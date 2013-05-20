@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+///////////////////////////////////////////////////////////////////////////////////////
+/// 請求與回覆的介面宣告
+/// 所有handler都要實作此介面，訂好雙方溝通協議，
+///////////////////////////////////////////////////////////////////////////////////////
+namespace Samebest.Contacts
+{
+	public interface IRespondents
+	{
+	}
+
+	public interface IRequester
+	{
+	}
+}
