@@ -35,13 +35,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MongoDB">
-      <HintPath>..\..\ThirdParty\Samus\MongoDB.dll</HintPath>
+      <HintPath>..\ThirdParty\Samus\MongoDB.dll</HintPath>
     </Reference>
     <Reference Include="MongoDB.Bson">
-      <HintPath>..\..\ThirdParty\MongoDB\MongoDB.Bson.dll</HintPath>
+      <HintPath>..\ThirdParty\MongoDB\MongoDB.Bson.dll</HintPath>
     </Reference>
-    <Reference Include="MySql.Data, Version=6.5.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>..\..\ThirdParty\MySQL\MySql.Data.dll</HintPath>
+    <Reference Include="MySql.Data">
+      <HintPath>..\ThirdParty\MySQL\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
