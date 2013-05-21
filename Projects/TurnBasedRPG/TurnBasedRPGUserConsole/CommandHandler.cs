@@ -58,7 +58,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             var commandInfomation = (from ci in _CommandInfomations where ci.Name.ToLower() == command.ToLower() select ci).FirstOrDefault();
             if (commandInfomation != null)
             {
-                commandInfomation.Execute(args);
+                commandInfomation.Execute(args);                
             }
             else
             {

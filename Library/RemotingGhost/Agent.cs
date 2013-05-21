@@ -228,7 +228,7 @@ namespace Samebest.Remoting.Ghost
 			return (IGhost)o;
 		}
 
-		System.Collections.Generic.Dictionary<Type , Type> _GhostTypes = new Dictionary<Type,Type>();
+		static System.Collections.Generic.Dictionary<Type , Type> _GhostTypes = new Dictionary<Type,Type>();
 		private Type _QueryGhostType(Type ghostBaseType)
 		{
 			Type ghostType = null;

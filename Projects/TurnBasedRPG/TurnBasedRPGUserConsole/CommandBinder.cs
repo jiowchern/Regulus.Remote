@@ -159,6 +159,8 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             _CommandHandler.Set("CreateAccount", _Build<string, string , bool>(obj.CreateAccount, _CreateAccountResult), "建立帳號 ex. createaccount [帳號] [密碼]");
             _CommandHandler.Set("Login", _Build<string, string, bool>(obj.Login, _LoginAccountResult), "登入 ex. login [帳號] [密碼]");
 
+
+            obj.RepeatLogin += () => { Console.WriteLine("重複登入");  };
         }
 
         private void _LoginAccountResult(Value<bool> obj)
