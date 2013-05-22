@@ -6,8 +6,7 @@ using System.Text;
 namespace Regulus.Project.TurnBasedRPG
 {
     class Hall : Regulus.Project.TurnBasedRPG.UserRoster , Samebest.Game.IFramework
-    {
-        
+    {        
         private Samebest.Game.FrameworkRoot _FrameworkRoot;
 
         public Hall()
@@ -18,6 +17,7 @@ namespace Regulus.Project.TurnBasedRPG
         {
             user.QuitEvent += () => 
             {
+                
                 _FrameworkRoot.RemoveFramework(user);
                 _User.Remove(user);
             };
@@ -32,7 +32,8 @@ namespace Regulus.Project.TurnBasedRPG
 
         bool Samebest.Game.IFramework.Update()
         {
-            return _FrameworkRoot.Update();
+            _FrameworkRoot.Update();
+            return true;
         }
 
         void Samebest.Game.IFramework.Shutdown()

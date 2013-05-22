@@ -20,11 +20,10 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
         }
         internal void Setup()
         {
-            var fw = _User as Samebest.Game.IFramework;
-            _CommandHandler.Set("quit", _Build(fw.Shutdown), "離開 ex. quit");
+            var fw = _User as Samebest.Game.IFramework;            
             _Bind(_User.Complex.QueryProvider<IVerify>());
             _Bind(_User.Complex.QueryProvider<IParking>());
-            _Bind(_User.Complex.QueryProvider<IPlayer>());
+            _Bind(_User.Complex.QueryProvider<IPlayer>());            
         }
 
         private void _Bind(Samebest.Remoting.Ghost.IProviderNotice<IPlayer> providerNotice)

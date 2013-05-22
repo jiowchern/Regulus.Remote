@@ -21,7 +21,7 @@ namespace Samebest.Game
 
         public void AddFramework(Samebest.Game.IFramework framework)
         {
-            _AddFrameworks.Enqueue(framework);
+            _AddFrameworks.Enqueue(framework);            
         }
 
         public void RemoveFramework(Samebest.Game.IFramework framework)
@@ -30,19 +30,19 @@ namespace Samebest.Game
             _RemoveFramework.Enqueue(framework);
         }
 
-        public bool Update()
+        public void Update()
         {
                         
             _Add(_AddFrameworks, _Frameworks);
                         
             _Remove(_RemoveFramework, _Frameworks);
 
-            return _Update();
+            _Update();
         }
 
         private void _Remove(Queue<Game.IFramework> remove_framework, List<Game.IFramework> frameworks)
         {
-            while (remove_framework.Count() > 0)
+            while (remove_framework.Count > 0)
             {
                 var fw = remove_framework.Dequeue();
                 frameworks.Remove(fw);
@@ -52,7 +52,7 @@ namespace Samebest.Game
 
         private void _Add(Queue<Game.IFramework> add_frameworks, List<Game.IFramework> frameworks)
         {
-            while (add_frameworks.Count() > 0)
+            while (add_frameworks.Count > 0)
             {
                 var fw = add_frameworks.Dequeue();
                 frameworks.Add(fw);
@@ -60,20 +60,27 @@ namespace Samebest.Game
             }                        
         }
 
-        private bool _Update()
+        private void _Update()
         {
+            Queue<Samebest.Game.IFramework> removeFrameworks = new Queue<IFramework>();
+            
             foreach (var framework in _Frameworks)
             {
                 if (framework.Update() == false)
-                    return false;
+                {
+                    removeFrameworks.Enqueue(framework);
+                }                    
             }
-            return true;
+
+            foreach(var removeFramework in removeFrameworks)
+                RemoveFramework(removeFramework);
         }
 
         
 
         private void _Shutdown(List<Game.IFramework> frameworks)
         {
+            
             foreach (var framework in frameworks)
             {
                 framework.Shutdown();

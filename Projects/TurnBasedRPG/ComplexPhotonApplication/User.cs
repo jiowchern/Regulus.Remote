@@ -92,6 +92,7 @@ namespace Regulus.Project.TurnBasedRPG
         public event Action QuitEvent;
         internal void Quit()
         {
+            
             if (QuitEvent != null)
             {
                 QuitEvent();

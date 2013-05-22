@@ -15,13 +15,18 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             Samebest.Utility.Singleton<Regulus.Utility.ConsoleLogger>.Instance.Launch("TurnBasedRPG");
 
             Samebest.Game.FrameworkRoot frameworkRoot = new Samebest.Game.FrameworkRoot();
-            
-            _CreateUser(frameworkRoot);
+
+            bool userRunning = true;
+            var user = _CreateUser(frameworkRoot);
+            user.Quit += () =>
+            {
+                userRunning = false;
+            };
             _CreateBot(frameworkRoot);
 
-            while (frameworkRoot.Update())
-            { 
-
+            while (userRunning)
+            {
+                frameworkRoot.Update();
             }
 
             Console.WriteLine("系統關閉...");
@@ -29,12 +34,13 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             Console.WriteLine("關閉完成.");
         }
 
-        private void _CreateUser(Samebest.Game.FrameworkRoot frameworkRoot)
+        private UserController _CreateUser(Samebest.Game.FrameworkRoot frameworkRoot)
         {
             Console.WriteLine("建立使用者.");
             UserController user = new UserController();
             
             frameworkRoot.AddFramework(user);
+            return user;
         }
 
         private void _CreateBot(Samebest.Game.FrameworkRoot frameworkRoot)

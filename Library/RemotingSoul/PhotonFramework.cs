@@ -23,13 +23,14 @@ namespace Samebest.Remoting.PhotonExpansion
 
         public abstract void Launch();
         void Game.IFramework.Launch()
-        {
+        {            
             Launch();
         }
 
         bool Game.IFramework.Update()
         {
-            return Update();
+            Update();
+            return true;
         }
 
         public abstract void Shutdown();

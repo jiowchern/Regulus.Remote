@@ -62,7 +62,8 @@ namespace Samebest.Game
 		{
             var standBy = _StandBys;
 
-            while ( standBy.Count() > 0)
+            
+            while ( standBy.Count > 0)
             {
                 var stage = standBy.Dequeue();
 

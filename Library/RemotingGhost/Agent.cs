@@ -183,13 +183,18 @@ namespace Samebest.Remoting.Ghost
 					_LinkState.LinkSuccess.Invoke();
 				_StartPing();
 			}
-			else
-			{				
-				_EndPing();
-				if (_LinkState.LinkFail != null)
-					_LinkState.LinkFail();                
+            else if (statusCode == ExitGames.Client.Photon.StatusCode.SendError)
+            { 
+
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine(statusCode.ToString());
+                _EndPing();
+                if (_LinkState.LinkFail != null)
+                    _LinkState.LinkFail();
                 _Peer = null;
-			}
+            }
 		}
 
 		System.Timers.Timer _PingTimer;

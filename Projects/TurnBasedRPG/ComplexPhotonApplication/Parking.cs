@@ -38,9 +38,6 @@ namespace Regulus.Project.TurnBasedRPG
             return _ActorInfomations.ToArray();
         }
 
-
-        
-
         public event Action<Serializable.DBActorInfomation> SelectEvent;
         void Common.IParking.Select(string name)
         {
