@@ -52,6 +52,16 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
                 };
             };
             _CommandHandler.Set("SetData", _Build<int, int>(obj.SetData, setDataResult), "測試用 SetData [數字]");
+
+
+            Action<Value<int>> getDataResult = (value) =>
+            {
+                value.OnValue += (res) =>
+                {
+                    Console.WriteLine("取得資料" + res.ToString());
+                };
+            };
+            _CommandHandler.Set("GetData", _Build<int>(obj.GetData, getDataResult), "測試用 GetData ");
         }
 
         private void _Bind(Samebest.Remoting.Ghost.IProviderNotice<IParking> providerNotice)
@@ -88,7 +98,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
 
             Func<string , Value<bool>> createActor = (name)=>
             {
-                var ai = new ActorInfomation();
+                var ai = new EntityLookInfomation();
                 ai.Name = name;
                 return obj.CreateActor(ai);
             };
@@ -109,32 +119,32 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             _CommandHandler.Set("CreateActor", _Build<string, bool>(createActor, createActorResult), "建立新角色 ex. CreateActor [名稱]");
 
 
-            Action<Value<ActorInfomation[]>> destroyActorResult = (value) =>
+            Action<Value<EntityLookInfomation[]>> destroyActorResult = (value) =>
             {
                 value.OnValue += (res) =>
                 {
                     _ShowActors(res);
                 };
             };
-            _CommandHandler.Set("DestroyActor", _Build<string, ActorInfomation[]>(obj.DestroyActor, destroyActorResult), "刪除角色 ex. DestroyActor [名稱]");
+            _CommandHandler.Set("DestroyActor", _Build<string, EntityLookInfomation[]>(obj.DestroyActor, destroyActorResult), "刪除角色 ex. DestroyActor [名稱]");
 
 
             _CommandHandler.Set("Back", _Build(obj.Back), "返回登入 ex. Back ");
 
 
-            Action<Value<ActorInfomation[]>> queryActorsResult = (value) =>
+            Action<Value<EntityLookInfomation[]>> queryActorsResult = (value) =>
             {
                 value.OnValue += (res) =>
                 {
                     _ShowActors(res);
                 };
             };
-            _CommandHandler.Set("QueryActors", _Build<ActorInfomation[]>(obj.QueryActors, queryActorsResult), "查詢角色 ex. QueryActors");
+            _CommandHandler.Set("QueryActors", _Build<EntityLookInfomation[]>(obj.QueryActors, queryActorsResult), "查詢角色 ex. QueryActors");
 
             _CommandHandler.Set("Select", _Build<string>(obj.Select), "選擇角色 ex. select [名稱]");
         }
 
-        private void _ShowActors(ActorInfomation[] ais)
+        private void _ShowActors(EntityLookInfomation[] ais)
         {
             foreach (var ai in ais)
             {

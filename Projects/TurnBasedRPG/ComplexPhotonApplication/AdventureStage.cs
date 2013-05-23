@@ -18,7 +18,7 @@ namespace Regulus.Project.TurnBasedRPG
             _Save = DateTime.Now;
         }
 
-        private Player _BuildPlayer(Serializable.DBActorInfomation dB_actorInfomation)
+        private Player _BuildPlayer(Serializable.DBEntityInfomation dB_actorInfomation)
         {
             return new Player(dB_actorInfomation);
         }

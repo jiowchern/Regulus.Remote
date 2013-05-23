@@ -17,9 +17,9 @@ namespace Regulus.Project.TurnBasedRPG.Common
     public interface IParking
     {
         Value<bool> CheckActorName(string name );
-        Value<bool> CreateActor(ActorInfomation cai);
-        Value<ActorInfomation[]> DestroyActor(string name);
-        Value<ActorInfomation[]> QueryActors();
+        Value<bool> CreateActor(EntityLookInfomation cai);
+        Value<EntityLookInfomation[]> DestroyActor(string name);
+        Value<EntityLookInfomation[]> QueryActors();
         void Back();
         void Select(string name);
     }
@@ -28,7 +28,8 @@ namespace Regulus.Project.TurnBasedRPG.Common
     {        
         void Logout();
         void ExitWorld();
-        Value<int> SetData(int i);        
+        Value<int> SetData(int i);
+        Value<int> GetData();        
     }
 
     

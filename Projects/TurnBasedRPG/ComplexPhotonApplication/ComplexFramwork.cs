@@ -7,7 +7,7 @@ namespace Regulus.Project.TurnBasedRPG
 {
     class ComplexFramwork : Samebest.Remoting.PhotonExpansion.PhotonFramework 
     {        
-        Regulus.Project.TurnBasedRPG.World _World;
+        Regulus.Project.TurnBasedRPG.Map _World;
         Regulus.Project.TurnBasedRPG.Hall _Hall;
 
         public ComplexFramwork()

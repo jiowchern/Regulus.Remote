@@ -40,26 +40,26 @@ namespace Regulus.Project.TurnBasedRPG
 
         internal bool CheckActorName(string name)
         {
-            var ais = _Database.Query<Serializable.DBActorInfomation>();
-            return (from a in ais where a.Name == name select true).FirstOrDefault();
+            var ais = _Database.Query<Serializable.DBEntityInfomation>();
+            return (from a in ais where a.Look.Name == name select true).FirstOrDefault();
         }
 
-        internal void Add(Serializable.DBActorInfomation ai)
+        internal void Add(Serializable.DBEntityInfomation ai)
         {
             _Database.Add(ai);
         }
 
-        internal Serializable.DBActorInfomation[] FindActor(Guid id)
+        internal Serializable.DBEntityInfomation[] FindActor(Guid id)
         {
-            var ais = _Database.Query<Serializable.DBActorInfomation>();
+            var ais = _Database.Query<Serializable.DBEntityInfomation>();
             var result = from a in ais where a.Owner == id select a;
             return result.ToArray();
         }
 
         internal bool RemoveActor(Guid id, string name)
         {
-            var ais = _Database.Query<Serializable.DBActorInfomation>();
-            var result = (from a in ais where a.Owner == id && a.Name == name select a).FirstOrDefault();
+            var ais = _Database.Query<Serializable.DBEntityInfomation>();
+            var result = (from a in ais where a.Owner == id && a.Look.Name == name select a).FirstOrDefault();
             if (result != null)
             {
                 _Database.Remove(result);
@@ -68,9 +68,9 @@ namespace Regulus.Project.TurnBasedRPG
             return false;
         }
 
-        internal void SaveActor(Serializable.DBActorInfomation actor)
+        internal void SaveActor(Serializable.DBEntityInfomation actor)
         {
-            _Database.Update<Serializable.DBActorInfomation>(actor, a => a.Name == actor.Name);
+            _Database.Update<Serializable.DBEntityInfomation>(actor, a => a.Look.Name == actor.Look.Name);
         }
     }
 }

@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 
 
-
-
 namespace Regulus.Project.TurnBasedRPG
 {
     class User : Samebest.Game.IFramework
@@ -61,11 +59,11 @@ namespace Regulus.Project.TurnBasedRPG
         internal void Logout()
         {
             _AccountInfomation = null;
-            Actor = null;
+            _ClearActor();            
             _Machine.Push(new VerifyStage(_UserRoster)); 
         }
-        public Serializable.DBActorInfomation Actor { get; private set; }
-        internal void EnterWorld(Serializable.DBActorInfomation obj)
+        public Serializable.DBEntityInfomation Actor { get; private set; }
+        internal void EnterWorld(Serializable.DBEntityInfomation obj)
         {
             Actor = obj;
             _Machine.Push(new AdventureStage());
@@ -74,8 +72,17 @@ namespace Regulus.Project.TurnBasedRPG
         void Samebest.Game.IFramework.Launch()
         {
             _AccountInfomation = null;
-            Actor = null;            
+            _ClearActor();            
             _Machine.Push(new VerifyStage(_UserRoster)); 
+        }
+
+        private void _ClearActor()
+        {
+            if (Actor != null)
+            {
+                Samebest.Utility.Singleton<Storage>.Instance.SaveActor(Actor);
+                Actor = null;
+            }
         }
 
         bool Samebest.Game.IFramework.Update()
@@ -85,8 +92,7 @@ namespace Regulus.Project.TurnBasedRPG
 
         void Samebest.Game.IFramework.Shutdown()
         {
-            if (Actor != null)
-                Samebest.Utility.Singleton<Storage>.Instance.SaveActor(Actor);
+            _ClearActor();                        
         }
 
         public event Action QuitEvent;

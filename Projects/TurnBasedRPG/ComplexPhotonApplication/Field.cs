@@ -1,0 +1,55 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Regulus.Project.TurnBasedRPG
+{
+    class Field
+    {
+
+        float _Range = 10.0f * 10.0f;
+        public Entity Entity { get; private set; }
+
+        List<Entity> _Within = new List<Entity>();
+
+        public Field(Entity ent)
+        {
+            Entity = ent;
+        }
+
+        internal void Update(TurnBasedRPG.Entity[] entitys)
+        {
+            foreach (var entity in entitys)
+            {
+                if (_Distance(entity, Entity) > _Range)
+                {
+                    // out
+                    if (_Find(_Within, entity))
+                    {
+                        Entity.LeftField(entity);
+                    }
+                }
+                else
+                { 
+                    // in
+                    if (_Find(_Within, entity) == false)
+                    {
+                        _Within.Add(entity);
+                        Entity.IntoField(entity);                        
+                    }
+                }
+            }
+        }
+
+        private bool _Find(List<TurnBasedRPG.Entity> within, TurnBasedRPG.Entity entity)
+        {
+            return within.Remove(entity);
+        }
+
+        private float _Distance(TurnBasedRPG.Entity e1, TurnBasedRPG.Entity e2)
+        {
+            return (e1.Position.X - e2.Position.X) * (e1.Position.X - e2.Position.X) + (e1.Position.Y - e2.Position.Y) * (e1.Position.Y - e2.Position.Y);
+        }
+    }
+}

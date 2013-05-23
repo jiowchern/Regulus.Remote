@@ -46,6 +46,7 @@
     <Compile Include="game_data_prototypefactory.cs" />
     <Compile Include="game_stage.cs" />
     <Compile Include="game_stagemachine.cs" />
+    <Compile Include="type.cs" />
     <Compile Include="utility_commandsender.cs" />
     <Compile Include="utility_csv.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
