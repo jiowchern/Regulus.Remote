@@ -5,11 +5,12 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPG
 {
-    class Player : Common.IPlayer
+    class Player : Entity , Common.IPlayer 
     {
         private Serializable.DBEntityInfomation _DBactorInfomation;
 
         public Player(Serializable.DBEntityInfomation dB_actorInfomation)
+            : base(dB_actorInfomation.Property)
         {            
             this._DBactorInfomation = dB_actorInfomation;
         }

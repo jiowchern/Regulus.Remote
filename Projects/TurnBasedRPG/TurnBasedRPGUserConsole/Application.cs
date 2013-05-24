@@ -6,8 +6,7 @@ using System.Text;
 namespace Regulus.Project.TurnBasedRPGUserConsole
 {
     class Application
-    {
-        
+    {        
         internal void Run()
         {
             Console.WriteLine("用摸的RPG");

@@ -20,11 +20,9 @@ namespace Regulus.Project.TurnBasedRPG
             _Verify = new Regulus.Project.TurnBasedRPG.Verify(_UserRoster);
             _Verify.LoginSuccess += obj.OnLoginSuccess;
             _Verify.QuitEvent += obj.Quit;
-            
+           
             obj.Provider.Bind<Common.IVerify>(_Verify);
         }
-
-        
 
         void Samebest.Game.IStage<User>.Leave(User obj)
         {

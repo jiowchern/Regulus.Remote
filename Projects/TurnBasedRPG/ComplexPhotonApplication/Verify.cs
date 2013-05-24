@@ -31,6 +31,8 @@ namespace Regulus.Project.TurnBasedRPG
         {
             // TODO: Complete member initialization
             this._UserRoster = user_roster;
+
+            
         }
         Samebest.Remoting.Value<bool> Common.IVerify.Login(string name, string password)
         {
@@ -63,8 +65,17 @@ namespace Regulus.Project.TurnBasedRPG
                 QuitEvent();
                 QuitEvent = null;
             }
+
+            
         }
 
+        public delegate void callback(int a);
+
+        public event callback cb;
+        public void OnCallBack()
+        {
+            cb(100);
+        }
 
         event Action _RepeatLogin;
         event Action Common.IVerify.RepeatLogin

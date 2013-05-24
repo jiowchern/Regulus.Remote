@@ -7,18 +7,30 @@ namespace Regulus.Project.TurnBasedRPG
 {
     class Entity
     {
-        public Regulus.Types.Vector2    Position    {get;private set;}
         
-        internal static void LeftField(Entity entity)
+        Regulus.Project.TurnBasedRPG.Serializable.EntityPropertyInfomation _Property;
+        public Entity(Regulus.Project.TurnBasedRPG.Serializable.EntityPropertyInfomation property)
         {
-            throw new NotImplementedException();
+            _Property = property;
+            Vision = 10;
+        }
+        public Regulus.Types.Vector2 Position 
+        { 
+            get 
+            {
+                return _Property.Position;
+            }            
+        }
+        
+        internal void LeftField(Entity entity)
+        {
+            
         }
 
-        internal static void IntoField(Entity entity)
+        internal void IntoField(Entity entity)
         {
-            throw new NotImplementedException();
+          
         }
-
-        public int Vision { get; private set; }
+        public int Vision { get ; private set; }
     }
 }
