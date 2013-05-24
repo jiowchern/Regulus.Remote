@@ -5,14 +5,14 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPG
 {
-    class Player : Entity , Common.IPlayer 
+    class Player : Actor , Common.IPlayer  
     {
-        private Serializable.DBEntityInfomation _DBactorInfomation;
+        private Serializable.DBEntityInfomation _DBActorInfomation;
 
         public Player(Serializable.DBEntityInfomation dB_actorInfomation)
-            : base(dB_actorInfomation.Property)
+            : base(dB_actorInfomation)
         {            
-            this._DBactorInfomation = dB_actorInfomation;
+            _DBActorInfomation = dB_actorInfomation;
         }
 
         public event Action LogoutEvent;
@@ -33,17 +33,15 @@ namespace Regulus.Project.TurnBasedRPG
             }
         }
 
-
         Samebest.Remoting.Value<int> Common.IPlayer.SetData(int i)
         {
-            _DBactorInfomation.TestData = ++i;
-            return _DBactorInfomation.TestData;
+            _DBActorInfomation.TestData = ++i;
+            return _DBActorInfomation.TestData;
         }
-
 
         Samebest.Remoting.Value<int> Common.IPlayer.GetData()
         {
-            return _DBactorInfomation.TestData;
+            return _DBActorInfomation.TestData;
         }
     }
 }

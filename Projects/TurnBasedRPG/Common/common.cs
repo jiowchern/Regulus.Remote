@@ -32,5 +32,11 @@ namespace Regulus.Project.TurnBasedRPG.Common
         Value<int> GetData();        
     }
 
+	public interface IActor
+	{
+		Value<EntityPropertyInfomation> GetProperty();
+		Value<EntityLookInfomation> GetLook();
+	}
+
     
 }

@@ -24,7 +24,11 @@ namespace Regulus.Project.TurnBasedRPG
             if (Samebest.Utility.Singleton<Storage>.Instance.CheckActorName(cai.Name) == false)
             {
                 Serializable.DBEntityInfomation ai = new Serializable.DBEntityInfomation();
-                ai.Look.Name = cai.Name;                
+                ai.Look.Name = cai.Name;				
+				var position = ai.Property.Position;
+				position.X = (float)Regulus.Utility.Random.Instance.R.Next(0,100);
+				position.Y = (float)Regulus.Utility.Random.Instance.R.Next(0,100);
+				
                 ai.Owner = _Id;
                 _ActorInfomations.Add(ai);
                 Samebest.Utility.Singleton<Storage>.Instance.Add(ai);

@@ -6,8 +6,7 @@ using System.Text;
 namespace Regulus.Project.TurnBasedRPG
 {
     class Entity
-    {
-        
+    {        
         Regulus.Project.TurnBasedRPG.Serializable.EntityPropertyInfomation _Property;
         public Entity(Regulus.Project.TurnBasedRPG.Serializable.EntityPropertyInfomation property)
         {
@@ -24,12 +23,12 @@ namespace Regulus.Project.TurnBasedRPG
         
         internal void LeftField(Entity entity)
         {
-            
+			            
         }
 
         internal void IntoField(Entity entity)
         {
-          
+			
         }
         public int Vision { get ; private set; }
     }

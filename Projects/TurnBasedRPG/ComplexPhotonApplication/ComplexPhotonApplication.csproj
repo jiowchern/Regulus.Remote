@@ -68,6 +68,7 @@
       <Link>common.cs</Link>
     </Compile>
     <Compile Include="AccountRoster.cs" />
+    <Compile Include="Actor.cs" />
     <Compile Include="AdventureStage.cs" />
     <Compile Include="ComplexApplication.cs" />
     <Compile Include="ComplexFramwork.cs" />
