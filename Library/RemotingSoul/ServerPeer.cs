@@ -120,7 +120,7 @@ namespace Samebest.Remoting.Soul
             while (_UpdateRequests.Count > 0)
             {
                 var cmd = _UpdateRequests.Dequeue();
-                if (InvokeMethodEvent != null && cmd != null)
+                if (InvokeMethodEvent != null )
                     InvokeMethodEvent.Invoke(cmd.EntityId, cmd.MethodName, cmd.ReturnId, cmd.MethodParams);
             }
 

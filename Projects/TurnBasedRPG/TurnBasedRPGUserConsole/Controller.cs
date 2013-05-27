@@ -246,15 +246,19 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
         protected override void _Launch(TurnBasedRPG.User user)
         {
             User = user;
+            User.LinkFail += User_LinkFail;
             _StageMachine = new Samebest.Game.StageMachine<StatusBotController>(this);
             ToVerify();
         }
 
-        
+        void User_LinkFail()
+        {
+            ToConnect();
+        }
 
         protected override void _Shutdown()
         {
-            
+            User.LinkFail -= User_LinkFail;
         }
 
         protected override string[] _HandlerInput()
@@ -265,21 +269,24 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
 
         internal void ToVerify()
         {
-            System.Threading.Thread.Sleep(200);
+            
             _StageMachine.Push(new BotStage.Verify());            
         }
 
         internal void ToParking()
         {
-            System.Threading.Thread.Sleep(200);
+            
             _StageMachine.Push(new BotStage.Parking());            
         }
 
         internal void ToGame()
         {
-
-            System.Threading.Thread.Sleep(200);
+            
             _StageMachine.Push(new BotStage.Game());            
+        }
+        internal void ToConnect()
+        {
+            _StageMachine.Push(new BotStage.Connect());            
         }
 
         

@@ -37,6 +37,9 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             _CommandHandler.Rise("ExitWorld");
             _CommandHandler.Rise("Logout");
             _CommandHandler.Rise("SetData");
+            _CommandHandler.Rise("GetData");
+            _CommandHandler.Rise("SetPosition");            
+            _CommandHandler.Rise("Ready");
 
             obj.IntoEvent -= obj_IntoEvent;
             obj.LeftEvent -= obj_LeftEvent;
@@ -44,6 +47,8 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
 
         private void _PlayerSupply(IPlayer obj)
         {
+            _CommandHandler.Set("SetPosition", _Build<float, float>(obj.SetPosition), "設定位置 ex. SetPosition 100 100");
+            _CommandHandler.Set("Ready", _Build(obj.Ready), "準備完畢 ex. Ready");
             _CommandHandler.Set("ExitWorld", _Build(obj.ExitWorld), "返回選角 ex. ExitWorld");
             _CommandHandler.Set("Logout", _Build(obj.Logout), "離開遊戲 ex. Logout");
 
@@ -71,14 +76,15 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
 
         }
 
-        void obj_LeftEvent(Guid obj)
+        public void obj_LeftEvent(Guid obj)
         {
-            Console.WriteLine("entiry離開{0}" + obj.ToString());
+            Console.WriteLine("entiry離開" + obj.ToString());
         }
 
-        void obj_IntoEvent(EntityInfomation obj)
+        void obj_IntoEvent(EntityInfomation info)
         {
-            Console.WriteLine("entiry進入{0}:{1},{2}" + obj.Id.ToString(), obj.Position.X, obj.Position.Y);
+
+            Console.WriteLine(String.Format("entiry進入{0}:{1},{2}" , info.Id.ToString(), info.Position.X, info.Position.Y));
         }
 
         private void _Bind(Samebest.Remoting.Ghost.IProviderNotice<IParking> providerNotice)
@@ -164,7 +170,10 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             {
                 value.OnValue += (res) =>
                 {
-                    Console.WriteLine("角色選擇正確.");
+                    if (res)
+                        Console.WriteLine("角色選擇正確.");
+                    else
+                        Console.WriteLine("角色選擇錯誤.");
                 };
             };
             _CommandHandler.Set("Select", _Build<string, bool>(obj.Select, selectResult), "選擇角色 ex. select [名稱]");

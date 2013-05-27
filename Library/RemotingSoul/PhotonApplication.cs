@@ -29,7 +29,7 @@ namespace Samebest.Remoting.Soul
 			 _Framework = _Setup();
 			_Framework.Launch();
 			_FrameworkThread = new System.Threading.Thread(_FrameworkUpdate);
-            _FrameworkThread.Priority = System.Threading.ThreadPriority.Normal;
+            _FrameworkThread.Priority = System.Threading.ThreadPriority.Lowest;
 			_FrameworkThread.Start();
 
 			Logger.Info("Setup end.");

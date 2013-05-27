@@ -84,12 +84,18 @@ namespace Samebest.Game
 			return false;
 		}
 
-
+        public void Termination()
+        {
+            _StandBys.Clear();
+            if (_Current != null)
+            {
+                _Current.Leave(_Param);
+                _Current = null;
+            }
+        }
 		void IDisposable.Dispose()
 		{
-			_StandBys.Clear();
-			if (_Current != null)
-				_Current.Leave(_Param);
+            Termination();
 		}
 	}
 }

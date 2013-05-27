@@ -26,6 +26,7 @@ namespace Regulus.Project.TurnBasedRPG
                 Serializable.DBEntityInfomation ai = new Serializable.DBEntityInfomation();
                 ai.Look.Name = cai.Name;				
 				var position = ai.Property.Position;
+                ai.Property.Id = Guid.NewGuid();
 				position.X = (float)Regulus.Utility.Random.Instance.R.Next(0,100);
 				position.Y = (float)Regulus.Utility.Random.Instance.R.Next(0,100);
 				

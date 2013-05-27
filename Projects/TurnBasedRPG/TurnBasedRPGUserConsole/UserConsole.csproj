@@ -58,6 +58,7 @@
     <Compile Include="Closures.cs" />
     <Compile Include="CommandBinder.cs" />
     <Compile Include="CommandHandler.cs" />
+    <Compile Include="Connect.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="BotStageGame.cs" />
     <Compile Include="BotStageParking.cs" />

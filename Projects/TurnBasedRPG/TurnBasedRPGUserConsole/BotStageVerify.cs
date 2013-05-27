@@ -10,9 +10,10 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
     {
         public class Verify : Samebest.Game.IStage<StatusBotController>
         {
+            Action<Regulus.Project.TurnBasedRPG.Common.IVerify> _OnSupply;
             void Samebest.Game.IStage<StatusBotController>.Enter(StatusBotController obj)
             {
-                Action<Regulus.Project.TurnBasedRPG.Common.IVerify> onSupply = (verify) =>
+                _OnSupply = (verify) =>
                 {
                     var resule = verify.Login(obj.Name, "1");
                     resule.OnValue += (res) =>
@@ -34,11 +35,11 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
                 var notify = obj.User.Complex.QueryProvider<Regulus.Project.TurnBasedRPG.Common.IVerify>();
                 if (notify.Ghosts.Length > 0)
                 {
-                    onSupply(notify.Ghosts[0]);
+                    _OnSupply(notify.Ghosts[0]);
                 }
                 else
-                {                    
-                    notify.Supply += onSupply;
+                {
+                    notify.Supply += _OnSupply;
                 }
                 _Restart = System.DateTime.Now;
             }
@@ -47,7 +48,8 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
 
             void Samebest.Game.IStage<StatusBotController>.Leave(StatusBotController obj)
             {
-                
+                var notify = obj.User.Complex.QueryProvider<Regulus.Project.TurnBasedRPG.Common.IVerify>();
+                notify.Supply -= _OnSupply;
             }
 
             System.DateTime _Restart;

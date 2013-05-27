@@ -7,10 +7,10 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
 {
     class Game : Samebest.Game.IStage<StatusBotController>
     {
-
+        Action<Regulus.Project.TurnBasedRPG.Common.IPlayer> _OnSupply;
         void Samebest.Game.IStage<StatusBotController>.Enter(StatusBotController obj)
         {
-            Action<Regulus.Project.TurnBasedRPG.Common.IPlayer> onSupply = (player) =>
+            _OnSupply = (player) =>
             {
                 player.Logout();
                 obj.ToVerify();
@@ -18,17 +18,18 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
             var notify = obj.User.Complex.QueryProvider<Regulus.Project.TurnBasedRPG.Common.IPlayer>();
             if(notify.Ghosts.Length > 0 )
             {
-                onSupply(notify.Ghosts[0]);
+                _OnSupply(notify.Ghosts[0]);
             }
             else
-                notify.Supply += onSupply;
+                notify.Supply += _OnSupply;
 
             _Restart = System.DateTime.Now;
         }
 
         void Samebest.Game.IStage<StatusBotController>.Leave(StatusBotController obj)
         {
-            
+            var notify = obj.User.Complex.QueryProvider<Regulus.Project.TurnBasedRPG.Common.IPlayer>();
+            notify.Supply -= _OnSupply;
         }
 
         System.DateTime _Restart;

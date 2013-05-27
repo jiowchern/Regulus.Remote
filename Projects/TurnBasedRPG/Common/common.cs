@@ -25,7 +25,8 @@ namespace Regulus.Project.TurnBasedRPG.Common
     }
 
     public interface IPlayer
-    {        
+    {
+        void Ready();
         void Logout();
         void ExitWorld();
         Value<int> SetData(int i);
@@ -33,7 +34,7 @@ namespace Regulus.Project.TurnBasedRPG.Common
         event Action<EntityInfomation>  IntoEvent;
         event Action<Guid>              LeftEvent;
 
-        
+        void SetPosition(float x,float y);
     }
 
     

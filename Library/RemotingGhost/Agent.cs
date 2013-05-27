@@ -21,12 +21,18 @@ namespace Samebest.Remoting.Ghost
 			
 		}
 
+
+        public void Launch()
+        {
+            if (_Peer != null)
+                _Peer.Disconnect();
+            _Peer = new Samebest.Remoting.PhotonExtension.ClientPeer(this, ExitGames.Client.Photon.ConnectionProtocol.Udp);
+            _Peer.Connect(_Config.Address, _Config.Name);			
+        }
 		public void Launch(LinkState link_state)
 		{			
 			_LinkState = link_state;
-			_Peer = new Samebest.Remoting.PhotonExtension.ClientPeer(this, ExitGames.Client.Photon.ConnectionProtocol.Udp);			
-			_Peer.Connect(_Config.Address , _Config.Name);
-			
+            Launch();
 		}
 
 		public bool Update()
@@ -51,6 +57,7 @@ namespace Samebest.Remoting.Ghost
 
 		void ExitGames.Client.Photon.IPhotonPeerListener.DebugReturn(ExitGames.Client.Photon.DebugLevel level, string message)
 		{
+            System.Diagnostics.Debug.WriteLine("photon debgu return .level:" + level.ToString() + " message" + message);
 		//	throw new NotImplementedException();
 		}
 
@@ -119,7 +126,7 @@ namespace Samebest.Remoting.Ghost
 		private void _LoadSoul(string type_name, Guid id)
 		{
 			IProvider provider = _QueryProvider(type_name);
-			if (provider != null)
+            if (provider != null && _Peer != null)
 				provider.Add(_BuildGhost(_GetType(type_name), _Peer, id));
 		}
 
@@ -170,10 +177,10 @@ namespace Samebest.Remoting.Ghost
 		private IGhost _FindGhost(Guid ghost_id)
 		{
 			return	(from provider in _Providers 
-					select (from g in provider.Value.Ghosts where ghost_id == g.GetID() select g).FirstOrDefault()).FirstOrDefault();	
+                    let r  = (from g in provider.Value.Ghosts where ghost_id == g.GetID() select g).FirstOrDefault()
+                    where r != null
+                    select r).FirstOrDefault();	
 		}
-		
-		
 
 		void ExitGames.Client.Photon.IPhotonPeerListener.OnStatusChanged(ExitGames.Client.Photon.StatusCode statusCode)
 		{
@@ -285,7 +292,8 @@ namespace Samebest.Remoting.Ghost
 				object fieldValue = eventInfos.GetValue(obj);
 				if (fieldValue is Delegate)
 				{
-					(fieldValue as Delegate).DynamicInvoke(args);
+                    Delegate fieldValueDelegate = (fieldValue as Delegate);
+                    fieldValueDelegate.DynamicInvoke(args);
 				}
 			}
 		}

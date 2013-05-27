@@ -7,10 +7,10 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
 {
     class Parking : Samebest.Game.IStage<StatusBotController>
     {
-
+        Action<Regulus.Project.TurnBasedRPG.Common.IParking> _OnSupply;
         void Samebest.Game.IStage<StatusBotController>.Enter(StatusBotController obj)
         {
-            Action<Regulus.Project.TurnBasedRPG.Common.IParking> onSupply = (patking) =>
+            _OnSupply = (patking) =>
             {
                 var val = patking.Select(obj.Name);
                 val.OnValue += ( res )=>
@@ -30,18 +30,19 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
             var notify = obj.User.Complex.QueryProvider<Regulus.Project.TurnBasedRPG.Common.IParking>();
             if (notify.Ghosts.Length > 0)
             {
-                onSupply(notify.Ghosts[0]);
+                _OnSupply(notify.Ghosts[0]);
             }
             else
             {
-                notify.Supply += onSupply;
+                notify.Supply += _OnSupply;
             }
             _Restart = System.DateTime.Now;
         }
 
         void Samebest.Game.IStage<StatusBotController>.Leave(StatusBotController obj)
         {
-            
+            var notify = obj.User.Complex.QueryProvider<Regulus.Project.TurnBasedRPG.Common.IParking>();
+            notify.Supply -= _OnSupply;
         }
 
         System.DateTime _Restart;

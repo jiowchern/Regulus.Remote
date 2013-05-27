@@ -92,7 +92,8 @@ namespace Regulus.Project.TurnBasedRPG
 
         void Samebest.Game.IFramework.Shutdown()
         {
-            _ClearActor();                        
+            _ClearActor();
+            _Machine.Termination();    
         }
 
         public event Action QuitEvent;

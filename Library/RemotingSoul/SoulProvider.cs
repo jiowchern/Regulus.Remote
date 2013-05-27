@@ -41,20 +41,6 @@ namespace Samebest.Remoting.Soul
         
 		void _InvokeEvent(Guid entity_id, string event_name, object[] args)
 		{            
-            /*
-              var op = new Photon.SocketServer.OperationResponse();
-			op.OperationCode = (byte)ServerToClientPhotonOpCode.InvokeEvent;
-			op.Parameters = new Dictionary<byte, object>();
-			op.Parameters.Add(0, entity_id.ToByteArray());
-			op.Parameters.Add(1,event_name) ;
-			byte i = 2;
-			foreach (var arg in args)
-			{
-				op.Parameters.Add( i , Samebest.PhotonExtension.TypeHelper.Serializer(arg) );
-				++i;
-			}            
-			_Peer.SendOperationResponse( op , new Photon.SocketServer.SendParameters());*/
-
             var argmants = new Dictionary<byte, object>();
             argmants.Add(0, entity_id.ToByteArray());
             argmants.Add(1, Samebest.PhotonExtension.TypeHelper.Serializer(event_name));
@@ -72,15 +58,6 @@ namespace Samebest.Remoting.Soul
             _WaitValues.Add(returnId, returnValue);
             returnValue.QueryValue(new Action<object>((obj) =>
             {
-                /*var op = new Photon.SocketServer.OperationResponse();
-                op.OperationCode = (byte)ServerToClientPhotonOpCode.ReturnValue;
-                op.Parameters = new Dictionary<byte, object>();
-                op.Parameters.Add(0, returnId.ToByteArray());
-                object value = returnValue.GetObject();
-                op.Parameters.Add(1, PhotonExtension.TypeHelper.Serializer(value));
-
-                _Peer.SendOperationResponse(op, new Photon.SocketServer.SendParameters());*/
-
                 var argmants = new Dictionary<byte, object>();
                 argmants.Add(0, returnId.ToByteArray());
                 object value = returnValue.GetObject();
@@ -91,14 +68,7 @@ namespace Samebest.Remoting.Soul
             }));            
         }
         private void _LoadSoul(string type_name, Guid id)
-        {
-            /*var op = new Photon.SocketServer.OperationResponse();
-            op.OperationCode = (byte)ServerToClientPhotonOpCode.LoadSoul;
-            op.Parameters = new Dictionary<byte, object>();
-            op.Parameters.Add(0, type_name);
-            op.Parameters.Add(1, id.ToByteArray());
-            _Peer.SendOperationResponse(op, new Photon.SocketServer.SendParameters());*/
-
+        {         
             var argmants = new Dictionary<byte, object>();
             argmants.Add(0, Samebest.PhotonExtension.TypeHelper.Serializer(type_name));
             argmants.Add(1, id.ToByteArray());
@@ -107,16 +77,6 @@ namespace Samebest.Remoting.Soul
 
         private void _UnloadSoul(string type_name, Guid id)
         {
-
-            /*
-            var op = new Photon.SocketServer.OperationResponse();
-            op.OperationCode = (byte)ServerToClientPhotonOpCode.UnloadSoul;
-            op.Parameters = new Dictionary<byte, object>();
-            op.Parameters.Add(0, type_name);
-            op.Parameters.Add(1, id.ToByteArray());
-            _Peer.SendOperationResponse(op, new Photon.SocketServer.SendParameters());
-             */
-
             var argmants = new Dictionary<byte, object>();
             argmants.Add(0, Samebest.PhotonExtension.TypeHelper.Serializer(type_name));
             argmants.Add(1, id.ToByteArray());

@@ -87,5 +87,19 @@ namespace Regulus.Project.TurnBasedRPG
             Field.IntoEvent -= _IntoEntity;
             Field.LeftEvent -= _LeftEntity;
         }
+
+        public event Action ReadyEvent;
+        void Common.IPlayer.Ready()
+        {
+            if (ReadyEvent != null)
+                ReadyEvent();
+        }
+
+
+        void Common.IPlayer.SetPosition(float x, float y)
+        {
+            _DBActorInfomation.Property.Position.X = x;
+            _DBActorInfomation.Property.Position.Y = y;
+        }
     }
 }

@@ -29,9 +29,9 @@ namespace Regulus.Project.TurnBasedRPG
                 if (_Distance(entity, Entity) > _Range)
                 {
                     // out
-                    if (_Find(_Within, entity))
+                    if (_Remove(_Within, entity))
                     {
-                        //LeftEvent(entity);
+                        LeftEvent(entity);
                     }
                 }
                 else
@@ -39,14 +39,19 @@ namespace Regulus.Project.TurnBasedRPG
                     // in
                     if (_Find(_Within, entity) == false)
                     {
-                        //_Within.Add(entity);
-                        //IntoEvent(entity); 
+                        _Within.Add(entity);
+                        IntoEvent(entity); 
                     }
                 }
             }
         }
 
-        private bool _Find(List<TurnBasedRPG.Entity> within, TurnBasedRPG.Entity entity)
+        private bool _Find(List<TurnBasedRPG.Entity> _Within, TurnBasedRPG.Entity entity)
+        {
+            return _Within.Find(ent => ent == entity) != null;
+        }
+
+        private bool _Remove(List<TurnBasedRPG.Entity> within, TurnBasedRPG.Entity entity)
         {
             return within.Remove(entity);
         }

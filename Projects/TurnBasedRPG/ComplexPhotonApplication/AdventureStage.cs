@@ -11,15 +11,21 @@ namespace Regulus.Project.TurnBasedRPG
         Regulus.Project.TurnBasedRPG.Player _Player;
         
         void Samebest.Game.IStage<User>.Enter(User obj)
-        {
-            
+        {            
             _Player = new Player(obj.Actor);
-            _Player.Initialize();
-            Samebest.Utility.Singleton<Map>.Instance.Into(_Player, _ExitMap);
-            _Player.ExitWorldEvent += obj.ToParking;
-            _Player.LogoutEvent += obj.Logout;
             obj.Provider.Bind<Common.IPlayer>(_Player);
+            _Player.Initialize();
+            _Player.ReadyEvent += _OnPlayerReady;
+            
+            _Player.ExitWorldEvent += obj.ToParking;
+            _Player.LogoutEvent += obj.Logout;            
             _Save = DateTime.Now;
+        }
+
+        void _OnPlayerReady()
+        {
+            _Player.ReadyEvent -= _OnPlayerReady;
+            Samebest.Utility.Singleton<Map>.Instance.Into(_Player, _ExitMap);            
         }
 
         void _ExitMap()
