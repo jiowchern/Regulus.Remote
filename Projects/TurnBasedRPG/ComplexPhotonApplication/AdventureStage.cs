@@ -9,23 +9,35 @@ namespace Regulus.Project.TurnBasedRPG
     {
         DateTime _Save;
         Regulus.Project.TurnBasedRPG.Player _Player;
+        
         void Samebest.Game.IStage<User>.Enter(User obj)
         {
-            _Player = _BuildPlayer(obj.Actor);
+            
+            _Player = new Player(obj.Actor);
+            _Player.Initialize();
+            Samebest.Utility.Singleton<Map>.Instance.Into(_Player, _ExitMap);
             _Player.ExitWorldEvent += obj.ToParking;
             _Player.LogoutEvent += obj.Logout;
             obj.Provider.Bind<Common.IPlayer>(_Player);
             _Save = DateTime.Now;
         }
 
-        private Player _BuildPlayer(Serializable.DBEntityInfomation dB_actorInfomation)
+        void _ExitMap()
         {
-            return new Player(dB_actorInfomation);
+            var plr = _Player as Common.IPlayer;
+            // 離開地圖
+            // 可能是切換地圖
         }
 
         void Samebest.Game.IStage<User>.Leave(User obj)
         {
-            obj.Provider.Unbind<Common.IPlayer>(_Player);
+            if (_Player != null)
+            {
+                _Player.Finialize();
+                Samebest.Utility.Singleton<Map>.Instance.Left(_Player);
+                obj.Provider.Unbind<Common.IPlayer>(_Player);
+            }
+            
         }
 
         void Samebest.Game.IStage<User>.Update(User obj)

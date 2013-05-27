@@ -40,7 +40,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Photon3Unity3D">
+    <Reference Include="Photon3Unity3D, Version=3.0.1.17, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\ThirdParty\Photon\Photon3Unity3D.dll</HintPath>
     </Reference>
     <Reference Include="System" />

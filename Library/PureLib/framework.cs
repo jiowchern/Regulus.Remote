@@ -62,18 +62,15 @@ namespace Samebest.Game
 
         private void _Update()
         {
-            Queue<Samebest.Game.IFramework> removeFrameworks = new Queue<IFramework>();
-            
             foreach (var framework in _Frameworks)
             {
                 if (framework.Update() == false)
                 {
-                    removeFrameworks.Enqueue(framework);
+                    
+                    RemoveFramework(framework);
                 }                    
             }
-
-            foreach(var removeFramework in removeFrameworks)
-                RemoveFramework(removeFramework);
+            
         }
 
         

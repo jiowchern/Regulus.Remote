@@ -66,7 +66,7 @@ namespace Samebest.Remoting.Ghost
 				if (operationResponse.Parameters.Count >= 2)
 				{
 					var entity_id = new Guid(operationResponse.Parameters[0] as byte[]);
-					var eventName = operationResponse.Parameters[1] as string;
+                    var eventName = Samebest.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[1] as byte[]) as string;
 					var eventParams = (from p in operationResponse.Parameters
 										where p.Key >= 2
 										select Samebest.PhotonExtension.TypeHelper.Deserialize(p.Value as byte[])).ToArray();
@@ -88,7 +88,7 @@ namespace Samebest.Remoting.Ghost
 			{
 				if (operationResponse.Parameters.Count == 2)
 				{
-					var typeName = operationResponse.Parameters[0] as string;
+                    var typeName = Samebest.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[0] as byte[]) as string;
 					var entity_id = new Guid(operationResponse.Parameters[1] as byte[]);
 					_LoadSoul(typeName, entity_id);
 				}
@@ -97,7 +97,7 @@ namespace Samebest.Remoting.Ghost
 			{
 				if (operationResponse.Parameters.Count == 2)
 				{
-					var typeName = operationResponse.Parameters[0] as string;
+                    var typeName = Samebest.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[0] as byte[])as string;
 					var entity_id = new Guid(operationResponse.Parameters[1] as byte[]);
 					_UnloadSoul(typeName, entity_id);
 				}
@@ -183,18 +183,32 @@ namespace Samebest.Remoting.Ghost
 					_LinkState.LinkSuccess.Invoke();
 				_StartPing();
 			}
+            else if (statusCode == ExitGames.Client.Photon.StatusCode.QueueOutgoingReliableWarning)
+            {
+            }
+            else if (statusCode == ExitGames.Client.Photon.StatusCode.QueueIncomingReliableWarning)
+            {
+            }
+            else if (statusCode == ExitGames.Client.Photon.StatusCode.QueueOutgoingAcksWarning)
+            {
+            }
+            else if (statusCode == ExitGames.Client.Photon.StatusCode.QueueSentWarning)
+            {
+            }
             else if (statusCode == ExitGames.Client.Photon.StatusCode.SendError)
-            { 
+            {
 
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine(statusCode.ToString());
+                
                 _EndPing();
                 if (_LinkState.LinkFail != null)
                     _LinkState.LinkFail();
                 _Peer = null;
             }
+
+            System.Diagnostics.Debug.WriteLine(statusCode.ToString());
 		}
 
 		System.Timers.Timer _PingTimer;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+
 namespace Regulus.Project.TurnBasedRPGUserConsole
 {
     abstract class Controller : Samebest.Game.IFramework
@@ -70,11 +71,11 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
         
     }
 
-    class BotController : Controller
+    class RandomBotController : Controller
     {
         Command[] _Commands;
         
-        public BotController(string script_path )
+        public RandomBotController(string script_path )
         {
             _Commands = _ReadCommand(script_path);
             _Random = new Random(System.DateTime.Now.Millisecond);
@@ -233,5 +234,55 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
         }
     }
 
+    class StatusBotController : Controller
+    {
+        Samebest.Game.StageMachine<StatusBotController> _StageMachine;
+        public TurnBasedRPG.User User {get; private set;}
+        public string Name { get; private set; }
+        public StatusBotController(string name)
+        {
+            Name = name;
+        }
+        protected override void _Launch(TurnBasedRPG.User user)
+        {
+            User = user;
+            _StageMachine = new Samebest.Game.StageMachine<StatusBotController>(this);
+            ToVerify();
+        }
+
+        
+
+        protected override void _Shutdown()
+        {
+            
+        }
+
+        protected override string[] _HandlerInput()
+        {
+            _StageMachine.Update();
+            return null;
+        }
+
+        internal void ToVerify()
+        {
+            System.Threading.Thread.Sleep(200);
+            _StageMachine.Push(new BotStage.Verify());            
+        }
+
+        internal void ToParking()
+        {
+            System.Threading.Thread.Sleep(200);
+            _StageMachine.Push(new BotStage.Parking());            
+        }
+
+        internal void ToGame()
+        {
+
+            System.Threading.Thread.Sleep(200);
+            _StageMachine.Push(new BotStage.Game());            
+        }
+
+        
+    }
     
 }

@@ -27,8 +27,22 @@ namespace Regulus.Project.TurnBasedRPG.Serializable
         { 
             Position = new Types.Vector2();
         }
+
+        public Guid Id { get; set; }
         public Regulus.Types.Vector2 Position { get; set; }
     }
+
+    [Serializable]
+    public class EntityInfomation
+    {
+        public EntityInfomation()
+        {
+            Position = new Types.Vector2();            
+        }
+        public Guid Id { get; set; }
+        public Regulus.Types.Vector2 Position { get; set; }        
+    }
+
 
     [Serializable]
     public class DBEntityInfomation 

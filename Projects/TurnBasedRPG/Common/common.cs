@@ -1,5 +1,5 @@
 
-
+using System;
 namespace Regulus.Project.TurnBasedRPG.Common
 {
 
@@ -21,7 +21,7 @@ namespace Regulus.Project.TurnBasedRPG.Common
         Value<EntityLookInfomation[]> DestroyActor(string name);
         Value<EntityLookInfomation[]> QueryActors();
         void Back();
-        void Select(string name);
+        Value<bool> Select(string name);
     }
 
     public interface IPlayer
@@ -29,14 +29,12 @@ namespace Regulus.Project.TurnBasedRPG.Common
         void Logout();
         void ExitWorld();
         Value<int> SetData(int i);
-        Value<int> GetData();        
-    }
+        Value<int> GetData();
+        event Action<EntityInfomation>  IntoEvent;
+        event Action<Guid>              LeftEvent;
 
-	public interface IActor
-	{
-		Value<EntityPropertyInfomation> GetProperty();
-		Value<EntityLookInfomation> GetLook();
-	}
+        
+    }
 
     
 }

@@ -8,7 +8,7 @@ namespace Regulus.Project.TurnBasedRPG
     class Field
     {
 
-        float _Range = 10.0f * 10.0f;
+        float _Range ;
         public Entity Entity { get; private set; }
 
         List<Entity> _Within = new List<Entity>();
@@ -16,8 +16,12 @@ namespace Regulus.Project.TurnBasedRPG
         public Field(Entity ent)
         {
             Entity = ent;
+            _Range = Entity.Vision * Entity.Vision;
         }
 
+
+        public Action<Entity> IntoEvent;
+        public Action<Entity> LeftEvent;
         internal void Update(TurnBasedRPG.Entity[] entitys)
         {
             foreach (var entity in entitys)
@@ -27,7 +31,7 @@ namespace Regulus.Project.TurnBasedRPG
                     // out
                     if (_Find(_Within, entity))
                     {
-                        Entity.LeftField(entity);
+                        //LeftEvent(entity);
                     }
                 }
                 else
@@ -35,8 +39,8 @@ namespace Regulus.Project.TurnBasedRPG
                     // in
                     if (_Find(_Within, entity) == false)
                     {
-                        _Within.Add(entity);
-                        Entity.IntoField(entity);                        
+                        //_Within.Add(entity);
+                        //IntoEvent(entity); 
                     }
                 }
             }

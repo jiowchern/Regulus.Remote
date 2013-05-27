@@ -7,8 +7,8 @@ namespace Regulus.Project.TurnBasedRPG
 {
     class ComplexFramwork : Samebest.Remoting.PhotonExpansion.PhotonFramework 
     {        
-        Regulus.Project.TurnBasedRPG.Map _World;
-        Regulus.Project.TurnBasedRPG.Hall _Hall;
+        //Regulus.Project.TurnBasedRPG.Map    _Map;
+        Regulus.Project.TurnBasedRPG.Hall   _Hall;
 
         public ComplexFramwork()
         {
@@ -17,19 +17,22 @@ namespace Regulus.Project.TurnBasedRPG
 
         public override void ObtainController(Samebest.Remoting.Soul.SoulProvider provider)
         {
-            _Hall.PushUser(new User(provider , _Hall));            
+            _Hall.PushUser(new User(provider , _Hall));
         }
 
         public override void Launch()
         {
-            AddFramework(_Hall);            
+            AddFramework(Samebest.Utility.Singleton<Map>.Instance);            
+            AddFramework(_Hall);  
             AddFramework(Samebest.Utility.Singleton<Storage>.Instance);            
+            
         }
 
         public override void Shutdown()
         {
-            RemoveFramework(_Hall);            
             RemoveFramework(Samebest.Utility.Singleton<Storage>.Instance);            
+            RemoveFramework(_Hall);
+            RemoveFramework(Samebest.Utility.Singleton<Map>.Instance);            
         }
     }
 }

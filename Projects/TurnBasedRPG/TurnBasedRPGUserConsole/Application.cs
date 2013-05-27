@@ -21,7 +21,9 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             {
                 userRunning = false;
             };
-            _CreateBot(frameworkRoot);
+            _CreateRandomBot(frameworkRoot);
+
+            _CreateStageBot(frameworkRoot);
 
             while (userRunning)
             {
@@ -42,18 +44,32 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             return user;
         }
 
-        private void _CreateBot(Samebest.Game.FrameworkRoot frameworkRoot)
+        private void _CreateStageBot(Samebest.Game.FrameworkRoot frameworkRoot)
+        {
+            Console.WriteLine("建立狀態機器人...");
+            Console.Write("輸入數量:");
+            int botCount = 0;
+            if (int.TryParse(Console.ReadLine(), out botCount))
+            {
+                for (int idx = 0; idx < botCount; ++idx)
+                {
+                    var bot = new StatusBotController("StatusBot" + idx.ToString() );
+                    frameworkRoot.AddFramework(bot);
+                }
+            }
+        }
+        private void _CreateRandomBot(Samebest.Game.FrameworkRoot frameworkRoot)
         {
             if (System.IO.File.Exists("BotCommand.txt"))
             {
-                Console.WriteLine("建立機器人...");
-                Console.Write("輸入機器人數量:");
+                Console.WriteLine("建立隨機機器人...");
+                Console.Write("輸入數量:");
                 int botCount = 0;
                 if (int.TryParse(Console.ReadLine(), out botCount))
                 { 
                     for(int idx = 0; idx < botCount ;++idx)
                     {
-                        var bot = new BotController("BotCommand.txt");
+                        var bot = new RandomBotController("BotCommand.txt");
                         frameworkRoot.AddFramework(bot);
                     }
                 }

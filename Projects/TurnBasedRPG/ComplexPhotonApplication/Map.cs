@@ -8,19 +8,20 @@ namespace Regulus.Project.TurnBasedRPG
 {
     class Map : Samebest.Game.IFramework
     {
-        List<Field> _Fields = new List<Field>();
-        
-        void Add(Entity entity)
+        class EntityInfomation
         {
-            if (entity.Vision > 0)
-            {
-                _Fields.Add(new Field(entity));
-            }        
+            public Entity Entity {get;set;}
+            public Action Exit; 
+        }
+        Regulus.Utility.Poller<EntityInfomation> _EntityInfomations = new Utility.Poller<EntityInfomation>();
+        public void Into(Entity entity, Action exit_map)
+        {
+            _EntityInfomations.Add(new EntityInfomation() { Entity = entity, Exit = exit_map });
         }
 
-        void Remove(Entity entity)
+        public void Left(Entity entity)
         {
-            _Fields.RemoveAll(field => field.Entity == entity);
+            _EntityInfomations.Remove(info => info.Entity == entity);
         }
         void Samebest.Game.IFramework.Launch()
         {
@@ -28,24 +29,18 @@ namespace Regulus.Project.TurnBasedRPG
         }
 
         bool Samebest.Game.IFramework.Update()
-        {            
-
-            // 更新每位entity可見視野
-            _UpdateField();            
-
+        {
+            var infos = _EntityInfomations.Update();
+            var entitys = (from info in infos select info.Entity).ToArray();
+            foreach(var inf in infos)
+            {
+                var ent = inf.Entity;
+                ent.Field.Update(entitys);                
+            }
             return true;
         }
 
-        private void _UpdateField()
-        {
-            Queue<Field> fields = new Queue<Field>(_Fields);
-            while (fields.Count > 0)
-            {
-                var field = fields.Dequeue();
-                Entity[] entitys = (from f in _Fields where f.Entity != field.Entity select field.Entity).ToArray();
-                field.Update(entitys);
-            }
-        }
+        
 
         void Samebest.Game.IFramework.Shutdown()
         {

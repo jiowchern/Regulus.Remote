@@ -37,6 +37,9 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             _CommandHandler.Rise("ExitWorld");
             _CommandHandler.Rise("Logout");
             _CommandHandler.Rise("SetData");
+
+            obj.IntoEvent -= obj_IntoEvent;
+            obj.LeftEvent -= obj_LeftEvent;
         }
 
         private void _PlayerSupply(IPlayer obj)
@@ -62,6 +65,20 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
                 };
             };
             _CommandHandler.Set("GetData", _Build<int>(obj.GetData, getDataResult), "測試用 GetData ");
+
+            obj.IntoEvent += obj_IntoEvent;
+            obj.LeftEvent += obj_LeftEvent;
+
+        }
+
+        void obj_LeftEvent(Guid obj)
+        {
+            Console.WriteLine("entiry離開{0}" + obj.ToString());
+        }
+
+        void obj_IntoEvent(EntityInfomation obj)
+        {
+            Console.WriteLine("entiry進入{0}:{1},{2}" + obj.Id.ToString(), obj.Position.X, obj.Position.Y);
         }
 
         private void _Bind(Samebest.Remoting.Ghost.IProviderNotice<IParking> providerNotice)
@@ -141,7 +158,16 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             };
             _CommandHandler.Set("QueryActors", _Build<EntityLookInfomation[]>(obj.QueryActors, queryActorsResult), "查詢角色 ex. QueryActors");
 
-            _CommandHandler.Set("Select", _Build<string>(obj.Select), "選擇角色 ex. select [名稱]");
+
+
+            Action<Value<bool>> selectResult = (value) =>
+            {
+                value.OnValue += (res) =>
+                {
+                    Console.WriteLine("角色選擇正確.");
+                };
+            };
+            _CommandHandler.Set("Select", _Build<string, bool>(obj.Select, selectResult), "選擇角色 ex. select [名稱]");
         }
 
         private void _ShowActors(EntityLookInfomation[] ais)

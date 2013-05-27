@@ -54,10 +54,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
+    <Compile Include="BotStageVerify.cs" />
     <Compile Include="Closures.cs" />
     <Compile Include="CommandBinder.cs" />
     <Compile Include="CommandHandler.cs" />
     <Compile Include="Controller.cs" />
+    <Compile Include="BotStageGame.cs" />
+    <Compile Include="BotStageParking.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

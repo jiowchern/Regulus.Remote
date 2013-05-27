@@ -32,8 +32,7 @@ namespace Samebest.Remoting
 			_Value = val;
 			if (OnValue != null)
 			{
-				OnValue(_Value);
-				OnValue = null;
+				OnValue(_Value);				
 			}
 				
 		}
@@ -52,7 +51,7 @@ namespace Samebest.Remoting
 			if (OnValue != null)
 			{
 				OnValue(_Value);
-				OnValue = null;
+				
 			}				
 		}
 

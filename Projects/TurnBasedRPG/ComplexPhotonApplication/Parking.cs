@@ -43,14 +43,16 @@ namespace Regulus.Project.TurnBasedRPG
         }
 
         public event Action<Serializable.DBEntityInfomation> SelectEvent;
-        void Common.IParking.Select(string name)
+        Samebest.Remoting.Value<bool> Common.IParking.Select(string name)
         {
             var a = _ActorInfomations.Find( (ai)=>{ return ai.Look.Name == name ; });
             if (a != null && SelectEvent != null)
             {
                 SelectEvent(a);
                 SelectEvent = null;
+                return true;
             }
+            return false;
         }
 
 
