@@ -21,12 +21,14 @@ namespace Regulus.Project.TurnBasedRPG
         {
             var linkStatu = new Samebest.Remoting.Ghost.LinkState();
             linkStatu.LinkSuccess += () =>
-            {                
-                LinkSuccess();
-            };
-            linkStatu.LinkFail += () =>
             {
-                LinkFail();
+                if (LinkSuccess != null)
+                    LinkSuccess();
+            };
+            linkStatu.LinkFail += () =>            
+            {
+                if(LinkFail != null)
+                    LinkFail();
             };
 
             Complex.Launch(linkStatu);

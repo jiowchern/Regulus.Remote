@@ -8,7 +8,7 @@ namespace Regulus.Project.TurnBasedRPG
     class Field
     {
 
-        float _Range ;
+        
         public Entity Entity { get; private set; }
 
         List<Entity> _Within = new List<Entity>();
@@ -16,7 +16,7 @@ namespace Regulus.Project.TurnBasedRPG
         public Field(Entity ent)
         {
             Entity = ent;
-            _Range = Entity.Vision * Entity.Vision;
+            
         }
 
 
@@ -24,9 +24,10 @@ namespace Regulus.Project.TurnBasedRPG
         public Action<Guid> LeftEvent;
         internal void Update(TurnBasedRPG.Entity[] entitys)
         {
+            var range = Entity.Vision * Entity.Vision;
             foreach (var entity in entitys)
             {
-                if (_Distance(entity, Entity) > _Range)
+                if (_Distance(entity, Entity) > range)
                 {
                     // out
                     if (_Remove(_Within, entity.Id))

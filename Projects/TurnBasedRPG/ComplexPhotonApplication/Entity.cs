@@ -12,7 +12,7 @@ namespace Regulus.Project.TurnBasedRPG
         public Entity(Regulus.Project.TurnBasedRPG.Serializable.EntityPropertyInfomation property)
         {
             _Property = property;
-            Vision = 10;
+            
             Field = new Field(this);            
         }
         public Regulus.Types.Vector2 Position 
@@ -21,8 +21,8 @@ namespace Regulus.Project.TurnBasedRPG
             {
                 return _Property.Position;
             }            
-        }        
-        public int Vision { get ; private set; }
+        }
+        public int Vision { get { return _Property.Vision; } }
         public Guid Id { get{ return _Property.Id;  } }
     }
 }

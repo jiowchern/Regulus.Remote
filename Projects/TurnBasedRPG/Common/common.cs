@@ -35,6 +35,7 @@ namespace Regulus.Project.TurnBasedRPG.Common
         event Action<Guid>              LeftEvent;
 
         void SetPosition(float x,float y);
+        void SetVision(int vision);
     }
 
     

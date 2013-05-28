@@ -30,6 +30,7 @@ namespace Regulus.Project.TurnBasedRPG.Serializable
 
         public Guid Id { get; set; }
         public Regulus.Types.Vector2 Position { get; set; }
+        public int Vision { get; set; }
     }
 
     [Serializable]

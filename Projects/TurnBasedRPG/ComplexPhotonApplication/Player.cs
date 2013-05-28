@@ -101,5 +101,11 @@ namespace Regulus.Project.TurnBasedRPG
             _DBActorInfomation.Property.Position.X = x;
             _DBActorInfomation.Property.Position.Y = y;
         }
+
+
+        void Common.IPlayer.SetVision(int vision)
+        {
+            _DBActorInfomation.Property.Vision = vision;
+        }
     }
 }
