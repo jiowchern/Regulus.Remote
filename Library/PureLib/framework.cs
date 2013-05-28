@@ -73,8 +73,6 @@ namespace Samebest.Game
             
         }
 
-        
-
         private void _Shutdown(List<Game.IFramework> frameworks)
         {
             
@@ -84,10 +82,15 @@ namespace Samebest.Game
             }
         }
 
-        void IDisposable.Dispose()
+        public void Shutdown()
         {
             _Shutdown(_Frameworks);
             _Frameworks.Clear();
+        }
+
+        void IDisposable.Dispose()
+        {
+            Shutdown();
         }
     }
 }

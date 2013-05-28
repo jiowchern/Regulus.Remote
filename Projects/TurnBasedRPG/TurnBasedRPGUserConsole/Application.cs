@@ -29,7 +29,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             {
                 frameworkRoot.Update();
             }
-
+            frameworkRoot.Shutdown();
             Console.WriteLine("系統關閉...");
             Samebest.Utility.Singleton<Regulus.Utility.ConsoleLogger>.Instance.Shutdown();
             Console.WriteLine("關閉完成.");
@@ -74,12 +74,6 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
                     }
                 }
             }
-        }
-
-        
-        
-        
-
-        
+        }    
     }
 }
