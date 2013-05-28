@@ -58,9 +58,9 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
                 var time =System.DateTime.Now - _Restart;
                 if (time.TotalSeconds > 10)
                 {
-                    obj.ToVerify();
+                    /*obj.ToVerify();
                     Console.WriteLine("重新發送 ToVerify");
-                    _Restart = System.DateTime.Now;
+                    _Restart = System.DateTime.Now;*/
                 }
             }
         }

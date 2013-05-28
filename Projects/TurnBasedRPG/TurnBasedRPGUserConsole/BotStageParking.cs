@@ -51,9 +51,9 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
             var time = System.DateTime.Now - _Restart;
             if (time.TotalSeconds > 10)
             {
-                obj.ToParking();
+                /*obj.ToParking();
                 Console.WriteLine("重新發送 ToParking");
-                _Restart = System.DateTime.Now;
+                _Restart = System.DateTime.Now;*/
             }
         }
     }

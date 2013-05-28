@@ -97,5 +97,6 @@ namespace Samebest.Game
 		{
             Termination();
 		}
-	}
+        
+    }
 }

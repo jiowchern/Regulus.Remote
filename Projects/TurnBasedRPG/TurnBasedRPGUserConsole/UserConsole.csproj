@@ -62,6 +62,7 @@
     <Compile Include="Controller.cs" />
     <Compile Include="BotStageGame.cs" />
     <Compile Include="BotStageParking.cs" />
+    <Compile Include="Move.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

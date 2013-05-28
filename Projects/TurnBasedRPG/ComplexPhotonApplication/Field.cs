@@ -21,7 +21,7 @@ namespace Regulus.Project.TurnBasedRPG
 
 
         public Action<Entity> IntoEvent;
-        public Action<Entity> LeftEvent;
+        public Action<Guid> LeftEvent;
         internal void Update(TurnBasedRPG.Entity[] entitys)
         {
             foreach (var entity in entitys)
@@ -29,9 +29,9 @@ namespace Regulus.Project.TurnBasedRPG
                 if (_Distance(entity, Entity) > _Range)
                 {
                     // out
-                    if (_Remove(_Within, entity))
+                    if (_Remove(_Within, entity.Id))
                     {
-                        LeftEvent(entity);
+                        LeftEvent(entity.Id);
                     }
                 }
                 else
@@ -51,14 +51,25 @@ namespace Regulus.Project.TurnBasedRPG
             return _Within.Find(ent => ent == entity) != null;
         }
 
-        private bool _Remove(List<TurnBasedRPG.Entity> within, TurnBasedRPG.Entity entity)
+        private bool _Remove(List<TurnBasedRPG.Entity> within, Guid id)
         {
-            return within.Remove(entity);
+            return within.RemoveAll(ent => ent.Id == id) > 0;
         }
 
         private float _Distance(TurnBasedRPG.Entity e1, TurnBasedRPG.Entity e2)
         {
             return (e1.Position.X - e2.Position.X) * (e1.Position.X - e2.Position.X) + (e1.Position.Y - e2.Position.Y) * (e1.Position.Y - e2.Position.Y);
+        }
+
+        internal void Left(List<Guid> left_entitys)
+        {
+            foreach (var entity in left_entitys)
+            {
+                if (_Remove(_Within, entity))
+                {
+                    LeftEvent(entity);
+                }
+            }
         }
     }
 }

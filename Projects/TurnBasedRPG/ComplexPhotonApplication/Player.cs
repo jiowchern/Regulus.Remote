@@ -15,10 +15,10 @@ namespace Regulus.Project.TurnBasedRPG
             _DBActorInfomation = dB_actorInfomation;
         }
 
-        private void _LeftEntity(Entity obj)
+        private void _LeftEntity(Guid obj)
         {
             if (_LeftEvent != null)
-                _LeftEvent(obj.Id);
+                _LeftEvent(obj);
         }
 
         private void _IntoEntity(Entity obj)

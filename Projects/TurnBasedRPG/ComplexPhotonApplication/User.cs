@@ -66,6 +66,10 @@ namespace Regulus.Project.TurnBasedRPG
         internal void EnterWorld(Serializable.DBEntityInfomation obj)
         {
             Actor = obj;
+            if (Actor.Property.Id == Guid.Empty)
+            {
+                Actor.Property.Id = Guid.NewGuid();
+            }
             _Machine.Push(new AdventureStage());
         }
 

@@ -14,6 +14,7 @@ namespace Regulus.Project.TurnBasedRPG
             public Action Exit; 
         }
         Regulus.Utility.Poller<EntityInfomation> _EntityInfomations = new Utility.Poller<EntityInfomation>();
+        List<Guid> _LeftEntity = new List<Guid>();
         public void Into(Entity entity, Action exit_map)
         {
             _EntityInfomations.Add(new EntityInfomation() { Entity = entity, Exit = exit_map });
@@ -22,6 +23,7 @@ namespace Regulus.Project.TurnBasedRPG
         public void Left(Entity entity)
         {
             _EntityInfomations.Remove(info => info.Entity == entity);
+            _LeftEntity.Add(entity.Id);
         }
         void Samebest.Game.IFramework.Launch()
         {
@@ -34,9 +36,11 @@ namespace Regulus.Project.TurnBasedRPG
             var entitys = (from info in infos select info.Entity).ToArray();
             foreach(var inf in infos)
             {
-                var ent = inf.Entity;
-                ent.Field.Update(entitys);                
+                var ent = inf.Entity;                
+                ent.Field.Update(entitys);
+                ent.Field.Left(_LeftEntity);
             }
+            _LeftEntity.Clear();
             return true;
         }
 

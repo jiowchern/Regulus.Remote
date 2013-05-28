@@ -12,8 +12,8 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
         {
             _OnSupply = (player) =>
             {
-                player.Logout();
-                obj.ToVerify();
+                player.Ready();
+                obj.ToMove();
             };
             var notify = obj.User.Complex.QueryProvider<Regulus.Project.TurnBasedRPG.Common.IPlayer>();
             if(notify.Ghosts.Length > 0 )
@@ -38,9 +38,9 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
             var time = System.DateTime.Now - _Restart;
             if (time.TotalSeconds > 10)
             {
-                Console.WriteLine("重新發送 ToGame");
+                /*Console.WriteLine("重新發送 ToGame");
                 obj.ToGame();
-                _Restart = System.DateTime.Now;
+                _Restart = System.DateTime.Now;*/
             }
         }
     }

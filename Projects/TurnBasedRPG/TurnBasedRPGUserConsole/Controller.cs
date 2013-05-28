@@ -289,7 +289,12 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             _StageMachine.Push(new BotStage.Connect());            
         }
 
-        
+
+
+        internal void ToMove()
+        {
+            _StageMachine.Push(new BotStage.Move()); 
+        }
     }
     
 }
