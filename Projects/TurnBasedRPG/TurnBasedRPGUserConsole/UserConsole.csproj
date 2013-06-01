@@ -58,11 +58,11 @@
     <Compile Include="Closures.cs" />
     <Compile Include="CommandBinder.cs" />
     <Compile Include="CommandHandler.cs" />
-    <Compile Include="Connect.cs" />
+    <Compile Include="BotStageConnect.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="BotStageGame.cs" />
     <Compile Include="BotStageParking.cs" />
-    <Compile Include="Move.cs" />
+    <Compile Include="BotStageMove.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

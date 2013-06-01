@@ -22,15 +22,9 @@ namespace Samebest
 				var mongo = new Mongo(mongodb_url);
 				_Mongo = mongo;
 
-                try
-                {
-                    _Mongo.Connect();
-                }
-                catch (MongoDB.MongoConnectionException e)
-                {
-                    
-                    throw e;
-                }
+                
+                _Mongo.Connect();
+                
 				
 
 				_Database = _Mongo.GetDatabase(_DatabaseName);

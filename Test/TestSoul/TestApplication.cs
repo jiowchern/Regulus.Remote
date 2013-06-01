@@ -20,6 +20,7 @@ namespace TestSoul
 		{
 			var soul = new CTestSoul();
 			provider.Bind<TestRemotingCommon.ITest>(soul);
+            soul.invoke();  
 			//provider.Unbind<TestRemotingCommon.ITest>(soul);
 		}
 
@@ -28,7 +29,7 @@ namespace TestSoul
 		//	throw new NotImplementedException();
 		}
 
-		bool Samebest.Game.IFramework.Update()
+		bool Samebest.Game.IFramework.Update() 
 		{
 		//	throw new NotImplementedException();
 			return true;

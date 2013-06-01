@@ -24,6 +24,7 @@ namespace Samebest.Remoting.Soul
 
 
             _Fiber.Stop();
+            _Fiber.Dispose();
 		}
 
 		public Action<Guid , string ,Guid , object[]>	InvokeMethodEvent;

@@ -12,9 +12,9 @@ namespace Samebest.Remoting
 
 		void QueryValue(Action<object> action);
 	}
-	
 
-	public class Value<T> : IValue 
+
+    sealed public class Value<T> : IValue 
 	{
         public static implicit operator Value<T>(T value)
         {
@@ -33,8 +33,7 @@ namespace Samebest.Remoting
 			if (OnValue != null)
 			{
 				OnValue(_Value);				
-			}
-				
+			}				
 		}
 
 		public event Action<T> OnValue;		
@@ -51,7 +50,6 @@ namespace Samebest.Remoting
 			if (OnValue != null)
 			{
 				OnValue(_Value);
-				
 			}				
 		}
 

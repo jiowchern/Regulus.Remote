@@ -7,6 +7,8 @@ namespace TestRemotingCommon
 {
 	public interface ITest
 	{
+
+        string Value { get; }
 		event Action	a1 ;
 		event Action<int> a2;
 

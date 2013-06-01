@@ -43,7 +43,7 @@ namespace Samebest.Game
         
     }
 
-	public class StageMachine<T> : IDisposable
+	public class StageMachine<T> 
 	{
 		System.Collections.Generic.Queue<Samebest.Game.IStage<T>> _StandBys;        
 		Samebest.Game.IStage<T> _Current;
@@ -92,11 +92,6 @@ namespace Samebest.Game
                 _Current.Leave(_Param);
                 _Current = null;
             }
-        }
-		void IDisposable.Dispose()
-		{
-            Termination();
-		}
-        
+        }        
     }
 }

@@ -9,7 +9,7 @@ namespace Samebest.Utility
     public class Singleton<T> where T : class, new()
     {
         private static T _Instance;
-
+        static Type _Sync = typeof(T);
         public static T GetInstance()
         {
             return Instance;
@@ -19,7 +19,7 @@ namespace Samebest.Utility
 		{
 			get 
 			{
-				lock (typeof(T))
+                lock (_Sync)
 				{
 					if (_Instance == null)
 					{

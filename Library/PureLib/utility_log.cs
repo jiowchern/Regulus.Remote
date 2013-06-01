@@ -10,7 +10,7 @@ namespace Regulus.Utility
         void Log(string message);                        
     }
 
-    public class ConsoleLogger : Samebest.Utility.Singleton<ConsoleLogger>, ILogger
+    public class ConsoleLogger : Samebest.Utility.Singleton<ConsoleLogger>, ILogger , IDisposable
     {
         System.IO.StreamWriter _StreamWriter;
         System.DateTime _Begin;
@@ -33,6 +33,11 @@ namespace Regulus.Utility
         public void Shutdown()
         {
             _StreamWriter.Close();
+        }
+
+        void IDisposable.Dispose()
+        {
+            Shutdown();
         }
     }
 }

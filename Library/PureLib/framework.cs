@@ -12,7 +12,7 @@ namespace Samebest.Game
         void Shutdown();
     }
 
-    public class FrameworkRoot  : IDisposable
+    public class FrameworkRoot  
     {
         Queue<Samebest.Game.IFramework> _AddFrameworks = new Queue<Game.IFramework>();
         Queue<Samebest.Game.IFramework> _RemoveFramework = new Queue<Game.IFramework>();
@@ -88,9 +88,6 @@ namespace Samebest.Game
             _Frameworks.Clear();
         }
 
-        void IDisposable.Dispose()
-        {
-            Shutdown();
-        }
+        
     }
 }

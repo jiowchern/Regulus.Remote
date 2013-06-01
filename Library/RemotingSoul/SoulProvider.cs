@@ -34,11 +34,58 @@ namespace Samebest.Remoting.Soul
 			public Guid ID                                          { get; set; }
 			public object							ObjectInstance	{ get; set; }
 			public Type								ObjectType		{ get; set; }
+            
 			public System.Reflection.MethodInfo[]	MethodInfos		{ get; set; }
-			public System.Collections.Generic.Dictionary<System.Reflection.EventInfo , Delegate>	EventHandlers { get; set; }			
-		}
+
+            public class EventHandler
+            {
+                public System.Reflection.EventInfo EventInfo;
+                public Delegate DelegateObject;
+            }
+            public System.Collections.Generic.List<EventHandler> EventHandlers { get; set; }
+
+
+            public class PropertyHandler
+            {
+                public System.Reflection.PropertyInfo PropertyInfo;
+                public object Value;
+            
+                internal bool UpdateProperty(object val)
+                {
+                    if ( !(val.Equals(Value) && Value.Equals(val)) )
+                    {
+                        Value = val;
+                        return true;
+                    }
+                    return false;
+                }　
+            }
+            public PropertyHandler[] PropertyHandlers { get; set; }
+            internal void ProcessDiffentValues(Action<Guid, string, object> update_property)
+            {
+                foreach (var handler in PropertyHandlers)
+                {
+                    var val = handler.PropertyInfo.GetValue(ObjectInstance, null);                    
+                    
+                    if(handler.UpdateProperty(val))
+                    {
+                        update_property(ID, handler.PropertyInfo.Name, val);
+                    }                                        
+                }
+            }
+        }
 		System.Collections.Generic.List<Soul>	_Souls = new List<Soul>();
-        
+
+        private void _UpdateProperty(Guid entity_id, string name, object val)
+        {
+            var argmants = new Dictionary<byte, object>();
+            argmants.Add(0, entity_id.ToByteArray());
+            argmants.Add(1, Samebest.PhotonExtension.TypeHelper.Serializer(name));
+            argmants.Add(2, Samebest.PhotonExtension.TypeHelper.Serializer(val));
+            
+            _Queue.Push((byte)ServerToClientPhotonOpCode.UpdateProperty, argmants);
+        }
+
 		void _InvokeEvent(Guid entity_id, string event_name, object[] args)
 		{            
             var argmants = new Dictionary<byte, object>();
@@ -108,15 +155,31 @@ namespace Samebest.Remoting.Soul
 				var new_soul = new Soul() { ID = Guid.NewGuid(), ObjectType = typeof(TSoul), ObjectInstance = soul, MethodInfos = typeof(TSoul).GetMethods()};
 
 				Type soulType = typeof(TSoul);
-				var eventInfos = soulType.GetEvents();
-				new_soul.EventHandlers = new Dictionary<System.Reflection.EventInfo,Delegate>();
+
+                
+                // event				
+                var eventInfos = soulType.GetEvents();
+                new_soul.EventHandlers = new List<Soul.EventHandler>();
 				foreach(var eventInfo in eventInfos)
 				{					
 					var genericArguments =  eventInfo.EventHandlerType.GetGenericArguments();
-					Delegate handler = _BuildDelegate(genericArguments, new_soul.ID , eventInfo.Name);					
-					new_soul.EventHandlers.Add( eventInfo , handler);
+					Delegate handler = _BuildDelegate(genericArguments, new_soul.ID , eventInfo.Name);
+                    Soul.EventHandler eh = new Soul.EventHandler();
+                    eh.EventInfo = eventInfo;
+                    eh.DelegateObject = handler;
+                    new_soul.EventHandlers.Add( eh );
 					eventInfo.AddEventHandler(soul , handler);
 				}
+
+                // property 
+                var propertys = soulType.GetProperties( System.Reflection.BindingFlags.GetProperty | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public );
+                new_soul.PropertyHandlers = new Soul.PropertyHandler[propertys.Length];
+                for (int i = 0; i < propertys.Length; ++i )
+                {
+                    new_soul.PropertyHandlers[i] = new Soul.PropertyHandler();
+                    new_soul.PropertyHandlers[i].PropertyInfo = propertys[i];
+                }
+
 				_LoadSoul(soulType.FullName, new_soul.ID);
 				_Souls.Add(new_soul);
 			}
@@ -158,7 +221,7 @@ namespace Samebest.Remoting.Soul
 			{
 				foreach (var eventHandler in soulInfo.EventHandlers)
 				{
-					eventHandler.Key.RemoveEventHandler(soulInfo.ObjectInstance ,  eventHandler.Value);
+                    eventHandler.EventInfo.RemoveEventHandler(soulInfo.ObjectInstance, eventHandler.DelegateObject );
 				}
 				_UnloadSoul(soulInfo.ObjectType.FullName , soulInfo.ID);
 				_Souls.Remove(soulInfo);
@@ -166,14 +229,28 @@ namespace Samebest.Remoting.Soul
 			}
 		}
 
-		void IDisposable.Dispose()
+		public void Dispose()
 		{
 			_Peer.InvokeMethodEvent -= _InvokeMethod;
+
 		}
 
+
+        System.DateTime _UpdatePropertyInterval;
         internal void Update()
         {
-            _Peer.Update();            
+            _Peer.Update();
+            if ((System.DateTime.Now - _UpdatePropertyInterval).TotalSeconds > 1)
+            {
+                foreach (var soul in _Souls)
+                {
+                    soul.ProcessDiffentValues(_UpdateProperty);
+                }
+                _UpdatePropertyInterval = System.DateTime.Now;
+            }
+            
         }
+
+        
     }
 }

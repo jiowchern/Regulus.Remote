@@ -142,7 +142,7 @@ namespace Samebest.Utility
 				this.Add(kvp.Key, kvp.Value);
 			}
 		}
-
+        [System.Security.Permissions.SecurityPermission(System.Security.Permissions.SecurityAction.Demand, SerializationFormatter = true)]
 		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
 		{
 			info.AddValue("ItemCount", this.Count);

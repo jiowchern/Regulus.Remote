@@ -24,17 +24,11 @@ namespace Samebest.PhotonExtension
 			{
 				System.Runtime.Serialization.IFormatter formater = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
 
-				try
-				{
-					formater.Serialize(stream, o);
-				}
-				catch(Exception e)
-				{
 				
-				}
+				formater.Serialize(stream, o);
 				
-				byte[] ret = stream.GetBuffer();
-				stream.Close();
+				
+				byte[] ret = stream.GetBuffer();				
 				return ret;
 			}
 		}
@@ -44,52 +38,38 @@ namespace Samebest.PhotonExtension
 			{
 				System.Runtime.Serialization.IFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();//定义BinaryFormatter以序列化object对象  
 
-				System.IO.MemoryStream ms = new System.IO.MemoryStream();//创建内存流对象  
 
-				formatter.Serialize(ms, obj);//把object对象序列化到内存流  
+                byte[] buffer = null;
+                using (System.IO.MemoryStream ms = new System.IO.MemoryStream())
+                {
+                    formatter.Serialize(ms, obj);//把object对象序列化到内存流  
+                    buffer = ms.ToArray();//把内存流对象写入字节数组                      
+                }
 
-				byte[] buffer = ms.ToArray();//把内存流对象写入字节数组  
+                using (System.IO.MemoryStream msNew = new System.IO.MemoryStream())
+                {
+                    System.IO.Compression.GZipStream gzipStream = new System.IO.Compression.GZipStream(msNew, System.IO.Compression.CompressionMode.Compress, true);//创建压缩对象  
 
-				ms.Close();//关闭内存流对象  
+                    gzipStream.Write(buffer, 0, buffer.Length);//把压缩后的数据写入文件  
 
-				ms.Dispose();//释放资源  
+                    gzipStream.Close();//关闭压缩流,这里要注意：一定要关闭，要不然解压缩的时候会出现小于4K的文件读取不到数据，大于4K的文件读取不完整              
 
-				System.IO.MemoryStream msNew = new System.IO.MemoryStream();
+                    gzipStream.Dispose();//释放对象  
 
-				System.IO.Compression.GZipStream gzipStream = new System.IO.Compression.GZipStream(msNew, System.IO.Compression.CompressionMode.Compress, true);//创建压缩对象  
-
-				gzipStream.Write(buffer, 0, buffer.Length);//把压缩后的数据写入文件  
-
-				gzipStream.Close();//关闭压缩流,这里要注意：一定要关闭，要不然解压缩的时候会出现小于4K的文件读取不到数据，大于4K的文件读取不完整              
-
-				gzipStream.Dispose();//释放对象  
-
-				msNew.Close();
-
-				msNew.Dispose();
-
-				return msNew.ToArray();
+                    return msNew.ToArray();
+                }
 			}
 		}
 		public static object Deserialize(byte[] b)
 		{
+            object obj = null;
 			using (System.IO.MemoryStream stream = new System.IO.MemoryStream(b))
 			{
 				System.Runtime.Serialization.IFormatter formater = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-				try
-				{
-					object obj = formater.Deserialize(stream);
-					stream.Close();
-					return obj;
-				}
-				catch (Exception e)
-				{
-
-				}
-				stream.Close();
-				return null;
 				
+				obj = formater.Deserialize(stream);
 			}
+            return obj;								
 		}
 		public static object DeserializeZip(byte[] bytes)
 		{
@@ -137,13 +117,13 @@ namespace Samebest.PhotonExtension
 
 				ms.Close();//关闭内存流  
 
-				ms.Dispose();//释放资源  
+				
 
 			}
 
 			gzipStream.Close();//关闭解压缩流  
 
-			gzipStream.Dispose();//释放资源  
+			
 
 			msNew.Close();
 

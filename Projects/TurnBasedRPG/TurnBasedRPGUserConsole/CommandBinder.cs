@@ -41,8 +41,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             _CommandHandler.Rise("SetPosition");            
             _CommandHandler.Rise("Ready");
 
-            obj.IntoEvent -= obj_IntoEvent;
-            obj.LeftEvent -= obj_LeftEvent;
+            
         }
 
         private void _PlayerSupply(IPlayer obj)
@@ -71,8 +70,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             };
             _CommandHandler.Set("GetData", _Build<int>(obj.GetData, getDataResult), "測試用 GetData ");
 
-            obj.IntoEvent += obj_IntoEvent;
-            obj.LeftEvent += obj_LeftEvent;
+            
 
         }
 

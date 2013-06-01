@@ -45,7 +45,7 @@ namespace Samebest.Game
             public string Key { get; private set; }
         }
 
-        public class PrototypeFactory
+        public class PrototypeFactory : IDisposable
         {
             System.Data.DataSet _Datas = new System.Data.DataSet("PrototypeFactory");
             public void LoadCSV(string name, string path , string ext_name = "")
@@ -203,6 +203,11 @@ namespace Samebest.Game
                 }
                 return null;
 
+            }
+
+            void IDisposable.Dispose()
+            {
+                _Datas.Dispose();
             }
         }
     }

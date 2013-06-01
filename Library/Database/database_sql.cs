@@ -9,7 +9,7 @@ namespace Samebest
     {
         using MySql.Data;
         using MySql.Data.MySqlClient;
-        public class Database
+        public class Database : IDisposable
         {
             MySqlConnection _Connect;
 
@@ -51,6 +51,11 @@ namespace Samebest
 					
 				}
 			}
+
+            void IDisposable.Dispose()
+            {
+                Disconnect();
+            }
         }
     }
 }

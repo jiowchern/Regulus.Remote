@@ -13,14 +13,14 @@ namespace Regulus.Project.TurnBasedRPG
 
         List<Entity> _Within = new List<Entity>();
 
-        public Field(Entity ent)
+        public Field(Entity ent )
         {
             Entity = ent;
             
         }
 
 
-        public Action<Entity> IntoEvent;
+        public Action<Regulus.Project.TurnBasedRPG.Common.IEntity> IntoEvent;
         public Action<Guid> LeftEvent;
         internal void Update(TurnBasedRPG.Entity[] entitys)
         {

@@ -11,12 +11,13 @@ namespace Samebest.Remoting
 		CallMethod,		
 	};
 
-	public enum ServerToClientPhotonOpCode
-	{
-		InvokeEvent,
-		LoadSoul,
-		UnloadSoul,
-		ReturnValue
+    public enum ServerToClientPhotonOpCode
+    {
+        InvokeEvent,
+        LoadSoul,
+        UnloadSoul,
+        ReturnValue,
+        UpdateProperty
 
-	}
+    }
 }

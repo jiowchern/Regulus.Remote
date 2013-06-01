@@ -27,7 +27,14 @@ namespace Samebest.Remoting.Ghost
 		event Action<T> _Supply;
 		event Action<T> IProviderNotice<T>.Supply
 		{
-			add { _Supply += value; }
+			add 
+            {
+                _Supply += value; 
+                foreach (var e in _Entitys)
+                {
+                    value(e);
+                }                
+            }
 			remove { _Supply -= value; }
 		}
 
