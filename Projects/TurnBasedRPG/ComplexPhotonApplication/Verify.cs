@@ -6,10 +6,10 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPG
 {
-    class Verify : Common.IVerify
+    class Verify : IVerify
     {
         
-        Samebest.Remoting.Value<bool> Common.IVerify.CreateAccount(string name, string password)
+        Samebest.Remoting.Value<bool> IVerify.CreateAccount(string name, string password)
         {
 
             if (Samebest.Utility.Singleton<Storage>.Instance.FindAccountInfomation(name) == null)
@@ -34,7 +34,7 @@ namespace Regulus.Project.TurnBasedRPG
 
             
         }
-        Samebest.Remoting.Value<bool> Common.IVerify.Login(string name, string password)
+        Samebest.Remoting.Value<bool> IVerify.Login(string name, string password)
         {
             var user = _UserRoster.Find(name);
             if (user == null)
@@ -58,7 +58,7 @@ namespace Regulus.Project.TurnBasedRPG
 
 
         public event Action QuitEvent;
-        void Common.IVerify.Quit()
+        void IVerify.Quit()
         {
             if (QuitEvent != null)
             {
@@ -78,7 +78,7 @@ namespace Regulus.Project.TurnBasedRPG
         }
 
         event Action _RepeatLogin;
-        event Action Common.IVerify.RepeatLogin
+        event Action IVerify.RepeatLogin
         {
             add { _RepeatLogin += value; }
             remove { _RepeatLogin -= value; }

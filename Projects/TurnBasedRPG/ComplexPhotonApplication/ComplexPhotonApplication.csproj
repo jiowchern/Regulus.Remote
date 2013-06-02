@@ -75,9 +75,13 @@
     <Compile Include="Entity.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="Hall.cs" />
+    <Compile Include="IObserveAbility.cs" />
+    <Compile Include="IObservedAbility.cs" />
     <Compile Include="Parking.cs" />
     <Compile Include="ParkingStage.cs" />
     <Compile Include="Player.cs" />
+    <Compile Include="PlayerObserveAbility.cs" />
+    <Compile Include="PlayerObservedAbility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Storage.cs" />
     <Compile Include="User.cs" />

@@ -9,11 +9,53 @@ namespace TestGhost
 
     class Program
     {
+        class A
+        { 
 
+        }
         static void Main(string[] args)
         {
-                        
-            TestRequester();
+            var a = new object();
+            var wa = new WeakReference<object>(a);
+
+            object refa;
+            if (wa.TryGetTarget(out refa))
+            {
+                Console.WriteLine("refa find");
+            }
+            else
+            {
+                Console.WriteLine("refa lose");
+            }
+
+            a = null;
+            a = null;
+            a = null;
+            a = null;
+            System.Threading.Thread.Sleep(1000);
+            System.GC.Collect();
+            System.Threading.Thread.Sleep(1000);
+            
+            if (refa != null)
+            {
+                Console.WriteLine("refa find");
+            }
+            else
+            {
+                Console.WriteLine("refa lose");
+            }
+
+            if (wa.TryGetTarget(out refa))
+            {
+                Console.WriteLine("refa find");
+            }
+            else
+            {
+                Console.WriteLine("refa lose");
+            }
+
+            Console.ReadKey();
+            //TestRequester();
         }
 
 

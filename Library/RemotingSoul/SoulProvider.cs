@@ -69,7 +69,8 @@ namespace Samebest.Remoting.Soul
                     
                     if(handler.UpdateProperty(val))
                     {
-                        update_property(ID, handler.PropertyInfo.Name, val);
+                        if (update_property != null)
+                            update_property(ID, handler.PropertyInfo.Name, val);
                     }                                        
                 }
             }
@@ -86,6 +87,8 @@ namespace Samebest.Remoting.Soul
             _Queue.Push((byte)ServerToClientPhotonOpCode.UpdateProperty, argmants);
         }
 
+
+        
 		void _InvokeEvent(Guid entity_id, string event_name, object[] args)
 		{            
             var argmants = new Dictionary<byte, object>();
@@ -97,8 +100,22 @@ namespace Samebest.Remoting.Soul
 				argmants.Add( i , Samebest.PhotonExtension.TypeHelper.Serializer(arg) );
 				++i;
 			}
-            _Queue.Push((byte)ServerToClientPhotonOpCode.InvokeEvent, argmants);
+            _InvokeEvent(event_name , argmants);
+            
 		}
+        Dictionary<string, Dictionary<byte, object>> _EventFilter = new Dictionary<string,Dictionary<byte,object>>();
+        private void _InvokeEvent(string event_name, Dictionary<byte, object> argmants)
+        {
+            Dictionary<byte, object> arg;
+            if (_EventFilter.TryGetValue(event_name, out arg))
+            {
+                _EventFilter[event_name] = argmants;
+            }
+            else
+            {
+                _EventFilter.Add(event_name , argmants);
+            }
+        }
         Dictionary<Guid, IValue> _WaitValues = new Dictionary<Guid, IValue>();
         private void _ReturnValue(Guid returnId, IValue returnValue)
         {
@@ -149,7 +166,9 @@ namespace Samebest.Remoting.Soul
 		
 		public void Bind<TSoul>(TSoul soul)
 		{
-			var prevSoul = _Souls.Find((soulInfo) => { return soulInfo.ObjectType == typeof(TSoul); });
+
+
+            var prevSoul = _Souls.Find((soulInfo) => { return Object.ReferenceEquals(soulInfo.ObjectInstance, soul); });
 			if (prevSoul == null)
 			{
 				var new_soul = new Soul() { ID = Guid.NewGuid(), ObjectType = typeof(TSoul), ObjectInstance = soul, MethodInfos = typeof(TSoul).GetMethods()};
@@ -179,6 +198,7 @@ namespace Samebest.Remoting.Soul
                     new_soul.PropertyHandlers[i] = new Soul.PropertyHandler();
                     new_soul.PropertyHandlers[i].PropertyInfo = propertys[i];
                 }
+                new_soul.ProcessDiffentValues(null);
 
 				_LoadSoul(soulType.FullName, new_soul.ID);
 				_Souls.Add(new_soul);
@@ -216,7 +236,8 @@ namespace Samebest.Remoting.Soul
 
 		public void Unbind<TSoul>(TSoul soul)
 		{
-			var soulInfo = _Souls.Find((soul_info) => { return soul_info.ObjectInstance  == soul as object; });
+
+            var soulInfo = _Souls.Find((soul_info) => { return Object.ReferenceEquals(soul_info.ObjectInstance, soul); });
 			if (soulInfo != null)
 			{
 				foreach (var eventHandler in soulInfo.EventHandlers)
@@ -237,9 +258,21 @@ namespace Samebest.Remoting.Soul
 
 
         System.DateTime _UpdatePropertyInterval;
+        System.DateTime _UpdateEventInterval;
         internal void Update()
         {
             _Peer.Update();
+
+            if ((System.DateTime.Now - _UpdatePropertyInterval).TotalSeconds > 1.0 / 60)
+            {
+                foreach (var filter in _EventFilter)
+                {
+                    _Queue.Push((byte)ServerToClientPhotonOpCode.InvokeEvent, filter.Value);
+                }
+                _EventFilter.Clear();
+                _UpdatePropertyInterval = System.DateTime.Now;
+            }
+
             if ((System.DateTime.Now - _UpdatePropertyInterval).TotalSeconds > 1)
             {
                 foreach (var soul in _Souls)
@@ -248,6 +281,7 @@ namespace Samebest.Remoting.Soul
                 }
                 _UpdatePropertyInterval = System.DateTime.Now;
             }
+            
             
         }
 

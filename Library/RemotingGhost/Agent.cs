@@ -108,6 +108,7 @@ namespace Samebest.Remoting.Ghost
 				{
                     var typeName = Samebest.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[0] as byte[]) as string;
 					var entity_id = new Guid(operationResponse.Parameters[1] as byte[]);
+                    System.Diagnostics.Debug.WriteLine("load soul : " + typeName +" id: "+ entity_id.ToString());
 					_LoadSoul(typeName, entity_id);
 				}
 			}
@@ -117,6 +118,7 @@ namespace Samebest.Remoting.Ghost
 				{
                     var typeName = Samebest.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[0] as byte[])as string;
 					var entity_id = new Guid(operationResponse.Parameters[1] as byte[]);
+                    System.Diagnostics.Debug.WriteLine("unload soul : " + typeName + " id: " + entity_id.ToString());
 					_UnloadSoul(typeName, entity_id);
 				}
 			}

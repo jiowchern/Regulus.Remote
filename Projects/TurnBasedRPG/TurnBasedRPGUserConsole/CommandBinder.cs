@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPGUserConsole
 {
-    using Regulus.Project.TurnBasedRPG.Common;
+    using Regulus.Project.TurnBasedRPG;
     using Regulus.Project.TurnBasedRPG.Serializable;
     using Samebest.Remoting;    
     class CommandBinder
@@ -23,7 +23,27 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             var fw = _User as Samebest.Game.IFramework;            
             _Bind(_User.Complex.QueryProvider<IVerify>());
             _Bind(_User.Complex.QueryProvider<IParking>());
-            _Bind(_User.Complex.QueryProvider<IPlayer>());            
+            _Bind(_User.Complex.QueryProvider<IPlayer>());
+            _Bind(_User.Complex.QueryProvider<IObservedAbility>());            
+        }
+
+        private void _Bind(Samebest.Remoting.Ghost.IProviderNotice<IObservedAbility> providerNotice)
+        {
+            
+            providerNotice.Supply += _ObservedSupply;
+            providerNotice.Unsupply += _ObservedUnsupply;
+        }
+
+         
+
+        public void _ObservedSupply(IObservedAbility obj)
+        {
+            Console.WriteLine(String.Format("entiry進入{0}:{1},{2}", obj.Id.ToString(), obj.Position.X, obj.Position.Y));
+        }
+
+        void _ObservedUnsupply(IObservedAbility obj)
+        {
+            Console.WriteLine("entiry離開" + obj.Id);
         }
 
         private void _Bind(Samebest.Remoting.Ghost.IProviderNotice<IPlayer> providerNotice)
@@ -74,16 +94,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
 
         }
 
-        public void obj_LeftEvent(Guid obj)
-        {
-            Console.WriteLine("entiry離開" + obj.ToString());
-        }
-
-        void obj_IntoEvent(EntityInfomation info)
-        {
-
-            Console.WriteLine(String.Format("entiry進入{0}:{1},{2}" , info.Id.ToString(), info.Position.X, info.Position.Y));
-        }
+        
 
         private void _Bind(Samebest.Remoting.Ghost.IProviderNotice<IParking> providerNotice)
         {

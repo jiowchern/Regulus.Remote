@@ -13,14 +13,36 @@ namespace Regulus.Project.TurnBasedRPG
         void Samebest.Game.IStage<User>.Enter(User obj)
         {            
             _Player = new Player(obj.Actor);
-            obj.Provider.Bind<Common.IPlayer>(_Player);
+            obj.Provider.Bind<IPlayer>(_Player);
             _Player.Initialize();
-            _Player.ReadyEvent += _OnPlayerReady;
-            
+            _Player.ReadyEvent += _OnPlayerReady;            
             _Player.ExitWorldEvent += obj.ToParking;
-            _Player.LogoutEvent += obj.Logout;            
+            _Player.LogoutEvent += obj.Logout;
+
+
+            var observe = _Player.FindAbility<IObserveAbility>();
+            if (observe != null)
+            {
+                _ObservedInto = (observed) =>
+                {
+                    obj.Provider.Bind<IObservedAbility>(observed);
+                };
+
+                _ObservedLeft = (observed) =>
+                {
+                    obj.Provider.Unbind<IObservedAbility>(observed);
+                };
+                
+                observe.IntoEvent += _ObservedInto;
+                observe.LeftEvent += _ObservedLeft;
+            }
+            
             _Save = DateTime.Now;
         }
+
+        Action<IObservedAbility> _ObservedLeft;
+        Action<IObservedAbility> _ObservedInto;
+        
 
         void _OnPlayerReady()
         {
@@ -30,7 +52,7 @@ namespace Regulus.Project.TurnBasedRPG
 
         void _ExitMap()
         {
-            var plr = _Player as Common.IPlayer;
+            var plr = _Player as IPlayer;
             // 離開地圖
             // 可能是切換地圖
         }
@@ -39,9 +61,15 @@ namespace Regulus.Project.TurnBasedRPG
         {
             if (_Player != null)
             {
+                var observe = _Player.FindAbility<IObserveAbility>();
+                if (observe != null)
+                {
+                    observe.IntoEvent -= _ObservedInto;
+                    observe.LeftEvent -= _ObservedLeft;
+                }
                 _Player.Finialize();
                 Samebest.Utility.Singleton<Map>.Instance.Left(_Player);
-                obj.Provider.Unbind<Common.IPlayer>(_Player);
+                obj.Provider.Unbind<IPlayer>(_Player);
             }
             
         }

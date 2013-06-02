@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPG
 {
-    class Parking : Common.IParking
+    class Parking : IParking
     {
         Guid _Id;
         List<Serializable.DBEntityInfomation> _ActorInfomations = new List<Serializable.DBEntityInfomation>();
@@ -14,12 +14,12 @@ namespace Regulus.Project.TurnBasedRPG
             _Id = id;
             _ActorInfomations = Samebest.Utility.Singleton<Storage>.Instance.FindActor(_Id).ToList();
         }
-        Samebest.Remoting.Value<bool> Common.IParking.CheckActorName(string name)
+        Samebest.Remoting.Value<bool> IParking.CheckActorName(string name)
         {
             return Samebest.Utility.Singleton<Storage>.Instance.CheckActorName(name);
         }
 
-        Samebest.Remoting.Value<bool> Common.IParking.CreateActor(Serializable.EntityLookInfomation cai)
+        Samebest.Remoting.Value<bool> IParking.CreateActor(Serializable.EntityLookInfomation cai)
         {
             if (Samebest.Utility.Singleton<Storage>.Instance.CheckActorName(cai.Name) == false)
             {
@@ -38,13 +38,13 @@ namespace Regulus.Project.TurnBasedRPG
             return false;
         }
         
-        Samebest.Remoting.Value<Serializable.EntityLookInfomation[]> Common.IParking.QueryActors()
+        Samebest.Remoting.Value<Serializable.EntityLookInfomation[]> IParking.QueryActors()
         {
             return (from actor in _ActorInfomations select actor.Look).ToArray();            
         }
 
         public event Action<Serializable.DBEntityInfomation> SelectEvent;
-        Samebest.Remoting.Value<bool> Common.IParking.Select(string name)
+        Samebest.Remoting.Value<bool> IParking.Select(string name)
         {
             var a = _ActorInfomations.Find( (ai)=>{ return ai.Look.Name == name ; });
             if (a != null && SelectEvent != null)
@@ -57,7 +57,7 @@ namespace Regulus.Project.TurnBasedRPG
         }
 
 
-        Samebest.Remoting.Value<Serializable.EntityLookInfomation[]> Common.IParking.DestroyActor(string name)
+        Samebest.Remoting.Value<Serializable.EntityLookInfomation[]> IParking.DestroyActor(string name)
         {
             var res = Samebest.Utility.Singleton<Storage>.Instance.RemoveActor(_Id, name);
             if (res)
@@ -69,7 +69,7 @@ namespace Regulus.Project.TurnBasedRPG
 
 
         public event Action BackEvent;
-        void Common.IParking.Back()
+        void IParking.Back()
         {
             if (BackEvent != null)
             {

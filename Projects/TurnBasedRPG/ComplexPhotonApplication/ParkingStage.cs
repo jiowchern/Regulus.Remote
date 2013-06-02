@@ -13,12 +13,12 @@ namespace Regulus.Project.TurnBasedRPG
             _Parking = new Regulus.Project.TurnBasedRPG.Parking(obj.Id);
             _Parking.BackEvent += obj.Logout;
             _Parking.SelectEvent += obj.EnterWorld;
-            obj.Provider.Bind<Common.IParking>(_Parking);
+            obj.Provider.Bind<IParking>(_Parking);
         }
 
         void Samebest.Game.IStage<User>.Leave(User obj)
         {
-            obj.Provider.Unbind<Common.IParking>(_Parking);
+            obj.Provider.Unbind<IParking>(_Parking);
         }
 
         void Samebest.Game.IStage<User>.Update(User obj)

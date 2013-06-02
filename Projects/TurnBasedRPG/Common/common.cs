@@ -1,6 +1,6 @@
 
 using System;
-namespace Regulus.Project.TurnBasedRPG.Common
+namespace Regulus.Project.TurnBasedRPG
 {
 
     using Regulus.Project.TurnBasedRPG.Serializable;
@@ -23,22 +23,22 @@ namespace Regulus.Project.TurnBasedRPG.Common
         void Back();
         Value<bool> Select(string name);
     }
-    public interface IEntity
-    {
-        
-    }
+    
     public interface IPlayer
-    {
+    {        
         void Ready();
         void Logout();
         void ExitWorld();
         Value<int> SetData(int i);
         Value<int> GetData();
-
         
         void SetPosition(float x,float y);
         void SetVision(int vision);
     }
-
+    public interface IObservedAbility
+    {
+        Guid Id { get; }
+        Regulus.Types.Vector2 Position { get; }
+    }
     
 }

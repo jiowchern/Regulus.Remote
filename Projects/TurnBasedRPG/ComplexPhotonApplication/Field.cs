@@ -7,32 +7,32 @@ namespace Regulus.Project.TurnBasedRPG
 {
     class Field
     {
-
         
-        public Entity Entity { get; private set; }
 
-        List<Entity> _Within = new List<Entity>();
+        List<IObservedAbility> _Within = new List<IObservedAbility>();
 
-        public Field(Entity ent )
+        public event Action<IObservedAbility> IntoEvent;
+        public event Action<IObservedAbility> LeftEvent;
+        internal void Update(IObserveAbility observe, TurnBasedRPG.IObservedAbility[] entitys)
         {
-            Entity = ent;
-            
-        }
+            var exits = entitys.Except(_Within);
+            foreach(var exit in exits)
+            {
+                _Remove(_Within, exit.Id);
+                if (LeftEvent != null)
+                    LeftEvent(exit);                
+            }
 
-
-        public Action<Regulus.Project.TurnBasedRPG.Common.IEntity> IntoEvent;
-        public Action<Guid> LeftEvent;
-        internal void Update(TurnBasedRPG.Entity[] entitys)
-        {
-            var range = Entity.Vision * Entity.Vision;
+            var range = observe.Vision * observe.Vision;
             foreach (var entity in entitys)
             {
-                if (_Distance(entity, Entity) > range)
+                if (_Distance(entity, observe.Observed) > range)
                 {
                     // out
                     if (_Remove(_Within, entity.Id))
                     {
-                        LeftEvent(entity.Id);
+                        if (LeftEvent != null)
+                            LeftEvent(entity);
                     }
                 }
                 else
@@ -41,36 +41,27 @@ namespace Regulus.Project.TurnBasedRPG
                     if (_Find(_Within, entity) == false)
                     {
                         _Within.Add(entity);
-                        IntoEvent(entity); 
+                        if (IntoEvent != null)
+                            IntoEvent(entity);
                     }
                 }
             }
         }
 
-        private bool _Find(List<TurnBasedRPG.Entity> _Within, TurnBasedRPG.Entity entity)
+        private bool _Find(List<TurnBasedRPG.IObservedAbility> _Within, TurnBasedRPG.IObservedAbility entity)
         {
-            return _Within.Find(ent => ent == entity) != null;
+            return _Within.Find(ent => ent.Id == entity.Id) != null;
         }
 
-        private bool _Remove(List<TurnBasedRPG.Entity> within, Guid id)
-        {
+        private bool _Remove(List<IObservedAbility> within, Guid id)
+        {            
             return within.RemoveAll(ent => ent.Id == id) > 0;
         }
 
-        private float _Distance(TurnBasedRPG.Entity e1, TurnBasedRPG.Entity e2)
+        private float _Distance(IObservedAbility e1, IObservedAbility e2)
         {
             return (e1.Position.X - e2.Position.X) * (e1.Position.X - e2.Position.X) + (e1.Position.Y - e2.Position.Y) * (e1.Position.Y - e2.Position.Y);
         }
-
-        internal void Left(List<Guid> left_entitys)
-        {
-            foreach (var entity in left_entitys)
-            {
-                if (_Remove(_Within, entity))
-                {
-                    LeftEvent(entity);
-                }
-            }
-        }
+        
     }
 }

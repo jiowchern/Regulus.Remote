@@ -139,7 +139,7 @@ namespace Samebest.Remoting.Soul
             }
             var response =  new Response() { Id = cmd, Args = args , Size = size };
             
-            _NewResponses.Enqueue(response);            
+            _NewResponses.Enqueue(response);                        
         }
     }
 }

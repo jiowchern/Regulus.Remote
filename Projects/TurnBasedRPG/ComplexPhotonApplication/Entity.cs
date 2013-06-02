@@ -5,27 +5,34 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPG
 {
-    class Entity : Regulus.Project.TurnBasedRPG.Common.IEntity
+    class Entity 
     {
-        public Field Field { get; private set; }
-        Regulus.Project.TurnBasedRPG.Serializable.EntityPropertyInfomation _Property;
-
-        public Entity(Regulus.Project.TurnBasedRPG.Serializable.EntityPropertyInfomation property)
-        {
-            _Property = property;            
-            Field = new Field(this); 
-        }
-        public Regulus.Types.Vector2 Position 
-        { 
-            get 
-            {
-                return _Property.Position;
-            }            
-        }
-
-        public int Vision { get { return _Property.Vision; } }
-        public Guid Id { get{ return _Property.Id;  } }
-
         
+        public Entity(Guid id)
+        {
+            Id = id;
+        }
+        public Guid Id { get; private set; }
+
+        Dictionary<Type, object> _Abilitys = new Dictionary<Type, object>();
+        protected void _AttechAbility<T>(T ability)
+        {
+            _Abilitys.Add(typeof(T) , ability as object);
+        }
+
+        protected void _DetechAbility<T>()
+        {
+            _Abilitys.Remove(typeof(T));
+        }
+
+        public T FindAbility<T>() where T : class
+        {
+            object o;
+            if (_Abilitys.TryGetValue(typeof(T), out o))
+            {
+                return o as T;
+            }
+            return default(T);
+        }
     }
 }

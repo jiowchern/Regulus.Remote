@@ -3,20 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+
+
 namespace Regulus.Project.TurnBasedRPG
 {
-    class Player : Actor , Common.IPlayer  
+    class Player : Actor , IPlayer  
     {
+
         private Serializable.DBEntityInfomation _DBActorInfomation;
 
         public Player(Serializable.DBEntityInfomation dB_actorInfomation)
-            : base(dB_actorInfomation)
+            : base(dB_actorInfomation.Property.Id)
         {            
             _DBActorInfomation = dB_actorInfomation;
         }
 
         public event Action LogoutEvent;
-        void Common.IPlayer.Logout()
+        void IPlayer.Logout()
         {
             if (LogoutEvent != null)
             {
@@ -25,7 +28,7 @@ namespace Regulus.Project.TurnBasedRPG
         }
 
         public event Action ExitWorldEvent;
-        void Common.IPlayer.ExitWorld()
+        void IPlayer.ExitWorld()
         {
             if (ExitWorldEvent != null)
             {
@@ -33,45 +36,50 @@ namespace Regulus.Project.TurnBasedRPG
             }
         }
 
-        Samebest.Remoting.Value<int> Common.IPlayer.SetData(int i)
+        Samebest.Remoting.Value<int> IPlayer.SetData(int i)
         {
             _DBActorInfomation.TestData = ++i;
             return _DBActorInfomation.TestData;
         }
 
-        Samebest.Remoting.Value<int> Common.IPlayer.GetData()
+        Samebest.Remoting.Value<int> IPlayer.GetData()
         {
             return _DBActorInfomation.TestData;
         }
 
-        
-
+        PlayerObserveAbility _ObserveAbility;
+        PlayerObservedAbility _ObservedAbility;
         internal void Initialize()
         {
-            
+            _ObservedAbility = new PlayerObservedAbility(_DBActorInfomation);
+            _AttechAbility<IObservedAbility>(_ObservedAbility);
+
+            _ObserveAbility = new PlayerObserveAbility(_ObservedAbility, _DBActorInfomation);
+            _AttechAbility<IObserveAbility>(_ObserveAbility);
         }
 
         internal void Finialize()
         {
-            
+            _DetechAbility<IObserveAbility>();
+            _DetechAbility<IObservedAbility>();
         }
 
         public event Action ReadyEvent;
-        void Common.IPlayer.Ready()
+        void IPlayer.Ready()
         {
             if (ReadyEvent != null)
                 ReadyEvent();
         }
 
 
-        void Common.IPlayer.SetPosition(float x, float y)
+        void IPlayer.SetPosition(float x, float y)
         {
             _DBActorInfomation.Property.Position.X = x;
             _DBActorInfomation.Property.Position.Y = y;
         }
 
 
-        void Common.IPlayer.SetVision(int vision)
+        void IPlayer.SetVision(int vision)
         {
             _DBActorInfomation.Property.Vision = vision;
         }

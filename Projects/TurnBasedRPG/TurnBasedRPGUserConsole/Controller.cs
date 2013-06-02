@@ -134,9 +134,9 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
 
         protected override void _Launch(Regulus.Project.TurnBasedRPG.User user)
         {
-            _Bind(user.Complex.QueryProvider<Regulus.Project.TurnBasedRPG.Common.IVerify>());
-            _Bind(user.Complex.QueryProvider<Regulus.Project.TurnBasedRPG.Common.IPlayer>());
-            _Bind(user.Complex.QueryProvider<Regulus.Project.TurnBasedRPG.Common.IParking>());
+            _Bind(user.Complex.QueryProvider<Regulus.Project.TurnBasedRPG.IVerify>());
+            _Bind(user.Complex.QueryProvider<Regulus.Project.TurnBasedRPG.IPlayer>());
+            _Bind(user.Complex.QueryProvider<Regulus.Project.TurnBasedRPG.IParking>());
         }
 
         private void _Bind<T>(Samebest.Remoting.Ghost.IProviderNotice<T> provider_notice)
