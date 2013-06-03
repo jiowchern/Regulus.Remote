@@ -7,7 +7,7 @@ namespace Regulus.Project.TurnBasedRPG
 {
     interface IObserveAbility
     {
-        void Update(IObservedAbility[] observeds);
+        void Update(IObservedAbility[] observeds, List<IObservedAbility> lefts);
         IObservedAbility Observed  { get; }
         float Vision { get; }
         event Action<IObservedAbility> IntoEvent;

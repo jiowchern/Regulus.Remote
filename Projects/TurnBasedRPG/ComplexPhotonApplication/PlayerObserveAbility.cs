@@ -17,9 +17,9 @@ namespace Regulus.Project.TurnBasedRPG
             _Field = new Field();
         }
 
-        void IObserveAbility.Update(IObservedAbility[] observeds)
+        void IObserveAbility.Update(IObservedAbility[] observeds, List<IObservedAbility> lefts)
         {
-            _Field.Update(this , observeds);
+            _Field.Update(this, observeds, lefts);
         }
 
         IObservedAbility IObserveAbility.Observed

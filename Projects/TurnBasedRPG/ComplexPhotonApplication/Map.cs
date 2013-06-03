@@ -33,15 +33,24 @@ namespace Regulus.Project.TurnBasedRPG
  	        _ObserverInfomations.Add( new ObserverInfomation() { Id = guid , ObserveAbility = oa});
         }
 
+
+        List<IObservedAbility> _Lefts = new List<IObservedAbility>();
         public void Left(Entity entity)
         {
+            IObservedAbility oa = entity.FindAbility<IObservedAbility>();
+            if (oa != null)
+            {
+                _Lefts.Add(oa);
+            }
             _RemoveObserver(entity.Id);
-            _EntityInfomations.Remove(info => info.Entity == entity);            
+            _EntityInfomations.Remove(info => info.Entity == entity);
+            
         }
 
         private void _RemoveObserver(Guid guid)
         {
- 	        _ObserverInfomations.Remove( oi => oi.Id == guid );
+ 	        _ObserverInfomations.Remove( oi =>  oi.Id == guid);
+            
         }
 
         void Samebest.Game.IFramework.Launch()
@@ -76,8 +85,9 @@ namespace Regulus.Project.TurnBasedRPG
 
             foreach(var info in  _ObserverInfomations.Update())
             {
-                info.ObserveAbility.Update(observeds);
+                info.ObserveAbility.Update(observeds, _Lefts);
             }
+            _Lefts.Clear();
         }
 
         void Samebest.Game.IFramework.Shutdown()

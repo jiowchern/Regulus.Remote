@@ -13,10 +13,10 @@ namespace Regulus.Project.TurnBasedRPG
 
         public event Action<IObservedAbility> IntoEvent;
         public event Action<IObservedAbility> LeftEvent;
-        internal void Update(IObserveAbility observe, TurnBasedRPG.IObservedAbility[] entitys)
+        internal void Update(IObserveAbility observe, TurnBasedRPG.IObservedAbility[] entitys, List<IObservedAbility> lefts)
         {
             var exits = entitys.Except(_Within);
-            foreach(var exit in exits)
+            foreach (var exit in lefts)
             {
                 _Remove(_Within, exit.Id);
                 if (LeftEvent != null)

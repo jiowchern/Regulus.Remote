@@ -25,6 +25,9 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             _Bind(_User.Complex.QueryProvider<IParking>());
             _Bind(_User.Complex.QueryProvider<IPlayer>());
             _Bind(_User.Complex.QueryProvider<IObservedAbility>());            
+
+            _ObservedWatcher = new ObservedWatcher();
+            _ObservedWatcher.Initial();
         }
 
         private void _Bind(Samebest.Remoting.Ghost.IProviderNotice<IObservedAbility> providerNotice)
@@ -33,17 +36,67 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             providerNotice.Supply += _ObservedSupply;
             providerNotice.Unsupply += _ObservedUnsupply;
         }
+        class ObservedWatcher
+        {
+            List<IObservedAbility> _Unknowns = new List<IObservedAbility>();
+            List<IObservedAbility> _Observers = new List<IObservedAbility>();
+            public void Add(IObservedAbility obs)
+            {
+                _Unknowns.Add(obs);
+            }
+
+            internal void Remove(IObservedAbility obj)
+            {
+                _Unknowns.Remove(obj);
+                if (_Observers.Remove(obj))
+                {
+                    Console.WriteLine("entiry離開" + obj.Id);
+                }
+            }
+
+            System.Timers.Timer _Watcher;
+            internal void Initial()
+            {
+                
+                
+            }
+            System.DateTime _UpdateInterval;
+            public void Update()
+            {
+
+                if ((System.DateTime.Now - _UpdateInterval).TotalSeconds > 0.2)
+                {
+                    var newobss = (from unknown in _Unknowns where unknown.Id != Guid.Empty && unknown.Position != null select unknown).ToArray();
+                    foreach (var newobs in newobss)
+                    {
+                        Console.WriteLine(String.Format("entiry進入{0}:{1},{2}", newobs.Id.ToString(), newobs.Position.X, newobs.Position.Y));
+                        _Observers.Add(newobs);
+                        _Unknowns.Remove(newobs);
+                    }
+
+                    _UpdateInterval = System.DateTime.Now;
+                }
+                
+            }
+
+            internal void Release()
+            {
+                
+            }
+        }
 
          
-
+        ObservedWatcher _ObservedWatcher;
         public void _ObservedSupply(IObservedAbility obj)
         {
-            Console.WriteLine(String.Format("entiry進入{0}:{1},{2}", obj.Id.ToString(), obj.Position.X, obj.Position.Y));
+            _ObservedWatcher.Add(obj);
+            
         }
 
         void _ObservedUnsupply(IObservedAbility obj)
         {
-            Console.WriteLine("entiry離開" + obj.Id);
+            _ObservedWatcher.Remove(obj);
+            
         }
 
         private void _Bind(Samebest.Remoting.Ghost.IProviderNotice<IPlayer> providerNotice)
@@ -467,7 +520,12 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
 
         internal void TearDown()
         {
-            
+            _ObservedWatcher.Release();
+        }
+
+        internal void Update()
+        {
+            _ObservedWatcher.Update();
         }
     }
 }

@@ -35,7 +35,8 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
 
         protected abstract string[] _HandlerInput();
         bool Samebest.Game.IFramework.Update()
-        {            
+        {
+            _CommandBinder.Update();
             string[] command = _HandlerInput();
             if (command != null)
                 _HandleCommand(_CommandHandler, command);

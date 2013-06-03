@@ -198,7 +198,7 @@ namespace Samebest.Remoting.Soul
                     new_soul.PropertyHandlers[i] = new Soul.PropertyHandler();
                     new_soul.PropertyHandlers[i].PropertyInfo = propertys[i];
                 }
-                new_soul.ProcessDiffentValues(null);
+                
 
 				_LoadSoul(soulType.FullName, new_soul.ID);
 				_Souls.Add(new_soul);
@@ -263,14 +263,14 @@ namespace Samebest.Remoting.Soul
         {
             _Peer.Update();
 
-            if ((System.DateTime.Now - _UpdatePropertyInterval).TotalSeconds > 1.0 / 60)
+            if ((System.DateTime.Now - _UpdateEventInterval).TotalSeconds > 1.0 / 60)
             {
                 foreach (var filter in _EventFilter)
                 {
                     _Queue.Push((byte)ServerToClientPhotonOpCode.InvokeEvent, filter.Value);
                 }
                 _EventFilter.Clear();
-                _UpdatePropertyInterval = System.DateTime.Now;
+                _UpdateEventInterval = System.DateTime.Now;
             }
 
             if ((System.DateTime.Now - _UpdatePropertyInterval).TotalSeconds > 1)

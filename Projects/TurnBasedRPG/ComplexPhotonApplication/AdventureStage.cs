@@ -66,9 +66,9 @@ namespace Regulus.Project.TurnBasedRPG
                 {
                     observe.IntoEvent -= _ObservedInto;
                     observe.LeftEvent -= _ObservedLeft;
-                }
-                _Player.Finialize();
+                }                
                 Samebest.Utility.Singleton<Map>.Instance.Left(_Player);
+                _Player.Finialize();
                 obj.Provider.Unbind<IPlayer>(_Player);
             }
             
