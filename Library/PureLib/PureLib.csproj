@@ -60,6 +60,7 @@
     <Compile Include="utility_commandsender.cs" />
     <Compile Include="utility_csv.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="utility_valuehelper.cs" />
     <Compile Include="utility_log.cs" />
     <Compile Include="utility_poller.cs" />
     <Compile Include="utility_random.cs" />

@@ -34,7 +34,7 @@ namespace Regulus.Project.TurnBasedRPG
 
             
         }
-        Samebest.Remoting.Value<bool> IVerify.Login(string name, string password)
+        Samebest.Remoting.Value<LoginResult> IVerify.Login(string name, string password)
         {
             var user = _UserRoster.Find(name);
             if (user == null)
@@ -43,16 +43,16 @@ namespace Regulus.Project.TurnBasedRPG
                 if (ai != null && ai.Password == password)
                 {
                     LoginSuccess(ai);                    
-                    return true;
+                    return LoginResult.Success;
                 }
             }
             else
             {
-                if (_RepeatLogin != null)
-                    _RepeatLogin();
-                user.Logout();                
+                
+                user.Logout();
+                return LoginResult.RepeatLogin;
             }
-            return false;
+            return LoginResult.Error;
             
         }
 
@@ -69,19 +69,7 @@ namespace Regulus.Project.TurnBasedRPG
             
         }
 
-        public delegate void callback(int a);
-
-        public event callback cb;
-        public void OnCallBack()
-        {
-            cb(100);
-        }
-
-        event Action _RepeatLogin;
-        event Action IVerify.RepeatLogin
-        {
-            add { _RepeatLogin += value; }
-            remove { _RepeatLogin -= value; }
-        }
+        
+        
     }
 }

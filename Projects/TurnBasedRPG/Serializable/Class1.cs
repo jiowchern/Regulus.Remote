@@ -4,6 +4,16 @@ using System.Linq;
 using System.Text;
 
 
+namespace Regulus.Project.TurnBasedRPG
+{
+    [Serializable]
+    public enum LoginResult
+    {
+        RepeatLogin,
+        Error,
+        Success
+    }
+}
 namespace Regulus.Project.TurnBasedRPG.Serializable
 {
     [Serializable]
@@ -55,8 +65,8 @@ namespace Regulus.Project.TurnBasedRPG.Serializable
         }
         public EntityPropertyInfomation Property { get; set; }
         public EntityLookInfomation Look { get; set; }
-        public Guid Owner { get; set; }
-        public int TestData { get; set; }
+        public Guid Owner { get; set; }        
     }
+
 
 }

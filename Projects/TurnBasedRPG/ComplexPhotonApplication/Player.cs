@@ -36,17 +36,6 @@ namespace Regulus.Project.TurnBasedRPG
             }
         }
 
-        Samebest.Remoting.Value<int> IPlayer.SetData(int i)
-        {
-            _DBActorInfomation.TestData = ++i;
-            return _DBActorInfomation.TestData;
-        }
-
-        Samebest.Remoting.Value<int> IPlayer.GetData()
-        {
-            return _DBActorInfomation.TestData;
-        }
-
         PlayerObserveAbility _ObserveAbility;
         PlayerObservedAbility _ObservedAbility;
         internal void Initialize()
@@ -82,6 +71,12 @@ namespace Regulus.Project.TurnBasedRPG
         void IPlayer.SetVision(int vision)
         {
             _DBActorInfomation.Property.Vision = vision;
+        }
+
+
+        Samebest.Remoting.Value<Guid> IPlayer.GetId()
+        {
+            return _DBActorInfomation.Property.Id;
         }
     }
 }

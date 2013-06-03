@@ -4,14 +4,14 @@ namespace Regulus.Project.TurnBasedRPG
 {
 
     using Regulus.Project.TurnBasedRPG.Serializable;
-    using Samebest.Remoting;    
+    using Samebest.Remoting;
 
     public interface IVerify
     {
+        
         Value<bool> CreateAccount(string name, string password);
-        Value<bool> Login(string name, string password );
-        void Quit();
-        event System.Action RepeatLogin;
+        Value<LoginResult> Login(string name, string password);
+        void Quit();        
     };
 
     public interface IParking
@@ -29,8 +29,8 @@ namespace Regulus.Project.TurnBasedRPG
         void Ready();
         void Logout();
         void ExitWorld();
-        Value<int> SetData(int i);
-        Value<int> GetData();
+
+        Value<Guid> GetId();        
         
         void SetPosition(float x,float y);
         void SetVision(int vision);

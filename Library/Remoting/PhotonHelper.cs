@@ -71,7 +71,7 @@ namespace Samebest.PhotonExtension
 			}
             return obj;								
 		}
-		public static object DeserializeZip(byte[] bytes)
+		public static object DeserializeZip(byte[] bytes) 
 		{
 			System.IO.MemoryStream msNew = new System.IO.MemoryStream(bytes);
 

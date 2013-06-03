@@ -9,9 +9,9 @@ namespace Regulus.Project.TurnBasedRPG
     public class User : Samebest.Game.IFramework
     {
         public Samebest.Remoting.Ghost.Agent Complex { get; private set; }
-
+         
         public event Action LinkSuccess;
-        public event Action LinkFail;
+        public event Action<string> LinkFail;
         public User(Samebest.Remoting.Ghost.Config config )
         {
             Complex = new Samebest.Remoting.Ghost.Agent(config); 
@@ -25,10 +25,10 @@ namespace Regulus.Project.TurnBasedRPG
                 if (LinkSuccess != null)
                     LinkSuccess();
             };
-            linkStatu.LinkFail += () =>            
+            linkStatu.LinkFail += (s) =>            
             {
                 if(LinkFail != null)
-                    LinkFail();
+                    LinkFail(s);
             };
 
             Complex.Launch(linkStatu);

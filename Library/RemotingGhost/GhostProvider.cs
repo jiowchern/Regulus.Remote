@@ -18,6 +18,7 @@ namespace Samebest.Remoting.Ghost
 		IGhost[] Ghosts { get; }	
 		void Add(IGhost entiry);
 		void Remove(Guid id);
+        void Ready(Guid id);
 	}
 
 	public class TProvider<T> : IProviderNotice<T>, IProvider where T : class
@@ -45,11 +46,24 @@ namespace Samebest.Remoting.Ghost
 			remove { _Unsupply -= value; }
 		}
 
+        List<T> _Waits = new List<T>();
+        void IProvider.Ready(Guid id)
+        {
+            var entity = (from e in _Waits where (e as IGhost).GetID() == id select e).FirstOrDefault();
+            _Waits.Remove(entity);
+            if (entity != null)
+                _Add(entity);
+        }
+
+        void _Add(T entity)
+        {
+            _Entitys.Add(entity);
+            if (_Supply != null)
+                _Supply.Invoke(entity as T);
+        }
 		void IProvider.Add(IGhost entity)
 		{
-			_Entitys.Add(entity as T);
-			if(_Supply != null)
-				_Supply.Invoke(entity as T);
+            _Waits.Add(entity as T);
 		}
 
 		void IProvider.Remove(Guid id)
@@ -61,17 +75,30 @@ namespace Samebest.Remoting.Ghost
 			}
 
 			_Entitys.Remove(entity);
+
+
+            var waitentity = (from e in _Waits where (e as IGhost).GetID() == id select e).FirstOrDefault();
+            if (waitentity != null)
+                _Waits.Remove(waitentity);
 		}
 
 		IGhost[] IProvider.Ghosts
 		{
-			get { return (from entity in _Entitys select (IGhost)entity).ToArray() ; }
+            
+			get 
+            {
+                var all = _Entitys.Concat(_Waits);
+                return (from entity in all select (IGhost)entity).ToArray(); 
+            }
 		}
 
 
 		T[] IProviderNotice<T>.Ghosts
 		{
-			get { return _Entitys.ToArray(); }
+			get 
+            {
+                return _Entitys.ToArray(); 
+            }
 		}
 	}
 

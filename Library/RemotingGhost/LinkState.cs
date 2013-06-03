@@ -8,6 +8,6 @@ namespace Samebest.Remoting.Ghost
 	public class LinkState
 	{
 		public Action	LinkSuccess;
-		public Action	LinkFail;
+		public Action<string>	LinkFail;
 	}
 }

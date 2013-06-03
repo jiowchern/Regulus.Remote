@@ -17,7 +17,8 @@ namespace Samebest.Remoting
         LoadSoul,
         UnloadSoul,
         ReturnValue,
-        UpdateProperty
+        UpdateProperty,
+        LoadSoulCompile
 
     }
 }

@@ -18,7 +18,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
                     var resule = verify.Login(obj.Name, "1");
                     resule.OnValue += (res) =>
                     {
-                        if (res)
+                        if (res == TurnBasedRPG.LoginResult.Success )
                         {
                             obj.ToParking();
                         }

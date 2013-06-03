@@ -54,7 +54,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
                 }
             }
 
-            System.Timers.Timer _Watcher;
+            
             internal void Initial()
             {
                 
@@ -72,7 +72,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
                         Console.WriteLine(String.Format("entiry進入{0}:{1},{2}", newobs.Id.ToString(), newobs.Position.X, newobs.Position.Y));
                         _Observers.Add(newobs);
                         _Unknowns.Remove(newobs);
-                    }
+                    } 
 
                     _UpdateInterval = System.DateTime.Now;
                 }
@@ -109,8 +109,6 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
         {
             _CommandHandler.Rise("ExitWorld");
             _CommandHandler.Rise("Logout");
-            _CommandHandler.Rise("SetData");
-            _CommandHandler.Rise("GetData");
             _CommandHandler.Rise("SetPosition");            
             _CommandHandler.Rise("Ready");
 			_CommandHandler.Rise("SetVision");
@@ -126,27 +124,6 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             _CommandHandler.Set("Ready", _Build(obj.Ready), "準備完畢 ex. Ready");
             _CommandHandler.Set("ExitWorld", _Build(obj.ExitWorld), "返回選角 ex. ExitWorld");
             _CommandHandler.Set("Logout", _Build(obj.Logout), "離開遊戲 ex. Logout");
-
-            Action<Value<int>> setDataResult = (value)=>
-            {
-                value.OnValue += (res) => 
-                {
-                    Console.WriteLine("取得資料"+ res.ToString());
-                };
-            };
-            _CommandHandler.Set("SetData", _Build<int, int>(obj.SetData, setDataResult), "測試用 SetData [數字]");
-
-
-            Action<Value<int>> getDataResult = (value) =>
-            {
-                value.OnValue += (res) =>
-                {
-                    Console.WriteLine("取得資料" + res.ToString());
-                };
-            };
-            _CommandHandler.Set("GetData", _Build<int>(obj.GetData, getDataResult), "測試用 GetData ");
-
-            
 
         }
 
@@ -266,20 +243,21 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
         private void _VeriftSupply(IVerify obj)
         {
             _CommandHandler.Set("CreateAccount", _Build<string, string , bool>(obj.CreateAccount, _CreateAccountResult), "建立帳號 ex. createaccount [帳號] [密碼]");
-            _CommandHandler.Set("Login", _Build<string, string, bool>(obj.Login, _LoginAccountResult), "登入 ex. login [帳號] [密碼]");
-
-
-            obj.RepeatLogin += () => { Console.WriteLine("重複登入");  };
+            _CommandHandler.Set("Login", _Build<string, string, LoginResult>(obj.Login, _LoginAccountResult), "登入 ex. login [帳號] [密碼]");
         }
 
-        private void _LoginAccountResult(Value<bool> obj)
+        private void _LoginAccountResult(Value<LoginResult> obj)
         {
             obj.OnValue += (res) =>
             {
-                if (res)
+                if (res == LoginResult.Success)
                     Console.WriteLine("登入成功.");
-                else
+                else if(res == LoginResult.Error)
                     Console.WriteLine("登入失敗.");
+                else if(res == LoginResult.RepeatLogin)
+                {
+                    Console.WriteLine("重複登入.");
+                }
             };
         }
 

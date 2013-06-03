@@ -73,13 +73,15 @@ namespace Samebest.Remoting.Ghost
             {
                 if (operationResponse.Parameters.Count == 3)
                 {
+                    
                     var entity_id = new Guid(operationResponse.Parameters[0] as byte[]);
                     var eventName = Samebest.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[1] as byte[]) as string;
                     var value = Samebest.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[2] as byte[]) ;
+
+                    System.Diagnostics.Debug.WriteLine("UpdateProperty id:" + entity_id + "name:" + eventName + "value:" + value);
                     _UpdateProperty(entity_id, eventName, value);
                 }
-            }
-			if (operationResponse.OperationCode == (int)ServerToClientPhotonOpCode.InvokeEvent)
+            }else if (operationResponse.OperationCode == (int)ServerToClientPhotonOpCode.InvokeEvent)
 			{
 				if (operationResponse.Parameters.Count >= 2)
 				{
@@ -102,28 +104,40 @@ namespace Samebest.Remoting.Ghost
 					_SetReturnValue(returnTarget, returnValue);
 				}
 			}
-			else if (operationResponse.OperationCode == (int)ServerToClientPhotonOpCode.LoadSoul)
-			{
-				if (operationResponse.Parameters.Count == 2)
-				{
+            else if (operationResponse.OperationCode == (int)ServerToClientPhotonOpCode.LoadSoulCompile)
+            {
+                if (operationResponse.Parameters.Count == 2)
+                {
                     var typeName = Samebest.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[0] as byte[]) as string;
-					var entity_id = new Guid(operationResponse.Parameters[1] as byte[]);
-                    System.Diagnostics.Debug.WriteLine("load soul : " + typeName +" id: "+ entity_id.ToString());
-					_LoadSoul(typeName, entity_id);
-				}
-			}
-			else if (operationResponse.OperationCode == (int)ServerToClientPhotonOpCode.UnloadSoul)
-			{
-				if (operationResponse.Parameters.Count == 2)
-				{
-                    var typeName = Samebest.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[0] as byte[])as string;
-					var entity_id = new Guid(operationResponse.Parameters[1] as byte[]);
+                    var entity_id = new Guid(operationResponse.Parameters[1] as byte[]);
+                    System.Diagnostics.Debug.WriteLine("load soul compile: " + typeName + " id: " + entity_id.ToString());
+                    _LoadSoulCompile(typeName, entity_id);
+                }
+            }
+            else if (operationResponse.OperationCode == (int)ServerToClientPhotonOpCode.LoadSoul)
+            {
+                if (operationResponse.Parameters.Count == 2)
+                {
+                    var typeName = Samebest.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[0] as byte[]) as string;
+                    var entity_id = new Guid(operationResponse.Parameters[1] as byte[]);
+                    System.Diagnostics.Debug.WriteLine("load soul : " + typeName + " id: " + entity_id.ToString());
+                    _LoadSoul(typeName, entity_id);
+                }
+            }
+            else if (operationResponse.OperationCode == (int)ServerToClientPhotonOpCode.UnloadSoul)
+            {
+                if (operationResponse.Parameters.Count == 2)
+                {
+                    var typeName = Samebest.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[0] as byte[]) as string;
+                    var entity_id = new Guid(operationResponse.Parameters[1] as byte[]);
                     System.Diagnostics.Debug.WriteLine("unload soul : " + typeName + " id: " + entity_id.ToString());
-					_UnloadSoul(typeName, entity_id);
-				}
-			}
+                    _UnloadSoul(typeName, entity_id);
+                }
+            }
 			
 		}
+
+        
 
         
 
@@ -137,7 +151,12 @@ namespace Samebest.Remoting.Ghost
 				value.SetValue(returnValue);
 			}
 		}
-		
+        private void _LoadSoulCompile(string type_name, Guid entity_id)
+        {
+            IProvider provider = _QueryProvider(type_name);
+            if (provider != null)
+                provider.Ready(entity_id);
+        }
 		private void _LoadSoul(string type_name, Guid id)
 		{
 			IProvider provider = _QueryProvider(type_name);
@@ -235,7 +254,7 @@ namespace Samebest.Remoting.Ghost
                 
                 _EndPing();
                 if (_LinkState.LinkFail != null)
-                    _LinkState.LinkFail();
+                    _LinkState.LinkFail(statusCode.ToString());
                 _Peer = null;
             }
 

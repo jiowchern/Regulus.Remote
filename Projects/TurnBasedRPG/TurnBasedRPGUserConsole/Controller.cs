@@ -22,7 +22,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             var addr = "127.0.0.1:5055";
             var user = _GenerateUser(addr);
             user.LinkSuccess += () => { Console.WriteLine("連線成功."); };
-            user.LinkFail += () => { Console.WriteLine("連線失敗."); };
+            user.LinkFail += (s) => { Console.WriteLine("連線失敗." + s); };
 
             _CommandHandler = new Regulus.Project.TurnBasedRPGUserConsole.CommandHandler();
             _CommandHandler.Initialize();
@@ -252,7 +252,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             ToVerify();
         }
 
-        void User_LinkFail()
+        void User_LinkFail(string msg)
         {
             ToConnect();
         }

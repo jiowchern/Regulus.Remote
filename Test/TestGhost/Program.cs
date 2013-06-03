@@ -65,7 +65,7 @@ namespace TestGhost
 
             Samebest.Remoting.Ghost.Agent agent = new Samebest.Remoting.Ghost.Agent(new Samebest.Remoting.Ghost.Config() { Name = "Test", Address = "127.0.0.1:5055" });
 
-            agent.Launch(new Samebest.Remoting.Ghost.LinkState() { LinkSuccess = () => { }, LinkFail = () => { } });
+            agent.Launch(new Samebest.Remoting.Ghost.LinkState() { LinkSuccess = () => { }, LinkFail = (msg) => { } });
 
             var provider = agent.QueryProvider<TestRemotingCommon.ITest>();
 

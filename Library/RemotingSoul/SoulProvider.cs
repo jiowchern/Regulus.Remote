@@ -52,9 +52,10 @@ namespace Samebest.Remoting.Soul
             
                 internal bool UpdateProperty(object val)
                 {
-                    if ( !(val.Equals(Value) && Value.Equals(val)) )
+
+                    if (!Regulus.Utility.ValueHelper.DeepEqual(Value, val))
                     {
-                        Value = val;
+                        Value = Regulus.Utility.ValueHelper.DeepCopy(val);
                         return true;
                     }
                     return false;
@@ -131,6 +132,14 @@ namespace Samebest.Remoting.Soul
                 _WaitValues.Remove(returnId);
             }));            
         }
+        private void _LoadSoulCompile(string type_name, Guid id)
+        {
+            var argmants = new Dictionary<byte, object>();
+            argmants.Add(0, Samebest.PhotonExtension.TypeHelper.Serializer(type_name));
+            argmants.Add(1, id.ToByteArray());
+            _Queue.Push((byte)ServerToClientPhotonOpCode.LoadSoulCompile, argmants);
+        }
+        
         private void _LoadSoul(string type_name, Guid id)
         {         
             var argmants = new Dictionary<byte, object>();
@@ -198,10 +207,11 @@ namespace Samebest.Remoting.Soul
                     new_soul.PropertyHandlers[i] = new Soul.PropertyHandler();
                     new_soul.PropertyHandlers[i].PropertyInfo = propertys[i];
                 }
-                
-
+                _Souls.Add(new_soul);
 				_LoadSoul(soulType.FullName, new_soul.ID);
-				_Souls.Add(new_soul);
+                new_soul.ProcessDiffentValues(_UpdateProperty);
+                _LoadSoulCompile(soulType.FullName, new_soul.ID);
+				
 			}
 		}
 				
