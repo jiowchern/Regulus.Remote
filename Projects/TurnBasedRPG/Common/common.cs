@@ -38,7 +38,7 @@ namespace Regulus.Project.TurnBasedRPG
     public interface IObservedAbility
     {
         Guid Id { get; }
-        Regulus.Types.Vector2 Position { get; }
+        Regulus.Types.Vector2 Position { get; }		
     }
     
 }

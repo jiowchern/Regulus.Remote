@@ -113,12 +113,15 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             _CommandHandler.Rise("GetData");
             _CommandHandler.Rise("SetPosition");            
             _CommandHandler.Rise("Ready");
+			_CommandHandler.Rise("SetVision");
+			
 
             
         }
 
         private void _PlayerSupply(IPlayer obj)
         {
+			_CommandHandler.Set("SetVision", _Build<int>(obj.SetVision), "設定視野 ex. Vision 100 ");
             _CommandHandler.Set("SetPosition", _Build<float, float>(obj.SetPosition), "設定位置 ex. SetPosition 100 100");
             _CommandHandler.Set("Ready", _Build(obj.Ready), "準備完畢 ex. Ready");
             _CommandHandler.Set("ExitWorld", _Build(obj.ExitWorld), "返回選角 ex. ExitWorld");

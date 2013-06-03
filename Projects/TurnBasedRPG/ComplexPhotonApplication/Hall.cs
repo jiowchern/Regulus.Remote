@@ -16,8 +16,7 @@ namespace Regulus.Project.TurnBasedRPG
         internal void PushUser(User user)
         {
             user.QuitEvent += () => 
-            {
-                
+            {                
                 _FrameworkRoot.RemoveFramework(user);
                 _User.Remove(user);
             };

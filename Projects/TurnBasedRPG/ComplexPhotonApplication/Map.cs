@@ -19,9 +19,8 @@ namespace Regulus.Project.TurnBasedRPG
         
         public void Into(Entity entity, Action exit_map)
         {
-
-            _EntityInfomations.Add(new EntityInfomation() { Entity = entity, Exit = exit_map });            
-            IObserveAbility oa = entity.FindAbility<IObserveAbility>();
+            _EntityInfomations.Add(new EntityInfomation() { Entity = entity, Exit = exit_map }); 
+            IObserveAbility oa = entity.FindAbility<IObserveAbility>(); 
             if (oa != null)
             {                
                 _AddObserver(entity.Id , oa);
