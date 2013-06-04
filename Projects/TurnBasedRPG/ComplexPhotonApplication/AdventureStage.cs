@@ -18,8 +18,7 @@ namespace Regulus.Project.TurnBasedRPG
             _Player.ReadyEvent += _OnPlayerReady;            
             _Player.ExitWorldEvent += obj.ToParking;
             _Player.LogoutEvent += obj.Logout;
-
-
+			
             var observe = _Player.FindAbility<IObserveAbility>();
             if (observe != null)
             {
@@ -48,6 +47,7 @@ namespace Regulus.Project.TurnBasedRPG
         {
             _Player.ReadyEvent -= _OnPlayerReady;
             Samebest.Utility.Singleton<Map>.Instance.Into(_Player, _ExitMap);            
+			
         }
 
         void _ExitMap()

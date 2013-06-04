@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-
-
 namespace Regulus.Project.TurnBasedRPG
 {
     class Player : Actor , IPlayer  
@@ -45,6 +43,9 @@ namespace Regulus.Project.TurnBasedRPG
 
             _ObserveAbility = new PlayerObserveAbility(_ObservedAbility, _DBActorInfomation);
             _AttechAbility<IObserveAbility>(_ObserveAbility);
+
+
+			_MoverAbility = new PlayerMoverAbility(_DBActorInfomation);
         }
 
         internal void Finialize()
@@ -54,12 +55,12 @@ namespace Regulus.Project.TurnBasedRPG
         }
 
         public event Action ReadyEvent;
+		private PlayerMoverAbility _MoverAbility;
         void IPlayer.Ready()
         {
             if (ReadyEvent != null)
                 ReadyEvent();
         }
-
 
         void IPlayer.SetPosition(float x, float y)
         {
@@ -67,16 +68,10 @@ namespace Regulus.Project.TurnBasedRPG
             _DBActorInfomation.Property.Position.Y = y;
         }
 
-
         void IPlayer.SetVision(int vision)
         {
             _DBActorInfomation.Property.Vision = vision;
         }
-
-
-        Samebest.Remoting.Value<Guid> IPlayer.GetId()
-        {
-            return _DBActorInfomation.Property.Id;
-        }
-    }
+		
+	}
 }

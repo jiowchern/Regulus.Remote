@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-
-
-
 namespace Regulus.Project.TurnBasedRPG
 {
-    class Map : Samebest.Game.IFramework
+    class Map : Samebest.Game.IFramework 
     {
         class EntityInfomation
         {
@@ -16,22 +13,14 @@ namespace Regulus.Project.TurnBasedRPG
             public Action Exit; 
         }
         Regulus.Utility.Poller<EntityInfomation> _EntityInfomations = new Utility.Poller<EntityInfomation>();
-        
+		System.DateTime _Time = System.DateTime.Now;
+
+		public long Time {get { return (System.DateTime.Now - _Time).Ticks ; }}
+
         public void Into(Entity entity, Action exit_map)
         {
-            _EntityInfomations.Add(new EntityInfomation() { Entity = entity, Exit = exit_map }); 
-            IObserveAbility oa = entity.FindAbility<IObserveAbility>(); 
-            if (oa != null)
-            {                
-                _AddObserver(entity.Id , oa);
-            }
+            _EntityInfomations.Add(new EntityInfomation() { Entity = entity, Exit = exit_map });         
         }
-
-        private void _AddObserver(Guid guid,IObserveAbility oa)
-        {
- 	        _ObserverInfomations.Add( new ObserverInfomation() { Id = guid , ObserveAbility = oa});
-        }
-
 
         List<IObservedAbility> _Lefts = new List<IObservedAbility>();
         public void Left(Entity entity)
@@ -41,14 +30,8 @@ namespace Regulus.Project.TurnBasedRPG
             {
                 _Lefts.Add(oa);
             }
-            _RemoveObserver(entity.Id);
-            _EntityInfomations.Remove(info => info.Entity == entity);
             
-        }
-
-        private void _RemoveObserver(Guid guid)
-        {
- 	        _ObserverInfomations.Remove( oi =>  oi.Id == guid);
+            _EntityInfomations.Remove(info => info.Entity == entity);
             
         }
 
@@ -64,9 +47,13 @@ namespace Regulus.Project.TurnBasedRPG
             var entitys = (from info in infos select info.Entity).ToArray();
 
             _UpdateObservers(entitys);
+
+			_UpdateMovers(entitys);
             
             return true;
         }
+
+		
 
         class ObserverInfomation
         {
@@ -74,20 +61,38 @@ namespace Regulus.Project.TurnBasedRPG
             public IObserveAbility  ObserveAbility;            
         }
 
-        Regulus.Utility.Poller<ObserverInfomation> _ObserverInfomations = new Utility.Poller<ObserverInfomation>();
+        
         private void _UpdateObservers(Entity[] entitys)
         {
             var observeds = (from entity in entitys 
                             let observed = entity.FindAbility<IObservedAbility>()
                             where observed != null
                             select observed).ToArray() ;
+			var observers = from entity in entitys
+							 let observed = entity.FindAbility<IObserveAbility>()
+							 where observed != null
+							 select observed;
 
-            foreach(var info in  _ObserverInfomations.Update())
+			foreach (var observer in observers)
             {
-                info.ObserveAbility.Update(observeds, _Lefts);
+				observer.Update(observeds, _Lefts);
             }
             _Lefts.Clear();
         }
+
+		private void _UpdateMovers(Entity[] entitys)
+		{
+			var abilitys = (from entity in entitys
+							 let observed = entity.FindAbility<IMoverAbility>()
+							 where observed != null
+							 select observed).ToArray();
+
+			foreach (var ability in abilitys)
+			{
+				ability.Update(Time , new CollisionInformation() );
+			}
+						
+		}
 
         void Samebest.Game.IFramework.Shutdown()
         {

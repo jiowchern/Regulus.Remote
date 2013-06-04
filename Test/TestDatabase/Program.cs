@@ -14,7 +14,7 @@ namespace TestDatabase
         Success
     }
 }
-namespace Regulus.Project.TurnBasedRPG.Serializable
+namespace Regulus.Project.Keys.Serializable
 {
     [Serializable]
     public class AccountInfomation
@@ -41,6 +41,7 @@ namespace Regulus.Project.TurnBasedRPG.Serializable
         public Guid Id { get; set; }
         public Regulus.Types.Vector2 Position { get; set; }
         public int Vision { get; set; }
+		public float Speed { get; set; }
     }
 
     [Serializable]
@@ -52,6 +53,7 @@ namespace Regulus.Project.TurnBasedRPG.Serializable
         }
         public Guid Id { get; set; }
         public Regulus.Types.Vector2 Position { get; set; }
+		public float Speed { get; set; }
     }
 
 
@@ -68,12 +70,72 @@ namespace Regulus.Project.TurnBasedRPG.Serializable
         public Guid Owner { get; set; }
     }
 
+	class PlayerMoverAbility 
+	{
+		private DBEntityInfomation _DBActorInfomation;
 
+		public PlayerMoverAbility(Serializable.DBEntityInfomation dB_actor_infomation)
+		{			
+			_DBActorInfomation = dB_actor_infomation;
+		}
+		Types.Vector2 _Start;
+		Types.Vector2 _End;
+		Types.Vector2 _Vector = new Types.Vector2();
+		long _BeginTime;
+		double _TotalTime;
+		double _Distance ; 
+		public void Move(Types.Vector2 end, long time)
+		{
+			_Start = Regulus.Utility.ValueHelper.DeepCopy(_DBActorInfomation.Property.Position);
+			_End = end;
+			_BeginTime = time;
 
+			float x = System.Math.Abs(_End.X - _Start.X);
+			float y = System.Math.Abs(_End.Y - _Start.Y);
+			_Distance = Math.Sqrt(x * x + y * y);
+
+			_Vector.X = x ;
+			_Vector.Y = y ;
+			_TotalTime = _Distance / _DBActorInfomation.Property.Speed;
+		}
+
+		public void Update(long time)
+		{
+			System.DateTime begin = new DateTime(_BeginTime);
+			System.DateTime current = new DateTime(time);
+			var seconds = (current - begin).TotalSeconds;
+			float newDistPer = (float)(seconds / _TotalTime);
+			if (newDistPer < 1.0)
+			{
+				_DBActorInfomation.Property.Position.X = _Start.X + _Vector.X * newDistPer;
+				_DBActorInfomation.Property.Position.Y = _Start.Y + _Vector.Y * newDistPer;
+			}
+		}
+	}
     class Program
     {
         static void Main(string[] args)
         {
+			var db3 = new DBEntityInfomation();
+			db3.Property.Speed = 1;
+			db3.Property.Position.X = 4530;
+			db3.Property.Position.Y = 5430;
+
+			var db4 = new DBEntityInfomation();
+			db4.Property.Position.X = 100;
+			db4.Property.Position.Y = 33220;
+
+
+			System.TimeSpan time = new TimeSpan(0, 0, 0);
+			PlayerMoverAbility pma = new PlayerMoverAbility(db3);
+			pma.Move(db4.Property.Position, time.Ticks);
+
+			pma.Update(time.Add(new TimeSpan(0,0,50)).Ticks);
+
+			pma.Update(time.Add(new TimeSpan(0, 0, 99)).Ticks);
+			
+
+
             DBEntityInfomation db1 = new DBEntityInfomation();
             db1.Property.Position.X = 100;
             DBEntityInfomation db2 = new DBEntityInfomation();

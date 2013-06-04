@@ -13,6 +13,11 @@ namespace Regulus.Project.TurnBasedRPG
         Error,
         Success
     }
+
+	[Serializable]
+	public class CollisionInformation
+	{
+	}
 }
 namespace Regulus.Project.TurnBasedRPG.Serializable
 {
@@ -41,6 +46,7 @@ namespace Regulus.Project.TurnBasedRPG.Serializable
         public Guid Id { get; set; }
         public Regulus.Types.Vector2 Position { get; set; }
         public int Vision { get; set; }
+		public float Speed { get; set; }
     }
 
     [Serializable]
