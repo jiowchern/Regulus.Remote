@@ -12,13 +12,12 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
         {
             var notify = obj.User.Complex.QueryProvider<Regulus.Project.TurnBasedRPG.IPlayer>();
             if (notify.Ghosts.Length > 0)
-            {
-                notify.Ghosts[0].SetPosition( Regulus.Utility.Random.Instance.R.Next(0 , 100) , Regulus.Utility.Random.Instance.R.Next(0 , 100));
-                
+            {                
+                notify.Ghosts[0].Walk(Regulus.Utility.Random.Next(0 ,360));                
             }
 
             _Logout = System.DateTime.Now;
-            _IdleTime = Regulus.Utility.Random.Instance.R.Next(10, 60);
+            _IdleTime = Regulus.Utility.Random.Instance.R.Next(20, 50);
         }
 
         System.DateTime _Logout;

@@ -70,6 +70,18 @@ namespace Regulus.Project.TurnBasedRPG
             {
                 Actor.Property.Id = Guid.NewGuid();
             }
+            if (Actor.Property.Speed == 0.0)            
+            {
+                Actor.Property.Speed = 1;
+            }
+            if ( !(Actor.Property.Position.X >= 0 && Actor.Property.Position.X <= 100))
+            {
+                Actor.Property.Position.X = Regulus.Utility.Random.Instance.R.Next(0, 100);
+            }
+            if (!(Actor.Property.Position.Y >= 0 && Actor.Property.Position.Y <= 100))
+            {
+                Actor.Property.Position.Y = Regulus.Utility.Random.Instance.R.Next(0, 100);
+            }
             _Machine.Push(new AdventureStage());
         }
 

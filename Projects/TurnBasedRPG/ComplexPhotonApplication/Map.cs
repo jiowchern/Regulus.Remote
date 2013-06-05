@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPG
 {
-    class Map : Samebest.Game.IFramework 
+    class Map : Samebest.Game.IFramework , IMapInfomation
     {
         class EntityInfomation
         {
@@ -13,9 +13,20 @@ namespace Regulus.Project.TurnBasedRPG
             public Action Exit; 
         }
         Regulus.Utility.Poller<EntityInfomation> _EntityInfomations = new Utility.Poller<EntityInfomation>();
-		System.DateTime _Time = System.DateTime.Now;
+		System.DateTime _CurrentTime = System.DateTime.Now;
+        System.DateTime _BeginTime = System.DateTime.Now;
+        public long Time { get { return (System.DateTime.Now - _BeginTime).Ticks; } }
+		long _DeltaTime 
+        {  
+            get 
+            {
+                var dt = (System.DateTime.Now - _CurrentTime).Ticks;
+                _CurrentTime = System.DateTime.Now;
+                return dt; 
+            } 
+        }
 
-		public long Time {get { return (System.DateTime.Now - _Time).Ticks ; }}
+        
 
         public void Into(Entity entity, Action exit_map)
         {
@@ -42,8 +53,8 @@ namespace Regulus.Project.TurnBasedRPG
 
         bool Samebest.Game.IFramework.Update()
         {
-            
-            var infos = _EntityInfomations.Update();
+            var dt = _DeltaTime;
+            var infos = _EntityInfomations.UpdateSet();
             var entitys = (from info in infos select info.Entity).ToArray();
 
             _UpdateObservers(entitys);
@@ -51,14 +62,6 @@ namespace Regulus.Project.TurnBasedRPG
 			_UpdateMovers(entitys);
             
             return true;
-        }
-
-		
-
-        class ObserverInfomation
-        {
-            public Guid             Id;
-            public IObserveAbility  ObserveAbility;            
         }
 
         
@@ -83,13 +86,13 @@ namespace Regulus.Project.TurnBasedRPG
 		private void _UpdateMovers(Entity[] entitys)
 		{
 			var abilitys = (from entity in entitys
-							 let observed = entity.FindAbility<IMoverAbility>()
-							 where observed != null
-							 select observed).ToArray();
+                            let ability = entity.FindAbility<IMoverAbility>()
+                            where ability != null
+                            select ability).ToArray();
 
 			foreach (var ability in abilitys)
 			{
-				ability.Update(Time , new CollisionInformation() );
+                ability.Update(Time, new CollisionInformation());
 			}
 						
 		}
@@ -97,6 +100,11 @@ namespace Regulus.Project.TurnBasedRPG
         void Samebest.Game.IFramework.Shutdown()
         {
             
+        }
+
+        Samebest.Remoting.Value<long> IMapInfomation.QueryTime()
+        {
+            return Time;
         }
     }
 }

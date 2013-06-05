@@ -24,10 +24,34 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             _Bind(_User.Complex.QueryProvider<IVerify>());
             _Bind(_User.Complex.QueryProvider<IParking>());
             _Bind(_User.Complex.QueryProvider<IPlayer>());
-            _Bind(_User.Complex.QueryProvider<IObservedAbility>());            
+            _Bind(_User.Complex.QueryProvider<IObservedAbility>());
+            _Bind(_User.Complex.QueryProvider<IMapInfomation>());            
 
             _ObservedWatcher = new ObservedWatcher();
             _ObservedWatcher.Initial();
+        }
+
+        private void _Bind(Samebest.Remoting.Ghost.IProviderNotice<IMapInfomation> providerNotice)
+        {
+            providerNotice.Supply += _MapSupply;
+            providerNotice.Unsupply += _MapUnsupply;
+        }
+
+        private void _MapUnsupply(IMapInfomation obj)
+        {
+            _CommandHandler.Rise("QueryTime");
+        }
+
+        private void _MapSupply(IMapInfomation obj)
+        {
+            Action<Value<long>> queryTimeResult = (value) =>
+            {
+                value.OnValue += (res) =>
+                {
+                    Console.WriteLine("現在時間" + res);
+                };
+            };
+            _CommandHandler.Set("QueryTime", _Build<long>(obj.QueryTime, queryTimeResult), "查詢時間 ex. QueryTime");
         }
 
         private void _Bind(Samebest.Remoting.Ghost.IProviderNotice<IObservedAbility> providerNotice)
@@ -71,12 +95,19 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
                     {
                         Console.WriteLine(String.Format("entiry進入{0}:{1},{2}", newobs.Id.ToString(), newobs.Position.X, newobs.Position.Y));
                         _Observers.Add(newobs);
+                        newobs.ShowActionEvent += (mi) => { newobs_ShowActionEvent(newobs.Id, mi); };
                         _Unknowns.Remove(newobs);
                     } 
 
                     _UpdateInterval = System.DateTime.Now;
                 }
                 
+            }
+
+            void newobs_ShowActionEvent(Guid id,MoveInfomation obj)
+            {
+
+                Console.WriteLine(String.Format("entiry行動{0}:{1}", id, obj.ActionStatue ));
             }
 
             internal void Release()
@@ -119,13 +150,21 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
 
         private void _PlayerSupply(IPlayer obj)
         {
-			_CommandHandler.Set("SetVision", _Build<int>(obj.SetVision), "設定視野 ex. Vision 100 ");
+			_CommandHandler.Set("SetVision", _Build<int>(obj.SetVision), "設定視野 ex. Vision 100 100");
             _CommandHandler.Set("SetPosition", _Build<float, float>(obj.SetPosition), "設定位置 ex. SetPosition 100 100");
             _CommandHandler.Set("Ready", _Build(obj.Ready), "準備完畢 ex. Ready");
             _CommandHandler.Set("ExitWorld", _Build(obj.ExitWorld), "返回選角 ex. ExitWorld");
             _CommandHandler.Set("Logout", _Build(obj.Logout), "離開遊戲 ex. Logout");
+            _CommandHandler.Set("Stop", _Build(obj.Stop), "停止移動 ex. Stop");
 
-        }
+            
+            Action<float> run = (d) =>
+            {
+                obj.Walk(d-180);
+            };
+            _CommandHandler.Set("Run", _Build<float>(run), "移動 ex. Run 0~360");
+
+        } 
 
         
 

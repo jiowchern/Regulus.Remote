@@ -67,7 +67,7 @@ namespace Samebest.Remoting.Soul
                         _Framework.ObtainController(provider);
                     }
                 }
-                _UpdateProvider(providers.Update());
+                _UpdateProvider(providers.UpdateSet());
 
 			}
 

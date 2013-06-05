@@ -8,8 +8,10 @@ namespace Regulus.Project.TurnBasedRPG
     class PlayerObservedAbility : IObservedAbility
     {
         Regulus.Project.TurnBasedRPG.Serializable.DBEntityInfomation _Infomation;
-        public PlayerObservedAbility(Regulus.Project.TurnBasedRPG.Serializable.DBEntityInfomation info )
+        Actor _Actor;
+        public PlayerObservedAbility(Actor actor,Regulus.Project.TurnBasedRPG.Serializable.DBEntityInfomation info )
         {
+            _Actor = actor;
             _Infomation = info;
         }
         Guid IObservedAbility.Id
@@ -20,6 +22,12 @@ namespace Regulus.Project.TurnBasedRPG
         Types.Vector2 IObservedAbility.Position
         {
             get { return _Infomation.Property.Position; }
+        }
+
+        event Action<Serializable.MoveInfomation> IObservedAbility.ShowActionEvent
+        {
+            add { _Actor.ShowActionEvent += value; }
+            remove { _Actor.ShowActionEvent -= value; ; }
         }
     }
 }

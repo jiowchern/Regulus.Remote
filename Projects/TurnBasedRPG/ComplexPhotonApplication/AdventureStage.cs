@@ -14,7 +14,7 @@ namespace Regulus.Project.TurnBasedRPG
         {            
             _Player = new Player(obj.Actor);
             obj.Provider.Bind<IPlayer>(_Player);
-            _Player.Initialize();
+            _Player.Initial();
             _Player.ReadyEvent += _OnPlayerReady;            
             _Player.ExitWorldEvent += obj.ToParking;
             _Player.LogoutEvent += obj.Logout;
@@ -35,6 +35,8 @@ namespace Regulus.Project.TurnBasedRPG
                 observe.IntoEvent += _ObservedInto;
                 observe.LeftEvent += _ObservedLeft;
             }
+
+            obj.Provider.Bind<IMapInfomation>(Samebest.Utility.Singleton<Map>.Instance); 
             
             _Save = DateTime.Now;
         }
@@ -61,14 +63,17 @@ namespace Regulus.Project.TurnBasedRPG
         {
             if (_Player != null)
             {
+                obj.Provider.Unbind<IMapInfomation>(Samebest.Utility.Singleton<Map>.Instance); 
+
                 var observe = _Player.FindAbility<IObserveAbility>();
                 if (observe != null)
                 {
                     observe.IntoEvent -= _ObservedInto;
                     observe.LeftEvent -= _ObservedLeft;
-                }                
+                }
+                
                 Samebest.Utility.Singleton<Map>.Instance.Left(_Player);
-                _Player.Finialize();
+                _Player.Release();
                 obj.Provider.Unbind<IPlayer>(_Player);
             }
             

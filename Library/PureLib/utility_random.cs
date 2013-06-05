@@ -17,5 +17,10 @@ namespace Regulus.Utility
 		{
 			R = new System.Random(seed);
 		}
+
+        public static int Next(int min , int max)
+        {
+            return Instance.R.Next(min, max);
+        }
 	}
 }

@@ -23,30 +23,35 @@ namespace Regulus.Project.TurnBasedRPG
         void Back();
         Value<bool> Select(string name);
     }
-	public interface IMap
-	{
 
+	public interface IMapInfomation
+	{
+        Value<long> QueryTime();
 	}
+
     public interface IPlayer
-    {        
+    {
+        Guid Id { get; }
         void Ready();
         void Logout();
-        void ExitWorld();
-        
+        void ExitWorld();        
         void SetPosition(float x,float y);		
         void SetVision(int vision);
-
-		Guid	Id {get;}
+        void Walk(float direction);
+        void Stop();		
     }
     public interface IObservedAbility
     {
         Guid Id { get; }
-        Regulus.Types.Vector2 Position { get; }		
+        Regulus.Types.Vector2 Position { get; }        
+        event Action<MoveInfomation> ShowActionEvent;
     }
 
 	public interface IMoverAbility
 	{
 		void Update(long time, CollisionInformation collision_information);
-	}
+
+        void Act(ActionStatue action_statue, float move_speed, float direction);
+    }
     
 }

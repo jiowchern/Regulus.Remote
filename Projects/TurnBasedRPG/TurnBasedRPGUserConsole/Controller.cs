@@ -19,7 +19,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             //Console.Write("請輸入連線位置&Port (127.0.0.1:5055):");
             //var addr = Console.ReadLine();
             var addr = "114.34.90.217:5055";           
-            //var addr = "127.0.0.1:5055";
+            //var addr = "127.0.0.1:5055"; 
             var user = _GenerateUser(addr);
             user.LinkSuccess += () => { Console.WriteLine("連線成功."); };
             user.LinkFail += (s) => { Console.WriteLine("連線失敗." + s); };

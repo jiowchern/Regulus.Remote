@@ -7,6 +7,13 @@ using System.Text;
 namespace Regulus.Project.TurnBasedRPG
 {
     [Serializable]
+    public enum ActionStatue 
+    { 
+        idle,
+        run
+    }
+
+    [Serializable]
     public enum LoginResult
     {
         RepeatLogin,
@@ -73,6 +80,16 @@ namespace Regulus.Project.TurnBasedRPG.Serializable
         public EntityLookInfomation Look { get; set; }
         public Guid Owner { get; set; }        
     }
-
+    [Serializable]
+    public class MoveInfomation
+    {
+        // 起始時間 , 啟始位置 , 動作 , 方向 , 位移速度
+        public long BeginTime {get;set;}
+        public Regulus.Types.Vector2 BeginPosition { get; set; }
+        public ActionStatue ActionStatue { get; set; }
+        public float MoveDirectionAngle { get; set; }
+        public Regulus.Types.Vector2 MoveDirection { get; set; }
+        public float Speed { get; set; }
+    }
 
 }

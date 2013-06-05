@@ -5,34 +5,53 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPG
 {
-    class Entity 
+    abstract class Entity 
     {
-        
-        public Entity(Guid id)
+        protected class AbilitySet
         {
-            Id = id;
-        }
-        public Guid Id { get; private set; }
+            Dictionary<Type, object> _Abilitys = new Dictionary<Type, object>();
+            public void AttechAbility<T>(T ability)
+            {
+                _Abilitys.Add(typeof(T), ability as object);
+            }
 
-        Dictionary<Type, object> _Abilitys = new Dictionary<Type, object>();
-        protected void _AttechAbility<T>(T ability)
+            public void DetechAbility<T>()
+            {
+                _Abilitys.Remove(typeof(T));
+            }
+
+            public T FindAbility<T>() where T : class
+            {
+                object o;
+                if (_Abilitys.TryGetValue(typeof(T), out o))
+                {
+                    return o as T;
+                }
+                return default(T);
+            }
+        }
+
+        public Entity(Guid id )
         {
-            _Abilitys.Add(typeof(T) , ability as object);
+            Id = id;            
         }
+        public Guid Id { get; private set; }        
 
-        protected void _DetechAbility<T>()
-        {
-            _Abilitys.Remove(typeof(T));
-        }
-
+        AbilitySet _Abilitys = new AbilitySet();
         public T FindAbility<T>() where T : class
         {
-            object o;
-            if (_Abilitys.TryGetValue(typeof(T), out o))
-            {
-                return o as T;
-            }
-            return default(T);
+            return _Abilitys.FindAbility<T>();
+        }
+
+        protected abstract void _SetAbility(AbilitySet abilitys);
+        public void Initial()
+        {
+            _SetAbility(_Abilitys);
+        }
+        protected abstract void _RiseAbility(AbilitySet abilitys);
+        public void Release()
+        {
+            _RiseAbility(_Abilitys);
         }
     }
 }

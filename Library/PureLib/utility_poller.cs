@@ -24,7 +24,7 @@ namespace Regulus.Utility
             _Removes.Enqueue(obj);
         }
 
-        public List<T> Update()
+        public List<T> UpdateSet()
         {
             _Add(_Adds);
             _Remove(_Removes);

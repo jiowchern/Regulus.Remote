@@ -11,7 +11,7 @@ namespace Regulus.Project.TurnBasedRPG
         private Serializable.DBEntityInfomation _DBActorInfomation;
 
         public Player(Serializable.DBEntityInfomation dB_actorInfomation)
-            : base(dB_actorInfomation.Property.Id)
+            : base(dB_actorInfomation.Property, dB_actorInfomation.Look)
         {            
             _DBActorInfomation = dB_actorInfomation;
         }
@@ -34,28 +34,29 @@ namespace Regulus.Project.TurnBasedRPG
             }
         }
 
+
         PlayerObserveAbility _ObserveAbility;
         PlayerObservedAbility _ObservedAbility;
-        internal void Initialize()
+
+        protected override void _SetAbility(Entity.AbilitySet abilitys)
         {
-            _ObservedAbility = new PlayerObservedAbility(_DBActorInfomation);
-            _AttechAbility<IObservedAbility>(_ObservedAbility);
+            _ObservedAbility = new PlayerObservedAbility(this, _DBActorInfomation);            
+            abilitys.AttechAbility<IObservedAbility>(_ObservedAbility);
 
             _ObserveAbility = new PlayerObserveAbility(_ObservedAbility, _DBActorInfomation);
-            _AttechAbility<IObserveAbility>(_ObserveAbility);
+            abilitys.AttechAbility<IObserveAbility>(_ObserveAbility);
 
-
-			_MoverAbility = new PlayerMoverAbility(_DBActorInfomation);
+            base._SetAbility(abilitys);
         }
-
-        internal void Finialize()
+        protected override void _RiseAbility(Entity.AbilitySet abilitys)
         {
-            _DetechAbility<IObserveAbility>();
-            _DetechAbility<IObservedAbility>();
+            abilitys.DetechAbility<IObserveAbility>();
+            abilitys.DetechAbility<IObservedAbility>();
+
+            base._RiseAbility(abilitys);
         }
 
-        public event Action ReadyEvent;
-		private PlayerMoverAbility _MoverAbility;
+        public event Action ReadyEvent;		
         void IPlayer.Ready()
         {
             if (ReadyEvent != null)
@@ -72,6 +73,25 @@ namespace Regulus.Project.TurnBasedRPG
         {
             _DBActorInfomation.Property.Vision = vision;
         }
-		
-	}
+        
+        void IPlayer.Stop()
+        {
+            var mover = FindAbility<IMoverAbility>();
+            if (mover != null)
+            {
+
+                mover.Act(ActionStatue.idle, 0,Direction );
+            }
+        }
+        void IPlayer.Walk(float direction)
+        {
+            var mover = FindAbility<IMoverAbility>();
+            if (mover != null)
+            {
+
+                mover.Act(ActionStatue.run, _DBActorInfomation.Property.Speed, direction);
+            }
+        }
+
+    }
 }
