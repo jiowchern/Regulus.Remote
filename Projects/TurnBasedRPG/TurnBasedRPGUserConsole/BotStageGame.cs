@@ -15,7 +15,8 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
                 player.Ready();
                 obj.ToMove();
             };
-            var notify = obj.User.Complex.QueryProvider<Regulus.Project.TurnBasedRPG.IPlayer>();
+
+            var notify = obj.User.PlayerProvider;
             if(notify.Ghosts.Length > 0 )
             {
                 _OnSupply(notify.Ghosts[0]);
@@ -28,7 +29,8 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
 
         void Samebest.Game.IStage<StatusBotController>.Leave(StatusBotController obj)
         {
-            var notify = obj.User.Complex.QueryProvider<Regulus.Project.TurnBasedRPG.IPlayer>();
+
+            var notify = obj.User.PlayerProvider;
             notify.Supply -= _OnSupply;
         }
 

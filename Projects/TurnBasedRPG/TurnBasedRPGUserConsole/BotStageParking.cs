@@ -27,7 +27,8 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
                     }
                 };
             };
-            var notify = obj.User.Complex.QueryProvider<Regulus.Project.TurnBasedRPG.IParking>();
+
+            var notify = obj.User.ParkingProvider;
             if (notify.Ghosts.Length > 0)
             {
                 _OnSupply(notify.Ghosts[0]);
@@ -41,7 +42,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
 
         void Samebest.Game.IStage<StatusBotController>.Leave(StatusBotController obj)
         {
-            var notify = obj.User.Complex.QueryProvider<Regulus.Project.TurnBasedRPG.IParking>();
+            var notify = obj.User.ParkingProvider;
             notify.Supply -= _OnSupply;
         }
 

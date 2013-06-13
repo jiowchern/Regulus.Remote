@@ -32,7 +32,8 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
                 };
 
 
-                var notify = obj.User.Complex.QueryProvider<Regulus.Project.TurnBasedRPG.IVerify>();
+
+                var notify = obj.User.VerifyProvider;
                 if (notify.Ghosts.Length > 0)
                 {
                     _OnSupply(notify.Ghosts[0]);
@@ -48,7 +49,8 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
 
             void Samebest.Game.IStage<StatusBotController>.Leave(StatusBotController obj)
             {
-                var notify = obj.User.Complex.QueryProvider<Regulus.Project.TurnBasedRPG.IVerify>();
+
+                var notify = obj.User.VerifyProvider;
                 notify.Supply -= _OnSupply;
             }
 

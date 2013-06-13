@@ -10,7 +10,8 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
         int _IdleTime;
         void Samebest.Game.IStage<StatusBotController>.Enter(StatusBotController obj)
         {
-            var notify = obj.User.Complex.QueryProvider<Regulus.Project.TurnBasedRPG.IPlayer>();
+
+            var notify = obj.User.PlayerProvider;
             if (notify.Ghosts.Length > 0)
             {                
                 notify.Ghosts[0].Walk(Regulus.Utility.Random.Next(0 ,360));                
@@ -30,7 +31,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
         {
             if ((System.DateTime.Now - _Logout).TotalSeconds > _IdleTime)
             {
-                var notify = obj.User.Complex.QueryProvider<Regulus.Project.TurnBasedRPG.IPlayer>();
+                var notify = obj.User.PlayerProvider;
                 if (notify.Ghosts.Length > 0)
                     notify.Ghosts[0].Logout();
                 obj.ToVerify();

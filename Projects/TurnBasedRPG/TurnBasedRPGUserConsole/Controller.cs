@@ -8,7 +8,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
 {
     abstract class Controller : Samebest.Game.IFramework
     {
-        Samebest.Game.IFramework _User;
+        Regulus.Project.TurnBasedRPG.User _User;
         protected Regulus.Project.TurnBasedRPGUserConsole.CommandHandler _CommandHandler;
 
         Regulus.Project.TurnBasedRPGUserConsole.CommandBinder _CommandBinder;
@@ -16,10 +16,10 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
         protected abstract void _Launch(Regulus.Project.TurnBasedRPG.User user);
         void Samebest.Game.IFramework.Launch()
         {
-            //Console.Write("請輸入連線位置&Port (127.0.0.1:5055):");
-            //var addr = Console.ReadLine();
-            var addr = "114.34.90.217:5055";           
-            //var addr = "127.0.0.1:5055"; 
+            //Console.Write("請輸入連線位置&Port (127.0.0.1:5055):");  
+            //var addr = Console.ReadLine();    
+            //var addr = "114.34.90.217:5055";           
+            var addr = "127.0.0.1:5055"; 
             var user = _GenerateUser(addr);
             user.LinkSuccess += () => { Console.WriteLine("連線成功."); };
             user.LinkFail += (s) => { Console.WriteLine("連線失敗." + s); };
@@ -135,9 +135,10 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
 
         protected override void _Launch(Regulus.Project.TurnBasedRPG.User user)
         {
-            _Bind(user.Complex.QueryProvider<Regulus.Project.TurnBasedRPG.IVerify>());
-            _Bind(user.Complex.QueryProvider<Regulus.Project.TurnBasedRPG.IPlayer>());
-            _Bind(user.Complex.QueryProvider<Regulus.Project.TurnBasedRPG.IParking>());
+
+            _Bind(user.VerifyProvider);
+            _Bind(user.PlayerProvider);
+            _Bind(user.ParkingProvider);
         }
 
         private void _Bind<T>(Samebest.Remoting.Ghost.IProviderNotice<T> provider_notice)

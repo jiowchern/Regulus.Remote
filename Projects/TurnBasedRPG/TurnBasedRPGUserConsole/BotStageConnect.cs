@@ -10,8 +10,8 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
         Action _LinkSuccess;
         void Samebest.Game.IStage<StatusBotController>.Enter(StatusBotController obj)
         {
-            obj.User.Complex.Launch();
-
+            obj.User.Launch();
+            
             _LinkSuccess = () => { obj.ToVerify();  };
             obj.User.LinkSuccess += _LinkSuccess;
         }

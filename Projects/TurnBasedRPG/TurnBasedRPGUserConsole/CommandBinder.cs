@@ -21,11 +21,11 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
         internal void Setup()
         {
             var fw = _User as Samebest.Game.IFramework;            
-            _Bind(_User.Complex.QueryProvider<IVerify>());
-            _Bind(_User.Complex.QueryProvider<IParking>());
-            _Bind(_User.Complex.QueryProvider<IPlayer>());
-            _Bind(_User.Complex.QueryProvider<IObservedAbility>());
-            _Bind(_User.Complex.QueryProvider<IMapInfomation>());            
+            _Bind(_User.VerifyProvider);
+            _Bind(_User.ParkingProvider);
+            _Bind(_User.PlayerProvider);
+            _Bind(_User.ObservedAbilityProvider);
+            _Bind(_User.MapInfomationProvider);            
 
             _ObservedWatcher = new ObservedWatcher();
             _ObservedWatcher.Initial();
