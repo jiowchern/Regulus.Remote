@@ -7,26 +7,22 @@ namespace Regulus.Project.TurnBasedRPG
 {
     class Map : Samebest.Game.IFramework , IMapInfomation
     {
+        Samebest.Remoting.Time _Time;
         class EntityInfomation
         {
             public Entity Entity {get;set;}
             public Action Exit; 
         }
         Regulus.Utility.Poller<EntityInfomation> _EntityInfomations = new Utility.Poller<EntityInfomation>();
-		System.DateTime _CurrentTime = System.DateTime.Now;
-        System.DateTime _BeginTime = System.DateTime.Now;
-        public long Time { get { return (System.DateTime.Now - _BeginTime).Ticks; } }
+		
+        
 		long _DeltaTime 
         {  
             get 
             {
-                var dt = (System.DateTime.Now - _CurrentTime).Ticks;
-                _CurrentTime = System.DateTime.Now;
-                return dt; 
+                return _Time.Delta; 
             } 
         }
-
-        
 
         public void Into(Entity entity, Action exit_map)
         {
@@ -53,7 +49,7 @@ namespace Regulus.Project.TurnBasedRPG
 
         bool Samebest.Game.IFramework.Update()
         {
-            var dt = _DeltaTime;
+            _Time.Update();            
             var infos = _EntityInfomations.UpdateSet();
             var entitys = (from info in infos select info.Entity).ToArray();
 
@@ -92,7 +88,7 @@ namespace Regulus.Project.TurnBasedRPG
 
 			foreach (var ability in abilitys)
 			{
-                ability.Update(Time, new CollisionInformation());
+                ability.Update(_Time.Ticks, new CollisionInformation());
 			}
 						
 		}
@@ -101,10 +97,11 @@ namespace Regulus.Project.TurnBasedRPG
         {
             
         }
-
-        Samebest.Remoting.Value<long> IMapInfomation.QueryTime()
+        
+        
+        internal void SetTime(Samebest.Remoting.ITime time)
         {
-            return Time;
+            _Time = new Samebest.Remoting.Time(time);
         }
     }
 }

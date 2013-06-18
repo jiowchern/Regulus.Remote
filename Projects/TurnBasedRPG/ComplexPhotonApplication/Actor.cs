@@ -24,7 +24,7 @@ namespace Regulus.Project.TurnBasedRPG
 
         protected override void _SetAbility(Entity.AbilitySet abilitys)
         {
-            _MoverAbility = new ActorMoverAbility(this);
+            _MoverAbility = new ActorMoverAbility();
             _MoverAbility.ActionEvent += _OnAction;
             _MoverAbility.PositionEvent += _OnPosition;
             

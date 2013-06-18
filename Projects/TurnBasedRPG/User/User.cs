@@ -19,6 +19,7 @@ namespace Regulus.Project.TurnBasedRPG
             _MapInfomationProvider = new Samebest.Remoting.Ghost.Provider<IMapInfomation>();
             _PlayerProvider = new Samebest.Remoting.Ghost.Provider<IPlayer>();
             _ObservedAbilityProvider = new Samebest.Remoting.Ghost.Provider<IObservedAbility>();
+            _TimeProvider = new Samebest.Remoting.Ghost.Provider<Samebest.Remoting.ITime>();
 
             _Complex = new Samebest.Remoting.Ghost.Agent(config); 
         }
@@ -46,6 +47,7 @@ namespace Regulus.Project.TurnBasedRPG
             _MapInfomationProvider.Add(_Complex);
             _PlayerProvider.Add(_Complex);
             _ObservedAbilityProvider.Add(_Complex);
+            _TimeProvider.Add(_Complex);
         }
 
         public  bool Update()
@@ -55,6 +57,7 @@ namespace Regulus.Project.TurnBasedRPG
 
         public void Shutdown()
         {
+            _TimeProvider.Remove(_Complex);
             _VerifyProvider.Remove(_Complex);
             _ParkingProvider.Remove(_Complex);
             _MapInfomationProvider.Remove(_Complex);
@@ -87,10 +90,16 @@ namespace Regulus.Project.TurnBasedRPG
             get { return _PlayerProvider; }
         }
 
-        Samebest.Remoting.Ghost.Provider<IObservedAbility> _ObservedAbilityProvider;
+        Samebest.Remoting.Ghost.Provider<IObservedAbility> _ObservedAbilityProvider;        
         public Samebest.Remoting.Ghost.IProviderNotice<IObservedAbility> ObservedAbilityProvider
         {
             get { return _ObservedAbilityProvider; }
+        }
+
+        Samebest.Remoting.Ghost.Provider<Samebest.Remoting.ITime> _TimeProvider;
+        public Samebest.Remoting.Ghost.IProviderNotice<Samebest.Remoting.ITime> TimeProvider
+        {
+            get { return _TimeProvider; }
         }
         
     }

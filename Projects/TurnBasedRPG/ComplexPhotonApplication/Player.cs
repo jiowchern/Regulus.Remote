@@ -88,10 +88,19 @@ namespace Regulus.Project.TurnBasedRPG
             var mover = FindAbility<IMoverAbility>();
             if (mover != null)
             {
-
                 mover.Act(ActionStatue.run, _DBActorInfomation.Property.Speed, direction);
             }
         }
 
+
+        Guid IPlayer.Id
+        {
+            get { return _DBActorInfomation.Property.Id; }
+        }
+
+        float IPlayer.Speed
+        {
+            get { return _DBActorInfomation.Property.Speed; }
+        }
     }
 }

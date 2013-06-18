@@ -36,7 +36,8 @@ namespace Regulus.Project.TurnBasedRPG
                 observe.LeftEvent += _ObservedLeft;
             }
 
-            obj.Provider.Bind<IMapInfomation>(Samebest.Utility.Singleton<Map>.Instance); 
+            obj.Provider.Bind<IMapInfomation>(Samebest.Utility.Singleton<Map>.Instance);
+            obj.Provider.Bind<Samebest.Remoting.ITime>( LocalTime.Instance );
             
             _Save = DateTime.Now;
         }
@@ -63,6 +64,7 @@ namespace Regulus.Project.TurnBasedRPG
         {
             if (_Player != null)
             {
+                obj.Provider.Unbind<Samebest.Remoting.ITime>(LocalTime.Instance);
                 obj.Provider.Unbind<IMapInfomation>(Samebest.Utility.Singleton<Map>.Instance); 
 
                 var observe = _Player.FindAbility<IObserveAbility>();
@@ -85,7 +87,7 @@ namespace Regulus.Project.TurnBasedRPG
             var span = new TimeSpan(elapsed);
             if (span.TotalMinutes > 1.0)
             {
-                Samebest.Utility.Singleton<Storage>.Instance.SaveActor(obj.Actor);
+                Samebest.Utility.Singleton<Storage>.Instance.SaveActor(obj.Actor);                
                 _Save = DateTime.Now;
             }
         }

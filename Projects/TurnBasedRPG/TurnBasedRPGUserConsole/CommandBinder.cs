@@ -25,11 +25,42 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             _Bind(_User.ParkingProvider);
             _Bind(_User.PlayerProvider);
             _Bind(_User.ObservedAbilityProvider);
-            _Bind(_User.MapInfomationProvider);            
+            _Bind(_User.MapInfomationProvider);
+            _Bind(_User.TimeProvider);            
 
             _ObservedWatcher = new ObservedWatcher();
             _ObservedWatcher.Initial();
         }
+
+        private void _Bind(Samebest.Remoting.Ghost.IProviderNotice<ITime> providerNotice)
+        {
+            providerNotice.Supply += _TimeSupply;
+            providerNotice.Unsupply += _TimeUnsupply;
+        }
+        Time _Time = new Time();
+        private void _TimeUnsupply(ITime obj)
+        {
+            _Time = null;
+            _CommandHandler.Rise("QueryTime");
+        }
+
+        private void _TimeSupply(ITime obj)
+        {
+            _Time = new Time(obj);
+
+            Action<Value<long>> queryTimeResult = (value) =>
+            {
+                value.OnValue += (res) =>
+                {
+                    Console.WriteLine("現在時間 server = " + new System.TimeSpan(res));
+                    Console.WriteLine("現在時間 client = " + new System.TimeSpan( _Time.Ticks ));                    
+                };
+            };
+            _CommandHandler.Set("QueryTime", _Build<long>(obj.GetTick , queryTimeResult), "查詢時間 ex. QueryTime");
+            
+        }
+
+        
 
         private void _Bind(Samebest.Remoting.Ghost.IProviderNotice<IMapInfomation> providerNotice)
         {
@@ -39,19 +70,12 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
 
         private void _MapUnsupply(IMapInfomation obj)
         {
-            _CommandHandler.Rise("QueryTime");
+            
         }
 
         private void _MapSupply(IMapInfomation obj)
         {
-            Action<Value<long>> queryTimeResult = (value) =>
-            {
-                value.OnValue += (res) =>
-                {
-                    Console.WriteLine("現在時間" + res);
-                };
-            };
-            _CommandHandler.Set("QueryTime", _Build<long>(obj.QueryTime, queryTimeResult), "查詢時間 ex. QueryTime");
+            
         }
 
         private void _Bind(Samebest.Remoting.Ghost.IProviderNotice<IObservedAbility> providerNotice)
@@ -545,6 +569,8 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
 
         internal void Update()
         {
+            if (_Time != null)
+                _Time.Update();
             _ObservedWatcher.Update();
         }
     }

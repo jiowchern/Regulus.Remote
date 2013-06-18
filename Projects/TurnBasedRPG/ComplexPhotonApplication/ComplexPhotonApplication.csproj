@@ -80,7 +80,7 @@
     <Compile Include="Parking.cs" />
     <Compile Include="ParkingStage.cs" />
     <Compile Include="Player.cs" />
-    <Compile Include="PlayerMoverAbility.cs" />
+    <Compile Include="ActorMoverAbility.cs" />
     <Compile Include="PlayerObserveAbility.cs" />
     <Compile Include="PlayerObservedAbility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
