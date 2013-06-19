@@ -34,18 +34,22 @@ namespace Regulus.Project.TurnBasedRPG
     {
         Guid Id { get; }
         float Speed { get; }
+        float Direction { get; }        
         void Ready();
         void Logout();
         void ExitWorld();        
         void SetPosition(float x,float y);		
         void SetVision(int vision);
+
+        void SetSpeed(float speed);
         void Walk(float direction);
-        void Stop();		
+        void Stop(float direction);		
     }
     public interface IObservedAbility
     {
         Guid Id { get; }
-        Regulus.Types.Vector2 Position { get; }        
+        Regulus.Types.Vector2 Position { get; }
+        float Direction { get; }        
         event Action<MoveInfomation> ShowActionEvent;
     }
 
@@ -65,9 +69,10 @@ namespace Regulus.Project.TurnBasedRPG
     {
 
         ActionStatue _CurrentAction;
-        public ActorMoverAbility()
+        public ActorMoverAbility(float direction)
         {
             _Update = _Empty;
+            _Direction = direction;
         }
 
         Action<long, CollisionInformation> _Update;
@@ -79,20 +84,26 @@ namespace Regulus.Project.TurnBasedRPG
         float _MoveSpeed;
         Regulus.Types.Vector2 _UnitVector;
         float _Direction;
-        void IMoverAbility.Act(ActionStatue action_statue, float move_speed, float direction)
+        void IMoverAbility.Act(ActionStatue action_statue, float move_speed, float direction /* 轉向角度 0~360 */)
         {
             if (_CanSwitch(_CurrentAction, action_statue))
             {
-                var t = (float)(direction * Math.PI / 180);
-                _Direction = direction;
+                // 角色面對世界的方向
+                _Direction = (direction + _Direction) % 360;
+                
                 _CurrentAction = action_statue;
-                _MoveSpeed = move_speed;
-                _UnitVector = new Types.Vector2() { X = (float)Math.Cos(t), Y = (float)Math.Sin(t) };
+                _MoveSpeed = move_speed; 
+
+                var t = (float)((_Direction - 180) * Math.PI / 180);                
+
+                // 移動向量
+                //_UnitVector = new Types.Vector2() { X = (float)Math.Cos(t), Y = (float)Math.Sin(t) };
+                _UnitVector = new Types.Vector2() { X = -(float)Math.Sin(t), Y = -(float)Math.Cos(t) };
                 _Update = _First;
             }
         }
 
-        public Action<long, Regulus.Types.Vector2> PositionEvent;
+        public event Action<long, Regulus.Types.Vector2> PositionEvent;
         void _UpdateMover(long time, CollisionInformation collision_information)
         {
             if (_MoveSpeed > 0)
@@ -116,7 +127,7 @@ namespace Regulus.Project.TurnBasedRPG
         }
 
         public delegate void BeginAction(long begin_time, float speed, float direction, Regulus.Types.Vector2 vector, ActionStatue action_status);
-        public BeginAction ActionEvent;
+        public event BeginAction ActionEvent;
 
         void _Empty(long time, CollisionInformation collision_information)
         {

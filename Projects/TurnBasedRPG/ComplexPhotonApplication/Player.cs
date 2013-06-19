@@ -74,13 +74,12 @@ namespace Regulus.Project.TurnBasedRPG
             _DBActorInfomation.Property.Vision = vision;
         }
         
-        void IPlayer.Stop()
+        void IPlayer.Stop(float dir)
         {
             var mover = FindAbility<IMoverAbility>();
             if (mover != null)
             {
-
-                mover.Act(ActionStatue.idle, 0,Direction );
+                mover.Act(ActionStatue.idle, 0, dir);
             }
         }
         void IPlayer.Walk(float direction)
@@ -101,6 +100,14 @@ namespace Regulus.Project.TurnBasedRPG
         float IPlayer.Speed
         {
             get { return _DBActorInfomation.Property.Speed; }
+        }
+
+
+        
+
+        void IPlayer.SetSpeed(float speed)
+        {
+            _DBActorInfomation.Property.Speed = speed;
         }
     }
 }

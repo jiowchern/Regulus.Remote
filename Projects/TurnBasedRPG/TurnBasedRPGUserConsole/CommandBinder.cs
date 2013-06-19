@@ -179,12 +179,12 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             _CommandHandler.Set("Ready", _Build(obj.Ready), "準備完畢 ex. Ready");
             _CommandHandler.Set("ExitWorld", _Build(obj.ExitWorld), "返回選角 ex. ExitWorld");
             _CommandHandler.Set("Logout", _Build(obj.Logout), "離開遊戲 ex. Logout");
-            _CommandHandler.Set("Stop", _Build(obj.Stop), "停止移動 ex. Stop");
+            _CommandHandler.Set("Stop", _Build<float>(obj.Stop), "停止移動 ex. Stop 0~360");
 
             
             Action<float> run = (d) =>
             {
-                obj.Walk(d-180);
+                obj.Walk(d);
             };
             _CommandHandler.Set("Run", _Build<float>(run), "移動 ex. Run 0~360");
 

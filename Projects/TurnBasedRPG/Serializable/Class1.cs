@@ -54,6 +54,7 @@ namespace Regulus.Project.TurnBasedRPG.Serializable
         public Regulus.Types.Vector2 Position { get; set; }
         public int Vision { get; set; }
 		public float Speed { get; set; }
+        public float Direction { get; set; }
     }
 
     [Serializable]

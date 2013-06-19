@@ -29,5 +29,10 @@ namespace Regulus.Project.TurnBasedRPG
             add { _Actor.ShowActionEvent += value; }
             remove { _Actor.ShowActionEvent -= value; ; }
         }
+
+        float IObservedAbility.Direction
+        {
+            get { return _Infomation.Property.Direction; }
+        }
     }
 }

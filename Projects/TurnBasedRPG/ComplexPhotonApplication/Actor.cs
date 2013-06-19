@@ -24,7 +24,7 @@ namespace Regulus.Project.TurnBasedRPG
 
         protected override void _SetAbility(Entity.AbilitySet abilitys)
         {
-            _MoverAbility = new ActorMoverAbility();
+            _MoverAbility = new ActorMoverAbility(_Property.Direction);
             _MoverAbility.ActionEvent += _OnAction;
             _MoverAbility.PositionEvent += _OnPosition;
             
@@ -42,10 +42,11 @@ namespace Regulus.Project.TurnBasedRPG
             abilitys.DetechAbility<IMoverAbility>();
         }
 
-        public float Direction {get ; private set ; }
+        public float Direction { get { return _Property.Direction; } }
         void _OnAction(long begin_time, float move_speed,float direction, Regulus.Types.Vector2 unit_vector, ActionStatue action_state)
         {
-            Direction = direction;
+            _Property.Direction = direction;
+            
             Serializable.MoveInfomation mi = new Serializable.MoveInfomation();
             mi.ActionStatue = action_state;
             mi.MoveDirectionAngle = direction;

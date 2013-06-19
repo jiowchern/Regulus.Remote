@@ -103,10 +103,7 @@ namespace Samebest.Remoting
         
         ~Time()
         {
-            if (_Time != null)
-            {
-                
-            }            
+                      
         }
 
         public long Delta { get; private set; }
