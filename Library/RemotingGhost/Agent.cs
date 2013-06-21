@@ -72,6 +72,7 @@ namespace Samebest.Remoting.Ghost
             if (operationResponse.OperationCode == (int)ServerToClientPhotonOpCode.Ping)
             {                
                 Ping = _PingTimeCounter.Ticks;
+                _StartPing();
             }
             else if (operationResponse.OperationCode == (int)ServerToClientPhotonOpCode.UpdateProperty)
             {
@@ -282,7 +283,8 @@ namespace Samebest.Remoting.Ghost
             if (_Peer != null)
             {
                 _PingTimeCounter = new TimeCounter();
-                _Peer.OpCustom((int)ClientToServerPhotonOpCode.Ping, new Dictionary<byte, object>(), false);
+                _Peer.OpCustom((int)ClientToServerPhotonOpCode.Ping, new Dictionary<byte, object>(), true);
+                _EndPing();
             }
 		}
 
@@ -626,7 +628,7 @@ namespace Samebest.Remoting.Ghost
                 il.Emit(OpCodes.Ldc_I4, (int)ClientToServerPhotonOpCode.CallMethod); // opcode 
                 il.Emit(OpCodes.Ldloc, varDict);
 
-                il.Emit(OpCodes.Ldc_I4, 1);
+                il.Emit(OpCodes.Ldc_I4_1);
                 //指定呼叫函式的多載
                 il.Emit(OpCodes.Call, peerField.FieldType.GetMethod("OpCustom", new Type[] { typeof(byte), dictionaryType, typeof(bool) }));
                 //把return的值pop掉

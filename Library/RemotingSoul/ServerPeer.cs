@@ -103,7 +103,7 @@ namespace Samebest.Remoting.Soul
 
             if (_UpdateResponses.Count > 0)
             {
-                if ((System.DateTime.Now - _UpdateTime).TotalMilliseconds > 20)
+                if (true /*(System.DateTime.Now - _UpdateTime).TotalMilliseconds > 20*/)
                 {
                     var cmd = _UpdateResponses.Dequeue();
                     _Fiber.Enqueue(() =>

@@ -21,7 +21,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
             if (actionStatus.Length > 0)
             {
                 obj.BodyMovements((Regulus.Project.TurnBasedRPG.ActionStatue) Regulus.Utility.Random.Next(0, actionStatus.Length - 1));
-                _ToMoveTimeSecond = 1;// Regulus.Utility.Random.Next(10, 30);   
+                _ToMoveTimeSecond =  Regulus.Utility.Random.Next(10, 30);   
             }
             
             
