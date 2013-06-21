@@ -9,8 +9,14 @@ namespace Regulus.Project.TurnBasedRPG
     [Serializable]
     public enum ActionStatue 
     { 
-        idle,
-        run
+        Idle,
+        Greeting,
+        Bow,
+        Talk,
+        Run,
+        Happy,
+        Sad,
+        GangnamStyle
     }
 
     [Serializable]

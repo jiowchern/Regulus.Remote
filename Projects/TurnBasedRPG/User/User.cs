@@ -12,22 +12,38 @@ namespace Regulus.Project.TurnBasedRPG
          
         public event Action LinkSuccess;
         public event Action<string> LinkFail;
+        Samebest.Remoting.Ghost.Config _Config;
         public User(Samebest.Remoting.Ghost.Config config )
         {
+            _Config = config;
             _VerifyProvider = new Samebest.Remoting.Ghost.Provider<IVerify>();
             _ParkingProvider = new Samebest.Remoting.Ghost.Provider<IParking>();
             _MapInfomationProvider = new Samebest.Remoting.Ghost.Provider<IMapInfomation>();
             _PlayerProvider = new Samebest.Remoting.Ghost.Provider<IPlayer>();
             _ObservedAbilityProvider = new Samebest.Remoting.Ghost.Provider<IObservedAbility>();
             _TimeProvider = new Samebest.Remoting.Ghost.Provider<Samebest.Remoting.ITime>();
-
-            _Complex = new Samebest.Remoting.Ghost.Agent(config); 
+            
         }
-
+        public long GetPing(int idx)
+        {
+            if (idx == 0 && _Complex != null)
+                return _Complex.Ping;
+            return -1 ;
+        }
+        
         public void Launch()
         {
-            
 
+            if (_Complex != null)
+            {
+                _TimeProvider.Remove(_Complex);
+                _VerifyProvider.Remove(_Complex);
+                _ParkingProvider.Remove(_Complex);
+                _MapInfomationProvider.Remove(_Complex);
+                _PlayerProvider.Remove(_Complex);
+                _ObservedAbilityProvider.Remove(_Complex);
+            }
+            
 
             var linkStatu = new Samebest.Remoting.Ghost.LinkState();
             linkStatu.LinkSuccess += () =>
@@ -40,6 +56,7 @@ namespace Regulus.Project.TurnBasedRPG
                 if(LinkFail != null)
                     LinkFail(s);
             };
+            _Complex = new Samebest.Remoting.Ghost.Agent(_Config); 
 
             _Complex.Launch(linkStatu);
             _VerifyProvider.Add(_Complex);
@@ -47,23 +64,21 @@ namespace Regulus.Project.TurnBasedRPG
             _MapInfomationProvider.Add(_Complex);
             _PlayerProvider.Add(_Complex);
             _ObservedAbilityProvider.Add(_Complex);
-            _TimeProvider.Add(_Complex);
+            _TimeProvider.Add(_Complex);           
         }
 
         public  bool Update()
         {
-            return _Complex.Update();
+            if (_Complex != null)
+                return _Complex.Update();
+            return true;
         }
 
         public void Shutdown()
         {
-            _TimeProvider.Remove(_Complex);
-            _VerifyProvider.Remove(_Complex);
-            _ParkingProvider.Remove(_Complex);
-            _MapInfomationProvider.Remove(_Complex);
-            _PlayerProvider.Remove(_Complex);
-            _ObservedAbilityProvider.Remove(_Complex);
-            _Complex.Shutdown();
+            if (_Complex != null)
+                _Complex.Shutdown();
+            _Complex = null;
         }
 
         Samebest.Remoting.Ghost.Provider<IVerify> _VerifyProvider;

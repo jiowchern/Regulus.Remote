@@ -50,8 +50,7 @@ namespace Samebest.Remoting.Ghost
             if (_Peer != null)
             {
                 _Peer.Disconnect();                
-                _Peer = null;
-                System.Diagnostics.Debug.Write("peer shutdown.\n");
+                _Peer = null;                
             }
 			
 		}
@@ -66,44 +65,50 @@ namespace Samebest.Remoting.Ghost
 		{
 
 		}
-
+        TimeCounter _PingTimeCounter = new TimeCounter();
+        public long Ping { get; private set; }
 		void ExitGames.Client.Photon.IPhotonPeerListener.OnOperationResponse(ExitGames.Client.Photon.OperationResponse operationResponse)
 		{
-            if (operationResponse.OperationCode == (int)ServerToClientPhotonOpCode.UpdateProperty)
+            if (operationResponse.OperationCode == (int)ServerToClientPhotonOpCode.Ping)
+            {                
+                Ping = _PingTimeCounter.Ticks;
+            }
+            else if (operationResponse.OperationCode == (int)ServerToClientPhotonOpCode.UpdateProperty)
             {
                 if (operationResponse.Parameters.Count == 3)
                 {
-                    
+
                     var entity_id = new Guid(operationResponse.Parameters[0] as byte[]);
                     var eventName = Samebest.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[1] as byte[]) as string;
-                    var value = Samebest.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[2] as byte[]) ;
+                    var value = Samebest.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[2] as byte[]);
 
-                    System.Diagnostics.Debug.WriteLine("UpdateProperty id:" + entity_id + "name:" + eventName + "value:" + value);
+                    System.Diagnostics.Debug.WriteLine("UpdateProperty id:" + entity_id + " name:" + eventName + " value:" + value);
                     _UpdateProperty(entity_id, eventName, value);
                 }
-            }else if (operationResponse.OperationCode == (int)ServerToClientPhotonOpCode.InvokeEvent)
-			{
-				if (operationResponse.Parameters.Count >= 2)
-				{
-					var entity_id = new Guid(operationResponse.Parameters[0] as byte[]);
+            }
+            else if (operationResponse.OperationCode == (int)ServerToClientPhotonOpCode.InvokeEvent)
+            {
+                if (operationResponse.Parameters.Count >= 2)
+                {
+                    var entity_id = new Guid(operationResponse.Parameters[0] as byte[]);
                     var eventName = Samebest.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[1] as byte[]) as string;
-					var eventParams = (from p in operationResponse.Parameters
-										where p.Key >= 2
-										select Samebest.PhotonExtension.TypeHelper.Deserialize(p.Value as byte[])).ToArray();
+                    var eventParams = (from p in operationResponse.Parameters
+                                       where p.Key >= 2
+                                       select Samebest.PhotonExtension.TypeHelper.Deserialize(p.Value as byte[])).ToArray();
 
-					_InvokeEvent(entity_id, eventName, eventParams);
-				}
-			}
-			else if (operationResponse.OperationCode == (int)ServerToClientPhotonOpCode.ReturnValue)
-			{
-				if (operationResponse.Parameters.Count == 2)
-				{
-					var returnTarget  = new Guid(operationResponse.Parameters[0] as byte[]);
-					var returnValue = Samebest.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[1] as byte[]);
+                    _InvokeEvent(entity_id, eventName, eventParams);
+                }
+            }
+            else if (operationResponse.OperationCode == (int)ServerToClientPhotonOpCode.ReturnValue)
+            {
+                if (operationResponse.Parameters.Count == 2)
+                {
+                    var returnTarget = new Guid(operationResponse.Parameters[0] as byte[]);
+                    var returnValue = Samebest.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[1] as byte[]);
 
-					_SetReturnValue(returnTarget, returnValue);
-				}
-			}
+                    _SetReturnValue(returnTarget, returnValue);
+                }
+            }
             else if (operationResponse.OperationCode == (int)ServerToClientPhotonOpCode.LoadSoulCompile)
             {
                 if (operationResponse.Parameters.Count == 2)
@@ -274,8 +279,11 @@ namespace Samebest.Remoting.Ghost
 
 		void _PingTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
 		{
-			if (_Peer != null)
-				_Peer.OpCustom((int)ClientToServerPhotonOpCode.Ping, new Dictionary<byte, object>(), false);
+            if (_Peer != null)
+            {
+                _PingTimeCounter = new TimeCounter();
+                _Peer.OpCustom((int)ClientToServerPhotonOpCode.Ping, new Dictionary<byte, object>(), false);
+            }
 		}
 
 		private void _EndPing()
@@ -332,8 +340,7 @@ namespace Samebest.Remoting.Ghost
                 var field = type.GetField("_" + property , System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
                 if (field != null)
                 {
-                    field.SetValue(instance , value);
-                    System.Diagnostics.Debug.WriteLine("UpdateProperty : property" + property + " type:"+ type_name + " value:" + value.ToString()  );
+                    field.SetValue(instance , value);                    
                 }                
             }
         }

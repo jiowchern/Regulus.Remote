@@ -18,7 +18,8 @@ namespace Samebest.Remoting
         UnloadSoul,
         ReturnValue,
         UpdateProperty,
-        LoadSoulCompile
+        LoadSoulCompile,
+        Ping
 
     }
 }

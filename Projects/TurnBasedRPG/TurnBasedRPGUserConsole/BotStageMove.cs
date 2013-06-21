@@ -18,7 +18,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
             }
 
             _Logout = System.DateTime.Now;
-            _IdleTime = Regulus.Utility.Random.Instance.R.Next(20, 50);
+            _IdleTime = 1;// Regulus.Utility.Random.Instance.R.Next(5,10 );
         }
 
         System.DateTime _Logout;

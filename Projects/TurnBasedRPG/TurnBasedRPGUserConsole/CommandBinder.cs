@@ -21,6 +21,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
         internal void Setup()
         {
             var fw = _User as Samebest.Game.IFramework;            
+
             _Bind(_User.VerifyProvider);
             _Bind(_User.ParkingProvider);
             _Bind(_User.PlayerProvider);
@@ -30,6 +31,20 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
 
             _ObservedWatcher = new ObservedWatcher();
             _ObservedWatcher.Initial();
+
+            Func<int, Value<string>> ping = (idx) =>
+            {
+                var pingVal = _User.GetPing(idx);                
+                return "Ping : " + new System.TimeSpan(pingVal).TotalMilliseconds.ToString() + "ms";                
+            };
+
+            Action<Value<string>> pingResponse = res =>
+            {
+                string msg;
+                if (res.TryGetValue(out msg))
+                    Console.WriteLine(msg);
+            };
+            _CommandHandler.Set("Ping", _Build<int, string>(ping, pingResponse), "ping ex. Ping 0~?");
         }
 
         private void _Bind(Samebest.Remoting.Ghost.IProviderNotice<ITime> providerNotice)
@@ -167,6 +182,9 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             _CommandHandler.Rise("SetPosition");            
             _CommandHandler.Rise("Ready");
 			_CommandHandler.Rise("SetVision");
+            _CommandHandler.Rise("Stop");
+            _CommandHandler.Rise("Run");
+            _CommandHandler.Rise("Act");
 			
 
             
@@ -187,6 +205,13 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
                 obj.Walk(d);
             };
             _CommandHandler.Set("Run", _Build<float>(run), "移動 ex. Run 0~360");
+
+            Action<int> act = (d) =>
+            {
+                if (d < Enum.GetValues(typeof(ActionStatue)).Length)
+                    obj.BodyMovements((ActionStatue)d);
+            };
+            _CommandHandler.Set("Act", _Build<int>(act), "做動作 ex. 0 ~" + Enum.GetValues(typeof(ActionStatue)).Length.ToString());
 
         } 
 
@@ -564,6 +589,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
 
         internal void TearDown()
         {
+            _CommandHandler.Rise("Ping");
             _ObservedWatcher.Release();
         }
 

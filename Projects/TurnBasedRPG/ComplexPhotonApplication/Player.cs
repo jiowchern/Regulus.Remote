@@ -79,7 +79,7 @@ namespace Regulus.Project.TurnBasedRPG
             var mover = FindAbility<IMoverAbility>();
             if (mover != null)
             {
-                mover.Act(ActionStatue.idle, 0, dir);
+                mover.Act(ActionStatue.Idle, 0, dir);
             }
         }
         void IPlayer.Walk(float direction)
@@ -87,7 +87,16 @@ namespace Regulus.Project.TurnBasedRPG
             var mover = FindAbility<IMoverAbility>();
             if (mover != null)
             {
-                mover.Act(ActionStatue.run, _DBActorInfomation.Property.Speed, direction);
+                mover.Act(ActionStatue.Run, _DBActorInfomation.Property.Speed, direction);
+            }
+        }
+
+        void IPlayer.BodyMovements(ActionStatue action_statue)
+        {
+            var mover = FindAbility<IMoverAbility>();
+            if (mover != null)
+            {
+                mover.Act(action_statue, 0, 0);
             }
         }
 
@@ -109,5 +118,10 @@ namespace Regulus.Project.TurnBasedRPG
         {
             _DBActorInfomation.Property.Speed = speed;
         }
+
+
+        
+
+        
     }
 }

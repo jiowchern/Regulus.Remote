@@ -53,6 +53,16 @@ namespace Samebest.Remoting
 			}				
 		}
 
+        public bool TryGetValue(out T val)
+        {
+            if (_Empty == false)
+            {
+                val = _Value;
+                return true;
+            }
+            val = default(T);
+            return false;
+        }
 		void IValue.QueryValue(Action<object> action)
 		{
 			if (_Empty == false)

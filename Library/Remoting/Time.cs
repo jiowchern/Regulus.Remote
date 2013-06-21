@@ -15,7 +15,11 @@ namespace Samebest.Remoting
     {
 
         long _Ticks;
-        internal void Reset()
+        public TimeCounter()
+        {
+            _Ticks = System.DateTime.Now.Ticks;
+        }
+        public void Reset()
         {
             _Ticks = System.DateTime.Now.Ticks;
         }

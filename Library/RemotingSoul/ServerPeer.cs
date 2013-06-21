@@ -33,7 +33,7 @@ namespace Samebest.Remoting.Soul
 		{
 			if (operationRequest.OperationCode == (byte)ClientToServerPhotonOpCode.Ping)
 			{
-
+                (this as Regulus.Remoting.IResponseQueue).Push((int)ServerToClientPhotonOpCode.Ping , new Dictionary<byte,object>());
 			}else if (operationRequest.OperationCode == (byte)ClientToServerPhotonOpCode.CallMethod)
 			{
 				
@@ -79,8 +79,7 @@ namespace Samebest.Remoting.Soul
         class Response
         {
             public byte Id { get; set; }
-            public Dictionary<byte, object> Args { get; set; }
-            public int Size { get; set; }
+            public Dictionary<byte, object> Args { get; set; }        
         }
         Queue<Response> _NewResponses = new Queue<Response>();
         Queue<Response> _UpdateResponses = new Queue<Response>();
@@ -130,14 +129,8 @@ namespace Samebest.Remoting.Soul
 
         void Regulus.Remoting.IResponseQueue.Push(byte cmd, Dictionary<byte, object> args)
         {
-            int size = sizeof(byte);
-            foreach (var a in args)
-            {
-                var b = a.Value as byte[];
-                
-                size += b.Length;
-            }
-            var response =  new Response() { Id = cmd, Args = args , Size = size };
+            
+            var response =  new Response() { Id = cmd, Args = args };
             
             _NewResponses.Enqueue(response);                        
         }

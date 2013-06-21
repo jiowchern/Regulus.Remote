@@ -26,7 +26,8 @@ namespace Regulus.Project.TurnBasedRPG
             var range = observe.Vision * observe.Vision;
             foreach (var entity in entitys)
             {
-                if (_Distance(entity, observe.Observed) > range)
+                var distance = _Distance(entity, observe.Observed);
+                if (distance > range)
                 {
                     // out
                     if (_Remove(_Within, entity.Id))

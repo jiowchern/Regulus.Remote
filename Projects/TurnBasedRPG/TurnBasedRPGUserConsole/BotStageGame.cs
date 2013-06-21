@@ -13,7 +13,10 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
             _OnSupply = (player) =>
             {
                 player.Ready();
-                obj.ToMove();
+                
+                
+                
+                obj.ToBodyMovements();
             };
 
             var notify = obj.User.PlayerProvider;

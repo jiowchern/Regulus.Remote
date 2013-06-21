@@ -43,7 +43,9 @@ namespace Regulus.Project.TurnBasedRPG
 
         void SetSpeed(float speed);
         void Walk(float direction);
-        void Stop(float direction);		
+        void Stop(float direction);
+
+        void BodyMovements(ActionStatue action_statue);
     }
     public interface IObservedAbility
     {
