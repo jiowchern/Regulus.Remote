@@ -37,7 +37,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Crystal", "Crystal", "{FADA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComplexApplication", "Projects\Crystal\ComplexApplication\ComplexApplication.csproj", "{1069DF4A-B9EE-4B26-9D49-3D5408245004}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serializable", "Serializable\Serializable.csproj", "{4868EA9E-ECFD-462C-B053-DFC4B7E4785C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serializable", "Projects\Crystal\Serializable\Serializable.csproj", "{4868EA9E-ECFD-462C-B053-DFC4B7E4785C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
