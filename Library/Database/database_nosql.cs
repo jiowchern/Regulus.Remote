@@ -30,6 +30,17 @@ namespace Samebest
 				_Database = _Mongo.GetDatabase(_DatabaseName);
 			}
 
+			public void Launch(string mongodb_url , string name)
+			{
+				//var mongo = new Mongo("mongodb://192.168.40.191:27017");
+				var mongo = new Mongo(mongodb_url);
+				_Mongo = mongo;
+
+
+				_Mongo.Connect();
+				_Database = _Mongo.GetDatabase(name);
+			}
+
 			IMongoCollection<T> _GetCollection<T>(IMongoDatabase db) where T : class
 			{
 				if (db != null)
