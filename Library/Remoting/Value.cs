@@ -12,8 +12,6 @@ namespace Samebest.Remoting
 
 		void QueryValue(Action<object> action);
 	}
-
-
     sealed public class Value<T> : IValue 
 	{
         public static implicit operator Value<T>(T value)

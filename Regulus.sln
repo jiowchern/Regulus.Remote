@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComplexApplication", "Proje
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Serializable", "Projects\Crystal\Serializable\Serializable.csproj", "{4868EA9E-ECFD-462C-B053-DFC4B7E4785C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "User", "Projects\Crystal\User\User.csproj", "{8232EE74-C1F1-49A4-94D7-D67DE577050B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Unity|Any CPU = Debug_Unity|Any CPU
@@ -262,6 +264,21 @@ Global
 		{4868EA9E-ECFD-462C-B053-DFC4B7E4785C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{4868EA9E-ECFD-462C-B053-DFC4B7E4785C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{4868EA9E-ECFD-462C-B053-DFC4B7E4785C}.Release|x86.ActiveCfg = Release|Any CPU
+		{8232EE74-C1F1-49A4-94D7-D67DE577050B}.Debug_Unity|Any CPU.ActiveCfg = Debug|Any CPU
+		{8232EE74-C1F1-49A4-94D7-D67DE577050B}.Debug_Unity|Any CPU.Build.0 = Debug|Any CPU
+		{8232EE74-C1F1-49A4-94D7-D67DE577050B}.Debug_Unity|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{8232EE74-C1F1-49A4-94D7-D67DE577050B}.Debug_Unity|Mixed Platforms.Build.0 = Debug|Any CPU
+		{8232EE74-C1F1-49A4-94D7-D67DE577050B}.Debug_Unity|x86.ActiveCfg = Debug|Any CPU
+		{8232EE74-C1F1-49A4-94D7-D67DE577050B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8232EE74-C1F1-49A4-94D7-D67DE577050B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8232EE74-C1F1-49A4-94D7-D67DE577050B}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{8232EE74-C1F1-49A4-94D7-D67DE577050B}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{8232EE74-C1F1-49A4-94D7-D67DE577050B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8232EE74-C1F1-49A4-94D7-D67DE577050B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8232EE74-C1F1-49A4-94D7-D67DE577050B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8232EE74-C1F1-49A4-94D7-D67DE577050B}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{8232EE74-C1F1-49A4-94D7-D67DE577050B}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{8232EE74-C1F1-49A4-94D7-D67DE577050B}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -283,5 +300,6 @@ Global
 		{30DDCAAC-8ED3-4C7F-A150-B7C32B598CBA} = {3BBDC330-565A-4183-8649-30A446A288C8}
 		{1069DF4A-B9EE-4B26-9D49-3D5408245004} = {FADABDEE-3BA4-4997-A360-6C716E093747}
 		{4868EA9E-ECFD-462C-B053-DFC4B7E4785C} = {FADABDEE-3BA4-4997-A360-6C716E093747}
+		{8232EE74-C1F1-49A4-94D7-D67DE577050B} = {FADABDEE-3BA4-4997-A360-6C716E093747}
 	EndGlobalSection
 EndGlobal
