@@ -14,5 +14,10 @@ namespace Regulus.Project.Crystal
         void Quit();        
     };
 
-    
+    interface IStorage
+    {
+        Value<AccountInfomation> FindAccountInfomation(string name);
+
+        void Add(AccountInfomation ai);
+    }
 }

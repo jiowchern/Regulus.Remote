@@ -43,6 +43,15 @@ namespace Samebest.Remoting
 			return _Value;
 		}
 
+        public void SetValue(T val)
+        {
+            _Empty = false;
+            _Value = val;
+            if (OnValue != null)
+            {
+                OnValue(_Value);
+            }				
+        }
 		void IValue.SetValue(object val)
 		{
 			_Empty = false;

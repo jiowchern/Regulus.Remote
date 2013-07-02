@@ -9,15 +9,18 @@ namespace Regulus.Project.Crystal
 {
     class User : Samebest.Game.IFramework
     {
+        
+        IStorage _IStorage;
         public  Samebest.Remoting.Soul.SoulProvider Provider {get ; private set;}
 		
         Samebest.Game.StageMachine<User> _Machine ;
 		
-		public User(Samebest.Remoting.Soul.SoulProvider provider)
+		public User(Samebest.Remoting.Soul.SoulProvider provider , IStorage stroage)
 		{			
 			Provider = provider;		
 			_Machine = new Samebest.Game.StageMachine<User>(this);			
 			Provider.BreakEvent += _OnInactive;
+            _IStorage = stroage;
 		}
 
 		void _OnInactive()
@@ -33,7 +36,7 @@ namespace Regulus.Project.Crystal
 
 		private void ToVerify()
 		{
-			_Machine.Push(new VerifyStage());
+            _Machine.Push(new VerifyStage(this , _IStorage));
 		}
 
         bool Samebest.Game.IFramework.Update()
@@ -52,7 +55,10 @@ namespace Regulus.Project.Crystal
 		{
 
 		}
-
+        public void Quit()
+        { 
+            _OnInactive();
+        }
 		public event Action InactiveEvent;
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ComplexApplication;
+
 
 namespace Regulus.Project.Crystal
 {
@@ -13,7 +13,7 @@ namespace Regulus.Project.Crystal
 		void Samebest.Remoting.PhotonExpansion.IPhotonFramework.ObtainController(Samebest.Remoting.Soul.SoulProvider provider)
 		{
 
-			var user = _Hall.CreateUser(provider);
+            var user = _Hall.CreateUser(provider, _Stroage);
 
 		}
 
