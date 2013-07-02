@@ -51,6 +51,8 @@
     <Compile Include="PhotonHelper.cs" />
     <Compile Include="PhotonOpCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SoulBinder.cs" />
+    <Compile Include="StandalongProvider.cs" />
     <Compile Include="Time.cs" />
     <Compile Include="Value.cs" />
   </ItemGroup>

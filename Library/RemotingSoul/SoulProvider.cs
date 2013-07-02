@@ -5,8 +5,8 @@ using System.Text;
 
 namespace Samebest.Remoting.Soul
 {
-	
-	public class SoulProvider : IDisposable
+
+	public class SoulProvider : IDisposable, Regulus.Remoting.ISoulBinder
 	{		
 		Samebest.Remoting.Soul.ServerPeer	_Peer;
         Regulus.Remoting.IResponseQueue _Queue;

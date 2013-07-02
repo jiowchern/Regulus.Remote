@@ -46,6 +46,8 @@
       <Link>common.cs</Link>
     </Compile>
     <Compile Include="ConnectUser.cs" />
+    <Compile Include="Core.cs" />
+    <Compile Include="StageFirst.cs" />
     <Compile Include="StandaloneUser.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

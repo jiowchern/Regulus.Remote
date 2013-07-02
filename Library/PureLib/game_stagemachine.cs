@@ -92,6 +92,7 @@ namespace Samebest.Game
                 _Current.Leave(_Param);
                 _Current = null;
             }
-        }        
-    }
+        }
+		
+	}
 }
