@@ -65,7 +65,7 @@ namespace Samebest.Remoting.Ghost
 		{
 
 		}
-        TimeCounter _PingTimeCounter = new TimeCounter();
+        Regulus.Utility.TimeCounter _PingTimeCounter = new Regulus.Utility.TimeCounter();
         public long Ping { get; private set; }
 		void ExitGames.Client.Photon.IPhotonPeerListener.OnOperationResponse(ExitGames.Client.Photon.OperationResponse operationResponse)
 		{
@@ -282,7 +282,7 @@ namespace Samebest.Remoting.Ghost
 		{
             if (_Peer != null)
             {
-                _PingTimeCounter = new TimeCounter();
+                _PingTimeCounter = new Regulus.Utility.TimeCounter();
                 _Peer.OpCustom((int)ClientToServerPhotonOpCode.Ping, new Dictionary<byte, object>(), true);
                 _EndPing();
             }

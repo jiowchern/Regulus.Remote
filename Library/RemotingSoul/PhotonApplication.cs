@@ -42,7 +42,7 @@ namespace Samebest.Remoting.Soul
             Regulus.Utility.Poller<SoulProvider> providers = new Regulus.Utility.Poller<SoulProvider>();
 			while (_Framework != null && _Framework.Update() == true && Running)
 			{
-                
+                System.Threading.Thread.Sleep(0);
 				Queue<SoulProvider> q = null;
 				lock (_SynObject)
 				{

@@ -13,10 +13,11 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
             obj.User.PlayerProvider.Supply += PlayerProvider_Supply;
         }
         int _ToMoveTimeSecond;
-        Samebest.Remoting.TimeCounter _ToMove;
+
+        Regulus.Utility.TimeCounter _ToMove;
         void PlayerProvider_Supply(TurnBasedRPG.IPlayer obj)
         {
-            _ToMove = new Samebest.Remoting.TimeCounter();
+            _ToMove = new Regulus.Utility.TimeCounter();
             var actionStatus = Enum.GetValues(typeof(Regulus.Project.TurnBasedRPG.ActionStatue));
             if (actionStatus.Length > 0)
             {

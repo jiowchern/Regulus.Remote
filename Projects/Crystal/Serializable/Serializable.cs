@@ -17,6 +17,8 @@ namespace Regulus.Project.Crystal
 	[Serializable]
 	public enum LoginResult
 	{
-
+        Success,
+        Fail,
+        Repeat
 	}
 }

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ComplexApplication
+namespace Regulus.Project.Crystal
 {
-	class Storage
+    
+    class Storage : IStorage
 	{
 		Samebest.NoSQL.Database _Database;
 		internal void Initial()
@@ -18,5 +19,17 @@ namespace ComplexApplication
 		{
 			_Database.Shutdown();
 		}
-	}
+
+        Samebest.Remoting.Value<AccountInfomation> IStorage.FindAccountInfomation(string name)
+        {
+            var ais = _Database.Query<AccountInfomation>();
+            var reault = (from a in ais where a.Name == name select a).FirstOrDefault();
+            return reault;
+        }
+
+        void IStorage.Add(AccountInfomation ai)
+        {
+            _Database.Add(ai);
+        }
+    }
 }

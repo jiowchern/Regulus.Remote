@@ -101,7 +101,7 @@ namespace Samebest.Utility
 						}					
 						catch(SystemException e)
 						{
-							throw new SystemException("參數解析失敗");							
+                            throw new SystemException("參數解析失敗" + e.ToString());							
 						}
 						
 						
