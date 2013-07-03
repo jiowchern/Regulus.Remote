@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPG
 {
-    class Map : Samebest.Game.IFramework , IMapInfomation
+    class Map : Regulus.Game.IFramework , IMapInfomation
     {
-        Samebest.Remoting.Time _Time;
+        Regulus.Remoting.Time _Time;
         class EntityInfomation
         {
             public Entity Entity {get;set;}
@@ -42,12 +42,12 @@ namespace Regulus.Project.TurnBasedRPG
             
         }
 
-        void Samebest.Game.IFramework.Launch()
+        void Regulus.Game.IFramework.Launch()
         {
             
         }
 
-        bool Samebest.Game.IFramework.Update()
+        bool Regulus.Game.IFramework.Update()
         {
             _Time.Update();            
             var infos = _EntityInfomations.UpdateSet();
@@ -93,15 +93,15 @@ namespace Regulus.Project.TurnBasedRPG
 						
 		}
 
-        void Samebest.Game.IFramework.Shutdown()
+        void Regulus.Game.IFramework.Shutdown()
         {
             
         }
         
         
-        internal void SetTime(Samebest.Remoting.ITime time)
+        internal void SetTime(Regulus.Remoting.ITime time)
         {
-            _Time = new Samebest.Remoting.Time(time);
+            _Time = new Regulus.Remoting.Time(time);
         }
     }
 }

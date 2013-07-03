@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Samebest.Game
+namespace Regulus.Game
 {
     public class StageMachine
     { 
-        System.Collections.Generic.Queue<Samebest.Game.IStage> _StandBys;
-        Samebest.Game.IStage _Current;
+        System.Collections.Generic.Queue<Regulus.Game.IStage> _StandBys;
+        Regulus.Game.IStage _Current;
 
         public StageMachine()
         {
             _StandBys = new Queue<IStage>();
         }
-        public void Push(Samebest.Game.IStage new_stage)
+        public void Push(Regulus.Game.IStage new_stage)
         {
             _StandBys.Enqueue(new_stage);
         }
@@ -45,15 +45,15 @@ namespace Samebest.Game
 
 	public class StageMachine<T> 
 	{
-		System.Collections.Generic.Queue<Samebest.Game.IStage<T>> _StandBys;        
-		Samebest.Game.IStage<T> _Current;
+		System.Collections.Generic.Queue<Regulus.Game.IStage<T>> _StandBys;        
+		Regulus.Game.IStage<T> _Current;
 		T						_Param;
 		public StageMachine(T par)
 		{
 			_Param = par;
 			_StandBys = new Queue<IStage<T>>();
 		}
-		public void Push(Samebest.Game.IStage<T> new_stage)
+		public void Push(Regulus.Game.IStage<T> new_stage)
 		{
 			_StandBys.Enqueue(new_stage);
 		}

@@ -142,7 +142,7 @@ namespace Regulus.Project.Keys.Serializable
             db2.Property.Position.X = 100;
             db2.Look.Name = "dff";
             var ret = Regulus.Utility.ValueHelper.DeepEqual(db1, db2);
-            Samebest.NoSQL.Database db = new Samebest.NoSQL.Database();
+            Regulus.NoSQL.Database db = new Regulus.NoSQL.Database();
             db.Launch("mongodb://127.0.0.1:27017");
             db.Shutdown();
         }

@@ -5,17 +5,37 @@ using System.Text;
 
 namespace Regulus.Standalong
 {
-	public class GhostProvider : Regulus.Remoting.ISoulBinder
+	public class Provider : Regulus.Remoting.ISoulBinder
 	{
 		
-		void Remoting.ISoulBinder.Bind<TSoul>(TSoul soul)
-		{
-							
-		}
-
-		void Remoting.ISoulBinder.Unbind<TSoul>(TSoul soul)
+		public Provider()
 		{
 			
+		}
+		void Remoting.ISoulBinder.Bind<T>(T soul)
+		{
+		
+		}
+
+		void Remoting.ISoulBinder.Unbind<T>(T soul)
+		{
+				
+		}
+
+		event Action Remoting.ISoulBinder.BreakEvent
+		{
+			add {  }
+			remove {  }
+		}
+
+		public void Register<T>(Regulus.Remoting.Ghost.IProviderNotice<T> provider)
+		{
+		
+		}
+
+		public void Unregister<T>()
+		{
+		
 		}
 	}
 }

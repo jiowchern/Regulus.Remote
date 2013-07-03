@@ -29,12 +29,12 @@ namespace TestSoul
 		}
 
 
-        Samebest.Remoting.Value<int> TestRemotingCommon.ITest.TestMethod(int a23)
+        Regulus.Remoting.Value<int> TestRemotingCommon.ITest.TestMethod(int a23)
 		{
 			a1.Invoke();
 			a2.Invoke(a23+ 1000);
 
-            return new Samebest.Remoting.Value<int>(a23);
+            return new Regulus.Remoting.Value<int>(a23);
 		}
 
         System.DateTime _Time = System.DateTime.Now;

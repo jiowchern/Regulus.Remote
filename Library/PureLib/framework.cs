@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Samebest.Game    
+namespace Regulus.Game    
 {
     public interface IFramework
     {
@@ -14,17 +14,17 @@ namespace Samebest.Game
 
     public class FrameworkRoot  
     {
-        Queue<Samebest.Game.IFramework> _AddFrameworks = new Queue<Game.IFramework>();
-        Queue<Samebest.Game.IFramework> _RemoveFramework = new Queue<Game.IFramework>();
+        Queue<Regulus.Game.IFramework> _AddFrameworks = new Queue<Game.IFramework>();
+        Queue<Regulus.Game.IFramework> _RemoveFramework = new Queue<Game.IFramework>();
 
-        List<Samebest.Game.IFramework> _Frameworks = new List<Game.IFramework>();
+        List<Regulus.Game.IFramework> _Frameworks = new List<Game.IFramework>();
 
-        public void AddFramework(Samebest.Game.IFramework framework)
+        public void AddFramework(Regulus.Game.IFramework framework)
         {
             _AddFrameworks.Enqueue(framework);            
         }
 
-        public void RemoveFramework(Samebest.Game.IFramework framework)
+        public void RemoveFramework(Regulus.Game.IFramework framework)
         {
             
             _RemoveFramework.Enqueue(framework);

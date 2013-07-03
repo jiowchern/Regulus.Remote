@@ -12,7 +12,7 @@ namespace TestRemotingCommon
 		event Action	a1 ;
 		event Action<int> a2;
 
-		Samebest.Remoting.Value<int> TestMethod(int a23);
+		Regulus.Remoting.Value<int> TestMethod(int a23);
 	}
 	
 }

@@ -5,13 +5,13 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPG
 {
-    class Hall : Regulus.Project.TurnBasedRPG.UserRoster , Samebest.Game.IFramework
+    class Hall : Regulus.Project.TurnBasedRPG.UserRoster , Regulus.Game.IFramework
     {        
-        private Samebest.Game.FrameworkRoot _FrameworkRoot;
+        private Regulus.Game.FrameworkRoot _FrameworkRoot;
 
         public Hall()
         {            
-            _FrameworkRoot = new Samebest.Game.FrameworkRoot();
+            _FrameworkRoot = new Regulus.Game.FrameworkRoot();
         }            
         internal void PushUser(User user)
         {
@@ -24,18 +24,18 @@ namespace Regulus.Project.TurnBasedRPG
             _User.Add(user);
         }
 
-        void Samebest.Game.IFramework.Launch()
+        void Regulus.Game.IFramework.Launch()
         {
             
         }
 
-        bool Samebest.Game.IFramework.Update()
+        bool Regulus.Game.IFramework.Update()
         {
             _FrameworkRoot.Update();
             return true;
         }
 
-        void Samebest.Game.IFramework.Shutdown()
+        void Regulus.Game.IFramework.Shutdown()
         {
             
         }

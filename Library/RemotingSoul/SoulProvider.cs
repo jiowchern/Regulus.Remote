@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Samebest.Remoting.Soul
+namespace Regulus.Remoting.Soul
 {
 
 	public class SoulProvider : IDisposable, Regulus.Remoting.ISoulBinder
-	{		
-		Samebest.Remoting.Soul.ServerPeer	_Peer;
+	{
+		Regulus.Remoting.IRequestQueue _Peer;
         Regulus.Remoting.IResponseQueue _Queue;
 
-        public SoulProvider(Samebest.Remoting.Soul.ServerPeer peer, Regulus.Remoting.IResponseQueue queue)
+		public SoulProvider(Regulus.Remoting.IRequestQueue peer, Regulus.Remoting.IResponseQueue queue)
 		{
             _Queue = queue;
             _Peer = peer;
@@ -22,11 +22,11 @@ namespace Samebest.Remoting.Soul
         {
             add
             {
-                _Peer.DisconnectEvent += value;
+				_Peer.BreakEvent += value;
             }
             remove
             {
-                _Peer.DisconnectEvent -= value;
+				_Peer.BreakEvent -= value;
             }
         }
 		class Soul
@@ -82,8 +82,8 @@ namespace Samebest.Remoting.Soul
         {
             var argmants = new Dictionary<byte, object>();
             argmants.Add(0, entity_id.ToByteArray());
-            argmants.Add(1, Samebest.PhotonExtension.TypeHelper.Serializer(name));
-            argmants.Add(2, Samebest.PhotonExtension.TypeHelper.Serializer(val));
+            argmants.Add(1, Regulus.PhotonExtension.TypeHelper.Serializer(name));
+            argmants.Add(2, Regulus.PhotonExtension.TypeHelper.Serializer(val));
             
             _Queue.Push((byte)ServerToClientPhotonOpCode.UpdateProperty, argmants);
         }
@@ -94,11 +94,11 @@ namespace Samebest.Remoting.Soul
 		{            
             var argmants = new Dictionary<byte, object>();
             argmants.Add(0, entity_id.ToByteArray());
-            argmants.Add(1, Samebest.PhotonExtension.TypeHelper.Serializer(event_name));
+            argmants.Add(1, Regulus.PhotonExtension.TypeHelper.Serializer(event_name));
 			byte i = 2;
 			foreach (var arg in args)
 			{
-				argmants.Add( i , Samebest.PhotonExtension.TypeHelper.Serializer(arg) );
+				argmants.Add( i , Regulus.PhotonExtension.TypeHelper.Serializer(arg) );
 				++i;
 			}
             _InvokeEvent(event_name , argmants);
@@ -135,7 +135,7 @@ namespace Samebest.Remoting.Soul
         private void _LoadSoulCompile(string type_name, Guid id)
         {
             var argmants = new Dictionary<byte, object>();
-            argmants.Add(0, Samebest.PhotonExtension.TypeHelper.Serializer(type_name));
+            argmants.Add(0, Regulus.PhotonExtension.TypeHelper.Serializer(type_name));
             argmants.Add(1, id.ToByteArray());
             _Queue.Push((byte)ServerToClientPhotonOpCode.LoadSoulCompile, argmants);
         }
@@ -143,7 +143,7 @@ namespace Samebest.Remoting.Soul
         private void _LoadSoul(string type_name, Guid id)
         {         
             var argmants = new Dictionary<byte, object>();
-            argmants.Add(0, Samebest.PhotonExtension.TypeHelper.Serializer(type_name));
+            argmants.Add(0, Regulus.PhotonExtension.TypeHelper.Serializer(type_name));
             argmants.Add(1, id.ToByteArray());
             _Queue.Push((byte)ServerToClientPhotonOpCode.LoadSoul, argmants);
         }
@@ -151,7 +151,7 @@ namespace Samebest.Remoting.Soul
         private void _UnloadSoul(string type_name, Guid id)
         {
             var argmants = new Dictionary<byte, object>();
-            argmants.Add(0, Samebest.PhotonExtension.TypeHelper.Serializer(type_name));
+            argmants.Add(0, Regulus.PhotonExtension.TypeHelper.Serializer(type_name));
             argmants.Add(1, id.ToByteArray());
             _Queue.Push((byte)ServerToClientPhotonOpCode.UnloadSoul, argmants);
         }

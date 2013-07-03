@@ -7,7 +7,7 @@ using System.Text;
 /// 請求與回覆的介面宣告
 /// 所有handler都要實作此介面，訂好雙方溝通協議，
 ///////////////////////////////////////////////////////////////////////////////////////
-namespace Samebest.Contacts
+namespace Regulus.Contacts
 {
 	public interface IRespondents
 	{

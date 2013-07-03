@@ -7,7 +7,7 @@ namespace Regulus.Project.Crystal
 {
 	public class ConnectUser
 	{
-		private Samebest.Remoting.Ghost.Agent _Complex { get; set; }
+		private Regulus.Remoting.Ghost.Agent _Complex { get; set; }
 		public void Update()
 		{
 			

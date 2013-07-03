@@ -5,27 +5,27 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPG
 {
-    class Storage : Samebest.Utility.Singleton<Storage>, Samebest.Game.IFramework  
+    class Storage : Regulus.Utility.Singleton<Storage>, Regulus.Game.IFramework  
     {
-        Samebest.NoSQL.Database _Database;
+        Regulus.NoSQL.Database _Database;
 
         internal void Add(Serializable.AccountInfomation ai)
         {
             _Database.Add(ai);
         }
 
-        void Samebest.Game.IFramework.Launch()
+        void Regulus.Game.IFramework.Launch()
         {
-            _Database = new Samebest.NoSQL.Database();
+            _Database = new Regulus.NoSQL.Database();
             _Database.Launch("mongodb://127.0.0.1:27017");
         }
 
-        bool Samebest.Game.IFramework.Update()
+        bool Regulus.Game.IFramework.Update()
         {
             return true;
         }
 
-        void Samebest.Game.IFramework.Shutdown()
+        void Regulus.Game.IFramework.Shutdown()
         {
             if (_Database != null)
                 _Database.Shutdown();

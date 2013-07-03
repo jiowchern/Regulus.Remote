@@ -8,7 +8,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
 {
     using Regulus.Project.TurnBasedRPG;
     using Regulus.Project.TurnBasedRPG.Serializable;
-    using Samebest.Remoting;    
+    using Regulus.Remoting;    
     class CommandBinder
     {
         CommandHandler _CommandHandler;
@@ -20,7 +20,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
         }
         internal void Setup()
         {
-            var fw = _User as Samebest.Game.IFramework;            
+            var fw = _User as Regulus.Game.IFramework;            
 
             _Bind(_User.VerifyProvider);
             _Bind(_User.ParkingProvider);
@@ -47,7 +47,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             _CommandHandler.Set("Ping", _Build<int, string>(ping, pingResponse), "ping ex. Ping 0~?");
         }
 
-        private void _Bind(Samebest.Remoting.Ghost.IProviderNotice<ITime> providerNotice)
+        private void _Bind(Regulus.Remoting.Ghost.IProviderNotice<ITime> providerNotice)
         {
             providerNotice.Supply += _TimeSupply;
             providerNotice.Unsupply += _TimeUnsupply;
@@ -77,7 +77,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
 
         
 
-        private void _Bind(Samebest.Remoting.Ghost.IProviderNotice<IMapInfomation> providerNotice)
+        private void _Bind(Regulus.Remoting.Ghost.IProviderNotice<IMapInfomation> providerNotice)
         {
             providerNotice.Supply += _MapSupply;
             providerNotice.Unsupply += _MapUnsupply;
@@ -93,7 +93,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             
         }
 
-        private void _Bind(Samebest.Remoting.Ghost.IProviderNotice<IObservedAbility> providerNotice)
+        private void _Bind(Regulus.Remoting.Ghost.IProviderNotice<IObservedAbility> providerNotice)
         {
             
             providerNotice.Supply += _ObservedSupply;
@@ -169,7 +169,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             
         }
 
-        private void _Bind(Samebest.Remoting.Ghost.IProviderNotice<IPlayer> providerNotice)
+        private void _Bind(Regulus.Remoting.Ghost.IProviderNotice<IPlayer> providerNotice)
         {
             providerNotice.Supply += _PlayerSupply;
             providerNotice.Unsupply += _PlayerUnsupply;
@@ -217,7 +217,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
 
         
 
-        private void _Bind(Samebest.Remoting.Ghost.IProviderNotice<IParking> providerNotice)
+        private void _Bind(Regulus.Remoting.Ghost.IProviderNotice<IParking> providerNotice)
         {
             providerNotice.Supply += _ParkingSupply;
             providerNotice.Unsupply += _ParkingUnupply;
@@ -316,7 +316,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
                 Console.WriteLine(ai.Name);
             }
         }
-        private void _Bind(Samebest.Remoting.Ghost.IProviderNotice<IVerify> providerNotice)
+        private void _Bind(Regulus.Remoting.Ghost.IProviderNotice<IVerify> providerNotice)
         {
             providerNotice.Supply += _VeriftSupply;
             providerNotice.Unsupply += _VeriftUnsupply;

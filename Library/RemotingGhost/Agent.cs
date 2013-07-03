@@ -7,11 +7,11 @@ using System.Reflection;
 using System.Reflection.Emit;
 
 
-namespace Samebest.Remoting.Ghost
+namespace Regulus.Remoting.Ghost
 {
 	public class Agent : ExitGames.Client.Photon.IPhotonPeerListener
 	{
-		Samebest.Remoting.PhotonExtension.ClientPeer _Peer;	
+		Regulus.Remoting.PhotonExtension.ClientPeer _Peer;	
 		LinkState							_LinkState;
 		Config								_Config;
 
@@ -26,7 +26,7 @@ namespace Samebest.Remoting.Ghost
         {
             if (_Peer != null)
                 _Peer.Disconnect();
-            _Peer = new Samebest.Remoting.PhotonExtension.ClientPeer(this, ExitGames.Client.Photon.ConnectionProtocol.Udp);
+            _Peer = new Regulus.Remoting.PhotonExtension.ClientPeer(this, ExitGames.Client.Photon.ConnectionProtocol.Udp);
             _Peer.Connect(_Config.Address, _Config.Name);			
         }
 		public void Launch(LinkState link_state)
@@ -80,8 +80,8 @@ namespace Samebest.Remoting.Ghost
                 {
 
                     var entity_id = new Guid(operationResponse.Parameters[0] as byte[]);
-                    var eventName = Samebest.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[1] as byte[]) as string;
-                    var value = Samebest.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[2] as byte[]);
+                    var eventName = Regulus.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[1] as byte[]) as string;
+                    var value = Regulus.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[2] as byte[]);
 
                     System.Diagnostics.Debug.WriteLine("UpdateProperty id:" + entity_id + " name:" + eventName + " value:" + value);
                     _UpdateProperty(entity_id, eventName, value);
@@ -92,10 +92,10 @@ namespace Samebest.Remoting.Ghost
                 if (operationResponse.Parameters.Count >= 2)
                 {
                     var entity_id = new Guid(operationResponse.Parameters[0] as byte[]);
-                    var eventName = Samebest.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[1] as byte[]) as string;
+                    var eventName = Regulus.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[1] as byte[]) as string;
                     var eventParams = (from p in operationResponse.Parameters
                                        where p.Key >= 2
-                                       select Samebest.PhotonExtension.TypeHelper.Deserialize(p.Value as byte[])).ToArray();
+                                       select Regulus.PhotonExtension.TypeHelper.Deserialize(p.Value as byte[])).ToArray();
 
                     _InvokeEvent(entity_id, eventName, eventParams);
                 }
@@ -105,7 +105,7 @@ namespace Samebest.Remoting.Ghost
                 if (operationResponse.Parameters.Count == 2)
                 {
                     var returnTarget = new Guid(operationResponse.Parameters[0] as byte[]);
-                    var returnValue = Samebest.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[1] as byte[]);
+                    var returnValue = Regulus.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[1] as byte[]);
 
                     _SetReturnValue(returnTarget, returnValue);
                 }
@@ -114,7 +114,7 @@ namespace Samebest.Remoting.Ghost
             {
                 if (operationResponse.Parameters.Count == 2)
                 {
-                    var typeName = Samebest.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[0] as byte[]) as string;
+                    var typeName = Regulus.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[0] as byte[]) as string;
                     var entity_id = new Guid(operationResponse.Parameters[1] as byte[]);
                     System.Diagnostics.Debug.WriteLine("load soul compile: " + typeName + " id: " + entity_id.ToString());
                     _LoadSoulCompile(typeName, entity_id);
@@ -124,7 +124,7 @@ namespace Samebest.Remoting.Ghost
             {
                 if (operationResponse.Parameters.Count == 2)
                 {
-                    var typeName = Samebest.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[0] as byte[]) as string;
+                    var typeName = Regulus.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[0] as byte[]) as string;
                     var entity_id = new Guid(operationResponse.Parameters[1] as byte[]);
                     System.Diagnostics.Debug.WriteLine("load soul : " + typeName + " id: " + entity_id.ToString());
                     _LoadSoul(typeName, entity_id);
@@ -134,7 +134,7 @@ namespace Samebest.Remoting.Ghost
             {
                 if (operationResponse.Parameters.Count == 2)
                 {
-                    var typeName = Samebest.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[0] as byte[]) as string;
+                    var typeName = Regulus.PhotonExtension.TypeHelper.Deserialize(operationResponse.Parameters[0] as byte[]) as string;
                     var entity_id = new Guid(operationResponse.Parameters[1] as byte[]);
                     System.Diagnostics.Debug.WriteLine("unload soul : " + typeName + " id: " + entity_id.ToString());
                     _UnloadSoul(typeName, entity_id);
@@ -148,7 +148,7 @@ namespace Samebest.Remoting.Ghost
         
 
 
-		Samebest.Remoting.Ghost.ReturnValueQueue _ReturnValueQueue = new Samebest.Remoting.Ghost.ReturnValueQueue();
+		Regulus.Remoting.Ghost.ReturnValueQueue _ReturnValueQueue = new Regulus.Remoting.Ghost.ReturnValueQueue();
 		private void _SetReturnValue(Guid returnTarget, object returnValue)
 		{
 			IValue value = _ReturnValueQueue.PopReturnValue(returnTarget);
@@ -300,7 +300,7 @@ namespace Samebest.Remoting.Ghost
 
 		
 
-		private IGhost _BuildGhost(Type ghostBaseType, Samebest.Remoting.PhotonExtension.ClientPeer peer , Guid id) 
+		private IGhost _BuildGhost(Type ghostBaseType, Regulus.Remoting.PhotonExtension.ClientPeer peer , Guid id) 
 		{
 			Type ghostType = _QueryGhostType(ghostBaseType);
 			object o = Activator.CreateInstance(ghostType, new Object[] { peer, id, _ReturnValueQueue });
@@ -366,26 +366,26 @@ namespace Samebest.Remoting.Ghost
             //反射機制
             Type baseType = ghostBaseType;
             //產生class的組態
-            AssemblyName asmName = new AssemblyName("SamebestRemotingGhost." + baseType.ToString() + "Assembly");
+            AssemblyName asmName = new AssemblyName("RegulusRemotingGhost." + baseType.ToString() + "Assembly");
             //從目前的domain裡即時產生一個組態
             AssemblyBuilder assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(asmName, AssemblyBuilderAccess.Run);
             //產生一個模組
-            ModuleBuilder module = assembly.DefineDynamicModule("SamebestRemotingGhost." + baseType.ToString() + "Module");
+            ModuleBuilder module = assembly.DefineDynamicModule("RegulusRemotingGhost." + baseType.ToString() + "Module");
             //產生一個class or struct
             //這裡是用class
             var typeName = "C" + baseType.ToString();
-            TypeBuilder type = module.DefineType(typeName, TypeAttributes.Class, typeof(Object), new Type[] { baseType, typeof(Samebest.Remoting.Ghost.IGhost) });
+            TypeBuilder type = module.DefineType(typeName, TypeAttributes.Class, typeof(Object), new Type[] { baseType, typeof(Regulus.Remoting.Ghost.IGhost) });
 
             #region build constructor
             // 產生建構子，有一個參數 tpeer
             ConstructorBuilder c = type.DefineConstructor(
                                         MethodAttributes.Public,
                                         CallingConventions.Standard,
-                                        new Type[] { typeof(Samebest.Remoting.PhotonExtension.ClientPeer), typeof(Guid), typeof(Samebest.Remoting.Ghost.ReturnValueQueue) });
+                                        new Type[] { typeof(Regulus.Remoting.PhotonExtension.ClientPeer), typeof(Guid), typeof(Regulus.Remoting.Ghost.ReturnValueQueue) });
             // 產生field，一個欄位
-            FieldBuilder peerField = type.DefineField("_Peer", typeof(Samebest.Remoting.PhotonExtension.ClientPeer), FieldAttributes.Private);
+            FieldBuilder peerField = type.DefineField("_Peer", typeof(Regulus.Remoting.PhotonExtension.ClientPeer), FieldAttributes.Private);
             FieldBuilder idField = type.DefineField("_ID", typeof(Guid), FieldAttributes.Private);
-            FieldBuilder rvqField = type.DefineField("_ReturnValueQueue", typeof(Samebest.Remoting.Ghost.ReturnValueQueue), FieldAttributes.Private);
+            FieldBuilder rvqField = type.DefineField("_ReturnValueQueue", typeof(Regulus.Remoting.Ghost.ReturnValueQueue), FieldAttributes.Private);
 
             // 取得中介語言的介面產生器
             ILGenerator cil = c.GetILGenerator();
@@ -530,7 +530,7 @@ namespace Samebest.Remoting.Ghost
 
                 il.Emit(OpCodes.Ldarg_0);
                 il.Emit(OpCodes.Ldfld, idField);
-                var guidToByteArrayMethod = typeof(Samebest.PhotonExtension.TypeHelper).GetMethod("GuidToByteArray", BindingFlags.Public | BindingFlags.Static);
+                var guidToByteArrayMethod = typeof(Regulus.PhotonExtension.TypeHelper).GetMethod("GuidToByteArray", BindingFlags.Public | BindingFlags.Static);
                 il.Emit(OpCodes.Call, guidToByteArrayMethod);
                 il.Emit(OpCodes.Stloc, varGuidByteArray);
 
@@ -577,7 +577,7 @@ namespace Samebest.Remoting.Ghost
                     il.Emit(OpCodes.Stloc, varRVQId);
 
                     il.Emit(OpCodes.Ldloc, varRVQId);
-                    il.Emit(OpCodes.Call, typeof(Samebest.PhotonExtension.TypeHelper).GetMethod("GuidToByteArray", BindingFlags.Public | BindingFlags.Static));
+                    il.Emit(OpCodes.Call, typeof(Regulus.PhotonExtension.TypeHelper).GetMethod("GuidToByteArray", BindingFlags.Public | BindingFlags.Static));
                     LocalBuilder varRVQIdByteArray = il.DeclareLocal(typeof(byte[]));
                     il.Emit(OpCodes.Stloc, varRVQIdByteArray);
 
@@ -603,7 +603,7 @@ namespace Samebest.Remoting.Ghost
                     il.Emit(OpCodes.Stloc, varBuffer);
 
                     //使用TypeHelper類別裡的Serializer函式 屬性為Public Static..
-                    var serializer = typeof(Samebest.PhotonExtension.TypeHelper).GetMethod("Serializer", BindingFlags.Public | BindingFlags.Static);
+                    var serializer = typeof(Regulus.PhotonExtension.TypeHelper).GetMethod("Serializer", BindingFlags.Public | BindingFlags.Static);
 
                     //讀取參數的值 從0開始
                     il.Emit(OpCodes.Ldarg, 1 + paramIndex);
@@ -696,7 +696,7 @@ namespace Samebest.Remoting.Ghost
 
 		private static void TestEmitYield(ILGenerator cil)
 		{
-			var yield = typeof(Samebest.PhotonExtension.TypeHelper).GetMethod("Yield", BindingFlags.Public | BindingFlags.Static);
+			var yield = typeof(Regulus.PhotonExtension.TypeHelper).GetMethod("Yield", BindingFlags.Public | BindingFlags.Static);
 			cil.Emit(OpCodes.Call, yield);
 		}
 

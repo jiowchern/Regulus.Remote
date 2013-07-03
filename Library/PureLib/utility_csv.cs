@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Samebest.Utility
+namespace Regulus.Utility
 {
 
 	class CSV

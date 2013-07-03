@@ -8,20 +8,20 @@ namespace Regulus.Project.TurnBasedRPG
 {
     public class User 
     {
-        private Samebest.Remoting.Ghost.Agent _Complex { get; set; }
+        private Regulus.Remoting.Ghost.Agent _Complex { get; set; }
          
         public event Action LinkSuccess;
         public event Action<string> LinkFail;
-        Samebest.Remoting.Ghost.Config _Config;
-        public User(Samebest.Remoting.Ghost.Config config )
+        Regulus.Remoting.Ghost.Config _Config;
+        public User(Regulus.Remoting.Ghost.Config config )
         {
             _Config = config;
-            _VerifyProvider = new Samebest.Remoting.Ghost.Provider<IVerify>();
-            _ParkingProvider = new Samebest.Remoting.Ghost.Provider<IParking>();
-            _MapInfomationProvider = new Samebest.Remoting.Ghost.Provider<IMapInfomation>();
-            _PlayerProvider = new Samebest.Remoting.Ghost.Provider<IPlayer>();
-            _ObservedAbilityProvider = new Samebest.Remoting.Ghost.Provider<IObservedAbility>();
-            _TimeProvider = new Samebest.Remoting.Ghost.Provider<Samebest.Remoting.ITime>();
+            _VerifyProvider = new Regulus.Remoting.Ghost.Provider<IVerify>();
+            _ParkingProvider = new Regulus.Remoting.Ghost.Provider<IParking>();
+            _MapInfomationProvider = new Regulus.Remoting.Ghost.Provider<IMapInfomation>();
+            _PlayerProvider = new Regulus.Remoting.Ghost.Provider<IPlayer>();
+            _ObservedAbilityProvider = new Regulus.Remoting.Ghost.Provider<IObservedAbility>();
+            _TimeProvider = new Regulus.Remoting.Ghost.Provider<Regulus.Remoting.ITime>();
             
         }
         public long GetPing(int idx)
@@ -45,7 +45,7 @@ namespace Regulus.Project.TurnBasedRPG
             }
             
 
-            var linkStatu = new Samebest.Remoting.Ghost.LinkState();
+            var linkStatu = new Regulus.Remoting.Ghost.LinkState();
             linkStatu.LinkSuccess += () =>
             {
                 if (LinkSuccess != null)
@@ -56,7 +56,7 @@ namespace Regulus.Project.TurnBasedRPG
                 if(LinkFail != null)
                     LinkFail(s);
             };
-            _Complex = new Samebest.Remoting.Ghost.Agent(_Config); 
+            _Complex = new Regulus.Remoting.Ghost.Agent(_Config); 
 
             _Complex.Launch(linkStatu);
             _VerifyProvider.Add(_Complex);
@@ -81,38 +81,38 @@ namespace Regulus.Project.TurnBasedRPG
             _Complex = null;
         }
 
-        Samebest.Remoting.Ghost.Provider<IVerify> _VerifyProvider;
-        public Samebest.Remoting.Ghost.IProviderNotice<IVerify> VerifyProvider
+        Regulus.Remoting.Ghost.Provider<IVerify> _VerifyProvider;
+        public Regulus.Remoting.Ghost.IProviderNotice<IVerify> VerifyProvider
         {
             get { return _VerifyProvider; }
         }
 
-        Samebest.Remoting.Ghost.Provider<IParking> _ParkingProvider;
-        public Samebest.Remoting.Ghost.IProviderNotice<IParking> ParkingProvider
+        Regulus.Remoting.Ghost.Provider<IParking> _ParkingProvider;
+        public Regulus.Remoting.Ghost.IProviderNotice<IParking> ParkingProvider
         {
             get { return _ParkingProvider; }
         }
 
-        Samebest.Remoting.Ghost.Provider<IMapInfomation> _MapInfomationProvider;
-        public Samebest.Remoting.Ghost.IProviderNotice<IMapInfomation> MapInfomationProvider
+        Regulus.Remoting.Ghost.Provider<IMapInfomation> _MapInfomationProvider;
+        public Regulus.Remoting.Ghost.IProviderNotice<IMapInfomation> MapInfomationProvider
         {
             get { return _MapInfomationProvider; }
         }
 
-        Samebest.Remoting.Ghost.Provider<IPlayer> _PlayerProvider;
-        public Samebest.Remoting.Ghost.IProviderNotice<IPlayer> PlayerProvider
+        Regulus.Remoting.Ghost.Provider<IPlayer> _PlayerProvider;
+        public Regulus.Remoting.Ghost.IProviderNotice<IPlayer> PlayerProvider
         {
             get { return _PlayerProvider; }
         }
 
-        Samebest.Remoting.Ghost.Provider<IObservedAbility> _ObservedAbilityProvider;        
-        public Samebest.Remoting.Ghost.IProviderNotice<IObservedAbility> ObservedAbilityProvider
+        Regulus.Remoting.Ghost.Provider<IObservedAbility> _ObservedAbilityProvider;        
+        public Regulus.Remoting.Ghost.IProviderNotice<IObservedAbility> ObservedAbilityProvider
         {
             get { return _ObservedAbilityProvider; }
         }
 
-        Samebest.Remoting.Ghost.Provider<Samebest.Remoting.ITime> _TimeProvider;
-        public Samebest.Remoting.Ghost.IProviderNotice<Samebest.Remoting.ITime> TimeProvider
+        Regulus.Remoting.Ghost.Provider<Regulus.Remoting.ITime> _TimeProvider;
+        public Regulus.Remoting.Ghost.IProviderNotice<Regulus.Remoting.ITime> TimeProvider
         {
             get { return _TimeProvider; }
         }

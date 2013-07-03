@@ -6,8 +6,8 @@ using System.Text;
 
 namespace Regulus.Project.Crystal
 {
-	public interface IUser : Samebest.Game.IFramework
+	public interface IUser : Regulus.Game.IFramework
 	{
-		Samebest.Remoting.Ghost.IProviderNotice<IVerify> VerifyProvider { get ; }		
+		Regulus.Remoting.Ghost.IProviderNotice<IVerify> VerifyProvider { get ; }		
 	}
 }

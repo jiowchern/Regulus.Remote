@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Samebest.Game
+namespace Regulus.Game
 {
     namespace Data
     {
-        using Samebest.Extension;
+        using Regulus.Extension;
         [AttributeUsage(AttributeTargets.Class)]
         public class TableAttribute : Attribute
         {
@@ -61,7 +61,7 @@ namespace Samebest.Game
 
 			private Array _GeneratePrototype(Type prototype_type, Func<System.Data.DataRow, bool> filter, string ext_name)
             {
-                var tableInfo = prototype_type.GetCustomAttributes(typeof(Samebest.Game.Data.TableAttribute), false).FirstOrDefault() as Samebest.Game.Data.TableAttribute;
+                var tableInfo = prototype_type.GetCustomAttributes(typeof(Regulus.Game.Data.TableAttribute), false).FirstOrDefault() as Regulus.Game.Data.TableAttribute;
                 if (tableInfo != null)
                 {
 
@@ -83,7 +83,7 @@ namespace Samebest.Game
                             foreach (var property in propertys)
                             {
                                 #region
-                                var fieldInfo = property.GetCustomAttributes(typeof(Samebest.Game.Data.FieldAttribute), false).FirstOrDefault() as Samebest.Game.Data.FieldAttribute;
+                                var fieldInfo = property.GetCustomAttributes(typeof(Regulus.Game.Data.FieldAttribute), false).FirstOrDefault() as Regulus.Game.Data.FieldAttribute;
                                 if (fieldInfo != null)
                                 {
                                     string fieldName = fieldInfo.Name;
@@ -97,7 +97,7 @@ namespace Samebest.Game
                                 #endregion
 
                                 #region
-                                var refFieldInfo = property.GetCustomAttributes(typeof(Samebest.Game.Data.ReferenceFieldAttribute), false).FirstOrDefault() as Samebest.Game.Data.ReferenceFieldAttribute;
+                                var refFieldInfo = property.GetCustomAttributes(typeof(Regulus.Game.Data.ReferenceFieldAttribute), false).FirstOrDefault() as Regulus.Game.Data.ReferenceFieldAttribute;
                                 if (refFieldInfo != null)
                                 {
 
@@ -120,7 +120,7 @@ namespace Samebest.Game
                                 #endregion
 
                                 #region
-                                var arrayFieldInfo = property.GetCustomAttributes(typeof(Samebest.Game.Data.ArrayFieldAttribute), false).FirstOrDefault() as Samebest.Game.Data.ArrayFieldAttribute;
+                                var arrayFieldInfo = property.GetCustomAttributes(typeof(Regulus.Game.Data.ArrayFieldAttribute), false).FirstOrDefault() as Regulus.Game.Data.ArrayFieldAttribute;
                                 if (arrayFieldInfo != null)
                                 {
                                     Array fields = Array.CreateInstance(property.PropertyType.GetElementType(), arrayFieldInfo.Fields.Length);
@@ -138,7 +138,7 @@ namespace Samebest.Game
 
 
                                 #region
-                                var blockFieldInfos = property.GetCustomAttributes(typeof(Samebest.Game.Data.BlockFieldAttribute), false) as Samebest.Game.Data.BlockFieldAttribute[];
+                                var blockFieldInfos = property.GetCustomAttributes(typeof(Regulus.Game.Data.BlockFieldAttribute), false) as Regulus.Game.Data.BlockFieldAttribute[];
 
                                 if (blockFieldInfos.Length > 0)
                                 {
@@ -166,7 +166,7 @@ namespace Samebest.Game
 
                                     foreach (var blockFieldInfo in blockFieldInfos)
                                     {
-                                        Samebest.Game.Data.BlockFieldAttribute bfa = blockFieldInfo as Samebest.Game.Data.BlockFieldAttribute;
+                                        Regulus.Game.Data.BlockFieldAttribute bfa = blockFieldInfo as Regulus.Game.Data.BlockFieldAttribute;
                                         var refProperty = refFieldType.GetProperty(bfa.Name);
 
                                         if (refProperty != null)

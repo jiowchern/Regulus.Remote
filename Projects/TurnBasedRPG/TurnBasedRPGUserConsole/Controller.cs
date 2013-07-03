@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPGUserConsole
 {
-    abstract class Controller : Samebest.Game.IFramework
+    abstract class Controller : Regulus.Game.IFramework
     {
         Regulus.Project.TurnBasedRPG.User _User;
         protected Regulus.Project.TurnBasedRPGUserConsole.CommandHandler _CommandHandler;
@@ -14,7 +14,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
         Regulus.Project.TurnBasedRPGUserConsole.CommandBinder _CommandBinder;
 
         protected abstract void _Launch(Regulus.Project.TurnBasedRPG.User user);
-        void Samebest.Game.IFramework.Launch()
+        void Regulus.Game.IFramework.Launch()
         {
             //Console.Write("請輸入連線位置&Port (127.0.0.1:5055):");  
             //var addr = Console.ReadLine();    
@@ -35,7 +35,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
         }
 
         protected abstract string[] _HandlerInput();
-        bool Samebest.Game.IFramework.Update()
+        bool Regulus.Game.IFramework.Update()
         {
             _CommandBinder.Update();
             string[] command = _HandlerInput();
@@ -45,7 +45,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             return _User.Update();
         }
         protected abstract void _Shutdown();
-        void Samebest.Game.IFramework.Shutdown()
+        void Regulus.Game.IFramework.Shutdown()
         {
             
             _Shutdown();
@@ -57,7 +57,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
         private TurnBasedRPG.User _GenerateUser(string addr)
         {
             
-            var user = new TurnBasedRPG.User(new Samebest.Remoting.Ghost.Config() { Address = addr, Name = "TurnBasedRPGComplex" });
+            var user = new TurnBasedRPG.User(new Regulus.Remoting.Ghost.Config() { Address = addr, Name = "TurnBasedRPGComplex" });
             return user;
         }
         private void _HandleCommand(CommandHandler command_handler, string[] command)
@@ -82,18 +82,18 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             _Commands = _ReadCommand(script_path);
             _Random = new Random(System.DateTime.Now.Millisecond);
         }
-        [Samebest.Game.Data.Table("Command")]
+        [Regulus.Game.Data.Table("Command")]
         class Command
         {
-            [Samebest.Game.Data.Field("Command")]
+            [Regulus.Game.Data.Field("Command")]
             public string Content { get; set; }
-            [Samebest.Game.Data.Field("Cooldown")]
+            [Regulus.Game.Data.Field("Cooldown")]
             public float Cooldown { get; set; }
         }
 
         private Command[] _ReadCommand(string p)
         {
-            Samebest.Game.Data.PrototypeFactory factory = new Samebest.Game.Data.PrototypeFactory();
+            Regulus.Game.Data.PrototypeFactory factory = new Regulus.Game.Data.PrototypeFactory();
             factory.LoadCSV("Command", p);
             var cmds = factory.GeneratePrototype<Command>();
             return cmds;
@@ -142,7 +142,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             _Bind(user.ParkingProvider);
         }
 
-        private void _Bind<T>(Samebest.Remoting.Ghost.IProviderNotice<T> provider_notice)
+        private void _Bind<T>(Regulus.Remoting.Ghost.IProviderNotice<T> provider_notice)
         {
             provider_notice.Supply += provider_notice_Supply;            
         }
@@ -207,7 +207,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             {
 
                 string commands = new string(chars.Reverse().ToArray());
-                Samebest.Utility.Singleton<Regulus.Utility.ConsoleLogger>.Instance.Log("Enter Command : " + commands);
+                Regulus.Utility.Singleton<Regulus.Utility.ConsoleLogger>.Instance.Log("Enter Command : " + commands);
                 chars.Clear();
 
                 Console.Write("\n");
@@ -239,7 +239,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
 
     class StatusBotController : Controller
     {
-        Samebest.Game.StageMachine<StatusBotController> _StageMachine;
+        Regulus.Game.StageMachine<StatusBotController> _StageMachine;
         public TurnBasedRPG.User User {get; private set;}
         public string Name { get; private set; }
         public StatusBotController(string name)
@@ -250,7 +250,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
         {
             User = user;
             User.LinkFail += User_LinkFail;
-            _StageMachine = new Samebest.Game.StageMachine<StatusBotController>(this);
+            _StageMachine = new Regulus.Game.StageMachine<StatusBotController>(this);
             ToVerify();
         }
 

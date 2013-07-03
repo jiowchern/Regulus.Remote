@@ -5,10 +5,10 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
 {
-    class Parking : Samebest.Game.IStage<StatusBotController>
+    class Parking : Regulus.Game.IStage<StatusBotController>
     {
         Action<Regulus.Project.TurnBasedRPG.IParking> _OnSupply;
-        void Samebest.Game.IStage<StatusBotController>.Enter(StatusBotController obj)
+        void Regulus.Game.IStage<StatusBotController>.Enter(StatusBotController obj)
         {
             _OnSupply = (patking) =>
             {
@@ -40,14 +40,14 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
             _Restart = System.DateTime.Now;
         }
 
-        void Samebest.Game.IStage<StatusBotController>.Leave(StatusBotController obj)
+        void Regulus.Game.IStage<StatusBotController>.Leave(StatusBotController obj)
         {
             var notify = obj.User.ParkingProvider;
             notify.Supply -= _OnSupply;
         }
 
         System.DateTime _Restart;
-        void Samebest.Game.IStage<StatusBotController>.Update(StatusBotController obj)
+        void Regulus.Game.IStage<StatusBotController>.Update(StatusBotController obj)
         {
             var time = System.DateTime.Now - _Restart;
             if (time.TotalSeconds > 10)

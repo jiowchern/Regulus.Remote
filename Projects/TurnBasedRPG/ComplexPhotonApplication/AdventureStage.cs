@@ -5,12 +5,12 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPG
 {
-    class AdventureStage : Samebest.Game.IStage<User>
+    class AdventureStage : Regulus.Game.IStage<User>
     {
         DateTime _Save;
         Regulus.Project.TurnBasedRPG.Player _Player;
         
-        void Samebest.Game.IStage<User>.Enter(User obj)
+        void Regulus.Game.IStage<User>.Enter(User obj)
         {            
             _Player = new Player(obj.Actor);
             obj.Provider.Bind<IPlayer>(_Player);
@@ -36,8 +36,8 @@ namespace Regulus.Project.TurnBasedRPG
                 observe.LeftEvent += _ObservedLeft;
             }
 
-            obj.Provider.Bind<IMapInfomation>(Samebest.Utility.Singleton<Map>.Instance);
-            obj.Provider.Bind<Samebest.Remoting.ITime>( LocalTime.Instance );
+            obj.Provider.Bind<IMapInfomation>(Regulus.Utility.Singleton<Map>.Instance);
+            obj.Provider.Bind<Regulus.Remoting.ITime>( LocalTime.Instance );
             
             _Save = DateTime.Now;
         }
@@ -49,7 +49,7 @@ namespace Regulus.Project.TurnBasedRPG
         void _OnPlayerReady()
         {
             _Player.ReadyEvent -= _OnPlayerReady;
-            Samebest.Utility.Singleton<Map>.Instance.Into(_Player, _ExitMap);            
+            Regulus.Utility.Singleton<Map>.Instance.Into(_Player, _ExitMap);            
 			
         }
 
@@ -60,12 +60,12 @@ namespace Regulus.Project.TurnBasedRPG
             // 可能是切換地圖
         }
 
-        void Samebest.Game.IStage<User>.Leave(User obj)
+        void Regulus.Game.IStage<User>.Leave(User obj)
         {
             if (_Player != null)
             {
-                obj.Provider.Unbind<Samebest.Remoting.ITime>(LocalTime.Instance);
-                obj.Provider.Unbind<IMapInfomation>(Samebest.Utility.Singleton<Map>.Instance); 
+                obj.Provider.Unbind<Regulus.Remoting.ITime>(LocalTime.Instance);
+                obj.Provider.Unbind<IMapInfomation>(Regulus.Utility.Singleton<Map>.Instance); 
 
                 var observe = _Player.FindAbility<IObserveAbility>();
                 if (observe != null)
@@ -74,20 +74,20 @@ namespace Regulus.Project.TurnBasedRPG
                     observe.LeftEvent -= _ObservedLeft;
                 }
                 
-                Samebest.Utility.Singleton<Map>.Instance.Left(_Player);
+                Regulus.Utility.Singleton<Map>.Instance.Left(_Player);
                 _Player.Release();
                 obj.Provider.Unbind<IPlayer>(_Player);
             }
             
         }
 
-        void Samebest.Game.IStage<User>.Update(User obj)
+        void Regulus.Game.IStage<User>.Update(User obj)
         {
             var elapsed = DateTime.Now.Ticks - _Save.Ticks;
             var span = new TimeSpan(elapsed);
             if (span.TotalMinutes > 1.0)
             {
-                Samebest.Utility.Singleton<Storage>.Instance.SaveActor(obj.Actor);                
+                Regulus.Utility.Singleton<Storage>.Instance.SaveActor(obj.Actor);                
                 _Save = DateTime.Now;
             }
         }

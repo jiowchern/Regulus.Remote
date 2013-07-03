@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 
-namespace Samebest.Utility
+namespace Regulus.Utility
 {
     public class Singleton<T> where T : class, new()
     {

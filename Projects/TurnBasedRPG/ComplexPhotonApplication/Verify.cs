@@ -9,16 +9,16 @@ namespace Regulus.Project.TurnBasedRPG
     class Verify : IVerify
     {
         
-        Samebest.Remoting.Value<bool> IVerify.CreateAccount(string name, string password)
+        Regulus.Remoting.Value<bool> IVerify.CreateAccount(string name, string password)
         {
 
-            if (Samebest.Utility.Singleton<Storage>.Instance.FindAccountInfomation(name) == null)
+            if (Regulus.Utility.Singleton<Storage>.Instance.FindAccountInfomation(name) == null)
             {
                 AccountInfomation ai = new AccountInfomation();
                 ai.Name = name;
                 ai.Password = password;
                 ai.Id = Guid.NewGuid();
-                Samebest.Utility.Singleton<Storage>.Instance.Add(ai);
+                Regulus.Utility.Singleton<Storage>.Instance.Add(ai);
                 return true;
             }
             return false;
@@ -34,12 +34,12 @@ namespace Regulus.Project.TurnBasedRPG
 
             
         }
-        Samebest.Remoting.Value<LoginResult> IVerify.Login(string name, string password)
+        Regulus.Remoting.Value<LoginResult> IVerify.Login(string name, string password)
         {
             var user = _UserRoster.Find(name);
             if (user == null)
             {
-                var ai = Samebest.Utility.Singleton<Storage>.Instance.FindAccountInfomation(name);
+                var ai = Regulus.Utility.Singleton<Storage>.Instance.FindAccountInfomation(name);
                 if (ai != null && ai.Password == password)
                 {
                     LoginSuccess(ai);                    

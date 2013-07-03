@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Samebest.Remoting.Soul
+namespace Regulus.Remoting.Soul
 {
-    public class ServerPeer : Photon.SocketServer.PeerBase, Regulus.Remoting.IResponseQueue
+	public class ServerPeer : Photon.SocketServer.PeerBase, Regulus.Remoting.IResponseQueue, Regulus.Remoting.IRequestQueue
 	{
         readonly ExitGames.Concurrency.Fibers.PoolFiber _Fiber;
 		public ServerPeer(Photon.SocketServer.InitRequest initRequest)
@@ -15,19 +15,19 @@ namespace Samebest.Remoting.Soul
             _Fiber.Start();
 		}
 
-		public event Action DisconnectEvent;
+		public event Action BreakEvent;
 		protected override void OnDisconnect(PhotonHostRuntimeInterfaces.DisconnectReason reasonCode, string reasonDetail)
 		{
             System.Diagnostics.Debug.WriteLine(reasonCode.ToString());
-			if(DisconnectEvent != null)												
-				DisconnectEvent.Invoke();
+			if(BreakEvent != null)												
+				BreakEvent.Invoke();
 
 
             _Fiber.Stop();
             _Fiber.Dispose();
 		}
 
-		public Action<Guid , string ,Guid , object[]>	InvokeMethodEvent;
+		public event Action<Guid , string ,Guid , object[]>	InvokeMethodEvent;
 		
 		protected override void OnOperationRequest(Photon.SocketServer.OperationRequest operationRequest, Photon.SocketServer.SendParameters sendParameters)
 		{
@@ -49,7 +49,7 @@ namespace Samebest.Remoting.Soul
 				
 				var methodParams = (from p in operationRequest.Parameters
 								   where p.Key >= 3 orderby p.Key
-								   select Samebest.PhotonExtension.TypeHelper.Deserialize(p.Value as byte[])).ToArray();
+								   select Regulus.PhotonExtension.TypeHelper.Deserialize(p.Value as byte[])).ToArray();
 
                 _Push(entityId, methodName, returnId, methodParams);
 
@@ -85,7 +85,7 @@ namespace Samebest.Remoting.Soul
         Queue<Response> _UpdateResponses = new Queue<Response>();
 
         System.DateTime _UpdateTime;
-        internal void Update()
+        public void Update()
         {
             while (_NewResponses.Count > 0)
             {

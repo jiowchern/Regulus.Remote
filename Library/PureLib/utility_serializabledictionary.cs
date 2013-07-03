@@ -1,6 +1,6 @@
 ﻿
 
-namespace Samebest.Utility
+namespace Regulus.Utility
 {
 	using System;
 	using System.Runtime.Serialization;
@@ -18,7 +18,7 @@ namespace Samebest.Utility
 		{
 			public override bool CanConvertFrom(System.ComponentModel.ITypeDescriptorContext context, Type sourceType)
 			{
-				if (sourceType == typeof(Samebest.Utility.Map<TKey, TKey>))
+				if (sourceType == typeof(Regulus.Utility.Map<TKey, TKey>))
 				{
 					return true;
 				}
@@ -26,7 +26,7 @@ namespace Samebest.Utility
 			}
 			public override object ConvertFrom(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
 			{
-				Samebest.Utility.Map<TKey, TKey> qn = new Utility.Map<TKey, TKey>();
+				Regulus.Utility.Map<TKey, TKey> qn = new Utility.Map<TKey, TKey>();
 				if (value != null)
 				{
 					Object[] parts = (Object[])value;
@@ -41,7 +41,7 @@ namespace Samebest.Utility
 			}
 			public override bool CanConvertTo(System.ComponentModel.ITypeDescriptorContext context, Type destinationType)
 			{
-				if (destinationType == typeof(Samebest.Utility.Map<TKey, TKey>))
+				if (destinationType == typeof(Regulus.Utility.Map<TKey, TKey>))
 				{
 					return true;
 				}
@@ -53,9 +53,9 @@ namespace Samebest.Utility
 				Object[] objs = new Object[0];
 				if (value != null)
 				{
-					if (destinationType == typeof(Samebest.Utility.Map<TKey, TKey>))
+					if (destinationType == typeof(Regulus.Utility.Map<TKey, TKey>))
 					{
-						Samebest.Utility.Map<TKey, TKey> qn = (Samebest.Utility.Map<TKey, TKey>)value;
+						Regulus.Utility.Map<TKey, TKey> qn = (Regulus.Utility.Map<TKey, TKey>)value;
 						objs = new Object[qn.Count];
 						int idx = 0;
 						foreach (var page in qn)
@@ -71,9 +71,9 @@ namespace Samebest.Utility
 			}
 		}
 
-		/*public static implicit operator Samebest.Utility.Map<TKey, TKey>(Object[] value)
+		/*public static implicit operator Regulus.Utility.Map<TKey, TKey>(Object[] value)
 		{
-			Samebest.Utility.Map<TKey, TKey> qn = new Utility.Map<TKey, TKey>();
+			Regulus.Utility.Map<TKey, TKey> qn = new Utility.Map<TKey, TKey>();
 			if (value != null)
 			{
 				Object[] parts = (Object[])value;
@@ -87,7 +87,7 @@ namespace Samebest.Utility
 			return qn;
 		}*/
 		#region Constants
-		private const string DictionaryNodeName = "Samebest.Utility.Map";
+		private const string DictionaryNodeName = "Regulus.Utility.Map";
 		private const string ItemNodeName = "Item";
 		private const string KeyNodeName = "Key";
 		private const string ValueNodeName = "Value";

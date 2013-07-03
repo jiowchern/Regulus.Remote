@@ -5,10 +5,11 @@ using System.Text;
 
 namespace Regulus.Remoting
 {
-	public interface ISoulBinder
+	public interface IRequestQueue	
 	{
-		void Bind<TSoul>(TSoul soul);
-		void Unbind<TSoul>(TSoul soul);
+		event Action<Guid, string, Guid, object[]> InvokeMethodEvent;
 		event Action BreakEvent;
+
+		void Update();
 	}
 }

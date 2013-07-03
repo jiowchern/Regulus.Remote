@@ -10,12 +10,12 @@ using log4net.Config;
 using LogManager = ExitGames.Logging.LogManager;
 using System.IO;
 
-namespace Samebest.Remoting.Soul
+namespace Regulus.Remoting.Soul
 {
 	public abstract class PhotonApplication : Photon.SocketServer.ApplicationBase
 	{
 		System.Threading.Thread	_FrameworkThread;
-		Samebest.Remoting.PhotonExpansion.IPhotonFramework _Framework;
+		Regulus.Remoting.PhotonExpansion.IPhotonFramework _Framework;
 		protected ILogger Logger{	get;private set;	}
 		protected override void Setup()
 		{
@@ -95,7 +95,7 @@ namespace Samebest.Remoting.Soul
 			Logger.Info("TearDown end.");
 		}	
 		object	_SynObject = new object();	
-		System.Collections.Generic.Queue<Samebest.Remoting.Soul.SoulProvider> _NewProviderQueue = new Queue<SoulProvider>();
+		System.Collections.Generic.Queue<Regulus.Remoting.Soul.SoulProvider> _NewProviderQueue = new Queue<SoulProvider>();
 		
 		protected override Photon.SocketServer.PeerBase CreatePeer(Photon.SocketServer.InitRequest initRequest)
 		{
@@ -104,13 +104,13 @@ namespace Samebest.Remoting.Soul
             
 			lock (_SynObject)
 			{                
-                _NewProviderQueue.Enqueue(new Samebest.Remoting.Soul.SoulProvider(peer, peer));
+                _NewProviderQueue.Enqueue(new Regulus.Remoting.Soul.SoulProvider(peer, peer));
 			}
 			
 			return peer;
 		}
 
-		protected abstract Samebest.Remoting.PhotonExpansion.IPhotonFramework _Setup();
+		protected abstract Regulus.Remoting.PhotonExpansion.IPhotonFramework _Setup();
 
 	}
 }

@@ -11,9 +11,9 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
         {
             Console.WriteLine("用摸的RPG");
             Console.WriteLine("系統啟動...");
-            Samebest.Utility.Singleton<Regulus.Utility.ConsoleLogger>.Instance.Launch("TurnBasedRPG");
+            Regulus.Utility.Singleton<Regulus.Utility.ConsoleLogger>.Instance.Launch("TurnBasedRPG");
 
-            Samebest.Game.FrameworkRoot frameworkRoot = new Samebest.Game.FrameworkRoot();
+            Regulus.Game.FrameworkRoot frameworkRoot = new Regulus.Game.FrameworkRoot();
 
             bool userRunning = true;
             var user = _CreateUser(frameworkRoot);
@@ -31,11 +31,11 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             }
             frameworkRoot.Shutdown();
             Console.WriteLine("系統關閉...");
-            Samebest.Utility.Singleton<Regulus.Utility.ConsoleLogger>.Instance.Shutdown();
+            Regulus.Utility.Singleton<Regulus.Utility.ConsoleLogger>.Instance.Shutdown();
             Console.WriteLine("關閉完成.");
         }
 
-        private UserController _CreateUser(Samebest.Game.FrameworkRoot frameworkRoot)
+        private UserController _CreateUser(Regulus.Game.FrameworkRoot frameworkRoot)
         {
             Console.WriteLine("建立使用者.");
             UserController user = new UserController();
@@ -44,7 +44,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             return user;
         }
 
-        private void _CreateStageBot(Samebest.Game.FrameworkRoot frameworkRoot)
+        private void _CreateStageBot(Regulus.Game.FrameworkRoot frameworkRoot)
         {
             Console.WriteLine("建立狀態機器人...");
             Console.Write("輸入數量:");
@@ -58,7 +58,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
                 }
             }
         }
-        private void _CreateRandomBot(Samebest.Game.FrameworkRoot frameworkRoot)
+        private void _CreateRandomBot(Regulus.Game.FrameworkRoot frameworkRoot)
         {
             if (System.IO.File.Exists("BotCommand.txt"))
             {

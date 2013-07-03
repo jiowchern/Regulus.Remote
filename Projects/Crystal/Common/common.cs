@@ -2,7 +2,7 @@
 using System;
 namespace Regulus.Project.Crystal
 {
-    using Samebest.Remoting;
+    using Regulus.Remoting;
     public interface IVerify
     {        
         Value<bool> CreateAccount(string name, string password);
@@ -11,7 +11,7 @@ namespace Regulus.Project.Crystal
     };
 
 
-    interface IStorage
+    public interface IStorage
     {
         Value<AccountInfomation> FindAccountInfomation(string name);
 

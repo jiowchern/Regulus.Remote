@@ -6,16 +6,16 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPG
 {
-    class User : Samebest.Game.IFramework
+    class User : Regulus.Game.IFramework
     {
-        public  Samebest.Remoting.Soul.SoulProvider Provider {get ; private set;}
+        public  Regulus.Remoting.Soul.SoulProvider Provider {get ; private set;}
 
-        Samebest.Game.StageMachine<User> _Machine ;
+        Regulus.Game.StageMachine<User> _Machine ;
         Regulus.Project.TurnBasedRPG.UserRoster _UserRoster;
-        public User(Samebest.Remoting.Soul.SoulProvider provider , Regulus.Project.TurnBasedRPG.UserRoster user_roster)
+        public User(Regulus.Remoting.Soul.SoulProvider provider , Regulus.Project.TurnBasedRPG.UserRoster user_roster)
         {
             _UserRoster = user_roster;
-            _Machine = new Samebest.Game.StageMachine<User>(this);
+            _Machine = new Regulus.Game.StageMachine<User>(this);
             Provider = provider;
             provider.BreakEvent += Quit;
         }
@@ -85,7 +85,7 @@ namespace Regulus.Project.TurnBasedRPG
             _Machine.Push(new AdventureStage());
         }
 
-        void Samebest.Game.IFramework.Launch()
+        void Regulus.Game.IFramework.Launch()
         {
             _AccountInfomation = null;
             _ClearActor();            
@@ -96,17 +96,17 @@ namespace Regulus.Project.TurnBasedRPG
         {
             if (Actor != null)
             {
-                Samebest.Utility.Singleton<Storage>.Instance.SaveActor(Actor);
+                Regulus.Utility.Singleton<Storage>.Instance.SaveActor(Actor);
                 Actor = null;
             }
         }
 
-        bool Samebest.Game.IFramework.Update()
+        bool Regulus.Game.IFramework.Update()
         {
             return _Machine.Update();
         }
 
-        void Samebest.Game.IFramework.Shutdown()
+        void Regulus.Game.IFramework.Shutdown()
         {
             _ClearActor();
             _Machine.Termination();    

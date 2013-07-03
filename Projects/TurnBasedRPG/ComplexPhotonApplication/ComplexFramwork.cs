@@ -6,27 +6,27 @@ using System.Text;
 namespace Regulus.Project.TurnBasedRPG
 {
 
-    class LocalTime : Samebest.Utility.Singleton<Samebest.Remoting.Time>, Samebest.Game.IFramework
+    class LocalTime : Regulus.Utility.Singleton<Regulus.Remoting.Time>, Regulus.Game.IFramework
     {
 
-        void Samebest.Game.IFramework.Launch()
+        void Regulus.Game.IFramework.Launch()
         {
                 
         }
 
-        bool Samebest.Game.IFramework.Update()
+        bool Regulus.Game.IFramework.Update()
         {
             Instance.Update();
             return true;    
         }
 
-        void Samebest.Game.IFramework.Shutdown()
+        void Regulus.Game.IFramework.Shutdown()
         {
             
         }
     }
 
-    class ComplexFramwork : Samebest.Remoting.PhotonExpansion.PhotonFramework 
+    class ComplexFramwork : Regulus.Remoting.PhotonExpansion.PhotonFramework 
     {        
         //Regulus.Project.TurnBasedRPG.Map    _Map;
         Regulus.Project.TurnBasedRPG.Hall   _Hall;
@@ -39,25 +39,25 @@ namespace Regulus.Project.TurnBasedRPG
             _Hall = new Hall();
         }
 
-        public override void ObtainController(Samebest.Remoting.Soul.SoulProvider provider)
+        public override void ObtainController(Regulus.Remoting.Soul.SoulProvider provider)
         {
             _Hall.PushUser(new User(provider , _Hall));
         }
 
         public override void Launch()
         {
-            Samebest.Utility.Singleton<Map>.Instance.SetTime(LocalTime.Instance);
+            Regulus.Utility.Singleton<Map>.Instance.SetTime(LocalTime.Instance);
             AddFramework(_Time);            
-            AddFramework(Samebest.Utility.Singleton<Map>.Instance);            
+            AddFramework(Regulus.Utility.Singleton<Map>.Instance);            
             AddFramework(_Hall);  
-            AddFramework(Samebest.Utility.Singleton<Storage>.Instance);                        
+            AddFramework(Regulus.Utility.Singleton<Storage>.Instance);                        
         }
 
         public override void Shutdown()
         {
-            RemoveFramework(Samebest.Utility.Singleton<Storage>.Instance);            
+            RemoveFramework(Regulus.Utility.Singleton<Storage>.Instance);            
             RemoveFramework(_Hall);
-            RemoveFramework(Samebest.Utility.Singleton<Map>.Instance);
+            RemoveFramework(Regulus.Utility.Singleton<Map>.Instance);
             RemoveFramework(_Time);            
         }
     }

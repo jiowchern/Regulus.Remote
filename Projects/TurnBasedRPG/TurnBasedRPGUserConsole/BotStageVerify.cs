@@ -8,10 +8,10 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
 {
     namespace BotStage
     {
-        public class Verify : Samebest.Game.IStage<StatusBotController>
+        public class Verify : Regulus.Game.IStage<StatusBotController>
         {
             Action<Regulus.Project.TurnBasedRPG.IVerify> _OnSupply;
-            void Samebest.Game.IStage<StatusBotController>.Enter(StatusBotController obj)
+            void Regulus.Game.IStage<StatusBotController>.Enter(StatusBotController obj)
             {
                 _OnSupply = (verify) =>
                 {
@@ -47,7 +47,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
 
             
 
-            void Samebest.Game.IStage<StatusBotController>.Leave(StatusBotController obj)
+            void Regulus.Game.IStage<StatusBotController>.Leave(StatusBotController obj)
             {
 
                 var notify = obj.User.VerifyProvider;
@@ -55,7 +55,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             }
 
             System.DateTime _Restart;
-            void Samebest.Game.IStage<StatusBotController>.Update(StatusBotController obj)
+            void Regulus.Game.IStage<StatusBotController>.Update(StatusBotController obj)
             {
                 var time =System.DateTime.Now - _Restart;
                 if (time.TotalSeconds > 10)

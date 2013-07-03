@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Regulus.Project.Crystal
 {
-	public class ComplexApplication : Samebest.Remoting.Soul.PhotonApplication
+	public class ComplexApplication : Regulus.Remoting.Soul.PhotonApplication
     {
-		protected override Samebest.Remoting.PhotonExpansion.IPhotonFramework _Setup()
+		protected override Regulus.Remoting.PhotonExpansion.IPhotonFramework _Setup()
 		{
 			return new Regulus.Project.Crystal.ComplexFramework();
 		}

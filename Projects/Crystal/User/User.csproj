@@ -42,13 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Common\common.cs">
-      <Link>common.cs</Link>
-    </Compile>
     <Compile Include="ConnectUser.cs" />
-    <Compile Include="Core.cs" />
-    <Compile Include="StageFirst.cs" />
     <Compile Include="StandaloneUser.cs" />
+    <Compile Include="Storage.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -64,6 +60,10 @@
     <ProjectReference Include="..\..\..\Library\Remoting\Remoting.csproj">
       <Project>{a4cfce46-bda8-4416-a1bb-77bd80514019}</Project>
       <Name>Remoting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Game\Game.csproj">
+      <Project>{6d0ec61e-f2b6-4e65-addc-23f09d397e54}</Project>
+      <Name>Game</Name>
     </ProjectReference>
     <ProjectReference Include="..\Serializable\Serializable.csproj">
       <Project>{4868ea9e-ecfd-462c-b053-dfc4b7e4785c}</Project>

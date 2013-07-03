@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Samebest.Remoting.Ghost
+namespace Regulus.Remoting.Ghost
 {
 	public class LinkState
 	{

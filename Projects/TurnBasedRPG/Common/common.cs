@@ -4,7 +4,7 @@ namespace Regulus.Project.TurnBasedRPG
 {
 
     using Regulus.Project.TurnBasedRPG.Serializable;
-    using Samebest.Remoting;
+    using Regulus.Remoting;
     
 
     public interface IVerify

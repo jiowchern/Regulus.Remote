@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Samebest.Extension
+namespace Regulus.Extension
 {
 
 
@@ -30,17 +30,17 @@ namespace Samebest.Extension
         {
 
 
-            var iterator = Samebest.Utility.CSV.Read(path, token).GetEnumerator();
+            var iterator = Regulus.Utility.CSV.Read(path, token).GetEnumerator();
 
             //System.Data.DataTable dt = new System.Data.DataTable();
 			// 第一行
 			//iterator.MoveNext();
             // 第二行
 			iterator.MoveNext();
-            Samebest.Utility.CSV.Row rowNames = iterator.Current;
+            Regulus.Utility.CSV.Row rowNames = iterator.Current;
 			// 第三行
             iterator.MoveNext();
-            Samebest.Utility.CSV.Row rowTypes = iterator.Current;
+            Regulus.Utility.CSV.Row rowTypes = iterator.Current;
 
             if (rowTypes.Fields.Length != rowNames.Fields.Length)
             {

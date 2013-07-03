@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Utility
 {
-	public class Random : Samebest.Utility.Singleton<Random>
+	public class Random : Regulus.Utility.Singleton<Random>
 	{
 		public System.Random R {get;private set;}
 		public Random()

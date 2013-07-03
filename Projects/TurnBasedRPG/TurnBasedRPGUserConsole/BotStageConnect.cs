@@ -5,10 +5,10 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
 {
-    class Connect : Samebest.Game.IStage<StatusBotController>
+    class Connect : Regulus.Game.IStage<StatusBotController>
     {
         Action _LinkSuccess;
-        void Samebest.Game.IStage<StatusBotController>.Enter(StatusBotController obj)
+        void Regulus.Game.IStage<StatusBotController>.Enter(StatusBotController obj)
         {
             obj.User.Launch();
             
@@ -16,12 +16,12 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
             obj.User.LinkSuccess += _LinkSuccess;
         }
 
-        void Samebest.Game.IStage<StatusBotController>.Leave(StatusBotController obj)
+        void Regulus.Game.IStage<StatusBotController>.Leave(StatusBotController obj)
         {
             obj.User.LinkSuccess -= _LinkSuccess;
         }
 
-        void Samebest.Game.IStage<StatusBotController>.Update(StatusBotController obj)
+        void Regulus.Game.IStage<StatusBotController>.Update(StatusBotController obj)
         {
             
         }
