@@ -10,7 +10,7 @@ namespace Regulus.Project.Crystal
 		private Regulus.Remoting.Ghost.Agent _Complex { get; set; }
 		public void Update()
 		{
-			
+		    	
 		}
 	}
 }

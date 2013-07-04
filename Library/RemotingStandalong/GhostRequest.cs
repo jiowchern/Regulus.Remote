@@ -29,14 +29,19 @@ namespace Regulus.Standalong
 
 		public void Update()
 		{
+            Queue<Request> requests = new Queue<Request>();
 			lock (_Requests)
 			{
 				while(_Requests.Count > 0)
 				{
-					var request = _Requests.Dequeue()	;
-					_Apportion(request.Code , request.Argments);
+                    requests.Enqueue(_Requests.Dequeue());					
 				}
 			}
+            while (requests.Count > 0)
+            {
+                var request = requests.Dequeue();
+                _Apportion(request.Code, request.Argments);
+            }            
 		}
 
 

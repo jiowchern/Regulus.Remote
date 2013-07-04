@@ -549,9 +549,7 @@ namespace Regulus.Remoting
 				il.Emit(OpCodes.Ldloc, varDict);
 
 				//指定呼叫函式的多載
-				il.Emit(OpCodes.Call, peerField.FieldType.GetMethod("Request", new Type[] { typeof(byte), dictionaryType }));
-				//把return的值pop掉
-				il.Emit(OpCodes.Pop);
+				il.Emit(OpCodes.Call, peerField.FieldType.GetMethod("Request", new Type[] { typeof(byte), dictionaryType }));				
 
 				if (valueOriType.Name == m.ReturnType.Name && valueOriType.Namespace == m.ReturnType.Namespace)
 				{

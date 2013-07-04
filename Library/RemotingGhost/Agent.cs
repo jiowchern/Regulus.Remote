@@ -18,7 +18,7 @@ namespace Regulus.Remoting.Ghost
 		public Agent(Config config) 
 		{			
 			_Config = config;
-			_Core = new AgentCore(_Peer);
+			
 		}
 
         public void Launch()
@@ -26,7 +26,8 @@ namespace Regulus.Remoting.Ghost
             if (_Peer != null)
                 _Peer.Disconnect();
             _Peer = new Regulus.Remoting.PhotonExtension.ClientPeer(this, ExitGames.Client.Photon.ConnectionProtocol.Udp);
-            _Peer.Connect(_Config.Address, _Config.Name);	
+            _Peer.Connect(_Config.Address, _Config.Name);
+            _Core = new AgentCore(_Peer);
         }
 		public void Launch(LinkState link_state)
 		{			

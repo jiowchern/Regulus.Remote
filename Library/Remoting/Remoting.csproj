@@ -51,7 +51,6 @@
     <Compile Include="Agent.cs" />
     <Compile Include="GenericEventClosure.cs" />
     <Compile Include="GhostRequest.cs" />
-    <Compile Include="GhostRequest_2.cs" />
     <Compile Include="RequestQueue.cs" />
     <Compile Include="GhostProvider.cs" />
     <Compile Include="IGhostEventListener.cs" />
