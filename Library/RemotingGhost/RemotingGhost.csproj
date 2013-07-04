@@ -58,8 +58,6 @@
     <Compile Include="Config.cs" />
     <Compile Include="LinkState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReturnValueQueue.cs" />
-    <Compile Include="StandaloneProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PureLib\PureLib.csproj">

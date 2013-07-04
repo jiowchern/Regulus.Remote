@@ -269,7 +269,7 @@ namespace Regulus.Remoting.Soul
 
         System.DateTime _UpdatePropertyInterval;
         System.DateTime _UpdateEventInterval;
-        internal void Update()
+        public void Update()
         {
             _Peer.Update();
 
