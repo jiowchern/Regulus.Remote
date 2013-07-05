@@ -11,7 +11,8 @@ namespace Regulus.Project.Crystal.Standalone
 		Regulus.Project.Crystal.Game.Hall _Hall;
 		Regulus.Standalong.Agent _Agent ;
 		public User()
-		{			
+		{
+						
 		}
 
 		Regulus.Remoting.Ghost.IProviderNotice<IVerify> IUser.VerifyProvider

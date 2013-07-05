@@ -9,6 +9,4 @@ namespace Regulus.Remoting
     {        
         void Push(byte cmd, Dictionary<byte, object> args);        
     }
-
-
 }
