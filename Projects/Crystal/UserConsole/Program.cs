@@ -10,8 +10,8 @@ namespace UserConsole
     {
         static void Main(string[] args)
         {
-            Regulus.Console.Application app = new Regulus.Console.Application();						
-			app.Run();
+            //Regulus.Console.Application app = new Regulus.Console.Application();						
+			//app.Run();
         }
     }
 }
