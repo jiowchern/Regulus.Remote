@@ -13,7 +13,12 @@ namespace Regulus.Project.TurnBasedRPG
             public Entity Entity {get;set;}
             public Action Exit; 
         }
+		class Collision
+		{
+			
+		}
         Regulus.Utility.Poller<EntityInfomation> _EntityInfomations = new Utility.Poller<EntityInfomation>();
+		//Regulus.Utility.QuadTree<Collision> _Collisions;
 		
         
 		long _DeltaTime 
@@ -26,6 +31,7 @@ namespace Regulus.Project.TurnBasedRPG
 
         public void Into(Entity entity, Action exit_map)
         {
+		
             _EntityInfomations.Add(new EntityInfomation() { Entity = entity, Exit = exit_map });         
         }
 
