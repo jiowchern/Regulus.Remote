@@ -12,5 +12,7 @@ namespace Regulus.Project.TurnBasedRPG
         float Vision { get; }
         event Action<IObservedAbility> IntoEvent;
         event Action<IObservedAbility> LeftEvent;
-    }
+
+		void Update(Physics.QuadTree<Physics.IQuadObject> observeds , List<IObservedAbility> lefts);
+	}
 }

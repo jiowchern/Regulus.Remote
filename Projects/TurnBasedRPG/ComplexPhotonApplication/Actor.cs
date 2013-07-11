@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPG
 {
-	class Actor : Entity
+	class Actor : Entity ,Regulus.Physics.IQuadObject
 	{
         Serializable.EntityPropertyInfomation _Property;
         Serializable.EntityLookInfomation _Look;
@@ -17,6 +17,16 @@ namespace Regulus.Project.TurnBasedRPG
 		{
             _Property = property;
             _Look = look;
+			_Bounds = new System.Windows.Rect( new System.Windows.Size(1 , 1));
+
+			_UpdateBounds(_Property.Position , _Bounds);
+		}
+
+		private void _UpdateBounds(Types.Vector2 vector2, System.Windows.Rect bounds)
+		{
+			bounds.Offset(vector2.X, vector2.Y);
+			if (BoundsChanged != null)
+				BoundsChanged(bounds , new EventArgs());
 		}        
 
         private ActorMoverAbility _MoverAbility;
@@ -29,16 +39,20 @@ namespace Regulus.Project.TurnBasedRPG
             _MoverAbility.PositionEvent += _OnPosition;
             
             abilitys.AttechAbility<IMoverAbility>(_MoverAbility);
+			abilitys.AttechAbility<Regulus.Physics.IQuadObject>(this);
         }
 
         private void _OnPosition(long time, Types.Vector2 unit_vector)
         {
             _Property.Position.X += unit_vector.X;
             _Property.Position.Y += unit_vector.Y;
+
+			_UpdateBounds(unit_vector , _Bounds);
         }
 
         protected override void _RiseAbility(Entity.AbilitySet abilitys)
         {
+			abilitys.DetechAbility<Regulus.Physics.IQuadObject>();
             abilitys.DetechAbility<IMoverAbility>();
         }
 
@@ -60,6 +74,14 @@ namespace Regulus.Project.TurnBasedRPG
             if (ShowActionEvent != null)
                 ShowActionEvent(mi);
         }
-        
-    }
+
+		System.Windows.Rect _Bounds;
+		System.Windows.Rect Physics.IQuadObject.Bounds
+		{
+			get { return _Bounds; }
+		}
+
+		public event EventHandler BoundsChanged;
+		
+	}
 }

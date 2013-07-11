@@ -8,17 +8,19 @@ namespace Regulus.Project.TurnBasedRPG
     class Map : Regulus.Game.IFramework , IMapInfomation
     {
         Regulus.Remoting.Time _Time;
-        class EntityInfomation
+        class EntityInfomation 
         {
             public Entity Entity {get;set;}
             public Action Exit; 
-        }
-		class Collision
-		{
-			
 		}
+
+
+		
+			
         Regulus.Utility.Poller<EntityInfomation> _EntityInfomations = new Utility.Poller<EntityInfomation>();
-		//Regulus.Utility.QuadTree<Collision> _Collisions;
+		Regulus.Physics.QuadTree<Regulus.Physics.IQuadObject> _ObseverdInfomations;
+		
+		
 		
         
 		long _DeltaTime 
@@ -31,8 +33,17 @@ namespace Regulus.Project.TurnBasedRPG
 
         public void Into(Entity entity, Action exit_map)
         {
-		
-            _EntityInfomations.Add(new EntityInfomation() { Entity = entity, Exit = exit_map });         
+
+			var qo = entity.FindAbility<Regulus.Physics.IQuadObject>();
+			if (qo != null)
+			{
+				_ObseverdInfomations.Insert(qo);	
+			}
+			
+
+			var ei = new EntityInfomation() { Entity = entity, Exit = exit_map };
+			_EntityInfomations.Add(ei);    
+			
         }
 
         List<IObservedAbility> _Lefts = new List<IObservedAbility>();
@@ -45,12 +56,19 @@ namespace Regulus.Project.TurnBasedRPG
             }
             
             _EntityInfomations.Remove(info => info.Entity == entity);
+
+
+			var qo = entity.FindAbility<Regulus.Physics.IQuadObject>();
+			if (qo != null)
+			{
+				_ObseverdInfomations.Remove(qo);
+			}
             
         }
 
         void Regulus.Game.IFramework.Launch()
         {
-            
+			_ObseverdInfomations = new Physics.QuadTree<Regulus.Physics.IQuadObject>(new System.Windows.Size(4, 4), 0);
         }
 
         bool Regulus.Game.IFramework.Update()
@@ -69,6 +87,7 @@ namespace Regulus.Project.TurnBasedRPG
         
         private void _UpdateObservers(Entity[] entitys)
         {
+			
             var observeds = (from entity in entitys 
                             let observed = entity.FindAbility<IObservedAbility>()
                             where observed != null
@@ -80,7 +99,9 @@ namespace Regulus.Project.TurnBasedRPG
 
 			foreach (var observer in observers)
             {
-				observer.Update(observeds, _Lefts);
+				//observer.Update(observeds, _Lefts);
+
+				observer.Update(_ObseverdInfomations , _Lefts);
             }
             _Lefts.Clear();
         }

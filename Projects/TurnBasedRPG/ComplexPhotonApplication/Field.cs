@@ -15,7 +15,7 @@ namespace Regulus.Project.TurnBasedRPG
         public event Action<IObservedAbility> LeftEvent;
         internal void Update(IObserveAbility observe, TurnBasedRPG.IObservedAbility[] entitys, List<IObservedAbility> lefts)
         {
-            var exits = entitys.Except(_Within);
+            
             foreach (var exit in lefts)
             {
                 _Remove(_Within, exit.Id);
@@ -63,6 +63,25 @@ namespace Regulus.Project.TurnBasedRPG
         {
             return (e1.Position.X - e2.Position.X) * (e1.Position.X - e2.Position.X) + (e1.Position.Y - e2.Position.Y) * (e1.Position.Y - e2.Position.Y);
         }
-        
-    }
+
+
+		internal void Update(IObserveAbility observe, Physics.QuadTree<Physics.IQuadObject> observeds, List<IObservedAbility> lefts)
+		{
+			
+			foreach (var exit in lefts)
+			{
+				_Remove(_Within, exit.Id);
+				if (LeftEvent != null)
+					LeftEvent(exit);
+			}
+
+			var w  = observe.Vision;
+			var h  = observe.Vision;
+			var x = observe.Observed.Position.X - observe.Vision/2;
+			var y = observe.Observed.Position.Y - observe.Vision/2;
+			var brounds = new System.Windows.Rect( x,y,w,h );
+			var inbrounds = observeds.Query( brounds );
+			
+		}
+	}
 }
