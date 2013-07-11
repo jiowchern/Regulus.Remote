@@ -46,9 +46,6 @@ namespace Regulus.Project.TurnBasedRPG
         }
 
 
-		void IObserveAbility.Update(Physics.QuadTree<Physics.IQuadObject> observeds, List<IObservedAbility> lefts)
-		{
-			_Field.Update(this, observeds, lefts);
-		}
+		
 	}
 }

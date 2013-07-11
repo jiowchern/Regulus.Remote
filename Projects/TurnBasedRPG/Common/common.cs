@@ -47,7 +47,7 @@ namespace Regulus.Project.TurnBasedRPG
 
         void BodyMovements(ActionStatue action_statue);
     }
-    public interface IObservedAbility
+    public interface IObservedAbility 
     {
         Guid Id { get; }
         Regulus.Types.Vector2 Position { get; }
@@ -57,9 +57,11 @@ namespace Regulus.Project.TurnBasedRPG
 
 	public interface IMoverAbility
 	{
-		void Update(long time, CollisionInformation collision_information);
-
+        Regulus.Utility.OBB Obb { get; }
+		
         void Act(ActionStatue action_statue, float move_speed, float direction);
+
+        void Update(long p, System.Collections.Generic.IEnumerable<Utility.OBB> obbs);
     }
     
 }
@@ -69,34 +71,41 @@ namespace Regulus.Project.TurnBasedRPG
 {
     public class ActorMoverAbility : IMoverAbility
     {
-
+        Utility.OBB _Obb;
         ActionStatue _CurrentAction;
-        public ActorMoverAbility(float direction)
+        public ActorMoverAbility(float direction , float x , float y)
         {
             _Update = _Empty;
             _Direction = direction;
+            _Obb = new Utility.OBB(x,y,0.5f,0.5f);
+            _Obb.setRotation(direction);
         }
-
-        Action<long, CollisionInformation> _Update;
-        void IMoverAbility.Update(long time, CollisionInformation collision_information)
+        public void SetPosition(float x , float y)
         {
-            _Update(time, collision_information);
+            _Obb.setXY(x,y);
+        }
+        Action<long, System.Collections.Generic.IEnumerable<Utility.OBB> > _Update;
+        void IMoverAbility.Update(long time, System.Collections.Generic.IEnumerable<Utility.OBB> obbs)
+        {
+            _Update(time, obbs);
         }
         long _CurrentTime;
         float _MoveSpeed;
         Regulus.Types.Vector2 _UnitVector;
         float _Direction;
-        void IMoverAbility.Act(ActionStatue action_statue, float move_speed, float direction /* 轉向角度 0~360 */)
+
+        void _Act(ActionStatue action_statue, float move_speed, float direction /* 轉向角度 0~360 */)
         {
             if (_CanSwitch(_CurrentAction, action_statue))
             {
                 // 角色面對世界的方向
                 _Direction = (direction + _Direction) % 360;
-                
-                _CurrentAction = action_statue;
-                _MoveSpeed = move_speed; 
+                _Obb.setRotation(_Direction);
 
-                var t = (float)((_Direction - 180) * Math.PI / 180);                
+                _CurrentAction = action_statue;
+                _MoveSpeed = move_speed;
+
+                var t = (float)((_Direction - 180) * Math.PI / 180);
 
                 // 移動向量
                 //_UnitVector = new Types.Vector2() { X = (float)Math.Cos(t), Y = (float)Math.Sin(t) };
@@ -104,22 +113,56 @@ namespace Regulus.Project.TurnBasedRPG
                 _Update = _First;
             }
         }
+        void IMoverAbility.Act(ActionStatue action_statue, float move_speed, float direction /* 轉向角度 0~360 */)
+        {
+            _Act(action_statue, move_speed, direction);
+        }
 
         public event Action<long, Regulus.Types.Vector2> PositionEvent;
-        void _UpdateMover(long time, CollisionInformation collision_information)
+        void _UpdateMover(long time, System.Collections.Generic.IEnumerable<Utility.OBB> obbs)
         {
             if (_MoveSpeed > 0)
             {
                 var dt = (float)new System.TimeSpan(time - _CurrentTime).TotalSeconds;
+                if (dt > 0)
+                {
+                    Regulus.Types.Vector2 moveVector = new Types.Vector2();
+                    moveVector.X = _UnitVector.X * dt * _MoveSpeed;
+                    moveVector.Y = _UnitVector.Y * dt * _MoveSpeed;
 
-                Regulus.Types.Vector2 moveVector = new Types.Vector2();
-                moveVector.X = _UnitVector.X * dt * _MoveSpeed;
-                moveVector.Y = _UnitVector.Y * dt * _MoveSpeed;
+                    _CurrentTime = time;
 
-                _CurrentTime = time;
+                    Utility.OBB testobb = new Utility.OBB(_Obb.getX() + moveVector.X, _Obb.getY() + moveVector.Y, _Obb.getWidth(), _Obb.getHeight());
+                    testobb.setRotation(_Obb.getRotation());
+                    foreach (var obb in obbs)
+                    {
+                        if (testobb.isCollision(obb) == false)
+                        {
+                            continue;
+                        }
 
-                if (PositionEvent != null)
-                    PositionEvent(time, moveVector);
+                        Utility.OBB safeobb = new Utility.OBB(_Obb.getX() + moveVector.X, _Obb.getY() + moveVector.Y, _Obb.getWidth(), _Obb.getHeight());
+                        safeobb.setRotation(_Obb.getRotation());
+                        do
+                        {                            
+                            moveVector.X += 0 - _UnitVector.X * dt * _MoveSpeed;
+                            moveVector.Y += 0 - _UnitVector.Y * dt * _MoveSpeed;
+                            safeobb.setXY(_Obb.getX() + moveVector.X, _Obb.getY() + moveVector.Y );
+                        }
+                        while (safeobb.isCollision(obb));
+                        
+                        if (PositionEvent != null)
+                            PositionEvent(time, moveVector);
+
+                        _Act(ActionStatue.GangnamStyle, 0, 0);
+                        return;
+                    }
+
+                    if (PositionEvent != null)
+                        PositionEvent(time, moveVector);
+                }
+
+                
             }
             else
             {
@@ -131,10 +174,10 @@ namespace Regulus.Project.TurnBasedRPG
         public delegate void BeginAction(long begin_time, float speed, float direction, Regulus.Types.Vector2 vector, ActionStatue action_status);
         public event BeginAction ActionEvent;
 
-        void _Empty(long time, CollisionInformation collision_information)
+        void _Empty(long time, System.Collections.Generic.IEnumerable<Utility.OBB> obbs)
         {
         }
-        void _First(long time, CollisionInformation collision_information)
+        void _First(long time, System.Collections.Generic.IEnumerable<Utility.OBB> obbs)
         {
             if (ActionEvent != null)
                 ActionEvent(time, _MoveSpeed, _Direction, _UnitVector, _CurrentAction);
@@ -146,6 +189,11 @@ namespace Regulus.Project.TurnBasedRPG
         {
             // TODO 動做兼是否可切換
             return true;
+        }
+
+        Utility.OBB IMoverAbility.Obb
+        {
+            get { return _Obb; }
         }
     }
 }

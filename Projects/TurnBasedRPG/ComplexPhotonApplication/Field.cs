@@ -23,7 +23,19 @@ namespace Regulus.Project.TurnBasedRPG
                     LeftEvent(exit);                
             }
 
-            var range = observe.Vision * observe.Vision;
+            foreach(var e in entitys.Except(_Within))
+            {
+                if (IntoEvent != null)
+                    IntoEvent(e);
+            }
+            foreach (var e in _Within.Except(entitys))
+            {
+                if (LeftEvent != null)
+                    LeftEvent(e);                                    
+                
+            }
+            _Within = entitys.ToList();
+            /*var range = observe.Vision * observe.Vision;
             foreach (var entity in entitys)
             {
                 var distance = _Distance(entity, observe.Observed);
@@ -46,7 +58,7 @@ namespace Regulus.Project.TurnBasedRPG
                             IntoEvent(entity);
                     }
                 }
-            }
+            }*/
         }
 
         private bool _Find(List<TurnBasedRPG.IObservedAbility> _Within, TurnBasedRPG.IObservedAbility entity)
@@ -65,23 +77,6 @@ namespace Regulus.Project.TurnBasedRPG
         }
 
 
-		internal void Update(IObserveAbility observe, Physics.QuadTree<Physics.IQuadObject> observeds, List<IObservedAbility> lefts)
-		{
-			
-			foreach (var exit in lefts)
-			{
-				_Remove(_Within, exit.Id);
-				if (LeftEvent != null)
-					LeftEvent(exit);
-			}
-
-			var w  = observe.Vision;
-			var h  = observe.Vision;
-			var x = observe.Observed.Position.X - observe.Vision/2;
-			var y = observe.Observed.Position.Y - observe.Vision/2;
-			var brounds = new System.Windows.Rect( x,y,w,h );
-			var inbrounds = observeds.Query( brounds );
-			
-		}
+		
 	}
 }

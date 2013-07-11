@@ -5,10 +5,11 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPG
 {
-	class Actor : Entity ,Regulus.Physics.IQuadObject
+    class Actor : Entity
 	{
         Serializable.EntityPropertyInfomation _Property;
         Serializable.EntityLookInfomation _Look;
+        
         
         public ActionStatue CurrentAction { get; protected set; }        
 
@@ -17,43 +18,44 @@ namespace Regulus.Project.TurnBasedRPG
 		{
             _Property = property;
             _Look = look;
-			_Bounds = new System.Windows.Rect( new System.Windows.Size(1 , 1));
-
-			_UpdateBounds(_Property.Position , _Bounds);
+            
 		}
 
-		private void _UpdateBounds(Types.Vector2 vector2, System.Windows.Rect bounds)
-		{
-			bounds.Offset(vector2.X, vector2.Y);
-			if (BoundsChanged != null)
-				BoundsChanged(bounds , new EventArgs());
-		}        
+		
 
         private ActorMoverAbility _MoverAbility;
+
+        QuadTreeObjectAbility _QuadTreeObjectAbility;
         public Action<Serializable.MoveInfomation> ShowActionEvent;
 
         protected override void _SetAbility(Entity.AbilitySet abilitys)
         {
-            _MoverAbility = new ActorMoverAbility(_Property.Direction);
+            _MoverAbility = new ActorMoverAbility(_Property.Direction, _Property.Position.X, _Property.Position.Y);
             _MoverAbility.ActionEvent += _OnAction;
             _MoverAbility.PositionEvent += _OnPosition;
             
             abilitys.AttechAbility<IMoverAbility>(_MoverAbility);
-			abilitys.AttechAbility<Regulus.Physics.IQuadObject>(this);
+
+            _QuadTreeObjectAbility = new QuadTreeObjectAbility(new System.Windows.Rect(_Property.Position.X , _Property.Position.Y , 1, 1) , this );
+            abilitys.AttechAbility<QuadTreeObjectAbility>(_QuadTreeObjectAbility);
+
+
+            
         }
 
         private void _OnPosition(long time, Types.Vector2 unit_vector)
         {
             _Property.Position.X += unit_vector.X;
             _Property.Position.Y += unit_vector.Y;
-
-			_UpdateBounds(unit_vector , _Bounds);
+            _QuadTreeObjectAbility.UpdateBounds(unit_vector);
+            _MoverAbility.SetPosition(_Property.Position.X, _Property.Position.Y);
         }
 
         protected override void _RiseAbility(Entity.AbilitySet abilitys)
         {
 			abilitys.DetechAbility<Regulus.Physics.IQuadObject>();
-            abilitys.DetechAbility<IMoverAbility>();
+            abilitys.DetechAbility<QuadTreeObjectAbility>();
+            
         }
 
         public float Direction { get { return _Property.Direction; } }
@@ -75,13 +77,6 @@ namespace Regulus.Project.TurnBasedRPG
                 ShowActionEvent(mi);
         }
 
-		System.Windows.Rect _Bounds;
-		System.Windows.Rect Physics.IQuadObject.Bounds
-		{
-			get { return _Bounds; }
-		}
-
-		public event EventHandler BoundsChanged;
-		
-	}
+        
+    }
 }
