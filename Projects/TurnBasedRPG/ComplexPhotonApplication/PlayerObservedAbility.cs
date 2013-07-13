@@ -34,5 +34,24 @@ namespace Regulus.Project.TurnBasedRPG
         {
             get { return _Infomation.Property.Direction; }
         }
+
+
+        internal void Say(string message)
+        {
+            if (_SayEvent != null)
+                _SayEvent(message);
+        }
+
+        event Action<string> _SayEvent;
+        event Action<string> IObservedAbility.SayEvent
+        {
+            add { _SayEvent += value; }
+            remove { _SayEvent -= value; }
+        }
+
+        string IObservedAbility.Name
+        {
+            get { return _Infomation.Look.Name; }
+        }
     }
 }

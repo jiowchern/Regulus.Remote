@@ -65,8 +65,8 @@ namespace Regulus.Project.TurnBasedRPG
 
         void IPlayer.SetPosition(float x, float y)
         {
-            _DBActorInfomation.Property.Position.X = x;
-            _DBActorInfomation.Property.Position.Y = y;
+            base.SetPosition(x , y);
+            
         }
 
         void IPlayer.SetVision(int vision)
@@ -118,10 +118,22 @@ namespace Regulus.Project.TurnBasedRPG
         {
             _DBActorInfomation.Property.Speed = speed;
         }
-
-
         
 
-        
+        void IPlayer.Say(string message)
+        {
+            _ObservedAbility.Say(message);
+        }
+
+
+        string IPlayer.Name
+        {
+            get { return _DBActorInfomation.Look.Name; }
+        }
+
+        float IPlayer.Direction
+        {
+            get { return _DBActorInfomation.Property.Direction; }
+        }
     }
 }

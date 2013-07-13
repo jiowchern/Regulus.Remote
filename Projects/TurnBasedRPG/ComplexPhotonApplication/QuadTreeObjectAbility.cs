@@ -23,13 +23,13 @@ namespace Regulus.Project.TurnBasedRPG
         }
 
         public event EventHandler BoundsChanged;
-        public void UpdateBounds(Types.Vector2 vector2)
+        public void UpdateBounds(float left , float top)
         {
-            _UpdateBounds(vector2, ref _Bounds);
+            _UpdateBounds(left, top, ref _Bounds);
         }
-        private void _UpdateBounds(Types.Vector2 vector2, ref System.Windows.Rect bounds)
+        private void _UpdateBounds(float left, float top, ref System.Windows.Rect bounds)
 		{
-			bounds.Offset(vector2.X, vector2.Y);
+            bounds.Location = new System.Windows.Point(left, top);            
 			if (BoundsChanged != null)
 				BoundsChanged(this, new EventArgs());
 		}        

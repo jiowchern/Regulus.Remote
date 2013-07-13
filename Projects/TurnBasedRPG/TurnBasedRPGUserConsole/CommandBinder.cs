@@ -106,6 +106,8 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             public void Add(IObservedAbility obs)
             {
                 _Unknowns.Add(obs);
+
+                
             }
 
             internal void Remove(IObservedAbility obj)
@@ -135,6 +137,10 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
                         Console.WriteLine(String.Format("entiry進入{0}:{1},{2}", newobs.Id.ToString(), newobs.Position.X, newobs.Position.Y));
                         _Observers.Add(newobs);
                         newobs.ShowActionEvent += (mi) => { newobs_ShowActionEvent(newobs.Id, mi); };
+                        newobs.SayEvent += (message) =>
+                        {
+                            Console.WriteLine(newobs.Id + ":" + message);
+                        };
                         _Unknowns.Remove(newobs);
                     } 
 
@@ -185,6 +191,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             _CommandHandler.Rise("Stop");
             _CommandHandler.Rise("Run");
             _CommandHandler.Rise("Act");
+            _CommandHandler.Rise("Say");
 			
 
             
@@ -212,6 +219,8 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
                     obj.BodyMovements((ActionStatue)d);
             };
             _CommandHandler.Set("Act", _Build<int>(act), "做動作 ex. 0 ~" + Enum.GetValues(typeof(ActionStatue)).Length.ToString());
+
+            _CommandHandler.Set("Say", _Build<string>(obj.Say), "講話 ex. 你好");
 
         } 
 

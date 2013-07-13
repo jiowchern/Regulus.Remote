@@ -9,7 +9,8 @@ namespace Regulus.Project.TurnBasedRPG
 	{
         Serializable.EntityPropertyInfomation _Property;
         Serializable.EntityLookInfomation _Look;
-        
+        float _BodyWidth;
+        float _BodyHeight;
         
         public ActionStatue CurrentAction { get; protected set; }        
 
@@ -18,7 +19,8 @@ namespace Regulus.Project.TurnBasedRPG
 		{
             _Property = property;
             _Look = look;
-            
+            _BodyWidth = 1;
+            _BodyHeight = 1;
 		}
 
 		
@@ -36,7 +38,7 @@ namespace Regulus.Project.TurnBasedRPG
             
             abilitys.AttechAbility<IMoverAbility>(_MoverAbility);
 
-            _QuadTreeObjectAbility = new QuadTreeObjectAbility(new System.Windows.Rect(_Property.Position.X , _Property.Position.Y , 1, 1) , this );
+            _QuadTreeObjectAbility = new QuadTreeObjectAbility(new System.Windows.Rect(_Property.Position.X - _BodyWidth / 2, _Property.Position.Y - _BodyHeight / 2, _BodyWidth, _BodyHeight), this);
             abilitys.AttechAbility<QuadTreeObjectAbility>(_QuadTreeObjectAbility);
 
 
@@ -48,7 +50,7 @@ namespace Regulus.Project.TurnBasedRPG
             _Property.Position.X += unit_vector.X;
             _Property.Position.Y += unit_vector.Y;
             _MoverAbility.SetPosition(_Property.Position.X, _Property.Position.Y);
-            _QuadTreeObjectAbility.UpdateBounds(unit_vector);
+            _QuadTreeObjectAbility.UpdateBounds(_Property.Position.X - _BodyWidth / 2, _Property.Position.Y - _BodyHeight / 2);
             
         }
 
@@ -78,6 +80,12 @@ namespace Regulus.Project.TurnBasedRPG
                 ShowActionEvent(mi);
         }
 
-        
+        public void SetPosition(float x, float y)
+        {
+            _Property.Position.X = x;
+            _Property.Position.Y = y;
+            _MoverAbility.SetPosition(_Property.Position.X, _Property.Position.Y);
+            _QuadTreeObjectAbility.UpdateBounds(_Property.Position.X - _BodyWidth / 2, _Property.Position.Y - _BodyHeight / 2);
+        }
     }
 }

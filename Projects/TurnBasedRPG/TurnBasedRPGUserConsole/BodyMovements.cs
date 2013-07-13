@@ -21,8 +21,11 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
             var actionStatus = Enum.GetValues(typeof(Regulus.Project.TurnBasedRPG.ActionStatue));
             if (actionStatus.Length > 0)
             {
-                obj.BodyMovements((Regulus.Project.TurnBasedRPG.ActionStatue) Regulus.Utility.Random.Next(0, actionStatus.Length - 1));
-                _ToMoveTimeSecond =  Regulus.Utility.Random.Next(10, 30);   
+                var a = (Regulus.Project.TurnBasedRPG.ActionStatue)Regulus.Utility.Random.Next(0, actionStatus.Length - 1);
+                obj.BodyMovements(a);
+                _ToMoveTimeSecond =  Regulus.Utility.Random.Next(10, 30);
+
+                obj.Say("執行動作" + a.ToString() + "," +  obj.Name + "如此說道");
             }
             
             

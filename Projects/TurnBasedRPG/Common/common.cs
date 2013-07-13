@@ -33,6 +33,7 @@ namespace Regulus.Project.TurnBasedRPG
     public interface IPlayer
     {
         Guid Id { get; }
+        string Name { get; }
         float Speed { get; }
         float Direction { get; }        
         void Ready();
@@ -44,15 +45,18 @@ namespace Regulus.Project.TurnBasedRPG
         void SetSpeed(float speed);
         void Walk(float direction);
         void Stop(float direction);
+        void Say(string message);
 
         void BodyMovements(ActionStatue action_statue);
     }
     public interface IObservedAbility 
     {
+        string Name { get; }
         Guid Id { get; }
         Regulus.Types.Vector2 Position { get; }
         float Direction { get; }        
         event Action<MoveInfomation> ShowActionEvent;
+        event Action<string> SayEvent;
     }
 
 
@@ -80,7 +84,7 @@ namespace Regulus.Project.TurnBasedRPG
             _Update = _Empty;
             _Direction = direction;
             _Obb = new Utility.OBB(x,y,0.5f,0.5f);
-            _Obb.setRotation(direction);
+            
         }
         public void SetPosition(float x , float y)
         {
@@ -102,7 +106,7 @@ namespace Regulus.Project.TurnBasedRPG
             {
                 // 角色面對世界的方向
                 _Direction = (direction + _Direction) % 360;
-                _Obb.setRotation(_Direction);
+                
 
                 _CurrentAction = action_statue;
                 _MoveSpeed = move_speed;
