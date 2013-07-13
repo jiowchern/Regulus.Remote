@@ -16,13 +16,9 @@ namespace Regulus.Project.TurnBasedRPG
             public Action Exit;
             public QuadTreeObjectAbility Observed;
 		}
-		
-			
+					
         Regulus.Utility.Poller<EntityInfomation> _EntityInfomations = new Utility.Poller<EntityInfomation>();
         Regulus.Physics.QuadTree<QuadTreeObjectAbility> _ObseverdInfomations;
-		
-		
-		
         
 		long _DeltaTime 
         {  
@@ -73,6 +69,43 @@ namespace Regulus.Project.TurnBasedRPG
         void Regulus.Game.IFramework.Launch()
         {
             _ObseverdInfomations = new Physics.QuadTree<QuadTreeObjectAbility>(new System.Windows.Size(4, 4), 0);
+
+            _InitialStaticEntiry(Regulus.Utility.OBB.Read("../TrunBasedRPG/Complex/Data/01.map"));
+            
+        }
+
+
+        List<StaticEntity> _StaticEntitys;
+        private void _InitialStaticEntiry(Regulus.Utility.OBB[] obbs)
+        {
+            _ReleaseStaticEntity();
+
+            _StaticEntitys = new List<StaticEntity>();
+            
+            if (obbs != null)
+            { 
+                foreach(var obb in obbs)
+                {
+                    var se = new StaticEntity(obb, Guid.NewGuid());
+                    se.Initial();
+                    _StaticEntitys.Add(se);
+                    Into(se , null);
+                }
+            }
+        }
+
+        private void _ReleaseStaticEntity()
+        {
+            if (_StaticEntitys != null)
+            {
+                foreach (var se in _StaticEntitys)
+                {
+                    Left(se);
+                    se.Release();
+                }
+                _StaticEntitys.Clear();
+            }
+            
         }
 
         bool Regulus.Game.IFramework.Update()
@@ -91,13 +124,10 @@ namespace Regulus.Project.TurnBasedRPG
         
         private void _UpdateObservers(Entity[] entitys)
         {
-			
-            
 			var observers = from entity in entitys
 							 let observed = entity.FindAbility<IObserveAbility>()
 							 where observed != null
 							 select observed;
-
             
 			foreach (var observer in observers)
             {
@@ -115,8 +145,6 @@ namespace Regulus.Project.TurnBasedRPG
 
 		private void _UpdateMovers(Entity[] entitys)
 		{
-
-            
 
             var movers = (from entity in entitys
                           let moverAbility = entity.FindAbility<IMoverAbility>()                          
@@ -142,6 +170,7 @@ namespace Regulus.Project.TurnBasedRPG
 
         void Regulus.Game.IFramework.Shutdown()
         {
+            _ReleaseStaticEntity();
             _ObseverdInfomations = null;
         }
         

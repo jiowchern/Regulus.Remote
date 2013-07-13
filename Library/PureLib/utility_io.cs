@@ -10,12 +10,21 @@ namespace Regulus.Utility.IO
 		static public void Write<T>(T obj , string path)
 		{
 			System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+            
 
 			System.IO.FileStream fs = new System.IO.FileStream(path, System.IO.FileMode.Create);
 
 			formatter.Serialize(fs, obj);
 
 			fs.Close();				
+
+
+            /*System.Xml.Serialization.XmlSerializer ser = new System.Xml.Serialization.XmlSerializer(typeof(T));
+            System.IO.FileStream fs = new System.IO.FileStream(path, System.IO.FileMode.Create);
+
+            ser.Serialize(fs, obj);
+
+            fs.Close();				*/
 		}
 
 		static public T Read<T>(string path)
@@ -27,6 +36,13 @@ namespace Regulus.Utility.IO
 			T obj = (T)formmater.Deserialize(fs);
 
 			fs.Close();
+
+            /*System.Xml.Serialization.XmlSerializer ser = new System.Xml.Serialization.XmlSerializer(typeof(T));
+            System.IO.FileStream fs = new System.IO.FileStream(path, System.IO.FileMode.Open);
+
+            T obj = (T)ser.Deserialize(fs);
+
+            fs.Close();*/
 
 			return obj;
 		}

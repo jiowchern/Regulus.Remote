@@ -25,10 +25,12 @@ namespace Regulus.Utility
 		private float[] axisX;
 		// unit vector of y axis
 		private float[] axisY;
-
+        
 		// 0 -360
 		private float rotation;
 
+
+        
 		/**
 		 * Create default OBB
 		 * 
@@ -77,21 +79,19 @@ namespace Regulus.Utility
 			// two OBB center distance vector
 			float[] centerDistanceVertor = {
                 this.centerPoint[0] - obb.centerPoint[0],
-                this.centerPoint[1] - obb.centerPoint[1]
-        };
+                this.centerPoint[1] - obb.centerPoint[1]       };
 
 			float[][] axes = {
                 this.axisX,
                 this.axisY,
                 obb.axisX,
                 obb.axisY,
-        };
+            };
 
 			for (int i = 0; i < axes.Length; i++)
 			{
 				// compare OBB1 radius projection add OBB2 radius projection to centerDistance projection
-				if (this.getProjectionRadius(axes[i]) + obb.getProjectionRadius(axes[i])
-						<= this.dot(centerDistanceVertor, axes[i]))
+				if (this.getProjectionRadius(axes[i]) + obb.getProjectionRadius(axes[i])  <= this.dot(centerDistanceVertor, axes[i]))
 				{
 					return false;
 				}
@@ -117,12 +117,27 @@ namespace Regulus.Utility
 		public OBB setRotation(float rotation)
 		{
 			this.rotation = rotation;
-			
-			this.axisX[0] = (float)Math.Cos(rotation);
-			this.axisX[1] = (float)Math.Sin(rotation);
 
-			this.axisY[0] = (float)-Math.Sin(rotation);
-			this.axisY[1] = (float)Math.Cos(rotation);
+            var t =  (float)(-(rotation - 180) * Math.PI / 180);
+			
+			this.axisX[0] = (float)Math.Cos(t);
+			this.axisX[1] = (float)Math.Sin(t);
+
+			this.axisY[0] = (float)-Math.Sin(t);
+			this.axisY[1] = (float)Math.Cos(t);
+
+            //this.axisX[0] = -(float)Math.Cos(t);
+            //this.axisX[1] = -(float)Math.Sin(t);
+
+            //this.axisY[0] = (float)Math.Sin(t);
+            //this.axisY[1] = (float)-Math.Cos(t);
+
+            //axisX[0] = -(float)Math.Sin(t);
+            //axisX[1] = -(float)Math.Cos(t);
+
+            //axisY[0] = (float)Math.Cos(t);
+            //axisY[1] = -(float)Math.Sin(t);
+
 
 			return this;
 		}
@@ -130,10 +145,18 @@ namespace Regulus.Utility
 		/**
 		 * Set OBB top left x, y
 		 */
+        public OBB setLeftTop(float l, float t)
+        {
+            this.centerPoint[0] = l + this.halfWidth;
+            this.centerPoint[1] = t + this.halfHeight;
+
+            return this;
+        }
+
 		public OBB setXY(float x, float y)
 		{
-			this.centerPoint[0] = x + this.halfWidth;
-			this.centerPoint[1] = y + this.halfHeight;
+			this.centerPoint[0] = x ;
+			this.centerPoint[1] = y ;
 
 			return this;
 		}
@@ -143,14 +166,21 @@ namespace Regulus.Utility
 			return this.rotation;
 		}
 
+        public float getLeft()
+        {
+            return this.centerPoint[0] - this.halfWidth;
+        }
 		public float getX()
 		{
-			return this.centerPoint[0] - this.halfWidth;
+			return this.centerPoint[0] ;
 		}
-
+        public float getTop()
+        {
+            return this.centerPoint[1] - this.halfHeight;
+        }
 		public float getY()
 		{
-			return this.centerPoint[1] - this.halfHeight;
+            return this.centerPoint[1];
 		}
 
 		public float getWidth()
@@ -166,12 +196,19 @@ namespace Regulus.Utility
 
 		public static OBB[] Read(string path)
 		{
-			return Regulus.Utility.IO.Serialization.Read<OBB[]>(path) ;
+            OBB[] obbs = Regulus.Utility.IO.Serialization.Read<OBB[]>(path);
+            foreach(var obb in obbs)
+            {
+                obb.setXY(obb.getX(), obb.getY());
+                obb.setRotation(obb.getRotation());
+            }
+            return obbs;
 		}
 
 		public static void Write(string path , OBB[] obbs)
 		{
 			Regulus.Utility.IO.Serialization.Write<OBB[]>(obbs , path);
 		}
+        
 	}
 }

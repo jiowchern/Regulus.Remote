@@ -47,8 +47,9 @@ namespace Regulus.Project.TurnBasedRPG
         {
             _Property.Position.X += unit_vector.X;
             _Property.Position.Y += unit_vector.Y;
-            _QuadTreeObjectAbility.UpdateBounds(unit_vector);
             _MoverAbility.SetPosition(_Property.Position.X, _Property.Position.Y);
+            _QuadTreeObjectAbility.UpdateBounds(unit_vector);
+            
         }
 
         protected override void _RiseAbility(Entity.AbilitySet abilitys)

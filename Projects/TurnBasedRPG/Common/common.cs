@@ -55,6 +55,8 @@ namespace Regulus.Project.TurnBasedRPG
         event Action<MoveInfomation> ShowActionEvent;
     }
 
+
+
 	public interface IMoverAbility
 	{
         Regulus.Utility.OBB Obb { get; }
@@ -141,7 +143,7 @@ namespace Regulus.Project.TurnBasedRPG
                             continue;
                         }
 
-                        Utility.OBB safeobb = new Utility.OBB(_Obb.getX() + moveVector.X, _Obb.getY() + moveVector.Y, _Obb.getWidth(), _Obb.getHeight());
+                        Utility.OBB safeobb = new Utility.OBB(_Obb.getX() , _Obb.getY() , _Obb.getWidth(), _Obb.getHeight());
                         safeobb.setRotation(_Obb.getRotation());
                         do
                         {                            
