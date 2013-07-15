@@ -54,9 +54,11 @@ namespace Regulus.Project.TurnBasedRPG.Serializable
         public EntityPropertyInfomation()
         { 
             Position = new Types.Vector2();
+            Map = "";
         }
 
         public Guid Id { get; set; }
+        public string Map { get; set; }
         public Regulus.Types.Vector2 Position { get; set; }
         public int Vision { get; set; }
 		public float Speed { get; set; }

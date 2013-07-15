@@ -35,7 +35,8 @@ namespace Regulus.Project.TurnBasedRPG
         Guid Id { get; }
         string Name { get; }
         float Speed { get; }
-        float Direction { get; }        
+        float Direction { get; }
+        
         void Ready();
         void Logout();
         void ExitWorld();        
