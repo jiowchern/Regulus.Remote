@@ -35,30 +35,7 @@ namespace Regulus.Project.TurnBasedRPG
                 
             }
             _Within = entitys.ToList();
-            /*var range = observe.Vision * observe.Vision;
-            foreach (var entity in entitys)
-            {
-                var distance = _Distance(entity, observe.Observed);
-                if (distance > range)
-                {
-                    // out
-                    if (_Remove(_Within, entity.Id))
-                    {
-                        if (LeftEvent != null)
-                            LeftEvent(entity);
-                    }
-                }
-                else
-                { 
-                    // in
-                    if (_Find(_Within, entity) == false)
-                    {
-                        _Within.Add(entity);
-                        if (IntoEvent != null)
-                            IntoEvent(entity);
-                    }
-                }
-            }*/
+           
         }
 
         private bool _Find(List<TurnBasedRPG.IObservedAbility> _Within, TurnBasedRPG.IObservedAbility entity)

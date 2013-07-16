@@ -27,7 +27,11 @@ namespace Regulus.Project.TurnBasedRPG
                 return _Time.Delta; 
             } 
         }
-
+		string _Name;
+		public Map(string name)
+		{
+			_Name = name;
+		}
         public void Into(Entity entity, Action exit_map)
         {
 
@@ -70,9 +74,16 @@ namespace Regulus.Project.TurnBasedRPG
         {
             _ObseverdInfomations = new Physics.QuadTree<QuadTreeObjectAbility>(new System.Windows.Size(4, 4), 0);
 
+
             _InitialStaticEntiry(Regulus.Utility.OBB.Read("../TrunBasedRPG/Complex/Data/01.map"));
-            
+			_InitialEntity(_Name);
         }
+
+		private void _InitialEntity(string name)
+		{
+			string path = "../TrunBasedRPG/Complex/Data/"+_Name+".map";
+
+		}
 
 
         List<StaticEntity> _StaticEntitys;
