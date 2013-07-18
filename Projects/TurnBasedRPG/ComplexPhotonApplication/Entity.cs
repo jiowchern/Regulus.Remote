@@ -5,7 +5,12 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPG
 {
-    abstract class Entity 
+
+	interface IEntity
+	{
+		Guid Id { get; }       		 
+	}
+	abstract class Entity : IEntity
     {
         protected class AbilitySet
         {

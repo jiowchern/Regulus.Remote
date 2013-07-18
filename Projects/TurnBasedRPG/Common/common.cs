@@ -36,6 +36,7 @@ namespace Regulus.Project.TurnBasedRPG
         string Name { get; }
         float Speed { get; }
         float Direction { get; }
+		string Map { get; }
         
         void Ready();
         void Logout();
@@ -47,7 +48,7 @@ namespace Regulus.Project.TurnBasedRPG
         void Walk(float direction);
         void Stop(float direction);
         void Say(string message);
-
+		
         void BodyMovements(ActionStatue action_statue);
     }
     public interface IObservedAbility 
@@ -68,7 +69,7 @@ namespace Regulus.Project.TurnBasedRPG
 		
         void Act(ActionStatue action_statue, float move_speed, float direction);
 
-        void Update(long p, System.Collections.Generic.IEnumerable<Utility.OBB> obbs);
+        void Update(long time, System.Collections.Generic.IEnumerable<Utility.OBB> obbs);
     }
     
 }

@@ -12,8 +12,7 @@ namespace Regulus.Project.TurnBasedRPG
 
         class EntityInfomation 
         {
-            public Entity Entity {get;set;}
-            public Action Exit;
+            public Entity Entity {get;set;}            
             public QuadTreeObjectAbility Observed;
 		}
 					
@@ -27,12 +26,12 @@ namespace Regulus.Project.TurnBasedRPG
                 return _Time.Delta; 
             } 
         }
-		string _Name;
+				
 		public Map(string name)
 		{
-			_Name = name;
+			Name = name;
 		}
-        public void Into(Entity entity, Action exit_map)
+        public void Into(Entity entity)
         {
 
             var qtoa = entity.FindAbility<QuadTreeObjectAbility>();
@@ -43,7 +42,7 @@ namespace Regulus.Project.TurnBasedRPG
                 _ObseverdInfomations.Insert(qtoa);	
 			}
 
-            var ei = new EntityInfomation() { Entity = entity, Exit = exit_map, Observed = qtoa };
+            var ei = new EntityInfomation() { Entity = entity, Observed = qtoa };
 			_EntityInfomations.Add(ei);    
 			
         }
@@ -76,13 +75,19 @@ namespace Regulus.Project.TurnBasedRPG
 
 
             _InitialStaticEntiry(Regulus.Utility.OBB.Read("../TrunBasedRPG/Complex/Data/01.map"));
-			_InitialEntity(_Name);
+			_Build(_ReadMapData(Name));
         }
 
-		private void _InitialEntity(string name)
+		private void _Build(Serialize.Map map)
 		{
-			string path = "../TrunBasedRPG/Complex/Data/"+_Name+".map";
+			
+		}
 
+		private Serialize.Map _ReadMapData(string name)
+		{
+			string path = "../TrunBasedRPG/Complex/Data/" + Name + ".map";
+			var data = Regulus.Utility.IO.Serialization.Read<Serialize.Map>(path);
+			return data;
 		}
 
 
@@ -100,7 +105,7 @@ namespace Regulus.Project.TurnBasedRPG
                     var se = new StaticEntity(obb, Guid.NewGuid());
                     se.Initial();
                     _StaticEntitys.Add(se);
-                    Into(se , null);
+                    Into(se );
                 }
             }
         }
@@ -190,5 +195,7 @@ namespace Regulus.Project.TurnBasedRPG
         {
             _Time = new Regulus.Remoting.Time(time);
         }
-    }
+
+		public string Name { get; private set; }
+	}
 }

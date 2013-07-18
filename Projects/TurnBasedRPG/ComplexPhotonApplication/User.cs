@@ -12,12 +12,14 @@ namespace Regulus.Project.TurnBasedRPG
 
         Regulus.Game.StageMachine<User> _Machine ;
         Regulus.Project.TurnBasedRPG.UserRoster _UserRoster;
-        public User(Regulus.Remoting.Soul.SoulProvider provider , Regulus.Project.TurnBasedRPG.UserRoster user_roster)
+		IWorld _World;
+        public User(Regulus.Remoting.Soul.SoulProvider provider , Regulus.Project.TurnBasedRPG.UserRoster user_roster , IWorld world)
         {
             _UserRoster = user_roster;
             _Machine = new Regulus.Game.StageMachine<User>(this);
             Provider = provider;
             provider.BreakEvent += Quit;
+			_World = world;
         }
 
         Serializable.AccountInfomation _AccountInfomation;
@@ -82,7 +84,7 @@ namespace Regulus.Project.TurnBasedRPG
             {
                 Actor.Property.Position.Y = Regulus.Utility.Random.Instance.R.Next(0, 100);
             }
-            _Machine.Push(new AdventureStage());
+			_Machine.Push(new AdventureStage(_World));
         }
 
         void Regulus.Game.IFramework.Launch()

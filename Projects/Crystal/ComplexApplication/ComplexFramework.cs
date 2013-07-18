@@ -33,7 +33,7 @@ namespace Regulus.Project.Crystal
 
 		void Regulus.Game.IFramework.Shutdown()
 		{			
-			_Stroage.Finial();
+			_Stroage.Finial();			
 		}
 	}
 }

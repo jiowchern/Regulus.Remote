@@ -75,6 +75,7 @@
     <Compile Include="ComplexApplication.cs" />
     <Compile Include="ComplexFramwork.cs" />
     <Compile Include="Entity.cs" />
+    <Compile Include="EntityBuilder.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="Hall.cs" />
     <Compile Include="IObserveAbility.cs" />
@@ -93,6 +94,8 @@
     <Compile Include="Verify.cs" />
     <Compile Include="VerifyStage.cs" />
     <Compile Include="Map.cs" />
+    <Compile Include="World.cs" />
+    <Compile Include="Zone.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Library\Database\Database.csproj">

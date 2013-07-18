@@ -135,5 +135,14 @@ namespace Regulus.Project.TurnBasedRPG
         {
             get { return _DBActorInfomation.Property.Direction; }
         }
-    }
+
+		public string Map
+		{
+			get { return _DBActorInfomation.Property.Map; }
+		}
+		string IPlayer.Map
+		{
+			get { return _DBActorInfomation.Property.Map; }
+		}
+	}
 }
