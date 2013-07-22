@@ -8,7 +8,6 @@ namespace Regulus.Project.TurnBasedRPG
     class Map : Regulus.Game.IFramework , IMapInfomation
     {
         Regulus.Remoting.Time _Time;
-       
 
         class EntityInfomation 
         {
@@ -72,57 +71,28 @@ namespace Regulus.Project.TurnBasedRPG
         void Regulus.Game.IFramework.Launch()
         {
             _ObseverdInfomations = new Physics.QuadTree<QuadTreeObjectAbility>(new System.Windows.Size(4, 4), 0);
-
-
-            _InitialStaticEntiry(Regulus.Utility.OBB.Read("../TrunBasedRPG/Complex/Data/01.map"));
 			_Build(_ReadMapData(Name));
         }
 
 		private void _Build(Data.Map map)
 		{
-			
+			if(map.Name == Name)
+			{			
+				foreach(var ent in map.Entitys)
+				{
+					var e= EntityBuilder.Instance.Build(ent);
+					e.Initial();
+					Into(e);					 
+				}
+			}
 		}
 
         private Data.Map _ReadMapData(string name)
 		{
 			string path = "../TrunBasedRPG/Complex/Data/" + Name + ".map";
-			var data = Regulus.Utility.IO.Serialization.Read<Serialize.Map>(path);
+			var data = Regulus.Utility.IO.Serialization.Read<Data.Map>(path);
 			return data;
 		}
-
-
-        List<StaticEntity> _StaticEntitys;
-        private void _InitialStaticEntiry(Regulus.Utility.OBB[] obbs)
-        {
-            _ReleaseStaticEntity();
-
-            _StaticEntitys = new List<StaticEntity>();
-            
-            if (obbs != null)
-            { 
-                foreach(var obb in obbs)
-                {
-                    var se = new StaticEntity(obb, Guid.NewGuid());
-                    se.Initial();
-                    _StaticEntitys.Add(se);
-                    Into(se );
-                }
-            }
-        }
-
-        private void _ReleaseStaticEntity()
-        {
-            if (_StaticEntitys != null)
-            {
-                foreach (var se in _StaticEntitys)
-                {
-                    Left(se);
-                    se.Release();
-                }
-                _StaticEntitys.Clear();
-            }
-            
-        }
 
         bool Regulus.Game.IFramework.Update()
         {
@@ -185,8 +155,7 @@ namespace Regulus.Project.TurnBasedRPG
 		}
 
         void Regulus.Game.IFramework.Shutdown()
-        {
-            _ReleaseStaticEntity();
+        {            
             _ObseverdInfomations = null;
         }
         
