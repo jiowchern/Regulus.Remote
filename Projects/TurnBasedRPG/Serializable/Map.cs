@@ -5,28 +5,26 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPG
 {
-	namespace Serialize
+	namespace Data
 	{
 		[Serializable]
 		public class Map
 		{
 			public string Name { get; set; }
-			public StaticEntity[] StaticEntitys{ get; set; }
-			public TransmissionEntity[] TransmissionEntitys { get; set; }
+			public Entity[] Entitys{ get; set; }			
 		}
+        [Serializable]
+        public abstract class Entity
+        {
+            public Guid Id { get; set; }
+        }
 
 		[Serializable]
-		public class StaticEntity
+        public class StaticEntity : Entity
 		{			
 			public Regulus.Utility.OBB Obb { get; set; }
 		}
-		[Serializable]
-		public class TransmissionEntity
-		{			
-			public Regulus.Utility.OBB Obb { get; set; }
-			public string TargetMapName { get; set; }
-			public Regulus.Types.Vector2 TargetPosition { get; set; }
-		}
+		
 	}
 	
 

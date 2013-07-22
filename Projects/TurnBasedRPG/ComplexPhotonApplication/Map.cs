@@ -78,12 +78,12 @@ namespace Regulus.Project.TurnBasedRPG
 			_Build(_ReadMapData(Name));
         }
 
-		private void _Build(Serialize.Map map)
+		private void _Build(Data.Map map)
 		{
 			
 		}
 
-		private Serialize.Map _ReadMapData(string name)
+        private Data.Map _ReadMapData(string name)
 		{
 			string path = "../TrunBasedRPG/Complex/Data/" + Name + ".map";
 			var data = Regulus.Utility.IO.Serialization.Read<Serialize.Map>(path);

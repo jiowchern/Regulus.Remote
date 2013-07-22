@@ -8,14 +8,9 @@ namespace Regulus.Project.TurnBasedRPG
 	
 	static class EntityBuilder
 	{
-		static StaticEntity	Build(Serialize.StaticEntity data)
+        static StaticEntity Build(Data.StaticEntity data)
 		{
-			return null;
-		}
-
-		static StaticEntity Build(Serialize.TransmissionEntity data)
-		{
-			return null;
+            return new StaticEntity(data.Obb, data.Id);
 		}
 	}
 	
