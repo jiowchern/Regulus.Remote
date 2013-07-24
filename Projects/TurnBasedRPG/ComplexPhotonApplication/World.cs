@@ -7,9 +7,8 @@ namespace Regulus.Project.TurnBasedRPG
 {
 
 	interface IWorld
-	{		
-		void Into(string map_name, Entity entity);
-		void Left(string map_name, Entity entity);
+	{
+        Regulus.Remoting.Value<IMap> Find(string map_name);		
 	}
 
 	class World : IWorld , Regulus.Game.IFramework
@@ -22,6 +21,8 @@ namespace Regulus.Project.TurnBasedRPG
 		{
 			// TODO: Complete member initialization
 			this._Time = time;
+
+        
 		}
 		void Game.IFramework.Launch()
 		{
@@ -51,22 +52,16 @@ namespace Regulus.Project.TurnBasedRPG
 			_Frameworks.Shutdown();
 		}
 
-		void IWorld.Into(string map_name, Entity entity)
-		{
-			var map = (from m in _Maps where m.Name == map_name select m).FirstOrDefault();
-			if(map != null)
-			{
-				map.Into(entity);
-			}
-		}
 
-		void IWorld.Left(string map_name , Entity entity)
-		{
-			var map = (from m in _Maps where m.Name == map_name select m).FirstOrDefault();
-			if(map != null)
-			{
-				map.Left(entity);
-			}
-		}
-	}
+
+        Remoting.Value<IMap> IWorld.Find(string map_name)
+        {
+            var map = (from m in _Maps where m.Name == map_name select m).FirstOrDefault();
+            if (map != null)
+            {
+                return map;
+            }
+            return new Remoting.Value<IMap>(null);
+        }
+    }
 }

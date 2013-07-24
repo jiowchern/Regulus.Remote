@@ -15,13 +15,15 @@ namespace Regulus.Project.TurnBasedRPG
             // TODO: Complete member initialization
             this._UserRoster = user_roster;
         }
-        void Regulus.Game.IStage<User>.Enter(User obj)
+        Regulus.Game.StageLock Regulus.Game.IStage<User>.Enter(User obj)
         {
             _Verify = new Regulus.Project.TurnBasedRPG.Verify(_UserRoster);
             _Verify.LoginSuccess += obj.OnLoginSuccess;
             _Verify.QuitEvent += obj.Quit;
            
             obj.Provider.Bind<IVerify>(_Verify);
+
+            return null;
         }
 
         void Regulus.Game.IStage<User>.Leave(User obj)

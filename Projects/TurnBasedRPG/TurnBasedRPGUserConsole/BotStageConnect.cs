@@ -8,12 +8,14 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
     class Connect : Regulus.Game.IStage<StatusBotController>
     {
         Action _LinkSuccess;
-        void Regulus.Game.IStage<StatusBotController>.Enter(StatusBotController obj)
+        Regulus.Game.StageLock Regulus.Game.IStage<StatusBotController>.Enter(StatusBotController obj)
         {
             obj.User.Launch();
             
             _LinkSuccess = () => { obj.ToVerify();  };
             obj.User.LinkSuccess += _LinkSuccess;
+
+            return null;
         }
 
         void Regulus.Game.IStage<StatusBotController>.Leave(StatusBotController obj)

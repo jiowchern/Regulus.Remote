@@ -5,11 +5,11 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPG
 {
-    class QuadTreeObjectAbility : Regulus.Physics.IQuadObject
+    class PhysicalAbility : Regulus.Physics.IQuadObject
     {
         System.Windows.Rect _Bounds;
         Entity _Owner;
-        public QuadTreeObjectAbility(System.Windows.Rect bounds ,Entity owner)
+        public PhysicalAbility(System.Windows.Rect bounds ,Entity owner)
         {            
             _Bounds = bounds;
             _Owner = owner;

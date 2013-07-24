@@ -8,7 +8,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
     class Move : Regulus.Game.IStage<StatusBotController>
     {
         int _IdleTime;
-        void Regulus.Game.IStage<StatusBotController>.Enter(StatusBotController obj)
+        Regulus.Game.StageLock Regulus.Game.IStage<StatusBotController>.Enter(StatusBotController obj)
         {
 
             var notify = obj.User.PlayerProvider;
@@ -19,6 +19,8 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
 
             _Logout = System.DateTime.Now;
             _IdleTime =  Regulus.Utility.Random.Instance.R.Next(5,10 );
+
+            return null;
         }
 
         System.DateTime _Logout;

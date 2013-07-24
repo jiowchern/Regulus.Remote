@@ -5,18 +5,21 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPG
 {
-    class Map : Regulus.Game.IFramework , IMapInfomation
+    class Map : Regulus.Game.IFramework, IMapInfomation, IMap
     {
         Regulus.Remoting.Time _Time;
 
         class EntityInfomation 
         {
-            public Entity Entity {get;set;}            
-            public QuadTreeObjectAbility Observed;
+            public Guid Id { get; set; }            
+            public PhysicalAbility Physical { get; set; }
+            public IObservedAbility Observed { get; set; }
+            public IMoverAbility Move { get; set; }
+            public IObserveAbility Observe { get; set; }
 		}
 					
         Regulus.Utility.Poller<EntityInfomation> _EntityInfomations = new Utility.Poller<EntityInfomation>();
-        Regulus.Physics.QuadTree<QuadTreeObjectAbility> _ObseverdInfomations;
+        Regulus.Physics.QuadTree<PhysicalAbility> _ObseverdInfomations;
         
 		long _DeltaTime 
         {  
@@ -33,32 +36,33 @@ namespace Regulus.Project.TurnBasedRPG
         public void Into(Entity entity)
         {
 
-            var qtoa = entity.FindAbility<QuadTreeObjectAbility>();
-            var oa = entity.FindAbility<IObservedAbility>();
+            var ei = new EntityInfomation() 
+            { 
+                Id = entity.Id,                
+                Physical = entity.FindAbility<PhysicalAbility>(),
+                Observe = entity.FindAbility<IObserveAbility>(),
+                Observed = entity.FindAbility<IObservedAbility>(),
+                Move = entity.FindAbility<IMoverAbility>()
+            };
+			_EntityInfomations.Add(ei);
 
-            if (qtoa != null)
-			{
-                _ObseverdInfomations.Insert(qtoa);	
-			}
-
-            var ei = new EntityInfomation() { Entity = entity, Observed = qtoa };
-			_EntityInfomations.Add(ei);    
+            if (ei.Physical != null)
+            {
+                _ObseverdInfomations.Insert(ei.Physical);
+            }
 			
         }
 
         List<IObservedAbility> _Lefts = new List<IObservedAbility>();
         public void Left(Entity entity)
         {
-            IObservedAbility oa = entity.FindAbility<IObservedAbility>();
-            if (oa != null)
-            {
-                _Lefts.Add(oa);
-            }            
+            
             _EntityInfomations.Remove((info) => 
             {
-                if (info.Entity == entity)
+                if (info.Id == entity.Id)
                 {
-                    _ObseverdInfomations.Remove(info.Observed);
+                    _ObseverdInfomations.Remove(info.Physical);
+                    _Lefts.Add(info.Observed);
                     return true;
                 }
                 return false;
@@ -70,7 +74,7 @@ namespace Regulus.Project.TurnBasedRPG
 
         void Regulus.Game.IFramework.Launch()
         {
-            _ObseverdInfomations = new Physics.QuadTree<QuadTreeObjectAbility>(new System.Windows.Size(4, 4), 0);
+            _ObseverdInfomations = new Physics.QuadTree<PhysicalAbility>(new System.Windows.Size(4, 4), 0);
 			_Build(_ReadMapData(Name));
         }
 
@@ -98,61 +102,55 @@ namespace Regulus.Project.TurnBasedRPG
         {
             _Time.Update();            
             var infos = _EntityInfomations.UpdateSet();
-            var entitys = (from info in infos select info.Entity).ToArray();
 
-            _UpdateObservers(entitys);
+            _UpdateObservers(infos);
 
-			_UpdateMovers(entitys);
+            _UpdateMovers(infos);
             
             return true;
         }
 
         
-        private void _UpdateObservers(Entity[] entitys)
+
+        private void _UpdateObservers(List<EntityInfomation> infos)
         {
-			var observers = from entity in entitys
-							 let observed = entity.FindAbility<IObserveAbility>()
-							 where observed != null
-							 select observed;
-            
-			foreach (var observer in observers)
+            foreach (var info in infos)
             {
-                var w = observer.Vision;
-                var h = observer.Vision;
-                var x = observer.Observed.Position.X - observer.Vision / 2;
-                var y = observer.Observed.Position.Y - observer.Vision / 2;
-                var brounds = new System.Windows.Rect(x, y, w, h);
-                var inbrounds = _ObseverdInfomations.Query(brounds);
-                var observeds = (from inbround in inbrounds let observedAbility = inbround.ObservedAbility where observedAbility  != null select observedAbility).ToArray();
-                observer.Update(observeds , _Lefts);
+                var observer = info.Observe;
+                if (observer != null)
+                {
+                    var brounds = observer.Vision;
+                    var inbrounds = _ObseverdInfomations.Query(brounds);
+                    observer.Update(inbrounds.ToArray(), _Lefts);                    
+                }                
             }
             _Lefts.Clear();
         }
 
-		private void _UpdateMovers(Entity[] entitys)
-		{
+        
+        
+        private void _UpdateMovers(List<EntityInfomation> infos)
+        {
+            foreach (var info in infos)
+            {
+                var moverAbility = info.Move;
+                var observeAbility = info.Observe;
+                var physical = info.Physical;
+                if (moverAbility != null && observeAbility != null && physical != null)
+                {
 
-            var movers = (from entity in entitys
-                          let moverAbility = entity.FindAbility<IMoverAbility>()                          
-                          let observeAbility = entity.FindAbility<IObserveAbility>()
-                          let quadTreeObjectAbility = entity.FindAbility<QuadTreeObjectAbility>()
-                          where moverAbility != null && observeAbility != null && quadTreeObjectAbility != null
-                          select new { Mover = moverAbility, ObserveAbility = observeAbility, Qtoa = quadTreeObjectAbility }).ToArray();
-
-            foreach (var mover in movers)
-			{
-                var w = mover.Qtoa.Bounds.Width;
-                var h = mover.Qtoa.Bounds.Height;
-                var x = mover.ObserveAbility.Observed.Position.X - w / 2;
-                var y = mover.ObserveAbility.Observed.Position.Y - h / 2;
-                var brounds = new System.Windows.Rect(x, y, w, h);
-                var inbrounds = _ObseverdInfomations.Query(brounds);
-                var obbs = from qtoa in inbrounds let ma = qtoa.MoverAbility where ma != null && mover.Mover != ma select ma.Obb;
-                mover.Mover.Update(_Time.Ticks, obbs);
-                
-			}
-						
-		}
+                    var w = physical.Bounds.Width;
+                    var h = physical.Bounds.Height;
+                    var x = observeAbility.Position.X - w / 2;
+                    var y = observeAbility.Position.Y - h / 2;
+                    var brounds = new System.Windows.Rect(x, y, w, h);
+                    var inbrounds = _ObseverdInfomations.Query(brounds);
+                    var obbs = from qtoa in inbrounds let ma = qtoa.MoverAbility where ma != null && moverAbility != ma select ma.Obb;
+                    moverAbility.Update(_Time.Ticks, obbs);
+                }
+            }
+        }
+		
 
         void Regulus.Game.IFramework.Shutdown()
         {            

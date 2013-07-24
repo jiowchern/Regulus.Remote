@@ -15,7 +15,8 @@ namespace Regulus.Project.TurnBasedRPG
 		{
 			_World = world;
 		}
-        void Regulus.Game.IStage<User>.Enter(User obj)
+      
+        Regulus.Game.StageLock Regulus.Game.IStage<User>.Enter(User obj)
         {            
             _Player = new Player(obj.Actor);
             obj.Provider.Bind<IPlayer>(_Player);
@@ -43,6 +44,9 @@ namespace Regulus.Project.TurnBasedRPG
             obj.Provider.Bind<Regulus.Remoting.ITime>( LocalTime.Instance );
             
             _Save = DateTime.Now;
+
+            
+            return null;
         }
 
         Action<IObservedAbility> _ObservedLeft;
@@ -52,17 +56,26 @@ namespace Regulus.Project.TurnBasedRPG
         void _OnPlayerReady()
         {
             _Player.ReadyEvent -= _OnPlayerReady;
+            var mapValue = _World.Find(_Player.Map);
+            mapValue.OnValue += _IntoMap;			
+        }
 
-			_World.Into(_Player.Map, _Player);
-
-			
+        void _IntoMap(IMap map)
+        {
+            if (map != null)
+            {
+                map.Into(_Player);
+            }
         }
         
         void Regulus.Game.IStage<User>.Leave(User obj)
         {
+            var mapValue = _World.Find(_Player.Map);
+            mapValue.OnValue += _LeftMap;
+
             if (_Player != null)
             {
-                obj.Provider.Unbind<Regulus.Remoting.ITime>(LocalTime.Instance);                
+                obj.Provider.Unbind<Regulus.Remoting.ITime>(LocalTime.Instance);
 
                 var observe = _Player.FindAbility<IObserveAbility>();
                 if (observe != null)
@@ -70,11 +83,15 @@ namespace Regulus.Project.TurnBasedRPG
                     observe.IntoEvent -= _ObservedInto;
                     observe.LeftEvent -= _ObservedLeft;
                 }
-				_World.Left(_Player.Map , _Player);                
                 _Player.Release();
                 obj.Provider.Unbind<IPlayer>(_Player);
             }
-            
+        }
+
+        void _LeftMap(IMap map)
+        {
+            if (map != null)
+                map.Left(_Player);
         }
 
         void Regulus.Game.IStage<User>.Update(User obj)

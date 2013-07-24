@@ -78,6 +78,7 @@
     <Compile Include="EntityBuilder.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="Hall.cs" />
+    <Compile Include="IMap.cs" />
     <Compile Include="IObserveAbility.cs" />
     <Compile Include="IObservedAbility.cs" />
     <Compile Include="Parking.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="ActorMoverAbility.cs" />
     <Compile Include="PlayerObserveAbility.cs" />
     <Compile Include="PlayerObservedAbility.cs" />
+    <Compile Include="PortalEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuadTreeObjectAbility.cs" />
     <Compile Include="StaticEntity.cs" />

@@ -8,9 +8,11 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
     class BodyMovements : Regulus.Game.IStage<StatusBotController>
     {
 
-        void Regulus.Game.IStage<StatusBotController>.Enter(StatusBotController obj)
+        Regulus.Game.StageLock Regulus.Game.IStage<StatusBotController>.Enter(StatusBotController obj)
         {
             obj.User.PlayerProvider.Supply += PlayerProvider_Supply;
+
+            return null;
         }
         int _ToMoveTimeSecond;
 

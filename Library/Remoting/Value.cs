@@ -28,13 +28,29 @@ namespace Regulus.Remoting
 		{
 			_Empty = false;
 			_Value = val;
-			if (OnValue != null)
+			if (_OnValue != null)
 			{
-				OnValue(_Value);				
+                _OnValue(_Value);				
 			}				
 		}
+        event Action<T> _OnValue;
+        public event Action<T> OnValue 
+        {
+            add 
+            {                
+                _OnValue += value;
 
-		public event Action<T> OnValue;		
+                if (_Empty == false)
+                {
+                    value(_Value);
+                }
+            }
+
+            remove 
+            {
+                _OnValue -= value;
+            }
+        }		
 
 		object IValue.GetObject()
 		{
@@ -45,18 +61,18 @@ namespace Regulus.Remoting
         {
             _Empty = false;
             _Value = val;
-            if (OnValue != null)
+            if (_OnValue != null)
             {
-                OnValue(_Value);
+                _OnValue(_Value);
             }				
         }
 		void IValue.SetValue(object val)
 		{
 			_Empty = false;
 			_Value = (T)val ;
-			if (OnValue != null)
+            if (_OnValue != null)
 			{
-				OnValue(_Value);
+                _OnValue(_Value);
 			}				
 		}
 

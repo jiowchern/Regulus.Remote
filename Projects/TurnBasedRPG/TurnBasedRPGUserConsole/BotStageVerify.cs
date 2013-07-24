@@ -11,7 +11,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
         public class Verify : Regulus.Game.IStage<StatusBotController>
         {
             Action<Regulus.Project.TurnBasedRPG.IVerify> _OnSupply;
-            void Regulus.Game.IStage<StatusBotController>.Enter(StatusBotController obj)
+            Regulus.Game.StageLock Regulus.Game.IStage<StatusBotController>.Enter(StatusBotController obj)
             {
                 _OnSupply = (verify) =>
                 {
@@ -43,6 +43,8 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
                     notify.Supply += _OnSupply;
                 }
                 _Restart = System.DateTime.Now;
+
+                return null;
             }
 
             

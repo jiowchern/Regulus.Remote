@@ -84,6 +84,10 @@ namespace Regulus.Project.TurnBasedRPG
             {
                 Actor.Property.Position.Y = Regulus.Utility.Random.Instance.R.Next(0, 100);
             }
+            if (Actor.Property.Map == "")
+            {
+                Actor.Property.Map = "Ferdinand";
+            }
 			_Machine.Push(new AdventureStage(_World));
         }
 

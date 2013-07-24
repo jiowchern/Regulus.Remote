@@ -7,51 +7,57 @@ namespace Regulus.Project.TurnBasedRPG
 {
     class Field
     {
-        
 
-        List<IObservedAbility> _Within = new List<IObservedAbility>();
+
+        List<PhysicalAbility> _Within = new List<PhysicalAbility>();
 
         public event Action<IObservedAbility> IntoEvent;
         public event Action<IObservedAbility> LeftEvent;
-        internal void Update(IObserveAbility observe, TurnBasedRPG.IObservedAbility[] entitys, List<IObservedAbility> lefts)
+        internal void Update(IObserveAbility observe, TurnBasedRPG.PhysicalAbility[] entitys, List<IObservedAbility> lefts)
         {
             
             foreach (var exit in lefts)
             {
-                _Remove(_Within, exit.Id);
-                if (LeftEvent != null)
-                    LeftEvent(exit);                
+                    _Remove(_Within, exit.Id);
+                    if (LeftEvent != null)
+                        LeftEvent(exit);                
+                
             }
 
             foreach(var e in entitys.Except(_Within))
             {
-                if (IntoEvent != null)
-                    IntoEvent(e);
+                if (e.ObservedAbility != null)
+                {
+                    if (IntoEvent != null)
+                        IntoEvent(e.ObservedAbility);
+                }
+                
             }
             foreach (var e in _Within.Except(entitys))
             {
-                if (LeftEvent != null)
-                    LeftEvent(e);                                    
+                if (e.ObservedAbility != null)
+                {
+                    if (LeftEvent != null)
+                        LeftEvent(e.ObservedAbility);                                    
+                }
+                
                 
             }
             _Within = entitys.ToList();
            
         }
 
-        private bool _Find(List<TurnBasedRPG.IObservedAbility> _Within, TurnBasedRPG.IObservedAbility entity)
+        private bool _Find(List<TurnBasedRPG.PhysicalAbility> _Within, TurnBasedRPG.PhysicalAbility entity)
         {
-            return _Within.Find(ent => ent.Id == entity.Id) != null;
+            return _Within.Find(ent => ent.ObservedAbility.Id == entity.ObservedAbility.Id) != null;
         }
 
-        private bool _Remove(List<IObservedAbility> within, Guid id)
+        private bool _Remove(List<PhysicalAbility> within, Guid id)
         {            
-            return within.RemoveAll(ent => ent.Id == id) > 0;
+            return within.RemoveAll(ent => ent.ObservedAbility.Id == id) > 0;
         }
 
-        private float _Distance(IObservedAbility e1, IObservedAbility e2)
-        {
-            return (e1.Position.X - e2.Position.X) * (e1.Position.X - e2.Position.X) + (e1.Position.Y - e2.Position.Y) * (e1.Position.Y - e2.Position.Y);
-        }
+        
 
 
 		

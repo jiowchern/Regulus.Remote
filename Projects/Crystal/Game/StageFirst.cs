@@ -9,10 +9,11 @@ namespace Regulus.Project.Crystal.Game.Stage
 	public class First : Regulus.Game.IStage<Core>, Regulus.Project.Crystal.IVerify
 	{
 		Core _Core;
-		void Regulus.Game.IStage<Core>.Enter(Core obj)
+        Regulus.Game.StageLock Regulus.Game.IStage<Core>.Enter(Core obj)
 		{
 			_Core = obj;
 			_Core.Binder.Bind<Regulus.Project.Crystal.IVerify>(this);
+            return null;
 		}
 
 		void Regulus.Game.IStage<Core>.Leave(Core obj)

@@ -8,7 +8,7 @@ namespace Regulus.Project.TurnBasedRPG
     class StaticEntity : Entity, IMoverAbility
     {
         Regulus.Utility.OBB _Obb;
-        QuadTreeObjectAbility _QuadTreeObjectAbility;
+        PhysicalAbility _QuadTreeObjectAbility;
 
         public StaticEntity(Regulus.Utility.OBB obb, Guid id)
             : base(id)
@@ -28,19 +28,19 @@ namespace Regulus.Project.TurnBasedRPG
             var x = _Obb.getX() - w / 2;
             var y = _Obb.getY() - h / 2;
 
-            _QuadTreeObjectAbility = new QuadTreeObjectAbility(new System.Windows.Rect(x,y,w,h) , this);
+            _QuadTreeObjectAbility = new PhysicalAbility(new System.Windows.Rect(x,y,w,h) , this);
             
         }
         
         protected override void _SetAbility(Entity.AbilitySet abilitys)
         {
-            abilitys.AttechAbility<QuadTreeObjectAbility>(_QuadTreeObjectAbility);
+            abilitys.AttechAbility<PhysicalAbility>(_QuadTreeObjectAbility);
             abilitys.AttechAbility<IMoverAbility>(this);
         }
 
         protected override void _RiseAbility(Entity.AbilitySet abilitys)
         {
-            abilitys.DetechAbility<QuadTreeObjectAbility>();
+            abilitys.DetechAbility<PhysicalAbility>();
             abilitys.DetechAbility<IMoverAbility>();
         }
 

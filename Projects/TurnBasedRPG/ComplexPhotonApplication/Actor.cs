@@ -27,7 +27,7 @@ namespace Regulus.Project.TurnBasedRPG
 
         private ActorMoverAbility _MoverAbility;
 
-        QuadTreeObjectAbility _QuadTreeObjectAbility;
+        PhysicalAbility _QuadTreeObjectAbility;
         public Action<Serializable.MoveInfomation> ShowActionEvent;
 
         protected override void _SetAbility(Entity.AbilitySet abilitys)
@@ -38,8 +38,8 @@ namespace Regulus.Project.TurnBasedRPG
             
             abilitys.AttechAbility<IMoverAbility>(_MoverAbility);
 
-            _QuadTreeObjectAbility = new QuadTreeObjectAbility(new System.Windows.Rect(_Property.Position.X - _BodyWidth / 2, _Property.Position.Y - _BodyHeight / 2, _BodyWidth, _BodyHeight), this);
-            abilitys.AttechAbility<QuadTreeObjectAbility>(_QuadTreeObjectAbility);
+            _QuadTreeObjectAbility = new PhysicalAbility(new System.Windows.Rect(_Property.Position.X - _BodyWidth / 2, _Property.Position.Y - _BodyHeight / 2, _BodyWidth, _BodyHeight), this);
+            abilitys.AttechAbility<PhysicalAbility>(_QuadTreeObjectAbility);
 
 
             
@@ -57,7 +57,7 @@ namespace Regulus.Project.TurnBasedRPG
         protected override void _RiseAbility(Entity.AbilitySet abilitys)
         {
 			abilitys.DetechAbility<Regulus.Physics.IQuadObject>();
-            abilitys.DetechAbility<QuadTreeObjectAbility>();
+            abilitys.DetechAbility<PhysicalAbility>();
             
         }
 
@@ -82,6 +82,7 @@ namespace Regulus.Project.TurnBasedRPG
 
         public void SetPosition(float x, float y)
         {
+
             _Property.Position.X = x;
             _Property.Position.Y = y;
             _MoverAbility.SetPosition(_Property.Position.X, _Property.Position.Y);

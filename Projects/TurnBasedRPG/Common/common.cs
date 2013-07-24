@@ -51,6 +51,9 @@ namespace Regulus.Project.TurnBasedRPG
 		
         void BodyMovements(ActionStatue action_statue);
     }
+
+
+
     public interface IObservedAbility 
     {
         string Name { get; }

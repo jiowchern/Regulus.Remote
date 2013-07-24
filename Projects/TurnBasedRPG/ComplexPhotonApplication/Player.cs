@@ -43,7 +43,7 @@ namespace Regulus.Project.TurnBasedRPG
             _ObservedAbility = new PlayerObservedAbility(this, _DBActorInfomation);            
             abilitys.AttechAbility<IObservedAbility>(_ObservedAbility);
 
-            _ObserveAbility = new PlayerObserveAbility(_ObservedAbility, _DBActorInfomation);
+            _ObserveAbility = new PlayerObserveAbility( _DBActorInfomation);
             abilitys.AttechAbility<IObserveAbility>(_ObserveAbility);
 
             base._SetAbility(abilitys);

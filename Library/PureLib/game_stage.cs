@@ -12,9 +12,27 @@ namespace Regulus.Game
 		void	Update	();
 	}
 
+
+    public class StageLock
+    {
+        public enum Status
+        { 
+            Locked,Unlock
+        }
+        public Status Current { get; private set; }
+        public StageLock()
+        {
+            Current = Status.Locked;
+        }
+
+        public void Unlock()
+        {
+            Current = Status.Unlock;
+        }
+    }
 	public interface IStage<T> 
 	{
-		void Enter(T obj);
+        StageLock Enter(T obj);
 		void Leave(T obj);
 		void Update(T obj);
 	}

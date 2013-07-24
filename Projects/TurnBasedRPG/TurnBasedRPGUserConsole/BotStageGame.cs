@@ -8,7 +8,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
     class Game : Regulus.Game.IStage<StatusBotController>
     {
         Action<Regulus.Project.TurnBasedRPG.IPlayer> _OnSupply;
-        void Regulus.Game.IStage<StatusBotController>.Enter(StatusBotController obj)
+        Regulus.Game.StageLock Regulus.Game.IStage<StatusBotController>.Enter(StatusBotController obj)
         {
             _OnSupply = (player) =>
             {
@@ -28,6 +28,8 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
                 notify.Supply += _OnSupply;
 
             _Restart = System.DateTime.Now;
+
+            return null;
         }
 
         void Regulus.Game.IStage<StatusBotController>.Leave(StatusBotController obj)

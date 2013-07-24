@@ -24,6 +24,14 @@ namespace Regulus.Project.TurnBasedRPG
 		{			
 			public Regulus.Utility.OBB Obb { get; set; }
 		}
+
+        [Serializable]
+        public class PortalEntity : Entity
+		{			
+			
+		}
+
+        
 		
 	}
 	

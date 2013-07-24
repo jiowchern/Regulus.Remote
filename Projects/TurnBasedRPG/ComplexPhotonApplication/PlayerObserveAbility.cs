@@ -7,29 +7,30 @@ namespace Regulus.Project.TurnBasedRPG
 {
     class PlayerObserveAbility : IObserveAbility
     {
-        IObservedAbility _Observed;
+        
         Field _Field;
         Regulus.Project.TurnBasedRPG.Serializable.DBEntityInfomation _Infomation;
-        public PlayerObserveAbility(IObservedAbility observed , Regulus.Project.TurnBasedRPG.Serializable.DBEntityInfomation info)
-        {
-            _Observed = observed;
+        public PlayerObserveAbility(Regulus.Project.TurnBasedRPG.Serializable.DBEntityInfomation info)
+        {            
             _Infomation = info;
             _Field = new Field();
         }
 
-        void IObserveAbility.Update(IObservedAbility[] observeds, List<IObservedAbility> lefts)
+        void IObserveAbility.Update(PhysicalAbility[] observeds, List<IObservedAbility> lefts)
         {
             _Field.Update(this, observeds, lefts);
         }
 
-        IObservedAbility IObserveAbility.Observed
-        {
-            get { return _Observed; }
-        }
+        
 
-        float IObserveAbility.Vision
+        System.Windows.Rect IObserveAbility.Vision
         {
-            get { return _Infomation.Property.Vision ; }
+            get 
+            {
+                var position  = _Infomation.Property.Position;                    
+                var vision = _Infomation.Property.Vision;
+                return new System.Windows.Rect(position.X - vision / 2, position.Y - vision / 2, vision, vision); 
+            }
         }
 
 
@@ -45,7 +46,9 @@ namespace Regulus.Project.TurnBasedRPG
             remove { _Field.LeftEvent -= value; }
         }
 
-
-		
-	}
+        Types.Vector2 IObserveAbility.Position
+        {
+            get { return _Infomation.Property.Position; }
+        }
+    }
 }

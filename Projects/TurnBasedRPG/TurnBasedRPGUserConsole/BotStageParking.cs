@@ -8,7 +8,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
     class Parking : Regulus.Game.IStage<StatusBotController>
     {
         Action<Regulus.Project.TurnBasedRPG.IParking> _OnSupply;
-        void Regulus.Game.IStage<StatusBotController>.Enter(StatusBotController obj)
+        Regulus.Game.StageLock Regulus.Game.IStage<StatusBotController>.Enter(StatusBotController obj)
         {
             _OnSupply = (patking) =>
             {
@@ -26,6 +26,8 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
                         obj.ToParking();    
                     }
                 };
+
+                
             };
 
             var notify = obj.User.ParkingProvider;
@@ -38,6 +40,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
                 notify.Supply += _OnSupply;
             }
             _Restart = System.DateTime.Now;
+            return null;
         }
 
         void Regulus.Game.IStage<StatusBotController>.Leave(StatusBotController obj)
