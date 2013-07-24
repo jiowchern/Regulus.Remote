@@ -27,7 +27,7 @@ namespace Regulus.Project.TurnBasedRPG
 
 	public interface IMapInfomation
 	{
-        
+     
 	}
 
     public interface IPlayer
@@ -35,8 +35,7 @@ namespace Regulus.Project.TurnBasedRPG
         Guid Id { get; }
         string Name { get; }
         float Speed { get; }
-        float Direction { get; }
-		string Map { get; }
+        float Direction { get; }		
         
         void Ready();
         void Logout();
@@ -50,6 +49,8 @@ namespace Regulus.Project.TurnBasedRPG
         void Say(string message);
 		
         void BodyMovements(ActionStatue action_statue);
+        Value<string> QueryMap();
+        
     }
 
 

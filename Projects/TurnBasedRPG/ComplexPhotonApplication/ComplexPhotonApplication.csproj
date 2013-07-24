@@ -74,10 +74,12 @@
     <Compile Include="CollisionAbility.cs" />
     <Compile Include="ComplexApplication.cs" />
     <Compile Include="ComplexFramwork.cs" />
+    <Compile Include="CrossStage.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="EntityBuilder.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="Hall.cs" />
+    <Compile Include="ICrossAbility.cs" />
     <Compile Include="IMap.cs" />
     <Compile Include="IObserveAbility.cs" />
     <Compile Include="IObservedAbility.cs" />

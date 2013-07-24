@@ -16,7 +16,7 @@ namespace Regulus.Project.TurnBasedRPG
             _Field = new Field();
         }
 
-        void IObserveAbility.Update(PhysicalAbility[] observeds, List<IObservedAbility> lefts)
+        void IObserveAbility.Update(Regulus.Project.TurnBasedRPG.Map.EntityInfomation[] observeds, List<IObservedAbility> lefts)
         {
             _Field.Update(this, observeds, lefts);
         }
@@ -49,6 +49,11 @@ namespace Regulus.Project.TurnBasedRPG
         Types.Vector2 IObserveAbility.Position
         {
             get { return _Infomation.Property.Position; }
+        }
+
+        public void Clear()
+        {
+            _Field.Clear();
         }
     }
 }

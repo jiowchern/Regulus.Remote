@@ -7,7 +7,7 @@ namespace Regulus.Project.TurnBasedRPG
 {
     interface IObserveAbility
     {
-        void Update(PhysicalAbility[] observeds, List<IObservedAbility> lefts);
+        void Update(Regulus.Project.TurnBasedRPG.Map.EntityInfomation[] observeds, List<IObservedAbility> lefts);
         Regulus.Types.Vector2 Position { get; }
         System.Windows.Rect Vision { get; }
         event Action<IObservedAbility> IntoEvent;

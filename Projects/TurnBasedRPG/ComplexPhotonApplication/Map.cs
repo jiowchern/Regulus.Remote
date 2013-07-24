@@ -9,17 +9,46 @@ namespace Regulus.Project.TurnBasedRPG
     {
         Regulus.Remoting.Time _Time;
 
-        class EntityInfomation 
+        public class EntityInfomation : Regulus.Physics.IQuadObject
         {
-            public Guid Id { get; set; }            
-            public PhysicalAbility Physical { get; set; }
+            public Guid Id { get; set; }
+
+            PhysicalAbility _Physical;
+            public PhysicalAbility Physical 
+            {
+                get { return _Physical; }
+                set 
+                {
+                    _Physical = value;
+                    if (_Physical != null)
+                        _Physical.BoundsChanged += _Physical_BoundsChanged;
+                } 
+            }
+
+            void _Physical_BoundsChanged(object sender, EventArgs e)
+            {
+                _BoundsChanged.Invoke(this , e);
+            }
             public IObservedAbility Observed { get; set; }
             public IMoverAbility Move { get; set; }
             public IObserveAbility Observe { get; set; }
-		}
+            public ICrossAbility Cross { get; set; }
+
+            System.Windows.Rect Physics.IQuadObject.Bounds
+            {
+                get { return Physical.Bounds; }
+            }
+
+            event EventHandler _BoundsChanged;
+            event EventHandler Physics.IQuadObject.BoundsChanged
+            {
+                add { _BoundsChanged += value; }
+                remove { _BoundsChanged -= value; }
+            }
+        }
 					
         Regulus.Utility.Poller<EntityInfomation> _EntityInfomations = new Utility.Poller<EntityInfomation>();
-        Regulus.Physics.QuadTree<PhysicalAbility> _ObseverdInfomations;
+        Regulus.Physics.QuadTree<EntityInfomation> _ObseverdInfomations;
         
 		long _DeltaTime 
         {  
@@ -42,13 +71,14 @@ namespace Regulus.Project.TurnBasedRPG
                 Physical = entity.FindAbility<PhysicalAbility>(),
                 Observe = entity.FindAbility<IObserveAbility>(),
                 Observed = entity.FindAbility<IObservedAbility>(),
-                Move = entity.FindAbility<IMoverAbility>()
+                Move = entity.FindAbility<IMoverAbility>(),
+                Cross = entity.FindAbility<ICrossAbility>()
             };
 			_EntityInfomations.Add(ei);
 
             if (ei.Physical != null)
             {
-                _ObseverdInfomations.Insert(ei.Physical);
+                _ObseverdInfomations.Insert(ei);
             }
 			
         }
@@ -61,7 +91,7 @@ namespace Regulus.Project.TurnBasedRPG
             {
                 if (info.Id == entity.Id)
                 {
-                    _ObseverdInfomations.Remove(info.Physical);
+                    _ObseverdInfomations.Remove(info);
                     _Lefts.Add(info.Observed);
                     return true;
                 }
@@ -74,7 +104,7 @@ namespace Regulus.Project.TurnBasedRPG
 
         void Regulus.Game.IFramework.Launch()
         {
-            _ObseverdInfomations = new Physics.QuadTree<PhysicalAbility>(new System.Windows.Size(4, 4), 0);
+            _ObseverdInfomations = new Physics.QuadTree<EntityInfomation>(new System.Windows.Size(4, 4), 0);
 			_Build(_ReadMapData(Name));
         }
 
@@ -145,7 +175,7 @@ namespace Regulus.Project.TurnBasedRPG
                     var y = observeAbility.Position.Y - h / 2;
                     var brounds = new System.Windows.Rect(x, y, w, h);
                     var inbrounds = _ObseverdInfomations.Query(brounds);
-                    var obbs = from qtoa in inbrounds let ma = qtoa.MoverAbility where ma != null && moverAbility != ma select ma.Obb;
+                    var obbs = from qtoa in inbrounds let ma = qtoa.Move where ma != null && moverAbility != ma select ma.Obb;
                     moverAbility.Update(_Time.Ticks, obbs);
                 }
             }

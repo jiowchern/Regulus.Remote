@@ -6,25 +6,48 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPG
 {
-    class ObserveAbility : IObserveAbility
+   
+
+    class PortalEntity : Entity, IObserveAbility
     {
-        IMap _Map;
         string _TargetMap;
+        Types.Vector2 _TargetPosition;
         Types.Vector2 _Position;
         System.Windows.Rect _Vision;
-        public ObserveAbility(System.Windows.Rect vision)
+
+        public PortalEntity(Guid id, System.Windows.Rect vision,string target_map, Types.Vector2 target_position)
+            : base(id)
         {
+            _TargetPosition = new Types.Vector2();
+            _TargetPosition.X = target_position.X;
+            _TargetPosition.Y = target_position.Y;
+            _TargetMap = target_map;
             _Vision = vision;
 
             _Position = new Types.Vector2();
-            _Position.X = (float)(_Vision.X + _Vision.Width / 2);
-            _Position.Y = (float)(_Vision.Y + _Vision.Height / 2);
+            _Position.X = (float)(_Vision.Left + _Vision.Width /2);
+            _Position.X = (float)(_Vision.Top + _Vision.Height / 2);
         }
-        void IObserveAbility.Update(PhysicalAbility[] observeds, List<IObservedAbility> lefts)
+        
+        protected override void _SetAbility(Entity.AbilitySet abilitys)
         {
+            abilitys.AttechAbility<IObserveAbility>(this);
+        }
 
-            
-            
+        protected override void _RiseAbility(Entity.AbilitySet abilitys)
+        {
+            abilitys.DetechAbility<IObserveAbility>();
+        }
+
+        void IObserveAbility.Update(Regulus.Project.TurnBasedRPG.Map.EntityInfomation[] observeds, List<IObservedAbility> lefts)
+        {
+            foreach (var observed in observeds)
+            {
+                if (observed.Cross != null)
+                {
+                    observed.Cross.Move(_TargetMap, Regulus.Utility.ValueHelper.DeepCopy(_TargetPosition) );
+                }
+            }
         }
 
         Types.Vector2 IObserveAbility.Position
@@ -39,33 +62,14 @@ namespace Regulus.Project.TurnBasedRPG
 
         event Action<IObservedAbility> IObserveAbility.IntoEvent
         {
-            add {  }
-            remove {  }
+            add { }
+            remove { }
         }
 
         event Action<IObservedAbility> IObserveAbility.LeftEvent
         {
-            add {  }
-            remove {  }
-        }
-    }
-    
-    class PortalEntity : Entity
-    {
-        public PortalEntity(Guid id)
-            : base(id)
-        { 
-
-        }
-
-        protected override void _SetAbility(Entity.AbilitySet abilitys)
-        {
-                                       
-        }
-
-        protected override void _RiseAbility(Entity.AbilitySet abilitys)
-        {
-            
+            add { }
+            remove { }
         }
     }
 }

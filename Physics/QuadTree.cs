@@ -217,7 +217,7 @@ namespace Regulus.Physics
 				QuadNode node = objectToNodeLookup[quadObject];
 				node.quadObjects.Remove(quadObject);
 				objectToNodeLookup.Remove(quadObject);
-				quadObject.BoundsChanged -= new EventHandler(quadObject_BoundsChanged);
+				quadObject.BoundsChanged -= new EventHandler(_OnBoundsChanged);
 			}
 		}
 
@@ -227,11 +227,11 @@ namespace Regulus.Physics
 			{
 				node.quadObjects.Add(quadObject);
 				objectToNodeLookup.Add(quadObject, node);
-				quadObject.BoundsChanged += new EventHandler(quadObject_BoundsChanged);
+				quadObject.BoundsChanged += new EventHandler(_OnBoundsChanged);
 			}
 		}
 
-		void quadObject_BoundsChanged(object sender, EventArgs e)
+		void _OnBoundsChanged(object sender, EventArgs e)
 		{
 			lock (syncLock)
 			{

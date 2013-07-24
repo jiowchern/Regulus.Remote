@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 
+
 namespace Regulus.Project.TurnBasedRPG
 {
     class User : Regulus.Game.IFramework
@@ -88,7 +89,26 @@ namespace Regulus.Project.TurnBasedRPG
             {
                 Actor.Property.Map = "Ferdinand";
             }
-			_Machine.Push(new AdventureStage(_World));
+
+            var map_string  = Actor.Property.Map;
+            _ToAdventure(map_string);
+			
+        }
+
+        private void _ToAdventure(string map_string)
+        {
+            var mapVal = _World.Find(map_string);
+            mapVal.OnValue += (map) =>
+            {
+                _Machine.Push(new AdventureStage(map));
+            };
+        }
+
+        public void ToAdventure(string map , Types.Vector2 position)
+        {
+            Actor.Property.Map = map;
+            Actor.Property.Position = position;
+            _ToAdventure(Actor.Property.Map);
         }
 
         void Regulus.Game.IFramework.Launch()
@@ -127,6 +147,11 @@ namespace Regulus.Project.TurnBasedRPG
                 QuitEvent();
                 QuitEvent = null;
             }
+        }
+
+        internal void OnCross(string target_map, Types.Vector2 target_position, string current_map, Types.Vector2 current_position)
+        {
+            _Machine.Push(new CrossStage(_World , target_map, target_position, current_map, current_position));             
         }
     }
 }

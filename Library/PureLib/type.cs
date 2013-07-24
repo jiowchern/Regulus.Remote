@@ -5,6 +5,15 @@ using System.Text;
 
 namespace Regulus.Types
 {
+
+    [Serializable]
+    public class Rect
+    {
+        public float Left;
+        public float Top;
+        public float Right;
+        public float Bottom;
+    }
     [Serializable]
     public class Vector2
     {

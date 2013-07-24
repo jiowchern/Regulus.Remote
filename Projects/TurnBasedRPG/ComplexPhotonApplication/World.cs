@@ -28,12 +28,20 @@ namespace Regulus.Project.TurnBasedRPG
 		{
 			_Frameworks = new Game.FrameworkRoot();
 			_Maps = new List<Map>();
-			Map map = _BuildMap("Ferdinand");
-			_Maps.Add(map);
+
 			
-			_Frameworks.AddFramework(map);
-			map.SetTime(_Time);
+            _AddMap(_BuildMap("Ferdinand"));
+
+            
+            _AddMap(_BuildMap("Chasel"));            
 		}
+
+        private void _AddMap(Map map)
+        {
+            _Maps.Add(map);
+            _Frameworks.AddFramework(map);
+            map.SetTime(_Time);
+        }
 
 		private Map _BuildMap(string name)
 		{

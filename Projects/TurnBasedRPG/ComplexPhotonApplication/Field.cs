@@ -9,36 +9,36 @@ namespace Regulus.Project.TurnBasedRPG
     {
 
 
-        List<PhysicalAbility> _Within = new List<PhysicalAbility>();
+        List<Regulus.Project.TurnBasedRPG.Map.EntityInfomation> _Within = new List<Regulus.Project.TurnBasedRPG.Map.EntityInfomation>();
 
         public event Action<IObservedAbility> IntoEvent;
         public event Action<IObservedAbility> LeftEvent;
-        internal void Update(IObserveAbility observe, TurnBasedRPG.PhysicalAbility[] entitys, List<IObservedAbility> lefts)
+        internal void Update(IObserveAbility observe, Regulus.Project.TurnBasedRPG.Map.EntityInfomation[] entitys, List<IObservedAbility> lefts)
         {
             
             foreach (var exit in lefts)
             {
-                    _Remove(_Within, exit.Id);
-                    if (LeftEvent != null)
-                        LeftEvent(exit);                
+                _Remove(_Within, exit.Id);
+                if (LeftEvent != null)
+                    LeftEvent(exit);                
                 
             }
 
             foreach(var e in entitys.Except(_Within))
             {
-                if (e.ObservedAbility != null)
+                if (e.Observed != null)
                 {
                     if (IntoEvent != null)
-                        IntoEvent(e.ObservedAbility);
+                        IntoEvent(e.Observed);
                 }
                 
             }
             foreach (var e in _Within.Except(entitys))
             {
-                if (e.ObservedAbility != null)
+                if (e.Observed != null)
                 {
                     if (LeftEvent != null)
-                        LeftEvent(e.ObservedAbility);                                    
+                        LeftEvent(e.Observed);                                    
                 }
                 
                 
@@ -47,19 +47,28 @@ namespace Regulus.Project.TurnBasedRPG
            
         }
 
-        private bool _Find(List<TurnBasedRPG.PhysicalAbility> _Within, TurnBasedRPG.PhysicalAbility entity)
+        private bool _Find(List<Regulus.Project.TurnBasedRPG.Map.EntityInfomation> _Within, Regulus.Project.TurnBasedRPG.Map.EntityInfomation entity)
         {
-            return _Within.Find(ent => ent.ObservedAbility.Id == entity.ObservedAbility.Id) != null;
+            return _Within.Find(ent => ent.Id == entity.Id) != null;
         }
 
-        private bool _Remove(List<PhysicalAbility> within, Guid id)
+        private bool _Remove(List<Regulus.Project.TurnBasedRPG.Map.EntityInfomation> within, Guid id)
         {            
-            return within.RemoveAll(ent => ent.ObservedAbility.Id == id) > 0;
+            return within.RemoveAll(ent => ent.Id == id) > 0;
         }
 
-        
+        internal void Clear()
+        {
+            foreach(var e in _Within)
+            {
+                if (e.Observed != null)
+                {
+                    if (LeftEvent != null)
+                        LeftEvent(e.Observed);
+                }
+            }
 
-
-		
-	}
+            _Within.Clear();
+        }
+    }
 }

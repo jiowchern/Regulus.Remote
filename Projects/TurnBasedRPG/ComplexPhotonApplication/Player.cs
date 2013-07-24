@@ -37,7 +37,7 @@ namespace Regulus.Project.TurnBasedRPG
 
         PlayerObserveAbility _ObserveAbility;
         PlayerObservedAbility _ObservedAbility;
-
+        ICrossAbility _CrossAbility;
         protected override void _SetAbility(Entity.AbilitySet abilitys)
         {
             _ObservedAbility = new PlayerObservedAbility(this, _DBActorInfomation);            
@@ -46,16 +46,30 @@ namespace Regulus.Project.TurnBasedRPG
             _ObserveAbility = new PlayerObserveAbility( _DBActorInfomation);
             abilitys.AttechAbility<IObserveAbility>(_ObserveAbility);
 
+            _CrossAbility = new CrossAbility();
+            abilitys.AttechAbility<ICrossAbility>(_CrossAbility);
+
+            _CrossAbility.MoveEvent += _CrossAbility_MoveEvent;
+            
             base._SetAbility(abilitys);
+        }
+
+        public event Action<string, Types.Vector2, string, Types.Vector2> CrossEvent;		
+        void _CrossAbility_MoveEvent(string target_map, Types.Vector2 target_position)
+        {
+            if (CrossEvent != null)
+                CrossEvent(target_map, target_position, _DBActorInfomation.Property.Map, _DBActorInfomation.Property.Position );
+            CrossEvent = null;
         }
         protected override void _RiseAbility(Entity.AbilitySet abilitys)
         {
             abilitys.DetechAbility<IObserveAbility>();
             abilitys.DetechAbility<IObservedAbility>();
+            abilitys.DetechAbility<ICrossAbility>();
 
             base._RiseAbility(abilitys);
         }
-
+        
         public event Action ReadyEvent;		
         void IPlayer.Ready()
         {
@@ -109,10 +123,7 @@ namespace Regulus.Project.TurnBasedRPG
         float IPlayer.Speed
         {
             get { return _DBActorInfomation.Property.Speed; }
-        }
-
-
-        
+        }        
 
         void IPlayer.SetSpeed(float speed)
         {
@@ -139,10 +150,20 @@ namespace Regulus.Project.TurnBasedRPG
 		public string Map
 		{
 			get { return _DBActorInfomation.Property.Map; }
+            set 
+            {
+                if (value != _DBActorInfomation.Property.Map)
+                {
+                    _DBActorInfomation.Property.Map = value;
+                    _ObserveAbility.Clear();        
+                }
+                
+            }
 		}
-		string IPlayer.Map
-		{
-			get { return _DBActorInfomation.Property.Map; }
-		}
-	}
+
+        Remoting.Value<string> IPlayer.QueryMap()
+        {
+            return _DBActorInfomation.Property.Map;
+        }
+    }
 }

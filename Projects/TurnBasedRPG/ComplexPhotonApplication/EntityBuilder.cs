@@ -12,6 +12,7 @@ namespace Regulus.Project.TurnBasedRPG
 
 	class EntityBuilder : Regulus.Utility.Singleton<EntityBuilder>
 	, IEntityBuilder<Data.StaticEntity , StaticEntity>
+    , IEntityBuilder<Data.PortalEntity, PortalEntity>
 	{
 		delegate Entity CommonBuilder(Data.Entity data);
 		Dictionary<Type, CommonBuilder> _Builders;
@@ -19,7 +20,8 @@ namespace Regulus.Project.TurnBasedRPG
 		public EntityBuilder()
 		{
 			_Builders = new Dictionary<Type, CommonBuilder >();
-			_Builders.Add(typeof(Data.StaticEntity), _Builder((this as IEntityBuilder<Data.StaticEntity, StaticEntity>)) );
+			_Builders.Add(typeof(Data.StaticEntity), _Builder((this as IEntityBuilder<Data.StaticEntity, StaticEntity>)));
+            _Builders.Add(typeof(Data.PortalEntity), _Builder((this as IEntityBuilder<Data.PortalEntity, PortalEntity>)));
 		}
 
 		private CommonBuilder _Builder<TData, TEntity>(IEntityBuilder<TData, TEntity> entity_builder) 
@@ -61,6 +63,16 @@ namespace Regulus.Project.TurnBasedRPG
 		{
 			return new StaticEntity(source.Obb, source.Id);
 		}
+
+        PortalEntity IEntityBuilder<Data.PortalEntity, PortalEntity>.Build(Data.PortalEntity source)
+        {
+            var rect = new System.Windows.Rect(source.Vision.Left ,
+                source.Vision.Top,
+                source.Vision.Right - source.Vision.Left,
+                source.Vision.Bottom - source.Vision.Top
+                );                        
+            return new PortalEntity(source.Id, rect, source.TargetMap, source.TargetPosition);
+        }
 	}
 	
 	

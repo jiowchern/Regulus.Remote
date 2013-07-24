@@ -5,15 +5,16 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPG
 {
-    class AdventureStage : Regulus.Game.IStage<User>
+    class AdventureStage : Regulus.Game.IStage<User> 
     {
         DateTime _Save;
         Regulus.Project.TurnBasedRPG.Player _Player;
-        IWorld _World;
 
-		public AdventureStage(IWorld world)
+        IMap _Map;
+        
+		public AdventureStage(IMap map)
 		{
-			_World = world;
+            _Map = map;
 		}
       
         Regulus.Game.StageLock Regulus.Game.IStage<User>.Enter(User obj)
@@ -24,6 +25,7 @@ namespace Regulus.Project.TurnBasedRPG
             _Player.ReadyEvent += _OnPlayerReady;            
             _Player.ExitWorldEvent += obj.ToParking;
             _Player.LogoutEvent += obj.Logout;
+            _Player.CrossEvent += obj.OnCross;
 			
             var observe = _Player.FindAbility<IObserveAbility>();
             if (observe != null)
@@ -42,10 +44,10 @@ namespace Regulus.Project.TurnBasedRPG
                 observe.LeftEvent += _ObservedLeft;
             }            
             obj.Provider.Bind<Regulus.Remoting.ITime>( LocalTime.Instance );
-            
+
             _Save = DateTime.Now;
 
-            
+            _Map.Into(_Player);
             return null;
         }
 
@@ -55,44 +57,31 @@ namespace Regulus.Project.TurnBasedRPG
 
         void _OnPlayerReady()
         {
-            _Player.ReadyEvent -= _OnPlayerReady;
-            var mapValue = _World.Find(_Player.Map);
-            mapValue.OnValue += _IntoMap;			
+            _Player.ReadyEvent -= _OnPlayerReady;            
         }
 
-        void _IntoMap(IMap map)
-        {
-            if (map != null)
-            {
-                map.Into(_Player);
-            }
-        }
+        
         
         void Regulus.Game.IStage<User>.Leave(User obj)
-        {
-            var mapValue = _World.Find(_Player.Map);
-            mapValue.OnValue += _LeftMap;
+        {            
+            
+            _Map.Left(_Player);
+                
 
-            if (_Player != null)
+            obj.Provider.Unbind<Regulus.Remoting.ITime>(LocalTime.Instance);
+
+            var observe = _Player.FindAbility<IObserveAbility>();
+            if (observe != null)
             {
-                obj.Provider.Unbind<Regulus.Remoting.ITime>(LocalTime.Instance);
-
-                var observe = _Player.FindAbility<IObserveAbility>();
-                if (observe != null)
-                {
-                    observe.IntoEvent -= _ObservedInto;
-                    observe.LeftEvent -= _ObservedLeft;
-                }
-                _Player.Release();
-                obj.Provider.Unbind<IPlayer>(_Player);
+                observe.IntoEvent -= _ObservedInto;
+                observe.LeftEvent -= _ObservedLeft;
             }
-        }
 
-        void _LeftMap(IMap map)
-        {
-            if (map != null)
-                map.Left(_Player);
+            _Player.Release();
+            obj.Provider.Unbind<IPlayer>(_Player);
+            
         }
+      
 
         void Regulus.Game.IStage<User>.Update(User obj)
         {

@@ -7,16 +7,12 @@ namespace Regulus.Project.TurnBasedRPG
 {
     class PhysicalAbility : Regulus.Physics.IQuadObject
     {
-        System.Windows.Rect _Bounds;
-        Entity _Owner;
+        System.Windows.Rect _Bounds;        
         public PhysicalAbility(System.Windows.Rect bounds ,Entity owner)
         {            
-            _Bounds = bounds;
-            _Owner = owner;
+            _Bounds = bounds;            
         }
-
-        public IMoverAbility MoverAbility { get { return _Owner.FindAbility<IMoverAbility>(); } }
-        public IObservedAbility ObservedAbility { get { return _Owner.FindAbility<IObservedAbility>(); } }
+        
         public System.Windows.Rect Bounds
         {
             get { return _Bounds; }
