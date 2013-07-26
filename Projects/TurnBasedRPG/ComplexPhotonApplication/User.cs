@@ -106,9 +106,12 @@ namespace Regulus.Project.TurnBasedRPG
 
         public void ToAdventure(string map , Types.Vector2 position)
         {
-            Actor.Property.Map = map;
-            Actor.Property.Position = position;
-            _ToAdventure(Actor.Property.Map);
+            if (Actor != null)
+            {
+                Actor.Property.Map = map;
+                Actor.Property.Position = position;
+                _ToAdventure(Actor.Property.Map);
+            }            
         }
 
         void Regulus.Game.IFramework.Launch()

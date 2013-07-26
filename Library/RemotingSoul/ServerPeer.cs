@@ -106,11 +106,17 @@ namespace Regulus.Remoting.Soul
                 if (true /*(System.DateTime.Now - _UpdateTime).TotalMilliseconds > 20*/)
                 {
                     var cmd = _UpdateResponses.Dequeue();
+
+                    if (cmd == null)
+                    {
+                        System.Diagnostics.Debug.WriteLine("_UpdateResponses cmd == null");                         
+                    }
                     _Fiber.Enqueue(() =>
                     {
+                        var command = cmd;
                         var op = new Photon.SocketServer.OperationResponse();
-                        op.OperationCode = cmd.Id;
-                        op.Parameters = cmd.Args;
+                        op.OperationCode = command.Id;
+                        op.Parameters = command.Args;
                         SendOperationResponse(op, new Photon.SocketServer.SendParameters());
                     });                        
                     _UpdateTime = System.DateTime.Now;
