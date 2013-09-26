@@ -55,7 +55,10 @@
     <Compile Include="game_stage.cs" />
     <Compile Include="game_stagemachine.cs" />
     <Compile Include="type.cs" />
+    <Compile Include="utility_command.cs" />
     <Compile Include="utility_commandsender.cs" />
+    <Compile Include="utility_console.cs" />
+    <Compile Include="utility_consoleinput.cs" />
     <Compile Include="utility_csv.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="utility_io.cs" />
@@ -67,6 +70,7 @@
     <Compile Include="utility_random.cs" />
     <Compile Include="utility_serializabledictionary.cs" />
     <Compile Include="utility_singleton.cs" />
+    <Compile Include="utility_consoleviewer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
