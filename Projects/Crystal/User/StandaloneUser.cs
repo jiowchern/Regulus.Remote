@@ -6,13 +6,14 @@ using System.Text;
 namespace Regulus.Project.Crystal.Standalone
 {	
 	using Regulus.Project.Crystal.Game;
-	public class User : IUser
+	class User : IUser
 	{		
 		Regulus.Project.Crystal.Game.Hall _Hall;
 		Regulus.Standalong.Agent _Agent ;
 		public User()
 		{
-						
+            _Agent = new Standalong.Agent();
+            _Hall = new Regulus.Project.Crystal.Game.Hall();
 		}
 
 		Regulus.Remoting.Ghost.IProviderNotice<IVerify> IUser.VerifyProvider
@@ -21,10 +22,8 @@ namespace Regulus.Project.Crystal.Standalone
 		}
 
 		public void Launch()
-		{
-			_Agent = new Standalong.Agent();
-			_Agent.Launch();
-			_Hall = new Regulus.Project.Crystal.Game.Hall();
+		{			
+			_Agent.Launch();			
 			_Hall.CreateUser(_Agent , new Regulus.Project.Crystal.Standalone.Storage());
 		}
 

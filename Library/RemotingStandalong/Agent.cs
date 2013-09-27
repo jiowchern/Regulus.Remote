@@ -10,12 +10,15 @@ namespace Regulus.Standalong
 		Regulus.Remoting.AgentCore	_Agent;	
 		Regulus.Remoting.Soul.SoulProvider	_SoulProvider;
 		GhostRequest	_GhostRequest;
-
+        public Agent()
+        {
+            _GhostRequest = new GhostRequest();
+            _Agent = new Remoting.AgentCore(_GhostRequest);
+        }
 		public void Launch()
 		{
-			_GhostRequest = new GhostRequest();
-			_GhostRequest.PingEvent	+= _OnRequestPing	;			
-			_Agent = new Remoting.AgentCore(_GhostRequest);
+			
+			_GhostRequest.PingEvent	+= _OnRequestPing	;						
 			_SoulProvider = new Remoting.Soul.SoulProvider( this , this);
 			
 		}

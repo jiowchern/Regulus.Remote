@@ -62,6 +62,7 @@
     <Compile Include="SoulBinder.cs" />
     <Compile Include="SoulProvider.cs" />
     <Compile Include="Time.cs" />
+    <Compile Include="UtilityCommandExtension.cs" />
     <Compile Include="Value.cs" />
   </ItemGroup>
   <ItemGroup>

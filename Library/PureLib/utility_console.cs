@@ -1,8 +1,10 @@
 ﻿namespace Regulus.Utility
-{
+{   
     public class Console
     {
-        public delegate void OnOutput(string[] command_paraments);
+        public delegate void OnOutput(string[] command_paraments );
+
+        
         public interface IInput
         {
             event OnOutput OutputEvent;
@@ -15,16 +17,18 @@
         public Command Command { get; private set; }
         IInput _Input;
         IViewer _Viewer;
+        
         public Console()
         {
             Command = new Command();            
         }
+
         public void Initial(IInput input , IViewer viewer)
         {
             _Viewer = viewer;
             _Input = input;
             _Input.OutputEvent += _Run;
-
+            
             Command.RegisterEvent += _OnRegister;
             Command.UnregisterEvent += _OnUnregister;
         }
@@ -59,11 +63,11 @@
                 int runCount = Command.Run(cmd, cmdArgs.ToArray());
                 if (runCount != 0)
                 {
-                    _Viewer.Write("執行完畢.");
+                    _Viewer.WriteLine("執行完畢.");
                 }
                 else
                 {
-                    _Viewer.Write("無此命令.");
+                    _Viewer.WriteLine("無此命令.");
                 }
             }
         }

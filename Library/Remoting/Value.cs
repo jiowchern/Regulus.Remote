@@ -12,6 +12,17 @@ namespace Regulus.Remoting
 
 		void QueryValue(Action<object> action);
 	}
+    public static class Helper
+    {
+        public static Action<Value<T>> UnBox<T>(Action<T> callback)
+        {
+
+            return (val) => 
+            {
+                val.OnValue += callback;
+            };
+        }
+    }
     sealed public class Value<T> : IValue 
 	{
         public static implicit operator Value<T>(T value)
