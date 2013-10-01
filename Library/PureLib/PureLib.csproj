@@ -52,6 +52,7 @@
     <Compile Include="extension_datatable.cs" />
     <Compile Include="framework.cs" />
     <Compile Include="game_data_prototypefactory.cs" />
+    <Compile Include="game_framework.cs" />
     <Compile Include="game_stage.cs" />
     <Compile Include="game_stagemachine.cs" />
     <Compile Include="type.cs" />

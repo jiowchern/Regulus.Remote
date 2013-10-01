@@ -6,40 +6,85 @@ using System.Text;
 namespace Regulus.Game
 {
     public class StageMachine
-    { 
+    {
+        class StageData
+        {
+            public Regulus.Game.IStage Stage;            
+        }
         System.Collections.Generic.Queue<Regulus.Game.IStage> _StandBys;
-        Regulus.Game.IStage _Current;
-
+        StageData _Current;
+        
         public StageMachine()
         {
+            
             _StandBys = new Queue<IStage>();
+            _Current = new StageData();
+            _Handle = _HandleStandByEnter;
         }
         public void Push(Regulus.Game.IStage new_stage)
         {
             _StandBys.Enqueue(new_stage);
         }
 
+        Action _Handle;
+        void _HandleStandByEnter()
+        {
+            if (_StandBys.Count > 0)
+            {
+                if (_Current.Stage != null)
+                    _Current.Stage.Leave();
+
+                var stage = _StandBys.Dequeue();
+
+                
+                if (stage != null)
+                {
+                    stage.Enter();                    
+                }
+                _Current.Stage = stage;
+            }
+
+            _Handle = _HandleCurrentStage;
+        }
+        void _HandleCheckStabdBy()
+        {
+            if (_StandBys.Count > 0)
+            {
+                _Handle = _HandleCurrentStageWait;
+            }
+            else
+                _Handle = _HandleCurrentStage;
+        }
+        void _HandleCurrentStageWait()
+        {            
+            _Handle = _HandleStandByEnter;
+        }
+        void _HandleCurrentStage()
+        {
+            if (_Current.Stage != null)
+            {
+                _Current.Stage.Update();
+            }
+
+            _Handle = _HandleCheckStabdBy;
+        }
         public bool Update()
         {
-            foreach (var stage in _StandBys)
-            {
-                if (_Current != null)
-                    _Current.Leave();
+            _Handle();
 
-                if (stage != null)
-                    stage.Enter();
-
-                _Current = stage;
-            }
-            _StandBys.Clear();
-
-            if (_Current != null)
-            {
-                _Current.Update();
-                return true;
-            }
-            return false;
+            return _Current.Stage != null;
         }
+
+        public void Termination()
+        {
+            _StandBys.Clear();
+            if (_Current.Stage != null)
+            {
+                _Current.Stage.Leave();
+                _Current = null;
+            }
+        }
+	
         
     }
 
