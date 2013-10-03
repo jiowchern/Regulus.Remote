@@ -275,10 +275,18 @@ namespace Regulus.Utility
 
         public int Run(string command, string[] args)
         {
-            var commandInfomations = (from ci in _Commands where ci.Name.ToLower() == command.ToLower() select ci);
-            foreach(var commandInfomation in commandInfomations)
+            
+            var commandInfomations = from ci in _Commands where ci.Name.ToLower() == command.ToLower() select ci;
+            List<Infomation> infos = new List<Infomation>();
+            
+            foreach (var commandInfomation in commandInfomations)
             {
-                commandInfomation.Handler(args);
+                infos.Add(commandInfomation);
+            }
+
+            foreach(var info in infos)
+            {
+                info.Handler(args);
             }
 
             return commandInfomations.Count() ;

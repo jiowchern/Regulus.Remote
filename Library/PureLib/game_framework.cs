@@ -3,17 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+
 namespace Regulus.Game
 {
-    public class ConsoleFramework<TSystem> : Regulus.Game.IFramework
-        where TSystem : Regulus.Game.IFramework
-    { 
+    public class ConsoleFramework<TUser> : Regulus.Game.IFramework
+        where TUser : Regulus.Game.IFramework
+    {
 
-        public delegate void BuildCompiled (TSystem system);
-        public class SystemProvider
+        public interface IController : Regulus.Game.IFramework
+        {
+            string Name { get; set; }
+            TUser User { get; }
+            void Release();
+
+            void Initialize(Utility.Console.IViewer view, Utility.Command command);
+        }
+
+        public delegate void BuildCompiled (TUser controller);
+        public class ControllerProvider
         {
             public string Command;
-            public Action<BuildCompiled , Regulus.Game.StageMachine> Build;
+            public Func<IController> Spawn;
         }
 
         bool _Runable = false;
@@ -23,30 +33,33 @@ namespace Regulus.Game
         Regulus.Utility.Console.IViewer _Viewer;
         Regulus.Game.StageMachine _StageMachine;
         FrameworkRoot _Loops;        
-        SystemProvider[] _SystemProviders;
+        ControllerProvider[] _ControllerProviders;
         public Regulus.Utility.Command Command { get { return _Console.Command; } }
         public Regulus.Utility.Console.IViewer Viewer { get { return _Viewer; } }
 
-        public ConsoleFramework(Regulus.Utility.Console.IViewer viewer, Regulus.Utility.Console.IInput input, SystemProvider[] system_providers, Regulus.Game.IFramework[] frameworks)
+        public delegate void OnSpawnUser(TUser user);
+        public event OnSpawnUser UserSpawnEvent;
+
+        public delegate void OnUnspawnUser(TUser user);
+        public event OnUnspawnUser UserUnspawnEvent;        
+
+        public ConsoleFramework(Regulus.Utility.Console.IViewer viewer, Regulus.Utility.Console.IInput input, ControllerProvider[] controller_providers)
         {
-            _SystemProviders = system_providers;
+            _ControllerProviders = controller_providers;
             _Viewer = viewer;
             _Input = input;
             _Loops = new FrameworkRoot();
-            foreach (var framework in frameworks)
-            {
-                _Loops.AddFramework(framework);
-            }
+            
         }
 
         class StageSelectSystem : Regulus.Game.IStage
         {
             Regulus.Utility.Console.IViewer _Viewer;
-            SystemProvider[] _SystemProviders;
+            ControllerProvider[] _SystemProviders;
             Regulus.Utility.Command _Command;
-            Regulus.Game.StageMachine _StageMachine;
+            
 
-            public StageSelectSystem(Regulus.Utility.Console.IViewer viewer, SystemProvider[] system_provider,Regulus.Utility.Command command)
+            public StageSelectSystem(Regulus.Utility.Console.IViewer viewer, ControllerProvider[] system_provider,Regulus.Utility.Command command)
             {
                 _Viewer = viewer;
                 _SystemProviders = system_provider;
@@ -61,49 +74,134 @@ namespace Regulus.Game
                     _Viewer.WriteLine(provider.Command);
                     _Command.Register(provider.Command, () => 
                     {
-                        _StageMachine = new StageMachine();
-                        provider.Build(_BuildCompiled , _StageMachine ); 
+
+                        if (SelectedEvent != null)
+                        {                            
+                            SelectedEvent(provider);
+                        }
                     });
                 }
             }
-            void _BuildCompiled(TSystem system)
-            {
-                if (SelectedEvent != null)
-                    SelectedEvent(system);
-            }
+            
             void IStage.Leave()
             {
                 foreach (var provider in _SystemProviders)
                 {
                     _Command.Unregister(provider.Command);
                 }
-                _StageMachine.Termination();
+                
             }
 
             void IStage.Update()
             {
-                if (_StageMachine != null)
-                    _StageMachine.Update();
+                
             }
-            public event Action<TSystem> SelectedEvent;
+            public event Action<ControllerProvider> SelectedEvent;
         }
         private StageMachine _CreateStage()
         {
             StageMachine stageMachine = new StageMachine();
 
-            var sss = new StageSelectSystem(_Viewer , _SystemProviders , Command);
+            var sss = new StageSelectSystem(_Viewer , _ControllerProviders , Command);
             sss.SelectedEvent += _OnSelectedSystem;
             stageMachine.Push(sss);
             return stageMachine;
         }
-        public delegate void OnSystemCreated(TSystem system);
-        public event OnSystemCreated SystemCreatedEvent;
-        void _OnSelectedSystem(TSystem system)
+        class StageSystemReady : Regulus.Game.IStage
         {
-            _Loops.AddFramework(system);
-            SystemCreatedEvent(system);
-            _StageMachine.Push(null);
+            private Utility.Console.IViewer _Viewer;
+            private ControllerProvider _ControllerProvider;
+            private Utility.Command _Command;
+            Regulus.Game.FrameworkRoot _Loops;
+            System.Collections.Generic.List<IController> _Controlls;
+            System.Collections.Generic.List<IController> _SelectedControlls;
+
+            public event OnSpawnUser UserSpawnEvent;
+            public event OnUnspawnUser UserUnspawnEvent;
+            public StageSystemReady(Utility.Console.IViewer view, ControllerProvider controller_provider, Utility.Command command)
+            {
+             
+                this._Viewer = view;
+                this._ControllerProvider = controller_provider;
+                this._Command = command;
+            }
+            void IStage.Enter()
+            {
+                _SelectedControlls = new List<IController>();
+                _Controlls = new List<IController>();
+                _Loops = new FrameworkRoot();
+                _Command.Register<string>("SpawnController", _SpawnController);
+                _Command.Register<string>("UnspawnController", _UnspawnController);
+                _Command.Register<string>("SelectController", _SelectController);
+            }
+
+            private void _SelectController(string name)
+            {
+                foreach (var controller in _SelectedControlls)
+                {
+                    controller.Release();                
+                }
+                _SelectedControlls.Clear();
+                _SelectedControlls.AddRange(from controller in _Controlls where controller.Name == name select controller);
+                
+                foreach (var controller in _SelectedControlls)
+                {
+                    controller.Initialize(_Viewer, _Command);
+                }
+                _Viewer.WriteLine("Select controller count " + _SelectedControlls.Count() );
+            }
+
+            void IStage.Leave()
+            {
+                _Command.Unregister("UnsawnController");
+                _Command.Unregister("SpawnController");
+                _Command.Unregister("SelectController");
+            }
+
+            void IStage.Update()
+            {
+                _Loops.Update();   
+            }
+            
+            private void _UnspawnController(string name)
+            {
+                var controllers = from controller in _Controlls where controller.Name == name select controller;
+                foreach (var c in controllers)
+                {
+                    if (UserUnspawnEvent != null)
+                        UserUnspawnEvent(c.User);
+                    _SelectedControlls.Remove(c);
+                    _Loops.RemoveFramework(c);
+                    _Controlls.Remove(c);                    
+                    _Viewer.WriteLine("Controller[" + name + "] Removed.");
+                }
+
+            }            
+
+            void _SpawnController(string name)
+            {
+                var controller = _ControllerProvider.Spawn();
+                
+                controller.Name = name;
+                
+                _Controlls.Add(controller);
+                _Loops.AddFramework(controller);
+                if (UserSpawnEvent != null)
+                    UserSpawnEvent(controller.User);
+                _Viewer.WriteLine("Controller[" + name + "] Added.");
+            }
+            
         }
+        
+        void _OnSelectedSystem(ConsoleFramework<TUser>.ControllerProvider controller_provider)
+        {
+            _Viewer.WriteLine("Selected System.");
+            var ssr = new StageSystemReady(_Viewer, controller_provider , Command);
+            ssr.UserSpawnEvent += UserSpawnEvent;
+            ssr.UserUnspawnEvent += UserUnspawnEvent;
+            _StageMachine.Push(ssr);
+        }
+        
 
         public void Stop()
         {
@@ -129,6 +227,8 @@ namespace Regulus.Game
 
         void IFramework.Shutdown()
         {
+            _Loops.Shutdown();
+            _Loops = null;
             _Console.Command.Unregister("quit");
             _Console.Release();
 
