@@ -10,22 +10,64 @@ namespace Regulus.Utility
 
     public class TimeCounter
     {
-
-        long _Ticks;
+        
+        long _Begin;
+        
         public TimeCounter()
         {
-            _Ticks = System.DateTime.Now.Ticks;
+            
+            Reset();
         }
         public void Reset()
         {
-            _Ticks = System.DateTime.Now.Ticks;
+            _Begin = System.DateTime.Now.Ticks;
         }
 
         public long Ticks
         {
             get
             {
-                return System.DateTime.Now.Ticks - _Ticks;
+                return System.DateTime.Now.Ticks - _Begin;
+            }
+        }
+    }
+
+    public class Stopwatch
+    {
+        TimeCounter _Current;
+        TimeCounter _Stop;
+        long _Interval;
+        long _StopTick;
+        bool _Pause;
+
+        public void Reset()
+        {
+            _Current.Reset();
+            _Stop.Reset();
+            _Interval = 0;
+            _StopTick = 0;
+        }
+
+        public void Continue()
+        {
+            _Pause = false;
+            _Interval += _Stop.Ticks;
+        }
+        public void Stop()
+        {
+            _Pause = true;
+            _Stop.Reset();
+            _StopTick = _Current.Ticks;
+        }
+        public long Ticks
+        {
+            get
+            {
+                if (_Pause == false)
+                    return _Current.Ticks - _Interval;
+                else
+                    return _StopTick;
+
             }
         }
     }
