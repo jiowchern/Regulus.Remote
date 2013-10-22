@@ -74,7 +74,6 @@ namespace Regulus.Game
                     _Viewer.WriteLine(provider.Command);
                     _Command.Register(provider.Command, () => 
                     {
-
                         if (SelectedEvent != null)
                         {                            
                             SelectedEvent(provider);
