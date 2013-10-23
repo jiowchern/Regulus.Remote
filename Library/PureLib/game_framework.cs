@@ -147,7 +147,7 @@ namespace Regulus.Game
                 {
                     controller.Initialize(_Viewer, _Command);
                 }
-                _Viewer.WriteLine("Select controller count " + _SelectedControlls.Count() );
+                _Viewer.WriteLine("選擇控制者[" + name + "]x" + _SelectedControlls.Count());
             }
 
             void IStage.Leave()
@@ -172,7 +172,7 @@ namespace Regulus.Game
                     _SelectedControlls.Remove(c);
                     _Loops.RemoveFramework(c);
                     _Controlls.Remove(c);                    
-                    _Viewer.WriteLine("Controller[" + name + "] Removed.");
+                    _Viewer.WriteLine("控制者[" + name + "] 移除.");
                 }
 
             }            
@@ -187,21 +187,24 @@ namespace Regulus.Game
                 _Loops.AddFramework(controller);
                 if (UserSpawnEvent != null)
                     UserSpawnEvent(controller.User);
-                _Viewer.WriteLine("Controller[" + name + "] Added.");
+                _Viewer.WriteLine("控制者[" + name + "] 增加.");
             }
             
         }
         
         void _OnSelectedSystem(ConsoleFramework<TUser>.ControllerProvider controller_provider)
         {
-            _Viewer.WriteLine("Selected System.");
+            _Viewer.WriteLine("啟動系統");
             var ssr = new StageSystemReady(_Viewer, controller_provider , Command);
             ssr.UserSpawnEvent += UserSpawnEvent;
             ssr.UserUnspawnEvent += UserUnspawnEvent;
             _StageMachine.Push(ssr);
         }
-        
 
+        public void SetLogMessage(Regulus.Utility.Console.LogFilter flag)
+        {
+            _Console.SetLogFilter(flag);
+        }
         public void Stop()
         {
             _Runable = false;

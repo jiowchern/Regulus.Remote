@@ -14,13 +14,23 @@
             void WriteLine(string message);
             void Write(string message);
         }
+        [System.Flags]
+        public enum LogFilter
+        {
+            None = 0,
+            RegisterCommand = 1,
+            All = RegisterCommand
+        }
+
         public Command Command { get; private set; }
         IInput _Input;
         IViewer _Viewer;
+        LogFilter _Filter;
         
         public Console()
         {
-            Command = new Command();            
+            Command = new Command();
+            _Filter = LogFilter.All;
         }
 
         public void Initial(IInput input , IViewer viewer)
@@ -32,10 +42,15 @@
             Command.RegisterEvent += _OnRegister;
             Command.UnregisterEvent += _OnUnregister;
         }
-
+       
+        public void SetLogFilter(LogFilter flag)
+        {
+            _Filter = flag;
+        }
         void _OnUnregister(string command)
         {
-            _Viewer.WriteLine("移除命令" + command);
+            if ( (_Filter & LogFilter.RegisterCommand) == LogFilter.RegisterCommand )
+                _Viewer.WriteLine("移除命令" + command);
         }
         public void Release()
         {
@@ -46,12 +61,15 @@
 
         void _OnRegister(string command, System.Type ret, System.Type[] args)
         {
-            string argString = ""; 
-            foreach (var arg in args)
+            if ((_Filter & LogFilter.RegisterCommand) == LogFilter.RegisterCommand)
             {
-                argString += arg.Name + " ";
-            }
-            _Viewer.WriteLine("增加命令 " + command + " " + argString);
+                string argString = "";
+                foreach (var arg in args)
+                {
+                    argString += arg.Name + " ";
+                }
+                _Viewer.WriteLine("增加命令 " + command + " " + argString);
+            }            
         }
 
         void _Run(string[] command_paraments)
