@@ -8,7 +8,7 @@ namespace Regulus.Extension
     public static class UtilityCommandExtension
     {
         public static void RemotingRegister<TR>(this Regulus.Utility.Command commander, string command, Func<Regulus.Remoting.Value<TR>> executer, Action<TR> value)
-        {        
+        {                    
             commander.Register<Regulus.Remoting.Value<TR>>(command, executer , Regulus.Remoting.Helper.UnBox<TR>(value));
         }
 
