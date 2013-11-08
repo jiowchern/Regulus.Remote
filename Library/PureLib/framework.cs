@@ -3,12 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Regulus.Game    
+namespace Regulus.Framework
 {
-    public interface IFramework
+    public interface ILaunched
     {
         void Launch();
+        void Shutdown();
+    }
+}
+namespace Regulus.Game    
+{
+    
+
+    public interface IFramework 
+    {
         bool Update();
+        void Launch();
         void Shutdown();
     }
 
