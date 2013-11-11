@@ -217,13 +217,12 @@ namespace Regulus.Remoting
 			}
 
 		}
-
-
-
+        
 		private Regulus.Remoting.Ghost.IGhost _BuildGhost(Type ghostBaseType, Regulus.Remoting.IGhostRequest peer, Guid id)
 		{
 			Type ghostType = _QueryGhostType(ghostBaseType);
-			object o = Activator.CreateInstance(ghostType, new Object[] { peer, id, _ReturnValueQueue });
+			object o = Activator.CreateInstance(ghostType, new Object[] { peer, id, _ReturnValueQueue }  );
+            
 			return (Regulus.Remoting.Ghost.IGhost)o;
 		}
 
@@ -287,20 +286,20 @@ namespace Regulus.Remoting
 			Type baseType = ghostBaseType;
 			//產生class的組態
 			AssemblyName asmName = new AssemblyName("RegulusRemotingGhost." + baseType.ToString() + "Assembly");
-			//從目前的domain裡即時產生一個組態
-			AssemblyBuilder assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(asmName, AssemblyBuilderAccess.Run);
+			//從目前的domain裡即時產生一個組態                                    
+            AssemblyBuilder assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(asmName, AssemblyBuilderAccess.Run);
 			//產生一個模組
 			ModuleBuilder module = assembly.DefineDynamicModule("RegulusRemotingGhost." + baseType.ToString() + "Module");
 			//產生一個class or struct
 			//這裡是用class
 			var typeName = "C" + baseType.ToString();
-			TypeBuilder type = module.DefineType(typeName, TypeAttributes.Class, typeof(Object), new Type[] { baseType, typeof(Regulus.Remoting.Ghost.IGhost) });
+            TypeBuilder type = module.DefineType(typeName, TypeAttributes.Class | TypeAttributes.Sealed, typeof(Object), new Type[] { baseType, typeof(Regulus.Remoting.Ghost.IGhost) });
 
 			#region build constructor
 			// 產生建構子，有一個參數 tpeer
 			ConstructorBuilder c = type.DefineConstructor(
 										MethodAttributes.Public,
-										CallingConventions.Standard,
+                                        CallingConventions.Standard,
 										new Type[] { typeof(Regulus.Remoting.IGhostRequest), typeof(Guid), typeof(Regulus.Remoting.Ghost.ReturnValueQueue) });
 			// 產生field，一個欄位
 			FieldBuilder peerField = type.DefineField("_Peer", typeof(Regulus.Remoting.IGhostRequest), FieldAttributes.Private);
@@ -321,9 +320,18 @@ namespace Regulus.Remoting
 			cil.Emit(OpCodes.Ldarg_2); // functioin第2個參數的值
 			cil.Emit(OpCodes.Stfld, idField); // 下設定指令
 
+            
+
 			cil.Emit(OpCodes.Ldarg_0); // this 指標
 			cil.Emit(OpCodes.Ldarg_3); // functioin第3個參數的值
 			cil.Emit(OpCodes.Stfld, rvqField); // 下設定指令
+
+            var objectType = typeof(Object);
+            var objectTypeConstructor = objectType.GetConstructor(new Type[0]);
+
+            cil.Emit(OpCodes.Ldarg_0); // this 指標
+            cil.Emit(OpCodes.Call, objectTypeConstructor );
+
 			cil.Emit(OpCodes.Ret); // return 出去
 			#endregion
 
@@ -478,15 +486,22 @@ namespace Regulus.Remoting
 
 				// push return info
 				var valueOriType = typeof(Value<>);
-				LocalBuilder varValueObject = il.DeclareLocal(typeof(object));
+
+                
+				LocalBuilder varValueObject = null;
 
 
 				if (valueOriType.Name == m.ReturnType.Name && valueOriType.Namespace == m.ReturnType.Namespace)
 				{
+
+                    
+
 					var argTypes = m.ReturnType.GetGenericArguments();
 					var valueType = valueOriType.MakeGenericType(new Type[] { argTypes[0] });
+                    
 					il.Emit(OpCodes.Newobj, valueType.GetConstructor(Type.EmptyTypes));
 					LocalBuilder varValue = il.DeclareLocal(valueType);
+                    varValueObject = il.DeclareLocal(valueType);
 					il.Emit(OpCodes.Stloc, varValue);
 
 					il.Emit(OpCodes.Ldarg_0);
@@ -506,11 +521,13 @@ namespace Regulus.Remoting
 					il.Emit(OpCodes.Ldloc, varRVQIdByteArray);
 					il.Emit(OpCodes.Call, varDict.LocalType.GetMethod("Add"));
 
+                    
+
 					il.Emit(OpCodes.Ldloc, varValue);
 					il.Emit(OpCodes.Stloc, varValueObject);
 
 				}
-
+                
 				for (int paramIndex = 0; paramIndex < pars.Length; paramIndex++)
 				{
 					//建立local變數，型別byte
@@ -548,14 +565,17 @@ namespace Regulus.Remoting
 				il.Emit(OpCodes.Ldc_I4, (int)ClientToServerPhotonOpCode.CallMethod); // opcode 
 				il.Emit(OpCodes.Ldloc, varDict);
 
-				//指定呼叫函式的多載
-				il.Emit(OpCodes.Call, peerField.FieldType.GetMethod("Request", new Type[] { typeof(byte), dictionaryType }));				
 
+                
+
+				//指定呼叫函式的多載
+				il.Emit(OpCodes.Callvirt, peerField.FieldType.GetMethod("Request", new Type[] { typeof(byte), dictionaryType }));
+                
 				if (valueOriType.Name == m.ReturnType.Name && valueOriType.Namespace == m.ReturnType.Namespace)
 				{
 					il.Emit(OpCodes.Ldloc, varValueObject);
 				}
-
+                
 				//return;
 				il.Emit(OpCodes.Ret);
 				//指定覆寫的fun

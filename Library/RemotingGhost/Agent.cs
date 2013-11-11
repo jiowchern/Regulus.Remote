@@ -103,13 +103,14 @@ namespace Regulus.Remoting.Ghost
 			else
 			{
 
-				_Core.Finial();
+                if (_Core != null)
+				    _Core.Finial();
 				if (_LinkState.LinkFail != null)
-					_LinkState.LinkFail(statusCode.ToString());
+					_LinkState.LinkFail(statusCode.ToString() + ":" + _Peer.PeerState.ToString());
 				_Peer = null;
 			}
 
-			System.Diagnostics.Debug.WriteLine(statusCode.ToString());
+			//System.Diagnostics.Debug.WriteLine(statusCode.ToString());
 		}
 
         
