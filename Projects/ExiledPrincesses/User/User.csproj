@@ -4,17 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{91FBBDF6-C184-4AC3-A538-06786E966DE4}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{5505ACEA-8D99-4B10-8224-FF73207283B1}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TurnBasedRPGUserConsole</RootNamespace>
-    <AssemblyName>TurnBasedRPGUserConsole</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <RootNamespace>User</RootNamespace>
+    <AssemblyName>User</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,31 +21,30 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug_Unity|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug_Unity\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Photon3Unity3D">
       <HintPath>..\..\..\Library\ThirdParty\Photon\Photon3Unity3D.dll</HintPath>
+    </Reference>
+    <Reference Include="Remoting, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Library\Remoting\bin\Debug\Remoting.dll</HintPath>
+    </Reference>
+    <Reference Include="RemotingGhost, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Library\RemotingGhost\bin\Debug\RemotingGhost.dll</HintPath>
+    </Reference>
+    <Reference Include="RemotingStandalong, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Library\RemotingStandalong\bin\Debug\RemotingStandalong.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -57,42 +55,27 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
-    <Compile Include="BodyMovements.cs" />
-    <Compile Include="BotStageVerify.cs" />
-    <Compile Include="Closures.cs" />
-    <Compile Include="CommandBinder.cs" />
-    <Compile Include="CommandHandler.cs" />
-    <Compile Include="BotStageConnect.cs" />
-    <Compile Include="Controller.cs" />
-    <Compile Include="BotStageGame.cs" />
-    <Compile Include="BotStageParking.cs" />
-    <Compile Include="BotStageMove.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="RemotingUser.cs" />
+    <Compile Include="StandaloneUser.cs" />
+    <Compile Include="StandalongUserController.cs" />
+    <Compile Include="Storage.cs" />
+    <Compile Include="User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
+    <Compile Include="UserCommand.cs" />
+    <Compile Include="RemotingUserController.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Library\PureLib\PureLib.csproj">
       <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
       <Name>PureLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Library\RemotingGhost\RemotingGhost.csproj">
-      <Project>{8af00b97-4c48-467a-b37d-e9b28bfda365}</Project>
-      <Name>RemotingGhost</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Library\Remoting\Remoting.csproj">
-      <Project>{a4cfce46-bda8-4416-a1bb-77bd80514019}</Project>
-      <Name>Remoting</Name>
+    <ProjectReference Include="..\Game\Game.csproj">
+      <Project>{0df727c5-16c7-45ae-9af6-ec04b4a7d713}</Project>
+      <Name>Game %28Projects\ExiledPrincesses\Game%29</Name>
     </ProjectReference>
     <ProjectReference Include="..\Serializable\Serializable.csproj">
-      <Project>{30ddcaac-8ed3-4c7f-a150-b7c32b598cba}</Project>
-      <Name>Serializable %28Projects\TurnBasedRPG\Serializable%29</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\User\User.csproj">
-      <Project>{f10a2af4-79d2-4335-98a3-a91ac4befa94}</Project>
-      <Name>User %28Projects\TurnBasedRPG\User%29</Name>
+      <Project>{15fc0b78-aa3d-4e6f-b0e6-f13a9f075d7c}</Project>
+      <Name>Serializable %28Projects\ExiledPrincesses\Serializable%29</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
