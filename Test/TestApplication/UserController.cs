@@ -22,11 +22,6 @@ namespace TestApplication
             }
         }
 
-        IUser Regulus.Game.ConsoleFramework<IUser>.IController.User
-        {
-            get { return _User; }
-        }
-
         void Regulus.Game.ConsoleFramework<IUser>.IController.Release()
         {
             
@@ -51,6 +46,19 @@ namespace TestApplication
         void Regulus.Game.IFramework.Shutdown()
         {
             
+        }
+
+
+        event Regulus.Game.ConsoleFramework<IUser>.OnSpawnUser Regulus.Game.ConsoleFramework<IUser>.IController.UserSpawnEvent
+        {
+            add { throw new NotImplementedException(); }
+            remove { throw new NotImplementedException(); }
+        }
+
+        event Regulus.Game.ConsoleFramework<IUser>.OnUnspawnUser Regulus.Game.ConsoleFramework<IUser>.IController.UserUnpawnEvent
+        {
+            add { throw new NotImplementedException(); }
+            remove { throw new NotImplementedException(); }
         }
     }
 }

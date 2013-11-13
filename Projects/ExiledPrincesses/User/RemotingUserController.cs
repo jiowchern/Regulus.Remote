@@ -14,7 +14,7 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
         private UserCommand _UserCommand;
         public UserController()
         {
-            _User = new User();
+            
         }
         string Regulus.Game.ConsoleFramework<IUser>.IController.Name
         {
@@ -28,10 +28,7 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
             }
         }
 
-        IUser Regulus.Game.ConsoleFramework<IUser>.IController.User
-        {
-            get { return _User; }
-        }
+        
 
         void Regulus.Game.ConsoleFramework<IUser>.IController.Release()
         {
@@ -41,22 +38,34 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
 
         void _Connect(string addr)
         {
+            _User = new User();
             _User.ConnectSuccessEvent += _OnConnectSuccess;
             _User.ConnectFailEvent += _OnConnectFail;
-            _User.Connect(addr);
+            try
+            {
+                _User.Connect(addr);
+            }
+            catch
+            {
+                _User.ConnectSuccessEvent -= _OnConnectSuccess;
+                _User.ConnectFailEvent -= _OnConnectFail;
+            }
+            
             
         }
 
         void _OnConnectFail(string obj)
         {
-            _View.WriteLine("連線失敗: " + obj);
+            _View.WriteLine("連線失敗: " + obj);            
         }
 
         void _OnConnectSuccess()
         {
+            _UserSpawnEvent(_User);
             _View.WriteLine("連線成功");
             _Command.Unregister("connect");
             _UserCommand = new UserCommand(_User, _View, _Command);
+
         }
         void Regulus.Game.ConsoleFramework<IUser>.IController.Initialize(Utility.Console.IViewer view, Utility.Command command)
         {
@@ -80,7 +89,21 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
 
         void Regulus.Game.IFramework.Shutdown()
         {
+            _UserUnpawnEvent(_User);
             (_User as Regulus.Game.IFramework).Shutdown();
+        }
+
+        event Regulus.Game.ConsoleFramework<IUser>.OnSpawnUser _UserSpawnEvent;
+        event Regulus.Game.ConsoleFramework<IUser>.OnSpawnUser Regulus.Game.ConsoleFramework<IUser>.IController.UserSpawnEvent
+        {
+            add { _UserSpawnEvent += value;  }
+            remove { _UserSpawnEvent -= value ; }
+        }
+        event Regulus.Game.ConsoleFramework<IUser>.OnUnspawnUser _UserUnpawnEvent;
+        event Regulus.Game.ConsoleFramework<IUser>.OnUnspawnUser Regulus.Game.ConsoleFramework<IUser>.IController.UserUnpawnEvent
+        {
+            add { _UserUnpawnEvent += value; }
+            remove { _UserUnpawnEvent -= value; }
         }
     }
 }

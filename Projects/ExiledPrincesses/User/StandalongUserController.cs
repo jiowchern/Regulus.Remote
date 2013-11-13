@@ -42,24 +42,38 @@ namespace Regulus.Project.ExiledPrincesses.Standalong
             _UserCommand.Release();
         }
 
-        IUser Regulus.Game.ConsoleFramework<IUser>.IController.User
-        {
-            get { return _User; }
-        }
+        
 
         void Regulus.Game.IFramework.Launch()
         {
+            
             _User.Launch();
+            _UserSpawnEvent(_User);
         }
 
         void Regulus.Game.IFramework.Shutdown()
         {
+            _UserUnpawnEvent(_User);
             _User.Shutdown();
         }
 
         bool Regulus.Game.IFramework.Update()
         {
             return _User.Update();
+        }
+
+
+        event Regulus.Game.ConsoleFramework<IUser>.OnSpawnUser _UserSpawnEvent;
+        event Regulus.Game.ConsoleFramework<IUser>.OnSpawnUser Regulus.Game.ConsoleFramework<IUser>.IController.UserSpawnEvent
+        {
+            add { _UserSpawnEvent += value; }
+            remove { _UserSpawnEvent -= value; }
+        }
+        event Regulus.Game.ConsoleFramework<IUser>.OnUnspawnUser _UserUnpawnEvent;
+        event Regulus.Game.ConsoleFramework<IUser>.OnUnspawnUser Regulus.Game.ConsoleFramework<IUser>.IController.UserUnpawnEvent
+        {
+            add { _UserUnpawnEvent += value; }
+            remove { _UserUnpawnEvent -= value; }
         }
     }
 }

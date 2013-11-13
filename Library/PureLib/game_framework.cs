@@ -13,7 +13,8 @@ namespace Regulus.Game
         public interface IController : Regulus.Game.IFramework
         {
             string Name { get; set; }
-            TUser User { get; }
+            event OnSpawnUser UserSpawnEvent;
+            event OnUnspawnUser UserUnpawnEvent;
             void Release();
 
             void Initialize(Utility.Console.IViewer view, Utility.Command command);
@@ -166,9 +167,7 @@ namespace Regulus.Game
             {
                 var controllers = from controller in _Controlls where controller.Name == name select controller;
                 foreach (var c in controllers)
-                {
-                    if (UserUnspawnEvent != null)
-                        UserUnspawnEvent(c.User);
+                {                    
                     _SelectedControlls.Remove(c);
                     _Loops.RemoveFramework(c);
                     _Controlls.Remove(c);                    
@@ -185,8 +184,9 @@ namespace Regulus.Game
                 
                 _Controlls.Add(controller);
                 _Loops.AddFramework(controller);
-                if (UserSpawnEvent != null)
-                    UserSpawnEvent(controller.User);
+                controller.UserSpawnEvent += UserSpawnEvent;
+                controller.UserUnpawnEvent += UserUnspawnEvent;
+                
                 _Viewer.WriteLine("控制者[" + name + "] 增加.");
             }
             
