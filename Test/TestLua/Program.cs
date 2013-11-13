@@ -23,16 +23,13 @@ namespace TestLua
 
             Regulus.Script.Lua.VirtualMachineProvider vmp = new Regulus.Script.Lua.VirtualMachineProvider();
 
-            vmp.Initialize(_OpenPlugin("reguluslua.dll"));
-/*            var vm = vmp.Create();
+            vmp.Initialize(_OpenPlugin("ScriptLuaDotNet.dll"));
+            var vm = vmp.Create();
 
             // 測試呼叫lua code
             vm.Execute("function Add(a,b) return a-b end");
 
             object[] results = vm.Call("Add" , 1 , 2);
-
-            vm.Execute("Test = import_type (\"TestLua.Test \")");*/
-            
             
             vmp.Finialize();
             
