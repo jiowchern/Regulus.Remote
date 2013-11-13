@@ -55,17 +55,33 @@ namespace Regulus.Utility
         }
         private void _AddCommand(string command, Action<string[]> func)
         {
-            _Commands.Add(new Infomation() { Name = command, Handler = func});
+            _Commands.Add(new Infomation() { Name = command, Handler = func });
         }
 
 
         public delegate void OnRegister(string command, Type ret , Type[] args);
         public event OnRegister RegisterEvent;
 
+        
+
         public delegate void OnUnregister(string command);
-        public event OnUnregister UnregisterEvent;
+        public event OnUnregister UnregisterEvent;        
+
+        public class CAaaa
+        {
+            public Action _Exe;
+
+            internal void Invoke(string[] strs)
+            {
+                if (strs.Length == 0)
+                {
+                    _Exe.Invoke();
+                }
+            }
+        }
         public void Register(string command, Action executer)
         {
+
             Action<string[]> func = (args) =>
             {
                 if (args.Length == 0)
@@ -243,7 +259,7 @@ namespace Regulus.Utility
         {
             Action<string[]> func = (args) =>
             {
-                if (args.Length == 3)
+                if (args.Length == 4)
                 {
                     object arg0;
                     _Cnv(args[0], out arg0, typeof(T1));

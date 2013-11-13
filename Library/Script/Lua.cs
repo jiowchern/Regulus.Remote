@@ -11,7 +11,9 @@ namespace Regulus.Script.Lua
     
     public interface IVirtualMachine 
     {
-        
+        void Execute(string chank);
+
+        object[] Call(string function_fullname, params object[] args);
     }
 
     public class VirtualMachineProvider

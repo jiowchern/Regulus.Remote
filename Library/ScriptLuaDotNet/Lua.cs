@@ -20,5 +20,17 @@ namespace Regulus.Script.Lua
         {
             
         }
+
+        void IVirtualMachine.Execute(string chank)
+        {
+            _Lua.DoString(chank);
+        }
+
+
+        object[] IVirtualMachine.Call(string function_fullname, params object[] args)
+        {
+            var func = _Lua.GetFunction(function_fullname);            
+            return func.Call(args);
+        }
     }
 }
