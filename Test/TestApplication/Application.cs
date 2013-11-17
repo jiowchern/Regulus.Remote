@@ -8,14 +8,9 @@ namespace TestApplication
 {
     public class Application : Regulus.Game.ConsoleFramework<IUser>
     {
-        static Application.ControllerProvider[] _Providers = new Application.ControllerProvider[] 
-            {
-                new Application.ControllerProvider { Command = "standalong" , Spawn =  _BuildStandalong},              
-            };
-
         
         public Application(Regulus.Utility.Console.IViewer view, Regulus.Utility.Console.IInput input)
-            : base(view , input , _Providers)
+            : base(view , input )
         { 
 
         }
@@ -23,6 +18,14 @@ namespace TestApplication
         private static IController _BuildStandalong()
         {
  	        throw new NotImplementedException();
+        }
+
+        protected override Regulus.Game.ConsoleFramework<IUser>.ControllerProvider[] _ControllerProvider()
+        {
+            return new Application.ControllerProvider[] 
+            {
+                new Application.ControllerProvider { Command = "standalong" , Spawn =  _BuildStandalong},              
+            };
         }
     }
 }

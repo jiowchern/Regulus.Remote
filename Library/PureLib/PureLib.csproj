@@ -55,6 +55,7 @@
     <Compile Include="game_framework.cs" />
     <Compile Include="game_stage.cs" />
     <Compile Include="game_stagemachine.cs" />
+    <Compile Include="utility_icommand.cs" />
     <Compile Include="type.cs" />
     <Compile Include="utility_command.cs" />
     <Compile Include="utility_commandsender.cs" />

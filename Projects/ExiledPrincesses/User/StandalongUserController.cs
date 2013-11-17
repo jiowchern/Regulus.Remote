@@ -13,16 +13,14 @@ namespace Regulus.Project.ExiledPrincesses.Standalong
         Regulus.Project.ExiledPrincesses.Standalone.User _User;
         UserCommand _UserCommand;
 
-        public UserController()
+        public UserController(Utility.Console.IViewer view, Utility.Command command)
         {
             _User = new Standalone.User();
-        }
-        void Regulus.Game.ConsoleFramework<IUser>.IController.Initialize(Utility.Console.IViewer view, Utility.Command command)
-        {
             _View = view;
             _Command = command;
-            _UserCommand = new UserCommand(_User, view, command);
+            
         }
+        
 
         string _Name;
         string Regulus.Game.ConsoleFramework<IUser>.IController.Name
@@ -36,25 +34,22 @@ namespace Regulus.Project.ExiledPrincesses.Standalong
                 _Name = value;
             }
         }
-
-        void Regulus.Game.ConsoleFramework<IUser>.IController.Release()
-        {
-            _UserCommand.Release();
-        }
-
         
 
         void Regulus.Game.IFramework.Launch()
         {
             
             _User.Launch();
-            _UserSpawnEvent(_User);
+            if (_UserSpawnEvent != null)
+                _UserSpawnEvent(_User);
         }
 
         void Regulus.Game.IFramework.Shutdown()
         {
-            _UserUnpawnEvent(_User);
+            
+            _UserUnpawnEvent(_User);            
             _User.Shutdown();
+
         }
 
         bool Regulus.Game.IFramework.Update()
@@ -74,6 +69,24 @@ namespace Regulus.Project.ExiledPrincesses.Standalong
         {
             add { _UserUnpawnEvent += value; }
             remove { _UserUnpawnEvent -= value; }
+        }
+
+
+        void Regulus.Game.ConsoleFramework<IUser>.IController.Look()
+        {
+            _UserCommand = new UserCommand(_User, _View, _Command);            
+        }
+
+        void Regulus.Game.ConsoleFramework<IUser>.IController.NotLook()
+        {
+            _UserCommand.Release();
+        }
+
+
+        event Regulus.Game.ConsoleFramework<IUser>.OnSpawnUserFail Regulus.Game.ConsoleFramework<IUser>.IController.UserSpawnFailEvent
+        {
+            add {  }
+            remove {  }
         }
     }
 }

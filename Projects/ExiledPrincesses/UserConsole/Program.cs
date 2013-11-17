@@ -154,8 +154,7 @@ namespace UserConsole
                     var c = _CommandStrings.Dequeue();
                     _Command.Run(c.Name, c.Args);
                 }            
-            }
-            
+            }            
         }
     }
     
@@ -194,7 +193,8 @@ namespace UserConsole
             var input = new Input(view);
 
             var application = new Regulus.Project.ExiledPrincesses.Application(view, input);
-            
+            application.SelectSystemEvent += _OnSelectSystem;
+            application.UserRequesterEvent += _OnUserRequester;
             
             
             Regulus.Game.IFramework app = application;
@@ -210,6 +210,17 @@ namespace UserConsole
             app.Shutdown();
             
        
+        }
+
+        private static void _OnUserRequester(Regulus.Game.ConsoleFramework<Regulus.Project.ExiledPrincesses.IUser>.IUserRequester user_requester)
+        {
+            user_requester.Spawn("1" , true);            
+        }
+
+        private static void _OnSelectSystem(Regulus.Game.ConsoleFramework<Regulus.Project.ExiledPrincesses.IUser>.ISystemSelector system_selector)
+        {
+            system_selector.Use("remoting");
+            
         }
 
         

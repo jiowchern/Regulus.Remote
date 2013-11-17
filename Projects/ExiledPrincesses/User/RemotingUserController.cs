@@ -12,9 +12,15 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
         Utility.Command _Command;
         Utility.Console.IViewer _View;
         private UserCommand _UserCommand;
-        public UserController()
-        {
-            
+        bool _Look;
+        bool _Linked;
+        public UserController(Utility.Console.IViewer view, Utility.Command command)
+        {            
+            _User = new User();
+            _Command = command;
+            _View = view;
+            _Look = false;
+            _Linked = false;
         }
         string Regulus.Game.ConsoleFramework<IUser>.IController.Name
         {
@@ -28,17 +34,9 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
             }
         }
 
-        
-
-        void Regulus.Game.ConsoleFramework<IUser>.IController.Release()
-        {
-            _Command.Unregister("connect");
-            _UserCommand.Release();
-        }
-
         void _Connect(string addr)
         {
-            _User = new User();
+            _Linked = false;
             _User.ConnectSuccessEvent += _OnConnectSuccess;
             _User.ConnectFailEvent += _OnConnectFail;
             try
@@ -49,31 +47,28 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
             {
                 _User.ConnectSuccessEvent -= _OnConnectSuccess;
                 _User.ConnectFailEvent -= _OnConnectFail;
-            }
-            
-            
+            }            
         }
 
         void _OnConnectFail(string obj)
         {
-            _View.WriteLine("連線失敗: " + obj);            
+            _View.WriteLine("連線失敗: " + obj);
+
+            if(_UserSpawnFailEvent != null)
+                _UserSpawnFailEvent("連線失敗: " + obj);
+            
         }
 
         void _OnConnectSuccess()
         {
-            _UserSpawnEvent(_User);
-            _View.WriteLine("連線成功");
-            _Command.Unregister("connect");
-            _UserCommand = new UserCommand(_User, _View, _Command);
-
+            _View.WriteLine("連線成功");            
+            if (_UserSpawnEvent != null)
+                _UserSpawnEvent(_User);
+            _Linked = true;
+            if (_Look)
+                _UserCommand = new UserCommand(_User, _View, _Command);            
         }
-        void Regulus.Game.ConsoleFramework<IUser>.IController.Initialize(Utility.Console.IViewer view, Utility.Command command)
-        {
-            command.Register<string>("connect", _Connect);
-
-            _Command = command;
-            _View = view;
-        }
+        
         
 
         bool Regulus.Game.IFramework.Update()
@@ -83,14 +78,19 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
         }
 
         void Regulus.Game.IFramework.Launch()
-        {
-            (_User as Regulus.Game.IFramework).Launch();
+        {            
+            (_User as Regulus.Game.IFramework).Launch();            
+            
+            //_Connect("127.0.0.1:5055");
+            _Connect("114.34.90.217:5055");
+            
         }
 
         void Regulus.Game.IFramework.Shutdown()
         {
             _UserUnpawnEvent(_User);
             (_User as Regulus.Game.IFramework).Shutdown();
+                        
         }
 
         event Regulus.Game.ConsoleFramework<IUser>.OnSpawnUser _UserSpawnEvent;
@@ -105,5 +105,35 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
             add { _UserUnpawnEvent += value; }
             remove { _UserUnpawnEvent -= value; }
         }
+
+        event Regulus.Game.ConsoleFramework<IUser>.OnSpawnUserFail _UserSpawnFailEvent;
+        event Regulus.Game.ConsoleFramework<IUser>.OnSpawnUserFail Regulus.Game.ConsoleFramework<IUser>.IController.UserSpawnFailEvent
+        {
+            add { _UserSpawnFailEvent+= value; }
+            remove { _UserSpawnFailEvent -= value; }
+        }
+
+
+        void Regulus.Game.ConsoleFramework<IUser>.IController.Look()
+        {
+            _Command.Register<string>("connect", _Connect);
+            if (_UserCommand != null)
+                _UserCommand.Release();
+            _Look = true;
+            if (_Linked)
+                _UserCommand = new UserCommand(_User, _View, _Command);
+        }
+
+        void Regulus.Game.ConsoleFramework<IUser>.IController.NotLook()
+        {
+            _Command.Unregister("connect");
+            if (_UserCommand != null)
+                _UserCommand.Release();
+
+            _Look = false;
+        }
+
+
+        
     }
 }

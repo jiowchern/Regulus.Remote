@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Utility
 {
-    public class Command
+    public class Command : ICommand
     {
         static void _Cnv(string p, out object val, Type source)
         {
@@ -284,8 +284,8 @@ namespace Regulus.Utility
 
         public void Unregister(string command)
         {
-            _Commands.RemoveAll(cmd => cmd.Name == command);
-            UnregisterEvent(command);
+            if(_Commands.RemoveAll(cmd => cmd.Name == command) > 0)
+                UnregisterEvent(command);
         }
 
 

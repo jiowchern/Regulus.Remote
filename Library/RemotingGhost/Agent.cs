@@ -105,8 +105,8 @@ namespace Regulus.Remoting.Ghost
 
                 if (_Core != null)
 				    _Core.Finial();
-				if (_LinkState.LinkFail != null)
-					_LinkState.LinkFail(statusCode.ToString() + ":" + _Peer.PeerState.ToString());
+				if (_LinkState.LinkFail != null )
+                    _LinkState.LinkFail(statusCode.ToString() + ":" + ((_Peer != null )?_Peer.PeerState.ToString() : "peer == null"));
 				_Peer = null;
 			}
 

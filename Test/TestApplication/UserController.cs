@@ -22,15 +22,7 @@ namespace TestApplication
             }
         }
 
-        void Regulus.Game.ConsoleFramework<IUser>.IController.Release()
-        {
-            
-        }
-
-        void Regulus.Game.ConsoleFramework<IUser>.IController.Initialize(Regulus.Utility.Console.IViewer view, Regulus.Utility.Command command)
-        {
-            
-        }
+        
 
         void Regulus.Game.IFramework.Launch()
         {
@@ -56,6 +48,24 @@ namespace TestApplication
         }
 
         event Regulus.Game.ConsoleFramework<IUser>.OnUnspawnUser Regulus.Game.ConsoleFramework<IUser>.IController.UserUnpawnEvent
+        {
+            add { throw new NotImplementedException(); }
+            remove { throw new NotImplementedException(); }
+        }
+
+
+        void Regulus.Game.ConsoleFramework<IUser>.IController.Look()
+        {
+            throw new NotImplementedException();
+        }
+
+        void Regulus.Game.ConsoleFramework<IUser>.IController.NotLook()
+        {
+            throw new NotImplementedException();
+        }
+
+
+        event Regulus.Game.ConsoleFramework<IUser>.OnSpawnUserFail Regulus.Game.ConsoleFramework<IUser>.IController.UserSpawnFailEvent
         {
             add { throw new NotImplementedException(); }
             remove { throw new NotImplementedException(); }

@@ -30,6 +30,14 @@ namespace Regulus.Utility
                 return System.DateTime.Now.Ticks - _Begin;
             }
         }
+
+        public float Second
+        {
+            get
+            {
+                return (float)new System.TimeSpan(Ticks).TotalSeconds;
+            }
+        }
     }
 
     public class Stopwatch

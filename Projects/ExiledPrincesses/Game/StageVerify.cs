@@ -45,7 +45,8 @@ namespace Regulus.Project.ExiledPrincesses.Game.Stage
 					_Core.Storage.Add(ai);
 					ret.SetValue(true);
 				}
-				ret.SetValue(false);
+                else
+				    ret.SetValue(false);
 			};
 			return ret;
 		}
