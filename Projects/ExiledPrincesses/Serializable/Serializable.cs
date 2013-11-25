@@ -13,14 +13,25 @@ namespace Regulus.Project.ExiledPrincesses
 		public string Name { get; set; }
 		public string Password { get; set; }
 		public Guid Id { get; set; }
+        public GameRecord Record { get; set; }
 	}
 
     [Serializable]
-    public class ActorInfomation
+    public class GameRecord
     {
-        public Guid Owner { get; set; }
+        public GameRecord()
+        {
+            Actors = new ActorInfomation[] { };
+        }
+        public ActorInfomation[] Actors { get; set; }
+        public string Map { get; set; }
+    }
+
+    [Serializable]
+    public class ActorInfomation
+    {        
         public Guid Id { get; set; }
-        public int Role { get; set; }
+        public int Prototype { get; set; }
         public int Level { get; set; }
         public int Exp { get; set; } 
     }

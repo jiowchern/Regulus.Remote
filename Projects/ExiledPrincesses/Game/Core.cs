@@ -46,14 +46,27 @@ namespace Regulus.Project.ExiledPrincesses.Game
         {
             var stage = new Regulus.Project.ExiledPrincesses.Game.Stage.Verify(this);
             _StageMachine.Push(stage);
-            stage.LoginSuccessEvent += _ToParking;
+            stage.LoginSuccessEvent += _ToAdventure;
             
             _StatusEvent(UserStatus.Verify);
+        }
+
+        private void _ToAdventure(AccountInfomation account_infomation)
+        {
+            if (account_infomation.Record == null)
+            {
+                account_infomation.Record = new GameRecord() { Map = "Teaching" };
+                account_infomation.Record.Actors = new ActorInfomation[] { new ActorInfomation() { Prototype = 1, Id = Guid.NewGuid(), Exp = 0, Level = 1 } };
+
+
+            }
+            
         }
 
         AccountInfomation _AccountInfomation;
         void _ToParking(AccountInfomation account_infomation)
         {
+            
             var stage = new Regulus.Project.ExiledPrincesses.Game.Stage.Parking(Binder , account_infomation);
             
             stage.VerifyEvent += _ToVerify;
@@ -62,20 +75,6 @@ namespace Regulus.Project.ExiledPrincesses.Game
             
             _StatusEvent(UserStatus.Pub);
         }
-
-        ActorInfomation _ActorInfomation;
-        void _ToAdventure(ActorInfomation actor_infomation)
-        {
-
-            var stage = new Regulus.Project.ExiledPrincesses.Game.Stage.Adventure(actor_infomation , Binder, _Map);
-            
-            stage.ParkingEvent += () => { _ToParking(_AccountInfomation); };
-            _StageMachine.Push(stage);
-
-            _ActorInfomation = actor_infomation;
-            _StatusEvent(UserStatus.Adventure);
-        }
-
         
 
 		public bool Update()
