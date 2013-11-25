@@ -7,8 +7,7 @@ namespace Regulus.Project.ExiledPrincesses.Game.Stage
 {
     class Parking : Regulus.Game.IStage, Regulus.Project.ExiledPrincesses.IParking
     {
-        public delegate void OnSelectCompiled(IObservableActor[] actor_infomations);
-        public event OnSelectCompiled SelectCompiledEvent;
+        
 
         public delegate void OnVerify();
         public event OnVerify VerifyEvent;

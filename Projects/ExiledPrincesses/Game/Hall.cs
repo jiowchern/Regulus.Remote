@@ -15,7 +15,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 			return true;
 		}
 
-		public Regulus.Project.ExiledPrincesses.Game.Core CreateUser(Regulus.Remoting.ISoulBinder binder, IStorage storage, IMap zone )
+		public Regulus.Project.ExiledPrincesses.Game.Core CreateUser(Regulus.Remoting.ISoulBinder binder, IStorage storage, IZone zone )
 		{
             var core = new Regulus.Project.ExiledPrincesses.Game.Core(binder, storage, zone);
 			_Users.AddFramework(core);

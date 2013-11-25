@@ -3,52 +3,92 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+namespace Regulus.Project.ExiledPrincesses.Game
+{
+    interface ITeammate
+    { 
+    }
+    class Contingent
+    {
+        public string Map; 
+        public ITeammate[] Teammates;
+    }
+}
 namespace Regulus.Project.ExiledPrincesses.Game.Stage
 {
-    class Adventure : Regulus.Game.IStage, IAdventure
+    
+    partial class Adventure : Regulus.Game.IStage
     {
-
-        public delegate void OnParking();
-        public event OnParking ParkingEvent;
-
+        Regulus.Game.StageMachine _StageMachine;
         private Remoting.ISoulBinder _Binder;
-        IMap _Map;
-        IObservableActor[] _ActorInfomation;
-
-        
-        public Adventure(IObservableActor[] actor_infomation, Remoting.ISoulBinder binder, IMap zone)
+        IZone _Zone;
+        Contingent _Contingent;
+        public Adventure(Contingent contingent , Remoting.ISoulBinder binder, Zone zone )
         {
-            _ActorInfomation = actor_infomation;
-            _Map = zone;
-            
-            this._Binder = binder;
-
-            
-            
+            _Contingent = contingent;
+            _Zone = zone;            
+            this._Binder = binder;            
         }
 
         void Regulus.Game.IStage.Enter()
         {
-            _Binder.Bind<IAdventure>(this);
-            
-            
-            
+            _StageMachine = new Regulus.Game.StageMachine();
+
+            _ToQueryMap(_Contingent.Map);
+        }
+
+        private void _ToQueryMap(string map)
+        {
+            var qms = new EnterMapStage(map , _Zone);            
+            _StageMachine.Push(qms);
         }
 
         void Regulus.Game.IStage.Leave()
         {
-                        
-            _Binder.Unbind<IAdventure>(this);            
+            _StageMachine.Termination();                                    
         }
-
-
-        
 
         void Regulus.Game.IStage.Update()
         {
-            
+            _StageMachine.Update();
         }
         
         
+    }
+
+    partial class Adventure
+    {
+        class EnterMapStage : Regulus.Game.IStage
+        {
+            private string _Map;
+            private IZone _Zone;
+
+            public EnterMapStage(string map, IZone _Zone)
+            {
+                // TODO: Complete member initialization
+                this._Map = map;
+                this._Zone = _Zone;
+            }
+            void Regulus.Game.IStage.Enter()
+            {
+                var result =  _Zone.Query(_Map);
+                result.OnValue += _QueryResult;
+            }
+
+            void _QueryResult(IMap map)
+            {
+                
+            }
+
+            void Regulus.Game.IStage.Leave()
+            {
+                
+            }
+
+            void Regulus.Game.IStage.Update()
+            {
+                
+            }
+        }
     }
 }

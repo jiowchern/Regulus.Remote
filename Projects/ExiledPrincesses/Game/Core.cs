@@ -9,16 +9,16 @@ namespace Regulus.Project.ExiledPrincesses.Game
 	{
 		Regulus.Remoting.ISoulBinder _Binder;
 		public IStorage	Storage {get ; private set;}
-        IMap _Map;
+        IZone _Zone;
         
         
 
 		public Regulus.Remoting.ISoulBinder Binder { get { return _Binder; }}
 		Regulus.Game.StageMachine _StageMachine;
-        public Core(Regulus.Remoting.ISoulBinder binder, IStorage storage, IMap zone )
+        public Core(Regulus.Remoting.ISoulBinder binder, IStorage storage, IZone zone )
 		{
-            
-            _Map = zone; 
+
+            _Zone = zone; 
 			Storage = storage;
 			_Binder = binder;
             _Binder.Bind<IUserStatus>(this);
@@ -57,8 +57,13 @@ namespace Regulus.Project.ExiledPrincesses.Game
             {
                 account_infomation.Record = new GameRecord() { Map = "Teaching" };
                 account_infomation.Record.Actors = new ActorInfomation[] { new ActorInfomation() { Prototype = 1, Id = Guid.NewGuid(), Exp = 0, Level = 1 } };
-
-
+                var contingent = new Regulus.Project.ExiledPrincesses.Contingent();
+                contingent.Formation = Regulus.Project.ExiledPrincesses.Contingent.FormationType.Auxiliary;
+                contingent.Members = new Guid[] { account_infomation.Record.Actors[0].Id };
+                account_infomation.Record.Contingent = contingent;
+                
+                
+                
             }
             
         }

@@ -5,30 +5,34 @@ using System.Text;
 
 namespace Regulus.Project.ExiledPrincesses.Game
 {
-    public interface IMap
+    public interface IZone
     {
-        void Enter(IEntity entity);
-        void Leave(IEntity entity);
-
-        
+        Regulus.Remoting.Value<IMap> Query(string map);
     }
 
     
-    
 
-    public class Zone 
+    public interface IMap : Regulus.Game.IFramework
+    {
+        
+    }
+
+
+
+
+    public class Zone : IZone
     {
         Regulus.Project.ExiledPrincesses.Game.Hall _Hall;
         IStorage _Storage;
         
         Regulus.Game.FrameworkRoot _Loopers;
-        Map _Map;
+        
         public Zone(IStorage storage)
         {
             _Storage = storage;
             _Hall = new Hall();
+
             
-            _Map = new Map();
 
             _Loopers = new Regulus.Game.FrameworkRoot();
             
@@ -36,7 +40,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
         public void Enter(Regulus.Remoting.ISoulBinder binder)
         {
-            _Hall.CreateUser(binder, _Storage, _Map);
+            _Hall.CreateUser(binder, _Storage, this);
         }
 
         public void Update()
@@ -45,13 +49,18 @@ namespace Regulus.Project.ExiledPrincesses.Game
             _Loopers.Update();
         }
 
-       
-
-        
-        
 
 
 
-        
+
+
+
+
+
+
+        Remoting.Value<IMap> IZone.Query(string map)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

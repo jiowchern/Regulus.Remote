@@ -5,10 +5,7 @@ namespace Regulus.Project.ExiledPrincesses
     
     using Regulus.Remoting;
     
-    interface IObservableActor
-    {
-
-    }
+    
 
 
     
@@ -46,11 +43,7 @@ namespace Regulus.Project.ExiledPrincesses
         void Add(AccountInfomation ai);        
     }
 
-    public interface IEntity
-    {
-        Guid Id { get; }
-        T QueryAttrib<T>();
-    }
+    
 
     
     

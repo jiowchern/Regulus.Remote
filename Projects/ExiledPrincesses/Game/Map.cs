@@ -5,29 +5,85 @@ using System.Text;
 
 namespace Regulus.Project.ExiledPrincesses.Game
 {
-    
-    class Map : IMap
+    interface IContingent
     {
-        List<IEntity> _Entitys;
-        
+        Guid Id { get; set; }
+        event Action GoForwardEvent; 
+    }
+
+    partial class Map : IMap
+    {
+        float _Position;
+        IContingent _Contingent;
+        Regulus.Game.StageMachine _StageMachine;
         public Map()
         {
-            
-            _Entitys = new List<IEntity>();
+            _Position = 0.0f;            
         }
-        void IMap.Enter(IEntity entity)
+
+        bool Regulus.Game.IFramework.Update()
         {
-            _Entitys.Add(entity);
+            _StageMachine.Update();
+            return true;
         }
 
-        void IMap.Leave(IEntity entity)
+        void Regulus.Game.IFramework.Launch()
         {
-            _Entitys.Remove(entity);
+            _StageMachine = new Regulus.Game.StageMachine();
+            _ToIdle();
         }
 
+        private void _ToIdle()
+        {
+            var stage = new IdleStage(_Contingent);
+            stage.GoForwardEvent += _ToGoForward;
+            _StageMachine.Push(stage);
+        }
 
+        void _ToGoForward()
+        {
+            //var stage = new GoForwardStage(_Contingent);
+            //_StageMachine.Push(stage);
+        }
 
+        void Regulus.Game.IFramework.Shutdown()
+        {
+            _StageMachine.Termination();
+        }
+    }
 
-        
+    partial class Map
+    {
+        class IdleStage : Regulus.Game.IStage
+        {
+            public delegate void OnGoForward();
+            public event OnGoForward GoForwardEvent;
+            private IContingent _Contingent;
+
+            public IdleStage(IContingent contingent)
+            {                
+                this._Contingent = contingent;
+            }
+            void Regulus.Game.IStage.Enter()
+            {
+                _Contingent.GoForwardEvent += _OnGoForwar;
+            }
+
+            void _OnGoForwar()
+            {
+                if (GoForwardEvent != null)
+                    GoForwardEvent();
+            }
+
+            void Regulus.Game.IStage.Leave()
+            {
+                _Contingent.GoForwardEvent -= _OnGoForwar;
+            }
+
+            void Regulus.Game.IStage.Update()
+            {
+                
+            }
+        }
     }
 }

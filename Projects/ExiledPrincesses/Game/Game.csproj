@@ -42,7 +42,6 @@
     <Compile Include="Adventure.cs" />
     <Compile Include="common.cs" />
     <Compile Include="Core.cs" />
-    <Compile Include="Entity.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="Zone.cs" />
     <Compile Include="Hall.cs" />

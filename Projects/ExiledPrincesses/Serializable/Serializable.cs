@@ -17,6 +17,18 @@ namespace Regulus.Project.ExiledPrincesses
 	}
 
     [Serializable]
+    public class Contingent
+    {
+        public enum FormationType
+        {
+            Auxiliary,
+            Defensive,
+        }
+        public FormationType Formation { get; set; }
+        public Guid[] Members { get; set; }
+    }
+
+    [Serializable]
     public class GameRecord
     {
         public GameRecord()
@@ -25,6 +37,9 @@ namespace Regulus.Project.ExiledPrincesses
         }
         public ActorInfomation[] Actors { get; set; }
         public string Map { get; set; }
+
+        public Contingent Contingent { get; set; }
+        
     }
 
     [Serializable]
