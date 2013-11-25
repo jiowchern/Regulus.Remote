@@ -10,9 +10,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
         void Enter(IEntity entity);
         void Leave(IEntity entity);
 
-        Regulus.Remoting.Value<bool> BattleRequest(Guid id);
-
-        event OnMapBattle BattleResponseEvent;
+        
     }
 
     
@@ -22,23 +20,23 @@ namespace Regulus.Project.ExiledPrincesses.Game
     {
         Regulus.Project.ExiledPrincesses.Game.Hall _Hall;
         IStorage _Storage;
-        Battle.Zone _Battle;
+        
         Regulus.Game.FrameworkRoot _Loopers;
         Map _Map;
         public Zone(IStorage storage)
         {
             _Storage = storage;
             _Hall = new Hall();
-            _Battle = new Battle.Zone();
-            _Map = new Map(_Battle);
+            
+            _Map = new Map();
 
             _Loopers = new Regulus.Game.FrameworkRoot();
-            _Loopers.AddFramework(_Battle);
+            
         }
 
         public void Enter(Regulus.Remoting.ISoulBinder binder)
         {
-            _Hall.CreateUser(binder, _Storage, _Map , _Battle);
+            _Hall.CreateUser(binder, _Storage, _Map);
         }
 
         public void Update()

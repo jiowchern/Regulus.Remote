@@ -49,34 +49,7 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
         }
 
 
-        Regulus.Remoting.Ghost.IProviderNotice<IReadyCaptureEnergy> IUser.BattleReadyCaptureEnergyProvider
-        {
-            get { return _Complex.QueryProvider<IReadyCaptureEnergy>(); }
-        }
-
-        Regulus.Remoting.Ghost.IProviderNotice<ICaptureEnergy> IUser.BattleCaptureEnergyProvider
-        {
-            get { return _Complex.QueryProvider<ICaptureEnergy>(); }
-        }
-
-
-
-
-        Regulus.Remoting.Ghost.IProviderNotice<IEnableChip> IUser.BattleEnableChipProvider
-        {
-            get { return _Complex.QueryProvider<IEnableChip>(); }
-        }
-
-        Regulus.Remoting.Ghost.IProviderNotice<IDrawChip> IUser.BattleDrawChipProvider
-        {
-            get { return _Complex.QueryProvider<IDrawChip>(); }
-        }
-
-
-        Regulus.Remoting.Ghost.IProviderNotice<IBattler> IUser.BattleProvider
-        {
-            get { return _Complex.QueryProvider<IBattler>(); }
-        }
+        
 
         internal void Connect(string addr)
         {

@@ -9,16 +9,16 @@ namespace Regulus.Project.ExiledPrincesses.Game
 	{
 		Regulus.Remoting.ISoulBinder _Binder;
 		public IStorage	Storage {get ; private set;}
-        IMap _Zone;
-        Battle.IZone _Battle;
+        IMap _Map;
+        
         
 
 		public Regulus.Remoting.ISoulBinder Binder { get { return _Binder; }}
 		Regulus.Game.StageMachine _StageMachine;
-        public Core(Regulus.Remoting.ISoulBinder binder, IStorage storage, IMap zone , Battle.IZone battle)
+        public Core(Regulus.Remoting.ISoulBinder binder, IStorage storage, IMap zone )
 		{
-            _Battle = battle;
-            _Zone = zone; 
+            
+            _Map = zone; 
 			Storage = storage;
 			_Binder = binder;
             _Binder.Bind<IUserStatus>(this);
@@ -55,20 +55,20 @@ namespace Regulus.Project.ExiledPrincesses.Game
         void _ToParking(AccountInfomation account_infomation)
         {
             var stage = new Regulus.Project.ExiledPrincesses.Game.Stage.Parking(Binder , account_infomation);
-            stage.SelectCompiledEvent += _ToAdventure;
+            
             stage.VerifyEvent += _ToVerify;
             _StageMachine.Push(stage);
             _AccountInfomation = account_infomation;
             
-            _StatusEvent(UserStatus.Parking);
+            _StatusEvent(UserStatus.Pub);
         }
 
         ActorInfomation _ActorInfomation;
         void _ToAdventure(ActorInfomation actor_infomation)
         {
 
-            var stage = new Regulus.Project.ExiledPrincesses.Game.Stage.Adventure(actor_infomation , Binder, _Zone);
-            stage.ToBattleStageEvent += _ToBattle;
+            var stage = new Regulus.Project.ExiledPrincesses.Game.Stage.Adventure(actor_infomation , Binder, _Map);
+            
             stage.ParkingEvent += () => { _ToParking(_AccountInfomation); };
             _StageMachine.Push(stage);
 
@@ -76,16 +76,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
             _StatusEvent(UserStatus.Adventure);
         }
 
-        void _ToBattle(IBattleAdmissionTickets battle_admission_tickets)
-        {
-            var stage = new Regulus.Project.ExiledPrincesses.Game.Stage.Battle(battle_admission_tickets, _ActorInfomation, Binder, Storage);
-            stage.EndEvent += () =>
-            {
-                _ToAdventure(_ActorInfomation);
-            };
-            _StageMachine.Push(stage);
-            _StatusEvent(UserStatus.Battle);
-        }
+        
 
 		public bool Update()
 		{

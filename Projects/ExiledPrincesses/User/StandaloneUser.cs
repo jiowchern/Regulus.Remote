@@ -89,30 +89,6 @@ namespace Regulus.Project.ExiledPrincesses.Standalone
         }
 
 
-        Regulus.Remoting.Ghost.IProviderNotice<IReadyCaptureEnergy> IUser.BattleReadyCaptureEnergyProvider
-        {
-            get { return _Agent.QueryProvider<IReadyCaptureEnergy>(); }
-        }
-
-        Regulus.Remoting.Ghost.IProviderNotice<ICaptureEnergy> IUser.BattleCaptureEnergyProvider
-        {
-            get { return _Agent.QueryProvider<ICaptureEnergy>(); }
-        }
-
-        Regulus.Remoting.Ghost.IProviderNotice<IEnableChip> IUser.BattleEnableChipProvider
-        {
-            get { return _Agent.QueryProvider<IEnableChip>(); }
-        }
-
-        Regulus.Remoting.Ghost.IProviderNotice<IDrawChip> IUser.BattleDrawChipProvider
-        {
-            get { return _Agent.QueryProvider<IDrawChip>(); }
-        }
-
-
-        Regulus.Remoting.Ghost.IProviderNotice<IBattler> IUser.BattleProvider
-        {
-            get { return _Agent.QueryProvider<IBattler>(); }
-        }
+        
     }
 }

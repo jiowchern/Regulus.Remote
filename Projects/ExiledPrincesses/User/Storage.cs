@@ -22,24 +22,7 @@ namespace Regulus.Project.ExiledPrincesses.Standalone
 			
 		}
 
-        int _Count;
-        Regulus.Remoting.Value<Pet> IStorage.FindPet(Guid id)
-        {
-            var pet = new Pet() { Id = Guid.NewGuid(), Owner = id };
-            pet.Energy = new Energy(7);
-            Func<bool>[] energyIncs = new Func<bool>[]{pet.Energy.IncGreen , pet.Energy.IncRed , pet.Energy.IncYellow }; 
-            /*for(int i = 0 ; i < 3 ; ++i)
-            {
-                energyIncs[Regulus.Utility.Random.Next(0, 3)]();
-            }*/
-            pet.Name = _Count++ % 2 == 0 ? "蝙蝠" : "甲蟲";
-            return pet;
-        }
-
-        void IStorage.Add(Pet pet)
-        {
-            
-        }
+        
     }
 }
 

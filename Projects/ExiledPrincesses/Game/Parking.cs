@@ -7,7 +7,7 @@ namespace Regulus.Project.ExiledPrincesses.Game.Stage
 {
     class Parking : Regulus.Game.IStage, Regulus.Project.ExiledPrincesses.IParking
     {
-        public delegate void OnSelectCompiled(ActorInfomation actor_infomation);
+        public delegate void OnSelectCompiled(IObservableActor[] actor_infomations);
         public event OnSelectCompiled SelectCompiledEvent;
 
         public delegate void OnVerify();
@@ -39,12 +39,5 @@ namespace Regulus.Project.ExiledPrincesses.Game.Stage
             
         }
         
-
-        Remoting.Value<ActorInfomation> IParking.SelectActor(string name)
-        {
-            var a = new ActorInfomation() { Id = Guid.NewGuid(), Name = name };
-            SelectCompiledEvent(a);
-            return a;
-        }
     }
 }
