@@ -63,7 +63,6 @@ namespace Regulus.Project.ExiledPrincesses.Game
                 account_infomation.Record.Contingent = contingent;
                 
                 
-                
             }
             
         }

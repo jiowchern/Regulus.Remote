@@ -7,7 +7,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 {
     public interface IZone
     {
-        Regulus.Remoting.Value<IMap> Query(string map);
+        Regulus.Remoting.Value<IMap> Create(string map);
     }
 
     
@@ -49,16 +49,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
             _Loopers.Update();
         }
 
-
-
-
-
-
-
-
-
-
-        Remoting.Value<IMap> IZone.Query(string map)
+        Remoting.Value<IMap> IZone.Create(string map)
         {
             throw new NotImplementedException();
         }

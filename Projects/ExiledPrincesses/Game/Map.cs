@@ -42,13 +42,35 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
         void _ToGoForward()
         {
-            //var stage = new GoForwardStage(_Contingent);
-            //_StageMachine.Push(stage);
+            var stage = new GoForwardStage(_Position);
+            _StageMachine.Push(stage);
         }
 
         void Regulus.Game.IFramework.Shutdown()
         {
             _StageMachine.Termination();
+        }
+    }
+
+    partial class Map
+    {
+        class GoForwardStage : Regulus.Game.IStage
+        {
+
+            void Regulus.Game.IStage.Enter()
+            {
+                
+            }
+
+            void Regulus.Game.IStage.Leave()
+            {
+                
+            }
+
+            void Regulus.Game.IStage.Update()
+            {
+                
+            }
         }
     }
 
@@ -61,7 +83,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
             private IContingent _Contingent;
 
             public IdleStage(IContingent contingent)
-            {                
+            {
                 this._Contingent = contingent;
             }
             void Regulus.Game.IStage.Enter()
@@ -82,7 +104,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
             void Regulus.Game.IStage.Update()
             {
-                
+
             }
         }
     }
