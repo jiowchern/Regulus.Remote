@@ -66,6 +66,7 @@
     <Compile Include="utility_io.cs" />
     <Compile Include="utility_obb.cs" />
     <Compile Include="utility_time.cs" />
+    <Compile Include="utility_updater.cs" />
     <Compile Include="utility_valuehelper.cs" />
     <Compile Include="utility_log.cs" />
     <Compile Include="utility_poller.cs" />

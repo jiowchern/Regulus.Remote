@@ -36,14 +36,15 @@ namespace Regulus.Project.ExiledPrincesses.Game
                 throw new NotImplementedException();
             }
         }
-
-
         Regulus.Game.StageMachine _StageMachine;
+        Team[] _Teams;
+
+        
         internal void Update()
         {
             _StageMachine.Update();
         }
-        Team[] _Teams;
+        
         internal void Initial(Team team1, Team team2)
         {
             _Teams = new Team[] { team1 , team2 };
@@ -60,7 +61,9 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
         private void _ToAction()
         {
-            throw new NotImplementedException();
+            var stage = new ActionStage(_Teams);
+            
+            _StageMachine.Push(stage);
         }
 
         internal void Finial()
@@ -68,7 +71,51 @@ namespace Regulus.Project.ExiledPrincesses.Game
             _StageMachine.Termination();
         }
     }
+    partial class Combat
+    {
+        class ActionStage : Regulus.Game.IStage
+        {            
+            
+            Team.Member[] _Members;
+            public ActionStage(Team[] teams)
+            {
 
+
+                _Members = _GetMembers(teams);
+            }
+
+            private Team.Member[] _GetMembers(Team[] teams)
+            {
+                List<Team.Member> teammates = new List<Team.Member>();
+                foreach (var team in teams)
+                {
+                    teammates.AddRange(team.Members);
+                }
+                return teammates.OrderBy(t => t.Teammate.Dex).ToArray();
+            }
+
+            void Regulus.Game.IStage.Enter()
+            {
+                
+
+                _Counter = new Utility.TimeCounter();
+            }
+
+            void Regulus.Game.IStage.Leave()
+            {
+                
+            }
+            Regulus.Utility.TimeCounter _Counter;
+            void Regulus.Game.IStage.Update()
+            {
+                if (_Counter.Second > 5.0f)
+                {
+                    
+                    _Counter.Reset();
+                }
+            }
+        }
+    }
     partial class Combat
     {
         class StrategyStage : Regulus.Game.IStage
@@ -92,13 +139,18 @@ namespace Regulus.Project.ExiledPrincesses.Game
             private void _Snatch(Strategy[] strategys)
             {
                 var members = _GetMembers(_Teams);
-
-                for (int i = 0; i < members.Length; ++i )
+                int i = 0;
+                while(true)
                 {
                     var memeber = members[i];
 
+                    i++;
+                    if (i == members.Length)
+                        i = 0;
                     if (_GetStrategy(memeber, strategys) == false)
                         break;
+
+
                 }
                 DoneEvent();
             }
@@ -133,7 +185,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
                 {
                     teammates.AddRange(team.Members);
                 }
-                return teammates.OrderBy(t => t.Teammate.Dex ).ToArray();
+                return teammates.OrderBy(t => t.Teammate.Int ).ToArray();
             }
 
             private Strategy[] _Generate()

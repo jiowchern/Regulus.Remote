@@ -10,6 +10,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
     public interface ITeammate
     {
         int Dex { get; }
+        int Int { get; }
         Strategy Specializes { get; }
     }
 
@@ -23,6 +24,12 @@ namespace Regulus.Project.ExiledPrincesses.Game
         }
 
         Strategy ITeammate.Specializes
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+
+        int ITeammate.Int
         {
             get { throw new NotImplementedException(); }
         }
@@ -45,6 +52,12 @@ namespace Regulus.Project.ExiledPrincesses.Game
         }
 
         Strategy ITeammate.Specializes
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+
+        int ITeammate.Int
         {
             get { throw new NotImplementedException(); }
         }
