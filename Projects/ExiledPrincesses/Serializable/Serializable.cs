@@ -6,6 +6,15 @@ using System.Text;
 
 namespace Regulus.Project.ExiledPrincesses
 {
+    [Serializable]
+    public enum Strategy
+    {
+        None,
+        Sword,
+        Staff,
+        Ax,
+        Shield
+    };
     
 	[Serializable]
 	public class AccountInfomation
@@ -36,10 +45,26 @@ namespace Regulus.Project.ExiledPrincesses
             Actors = new ActorInfomation[] { };
         }
         public ActorInfomation[] Actors { get; set; }
-        public string Map { get; set; }
-
+        public string Tone { get; set; }
         public Contingent Contingent { get; set; }
-        
+
+
+        public ActorInfomation[] GetContingentActors()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    [Serializable]
+    public class PrototypeActor
+    {
+        public int Id { get; set; }
+        public int Level { get; set; }
+        public int Hp { get; set; }
+        public int Int { get; set; }
+        public int Dex { get; set; }
+        public int Exp { get; set; }
+        public Strategy Specializes { get; set; } 
     }
 
     [Serializable]
@@ -48,7 +73,7 @@ namespace Regulus.Project.ExiledPrincesses
         public Guid Id { get; set; }
         public int Prototype { get; set; }
         public int Level { get; set; }
-        public int Exp { get; set; } 
+        public int Exp { get; set; }        
     }
 
     [Serializable]
@@ -56,9 +81,8 @@ namespace Regulus.Project.ExiledPrincesses
     {
         None,
         Verify,
-        Pub,
-        Adventure,
-        Battle,
+        Tone,
+        Adventure,        
     }
 
 	[Serializable]

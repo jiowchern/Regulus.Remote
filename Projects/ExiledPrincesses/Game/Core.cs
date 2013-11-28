@@ -10,11 +10,9 @@ namespace Regulus.Project.ExiledPrincesses.Game
 		Regulus.Remoting.ISoulBinder _Binder;
 		public IStorage	Storage {get ; private set;}
         IZone _Zone;
-        
-        
-
 		public Regulus.Remoting.ISoulBinder Binder { get { return _Binder; }}
 		Regulus.Game.StageMachine _StageMachine;
+        AccountInfomation _AccountInfomation;
         public Core(Regulus.Remoting.ISoulBinder binder, IStorage storage, IZone zone )
 		{
 
@@ -46,38 +44,77 @@ namespace Regulus.Project.ExiledPrincesses.Game
         {
             var stage = new Regulus.Project.ExiledPrincesses.Game.Stage.Verify(this);
             _StageMachine.Push(stage);
-            stage.LoginSuccessEvent += _ToAdventure;
+            stage.LoginSuccessEvent += _ToFirst;
             
             _StatusEvent(UserStatus.Verify);
         }
 
-        private void _ToAdventure(AccountInfomation account_infomation)
+        private void _ToFirst(AccountInfomation account_infomation)
         {
+            _AccountInfomation = account_infomation;
             if (account_infomation.Record == null)
             {
-                account_infomation.Record = new GameRecord() { Map = "Teaching" };
-                account_infomation.Record.Actors = new ActorInfomation[] { new ActorInfomation() { Prototype = 1, Id = Guid.NewGuid(), Exp = 0, Level = 1 } };
-                var contingent = new Regulus.Project.ExiledPrincesses.Contingent();
-                contingent.Formation = Regulus.Project.ExiledPrincesses.Contingent.FormationType.Auxiliary;
-                contingent.Members = new Guid[] { account_infomation.Record.Actors[0].Id };
-                account_infomation.Record.Contingent = contingent;
-                
-                
+                GameRecord record = _BuildFirstRecord();
+                Adventurer adv = _BuildAdventurer("Teaching" , record);
+
+                _ToFirstAdventure(record, adv);
+            }
+            else
+            {
+                _ToTone(account_infomation.Record.Tone);
             }
             
         }
 
-        AccountInfomation _AccountInfomation;
-        void _ToParking(AccountInfomation account_infomation)
+        private void _ToFirstAdventure(GameRecord record, Adventurer adv)
         {
-            
-            var stage = new Regulus.Project.ExiledPrincesses.Game.Stage.Parking(Binder , account_infomation);
-            
-            stage.VerifyEvent += _ToVerify;
+            var stage = new Regulus.Project.ExiledPrincesses.Game.Stage.Adventure(adv, _Binder, _Zone);
+            stage.ToToneEvent += (tone) =>
+            {
+                _AccountInfomation.Record = record;
+                _ToTone(tone);
+            };
             _StageMachine.Push(stage);
-            _AccountInfomation = account_infomation;
-            
-            _StatusEvent(UserStatus.Pub);
+        }
+
+        private Adventurer _BuildAdventurer(string map ,GameRecord record)
+        {
+            ActorInfomation[] actors = record.GetContingentActors();
+            var teammates = (from actor in actors select new Teammate(actor)).ToArray();
+            var adv = new Adventurer();
+            adv.Map = map;
+            adv.Teammates = teammates;
+            return adv;
+        }
+
+        private GameRecord _BuildFirstRecord()
+        {
+            var record = new GameRecord();
+            record.Actors = new ActorInfomation[] { new ActorInfomation() { Prototype = 1, Id = Guid.NewGuid(), Exp = 0, Level = 1 } };
+            var contingent = new Regulus.Project.ExiledPrincesses.Contingent();
+            contingent.Formation = Regulus.Project.ExiledPrincesses.Contingent.FormationType.Auxiliary;
+            contingent.Members = new Guid[] { record.Actors[0].Id };
+            record.Contingent = contingent;
+            return record;
+        }
+
+        private void _ToAdventure(Adventurer adventurer)
+        {
+            var stage = new Regulus.Project.ExiledPrincesses.Game.Stage.Adventure(adventurer , _Binder , _Zone);
+            stage.ToToneEvent += _ToTone ;
+            _StageMachine.Push(stage);
+        }
+
+        private void _ToTone(string name)
+        {
+            var stage = new Regulus.Project.ExiledPrincesses.Game.Stage.Tone();
+            stage.ToMapEvent += _ToMap;
+            _StageMachine.Push(stage);
+        }
+
+        void _ToMap(string name)
+        {
+            _ToAdventure( _BuildAdventurer(name, _AccountInfomation.Record ));
         }
         
 

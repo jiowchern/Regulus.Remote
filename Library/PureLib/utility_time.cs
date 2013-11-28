@@ -113,18 +113,13 @@ namespace Regulus.Utility
         protected long _Real;
         public long Ticks { get { return _Real; } }
 
-        
-
         public Time()
         {
             _Current = System.DateTime.Now.Ticks;
-            _Real = _Current;
-            
+            _Real = _Current;            
         }
 
         protected TimeCounter _Request = new TimeCounter();
-
-        
 
         public void Update()
         {
@@ -141,6 +136,10 @@ namespace Regulus.Utility
         }
 
         public long Delta { get; private set; }
+        public float DeltaSecond { get 
+        {
+            return (float)new System.TimeSpan(Delta).TotalSeconds;
+        } }
 
     }
 }

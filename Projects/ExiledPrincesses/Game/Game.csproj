@@ -40,12 +40,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Adventure.cs" />
+    <Compile Include="Combat.cs" />
     <Compile Include="common.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="Map.cs" />
+    <Compile Include="Tone.cs" />
     <Compile Include="Zone.cs" />
     <Compile Include="Hall.cs" />
-    <Compile Include="Parking.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StageVerify.cs" />
   </ItemGroup>

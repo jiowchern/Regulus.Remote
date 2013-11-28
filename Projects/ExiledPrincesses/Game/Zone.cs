@@ -8,17 +8,24 @@ namespace Regulus.Project.ExiledPrincesses.Game
     public interface IZone
     {
         Regulus.Remoting.Value<IMap> Create(string map);
+
+        void Destory(IMap map);
     }
 
     
 
     public interface IMap : Regulus.Game.IFramework
     {
-        
+        event Action<string> ToMapEvent;
+        event Action<string> ToToneEvent;
+
+        void Initial(Contingent.FormationType formationType, ITeammate[] teammate);
+        void Release();
     }
 
-
-
+    public class LocalTime : Regulus.Utility.Singleton<Regulus.Remoting.Time>
+    {                
+    }
 
     public class Zone : IZone
     {
@@ -29,11 +36,9 @@ namespace Regulus.Project.ExiledPrincesses.Game
         
         public Zone(IStorage storage)
         {
+            
             _Storage = storage;
             _Hall = new Hall();
-
-            
-
             _Loopers = new Regulus.Game.FrameworkRoot();
             
         }
@@ -45,11 +50,18 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
         public void Update()
         {
+            LocalTime.Instance.Update();
             _Hall.Update();
             _Loopers.Update();
         }
 
         Remoting.Value<IMap> IZone.Create(string map)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        void IZone.Destory(IMap map)
         {
             throw new NotImplementedException();
         }
