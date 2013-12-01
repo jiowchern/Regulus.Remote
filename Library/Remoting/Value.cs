@@ -25,7 +25,7 @@ namespace Regulus.Remoting
     }
     sealed public class Value<T> : IValue 
 	{
-        public static implicit operator Value<T>(T value)
+        public static implicit operator Value<T>(T value) 
         {
             return new Value<T>(value);
         }

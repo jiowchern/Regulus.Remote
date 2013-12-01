@@ -7,15 +7,15 @@ namespace Regulus.Project.ExiledPrincesses.Game
 {
     class BattlefieldResources : Regulus.Utility.Singleton<BattlefieldResources>
     {
-        Dictionary<Guid, BattlefieldPrototype> _BattlefieldPrototypes;
+        Dictionary<int, BattlefieldPrototype> _BattlefieldPrototypes;
         public BattlefieldResources()
         {
-            _BattlefieldPrototypes = new Dictionary<Guid, BattlefieldPrototype>();
+            _BattlefieldPrototypes = new Dictionary<int, BattlefieldPrototype>();
         }
-        internal BattlefieldPrototype Find(Guid guid)
+        internal BattlefieldPrototype Find(int id)
         {
             BattlefieldPrototype battlefieldPrototype;
-            if (_BattlefieldPrototypes.TryGetValue(guid, out battlefieldPrototype))
+            if (_BattlefieldPrototypes.TryGetValue(id, out battlefieldPrototype))
                 return battlefieldPrototype;
             return null;
         }

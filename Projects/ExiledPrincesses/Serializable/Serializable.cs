@@ -52,7 +52,7 @@ namespace Regulus.Project.ExiledPrincesses
 
         public ActorInfomation[] GetContingentActors()
         {
-            throw new NotImplementedException();
+            return (from a in Actors join m in Contingent.Members on a.Id equals m select a).ToArray();
         }
     }
 
@@ -84,7 +84,7 @@ namespace Regulus.Project.ExiledPrincesses
 
         public Ability FindAbility(int exp)
         {
-            return (from a in Abilitys where a.Exp < exp orderby a.Exp descending select a).FirstOrDefault();
+            return (from a in Abilitys where a.Exp <= exp orderby a.Exp descending select a).FirstOrDefault();
         }
     }
 
@@ -115,17 +115,15 @@ namespace Regulus.Project.ExiledPrincesses
     [Serializable]
     public class Station
     {
-        public Guid Id;
-        public enum Kind
+        public int Id { get; set; }
+        public enum KindType
         {
             None,
             Combat,
             Choice
         }
-        virtual public Kind GetKind()
-        {
-            return Kind.None;
-        }
+        public KindType Kind { get; set; }
+        
         public float Position { get; set; }
     }
 
@@ -148,5 +146,12 @@ namespace Regulus.Project.ExiledPrincesses
     public class TonePrototype
     {
         public string[] Maps { get; set; } 
+    }
+    [Serializable]
+    public class ChoicePrototype
+    {
+        public string[] Maps { get; set; }
+        public string[] Towns { get; set; }
+        public bool Cancel { get; set; }
     }
 }

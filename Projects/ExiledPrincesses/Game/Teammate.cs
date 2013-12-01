@@ -6,7 +6,7 @@ using System.Text;
 namespace Regulus.Project.ExiledPrincesses.Game
 {
     public interface ITeammate
-    {
+    {       
         int Dex { get; }
         int Int { get; }
         int Hp { get; }
@@ -20,60 +20,11 @@ namespace Regulus.Project.ExiledPrincesses.Game
         void Injury(int damage);
 
         int AddCombo(Strategy strategy);
-    }
 
-    public class Monster : ITeammate
-    {
+        void SetIdleController(IAdventureIdle adventure_idle);
+        void SetGoController(IAdventureGo adventure_go);
 
-        int ITeammate.Dex
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        Strategy ITeammate.Specializes
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        int ITeammate.Int
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-
-        Skill.Effect[] ITeammate.GetActivitiesEffects(Team team, CommonSkillSet common_skill_set)
-        {
-            throw new NotImplementedException();
-        }
-
-
-        int ITeammate.Hp
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-
-        int ITeammate.AddHit(Strategy strategy)
-        {
-            throw new NotImplementedException();
-        }
-
-        void ITeammate.Injury(int damage)
-        {
-            throw new NotImplementedException();
-        }
-
-
-        int ITeammate.AddCombo(Strategy strategy)
-        {
-            throw new NotImplementedException();
-        }
-
-
-        void ITeammate.Take(CommonSkillSet common_skill_set)
-        {
-            throw new NotImplementedException();
-        }
+        void SetChoiceController(IAdventureChoice adventureChoice);
     }
 
     public class Teammate : ITeammate
@@ -86,9 +37,10 @@ namespace Regulus.Project.ExiledPrincesses.Game
         int _Hp;
         Strategy _Specializes ;
         Strategy _Weakness ;
-        public Teammate(ActorInfomation actor)
+        Controller _Controller;
+        public Teammate(ActorInfomation actor, Controller controller )
         {
-            
+            _Controller = controller;
             var prototypeActor = ActorResource.Instance.Find(actor.Prototype);
             _ActivitiesSkills = new Dictionary<int, Skill>();
             _Ability = prototypeActor.FindAbility(actor.Exp);
@@ -98,7 +50,6 @@ namespace Regulus.Project.ExiledPrincesses.Game
             _Hit = 0;
             _Combo = 0;
         }
-
 
         int ITeammate.Dex
         {
@@ -247,8 +198,27 @@ namespace Regulus.Project.ExiledPrincesses.Game
         {
             skills.Add(++_SkillSn, skill);
         }
+
+        void ITeammate.SetIdleController(IAdventureIdle adventureIdle)
+        {
+            _Controller.SetIdleController(adventureIdle);            
+        }
+
+
+        void ITeammate.SetGoController(IAdventureGo adventure_go)
+        {
+            _Controller.SetGoController(adventure_go);            
+        }
+
+
+        void ITeammate.SetChoiceController(IAdventureChoice adventure_choice)
+        {
+            _Controller.SetChoiceController(adventure_choice);            
+        }
     }
 
+   
+    
     class Adventurer
     {
         public string Map;

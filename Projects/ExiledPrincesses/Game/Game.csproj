@@ -42,12 +42,15 @@
     <Compile Include="Actor.cs" />
     <Compile Include="Adventure.cs" />
     <Compile Include="BattlefieldResources.cs" />
+    <Compile Include="ChoiceResource.cs" />
     <Compile Include="Combat.cs" />
     <Compile Include="common.cs" />
+    <Compile Include="Controller.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="EffectResource.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="MapResources.cs" />
+    <Compile Include="Resource.cs" />
     <Compile Include="Skill.cs" />
     <Compile Include="StationResources.cs" />
     <Compile Include="Teammate.cs" />
@@ -61,6 +64,10 @@
     <ProjectReference Include="..\..\..\Library\PureLib\PureLib.csproj">
       <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
       <Name>PureLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Library\RemotingStandalong\RemotingStandalong.csproj">
+      <Project>{485f551d-9155-4982-b653-f8d4eac2fca1}</Project>
+      <Name>RemotingStandalong</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Library\Remoting\Remoting.csproj">
       <Project>{a4cfce46-bda8-4416-a1bb-77bd80514019}</Project>

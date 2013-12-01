@@ -81,9 +81,6 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
         {            
             (_User as Regulus.Game.IFramework).Launch();            
             
-            //_Connect("127.0.0.1:5055");
-            _Connect("114.34.90.217:5055");
-            
         }
 
         void Regulus.Game.IFramework.Shutdown()
@@ -116,7 +113,7 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
 
         void Regulus.Game.ConsoleFramework<IUser>.IController.Look()
         {
-            _Command.Register<string>("connect", _Connect);
+            _Command.Register<string>("Connect", _Connect);
             if (_UserCommand != null)
                 _UserCommand.Release();
             _Look = true;
@@ -126,7 +123,7 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
 
         void Regulus.Game.ConsoleFramework<IUser>.IController.NotLook()
         {
-            _Command.Unregister("connect");
+            _Command.Unregister("Connect");
             if (_UserCommand != null)
                 _UserCommand.Release();
 

@@ -13,17 +13,20 @@ namespace Regulus.Project.ExiledPrincesses.Game
 		public Regulus.Remoting.ISoulBinder Binder { get { return _Binder; }}
 		Regulus.Game.StageMachine _StageMachine;
         AccountInfomation _AccountInfomation;
+        
         public Core(Regulus.Remoting.ISoulBinder binder, IStorage storage, IZone zone )
 		{
 
             _Zone = zone; 
 			Storage = storage;
 			_Binder = binder;
-            _Binder.Bind<IUserStatus>(this);
+            
 			_StageMachine = new Regulus.Game.StageMachine();
 
 			binder.BreakEvent += _OnInactive;
             _StatusEvent += (s) => { };
+
+            
 		}
 		~Core()
 		{
@@ -37,15 +40,15 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
 		public void Launch()
 		{
-			
+            _Binder.Bind<IUserStatus>(this);
 		}
 
         private void _ToVerify()
         {
-            var stage = new Regulus.Project.ExiledPrincesses.Game.Stage.Verify(this);
-            _StageMachine.Push(stage);
-            stage.LoginSuccessEvent += _ToFirst;
             
+            var stage = new Regulus.Project.ExiledPrincesses.Game.Stage.Verify(this);
+            stage.LoginSuccessEvent += _ToFirst;
+            _StageMachine.Push(stage);
             _StatusEvent(UserStatus.Verify);
         }
 
@@ -68,6 +71,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
         private void _ToFirstAdventure(GameRecord record, Adventurer adv)
         {
+            _StatusEvent(UserStatus.Adventure);
             var stage = new Regulus.Project.ExiledPrincesses.Game.Stage.Adventure(adv, _Binder, _Zone);
             stage.ToToneEvent += (tone) =>
             {
@@ -76,11 +80,12 @@ namespace Regulus.Project.ExiledPrincesses.Game
             };
             _StageMachine.Push(stage);
         }
-
+        
         private Adventurer _BuildAdventurer(string map ,GameRecord record)
         {
             ActorInfomation[] actors = record.GetContingentActors();
-            var teammates = (from actor in actors select new Teammate(actor)).ToArray();
+
+            var teammates = (from actor in actors select new Teammate(actor, new PlayerController(_Binder))).ToArray();
             var adv = new Adventurer();
             adv.Map = map;
             adv.Teammates = teammates;
@@ -101,6 +106,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
         private void _ToAdventure(Adventurer adventurer)
         {
+            _StatusEvent(UserStatus.Adventure);
             var stage = new Regulus.Project.ExiledPrincesses.Game.Stage.Adventure(adventurer , _Binder , _Zone);
             stage.ToToneEvent += _ToTone ;
             _StageMachine.Push(stage);
@@ -108,16 +114,18 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
         private void _ToTone(string name)
         {
+            _StatusEvent(UserStatus.Tone);
             TonePrototype prototype = Regulus.Project.ExiledPrincesses.Game.Stage.ToneResource.Instance.Find(name);
             if (prototype != null)
             {
-                var stage = new Regulus.Project.ExiledPrincesses.Game.Stage.Tone(prototype);
+                var stage = new Regulus.Project.ExiledPrincesses.Game.Stage.Town(prototype , _Binder);
                 stage.ToMapEvent += _ToMap;
                 _StageMachine.Push(stage);
             }
             else
             {
-                throw new SystemException("沒有城鎮" + name);
+                _AccountInfomation.Record = null;
+                _ToFirst(_AccountInfomation);
             }
         }
 
@@ -134,6 +142,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 		}
 		public void Shutdown()
 		{
+            _Binder.Unbind<IUserStatus>(this);
 			_StageMachine.Termination();
 		}
 
@@ -149,6 +158,12 @@ namespace Regulus.Project.ExiledPrincesses.Game
         void IUserStatus.Ready()
         {
             _ToVerify();
+        }
+
+
+        Remoting.Value<long> IUserStatus.QueryTime()
+        {
+            return LocalTime.Instance.Ticks;
         }
     }
 }

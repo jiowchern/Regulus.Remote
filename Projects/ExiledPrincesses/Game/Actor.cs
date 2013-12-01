@@ -12,19 +12,19 @@ namespace Regulus.Project.ExiledPrincesses.Game
         {
             _Actors = new Dictionary<int, ActorPrototype>();
             _Add(1, Strategy.Sword, Strategy.Sword
-                    ,new Ability(100, 100, 100, 100 , new int[] { 5 })
+                    ,new Ability(100, 100, 100, 0 , new int[] { 5 })
                     , new Ability(100, 100, 100, 200, new int[] { 5 })
                     , new Ability(100, 100, 100, 300, new int[] { 5 }));
             _Add(2, Strategy.Sword, Strategy.Staff
-                    , new Ability(100, 100, 100, 100, new int[] { 6 })
+                    , new Ability(100, 100, 100, 0, new int[] { 6 })
                     , new Ability(100, 100, 100, 200, new int[] { 6 })
                     , new Ability(100, 100, 100, 300, new int[] { 6 }));
             _Add(3, Strategy.Sword, Strategy.Shield
-                    , new Ability(100, 100, 100, 100, new int[] { 7 })
+                    , new Ability(100, 100, 100, 0, new int[] { 7 })
                     , new Ability(100, 100, 100, 200, new int[] { 7 })
                     , new Ability(100, 100, 100, 300, new int[] { 7 }));
             _Add(4, Strategy.Sword, Strategy.Ax
-                    , new Ability(100, 100, 100, 100, new int[] { 8 })
+                    , new Ability(100, 100, 100, 0, new int[] { 8 })
                     , new Ability(100, 100, 100, 200, new int[] { 8 })
                     , new Ability(100, 100, 100, 300, new int[] { 8 }));
             

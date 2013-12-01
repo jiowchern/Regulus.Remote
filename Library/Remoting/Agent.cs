@@ -9,9 +9,12 @@ namespace Regulus.Remoting
 	using System.Reflection.Emit;
 	public class AgentCore
 	{
-		IGhostRequest _Requester ;	
+		IGhostRequest _Requester ;
+        static int Sn;
+        int _Sn;
 		public AgentCore(IGhostRequest req)
-		{		
+		{
+            _Sn = Sn++;
 			_Requester = req;				
 		}
 
@@ -226,7 +229,7 @@ namespace Regulus.Remoting
 			return (Regulus.Remoting.Ghost.IGhost)o;
 		}
 
-		static System.Collections.Generic.Dictionary<Type, Type> _GhostTypes = new Dictionary<Type, Type>();
+		System.Collections.Generic.Dictionary<Type, Type> _GhostTypes = new Dictionary<Type, Type>();
 		private Type _QueryGhostType(Type ghostBaseType)
 		{
 			Type ghostType = null;
@@ -235,7 +238,7 @@ namespace Regulus.Remoting
 				return ghostType;
 			}
 
-			ghostType = _BuildGhostType(ghostBaseType);
+			ghostType = _BuildGhostType(ghostBaseType , _Sn);
 			_GhostTypes.Add(ghostBaseType, ghostType);
 			return ghostType;
 		}
@@ -280,7 +283,7 @@ namespace Regulus.Remoting
 				}
 			}
 		}
-		static private Type _BuildGhostType(Type ghostBaseType)
+		static private Type _BuildGhostType(Type ghostBaseType, int sn)
 		{
 			//反射機制
 			Type baseType = ghostBaseType;
@@ -292,7 +295,7 @@ namespace Regulus.Remoting
 			ModuleBuilder module = assembly.DefineDynamicModule("RegulusRemotingGhost." + baseType.ToString() + "Module");
 			//產生一個class or struct
 			//這裡是用class
-			var typeName = "C" + baseType.ToString();
+            var typeName = "C" + sn + baseType.ToString();
             TypeBuilder type = module.DefineType(typeName, TypeAttributes.Class | TypeAttributes.Sealed, typeof(Object), new Type[] { baseType, typeof(Regulus.Remoting.Ghost.IGhost) });
 
 			#region build constructor

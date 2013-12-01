@@ -26,17 +26,37 @@ namespace Regulus.Project.ExiledPrincesses
             _System.StatusProvider.Supply += _OnStatusSupply;
             _System.StatusProvider.Unsupply += _Unsupply;
 
-            _System.ParkingProvider.Supply += _OnParkingSupply; 
-            _System.ParkingProvider.Unsupply += _Unsupply;
+            _System.TownProvider.Supply += _OnTownSupply; 
+            _System.TownProvider.Unsupply += _Unsupply;
 
             _System.AdventureProvider.Supply += _OnAdventureSupply;
             _System.AdventureProvider.Unsupply += _Unsupply;
 
+            _System.AdventureIdleProvider.Supply += _OnAdventureIdleSupply;
+            _System.AdventureIdleProvider.Unsupply += _Unsupply;
+
+            _System.AdventureGoProvider.Supply += _OnAdventureGoSupply;
+            _System.AdventureGoProvider.Unsupply += _Unsupply;
+
+
+            _System.AdventureChoiceProvider.Supply += _OnAdventureChoiceSupply;
+            _System.AdventureChoiceProvider.Unsupply += _Unsupply;
+            
+
             
         }
+
+        
         internal void Release()
         {
-            
+            _System.AdventureChoiceProvider.Supply -= _OnAdventureChoiceSupply;
+            _System.AdventureChoiceProvider.Unsupply -= _Unsupply;
+
+            _System.AdventureGoProvider.Supply -= _OnAdventureGoSupply;
+            _System.AdventureGoProvider.Unsupply -= _Unsupply;
+
+            _System.AdventureIdleProvider.Supply -= _OnAdventureIdleSupply;
+            _System.AdventureIdleProvider.Unsupply -= _Unsupply;
 
             _System.VerifyProvider.Supply -= _OnVerifySupply;
             _System.VerifyProvider.Unsupply -= _Unsupply;
@@ -44,12 +64,11 @@ namespace Regulus.Project.ExiledPrincesses
             _System.StatusProvider.Supply -= _OnStatusSupply;
             _System.StatusProvider.Unsupply -= _Unsupply;
 
-            _System.ParkingProvider.Supply -= _OnParkingSupply;
-            _System.ParkingProvider.Unsupply -= _Unsupply;
+            _System.TownProvider.Supply -= _OnTownSupply;
+            _System.TownProvider.Unsupply -= _Unsupply;
 
             _System.AdventureProvider.Supply -= _OnAdventureSupply;
             _System.AdventureProvider.Unsupply -= _Unsupply;
-
             
             foreach (var command in _RemoveCommands)
             {
@@ -69,6 +88,45 @@ namespace Regulus.Project.ExiledPrincesses
             }
         }
 
+        private void _OnAdventureChoiceSupply(IAdventureChoice obj)
+        {
+            _View.Write("Map [");
+            foreach(var map in obj.Maps)
+            {
+                _View.Write(" " + map+" ");
+            }
+            _View.WriteLine("]");
+
+            _View.Write("Town [");
+            foreach (var town in obj.Town)
+            {
+                _View.Write(" " + town + " ");
+            }
+            _View.WriteLine("]");
+
+            _Command.Register<string>("ChoiceMap", obj.GoMap);
+            _Command.Register<string>("ChoiceTown", obj.GoTown);
+
+            _RemoveCommands.Add(obj, new string[] 
+            {
+                "ChoiceMap" , "ChoiceTown"
+            });
+        }
+
+        private void _OnAdventureGoSupply(IAdventureGo obj)
+        {
+            obj.ForwardEvent += _OnForward;
+            _RemoveEvents.Add(obj, new Action[] 
+            {
+                ()=>{obj.ForwardEvent -= _OnForward;}
+            });
+        }
+
+        private void _OnForward(long time_tick, float position, float speed)
+        {
+            _View.WriteLine("移動 時間:" + time_tick + " 位置:" + position + "速度:" + speed);
+        }
+
 
         
 
@@ -76,13 +134,7 @@ namespace Regulus.Project.ExiledPrincesses
         {
             _View.WriteLine(obj);
         }
-
-
-        
-
-        
-
-        
+  
         
         private void _OnAdventureSupply(IAdventure adventure)
         {
@@ -93,17 +145,19 @@ namespace Regulus.Project.ExiledPrincesses
             });
         }
 
-        private void _OnParkingSupply(ITone parking)
-        {
-            
-            
-            
-
-            
-
-            _RemoveCommands.Add(parking, new string[] 
+        private void _OnTownSupply(ITown town)
+        {   
+            _View.Write("前往區域 [");
+            foreach (var map in town.Maps)
             {
-                
+                _View.Write(" "+map+" ");
+            }
+            _View.WriteLine("]");
+
+            _Command.Register<string>("Goto", town.ToMap);
+            _RemoveCommands.Add(town, new string[] 
+            {
+                "Goto"   
             });
         }
 
@@ -119,12 +173,17 @@ namespace Regulus.Project.ExiledPrincesses
             });
 
             _Command.Register("Ready", status.Ready );
-            _RemoveCommands.Add(status, new string[] { "Ready" });
+            _Command.RemotingRegister<long>("Time", status.QueryTime, (time) =>
+            {
+                _View.WriteLine("現在時間 : " + System.TimeSpan.FromTicks(time) + " ( "+ time +" )"  );
+            });
+            _RemoveCommands.Add(status, new string[] { "Ready" , "Time" 
+            });
         }
 
         void _OnUserStatusChanged(UserStatus status)
         {
-            _View.WriteLine("遊戲狀態改變" + status);
+            _View.WriteLine("遊戲狀態改變 : " + status);
         }
 
         void _Unsupply<T>(T obj)
@@ -173,7 +232,14 @@ namespace Regulus.Project.ExiledPrincesses
             });
         }
 
-        
+        private void _OnAdventureIdleSupply(IAdventureIdle obj)
+        {
+            _Command.Register("go", obj.GoForwar);
+            _RemoveCommands.Add(obj, new string[] 
+            {
+                "go" 
+            });
+        }        
     }
 }
 

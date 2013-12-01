@@ -77,9 +77,9 @@ namespace Regulus.Project.ExiledPrincesses.Standalone
         }
 
 
-        Regulus.Remoting.Ghost.IProviderNotice<ITone> IUser.ParkingProvider
+        Regulus.Remoting.Ghost.IProviderNotice<ITown> IUser.TownProvider
         {
-            get { return _Agent.QueryProvider<ITone>(); }
+            get { return _Agent.QueryProvider<ITown>(); }
         }
 
 
@@ -88,7 +88,20 @@ namespace Regulus.Project.ExiledPrincesses.Standalone
             get { return _Agent.QueryProvider<IAdventure>(); }
         }
 
+        Regulus.Remoting.Ghost.IProviderNotice<IAdventureIdle> IUser.AdventureIdleProvider
+        {
+            get { return _Agent.QueryProvider<IAdventureIdle>(); }
+        }
 
-        
+
+        Regulus.Remoting.Ghost.IProviderNotice<IAdventureGo> IUser.AdventureGoProvider
+        {
+            get { return _Agent.QueryProvider<IAdventureGo>(); }
+        }
+
+        Regulus.Remoting.Ghost.IProviderNotice<IAdventureChoice> IUser.AdventureChoiceProvider
+        {
+            get { return _Agent.QueryProvider<IAdventureChoice>(); }
+        }
     }
 }

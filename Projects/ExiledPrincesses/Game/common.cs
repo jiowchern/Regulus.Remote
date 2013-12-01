@@ -9,19 +9,20 @@ namespace Regulus.Project.ExiledPrincesses
     {
         void Ready();
         event Action<UserStatus> StatusEvent;
+        Value<long> QueryTime();
     }
 
     public interface IVerify
     {        
         Value<bool> CreateAccount(string name, string password);
-        Value<LoginResult> Login(string name, string password);
-        Value<IVerify> Get();
+        Value<LoginResult> Login(string name, string password);        
         void Quit();        
     };
 
-    public interface ITone
-    {        
-        
+    public interface ITown
+    {
+        string[] Maps { get; }
+        void ToMap(string map);
     };
 
     public interface IAdventure
@@ -34,6 +35,25 @@ namespace Regulus.Project.ExiledPrincesses
         Value<AccountInfomation> FindAccountInfomation(string name);
 		
         void Add(AccountInfomation ai);        
-    }    
+    }
 
+    public interface IAdventureIdle
+    {
+        void GoForwar();
+    }
+
+    
+    public interface IAdventureGo
+    {
+         event Action<long /*time_tick*/ , float /*position*/ , float /*speed*/> ForwardEvent;
+    }
+
+    public interface IAdventureChoice
+    {
+        string[] Maps {get;}
+        string[] Town { get; }
+
+        void GoMap(string map);
+        void GoTown(string tone);
+    }
 }

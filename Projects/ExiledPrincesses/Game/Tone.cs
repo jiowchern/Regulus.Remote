@@ -11,6 +11,7 @@ namespace Regulus.Project.ExiledPrincesses.Game.Stage
         public ToneResource()
         {
             _TonePrototypes = new Dictionary<string, TonePrototype>();
+            _TonePrototypes.Add("Credits", new TonePrototype() { Maps = new string[] { "Teaching" } });
         }
         internal TonePrototype Find(string name)
         {
@@ -23,20 +24,22 @@ namespace Regulus.Project.ExiledPrincesses.Game.Stage
         }
     }
 
-    class Tone : Regulus.Game.IStage
+    class Town : Regulus.Game.IStage , ITown
     {
 
         public delegate void OnToMap(string name);
         public event OnToMap ToMapEvent;
         TonePrototype _Prototype;
-
-        public Tone(TonePrototype prototype)
+        Regulus.Remoting.ISoulBinder _Binder;
+        public Town(TonePrototype prototype , Regulus.Remoting.ISoulBinder binder)
         {
+            _Binder = binder;
             _Prototype = prototype;
+            
         }
         void Regulus.Game.IStage.Enter()
         {
-            
+            _Binder.Bind<ITown>(this);
         }
 
         void _GotoMap(string destination)
@@ -49,12 +52,24 @@ namespace Regulus.Project.ExiledPrincesses.Game.Stage
         }
         void Regulus.Game.IStage.Leave()
         {
-            
+            _Binder.Unbind<ITown>(this);
         }
 
         void Regulus.Game.IStage.Update()
         {
-            
+
+
+        }
+
+        string[] ITown.Maps
+        {
+            get { return _Prototype.Maps; }
+        }
+
+
+        void ITown.ToMap(string map)
+        {
+            _GotoMap(map);
         }
     }
 }

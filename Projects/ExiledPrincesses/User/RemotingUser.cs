@@ -37,15 +37,20 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
         }
 
 
-        Regulus.Remoting.Ghost.IProviderNotice<ITone> IUser.ParkingProvider
+        Regulus.Remoting.Ghost.IProviderNotice<ITown> IUser.TownProvider
         {
-            get { return _Complex.QueryProvider<ITone>(); }
+            get { return _Complex.QueryProvider<ITown>(); }
         }
 
 
         Regulus.Remoting.Ghost.IProviderNotice<IAdventure> IUser.AdventureProvider
         {
             get { return _Complex.QueryProvider<IAdventure>(); }
+        }
+
+        Regulus.Remoting.Ghost.IProviderNotice<IAdventureChoice> IUser.AdventureChoiceProvider
+        {
+            get { return _Complex.QueryProvider<IAdventureChoice>(); }
         }
 
 
@@ -62,6 +67,18 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
 
         public event Action ConnectSuccessEvent;
         public event Action<string> ConnectFailEvent;
+
+
+        Regulus.Remoting.Ghost.IProviderNotice<IAdventureIdle> IUser.AdventureIdleProvider
+        {
+            get { return _Complex.QueryProvider<IAdventureIdle>(); }
+        }
+
+
+        Regulus.Remoting.Ghost.IProviderNotice<IAdventureGo> IUser.AdventureGoProvider
+        {
+            get { return _Complex.QueryProvider<IAdventureGo>(); }
+        }
     }
 }
 

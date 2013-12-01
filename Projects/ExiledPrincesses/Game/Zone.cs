@@ -69,7 +69,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
                 _Loopers.Add(map);
                 return map;    
             }
-            return null;
+            return new Remoting.Value<IMap>(null);
         }
     }
 }

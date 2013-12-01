@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 
+
 namespace Regulus.Project.ExiledPrincesses.Game
 {
     
@@ -28,12 +29,14 @@ namespace Regulus.Project.ExiledPrincesses.Game
         System.Collections.Generic.Queue<Station> _Stations;
         Contingent.FormationType _Formation;
         ITeammate[] _Teammates;
+
         public Map(MapPrototype map_prototype)
         {
             _Position = 0.0f;
             _Id = Guid.NewGuid();            
             this._MapPrototype = map_prototype;
             _Stations = new Queue<Station>(_MapPrototype.Stations);
+            _StageMachine = new Regulus.Game.StageMachine();
         }
 
         internal void Initialize(Contingent.FormationType formation, ITeammate[] teammate)
@@ -50,26 +53,30 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
         private void _ToIdle()
         {
-            var stage = new IdleStage();
-            stage.GoForwardEvent += _ToGoForward;
+            var stage = new IdleStage(_Teammates[0]);            
+            
+            stage.GoForwardEvent += _ToGoForward;            
             _StageMachine.Push(stage);
         }
 
         void _ToGoForward()
         {
-            var stage = new GoForwardStage(_Position, _Stations.Dequeue());
-            stage.ArrivalEvent += _OnArrival;
-            _StageMachine.Push(stage);
+            if (_Stations.Count > 0)
+            {
+                var stage = new GoForwardStage(_Position, _Stations.Dequeue(), _Teammates);
+                stage.ArrivalEvent += _OnArrival;
+                _StageMachine.Push(stage);
+            }            
         }
 
         void _OnArrival(float position, Station station)
         {
             _Position = position;
-            if (station.GetKind() == Station.Kind.Choice)
+            if (station.Kind == Station.KindType.Choice)
             {
                 _ToChoice(station);
             }
-            else if (station.GetKind() == Station.Kind.Combat)
+            else if (station.Kind == Station.KindType.Combat)
             {
                 _ToCombat(station);
             }            
@@ -104,11 +111,19 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
         private void _ToChoice(Station station)
         {
-            var stage = new ChoiceStage(station.Id);
-            stage.ToMapEvent += _ToMap;
-            stage.ToTownEvent += _ToTone;
-            stage.CancelEvent += _ToIdle;
-            _StageMachine.Push(stage);
+            var prototype = ChoiceResource.Instance.Find(station.Id);
+            if (prototype != null)
+            {
+                var stage = new ChoiceStage(prototype , _Teammates[0]);
+                stage.ToMapEvent += _ToMap;
+                stage.ToTownEvent += _ToTone;
+                stage.CancelEvent += _ToIdle;
+                _StageMachine.Push(stage);
+            }
+            else
+            {
+                throw new SystemException("沒有選項:"+station.Id);
+            }
         }
 
         void _ToTone(string name)
@@ -120,8 +135,6 @@ namespace Regulus.Project.ExiledPrincesses.Game
         {
             _ToMapEvent(name);
         }
-
-        
 
         event Action<string> _ToMapEvent;
         event Action<string> IMap.ToMapEvent
@@ -136,9 +149,6 @@ namespace Regulus.Project.ExiledPrincesses.Game
             remove { _ToToneEvent -= value; }
         }
 
-        
-
-
         bool Utility.IUpdatable.Update()
         {
             _StageMachine.Update();
@@ -146,9 +156,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
         }
 
         void Framework.ILaunched.Launch()
-        {
-            _Stations = new Queue<Station>();
-            _StageMachine = new Regulus.Game.StageMachine();            
+        {                    
         }
 
         void Framework.ILaunched.Shutdown()
@@ -184,7 +192,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
             void Regulus.Game.IStage.Enter()
             {
                 var team1 = new Team(_Formation, _Teammates);
-                var enemys = (from enemy in _Prototype.Enemys select new Teammate( new ActorInfomation() { Exp = 0 , Prototype = enemy })).ToArray();
+                var enemys = (from enemy in _Prototype.Enemys select new Teammate( new ActorInfomation() { Exp = 0 , Prototype = enemy }, null)).ToArray();
                 var team2 = new Team(_Prototype.Formation, enemys);
                 _Combat.Initial(team1, team2);
                 _Combat.WinnerEvent += (winner) =>
@@ -215,7 +223,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
     }
     partial class Map
     {
-        class ChoiceStage : Regulus.Game.IStage
+        class ChoiceStage : Regulus.Game.IStage, IAdventureChoice
         {
             public delegate void OnToTown(string name);
             public event OnToTown ToTownEvent;
@@ -223,31 +231,85 @@ namespace Regulus.Project.ExiledPrincesses.Game
             public event OnToMap ToMapEvent;
             public delegate void OnCancel();
             public event OnCancel CancelEvent;
+            ChoicePrototype _ChoicePrototype;
+            ITeammate _Teammate;
+            Regulus.Standalong.Agent _Agent;
+            public ChoiceStage(ChoicePrototype protorype , ITeammate teammate)
+            {
+                _ChoicePrototype = protorype;
+                _Teammate = teammate;
+                _Agent = new Standalong.Agent();
+            }
 
-            public ChoiceStage(Guid id)
-            { 
 
+            void _ChoiceMap(string name)
+            {
+                var result = (from map in _ChoicePrototype.Maps where name == map select map).Count();
+                if (result >= 1)
+                {
+                    ToMapEvent(name);
+                }
+            }
+            void _ChoiceTown(string name)
+            {
+                var result = (from town in _ChoicePrototype.Towns where name == town select town).Count();
+                if (result >= 1)
+                {
+                    ToTownEvent(name);
+                }
+            }
+            void _ChoiceCancel()
+            {
+                if (_ChoicePrototype.Cancel)
+                {
+                    CancelEvent();
+                }
             }
             public void Enter()
             {
+                _Agent.Launch();
+                _Agent.Bind<IAdventureChoice>(this);
+                _Teammate.SetChoiceController(_Agent.QueryProvider<IAdventureChoice>().Ghosts[0]);
                 
             }
 
             public void Leave()
             {
-                
+                _Teammate.SetChoiceController(null);
+                _Agent.Unbind<IAdventureChoice>(this);
+                _Agent.Shutdown();
             }
 
             public void Update()
             {
-                
+                _Agent.Update();
+            }
+
+            string[] IAdventureChoice.Maps
+            {
+                get { return _ChoicePrototype.Maps; }
+            }
+
+            string[] IAdventureChoice.Town
+            {
+                get { return _ChoicePrototype.Towns; }
+            }
+
+
+            void IAdventureChoice.GoMap(string map)
+            {
+                _ChoiceMap(map);
+            }
+
+            void IAdventureChoice.GoTown(string tone)
+            {
+                _ChoiceTown(tone);
             }
         }
     }
     partial class Map
     {
-
-        class GoForwardStage : Regulus.Game.IStage
+        class GoForwardStage : Regulus.Game.IStage , IAdventureGo
         {
             Station _Station;
             private float _Position;
@@ -255,63 +317,110 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
             public delegate void OnArrival(float position, Station station);
             public event OnArrival ArrivalEvent;
-            public GoForwardStage(float position , Station station)
+            ITeammate[] _Teammates;
+            Regulus.Standalong.Agent _Agent;
+            public GoForwardStage(float position , Station station , ITeammate[] teammates)
             {
                 _Station = station;
                 this._Position = position;
+                _Teammates = teammates;
+                _Agent = new Standalong.Agent();
             }
 
             void Regulus.Game.IStage.Enter()
             {
-                
+                _Agent.Launch();
+                _Agent.Bind<IAdventureGo>(this);
+                var ghost = _Agent.QueryProvider<IAdventureGo>().Ghosts[0];
+                foreach (var t in _Teammates)
+                {
+                    t.SetGoController(ghost);
+                }
+
+                _ForwardEvent(LocalTime.Instance.Ticks, _Position, _DistancePerSeconds);
             }
 
             void Regulus.Game.IStage.Leave()
-            {
-                
+            {                                
+                _Agent.Unbind<IAdventureGo>(this);
+                foreach (var t in _Teammates)
+                {
+                    t.SetGoController(null);
+                }
+                _Agent.Shutdown();
             }
 
             void Regulus.Game.IStage.Update()
             {
+                _Agent.Update();
                 _Position += (_DistancePerSeconds * LocalTime.Instance.DeltaSecond);
                 if (_Position > _Station.Position)
                 {
                     ArrivalEvent(_Position, _Station);
                 }
             }
+
+            event Action<long /*time_tick*/ , float /*position*/ , float /*speed*/> _ForwardEvent;
+            event Action<long /*time_tick*/ , float /*position*/ , float /*speed*/> IAdventureGo.ForwardEvent
+            {
+                add { _ForwardEvent += value; }
+                remove { _ForwardEvent -= value; }
+            }
         }
     }
 
     partial class Map
     {
-        class IdleStage : Regulus.Game.IStage
+
+        public class IdleStage : Regulus.Game.IStage, IAdventureIdle
         {
             public delegate void OnGoForward();
             public event OnGoForward GoForwardEvent;
-            
 
-            public IdleStage()
+            ITeammate _Teammate;
+            Regulus.Standalong.Agent _Agent;
+            IdleStage()
             {
-                
+                _Agent = new Standalong.Agent();
+            }            
+            public IdleStage(ITeammate teammate) : this()
+            {
+                _Teammate = teammate;
             }
             void Regulus.Game.IStage.Enter()
             {
-                
+                _Agent.Launch();
+                _Agent.Bind<IAdventureIdle>(this);
+                _Teammate.SetIdleController(Get());
             }
-
-            void _OnGoForwar()
+            public IAdventureIdle Get()
+            {
+                var provider = _Agent.QueryProvider<IAdventureIdle>();
+                return provider.Ghosts[0];
+            }            
+            
+            void _GoForwar()
             {
                 if (GoForwardEvent != null)
                     GoForwardEvent();
+                GoForwardEvent = null;
             }
 
             void Regulus.Game.IStage.Leave()
-            {                
+            {
+                _Teammate.SetIdleController(null);
+                _Agent.Unbind<IAdventureIdle>(this);
+                _Agent.Shutdown();
             }
 
             void Regulus.Game.IStage.Update()
             {
+                _Agent.Update();
+            }
 
+            void IAdventureIdle.GoForwar()
+            {
+                _GoForwar();
             }
         }
     }

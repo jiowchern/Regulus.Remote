@@ -76,11 +76,6 @@ namespace Regulus.Project.ExiledPrincesses.Game.Stage
 		{
 			
 		}
-
-
-        Remoting.Value<IVerify> IVerify.Get()
-        {
-            return this;
-        }
+        
     }
 }
