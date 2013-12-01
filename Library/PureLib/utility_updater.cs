@@ -66,7 +66,6 @@ namespace Regulus.Utility
             {
                 if (framework.Update() == false)
                 {
-
                     Remove(framework);
                 }
             }

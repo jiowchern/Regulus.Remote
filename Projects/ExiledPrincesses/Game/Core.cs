@@ -84,13 +84,14 @@ namespace Regulus.Project.ExiledPrincesses.Game
             var adv = new Adventurer();
             adv.Map = map;
             adv.Teammates = teammates;
+            adv.Formation = Contingent.FormationType.Auxiliary;
             return adv;
         }
 
         private GameRecord _BuildFirstRecord()
         {
             var record = new GameRecord();
-            record.Actors = new ActorInfomation[] { new ActorInfomation() { Prototype = 1, Id = Guid.NewGuid(), Exp = 0, Level = 1 } };
+            record.Actors = new ActorInfomation[] { new ActorInfomation() { Prototype = 1, Id = Guid.NewGuid(), Exp = 0} };
             var contingent = new Regulus.Project.ExiledPrincesses.Contingent();
             contingent.Formation = Regulus.Project.ExiledPrincesses.Contingent.FormationType.Auxiliary;
             contingent.Members = new Guid[] { record.Actors[0].Id };
@@ -107,9 +108,17 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
         private void _ToTone(string name)
         {
-            var stage = new Regulus.Project.ExiledPrincesses.Game.Stage.Tone();
-            stage.ToMapEvent += _ToMap;
-            _StageMachine.Push(stage);
+            TonePrototype prototype = Regulus.Project.ExiledPrincesses.Game.Stage.ToneResource.Instance.Find(name);
+            if (prototype != null)
+            {
+                var stage = new Regulus.Project.ExiledPrincesses.Game.Stage.Tone(prototype);
+                stage.ToMapEvent += _ToMap;
+                _StageMachine.Push(stage);
+            }
+            else
+            {
+                throw new SystemException("沒有城鎮" + name);
+            }
         }
 
         void _ToMap(string name)

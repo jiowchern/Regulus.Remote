@@ -39,11 +39,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actor.cs" />
     <Compile Include="Adventure.cs" />
+    <Compile Include="BattlefieldResources.cs" />
     <Compile Include="Combat.cs" />
     <Compile Include="common.cs" />
     <Compile Include="Core.cs" />
+    <Compile Include="EffectResource.cs" />
     <Compile Include="Map.cs" />
+    <Compile Include="MapResources.cs" />
+    <Compile Include="Skill.cs" />
+    <Compile Include="StationResources.cs" />
+    <Compile Include="Teammate.cs" />
     <Compile Include="Tone.cs" />
     <Compile Include="Zone.cs" />
     <Compile Include="Hall.cs" />

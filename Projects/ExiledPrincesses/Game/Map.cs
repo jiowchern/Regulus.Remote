@@ -3,60 +3,54 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+
 namespace Regulus.Project.ExiledPrincesses.Game
 {
-    interface IContingent
+    
+
+    public interface IMap 
     {
-        Guid Id { get; set; }
-        event Action GoForwardEvent; 
+        event Action<string> ToMapEvent;
+        event Action<string> ToToneEvent;
+
+        Guid Id { get; }
     }
 
-    partial class Map : IMap
-    {
-        class Station
-        {
-            public Guid Id;
-            public enum Kind
-            {
-                None,
-                Combat,
-                Choice
-            }
-            virtual public Kind GetKind()
-            { 
-                return Kind.None;
-            }
-            public float Position { get; set; }
-        }
+    partial class Map : IMap, Regulus.Utility.IUpdatable
+    {        
 
         float _Position;
-        IContingent _Contingent;
+        
         Regulus.Game.StageMachine _StageMachine;
-        string _Tone;
-
+        Guid _Id;
+        private MapPrototype _MapPrototype;
+        public Guid Id { get { return _Id; } }
         System.Collections.Generic.Queue<Station> _Stations;
-        public Map()
+        Contingent.FormationType _Formation;
+        ITeammate[] _Teammates;
+        public Map(MapPrototype map_prototype)
         {
-            _Position = 0.0f;            
+            _Position = 0.0f;
+            _Id = Guid.NewGuid();            
+            this._MapPrototype = map_prototype;
+            _Stations = new Queue<Station>(_MapPrototype.Stations);
         }
 
-        bool Regulus.Game.IFramework.Update()
+        internal void Initialize(Contingent.FormationType formation, ITeammate[] teammate)
         {
-            _StageMachine.Update();
-            return true;
-        }
-
-        void Regulus.Game.IFramework.Launch()
-        {
-            _Stations = new Queue<Station>();
-            _StageMachine = new Regulus.Game.StageMachine();
-
+            _Formation = formation;
+            _Teammates = teammate;
             _ToIdle();
+        }
+
+        internal void Release()
+        {
+            
         }
 
         private void _ToIdle()
         {
-            var stage = new IdleStage(_Contingent);
+            var stage = new IdleStage();
             stage.GoForwardEvent += _ToGoForward;
             _StageMachine.Push(stage);
         }
@@ -68,7 +62,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
             _StageMachine.Push(stage);
         }
 
-        void _OnArrival(float position, Map.Station station)
+        void _OnArrival(float position, Station station)
         {
             _Position = position;
             if (station.GetKind() == Station.Kind.Choice)
@@ -78,15 +72,22 @@ namespace Regulus.Project.ExiledPrincesses.Game
             else if (station.GetKind() == Station.Kind.Combat)
             {
                 _ToCombat(station);
-            }
-            
+            }            
         }
 
         private void _ToCombat(Station station)
         {
-            var stage = new CombatStage(station.Id, _Formation, _Teammates);
-            stage.ResultEvent += _CombatResult;
-            _StageMachine.Push(stage);
+            var battlefield = BattlefieldResources.Instance.Find(station.Id);
+            if (battlefield != null)
+            {
+                var stage = new CombatStage(battlefield, _Formation, _Teammates);
+                stage.ResultEvent += _CombatResult;
+                _StageMachine.Push(stage);
+            }
+            else
+            {
+                _ToIdle();
+            }
         }
 
         void _CombatResult(Map.CombatStage.Result result)
@@ -97,7 +98,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
             }
             else
             {
-                _ToTone(_Tone);
+                _ToTone(_MapPrototype.Tone);
             }
         }
 
@@ -120,11 +121,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
             _ToMapEvent(name);
         }
 
-        void Regulus.Game.IFramework.Shutdown()
-        {
-            _StageMachine.Termination();
-        }
-
+        
 
         event Action<string> _ToMapEvent;
         event Action<string> IMap.ToMapEvent
@@ -139,18 +136,27 @@ namespace Regulus.Project.ExiledPrincesses.Game
             remove { _ToToneEvent -= value; }
         }
 
-        Contingent.FormationType _Formation;
-        ITeammate[] _Teammates;
-        void IMap.Initial(Contingent.FormationType formation, ITeammate[] teammate)
+        
+
+
+        bool Utility.IUpdatable.Update()
         {
-            _Formation = formation;
-            _Teammates = teammate;
+            _StageMachine.Update();
+            return true;
         }
 
-        void IMap.Release()
+        void Framework.ILaunched.Launch()
         {
-            
+            _Stations = new Queue<Station>();
+            _StageMachine = new Regulus.Game.StageMachine();            
         }
+
+        void Framework.ILaunched.Shutdown()
+        {
+            _StageMachine.Termination();
+        }
+
+        
     }
     partial class Map
     {
@@ -162,14 +168,14 @@ namespace Regulus.Project.ExiledPrincesses.Game
             }
             public delegate void OnResult(Result result);
             public event OnResult ResultEvent;
-            private Guid _Id;            
+            
             private Contingent.FormationType _Formation;
             private ITeammate[] _Teammates;
             Combat _Combat;
-            public CombatStage(Guid guid, Contingent.FormationType formation, ITeammate[] teammates)
+            BattlefieldPrototype _Prototype;
+            public CombatStage(BattlefieldPrototype prototype, Contingent.FormationType formation, ITeammate[] teammates)
             {
-                // TODO: Complete member initialization
-                this._Id = guid;
+                _Prototype = prototype;
                 this._Formation = formation;
                 this._Teammates = teammates;
 
@@ -177,9 +183,22 @@ namespace Regulus.Project.ExiledPrincesses.Game
             }
             void Regulus.Game.IStage.Enter()
             {
-                var team1 = new Combat.Team(_Formation, _Teammates);
-                var team2 = new Combat.Team(Contingent.FormationType.Auxiliary , new ITeammate[]{ new Monster()});
+                var team1 = new Team(_Formation, _Teammates);
+                var enemys = (from enemy in _Prototype.Enemys select new Teammate( new ActorInfomation() { Exp = 0 , Prototype = enemy })).ToArray();
+                var team2 = new Team(_Prototype.Formation, enemys);
                 _Combat.Initial(team1, team2);
+                _Combat.WinnerEvent += (winner) =>
+                {
+                    if (winner == team1)
+                        ResultEvent(Result.Victory);
+                    else
+                        ResultEvent(Result.Failure);
+                };
+
+                _Combat.DrawEvent += () =>
+                {
+                    ResultEvent(Result.Failure);
+                };
                 
             }
 
@@ -269,15 +288,15 @@ namespace Regulus.Project.ExiledPrincesses.Game
         {
             public delegate void OnGoForward();
             public event OnGoForward GoForwardEvent;
-            private IContingent _Contingent;
+            
 
-            public IdleStage(IContingent contingent)
+            public IdleStage()
             {
-                this._Contingent = contingent;
+                
             }
             void Regulus.Game.IStage.Enter()
             {
-                _Contingent.GoForwardEvent += _OnGoForwar;
+                
             }
 
             void _OnGoForwar()
@@ -287,8 +306,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
             }
 
             void Regulus.Game.IStage.Leave()
-            {
-                _Contingent.GoForwardEvent -= _OnGoForwar;
+            {                
             }
 
             void Regulus.Game.IStage.Update()

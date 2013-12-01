@@ -77,9 +77,9 @@ namespace Regulus.Project.ExiledPrincesses.Standalone
         }
 
 
-        Regulus.Remoting.Ghost.IProviderNotice<IParking> IUser.ParkingProvider
+        Regulus.Remoting.Ghost.IProviderNotice<ITone> IUser.ParkingProvider
         {
-            get { return _Agent.QueryProvider<IParking>(); }
+            get { return _Agent.QueryProvider<ITone>(); }
         }
 
 

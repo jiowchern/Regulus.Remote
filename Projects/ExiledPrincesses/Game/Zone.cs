@@ -3,44 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+
 namespace Regulus.Project.ExiledPrincesses.Game
 {
+    public class LocalTime : Regulus.Utility.Singleton<Regulus.Remoting.Time>
+    {
+    }
+
     public interface IZone
     {
-        Regulus.Remoting.Value<IMap> Create(string map);
-
-        void Destory(IMap map);
-    }
-
+        Regulus.Remoting.Value<IMap> Create(string map, Contingent.FormationType formationType, ITeammate[] teammate);
+        void Destory(Guid map);
+    }    
     
-
-    public interface IMap : Regulus.Game.IFramework
-    {
-        event Action<string> ToMapEvent;
-        event Action<string> ToToneEvent;
-
-        void Initial(Contingent.FormationType formationType, ITeammate[] teammate);
-        void Release();
-    }
-
-    public class LocalTime : Regulus.Utility.Singleton<Regulus.Remoting.Time>
-    {                
-    }
-
     public class Zone : IZone
     {
         Regulus.Project.ExiledPrincesses.Game.Hall _Hall;
         IStorage _Storage;
-        
-        Regulus.Game.FrameworkRoot _Loopers;
+
+        Regulus.Utility.Updater<Map> _Loopers;
         
         public Zone(IStorage storage)
         {
             
             _Storage = storage;
             _Hall = new Hall();
-            _Loopers = new Regulus.Game.FrameworkRoot();
-            
+            _Loopers = new Regulus.Utility.Updater<Map>();
+            _Maps = new Dictionary<Guid, Map>();
         }
 
         public void Enter(Regulus.Remoting.ISoulBinder binder)
@@ -55,15 +44,32 @@ namespace Regulus.Project.ExiledPrincesses.Game
             _Loopers.Update();
         }
 
-        Remoting.Value<IMap> IZone.Create(string map)
+        Dictionary<Guid, Map> _Maps;        
+
+        void IZone.Destory(Guid id)
         {
-            throw new NotImplementedException();
+            Map map;
+            if (_Maps.TryGetValue(id, out map))
+            {
+                map.Release();
+                _Loopers.Remove(map);
+                _Maps.Remove(id);
+            }
+            
         }
-
-
-        void IZone.Destory(IMap map)
+        
+        Remoting.Value<IMap> IZone.Create(string name, Contingent.FormationType formation_type, ITeammate[] teammate)
         {
-            throw new NotImplementedException();
+            var mapPrototype  = MapResources.Instance.Find(name);
+            if (mapPrototype != null)
+            {
+                var map = new Map(mapPrototype);
+                map.Initialize(formation_type, teammate);
+                _Maps.Add(map.Id, map);
+                _Loopers.Add(map);
+                return map;    
+            }
+            return null;
         }
     }
 }

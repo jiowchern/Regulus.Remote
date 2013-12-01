@@ -80,6 +80,9 @@ namespace Regulus.Utility
         }
     }
 
+
+    
+
     public class Timer
     {
         private long _Current;
@@ -141,5 +144,23 @@ namespace Regulus.Utility
             return (float)new System.TimeSpan(Delta).TotalSeconds;
         } }
 
+    }
+
+    public class IndependentTimer  
+    {
+        Timer _Timer;
+        Time _Time;
+
+        public IndependentTimer(System.TimeSpan interval, Action<long> time_up)
+        {
+            _Timer = new Timer(interval, time_up);
+            _Time = new Time();
+        }
+
+        public void Update()
+        {
+            _Time.Update();
+            _Timer.Update(_Time.Delta);
+        }
     }
 }

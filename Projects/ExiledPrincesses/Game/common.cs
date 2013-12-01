@@ -4,13 +4,6 @@ namespace Regulus.Project.ExiledPrincesses
 {
     
     using Regulus.Remoting;
-    
-    
-
-
-    
-    
-
 
     public interface IUserStatus
     {
@@ -26,7 +19,7 @@ namespace Regulus.Project.ExiledPrincesses
         void Quit();        
     };
 
-    public interface IParking
+    public interface ITone
     {        
         
     };
@@ -41,13 +34,6 @@ namespace Regulus.Project.ExiledPrincesses
         Value<AccountInfomation> FindAccountInfomation(string name);
 		
         void Add(AccountInfomation ai);        
-    }
-
-    
-
-    
-    
-
-    
+    }    
 
 }

@@ -93,7 +93,7 @@ namespace Regulus.Project.ExiledPrincesses
             });
         }
 
-        private void _OnParkingSupply(IParking parking)
+        private void _OnParkingSupply(ITone parking)
         {
             
             

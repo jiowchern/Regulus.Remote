@@ -3,73 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Regulus.Project.ExiledPrincesses.Game
-{
-    
 
-    public interface ITeammate
-    {
-        int Dex { get; }
-        int Int { get; }
-        Strategy Specializes { get; }
-    }
-
-    public class Monster : ITeammate
-    {
-
-
-        int ITeammate.Dex
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        Strategy ITeammate.Specializes
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-
-        int ITeammate.Int
-        {
-            get { throw new NotImplementedException(); }
-        }
-    }
-
-    public class Teammate : ITeammate
-    {
-        private readonly ActorInfomation _Actor;
-
-        public Teammate(ActorInfomation actor)
-        {
-            // TODO: Complete member initialization
-            _Actor = actor;
-        }
-
-
-        int ITeammate.Dex
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        Strategy ITeammate.Specializes
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-
-        int ITeammate.Int
-        {
-            get { throw new NotImplementedException(); }
-        }
-    }
-    
-    class Adventurer
-    {
-        public string Map;
-        public Regulus.Project.ExiledPrincesses.Contingent.FormationType Formation;
-        public ITeammate[] Teammates;
-    }
-}
 namespace Regulus.Project.ExiledPrincesses.Game.Stage
 {
     
@@ -89,16 +23,20 @@ namespace Regulus.Project.ExiledPrincesses.Game.Stage
 
         private void _ObtainMap(IMap map)
         {
-            map.Initial(_Adventurer.Formation, _Adventurer.Teammates);
-            map.ToMapEvent += (name) =>
+            if (map != null)
             {
-                map.Release();
-                _Zone.Destory(map);
-                _CreateMap(name);       
-            };
+                map.ToMapEvent += (name) =>
+                {
+                    _Zone.Destory(map.Id);
+                    _CreateMap(name);
+                };
 
-            map.ToToneEvent += _ToTone;
-            
+                map.ToToneEvent += _ToTone;
+            }
+            else
+            {
+                throw new SystemException("找不到地圖");
+            }
         }
 
         public delegate void OnToTone(string name);
@@ -110,7 +48,7 @@ namespace Regulus.Project.ExiledPrincesses.Game.Stage
 
         private void _CreateMap(string name)
         {
-            _Zone.Create(name).OnValue += _ObtainMap;
+            _Zone.Create(name, _Adventurer.Formation, _Adventurer.Teammates ).OnValue += _ObtainMap;
         }
         
 

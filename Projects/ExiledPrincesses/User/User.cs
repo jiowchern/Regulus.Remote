@@ -10,7 +10,7 @@ namespace Regulus.Project.ExiledPrincesses
 	{
 		Regulus.Remoting.Ghost.IProviderNotice<IVerify> VerifyProvider { get ; }
         Regulus.Remoting.Ghost.IProviderNotice<IUserStatus> StatusProvider { get; }
-        Regulus.Remoting.Ghost.IProviderNotice<IParking> ParkingProvider { get; }	
+        Regulus.Remoting.Ghost.IProviderNotice<ITone> ParkingProvider { get; }	
         Regulus.Remoting.Ghost.IProviderNotice<IAdventure> AdventureProvider { get; }
         
 
