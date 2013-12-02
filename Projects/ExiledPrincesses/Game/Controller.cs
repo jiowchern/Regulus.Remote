@@ -17,7 +17,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
         public OnChoiceController SetChoiceController;
         
     }
-
+    
     public class PlayerController : Controller
     {
         public class Binder<T>   where T :class

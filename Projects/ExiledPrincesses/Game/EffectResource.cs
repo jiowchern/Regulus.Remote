@@ -133,7 +133,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
             hit = hit > 10 ? 10 : hit;
             double combo = (double)target.AddCombo(strategy);
             combo = combo > 10 ? combo : 10;
-            float trauma = (float)(1 / Math.Log(10 / ((combo / 10) * 7 + (hit / 10)*3)));
+            float trauma = (float)(1 / Math.Log(10 / (combo / 10 * 6 + hit / 10* 3 + 1)));
             target.Injury((int)(trauma * damage) + damage);
         }
 
