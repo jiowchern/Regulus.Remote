@@ -48,13 +48,14 @@
     <Compile Include="Controller.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="EffectResource.cs" />
-    <Compile Include="Map.cs" />
+    <Compile Include="Levels.cs" />
     <Compile Include="MapResources.cs" />
     <Compile Include="Resource.cs" />
     <Compile Include="Skill.cs" />
     <Compile Include="StationResources.cs" />
+    <Compile Include="Military.cs" />
     <Compile Include="Teammate.cs" />
-    <Compile Include="Tone.cs" />
+    <Compile Include="Town.cs" />
     <Compile Include="Zone.cs" />
     <Compile Include="Hall.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

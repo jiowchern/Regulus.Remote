@@ -5,17 +5,17 @@ using System.Text;
 
 namespace Regulus.Project.ExiledPrincesses.Game.Stage
 {
-    public class ToneResource : Regulus.Utility.Singleton<ToneResource>
+    public class TownResource : Regulus.Utility.Singleton<TownResource>
     {
-        Dictionary<string, TonePrototype> _TonePrototypes;
-        public ToneResource()
+        Dictionary<string, TownPrototype> _TonePrototypes;
+        public TownResource()
         {
-            _TonePrototypes = new Dictionary<string, TonePrototype>();
-            _TonePrototypes.Add("Credits", new TonePrototype() { Maps = new string[] { "Teaching" } });
+            _TonePrototypes = new Dictionary<string, TownPrototype>();
+            _TonePrototypes.Add("Credits", new TownPrototype() { Maps = new string[] { "Teaching" } });
         }
-        internal TonePrototype Find(string name)
+        internal TownPrototype Find(string name)
         {
-            TonePrototype tone;
+            TownPrototype tone;
             if (_TonePrototypes.TryGetValue(name, out tone))
             {
                 return tone;
@@ -28,11 +28,13 @@ namespace Regulus.Project.ExiledPrincesses.Game.Stage
     {
 
         public delegate void OnToMap(string name);
-        public event OnToMap ToMapEvent;
-        TonePrototype _Prototype;
+        public event OnToMap ToLevelsEvent;
+        TownPrototype _Prototype;
         Regulus.Remoting.ISoulBinder _Binder;
-        public Town(TonePrototype prototype , Regulus.Remoting.ISoulBinder binder)
+        string _Name;
+        public Town(string name,TownPrototype prototype , Regulus.Remoting.ISoulBinder binder)
         {
+            _Name = name;
             _Binder = binder;
             _Prototype = prototype;
             
@@ -47,7 +49,7 @@ namespace Regulus.Project.ExiledPrincesses.Game.Stage
             var result = (from map in _Prototype.Maps where map == destination select map).FirstOrDefault();
             if (result != null)
             {
-                ToMapEvent(destination);
+                ToLevelsEvent(destination);                
             }
         }
         void Regulus.Game.IStage.Leave()
@@ -70,6 +72,12 @@ namespace Regulus.Project.ExiledPrincesses.Game.Stage
         void ITown.ToMap(string map)
         {
             _GotoMap(map);
+        }
+
+
+        string ITown.Name
+        {
+            get { return _Name; }
         }
     }
 }

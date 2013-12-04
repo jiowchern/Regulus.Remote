@@ -7,53 +7,44 @@ using System.Text;
 
 namespace Regulus.Project.ExiledPrincesses.Game
 {
-    
-
-    public interface IMap 
+  
+    public interface ILevels 
     {
-        event Action<string> ToMapEvent;
-        event Action<string> ToToneEvent;
-
-        Guid Id { get; }
+        event Action<string> ToLevelsEvent;
+        event Action<string> ToTownEvent;
+        void Leave(Squad squad);
     }
 
-    partial class Map : IMap, Regulus.Utility.IUpdatable
+    partial class Levels : ILevels, Regulus.Utility.IUpdatable
     {        
 
-        float _Position;
-        
+        float _Position;        
         Regulus.Game.StageMachine _StageMachine;
         Guid _Id;
         private MapPrototype _MapPrototype;
         public Guid Id { get { return _Id; } }
         System.Collections.Generic.Queue<Station> _Stations;
-        Contingent.FormationType _Formation;
-        ITeammate[] _Teammates;
-
-        public Map(MapPrototype map_prototype)
+        public delegate void OnRelease();
+        public event OnRelease ReleaseEvent;
+        Platoon _Platoon;
+        Regulus.Utility.Updater<Platoon> _Platoons;
+        public Levels(MapPrototype map_prototype, Squad squad)
         {
             _Position = 0.0f;
             _Id = Guid.NewGuid();            
             this._MapPrototype = map_prototype;
             _Stations = new Queue<Station>(_MapPrototype.Stations);
             _StageMachine = new Regulus.Game.StageMachine();
-        }
 
-        internal void Initialize(Contingent.FormationType formation, ITeammate[] teammate)
-        {
-            _Formation = formation;
-            _Teammates = teammate;
-            _ToIdle();
-        }
+            _Platoon = new Platoon(squad);
+            _Platoon.EmptyEvent += () => { ReleaseEvent(); };
 
-        internal void Release()
-        {
-            
+            _Platoons = new Utility.Updater<Platoon>(); ;
         }
 
         private void _ToIdle()
         {
-            var stage = new IdleStage(_Teammates[0]);            
+            var stage = new IdleStage(_Platoon);
             
             stage.GoForwardEvent += _ToGoForward;            
             _StageMachine.Push(stage);
@@ -63,7 +54,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
         {
             if (_Stations.Count > 0)
             {
-                var stage = new GoForwardStage(_Position, _Stations.Dequeue(), _Teammates);
+                var stage = new GoForwardStage(_Position, _Stations.Dequeue(), _Platoon);
                 stage.ArrivalEvent += _OnArrival;
                 _StageMachine.Push(stage);
             }            
@@ -87,9 +78,9 @@ namespace Regulus.Project.ExiledPrincesses.Game
             var battlefield = BattlefieldResources.Instance.Find(station.Id);
             if (battlefield != null)
             {
-                var stage = new CombatStage(battlefield, _Formation, _Teammates);
+                /*var stage = new CombatStage(battlefield, _Platoon);
                 stage.ResultEvent += _CombatResult;
-                _StageMachine.Push(stage);
+                _StageMachine.Push(stage);*/
             }
             else
             {
@@ -97,7 +88,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
             }
         }
 
-        void _CombatResult(Map.CombatStage.Result result)
+        void _CombatResult(Levels.CombatStage.Result result)
         {
             if (result == CombatStage.Result.Victory)
             {
@@ -114,7 +105,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
             var prototype = ChoiceResource.Instance.Find(station.Id);
             if (prototype != null)
             {
-                var stage = new ChoiceStage(prototype , _Teammates[0]);
+                var stage = new ChoiceStage(prototype, _Platoon);
                 stage.ToMapEvent += _ToMap;
                 stage.ToTownEvent += _ToTone;
                 stage.CancelEvent += _ToIdle;
@@ -127,23 +118,25 @@ namespace Regulus.Project.ExiledPrincesses.Game
         }
 
         void _ToTone(string name)
-        {
+        {            
             _ToToneEvent(name);
+            ReleaseEvent();
         }
 
         void _ToMap(string name)
         {
             _ToMapEvent(name);
+            ReleaseEvent();
         }
 
         event Action<string> _ToMapEvent;
-        event Action<string> IMap.ToMapEvent
+        event Action<string> ILevels.ToLevelsEvent
         {
             add { _ToMapEvent += value; }
             remove { _ToMapEvent -= value; }
         }
         event Action<string> _ToToneEvent;
-        event Action<string> IMap.ToToneEvent
+        event Action<string> ILevels.ToTownEvent
         {
             add { _ToToneEvent += value; }
             remove { _ToToneEvent -= value; }
@@ -151,22 +144,33 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
         bool Utility.IUpdatable.Update()
         {
+            _Platoons.Update();
             _StageMachine.Update();
             return true;
         }
 
         void Framework.ILaunched.Launch()
-        {                    
+        {
+            _Platoons.Add(_Platoon);
+            _ToIdle();            
         }
 
         void Framework.ILaunched.Shutdown()
         {
             _StageMachine.Termination();
+            _Platoons.Remove(_Platoon);
         }
 
+
+
+
+        void ILevels.Leave(Squad squad)
+        {
+            _Platoon.Leave(squad);
+        }
         
     }
-    partial class Map
+    partial class Levels
     {
         class CombatStage : Regulus.Game.IStage
         {
@@ -192,7 +196,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
             void Regulus.Game.IStage.Enter()
             {
                 var team1 = new Team(_Formation, _Teammates);
-                var enemys = (from enemy in _Prototype.Enemys select new Teammate( new ActorInfomation() { Exp = 0 , Prototype = enemy }, null)).ToArray();
+                var enemys = (from enemy in _Prototype.Enemys select new Teammate( new ActorInfomation() { Exp = 0 , Prototype = enemy })).ToArray();
                 var team2 = new Team(_Prototype.Formation, enemys);
                 _Combat.Initial(team1, team2);
                 _Combat.WinnerEvent += (winner) =>
@@ -221,7 +225,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
             }
         }
     }
-    partial class Map
+    partial class Levels
     {
         class ChoiceStage : Regulus.Game.IStage, IAdventureChoice
         {
@@ -231,13 +235,14 @@ namespace Regulus.Project.ExiledPrincesses.Game
             public event OnToMap ToMapEvent;
             public delegate void OnCancel();
             public event OnCancel CancelEvent;
-            ChoicePrototype _ChoicePrototype;
-            ITeammate _Teammate;
+            ChoicePrototype _ChoicePrototype;            
             Regulus.Standalong.Agent _Agent;
-            public ChoiceStage(ChoicePrototype protorype , ITeammate teammate)
+            
+            ICommandable _Commandable; 
+            public ChoiceStage(ChoicePrototype protorype, ICommandable commandable)
             {
                 _ChoicePrototype = protorype;
-                _Teammate = teammate;
+                _Commandable = commandable;
                 _Agent = new Standalong.Agent();
             }
 
@@ -269,13 +274,12 @@ namespace Regulus.Project.ExiledPrincesses.Game
             {
                 _Agent.Launch();
                 _Agent.Bind<IAdventureChoice>(this);
-                _Teammate.SetChoiceController(_Agent.QueryProvider<IAdventureChoice>().Ghosts[0]);
-                
+                _Commandable.AuthorizeChoice(_Agent.QueryProvider<IAdventureChoice>().Ghosts[0]);
             }
 
             public void Leave()
             {
-                _Teammate.SetChoiceController(null);
+                _Commandable.InterdictChoice(_Agent.QueryProvider<IAdventureChoice>().Ghosts[0]);                
                 _Agent.Unbind<IAdventureChoice>(this);
                 _Agent.Shutdown();
             }
@@ -307,24 +311,28 @@ namespace Regulus.Project.ExiledPrincesses.Game
             }
         }
     }
-    partial class Map
+    partial class Levels
     {
         class GoForwardStage : Regulus.Game.IStage , IAdventureGo
         {
             Station _Station;
             private float _Position;
-            const float _DistancePerSeconds = 10.0f;
+            const float _DistancePerSeconds = 140.0f;
 
             public delegate void OnArrival(float position, Station station);
             public event OnArrival ArrivalEvent;
-            ITeammate[] _Teammates;
+            
             Regulus.Standalong.Agent _Agent;
-            public GoForwardStage(float position , Station station , ITeammate[] teammates)
+            Platoon _Platoon;
+            
+            public GoForwardStage(float position, Station station, Platoon platoon)
             {
                 _Station = station;
                 this._Position = position;
-                _Teammates = teammates;
+                _Platoon = platoon;
+                
                 _Agent = new Standalong.Agent();
+                
             }
 
             void Regulus.Game.IStage.Enter()
@@ -332,26 +340,24 @@ namespace Regulus.Project.ExiledPrincesses.Game
                 _Agent.Launch();
                 _Agent.Bind<IAdventureGo>(this);
                 var ghost = _Agent.QueryProvider<IAdventureGo>().Ghosts[0];
-                foreach (var t in _Teammates)
-                {
-                    t.SetGoController(ghost);
-                }
+                _Platoon.Go(ghost);
 
                 _ForwardEvent(LocalTime.Instance.Ticks, _Position, _DistancePerSeconds);
+                
             }
 
             void Regulus.Game.IStage.Leave()
-            {                                
+            {
+                
+                _ForwardEvent(LocalTime.Instance.Ticks, _Position, 0);
+                _Platoon.Stop();
                 _Agent.Unbind<IAdventureGo>(this);
-                foreach (var t in _Teammates)
-                {
-                    t.SetGoController(null);
-                }
+                
                 _Agent.Shutdown();
             }
 
             void Regulus.Game.IStage.Update()
-            {
+            {                
                 _Agent.Update();
                 _Position += (_DistancePerSeconds * LocalTime.Instance.DeltaSecond);
                 if (_Position > _Station.Position)
@@ -369,7 +375,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
         }
     }
 
-    partial class Map
+    partial class Levels
     {
 
         public class IdleStage : Regulus.Game.IStage, IAdventureIdle
@@ -377,21 +383,23 @@ namespace Regulus.Project.ExiledPrincesses.Game
             public delegate void OnGoForward();
             public event OnGoForward GoForwardEvent;
 
-            ITeammate _Teammate;
+            ICommandable _Commandable;
             Regulus.Standalong.Agent _Agent;
             IdleStage()
             {
                 _Agent = new Standalong.Agent();
-            }            
-            public IdleStage(ITeammate teammate) : this()
+            }
+            public IdleStage(ICommandable commandable)
+                : this()
             {
-                _Teammate = teammate;
+                _Commandable = commandable;
             }
             void Regulus.Game.IStage.Enter()
             {
                 _Agent.Launch();
                 _Agent.Bind<IAdventureIdle>(this);
-                _Teammate.SetIdleController(Get());
+                _Commandable.AuthorizeIdle(Get());
+                
             }
             public IAdventureIdle Get()
             {
@@ -408,7 +416,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
             void Regulus.Game.IStage.Leave()
             {
-                _Teammate.SetIdleController(null);
+                _Commandable.InterdictIdle(null);
                 _Agent.Unbind<IAdventureIdle>(this);
                 _Agent.Shutdown();
             }

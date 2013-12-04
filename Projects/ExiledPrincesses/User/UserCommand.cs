@@ -41,6 +41,9 @@ namespace Regulus.Project.ExiledPrincesses
 
             _System.AdventureChoiceProvider.Supply += _OnAdventureChoiceSupply;
             _System.AdventureChoiceProvider.Unsupply += _Unsupply;
+
+            _System.ActorProvider.Supply += _OnActorSupply;
+            _System.ActorProvider.Unsupply += _Unsupply;
             
 
             
@@ -49,6 +52,9 @@ namespace Regulus.Project.ExiledPrincesses
         
         internal void Release()
         {
+            _System.ActorProvider.Supply -= _OnActorSupply;
+            _System.ActorProvider.Unsupply -= _Unsupply;
+
             _System.AdventureChoiceProvider.Supply -= _OnAdventureChoiceSupply;
             _System.AdventureChoiceProvider.Unsupply -= _Unsupply;
 
@@ -86,6 +92,11 @@ namespace Regulus.Project.ExiledPrincesses
                     remover();
                 }
             }
+        }
+
+        private void _OnActorSupply(IActor obj)
+        {
+            _View.WriteLine("Actor id:" + obj.Pretotype );
         }
 
         private void _OnAdventureChoiceSupply(IAdventureChoice obj)
@@ -138,15 +149,31 @@ namespace Regulus.Project.ExiledPrincesses
         
         private void _OnAdventureSupply(IAdventure adventure)
         {
+            _Command.RemotingRegister<string>("QueryLevels", adventure.QueryLevels, (levels) => 
+            {
+                _View.WriteLine("目前關卡 : " + levels);
+            });
+
+            adventure.ChangeLevels += _OnChangeLevels;
+            _RemoveEvents.Add(adventure, new Action[] 
+            {
+                ()=>{adventure.ChangeLevels -= _OnChangeLevels;}
+            });
             
             _RemoveCommands.Add(adventure, new string[] 
             {
-                
+                "QueryLevels"
             });
         }
 
+        private void _OnChangeLevels(string levels)
+        {
+            _View.WriteLine("切換關卡 : " + levels);
+        }
+
         private void _OnTownSupply(ITown town)
-        {   
+        {
+            _View.WriteLine("抵達城鎮:"+ town.Name);
             _View.Write("前往區域 [");
             foreach (var map in town.Maps)
             {
@@ -164,12 +191,15 @@ namespace Regulus.Project.ExiledPrincesses
         
 
         private void _OnStatusSupply(IUserStatus status)
-        {            
+        {
             
             status.StatusEvent += _OnUserStatusChanged;
             _RemoveEvents.Add(status , new Action[] 
             {
-                ()=>{status.StatusEvent -= _OnUserStatusChanged;}
+                ()=>
+                {                    
+                    status.StatusEvent -= _OnUserStatusChanged;
+                }
             });
 
             _Command.Register("Ready", status.Ready );
@@ -179,6 +209,11 @@ namespace Regulus.Project.ExiledPrincesses
             });
             _RemoveCommands.Add(status, new string[] { "Ready" , "Time" 
             });
+        }
+
+        private void _OnChangeTown(string obj)
+        {
+            _View.WriteLine("切換城鎮 : " + obj);
         }
 
         void _OnUserStatusChanged(UserStatus status)

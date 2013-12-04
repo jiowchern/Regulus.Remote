@@ -5,26 +5,16 @@ using System.Text;
 
 namespace Regulus.Project.ExiledPrincesses.Game
 {
-    public interface ITeammate
+    
+    public interface ITeammate : IActor
     {       
-        int Dex { get; }
-        int Int { get; }
-        int Hp { get; }
-        Strategy Specializes { get; }
 
         Skill.Effect[] GetActivitiesEffects(Team team , CommonSkillSet common_skill_set);
 
         void Take(CommonSkillSet common_skill_set);
         int AddHit(Strategy strategy);
-
         void Injury(int damage);
-
-        int AddCombo(Strategy strategy);
-
-        void SetIdleController(IAdventureIdle adventure_idle);
-        void SetGoController(IAdventureGo adventure_go);
-
-        void SetChoiceController(IAdventureChoice adventureChoice);
+        int AddCombo(Strategy strategy);        
     }
 
     public class Teammate : ITeammate
@@ -37,10 +27,12 @@ namespace Regulus.Project.ExiledPrincesses.Game
         int _Hp;
         Strategy _Specializes ;
         Strategy _Weakness ;
-        Controller _Controller;
-        public Teammate(ActorInfomation actor, Controller controller )
+        
+        int _Prototype;
+        public Teammate(ActorInfomation actor)
         {
-            _Controller = controller;
+            
+            _Prototype = actor.Prototype;
             var prototypeActor = ActorResource.Instance.Find(actor.Prototype);
             _ActivitiesSkills = new Dictionary<int, Skill>();
             _Ability = prototypeActor.FindAbility(actor.Exp);
@@ -51,17 +43,17 @@ namespace Regulus.Project.ExiledPrincesses.Game
             _Combo = 0;
         }
 
-        int ITeammate.Dex
+        int IActor.Dex
         {
             get { return _Ability.Dex; }
         }
 
-        Strategy ITeammate.Specializes
+        Strategy IActor.Specializes
         {
             get { return _Specializes; }
         }
 
-        int ITeammate.Int
+        int IActor.Int
         {
             get { return _Ability.Int; }
         }
@@ -136,7 +128,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
             return effects.ToArray();
         }
 
-        int ITeammate.Hp
+        int IActor.Hp
         {
             get { return _Hp; }
         }
@@ -199,22 +191,13 @@ namespace Regulus.Project.ExiledPrincesses.Game
             skills.Add(++_SkillSn, skill);
         }
 
-        void ITeammate.SetIdleController(IAdventureIdle adventureIdle)
+        
+
+        int IActor.Pretotype
         {
-            _Controller.SetIdleController(adventureIdle);            
+            get { return _Prototype; }
         }
 
-
-        void ITeammate.SetGoController(IAdventureGo adventure_go)
-        {
-            _Controller.SetGoController(adventure_go);            
-        }
-
-
-        void ITeammate.SetChoiceController(IAdventureChoice adventure_choice)
-        {
-            _Controller.SetChoiceController(adventure_choice);            
-        }
     }
 
    
@@ -224,5 +207,6 @@ namespace Regulus.Project.ExiledPrincesses.Game
         public string Map;
         public Regulus.Project.ExiledPrincesses.Contingent.FormationType Formation;
         public ITeammate[] Teammates;
+        public PlayerController Controller;
     }
 }

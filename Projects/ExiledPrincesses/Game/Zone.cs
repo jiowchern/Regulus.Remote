@@ -12,8 +12,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
     public interface IZone
     {
-        Regulus.Remoting.Value<IMap> Create(string map, Contingent.FormationType formationType, ITeammate[] teammate);
-        void Destory(Guid map);
+        Regulus.Remoting.Value<ILevels> Create(string map, Contingent.FormationType formationType, Squad squad);        
     }    
     
     public class Zone : IZone
@@ -21,15 +20,15 @@ namespace Regulus.Project.ExiledPrincesses.Game
         Regulus.Project.ExiledPrincesses.Game.Hall _Hall;
         IStorage _Storage;
 
-        Regulus.Utility.Updater<Map> _Loopers;
+        Regulus.Utility.Updater<Levels> _Loopers;
         
         public Zone(IStorage storage)
         {
             
             _Storage = storage;
             _Hall = new Hall();
-            _Loopers = new Regulus.Utility.Updater<Map>();
-            _Maps = new Dictionary<Guid, Map>();
+            _Loopers = new Regulus.Utility.Updater<Levels>();
+            
         }
 
         public void Enter(Regulus.Remoting.ISoulBinder binder)
@@ -44,32 +43,24 @@ namespace Regulus.Project.ExiledPrincesses.Game
             _Loopers.Update();
         }
 
-        Dictionary<Guid, Map> _Maps;        
-
-        void IZone.Destory(Guid id)
-        {
-            Map map;
-            if (_Maps.TryGetValue(id, out map))
-            {
-                map.Release();
-                _Loopers.Remove(map);
-                _Maps.Remove(id);
-            }
-            
-        }
         
-        Remoting.Value<IMap> IZone.Create(string name, Contingent.FormationType formation_type, ITeammate[] teammate)
+
+        
+        
+        Remoting.Value<ILevels> IZone.Create(string name, Contingent.FormationType formation_type, Squad squad)
         {
             var mapPrototype  = MapResources.Instance.Find(name);
             if (mapPrototype != null)
             {
-                var map = new Map(mapPrototype);
-                map.Initialize(formation_type, teammate);
-                _Maps.Add(map.Id, map);
-                _Loopers.Add(map);
-                return map;    
+                var levels = new Levels(mapPrototype, squad);                
+                levels.ReleaseEvent += () => 
+                {                    
+                    _Loopers.Remove(levels);
+                };                
+                _Loopers.Add(levels);
+                return levels;    
             }
-            return new Remoting.Value<IMap>(null);
+            return new Remoting.Value<ILevels>(null);
         }
     }
 }

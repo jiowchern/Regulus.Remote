@@ -74,10 +74,14 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
             get { return _Complex.QueryProvider<IAdventureIdle>(); }
         }
 
-
         Regulus.Remoting.Ghost.IProviderNotice<IAdventureGo> IUser.AdventureGoProvider
         {
             get { return _Complex.QueryProvider<IAdventureGo>(); }
+        }
+
+        Regulus.Remoting.Ghost.IProviderNotice<IActor> IUser.ActorProvider
+        {
+            get { return _Complex.QueryProvider<IActor>(); }
         }
     }
 }

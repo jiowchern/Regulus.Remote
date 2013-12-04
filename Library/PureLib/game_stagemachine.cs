@@ -78,7 +78,7 @@ namespace Regulus.Game
         public void Termination()
         {
             _StandBys.Clear();
-            if (_Current.Stage != null)
+            if (_Current != null && _Current.Stage != null)
             {
                 _Current.Stage.Leave();
                 _Current = null;

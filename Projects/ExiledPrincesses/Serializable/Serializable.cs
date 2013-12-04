@@ -101,7 +101,7 @@ namespace Regulus.Project.ExiledPrincesses
     {
         None,
         Verify,
-        Tone,
+        Town,
         Adventure,        
     }
 
@@ -143,7 +143,7 @@ namespace Regulus.Project.ExiledPrincesses
 
 
     [Serializable]
-    public class TonePrototype
+    public class TownPrototype
     {
         public string[] Maps { get; set; } 
     }

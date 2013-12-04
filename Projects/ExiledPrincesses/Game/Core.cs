@@ -13,10 +13,9 @@ namespace Regulus.Project.ExiledPrincesses.Game
 		public Regulus.Remoting.ISoulBinder Binder { get { return _Binder; }}
 		Regulus.Game.StageMachine _StageMachine;
         AccountInfomation _AccountInfomation;
-        
+        PlayerController _PlayerController;
         public Core(Regulus.Remoting.ISoulBinder binder, IStorage storage, IZone zone )
 		{
-
             _Zone = zone; 
 			Storage = storage;
 			_Binder = binder;
@@ -25,13 +24,19 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
 			binder.BreakEvent += _OnInactive;
             _StatusEvent += (s) => { };
-
+            _PlayerController = new PlayerController(_Binder);
             
 		}
 		~Core()
 		{
 			_Binder.BreakEvent -= _OnInactive;
 		}
+        public void OnKick(Guid account)
+        {
+            if (_AccountInfomation != null && _AccountInfomation.Id == account)
+                _OnInactive();
+        }
+
 		void _OnInactive()
 		{
 			if (InactiveEvent != null)
@@ -44,17 +49,19 @@ namespace Regulus.Project.ExiledPrincesses.Game
 		}
 
         private void _ToVerify()
-        {
-            
+        {            
             var stage = new Regulus.Project.ExiledPrincesses.Game.Stage.Verify(this);
             stage.LoginSuccessEvent += _ToFirst;
             _StageMachine.Push(stage);
             _StatusEvent(UserStatus.Verify);
         }
 
+        public event OnNewUser VerifySuccessEvent;
         private void _ToFirst(AccountInfomation account_infomation)
         {
             _AccountInfomation = account_infomation;
+            if (VerifySuccessEvent != null)
+                VerifySuccessEvent(_AccountInfomation.Id);
             if (account_infomation.Record == null)
             {
                 GameRecord record = _BuildFirstRecord();
@@ -64,7 +71,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
             }
             else
             {
-                _ToTone(account_infomation.Record.Tone);
+                _ToTown(account_infomation.Record.Tone);
             }
             
         }
@@ -76,7 +83,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
             stage.ToToneEvent += (tone) =>
             {
                 _AccountInfomation.Record = record;
-                _ToTone(tone);
+                _ToTown(tone);
             };
             _StageMachine.Push(stage);
         }
@@ -85,11 +92,12 @@ namespace Regulus.Project.ExiledPrincesses.Game
         {
             ActorInfomation[] actors = record.GetContingentActors();
 
-            var teammates = (from actor in actors select new Teammate(actor, new PlayerController(_Binder))).ToArray();
+            var teammates = (from actor in actors select new Teammate(actor)).ToArray();
             var adv = new Adventurer();
             adv.Map = map;
             adv.Teammates = teammates;
             adv.Formation = Contingent.FormationType.Auxiliary;
+            adv.Controller = _PlayerController;
             return adv;
         }
 
@@ -108,18 +116,18 @@ namespace Regulus.Project.ExiledPrincesses.Game
         {
             _StatusEvent(UserStatus.Adventure);
             var stage = new Regulus.Project.ExiledPrincesses.Game.Stage.Adventure(adventurer , _Binder , _Zone);
-            stage.ToToneEvent += _ToTone ;
+            stage.ToToneEvent += _ToTown ;
             _StageMachine.Push(stage);
         }
 
-        private void _ToTone(string name)
+        private void _ToTown(string name)
         {
-            _StatusEvent(UserStatus.Tone);
-            TonePrototype prototype = Regulus.Project.ExiledPrincesses.Game.Stage.ToneResource.Instance.Find(name);
+            _StatusEvent(UserStatus.Town);
+            TownPrototype prototype = Regulus.Project.ExiledPrincesses.Game.Stage.TownResource.Instance.Find(name);
             if (prototype != null)
             {
-                var stage = new Regulus.Project.ExiledPrincesses.Game.Stage.Town(prototype , _Binder);
-                stage.ToMapEvent += _ToMap;
+                var stage = new Regulus.Project.ExiledPrincesses.Game.Stage.Town(name , prototype, _Binder);
+                stage.ToLevelsEvent += _ToLevels;
                 _StageMachine.Push(stage);
             }
             else
@@ -129,7 +137,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
             }
         }
 
-        void _ToMap(string name)
+        void _ToLevels(string name)
         {
             _ToAdventure( _BuildAdventurer(name, _AccountInfomation.Record ));
         }
@@ -165,5 +173,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
         {
             return LocalTime.Instance.Ticks;
         }
+
+
     }
 }

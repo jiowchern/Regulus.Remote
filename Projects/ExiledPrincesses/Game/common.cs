@@ -10,6 +10,7 @@ namespace Regulus.Project.ExiledPrincesses
         void Ready();
         event Action<UserStatus> StatusEvent;
         Value<long> QueryTime();
+        
     }
 
     public interface IVerify
@@ -23,11 +24,14 @@ namespace Regulus.Project.ExiledPrincesses
     {
         string[] Maps { get; }
         void ToMap(string map);
+        string Name { get; }
+        
     };
-
+    
     public interface IAdventure
     {
-        
+        event Action<string> ChangeLevels;
+        Value<string> QueryLevels();
     }
 
     public interface IStorage
@@ -55,5 +59,13 @@ namespace Regulus.Project.ExiledPrincesses
 
         void GoMap(string map);
         void GoTown(string tone);
+    }
+    public interface IActor
+    {
+        int Pretotype { get; }
+        int Dex { get; }
+        int Int { get; }
+        int Hp { get; }
+        Strategy Specializes { get; }
     }
 }
