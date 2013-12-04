@@ -20,7 +20,7 @@ namespace Regulus.Project.ExiledPrincesses.Game.Stage
             _Adventurer = adventurer;
             _Zone = zone;            
             this._Binder = binder;
-            _Squad = new Squad(_Adventurer.Teammates, _Adventurer.Controller);
+            _Squad = new Squad(adventurer.Formation ,_Adventurer.Teammates, _Adventurer.Controller);
         }
 
         private void _ObtainMap(ILevels map)

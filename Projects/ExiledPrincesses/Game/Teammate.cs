@@ -6,7 +6,7 @@ using System.Text;
 namespace Regulus.Project.ExiledPrincesses.Game
 {
     
-    public interface ITeammate : IActor
+    public interface ITeammate : IActor , ICombatController
     {       
 
         Skill.Effect[] GetActivitiesEffects(Team team , CommonSkillSet common_skill_set);
@@ -20,9 +20,11 @@ namespace Regulus.Project.ExiledPrincesses.Game
     public class Teammate : ITeammate
     {        
         Dictionary<int , Skill> _Idle;
+        Dictionary<int, Skill> _ActivitiesSkills;
+
         Queue<Skill> _Wait;
         List<Skill> _Recover;
-        Dictionary<int, Skill> _ActivitiesSkills;
+        
         Ability _Ability;
         int _Hp;
         Strategy _Specializes ;
@@ -198,6 +200,37 @@ namespace Regulus.Project.ExiledPrincesses.Game
             get { return _Prototype; }
         }
 
+
+        void ICombatController.FlipSkill(int activities_sn)
+        {
+            _FlipSkill(activities_sn);
+        }
+
+        void ICombatController.EnableSkill(int idle_sn)
+        {
+            _EnableSkill(idle_sn);
+        }
+
+        Remoting.Value<CombatSkill[]> ICombatController.QueryEnableSkills()
+        {
+            var combatSkills = _QueryCombatSkill(_ActivitiesSkills);
+            return combatSkills.ToArray();
+        }
+
+        private IEnumerable<CombatSkill> _QueryCombatSkill(Dictionary<int , Skill> skills)
+        {
+            var combatSkills = from pair in skills select new CombatSkill() { Id = pair.Value.Id, Index = pair.Key };
+            return combatSkills;
+        }
+
+        Remoting.Value<CombatSkill[]> ICombatController.QueryIdleSkills()
+        {
+            var combatSkills = _QueryCombatSkill(_Idle);
+            return combatSkills.ToArray();
+        }
+
+
+        
     }
 
    

@@ -154,4 +154,11 @@ namespace Regulus.Project.ExiledPrincesses
         public string[] Towns { get; set; }
         public bool Cancel { get; set; }
     }
+
+    [Serializable]
+    public class CombatSkill
+    {
+        public int Id { get; set; }
+        public int Index { get; set; }
+    }
 }

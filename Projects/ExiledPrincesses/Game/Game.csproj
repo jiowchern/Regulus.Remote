@@ -49,6 +49,10 @@
     <Compile Include="Core.cs" />
     <Compile Include="EffectResource.cs" />
     <Compile Include="Levels.cs" />
+    <Compile Include="LevelsChoice.cs" />
+    <Compile Include="LevelsCombat.cs" />
+    <Compile Include="LevelsGo.cs" />
+    <Compile Include="LevelsIdle.cs" />
     <Compile Include="MapResources.cs" />
     <Compile Include="Resource.cs" />
     <Compile Include="Skill.cs" />

@@ -24,7 +24,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
         private void _Add(Dictionary<int, Skill> skills, int id, int effect1, int effect2)
         {
-            skills.Add(id, new Skill(EffectResources.Instance.Find(effect1), EffectResources.Instance.Find(effect2)));
+            skills.Add(id, new Skill(id , EffectResources.Instance.Find(effect1), EffectResources.Instance.Find(effect2)));
         }
         public Skill Find(int id)
         {
@@ -69,9 +69,9 @@ namespace Regulus.Project.ExiledPrincesses.Game
         Effect _Effect1;
         Effect _Effect2;        
 
-        public Skill(Effect effect1, Effect effect2)
+        public Skill(int id ,Effect effect1, Effect effect2)
         {
-            // TODO: Complete member initialization
+            Id = id;
             this._Effect1 = effect1;
             this._Effect2 = effect2;
         }
@@ -94,6 +94,8 @@ namespace Regulus.Project.ExiledPrincesses.Game
                 skills[idx] = tmp;
             }
         }
+
+        public int Id { get; private set; }
     }
 
     public class CommonSkillSet

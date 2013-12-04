@@ -54,6 +54,8 @@ namespace Regulus.Project.ExiledPrincesses.Standalong
 
         bool Regulus.Game.IFramework.Update()
         {
+            if (_UserCommand != null)
+                _UserCommand.Update();
             return _User.Update();
         }
 
@@ -80,6 +82,7 @@ namespace Regulus.Project.ExiledPrincesses.Standalong
         void Regulus.Game.ConsoleFramework<IUser>.IController.NotLook()
         {
             _UserCommand.Release();
+            _UserCommand = null;
         }
 
 

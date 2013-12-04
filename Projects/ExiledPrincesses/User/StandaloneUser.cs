@@ -109,5 +109,16 @@ namespace Regulus.Project.ExiledPrincesses.Standalone
         {
             get { return _Agent.QueryProvider<IActor>(); }
         }
+
+
+        Regulus.Remoting.Ghost.IProviderNotice<ITeam> IUser.TeamProvider
+        {
+            get { return _Agent.QueryProvider<ITeam>(); }
+        }
+
+        Regulus.Remoting.Ghost.IProviderNotice<ICombatController> IUser.CombatControllerProvider
+        {
+            get { return _Agent.QueryProvider<ICombatController>(); }
+        }
     }
 }

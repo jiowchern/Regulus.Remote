@@ -68,4 +68,19 @@ namespace Regulus.Project.ExiledPrincesses
         int Hp { get; }
         Strategy Specializes { get; }
     }
+
+    public interface ITeam
+    {
+        int[] Strategys { get; }
+    }
+
+
+    public interface ICombatController
+    {
+        Value<CombatSkill[]> QueryEnableSkills();
+        Value<CombatSkill[]> QueryIdleSkills();
+
+        void FlipSkill(int activities_sn);
+        void EnableSkill(int idle_sn);
+    }
 }

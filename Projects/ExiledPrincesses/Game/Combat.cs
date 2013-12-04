@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Project.ExiledPrincesses.Game
 {
-    public class Team
+    public class Team : ITeam
     {
         public class Member
         {
@@ -17,33 +17,33 @@ namespace Regulus.Project.ExiledPrincesses.Game
             public Team Owner { get; private set; }
             public ITeammate Teammate { get; private set; }
         }
-        private Contingent.FormationType _Formation;
-        private ITeammate[] _Teammates;
+        
         private ITeammate[] _Front;
         private ITeammate[] _Back;
 
-
-        public Team(Contingent.FormationType formation, ITeammate[] teammates)
+        public Platoon Platoon { get; private set; } 
+        
+        public Team(Platoon platoon)
         {
-            this._Formation = formation;
-            this._Teammates = teammates;
+            Platoon = platoon;
             _Strategys = new int[(int)Strategy.Count];
 
-            if (formation == Contingent.FormationType.Auxiliary)
+            if (Platoon.Formation == Contingent.FormationType.Auxiliary)
             {
-                _Front = new ITeammate[] { teammates[0] };
+
+                _Front = new ITeammate[] { Platoon.Teammates[0] };
                 int i = 0;
-                _Back = (from teammate in teammates
+                _Back = (from teammate in Platoon.Teammates
                         let idx = i++
                         where idx > 0
                         select teammate).ToArray();
             }
 
-            if (formation == Contingent.FormationType.Defensive)
+            if (Platoon.Formation == Contingent.FormationType.Defensive)
             {
-                _Back= new ITeammate[] { teammates[0] };
+                _Back = new ITeammate[] { Platoon.Teammates[0] };
                 int i = 0;
-                _Front = (from teammate in teammates
+                _Front = (from teammate in Platoon.Teammates
                          let idx = i++
                          where idx > 0
                          select teammate).ToArray();
@@ -51,7 +51,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
         }
 
-        public Member[] Members { get { return (from t in _Teammates select new Member(this, t)).ToArray(); } }
+        public Member[] Members { get { return (from t in Platoon.Teammates select new Member(this, t)).ToArray(); } }
         int[] _Strategys;
         internal void AddStrategy(Strategy strategy)
         {
@@ -92,6 +92,21 @@ namespace Regulus.Project.ExiledPrincesses.Game
                 return _Front;
             return _Back;
         }
+
+        int[] ITeam.Strategys
+        {
+            get { return _Strategys; }
+        }
+
+        internal void InitialBroadcast(ITeam[] teams)
+        {
+            Platoon.SetTeams(teams);
+        }
+
+        internal void FinalialBroadcast()
+        {
+            Platoon.SetTeams(new ITeam[0]);
+        }
     }
 
     partial class Combat
@@ -116,14 +131,17 @@ namespace Regulus.Project.ExiledPrincesses.Game
             _CommonSkillSet.EmptyEvent += () => { DrawEvent(); };
             _Teams = new Team[] { team1 , team2 };
             _StageMachine = new Regulus.Game.StageMachine();
+
+
             _Take(_Teams , _CommonSkillSet);
             _ToStrategy(_Teams);
+            _InitialBroadcasting(_Teams);
         }
 
         private void _Take(Team[] teams, CommonSkillSet common_skill_set)
-        {
+        {                        
             foreach (var team in teams)
-            { 
+            {                 
                 foreach(var member in team.Members)
                 {
                     member.Teammate.Take(common_skill_set);
@@ -160,7 +178,42 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
         internal void Finial()
         {
+            _ReleaseBroadcasting(_Teams);
             _StageMachine.Termination();
+        }
+
+
+        private void _InitialBroadcasting(Team[] teams)
+        {
+            
+            foreach (var team in teams)
+            {
+                team.InitialBroadcast(teams);
+                _BroadcastEnemys(teams, team);
+            }
+        }
+
+        private static void _BroadcastEnemys(Team[] teams, Team team)
+        {
+            foreach (var teammates in from t in teams where t != team select t.Platoon.Teammates)
+                team.Platoon.SetEnemys(teammates);
+        }
+
+        private void _ReleaseBroadcasting(Team[] teams)
+        {
+            _ReceivedBroadcast(teams);
+            foreach (var team in teams)
+            {
+                team.FinalialBroadcast();
+            }
+        }
+
+        private void _ReceivedBroadcast(Team[] teams)
+        {
+            foreach (var team in teams)
+            {
+                team.Platoon.SetEnemys(new ITeammate[0]);
+            }
         }
     }
     partial class Combat
@@ -184,8 +237,8 @@ namespace Regulus.Project.ExiledPrincesses.Game
                 
                 public bool Update()
                 {
-                    if (_Timer != null)
-                        _Timer.Update();
+                    
+                    _Timer.Update();
                     return true;
                 }
 
@@ -239,16 +292,19 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
             void Regulus.Game.IStage.Enter()
             {
-                _Current = _Activists.Dequeue();
+                _Current = _Activists.Dequeue();                
                 _Current.DoneEvent += _Next;
+                _Current.Launch();
             }
 
             private void _Next()
-            {
-                _Current = null;
+            {                
                 if (_Activists.Count > 0)
                 {
+                    _Current.Shutdown();
                     _Current = _Activists.Dequeue();
+                    _Current.DoneEvent += _Next;
+                    _Current.Launch();
                 }
                 else
                 {
@@ -272,7 +328,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
             void Regulus.Game.IStage.Leave()
             {
-                
+                _Current.Shutdown();
             }
             
             void Regulus.Game.IStage.Update()
@@ -383,12 +439,12 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
             void Regulus.Game.IStage.Leave()
             {
-                throw new NotImplementedException();
+                
             }
 
             void Regulus.Game.IStage.Update()
             {
-                throw new NotImplementedException();
+                
             }
         }
     }

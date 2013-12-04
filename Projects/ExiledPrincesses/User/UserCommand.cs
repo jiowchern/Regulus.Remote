@@ -8,13 +8,45 @@ namespace Regulus.Project.ExiledPrincesses
     using Regulus.Extension;
     public class UserCommand
     {
+        class Timer
+        {
+            Dictionary<object , Action> _Resources;
+            Regulus.Utility.IndependentTimer _Timer;
+            public Timer()
+            {
+                _Resources = new Dictionary<object, Action>();
+                _Timer = new Utility.IndependentTimer(TimeSpan.FromSeconds(1), _OnTimer);
+            }
+
+            private void _OnTimer(long obj)
+            {
+                foreach(var pair in _Resources)
+                {
+                    pair.Value();
+                }
+            }
+            public void Register(object obj , Action callback)
+            {
+                _Resources.Add(obj , callback);
+            }
+            public void Unregister(object obj)
+            {
+                _Resources.Remove(obj);
+            }
+
+            public void Update()
+            {
+                _Timer.Update();
+            }
+        }
         private IUser _System;
         Regulus.Utility.Console.IViewer _View;
         Regulus.Utility.Command _Command;
         System.Collections.Generic.Dictionary<object, Action[]> _RemoveEvents;
-        
+        Timer _Timer;
         public UserCommand(IUser system , Regulus.Utility.Console.IViewer view , Regulus.Utility.Command command)
         {
+            _Timer = new Timer();
             _RemoveEvents = new Dictionary<object, Action[]>();
             _System = system;
             _View = view;
@@ -44,14 +76,27 @@ namespace Regulus.Project.ExiledPrincesses
 
             _System.ActorProvider.Supply += _OnActorSupply;
             _System.ActorProvider.Unsupply += _Unsupply;
-            
 
+            _System.TeamProvider.Supply += _OnTeamSupply;
+            _System.TeamProvider.Unsupply += _Unsupply;
+
+            _System.CombatControllerProvider.Supply += _OnCombatController;
+            _System.CombatControllerProvider.Unsupply += _Unsupply;
             
         }
-
-        
+        public void Update()
+        {
+            _Timer.Update();
+        }
         internal void Release()
         {
+            
+            _System.CombatControllerProvider.Supply -= _OnCombatController;
+            _System.CombatControllerProvider.Unsupply -= _Unsupply;
+
+            _System.TeamProvider.Unsupply -= _Unsupply;
+            _System.TeamProvider.Supply -= _OnTeamSupply;
+
             _System.ActorProvider.Supply -= _OnActorSupply;
             _System.ActorProvider.Unsupply -= _Unsupply;
 
@@ -94,9 +139,45 @@ namespace Regulus.Project.ExiledPrincesses
             }
         }
 
+        void _OnCombatController(ICombatController obj)
+        {
+            _RemoveCommands.Add(obj, new string[] 
+            {
+                "FlipSkill" , "EnableSkill" , "QueryEnable" , "QueryIdle"
+            });
+            _Command.Register<int>("Flip", obj.FlipSkill);
+            _Command.Register<int>("Enable", obj.EnableSkill );
+            _Command.RemotingRegister<CombatSkill[]>("QueryEnable", obj.QueryEnableSkills, (skills) => 
+            {
+                _View.WriteLine("啟動技能");
+                foreach(var skill in skills)
+                {
+                    _View.WriteLine("技能ID" + skill.Id + ",序號:" + skill.Index);
+                }
+            });
+
+            _Command.RemotingRegister<CombatSkill[]>("QueryIdle", obj.QueryIdleSkills, (skills) =>
+            {
+                _View.WriteLine("未用技能");
+                foreach (var skill in skills)
+                {
+                    _View.WriteLine("技能ID" + skill.Id + ",序號:" + skill.Index);
+                }
+            });
+        }
+
+        void _OnTeamSupply(ITeam obj)
+        {
+            _View.WriteLine("Team Strategys:" + obj.Strategys[0] + "," + obj.Strategys[1] + "," + obj.Strategys[2] + "," + obj.Strategys[3] );
+        }
+
         private void _OnActorSupply(IActor obj)
         {
-            _View.WriteLine("Actor id:" + obj.Pretotype );
+            _Timer.Register(obj, () => 
+            {
+                _View.WriteLine("Actor id:" + obj.Pretotype +",hp:" +obj.Hp) ;
+            });
+            
         }
 
         private void _OnAdventureChoiceSupply(IAdventureChoice obj)
@@ -136,10 +217,7 @@ namespace Regulus.Project.ExiledPrincesses
         private void _OnForward(long time_tick, float position, float speed)
         {
             _View.WriteLine("移動 時間:" + time_tick + " 位置:" + position + "速度:" + speed);
-        }
-
-
-        
+        }        
 
         void _OnEnableChipMessage(string obj)
         {
@@ -223,6 +301,7 @@ namespace Regulus.Project.ExiledPrincesses
 
         void _Unsupply<T>(T obj)
         {
+            _Timer.Unregister(obj);
             string[] commands;
             if (_RemoveCommands.TryGetValue(obj, out commands))
             {

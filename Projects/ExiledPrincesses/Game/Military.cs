@@ -19,18 +19,32 @@ namespace Regulus.Project.ExiledPrincesses.Game
         void InterdictChoice(IAdventureChoice adventure_choice);
         
     }
-    public class Squad : ICommandable
+    public class Squad : ICommandable 
     {
         ITeammate[] _ITeammates;
+        public ITeammate[] Teammatess { get { return _ITeammates; } }
         public IActor[] Actors
         {
             get{ return _ITeammates; }
         }
+        public Contingent.FormationType Formation { get; private set;}
         Controller _Controller;
-        public Squad(ITeammate[] teammates , Controller controller)
+
+        public Squad(Contingent.FormationType formation, ITeammate[] teammates, Controller controller)
         {
+            Formation = formation;
             _ITeammates = teammates;
             _Controller = controller;
+        }
+
+        public void Initial()
+        {            
+            _Controller.SetCombatController(_ITeammates);
+        }
+
+        public void Final()
+        {            
+            _Controller.SetCombatController(new ITeammate[0]);
         }
         void ICommandable.AuthorizeIdle(IAdventureIdle adventureIdle)
         {
@@ -51,7 +65,6 @@ namespace Regulus.Project.ExiledPrincesses.Game
             _Controller.SetGoController(null);
         }
 
-
         void ICommandable.AuthorizeChoice(IAdventureChoice adventure_choice)
         {
             _Controller.SetChoiceController(adventure_choice);
@@ -61,10 +74,18 @@ namespace Regulus.Project.ExiledPrincesses.Game
         {
             _Controller.SetChoiceController(null);
         }
-
+        public void SetEnemys(IActor[] actors)
+        {
+            _Controller.SetEnemys(actors);
+        }
         public void SetComrades(IActor[] actors)
         {
             _Controller.SetComrades(actors);
+        }
+
+        internal void SetTeams(ITeam[] teams)
+        {
+            _Controller.SetTeams(teams);
         }
     }
 
@@ -80,6 +101,12 @@ namespace Regulus.Project.ExiledPrincesses.Game
             this._Squad = squad;
         }
 
+        public Contingent.FormationType Formation { get { return _Squad.Formation; } }
+
+        public ITeammate[] Teammates { get 
+        {
+            return _Squad.Teammatess;
+        } }
 
         void ICommandable.AuthorizeIdle(IAdventureIdle adventureIdle)
         {
@@ -128,9 +155,12 @@ namespace Regulus.Project.ExiledPrincesses.Game
         void Framework.ILaunched.Launch()
         {
             IActor[] actors = _GetTeammates();
-
+            _Squad.Initial();
             _Squad.SetComrades(actors);
+            
         }
+
+        
 
         private IActor[] _GetTeammates()
         {
@@ -139,7 +169,21 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
         void Framework.ILaunched.Shutdown()
         {
+
             _Squad.SetComrades(new IActor[0]);
+            _Squad.Final();
         }
+
+        public void SetEnemys(IActor[] actors)
+        {
+            _Squad.SetEnemys(actors);
+        }
+
+        public void SetTeams(ITeam[] teams)
+        {
+            _Squad.SetTeams(teams);
+        }
+
+
     }
 }

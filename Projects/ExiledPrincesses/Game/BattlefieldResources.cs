@@ -11,6 +11,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
         public BattlefieldResources()
         {
             _BattlefieldPrototypes = new Dictionary<int, BattlefieldPrototype>();
+            _BattlefieldPrototypes.Add(1 , new BattlefieldPrototype() { Formation = Contingent.FormationType.Auxiliary , Money = 1000 , Enemys = new int[] {1}});
         }
         internal BattlefieldPrototype Find(int id)
         {

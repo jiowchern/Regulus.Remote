@@ -18,11 +18,58 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
         public delegate void OnActors(IActor[] actors);
         public OnActors SetComrades;
-        
+        public OnActors SetEnemys;
+
+        public delegate void OnTeamss(ITeam[] teams);
+        public OnTeamss SetTeams;
+
+        public delegate void OnCombatController(ITeammate[] teammates);
+        public OnCombatController SetCombatController;
+        public Controller()
+        {
+            SetIdleController = (p) => { };
+            SetGoController = (p) => { };
+            SetChoiceController = (p) => { };
+            SetComrades = (p) => { };
+            SetEnemys = (p) => { };
+            SetTeams = (p) => { };
+            SetCombatController = (p) => { };
+        }
     }
     
     public class PlayerController : Controller
     {
+        public class Binder<T> where T : class
+        {
+            private Remoting.ISoulBinder _Binder;
+            T[] _Objects;
+            public Binder(Remoting.ISoulBinder binder , T[] objs)
+            {
+                _Binder = binder;
+                _Objects = objs;
+            }
+
+            public void Differences(T[] source)
+            {
+                _Differences(_Objects, source);
+                _Objects = source;
+            }
+            private void _Differences(T[] current, T[] actors)
+            {
+                var exits = current.Except(actors);
+                foreach (var exit in exits)
+                {
+                    _Binder.Unbind<T>(exit);
+                }
+
+                var joins = actors.Except(current);
+                foreach (var join in joins)
+                {
+                    _Binder.Bind<T>(join);
+                }
+
+            }
+        }
         public class OnesBinder<T>   where T :class
         {
             private Remoting.ISoulBinder _Binder;
@@ -52,7 +99,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
         OnesBinder<IAdventureChoice> _AdventureChoiceBinder;       
         public PlayerController(Remoting.ISoulBinder binder)  
         {
-            _Actors = new IActor[0];
+            
             this._Binder = binder;
 
             _AdventureIdleBinder = new OnesBinder<IAdventureIdle>(_Binder);
@@ -73,24 +120,41 @@ namespace Regulus.Project.ExiledPrincesses.Game
                 _AdventureChoiceBinder.Set(obj);
             };
 
+            _Comrade = new Binder<IActor>(_Binder , new IActor[0]);
             SetComrades += _OnComrades;
+
+            _Enemy = new Binder<IActor>(_Binder, new IActor[0]);
+            SetEnemys += _OnEnemys;
+
+            _Team = new Binder<ITeam>(_Binder, new ITeam[0]);
+            SetTeams += _OnTeams;
+
+            _CombatController = new Binder<ICombatController>(_Binder ,new ICombatController[0] );
+            SetCombatController += _OnCombatController;
         }
-        IActor[] _Actors;
+
+        private void _OnCombatController(ITeammate[] teammates)
+        {
+            _CombatController.Differences(teammates);
+        }
+
+        private void _OnTeams(ITeam[] teams)
+        {
+            _Team.Differences(teams);
+        }
+        Binder<IActor> _Comrade;        
         private void _OnComrades(IActor[] actors)
         {
-            var exits = _Actors.Except(actors);
-            foreach(var exit in exits)
-            {
-                _Binder.Unbind<IActor>(exit);
-            }
-
-            var joins = actors.Except(_Actors);
-            foreach (var join in joins)
-            {
-                _Binder.Bind<IActor>(join);
-            }
-            _Actors = actors;
+            _Comrade.Differences(actors);
         }
-        
+
+        Binder<IActor> _Enemy;
+        private Binder<ICombatController> _CombatController;                
+        private void _OnEnemys(IActor[] actors)
+        {
+            _Enemy.Differences(actors);
+        }
+
+        public Binder<ITeam> _Team { get; set; }
     }
 }

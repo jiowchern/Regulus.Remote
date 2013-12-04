@@ -18,6 +18,9 @@ namespace Regulus.Project.ExiledPrincesses
         Regulus.Remoting.Ghost.IProviderNotice<IAdventureChoice> AdventureChoiceProvider { get; }
 
         Regulus.Remoting.Ghost.IProviderNotice<IActor> ActorProvider { get; }
+        Regulus.Remoting.Ghost.IProviderNotice<ITeam> TeamProvider { get; }
+        Regulus.Remoting.Ghost.IProviderNotice<ICombatController> CombatControllerProvider { get; }
+        
     }
 
     

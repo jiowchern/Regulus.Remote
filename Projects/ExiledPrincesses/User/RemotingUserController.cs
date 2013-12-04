@@ -73,6 +73,8 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
 
         bool Regulus.Game.IFramework.Update()
         {
+            if (_Look && _UserCommand != null)
+                _UserCommand.Update();
             (_User as Regulus.Game.IFramework).Update();
             return true;
         }
