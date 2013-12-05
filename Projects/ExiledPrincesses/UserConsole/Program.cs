@@ -63,7 +63,7 @@ namespace UserConsole
             _CommandStrings.Enqueue(new CommandString() { Name = "ready", Args = new string[] { } });
 
             _CommandStrings.Enqueue(new CommandString() { Name = "login", Args = new string[] { "1", "1" } });
-            _CommandStrings.Enqueue(new CommandString() { Name = "go", Args = new string[] { } });
+            //_CommandStrings.Enqueue(new CommandString() { Name = "go", Args = new string[] { } });
         }
 
         

@@ -10,11 +10,19 @@ namespace Regulus.Project.ExiledPrincesses
     {
         class Timer
         {
-            Dictionary<object , Action> _Resources;
-            Regulus.Utility.IndependentTimer _Timer;
-            public Timer()
+            class Data
             {
-                _Resources = new Dictionary<object, Action>();
+                public Action Callback;
+                public Action Remove;
+                public bool Run;
+            }
+            Dictionary<object, Data> _Resources;
+            Regulus.Utility.IndependentTimer _Timer;
+            Regulus.Utility.Command _Command;
+            public Timer(Regulus.Utility.Command command)
+            {
+                _Command = command;
+                _Resources = new Dictionary<object, Data>();
                 _Timer = new Utility.IndependentTimer(TimeSpan.FromSeconds(1), _OnTimer);
             }
 
@@ -22,16 +30,30 @@ namespace Regulus.Project.ExiledPrincesses
             {
                 foreach(var pair in _Resources)
                 {
-                    pair.Value();
+                    if (pair.Value.Run)
+                        pair.Value.Callback();
                 }
             }
-            public void Register(object obj , Action callback)
+            public void Register(string name , object obj , Action callback)
             {
-                _Resources.Add(obj , callback);
+                var data = new Data() { Run = false , Callback =callback};
+
+                _Command.Register(name, () => { data.Run = !data.Run;});
+                data.Remove = () =>
+                {
+                    _Command.Unregister(name);
+                };
+                _Resources.Add(obj, data );
             }
             public void Unregister(object obj)
             {
-                _Resources.Remove(obj);
+                Data data;
+                if(_Resources.TryGetValue(obj , out data))
+                {
+                    data.Remove();
+                    _Resources.Remove(obj);
+                }
+                
             }
 
             public void Update()
@@ -46,7 +68,7 @@ namespace Regulus.Project.ExiledPrincesses
         Timer _Timer;
         public UserCommand(IUser system , Regulus.Utility.Console.IViewer view , Regulus.Utility.Command command)
         {
-            _Timer = new Timer();
+            _Timer = new Timer(command);
             _RemoveEvents = new Dictionary<object, Action[]>();
             _System = system;
             _View = view;
@@ -166,14 +188,19 @@ namespace Regulus.Project.ExiledPrincesses
             });
         }
 
+        int _TeamSn;
         void _OnTeamSupply(ITeam obj)
         {
-            _View.WriteLine("Team Strategys:" + obj.Strategys[0] + "," + obj.Strategys[1] + "," + obj.Strategys[2] + "," + obj.Strategys[3] );
+            _Timer.Register("team" + ++_TeamSn, obj, () => 
+            {
+                _View.WriteLine("Team Strategys:" + obj.Strategys[0] + "," + obj.Strategys[1] + "," + obj.Strategys[2] + "," + obj.Strategys[3]);
+            });
+            
         }
-
+        int _ActorSn;
         private void _OnActorSupply(IActor obj)
         {
-            _Timer.Register(obj, () => 
+            _Timer.Register("actor"+ ++ _ActorSn, obj, () => 
             {
                 _View.WriteLine("Actor id:" + obj.Pretotype +",hp:" +obj.Hp) ;
             });
