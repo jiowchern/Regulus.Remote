@@ -177,7 +177,10 @@ namespace Regulus.Remoting.Soul
 		{
 
 
-            var prevSoul = _Souls.Find((soulInfo) => { return Object.ReferenceEquals(soulInfo.ObjectInstance, soul); });
+            var prevSoul = _Souls.Find((soulInfo) => 
+            {
+                return Object.ReferenceEquals(soulInfo.ObjectInstance, soul) && soulInfo.ObjectType == typeof(TSoul); 
+            });
 			if (prevSoul == null)
 			{
 				var new_soul = new Soul() { ID = Guid.NewGuid(), ObjectType = typeof(TSoul), ObjectInstance = soul, MethodInfos = typeof(TSoul).GetMethods()};
@@ -214,6 +217,22 @@ namespace Regulus.Remoting.Soul
 				
 			}
 		}
+
+        public void Unbind<TSoul>(TSoul soul)
+        {
+
+            var soulInfo = _Souls.Find((soul_info) => { return Object.ReferenceEquals(soul_info.ObjectInstance, soul) && soul_info.ObjectType == typeof(TSoul); });
+            if (soulInfo != null)
+            {
+                foreach (var eventHandler in soulInfo.EventHandlers)
+                {
+                    eventHandler.EventInfo.RemoveEventHandler(soulInfo.ObjectInstance, eventHandler.DelegateObject);
+                }
+                _UnloadSoul(soulInfo.ObjectType.FullName, soulInfo.ID);
+                _Souls.Remove(soulInfo);
+
+            }
+        }
 				
 		private Delegate _BuildDelegate(Type[] generic_arguments, Guid entity_id, string event_name)
 		{
@@ -244,21 +263,7 @@ namespace Regulus.Remoting.Soul
 			return Delegate.CreateDelegate(delegateType, closureInstance, run);
 		}
 
-		public void Unbind<TSoul>(TSoul soul)
-		{
-
-            var soulInfo = _Souls.Find((soul_info) => { return Object.ReferenceEquals(soul_info.ObjectInstance, soul); });
-			if (soulInfo != null)
-			{
-				foreach (var eventHandler in soulInfo.EventHandlers)
-				{
-                    eventHandler.EventInfo.RemoveEventHandler(soulInfo.ObjectInstance, eventHandler.DelegateObject );
-				}
-				_UnloadSoul(soulInfo.ObjectType.FullName , soulInfo.ID);
-				_Souls.Remove(soulInfo);
-				
-			}
-		}
+		
 
 		public void Dispose()
 		{

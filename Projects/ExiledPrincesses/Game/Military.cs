@@ -28,21 +28,21 @@ namespace Regulus.Project.ExiledPrincesses.Game
             get{ return _ITeammates; }
         }
         public Contingent.FormationType Formation { get; private set;}
-        Controller _Controller;
+        IController _Controller;
 
-        public Squad(Contingent.FormationType formation, ITeammate[] teammates, Controller controller)
+        public Squad(Contingent.FormationType formation, ITeammate[] teammates, IController controller)
         {
             Formation = formation;
             _ITeammates = teammates;
             _Controller = controller;
         }
 
-        public void Initial()
+        public void SetCombatController()
         {            
             _Controller.SetCombatController(_ITeammates);
         }
 
-        public void Final()
+        public void RiseCombatController()
         {            
             _Controller.SetCombatController(new ITeammate[0]);
         }
@@ -85,7 +85,17 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
         internal void SetTeams(ITeam[] teams)
         {
-            _Controller.SetTeams(teams);
+            _Controller.SetTeamss(teams);            
+        }
+
+        internal void BeginBattle()
+        {
+            _Controller.BattleBegins();
+        }
+
+        internal void EndBattle()
+        {
+            _Controller.BattleEnd();
         }
     }
 
@@ -155,7 +165,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
         void Framework.ILaunched.Launch()
         {
             IActor[] actors = _GetTeammates();
-            _Squad.Initial();
+            
             _Squad.SetComrades(actors);
             
         }
@@ -169,9 +179,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
         void Framework.ILaunched.Shutdown()
         {
-
-            _Squad.SetComrades(new IActor[0]);
-            _Squad.Final();
+            _Squad.SetComrades(new IActor[0]);            
         }
 
         public void SetEnemys(IActor[] actors)
@@ -185,5 +193,18 @@ namespace Regulus.Project.ExiledPrincesses.Game
         }
 
 
+
+        internal void BattleBegins()
+        {
+            _Squad.BeginBattle();
+            _Squad.SetCombatController();
+            
+        }
+
+        internal void EndBegins()
+        {
+            _Squad.RiseCombatController();
+            _Squad.EndBattle();
+        }
     }
 }

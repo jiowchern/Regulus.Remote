@@ -193,7 +193,7 @@ namespace Regulus.Project.ExiledPrincesses
         {
             _Timer.Register("team" + ++_TeamSn, obj, () => 
             {
-                _View.WriteLine("Team Strategys:" + obj.Strategys[0] + "," + obj.Strategys[1] + "," + obj.Strategys[2] + "," + obj.Strategys[3]);
+                _View.WriteLine("Team id:"+obj.Id+" Strategys:" + obj.Strategys[0] + "," + obj.Strategys[1] + "," + obj.Strategys[2] + "," + obj.Strategys[3]);
             });
             
         }
@@ -209,19 +209,19 @@ namespace Regulus.Project.ExiledPrincesses
 
         private void _OnAdventureChoiceSupply(IAdventureChoice obj)
         {
-            _View.Write("Map [");
+            _View.Write("Map ");
             foreach(var map in obj.Maps)
             {
                 _View.Write(" " + map+" ");
             }
-            _View.WriteLine("]");
+            _View.WriteLine("");
 
-            _View.Write("Town [");
+            _View.Write("Town ");
             foreach (var town in obj.Town)
             {
                 _View.Write(" " + town + " ");
             }
-            _View.WriteLine("]");
+            _View.WriteLine("");
 
             _Command.Register<string>("ChoiceMap", obj.GoMap);
             _Command.Register<string>("ChoiceTown", obj.GoTown);

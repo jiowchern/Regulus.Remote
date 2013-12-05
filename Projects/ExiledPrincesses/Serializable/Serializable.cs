@@ -102,7 +102,7 @@ namespace Regulus.Project.ExiledPrincesses
         None,
         Verify,
         Town,
-        Adventure,        
+        Adventure,                
     }
 
 	[Serializable]

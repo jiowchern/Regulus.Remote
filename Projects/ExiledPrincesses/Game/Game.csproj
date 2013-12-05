@@ -47,6 +47,7 @@
     <Compile Include="common.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="Core.cs" />
+    <Compile Include="CoreBinder.cs" />
     <Compile Include="EffectResource.cs" />
     <Compile Include="Levels.cs" />
     <Compile Include="LevelsChoice.cs" />

@@ -10,7 +10,8 @@ namespace Regulus.Project.ExiledPrincesses
         void Ready();
         event Action<UserStatus> StatusEvent;
         Value<long> QueryTime();
-        
+        event Action BattleBegin;
+        event Action EndBegin;
     }
 
     public interface IVerify
@@ -71,6 +72,7 @@ namespace Regulus.Project.ExiledPrincesses
 
     public interface ITeam
     {
+        int Id { get; }
         int[] Strategys { get; }
     }
 

@@ -240,6 +240,6 @@ namespace Regulus.Project.ExiledPrincesses.Game
         public string Map;
         public Regulus.Project.ExiledPrincesses.Contingent.FormationType Formation;
         public ITeammate[] Teammates;
-        public PlayerController Controller;
+        public IController Controller;
     }
 }

@@ -30,12 +30,12 @@ namespace Regulus.Project.ExiledPrincesses.Game
             }
             void Regulus.Game.IStage.Enter()
             {
-                var team1 = new Team(_Platoon);
+                var team1 = new Team(1,_Platoon);
                 
                 var enemys = (from enemy in _Prototype.Enemys select new Teammate(new ActorInfomation() { Exp = 0, Prototype = enemy })).ToArray();
 
-                var platoonEnemy = new Platoon(new Squad(Contingent.FormationType.Auxiliary, enemys , new Controller()));
-                var team2 = new Team(platoonEnemy);
+                var platoonEnemy = new Platoon(new Squad(Contingent.FormationType.Auxiliary, enemys , new AIController()));
+                var team2 = new Team(2,platoonEnemy);
                 _Combat.Initial(team1, team2);
                 _Combat.WinnerEvent += (winner) =>
                 {

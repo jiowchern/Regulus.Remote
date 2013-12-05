@@ -94,7 +94,8 @@ namespace Regulus.Utility
                 Type elementType = Type.GetType(
                      type.FullName.Replace("[]", string.Empty));
                 var array = obj as Array;
-                Array copied = Array.CreateInstance(elementType, array.Length);
+                //Array copied = Array.CreateInstance(elementType, array.Length);
+                var copied = obj1 as Array;
                 for (int i = 0; i < array.Length; i++)
                 {
                     if (_EqualProcess(array.GetValue(i), copied.GetValue(i)) == false)

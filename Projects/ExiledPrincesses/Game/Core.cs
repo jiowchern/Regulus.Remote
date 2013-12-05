@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Project.ExiledPrincesses.Game
 {
-    public class Core : Regulus.Game.IFramework, IUserStatus
+    public partial class Core : Regulus.Game.IFramework, IUserStatus, IController
 	{
 		Regulus.Remoting.ISoulBinder _Binder;
 		public IStorage	Storage {get ; private set;}
@@ -13,7 +13,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 		public Regulus.Remoting.ISoulBinder Binder { get { return _Binder; }}
 		Regulus.Game.StageMachine _StageMachine;
         AccountInfomation _AccountInfomation;
-        PlayerController _PlayerController;
+        
         public Core(Regulus.Remoting.ISoulBinder binder, IStorage storage, IZone zone )
 		{
             _Zone = zone; 
@@ -24,7 +24,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
 			binder.BreakEvent += _OnInactive;
             _StatusEvent += (s) => { };
-            _PlayerController = new PlayerController(_Binder);
+            
             
 		}
 		~Core()
@@ -45,6 +45,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
 		public void Launch()
 		{
+            _InitialController(_Binder);
             _Binder.Bind<IUserStatus>(this);
 		}
 
@@ -97,7 +98,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
             adv.Map = map;
             adv.Teammates = teammates;
             adv.Formation = Contingent.FormationType.Auxiliary;
-            adv.Controller = _PlayerController;
+            adv.Controller = this;
             return adv;
         }
 
@@ -175,5 +176,81 @@ namespace Regulus.Project.ExiledPrincesses.Game
         }
 
 
+        void _InitialController(Regulus.Remoting.ISoulBinder binder)
+        {
+            _AdventureIdleBinder = new OnesBinder<IAdventureIdle>(binder);
+            _AdventureGoBinder = new OnesBinder<IAdventureGo>(binder);
+            _AdventureChoiceBinder = new OnesBinder<IAdventureChoice>(binder);
+            _Actor = new PluralBinder<IActor>(binder , new IActor[0]);
+            _Enemy = new PluralBinder<IActor>(binder, new IActor[0]);
+            _Team = new PluralBinder<ITeam>(binder, new ITeam[0]);
+            _CombatController = new PluralBinder<ICombatController>(binder, new ICombatController[0]);
+        }
+
+
+        OnesBinder<IAdventureIdle> _AdventureIdleBinder;
+        void IController.SetIdleController(IAdventureIdle adventure_idle)
+        {
+            _AdventureIdleBinder.Set(adventure_idle);
+        }
+
+        OnesBinder<IAdventureGo> _AdventureGoBinder;        
+        void IController.SetGoController(IAdventureGo adventure_go)
+        {
+            _AdventureGoBinder.Set(adventure_go);
+        }
+
+        OnesBinder<IAdventureChoice> _AdventureChoiceBinder;       
+        void IController.SetChoiceController(IAdventureChoice adventure_choice)
+        {
+            _AdventureChoiceBinder.Set(adventure_choice);
+        }
+
+        PluralBinder<IActor> _Actor;        
+        void IController.SetComrades(IActor[] actors)
+        {
+            _Actor.Differences(actors);
+        }
+        PluralBinder<ITeam> _Team;
+        void IController.SetTeamss(ITeam[] teams)
+        {
+            _Team.Differences(teams);
+        }
+
+        PluralBinder<IActor> _Enemy;        
+        void IController.SetEnemys(IActor[] actors)
+        {
+            _Enemy.Differences(actors);
+        }
+
+        PluralBinder<ICombatController> _CombatController;                
+        void IController.SetCombatController(ICombatController[] controllers)
+        {
+            _CombatController.Differences(controllers);
+        }
+
+        void IController.BattleBegins()
+        {
+            _BattleBegin();
+        }
+
+        void IController.BattleEnd()
+        {
+            _EndBegin();
+        }
+
+
+        event Action _BattleBegin;
+        event Action IUserStatus.BattleBegin
+        {
+            add { _BattleBegin += value; }
+            remove { _BattleBegin -= value; }
+        }
+        event Action _EndBegin;
+        event Action IUserStatus.EndBegin
+        {
+            add { _EndBegin += value; }
+            remove { _EndBegin -= value; }
+        }
     }
 }

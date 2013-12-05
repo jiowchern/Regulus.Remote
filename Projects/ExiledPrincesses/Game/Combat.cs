@@ -21,10 +21,11 @@ namespace Regulus.Project.ExiledPrincesses.Game
         private ITeammate[] _Front;
         private ITeammate[] _Back;
 
-        public Platoon Platoon { get; private set; } 
-        
-        public Team(Platoon platoon)
+        public Platoon Platoon { get; private set; }
+        int _Id;
+        public Team(int id,Platoon platoon)
         {
+            _Id = id;
             Platoon = platoon;
             _Strategys = new int[(int)Strategy.Count];
 
@@ -98,14 +99,26 @@ namespace Regulus.Project.ExiledPrincesses.Game
             get { return _Strategys; }
         }
 
-        internal void InitialBroadcast(ITeam[] teams)
+        internal void InitialBroadcast(Team[] teams)
         {
+            Platoon.BattleBegins();
             Platoon.SetTeams(teams);
+            foreach (var teammates in from t in teams where t != this select t.Platoon.Teammates)
+                Platoon.SetEnemys(teammates);
         }
 
         internal void FinalialBroadcast()
         {
+            
+            Platoon.SetEnemys(new ITeammate[0]);
             Platoon.SetTeams(new ITeam[0]);
+
+            Platoon.EndBegins();
+        }
+
+        int ITeam.Id
+        {
+            get { return _Id; }
         }
     }
 
@@ -134,8 +147,14 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
 
             _Take(_Teams , _CommonSkillSet);
-            _ToStrategy(_Teams);
             _InitialBroadcasting(_Teams);
+            
+            _ToStrategy(_Teams);            
+        }
+        internal void Finial()
+        {
+            _ReleaseBroadcasting(_Teams);
+            _StageMachine.Termination();
         }
 
         private void _Take(Team[] teams, CommonSkillSet common_skill_set)
@@ -176,45 +195,26 @@ namespace Regulus.Project.ExiledPrincesses.Game
             }
         }
 
-        internal void Finial()
-        {
-            _ReleaseBroadcasting(_Teams);
-            _StageMachine.Termination();
-        }
+        
 
 
         private void _InitialBroadcasting(Team[] teams)
-        {
-            
+        {            
             foreach (var team in teams)
             {
-                team.InitialBroadcast(teams);
-                _BroadcastEnemys(teams, team);
+                team.InitialBroadcast(teams);                
             }
         }
 
-        private static void _BroadcastEnemys(Team[] teams, Team team)
-        {
-            foreach (var teammates in from t in teams where t != team select t.Platoon.Teammates)
-                team.Platoon.SetEnemys(teammates);
-        }
-
         private void _ReleaseBroadcasting(Team[] teams)
-        {
-            _ReceivedBroadcast(teams);
+        {        
             foreach (var team in teams)
             {
                 team.FinalialBroadcast();
             }
         }
 
-        private void _ReceivedBroadcast(Team[] teams)
-        {
-            foreach (var team in teams)
-            {
-                team.Platoon.SetEnemys(new ITeammate[0]);
-            }
-        }
+        
     }
     partial class Combat
     {
@@ -222,6 +222,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
         {
             class Activists : Regulus.Utility.IUpdatable
             {
+                const float _IdleTime = 5.0f;
                 public delegate void OnDone();
                 public event OnDone DoneEvent;
                 private Team.Member _Member;
@@ -246,7 +247,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
                 {
                     Skill.Effect[] effects = _Member.Teammate.GetActivitiesEffects(_Member.Owner, _CommonSkillSet);
 
-                    float waitTime = _UseEffects(effects);
+                    float waitTime = _UseEffects(effects) + _IdleTime;
                     _Timer = new Utility.IndependentTimer(TimeSpan.FromSeconds(waitTime), _Done );
                     
                 }
@@ -343,7 +344,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
                 {
                     teammates.AddRange(from member in team.Members where member.Teammate.Hp > 0 select member);
                 }
-                teammates = teammates.OrderBy(t => t.Teammate.Dex).ToList();
+                teammates = teammates.OrderBy(t => t.Teammate.Dex + Regulus.Utility.Random.Next(-2, 2)).ToList();
 
                 return (from t in teammates select new Activists(t, (from team in teams where t.Owner != team select team).ToArray(), common_skill_set)).ToArray();
             }
@@ -416,7 +417,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
                 {
                     teammates.AddRange(from member in  team.Members where member.Teammate.Hp > 0 select member);
                 }
-                return teammates.OrderBy(t => t.Teammate.Int ).ToArray();
+                return teammates.OrderBy(t => t.Teammate.Int + Regulus.Utility.Random.Next(-2 , 2)).ToArray();
             }
 
             private Strategy[] _Generate()
