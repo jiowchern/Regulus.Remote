@@ -175,8 +175,6 @@ namespace Regulus.Remoting.Soul
 		
 		public void Bind<TSoul>(TSoul soul)
 		{
-
-
             var prevSoul = _Souls.Find((soulInfo) => 
             {
                 return Object.ReferenceEquals(soulInfo.ObjectInstance, soul) && soulInfo.ObjectType == typeof(TSoul); 

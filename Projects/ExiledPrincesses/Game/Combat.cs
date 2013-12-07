@@ -21,30 +21,32 @@ namespace Regulus.Project.ExiledPrincesses.Game
         private ITeammate[] _Front;
         private ITeammate[] _Back;
 
-        public Platoon Platoon { get; private set; }
-        int _Id;
-        public Team(int id,Platoon platoon)
+        Platoon _Platoon { get; set; }
+        TeamSide _Side;
+        public Team(TeamSide side, Platoon platoon)
         {
-            _Id = id;
-            Platoon = platoon;
+            _Side = side;
+            _Platoon = platoon;
+            _Platoon.SetSide(side);
+            
             _Strategys = new int[(int)Strategy.Count];
 
-            if (Platoon.Formation == Contingent.FormationType.Auxiliary)
+            if (_Platoon.Formation == Contingent.FormationType.Auxiliary)
             {
 
-                _Front = new ITeammate[] { Platoon.Teammates[0] };
+                _Front = new ITeammate[] { _Platoon.Teammates[0] };
                 int i = 0;
-                _Back = (from teammate in Platoon.Teammates
+                _Back = (from teammate in _Platoon.Teammates
                         let idx = i++
                         where idx > 0
                         select teammate).ToArray();
             }
 
-            if (Platoon.Formation == Contingent.FormationType.Defensive)
+            if (_Platoon.Formation == Contingent.FormationType.Defensive)
             {
-                _Back = new ITeammate[] { Platoon.Teammates[0] };
+                _Back = new ITeammate[] { _Platoon.Teammates[0] };
                 int i = 0;
-                _Front = (from teammate in Platoon.Teammates
+                _Front = (from teammate in _Platoon.Teammates
                          let idx = i++
                          where idx > 0
                          select teammate).ToArray();
@@ -52,7 +54,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
         }
 
-        public Member[] Members { get { return (from t in Platoon.Teammates select new Member(this, t)).ToArray(); } }
+        public Member[] Members { get { return (from t in _Platoon.Teammates select new Member(this, t)).ToArray(); } }
         int[] _Strategys;
         internal void AddStrategy(Strategy strategy)
         {
@@ -101,24 +103,25 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
         internal void InitialBroadcast(Team[] teams)
         {
-            Platoon.BattleBegins();
-            Platoon.SetTeams(teams);
-            foreach (var teammates in from t in teams where t != this select t.Platoon.Teammates)
-                Platoon.SetEnemys(teammates);
+            _Platoon.BattleBegins();
+            _Platoon.SetTeams(teams);
+            foreach (var teammates in from t in teams where t != this select t._Platoon.Teammates)
+                _Platoon.SetEnemys(teammates);
         }
 
         internal void FinalialBroadcast()
         {
             
-            Platoon.SetEnemys(new ITeammate[0]);
-            Platoon.SetTeams(new ITeam[0]);
+            _Platoon.SetEnemys(new ITeammate[0]);
+            _Platoon.SetTeams(new ITeam[0]);
 
-            Platoon.EndBegins();
+            _Platoon.EndBegins();
         }
 
-        int ITeam.Id
+        
+        TeamSide ITeam.Side
         {
-            get { return _Id; }
+            get { return _Side; }
         }
     }
 
@@ -222,7 +225,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
         {
             class Activists : Regulus.Utility.IUpdatable
             {
-                const float _IdleTime = 5.0f;
+                const float _IdleTime = 2.0f;
                 public delegate void OnDone();
                 public event OnDone DoneEvent;
                 private Team.Member _Member;

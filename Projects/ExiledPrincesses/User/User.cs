@@ -20,7 +20,9 @@ namespace Regulus.Project.ExiledPrincesses
         Regulus.Remoting.Ghost.IProviderNotice<IActor> ActorProvider { get; }
         Regulus.Remoting.Ghost.IProviderNotice<ITeam> TeamProvider { get; }
         Regulus.Remoting.Ghost.IProviderNotice<ICombatController> CombatControllerProvider { get; }
-        
+
+
+        Regulus.Remoting.Ghost.IProviderNotice<T> QueryProivder<T>();
     }
 
     

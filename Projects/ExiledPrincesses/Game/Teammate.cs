@@ -5,7 +5,14 @@ using System.Text;
 
 namespace Regulus.Project.ExiledPrincesses.Game
 {
-    
+    static class SkillExt
+    {
+        public static CombatSkill ToIndex(this Skill skill ,int idx )
+        {
+            return new CombatSkill() { Status = skill.IsConsumed() ? SkillStatus.Initiative :SkillStatus.Passive
+                , Id = skill.Id , Index = idx};
+        }
+    }
     public interface ITeammate : IActor , ICombatController
     {       
 
@@ -14,7 +21,10 @@ namespace Regulus.Project.ExiledPrincesses.Game
         void Take(CommonSkillSet common_skill_set);
         int AddHit(Strategy strategy);
         void Injury(int damage);
-        int AddCombo(Strategy strategy);        
+        int AddCombo(Strategy strategy);
+
+        void SetSide(TeamSide side);
+        void SetPlatoonNumber(int number);
     }
 
     public class Teammate : ITeammate
@@ -66,6 +76,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
             if (_ActivitiesSkills.TryGetValue(activities_sn, out skill))
             {
                 skill.Flip();
+                _FlipEnableEvent(new CombatSkill[]{ skill.ToIndex(activities_sn)} );
             }
         }
 
@@ -76,8 +87,9 @@ namespace Regulus.Project.ExiledPrincesses.Game
                 Skill skill;
                 if (_Out(_Idle , idle_sn, out skill))
                 {
-                    _Add(_ActivitiesSkills, skill);
-                    
+                    _RemoveIdleEvent(new CombatSkill[] { skill.ToIndex(idle_sn) });
+                    int sn= _Add(_ActivitiesSkills, skill);
+                    _AddIEnableEvent(new CombatSkill[] { skill.ToIndex(sn) });
                 }
             }
             
@@ -95,7 +107,10 @@ namespace Regulus.Project.ExiledPrincesses.Game
                     _Wait = new Queue<Skill>(recover);
                     _Recover.Clear();
                 }
-                _Add(skills, _Wait.Dequeue());
+                var newSkill = _Wait.Dequeue();
+                
+                var newSn = _Add(skills, newSkill);
+                _AddIdleEvent(new CombatSkill[] { newSkill.ToIndex(newSn) });
                 return true;
             }
             return false;
@@ -121,11 +136,14 @@ namespace Regulus.Project.ExiledPrincesses.Game
                     }                    
                 }
             }
-
+            if (_RemoveEnableEvent != null)
+                _RemoveEnableEvent( (from removeSkill in removSkills select _ActivitiesSkills[removeSkill].ToIndex(removeSkill)).ToArray() );
             foreach(var skill in removSkills)
             {
                 _ActivitiesSkills.Remove(skill);
+                
             }
+            
                         
             return effects.ToArray();
         }
@@ -188,9 +206,10 @@ namespace Regulus.Project.ExiledPrincesses.Game
         }
 
         int _SkillSn;
-        private void _Add(Dictionary<int , Skill> skills , Skill skill)
+        private int _Add(Dictionary<int , Skill> skills , Skill skill)
         {
             skills.Add(++_SkillSn, skill);
+            return _SkillSn;
         }
 
         
@@ -219,7 +238,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
         private IEnumerable<CombatSkill> _QueryCombatSkill(Dictionary<int , Skill> skills)
         {
-            var combatSkills = from pair in skills select new CombatSkill() { Id = pair.Value.Id, Index = pair.Key };
+            var combatSkills = from pair in skills select new CombatSkill() { Id = pair.Value.Id, Index = pair.Key, Status = pair.Value.IsConsumed() ? SkillStatus.Initiative : SkillStatus.Passive };
             return combatSkills;
         }
 
@@ -230,7 +249,65 @@ namespace Regulus.Project.ExiledPrincesses.Game
         }
 
 
-        
+
+        TeamSide _Side;
+        TeamSide IActor.Side
+        {
+            get { return _Side; }
+        }
+
+
+        int _PlatoonNo;
+        int IActor.PlatoonNo
+        {
+            get { return _PlatoonNo; }
+        }
+
+
+        void ITeammate.SetSide(TeamSide side)
+        {
+            _Side = side;
+        }
+
+        void ITeammate.SetPlatoonNumber(int number)
+        {
+            _PlatoonNo = number;
+        }
+
+
+        event Action<CombatSkill[]> _AddIdleEvent;
+        event Action<CombatSkill[]> ICombatController.AddIdleEvent
+        {
+            add { _AddIdleEvent += value; }
+            remove { _AddIdleEvent -= value; }
+        }
+
+        event Action<CombatSkill[]> _RemoveIdleEvent;
+        event Action<CombatSkill[]> ICombatController.RemoveIdleEvent
+        {
+            add { _RemoveIdleEvent += value; }
+            remove { _RemoveIdleEvent -= value; }
+        }
+        event Action<CombatSkill[]> _AddIEnableEvent;
+        event Action<CombatSkill[]> ICombatController.AddIEnableEvent
+        {
+            add { _AddIEnableEvent += value; }
+            remove { _AddIEnableEvent -= value; }
+        }
+
+        event Action<CombatSkill[]> _RemoveEnableEvent;
+        event Action<CombatSkill[]> ICombatController.RemoveEnableEvent
+        {
+            add { _RemoveEnableEvent += value; }
+            remove { _RemoveEnableEvent -= value; }
+        }
+
+        event Action<CombatSkill[]> _FlipEnableEvent;
+        event Action<CombatSkill[]> ICombatController.FlipEnableEvent
+        {
+            add { _FlipEnableEvent += value;  }
+            remove { _FlipEnableEvent -= value; }
+        }
     }
 
    

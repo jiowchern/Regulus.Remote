@@ -193,7 +193,7 @@ namespace Regulus.Project.ExiledPrincesses
         {
             _Timer.Register("team" + ++_TeamSn, obj, () => 
             {
-                _View.WriteLine("Team id:"+obj.Id+" Strategys:" + obj.Strategys[0] + "," + obj.Strategys[1] + "," + obj.Strategys[2] + "," + obj.Strategys[3]);
+                _View.WriteLine("Team side:"+obj.Side+" Strategys:" + obj.Strategys[0] + "," + obj.Strategys[1] + "," + obj.Strategys[2] + "," + obj.Strategys[3]);
             });
             
         }

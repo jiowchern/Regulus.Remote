@@ -66,6 +66,11 @@ namespace Regulus.Project.ExiledPrincesses.Game
                 add { _ForwardEvent += value; }
                 remove { _ForwardEvent -= value; }
             }
+
+            Station IAdventureGo.Site
+            {
+                get { return _Station; }
+            }
         }
     }
 }

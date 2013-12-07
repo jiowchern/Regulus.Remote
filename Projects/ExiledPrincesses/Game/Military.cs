@@ -97,6 +97,14 @@ namespace Regulus.Project.ExiledPrincesses.Game
         {
             _Controller.BattleEnd();
         }
+
+        internal void SetSide(TeamSide side)
+        {
+            foreach (var teammate in _ITeammates)
+            {
+                teammate.SetSide(side);
+            }
+        }
     }
 
     public class Platoon : ICommandable , Regulus.Utility.IUpdatable
@@ -113,10 +121,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
         public Contingent.FormationType Formation { get { return _Squad.Formation; } }
 
-        public ITeammate[] Teammates { get 
-        {
-            return _Squad.Teammatess;
-        } }
+        public ITeammate[] Teammates { get {return _Squad.Teammatess; } }
 
         void ICommandable.AuthorizeIdle(IAdventureIdle adventureIdle)
         {
@@ -164,13 +169,15 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
         void Framework.ILaunched.Launch()
         {
-            IActor[] actors = _GetTeammates();
-            
-            _Squad.SetComrades(actors);
-            
-        }
+            int i = 0;
+            foreach (var teamate in Teammates)
+            {
+                teamate.SetPlatoonNumber(i++);
+            }
 
-        
+            IActor[] actors = _GetTeammates(); 
+            _Squad.SetComrades(actors);            
+        }
 
         private IActor[] _GetTeammates()
         {
@@ -192,8 +199,6 @@ namespace Regulus.Project.ExiledPrincesses.Game
             _Squad.SetTeams(teams);
         }
 
-
-
         internal void BattleBegins()
         {
             _Squad.BeginBattle();
@@ -205,6 +210,11 @@ namespace Regulus.Project.ExiledPrincesses.Game
         {
             _Squad.RiseCombatController();
             _Squad.EndBattle();
+        }
+
+        internal void SetSide(TeamSide side)
+        {
+            _Squad.SetSide(side);          
         }
     }
 }

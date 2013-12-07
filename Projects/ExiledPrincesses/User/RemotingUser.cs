@@ -94,6 +94,12 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
         {
             get { return _Complex.QueryProvider<ICombatController>(); }
         }
+
+
+        Regulus.Remoting.Ghost.IProviderNotice<T> IUser.QueryProivder<T>()
+        {
+            return _Complex.QueryProvider<T>(); 
+        }
     }
 }
 

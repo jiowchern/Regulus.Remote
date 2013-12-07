@@ -66,14 +66,18 @@ namespace Regulus.Project.ExiledPrincesses.Game
         {
             return _Consumed;
         }
-        Effect _Effect1;
-        Effect _Effect2;        
+        readonly Effect _Effect1;
+        readonly Effect _Effect2;
+
+        public Effect Initiave { get { return _Effect1;} }
+        public Effect Passive { get { return _Effect1; } }
 
         public Skill(int id ,Effect effect1, Effect effect2)
         {
             Id = id;
             this._Effect1 = effect1;
             this._Effect2 = effect2;
+            _Consumed = true;
         }
         internal Effect GetActivitiesEffect()
         {

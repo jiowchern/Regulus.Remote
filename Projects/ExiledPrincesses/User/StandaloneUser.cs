@@ -120,5 +120,9 @@ namespace Regulus.Project.ExiledPrincesses.Standalone
         {
             get { return _Agent.QueryProvider<ICombatController>(); }
         }
+        Regulus.Remoting.Ghost.IProviderNotice<T> IUser.QueryProivder<T>()
+        {
+            return _Agent.QueryProvider<T>();
+        }
     }
 }

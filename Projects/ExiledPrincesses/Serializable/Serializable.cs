@@ -156,9 +156,22 @@ namespace Regulus.Project.ExiledPrincesses
     }
 
     [Serializable]
+    public enum SkillStatus
+    {
+        Initiative,
+        Passive
+    }
+    [Serializable]
     public class CombatSkill
     {
         public int Id { get; set; }
+        public SkillStatus Status { get; set; }
         public int Index { get; set; }
     }
+
+    [Serializable]
+    public enum TeamSide
+    { 
+        Left,Right
+    };
 }

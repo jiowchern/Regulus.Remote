@@ -50,7 +50,8 @@ namespace Regulus.Project.ExiledPrincesses
     
     public interface IAdventureGo
     {
-         event Action<long /*time_tick*/ , float /*position*/ , float /*speed*/> ForwardEvent;
+        Station Site { get; }
+        event Action<long /*time_tick*/ , float /*position*/ , float /*speed*/> ForwardEvent;
     }
 
     public interface IAdventureChoice
@@ -61,8 +62,12 @@ namespace Regulus.Project.ExiledPrincesses
         void GoMap(string map);
         void GoTown(string tone);
     }
+
+   
     public interface IActor
     {
+        TeamSide Side { get; }
+        int PlatoonNo { get; }
         int Pretotype { get; }
         int Dex { get; }
         int Int { get; }
@@ -72,7 +77,7 @@ namespace Regulus.Project.ExiledPrincesses
 
     public interface ITeam
     {
-        int Id { get; }
+        TeamSide Side { get; }
         int[] Strategys { get; }
     }
 
@@ -82,6 +87,13 @@ namespace Regulus.Project.ExiledPrincesses
         Value<CombatSkill[]> QueryEnableSkills();
         Value<CombatSkill[]> QueryIdleSkills();
 
+
+        event Action<CombatSkill[]> AddIdleEvent;
+        event Action<CombatSkill[]> RemoveIdleEvent;
+
+        event Action<CombatSkill[]> AddIEnableEvent;
+        event Action<CombatSkill[]> RemoveEnableEvent;
+        event Action<CombatSkill[]> FlipEnableEvent;
         void FlipSkill(int activities_sn);
         void EnableSkill(int idle_sn);
     }
