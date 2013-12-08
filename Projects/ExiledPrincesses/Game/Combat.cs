@@ -241,13 +241,15 @@ namespace Regulus.Project.ExiledPrincesses.Game
                 Team[] _Targets;
                 Regulus.Utility.IndependentTimer _Timer;
                 CommonSkillSet _CommonSkillSet;
-                int _Order;
-                public Activists(int order,Team.Member member, Team[] targets, CommonSkillSet common_skill_set)
+                int _Remaining;
+                public Activists(int order, int remaining, Team.Member member, Team[] targets, CommonSkillSet common_skill_set)
                 {
-                    _Order = order;
+                    _Remaining = remaining;
                     _CommonSkillSet = common_skill_set;
                     _Targets = targets;
                     this._Member = member;
+                    _Member.Teammate.SetBattleThinkTime(LocalTime.Instance.Ticks, (order + 1) * ThinkTime, false);
+                    
                 }
                 
                 public bool Update()
@@ -259,10 +261,13 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
                 public void Launch()
                 {
+                    _Timer = new Utility.IndependentTimer(TimeSpan.FromSeconds(ThinkTime), _Effect);                    
+                }
+
+                private void _Effect(long obj)
+                {
                     Skill.Effect[] effects = _Member.Teammate.GetActivitiesEffects(_Member.Owner, _CommonSkillSet);
                     var showTime = _UseEffects(effects);
-                    float waitTime = showTime + ThinkTime;
-                    _Timer = new Utility.IndependentTimer(TimeSpan.FromSeconds(waitTime), _Done );
 
                     
                     var partners = _Member.Owner.GetPartner(_Member.Teammate);
@@ -274,20 +279,21 @@ namespace Regulus.Project.ExiledPrincesses.Game
                     foreach (var team in _Targets)
                     {
                         ITeammate[] teammates = team.GetAliveTeammate();
-                        foreach(var teammate in teammates)
+                        foreach (var teammate in teammates)
                         {
                             
                             teammate.AddBattleThinkTime(LocalTime.Instance.Ticks, showTime);
                         }
-                       
+
                     }
 
-                    _Member.Teammate.SetBattleThinkTime(LocalTime.Instance.Ticks, showTime + (_Order + 1) * ThinkTime);
+                    _Member.Teammate.SetBattleThinkTime(LocalTime.Instance.Ticks, showTime + _Remaining * ThinkTime , true);
+                    _Timer = new Utility.IndependentTimer(TimeSpan.FromSeconds(showTime), _ShowDown);
                     
                 }
 
-                private void _Done(long obj)
-                {
+                private void _ShowDown(long obj)
+                {                    
                     DoneEvent();                    
                 }
 
@@ -322,8 +328,6 @@ namespace Regulus.Project.ExiledPrincesses.Game
             {
                 
                 _Teams = teams;
-                var activists = _GetSurvivor(teams, common_skill_set);
-                
                 _Activists = new Queue<Activists>(_GetSurvivor(teams, common_skill_set));
             }
 
@@ -376,9 +380,14 @@ namespace Regulus.Project.ExiledPrincesses.Game
             private Activists[] _GetSurvivor(Team[] teams, CommonSkillSet common_skill_set)
             {                
                 var members = _Sort(teams);
-                int i = members.Count;
-                return (from t in members                         
-                        select new Activists(--i,t, (from team in teams where t.Owner != team select team).ToArray(), common_skill_set)).ToArray();
+                int i = 0;
+                List<Activists> activistss = new List<Activists>();
+                foreach(var member in members)
+                {
+                    activistss.Add(new Activists(i++, members.Count - i, member, (from team in teams where member.Owner != team select team).ToArray(), common_skill_set));
+                }
+
+                return activistss.ToArray();
             }
 
             private static List<Team.Member> _Sort(Team[] teams)

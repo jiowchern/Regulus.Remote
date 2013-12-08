@@ -75,7 +75,7 @@ namespace Regulus.Project.ExiledPrincesses
         int MaxHp { get; }
         Strategy Specializes { get; }
 
-        event Action<long, float> SetBattleThinkTimeEvent;
+        event Action<long, float , bool> SetBattleThinkTimeEvent;
         event Action<long, float> AddBattleThinkTimeEvent;
         
     }

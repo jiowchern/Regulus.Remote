@@ -26,7 +26,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
         void SetSide(TeamSide side);
         void SetPlatoonNumber(int number);
 
-        void SetBattleThinkTime(long tick, float time);
+        void SetBattleThinkTime(long tick, float time , bool idle);
         void AddBattleThinkTime(long tick, float time);
     }
 
@@ -322,9 +322,9 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
       
 
-        void ITeammate.SetBattleThinkTime(long tick, float time)
+        void ITeammate.SetBattleThinkTime(long tick, float time , bool idle)
         {
-            _SetBattleThinkTimeEvent(tick, time);
+            _SetBattleThinkTimeEvent(tick, time, idle);
         }
 
         void ITeammate.AddBattleThinkTime(long tick, float time)
@@ -332,8 +332,8 @@ namespace Regulus.Project.ExiledPrincesses.Game
             _AddBattleThinkTimeEvent(tick, time);
         }
 
-        event Action<long, float> _SetBattleThinkTimeEvent;
-        event Action<long, float> IActor.SetBattleThinkTimeEvent
+        event Action<long, float , bool> _SetBattleThinkTimeEvent;
+        event Action<long, float, bool> IActor.SetBattleThinkTimeEvent
         {
             add { _SetBattleThinkTimeEvent += value; }
             remove { _SetBattleThinkTimeEvent -= value; }

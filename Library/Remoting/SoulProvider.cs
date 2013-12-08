@@ -101,21 +101,13 @@ namespace Regulus.Remoting.Soul
 				argmants.Add( i , Regulus.PhotonExtension.TypeHelper.Serializer(arg) );
 				++i;
 			}
-            _InvokeEvent(event_name , argmants);
+            _InvokeEvent(argmants);
             
 		}
-        Dictionary<string, Dictionary<byte, object>> _EventFilter = new Dictionary<string,Dictionary<byte,object>>();
-        private void _InvokeEvent(string event_name, Dictionary<byte, object> argmants)
+        Queue<Dictionary<byte, object>> _EventFilter = new Queue<Dictionary<byte, object>>();
+        private void _InvokeEvent(Dictionary<byte, object> argmants)
         {
-            Dictionary<byte, object> arg;
-            if (_EventFilter.TryGetValue(event_name, out arg))
-            {
-                _EventFilter[event_name] = argmants;
-            }
-            else
-            {
-                _EventFilter.Add(event_name , argmants);
-            }
+            _EventFilter.Enqueue(argmants);            
         }
         Dictionary<Guid, IValue> _WaitValues = new Dictionary<Guid, IValue>();
         private void _ReturnValue(Guid returnId, IValue returnValue)
@@ -280,13 +272,13 @@ namespace Regulus.Remoting.Soul
             {
                 foreach (var filter in _EventFilter)
                 {
-                    _Queue.Push((byte)ServerToClientPhotonOpCode.InvokeEvent, filter.Value);
+                    _Queue.Push((byte)ServerToClientPhotonOpCode.InvokeEvent, filter);
                 }
                 _EventFilter.Clear();
                 _UpdateEventInterval = System.DateTime.Now;
             }
 
-            if ((System.DateTime.Now - _UpdatePropertyInterval).TotalSeconds > 1)
+            if ((System.DateTime.Now - _UpdatePropertyInterval).TotalSeconds > 0.5)
             {
                 foreach (var soul in _Souls)
                 {

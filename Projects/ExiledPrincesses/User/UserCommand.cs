@@ -205,9 +205,9 @@ namespace Regulus.Project.ExiledPrincesses
                 _View.WriteLine("Actor id:" + obj.Pretotype +",hp:" +obj.Hp) ;
             });
 
-            Action<long, float> setThinkTime = (tick, time) => 
+            Action<long, float,bool > setThinkTime = (tick, time , idle) => 
             {
-                _View.WriteLine("Actor side:" + obj.Side+ ",think :" + time);            
+                _View.WriteLine("Actor side:" + obj.Side + ",think :" + time + " idle:" + idle);            
             };
             obj.SetBattleThinkTimeEvent += setThinkTime;
 
