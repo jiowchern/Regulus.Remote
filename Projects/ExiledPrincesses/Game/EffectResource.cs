@@ -12,20 +12,20 @@ namespace Regulus.Project.ExiledPrincesses.Game
         public EffectResources()
         {
             _Effects = new Dictionary<int, Skill.Effect>();
-            _Add(_Effects, 1, 5.0f, new int[] { 1, 0, 0, 0 }, _SwordAttack1);
-            _Add(_Effects, 2, 5.0f, new int[] { 0, 1, 0, 0 }, _AxAttack1);
-            _Add(_Effects, 3, 5.0f, new int[] { 0, 0, 1, 0 }, _StaffAttack1);
-            _Add(_Effects, 4, 5.0f, new int[] { 0, 0, 0, 1 }, _ShieldAttack1);
+            _Add(_Effects, 1, 5.0f, new int[] { 10, 0, 0, 0 }, _SwordAttack1);
+            _Add(_Effects, 2, 5.0f, new int[] { 0, 10, 0, 0 }, _AxAttack1);
+            _Add(_Effects, 3, 5.0f, new int[] { 0, 0, 10, 0 }, _StaffAttack1);
+            _Add(_Effects, 4, 5.0f, new int[] { 0, 0, 0, 10 }, _ShieldAttack1);
 
             _Add(_Effects, 5, 1.0f, new int[] { 0, 0, 0, 0 }, _SwordRecovery1);
             _Add(_Effects, 6, 1.0f, new int[] { 0, 0, 0, 0 }, _AxRecovery1);
             _Add(_Effects, 7, 1.0f, new int[] { 0, 0, 0, 0 }, _StaffRecovery1);
             _Add(_Effects, 8, 1.0f, new int[] { 0, 0, 0, 0 }, _ShieldRecovery1);
 
-            _Add(_Effects, 9, 5.0f, new int[] { 2, 0, 0, 0 }, _SwordAttack2);
-            _Add(_Effects, 10, 5.0f, new int[] { 0, 2, 0, 0 }, _AxAttack2);
-            _Add(_Effects, 11, 5.0f, new int[] { 0, 0, 2, 0 }, _StaffAttack2);
-            _Add(_Effects, 12, 5.0f, new int[] { 0, 0, 0, 2 }, _ShieldAttack2);
+            _Add(_Effects, 9, 5.0f, new int[] { 30, 0, 0, 0 }, _SwordAttack2);
+            _Add(_Effects, 10, 5.0f, new int[] { 0, 30, 0, 0 }, _AxAttack2);
+            _Add(_Effects, 11, 5.0f, new int[] { 0, 0, 30, 0 }, _StaffAttack2);
+            _Add(_Effects, 12, 5.0f, new int[] { 0, 0, 0, 30 }, _ShieldAttack2);
         }
 
         private void _ShieldAttack2(Team.Member member, Team[] target_teams)

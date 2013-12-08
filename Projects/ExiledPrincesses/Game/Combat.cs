@@ -409,8 +409,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
             void Regulus.Game.IStage.Enter()
             {
-                var strategys = _Generate();
-                strategys = new Strategy[0];
+                var strategys = _Generate();                
                 _Snatch(strategys);
             }
 
