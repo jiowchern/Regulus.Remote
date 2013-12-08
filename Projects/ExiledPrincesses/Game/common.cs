@@ -74,6 +74,10 @@ namespace Regulus.Project.ExiledPrincesses
         int Hp { get; }
         int MaxHp { get; }
         Strategy Specializes { get; }
+
+        event Action<long, float> SetBattleThinkTimeEvent;
+        event Action<long, float> AddBattleThinkTimeEvent;
+        
     }
 
     public interface ITeam

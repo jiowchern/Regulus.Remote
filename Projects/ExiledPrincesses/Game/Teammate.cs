@@ -25,6 +25,9 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
         void SetSide(TeamSide side);
         void SetPlatoonNumber(int number);
+
+        void SetBattleThinkTime(long tick, float time);
+        void AddBattleThinkTime(long tick, float time);
     }
 
     public class Teammate : ITeammate
@@ -315,6 +318,32 @@ namespace Regulus.Project.ExiledPrincesses.Game
         int IActor.MaxHp
         {
             get { return _Ability.Hp; }
+        }
+
+      
+
+        void ITeammate.SetBattleThinkTime(long tick, float time)
+        {
+            _SetBattleThinkTimeEvent(tick, time);
+        }
+
+        void ITeammate.AddBattleThinkTime(long tick, float time)
+        {
+            _AddBattleThinkTimeEvent(tick, time);
+        }
+
+        event Action<long, float> _SetBattleThinkTimeEvent;
+        event Action<long, float> IActor.SetBattleThinkTimeEvent
+        {
+            add { _SetBattleThinkTimeEvent += value; }
+            remove { _SetBattleThinkTimeEvent -= value; }
+        }
+
+        event Action<long, float> _AddBattleThinkTimeEvent;
+        event Action<long, float> IActor.AddBattleThinkTimeEvent
+        {
+            add { _AddBattleThinkTimeEvent += value; }
+            remove { _AddBattleThinkTimeEvent -= value; }
         }
     }
 

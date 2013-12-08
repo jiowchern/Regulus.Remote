@@ -46,7 +46,9 @@ namespace Regulus.Project.ExiledPrincesses.Game
 		public void Launch()
 		{
             _InitialController(_Binder);
+            _Binder.Bind<Regulus.Remoting.ITime>( LocalTime.Instance );
             _Binder.Bind<IUserStatus>(this);
+
 		}
 
         private void _ToVerify()
@@ -152,6 +154,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 		public void Shutdown()
 		{
             _Binder.Unbind<IUserStatus>(this);
+            _Binder.Unbind<Regulus.Remoting.ITime>(LocalTime.Instance);
 			_StageMachine.Termination();
 		}
 

@@ -8,6 +8,7 @@ namespace Regulus.Project.ExiledPrincesses
 {
 	public interface IUser : Regulus.Game.IFramework
 	{
+        Regulus.Remoting.Ghost.IProviderNotice<Regulus.Remoting.ITime> TimeProvider { get; }
 		Regulus.Remoting.Ghost.IProviderNotice<IVerify> VerifyProvider { get ; }
         Regulus.Remoting.Ghost.IProviderNotice<IUserStatus> StatusProvider { get; }
         Regulus.Remoting.Ghost.IProviderNotice<ITown> TownProvider { get; }	

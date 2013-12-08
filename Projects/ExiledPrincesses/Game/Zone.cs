@@ -6,8 +6,12 @@ using System.Text;
 
 namespace Regulus.Project.ExiledPrincesses.Game
 {
-    public class LocalTime : Regulus.Utility.Singleton<Regulus.Remoting.Time>
+    public class LocalTime : Regulus.Utility.Singleton<Regulus.Remoting.Time> , Regulus.Remoting.ITime
     {
+        Remoting.Value<long> Remoting.ITime.GetTick()
+        {
+            return Instance.Ticks;
+        }
     }
 
     public interface IZone

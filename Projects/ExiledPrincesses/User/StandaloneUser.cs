@@ -124,5 +124,10 @@ namespace Regulus.Project.ExiledPrincesses.Standalone
         {
             return _Agent.QueryProvider<T>();
         }
+
+        Regulus.Remoting.Ghost.IProviderNotice<Regulus.Remoting.ITime> IUser.TimeProvider
+        {
+            get { return _Agent.QueryProvider<Regulus.Remoting.ITime>(); }
+        }
     }
 }

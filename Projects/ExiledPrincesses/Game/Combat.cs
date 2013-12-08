@@ -16,6 +16,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
             }
             public Team Owner { get; private set; }
             public ITeammate Teammate { get; private set; }
+            
         }
         
         private ITeammate[] _Front;
@@ -117,11 +118,19 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
             _Platoon.EndBegins();
         }
-
+        public ITeammate[] GetPartner(ITeammate me)
+        {
+            return (from t in _Platoon.Teammates where t.Side == me.Side && t.PlatoonNo != t.PlatoonNo select t).ToArray();
+        }
         
         TeamSide ITeam.Side
         {
             get { return _Side; }
+        }
+
+        internal ITeammate[] GetAliveTeammate()
+        {
+            return (from teammate in _Platoon.Teammates where teammate.Hp > 0 select teammate).ToArray();
         }
     }
 
@@ -225,15 +234,17 @@ namespace Regulus.Project.ExiledPrincesses.Game
         {
             class Activists : Regulus.Utility.IUpdatable
             {
-                const float _IdleTime = 2.0f;
+                public const float ThinkTime = 2.0f;
                 public delegate void OnDone();
                 public event OnDone DoneEvent;
                 private Team.Member _Member;
                 Team[] _Targets;
                 Regulus.Utility.IndependentTimer _Timer;
                 CommonSkillSet _CommonSkillSet;
-                public Activists(Team.Member member, Team[] targets, CommonSkillSet common_skill_set)
+                int _Order;
+                public Activists(int order,Team.Member member, Team[] targets, CommonSkillSet common_skill_set)
                 {
+                    _Order = order;
                     _CommonSkillSet = common_skill_set;
                     _Targets = targets;
                     this._Member = member;
@@ -249,15 +260,35 @@ namespace Regulus.Project.ExiledPrincesses.Game
                 public void Launch()
                 {
                     Skill.Effect[] effects = _Member.Teammate.GetActivitiesEffects(_Member.Owner, _CommonSkillSet);
-
-                    float waitTime = _UseEffects(effects) + _IdleTime;
+                    var showTime = _UseEffects(effects);
+                    float waitTime = showTime + ThinkTime;
                     _Timer = new Utility.IndependentTimer(TimeSpan.FromSeconds(waitTime), _Done );
+
+                    
+                    var partners = _Member.Owner.GetPartner(_Member.Teammate);
+                    foreach (var partner in partners)
+                    {
+                        
+                        partner.AddBattleThinkTime(LocalTime.Instance.Ticks, showTime);
+                    }
+                    foreach (var team in _Targets)
+                    {
+                        ITeammate[] teammates = team.GetAliveTeammate();
+                        foreach(var teammate in teammates)
+                        {
+                            
+                            teammate.AddBattleThinkTime(LocalTime.Instance.Ticks, showTime);
+                        }
+                       
+                    }
+
+                    _Member.Teammate.SetBattleThinkTime(LocalTime.Instance.Ticks, showTime + (_Order + 1) * ThinkTime);
                     
                 }
 
                 private void _Done(long obj)
                 {
-                    DoneEvent();
+                    DoneEvent();                    
                 }
 
 
@@ -291,6 +322,8 @@ namespace Regulus.Project.ExiledPrincesses.Game
             {
                 
                 _Teams = teams;
+                var activists = _GetSurvivor(teams, common_skill_set);
+                
                 _Activists = new Queue<Activists>(_GetSurvivor(teams, common_skill_set));
             }
 
@@ -341,15 +374,22 @@ namespace Regulus.Project.ExiledPrincesses.Game
             }
 
             private Activists[] _GetSurvivor(Team[] teams, CommonSkillSet common_skill_set)
+            {                
+                var members = _Sort(teams);
+                int i = members.Count;
+                return (from t in members                         
+                        select new Activists(--i,t, (from team in teams where t.Owner != team select team).ToArray(), common_skill_set)).ToArray();
+            }
+
+            private static List<Team.Member> _Sort(Team[] teams)
             {
                 List<Team.Member> teammates = new List<Team.Member>();
                 foreach (var team in teams)
                 {
                     teammates.AddRange(from member in team.Members where member.Teammate.Hp > 0 select member);
                 }
-                teammates = teammates.OrderBy(t => t.Teammate.Dex + Regulus.Utility.Random.Next(-2, 2)).ToList();
-
-                return (from t in teammates select new Activists(t, (from team in teams where t.Owner != team select team).ToArray(), common_skill_set)).ToArray();
+                
+                return teammates.OrderBy(t => t.Teammate.Dex + Regulus.Utility.Random.Next(-2, 2)).ToList();
             }
         }
     }
@@ -370,6 +410,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
             void Regulus.Game.IStage.Enter()
             {
                 var strategys = _Generate();
+                strategys = new Strategy[0];
                 _Snatch(strategys);
             }
 
