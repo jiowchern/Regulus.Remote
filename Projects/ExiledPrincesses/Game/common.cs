@@ -72,6 +72,7 @@ namespace Regulus.Project.ExiledPrincesses
         int Dex { get; }
         int Int { get; }
         int Hp { get; }
+        int MaxHp { get; }
         Strategy Specializes { get; }
     }
 

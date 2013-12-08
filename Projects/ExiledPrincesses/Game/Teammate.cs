@@ -36,6 +36,8 @@ namespace Regulus.Project.ExiledPrincesses.Game
         List<Skill> _Recover;
         
         Ability _Ability;
+
+        
         int _Hp;
         Strategy _Specializes ;
         Strategy _Weakness ;
@@ -307,6 +309,12 @@ namespace Regulus.Project.ExiledPrincesses.Game
         {
             add { _FlipEnableEvent += value;  }
             remove { _FlipEnableEvent -= value; }
+        }
+
+
+        int IActor.MaxHp
+        {
+            get { return _Ability.Hp; }
         }
     }
 

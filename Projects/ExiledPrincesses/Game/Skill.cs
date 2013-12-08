@@ -28,7 +28,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
         }
         public Skill Find(int id)
         {
-            return _Skills[id];
+            return _Skills[id].Clone();
         }
 
         
@@ -100,6 +100,11 @@ namespace Regulus.Project.ExiledPrincesses.Game
         }
 
         public int Id { get; private set; }
+
+        internal Skill Clone()
+        {
+            return new Skill(Id , _Effect1 , _Effect2);
+        }
     }
 
     public class CommonSkillSet
