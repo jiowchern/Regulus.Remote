@@ -87,7 +87,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
         void _EnableSkill(int idle_sn)
         {
-            if (_ActivitiesSkills.Count < 2)
+            if (_ActivitiesSkills.Count < 3)
             {
                 Skill skill;
                 if (_Out(_Idle , idle_sn, out skill))
@@ -277,6 +277,8 @@ namespace Regulus.Project.ExiledPrincesses.Game
         void ITeammate.SetPlatoonNumber(int number)
         {
             _PlatoonNo = number;
+            if (_ChangePlatoonNoEvent != null)
+                _ChangePlatoonNoEvent(_PlatoonNo);
         }
 
 
@@ -344,6 +346,21 @@ namespace Regulus.Project.ExiledPrincesses.Game
         {
             add { _AddBattleThinkTimeEvent += value; }
             remove { _AddBattleThinkTimeEvent -= value; }
+        }
+
+        
+
+
+        Remoting.Value<int> IActor.GetPlatoonNo()
+        {
+            return _PlatoonNo;
+        }
+
+        event Action<int> _ChangePlatoonNoEvent;
+        event Action<int> IActor.ChangePlatoonNoEvent
+        {
+            add { _ChangePlatoonNoEvent += value; }
+            remove { _ChangePlatoonNoEvent -= value; }
         }
     }
 

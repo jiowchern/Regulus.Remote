@@ -66,9 +66,9 @@ namespace Regulus.Project.ExiledPrincesses
    
     public interface IActor
     {
-        TeamSide Side { get; }
-        int PlatoonNo { get; }
+        TeamSide Side { get; }        
         int Pretotype { get; }
+        int PlatoonNo { get; }
         int Dex { get; }
         int Int { get; }
         int Hp { get; }
@@ -77,7 +77,8 @@ namespace Regulus.Project.ExiledPrincesses
 
         event Action<long, float , bool> SetBattleThinkTimeEvent;
         event Action<long, float> AddBattleThinkTimeEvent;
-        
+        Value<int> GetPlatoonNo();
+        event Action<int> ChangePlatoonNoEvent;
     }
 
     public interface ITeam
