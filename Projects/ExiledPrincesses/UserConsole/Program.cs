@@ -21,7 +21,7 @@ namespace UserConsole
         {
             _Timer = new Regulus.Utility.TimeCounter();            
             
-            this._Command = command;
+            this._Command = command; 
 
             _Command.Register("1" , _1);
             _Command.Register("2", _2);
