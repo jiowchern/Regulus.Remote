@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<modelStoreModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/LogicalClassDesigner"
+  dslVersion="1.0.0.0"
+  Id="abc799cf-e546-4caf-a6ea-994dc4d31fa6"
+  name="ExiledPrincesses" xmlns="http://schemas.microsoft.com/dsltools/ModelStore">
+  <referencesInternal>
+    <reference
+      Id="f34f7650-cf23-408d-9105-aab1e8a64b14"
+      handle="viewcode://./CodeSchema_Namespace?Namespace%3D::"
+      tag="ViewCode" />
+  </referencesInternal>
+  <profileInstances>
+    <packageHasProfileInstances
+      Id="0caec977-1f8c-4ba3-a7db-8cc9ad9cc73b">
+      <profileInstance
+        Id="e34d544e-0fea-4ed6-ac5e-1b74119ac791"
+        name="StandardProfileL2" />
+    </packageHasProfileInstances>
+    <packageHasProfileInstances
+      Id="29349502-908c-4fda-9054-c48619c59ed0">
+      <profileInstance
+        Id="532ea607-fb19-44b8-8502-3351b05452be"
+        name="StandardProfileL3" />
+    </packageHasProfileInstances>
+    <packageHasProfileInstances
+      Id="44706f68-7921-412e-8d6b-26959682d5e6">
+      <profileInstance
+        Id="eb74647b-25de-4bb6-92d2-39f4e862b8ad"
+        name="CSharpProfile" />
+    </packageHasProfileInstances>
+  </profileInstances>
+  <packagedElements>
+    <packageHasNamedElement>
+      <packageMoniker
+        Id="dc56ed31-5e92-4456-a723-c67bb34e41e5"
+        LastKnownName="Regulus"
+        LastKnownLocation="Package_1524.uml" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <packageMoniker
+        Id="0ecef147-289d-49b2-8337-034bd831cc45"
+        LastKnownName="System"
+        LastKnownLocation="Package4_1524.uml" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <class
+        Id="f00d8a8e-cd1e-4522-9194-77685d88c8ea"
+        name="T‎[]"
+        visibility="Private"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false">
+        <referencesInternal>
+          <reference
+            Id="e6df2024-9bda-4954-b8cc-dacce79690cb"
+            handle="viewcode://./CodeSchema_Class?Assembly%3Dfile:%2F%2F%2FE:%2FDevelop%2FRegulus%2FLibrary%2FDatabase%2Fbin%2FDebug%2FDatabase.dll Namespace%3DRegulus.NoSQL Type%3D(ArrayRank%3D1 ParentType%3D(Type%3DDatabase Member%3D(Name%3DQuery GenericParameterCount%3D1) ParameterIdentifier%3D0))"
+            tag="ViewCode" />
+        </referencesInternal>
+        <appliedStereotypesInternal>
+          <stereotypeInstance
+            Id="f00cb7a8-b3b6-41fe-ad63-638a5cfe278f"
+            name="class"
+            profile="CSharpProfile">
+            <propertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="997eef00-618a-465d-9889-25ad8a36d17c">
+                <propertyInstance
+                  Id="a5bf4ac9-5141-4a49-8eb6-1721dd73e0fd"
+                  name="ClrAttributes" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="c7484f4e-c03c-4ea8-bb90-bd08cd6aa31a">
+                <propertyInstance
+                  Id="a358423a-d7bb-4159-97bc-aea568e6e909"
+                  name="IsPartial"
+                  value="false" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="2e051264-9b43-4ac7-8a69-fdbe218e0aa6">
+                <propertyInstance
+                  Id="951169a4-9690-496f-a837-e44b1ee95a7c"
+                  name="IsStatic"
+                  value="False" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="cb3add8c-03cc-4d0b-a974-027cf40ba6b0">
+                <propertyInstance
+                  Id="82504062-a0fe-4b07-8cf0-b0ee427facb2"
+                  name="IsUnsafe"
+                  value="false" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="2e07f69b-3449-4c07-8d71-f2141be62cd8">
+                <propertyInstance
+                  Id="2e92b417-4848-4429-8cb1-0338e3686f51"
+                  name="PackageVisibility"
+                  value="internal" />
+              </stereotypeInstanceHasPropertyInstances>
+            </propertyInstances>
+          </stereotypeInstance>
+        </appliedStereotypesInternal>
+      </class>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <packageMoniker
+        Id="2c2d22db-ef4b-443e-8ac5-832129af2855"
+        LastKnownName="MongoDB"
+        LastKnownLocation="Package3_1530.uml" />
+    </packageHasNamedElement>
+  </packagedElements>
+  <primitiveType
+    Id="220a3521-e091-4221-bae9-3ef9018e845c"
+    name="Integer"
+    isAbstract="false"
+    isLeaf="false" />
+  <primitiveType
+    Id="8943dc84-709e-4f62-b15a-a3273aa6f165"
+    name="Boolean"
+    isAbstract="false"
+    isLeaf="false" />
+  <primitiveType
+    Id="59259974-6d55-42c6-b7bd-763d77ac8ef9"
+    name="String"
+    isAbstract="false"
+    isLeaf="false" />
+  <primitiveType
+    Id="3ab42e7d-4969-445a-b209-471f5cb8209c"
+    name="UnlimitedNatural"
+    isAbstract="false"
+    isLeaf="false" />
+</modelStoreModel>

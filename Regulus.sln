@@ -59,6 +59,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "User", "Projects\ExiledPrin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserConsole", "Projects\ExiledPrincesses\UserConsole\UserConsole.csproj", "{7387C799-4F4F-4BF8-B34C-E223C0935632}"
 EndProject
+Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "ExiledPrincesses", "UML\ExiledPrincesses\ExiledPrincesses.modelproj", "{56D4FD2B-8F76-4CA7-A176-137DEB146229}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UML", "UML", "{08D56761-9823-44C0-B9F1-2B5026A38C0D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Unity|Any CPU = Debug_Unity|Any CPU
@@ -417,6 +421,21 @@ Global
 		{7387C799-4F4F-4BF8-B34C-E223C0935632}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{7387C799-4F4F-4BF8-B34C-E223C0935632}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{7387C799-4F4F-4BF8-B34C-E223C0935632}.Release|x86.ActiveCfg = Release|Any CPU
+		{56D4FD2B-8F76-4CA7-A176-137DEB146229}.Debug_Unity|Any CPU.ActiveCfg = Debug|Any CPU
+		{56D4FD2B-8F76-4CA7-A176-137DEB146229}.Debug_Unity|Any CPU.Build.0 = Debug|Any CPU
+		{56D4FD2B-8F76-4CA7-A176-137DEB146229}.Debug_Unity|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{56D4FD2B-8F76-4CA7-A176-137DEB146229}.Debug_Unity|Mixed Platforms.Build.0 = Debug|Any CPU
+		{56D4FD2B-8F76-4CA7-A176-137DEB146229}.Debug_Unity|x86.ActiveCfg = Debug|Any CPU
+		{56D4FD2B-8F76-4CA7-A176-137DEB146229}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56D4FD2B-8F76-4CA7-A176-137DEB146229}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56D4FD2B-8F76-4CA7-A176-137DEB146229}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{56D4FD2B-8F76-4CA7-A176-137DEB146229}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{56D4FD2B-8F76-4CA7-A176-137DEB146229}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{56D4FD2B-8F76-4CA7-A176-137DEB146229}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56D4FD2B-8F76-4CA7-A176-137DEB146229}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56D4FD2B-8F76-4CA7-A176-137DEB146229}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{56D4FD2B-8F76-4CA7-A176-137DEB146229}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{56D4FD2B-8F76-4CA7-A176-137DEB146229}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -447,5 +466,6 @@ Global
 		{15FC0B78-AA3D-4E6F-B0E6-F13A9F075D7C} = {4B71C9F3-D528-4AE4-9D6E-E31837D8ED34}
 		{5505ACEA-8D99-4B10-8224-FF73207283B1} = {4B71C9F3-D528-4AE4-9D6E-E31837D8ED34}
 		{7387C799-4F4F-4BF8-B34C-E223C0935632} = {4B71C9F3-D528-4AE4-9D6E-E31837D8ED34}
+		{56D4FD2B-8F76-4CA7-A176-137DEB146229} = {08D56761-9823-44C0-B9F1-2B5026A38C0D}
 	EndGlobalSection
 EndGlobal

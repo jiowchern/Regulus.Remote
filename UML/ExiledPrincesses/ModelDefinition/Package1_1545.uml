@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/LogicalClassDesigner" xmlns:dm9="http://schemas.microsoft.com/VisualStudio/TeamArchitect/ComponentDesigner"
+  dslVersion="1.0.0.0"
+  Id="63735f37-ee48-4d46-807d-9df6cb12a1cd"
+  name="Data"
+  visibility="Private" xmlns="http://schemas.microsoft.com/dsltools/ModelStore">
+  <referencesInternal>
+    <reference
+      Id="de22bccd-9989-462f-a127-5d749b01a6f9"
+      handle="viewcode://./CodeSchema_Namespace?Namespace%3DRegulus.Project.TurnBasedRPG.Data"
+      tag="ViewCode" />
+  </referencesInternal>
+  <packagedElements>
+    <packageHasNamedElement>
+      <class
+        Id="edbe198b-d20a-4392-85f2-0ccab144e9a2"
+        name="Map"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false">
+        <referencesInternal>
+          <reference
+            Id="7ca7b31d-2873-4ff3-8740-801801181c88"
+            handle="viewcode://./CodeSchema_Class?Assembly%3Dfile:%2F%2F%2FE:%2FDevelop%2FRegulus%2FProjects%2FTurnBasedRPG%2FSerializable%2Fbin%2FDebug%2FSerializable.dll Namespace%3DRegulus.Project.TurnBasedRPG.Data Type%3DMap"
+            tag="ViewCode" />
+        </referencesInternal>
+        <appliedStereotypesInternal>
+          <stereotypeInstance
+            Id="794bbdfc-b53c-40f7-9333-8fdae59e426e"
+            name="class"
+            profile="CSharpProfile">
+            <propertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="01e8f516-6a03-401c-8118-a2892ecded7d">
+                <propertyInstance
+                  Id="d96c2e57-bd11-48a0-b007-0661c3af3377"
+                  name="ClrAttributes" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="d5a77345-3c86-412d-bf5a-9aad5b5f3374">
+                <propertyInstance
+                  Id="06f19bc3-9da0-49ed-b99b-3d18a3f5fbe5"
+                  name="IsPartial"
+                  value="false" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="0e843744-f200-4e22-8b3f-4be8db8ce666">
+                <propertyInstance
+                  Id="6b1aab60-7192-4fec-a9c3-89d325acd1f8"
+                  name="IsStatic"
+                  value="False" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="ab5f37f2-7387-4819-94d5-8ae4aa8beab0">
+                <propertyInstance
+                  Id="bd291f0e-ae7a-4d9b-8def-0450a0b3ea11"
+                  name="IsUnsafe"
+                  value="false" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="557ffac3-f6a4-4a56-9f2a-9fbfcbbd2d89">
+                <propertyInstance
+                  Id="b635fa3b-08b9-451c-8673-d554f82f3672"
+                  name="PackageVisibility"
+                  value="internal" />
+              </stereotypeInstanceHasPropertyInstances>
+            </propertyInstances>
+          </stereotypeInstance>
+        </appliedStereotypesInternal>
+      </class>
+    </packageHasNamedElement>
+  </packagedElements>
+</package>

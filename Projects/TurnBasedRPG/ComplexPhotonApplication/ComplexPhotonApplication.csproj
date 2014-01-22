@@ -124,7 +124,7 @@
     </ProjectReference>
     <ProjectReference Include="..\Serializable\Serializable.csproj">
       <Project>{30ddcaac-8ed3-4c7f-a150-b7c32b598cba}</Project>
-      <Name>Serializable %28Projects\TurnBasedRPG\Serializable%29</Name>
+      <Name>Serializable</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
