@@ -7,13 +7,13 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
 {
 	class User : IUser
 	{
-		private Regulus.Remoting.Ghost.Agent _Complex { get; set; }
+        private Regulus.Remoting.Ghost.Photon.Agent _Complex { get; set; }
 
         
 
         void Regulus.Game.IFramework.Launch()
         {
-            _Complex = new Regulus.Remoting.Ghost.Agent(null);
+            _Complex = new Regulus.Remoting.Ghost.Photon.Agent(null);
         }
 
         void Regulus.Game.IFramework.Shutdown()
@@ -58,7 +58,7 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
 
         internal void Connect(string addr)
         {
-            _Complex = new Regulus.Remoting.Ghost.Agent(new Regulus.Remoting.Ghost.Config() { Address = addr , Name = "ExiledPrincesses" });
+            _Complex = new Regulus.Remoting.Ghost.Photon.Agent(new Regulus.Remoting.Ghost.Config() { Address = addr, Name = "ExiledPrincesses" });
             var linkState = new Regulus.Remoting.Ghost.LinkState();
             linkState.LinkSuccess += ConnectSuccessEvent;
             linkState.LinkFail += ConnectFailEvent;

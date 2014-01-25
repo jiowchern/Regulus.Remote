@@ -5,11 +5,8 @@ using System.Text;
 
 namespace Regulus.Remoting.Ghost
 {
-	
 
-	
-
-    public class Provider<T> : IProviderNotice<T> 
+    public class Provider<T, Agent> : IProviderNotice<T> where Agent : IAgent
     {
         List<Agent> _Agents = new List<Agent>();
 

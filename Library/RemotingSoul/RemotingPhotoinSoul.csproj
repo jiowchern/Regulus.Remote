@@ -8,8 +8,8 @@
     <ProjectGuid>{8579E5DB-C699-432A-AEAF-D6050A87043C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RemotingSoul</RootNamespace>
-    <AssemblyName>RemotingSoul</AssemblyName>
+    <RootNamespace>Regulus.Remoting.Soul.Photon</RootNamespace>
+    <AssemblyName>RemotingPhotonSoul</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

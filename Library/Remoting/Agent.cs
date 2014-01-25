@@ -5,8 +5,15 @@ using System.Text;
 
 namespace Regulus.Remoting
 {
+    
 	using System.Reflection;
 	using System.Reflection.Emit;
+
+    public interface IAgent
+    {
+        Regulus.Remoting.Ghost.IProviderNotice<T> QueryProvider<T>();
+    }
+
 	public class AgentCore
 	{
 		IGhostRequest _Requester ;

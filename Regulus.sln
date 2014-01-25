@@ -9,9 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PureLib", "Library\PureLib\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remoting", "Library\Remoting\Remoting.csproj", "{A4CFCE46-BDA8-4416-A1BB-77BD80514019}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemotingGhost", "Library\RemotingGhost\RemotingGhost.csproj", "{8AF00B97-4C48-467A-B37D-E9B28BFDA365}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemotingPhotonGhost", "Library\RemotingGhost\RemotingPhotonGhost.csproj", "{8AF00B97-4C48-467A-B37D-E9B28BFDA365}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemotingSoul", "Library\RemotingSoul\RemotingSoul.csproj", "{8579E5DB-C699-432A-AEAF-D6050A87043C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemotingPhotoinSoul", "Library\RemotingSoul\RemotingPhotoinSoul.csproj", "{8579E5DB-C699-432A-AEAF-D6050A87043C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestSoul", "Test\TestSoul\TestSoul.csproj", "{58C2C3EC-6526-480D-BB26-91BC3C39C173}"
 EndProject
@@ -62,6 +62,8 @@ EndProject
 Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "ExiledPrincesses", "UML\ExiledPrincesses\ExiledPrincesses.modelproj", "{56D4FD2B-8F76-4CA7-A176-137DEB146229}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UML", "UML", "{08D56761-9823-44C0-B9F1-2B5026A38C0D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestSocketApplication", "Test\TestSocketApplication\TestSocketApplication.csproj", "{5C7FB68B-7093-4DDA-8138-6DACB6AC6CFB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -436,6 +438,21 @@ Global
 		{56D4FD2B-8F76-4CA7-A176-137DEB146229}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{56D4FD2B-8F76-4CA7-A176-137DEB146229}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{56D4FD2B-8F76-4CA7-A176-137DEB146229}.Release|x86.ActiveCfg = Release|Any CPU
+		{5C7FB68B-7093-4DDA-8138-6DACB6AC6CFB}.Debug_Unity|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C7FB68B-7093-4DDA-8138-6DACB6AC6CFB}.Debug_Unity|Any CPU.Build.0 = Debug|Any CPU
+		{5C7FB68B-7093-4DDA-8138-6DACB6AC6CFB}.Debug_Unity|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5C7FB68B-7093-4DDA-8138-6DACB6AC6CFB}.Debug_Unity|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5C7FB68B-7093-4DDA-8138-6DACB6AC6CFB}.Debug_Unity|x86.ActiveCfg = Debug|Any CPU
+		{5C7FB68B-7093-4DDA-8138-6DACB6AC6CFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C7FB68B-7093-4DDA-8138-6DACB6AC6CFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C7FB68B-7093-4DDA-8138-6DACB6AC6CFB}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5C7FB68B-7093-4DDA-8138-6DACB6AC6CFB}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5C7FB68B-7093-4DDA-8138-6DACB6AC6CFB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5C7FB68B-7093-4DDA-8138-6DACB6AC6CFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C7FB68B-7093-4DDA-8138-6DACB6AC6CFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C7FB68B-7093-4DDA-8138-6DACB6AC6CFB}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{5C7FB68B-7093-4DDA-8138-6DACB6AC6CFB}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{5C7FB68B-7093-4DDA-8138-6DACB6AC6CFB}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -455,6 +472,7 @@ Global
 		{D028B83C-1288-4F47-AC3A-26B1BA00537D} = {0701FE3A-A51F-45B4-8558-2F850665323A}
 		{5C439D60-9049-4335-87AF-4E5E24BCB87D} = {0701FE3A-A51F-45B4-8558-2F850665323A}
 		{10D95F6D-C446-4909-B37F-3F68F8EDA5AC} = {0701FE3A-A51F-45B4-8558-2F850665323A}
+		{5C7FB68B-7093-4DDA-8138-6DACB6AC6CFB} = {0701FE3A-A51F-45B4-8558-2F850665323A}
 		{3BBDC330-565A-4183-8649-30A446A288C8} = {BC57B228-DB48-4122-90B4-8281960C0282}
 		{4B71C9F3-D528-4AE4-9D6E-E31837D8ED34} = {BC57B228-DB48-4122-90B4-8281960C0282}
 		{91FBBDF6-C184-4AC3-A538-06786E966DE4} = {3BBDC330-565A-4183-8649-30A446A288C8}

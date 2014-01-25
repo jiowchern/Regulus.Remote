@@ -36,10 +36,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Library\Remoting\bin\Debug\Remoting.dll</HintPath>
     </Reference>
-    <Reference Include="RemotingGhost, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Library\RemotingGhost\bin\Debug\RemotingGhost.dll</HintPath>
-    </Reference>
     <Reference Include="RemotingStandalong, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Library\RemotingStandalong\bin\Debug\RemotingStandalong.dll</HintPath>

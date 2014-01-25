@@ -63,7 +63,7 @@ namespace TestGhost
         private static void TestRequester()
         {
 
-            Regulus.Remoting.Ghost.Agent agent = new Regulus.Remoting.Ghost.Agent(new Regulus.Remoting.Ghost.Config() { Name = "Test", Address = "127.0.0.1:5055" });
+            Regulus.Remoting.Ghost.Photon.Agent agent = new Regulus.Remoting.Ghost.Photon.Agent(new Regulus.Remoting.Ghost.Config() { Name = "Test", Address = "127.0.0.1:5055" });
 
             agent.Launch(new Regulus.Remoting.Ghost.LinkState() { LinkSuccess = () => { }, LinkFail = (msg) => { } });
 

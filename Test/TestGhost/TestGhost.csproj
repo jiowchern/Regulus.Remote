@@ -54,9 +54,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Library\RemotingGhost\RemotingGhost.csproj">
+    <ProjectReference Include="..\..\Library\RemotingGhost\RemotingPhotonGhost.csproj">
       <Project>{8af00b97-4c48-467a-b37d-e9b28bfda365}</Project>
-      <Name>RemotingGhost</Name>
+      <Name>RemotingPhotonGhost</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Library\Remoting\Remoting.csproj">
       <Project>{a4cfce46-bda8-4416-a1bb-77bd80514019}</Project>

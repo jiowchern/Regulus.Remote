@@ -8,7 +8,7 @@ namespace Regulus.Project.TurnBasedRPG
 {
     public class User 
     {
-        private Regulus.Remoting.Ghost.Agent _Complex { get; set; }
+        private Regulus.Remoting.Ghost.Photon.Agent _Complex { get; set; }
          
         public event Action LinkSuccess;
         public event Action<string> LinkFail;
@@ -16,12 +16,12 @@ namespace Regulus.Project.TurnBasedRPG
         public User(Regulus.Remoting.Ghost.Config config )
         {
             _Config = config;
-            _VerifyProvider = new Regulus.Remoting.Ghost.Provider<IVerify>();
-            _ParkingProvider = new Regulus.Remoting.Ghost.Provider<IParking>();
-            _MapInfomationProvider = new Regulus.Remoting.Ghost.Provider<IMapInfomation>();
-            _PlayerProvider = new Regulus.Remoting.Ghost.Provider<IPlayer>();
-            _ObservedAbilityProvider = new Regulus.Remoting.Ghost.Provider<IObservedAbility>();
-            _TimeProvider = new Regulus.Remoting.Ghost.Provider<Regulus.Remoting.ITime>();
+            _VerifyProvider = new Regulus.Remoting.Ghost.Provider<IVerify, Regulus.Remoting.Ghost.Photon.Agent>();
+            _ParkingProvider = new Regulus.Remoting.Ghost.Provider<IParking, Regulus.Remoting.Ghost.Photon.Agent>();
+            _MapInfomationProvider = new Regulus.Remoting.Ghost.Provider<IMapInfomation, Regulus.Remoting.Ghost.Photon.Agent>();
+            _PlayerProvider = new Regulus.Remoting.Ghost.Provider<IPlayer, Regulus.Remoting.Ghost.Photon.Agent>();
+            _ObservedAbilityProvider = new Regulus.Remoting.Ghost.Provider<IObservedAbility, Regulus.Remoting.Ghost.Photon.Agent>();
+            _TimeProvider = new Regulus.Remoting.Ghost.Provider<Regulus.Remoting.ITime, Regulus.Remoting.Ghost.Photon.Agent>();
             
         }
         public long GetPing(int idx)
@@ -56,7 +56,7 @@ namespace Regulus.Project.TurnBasedRPG
                 if(LinkFail != null)
                     LinkFail(s);
             };
-            _Complex = new Regulus.Remoting.Ghost.Agent(_Config); 
+            _Complex = new Regulus.Remoting.Ghost.Photon.Agent(_Config); 
 
             _Complex.Launch(linkStatu);
             _VerifyProvider.Add(_Complex);
@@ -81,37 +81,37 @@ namespace Regulus.Project.TurnBasedRPG
             _Complex = null;
         }
 
-        Regulus.Remoting.Ghost.Provider<IVerify> _VerifyProvider;
+        Regulus.Remoting.Ghost.Provider<IVerify, Regulus.Remoting.Ghost.Photon.Agent> _VerifyProvider;
         public Regulus.Remoting.Ghost.IProviderNotice<IVerify> VerifyProvider
         {
             get { return _VerifyProvider; }
         }
 
-        Regulus.Remoting.Ghost.Provider<IParking> _ParkingProvider;
+        Regulus.Remoting.Ghost.Provider<IParking, Regulus.Remoting.Ghost.Photon.Agent> _ParkingProvider;
         public Regulus.Remoting.Ghost.IProviderNotice<IParking> ParkingProvider
         {
             get { return _ParkingProvider; }
         }
 
-        Regulus.Remoting.Ghost.Provider<IMapInfomation> _MapInfomationProvider;
+        Regulus.Remoting.Ghost.Provider<IMapInfomation, Regulus.Remoting.Ghost.Photon.Agent> _MapInfomationProvider;
         public Regulus.Remoting.Ghost.IProviderNotice<IMapInfomation> MapInfomationProvider
         {
             get { return _MapInfomationProvider; }
         }
 
-        Regulus.Remoting.Ghost.Provider<IPlayer> _PlayerProvider;
+        Regulus.Remoting.Ghost.Provider<IPlayer, Regulus.Remoting.Ghost.Photon.Agent> _PlayerProvider;
         public Regulus.Remoting.Ghost.IProviderNotice<IPlayer> PlayerProvider
         {
             get { return _PlayerProvider; }
         }
 
-        Regulus.Remoting.Ghost.Provider<IObservedAbility> _ObservedAbilityProvider;        
+        Regulus.Remoting.Ghost.Provider<IObservedAbility, Regulus.Remoting.Ghost.Photon.Agent> _ObservedAbilityProvider;        
         public Regulus.Remoting.Ghost.IProviderNotice<IObservedAbility> ObservedAbilityProvider
         {
             get { return _ObservedAbilityProvider; }
         }
 
-        Regulus.Remoting.Ghost.Provider<Regulus.Remoting.ITime> _TimeProvider;
+        Regulus.Remoting.Ghost.Provider<Regulus.Remoting.ITime, Regulus.Remoting.Ghost.Photon.Agent> _TimeProvider;
         public Regulus.Remoting.Ghost.IProviderNotice<Regulus.Remoting.ITime> TimeProvider
         {
             get { return _TimeProvider; }
