@@ -19,10 +19,8 @@ namespace Regulus.Project.ExiledPrincesses.Game
             Regulus.Standalong.Agent _Agent;
 
             ICommandable _Commandable;
-            int _Id;
-            public ChoiceStage(int id , ChoicePrototype protorype, ICommandable commandable)
+            public ChoiceStage(ChoicePrototype protorype, ICommandable commandable)
             {
-                _Id = id;
                 _ChoicePrototype = protorype;
                 _Commandable = commandable;
                 _Agent = new Standalong.Agent();
@@ -90,11 +88,6 @@ namespace Regulus.Project.ExiledPrincesses.Game
             void IAdventureChoice.GoTown(string tone)
             {
                 _ChoiceTown(tone);
-            }
-
-            int IAdventureChoice.Id
-            {
-                get { return _Id; }
             }
         }
     }

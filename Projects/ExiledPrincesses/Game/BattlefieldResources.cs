@@ -14,10 +14,6 @@ namespace Regulus.Project.ExiledPrincesses.Game
             _BattlefieldPrototypes.Add(1 , new BattlefieldPrototype() { Formation = Contingent.FormationType.Auxiliary , Money = 1000 , Enemys = new int[] {1,1}});
             _BattlefieldPrototypes.Add(2, new BattlefieldPrototype() { Formation = Contingent.FormationType.Auxiliary, Money = 1000, Enemys = new int[] { 1 } });
             _BattlefieldPrototypes.Add(3, new BattlefieldPrototype() { Formation = Contingent.FormationType.Auxiliary, Money = 1000, Enemys = new int[] { 1 ,1,1} });
-
-            _BattlefieldPrototypes.Add(4, new BattlefieldPrototype() { Formation = Contingent.FormationType.Auxiliary, Money = 1000, Enemys = new int[] { 1, 1 } });
-            _BattlefieldPrototypes.Add(5, new BattlefieldPrototype() { Formation = Contingent.FormationType.Auxiliary, Money = 1000, Enemys = new int[] { 1 } });
-            _BattlefieldPrototypes.Add(6, new BattlefieldPrototype() { Formation = Contingent.FormationType.Auxiliary, Money = 1000, Enemys = new int[] { 1, 1, 1 } });
         }
         internal BattlefieldPrototype Find(int id)
         {

@@ -56,7 +56,6 @@ namespace Regulus.Project.ExiledPrincesses
 
     public interface IAdventureChoice
     {
-        int Id { get; }
         string[] Maps {get;}
         string[] Town { get; }
 
