@@ -1,0 +1,822 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/LogicalClassDesigner" xmlns:dm9="http://schemas.microsoft.com/VisualStudio/TeamArchitect/ComponentDesigner"
+  dslVersion="1.0.0.0"
+  Id="6dfa7ab3-0443-4c92-8440-d3485eefc316"
+  name="PhotonExpansion"
+  visibility="Private" xmlns="http://schemas.microsoft.com/dsltools/ModelStore">
+  <referencesInternal>
+    <reference
+      Id="2f7a2149-1d0b-4381-ac90-bd46dfb171ec"
+      handle="viewcode://./CodeSchema_Namespace?Namespace%3DRegulus.Remoting.PhotonExpansion"
+      tag="ViewCode" />
+  </referencesInternal>
+  <packagedElements>
+    <packageHasNamedElement>
+      <Interface
+        Id="43c3addc-e8f2-4619-8815-2c6f38b7d356"
+        name="IPhotonFramework"
+        isAbstract="false"
+        isLeaf="false">
+        <referencesInternal>
+          <reference
+            Id="ec727d7d-bd2f-4bb7-88ce-2f4753d56c66"
+            handle="viewcode://./CodeSchema_Interface?Assembly%3Dfile:%2F%2F%2FE:%2FDevelop%2FRegulus%2FLibrary%2FRemotingSoul%2Fbin%2FDebug%2FRemotingSoul.dll Namespace%3DRegulus.Remoting.PhotonExpansion Type%3DIPhotonFramework"
+            tag="ViewCode" />
+        </referencesInternal>
+        <appliedStereotypesInternal>
+          <stereotypeInstance
+            Id="9b188158-5b35-4c62-9fca-8fc54d83c6af"
+            name="interface"
+            profile="CSharpProfile">
+            <propertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="4b4433a4-80d7-4a76-afe5-5d6bfcd1cf61">
+                <propertyInstance
+                  Id="a8a91046-c287-4950-b182-ab2910ce6c85"
+                  name="ClrAttributes" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="1d68c023-2cba-4c0c-8687-58cdb0cba2e5">
+                <propertyInstance
+                  Id="83b2f120-f709-4ea9-907c-602c9e5ab77f"
+                  name="IsPartial"
+                  value="false" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="9e3c08ff-bf7a-42da-8e84-91fff27c2a0b">
+                <propertyInstance
+                  Id="35491efd-c330-4a43-b300-f3103facf2c1"
+                  name="IsUnsafe"
+                  value="false" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="ddbc5999-2a13-4c61-bb5c-d1acb0a9eaeb">
+                <propertyInstance
+                  Id="58a6f1e7-cf78-43d9-9afd-6de99e1b0296"
+                  name="PackageVisibility"
+                  value="internal" />
+              </stereotypeInstanceHasPropertyInstances>
+            </propertyInstances>
+          </stereotypeInstance>
+        </appliedStereotypesInternal>
+        <generalsInternal>
+          <generalization
+            Id="95292010-5c27-4bd0-a1c7-75390c7d5ac1"
+            isSubstitutable="false">
+            <interfaceMoniker
+              Id="71094ac1-d297-4d82-b4f7-94fc0aebaba6"
+              LastKnownName="IFramework"
+              LastKnownLocation="Package6_1524.uml" />
+          </generalization>
+        </generalsInternal>
+        <ownedOperations>
+          <operation
+            Id="7c027175-082c-4cfb-86a9-19360df95c53"
+            name="ObtainController"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="true"
+            concurrency="Sequential"
+            isQuery="false">
+            <referencesInternal>
+              <reference
+                Id="820b9cad-fb1a-4214-ac76-959d7c8b6058"
+                handle="viewcode://./CodeSchema_Method?Assembly%3Dfile:%2F%2F%2FE:%2FDevelop%2FRegulus%2FLibrary%2FRemotingSoul%2Fbin%2FDebug%2FRemotingSoul.dll Namespace%3DRegulus.Remoting.PhotonExpansion Type%3DIPhotonFramework Member%3D(Name%3DObtainController OverloadingParameters%3D[(Assembly%3Dfile:%2F%2F%2FE:%2FDevelop%2FRegulus%2FLibrary%2FRemoting%2Fbin%2FDebug%2FRemoting.dll Namespace%3DRegulus.Remoting.Soul Type%3DSoulProvider)])"
+                tag="ViewCode" />
+            </referencesInternal>
+            <appliedStereotypesInternal>
+              <stereotypeInstance
+                Id="357ce60e-08a1-4383-a1b1-f81c6c2ee945"
+                name="method"
+                profile="CSharpProfile">
+                <propertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="ef800e41-e41c-48a5-8f03-300bd88a76c9">
+                    <propertyInstance
+                      Id="896f2ec6-1164-460d-9ca0-e25e1bc345d0"
+                      name="ClrAttributes" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="93ad67f7-0ecf-4856-a847-72e3d115208e">
+                    <propertyInstance
+                      Id="266b8020-1faa-4ca2-9ba4-e9fa2ca6f7af"
+                      name="IsPartial"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="4d28f432-7414-42eb-8af8-c475a306562d">
+                    <propertyInstance
+                      Id="a56e7842-3e71-43b7-b1be-ca2cd685ddd4"
+                      name="IsUnsafe"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="ea493076-6c98-4f63-bdca-92cda5c826dc">
+                    <propertyInstance
+                      Id="a02e83ae-2fec-4143-916c-151dc2cea91a"
+                      name="Inheritance"
+                      value="none" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="b1d5cf6e-61f1-4355-adeb-399b7192dccf">
+                    <propertyInstance
+                      Id="bdb4b431-11e8-43d4-9fea-1ba97ed1faf7"
+                      name="PackageVisibility"
+                      value="internal" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="5f236b45-c2ed-4a1f-9188-f1d8959c908e">
+                    <propertyInstance
+                      Id="3daba208-d34e-495e-bd5d-6b2e1158972d"
+                      name="params"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                </propertyInstances>
+              </stereotypeInstance>
+            </appliedStereotypesInternal>
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="cf3046f0-df5d-439a-b6f6-648701c853b4"
+                  name="provider"
+                  direction="In">
+                  <referencesInternal>
+                    <reference
+                      Id="b658d1d2-e1f5-4430-aa5e-077fbf8e16d1"
+                      handle="viewcode://./CodeSchema_Parameter?Assembly%3Dfile:%2F%2F%2FE:%2FDevelop%2FRegulus%2FLibrary%2FRemotingSoul%2Fbin%2FDebug%2FRemotingSoul.dll Namespace%3DRegulus.Remoting.PhotonExpansion Type%3DIPhotonFramework Member%3D(Name%3DObtainController OverloadingParameters%3D[(Assembly%3Dfile:%2F%2F%2FE:%2FDevelop%2FRegulus%2FLibrary%2FRemoting%2Fbin%2FDebug%2FRemoting.dll Namespace%3DRegulus.Remoting.Soul Type%3DSoulProvider)]) ParameterIdentifier%3Dprovider"
+                      tag="ViewCode" />
+                  </referencesInternal>
+                  <type_NamedElement>
+                    <classMoniker
+                      Id="dddb9b5f-5518-498e-9fe1-c0fee5a7b407"
+                      LastKnownName="SoulProvider"
+                      LastKnownLocation="Package_1346.uml" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+        </ownedOperations>
+      </Interface>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <class
+        Id="44210bce-5b0e-49b4-acb5-ab00e870ec39"
+        name="PhotonFramework"
+        isAbstract="true"
+        isLeaf="false"
+        isActiveClass="false">
+        <referencesInternal>
+          <reference
+            Id="7771f93d-3829-4963-8d64-82a398cf2b9a"
+            handle="viewcode://./CodeSchema_Class?Assembly%3Dfile:%2F%2F%2FE:%2FDevelop%2FRegulus%2FLibrary%2FRemotingSoul%2Fbin%2FDebug%2FRemotingSoul.dll Namespace%3DRegulus.Remoting.PhotonExpansion Type%3DPhotonFramework"
+            tag="ViewCode" />
+        </referencesInternal>
+        <appliedStereotypesInternal>
+          <stereotypeInstance
+            Id="b5b77206-d85f-4f47-bc17-6afcf76d8868"
+            name="class"
+            profile="CSharpProfile">
+            <propertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="89c59f3e-1ae5-4aef-b2e4-61d15cc3a432">
+                <propertyInstance
+                  Id="b8dc9f56-7211-40ca-9dc3-b70cd98d40f9"
+                  name="ClrAttributes" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="6b1e1cc0-eece-4e07-9bc5-8dd3a66e15d1">
+                <propertyInstance
+                  Id="26a77499-b9b5-4d0d-b8af-1a8a1de5b2a3"
+                  name="IsPartial"
+                  value="false" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="ed0d94b6-f737-44f2-8656-654431487562">
+                <propertyInstance
+                  Id="2a5cfde0-1503-4601-b792-9e9675c97cb0"
+                  name="IsStatic"
+                  value="False" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="9d11f369-49e4-4fed-8b9e-2c2eedb245be">
+                <propertyInstance
+                  Id="0a697a3f-0894-4d0e-8d38-5a9f5415e799"
+                  name="IsUnsafe"
+                  value="false" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="906ba240-79c4-4866-b41f-9174bbbc0cfb">
+                <propertyInstance
+                  Id="88417469-297c-4d9e-84d1-a125d5b3f610"
+                  name="PackageVisibility"
+                  value="internal" />
+              </stereotypeInstanceHasPropertyInstances>
+            </propertyInstances>
+          </stereotypeInstance>
+        </appliedStereotypesInternal>
+        <suppliersInternal>
+          <interfaceRealization
+            Id="1a4142a6-cb75-4eba-acfb-ad706c9a5bb2">
+            <interfaceMoniker
+              Id="43c3addc-e8f2-4619-8815-2c6f38b7d356"
+              LastKnownName="IPhotonFramework"
+              LastKnownLocation="Package1_1346.uml" />
+          </interfaceRealization>
+        </suppliersInternal>
+        <generalsInternal>
+          <generalization
+            Id="721d0eea-147e-4637-b1b1-0c94220e7d11"
+            isSubstitutable="false">
+            <classMoniker
+              Id="1f7f7198-99aa-461d-b930-a4cb2653ba4b"
+              LastKnownName="FrameworkRoot"
+              LastKnownLocation="Package6_1524.uml" />
+          </generalization>
+        </generalsInternal>
+        <ownedOperationsInternal>
+          <operation
+            Id="7260e4a3-2793-4f92-b764-0ccf3a769bfa"
+            name="ObtainController"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="true"
+            concurrency="Sequential"
+            isQuery="false">
+            <referencesInternal>
+              <reference
+                Id="83ca6f43-775c-46f1-bd76-f0fc16918483"
+                handle="viewcode://./CodeSchema_Method?Assembly%3Dfile:%2F%2F%2FE:%2FDevelop%2FRegulus%2FLibrary%2FRemotingSoul%2Fbin%2FDebug%2FRemotingSoul.dll Namespace%3DRegulus.Remoting.PhotonExpansion Type%3DPhotonFramework Member%3D(Name%3DObtainController OverloadingParameters%3D[(Assembly%3Dfile:%2F%2F%2FE:%2FDevelop%2FRegulus%2FLibrary%2FRemoting%2Fbin%2FDebug%2FRemoting.dll Namespace%3DRegulus.Remoting.Soul Type%3DSoulProvider)])"
+                tag="ViewCode" />
+            </referencesInternal>
+            <appliedStereotypesInternal>
+              <stereotypeInstance
+                Id="0cbfd72f-75e5-431f-a6d5-4b9d27ed3fef"
+                name="method"
+                profile="CSharpProfile">
+                <propertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="f6ae89b4-bd60-4a24-8c63-f13b91288c8a">
+                    <propertyInstance
+                      Id="9a00bb56-165b-4b66-876d-16d11cce6093"
+                      name="ClrAttributes" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="b002bc8c-0509-4129-b791-c91948bc65e1">
+                    <propertyInstance
+                      Id="0822adc9-2277-474c-9713-fec0dbd6276f"
+                      name="IsPartial"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="57951302-71bd-412f-90c5-125e0cdfc8de">
+                    <propertyInstance
+                      Id="50b97ba0-5a8e-40ed-9aa6-ca93ea52a99f"
+                      name="IsUnsafe"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="d2e71595-806d-4307-bd93-4fb3788bc588">
+                    <propertyInstance
+                      Id="827cc823-7ccc-499e-97fa-01cfccc53f8e"
+                      name="Inheritance"
+                      value="none" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="6f4f95eb-7d26-4945-a14d-36e3ae640736">
+                    <propertyInstance
+                      Id="babdae99-2379-4619-b271-cfd2a7722cdf"
+                      name="PackageVisibility"
+                      value="internal" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="76c0b390-8324-450d-9c9a-27cfec6fda51">
+                    <propertyInstance
+                      Id="4065a693-858e-456d-8a79-3a844e3dda27"
+                      name="params"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                </propertyInstances>
+              </stereotypeInstance>
+            </appliedStereotypesInternal>
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="69c3f05b-3f8c-47b8-861a-eafda8633087"
+                  name="provider"
+                  direction="In">
+                  <referencesInternal>
+                    <reference
+                      Id="cfb950c6-3827-49b4-ba51-c1c3b503ba4c"
+                      handle="viewcode://./CodeSchema_Parameter?Assembly%3Dfile:%2F%2F%2FE:%2FDevelop%2FRegulus%2FLibrary%2FRemotingSoul%2Fbin%2FDebug%2FRemotingSoul.dll Namespace%3DRegulus.Remoting.PhotonExpansion Type%3DPhotonFramework Member%3D(Name%3DObtainController OverloadingParameters%3D[(Assembly%3Dfile:%2F%2F%2FE:%2FDevelop%2FRegulus%2FLibrary%2FRemoting%2Fbin%2FDebug%2FRemoting.dll Namespace%3DRegulus.Remoting.Soul Type%3DSoulProvider)]) ParameterIdentifier%3Dprovider"
+                      tag="ViewCode" />
+                  </referencesInternal>
+                  <type_NamedElement>
+                    <classMoniker
+                      Id="dddb9b5f-5518-498e-9fe1-c0fee5a7b407"
+                      LastKnownName="SoulProvider"
+                      LastKnownLocation="Package_1346.uml" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation
+            Id="04ca5975-0969-41bb-a408-696536b78c6a"
+            name="Regulus‎.Remoting‎.PhotonExpansion‎.IPhotonFramework‎.ObtainController"
+            visibility="Private"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <referencesInternal>
+              <reference
+                Id="61495f7c-0af8-4bb7-a68a-531547ab7d81"
+                handle="viewcode://./CodeSchema_Method?Assembly%3Dfile:%2F%2F%2FE:%2FDevelop%2FRegulus%2FLibrary%2FRemotingSoul%2Fbin%2FDebug%2FRemotingSoul.dll Namespace%3DRegulus.Remoting.PhotonExpansion Type%3DPhotonFramework Member%3D(Name%3DRegulus.Remoting.PhotonExpansion.IPhotonFramework.ObtainController OverloadingParameters%3D[(Assembly%3Dfile:%2F%2F%2FE:%2FDevelop%2FRegulus%2FLibrary%2FRemoting%2Fbin%2FDebug%2FRemoting.dll Namespace%3DRegulus.Remoting.Soul Type%3DSoulProvider)])"
+                tag="ViewCode" />
+            </referencesInternal>
+            <appliedStereotypesInternal>
+              <stereotypeInstance
+                Id="df361055-b4d3-4732-beea-39b8f6a23a68"
+                name="method"
+                profile="CSharpProfile">
+                <propertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="c451741e-c1a9-4e77-9ef2-ef849b9363e0">
+                    <propertyInstance
+                      Id="52d34ce3-7236-46e9-98ab-a1b62d18735d"
+                      name="ClrAttributes" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="420fdad5-8035-48b4-b07b-2e74d1afc5eb">
+                    <propertyInstance
+                      Id="ac83e39f-5141-4c7a-adc1-5b134e0ebcbe"
+                      name="IsPartial"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="a7289e1b-773e-4422-87dc-9255e547848b">
+                    <propertyInstance
+                      Id="f096cfc4-a8a9-4430-9429-ef3ec4a1d358"
+                      name="IsUnsafe"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="7a7e91bc-7fa2-482b-861a-747fed73f2f7">
+                    <propertyInstance
+                      Id="e09a7047-80bb-4ae4-ba62-1bd753fa4ac8"
+                      name="Inheritance"
+                      value="none" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="880b43f9-44f9-4557-ad84-0a3d7749f32a">
+                    <propertyInstance
+                      Id="c5c1c134-a80b-4bbe-821e-45e01ba483ba"
+                      name="PackageVisibility"
+                      value="internal" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="61c2f873-140b-4f2d-90bf-b94bc8228a1d">
+                    <propertyInstance
+                      Id="0c49cc2c-9965-49f5-9401-0a194d2fddda"
+                      name="params"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                </propertyInstances>
+              </stereotypeInstance>
+            </appliedStereotypesInternal>
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="5d3b22b9-a19a-4dcf-baba-d8f959d7fead"
+                  name="provider"
+                  direction="In">
+                  <referencesInternal>
+                    <reference
+                      Id="66da8dfd-d028-4159-992f-6bfad629298c"
+                      handle="viewcode://./CodeSchema_Parameter?Assembly%3Dfile:%2F%2F%2FE:%2FDevelop%2FRegulus%2FLibrary%2FRemotingSoul%2Fbin%2FDebug%2FRemotingSoul.dll Namespace%3DRegulus.Remoting.PhotonExpansion Type%3DPhotonFramework Member%3D(Name%3DRegulus.Remoting.PhotonExpansion.IPhotonFramework.ObtainController OverloadingParameters%3D[(Assembly%3Dfile:%2F%2F%2FE:%2FDevelop%2FRegulus%2FLibrary%2FRemoting%2Fbin%2FDebug%2FRemoting.dll Namespace%3DRegulus.Remoting.Soul Type%3DSoulProvider)]) ParameterIdentifier%3Dprovider"
+                      tag="ViewCode" />
+                  </referencesInternal>
+                  <type_NamedElement>
+                    <classMoniker
+                      Id="dddb9b5f-5518-498e-9fe1-c0fee5a7b407"
+                      LastKnownName="SoulProvider"
+                      LastKnownLocation="Package_1346.uml" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation
+            Id="7347c95d-5557-45a8-8edf-1dc4aca47274"
+            name="PhotonFramework"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <referencesInternal>
+              <reference
+                Id="ed911476-af65-4923-98b9-e4a71d7e19a4"
+                handle="viewcode://./CodeSchema_Method?Assembly%3Dfile:%2F%2F%2FE:%2FDevelop%2FRegulus%2FLibrary%2FRemotingSoul%2Fbin%2FDebug%2FRemotingSoul.dll Namespace%3DRegulus.Remoting.PhotonExpansion Type%3DPhotonFramework Member%3D.ctor"
+                tag="ViewCode" />
+            </referencesInternal>
+            <appliedStereotypesInternal>
+              <stereotypeInstance
+                Id="9eeb7e9e-7753-4c3b-8fe0-e66e8f42674e"
+                name="method"
+                profile="CSharpProfile">
+                <propertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="805ace26-67ec-4fc6-8744-19919725015d">
+                    <propertyInstance
+                      Id="dd7cc449-82e4-4989-acd5-5d6b322534cd"
+                      name="ClrAttributes" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="d064d85a-9f0e-45d7-83e6-092bee01e3c2">
+                    <propertyInstance
+                      Id="bf3c8ee6-7022-4033-8b38-407a10755131"
+                      name="IsPartial"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="d024aa85-ff78-4512-b229-8b741c2c8148">
+                    <propertyInstance
+                      Id="725da248-d55a-4698-8699-127d23b5b69f"
+                      name="IsUnsafe"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="a563a575-831e-48a3-98ed-3000902c73a0">
+                    <propertyInstance
+                      Id="91ce998f-4870-4828-b544-5212d87f6c43"
+                      name="Inheritance"
+                      value="none" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="3eab4c7e-aa19-4201-bbf3-11718a83b21d">
+                    <propertyInstance
+                      Id="da557e6c-4115-4566-828e-01017d7c8c3e"
+                      name="PackageVisibility"
+                      value="internal" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="c5c2fc01-0261-4963-8823-6f3f751464dc">
+                    <propertyInstance
+                      Id="eb875795-bff9-418d-b023-89eb1589e9d5"
+                      name="params"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                </propertyInstances>
+              </stereotypeInstance>
+            </appliedStereotypesInternal>
+          </operation>
+          <operation
+            Id="77b04af4-af45-4688-bce3-e4b9fa4f7b8c"
+            name="Launch"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="true"
+            concurrency="Sequential"
+            isQuery="false">
+            <referencesInternal>
+              <reference
+                Id="ef8320b4-46d5-4f71-844c-cc7ce7e83b9d"
+                handle="viewcode://./CodeSchema_Method?Assembly%3Dfile:%2F%2F%2FE:%2FDevelop%2FRegulus%2FLibrary%2FRemotingSoul%2Fbin%2FDebug%2FRemotingSoul.dll Namespace%3DRegulus.Remoting.PhotonExpansion Type%3DPhotonFramework Member%3DLaunch"
+                tag="ViewCode" />
+            </referencesInternal>
+            <appliedStereotypesInternal>
+              <stereotypeInstance
+                Id="f4f8bce8-d851-4ebe-9797-6be2f48452e2"
+                name="method"
+                profile="CSharpProfile">
+                <propertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="f5ca74ed-0594-4044-ad66-e1601eb392b9">
+                    <propertyInstance
+                      Id="96227746-f910-4036-a1b5-9fef5fcae2e3"
+                      name="ClrAttributes" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="79aaf045-fbab-463e-b0e1-786ab2143e55">
+                    <propertyInstance
+                      Id="c41138a7-fabf-486e-bfd6-85c2717c8d12"
+                      name="IsPartial"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="0b4a145e-ed80-4ec5-9c4d-874b51286a2b">
+                    <propertyInstance
+                      Id="b052a0b3-43ec-4298-8602-42995fefa9c2"
+                      name="IsUnsafe"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="1c2088d7-1213-4e16-a78c-2e907a810523">
+                    <propertyInstance
+                      Id="3e262cf2-c973-43b6-b3ef-61433a4197d2"
+                      name="Inheritance"
+                      value="none" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="a7f7f714-420f-4f59-89e7-917d2ab0a17a">
+                    <propertyInstance
+                      Id="9518cc5f-321f-4e65-a69a-5eea938c3a91"
+                      name="PackageVisibility"
+                      value="internal" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="96126452-4fbc-41c5-b992-762c82b8f05f">
+                    <propertyInstance
+                      Id="8467a1aa-e92d-4b16-854c-1d564c44693b"
+                      name="params"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                </propertyInstances>
+              </stereotypeInstance>
+            </appliedStereotypesInternal>
+          </operation>
+          <operation
+            Id="712ce601-e73b-4da2-8856-c3233187356a"
+            name="Regulus‎.Game‎.IFramework‎.Launch"
+            visibility="Private"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <referencesInternal>
+              <reference
+                Id="6de0cbb3-26bb-4305-8cc4-430532a83357"
+                handle="viewcode://./CodeSchema_Method?Assembly%3Dfile:%2F%2F%2FE:%2FDevelop%2FRegulus%2FLibrary%2FRemotingSoul%2Fbin%2FDebug%2FRemotingSoul.dll Namespace%3DRegulus.Remoting.PhotonExpansion Type%3DPhotonFramework Member%3DRegulus.Game.IFramework.Launch"
+                tag="ViewCode" />
+            </referencesInternal>
+            <appliedStereotypesInternal>
+              <stereotypeInstance
+                Id="948a81f7-2298-4beb-a62c-088a4aa9a9dc"
+                name="method"
+                profile="CSharpProfile">
+                <propertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="c0795b10-6767-441f-bd77-55f44aa3f9c4">
+                    <propertyInstance
+                      Id="9a3b028b-5e46-44e7-8644-a6fa07027f2b"
+                      name="ClrAttributes" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="65cf292d-beb2-4695-ac82-84256be6dc2f">
+                    <propertyInstance
+                      Id="ffab03b8-b079-4857-aa92-22d435ead5de"
+                      name="IsPartial"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="d0ea27b6-efe0-49e9-8a50-f40dbb270952">
+                    <propertyInstance
+                      Id="4f459267-ec33-4225-9125-681302ddfc78"
+                      name="IsUnsafe"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="5ac4995c-721a-450b-a207-0bb740511e0a">
+                    <propertyInstance
+                      Id="a40e22c0-d8aa-4621-84fd-44ea3d1503e6"
+                      name="Inheritance"
+                      value="none" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="c59b188b-f515-4003-be42-b1629c2bd0d5">
+                    <propertyInstance
+                      Id="447a6054-69b5-454f-a475-7b9187aee55c"
+                      name="PackageVisibility"
+                      value="internal" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="54f08f8b-2522-4da7-b187-387c02222065">
+                    <propertyInstance
+                      Id="c388ee11-5fc7-4300-9204-0b6cbaf33ae5"
+                      name="params"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                </propertyInstances>
+              </stereotypeInstance>
+            </appliedStereotypesInternal>
+          </operation>
+          <operation
+            Id="4ba8e7d5-043d-4816-9484-eec63bbdbfa3"
+            name="Regulus‎.Game‎.IFramework‎.Shutdown"
+            visibility="Private"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <referencesInternal>
+              <reference
+                Id="ab0c756d-fea7-4d41-aba3-192abee1aabb"
+                handle="viewcode://./CodeSchema_Method?Assembly%3Dfile:%2F%2F%2FE:%2FDevelop%2FRegulus%2FLibrary%2FRemotingSoul%2Fbin%2FDebug%2FRemotingSoul.dll Namespace%3DRegulus.Remoting.PhotonExpansion Type%3DPhotonFramework Member%3DRegulus.Game.IFramework.Shutdown"
+                tag="ViewCode" />
+            </referencesInternal>
+            <appliedStereotypesInternal>
+              <stereotypeInstance
+                Id="9e67fb5b-e8c6-4ea1-934c-6a8d3883cf3f"
+                name="method"
+                profile="CSharpProfile">
+                <propertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="5d3ef965-a3ad-40bd-a518-a30d4ad1379b">
+                    <propertyInstance
+                      Id="8ec80973-0650-412c-bd04-c650e2d6c078"
+                      name="ClrAttributes" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="305386c6-fe56-4ff5-91fa-5de288a811fb">
+                    <propertyInstance
+                      Id="e1afce0a-ac1a-455d-a8b7-2bf061eae42d"
+                      name="IsPartial"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="8e4ed893-e239-4821-89d8-81dc6b9db13e">
+                    <propertyInstance
+                      Id="38812a15-d91a-4e09-a4a8-5d0277164c87"
+                      name="IsUnsafe"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="3467061f-f1d3-4967-b01d-b21cf285416a">
+                    <propertyInstance
+                      Id="d5d52a84-fed2-4b81-aaf1-101a55b2fe42"
+                      name="Inheritance"
+                      value="none" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="caaafbc3-b542-4c8f-894c-fd43d02254b3">
+                    <propertyInstance
+                      Id="f9a5713f-c886-4671-89ea-20b9f38ccb71"
+                      name="PackageVisibility"
+                      value="internal" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="ee123cb2-e8ef-4e7e-bb9c-aa80f7e6a259">
+                    <propertyInstance
+                      Id="a517f763-a9dd-4f9c-8c2f-053dfdbd080f"
+                      name="params"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                </propertyInstances>
+              </stereotypeInstance>
+            </appliedStereotypesInternal>
+          </operation>
+          <operation
+            Id="969eb113-b174-44ae-b9e2-e3c1c99c754a"
+            name="Regulus‎.Game‎.IFramework‎.Update"
+            visibility="Private"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <referencesInternal>
+              <reference
+                Id="48ab6675-f4ae-41fe-89bc-2415f6bccfa1"
+                handle="viewcode://./CodeSchema_Method?Assembly%3Dfile:%2F%2F%2FE:%2FDevelop%2FRegulus%2FLibrary%2FRemotingSoul%2Fbin%2FDebug%2FRemotingSoul.dll Namespace%3DRegulus.Remoting.PhotonExpansion Type%3DPhotonFramework Member%3DRegulus.Game.IFramework.Update"
+                tag="ViewCode" />
+            </referencesInternal>
+            <appliedStereotypesInternal>
+              <stereotypeInstance
+                Id="42f7b1e7-03f9-41b3-bb07-8f68ca425f72"
+                name="method"
+                profile="CSharpProfile">
+                <propertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="05cf6ec4-400c-4a24-8e49-c2a2e5f2f9ab">
+                    <propertyInstance
+                      Id="aba03307-38ae-4d85-a17a-e3d046b3a935"
+                      name="ClrAttributes" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="3c9393d0-5f68-4bfd-99b5-d15ff3c27f75">
+                    <propertyInstance
+                      Id="fdac23e0-7ae1-41f9-98bf-94dcaca73e83"
+                      name="IsPartial"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="8bec5585-4455-4330-a895-cb34e8b29485">
+                    <propertyInstance
+                      Id="53afe9b9-c734-4370-bc66-1e0480e2d6ae"
+                      name="IsUnsafe"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="fc257252-c00d-43b1-8c88-b26bb83bafb0">
+                    <propertyInstance
+                      Id="a00cbdc7-5688-4bc2-9822-7976cb14895e"
+                      name="Inheritance"
+                      value="none" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="9c5d383e-94ae-43d1-ae90-6cd07559bb13">
+                    <propertyInstance
+                      Id="eeeca838-c09c-4bd2-ba71-a8bba4f029ae"
+                      name="PackageVisibility"
+                      value="internal" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="bf108585-5b29-48f4-b501-0f21fb3a09f1">
+                    <propertyInstance
+                      Id="5cc64172-11c1-4fb3-884c-a16d5d524c33"
+                      name="params"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                </propertyInstances>
+              </stereotypeInstance>
+            </appliedStereotypesInternal>
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="4294a8b9-d4ff-42ae-96ed-6c8317d1daf1"
+                  direction="Return">
+                  <type_NamedElement>
+                    <primitiveTypeMoniker
+                      Id="8943dc84-709e-4f62-b15a-a3273aa6f165"
+                      LastKnownName="Boolean"
+                      LastKnownLocation="ExiledPrincesses.uml" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation
+            Id="dedfd9c0-954e-4998-8e3a-d1cda2e0db39"
+            name="Shutdown"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="true"
+            concurrency="Sequential"
+            isQuery="false">
+            <referencesInternal>
+              <reference
+                Id="15979760-3186-4ab6-b719-9ff761259900"
+                handle="viewcode://./CodeSchema_Method?Assembly%3Dfile:%2F%2F%2FE:%2FDevelop%2FRegulus%2FLibrary%2FRemotingSoul%2Fbin%2FDebug%2FRemotingSoul.dll Namespace%3DRegulus.Remoting.PhotonExpansion Type%3DPhotonFramework Member%3DShutdown"
+                tag="ViewCode" />
+            </referencesInternal>
+            <appliedStereotypesInternal>
+              <stereotypeInstance
+                Id="d97ac5d6-d08f-430d-a465-4d0292017072"
+                name="method"
+                profile="CSharpProfile">
+                <propertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="64611903-63a6-4b12-91a2-f653c106a6ea">
+                    <propertyInstance
+                      Id="53eeb7fa-e0bc-4a70-bda9-45513307fbe0"
+                      name="ClrAttributes" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="8ba10b9e-ec4f-4ae1-b9ff-c62b845499bb">
+                    <propertyInstance
+                      Id="c0e9709d-7fb4-46ea-8505-2fb850b0802c"
+                      name="IsPartial"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="1ea1d139-8ae8-4cac-84df-03c26faeb9da">
+                    <propertyInstance
+                      Id="c640a6c0-e0f9-400d-a0ee-db801a11ce20"
+                      name="IsUnsafe"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="1b10ffdb-8010-4783-9a54-845cfb8d9d67">
+                    <propertyInstance
+                      Id="fe55c57a-5699-4408-b409-e75c48396d1c"
+                      name="Inheritance"
+                      value="none" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="3bba9679-132d-464d-8619-6081ff2305b4">
+                    <propertyInstance
+                      Id="7b6798f0-bc32-4e72-a25d-a64ada7845ac"
+                      name="PackageVisibility"
+                      value="internal" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="f5812f4c-8bf1-42cd-885b-e79779d05c47">
+                    <propertyInstance
+                      Id="9ca1de2f-94ba-4267-b98d-04326c7a1eaa"
+                      name="params"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                </propertyInstances>
+              </stereotypeInstance>
+            </appliedStereotypesInternal>
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </packageHasNamedElement>
+  </packagedElements>
+</package>

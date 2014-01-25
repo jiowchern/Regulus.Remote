@@ -60,9 +60,9 @@
       <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
       <Name>PureLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Library\RemotingSoul\RemotingSoul.csproj">
+    <ProjectReference Include="..\..\..\Library\RemotingSoul\RemotingPhotoinSoul.csproj">
       <Project>{8579e5db-c699-432a-aeaf-d6050a87043c}</Project>
-      <Name>RemotingSoul</Name>
+      <Name>RemotingPhotoinSoul</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Library\Remoting\Remoting.csproj">
       <Project>{a4cfce46-bda8-4416-a1bb-77bd80514019}</Project>
@@ -70,11 +70,11 @@
     </ProjectReference>
     <ProjectReference Include="..\Game\Game.csproj">
       <Project>{0df727c5-16c7-45ae-9af6-ec04b4a7d713}</Project>
-      <Name>Game %28Projects\ExiledPrincesses\Game%29</Name>
+      <Name>Game</Name>
     </ProjectReference>
     <ProjectReference Include="..\Serializable\Serializable.csproj">
       <Project>{15fc0b78-aa3d-4e6f-b0e6-f13a9f075d7c}</Project>
-      <Name>Serializable %28Projects\ExiledPrincesses\Serializable%29</Name>
+      <Name>Serializable</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

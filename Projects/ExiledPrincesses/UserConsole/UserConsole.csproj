@@ -36,10 +36,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Library\Remoting\bin\Debug\Remoting.dll</HintPath>
     </Reference>
-    <Reference Include="RemotingGhost, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Library\RemotingGhost\bin\Debug\RemotingGhost.dll</HintPath>
-    </Reference>
     <Reference Include="RemotingStandalong, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\Library\RemotingStandalong\bin\Debug\RemotingStandalong.dll</HintPath>
@@ -66,11 +62,11 @@
     </ProjectReference>
     <ProjectReference Include="..\Serializable\Serializable.csproj">
       <Project>{15fc0b78-aa3d-4e6f-b0e6-f13a9f075d7c}</Project>
-      <Name>Serializable %28Projects\ExiledPrincesses\Serializable%29</Name>
+      <Name>Serializable</Name>
     </ProjectReference>
     <ProjectReference Include="..\User\User.csproj">
       <Project>{5505acea-8d99-4b10-8224-ff73207283b1}</Project>
-      <Name>User %28Projects\ExiledPrincesses\User%29</Name>
+      <Name>User</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{58C2C3EC-6526-480D-BB26-91BC3C39C173}</ProjectGuid>
+    <ProjectGuid>{8579E5DB-C699-432A-AEAF-D6050A87043C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TestSoul</RootNamespace>
-    <AssemblyName>TestSoul</AssemblyName>
+    <RootNamespace>Regulus.Remoting.Soul.Photon</RootNamespace>
+    <AssemblyName>RemotingPhotonSoul</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -40,26 +40,26 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ExitGames.Logging.Log4Net, Version=0.9.9.3, Culture=neutral, PublicKeyToken=eac0edd9746a4aa0, processorArchitecture=MSIL">
+    <Reference Include="ExitGames.Logging.Log4Net, Version=0.9.9.5, Culture=neutral, PublicKeyToken=eac0edd9746a4aa0, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Library\ThirdParty\Photon\ExitGames.Logging.Log4Net.dll</HintPath>
+      <HintPath>..\ThirdParty\Photon\ExitGames.Logging.Log4Net.dll</HintPath>
     </Reference>
-    <Reference Include="ExitGamesLibs, Version=0.9.9.3, Culture=neutral, PublicKeyToken=eac0edd9746a4aa0, processorArchitecture=MSIL">
+    <Reference Include="ExitGamesLibs, Version=0.9.9.5, Culture=neutral, PublicKeyToken=eac0edd9746a4aa0, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Library\ThirdParty\Photon\ExitGamesLibs.dll</HintPath>
+      <HintPath>..\ThirdParty\Photon\ExitGamesLibs.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=1.2.10.1, Culture=neutral, PublicKeyToken=2bb32138a3ceff71, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Library\ThirdParty\Photon\log4net.dll</HintPath>
+      <HintPath>..\ThirdParty\Photon\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Photon.SocketServer, Version=3.0.37.3631, Culture=neutral, PublicKeyToken=48c2fa3b6988090e, processorArchitecture=MSIL">
+    <Reference Include="Photon.SocketServer, Version=3.2.10.4248, Culture=neutral, PublicKeyToken=48c2fa3b6988090e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Library\ThirdParty\Photon\Photon.SocketServer.dll</HintPath>
+      <HintPath>..\ThirdParty\Photon\Photon.SocketServer.dll</HintPath>
     </Reference>
-    <Reference Include="PhotonHostRuntimeInterfaces, Version=3.35.0.0, Culture=neutral, PublicKeyToken=6cb1467adaa73020, processorArchitecture=MSIL">
+    <Reference Include="PhotonHostRuntimeInterfaces, Version=3.50.0.0, Culture=neutral, PublicKeyToken=6cb1467adaa73020, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
-      <HintPath>..\..\Library\ThirdParty\Photon\PhotonHostRuntimeInterfaces.dll</HintPath>
+      <HintPath>..\ThirdParty\Photon\PhotonHostRuntimeInterfaces.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -69,24 +69,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\TestRemoting\Test.cs">
-      <Link>Test.cs</Link>
-    </Compile>
-    <Compile Include="CTestSoul.cs" />
-    <Compile Include="TestApplication.cs" />
+    <Compile Include="PhotonFramework.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PhotonApplication.cs" />
+    <Compile Include="ServerPeer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Library\PureLib\PureLib.csproj">
-      <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
+    <ProjectReference Include="..\PureLib\PureLib.csproj">
+      <Project>{2F28AA04-316D-4C20-BF46-987D4A59691D}</Project>
       <Name>PureLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\RemotingSoul\RemotingPhotoinSoul.csproj">
-      <Project>{8579e5db-c699-432a-aeaf-d6050a87043c}</Project>
-      <Name>RemotingPhotoinSoul</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Library\Remoting\Remoting.csproj">
-      <Project>{a4cfce46-bda8-4416-a1bb-77bd80514019}</Project>
+    <ProjectReference Include="..\Remoting\Remoting.csproj">
+      <Project>{A4CFCE46-BDA8-4416-A1BB-77BD80514019}</Project>
       <Name>Remoting</Name>
     </ProjectReference>
   </ItemGroup>
