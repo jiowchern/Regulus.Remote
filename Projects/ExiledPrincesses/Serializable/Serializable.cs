@@ -19,9 +19,9 @@ namespace Regulus.Project.ExiledPrincesses
     
 	[Serializable]
 	public class AccountInfomation
-	{
+	{        
 		public string Name { get; set; }
-		public string Password { get; set; }
+		public string Password { get; set; }        
 		public Guid Id { get; set; }
         public GameRecord Record { get; set; }
 	}

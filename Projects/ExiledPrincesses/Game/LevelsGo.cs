@@ -43,7 +43,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
             void Regulus.Game.IStage.Leave()
             {
 
-                _ForwardEvent(LocalTime.Instance.Ticks, _Position, 0);
+                
                 _Platoon.Stop();
                 _Agent.Unbind<IAdventureGo>(this);
 
@@ -56,7 +56,8 @@ namespace Regulus.Project.ExiledPrincesses.Game
                 _Position += (_DistancePerSeconds * LocalTime.Instance.DeltaSecond);
                 if (_Position > _Station.Position)
                 {
-                    ArrivalEvent(_Position, _Station);
+                    _ForwardEvent(LocalTime.Instance.Ticks, _Station.Position, 0);
+                    ArrivalEvent(_Station.Position, _Station);
                 }
             }
 

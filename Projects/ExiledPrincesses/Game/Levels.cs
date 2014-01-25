@@ -105,7 +105,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
             var prototype = ChoiceResource.Instance.Find(station.Id);
             if (prototype != null)
             {
-                var stage = new ChoiceStage(prototype, _Platoon);
+                var stage = new ChoiceStage(station.Id , prototype, _Platoon);
                 stage.ToMapEvent += _ToMap;
                 stage.ToTownEvent += _ToTone;
                 stage.CancelEvent += _ToIdle;

@@ -16,7 +16,10 @@ namespace Regulus.Project.ExiledPrincesses.Game
                 );            
             _Add(_Maps, "Test1", "Credits",
                 new Station() { Position = 200, Kind = Station.KindType.Combat, Id = 2 },
+                new Station() { Position = 300, Kind = Station.KindType.Combat, Id = 4 },
+                new Station() { Position = 500, Kind = Station.KindType.Combat, Id = 5 },
                 new Station() { Position = 600, Kind = Station.KindType.Combat, Id = 3 },
+                new Station() { Position = 610, Kind = Station.KindType.Combat, Id = 6 },
                 new Station() { Position = 700, Kind = Station.KindType.Choice, Id = 2 }
                 );
         }
