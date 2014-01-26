@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="protobuf-net">
+      <HintPath>..\..\Library\ThirdParty\protobuf-net r668\Full\net30\protobuf-net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -41,6 +44,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Application.cs" />
+    <Compile Include="Client.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -54,6 +59,10 @@
     <ProjectReference Include="..\..\Library\PureLib\PureLib.csproj">
       <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
       <Name>PureLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Library\Remoting\Remoting.csproj">
+      <Project>{a4cfce46-bda8-4416-a1bb-77bd80514019}</Project>
+      <Name>Remoting</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

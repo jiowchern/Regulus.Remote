@@ -9,8 +9,6 @@ namespace Regulus.Project.ExiledPrincesses
     public class Application : Regulus.Game.ConsoleFramework<Regulus.Project.ExiledPrincesses.IUser> 
     {
 
-        
-
         private IController _BuildRemoting()
         {
             IController uc = new Remoting.UserController(_Viewer, Command);            
