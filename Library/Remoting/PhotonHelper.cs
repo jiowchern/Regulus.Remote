@@ -14,6 +14,10 @@ namespace Regulus.PhotonExtension
 		{
 
 		}
+        public static byte[] StringToByteArray(string str)
+        {
+            return System.Text.Encoding.Default.GetBytes(str);
+        }
 		public static byte[] GuidToByteArray(Guid guid)
 		{
 			return guid.ToByteArray();

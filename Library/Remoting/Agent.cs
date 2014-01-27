@@ -36,11 +36,11 @@ namespace Regulus.Remoting
 		Regulus.Utility.TimeCounter _PingTimeCounter = new Regulus.Utility.TimeCounter();
 		public long Ping { get; private set; }
 
-		public  void OnResponse(byte id, Dictionary<byte, object> args)
+		public  void OnResponse(byte id, Dictionary<byte, byte[]> args)
 		{
 			_OnResponse(id , args);
 		}
-		protected void _OnResponse(byte id, Dictionary<byte, object> args)
+		protected void _OnResponse(byte id, Dictionary<byte, byte[]> args)
 		{
 			if (id == (int)ServerToClientPhotonOpCode.Ping)
 			{
@@ -213,7 +213,7 @@ namespace Regulus.Remoting
 			if (_Requester != null)
 			{
 				_PingTimeCounter = new Regulus.Utility.TimeCounter();
-				_Requester.Request((int)ClientToServerPhotonOpCode.Ping , new Dictionary<byte, object>());				
+				_Requester.Request((int)ClientToServerPhotonOpCode.Ping , new Dictionary<byte, byte[]>());				
 				_EndPing();
 			}
 		}
@@ -320,7 +320,7 @@ namespace Regulus.Remoting
 			ILGenerator cil = c.GetILGenerator();
 			// emit為c#中介語言的寫入方法工具
 			// opcode為中介語的opcodes
-
+            
 
 			cil.Emit(OpCodes.Ldarg_0); // this 指標
 			cil.Emit(OpCodes.Ldarg_1); // functioin第1個參數的值
@@ -462,19 +462,25 @@ namespace Regulus.Remoting
 				MethodBuilder method = type.DefineMethod(m.Name, attribute, m.ReturnType, types);
 				// 取得中介語言的介面產生器
 				ILGenerator il = method.GetILGenerator();
-
-				var guidByteArrayType = typeof(byte[]);
-				LocalBuilder varGuidByteArray = il.DeclareLocal(guidByteArrayType);
+                
+				var byteArrayType = typeof(byte[]);
+				LocalBuilder varGuidByteArray = il.DeclareLocal(byteArrayType);
+                LocalBuilder varMethodNameByteArray = il.DeclareLocal(byteArrayType);
 
 				il.Emit(OpCodes.Ldarg_0);
 				il.Emit(OpCodes.Ldfld, idField);
 				var guidToByteArrayMethod = typeof(Regulus.PhotonExtension.TypeHelper).GetMethod("GuidToByteArray", BindingFlags.Public | BindingFlags.Static);
 				il.Emit(OpCodes.Call, guidToByteArrayMethod);
 				il.Emit(OpCodes.Stloc, varGuidByteArray);
+                
+                il.Emit(OpCodes.Ldstr, m.Name);
+                var stringToByteArrayMethod = typeof(Regulus.PhotonExtension.TypeHelper).GetMethod("StringToByteArray", BindingFlags.Public | BindingFlags.Static);
+                il.Emit(OpCodes.Call, stringToByteArrayMethod);
+                il.Emit(OpCodes.Stloc, varMethodNameByteArray);
 
 
 				//取出type物件
-				var dictionaryType = typeof(Dictionary<byte, object>);
+				var dictionaryType = typeof(Dictionary<byte, byte[]>);
 				//宣告函式的local變數
 				LocalBuilder varDict = il.DeclareLocal(dictionaryType);
 				//new出指定物的建構子
@@ -491,7 +497,7 @@ namespace Regulus.Remoting
 				// add method name
 				il.Emit(OpCodes.Ldloc, varDict);
 				il.Emit(OpCodes.Ldc_I4, 1);
-				il.Emit(OpCodes.Ldstr, m.Name);
+                il.Emit(OpCodes.Ldstr, varMethodNameByteArray);
 				il.Emit(OpCodes.Call, varDict.LocalType.GetMethod("Add"));
 
 				// push return info

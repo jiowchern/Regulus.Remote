@@ -10,7 +10,7 @@ namespace Regulus.Standalong
 		class Request
 		{
 			public byte Code;
-			public Dictionary<byte, object> Argments;
+			public Dictionary<byte, byte[]> Argments;
 		}
 		Queue<Request> _Requests;
 		
@@ -18,7 +18,7 @@ namespace Regulus.Standalong
 		{
 			_Requests = new Queue<Request>();
 		}
-		void Remoting.IGhostRequest.Request(byte code, Dictionary<byte, object> args)
+		void Remoting.IGhostRequest.Request(byte code, Dictionary<byte, byte[]> args)
 		{
 			lock (_Requests)
 			{
@@ -46,7 +46,7 @@ namespace Regulus.Standalong
 
 
 
-		private void _Apportion(byte code, Dictionary<byte, object> args)
+		private void _Apportion(byte code, Dictionary<byte, byte[]> args)
 		{
 			if ((int)Regulus.Remoting.ClientToServerPhotonOpCode.Ping == code)
 			{
@@ -55,14 +55,15 @@ namespace Regulus.Standalong
 			}
 			else if( (int) Regulus.Remoting.ClientToServerPhotonOpCode.CallMethod == code)
 			{
-				var entityId = new Guid(args[0] as byte[]);
-				var methodName = args[1] as string;
+				var entityId = new Guid(args[0]);
 
-				object par = null;				
+                var methodName = System.Text.Encoding.Default.GetString(args[1]);
+
+				byte[] par = null;				
 				Guid returnId = Guid.Empty;
 				if (args.TryGetValue(2, out par))
 				{
-					returnId = new Guid(par as byte[]);
+					returnId = new Guid(par);
 				}
 
 				var methodParams = (from p in args

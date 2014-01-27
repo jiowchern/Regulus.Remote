@@ -80,7 +80,7 @@ namespace Regulus.Remoting.Soul
 
         private void _UpdateProperty(Guid entity_id, string name, object val)
         {
-            var argmants = new Dictionary<byte, object>();
+            var argmants = new Dictionary<byte, byte[]>();
             argmants.Add(0, entity_id.ToByteArray());
             argmants.Add(1, Regulus.PhotonExtension.TypeHelper.Serializer(name));
             argmants.Add(2, Regulus.PhotonExtension.TypeHelper.Serializer(val));
@@ -92,7 +92,7 @@ namespace Regulus.Remoting.Soul
         
 		void _InvokeEvent(Guid entity_id, string event_name, object[] args)
 		{            
-            var argmants = new Dictionary<byte, object>();
+            var argmants = new Dictionary<byte, byte[]>();
             argmants.Add(0, entity_id.ToByteArray());
             argmants.Add(1, Regulus.PhotonExtension.TypeHelper.Serializer(event_name));
 			byte i = 2;
@@ -104,8 +104,8 @@ namespace Regulus.Remoting.Soul
             _InvokeEvent(argmants);
             
 		}
-        Queue<Dictionary<byte, object>> _EventFilter = new Queue<Dictionary<byte, object>>();
-        private void _InvokeEvent(Dictionary<byte, object> argmants)
+        Queue<Dictionary<byte, byte[]>> _EventFilter = new Queue<Dictionary<byte, byte[]>>();
+        private void _InvokeEvent(Dictionary<byte, byte[]> argmants)
         {
             _EventFilter.Enqueue(argmants);            
         }
@@ -115,7 +115,7 @@ namespace Regulus.Remoting.Soul
             _WaitValues.Add(returnId, returnValue);
             returnValue.QueryValue(new Action<object>((obj) =>
             {
-                var argmants = new Dictionary<byte, object>();
+                var argmants = new Dictionary<byte, byte[]>();
                 argmants.Add(0, returnId.ToByteArray());
                 object value = returnValue.GetObject();
                 argmants.Add(1, PhotonExtension.TypeHelper.Serializer(value));
@@ -126,7 +126,7 @@ namespace Regulus.Remoting.Soul
         }
         private void _LoadSoulCompile(string type_name, Guid id)
         {
-            var argmants = new Dictionary<byte, object>();
+            var argmants = new Dictionary<byte, byte[]>();
             argmants.Add(0, Regulus.PhotonExtension.TypeHelper.Serializer(type_name));
             argmants.Add(1, id.ToByteArray());
             _Queue.Push((byte)ServerToClientPhotonOpCode.LoadSoulCompile, argmants);
@@ -134,7 +134,7 @@ namespace Regulus.Remoting.Soul
         
         private void _LoadSoul(string type_name, Guid id)
         {         
-            var argmants = new Dictionary<byte, object>();
+            var argmants = new Dictionary<byte, byte[]>();
             argmants.Add(0, Regulus.PhotonExtension.TypeHelper.Serializer(type_name));
             argmants.Add(1, id.ToByteArray());
             _Queue.Push((byte)ServerToClientPhotonOpCode.LoadSoul, argmants);
@@ -142,7 +142,7 @@ namespace Regulus.Remoting.Soul
 
         private void _UnloadSoul(string type_name, Guid id)
         {
-            var argmants = new Dictionary<byte, object>();
+            var argmants = new Dictionary<byte, byte[]>();
             argmants.Add(0, Regulus.PhotonExtension.TypeHelper.Serializer(type_name));
             argmants.Add(1, id.ToByteArray());
             _Queue.Push((byte)ServerToClientPhotonOpCode.UnloadSoul, argmants);

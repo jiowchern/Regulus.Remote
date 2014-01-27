@@ -55,7 +55,7 @@ namespace TestGhost
             }
 
             Console.ReadKey();
-            //TestRequester();
+            TestRequester();
         }
 
 

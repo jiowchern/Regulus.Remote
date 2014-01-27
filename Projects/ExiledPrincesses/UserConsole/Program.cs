@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 
 namespace UserConsole
 {
@@ -60,9 +60,9 @@ namespace UserConsole
 
             _CommandStrings.Enqueue(new CommandString() { Name = "spawncontroller", Args = new string[] { "jc" } });
             _CommandStrings.Enqueue(new CommandString() { Name = "selectcontroller", Args = new string[] { "jc" } });
-            _CommandStrings.Enqueue(new CommandString() { Name = "ready", Args = new string[] { } });
+            //_CommandStrings.Enqueue(new CommandString() { Name = "ready", Args = new string[] { } });
 
-            _CommandStrings.Enqueue(new CommandString() { Name = "login", Args = new string[] { "1", "1" } });
+            //_CommandStrings.Enqueue(new CommandString() { Name = "login", Args = new string[] { "1", "1" } });
             //_CommandStrings.Enqueue(new CommandString() { Name = "go", Args = new string[] { } });
         }
 

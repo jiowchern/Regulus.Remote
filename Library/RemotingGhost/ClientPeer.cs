@@ -29,9 +29,15 @@ namespace Regulus.Remoting.PhotonExtension
 			base.Disconnect();
 		}
 
-		void IGhostRequest.Request(byte code , Dictionary<byte , object> args )
+		void IGhostRequest.Request(byte code , Dictionary<byte , byte[]> args )
 		{
-			OpCustom( code , args , true);
+
+            var pars = new Dictionary<byte, object>();
+            foreach(var arg in args)
+            {
+                pars.Add(arg.Key, pars.Values);
+            }
+            OpCustom(code, pars, true);
 		}
 	}
 }

@@ -67,7 +67,12 @@ namespace Regulus.Remoting.Ghost
             }
             void ExitGames.Client.Photon.IPhotonPeerListener.OnOperationResponse(ExitGames.Client.Photon.OperationResponse operationResponse)
             {
-                _Core.OnResponse(operationResponse.OperationCode, operationResponse.Parameters);
+                var args = new Dictionary<byte, byte[]>();
+                foreach(var p in operationResponse.Parameters)
+                {
+                    args.Add(p.Key , p.Value as byte[]);
+                }
+                _Core.OnResponse(operationResponse.OperationCode, args);
             }
             void ExitGames.Client.Photon.IPhotonPeerListener.DebugReturn(ExitGames.Client.Photon.DebugLevel level, string message)
             {

@@ -13,7 +13,7 @@ namespace Regulus.Remoting
         [ProtoBuf.ProtoMember(1) ]
         public byte Code;
         [ProtoBuf.ProtoMember(2, DynamicType = true)]
-        public Dictionary<byte, object> Args;
+        public Dictionary<byte, byte[]> Args;
     }
 }
 namespace Regulus.Remoting.Soul
@@ -72,7 +72,7 @@ namespace Regulus.Remoting.Soul
             {
                 if (package.Code == (byte)ClientToServerPhotonOpCode.Ping)
                 {
-                    (this as Regulus.Remoting.IResponseQueue).Push((int)ServerToClientPhotonOpCode.Ping, new Dictionary<byte, object>());
+                    (this as Regulus.Remoting.IResponseQueue).Push((int)ServerToClientPhotonOpCode.Ping, new Dictionary<byte, byte[]>());
                 }
             }
 
@@ -86,7 +86,7 @@ namespace Regulus.Remoting.Soul
 
             
 
-            void Remoting.IResponseQueue.Push(byte cmd, Dictionary<byte, object> args)
+            void Remoting.IResponseQueue.Push(byte cmd, Dictionary<byte, byte[]> args)
             {
                 _Writes.Enqueue(new Regulus.Remoting.Package() { Code = cmd, Args = args });
             }

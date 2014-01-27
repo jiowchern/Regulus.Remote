@@ -158,7 +158,7 @@ namespace Regulus.Remoting.Ghost.Native
                 _Core.Finial();
         }
 
-        void Remoting.IGhostRequest.Request(byte code, Dictionary<byte, object> args)
+        void Remoting.IGhostRequest.Request(byte code, Dictionary<byte, byte[]> args)
         {
             _WaitWiters.Enqueue(new Package() { Args = args, Code = code } );
         }

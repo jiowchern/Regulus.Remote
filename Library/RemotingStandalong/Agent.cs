@@ -55,7 +55,7 @@ namespace Regulus.Standalong
 			
 		}
 
-		void Remoting.IResponseQueue.Push(byte cmd, Dictionary<byte, object> args)
+		void Remoting.IResponseQueue.Push(byte cmd, Dictionary<byte, byte[]> args)
 		{
 			_Agent.OnResponse(cmd , args);
 		}

@@ -67,18 +67,7 @@ namespace Regulus.Utility
         public delegate void OnUnregister(string command);
         public event OnUnregister UnregisterEvent;        
 
-        public class CAaaa
-        {
-            public Action _Exe;
-
-            internal void Invoke(string[] strs)
-            {
-                if (strs.Length == 0)
-                {
-                    _Exe.Invoke();
-                }
-            }
-        }
+        
         public void Register(string command, Action executer)
         {
 

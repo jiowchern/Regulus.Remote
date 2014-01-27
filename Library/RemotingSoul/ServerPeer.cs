@@ -33,12 +33,12 @@ namespace Regulus.Remoting.Soul
 		{
 			if (operationRequest.OperationCode == (byte)ClientToServerPhotonOpCode.Ping)
 			{
-                (this as Regulus.Remoting.IResponseQueue).Push((int)ServerToClientPhotonOpCode.Ping , new Dictionary<byte,object>());
+                (this as Regulus.Remoting.IResponseQueue).Push((int)ServerToClientPhotonOpCode.Ping , new Dictionary<byte,byte[]>());
 			}else if (operationRequest.OperationCode == (byte)ClientToServerPhotonOpCode.CallMethod)
 			{
 				
 				var entityId = new Guid(operationRequest.Parameters[0] as byte[]);
-				var methodName = operationRequest.Parameters[1] as string;
+                var methodName = System.Text.Encoding.Default.GetString(operationRequest.Parameters[1] as byte[]);
 
 				object par = null;
 				Guid returnId = Guid.Empty;
@@ -79,7 +79,7 @@ namespace Regulus.Remoting.Soul
         class Response
         {
             public byte Id { get; set; }
-            public Dictionary<byte, object> Args { get; set; }        
+            public Dictionary<byte, byte[]> Args { get; set; }        
         }
         Queue<Response> _NewResponses = new Queue<Response>();
         Queue<Response> _UpdateResponses = new Queue<Response>();
@@ -116,7 +116,13 @@ namespace Regulus.Remoting.Soul
                         var command = cmd;
                         var op = new Photon.SocketServer.OperationResponse();
                         op.OperationCode = command.Id;
-                        op.Parameters = command.Args;
+
+                        var pars = new Dictionary<byte, object>();
+                        foreach (var arg in command.Args)
+                        {
+                            pars.Add(arg.Key, arg.Value);
+                        }
+                        op.Parameters = pars;
                         SendOperationResponse(op, new Photon.SocketServer.SendParameters());
                     });                        
                     _UpdateTime = System.DateTime.Now;
@@ -133,7 +139,7 @@ namespace Regulus.Remoting.Soul
             
         }
 
-        void Regulus.Remoting.IResponseQueue.Push(byte cmd, Dictionary<byte, object> args)
+        void Regulus.Remoting.IResponseQueue.Push(byte cmd, Dictionary<byte, byte[]> args)
         {
             
             var response =  new Response() { Id = cmd, Args = args };
