@@ -473,8 +473,6 @@ namespace Regulus.Remoting
 				il.Emit(OpCodes.Call, guidToByteArrayMethod);
 				il.Emit(OpCodes.Stloc, varGuidByteArray);
 
-                
-
                 il.Emit(OpCodes.Ldstr, m.Name);
                 var stringToByteArrayMethod = typeof(Regulus.PhotonExtension.TypeHelper).GetMethod("StringToByteArray", BindingFlags.Public | BindingFlags.Static);
                 il.Emit(OpCodes.Call, stringToByteArrayMethod);
@@ -511,9 +509,6 @@ namespace Regulus.Remoting
 
 				if (valueOriType.Name == m.ReturnType.Name && valueOriType.Namespace == m.ReturnType.Namespace)
 				{
-
-                    
-
 					var argTypes = m.ReturnType.GetGenericArguments();
 					var valueType = valueOriType.MakeGenericType(new Type[] { argTypes[0] });
                     
@@ -538,8 +533,6 @@ namespace Regulus.Remoting
 					il.Emit(OpCodes.Ldc_I4, 2);
 					il.Emit(OpCodes.Ldloc, varRVQIdByteArray);
 					il.Emit(OpCodes.Call, varDict.LocalType.GetMethod("Add"));
-
-                    
 
 					il.Emit(OpCodes.Ldloc, varValue);
 					il.Emit(OpCodes.Stloc, varValueObject);
@@ -583,9 +576,6 @@ namespace Regulus.Remoting
 				il.Emit(OpCodes.Ldc_I4, (int)ClientToServerPhotonOpCode.CallMethod); // opcode 
 				il.Emit(OpCodes.Ldloc, varDict);
 
-
-                
-
 				//指定呼叫函式的多載
 				il.Emit(OpCodes.Callvirt, peerField.FieldType.GetMethod("Request", new Type[] { typeof(byte), dictionaryType }));
                 
@@ -608,7 +598,6 @@ namespace Regulus.Remoting
 				Type eventHandleType = eventInfo.EventHandlerType;
 				var eventFieldBuilder = type.DefineField(eventName, eventHandleType, FieldAttributes.FamORAssem);
 				var eventBuilder = type.DefineEvent(eventInfo.Name, EventAttributes.None, eventHandleType);
-
 
 				#region add event
 				var addEventBuilder = type.DefineMethod("add_" + eventInfo.Name, eventInfo.GetAddMethod().Attributes & ~(MethodAttributes.Abstract), null, new Type[] { eventHandleType });

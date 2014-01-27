@@ -22,20 +22,24 @@ namespace AsyncEchoServer
             var server = new Regulus.Remoting.Soul.NativeAppliaction(12345, viwer, input);
 
             var client = new Regulus.Remoting.Ghost.Native.Agent("127.0.0.1" , 12345);
+            var client2 = new Regulus.Remoting.Ghost.Native.Agent("127.0.0.1", 12345);
 
             Regulus.Game.IFramework servera = server;
 
             Regulus.Utility.Updater<Regulus.Utility.IUpdatable> updater = new Regulus.Utility.Updater<Regulus.Utility.IUpdatable>();
             updater.Add(server);
             updater.Add(client);
+            updater.Add(client2);
             servera.Launch();
 
+            bool exit = false;
+            server.Command.Register("exit", () => { exit = true; });
             server.Command.Register("ping", () => 
             {
 
                 viwer.WriteLine(System.TimeSpan.FromTicks(client.Ping).ToString());
             });
-            while(true)
+            while (exit == false)
             {
                 servera.Update();
                 updater.Update();

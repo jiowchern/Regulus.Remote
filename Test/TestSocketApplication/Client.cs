@@ -23,11 +23,13 @@ namespace Regulus.Remoting
             {
                 var package = _Packages.Dequeue();
                 var buffer = Regulus.PhotonExtension.TypeHelper.Serializer(package);
-
-                //var stream = new MemoryStream();
-                //ProtoBuf.Serializer.Serialize<Package>(stream, package);
-                //var buffer = stream.ToArray();
                 _Stream.BeginWrite(buffer, 0, buffer.Length, _WriteCompletion, null);
+                /*using (var stream = new MemoryStream())
+                {
+                    ProtoBuf.Serializer.Serialize<Package>(stream, package);                    
+                    var buffer = stream.ToArray();
+                    _Stream.BeginWrite(buffer, 0, buffer.Length, _WriteCompletion, null);
+                } */               
             }
             else
             {
@@ -74,6 +76,12 @@ namespace Regulus.Remoting
         {
             _Stream.EndRead(ar);
             ReadCompletionEvent(Regulus.PhotonExtension.TypeHelper.Deserialize(_Buffer) as Package);
+
+            /*using(var stream = new MemoryStream())
+            {
+                var package = ProtoBuf.Serializer.Deserialize<Package>(stream);
+                ReadCompletionEvent(package);
+            }*/
         }
 
         void Game.IStage.Leave()

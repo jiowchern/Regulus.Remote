@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 
 namespace Regulus.Remoting
 {
-    [Serializable]
+    [Serializable , ProtoBuf.ProtoContract]
     public class Package
     {        
-        
+        [ProtoBuf.ProtoMember(1)]
         public byte Code;
-        
+
+        [ProtoBuf.ProtoMember(2,DynamicType = true)]
         public Regulus.Utility.Map<byte, byte[]> Args;        
     }
 }
