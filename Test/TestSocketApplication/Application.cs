@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace Regulus.Remoting
 {
-    [ProtoBuf.ProtoContract]
+    [Serializable]
     public class Package
-    {
-        [ProtoBuf.ProtoMember(1) ]
+    {        
+        
         public byte Code;
-        [ProtoBuf.ProtoMember(2, DynamicType = true)]
-        public Dictionary<byte, byte[]> Args;
+        
+        public Regulus.Utility.Map<byte, byte[]> Args;        
     }
 }
 namespace Regulus.Remoting.Soul
@@ -56,13 +56,14 @@ namespace Regulus.Remoting.Soul
             private void _ToRead()
             {
                 var stage = new NetworkStreamReadStage(_Client.GetStream(), _Client.ReceiveBufferSize);
-                stage.ReadCompletionEvent += (buffer) =>
+                stage.ReadCompletionEvent += (package) =>
                 {
-                    using (var stream = new System.IO.MemoryStream(buffer))
-                    {
+                    _HandlePackage(package); 
+                    /*using (var stream = new System.IO.MemoryStream(buffer))                    {
+                    {     
                         var package = ProtoBuf.Serializer.Deserialize<Package>(stream);
                         _HandlePackage(package);
-                    }
+                    }*/
                     _ToRead();
                 };
                 _ReadMachine.Push(stage);
@@ -78,6 +79,7 @@ namespace Regulus.Remoting.Soul
 
             public void Update()
             {
+                System.Threading.Thread.Sleep(0);
                 _SoulProvider.Update();
 
                 _ReadMachine.Update();
@@ -88,7 +90,7 @@ namespace Regulus.Remoting.Soul
 
             void Remoting.IResponseQueue.Push(byte cmd, Dictionary<byte, byte[]> args)
             {
-                _Writes.Enqueue(new Regulus.Remoting.Package() { Code = cmd, Args = args });
+                _Writes.Enqueue(new Regulus.Remoting.Package() { Code = cmd, Args = Regulus.Utility.Map<byte, byte[]>.ToMap(args) });
             }
 
             event Action<Guid, string, Guid, object[]> Remoting.IRequestQueue.InvokeMethodEvent
@@ -110,59 +112,60 @@ namespace Regulus.Remoting.Soul
         }
         class Controller : IController
         {
+            string _Name;
             string IController.Name
             {
                 get
                 {
-                    throw new NotImplementedException();
+                    return _Name ;
                 }
                 set
                 {
-                    throw new NotImplementedException();
+                    _Name = value;
                 }
             }
 
             event OnSpawnUser IController.UserSpawnEvent
             {
-                add { throw new NotImplementedException(); }
-                remove { throw new NotImplementedException(); }
+                add {  }
+                remove {  }
             }
 
             event OnSpawnUserFail IController.UserSpawnFailEvent
             {
-                add { throw new NotImplementedException(); }
-                remove { throw new NotImplementedException(); }
+                add {  }
+                remove {  }
             }
 
             event OnUnspawnUser IController.UserUnpawnEvent
             {
-                add { throw new NotImplementedException(); }
-                remove { throw new NotImplementedException(); }
+                add {  }
+                remove {  }
             }
 
             void IController.Look()
             {
-                throw new NotImplementedException();
+                
             }
 
             void IController.NotLook()
             {
-                throw new NotImplementedException();
+                
             }
 
             bool Game.IFramework.Update()
             {
-                throw new NotImplementedException();
+                return true;
             }
 
             void Game.IFramework.Launch()
             {
-                throw new NotImplementedException();
+                
             }
 
             void Game.IFramework.Shutdown()
             {
-                throw new NotImplementedException();
+                
             }
         }
 
@@ -231,6 +234,7 @@ namespace Regulus.Remoting.Soul
 
         void Framework.ILaunched.Launch()
         {
+            
             _Listener = System.Net.Sockets.TcpListener.Create(_Port);
             _Listener.Start();
             _HandleConnect(_Listener, _NewClients);

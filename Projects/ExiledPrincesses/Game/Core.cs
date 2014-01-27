@@ -172,7 +172,6 @@ namespace Regulus.Project.ExiledPrincesses.Game
             _ToVerify();
         }
 
-
         Remoting.Value<long> IUserStatus.QueryTime()
         {
             return LocalTime.Instance.Ticks;

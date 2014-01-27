@@ -18,7 +18,7 @@ namespace Regulus.Utility
 		{
 			public override bool CanConvertFrom(System.ComponentModel.ITypeDescriptorContext context, Type sourceType)
 			{
-				if (sourceType == typeof(Regulus.Utility.Map<TKey, TKey>))
+                if (sourceType == typeof(Regulus.Utility.Map<TKey, TVal>))
 				{
 					return true;
 				}
@@ -26,13 +26,13 @@ namespace Regulus.Utility
 			}
 			public override object ConvertFrom(System.ComponentModel.ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
 			{
-				Regulus.Utility.Map<TKey, TKey> qn = new Utility.Map<TKey, TKey>();
+                Regulus.Utility.Map<TKey, TVal> qn = new Utility.Map<TKey, TVal>();
 				if (value != null)
 				{
 					Object[] parts = (Object[])value;
 					foreach (var part in parts)
 					{
-						System.Collections.Generic.KeyValuePair<TKey, TKey> kv = (System.Collections.Generic.KeyValuePair<TKey, TKey>)part;
+                        System.Collections.Generic.KeyValuePair<TKey, TVal> kv = (System.Collections.Generic.KeyValuePair<TKey, TVal>)part;
 						qn.Add(kv.Key, kv.Value);
 					}
 					return qn;
@@ -41,7 +41,7 @@ namespace Regulus.Utility
 			}
 			public override bool CanConvertTo(System.ComponentModel.ITypeDescriptorContext context, Type destinationType)
 			{
-				if (destinationType == typeof(Regulus.Utility.Map<TKey, TKey>))
+                if (destinationType == typeof(Regulus.Utility.Map<TKey, TVal>))
 				{
 					return true;
 				}
@@ -53,9 +53,9 @@ namespace Regulus.Utility
 				Object[] objs = new Object[0];
 				if (value != null)
 				{
-					if (destinationType == typeof(Regulus.Utility.Map<TKey, TKey>))
+                    if (destinationType == typeof(Regulus.Utility.Map<TKey, TVal>))
 					{
-						Regulus.Utility.Map<TKey, TKey> qn = (Regulus.Utility.Map<TKey, TKey>)value;
+                        Regulus.Utility.Map<TKey, TVal> qn = (Regulus.Utility.Map<TKey, TVal>)value;
 						objs = new Object[qn.Count];
 						int idx = 0;
 						foreach (var page in qn)
@@ -70,7 +70,16 @@ namespace Regulus.Utility
 				return base.ConvertTo(context, culture, value, destinationType); 
 			}
 		}
-
+        public static Regulus.Utility.Map<TKey, TVal> ToMap(Dictionary<TKey, TVal> value)
+        {
+            Regulus.Utility.Map<TKey, TVal> map = new Regulus.Utility.Map<TKey, TVal>();
+            foreach (var pair in value)
+            {
+                map.Add(pair.Key, pair.Value);
+            }
+            return map;
+        }
+        
 		/*public static implicit operator Regulus.Utility.Map<TKey, TKey>(Object[] value)
 		{
 			Regulus.Utility.Map<TKey, TKey> qn = new Utility.Map<TKey, TKey>();

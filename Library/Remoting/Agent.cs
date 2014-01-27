@@ -472,7 +472,9 @@ namespace Regulus.Remoting
 				var guidToByteArrayMethod = typeof(Regulus.PhotonExtension.TypeHelper).GetMethod("GuidToByteArray", BindingFlags.Public | BindingFlags.Static);
 				il.Emit(OpCodes.Call, guidToByteArrayMethod);
 				il.Emit(OpCodes.Stloc, varGuidByteArray);
+
                 
+
                 il.Emit(OpCodes.Ldstr, m.Name);
                 var stringToByteArrayMethod = typeof(Regulus.PhotonExtension.TypeHelper).GetMethod("StringToByteArray", BindingFlags.Public | BindingFlags.Static);
                 il.Emit(OpCodes.Call, stringToByteArrayMethod);
@@ -497,7 +499,7 @@ namespace Regulus.Remoting
 				// add method name
 				il.Emit(OpCodes.Ldloc, varDict);
 				il.Emit(OpCodes.Ldc_I4, 1);
-                il.Emit(OpCodes.Ldstr, varMethodNameByteArray);
+                il.Emit(OpCodes.Ldloc, varMethodNameByteArray);
 				il.Emit(OpCodes.Call, varDict.LocalType.GetMethod("Add"));
 
 				// push return info

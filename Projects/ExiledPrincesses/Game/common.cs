@@ -6,7 +6,7 @@ namespace Regulus.Project.ExiledPrincesses
     using Regulus.Remoting;
 
     public interface IUserStatus
-    {
+    {        
         void Ready();
         event Action<UserStatus> StatusEvent;
         Value<long> QueryTime();
@@ -18,7 +18,9 @@ namespace Regulus.Project.ExiledPrincesses
     {        
         Value<bool> CreateAccount(string name, string password);
         Value<LoginResult> Login(string name, string password);        
-        void Quit();        
+        void Quit();  
+      
+        
     };
 
     public interface ITown

@@ -81,7 +81,7 @@ namespace Regulus.Project.ExiledPrincesses
         public Strategy Specializes { get; set; }
         public Strategy Weakness { get; set; } 
         public Ability[] Abilitys { get; set; }
-
+        
         public Ability FindAbility(int exp)
         {
             return (from a in Abilitys where a.Exp <= exp orderby a.Exp descending select a).FirstOrDefault();
@@ -111,6 +111,8 @@ namespace Regulus.Project.ExiledPrincesses
         Success,
         Fail,
         Repeat
+
+        
 	}
     [Serializable]
     public class Station

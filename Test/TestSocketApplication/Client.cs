@@ -22,9 +22,11 @@ namespace Regulus.Remoting
             if (_Packages.Count > 0)
             {
                 var package = _Packages.Dequeue();
-                var stream = new MemoryStream();
-                ProtoBuf.Serializer.Serialize<Package>(stream, package);
-                var buffer = stream.ToArray();
+                var buffer = Regulus.PhotonExtension.TypeHelper.Serializer(package);
+
+                //var stream = new MemoryStream();
+                //ProtoBuf.Serializer.Serialize<Package>(stream, package);
+                //var buffer = stream.ToArray();
                 _Stream.BeginWrite(buffer, 0, buffer.Length, _WriteCompletion, null);
             }
             else
@@ -65,13 +67,13 @@ namespace Regulus.Remoting
             _Stream.BeginRead(_Buffer, 0, _Buffer.Length, _Readed, null);
         }
 
-        public delegate void OnReadCompletion(byte[] buffer);
+        public delegate void OnReadCompletion(Package package);
         public event OnReadCompletion ReadCompletionEvent;
 
         private void _Readed(IAsyncResult ar)
         {
             _Stream.EndRead(ar);
-            ReadCompletionEvent(_Buffer);
+            ReadCompletionEvent(Regulus.PhotonExtension.TypeHelper.Deserialize(_Buffer) as Package);
         }
 
         void Game.IStage.Leave()
@@ -132,13 +134,15 @@ namespace Regulus.Remoting.Ghost.Native
         private void _ToRead()
         {
             var stage = new NetworkStreamReadStage(_Tcp.GetStream(), _Tcp.ReceiveBufferSize);
-            stage.ReadCompletionEvent += (buffer) =>
+            stage.ReadCompletionEvent += (package) =>
             {
-                using(var stream = new MemoryStream(buffer))
+
+                _Core.OnResponse(package.Code, package.Args);
+                /*using(var stream = new MemoryStream(buffer))
                 {
                     var package = ProtoBuf.Serializer.Deserialize<Package>(stream);                    
                     _Core.OnResponse(package.Code, package.Args);
-                }
+                }*/
                 _ToRead();
             };
             _ReadMachine.Push(stage);
@@ -160,9 +164,9 @@ namespace Regulus.Remoting.Ghost.Native
 
         void Remoting.IGhostRequest.Request(byte code, Dictionary<byte, byte[]> args)
         {
-            _WaitWiters.Enqueue(new Package() { Args = args, Code = code } );
+            _WaitWiters.Enqueue(new Package() { Args = Regulus.Utility.Map<byte, byte[]>.ToMap(args), Code = code });
         }
 
-        
+        public long Ping { get { return _Core.Ping; } }
     }
 }

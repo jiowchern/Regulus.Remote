@@ -306,7 +306,7 @@ namespace Regulus.Project.ExiledPrincesses
             });
         }
 
-        
+
 
         private void _OnStatusSupply(IUserStatus status)
         {
@@ -319,7 +319,7 @@ namespace Regulus.Project.ExiledPrincesses
                     status.StatusEvent -= _OnUserStatusChanged;
                 }
             });
-
+            
             _Command.Register("Ready", status.Ready );
             _Command.RemotingRegister<long>("Time", status.QueryTime, (time) =>
             {
