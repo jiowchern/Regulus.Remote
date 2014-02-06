@@ -6,11 +6,11 @@ using System.Text;
 
 namespace Regulus.Game
 {
-    public abstract partial class ConsoleFramework<TUser> : Regulus.Game.IFramework
-        where TUser : Regulus.Game.IFramework
+    public abstract partial class ConsoleFramework<TUser> : Regulus.Utility.IUpdatable
+		where TUser : Regulus.Utility.IUpdatable
     {
 
-        public interface IController : Regulus.Game.IFramework
+		public interface IController : Regulus.Utility.IUpdatable
         {
             string Name { get; set; }
             event OnSpawnUser UserSpawnEvent;
@@ -34,7 +34,7 @@ namespace Regulus.Game
         protected Regulus.Utility.Console.IInput _Input;
         protected Regulus.Utility.Console.IViewer _Viewer;
         Regulus.Game.StageMachine _StageMachine;
-        FrameworkRoot _Loops;        
+		Regulus.Utility.Updater<Regulus.Utility.IUpdatable> _Loops;        
         
         public Regulus.Utility.Command Command { get { return _Console.Command; } }
         public Regulus.Utility.Console.IViewer Viewer { get { return _Viewer; } }
@@ -54,8 +54,8 @@ namespace Regulus.Game
             
             _Viewer = viewer;
             _Input = input;
-            _Loops = new FrameworkRoot();
-            
+            _Loops = new Regulus.Utility.Updater<Regulus.Utility.IUpdatable>();
+			_Console = new Regulus.Utility.Console(_Input, _Viewer);
         }
         
         
@@ -91,32 +91,29 @@ namespace Regulus.Game
         public void Stop()
         {
             _Runable = false;
+
         }
 
-        void IFramework.Launch()
+
+		void Regulus.Framework.ILaunched.Launch()
         {
             _Runable = true;
-            _Console = new Regulus.Utility.Console();
-            _Console.Initial(_Input, _Viewer);
-            _Console.Command.Register("quit", Stop);
 
             _StageMachine = _CreateStage();
         }
 
-        bool IFramework.Update()
+		bool Regulus.Utility.IUpdatable.Update()
         {
             _Loops.Update();
             _StageMachine.Update();
             return _Runable;
         }
 
-        void IFramework.Shutdown()
+		void Regulus.Framework.ILaunched.Shutdown()
         {
             _Loops.Shutdown();
             _Loops = null;
-            _Console.Command.Unregister("quit");
-            _Console.Release();
-
+        
             _StageMachine = null;
             _Viewer = null;
             _Input = null;
@@ -257,7 +254,7 @@ namespace Regulus.Game
             private Utility.Console.IViewer _Viewer;
             private ControllerProvider _ControllerProvider;
             private Utility.Command _Command;
-            Regulus.Game.FrameworkRoot _Loops;
+			Regulus.Utility.Updater<Regulus.Utility.IUpdatable> _Loops;
             System.Collections.Generic.List<IController> _Controlls;
             System.Collections.Generic.List<IController> _SelectedControlls;
 
@@ -276,7 +273,7 @@ namespace Regulus.Game
             {
                 _SelectedControlls = new List<IController>();
                 _Controlls = new List<IController>();
-                _Loops = new FrameworkRoot();
+                _Loops = new Regulus.Utility.Updater<Regulus.Utility.IUpdatable>();
                 _Command.Register<string>("SpawnController", _SpawnController);
                 _Command.Register<string>("SelectController", _SelectController);
                 _Command.Register<string>("UnspawnController", _UnspawnController);                
@@ -304,7 +301,7 @@ namespace Regulus.Game
                 foreach (var c in controllers)
                 {
                     _SelectedControlls.Remove(c);
-                    _Loops.RemoveFramework(c);
+					_Loops.Remove(c);                    
                     _Controlls.Remove(c);
                     _Viewer.WriteLine("控制者[" + name + "] 移除.");
                 }
@@ -318,7 +315,7 @@ namespace Regulus.Game
                 controller.Name = name;
 
                 _Controlls.Add(controller);
-                _Loops.AddFramework(controller);
+				_Loops.Add(controller);                
                 controller.UserSpawnEvent += UserSpawnEvent;
                 controller.UserSpawnFailEvent += UserSpawnFailEvent;
                 controller.UserUnpawnEvent += UserUnspawnEvent;

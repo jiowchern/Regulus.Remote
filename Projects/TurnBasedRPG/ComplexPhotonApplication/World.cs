@@ -11,10 +11,11 @@ namespace Regulus.Project.TurnBasedRPG
         Regulus.Remoting.Value<IMap> Find(string map_name);		
 	}
 
-	class World : IWorld , Regulus.Game.IFramework
+	class World : IWorld , Regulus.Utility.IUpdatable
 	{
 		List<Map>	_Maps ;
-		Regulus.Game.FrameworkRoot	_Frameworks;
+
+		Regulus.Utility.Updater<Regulus.Utility.IUpdatable> _Frameworks;
 		private Remoting.Time _Time;
 
 		public World(Remoting.Time time)
@@ -24,9 +25,9 @@ namespace Regulus.Project.TurnBasedRPG
 
         
 		}
-		void Game.IFramework.Launch()
+		void Regulus.Framework.ILaunched.Launch()
 		{
-			_Frameworks = new Game.FrameworkRoot();
+			_Frameworks = new Regulus.Utility.Updater<Regulus.Utility.IUpdatable>();
 			_Maps = new List<Map>();
 
 			
@@ -39,7 +40,7 @@ namespace Regulus.Project.TurnBasedRPG
         private void _AddMap(Map map)
         {
             _Maps.Add(map);
-            _Frameworks.AddFramework(map);
+            _Frameworks.Add(map);
             map.SetTime(_Time);
         }
 
@@ -49,13 +50,13 @@ namespace Regulus.Project.TurnBasedRPG
 			return map;
 		}
 
-		bool Game.IFramework.Update()
+		bool Regulus.Utility.IUpdatable.Update()
 		{
 			_Frameworks.Update();
 			return true;
 		}
 
-		void Game.IFramework.Shutdown()
+		void Regulus.Framework.ILaunched.Shutdown()
 		{
 			_Frameworks.Shutdown();
 		}

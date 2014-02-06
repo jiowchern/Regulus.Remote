@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPG
 {
-    class Storage : Regulus.Utility.Singleton<Storage>, Regulus.Game.IFramework  
+    class Storage : Regulus.Utility.Singleton<Storage>, Regulus.Utility.IUpdatable
     {
         Regulus.NoSQL.Database _Database;
 
@@ -14,18 +14,19 @@ namespace Regulus.Project.TurnBasedRPG
             _Database.Add(ai);
         }
 
-        void Regulus.Game.IFramework.Launch()
+
+		void Regulus.Framework.ILaunched.Launch()
         {
             _Database = new Regulus.NoSQL.Database();
             _Database.Launch("mongodb://127.0.0.1:27017");
         }
 
-        bool Regulus.Game.IFramework.Update()
+		bool Regulus.Utility.IUpdatable.Update()
         {
             return true;
         }
 
-        void Regulus.Game.IFramework.Shutdown()
+		void Regulus.Framework.ILaunched.Shutdown()
         {
             if (_Database != null)
                 _Database.Shutdown();

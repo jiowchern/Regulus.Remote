@@ -85,7 +85,7 @@ namespace UserConsole
     
     class Program
     {
-        class Input : Regulus.Utility.ConsoleInput, Regulus.Game.IFramework
+        class Input : Regulus.Utility.ConsoleInput, Regulus.Utility.IUpdatable
         {
 
 
@@ -95,23 +95,25 @@ namespace UserConsole
                 // TODO: Complete member initialization
             
             }
-            
-            void Regulus.Game.IFramework.Launch()
-            {
-                
-            }
 
-            void Regulus.Game.IFramework.Shutdown()
-            {
-                
-            }
 
-            bool Regulus.Game.IFramework.Update()
-            {
-                base.Update();
-                return true;
-            }
-        }
+
+			bool Regulus.Utility.IUpdatable.Update()
+			{
+				base.Update();
+				return true;
+			}
+
+			void Regulus.Framework.ILaunched.Launch()
+			{
+				throw new NotImplementedException();
+			}
+
+			void Regulus.Framework.ILaunched.Shutdown()
+			{
+				throw new NotImplementedException();
+			}
+		}
         static void Main(string[] args)
         {
             var view = new Regulus.Utility.ConsoleViewer();
@@ -122,7 +124,7 @@ namespace UserConsole
             //application.UserRequesterEvent += _OnUserRequester;
             
             
-            Regulus.Game.IFramework app = application;
+            Regulus.Utility.IUpdatable app = application;
             app.Launch();
             application.SetLogMessage(Regulus.Utility.Console.LogFilter.All);
             var batchCommander = new BatchCommander(application.Command , view);

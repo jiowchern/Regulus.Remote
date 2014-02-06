@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Project.ExiledPrincesses.Game
 {
-    public partial class Core : Regulus.Game.IFramework, IUserStatus, IController
+    public partial class Core : Regulus.Utility.IUpdatable, IUserStatus, IController
 	{
 		Regulus.Remoting.ISoulBinder _Binder;
 		public IStorage	Storage {get ; private set;}

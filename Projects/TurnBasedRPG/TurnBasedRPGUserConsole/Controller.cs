@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPGUserConsole
 {
-    abstract class Controller : Regulus.Game.IFramework
+    abstract class Controller : Regulus.Utility.IUpdatable
     {
         Regulus.Project.TurnBasedRPG.User _User;
         protected Regulus.Project.TurnBasedRPGUserConsole.CommandHandler _CommandHandler;
@@ -14,7 +14,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
         Regulus.Project.TurnBasedRPGUserConsole.CommandBinder _CommandBinder;
 
         protected abstract void _Launch(Regulus.Project.TurnBasedRPG.User user);
-        void Regulus.Game.IFramework.Launch()
+		void Regulus.Framework.ILaunched.Launch()
         {
             //Console.Write("請輸入連線位置&Port (127.0.0.1:5055):");  
             //var addr = Console.ReadLine();    
@@ -35,7 +35,8 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
         }
 
         protected abstract string[] _HandlerInput();
-        bool Regulus.Game.IFramework.Update()
+
+		bool Regulus.Utility.IUpdatable.Update()
         {
             _CommandBinder.Update();
             string[] command = _HandlerInput();
@@ -45,7 +46,8 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             return _User.Update();
         }
         protected abstract void _Shutdown();
-        void Regulus.Game.IFramework.Shutdown()
+
+		void Regulus.Framework.ILaunched.Shutdown()
         {
             
             _Shutdown();

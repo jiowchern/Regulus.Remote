@@ -13,7 +13,8 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             Console.WriteLine("系統啟動...");
             Regulus.Utility.Singleton<Regulus.Utility.ConsoleLogger>.Instance.Launch("TurnBasedRPG");
 
-            Regulus.Game.FrameworkRoot frameworkRoot = new Regulus.Game.FrameworkRoot();
+
+			Regulus.Utility.Updater<Regulus.Utility.IUpdatable> frameworkRoot = new Regulus.Utility.Updater<Regulus.Utility.IUpdatable>();
 
             bool userRunning = true;
             var user = _CreateUser(frameworkRoot);
@@ -35,16 +36,16 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             Console.WriteLine("關閉完成.");
         }
 
-        private UserController _CreateUser(Regulus.Game.FrameworkRoot frameworkRoot)
+		private UserController _CreateUser(Regulus.Utility.Updater<Regulus.Utility.IUpdatable> frameworkRoot)
         {
             Console.WriteLine("建立使用者.");
             UserController user = new UserController();
             
-            frameworkRoot.AddFramework(user);
+            frameworkRoot.Add(user);
             return user;
         }
 
-        private void _CreateStageBot(Regulus.Game.FrameworkRoot frameworkRoot)
+		private void _CreateStageBot(Regulus.Utility.Updater<Regulus.Utility.IUpdatable> frameworkRoot)
         {
             Console.WriteLine("建立狀態機器人...");
             Console.Write("輸入數量:");
@@ -54,11 +55,11 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
                 for (int idx = 0; idx < botCount; ++idx)
                 {
                     var bot = new StatusBotController("StatusBot" + idx.ToString() );
-                    frameworkRoot.AddFramework(bot);
+                    frameworkRoot.Add(bot);
                 }
             }
         }
-        private void _CreateRandomBot(Regulus.Game.FrameworkRoot frameworkRoot)
+		private void _CreateRandomBot(Regulus.Utility.Updater<Regulus.Utility.IUpdatable> frameworkRoot)
         {
             if (System.IO.File.Exists("BotCommand.txt"))
             {
@@ -70,7 +71,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
                     for(int idx = 0; idx < botCount ;++idx)
                     {
                         var bot = new RandomBotController("BotCommand.txt");
-                        frameworkRoot.AddFramework(bot);
+                        frameworkRoot.Add(bot);
                     }
                 }
             }

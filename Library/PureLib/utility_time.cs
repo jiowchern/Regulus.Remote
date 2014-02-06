@@ -5,7 +5,29 @@ using System.Text;
 
 namespace Regulus.Utility
 {
-    
+
+
+	public class FPSCounter
+	{
+		public int Value {  get; private set;}
+		TimeCounter _Counter;
+		int _Frames;
+		public FPSCounter()
+		{
+			_Counter = new TimeCounter();
+		}
+
+		public void Update()
+		{
+			_Frames++;
+			if (_Counter.Second > 1.0f)
+			{
+				Value = _Frames;
+				_Frames = 0;
+				_Counter.Reset();
+			}
+		}
+	}
 
 
     public class TimeCounter

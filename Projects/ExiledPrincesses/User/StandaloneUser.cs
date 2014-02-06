@@ -61,20 +61,7 @@ namespace Regulus.Project.ExiledPrincesses.Standalone
             get { return _Agent.QueryProvider<IUserStatus>(); }
         }
 
-        void Regulus.Game.IFramework.Launch()
-        {
-            throw new NotImplementedException();
-        }
-
-        void Regulus.Game.IFramework.Shutdown()
-        {
-            throw new NotImplementedException();
-        }
-
-        bool Regulus.Game.IFramework.Update()
-        {
-            throw new NotImplementedException();
-        }
+        
 
 
         Regulus.Remoting.Ghost.IProviderNotice<ITown> IUser.TownProvider
@@ -129,5 +116,20 @@ namespace Regulus.Project.ExiledPrincesses.Standalone
         {
             get { return _Agent.QueryProvider<Regulus.Remoting.ITime>(); }
         }
-    }
+
+		bool Utility.IUpdatable.Update()
+		{
+			throw new NotImplementedException();
+		}
+
+		void Regulus.Framework.ILaunched.Launch()
+		{
+			throw new NotImplementedException();
+		}
+
+		void Regulus.Framework.ILaunched.Shutdown()
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

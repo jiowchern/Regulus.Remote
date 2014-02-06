@@ -16,7 +16,7 @@ namespace Regulus.Project.ExiledPrincesses
             _World.Enter(provider);
 		}
 
-		void Regulus.Game.IFramework.Launch()
+		void Regulus.Framework.ILaunched.Launch()
 		{
 			_Stroage = new Storage();
 			_Stroage.Initial();
@@ -25,13 +25,13 @@ namespace Regulus.Project.ExiledPrincesses
 			
 		}
 
-		bool Regulus.Game.IFramework.Update()
+		bool Regulus.Utility.IUpdatable.Update()
 		{
             _World.Update();
 			return true;
 		}
 
-		void Regulus.Game.IFramework.Shutdown()
+		void Regulus.Framework.ILaunched.Shutdown()
 		{			
 			_Stroage.Finial();			
 		}

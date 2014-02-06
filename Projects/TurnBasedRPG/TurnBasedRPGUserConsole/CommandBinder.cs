@@ -20,7 +20,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
         }
         internal void Setup()
         {
-            var fw = _User as Regulus.Game.IFramework;            
+            var fw = _User as Regulus.Utility.IUpdatable;            
 
             _Bind(_User.VerifyProvider);
             _Bind(_User.ParkingProvider);

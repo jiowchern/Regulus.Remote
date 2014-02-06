@@ -26,14 +26,21 @@
         IInput _Input;
         IViewer _Viewer;
         LogFilter _Filter;
-        
-        public Console()
+
+		public Console(IInput input, IViewer viewer)
         {
             Command = new Command();
             _Filter = LogFilter.All;
+
+			_Initial(input , viewer);
         }
 
-        public void Initial(IInput input , IViewer viewer)
+		~Console()
+		{
+			_Release();
+		}
+
+        void _Initial(IInput input , IViewer viewer)
         {
             _Viewer = viewer;
             _Input = input;
@@ -52,7 +59,7 @@
             if ( (_Filter & LogFilter.RegisterCommand) == LogFilter.RegisterCommand )
                 _Viewer.WriteLine("移除命令" + command);
         }
-        public void Release()
+        void _Release()
         {
             Command.UnregisterEvent -= _OnUnregister;
             Command.RegisterEvent -= _OnRegister;

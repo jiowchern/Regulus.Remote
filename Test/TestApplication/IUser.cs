@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TestApplication
 {
-    public interface IUser : Regulus.Game.IFramework
+    public interface IUser : Regulus.Utility.IUpdatable
     {
     }
 }

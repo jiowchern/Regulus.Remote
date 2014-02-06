@@ -36,7 +36,7 @@ namespace Regulus.Project.ExiledPrincesses.Standalong
         }
         
 
-        void Regulus.Game.IFramework.Launch()
+        void Regulus.Framework.ILaunched.Launch()
         {
             
             _User.Launch();
@@ -44,7 +44,7 @@ namespace Regulus.Project.ExiledPrincesses.Standalong
                 _UserSpawnEvent(_User);
         }
 
-        void Regulus.Game.IFramework.Shutdown()
+		void Regulus.Framework.ILaunched.Shutdown()
         {
             
             _UserUnpawnEvent(_User);            
@@ -52,7 +52,7 @@ namespace Regulus.Project.ExiledPrincesses.Standalong
 
         }
 
-        bool Regulus.Game.IFramework.Update()
+        bool Regulus.Utility.IUpdatable.Update()
         {
             if (_UserCommand != null)
                 _UserCommand.Update();

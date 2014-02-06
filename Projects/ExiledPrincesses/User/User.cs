@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Regulus.Project.ExiledPrincesses
 {
-	public interface IUser : Regulus.Game.IFramework
+	public interface IUser : Regulus.Utility.IUpdatable
 	{
         Regulus.Remoting.Ghost.IProviderNotice<Regulus.Remoting.ITime> TimeProvider { get; }
 		Regulus.Remoting.Ghost.IProviderNotice<IVerify> VerifyProvider { get ; }

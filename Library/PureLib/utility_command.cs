@@ -58,15 +58,11 @@ namespace Regulus.Utility
             _Commands.Add(new Infomation() { Name = command, Handler = func });
         }
 
-
         public delegate void OnRegister(string command, Type ret , Type[] args);
         public event OnRegister RegisterEvent;
 
-        
-
         public delegate void OnUnregister(string command);
         public event OnUnregister UnregisterEvent;        
-
         
         public void Register(string command, Action executer)
         {

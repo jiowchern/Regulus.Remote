@@ -5,14 +5,14 @@ using System.Text;
 
 namespace Regulus.Remoting.PhotonExpansion
 {
-	public interface IPhotonFramework : Regulus.Game.IFramework
+	public interface IPhotonFramework : Regulus.Utility.IUpdatable
 	{
 
 		void ObtainController(Soul.SoulProvider provider);
 	}
 
 
-    public abstract class PhotonFramework : Regulus.Game.FrameworkRoot , IPhotonFramework
+	public abstract class PhotonFramework : Regulus.Utility.Updater<Regulus.Utility.IUpdatable>, IPhotonFramework
     {
         
         public abstract void ObtainController(Soul.SoulProvider provider);
@@ -22,19 +22,21 @@ namespace Regulus.Remoting.PhotonExpansion
         }
 
         public abstract void Launch();
-        void Game.IFramework.Launch()
+
+
+		void Regulus.Framework.ILaunched.Launch()
         {            
             Launch();
         }
 
-        bool Game.IFramework.Update()
+		bool Regulus.Utility.IUpdatable.Update()
         {
             Update();
             return true;
         }
 
         public abstract void Shutdown();
-        void Game.IFramework.Shutdown()
+		void Regulus.Framework.ILaunched.Shutdown()
         {
             Shutdown();
         }

@@ -11,17 +11,17 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
 
         
 
-        void Regulus.Game.IFramework.Launch()
+        void Regulus.Framework.ILaunched.Launch()
         {
             _Complex = new Regulus.Remoting.Ghost.Photon.Agent(null);
         }
 
-        void Regulus.Game.IFramework.Shutdown()
+		void Regulus.Framework.ILaunched.Shutdown()
         {
             _Complex.Shutdown();
         }
 
-        bool Regulus.Game.IFramework.Update()
+        bool Regulus.Utility.IUpdatable.Update()
         {
             return _Complex.Update();
         }

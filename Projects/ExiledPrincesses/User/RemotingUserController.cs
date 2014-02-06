@@ -71,24 +71,24 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
         
         
 
-        bool Regulus.Game.IFramework.Update()
+        bool Regulus.Utility.IUpdatable.Update()
         {
             if (_Look && _UserCommand != null)
                 _UserCommand.Update();
-            (_User as Regulus.Game.IFramework).Update();
+			(_User as Regulus.Utility.IUpdatable).Update();
             return true;
         }
 
-        void Regulus.Game.IFramework.Launch()
-        {            
-            (_User as Regulus.Game.IFramework).Launch();            
+		void Regulus.Framework.ILaunched.Launch()
+        {
+			(_User as Regulus.Framework.ILaunched).Launch();            
             
         }
 
-        void Regulus.Game.IFramework.Shutdown()
+		void Regulus.Framework.ILaunched.Shutdown()
         {
             _UserUnpawnEvent(_User);
-            (_User as Regulus.Game.IFramework).Shutdown();
+			(_User as Regulus.Framework.ILaunched).Shutdown();
                         
         }
 

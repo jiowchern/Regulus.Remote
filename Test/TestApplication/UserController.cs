@@ -22,23 +22,6 @@ namespace TestApplication
             }
         }
 
-        
-
-        void Regulus.Game.IFramework.Launch()
-        {
-            
-        }
-
-        bool Regulus.Game.IFramework.Update()
-        {
-            _User.Update();
-            return true;
-        }
-
-        void Regulus.Game.IFramework.Shutdown()
-        {
-            
-        }
 
 
         event Regulus.Game.ConsoleFramework<IUser>.OnSpawnUser Regulus.Game.ConsoleFramework<IUser>.IController.UserSpawnEvent
@@ -70,5 +53,21 @@ namespace TestApplication
             add { throw new NotImplementedException(); }
             remove { throw new NotImplementedException(); }
         }
-    }
+
+		bool Regulus.Utility.IUpdatable.Update()
+		{
+			_User.Update();
+			return true;
+		}
+
+		void Regulus.Framework.ILaunched.Launch()
+		{
+			throw new NotImplementedException();
+		}
+
+		void Regulus.Framework.ILaunched.Shutdown()
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

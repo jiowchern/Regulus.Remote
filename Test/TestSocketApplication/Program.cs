@@ -18,37 +18,22 @@ namespace AsyncEchoServer
         {
             Regulus.Utility.Console.IViewer viwer = new Regulus.Utility.ConsoleViewer();
             var input = new Regulus.Utility.ConsoleInput(viwer);
-
-            var server = new Regulus.Remoting.Soul.NativeAppliaction(12345, viwer, input);
-
-            var client = new Regulus.Remoting.Ghost.Native.Agent("127.0.0.1" , 12345);
-            var client2 = new Regulus.Remoting.Ghost.Native.Agent("127.0.0.1", 12345);
-
-            Regulus.Game.IFramework servera = server;
+            var server = new Regulus.Remoting.Soul.Native.Application(viwer, input);
 
             Regulus.Utility.Updater<Regulus.Utility.IUpdatable> updater = new Regulus.Utility.Updater<Regulus.Utility.IUpdatable>();
             updater.Add(server);
-            updater.Add(client);
-            updater.Add(client2);
-            servera.Launch();
 
-            bool exit = false;
-            server.Command.Register("exit", () => { exit = true; });
-            server.Command.Register("ping", () => 
-            {
+			bool exit = false;
 
-                viwer.WriteLine(System.TimeSpan.FromTicks(client.Ping).ToString());
-            });
+			server.Command.Register("quit", () => { exit = true; });
+			
             while (exit == false)
-            {
-                servera.Update();
+            {                
                 updater.Update();
                 input.Update();
-                
             }
-            servera.Shutdown();
-            
-            
+
+			server.Command.Unregister("quit");
         }
     }
 }

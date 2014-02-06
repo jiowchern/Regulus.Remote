@@ -7,9 +7,9 @@ namespace Regulus.Project.ExiledPrincesses.Game
 {
     public delegate void OnNewUser(Guid account);
 	public class Hall 
-	{		
+	{
 
-		Regulus.Game.FrameworkRoot	_Users = new Regulus.Game.FrameworkRoot();
+		Regulus.Utility.Updater<Regulus.Utility.IUpdatable> _Users = new Regulus.Utility.Updater<Regulus.Utility.IUpdatable>();
         
         public event OnNewUser NewUserEvent;
         public Hall()
@@ -33,11 +33,11 @@ namespace Regulus.Project.ExiledPrincesses.Game
             
 
 
-			_Users.AddFramework(core);
+			_Users.Add(core);
 			core.InactiveEvent += () => 
             {
                 NewUserEvent -= core.OnKick;
-                _Users.RemoveFramework(core); 
+                _Users.Remove(core); 
             };
 			return core;
 		}

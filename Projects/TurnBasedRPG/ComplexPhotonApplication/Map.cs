@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPG
 {
-    class Map : Regulus.Game.IFramework, IMapInfomation, IMap
+    class Map : Regulus.Utility.IUpdatable, IMapInfomation, IMap
     {
         Regulus.Remoting.Time _Time;
 
@@ -102,7 +102,7 @@ namespace Regulus.Project.TurnBasedRPG
             
         }
 
-        void Regulus.Game.IFramework.Launch()
+        void Regulus.Framework.ILaunched.Launch()
         {
             _ObseverdInfomations = new Physics.QuadTree<EntityInfomation>(new System.Windows.Size(4, 4), 0);
 			_Build(_ReadMapData(Name));
@@ -128,7 +128,8 @@ namespace Regulus.Project.TurnBasedRPG
 			return data;
 		}
 
-        bool Regulus.Game.IFramework.Update()
+
+		bool Regulus.Utility.IUpdatable.Update()
         {
             _Time.Update();            
             var infos = _EntityInfomations.UpdateSet();
@@ -180,9 +181,9 @@ namespace Regulus.Project.TurnBasedRPG
                 }
             }
         }
-		
 
-        void Regulus.Game.IFramework.Shutdown()
+
+		void Regulus.Framework.ILaunched.Shutdown()
         {            
             _ObseverdInfomations = null;
         }

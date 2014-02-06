@@ -6,21 +6,21 @@ using System.Text;
 namespace Regulus.Project.TurnBasedRPG
 {
 
-    class LocalTime : Regulus.Utility.Singleton<Regulus.Remoting.Time>, Regulus.Game.IFramework
+    class LocalTime : Regulus.Utility.Singleton<Regulus.Remoting.Time>, Regulus.Utility.IUpdatable
     {
 
-        void Regulus.Game.IFramework.Launch()
+		void Regulus.Framework.ILaunched.Launch()
         {
                 
         }
 
-        bool Regulus.Game.IFramework.Update()
+		bool Regulus.Utility.IUpdatable.Update()
         {
             Instance.Update();
             return true;    
         }
 
-        void Regulus.Game.IFramework.Shutdown()
+        void Regulus.Framework.ILaunched.Shutdown()
         {
             
         }
@@ -47,20 +47,20 @@ namespace Regulus.Project.TurnBasedRPG
 
         public override void Launch()
         {            
-            AddFramework(_Time);            
-			AddFramework(_World);						
+            Add(_Time);            
+			Add(_World);						
             //AddFramework(Regulus.Utility.Singleton<Map>.Instance);            
-            AddFramework(_Hall);  
-            AddFramework(Regulus.Utility.Singleton<Storage>.Instance);                        
+            Add(_Hall);  
+            Add(Regulus.Utility.Singleton<Storage>.Instance);                        
         }
 
         public override void Shutdown()
         {
-            RemoveFramework(Regulus.Utility.Singleton<Storage>.Instance);            
-            RemoveFramework(_Hall);
+            Remove(Regulus.Utility.Singleton<Storage>.Instance);            
+            Remove(_Hall);
             //RemoveFramework(Regulus.Utility.Singleton<Map>.Instance);
-			RemoveFramework(_World);
-            RemoveFramework(_Time);            
+			Remove(_World);
+            Remove(_Time);            
         }
     }
 }

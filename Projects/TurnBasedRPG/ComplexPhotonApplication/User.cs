@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPG
 {
-    class User : Regulus.Game.IFramework
+    class User : Regulus.Utility.IUpdatable
     {
         public  Regulus.Remoting.Soul.SoulProvider Provider {get ; private set;}
 
@@ -114,7 +114,7 @@ namespace Regulus.Project.TurnBasedRPG
             }            
         }
 
-        void Regulus.Game.IFramework.Launch()
+        void Regulus.Framework.ILaunched.Launch()
         {
             _AccountInfomation = null;
             _ClearActor();            
@@ -130,12 +130,12 @@ namespace Regulus.Project.TurnBasedRPG
             }
         }
 
-        bool Regulus.Game.IFramework.Update()
+		bool Regulus.Utility.IUpdatable.Update()
         {
             return _Machine.Update();
         }
 
-        void Regulus.Game.IFramework.Shutdown()
+		void Regulus.Framework.ILaunched.Shutdown()
         {
             _ClearActor();
             _Machine.Termination();    

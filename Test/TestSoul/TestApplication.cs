@@ -24,20 +24,21 @@ namespace TestSoul
 			//provider.Unbind<TestRemotingCommon.ITest>(soul);
 		}
 
-		void Regulus.Game.IFramework.Launch()
+
+
+		bool Regulus.Utility.IUpdatable.Update()
 		{
-		//	throw new NotImplementedException();
+			throw new NotImplementedException();
 		}
 
-		bool Regulus.Game.IFramework.Update() 
+		void Regulus.Framework.ILaunched.Launch()
 		{
-		//	throw new NotImplementedException();
-			return true;
+			throw new NotImplementedException();
 		}
 
-		void Regulus.Game.IFramework.Shutdown()
+		void Regulus.Framework.ILaunched.Shutdown()
 		{
-		//	throw new NotImplementedException();
+			throw new NotImplementedException();
 		}
 	}
 }

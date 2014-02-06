@@ -28,19 +28,21 @@ namespace TestApplication
             _Agent.Shutdown();
         }
 
-        void Regulus.Game.IFramework.Launch()
-        {
-            throw new NotImplementedException();
-        }
 
-        bool Regulus.Game.IFramework.Update()
-        {
-            throw new NotImplementedException();
-        }
 
-        void Regulus.Game.IFramework.Shutdown()
-        {
-            throw new NotImplementedException();
-        }
-    }
+		bool Regulus.Utility.IUpdatable.Update()
+		{
+			throw new NotImplementedException();
+		}
+
+		void Regulus.Framework.ILaunched.Launch()
+		{
+			throw new NotImplementedException();
+		}
+
+		void Regulus.Framework.ILaunched.Shutdown()
+		{
+			throw new NotImplementedException();
+		}
+	}
 }
