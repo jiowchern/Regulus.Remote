@@ -84,7 +84,7 @@ namespace Regulus.Remoting.Soul
         Queue<Response> _NewResponses = new Queue<Response>();
         Queue<Response> _UpdateResponses = new Queue<Response>();
 
-        System.DateTime _UpdateTime;
+        
         public void Update()
         {
             while (_NewResponses.Count > 0)
@@ -124,8 +124,7 @@ namespace Regulus.Remoting.Soul
                         }
                         op.Parameters = pars;
                         SendOperationResponse(op, new Photon.SocketServer.SendParameters());
-                    });                        
-                    _UpdateTime = System.DateTime.Now;
+                    });                                
                 }
             }
 

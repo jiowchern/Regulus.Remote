@@ -63,6 +63,7 @@
     <Compile Include="utility_consoleinput.cs" />
     <Compile Include="utility_csv.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="utility_ini.cs" />
     <Compile Include="utility_io.cs" />
     <Compile Include="utility_obb.cs" />
     <Compile Include="utility_time.cs" />

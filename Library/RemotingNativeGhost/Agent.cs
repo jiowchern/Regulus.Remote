@@ -3,24 +3,26 @@ using System.Collections.Generic;
 namespace Regulus.Remoting.Ghost.Native
 {
 
-	public class Agent : Regulus.Utility.IUpdatable, Regulus.Remoting.IGhostRequest
+    public class Agent : Regulus.Utility.IUpdatable, Regulus.Remoting.IGhostRequest, IAgent
 	{
 		Regulus.Remoting.AgentCore _Core;
 		System.Net.Sockets.TcpClient _Tcp;
 		Queue<Package> _WaitWiters;
 		Regulus.Game.StageMachine _ReadMachine;
 		Regulus.Game.StageMachine _WriteMachine;
-		string _IpAddress;
-		int _Port;
-		public Agent(string ipaddress, int port)
+		
+		public Agent()
 		{
-			_WaitWiters = new Queue<Package>();
-			_IpAddress = ipaddress;
-			_Port = port;
+            _Core = new Remoting.AgentCore(this);
+			_WaitWiters = new Queue<Package>();		
 			_ReadMachine = new Game.StageMachine();
 			_WriteMachine = new Game.StageMachine();
 		}
-
+        public void Connect(string ipaddress, int port)
+        {
+            _Tcp = new System.Net.Sockets.TcpClient();
+            _Tcp.BeginConnect(ipaddress, port, _OnConnect, null);
+        }
 		bool Utility.IUpdatable.Update()
 		{
 			_ReadMachine.Update();
@@ -30,14 +32,21 @@ namespace Regulus.Remoting.Ghost.Native
 
 		void Framework.ILaunched.Launch()
 		{
-			_Tcp = new System.Net.Sockets.TcpClient();
-			_Tcp.BeginConnect(_IpAddress, _Port, _OnConnect, null);
+			
 		}
 
 		private void _OnConnect(IAsyncResult ar)
 		{
-			_Tcp.EndConnect(ar);
-			_Core = new Remoting.AgentCore(this);
+            try
+            {                
+                _Tcp.EndConnect(ar);
+            }
+            catch (System.Net.Sockets.SocketException ex)
+            { 
+                
+            }
+			
+			
 			_Core.Initial();
 
 			_ToRead();
@@ -81,5 +90,10 @@ namespace Regulus.Remoting.Ghost.Native
 		}
 
 		public long Ping { get { return _Core.Ping; } }
-	}
+
+        IProviderNotice<T> IAgent.QueryProvider<T>()
+        {
+            return _Core.QueryProvider<T>();
+        }
+    }
 }

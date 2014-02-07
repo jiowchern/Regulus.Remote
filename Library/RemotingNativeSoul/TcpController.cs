@@ -9,7 +9,9 @@ namespace Regulus.Remoting.Soul.Native
 	partial class TcpController : Application.IController
 	{
 		System.Net.Sockets.TcpListener _Listener;
-		
+
+        Regulus.Game.StageMachine _Machine;
+
 		float _Timeout;
 
 		System.Collections.Concurrent.ConcurrentQueue<Peer> _NewPeers;
@@ -17,6 +19,9 @@ namespace Regulus.Remoting.Soul.Native
 		Regulus.Utility.Command _Command;
 		Regulus.Utility.Console.IViewer _View;
 		Regulus.Utility.FPSCounter _FPS;
+
+        
+
 		public TcpController(Regulus.Utility.Command command, Regulus.Utility.Console.IViewer view)
 		{
 			_Timeout = 0;
@@ -25,6 +30,7 @@ namespace Regulus.Remoting.Soul.Native
 			_Command = command;
 			_View = view;
 			_FPS = new Utility.FPSCounter();
+            _Machine = new Game.StageMachine();
 		}
 
 
@@ -49,42 +55,49 @@ namespace Regulus.Remoting.Soul.Native
 
 		public void Look()
 		{
-			_Command.Register<int, float>("Start", _StartListen);
-			_Command.Register("Stop", _StopListen);
 			_Command.Register("ConnectCount", () => { _View.WriteLine("Connect Count:" + _Clients.Count.ToString()); });
 			_Command.Register("FPS", () => { _View.WriteLine("FPS:" + _FPS.Value.ToString()); });
 		}
 
 		public void NotLook()
-		{
-			_Command.Unregister("Start");
-			_Command.Unregister("Stop");
+		{            
 			_Command.Unregister("ConnectCount");
 			_Command.Unregister("FPS");
 		}
 		
 		public bool Update()
 		{
-			
-			System.Threading.Thread.Sleep(0);
-			_HandlePeer(_Clients, _NewPeers);
+            System.Threading.Thread.Sleep(0);
+            _Machine.Update();						
 
-			_FPS.Update();
-			
+			_FPS.Update();            
 			return true;
 		}
 
 		public void Launch()
 		{
-			
+            _ToStart();            
 		}
+
+        private void _ToStart()
+        {
+            var stage = new Regulus.Remoting.Soul.Native.TcpController.StageStart(_Command , this);
+            stage.DoneEvent += _ToRun;
+            _Machine.Push(stage);
+        }
+        private void _ToRun(Regulus.Game.ICore core)
+        {                        
+            var stage = new Regulus.Remoting.Soul.Native.TcpController.StageRun(core , _Command, this);
+            stage.ShutdownEvent += _ToStart;
+            _Machine.Push(stage);
+        }
 
 		private void _StartListen(int port,float timeout)
 		{
 			_Timeout = timeout;
 			_Listener = System.Net.Sockets.TcpListener.Create(port);
 			_Listener.Start();
-			_HandleConnect(_Listener, _NewPeers);
+			_HandleConnect(_Listener, _NewPeers);            
 		}
 
 		public void Shutdown()
@@ -94,8 +107,9 @@ namespace Regulus.Remoting.Soul.Native
 
 		private void _StopListen()
 		{
+            
+            
 			_Listener.Stop();
-
 			_Timeout = 0;
 			_NewPeers = new System.Collections.Concurrent.ConcurrentQueue<Peer>();
 			_Clients = new List<Peer>();
@@ -103,11 +117,11 @@ namespace Regulus.Remoting.Soul.Native
 
 		
 		
-		private void _HandlePeer(List<Peer> clients, System.Collections.Concurrent.ConcurrentQueue<Peer> new_clients)
+		private void _HandlePeer(List<Peer> clients, System.Collections.Concurrent.ConcurrentQueue<Peer> new_clients, Regulus.Game.ICore core)
 		{
-			_AddPeer(clients, new_clients);
+            _AddPeer(clients, new_clients, core);
 
-			System.Collections.Concurrent.ConcurrentQueue<Peer> removes = _UpdatePeer(clients);
+			var removes = _UpdatePeer(clients);
 
 			_RemovePeer(clients, removes);
 		}
@@ -119,6 +133,7 @@ namespace Regulus.Remoting.Soul.Native
 				Peer peer;
 				if (removes.TryDequeue(out peer))
 				{
+                    peer.Disconnect();
 					clients.Remove(peer);
 				}
 			}
@@ -138,14 +153,14 @@ namespace Regulus.Remoting.Soul.Native
 			return removes;
 		}
 
-		private static void _AddPeer(List<Peer> clients, System.Collections.Concurrent.ConcurrentQueue<Peer> new_clients)
+		private static void _AddPeer(List<Peer> clients, System.Collections.Concurrent.ConcurrentQueue<Peer> new_clients , Regulus.Game.ICore core)
 		{
 			if (new_clients.Count > 0)
 			{
 				Peer client;
 				if (new_clients.TryDequeue(out client))
 				{
-					
+                    core.ObtainController(client.Binder);
 					clients.Add(client);
 				}
 			}

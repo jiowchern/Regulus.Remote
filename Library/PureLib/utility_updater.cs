@@ -10,6 +10,8 @@ namespace Regulus.Utility
         bool Update();
     }
 
+
+
     public class Updater<T> where T : IUpdatable
     {
         Queue<T> _Adds = new Queue<T>();
@@ -21,13 +23,14 @@ namespace Regulus.Utility
 
         public void Add(T framework)
         {
-            _Adds.Enqueue(framework);
+            if (framework != null)
+                _Adds.Enqueue(framework);
         }
 
         public void Remove(T framework)
         {
-
-            _Removes.Enqueue(framework);
+            if (framework != null)
+                _Removes.Enqueue(framework);
         }
 
         public void Update()
@@ -86,5 +89,10 @@ namespace Regulus.Utility
             _Shutdown(_Ts);
             _Ts.Clear();
         }
+    }
+
+    public class Updater : Updater<IUpdatable>
+    { 
+
     }
 }
