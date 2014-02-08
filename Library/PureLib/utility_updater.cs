@@ -35,10 +35,9 @@ namespace Regulus.Utility
 
         public void Update()
         {
+            _Remove(_Removes, _Ts);
 
             _Add(_Adds, _Ts);
-
-            _Remove(_Removes, _Ts);
 
             _Update();
         }

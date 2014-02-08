@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+
 namespace Regulus.Remoting.Soul.Native
 {
 	public interface IUser : Regulus.Utility.IUpdatable

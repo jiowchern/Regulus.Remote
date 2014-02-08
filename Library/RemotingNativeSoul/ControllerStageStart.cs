@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Regulus.Remoting.Soul.Native
 {
@@ -10,12 +10,11 @@ namespace Regulus.Remoting.Soul.Native
     {
         class StageStart : Regulus.Game.IStage
         {
-            public event Action<Regulus.Game.ICore> DoneEvent;
-            TcpController _Controller;
+            public event Action<Regulus.Game.ICore,int,float> DoneEvent;
+            
             Regulus.Utility.Command _Command;
-            public StageStart(Regulus.Utility.Command command , TcpController controller)
-            {
-                _Controller = controller;
+            public StageStart(Regulus.Utility.Command command )
+            {                
                 _Command = command;
             }
             void Game.IStage.Enter()
@@ -37,11 +36,10 @@ namespace Regulus.Remoting.Soul.Native
             }
 
             private void _Start(int port, float timeout, string path, string class_name)
-            {
-                _Controller._StartListen(port, timeout);
+            {                
                 var stream = System.IO.File.ReadAllBytes(path);
-                var core = Regulus.Game.Loader.Load(stream, class_name);                                
-                DoneEvent(core);
+                var core = Regulus.Game.Loader.Load(stream, class_name);
+                DoneEvent(core, port, timeout);
             }
 
             void Game.IStage.Leave()

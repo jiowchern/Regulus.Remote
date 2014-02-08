@@ -23,7 +23,7 @@ namespace Regulus.Utility
         /// <PARAM name="INIPath"></PARAM>
         public Ini(string path)
         {
-            _Path = path;
+            _Path = System.Environment.CurrentDirectory + "\\" + path;
         }
         /// <summary>
         /// Write Data to the INI File

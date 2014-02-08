@@ -2,11 +2,12 @@
 {
 	public class NetworkStreamWriteStage : Regulus.Game.IStage
 	{
-		System.Net.Sockets.NetworkStream _Stream;
+		System.Net.Sockets.Socket _Socket;
 		System.Collections.Generic.Queue<Package> _Packages;
-		public NetworkStreamWriteStage(System.Net.Sockets.NetworkStream stream, System.Collections.Generic.Queue<Package> packages)
+        System.IAsyncResult _AsyncResult;
+        public NetworkStreamWriteStage(System.Net.Sockets.Socket socket, System.Collections.Generic.Queue<Package> packages)
 		{
-			_Stream = stream;
+            _Socket = socket;
 			_Packages = packages;
 		}
 		void Game.IStage.Enter()
@@ -15,13 +16,7 @@
 			{
 				var package = _Packages.Dequeue();
 				var buffer = Regulus.PhotonExtension.TypeHelper.Serializer(package);
-				_Stream.BeginWrite(buffer, 0, buffer.Length, _WriteCompletion, null);
-				/*using (var stream = new MemoryStream())
-				{
-					ProtoBuf.Serializer.Serialize<Package>(stream, package);                    
-					var buffer = stream.ToArray();
-					_Stream.BeginWrite(buffer, 0, buffer.Length, _WriteCompletion, null);
-				} */
+                _AsyncResult = _Socket.BeginSend(buffer, 0, buffer.Length, 0, _WriteCompletion, null);
 			}
 			else
 			{
@@ -33,8 +28,7 @@
 		public event OnWriteCompletion WriteCompletionEvent;
 		private void _WriteCompletion(System.IAsyncResult ar)
 		{
-			_Stream.EndWrite(ar);
-			WriteCompletionEvent();
+            _Socket.EndSend(ar);			
 		}
 
 		void Game.IStage.Leave()
@@ -44,21 +38,25 @@
 
 		void Game.IStage.Update()
 		{
-
+            if (_AsyncResult != null && _AsyncResult.IsCompleted)
+            {
+                WriteCompletionEvent();
+            }
 		}
 	}
 	public class NetworkStreamReadStage : Regulus.Game.IStage
 	{
-		System.Net.Sockets.NetworkStream _Stream;
+		System.Net.Sockets.Socket _Socket;
 		byte[] _Buffer;
-		public NetworkStreamReadStage(System.Net.Sockets.NetworkStream stream, int size)
+        System.IAsyncResult _AsyncResult;
+        public NetworkStreamReadStage(System.Net.Sockets.Socket socket, int size)
 		{
 			_Buffer = new byte[size];
-			_Stream = stream;
+			_Socket = socket;
 		}
 		void Game.IStage.Enter()
 		{
-			_Stream.BeginRead(_Buffer, 0, _Buffer.Length, _Readed, null);
+            _AsyncResult = _Socket.BeginReceive(_Buffer, 0, _Buffer.Length, 0, _Readed, null);
 		}
 
 		public delegate void OnReadCompletion(Package package);
@@ -66,24 +64,20 @@
 
 		private void _Readed(System.IAsyncResult ar)
 		{
-			_Stream.EndRead(ar);
-			ReadCompletionEvent(Regulus.PhotonExtension.TypeHelper.Deserialize(_Buffer) as Package);
-
-			/*using(var stream = new MemoryStream())
-			{
-				var package = ProtoBuf.Serializer.Deserialize<Package>(stream);
-				ReadCompletionEvent(package);
-			}*/
+            _Socket.EndReceive(ar);            
 		}
 
 		void Game.IStage.Leave()
 		{
 
 		}
-
+        
 		void Game.IStage.Update()
 		{
-
+            if (_AsyncResult.IsCompleted)
+            {
+                ReadCompletionEvent(Regulus.PhotonExtension.TypeHelper.Deserialize(_Buffer) as Package);
+            }
 		}
 	}
 }

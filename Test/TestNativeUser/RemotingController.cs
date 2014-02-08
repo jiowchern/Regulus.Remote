@@ -75,7 +75,8 @@ namespace TestNativeUser
 
         void Regulus.Framework.ILaunched.Launch()
         {
-            _UserSpawnEvent(_User);
+            if (_UserSpawnEvent != null)
+                _UserSpawnEvent(_User);
             _Updater.Add(_User);
         }
 
