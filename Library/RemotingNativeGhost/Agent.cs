@@ -129,7 +129,7 @@ namespace Regulus.Remoting.Ghost.Native
 
 		private void _ToRead()
 		{
-            var stage = new NetworkStreamReadStage(_Socket, _Socket.ReceiveBufferSize);
+            var stage = new NetworkStreamReadStage(_Socket);
 			stage.ReadCompletionEvent += (package) =>
 			{
 				_Core.OnResponse(package.Code, package.Args);				

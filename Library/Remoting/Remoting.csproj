@@ -64,8 +64,6 @@
     <Compile Include="SoulProvider.cs" />
     <Compile Include="Stream.cs" />
     <Compile Include="Time.cs" />
-    <Compile Include="UtilityCommandExtension.cs" />
-    <Compile Include="Value.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PureLib\PureLib.csproj">

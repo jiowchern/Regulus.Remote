@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-
+using Regulus.Extension;
 namespace Regulus.Game
 {
+    
+
     public abstract partial class ConsoleFramework<TUser> : Regulus.Utility.IUpdatable
 		where TUser : Regulus.Utility.IUpdatable
     {
@@ -71,7 +73,7 @@ namespace Regulus.Game
 
         public event OnUserRequester UserRequesterEvent;
 
-        void _OnSelectedSystem(ConsoleFramework<TUser>.ControllerProvider controller_provider)
+        IUserRequester _OnSelectedSystem(ConsoleFramework<TUser>.ControllerProvider controller_provider)
         {
             _Viewer.WriteLine("啟動系統");
             var ssr = new StageSystemReady(_Viewer, controller_provider , Command);
@@ -80,6 +82,8 @@ namespace Regulus.Game
             ssr.UserRequesterEvent += UserRequesterEvent;            
             ssr.UserUnspawnEvent += UserUnspawnEvent;
             _StageMachine.Push(ssr);
+
+            return ssr;
         }
 
 
@@ -129,7 +133,7 @@ namespace Regulus.Game
 
         public interface ISystemSelector
         {
-            void Use(string system);
+            Regulus.Remoting.Value<IUserRequester> Use(string system);
         }
         
 
@@ -144,13 +148,16 @@ namespace Regulus.Game
                 {
                     _SystemSelector = new WeakReference(system_selector);
                 }
-                void ISystemSelector.Use(string system)
+                Regulus.Remoting.Value<IUserRequester> ISystemSelector.Use(string system)
                 {
                     if (_SystemSelector != null && _SystemSelector.IsAlive)
                     {
-                        (_SystemSelector.Target as ISystemSelector).Use(system);
+                        
+                        var val =  (_SystemSelector.Target as ISystemSelector).Use(system);
                         _SystemSelector = null;
+                        return val;
                     }
+                    return null;
                 }
             }
             Regulus.Utility.Console.IViewer _Viewer;
@@ -199,19 +206,20 @@ namespace Regulus.Game
             {
 
             }
-            public event Action<ControllerProvider> SelectedEvent;
+            public event Func<ControllerProvider, IUserRequester> SelectedEvent;
 
-            void ISystemSelector.Use(string system)
+            Regulus.Remoting.Value<IUserRequester> ISystemSelector.Use(string system)
             {
                 var p = (from provider in _SystemProviders where provider.Command == system select provider).FirstOrDefault();
                 if (p != null)
                 {
-                    SelectedEvent(p);
+                    return new Regulus.Remoting.Value<IUserRequester>(SelectedEvent(p));
                 }
                 else
                 {
                     _Viewer.WriteLine("錯誤的系統名稱.");
                 }
+                return null;
             }
         }
     }
@@ -221,7 +229,7 @@ namespace Regulus.Game
         public delegate void OnUserRequester(IUserRequester user_requester);
         public interface IUserRequester
         {
-            void Spawn(string name ,  bool look);
+            Regulus.Remoting.Value<TUser> Spawn(string name ,  bool look);
             void Unspawn(string name);
         }
 
@@ -232,12 +240,13 @@ namespace Regulus.Game
             {
                 _UserRequester = new WeakReference(user_requester);
             }
-            void IUserRequester.Spawn(string name , bool look)
+            Regulus.Remoting.Value<TUser> IUserRequester.Spawn(string name, bool look)
             {
                 if (_UserRequester.IsAlive)
                 {
-                    (_UserRequester.Target as IUserRequester).Spawn(name, look);                    
+                    return (_UserRequester.Target as IUserRequester).Spawn(name, look);                    
                 }
+                return null;
             }
 
             void IUserRequester.Unspawn(string name)
@@ -268,13 +277,16 @@ namespace Regulus.Game
                 this._Viewer = view;
                 this._ControllerProvider = controller_provider;
                 this._Command = command;
-            }
-            void IStage.Enter()
-            {
+
                 _SelectedControlls = new List<IController>();
                 _Controlls = new List<IController>();
                 _Loops = new Regulus.Utility.Updater<Regulus.Utility.IUpdatable>();
-                _Command.Register<string>("SpawnController", _SpawnController);
+            }
+            void IStage.Enter()
+            {
+
+
+                _Command.RemotingRegister<string, TUser>("SpawnController", _SpawnController, (user) => { });                
                 _Command.Register<string>("SelectController", _SelectController);
                 _Command.Register<string>("UnspawnController", _UnspawnController);                
                 
@@ -308,19 +320,26 @@ namespace Regulus.Game
 
             }
 
-            void _SpawnController(string name)
+            Regulus.Remoting.Value<TUser> _SpawnController(string name)
             {
+                var value = new Regulus.Remoting.Value<TUser>();
                 var controller = _ControllerProvider.Spawn();
 
                 controller.Name = name;
 
                 _Controlls.Add(controller);
 				_Loops.Add(controller);                
-                controller.UserSpawnEvent += UserSpawnEvent;
+                controller.UserSpawnEvent += (user)=>
+                {
+                    if (UserSpawnEvent != null)
+                        UserSpawnEvent(user);
+                    value.SetValue(user);
+                };
                 controller.UserSpawnFailEvent += UserSpawnFailEvent;
                 controller.UserUnpawnEvent += UserUnspawnEvent;
 
                 _Viewer.WriteLine("控制者[" + name + "] 增加.");
+                return value;
             }
 
             private void _SelectController(string name)
@@ -339,11 +358,12 @@ namespace Regulus.Game
                 _Viewer.WriteLine("選擇控制者[" + name + "]x" + _SelectedControlls.Count());
             }
 
-            void IUserRequester.Spawn(string name , bool look)
+            Regulus.Remoting.Value<TUser> IUserRequester.Spawn(string name, bool look)
             {
-                _SpawnController(name);
+                var val = _SpawnController(name);
                 if (look)
                     _SelectController(name);
+                return val;
             }
 
             void IUserRequester.Unspawn(string name)

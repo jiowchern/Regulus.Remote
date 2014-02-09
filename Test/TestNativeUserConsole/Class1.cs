@@ -9,82 +9,113 @@ namespace TestNativeUserConsole
     using Regulus.Extension;
 
 
-    class BatchCommander
+    
+    public class Appliaction : Regulus.Utility.IUpdatable
     {
-        private TestNativeUser.Application _App;
+        private TestNativeUser.Application _Appliaction;
+        Regulus.Game.ConsoleFramework<TestNativeUser.IUser>.IUserRequester _UserRequester;
+        Regulus.Game.ConsoleFramework<TestNativeUser.IUser>.ISystemSelector _SystemSelector;
+
+        Regulus.Utility.Updater<Bot> _Bots;
+        int _BotAmount;
+        long _BotSn;
         Regulus.Utility.Console.IViewer _View;
-        struct CommandString
+        public Appliaction(TestNativeUser.Application appliaction , Regulus.Utility.Console.IViewer view)
         {
-            public string Name;
-            public string[] Args;
-        }
-        Regulus.Utility.TimeCounter _Timer;
-        Queue<CommandString> _CommandStrings;
-        public BatchCommander(TestNativeUser.Application app , Regulus.Utility.Console.IViewer view)
-        {
-            _Timer = new Regulus.Utility.TimeCounter();
-
-            this._App = app;
-
+            _Bots = new Regulus.Utility.Updater<Bot>();
+            this._Appliaction = appliaction;
             _View = view;
-            _App.Command.Register("1", _1);
-            _App.Command.Register<int>("2", _2);
-            _CommandStrings = new Queue<CommandString>();
-
-
-
-
         }
 
-        private void _2(int count)
+        bool Regulus.Utility.IUpdatable.Update()
         {
-            _CommandStrings.Enqueue(new CommandString() { Name = "remoting", Args = new string[] { } });
+            _Bots.Update();
 
-            for(int i = 0 ; i < count; ++i)
+            if(_BotAmount >0 )
             {
-                _CommandStrings.Enqueue(new CommandString() { Name = "spawncontroller", Args = new string[] { "jc"+i.ToString() } });
-                _CommandStrings.Enqueue(new CommandString() { Name = "selectcontroller", Args = new string[] { "jc" + i.ToString() } });
-
-                _CommandStrings.Enqueue(new CommandString() { Name = "connect", Args = new string[] { "127.0.0.1", "12345" } });
-            }
-        }
-
-
-
-        private void _1()
-        {
-            _CommandStrings.Enqueue(new CommandString() { Name = "remoting", Args = new string[] { } });
-
-            _CommandStrings.Enqueue(new CommandString() { Name = "spawncontroller", Args = new string[] { "jc" } });
-            _CommandStrings.Enqueue(new CommandString() { Name = "selectcontroller", Args = new string[] { "jc" } });
-
-            _CommandStrings.Enqueue(new CommandString() { Name = "connect", Args = new string[] { "127.0.0.1" , "12345" } });
-
-            _App.UserSpawnEvent += (user) =>
-            {
-                user.MessagerProvider.Supply += (messager) => { _Messager(messager, _App.Command, _View); };
-            };
-
-
-        }
-        private static void _Messager(TestNativeGameCore.IMessager messager, Regulus.Utility.Command command, Regulus.Utility.Console.IViewer viewer)
-        {
-            command.RemotingRegister<string, string>("SendMessage", messager.Send, (result) => { viewer.WriteLine(result); });
-        }
-
-
-
-        internal void Update()
-        {
-            if (new System.TimeSpan(_Timer.Ticks).TotalSeconds > 0.5)
-            {
-                _Timer.Reset();
-                if (_CommandStrings.Count > 0)
+                _BotAmount--;
+                var name = "jc" + _BotSn.ToString();
+                var userValue =  _UserRequester.Spawn( name, false);
+                userValue.OnValue += (user) =>
                 {
-                    var c = _CommandStrings.Dequeue();
-                    _App.Command.Run(c.Name, c.Args);
-                }
+                    var bot = _CreateBot(user, name);
+                    bot.ExitEvent += () => 
+                    {
+                        _UserRequester.Unspawn(name);
+                        _RestoryBot(bot.User); 
+                    };
+                };
+                _BotSn++;
             }
+            return true;
+        }
+
+        void Regulus.Framework.ILaunched.Launch()
+        {
+            
+            _Appliaction.SelectSystemEvent += _Appliaction_SelectSystemEvent;            
+
+            _Appliaction.Command.Register("one" , _BuildOne );
+            _Appliaction.Command.Register<int>("bot", _BuildBot);
+        }
+
+        private void _BuildBot(int count)
+        {
+            _BotAmount = count;
+            
+            var val = _SystemSelector.Use("remoting");
+            val.OnValue += (requester) => 
+            {
+                _UserRequester = requester;                
+            };
+        }
+
+        void _RestoryBot(TestNativeUser.IUser user)
+        {
+            var bots = (from b in _Bots.Objects where b.User == user select b).ToArray();
+            foreach(var bot in bots)
+            {
+                
+                _Bots.Remove(bot);
+                _BotAmount++;
+            }
+        }
+
+        Bot _CreateBot(TestNativeUser.IUser user,string name)
+        {
+            var bot = new Bot(user , name , _View);            
+            _Bots.Add(bot);
+            
+            return bot;
+        }
+
+        
+
+        private void _BuildOne()
+        {
+            var val = _SystemSelector.Use("remoting");
+            val.OnValue += _OnUserRequester;
+
+        }
+
+        void _OnUserRequester(Regulus.Game.ConsoleFramework<TestNativeUser.IUser>.IUserRequester obj)
+        {
+            if (obj != null)
+            {
+                obj.Spawn("jc", true);
+            }
+        }
+
+        
+
+        void _Appliaction_SelectSystemEvent(Regulus.Game.ConsoleFramework<TestNativeUser.IUser>.ISystemSelector system_selector)
+        {
+            _SystemSelector = system_selector;
+        }
+
+        void Regulus.Framework.ILaunched.Shutdown()
+        {
+            
         }
     }
 
@@ -96,33 +127,24 @@ namespace TestNativeUserConsole
             var input = new Regulus.Utility.ConsoleInput(viwer);
             TestNativeUser.Application appliaction = new TestNativeUser.Application(viwer, input);
 
-            
-
+            var app = new Appliaction(appliaction, viwer);
 
             Regulus.Utility.Updater updater = new Regulus.Utility.Updater();
             appliaction.SetLogMessage(Regulus.Utility.Console.LogFilter.All);
-            
+            updater.Add(app);
             updater.Add(appliaction);
+            
             bool exit = false;
-
             appliaction.Command.Register("quit", () => { exit = true; });
-
-
-            var betch = new BatchCommander(appliaction, viwer);
+            
             while (exit == false)
             {
                 input.Update();
                 updater.Update();
-                betch.Update();
+                
             }
             appliaction.Command.Unregister("quit");
         }
-        
-
-        
-
-        
-
         
     }
    

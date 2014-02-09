@@ -55,6 +55,7 @@
     <Compile Include="game_framework.cs" />
     <Compile Include="game_stage.cs" />
     <Compile Include="game_stagemachine.cs" />
+    <Compile Include="utility_command_extension.cs" />
     <Compile Include="utility_icommand.cs" />
     <Compile Include="type.cs" />
     <Compile Include="utility_command.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="utility_serializabledictionary.cs" />
     <Compile Include="utility_singleton.cs" />
     <Compile Include="utility_consoleviewer.cs" />
+    <Compile Include="remoting_value.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

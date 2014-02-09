@@ -43,7 +43,7 @@ namespace Regulus.Remoting.Soul.Native
 		}
 		private void _HandleRead()
 		{
-			var stage = new NetworkStreamReadStage(_Socket, _Socket.ReceiveBufferSize);
+			var stage = new NetworkStreamReadStage(_Socket);
 			stage.ReadCompletionEvent += (package) =>
 			{
 				_HandlePackage(package);
