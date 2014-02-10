@@ -89,8 +89,6 @@ namespace TestNativeUserConsole
             return bot;
         }
 
-        
-
         private void _BuildOne()
         {
             var val = _SystemSelector.Use("remoting");
