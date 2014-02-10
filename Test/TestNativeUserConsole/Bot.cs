@@ -145,7 +145,7 @@ namespace TestNativeUserConsole
             void val_OnValue(string respunse)
             {
                 _View.WriteLine(respunse);
-                ContinueEvent( true );
+                ContinueEvent( Regulus.Utility.Random.Next(0,2) == 0 );
             }
 
             private string _BuildString()

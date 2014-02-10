@@ -15,8 +15,8 @@
                 this._Socket = socket;
                 _Buffer = buffer;
             }
-            void Game.IStage.Enter()
-            {
+            void Game.IStage.Enter()            
+            {                
                 _AsyncResult = _Socket.BeginSend(_Buffer, 0, _Buffer.Length, 0, _WriteCompletion, null);
             }
 
@@ -39,6 +39,7 @@
             }
         }
     }
+
 	public partial class NetworkStreamWriteStage : Regulus.Game.IStage
 	{
 		System.Net.Sockets.Socket _Socket;
@@ -58,10 +59,12 @@
 			if (_Packages.Count > 0)
 			{
 				var package = _Packages.Dequeue();
+                if (package == null)
+                {
+                    throw new System.NullReferenceException();
+                }
 				var buffer = Regulus.PhotonExtension.TypeHelper.Serializer(package);
-
-                _ToHead(buffer);
-                
+                _ToHead(buffer);                
 			}
 			else
 			{
@@ -78,14 +81,11 @@
         }
 
         private void _ToBody(byte[] buffer)
-        {
+        {            
             var stage = new WrittingStage(_Socket, buffer);
             stage.DoneEvent += WriteCompletionEvent;
             _Machine.Push(stage);
         }
-
-		
-		
 
 		void Game.IStage.Leave()
 		{
@@ -94,20 +94,28 @@
 
 		void Game.IStage.Update()
 		{
-            _Machine.Update();
+            try
+            {
+                _Machine.Update();
+            }
+            catch (System.Net.Sockets.SocketException ex)
+            { 
+
+            }
+            
 		}
 	}
 
 
     public partial class NetworkStreamReadStage : Regulus.Game.IStage
     {
+        
         class ReadingStage : Regulus.Game.IStage
         {
             public event System.Action<byte[]> DoneEvent;
             private System.Net.Sockets.Socket _Socket;
             private int _Size;
             int _Offset;
-
             byte[] _Buffer;
             bool _Done;
             public ReadingStage(System.Net.Sockets.Socket socket, int size)
@@ -122,7 +130,7 @@
             void Game.IStage.Enter()
             {
                 _Done = false;
-                _Socket.BeginReceive(_Buffer, _Offset , _Buffer.Length, 0, _Readed, null);                
+                _Socket.BeginReceive(_Buffer, _Offset, _Buffer.Length - _Offset, 0, _Readed, null);                
             }
 
             void Game.IStage.Leave()
@@ -140,15 +148,22 @@
 
             private void _Readed(System.IAsyncResult ar)
             {
-                _Offset += _Socket.EndReceive(ar);
-                if (_Offset == _Size)
+                try
                 {
-                    _Done = true;
+                    _Offset += _Socket.EndReceive(ar);
+                    if (_Offset == _Size)
+                    {
+                        _Done = true;
+                    }
+                    else
+                    {
+                        _Done = false;
+                        _Socket.BeginReceive(_Buffer, _Offset, _Buffer.Length - _Offset, 0, _Readed, null);
+                    }                
                 }
-                else
-                {
-                    _Done = false;
-                    _Socket.BeginReceive(_Buffer, _Offset, _Buffer.Length, 0, _Readed, null);
+                catch (System.Net.Sockets.SocketException ex)
+                { 
+
                 }
                 
             }
@@ -158,6 +173,8 @@
     
 	public partial class NetworkStreamReadStage : Regulus.Game.IStage
 	{
+        public delegate void OnReadCompletion(Package package);
+        public event OnReadCompletion ReadCompletionEvent;
 		System.Net.Sockets.Socket _Socket;
         Regulus.Game.StageMachine _Machine;
         const int _HeadSize = 4;
@@ -189,11 +206,6 @@
             ReadCompletionEvent(Regulus.PhotonExtension.TypeHelper.Deserialize(body) as Package);
         }
 
-		public delegate void OnReadCompletion(Package package);
-		public event OnReadCompletion ReadCompletionEvent;
-
-		
-
 		void Game.IStage.Leave()
 		{
 
@@ -201,7 +213,15 @@
         
 		void Game.IStage.Update()
 		{
-            _Machine.Update();
+            try
+            { 
+                _Machine.Update();
+            }
+            catch(System.Net.Sockets.SocketException ex)
+            {
+
+            }
+            
 		}
 	}
 }

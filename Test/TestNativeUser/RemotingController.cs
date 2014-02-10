@@ -94,7 +94,8 @@ namespace TestNativeUser
 
         void Regulus.Framework.ILaunched.Shutdown()
         {
-            _UserUnpawnEvent(_User);
+            if (_UserUnpawnEvent != null)
+                _UserUnpawnEvent(_User);
             _Updater.Remove(_User);
         }
     }

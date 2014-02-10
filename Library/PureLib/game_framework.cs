@@ -309,7 +309,8 @@ namespace Regulus.Game
 
             private void _UnspawnController(string name)
             {
-                var controllers = from controller in _Controlls where controller.Name == name select controller;
+
+                var controllers = (from controller in _Controlls where controller.Name == name select controller).ToArray() ;
                 foreach (var c in controllers)
                 {
                     _SelectedControlls.Remove(c);

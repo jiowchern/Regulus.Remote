@@ -72,7 +72,7 @@ namespace Regulus.Remoting.Ghost.Native
 		Regulus.Game.StageMachine _ReadMachine;
 		Regulus.Game.StageMachine _WriteMachine;
         Regulus.Game.StageMachine _Machine;
-        static System.Threading.ManualResetEvent _ManualResetEvent = new System.Threading.ManualResetEvent(false);
+        
 		public Agent()
 		{
             _Core = new Remoting.AgentCore(this);
@@ -115,8 +115,11 @@ namespace Regulus.Remoting.Ghost.Native
 		bool Utility.IUpdatable.Update()
 		{
             _Machine.Update();
-			_ReadMachine.Update();
-			_WriteMachine.Update();
+            if ( _Socket.Connected )
+            {                
+                _ReadMachine.Update();
+                _WriteMachine.Update();
+            }            
 			return true;
 		}
 
@@ -124,8 +127,6 @@ namespace Regulus.Remoting.Ghost.Native
 		{
             
 		}
-
-		
 
 		private void _ToRead()
 		{
