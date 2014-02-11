@@ -17,11 +17,9 @@ namespace Regulus.Remoting
 	public class AgentCore
 	{
 		IGhostRequest _Requester ;
-        static int Sn;
-        int _Sn;
+        
 		public AgentCore(IGhostRequest req)
-		{
-            _Sn = Sn++;
+		{            
 			_Requester = req;				
 		}
 
@@ -236,7 +234,7 @@ namespace Regulus.Remoting
 			return (Regulus.Remoting.Ghost.IGhost)o;
 		}
 
-		System.Collections.Generic.Dictionary<Type, Type> _GhostTypes = new Dictionary<Type, Type>();
+		static System.Collections.Generic.Dictionary<Type, Type> _GhostTypes = new Dictionary<Type, Type>();
 		private Type _QueryGhostType(Type ghostBaseType)
 		{
 			Type ghostType = null;
@@ -245,7 +243,7 @@ namespace Regulus.Remoting
 				return ghostType;
 			}
 
-			ghostType = _BuildGhostType(ghostBaseType , _Sn);
+			ghostType = _BuildGhostType(ghostBaseType );
 			_GhostTypes.Add(ghostBaseType, ghostType);
 			return ghostType;
 		}
@@ -290,7 +288,7 @@ namespace Regulus.Remoting
 				}
 			}
 		}
-		static private Type _BuildGhostType(Type ghostBaseType, int sn)
+		static private Type _BuildGhostType(Type ghostBaseType)
 		{
 			//反射機制
 			Type baseType = ghostBaseType;
@@ -298,13 +296,16 @@ namespace Regulus.Remoting
 			AssemblyName asmName = new AssemblyName("RegulusRemotingGhost." + baseType.ToString() + "Assembly");
 			//從目前的domain裡即時產生一個組態                                    
             AssemblyBuilder assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(asmName, AssemblyBuilderAccess.Run);
+            
+            
+            
 			//產生一個模組
 			ModuleBuilder module = assembly.DefineDynamicModule("RegulusRemotingGhost." + baseType.ToString() + "Module");
 			//產生一個class or struct
 			//這裡是用class
-            var typeName = "C" + sn + baseType.ToString();
+            var typeName = "C" + baseType.ToString();
             TypeBuilder type = module.DefineType(typeName, TypeAttributes.Class | TypeAttributes.Sealed, typeof(Object), new Type[] { baseType, typeof(Regulus.Remoting.Ghost.IGhost) });
-
+            
 			#region build constructor
 			// 產生建構子，有一個參數 tpeer
 			ConstructorBuilder c = type.DefineConstructor(

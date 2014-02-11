@@ -56,11 +56,14 @@ namespace TestNativeUserConsole
             _Appliaction.SelectSystemEvent += _Appliaction_SelectSystemEvent;            
 
             _Appliaction.Command.Register("one" , _BuildOne );
-            _Appliaction.Command.Register<int>("bot", _BuildBot);
+            _Appliaction.Command.Register<int,string,int>("bot", _BuildBot);
         }
-
-        private void _BuildBot(int count)
+        string _Ip;
+        int _Port;
+        private void _BuildBot(int count,string ip,int port)
         {
+            _Ip = ip;
+            _Port = port;
             _BotAmount = count;
             
             var val = _SystemSelector.Use("remoting");
@@ -83,7 +86,7 @@ namespace TestNativeUserConsole
 
         Bot _CreateBot(TestNativeUser.IUser user,string name)
         {
-            var bot = new Bot(user , name , _View);            
+            var bot = new Bot(user , name , _View,_Ip , _Port);            
             _Bots.Add(bot);
             
             return bot;

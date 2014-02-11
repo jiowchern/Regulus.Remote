@@ -88,8 +88,12 @@ namespace TestNativeUser
 
         private void _Connecter_ConnectedEvent(string addr, int port, Regulus.Remoting.Value<bool> result)
         {
- 	        _Complex.Connect(addr , port);
-            result.SetValue(true);
+ 	        var val = _Complex.Connect(addr , port);
+            val.OnValue += (r) => 
+            {
+                result.SetValue(r);
+            };
+            
             _Updater.Remove(_Complex);
             _Updater.Add(_Complex);
         }

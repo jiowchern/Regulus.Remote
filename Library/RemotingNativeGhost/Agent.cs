@@ -83,18 +83,25 @@ namespace Regulus.Remoting.Ghost.Native
             _Machine = new Game.StageMachine();
             _Socket = new System.Net.Sockets.Socket( System.Net.Sockets.AddressFamily.InterNetwork ,System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
 		}
-        public void Connect(string ipaddress, int port)
+        public Regulus.Remoting.Value<bool> Connect(string ipaddress, int port)
         {            
-            _ToConnect(ipaddress, port);
+            
             _ToIdle(_ReadMachine);
             _ToIdle(_WriteMachine);
+            return _ToConnect(ipaddress, port);
         }
 
-        private void _ToConnect(string ipaddress, int port)
+        private Regulus.Remoting.Value<bool> _ToConnect(string ipaddress, int port)
         {
+            var val = new Regulus.Remoting.Value<bool>();
             var stage = new ConnectStage(_Socket, ipaddress, port);
-            stage.ResultEvent += _ConnectResult;
+            stage.ResultEvent += (result)=>
+            {
+                val.SetValue(result);
+                _ConnectResult(result); 
+            };
             _Machine.Push(stage);
+            return val;
         }
 
         void _ConnectResult(bool success)

@@ -1,23 +1,36 @@
 ﻿namespace Regulus.Remoting
 {
-    public partial class NetworkStreamWriteStage : Regulus.Game.IStage
+    public enum SocketIOResult
     {
+        None, Done, Break
+    }
+    public partial class NetworkStreamWriteStage : Regulus.Game.IStage
+    {        
         class WrittingStage : Regulus.Game.IStage
         {
             System.Net.Sockets.Socket _Socket;
             System.IAsyncResult _AsyncResult;
             byte[] _Buffer;
-            public event System.Action DoneEvent;
-            
-
+            public event System.Action<SocketIOResult> DoneEvent;            
+            SocketIOResult _Result;
             public WrittingStage(System.Net.Sockets.Socket socket, byte[] buffer)
             {                
                 this._Socket = socket;
                 _Buffer = buffer;
+                
             }
             void Game.IStage.Enter()            
-            {                
-                _AsyncResult = _Socket.BeginSend(_Buffer, 0, _Buffer.Length, 0, _WriteCompletion, null);
+            {
+                try
+                {
+                    _Result = SocketIOResult.None;
+                    _AsyncResult = _Socket.BeginSend(_Buffer, 0, _Buffer.Length, 0, _WriteCompletion, null);
+                }
+                catch 
+                {
+                    _Result = SocketIOResult.Break;
+                }
+                    
             }
 
             void Game.IStage.Leave()
@@ -27,15 +40,23 @@
 
             void Game.IStage.Update()
             {
-                if (_AsyncResult.IsCompleted)
+                if (_Result != SocketIOResult.None)
                 {
-                    DoneEvent();
+                    DoneEvent(_Result);
                 }
             }
 
             private void _WriteCompletion(System.IAsyncResult ar)
             {
-                _Socket.EndSend(ar);
+                try                
+                {
+                    _Socket.EndSend(ar);
+                    _Result = SocketIOResult.Done;
+                }
+                catch 
+                {
+                    _Result = SocketIOResult.Break;
+                }                
             }
         }
     }
@@ -46,6 +67,7 @@
 		System.Collections.Generic.Queue<Package> _Packages;
         
         public event System.Action WriteCompletionEvent;
+        public event System.Action ErrorEvent;
         Regulus.Game.StageMachine _Machine;        
 
         public NetworkStreamWriteStage(System.Net.Sockets.Socket socket, System.Collections.Generic.Queue<Package> packages)
@@ -76,14 +98,28 @@
         {
             var header = System.BitConverter.GetBytes((int)buffer.Length);
             var stage = new WrittingStage(_Socket, header);
-            stage.DoneEvent += () => { _ToBody(buffer); };
+            stage.DoneEvent += (result) => 
+            {
+                if (result == SocketIOResult.Done)
+                    _ToBody(buffer);
+                else
+                    ErrorEvent();
+            };
+            
             _Machine.Push(stage);
         }
 
         private void _ToBody(byte[] buffer)
         {            
             var stage = new WrittingStage(_Socket, buffer);
-            stage.DoneEvent += WriteCompletionEvent;
+            stage.DoneEvent += (result) => 
+            { 
+                if(result == SocketIOResult.Done)
+                    WriteCompletionEvent(); 
+                else
+                    ErrorEvent();
+            };
+            
             _Machine.Push(stage);
         }
 
@@ -94,14 +130,9 @@
 
 		void Game.IStage.Update()
 		{
-            try
-            {
-                _Machine.Update();
-            }
-            catch (System.Net.Sockets.SocketException ex)
-            { 
-
-            }
+            
+            _Machine.Update();
+            
             
 		}
 	}
@@ -112,25 +143,32 @@
         
         class ReadingStage : Regulus.Game.IStage
         {
-            public event System.Action<byte[]> DoneEvent;
+            public event System.Action<byte[]> DoneEvent;            
             private System.Net.Sockets.Socket _Socket;
             private int _Size;
             int _Offset;
             byte[] _Buffer;
-            bool _Done;
+            SocketIOResult _Result;
             public ReadingStage(System.Net.Sockets.Socket socket, int size)
             {                
                 this._Socket = socket;
                 this._Size = size;
-                _Buffer = new byte[size];
-                _Done = false;
+                _Buffer = new byte[size];                
             }
 
 
             void Game.IStage.Enter()
             {
-                _Done = false;
-                _Socket.BeginReceive(_Buffer, _Offset, _Buffer.Length - _Offset, 0, _Readed, null);                
+                try
+                {
+                    _Result = SocketIOResult.None;
+                    _Socket.BeginReceive(_Buffer, _Offset, _Buffer.Length - _Offset, 0, _Readed, null);
+                }
+                catch 
+                {
+                    _Result = SocketIOResult.Break;
+                }
+                
             }
 
             void Game.IStage.Leave()
@@ -140,10 +178,12 @@
 
             void Game.IStage.Update()
             {
-                if (_Done)
+                if (_Result == SocketIOResult.Done)
                 { 
                     DoneEvent(_Buffer);                    
                 }
+                else if (_Result == SocketIOResult.Break)
+                    DoneEvent(null);                    
             }
 
             private void _Readed(System.IAsyncResult ar)
@@ -153,17 +193,17 @@
                     _Offset += _Socket.EndReceive(ar);
                     if (_Offset == _Size)
                     {
-                        _Done = true;
+                        _Result = SocketIOResult.Done;
                     }
                     else
                     {
-                        _Done = false;
+                        _Result = SocketIOResult.None;
                         _Socket.BeginReceive(_Buffer, _Offset, _Buffer.Length - _Offset, 0, _Readed, null);
                     }                
                 }
-                catch (System.Net.Sockets.SocketException ex)
-                { 
-
+                catch 
+                {
+                    _Result = SocketIOResult.Break; 
                 }
                 
             }
@@ -175,6 +215,7 @@
 	{
         public delegate void OnReadCompletion(Package package);
         public event OnReadCompletion ReadCompletionEvent;
+        public event System.Action ErrorEvent;       
 		System.Net.Sockets.Socket _Socket;
         Regulus.Game.StageMachine _Machine;
         const int _HeadSize = 4;
@@ -191,14 +232,28 @@
         private void _ToHead()
         {
             var stage = new ReadingStage(_Socket, _HeadSize);
-            stage.DoneEvent+= _ToBody;            
+            stage.DoneEvent += (buffer)=>
+            {
+                if (buffer != null)
+                    _ToBody(buffer);
+                else
+                    ErrorEvent();
+            };
+            
             _Machine.Push(stage);
         }
         private void _ToBody(byte[] head)
         {           
             var bodySize = System.BitConverter.ToInt32(head , 0);
             var stage = new ReadingStage(_Socket, bodySize);
-            stage.DoneEvent += _Done;
+            stage.DoneEvent += (buffer)=>
+            {
+                if (buffer != null)
+                    _Done(buffer);
+                else
+                    ErrorEvent();
+            };
+            
             _Machine.Push(stage);
         }
         private void _Done(byte[] body)
@@ -212,16 +267,8 @@
 		}
         
 		void Game.IStage.Update()
-		{
-            try
-            { 
-                _Machine.Update();
-            }
-            catch(System.Net.Sockets.SocketException ex)
-            {
-
-            }
-            
+		{            
+            _Machine.Update();
 		}
 	}
 }

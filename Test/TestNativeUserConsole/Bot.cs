@@ -28,7 +28,7 @@ namespace TestNativeUserConsole
 
         private void _ToConnect()
         {
-            var stage = new ConnectStage(User);
+            var stage = new ConnectStage(User,_Ip , _Port);
             stage.ConnectResultEvent += stage_ConnectResultEvent;
             _Machine.Push(stage);
         }
@@ -68,11 +68,14 @@ namespace TestNativeUserConsole
         }
 
         public TestNativeUser.IUser User { get; private set; }
-
+        string _Ip;
+        int _Port;
         
 
-        public Bot(TestNativeUser.IUser user, string name,Regulus.Utility.Console.IViewer view)
+        public Bot(TestNativeUser.IUser user, string name,Regulus.Utility.Console.IViewer view,string ip,int port)
         {
+            _Ip = ip; ;
+            _Port = port;
             // TODO: Complete member initialization
             this.User = user;
             this._Name = name;
@@ -85,10 +88,14 @@ namespace TestNativeUserConsole
     {
         class ConnectStage : Regulus.Game.IStage
         {
+            string _Ip;
+            int _Port;
             TestNativeUser.IUser _User;
             public event Action<bool> ConnectResultEvent;
-            public ConnectStage(TestNativeUser.IUser user)
+            public ConnectStage(TestNativeUser.IUser user , string ip , int port)
             {
+                _Ip = ip;
+                _Port = port;
                 _User = user;
             }
             void Regulus.Game.IStage.Enter()
@@ -98,7 +105,7 @@ namespace TestNativeUserConsole
 
             void ConnectProvider_Supply(TestNativeGameCore.IConnect obj)
             {
-                var val = obj.Connect("127.0.0.1" , 12345);
+                var val = obj.Connect(_Ip, _Port);
                 val.OnValue += val_OnValue;
             }
 

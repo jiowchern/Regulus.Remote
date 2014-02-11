@@ -22,7 +22,8 @@ namespace Regulus.Remoting.Soul.Native
 		System.Collections.Generic.Queue<Regulus.Remoting.Package> _Responses;
         System.Collections.Generic.Queue<Request> _Requests;
 		Regulus.Game.StageMachine _ReadMachine;
-		Regulus.Game.StageMachine _WriteMachine;		
+		Regulus.Game.StageMachine _WriteMachine;
+        bool _Enable;
         public Peer(System.Net.Sockets.Socket client)
 		{
 			
@@ -32,13 +33,14 @@ namespace Regulus.Remoting.Soul.Native
             _Requests = new Queue<Request>();
 			_ReadMachine = new Game.StageMachine();
 			_WriteMachine = new Game.StageMachine();
-
+            _Enable = true;
 			
 		}
 		private void _HandleWrite()
 		{
 			var stage = new NetworkStreamWriteStage(_Socket, _Responses);
 			stage.WriteCompletionEvent += _HandleWrite;
+            stage.ErrorEvent += () => { _Enable = false; };
 			_WriteMachine.Push(stage);
 		}
 		private void _HandleRead()
@@ -50,6 +52,7 @@ namespace Regulus.Remoting.Soul.Native
 
 				_HandleRead();
 			};
+            stage.ErrorEvent += () => { _Enable = false; };
 			_ReadMachine.Push(stage);
 		}
 
@@ -92,7 +95,7 @@ namespace Regulus.Remoting.Soul.Native
 
 		private bool _Connected()
 		{
-            return _Socket.Connected;
+            return _Enable && _Socket.Connected;
 		}
 
 		void Remoting.IResponseQueue.Push(byte cmd, Dictionary<byte, byte[]> args)

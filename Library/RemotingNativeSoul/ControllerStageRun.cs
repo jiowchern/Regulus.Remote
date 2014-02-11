@@ -45,12 +45,19 @@ namespace Regulus.Remoting.Soul.Native
 
             private void _Accept(IAsyncResult ar)
             {
-                var socket = _Socket.EndAccept(ar);
-                lock (_Sockets)
+                try
                 {
-                    _Sockets.Enqueue(socket);
-                }                
-                _Socket.BeginAccept(_Accept, null);
+                    var socket = _Socket.EndAccept(ar);
+                    lock (_Sockets)
+                    {
+                        _Sockets.Enqueue(socket);
+                    }
+                    _Socket.BeginAccept(_Accept, null);
+                }
+                catch
+                { 
+
+                }
             }
 
             private void _ShutdownEvent()
