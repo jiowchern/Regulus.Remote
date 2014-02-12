@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Utility
 {
-    public class ConsoleInput : Console.IInput
+    public class ConsoleInput : Console.IInput , Regulus.Utility.IUpdatable
     {
         
         Stack<char> _InputData = new Stack<char>();
@@ -82,6 +82,22 @@ namespace Regulus.Utility
             remove { _OutputEvent -= value; }
         }
 
-        
+
+
+        bool IUpdatable.Update()
+        {
+            Update();
+            return true;
+        }
+
+        void Framework.ILaunched.Launch()
+        {
+            
+        }
+
+        void Framework.ILaunched.Shutdown()
+        {
+            
+        }
     }
 }

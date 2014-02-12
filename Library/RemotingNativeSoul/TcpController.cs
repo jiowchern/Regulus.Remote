@@ -72,7 +72,7 @@ namespace Regulus.Remoting.Soul.Native
 
         private void _ToStart()
         {
-            var stage = new Regulus.Remoting.Soul.Native.TcpController.StageStart(_Command);
+            var stage = new Regulus.Remoting.Soul.Native.TcpController.StageStart(_Command,_View);
             stage.DoneEvent += _ToRun;
             _Machine.Push(stage);
         }

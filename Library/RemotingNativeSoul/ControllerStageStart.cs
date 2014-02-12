@@ -13,33 +13,60 @@ namespace Regulus.Remoting.Soul.Native
             public event Action<Regulus.Game.ICore,int,float> DoneEvent;
             
             Regulus.Utility.Command _Command;
-            public StageStart(Regulus.Utility.Command command )
-            {                
+            Regulus.Utility.Console.IViewer _View;
+            public StageStart(Regulus.Utility.Command command , Regulus.Utility.Console.IViewer view)
+            {
+                _View = view;
                 _Command = command;
             }
             void Game.IStage.Enter()
             {
-                _Command.Register<int, float,string , string>("Launch", _Start );
+                _Command.Register<int, string , string>("Launch", _Start );
                 _Command.Register<string>("LaunchIni", _StartIni);
             }
 
             private void _StartIni(string path)
             {
                 var ini = new Regulus.Utility.Ini(path);
-                int port = int.Parse(ini.Read("Launch", "port"));
-
-                float timeout = float.Parse(ini.Read("Launch", "timeout"));
+                int port = int.Parse(ini.Read("Launch", "port"));                
                 string dllpath = ini.Read("Launch", "path");
-                string className = ini.Read("Launch", "class");
+                string className = ini.Read("Launch", "class");                
 
-                _Start(port, timeout, dllpath, className);
+                _Start(port, dllpath, className);
             }
 
-            private void _Start(int port, float timeout, string path, string class_name)
+            private void _Start(int port, string path, string class_name)
             {                
+                
+                
+
                 var stream = System.IO.File.ReadAllBytes(path);
                 var core = Regulus.Game.Loader.Load(stream, class_name);
-                DoneEvent(core, port, timeout);
+
+                //_LoadLibrary(work_dir);
+                
+                
+                DoneEvent(core, port, 0);
+            }
+
+            private void _LoadLibrary(string work_dir)
+            {
+                
+                var files = from f in System.IO.Directory.EnumerateFiles(work_dir, "*.dll", System.IO.SearchOption.AllDirectories) select f;
+                foreach(var file in files)
+                {
+                    _View.Write("載入程式庫 " + file + "...");
+                    try
+                    {
+                        var assembly = System.Reflection.Assembly.LoadFile(file);                        
+                        _View.WriteLine("完成!");
+                    }
+                    catch (SystemException ex)
+                    {
+                        _View.WriteLine("失敗!" + ex.ToString());
+                    }
+                    
+                }
             }
 
             void Game.IStage.Leave()

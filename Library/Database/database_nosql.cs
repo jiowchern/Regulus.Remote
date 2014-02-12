@@ -11,24 +11,11 @@ namespace Regulus
 
 		public class Database
 		{
-
-			static readonly string _DatabaseName = "Megrez";
+			
 			Mongo _Mongo;
 			IMongoDatabase _Database;
 
-			public void Launch(string mongodb_url)
-			{
-				//var mongo = new Mongo("mongodb://192.168.40.191:27017");
-				var mongo = new Mongo(mongodb_url);
-				_Mongo = mongo;
-
-                
-                _Mongo.Connect();
-                
-				
-
-				_Database = _Mongo.GetDatabase(_DatabaseName);
-			}
+			
 
 			public void Launch(string mongodb_url , string name)
 			{

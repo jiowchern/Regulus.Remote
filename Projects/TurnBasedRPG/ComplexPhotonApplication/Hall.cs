@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPG
 {
-	
+    
     class Hall : Regulus.Project.TurnBasedRPG.UserRoster , Regulus.Utility.IUpdatable
     {        
         private Regulus.Utility.Updater<Regulus.Utility.IUpdatable> _FrameworkRoot;

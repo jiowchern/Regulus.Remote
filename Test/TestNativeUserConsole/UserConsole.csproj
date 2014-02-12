@@ -65,7 +65,7 @@
     </ProjectReference>
     <ProjectReference Include="..\TestNativeUser\User.csproj">
       <Project>{34995342-07cb-4cdb-84ab-94e3a245c48e}</Project>
-      <Name>User %28Test\TestNative\User%29</Name>
+      <Name>User</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

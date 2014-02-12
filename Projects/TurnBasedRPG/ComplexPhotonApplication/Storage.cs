@@ -18,7 +18,7 @@ namespace Regulus.Project.TurnBasedRPG
 		void Regulus.Framework.ILaunched.Launch()
         {
             _Database = new Regulus.NoSQL.Database();
-            _Database.Launch("mongodb://127.0.0.1:27017");
+            _Database.Launch("mongodb://127.0.0.1:27017", "TurnBasedRPG");
         }
 
 		bool Regulus.Utility.IUpdatable.Update()

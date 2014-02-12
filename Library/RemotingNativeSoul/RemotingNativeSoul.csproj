@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RemotingNativeSoul</RootNamespace>
     <AssemblyName>RemotingNativeSoul</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -44,7 +44,6 @@
     <Compile Include="Application.cs" />
     <Compile Include="ControllerStageRun.cs" />
     <Compile Include="ControllerStageStart.cs" />
-    <Compile Include="GameLoader.cs" />
     <Compile Include="Peer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TcpController.cs" />
