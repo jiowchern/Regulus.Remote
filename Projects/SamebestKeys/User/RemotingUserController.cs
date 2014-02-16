@@ -86,6 +86,8 @@ namespace Regulus.Project.SamebestKeys.Remoting
         {
             if (_UserUnpawnEvent != null)
                 _UserUnpawnEvent(_User);
+
+            _Updater.Shutdown();
         }
     }
 }

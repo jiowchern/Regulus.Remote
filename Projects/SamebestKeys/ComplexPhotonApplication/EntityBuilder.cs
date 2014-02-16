@@ -66,7 +66,7 @@ namespace Regulus.Project.SamebestKeys
 
         PortalEntity IEntityBuilder<Data.PortalEntity, PortalEntity>.Build(Data.PortalEntity source)
         {
-            var rect = new System.Windows.Rect(source.Vision.Left ,
+            var rect = new Regulus.Types.Rect(source.Vision.Left ,
                 source.Vision.Top,
                 source.Vision.Right - source.Vision.Left,
                 source.Vision.Bottom - source.Vision.Top

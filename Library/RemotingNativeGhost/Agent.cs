@@ -10,7 +10,7 @@ namespace Regulus.Remoting.Ghost.Native
             private string _Ipaddress;
             private int _Port;
             IAsyncResult _AsyncResult;
-
+            bool _Result;
             public event Action<bool> ResultEvent;
             public ConnectStage(System.Net.Sockets.Socket socket, string ipaddress, int port)
             {
@@ -27,7 +27,15 @@ namespace Regulus.Remoting.Ghost.Native
 
             private void _ConnectResult(IAsyncResult ar)
             {
-                _Socket.EndConnect(ar);
+                try
+                {
+                    _Socket.EndConnect(ar);
+                    _Result = true;
+                }
+                catch (System.Net.Sockets.SocketException ex)
+                {
+                    _Result = false;
+                }
             }
 
             void Game.IStage.Leave()
@@ -39,7 +47,7 @@ namespace Regulus.Remoting.Ghost.Native
             {
                 if (_AsyncResult.IsCompleted)
                 {
-                    ResultEvent(true);
+                    ResultEvent(_Result);
                 }
             }
         }
@@ -62,12 +70,18 @@ namespace Regulus.Remoting.Ghost.Native
                 
             }
         }
+
+        
     }
     public partial class Agent : Regulus.Utility.IUpdatable, Regulus.Remoting.IGhostRequest, IAgent
 	{
 		Regulus.Remoting.AgentCore _Core;
         System.Net.Sockets.Socket _Socket;
 		Queue<Package> _Sends;
+        Queue<Package> _Receives;
+
+        System.Threading.Thread _IOThread;
+        volatile bool _ThreadRun;
         
 		Regulus.Game.StageMachine _ReadMachine;
 		Regulus.Game.StageMachine _WriteMachine;
@@ -76,42 +90,62 @@ namespace Regulus.Remoting.Ghost.Native
 		public Agent()
 		{
             _Core = new Remoting.AgentCore(this);
-			_Sends = new Queue<Package>();		
+			_Sends = new Queue<Package>();
+            _Receives = new Queue<Package>();
 			_ReadMachine = new Game.StageMachine();
-			_WriteMachine = new Game.StageMachine();
-
+			_WriteMachine = new Game.StageMachine();            
             _Machine = new Game.StageMachine();
-            _Socket = new System.Net.Sockets.Socket( System.Net.Sockets.AddressFamily.InterNetwork ,System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
+            _Socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
 		}
+
+        
         public Regulus.Remoting.Value<bool> Connect(string ipaddress, int port)
-        {            
-            
-            _ToIdle(_ReadMachine);
-            _ToIdle(_WriteMachine);
+        {
+
+            Disconnect();
             return _ToConnect(ipaddress, port);
         }
 
         private Regulus.Remoting.Value<bool> _ToConnect(string ipaddress, int port)
-        {
+        {            
+            _Socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
             var val = new Regulus.Remoting.Value<bool>();
             var stage = new ConnectStage(_Socket, ipaddress, port);
             stage.ResultEvent += (result)=>
             {
                 val.SetValue(result);
-                _ConnectResult(result); 
+                _ConnectResult(result);                
             };
             _Machine.Push(stage);
             return val;
         }
+        void _HandleIO()
+        {
+            _ToWrite();
+            _ToRead();
 
+            while (_Socket.Connected && _ThreadRun )
+            {
+                _ReadMachine.Update();
+                _WriteMachine.Update();
+            }
+
+            _ToIdle(_ReadMachine);
+            _ToIdle(_WriteMachine);
+        }
         void _ConnectResult(bool success)
         {
             if (success == true)
             {
-                _ToIdle(_Machine);
-                _ToWrite();
-                _ToRead();                
+                _ToIdle(_Machine);                
                 _Core.Initial();
+                _ThreadRun = true;
+                _IOThread = new System.Threading.Thread(_HandleIO);
+                _IOThread.Start();
+            }
+            else
+            {
+                _ToIdle(_Machine);            
             }
         }
 
@@ -119,14 +153,20 @@ namespace Regulus.Remoting.Ghost.Native
         {
             machine.Push(new IdleStage());
         }
+
+        public bool Connected { get { return _Socket.Connected; } }
 		bool Utility.IUpdatable.Update()
 		{
             _Machine.Update();
-            if ( _Socket.Connected )
-            {                
-                _ReadMachine.Update();
-                _WriteMachine.Update();
+            while (_Receives.Count > 0)
+            {
+                lock (_Receives)
+                {
+                    var package = _Receives.Dequeue();
+                    _Core.OnResponse(package.Code, package.Args);				
+                }
             }            
+            
 			return true;
 		}
 
@@ -140,7 +180,10 @@ namespace Regulus.Remoting.Ghost.Native
             var stage = new NetworkStreamReadStage(_Socket);
 			stage.ReadCompletionEvent += (package) =>
 			{
-				_Core.OnResponse(package.Code, package.Args);				
+                lock (_Receives)
+                {
+                    _Receives.Enqueue(package);
+                }
 				_ToRead();
 			};
 			_ReadMachine.Push(stage);
@@ -148,20 +191,35 @@ namespace Regulus.Remoting.Ghost.Native
 
 		private void _ToWrite()
 		{
-            var stage = new NetworkStreamWriteStage(_Socket, _Sends);
-            stage.WriteCompletionEvent += _ToWrite;
-			_WriteMachine.Push(stage);
+            lock (_Sends)
+            {
+                if (_Sends.Count > 0)
+                {
+                    var package = _Sends.Dequeue();
+                    var stage = new NetworkStreamWriteStage(_Socket, package);
+                    stage.WriteCompletionEvent += _ToWrite;                    
+                    _WriteMachine.Push(stage);
+                }
+                else
+                {
+                    var stage = new WaitQueueStage(_Sends);
+                    stage.DoneEvent += _ToWrite;
+                    _WriteMachine.Push(stage);
+                }
+            }            
 		}
 
 		void Framework.ILaunched.Shutdown()
-		{            
-			if (_Core != null)
-				_Core.Finial();
+		{
+            Disconnect();
 		}
 
 		void Remoting.IGhostRequest.Request(byte code, System.Collections.Generic.Dictionary<byte, byte[]> args)
 		{
-			_Sends.Enqueue(new Package() { Args = Regulus.Utility.Map<byte, byte[]>.ToMap(args), Code = code });
+            lock (_Sends)
+            {
+                _Sends.Enqueue(new Package() { Args = Regulus.Utility.Map<byte, byte[]>.ToMap(args), Code = code });
+            }			
 		}
 
 		public long Ping { get { return _Core.Ping; } }
@@ -169,6 +227,23 @@ namespace Regulus.Remoting.Ghost.Native
         IProviderNotice<T> IAgent.QueryProvider<T>()
         {
             return _Core.QueryProvider<T>();
+        }
+
+        public void Disconnect()
+        {
+            _ThreadRun = false;
+            if (_IOThread != null &&_IOThread.IsAlive)
+            {
+                _IOThread.Abort();
+                _IOThread.Join();
+            }
+            _IOThread = null;
+            
+            if (_Socket.Connected)
+                _Socket.Close();
+            if (_Core != null)
+                _Core.Finial();
+            
         }
     }
 }

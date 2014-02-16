@@ -38,7 +38,7 @@ namespace Regulus.Project.TurnBasedRPG
             
             abilitys.AttechAbility<IMoverAbility>(_MoverAbility);
 
-            _QuadTreeObjectAbility = new PhysicalAbility(new System.Windows.Rect(_Property.Position.X - _BodyWidth / 2, _Property.Position.Y - _BodyHeight / 2, _BodyWidth, _BodyHeight), this);
+            _QuadTreeObjectAbility = new PhysicalAbility(new Regulus.Types.Rect(_Property.Position.X - _BodyWidth / 2, _Property.Position.Y - _BodyHeight / 2, _BodyWidth, _BodyHeight), this);
             abilitys.AttechAbility<PhysicalAbility>(_QuadTreeObjectAbility);
 
 

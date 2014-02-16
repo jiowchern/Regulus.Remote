@@ -5,6 +5,24 @@ using System.Text;
 
 namespace Regulus.Game
 {
+
+    public class EmptyStage : IStage
+    {
+        void IStage.Enter()
+        {
+            
+        }
+
+        void IStage.Leave()
+        {
+            
+        }
+
+        void IStage.Update()
+        {
+            
+        }
+    }
     public class StageMachine
     {
         class StageData
@@ -70,7 +88,27 @@ namespace Regulus.Game
         }
         public bool Update()
         {
-            _Handle();
+            //_Handle();
+
+            if (_StandBys.Count > 0)
+            {
+                if (_Current.Stage != null)
+                    _Current.Stage.Leave();
+
+                var stage = _StandBys.Dequeue();
+
+
+                if (stage != null)
+                {
+                    stage.Enter();
+                }
+                _Current.Stage = stage;
+            }
+
+            if (_Current.Stage != null)
+            {
+                _Current.Stage.Update();
+            }
 
             return _Current.Stage != null;
         }
@@ -84,7 +122,11 @@ namespace Regulus.Game
                 _Current = null;
             }
         }
-	
+
+        public void Empty()
+        {
+            Push(new EmptyStage());
+        }
         
     }
 

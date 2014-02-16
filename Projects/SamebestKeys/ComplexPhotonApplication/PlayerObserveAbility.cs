@@ -23,13 +23,13 @@ namespace Regulus.Project.SamebestKeys
 
         
 
-        System.Windows.Rect IObserveAbility.Vision
+        Regulus.Types.Rect IObserveAbility.Vision
         {
             get 
             {
                 var position  = _Infomation.Property.Position;                    
                 var vision = _Infomation.Property.Vision;
-                return new System.Windows.Rect(position.X - vision / 2, position.Y - vision / 2, vision, vision); 
+                return new Regulus.Types.Rect(position.X - vision / 2, position.Y - vision / 2, vision, vision); 
             }
         }
 

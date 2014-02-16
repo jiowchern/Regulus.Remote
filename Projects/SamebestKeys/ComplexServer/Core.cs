@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
-    class ComplexServer :Regulus.Game.ICore
+    public class ComplexServer :Regulus.Game.ICore
     {
         Regulus.Utility.Updater _Updater;
         Regulus.Game.ICore _Complex;

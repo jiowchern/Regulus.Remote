@@ -64,34 +64,25 @@
 	public partial class NetworkStreamWriteStage : Regulus.Game.IStage
 	{
 		System.Net.Sockets.Socket _Socket;
-		System.Collections.Generic.Queue<Package> _Packages;
+		Package _Package;
         
         public event System.Action WriteCompletionEvent;
         public event System.Action ErrorEvent;
         Regulus.Game.StageMachine _Machine;        
 
-        public NetworkStreamWriteStage(System.Net.Sockets.Socket socket, System.Collections.Generic.Queue<Package> packages)
+        public NetworkStreamWriteStage(System.Net.Sockets.Socket socket, Package package)
 		{
             _Socket = socket;
-			_Packages = packages;
+            _Package = package;
             _Machine = new Game.StageMachine();
 		}
 		void Game.IStage.Enter()
 		{
-			if (_Packages.Count > 0)
-			{
-				var package = _Packages.Dequeue();
-                if (package == null)
-                {
-                    throw new System.NullReferenceException();
-                }
-				var buffer = Regulus.PhotonExtension.TypeHelper.Serializer(package);
-                _ToHead(buffer);                
-			}
-			else
-			{
-				WriteCompletionEvent();
-			}
+
+            var package = _Package;            
+			var buffer = Regulus.PhotonExtension.TypeHelper.Serializer(package);
+            _ToHead(buffer);                
+			
 		}
 
         private void _ToHead(byte[] buffer)
@@ -153,14 +144,15 @@
             {                
                 this._Socket = socket;
                 this._Size = size;
-                _Buffer = new byte[size];                
             }
 
 
             void Game.IStage.Enter()
             {
+
                 try
                 {
+                    _Buffer = new byte[_Size];                
                     _Result = SocketIOResult.None;
                     _Socket.BeginReceive(_Buffer, _Offset, _Buffer.Length - _Offset, 0, _Readed, null);
                 }
@@ -222,7 +214,8 @@
         public NetworkStreamReadStage(System.Net.Sockets.Socket socket )
 		{            
 			_Socket = socket;
-            _Machine = new Game.StageMachine();            
+            _Machine = new Game.StageMachine();
+            ErrorEvent = () => { };
 		}
 		void Game.IStage.Enter()
 		{
@@ -271,4 +264,34 @@
             _Machine.Update();
 		}
 	}
+
+    public partial class WaitQueueStage : Regulus.Game.IStage
+    {
+
+
+        public event System.Action DoneEvent;
+        private System.Collections.Generic.Queue<Package> _Packages;
+
+        public WaitQueueStage(System.Collections.Generic.Queue<Package> packages)
+        {            
+            this._Packages = packages;
+        }
+        void Game.IStage.Enter()
+        {
+            
+        }
+
+        void Game.IStage.Leave()
+        {
+            
+        }
+
+        void Game.IStage.Update()
+        {
+            if (_Packages.Count > 0)
+            {
+                DoneEvent();
+            }
+        }
+    }
 }

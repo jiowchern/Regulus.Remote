@@ -23,13 +23,19 @@ namespace Console
             bool exit = false;
             application.Command.Register("quit", () => { exit = true; });
             _Initial(application);
-    
+
+            Regulus.Utility.TimeCounter fps = new Regulus.Utility.TimeCounter(); ;
             while (exit == false)
             {
-                updater.Update();                
+                if (fps.Second > 1.0 / 60)
+                {
+                    updater.Update();
+                    fps.Reset();
+                }
             }
 
             application.Command.Unregister("quit");
+            application.Stop();
 
             
         }

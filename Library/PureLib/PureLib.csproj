@@ -41,6 +41,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="INIFileParser">
+      <HintPath>..\ThirdParty\INIFileParser.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -55,6 +58,11 @@
     <Compile Include="game_framework.cs" />
     <Compile Include="game_stage.cs" />
     <Compile Include="game_stagemachine.cs" />
+    <Compile Include="Point.cs" />
+    <Compile Include="QuadTree.cs" />
+    <Compile Include="QuadTreeObject.cs" />
+    <Compile Include="Rect.cs" />
+    <Compile Include="Size.cs" />
     <Compile Include="utility_command_extension.cs" />
     <Compile Include="utility_icommand.cs" />
     <Compile Include="type.cs" />

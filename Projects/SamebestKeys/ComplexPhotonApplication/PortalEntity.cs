@@ -13,9 +13,9 @@ namespace Regulus.Project.SamebestKeys
         string _TargetMap;
         Types.Vector2 _TargetPosition;
         Types.Vector2 _Position;
-        System.Windows.Rect _Vision;
+        Regulus.Types.Rect _Vision;
 
-        public PortalEntity(Guid id, System.Windows.Rect vision,string target_map, Types.Vector2 target_position)
+        public PortalEntity(Guid id, Regulus.Types.Rect vision,string target_map, Types.Vector2 target_position)
             : base(id)
         {
             _TargetPosition = new Types.Vector2();
@@ -25,8 +25,8 @@ namespace Regulus.Project.SamebestKeys
             _Vision = vision;
 
             _Position = new Types.Vector2();
-            _Position.X = (float)(_Vision.Left + _Vision.Width /2);
-            _Position.X = (float)(_Vision.Top + _Vision.Height / 2);
+            _Position.X = (float)(_Vision.X + _Vision.Width /2);
+            _Position.X = (float)(_Vision.Y + _Vision.Height / 2);
         }
         
         protected override void _SetAbility(Entity.AbilitySet abilitys)
@@ -55,7 +55,7 @@ namespace Regulus.Project.SamebestKeys
             get { return _Position; }
         }
 
-        System.Windows.Rect IObserveAbility.Vision
+        Regulus.Types.Rect IObserveAbility.Vision
         {
             get { return _Vision; }
         }

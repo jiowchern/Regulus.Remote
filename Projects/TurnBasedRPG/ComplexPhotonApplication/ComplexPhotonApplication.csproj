@@ -118,10 +118,6 @@
       <Project>{a4cfce46-bda8-4416-a1bb-77bd80514019}</Project>
       <Name>Remoting</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Physics\Physics.csproj">
-      <Project>{e5e0f1e3-9c84-41a4-9fc5-eb3c18f41070}</Project>
-      <Name>Physics</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Serializable\Serializable.csproj">
       <Project>{30ddcaac-8ed3-4c7f-a150-b7c32b598cba}</Project>
       <Name>Serializable</Name>

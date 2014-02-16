@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Regulus.Physics
 {
-    using Regulus.Utility;
+    using Regulus.Types;
 	public interface IQuadObject
 	{
 		

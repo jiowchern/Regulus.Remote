@@ -23,6 +23,12 @@ namespace Regulus.Projects.SamebestKeys
 
         internal void Register(Regulus.Project.SamebestKeys.IUser user)
         {
+            user.PlayerProvider.Supply += PlayerProvider_Supply;
+            user.PlayerProvider.Unsupply += _Unsupply;
+
+            user.OnlineProvider.Supply += OnlineProvider_Supply;
+            user.OnlineProvider.Unsupply += _Unsupply;
+
             user.ConnectProvider.Supply += ConnectProvider_Supply;
             user.ConnectProvider.Unsupply += _Unsupply;
 
@@ -33,13 +39,120 @@ namespace Regulus.Projects.SamebestKeys
             user.ParkingProvider.Unsupply += _Unsupply;
         }
 
+        internal void Unregister(Regulus.Project.SamebestKeys.IUser user)
+        {
+            user.PlayerProvider.Supply -= PlayerProvider_Supply;
+            user.PlayerProvider.Unsupply -= _Unsupply;
+
+            user.OnlineProvider.Supply -= OnlineProvider_Supply;
+            user.OnlineProvider.Unsupply -= _Unsupply;
+
+            user.ConnectProvider.Supply -= ConnectProvider_Supply;
+            user.ConnectProvider.Unsupply -= _Unsupply;
+
+            user.VerifyProvider.Supply -= VerifyProvider_Supply;
+            user.VerifyProvider.Unsupply -= _Unsupply;
+
+            user.ParkingProvider.Supply -= ParkingProvider_Supply;
+            user.ParkingProvider.Unsupply -= _Unsupply;
+
+            foreach (var command in _RemoveCommands)
+            {
+                foreach (var cmd in command.Value)
+                {
+                    _Command.Unregister(cmd);
+                }
+            }
+
+            foreach (var removerEvent in _RemoveEvents)
+            {
+                var removers = removerEvent.Value;
+                foreach (var remover in removers)
+                {
+                    remover();
+                }
+            }
+        }
+
+        void PlayerProvider_Supply(Project.SamebestKeys.IPlayer obj)
+        {
+
+            _Command.Register("Ready", obj.Ready);
+            _Command.Register("Logout", obj.Logout);
+            _Command.Register("ExitWorld", obj.ExitWorld);
+            _Command.Register<float,float>("SetPosition", obj.SetPosition);
+            _Command.Register<int>("SetVision", obj.SetVision);
+            _Command.Register<float>("SetSpeed", obj.SetSpeed);
+            _Command.Register<float>("Walk", obj.Walk);
+            _Command.Register<float>("Stop", obj.Stop);
+            _Command.Register<string>("Say", obj.Say);
+            _Command.Register<string>("BodyMovements", (val)=>
+            {
+                obj.BodyMovements((Project.SamebestKeys.ActionStatue)Enum.Parse(typeof(Project.SamebestKeys.ActionStatue), val));
+            });
+
+            _Command.RemotingRegister<string>("QueryMap", obj.QueryMap, (val) => 
+            {
+                _View.WriteLine("所在地圖" + val);
+            });
+
+            _RemoveCommands.Add(obj, new string[] 
+            {
+                "Ready","Logout","ExitWorld","SetPosition","SetVision",
+                "SetSpeed","Walk","Stop","Say","BodyMovements",
+                "QueryMap",
+            });
+        }
+
+        void OnlineProvider_Supply(Project.SamebestKeys.IOnline obj)
+        {
+            _Command.Register("Ping", () => { _View.WriteLine(obj.Ping.ToString()); });
+            _Command.Register("Disconnect" ,obj.Disconnect);
+
+            _RemoveCommands.Add(obj, new string[] 
+            {
+                "Ping"  ,"Disconnect"
+            });
+        }
+
         void ParkingProvider_Supply(Project.SamebestKeys.IParking obj)
         {
             _Command.Register("Back", obj.Back);
 
+            _Command.RemotingRegister<string, bool>("CreateActor",
+                (name) => { return obj.CreateActor(new Project.SamebestKeys.Serializable.EntityLookInfomation() { Name = name }); },
+                (result)=>{ _View.WriteLine("角色建立" + result.ToString() );});
+
+            _Command.RemotingRegister<string, bool>("CheckActorName",
+                (name) => { return obj.CheckActorName(name); },
+                (result) => { _View.WriteLine("角色建立" + result.ToString()); });
+            _Command.RemotingRegister<string,Regulus.Project.SamebestKeys.Serializable.EntityLookInfomation[]>("DestroyActor", obj.DestroyActor,
+                (actors) =>
+                {
+                    foreach (var actor in actors)
+                    {
+                        _View.WriteLine("角色 : "+ actor.Name);
+                    }
+                });
+
+            _Command.RemotingRegister<Regulus.Project.SamebestKeys.Serializable.EntityLookInfomation[]>("QueryActors", obj.QueryActors,
+                (actors) =>
+                {
+                    foreach (var actor in actors)
+                    {
+                        _View.WriteLine("角色 : " + actor.Name);
+                    }
+                });
+
+            _Command.RemotingRegister<string, bool>("Select", obj.Select, (result) =>
+                {
+                    _View.WriteLine(result.ToString());
+                });
+            
+
             _RemoveCommands.Add(obj, new string[] 
             {
-                "Back"  
+                "Back" , "CreateActor" , "CheckActorName" , "DestroyActor" , "QueryActors" , "Select"
             });
         }
 
@@ -96,35 +209,7 @@ namespace Regulus.Projects.SamebestKeys
 
         
 
-        internal void Unregister(Regulus.Project.SamebestKeys.IUser user)
-        {
-
-            user.ConnectProvider.Supply -= ConnectProvider_Supply;
-            user.ConnectProvider.Unsupply -= _Unsupply;
-
-            user.VerifyProvider.Supply -= VerifyProvider_Supply;
-            user.VerifyProvider.Unsupply -= _Unsupply;
-
-            user.ParkingProvider.Supply -= ParkingProvider_Supply;
-            user.ParkingProvider.Unsupply -= _Unsupply;
-
-            foreach (var command in _RemoveCommands)
-            {
-                foreach (var cmd in command.Value)
-                {
-                    _Command.Unregister(cmd);
-                }
-            }
-
-            foreach (var removerEvent in _RemoveEvents)
-            {
-                var removers = removerEvent.Value;
-                foreach (var remover in removers)
-                {
-                    remover();
-                }
-            }
-        }
+        
 
 
         void _Unsupply<T>(T obj)

@@ -34,7 +34,7 @@ namespace Regulus.Project.SamebestKeys
             public IObserveAbility Observe { get; set; }
             public ICrossAbility Cross { get; set; }
 
-            System.Windows.Rect Physics.IQuadObject.Bounds
+            Regulus.Types.Rect Physics.IQuadObject.Bounds
             {
                 get { return Physical.Bounds; }
             }
@@ -104,7 +104,7 @@ namespace Regulus.Project.SamebestKeys
 
         void Regulus.Framework.ILaunched.Launch()
         {
-            _ObseverdInfomations = new Physics.QuadTree<EntityInfomation>(new System.Windows.Size(4, 4), 0);
+            _ObseverdInfomations = new Physics.QuadTree<EntityInfomation>(new Regulus.Types.Size(4, 4), 0);
 			_Build(_ReadMapData(Name));
         }
 
@@ -182,7 +182,7 @@ namespace Regulus.Project.SamebestKeys
                     var h = physical.Bounds.Height;
                     var x = observeAbility.Position.X - w / 2;
                     var y = observeAbility.Position.Y - h / 2;
-                    var brounds = new System.Windows.Rect(x, y, w, h);
+                    var brounds = new Regulus.Types.Rect(x, y, w, h);
                     var inbrounds = _ObseverdInfomations.Query(brounds);
                     var obbs = from qtoa in inbrounds let ma = qtoa.Move where ma != null && moverAbility != ma select ma.Obb;
                     moverAbility.Update(_Time.Ticks, obbs);

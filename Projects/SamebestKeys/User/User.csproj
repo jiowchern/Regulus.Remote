@@ -64,10 +64,6 @@
       <Project>{e4c45855-ec59-4c4c-a21d-44cb0390ce37}</Project>
       <Name>Game</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Serializable\Serializable.csproj">
-      <Project>{163da7ea-9ce3-4801-9c83-1a600ec6abea}</Project>
-      <Name>Serializable</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

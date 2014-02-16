@@ -7,8 +7,8 @@
     <ProjectGuid>{E4C45855-EC59-4C4C-A21D-44CB0390CE37}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ComplexPhotonApplication</RootNamespace>
-    <AssemblyName>ComplexPhotonApplication</AssemblyName>
+    <RootNamespace>Regulus.Project.SamebestKeys</RootNamespace>
+    <AssemblyName>Game</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -65,6 +65,7 @@
     <Compile Include="IObserveAbility.cs" />
     <Compile Include="IObservedAbility.cs" />
     <Compile Include="IStorage.cs" />
+    <Compile Include="Package.cs" />
     <Compile Include="Parking.cs" />
     <Compile Include="ParkingStage.cs" />
     <Compile Include="Player.cs" />
@@ -91,14 +92,6 @@
     <ProjectReference Include="..\..\..\Library\Remoting\Remoting.csproj">
       <Project>{a4cfce46-bda8-4416-a1bb-77bd80514019}</Project>
       <Name>Remoting</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Physics\Physics.csproj">
-      <Project>{e5e0f1e3-9c84-41a4-9fc5-eb3c18f41070}</Project>
-      <Name>Physics</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Serializable\Serializable.csproj">
-      <Project>{163da7ea-9ce3-4801-9c83-1a600ec6abea}</Project>
-      <Name>Serializable</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -8,11 +8,11 @@ using System.Text;
 
 namespace Regulus.Physics
 {
-    using Regulus.Utility;
+    using Regulus.Types;
 	public class QuadTree<T> where T : class, IQuadObject
 	{
 		private readonly bool sort;
-		private readonly Size minLeafSize;
+		private readonly Regulus.Types.Size minLeafSize;
 		private readonly int maxObjectsPerLeaf;
 		private QuadNode root = null;
 		private Dictionary<T, QuadNode> objectToNodeLookup = new Dictionary<T, QuadNode>();
@@ -515,14 +515,14 @@ namespace Regulus.Physics
 			internal List<T> quadObjects = new List<T>();
 			public ReadOnlyCollection<T> Objects;
 
-			public Rect Bounds { get; internal set; }
+			public Regulus.Types.Rect Bounds { get; internal set; }
 
 			public bool HasChildNodes()
 			{
 				return _nodes[0] != null;
 			}
 
-			public QuadNode(Rect bounds)
+			public QuadNode(Regulus.Types.Rect bounds)
 			{
 				Bounds = bounds;
 				Nodes = new ReadOnlyCollection<QuadNode>(_nodes);
@@ -530,7 +530,7 @@ namespace Regulus.Physics
 			}
 
 			public QuadNode(double x, double y, double width, double height)
-				: this(new Rect(x, y, width, height))
+				: this(new Regulus.Types.Rect(x, y, width, height))
 			{
 
 			}

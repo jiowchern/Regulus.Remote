@@ -12,8 +12,15 @@ namespace Regulus.Project.SamebestKeys
     {
         Regulus.Remoting.Value<bool> Connect(string ipaddr, int port);
     }
+
+    public interface IOnline
+    {
+        float Ping { get; }
+        void Disconnect();
+    }
     public interface IUser :Regulus.Utility.IUpdatable
-    {        
+    {
+        Regulus.Remoting.Ghost.IProviderNotice<IOnline> OnlineProvider { get; }
         Regulus.Remoting.Ghost.IProviderNotice<IConnect> ConnectProvider { get; }
         Regulus.Remoting.Ghost.IProviderNotice<IVerify> VerifyProvider  { get; }
         Regulus.Remoting.Ghost.IProviderNotice<IParking> ParkingProvider { get; }

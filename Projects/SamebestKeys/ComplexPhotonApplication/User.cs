@@ -91,6 +91,10 @@ namespace Regulus.Project.SamebestKeys
             {
                 Actor.Property.Map = "Ferdinand";
             }
+            if (float.IsNaN(Actor.Property.Direction) )
+            {
+                Actor.Property.Direction = 0;
+            }
 
             var map_string  = Actor.Property.Map;
             _ToAdventure(map_string);

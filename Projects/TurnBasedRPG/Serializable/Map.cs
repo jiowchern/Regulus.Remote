@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPG
 {
+    
 	namespace Data
 	{
 		[Serializable]

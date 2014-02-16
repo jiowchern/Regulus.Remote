@@ -70,8 +70,14 @@ namespace Regulus.PhotonExtension
 			using (System.IO.MemoryStream stream = new System.IO.MemoryStream(b))
 			{
 				System.Runtime.Serialization.IFormatter formater = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                try
+                {
+                    obj = formater.Deserialize(stream);
+                }
+                catch
+                { 
+                }
 				
-				obj = formater.Deserialize(stream);
 			}
             return obj;								
 		}

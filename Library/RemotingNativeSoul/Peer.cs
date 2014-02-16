@@ -38,18 +38,32 @@ namespace Regulus.Remoting.Soul.Native
 		}
 		private void _HandleWrite()
 		{
-			var stage = new NetworkStreamWriteStage(_Socket, _Responses);
-			stage.WriteCompletionEvent += _HandleWrite;
-            stage.ErrorEvent += () => { _Enable = false; };
-			_WriteMachine.Push(stage);
+            lock (_Responses)
+            {
+                if (_Responses.Count > 0)
+                {
+                    var package = _Responses.Dequeue();
+                    var stage = new NetworkStreamWriteStage(_Socket, package);
+                    stage.WriteCompletionEvent += _HandleWrite;
+                    stage.ErrorEvent += () => { _Enable = false; };
+                    _WriteMachine.Push(stage);
+                }
+                else
+                {
+                    var stage = new WaitQueueStage(_Responses);
+                    stage.DoneEvent += _HandleWrite;
+                    _WriteMachine.Push(stage);
+                }
+            }
+			
 		}
 		private void _HandleRead()
 		{
 			var stage = new NetworkStreamReadStage(_Socket);
 			stage.ReadCompletionEvent += (package) =>
 			{
-				_HandlePackage(package);
-
+                if (package != null)
+				    _HandlePackage(package);
 				_HandleRead();
 			};
             stage.ErrorEvent += () => { _Enable = false; };
@@ -88,7 +102,10 @@ namespace Regulus.Remoting.Soul.Native
 
         private void _PushRequest(Guid entity_id, string method_name, Guid return_id, object[] method_params)
         {
-            _Requests.Enqueue(new Request() { EntityId = entity_id, MethodName = method_name, MethodParams = method_params, ReturnId = return_id });
+            lock (_Requests)
+            {
+                _Requests.Enqueue(new Request() { EntityId = entity_id, MethodName = method_name, MethodParams = method_params, ReturnId = return_id });
+            }            
         }
 
 		

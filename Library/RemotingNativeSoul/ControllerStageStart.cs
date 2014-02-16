@@ -27,8 +27,9 @@ namespace Regulus.Remoting.Soul.Native
 
             private void _StartIni(string path)
             {
-                var ini = new Regulus.Utility.Ini(path);
-                int port = int.Parse(ini.Read("Launch", "port"));                
+                var ini = new Regulus.Utility.Ini(System.IO.File.ReadAllText(path));
+                var port_string = ini.Read("Launch", "port");
+                int port = int.Parse(port_string);                
                 string dllpath = ini.Read("Launch", "path");
                 string className = ini.Read("Launch", "class");                
 

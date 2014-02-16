@@ -94,8 +94,21 @@ namespace Regulus.Game
         }
         public void Stop()
         {
-            _Runable = false;
+            
+            _Stop();
+        }
 
+        private void _Stop()
+        {
+            _Runable = false;
+            _Loops.Shutdown();
+            _StageMachine.Termination();
+            _Loops = null;
+
+            _StageMachine = null;
+            _Viewer = null;
+            _Input = null;
+            _Console = null;
         }
 
 
@@ -115,13 +128,7 @@ namespace Regulus.Game
 
 		void Regulus.Framework.ILaunched.Shutdown()
         {
-            _Loops.Shutdown();
-            _Loops = null;
-        
-            _StageMachine = null;
-            _Viewer = null;
-            _Input = null;
-            _Console = null;
+            _Stop();
         }
     }
 
@@ -297,7 +304,8 @@ namespace Regulus.Game
             {
                 _Command.Unregister("SelectController");
                 _Command.Unregister("UnsawnController");
-                _Command.Unregister("SpawnController");                
+                _Command.Unregister("SpawnController");
+                _Loops.Shutdown();
             }
 
             void IStage.Update()
