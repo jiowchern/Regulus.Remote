@@ -8,15 +8,15 @@ namespace Regulus.Types
     public struct Size
     {
 
-        
-        public Size(double width, double height)
+
+        public Size(float width, float height)
         {            
             Width = width;
             Height = height;
         }
 
-        public double Height;
+        public float Height;
 
-        public double Width;
+        public float Width;
     }
 }

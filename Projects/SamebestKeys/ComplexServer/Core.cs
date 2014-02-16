@@ -31,7 +31,7 @@ namespace Regulus.Project.SamebestKeys
         void Framework.ILaunched.Launch()
         {
             _Updater.Add(_Storage);
-            _Updater.Add(_Complex);            
+            _Updater.Add(_Complex);             
         }
 
         void Framework.ILaunched.Shutdown()

@@ -20,7 +20,11 @@ namespace Server
 
             bool exit = false;
 
-            server.Command.Register("quit", () => { exit = true; });
+            server.Command.Register("quit", 
+                () => 
+                { 
+                    exit = true; 
+                });
             _Initial(server);
             
             while (exit == false)
@@ -28,8 +32,9 @@ namespace Server
                 updater.Update();
                 input.Update();                
             }
-
+            
             server.Command.Unregister("quit");
+            updater.Shutdown();
         }
 
 

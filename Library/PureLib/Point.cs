@@ -7,17 +7,17 @@ namespace Regulus.Types
 {
     public struct Point
     {
-        
 
-        public Point(double x, double y)
+
+        public Point(float x, float y)
         {
             // TODO: Complete member initialization
             this.X = x;
             this.Y = y;
         }
 
-        public double X;
+        public float X;
 
-        public double Y;
+        public float Y;
     }
 }

@@ -13,14 +13,14 @@ namespace Regulus.Remoting.Soul.Native
         
 		Regulus.Utility.Command _Command;
 		Regulus.Utility.Console.IViewer _View;
-		Regulus.Utility.FPSCounter _FPS;
+		
 
 		public TcpController(Regulus.Utility.Command command, Regulus.Utility.Console.IViewer view)
 		{
 			
 			_Command = command;
 			_View = view;
-			_FPS = new Utility.FPSCounter();
+		
             _Machine = new Game.StageMachine();
 		}
 
@@ -47,21 +47,19 @@ namespace Regulus.Remoting.Soul.Native
 		public void Look()
 		{
 			
-			_Command.Register("FPS", () => { _View.WriteLine("FPS:" + _FPS.Value.ToString()); });
+			
 		}
 
 		public void NotLook()
 		{            
 			
-			_Command.Unregister("FPS");
+			
 		}
 		
 		public bool Update()
-		{
-            System.Threading.Thread.Sleep(0);
+		{            
             _Machine.Update();						
-
-			_FPS.Update();            
+			
 			return true;
 		}
 
@@ -85,7 +83,7 @@ namespace Regulus.Remoting.Soul.Native
         
 		public void Shutdown()
 		{
-			
+            _Machine.Termination();
 		}
         
         

@@ -17,8 +17,8 @@ namespace Regulus.Project.TurnBasedRPG
 
 
             var a = (float)((_Obb.getRotation() - 180) * Math.PI / 180);
-            var s = Math.Sin(a);
-            var c = Math.Cos(a);
+            var s = (float)Math.Sin(a);
+            var c = (float)Math.Cos(a);
             
             s = s < 0 ? -s : s;
             c = c < 0 ? -c : c;

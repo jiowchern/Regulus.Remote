@@ -18,6 +18,7 @@ namespace Regulus.Utility
         List<T> _Ts = new List<T>();
 
         public T[] Objects { get { return _Ts.ToArray(); } }
+        public int Count { get { return _Ts.Count;  } }
 
         public void Add(T framework)
         {

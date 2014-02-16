@@ -10,7 +10,7 @@ namespace Regulus.Types
         
         private Size _Size;
         public Point Location;
-        
+
         public Rect(Point rootOrigin, Size rootSize)
         {
             // TODO: Complete member initialization
@@ -18,7 +18,7 @@ namespace Regulus.Types
             this._Size = rootSize;
         }
 
-        public Rect(double newX, double newY, double p1, double p2)
+        public Rect(float newX, float newY, float p1, float p2)
         {
             // TODO: Complete member initialization
             Location.X = newX;
@@ -29,15 +29,15 @@ namespace Regulus.Types
 
 
 
-        public double Width { get { return _Size.Width; } set { _Size.Width = value; } }
+        public float Width { get { return _Size.Width; } set { _Size.Width = value; } }
 
-        public double Height { get { return _Size.Height; } set { _Size.Height = value; } }
+        public float Height { get { return _Size.Height; } set { _Size.Height = value; } }
 
-        public double X { get { return Location.X; } set { Location.X = value; } }
+        public float X { get { return Location.X; } set { Location.X = value; } }
 
-        public double Y { get { return Location.Y; } set { Location.Y = value; } }
+        public float Y { get { return Location.Y; } set { Location.Y = value; } }
 
-        internal bool Contains(Rect rect)
+        public bool Contains(Rect rect)
         {
             return (X <= rect.X &&
                     Y <= rect.Y &&
@@ -45,7 +45,7 @@ namespace Regulus.Types
                     Y + Height >= rect.Y + rect.Height);
         }
 
-        internal bool IntersectsWith(Rect rect)
+        public bool IntersectsWith(Rect rect)
         {
             return (rect.Left <= Right) &&
                   (rect.Right>= Left) &&
@@ -55,17 +55,17 @@ namespace Regulus.Types
 
 
 
-        public double Left { get { return Location.X; } set { Location.X = value; } }
+        public float Left { get { return Location.X; } set { Location.X = value; } }
 
-        public double Top { get { return Location.Y; } set { Location.Y = value; } }
+        public float Top { get { return Location.Y; } set { Location.Y = value; } }
 
-        public double Right { get { return Location.X + _Size.Width; } 
+        public float Right { get { return Location.X + _Size.Width; } 
             set 
             {
                 _Size.Width = value - Location.X;
             } }
 
-        public double Bottom
+        public float Bottom
         {
             get { return Location.Y + _Size.Height; }
             set

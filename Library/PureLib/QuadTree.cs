@@ -64,9 +64,9 @@ namespace Regulus.Physics
 				Rect bounds = quadObject.Bounds;
 				if (root == null)
 				{
-					var rootSize = new Size(Math.Ceiling(bounds.Width / minLeafSize.Width),
-											Math.Ceiling(bounds.Height / minLeafSize.Height));
-					double multiplier = Math.Max(rootSize.Width, rootSize.Height);
+					var rootSize = new Size((float)Math.Ceiling(bounds.Width / minLeafSize.Width),
+											(float)Math.Ceiling(bounds.Height / minLeafSize.Height));
+					float multiplier = Math.Max(rootSize.Width, rootSize.Height);
 					rootSize = new Size(minLeafSize.Width * multiplier, minLeafSize.Height * multiplier);
 					var center = new Point(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2);
 					var rootOrigin = new Point(center.X - rootSize.Width / 2, center.Y - rootSize.Height / 2);
@@ -134,10 +134,10 @@ namespace Regulus.Physics
 					rootDirection = isWest ? Direction.SW : Direction.SE;
 				}
 
-				double newX = (rootDirection == Direction.NW || rootDirection == Direction.SW)
+				float newX = (rootDirection == Direction.NW || rootDirection == Direction.SW)
 								  ? root.Bounds.X
 								  : root.Bounds.X - root.Bounds.Width;
-				double newY = (rootDirection == Direction.NW || rootDirection == Direction.NE)
+                float newY = (rootDirection == Direction.NW || rootDirection == Direction.NE)
 								  ? root.Bounds.Y
 								  : root.Bounds.Y - root.Bounds.Height;
 				Rect newRootBounds = new Rect(newX, newY, root.Bounds.Width * 2, root.Bounds.Height * 2);
@@ -529,7 +529,7 @@ namespace Regulus.Physics
 				Objects = new ReadOnlyCollection<T>(quadObjects);
 			}
 
-			public QuadNode(double x, double y, double width, double height)
+			public QuadNode(float x, float y, float width, float height)
 				: this(new Regulus.Types.Rect(x, y, width, height))
 			{
 

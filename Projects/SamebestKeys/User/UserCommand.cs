@@ -63,6 +63,7 @@ namespace Regulus.Projects.SamebestKeys
                     _Command.Unregister(cmd);
                 }
             }
+            _RemoveCommands.Clear();
 
             foreach (var removerEvent in _RemoveEvents)
             {
@@ -72,6 +73,7 @@ namespace Regulus.Projects.SamebestKeys
                     remover();
                 }
             }
+            _RemoveEvents.Clear();
         }
 
         void PlayerProvider_Supply(Project.SamebestKeys.IPlayer obj)

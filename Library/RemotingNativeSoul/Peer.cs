@@ -117,7 +117,10 @@ namespace Regulus.Remoting.Soul.Native
 
 		void Remoting.IResponseQueue.Push(byte cmd, Dictionary<byte, byte[]> args)
 		{
-			_Responses.Enqueue(new Regulus.Remoting.Package() { Code = cmd, Args = Regulus.Utility.Map<byte, byte[]>.ToMap(args) });
+            lock (_Responses)
+            {
+                _Responses.Enqueue(new Regulus.Remoting.Package() { Code = cmd, Args = Regulus.Utility.Map<byte, byte[]>.ToMap(args) });
+            }			
 		}
 
         event Action<Guid, string, Guid, object[]> _InvokeMethodEvent;
@@ -163,8 +166,11 @@ namespace Regulus.Remoting.Soul.Native
 
                 if (_Requests.Count > 0)
                 {
-                    var request = _Requests.Dequeue();
-                    _InvokeMethodEvent(request.EntityId, request.MethodName, request.ReturnId, request.MethodParams);
+                    lock (_Requests)
+                    {
+                        var request = _Requests.Dequeue();
+                        _InvokeMethodEvent(request.EntityId, request.MethodName, request.ReturnId, request.MethodParams);
+                    }                    
                 }
 
                 return true;
@@ -181,6 +187,8 @@ namespace Regulus.Remoting.Soul.Native
         void Framework.ILaunched.Shutdown()
         {
             _Socket.Close();
+            _ReadMachine.Termination();
+            _WriteMachine.Termination();
         }
     }
 	
