@@ -27,7 +27,7 @@ namespace Regulus.Remoting.Soul
             _Fiber.Dispose();
 		}
 
-		public event Action<Guid , string ,Guid , object[]>	InvokeMethodEvent;
+		public event Action<Guid , string ,Guid , byte[][]>	InvokeMethodEvent;
 		
 		protected override void OnOperationRequest(Photon.SocketServer.OperationRequest operationRequest, Photon.SocketServer.SendParameters sendParameters)
 		{
@@ -49,7 +49,7 @@ namespace Regulus.Remoting.Soul
 				
 				var methodParams = (from p in operationRequest.Parameters
 								   where p.Key >= 3 orderby p.Key
-								   select Regulus.PhotonExtension.TypeHelper.Deserialize(p.Value as byte[])).ToArray();
+								   select p.Value as byte[]).ToArray();
 
                 _Push(entityId, methodName, returnId, methodParams);
 
@@ -63,12 +63,12 @@ namespace Regulus.Remoting.Soul
             public Guid EntityId { get; set; }
             public string MethodName { get; set; }
             public Guid ReturnId { get; set; }
-            public object[] MethodParams { get; set; }
+            public byte[][] MethodParams { get; set; }
         }
         Queue<Request> _NewRequests = new Queue<Request>();
         Queue<Request> _UpdateRequests = new Queue<Request>();
 
-        private void _Push(Guid entity_id, string method_name, Guid return_id, object[] method_params)
+        private void _Push(Guid entity_id, string method_name, Guid return_id, byte[][] method_params)
         {
             lock (_Sync)
             {

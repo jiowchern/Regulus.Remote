@@ -14,7 +14,7 @@ namespace Regulus.Remoting.Soul.Native
             public Guid EntityId { get; set; }
             public string MethodName { get; set; }
             public Guid ReturnId { get; set; }
-            public object[] MethodParams { get; set; }
+            public byte[][] MethodParams { get; set; }
         }
 
 		System.Net.Sockets.Socket _Socket;
@@ -94,13 +94,13 @@ namespace Regulus.Remoting.Soul.Native
                 var methodParams = (from p in package.Args
                                     where p.Key >= 3
                                     orderby p.Key
-                                    select Regulus.PhotonExtension.TypeHelper.Deserialize(p.Value)).ToArray();
+                                    select p.Value).ToArray();
 
                 _PushRequest(entityId, methodName, returnId, methodParams);
             }
 		}
 
-        private void _PushRequest(Guid entity_id, string method_name, Guid return_id, object[] method_params)
+        private void _PushRequest(Guid entity_id, string method_name, Guid return_id, byte[][] method_params)
         {
             lock (_Requests)
             {
@@ -123,8 +123,8 @@ namespace Regulus.Remoting.Soul.Native
             }			
 		}
 
-        event Action<Guid, string, Guid, object[]> _InvokeMethodEvent;
-		event Action<Guid, string, Guid, object[]> Remoting.IRequestQueue.InvokeMethodEvent
+        event Action<Guid, string, Guid, byte[][]> _InvokeMethodEvent;
+        event Action<Guid, string, Guid, byte[][]> Remoting.IRequestQueue.InvokeMethodEvent
 		{
 			add
 			{

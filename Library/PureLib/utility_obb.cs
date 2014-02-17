@@ -11,22 +11,29 @@ namespace Regulus.Utility
  *  
  * Oriented bounding box 
  */
+
 	[Serializable]
+    [ProtoBuf.ProtoContract]
 	public class OBB
 	{
-
+        [ProtoBuf.ProtoMember(1)]
 		private float[] centerPoint;
 
+        [ProtoBuf.ProtoMember(2)]
 		private float halfWidth;
 
+        [ProtoBuf.ProtoMember(3)]
 		private float halfHeight;
 
 		// unit vector of x axis
+        [ProtoBuf.ProtoMember(4)]
 		private float[] axisX;
 		// unit vector of y axis
+        [ProtoBuf.ProtoMember(5)]
 		private float[] axisY;
         
 		// 0 -360
+        [ProtoBuf.ProtoMember(6)]
 		private float rotation;
 
 

@@ -8,7 +8,7 @@ namespace Regulus.Remoting
 	public interface IValue
 	{
 		object GetObject();
-		void SetValue(object val);
+		void SetValue(byte[] val);
 
 		void QueryValue(Action<object> action);
 	}
@@ -77,10 +77,10 @@ namespace Regulus.Remoting
                 _OnValue(_Value);
             }				
         }
-		void IValue.SetValue(object val)
+		void IValue.SetValue(byte[] val)
 		{
 			_Empty = false;
-			_Value = (T)val ;
+            _Value = ProtoBuf.Serializer.Deserialize<T>(new System.IO.MemoryStream(val));
             if (_OnValue != null)
 			{
                 _OnValue(_Value);

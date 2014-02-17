@@ -69,7 +69,7 @@ namespace Regulus.Standalong
 				var methodParams = (from p in args
 									where p.Key >= 3
 									orderby p.Key
-									select Regulus.PhotonExtension.TypeHelper.Deserialize(p.Value as byte[])).ToArray();			
+									select p.Value).ToArray();			
 
 				if(CallMethodEvent != null)
 					CallMethodEvent(entityId, methodName, returnId, methodParams);
@@ -78,7 +78,7 @@ namespace Regulus.Standalong
 		}
 
 		
-		public event Action<Guid , string , Guid , object[] > CallMethodEvent;
+		public event Action<Guid , string , Guid , byte[][] > CallMethodEvent;
 		public event Action PingEvent;
 	}
 }

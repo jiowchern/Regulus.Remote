@@ -6,7 +6,7 @@ using System.Text;
 namespace Regulus.Types
 {
 
-    
+    [ProtoBuf.ProtoContract]
     [Serializable]
     public class Vector2
     {
@@ -15,6 +15,9 @@ namespace Regulus.Types
             X = 0.0f;
             Y = 0.0f;
         }
-        public float X,Y;
+        [ProtoBuf.ProtoMember(1)]
+        public float X;
+        [ProtoBuf.ProtoMember(2)]
+        public float Y;
     }
 }

@@ -34,16 +34,18 @@ namespace TestNativeUser
                 return _Id;
             }
 
-            void Regulus.Remoting.Ghost.IGhost.OnProperty(string name, object value)
-            {
-                throw new NotImplementedException();
-            }
-
+            
             Regulus.Remoting.Value<bool> TestNativeGameCore.IConnect.Connect(string ipaddr, int port)
             {
                 var val = new Regulus.Remoting.Value<bool>();
                 ConnectedEvent(ipaddr, port, val);
                 return val;
+            }
+
+
+            void Regulus.Remoting.Ghost.IGhost.OnProperty(string name, byte[] value)
+            {
+                throw new NotImplementedException();
             }
         }
 

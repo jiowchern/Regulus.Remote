@@ -1,8 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database", "Library\Database\Database.csproj", "{E51E2098-C578-4637-807C-F67067A54535}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PureLib", "Library\PureLib\PureLib.csproj", "{2F28AA04-316D-4C20-BF46-987D4A59691D}"
@@ -88,6 +86,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComplexServer", "Projects\SamebestKeys\ComplexServer\ComplexServer.csproj", "{D88116CF-9E9C-4E0B-8EB7-FE75C99E6D4D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console", "Projects\SamebestKeys\Console\Console.csproj", "{36979344-1B38-4397-8D81-E84E20813E23}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProtobuf", "Test\TestProtobuf\TestProtobuf.csproj", "{ED15CB50-2F5F-4275-B2CF-214A1EDCCCA6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -612,6 +612,21 @@ Global
 		{36979344-1B38-4397-8D81-E84E20813E23}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{36979344-1B38-4397-8D81-E84E20813E23}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{36979344-1B38-4397-8D81-E84E20813E23}.Release|x86.ActiveCfg = Release|Any CPU
+		{ED15CB50-2F5F-4275-B2CF-214A1EDCCCA6}.Debug_Unity|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED15CB50-2F5F-4275-B2CF-214A1EDCCCA6}.Debug_Unity|Any CPU.Build.0 = Debug|Any CPU
+		{ED15CB50-2F5F-4275-B2CF-214A1EDCCCA6}.Debug_Unity|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{ED15CB50-2F5F-4275-B2CF-214A1EDCCCA6}.Debug_Unity|Mixed Platforms.Build.0 = Debug|Any CPU
+		{ED15CB50-2F5F-4275-B2CF-214A1EDCCCA6}.Debug_Unity|x86.ActiveCfg = Debug|Any CPU
+		{ED15CB50-2F5F-4275-B2CF-214A1EDCCCA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED15CB50-2F5F-4275-B2CF-214A1EDCCCA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED15CB50-2F5F-4275-B2CF-214A1EDCCCA6}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{ED15CB50-2F5F-4275-B2CF-214A1EDCCCA6}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{ED15CB50-2F5F-4275-B2CF-214A1EDCCCA6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{ED15CB50-2F5F-4275-B2CF-214A1EDCCCA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED15CB50-2F5F-4275-B2CF-214A1EDCCCA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED15CB50-2F5F-4275-B2CF-214A1EDCCCA6}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{ED15CB50-2F5F-4275-B2CF-214A1EDCCCA6}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{ED15CB50-2F5F-4275-B2CF-214A1EDCCCA6}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -633,6 +648,7 @@ Global
 		{5C439D60-9049-4335-87AF-4E5E24BCB87D} = {0701FE3A-A51F-45B4-8558-2F850665323A}
 		{10D95F6D-C446-4909-B37F-3F68F8EDA5AC} = {0701FE3A-A51F-45B4-8558-2F850665323A}
 		{21E0ECA9-851F-4A6C-8BE3-A0B041C6326B} = {0701FE3A-A51F-45B4-8558-2F850665323A}
+		{ED15CB50-2F5F-4275-B2CF-214A1EDCCCA6} = {0701FE3A-A51F-45B4-8558-2F850665323A}
 		{3BBDC330-565A-4183-8649-30A446A288C8} = {BC57B228-DB48-4122-90B4-8281960C0282}
 		{4B71C9F3-D528-4AE4-9D6E-E31837D8ED34} = {BC57B228-DB48-4122-90B4-8281960C0282}
 		{25A92ADA-CC04-4F8C-93B3-8F43A42030E3} = {BC57B228-DB48-4122-90B4-8281960C0282}

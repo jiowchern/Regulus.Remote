@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Regulus.Types
 {
+    [ProtoBuf.ProtoContract]
     public struct Point
     {
 
@@ -15,9 +16,9 @@ namespace Regulus.Types
             this.X = x;
             this.Y = y;
         }
-
+        [ProtoBuf.ProtoMember(1)]
         public float X;
-
+        [ProtoBuf.ProtoMember(2)]
         public float Y;
     }
 }

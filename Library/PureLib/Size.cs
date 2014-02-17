@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Regulus.Types
 {
+    [ProtoBuf.ProtoContract]
     public struct Size
     {
 
@@ -14,9 +15,9 @@ namespace Regulus.Types
             Width = width;
             Height = height;
         }
-
+        [ProtoBuf.ProtoMember(1)]
         public float Height;
-
+        [ProtoBuf.ProtoMember(2)]
         public float Width;
     }
 }

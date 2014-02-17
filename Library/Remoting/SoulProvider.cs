@@ -148,7 +148,7 @@ namespace Regulus.Remoting.Soul
             _Queue.Push((byte)ServerToClientPhotonOpCode.UnloadSoul, argmants);
         }
 		
-		void _InvokeMethod(Guid entity_id , string method_name ,Guid returnId , object[] args)
+		void _InvokeMethod(Guid entity_id , string method_name ,Guid returnId , byte[][] args)
 		{			    
 			var soulInfo = (from soul in _Souls where soul.ID == entity_id select new { MethodInfos = soul.MethodInfos , ObjectInstance = soul.ObjectInstance}).FirstOrDefault();
 			if (soulInfo != null)
@@ -156,7 +156,13 @@ namespace Regulus.Remoting.Soul
 				System.Reflection.MethodInfo methodInfo = (from m in soulInfo.MethodInfos where m.Name == method_name && m.GetParameters().Count() == args.Count() select m).FirstOrDefault();
 				if (methodInfo != null)
 				{
-					var returnValue = methodInfo.Invoke(soulInfo.ObjectInstance, args);
+                    var paramerInfos = methodInfo.GetParameters();
+                    int i = 0;
+                    var argObjects = from pi in paramerInfos 
+                                     let arg = args[i++]
+                                     select ProtoBuf.Serializer.NonGeneric.Deserialize(pi.ParameterType , new System.IO.MemoryStream(arg));
+
+                    var returnValue = methodInfo.Invoke(soulInfo.ObjectInstance, argObjects.ToArray());
 					if (returnId != Guid.Empty)
 					{
 						_ReturnValue(returnId, returnValue as IValue);							

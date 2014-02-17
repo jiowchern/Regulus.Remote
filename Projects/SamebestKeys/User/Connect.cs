@@ -25,10 +25,7 @@ namespace Regulus.Projects.SamebestKeys
             return _Id;
         }
 
-        void Regulus.Remoting.Ghost.IGhost.OnProperty(string name, object value)
-        {
-            throw new NotImplementedException();
-        }
+
         
 
         Regulus.Remoting.Value<bool> Project.SamebestKeys.IConnect.Connect(string ipaddr, int port)
@@ -36,6 +33,12 @@ namespace Regulus.Projects.SamebestKeys
             var val = new Regulus.Remoting.Value<bool>();
             ConnectedEvent(ipaddr, port, val);
             return val;
+        }
+
+
+        void Regulus.Remoting.Ghost.IGhost.OnProperty(string name, byte[] value)
+        {
+            throw new NotImplementedException();
         }
     }
 }

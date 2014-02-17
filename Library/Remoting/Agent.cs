@@ -51,8 +51,8 @@ namespace Regulus.Remoting
 				{
 
 					var entity_id = new Guid(args[0] as byte[]);
-					var eventName = Regulus.PhotonExtension.TypeHelper.Deserialize(args[1] as byte[]) as string;
-					var value = Regulus.PhotonExtension.TypeHelper.Deserialize(args[2] as byte[]);
+					var eventName = Regulus.PhotonExtension.TypeHelper.Deserialize<string>(args[1] as byte[]) ;
+					var value = args[2] ;
 
 					System.Diagnostics.Debug.WriteLine("UpdateProperty id:" + entity_id + " name:" + eventName + " value:" + value);
 					_UpdateProperty(entity_id, eventName, value);
@@ -63,10 +63,10 @@ namespace Regulus.Remoting
 				if (args.Count >= 2)
 				{
 					var entity_id = new Guid(args[0] as byte[]);
-					var eventName = Regulus.PhotonExtension.TypeHelper.Deserialize(args[1] as byte[]) as string;
+					var eventName = Regulus.PhotonExtension.TypeHelper.Deserialize<string>(args[1] as byte[]) ;
 					var eventParams = (from p in args
 									   where p.Key >= 2
-									   select Regulus.PhotonExtension.TypeHelper.Deserialize(p.Value as byte[])).ToArray();
+									   select Regulus.PhotonExtension.TypeHelper.Deserialize<object>(p.Value as byte[])).ToArray();
 
 					_InvokeEvent(entity_id, eventName, eventParams);
 				}
@@ -76,7 +76,7 @@ namespace Regulus.Remoting
 				if (args.Count == 2)
 				{
 					var returnTarget = new Guid(args[0] as byte[]);
-					var returnValue = Regulus.PhotonExtension.TypeHelper.Deserialize(args[1] as byte[]);
+					var returnValue = args[1] ;
 
 					_SetReturnValue(returnTarget, returnValue);
 				}
@@ -85,7 +85,7 @@ namespace Regulus.Remoting
 			{
 				if (args.Count == 2)
 				{
-					var typeName = Regulus.PhotonExtension.TypeHelper.Deserialize(args[0] as byte[]) as string;
+					var typeName = Regulus.PhotonExtension.TypeHelper.Deserialize<string>(args[0] as byte[]) ;
 					var entity_id = new Guid(args[1] as byte[]);
 					System.Diagnostics.Debug.WriteLine("load soul compile: " + typeName + " id: " + entity_id.ToString());
 					_LoadSoulCompile(typeName, entity_id);
@@ -95,7 +95,7 @@ namespace Regulus.Remoting
 			{
 				if (args.Count == 2)
 				{
-					var typeName = Regulus.PhotonExtension.TypeHelper.Deserialize(args[0] as byte[]) as string;
+					var typeName = Regulus.PhotonExtension.TypeHelper.Deserialize<string>(args[0] as byte[]) ;
 					var entity_id = new Guid(args[1] as byte[]);
 					System.Diagnostics.Debug.WriteLine("load soul : " + typeName + " id: " + entity_id.ToString());
 					_LoadSoul(typeName, entity_id);
@@ -105,7 +105,7 @@ namespace Regulus.Remoting
 			{
 				if (args.Count == 2)
 				{
-					var typeName = Regulus.PhotonExtension.TypeHelper.Deserialize(args[0] as byte[]) as string;
+					var typeName = Regulus.PhotonExtension.TypeHelper.Deserialize<string>(args[0] as byte[]) ;
 					var entity_id = new Guid(args[1] as byte[]);
 					System.Diagnostics.Debug.WriteLine("unload soul : " + typeName + " id: " + entity_id.ToString());
 					_UnloadSoul(typeName, entity_id);
@@ -114,7 +114,7 @@ namespace Regulus.Remoting
 		}
 
 		Regulus.Remoting.Ghost.ReturnValueQueue _ReturnValueQueue = new Regulus.Remoting.Ghost.ReturnValueQueue();
-		private void _SetReturnValue(Guid returnTarget, object returnValue)
+		private void _SetReturnValue(Guid returnTarget, byte[] returnValue)
 		{
 			IValue value = _ReturnValueQueue.PopReturnValue(returnTarget);
 			if (value != null)
@@ -170,7 +170,7 @@ namespace Regulus.Remoting
 		{
 			return _QueryProvider(typeof(T).FullName) as Regulus.Remoting.Ghost.IProviderNotice<T>;
 		}
-		private void _UpdateProperty(Guid entity_id, string name, object value)
+		private void _UpdateProperty(Guid entity_id, string name, byte[] value)
 		{
 			Regulus.Remoting.Ghost.IGhost ghost = _FindGhost(entity_id);
 			if (ghost != null)
@@ -552,7 +552,8 @@ namespace Regulus.Remoting
 					il.Emit(OpCodes.Stloc, varBuffer);
 
 					//使用TypeHelper類別裡的Serializer函式 屬性為Public Static..
-					var serializer = typeof(Regulus.PhotonExtension.TypeHelper).GetMethod("Serializer", BindingFlags.Public | BindingFlags.Static);
+                    var serializer = typeof(Regulus.PhotonExtension.TypeHelper).GetMethod("Serializer", BindingFlags.Public | BindingFlags.Static).MakeGenericMethod(new Type[] { types[paramIndex] });
+                    
 
 					//讀取參數的值 從0開始
 					il.Emit(OpCodes.Ldarg, 1 + paramIndex);

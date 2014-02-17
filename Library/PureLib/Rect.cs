@@ -5,10 +5,13 @@ using System.Text;
 
 namespace Regulus.Types
 {
+    [ProtoBuf.ProtoContract]
     public struct Rect
     {
         
+        [ProtoBuf.ProtoMember(1)]
         private Size _Size;
+        [ProtoBuf.ProtoMember(2)]
         public Point Location;
 
         public Rect(Point rootOrigin, Size rootSize)

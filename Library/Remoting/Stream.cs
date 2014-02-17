@@ -251,7 +251,7 @@
         }
         private void _Done(byte[] body)
         {
-            ReadCompletionEvent(Regulus.PhotonExtension.TypeHelper.Deserialize(body) as Package);
+            ReadCompletionEvent(Regulus.PhotonExtension.TypeHelper.Deserialize<Package>(body) );
         }
 
 		void Game.IStage.Leave()

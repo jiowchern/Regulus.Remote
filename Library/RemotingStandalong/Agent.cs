@@ -42,7 +42,7 @@ namespace Regulus.Standalong
 			_GhostRequest.PingEvent -= _OnRequestPing;			
 		}
 
-		event Action<Guid, string, Guid, object[]> Remoting.IRequestQueue.InvokeMethodEvent
+		event Action<Guid, string, Guid, byte[][]> Remoting.IRequestQueue.InvokeMethodEvent
 		{
 			add { _GhostRequest.CallMethodEvent += value ; }
 			remove { _GhostRequest.CallMethodEvent -= value; }

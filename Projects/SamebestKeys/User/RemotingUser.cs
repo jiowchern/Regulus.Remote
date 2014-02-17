@@ -59,7 +59,10 @@ namespace Regulus.Projects.SamebestKeys.Remoting
                 return _Id;
             }
 
-            void Regulus.Remoting.Ghost.IGhost.OnProperty(string name, object value)
+            
+
+
+            void Regulus.Remoting.Ghost.IGhost.OnProperty(string name, byte[] value)
             {
                 throw new NotImplementedException();
             }
