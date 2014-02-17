@@ -128,6 +128,8 @@ namespace Regulus.Remoting.Ghost.Native
             {
                 _ReadMachine.Update();
                 _WriteMachine.Update();
+
+                System.Threading.Thread.Sleep(0);
             }
 
             _ToIdle(_ReadMachine);
@@ -197,7 +199,7 @@ namespace Regulus.Remoting.Ghost.Native
                 {
                     var package = _Sends.Dequeue();
                     var stage = new NetworkStreamWriteStage(_Socket, package);
-                    stage.WriteCompletionEvent += _ToWrite;                    
+                    stage.WriteCompletionEvent += _ToWrite;                                        
                     _WriteMachine.Push(stage);
                 }
                 else

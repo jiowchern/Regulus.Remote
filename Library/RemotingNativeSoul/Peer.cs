@@ -150,7 +150,8 @@ namespace Regulus.Remoting.Soul.Native
 
         internal void Disconnect()
         {
-            _BreakEvent();
+            if (_BreakEvent != null)
+                _BreakEvent();
         }
 
         public ISoulBinder Binder { get { return _SoulProvider; } }
@@ -175,6 +176,7 @@ namespace Regulus.Remoting.Soul.Native
 
                 return true;
             }
+            Disconnect();
             return false;
         }
 

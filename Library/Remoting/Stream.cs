@@ -94,7 +94,7 @@
                 if (result == SocketIOResult.Done)
                     _ToBody(buffer);
                 else
-                    ErrorEvent();
+                    _ToHead(buffer);
             };
             
             _Machine.Push(stage);
@@ -104,11 +104,11 @@
         {            
             var stage = new WrittingStage(_Socket, buffer);
             stage.DoneEvent += (result) => 
-            { 
-                if(result == SocketIOResult.Done)
-                    WriteCompletionEvent(); 
+            {
+                if (result == SocketIOResult.Done)
+                    WriteCompletionEvent();
                 else
-                    ErrorEvent();
+                    _ToBody(buffer);
             };
             
             _Machine.Push(stage);

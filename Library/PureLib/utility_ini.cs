@@ -5,14 +5,14 @@ using System.Text;
 
 namespace Regulus.Utility
 {
+    
     public class Ini
     {
-
-        IniParser.Model.IniData _Data;
+        IniParser.IniData _Data;
         
         public Ini(string stream)
         {
-            _Data = new IniParser.Parser.IniDataParser().Parse(stream);            
+            _Data = new IniParser.StringIniParser().ParseString(stream);
         }
         
         public void Write(string Section,string Key,string Value)

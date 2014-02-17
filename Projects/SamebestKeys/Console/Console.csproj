@@ -41,6 +41,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bot.cs" />
+    <Compile Include="BotConnectStage.cs" />
+    <Compile Include="BotCreateAccountStage.cs" />
+    <Compile Include="BotCreateActorStage.cs" />
+    <Compile Include="BotMapStage.cs" />
+    <Compile Include="BotSelectActorStage.cs" />
+    <Compile Include="BotSet.cs" />
+    <Compile Include="BotVerifyStage.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
