@@ -86,6 +86,7 @@ namespace Regulus.Utility
             {
                 if (args.Length == 1)
                 {
+                    
                     object arg0;
                     _Cnv(args[0], out arg0, typeof(T1));
                     executer.Invoke((T1)arg0);

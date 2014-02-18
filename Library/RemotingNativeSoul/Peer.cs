@@ -111,7 +111,7 @@ namespace Regulus.Remoting.Soul.Native
 		
 
 		private bool _Connected()
-		{
+		{            
             return _Enable && _Socket.Connected;
 		}
 

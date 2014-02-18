@@ -66,7 +66,7 @@ namespace Regulus.Remoting
 					var eventName = Regulus.PhotonExtension.TypeHelper.Deserialize<string>(args[1] as byte[]) ;
 					var eventParams = (from p in args
 									   where p.Key >= 2
-									   select Regulus.PhotonExtension.TypeHelper.Deserialize<object>(p.Value as byte[])).ToArray();
+									   select p.Value as object).ToArray();
 
 					_InvokeEvent(entity_id, eventName, eventParams);
 				}
@@ -269,7 +269,8 @@ namespace Regulus.Remoting
 				var field = type.GetField("_" + property, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
 				if (field != null)
 				{
-					field.SetValue(instance, value);
+
+                    field.SetValue(instance, Regulus.PhotonExtension.TypeHelper.DeserializeObject(field.FieldType, value as byte[]) );
 				}
 			}
 		}
@@ -279,12 +280,19 @@ namespace Regulus.Remoting
 
 			if (type != null)
 			{
+                
 				var eventInfos = type.GetField("_" + method, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
 				object fieldValue = eventInfos.GetValue(obj);
 				if (fieldValue is Delegate)
 				{
+                    
+                    
 					Delegate fieldValueDelegate = (fieldValue as Delegate);
-					fieldValueDelegate.DynamicInvoke(args);
+                    Type[] parTypes = (from p in fieldValueDelegate.Method.GetParameters()
+                                      select p.ParameterType).ToArray();
+                    int i = 0;
+                    object[] pars = (from a in args select Regulus.PhotonExtension.TypeHelper.DeserializeObject(parTypes[i++], a as byte[])).ToArray();
+                    fieldValueDelegate.DynamicInvoke(pars);
 				}
 			}
 		}
@@ -551,27 +559,27 @@ namespace Regulus.Remoting
 					//將array的值設定到varBuffer
 					il.Emit(OpCodes.Stloc, varBuffer);
 
-					//使用TypeHelper類別裡的Serializer函式 屬性為Public Static..
-                    var serializer = typeof(Regulus.PhotonExtension.TypeHelper).GetMethod("Serializer", BindingFlags.Public | BindingFlags.Static).MakeGenericMethod(new Type[] { types[paramIndex] });
-                    
-
 					//讀取參數的值 從0開始
 					il.Emit(OpCodes.Ldarg, 1 + paramIndex);
 					//將參數真正的型別轉出來
-					il.Emit(OpCodes.Box, types[paramIndex]);
+					//il.Emit(OpCodes.Box, types[paramIndex]);
+
+                    //使用TypeHelper類別裡的Serializer函式 屬性為Public Static..
+                    var serializer = typeof(Regulus.PhotonExtension.TypeHelper).GetMethod("Serializer", BindingFlags.Public | BindingFlags.Static).MakeGenericMethod(new Type[] { types[paramIndex] });
 					//指定呼叫函式的多載，因為沒有多載，所以填null
 					il.EmitCall(OpCodes.Call, serializer, null);
 					//byte array 存到 varBuffer
 					il.Emit(OpCodes.Stloc, varBuffer);
-					//
+
+                    
 					il.Emit(OpCodes.Ldloc, varDict);
 					il.Emit(OpCodes.Ldc_I4, 3 + paramIndex);
-					il.Emit(OpCodes.Ldloc, varBuffer);
-					il.Emit(OpCodes.Box, typeof(byte[]));
+					il.Emit(OpCodes.Ldloc, varBuffer);					
 
-					il.Emit(OpCodes.Call, varDict.LocalType.GetMethod("Add"));
+					il.Emit(OpCodes.Call, varDict.LocalType.GetMethod("Add"));                    
 				}
 
+                TestEmitYield(il);
 				//填函式要的資料
 				il.Emit(OpCodes.Ldarg_0); // this
 				il.Emit(OpCodes.Ldfld, peerField); // peer
@@ -580,12 +588,14 @@ namespace Regulus.Remoting
 
 				//指定呼叫函式的多載
 				il.Emit(OpCodes.Callvirt, peerField.FieldType.GetMethod("Request", new Type[] { typeof(byte), dictionaryType }));
+
+                TestEmitYield(il);
                 
 				if (valueOriType.Name == m.ReturnType.Name && valueOriType.Namespace == m.ReturnType.Namespace)
 				{
 					il.Emit(OpCodes.Ldloc, varValueObject);
 				}
-                
+                TestEmitYield(il);
 				//return;
 				il.Emit(OpCodes.Ret);
 				//指定覆寫的fun

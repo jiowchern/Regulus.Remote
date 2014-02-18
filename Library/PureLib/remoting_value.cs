@@ -80,7 +80,8 @@ namespace Regulus.Remoting
 		void IValue.SetValue(byte[] val)
 		{
 			_Empty = false;
-            _Value = ProtoBuf.Serializer.Deserialize<T>(new System.IO.MemoryStream(val));
+
+            _Value = Regulus.PhotonExtension.TypeHelper.Deserialize<T>(val);
             if (_OnValue != null)
 			{
                 _OnValue(_Value);

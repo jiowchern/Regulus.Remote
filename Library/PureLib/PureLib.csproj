@@ -61,6 +61,7 @@
     <Compile Include="game_framework.cs" />
     <Compile Include="game_stage.cs" />
     <Compile Include="game_stagemachine.cs" />
+    <Compile Include="PhotonHelper.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="QuadTree.cs" />
     <Compile Include="QuadTreeObject.cs" />

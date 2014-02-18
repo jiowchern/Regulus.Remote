@@ -60,7 +60,6 @@
     <Compile Include="RequestQueue.cs" />
     <Compile Include="GhostProvider.cs" />
     <Compile Include="IGhostEventListener.cs" />
-    <Compile Include="PhotonHelper.cs" />
     <Compile Include="PhotonOpCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReturnValueQueue.cs" />

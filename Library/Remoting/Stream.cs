@@ -23,11 +23,12 @@
             {
                 try
                 {
-                    _Result = SocketIOResult.None;
+                    _Result = SocketIOResult.None;                    
                     _AsyncResult = _Socket.BeginSend(_Buffer, 0, _Buffer.Length, 0, _WriteCompletion, null);
                 }
-                catch 
+                catch (System.Net.Sockets.SocketException ex)
                 {
+                    System.Diagnostics.Debug.WriteLine(ex.ToString() + ex.ErrorCode);
                     _Result = SocketIOResult.Break;
                 }
                     
@@ -53,8 +54,9 @@
                     _Socket.EndSend(ar);
                     _Result = SocketIOResult.Done;
                 }
-                catch 
+                catch (System.Net.Sockets.SocketException ex)
                 {
+                    System.Diagnostics.Debug.WriteLine(ex.ToString() + ex.ErrorCode);
                     _Result = SocketIOResult.Break;
                 }                
             }
@@ -80,21 +82,22 @@
 		{
 
             var package = _Package;            
-			var buffer = Regulus.PhotonExtension.TypeHelper.Serializer(package);
+			var buffer = Regulus.PhotonExtension.TypeHelper.Serializer<Package>(package);
             _ToHead(buffer);                
 			
 		}
 
         private void _ToHead(byte[] buffer)
         {
-            var header = System.BitConverter.GetBytes((int)buffer.Length);
+            
+            var header = System.BitConverter.GetBytes((int)buffer.Length);            
             var stage = new WrittingStage(_Socket, header);
             stage.DoneEvent += (result) => 
             {
                 if (result == SocketIOResult.Done)
                     _ToBody(buffer);
                 else
-                    _ToHead(buffer);
+                    ErrorEvent();
             };
             
             _Machine.Push(stage);
@@ -108,7 +111,7 @@
                 if (result == SocketIOResult.Done)
                     WriteCompletionEvent();
                 else
-                    _ToBody(buffer);
+                    ErrorEvent();
             };
             
             _Machine.Push(stage);
@@ -143,6 +146,7 @@
             public ReadingStage(System.Net.Sockets.Socket socket, int size)
             {                
                 this._Socket = socket;
+                
                 this._Size = size;
             }
 
@@ -237,7 +241,8 @@
         }
         private void _ToBody(byte[] head)
         {           
-            var bodySize = System.BitConverter.ToInt32(head , 0);
+            //var bodySize = Regulus.PhotonExtension.TypeHelper.Deserialize<int>(head);
+            var bodySize = System.BitConverter.ToInt32(head, 0);
             var stage = new ReadingStage(_Socket, bodySize);
             stage.DoneEvent += (buffer)=>
             {

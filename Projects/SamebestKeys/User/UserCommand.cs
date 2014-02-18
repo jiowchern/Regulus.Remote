@@ -37,10 +37,18 @@ namespace Regulus.Projects.SamebestKeys
 
             user.ParkingProvider.Supply += ParkingProvider_Supply;
             user.ParkingProvider.Unsupply += _Unsupply;
+
+            user.ObservedAbilityProvider.Supply += ObservedAbilityProvider_Supply;
+            user.ObservedAbilityProvider.Unsupply += _Unsupply;
         }
+
+        
 
         internal void Unregister(Regulus.Project.SamebestKeys.IUser user)
         {
+            user.ObservedAbilityProvider.Supply -= ObservedAbilityProvider_Supply;
+            user.ObservedAbilityProvider.Unsupply -= _Unsupply;
+
             user.PlayerProvider.Supply -= PlayerProvider_Supply;
             user.PlayerProvider.Unsupply -= _Unsupply;
 
@@ -75,7 +83,13 @@ namespace Regulus.Projects.SamebestKeys
             }
             _RemoveEvents.Clear();
         }
-
+        void ObservedAbilityProvider_Supply(Project.SamebestKeys.IObservedAbility obj)
+        {
+            obj.ShowActionEvent += (inf) => 
+            {
+                _View.WriteLine(obj.Name + "移動,方向" + inf.MoveDirection);
+            };
+        }
         void PlayerProvider_Supply(Project.SamebestKeys.IPlayer obj)
         {
 

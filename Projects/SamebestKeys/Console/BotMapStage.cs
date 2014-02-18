@@ -26,7 +26,7 @@ namespace Console
         void PlayerProvider_Supply(Regulus.Project.SamebestKeys.IPlayer obj)
         {
             _Player = obj;
-            _Player.SetPosition(Regulus.Utility.Random.Next(0, 100), Regulus.Utility.Random.Next(0, 100));
+            _Player.SetPosition(Regulus.Utility.Random.Next(0 , 30), Regulus.Utility.Random.Next(0, 30));
             _Player.SetSpeed(1);
             _Player.Walk(Regulus.Utility.Random.Next(0,360));
             _TimeCounter.Reset();

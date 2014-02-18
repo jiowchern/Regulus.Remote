@@ -23,46 +23,29 @@ namespace Regulus.PhotonExtension
 			return guid.ToByteArray();
 		}
 		public static byte[] Serializer<T>(T o)
-		{
+		{            
             using (System.IO.MemoryStream stream = new System.IO.MemoryStream())
             {
                 ProtoBuf.Serializer.Serialize<T>(stream, o);
                 return stream.ToArray();
             }
 
-			/*using (System.IO.MemoryStream stream = new System.IO.MemoryStream())
-			{
-				System.Runtime.Serialization.IFormatter formater = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-
-				
-				formater.Serialize(stream, o);
-				
-				
-				byte[] ret = stream.GetBuffer();				
-				return ret;
-			}*/
 		}
+
         
+        public static object DeserializeObject(Type type , byte[] b  )
+        {            
+            using (System.IO.MemoryStream stream = new System.IO.MemoryStream(b))
+            {
+                return ProtoBuf.Serializer.NonGeneric.Deserialize(type, stream);
+            }
+        }
 		public static T Deserialize<T>(byte[] b)
-		{
+		{            
             using (System.IO.MemoryStream stream = new System.IO.MemoryStream(b))
             {
                 return ProtoBuf.Serializer.Deserialize<T>(stream);
             }
-            /*object obj = null;
-			using (System.IO.MemoryStream stream = new System.IO.MemoryStream(b))
-			{
-				System.Runtime.Serialization.IFormatter formater = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                try
-                {
-                    obj = formater.Deserialize(stream);
-                }
-                catch
-                { 
-                }
-				
-			}
-            return obj;					*/			
 		}
 		
 	}

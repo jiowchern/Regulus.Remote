@@ -156,11 +156,12 @@ namespace Regulus.Remoting.Soul
 				System.Reflection.MethodInfo methodInfo = (from m in soulInfo.MethodInfos where m.Name == method_name && m.GetParameters().Count() == args.Count() select m).FirstOrDefault();
 				if (methodInfo != null)
 				{
+                    
                     var paramerInfos = methodInfo.GetParameters();
                     int i = 0;
                     var argObjects = from pi in paramerInfos 
                                      let arg = args[i++]
-                                     select ProtoBuf.Serializer.NonGeneric.Deserialize(pi.ParameterType , new System.IO.MemoryStream(arg));
+                                     select Regulus.PhotonExtension.TypeHelper.DeserializeObject(pi.ParameterType, arg);
 
                     var returnValue = methodInfo.Invoke(soulInfo.ObjectInstance, argObjects.ToArray());
 					if (returnId != Guid.Empty)
