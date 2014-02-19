@@ -17,6 +17,8 @@ namespace Regulus.Project.SamebestKeys
     {
         float Ping { get; }
         void Disconnect();
+
+        event Action DisconnectEvent;
     }
     public interface IUser :Regulus.Utility.IUpdatable
     {

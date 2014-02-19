@@ -16,6 +16,7 @@ namespace Console
         {            
             this._User = _User;
             _TimeCounter = new Regulus.Utility.TimeCounter();
+            _Timeup = Regulus.Utility.Random.Next(1, 10);
         }
         public void Enter()
         {
@@ -31,7 +32,7 @@ namespace Console
             _Player.Walk(Regulus.Utility.Random.Next(0,360));
             _TimeCounter.Reset();
 
-            _Timeup = Regulus.Utility.Random.Next(1, 10);
+            
         }
 
         void OnlineProvider_Supply(Regulus.Project.SamebestKeys.IOnline obj)

@@ -23,20 +23,28 @@ namespace Regulus.Projects.SamebestKeys.Remoting
             }
             void Game.IStage.Enter()
             {
-
+                _Agent.DisconnectEvent += _Agent_DisconnectEvent; 
                 (_Provider as Regulus.Remoting.Ghost.IProvider).Add(this);
                 (_Provider as Regulus.Remoting.Ghost.IProvider).Ready(_Id);
             }
 
+            void _Agent_DisconnectEvent()
+            {
+                BreakEvent();
+                if (_DisconnectEvent != null)
+                    _DisconnectEvent();
+            }
+
             void Game.IStage.Leave()
             {
+                _Agent.DisconnectEvent -= _Agent_DisconnectEvent; 
                 (_Provider as Regulus.Remoting.Ghost.IProvider).Remove(_Id);
             }
 
             void Game.IStage.Update()
             {
-                if (_Agent.Connected == false)
-                    BreakEvent();
+                
+                    
             }
 
             float Project.SamebestKeys.IOnline.Ping
@@ -65,6 +73,13 @@ namespace Regulus.Projects.SamebestKeys.Remoting
             void Regulus.Remoting.Ghost.IGhost.OnProperty(string name, byte[] value)
             {
                 throw new NotImplementedException();
+            }
+
+            event Action _DisconnectEvent;
+            event Action Project.SamebestKeys.IOnline.DisconnectEvent
+            {
+                add { _DisconnectEvent += value; }
+                remove { _DisconnectEvent -= value; }
             }
         }
     }

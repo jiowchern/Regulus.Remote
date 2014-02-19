@@ -40,8 +40,8 @@ namespace Regulus.Remoting.Soul.Native
             Regulus.Utility.TimeCounter peerTimeCounter = new Utility.TimeCounter();
 
             _Socket.Bind(new System.Net.IPEndPoint(System.Net.IPAddress.Any, _Port));
-            //_Socket.Listen((int)System.Net.Sockets.SocketOptionName.MaxConnections);
-            _Socket.Listen(5);
+            _Socket.Listen((int)System.Net.Sockets.SocketOptionName.MaxConnections);
+            //_Socket.Listen(5);
             _Socket.BeginAccept(_Accept, null);
             _Core.Launch();
             

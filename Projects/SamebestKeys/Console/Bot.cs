@@ -29,12 +29,26 @@ namespace Console
         }
         void Regulus.Framework.ILaunched.Shutdown()
         {
-            
+            _User.OnlineProvider.Supply -= OnlineProvider_Supply;
         }
         void Regulus.Framework.ILaunched.Launch()
         {
-            _ToConnect(IpAddress, Port);    
+            _ToConnect(IpAddress, Port);
+            _User.OnlineProvider.Supply += OnlineProvider_Supply;
         }
+
+        Action _OnlineOnDisconnect;
+        void OnlineProvider_Supply(Regulus.Project.SamebestKeys.IOnline obj)
+        {
+            _OnlineOnDisconnect = () => 
+            {
+                obj.DisconnectEvent -= _OnlineOnDisconnect;
+                _ToConnect(IpAddress, Port);
+            };
+            obj.DisconnectEvent += _OnlineOnDisconnect;
+        }
+
+        
 
         private void _ToConnect(string ip, int port)
         {

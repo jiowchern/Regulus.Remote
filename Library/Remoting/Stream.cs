@@ -23,12 +23,16 @@
             {
                 try
                 {
-                    _Result = SocketIOResult.None;                    
+                    _Result = SocketIOResult.None;
                     _AsyncResult = _Socket.BeginSend(_Buffer, 0, _Buffer.Length, 0, _WriteCompletion, null);
                 }
                 catch (System.Net.Sockets.SocketException ex)
                 {
                     System.Diagnostics.Debug.WriteLine(ex.ToString() + ex.ErrorCode);
+                    _Result = SocketIOResult.Break;
+                }
+                catch
+                {
                     _Result = SocketIOResult.Break;
                 }
                     
@@ -59,6 +63,10 @@
                     System.Diagnostics.Debug.WriteLine(ex.ToString() + ex.ErrorCode);
                     _Result = SocketIOResult.Break;
                 }                
+                catch
+                {
+                    _Result = SocketIOResult.Break;
+                }
             }
         }
     }
@@ -218,8 +226,7 @@
         public NetworkStreamReadStage(System.Net.Sockets.Socket socket )
 		{            
 			_Socket = socket;
-            _Machine = new Game.StageMachine();
-            ErrorEvent = () => { };
+            _Machine = new Game.StageMachine();            
 		}
 		void Game.IStage.Enter()
 		{

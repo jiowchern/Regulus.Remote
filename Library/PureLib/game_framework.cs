@@ -6,8 +6,6 @@ using System.Text;
 using Regulus.Extension;
 namespace Regulus.Game
 {
-    
-
     public abstract partial class ConsoleFramework<TUser> : Regulus.Utility.IUpdatable
 		where TUser : Regulus.Utility.IUpdatable
     {

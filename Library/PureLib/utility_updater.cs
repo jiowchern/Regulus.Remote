@@ -5,40 +5,62 @@ using System.Text;
 
 namespace Regulus.Utility
 {
+    
+
+
     public interface IUpdatable : Regulus.Framework.ILaunched
     {
         bool Update();
     }
+    
 
-    public class Updater<T> where T : IUpdatable
+    public class Updater<T> where T : IUpdatable 
     {
         Queue<T> _Adds = new Queue<T>();
         Queue<T> _Removes = new Queue<T>();
 
         List<T> _Ts = new List<T>();
 
-        public T[] Objects { get { return _Ts.ToArray(); } }
+        public T[] Objects
+        {
+            get
+            {
+                lock (_Ts)
+                {
+                    return _Ts.ToArray();
+                }
+            }
+        }
         public int Count { get { return _Ts.Count;  } }
 
         public void Add(T framework)
         {
-            if (framework != null)
-                _Adds.Enqueue(framework);
+            lock (_Ts)
+            {
+                if (framework != null)
+                    _Adds.Enqueue(framework);
+            }            
         }
 
         public void Remove(T framework)
         {
-            if (framework != null)
-                _Removes.Enqueue(framework);
+            lock (_Ts)
+            {
+                if (framework != null)
+                    _Removes.Enqueue(framework);
+            }
         }
 
         public void Update()
         {
-            _Remove(_Removes, _Ts);
+            lock (_Ts)
+            {
+                _Remove(_Removes, _Ts);
 
-            _Add(_Adds, _Ts);
+                _Add(_Adds, _Ts);
 
-            _Update();
+                _Update();
+            }            
         }
 
         private void _Remove(Queue<T> remove_framework, List<T> frameworks)
@@ -92,4 +114,6 @@ namespace Regulus.Utility
     { 
 
     }
+    
+    
 }
