@@ -7,8 +7,8 @@ namespace Console
 {
     class Bot : Regulus.Utility.IUpdatable
     {
-        //const string IpAddress = "192.168.40.133";
-        const string IpAddress = "127.0.0.1";
+        const string IpAddress = "192.168.40.133";
+        //const string IpAddress = "127.0.0.1";
         const int Port = 12345;
         private Regulus.Project.SamebestKeys.IUser _User;
 
@@ -144,9 +144,12 @@ namespace Console
         private void _ToMap()
         {
             var stage = new BotMapStage(_User);
-            stage.ResultEvent += () =>
+            stage.ResultEvent += (result) =>
             {
-                _ToConnect(IpAddress, Port);
+                if(result == BotMapStage.Result.Connect)
+                    _ToConnect(IpAddress, Port);
+                if (result == BotMapStage.Result.Reset)
+                    _ToMap();
             };
 
             _Machine.Push(stage);            

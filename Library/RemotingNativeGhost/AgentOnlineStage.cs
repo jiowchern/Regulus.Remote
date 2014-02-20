@@ -18,6 +18,7 @@ namespace Regulus.Remoting.Ghost.Native
             private System.Net.Sockets.Socket _Socket;
             AgentCore _Core;
             bool _Enable;
+            
             public OnlineStage()
             {                
                 _Sends = new Queue<Package>();
@@ -50,16 +51,7 @@ namespace Regulus.Remoting.Ghost.Native
                 while (_Socket.Connected && _Enable)
                 {
                     _ReadMachine.Update();
-                    _WriteMachine.Update();
-
-                    while (_Receives.Count > 0)
-                    {
-                        lock (_Receives)
-                        {
-                            var package = _Receives.Dequeue();
-                            _Core.OnResponse(package.Code, package.Args);
-                        }
-                    }
+                    _WriteMachine.Update();                    
                     return true;
                 }                
                 DoneEvent();
@@ -138,7 +130,21 @@ namespace Regulus.Remoting.Ghost.Native
                 return _Core.QueryProvider<T>();
             }
 
-            
+
+
+            internal void Process()
+            {
+                lock (_Receives)
+                {
+                    while (_Receives.Count > 0)
+                    {
+
+                        var package = _Receives.Dequeue();
+                        _Core.OnResponse(package.Code, package.Args);
+
+                    }
+                }
+            }
         }
     }
 }

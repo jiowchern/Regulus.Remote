@@ -196,15 +196,20 @@ namespace Regulus.Remoting
 					select r).FirstOrDefault();
 		}
 
+        object _SyncTimer = new object();
 		System.Timers.Timer _PingTimer;
 		protected void _StartPing()
 		{
 			_EndPing();
-			_PingTimer = new System.Timers.Timer(1000);
-			_PingTimer.Enabled = true;
-			_PingTimer.AutoReset = true;
-			_PingTimer.Elapsed += new System.Timers.ElapsedEventHandler(_PingTimerElapsed);
-			_PingTimer.Start();
+            lock (_SyncTimer)
+            {
+                _PingTimer = new System.Timers.Timer(1000);
+                _PingTimer.Enabled = true;
+                _PingTimer.AutoReset = true;
+                _PingTimer.Elapsed += new System.Timers.ElapsedEventHandler(_PingTimerElapsed);
+                _PingTimer.Start();
+            }
+			
 		}
 		void _PingTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
 		{
@@ -218,12 +223,14 @@ namespace Regulus.Remoting
 
 		protected void _EndPing()
 		{
-			if (_PingTimer != null)
-			{
-				_PingTimer.Stop();
-				_PingTimer = null;
-			}
-
+            lock (_SyncTimer)
+            {
+                if (_PingTimer != null)
+                {
+                    _PingTimer.Stop();
+                    _PingTimer = null;
+                }
+            }
 		}
         
 		private Regulus.Remoting.Ghost.IGhost _BuildGhost(Type ghostBaseType, Regulus.Remoting.IGhostRequest peer, Guid id)

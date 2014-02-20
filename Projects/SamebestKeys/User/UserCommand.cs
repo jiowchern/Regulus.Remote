@@ -85,10 +85,10 @@ namespace Regulus.Projects.SamebestKeys
         }
         void ObservedAbilityProvider_Supply(Project.SamebestKeys.IObservedAbility obj)
         {
-            obj.ShowActionEvent += (inf) => 
+            /*obj.ShowActionEvent += (inf) => 
             {
                 _View.WriteLine(obj.Name + "移動,方向" + inf.MoveDirection);
-            };
+            };*/
         }
         void PlayerProvider_Supply(Project.SamebestKeys.IPlayer obj)
         {
@@ -223,10 +223,6 @@ namespace Regulus.Projects.SamebestKeys
             });
         }
 
-        
-
-        
-
 
         void _Unsupply<T>(T obj)
         {
@@ -254,3 +250,41 @@ namespace Regulus.Projects.SamebestKeys
         }
     }
 }
+
+
+interface ICodeStyle
+{
+    void PureVirtualFunction(int arg_1);
+}
+
+class CodeStyle : ICodeStyle
+{
+    public int PublicProperty { get; private set; }
+    int _PrivateMember;
+
+    public void PublicFunction(int arg_data1, int arg_data2)
+    {
+        int localData = 0;
+    }
+
+    void _PrivateFunction(int arg_data1, int arg_data2)
+    { 
+
+    }
+
+    public delegate void OnDelegateSample(int arg_1);
+    public event OnDelegateSample DelegateSampleEvent;
+    event OnDelegateSample _PrivateDelegateSampleEvent;
+
+    /*介面繼承以明確實作為主*/
+    void ICodeStyle.PureVirtualFunction(int arg_1)
+    {
+        PureVirtualFunction(arg_1);
+    }
+
+    public void PureVirtualFunction(int arg_1)
+    { 
+
+    }
+}
+

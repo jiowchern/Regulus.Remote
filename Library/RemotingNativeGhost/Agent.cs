@@ -72,7 +72,9 @@ namespace Regulus.Remoting.Ghost.Native
 		bool Utility.IUpdatable.Update()
 		{
             _Machine.Update();
-                        
+            _OnlineStage.Process();
+            
+
 			return true;
 		}
 
