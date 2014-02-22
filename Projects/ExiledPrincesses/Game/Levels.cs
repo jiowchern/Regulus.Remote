@@ -27,7 +27,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
         public delegate void OnRelease();
         public event OnRelease ReleaseEvent;
         Platoon _Platoon;
-        Regulus.Utility.Updater<Platoon> _Platoons;
+        Regulus.Utility.Updater _Platoons;
         public Levels(MapPrototype map_prototype, Squad squad)
         {
             _Position = 0.0f;
@@ -39,7 +39,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
             _Platoon = new Platoon(squad);
             _Platoon.EmptyEvent += () => { ReleaseEvent(); };
 
-            _Platoons = new Utility.Updater<Platoon>(); ;
+            _Platoons = new Utility.Updater(); ;
         }
 
         private void _ToIdle()

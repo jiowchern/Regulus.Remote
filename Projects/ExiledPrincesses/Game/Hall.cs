@@ -9,7 +9,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 	public class Hall 
 	{
 
-		Regulus.Utility.Updater<Regulus.Utility.IUpdatable> _Users = new Regulus.Utility.Updater<Regulus.Utility.IUpdatable>();
+		Regulus.Utility.Updater _Users = new Regulus.Utility.Updater();
         
         public event OnNewUser NewUserEvent;
         public Hall()

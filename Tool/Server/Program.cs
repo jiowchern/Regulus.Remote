@@ -15,7 +15,7 @@ namespace Server
             var server = new Regulus.Remoting.Soul.Native.Application(viwer, input);
 
 
-            Regulus.Utility.Updater<Regulus.Utility.IUpdatable> updater = new Regulus.Utility.Updater<Regulus.Utility.IUpdatable>();
+            Regulus.Utility.Updater updater = new Regulus.Utility.Updater();
             updater.Add(server);
 
             bool exit = false;

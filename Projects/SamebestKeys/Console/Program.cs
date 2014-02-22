@@ -20,7 +20,7 @@ namespace Console
 
             application.SetLogMessage(Regulus.Utility.Console.LogFilter.All);
 
-            Regulus.Utility.Updater<Regulus.Utility.IUpdatable> updater = new Regulus.Utility.Updater<Regulus.Utility.IUpdatable>();
+            Regulus.Utility.Updater updater = new Regulus.Utility.Updater();
             
             updater.Add(application);
             updater.Add(input);

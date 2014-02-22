@@ -23,6 +23,13 @@ namespace Regulus.Projects.SamebestKeys
 
         internal void Register(Regulus.Project.SamebestKeys.IUser user)
         {
+
+            _Command.Register("Package", () => 
+            {
+                _View.WriteLine("Read:" + Regulus.Remoting.NetworkStreamReadStage.TotalBytesPerSecond.ToString());
+                _View.WriteLine("Write:" + Regulus.Remoting.NetworkStreamWriteStage.TotalBytesPerSecond.ToString()); 
+            });
+
             user.PlayerProvider.Supply += PlayerProvider_Supply;
             user.PlayerProvider.Unsupply += _Unsupply;
 
@@ -64,6 +71,8 @@ namespace Regulus.Projects.SamebestKeys
             user.ParkingProvider.Supply -= ParkingProvider_Supply;
             user.ParkingProvider.Unsupply -= _Unsupply;
 
+
+            _Command.Unregister("Package");
             foreach (var command in _RemoveCommands)
             {
                 foreach (var cmd in command.Value)

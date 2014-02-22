@@ -24,14 +24,14 @@ namespace Regulus.Project.ExiledPrincesses.Game
         Regulus.Project.ExiledPrincesses.Game.Hall _Hall;
         IStorage _Storage;
 
-        Regulus.Utility.Updater<Levels> _Loopers;
+        Regulus.Utility.Updater _Loopers;
         
         public Zone(IStorage storage)
         {
             
             _Storage = storage;
             _Hall = new Hall();
-            _Loopers = new Regulus.Utility.Updater<Levels>();
+            _Loopers = new Regulus.Utility.Updater();
             
         }
 

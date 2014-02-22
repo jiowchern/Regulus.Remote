@@ -52,7 +52,7 @@ namespace TestNativeUser
         private Regulus.Remoting.Ghost.Native.Agent _Complex { get; set; }
         private Regulus.Remoting.IAgent _Agent { get { return _Complex; } }        
 
-        Regulus.Utility.Updater<Regulus.Utility.IUpdatable> _Updater;
+        Regulus.Utility.Updater _Updater;
 
         Connect _Connecter;
 
@@ -60,7 +60,7 @@ namespace TestNativeUser
 
         public User()
         {
-            _Updater = new Regulus.Utility.Updater<Regulus.Utility.IUpdatable>();
+            _Updater = new Regulus.Utility.Updater();
             _ConnectProvider = new Regulus.Remoting.Ghost.TProvider<TestNativeGameCore.IConnect>();
             _Connecter = new Connect();
             _Complex = new Regulus.Remoting.Ghost.Native.Agent();            

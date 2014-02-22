@@ -119,7 +119,7 @@ namespace Regulus.Remoting.Soul.Native
 		{
             lock (_Responses)
             {
-                _Responses.Enqueue(new Regulus.Remoting.Package() { Code = cmd, Args = Regulus.Utility.Map<byte, byte[]>.ToMap(args) });
+                _Responses.Enqueue(new Regulus.Remoting.Package() { Code = cmd, Args = args });
             }			
 		}
 

@@ -15,7 +15,7 @@ namespace Regulus.Project.TurnBasedRPG
 	{
 		List<Map>	_Maps ;
 
-		Regulus.Utility.Updater<Regulus.Utility.IUpdatable> _Frameworks;
+		Regulus.Utility.Updater _Frameworks;
 		private Remoting.Time _Time;
 
 		public World(Remoting.Time time)
@@ -27,7 +27,7 @@ namespace Regulus.Project.TurnBasedRPG
 		}
 		void Regulus.Framework.ILaunched.Launch()
 		{
-			_Frameworks = new Regulus.Utility.Updater<Regulus.Utility.IUpdatable>();
+			_Frameworks = new Regulus.Utility.Updater();
 			_Maps = new List<Map>();
 
 			

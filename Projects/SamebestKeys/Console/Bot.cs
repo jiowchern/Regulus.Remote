@@ -7,8 +7,9 @@ namespace Console
 {
     class Bot : Regulus.Utility.IUpdatable
     {
-        const string IpAddress = "192.168.40.133";
-        //const string IpAddress = "127.0.0.1";
+        //const string IpAddress = "192.168.40.133";
+        //const string IpAddress = "114.34.90.217";
+        const string IpAddress = "127.0.0.1";
         const int Port = 12345;
         private Regulus.Project.SamebestKeys.IUser _User;
 

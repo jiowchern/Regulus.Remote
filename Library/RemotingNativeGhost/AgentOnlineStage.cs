@@ -78,7 +78,7 @@ namespace Regulus.Remoting.Ghost.Native
             {
                 lock (_Sends)
                 {
-                    _Sends.Enqueue(new Package() { Args = Regulus.Utility.Map<byte, byte[]>.ToMap(args), Code = code });
+                    _Sends.Enqueue(new Package() { Args = args, Code = code });
                 }			
             }
 

@@ -14,7 +14,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             Regulus.Utility.Singleton<Regulus.Utility.ConsoleLogger>.Instance.Launch("TurnBasedRPG");
 
 
-			Regulus.Utility.Updater<Regulus.Utility.IUpdatable> frameworkRoot = new Regulus.Utility.Updater<Regulus.Utility.IUpdatable>();
+			Regulus.Utility.Updater frameworkRoot = new Regulus.Utility.Updater();
 
             bool userRunning = true;
             var user = _CreateUser(frameworkRoot);
@@ -36,7 +36,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             Console.WriteLine("關閉完成.");
         }
 
-		private UserController _CreateUser(Regulus.Utility.Updater<Regulus.Utility.IUpdatable> frameworkRoot)
+		private UserController _CreateUser(Regulus.Utility.Updater frameworkRoot)
         {
             Console.WriteLine("建立使用者.");
             UserController user = new UserController();
@@ -45,7 +45,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             return user;
         }
 
-		private void _CreateStageBot(Regulus.Utility.Updater<Regulus.Utility.IUpdatable> frameworkRoot)
+		private void _CreateStageBot(Regulus.Utility.Updater frameworkRoot)
         {
             Console.WriteLine("建立狀態機器人...");
             Console.Write("輸入數量:");
@@ -59,7 +59,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
                 }
             }
         }
-		private void _CreateRandomBot(Regulus.Utility.Updater<Regulus.Utility.IUpdatable> frameworkRoot)
+		private void _CreateRandomBot(Regulus.Utility.Updater frameworkRoot)
         {
             if (System.IO.File.Exists("BotCommand.txt"))
             {

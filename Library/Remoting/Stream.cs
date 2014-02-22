@@ -13,6 +13,7 @@
             byte[] _Buffer;
             public event System.Action<SocketIOResult> DoneEvent;            
             SocketIOResult _Result;
+
             public WrittingStage(System.Net.Sockets.Socket socket, byte[] buffer)
             {                
                 this._Socket = socket;
@@ -78,21 +79,25 @@
         
         public event System.Action WriteCompletionEvent;
         public event System.Action ErrorEvent;
-        Regulus.Game.StageMachine _Machine;        
+        Regulus.Game.StageMachine _Machine;
 
+        
+        public static int TotalBytes { get; private set; }
+        static Regulus.Utility.TimeCounter _AfterTime = new Utility.TimeCounter();
+        public static double TotalBytesPerSecond { get { return TotalBytes / _AfterTime.Second; } }
+        const int _HeadSize = 4;
         public NetworkStreamWriteStage(System.Net.Sockets.Socket socket, Package package)
 		{
             _Socket = socket;
             _Package = package;
             _Machine = new Game.StageMachine();
+            
 		}
 		void Game.IStage.Enter()
-		{
-
-            var package = _Package;            
-			var buffer = Regulus.PhotonExtension.TypeHelper.Serializer<Package>(package);
-            _ToHead(buffer);                
-			
+		{            
+            var package = _Package;                        
+			var buffer = Regulus.PhotonExtension.TypeHelper.Serializer<Package>(package);            
+            _ToHead(buffer);                			
 		}
 
         private void _ToHead(byte[] buffer)
@@ -117,7 +122,9 @@
             stage.DoneEvent += (result) => 
             {
                 if (result == SocketIOResult.Done)
-                    WriteCompletionEvent();
+                {
+                    _Done(buffer.Length + _HeadSize);
+                }
                 else
                     ErrorEvent();
             };
@@ -125,9 +132,15 @@
             _Machine.Push(stage);
         }
 
+        private void _Done(int size)
+        {
+            WriteCompletionEvent();
+            TotalBytes += size;            
+        }
+
 		void Game.IStage.Leave()
 		{
-
+            
 		}
 
 		void Game.IStage.Update()
@@ -222,14 +235,20 @@
         public event System.Action ErrorEvent;       
 		System.Net.Sockets.Socket _Socket;
         Regulus.Game.StageMachine _Machine;
+        Regulus.Utility.TimeCounter _LifeCycle;
+        public static int TotalBytes { get; private set; }
+        static Regulus.Utility.TimeCounter _AfterTime = new Utility.TimeCounter();
+        public static double TotalBytesPerSecond { get { return TotalBytes / _AfterTime.Second; } }
         const int _HeadSize = 4;
         public NetworkStreamReadStage(System.Net.Sockets.Socket socket )
 		{            
 			_Socket = socket;
-            _Machine = new Game.StageMachine();            
+            _Machine = new Game.StageMachine();
+            _LifeCycle = new Utility.TimeCounter();
 		}
 		void Game.IStage.Enter()
 		{
+            _LifeCycle.Reset();
             _ToHead();
 		}
 
@@ -247,8 +266,7 @@
             _Machine.Push(stage);
         }
         private void _ToBody(byte[] head)
-        {           
-            //var bodySize = Regulus.PhotonExtension.TypeHelper.Deserialize<int>(head);
+        {                       
             var bodySize = System.BitConverter.ToInt32(head, 0);
             var stage = new ReadingStage(_Socket, bodySize);
             stage.DoneEvent += (buffer)=>
@@ -264,11 +282,13 @@
         private void _Done(byte[] body)
         {
             ReadCompletionEvent(Regulus.PhotonExtension.TypeHelper.Deserialize<Package>(body) );
+            TotalBytes += (body.Length + _HeadSize);
+            
         }
 
 		void Game.IStage.Leave()
 		{
-
+            
 		}
         
 		void Game.IStage.Update()

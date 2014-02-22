@@ -102,10 +102,7 @@ namespace Regulus.Utility
         }
     }
 
-
-    
-
-    public class Timer
+    public class Timer 
     {
         private long _Current;
         Action<long> _TimeUp;
@@ -116,7 +113,7 @@ namespace Regulus.Utility
             _Interval = interval.Ticks;
             _Current = 0;
         }
-        public void Update(long delta)
+        protected bool _Update(long delta)
         {
             var newTime = _Current + delta;
 
@@ -124,9 +121,68 @@ namespace Regulus.Utility
             {
                 _Current = newTime - _Interval;
                 _TimeUp(_Current);
+                return true;
             }
             else
                 _Current = newTime;
+            return false;
+        }
+
+        public void Update(long delta)
+        {
+            _Update(delta);
+        }
+    }
+
+    public class Task : Timer , Regulus.Utility.IUpdatable<long>
+    {
+        public Task(System.TimeSpan interval, Action<long> time_up)
+            : base(interval, time_up)
+        { 
+
+        }
+
+        bool IUpdatable<long>.Update(long arg)
+        {
+            return _Update(arg) == false;
+        }
+
+        void Framework.ILaunched.Launch()
+        {
+            
+        }
+
+        void Framework.ILaunched.Shutdown()
+        {
+            
+        }
+    }
+
+    public class Scheduler : Regulus.Utility.Singleton<Scheduler> 
+    {
+        Time _Time;
+        Regulus.Utility.Updater<long> _Tasks;
+        public Scheduler()
+        {
+            _Tasks = new Updater<long>();
+            _Time = new Time();
+        }
+
+        public Task Add(System.TimeSpan interval, Action<long> time_up)
+        {
+            var task = new Task(interval, time_up);
+            _Tasks.Add(task);
+            return task;
+        }
+        public void Remove(Task task)
+        {
+            _Tasks.Remove(task);
+        }
+
+        public void Update()
+        {
+            _Time.Update();
+            _Tasks.Update(_Time.Delta);
         }
     }
 

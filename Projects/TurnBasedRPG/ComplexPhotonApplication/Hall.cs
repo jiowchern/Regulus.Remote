@@ -8,12 +8,12 @@ namespace Regulus.Project.TurnBasedRPG
     
     class Hall : Regulus.Project.TurnBasedRPG.UserRoster , Regulus.Utility.IUpdatable
     {        
-        private Regulus.Utility.Updater<Regulus.Utility.IUpdatable> _FrameworkRoot;
+        private Regulus.Utility.Updater _FrameworkRoot;
 
         public Hall()
         {
 
-			_FrameworkRoot = new Regulus.Utility.Updater<Regulus.Utility.IUpdatable>();
+			_FrameworkRoot = new Regulus.Utility.Updater();
         }            
         internal void PushUser(User user)
         {

@@ -20,7 +20,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
             Combat _Combat;
             BattlefieldPrototype _Prototype;
             Platoon _Platoon;
-            Regulus.Utility.Updater<Platoon> _Platoons;
+            Regulus.Utility.Updater _Platoons;
             public CombatStage(BattlefieldPrototype prototype, Platoon platoon)
             {
                 _Prototype = prototype;
@@ -50,7 +50,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
                 {
                     ResultEvent(Result.Failure);
                 };
-                _Platoons = new Utility.Updater<Platoon>();
+                _Platoons = new Utility.Updater();
                 _Platoons.Add(platoonEnemy);
                 
             }

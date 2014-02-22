@@ -10,7 +10,7 @@ namespace Regulus.Project.SamebestKeys
         Regulus.Project.SamebestKeys.Hall _Hall;
         World _World;
         LocalTime _Time;
-        Regulus.Utility.Updater<Regulus.Utility.IUpdatable> _Updater;
+        Regulus.Utility.Updater _Updater;
         IStorage _Storage;
 
         
@@ -20,7 +20,7 @@ namespace Regulus.Project.SamebestKeys
             _Time = new LocalTime();
             _Hall = new Hall();
             _World = new World(LocalTime.Instance);
-            _Updater = new Utility.Updater<Utility.IUpdatable>();
+            _Updater = new Utility.Updater();
             _Storage = stroage;
         }
 
@@ -31,6 +31,7 @@ namespace Regulus.Project.SamebestKeys
 
         bool Utility.IUpdatable.Update()
         {
+            
             _Updater.Update();
             return true;
         }

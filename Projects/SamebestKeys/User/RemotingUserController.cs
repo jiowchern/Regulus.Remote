@@ -8,7 +8,7 @@ namespace Regulus.Project.SamebestKeys.Remoting
 {
     class UserController : Regulus.Project.SamebestKeys.Console.IController
     {
-        Regulus.Utility.Updater<Regulus.Utility.IUpdatable> _Updater;
+        Regulus.Utility.Updater _Updater;
         private Utility.Console.IViewer _Viewer;
         private Utility.Command _Command;
         Regulus.Project.SamebestKeys.IUser _User;
@@ -20,7 +20,7 @@ namespace Regulus.Project.SamebestKeys.Remoting
             this._Command = command;
             _UserCommand = new UserCommand(view, command);
             _User = new Regulus.Projects.SamebestKeys.Remoting.RemotingUser();
-            _Updater = new Utility.Updater<Utility.IUpdatable>();
+            _Updater = new Utility.Updater();
         }
 
 

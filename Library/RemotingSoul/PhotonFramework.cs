@@ -12,7 +12,7 @@ namespace Regulus.Remoting.PhotonExpansion
 	}
 
 
-	public abstract class PhotonFramework : Regulus.Utility.Updater<Regulus.Utility.IUpdatable>, IPhotonFramework
+	public abstract class PhotonFramework : Regulus.Utility.Updater, IPhotonFramework
     {
         
         public abstract void ObtainController(Soul.SoulProvider provider);

@@ -122,14 +122,13 @@ namespace Regulus.Remoting.Soul.Native
                 { 
                     _View.WriteLine("FPS:" + _ThreadSocketHandler.FPS.ToString());
                     _View.WriteLine("Core:" + _ThreadSocketHandler.CoreTimeCounter.ToString());
-                    _View.WriteLine("Peer:" + _ThreadSocketHandler.PeerTimeCounter.ToString()); 
+                    _View.WriteLine("Peer:" + _ThreadSocketHandler.PeerTimeCounter.ToString());
+                    _View.WriteLine("PeerCount:" + _ThreadSocketHandler.PeerCount.ToString());
+                    _View.WriteLine("Read:" + NetworkStreamReadStage.TotalBytesPerSecond.ToString());
+                    _View.WriteLine("Write:" + NetworkStreamWriteStage.TotalBytesPerSecond.ToString()); 
                 }  );
                 _Command.Register("Shutdown", _ShutdownEvent );
-                _Command.Register("PeerCount", 
-                    () => 
-                    {
-                        _View.WriteLine("Connect Count:" + _ThreadSocketHandler.PeerCount.ToString() ); 
-                    });
+                
                 
                 _ThreadSocket.Start();
             }
@@ -148,7 +147,7 @@ namespace Regulus.Remoting.Soul.Native
                 _ThreadSocket.Join();
                 _Command.Unregister("Shutdown");
                 _Command.Unregister("FPS");
-                _Command.Unregister("PeerCount");
+                
             }
 
             void Game.IStage.Update()

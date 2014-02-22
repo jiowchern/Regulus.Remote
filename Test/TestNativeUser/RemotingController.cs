@@ -10,7 +10,7 @@ namespace TestNativeUser
     class RemotingController : Application.IController
     {
         IUser _User;
-        Regulus.Utility.Updater<Regulus.Utility.IUpdatable> _Updater;
+        Regulus.Utility.Updater _Updater;
         Regulus.Utility.Command _Command;
         string _Name;
         Regulus.Utility.Console.IViewer _View;
@@ -50,7 +50,7 @@ namespace TestNativeUser
         {
             _View = view;
             _User = new User();
-            _Updater = new Regulus.Utility.Updater<Regulus.Utility.IUpdatable>();
+            _Updater = new Regulus.Utility.Updater();
 
             _Command = command;
         }

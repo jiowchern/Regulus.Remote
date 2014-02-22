@@ -196,41 +196,44 @@ namespace Regulus.Remoting
 					select r).FirstOrDefault();
 		}
 
-        object _SyncTimer = new object();
+        object _Sync = new object();
+        enum PingStatus { Wait , Send };
+        PingStatus _PingStatus;
 		System.Timers.Timer _PingTimer;
 		protected void _StartPing()
 		{
 			_EndPing();
-            lock (_SyncTimer)
-            {
-                _PingTimer = new System.Timers.Timer(1000);
-                _PingTimer.Enabled = true;
-                _PingTimer.AutoReset = true;
-                _PingTimer.Elapsed += new System.Timers.ElapsedEventHandler(_PingTimerElapsed);
-                _PingTimer.Start();
-            }
+            
+            _PingTimer = new System.Timers.Timer(1000);
+            _PingTimer.Enabled = true;
+            _PingTimer.AutoReset = true;
+            _PingTimer.Elapsed += new System.Timers.ElapsedEventHandler(_PingTimerElapsed);
+            _PingTimer.Start();
+            _PingStatus = PingStatus.Wait;
 			
 		}
 		void _PingTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
 		{
-			if (_Requester != null)
-			{
-				_PingTimeCounter = new Regulus.Utility.TimeCounter();
-				_Requester.Request((int)ClientToServerPhotonOpCode.Ping , new Dictionary<byte, byte[]>());				
-				_EndPing();
-			}
-		}
-
-		protected void _EndPing()
-		{
-            lock (_SyncTimer)
+            lock (_Sync)
             {
                 if (_PingTimer != null)
                 {
-                    _PingTimer.Stop();
-                    _PingTimer = null;
-                }
+                    _PingStatus = PingStatus.Send;
+                    _PingTimeCounter = new Regulus.Utility.TimeCounter();
+                    _Requester.Request((int)ClientToServerPhotonOpCode.Ping, new Dictionary<byte, byte[]>());
+                    _EndPing();
+                }            
             }
+            
+		}
+
+		protected void _EndPing()
+		{            
+            if (_PingTimer != null)
+            {                
+                _PingTimer.Stop();
+                _PingTimer = null;                
+            }            
 		}
         
 		private Regulus.Remoting.Ghost.IGhost _BuildGhost(Type ghostBaseType, Regulus.Remoting.IGhostRequest peer, Guid id)

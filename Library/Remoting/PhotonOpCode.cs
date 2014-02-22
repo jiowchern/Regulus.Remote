@@ -6,14 +6,14 @@ using System.Text;
 namespace Regulus.Remoting
 {
 	public enum ClientToServerPhotonOpCode
-	{
-		Ping,		
-		CallMethod,		
+	{		       
+		CallMethod = 1,
+        Ping,		
 	};
 
     public enum ServerToClientPhotonOpCode
     {
-        InvokeEvent,
+        InvokeEvent = 1,
         LoadSoul,
         UnloadSoul,
         ReturnValue,

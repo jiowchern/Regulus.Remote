@@ -16,13 +16,13 @@ namespace TestNativeUserConsole
         Regulus.Game.ConsoleFramework<TestNativeUser.IUser>.IUserRequester _UserRequester;
         Regulus.Game.ConsoleFramework<TestNativeUser.IUser>.ISystemSelector _SystemSelector;
 
-        Regulus.Utility.Updater<Bot> _Bots;
+        Regulus.Utility.Updater _Bots;
         int _BotAmount;
         long _BotSn;
         Regulus.Utility.Console.IViewer _View;
         public Appliaction(TestNativeUser.Application appliaction , Regulus.Utility.Console.IViewer view)
         {
-            _Bots = new Regulus.Utility.Updater<Bot>();
+            _Bots = new Regulus.Utility.Updater();
             this._Appliaction = appliaction;
             _View = view;
         }
@@ -75,13 +75,15 @@ namespace TestNativeUserConsole
 
         void _RestoryBot(TestNativeUser.IUser user)
         {
-            var bots = (from b in _Bots.Objects where b.User == user select b).ToArray();
-            foreach(var bot in bots)
+            foreach(var bot in _Bots.Objects)
             {
-                
-                _Bots.Remove(bot);
-                _BotAmount++;
+                if ((bot as Bot).User == user)
+                {
+                    _Bots.Remove(bot);
+                    _BotAmount++;
+                }                
             }
+            
         }
 
         Bot _CreateBot(TestNativeUser.IUser user,string name)
