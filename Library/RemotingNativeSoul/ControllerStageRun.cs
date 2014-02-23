@@ -29,7 +29,7 @@ namespace Regulus.Remoting.Soul.Native
             _Sockets = new Queue<System.Net.Sockets.Socket>();
             _Socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
             _Socket.NoDelay = true;
-            _Socket.Blocking = false;
+            
             
             _Peers = new Utility.Updater();
             _FPS = new Utility.FPSCounter();

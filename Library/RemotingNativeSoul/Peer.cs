@@ -165,14 +165,15 @@ namespace Regulus.Remoting.Soul.Native
                 _ReadMachine.Update();
                 _WriteMachine.Update();
 
-                if (_Requests.Count > 0)
+                lock (_Requests)
                 {
-                    lock (_Requests)
+                    while (_Requests.Count > 0)
                     {
                         var request = _Requests.Dequeue();
                         _InvokeMethodEvent(request.EntityId, request.MethodName, request.ReturnId, request.MethodParams);
-                    }                    
+                    }
                 }
+                
 
                 return true;
             }
