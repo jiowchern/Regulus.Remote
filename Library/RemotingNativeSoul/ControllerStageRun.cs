@@ -28,6 +28,9 @@ namespace Regulus.Remoting.Soul.Native
             _Core = core;
             _Sockets = new Queue<System.Net.Sockets.Socket>();
             _Socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
+            _Socket.NoDelay = true;
+            _Socket.Blocking = false;
+            
             _Peers = new Utility.Updater();
             _FPS = new Utility.FPSCounter();
             
@@ -112,7 +115,7 @@ namespace Regulus.Remoting.Soul.Native
                 _View = viewer;
                 this._Command = command;
                 _ThreadSocketHandler = new ThreadSocketHandler(port, core);
-                _ThreadSocket = new System.Threading.Thread(_ThreadSocketHandler.DoWork);
+                _ThreadSocket = new System.Threading.Thread(_ThreadSocketHandler.DoWork);                
             }
 
             void Game.IStage.Enter()

@@ -75,9 +75,13 @@ namespace Regulus.Project.SamebestKeys
             {
                 Actor.Property.Id = Guid.NewGuid();
             }
+            if (Actor.Property.Vision == 0.0)
+            {
+                Actor.Property.Vision = 30;
+            }
             if (Actor.Property.Speed == 0.0)            
             {
-                Actor.Property.Speed = 1;
+                Actor.Property.Speed = 10;
             }
             if ( !(Actor.Property.Position.X >= 0 && Actor.Property.Position.X <= 100))
             {

@@ -41,7 +41,9 @@ namespace Console
         {
             if (obj.ActionStatue == Regulus.Project.SamebestKeys.ActionStatue.GangnamStyle)
             {
-                _Player.Walk(Regulus.Utility.Random.Next(0, 360));
+                var angle = Regulus.Utility.Random.Next(0, 360);
+                _Player.Walk(angle);
+                _Player.Say("撞到! 轉向" + angle + "度移動");
             }
         }
 
@@ -50,7 +52,10 @@ namespace Console
             _Player = obj;
             _Player.SetPosition(Regulus.Utility.Random.Next(0 , 100), Regulus.Utility.Random.Next(0, 100));
             _Player.SetSpeed(5);
-            _Player.Walk(Regulus.Utility.Random.Next(0,360));
+            _Player.SetVision(30);
+            var angle = Regulus.Utility.Random.Next(0, 360);
+            _Player.Walk(angle);
+            //_Player.Say("轉向"+angle+"度移動"  );
             _TimeCounter.Reset();
 
             _User.ObservedAbilityProvider.Supply += ObservedAbilityProvider_Supply;
@@ -77,8 +82,13 @@ namespace Console
                     _Player.Stop(0);
                 if (_Online != null)
                 {
-                    _Online.Disconnect();
-                    ResultEvent(Regulus.Utility.Random.Next(0, 10) > 5 ? Result.Connect : Result.Reset);
+                    
+                    var result = Regulus.Utility.Random.Next(0, 10) >= 9 ? Result.Connect : Result.Reset;
+                    if (result == Result.Connect)
+                    {
+                        _Online.Disconnect();
+                    }
+                    ResultEvent(result);
                 }
             }
             

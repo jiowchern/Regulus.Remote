@@ -50,8 +50,8 @@ namespace Regulus.Remoting.Ghost.Native
             {
                 while (_Socket.Connected && _Enable)
                 {
-                    _ReadMachine.Update();
                     _WriteMachine.Update();                    
+                    _ReadMachine.Update();                    
                     return true;
                 }                
                 DoneEvent();
@@ -102,9 +102,9 @@ namespace Regulus.Remoting.Ghost.Native
                 lock (_Sends)
                 {
                     if (_Sends.Count > 0)
-                    {
-                        var package = _Sends.Dequeue();
-                        var stage = new NetworkStreamWriteStage(_Socket, package);
+                    {                        
+                        var stage = new NetworkStreamWriteStage(_Socket, _Sends.ToArray());
+                        _Sends.Clear();
                         stage.WriteCompletionEvent += _ToWrite;
                         stage.ErrorEvent += () => { _Enable = false; };
                         _WriteMachine.Push(stage);

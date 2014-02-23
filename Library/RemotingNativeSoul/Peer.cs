@@ -41,9 +41,9 @@ namespace Regulus.Remoting.Soul.Native
             lock (_Responses)
             {
                 if (_Responses.Count > 0)
-                {
-                    var package = _Responses.Dequeue();
-                    var stage = new NetworkStreamWriteStage(_Socket, package);
+                {                    
+                    var stage = new NetworkStreamWriteStage(_Socket, _Responses.ToArray());
+                    _Responses.Clear();
                     stage.WriteCompletionEvent += _HandleWrite;
                     stage.ErrorEvent += () => { _Enable = false; };
                     _WriteMachine.Push(stage);

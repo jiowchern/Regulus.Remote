@@ -14,6 +14,9 @@ namespace Regulus.Remoting.Ghost.Native
 		{            
             _Machine = new Game.StageMachine();
             _Socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
+            _Socket.NoDelay = true;
+            _Socket.Blocking = false;
+
             _OnlineStage = new OnlineStage();
             _OnlineStage.DoneEvent += () =>
             {
@@ -32,6 +35,9 @@ namespace Regulus.Remoting.Ghost.Native
         private Regulus.Remoting.Value<bool> _ToConnect(string ipaddress, int port)
         {            
             _Socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
+            _Socket.NoDelay = true;
+            _Socket.Blocking = false;
+            
             var val = new Regulus.Remoting.Value<bool>();
             var stage = new ConnectStage(_Socket, ipaddress, port);
             stage.ResultEvent += (result)=>

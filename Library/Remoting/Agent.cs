@@ -203,13 +203,15 @@ namespace Regulus.Remoting
 		protected void _StartPing()
 		{
 			_EndPing();
-            
-            _PingTimer = new System.Timers.Timer(1000);
-            _PingTimer.Enabled = true;
-            _PingTimer.AutoReset = true;
-            _PingTimer.Elapsed += new System.Timers.ElapsedEventHandler(_PingTimerElapsed);
-            _PingTimer.Start();
-            _PingStatus = PingStatus.Wait;
+            lock (_Sync)
+            {
+                _PingTimer = new System.Timers.Timer(1000);
+                _PingTimer.Enabled = true;
+                _PingTimer.AutoReset = true;
+                _PingTimer.Elapsed += new System.Timers.ElapsedEventHandler(_PingTimerElapsed);
+                _PingTimer.Start();
+                _PingStatus = PingStatus.Wait;
+            }
 			
 		}
 		void _PingTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -221,19 +223,22 @@ namespace Regulus.Remoting
                     _PingStatus = PingStatus.Send;
                     _PingTimeCounter = new Regulus.Utility.TimeCounter();
                     _Requester.Request((int)ClientToServerPhotonOpCode.Ping, new Dictionary<byte, byte[]>());
-                    _EndPing();
+                    
                 }            
             }
-            
+            _EndPing();
 		}
 
 		protected void _EndPing()
-		{            
-            if (_PingTimer != null)
-            {                
-                _PingTimer.Stop();
-                _PingTimer = null;                
-            }            
+		{
+            lock (_Sync)
+            {
+                if (_PingTimer != null)
+                {
+                    _PingTimer.Stop();
+                    _PingTimer = null;
+                }
+            }
 		}
         
 		private Regulus.Remoting.Ghost.IGhost _BuildGhost(Type ghostBaseType, Regulus.Remoting.IGhostRequest peer, Guid id)

@@ -50,7 +50,7 @@ namespace Regulus.Remoting.Soul.Native
                 DoneEvent(core, port, 0);
             }
 
-            private void _LoadLibrary(string work_dir)
+            /*private void _LoadLibrary(string work_dir)
             {
                 
                 var files = from f in System.IO.Directory.EnumerateFiles(work_dir, "*.dll", System.IO.SearchOption.AllDirectories) select f;
@@ -68,7 +68,7 @@ namespace Regulus.Remoting.Soul.Native
                     }
                     
                 }
-            }
+            }*/
 
             void Game.IStage.Leave()
             {
