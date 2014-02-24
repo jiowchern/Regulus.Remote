@@ -28,9 +28,13 @@ namespace Console
 
             bool exit = false;
             application.Command.Register("quit", () => { exit = true; });
+            application.Command.Register<int>("BotSn", (sn) =>
+            {
+                bots.Sn = sn;
+            });
             application.Command.Register<int>("Bot", (count) => 
             {
-                bots.Create(count);
+                bots.Create(count );
             });
             application.SelectSystemEvent += (selector) =>
             {
@@ -51,6 +55,7 @@ namespace Console
                     fps.Reset();
                 }
             }
+            application.Command.Unregister("BotSn");
             application.Command.Unregister("Bot");
             application.Command.Unregister("quit");
             application.Stop();

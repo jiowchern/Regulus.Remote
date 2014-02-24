@@ -262,20 +262,40 @@ namespace Regulus.Remoting
 			_GhostTypes.Add(ghostBaseType, ghostType);
 			return ghostType;
 		}
+        static Dictionary<string, Type> _Types = new Dictionary<string, Type>();
 		static Type _GetType(string type_name)
 		{
-			var type = Type.GetType(type_name);
-			if (type == null)
-			{
-				foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
-				{
-					type = a.GetType(type_name);
-					if (type != null)
-						return type;
-				}
-			}
-			return type;
+            lock (_Types)
+            {
+                Type result ;
+                if (_Types.TryGetValue(type_name, out result))
+                {
+                    return result;
+                }
+                else
+                {
+                    result = _Find(type_name);
+                    _Types.Add(type_name , result);
+                    return result;
+                }
+            }
+			
 		}
+
+        private static Type _Find(string type_name)
+        {
+            var type = Type.GetType(type_name);
+            if (type == null)
+            {
+                foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
+                {
+                    type = a.GetType(type_name);
+                    if (type != null)
+                        return type;
+                }
+            }
+            return type;
+        }
 		public static void UpdateProperty(string property, string type_name, object instance, object value)
 		{
 			Type type = _GetType(type_name);

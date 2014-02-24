@@ -13,7 +13,7 @@ namespace Regulus.Project.SamebestKeys
         Regulus.Utility.Updater _Updater;
         IStorage _Storage;
 
-        
+        Regulus.Utility.TimeCounter _TimeCounter;
 
         public Complex(IStorage stroage)
         {
@@ -22,6 +22,7 @@ namespace Regulus.Project.SamebestKeys
             _World = new World(LocalTime.Instance);
             _Updater = new Utility.Updater();
             _Storage = stroage;
+            _TimeCounter = new Utility.TimeCounter();
         }
 
         void Game.ICore.ObtainController(Remoting.ISoulBinder binder)
@@ -31,8 +32,12 @@ namespace Regulus.Project.SamebestKeys
 
         bool Utility.IUpdatable.Update()
         {
+            if (_TimeCounter.Second > 1.0 / 60)
+            {
+                _Updater.Update();
+                _TimeCounter.Reset();
+            }
             
-            _Updater.Update();
             return true;
         }
 

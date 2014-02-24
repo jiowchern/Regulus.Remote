@@ -275,15 +275,18 @@ namespace Regulus.Remoting.Soul
         {
             _Peer.Update();
 
-            if ((System.DateTime.Now - _UpdateEventInterval).TotalSeconds > 1.0 / 60)
+
+            foreach (var filter in _EventFilter)
             {
-                foreach (var filter in _EventFilter)
-                {
-                    _Queue.Push((byte)ServerToClientPhotonOpCode.InvokeEvent, filter);
-                }
-                _EventFilter.Clear();
-                _UpdateEventInterval = System.DateTime.Now;
+                _Queue.Push((byte)ServerToClientPhotonOpCode.InvokeEvent, filter);
             }
+            _EventFilter.Clear();
+            //_UpdateEventInterval = System.DateTime.Now;
+
+            /*if ((System.DateTime.Now - _UpdateEventInterval).TotalSeconds > 1.0 / 60)
+            {
+                
+            }*/
 
             if ((System.DateTime.Now - _UpdatePropertyInterval).TotalSeconds > 0.5)
             {

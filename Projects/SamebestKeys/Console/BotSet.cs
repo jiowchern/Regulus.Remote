@@ -31,13 +31,13 @@ namespace Console
             
         }
         static int _Sn;
-        internal void Create(int count)
+        internal void Create(int count )
         {
             if (Requester != null)
             {
                 for (int i = 0; i < count; ++i)
                 {
-                    string account = "BotController" + (_Sn++);
+                    string account = "BotController" + (_Sn++ );
                     var val = Requester.Spawn(account, false);
                     val.OnValue += (user) => { _UserCreated(user, account); };
                 }
@@ -51,5 +51,7 @@ namespace Console
         }
 
         public Regulus.Game.ConsoleFramework<Regulus.Project.SamebestKeys.IUser>.IUserRequester Requester { private get; set; }
+
+        public int Sn { set { _Sn = value; } }
     }
 }
