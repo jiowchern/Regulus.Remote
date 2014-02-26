@@ -37,6 +37,7 @@ namespace Regulus.Standalong
 		{
             if (BreakEvent != null)
                 BreakEvent();
+            BreakEvent = null;
 			_Agent.Finial();
 			_SoulProvider = null;
 			_GhostRequest.PingEvent -= _OnRequestPing;			
@@ -82,5 +83,10 @@ namespace Regulus.Standalong
 		{
 			_SoulProvider.Unbind<TSoul>(soul);
 		}
-	}
+
+        public void Disconnect()
+        {
+            Shutdown();
+        }
+    }
 }

@@ -9,7 +9,12 @@ namespace Regulus.Project.SamebestKeys
     {
         private IController _BuildRemoting()
         {            
-            return new Remoting.UserController(_Viewer, Command);
+            return new UserController(_Viewer, Command , new Regulus.Projects.SamebestKeys.Remoting.RemotingUser());
+        }
+
+        private IController _Standalong()
+        {
+            return new UserController(_Viewer, Command, new Regulus.Projects.SamebestKeys.Standalong.StandalongUser());
         }
 
         /*private IController _BuildStandalong()
@@ -27,7 +32,8 @@ namespace Regulus.Project.SamebestKeys
             return new Console.ControllerProvider[] 
             {
                 //new Console.ControllerProvider { Command = "standalong" , Spawn =  _BuildStandalong},
-                new Console.ControllerProvider { Command = "remoting" , Spawn = _BuildRemoting}
+                new Console.ControllerProvider { Command = "remoting" , Spawn = _BuildRemoting},
+                new Console.ControllerProvider { Command = "standalong" , Spawn = _Standalong}
             };
         }
     }
