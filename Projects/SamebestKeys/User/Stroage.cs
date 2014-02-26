@@ -26,7 +26,8 @@ namespace Regulus.Projects.SamebestKeys.Standalong
 
         bool Project.SamebestKeys.IStorage.CheckActorName(string name)
         {
-            return true;
+            var result = (from ei in _DBEntityInfomations where ei.Look.Name == name select ei).Count();
+            return result != 0;
         }
 
         Project.SamebestKeys.Serializable.AccountInfomation Project.SamebestKeys.IStorage.FindAccountInfomation(string name)
