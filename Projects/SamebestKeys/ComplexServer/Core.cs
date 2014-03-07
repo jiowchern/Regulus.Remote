@@ -11,6 +11,8 @@ namespace Regulus.Project.SamebestKeys
         Regulus.Utility.Updater _Updater;
         Regulus.Game.ICore _Complex;
         Storage _Storage;
+
+
         public ComplexServer()
         {            
             _Storage = new Storage();
@@ -31,7 +33,12 @@ namespace Regulus.Project.SamebestKeys
         void Framework.ILaunched.Launch()
         {
             _Updater.Add(_Storage);
-            _Updater.Add(_Complex);             
+            _Updater.Add(_Complex);
+
+            var dataBuilder = new GameDataBuilder(GameData.Instance);
+            var stream = System.IO.File.ReadAllBytes("mapdata.txt");
+            dataBuilder.Build(stream);            
+    
         }
 
         void Framework.ILaunched.Shutdown()

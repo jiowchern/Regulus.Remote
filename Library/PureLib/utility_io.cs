@@ -11,7 +11,6 @@ namespace Regulus.Utility.IO
 		{
 			System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
             
-
 			System.IO.FileStream fs = new System.IO.FileStream(path, System.IO.FileMode.Create);
 
 			formatter.Serialize(fs, obj);
@@ -27,6 +26,19 @@ namespace Regulus.Utility.IO
             fs.Close();				*/
 		}
 
+
+        static public T Read<T>(byte[] stream)
+        {
+            System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formmater = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+
+            System.IO.MemoryStream ms = new System.IO.MemoryStream(stream);
+
+            T obj = (T)formmater.Deserialize(ms);
+
+            ms.Close();
+
+            return obj;
+        }
 		static public T Read<T>(string path)
 		{
 			System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formmater = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();

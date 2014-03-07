@@ -123,17 +123,9 @@ namespace Regulus.Project.SamebestKeys
 
         private Data.Map _ReadMapData(string name)
 		{
-			string path = "Data/" + Name + ".map";
-            try
-            {
-                var data = Regulus.Utility.IO.Serialization.Read<Data.Map>(path);
-                return data;
-            }
-            catch
-            {
-                return null;
-            }
-			
+
+            Data.Map data = GameData.Instance.FindMap(name);
+            return data;
 		}
 
 

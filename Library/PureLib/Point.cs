@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Regulus.Types
 {
+    [Serializable]
     [ProtoBuf.ProtoContract]
     public struct Point
     {

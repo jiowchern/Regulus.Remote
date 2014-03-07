@@ -20,7 +20,7 @@ namespace Regulus.Project.TurnBasedRPG
 		public EntityBuilder()
 		{
 			_Builders = new Dictionary<Type, CommonBuilder >();
-			_Builders.Add(typeof(Data.StaticEntity), _Builder((this as IEntityBuilder<Data.StaticEntity, StaticEntity>)));
+            _Builders.Add(typeof(Data.StaticEntity), _Builder((this as IEntityBuilder<Data.StaticEntity, StaticEntity>)));
             _Builders.Add(typeof(Data.PortalEntity), _Builder((this as IEntityBuilder<Data.PortalEntity, PortalEntity>)));
 		}
 

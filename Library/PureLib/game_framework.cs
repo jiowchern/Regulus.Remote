@@ -110,13 +110,19 @@ namespace Regulus.Game
         }
 
 
+
+        protected virtual void _Launch(Regulus.Utility.Updater updater)
+        { }
 		void Regulus.Framework.ILaunched.Launch()
         {
             _Runable = true;
 
             _StageMachine = _CreateStage();
+
+            _Launch(_Loops);
         }
 
+        
 		bool Regulus.Utility.IUpdatable.Update()
         {
             _Loops.Update();
@@ -124,8 +130,10 @@ namespace Regulus.Game
             return _Runable;
         }
 
+        protected virtual void _Shutdown(Regulus.Utility.Updater updater) { }
 		void Regulus.Framework.ILaunched.Shutdown()
         {
+            _Shutdown(_Loops);
             _Stop();
         }
     }

@@ -65,6 +65,7 @@
     <Compile Include="Field.cs" />
     <Compile Include="Hall.cs" />
     <Compile Include="ICrossAbility.cs" />
+    <Compile Include="GameData.cs" />
     <Compile Include="IMap.cs" />
     <Compile Include="IObserveAbility.cs" />
     <Compile Include="IObservedAbility.cs" />

@@ -10,11 +10,12 @@ namespace Regulus.Project.SamebestKeys
         IStorage _Stroage;
         DateTime _Save;
         Regulus.Project.SamebestKeys.Player _Player;
-
+        List<IObservedAbility> _Observeds;
         IMap _Map;
         
 		public AdventureStage(IMap map , IStorage storage)
 		{
+            _Observeds = new List<IObservedAbility>();
             _Stroage = storage;
             _Map = map;
 		}
@@ -35,10 +36,12 @@ namespace Regulus.Project.SamebestKeys
                 _ObservedInto = (observed) =>
                 {
                     obj.Provider.Bind<IObservedAbility>(observed);
+                    _Observeds.Add(observed);
                 };
 
                 _ObservedLeft = (observed) =>
                 {
+                    _Observeds.Remove(observed);
                     obj.Provider.Unbind<IObservedAbility>(observed);
                 };
                 
@@ -78,7 +81,10 @@ namespace Regulus.Project.SamebestKeys
                 observe.IntoEvent -= _ObservedInto;
                 observe.LeftEvent -= _ObservedLeft;
             }
-
+            foreach (var o in _Observeds)
+            {
+                obj.Provider.Unbind<IObservedAbility>(o);
+            }
             _Player.Release();
             obj.Provider.Unbind<IPlayer>(_Player);
             

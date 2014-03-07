@@ -14,6 +14,7 @@ namespace Console
             var input = new Regulus.Utility.ConsoleInput(view);
             
             var application = new Regulus.Project.SamebestKeys.Console(view, input);
+            
 
             BotSet bots = new BotSet();
 
@@ -32,6 +33,10 @@ namespace Console
             {
                 bots.Sn = sn;
             });
+            application.UserRequesterEvent += (requester) =>
+            {
+                bots.Requester = requester;
+            };
             application.Command.Register<int>("Bot", (count) => 
             {
                 bots.Create(count );

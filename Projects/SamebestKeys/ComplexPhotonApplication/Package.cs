@@ -7,6 +7,7 @@ namespace Regulus.Project.SamebestKeys
 {
     namespace Data
     {
+        [Serializable]
         [ProtoBuf.ProtoContract]
         public class Map
         {
@@ -15,6 +16,8 @@ namespace Regulus.Project.SamebestKeys
             [ProtoBuf.ProtoMember(2)]
             public Entity[] Entitys { get; set; }
         }
+
+        [Serializable]
         [ProtoBuf.ProtoContract]
         public abstract class Entity
         {
@@ -22,6 +25,7 @@ namespace Regulus.Project.SamebestKeys
             public Guid Id { get; set; }
         }
 
+        [Serializable]
         [ProtoBuf.ProtoContract]
         public class StaticEntity : Entity
         {
@@ -29,6 +33,7 @@ namespace Regulus.Project.SamebestKeys
             public Regulus.Utility.OBB Obb { get; set; }
         }
 
+        [Serializable]
         [ProtoBuf.ProtoContract]
         public class PortalEntity : Entity
         {

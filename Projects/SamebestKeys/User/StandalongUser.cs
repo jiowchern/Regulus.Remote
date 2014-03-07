@@ -14,9 +14,10 @@ namespace Regulus.Projects.SamebestKeys.Standalong
         Regulus.Remoting.Ghost.TProvider<Regulus.Project.SamebestKeys.IOnline> _OnlineProvider;
         Regulus.Standalong.Agent _Agent;
         Regulus.Game.StageMachine _Machine;
-        public StandalongUser()
+        private Game _Game;
+        public StandalongUser(Game game)
         {
-            
+            _Game = game;
             _Agent = new Regulus.Standalong.Agent();
             _Machine = new Regulus.Game.StageMachine();            
             _ConnectProvider = new Regulus.Remoting.Ghost.TProvider<Project.SamebestKeys.IConnect>();
@@ -90,7 +91,7 @@ namespace Regulus.Projects.SamebestKeys.Standalong
 
         private void _ToOnline()
         {
-            var stage = new OnlineStage(_Agent, _OnlineProvider);
+            var stage = new OnlineStage(_Agent, _OnlineProvider,_Game);
             stage.DisconnectEvent += () => 
             {
                 _ToConnect();
@@ -114,9 +115,11 @@ namespace Regulus.Projects.SamebestKeys.Standalong
             private Regulus.Remoting.Ghost.TProvider<Project.SamebestKeys.IOnline> _Provider;
             Regulus.Utility.Updater _Updater;
             public event Action DisconnectEvent;
+            private Game _Game;
 
-            public OnlineStage(Regulus.Standalong.Agent agent , Regulus.Remoting.Ghost.TProvider<Project.SamebestKeys.IOnline> provider)
+            public OnlineStage(Regulus.Standalong.Agent agent , Regulus.Remoting.Ghost.TProvider<Project.SamebestKeys.IOnline> provider , Regulus.Projects.SamebestKeys.Standalong.Game game)
             {
+                _Game = game;
                 _Updater = new Utility.Updater();
                 _Agent = agent;
                 _Id = Guid.NewGuid();
@@ -159,16 +162,16 @@ namespace Regulus.Projects.SamebestKeys.Standalong
                 (_Provider as Regulus.Remoting.Ghost.IProvider).Add(this);
                 (_Provider as Regulus.Remoting.Ghost.IProvider).Ready(_Id);
                 _Agent.Launch();
-                Game.Instance.Push(_Agent);
+                _Game.Push(_Agent);
                 _Agent.BreakEvent += DisconnectEvent;
-                _Updater.Add(Game.Instance);
+                
             }
 
             
 
             void Regulus.Game.IStage.Leave()
             {
-                _Updater.Add(Game.Instance);
+                
                 _Agent.BreakEvent -= DisconnectEvent;
                 _Agent.Shutdown();
                 (_Provider as Regulus.Remoting.Ghost.IProvider).Remove(_Id);
