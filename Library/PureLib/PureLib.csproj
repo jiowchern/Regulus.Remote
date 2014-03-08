@@ -79,6 +79,7 @@
     <Compile Include="utility_ini.cs" />
     <Compile Include="utility_io.cs" />
     <Compile Include="utility_obb.cs" />
+    <Compile Include="types_polygon.cs" />
     <Compile Include="utility_time.cs" />
     <Compile Include="utility_updater.cs" />
     <Compile Include="utility_valuehelper.cs" />
