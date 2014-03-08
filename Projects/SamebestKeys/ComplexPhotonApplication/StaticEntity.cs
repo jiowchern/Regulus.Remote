@@ -54,7 +54,7 @@ namespace Regulus.Project.SamebestKeys
             
         }
 
-        void IMoverAbility.Update(long p, IEnumerable<Utility.OBB> obbs)
+        void IMoverAbility.Update(long time, IEnumerable<Utility.OBB> obbs)
         {
             
         }

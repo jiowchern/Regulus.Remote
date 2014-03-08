@@ -65,10 +65,19 @@ namespace Regulus.Project.SamebestKeys
         event Action<string> SayEvent;
     }
 
-	public interface IMoverAbility
-	{
+
+    public interface IMoverAbility2
+    {
+        Regulus.Types.Polygon Polygon { get; }
+
+        void Act(ActionStatue action_statue, float move_speed, float direction);
+
+        void Update(long time, System.Collections.Generic.IEnumerable<Regulus.Types.Polygon> obbs);
+    }
+    public interface IMoverAbility
+    {
         Regulus.Utility.OBB Obb { get; }
-		
+
         void Act(ActionStatue action_statue, float move_speed, float direction);
 
         void Update(long time, System.Collections.Generic.IEnumerable<Utility.OBB> obbs);
@@ -79,22 +88,23 @@ namespace Regulus.Project.SamebestKeys
 
 namespace Regulus.Project.SamebestKeys
 {
+    
     public class ActorMoverAbility : IMoverAbility
     {
         Utility.OBB _Obb;
         ActionStatue _CurrentAction;
-        public ActorMoverAbility(float direction , float x , float y)
+        public ActorMoverAbility(float direction, float x, float y)
         {
             _Update = _Empty;
             _Direction = direction;
-            _Obb = new Utility.OBB(x,y,0.5f,0.5f);
-            
+            _Obb = new Utility.OBB(x, y, 0.5f, 0.5f);
+
         }
-        public void SetPosition(float x , float y)
+        public void SetPosition(float x, float y)
         {
-            _Obb.setXY(x,y);
+            _Obb.setXY(x, y);
         }
-        Action<long, System.Collections.Generic.IEnumerable<Utility.OBB> > _Update;
+        Action<long, System.Collections.Generic.IEnumerable<Utility.OBB>> _Update;
         void IMoverAbility.Update(long time, System.Collections.Generic.IEnumerable<Utility.OBB> obbs)
         {
             _Update(time, obbs);
@@ -110,7 +120,7 @@ namespace Regulus.Project.SamebestKeys
             {
                 // 角色面對世界的方向
                 _Direction = (direction + _Direction) % 360;
-                
+
 
                 _CurrentAction = action_statue;
                 _MoveSpeed = move_speed;
@@ -151,16 +161,16 @@ namespace Regulus.Project.SamebestKeys
                             continue;
                         }
 
-                        Utility.OBB safeobb = new Utility.OBB(_Obb.getX() , _Obb.getY() , _Obb.getWidth(), _Obb.getHeight());
+                        Utility.OBB safeobb = new Utility.OBB(_Obb.getX(), _Obb.getY(), _Obb.getWidth(), _Obb.getHeight());
                         safeobb.setRotation(_Obb.getRotation());
                         do
-                        {                            
+                        {
                             moveVector.X += 0 - _UnitVector.X * dt * _MoveSpeed;
                             moveVector.Y += 0 - _UnitVector.Y * dt * _MoveSpeed;
-                            safeobb.setXY(_Obb.getX() + moveVector.X, _Obb.getY() + moveVector.Y );
+                            safeobb.setXY(_Obb.getX() + moveVector.X, _Obb.getY() + moveVector.Y);
                         }
                         while (safeobb.isCollision(obb));
-                        
+
                         if (PositionEvent != null)
                             PositionEvent(time, moveVector);
 
@@ -172,7 +182,7 @@ namespace Regulus.Project.SamebestKeys
                         PositionEvent(time, moveVector);
                 }
 
-                
+
             }
             else
             {
@@ -186,6 +196,7 @@ namespace Regulus.Project.SamebestKeys
 
         void _Empty(long time, System.Collections.Generic.IEnumerable<Utility.OBB> obbs)
         {
+
         }
         void _First(long time, System.Collections.Generic.IEnumerable<Utility.OBB> obbs)
         {

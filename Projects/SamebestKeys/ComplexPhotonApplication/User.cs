@@ -85,11 +85,11 @@ namespace Regulus.Project.SamebestKeys
             }
             if ( !(Actor.Property.Position.X >= 0 && Actor.Property.Position.X <= 100))
             {
-                Actor.Property.Position.X = Regulus.Utility.Random.Instance.R.Next(0, 100);
+                Actor.Property.Position = Types.Vector2.FromPoint(Regulus.Utility.Random.Instance.R.Next(0, 100), Actor.Property.Position.Y);
             }
             if (!(Actor.Property.Position.Y >= 0 && Actor.Property.Position.Y <= 100))
             {
-                Actor.Property.Position.Y = Regulus.Utility.Random.Instance.R.Next(0, 100);
+                Actor.Property.Position = Types.Vector2.FromPoint(Actor.Property.Position.X, Regulus.Utility.Random.Instance.R.Next(0, 100));
             }
             if (Actor.Property.Map == "")
             {

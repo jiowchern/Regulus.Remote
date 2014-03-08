@@ -47,8 +47,10 @@ namespace Regulus.Project.TurnBasedRPG
 
         private void _OnPosition(long time, Types.Vector2 unit_vector)
         {
-            _Property.Position.X += unit_vector.X;
-            _Property.Position.Y += unit_vector.Y;
+
+
+            _Property.Position = Types.Vector2.FromPoint(_Property.Position.X + unit_vector.X, _Property.Position.Y + unit_vector.Y);
+            
             _MoverAbility.SetPosition(_Property.Position.X, _Property.Position.Y);
             _QuadTreeObjectAbility.UpdateBounds(_Property.Position.X - _BodyWidth / 2, _Property.Position.Y - _BodyHeight / 2);
             
@@ -82,9 +84,7 @@ namespace Regulus.Project.TurnBasedRPG
 
         public void SetPosition(float x, float y)
         {
-
-            _Property.Position.X = x;
-            _Property.Position.Y = y;
+            _Property.Position = Types.Vector2.FromPoint(x, y);            
             _MoverAbility.SetPosition(_Property.Position.X, _Property.Position.Y);
             _QuadTreeObjectAbility.UpdateBounds(_Property.Position.X - _BodyWidth / 2, _Property.Position.Y - _BodyHeight / 2);
         }

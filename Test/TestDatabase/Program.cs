@@ -107,8 +107,10 @@ namespace Regulus.Project.Keys.Serializable
 			float newDistPer = (float)(seconds / _TotalTime);
 			if (newDistPer < 1.0)
 			{
-				_DBActorInfomation.Property.Position.X = _Start.X + _Vector.X * newDistPer;
-				_DBActorInfomation.Property.Position.Y = _Start.Y + _Vector.Y * newDistPer;
+                var position = new Types.Vector2();
+                position.X = _Start.X + _Vector.X * newDistPer;
+                position.Y = _Start.Y + _Vector.Y * newDistPer;
+                _DBActorInfomation.Property.Position = position;				
 			}
 		}
 	}
@@ -118,12 +120,16 @@ namespace Regulus.Project.Keys.Serializable
         {
 			var db3 = new DBEntityInfomation();
 			db3.Property.Speed = 1;
-			db3.Property.Position.X = 4530;
-			db3.Property.Position.Y = 5430;
+            var position = new Types.Vector2();
+            position.X = 4530;
+            position.Y = 5430;
+            db3.Property.Position = position;
+			
 
 			var db4 = new DBEntityInfomation();
-			db4.Property.Position.X = 100;
-			db4.Property.Position.Y = 33220;
+            position.X = 100;
+            position.Y = 33220;
+            db4.Property.Position = position;			
 
 
 			System.TimeSpan time = new TimeSpan(0, 0, 0);
@@ -137,9 +143,9 @@ namespace Regulus.Project.Keys.Serializable
 
 
             DBEntityInfomation db1 = new DBEntityInfomation();
-            db1.Property.Position.X = 100;
+            db1.Property.Position = position;
             DBEntityInfomation db2 = new DBEntityInfomation();
-            db2.Property.Position.X = 100;
+            db2.Property.Position = position;
             db2.Look.Name = "dff";
             var ret = Regulus.Utility.ValueHelper.DeepEqual(db1, db2);
             Regulus.NoSQL.Database db = new Regulus.NoSQL.Database();
