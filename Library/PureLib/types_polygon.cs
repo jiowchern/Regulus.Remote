@@ -140,6 +140,8 @@ namespace Regulus.Types
         private List<Vector2> points = new List<Vector2>();
         private List<Vector2> edges = new List<Vector2>();
 
+
+        
         public void BuildEdges()
         {
             Vector2 p1;
@@ -213,5 +215,68 @@ namespace Regulus.Types
             return result;
         }
 
+
+
+        
+
+        private void MergeSort(int left, int right)
+        {
+            if (left < right)
+            {
+                int mid = (left + right) / 2;
+                MergeSort(left, mid);
+                MergeSort(mid + 1, right);
+                Merge(left, mid, right);
+            }
+        }
+
+        private void Merge(int left, int mid, int right)
+        {
+            int i = left, j = mid + 1, top = 0;
+            Point[] data = new Point[right + 1];
+            while (i <= mid && j <= right)
+            {
+                if (cmp(points[i], points[j])) data[top++] = points[i++];
+                else data[top++] = points[j++];
+            }
+            while (i <= mid) data[top++] = points[i++];
+            while (j <= right) data[top++] = points[j++];
+            for (i = 0, j = left; i < top; i++, j++)
+                points[j] = Vector2.FromPoint(data[i].X, data[i].Y);
+        }
+        private float cross(Point o, Point a, Point b)
+        {
+            return (a.X - o.X) * (b.Y - o.Y) - (a.Y - o.Y) * (b.X - o.X);
+        }
+        private bool cmp(Point a, Point b)
+        {
+            return (a.Y < b.Y) || (a.Y == b.Y && a.X < b.X);
+        }
+
+        public void Convex()
+        {
+            MergeSort(0, points.Count - 1);
+
+            Vector2[] CH = new Vector2[points.Count + 1];
+            int m = 0;
+            for (int i = 0; i < points.Count; i++)
+            {
+                while (m >= 2 && cross(CH[m - 2], CH[m - 1], points[i]) <= 0) m--;
+                CH[m++] = points[i];
+            }
+            for (int i = points.Count - 2, t = m + 1; i >= 0; i--)
+            {
+                while (m >= t && cross(CH[m - 2], CH[m - 1], points[i]) <= 0) m--;
+                CH[m++] = points[i];
+            }
+            points.Clear();
+            for (int i = 0; i < m-1; ++i)
+            {
+                points.Add(CH[i]);
+            }
+
+
+            BuildEdges();
+        }
     }
 }

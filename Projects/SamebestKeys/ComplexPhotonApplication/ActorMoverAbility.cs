@@ -25,6 +25,7 @@ namespace Regulus.Project.SamebestKeys
             _Polygon.Points.Add(new Types.Vector2(x + 0.5f, y + 0.5f));
             _Polygon.Points.Add(new Types.Vector2(x + 0.5f, y - 0.5f));
             _Polygon.Points.Add(new Types.Vector2(x - 0.5f, y - 0.5f));
+            _Polygon.BuildEdges();
         }
         public void SetPosition(float x, float y)
         {
