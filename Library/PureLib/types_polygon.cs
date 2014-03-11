@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Types
 {
-
+    [Serializable]
     public class Polygon
     {
         // Structure that stores the results of the PolygonCollision function
@@ -137,39 +137,37 @@ namespace Regulus.Types
             public Vector2 MinimumTranslationVector2; // The translation to apply to polygon A to push the polygons appart.
         }
 
-        private List<Vector2> points = new List<Vector2>();
-        private List<Vector2> edges = new List<Vector2>();
-
-
+        private List<Vector2> _Points = new List<Vector2>();
+        private List<Vector2> _Edges = new List<Vector2>();
         
         public void BuildEdges()
         {
             Vector2 p1;
             Vector2 p2;
-            edges.Clear();
-            for (int i = 0; i < points.Count; i++)
+            _Edges.Clear();
+            for (int i = 0; i < _Points.Count; i++)
             {
-                p1 = points[i];
-                if (i + 1 >= points.Count)
+                p1 = _Points[i];
+                if (i + 1 >= _Points.Count)
                 {
-                    p2 = points[0];
+                    p2 = _Points[0];
                 }
                 else
                 {
-                    p2 = points[i + 1];
+                    p2 = _Points[i + 1];
                 }
-                edges.Add(p2 - p1);
+                _Edges.Add(p2 - p1);
             }
         }
 
         public List<Vector2> Edges
         {
-            get { return edges; }
+            get { return _Edges; }
         }
 
         public List<Vector2> Points
         {
-            get { return points; }
+            get { return _Points; }
         }
 
         public Vector2 Center
@@ -178,13 +176,13 @@ namespace Regulus.Types
             {
                 float totalX = 0;
                 float totalY = 0;
-                for (int i = 0; i < points.Count; i++)
+                for (int i = 0; i < _Points.Count; i++)
                 {
-                    totalX += points[i].X;
-                    totalY += points[i].Y;
+                    totalX += _Points[i].X;
+                    totalY += _Points[i].Y;
                 }
 
-                return new Vector2(totalX / (float)points.Count, totalY / (float)points.Count);
+                return new Vector2(totalX / (float)_Points.Count, totalY / (float)_Points.Count);
             }
         }
 
@@ -195,10 +193,10 @@ namespace Regulus.Types
 
         public void Offset(float x, float y)
         {
-            for (int i = 0; i < points.Count; i++)
+            for (int i = 0; i < _Points.Count; i++)
             {
-                Vector2 p = points[i];
-                points[i] = new Vector2(p.X + x, p.Y + y);
+                Vector2 p = _Points[i];
+                _Points[i] = new Vector2(p.X + x, p.Y + y);
             }
         }
 
@@ -206,18 +204,14 @@ namespace Regulus.Types
         {
             string result = "";
 
-            for (int i = 0; i < points.Count; i++)
+            for (int i = 0; i < _Points.Count; i++)
             {
                 if (result != "") result += " ";
-                result += "{" + points[i].ToString(true) + "}";
+                result += "{" + _Points[i].ToString(true) + "}";
             }
 
             return result;
         }
-
-
-
-        
 
         private void MergeSort(int left, int right)
         {
@@ -236,13 +230,13 @@ namespace Regulus.Types
             Point[] data = new Point[right + 1];
             while (i <= mid && j <= right)
             {
-                if (cmp(points[i], points[j])) data[top++] = points[i++];
-                else data[top++] = points[j++];
+                if (cmp(_Points[i], _Points[j])) data[top++] = _Points[i++];
+                else data[top++] = _Points[j++];
             }
-            while (i <= mid) data[top++] = points[i++];
-            while (j <= right) data[top++] = points[j++];
+            while (i <= mid) data[top++] = _Points[i++];
+            while (j <= right) data[top++] = _Points[j++];
             for (i = 0, j = left; i < top; i++, j++)
-                points[j] = Vector2.FromPoint(data[i].X, data[i].Y);
+                _Points[j] = Vector2.FromPoint(data[i].X, data[i].Y);
         }
         private float cross(Point o, Point a, Point b)
         {
@@ -255,28 +249,51 @@ namespace Regulus.Types
 
         public void Convex()
         {
-            MergeSort(0, points.Count - 1);
+            MergeSort(0, _Points.Count - 1);
 
-            Vector2[] CH = new Vector2[points.Count + 1];
+            Vector2[] CH = new Vector2[_Points.Count + 1];
             int m = 0;
-            for (int i = 0; i < points.Count; i++)
+            for (int i = 0; i < _Points.Count; i++)
             {
-                while (m >= 2 && cross(CH[m - 2], CH[m - 1], points[i]) <= 0) m--;
-                CH[m++] = points[i];
+                while (m >= 2 && cross(CH[m - 2], CH[m - 1], _Points[i]) <= 0) m--;
+                CH[m++] = _Points[i];
             }
-            for (int i = points.Count - 2, t = m + 1; i >= 0; i--)
+            for (int i = _Points.Count - 2, t = m + 1; i >= 0; i--)
             {
-                while (m >= t && cross(CH[m - 2], CH[m - 1], points[i]) <= 0) m--;
-                CH[m++] = points[i];
+                while (m >= t && cross(CH[m - 2], CH[m - 1], _Points[i]) <= 0) m--;
+                CH[m++] = _Points[i];
             }
-            points.Clear();
+            _Points.Clear();
             for (int i = 0; i < m-1; ++i)
             {
-                points.Add(CH[i]);
+                _Points.Add(CH[i]);
             }
 
 
             BuildEdges();
+        }
+
+        public void Rotation(float angle)
+        {
+
+            var points = new List<Vector2>();
+            var center = new Vector2(Center.X , Center.Y);
+            foreach (var point in Points)
+            {
+                points.Add(_RotatePoint(point, center, angle));
+            }
+
+            _Points = points;
+            BuildEdges();
+        }
+
+        public Vector2 _RotatePoint(Vector2 point, Vector2 centroid, double angle)
+        {
+            var x = centroid.X + ((point.X - centroid.X) * Math.Cos(angle) - (point.Y - centroid.Y) * Math.Sin(angle));
+
+            var y = centroid.Y + ((point.X - centroid.X) * Math.Sin(angle) + (point.Y - centroid.Y) * Math.Cos(angle));
+
+            return new Vector2((float)x, (float)y);
         }
     }
 }

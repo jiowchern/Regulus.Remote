@@ -22,13 +22,13 @@ namespace Regulus.Types
             this._Size = rootSize;
         }
 
-        public Rect(float newX, float newY, float p1, float p2)
+        public Rect(float x, float y, float w, float h)
         {
             // TODO: Complete member initialization
-            Location.X = newX;
-            Location.Y = newY;
-            _Size.Width = p1;
-            _Size.Height = p2;
+            Location.X = x;
+            Location.Y = y;
+            _Size.Width = w;
+            _Size.Height = h;
         }
 
 

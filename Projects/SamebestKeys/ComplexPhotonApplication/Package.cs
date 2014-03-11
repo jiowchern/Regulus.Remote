@@ -33,6 +33,8 @@ namespace Regulus.Project.SamebestKeys
             public Regulus.Utility.OBB Obb { get; set; }
         }
 
+
+
         [Serializable]
         [ProtoBuf.ProtoContract]
         public class PortalEntity : Entity
@@ -50,7 +52,15 @@ namespace Regulus.Project.SamebestKeys
             public Types.Vector2 TargetPosition { get; set; }
         }
 
-
+        [Serializable]
+        public class TriangleEntity : Entity
+        {
+            public TriangleEntity()
+            {
+                Polygon = new Types.Polygon();
+            }
+            public Types.Polygon Polygon { get; set; }
+        }
 
     }
 

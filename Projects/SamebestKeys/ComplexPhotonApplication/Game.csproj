@@ -82,6 +82,7 @@
     <Compile Include="QuadTreeObjectAbility.cs" />
     <Compile Include="StaticEntity.cs" />
     <Compile Include="Time.cs" />
+    <Compile Include="TriangleEntity.cs" />
     <Compile Include="User.cs" />
     <Compile Include="Verify.cs" />
     <Compile Include="VerifyStage.cs" />
