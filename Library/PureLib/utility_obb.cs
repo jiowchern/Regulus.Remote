@@ -46,6 +46,9 @@ namespace Regulus.Utility
 		 * @param width
 		 * @param height
 		 */
+        public OBB() : this(0,0,0,0)
+        { 
+        }
 		public OBB(float x, float y, float width, float height)
 		{
 

@@ -14,6 +14,10 @@ namespace Regulus.Project.SamebestKeys
             [ProtoBuf.ProtoMember(1)]
             public string Name { get; set; }
             [ProtoBuf.ProtoMember(2)]
+            [System.Xml.Serialization.XmlArrayItem(typeof(Entity))]
+            [System.Xml.Serialization.XmlArrayItem(typeof(StaticEntity))]
+            [System.Xml.Serialization.XmlArrayItem(typeof(PortalEntity))]
+            [System.Xml.Serialization.XmlArrayItem(typeof(TriangleEntity))]
             public Entity[] Entitys { get; set; }
         }
 

@@ -294,6 +294,6 @@ namespace Regulus.Types
             var y = centroid.Y + ((point.X - centroid.X) * Math.Sin(angle) + (point.Y - centroid.Y) * Math.Cos(angle));
 
             return new Vector2((float)x, (float)y);
-        }
+        }        
     }
 }
