@@ -62,7 +62,7 @@ namespace Regulus.Project.SamebestKeys
 		{
 			Name = name;
 		}
-        public void Into(Entity entity)
+        void _Into(Entity entity)
         {
 
             var ei = new EntityInfomation() 
@@ -84,7 +84,7 @@ namespace Regulus.Project.SamebestKeys
         }
 
         List<IObservedAbility> _Lefts = new List<IObservedAbility>();
-        public void Left(Entity entity)
+        void _Left(Entity entity)
         {
             
             _EntityInfomations.Remove((info) => 
@@ -116,7 +116,7 @@ namespace Regulus.Project.SamebestKeys
 				{
 					var e= EntityBuilder.Instance.Build(ent);
 					e.Initial();
-					Into(e);					 
+					_Into(e);					 
 				}
 			}
 		}
@@ -195,5 +195,25 @@ namespace Regulus.Project.SamebestKeys
         }
 
 		public string Name { get; private set; }
-	}
+
+        Remoting.Value<Types.Polygon[]> IMapInfomation.QueryWalls()
+        {
+            return (from e in _EntityInfomations.Objects where e.Move != null select e.Move.Polygon).ToArray();
+        }
+
+        void IMap.Into(Entity entity)
+        {
+            _Into(entity);
+        }
+
+        void IMap.Left(Entity entity)
+        {
+            _Left(entity);
+        }
+
+        IMapInfomation IMap.GetInfomation()
+        {
+            return this;
+        }
+    }
 }

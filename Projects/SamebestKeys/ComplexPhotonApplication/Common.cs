@@ -27,7 +27,7 @@ namespace Regulus.Project.SamebestKeys
 
 	public interface IMapInfomation
 	{
-     
+        Value<Types.Polygon[]> QueryWalls();
 	}
 
     public interface IPlayer

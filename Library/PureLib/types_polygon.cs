@@ -6,6 +6,7 @@ using System.Text;
 namespace Regulus.Types
 {
     [Serializable]
+    [ProtoBuf.ProtoContract]
     public class Polygon
     {
         // Structure that stores the results of the PolygonCollision function
@@ -137,7 +138,9 @@ namespace Regulus.Types
             public Vector2 MinimumTranslationVector2; // The translation to apply to polygon A to push the polygons appart.
         }
 
+        [ProtoBuf.ProtoMember(1)]
         private List<Vector2> _Points = new List<Vector2>();
+        [ProtoBuf.ProtoMember(2)]
         private List<Vector2> _Edges = new List<Vector2>();
         
         public void BuildEdges()

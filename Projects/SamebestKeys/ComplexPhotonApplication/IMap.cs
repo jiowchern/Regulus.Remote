@@ -9,5 +9,7 @@ namespace Regulus.Project.SamebestKeys
     {
         void Into(Entity entity);
         void Left(Entity entity);
+
+        IMapInfomation GetInfomation();
     }
 }

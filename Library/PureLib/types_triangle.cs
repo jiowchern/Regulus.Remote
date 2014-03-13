@@ -5,10 +5,14 @@ using System.Text;
 
 namespace Regulus.Types
 {
+    [ProtoBuf.ProtoContract]
     public struct Triangle : System.IEquatable<Triangle>, IRotatable
     {
+        [ProtoBuf.ProtoMember(1)]
         public Regulus.Types.Vector2 Point1;
+        [ProtoBuf.ProtoMember(2)]
         public Regulus.Types.Vector2 Point2;
+        [ProtoBuf.ProtoMember(3)]
         public Regulus.Types.Vector2 Point3;
 
         bool System.IEquatable<Triangle>.Equals(Triangle other)

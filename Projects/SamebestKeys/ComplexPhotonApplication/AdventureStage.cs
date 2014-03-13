@@ -24,6 +24,7 @@ namespace Regulus.Project.SamebestKeys
         {            
             _Player = new Player(obj.Actor);
             obj.Provider.Bind<IPlayer>(_Player);
+            obj.Provider.Bind<IMapInfomation>(_Map.GetInfomation());
             _Player.Initial();
             _Player.ReadyEvent += _OnPlayerReady;            
             _Player.ExitWorldEvent += obj.ToParking;
@@ -87,7 +88,7 @@ namespace Regulus.Project.SamebestKeys
             }
             _Player.Release();
             obj.Provider.Unbind<IPlayer>(_Player);
-            
+            obj.Provider.Unbind<IMapInfomation>(_Map.GetInfomation());
         }
       
 
