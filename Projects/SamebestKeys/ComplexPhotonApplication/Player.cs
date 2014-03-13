@@ -90,7 +90,7 @@ namespace Regulus.Project.SamebestKeys
         
         void IPlayer.Stop(float dir)
         {
-            var mover = FindAbility<IMoverAbility>();
+            var mover = FindAbility<IMoverAbility2>();
             if (mover != null)
             {
                 mover.Act(ActionStatue.Idle, 0, dir);
@@ -98,7 +98,7 @@ namespace Regulus.Project.SamebestKeys
         }
         void IPlayer.Walk(float direction)
         {
-            var mover = FindAbility<IMoverAbility>();
+            var mover = FindAbility<IMoverAbility2>();
             if (mover != null)
             {
                 mover.Act(ActionStatue.Run, _DBActorInfomation.Property.Speed, direction);
@@ -107,7 +107,7 @@ namespace Regulus.Project.SamebestKeys
 
         void IPlayer.BodyMovements(ActionStatue action_statue)
         {
-            var mover = FindAbility<IMoverAbility>();
+            var mover = FindAbility<IMoverAbility2>();
             if (mover != null)
             {
                 mover.Act(action_statue, 0, 0);

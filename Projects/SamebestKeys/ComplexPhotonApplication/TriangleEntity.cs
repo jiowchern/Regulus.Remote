@@ -17,29 +17,33 @@ namespace Regulus.Project.SamebestKeys
 
             var points = new Queue<Types.Vector2>(_Polygon.Points);
             var firstPoint = points.Dequeue();
-            Regulus.Types.Rect rect = new Types.Rect(firstPoint.X, firstPoint.Y, firstPoint.X, firstPoint.Y);
+            float top = firstPoint.Y;
+            float down = firstPoint.Y ;
+            float left = firstPoint.X;
+            float right = firstPoint.X;
             while (points.Count > 0)
             {
                 var point = points.Dequeue();
-                if (rect.Left > point.X)
+                if (point.X > right)
                 {
-                    rect.Left = point.X;
+                    right = point.X;
                 }
-                if (rect.Top > point.Y)
+                if (point.X < left)
                 {
-                    rect.Top = point.Y;
+                    left = point.X;
                 }
-                if (rect.Right < point.X)
+                if (point.Y < top)
                 {
-                    rect.Right = point.X;
+                    top = point.Y;
                 }
-                if (rect.Bottom < point.Y)
+                if (point.Y > down)
                 {
-                    rect.Bottom = point.Y;
+                    down = point.Y;
                 }
+                
             }
-            _QuadTreeObjectAbility = new PhysicalAbility(rect, this);
-            
+            _QuadTreeObjectAbility = new PhysicalAbility(new Regulus.Types.Rect(left , top , right - left , down - top ) , this);
+            _Polygon.BuildEdges();
         }
         Types.Polygon IMoverAbility2.Polygon
         {

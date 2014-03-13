@@ -58,10 +58,12 @@ namespace Regulus.Utility.IO
 
         private static T _ReadXmlStream<T>(byte[] buffer)
         {
-            using ( System.IO.MemoryStream ms = new System.IO.MemoryStream(buffer))
+            
+            
+            using ( var stream = new System.IO.StringReader(System.Text.Encoding.Default.GetString(buffer)))
             {
                 System.Xml.Serialization.XmlSerializer ser = new System.Xml.Serialization.XmlSerializer(typeof(T));
-                return (T)ser.Deserialize(ms);
+                return (T)ser.Deserialize(stream);
             }            
         }
 

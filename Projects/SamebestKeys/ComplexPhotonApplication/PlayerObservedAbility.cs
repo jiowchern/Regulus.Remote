@@ -9,10 +9,12 @@ namespace Regulus.Project.SamebestKeys
     {
         Regulus.Project.SamebestKeys.Serializable.DBEntityInfomation _Infomation;
         Actor _Actor;
+        
         public PlayerObservedAbility(Actor actor,Regulus.Project.SamebestKeys.Serializable.DBEntityInfomation info )
         {
             _Actor = actor;
             _Infomation = info;
+        
         }
         Guid IObservedAbility.Id
         {
@@ -22,6 +24,7 @@ namespace Regulus.Project.SamebestKeys
         Types.Vector2 IObservedAbility.Position
         {
             get { return _Infomation.Property.Position; }
+            
         }
 
         event Action<Serializable.MoveInfomation> IObservedAbility.ShowActionEvent

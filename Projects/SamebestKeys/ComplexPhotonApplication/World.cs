@@ -31,11 +31,12 @@ namespace Regulus.Project.SamebestKeys
 			_Maps = new List<Map>();
 
 			
-            _AddMap(_BuildMap("Ferdinand"));
 
-            
-            _AddMap(_BuildMap("Chasel"));            
-		}
+            foreach(Data.Map map in GameData.Instance.Maps)
+            {
+                _AddMap(_BuildMap(map.Name));
+            }            
+		}        
 
         private void _AddMap(Map map)
         {

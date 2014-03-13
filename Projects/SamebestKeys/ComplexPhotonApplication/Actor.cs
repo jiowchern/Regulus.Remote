@@ -25,18 +25,18 @@ namespace Regulus.Project.SamebestKeys
 
 		
 
-        private ActorMoverAbility _MoverAbility;
+        private ActorMoverAbility2 _MoverAbility;
 
         PhysicalAbility _QuadTreeObjectAbility;
         public Action<Serializable.MoveInfomation> ShowActionEvent;
 
         protected override void _SetAbility(Entity.AbilitySet abilitys)
         {
-            _MoverAbility = new ActorMoverAbility(_Property.Direction, _Property.Position.X, _Property.Position.Y);
+            _MoverAbility = new ActorMoverAbility2(_Property.Direction, _Property.Position.X, _Property.Position.Y);
             _MoverAbility.ActionEvent += _OnAction;
             _MoverAbility.PositionEvent += _OnPosition;
             
-            abilitys.AttechAbility<IMoverAbility>(_MoverAbility);
+            abilitys.AttechAbility<IMoverAbility2>(_MoverAbility);
 
             _QuadTreeObjectAbility = new PhysicalAbility(new Regulus.Types.Rect(_Property.Position.X - _BodyWidth / 2, _Property.Position.Y - _BodyHeight / 2, _BodyWidth, _BodyHeight), this);
             abilitys.AttechAbility<PhysicalAbility>(_QuadTreeObjectAbility);
@@ -55,7 +55,7 @@ namespace Regulus.Project.SamebestKeys
 
         protected override void _RiseAbility(Entity.AbilitySet abilitys)
         {
-			abilitys.DetechAbility<Regulus.Physics.IQuadObject>();
+            abilitys.DetechAbility<IMoverAbility2>();
             abilitys.DetechAbility<PhysicalAbility>();
             
         }

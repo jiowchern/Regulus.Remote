@@ -26,6 +26,7 @@ namespace Regulus.Project.SamebestKeys
             _Polygon.Points.Add(new Types.Vector2(x + 0.5f, y - 0.5f));
             _Polygon.Points.Add(new Types.Vector2(x - 0.5f, y - 0.5f));
             _Polygon.BuildEdges();
+            _Update = _Empty;
         }
         public void SetPosition(float x, float y)
         {
@@ -88,8 +89,9 @@ namespace Regulus.Project.SamebestKeys
                         var result = Regulus.Types.Polygon.Collision(_Polygon, polygon, moveVector);
                         if (result.WillIntersect)
                         {
-                            _Act(ActionStatue.GangnamStyle, 0, 0);
-                            return ;
+                            _Act(ActionStatue.Idle, 0, 0);
+                            moveVector = result.MinimumTranslationVector2;
+                            break ;
                         }
                     }
                     if (PositionEvent != null)

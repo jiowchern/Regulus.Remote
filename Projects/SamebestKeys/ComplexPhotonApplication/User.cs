@@ -93,7 +93,7 @@ namespace Regulus.Project.SamebestKeys
             }
             if (Actor.Property.Map == "")
             {
-                Actor.Property.Map = "Ferdinand";
+                Actor.Property.Map = "Test";
             }
             if (float.IsNaN(Actor.Property.Direction) )
             {
@@ -130,7 +130,7 @@ namespace Regulus.Project.SamebestKeys
             _ClearActor();            
             _Machine.Push(new VerifyStage(_UserRoster , _Storage)); 
         }
-
+        
         private void _ClearActor()
         {
             if (Actor != null)

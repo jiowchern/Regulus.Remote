@@ -130,14 +130,16 @@ namespace Regulus.Project.SamebestKeys.Serializable
         public Guid Id { get; set; }
         [ProtoBuf.ProtoMember(2)]
         public string Map { get; set; }
+        
         [ProtoBuf.ProtoMember(3)]
-        public Regulus.Types.Vector2 Position { get; set; }
-        [ProtoBuf.ProtoMember(4)]
         public int Vision { get; set; }
-        [ProtoBuf.ProtoMember(5)]
+        [ProtoBuf.ProtoMember(4)]
 		public float Speed { get; set; }
-        [ProtoBuf.ProtoMember(6)]
+        [ProtoBuf.ProtoMember(5)]
         public float Direction { get; set; }
+
+        [ProtoBuf.ProtoMember(6)]
+        public Regulus.Types.Vector2 Position { get; set; }
     }
 
     [ProtoBuf.ProtoContract]

@@ -25,15 +25,20 @@ namespace Regulus.Project.SamebestKeys
 
     public class GameData : Regulus.Utility.Singleton<GameData>, IGameDataSetter
     {
-        Data.Map[] _Maps;
+        List<Data.Map> _Maps;
 
         public GameData()
+        {            
+            _Maps = new List<Data.Map>();
+        }
+
+        void _Add(Data.Map[] maps)
         {
-            _Maps = new Data.Map[0];
+            _Maps.AddRange(maps);
         }
         void _Set(Data.Map[] maps)
-        {
-            _Maps = maps;
+        {                     
+            _Maps = maps.ToList();
         }
 
         internal Data.Map FindMap(string name)
@@ -42,9 +47,16 @@ namespace Regulus.Project.SamebestKeys
             return map;
         }
 
+
+
         void IGameDataSetter.Set(Data.Map[] map)
         {
-            _Set(map);
+            _Add(map);
+        }
+
+        public IEnumerable<Data.Map> Maps 
+        {
+            get { return _Maps;  }
         }
     }
 }

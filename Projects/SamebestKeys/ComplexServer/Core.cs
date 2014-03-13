@@ -35,9 +35,17 @@ namespace Regulus.Project.SamebestKeys
             _Updater.Add(_Storage);
             _Updater.Add(_Complex);
 
+
             var dataBuilder = new GameDataBuilder(GameData.Instance);
-            var stream = System.IO.File.ReadAllBytes("mapdata.txt");
-            dataBuilder.Build(stream);            
+            var workPath = System.IO.Directory.GetCurrentDirectory();
+            var files = System.IO.Directory.GetFiles(workPath, "*.map.txt");
+            foreach (var file in files)
+            {
+                var stream = System.IO.File.ReadAllBytes(file);
+                dataBuilder.Build(stream);            
+            }
+            
+            
     
         }
 

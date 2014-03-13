@@ -9,7 +9,7 @@ namespace Regulus.Types
     
     [ProtoBuf.ProtoContract]
     [Serializable]
-    public struct Vector2 : IEquatable<object>
+    public class Vector2 
     {
         [ProtoBuf.ProtoMember(1)]
         public float X;
@@ -25,7 +25,9 @@ namespace Regulus.Types
         {
             return new Vector2(x, y);
         }
-
+        public Vector2()
+        { 
+        }
         public Vector2(float x, float y)
         {
             this.X = x;
@@ -144,14 +146,6 @@ namespace Regulus.Types
 
         
 
-        bool IEquatable<object>.Equals(object other)
-        {
-            if (other is Vector2)
-            {
-                Vector2 v = (Vector2)other;
-                return X == v.X && Y == v.Y;
-            }
-            return false;
-        }
+
     }
 }
