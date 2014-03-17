@@ -36,7 +36,7 @@ namespace Regulus.Project.SamebestKeys
             _MoverAbility.ActionEvent += _OnAction;
             _MoverAbility.PositionEvent += _OnPosition;
             
-            abilitys.AttechAbility<IMoverAbility2>(_MoverAbility);
+            abilitys.AttechAbility<IMoverAbility>(_MoverAbility);
 
             _QuadTreeObjectAbility = new PhysicalAbility(new Regulus.Types.Rect(_Property.Position.X - _BodyWidth / 2, _Property.Position.Y - _BodyHeight / 2, _BodyWidth, _BodyHeight), this);
             abilitys.AttechAbility<PhysicalAbility>(_QuadTreeObjectAbility);
@@ -55,7 +55,7 @@ namespace Regulus.Project.SamebestKeys
 
         protected override void _RiseAbility(Entity.AbilitySet abilitys)
         {
-            abilitys.DetechAbility<IMoverAbility2>();
+            abilitys.DetechAbility<IMoverAbility>();
             abilitys.DetechAbility<PhysicalAbility>();
             
         }

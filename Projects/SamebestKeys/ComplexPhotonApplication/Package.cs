@@ -14,10 +14,10 @@ namespace Regulus.Project.SamebestKeys
             [ProtoBuf.ProtoMember(1)]
             public string Name { get; set; }
             [ProtoBuf.ProtoMember(2)]
-            [System.Xml.Serialization.XmlArrayItem(typeof(Entity))]
-            [System.Xml.Serialization.XmlArrayItem(typeof(StaticEntity))]
+            [System.Xml.Serialization.XmlArrayItem(typeof(Entity))]            
             [System.Xml.Serialization.XmlArrayItem(typeof(PortalEntity))]
-            [System.Xml.Serialization.XmlArrayItem(typeof(TriangleEntity))]
+            [System.Xml.Serialization.XmlArrayItem(typeof(TriangleEntity))]            
+            // 新增的entity需要在這裡定意 ... 
             public Entity[] Entitys { get; set; }
         }
 
@@ -28,16 +28,6 @@ namespace Regulus.Project.SamebestKeys
             [ProtoBuf.ProtoMember(1)]
             public Guid Id { get; set; }
         }
-
-        [Serializable]
-        [ProtoBuf.ProtoContract]
-        public class StaticEntity : Entity
-        {
-            [ProtoBuf.ProtoMember(1)]
-            public Regulus.Utility.OBB Obb { get; set; }
-        }
-
-
 
         [Serializable]
         [ProtoBuf.ProtoContract]
@@ -65,7 +55,7 @@ namespace Regulus.Project.SamebestKeys
             }
             public Types.Polygon Polygon { get; set; }
         }
-
+        
     }
 
 

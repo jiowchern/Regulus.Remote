@@ -30,7 +30,7 @@ namespace Regulus.Project.SamebestKeys
                 _BoundsChanged.Invoke(this , e);
             }
             public IObservedAbility Observed { get; set; }
-            public IMoverAbility2 Move { get; set; }
+            public IMoverAbility Move { get; set; }
             public IObserveAbility Observe { get; set; }
             public ICrossAbility Cross { get; set; }
 
@@ -71,7 +71,7 @@ namespace Regulus.Project.SamebestKeys
                 Physical = entity.FindAbility<PhysicalAbility>(),
                 Observe = entity.FindAbility<IObserveAbility>(),
                 Observed = entity.FindAbility<IObservedAbility>(),
-                Move = entity.FindAbility<IMoverAbility2>(),
+                Move = entity.FindAbility<IMoverAbility>(),
                 Cross = entity.FindAbility<ICrossAbility>()
             };
 			_EntityInfomations.Add(ei);

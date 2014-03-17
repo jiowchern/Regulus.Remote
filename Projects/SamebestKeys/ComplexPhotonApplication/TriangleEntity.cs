@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
-    class TriangleEntity : Entity, IMoverAbility2
+    class TriangleEntity : Entity, IMoverAbility
     {
         Types.Polygon _Polygon;
         PhysicalAbility _QuadTreeObjectAbility;
@@ -45,17 +45,17 @@ namespace Regulus.Project.SamebestKeys
             _QuadTreeObjectAbility = new PhysicalAbility(new Regulus.Types.Rect(left , top , right - left , down - top ) , this);
             _Polygon.BuildEdges();
         }
-        Types.Polygon IMoverAbility2.Polygon
+        Types.Polygon IMoverAbility.Polygon
         {
             get { return _Polygon; }
         }
 
-        void IMoverAbility2.Act(ActionStatue action_statue, float move_speed, float direction)
+        void IMoverAbility.Act(ActionStatue action_statue, float move_speed, float direction)
         {
             
         }
 
-        void IMoverAbility2.Update(long time, IEnumerable<Types.Polygon> obbs)
+        void IMoverAbility.Update(long time, IEnumerable<Types.Polygon> obbs)
         {
             
         }
@@ -63,13 +63,13 @@ namespace Regulus.Project.SamebestKeys
         protected override void _SetAbility(Entity.AbilitySet abilitys)
         {
             abilitys.AttechAbility<PhysicalAbility>(_QuadTreeObjectAbility);
-            abilitys.AttechAbility<IMoverAbility2>(this);
+            abilitys.AttechAbility<IMoverAbility>(this);
         }
 
         protected override void _RiseAbility(Entity.AbilitySet abilitys)
         {
             abilitys.DetechAbility<PhysicalAbility>();
-            abilitys.DetechAbility<IMoverAbility2>();
+            abilitys.DetechAbility<IMoverAbility>();
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 namespace Regulus.Project.SamebestKeys
 {
-    public class ActorMoverAbility2 : IMoverAbility2
+    public class ActorMoverAbility2 : IMoverAbility
     {
         Regulus.Types.Polygon _Polygon;
         private float _Direction;
@@ -33,7 +33,7 @@ namespace Regulus.Project.SamebestKeys
             var offset = Types.Vector2.FromPoint(x, y) - _Polygon.Center;
             _Polygon.Offset(offset);
         }
-        Types.Polygon IMoverAbility2.Polygon
+        Types.Polygon IMoverAbility.Polygon
         {
             get { return _Polygon; }
         }
@@ -53,12 +53,12 @@ namespace Regulus.Project.SamebestKeys
             _Update = _First;
         }
 
-        void IMoverAbility2.Act(ActionStatue action_statue, float move_speed, float direction)
+        void IMoverAbility.Act(ActionStatue action_statue, float move_speed, float direction)
         {
             _Act(action_statue, move_speed, direction);
         }
 
-        void IMoverAbility2.Update(long time, System.Collections.Generic.IEnumerable<Types.Polygon> polygons)
+        void IMoverAbility.Update(long time, System.Collections.Generic.IEnumerable<Types.Polygon> polygons)
         {
             _Update(time , polygons);
         }

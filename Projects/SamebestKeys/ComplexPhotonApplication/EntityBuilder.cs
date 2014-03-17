@@ -10,8 +10,7 @@ namespace Regulus.Project.SamebestKeys
 		TEntity Build(TData source);		
 	}
 
-	class EntityBuilder : Regulus.Utility.Singleton<EntityBuilder>
-	, IEntityBuilder<Data.StaticEntity , StaticEntity>
+	class EntityBuilder : Regulus.Utility.Singleton<EntityBuilder>	
     , IEntityBuilder<Data.PortalEntity, PortalEntity>
     , IEntityBuilder<Data.TriangleEntity, TriangleEntity>
 	{
@@ -20,8 +19,7 @@ namespace Regulus.Project.SamebestKeys
 
 		public EntityBuilder()
 		{
-			_Builders = new Dictionary<Type, CommonBuilder >();
-			_Builders.Add(typeof(Data.StaticEntity), _Builder((this as IEntityBuilder<Data.StaticEntity, StaticEntity>)));
+			_Builders = new Dictionary<Type, CommonBuilder >();			
             _Builders.Add(typeof(Data.PortalEntity), _Builder((this as IEntityBuilder<Data.PortalEntity, PortalEntity>)));
             _Builders.Add(typeof(Data.TriangleEntity), _Builder((this as IEntityBuilder<Data.TriangleEntity, TriangleEntity>)));
 		}
@@ -57,13 +55,6 @@ namespace Regulus.Project.SamebestKeys
 				return builder ;
 			}
 			return null;
-		}
-
-
-
-		StaticEntity IEntityBuilder<Data.StaticEntity, StaticEntity>.Build(Data.StaticEntity source)
-		{
-			return new StaticEntity(source.Obb, source.Id);
 		}
 
         PortalEntity IEntityBuilder<Data.PortalEntity, PortalEntity>.Build(Data.PortalEntity source)
