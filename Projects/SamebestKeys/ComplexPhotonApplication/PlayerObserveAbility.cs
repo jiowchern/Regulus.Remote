@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
+	// 玩家觀察功能
     class PlayerObserveAbility : IObserveAbility
     {
         
@@ -20,8 +21,6 @@ namespace Regulus.Project.SamebestKeys
         {
             _Field.Update(this, observeds, lefts);
         }
-
-        
 
         Regulus.Types.Rect IObserveAbility.Vision
         {

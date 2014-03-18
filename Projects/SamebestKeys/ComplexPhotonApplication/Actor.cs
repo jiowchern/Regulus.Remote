@@ -1,15 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
     class Actor : Entity
 	{
+		// Entity屬性
         Serializable.EntityPropertyInfomation _Property;
+		// Entity外表資訊
         Serializable.EntityLookInfomation _Look;
+		// 身體寬度
         float _BodyWidth;
+		// 身體高度
         float _BodyHeight;
         
         public ActionStatue CurrentAction { get; protected set; }        
@@ -23,13 +24,12 @@ namespace Regulus.Project.SamebestKeys
             _BodyHeight = 1;
 		}
 
-		
-
         private ActorMoverAbility2 _MoverAbility;
 
         PhysicalAbility _QuadTreeObjectAbility;
         public Action<Serializable.MoveInfomation> ShowActionEvent;
 
+		// 設定功能
         protected override void _SetAbility(Entity.AbilitySet abilitys)
         {
             _MoverAbility = new ActorMoverAbility2(_Property.Direction, _Property.Position.X, _Property.Position.Y);
@@ -40,11 +40,9 @@ namespace Regulus.Project.SamebestKeys
 
             _QuadTreeObjectAbility = new PhysicalAbility(new Regulus.Types.Rect(_Property.Position.X - _BodyWidth / 2, _Property.Position.Y - _BodyHeight / 2, _BodyWidth, _BodyHeight), this);
             abilitys.AttechAbility<PhysicalAbility>(_QuadTreeObjectAbility);
-
-
-            
         }
 
+		// On位置改變
         private void _OnPosition(long time, Types.Vector2 unit_vector)
         {
             _Property.Position = Types.Vector2.FromPoint(unit_vector.X + _Property.Position.X, unit_vector.Y + _Property.Position.Y);            
@@ -60,7 +58,9 @@ namespace Regulus.Project.SamebestKeys
             
         }
 
+		// 方向
         public float Direction { get { return _Property.Direction; } }
+
         void _OnAction(long begin_time, float move_speed,float direction, Regulus.Types.Vector2 unit_vector, ActionStatue action_state)
         {
             _Property.Direction = direction;
@@ -79,6 +79,7 @@ namespace Regulus.Project.SamebestKeys
                 ShowActionEvent(mi);
         }
 
+		// 設定位置
         public void SetPosition(float x, float y)
         {
 

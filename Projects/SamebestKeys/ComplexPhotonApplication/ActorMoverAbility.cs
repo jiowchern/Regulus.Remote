@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 namespace Regulus.Project.SamebestKeys
 {
+	// 移動功能
     public class ActorMoverAbility2 : IMoverAbility
     {
         Regulus.Types.Polygon _Polygon;
