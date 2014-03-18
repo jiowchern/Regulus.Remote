@@ -165,5 +165,11 @@ namespace Regulus.Project.SamebestKeys
         {
             return _DBActorInfomation.Property.Map;
         }
+
+
+        void IPlayer.Goto(string map, float x, float y)
+        {
+            _CrossAbility.Move(map, new Types.Vector2(x, y));
+        }
     }
 }

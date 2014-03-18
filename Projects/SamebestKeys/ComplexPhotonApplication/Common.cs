@@ -50,6 +50,8 @@ namespace Regulus.Project.SamebestKeys
 		
         void BodyMovements(ActionStatue action_statue);
         Value<string> QueryMap();
+
+        void Goto(string map , float x , float y);
         
     }
 

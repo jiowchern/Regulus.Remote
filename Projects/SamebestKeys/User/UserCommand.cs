@@ -102,6 +102,7 @@ namespace Regulus.Projects.SamebestKeys
         void PlayerProvider_Supply(Project.SamebestKeys.IPlayer obj)
         {
 
+            _Command.Register<string , float , float>("Goto", obj.Goto);
             _Command.Register("Ready", obj.Ready);
             _Command.Register("Logout", obj.Logout);
             _Command.Register("ExitWorld", obj.ExitWorld);
