@@ -38,6 +38,11 @@ namespace Regulus.Project.SamebestKeys
         PlayerObserveAbility _ObserveAbility;
         PlayerObservedAbility _ObservedAbility;
         ICrossAbility _CrossAbility;
+
+		/// <summary>
+		/// 設定功能
+		/// </summary>
+		/// <param name="abilitys">現有功能Dict</param>
         protected override void _SetAbility(Entity.AbilitySet abilitys)
         {
             _ObservedAbility = new PlayerObservedAbility(this, _DBActorInfomation);            

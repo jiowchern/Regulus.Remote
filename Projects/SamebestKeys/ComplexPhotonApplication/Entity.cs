@@ -10,6 +10,9 @@ namespace Regulus.Project.SamebestKeys
 	}
 	abstract class Entity : IEntity
     {
+		/// <summary>
+		/// 功能Dict
+		/// </summary>
         protected class AbilitySet
         {
             Dictionary<Type, object> _Abilitys = new Dictionary<Type, object>();
@@ -39,13 +42,19 @@ namespace Regulus.Project.SamebestKeys
             Id = id;            
         }
         public Guid Id { get; private set; }        
-
+		/// <summary>
+		/// 現有功能Dict
+		/// </summary>
         AbilitySet _Abilitys = new AbilitySet();
         public T FindAbility<T>() where T : class
         {
             return _Abilitys.FindAbility<T>();
         }
 
+		/// <summary>
+		/// 設定功能
+		/// </summary>
+		/// <param name="abilitys">現有功能Dict</param>
         protected abstract void _SetAbility(AbilitySet abilitys);
         public void Initial()
         {

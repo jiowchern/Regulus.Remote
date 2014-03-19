@@ -6,8 +6,6 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
-   
-
     class PortalEntity : Entity, IObserveAbility
     {
         string _TargetMap;
