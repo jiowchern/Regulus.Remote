@@ -5,7 +5,9 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
-	// 觀察功能
+	/// <summary>
+	/// 觀察功能
+	/// </summary>
     interface IObserveAbility
     {
         void Update(Regulus.Project.SamebestKeys.Map.EntityInfomation[] observeds, List<IObservedAbility> lefts);

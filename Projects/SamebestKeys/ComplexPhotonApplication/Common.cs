@@ -65,7 +65,9 @@ namespace Regulus.Project.SamebestKeys
         event Action<string> SayEvent;
     }
 
-
+	/// <summary>
+	/// ²¾°Ê¥\¯à
+	/// </summary>
     public interface IMoverAbility
     {
         Regulus.Types.Polygon Polygon { get; }

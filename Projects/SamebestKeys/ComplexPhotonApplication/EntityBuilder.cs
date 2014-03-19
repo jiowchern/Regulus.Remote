@@ -72,7 +72,4 @@ namespace Regulus.Project.SamebestKeys
             return new TriangleEntity(source.Id, source.Polygon);
         }
     }
-	
-	
-	
 }

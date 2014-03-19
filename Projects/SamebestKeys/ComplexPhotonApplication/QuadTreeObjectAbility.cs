@@ -8,6 +8,9 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
+	/// <summary>
+	/// 物理功能
+	/// </summary>
     class PhysicalAbility : Regulus.Physics.IQuadObject
     {
         Rect _Bounds;        

@@ -24,12 +24,18 @@ namespace Regulus.Project.SamebestKeys
             _BodyHeight = 1;
 		}
 
+		/// <summary>
+		/// 移動功能
+		/// </summary>
         private ActorMoverAbility2 _MoverAbility;
 
         PhysicalAbility _QuadTreeObjectAbility;
         public Action<Serializable.MoveInfomation> ShowActionEvent;
 
-		// 設定功能
+		/// <summary>
+		/// 設定功能
+		/// </summary>
+		/// <param name="abilitys">現有功能Dict</param>
         protected override void _SetAbility(Entity.AbilitySet abilitys)
         {
             _MoverAbility = new ActorMoverAbility2(_Property.Direction, _Property.Position.X, _Property.Position.Y);
@@ -42,20 +48,22 @@ namespace Regulus.Project.SamebestKeys
             abilitys.AttechAbility<PhysicalAbility>(_QuadTreeObjectAbility);
         }
 
-		// On位置改變
+		/// <summary>
+		/// On位置改變
+		/// </summary>
+		/// <param name="time">目前時間Ticks</param>
+		/// <param name="unit_vector">單位時間移動向量</param>
         private void _OnPosition(long time, Types.Vector2 unit_vector)
         {
             _Property.Position = Types.Vector2.FromPoint(unit_vector.X + _Property.Position.X, unit_vector.Y + _Property.Position.Y);            
             _MoverAbility.SetPosition(_Property.Position.X, _Property.Position.Y);
             _QuadTreeObjectAbility.UpdateBounds(_Property.Position.X - _BodyWidth / 2, _Property.Position.Y - _BodyHeight / 2);
-            
         }
 
         protected override void _RiseAbility(Entity.AbilitySet abilitys)
         {
             abilitys.DetechAbility<IMoverAbility>();
             abilitys.DetechAbility<PhysicalAbility>();
-            
         }
 
 		// 方向
@@ -79,10 +87,11 @@ namespace Regulus.Project.SamebestKeys
                 ShowActionEvent(mi);
         }
 
-		// 設定位置
+		/// <summary>
+		/// 設定位置
+		/// </summary>
         public void SetPosition(float x, float y)
         {
-
             _Property.Position = Types.Vector2.FromPoint(x,y);            
             _MoverAbility.SetPosition(_Property.Position.X, _Property.Position.Y);
             _QuadTreeObjectAbility.UpdateBounds(_Property.Position.X - _BodyWidth / 2, _Property.Position.Y - _BodyHeight / 2);

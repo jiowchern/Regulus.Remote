@@ -192,6 +192,10 @@ namespace Regulus.Utility
         
         private long _Current;
         protected long _Real;
+
+		/// <summary>
+		/// 目前時間Ticks
+		/// </summary>
         public long Ticks { get { return _Real; } }
 
         public Time()

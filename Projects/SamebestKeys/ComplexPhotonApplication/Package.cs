@@ -59,6 +59,9 @@ namespace Regulus.Project.SamebestKeys
 }
 namespace Regulus.Project.SamebestKeys
 {
+	/// <summary>
+	/// 動作狀態
+	/// </summary>
     [ProtoBuf.ProtoContract]
     public enum ActionStatue 
     { 
@@ -98,13 +101,19 @@ namespace Regulus.Project.SamebestKeys.Serializable
         public Guid Id { get; set; }        
     }
 
+	/// <summary>
+	/// Entity外表資訊
+	/// </summary>
     [ProtoBuf.ProtoContract]
-    public class EntityLookInfomation
+	public class EntityLookInfomation
     {
         [ProtoBuf.ProtoMember(1)]
         public string Name { get; set; }
     }
 
+	/// <summary>
+	/// Entity屬性
+	/// </summary>
     [ProtoBuf.ProtoContract]
     public class EntityPropertyInfomation
     {
@@ -129,6 +138,9 @@ namespace Regulus.Project.SamebestKeys.Serializable
         public Regulus.Types.Vector2 Position { get; set; }
     }
 
+	/// <summary>
+	/// Entity資訊
+	/// </summary>
     [ProtoBuf.ProtoContract]
     public class EntityInfomation
     {
@@ -158,20 +170,46 @@ namespace Regulus.Project.SamebestKeys.Serializable
         [ProtoBuf.ProtoMember(3)]
         public Guid Owner { get; set; }        
     }
+
+	/// <summary>
+	/// 移動資訊
+	/// </summary>
     [ProtoBuf.ProtoContract]
     public class MoveInfomation
     {
-        // 起始時間 , 啟始位置 , 動作 , 方向 , 位移速度
+		/// <summary>
+		/// 起始時間
+		/// </summary>
         [ProtoBuf.ProtoMember(1)]
         public long BeginTime {get;set;}
+
+		/// <summary>
+		/// 啟始位置
+		/// </summary>
         [ProtoBuf.ProtoMember(2)]
         public Regulus.Types.Vector2 BeginPosition { get; set; }
+
+		/// <summary>
+		/// 動作狀態
+		/// </summary>
         [ProtoBuf.ProtoMember(3)]
         public ActionStatue ActionStatue { get; set; }
+
+		/// <summary>
+		/// 移動角度
+		/// </summary>
         [ProtoBuf.ProtoMember(4)]
         public float MoveDirectionAngle { get; set; }
+
+		/// <summary>
+		/// 移動方向
+		/// </summary>
         [ProtoBuf.ProtoMember(5)]
         public Regulus.Types.Vector2 MoveDirection { get; set; }
+
+		/// <summary>
+		/// 位移速度
+		/// </summary>
         [ProtoBuf.ProtoMember(6)]
         public float Speed { get; set; }
     }
