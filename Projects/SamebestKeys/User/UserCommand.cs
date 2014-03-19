@@ -126,7 +126,7 @@ namespace Regulus.Projects.SamebestKeys
             {
                 "Ready","Logout","ExitWorld","SetPosition","SetVision",
                 "SetSpeed","Walk","Stop","Say","BodyMovements",
-                "QueryMap",
+                "QueryMap","Goto"
             });
         }
 

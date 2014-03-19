@@ -53,12 +53,9 @@ namespace Console
 
             Regulus.Utility.TimeCounter fps = new Regulus.Utility.TimeCounter(); ;
             while (exit == false)
-            {
-                if (fps.Second > 1.0 / 60)
-                {
-                    updater.Update();
-                    fps.Reset();
-                }
+            {                
+                updater.Update();
+                fps.Reset();                
             }
             application.Command.Unregister("BotSn");
             application.Command.Unregister("Bot");
