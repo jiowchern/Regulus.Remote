@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database", "Library\Database\Database.csproj", "{E51E2098-C578-4637-807C-F67067A54535}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PureLib", "Library\PureLib\PureLib.csproj", "{2F28AA04-316D-4C20-BF46-987D4A59691D}"
@@ -671,5 +673,8 @@ Global
 		{D88116CF-9E9C-4E0B-8EB7-FE75C99E6D4D} = {25A92ADA-CC04-4F8C-93B3-8F43A42030E3}
 		{36979344-1B38-4397-8D81-E84E20813E23} = {25A92ADA-CC04-4F8C-93B3-8F43A42030E3}
 		{FAE04BC0-81CB-41C1-8B33-DDF0C6B5C318} = {47390BD3-7996-4D7F-B820-1D382859BFED}
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal
