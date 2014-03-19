@@ -60,12 +60,20 @@ namespace Regulus.Project.SamebestKeys
             
         }
 
+		/// <summary>
+		/// 設定功能
+		/// </summary>
+		/// <param name="abilitys">現有功能Dict</param>
         protected override void _SetAbility(Entity.AbilitySet abilitys)
         {
             abilitys.AttechAbility<PhysicalAbility>(_QuadTreeObjectAbility);
             abilitys.AttechAbility<IMoverAbility>(this);
         }
 
+		/// <summary>
+		/// 移除功能
+		/// </summary>
+		/// <param name="abilitys">現有功能Dict</param>
         protected override void _RiseAbility(Entity.AbilitySet abilitys)
         {
             abilitys.DetechAbility<PhysicalAbility>();

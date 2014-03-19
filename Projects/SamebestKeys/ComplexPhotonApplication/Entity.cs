@@ -16,16 +16,26 @@ namespace Regulus.Project.SamebestKeys
         protected class AbilitySet
         {
             Dictionary<Type, object> _Abilitys = new Dictionary<Type, object>();
+
+			/// <summary>
+			/// 加入功能
+			/// </summary>
             public void AttechAbility<T>(T ability)
             {
                 _Abilitys.Add(typeof(T), ability as object);
             }
 
+			/// <summary>
+			/// 移除功能
+			/// </summary>
             public void DetechAbility<T>()
             {
                 _Abilitys.Remove(typeof(T));
             }
 
+			/// <summary>
+			/// 尋找功能
+			/// </summary>
             public T FindAbility<T>() where T : class
             {
                 object o;
@@ -46,6 +56,10 @@ namespace Regulus.Project.SamebestKeys
 		/// 現有功能Dict
 		/// </summary>
         AbilitySet _Abilitys = new AbilitySet();
+
+		/// <summary>
+		/// 尋找功能
+		/// </summary>
         public T FindAbility<T>() where T : class
         {
             return _Abilitys.FindAbility<T>();
@@ -60,6 +74,11 @@ namespace Regulus.Project.SamebestKeys
         {
             _SetAbility(_Abilitys);
         }
+
+		/// <summary>
+		/// 移除功能
+		/// </summary>
+		/// <param name="abilitys">現有功能Dict</param>
         protected abstract void _RiseAbility(AbilitySet abilitys);
         public void Release()
         {

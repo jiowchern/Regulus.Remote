@@ -60,6 +60,10 @@ namespace Regulus.Project.SamebestKeys
             _QuadTreeObjectAbility.UpdateBounds(_Property.Position.X - _BodyWidth / 2, _Property.Position.Y - _BodyHeight / 2);
         }
 
+		/// <summary>
+		/// 移除功能
+		/// </summary>
+		/// <param name="abilitys">現有功能Dict</param>
         protected override void _RiseAbility(Entity.AbilitySet abilitys)
         {
             abilitys.DetechAbility<IMoverAbility>();

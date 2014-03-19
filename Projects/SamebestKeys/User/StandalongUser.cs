@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Regulus.Projects.SamebestKeys.Standalong
 {
-
-    
-    partial class StandalongUser  : Regulus.Project.SamebestKeys.IUser
+	/// <summary>
+	/// 單機版
+	/// </summary>
+    partial class StandalongUser : Regulus.Project.SamebestKeys.IUser
     {
-        
         Regulus.Remoting.Ghost.TProvider<Regulus.Project.SamebestKeys.IConnect> _ConnectProvider;
         Regulus.Remoting.Ghost.TProvider<Regulus.Project.SamebestKeys.IOnline> _OnlineProvider;
         Regulus.Standalong.Agent _Agent;
@@ -22,8 +19,6 @@ namespace Regulus.Projects.SamebestKeys.Standalong
             _Machine = new Regulus.Game.StageMachine();            
             _ConnectProvider = new Regulus.Remoting.Ghost.TProvider<Project.SamebestKeys.IConnect>();
             _OnlineProvider = new Regulus.Remoting.Ghost.TProvider<Project.SamebestKeys.IOnline>();
-
-            
         }
         Regulus.Remoting.Ghost.IProviderNotice<Project.SamebestKeys.IOnline> Project.SamebestKeys.IUser.OnlineProvider
         {
@@ -166,8 +161,6 @@ namespace Regulus.Projects.SamebestKeys.Standalong
                 _Agent.BreakEvent += DisconnectEvent;
                 
             }
-
-            
 
             void Regulus.Game.IStage.Leave()
             {

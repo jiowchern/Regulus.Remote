@@ -6,6 +6,9 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
+	/// <summary>
+	/// 登入驗證
+	/// </summary>
     class Verify : IVerify
     {
         

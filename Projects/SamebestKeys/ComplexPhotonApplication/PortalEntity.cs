@@ -6,6 +6,9 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
+	/// <summary>
+	/// 傳送點
+	/// </summary>
     class PortalEntity : Entity, IObserveAbility
     {
         string _TargetMap;
@@ -26,12 +29,20 @@ namespace Regulus.Project.SamebestKeys
             _Position.X = (float)(_Vision.X + _Vision.Width /2);
             _Position.X = (float)(_Vision.Y + _Vision.Height / 2);
         }
-        
+
+		/// <summary>
+		/// 設定功能
+		/// </summary>
+		/// <param name="abilitys">現有功能Dict</param>
         protected override void _SetAbility(Entity.AbilitySet abilitys)
         {
             abilitys.AttechAbility<IObserveAbility>(this);
         }
 
+		/// <summary>
+		/// 移除功能
+		/// </summary>
+		/// <param name="abilitys">現有功能Dict</param>
         protected override void _RiseAbility(Entity.AbilitySet abilitys)
         {
             abilitys.DetechAbility<IObserveAbility>();

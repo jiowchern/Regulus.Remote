@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
+	/// <summary>
+	/// 玩家觀察功能
+	/// </summary>
     class PlayerObservedAbility : IObservedAbility
     {
         Regulus.Project.SamebestKeys.Serializable.DBEntityInfomation _Infomation;

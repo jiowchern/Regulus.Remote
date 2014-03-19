@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
+	/// <summary>
+	/// 玩家自己
+	/// </summary>
     class Player : Actor , IPlayer  
     {
 
@@ -66,6 +69,11 @@ namespace Regulus.Project.SamebestKeys
                 CrossEvent(target_map, target_position, _DBActorInfomation.Property.Map, _DBActorInfomation.Property.Position );
             CrossEvent = null;
         }
+
+		/// <summary>
+		/// 移除功能
+		/// </summary>
+		/// <param name="abilitys">現有功能Dict</param>
         protected override void _RiseAbility(Entity.AbilitySet abilitys)
         {
             abilitys.DetechAbility<IObserveAbility>();

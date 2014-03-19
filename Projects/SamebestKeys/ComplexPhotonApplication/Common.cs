@@ -1,12 +1,13 @@
-
 using System;
+
 namespace Regulus.Project.SamebestKeys
 {
-
     using Regulus.Project.SamebestKeys.Serializable;
     using Regulus.Remoting;
-    
 
+	/// <summary>
+	/// 登入驗證
+	/// </summary>
     public interface IVerify
     {
         
@@ -30,6 +31,9 @@ namespace Regulus.Project.SamebestKeys
         Value<Types.Polygon[]> QueryWalls();
 	}
 
+	/// <summary>
+	/// 玩家自己
+	/// </summary>
     public interface IPlayer
     {
         Guid Id { get; }
@@ -55,8 +59,9 @@ namespace Regulus.Project.SamebestKeys
         
     }
 
-
-
+	/// <summary>
+	/// 觀察功能
+	/// </summary>
     public interface IObservedAbility 
     {
         string Name { get; }

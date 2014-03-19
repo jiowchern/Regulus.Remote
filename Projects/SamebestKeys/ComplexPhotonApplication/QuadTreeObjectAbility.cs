@@ -1,10 +1,5 @@
-﻿
-using Regulus.Types;
-using Regulus.Utility;
+﻿using Regulus.Types;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
@@ -34,7 +29,6 @@ namespace Regulus.Project.SamebestKeys
             bounds.Location = new Point(left, top);            
 			if (BoundsChanged != null)
 				BoundsChanged(this, new EventArgs());
-		}        
-
+		}
     }
 }

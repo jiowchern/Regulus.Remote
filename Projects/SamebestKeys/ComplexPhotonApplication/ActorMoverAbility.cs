@@ -5,7 +5,7 @@ using System.Text;
 namespace Regulus.Project.SamebestKeys
 {
 	/// <summary>
-	/// 移動功能
+	/// 其他玩家移動功能
 	/// </summary>
     public class ActorMoverAbility2 : IMoverAbility
     {
