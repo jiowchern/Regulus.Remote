@@ -19,6 +19,7 @@ namespace Regulus.Remoting.Ghost.Native
         {
             _Sync = new object();
             _Updater = new Utility.Updater();
+            
         }
         public void Stop(Regulus.Utility.IUpdatable updater)
         {
@@ -41,7 +42,6 @@ namespace Regulus.Remoting.Ghost.Native
                 {
                     _Thread = new System.Threading.Thread(_Handle);
                     _Thread.IsBackground = true;
-
                     _Thread.Start();
                     _ThreadCount++;
                     System.Diagnostics.Debug.WriteLine("IOHandler Threads:" + _ThreadCount);
@@ -55,7 +55,8 @@ namespace Regulus.Remoting.Ghost.Native
             
             do
             {
-                _Updater.Update();
+                
+                _Updater.Update();                
                 System.Threading.Thread.Sleep(0);
             } while (_Updater.Count > 0);            
             

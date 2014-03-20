@@ -14,7 +14,7 @@ namespace Regulus.Project.SamebestKeys
 
 
         public ComplexServer()
-        {            
+        {
             _Storage = new Storage();
             _Complex = new Complex(_Storage);
             _Updater = new Utility.Updater();
@@ -32,6 +32,9 @@ namespace Regulus.Project.SamebestKeys
 
         void Framework.ILaunched.Launch()
         {
+
+            
+
             _Updater.Add(_Storage);
             _Updater.Add(_Complex);
 

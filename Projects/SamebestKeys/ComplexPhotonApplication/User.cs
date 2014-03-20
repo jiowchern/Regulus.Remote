@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
-    class User : Regulus.Utility.IUpdatable
+    internal class User : Regulus.Utility.IUpdatable
     {
         public Remoting.ISoulBinder Provider { get; private set; }
 

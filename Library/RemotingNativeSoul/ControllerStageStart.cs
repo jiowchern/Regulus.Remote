@@ -44,7 +44,7 @@ namespace Regulus.Remoting.Soul.Native
                 var stream = System.IO.File.ReadAllBytes(path);
                 var core = Regulus.Game.Loader.Load(stream, class_name);
 
-                //_LoadLibrary(work_dir);
+               // _LoadLibrary(work_dir);
                 
                 
                 DoneEvent(core, port, 0);

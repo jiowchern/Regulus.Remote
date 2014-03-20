@@ -39,7 +39,10 @@ namespace Console
                 {
                     string account = "BotController" + (_Sn++ );
                     var val = Requester.Spawn(account, false);
-                    val.OnValue += (user) => { _UserCreated(user, account); };
+                    val.OnValue += (user) => 
+                    { 
+                        _UserCreated(user, account); 
+                    };
                 }
             }
         }

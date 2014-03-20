@@ -34,8 +34,12 @@ namespace Regulus.Game
 
             }
             catch (System.BadImageFormatException bfe)
-            { 
+            {
 
+            }
+            catch (System.Reflection.TargetInvocationException tie)
+            {
+                var sss = tie.ToString();
             }
             return null;
         }
