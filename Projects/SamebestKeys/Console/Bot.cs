@@ -112,7 +112,7 @@ namespace Console
             var stage = new BotSelectActorStage(_User , account );
             stage.ResultEvent += (result) =>
             {
-                if (result)
+                if (result != string.Empty)
                 {
                     _ToMap();
                 }

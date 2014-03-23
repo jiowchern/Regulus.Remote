@@ -82,13 +82,7 @@ namespace Regulus.Project.SamebestKeys
 
             base._RiseAbility(abilitys);
         }
-        
-        public event Action ReadyEvent;		
-        void IPlayer.Ready()
-        {
-            if (ReadyEvent != null)
-                ReadyEvent();
-        }
+                
 
         void IPlayer.SetPosition(float x, float y)
         {

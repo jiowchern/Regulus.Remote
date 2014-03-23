@@ -9,7 +9,7 @@ namespace Console
     {
         private Regulus.Project.SamebestKeys.IUser _User;
         private string account;
-        public event Action<bool> ResultEvent;
+        public event Action<string> ResultEvent;
         public BotSelectActorStage(Regulus.Project.SamebestKeys.IUser _User, string account)
         {
             // TODO: Complete member initialization

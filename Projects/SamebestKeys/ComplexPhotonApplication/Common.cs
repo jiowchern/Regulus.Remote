@@ -23,7 +23,7 @@ namespace Regulus.Project.SamebestKeys
         Value<EntityLookInfomation[]> DestroyActor(string name);
         Value<EntityLookInfomation[]> QueryActors();
         void Back();
-        Value<bool> Select(string name);
+        Value<string> Select(string name);
     }
 
 	public interface IMapInfomation
@@ -41,7 +41,7 @@ namespace Regulus.Project.SamebestKeys
         float Speed { get; }
         float Direction { get; }		
         
-        void Ready();
+        
         void Logout();
         void ExitWorld();        
         void SetPosition(float x,float y);		
@@ -83,14 +83,13 @@ namespace Regulus.Project.SamebestKeys
 
         void Update(long time, System.Collections.Generic.IEnumerable<Regulus.Types.Polygon> obbs);
     }
-    /*public interface IMoverAbility
+
+    public interface ITraversable
     {
-        Regulus.Utility.OBB Obb { get; }
+        Value<CrossStatus> GetStatus();
+        void Ready();
+    }
 
-        void Act(ActionStatue action_statue, float move_speed, float direction);
-
-        void Update(long time, System.Collections.Generic.IEnumerable<Utility.OBB> obbs);
-    }*/
     
 }
 

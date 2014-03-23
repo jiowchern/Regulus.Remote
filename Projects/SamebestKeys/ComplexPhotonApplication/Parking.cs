@@ -47,16 +47,16 @@ namespace Regulus.Project.SamebestKeys
         }
 
         public event Action<Serializable.DBEntityInfomation> SelectEvent;
-        Regulus.Remoting.Value<bool> IParking.Select(string name)
+        Regulus.Remoting.Value<string> IParking.Select(string name)
         {
             var a = _ActorInfomations.Find( (ai)=>{ return ai.Look.Name == name ; });
             if (a != null && SelectEvent != null)
-            {
+            {                
                 SelectEvent(a);
                 SelectEvent = null;
-                return true;
+                return a.Property.Map;
             }
-            return false;
+            return string.Empty;
         }
 
 

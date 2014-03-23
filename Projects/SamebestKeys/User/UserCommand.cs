@@ -30,6 +30,10 @@ namespace Regulus.Projects.SamebestKeys
                 _View.WriteLine("Write:" + Regulus.Remoting.NetworkStreamWriteStage.TotalBytesPerSecond.ToString()); 
             });
 
+
+            user.TraversableProvider.Supply += TraversableProvider_Supply;
+            user.TraversableProvider.Unsupply += _Unsupply;
+
             user.PlayerProvider.Supply += PlayerProvider_Supply;
             user.PlayerProvider.Unsupply += _Unsupply;
 
@@ -48,7 +52,6 @@ namespace Regulus.Projects.SamebestKeys
             user.ObservedAbilityProvider.Supply += ObservedAbilityProvider_Supply;
             user.ObservedAbilityProvider.Unsupply += _Unsupply;
         }
-
         
 
         internal void Unregister(Regulus.Project.SamebestKeys.IUser user)
@@ -71,6 +74,8 @@ namespace Regulus.Projects.SamebestKeys
             user.ParkingProvider.Supply -= ParkingProvider_Supply;
             user.ParkingProvider.Unsupply -= _Unsupply;
 
+            user.TraversableProvider.Supply -= TraversableProvider_Supply;
+            user.TraversableProvider.Unsupply -= _Unsupply;
 
             _Command.Unregister("Package");
             foreach (var command in _RemoveCommands)
@@ -92,6 +97,24 @@ namespace Regulus.Projects.SamebestKeys
             }
             _RemoveEvents.Clear();
         }
+
+        void TraversableProvider_Supply(Project.SamebestKeys.ITraversable obj)
+        {
+            _Command.RemotingRegister<Regulus.Project.SamebestKeys.Serializable.CrossStatus>("CrossStatus", obj.GetStatus, 
+                (cross_info) => 
+                {
+                    _View.WriteLine("過場中 目標" + cross_info.TargetMap + "(" +cross_info.TargetPosition.ToString() + ")" );
+                });
+
+            _Command.Register("Ready" ,obj.Ready);
+
+            _RemoveCommands.Add(obj, new string[] 
+            {
+                "CrossStatus","Ready"
+            });
+        }
+
+
         void ObservedAbilityProvider_Supply(Project.SamebestKeys.IObservedAbility obj)
         {
             /*obj.ShowActionEvent += (inf) => 
@@ -102,8 +125,7 @@ namespace Regulus.Projects.SamebestKeys
         void PlayerProvider_Supply(Project.SamebestKeys.IPlayer obj)
         {
 
-            _Command.Register<string , float , float>("Goto", obj.Goto);
-            _Command.Register("Ready", obj.Ready);
+            _Command.Register<string , float , float>("Goto", obj.Goto);            
             _Command.Register("Logout", obj.Logout);
             _Command.Register("ExitWorld", obj.ExitWorld);
             _Command.Register<float,float>("SetPosition", obj.SetPosition);
@@ -124,7 +146,7 @@ namespace Regulus.Projects.SamebestKeys
 
             _RemoveCommands.Add(obj, new string[] 
             {
-                "Ready","Logout","ExitWorld","SetPosition","SetVision",
+                "Logout","ExitWorld","SetPosition","SetVision",
                 "SetSpeed","Walk","Stop","Say","BodyMovements",
                 "QueryMap","Goto"
             });
@@ -170,9 +192,9 @@ namespace Regulus.Projects.SamebestKeys
                     }
                 });
 
-            _Command.RemotingRegister<string, bool>("Select", obj.Select, (result) =>
+            _Command.RemotingRegister<string, string>("Select", obj.Select, (result) =>
                 {
-                    _View.WriteLine(result.ToString());
+                    _View.WriteLine("goto : " + result);
                 });
             
 

@@ -5,40 +5,35 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
-    class CrossStage : Regulus.Game.IStage<User>
+    class CrossStage : Regulus.Game.IStage<User>, ITraversable
     {
         private Regulus.Project.SamebestKeys.IWorld _World;
-        private string target_map;
-        private Regulus.Types.Vector2 target_position;
-        private string current_map;
-        private Regulus.Types.Vector2 current_position;
+        private string _TargetMap;
+        private Regulus.Types.Vector2 _TargetPosition;
+        private string _CurrentMap;
+        private Regulus.Types.Vector2 _CurrentPosition;
 
-        public CrossStage(Regulus.Project.SamebestKeys.IWorld _World, string target_map, Regulus.Types.Vector2 target_position, string current_map, Regulus.Types.Vector2 current_position)
+        public delegate void OnResult(string target_map,Regulus.Types.Vector2 target_position );
+        public event OnResult ResultEvent;
+        private Remoting.ISoulBinder _Provider;
+        
+
+        public CrossStage(Remoting.ISoulBinder provider ,Regulus.Project.SamebestKeys.IWorld _World, string target_map, Regulus.Types.Vector2 target_position, string current_map, Regulus.Types.Vector2 current_position)
         {
             // TODO: Complete member initialization
             this._World = _World;
-            this.target_map = target_map;
-            this.target_position = target_position;
-            this.current_map = current_map;
-            this.current_position = current_position;
+            this._TargetMap = target_map;
+            this._TargetPosition = target_position;
+            this._CurrentMap = current_map;
+            this._CurrentPosition = current_position;
+            _Provider = provider;
         }
+
+        
 
         Game.StageLock Game.IStage<User>.Enter(User obj)
         {
-            var mapValue = _World.Find(target_map);
-            mapValue.OnValue += (map) => 
-            {
-                if (map == null)
-                {
-                    obj.ToAdventure(current_map, current_position);
-                }
-                else
-                {
-                    obj.ToAdventure(target_map, target_position);
-                }
-
-            };
-
+            _Provider.Bind<ITraversable>(this);
             return null;
         }
 
@@ -46,12 +41,35 @@ namespace Regulus.Project.SamebestKeys
 
         void Game.IStage<User>.Leave(User obj)
         {
-           
+            _Provider.Unbind<ITraversable>(this);
         }
 
         void Game.IStage<User>.Update(User obj)
         {
             
+        }
+
+        Remoting.Value<Serializable.CrossStatus> ITraversable.GetStatus()
+        {
+            return new Serializable.CrossStatus() { SourceMap = _CurrentMap, SourcePosition = _CurrentPosition, TargetMap = _TargetMap, TargetPosition = _TargetPosition };
+        }
+
+        void ITraversable.Ready()
+        {
+            var mapValue = _World.Find(_TargetMap);
+            mapValue.OnValue += (map) =>
+            {
+                if (map == null)
+                {
+                    ResultEvent(_CurrentMap, _CurrentPosition);                    
+                }
+                else
+                {
+                    ResultEvent(_TargetMap, _TargetPosition);
+                    
+                }
+
+            };
         }
     }
 }

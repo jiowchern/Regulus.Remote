@@ -30,8 +30,6 @@ namespace Regulus.Project.SamebestKeys
 			_Frameworks = new Regulus.Utility.Updater();
 			_Maps = new List<Map>();
 
-			
-
             foreach(Data.Map map in GameData.Instance.Maps)
             {
                 _AddMap(_BuildMap(map.Name));

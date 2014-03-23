@@ -60,6 +60,11 @@ namespace Regulus.Projects.SamebestKeys.Standalong
             get { return _Agent.QueryProvider<Regulus.Remoting.ITime>(); }
         }
 
+        Regulus.Remoting.Ghost.IProviderNotice<Project.SamebestKeys.ITraversable> Project.SamebestKeys.IUser.TraversableProvider
+        {
+            get { return _Agent.QueryProvider<Project.SamebestKeys.ITraversable>(); }
+        }
+
         bool Utility.IUpdatable.Update()
         {
             
@@ -99,6 +104,9 @@ namespace Regulus.Projects.SamebestKeys.Standalong
         {
             
         }
+
+
+        
     }
 
     partial class StandalongUser : Regulus.Project.SamebestKeys.IUser

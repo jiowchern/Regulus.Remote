@@ -70,7 +70,7 @@ namespace Regulus.Remoting.Soul.Native
                 CoreTimeCounter = coreTimeCounter.Second;
 
                 _FPS.Update();
-                System.Threading.Thread.Sleep(0);
+               // System.Threading.Thread.Sleep(0);
             }
 
             _Core.Shutdown();
@@ -115,7 +115,8 @@ namespace Regulus.Remoting.Soul.Native
                 _View = viewer;
                 this._Command = command;
                 _ThreadSocketHandler = new ThreadSocketHandler(port, core);
-                _ThreadSocket = new System.Threading.Thread(_ThreadSocketHandler.DoWork);                
+                _ThreadSocket = new System.Threading.Thread(_ThreadSocketHandler.DoWork);
+                _ThreadSocket.Priority = System.Threading.ThreadPriority.AboveNormal;
             }
 
             void Game.IStage.Enter()

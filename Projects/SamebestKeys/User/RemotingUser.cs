@@ -84,6 +84,9 @@ namespace Regulus.Projects.SamebestKeys.Remoting
                 remove { _DisconnectEvent -= value; }
             }
         }
+
+
+        
     }
     
     partial class RemotingUser : Regulus.Project.SamebestKeys.IUser
@@ -195,6 +198,11 @@ namespace Regulus.Projects.SamebestKeys.Remoting
         Regulus.Remoting.Ghost.IProviderNotice<Regulus.Remoting.ITime> Project.SamebestKeys.IUser.TimeProvider
         {
             get { return _Agent.QueryProvider<Regulus.Remoting.ITime>(); }
+        }
+
+        Regulus.Remoting.Ghost.IProviderNotice<Project.SamebestKeys.ITraversable> Project.SamebestKeys.IUser.TraversableProvider
+        {
+            get { return _Agent.QueryProvider<Project.SamebestKeys.ITraversable>(); }
         }
     }
 }

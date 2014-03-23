@@ -14,8 +14,8 @@ namespace Console
             var input = new Regulus.Utility.ConsoleInput(view);
             
             var application = new Regulus.Project.SamebestKeys.Console(view, input);
-            
 
+            _BuildGameData(view);
             BotSet bots = new BotSet();
 
 
@@ -63,6 +63,19 @@ namespace Console
             application.Stop();
 
             
+        }
+
+        private static void _BuildGameData(Regulus.Utility.Console.IViewer view)
+        {
+            var dataBuilder = new Regulus.Project.SamebestKeys.GameDataBuilder(Regulus.Project.SamebestKeys.GameData.Instance);
+            var workPath = System.IO.Directory.GetCurrentDirectory();
+            var files = System.IO.Directory.GetFiles(workPath, "*.map.txt");
+            foreach (var file in files)
+            {
+                var stream = System.IO.File.ReadAllBytes(file);
+                view.WriteLine("load game data : " + file);
+                dataBuilder.Build(stream);
+            }
         }
 
 

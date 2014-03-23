@@ -90,6 +90,21 @@ namespace Regulus.Project.SamebestKeys
 }
 namespace Regulus.Project.SamebestKeys.Serializable
 {
+
+    [ProtoBuf.ProtoContract]
+    public class CrossStatus
+    {
+        [ProtoBuf.ProtoMember(1)]
+        public string SourceMap;
+        [ProtoBuf.ProtoMember(2)]
+        public Regulus.Types.Vector2 SourcePosition;
+
+        [ProtoBuf.ProtoMember(3)]
+        public string TargetMap;
+        [ProtoBuf.ProtoMember(4)]
+        public Regulus.Types.Vector2 TargetPosition;
+    }
+
     [ProtoBuf.ProtoContract]
     public class AccountInfomation 
     {

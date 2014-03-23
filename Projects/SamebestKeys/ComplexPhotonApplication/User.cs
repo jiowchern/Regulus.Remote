@@ -85,11 +85,11 @@ namespace Regulus.Project.SamebestKeys
             }
             if ( !(Actor.Property.Position.X >= 0 && Actor.Property.Position.X <= 100))
             {
-                Actor.Property.Position = Types.Vector2.FromPoint(Regulus.Utility.Random.Instance.R.Next(0, 100), Actor.Property.Position.Y);                
+                //Actor.Property.Position = Types.Vector2.FromPoint(Regulus.Utility.Random.Instance.R.Next(0, 100), Actor.Property.Position.Y);                
             }
             if (!(Actor.Property.Position.Y >= 0 && Actor.Property.Position.Y <= 100))
             {                
-                Actor.Property.Position = Types.Vector2.FromPoint(Actor.Property.Position.X, Regulus.Utility.Random.Instance.R.Next(0, 100));
+                //Actor.Property.Position = Types.Vector2.FromPoint(Actor.Property.Position.X, Regulus.Utility.Random.Instance.R.Next(0, 100));
             }
             if (Actor.Property.Map == "")
             {
@@ -101,7 +101,7 @@ namespace Regulus.Project.SamebestKeys
             }
 
             var map_string  = Actor.Property.Map;
-            _ToAdventure(map_string);
+            ToCross(map_string, Actor.Property.Position , "Test" , new Types.Vector2(50,50));
 			
         }
 
@@ -114,7 +114,8 @@ namespace Regulus.Project.SamebestKeys
             };
         }
 
-        public void ToAdventure(string map , Types.Vector2 position)
+        
+        void _ToAdventure(string map , Types.Vector2 position)
         {
             if (Actor != null)
             {
@@ -162,9 +163,14 @@ namespace Regulus.Project.SamebestKeys
             }
         }
 
-        internal void OnCross(string target_map, Types.Vector2 target_position, string current_map, Types.Vector2 current_position)
+        internal void ToCross(string target_map, Types.Vector2 target_position, string current_map, Types.Vector2 current_position)
         {
-            _Machine.Push(new CrossStage(_World , target_map, target_position, current_map, current_position));             
+            var stage = new CrossStage(Provider , _World, target_map, target_position, current_map, current_position);
+            stage.ResultEvent += _ToAdventure;
+
+            _Machine.Push(stage);             
         }
+
+        
     }
 }

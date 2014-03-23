@@ -26,10 +26,10 @@ namespace Regulus.Project.SamebestKeys
             obj.Provider.Bind<IPlayer>(_Player);
             obj.Provider.Bind<IMapInfomation>(_Map.GetInfomation());
             _Player.Initial();
-            _Player.ReadyEvent += _OnPlayerReady;            
+            
             _Player.ExitWorldEvent += obj.ToParking;
             _Player.LogoutEvent += obj.Logout;
-            _Player.CrossEvent += obj.OnCross;
+            _Player.CrossEvent += obj.ToCross;
 			
             var observe = _Player.FindAbility<IObserveAbility>();
             if (observe != null)
@@ -59,13 +59,6 @@ namespace Regulus.Project.SamebestKeys
 
         Action<IObservedAbility> _ObservedLeft;
         Action<IObservedAbility> _ObservedInto;
-        
-
-        void _OnPlayerReady()
-        {
-            _Player.ReadyEvent -= _OnPlayerReady;            
-        }
-
         
         
         void Regulus.Game.IStage<User>.Leave(User obj)

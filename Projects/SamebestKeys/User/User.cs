@@ -32,6 +32,7 @@ namespace Regulus.Project.SamebestKeys
         Regulus.Remoting.Ghost.IProviderNotice<IPlayer> PlayerProvider { get; }
 
         Regulus.Remoting.Ghost.IProviderNotice<IObservedAbility> ObservedAbilityProvider { get; }
+        Regulus.Remoting.Ghost.IProviderNotice<ITraversable> TraversableProvider { get; }
 
         Regulus.Remoting.Ghost.IProviderNotice<Regulus.Remoting.ITime> TimeProvider { get; }
         
