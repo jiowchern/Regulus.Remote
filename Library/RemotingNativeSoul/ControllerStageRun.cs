@@ -70,7 +70,7 @@ namespace Regulus.Remoting.Soul.Native
                 CoreTimeCounter = coreTimeCounter.Second;
 
                 _FPS.Update();
-               // System.Threading.Thread.Sleep(0);
+                System.Threading.Thread.Sleep(0);
             }
 
             _Core.Shutdown();

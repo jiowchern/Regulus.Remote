@@ -24,9 +24,15 @@ namespace Console
         }
         public void Enter()
         {
+            _User.TraversableProvider.Supply += TraversableProvider_Supply;
             _User.OnlineProvider.Supply += OnlineProvider_Supply;
             _User.PlayerProvider.Supply += PlayerProvider_Supply;
             
+        }
+
+        void TraversableProvider_Supply(Regulus.Project.SamebestKeys.ITraversable obj)
+        {
+            obj.Ready();
         }
 
         void ObservedAbilityProvider_Supply(Regulus.Project.SamebestKeys.IObservedAbility obj)
@@ -70,7 +76,8 @@ namespace Console
         {
             _User.ObservedAbilityProvider.Supply -= ObservedAbilityProvider_Supply;
             _User.PlayerProvider.Supply -= PlayerProvider_Supply;
-            _User.OnlineProvider.Supply -= OnlineProvider_Supply;            
+            _User.OnlineProvider.Supply -= OnlineProvider_Supply;
+            _User.TraversableProvider.Supply -= TraversableProvider_Supply;
         }
 
         public void Update()
@@ -81,13 +88,16 @@ namespace Console
                 if (_Player != null)                
                 {
                     _Player.Stop(0);
-
-                    if (Regulus.Utility.Random.Next(0, 2) == 0)
+                    var map = Regulus.Utility.Random.Next(0, 3);
+                    if (map == 0)
                     {
                         _Player.Goto("Ark", Regulus.Utility.Random.Next(3, 3 + 10), Regulus.Utility.Random.Next(389, 389+10));
                     }
-                    else
+                    if (map == 1)
                         _Player.Goto("Test", Regulus.Utility.Random.Next(50, 50 + 10), Regulus.Utility.Random.Next(50, 50 + 10));
+                    if (map == 2)
+                        _Player.Goto("SL_1C", Regulus.Utility.Random.Next(200, 200 + 10), Regulus.Utility.Random.Next(200, 200 + 10));
+
                     
                 }
                     
