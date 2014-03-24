@@ -296,6 +296,9 @@ namespace Regulus.Remoting
             }
             return type;
         }
+
+
+        //被_BuildGhostType參考
 		public static void UpdateProperty(string property, string type_name, object instance, object value)
 		{
 			Type type = _GetType(type_name);
@@ -304,24 +307,22 @@ namespace Regulus.Remoting
 				var field = type.GetField("_" + property, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
 				if (field != null)
 				{
-
                     field.SetValue(instance, Regulus.PhotonExtension.TypeHelper.DeserializeObject(field.FieldType, value as byte[]) );
 				}
 			}
 		}
+
+        //被_BuildGhostType參考
 		public static void CallEvent(string method, string type_name, object obj, object[] args)
 		{
 			Type type = _GetType(type_name);
 
 			if (type != null)
-			{
-                
+			{                
 				var eventInfos = type.GetField("_" + method, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
 				object fieldValue = eventInfos.GetValue(obj);
 				if (fieldValue is Delegate)
-				{
-                    
-                    
+				{                                     
 					Delegate fieldValueDelegate = (fieldValue as Delegate);
                     Type[] parTypes = (from p in fieldValueDelegate.Method.GetParameters()
                                       select p.ParameterType).ToArray();
@@ -451,7 +452,7 @@ namespace Regulus.Remoting
 				methodIL.Emit(OpCodes.Ldarg_1);
 				methodIL.Emit(OpCodes.Ldstr, typeName);
 				methodIL.Emit(OpCodes.Ldarg_0);
-				methodIL.Emit(OpCodes.Ldarg_2);
+				methodIL.Emit(OpCodes.Ldarg_2);                    
 				methodIL.Emit(OpCodes.Call, typeof(AgentCore).GetMethod("UpdateProperty", BindingFlags.Public | BindingFlags.Static));
 				methodIL.Emit(OpCodes.Nop);
 				methodIL.Emit(OpCodes.Ret);

@@ -20,7 +20,7 @@ namespace Console
         {            
             this._User = _User;
             _TimeCounter = new Regulus.Utility.TimeCounter();
-            _Timeup = Regulus.Utility.Random.Next(10, 300);
+            _Timeup = Regulus.Utility.Random.Next(10, 60 * 10);
         }
         public void Enter()
         {
@@ -32,8 +32,8 @@ namespace Console
 
         void TraversableProvider_Supply(Regulus.Project.SamebestKeys.ITraversable obj)
         {
-            obj.Ready();
-        }
+            obj.Ready();            
+        }        
 
         void ObservedAbilityProvider_Supply(Regulus.Project.SamebestKeys.IObservedAbility obj)
         {
