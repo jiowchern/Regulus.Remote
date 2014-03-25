@@ -29,6 +29,12 @@ namespace Console
 
             bool exit = false;
             application.Command.Register("quit", () => { exit = true; });
+            application.Command.Register<string,int>("SetBotIp", 
+                (ip,port) => 
+                {
+                    Bot.Port = port;
+                    Bot.IpAddress = ip;
+                });
             application.Command.Register<int>("BotSn", (sn) =>
             {
                 bots.Sn = sn;
@@ -38,8 +44,8 @@ namespace Console
                 bots.Requester = requester;
             };
             application.Command.Register<int>("Bot", (count) => 
-            {
-                bots.Create(count );
+            {            
+                bots.Create(count);
             });
             /*application.SelectSystemEvent += (selector) =>
             {
@@ -57,6 +63,7 @@ namespace Console
                 updater.Update();
                 fps.Reset();                
             }
+            application.Command.Unregister("SetBotIp");
             application.Command.Unregister("BotSn");
             application.Command.Unregister("Bot");
             application.Command.Unregister("quit");
