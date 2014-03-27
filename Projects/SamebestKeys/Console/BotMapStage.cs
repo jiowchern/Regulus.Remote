@@ -91,12 +91,12 @@ namespace Console
                     var map = Regulus.Utility.Random.Next(0, 3);
                     if (map == 0)
                     {
-                        _Player.Goto("Ark", Regulus.Utility.Random.Next(3, 3 + 10), Regulus.Utility.Random.Next(389, 389+10));
+                        _Player.Goto("Ark", Regulus.Utility.Random.Next(47, 47 + 10), Regulus.Utility.Random.Next(167, 167+10));
                     }
                     if (map == 1)
                         _Player.Goto("Test", Regulus.Utility.Random.Next(50, 50 + 10), Regulus.Utility.Random.Next(50, 50 + 10));
                     if (map == 2)
-                        _Player.Goto("SL_1C", Regulus.Utility.Random.Next(200, 200 + 10), Regulus.Utility.Random.Next(200, 200 + 10));
+                        _Player.Goto("SL_1C", Regulus.Utility.Random.Next(169, 169 + 10), Regulus.Utility.Random.Next(148, 148 + 10));
 
                     
                 }
