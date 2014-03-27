@@ -108,7 +108,7 @@ namespace Regulus.Project.SamebestKeys
             var mover = FindAbility<IMoverAbility>();
             if (mover != null)
             {
-                mover.Act(ActionStatue.Run, _DBActorInfomation.Property.Speed, direction);
+                mover.Act(ActionStatue.Walk, _DBActorInfomation.Property.Speed, direction);
             }
         }
 

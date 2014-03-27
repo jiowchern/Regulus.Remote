@@ -66,13 +66,13 @@ namespace Regulus.Project.SamebestKeys
     public enum ActionStatue 
     { 
         Idle,
-        Greeting,
-        Bow,
-        Talk,
-        Run,
+        Angry,
+        Call,
+        Greet,
+        Walk,
         Happy,
-        Sad,
-        GangnamStyle
+        individual,
+        
     }
 
     [ProtoBuf.ProtoContract]
@@ -124,6 +124,8 @@ namespace Regulus.Project.SamebestKeys.Serializable
     {
         [ProtoBuf.ProtoMember(1)]
         public string Name { get; set; }
+        [ProtoBuf.ProtoMember(2)]
+        public int Shell { get; set; }
     }
 
 	/// <summary>

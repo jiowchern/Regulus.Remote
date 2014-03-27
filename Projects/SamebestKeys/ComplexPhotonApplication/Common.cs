@@ -67,6 +67,7 @@ namespace Regulus.Project.SamebestKeys
         string Name { get; }
         Guid Id { get; }
         Regulus.Types.Vector2 Position { get; }
+        int Shell { get; }
         float Direction { get; }        
         event Action<MoveInfomation> ShowActionEvent;
         event Action<string> SayEvent;

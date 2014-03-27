@@ -91,9 +91,14 @@ namespace Regulus.Project.SamebestKeys
             {                
                 //Actor.Property.Position = Types.Vector2.FromPoint(Actor.Property.Position.X, Regulus.Utility.Random.Instance.R.Next(0, 100));
             }
+            if ( !(Actor.Look.Shell > 0 && Actor.Look.Shell <14))
+            {
+                Actor.Look.Shell = Regulus.Utility.Random.Next(1 , 13);
+            }
             if (Actor.Property.Map == "")
             {
-                Actor.Property.Map = "Test";
+                Actor.Property.Map = "SL_1C";
+                Actor.Property.Position = Types.Vector2.FromPoint(169,148);
             }
             if (float.IsNaN(Actor.Property.Direction) )
             {

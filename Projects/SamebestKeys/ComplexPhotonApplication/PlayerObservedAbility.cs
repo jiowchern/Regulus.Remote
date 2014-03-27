@@ -59,5 +59,11 @@ namespace Regulus.Project.SamebestKeys
         {
             get { return _Infomation.Look.Name; }
         }
+
+
+        int IObservedAbility.Shell
+        {
+            get { return _Infomation.Look.Shell; }
+        }
     }
 }
