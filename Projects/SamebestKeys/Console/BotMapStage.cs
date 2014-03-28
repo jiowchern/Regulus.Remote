@@ -5,12 +5,16 @@ using System.Text;
 
 namespace Console
 {
+
+
     class BotMapStage : Regulus.Game.IStage
     {
         private Regulus.Project.SamebestKeys.IUser _User;
-        Regulus.Project.SamebestKeys.IOnline _Online;
-        Regulus.Utility.TimeCounter _TimeCounter;
+        Regulus.Project.SamebestKeys.IOnline _Online;        
         Regulus.Project.SamebestKeys.IPlayer _Player;
+        Regulus.Project.SamebestKeys.IObservedAbility _Observed;
+
+        Regulus.Game.StageMachine _Machine;
         public enum Result
         {
             Connect,Reset
@@ -19,14 +23,16 @@ namespace Console
         public BotMapStage(Regulus.Project.SamebestKeys.IUser _User)
         {            
             this._User = _User;
-            _TimeCounter = new Regulus.Utility.TimeCounter();
-            _Timeup = Regulus.Utility.Random.Next(10, 60 * 10);
+            
+            _Machine = new Regulus.Game.StageMachine();
         }
         public void Enter()
         {
             _User.TraversableProvider.Supply += TraversableProvider_Supply;
             _User.OnlineProvider.Supply += OnlineProvider_Supply;
             _User.PlayerProvider.Supply += PlayerProvider_Supply;
+
+
             
         }
 
@@ -39,32 +45,90 @@ namespace Console
         {
             if (obj.Id == _Player.Id)
             {
-                obj.ShowActionEvent += obj_ShowActionEvent;
-            }
-        }
-
-        void obj_ShowActionEvent(Regulus.Project.SamebestKeys.Serializable.MoveInfomation obj)
-        {
-            if (obj.ActionStatue == Regulus.Project.SamebestKeys.ActionStatue.Idle && obj.Speed == 0)
-            {
-                var angle = Regulus.Utility.Random.Next(0, 360);
-                _Player.Walk(angle);
-                //_Player.Say("撞到! 轉向" + angle + "度移動");
+                _Observed = obj;
+                _Action();
             }
         }
 
         void PlayerProvider_Supply(Regulus.Project.SamebestKeys.IPlayer obj)
         {
             _Player = obj;
-            //_Player.SetPosition(Regulus.Utility.Random.Next(0 , 100), Regulus.Utility.Random.Next(0, 100));
-            _Player.SetSpeed(5);
-            _Player.SetVision(30);
-            var angle = Regulus.Utility.Random.Next(0, 360);
-            _Player.Walk(angle);
-            //_Player.Say("轉向"+angle+"度移動"  );
-            _TimeCounter.Reset();
-
             _User.ObservedAbilityProvider.Supply += ObservedAbilityProvider_Supply;
+        }
+
+        private void _Action()
+        {
+            var idx = Regulus.Utility.Random.Instance.R.NextDouble();
+            if (idx > 0.5 )
+            {
+                _ToRun();
+            }
+            else if (idx > 0.4)
+            {
+                _ToTalk();
+            }
+            else if (idx > 0.3)
+            {
+                _ToEmo();
+            }
+            else if (idx > 0.2)
+            {
+                _ToChangeMap();
+            }
+            else 
+            {
+                _ToOffline();
+            }
+
+        }
+
+        private void _ToTalk()
+        {
+            var stage = new BotTalkStage(_Player);
+            stage.DoneEvent += _Action;
+            _Machine.Push(stage);
+        }
+
+        private void _ToEmo()
+        {
+            var stage = new BotEmoStage(_Player, _Observed);
+            stage.DoneEvent += _Action;
+            _Machine.Push(stage);
+        }
+
+        private void _ToChangeMap()
+        {
+            if (_Player != null)
+            {
+                _Player.Stop(0);
+                var map = Regulus.Utility.Random.Next(0, 3);
+                if (map == 0)
+                {
+                    _Player.Goto("Ark", Regulus.Utility.Random.Next(47, 47 + 10), Regulus.Utility.Random.Next(167, 167 + 10));
+                }
+                if (map == 1)
+                    _Player.Goto("Test", Regulus.Utility.Random.Next(50, 50 + 10), Regulus.Utility.Random.Next(50, 50 + 10));
+                if (map == 2)
+                    _Player.Goto("SL_1C", Regulus.Utility.Random.Next(169, 169 + 10), Regulus.Utility.Random.Next(148, 148 + 10));
+
+                ResultEvent(Result.Reset);
+            }
+        }
+
+        private void _ToOffline()
+        {
+            if (_Online != null)
+            {                
+                _Online.Disconnect();
+                ResultEvent(Result.Connect);
+            }
+        }
+
+        private void _ToRun()
+        {
+            var stage = new BotRunStage(_Player , _Observed);
+            stage.DoneEvent += _Action;
+            _Machine.Push(stage);
         }
 
         void OnlineProvider_Supply(Regulus.Project.SamebestKeys.IOnline obj)
@@ -78,12 +142,14 @@ namespace Console
             _User.PlayerProvider.Supply -= PlayerProvider_Supply;
             _User.OnlineProvider.Supply -= OnlineProvider_Supply;
             _User.TraversableProvider.Supply -= TraversableProvider_Supply;
+
+            _Machine.Termination();
         }
 
         public void Update()
         {
 
-            if (_TimeCounter.Second > _Timeup)
+            /*if (_TimeCounter.Second > _Timeup)
             {
                 if (_Player != null)                
                 {
@@ -111,10 +177,12 @@ namespace Console
                     }
                     ResultEvent(result);
                 }
-            }
+            }*/
+
+            _Machine.Update();
             
         }
 
-        int _Timeup { get; set; }
+      
     }
 }
