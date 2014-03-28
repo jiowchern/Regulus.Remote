@@ -24,10 +24,10 @@ namespace Regulus.Project.SamebestKeys
         {
             _Direction = direction;
             _Polygon = new Types.Polygon();
-            _Polygon.Points.Add(new Types.Vector2(x - 0.12f, y + 0.12f));
-            _Polygon.Points.Add(new Types.Vector2(x + 0.12f, y + 0.12f));
-            _Polygon.Points.Add(new Types.Vector2(x + 0.12f, y - 0.12f));
-            _Polygon.Points.Add(new Types.Vector2(x - 0.12f, y - 0.12f));
+            _Polygon.Points.Add(new Types.Vector2(x - 0.25f, y + 0.25f));
+            _Polygon.Points.Add(new Types.Vector2(x + 0.25f, y + 0.25f));
+            _Polygon.Points.Add(new Types.Vector2(x + 0.25f, y - 0.25f));
+            _Polygon.Points.Add(new Types.Vector2(x - 0.25f, y - 0.25f));
             _Polygon.BuildEdges();
             _Update = _Empty;
         }
