@@ -23,7 +23,7 @@ namespace Console
 
         void Regulus.Game.IStage.Enter()
         {
-            var len = Enum.GetValues(typeof(Regulus.Project.SamebestKeys.ActionStatue)).Length;
+            var len = Enum.GetValues(typeof(Regulus.Project.SamebestKeys.ActionStatue)).Length - 1;
             _Player.BodyMovements((Regulus.Project.SamebestKeys.ActionStatue)len);
             _Timeup = Regulus.Utility.Random.Next(3,30);
         }

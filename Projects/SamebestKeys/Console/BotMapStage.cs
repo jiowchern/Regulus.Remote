@@ -67,17 +67,18 @@ namespace Console
             {
                 _ToTalk();
             }
-            else if (idx > 0.3)
+            else if (idx > 0.2)
             {
                 _ToEmo();
             }
-            else if (idx > 0.2)
+            else if (idx > 0.0005)
             {
+                //_ToRun();
                 _ToChangeMap();
             }
             else 
             {
-                _ToOffline();
+                _ToEmo();
             }
 
         }

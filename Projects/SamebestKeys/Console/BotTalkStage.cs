@@ -19,11 +19,19 @@ namespace Console
 
 
         static string[] _Messages = { 
-                                    "這是測試",
+                                    "卡栽A拉!!!",
+                                    "J謀重要",
+                                    "dbasa",                                    
                                     "公家機關",
                                     "司法改革",
                                     "有間客棧",
-                                    "病入膏肓",};
+                                    "病入膏肓",                                    
+                                    "去過同學匯了嗎?",
+                                    "我昨天有去",
+                                    "我正要去",
+                                    "超漂亮",
+                                    "超好玩",
+                                    "自從我去了同學匯考試都考一百分",};
         void Regulus.Game.IStage.Enter()
         {
 

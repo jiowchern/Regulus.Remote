@@ -9,10 +9,12 @@ namespace Console
     {
         private Regulus.Project.SamebestKeys.IPlayer _Player;
         private Regulus.Project.SamebestKeys.IObservedAbility _Observed;
+        Regulus.Utility.TimeCounter _TimeUp;
+        float _Second;
         public event Action DoneEvent;
         public BotRunStage(Regulus.Project.SamebestKeys.IPlayer _Player, Regulus.Project.SamebestKeys.IObservedAbility _Observed)
         {
-            // TODO: Complete member initialization
+            _TimeUp = new Regulus.Utility.TimeCounter();
             this._Player = _Player;
             this._Observed = _Observed;
         }
@@ -24,13 +26,14 @@ namespace Console
             _Player.SetSpeed(2);
             _Player.Walk(Regulus.Utility.Random.Next(0,360));
             _Observed.ShowActionEvent += _Observed_ShowActionEvent;
+            _Second = Regulus.Utility.Random.Next(3 , 60);
         }
 
         void _Observed_ShowActionEvent(Regulus.Project.SamebestKeys.Serializable.MoveInfomation obj)
         {
             if (obj.ActionStatue == Regulus.Project.SamebestKeys.ActionStatue.Idle && obj.Speed == 0 && DoneEvent != null)
             {
-                DoneEvent();
+                _Player.Walk(Regulus.Utility.Random.Next(0, 360));
             }
         }
 
@@ -41,7 +44,10 @@ namespace Console
 
         void Regulus.Game.IStage.Update()
         {
-            
+            if(_TimeUp.Second > _Second)
+            {
+                DoneEvent();
+            }
         }
     }
 }
