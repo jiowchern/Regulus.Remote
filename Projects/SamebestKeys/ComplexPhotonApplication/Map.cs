@@ -19,6 +19,8 @@ namespace Regulus.Project.SamebestKeys
                 get { return _Physical; }
                 set 
                 {
+                    if (value != null)
+                        value.BoundsChanged -= _Physical_BoundsChanged;
                     _Physical = value;
                     if (_Physical != null)
                         _Physical.BoundsChanged += _Physical_BoundsChanged;
@@ -134,54 +136,45 @@ namespace Regulus.Project.SamebestKeys
             _Time.Update();            
             var infos = _EntityInfomations.UpdateSet();
 
-            _UpdateObservers(infos);
-
-            _UpdateMovers(infos);
-            
-            return true;
-        }
-
-        
-
-        private void _UpdateObservers(List<EntityInfomation> infos)
-        {
             foreach (var info in infos)
             {
                 var observer = info.Observe;
                 if (observer != null)
                 {
-                    var brounds = observer.Vision;
-                    var inbrounds = _ObseverdInfomations.Query(brounds);
-                    observer.Update(inbrounds.ToArray(), _Lefts);                    
-                }                
-            }
-            _Lefts.Clear();
-        }
+                    _UpdateObservers(observer);
+                }
 
-        
-        
-        private void _UpdateMovers(List<EntityInfomation> infos)
-        {
-            foreach (var info in infos)
-            {
                 var moverAbility = info.Move;
                 var observeAbility = info.Observe;
                 var physical = info.Physical;
                 if (moverAbility != null && observeAbility != null && physical != null)
                 {
 
-                    var w = physical.Bounds.Width;
-                    var h = physical.Bounds.Height;
-                    var x = observeAbility.Position.X - w / 2;
-                    var y = observeAbility.Position.Y - h / 2;
-                    var brounds = new Regulus.Types.Rect(x, y, w, h);
-                    var inbrounds = _ObseverdInfomations.Query(brounds);
-                    var obbs = from qtoa in inbrounds let ma = qtoa.Move where ma != null && moverAbility != ma select ma.Polygon;
-                    moverAbility.Update(_Time.Ticks, obbs);
+                    _UpdateMovers(moverAbility, observeAbility, physical);
                 }
             }
+            _Lefts.Clear();
+            return true;
         }
 
+        private void _UpdateMovers(IMoverAbility moverAbility, IObserveAbility observeAbility, PhysicalAbility physical)
+        {
+            var w = physical.Bounds.Width;
+            var h = physical.Bounds.Height;
+            var x = observeAbility.Position.X - w / 2;
+            var y = observeAbility.Position.Y - h / 2;
+            var brounds = new Regulus.Types.Rect(x, y, w, h);
+            var inbrounds = _ObseverdInfomations.Query(brounds);
+            var obbs = from qtoa in inbrounds let ma = qtoa.Move where ma != null && moverAbility != ma select ma.Polygon;
+            moverAbility.Update(_Time.Ticks, obbs);
+        }
+
+        private void _UpdateObservers(IObserveAbility observer)
+        {
+            var brounds = observer.Vision;
+            var inbrounds = _ObseverdInfomations.Query(brounds);
+            observer.Update(inbrounds.ToArray(), _Lefts);
+        }
 
 		void Regulus.Framework.ILaunched.Shutdown()
         {            
