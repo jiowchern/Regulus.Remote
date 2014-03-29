@@ -63,23 +63,21 @@ namespace Console
             {
                 _ToRun();
             }
-            else if (idx > 0.4)
+            else if (idx > 0.4 && idx < 0.5)
             {
                 _ToTalk();
             }
-            else if (idx > 0.2)
+            else if (idx > 0.2 && idx < 0.25 )
             {
                 _ToEmo();
             }
-            else if (idx > 0.0005)
+            else if (idx > 0.01 && idx < 0.02)
             {
                 //_ToRun();
                 _ToChangeMap();
             }
-            else 
-            {
-                _ToEmo();
-            }
+            else
+                _Action();
 
         }
 

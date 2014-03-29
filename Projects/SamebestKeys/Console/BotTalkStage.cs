@@ -19,6 +19,7 @@ namespace Console
 
 
         static string[] _Messages = { 
+                                    "xu,41u4rm 5j6xu;61u4",
                                     "卡栽A拉!!!",
                                     "J謀重要",
                                     "dbasa",                                    
