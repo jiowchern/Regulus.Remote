@@ -107,9 +107,9 @@ namespace Console
                 {
                     _Player.Goto("Ark", Regulus.Utility.Random.Next(47, 47 + 10), Regulus.Utility.Random.Next(167, 167 + 10));
                 }
-                if (map == 1)
+                else if (map == 1)
                     _Player.Goto("Test", Regulus.Utility.Random.Next(50, 50 + 10), Regulus.Utility.Random.Next(50, 50 + 10));
-                if (map == 2)
+                else
                     _Player.Goto("SL_1C", Regulus.Utility.Random.Next(169, 169 + 10), Regulus.Utility.Random.Next(148, 148 + 10));
 
                 ResultEvent(Result.Reset);
