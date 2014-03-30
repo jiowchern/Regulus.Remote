@@ -7,7 +7,7 @@ namespace Regulus.Project.SamebestKeys
 {
     class Map : Regulus.Utility.IUpdatable, IMapInfomation, IMap
     {
-        Regulus.Remoting.Time _Time;
+        
 
         public class EntityInfomation : Regulus.Physics.IQuadObject
         {
@@ -48,8 +48,9 @@ namespace Regulus.Project.SamebestKeys
                 remove { _BoundsChanged -= value; }
             }
         }
-					
+        Regulus.Remoting.Time _Time;
         Regulus.Utility.Poller<EntityInfomation> _EntityInfomations = new Utility.Poller<EntityInfomation>();
+        Regulus.Utility.Poller<EntityInfomation> _Observes = new Utility.Poller<EntityInfomation>();
         Regulus.Physics.QuadTree<EntityInfomation> _ObseverdInfomations;
         
 		long _DeltaTime 
@@ -76,7 +77,13 @@ namespace Regulus.Project.SamebestKeys
                 Move = entity.FindAbility<IMoverAbility>(),
                 Cross = entity.FindAbility<ICrossAbility>()
             };
+                        
 			_EntityInfomations.Add(ei);
+
+            if (ei.Observe != null)
+            {
+                _Observes.Add(ei);
+            }
 
             if (ei.Physical != null)
             {
@@ -92,16 +99,21 @@ namespace Regulus.Project.SamebestKeys
             _EntityInfomations.Remove((info) => 
             {
                 if (info.Id == entity.Id)
-                {
+                {                    
                     _ObseverdInfomations.Remove(info);
+                    _RemoveObserve(info);
                     _Lefts.Add(info.Observed);
                     return true;
                 }
                 return false;
             });
-			
 
             
+        }
+
+        private void _RemoveObserve(EntityInfomation info)
+        {
+            _Observes.Remove(i =>  i.Id == info.Id);
         }
 
         void Regulus.Framework.ILaunched.Launch()
@@ -134,7 +146,9 @@ namespace Regulus.Project.SamebestKeys
 		bool Regulus.Utility.IUpdatable.Update()
         {
             _Time.Update();            
-            var infos = _EntityInfomations.UpdateSet();
+            _EntityInfomations.UpdateSet();
+            var infos = _Observes.UpdateSet();
+
 
             foreach (var info in infos)
             {
@@ -153,6 +167,7 @@ namespace Regulus.Project.SamebestKeys
                     _UpdateMovers(moverAbility, observeAbility, physical);
                 }
             }
+           
             _Lefts.Clear();
             return true;
         }

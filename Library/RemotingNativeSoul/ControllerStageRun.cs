@@ -42,18 +42,18 @@ namespace Regulus.Remoting.Soul.Native
             Regulus.Utility.TimeCounter coreTimeCounter = new Utility.TimeCounter();
             Regulus.Utility.TimeCounter peerTimeCounter = new Utility.TimeCounter();
 
+            _Core.Launch();
+
             _Socket.Bind(new System.Net.IPEndPoint(System.Net.IPAddress.Any, _Port));
-            //_Socket.Listen((int)System.Net.Sockets.SocketOptionName.MaxConnections);
+            
             _Socket.Listen(5);
             _Socket.BeginAccept(_Accept, null);
-            _Core.Launch();
-            
 
             while (_Run)
             {
-                while (_Sockets.Count > 0)
+                lock (_Sockets)
                 {
-                    lock (_Sockets)
+                    while (_Sockets.Count > 0)
                     {
                         var socket = _Sockets.Dequeue();
                         var peer = new Peer(socket);
@@ -61,6 +61,7 @@ namespace Regulus.Remoting.Soul.Native
                         _Core.ObtainController(peer.Binder);
                     }
                 }
+                
                 peerTimeCounter.Reset();
                 _Peers.Update();
                 PeerTimeCounter = peerTimeCounter.Second;

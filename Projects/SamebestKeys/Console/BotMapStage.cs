@@ -67,7 +67,7 @@ namespace Console
             {
                 _ToTalk();
             }
-            else if (idx > 0.2 && idx < 0.25 )
+            else if (idx > 0.2 && idx < 0.4 )
             {
                 _ToEmo();
             }
@@ -90,7 +90,7 @@ namespace Console
 
         private void _ToEmo()
         {
-            var stage = new BotEmoStage(_Player, _Observed);
+            var stage = new BotEmoStage(_Player);
             stage.DoneEvent += _Action;
             _Machine.Push(stage);
         }

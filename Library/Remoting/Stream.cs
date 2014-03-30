@@ -86,9 +86,9 @@
         Regulus.Game.StageMachine _Machine;
 
         
-        public static int TotalBytes { get; private set; }
+        public static decimal TotalBytes { get; private set; }
         static Regulus.Utility.TimeCounter _AfterTime = new Utility.TimeCounter();
-        public static double TotalBytesPerSecond { get { return TotalBytes / _AfterTime.Second; } }
+        public static decimal TotalBytesPerSecond { get { return TotalBytes / (decimal)(_AfterTime.Second + 1); } }
         const int _HeadSize = 4;
         public NetworkStreamWriteStage(System.Net.Sockets.Socket socket, Package[] packages)
 		{
@@ -272,9 +272,9 @@
 		System.Net.Sockets.Socket _Socket;
         Regulus.Game.StageMachine _Machine;
         Regulus.Utility.TimeCounter _LifeCycle;
-        public static int TotalBytes { get; private set; }        
+        public static decimal TotalBytes { get; private set; }        
         static Regulus.Utility.TimeCounter _AfterTime = new Utility.TimeCounter();
-        public static double TotalBytesPerSecond { get { return TotalBytes / _AfterTime.Second; } }
+        public static decimal TotalBytesPerSecond { get { return TotalBytes / (decimal) (_AfterTime.Second + 1); } }
         const int _HeadSize = 4;
         public NetworkStreamReadStage(System.Net.Sockets.Socket socket )
 		{            
