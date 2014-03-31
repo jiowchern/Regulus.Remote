@@ -12,13 +12,14 @@ namespace Regulus.Project.SamebestKeys
         public Remoting.ISoulBinder Provider { get; private set; }
 
         Regulus.Game.StageMachine<User> _Machine ;
-        Regulus.Project.SamebestKeys.UserRoster _UserRoster;
+        public event OnNewUser VerifySuccessEvent;
+        
 		IWorld _World;
         IStorage _Storage;
-        public User(Remoting.ISoulBinder provider, Regulus.Project.SamebestKeys.UserRoster user_roster, IWorld world , IStorage storage)
+        public User(Remoting.ISoulBinder provider, IWorld world , IStorage storage)
         {
             _Storage = storage;
-            _UserRoster = user_roster;
+
             _Machine = new Regulus.Game.StageMachine<User>(this);
             Provider = provider;
             provider.BreakEvent += Quit;
@@ -28,7 +29,10 @@ namespace Regulus.Project.SamebestKeys
         Serializable.AccountInfomation _AccountInfomation;
         internal void OnLoginSuccess(Serializable.AccountInfomation obj)
         {
+            
+            
             _AccountInfomation = obj;
+            VerifySuccessEvent(obj.Id);            
             ToParking();
         }
 
@@ -65,7 +69,7 @@ namespace Regulus.Project.SamebestKeys
         {
             _AccountInfomation = null;
             _ClearActor();            
-            _Machine.Push(new VerifyStage(_UserRoster , _Storage)); 
+            _Machine.Push(new VerifyStage(_Storage)); 
         }
         public Serializable.DBEntityInfomation Actor { get; private set; }
         internal void EnterWorld(Serializable.DBEntityInfomation obj)
@@ -134,7 +138,7 @@ namespace Regulus.Project.SamebestKeys
         {
             _AccountInfomation = null;
             _ClearActor();            
-            _Machine.Push(new VerifyStage(_UserRoster , _Storage)); 
+            _Machine.Push(new VerifyStage(_Storage)); 
         }
         
         private void _ClearActor()
@@ -176,6 +180,12 @@ namespace Regulus.Project.SamebestKeys
             _Machine.Push(stage);             
         }
 
-        
+
+
+        internal void OnKick(Guid account)
+        {
+            if (_AccountInfomation != null && _AccountInfomation.Id == account)
+                Quit();
+        }
     }
 }

@@ -5,25 +5,33 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
-    
-    class Hall : Regulus.Project.SamebestKeys.UserRoster , Regulus.Utility.IUpdatable
-    {        
-        private Regulus.Utility.Updater _FrameworkRoot;
+    public delegate void OnNewUser(Guid account);
+    class Hall : Regulus.Utility.IUpdatable
+    {
+        public event OnNewUser NewUserEvent;
+        private Regulus.Utility.Updater _Users;
 
         public Hall()
         {
 
-			_FrameworkRoot = new Regulus.Utility.Updater();
+			_Users = new Regulus.Utility.Updater();
         }            
         internal void PushUser(User user)
         {
-            user.QuitEvent += () => 
-            {                
-                _FrameworkRoot.Remove(user);
-                _User.Remove(user);
+            user.VerifySuccessEvent += (id) =>
+            {
+                if (NewUserEvent != null)
+                    NewUserEvent(id);
+                NewUserEvent += user.OnKick;
             };
-            _FrameworkRoot.Add(user);
-            _User.Add(user);
+
+
+            user.QuitEvent += () => 
+            {
+                NewUserEvent -= user.OnKick;
+                _Users.Remove(user);                
+            };
+            _Users.Add(user);            
         }
 
         void Regulus.Framework.ILaunched.Launch()
@@ -33,7 +41,7 @@ namespace Regulus.Project.SamebestKeys
 
         bool Regulus.Utility.IUpdatable.Update()
         {
-            _FrameworkRoot.Update();
+            _Users.Update();
             return true;
         }
 

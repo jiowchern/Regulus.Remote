@@ -74,7 +74,7 @@ namespace Regulus.Remoting.Soul
 			Logger.Info("_FrameworkUpdate end.");
 		}
 
-        private void _UpdateProvider(List<SoulProvider> providers)
+        private void _UpdateProvider(SoulProvider[] providers)
         {
             foreach (var provider in providers)
             {

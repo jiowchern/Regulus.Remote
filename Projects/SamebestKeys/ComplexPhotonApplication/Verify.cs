@@ -28,36 +28,24 @@ namespace Regulus.Project.SamebestKeys
         }
 
         public event Action<Serializable.AccountInfomation> LoginSuccess;
-        private UserRoster _UserRoster;
+        
 
         IStorage _Stroage;
-        public Verify(UserRoster user_roster, IStorage stroage)
+        public Verify( IStorage stroage)
         {
-            // TODO: Complete member initialization
-            this._UserRoster = user_roster;
+            
             _Stroage = stroage;
             
         }
         Regulus.Remoting.Value<LoginResult> IVerify.Login(string name, string password)
         {
-            var user = _UserRoster.Find(name);
-            if (user == null)
+            var ai = _Stroage.FindAccountInfomation(name);
+            if (ai != null && ai.Password == password)
             {
-                var ai = _Stroage.FindAccountInfomation(name);
-                if (ai != null && ai.Password == password)
-                {
-                    LoginSuccess(ai);                    
-                    return LoginResult.Success;
-                }
-            }
-            else
-            {
-                
-                user.Logout();
-                return LoginResult.RepeatLogin;
+                LoginSuccess(ai);
+                return LoginResult.Success;
             }
             return LoginResult.Error;
-            
         }
 
 

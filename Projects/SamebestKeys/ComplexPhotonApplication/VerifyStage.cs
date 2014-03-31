@@ -8,16 +8,16 @@ namespace Regulus.Project.SamebestKeys
     class VerifyStage : Regulus.Game.IStage<User>
     {
         Regulus.Project.SamebestKeys.Verify _Verify;
-        private UserRoster _UserRoster;
+        
         IStorage _Storage;
-        public VerifyStage(UserRoster user_roster, IStorage storage)
+        public VerifyStage(IStorage storage)
         {
             _Storage = storage;
-            this._UserRoster = user_roster;
+            
         }
         Regulus.Game.StageLock Regulus.Game.IStage<User>.Enter(User obj)
         {
-            _Verify = new Regulus.Project.SamebestKeys.Verify(_UserRoster, _Storage);
+            _Verify = new Regulus.Project.SamebestKeys.Verify(_Storage);
             _Verify.LoginSuccess += obj.OnLoginSuccess;
             _Verify.QuitEvent += obj.Quit;
            

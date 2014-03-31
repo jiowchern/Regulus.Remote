@@ -143,7 +143,7 @@ namespace Regulus.Project.TurnBasedRPG
 
         
 
-        private void _UpdateObservers(List<EntityInfomation> infos)
+        private void _UpdateObservers(EntityInfomation[] infos)
         {
             foreach (var info in infos)
             {
@@ -160,7 +160,7 @@ namespace Regulus.Project.TurnBasedRPG
 
         
         
-        private void _UpdateMovers(List<EntityInfomation> infos)
+        private void _UpdateMovers(EntityInfomation[] infos)
         {
             foreach (var info in infos)
             {

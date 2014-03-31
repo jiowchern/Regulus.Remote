@@ -2,47 +2,114 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using System.Threading.Tasks;
 
 namespace Regulus.Remoting.Soul.Native
 {
+    
+    class ParallelUpdate : Regulus.Utility.Launcher<Regulus.Utility.IUpdatable>
+    {
+        public void Update()
+        {
+            Parallel.ForEach(base.Update(), _Update );
+        }
+
+        private void _Update(Regulus.Utility.IUpdatable updater)
+        {
+            bool result = false;
+            
+            result = updater.Update();
+
+            if (result == false)
+            {
+                Remove(updater);
+            }
+        }
+    }
+
+    class ThreadCoreHandler
+    {
+        volatile bool _Run;
+        Regulus.Game.ICore _Core;
+        Queue<ISoulBinder> _Binders;
+        Regulus.Utility.FPSCounter _FPS;
+        public int FPS { get { return _FPS.Value; } }
+        public ThreadCoreHandler(Regulus.Game.ICore core)
+        {
+            _Core = core;
+            _Binders = new Queue<ISoulBinder>();
+            _FPS = new Utility.FPSCounter();
+        }
+
+        public void DoWork()
+        {
+            _Run = true;
+            _Core.Launch();
+            while (_Run)
+            {
+                if (_Binders.Count > 0)
+                {
+                    lock (_Binders)
+                    {
+                        while (_Binders.Count > 0)
+                        {
+                            _Core.ObtainController( _Binders.Dequeue()) ;
+                        }
+                    }
+                    
+                }
+                _Core.Update();
+                _FPS.Update();
+                System.Threading.Thread.Sleep(0);
+            }
+            _Core.Shutdown();
+        }
+
+        public void Stop()
+        {
+            _Run = false;
+        }
+
+        internal void Push(ISoulBinder soulBinder)
+        {
+            lock (_Binders)
+            {
+                _Binders.Enqueue(soulBinder);
+            }
+
+        }
+    }
+
 
     class ThreadSocketHandler
     {
         System.Net.Sockets.Socket _Socket;
         System.Collections.Generic.Queue<System.Net.Sockets.Socket> _Sockets;
-        Regulus.Game.ICore _Core;
+        ThreadCoreHandler _CoreHandler;
         int _Port;
         volatile bool _Run;
-        Regulus.Utility.Updater _Peers;
+        ParallelUpdate _Peers;
         Regulus.Utility.FPSCounter _FPS;
-
-
-        public float CoreTimeCounter { get; private set; }
-        public float PeerTimeCounter { get; private set; }
+        
         public int FPS { get { return _FPS.Value; } }
         public int PeerCount { get { return _Peers.Count; } }
-        public ThreadSocketHandler(int port , Regulus.Game.ICore core)
+        public ThreadSocketHandler(int port , ThreadCoreHandler core_handler)
         {
+            _CoreHandler = core_handler;
             _Port = port;
-            _Core = core;
+            
             _Sockets = new Queue<System.Net.Sockets.Socket>();
             _Socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
             _Socket.NoDelay = true;
-            
-            
-            _Peers = new Utility.Updater();
+
+
+            _Peers = new ParallelUpdate();
             _FPS = new Utility.FPSCounter();
             
         }
         public void DoWork()
         {
             _Run = true;
-
-            Regulus.Utility.TimeCounter coreTimeCounter = new Utility.TimeCounter();
-            Regulus.Utility.TimeCounter peerTimeCounter = new Utility.TimeCounter();
-
-            _Core.Launch();
 
             _Socket.Bind(new System.Net.IPEndPoint(System.Net.IPAddress.Any, _Port));
             
@@ -51,30 +118,27 @@ namespace Regulus.Remoting.Soul.Native
 
             while (_Run)
             {
-                lock (_Sockets)
+                if (_Sockets.Count > 0)
                 {
-                    while (_Sockets.Count > 0)
+                    lock (_Sockets)
                     {
-                        var socket = _Sockets.Dequeue();
-                        var peer = new Peer(socket);
-                        _Peers.Add(peer);
-                        _Core.ObtainController(peer.Binder);
+                        while (_Sockets.Count > 0)
+                        {
+                            var socket = _Sockets.Dequeue();
+                            var peer = new Peer(socket);
+                            _Peers.Add(peer);
+                            _CoreHandler.Push(peer.Binder);
+                        }
                     }
-                }
+                }           
+     
                 
-                peerTimeCounter.Reset();
                 _Peers.Update();
-                PeerTimeCounter = peerTimeCounter.Second;
-
-                coreTimeCounter.Reset();
-                _Core.Update();
-                CoreTimeCounter = coreTimeCounter.Second;
-
                 _FPS.Update();
                 System.Threading.Thread.Sleep(0);
             }
 
-            _Core.Shutdown();
+            
         }
 
         public void Stop()
@@ -111,13 +175,21 @@ namespace Regulus.Remoting.Soul.Native
             ThreadSocketHandler _ThreadSocketHandler;
             System.Threading.Thread _ThreadSocket;
 
+            ThreadCoreHandler _ThreadCoreHandler;
+            System.Threading.Thread _ThreadCore;
+
             public StageRun(Regulus.Game.ICore core,Utility.Command command,int port , Utility.Console.IViewer viewer)
             {
                 _View = viewer;
                 this._Command = command;
-                _ThreadSocketHandler = new ThreadSocketHandler(port, core);
+
+                _ThreadCoreHandler = new ThreadCoreHandler(core);
+                _ThreadCore = new System.Threading.Thread(_ThreadCoreHandler.DoWork);
+                _ThreadCore.Priority = System.Threading.ThreadPriority.Normal;
+
+                _ThreadSocketHandler = new ThreadSocketHandler(port, _ThreadCoreHandler);
                 _ThreadSocket = new System.Threading.Thread(_ThreadSocketHandler.DoWork);
-                _ThreadSocket.Priority = System.Threading.ThreadPriority.AboveNormal;
+                _ThreadSocket.Priority = System.Threading.ThreadPriority.Normal;
             }
 
             void Game.IStage.Enter()
@@ -125,17 +197,17 @@ namespace Regulus.Remoting.Soul.Native
 
                 _Command.Register("FPS", () => 
                 { 
-                    _View.WriteLine("FPS:" + _ThreadSocketHandler.FPS.ToString());
-                    _View.WriteLine("Core:" + _ThreadSocketHandler.CoreTimeCounter.ToString());
-                    _View.WriteLine("Peer:" + _ThreadSocketHandler.PeerTimeCounter.ToString());
+                    _View.WriteLine("PeerFPS:" + _ThreadSocketHandler.FPS.ToString());                    
                     _View.WriteLine("PeerCount:" + _ThreadSocketHandler.PeerCount.ToString());
+                    _View.WriteLine("CoreFPS:" + _ThreadCoreHandler.FPS.ToString());                    
                     _View.WriteLine("Read:" + NetworkStreamReadStage.TotalBytesPerSecond.ToString());
                     _View.WriteLine("Write:" + NetworkStreamWriteStage.TotalBytesPerSecond.ToString()); 
                 }  );
                 _Command.Register("Shutdown", _ShutdownEvent );
-                
-                
-                _ThreadSocket.Start();
+
+
+                _ThreadCore.Start();
+                _ThreadSocket.Start();                
             }
 
             
@@ -147,9 +219,14 @@ namespace Regulus.Remoting.Soul.Native
 
             void Game.IStage.Leave()
             {
+                _ThreadCoreHandler.Stop();
+                _ThreadCore.Abort();
+                _ThreadCore.Join();
+
                 _ThreadSocketHandler.Stop();
                 _ThreadSocket.Abort();
                 _ThreadSocket.Join();
+
                 _Command.Unregister("Shutdown");
                 _Command.Unregister("FPS");
                 

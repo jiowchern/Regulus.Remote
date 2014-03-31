@@ -27,7 +27,7 @@ namespace Regulus.Project.SamebestKeys
 
         void Game.ICore.ObtainController(Remoting.ISoulBinder binder)
         {
-            _Hall.PushUser(new User(binder, _Hall, _World, _Storage));
+            _Hall.PushUser(new User(binder, _World, _Storage));
         }
 
         bool Utility.IUpdatable.Update()

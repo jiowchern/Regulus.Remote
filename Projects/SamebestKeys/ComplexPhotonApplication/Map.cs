@@ -206,7 +206,7 @@ namespace Regulus.Project.SamebestKeys
 
         Remoting.Value<Types.Polygon[]> IMapInfomation.QueryWalls()
         {
-            return (from e in _EntityInfomations.Objects where e.Move != null select e.Move.Polygon).ToArray();
+            return (from e in _EntityInfomations.UpdateSet() where e.Move != null select e.Move.Polygon).ToArray();
         }
 
         void IMap.Into(Entity entity)

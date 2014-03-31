@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RemotingNativeSoul</RootNamespace>
     <AssemblyName>RemotingNativeSoul</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -49,7 +49,6 @@
     <Compile Include="TcpController.cs" />
     <Compile Include="TcpUser.cs" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\PureLib\PureLib.csproj">
       <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>

@@ -11,25 +11,32 @@ namespace Regulus.Utility
 
         Queue<Func<T, bool>> _Removes = new Queue<Func<T, bool>>();
         List<T> _Objects = new List<T>();
-
-        public List<T> Objects { get { return _Objects; } }
+        
         public void Add(T obj)
         {
-            _Adds.Enqueue(obj);
+            
+            lock (_Adds)
+                _Adds.Enqueue(obj);
         }
 
 
         public void Remove(Func<T, bool> obj)
         {
-            _Removes.Enqueue(obj);
+            lock (_Removes)
+                _Removes.Enqueue(obj);
         }
 
-        public List<T> UpdateSet()
+        public T[] UpdateSet()
         {
-            _Add(_Adds);
-            _Remove(_Removes);
+            lock (_Objects)
+            {
+                lock (_Adds)
+                    _Add(_Adds);
+                lock (_Removes)
+                    _Remove(_Removes);
 
-            return Objects;
+                return _Objects.ToArray();
+            }            
         }
 
         private void _Remove(Queue<Func<T, bool>> removes)

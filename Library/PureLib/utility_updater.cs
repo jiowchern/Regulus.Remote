@@ -31,48 +31,44 @@ namespace Regulus.Utility
         public T[] Objects
         {
             get
-            {
-                lock (_Ts)
-                {
-                    return _Ts.ToArray();
-                }
+            {                
+                return _Ts.ToArray();                
             }
         }
         public int Count { get { return _Ts.Count; } }
 
         public void Add(T framework)
         {
-            lock (_Ts)
-            {
-                if (framework != null)
-                    _Adds.Enqueue(framework);
-            }
+            lock (_Adds) 
+                _Adds.Enqueue(framework);            
         }
 
         public void Remove(T framework)
         {
-            lock (_Ts)
-            {
-                if (framework != null)
-                    _Removes.Enqueue(framework);
-            }
+            lock (_Removes) 
+                _Removes.Enqueue(framework);            
         }
 
         public System.Collections.Generic.IEnumerable<T> Update()
         {
             lock (_Ts)
             {
-                _Remove(_Removes, _Ts);
 
-                _Add(_Adds, _Ts);
+                lock (_Removes)
+                    _Remove(_Removes, _Ts);
 
-                return _Update();
+                lock (_Adds)
+                    _Add(_Adds, _Ts);
             }
+
+            return _Update();
         }
 
         System.Collections.Generic.IEnumerable<T> _Update()
-        {            
-            return _Ts;
+        {
+
+            return Objects;
+
         }
 
         private void _Remove(Queue<T> remove_framework, List<T> frameworks)

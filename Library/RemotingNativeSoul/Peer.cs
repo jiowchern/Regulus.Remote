@@ -170,7 +170,8 @@ namespace Regulus.Remoting.Soul.Native
                     while (_Requests.Count > 0)
                     {
                         var request = _Requests.Dequeue();
-                        _InvokeMethodEvent(request.EntityId, request.MethodName, request.ReturnId, request.MethodParams);
+                        if(_InvokeMethodEvent != null)
+                            _InvokeMethodEvent(request.EntityId, request.MethodName, request.ReturnId, request.MethodParams);
                     }
                 }
                 
