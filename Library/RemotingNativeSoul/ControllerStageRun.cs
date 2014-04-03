@@ -186,10 +186,12 @@ namespace Regulus.Remoting.Soul.Native
                 _ThreadCoreHandler = new ThreadCoreHandler(core);
                 _ThreadCore = new System.Threading.Thread(_ThreadCoreHandler.DoWork);
                 _ThreadCore.Priority = System.Threading.ThreadPriority.Normal;
+                _ThreadCore.IsBackground = true;
 
                 _ThreadSocketHandler = new ThreadSocketHandler(port, _ThreadCoreHandler);
                 _ThreadSocket = new System.Threading.Thread(_ThreadSocketHandler.DoWork);
                 _ThreadSocket.Priority = System.Threading.ThreadPriority.Normal;
+                _ThreadSocket.IsBackground = true;
             }
 
             void Game.IStage.Enter()

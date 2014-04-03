@@ -87,18 +87,16 @@ namespace Regulus.Project.SamebestKeys
 
                     _CurrentTime = time;
 
-                    foreach(var polygon in polygons)
+                    var result = _Collision(polygons, moveVector);
+
+                    if (result.Intersect || result.WillIntersect)
                     {
-                        var result = Regulus.Types.Polygon.Collision(_Polygon, polygon, moveVector);
-                        if (result.WillIntersect)
-                        {
-                            _Act(ActionStatue.Idle, 0, 0);
-                            moveVector = result.MinimumTranslationVector2;
-                            break ;
-                        }
-                    }
-                    if (PositionEvent != null)
+                        _Act(ActionStatue.Idle, 0, 0);
+                        return;
+                    }                    
+                    else if (PositionEvent != null)
                         PositionEvent(time, moveVector);
+                    
                 }
 
 
@@ -108,6 +106,24 @@ namespace Regulus.Project.SamebestKeys
                 _Update = _Empty;
             }
 
+        }
+
+        private Regulus.Types.Polygon.CollisionResult _Collision(System.Collections.Generic.IEnumerable<Types.Polygon> polygons, Regulus.Types.Vector2 moveVector)
+        {
+            Regulus.Types.Polygon p = Regulus.Utility.ValueHelper.DeepCopy<Regulus.Types.Polygon>(_Polygon);
+            p.Offset(moveVector);
+            p.BuildEdges();
+            Regulus.Types.Polygon.CollisionResult result = new Types.Polygon.CollisionResult();
+            foreach (var polygon in polygons)
+            {
+                result = Regulus.Types.Polygon.Collision(p, polygon, Regulus.Types.Vector2.FromPoint(0,0));
+                if (result.WillIntersect || result.Intersect)
+                {
+                    return result;                    
+                }
+                
+            }
+            return result;
         }
 
         private void _Empty(long arg1, IEnumerable<Types.Polygon> arg2)
