@@ -293,6 +293,8 @@ namespace Regulus.Remoting
                     if (type != null)
                         return type;
                 }
+
+                throw new System.Exception("找不到gpi " + type_name);
             }
             return type;
         }

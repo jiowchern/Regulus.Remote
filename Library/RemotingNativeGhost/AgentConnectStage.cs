@@ -39,23 +39,39 @@ namespace Regulus.Remoting.Ghost.Native
                 {
                     _Result = false;
                 }
-                catch
+                catch (ObjectDisposedException ode)
+                {
+                    _Result = false;
+                }
+                catch 
                 {
                     _Result = false;
                 }
             }
 
+            bool _InvokeResultEvent()
+            {
+                var completed = _AsyncResult.IsCompleted;
+                if (completed && ResultEvent != null)
+                {
+                    ResultEvent(_Result);
+                    ResultEvent = null;
+                }
+
+                return completed;
+            }
             void Game.IStage.Leave()
             {
-
+                if (_InvokeResultEvent() == false)
+                {
+                    ResultEvent(false);
+                }
+                
             }
 
             void Game.IStage.Update()
             {
-                if (_AsyncResult.IsCompleted)
-                {
-                    ResultEvent(_Result);
-                }
+                _InvokeResultEvent();
             }
         }
 
