@@ -56,6 +56,10 @@
     <Compile Include="AccountRoster.cs" />
     <Compile Include="Actor.cs" />
     <Compile Include="AdventureStage.cs" />
+    <Compile Include="BehavioralAbility.cs" />
+    <Compile Include="Behavior\IActorPropertyAbility.cs" />
+    <Compile Include="Behavior\IdleBehaviorStage.cs" />
+    <Compile Include="Behavior\MoveBehaviorStage.cs" />
     <Compile Include="CollisionAbility.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="Complex.cs" />
@@ -64,6 +68,7 @@
     <Compile Include="EntityBuilder.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="Hall.cs" />
+    <Compile Include="ITriggerableAbility.cs" />
     <Compile Include="ICrossAbility.cs" />
     <Compile Include="GameData.cs" />
     <Compile Include="IMap.cs" />

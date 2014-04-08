@@ -89,13 +89,17 @@ namespace Regulus.Project.SamebestKeys
 
                     var result = _Collision(polygons, moveVector);
 
+                    if (PositionEvent != null && (result.WillIntersect || result.Intersect) )
+                        PositionEvent(time, moveVector + result.MinimumTranslationVector2);
+                    else if (PositionEvent != null)
+                        PositionEvent(time, moveVector);
+
                     if (result.Intersect || result.WillIntersect)
                     {
                         _Act(ActionStatue.Idle, 0, 0);
-                        return;
-                    }                    
-                    else if (PositionEvent != null)
-                        PositionEvent(time, moveVector);
+                    }
+
+                    
                     
                 }
 
@@ -110,13 +114,21 @@ namespace Regulus.Project.SamebestKeys
 
         private Regulus.Types.Polygon.CollisionResult _Collision(System.Collections.Generic.IEnumerable<Types.Polygon> polygons, Regulus.Types.Vector2 moveVector)
         {
-            Regulus.Types.Polygon p = Regulus.Utility.ValueHelper.DeepCopy<Regulus.Types.Polygon>(_Polygon);
-            p.Offset(moveVector);
-            p.BuildEdges();
+            var p = _Polygon;
+            //Regulus.Types.Polygon p = Regulus.Utility.ValueHelper.DeepCopy<Regulus.Types.Polygon>(_Polygon);
+            //p.Offset(moveVector);
+            /*foreach(var point in _Polygon.Points )
+            {
+                p.Points.Add(point);
+            }
+            p.Convex();*/
+            //p.BuildEdges();
+            
+
             Regulus.Types.Polygon.CollisionResult result = new Types.Polygon.CollisionResult();
             foreach (var polygon in polygons)
             {
-                result = Regulus.Types.Polygon.Collision(p, polygon, Regulus.Types.Vector2.FromPoint(0,0));
+                result = Regulus.Types.Polygon.Collision(p, polygon, moveVector);
                 if (result.WillIntersect || result.Intersect)
                 {
                     return result;                    

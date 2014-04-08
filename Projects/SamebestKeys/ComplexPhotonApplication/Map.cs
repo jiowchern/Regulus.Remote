@@ -158,20 +158,22 @@ namespace Regulus.Project.SamebestKeys
                     _UpdateObservers(observer);
                 }
 
-                var moverAbility = info.Move;
-                var observeAbility = info.Observe;
+                var moverAbility = info.Move;               
                 var physical = info.Physical;
-                if (moverAbility != null && observeAbility != null && physical != null)
+                if (moverAbility != null && observer != null && physical != null)
                 {
-
-                    _UpdateMovers(moverAbility, observeAbility, physical);
+                    _UpdateMovers(moverAbility, observer, physical);
                 }
             }
            
             _Lefts.Clear();
             return true;
         }
-
+        private void _UpdateBehavior(ITriggerableAbility behavior)
+        {
+            var inbrounds = _ObseverdInfomations.Query(behavior.Bounds);
+            behavior.Interactive(_Time.Ticks, inbrounds);
+        }
         private void _UpdateMovers(IMoverAbility moverAbility, IObserveAbility observeAbility, PhysicalAbility physical)
         {
             var w = physical.Bounds.Width;
@@ -183,7 +185,7 @@ namespace Regulus.Project.SamebestKeys
             var obbs = from qtoa in inbrounds let ma = qtoa.Move where ma != null && moverAbility != ma select ma.Polygon;
             moverAbility.Update(_Time.Ticks, obbs);
         }
-
+       
         private void _UpdateObservers(IObserveAbility observer)
         {
             var brounds = observer.Vision;

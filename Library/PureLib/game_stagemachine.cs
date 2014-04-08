@@ -31,7 +31,14 @@ namespace Regulus.Game
         }
         System.Collections.Generic.Queue<Regulus.Game.IStage> _StandBys;
         StageData _Current;
-        
+
+
+        public Regulus.Game.IStage Current { get 
+        {
+            if (_Current != null)
+                return _Current.Stage;
+            return null;
+        } }
         public StageMachine()
         {
             
