@@ -107,6 +107,10 @@ namespace Regulus.Utility
         private long _Current;
         Action<long> _TimeUp;
         long _Interval;
+        public Timer(float second, Action<long> time_up) : this( System.TimeSpan.FromSeconds(second) , time_up)
+        { 
+
+        }
         public Timer(System.TimeSpan interval, Action<long> time_up)
         {
             _TimeUp = time_up;

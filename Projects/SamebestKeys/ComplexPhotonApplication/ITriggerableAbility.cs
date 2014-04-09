@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
-    interface ITriggerableAbility
+    internal interface ITriggerableAbility
     {
         Types.Rect Bounds { get;  }
 

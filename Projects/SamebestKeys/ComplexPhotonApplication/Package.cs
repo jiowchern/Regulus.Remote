@@ -63,16 +63,19 @@ namespace Regulus.Project.SamebestKeys
 	/// 動作狀態
 	/// </summary>
     [ProtoBuf.ProtoContract]
-    public enum ActionStatue 
-    { 
+    public enum ActionStatue
+    {
         Idle,
+        BattleIdle,
         Angry,
         Call,
         Greet,
         Walk,
         Happy,
         individual,
-        
+        Injury,
+        Knockout,
+
     }
 
     [ProtoBuf.ProtoContract]

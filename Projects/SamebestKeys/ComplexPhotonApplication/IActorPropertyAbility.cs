@@ -14,5 +14,9 @@ namespace Regulus.Project.SamebestKeys
         float NormalSpeed { get; set; }
 
         float CurrentSpeed { get; set; }
+
+        int Hp { get; set; }
+
+        bool IsAlive();
     }
 }

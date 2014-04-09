@@ -136,6 +136,20 @@ namespace Regulus.Utility
             }
         }
     }
+
+    public class TUpdater<T> : Launcher<T> where T : Regulus.Utility.IUpdatable
+    {
+        public void Update()
+        {
+            foreach (var t in base.Update())
+            {
+                if (t.Update() == false)
+                {
+                    Remove(t);
+                }
+            }
+        }
+    }
     
     
 }
