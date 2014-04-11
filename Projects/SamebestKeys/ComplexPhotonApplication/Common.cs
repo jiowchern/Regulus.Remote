@@ -48,6 +48,7 @@ namespace Regulus.Project.SamebestKeys
         void SetVision(int vision);
 
         void SetSpeed(float speed);
+        void ChangeMode();
         void Walk(float direction);
         void Stop(float direction);
         void Say(string message);
@@ -64,6 +65,7 @@ namespace Regulus.Project.SamebestKeys
 	/// </summary>
     public interface IObservedAbility 
     {
+        ActorMode Mode { get; }
         string Name { get; }
         Guid Id { get; }
         Regulus.Types.Vector2 Position { get; }
@@ -81,6 +83,8 @@ namespace Regulus.Project.SamebestKeys
         Regulus.Types.Polygon Polygon { get; }
 
         void Act(ActionStatue action_statue, float move_speed, float direction);
+
+        void Act(ActionCommand action_command);
 
         void Update(long time, System.Collections.Generic.IEnumerable<Regulus.Types.Polygon> obbs);
     }

@@ -13,7 +13,7 @@ namespace Regulus.Remoting.Ghost.Native
             private string _Ipaddress;
             private int _Port;
             IAsyncResult _AsyncResult;
-            bool _Result;
+            bool? _Result;
             public event Action<bool> ResultEvent;
             public ConnectStage(System.Net.Sockets.Socket socket, string ipaddress, int port)
             {
@@ -32,8 +32,8 @@ namespace Regulus.Remoting.Ghost.Native
             {
                 try
                 {
-                    _Socket.EndConnect(ar);
                     _Result = true;
+                    _Socket.EndConnect(ar);                    
                 }
                 catch (System.Net.Sockets.SocketException ex)
                 {
@@ -51,18 +51,18 @@ namespace Regulus.Remoting.Ghost.Native
 
             bool _InvokeResultEvent()
             {
-                var completed = _AsyncResult.IsCompleted;
-                if (completed && ResultEvent != null)
+
+                if (_Result.HasValue && ResultEvent != null)
                 {
-                    ResultEvent(_Result);
+                    ResultEvent(_Result.Value);
                     ResultEvent = null;
                 }
 
-                return completed;
+                return false;
             }
             void Game.IStage.Leave()
             {
-                if (_InvokeResultEvent() == false)
+                if (_Result.HasValue == false)
                 {
                     ResultEvent(false);
                 }

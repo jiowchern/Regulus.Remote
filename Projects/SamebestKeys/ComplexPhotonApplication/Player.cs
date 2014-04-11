@@ -97,19 +97,21 @@ namespace Regulus.Project.SamebestKeys
         
         void IPlayer.Stop(float dir)
         {
-            var mover = FindAbility<IMoverAbility>();
-            if (mover != null)
+            var commander = FindAbility<IBehaviorCommandAbility>();
+            if (commander != null)
             {
-                mover.Act(ActionStatue.Idle, 0, dir);
+                commander.Invoke(new BehaviorCommand.Stop());
             }
         }
         void IPlayer.Walk(float direction)
         {
-            var mover = FindAbility<IMoverAbility>();
-            if (mover != null)
+
+            var commander = FindAbility<IBehaviorCommandAbility>();
+            if (commander != null)
             {
-                mover.Act(ActionStatue.Walk, _DBActorInfomation.Property.Speed, direction);
+                commander.Invoke(new BehaviorCommand.Move(direction));
             }
+            
         }
 
         void IPlayer.BodyMovements(ActionStatue action_statue)
@@ -177,6 +179,16 @@ namespace Regulus.Project.SamebestKeys
         void IPlayer.Goto(string map, float x, float y)
         {
             _CrossAbility.Move(map, new Types.Vector2(x, y));
+        }
+
+
+        void IPlayer.ChangeMode()
+        {
+            var commander = FindAbility<IBehaviorCommandAbility>();
+            if (commander != null)
+            {
+                commander.Invoke(new BehaviorCommand.Skill(1));
+            }            
         }
     }
 }

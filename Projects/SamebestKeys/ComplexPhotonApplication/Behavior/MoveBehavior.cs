@@ -9,10 +9,10 @@ namespace Regulus.Project.SamebestKeys
     {
         public delegate void OnMove(float direction);
         public event OnMove MoveEvent;
-
-        public MoveBehaviorHandler()
+        Entity _Entity;
+        public MoveBehaviorHandler(Entity entity)
         {
-
+            _Entity = entity;
         }
         bool Utility.IUpdatable.Update()
         {
@@ -21,15 +21,14 @@ namespace Regulus.Project.SamebestKeys
 
         void Framework.ILaunched.Launch()
         {
-
+            var command = _Entity.FindAbility<IBehaviorCommandAbility>();
+            if (command != null)
+            {
+                command.CommandEvent += _Done;
+            }
         }
 
-        void Framework.ILaunched.Shutdown()
-        {
-
-        }
-
-        void IBehaviorCommandInvoker.Invoke(IBehaviorCommand command)
+        private void _Done(IBehaviorCommand command)
         {
             var move = command as BehaviorCommand.Move;
             if (move != null)
@@ -37,48 +36,16 @@ namespace Regulus.Project.SamebestKeys
                 MoveEvent(move.Direction);
             }
         }
-    }
 
-    class MoveBehaviorStage : BehaviorStage
-    {
-        public IdleBehaviorHandler Idle { get; private set; }
-
-        public InjuryBehaviorHandler Injury { get; private set; }
-        
-        Entity _Entity;
-        float _Direction;
-
-        public MoveBehaviorStage(Entity entity, float direction)
+        void Framework.ILaunched.Shutdown()
         {
-            Idle = new IdleBehaviorHandler(entity );
-            Injury = new InjuryBehaviorHandler();
-            _Entity = entity;
-            _Direction = direction;
-        }
-
-
-        internal override ITriggerableAbility _TriggerableAbility()
-        {
-            return null;
-        }
-
-        internal override IBehaviorHandler[] _Handlers()
-        {
-            return new IBehaviorHandler[] { Idle, Injury };
-        }
-
-        protected override void _Begin()
-        {
-            var property = _Entity.FindAbility<IActorPropertyAbility>();
-            var move = _Entity.FindAbility<IMoverAbility>();
-
-            if (move != null && property != null)
-                move.Act(ActionStatue.Walk, property.NormalSpeed, _Direction);
-        }
-
-        protected override void _End()
-        {
-            
+            var command = _Entity.FindAbility<IBehaviorCommandAbility>();
+            if (command != null)
+            {
+                command.CommandEvent -= _Done;
+            }
         }
     }
+
+    
 }

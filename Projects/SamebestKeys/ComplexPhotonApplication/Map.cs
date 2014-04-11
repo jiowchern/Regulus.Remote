@@ -35,6 +35,11 @@ namespace Regulus.Project.SamebestKeys
             public IMoverAbility Move { get; set; }
             public IObserveAbility Observe { get; set; }
             public ICrossAbility Cross { get; set; }
+            public IBehaviorAbility Behavior { get; set; }
+            public IBehaviorCommandAbility Commander { get; set; }
+            public ISkillCaptureAbility Effect { get; set; }
+            public IActorPropertyAbility Property { get; set; }
+            public IActorUpdateAbility Update { get; set; }
 
             Regulus.Types.Rect Physics.IQuadObject.Bounds
             {
@@ -75,7 +80,12 @@ namespace Regulus.Project.SamebestKeys
                 Observe = entity.FindAbility<IObserveAbility>(),
                 Observed = entity.FindAbility<IObservedAbility>(),
                 Move = entity.FindAbility<IMoverAbility>(),
-                Cross = entity.FindAbility<ICrossAbility>()
+                Cross = entity.FindAbility<ICrossAbility>(),
+                Behavior = entity.FindAbility<IBehaviorAbility>(),
+                Commander = entity.FindAbility<IBehaviorCommandAbility>(),
+                Effect = entity.FindAbility <ISkillCaptureAbility>(),
+                Property = entity.FindAbility<IActorPropertyAbility>(),
+                Update = entity.FindAbility<IActorUpdateAbility>(),
             };
                         
 			_EntityInfomations.Add(ei);
@@ -149,7 +159,6 @@ namespace Regulus.Project.SamebestKeys
             _EntityInfomations.UpdateSet();
             var infos = _Observes.UpdateSet();
 
-
             foreach (var info in infos)
             {
                 var observer = info.Observe;
@@ -158,21 +167,55 @@ namespace Regulus.Project.SamebestKeys
                     _UpdateObservers(observer);
                 }
 
-                var moverAbility = info.Move;               
+                var moverAbility = info.Move;
                 var physical = info.Physical;
                 if (moverAbility != null && observer != null && physical != null)
                 {
                     _UpdateMovers(moverAbility, observer, physical);
                 }
+
+                var behavior = info.Behavior;
+                if (behavior != null)
+                {
+                    behavior.Update();
+                }
+                if (info.Effect != null && info.Property!= null)
+                    _UpdateEffect(info.Effect, info.Property);
+
+                if (info.Update != null)
+                    info.Update.Update();
             }
            
             _Lefts.Clear();
             return true;
         }
-        private void _UpdateBehavior(ITriggerableAbility behavior)
+        private void _UpdateEffect(ISkillCaptureAbility behavior , IActorPropertyAbility property)
         {
-            var inbrounds = _ObseverdInfomations.Query(behavior.Bounds);
-            behavior.Interactive(_Time.Ticks, inbrounds);
+            Types.Rect bounds = new Types.Rect();
+            int skill = 0;
+            var s = GameData.Instance.FindSkill(skill);            
+            if (behavior.TryGetBounds(ref bounds , ref skill))
+            {                
+                if (s != null)
+                {
+                    if (s.Id == 1)
+                    {
+                        property.ChangeMode();
+                    }
+                    else if (s.Id == 2 )
+                    {
+                        var inbrounds = _ObseverdInfomations.Query(bounds);
+                        foreach (var e in inbrounds)
+                        {
+                            e.Commander.Invoke(new BehaviorCommand.Injury(s.Param1));
+                        }
+                    }
+                    
+
+                }
+                
+            }
+            
         }
         private void _UpdateMovers(IMoverAbility moverAbility, IObserveAbility observeAbility, PhysicalAbility physical)
         {

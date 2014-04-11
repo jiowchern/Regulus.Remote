@@ -5,6 +5,19 @@ namespace Regulus.Project.SamebestKeys
     namespace Data
     {
         [Serializable]
+        public class Skill
+        {
+            public int Id { get; set; }
+            public int Energy { get; set; }
+            public float Begin { get; set; }
+            public float Effective { get; set; }
+            public float End { get; set; }
+            public bool Capture { get; set; }
+            public Regulus.Types.Rect CaptureBounds { get; set; }
+            public int Param1 { get; set; }
+        }
+
+        [Serializable]
         [ProtoBuf.ProtoContract]
         public class Map
         {
@@ -59,23 +72,28 @@ namespace Regulus.Project.SamebestKeys
 }
 namespace Regulus.Project.SamebestKeys
 {
+
+    public enum ActorMode
+    {
+        Explore , Alert
+    }
+        
 	/// <summary>
 	/// 動作狀態
 	/// </summary>
     [ProtoBuf.ProtoContract]
     public enum ActionStatue
     {
-        Idle,
-        BattleIdle,
+        Idle,        
         Angry,
         Call,
         Greet,
         Walk,
-        Happy,
-        individual,
+        Happy,        
         Injury,
         Knockout,
-
+        SkillBegin,
+        SkillEnd,
     }
 
     [ProtoBuf.ProtoContract]
@@ -93,6 +111,11 @@ namespace Regulus.Project.SamebestKeys
 }
 namespace Regulus.Project.SamebestKeys.Serializable
 {
+
+    public class Skill
+    {
+        public int Id ; 
+    }
 
     [ProtoBuf.ProtoContract]
     public class CrossStatus
@@ -141,6 +164,9 @@ namespace Regulus.Project.SamebestKeys.Serializable
         { 
             Position = new Types.Vector2();
             Map = "";
+            MaxHealth = 100;
+            Health = 100;
+            Skills = new System.Collections.Generic.List<Skill>();
         }
         [ProtoBuf.ProtoMember(1)]
         public Guid Id { get; set; }
@@ -156,6 +182,19 @@ namespace Regulus.Project.SamebestKeys.Serializable
 
         [ProtoBuf.ProtoMember(6)]
         public Regulus.Types.Vector2 Position { get; set; }
+
+
+        [ProtoBuf.ProtoMember(7)]
+        public int MaxHealth { get; set; }
+
+        [ProtoBuf.ProtoMember(8)]
+        public int Health { get; set; }
+
+        [ProtoBuf.ProtoMember(9)]
+        public bool Died { get; set; }
+        [ProtoBuf.ProtoMember(10)]
+        public System.Collections.Generic.List<Skill> Skills { get; set; }
+        
     }
 
 	/// <summary>
@@ -191,6 +230,16 @@ namespace Regulus.Project.SamebestKeys.Serializable
         public Guid Owner { get; set; }        
     }
 
+    [ProtoBuf.ProtoContract]
+    public class ActionCommand
+    {
+        [ProtoBuf.ProtoMember(1)]
+        public ActionStatue Command { get; set; }
+        [ProtoBuf.ProtoMember(2)]
+        public float Speed { get; set; }
+        [ProtoBuf.ProtoMember(3)]
+        public float Direction { get; set; }
+    }
 	/// <summary>
 	/// 移動資訊
 	/// </summary>

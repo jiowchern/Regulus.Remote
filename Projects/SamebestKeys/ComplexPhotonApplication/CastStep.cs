@@ -5,9 +5,11 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
-    internal interface ISkillCaptureAbility
+    enum CastStep
     {
-        bool TryGetBounds(ref Types.Rect bounds , ref int Skill);
-        void Hit();
+        NotYet,
+        Beginning,
+        Effective,
+        Ending,
     }
 }

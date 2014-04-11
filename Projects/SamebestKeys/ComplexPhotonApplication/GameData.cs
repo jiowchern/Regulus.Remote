@@ -58,5 +58,10 @@ namespace Regulus.Project.SamebestKeys
         {
             get { return _Maps;  }
         }
+
+        internal Data.Skill FindSkill(int id)
+        {
+            return new Data.Skill() { Id = 0, Begin = 1, Effective = 1, End = 1, Energy = 10 };
+        }
     }
 }

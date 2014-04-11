@@ -37,48 +37,9 @@ namespace Regulus.Project.SamebestKeys
             
         }
 
-        void IBehaviorCommandInvoker.Invoke(IBehaviorCommand command)
-        {
-            
-        }
+       
     }
 
 
-    class KnockoutBehaviorStage : BehaviorStage
-    {
-        public KnockoutToIdleBehaviorHandler Idle { get; private set; }
-
-
-        Entity _Entity;
-        public KnockoutBehaviorStage(Entity entity)
-        {
-            _Entity = entity;
-            Idle = new KnockoutToIdleBehaviorHandler(entity);
-        }
-
-
-        internal override ITriggerableAbility _TriggerableAbility()
-        {
-            return null;
-        }
-
-        internal override IBehaviorHandler[] _Handlers()
-        {
-            return new IBehaviorHandler[] { Idle };
-        }
-
-        protected override void _Begin()
-        {
-            var ability = _Entity.FindAbility<IMoverAbility>();
-            if(ability != null)
-            {
-                ability.Act(ActionStatue.Knockout, 0, 0);
-            }
-        }
-
-        protected override void _End()
-        {
-            
-        }
-    }
+    
 }

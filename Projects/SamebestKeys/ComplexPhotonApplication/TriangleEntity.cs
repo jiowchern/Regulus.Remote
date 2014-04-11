@@ -79,5 +79,11 @@ namespace Regulus.Project.SamebestKeys
             abilitys.DetechAbility<PhysicalAbility>();
             abilitys.DetechAbility<IMoverAbility>();
         }
+
+
+        void IMoverAbility.Act(Serializable.ActionCommand action_command)
+        {
+            
+        }
     }
 }

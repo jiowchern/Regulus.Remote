@@ -3,29 +3,55 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Regulus.Project.SamebestKeys.Behavior
+namespace Regulus.Project.SamebestKeys
 {
-    class SkillBehaviorStage : BehaviorStage
+    class IdleToSkillBehaviorHandler : IBehaviorHandler
     {
-        public IdleBehaviorHandler Idle { get; private set; }
-        internal override ITriggerableAbility _TriggerableAbility()
+        public delegate void OnSkill(int skill);
+        public event OnSkill SkillEvent;
+
+
+        Entity _Entity;
+        public IdleToSkillBehaviorHandler(Entity entity)
         {
-            return null;
+            _Entity = entity;
+        }
+        bool Utility.IUpdatable.Update()
+        {
+            return true;
         }
 
-        internal override IBehaviorHandler[] _Handlers()
+        void Framework.ILaunched.Launch()
         {
-            return new IBehaviorHandler[] { Idle };
+            var command = _Entity.FindAbility<IBehaviorCommandAbility>();
+            if (command != null)
+            {
+                command.CommandEvent += _Done;
+            }
         }
 
-        protected override void _Begin()
+        void Framework.ILaunched.Shutdown()
         {
-            
+            var command = _Entity.FindAbility<IBehaviorCommandAbility>();
+            if (command != null)
+            {
+                command.CommandEvent -= _Done;
+            }
         }
 
-        protected override void _End()
+        private void _Done(IBehaviorCommand command)
         {
-            
+            var skill = command as Regulus.Project.SamebestKeys.BehaviorCommand.Skill;
+            if (skill != null)
+            {
+                var abiliry = _Entity.FindAbility<IActorPropertyAbility>();
+                if (abiliry.HasSkill(skill.Id))
+                {
+                    SkillEvent(skill.Id);
+                }
+            }
         }
+
+       
     }
 }

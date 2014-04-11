@@ -65,5 +65,10 @@ namespace Regulus.Project.SamebestKeys
         {
             get { return _Infomation.Look.Shell; }
         }
+
+        ActorMode IObservedAbility.Mode
+        {
+            get { return _Actor.Mode; }
+        }
     }
 }

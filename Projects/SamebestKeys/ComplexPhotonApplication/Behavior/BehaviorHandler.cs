@@ -5,66 +5,55 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
-    internal interface IBehaviorHandler : Regulus.Utility.IUpdatable, IBehaviorCommandInvoker
+    internal interface IBehaviorHandler : Regulus.Utility.IUpdatable
     {
     }
 
-    abstract public class BehaviorStage : IBehaviorStage
-    {
-        Regulus.Utility.TUpdater<IBehaviorHandler> _Updater;
-        
+    class CommandBehaviorHandler<T> : IBehaviorHandler where T : class 
+    { 
+        Entity _Entity;
+        public delegate void OnIdle();
+        public event OnIdle DoneEvent;
+        public delegate bool OnCommand(T command);
+        public event OnCommand CommandEvent;
 
-        abstract internal ITriggerableAbility _TriggerableAbility();
-        abstract internal IBehaviorHandler[] _Handlers();
-
-        abstract protected void _Begin();
-        abstract protected void _End();
-
-        protected BehaviorStage()
+        public CommandBehaviorHandler(Entity entity)
         {
-            _Updater = new Utility.TUpdater<IBehaviorHandler>();
+            _Entity = entity;
         }
 
-        private void _BuildHandler(IBehaviorHandler[] behavior_handlers)
+        bool Utility.IUpdatable.Update()
         {
-            _Updater = new Utility.TUpdater<IBehaviorHandler>();
+            return true;
+        }
 
-            foreach (var handles in behavior_handlers)
+        void Framework.ILaunched.Launch()
+        {
+
+
+            var command = _Entity.FindAbility<IBehaviorCommandAbility>();
+            if (command != null)
             {
-                _Updater.Add(handles);
+                command.CommandEvent += _CommandEvent;
             }
         }
 
-        ITriggerableAbility IBehaviorStage.Ability
+        private void _CommandEvent(IBehaviorCommand obj)
         {
-            get { return _TriggerableAbility(); }
+            var command = obj as T;
+            if (command != null && CommandEvent(command))
+                DoneEvent();
         }
 
-        void Game.IStage.Enter()
+        void Framework.ILaunched.Shutdown()
         {
-            _Begin();
-            _BuildHandler(_Handlers());
-        }
-
-
-
-        void Game.IStage.Leave()
-        {
-            _Updater.Shutdown();
-            _End();
-        }
-
-        void Game.IStage.Update()
-        {
-            _Updater.Update();
-        }
-
-        void IBehaviorCommandInvoker.Invoke(IBehaviorCommand command)
-        {
-            foreach (var obj in _Updater.Objects)
+            var command = _Entity.FindAbility<IBehaviorCommandAbility>();
+            if (command != null)
             {
-                obj.Invoke(command);
+                command.CommandEvent -= _CommandEvent;
             }
+
+
         }
     }
 }

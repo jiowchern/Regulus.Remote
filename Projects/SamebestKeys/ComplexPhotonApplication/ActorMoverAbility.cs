@@ -142,5 +142,11 @@ namespace Regulus.Project.SamebestKeys
         {
             
         }
+
+
+        void IMoverAbility.Act(Serializable.ActionCommand action_command)
+        {
+            _Act(action_command.Command, action_command.Speed, action_command.Direction);
+        }
     }
 }

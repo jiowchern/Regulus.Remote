@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 
 
+
 namespace Regulus.Project.SamebestKeys
 {
 
     class KnockoutToIdleBehaviorHandler : IBehaviorHandler
     {
-
         public delegate void OnDone();
         public event OnDone DoneEvent;
         Entity _Entity;
@@ -40,10 +40,7 @@ namespace Regulus.Project.SamebestKeys
             
         }
 
-        void IBehaviorCommandInvoker.Invoke(IBehaviorCommand command)
-        {
-            
-        }
+        
     }
 
     class InjuryToIdleBehaviorHandler : IBehaviorHandler
@@ -77,19 +74,58 @@ namespace Regulus.Project.SamebestKeys
             
         }
 
-        void IBehaviorCommandInvoker.Invoke(IBehaviorCommand command)
+        
+    }
+    class StopToIdleBehaviorHandler : IBehaviorHandler
+    {
+        Entity _Entity;
+        public delegate void OnIdle();
+        public event OnIdle DoneEvent;
+        public StopToIdleBehaviorHandler(Entity entity)
         {
-            
+            _Entity = entity;
+        }
+
+        bool Utility.IUpdatable.Update()
+        {
+            return true;   
+        }
+
+        void Framework.ILaunched.Launch()
+        {
+            var ability = _Entity.FindAbility<IObservedAbility>();
+            if (ability != null)
+            {
+                ability.ShowActionEvent += _CheckIdle;
+            }
+        }
+
+        private void _CheckIdle(Serializable.MoveInfomation obj)
+        {
+            if (obj.Speed == 0)
+            {
+                DoneEvent();
+            }
+        }
+
+        void Framework.ILaunched.Shutdown()
+        {
+            var ability = _Entity.FindAbility<IObservedAbility>();
+            if (ability != null)
+            {
+                ability.ShowActionEvent -= _CheckIdle;
+            }
         }
     }
 
-    class IdleBehaviorHandler : IBehaviorHandler
+    
+    class MoveToIdleBehaviorHandler : IBehaviorHandler
     {
         Entity _Entity;
         public delegate void OnIdle();
         public event OnIdle DoneEvent;
 
-        public IdleBehaviorHandler(Entity entity)
+        public MoveToIdleBehaviorHandler(Entity entity)
         {
             _Entity = entity;
         }
@@ -101,78 +137,77 @@ namespace Regulus.Project.SamebestKeys
 
         void Framework.ILaunched.Launch()
         {
-            var observed = _Entity.FindAbility<IObservedAbility>();
-            if (observed != null)
+            
+
+            var command =  _Entity.FindAbility<IBehaviorCommandAbility>();
+            if (command != null)
             {
-                observed.ShowActionEvent += _CheckIdle;
+                command.CommandEvent += _Done;
             }
         }
 
-        void _CheckIdle(Serializable.MoveInfomation obj)
+        private void _Done(IBehaviorCommand command)
         {
-            if (obj.Speed == 0)
-            {
-                DoneEvent();
-            }
-        }
-
-        void Framework.ILaunched.Shutdown()
-        {
-            var observed = _Entity.FindAbility<IObservedAbility>();
-            if (observed != null)
-            {
-                observed.ShowActionEvent -= _CheckIdle;
-            }
-        }
-
-        void IBehaviorCommandInvoker.Invoke(IBehaviorCommand command)
-        {
-            var cmd = command as BehaviorCommand.Idle;
+            var cmd = command as BehaviorCommand.Stop;
             if (cmd != null)
             {
                 DoneEvent();
             }
         }
-    }
 
-    class IdleBehaviorStage : BehaviorStage 
-    {
-        public IdleBehaviorHandler BattleIdle { get; private set; }
+        
 
-        public MoveBehaviorHandler Move { get; private set; }
-        public InjuryBehaviorHandler Injury { get; private set; }
-
-        Entity _Entity;
-        ActionStatue _Idle;
-        public IdleBehaviorStage(Entity entity , ActionStatue idle)            
+        void Framework.ILaunched.Shutdown()
         {
-            Move = new MoveBehaviorHandler();
-            BattleIdle = new IdleBehaviorHandler(entity);
-            Injury = new InjuryBehaviorHandler();
-            _Entity = entity;
-            _Idle = idle;
-        }
+            var command = _Entity.FindAbility<IBehaviorCommandAbility>();
+            if (command != null)
+            {
+                command.CommandEvent -= _Done;
+            }
 
-        internal override IBehaviorHandler[] _Handlers()
-        {
-            return new IBehaviorHandler[] { Move, BattleIdle , Injury};
-        }
-
-        internal override ITriggerableAbility _TriggerableAbility()
-        {
-            return null;
-        }
-
-        protected override void _Begin()
-        {
-            var ability = _Entity.FindAbility<IMoverAbility>();
-            if (ability != null)
-                ability.Act(_Idle, 0, 0);
-        }
-
-        protected override void _End()
-        {
             
         }
+
+        
+    }
+
+    class SkillHitToIdleBehaviorHandler : IBehaviorHandler
+    {
+
+        public delegate void OnIdle();
+        public event OnIdle IdleEvent;
+        Entity _Entity;
+        
+        private Remoting.Value<CastResult> _Result;
+
+
+        public SkillHitToIdleBehaviorHandler(Entity entity, Remoting.Value<CastResult> result)
+        {            
+            this._Entity = entity;
+            this._Result = result;
+        }
+        bool Utility.IUpdatable.Update()
+        {            
+            return true;
+        }
+
+        void Framework.ILaunched.Launch()
+        {
+            
+            _Result.OnValue += _CastResult;
+        }
+
+        private void _CastResult(CastResult cast_result)
+        {
+            if (cast_result == CastResult.Hit || cast_result == CastResult.Miss)
+                IdleEvent();
+        }
+
+        void Framework.ILaunched.Shutdown()
+        {
+            _Result.OnValue -= _CastResult;
+        }
+
+        
     }
 }

@@ -12,8 +12,12 @@ namespace Regulus.Project.SamebestKeys
         float _BodyWidth;
 		// 身體高度
         float _BodyHeight;
-        
-        public ActionStatue CurrentAction { get; protected set; }        
+
+        Behavior _Behavior;
+
+        public ActionStatue CurrentAction { get; protected set; }
+
+        ActorPropertyAbility _PropertyAbility;
 
 		public Actor(Serializable.EntityPropertyInfomation property , Serializable.EntityLookInfomation look)
             : base(property.Id)
@@ -22,6 +26,9 @@ namespace Regulus.Project.SamebestKeys
             _Look = look;
             _BodyWidth = 1;
             _BodyHeight = 1;
+
+            _Behavior = new Behavior(this);
+            _PropertyAbility = new ActorPropertyAbility(_Property, _Look);
 		}
 
 		/// <summary>
@@ -46,6 +53,14 @@ namespace Regulus.Project.SamebestKeys
 
             _QuadTreeObjectAbility = new PhysicalAbility(new Regulus.Types.Rect(_Property.Position.X - _BodyWidth / 2, _Property.Position.Y - _BodyHeight / 2, _BodyWidth, _BodyHeight), this);
             abilitys.AttechAbility<PhysicalAbility>(_QuadTreeObjectAbility);
+            abilitys.AttechAbility<IBehaviorAbility>(_Behavior);
+            abilitys.AttechAbility<IBehaviorCommandAbility>(_Behavior);
+
+            abilitys.AttechAbility<IActorPropertyAbility>(_PropertyAbility);
+            abilitys.AttechAbility<IActorUpdateAbility>(_PropertyAbility);
+            abilitys.AttechAbility<ISkillCaptureAbility>(_PropertyAbility);
+            
+            
         }
 
 		/// <summary>
@@ -66,6 +81,12 @@ namespace Regulus.Project.SamebestKeys
 		/// <param name="abilitys">現有功能Dict</param>
         protected override void _RiseAbility(Entity.AbilitySet abilitys)
         {
+            abilitys.DetechAbility<IActorPropertyAbility>();
+            abilitys.DetechAbility<IActorUpdateAbility>();
+            abilitys.DetechAbility<ISkillCaptureAbility>();
+
+            abilitys.DetechAbility<IBehaviorCommandAbility>();            
+            abilitys.DetechAbility<IBehaviorAbility>();
             abilitys.DetechAbility<IMoverAbility>();
             abilitys.DetechAbility<PhysicalAbility>();
         }
@@ -100,5 +121,7 @@ namespace Regulus.Project.SamebestKeys
             _MoverAbility.SetPosition(_Property.Position.X, _Property.Position.Y);
             _QuadTreeObjectAbility.UpdateBounds(_Property.Position.X - _BodyWidth / 2, _Property.Position.Y - _BodyHeight / 2);
         }
+
+        public ActorMode Mode { get { return _PropertyAbility.GetMode(); } }
     }
 }
