@@ -36,6 +36,8 @@ namespace Regulus.Project.SamebestKeys
 
 
         void ChangeMode();
+
+        bool Died();
     }
 
     class ActorPropertyAbility : IActorPropertyAbility, IActorUpdateAbility , ISkillCaptureAbility
@@ -54,14 +56,18 @@ namespace Regulus.Project.SamebestKeys
         {
             _Property = property;
             _Look = look;
-
+            _Mode = ActorMode.Explore;
             _Updater = new Utility.Updater();
         }
 
         void IActorPropertyAbility.Injury(int damage)
         {
-            _Property.Health -= damage;
-            _Property.Died = true;
+            if (_Property.Died == false)
+            {
+                _Property.Health -= damage;
+                if (_Property.Health < 0)
+                    _Property.Died = true;
+            }            
         }
 
         float IActorPropertyAbility.Direction
@@ -96,9 +102,17 @@ namespace Regulus.Project.SamebestKeys
 
 
         
-        bool IActorPropertyAbility.HasSkill(int skill)
+        bool IActorPropertyAbility.HasSkill(int id)
         {
-            return _FindSkill(skill) != null;
+            var skill = _FindSkill(id);
+            if(skill != null)
+            {
+                var prototype = GameData.Instance.FindSkill(id);
+                var result = prototype.UseMode & GetMode();
+                if (result != 0)
+                    return true;
+            }
+            return false;
         }
 
         private Regulus.Project.SamebestKeys.Serializable.Skill _FindSkill(int skill)
@@ -156,10 +170,6 @@ namespace Regulus.Project.SamebestKeys
             _Capture = rect;            
         }
 
-        
-
-       
-
         bool ISkillCaptureAbility.TryGetBounds(ref Types.Rect bounds , ref int skill)
         {            
             if (_InEffect)
@@ -188,6 +198,12 @@ namespace Regulus.Project.SamebestKeys
                 _Mode = ActorMode.Alert;
         }
         public ActorMode GetMode() { return _Mode; }
+
+
+        bool IActorPropertyAbility.Died()
+        {
+            return _Property.Died;
+        }
     }
     
 }

@@ -124,7 +124,8 @@ namespace Regulus.Projects.SamebestKeys
         }
         void PlayerProvider_Supply(Project.SamebestKeys.IPlayer obj)
         {
-
+            _Command.Register<int>("Cast", obj.Cast);            
+            _Command.Register("ChangeMode", obj.ChangeMode);            
             _Command.Register<string , float , float>("Goto", obj.Goto);            
             _Command.Register("Logout", obj.Logout);
             _Command.Register("ExitWorld", obj.ExitWorld);
@@ -148,7 +149,7 @@ namespace Regulus.Projects.SamebestKeys
             {
                 "Logout","ExitWorld","SetPosition","SetVision",
                 "SetSpeed","Walk","Stop","Say","BodyMovements",
-                "QueryMap","Goto"
+                "QueryMap","Goto","ChangeMode" , "Cast"
             });
         }
 

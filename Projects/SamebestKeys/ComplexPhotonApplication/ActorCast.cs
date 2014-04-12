@@ -65,20 +65,15 @@ namespace Regulus.Project.SamebestKeys
         {
             _Step = CastStep.Effective;
 
-            if (_Prototype.Capture)
+            
+            var stage = new Effective(effective, _Actor, _Prototype.CaptureBounds);
+            stage.DoneEvent += () =>
             {
-                var stage = new Effective(effective, _Actor, _Prototype.CaptureBounds);
-                stage.DoneEvent += () =>
-                {
-                    _ReturnValue.SetValue(CastResult.Miss);
-                    _ToEnd(_Prototype.End);
-                };
-                _Machine.Push(stage);
-            }
-            else
-            { 
-
-            }
+                _ReturnValue.SetValue(CastResult.Miss);
+                _ToEnd(_Prototype.End);
+            };
+            _Machine.Push(stage);
+            
             
         }
 

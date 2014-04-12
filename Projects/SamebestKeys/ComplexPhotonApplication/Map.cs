@@ -180,7 +180,7 @@ namespace Regulus.Project.SamebestKeys
                     behavior.Update();
                 }
                 if (info.Effect != null && info.Property!= null)
-                    _UpdateEffect(info.Effect, info.Property);
+                    _UpdateEffect(info);
 
                 if (info.Update != null)
                     info.Update.Update();
@@ -189,29 +189,38 @@ namespace Regulus.Project.SamebestKeys
             _Lefts.Clear();
             return true;
         }
-        private void _UpdateEffect(ISkillCaptureAbility behavior , IActorPropertyAbility property)
+        private void _UpdateEffect(EntityInfomation entity)
         {
+            var behavior = entity.Effect;
+            var property = entity.Property;
             Types.Rect bounds = new Types.Rect();
-            int skill = 0;
-            var s = GameData.Instance.FindSkill(skill);            
+            int skill = 0;            
             if (behavior.TryGetBounds(ref bounds , ref skill))
-            {                
+            {
+                var s = GameData.Instance.FindSkill(skill);            
                 if (s != null)
                 {
                     if (s.Id == 1)
                     {
                         property.ChangeMode();
+                        behavior.Hit();
                     }
                     else if (s.Id == 2 )
                     {
                         var inbrounds = _ObseverdInfomations.Query(bounds);
-                        foreach (var e in inbrounds)
+                        var commanders = from e1 in inbrounds where e1.Id != entity.Id && e1.Commander != null select e1.Commander;
+                        foreach (var commander in commanders)
                         {
-                            e.Commander.Invoke(new BehaviorCommand.Injury(s.Param1));
+                            commander.Invoke(new BehaviorCommand.Injury(s.Param1));
                         }
-                    }
-                    
+                        if (commanders.Count() > 0)
+                        {
+                            behavior.Hit();
+                        }
 
+                    }
+
+                    
                 }
                 
             }

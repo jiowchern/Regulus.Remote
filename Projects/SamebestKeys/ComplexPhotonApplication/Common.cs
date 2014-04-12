@@ -49,13 +49,13 @@ namespace Regulus.Project.SamebestKeys
 
         void SetSpeed(float speed);
         void ChangeMode();
+        void Cast(int skill);
         void Walk(float direction);
         void Stop(float direction);
         void Say(string message);
 		
         void BodyMovements(ActionStatue action_statue);
-        Value<string> QueryMap();
-
+        Value<string> QueryMap();        
         void Goto(string map , float x , float y);
         
     }
@@ -73,6 +73,7 @@ namespace Regulus.Project.SamebestKeys
         float Direction { get; }        
         event Action<MoveInfomation> ShowActionEvent;
         event Action<string> SayEvent;
+        
     }
 
 	/// <summary>

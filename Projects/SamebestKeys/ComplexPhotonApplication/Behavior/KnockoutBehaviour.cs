@@ -19,7 +19,7 @@ namespace Regulus.Project.SamebestKeys
             var property = _Entity.FindAbility<IActorPropertyAbility>();
             if (property != null)
             {
-                if (property.Hp == 0)
+                if (property.Died())
                 {
                     DoneEvent();
                 }

@@ -70,5 +70,11 @@ namespace Regulus.Project.SamebestKeys
         {
             get { return _Actor.Mode; }
         }
+
+
+
+
+
+        
     }
 }

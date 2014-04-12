@@ -190,5 +190,15 @@ namespace Regulus.Project.SamebestKeys
                 commander.Invoke(new BehaviorCommand.Skill(1));
             }            
         }
+
+
+        void IPlayer.Cast(int skill)
+        {
+            var commander = FindAbility<IBehaviorCommandAbility>();
+            if (commander != null)
+            {
+                commander.Invoke(new BehaviorCommand.Skill(skill));
+            }            
+        }
     }
 }

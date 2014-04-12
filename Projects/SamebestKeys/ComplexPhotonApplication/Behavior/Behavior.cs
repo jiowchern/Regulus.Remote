@@ -56,13 +56,15 @@ namespace Regulus.Project.SamebestKeys
                 var move = new MoveBehaviorHandler(_Entity);                
                 var injury = new IdleToInjuryBehaviorHandler(_Entity);
                 var skill = new IdleToSkillBehaviorHandler(_Entity);
+                var knockout = new KnockoutBehaviorHandler(_Entity);
                 
                 injury.DoneEvent += _ToInjury;
                 move.MoveEvent += _ToMove;
                 skill.SkillEvent += _ToSkill;
+                knockout.DoneEvent += _ToKnockout;
                 
                 _EntityAct(ActionStatue.Idle, 0, 0);
-                return new IBehaviorHandler[] { injury, move, skill };
+                return new IBehaviorHandler[] { injury, move, skill, knockout };
             });            
         }
 
@@ -164,7 +166,7 @@ namespace Regulus.Project.SamebestKeys
         {
             var move = _Entity.FindAbility<IMoverAbility>();
             if (move != null)
-                move.Act(ActionStatue.Idle, 0, 0);
+                move.Act(action_statue, speed, direction);
         }
 
         void IBehaviorAbility.Update()

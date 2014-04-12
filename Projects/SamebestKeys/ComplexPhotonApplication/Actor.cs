@@ -107,6 +107,7 @@ namespace Regulus.Project.SamebestKeys
             mi.BeginTime = begin_time;
             mi.MoveDirection = unit_vector;
             mi.Speed = move_speed;
+            mi.Mode = Mode;
 
             if (ShowActionEvent != null)
                 ShowActionEvent(mi);

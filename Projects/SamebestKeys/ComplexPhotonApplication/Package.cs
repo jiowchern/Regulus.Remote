@@ -15,6 +15,7 @@ namespace Regulus.Project.SamebestKeys
             public bool Capture { get; set; }
             public Regulus.Types.Rect CaptureBounds { get; set; }
             public int Param1 { get; set; }
+            public ActorMode UseMode { get; set; }
         }
 
         [Serializable]
@@ -72,10 +73,14 @@ namespace Regulus.Project.SamebestKeys
 }
 namespace Regulus.Project.SamebestKeys
 {
-
+    [ProtoBuf.ProtoContract]
+    [Flags]
     public enum ActorMode
     {
-        Explore , Alert
+        None,
+        Explore,
+        Alert,
+        All = Explore | Alert
     }
         
 	/// <summary>
@@ -93,7 +98,10 @@ namespace Regulus.Project.SamebestKeys
         Injury,
         Knockout,
         SkillBegin,
-        SkillEnd,
+        Skill1,
+        Skill2,
+        Skill3,
+        SkillEnd ,
     }
 
     [ProtoBuf.ProtoContract]
@@ -164,8 +172,8 @@ namespace Regulus.Project.SamebestKeys.Serializable
         { 
             Position = new Types.Vector2();
             Map = "";
-            MaxHealth = 100;
-            Health = 100;
+            MaxHealth = 50;
+            Health = 50;
             Skills = new System.Collections.Generic.List<Skill>();
         }
         [ProtoBuf.ProtoMember(1)]
@@ -281,6 +289,9 @@ namespace Regulus.Project.SamebestKeys.Serializable
 		/// </summary>
         [ProtoBuf.ProtoMember(6)]
         public float Speed { get; set; }
+
+        [ProtoBuf.ProtoMember(7)]
+        public ActorMode Mode { get; set; }
     }
 
 }

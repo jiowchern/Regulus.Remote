@@ -99,10 +99,24 @@ namespace Regulus.Project.SamebestKeys
             {
                 Actor.Look.Shell = Regulus.Utility.Random.Next(1 , 13);
             }
+            if (Actor.Property.Skills.Count == 0)
+            {
+                Actor.Property.Skills.Add(new Serializable.Skill() { Id = 1 });
+                Actor.Property.Skills.Add(new Serializable.Skill() { Id = 2 });
+            }
             if (Actor.Property.Map == "")
             {
                 Actor.Property.Map = "SL_1C";
-                Actor.Property.Position = Types.Vector2.FromPoint(169,148);
+
+                var positions = new Types.Vector2[] 
+                {
+                    Types.Vector2.FromPoint(Regulus.Utility.Random.Next(164, 164+ 10), Regulus.Utility.Random.Next(163, 163+ 10)),
+                    Types.Vector2.FromPoint(Regulus.Utility.Random.Next(217, 217+ 10), Regulus.Utility.Random.Next(185, 185+ 10)),
+                    Types.Vector2.FromPoint(Regulus.Utility.Random.Next(270, 270+ 10), Regulus.Utility.Random.Next(228, 228+ 10)),
+                    Types.Vector2.FromPoint(Regulus.Utility.Random.Next(255, 255+ 10), Regulus.Utility.Random.Next(130, 130+ 10)),
+                };
+
+                Actor.Property.Position = positions[Regulus.Utility.Random.Next(0, positions.Length)];
             }
             if (float.IsNaN(Actor.Property.Direction) )
             {

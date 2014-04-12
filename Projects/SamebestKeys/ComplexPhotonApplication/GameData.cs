@@ -59,9 +59,13 @@ namespace Regulus.Project.SamebestKeys
             get { return _Maps;  }
         }
 
+
+        static Data.Skill[] _Skills = { new Data.Skill() { Id = 1, Begin = 0.26f, Effective = 0.26f, End = 0.26f, Energy = 10 , Capture = false , CaptureBounds = new Types.Rect() , UseMode = ActorMode.All} ,
+                                      new Data.Skill() { Id = 2, Begin = 0.33f, Effective = 0.03f, End = 0.69f, Energy = 10, Capture = true, CaptureBounds = new Types.Rect(-1,-1,2,2 ) , UseMode = ActorMode.Alert , Param1 = 10}};
+        
         internal Data.Skill FindSkill(int id)
         {
-            return new Data.Skill() { Id = 0, Begin = 1, Effective = 1, End = 1, Energy = 10 };
+            return (from s in _Skills where s.Id == id select s).SingleOrDefault();
         }
     }
 }
