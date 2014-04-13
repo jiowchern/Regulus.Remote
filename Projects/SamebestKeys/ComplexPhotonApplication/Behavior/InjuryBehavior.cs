@@ -7,7 +7,7 @@ namespace Regulus.Project.SamebestKeys
 {
     class SkillFallToInjuryBehaviorHandler : IBehaviorHandler
     {
-        public delegate void OnInjury(int damage);
+        public delegate void OnInjury(BehaviorCommand.Injury injury);
         public event OnInjury DoneEvent;
 
         Entity _Entity;
@@ -44,7 +44,7 @@ namespace Regulus.Project.SamebestKeys
                 CastStep result =  actor.QueryCastStep(_Skill);
                 if (result != CastStep.Effective)
                 {
-                    DoneEvent(injury.Value);
+                    DoneEvent(injury);
                 }
             }
             
@@ -63,7 +63,7 @@ namespace Regulus.Project.SamebestKeys
     }
     class IdleToInjuryBehaviorHandler : IBehaviorHandler
     {
-        public delegate void OnInjury(int damage);
+        public delegate void OnInjury(BehaviorCommand.Injury injury);
         public event OnInjury DoneEvent;
 
         Entity _Entity;
@@ -100,7 +100,7 @@ namespace Regulus.Project.SamebestKeys
             var cmd = command as BehaviorCommand.Injury;
             if (cmd != null)
             {
-                DoneEvent(cmd.Value);
+                DoneEvent(cmd);
             }
         }
 

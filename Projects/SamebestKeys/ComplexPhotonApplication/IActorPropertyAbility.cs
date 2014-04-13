@@ -12,7 +12,7 @@ namespace Regulus.Project.SamebestKeys
     }
     interface IActorPropertyAbility
     {
-        void Injury(int damage);
+        bool Injury(int damage, int repel);
 
         float Direction { get; }
 
@@ -60,14 +60,18 @@ namespace Regulus.Project.SamebestKeys
             _Updater = new Utility.Updater();
         }
 
-        void IActorPropertyAbility.Injury(int damage)
+        bool IActorPropertyAbility.Injury(int damage , int repel)
         {
             if (_Property.Died == false)
             {
                 _Property.Health -= damage;
                 if (_Property.Health < 0)
                     _Property.Died = true;
-            }            
+
+                return _Property.Health < repel;
+            }
+
+            return false;
         }
 
         float IActorPropertyAbility.Direction

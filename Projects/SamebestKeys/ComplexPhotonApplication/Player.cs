@@ -119,7 +119,7 @@ namespace Regulus.Project.SamebestKeys
             var mover = FindAbility<IMoverAbility>();
             if (mover != null)
             {
-                mover.Act(action_statue, 0, 0);
+                mover.Act(new Serializable.ActionCommand() { Command = action_statue, Turn = true });
             }
         }
 

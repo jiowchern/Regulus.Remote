@@ -193,6 +193,7 @@ namespace Regulus.Project.SamebestKeys
         {
             var behavior = entity.Effect;
             var property = entity.Property;
+            var obs = entity.Observed;
             Types.Rect bounds = new Types.Rect();
             int skill = 0;            
             if (behavior.TryGetBounds(ref bounds , ref skill))
@@ -211,7 +212,7 @@ namespace Regulus.Project.SamebestKeys
                         var commanders = from e1 in inbrounds where e1.Id != entity.Id && e1.Commander != null select e1.Commander;
                         foreach (var commander in commanders)
                         {
-                            commander.Invoke(new BehaviorCommand.Injury(s.Param1));
+                            commander.Invoke(new BehaviorCommand.Injury(s.Param1, obs.Direction));
                         }
                         if (commanders.Count() > 0)
                         {

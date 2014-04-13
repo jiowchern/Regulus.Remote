@@ -83,8 +83,6 @@ namespace Regulus.Project.SamebestKeys
     {
         Regulus.Types.Polygon Polygon { get; }
 
-        void Act(ActionStatue action_statue, float move_speed, float direction);
-
         void Act(ActionCommand action_command);
 
         void Update(long time, System.Collections.Generic.IEnumerable<Regulus.Types.Polygon> obbs);

@@ -40,26 +40,31 @@ namespace Regulus.Project.SamebestKeys
         {
             get { return _Polygon; }
         }
-        void _Act(ActionStatue action_statue, float move_speed, float direction /* 轉向角度 0~360 */)
+        void _Act(ActionStatue action_statue, float move_speed, float direction /* 轉向角度 0~360 */ , bool turn , bool absolutely  )
         {
             // 角色面對世界的方向
-            _Direction = (direction + _Direction) % 360;
+            var moveDirection = 0.0f;
+            if (absolutely == false)
+                moveDirection = (direction + _Direction) % 360;
+            else
+                moveDirection = direction % 360;
+
+            if (turn)
+            {
+                _Direction = moveDirection;
+            }
 
             _CurrentAction = action_statue;
             _MoveSpeed = move_speed;
 
-            var t = (float)((_Direction - 180) * Math.PI / 180);
+            var t = (float)((moveDirection - 180) * Math.PI / 180);
 
             // 移動向量
             //_UnitVector = new Types.Vector2() { X = (float)Math.Cos(t), Y = (float)Math.Sin(t) };
             _UnitVector = new Types.Vector2() { X = -(float)Math.Sin(t), Y = -(float)Math.Cos(t) };
             _Update = _First;
         }
-
-        void IMoverAbility.Act(ActionStatue action_statue, float move_speed, float direction)
-        {
-            _Act(action_statue, move_speed, direction);
-        }
+        
 
         void IMoverAbility.Update(long time, System.Collections.Generic.IEnumerable<Types.Polygon> polygons)
         {
@@ -96,7 +101,7 @@ namespace Regulus.Project.SamebestKeys
 
                     if (result.Intersect || result.WillIntersect)
                     {
-                        _Act(ActionStatue.Idle, 0, 0);
+                        _Act(ActionStatue.Idle, 0, 0 , true , false);
                     }
 
                     
@@ -146,7 +151,7 @@ namespace Regulus.Project.SamebestKeys
 
         void IMoverAbility.Act(Serializable.ActionCommand action_command)
         {
-            _Act(action_command.Command, action_command.Speed, action_command.Direction);
+            _Act(action_command.Command, action_command.Speed, action_command.Direction , action_command.Turn , action_command.Absolutely);
         }
     }
 }

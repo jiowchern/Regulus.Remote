@@ -50,10 +50,7 @@ namespace Regulus.Project.SamebestKeys
             get { return _Polygon; }
         }
 
-        void IMoverAbility.Act(ActionStatue action_statue, float move_speed, float direction)
-        {
-            
-        }
+        
 
         void IMoverAbility.Update(long time, IEnumerable<Types.Polygon> obbs)
         {

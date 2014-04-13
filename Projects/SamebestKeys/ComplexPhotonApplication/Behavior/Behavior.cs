@@ -62,8 +62,8 @@ namespace Regulus.Project.SamebestKeys
                 move.MoveEvent += _ToMove;
                 skill.SkillEvent += _ToSkill;
                 knockout.DoneEvent += _ToKnockout;
-                
-                _EntityAct(ActionStatue.Idle, 0, 0);
+
+                _EntityAct(new Serializable.ActionCommand() { Command = ActionStatue.Idle, Turn = true } );
                 return new IBehaviorHandler[] { injury, move, skill, knockout };
             });            
         }
@@ -100,19 +100,28 @@ namespace Regulus.Project.SamebestKeys
 
        
        
-        private void _ToInjury(int damage )
+        private void _ToInjury(BehaviorCommand.Injury injury)
         {
             _ChangeStage(() => 
             {
+                var ability = _Entity.FindAbility<IActorPropertyAbility>();
+
+                if (ability != null && ability.Injury(injury.Value, Regulus.Utility.Random.Next(20, 40)))
+                {
+                    _EntityAct(new Serializable.ActionCommand() { Command = ActionStatue.Injury, Turn = false, Direction = injury.Direction , Speed = 7 , Absolutely = true });
+                }
+                else
+                    _EntityAct(new Serializable.ActionCommand() { Command = ActionStatue.Injury, Turn = true });
+
+
+
                 var idle = new InjuryToIdleBehaviorHandler(1);
                 var knockout = new KnockoutBehaviorHandler(_Entity);
 
                 idle.DoneEvent += _ToIdle;
                 knockout.DoneEvent += _ToKnockout;
-                var ability = _Entity.FindAbility<IActorPropertyAbility>();
-                if (ability != null)
-                    ability.Injury(damage);
-                _EntityAct(ActionStatue.Injury, 0, 0);
+                
+                
                 return new IBehaviorHandler[] { knockout, idle };
             });            
         }
@@ -127,7 +136,7 @@ namespace Regulus.Project.SamebestKeys
                 var ability = _Entity.FindAbility<IActorPropertyAbility>();
                 if (ability != null)
                     ability.DoWakin();
-                _EntityAct(ActionStatue.Knockout, 0, 0);
+                _EntityAct(new Serializable.ActionCommand() { Command = ActionStatue.Knockout, Turn = true } );
                 return new IBehaviorHandler[] { idle };
             });            
         }
@@ -144,7 +153,7 @@ namespace Regulus.Project.SamebestKeys
                 var injury = new SkillFallToInjuryBehaviorHandler(_Entity, skill);
                 idle.IdleEvent += _ToIdle;
                 injury.DoneEvent += _ToInjury;
-                _EntityAct(ActionStatue.SkillBegin + skill, 0, 0);
+                _EntityAct(new Serializable.ActionCommand() { Command = ActionStatue.SkillBegin + skill, Turn = true });
 
                 return new IBehaviorHandler[] { injury, idle };    
             });
@@ -159,14 +168,16 @@ namespace Regulus.Project.SamebestKeys
             var move = _Entity.FindAbility<IMoverAbility>();
 
             if (move != null && property != null)
-                move.Act(ActionStatue.Walk, property.CurrentSpeed, direction);
+            {
+                move.Act(new Serializable.ActionCommand() { Command = ActionStatue.Walk, Direction = direction, Speed = property.CurrentSpeed, Turn = true });                
+            }
         }
 
-        private void _EntityAct(ActionStatue action_statue, float speed, float direction)
+        private void _EntityAct(Serializable.ActionCommand action_command)
         {
             var move = _Entity.FindAbility<IMoverAbility>();
             if (move != null)
-                move.Act(action_statue, speed, direction);
+                move.Act(action_command);
         }
 
         void IBehaviorAbility.Update()

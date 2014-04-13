@@ -43,12 +43,13 @@ namespace Regulus.Project.SamebestKeys
 
         class Injury : IBehaviorCommand
         {
-
-            public Injury(int damage)
+            
+            public Injury(int damage , float direction)
             {
+                Direction = direction;
                 Value = damage;
             }
-
+            public float Direction { get; private set; }
             public int Value { get; private set; }
         }
     }

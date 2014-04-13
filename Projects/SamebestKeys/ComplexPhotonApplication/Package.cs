@@ -240,13 +240,17 @@ namespace Regulus.Project.SamebestKeys.Serializable
 
     [ProtoBuf.ProtoContract]
     public class ActionCommand
-    {
+    {        
         [ProtoBuf.ProtoMember(1)]
         public ActionStatue Command { get; set; }
         [ProtoBuf.ProtoMember(2)]
         public float Speed { get; set; }
         [ProtoBuf.ProtoMember(3)]
         public float Direction { get; set; }
+        [ProtoBuf.ProtoMember(4)]
+        public bool Turn { get; set; }
+        [ProtoBuf.ProtoMember(5)]
+        public bool Absolutely { get; set; }
     }
 	/// <summary>
 	/// 移動資訊
