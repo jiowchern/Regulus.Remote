@@ -22,6 +22,7 @@ namespace Regulus.Project.SamebestKeys
         [ProtoBuf.ProtoContract]
         public class Map
         {
+            
             [ProtoBuf.ProtoMember(1)]
             public string Name { get; set; }
             [ProtoBuf.ProtoMember(2)]

@@ -94,8 +94,12 @@ namespace Regulus.Project.SamebestKeys
 
                     var result = _Collision(polygons, moveVector);
 
-                    if (PositionEvent != null && (result.WillIntersect || result.Intersect) )
+                    if (PositionEvent != null && result.Intersect )
                         PositionEvent(time, moveVector + result.MinimumTranslationVector2);
+                    else if (PositionEvent != null && result.WillIntersect )
+                    {
+                        //PositionEvent(time, moveVector + result.MinimumTranslationVector2);
+                    }
                     else if (PositionEvent != null)
                         PositionEvent(time, moveVector);
 
