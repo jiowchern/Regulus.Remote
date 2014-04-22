@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F10A2AF4-79D2-4335-98A3-A91AC4BEFA94}</ProjectGuid>
+    <ProjectGuid>{BAA6D0EE-C862-4D76-8296-19B8FC611CD1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>User</RootNamespace>
-    <AssemblyName>User</AssemblyName>
+    <RootNamespace>Regulus.Project.KeysHearthstone</RootNamespace>
+    <AssemblyName>Game</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -30,49 +30,33 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug_Unity|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug_Unity\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Photon3Unity3D">
-      <HintPath>..\..\..\Library\ThirdParty\Photon\Photon3Unity3D.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Common\common.cs">
-      <Link>common.cs</Link>
-    </Compile>
-    <Compile Include="User.cs" />
+    <Compile Include="Complex.cs" />
+    <Compile Include="Data\Account.cs" />
+    <Compile Include="Hall.cs" />
+    <Compile Include="IStorage.cs" />
+    <Compile Include="IVerify.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="User.cs" />
+    <Compile Include="Verify.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Library\PureLib\PureLib.csproj">
+    <ProjectReference Include="..\..\Library\PureLib\PureLib.csproj">
       <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
       <Name>PureLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Library\RemotingGhost\RemotingPhotonGhost.csproj">
-      <Project>{8af00b97-4c48-467a-b37d-e9b28bfda365}</Project>
-      <Name>RemotingPhotonGhost</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Library\Remoting\Remoting.csproj">
+    <ProjectReference Include="..\..\Library\Remoting\Remoting.csproj">
       <Project>{a4cfce46-bda8-4416-a1bb-77bd80514019}</Project>
       <Name>Remoting</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Serializable\Serializable.csproj">
-      <Project>{30ddcaac-8ed3-4c7f-a150-b7c32b598cba}</Project>
-      <Name>Serializable %28Projects\TurnBasedRPG\Serializable%29</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

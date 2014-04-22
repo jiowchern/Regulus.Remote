@@ -59,7 +59,7 @@
     </ProjectReference>
     <ProjectReference Include="..\TestNativeGameCore\Game.csproj">
       <Project>{bbec69fa-44a8-4eef-a99b-0b6665c9baca}</Project>
-      <Name>Game</Name>
+      <Name>Game %28Test\TestNative\Game%29</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -70,11 +70,11 @@
     </ProjectReference>
     <ProjectReference Include="..\Game\Game.csproj">
       <Project>{0df727c5-16c7-45ae-9af6-ec04b4a7d713}</Project>
-      <Name>Game</Name>
+      <Name>Game %28Projects\ExiledPrincesses\Game%29</Name>
     </ProjectReference>
     <ProjectReference Include="..\Serializable\Serializable.csproj">
       <Project>{15fc0b78-aa3d-4e6f-b0e6-f13a9f075d7c}</Project>
-      <Name>Serializable</Name>
+      <Name>Serializable %28Projects\ExiledPrincesses\Serializable%29</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

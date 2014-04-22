@@ -61,11 +61,11 @@
     </ProjectReference>
     <ProjectReference Include="..\TestNativeGameCore\Game.csproj">
       <Project>{bbec69fa-44a8-4eef-a99b-0b6665c9baca}</Project>
-      <Name>Game</Name>
+      <Name>Game %28Test\TestNative\Game%29</Name>
     </ProjectReference>
     <ProjectReference Include="..\TestNativeUser\User.csproj">
       <Project>{34995342-07cb-4cdb-84ab-94e3a245c48e}</Project>
-      <Name>User</Name>
+      <Name>User %28Test\TestNative\User%29</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

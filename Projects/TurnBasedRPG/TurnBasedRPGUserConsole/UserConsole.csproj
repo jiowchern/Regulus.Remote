@@ -88,11 +88,11 @@
     </ProjectReference>
     <ProjectReference Include="..\Serializable\Serializable.csproj">
       <Project>{30ddcaac-8ed3-4c7f-a150-b7c32b598cba}</Project>
-      <Name>Serializable</Name>
+      <Name>Serializable %28Projects\TurnBasedRPG\Serializable%29</Name>
     </ProjectReference>
     <ProjectReference Include="..\User\User.csproj">
       <Project>{f10a2af4-79d2-4335-98a3-a91ac4befa94}</Project>
-      <Name>User</Name>
+      <Name>User %28Projects\TurnBasedRPG\User%29</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
