@@ -30,7 +30,7 @@ namespace Regulus.Project.KeysHearthstone
 
 		void Game.IStage.Update()
 		{
-			
+				
 		}
 
 		Remoting.Value<bool> IVerify.Login(string name, string password)
