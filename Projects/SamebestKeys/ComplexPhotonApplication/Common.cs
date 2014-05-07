@@ -26,6 +26,17 @@ namespace Regulus.Project.SamebestKeys
         Value<string> Select(string name);
     }
 
+
+    public interface ILevelSelector
+    {
+        Remoting.Value<string[]>   QueryLevels();
+        Remoting.Value<bool> Select(string id);
+
+
+        void Back();
+    }
+
+
 	public interface IMapInfomation
 	{
         Value<Types.Polygon[]> QueryWalls();

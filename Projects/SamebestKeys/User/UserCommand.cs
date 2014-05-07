@@ -51,11 +51,20 @@ namespace Regulus.Projects.SamebestKeys
 
             user.ObservedAbilityProvider.Supply += ObservedAbilityProvider_Supply;
             user.ObservedAbilityProvider.Unsupply += _Unsupply;
+
+            user.LevelSelectorProvider.Supply += _LevelSelectotSupply;
+            user.LevelSelectorProvider.Unsupply += _Unsupply;
         }
+
+        
         
 
         internal void Unregister(Regulus.Project.SamebestKeys.IUser user)
         {
+            user.LevelSelectorProvider.Supply -= _LevelSelectotSupply;
+            user.LevelSelectorProvider.Unsupply -= _Unsupply;
+
+
             user.ObservedAbilityProvider.Supply -= ObservedAbilityProvider_Supply;
             user.ObservedAbilityProvider.Unsupply -= _Unsupply;
 
@@ -150,6 +159,29 @@ namespace Regulus.Projects.SamebestKeys
                 "Logout","ExitWorld","SetPosition","SetVision",
                 "SetSpeed","Walk","Stop","Say","BodyMovements",
                 "QueryMap","Goto","ChangeMode" , "Cast"
+            });
+        }
+
+
+        void _LevelSelectotSupply(Project.SamebestKeys.ILevelSelector obj)
+        {
+            
+            
+            _Command.Register("Back", obj.Back );
+            _Command.RemotingRegister<string[]>("Levels", obj.QueryLevels, (levels) => 
+            {
+                _View.Write("關卡:");
+                foreach (var level in levels)
+                {
+                    _View.Write("["+level+"]");
+                }
+                _View.WriteLine("");
+            });
+            _Command.RemotingRegister<string, bool>("Select", obj.Select, (result) => { _View.WriteLine("關卡選擇" + result.ToString() ); });
+
+            _RemoveCommands.Add(obj, new string[] 
+            {
+                "Ping"  ,"Disconnect"
             });
         }
 

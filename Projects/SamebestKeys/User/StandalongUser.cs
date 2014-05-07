@@ -65,6 +65,11 @@ namespace Regulus.Projects.SamebestKeys.Standalong
             get { return _Agent.QueryProvider<Project.SamebestKeys.ITraversable>(); }
         }
 
+        Regulus.Remoting.Ghost.IProviderNotice<Project.SamebestKeys.ILevelSelector> Project.SamebestKeys.IUser.LevelSelectorProvider
+        {
+            get { return _Agent.QueryProvider<Project.SamebestKeys.ILevelSelector>(); }
+        }
+
         bool Utility.IUpdatable.Update()
         {
             
@@ -104,6 +109,9 @@ namespace Regulus.Projects.SamebestKeys.Standalong
         {
             
         }
+
+
+
 
 
         

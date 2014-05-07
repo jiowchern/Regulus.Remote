@@ -21,6 +21,7 @@ namespace Regulus.Project.SamebestKeys
                 ai.Name = name;
                 ai.Password = password;
                 ai.Id = Guid.NewGuid();
+                ai.LevelRecords = new string[] { "demo" };
                 _Stroage.Add(ai);
                 return true;
             }
@@ -57,11 +58,6 @@ namespace Regulus.Project.SamebestKeys
                 QuitEvent();
                 QuitEvent = null;
             }
-
-            
         }
-
-        
-        
     }
 }

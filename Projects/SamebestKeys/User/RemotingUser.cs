@@ -84,8 +84,6 @@ namespace Regulus.Projects.SamebestKeys.Remoting
                 remove { _DisconnectEvent -= value; }
             }
         }
-
-
         
     }
     
@@ -203,6 +201,12 @@ namespace Regulus.Projects.SamebestKeys.Remoting
         Regulus.Remoting.Ghost.IProviderNotice<Project.SamebestKeys.ITraversable> Project.SamebestKeys.IUser.TraversableProvider
         {
             get { return _Agent.QueryProvider<Project.SamebestKeys.ITraversable>(); }
+        }
+
+
+        Regulus.Remoting.Ghost.IProviderNotice<Project.SamebestKeys.ILevelSelector> Project.SamebestKeys.IUser.LevelSelectorProvider
+        {
+            get { return _Agent.QueryProvider<Project.SamebestKeys.ILevelSelector>(); }
         }
     }
 }

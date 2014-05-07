@@ -142,13 +142,16 @@ namespace Regulus.Project.SamebestKeys.Serializable
 
     [ProtoBuf.ProtoContract]
     public class AccountInfomation 
-    {
+    {        
         [ProtoBuf.ProtoMember(1)]
         public string Name { get; set; }
         [ProtoBuf.ProtoMember(2)]
         public string Password{ get; set; }
         [ProtoBuf.ProtoMember(3)]
-        public Guid Id { get; set; }        
+        public Guid Id { get; set; }
+
+        public string[] LevelRecords { get; set; }
+        
     }
 
 	/// <summary>

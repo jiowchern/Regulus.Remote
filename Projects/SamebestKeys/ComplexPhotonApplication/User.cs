@@ -29,8 +29,6 @@ namespace Regulus.Project.SamebestKeys
         Serializable.AccountInfomation _AccountInfomation;
         internal void OnLoginSuccess(Serializable.AccountInfomation obj)
         {
-            
-            
             _AccountInfomation = obj;
             VerifySuccessEvent(obj.Id);            
             ToParking();
@@ -44,17 +42,7 @@ namespace Regulus.Project.SamebestKeys
                 _Machine.Push(new ParkingStage(_Storage));
             }
         }
-
-
-        public string Name
-        {
-            get
-            {
-                if (_AccountInfomation != null)
-                    return _AccountInfomation.Name;
-                return null;
-            } 
-        }
+        
         public Guid Id 
         { 
             get 
@@ -72,9 +60,8 @@ namespace Regulus.Project.SamebestKeys
             _Machine.Push(new VerifyStage(_Storage)); 
         }
         public Serializable.DBEntityInfomation Actor { get; private set; }
-        internal void EnterWorld(Serializable.DBEntityInfomation obj)
-        {
-            Actor = obj;
+        internal void EnterWorld(Serializable.DBEntityInfomation obj , string level)
+        {            
             if (Actor.Property.Id == Guid.Empty)
             {
                 Actor.Property.Id = Guid.NewGuid();
@@ -89,7 +76,7 @@ namespace Regulus.Project.SamebestKeys
             }
             if ( !(Actor.Property.Position.X >= 0 && Actor.Property.Position.X <= 100))
             {
-                //Actor.Property.Position = Types.Vector2.FromPoint(Regulus.Utility.Random.Instance.R.Next(0, 100), Actor.Property.Position.Y);                
+                //Actor.Property.Position = Types.Vector2.FromPoint(Regulus.Utility.Random.Instance.R.Next(0, 100), Actor.Property.Position.Y);
             }
             if (!(Actor.Property.Position.Y >= 0 && Actor.Property.Position.Y <= 100))
             {                
@@ -104,27 +91,9 @@ namespace Regulus.Project.SamebestKeys
                 Actor.Property.Skills.Add(new Serializable.Skill() { Id = 1 });
                 Actor.Property.Skills.Add(new Serializable.Skill() { Id = 2 });
             }
-            if (Actor.Property.Map == "")
-            {
-                Actor.Property.Map = "SL_1C";
+            
 
-                var positions = new Types.Vector2[] 
-                {
-                    Types.Vector2.FromPoint(Regulus.Utility.Random.Next(164, 164+ 10), Regulus.Utility.Random.Next(163, 163+ 10)),
-                    Types.Vector2.FromPoint(Regulus.Utility.Random.Next(217, 217+ 10), Regulus.Utility.Random.Next(185, 185+ 10)),
-                    Types.Vector2.FromPoint(Regulus.Utility.Random.Next(270, 270+ 10), Regulus.Utility.Random.Next(228, 228+ 10)),
-                    Types.Vector2.FromPoint(Regulus.Utility.Random.Next(255, 255+ 10), Regulus.Utility.Random.Next(130, 130+ 10)),
-                };
-
-                Actor.Property.Position = positions[Regulus.Utility.Random.Next(0, positions.Length)];
-            }
-            if (float.IsNaN(Actor.Property.Direction) )
-            {
-                Actor.Property.Direction = 0;
-            }
-
-            var map_string  = Actor.Property.Map;
-            ToCross(map_string, Actor.Property.Position , "Test" , new Types.Vector2(50,50));
+            ToCross(level, Actor.Property.Position, "Test", new Types.Vector2(50, 50));
 			
         }
 
@@ -190,7 +159,6 @@ namespace Regulus.Project.SamebestKeys
         {
             var stage = new CrossStage(Provider , _World, target_map, target_position, current_map, current_position);
             stage.ResultEvent += _ToAdventure;
-
             _Machine.Push(stage);             
         }
 
@@ -201,5 +169,19 @@ namespace Regulus.Project.SamebestKeys
             if (_AccountInfomation != null && _AccountInfomation.Id == account)
                 Quit();
         }
+
+        internal void ToLevel(Serializable.DBEntityInfomation entity)
+        {
+            Actor = entity;
+            var stage = new LevelStage(_AccountInfomation);
+            stage.DoneEvent += (level) => 
+            {
+                EnterWorld(Actor, level);
+            };
+            stage.BackEvent += ToParking;
+            _Machine.Push(stage);            
+        }
+
+        
     }
 }
