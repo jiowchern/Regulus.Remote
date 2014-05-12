@@ -61,7 +61,8 @@ namespace Regulus.Project.SamebestKeys
         }
         public Serializable.DBEntityInfomation Actor { get; private set; }
         internal void EnterWorld(Serializable.DBEntityInfomation obj , string level)
-        {            
+        {
+            Actor = obj;
             if (Actor.Property.Id == Guid.Empty)
             {
                 Actor.Property.Id = Guid.NewGuid();

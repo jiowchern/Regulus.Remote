@@ -17,7 +17,8 @@ namespace Regulus.Project.SamebestKeys
         {
             _Parking = new Regulus.Project.SamebestKeys.Parking(obj.Id, _Storage);
             _Parking.BackEvent += obj.Logout;
-            _Parking.SelectEvent += obj.ToLevel;
+            //_Parking.SelectEvent += obj.ToLevel;
+            _Parking.SelectEvent += (ent) => { obj.EnterWorld(ent, "Test"); };
             obj.Provider.Bind<IParking>(_Parking);
 
             return null;
