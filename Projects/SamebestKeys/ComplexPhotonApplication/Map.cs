@@ -5,10 +5,10 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
-    class Map : Regulus.Utility.IUpdatable, IMapInfomation, IMap
+    class Map : Regulus.Utility.IUpdatable, IMapInfomation, IMap 
     {
-        
 
+        Guid _Id;
         public class EntityInfomation : Regulus.Physics.IQuadObject
         {
             public Guid Id { get; set; }
@@ -66,9 +66,11 @@ namespace Regulus.Project.SamebestKeys
             } 
         }
 				
-		public Map(string name)
+		public Map(string name,Regulus.Remoting.ITime time)
 		{
+            _Id = Guid.NewGuid();
 			Name = name;
+            _SetTime(time);
 		}
         void _Into(Entity entity)
         {
@@ -96,7 +98,7 @@ namespace Regulus.Project.SamebestKeys
             }
 
             if (ei.Physical != null)
-            {
+            {                
                 _ObseverdInfomations.Insert(ei);
             }
 			
@@ -252,7 +254,7 @@ namespace Regulus.Project.SamebestKeys
         }
         
         
-        internal void SetTime(Regulus.Remoting.ITime time)
+        void _SetTime(Regulus.Remoting.ITime time)
         {
             _Time = new Regulus.Remoting.Time(time);
         }
@@ -278,5 +280,19 @@ namespace Regulus.Project.SamebestKeys
         {
             return this;
         }
+
+        Guid IMap.Id
+        {
+            get { return _Id; }
+        }
+
+        event Action _ShutdownEvent;
+        event Action IMap.ShutdownEvent
+        {
+            add { _ShutdownEvent += value; }
+            remove { _ShutdownEvent -= value; }
+        }
+
+
     }
 }

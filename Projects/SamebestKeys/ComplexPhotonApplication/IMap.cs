@@ -7,8 +7,11 @@ namespace Regulus.Project.SamebestKeys
 {
     interface IMap
     {
+        Guid Id { get; }
         void Into(Entity entity);
         void Left(Entity entity);
+
+        event Action ShutdownEvent;
 
         IMapInfomation GetInfomation();
     }

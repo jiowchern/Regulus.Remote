@@ -8,68 +8,81 @@ namespace Regulus.Project.SamebestKeys
 
 	interface IWorld
 	{
-        Regulus.Remoting.Value<IMap> Find(string map_name);		
+        Regulus.Remoting.Value<IMap> Create(string level_name);
+        Regulus.Remoting.Value<IMap> Find(Guid id);		
 	}
 
 	class World : IWorld , Regulus.Utility.IUpdatable
 	{
-		List<Map>	_Maps ;
-
-		Regulus.Utility.Updater _Frameworks;
+        Regulus.Utility.TUpdater<Level> _Levels;
+        Regulus.Utility.TUpdater<Map> _Updater;
+        
 		private Remoting.Time _Time;
 
 		public World(Remoting.Time time)
-		{
-			// TODO: Complete member initialization
+		{			
 			this._Time = time;
-
-        
+            _Updater = new Regulus.Utility.TUpdater<Map>();
+            _Levels = new Utility.TUpdater<Level>();
 		}
 		void Regulus.Framework.ILaunched.Launch()
-		{
-			_Frameworks = new Regulus.Utility.Updater();
-			_Maps = new List<Map>();
-
-            foreach(Data.Map map in GameData.Instance.Maps)
-            {
-                _AddMap(_BuildMap(map.Name));
-            }            
+		{            
 		}        
-
-        private void _AddMap(Map map)
-        {
-            _Maps.Add(map);
-            _Frameworks.Add(map);
-            map.SetTime(_Time);
-        }
-
-		private Map _BuildMap(string name)
-		{
-			var map = new Map(name);
-			return map;
-		}
 
 		bool Regulus.Utility.IUpdatable.Update()
 		{
-			_Frameworks.Update();
+			_Updater.Update();
 			return true;
 		}
 
 		void Regulus.Framework.ILaunched.Shutdown()
 		{
-			_Frameworks.Shutdown();
+			_Updater.Shutdown();
 		}
-
-
-
-        Remoting.Value<IMap> IWorld.Find(string map_name)
+        Remoting.Value<IMap> IWorld.Find(Guid id)
         {
-            var map = (from m in _Maps where m.Name == map_name select m).FirstOrDefault();
+            return new Remoting.Value<IMap>((from map in _Updater.Objects where _GetId(map) == id select map).SingleOrDefault());
+        }
+
+        Remoting.Value<IMap> IWorld.Create(string map_name)
+        {
+            var map = _Create(map_name);
             if (map != null)
             {
-                return map;
+                _Initial(map);
+                return new Remoting.Value<IMap>(map);
             }
             return new Remoting.Value<IMap>(null);
+        }
+
+        private Map _Create(string map_name)
+        {
+            return new Map(map_name, _Time);
+        }
+
+
+        private void _AddUpdater(Map map)
+        {
+            _Updater.Add(map);
+        }
+        private void _Initial(Map map)
+        {                        
+            _AddUpdater(map);
+            _RegisterRemoveMap(map, () => { _RemoveUpdater(map); });
+        }
+
+        private void _RemoveUpdater(Map map)
+        {
+            _Updater.Remove(map);
+        }
+        private void _RegisterRemoveMap(IMap map,Action remover_handler)
+        {
+            map.ShutdownEvent += remover_handler;
+        }
+        
+        private Guid _GetId(IMap map)
+        {
+            return map.Id;
         }
     }
 }

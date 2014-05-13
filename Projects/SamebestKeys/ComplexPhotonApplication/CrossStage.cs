@@ -19,8 +19,7 @@ namespace Regulus.Project.SamebestKeys
         
 
         public CrossStage(Remoting.ISoulBinder provider ,Regulus.Project.SamebestKeys.IWorld _World, string target_map, Regulus.Types.Vector2 target_position, string current_map, Regulus.Types.Vector2 current_position)
-        {
-            // TODO: Complete member initialization
+        {            
             this._World = _World;
             this._TargetMap = target_map;
             this._TargetPosition = target_position;
@@ -56,7 +55,7 @@ namespace Regulus.Project.SamebestKeys
 
         void ITraversable.Ready()
         {
-            var mapValue = _World.Find(_TargetMap);
+            var mapValue = _World.Create(_TargetMap);
             mapValue.OnValue += (map) =>
             {
                 if (map == null)

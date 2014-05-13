@@ -100,7 +100,7 @@ namespace Regulus.Project.SamebestKeys
 
         private void _ToAdventure(string map_string)
         {
-            var mapVal = _World.Find(map_string);
+            var mapVal = _World.Create(map_string);
             mapVal.OnValue += (map) =>
             {
                 _Machine.Push(new AdventureStage(map, _Storage));
@@ -171,17 +171,7 @@ namespace Regulus.Project.SamebestKeys
                 Quit();
         }
 
-        internal void ToLevel(Serializable.DBEntityInfomation entity)
-        {
-            Actor = entity;
-            var stage = new LevelStage(_AccountInfomation);
-            stage.DoneEvent += (level) => 
-            {
-                EnterWorld(Actor, level);
-            };
-            stage.BackEvent += ToParking;
-            _Machine.Push(stage);            
-        }
+        
 
         
     }
