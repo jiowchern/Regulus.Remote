@@ -5,33 +5,32 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
-    class VerifyStage : Regulus.Game.IStage<User>
+    class VerifyStage : Regulus.Game.IStage
     {
         Regulus.Project.SamebestKeys.Verify _Verify;
-        
+        User _User;
         IStorage _Storage;
-        public VerifyStage(IStorage storage)
+        public VerifyStage(IStorage storage,User user)
         {
+            _User = user;
             _Storage = storage;
             
         }
-        Regulus.Game.StageLock Regulus.Game.IStage<User>.Enter(User obj)
+        void Regulus.Game.IStage.Enter()
         {
             _Verify = new Regulus.Project.SamebestKeys.Verify(_Storage);
-            _Verify.LoginSuccess += obj.OnLoginSuccess;
-            _Verify.QuitEvent += obj.Quit;
-           
-            obj.Provider.Bind<IVerify>(_Verify);
+            _Verify.LoginSuccess += _User.OnLoginSuccess;
+            _Verify.QuitEvent += _User.Quit;
 
-            return null;
+            _User.Provider.Bind<IVerify>(_Verify);
         }
 
-        void Regulus.Game.IStage<User>.Leave(User obj)
+        void Regulus.Game.IStage.Leave()
         {
-            obj.Provider.Unbind<IVerify>(_Verify);
+            _User.Provider.Unbind<IVerify>(_Verify);
         }
 
-        void Regulus.Game.IStage<User>.Update(User obj)
+        void Regulus.Game.IStage.Update()
         {
             
         }

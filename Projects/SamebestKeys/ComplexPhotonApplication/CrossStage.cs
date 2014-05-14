@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
-    class CrossStage : Regulus.Game.IStage<User>, ITraversable
+    class CrossStage : Regulus.Game.IStage, ITraversable
     {
         private Regulus.Project.SamebestKeys.IWorld _World;
         private string _TargetMap;
@@ -30,20 +30,20 @@ namespace Regulus.Project.SamebestKeys
 
         
 
-        Game.StageLock Game.IStage<User>.Enter(User obj)
+        void Game.IStage.Enter()
         {
             _Provider.Bind<ITraversable>(this);
-            return null;
+            
         }
 
         
 
-        void Game.IStage<User>.Leave(User obj)
+        void Game.IStage.Leave()
         {
             _Provider.Unbind<ITraversable>(this);
         }
 
-        void Game.IStage<User>.Update(User obj)
+        void Game.IStage.Update()
         {
             
         }

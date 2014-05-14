@@ -4,6 +4,13 @@ namespace Regulus.Project.SamebestKeys
 {
     namespace Data
     {
+
+        [Serializable]
+        public class Level
+        {
+            public string Name { get; set; }
+            public bool Singleton { get; set; }
+        }
         [Serializable]
         public class Skill
         {

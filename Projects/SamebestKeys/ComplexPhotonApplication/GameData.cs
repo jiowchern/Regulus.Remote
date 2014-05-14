@@ -62,10 +62,29 @@ namespace Regulus.Project.SamebestKeys
 
         static Data.Skill[] _Skills = { new Data.Skill() { Id = 1, Begin = 0.26f, Effective = 0.26f, End = 0.26f, Energy = 10 , Capture = false , CaptureBounds = new Types.Rect() , UseMode = ActorMode.All} ,
                                       new Data.Skill() { Id = 2, Begin = 0.33f, Effective = 0.03f, End = 0.69f, Energy = 10, Capture = true, CaptureBounds = new Types.Rect(-1,-1,2,2 ) , UseMode = ActorMode.Alert , Param1 = 10}};
-        
+
+
+        static Data.Level[] _Levels = 
+        {
+            new Data.Level()
+            {
+                Name = "Ark",
+                Singleton = true
+            },
+            new Data.Level()
+            {
+                Name = "Test",
+                Singleton = false
+            }
+        };
         internal Data.Skill FindSkill(int id)
         {
             return (from s in _Skills where s.Id == id select s).SingleOrDefault();
+        }
+
+        internal Data.Level FindLevel(string level_name)
+        {
+            return (from level in _Levels where level.Name == level_name select level).SingleOrDefault();
         }
     }
 }

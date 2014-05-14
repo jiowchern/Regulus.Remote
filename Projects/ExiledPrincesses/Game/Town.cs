@@ -29,6 +29,7 @@ namespace Regulus.Project.ExiledPrincesses.Game.Stage
 
         public delegate void OnToMap(string name);
         public event OnToMap ToLevelsEvent;
+
         TownPrototype _Prototype;
         Regulus.Remoting.ISoulBinder _Binder;
         string _Name;

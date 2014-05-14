@@ -11,7 +11,7 @@ namespace Regulus.Project.SamebestKeys
     {
         public Remoting.ISoulBinder Provider { get; private set; }
 
-        Regulus.Game.StageMachine<User> _Machine ;
+        Regulus.Game.StageMachine _Machine ;
         public event OnNewUser VerifySuccessEvent;
         
 		IWorld _World;
@@ -20,7 +20,7 @@ namespace Regulus.Project.SamebestKeys
         {
             _Storage = storage;
 
-            _Machine = new Regulus.Game.StageMachine<User>(this);
+            _Machine = new Regulus.Game.StageMachine();
             Provider = provider;
             provider.BreakEvent += Quit;
 			_World = world;
@@ -39,7 +39,7 @@ namespace Regulus.Project.SamebestKeys
             if (_AccountInfomation != null)
             {
                 Actor = null;
-                _Machine.Push(new ParkingStage(_Storage));
+                _Machine.Push(new ParkingStage(_Storage , this));
             }
         }
         
@@ -57,7 +57,7 @@ namespace Regulus.Project.SamebestKeys
         {
             _AccountInfomation = null;
             _ClearActor();            
-            _Machine.Push(new VerifyStage(_Storage)); 
+            _Machine.Push(new VerifyStage(_Storage ,this)); 
         }
         public Serializable.DBEntityInfomation Actor { get; private set; }
         internal void EnterWorld(Serializable.DBEntityInfomation obj , string level)
@@ -97,24 +97,18 @@ namespace Regulus.Project.SamebestKeys
             ToCross(level, Actor.Property.Position, "Test", new Types.Vector2(50, 50));
 			
         }
-
-        private void _ToAdventure(string map_string)
+        private void _ToAdventure(IMap map)
         {
-            var mapVal = _World.Create(map_string);
-            mapVal.OnValue += (map) =>
-            {
-                _Machine.Push(new AdventureStage(map, _Storage));
-            };
+            _Machine.Push(new AdventureStage(map, _Storage, this));
         }
 
-        
         void _ToAdventure(string map , Types.Vector2 position)
         {
             if (Actor != null)
             {
                 Actor.Property.Map = map;
                 Actor.Property.Position = position;
-                _ToAdventure(Actor.Property.Map);
+                //_ToAdventure(Actor.Property.Map);
             }            
         }
 
@@ -122,7 +116,7 @@ namespace Regulus.Project.SamebestKeys
         {
             _AccountInfomation = null;
             _ClearActor();            
-            _Machine.Push(new VerifyStage(_Storage)); 
+            _Machine.Push(new VerifyStage(_Storage,this)); 
         }
         
         private void _ClearActor()
@@ -158,9 +152,11 @@ namespace Regulus.Project.SamebestKeys
 
         internal void ToCross(string target_map, Types.Vector2 target_position, string current_map, Types.Vector2 current_position)
         {
+            
             var stage = new CrossStage(Provider , _World, target_map, target_position, current_map, current_position);
             stage.ResultEvent += _ToAdventure;
             _Machine.Push(stage);             
+            
         }
 
 
@@ -173,6 +169,20 @@ namespace Regulus.Project.SamebestKeys
 
         
 
-        
+        internal void ToCreateLevel(Serializable.DBEntityInfomation obj)
+        {
+            Actor = obj;
+            var result = _World.Create("Ark");
+            result.OnValue += _ToLevel;
+
+        }
+        ILevel _Level;
+        private void _ToLevel(ILevel level)
+        {
+            _Level = level;
+            var result = _Level.QueryCurrent();
+            
+            
+        }
     }
 }

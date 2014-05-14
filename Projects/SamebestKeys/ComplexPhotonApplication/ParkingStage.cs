@@ -5,31 +5,31 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
-    class ParkingStage : Regulus.Game.IStage<User>
+    class ParkingStage : Regulus.Game.IStage
     {
         IStorage _Storage;
+        User _User;
         Regulus.Project.SamebestKeys.Parking _Parking;
-        public ParkingStage(IStorage storage)
+        public ParkingStage(IStorage storage , User user)
         {
+            _User = user;
             _Storage = storage;
         }
-        Regulus.Game.StageLock Regulus.Game.IStage<User>.Enter(User obj)
+        void Regulus.Game.IStage.Enter()
         {
-            _Parking = new Regulus.Project.SamebestKeys.Parking(obj.Id, _Storage);
-            _Parking.BackEvent += obj.Logout;
-            //_Parking.SelectEvent += obj.ToLevel;
-            _Parking.SelectEvent += (ent) => { obj.EnterWorld(ent, "Test"); };
-            obj.Provider.Bind<IParking>(_Parking);
-
-            return null;
+            _Parking = new Regulus.Project.SamebestKeys.Parking(_User.Id, _Storage);
+            _Parking.BackEvent += _User.Logout;            
+            _Parking.SelectEvent += _User.ToCreateLevel;
+            _User.Provider.Bind<IParking>(_Parking);
+            
         }
 
-        void Regulus.Game.IStage<User>.Leave(User obj)
+        void Regulus.Game.IStage.Leave()
         {
-            obj.Provider.Unbind<IParking>(_Parking);
+            _User.Provider.Unbind<IParking>(_Parking);
         }
 
-        void Regulus.Game.IStage<User>.Update(User obj)
+        void Regulus.Game.IStage.Update()
         {
             
         }

@@ -53,7 +53,8 @@ namespace Regulus.Project.KeysHearthstone
 		private void _ToVerify()
 		{
 			var stage = new Verify(_Binder, _Storage);
-			stage.DoneEvent += _ToMaintenance;
+			stage.DoneEvent += _ToMaintenance;            
+            
 			_Machine.Push(stage);
 		}
 

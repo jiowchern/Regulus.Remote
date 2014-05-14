@@ -5,13 +5,27 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
-    class Level : Regulus.Utility.IUpdatable
+
+    interface ILevel
+    {
+        event Action ShutdownEvent;
+        Guid Id { get; }
+
+        Remoting.Value<IMap> QueryCurrent();
+    }
+
+    class Level : Regulus.Utility.IUpdatable , ILevel
     {
         Queue<string> _MapNames;
         public delegate void OnDone();
         public event OnDone DoneEvent;
 
-        //IMap Current { get; private set; }
+        private Remoting.Time _Time;
+
+        public Level(Remoting.Time time)
+        {            
+            this._Time = time;
+        }
         bool Utility.IUpdatable.Update()
         {
             throw new NotImplementedException();
@@ -19,13 +33,18 @@ namespace Regulus.Project.SamebestKeys
 
         void Framework.ILaunched.Launch()
         {
-            /*if (_MapNames.Count > 0)
-                _Change(_Pop(_MapNames.Dequeue()));
+            if (_MapNames.Count > 0)
+                _Change(_Create(_MapNames.Dequeue()));
             else
-                DoneEvent();*/
+                DoneEvent();
         }
 
-        private IMap _Pop(string map_name)
+        private void _Change(IMap map)
+        {
+            throw new NotImplementedException();
+        }
+
+        private IMap _Create(string map_name)
         {
             return new Map(map_name, LocalTime.Instance);
         }
@@ -33,6 +52,29 @@ namespace Regulus.Project.SamebestKeys
         
 
         void Framework.ILaunched.Shutdown()
+        {
+            throw new NotImplementedException();
+        }
+
+        event Action ILevel.ShutdownEvent
+        {
+            add { throw new NotImplementedException(); }
+            remove { throw new NotImplementedException(); }
+        }
+
+        internal void Build(Data.Level level)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        Guid ILevel.Id
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+
+        Remoting.Value<IMap> ILevel.QueryCurrent()
         {
             throw new NotImplementedException();
         }
