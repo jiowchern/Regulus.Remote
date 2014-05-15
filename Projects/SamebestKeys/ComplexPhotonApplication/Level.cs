@@ -70,14 +70,14 @@ namespace Regulus.Project.SamebestKeys
         }
 
 
-
         Remoting.Value<bool> IRealm.Join(Player[] players)
-        {
-            return false;
-            /*if (_Controllers.Count < _Realm.NumberForPlayer)
+        {            
+            if (_Controllers.Count < _Realm.NumberForPlayer)
             { 
 
-            }*/
+            }
+
+            return false;
         }
     }
 

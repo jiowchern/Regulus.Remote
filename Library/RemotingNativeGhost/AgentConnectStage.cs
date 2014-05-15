@@ -30,23 +30,26 @@ namespace Regulus.Remoting.Ghost.Native
 
             private void _ConnectResult(IAsyncResult ar)
             {
+                bool result = false;
                 try
                 {
-                    _Result = true;
-                    _Socket.EndConnect(ar);                    
+                    
+                    _Socket.EndConnect(ar);
+                    result = true;
                 }
                 catch (System.Net.Sockets.SocketException ex)
                 {
-                    _Result = false;
+                    
                 }
                 catch (ObjectDisposedException ode)
                 {
-                    _Result = false;
+                    
                 }
                 catch 
                 {
-                    _Result = false;
+                    
                 }
+                _Result = result;
             }
 
             bool _InvokeResultEvent()
