@@ -6,77 +6,86 @@ using System.Text;
 namespace Regulus.Project.SamebestKeys
 {
 
-    interface ILevel
+    interface IRealm
     {
         event Action ShutdownEvent;
         Guid Id { get; }
-
-        Remoting.Value<IMap> QueryCurrent();
+        Remoting.Value<bool> Join(Player[] players);
     }
 
-    class Level : Regulus.Utility.IUpdatable , ILevel
+    partial class Realm : Regulus.Utility.IUpdatable , IRealm
     {
-        Queue<string> _MapNames;
-        public delegate void OnDone();
-        public event OnDone DoneEvent;
-
+        Guid _Id;
+        List<Record> _Records;        
+        Regulus.Utility.Updater _Updater;
         private Remoting.Time _Time;
-
-        public Level(Remoting.Time time)
-        {            
-            this._Time = time;
+        Data.Realm _Realm;
+        List<Controller> _Controllers;
+        public Realm(Remoting.Time time)
+        {
+            _Controllers = new List<Controller>();
+            _Updater = new Utility.Updater();
+            _Records = new List<Record>();
+            _Time = time;
+            _Id = new Guid();
         }
         bool Utility.IUpdatable.Update()
         {
-            throw new NotImplementedException();
+            _Updater.Update();
+            return true;
         }
 
         void Framework.ILaunched.Launch()
         {
-            if (_MapNames.Count > 0)
-                _Change(_Create(_MapNames.Dequeue()));
-            else
-                DoneEvent();
+            
         }
+        
 
-        private void _Change(IMap map)
-        {
-            throw new NotImplementedException();
-        }
 
-        private IMap _Create(string map_name)
+        private Map _Create(string map_name)
         {
             return new Map(map_name, LocalTime.Instance);
         }
 
-        
-
         void Framework.ILaunched.Shutdown()
         {
-            throw new NotImplementedException();
+            _Updater.Shutdown();
         }
 
-        event Action ILevel.ShutdownEvent
+        event Action _ShutdownEvent;
+        event Action IRealm.ShutdownEvent
         {
-            add { throw new NotImplementedException(); }
-            remove { throw new NotImplementedException(); }
+            add { _ShutdownEvent += value; }
+            remove { _ShutdownEvent -= value; }
         }
 
-        internal void Build(Data.Level level)
+        internal void Build(Data.Realm realm)
         {
-            throw new NotImplementedException();
+            _Realm = realm;
+        }
+
+        Guid IRealm.Id
+        {
+            get { return _Id; }
         }
 
 
-        Guid ILevel.Id
+
+        Remoting.Value<bool> IRealm.Join(Player[] players)
         {
-            get { throw new NotImplementedException(); }
+            return false;
+            /*if (_Controllers.Count < _Realm.NumberForPlayer)
+            { 
+
+            }*/
         }
+    }
 
+    partial class Realm
+    {
+        struct Controller
+        { 
 
-        Remoting.Value<IMap> ILevel.QueryCurrent()
-        {
-            throw new NotImplementedException();
         }
     }
 }

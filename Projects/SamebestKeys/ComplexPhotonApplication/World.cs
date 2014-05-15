@@ -29,21 +29,21 @@ namespace Regulus.Project.SamebestKeys
 
 	interface IWorld
 	{
-        Regulus.Remoting.Value<ILevel> Create(string level_name);
-        Regulus.Remoting.Value<ILevel> Find(Guid id);		
+        Regulus.Remoting.Value<IRealm> Create(string level_name);
+        Regulus.Remoting.Value<IRealm> Find(Guid id);		
 	}
 
 	class World : IWorld , Regulus.Utility.IUpdatable
 	{
-        Regulus.Utility.TUpdater<Level> _Levels;        
+        Regulus.Utility.TUpdater<Realm> _Levels;        
         
 		private Remoting.Time _Time;
 
 		public World(Remoting.Time time)
 		{
 			this._Time = time;
-            _Levels = new Utility.TUpdater<Level>();
-            _Singletons = new Dictionary<string, Level>();
+            _Levels = new Utility.TUpdater<Realm>();
+            _Singletons = new Dictionary<string, Realm>();
 		}
 
 
@@ -61,25 +61,25 @@ namespace Regulus.Project.SamebestKeys
 		{
             _Levels.Shutdown();
 		}
-        Remoting.Value<ILevel> IWorld.Find(Guid id)
+        Remoting.Value<IRealm> IWorld.Find(Guid id)
         {
-            return new Remoting.Value<ILevel>((from level in _Levels.Objects where _GetId(level) == id select level).SingleOrDefault());
+            return new Remoting.Value<IRealm>((from level in _Levels.Objects where _GetId(level) == id select level).SingleOrDefault());
         }
 
-        Remoting.Value<ILevel> IWorld.Create(string level_name)
+        Remoting.Value<IRealm> IWorld.Create(string level_name)
         {
             var level = _Create(level_name);
             if (level != null)
             {
                 _Initial(level);
-                return new Remoting.Value<ILevel>(level);
+                return new Remoting.Value<IRealm>(level);
             }
-            return new Remoting.Value<ILevel>(null);
+            return new Remoting.Value<IRealm>(null);
         }
 
-        private Level _Create(string level_name)
+        private Realm _Create(string level_name)
         {
-            Data.Level level = GameData.Instance.FindLevel(level_name);
+            Data.Realm level = GameData.Instance.FindLevel(level_name);
             if (level.Singleton)
             {
                 var instance = _Find(level.Name);
@@ -92,9 +92,9 @@ namespace Regulus.Project.SamebestKeys
             return _Create(level , _Time);
         }
 
-        private Level _Create(Data.Level level, Remoting.Time time)
+        private Realm _Create(Data.Realm level, Remoting.Time time)
         {
-            var instance = new Level(time);
+            var instance = new Realm(time);
             instance.Build(level);
             if (level.Singleton)
             {
@@ -104,40 +104,40 @@ namespace Regulus.Project.SamebestKeys
         }
 
 
-        private void _Register(Level instance, string name)
+        private void _Register(Realm instance, string name)
         {
             _Singletons.Add(name, instance);
         }
 
 
         
-        Dictionary<string, Level> _Singletons;
-        private Level _Find(string level_name)
+        Dictionary<string, Realm> _Singletons;
+        private Realm _Find(string level_name)
         {
             return (from singleton in _Singletons where singleton.Key == level_name select singleton.Value).SingleOrDefault();
         }
 
 
-        private void _AddUpdater(Level map)
+        private void _AddUpdater(Realm map)
         {
             _Levels.Add(map);
         }
-        private void _Initial(Level map)
+        private void _Initial(Realm map)
         {                        
             _AddUpdater(map);
             _RegisterRemoveMap(map, () => { _RemoveUpdater(map); });
         }
 
-        private void _RemoveUpdater(Level level)
+        private void _RemoveUpdater(Realm level)
         {
             _Levels.Remove(level);
         }
-        private void _RegisterRemoveMap(ILevel map,Action remover_handler)
+        private void _RegisterRemoveMap(IRealm map,Action remover_handler)
         {
             map.ShutdownEvent += remover_handler;
         }
         
-        private Guid _GetId(ILevel level)
+        private Guid _GetId(IRealm level)
         {
             return level.Id;
         }

@@ -169,20 +169,18 @@ namespace Regulus.Project.SamebestKeys
 
         
 
-        internal void ToCreateLevel(Serializable.DBEntityInfomation obj)
+        internal void ToFirst(Serializable.DBEntityInfomation obj)
         {
             Actor = obj;
             var result = _World.Create("Ark");
-            result.OnValue += _ToLevel;
+            result.OnValue += _ToRealm;
 
         }
-        ILevel _Level;
-        private void _ToLevel(ILevel level)
+        IRealm _Realm;
+        private void _ToRealm(IRealm realm)
         {
-            _Level = level;
-            var result = _Level.QueryCurrent();
-            
-            
+            //var stage = new RealmStage(realm);
+            //_Machine.Push(stage);
         }
     }
 }

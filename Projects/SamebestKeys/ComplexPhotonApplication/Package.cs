@@ -4,12 +4,24 @@ namespace Regulus.Project.SamebestKeys
 {
     namespace Data
     {
-
         [Serializable]
-        public class Level
+        public struct Stage
+        {
+            public string Name { get; set; }
+            public bool First { get; set; }
+        }
+        [Serializable]
+        public struct Realm
         {
             public string Name { get; set; }
             public bool Singleton { get; set; }
+
+            public Stage[] Stages { get; set; }
+
+            public int NumberForPlayer { get; set; }
+
+            public bool NotLimit() {  return NumberForPlayer == 0 ;} 
+            
         }
         [Serializable]
         public class Skill

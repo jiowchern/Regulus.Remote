@@ -7,7 +7,8 @@ namespace Regulus.Project.SamebestKeys
 {
     class Map : Regulus.Utility.IUpdatable, IMapInfomation, IMap 
     {
-
+        public delegate void OnDone(Record record);
+        public event OnDone DoneEvent;
         Guid _Id;
         public class EntityInfomation : Regulus.Physics.IQuadObject
         {
