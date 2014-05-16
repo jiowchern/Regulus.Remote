@@ -55,7 +55,7 @@ namespace Regulus.Project.SamebestKeys
 
         void ITraversable.Ready()
         {
-            var mapValue = _World.Create(_TargetMap);
+            var mapValue = _World.Query(_TargetMap);
             mapValue.OnValue += (map) =>
             {
                 if (map == null)

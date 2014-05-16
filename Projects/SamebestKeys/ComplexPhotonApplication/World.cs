@@ -5,100 +5,83 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
-    struct AAA
-    {
-        public int a;
-    }
-    struct AAAA
-    {
-        public AAA AAA;
-        public int A;
-        public int B;
-        public int C;
-        public int D;
-    }
-
-    class CCCC
-    {
-       public int A;
-       public int B;
-       public int C;
-       public int D;
-    }
-
 
 	interface IWorld
 	{
-        Regulus.Remoting.Value<IRealm> Create(string level_name);
+        Regulus.Remoting.Value<IRealm> Query(string level_name);
         Regulus.Remoting.Value<IRealm> Find(Guid id);		
 	}
 
 	class World : IWorld , Regulus.Utility.IUpdatable
 	{
-        Regulus.Utility.TUpdater<Realm> _Levels;        
-        
+        Dictionary<string, Realm> _Singletons;
+        Regulus.Utility.TUpdater<Realm> _Realms;                
 		private Remoting.Time _Time;
 
 		public World(Remoting.Time time)
 		{
 			this._Time = time;
-            _Levels = new Utility.TUpdater<Realm>();
+            _Realms = new Utility.TUpdater<Realm>();
             _Singletons = new Dictionary<string, Realm>();
 		}
 
 
 		void Regulus.Framework.ILaunched.Launch()
 		{            
+
 		}        
 
 		bool Regulus.Utility.IUpdatable.Update()
 		{
-            _Levels.Update();
+            _Realms.Update();
 			return true;
 		}
 
 		void Regulus.Framework.ILaunched.Shutdown()
 		{
-            _Levels.Shutdown();
+            _Realms.Shutdown();
 		}
         Remoting.Value<IRealm> IWorld.Find(Guid id)
         {
-            return new Remoting.Value<IRealm>((from level in _Levels.Objects where _GetId(level) == id select level).SingleOrDefault());
+            return new Remoting.Value<IRealm>((from level in _Realms.Objects where _GetId(level) == id select level).SingleOrDefault());
         }
 
-        Remoting.Value<IRealm> IWorld.Create(string level_name)
+        Remoting.Value<IRealm> IWorld.Query(string realm_name)
         {
-            var level = _Create(level_name);
-            if (level != null)
+            var result = new Remoting.Value<IRealm>();
+            var realm = _Query(realm_name);
+            if (realm != null)
             {
-                _Initial(level);
-                return new Remoting.Value<IRealm>(level);
+                _Initial(result, realm);
             }
-            return new Remoting.Value<IRealm>(null);
+            else
+                result.SetValue(null);
+            return result;
         }
 
-        private Realm _Create(string level_name)
+        
+
+        private Realm _Query(string realm_name)
         {
-            Data.Realm level = GameData.Instance.FindLevel(level_name);
-            if (level.Singleton)
+            Data.Realm realm = GameData.Instance.FindLevel(realm_name);
+            if (realm.Singleton)
             {
-                var instance = _Find(level.Name);
+                var instance = _Find(realm.Name);
                 if (instance != null)
                 {
                     return instance;
                 }
             }
 
-            return _Create(level , _Time);
+            return _Create(realm , _Time);
         }
 
-        private Realm _Create(Data.Realm level, Remoting.Time time)
+        private Realm _Create(Data.Realm realm, Remoting.Time time)
         {
-            var instance = new Realm(time);
-            instance.Build(level);
-            if (level.Singleton)
+            var instance = new Realm(time, realm);            
+            if (realm.Singleton)
             {
-                _Register(instance ,  level.Name);
+                _Register(instance ,  realm.Name);
             }
             return instance;
         }
@@ -108,34 +91,25 @@ namespace Regulus.Project.SamebestKeys
         {
             _Singletons.Add(name, instance);
         }
-
-
         
-        Dictionary<string, Realm> _Singletons;
         private Realm _Find(string level_name)
         {
             return (from singleton in _Singletons where singleton.Key == level_name select singleton.Value).SingleOrDefault();
         }
 
 
-        private void _AddUpdater(Realm map)
+        private void _PushToUpdater(Realm map)
         {
-            _Levels.Add(map);
-        }
-        private void _Initial(Realm map)
-        {                        
-            _AddUpdater(map);
-            _RegisterRemoveMap(map, () => { _RemoveUpdater(map); });
+            _Realms.Add(map);
         }
 
-        private void _RemoveUpdater(Realm level)
-        {
-            _Levels.Remove(level);
+        private void _Initial(Remoting.Value<IRealm> result, Realm realm)
+        {            
+            _PushToUpdater(realm);           
         }
-        private void _RegisterRemoveMap(IRealm map,Action remover_handler)
-        {
-            map.ShutdownEvent += remover_handler;
-        }
+        
+
+        
         
         private Guid _GetId(IRealm level)
         {

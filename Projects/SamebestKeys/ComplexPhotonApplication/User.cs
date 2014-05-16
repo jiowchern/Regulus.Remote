@@ -172,7 +172,7 @@ namespace Regulus.Project.SamebestKeys
         internal void ToFirst(Serializable.DBEntityInfomation obj)
         {
             Actor = obj;
-            var result = _World.Create("Ark");
+            var result = _World.Query("Ark");
             result.OnValue += _ToRealm;
 
         }

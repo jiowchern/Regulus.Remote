@@ -7,9 +7,10 @@ namespace Regulus.Project.SamebestKeys
         [Serializable]
         public struct Stage
         {
-            public string Name { get; set; }
+            public string MapName { get; set; }
             public bool First { get; set; }
         }
+
         [Serializable]
         public struct Realm
         {
