@@ -18,8 +18,8 @@ namespace Regulus.Utility
         bool Update(T arg);
     }
 
-
-    public class Launcher<T> where T : Regulus.Framework.ILaunched
+   
+    public class Launcher<T > where T : Regulus.Framework.ILaunched
     {
         
         Queue<T> _Adds = new Queue<T>();

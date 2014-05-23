@@ -5,16 +5,16 @@ using System.Text;
 
 namespace Regulus.Utility
 {
+
     public class Poller<T> where T : class
     {
         Queue<T> _Adds = new Queue<T>();
-
         Queue<Func<T, bool>> _Removes = new Queue<Func<T, bool>>();
+
         List<T> _Objects = new List<T>();
         
         public void Add(T obj)
-        {
-            
+        {            
             lock (_Adds)
                 _Adds.Enqueue(obj);
         }

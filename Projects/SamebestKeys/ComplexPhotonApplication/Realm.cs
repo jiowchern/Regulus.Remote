@@ -10,73 +10,48 @@ namespace Regulus.Project.SamebestKeys
     {
         event Action ShutdownEvent;
         Guid Id { get; }
-        Remoting.Value<bool> Join(Player[] players);
+        Remoting.Value<bool> Join(Player player);
+        void Exit(Player player);
     }
 
     partial class Realm : Regulus.Utility.IUpdatable , IRealm
     {
-        Guid _Id;        
-        
+        Guid _Id;
         private Remoting.Time _Time;
-        Data.Realm _Realm;
+        private Zone _Zone;
+        Team _Team;
+        Regulus.Utility.Updater _Updater;
         
-        event Action _ShutdownEvent;
-
-        Regulus.Game.StageMachine _Machine;
-
-        public Realm(Remoting.Time time)
+        Realm(Team team, Zone zone, Remoting.Time time )
         {
-            _Machine = new Game.StageMachine();                   
-            _Time = time;
-            _Id = new Guid();
-        }
+            _Team = team;
+            _Id = Guid.NewGuid();
+            this._Zone = zone;
+            this._Time = time;
 
-        public Realm(Remoting.Time time, Data.Realm realm) : this(time)
-        {
-            _Realm = realm;            
+            _Updater = new Utility.Updater();
         }
+        
         bool Utility.IUpdatable.Update()
         {
-            _Machine.Update();
-            
+            _Updater.Update();
             return true;
         }
 
         void Framework.ILaunched.Launch()
-        {            
-            _Build(_Realm);
-            
-        }
-
-        private Map _Create(string map_name)
         {
-            return new Map(map_name, _Time);
+            _Updater.Add(_Zone);
+            _Updater.Add(_Team);
         }
-
         void Framework.ILaunched.Shutdown()
         {
-            _Machine.Termination();
-            
+            _Updater.Shutdown();
         }
-        
+
         event Action IRealm.ShutdownEvent
         {
-            add { _ShutdownEvent += value; }
-            remove { _ShutdownEvent -= value; }
-        }
-
-        void _Build(Data.Realm realm)
-        {            
-            _Build(_Realm.Stages);
-        }
-
-        private void _Build(Data.Stage[] stages)
-        {
-            //Map[] maps = new Map[];
-            foreach (var stage in stages)
-            {
-                var map = _Create(stage.MapName);                
-            }
+            add { throw new NotImplementedException(); }
+            remove { throw new NotImplementedException(); }
         }
 
         Guid IRealm.Id
@@ -84,48 +59,16 @@ namespace Regulus.Project.SamebestKeys
             get { return _Id; }
         }
 
-        Remoting.Value<bool> IRealm.Join(Player[] players)
-        {            
-            /*if (_Controllers.Count < _Realm.NumberForPlayer)
-            {
-                _Controllers.Add(new Controller(players));                
-                return true;
-            }*/
-            return false;
-        }
-    }
-    partial class Realm
-    {
-        class ReadyStage : Regulus.Game.IStage
+        Remoting.Value<bool> IRealm.Join(Player player)
         {
-
-            void Game.IStage.Enter()
-            {
-                throw new NotImplementedException();
-            }
-
-            void Game.IStage.Leave()
-            {
-                throw new NotImplementedException();
-            }
-
-            void Game.IStage.Update()
-            {
-                throw new NotImplementedException();
-            }
+            return _Team.Join(player);            
         }
-    }
-    partial class Realm
-    {
-        struct Controller
+
+        void IRealm.Exit(Player player)
         {
-            private Player[] _Players;
-
-            public Controller(Player[] players)
-            {                
-                this._Players = players;
-            } 
-            
+            _Team.Left(player);
         }
     }
+    
+    
 }

@@ -5,7 +5,6 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
-    struct Record
-    {
-    }
+
+    
 }

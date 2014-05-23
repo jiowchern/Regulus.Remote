@@ -12,7 +12,7 @@ namespace Regulus.Project.SamebestKeys
     {
         
         Value<bool> CreateAccount(string name, string password);
-        Value<LoginResult> Login(string name, string password);
+        Value<LoginResult> Login(string name, string password );
         void Quit();        
     };
 

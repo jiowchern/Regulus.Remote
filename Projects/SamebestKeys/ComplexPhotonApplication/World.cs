@@ -78,14 +78,14 @@ namespace Regulus.Project.SamebestKeys
 
         private Realm _Create(Data.Realm realm, Remoting.Time time)
         {
-            var instance = new Realm(time, realm);            
+            var instance = new Realm.Generator(realm).Create();
+            
             if (realm.Singleton)
             {
                 _Register(instance ,  realm.Name);
             }
             return instance;
         }
-
 
         private void _Register(Realm instance, string name)
         {

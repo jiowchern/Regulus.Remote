@@ -6,9 +6,7 @@ using System.Text;
 namespace Regulus.Project.SamebestKeys
 {
     class Map : Regulus.Utility.IUpdatable, IMapInfomation, IMap 
-    {
-        public delegate void OnDone(Record record);
-        public event OnDone DoneEvent;
+    {        
         Guid _Id;
         public class EntityInfomation : Regulus.Physics.IQuadObject
         {
@@ -70,7 +68,7 @@ namespace Regulus.Project.SamebestKeys
 		public Map(string name,Regulus.Remoting.ITime time)
 		{
             _Id = Guid.NewGuid();
-			Name = name;
+			_Name = name;
             _SetTime(time);
 		}
         void _Into(Entity entity)
@@ -132,12 +130,12 @@ namespace Regulus.Project.SamebestKeys
         void Regulus.Framework.ILaunched.Launch()
         {
             _ObseverdInfomations = new Physics.QuadTree<EntityInfomation>(new Regulus.Types.Size(4, 4), 0);
-			_Build(_ReadMapData(Name));
+			_Build(_ReadMapData(_Name));
         }
 
 		private void _Build(Data.Map map)
 		{
-            if (map != null && map.Name == Name)
+            if (map != null && map.Name == _Name)
 			{			
 				foreach(var ent in map.Entitys)
 				{
@@ -177,7 +175,7 @@ namespace Regulus.Project.SamebestKeys
                     _UpdateMovers(moverAbility, observer, physical);
                 }
 
-                var behavior = info.Behavior;
+                var behavior = info.Behavior;   
                 if (behavior != null)
                 {
                     behavior.Update();
@@ -260,7 +258,7 @@ namespace Regulus.Project.SamebestKeys
             _Time = new Regulus.Remoting.Time(time);
         }
 
-		public string Name { get; private set; }
+		string _Name { get; set; }
 
         Remoting.Value<Types.Polygon[]> IMapInfomation.QueryWalls()
         {
@@ -287,13 +285,16 @@ namespace Regulus.Project.SamebestKeys
             get { return _Id; }
         }
 
-        event Action _ShutdownEvent;
-        event Action IMap.ShutdownEvent
+
+        public string Name { get { return _Name; } }
+
+        string IMap.Name
         {
-            add { _ShutdownEvent += value; }
-            remove { _ShutdownEvent -= value; }
+            get
+            {
+                return _Name;
+            }
+            
         }
-
-
     }
 }

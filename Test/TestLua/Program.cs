@@ -6,20 +6,12 @@ using System.Threading.Tasks;
 
 namespace TestLua
 {
-    public class Test 
-    {
-        public int Add(int a, int b)
-        {
-            return a + b;
-        }
-    }
-
     class Program
     {
         
 
         static void Main(string[] args)
-        {
+        {            
 
             Regulus.Script.Lua.VirtualMachineProvider vmp = new Regulus.Script.Lua.VirtualMachineProvider();
 
@@ -49,8 +41,7 @@ namespace TestLua
                     throw new SystemException("read file source too big");
 
                 return buffer;
-            }
-            return null;
+            }            
         }
 
         

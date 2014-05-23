@@ -11,8 +11,8 @@ namespace Regulus.Project.SamebestKeys
         void Into(Entity entity);
         void Left(Entity entity);
 
-        event Action ShutdownEvent;
-
         IMapInfomation GetInfomation();
+
+        string Name { get; }
     }
 }

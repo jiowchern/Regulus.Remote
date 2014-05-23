@@ -175,12 +175,12 @@ namespace Regulus.Project.SamebestKeys
             var result = _World.Query("Ark");
             result.OnValue += _ToRealm;
 
-        }
-        IRealm _Realm;
+        }        
         private void _ToRealm(IRealm realm)
         {
-            //var stage = new RealmStage(realm);
-            //_Machine.Push(stage);
+            var stage = new RealmStage(realm , new [] { Actor });
+            realm.ShutdownEvent += ToParking;
+            _Machine.Push(stage);
         }
     }
 }

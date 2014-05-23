@@ -8,6 +8,7 @@ namespace Regulus.Utility
 {
     public class ValueHelper
     {
+
         public static T DeepCopy<T>(T obj)
         {
             if (obj == null)
