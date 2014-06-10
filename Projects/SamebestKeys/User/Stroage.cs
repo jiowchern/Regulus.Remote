@@ -13,6 +13,16 @@ namespace Regulus.Projects.SamebestKeys.Standalong
         {
             _DBEntityInfomations = new List<Project.SamebestKeys.Serializable.DBEntityInfomation>();
             _AccountInfomations = new List<Project.SamebestKeys.Serializable.AccountInfomation>();
+
+            var id = Guid.NewGuid();
+            _AccountInfomations.Add(new Project.SamebestKeys.Serializable.AccountInfomation() { Id = id, Name = "1", Password = "1" });
+
+            _DBEntityInfomations.Add(new Project.SamebestKeys.Serializable.DBEntityInfomation()
+            {
+                Look = new Project.SamebestKeys.Serializable.EntityLookInfomation() { Name = "1" } ,
+                Owner = id,
+                Property = new Project.SamebestKeys.Serializable.EntityPropertyInfomation()
+            });
         }
         void Project.SamebestKeys.IStorage.Add(Project.SamebestKeys.Serializable.AccountInfomation ai)
         {

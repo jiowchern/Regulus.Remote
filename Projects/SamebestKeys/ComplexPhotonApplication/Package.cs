@@ -7,8 +7,7 @@ namespace Regulus.Project.SamebestKeys
         [Serializable]
         public struct Stage
         {
-            public string MapName { get; set; }
-            public bool First { get; set; }
+            public string MapName { get; set; }            
         }
 
         [Serializable]
@@ -193,9 +192,7 @@ namespace Regulus.Project.SamebestKeys.Serializable
     public class EntityPropertyInfomation
     {
         public EntityPropertyInfomation()
-        { 
-            Position = new Types.Vector2();
-            Map = "";
+        {             
             MaxHealth = 50;
             Health = 50;
             Skills = new System.Collections.Generic.List<Skill>();

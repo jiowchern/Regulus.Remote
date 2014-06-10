@@ -29,9 +29,26 @@ namespace Regulus.Project.SamebestKeys
             }
 
             private Realm.Zone _BuildStage(Data.Realm data)
-            {          
-      
-                return new Realm.Zone(null);
+            {
+                var stages = data.Stages;
+                var mapDatas = from stage in stages
+                            join map in GameData.Instance.Maps
+                            on stage.MapName equals map.Name
+                            select map;
+
+                Map[] maps = _BuildMap(mapDatas);
+
+                return new Realm.Zone(maps);
+            }
+
+            private Map[] _BuildMap(IEnumerable<Data.Map> datas)
+            {
+                List<Map> maps = new List<Map>();
+                foreach(var data in datas)
+                {
+                    maps.Add(new Map(data.Name, LocalTime.Instance));                    
+                }
+                return maps.ToArray();
             }
 
             private Realm.JoinCondition _BuildJoinCondition(Data.Realm data)

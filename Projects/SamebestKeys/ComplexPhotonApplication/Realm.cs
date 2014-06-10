@@ -48,10 +48,11 @@ namespace Regulus.Project.SamebestKeys
             _Updater.Shutdown();
         }
 
+        event Action _ShutdownEvent;
         event Action IRealm.ShutdownEvent
         {
-            add { throw new NotImplementedException(); }
-            remove { throw new NotImplementedException(); }
+            add { _ShutdownEvent += value;  }
+            remove { _ShutdownEvent -= value; }
         }
 
         Guid IRealm.Id

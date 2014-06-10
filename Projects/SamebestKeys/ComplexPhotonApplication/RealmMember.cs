@@ -26,7 +26,7 @@ namespace Regulus.Project.SamebestKeys
             }
             internal void Left()
             {
-
+                _Player.SetMap(null);
                 var ability = _Player.FindAbility<ICrossAbility>();
                 ability.MoveEvent -= _OnMove;
 
@@ -41,6 +41,7 @@ namespace Regulus.Project.SamebestKeys
                 Left();
                 _Map = map;
                 _Map.Into(_Player);
+                _Player.SetMap(map.Name);
 
                 var ability = _Player.FindAbility<ICrossAbility>();
                 ability.MoveEvent += _OnMove;

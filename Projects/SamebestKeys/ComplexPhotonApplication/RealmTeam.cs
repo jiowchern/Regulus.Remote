@@ -44,12 +44,12 @@ namespace Regulus.Project.SamebestKeys
             {
                 if (_JoinCondidion.Check(this))
                 {
-                    var star = new Member(player);
-                    star.MigrateEvent += _OnMigrate;
-                    star.CrossEvent += _OnCross;
+                    var member = new Member(player);
+                    member.MigrateEvent += _OnMigrate;
+                    member.CrossEvent += _OnCross;
 
-                    star.Into(_Zone.EnterMap);
-                    _Stars.Add(star);
+                    member.Into(_Zone.FirstMap);
+                    _Stars.Add(member);
                     return true;
                 }
 

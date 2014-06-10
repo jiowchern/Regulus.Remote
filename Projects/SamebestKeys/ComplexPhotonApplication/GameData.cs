@@ -64,17 +64,19 @@ namespace Regulus.Project.SamebestKeys
                                       new Data.Skill() { Id = 2, Begin = 0.33f, Effective = 0.03f, End = 0.69f, Energy = 10, Capture = true, CaptureBounds = new Types.Rect(-1,-1,2,2 ) , UseMode = ActorMode.Alert , Param1 = 10}};
 
 
-        static Data.Realm[] _Levels = 
+        static Data.Realm[] _Realms = 
         {
             new Data.Realm()
             {
                 Name = "Ark",
-                Singleton = true
+                Singleton = true, 
+                Stages = new [] {new Data.Stage { MapName = "Ark" }}
             },
             new Data.Realm()
             {
                 Name = "Test",
-                Singleton = false
+                Singleton = false,
+                Stages = new [] {new Data.Stage { MapName = "Ark" }}
             }
         };
         internal Data.Skill FindSkill(int id)
@@ -82,9 +84,9 @@ namespace Regulus.Project.SamebestKeys
             return (from s in _Skills where s.Id == id select s).SingleOrDefault();
         }
 
-        internal Data.Realm FindLevel(string level_name)
+        internal Data.Realm FindRealm(string realm_name)
         {
-            return (from level in _Levels where level.Name == level_name select level).SingleOrDefault();
+            return (from realm in _Realms where realm.Name == realm_name select realm).SingleOrDefault();
         }
     }
 }

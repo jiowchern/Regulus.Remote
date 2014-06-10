@@ -18,7 +18,7 @@ namespace Regulus.Project.SamebestKeys
         void Regulus.Game.IStage.Enter()
         {
             _Parking = new Regulus.Project.SamebestKeys.Parking(_User.Id, _Storage);
-            _Parking.BackEvent += _User.Logout;            
+            _Parking.BackEvent += _User.ToLogout;            
             _Parking.SelectEvent += _User.ToFirst;
             _User.Provider.Bind<IParking>(_Parking);
             

@@ -53,7 +53,7 @@ namespace Regulus.Project.SamebestKeys
             } 
         }
         
-        internal void Logout()
+        internal void ToLogout()
         {
             _AccountInfomation = null;
             _ClearActor();            
@@ -178,8 +178,10 @@ namespace Regulus.Project.SamebestKeys
         }        
         private void _ToRealm(IRealm realm)
         {
-            var stage = new RealmStage(realm , new [] { Actor });
-            realm.ShutdownEvent += ToParking;
+            var stage = new RealmStage( Provider ,realm , new [] { Actor });
+            stage.ExitWorldEvent += ToParking;
+            stage.LogoutEvent += ToLogout;
+            stage.CrossEvent += ToCross;            
             _Machine.Push(stage);
         }
     }

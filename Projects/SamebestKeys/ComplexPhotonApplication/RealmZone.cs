@@ -10,11 +10,9 @@ namespace Regulus.Project.SamebestKeys
     {
         interface IZone
         {
-
-
             IMap Find(string map_name);
 
-            IMap EnterMap { get;  }
+            IMap FirstMap { get;  }
         }
         class Zone : Regulus.Utility.IUpdatable , IZone
 	    {
@@ -51,11 +49,11 @@ namespace Regulus.Project.SamebestKeys
                 return (from map in _Maps where map.Name == map_name select map).SingleOrDefault();
             }
 
-            IMap IZone.EnterMap
+            IMap IZone.FirstMap
             {
                 get
                 {
-                    throw new NotImplementedException();
+                    return _Maps[0];
                 }                
             }
         }

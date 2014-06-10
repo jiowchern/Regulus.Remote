@@ -105,8 +105,7 @@ namespace Regulus.Project.SamebestKeys
 
         List<IObservedAbility> _Lefts = new List<IObservedAbility>();
         void _Left(Entity entity)
-        {
-            
+        {            
             _EntityInfomations.Remove((info) => 
             {
                 if (info.Id == entity.Id)
@@ -117,9 +116,7 @@ namespace Regulus.Project.SamebestKeys
                     return true;
                 }
                 return false;
-            });
-
-            
+            });            
         }
 
         private void _RemoveObserve(EntityInfomation info)
@@ -139,8 +136,7 @@ namespace Regulus.Project.SamebestKeys
 			{			
 				foreach(var ent in map.Entitys)
 				{
-					var e= EntityBuilder.Instance.Build(ent);
-					e.Initial();
+					var e= EntityBuilder.Instance.Build(ent);					
 					_Into(e);					 
 				}
 			}

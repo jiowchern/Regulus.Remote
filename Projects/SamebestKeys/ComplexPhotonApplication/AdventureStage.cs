@@ -26,10 +26,10 @@ namespace Regulus.Project.SamebestKeys
             _Player = new Player(_User.Actor);
             _User.Provider.Bind<IPlayer>(_Player);
             _User.Provider.Bind<IMapInfomation>(_Map.GetInfomation());
-            _Player.Initial();
+            
 
             _Player.ExitWorldEvent += _User.ToParking;
-            _Player.LogoutEvent += _User.Logout;
+            _Player.LogoutEvent += _User.ToLogout;
             _Player.CrossEvent += _User.ToCross;
 			
             var observe = _Player.FindAbility<IObserveAbility>();
@@ -80,7 +80,7 @@ namespace Regulus.Project.SamebestKeys
             {
                 _User.Provider.Unbind<IObservedAbility>(o);
             }
-            _Player.Release();
+            
             _User.Provider.Unbind<IPlayer>(_Player);
             _User.Provider.Unbind<IMapInfomation>(_Map.GetInfomation());
         }

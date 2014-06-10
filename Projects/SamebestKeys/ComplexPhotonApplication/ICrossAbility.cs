@@ -15,9 +15,9 @@ namespace Regulus.Project.SamebestKeys
 
     class CrossAbility : ICrossAbility
     {
-
+        
         void ICrossAbility.Move(string target_map, Types.Vector2 target_position)
-        {
+        {            
             if (MoveEvent != null)
                 MoveEvent(target_map, target_position);
         }

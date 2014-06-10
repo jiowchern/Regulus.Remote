@@ -46,10 +46,11 @@ namespace Regulus.Project.SamebestKeys
                 return default(T);
             }
         }
-
+        bool _Initialed;
         public Entity(Guid id )
         {
-            Id = id;            
+            Id = id;
+            _Initialed = false;
         }
         public Guid Id { get; private set; }        
 		/// <summary>
@@ -62,6 +63,11 @@ namespace Regulus.Project.SamebestKeys
 		/// </summary>
         public T FindAbility<T>() where T : class
         {
+            if (_Initialed == false)
+            {
+                _Initial();
+                _Initialed = true;
+            }
             return _Abilitys.FindAbility<T>();
         }
 
@@ -70,7 +76,7 @@ namespace Regulus.Project.SamebestKeys
 		/// </summary>
 		/// <param name="abilitys">現有功能Dict</param>
         protected abstract void _SetAbility(AbilitySet abilitys);
-        public void Initial()
+        void _Initial()
         {
             _SetAbility(_Abilitys);
         }
@@ -80,7 +86,7 @@ namespace Regulus.Project.SamebestKeys
 		/// </summary>
 		/// <param name="abilitys">現有功能Dict</param>
         protected abstract void _RiseAbility(AbilitySet abilitys);
-        public void Release()
+        void _Release()
         {
             _RiseAbility(_Abilitys);
         }

@@ -169,10 +169,10 @@ namespace Regulus.Project.SamebestKeys
                 
             }
 		}
-
+        string _Map;
         Remoting.Value<string> IPlayer.QueryMap()
-        {
-            return _DBActorInfomation.Property.Map;
+        {            
+            return _Map;        
         }
 
 
@@ -199,6 +199,11 @@ namespace Regulus.Project.SamebestKeys
             {
                 commander.Invoke(new BehaviorCommand.Skill(skill));
             }            
+        }
+
+        internal void SetMap(string map)
+        {
+            _Map = map;
         }
     }
 }

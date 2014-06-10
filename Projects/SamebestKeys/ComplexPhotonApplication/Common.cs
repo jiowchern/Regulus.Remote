@@ -50,8 +50,7 @@ namespace Regulus.Project.SamebestKeys
         Guid Id { get; }
         string Name { get; }
         float Speed { get; }
-        float Direction { get; }		
-        
+        float Direction { get; }		        
         
         void Logout();
         void ExitWorld();        

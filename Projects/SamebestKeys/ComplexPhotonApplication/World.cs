@@ -52,18 +52,17 @@ namespace Regulus.Project.SamebestKeys
             var realm = _Query(realm_name);
             if (realm != null)
             {
-                _Initial(result, realm);
+                _Initial(result, realm);                
             }
-            else
-                result.SetValue(null);
-            return result;
+                            
+            return realm;
         }
 
         
 
         private Realm _Query(string realm_name)
         {
-            Data.Realm realm = GameData.Instance.FindLevel(realm_name);
+            Data.Realm realm = GameData.Instance.FindRealm(realm_name);
             if (realm.Singleton)
             {
                 var instance = _Find(realm.Name);
