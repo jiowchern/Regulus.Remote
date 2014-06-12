@@ -14,10 +14,9 @@ namespace Regulus.Project.SamebestKeys
         List<IObservedAbility> _Observeds;
         Action<IObservedAbility> _ObservedLeft;
         Action<IObservedAbility> _ObservedInto;
-
+        Realm.Member _Member;
         public event Action ExitWorldEvent;
-        public event Action LogoutEvent;
-        public event Action<string, Types.Vector2, string, Types.Vector2> CrossEvent;		
+        public event Action LogoutEvent;        
 
         public RealmStage(Regulus.Remoting.ISoulBinder binder , IRealm realm ,Regulus.Project.SamebestKeys.Serializable.DBEntityInfomation[] actors )
         {
@@ -31,14 +30,36 @@ namespace Regulus.Project.SamebestKeys
 
         void Game.IStage.Enter()
         {
-            _Realm.Join(_Players[0]);
-            _Realm.ShutdownEvent += ExitWorldEvent;
-            _Bind(_Players[0] , _Binder);
-            _RegisterQuit(_Players[0] );
+            _Member = new Realm.Member(_Players[0]);
+            _Member.BeginTraversableEvent += _OnBeginTraver;
+            _Member.EndTraversableEvent += _OnEndTraver;
+            if (_Realm.Join(_Member))
+            {
+                _Realm.ShutdownEvent += ExitWorldEvent;
+                _Bind(_Players[0], _Binder);
+                _RegisterQuit(_Players[0]);
+            }
+            else
+                LogoutEvent();
         }
+
+        private void _OnEndTraver(ITraversable traversable)
+        {
+            _Binder.Unbind<ITraversable>(traversable);
+        }
+
+        void _OnBeginTraver(ITraversable traversable)
+        {
+            _Binder.Bind<ITraversable>(traversable);
+        }
+
+        
 
         void Game.IStage.Leave()
         {
+            _Member.BeginTraversableEvent -= _OnBeginTraver;
+            _Member.EndTraversableEvent -= _OnEndTraver;
+
             _UnregisterQuit(_Players[0]);
             _Unbind(_Players[0], _Binder);
             _Realm.ShutdownEvent -= ExitWorldEvent;
@@ -47,8 +68,7 @@ namespace Regulus.Project.SamebestKeys
 
         private void _RegisterQuit(Player player)
         {
-            player.ExitWorldEvent += ExitWorldEvent;
-            player.CrossEvent += CrossEvent;
+            player.ExitWorldEvent += ExitWorldEvent;            
             player.LogoutEvent += LogoutEvent;
         }
 
@@ -95,16 +115,11 @@ namespace Regulus.Project.SamebestKeys
             binder.Unbind<IPlayer>(player);            
         }
 
-        
-
         private void _UnregisterQuit(Player player)
         {
-            player.ExitWorldEvent -= ExitWorldEvent;
-            player.CrossEvent -= CrossEvent;
+            player.ExitWorldEvent -= ExitWorldEvent;            
             player.LogoutEvent -= LogoutEvent;
         }
-
-        
 
         void Game.IStage.Update()
         {            

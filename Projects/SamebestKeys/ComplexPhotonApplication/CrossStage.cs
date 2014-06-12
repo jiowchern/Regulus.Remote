@@ -18,9 +18,14 @@ namespace Regulus.Project.SamebestKeys
         private Remoting.ISoulBinder _Provider;
         
 
-        public CrossStage(Remoting.ISoulBinder provider ,Regulus.Project.SamebestKeys.IWorld _World, string target_map, Regulus.Types.Vector2 target_position, string current_map, Regulus.Types.Vector2 current_position)
+        public CrossStage(Remoting.ISoulBinder provider 
+                        , Regulus.Project.SamebestKeys.IWorld world
+                        , string target_map
+                        , Regulus.Types.Vector2 target_position
+                        , string current_map
+                        , Regulus.Types.Vector2 current_position)
         {            
-            this._World = _World;
+            this._World = world;
             this._TargetMap = target_map;
             this._TargetPosition = target_position;
             this._CurrentMap = current_map;

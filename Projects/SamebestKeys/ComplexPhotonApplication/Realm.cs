@@ -10,7 +10,7 @@ namespace Regulus.Project.SamebestKeys
     {
         event Action ShutdownEvent;
         Guid Id { get; }
-        Remoting.Value<bool> Join(Player player);
+        bool Join(Regulus.Project.SamebestKeys.Realm.Member player);
         void Exit(Player player);
     }
 
@@ -60,7 +60,7 @@ namespace Regulus.Project.SamebestKeys
             get { return _Id; }
         }
 
-        Remoting.Value<bool> IRealm.Join(Player player)
+        bool IRealm.Join(Member player)
         {
             return _Team.Join(player);            
         }

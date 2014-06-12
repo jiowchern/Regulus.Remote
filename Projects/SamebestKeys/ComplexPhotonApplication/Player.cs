@@ -57,18 +57,18 @@ namespace Regulus.Project.SamebestKeys
             _CrossAbility = new CrossAbility();
             abilitys.AttechAbility<ICrossAbility>(_CrossAbility);
 
-            _CrossAbility.MoveEvent += _CrossAbility_MoveEvent;
+            //_CrossAbility.MoveEvent += _CrossAbility_MoveEvent;
             
             base._SetAbility(abilitys);
         }
 
-        public event Action<string, Types.Vector2, string, Types.Vector2> CrossEvent;		
+        /*public event Action<string, Types.Vector2, string, Types.Vector2> CrossEvent;		
         void _CrossAbility_MoveEvent(string target_map, Types.Vector2 target_position)
         {
             if (CrossEvent != null)
                 CrossEvent(target_map, target_position, _DBActorInfomation.Property.Map, _DBActorInfomation.Property.Position );
             CrossEvent = null;
-        }
+        }*/
 
 		/// <summary>
 		/// 移除功能

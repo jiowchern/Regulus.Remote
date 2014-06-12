@@ -179,9 +179,8 @@ namespace Regulus.Project.SamebestKeys
         private void _ToRealm(IRealm realm)
         {
             var stage = new RealmStage( Provider ,realm , new [] { Actor });
-            stage.ExitWorldEvent += ToParking;
-            stage.LogoutEvent += ToLogout;
-            stage.CrossEvent += ToCross;            
+            stage.ExitWorldEvent += ToParking; 
+            stage.LogoutEvent += ToLogout;             
             _Machine.Push(stage);
         }
     }

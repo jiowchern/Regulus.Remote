@@ -29,8 +29,7 @@ namespace Regulus.Project.SamebestKeys
             
 
             _Player.ExitWorldEvent += _User.ToParking;
-            _Player.LogoutEvent += _User.ToLogout;
-            _Player.CrossEvent += _User.ToCross;
+            _Player.LogoutEvent += _User.ToLogout;            
 			
             var observe = _Player.FindAbility<IObserveAbility>();
             if (observe != null)

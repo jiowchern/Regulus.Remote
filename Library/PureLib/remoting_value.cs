@@ -109,5 +109,7 @@ namespace Regulus.Remoting
 				OnValue += (obj)=>{ action.Invoke(obj) ;};
 			}
 		}
-	}
+
+        public static Value<T> Empty { get { return default(T); } }
+    }
 }

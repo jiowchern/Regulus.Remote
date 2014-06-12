@@ -12,14 +12,13 @@ namespace Regulus.Project.SamebestKeys
         {
             JoinCondition _JoinCondidion;
             Regulus.Utility.Updater _Updater;
-            List<Member> _Stars;
-            IZone _Zone;
-            public int Count { get { return _Stars.Count; } }
+            List<Member> _Members;
+            IZone _Zone;            
 
             public Team(IZone zone, JoinCondition join_condition)
             {
                 _JoinCondidion = join_condition;
-                _Stars = new List<Member>();
+                _Members = new List<Member>();
                 _Zone = zone;
                 _Updater = new Utility.Updater();            
             }
@@ -40,16 +39,15 @@ namespace Regulus.Project.SamebestKeys
                 _Updater.Shutdown();
             }
 
-            internal Remoting.Value<bool> Join(Player player)
+            internal bool Join(Member member)
             {
                 if (_JoinCondidion.Check(this))
-                {
-                    var member = new Member(player);
+                {                    
                     member.MigrateEvent += _OnMigrate;
                     member.CrossEvent += _OnCross;
 
-                    member.Into(_Zone.FirstMap);
-                    _Stars.Add(member);
+                    member.Into(_Zone.FirstMap.Name);
+                    _Members.Add(member);
                     return true;
                 }
 
@@ -67,28 +65,20 @@ namespace Regulus.Project.SamebestKeys
 
             }
 
-            private IMap _CurrentMap(IMap[] maps)
-            {
-                // todo : 找出第一張或者是活動中的地圖
-                return maps[0];
-            }
-
-            
-
             internal void Left(Player player)
             {
-                var s = (from star in _Stars where star.Id == player.Id select star).SingleOrDefault();
+                var s = (from star in _Members where star.Id == player.Id select star).SingleOrDefault();
                 s.Left();
 
                 s.MigrateEvent -= _OnMigrate;
                 s.CrossEvent -= _OnCross; 
-                _Stars.Remove(s); 
+                _Members.Remove(s); 
             }
 
 
             int JoinCondition.IResourceProvider.PlayerCount
             {
-                get { return _Stars.Count; }
+                get { return _Members.Count; }
                 
             }
         }

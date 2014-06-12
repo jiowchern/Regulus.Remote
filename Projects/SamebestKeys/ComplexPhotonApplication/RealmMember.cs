@@ -9,13 +9,19 @@ namespace Regulus.Project.SamebestKeys
 
     partial class Realm
     {
-        class Member
+        
+        public class Member : ITraversable 
         {
+
             public delegate void OnMigrate();
             public event OnMigrate MigrateEvent;
 
             public delegate IMap OnCross(string map);
             public event OnCross CrossEvent;
+
+            public delegate void OnTraversable(ITraversable traversable);
+            public event OnTraversable BeginTraversableEvent;
+            public event OnTraversable EndTraversableEvent;
 
             private Player _Player;
             IMap _Map;
@@ -36,6 +42,11 @@ namespace Regulus.Project.SamebestKeys
                     _Map = null;
                 }
             }
+            internal void Into(string map)
+            {
+                _Map = CrossEvent(map);
+                BeginTraversableEvent(this);                
+            }
             internal void Into(IMap map)
             {
                 Left();
@@ -49,12 +60,26 @@ namespace Regulus.Project.SamebestKeys
 
             private void _OnMove(string target_map, Types.Vector2 target_position)
             {
-                var map = CrossEvent(target_map);
-                if (map != null)
-                    Into(map);
+                Into(target_map);
+            }
+
+            internal void ToMap()
+            {
+                EndTraversableEvent(this);                                
+                Into(_Map);
             }
 
             public Guid Id { get { return _Player.Id; } }
+
+            Remoting.Value<Serializable.CrossStatus> ITraversable.GetStatus()
+            {
+                return new Serializable.CrossStatus() { TargetMap = _Map.Name };
+            }
+
+            void ITraversable.Ready()
+            {
+                ToMap();
+            }
         }
     }
 }
