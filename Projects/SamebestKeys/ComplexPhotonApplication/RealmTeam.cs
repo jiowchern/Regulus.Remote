@@ -16,7 +16,7 @@ namespace Regulus.Project.SamebestKeys.Dungeons
         public Team(IZone zone, JoinCondition join_condition)
         {
             _JoinCondidion = join_condition;
-            _Members = new List<Member>();
+            _Members = new List<Regulus.Project.SamebestKeys.Dungeons.Member>();
             _Zone = zone;
             _Updater = new Utility.Updater();
         }

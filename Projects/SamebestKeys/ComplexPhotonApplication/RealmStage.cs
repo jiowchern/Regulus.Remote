@@ -3,22 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Regulus.Project.SamebestKeys
+namespace Regulus.Project.SamebestKeys.Dungeons
 {
     partial class RealmStage : Regulus.Game.IStage
     {
-        private IRealm _Realm;        
+        private IScene _Realm;        
         Player[] _Players;
         Regulus.Remoting.ISoulBinder _Binder;
 
         List<IObservedAbility> _Observeds;
         Action<IObservedAbility> _ObservedLeft;
         Action<IObservedAbility> _ObservedInto;
-        Realm.Member _Member;
+        Member _Member;
         public event Action ExitWorldEvent;
-        public event Action LogoutEvent;        
+        public event Action LogoutEvent;
 
-        public RealmStage(Regulus.Remoting.ISoulBinder binder , IRealm realm ,Regulus.Project.SamebestKeys.Serializable.DBEntityInfomation[] actors )
+        public RealmStage(Regulus.Remoting.ISoulBinder binder, IScene realm, Regulus.Project.SamebestKeys.Serializable.DBEntityInfomation[] actors)
         {
             _Binder = binder;
             this._Realm = realm;
@@ -30,7 +30,7 @@ namespace Regulus.Project.SamebestKeys
 
         void Game.IStage.Enter() 
         {
-            _Member = new Realm.Member(_Players[0]);
+            _Member = new Member(_Players[0]);
             _Member.BeginTraversableEvent += _OnBeginTraver;
             _Member.EndTraversableEvent += _OnEndTraver;
             _Realm.ShutdownEvent += ExitWorldEvent;

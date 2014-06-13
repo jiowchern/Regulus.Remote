@@ -4,86 +4,80 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Regulus.Project.SamebestKeys
+namespace Regulus.Project.SamebestKeys.Dungeons
 {
-
-    partial class Realm
+    class Member : ITraversable
     {
-        
-        public class Member : ITraversable 
+        public delegate void OnMigrate();
+        public event OnMigrate MigrateEvent;
+
+        public delegate IMap OnCross(string map);
+        public event OnCross CrossEvent;
+
+        public delegate void OnTraversable(ITraversable traversable);
+        public event OnTraversable BeginTraversableEvent;
+        public event OnTraversable EndTraversableEvent;
+
+        private Player _Player;
+        IMap _Map;
+
+        public Member(Player player)
+        {
+            this._Player = player;
+        }
+        internal void Left()
         {
 
-            public delegate void OnMigrate();
-            public event OnMigrate MigrateEvent;
+            var ability = _Player.FindAbility<ICrossAbility>();
+            ability.MoveEvent -= _OnMove;
 
-            public delegate IMap OnCross(string map);
-            public event OnCross CrossEvent;
-
-            public delegate void OnTraversable(ITraversable traversable);
-            public event OnTraversable BeginTraversableEvent;
-            public event OnTraversable EndTraversableEvent;
-
-            private Player _Player;
-            IMap _Map;
-
-            public Member(Player player)
+            if (_Map != null)
             {
-                this._Player = player;
+                _Map.Left(_Player);
+                _Map = null;
             }
-            internal void Left()
-            {
-                
-                var ability = _Player.FindAbility<ICrossAbility>();
-                ability.MoveEvent -= _OnMove;
+        }
+        internal void Into(string map)
+        {
+            Left();
+            _Map = CrossEvent(map);
+            BeginTraversableEvent(this);
+        }
+        private void _Into(IMap map)
+        {
+            var point = GameData.Instance.FindMap(map.Name).Born;
+            var x = Regulus.Utility.Random.Next((int)point.Left, (int)point.Right);
+            var y = Regulus.Utility.Random.Next((int)point.Top, (int)point.Bottom);
+            _Player.SetPosition(x, y);
+            _Map = map;
+            _Map.Into(_Player);
 
-                if (_Map != null)
-                {
-                    _Map.Left(_Player);
-                    _Map = null;
-                }
-            }
-            internal void Into(string map)
-            {
-                Left();
-                _Map = CrossEvent(map);
-                BeginTraversableEvent(this);                
-            }
-            private void _Into(IMap map)
-            {
-                var point = GameData.Instance.FindMap(map.Name).Born;
-                var x = Regulus.Utility.Random.Next((int)point.Left, (int)point.Right);
-                var y = Regulus.Utility.Random.Next((int)point.Top, (int)point.Bottom);
-                _Player.SetPosition(x,y);
-                _Map = map;
-                _Map.Into(_Player);
-                
 
-                var ability = _Player.FindAbility<ICrossAbility>();
-                ability.MoveEvent += _OnMove;
-            }
+            var ability = _Player.FindAbility<ICrossAbility>();
+            ability.MoveEvent += _OnMove;
+        }
 
-            private void _OnMove(string target_map, Types.Vector2 target_position)
-            {
-                Into(target_map);
-            }
+        private void _OnMove(string target_map, Types.Vector2 target_position)
+        {
+            Into(target_map);
+        }
 
-            internal void ToMap()
-            {
-                EndTraversableEvent(this);                                
-                _Into(_Map);
-            }
+        internal void ToMap()
+        {
+            EndTraversableEvent(this);
+            _Into(_Map);
+        }
 
-            public Guid Id { get { return _Player.Id; } }
+        public Guid Id { get { return _Player.Id; } }
 
-            Remoting.Value<Serializable.CrossStatus> ITraversable.GetStatus()
-            {
-                return new Serializable.CrossStatus() { TargetMap = (_Map != null)?_Map.Name : "Test"};
-            }
+        Remoting.Value<Serializable.CrossStatus> ITraversable.GetStatus()
+        {
+            return new Serializable.CrossStatus() { TargetMap = (_Map != null) ? _Map.Name : "Test" };
+        }
 
-            void ITraversable.Ready()
-            {
-                ToMap();
-            }
+        void ITraversable.Ready()
+        {
+            ToMap();
         }
     }
 }
