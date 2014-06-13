@@ -51,10 +51,7 @@ namespace Regulus.Standalong
 
 		
 		
-		void Remoting.IRequestQueue.Update()
-		{
-			
-		}
+		
 
 		void Remoting.IResponseQueue.Push(byte cmd, Dictionary<byte, byte[]> args)
 		{

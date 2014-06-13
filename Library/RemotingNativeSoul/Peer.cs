@@ -6,7 +6,8 @@ using System.Text;
 
 namespace Regulus.Remoting.Soul.Native
 {
-	
+    
+
 	class Peer : Regulus.Remoting.IRequestQueue, Regulus.Remoting.IResponseQueue , Regulus.Utility.IUpdatable
 	{
         class Request
@@ -25,8 +26,7 @@ namespace Regulus.Remoting.Soul.Native
 		Regulus.Game.StageMachine _WriteMachine;
         bool _Enable;
         public Peer(System.Net.Sockets.Socket client)
-		{
-			
+		{			
 			_Socket = client;
 			_SoulProvider = new Remoting.Soul.SoulProvider(this, this);
 			_Responses = new Queue<Remoting.Package>();
@@ -143,10 +143,6 @@ namespace Regulus.Remoting.Soul.Native
             remove { _BreakEvent -= value; }
 		}
 
-		void IRequestQueue.Update()
-		{
-
-		}
 
         internal void Disconnect()
         {
@@ -155,6 +151,7 @@ namespace Regulus.Remoting.Soul.Native
         }
 
         public ISoulBinder Binder { get { return _SoulProvider; } }
+        public CoreThreadRequestHandler Handler { get { return new CoreThreadRequestHandler(this); } }
 
         bool Utility.IUpdatable.Update()
         {
@@ -165,15 +162,7 @@ namespace Regulus.Remoting.Soul.Native
                 _ReadMachine.Update();
                 _WriteMachine.Update();
 
-                lock (_Requests)
-                {
-                    while (_Requests.Count > 0)
-                    {
-                        var request = _Requests.Dequeue();
-                        if(_InvokeMethodEvent != null)
-                            _InvokeMethodEvent(request.EntityId, request.MethodName, request.ReturnId, request.MethodParams);
-                    }
-                }
+                
                 
 
                 return true;
@@ -193,6 +182,20 @@ namespace Regulus.Remoting.Soul.Native
             _Socket.Close();
             _ReadMachine.Termination();
             _WriteMachine.Termination();
+        }
+
+
+        void IRequestQueue.Update()
+        {
+            lock (_Requests)
+            {
+                while (_Requests.Count > 0)
+                {
+                    var request = _Requests.Dequeue();
+                    if (_InvokeMethodEvent != null)
+                        _InvokeMethodEvent(request.EntityId, request.MethodName, request.ReturnId, request.MethodParams);
+                }
+            }
         }
     }
 	

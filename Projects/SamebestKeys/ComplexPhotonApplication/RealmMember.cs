@@ -44,12 +44,12 @@ namespace Regulus.Project.SamebestKeys
             }
             internal void Into(string map)
             {
+                Left();
                 _Map = CrossEvent(map);
                 BeginTraversableEvent(this);                
             }
-            internal void Into(IMap map)
-            {
-                Left();
+            private void _Into(IMap map)
+            {                
                 _Map = map;
                 _Map.Into(_Player);
                 _Player.SetMap(map.Name);
@@ -66,7 +66,7 @@ namespace Regulus.Project.SamebestKeys
             internal void ToMap()
             {
                 EndTraversableEvent(this);                                
-                Into(_Map);
+                _Into(_Map);
             }
 
             public Guid Id { get { return _Player.Id; } }

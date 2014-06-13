@@ -299,8 +299,7 @@ namespace Regulus.Remoting.Soul
         public void Update()
         {
             
-            var souls = _Souls.UpdateSet();
-            _Peer.Update();
+            var souls = _Souls.UpdateSet();            
             if ((System.DateTime.Now - _UpdatePropertyInterval).TotalSeconds > 0.5)
             {
                 foreach (var soul in souls)

@@ -29,6 +29,7 @@ namespace Regulus.Remoting.Soul.Native
 
     class ThreadCoreHandler
     {
+        Regulus.Utility.Updater _RequesterHandlers;
         volatile bool _Run;
         Regulus.Game.ICore _Core;
         Queue<ISoulBinder> _Binders;
@@ -39,6 +40,7 @@ namespace Regulus.Remoting.Soul.Native
             _Core = core;
             _Binders = new Queue<ISoulBinder>();
             _FPS = new Utility.FPSCounter();
+            _RequesterHandlers = new Utility.Updater();
         }
 
         public void DoWork()
@@ -53,11 +55,13 @@ namespace Regulus.Remoting.Soul.Native
                     {
                         while (_Binders.Count > 0)
                         {
-                            _Core.ObtainController( _Binders.Dequeue()) ;
+                            var provider = _Binders.Dequeue();
+                            _Core.ObtainController(provider);
                         }
                     }
                     
                 }
+                _RequesterHandlers.Update();
                 _Core.Update();
                 _FPS.Update();
                 System.Threading.Thread.Sleep(0);
@@ -70,8 +74,9 @@ namespace Regulus.Remoting.Soul.Native
             _Run = false;
         }
 
-        internal void Push(ISoulBinder soulBinder)
+        internal void Push(ISoulBinder soulBinder , CoreThreadRequestHandler handler)
         {
+            _RequesterHandlers.Add(handler);
             lock (_Binders)
             {
                 _Binders.Enqueue(soulBinder);
@@ -127,7 +132,7 @@ namespace Regulus.Remoting.Soul.Native
                             var socket = _Sockets.Dequeue();
                             var peer = new Peer(socket);
                             _Peers.Add(peer);
-                            _CoreHandler.Push(peer.Binder);
+                            _CoreHandler.Push(peer.Binder , peer.Handler);                            
                         }
                     }
                 }           

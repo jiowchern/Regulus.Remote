@@ -28,19 +28,20 @@ namespace Regulus.Project.SamebestKeys
             _Observeds = new List<IObservedAbility>();
         }
 
-        void Game.IStage.Enter()
+        void Game.IStage.Enter() 
         {
             _Member = new Realm.Member(_Players[0]);
             _Member.BeginTraversableEvent += _OnBeginTraver;
             _Member.EndTraversableEvent += _OnEndTraver;
-            if (_Realm.Join(_Member))
+            _Realm.ShutdownEvent += ExitWorldEvent;
+            _Bind(_Players[0], _Binder);
+            _RegisterQuit(_Players[0]);
+
+            if (_Realm.Join(_Member)== false)
             {
-                _Realm.ShutdownEvent += ExitWorldEvent;
-                _Bind(_Players[0], _Binder);
-                _RegisterQuit(_Players[0]);
-            }
-            else
                 LogoutEvent();
+            }            
+                
         }
 
         private void _OnEndTraver(ITraversable traversable)

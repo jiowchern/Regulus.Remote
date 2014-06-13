@@ -50,6 +50,10 @@ namespace Regulus.Project.SamebestKeys
             [System.Xml.Serialization.XmlArrayItem(typeof(TriangleEntity))]            
             // 新增的entity需要在這裡定意 ... 
             public Entity[] Entitys { get; set; }
+
+
+            [ProtoBuf.ProtoMember(3)]
+            public Regulus.Types.Rect Born;
         }
 
         [Serializable]
@@ -196,6 +200,7 @@ namespace Regulus.Project.SamebestKeys.Serializable
             MaxHealth = 50;
             Health = 50;
             Skills = new System.Collections.Generic.List<Skill>();
+            Position = new Types.Vector2();
         }
         [ProtoBuf.ProtoMember(1)]
         public Guid Id { get; set; }
