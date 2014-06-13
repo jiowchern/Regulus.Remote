@@ -64,15 +64,15 @@ namespace Regulus.Project.SamebestKeys
                                       new Data.Skill() { Id = 2, Begin = 0.33f, Effective = 0.03f, End = 0.69f, Energy = 10, Capture = true, CaptureBounds = new Types.Rect(-1,-1,2,2 ) , UseMode = ActorMode.Alert , Param1 = 10}};
 
 
-        static Data.Realm[] _Realms = 
+        static Data.Scene[] _Realms = 
         {
-            new Data.Realm()
+            new Data.Scene()
             {
                 Name = "Ark",
                 Singleton = true, 
                 Stages = new [] {new Data.Stage { MapName = "Ark" }}
             },
-            new Data.Realm()
+            new Data.Scene()
             {
                 Name = "Test",
                 Singleton = false,
@@ -84,7 +84,7 @@ namespace Regulus.Project.SamebestKeys
             return (from s in _Skills where s.Id == id select s).SingleOrDefault();
         }
 
-        internal Data.Realm FindRealm(string realm_name)
+        internal Data.Scene FindRealm(string realm_name)
         {
             return (from realm in _Realms where realm.Name == realm_name select realm).SingleOrDefault();
         }

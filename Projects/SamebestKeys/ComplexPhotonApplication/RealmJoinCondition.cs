@@ -3,74 +3,64 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Regulus.Project.SamebestKeys
+namespace Regulus.Project.SamebestKeys.Dungeons
 {
-    partial class Realm
+    abstract class JoinCondition
     {
-        
+        public interface IResourceProvider { int PlayerCount { get; } }
+        bool _LastCheck;
 
-        abstract class JoinCondition
+        protected JoinCondition(bool default_check)
         {
-            public interface IResourceProvider { int PlayerCount { get; } }
-            bool _LastCheck;
-
-            protected JoinCondition(bool default_check)
-            {
-                _LastCheck = default_check;
-            }
-
-            public bool Check(IResourceProvider provider)
-            {
-                _LastCheck = _Check(provider);
-                return _LastCheck;
-            }
-            protected abstract bool _Check(IResourceProvider realm);
-
-
-            public bool LastCheck()
-            {
-                return _LastCheck;
-            }
+            _LastCheck = default_check;
         }
 
-        class FreeJoinCondition : JoinCondition
+        public bool Check(IResourceProvider provider)
         {
-            public FreeJoinCondition() :base(true){ }
-            protected override bool _Check(IResourceProvider provider)
-            {
-                return true;
-            }
+            _LastCheck = _Check(provider);
+            return _LastCheck;
         }
+        protected abstract bool _Check(IResourceProvider realm);
 
-        class LimitJoinCondition : JoinCondition
+
+        public bool LastCheck()
         {
-            private int _Amount;
-
-            public LimitJoinCondition(int amount) : base(true)
-            {
-                // TODO: Complete member initialization
-                this._Amount = amount;
-            }
-
-            protected override bool _Check(IResourceProvider provider)
-            {
-                return provider.PlayerCount < _Amount;
-            }
+            return _LastCheck;
         }
-
-        class ForbidJoinCondition : JoinCondition
-        {
-            public ForbidJoinCondition() : base(false) { }
-            protected override bool _Check(IResourceProvider provider)
-            {
-                return false;
-            }
-        }
-
-        
-        
     }
 
+    class FreeJoinCondition : JoinCondition
+    {
+        public FreeJoinCondition() : base(true) { }
+        protected override bool _Check(IResourceProvider provider)
+        {
+            return true;
+        }
+    }
 
-    
+    class LimitJoinCondition : JoinCondition
+    {
+        private int _Amount;
+
+        public LimitJoinCondition(int amount)
+            : base(true)
+        {
+            // TODO: Complete member initialization
+            this._Amount = amount;
+        }
+
+        protected override bool _Check(IResourceProvider provider)
+        {
+            return provider.PlayerCount < _Amount;
+        }
+    }
+
+    class ForbidJoinCondition : JoinCondition
+    {
+        public ForbidJoinCondition() : base(false) { }
+        protected override bool _Check(IResourceProvider provider)
+        {
+            return false;
+        }
+    }
 }

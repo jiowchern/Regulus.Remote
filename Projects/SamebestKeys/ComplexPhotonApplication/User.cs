@@ -176,9 +176,9 @@ namespace Regulus.Project.SamebestKeys
             result.OnValue += _ToRealm;
 
         }        
-        private void _ToRealm(IRealm realm)
+        private void _ToRealm(Regulus.Project.SamebestKeys.Dungeons.IScene realm)
         {
-            var stage = new RealmStage( Provider ,realm , new [] { Actor });
+            var stage = new Regulus.Project.SamebestKeys.Dungeons.RealmStage( Provider ,realm , new [] { Actor });
             stage.ExitWorldEvent += ToParking; 
             stage.LogoutEvent += ToLogout;             
             _Machine.Push(stage);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Regulus.Project.SamebestKeys.Dungeons;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,21 +9,21 @@ namespace Regulus.Project.SamebestKeys
 
 	interface IWorld
 	{
-        Regulus.Remoting.Value<IRealm> Query(string level_name);
-        Regulus.Remoting.Value<IRealm> Find(Guid id);		
+        Regulus.Remoting.Value<Regulus.Project.SamebestKeys.Dungeons.IScene> Query(string level_name);
+        Regulus.Remoting.Value<Regulus.Project.SamebestKeys.Dungeons.IScene> Find(Guid id);		
 	}
 
 	class World : IWorld , Regulus.Utility.IUpdatable
 	{
-        Dictionary<string, Realm> _Singletons;
-        Regulus.Utility.TUpdater<Realm> _Realms;                
+        Dictionary<string, Regulus.Project.SamebestKeys.Dungeons.Scene> _Singletons;
+        Regulus.Utility.TUpdater<Regulus.Project.SamebestKeys.Dungeons.Scene> _Realms;                
 		private Remoting.Time _Time;
 
 		public World(Remoting.Time time)
 		{
 			this._Time = time;
-            _Realms = new Utility.TUpdater<Realm>();
-            _Singletons = new Dictionary<string, Realm>();
+            _Realms = new Utility.TUpdater<Scene>();
+            _Singletons = new Dictionary<string, Scene>();
 		}
 
 
@@ -41,14 +42,14 @@ namespace Regulus.Project.SamebestKeys
 		{
             _Realms.Shutdown();
 		}
-        Remoting.Value<IRealm> IWorld.Find(Guid id)
+        Remoting.Value<IScene> IWorld.Find(Guid id)
         {
-            return new Remoting.Value<IRealm>((from level in _Realms.Objects where _GetId(level) == id select level).SingleOrDefault());
+            return new Remoting.Value<IScene>((from level in _Realms.Objects where _GetId(level) == id select level).SingleOrDefault());
         }
 
-        Remoting.Value<IRealm> IWorld.Query(string realm_name)
+        Remoting.Value<IScene> IWorld.Query(string realm_name)
         {
-            var result = new Remoting.Value<IRealm>();
+            var result = new Remoting.Value<IScene>();
             var realm = _Query(realm_name);
             if (realm != null)
             {
@@ -60,9 +61,9 @@ namespace Regulus.Project.SamebestKeys
 
         
 
-        private Realm _Query(string realm_name)
+        private Scene _Query(string realm_name)
         {
-            Data.Realm realm = GameData.Instance.FindRealm(realm_name);
+            Data.Scene realm = GameData.Instance.FindRealm(realm_name);
             if (realm.Singleton)
             {
                 var instance = _Find(realm.Name);
@@ -75,9 +76,9 @@ namespace Regulus.Project.SamebestKeys
             return _Create(realm , _Time);
         }
 
-        private Realm _Create(Data.Realm realm, Remoting.Time time)
+        private Scene _Create(Data.Scene realm, Remoting.Time time)
         {
-            var instance = new Realm.Generator(realm).Create();
+            var instance = new Generator(realm).Create();
             
             if (realm.Singleton)
             {
@@ -86,23 +87,23 @@ namespace Regulus.Project.SamebestKeys
             return instance;
         }
 
-        private void _Register(Realm instance, string name)
+        private void _Register(Scene instance, string name)
         {
             _Singletons.Add(name, instance);
         }
         
-        private Realm _Find(string level_name)
+        private Scene _Find(string level_name)
         {
             return (from singleton in _Singletons where singleton.Key == level_name select singleton.Value).SingleOrDefault();
         }
 
 
-        private void _PushToUpdater(Realm map)
+        private void _PushToUpdater(Scene map)
         {
             _Realms.Add(map);
         }
 
-        private void _Initial(Remoting.Value<IRealm> result, Realm realm)
+        private void _Initial(Remoting.Value<IScene> result, Scene realm)
         {            
             _PushToUpdater(realm);           
         }
@@ -110,7 +111,7 @@ namespace Regulus.Project.SamebestKeys
 
         
         
-        private Guid _GetId(IRealm level)
+        private Guid _GetId(IScene level)
         {
             return level.Id;
         }

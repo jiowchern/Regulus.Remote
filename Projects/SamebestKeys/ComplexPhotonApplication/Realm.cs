@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Regulus.Project.SamebestKeys
+namespace Regulus.Project.SamebestKeys.Dungeons
 {
-
-    interface IRealm
+    interface IScene
     {
         event Action ShutdownEvent;
         Guid Id { get; }
-        bool Join(Regulus.Project.SamebestKeys.Realm.Member player);
+        bool Join(Member player);
         void Exit(Player player);
     }
 
-    partial class Realm : Regulus.Utility.IUpdatable , IRealm
+    class Scene : Regulus.Utility.IUpdatable , IScene
     {
         Guid _Id;
         private Remoting.Time _Time;
@@ -22,7 +21,7 @@ namespace Regulus.Project.SamebestKeys
         Team _Team;
         Regulus.Utility.Updater _Updater;
         
-        Realm(Team team, Zone zone, Remoting.Time time )
+        public Scene(Team team, Zone zone, Remoting.Time time )
         {
             _Team = team;
             _Id = Guid.NewGuid();
@@ -49,23 +48,26 @@ namespace Regulus.Project.SamebestKeys
         }
 
         event Action _ShutdownEvent;
-        event Action IRealm.ShutdownEvent
+        private Team team;
+        private Zone zone;
+        private Remoting.Time time;
+        event Action IScene.ShutdownEvent
         {
             add { _ShutdownEvent += value;  }
             remove { _ShutdownEvent -= value; }
         }
 
-        Guid IRealm.Id
+        Guid IScene.Id
         {
             get { return _Id; }
         }
 
-        bool IRealm.Join(Member player)
+        bool IScene.Join(Member player)
         {
             return _Team.Join(player);            
         }
 
-        void IRealm.Exit(Player player)
+        void IScene.Exit(Player player)
         {
             _Team.Left(player);
         }

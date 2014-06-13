@@ -5,58 +5,53 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
-    
-    partial class Realm
+    interface IZone
     {
-        interface IZone
+        IMap Find(string map_name);
+
+        IMap FirstMap { get; }
+    }
+    class Zone : Regulus.Utility.IUpdatable, IZone
+    {
+        Map[] _Maps;
+        Regulus.Utility.Updater _Updater;
+
+        public Zone(Map[] maps)
         {
-            IMap Find(string map_name);
-
-            IMap FirstMap { get;  }
+            _Maps = maps;
+            _Updater = new Utility.Updater();
         }
-        class Zone : Regulus.Utility.IUpdatable , IZone
-	    {
-            Map[] _Maps;
-            Regulus.Utility.Updater _Updater;            
 
-            public Zone(Map[] maps)
+        bool Utility.IUpdatable.Update()
+        {
+            _Updater.Update();
+            return true;
+        }
+
+        void Framework.ILaunched.Launch()
+        {
+            foreach (var map in _Maps)
             {
-                _Maps = maps;            
-                _Updater = new Utility.Updater();
+                _Updater.Add(map);
             }
+        }
 
-            bool Utility.IUpdatable.Update()
-            {                
-                _Updater.Update();
-                return true;
-            }
+        void Framework.ILaunched.Shutdown()
+        {
+            _Updater.Shutdown();
+        }
 
-            void Framework.ILaunched.Launch()
+        IMap IZone.Find(string map_name)
+        {
+            return (from map in _Maps where map.Name == map_name select map).SingleOrDefault();
+        }
+
+        IMap IZone.FirstMap
+        {
+            get
             {
-                foreach (var map in _Maps)
-                {
-                    _Updater.Add(map);
-                }
-            }
-
-            void Framework.ILaunched.Shutdown()
-            {
-                _Updater.Shutdown();
-            }
-
-            IMap IZone.Find(string map_name)
-            {
-                return (from map in _Maps where map.Name == map_name select map).SingleOrDefault();
-            }
-
-            IMap IZone.FirstMap
-            {
-                get
-                {
-                    return _Maps[0];
-                }                
+                return _Maps[0];
             }
         }
     }
-    
 }

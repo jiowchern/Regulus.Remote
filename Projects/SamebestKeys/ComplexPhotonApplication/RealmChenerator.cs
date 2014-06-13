@@ -3,64 +3,60 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Regulus.Project.SamebestKeys
+namespace Regulus.Project.SamebestKeys.Dungeons
 {
-    partial class Realm
-    {        
-        public class Generator
+    public class Generator
+    {
+        Data.Scene _Data;
+    
+        public Generator(Data.Scene data)
         {
-            Data.Realm _Data;
-
-            public Generator(Data.Realm data)
+            _Data = data;
+        }
+    
+        internal Scene Create()
+        {
+            return _Create(_Data);
+        }
+    
+        private Scene _Create(Data.Scene data)
+        {
+            Zone zone = _BuildStage(data);
+            JoinCondition joinCondition = _BuildJoinCondition(data);
+            return new Scene(new Team(zone,joinCondition ), zone, LocalTime.Instance);
+        }
+    
+        private Zone _BuildStage(Data.Scene data)
+        {
+            var stages = data.Stages;
+            var mapDatas = from stage in stages
+                        join map in GameData.Instance.Maps
+                        on stage.MapName equals map.Name
+                        select map;
+    
+            Map[] maps = _BuildMap(mapDatas);
+    
+            return new Zone(maps);
+        }
+    
+        private Map[] _BuildMap(IEnumerable<Data.Map> datas)
+        {
+            List<Map> maps = new List<Map>();
+            foreach(var data in datas)
             {
-                _Data = data;
+                maps.Add(new Map(data.Name, LocalTime.Instance));                    
             }
-
-            internal Realm Create()
+            return maps.ToArray();
+        }
+    
+        private JoinCondition _BuildJoinCondition(Data.Scene data)
+        {
+            if (data.NotLimit())
             {
-                return _Create(_Data);
+                return new FreeJoinCondition();
             }
-
-            private Realm _Create(Data.Realm data)
-            {
-                Realm.Zone zone = _BuildStage(data);
-                Realm.JoinCondition joinCondition = _BuildJoinCondition(data);
-                return new Realm(new Team(zone,joinCondition ), zone, LocalTime.Instance);
-            }
-
-            private Realm.Zone _BuildStage(Data.Realm data)
-            {
-                var stages = data.Stages;
-                var mapDatas = from stage in stages
-                            join map in GameData.Instance.Maps
-                            on stage.MapName equals map.Name
-                            select map;
-
-                Map[] maps = _BuildMap(mapDatas);
-
-                return new Realm.Zone(maps);
-            }
-
-            private Map[] _BuildMap(IEnumerable<Data.Map> datas)
-            {
-                List<Map> maps = new List<Map>();
-                foreach(var data in datas)
-                {
-                    maps.Add(new Map(data.Name, LocalTime.Instance));                    
-                }
-                return maps.ToArray();
-            }
-
-            private Realm.JoinCondition _BuildJoinCondition(Data.Realm data)
-            {
-                if (data.NotLimit())
-                {
-                    return new Realm.FreeJoinCondition();
-                }
-                else
-                    return new Realm.LimitJoinCondition(data.NumberForPlayer);
-            }
+            else
+                return new LimitJoinCondition(data.NumberForPlayer);
         }
     }
-    
 }
