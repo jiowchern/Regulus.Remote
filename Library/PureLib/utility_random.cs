@@ -16,8 +16,7 @@ namespace Regulus.Utility
 		public void SetSeed(int seed)
 		{
 			R = new System.Random(seed);
-		}
-
+		}        
         public static int Next(int min , int max)
         {
             return Instance.R.Next(min, max);

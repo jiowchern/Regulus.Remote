@@ -76,7 +76,7 @@ namespace Regulus.Project.SamebestKeys
             {
                 Name = "Test",
                 Singleton = false,
-                Stages = new [] {new Data.Stage { MapName = "Ark" }}
+                Stages = new [] {new Data.Stage { MapName = "Test" }}
             }
         };
         internal Data.Skill FindSkill(int id)

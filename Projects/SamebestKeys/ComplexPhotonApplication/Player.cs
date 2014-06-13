@@ -201,9 +201,6 @@ namespace Regulus.Project.SamebestKeys
             }            
         }
 
-        internal void SetMap(string map)
-        {
-            _Map = map;
-        }
+        
     }
 }
