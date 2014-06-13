@@ -62,6 +62,15 @@ namespace Regulus.Project.SamebestKeys
         public Serializable.DBEntityInfomation Actor { get; private set; }
         internal void EnterWorld(Serializable.DBEntityInfomation obj , string level)
         {
+            _InitialActor(obj);
+            
+
+            ToCross(level, Actor.Property.Position, "Test", new Types.Vector2(50, 50));
+			
+        }
+
+        private void _InitialActor(Serializable.DBEntityInfomation obj)
+        {
             Actor = obj;
             if (Actor.Property.Id == Guid.Empty)
             {
@@ -75,27 +84,23 @@ namespace Regulus.Project.SamebestKeys
             {
                 Actor.Property.Speed = 10;
             }
-            if ( !(Actor.Property.Position.X >= 0 && Actor.Property.Position.X <= 100))
+            if (!(Actor.Property.Position.X >= 0 && Actor.Property.Position.X <= 100))
             {
                 //Actor.Property.Position = Types.Vector2.FromPoint(Regulus.Utility.Random.Instance.R.Next(0, 100), Actor.Property.Position.Y);
             }
             if (!(Actor.Property.Position.Y >= 0 && Actor.Property.Position.Y <= 100))
-            {                
+            {
                 //Actor.Property.Position = Types.Vector2.FromPoint(Actor.Property.Position.X, Regulus.Utility.Random.Instance.R.Next(0, 100));
             }
-            if ( !(Actor.Look.Shell > 0 && Actor.Look.Shell <14))
+            if (!(Actor.Look.Shell > 0 && Actor.Look.Shell < 14))
             {
-                Actor.Look.Shell = Regulus.Utility.Random.Next(1 , 13);
+                Actor.Look.Shell = Regulus.Utility.Random.Next(1, 13);
             }
             if (Actor.Property.Skills.Count == 0)
             {
                 Actor.Property.Skills.Add(new Serializable.Skill() { Id = 1 });
                 Actor.Property.Skills.Add(new Serializable.Skill() { Id = 2 });
             }
-            
-
-            ToCross(level, Actor.Property.Position, "Test", new Types.Vector2(50, 50));
-			
         }
         private void _ToAdventure(IMap map)
         {
@@ -171,8 +176,8 @@ namespace Regulus.Project.SamebestKeys
 
         internal void ToFirst(Serializable.DBEntityInfomation obj)
         {
-            Actor = obj;
-            var result = _World.Query("Ark");
+            _InitialActor(obj);
+            var result = _World.Query("Test");
             result.OnValue += _ToRealm;
 
         }        

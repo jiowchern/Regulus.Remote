@@ -32,7 +32,7 @@ namespace Regulus.Project.SamebestKeys
             }
             internal void Left()
             {
-                _Player.SetMap(null);
+                
                 var ability = _Player.FindAbility<ICrossAbility>();
                 ability.MoveEvent -= _OnMove;
 
@@ -49,10 +49,14 @@ namespace Regulus.Project.SamebestKeys
                 BeginTraversableEvent(this);                
             }
             private void _Into(IMap map)
-            {                
+            {
+                var point = GameData.Instance.FindMap(map.Name).Born;
+                var x = Regulus.Utility.Random.Next((int)point.Left, (int)point.Right);
+                var y = Regulus.Utility.Random.Next((int)point.Top, (int)point.Bottom);
+                _Player.SetPosition(x,y);
                 _Map = map;
                 _Map.Into(_Player);
-                _Player.SetMap(map.Name);
+                
 
                 var ability = _Player.FindAbility<ICrossAbility>();
                 ability.MoveEvent += _OnMove;
@@ -73,7 +77,7 @@ namespace Regulus.Project.SamebestKeys
 
             Remoting.Value<Serializable.CrossStatus> ITraversable.GetStatus()
             {
-                return new Serializable.CrossStatus() { TargetMap = _Map.Name };
+                return new Serializable.CrossStatus() { TargetMap = (_Map != null)?_Map.Name : "Test"};
             }
 
             void ITraversable.Ready()
