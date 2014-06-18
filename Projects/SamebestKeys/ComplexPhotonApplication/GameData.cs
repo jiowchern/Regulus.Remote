@@ -66,17 +66,12 @@ namespace Regulus.Project.SamebestKeys
 
         static Data.Scene[] _Realms = 
         {
+            
             new Data.Scene()
             {
-                Name = "Ark",
-                Singleton = true, 
-                Stages = new [] {new Data.Stage { MapName = "Ark" }}
-            },
-            new Data.Scene()
-            {
-                Name = "Test",
+                Name = "First",
                 Singleton = false,
-                Stages = new [] {new Data.Stage { MapName = "Test" }}
+                Stages = new [] {new Data.Stage { MapName = "Room" }  }
             }
         };
         internal Data.Skill FindSkill(int id)

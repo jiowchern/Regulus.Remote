@@ -177,7 +177,7 @@ namespace Regulus.Project.SamebestKeys
         internal void ToFirst(Serializable.DBEntityInfomation obj)
         {
             _InitialActor(obj);
-            var result = _World.Query("Test");
+            var result = _World.Query("First");
             result.OnValue += _ToRealm;
 
         }        

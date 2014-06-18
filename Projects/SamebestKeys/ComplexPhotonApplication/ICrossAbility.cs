@@ -6,10 +6,14 @@ using System.Text;
 namespace Regulus.Project.SamebestKeys
 {
     public delegate void CrossAbilityOnMove(string target_map, Types.Vector2 target_position);
+    public delegate void CrossAbilityOnJump(string target);
     interface ICrossAbility
     {
         void Move(string target_map, Types.Vector2 target_position);
         event CrossAbilityOnMove MoveEvent;
+
+        void Jump(string _Target);
+        event CrossAbilityOnJump JumpEvent;
     }
 
 
@@ -22,9 +26,15 @@ namespace Regulus.Project.SamebestKeys
                 MoveEvent(target_map, target_position);
         }
 
-        public event CrossAbilityOnMove MoveEvent;
+        public event CrossAbilityOnMove MoveEvent;        
 
+        void ICrossAbility.Jump(string target)
+        {
+            if (JumpEvent != null)
+                JumpEvent(target);
+        }
 
+        public event CrossAbilityOnJump JumpEvent;
         
     }
 }

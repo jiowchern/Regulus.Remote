@@ -28,7 +28,8 @@ namespace Regulus.Project.SamebestKeys
 
             void _Physical_BoundsChanged(object sender, EventArgs e)
             {
-                _BoundsChanged.Invoke(this , e);
+                if (_BoundsChanged != null)
+                    _BoundsChanged.Invoke(this , e);
             }
             public IObservedAbility Observed { get; set; }
             public IMoverAbility Move { get; set; }

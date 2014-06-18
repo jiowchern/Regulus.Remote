@@ -46,11 +46,12 @@ namespace Regulus.Project.SamebestKeys.Dungeons
         private void _Into(IMap map)
         {
             var point = GameData.Instance.FindMap(map.Name).Born;
-            var x = Regulus.Utility.Random.Next((int)point.Left, (int)point.Right);
-            var y = Regulus.Utility.Random.Next((int)point.Top, (int)point.Bottom);
-            _Player.SetPosition(x, y);
+            var x = Regulus.Utility.Random.NextFloat(point.Left, point.Right);
+            var y = Regulus.Utility.Random.NextFloat(point.Top, point.Bottom);
+            
             _Map = map;
             _Map.Into(_Player);
+            _Player.SetPosition(x, y);
 
 
             var ability = _Player.FindAbility<ICrossAbility>();

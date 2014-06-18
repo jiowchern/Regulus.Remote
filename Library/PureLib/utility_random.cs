@@ -16,7 +16,12 @@ namespace Regulus.Utility
 		public void SetSeed(int seed)
 		{
 			R = new System.Random(seed);
-		}        
+		}
+        public static float NextFloat(float min, float max)
+        {
+            var number = (float)Instance.R.NextDouble();
+            return (max - min) * number + min;
+        }
         public static int Next(int min , int max)
         {
             return Instance.R.Next(min, max);

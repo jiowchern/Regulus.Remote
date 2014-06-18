@@ -101,6 +101,7 @@
     <Compile Include="RealmStage.cs" />
     <Compile Include="RealmMember.cs" />
     <Compile Include="Record.cs" />
+    <Compile Include="ShuttleEntity.cs" />
     <Compile Include="Time.cs" />
     <Compile Include="TriangleEntity.cs" />
     <Compile Include="User.cs" />

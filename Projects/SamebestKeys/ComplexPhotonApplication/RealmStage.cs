@@ -17,6 +17,7 @@ namespace Regulus.Project.SamebestKeys.Dungeons
         Member _Member;
         public event Action ExitWorldEvent;
         public event Action LogoutEvent;
+        public event Action<string> ChangeRealmEvent;
 
         public RealmStage(Regulus.Remoting.ISoulBinder binder, IScene realm, Regulus.Project.SamebestKeys.Serializable.DBEntityInfomation[] actors)
         {
@@ -128,70 +129,5 @@ namespace Regulus.Project.SamebestKeys.Dungeons
         }
     }
 
-    class PlayingStage : Regulus.Game.IStage
-    {
-        private Zone _Zone;
-
-        public delegate void OnDone();
-        public event OnDone DoneEvent;
-
-        Regulus.Utility.Updater _ZoneUpdater;
-        public PlayingStage(Zone zone)
-        {
-            this._Zone = zone;
-            _ZoneUpdater = new Utility.Updater();
-        }
-        void Game.IStage.Enter()
-        {
-            _ZoneUpdater.Add(_Zone);
-        }
-
-        void Game.IStage.Leave()
-        {
-            _ZoneUpdater.Shutdown();
-        }
-
-        void Game.IStage.Update()
-        {
-            _ZoneUpdater.Update();
-        }
-    }
-
-
-
-    class ReadyStage : Regulus.Game.IStage
-    {
-        public delegate void OnDone();
-        public event OnDone DoneEvent;
-        private JoinCondition _JoinCondition;
-
-
-        public ReadyStage()
-        {
-
-        }
-
-        public ReadyStage(JoinCondition join_condition)
-        {
-            this._JoinCondition = join_condition;
-        }
-
-        void Game.IStage.Enter()
-        {
-
-        }
-
-        void Game.IStage.Leave()
-        {
-
-        }
-
-        void Game.IStage.Update()
-        {
-            if (_JoinCondition.LastCheck() == false)
-            {
-                DoneEvent();
-            }
-        }
-    }
+    
 }
