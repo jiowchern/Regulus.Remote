@@ -54,13 +54,19 @@ namespace Regulus.Projects.SamebestKeys
 
             user.LevelSelectorProvider.Supply += _LevelSelectotSupply;
             user.LevelSelectorProvider.Unsupply += _Unsupply;
-        }
 
-        
+            user.RealmJumperProvider.Supply += RealmJumperProvider_Supply;
+            user.RealmJumperProvider.Unsupply += _Unsupply;
+        }
         
 
         internal void Unregister(Regulus.Project.SamebestKeys.IUser user)
         {
+
+            user.RealmJumperProvider.Supply -= RealmJumperProvider_Supply;
+            user.RealmJumperProvider.Unsupply -= _Unsupply;
+
+
             user.LevelSelectorProvider.Supply -= _LevelSelectotSupply;
             user.LevelSelectorProvider.Unsupply -= _Unsupply;
 
@@ -105,6 +111,16 @@ namespace Regulus.Projects.SamebestKeys
                 }
             }
             _RemoveEvents.Clear();
+        }
+
+        void RealmJumperProvider_Supply(Project.SamebestKeys.IRealmJumper obj)
+        {
+            _Command.Register<string>("JumpRealm", obj.Jump);
+
+            _RemoveCommands.Add(obj, new string[] 
+            {
+                "JumpRealm"
+            });
         }
 
         void TraversableProvider_Supply(Project.SamebestKeys.ITraversable obj)
@@ -323,9 +339,9 @@ interface ICodeStyle
 }
 
 class CodeStyle : ICodeStyle
-{
-    public int PublicProperty { get; private set; }
-    int _PrivateMember;
+{    
+    public int PublicProperty  { get; private set; }        
+    int _PrivateMember; // field
 
     public void PublicFunction(int arg_data1, int arg_data2)
     {
@@ -333,13 +349,13 @@ class CodeStyle : ICodeStyle
     }
 
     void _PrivateFunction(int arg_data1, int arg_data2)
-    { 
+    {
 
-    }
+    } 
 
     public delegate void OnDelegateSample(int arg_1);
     public event OnDelegateSample DelegateSampleEvent;
-    event OnDelegateSample _PrivateDelegateSampleEvent;
+    private event OnDelegateSample _PrivateDelegateSampleEvent;
 
     /*介面繼承以明確實作為主*/
     void ICodeStyle.PureVirtualFunction(int arg_1)
@@ -347,7 +363,7 @@ class CodeStyle : ICodeStyle
         PureVirtualFunction(arg_1);
     }
 
-    public void PureVirtualFunction(int arg_1)
+    public void PureVirtualFunction(int arg_1) 
     { 
 
     }

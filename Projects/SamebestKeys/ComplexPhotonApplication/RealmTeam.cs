@@ -60,7 +60,6 @@ namespace Regulus.Project.SamebestKeys.Dungeons
         private void _OnMigrate()
         {
             // todo : 遷移
-
         }
 
         internal void Left(Player player)

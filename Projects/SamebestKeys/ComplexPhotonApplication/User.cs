@@ -60,14 +60,7 @@ namespace Regulus.Project.SamebestKeys
             _Machine.Push(new VerifyStage(_Storage ,this)); 
         }
         public Serializable.DBEntityInfomation Actor { get; private set; }
-        internal void EnterWorld(Serializable.DBEntityInfomation obj , string level)
-        {
-            _InitialActor(obj);
-            
-
-            ToCross(level, Actor.Property.Position, "Test", new Types.Vector2(50, 50));
-			
-        }
+        
 
         private void _InitialActor(Serializable.DBEntityInfomation obj)
         {
@@ -173,20 +166,34 @@ namespace Regulus.Project.SamebestKeys
         }
 
         
+        
 
         internal void ToFirst(Serializable.DBEntityInfomation obj)
         {
             _InitialActor(obj);
-            var result = _World.Query("First");
-            result.OnValue += _ToRealm;
+            _JumpRealm("Room");
 
         }        
-        private void _ToRealm(Regulus.Project.SamebestKeys.Dungeons.IScene realm)
+        private void _ToRealm(Regulus.Project.SamebestKeys.Dungeons.IScene realm)        
         {
-            var stage = new Regulus.Project.SamebestKeys.Dungeons.RealmStage( Provider ,realm , new [] { Actor });
-            stage.ExitWorldEvent += ToParking; 
-            stage.LogoutEvent += ToLogout;             
-            _Machine.Push(stage);
+            if (realm != null)
+            {
+                var stage = new Regulus.Project.SamebestKeys.Dungeons.RealmStage(Provider, realm, new[] { Actor });
+                stage.ExitWorldEvent += ToParking;
+                stage.LogoutEvent += ToLogout;
+                stage.ChangeRealmEvent += _JumpRealm;
+                _Machine.Push(stage);
+            }
+            else
+            {
+                ToParking();
+            }
+        }
+
+        private void _JumpRealm(string realm)
+        {
+            var result = _World.Query(realm);
+            result.OnValue += _ToRealm;
         }
     }
 }

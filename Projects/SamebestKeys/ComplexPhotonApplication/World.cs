@@ -49,31 +49,32 @@ namespace Regulus.Project.SamebestKeys
 
         Remoting.Value<IScene> IWorld.Query(string realm_name)
         {
-            var result = new Remoting.Value<IScene>();
-            var realm = _Query(realm_name);
-            if (realm != null)
-            {
-                _Initial(result, realm);                
-            }
-                            
+            Data.Scene realmData = GameData.Instance.FindRealm(realm_name);            
+            var realm = _Query(realmData);                                        
             return realm;
         }
 
         
 
-        private Scene _Query(string realm_name)
+        private Scene _Query(Data.Scene scene)
         {
-            Data.Scene realm = GameData.Instance.FindRealm(realm_name);
-            if (realm.Singleton)
-            {
-                var instance = _Find(realm.Name);
-                if (instance != null)
-                {
-                    return instance;
-                }
-            }
 
-            return _Create(realm , _Time);
+            if (scene.Name != null)
+            {
+                if (scene.Singleton)
+                {
+                    var instance = _Find(scene.Name);
+                    if (instance != null)
+                    {
+                        return instance;
+                    }
+                }
+
+                var realm =  _Create(scene, _Time);
+                _Initial(realm);
+                return realm;
+            }
+            return null;
         }
 
         private Scene _Create(Data.Scene realm, Remoting.Time time)
@@ -103,7 +104,7 @@ namespace Regulus.Project.SamebestKeys
             _Realms.Add(map);
         }
 
-        private void _Initial(Remoting.Value<IScene> result, Scene realm)
+        private void _Initial(Scene realm)
         {            
             _PushToUpdater(realm);           
         }

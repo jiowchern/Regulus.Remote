@@ -53,7 +53,6 @@ namespace Regulus.Project.SamebestKeys.Dungeons
             _Map.Into(_Player);
             _Player.SetPosition(x, y);
 
-
             var ability = _Player.FindAbility<ICrossAbility>();
             ability.MoveEvent += _OnMove;
         }

@@ -105,19 +105,22 @@ namespace Regulus.Project.SamebestKeys
         }
 
         List<IObservedAbility> _Lefts = new List<IObservedAbility>();
-        void _Left(Entity entity)
-        {            
+        Regulus.Remoting.Value<bool> _Left(Entity entity)
+        {
+            Regulus.Remoting.Value<bool> ret = new Remoting.Value<bool>();
             _EntityInfomations.Remove((info) => 
             {
                 if (info.Id == entity.Id)
-                {                    
+                {
                     _ObseverdInfomations.Remove(info);
                     _RemoveObserve(info);
                     _Lefts.Add(info.Observed);
+                    ret.SetValue(true);
                     return true;
                 }
                 return false;
-            });            
+            });
+            return ret;
         }
 
         private void _RemoveObserve(EntityInfomation info)
@@ -267,9 +270,9 @@ namespace Regulus.Project.SamebestKeys
             _Into(entity);
         }
 
-        void IMap.Left(Entity entity)
+        Regulus.Remoting.Value<bool> IMap.Left(Entity entity)
         {
-            _Left(entity);
+            return _Left(entity);
         }
 
         IMapInfomation IMap.GetInfomation()

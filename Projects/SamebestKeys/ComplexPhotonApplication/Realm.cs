@@ -48,9 +48,8 @@ namespace Regulus.Project.SamebestKeys.Dungeons
         }
 
         event Action _ShutdownEvent;
-        private Team team;
-        private Zone zone;
-        private Remoting.Time time;
+        
+        
         event Action IScene.ShutdownEvent
         {
             add { _ShutdownEvent += value;  }

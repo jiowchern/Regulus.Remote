@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys.Dungeons
 {
-    partial class RealmStage : Regulus.Game.IStage
+    partial class RealmStage : Regulus.Game.IStage, IRealmJumper
     {
-        private IScene _Realm;        
+        private IScene _Scene;        
         Player[] _Players;
         Regulus.Remoting.ISoulBinder _Binder;
 
@@ -22,7 +22,7 @@ namespace Regulus.Project.SamebestKeys.Dungeons
         public RealmStage(Regulus.Remoting.ISoulBinder binder, IScene realm, Regulus.Project.SamebestKeys.Serializable.DBEntityInfomation[] actors)
         {
             _Binder = binder;
-            this._Realm = realm;
+            this._Scene = realm;
             
             _Players = (from actor in actors select new Player(actor)).ToArray();
 
@@ -34,11 +34,11 @@ namespace Regulus.Project.SamebestKeys.Dungeons
             _Member = new Member(_Players[0]);
             _Member.BeginTraversableEvent += _OnBeginTraver;
             _Member.EndTraversableEvent += _OnEndTraver;
-            _Realm.ShutdownEvent += ExitWorldEvent;
+            _Scene.ShutdownEvent += ExitWorldEvent;
             _Bind(_Players[0], _Binder);
             _RegisterQuit(_Players[0]);
 
-            if (_Realm.Join(_Member)== false)
+            if (_Scene.Join(_Member) == false)
             {
                 LogoutEvent();
             }            
@@ -64,8 +64,8 @@ namespace Regulus.Project.SamebestKeys.Dungeons
 
             _UnregisterQuit(_Players[0]);
             _Unbind(_Players[0], _Binder);
-            _Realm.ShutdownEvent -= ExitWorldEvent;
-            _Realm.Exit(_Players[0]);
+            _Scene.ShutdownEvent -= ExitWorldEvent;
+            _Scene.Exit(_Players[0]);
         }
 
         private void _RegisterQuit(Player player)
@@ -97,10 +97,14 @@ namespace Regulus.Project.SamebestKeys.Dungeons
                 observe.LeftEvent += _ObservedLeft;
             }
             binder.Bind<Regulus.Remoting.ITime>(LocalTime.Instance);
+
+            binder.Bind<IRealmJumper>(this);
         }
 
         private void _Unbind(Player player, Remoting.ISoulBinder binder)
         {
+            binder.Unbind<IRealmJumper>(this);
+
             binder.Unbind<Regulus.Remoting.ITime>(LocalTime.Instance);
 
             var observe = player.FindAbility<IObserveAbility>();
@@ -126,6 +130,11 @@ namespace Regulus.Project.SamebestKeys.Dungeons
         void Game.IStage.Update()
         {            
 
+        }
+
+        void IRealmJumper.Jump(string realm)
+        {
+            ChangeRealmEvent(realm);            
         }
     }
 

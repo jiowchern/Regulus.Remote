@@ -77,6 +77,7 @@
     <Compile Include="EntityBuilder.cs" />
     <Compile Include="Field.cs" />
     <Compile Include="Hall.cs" />
+    <Compile Include="IRealmRequester.cs" />
     <Compile Include="ITriggerableAbility.cs" />
     <Compile Include="ICrossAbility.cs" />
     <Compile Include="GameData.cs" />

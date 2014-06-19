@@ -36,6 +36,7 @@ namespace Regulus.Project.SamebestKeys
         Regulus.Remoting.Ghost.IProviderNotice<ILevelSelector> LevelSelectorProvider { get; }
 
         Regulus.Remoting.Ghost.IProviderNotice<Regulus.Remoting.ITime> TimeProvider { get; }
-        
+
+        Regulus.Remoting.Ghost.IProviderNotice<IRealmJumper> RealmJumperProvider { get; }
     }
 }

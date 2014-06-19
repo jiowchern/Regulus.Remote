@@ -28,7 +28,7 @@ namespace Regulus.Project.SamebestKeys
         List<Data.Map> _Maps;
 
         public GameData()
-        {            
+        {
             _Maps = new List<Data.Map>();
         }
 
@@ -66,10 +66,27 @@ namespace Regulus.Project.SamebestKeys
 
         static Data.Scene[] _Realms = 
         {
-            
             new Data.Scene()
             {
-                Name = "First",
+                Name = "SL_1C",
+                Singleton = true,
+                Stages = new [] { new Data.Stage { MapName = "SL_1C" }  }
+            },
+            new Data.Scene()
+            {
+                Name = "Ark",
+                Singleton = true,
+                Stages = new [] { new Data.Stage { MapName = "Ark" }  }
+            },
+            new Data.Scene()
+            {
+                Name = "Test",
+                Singleton = true,
+                Stages = new [] { new Data.Stage { MapName = "Test" }  }
+            },
+            new Data.Scene()
+            {
+                Name = "Room",
                 Singleton = false,
                 Stages = new [] {new Data.Stage { MapName = "Room" }  }
             }
