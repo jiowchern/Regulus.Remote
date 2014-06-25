@@ -6,16 +6,23 @@ using System.Text;
 namespace Regulus.Project.SamebestKeys
 {
 	// 玩家觀察功能
+
+
     class PlayerObserveAbility : IObserveAbility
     {
-        
+
+       
+
         Field _Field;
         Regulus.Project.SamebestKeys.Serializable.DBEntityInfomation _Infomation;
         public PlayerObserveAbility(Regulus.Project.SamebestKeys.Serializable.DBEntityInfomation info)
         {            
             _Infomation = info;
             _Field = new Field();
+
         }
+
+        
 
         void IObserveAbility.Update(Regulus.Project.SamebestKeys.Map.EntityInfomation[] observeds, List<IObservedAbility> lefts)
         {

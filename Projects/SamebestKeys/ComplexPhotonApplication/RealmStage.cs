@@ -32,8 +32,8 @@ namespace Regulus.Project.SamebestKeys.Dungeons
         void Game.IStage.Enter() 
         {
             _Member = new Member(_Players[0]);
-            _Member.BeginTraversableEvent += _OnBeginTraver;
-            _Member.EndTraversableEvent += _OnEndTraver;
+            _Member.BeginTraversable+= _OnBeginTraver;
+            _Member.EndTraversable+= _OnEndTraver;
             _Scene.ShutdownEvent += ExitWorldEvent;
             _Bind(_Players[0], _Binder);
             _RegisterQuit(_Players[0]);
@@ -48,10 +48,12 @@ namespace Regulus.Project.SamebestKeys.Dungeons
         private void _OnEndTraver(ITraversable traversable)
         {
             _Binder.Unbind<ITraversable>(traversable);
+            //_Binder.Bind<IPlayer>(_Players[0]);
         }
 
         void _OnBeginTraver(ITraversable traversable)
         {
+            //_Binder.Unbind<IPlayer>(_Players[0]);
             _Binder.Bind<ITraversable>(traversable);
         }
 
@@ -59,13 +61,13 @@ namespace Regulus.Project.SamebestKeys.Dungeons
 
         void Game.IStage.Leave()
         {
-            _Member.BeginTraversableEvent -= _OnBeginTraver;
-            _Member.EndTraversableEvent -= _OnEndTraver;
+            _Member.BeginTraversable -= _OnBeginTraver;
+            _Member.EndTraversable -= _OnEndTraver;
 
             _UnregisterQuit(_Players[0]);
             _Unbind(_Players[0], _Binder);
             _Scene.ShutdownEvent -= ExitWorldEvent;
-            _Scene.Exit(_Players[0]);
+            _Scene.Exit(_Member);
         }
 
         private void _RegisterQuit(Player player)

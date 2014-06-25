@@ -86,8 +86,7 @@ namespace Regulus.Project.SamebestKeys
 
         void IPlayer.SetPosition(float x, float y)
         {
-            base.SetPosition(x , y);
-            
+            base.SetPosition(x , y);         
         }
 
         void IPlayer.SetVision(int vision)
@@ -156,19 +155,7 @@ namespace Regulus.Project.SamebestKeys
             get { return _DBActorInfomation.Property.Direction; }
         }
 
-		public string Map
-		{
-			get { return _DBActorInfomation.Property.Map; }
-            set 
-            {
-                if (value != _DBActorInfomation.Property.Map)
-                {
-                    _DBActorInfomation.Property.Map = value;
-                    _ObserveAbility.Clear();        
-                }
-                
-            }
-		}
+		
         string _Map;
         Remoting.Value<string> IPlayer.QueryMap()
         {            
@@ -201,6 +188,11 @@ namespace Regulus.Project.SamebestKeys
             }            
         }
 
-        
+
+
+        internal void ClearField()
+        {
+            _ObserveAbility.Clear();
+        }
     }
 }

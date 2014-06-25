@@ -9,21 +9,20 @@ namespace Regulus.Project.SamebestKeys.Dungeons
     class Team : Regulus.Utility.IUpdatable, JoinCondition.IResourceProvider
     {
         JoinCondition _JoinCondidion;
-        Regulus.Utility.Updater _Updater;
-        List<Member> _Members;
+        Regulus.Utility.TUpdater<MemberHandler> _Handlers;        
         IZone _Zone;
 
         public Team(IZone zone, JoinCondition join_condition)
         {
             _JoinCondidion = join_condition;
-            _Members = new List<Regulus.Project.SamebestKeys.Dungeons.Member>();
+            
             _Zone = zone;
-            _Updater = new Utility.Updater();
+            _Handlers = new Utility.TUpdater<MemberHandler>();
         }
 
         bool Utility.IUpdatable.Update()
         {
-            _Updater.Update();
+            _Handlers.Update();
             return true;
         }
 
@@ -34,49 +33,63 @@ namespace Regulus.Project.SamebestKeys.Dungeons
 
         void Framework.ILaunched.Shutdown()
         {
-            _Updater.Shutdown();
+            _Handlers.Shutdown();
         }
 
         internal bool Join(Member member)
         {
             if (_JoinCondidion.Check(this))
-            {
-                member.MigrateEvent += _OnMigrate;
-                member.CrossEvent += _OnCross;
-
-                member.Into(_Zone.FirstMap.Name);
-                _Members.Add(member);
+            {                
+                _QueryMap(member, _Zone.FirstMap.Name);
                 return true;
             }
 
             return false;
         }
 
-        private IMap _OnCross(string map_name)
+        
+
+        private void _QueryMap(Member member, string map)
         {
-            return _Zone.Find(map_name);
+            var handler = _QueryHandler(member);
+            var stage = new MemberQueryHandler(member, _Zone, map);
+            stage.ResultEvent += _JoinMap;
+            handler.ChangeState(stage);
         }
 
-        private void _OnMigrate()
+        private void _JoinMap(Member member, IMap map)
         {
-            // todo : 遷移
+            var handler = _QueryHandler(member);
+            var stage = new MemberMapHandler(member, map);
+            stage.NextMapEvent += _QueryMap;
+            handler.ChangeState(stage);
         }
 
-        internal void Left(Player player)
+        private MemberHandler _QueryHandler(Member member)
         {
-            var s = (from star in _Members where star.Id == player.Id select star).SingleOrDefault();
-            s.Left();
+            var handler = (from h in _Handlers.Objects where h.Id == member.Id select h).SingleOrDefault();
+            if (handler != null)
+                return handler;
 
-            s.MigrateEvent -= _OnMigrate;
-            s.CrossEvent -= _OnCross;
-            _Members.Remove(s);
+            handler = new MemberHandler(member);
+            _Handlers.Add(handler);
+            return handler;
+        }
+
+        internal void Left(Member player)
+        {           
+            
+            var handler = _QueryHandler(player);
+            _Handlers.Remove(handler);
         }
 
 
         int JoinCondition.IResourceProvider.PlayerCount
         {
-            get { return _Members.Count; }
+            get { return _Handlers.Count; }
 
         }
     }
+
+    
 }    

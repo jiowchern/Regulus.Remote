@@ -186,7 +186,12 @@ namespace Regulus.Project.SamebestKeys
                 if (info.Update != null)
                     info.Update.Update();
             }
-           
+
+            if (_LeftDoneEvent != null)
+                foreach(var l in _Lefts)
+                {
+                    _LeftDoneEvent(l.Id);                    
+                }
             _Lefts.Clear();
             return true;
         }
@@ -270,9 +275,9 @@ namespace Regulus.Project.SamebestKeys
             _Into(entity);
         }
 
-        Regulus.Remoting.Value<bool> IMap.Left(Entity entity)
+        void IMap.Left(Entity entity)
         {
-            return _Left(entity);
+            _Left(entity);
         }
 
         IMapInfomation IMap.GetInfomation()
@@ -295,6 +300,13 @@ namespace Regulus.Project.SamebestKeys
                 return _Name;
             }
             
+        }
+
+        event Action<Guid> _LeftDoneEvent;
+        event Action<Guid> IMap.LeftDoneEvent
+        {
+            add { _LeftDoneEvent += value; }
+            remove { _LeftDoneEvent -= value; }
         }
     }
 }

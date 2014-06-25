@@ -10,7 +10,7 @@ namespace Regulus.Project.SamebestKeys.Dungeons
         event Action ShutdownEvent;
         Guid Id { get; }
         bool Join(Member player);
-        void Exit(Player player);
+        void Exit(Member player);
     }
 
     class Scene : Regulus.Utility.IUpdatable , IScene
@@ -49,7 +49,6 @@ namespace Regulus.Project.SamebestKeys.Dungeons
 
         event Action _ShutdownEvent;
         
-        
         event Action IScene.ShutdownEvent
         {
             add { _ShutdownEvent += value;  }
@@ -66,9 +65,9 @@ namespace Regulus.Project.SamebestKeys.Dungeons
             return _Team.Join(player);            
         }
 
-        void IScene.Exit(Player player)
+        void IScene.Exit(Member player)
         {
-            _Team.Left(player);
+            _Team.Left(player);            
         }
     }
     

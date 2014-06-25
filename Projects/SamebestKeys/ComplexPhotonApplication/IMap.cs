@@ -9,10 +9,12 @@ namespace Regulus.Project.SamebestKeys
     {
         Guid Id { get; }
         void Into(Entity entity);
-        Regulus.Remoting.Value<bool> Left(Entity entity);
+        void Left(Entity entity);
 
         IMapInfomation GetInfomation();
 
         string Name { get; }
+
+        event Action<Guid> LeftDoneEvent;
     }
 }
