@@ -83,14 +83,16 @@ namespace Regulus.Project.SamebestKeys.Dungeons
         }
         void Game.IStage.Enter()
         {
-            _Member.BeginTraversable(this); 
+            if (_Member.BeginTraversable != null)
+                _Member.BeginTraversable(this); 
         }
 
         
 
         void Game.IStage.Leave()
         {
-        
+            if (_Member.BeginTraversable != null)
+                _Member.EndTraversable(this);
         }
 
         void Game.IStage.Update()
@@ -103,8 +105,7 @@ namespace Regulus.Project.SamebestKeys.Dungeons
         }
 
         void ITraversable.Ready()
-        {
-            _Member.EndTraversable(this);
+        {            
 
             var map = _Zone.Find(_Map);
             ResultEvent(_Member, map);

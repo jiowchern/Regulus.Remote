@@ -19,6 +19,8 @@ namespace Regulus.Project.SamebestKeys.Dungeons
         public event Action LogoutEvent;
         public event Action<string> ChangeRealmEvent;
 
+        ITraversable _Traversable;
+
         public RealmStage(Regulus.Remoting.ISoulBinder binder, IScene realm, Regulus.Project.SamebestKeys.Serializable.DBEntityInfomation[] actors)
         {
             _Binder = binder;
@@ -35,7 +37,7 @@ namespace Regulus.Project.SamebestKeys.Dungeons
             _Member.BeginTraversable+= _OnBeginTraver;
             _Member.EndTraversable+= _OnEndTraver;
             _Scene.ShutdownEvent += ExitWorldEvent;
-            _Bind(_Players[0], _Binder);
+            
             _RegisterQuit(_Players[0]);
 
             if (_Scene.Join(_Member) == false)
@@ -47,25 +49,30 @@ namespace Regulus.Project.SamebestKeys.Dungeons
 
         private void _OnEndTraver(ITraversable traversable)
         {
-            _Binder.Unbind<ITraversable>(traversable);
-            //_Binder.Bind<IPlayer>(_Players[0]);
+            _Traversable = null;
+            _Binder.Unbind<ITraversable>(traversable);            
+            _Bind(_Players[0], _Binder);
         }
 
         void _OnBeginTraver(ITraversable traversable)
         {
-            //_Binder.Unbind<IPlayer>(_Players[0]);
+            _Traversable = traversable;
+            _Unbind(_Players[0], _Binder);            
             _Binder.Bind<ITraversable>(traversable);
         }
-
-        
-
         void Game.IStage.Leave()
         {
+            if (_Traversable != null)
+            {
+                _Binder.Unbind<ITraversable>(_Traversable);            
+                _Traversable = null;
+            }
+
             _Member.BeginTraversable -= _OnBeginTraver;
             _Member.EndTraversable -= _OnEndTraver;
-
+            
             _UnregisterQuit(_Players[0]);
-            _Unbind(_Players[0], _Binder);
+            _Unbind(_Players[0], _Binder);            
             _Scene.ShutdownEvent -= ExitWorldEvent;
             _Scene.Exit(_Member);
         }

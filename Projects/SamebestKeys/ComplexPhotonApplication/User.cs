@@ -28,9 +28,9 @@ namespace Regulus.Project.SamebestKeys
 
         Serializable.AccountInfomation _AccountInfomation;
         internal void OnLoginSuccess(Serializable.AccountInfomation obj)
-        {
+        {            
+            VerifySuccessEvent(obj.Id);
             _AccountInfomation = obj;
-            VerifySuccessEvent(obj.Id);            
             ToParking();
         }
 
@@ -95,20 +95,7 @@ namespace Regulus.Project.SamebestKeys
                 Actor.Property.Skills.Add(new Serializable.Skill() { Id = 2 });
             }
         }
-        private void _ToAdventure(IMap map)
-        {
-            _Machine.Push(new AdventureStage(map, _Storage, this));
-        }
-
-        void _ToAdventure(string map , Types.Vector2 position)
-        {
-            if (Actor != null)
-            {
-                Actor.Property.Map = map;
-                Actor.Property.Position = position;
-                //_ToAdventure(Actor.Property.Map);
-            }            
-        }
+       
 
         void Regulus.Framework.ILaunched.Launch()
         {
@@ -148,21 +135,14 @@ namespace Regulus.Project.SamebestKeys
             }
         }
 
-        internal void ToCross(string target_map, Types.Vector2 target_position, string current_map, Types.Vector2 current_position)
-        {
-            
-            var stage = new CrossStage(Provider , _World, target_map, target_position, current_map, current_position);
-            stage.ResultEvent += _ToAdventure;
-            _Machine.Push(stage);             
-            
-        }
+        
 
 
 
         internal void OnKick(Guid account)
         {
             if (_AccountInfomation != null && _AccountInfomation.Id == account)
-                Quit();
+                ToLogout();
         }
 
         
