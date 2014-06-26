@@ -5,6 +5,20 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
+    class ObservedAbilityEqualityComparer : IEqualityComparer<Regulus.Project.SamebestKeys.Map.EntityInfomation>
+    {
+
+
+        bool IEqualityComparer<Map.EntityInfomation>.Equals(Map.EntityInfomation x, Map.EntityInfomation y)
+        {
+            return x.Id == y.Id;
+        }
+
+        int IEqualityComparer<Map.EntityInfomation>.GetHashCode(Map.EntityInfomation obj)
+        {
+            return obj.GetHashCode();
+        }
+    }
     class Field
     {
 
@@ -33,15 +47,16 @@ namespace Regulus.Project.SamebestKeys
                 }
                 
             }
-            foreach (var e in _Within.Except(entitys))
+            foreach (var e in _Within.Except(entitys, new ObservedAbilityEqualityComparer() ))
             {
+
                 if (e.Observed != null)
                 {
                     if (LeftEvent != null)
-                        LeftEvent(e.Observed);                                    
+                        LeftEvent(e.Observed);
                 }
-                
-                
+
+
             }
             _Within = entitys.ToList();
            

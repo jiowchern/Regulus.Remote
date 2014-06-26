@@ -15,10 +15,11 @@ namespace Regulus.Project.SamebestKeys
 
 	class World : IWorld , Regulus.Utility.IUpdatable
 	{
+
         Dictionary<string, Regulus.Project.SamebestKeys.Dungeons.Scene> _Singletons;
         Regulus.Utility.TUpdater<Regulus.Project.SamebestKeys.Dungeons.Scene> _Realms;                
 		private Remoting.Time _Time;
-
+        
 		public World(Remoting.Time time)
 		{
 			this._Time = time;
@@ -108,9 +109,6 @@ namespace Regulus.Project.SamebestKeys
         {            
             _PushToUpdater(realm);           
         }
-        
-
-        
         
         private Guid _GetId(IScene level)
         {

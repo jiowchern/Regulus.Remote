@@ -15,6 +15,7 @@ namespace Regulus.Project.SamebestKeys.Dungeons
 
         public delegate void OnNextMap(Member member , string map);
         public event OnNextMap NextMapEvent;
+        
 
         public MemberMapHandler(Member member, IMap map)
         {            
@@ -57,6 +58,7 @@ namespace Regulus.Project.SamebestKeys.Dungeons
         void Game.IStage.Leave()
         {
             _Map.LeftDoneEvent -= _LeftDone;
+            _Map.Left(_Member.Player);            
         }
 
         void Game.IStage.Update()

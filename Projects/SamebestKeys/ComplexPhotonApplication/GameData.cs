@@ -88,8 +88,8 @@ namespace Regulus.Project.SamebestKeys
             {
                 Name = "Room",
                 Singleton = false,
-                Stages = new [] { new Data.Stage { MapName = "Test" } , new Data.Stage { MapName = "Ark" } }
-                //Stages = new [] {new Data.Stage { MapName = "Room" }  }
+                //Stages = new [] { new Data.Stage { MapName = "Test" } , new Data.Stage { MapName = "Ark" } }
+                Stages = new [] {new Data.Stage { MapName = "Room" }  }
             }
         };
         internal Data.Skill FindSkill(int id)

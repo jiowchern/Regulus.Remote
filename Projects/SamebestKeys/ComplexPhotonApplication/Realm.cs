@@ -20,8 +20,9 @@ namespace Regulus.Project.SamebestKeys.Dungeons
         private Zone _Zone;
         Team _Team;
         Regulus.Utility.Updater _Updater;
-        
-        public Scene(Team team, Zone zone, Remoting.Time time )
+        Regulus.Utility.TimeCounter _IdleTime;
+        bool _NeedRecover;
+        public Scene(Team team, Zone zone, Remoting.Time time , bool need_recovery)
         {
             _Team = team;
             _Id = Guid.NewGuid();
@@ -29,10 +30,31 @@ namespace Regulus.Project.SamebestKeys.Dungeons
             this._Time = time;
 
             _Updater = new Utility.Updater();
+            _NeedRecover = need_recovery;
         }
         
         bool Utility.IUpdatable.Update()
         {
+            if (_NeedRecover)
+            {
+                if (_Team.MemberAmount() == 0)
+                {
+                    if (_IdleTime == null)
+                    {
+                        _IdleTime = new Utility.TimeCounter();
+                    }
+                    else if (_IdleTime.Second >= 30f)
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    _IdleTime = null;
+                }
+            }
+            
+            
             _Updater.Update();
             return true;
         }

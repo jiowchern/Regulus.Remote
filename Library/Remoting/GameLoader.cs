@@ -8,7 +8,7 @@ namespace Regulus.Game
 {
     public interface ICore : Regulus.Utility.IUpdatable
     {
-        void ObtainController(Regulus.Remoting.ISoulBinder binder);
+        void ObtainController(Regulus.Remoting.ISoulBinder binder);        
     }
 
     public class Loader

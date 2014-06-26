@@ -89,6 +89,11 @@ namespace Regulus.Project.SamebestKeys.Dungeons
             get { return _Handlers.Count; }
 
         }
+
+        internal int MemberAmount()
+        {
+            return _Handlers.Objects.Count();
+        }
     }
 
     

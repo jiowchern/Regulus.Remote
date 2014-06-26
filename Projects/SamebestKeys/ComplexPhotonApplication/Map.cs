@@ -52,6 +52,11 @@ namespace Regulus.Project.SamebestKeys
                 add { _BoundsChanged += value; }
                 remove { _BoundsChanged -= value; }
             }
+
+            internal void Release()
+            {
+                _Physical.BoundsChanged -= _Physical_BoundsChanged;
+            }
         }
         Regulus.Remoting.Time _Time;
         Regulus.Utility.Poller<EntityInfomation> _EntityInfomations = new Utility.Poller<EntityInfomation>();
@@ -105,22 +110,22 @@ namespace Regulus.Project.SamebestKeys
         }
 
         List<IObservedAbility> _Lefts = new List<IObservedAbility>();
-        Regulus.Remoting.Value<bool> _Left(Entity entity)
+        void _Left(Entity entity)
         {
-            Regulus.Remoting.Value<bool> ret = new Remoting.Value<bool>();
+            
             _EntityInfomations.Remove((info) => 
             {
                 if (info.Id == entity.Id)
                 {
                     _ObseverdInfomations.Remove(info);
                     _RemoveObserve(info);
-                    _Lefts.Add(info.Observed);
-                    ret.SetValue(true);
+                    _Lefts.Add(info.Observed);                    
+                    info.Release();
                     return true;
                 }
                 return false;
             });
-            return ret;
+            
         }
 
         private void _RemoveObserve(EntityInfomation info)
