@@ -13,7 +13,9 @@ namespace Console
         Regulus.Project.SamebestKeys.IOnline _Online;        
         Regulus.Project.SamebestKeys.IPlayer _Player;
         Regulus.Project.SamebestKeys.IObservedAbility _Observed;
-
+        Regulus.Project.SamebestKeys.IRealmJumper _RealmJumper;
+        
+        string[] _Scenes;
         Regulus.Game.StageMachine _Machine;
         public enum Result
         {
@@ -23,7 +25,7 @@ namespace Console
         public BotMapStage(Regulus.Project.SamebestKeys.IUser _User)
         {            
             this._User = _User;
-            
+            _Scenes = new string[0];
             _Machine = new Regulus.Game.StageMachine();
         }
         public void Enter()
@@ -31,8 +33,22 @@ namespace Console
             _User.TraversableProvider.Supply += TraversableProvider_Supply;
             _User.OnlineProvider.Supply += OnlineProvider_Supply;
             _User.PlayerProvider.Supply += PlayerProvider_Supply;
+            _User.RealmJumperProvider.Supply += RealmJumperProvider_Supply;
+            
 
 
+            
+        }
+
+        void RealmJumperProvider_Supply(Regulus.Project.SamebestKeys.IRealmJumper obj)
+        {
+            _RealmJumper = obj;
+
+            _RealmJumper.Query().OnValue += (scenes) => { _Scenes = scenes; };
+        }
+
+        void LevelSelectorProvider_Supply(Regulus.Project.SamebestKeys.ILevelSelector obj)
+        {
             
         }
 
@@ -97,18 +113,12 @@ namespace Console
 
         private void _ToChangeMap()
         {
-            if (_Player != null)
+            if (_Player != null && _Scenes.Length > 0)
             {
                 _Player.Stop(0);
-                var map = Regulus.Utility.Random.Next(0, 3);
-                if (map == 0)
-                {
-                    _Player.Goto("Ark", Regulus.Utility.Random.Next(47, 47 + 10), Regulus.Utility.Random.Next(167, 167 + 10));
-                }
-                else if (map == 1)                    
-                    _Player.Goto("Test", Regulus.Utility.Random.Next(50, 50 + 10), Regulus.Utility.Random.Next(50, 50 + 10));
-                else
-                    _Player.Goto("SL_1C", Regulus.Utility.Random.Next(169, 169 + 10), Regulus.Utility.Random.Next(148, 148 + 10));
+
+                var idx = Regulus.Utility.Random.Next(0, _Scenes.Length);
+                _RealmJumper.Jump(_Scenes[idx]);
 
                 ResultEvent(Result.Reset);
             }
@@ -137,6 +147,7 @@ namespace Console
 
         public void Leave()
         {
+            _User.RealmJumperProvider.Supply += RealmJumperProvider_Supply;
             _User.ObservedAbilityProvider.Supply -= ObservedAbilityProvider_Supply;
             _User.PlayerProvider.Supply -= PlayerProvider_Supply;
             _User.OnlineProvider.Supply -= OnlineProvider_Supply;

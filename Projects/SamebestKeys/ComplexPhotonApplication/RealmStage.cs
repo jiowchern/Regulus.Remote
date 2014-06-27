@@ -145,6 +145,18 @@ namespace Regulus.Project.SamebestKeys.Dungeons
         {
             ChangeRealmEvent(realm);            
         }
+
+        Remoting.Value<string[]> IRealmJumper.Query()
+        {
+            return _QueryScenes(_Players[0]);
+        }
+
+        private Remoting.Value<string[]> _QueryScenes(Player player)
+        {
+            return player.QueryPlayableScenes();
+        }
+
+
     }
 
     

@@ -13,6 +13,7 @@ namespace Regulus.Project.SamebestKeys
 		[Serializable]
 		public struct Scene
 		{
+            public string Front { get; set; }
 			public string Name { get; set; }
 			public bool Singleton { get; set; }
 
@@ -248,7 +249,17 @@ namespace Regulus.Project.SamebestKeys.Serializable
 	}
 
 
-	[ProtoBuf.ProtoContract]
+    
+    public class Record
+    {
+        public Record()
+		{
+			Clearances = new string[1] { "" };
+		}
+        public string[] Clearances;
+    }
+
+	
 	public class DBEntityInfomation 
 	{
 		public DBEntityInfomation()
@@ -256,12 +267,14 @@ namespace Regulus.Project.SamebestKeys.Serializable
 			Look = new EntityLookInfomation();
 			Property = new EntityPropertyInfomation();
 		}
-		[ProtoBuf.ProtoMember(1)]
+		
 		public EntityPropertyInfomation Property { get; set; }
-		[ProtoBuf.ProtoMember(2)]
+		
 		public EntityLookInfomation Look { get; set; }
-		[ProtoBuf.ProtoMember(3)]
-		public Guid Owner { get; set; }        
+		
+		public Guid Owner { get; set; }    
+    
+        public Record Record { get; set; }  
 	}
 
 	[ProtoBuf.ProtoContract]

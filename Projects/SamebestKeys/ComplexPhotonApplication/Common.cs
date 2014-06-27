@@ -29,10 +29,8 @@ namespace Regulus.Project.SamebestKeys
 
     public interface ILevelSelector
     {
-        Remoting.Value<string[]>   QueryLevels();
+        Remoting.Value<string[]> QueryLevels();
         Remoting.Value<bool> Select(string id);
-
-
         void Back();
     }
 
@@ -65,7 +63,7 @@ namespace Regulus.Project.SamebestKeys
         void Say(string message);
 		
         void BodyMovements(ActionStatue action_statue);
-        Value<string> QueryMap();        
+        
         void Goto(string map , float x , float y);
         
     }

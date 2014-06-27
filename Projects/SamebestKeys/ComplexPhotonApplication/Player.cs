@@ -156,11 +156,7 @@ namespace Regulus.Project.SamebestKeys
         }
 
 		
-        string _Map;
-        Remoting.Value<string> IPlayer.QueryMap()
-        {            
-            return _Map;        
-        }
+        
 
 
         void IPlayer.Goto(string map, float x, float y)
@@ -193,6 +189,16 @@ namespace Regulus.Project.SamebestKeys
         internal void ClearField()
         {
             _ObserveAbility.Clear();
+        }
+
+        internal string[] QueryPlayableScenes()
+        {
+            var results = ( from dataScene in GameData.Instance.Scenes
+                            join clearanceScene in _DBActorInfomation.Record.Clearances 
+                            on dataScene.Front equals clearanceScene 
+                            select dataScene.Name).ToArray();
+
+            return results;    
         }
     }
 }

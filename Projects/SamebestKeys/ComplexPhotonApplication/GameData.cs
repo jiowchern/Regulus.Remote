@@ -64,28 +64,41 @@ namespace Regulus.Project.SamebestKeys
                                       new Data.Skill() { Id = 2, Begin = 0.33f, Effective = 0.03f, End = 0.69f, Energy = 10, Capture = true, CaptureBounds = new Types.Rect(-1,-1,2,2 ) , UseMode = ActorMode.Alert , Param1 = 10}};
 
 
+        public Data.Scene[] Scenes { get { return _Realms ; } }
+
         static Data.Scene[] _Realms = 
         {
             new Data.Scene()
             {
+                Front = "SL_1A",
                 Name = "SL_1C",
-                Singleton = true,
+                Singleton = false,
                 Stages = new [] { new Data.Stage { MapName = "SL_1C" }  }
             },
             new Data.Scene()
             {
+                Front = "",
+                Name = "SL_1A",
+                Singleton = false,
+                Stages = new [] { new Data.Stage { MapName = "SL_1A" }  }
+            },
+            new Data.Scene()
+            {
+                Front = "",
                 Name = "Ark",
                 Singleton = true,
                 Stages = new [] { new Data.Stage { MapName = "Ark" }  }
             },
             new Data.Scene()
             {
+                Front = "",
                 Name = "Test",
                 Singleton = true,
                 Stages = new [] { new Data.Stage { MapName = "Test" } , new Data.Stage { MapName = "Ark" } }
             },
             new Data.Scene()
             {
+                Front = "",
                 Name = "Room",
                 Singleton = false,
                 //Stages = new [] { new Data.Stage { MapName = "Test" } , new Data.Stage { MapName = "Ark" } }

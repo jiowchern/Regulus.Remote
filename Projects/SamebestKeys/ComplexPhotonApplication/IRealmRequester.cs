@@ -7,6 +7,8 @@ namespace Regulus.Project.SamebestKeys
 {
     public interface IRealmJumper
     {
+        
+        Regulus.Remoting.Value<string[]> Query();
         void Jump(string realm);
     }
 }

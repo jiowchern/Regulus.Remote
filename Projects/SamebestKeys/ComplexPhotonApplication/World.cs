@@ -55,8 +55,6 @@ namespace Regulus.Project.SamebestKeys
             return realm;
         }
 
-        
-
         private Scene _Query(Data.Scene scene)
         {
 

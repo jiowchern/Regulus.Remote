@@ -94,6 +94,11 @@ namespace Regulus.Project.SamebestKeys
                 Actor.Property.Skills.Add(new Serializable.Skill() { Id = 1 });
                 Actor.Property.Skills.Add(new Serializable.Skill() { Id = 2 });
             }
+
+            if (Actor.Record == null)
+            {
+                Actor.Record = new Serializable.Record();                
+            }
         }
        
 
@@ -150,9 +155,8 @@ namespace Regulus.Project.SamebestKeys
 
         internal void ToFirst(Serializable.DBEntityInfomation obj)
         {
-            _InitialActor(obj);
+            _InitialActor(obj);            
             _JumpRealm("Room");
-
         }        
         private void _ToRealm(Regulus.Project.SamebestKeys.Dungeons.IScene realm)        
         {

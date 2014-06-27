@@ -116,10 +116,19 @@ namespace Regulus.Projects.SamebestKeys
         void RealmJumperProvider_Supply(Project.SamebestKeys.IRealmJumper obj)
         {
             _Command.Register<string>("JumpRealm", obj.Jump);
+            _Command.RemotingRegister<string[]>("QueryRealms", obj.Query, (realms) => 
+            {
+                _View.WriteLine("可玩關卡");
+                foreach (var realm in realms)
+                {
+                    _View.WriteLine(realm);
+                }
+                
+            });
 
             _RemoveCommands.Add(obj, new string[] 
             {
-                "JumpRealm"
+                "JumpRealm" , "QueryRealms"
             });
         }
 
@@ -165,16 +174,13 @@ namespace Regulus.Projects.SamebestKeys
                 obj.BodyMovements((Project.SamebestKeys.ActionStatue)Enum.Parse(typeof(Project.SamebestKeys.ActionStatue), val));
             });
 
-            _Command.RemotingRegister<string>("QueryMap", obj.QueryMap, (val) => 
-            {
-                _View.WriteLine("所在地圖" + val);
-            });
+            
 
             _RemoveCommands.Add(obj, new string[] 
             {
                 "Logout","ExitWorld","SetPosition","SetVision",
                 "SetSpeed","Walk","Stop","Say","BodyMovements",
-                "QueryMap","Goto","ChangeMode" , "Cast"
+                "Goto","ChangeMode" , "Cast"
             });
         }
 
