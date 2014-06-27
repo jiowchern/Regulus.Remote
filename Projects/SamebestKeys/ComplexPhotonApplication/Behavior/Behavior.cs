@@ -63,7 +63,7 @@ namespace Regulus.Project.SamebestKeys
                 skill.SkillEvent += _ToSkill;
                 knockout.DoneEvent += _ToKnockout;
 
-                _EntityAct(new Serializable.ActionCommand() { Command = ActionStatue.Idle, Turn = true } );
+                _EntityAct(new Serializable.ActionCommand() { Command = ActionStatue.Idle_1, Turn = true } );
                 return new IBehaviorHandler[] { injury, move, skill, knockout };
             });            
         }

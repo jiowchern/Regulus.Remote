@@ -105,7 +105,7 @@ namespace Regulus.Project.SamebestKeys
 
                     if (result.Intersect || result.WillIntersect)
                     {
-                        _Act(ActionStatue.Idle, 0, 0 , true , false);
+                        _Act(ActionStatue.Idle_1, 0, 0 , true , false);
                     }
 
                     

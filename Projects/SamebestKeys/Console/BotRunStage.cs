@@ -31,7 +31,7 @@ namespace Console
 
         void _Observed_ShowActionEvent(Regulus.Project.SamebestKeys.Serializable.MoveInfomation obj)
         {
-            if (obj.ActionStatue == Regulus.Project.SamebestKeys.ActionStatue.Idle && obj.Speed == 0 && DoneEvent != null)
+            if (obj.ActionStatue == Regulus.Project.SamebestKeys.ActionStatue.Idle_1 && obj.Speed == 0 && DoneEvent != null)
             {
                 _Player.Walk(Regulus.Utility.Random.Next(0, 360));
             }

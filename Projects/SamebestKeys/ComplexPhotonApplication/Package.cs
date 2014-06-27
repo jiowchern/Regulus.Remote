@@ -114,14 +114,15 @@ namespace Regulus.Project.SamebestKeys
 	[ProtoBuf.ProtoContract]
 	public enum ActionStatue
 	{
-		Idle,        
-		Angry,
-		Call,
-		Greet,
+		Idle_1,        
+		Idle_Long,
+		Depression_1,
+		Greet_1,
+		Happy_1,        
+		Run,
 		Walk,
-		Happy,        
-		Injury,
-		Knockout,
+        Injury,
+        Knockout,
 		SkillBegin,
 		Skill1,
 		Skill2,
