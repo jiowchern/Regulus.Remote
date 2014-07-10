@@ -7,6 +7,7 @@ namespace Regulus.Project.SamebestKeys.Dungeons
 {
     partial class RealmStage : Regulus.Game.IStage, IRealmJumper
     {
+        Belongings _Belongings;
         private IScene _Scene;        
         Player[] _Players;
         Regulus.Remoting.ISoulBinder _Binder;
@@ -21,7 +22,7 @@ namespace Regulus.Project.SamebestKeys.Dungeons
 
         ITraversable _Traversable;
 
-        public RealmStage(Regulus.Remoting.ISoulBinder binder, IScene realm, Regulus.Project.SamebestKeys.Serializable.DBEntityInfomation[] actors)
+        public RealmStage(Regulus.Remoting.ISoulBinder binder, IScene realm, Regulus.Project.SamebestKeys.Serializable.DBEntityInfomation[] actors, Belongings belongings)
         {
             _Binder = binder;
             this._Scene = realm;
@@ -29,10 +30,12 @@ namespace Regulus.Project.SamebestKeys.Dungeons
             _Players = (from actor in actors select new Player(actor)).ToArray();
 
             _Observeds = new List<IObservedAbility>();
+            _Belongings = belongings;
         }
 
         void Game.IStage.Enter() 
         {
+            _Binder.Bind<IBelongings>(_Belongings);
             _Member = new Member(_Players[0]);
             _Member.BeginTraversable+= _OnBeginTraver;
             _Member.EndTraversable+= _OnEndTraver;
@@ -64,7 +67,7 @@ namespace Regulus.Project.SamebestKeys.Dungeons
         {
             if (_Traversable != null)
             {
-                _Binder.Unbind<ITraversable>(_Traversable);            
+                _Binder.Unbind<ITraversable>(_Traversable); 
                 _Traversable = null;
             }
 
@@ -75,6 +78,7 @@ namespace Regulus.Project.SamebestKeys.Dungeons
             _Unbind(_Players[0], _Binder);            
             _Scene.ShutdownEvent -= ExitWorldEvent;
             _Scene.Exit(_Member);
+            _Binder.Unbind<IBelongings>(_Belongings);
         }
 
         private void _RegisterQuit(Player player)

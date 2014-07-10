@@ -165,18 +165,22 @@ namespace Regulus.Project.SamebestKeys.Serializable
 		public Regulus.Types.Vector2 TargetPosition;
 	}
 
-	[ProtoBuf.ProtoContract]
+    /*public struct Consumption
+    {        
+        public int Number;
+        public int Coins;
+        public int Source;
+        public string Remark;
+    }*/
 	public class AccountInfomation 
-	{        
-		[ProtoBuf.ProtoMember(1)]
+	{        		
 		public string Name { get; set; }
-		[ProtoBuf.ProtoMember(2)]
-		public string Password{ get; set; }
-		[ProtoBuf.ProtoMember(3)]
+		
+		public string Password{ get; set; }		
 		public Guid Id { get; set; }
 
-		public string[] LevelRecords { get; set; }
-		
+		public string[] LevelRecords { get; set; }        
+             
 	}
 
 	/// <summary>

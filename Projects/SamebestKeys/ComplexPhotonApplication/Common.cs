@@ -39,7 +39,12 @@ namespace Regulus.Project.SamebestKeys
 	{
         Value<Types.Polygon[]> QueryWalls();
 	}
+    public interface IBelongings
+    {
+        Remoting.Value<int> QueryCoins();
 
+        void AddCoins(int coins);
+    }
 	/// <summary>
 	/// ª±®a¦Û¤v
 	/// </summary>

@@ -7,15 +7,17 @@ namespace Regulus
 {
     namespace SQL
     {
-        using MySql.Data;
         using MySql.Data.MySqlClient;
+        
         public class Database : IDisposable
         {
             MySqlConnection _Connect;
 
             public void Connect(string host, string user, string password, string database_name)
-            {
-                _Connect = new MySqlConnection("server=" + host + ";uid=" + user + ";pwd=" + password + ";database=" + database_name);
+            {                
+                
+                var connect = "Server = " + host + "; UserId = " + user + "; Password = " + password + "; Database = " + database_name + "";                
+                _Connect = new MySqlConnection(connect);                
 
                 try
                 {
@@ -42,14 +44,15 @@ namespace Regulus
                     _Connect.Close();
                 _Connect = null;
             }
-
-			public void ExecuteSQL(string command_str)
+            public void ExecuteNonQuery(string command_str)
+            {
+                var cmd = new MySqlCommand(command_str, _Connect);
+                cmd.ExecuteNonQuery();
+            }
+            public MySqlDataReader Execute(string command_str)
 			{
-				var cmd = _Connect.CreateCommand();
-				using (var reader = cmd.ExecuteReader())
-				{
-					
-				}
+                var cmd = new MySqlCommand(command_str, _Connect);                
+                return cmd.ExecuteReader();
 			}
 
             void IDisposable.Dispose()

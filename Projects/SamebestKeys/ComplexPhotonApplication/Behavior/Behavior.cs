@@ -169,7 +169,7 @@ namespace Regulus.Project.SamebestKeys
 
             if (move != null && property != null)
             {
-                move.Act(new Serializable.ActionCommand() { Command = ActionStatue.Walk, Direction = direction, Speed = property.CurrentSpeed, Turn = true });                
+                move.Act(new Serializable.ActionCommand() { Command = ActionStatue.Run, Direction = direction, Speed = property.CurrentSpeed, Turn = true });                
             }
         }
 

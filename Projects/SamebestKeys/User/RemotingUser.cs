@@ -216,6 +216,11 @@ namespace Regulus.Projects.SamebestKeys.Remoting
         {
             get { return _Agent.QueryProvider<Project.SamebestKeys.IRealmJumper>(); }
         }
+
+        Regulus.Remoting.Ghost.IProviderNotice<Project.SamebestKeys.IBelongings> Project.SamebestKeys.IUser.BelongingsProvider
+        {
+            get { return _Agent.QueryProvider<Project.SamebestKeys.IBelongings>(); }
+        }
     }
 }
 

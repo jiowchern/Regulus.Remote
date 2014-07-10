@@ -23,7 +23,7 @@ namespace Console
         
         void Regulus.Game.IStage.Enter()
         {
-            _Player.SetSpeed(2);
+            _Player.SetSpeed(7);
             _Player.Walk(Regulus.Utility.Random.Next(0,360));
             _Observed.ShowActionEvent += _Observed_ShowActionEvent;
             _Second = Regulus.Utility.Random.Next(3 , 60);

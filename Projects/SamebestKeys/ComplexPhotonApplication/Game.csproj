@@ -61,6 +61,7 @@
     <Compile Include="Behavior\BehaviorCommand.cs" />
     <Compile Include="Behavior\BehaviorHandler.cs" />
     <Compile Include="Behavior\BehavourStage.cs" />
+    <Compile Include="Belongings.cs" />
     <Compile Include="CastResult.cs" />
     <Compile Include="Behavior\InjuryBehavior.cs" />
     <Compile Include="Behavior\KnockoutBehaviour.cs" />

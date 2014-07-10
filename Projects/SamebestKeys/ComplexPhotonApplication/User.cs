@@ -8,7 +8,7 @@ using System.Text;
 namespace Regulus.Project.SamebestKeys
 {
     internal class User : Regulus.Utility.IUpdatable
-    {
+    {        
         public Remoting.ISoulBinder Provider { get; private set; }
 
         Regulus.Game.StageMachine _Machine ;
@@ -24,6 +24,8 @@ namespace Regulus.Project.SamebestKeys
             Provider = provider;
             provider.BreakEvent += Quit;
 			_World = world;
+
+            
         }
 
         Serializable.AccountInfomation _AccountInfomation;
@@ -31,6 +33,7 @@ namespace Regulus.Project.SamebestKeys
         {            
             VerifySuccessEvent(obj.Id);
             _AccountInfomation = obj;
+            _Storage.CreateConsumptionPlayer(_AccountInfomation.Id);
             ToParking();
         }
 
@@ -71,11 +74,11 @@ namespace Regulus.Project.SamebestKeys
             }
             if (Actor.Property.Vision == 0.0)
             {
-                Actor.Property.Vision = 30;
+                Actor.Property.Vision = 300;
             }
             if (Actor.Property.Speed == 0.0)
             {
-                Actor.Property.Speed = 10;
+                Actor.Property.Speed = 5;
             }
             if (!(Actor.Property.Position.X >= 0 && Actor.Property.Position.X <= 100))
             {
@@ -162,7 +165,7 @@ namespace Regulus.Project.SamebestKeys
         {
             if (realm != null)
             {
-                var stage = new Regulus.Project.SamebestKeys.Dungeons.RealmStage(Provider, realm, new[] { Actor });
+                var stage = new Regulus.Project.SamebestKeys.Dungeons.RealmStage(Provider, realm, new[] { Actor } , new Belongings(_Storage, _AccountInfomation.Id));
                 stage.ExitWorldEvent += ToParking;
                 stage.LogoutEvent += ToLogout;
                 stage.ChangeRealmEvent += _JumpRealm;

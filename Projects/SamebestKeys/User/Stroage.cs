@@ -61,6 +61,22 @@ namespace Regulus.Projects.SamebestKeys.Standalong
         {
             _DBEntityInfomations.Add(actor);
         }
+
+
+        void Project.SamebestKeys.IStorage.CreateConsumptionPlayer(Guid owner)
+        {
+            
+        }
+
+        int Project.SamebestKeys.IStorage.QueryConsumptionCoins(Guid owner)
+        {
+            return 100;
+        }
+
+        void Project.SamebestKeys.IStorage.AddConsumptionCoins(Guid owner, int coins)
+        {
+            
+        }
     }
     
 }

@@ -38,5 +38,8 @@ namespace Regulus.Project.SamebestKeys
         Regulus.Remoting.Ghost.IProviderNotice<Regulus.Remoting.ITime> TimeProvider { get; }
 
         Regulus.Remoting.Ghost.IProviderNotice<IRealmJumper> RealmJumperProvider { get; }
+
+        Regulus.Remoting.Ghost.IProviderNotice<IBelongings> BelongingsProvider { get; }
+        
     }
 }

@@ -10,5 +10,11 @@ namespace Regulus.Project.SamebestKeys
         global::Regulus.Project.SamebestKeys.Serializable.DBEntityInfomation[] FindActor(Guid id);
         bool RemoveActor(Guid id, string name);
         void SaveActor(global::Regulus.Project.SamebestKeys.Serializable.DBEntityInfomation actor);
+
+        void CreateConsumptionPlayer(Guid owner);
+
+        int QueryConsumptionCoins(Guid owner);
+
+        void AddConsumptionCoins(Guid owner, int coins);
     }
 }

@@ -23,7 +23,7 @@ namespace Regulus.Project.SamebestKeys.Dungeons
         {
             Zone zone = _BuildStage(data);
             JoinCondition joinCondition = _BuildJoinCondition(data);
-            return new Scene(new Team(zone, joinCondition), zone, LocalTime.Instance, data.Singleton);
+            return new Scene(new Team(zone, joinCondition), zone, LocalTime.Instance, ! data.Singleton );
         }
     
         private Zone _BuildStage(Data.Scene data)
