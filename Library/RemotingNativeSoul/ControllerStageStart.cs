@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Regulus.Remoting.Soul.Native
 {
-    partial class TcpController : Application.IController
+    partial class Controller : Application.IController
     {
         class StageStart : Regulus.Game.IStage
         {

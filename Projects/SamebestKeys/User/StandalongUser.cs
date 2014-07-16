@@ -180,7 +180,6 @@ namespace Regulus.Projects.SamebestKeys.Standalong
                 _Agent.Launch();
                 _Game.Push(_Agent);
                 _Agent.BreakEvent += DisconnectEvent;
-                
             }
 
             void Regulus.Game.IStage.Leave()

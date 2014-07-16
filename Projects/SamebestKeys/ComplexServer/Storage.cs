@@ -8,7 +8,7 @@ namespace Regulus.Project.SamebestKeys
     class Storage :  Regulus.Utility.IUpdatable, IStorage
     {
         Regulus.NoSQL.Database _Game;
-        Regulus.SQL.Database _Business;
+        //Regulus.SQL.Database _Business;
         
 
         public void Add(Serializable.AccountInfomation ai)
@@ -22,8 +22,8 @@ namespace Regulus.Project.SamebestKeys
             _Game = new Regulus.NoSQL.Database();
             _Game.Launch("mongodb://127.0.0.1:27017", "SamebestKeys");
 
-            _Business = new SQL.Database();
-            _Business.Connect("localhost", "root", "keys", "SamebestKeys");
+            //_Business = new SQL.Database();
+            //_Business.Connect("localhost", "root", "keys", "SamebestKeys");
         }
 
 		bool Regulus.Utility.IUpdatable.Update()
@@ -36,7 +36,7 @@ namespace Regulus.Project.SamebestKeys
             if (_Game != null)
                 _Game.Shutdown();
 
-            _Business.Disconnect();
+            //_Business.Disconnect();
         }
 
 
@@ -49,7 +49,7 @@ namespace Regulus.Project.SamebestKeys
         private void _AddConsumptionCoins(int number, int coins)
         {
             var sql = "insert into Consumption(Number, Coins , Source , Remark) values (" + number.ToString() + "," + coins.ToString() + ",'GameSystem','')";
-            _Business.ExecuteNonQuery(sql);
+            //_Business.ExecuteNonQuery(sql);
         }
         public void CreateConsumptionPlayer(Guid owner)
         {
@@ -63,22 +63,23 @@ namespace Regulus.Project.SamebestKeys
 
         private bool _HasConsumptionPlayer(Guid owner)
         {
-            var sql = "select * from Player where Id = '" + owner.ToString() + "'";
+            return true;
+            /*var sql = "select * from Player where Id = '" + owner.ToString() + "'";
             using(var data = _Business.Execute(sql))
             {
                 return data.HasRows;
-            }
+            }*/
         }
 
         private void _CreateConsumptionPlayer(Guid owner)
         {
-            var sql = "insert into Player (Id) values ('"+ owner.ToString() +"')";
-            _Business.ExecuteNonQuery(sql);
+            //var sql = "insert into Player (Id) values ('"+ owner.ToString() +"')";
+            //_Business.ExecuteNonQuery(sql);
         }
         public int QueryConsumptionCoins(Guid owner)
         {
 
-            var number = _FindPlayerNumber(owner);
+           /* var number = _FindPlayerNumber(owner);
 
             var sql = "select SUM(Coins) from Consumption where Number = " + number.ToString();
             using(var data = _Business.Execute(sql))
@@ -93,7 +94,7 @@ namespace Regulus.Project.SamebestKeys
                     }
                         
                 }
-            }
+            }*/
             
             return 0;
             
@@ -101,12 +102,13 @@ namespace Regulus.Project.SamebestKeys
 
         private int _FindPlayerNumber(Guid owner)
         {
-            var sql = "select Number from Player where Id = '" + owner.ToString()+"'";
+            /*var sql = "select Number from Player where Id = '" + owner.ToString()+"'";
             using(var data = _Business.Execute(sql))
             {
                 data.Read();
                 return (int)data[0];
-            }
+            }*/
+            return 0;
         }
         public Serializable.AccountInfomation FindAccountInfomation(string name)
         {

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Regulus.Remoting.Soul.Native
 {
-	partial class TcpController : Application.IController
+	partial class Controller : Application.IController
 	{
         Regulus.Game.StageMachine _Machine;
 
@@ -15,7 +15,7 @@ namespace Regulus.Remoting.Soul.Native
 		Regulus.Utility.Console.IViewer _View;
 		
 
-		public TcpController(Regulus.Utility.Command command, Regulus.Utility.Console.IViewer view)
+		public Controller(Regulus.Utility.Command command, Regulus.Utility.Console.IViewer view)
 		{
 			
 			_Command = command;
@@ -70,13 +70,13 @@ namespace Regulus.Remoting.Soul.Native
 
         private void _ToStart()
         {
-            var stage = new Regulus.Remoting.Soul.Native.TcpController.StageStart(_Command,_View);
+            var stage = new Regulus.Remoting.Soul.Native.Controller.StageStart(_Command,_View);
             stage.DoneEvent += _ToRun;
             _Machine.Push(stage);
         }
         private void _ToRun(Regulus.Game.ICore core,int port , float timeout)
         {
-            var stage = new Regulus.Remoting.Soul.Native.TcpController.StageRun(core, _Command, port , _View);
+            var stage = new Regulus.Remoting.Soul.Native.Controller.StageRun(core, _Command, port , _View);
             stage.ShutdownEvent += _ToStart;            
             _Machine.Push(stage);
         }

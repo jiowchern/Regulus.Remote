@@ -49,7 +49,7 @@ namespace Regulus.Project.SamebestKeys
 	/// ª±®a¦Û¤v
 	/// </summary>
     public interface IPlayer
-    {
+    {        
         Guid Id { get; }
         string Name { get; }
         float Speed { get; }
