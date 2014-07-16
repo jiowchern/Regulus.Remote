@@ -271,7 +271,7 @@
         public event System.Action ErrorEvent;       
 		System.Net.Sockets.Socket _Socket;
         Regulus.Game.StageMachine _Machine;
-        Regulus.Utility.TimeCounter _LifeCycle;
+        
         public static decimal TotalBytes { get; private set; }        
         static Regulus.Utility.TimeCounter _AfterTime = new Utility.TimeCounter();
         public static decimal TotalBytesPerSecond { get { return TotalBytes / (decimal) (_AfterTime.Second + 1); } }
@@ -279,12 +279,10 @@
         public NetworkStreamReadStage(System.Net.Sockets.Socket socket )
 		{            
 			_Socket = socket;
-            _Machine = new Game.StageMachine();
-            _LifeCycle = new Utility.TimeCounter();
+            _Machine = new Game.StageMachine();        
 		}
 		void Game.IStage.Enter()
-		{
-            _LifeCycle.Reset();
+		{        
             _ToHead();
 		}
 

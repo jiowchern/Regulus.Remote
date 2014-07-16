@@ -97,6 +97,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Game", "Projects\KeysHearth
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestMySql", "TestMySql\TestMySql.csproj", "{8E10222B-47BD-44B2-B73C-06E214467483}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Business", "Business", "{999F5066-CEFC-49BE-9C0B-C033F5FF34C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessServer", "Projects\SamebestKeys\BusinessServer\BusinessServer.csproj", "{33320764-2C40-4B14-AD7F-767B5848EAAC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Unity|Any CPU = Debug_Unity|Any CPU
@@ -665,6 +669,21 @@ Global
 		{8E10222B-47BD-44B2-B73C-06E214467483}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{8E10222B-47BD-44B2-B73C-06E214467483}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{8E10222B-47BD-44B2-B73C-06E214467483}.Release|x86.ActiveCfg = Release|Any CPU
+		{33320764-2C40-4B14-AD7F-767B5848EAAC}.Debug_Unity|Any CPU.ActiveCfg = Debug|Any CPU
+		{33320764-2C40-4B14-AD7F-767B5848EAAC}.Debug_Unity|Any CPU.Build.0 = Debug|Any CPU
+		{33320764-2C40-4B14-AD7F-767B5848EAAC}.Debug_Unity|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{33320764-2C40-4B14-AD7F-767B5848EAAC}.Debug_Unity|Mixed Platforms.Build.0 = Debug|Any CPU
+		{33320764-2C40-4B14-AD7F-767B5848EAAC}.Debug_Unity|x86.ActiveCfg = Debug|Any CPU
+		{33320764-2C40-4B14-AD7F-767B5848EAAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33320764-2C40-4B14-AD7F-767B5848EAAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33320764-2C40-4B14-AD7F-767B5848EAAC}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{33320764-2C40-4B14-AD7F-767B5848EAAC}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{33320764-2C40-4B14-AD7F-767B5848EAAC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{33320764-2C40-4B14-AD7F-767B5848EAAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33320764-2C40-4B14-AD7F-767B5848EAAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33320764-2C40-4B14-AD7F-767B5848EAAC}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{33320764-2C40-4B14-AD7F-767B5848EAAC}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{33320764-2C40-4B14-AD7F-767B5848EAAC}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -712,5 +731,7 @@ Global
 		{C18537BA-F951-4203-8B17-903E4485A076} = {BC57B228-DB48-4122-90B4-8281960C0282}
 		{BAA6D0EE-C862-4D76-8296-19B8FC611CD1} = {C18537BA-F951-4203-8B17-903E4485A076}
 		{8E10222B-47BD-44B2-B73C-06E214467483} = {0701FE3A-A51F-45B4-8558-2F850665323A}
+		{999F5066-CEFC-49BE-9C0B-C033F5FF34C3} = {25A92ADA-CC04-4F8C-93B3-8F43A42030E3}
+		{33320764-2C40-4B14-AD7F-767B5848EAAC} = {999F5066-CEFC-49BE-9C0B-C033F5FF34C3}
 	EndGlobalSection
 EndGlobal

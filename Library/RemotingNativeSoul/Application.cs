@@ -27,7 +27,7 @@ namespace Regulus.Remoting.Soul.Native
 
 		private IController _BuildStandController()
 		{
-			return new TcpController(Command , _Viewer);
+			return new Controller(Command , _Viewer);
 		}
 		
 	}

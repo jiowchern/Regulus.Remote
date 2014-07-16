@@ -77,11 +77,11 @@
     </ProjectReference>
     <ProjectReference Include="..\ComplexPhotonApplication\Game.csproj">
       <Project>{e4c45855-ec59-4c4c-a21d-44cb0390ce37}</Project>
-      <Name>Game %28Projects\SamebestKeys\Game%29</Name>
+      <Name>Game</Name>
     </ProjectReference>
     <ProjectReference Include="..\User\User.csproj">
       <Project>{135f7b20-b932-4e72-801a-74a6c7a5c2c1}</Project>
-      <Name>User %28Projects\SamebestKeys\User%29</Name>
+      <Name>User</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

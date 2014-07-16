@@ -107,7 +107,6 @@ namespace Regulus.Remoting.Soul.Native
             _Socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
             _Socket.NoDelay = true;
 
-
             _Peers = new ParallelUpdate();
             _FPS = new Utility.FPSCounter();
             
@@ -168,7 +167,7 @@ namespace Regulus.Remoting.Soul.Native
         }
 
     }
-    partial class TcpController : Application.IController
+    partial class Controller : Application.IController
     {
         class StageRun : Regulus.Game.IStage
         {

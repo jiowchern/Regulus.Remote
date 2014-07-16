@@ -1,17 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5505ACEA-8D99-4B10-8224-FF73207283B1}</ProjectGuid>
+    <ProjectGuid>{33320764-2C40-4B14-AD7F-767B5848EAAC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>User</RootNamespace>
-    <AssemblyName>User</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <RootNamespace>BusinessServer</RootNamespace>
+    <AssemblyName>BusinessServer</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,52 +30,43 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Photon3Unity3D">
-      <HintPath>..\..\..\Library\ThirdParty\Photon\Photon3Unity3D.dll</HintPath>
-    </Reference>
-    <Reference Include="Remoting, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Library\Remoting\bin\Debug\Remoting.dll</HintPath>
-    </Reference>
-    <Reference Include="RemotingStandalong, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Library\RemotingStandalong\bin\Debug\RemotingStandalong.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Application.cs" />
-    <Compile Include="RemotingUser.cs" />
-    <Compile Include="StandaloneUser.cs" />
-    <Compile Include="StandalongUserController.cs" />
+    <Compile Include="Account.cs" />
+    <Compile Include="Core.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service.cs" />
     <Compile Include="Storage.cs" />
     <Compile Include="User.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UserCommand.cs" />
-    <Compile Include="RemotingUserController.cs" />
+    <Compile Include="Verify.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Library\Database\Database.csproj">
+      <Project>{e51e2098-c578-4637-807c-f67067a54535}</Project>
+      <Name>Database</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Library\PureLib\PureLib.csproj">
       <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
       <Name>PureLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Library\RemotingGhost\RemotingPhotonGhost.csproj">
-      <Project>{8af00b97-4c48-467a-b37d-e9b28bfda365}</Project>
-      <Name>RemotingPhotonGhost</Name>
+    <ProjectReference Include="..\..\..\Library\RemotingNativeSoul\RemotingNativeSoul.csproj">
+      <Project>{d4580866-2273-4e9b-be70-4fa2ab11434a}</Project>
+      <Name>RemotingNativeSoul</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Game\Game.csproj">
-      <Project>{0df727c5-16c7-45ae-9af6-ec04b4a7d713}</Project>
-      <Name>Game</Name>
+    <ProjectReference Include="..\..\..\Library\Remoting\Remoting.csproj">
+      <Project>{a4cfce46-bda8-4416-a1bb-77bd80514019}</Project>
+      <Name>Remoting</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Serializable\Serializable.csproj">
-      <Project>{15fc0b78-aa3d-4e6f-b0e6-f13a9f075d7c}</Project>
-      <Name>Serializable</Name>
-    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
