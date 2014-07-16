@@ -144,6 +144,11 @@ namespace Regulus.Project.SamebestKeys
             _ObservedAbility.Say(message);
         }
 
+        void IPlayer.Speak(float[] voice_stream)
+        {
+            _ObservedAbility.Speak(voice_stream);
+        }
+
 
         string IPlayer.Name
         {
@@ -200,6 +205,12 @@ namespace Regulus.Project.SamebestKeys
 
             return results;    
         }
+
+
+
+
+
+
 
 
         

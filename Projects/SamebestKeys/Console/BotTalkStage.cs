@@ -33,7 +33,6 @@ namespace Console
                                     };
         void Regulus.Game.IStage.Enter()
         {
-
             _Player.Say(_Messages[Regulus.Utility.Random.Next(0, _Messages.Length)]);
             DoneEvent();
         }

@@ -66,6 +66,8 @@ namespace Regulus.Project.SamebestKeys
         void Walk(float direction);
         void Stop(float direction);
         void Say(string message);
+
+        void Speak(float[] voice_stream);
 		
         void BodyMovements(ActionStatue action_statue);
         
@@ -86,6 +88,7 @@ namespace Regulus.Project.SamebestKeys
         float Direction { get; }        
         event Action<MoveInfomation> ShowActionEvent;
         event Action<string> SayEvent;
+        event Action<float[]> SpeakEvent;
         
     }
 

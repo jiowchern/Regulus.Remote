@@ -55,6 +55,20 @@ namespace Regulus.Project.SamebestKeys
             remove { _SayEvent -= value; }
         }
 
+        internal void Speak(float[] voice_stream)
+        {
+            if (_Speakvent != null)
+                _Speakvent(voice_stream);
+        }
+
+        event Action<float[]> _Speakvent;
+        event Action<float[]> IObservedAbility.SpeakEvent
+        {
+            add { _Speakvent += value; }
+            remove { _Speakvent -= value; }
+        }
+
+
         string IObservedAbility.Name
         {
             get { return _Infomation.Look.Name; }
@@ -70,6 +84,8 @@ namespace Regulus.Project.SamebestKeys
         {
             get { return _Actor.Mode; }
         }
+
+
 
 
 
