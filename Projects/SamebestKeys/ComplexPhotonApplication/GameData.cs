@@ -68,13 +68,13 @@ namespace Regulus.Project.SamebestKeys
 
         static Data.Scene[] _Realms = 
         {
-            new Data.Scene()
+            /*new Data.Scene()
             {
                 Front = "SL_1A",
                 Name = "SL_1C",
                 Singleton = false,
                 Stages = new [] { new Data.Stage { MapName = "SL_1C" }  }
-            },
+            },*/
             new Data.Scene()
             {
                 Front = "",
