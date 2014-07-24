@@ -80,6 +80,11 @@ namespace Regulus.Projects.SamebestKeys.Standalong
             get { return _Agent.QueryProvider<Project.SamebestKeys.IBelongings>(); }
         }
 
+        Regulus.Remoting.Ghost.IProviderNotice<Project.SamebestKeys.IIdle> Project.SamebestKeys.IUser.IdleProvider
+        {
+            get { return _Agent.QueryProvider<Project.SamebestKeys.IIdle>(); }
+        }
+
         bool Utility.IUpdatable.Update()
         {
             
@@ -119,6 +124,9 @@ namespace Regulus.Projects.SamebestKeys.Standalong
         {
             
         }
+
+
+
         
     }
 

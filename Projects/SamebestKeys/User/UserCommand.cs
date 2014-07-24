@@ -60,11 +60,20 @@ namespace Regulus.Projects.SamebestKeys
 
             user.BelongingsProvider.Supply += BelongingsProviderSupply;
             user.BelongingsProvider.Unsupply += _Unsupply;
+
+            user.IdleProvider.Supply += IdleProvider_Supply;
+            user.IdleProvider.Unsupply += _Unsupply;
+            
         }
+        
         
 
         internal void Unregister(Regulus.Project.SamebestKeys.IUser user)
         {
+
+            user.IdleProvider.Supply -= IdleProvider_Supply;
+            user.IdleProvider.Unsupply -= _Unsupply;
+
             user.BelongingsProvider.Supply -= BelongingsProviderSupply;
             user.BelongingsProvider.Unsupply -= _Unsupply;
 
@@ -118,6 +127,17 @@ namespace Regulus.Projects.SamebestKeys
             _RemoveEvents.Clear();
         }
 
+        void IdleProvider_Supply(Project.SamebestKeys.IIdle obj)
+        {
+            _Command.Register<string>("GotoRealm", obj.GotoRealm);
+            
+
+            _RemoveCommands.Add(obj, new string[] 
+            {
+                "GotoRealm" 
+            });
+        }
+
         private void BelongingsProviderSupply(Project.SamebestKeys.IBelongings obj)
         {
             _Command.Register<int>("AddCoins", obj.AddCoins);
@@ -134,6 +154,7 @@ namespace Regulus.Projects.SamebestKeys
 
         void RealmJumperProvider_Supply(Project.SamebestKeys.IRealmJumper obj)
         {
+            _Command.Register("QuitRealm", obj.Quit );
             _Command.Register<string>("JumpRealm", obj.Jump);
             _Command.RemotingRegister<string[]>("QueryRealms", obj.Query, (realms) => 
             {
@@ -147,7 +168,7 @@ namespace Regulus.Projects.SamebestKeys
 
             _RemoveCommands.Add(obj, new string[] 
             {
-                "JumpRealm" , "QueryRealms"
+                "JumpRealm" , "QueryRealms" , "QuitRealm"
             });
         }
 

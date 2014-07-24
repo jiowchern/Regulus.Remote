@@ -40,6 +40,8 @@ namespace Regulus.Project.SamebestKeys
         Regulus.Remoting.Ghost.IProviderNotice<IRealmJumper> RealmJumperProvider { get; }
 
         Regulus.Remoting.Ghost.IProviderNotice<IBelongings> BelongingsProvider { get; }
+
+        Regulus.Remoting.Ghost.IProviderNotice<IIdle> IdleProvider { get; }
         
     }
 }

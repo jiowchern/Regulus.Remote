@@ -59,7 +59,7 @@ namespace Regulus.Project.SamebestKeys
         internal void ToLogout()
         {
             _AccountInfomation = null;
-            _ClearActor();            
+            _ClearActor(); 
             _Machine.Push(new VerifyStage(_Storage ,this)); 
         }
         public Serializable.DBEntityInfomation Actor { get; private set; }
@@ -143,18 +143,11 @@ namespace Regulus.Project.SamebestKeys
             }
         }
 
-        
-
-
-
         internal void OnKick(Guid account)
         {
             if (_AccountInfomation != null && _AccountInfomation.Id == account)
                 ToLogout();
         }
-
-        
-        
 
         internal void ToFirst(Serializable.DBEntityInfomation obj)
         {
@@ -169,6 +162,7 @@ namespace Regulus.Project.SamebestKeys
                 stage.ExitWorldEvent += ToParking;
                 stage.LogoutEvent += ToLogout;
                 stage.ChangeRealmEvent += _JumpRealm;
+                stage.QuitEvent += ToIdle;
                 _Machine.Push(stage);
             }
             else
@@ -176,6 +170,13 @@ namespace Regulus.Project.SamebestKeys
                 ToParking();
             }
         }
+
+        private void ToIdle()
+        {
+            var stage = new Regulus.Project.SamebestKeys.Dungeons.IdleStage(Provider);
+            stage.GotoRealmEvent += _JumpRealm;
+            _Machine.Push(stage);         
+        }        
 
         private void _JumpRealm(string realm)
         {

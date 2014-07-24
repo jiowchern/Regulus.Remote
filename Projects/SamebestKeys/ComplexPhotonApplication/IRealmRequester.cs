@@ -10,5 +10,7 @@ namespace Regulus.Project.SamebestKeys
         
         Regulus.Remoting.Value<string[]> Query();
         void Jump(string realm);
+
+        void Quit();
     }
 }

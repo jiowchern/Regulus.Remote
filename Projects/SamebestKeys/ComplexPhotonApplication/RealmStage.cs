@@ -19,6 +19,7 @@ namespace Regulus.Project.SamebestKeys.Dungeons
         public event Action ExitWorldEvent;
         public event Action LogoutEvent;
         public event Action<string> ChangeRealmEvent;
+        public event Action QuitEvent;
 
         ITraversable _Traversable;
 
@@ -161,6 +162,12 @@ namespace Regulus.Project.SamebestKeys.Dungeons
         }
 
 
+
+
+        void IRealmJumper.Quit()
+        {
+            QuitEvent();
+        }
     }
 
     

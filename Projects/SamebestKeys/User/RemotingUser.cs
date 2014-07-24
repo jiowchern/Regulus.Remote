@@ -87,6 +87,9 @@ namespace Regulus.Projects.SamebestKeys.Remoting
 
 
 
+
+
+
         
     }
     
@@ -220,6 +223,11 @@ namespace Regulus.Projects.SamebestKeys.Remoting
         Regulus.Remoting.Ghost.IProviderNotice<Project.SamebestKeys.IBelongings> Project.SamebestKeys.IUser.BelongingsProvider
         {
             get { return _Agent.QueryProvider<Project.SamebestKeys.IBelongings>(); }
+        }
+
+        Regulus.Remoting.Ghost.IProviderNotice<Project.SamebestKeys.IIdle> Project.SamebestKeys.IUser.IdleProvider
+        {
+            get { return _Agent.QueryProvider<Project.SamebestKeys.IIdle>(); }
         }
     }
 }

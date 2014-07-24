@@ -110,6 +110,11 @@ namespace Regulus.Project.SamebestKeys
         void Ready();
     }
 
+
+    public interface IIdle
+    {
+        void GotoRealm(string realm);
+    }
     
 }
 
