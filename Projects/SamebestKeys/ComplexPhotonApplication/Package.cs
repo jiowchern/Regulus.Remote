@@ -195,45 +195,58 @@ namespace Regulus.Project.SamebestKeys.Serializable
 		public int Shell { get; set; }
 	}
 
+
+
 	/// <summary>
 	/// Entity屬性
 	/// </summary>
-	[ProtoBuf.ProtoContract]
+	
 	public class EntityPropertyInfomation
 	{
+        [Flags]
+        public enum IDENTITY
+        {
+            GUEST = 0,            
+            STUNDENT = 1,
+            CONVERSATION = 2,            
+        };
+        
 		public EntityPropertyInfomation()
-		{             
+		{            
 			MaxHealth = 50;
 			Health = 50;
 			Skills = new System.Collections.Generic.List<Skill>();
 			Position = new Types.Vector2();
+            Identity = IDENTITY.GUEST;
 		}
-		[ProtoBuf.ProtoMember(1)]
+		
 		public Guid Id { get; set; }
-		[ProtoBuf.ProtoMember(2)]
+		
 		public string Map { get; set; }
 		
-		[ProtoBuf.ProtoMember(3)]
+		
 		public int Vision { get; set; }
-		[ProtoBuf.ProtoMember(4)]
+		
 		public float Speed { get; set; }
-		[ProtoBuf.ProtoMember(5)]
+		
 		public float Direction { get; set; }
 
-		[ProtoBuf.ProtoMember(6)]
+		
 		public Regulus.Types.Vector2 Position { get; set; }
 
 
-		[ProtoBuf.ProtoMember(7)]
+		
 		public int MaxHealth { get; set; }
 
-		[ProtoBuf.ProtoMember(8)]
+		
 		public int Health { get; set; }
 
-		[ProtoBuf.ProtoMember(9)]
+		
 		public bool Died { get; set; }
-		[ProtoBuf.ProtoMember(10)]
+		
 		public System.Collections.Generic.List<Skill> Skills { get; set; }
+
+        public IDENTITY Identity { get; set; }
 		
 	}
 

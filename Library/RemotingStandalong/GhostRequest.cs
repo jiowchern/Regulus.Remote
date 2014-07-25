@@ -48,12 +48,12 @@ namespace Regulus.Standalong
 
 		private void _Apportion(byte code, Dictionary<byte, byte[]> args)
 		{
-			if ((int)Regulus.Remoting.ClientToServerPhotonOpCode.Ping == code)
+			if ((int)Regulus.Remoting.ClientToServerOpCode.Ping == code)
 			{
 				if(PingEvent != null)
 					PingEvent();
 			}
-			else if( (int) Regulus.Remoting.ClientToServerPhotonOpCode.CallMethod == code)
+			else if( (int) Regulus.Remoting.ClientToServerOpCode.CallMethod == code)
 			{
 				var entityId = new Guid(args[0]);
 

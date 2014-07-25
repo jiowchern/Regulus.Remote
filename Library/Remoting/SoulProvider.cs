@@ -96,7 +96,7 @@ namespace Regulus.Remoting.Soul
             argmants.Add(1, Regulus.PhotonExtension.TypeHelper.Serializer(name));
             argmants.Add(2, Regulus.PhotonExtension.TypeHelper.Serializer(val));
             
-            _Queue.Push((byte)ServerToClientPhotonOpCode.UpdateProperty, argmants);
+            _Queue.Push((byte)ServerToClientOpCode.UpdateProperty, argmants);
         }
 
 
@@ -134,7 +134,7 @@ namespace Regulus.Remoting.Soul
                 argmants.Add(0, returnId.ToByteArray());
                 object value = returnValue.GetObject();
                 argmants.Add(1, PhotonExtension.TypeHelper.Serializer(value));
-                _Queue.Push((byte)ServerToClientPhotonOpCode.ReturnValue, argmants);
+                _Queue.Push((byte)ServerToClientOpCode.ReturnValue, argmants);
 
                 _WaitValues.Remove(returnId);
             }));            
@@ -144,7 +144,7 @@ namespace Regulus.Remoting.Soul
             var argmants = new Dictionary<byte, byte[]>();
             argmants.Add(0, Regulus.PhotonExtension.TypeHelper.Serializer(type_name));
             argmants.Add(1, id.ToByteArray());
-            _Queue.Push((byte)ServerToClientPhotonOpCode.LoadSoulCompile, argmants);
+            _Queue.Push((byte)ServerToClientOpCode.LoadSoulCompile, argmants);
         }
         
         private void _LoadSoul(string type_name, Guid id)
@@ -152,7 +152,7 @@ namespace Regulus.Remoting.Soul
             var argmants = new Dictionary<byte, byte[]>();
             argmants.Add(0, Regulus.PhotonExtension.TypeHelper.Serializer(type_name));
             argmants.Add(1, id.ToByteArray());
-            _Queue.Push((byte)ServerToClientPhotonOpCode.LoadSoul, argmants);
+            _Queue.Push((byte)ServerToClientOpCode.LoadSoul, argmants);
         }
 
         private void _UnloadSoul(string type_name, Guid id)
@@ -160,7 +160,7 @@ namespace Regulus.Remoting.Soul
             var argmants = new Dictionary<byte, byte[]>();
             argmants.Add(0, Regulus.PhotonExtension.TypeHelper.Serializer(type_name));
             argmants.Add(1, id.ToByteArray());
-            _Queue.Push((byte)ServerToClientPhotonOpCode.UnloadSoul, argmants);
+            _Queue.Push((byte)ServerToClientOpCode.UnloadSoul, argmants);
         }
 		
 		void _InvokeMethod(Guid entity_id , string method_name ,Guid returnId , byte[][] args)
@@ -258,7 +258,9 @@ namespace Regulus.Remoting.Soul
 				
 		private Delegate _BuildDelegate(Type[] generic_arguments, Guid entity_id, string event_name)
 		{
+            
 			Type closureType = null;
+
 			Type delegateType = null;
 			System.Reflection.MethodInfo run = null;
 			Type[] closureTypes = new Type[]	{	typeof(GenericEventClosure)
@@ -270,7 +272,7 @@ namespace Regulus.Remoting.Soul
 
 			closureType = closureTypes[generic_arguments.Length]; 
 			if (generic_arguments.Length != 0)
-			{
+			{                
 				closureType = closureType.MakeGenericType(generic_arguments);
 				var getDelegateTypeMethod = closureType.GetMethod("GetDelegateType", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
 				delegateType = (Type)getDelegateTypeMethod.Invoke(null, null);											
@@ -282,7 +284,8 @@ namespace Regulus.Remoting.Soul
 
 			run = closureType.GetMethod("Run");
 			object closureInstance = Activator.CreateInstance(closureType, new object[] { entity_id, event_name, new Action<Guid, string, object[]>(_InvokeEvent) });
-			return Delegate.CreateDelegate(delegateType, closureInstance, run);
+            
+			return Delegate.CreateDelegate(delegateType, closureInstance, run);            
 		}
 
 		
@@ -314,7 +317,7 @@ namespace Regulus.Remoting.Soul
             {
                 foreach (var filter in _EventFilter)
                 {
-                    _Queue.Push((byte)ServerToClientPhotonOpCode.InvokeEvent, filter);
+                    _Queue.Push((byte)ServerToClientOpCode.InvokeEvent, filter);
                 }
                 _EventFilter.Clear();
             }

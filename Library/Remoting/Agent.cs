@@ -40,12 +40,12 @@ namespace Regulus.Remoting
 		}
 		protected void _OnResponse(byte id, Dictionary<byte, byte[]> args)
 		{
-			if (id == (int)ServerToClientPhotonOpCode.Ping)
+			if (id == (int)ServerToClientOpCode.Ping)
 			{
 				Ping = _PingTimeCounter.Ticks;
 				_StartPing();
 			}
-			else if (id == (int)ServerToClientPhotonOpCode.UpdateProperty)
+			else if (id == (int)ServerToClientOpCode.UpdateProperty)
 			{
 				if (args.Count == 3)
 				{
@@ -58,7 +58,7 @@ namespace Regulus.Remoting
 					_UpdateProperty(entity_id, eventName, value);
 				}
 			}
-			else if (id == (int)ServerToClientPhotonOpCode.InvokeEvent)
+			else if (id == (int)ServerToClientOpCode.InvokeEvent)
 			{
 				if (args.Count >= 2)
 				{
@@ -71,7 +71,7 @@ namespace Regulus.Remoting
 					_InvokeEvent(entity_id, eventName, eventParams);
 				}
 			}
-			else if (id == (int)ServerToClientPhotonOpCode.ReturnValue)
+			else if (id == (int)ServerToClientOpCode.ReturnValue)
 			{
 				if (args.Count == 2)
 				{
@@ -81,7 +81,7 @@ namespace Regulus.Remoting
 					_SetReturnValue(returnTarget, returnValue);
 				}
 			}
-			else if (id == (int)ServerToClientPhotonOpCode.LoadSoulCompile)
+			else if (id == (int)ServerToClientOpCode.LoadSoulCompile)
 			{
 				if (args.Count == 2)
 				{
@@ -91,7 +91,7 @@ namespace Regulus.Remoting
 					_LoadSoulCompile(typeName, entity_id);
 				}
 			}
-			else if (id == (int)ServerToClientPhotonOpCode.LoadSoul)
+			else if (id == (int)ServerToClientOpCode.LoadSoul)
 			{
 				if (args.Count == 2)
 				{
@@ -101,7 +101,7 @@ namespace Regulus.Remoting
 					_LoadSoul(typeName, entity_id);
 				}
 			}
-			else if (id == (int)ServerToClientPhotonOpCode.UnloadSoul)
+			else if (id == (int)ServerToClientOpCode.UnloadSoul)
 			{
 				if (args.Count == 2)
 				{
@@ -222,7 +222,7 @@ namespace Regulus.Remoting
                 {
                     _PingStatus = PingStatus.Send;
                     _PingTimeCounter = new Regulus.Utility.TimeCounter();
-                    _Requester.Request((int)ClientToServerPhotonOpCode.Ping, new Dictionary<byte, byte[]>());
+                    _Requester.Request((int)ClientToServerOpCode.Ping, new Dictionary<byte, byte[]>());
                     
                 }            
             }
@@ -621,7 +621,7 @@ namespace Regulus.Remoting
 				//填函式要的資料
 				il.Emit(OpCodes.Ldarg_0); // this
 				il.Emit(OpCodes.Ldfld, peerField); // peer
-				il.Emit(OpCodes.Ldc_I4, (int)ClientToServerPhotonOpCode.CallMethod); // opcode 
+				il.Emit(OpCodes.Ldc_I4, (int)ClientToServerOpCode.CallMethod); // opcode 
 				il.Emit(OpCodes.Ldloc, varDict);
 
 				//指定呼叫函式的多載

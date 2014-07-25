@@ -31,10 +31,10 @@ namespace Regulus.Remoting.Soul
 		
 		protected override void OnOperationRequest(Photon.SocketServer.OperationRequest operationRequest, Photon.SocketServer.SendParameters sendParameters)
 		{
-			if (operationRequest.OperationCode == (byte)ClientToServerPhotonOpCode.Ping)
+			if (operationRequest.OperationCode == (byte)ClientToServerOpCode.Ping)
 			{
-                (this as Regulus.Remoting.IResponseQueue).Push((int)ServerToClientPhotonOpCode.Ping , new Dictionary<byte,byte[]>());
-			}else if (operationRequest.OperationCode == (byte)ClientToServerPhotonOpCode.CallMethod)
+                (this as Regulus.Remoting.IResponseQueue).Push((int)ServerToClientOpCode.Ping , new Dictionary<byte,byte[]>());
+			}else if (operationRequest.OperationCode == (byte)ClientToServerOpCode.CallMethod)
 			{
 				
 				var entityId = new Guid(operationRequest.Parameters[0] as byte[]);

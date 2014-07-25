@@ -24,7 +24,7 @@ namespace Regulus.Standalong
 		}
 		private void _OnRequestPing()
 		{
-			_Agent.OnResponse( (byte)Regulus.Remoting.ServerToClientPhotonOpCode.Ping , null ) ;
+			_Agent.OnResponse( (byte)Regulus.Remoting.ServerToClientOpCode.Ping , null ) ;
 		}		
 
 		public void Update()

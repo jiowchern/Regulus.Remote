@@ -72,12 +72,12 @@ namespace Regulus.Remoting.Soul.Native
 
 		private void _HandlePackage(Package package)
 		{
-			if (package.Code == (byte)ClientToServerPhotonOpCode.Ping)
+			if (package.Code == (byte)ClientToServerOpCode.Ping)
 			{
 				
-				(this as Regulus.Remoting.IResponseQueue).Push((int)ServerToClientPhotonOpCode.Ping, new Dictionary<byte, byte[]>());
+				(this as Regulus.Remoting.IResponseQueue).Push((int)ServerToClientOpCode.Ping, new Dictionary<byte, byte[]>());
 			}
-            else if (package.Code == (byte)ClientToServerPhotonOpCode.CallMethod)
+            else if (package.Code == (byte)ClientToServerOpCode.CallMethod)
             {
 
                 var entityId = new Guid(package.Args[0]);

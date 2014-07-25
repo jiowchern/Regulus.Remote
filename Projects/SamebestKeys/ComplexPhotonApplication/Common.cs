@@ -72,14 +72,17 @@ namespace Regulus.Project.SamebestKeys
         void BodyMovements(ActionStatue action_statue);
         
         void Goto(string map , float x , float y);
-        
-    }
 
+        
+
+
+    }
+    
 	/// <summary>
 	/// 觀察功能
 	/// </summary>
     public interface IObservedAbility 
-    {
+    {     
         ActorMode Mode { get; }
         string Name { get; }
         Guid Id { get; }
@@ -91,6 +94,8 @@ namespace Regulus.Project.SamebestKeys
         event Action<float[]> SpeakEvent;
         
     }
+
+
 
 	/// <summary>
 	/// 移動功能
