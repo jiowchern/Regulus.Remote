@@ -93,7 +93,7 @@ namespace Regulus.Project.SamebestKeys
         {
             _DBActorInfomation.Property.Vision = vision;
         }
-        
+
         void IPlayer.Stop(float dir)
         {
             var commander = FindAbility<IBehaviorCommandAbility>();
@@ -102,13 +102,13 @@ namespace Regulus.Project.SamebestKeys
                 commander.Invoke(new BehaviorCommand.Stop());
             }
         }
-        void IPlayer.Walk(float direction)
+        void IPlayer.Walk(float direction , long time)
         {
 
             var commander = FindAbility<IBehaviorCommandAbility>();
             if (commander != null)
             {
-                commander.Invoke(new BehaviorCommand.Move(direction));
+                commander.Invoke(new BehaviorCommand.Move(direction, time));
             }
             
         }

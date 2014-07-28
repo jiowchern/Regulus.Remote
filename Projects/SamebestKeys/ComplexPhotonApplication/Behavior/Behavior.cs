@@ -79,7 +79,7 @@ namespace Regulus.Project.SamebestKeys
 
        
         
-        private void _ToMove(float direction)
+        private void _ToMove(float direction,long time)
         {
             BehaviorStage.OnBegin begin = () =>
             {
@@ -91,7 +91,7 @@ namespace Regulus.Project.SamebestKeys
                 stop.DoneEvent += _ToIdle; 
                 idle.DoneEvent += _ToIdle;
                 injury.DoneEvent += _ToInjury;
-                _EntityMove(direction);
+                _EntityMove(direction, time);
                 return new IBehaviorHandler[] { move ,stop, idle, injury };
             };
 
@@ -108,7 +108,7 @@ namespace Regulus.Project.SamebestKeys
 
                 if (ability != null && ability.Injury(injury.Value, Regulus.Utility.Random.Next(20, 40)))
                 {
-                    _EntityAct(new Serializable.ActionCommand() { Command = ActionStatue.Injury, Turn = false, Direction = injury.Direction , Speed = 7 , Absolutely = true });
+                    _EntityAct(new Serializable.ActionCommand() { Command = ActionStatue.Injury, Turn = false, Direction = injury.Direction , Speed = 7 , Absolutely = true , Time = LocalTime.Instance.Ticks });
                 }
                 else
                     _EntityAct(new Serializable.ActionCommand() { Command = ActionStatue.Injury, Turn = true });
@@ -162,14 +162,14 @@ namespace Regulus.Project.SamebestKeys
 
         
 
-        void _EntityMove(float direction)
+        void _EntityMove(float direction, long time)
         {
             var property = _Entity.FindAbility<IActorPropertyAbility>();
             var move = _Entity.FindAbility<IMoverAbility>();
 
             if (move != null && property != null)
             {
-                move.Act(new Serializable.ActionCommand() { Command = ActionStatue.Run, Direction = direction, Speed = property.CurrentSpeed, Turn = true });                
+                move.Act(new Serializable.ActionCommand() { Command = ActionStatue.Run, Direction = direction, Speed = property.CurrentSpeed, Turn = true, Time = time });                
             }
         }
 

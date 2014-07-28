@@ -19,15 +19,21 @@ namespace Regulus.Project.SamebestKeys
 
         class Stop : IBehaviorCommand
         {
-
+            
+            public Stop()
+            {                
+            
+            }
         }
 
         class Move : IBehaviorCommand
         {
+            public long Time{ get; private set; }
             public float Direction { get; private set; }
-            public Move(float direction)
+            public Move(float direction , long time)
             {
                 Direction = direction;
+                Time = time;
             }
         }
 

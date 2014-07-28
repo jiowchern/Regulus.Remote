@@ -63,7 +63,7 @@ namespace Regulus.Project.SamebestKeys
         void SetSpeed(float speed);
         void ChangeMode();
         void Cast(int skill);
-        void Walk(float direction);
+        void Walk(float direction, long time);
         void Stop(float direction);
         void Say(string message);
 

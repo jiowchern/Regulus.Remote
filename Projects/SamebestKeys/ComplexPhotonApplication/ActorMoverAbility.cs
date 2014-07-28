@@ -15,7 +15,7 @@ namespace Regulus.Project.SamebestKeys
         private ActionStatue _CurrentAction;
         private float _MoveSpeed;
         private Types.Vector2 _UnitVector;
-        private long _CurrentTime;
+        private long _PrevTime;
         public delegate void BeginAction(long begin_time, float speed, float direction, Regulus.Types.Vector2 vector, ActionStatue action_status);
         public event BeginAction ActionEvent;
         public event Action<long, Regulus.Types.Vector2> PositionEvent;
@@ -30,6 +30,8 @@ namespace Regulus.Project.SamebestKeys
             _Polygon.Points.Add(new Types.Vector2(x - 0.25f, y - 0.25f));
             _Polygon.BuildEdges();
             _Update = _Empty;
+
+            _PrevTime = LocalTime.Instance.Ticks;
         }
         public void SetPosition(float x, float y)
         {
@@ -40,29 +42,33 @@ namespace Regulus.Project.SamebestKeys
         {
             get { return _Polygon; }
         }
-        void _Act(ActionStatue action_statue, float move_speed, float direction /* 轉向角度 0~360 */ , bool turn , bool absolutely  )
+
+        private void _Act(Serializable.ActionCommand action_command)        
         {
             // 角色面對世界的方向
             var moveDirection = 0.0f;
-            if (absolutely == false)
-                moveDirection = (direction + _Direction) % 360;
+            if (action_command.Absolutely == false)
+                moveDirection = (action_command.Direction + _Direction) % 360;
             else
-                moveDirection = direction % 360;
+                moveDirection = action_command.Direction % 360;
 
-            if (turn)
+            if (action_command.Turn)
             {
                 _Direction = moveDirection;
             }
 
-            _CurrentAction = action_statue;
-            _MoveSpeed = move_speed;
+            _CurrentAction = action_command.Command;
+            _MoveSpeed = action_command.Speed;
 
+            // 移動向量            
             var t = (float)((moveDirection - 180) * Math.PI / 180);
-
-            // 移動向量
-            //_UnitVector = new Types.Vector2() { X = (float)Math.Cos(t), Y = (float)Math.Sin(t) };
-            _UnitVector = new Types.Vector2() { X = -(float)Math.Sin(t), Y = -(float)Math.Cos(t) };
+            var unitVector = new Types.Vector2() { X = -(float)Math.Sin(t), Y = -(float)Math.Cos(t) };
+            
+            _UnitVector = unitVector;
             _Update = _First;
+            
+            if (_PrevTime < action_command.Time)
+                _PrevTime = action_command.Time;
         }
         
 
@@ -74,23 +80,22 @@ namespace Regulus.Project.SamebestKeys
         void _First(long time, System.Collections.Generic.IEnumerable<Types.Polygon> obbs)
         {
             if (ActionEvent != null)
-                ActionEvent(time, _MoveSpeed, _Direction, _UnitVector, _CurrentAction);
-            _Update = _UpdateMover;
-            _CurrentTime = time;
+                ActionEvent(_PrevTime, _MoveSpeed, _Direction, _UnitVector, _CurrentAction);
+            _Update = _UpdateMover;            
         }
 
         void _UpdateMover(long time, System.Collections.Generic.IEnumerable<Types.Polygon> polygons)
         {
             if (_MoveSpeed > 0)
             {
-                var dt = (float)new System.TimeSpan(time - _CurrentTime).TotalSeconds;
+                var dt = (float)new System.TimeSpan(time - _PrevTime).TotalSeconds;
                 if (dt > 0)
                 {
                     Regulus.Types.Vector2 moveVector = new Types.Vector2();
                     moveVector.X = _UnitVector.X * dt * _MoveSpeed;
                     moveVector.Y = _UnitVector.Y * dt * _MoveSpeed;
 
-                    _CurrentTime = time;
+                    _PrevTime = time;
 
                     var result = _Collision(polygons, moveVector);
 
@@ -105,10 +110,18 @@ namespace Regulus.Project.SamebestKeys
 
                     if (result.Intersect || result.WillIntersect)
                     {
-                        _Act(ActionStatue.Idle_1, 0, 0 , true , false);
-                    }
 
-                    
+                        Serializable.ActionCommand actionCommand = new Serializable.ActionCommand() 
+                        {
+                            Absolutely = false,
+                            Command = ActionStatue.Idle_1,
+                            Direction = 0,
+                            Speed = 0,
+                            Time = time,
+                            Turn = true
+                        };
+                        _Act(actionCommand);
+                    }
                     
                 }
 
@@ -155,7 +168,10 @@ namespace Regulus.Project.SamebestKeys
 
         void IMoverAbility.Act(Serializable.ActionCommand action_command)
         {
-            _Act(action_command.Command, action_command.Speed, action_command.Direction , action_command.Turn , action_command.Absolutely);
+            _Act(action_command);
+            
         }
+
+        
     }
 }

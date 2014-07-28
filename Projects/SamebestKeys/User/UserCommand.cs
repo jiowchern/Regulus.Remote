@@ -206,7 +206,7 @@ namespace Regulus.Projects.SamebestKeys
             _Command.Register<float,float>("SetPosition", obj.SetPosition);
             _Command.Register<int>("SetVision", obj.SetVision);
             _Command.Register<float>("SetSpeed", obj.SetSpeed);
-            _Command.Register<float>("Walk", obj.Walk);
+            _Command.Register<float,long>("Walk", obj.Walk);
             _Command.Register<float>("Stop", obj.Stop);
             _Command.Register<string>("Say", obj.Say);
             _Command.Register<string>("BodyMovements", (val)=>

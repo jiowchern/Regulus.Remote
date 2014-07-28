@@ -308,6 +308,9 @@ namespace Regulus.Project.SamebestKeys.Serializable
 		public bool Turn { get; set; }
 		[ProtoBuf.ProtoMember(5)]
 		public bool Absolutely { get; set; }
+
+        [ProtoBuf.ProtoMember(6)]
+        public long Time { get; set; }
 	}
 	/// <summary>
 	/// 移動資訊
