@@ -62,7 +62,8 @@ namespace Regulus.Project.SamebestKeys
                 move.MoveEvent += _ToMove;
                 skill.SkillEvent += _ToSkill;
                 knockout.DoneEvent += _ToKnockout;
-
+                var actor = _Entity.FindAbility<IActorPropertyAbility>();
+                actor.EndExpendEnergy();
                 _EntityAct(new Serializable.ActionCommand() { Command = ActionStatue.Idle_1, Turn = true } );
                 return new IBehaviorHandler[] { injury, move, skill, knockout };
             });            
@@ -92,6 +93,9 @@ namespace Regulus.Project.SamebestKeys
                 idle.DoneEvent += _ToIdle;
                 injury.DoneEvent += _ToInjury;
                 _EntityMove(direction, time);
+
+                var actor = _Entity.FindAbility<IActorPropertyAbility>();
+                actor.BeginExpendEnergy();
                 return new IBehaviorHandler[] { move ,stop, idle, injury };
             };
 
@@ -169,7 +173,15 @@ namespace Regulus.Project.SamebestKeys
 
             if (move != null && property != null)
             {
-                move.Act(new Serializable.ActionCommand() { Command = ActionStatue.Run, Direction = direction, Speed = property.CurrentSpeed, Turn = true, Time = time });                
+                
+                move.Act(new Serializable.ActionCommand() 
+                {
+                    Command = property.Energy > 0 ? ActionStatue.Run : ActionStatue.Walk ,  
+                    Direction = direction, 
+                    Speed = property.CurrentSpeed, 
+                    Turn = true, 
+                    Time = time 
+                });                
             }
         }
 

@@ -28,7 +28,7 @@ namespace Regulus.Project.SamebestKeys
 
         void Framework.ILaunched.Shutdown()
         {
-            _Property.Health = _Property.MaxHealth;
+            _Property.Energy = _Property.MaxEnergy;
             _Property.Died = false;            
         }
     }

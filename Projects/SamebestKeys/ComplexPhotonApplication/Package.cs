@@ -213,8 +213,8 @@ namespace Regulus.Project.SamebestKeys.Serializable
         
 		public EntityPropertyInfomation()
 		{            
-			MaxHealth = 50;
-			Health = 50;
+			MaxEnergy = 100;
+			Energy = 100;
 			Skills = new System.Collections.Generic.List<Skill>();
 			Position = new Types.Vector2();
             Identity = IDENTITY.GUEST;
@@ -236,10 +236,10 @@ namespace Regulus.Project.SamebestKeys.Serializable
 
 
 		
-		public int MaxHealth { get; set; }
+		public float MaxEnergy { get; set; }
 
-		
-		public int Health { get; set; }
+
+        public float Energy { get; set; }
 
 		
 		public bool Died { get; set; }

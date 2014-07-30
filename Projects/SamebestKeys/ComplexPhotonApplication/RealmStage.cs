@@ -8,6 +8,7 @@ namespace Regulus.Project.SamebestKeys.Dungeons
     partial class RealmStage : Regulus.Game.IStage, IRealmJumper
     {
         Belongings _Belongings;
+        Regulus.Utility.Updater _Updater;
         private IScene _Scene;        
         Player[] _Players;
         Regulus.Remoting.ISoulBinder _Binder;
@@ -32,6 +33,7 @@ namespace Regulus.Project.SamebestKeys.Dungeons
 
             _Observeds = new List<IObservedAbility>();
             _Belongings = belongings;
+            _Updater = new Utility.Updater();
         }
 
         void Game.IStage.Enter() 
@@ -47,8 +49,10 @@ namespace Regulus.Project.SamebestKeys.Dungeons
             if (_Scene.Join(_Member) == false)
             {
                 LogoutEvent();
-            }            
-                
+            }
+
+
+            _Updater.Add(_Belongings);
         }
 
         private void _OnEndTraver(ITraversable traversable)
@@ -66,6 +70,7 @@ namespace Regulus.Project.SamebestKeys.Dungeons
         }
         void Game.IStage.Leave()
         {
+            
             if (_Traversable != null)
             {
                 _Binder.Unbind<ITraversable>(_Traversable); 
@@ -80,6 +85,8 @@ namespace Regulus.Project.SamebestKeys.Dungeons
             _Scene.ShutdownEvent -= ExitWorldEvent;
             _Scene.Exit(_Member);
             _Binder.Unbind<IBelongings>(_Belongings);
+
+            _Updater.Shutdown();
         }
 
         private void _RegisterQuit(Player player)
@@ -142,8 +149,8 @@ namespace Regulus.Project.SamebestKeys.Dungeons
         }
 
         void Game.IStage.Update()
-        {            
-
+        {
+            _Updater.Update();
         }
 
         void IRealmJumper.Jump(string realm)

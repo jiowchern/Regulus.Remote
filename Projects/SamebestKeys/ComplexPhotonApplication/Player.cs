@@ -206,13 +206,13 @@ namespace Regulus.Project.SamebestKeys
             return results;    
         }
 
-
-
-
-
-
-
-
-        
+        float IPlayer.MaxEnergy
+        {
+            get { return _DBActorInfomation.Property.MaxEnergy; }
+        }
+        float IPlayer.Energy
+        {
+            get { return _DBActorInfomation.Property.Energy; }
+        }
     }
 }

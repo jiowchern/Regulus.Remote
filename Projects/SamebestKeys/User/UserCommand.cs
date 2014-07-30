@@ -140,7 +140,10 @@ namespace Regulus.Projects.SamebestKeys
 
         private void BelongingsProviderSupply(Project.SamebestKeys.IBelongings obj)
         {
-            _Command.Register<int>("AddCoins", obj.AddCoins);
+            _Command.RemotingRegister<int, int>("AddCoins", obj.AddCoins, (coins) =>
+            {
+                _View.WriteLine("Coins : " + coins.ToString());
+            });
             _Command.RemotingRegister<int>("QueryCoins", obj.QueryCoins, (coins) => 
             {
                 _View.WriteLine("QueryCoins : " + coins.ToString());

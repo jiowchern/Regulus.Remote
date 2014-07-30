@@ -15,12 +15,11 @@ namespace Regulus.Project.SamebestKeys
         bool Injury(int damage, int repel);
 
         float Direction { get; }
-
-        float NormalSpeed { get; }
+        
 
         float CurrentSpeed { get; }
 
-        int Hp { get; }
+        float Energy { get; }        
 
         bool IsAlive();
 
@@ -38,6 +37,10 @@ namespace Regulus.Project.SamebestKeys
         void ChangeMode();
 
         bool Died();
+
+        void BeginExpendEnergy();
+
+        void EndExpendEnergy();
     }
 
     class ActorPropertyAbility : IActorPropertyAbility, IActorUpdateAbility , ISkillCaptureAbility
@@ -51,24 +54,25 @@ namespace Regulus.Project.SamebestKeys
         Serializable.EntityLookInfomation _Look;
 
         ActorCast _CurrentActorCast;
-
+        bool _ExpendEnergy;
         public ActorPropertyAbility(Serializable.EntityPropertyInfomation property , Serializable.EntityLookInfomation look)
         {
             _Property = property;
             _Look = look;
             _Mode = ActorMode.Explore;
             _Updater = new Utility.Updater();
+            _ExpendEnergy = false;
         }
 
         bool IActorPropertyAbility.Injury(int damage , int repel)
         {
             if (_Property.Died == false)
             {
-                _Property.Health -= damage;
-                if (_Property.Health < 0)
+                _Property.Energy -= damage;
+                if (_Property.Energy < 0)
                     _Property.Died = true;
 
-                return _Property.Health < repel;
+                return _Property.Energy < repel;
             }
 
             return false;
@@ -77,21 +81,22 @@ namespace Regulus.Project.SamebestKeys
         float IActorPropertyAbility.Direction
         {
             get { return _Property.Direction; }
-        }
-
-        float IActorPropertyAbility.NormalSpeed
-        {
-            get { return _Property.Speed; }
-        }
+        }        
 
         float IActorPropertyAbility.CurrentSpeed
         {
-            get { return _Property.Speed; }
+            get 
+            {
+                if (_Property.Energy > 0)
+                    return _Property.Speed;
+                else
+                    return _Property.Speed / 2;
+            }
         }
 
-        int IActorPropertyAbility.Hp
+        float IActorPropertyAbility.Energy
         {
-            get { return _Property.Health; }
+            get { return _Property.Energy; }
         }
 
         bool IActorPropertyAbility.IsAlive()
@@ -150,6 +155,21 @@ namespace Regulus.Project.SamebestKeys
 
         void IActorUpdateAbility.Update()
         {
+
+            if(_ExpendEnergy)
+            {
+                _Property.Energy -= LocalTime.Instance.DeltaSecond;
+                if (_Property.Energy < 0)
+                    _Property.Energy = 0;
+                    
+            }
+            else
+            {
+                
+                _Property.Energy += LocalTime.Instance.DeltaSecond;
+                if (_Property.Energy >= _Property.MaxEnergy)
+                    _Property.Energy = _Property.MaxEnergy;
+            }
             _Updater.Update();
         }
 
@@ -207,6 +227,17 @@ namespace Regulus.Project.SamebestKeys
         bool IActorPropertyAbility.Died()
         {
             return _Property.Died;
+        }
+
+
+        void IActorPropertyAbility.BeginExpendEnergy()
+        {
+            _ExpendEnergy = true;
+        }
+
+        void IActorPropertyAbility.EndExpendEnergy()
+        {
+            _ExpendEnergy = false;
         }
     }
     

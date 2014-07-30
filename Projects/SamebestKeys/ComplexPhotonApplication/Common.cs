@@ -41,9 +41,11 @@ namespace Regulus.Project.SamebestKeys
 	}
     public interface IBelongings
     {
+        event Action<int> CoinsEvent;
+        event Action<int> CashEvent;
         Remoting.Value<int> QueryCoins();
-
-        void AddCoins(int coins);
+        Remoting.Value<int> QueryCash();
+        Remoting.Value<int> AddCoins(int coins);
     }
 	/// <summary>
 	/// ª±®a¦Û¤v
@@ -73,9 +75,8 @@ namespace Regulus.Project.SamebestKeys
         
         void Goto(string map , float x , float y);
 
-        
-
-
+        float Energy { get; }
+        float MaxEnergy { get; }
     }
     
 	/// <summary>

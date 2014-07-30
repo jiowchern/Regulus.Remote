@@ -23,7 +23,7 @@ namespace Regulus.Project.SamebestKeys
             _Game.Launch("mongodb://127.0.0.1:27017", "SamebestKeys");
 
             _Business = new SQL.Database();
-            //_Business.Connect("localhost", "root", "keys", "SamebestKeys");
+            _Business.Connect("localhost", "root", "keys", "SamebestKeys");
         }
 
 		bool Regulus.Utility.IUpdatable.Update()
@@ -52,8 +52,7 @@ namespace Regulus.Project.SamebestKeys
             _Business.ExecuteNonQuery(sql);
         }
         public void CreateConsumptionPlayer(Guid owner)
-        {
-            return;
+        {            
             if(_HasConsumptionPlayer(owner) == false)
             {
                 _CreateConsumptionPlayer( owner);

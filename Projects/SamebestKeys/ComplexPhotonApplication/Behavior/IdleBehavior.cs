@@ -81,6 +81,7 @@ namespace Regulus.Project.SamebestKeys
         Entity _Entity;
         public delegate void OnIdle();
         public event OnIdle DoneEvent;
+        bool _Run;
         public StopToIdleBehaviorHandler(Entity entity)
         {
             _Entity = entity;
@@ -88,7 +89,17 @@ namespace Regulus.Project.SamebestKeys
 
         bool Utility.IUpdatable.Update()
         {
+            bool run = _GetRunStatus();
+            if (_Run != run)
+                DoneEvent();
             return true;   
+        }
+
+        private bool _GetRunStatus()
+        {
+            var ability = _Entity.FindAbility<IActorPropertyAbility>();
+            bool run = ability.Energy > 0;
+            return run;
         }
 
         void Framework.ILaunched.Launch()
@@ -98,6 +109,13 @@ namespace Regulus.Project.SamebestKeys
             {
                 ability.ShowActionEvent += _CheckIdle;
             }
+
+            _InitialRun();
+        }
+
+        private void _InitialRun()
+        {            
+            _Run = _GetRunStatus();           
         }
 
         private void _CheckIdle(Serializable.MoveInfomation obj)
