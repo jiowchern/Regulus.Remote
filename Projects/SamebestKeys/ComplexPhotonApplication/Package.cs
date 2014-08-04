@@ -213,8 +213,8 @@ namespace Regulus.Project.SamebestKeys.Serializable
         
 		public EntityPropertyInfomation()
 		{            
-			MaxEnergy = 100;
-			Energy = 100;
+			MaxEnergy = 5;
+			Energy = 5;
 			Skills = new System.Collections.Generic.List<Skill>();
 			Position = new Types.Vector2();
             Identity = IDENTITY.GUEST;

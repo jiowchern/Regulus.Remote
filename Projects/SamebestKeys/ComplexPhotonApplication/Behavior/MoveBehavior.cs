@@ -10,16 +10,15 @@ namespace Regulus.Project.SamebestKeys
         public delegate void OnMove(float direction,long time );
         public event OnMove MoveEvent;
         Entity _Entity;
-
         
         public MoveBehaviorHandler(Entity entity)
         {
             _Entity = entity;
         }
         bool Utility.IUpdatable.Update()
-        {
+        {            
             return true;
-        }
+        }        
 
         void Framework.ILaunched.Launch()
         {
@@ -28,8 +27,8 @@ namespace Regulus.Project.SamebestKeys
             {
                 command.CommandEvent += _Done;
             }
-            
         }
+        
 
         private void _Done(IBehaviorCommand command)
         {

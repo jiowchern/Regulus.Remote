@@ -214,5 +214,12 @@ namespace Regulus.Project.SamebestKeys
         {
             get { return _DBActorInfomation.Property.Energy; }
         }
+
+
+        void IPlayer.SetEnergy(int energy)
+        {
+            _DBActorInfomation.Property.MaxEnergy = energy;
+            _DBActorInfomation.Property.Energy = energy;            
+        }
     }
 }

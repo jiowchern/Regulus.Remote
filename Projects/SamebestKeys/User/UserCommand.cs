@@ -207,6 +207,7 @@ namespace Regulus.Projects.SamebestKeys
             _Command.Register("Logout", obj.Logout);
             _Command.Register("ExitWorld", obj.ExitWorld);
             _Command.Register<float,float>("SetPosition", obj.SetPosition);
+            _Command.Register<int>("SetEnergy", obj.SetEnergy);
             _Command.Register<int>("SetVision", obj.SetVision);
             _Command.Register<float>("SetSpeed", obj.SetSpeed);
             _Command.Register<float,long>("Walk", obj.Walk);

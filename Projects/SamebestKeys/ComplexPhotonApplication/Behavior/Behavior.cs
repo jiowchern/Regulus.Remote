@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+
 namespace Regulus.Project.SamebestKeys
 {
 
@@ -84,10 +85,13 @@ namespace Regulus.Project.SamebestKeys
         {
             BehaviorStage.OnBegin begin = () =>
             {
+                var speedChange = new SpeedChangeBehaviorHandler(_Entity);
                 var move = new MoveBehaviorHandler(_Entity);
                 var stop = new StopToIdleBehaviorHandler(_Entity);
                 var idle = new MoveToIdleBehaviorHandler(_Entity);
                 var injury = new IdleToInjuryBehaviorHandler(_Entity);
+
+                speedChange.MoveEvent += _ToMove;
                 move.MoveEvent += _ToMove;
                 stop.DoneEvent += _ToIdle; 
                 idle.DoneEvent += _ToIdle;
@@ -96,7 +100,7 @@ namespace Regulus.Project.SamebestKeys
 
                 var actor = _Entity.FindAbility<IActorPropertyAbility>();
                 actor.BeginExpendEnergy();
-                return new IBehaviorHandler[] { move ,stop, idle, injury };
+                return new IBehaviorHandler[] { move, stop, idle, injury, speedChange };
             };
 
             _ChangeStage(begin);

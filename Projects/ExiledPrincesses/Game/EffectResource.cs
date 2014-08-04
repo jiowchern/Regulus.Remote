@@ -137,6 +137,8 @@ namespace Regulus.Project.ExiledPrincesses.Game
             target.Injury((int)(trauma * damage) + damage);
         }
 
+
+        
         IEnumerable<ITeammate> _GetTarget(Team[] target_teams)
         {
             foreach (var targetTeam in target_teams)

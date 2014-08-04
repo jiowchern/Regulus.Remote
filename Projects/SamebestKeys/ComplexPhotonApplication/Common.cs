@@ -62,6 +62,8 @@ namespace Regulus.Project.SamebestKeys
         void SetPosition(float x,float y);		
         void SetVision(int vision);
 
+        void SetEnergy(int energy);
+
         void SetSpeed(float speed);
         void ChangeMode();
         void Cast(int skill);
