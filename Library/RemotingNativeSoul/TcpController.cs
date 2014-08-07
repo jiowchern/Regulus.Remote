@@ -37,12 +37,7 @@ namespace Regulus.Remoting.Soul.Native
 				_Name = value;
 			}
 		}
-
-		public event Game.ConsoleFramework<IUser>.OnSpawnUser UserSpawnEvent;
-
-		public event Game.ConsoleFramework<IUser>.OnSpawnUserFail UserSpawnFailEvent;
-
-		public event Game.ConsoleFramework<IUser>.OnUnspawnUser UserUnpawnEvent;
+		
 
 		public void Look()
 		{
@@ -85,11 +80,49 @@ namespace Regulus.Remoting.Soul.Native
 		{
             _Machine.Termination();
 		}
-        
-        
 
-		
-	}
+        string Game.ConsoleFramework<IUser>.IController.Name
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        void Game.ConsoleFramework<IUser>.IController.Look()
+        {
+            throw new NotImplementedException();
+        }
+
+        void Game.ConsoleFramework<IUser>.IController.NotLook()
+        {
+            throw new NotImplementedException();
+        }
+
+        IUser Game.ConsoleFramework<IUser>.IController.GetUser()
+        {
+            return null;
+        }
+
+        bool Utility.IUpdatable.Update()
+        {
+            throw new NotImplementedException();
+        }
+
+        void Framework.ILaunched.Launch()
+        {
+            throw new NotImplementedException();
+        }
+
+        void Framework.ILaunched.Shutdown()
+        {
+            throw new NotImplementedException();
+        }
+    }
 
 	
 }

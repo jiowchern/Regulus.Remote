@@ -54,16 +54,14 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
         {
             _View.WriteLine("連線失敗: " + obj);
 
-            if(_UserSpawnFailEvent != null)
-                _UserSpawnFailEvent("連線失敗: " + obj);
+            
             
         }
 
         void _OnConnectSuccess()
         {
             _View.WriteLine("連線成功");            
-            if (_UserSpawnEvent != null)
-                _UserSpawnEvent(_User);
+            
             _Linked = true;
             if (_Look)
                 _UserCommand = new UserCommand(_User, _View, _Command);            
@@ -87,30 +85,11 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
 
 		void Regulus.Framework.ILaunched.Shutdown()
         {
-            _UserUnpawnEvent(_User);
+            
 			(_User as Regulus.Framework.ILaunched).Shutdown();
                         
         }
-
-        event Regulus.Game.ConsoleFramework<IUser>.OnSpawnUser _UserSpawnEvent;
-        event Regulus.Game.ConsoleFramework<IUser>.OnSpawnUser Regulus.Game.ConsoleFramework<IUser>.IController.UserSpawnEvent
-        {
-            add { _UserSpawnEvent += value;  }
-            remove { _UserSpawnEvent -= value ; }
-        }
-        event Regulus.Game.ConsoleFramework<IUser>.OnUnspawnUser _UserUnpawnEvent;
-        event Regulus.Game.ConsoleFramework<IUser>.OnUnspawnUser Regulus.Game.ConsoleFramework<IUser>.IController.UserUnpawnEvent
-        {
-            add { _UserUnpawnEvent += value; }
-            remove { _UserUnpawnEvent -= value; }
-        }
-
-        event Regulus.Game.ConsoleFramework<IUser>.OnSpawnUserFail _UserSpawnFailEvent;
-        event Regulus.Game.ConsoleFramework<IUser>.OnSpawnUserFail Regulus.Game.ConsoleFramework<IUser>.IController.UserSpawnFailEvent
-        {
-            add { _UserSpawnFailEvent+= value; }
-            remove { _UserSpawnFailEvent -= value; }
-        }
+        
 
 
         void Regulus.Game.ConsoleFramework<IUser>.IController.Look()
@@ -133,6 +112,12 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
         }
 
 
-        
+
+
+
+        IUser Regulus.Game.ConsoleFramework<IUser>.IController.GetUser()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

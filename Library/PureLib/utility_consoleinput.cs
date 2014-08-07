@@ -5,14 +5,76 @@ using System.Text;
 
 namespace Regulus.Utility
 {
+
+    class Doskey
+    {
+        int _Current;
+        int _Capacity;
+
+        List<string> _Records;        
+        
+
+        public Doskey(int capacity)
+        {
+            _Capacity = capacity;
+            _Records = new List<string>();
+        }
+        private string _Get(int current)
+        {
+            if (current < _Records.Count)
+                return _Records[current];
+            return null;
+        }
+        int _Next()
+        {
+            if (++_Current > _Records.Count)
+            {
+                _Current = 0;
+            }
+            return _Current;
+        }
+
+        private int _Prev()
+        {
+
+            if (--_Current < 0)
+            {
+                _Current = _Records.Count;
+            }
+            return _Current;
+        }
+
+        internal string GetPrev()
+        {
+            return _Get(_Prev());
+        }
+
+        internal string GetNext()
+        {
+            return _Get(_Next());
+        }
+
+        
+
+        internal void Record(string commands)
+        {
+            _Current = 0;
+            _Records = _Records.Union(new string[] {commands}).ToList() ;
+            if(_Records.Count > _Capacity)
+            {
+                _Records.RemoveAt(_Records.Count);
+            }
+        }
+    }
     public class ConsoleInput : Console.IInput , Regulus.Utility.IUpdatable
     {
-        
+        Doskey _Doskey;
         Stack<char> _InputData = new Stack<char>();
         Console.IViewer _Viewer;
         public ConsoleInput(Console.IViewer viewer)
         {
             _Viewer = viewer;
+            _Doskey = new Doskey(10);
         }
 
         public void Update()
@@ -43,10 +105,24 @@ namespace Regulus.Utility
                 return null;
             if ((keyInfo.Modifiers & ConsoleModifiers.Control) == ConsoleModifiers.Control)
                 return null;
+
             // Ignore if KeyChar value is \u0000.
+            
+
+            // Ignore tab key.
+            if (keyInfo.Key == ConsoleKey.DownArrow)
+            {
+                string message = _Doskey.GetNext();
+                _ResetLine(chars, message);                
+            }
+            if (keyInfo.Key == ConsoleKey.UpArrow)
+            {
+                string message = _Doskey.GetPrev();
+                _ResetLine(chars, message);                
+            }
             if (keyInfo.KeyChar == '\u0000')
                 return null;
-            // Ignore tab key.
+
             if (keyInfo.Key == ConsoleKey.Tab)
                 return null;
             if (keyInfo.Key == ConsoleKey.Escape)
@@ -61,11 +137,18 @@ namespace Regulus.Utility
             {
 
                 string commands = new string(chars.Reverse().ToArray());
-                Regulus.Utility.Singleton<Regulus.Utility.ConsoleLogger>.Instance.Log("Enter Command : " + commands);
-                chars.Clear();
+                commands = commands.Trim();
+                if (commands.Length > 0)
+                {
+                    Regulus.Utility.Singleton<Regulus.Utility.ConsoleLogger>.Instance.Log("Enter Command : " + commands);
+                    chars.Clear();
 
-                _Viewer.Write("\n");
-                return commands.Split(new char[] { ' ' }, System.StringSplitOptions.RemoveEmptyEntries);
+                    _Viewer.Write("\n");
+
+                    _Doskey.Record(commands);
+                    return commands.Split(new char[] { ' ' }, System.StringSplitOptions.RemoveEmptyEntries);
+                }
+                return null;
             }
             else
             {
@@ -73,6 +156,27 @@ namespace Regulus.Utility
                 _Viewer.Write(keyInfo.KeyChar.ToString());
             }
             return null;
+        }
+
+        private void _ResetLine(Stack<char> chars, string message)
+        {
+            if (message != null)
+            {
+                foreach (var c in chars)
+                    _Viewer.Write("\b");
+                foreach (var c in chars)
+                    _Viewer.Write(" ");
+                _Viewer.Write("\r");
+                _Viewer.Write(message);                
+
+                chars.Clear();
+
+                foreach(var c in message)
+                {
+                    chars.Push(c);
+                }
+                
+            }            
         }
 
         event Console.OnOutput _OutputEvent;

@@ -40,14 +40,13 @@ namespace Regulus.Project.ExiledPrincesses.Standalong
         {
             
             _User.Launch();
-            if (_UserSpawnEvent != null)
-                _UserSpawnEvent(_User);
+            
         }
 
 		void Regulus.Framework.ILaunched.Shutdown()
         {
             
-            _UserUnpawnEvent(_User);            
+            
             _User.Shutdown();
 
         }
@@ -60,19 +59,7 @@ namespace Regulus.Project.ExiledPrincesses.Standalong
         }
 
 
-        event Regulus.Game.ConsoleFramework<IUser>.OnSpawnUser _UserSpawnEvent;
-        event Regulus.Game.ConsoleFramework<IUser>.OnSpawnUser Regulus.Game.ConsoleFramework<IUser>.IController.UserSpawnEvent
-        {
-            add { _UserSpawnEvent += value; }
-            remove { _UserSpawnEvent -= value; }
-        }
-        event Regulus.Game.ConsoleFramework<IUser>.OnUnspawnUser _UserUnpawnEvent;
-        event Regulus.Game.ConsoleFramework<IUser>.OnUnspawnUser Regulus.Game.ConsoleFramework<IUser>.IController.UserUnpawnEvent
-        {
-            add { _UserUnpawnEvent += value; }
-            remove { _UserUnpawnEvent -= value; }
-        }
-
+        
 
         void Regulus.Game.ConsoleFramework<IUser>.IController.Look()
         {
@@ -86,10 +73,12 @@ namespace Regulus.Project.ExiledPrincesses.Standalong
         }
 
 
-        event Regulus.Game.ConsoleFramework<IUser>.OnSpawnUserFail Regulus.Game.ConsoleFramework<IUser>.IController.UserSpawnFailEvent
+        
+
+
+        IUser Regulus.Game.ConsoleFramework<IUser>.IController.GetUser()
         {
-            add {  }
-            remove {  }
+            throw new NotImplementedException();
         }
     }
 }

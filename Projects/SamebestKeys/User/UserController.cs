@@ -37,26 +37,8 @@ namespace Regulus.Project.SamebestKeys
             }
         }
 
-        event Game.ConsoleFramework<Project.SamebestKeys.IUser>.OnSpawnUser _UserSpawnEvent;
-        event Game.ConsoleFramework<Project.SamebestKeys.IUser>.OnSpawnUser Game.ConsoleFramework<Project.SamebestKeys.IUser>.IController.UserSpawnEvent
-        {
-            add { _UserSpawnEvent += value; }
-            remove { _UserSpawnEvent -= value; }
-        }
-
         
-        event Game.ConsoleFramework<Project.SamebestKeys.IUser>.OnSpawnUserFail Game.ConsoleFramework<Project.SamebestKeys.IUser>.IController.UserSpawnFailEvent
-        {
-            add {  }
-            remove {  }
-        }
-
-        event Game.ConsoleFramework<Project.SamebestKeys.IUser>.OnUnspawnUser _UserUnpawnEvent;
-        event Game.ConsoleFramework<Project.SamebestKeys.IUser>.OnUnspawnUser Game.ConsoleFramework<Project.SamebestKeys.IUser>.IController.UserUnpawnEvent
-        {
-            add { _UserUnpawnEvent += value; }
-            remove { _UserUnpawnEvent -= value; }
-        }
+        
         
         void Game.ConsoleFramework<Project.SamebestKeys.IUser>.IController.Look()
         {
@@ -76,18 +58,21 @@ namespace Regulus.Project.SamebestKeys
 
         void Framework.ILaunched.Launch()
         {
-            if (_UserSpawnEvent != null)
-                _UserSpawnEvent(_User);
+            
 
             _Updater.Add(_User);
         }
 
         void Framework.ILaunched.Shutdown()
-        {
-            if (_UserUnpawnEvent != null)
-                _UserUnpawnEvent(_User);
+        {            
 
             _Updater.Shutdown();
+        }
+
+
+        IUser Game.ConsoleFramework<IUser>.IController.GetUser()
+        {
+            return _User;
         }
     }
 }

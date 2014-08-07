@@ -8,6 +8,11 @@ namespace Regulus.Utility
 {
     public class ValueHelper
     {
+        public IEnumerator<T> GetEnumItems<T>() where T : class 
+        {
+            foreach (var item in Enum.GetValues(typeof(T)))
+                yield return item as T;
+        }
 
         public static T DeepCopy<T>(T obj)
         {

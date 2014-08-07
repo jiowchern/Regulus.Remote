@@ -13,7 +13,7 @@ namespace Console
             var view = new Regulus.Utility.ConsoleViewer();
             var input = new Regulus.Utility.ConsoleInput(view);
             
-            var application = new Regulus.Project.SamebestKeys.Console(view, input);
+            var application = new Regulus.Project.SamebestKeys.Console(view, input);            
 
             _BuildGameData(view);
             BotSet bots = new BotSet();

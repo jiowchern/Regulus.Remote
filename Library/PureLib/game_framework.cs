@@ -12,13 +12,12 @@ namespace Regulus.Game
 
 		public interface IController : Regulus.Utility.IUpdatable
         {
-            string Name { get; set; }
-            event OnSpawnUser UserSpawnEvent;
-            event OnSpawnUserFail UserSpawnFailEvent;
-            event OnUnspawnUser UserUnpawnEvent;
+            string Name { get; set; }            
 
             void Look();
             void NotLook();
+
+            TUser GetUser();
         }
 
         public delegate void BuildCompiled (TUser controller);
@@ -38,15 +37,7 @@ namespace Regulus.Game
         
         public Regulus.Utility.Command Command { get { return _Console.Command; } }
         public Regulus.Utility.Console.IViewer Viewer { get { return _Viewer; } }
-
-        public delegate void OnSpawnUser(TUser user);
-        public event OnSpawnUser UserSpawnEvent;
-
-        public delegate void OnSpawnUserFail(string message);
-        public event OnSpawnUserFail UserSpawnFailEvent;
-
-        public delegate void OnUnspawnUser(TUser user);
-        public event OnUnspawnUser UserUnspawnEvent;
+        
         protected abstract ControllerProvider[] _ControllerProvider();
 
         public ConsoleFramework(Regulus.Utility.Console.IViewer viewer, Regulus.Utility.Console.IInput input)
@@ -74,13 +65,9 @@ namespace Regulus.Game
         IUserRequester _OnSelectedSystem(ConsoleFramework<TUser>.ControllerProvider controller_provider)
         {
             _Viewer.WriteLine("啟動系統");
-            var ssr = new StageSystemReady(_Viewer, controller_provider , Command);
-            ssr.UserSpawnEvent += UserSpawnEvent;
-            ssr.UserSpawnFailEvent += UserSpawnFailEvent;
-            ssr.UserRequesterEvent += UserRequesterEvent;            
-            ssr.UserUnspawnEvent += UserUnspawnEvent;
+            var ssr = new StageSystemReady(_Viewer, controller_provider , Command);            
             _StageMachine.Push(ssr);
-
+            UserRequesterEvent(ssr);
             return ssr;
         }
 
@@ -279,10 +266,7 @@ namespace Regulus.Game
 			Regulus.Utility.Updater _Loops;
             System.Collections.Generic.List<IController> _Controlls;
             System.Collections.Generic.List<IController> _SelectedControlls;
-
-            public event OnSpawnUser UserSpawnEvent;
-            public event OnSpawnUserFail UserSpawnFailEvent;
-            public event OnUnspawnUser UserUnspawnEvent;
+            
             public event OnUserRequester UserRequesterEvent;
             public StageSystemReady(Utility.Console.IViewer view, ControllerProvider controller_provider, Utility.Command command)
             {
@@ -299,7 +283,7 @@ namespace Regulus.Game
             {
 
 
-                _Command.RemotingRegister<string, TUser>("SpawnController", _SpawnController, (user) => { });                
+                _Command.Register<string, TUser>("SpawnController", _SpawnController, (user) => { });                
                 _Command.Register<string>("SelectController", _SelectController);
                 _Command.Register<string>("UnspawnController", _UnspawnController);                
                 
@@ -335,7 +319,7 @@ namespace Regulus.Game
 
             }
 
-            Regulus.Remoting.Value<TUser> _SpawnController(string name)
+            TUser _SpawnController(string name)
             {
                 var value = new Regulus.Remoting.Value<TUser>();
                 var controller = _ControllerProvider.Spawn();
@@ -344,17 +328,9 @@ namespace Regulus.Game
 
                 _Controlls.Add(controller);
 				_Loops.Add(controller);                
-                controller.UserSpawnEvent += (user)=>
-                {
-                    if (UserSpawnEvent != null)
-                        UserSpawnEvent(user);
-                    value.SetValue(user);
-                };
-                controller.UserSpawnFailEvent += UserSpawnFailEvent;
-                controller.UserUnpawnEvent += UserUnspawnEvent;
 
                 _Viewer.WriteLine("控制者[" + name + "] 增加.");
-                return value;
+                return controller.GetUser();
             }
 
             private void _SelectController(string name)
