@@ -22,7 +22,7 @@ namespace Console
 
         void ParkingProvider_Supply(Regulus.Project.SamebestKeys.IParking obj)
         {            
-            obj.CreateActor(new Regulus.Project.SamebestKeys.Serializable.EntityLookInfomation() { Name = _Account + "-1" }).OnValue += ResultEvent;
+            obj.CreateActor(new Regulus.Project.SamebestKeys.Serializable.EntityLookInfomation() { Name = _Account + "-1" } , Regulus.Project.SamebestKeys.Serializable.EntityPropertyInfomation.IDENTITY.GUEST).OnValue += ResultEvent;
         }
 
         void Regulus.Game.IStage.Leave()

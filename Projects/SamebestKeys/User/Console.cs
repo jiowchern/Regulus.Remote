@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
-    public class Console : Regulus.Game.ConsoleFramework<Regulus.Project.SamebestKeys.IUser>
+    public class Console : Regulus.Game.Framework<Regulus.Project.SamebestKeys.IUser>
     {
         Regulus.Projects.SamebestKeys.Standalong.Game _Game;
         private IController _BuildRemoting()
@@ -25,7 +25,7 @@ namespace Regulus.Project.SamebestKeys
             _Game = new Projects.SamebestKeys.Standalong.Game();
         }
 
-        protected override Regulus.Game.ConsoleFramework<Regulus.Project.SamebestKeys.IUser>.ControllerProvider[] _ControllerProvider()
+        protected override Regulus.Game.Framework<Regulus.Project.SamebestKeys.IUser>.ControllerProvider[] _ControllerProvider()
         {
             return new Console.ControllerProvider[] 
             {                

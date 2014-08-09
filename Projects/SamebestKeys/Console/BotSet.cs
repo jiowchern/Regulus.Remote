@@ -53,7 +53,7 @@ namespace Console
             _Users.Add(bot);
         }
 
-        public Regulus.Game.ConsoleFramework<Regulus.Project.SamebestKeys.IUser>.IUserRequester Requester { private get; set; }
+        public Regulus.Game.Framework<Regulus.Project.SamebestKeys.IUser>.IUserRequester Requester { private get; set; }
 
         public int Sn { set { _Sn = value; } }
     }

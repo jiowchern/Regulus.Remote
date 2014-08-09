@@ -7,7 +7,7 @@ using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Text;
 
- 
+using Regulus.Utility.WindowConsoleAppliction; 
 namespace AsyncEchoServer
 {
     class BatchCommander
@@ -67,32 +67,16 @@ namespace AsyncEchoServer
             }
         }
     }
+
+    
     class Program
     {
         static void Main(string[] args)
         {
-            Regulus.Utility.Console.IViewer viwer = new Regulus.Utility.ConsoleViewer();
-            var input = new Regulus.Utility.ConsoleInput(viwer);
-            var server = new Regulus.Remoting.Soul.Native.Application(viwer, input);
             
-
-            Regulus.Utility.Updater updater = new Regulus.Utility.Updater();
-            updater.Add(server);
-
-			bool exit = false;
-
-			server.Command.Register("quit", () => { exit = true; });
-
-
-            var batch = new BatchCommander(server.Command);
-            while (exit == false)
-            {                
-                updater.Update();
-                input.Update();
-                batch.Update();
-            }
-
-			server.Command.Unregister("quit");
+            var server = new Regulus.Remoting.Soul.Native.Application();
+            
+            server.Run();
         }
     }
 }

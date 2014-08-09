@@ -23,7 +23,7 @@ namespace Regulus.Project.ExiledPrincesses.Standalong
         
 
         string _Name;
-        string Regulus.Game.ConsoleFramework<IUser>.IController.Name
+        string Regulus.Game.Framework<IUser>.IController.Name
         {
             get
             {
@@ -61,12 +61,12 @@ namespace Regulus.Project.ExiledPrincesses.Standalong
 
         
 
-        void Regulus.Game.ConsoleFramework<IUser>.IController.Look()
+        void Regulus.Game.Framework<IUser>.IController.Look()
         {
             _UserCommand = new UserCommand(_User, _View, _Command);            
         }
 
-        void Regulus.Game.ConsoleFramework<IUser>.IController.NotLook()
+        void Regulus.Game.Framework<IUser>.IController.NotLook()
         {
             _UserCommand.Release();
             _UserCommand = null;
@@ -76,7 +76,7 @@ namespace Regulus.Project.ExiledPrincesses.Standalong
         
 
 
-        IUser Regulus.Game.ConsoleFramework<IUser>.IController.GetUser()
+        IUser Regulus.Game.Framework<IUser>.IController.GetUser()
         {
             throw new NotImplementedException();
         }

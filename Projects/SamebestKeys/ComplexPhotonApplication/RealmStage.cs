@@ -23,9 +23,10 @@ namespace Regulus.Project.SamebestKeys.Dungeons
         public event Action QuitEvent;
 
         ITraversable _Traversable;
-
+        
         public RealmStage(Regulus.Remoting.ISoulBinder binder, IScene realm, Regulus.Project.SamebestKeys.Serializable.DBEntityInfomation[] actors, Belongings belongings)
         {
+            
             _Binder = binder;
             this._Scene = realm;
             
@@ -34,6 +35,8 @@ namespace Regulus.Project.SamebestKeys.Dungeons
             _Observeds = new List<IObservedAbility>();
             _Belongings = belongings;
             _Updater = new Utility.Updater();
+
+         
         }
 
         void Game.IStage.Enter() 

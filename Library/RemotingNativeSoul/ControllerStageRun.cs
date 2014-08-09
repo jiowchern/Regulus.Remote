@@ -167,86 +167,83 @@ namespace Regulus.Remoting.Soul.Native
         }
 
     }
-    partial class Controller : Application.IController
+    class StageRun : Regulus.Game.IStage
     {
-        class StageRun : Regulus.Game.IStage
+        public event Action ShutdownEvent;
+
+        private Utility.Command _Command;
+        Utility.Console.IViewer _View;
+
+        ThreadSocketHandler _ThreadSocketHandler;
+        System.Threading.Thread _ThreadSocket;
+
+        ThreadCoreHandler _ThreadCoreHandler;
+        System.Threading.Thread _ThreadCore;
+
+        public StageRun(Regulus.Game.ICore core, Utility.Command command, int port, Utility.Console.IViewer viewer)
         {
-            public event Action ShutdownEvent;
-            
-            private Utility.Command _Command;
-            Utility.Console.IViewer _View;
+            _View = viewer;
+            this._Command = command;
 
-            ThreadSocketHandler _ThreadSocketHandler;
-            System.Threading.Thread _ThreadSocket;
+            _ThreadCoreHandler = new ThreadCoreHandler(core);
+            _ThreadCore = new System.Threading.Thread(_ThreadCoreHandler.DoWork);
+            _ThreadCore.Priority = System.Threading.ThreadPriority.Normal;
+            _ThreadCore.IsBackground = true;
 
-            ThreadCoreHandler _ThreadCoreHandler;
-            System.Threading.Thread _ThreadCore;
-
-            public StageRun(Regulus.Game.ICore core,Utility.Command command,int port , Utility.Console.IViewer viewer)
-            {
-                _View = viewer;
-                this._Command = command;
-
-                _ThreadCoreHandler = new ThreadCoreHandler(core);
-                _ThreadCore = new System.Threading.Thread(_ThreadCoreHandler.DoWork);
-                _ThreadCore.Priority = System.Threading.ThreadPriority.Normal;
-                _ThreadCore.IsBackground = true;
-
-                _ThreadSocketHandler = new ThreadSocketHandler(port, _ThreadCoreHandler);
-                _ThreadSocket = new System.Threading.Thread(_ThreadSocketHandler.DoWork);
-                _ThreadSocket.Priority = System.Threading.ThreadPriority.Normal;
-                _ThreadSocket.IsBackground = true;
-            }
-
-            void Game.IStage.Enter()
-            {
-
-                _Command.Register("FPS", () => 
-                { 
-                    _View.WriteLine("PeerFPS:" + _ThreadSocketHandler.FPS.ToString());                    
-                    _View.WriteLine("PeerCount:" + _ThreadSocketHandler.PeerCount.ToString());
-                    _View.WriteLine("CoreFPS:" + _ThreadCoreHandler.FPS.ToString());                    
-                    _View.WriteLine("Read:" + NetworkStreamReadStage.TotalBytesPerSecond.ToString());
-                    _View.WriteLine("Write:" + NetworkStreamWriteStage.TotalBytesPerSecond.ToString()); 
-                }  );
-                _Command.Register("Shutdown", _ShutdownEvent );
-
-
-                _ThreadCore.Start();
-                _ThreadSocket.Start();                
-            }
-
-            
-
-            private void _ShutdownEvent()
-            {                
-                ShutdownEvent();
-            }
-
-            void Game.IStage.Leave()
-            {
-                _ThreadCoreHandler.Stop();
-                _ThreadCore.Abort();
-                _ThreadCore.Join();
-
-                _ThreadSocketHandler.Stop();
-                _ThreadSocket.Abort();
-                _ThreadSocket.Join();
-
-                _Command.Unregister("Shutdown");
-                _Command.Unregister("FPS");
-                
-            }
-
-            void Game.IStage.Update()
-            {
-                
-                
-            }
-
-
-            
+            _ThreadSocketHandler = new ThreadSocketHandler(port, _ThreadCoreHandler);
+            _ThreadSocket = new System.Threading.Thread(_ThreadSocketHandler.DoWork);
+            _ThreadSocket.Priority = System.Threading.ThreadPriority.Normal;
+            _ThreadSocket.IsBackground = true;
         }
+
+        void Game.IStage.Enter()
+        {
+
+            _Command.Register("FPS", () =>
+            {
+                _View.WriteLine("PeerFPS:" + _ThreadSocketHandler.FPS.ToString());
+                _View.WriteLine("PeerCount:" + _ThreadSocketHandler.PeerCount.ToString());
+                _View.WriteLine("CoreFPS:" + _ThreadCoreHandler.FPS.ToString());
+                _View.WriteLine("Read:" + NetworkStreamReadStage.TotalBytesPerSecond.ToString());
+                _View.WriteLine("Write:" + NetworkStreamWriteStage.TotalBytesPerSecond.ToString());
+            });
+            _Command.Register("Shutdown", _ShutdownEvent);
+
+
+            _ThreadCore.Start();
+            _ThreadSocket.Start();
+        }
+
+
+
+        private void _ShutdownEvent()
+        {
+            ShutdownEvent();
+        }
+
+        void Game.IStage.Leave()
+        {
+            _ThreadCoreHandler.Stop();
+            _ThreadCore.Abort();
+            _ThreadCore.Join();
+
+            _ThreadSocketHandler.Stop();
+            _ThreadSocket.Abort();
+            _ThreadSocket.Join();
+
+            _Command.Unregister("Shutdown");
+            _Command.Unregister("FPS");
+
+        }
+
+        void Game.IStage.Update()
+        {
+
+
+        }
+
+
+
     }
     
 }

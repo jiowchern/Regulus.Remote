@@ -16,12 +16,18 @@ namespace Regulus
             public void Connect(string host, string user, string password, string database_name)
             {                
                 
-                var connect = "Server = " + host + "; UserId = " + user + "; Password = " + password + "; Database = " + database_name + "";                
-                _Connect = new MySqlConnection(connect);                
+                var connect = "Server = " + host + "; UserId = " + user + "; Password = " + password + "; Database = " + database_name + "";
+                _Connect = _CreateConnector(connect);
+
+            }
+
+            private MySqlConnection _CreateConnector(string connect)
+            {
+                var c = new MySqlConnection(connect);
 
                 try
                 {
-                    _Connect.Open();
+                    c.Open();
                 }
                 catch (MySql.Data.MySqlClient.MySqlException ex)
                 {
@@ -35,7 +41,7 @@ namespace Regulus
                     }
                     throw new SystemException("MySQL:連線失敗.代號:" + ex.Number.ToString());
                 }
-
+                return c;
             }
 
             public void Disconnect()
@@ -46,11 +52,19 @@ namespace Regulus
             }
             public void ExecuteNonQuery(string command_str)
             {
+                if (_Connect.State == System.Data.ConnectionState.Closed)
+                {
+                    _Connect = _CreateConnector(_Connect.ConnectionString);
+                }
                 var cmd = new MySqlCommand(command_str, _Connect);
                 cmd.ExecuteNonQuery();
             }
             public MySqlDataReader Execute(string command_str)
 			{
+                if(_Connect.State == System.Data.ConnectionState.Closed)
+                {
+                    _Connect = _CreateConnector(_Connect.ConnectionString);
+                }
                 var cmd = new MySqlCommand(command_str, _Connect);                
                 return cmd.ExecuteReader();
 			}

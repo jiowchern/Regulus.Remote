@@ -6,7 +6,7 @@ using System.Text;
 
 namespace TestNativeUser
 {
-    public class Application : Regulus.Game.ConsoleFramework<TestNativeUser.IUser>
+    public class Application : Regulus.Game.Framework<TestNativeUser.IUser>
     {
         Regulus.Utility.Console.IViewer _View;
         public Application(Regulus.Utility.Console.IViewer view, Regulus.Utility.Console.IInput input)
@@ -15,7 +15,7 @@ namespace TestNativeUser
             _View = view;
         }
 
-        protected override Regulus.Game.ConsoleFramework<IUser>.ControllerProvider[] _ControllerProvider()
+        protected override Regulus.Game.Framework<IUser>.ControllerProvider[] _ControllerProvider()
         {
             return new Application.ControllerProvider[] 
             {                

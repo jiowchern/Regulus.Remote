@@ -39,10 +39,7 @@ namespace Console
             {
                 bots.Sn = sn;
             });
-            application.UserRequesterEvent += (requester) =>
-            {
-                bots.Requester = requester;
-            };
+                        
             application.Command.Register<int>("Bot", (count) => 
             {            
                 bots.Create(count);
@@ -88,12 +85,12 @@ namespace Console
 
         
 
-        private static void _Spawn(Regulus.Remoting.Value<Regulus.Game.ConsoleFramework<Regulus.Project.SamebestKeys.IUser>.IUserRequester> value)
+        private static void _Spawn(Regulus.Remoting.Value<Regulus.Game.Framework<Regulus.Project.SamebestKeys.IUser>.IUserRequester> value)
         {
             value.OnValue += _SpawnController;
         }
 
-        static void _SpawnController(Regulus.Game.ConsoleFramework<Regulus.Project.SamebestKeys.IUser>.IUserRequester obj)
+        static void _SpawnController(Regulus.Game.Framework<Regulus.Project.SamebestKeys.IUser>.IUserRequester obj)
         {
             obj.Spawn("jc", true);
         }

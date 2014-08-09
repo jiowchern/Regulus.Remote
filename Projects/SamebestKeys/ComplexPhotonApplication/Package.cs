@@ -98,6 +98,26 @@ namespace Regulus.Project.SamebestKeys
 }
 namespace Regulus.Project.SamebestKeys
 {
+    [ProtoBuf.ProtoContract]
+    public enum SessionScoreType
+    {
+        _1,
+        _2,
+        _3,
+        _4,
+        _5,
+        _6,
+    };
+
+    [ProtoBuf.ProtoContract]
+    public struct SessionScore
+    {
+        [ProtoBuf.ProtoMember(1)]
+        public SessionScoreType Type;
+        [ProtoBuf.ProtoMember(2)]
+        public int Score;
+    }
+
 	[ProtoBuf.ProtoContract]
 	[Flags]
 	public enum ActorMode

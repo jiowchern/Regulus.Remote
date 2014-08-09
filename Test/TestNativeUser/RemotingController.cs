@@ -14,7 +14,7 @@ namespace TestNativeUser
         Regulus.Utility.Command _Command;
         string _Name;
         Regulus.Utility.Console.IViewer _View;
-        string Regulus.Game.ConsoleFramework<IUser>.IController.Name
+        string Regulus.Game.Framework<IUser>.IController.Name
         {
             get
             {
@@ -35,7 +35,7 @@ namespace TestNativeUser
 
             _Command = command;
         }
-        void Regulus.Game.ConsoleFramework<IUser>.IController.Look()
+        void Regulus.Game.Framework<IUser>.IController.Look()
         {
             _User.ConnectProvider.Supply += ConnectProvider_Supply;
             _User.MessagerProvider.Supply += MessagerProvider_Supply;
@@ -51,7 +51,7 @@ namespace TestNativeUser
             _Command.RemotingRegister<string, int, bool>("Connect", connect.Connect, (result) => { _View.WriteLine(result.ToString()); });                       
         }
 
-        void Regulus.Game.ConsoleFramework<IUser>.IController.NotLook()
+        void Regulus.Game.Framework<IUser>.IController.NotLook()
         {
             _Command.Unregister("Connect");
             _Command.Unregister("Send");
@@ -79,7 +79,7 @@ namespace TestNativeUser
         }
 
 
-        IUser Regulus.Game.ConsoleFramework<IUser>.IController.GetUser()
+        IUser Regulus.Game.Framework<IUser>.IController.GetUser()
         {
             throw new NotImplementedException();
         }

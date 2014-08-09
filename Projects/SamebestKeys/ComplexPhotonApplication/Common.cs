@@ -19,7 +19,7 @@ namespace Regulus.Project.SamebestKeys
     public interface IParking
     {
         Value<bool> CheckActorName(string name );
-        Value<bool> CreateActor(EntityLookInfomation cai);
+        Value<bool> CreateActor(EntityLookInfomation cai , EntityPropertyInfomation.IDENTITY identity);
         Value<EntityLookInfomation[]> DestroyActor(string name);
         Value<EntityLookInfomation[]> QueryActors();
         void Back();
@@ -123,7 +123,49 @@ namespace Regulus.Project.SamebestKeys
     {
         void GotoRealm(string realm);
     }
+
+    public interface ISessionStuff
+    {
+        Guid Id { get; }
+        event Action<float> SpeakEvent;
+        void Speak(float[] speak);
+    }
+
+    public interface ISessionRequester
+    {
+        Remoting.Value<bool> Requester(Guid id , int coin);
+    }
+
+    public interface ISessionResponse
+    {
+        void Yes();
+        void No();
+    }
     
+    public interface ISessionTeacher
+    {
+        event Action<long> CurrentTimeEvent;
+        
+        void Next(int step);
+        void SetScore(SessionScoreType type,int score);
+        void SetTexture(string name);
+        void Done();
+    }
+
+    public interface ISessionStudent
+    {
+        event Action<long> CurrentTimeEvent;
+        event Action<int> NextEvent;
+        event Action<string> TextureEvent;
+        
+    }
+
+    public interface ISessionScore
+    {
+        SessionScore[] Scores {get;}
+        void Done();
+    }
+
 }
 
 

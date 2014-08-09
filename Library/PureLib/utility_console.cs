@@ -3,7 +3,6 @@
     public class Console
     {
         public delegate void OnOutput(string[] command_paraments );
-
         
         public interface IInput
         {
@@ -31,7 +30,6 @@
         {
             Command = new Command();
             _Filter = LogFilter.All;
-
 			_Initial(input , viewer);
         }
 

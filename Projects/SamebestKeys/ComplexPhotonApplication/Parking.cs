@@ -22,7 +22,7 @@ namespace Regulus.Project.SamebestKeys
             return _Stroage.CheckActorName(name);
         }
 
-        Regulus.Remoting.Value<bool> IParking.CreateActor(Serializable.EntityLookInfomation cai)
+        Regulus.Remoting.Value<bool> IParking.CreateActor(Serializable.EntityLookInfomation cai, Regulus.Project.SamebestKeys.Serializable.EntityPropertyInfomation.IDENTITY identity)
         {
             if (_Stroage.CheckActorName(cai.Name) == false)
             {
@@ -31,6 +31,7 @@ namespace Regulus.Project.SamebestKeys
                 ai.Look.Shell = cai.Shell;
 				
                 ai.Property.Id = Guid.NewGuid();
+                ai.Property.Identity = identity;
                 ai.Owner = _Id;
                 _ActorInfomations.Add(ai);
                 _Stroage.Add(ai);

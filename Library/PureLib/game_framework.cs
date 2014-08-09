@@ -6,7 +6,7 @@ using System.Text;
 using Regulus.Extension;
 namespace Regulus.Game
 {
-    public abstract partial class ConsoleFramework<TUser> : Regulus.Utility.IUpdatable
+    public abstract partial class Framework<TUser> : Regulus.Utility.IUpdatable
 		where TUser : Regulus.Utility.IUpdatable
     {
 
@@ -19,6 +19,7 @@ namespace Regulus.Game
 
             TUser GetUser();
         }
+
 
         public delegate void BuildCompiled (TUser controller);
         public class ControllerProvider
@@ -40,7 +41,7 @@ namespace Regulus.Game
         
         protected abstract ControllerProvider[] _ControllerProvider();
 
-        public ConsoleFramework(Regulus.Utility.Console.IViewer viewer, Regulus.Utility.Console.IInput input)
+        public Framework(Regulus.Utility.Console.IViewer viewer, Regulus.Utility.Console.IInput input)
         {
             
             _Viewer = viewer;
@@ -60,14 +61,14 @@ namespace Regulus.Game
             return stageMachine;
         }
 
-        public event OnUserRequester UserRequesterEvent;
+        
 
-        IUserRequester _OnSelectedSystem(ConsoleFramework<TUser>.ControllerProvider controller_provider)
+        IUserRequester _OnSelectedSystem(Framework<TUser>.ControllerProvider controller_provider)
         {
             _Viewer.WriteLine("啟動系統");
             var ssr = new StageSystemReady(_Viewer, controller_provider , Command);            
             _StageMachine.Push(ssr);
-            UserRequesterEvent(ssr);
+       
             return ssr;
         }
 
@@ -126,7 +127,7 @@ namespace Regulus.Game
     }
 
 
-    public abstract partial class ConsoleFramework<TUser>
+    public abstract partial class Framework<TUser>
     {
         public event OnSelectSystem SelectSystemEvent;
         public delegate void OnSelectSystem(ISystemSelector system_selector);
@@ -224,7 +225,7 @@ namespace Regulus.Game
         }
     }
 
-    public abstract partial class ConsoleFramework<TUser>
+    public abstract partial class Framework<TUser>
     {
         public delegate void OnUserRequester(IUserRequester user_requester);
         public interface IUserRequester
@@ -281,8 +282,6 @@ namespace Regulus.Game
             }
             void IStage.Enter()
             {
-
-
                 _Command.Register<string, TUser>("SpawnController", _SpawnController, (user) => { });                
                 _Command.Register<string>("SelectController", _SelectController);
                 _Command.Register<string>("UnspawnController", _UnspawnController);                

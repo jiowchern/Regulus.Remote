@@ -266,8 +266,15 @@ namespace Regulus.Projects.SamebestKeys
         {
             _Command.Register("Back", obj.Back);
 
-            _Command.RemotingRegister<string, bool>("CreateActor",
-                (name) => { return obj.CreateActor(new Project.SamebestKeys.Serializable.EntityLookInfomation() { Name = name }); },
+            _Command.RemotingRegister<string , int, bool>("CreateActor",
+                (name , id) => 
+                {
+                    Project.SamebestKeys.Serializable.EntityPropertyInfomation.IDENTITY identity = Project.SamebestKeys.Serializable.EntityPropertyInfomation.IDENTITY.GUEST;
+                    if (id != 0)
+                        identity = Project.SamebestKeys.Serializable.EntityPropertyInfomation.IDENTITY.CONVERSATION;
+
+                    return obj.CreateActor(new Project.SamebestKeys.Serializable.EntityLookInfomation() { Name = name }, identity); 
+                },
                 (result)=>{ _View.WriteLine("角色建立" + result.ToString() );});
 
             _Command.RemotingRegister<string, bool>("CheckActorName",

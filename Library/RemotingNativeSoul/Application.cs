@@ -2,33 +2,38 @@
 using System.Collections.Generic;
 
 namespace Regulus.Remoting.Soul.Native
-{
-	public interface IUser : Regulus.Utility.IUpdatable
+{    
+	public class Application : Regulus.Utility.WindowConsole
 	{
+        Regulus.Game.StageMachine _Machine;
+        protected override void _Launch()
+        {
+            _Machine = new Game.StageMachine();
+            _ToStart();        
+        }
 
-	}
+        protected override void _Update()
+        {
+            _Machine.Update();
+        }
 
+        protected override void _Shutdown()
+        {
+            _Machine.Termination();
+        }
 
-	public class Application : Regulus.Game.ConsoleFramework<IUser>
-	{
-		
-		public Application(Regulus.Utility.Console.IViewer view, Regulus.Utility.Console.IInput input)
-			: base(view, input)
-		{
-			
-		}
-		protected override Regulus.Game.ConsoleFramework<IUser>.ControllerProvider[] _ControllerProvider()
-		{
-			return new Application.ControllerProvider[] 
-            {
-                new Application.ControllerProvider { Command = "stand" , Spawn =  _BuildStandController},                
-            };
-		}
+        private void _ToStart()
+        {
+            var stage = new Regulus.Remoting.Soul.Native.StageStart(base.Command, base.Viewer);
+            stage.DoneEvent += _ToRun;
+            _Machine.Push(stage);
+        }
 
-		private IController _BuildStandController()
-		{
-			return new Controller(Command , _Viewer);
-		}
-		
-	}
+        private void _ToRun(Regulus.Game.ICore core, int port, float timeout)
+        {
+            var stage = new Regulus.Remoting.Soul.Native.StageRun(core, base.Command, port, base.Viewer);
+            stage.ShutdownEvent += _ToStart;
+            _Machine.Push(stage);
+        }
+    }
 }
