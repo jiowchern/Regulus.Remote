@@ -133,7 +133,7 @@ namespace Regulus.Project.SamebestKeys
 
     public interface ISessionRequester
     {
-        Remoting.Value<bool> Requester(Guid id , int coin);
+        Remoting.Value<bool> Requester(string target , int coin);
     }
 
     public interface ISessionResponse
