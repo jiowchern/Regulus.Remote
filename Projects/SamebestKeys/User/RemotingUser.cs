@@ -229,6 +229,36 @@ namespace Regulus.Projects.SamebestKeys.Remoting
         {
             get { return _Agent.QueryProvider<Project.SamebestKeys.IIdle>(); }
         }
+
+        Regulus.Remoting.Ghost.IProviderNotice<Project.SamebestKeys.ISessionScore> Project.SamebestKeys.IUser.SessionScoreProvider
+        {
+            get { return _Agent.QueryProvider<Project.SamebestKeys.ISessionScore>(); }
+        }
+
+        Regulus.Remoting.Ghost.IProviderNotice<Project.SamebestKeys.ISessionStudent> Project.SamebestKeys.IUser.SessionStudentProvider
+        {
+            get { return _Agent.QueryProvider<Project.SamebestKeys.ISessionStudent>(); }
+        }
+
+        Regulus.Remoting.Ghost.IProviderNotice<Project.SamebestKeys.ISessionTeacher> Project.SamebestKeys.IUser.SessionTeacherProvider
+        {
+            get { return _Agent.QueryProvider<Project.SamebestKeys.ISessionTeacher>(); }
+        }
+
+        Regulus.Remoting.Ghost.IProviderNotice<Project.SamebestKeys.ISessionResponse> Project.SamebestKeys.IUser.SessionResponseProvider
+        {
+            get { return _Agent.QueryProvider<Project.SamebestKeys.ISessionResponse>(); }
+        }
+
+        Regulus.Remoting.Ghost.IProviderNotice<Project.SamebestKeys.ISessionRequester> Project.SamebestKeys.IUser.SessionRequesterProvider
+        {
+            get { return _Agent.QueryProvider<Project.SamebestKeys.ISessionRequester>(); }
+        }
+
+        Regulus.Remoting.Ghost.IProviderNotice<Project.SamebestKeys.ISessionStuff> Project.SamebestKeys.IUser.SessionStuffProvider
+        {
+            get { return _Agent.QueryProvider<Project.SamebestKeys.ISessionStuff>(); }
+        }
     }
 }
 

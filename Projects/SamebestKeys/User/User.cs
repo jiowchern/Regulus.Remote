@@ -42,6 +42,25 @@ namespace Regulus.Project.SamebestKeys
         Regulus.Remoting.Ghost.IProviderNotice<IBelongings> BelongingsProvider { get; }
 
         Regulus.Remoting.Ghost.IProviderNotice<IIdle> IdleProvider { get; }
+
+        Regulus.Remoting.Ghost.IProviderNotice<ISessionScore> SessionScoreProvider { get; }
+
+        Regulus.Remoting.Ghost.IProviderNotice<ISessionStudent> SessionStudentProvider { get; }
+
+        Regulus.Remoting.Ghost.IProviderNotice<ISessionTeacher> SessionTeacherProvider { get; }
+
+        Regulus.Remoting.Ghost.IProviderNotice<ISessionResponse> SessionResponseProvider { get; }
+
+        Regulus.Remoting.Ghost.IProviderNotice<ISessionRequester> SessionRequesterProvider { get; }
+
+        Regulus.Remoting.Ghost.IProviderNotice<ISessionStuff> SessionStuffProvider { get; }
+
+
+        
+
+        
+
+        
         
     }
 }

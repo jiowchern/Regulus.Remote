@@ -6,8 +6,7 @@ using System.Text;
 namespace Regulus.Project.SamebestKeys.Session
 {
     class Staff
-    {
-
+    {         
         public delegate void OnBreak ();
         public event OnBreak BreakEvent;
     }

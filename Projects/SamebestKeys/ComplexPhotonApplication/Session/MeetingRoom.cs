@@ -15,8 +15,6 @@ namespace Regulus.Project.SamebestKeys.Session
             
         }
 
-        
-
         public MeetingRoom(Staff leader)
         {
             

@@ -39,7 +39,7 @@ namespace Regulus.Project.SamebestKeys
             public IBehaviorCommandAbility Commander { get; set; }
             public ISkillCaptureAbility Effect { get; set; }
             public IActorPropertyAbility Property { get; set; }
-            public IActorUpdateAbility Update { get; set; }
+            public IActorUpdateAbility ActorUpdate { get; set; }
 
             Regulus.Types.Rect Physics.IQuadObject.Bounds
             {
@@ -92,7 +92,7 @@ namespace Regulus.Project.SamebestKeys
                 Commander = entity.FindAbility<IBehaviorCommandAbility>(),
                 Effect = entity.FindAbility <ISkillCaptureAbility>(),
                 Property = entity.FindAbility<IActorPropertyAbility>(),
-                Update = entity.FindAbility<IActorUpdateAbility>(),
+                ActorUpdate = entity.FindAbility<IActorUpdateAbility>(),
             };
                         
 			_EntityInfomations.Add(ei);
@@ -188,8 +188,8 @@ namespace Regulus.Project.SamebestKeys
                 if (info.Effect != null && info.Property!= null)
                     _UpdateEffect(info);
 
-                if (info.Update != null)
-                    info.Update.Update();
+                if (info.ActorUpdate != null)
+                    info.ActorUpdate.Update();
             }
 
             if (_LeftDoneEvent != null)
