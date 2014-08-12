@@ -229,11 +229,7 @@ namespace Regulus.Projects.SamebestKeys.Remoting
         {
             get { return _Agent.QueryProvider<Project.SamebestKeys.IIdle>(); }
         }
-
-        Regulus.Remoting.Ghost.IProviderNotice<Project.SamebestKeys.ISessionScore> Project.SamebestKeys.IUser.SessionScoreProvider
-        {
-            get { return _Agent.QueryProvider<Project.SamebestKeys.ISessionScore>(); }
-        }
+        
 
         Regulus.Remoting.Ghost.IProviderNotice<Project.SamebestKeys.ISessionStudent> Project.SamebestKeys.IUser.SessionStudentProvider
         {

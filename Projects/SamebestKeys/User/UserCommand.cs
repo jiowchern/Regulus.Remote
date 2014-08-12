@@ -30,6 +30,19 @@ namespace Regulus.Projects.SamebestKeys
                 _View.WriteLine("Write:" + Regulus.Remoting.NetworkStreamWriteStage.TotalBytesPerSecond.ToString()); 
             });
 
+            user.SessionTeacherProvider.Supply += SessionTeacherProvider_Supply;
+            user.SessionTeacherProvider.Unsupply += _Unsupply;
+
+
+            user.SessionStudentProvider.Supply += SessionStudentProvider_Supply;
+            user.SessionStudentProvider.Unsupply += _Unsupply;
+
+
+            user.SessionResponseProvider.Supply += SessionResponseProvider_Supply;
+            user.SessionResponseProvider.Unsupply += _Unsupply;
+
+            user.SessionRequesterProvider.Supply += SessionRequesterProvider_Supply;
+            user.SessionRequesterProvider.Unsupply += _Unsupply;
 
             user.TraversableProvider.Supply += TraversableProvider_Supply;
             user.TraversableProvider.Unsupply += _Unsupply;
@@ -66,10 +79,20 @@ namespace Regulus.Projects.SamebestKeys
             
         }
         
-        
-
         internal void Unregister(Regulus.Project.SamebestKeys.IUser user)
         {
+
+            user.SessionTeacherProvider.Supply -= SessionTeacherProvider_Supply;
+            user.SessionTeacherProvider.Unsupply -= _Unsupply;
+
+            user.SessionStudentProvider.Supply -= SessionStudentProvider_Supply;
+            user.SessionStudentProvider.Unsupply -= _Unsupply;
+
+            user.SessionResponseProvider.Supply -= SessionResponseProvider_Supply;
+            user.SessionResponseProvider.Unsupply -= _Unsupply;
+
+            user.SessionRequesterProvider.Supply -= SessionRequesterProvider_Supply;
+            user.SessionRequesterProvider.Unsupply -= _Unsupply;
 
             user.IdleProvider.Supply -= IdleProvider_Supply;
             user.IdleProvider.Unsupply -= _Unsupply;
@@ -126,7 +149,59 @@ namespace Regulus.Projects.SamebestKeys
             }
             _RemoveEvents.Clear();
         }
+        void SessionTeacherProvider_Supply(Project.SamebestKeys.ISessionTeacher obj)
+        {
+            _Command.Register("SessionDone" , obj.Done);
+            _Command.Register<int>("SessionNext", obj.Next);
+            _Command.Register<int, int>("SessionScore", (type, score) => 
+            {
+                obj.SetScore((Project.SamebestKeys.SessionScoreType)type, score);
+            });
 
+            _Command.Register<string>("SessionTexture", obj.SetTexture);
+
+            _RemoveCommands.Add(obj, new string[] 
+            {
+                "SessionDone"  , "SessionNext","SessionScore"  , "SessionTexture"
+            });
+            
+
+        }
+
+        void SessionStudentProvider_Supply(Project.SamebestKeys.ISessionStudent obj)
+        {
+            obj.DoneEvent += _ShowSessionScore;
+            obj.NextEvent += _SessionNext;
+            obj.TextureEvent += _SessionTexture;            
+        }
+
+        void _SessionTexture(string obj)
+        {
+            _View.WriteLine("Session texture:" + obj.ToString());
+        }
+
+        void _SessionNext(int step)
+        {
+            _View.WriteLine("Session Step:" + step.ToString());
+        }
+
+        private void _ShowSessionScore(Project.SamebestKeys.SessionScore[] scores)
+        {
+            foreach(var score in scores)
+            {
+                _View.WriteLine("Score Type:" + score.Type +" value:" + score.Score );
+            }
+        }
+        void SessionResponseProvider_Supply(Project.SamebestKeys.ISessionResponse obj)
+        {
+            _Command.Register("SessionResponseYes", obj.Yes);
+            _Command.Register("SessionResponseNo", obj.No);
+
+            _RemoveCommands.Add(obj, new string[] 
+            {
+                "SessionResponseYes"  , "SessionResponseNo"
+            });
+        }
         void IdleProvider_Supply(Project.SamebestKeys.IIdle obj)
         {
             _Command.Register<string>("GotoRealm", obj.GotoRealm);
@@ -135,6 +210,15 @@ namespace Regulus.Projects.SamebestKeys
             _RemoveCommands.Add(obj, new string[] 
             {
                 "GotoRealm" 
+            });
+        }
+
+        void SessionRequesterProvider_Supply(Project.SamebestKeys.ISessionRequester obj)
+        {
+            _Command.RemotingRegister<string,int,bool>("SessionRequester" , obj.Requester , (result) => { _View.WriteLine("SessionRequester..." + result.ToString());});            
+            _RemoveCommands.Add(obj, new string[] 
+            {
+                "SessionRequester" 
             });
         }
 

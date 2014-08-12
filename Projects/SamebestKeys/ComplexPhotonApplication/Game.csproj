@@ -105,9 +105,14 @@
     <Compile Include="RealmStage.cs" />
     <Compile Include="RealmMember.cs" />
     <Compile Include="Record.cs" />
+    <Compile Include="Session\Score.cs" />
     <Compile Include="Session\MeetingRoom.cs" />
+    <Compile Include="Session\ResuestLession.cs" />
+    <Compile Include="Session\Session.cs" />
     <Compile Include="Session\Staff.cs" />
     <Compile Include="ShuttleEntity.cs" />
+    <Compile Include="StuffStudent.cs" />
+    <Compile Include="StuffTeacher.cs" />
     <Compile Include="Time.cs" />
     <Compile Include="TriangleEntity.cs" />
     <Compile Include="User.cs" />

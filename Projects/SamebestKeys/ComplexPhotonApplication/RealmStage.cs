@@ -11,6 +11,7 @@ namespace Regulus.Project.SamebestKeys.Dungeons
         Regulus.Utility.Updater _Updater;
         private IScene _Scene;        
         Player[] _Players;
+        Player _Player {get {return _Players[0];}}
         Regulus.Remoting.ISoulBinder _Binder;
 
         List<IObservedAbility> _Observeds;
@@ -35,19 +36,18 @@ namespace Regulus.Project.SamebestKeys.Dungeons
             _Observeds = new List<IObservedAbility>();
             _Belongings = belongings;
             _Updater = new Utility.Updater();
-
          
         }
 
         void Game.IStage.Enter() 
         {
             _Binder.Bind<IBelongings>(_Belongings);
-            _Member = new Member(_Players[0]);
+            _Member = new Member(_Player);
             _Member.BeginTraversable+= _OnBeginTraver;
             _Member.EndTraversable+= _OnEndTraver;
             _Scene.ShutdownEvent += ExitWorldEvent;
-            
-            _RegisterQuit(_Players[0]);
+
+            _RegisterQuit(_Player);
 
             if (_Scene.Join(_Member) == false)
             {
@@ -56,23 +56,56 @@ namespace Regulus.Project.SamebestKeys.Dungeons
 
 
             _Updater.Add(_Belongings);
+
+            _InitialSession();
+        }
+
+        private void _InitialSession()
+        {
+            var student = _Player.FindAbility<Session.StuffStudent>();
+            if (student != null)
+            {
+                student.SetBinder(_Binder);
+            }
+
+            var teacher = _Player.FindAbility<Session.StuffTeacher>();
+            if (teacher != null)
+            {
+                teacher.SetBinder(_Binder);
+            }
+        }
+
+        void _ResleaseSession()
+        {
+            var student = _Player.FindAbility<Session.StuffStudent>();
+            if (student != null)
+            {
+                student.ClearBinder();
+            }
+
+            var teacher = _Player.FindAbility<Session.StuffTeacher>();
+            if (teacher != null)
+            {
+                teacher.ClearBinder();
+            }
         }
 
         private void _OnEndTraver(ITraversable traversable)
         {
             _Traversable = null;
-            _Binder.Unbind<ITraversable>(traversable);            
-            _Bind(_Players[0], _Binder);
+            _Binder.Unbind<ITraversable>(traversable);
+            _Bind(_Player, _Binder);
         }
 
         void _OnBeginTraver(ITraversable traversable)
         {
             _Traversable = traversable;
-            _Unbind(_Players[0], _Binder);            
+            _Unbind(_Player, _Binder);            
             _Binder.Bind<ITraversable>(traversable);
         }
         void Game.IStage.Leave()
         {
+            _ResleaseSession();
             
             if (_Traversable != null)
             {
@@ -83,8 +116,8 @@ namespace Regulus.Project.SamebestKeys.Dungeons
             _Member.BeginTraversable -= _OnBeginTraver;
             _Member.EndTraversable -= _OnEndTraver;
             
-            _UnregisterQuit(_Players[0]);
-            _Unbind(_Players[0], _Binder);            
+            _UnregisterQuit(_Player);
+            _Unbind(_Player, _Binder);            
             _Scene.ShutdownEvent -= ExitWorldEvent;
             _Scene.Exit(_Member);
             _Binder.Unbind<IBelongings>(_Belongings);
@@ -163,7 +196,7 @@ namespace Regulus.Project.SamebestKeys.Dungeons
 
         Remoting.Value<string[]> IRealmJumper.Query()
         {
-            return _QueryScenes(_Players[0]);
+            return _QueryScenes(_Player);
         }
 
         private Remoting.Value<string[]> _QueryScenes(Player player)

@@ -62,7 +62,10 @@ namespace Regulus.Project.SamebestKeys
         Regulus.Utility.Poller<EntityInfomation> _EntityInfomations = new Utility.Poller<EntityInfomation>();
         Regulus.Utility.Poller<EntityInfomation> _Observes = new Utility.Poller<EntityInfomation>();
         Regulus.Physics.QuadTree<EntityInfomation> _ObseverdInfomations;
-        
+
+        Regulus.Utility.Updater _Updater;
+
+        Session.Session _Session;
 		long _DeltaTime 
         {  
             get 
@@ -73,9 +76,12 @@ namespace Regulus.Project.SamebestKeys
 				
 		public Map(string name,Regulus.Remoting.ITime time)
 		{
+            _Updater = new Utility.Updater();
             _Id = Guid.NewGuid();
 			_Name = name;
             _SetTime(time);
+
+            _Session = new Session.Session();
 		}
         void _Into(Entity entity)
         {
@@ -106,7 +112,31 @@ namespace Regulus.Project.SamebestKeys
             {                
                 _ObseverdInfomations.Insert(ei);
             }
-			
+
+            _RegisterSession( entity , _Session);
+            
+        }
+
+        private void _RegisterSession(Entity entity, Session.Session session)
+        {
+            var student = entity.FindAbility<Session.StuffStudent>();
+            if (student != null)
+                session.Join(student);
+
+            var teacher = entity.FindAbility<Session.StuffTeacher>();
+            if(teacher != null)
+                session.Join(teacher);
+        }
+
+        private void _UnregisterSession(Entity entity, Session.Session session)
+        {
+            var student = entity.FindAbility<Session.StuffStudent>();
+            if (student != null)
+                session.Leave(student);
+
+            var teacher = entity.FindAbility<Session.StuffTeacher>();
+            if (teacher != null)
+                session.Leave(teacher);
         }
 
         List<IObservedAbility> _Lefts = new List<IObservedAbility>();
@@ -121,12 +151,16 @@ namespace Regulus.Project.SamebestKeys
                     _RemoveObserve(info);
                     _Lefts.Add(info.Observed);                    
                     info.Release();
+
+                    _UnregisterSession(entity, _Session);
                     return true;
                 }
                 return false;
             });
             
         }
+
+        
 
         private void _RemoveObserve(EntityInfomation info)
         {
@@ -135,6 +169,7 @@ namespace Regulus.Project.SamebestKeys
 
         void Regulus.Framework.ILaunched.Launch()
         {
+            _Updater.Add(_Session);
             _ObseverdInfomations = new Physics.QuadTree<EntityInfomation>(new Regulus.Types.Size(4, 4), 0);
 			_Build(_ReadMapData(_Name));
         }
@@ -161,6 +196,7 @@ namespace Regulus.Project.SamebestKeys
 
 		bool Regulus.Utility.IUpdatable.Update()
         {
+            _Updater.Update();
             _Time.Update();            
             _EntityInfomations.UpdateSet();
             var infos = _Observes.UpdateSet();
@@ -258,7 +294,8 @@ namespace Regulus.Project.SamebestKeys
         }
 
 		void Regulus.Framework.ILaunched.Shutdown()
-        {            
+        {
+            _Updater.Shutdown();
             _ObseverdInfomations = null;
         }
         

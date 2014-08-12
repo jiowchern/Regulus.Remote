@@ -41,6 +41,9 @@ namespace Regulus.Project.SamebestKeys
         PlayerObserveAbility _ObserveAbility;
         PlayerObservedAbility _ObservedAbility;
         ICrossAbility _CrossAbility;
+        private Session.StuffTeacher _TeacherAbility;
+        private Session.StuffStudent _StudentAbility;
+        
 
 		/// <summary>
 		/// 設定功能
@@ -57,7 +60,14 @@ namespace Regulus.Project.SamebestKeys
             _CrossAbility = new CrossAbility();
             abilitys.AttechAbility<ICrossAbility>(_CrossAbility);
 
-            //_CrossAbility.MoveEvent += _CrossAbility_MoveEvent;
+            if(_DBActorInfomation.Property.Identity == Serializable.EntityPropertyInfomation.IDENTITY.CONVERSATION)
+            {
+                _TeacherAbility = new Session.StuffTeacher(this);
+                abilitys.AttechAbility<Session.StuffTeacher>(_TeacherAbility);
+            }
+
+            _StudentAbility = new Session.StuffStudent(this);
+            abilitys.AttechAbility<Session.StuffStudent>(_StudentAbility);
             
             base._SetAbility(abilitys);
         }
@@ -76,6 +86,8 @@ namespace Regulus.Project.SamebestKeys
 		/// <param name="abilitys">現有功能Dict</param>
         protected override void _RiseAbility(Entity.AbilitySet abilitys)
         {
+            abilitys.DetechAbility<Session.StuffTeacher>();
+            abilitys.DetechAbility<Session.StuffStudent>();
             abilitys.DetechAbility<IObserveAbility>();
             abilitys.DetechAbility<IObservedAbility>();
             abilitys.DetechAbility<ICrossAbility>();
@@ -149,7 +161,7 @@ namespace Regulus.Project.SamebestKeys
             _ObservedAbility.Speak(voice_stream);
         }
 
-
+        public string Name { get { return _DBActorInfomation.Look.Name; } }
         string IPlayer.Name
         {
             get { return _DBActorInfomation.Look.Name; }

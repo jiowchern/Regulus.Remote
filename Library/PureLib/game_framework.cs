@@ -282,7 +282,7 @@ namespace Regulus.Game
             }
             void IStage.Enter()
             {
-                _Command.Register<string, TUser>("SpawnController", _SpawnController, (user) => { });                
+                _Command.Register<string, TUser>("SpawnController", _SpawnController, (user) => { });
                 _Command.Register<string>("SelectController", _SelectController);
                 _Command.Register<string>("UnspawnController", _UnspawnController);                
                 

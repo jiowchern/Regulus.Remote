@@ -79,6 +79,8 @@ namespace Regulus.Project.SamebestKeys
 
         float Energy { get; }
         float MaxEnergy { get; }
+
+        
     }
     
 	/// <summary>
@@ -127,7 +129,7 @@ namespace Regulus.Project.SamebestKeys
     public interface ISessionStuff
     {
         Guid Id { get; }
-        event Action<float> SpeakEvent;
+        event Action<float[]> SpeakEvent;
         void Speak(float[] speak);
     }
 
@@ -144,6 +146,8 @@ namespace Regulus.Project.SamebestKeys
     
     public interface ISessionTeacher
     {
+
+        string Lession { get; }
         event Action<long> CurrentTimeEvent;
         
         void Next(int step);
@@ -154,17 +158,15 @@ namespace Regulus.Project.SamebestKeys
 
     public interface ISessionStudent
     {
+        string Lession { get; }
         event Action<long> CurrentTimeEvent;
         event Action<int> NextEvent;
         event Action<string> TextureEvent;
-        
+
+        event Action<SessionScore[]> DoneEvent;        
     }
 
-    public interface ISessionScore
-    {
-        SessionScore[] Scores {get;}
-        void Done();
-    }
+    
 
 }
 

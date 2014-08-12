@@ -62,7 +62,7 @@ namespace Regulus.Utility
             _Records = _Records.Union(new string[] {commands}).ToList() ;
             if(_Records.Count > _Capacity)
             {
-                _Records.RemoveAt(_Records.Count);
+                _Records.RemoveAt(_Records.Count - 1);
             }
         }
     }
