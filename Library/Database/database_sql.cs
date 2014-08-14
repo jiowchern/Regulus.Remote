@@ -51,22 +51,33 @@ namespace Regulus
                 _Connect = null;
             }
             public void ExecuteNonQuery(string command_str)
-            {
-                if (_Connect.State == System.Data.ConnectionState.Closed)
+            {                
+
+                try
+                {
+                    var cmd = new MySqlCommand(command_str, _Connect);
+                    cmd.ExecuteNonQuery();
+                }
+                catch
                 {
                     _Connect = _CreateConnector(_Connect.ConnectionString);
+                    ExecuteNonQuery(command_str);
                 }
-                var cmd = new MySqlCommand(command_str, _Connect);
-                cmd.ExecuteNonQuery();
+                
             }
             public MySqlDataReader Execute(string command_str)
 			{
-                if(_Connect.State == System.Data.ConnectionState.Closed)
+                try
+                {
+                    var cmd = new MySqlCommand(command_str, _Connect);
+                    return cmd.ExecuteReader();
+                }
+                catch
                 {
                     _Connect = _CreateConnector(_Connect.ConnectionString);
+                    return Execute(command_str);
                 }
-                var cmd = new MySqlCommand(command_str, _Connect);                
-                return cmd.ExecuteReader();
+                
 			}
 
             void IDisposable.Dispose()

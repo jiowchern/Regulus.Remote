@@ -110,9 +110,9 @@
     <Compile Include="Session\ResuestLession.cs" />
     <Compile Include="Session\Session.cs" />
     <Compile Include="Session\Staff.cs" />
+    <Compile Include="Session\StuffStudent.cs" />
+    <Compile Include="Session\StuffTeacher.cs" />
     <Compile Include="ShuttleEntity.cs" />
-    <Compile Include="StuffStudent.cs" />
-    <Compile Include="StuffTeacher.cs" />
     <Compile Include="Time.cs" />
     <Compile Include="TriangleEntity.cs" />
     <Compile Include="User.cs" />
