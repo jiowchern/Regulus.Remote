@@ -44,7 +44,8 @@ namespace Console
         {
             _RealmJumper = obj;
 
-            _RealmJumper.Query().OnValue += (scenes) => { _Scenes = scenes; };
+            //_RealmJumper.Query().OnValue += (scenes) => { _Scenes = scenes; };
+            _Scenes = new string[]  { "SC_1A" , "SL_1K" };
         }
 
         void LevelSelectorProvider_Supply(Regulus.Project.SamebestKeys.ILevelSelector obj)
@@ -75,25 +76,12 @@ namespace Console
         private void _Action()
         {
             var idx = Regulus.Utility.Random.Instance.R.NextDouble();
-            if (idx > 0.5 )
+            if (idx > 0.1 )
             {
                 _ToRun();
-            }
-            else if (idx > 0.4 && idx < 0.5)
-            {
-                _ToTalk();
-            }
-            else if (idx > 0.2 && idx < 0.4 )
-            {
-                _ToEmo();
-            }
-            else if (idx > 0.01 && idx < 0.02)
-            {
-                //_ToRun();
-                _ToChangeMap();
-            }
+            }            
             else
-                _Action();
+                _ToChangeMap();
 
         }
 

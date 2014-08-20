@@ -14,7 +14,7 @@ namespace Console
         //const string IpAddress = "23.97.70.8";
 
         //public static string IpAddress = "60.250.141.88";
-        public static string IpAddress = "127.0.0.1";
+        public static string IpAddress = "192.168.120.38";
         public static int Port = 12345;
 
         private Regulus.Project.SamebestKeys.IUser _User;        

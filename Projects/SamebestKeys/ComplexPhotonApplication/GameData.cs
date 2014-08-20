@@ -83,39 +83,39 @@ namespace Regulus.Project.SamebestKeys
                 Stages = new [] { new Data.Stage { MapName = "SC_1A" }  }
             },
 
-            new Data.Scene()
+            /*new Data.Scene()
             {
                 Front = "",
                 Name = "SL_1A",
                 Singleton = false,
                 Stages = new [] { new Data.Stage { MapName = "SL_1A" }  }
-            },
-            new Data.Scene()
+            },*/
+            /*new Data.Scene()
             {
                 Front = "",
                 Name = "SL_1B",
                 Singleton = false,
                 Stages = new [] { new Data.Stage { MapName = "SL_1B" }  }
-            },
+            },*/
             new Data.Scene()
             {
                 Front = "",
                 Name = "SL_1B_2",
-                Singleton = false,
+                Singleton = true,
                 Stages = new [] { new Data.Stage { MapName = "SL_1B_2" }  }
             },
             new Data.Scene()
             {
                 Front = "",
                 Name = "SL_1C",
-                Singleton = false,
+                Singleton = true,
                 Stages = new [] { new Data.Stage { MapName = "SL_1C" }  }
             },
             new Data.Scene()
             {
                 Front = "",
                 Name = "SL_1K",
-                Singleton = false,
+                Singleton = true,
                 Stages = new [] { new Data.Stage { MapName = "SL_1K" }  }
             },
             

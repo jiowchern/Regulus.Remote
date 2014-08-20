@@ -134,6 +134,7 @@ namespace Regulus.Project.SamebestKeys
 	[ProtoBuf.ProtoContract]
 	public enum ActionStatue
 	{
+        Brakes,
 		Idle_1,        
 		Idle_Long,
 		Depression_1,
@@ -148,6 +149,8 @@ namespace Regulus.Project.SamebestKeys
 		Skill2,
 		Skill3,
 		SkillEnd ,
+
+
 	}
 
 	[ProtoBuf.ProtoContract]
@@ -233,8 +236,8 @@ namespace Regulus.Project.SamebestKeys.Serializable
         
 		public EntityPropertyInfomation()
 		{            
-			MaxEnergy = 5;
-			Energy = 5;
+			MaxEnergy = 50;
+			Energy = 50;
 			Skills = new System.Collections.Generic.List<Skill>();
 			Position = new Types.Vector2();
             Identity = IDENTITY.GUEST;

@@ -44,7 +44,7 @@ namespace Console
             {            
                 bots.Create(count);
             });
-            /*application.SelectSystemEvent += (selector) =>
+            application.SelectSystemEvent += (selector) =>
             {
                 var value = selector.Use("remoting");
                 value.OnValue += _SpawnController;
@@ -52,7 +52,7 @@ namespace Console
                 {
                     bots.Requester = requester;
                 };
-            };*/
+            };
 
             Regulus.Utility.TimeCounter fps = new Regulus.Utility.TimeCounter(); ;
             while (exit == false)

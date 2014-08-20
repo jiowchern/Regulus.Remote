@@ -67,7 +67,7 @@ namespace Regulus.Project.SamebestKeys.Dungeons
 
         private MemberHandler _QueryHandler(Member member)
         {
-            var handler = (from h in _Handlers.Objects where h.Id == member.Id select h).SingleOrDefault();
+            var handler = (from h in _Handlers.Objects where h.Id == member.Id select h).FirstOrDefault();
             if (handler != null)
                 return handler;
 

@@ -74,7 +74,7 @@ namespace Regulus.Project.SamebestKeys
             }
             if (Actor.Property.Vision == 0.0)
             {
-                Actor.Property.Vision = 300;
+                Actor.Property.Vision = 100;
             }
             if (Actor.Property.Speed == 0.0)
             {
