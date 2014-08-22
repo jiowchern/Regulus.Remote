@@ -12,11 +12,12 @@ namespace Regulus
         public class Database : IDisposable
         {
             MySqlConnection _Connect;
-
+            string _ConnectParams;
             public void Connect(string host, string user, string password, string database_name)
             {                
                 
                 var connect = "Server = " + host + "; UserId = " + user + "; Password = " + password + "; Database = " + database_name + "";
+                _ConnectParams = connect;
                 _Connect = _CreateConnector(connect);
 
             }
@@ -60,7 +61,7 @@ namespace Regulus
                 }
                 catch
                 {
-                    _Connect = _CreateConnector(_Connect.ConnectionString);
+                    _Connect = _CreateConnector(_ConnectParams);
                     ExecuteNonQuery(command_str);
                 }
                 
@@ -74,7 +75,7 @@ namespace Regulus
                 }
                 catch
                 {
-                    _Connect = _CreateConnector(_Connect.ConnectionString);
+                    _Connect = _CreateConnector(_ConnectParams);
                     return Execute(command_str);
                 }
                 
