@@ -15,6 +15,7 @@ namespace Console
 
         //public static string IpAddress = "60.250.141.88";
         public static string IpAddress = "192.168.120.38";
+        //public static string IpAddress = "127.0.0.1";
         public static int Port = 12345;
 
         private Regulus.Project.SamebestKeys.IUser _User;        
@@ -118,13 +119,24 @@ namespace Console
             {
                 if (result != string.Empty)
                 {
-                    _ToMap();
+                    _ToRoom();
                 }
                 else
                 {
                     _ToCreateActor(account);
                 }
             };
+            _Machine.Push(stage);            
+        }
+
+        private void _ToRoom()
+        {
+            var stage = new BotRoomStage(_User);
+            stage.DoneEvent += () =>
+            {
+                _ToMap();
+            };            
+
             _Machine.Push(stage);            
         }
 
@@ -146,27 +158,34 @@ namespace Console
 
             _Machine.Push(stage);            
         }
-
         private void _ToMap()
         {
             var stage = new BotMapStage(_User);
-            stage.ResultEvent += (result) =>
+            stage.ResultResetEvent += (point) =>
             {
-                if(result == BotMapStage.Result.Connect)
-                    _ToConnect(IpAddress, Port);
-                if (result == BotMapStage.Result.Reset)
-                    _ToMap();
+                _ToMap(point);
+            };
+            stage.ResultConnectEvent += () =>
+            {
+                _ToConnect(IpAddress, Port);
             };
 
+            _Machine.Push(stage);
+        }
+        private void _ToMap(Regulus.Types.Point born_point)
+        {
+            var stage = new BotMapStage(_User, born_point);
+            stage.ResultResetEvent += (point) => 
+            {
+                _ToMap(point);
+            };
+            stage.ResultConnectEvent += () =>
+            {
+                _ToConnect(IpAddress, Port);
+            };
+            
             _Machine.Push(stage);            
         }
-
-
-
-
-
-
-
         
     }
 }

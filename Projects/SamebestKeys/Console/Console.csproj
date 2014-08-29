@@ -51,6 +51,7 @@
     <Compile Include="BotCreateActorStage.cs" />
     <Compile Include="BotEmoStage.cs" />
     <Compile Include="BotMapStage.cs" />
+    <Compile Include="BotRoomStage.cs" />
     <Compile Include="BotRunStage.cs" />
     <Compile Include="BotSelectActorStage.cs" />
     <Compile Include="BotSet.cs" />

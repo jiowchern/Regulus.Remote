@@ -9,24 +9,71 @@ namespace Console
 
     class BotMapStage : Regulus.Game.IStage
     {
-        private Regulus.Project.SamebestKeys.IUser _User;
-        Regulus.Project.SamebestKeys.IOnline _Online;        
-        Regulus.Project.SamebestKeys.IPlayer _Player;
-        Regulus.Project.SamebestKeys.IObservedAbility _Observed;
-        Regulus.Project.SamebestKeys.IRealmJumper _RealmJumper;
-        
-        string[] _Scenes;
-        Regulus.Game.StageMachine _Machine;
-        public enum Result
+
+        struct SceneBorn
         {
-            Connect,Reset
-        };
-        public event Action<Result> ResultEvent;
+            public string Name;
+            public Regulus.Types.Point[] Points;
+        }
+
+        private Regulus.Project.SamebestKeys.IUser _User;
+        Regulus.Project.SamebestKeys.IOnline _Online;                
+        Regulus.Project.SamebestKeys.IRealmJumper _RealmJumper;
+
+
+        SceneBorn[] _SceneBorns;
+        
+        Regulus.Game.StageMachine _Machine;
+
+        public event Action<Regulus.Types.Point> ResultResetEvent;
+        public event Action ResultConnectEvent;
+        private Regulus.Types.Point? _BornPoint;        
         public BotMapStage(Regulus.Project.SamebestKeys.IUser _User)
         {            
             this._User = _User;
-            _Scenes = new string[0];
+            _SceneBorns = new SceneBorn[] 
+            { 
+                new SceneBorn() { Name = "SC_1A" , Points = new Regulus.Types.Point[] 
+                    {
+                        new Regulus.Types.Point(41,420 ),
+                        new Regulus.Types.Point(41,320 ),
+                        new Regulus.Types.Point(37,80 ),
+                        new Regulus.Types.Point(26,63 ),
+                        new Regulus.Types.Point(105,290 )
+                    }},
+                /*new SceneBorn() { Name = "SL_1B_2" , Points = new Regulus.Types.Point[] 
+                    {
+                        new Regulus.Types.Point(264,438),
+                        new Regulus.Types.Point(265,250),
+                        new Regulus.Types.Point(82,545),
+                        new Regulus.Types.Point(80,477),
+                        new Regulus.Types.Point(185,247)
+                    }},
+                new SceneBorn() { Name = "SL_1C" , Points = new Regulus.Types.Point[] 
+                    {
+                        new Regulus.Types.Point(72,267),
+                        new Regulus.Types.Point(128,198),
+                        new Regulus.Types.Point(176,330),
+                        new Regulus.Types.Point(184,115),
+                        new Regulus.Types.Point(265,101)
+                    }},
+                new SceneBorn() { Name = "SL_1K" , Points = new Regulus.Types.Point[] 
+                    {
+                        new Regulus.Types.Point(99,172),
+                        new Regulus.Types.Point(213,200),
+                        new Regulus.Types.Point(336,182),
+                        new Regulus.Types.Point(434,170),
+                        new Regulus.Types.Point(534,183)
+                    }},*/
+            };
             _Machine = new Regulus.Game.StageMachine();
+            
+        }
+
+        public BotMapStage(Regulus.Project.SamebestKeys.IUser _User, Regulus.Types.Point born_point)
+            : this(_User)
+        {            
+            this._BornPoint = born_point;            
         }
         public void Enter()
         {
@@ -35,42 +82,28 @@ namespace Console
             _User.PlayerProvider.Supply += PlayerProvider_Supply;
             _User.RealmJumperProvider.Supply += RealmJumperProvider_Supply;
             
-
-
-            
         }
 
         void RealmJumperProvider_Supply(Regulus.Project.SamebestKeys.IRealmJumper obj)
         {
-            _RealmJumper = obj;
-
-            //_RealmJumper.Query().OnValue += (scenes) => { _Scenes = scenes; };
-            _Scenes = new string[]  { "SC_1A" , "SL_1K" };
+            _RealmJumper = obj;            
         }
-
-        void LevelSelectorProvider_Supply(Regulus.Project.SamebestKeys.ILevelSelector obj)
-        {
-            
-        }
+        
 
         void TraversableProvider_Supply(Regulus.Project.SamebestKeys.ITraversable obj)
         {
-            obj.Ready();            
+            obj.Ready();
+            _Action();
         }        
 
         void ObservedAbilityProvider_Supply(Regulus.Project.SamebestKeys.IObservedAbility obj)
         {
-            if (obj.Id == _Player.Id)
-            {
-                _Observed = obj;
-                _Action();
-            }
+            
         }
 
         void PlayerProvider_Supply(Regulus.Project.SamebestKeys.IPlayer obj)
         {
-            _Player = obj;
-            _User.ObservedAbilityProvider.Supply += ObservedAbilityProvider_Supply;
+            
         }
 
         private void _Action()
@@ -81,35 +114,33 @@ namespace Console
                 _ToRun();
             }            
             else
-                _ToChangeMap();
-
-        }
-
-        private void _ToTalk()
-        {
-            var stage = new BotTalkStage(_Player);
-            stage.DoneEvent += _Action;
-            _Machine.Push(stage);
-        }
-
-        private void _ToEmo()
-        {
-            var stage = new BotEmoStage(_Player);
-            stage.DoneEvent += _Action;
-            _Machine.Push(stage);
-        }
-
-        private void _ToChangeMap()
-        {
-            if (_Player != null && _Scenes.Length > 0)
             {
-                _Player.Stop(0);
-
-                var idx = Regulus.Utility.Random.Next(0, _Scenes.Length);
-                _RealmJumper.Jump(_Scenes[idx]);
-
-                ResultEvent(Result.Reset);
+                if(_ToChangeMap() == false)
+                {
+                    _ToRun();
+                }
             }
+                
+
+        }
+
+        
+        private bool _ToChangeMap()
+        {
+            if (_RealmJumper != null && _SceneBorns.Length > 0)
+            {
+                var idx = Regulus.Utility.Random.Next(0, _SceneBorns.Length);
+
+                var points = _SceneBorns[idx].Points;
+                var sceneName = _SceneBorns[idx].Name;
+                var point = points[Regulus.Utility.Random.Next(0, points.Length)];
+
+                _RealmJumper.Jump(sceneName);
+
+                ResultResetEvent(point);
+                return true;
+            }
+            return false;
         }
 
         private void _ToOffline()
@@ -117,13 +148,13 @@ namespace Console
             if (_Online != null)
             {                
                 _Online.Disconnect();
-                ResultEvent(Result.Connect);
+                ResultConnectEvent();
             }
         }
 
         private void _ToRun()
         {
-            var stage = new BotRunStage(_Player , _Observed);
+            var stage = new BotRunStage(_User , _BornPoint );
             stage.DoneEvent += _Action;
             _Machine.Push(stage);
         }
@@ -135,8 +166,7 @@ namespace Console
 
         public void Leave()
         {
-            _User.RealmJumperProvider.Supply += RealmJumperProvider_Supply;
-            _User.ObservedAbilityProvider.Supply -= ObservedAbilityProvider_Supply;
+            _User.RealmJumperProvider.Supply += RealmJumperProvider_Supply;            
             _User.PlayerProvider.Supply -= PlayerProvider_Supply;
             _User.OnlineProvider.Supply -= OnlineProvider_Supply;
             _User.TraversableProvider.Supply -= TraversableProvider_Supply;
@@ -146,36 +176,6 @@ namespace Console
 
         public void Update()
         {
-
-            /*if (_TimeCounter.Second > _Timeup)
-            {
-                if (_Player != null)                
-                {
-                    _Player.Stop(0);
-                    var map = Regulus.Utility.Random.Next(0, 3);
-                    if (map == 0)
-                    {
-                        _Player.Goto("Ark", Regulus.Utility.Random.Next(47, 47 + 10), Regulus.Utility.Random.Next(167, 167+10));
-                    }
-                    if (map == 1)
-                        _Player.Goto("Test", Regulus.Utility.Random.Next(50, 50 + 10), Regulus.Utility.Random.Next(50, 50 + 10));
-                    if (map == 2)
-                        _Player.Goto("SL_1C", Regulus.Utility.Random.Next(169, 169 + 10), Regulus.Utility.Random.Next(148, 148 + 10));
-
-                    
-                }
-                    
-                if (_Online != null)
-                {
-                    
-                    var result = Regulus.Utility.Random.Next(0, 10) >= 9 ? Result.Connect : Result.Reset;
-                    if (result == Result.Connect)
-                    {
-                        _Online.Disconnect();
-                    }
-                    ResultEvent(result);
-                }
-            }*/
 
             _Machine.Update();
             

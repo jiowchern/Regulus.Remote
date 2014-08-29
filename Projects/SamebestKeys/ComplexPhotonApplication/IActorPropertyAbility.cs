@@ -166,7 +166,7 @@ namespace Regulus.Project.SamebestKeys
             else
             {
                 
-                _Property.Energy += LocalTime.Instance.DeltaSecond;
+                _Property.Energy += LocalTime.Instance.DeltaSecond * 10;
                 if (_Property.Energy >= _Property.MaxEnergy)
                     _Property.Energy = _Property.MaxEnergy;
             }
