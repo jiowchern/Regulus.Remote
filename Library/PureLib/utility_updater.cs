@@ -125,7 +125,7 @@ namespace Regulus.Utility
 
     public class Updater : Launcher<Regulus.Utility.IUpdatable>             
     {
-        public void Update()
+        new public void Update()
         {
             foreach (var t in base.Update())
             {
@@ -139,7 +139,7 @@ namespace Regulus.Utility
 
     public class TUpdater<T> : Launcher<T> where T : Regulus.Utility.IUpdatable
     {
-        public void Update()
+        new public void Update()
         {
             foreach (var t in base.Update())
             {

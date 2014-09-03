@@ -72,6 +72,7 @@
     <Compile Include="Size.cs" />
     <Compile Include="types_triangle.cs" />
     <Compile Include="utility_command_extension.cs" />
+    <Compile Include="utility_coroutine.cs" />
     <Compile Include="utility_icommand.cs" />
     <Compile Include="type.cs" />
     <Compile Include="utility_command.cs" />

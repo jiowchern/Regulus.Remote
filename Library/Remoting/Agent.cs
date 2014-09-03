@@ -9,9 +9,16 @@ namespace Regulus.Remoting
 	using System.Reflection;
 	using System.Reflection.Emit;
 
-    public interface IAgent
+    public interface IAgent : Regulus.Utility.IUpdatable
     {
         Regulus.Remoting.Ghost.IProviderNotice<T> QueryProvider<T>();
+
+        Value<bool> Connect(string account, int password);
+
+        long Ping { get; }
+
+        event Action DisconnectEvent;
+        void Disconnect();
     }
 
 	public class AgentCore

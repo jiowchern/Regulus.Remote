@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace Regulus.Remoting.Ghost.Native
 {
     
-    public partial class Agent : Regulus.Utility.IUpdatable,  IAgent
+    public partial class Agent :  IAgent
 	{        
         System.Net.Sockets.Socket _Socket;		
         Regulus.Game.StageMachine _Machine;

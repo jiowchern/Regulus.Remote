@@ -3,9 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Regulus.Projects.SamebestKeys
+namespace Regulus.Game
 {
-    class Connect : Regulus.Remoting.Ghost.IGhost, Regulus.Project.SamebestKeys.IConnect
+    public interface IConnect
+    {
+        Regulus.Remoting.Value<bool> Connect(string ipaddr, int port);
+    }
+
+
+    public class Connect : Regulus.Remoting.Ghost.IGhost, IConnect
     {
         Guid _Id;
         public Guid Id { get { return _Id; } }
@@ -25,7 +31,7 @@ namespace Regulus.Projects.SamebestKeys
             return _Id;
         }
 
-        Regulus.Remoting.Value<bool> Project.SamebestKeys.IConnect.Connect(string ipaddr, int port)
+        Regulus.Remoting.Value<bool> IConnect.Connect(string ipaddr, int port)
         {
             var val = new Regulus.Remoting.Value<bool>();
             ConnectedEvent(ipaddr, port, val);
@@ -38,4 +44,5 @@ namespace Regulus.Projects.SamebestKeys
             throw new NotImplementedException();
         }
     }
+
 }

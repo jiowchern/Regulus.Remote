@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Standalong
 {
-	public class Agent : Regulus.Remoting.IRequestQueue, Regulus.Remoting.IResponseQueue, Regulus.Remoting.ISoulBinder
+	public class Agent : Regulus.Remoting.IRequestQueue, Regulus.Remoting.IResponseQueue, Regulus.Remoting.ISoulBinder , Regulus.Remoting.IAgent
 	{
 		Regulus.Remoting.AgentCore	_Agent;	
 		Regulus.Remoting.Soul.SoulProvider	_SoulProvider;
@@ -82,6 +82,52 @@ namespace Regulus.Standalong
 		}
 
         public void Disconnect()
+        {
+            Shutdown();
+        }
+
+        Remoting.Ghost.IProviderNotice<T> Remoting.IAgent.QueryProvider<T>()
+        {
+            throw new NotImplementedException();
+        }
+
+        Remoting.Value<bool> Remoting.IAgent.Connect(string account, int password)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        long Remoting.IAgent.Ping
+        {
+            get { return _Agent.Ping; }
+        }
+
+        event Action _DisconnectEvent;
+        event Action Remoting.IAgent.DisconnectEvent
+        {
+            add { _DisconnectEvent += value; }
+            remove { _DisconnectEvent -= value; }
+        }
+
+        void Remoting.IAgent.Disconnect()
+        {
+            if (_DisconnectEvent != null)
+                _DisconnectEvent();
+        }
+
+        bool Utility.IUpdatable.Update()
+        {
+            Update();
+
+            return true;
+        }
+
+        void Framework.ILaunched.Launch()
+        {
+            Launch();
+        }
+
+        void Framework.ILaunched.Shutdown()
         {
             Shutdown();
         }

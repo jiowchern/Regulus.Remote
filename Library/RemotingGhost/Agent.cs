@@ -121,6 +121,52 @@ namespace Regulus.Remoting.Ghost
             }
 
 
+
+            IProviderNotice<T> IAgent.QueryProvider<T>()
+            {
+                throw new NotImplementedException();
+            }
+
+            Value<bool> IAgent.Connect(string account, int password)
+            {
+                throw new NotImplementedException();
+            }
+
+
+            long IAgent.Ping
+            {
+                get
+                {
+                    throw new NotImplementedException();
+                }
+                
+            }
+
+            event Action IAgent.DisconnectEvent
+            {
+                add { throw new NotImplementedException(); }
+                remove { throw new NotImplementedException(); }
+            }
+
+            void IAgent.Disconnect()
+            {
+                throw new NotImplementedException();
+            }
+
+            bool Utility.IUpdatable.Update()
+            {
+                throw new NotImplementedException();
+            }
+
+            void Framework.ILaunched.Launch()
+            {
+                throw new NotImplementedException();
+            }
+
+            void Framework.ILaunched.Shutdown()
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 	
