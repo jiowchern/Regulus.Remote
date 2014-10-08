@@ -42,6 +42,7 @@ namespace Regulus.Remoting.Ghost.Native
             var stage = new ConnectStage(_Socket, ipaddress, port);
             stage.ResultEvent += (result)=>
             {
+                _ConnectEvent();
                 val.SetValue(result);
                 _ConnectResult(result);                
             };
@@ -107,6 +108,35 @@ namespace Regulus.Remoting.Ghost.Native
         {
             if (_Socket.Connected)
                 _Socket.Close();                        
+        }
+
+
+        Value<bool> IAgent.Connect(string account, int password)
+        {
+            return Connect(account, password);
+        }
+
+        event Action _ConnectEvent;
+        event Action IAgent.ConnectEvent
+        {
+            add { _ConnectEvent += value; }
+            remove { _ConnectEvent -= value; }
+        }
+
+        long IAgent.Ping
+        {
+            get { return Ping; }
+        }
+
+        event Action IAgent.DisconnectEvent
+        {
+            add { DisconnectEvent += value; }
+            remove { DisconnectEvent -= value; }
+        }
+
+        void IAgent.Disconnect()
+        {
+            Disconnect();
         }
     }
 }

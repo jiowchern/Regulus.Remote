@@ -40,7 +40,14 @@ namespace Regulus.Game
         public Regulus.Utility.Console.IViewer Viewer { get { return _Viewer; } }
         
         protected abstract ControllerProvider[] _ControllerProvider();
+        public Framework(Regulus.Utility.Console.IViewer viewer, Regulus.Utility.Console.IInput input , Regulus.Utility.Console console)
+        {
+            _Viewer = viewer;
+            _Input = input;
+            _Loops = new Regulus.Utility.Updater();
+            _Console = console;
 
+        }
         public Framework(Regulus.Utility.Console.IViewer viewer, Regulus.Utility.Console.IInput input)
         {
             

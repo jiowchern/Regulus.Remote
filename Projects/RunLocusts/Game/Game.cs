@@ -9,7 +9,7 @@ namespace Imdgame.RunLocusts
     public class Game  : Regulus.Game.ICore
     {
         Hall _Hall;
-
+       
 
         void Regulus.Game.ICore.ObtainController(Regulus.Remoting.ISoulBinder binder)
         {
@@ -18,6 +18,7 @@ namespace Imdgame.RunLocusts
 
         bool Regulus.Utility.IUpdatable.Update()
         {
+            
             return true;
         }
 

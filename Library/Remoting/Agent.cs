@@ -15,6 +15,8 @@ namespace Regulus.Remoting
 
         Value<bool> Connect(string account, int password);
 
+        event Action ConnectEvent;
+
         long Ping { get; }
 
         event Action DisconnectEvent;
@@ -300,7 +302,7 @@ namespace Regulus.Remoting
                     if (type != null)
                         return type;
                 }
-
+                
                 throw new System.Exception("找不到gpi " + type_name);
             }
             return type;

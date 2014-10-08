@@ -14,12 +14,13 @@ namespace Regulus.Standalong
         {
             _GhostRequest = new GhostRequest();
             _Agent = new Remoting.AgentCore(_GhostRequest);
+            _SoulProvider = new Remoting.Soul.SoulProvider(this, this);
         }
 		public void Launch()
 		{
 			
 			_GhostRequest.PingEvent	+= _OnRequestPing	;						
-			_SoulProvider = new Remoting.Soul.SoulProvider( this , this);
+			
 			
 		}
 		private void _OnRequestPing()
@@ -88,12 +89,13 @@ namespace Regulus.Standalong
 
         Remoting.Ghost.IProviderNotice<T> Remoting.IAgent.QueryProvider<T>()
         {
-            throw new NotImplementedException();
+            return QueryProvider<T>();
         }
 
         Remoting.Value<bool> Remoting.IAgent.Connect(string account, int password)
         {
-            throw new NotImplementedException();
+            _ConnectEvent();
+            return true;
         }
 
 
@@ -130,6 +132,14 @@ namespace Regulus.Standalong
         void Framework.ILaunched.Shutdown()
         {
             Shutdown();
+        }
+
+
+        event Action _ConnectEvent;
+        event Action Remoting.IAgent.ConnectEvent
+        {
+            add { _ConnectEvent += value; }
+            remove { _ConnectEvent -= value; }
         }
     }
 }

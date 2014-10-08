@@ -167,6 +167,13 @@ namespace Regulus.Remoting.Ghost
             {
                 throw new NotImplementedException();
             }
+
+
+            event Action IAgent.ConnectEvent
+            {
+                add { throw new NotImplementedException(); }
+                remove { throw new NotImplementedException(); }
+            }
         }
     }
 	
