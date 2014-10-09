@@ -27,4 +27,10 @@ namespace Regulus.Utility
             return Instance.R.Next(min, max);
         }
 	}
+
+
+    public interface IRandomProvider
+    {
+        float Next();
+    }
 }
