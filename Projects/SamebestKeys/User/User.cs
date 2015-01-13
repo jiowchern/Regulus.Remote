@@ -21,7 +21,7 @@ namespace Regulus.Project.SamebestKeys
         event Action DisconnectEvent;
     }
     public interface IUser :Regulus.Utility.IUpdatable
-    {
+    {        
         Regulus.Remoting.Ghost.IProviderNotice<IOnline> OnlineProvider { get; }
         Regulus.Remoting.Ghost.IProviderNotice<IConnect> ConnectProvider { get; }
         Regulus.Remoting.Ghost.IProviderNotice<IVerify> VerifyProvider  { get; }
@@ -53,13 +53,6 @@ namespace Regulus.Project.SamebestKeys
         Regulus.Remoting.Ghost.IProviderNotice<ISessionRequester> SessionRequesterProvider { get; }
 
         Regulus.Remoting.Ghost.IProviderNotice<ISessionStuff> SessionStuffProvider { get; }
-
-
-        
-
-        
-
-        
         
     }
 }

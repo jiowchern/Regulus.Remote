@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Regulus;
 
 namespace Regulus.Framework
 {
@@ -16,4 +17,6 @@ namespace Regulus.Framework
         void Launch();
         void Shutdown();
     }
+
+   
 }
