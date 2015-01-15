@@ -7,6 +7,7 @@ namespace Regulus.Framework
 {
     public interface IUserFactoty<TUser>
     {
-        TUser Spawn();
+        TUser SpawnUser();
+        ICommandParsable<TUser> SpawnParser(Regulus.Utility.Command command , Regulus.Utility.Console.IViewer view , TUser user);
     }
 }

@@ -58,6 +58,7 @@
     <Compile Include="extension_datatable.cs" />
     <Compile Include="extension_dict.cs" />
     <Compile Include="framework.cs" />
+    <Compile Include="GameClient.cs" />
     <Compile Include="GameConsole.cs" />
     <Compile Include="GameModeSelector.cs" />
     <Compile Include="game_data_prototypefactory.cs" />
@@ -76,6 +77,8 @@
     <Compile Include="Rect.cs" />
     <Compile Include="Root.cs" />
     <Compile Include="Size.cs" />
+    <Compile Include="StageOnBoard.cs" />
+    <Compile Include="StageSelectMode.cs" />
     <Compile Include="types_triangle.cs" />
     <Compile Include="utility_command_extension.cs" />
     <Compile Include="utility_coroutine.cs" />

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Framework
 {
-    public class GameModeSelector<TUser>
+    public class GameModeSelector<TUser> 
         where TUser : class
     {
         struct Provider
@@ -15,23 +15,22 @@ namespace Regulus.Framework
         }
 
         System.Collections.Generic.List<Provider> _Providers;
-        private Regulus.Utility.Command _Command;
+        
         private Regulus.Utility.Console.IViewer _View;
-        Framework.ICommandParsable<TUser> _Parser;
-        public GameModeSelector(Regulus.Utility.Command command, Regulus.Utility.Console.IViewer view , Framework.ICommandParsable<TUser> parser)
+        
+
+        public delegate void OnGameConsole(UserProvider<TUser> console);
+        public event OnGameConsole GameConsoleEvent;
+        public GameModeSelector(Regulus.Utility.Command command, Regulus.Utility.Console.IViewer view )
         {            
-            this._Command = command;
+            
             this._View = view;
-            _Parser = parser;
+            
             _Providers = new List<Provider>();
-
-            command.Register<string, GameConsole<TUser>>("CreateGameConsole", CreateGameConsole, ( dummy ) => { });
         }
-
-        ~GameModeSelector()
-        {
-            _Command.Unregister("CreateGameConsole");            
-        }
+        
+        
+        
 
         public void AddFactoty(string name, Regulus.Framework.IUserFactoty<TUser> user_factory)
         {
@@ -39,16 +38,28 @@ namespace Regulus.Framework
             _View.WriteLine( string.Format("Added {0} factory." , name));
         }
         
-        public GameConsole<TUser> CreateGameConsole(string name )
+        public UserProvider<TUser> CreateGameConsole(string name, Regulus.Utility.Command command)
         {
             Regulus.Framework.IUserFactoty<TUser> factory = _Find(name);
-            _View.WriteLine(string.Format("Create Game Console Factory:{0}.", name));
-            return new GameConsole<TUser>(_Parser, factory, _View, _Command);
+            if (factory == null)
+            {
+                _View.WriteLine(string.Format("Game mode {0} not found.", name));
+                return null;
+            }
+            
+            _View.WriteLine(string.Format("Create game console factory : {0}.", name));
+
+            var console = new UserProvider<TUser>(factory, _View, command);
+            if (GameConsoleEvent != null)
+                GameConsoleEvent(console);
+            return console;
         }
 
         private IUserFactoty<TUser> _Find(string name)
         {
             return (from provider in _Providers where provider.Name == name select provider.Factory).SingleOrDefault();
         }
+
+        
     }
 }

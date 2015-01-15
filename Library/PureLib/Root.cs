@@ -20,7 +20,7 @@ namespace Regulus.Framework
         }
         public TUser Spawn()
         {
-            var user = _Provider.Spawn();
+            var user = _Provider.SpawnUser();
             _Users.Add(user);
             return user;
         }

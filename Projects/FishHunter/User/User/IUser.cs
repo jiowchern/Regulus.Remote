@@ -7,6 +7,6 @@ namespace VGame.Project.FishHunter
 {
     public interface IUser : Regulus.Utility.IUpdatable
     {
-        Regulus.Remoting.User Remoting { get; }        
+        Regulus.Remoting.User Remoting { get; }
     }
 }

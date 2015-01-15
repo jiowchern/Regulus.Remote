@@ -6,7 +6,7 @@ using System.Text;
 namespace Regulus.Game
 {
     public interface IOnline
-    {
+    {        
         float Ping { get; }
         void Disconnect();
 

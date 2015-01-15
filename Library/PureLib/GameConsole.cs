@@ -6,7 +6,7 @@ using Regulus;
 
 namespace Regulus.Framework
 {
-    public class GameConsole<TUser>
+    public class UserProvider<TUser>
         where TUser : class
     {
         List<Controller<TUser>> _Controllers;
@@ -14,15 +14,7 @@ namespace Regulus.Framework
         private Utility.Console.IViewer _View;
         private Utility.Command _Command;
         Controller<TUser>? _Current;        
-
-        ICommandParsable<TUser> _Parser;
-
-        public GameConsole(ICommandParsable<TUser> parser , IUserFactoty<TUser> factory, Utility.Console.IViewer view, Utility.Command command)
-            : this(factory, view, command)
-        {
-            _Parser = parser;
-        }
-        GameConsole(IUserFactoty<TUser> factory, Utility.Console.IViewer view, Utility.Command command)
+        public UserProvider(IUserFactoty<TUser> factory, Utility.Console.IViewer view, Utility.Command command)
         {
             _Controllers = new List<Controller<TUser>>();
             this.Factory = factory;
@@ -34,10 +26,11 @@ namespace Regulus.Framework
 
         public TUser Spawn(string name)
         {
-            var user = Factory.Spawn();            
+            var user = Factory.SpawnUser();
+            var parser = Factory.SpawnParser(_Command, _View, user);
 
-            _Add(_Build(name, user));
-
+            _Add(_Build(name, user, parser));
+            _View.WriteLine( string.Format("{0} user created." , name));
             return user;
         }
 
@@ -46,9 +39,9 @@ namespace Regulus.Framework
             _Controllers.Add(controller);
         }
 
-        private Controller<TUser> _Build(string name, TUser user)
+        private Controller<TUser> _Build(string name, TUser user , ICommandParsable<TUser> parser)
         {
-            return new Controller<TUser>(name, user);
+            return new Controller<TUser>(name, user, parser);
         }
 
         public void Unspawn(string name)
@@ -57,12 +50,18 @@ namespace Regulus.Framework
 
             if (controller.HasValue)
             {
-                _Parser.Unregister(controller.Value.User, _Command);
+
+                controller.Value.Parser.Clear();                
                 if (_Current.HasValue &&  _Current.Value.User == controller.Value.User)
                     _Current = new Controller<TUser>?();
 
                 _Controllers.Remove(controller.Value);
+                _View.WriteLine(string.Format("{0} user removed.", name));
+                
             }
+
+            _View.WriteLine(string.Format("not found {0}.", name));
+            
         }
 
         private Controller<TUser>? _Find(string name)
@@ -85,11 +84,11 @@ namespace Regulus.Framework
             {
                 if (_Current.HasValue)
                 {
-                    _Parser.Unregister(_Current.Value.User, _Command);
-                }                    
-                _Parser.Register(controller.Value.User , _Command );
-
+                    _Current.Value.Parser.Clear();       
+                }
+                _View.WriteLine(string.Format("{0} selected.", name));                
                 _Current = controller;
+                _Current.Value.Parser.Setup();                
                 return true;
             }
 

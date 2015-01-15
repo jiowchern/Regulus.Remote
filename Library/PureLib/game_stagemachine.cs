@@ -126,7 +126,7 @@ namespace Regulus.Game
             if (_Current != null && _Current.Stage != null)
             {
                 _Current.Stage.Leave();
-                _Current = null;
+                _Current.Stage = null;
             }
         }
 
