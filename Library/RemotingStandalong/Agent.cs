@@ -94,7 +94,7 @@ namespace Regulus.Standalong
 
         Remoting.Value<bool> Remoting.IAgent.Connect(string account, int password)
         {
-            _ConnectEvent();
+           // _ConnectEvent();
             return true;
         }
 
@@ -135,11 +135,16 @@ namespace Regulus.Standalong
         }
 
 
-        event Action _ConnectEvent;
+
+
+
+
+
+
         event Action Remoting.IAgent.ConnectEvent
         {
-            add { _ConnectEvent += value; }
-            remove { _ConnectEvent -= value; }
+            add { throw new NotImplementedException(); }
+            remove { throw new NotImplementedException(); }
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Framework
 {
-    internal struct Controller<T> where T : class
+    internal struct Controller<T> where T : class , Regulus.Utility.IUpdatable
     {
         Regulus.Framework.ICommandParsable<T> _Parser;        
         T _User;

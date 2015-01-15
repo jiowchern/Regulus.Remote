@@ -6,7 +6,7 @@ using System.Text;
 namespace Regulus.Framework
 {
     public class Client<TUser> : Regulus.Utility.IUpdatable
-       where TUser : class
+       where TUser : class, Regulus.Utility.IUpdatable
     {
         Regulus.Game.StageMachine _Machine;
 

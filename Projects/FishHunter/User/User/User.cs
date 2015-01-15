@@ -18,6 +18,7 @@ namespace VGame.Project.FishHunter
             this._Agent = agent;
             _Updater = new Regulus.Utility.Updater();
             _User = new Regulus.Remoting.User(_Agent);
+            
         }
         
         bool Regulus.Utility.IUpdatable.Update()

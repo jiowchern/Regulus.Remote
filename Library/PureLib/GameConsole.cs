@@ -6,14 +6,16 @@ using Regulus;
 
 namespace Regulus.Framework
 {
-    public class UserProvider<TUser>
-        where TUser : class
+    public class UserProvider<TUser> : Regulus.Utility.IUpdatable
+        where TUser : class, Regulus.Utility.IUpdatable
     {
         List<Controller<TUser>> _Controllers;
         private IUserFactoty<TUser> Factory;
         private Utility.Console.IViewer _View;
         private Utility.Command _Command;
-        Controller<TUser>? _Current;        
+        Controller<TUser>? _Current;
+
+        Regulus.Utility.Updater _Updater;
         public UserProvider(IUserFactoty<TUser> factory, Utility.Console.IViewer view, Utility.Command command)
         {
             _Controllers = new List<Controller<TUser>>();
@@ -21,6 +23,7 @@ namespace Regulus.Framework
             this._View = view;
             this._Command = command;
             _Current = new Controller<TUser>?();
+            _Updater = new Utility.Updater();
         }
         
 
@@ -37,6 +40,7 @@ namespace Regulus.Framework
         private void _Add(Controller<TUser> controller)
         {
             _Controllers.Add(controller);
+            _Updater.Add(controller.User);
         }
 
         private Controller<TUser> _Build(string name, TUser user , ICommandParsable<TUser> parser)
@@ -93,6 +97,22 @@ namespace Regulus.Framework
             }
 
             return false;
+        }
+
+        bool Utility.IUpdatable.Update()
+        {
+            _Updater.Update();
+            return true;
+        }
+
+        void ILaunched.Launch()
+        {
+            
+        }
+
+        void ILaunched.Shutdown()
+        {
+            _Updater.Shutdown();
         }
     }
 }

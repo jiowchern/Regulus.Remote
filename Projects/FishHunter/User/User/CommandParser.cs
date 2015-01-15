@@ -20,13 +20,14 @@ namespace VGame.Project.FishHunter
             this._Command = command;
             this._View = view;
             this._User = user;
+            _CommandAutoBuild = new Regulus.Remoting.CommandAutoBuild(_Command);
         }
 
 
         void Regulus.Framework.ICommandParsable<IUser>.Setup()
         {
             var gpiBinder = _CommandAutoBuild.Add<Regulus.Game.IConnect>(_User.Remoting.ConnectProvider);
-            //gpiBinder.Add("Connect", (connect) => { return new CommandParam<string, int, bool>(connect.Connect, _ConnectResult); });
+            gpiBinder.Add("Connect", (connect) => { return new Regulus.Remoting.CommandParamBuilder().BuildRemoting<string, int, bool>(connect.Connect, _ConnectResult); });
             
         }
 
@@ -34,12 +35,7 @@ namespace VGame.Project.FishHunter
         {
             _CommandAutoBuild.Remove(_User.Remoting.OnlineProvider);
         }
-
-        private void _ConnectSupply(Regulus.Game.IConnect connect)
-        {
-            _Command.RemotingRegister<string, int, bool>("Connect", connect.Connect, _ConnectResult);
-        }
-
+        
         private void _ConnectResult(bool result)
         {
             _View.WriteLine(string.Format("Connect result {0}", result));

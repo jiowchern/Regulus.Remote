@@ -23,9 +23,11 @@ namespace Regulus.Remoting
         Regulus.Utility.Command _Command;
         List<Data> _Handlers;
         Regulus.Remoting.Ghost.IProviderNotice<T> _Notice;
-        public GPIBinder(Regulus.Remoting.Ghost.IProviderNotice<T> notice)
+        public GPIBinder(Regulus.Remoting.Ghost.IProviderNotice<T> notice , Regulus.Utility.Command command)
         {
             _Notice = notice;
+            _Command = command;
+            _Handlers = new List<Data>();
         }
         public void Add( string name , Func<T , CommandParam> handler)
         {

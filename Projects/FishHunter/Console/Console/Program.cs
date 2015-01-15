@@ -28,8 +28,10 @@ namespace Console
 
         static void client_ModeSelectorEvent(Regulus.Framework.GameModeSelector<VGame.Project.FishHunter.IUser> selector)
         {
-            selector.AddFactoty( "standalong" , new VGame.Project.FishHunter.StandalongUserFactory());
-
+            selector.AddFactoty( "standalong" , new VGame.Project.FishHunter.StandalongUserFactory(null));
+            var provider = selector.CreateGameConsole("standalong");
+            provider.Spawn("1"); 
+            provider.Select("1");
            
         }
     }

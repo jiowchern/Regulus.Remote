@@ -54,6 +54,7 @@
     <Compile Include="Agent.cs" />
     <Compile Include="CommandAutoBuild.cs" />
     <Compile Include="CommandParam.cs" />
+    <Compile Include="CommandParamBuilder.cs" />
     <Compile Include="Connect.cs" />
     <Compile Include="CoreThreadRequestHandler.cs" />
     <Compile Include="GameLoader.cs" />

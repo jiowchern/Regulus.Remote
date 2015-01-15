@@ -5,8 +5,8 @@ using System.Text;
 
 namespace Regulus.Framework
 {
-    public class GameModeSelector<TUser> 
-        where TUser : class
+    public class GameModeSelector<TUser>
+        where TUser : class, Regulus.Utility.IUpdatable
     {
         struct Provider
         {
@@ -17,28 +17,25 @@ namespace Regulus.Framework
         System.Collections.Generic.List<Provider> _Providers;
         
         private Regulus.Utility.Console.IViewer _View;
-        
 
         public delegate void OnGameConsole(UserProvider<TUser> console);
         public event OnGameConsole GameConsoleEvent;
+
+        Regulus.Utility.Command _Command;
         public GameModeSelector(Regulus.Utility.Command command, Regulus.Utility.Console.IViewer view )
-        {            
-            
+        {
+            _Command = command;
             this._View = view;
             
             _Providers = new List<Provider>();
         }
-        
-        
-        
-
         public void AddFactoty(string name, Regulus.Framework.IUserFactoty<TUser> user_factory)
         {
             _Providers.Add(new Provider() { Name = name, Factory = user_factory });
             _View.WriteLine( string.Format("Added {0} factory." , name));
         }
         
-        public UserProvider<TUser> CreateGameConsole(string name, Regulus.Utility.Command command)
+        public UserProvider<TUser> CreateGameConsole(string name)
         {
             Regulus.Framework.IUserFactoty<TUser> factory = _Find(name);
             if (factory == null)
@@ -49,7 +46,7 @@ namespace Regulus.Framework
             
             _View.WriteLine(string.Format("Create game console factory : {0}.", name));
 
-            var console = new UserProvider<TUser>(factory, _View, command);
+            var console = new UserProvider<TUser>(factory, _View, _Command);
             if (GameConsoleEvent != null)
                 GameConsoleEvent(console);
             return console;

@@ -6,22 +6,18 @@ using System.Text;
 namespace Regulus.Framework.Stage
 {
     class OnBoard<TUser>: Regulus.Game.IStage
-        where TUser : class
+        where TUser : class, Regulus.Utility.IUpdatable
     {
         public delegate void OnDone();
         public event OnDone DoneEvent;
         private UserProvider<TUser> _UserProvider;
         private Utility.Command _Command;
-
+        Regulus.Utility.Updater _Updater;
         
-        public OnBoard()
-        {
-            
-        }
-
+        
         public OnBoard(UserProvider<TUser> user_provider, Utility.Command command)
         {
-            
+            _Updater = new Utility.Updater();
             this._UserProvider = user_provider;
             this._Command = command;
         }
@@ -30,7 +26,7 @@ namespace Regulus.Framework.Stage
         void Regulus.Game.IStage.Enter()
         {
 
-            System.GC.Collect();
+            _Updater.Add(_UserProvider);
             _Command.Register<string>("SpawnUser" , _Spawn);
             _Command.Register<string>("UnpawnUser", _Unspawn);
             _Command.Register<string>("SelectUser", _Select);
@@ -41,6 +37,7 @@ namespace Regulus.Framework.Stage
             _Command.Unregister("SelectUser");
             _Command.Unregister("SpawnUser");
             _Command.Unregister("UnpawnUser");
+            _Updater.Shutdown();
         }
 
         void _Spawn(string name)
@@ -60,7 +57,7 @@ namespace Regulus.Framework.Stage
 
         void Regulus.Game.IStage.Update()
         {
-            
+            _Updater.Update();
         }
     }
 }
