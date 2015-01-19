@@ -26,7 +26,7 @@ namespace Imdgame.RunLocusts
             user.OnlineProvider.Unsupply += _Unsupply;
         }
 
-        void OnlineProvider_Supply(Regulus.Game.IOnline obj)
+        void OnlineProvider_Supply(Regulus.Utility.IOnline obj)
         {
             _Command.Register("Disconnect", obj.Disconnect );
             obj.DisconnectEvent += obj_DisconnectEvent;
@@ -50,7 +50,7 @@ namespace Imdgame.RunLocusts
             _View.WriteLine("disconnect.");
         }
 
-        void ConnectProvider_Supply(Regulus.Game.IConnect obj)
+        void ConnectProvider_Supply(Regulus.Utility.IConnect obj)
         {
 
             _Command.RemotingRegister<string,int,bool>("Connect" , obj.Connect , _ConnectResult );

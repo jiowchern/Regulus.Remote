@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Regulus.Game
+namespace Regulus.Utility
 {
     public interface IConnect
-    {
-        Regulus.Remoting.Value<bool> Connect(string ipaddr, int port);
+    {        
+        Regulus.Remoting.Value<bool> Connect(string ipaddr, int port);        
     }
 
 

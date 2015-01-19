@@ -8,7 +8,7 @@ namespace Regulus.Project.SamebestKeys
     class Map : Regulus.Utility.IUpdatable, IMapInfomation, IMap 
     {        
         Guid _Id;
-        public class EntityInfomation : Regulus.Physics.IQuadObject
+        public class EntityInfomation : Regulus.Collection.IQuadObject
         {
             public Guid Id { get; set; }
 
@@ -41,13 +41,13 @@ namespace Regulus.Project.SamebestKeys
             public IActorPropertyAbility Property { get; set; }
             public IActorUpdateAbility ActorUpdate { get; set; }
 
-            Regulus.Types.Rect Physics.IQuadObject.Bounds
+            Regulus.CustomType.Rect Collection.IQuadObject.Bounds
             {
                 get { return Physical.Bounds; }
             }
 
             event EventHandler _BoundsChanged;
-            event EventHandler Physics.IQuadObject.BoundsChanged
+            event EventHandler Collection.IQuadObject.BoundsChanged
             {
                 add { _BoundsChanged += value; }
                 remove { _BoundsChanged -= value; }
@@ -61,7 +61,7 @@ namespace Regulus.Project.SamebestKeys
         Regulus.Remoting.Time _Time;
         Regulus.Utility.Poller<EntityInfomation> _EntityInfomations = new Utility.Poller<EntityInfomation>();
         Regulus.Utility.Poller<EntityInfomation> _Observes = new Utility.Poller<EntityInfomation>();
-        Regulus.Physics.QuadTree<EntityInfomation> _ObseverdInfomations;
+        Regulus.Collection.QuadTree<EntityInfomation> _ObseverdInfomations;
 
         Regulus.Utility.Updater _Updater;
 
@@ -170,7 +170,7 @@ namespace Regulus.Project.SamebestKeys
         void Regulus.Framework.ILaunched.Launch()
         {
             _Updater.Add(_Session);
-            _ObseverdInfomations = new Physics.QuadTree<EntityInfomation>(new Regulus.Types.Size(4, 4), 0);
+            _ObseverdInfomations = new Collection.QuadTree<EntityInfomation>(new Regulus.CustomType.Size(4, 4), 0);
 			_Build(_ReadMapData(_Name));
         }
 
@@ -241,7 +241,7 @@ namespace Regulus.Project.SamebestKeys
             var behavior = entity.Effect;
             var property = entity.Property;
             var obs = entity.Observed;
-            Types.Rect bounds = new Types.Rect();
+            CustomType.Rect bounds = new CustomType.Rect();
             int skill = 0;            
             if (behavior.TryGetBounds(ref bounds , ref skill))
             {
@@ -280,7 +280,7 @@ namespace Regulus.Project.SamebestKeys
             var h = physical.Bounds.Height;
             var x = observeAbility.Position.X - w / 2;
             var y = observeAbility.Position.Y - h / 2;
-            var brounds = new Regulus.Types.Rect(x, y, w, h);
+            var brounds = new Regulus.CustomType.Rect(x, y, w, h);
             var inbrounds = _ObseverdInfomations.Query(brounds);
             var obbs = from qtoa in inbrounds let ma = qtoa.Move where ma != null && moverAbility != ma select ma.Polygon;
             moverAbility.Update(_Time.Ticks, obbs);
@@ -307,7 +307,7 @@ namespace Regulus.Project.SamebestKeys
 
 		string _Name { get; set; }
 
-        Remoting.Value<Types.Polygon[]> IMapInfomation.QueryWalls()
+        Remoting.Value<CustomType.Polygon[]> IMapInfomation.QueryWalls()
         {
             return (from e in _EntityInfomations.UpdateSet() where e.Move != null select e.Move.Polygon).ToArray();
         }

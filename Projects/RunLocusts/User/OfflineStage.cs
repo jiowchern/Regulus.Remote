@@ -5,23 +5,23 @@ using System.Text;
 
 namespace Imdgame.RunLocusts
 {
-    class OfflineStage : Regulus.Game.IStage
+    class OfflineStage : Regulus.Utility.IStage
     {
         private Regulus.Remoting.IAgent _Agent;
-        private Regulus.Remoting.Ghost.TProvider<Regulus.Game.IConnect> _ConnectProvider;
-        Regulus.Game.Connect _Connect;
+        private Regulus.Remoting.Ghost.TProvider<Regulus.Utility.IConnect> _ConnectProvider;
+        Regulus.Utility.Connect _Connect;
 
 
         public delegate void OnDone();
         public event OnDone DoneEvent;
 
-        public OfflineStage(Regulus.Remoting.IAgent agent, Regulus.Remoting.Ghost.TProvider<Regulus.Game.IConnect> _ConnectProvider)
+        public OfflineStage(Regulus.Remoting.IAgent agent, Regulus.Remoting.Ghost.TProvider<Regulus.Utility.IConnect> _ConnectProvider)
         {            
             this._Agent = agent;
             this._ConnectProvider = _ConnectProvider;
-            _Connect = new Regulus.Game.Connect();
+            _Connect = new Regulus.Utility.Connect();
         }
-        void Regulus.Game.IStage.Enter()
+        void Regulus.Utility.IStage.Enter()
         {
             _Connect.ConnectedEvent += _Connect_ConnectedEvent;
 
@@ -38,14 +38,14 @@ namespace Imdgame.RunLocusts
             };
         }
 
-        void Regulus.Game.IStage.Leave()
+        void Regulus.Utility.IStage.Leave()
         {
             _Unbind(_ConnectProvider);
 
             _Connect.ConnectedEvent -= _Connect_ConnectedEvent;
         }
 
-        void Regulus.Game.IStage.Update()
+        void Regulus.Utility.IStage.Update()
         {            
         }
 

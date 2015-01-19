@@ -9,7 +9,7 @@ namespace Regulus.Project.TurnBasedRPG
     {
         Regulus.Remoting.Time _Time;
 
-        public class EntityInfomation : Regulus.Physics.IQuadObject
+        public class EntityInfomation : Regulus.Collection.IQuadObject
         {
             public Guid Id { get; set; }
 
@@ -34,13 +34,13 @@ namespace Regulus.Project.TurnBasedRPG
             public IObserveAbility Observe { get; set; }
             public ICrossAbility Cross { get; set; }
 
-            Regulus.Types.Rect Physics.IQuadObject.Bounds
+            Regulus.CustomType.Rect Collection.IQuadObject.Bounds
             {
                 get { return Physical.Bounds; }
             }
 
             event EventHandler _BoundsChanged;
-            event EventHandler Physics.IQuadObject.BoundsChanged
+            event EventHandler Collection.IQuadObject.BoundsChanged
             {
                 add { _BoundsChanged += value; }
                 remove { _BoundsChanged -= value; }
@@ -48,7 +48,7 @@ namespace Regulus.Project.TurnBasedRPG
         }
 					
         Regulus.Utility.Poller<EntityInfomation> _EntityInfomations = new Utility.Poller<EntityInfomation>();
-        Regulus.Physics.QuadTree<EntityInfomation> _ObseverdInfomations;
+        Regulus.Collection.QuadTree<EntityInfomation> _ObseverdInfomations;
         
 		long _DeltaTime 
         {  
@@ -104,7 +104,7 @@ namespace Regulus.Project.TurnBasedRPG
 
         void Regulus.Framework.ILaunched.Launch()
         {
-            _ObseverdInfomations = new Physics.QuadTree<EntityInfomation>(new Regulus.Types.Size(4, 4), 0);
+            _ObseverdInfomations = new Collection.QuadTree<EntityInfomation>(new Regulus.CustomType.Size(4, 4), 0);
 			_Build(_ReadMapData(Name));
         }
 
@@ -174,7 +174,7 @@ namespace Regulus.Project.TurnBasedRPG
                     var h = physical.Bounds.Height;
                     var x = observeAbility.Position.X - w / 2;
                     var y = observeAbility.Position.Y - h / 2;
-                    var brounds = new Regulus.Types.Rect(x, y, w, h);
+                    var brounds = new Regulus.CustomType.Rect(x, y, w, h);
                     var inbrounds = _ObseverdInfomations.Query(brounds);
                     var obbs = from qtoa in inbrounds let ma = qtoa.Move where ma != null && moverAbility != ma select ma.Obb;
                     moverAbility.Update(_Time.Ticks, obbs);

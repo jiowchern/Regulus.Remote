@@ -9,7 +9,7 @@ namespace BusinessServer
     {
         private Regulus.Remoting.ISoulBinder _Binder;
         private bool _Enable;
-        Regulus.Game.StageMachine _Machine;
+        Regulus.Utility.StageMachine _Machine;
         public event OnVerifySucess VerifySuccessEvent;
         Storage _Storage;
         public User(Regulus.Remoting.ISoulBinder binder , Storage storage)
@@ -32,7 +32,7 @@ namespace BusinessServer
         void Regulus.Framework.ILaunched.Launch()
         {
             _Binder.BreakEvent += _Break;
-            _Machine = new Regulus.Game.StageMachine();
+            _Machine = new Regulus.Utility.StageMachine();
 
 
             _ToVerify();

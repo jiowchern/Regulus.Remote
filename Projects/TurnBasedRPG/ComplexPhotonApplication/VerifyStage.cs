@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPG
 {
-    class VerifyStage : Regulus.Game.IStage<User>
+    class VerifyStage : Regulus.Utility.IStage<User>
     {
         Regulus.Project.TurnBasedRPG.Verify _Verify;
         private UserRoster _UserRoster;
@@ -15,7 +15,7 @@ namespace Regulus.Project.TurnBasedRPG
             // TODO: Complete member initialization
             this._UserRoster = user_roster;
         }
-        Regulus.Game.StageLock Regulus.Game.IStage<User>.Enter(User obj)
+        Regulus.Utility.StageLock Regulus.Utility.IStage<User>.Enter(User obj)
         {
             _Verify = new Regulus.Project.TurnBasedRPG.Verify(_UserRoster);
             _Verify.LoginSuccess += obj.OnLoginSuccess;
@@ -26,12 +26,12 @@ namespace Regulus.Project.TurnBasedRPG
             return null;
         }
 
-        void Regulus.Game.IStage<User>.Leave(User obj)
+        void Regulus.Utility.IStage<User>.Leave(User obj)
         {
             obj.Provider.Unbind<IVerify>(_Verify);
         }
 
-        void Regulus.Game.IStage<User>.Update(User obj)
+        void Regulus.Utility.IStage<User>.Update(User obj)
         {
             
         }

@@ -10,7 +10,7 @@ namespace Regulus.Project.SamebestKeys
     {
         private Serializable.Skill _Skill;        
         private Remoting.Value<CastResult> _ReturnValue;
-        Regulus.Game.StageMachine _Machine;
+        Regulus.Utility.StageMachine _Machine;
 
 
         bool _Done;
@@ -27,7 +27,7 @@ namespace Regulus.Project.SamebestKeys
             
             this._ReturnValue = return_value;
             _Done = false;
-            _Machine = new Game.StageMachine();
+            _Machine = new Utility.StageMachine();
             _Step = CastStep.NotYet;
         }
 
@@ -116,45 +116,45 @@ namespace Regulus.Project.SamebestKeys
 
     partial class ActorCast
     {
-        class Effective : Regulus.Game.IStage
+        class Effective : Regulus.Utility.IStage
         {
             public delegate void OnDone();
             public event OnDone DoneEvent;
             private float _Interval;
             Regulus.Utility.TimeCounter _Timer;
             ActorPropertyAbility _Actor;
-            Regulus.Types.Rect _Bounds;
+            Regulus.CustomType.Rect _Bounds;
             Effective(float interval)
             {                
                 this._Interval = interval;
                 _Timer = new Utility.TimeCounter();
             }
 
-            public Effective(float interval,  ActorPropertyAbility actor , Regulus.Types.Rect bounds)
+            public Effective(float interval,  ActorPropertyAbility actor , Regulus.CustomType.Rect bounds)
                 : this(interval)
             {
                 _Actor = actor;
                 _Bounds = bounds;
             }
 
-            void Game.IStage.Enter()
+            void Utility.IStage.Enter()
             {
                 _Actor.SetCaptureRect(_Bounds);    
             }
 
-            void Game.IStage.Leave()
+            void Utility.IStage.Leave()
             {
                 _Actor.ClearCaptureRect();    
             }
 
-            void Game.IStage.Update()
+            void Utility.IStage.Update()
             {
                 if (_Timer.Second > _Interval)
                     DoneEvent();
             }
         }
 
-        class After : Regulus.Game.IStage
+        class After : Regulus.Utility.IStage
         {
             public delegate void OnDone();
             public event OnDone DoneEvent;
@@ -167,17 +167,17 @@ namespace Regulus.Project.SamebestKeys
                 _TimeCounter = new Utility.TimeCounter();
             }
 
-            void Game.IStage.Enter()
+            void Utility.IStage.Enter()
             {
                 
             }
 
-            void Game.IStage.Leave()
+            void Utility.IStage.Leave()
             {
                 
             }
 
-            void Game.IStage.Update()
+            void Utility.IStage.Update()
             {
                 if (_TimeCounter.Second > _Interval)
                     DoneEvent();

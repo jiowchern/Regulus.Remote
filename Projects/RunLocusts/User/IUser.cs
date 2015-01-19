@@ -8,7 +8,7 @@ namespace Imdgame.RunLocusts
     public interface IUser 
         : Regulus.Utility.IUpdatable
     {
-        Regulus.Remoting.Ghost.IProviderNotice<Regulus.Game.IConnect> ConnectProvider { get; }
-        Regulus.Remoting.Ghost.IProviderNotice<Regulus.Game.IOnline> OnlineProvider { get; }
+        Regulus.Remoting.Ghost.IProviderNotice<Regulus.Utility.IConnect> ConnectProvider { get; }
+        Regulus.Remoting.Ghost.IProviderNotice<Regulus.Utility.IOnline> OnlineProvider { get; }
     }
 }

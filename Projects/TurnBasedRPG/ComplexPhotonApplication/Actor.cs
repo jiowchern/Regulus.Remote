@@ -38,18 +38,18 @@ namespace Regulus.Project.TurnBasedRPG
             
             abilitys.AttechAbility<IMoverAbility>(_MoverAbility);
 
-            _QuadTreeObjectAbility = new PhysicalAbility(new Regulus.Types.Rect(_Property.Position.X - _BodyWidth / 2, _Property.Position.Y - _BodyHeight / 2, _BodyWidth, _BodyHeight), this);
+            _QuadTreeObjectAbility = new PhysicalAbility(new Regulus.CustomType.Rect(_Property.Position.X - _BodyWidth / 2, _Property.Position.Y - _BodyHeight / 2, _BodyWidth, _BodyHeight), this);
             abilitys.AttechAbility<PhysicalAbility>(_QuadTreeObjectAbility);
 
 
             
         }
 
-        private void _OnPosition(long time, Types.Vector2 unit_vector)
+        private void _OnPosition(long time, CustomType.Vector2 unit_vector)
         {
 
 
-            _Property.Position = Types.Vector2.FromPoint(_Property.Position.X + unit_vector.X, _Property.Position.Y + unit_vector.Y);
+            _Property.Position = CustomType.Vector2.FromPoint(_Property.Position.X + unit_vector.X, _Property.Position.Y + unit_vector.Y);
             
             _MoverAbility.SetPosition(_Property.Position.X, _Property.Position.Y);
             _QuadTreeObjectAbility.UpdateBounds(_Property.Position.X - _BodyWidth / 2, _Property.Position.Y - _BodyHeight / 2);
@@ -58,13 +58,13 @@ namespace Regulus.Project.TurnBasedRPG
 
         protected override void _RiseAbility(Entity.AbilitySet abilitys)
         {
-			abilitys.DetechAbility<Regulus.Physics.IQuadObject>();
+			abilitys.DetechAbility<Regulus.Collection.IQuadObject>();
             abilitys.DetechAbility<PhysicalAbility>();
             
         }
 
         public float Direction { get { return _Property.Direction; } }
-        void _OnAction(long begin_time, float move_speed,float direction, Regulus.Types.Vector2 unit_vector, ActionStatue action_state)
+        void _OnAction(long begin_time, float move_speed,float direction, Regulus.CustomType.Vector2 unit_vector, ActionStatue action_state)
         {
             _Property.Direction = direction;
             
@@ -84,7 +84,7 @@ namespace Regulus.Project.TurnBasedRPG
 
         public void SetPosition(float x, float y)
         {
-            _Property.Position = Types.Vector2.FromPoint(x, y);            
+            _Property.Position = CustomType.Vector2.FromPoint(x, y);            
             _MoverAbility.SetPosition(_Property.Position.X, _Property.Position.Y);
             _QuadTreeObjectAbility.UpdateBounds(_Property.Position.X - _BodyWidth / 2, _Property.Position.Y - _BodyHeight / 2);
         }

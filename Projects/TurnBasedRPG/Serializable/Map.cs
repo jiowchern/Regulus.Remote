@@ -31,14 +31,14 @@ namespace Regulus.Project.TurnBasedRPG
 		{
             public PortalEntity()
             {
-                Vision = new Types.Rect();
-                TargetPosition = new Types.Vector2();
+                Vision = new CustomType.Rect();
+                TargetPosition = new CustomType.Vector2();
             }
-            public Types.Rect Vision { get; set; }
+            public CustomType.Rect Vision { get; set; }
 
             public string TargetMap { get; set; }
 
-            public Types.Vector2 TargetPosition { get; set; }
+            public CustomType.Vector2 TargetPosition { get; set; }
         }
 
         

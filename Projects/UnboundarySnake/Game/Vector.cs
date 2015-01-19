@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Project.UnboundarySnake
 {
-    public class Vector : Regulus.Types.Vector2
+    public class Vector : Regulus.CustomType.Vector2
     {
     }
 }

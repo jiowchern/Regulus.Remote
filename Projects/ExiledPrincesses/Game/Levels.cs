@@ -19,7 +19,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
     {        
 
         float _Position;        
-        Regulus.Game.StageMachine _StageMachine;
+        Regulus.Utility.StageMachine _StageMachine;
         Guid _Id;
         private MapPrototype _MapPrototype;
         public Guid Id { get { return _Id; } }
@@ -34,7 +34,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
             _Id = Guid.NewGuid();            
             this._MapPrototype = map_prototype;
             _Stations = new Queue<Station>(_MapPrototype.Stations);
-            _StageMachine = new Regulus.Game.StageMachine();
+            _StageMachine = new Regulus.Utility.StageMachine();
 
             _Platoon = new Platoon(squad);
             _Platoon.EmptyEvent += () => { ReleaseEvent(); };

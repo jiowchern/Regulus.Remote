@@ -11,8 +11,8 @@ namespace Regulus.Project.SamebestKeys
     interface IObserveAbility
     {
         void Update(Regulus.Project.SamebestKeys.Map.EntityInfomation[] observeds, List<IObservedAbility> lefts);
-        Regulus.Types.Vector2 Position { get; }
-        Regulus.Types.Rect Vision { get; }
+        Regulus.CustomType.Vector2 Position { get; }
+        Regulus.CustomType.Rect Vision { get; }
         event Action<IObservedAbility> IntoEvent;
         event Action<IObservedAbility> LeftEvent;
 	}

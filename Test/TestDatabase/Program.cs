@@ -35,11 +35,11 @@ namespace Regulus.Project.Keys.Serializable
     {
         public EntityPropertyInfomation()
         {
-            Position = new Types.Vector2();
+            Position = new CustomType.Vector2();
         }
 
         public Guid Id { get; set; }
-        public Regulus.Types.Vector2 Position { get; set; }
+        public Regulus.CustomType.Vector2 Position { get; set; }
         public int Vision { get; set; }
 		public float Speed { get; set; }
     }
@@ -49,10 +49,10 @@ namespace Regulus.Project.Keys.Serializable
     {
         public EntityInfomation()
         {
-            Position = new Types.Vector2();
+            Position = new CustomType.Vector2();
         }
         public Guid Id { get; set; }
-        public Regulus.Types.Vector2 Position { get; set; }
+        public Regulus.CustomType.Vector2 Position { get; set; }
 		public float Speed { get; set; }
     }
 
@@ -78,13 +78,13 @@ namespace Regulus.Project.Keys.Serializable
 		{			
 			_DBActorInfomation = dB_actor_infomation;
 		}
-		Types.Vector2 _Start;
-		Types.Vector2 _End;
-		Types.Vector2 _Vector = new Types.Vector2();
+		CustomType.Vector2 _Start;
+		CustomType.Vector2 _End;
+		CustomType.Vector2 _Vector = new CustomType.Vector2();
 		long _BeginTime;
 		double _TotalTime;
 		double _Distance ; 
-		public void Move(Types.Vector2 end, long time)
+		public void Move(CustomType.Vector2 end, long time)
 		{
 			_Start = Regulus.Utility.ValueHelper.DeepCopy(_DBActorInfomation.Property.Position);
 			_End = end;
@@ -107,7 +107,7 @@ namespace Regulus.Project.Keys.Serializable
 			float newDistPer = (float)(seconds / _TotalTime);
 			if (newDistPer < 1.0)
 			{
-                var position = new Types.Vector2();
+                var position = new CustomType.Vector2();
                 position.X = _Start.X + _Vector.X * newDistPer;
                 position.Y = _Start.Y + _Vector.Y * newDistPer;
                 _DBActorInfomation.Property.Position = position;				
@@ -120,7 +120,7 @@ namespace Regulus.Project.Keys.Serializable
         {
 			var db3 = new DBEntityInfomation();
 			db3.Property.Speed = 1;
-            var position = new Types.Vector2();
+            var position = new CustomType.Vector2();
             position.X = 4530;
             position.Y = 5430;
             db3.Property.Position = position;

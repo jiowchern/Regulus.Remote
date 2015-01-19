@@ -7,7 +7,7 @@ namespace Imdgame.RunLocusts
 {
 
 
-    class Verify : Regulus.Game.IStage, IVerify
+    class Verify : Regulus.Utility.IStage, IVerify
     {
         private Regulus.Remoting.ISoulBinder _Binder;
 
@@ -19,17 +19,17 @@ namespace Imdgame.RunLocusts
         {            
             this._Binder = binder;
         }
-        void Regulus.Game.IStage.Enter()
+        void Regulus.Utility.IStage.Enter()
         {
             _Binder.Bind<IVerify>(this);
         }
 
-        void Regulus.Game.IStage.Leave()
+        void Regulus.Utility.IStage.Leave()
         {
             _Binder.Unbind<IVerify>(this);
         }
 
-        void Regulus.Game.IStage.Update()
+        void Regulus.Utility.IStage.Update()
         {
             
         }

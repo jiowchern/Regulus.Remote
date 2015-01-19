@@ -81,7 +81,7 @@ namespace Regulus.Remoting
 		{
 			_Empty = false;
 
-            _Value = Regulus.PhotonExtension.TypeHelper.Deserialize<T>(val);
+            _Value = Regulus.Serializer.TypeHelper.Deserialize<T>(val);
             if (_OnValue != null)
 			{
                 _OnValue(_Value);

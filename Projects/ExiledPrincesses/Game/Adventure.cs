@@ -7,7 +7,7 @@ using System.Text;
 namespace Regulus.Project.ExiledPrincesses.Game.Stage
 {
     
-    partial class Adventure : Regulus.Game.IStage , IAdventure
+    partial class Adventure : Regulus.Utility.IStage , IAdventure
     {
         
         private Remoting.ISoulBinder _Binder;
@@ -52,7 +52,7 @@ namespace Regulus.Project.ExiledPrincesses.Game.Stage
         }
         
 
-        void Regulus.Game.IStage.Enter()
+        void Regulus.Utility.IStage.Enter()
         {
             
             
@@ -60,13 +60,13 @@ namespace Regulus.Project.ExiledPrincesses.Game.Stage
             _CreateLevels(_Adventurer.Map);
         }
 
-        void Regulus.Game.IStage.Leave()
+        void Regulus.Utility.IStage.Leave()
         {
             _Levels.Leave(_Squad);
             _Binder.Unbind<IAdventure>(this);
         }
 
-        void Regulus.Game.IStage.Update()
+        void Regulus.Utility.IStage.Update()
         {
             
         }

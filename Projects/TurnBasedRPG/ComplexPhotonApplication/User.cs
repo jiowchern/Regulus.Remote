@@ -11,13 +11,13 @@ namespace Regulus.Project.TurnBasedRPG
     {
         public  Regulus.Remoting.Soul.SoulProvider Provider {get ; private set;}
 
-        Regulus.Game.StageMachine<User> _Machine ;
+        Regulus.Utility.StageMachine<User> _Machine ;
         Regulus.Project.TurnBasedRPG.UserRoster _UserRoster;
 		IWorld _World;
         public User(Regulus.Remoting.Soul.SoulProvider provider , Regulus.Project.TurnBasedRPG.UserRoster user_roster , IWorld world)
         {
             _UserRoster = user_roster;
-            _Machine = new Regulus.Game.StageMachine<User>(this);
+            _Machine = new Regulus.Utility.StageMachine<User>(this);
             Provider = provider;
             provider.BreakEvent += Quit;
 			_World = world;
@@ -85,7 +85,7 @@ namespace Regulus.Project.TurnBasedRPG
             }
             if (!(Actor.Property.Position.Y >= 0 && Actor.Property.Position.Y <= 100))
             {
-                Actor.Property.Position = Types.Vector2.FromPoint(Actor.Property.Position.X, Regulus.Utility.Random.Instance.R.Next(0, 100));
+                Actor.Property.Position = CustomType.Vector2.FromPoint(Actor.Property.Position.X, Regulus.Utility.Random.Instance.R.Next(0, 100));
             }
             if (Actor.Property.Map == "")
             {
@@ -106,7 +106,7 @@ namespace Regulus.Project.TurnBasedRPG
             };
         }
 
-        public void ToAdventure(string map , Types.Vector2 position)
+        public void ToAdventure(string map , CustomType.Vector2 position)
         {
             if (Actor != null)
             {
@@ -154,7 +154,7 @@ namespace Regulus.Project.TurnBasedRPG
             }
         }
 
-        internal void OnCross(string target_map, Types.Vector2 target_position, string current_map, Types.Vector2 current_position)
+        internal void OnCross(string target_map, CustomType.Vector2 target_position, string current_map, CustomType.Vector2 current_position)
         {
             _Machine.Push(new CrossStage(_World , target_map, target_position, current_map, current_position));             
         }

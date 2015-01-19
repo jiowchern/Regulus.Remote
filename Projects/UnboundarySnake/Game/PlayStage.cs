@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Project.UnboundarySnake
 {
-    class PlayStage : Regulus.Game.IStage
+    class PlayStage : Regulus.Utility.IStage
     {
         private Remoting.ISoulBinder _Binder;
         private Snake _Snake;
@@ -20,7 +20,7 @@ namespace Regulus.Project.UnboundarySnake
             _Zone = zone;
         }
 
-        void Regulus.Game.IStage.Enter()
+        void Regulus.Utility.IStage.Enter()
         {
             _Zone.Join(_Snake);
             
@@ -34,7 +34,7 @@ namespace Regulus.Project.UnboundarySnake
             throw new NotImplementedException();
         }
 
-        void Regulus.Game.IStage.Leave()
+        void Regulus.Utility.IStage.Leave()
         {
             _Zone.Left(_Snake);
             _UnbindListener(_Listener);
@@ -45,7 +45,7 @@ namespace Regulus.Project.UnboundarySnake
             throw new NotImplementedException();
         }
 
-        void Regulus.Game.IStage.Update()
+        void Regulus.Utility.IStage.Update()
         {
             
         }

@@ -6,10 +6,10 @@
     {
         None, Done, Break
     }
-    public partial class NetworkStreamWriteStage : Regulus.Game.IStage
+    public partial class NetworkStreamWriteStage : Regulus.Utility.IStage
     {
         
-        class WrittingStage : Regulus.Game.IStage
+        class WrittingStage : Regulus.Utility.IStage
         {
             System.Net.Sockets.Socket _Socket;
             System.IAsyncResult _AsyncResult;
@@ -24,7 +24,7 @@
                 _Buffer = buffer;
                 
             }
-            void Game.IStage.Enter()            
+            void Utility.IStage.Enter()            
             {
                 try
                 {
@@ -43,12 +43,12 @@
                     
             }
 
-            void Game.IStage.Leave()
+            void Utility.IStage.Leave()
             {
                 
             }
 
-            void Game.IStage.Update()
+            void Utility.IStage.Update()
             {
                 if (_Result != SocketIOResult.None)
                 {
@@ -76,14 +76,14 @@
         }
     }
 
-	public partial class NetworkStreamWriteStage : Regulus.Game.IStage
+	public partial class NetworkStreamWriteStage : Regulus.Utility.IStage
 	{
 		System.Net.Sockets.Socket _Socket;
         Package[] _Packages;
         
         public event System.Action WriteCompletionEvent;
         public event System.Action ErrorEvent;
-        Regulus.Game.StageMachine _Machine;
+        Regulus.Utility.StageMachine _Machine;
 
         
         public static decimal TotalBytes { get; private set; }
@@ -94,10 +94,10 @@
 		{
             _Socket = socket;
             _Packages = packages;
-            _Machine = new Game.StageMachine();
+            _Machine = new Utility.StageMachine();
             
 		}
-		void Game.IStage.Enter()
+		void Utility.IStage.Enter()
 		{            
             var packages = _Packages;
             var buffer = _CreateBuffer(packages);
@@ -123,7 +123,7 @@
         byte[] _CreateBuffer(Package[] packages)
         {
             
-            var buffers = from p in packages select Regulus.PhotonExtension.TypeHelper.Serializer<Package>(p);            
+            var buffers = from p in packages select Regulus.Serializer.TypeHelper.Serializer<Package>(p);            
 
             using (System.IO.MemoryStream stream = new System.IO.MemoryStream())
             { 
@@ -174,12 +174,12 @@
             TotalBytes += size;            
         }
 
-		void Game.IStage.Leave()
+		void Utility.IStage.Leave()
 		{
             
 		}
 
-		void Game.IStage.Update()
+		void Utility.IStage.Update()
 		{
             
             _Machine.Update();
@@ -189,10 +189,10 @@
 	}
 
 
-    public partial class NetworkStreamReadStage : Regulus.Game.IStage
+    public partial class NetworkStreamReadStage : Regulus.Utility.IStage
     {
         
-        class ReadingStage : Regulus.Game.IStage
+        class ReadingStage : Regulus.Utility.IStage
         {
             public event System.Action<byte[]> DoneEvent;            
             private System.Net.Sockets.Socket _Socket;
@@ -208,7 +208,7 @@
             }
 
 
-            void Game.IStage.Enter()
+            void Utility.IStage.Enter()
             {
 
                 try
@@ -224,12 +224,12 @@
                 
             }
 
-            void Game.IStage.Leave()
+            void Utility.IStage.Leave()
             {
                 
             }
 
-            void Game.IStage.Update()
+            void Utility.IStage.Update()
             {
                 if (_Result == SocketIOResult.Done)
                 { 
@@ -264,13 +264,13 @@
         }
     }
     
-	public partial class NetworkStreamReadStage : Regulus.Game.IStage
+	public partial class NetworkStreamReadStage : Regulus.Utility.IStage
 	{
         public delegate void OnReadCompletion(Package package);
         public event OnReadCompletion ReadCompletionEvent;
         public event System.Action ErrorEvent;       
 		System.Net.Sockets.Socket _Socket;
-        Regulus.Game.StageMachine _Machine;
+        Regulus.Utility.StageMachine _Machine;
         
         public static decimal TotalBytes { get; private set; }        
         static Regulus.Utility.TimeCounter _AfterTime = new Utility.TimeCounter();
@@ -279,9 +279,9 @@
         public NetworkStreamReadStage(System.Net.Sockets.Socket socket )
 		{            
 			_Socket = socket;
-            _Machine = new Game.StageMachine();        
+            _Machine = new Utility.StageMachine();        
 		}
-		void Game.IStage.Enter()
+		void Utility.IStage.Enter()
 		{        
             _ToHead();
 		}
@@ -315,23 +315,23 @@
         }
         private void _Done(byte[] body)
         {
-            ReadCompletionEvent(Regulus.PhotonExtension.TypeHelper.Deserialize<Package>(body) );
+            ReadCompletionEvent(Regulus.Serializer.TypeHelper.Deserialize<Package>(body) );
             TotalBytes += (body.Length + _HeadSize);
             
         }
 
-		void Game.IStage.Leave()
+		void Utility.IStage.Leave()
 		{
             
 		}
         
-		void Game.IStage.Update()
+		void Utility.IStage.Update()
 		{            
             _Machine.Update();
 		}
 	}
 
-    public partial class WaitQueueStage : Regulus.Game.IStage
+    public partial class WaitQueueStage : Regulus.Utility.IStage
     {
 
 
@@ -342,17 +342,17 @@
         {            
             this._Packages = packages;
         }
-        void Game.IStage.Enter()
+        void Utility.IStage.Enter()
         {
             
         }
 
-        void Game.IStage.Leave()
+        void Utility.IStage.Leave()
         {
             
         }
 
-        void Game.IStage.Update()
+        void Utility.IStage.Update()
         {
             if (_Packages.Count > 0)
             {

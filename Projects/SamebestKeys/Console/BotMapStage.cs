@@ -7,13 +7,13 @@ namespace Console
 {
 
 
-    class BotMapStage : Regulus.Game.IStage
+    class BotMapStage : Regulus.Utility.IStage
     {
 
         struct SceneBorn
         {
             public string Name;
-            public Regulus.Types.Point[] Points;
+            public Regulus.CustomType.Point[] Points;
         }
 
         private Regulus.Project.SamebestKeys.IUser _User;
@@ -23,23 +23,23 @@ namespace Console
 
         SceneBorn[] _SceneBorns;
         
-        Regulus.Game.StageMachine _Machine;
+        Regulus.Utility.StageMachine _Machine;
 
-        public event Action<Regulus.Types.Point> ResultResetEvent;
+        public event Action<Regulus.CustomType.Point> ResultResetEvent;
         public event Action ResultConnectEvent;
-        private Regulus.Types.Point? _BornPoint;        
+        private Regulus.CustomType.Point? _BornPoint;        
         public BotMapStage(Regulus.Project.SamebestKeys.IUser _User)
         {            
             this._User = _User;
             _SceneBorns = new SceneBorn[] 
             { 
-                new SceneBorn() { Name = "SC_1A" , Points = new Regulus.Types.Point[] 
+                new SceneBorn() { Name = "SC_1A" , Points = new Regulus.CustomType.Point[] 
                     {
-                        new Regulus.Types.Point(41,420 ),
-                        new Regulus.Types.Point(41,320 ),
-                        new Regulus.Types.Point(37,80 ),
-                        new Regulus.Types.Point(26,63 ),
-                        new Regulus.Types.Point(105,290 )
+                        new Regulus.CustomType.Point(41,420 ),
+                        new Regulus.CustomType.Point(41,320 ),
+                        new Regulus.CustomType.Point(37,80 ),
+                        new Regulus.CustomType.Point(26,63 ),
+                        new Regulus.CustomType.Point(105,290 )
                     }},
                 /*new SceneBorn() { Name = "SL_1B_2" , Points = new Regulus.Types.Point[] 
                     {
@@ -66,11 +66,11 @@ namespace Console
                         new Regulus.Types.Point(534,183)
                     }},*/
             };
-            _Machine = new Regulus.Game.StageMachine();
+            _Machine = new Regulus.Utility.StageMachine();
             
         }
 
-        public BotMapStage(Regulus.Project.SamebestKeys.IUser _User, Regulus.Types.Point born_point)
+        public BotMapStage(Regulus.Project.SamebestKeys.IUser _User, Regulus.CustomType.Point born_point)
             : this(_User)
         {            
             this._BornPoint = born_point;            

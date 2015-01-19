@@ -28,7 +28,7 @@ namespace Regulus.Project.TurnBasedRPG
             var x = _Obb.getX() - w / 2;
             var y = _Obb.getY() - h / 2;
 
-            _QuadTreeObjectAbility = new PhysicalAbility(new Regulus.Types.Rect(x,y,w,h) , this);
+            _QuadTreeObjectAbility = new PhysicalAbility(new Regulus.CustomType.Rect(x,y,w,h) , this);
             
         }
         

@@ -5,10 +5,10 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
 {
-    class BodyMovements : Regulus.Game.IStage<StatusBotController>
+    class BodyMovements : Regulus.Utility.IStage<StatusBotController>
     {
 
-        Regulus.Game.StageLock Regulus.Game.IStage<StatusBotController>.Enter(StatusBotController obj)
+        Regulus.Utility.StageLock Regulus.Utility.IStage<StatusBotController>.Enter(StatusBotController obj)
         {
             obj.User.PlayerProvider.Supply += PlayerProvider_Supply;
 
@@ -34,12 +34,12 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
             
         }
 
-        void Regulus.Game.IStage<StatusBotController>.Leave(StatusBotController obj)
+        void Regulus.Utility.IStage<StatusBotController>.Leave(StatusBotController obj)
         {
             obj.User.PlayerProvider.Supply -= PlayerProvider_Supply;
         }
 
-        void Regulus.Game.IStage<StatusBotController>.Update(StatusBotController obj)
+        void Regulus.Utility.IStage<StatusBotController>.Update(StatusBotController obj)
         {
 
             if (_ToMove != null)

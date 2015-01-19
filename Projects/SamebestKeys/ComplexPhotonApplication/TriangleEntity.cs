@@ -7,15 +7,15 @@ namespace Regulus.Project.SamebestKeys
 {
     class TriangleEntity : Entity, IMoverAbility
     {
-        Types.Polygon _Polygon;
+        CustomType.Polygon _Polygon;
         PhysicalAbility _QuadTreeObjectAbility;
 
-        public TriangleEntity(Guid id,Types.Polygon polygon) 
+        public TriangleEntity(Guid id,CustomType.Polygon polygon) 
             : base(id)
         {
             _Polygon = polygon;
 
-            var points = new Queue<Types.Vector2>(_Polygon.Points);
+            var points = new Queue<CustomType.Vector2>(_Polygon.Points);
             var firstPoint = points.Dequeue();
             float top = firstPoint.Y;
             float down = firstPoint.Y ;
@@ -42,17 +42,17 @@ namespace Regulus.Project.SamebestKeys
                 }
                 
             }
-            _QuadTreeObjectAbility = new PhysicalAbility(new Regulus.Types.Rect(left , top , right - left , down - top ) , this);
+            _QuadTreeObjectAbility = new PhysicalAbility(new Regulus.CustomType.Rect(left , top , right - left , down - top ) , this);
             _Polygon.BuildEdges();
         }
-        Types.Polygon IMoverAbility.Polygon
+        CustomType.Polygon IMoverAbility.Polygon
         {
             get { return _Polygon; }
         }
 
         
 
-        void IMoverAbility.Update(long time, IEnumerable<Types.Polygon> obbs)
+        void IMoverAbility.Update(long time, IEnumerable<CustomType.Polygon> obbs)
         {
             
         }

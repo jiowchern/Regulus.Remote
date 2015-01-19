@@ -10,7 +10,7 @@ namespace TestApplication
     {
         User _User;
         string _Name;
-        string Regulus.Game.Framework<IUser>.IController.Name
+        string Regulus.Utility.Framework<IUser>.IController.Name
         {
             get
             {
@@ -27,12 +27,12 @@ namespace TestApplication
         
 
 
-        void Regulus.Game.Framework<IUser>.IController.Look()
+        void Regulus.Utility.Framework<IUser>.IController.Look()
         {
             throw new NotImplementedException();
         }
 
-        void Regulus.Game.Framework<IUser>.IController.NotLook()
+        void Regulus.Utility.Framework<IUser>.IController.NotLook()
         {
             throw new NotImplementedException();
         }
@@ -57,7 +57,7 @@ namespace TestApplication
 		}
 
 
-        IUser Regulus.Game.Framework<IUser>.IController.GetUser()
+        IUser Regulus.Utility.Framework<IUser>.IController.GetUser()
         {
             throw new NotImplementedException();
         }

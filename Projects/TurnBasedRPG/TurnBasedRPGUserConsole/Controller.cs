@@ -84,18 +84,18 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
             _Commands = _ReadCommand(script_path);
             _Random = new Random(System.DateTime.Now.Millisecond);
         }
-        [Regulus.Game.Data.Table("Command")]
+        [Regulus.Utility.Data.Table("Command")]
         class Command
         {
-            [Regulus.Game.Data.Field("Command")]
+            [Regulus.Utility.Data.Field("Command")]
             public string Content { get; set; }
-            [Regulus.Game.Data.Field("Cooldown")]
+            [Regulus.Utility.Data.Field("Cooldown")]
             public float Cooldown { get; set; }
         }
 
         private Command[] _ReadCommand(string p)
         {
-            Regulus.Game.Data.PrototypeFactory factory = new Regulus.Game.Data.PrototypeFactory();
+            Regulus.Utility.Data.PrototypeFactory factory = new Regulus.Utility.Data.PrototypeFactory();
             factory.LoadCSV("Command", p);
             var cmds = factory.GeneratePrototype<Command>();
             return cmds;
@@ -241,7 +241,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
 
     class StatusBotController : Controller
     {
-        Regulus.Game.StageMachine<StatusBotController> _StageMachine;
+        Regulus.Utility.StageMachine<StatusBotController> _StageMachine;
         public TurnBasedRPG.User User {get; private set;}
         public string Name { get; private set; }
         public StatusBotController(string name)
@@ -252,7 +252,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole
         {
             User = user;
             User.LinkFail += User_LinkFail;
-            _StageMachine = new Regulus.Game.StageMachine<StatusBotController>(this);
+            _StageMachine = new Regulus.Utility.StageMachine<StatusBotController>(this);
             ToVerify();
         }
 

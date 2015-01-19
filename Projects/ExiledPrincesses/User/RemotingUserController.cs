@@ -22,7 +22,7 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
             _Look = false;
             _Linked = false;
         }
-        string Regulus.Game.Framework<IUser>.IController.Name
+        string Regulus.Utility.Framework<IUser>.IController.Name
         {
             get
             {
@@ -92,7 +92,7 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
         
 
 
-        void Regulus.Game.Framework<IUser>.IController.Look()
+        void Regulus.Utility.Framework<IUser>.IController.Look()
         {
             _Command.Register<string>("Connect", _Connect);
             if (_UserCommand != null)
@@ -102,7 +102,7 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
                 _UserCommand = new UserCommand(_User, _View, _Command);
         }
 
-        void Regulus.Game.Framework<IUser>.IController.NotLook()
+        void Regulus.Utility.Framework<IUser>.IController.NotLook()
         {
             _Command.Unregister("Connect");
             if (_UserCommand != null)
@@ -115,7 +115,7 @@ namespace Regulus.Project.ExiledPrincesses.Remoting
 
 
 
-        IUser Regulus.Game.Framework<IUser>.IController.GetUser()
+        IUser Regulus.Utility.Framework<IUser>.IController.GetUser()
         {
             throw new NotImplementedException();
         }

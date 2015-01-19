@@ -5,10 +5,10 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
 {
-    class Game : Regulus.Game.IStage<StatusBotController>
+    class Game : Regulus.Utility.IStage<StatusBotController>
     {
         Action<Regulus.Project.TurnBasedRPG.IPlayer> _OnSupply;
-        Regulus.Game.StageLock Regulus.Game.IStage<StatusBotController>.Enter(StatusBotController obj)
+        Regulus.Utility.StageLock Regulus.Utility.IStage<StatusBotController>.Enter(StatusBotController obj)
         {
             _OnSupply = (player) =>
             {
@@ -32,7 +32,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
             return null;
         }
 
-        void Regulus.Game.IStage<StatusBotController>.Leave(StatusBotController obj)
+        void Regulus.Utility.IStage<StatusBotController>.Leave(StatusBotController obj)
         {
 
             var notify = obj.User.PlayerProvider;
@@ -40,7 +40,7 @@ namespace Regulus.Project.TurnBasedRPGUserConsole.BotStage
         }
 
         System.DateTime _Restart;
-        void Regulus.Game.IStage<StatusBotController>.Update(StatusBotController obj)
+        void Regulus.Utility.IStage<StatusBotController>.Update(StatusBotController obj)
         {
             var time = System.DateTime.Now - _Restart;
             if (time.TotalSeconds > 10)

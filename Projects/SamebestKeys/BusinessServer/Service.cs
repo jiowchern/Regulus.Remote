@@ -11,7 +11,7 @@ namespace BusinessServer
         void PushCoins(string player_id, int coins, string remark);
         void Logout();
     }
-    class Service : Regulus.Game.IStage, ServiceAPI
+    class Service : Regulus.Utility.IStage, ServiceAPI
     {
         private Regulus.Remoting.ISoulBinder _Binder;
         private Storage _Storage;
@@ -37,17 +37,17 @@ namespace BusinessServer
             this._Storage = _Storage;
         }
 
-        void Regulus.Game.IStage.Enter()
+        void Regulus.Utility.IStage.Enter()
         {
             
         }
 
-        void Regulus.Game.IStage.Leave()
+        void Regulus.Utility.IStage.Leave()
         {
             
         }
 
-        void Regulus.Game.IStage.Update()
+        void Regulus.Utility.IStage.Update()
         {
             
         }

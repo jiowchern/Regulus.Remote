@@ -10,13 +10,13 @@ namespace Regulus.Projects.SamebestKeys.Standalong
         Regulus.Remoting.Ghost.TProvider<Regulus.Project.SamebestKeys.IConnect> _ConnectProvider;
         Regulus.Remoting.Ghost.TProvider<Regulus.Project.SamebestKeys.IOnline> _OnlineProvider;
         Regulus.Standalong.Agent _Agent;
-        Regulus.Game.StageMachine _Machine;
+        Regulus.Utility.StageMachine _Machine;
         private Game _Game;
         public StandalongUser(Game game)
         {
             _Game = game;
             _Agent = new Regulus.Standalong.Agent();
-            _Machine = new Regulus.Game.StageMachine();            
+            _Machine = new Regulus.Utility.StageMachine();            
             _ConnectProvider = new Regulus.Remoting.Ghost.TProvider<Project.SamebestKeys.IConnect>();
             _OnlineProvider = new Regulus.Remoting.Ghost.TProvider<Project.SamebestKeys.IOnline>();
         }
@@ -162,7 +162,7 @@ namespace Regulus.Projects.SamebestKeys.Standalong
 
     partial class StandalongUser : Regulus.Project.SamebestKeys.IUser
     {
-        class OnlineStage : Regulus.Game.IStage, Regulus.Project.SamebestKeys.IOnline, Regulus.Remoting.Ghost.IGhost
+        class OnlineStage : Regulus.Utility.IStage, Regulus.Project.SamebestKeys.IOnline, Regulus.Remoting.Ghost.IGhost
         {
             Guid _Id;
             Regulus.Standalong.Agent _Agent;
@@ -211,7 +211,7 @@ namespace Regulus.Projects.SamebestKeys.Standalong
                 throw new NotImplementedException();
             }
 
-            void Regulus.Game.IStage.Enter()
+            void Regulus.Utility.IStage.Enter()
             {
                 (_Provider as Regulus.Remoting.Ghost.IProvider).Add(this);
                 (_Provider as Regulus.Remoting.Ghost.IProvider).Ready(_Id);
@@ -220,7 +220,7 @@ namespace Regulus.Projects.SamebestKeys.Standalong
                 _Agent.BreakEvent += DisconnectEvent;
             }
 
-            void Regulus.Game.IStage.Leave()
+            void Regulus.Utility.IStage.Leave()
             {
                 
                 _Agent.BreakEvent -= DisconnectEvent;
@@ -228,7 +228,7 @@ namespace Regulus.Projects.SamebestKeys.Standalong
                 (_Provider as Regulus.Remoting.Ghost.IProvider).Remove(_Id);
             }
 
-            void Regulus.Game.IStage.Update()
+            void Regulus.Utility.IStage.Update()
             {
                 _Updater.Update();
                 _Agent.Update();

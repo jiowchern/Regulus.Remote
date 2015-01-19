@@ -85,12 +85,12 @@ namespace Console
 
         
 
-        private static void _Spawn(Regulus.Remoting.Value<Regulus.Game.Framework<Regulus.Project.SamebestKeys.IUser>.IUserRequester> value)
+        private static void _Spawn(Regulus.Remoting.Value<Regulus.Utility.Framework<Regulus.Project.SamebestKeys.IUser>.IUserRequester> value)
         {
             value.OnValue += _SpawnController;
         }
 
-        static void _SpawnController(Regulus.Game.Framework<Regulus.Project.SamebestKeys.IUser>.IUserRequester obj)
+        static void _SpawnController(Regulus.Utility.Framework<Regulus.Project.SamebestKeys.IUser>.IUserRequester obj)
         {
             obj.Spawn("jc", true);
         }

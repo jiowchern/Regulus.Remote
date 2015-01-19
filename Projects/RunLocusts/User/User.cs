@@ -7,9 +7,9 @@ namespace Imdgame.RunLocusts
 {
     internal class User : IUser
     {
-        Regulus.Remoting.Ghost.TProvider<Regulus.Game.IConnect> _ConnectProvider;
-        Regulus.Remoting.Ghost.TProvider<Regulus.Game.IOnline> _OnlineProvider;        
-        Regulus.Game.StageMachine _Machine;
+        Regulus.Remoting.Ghost.TProvider<Regulus.Utility.IConnect> _ConnectProvider;
+        Regulus.Remoting.Ghost.TProvider<Regulus.Utility.IOnline> _OnlineProvider;        
+        Regulus.Utility.StageMachine _Machine;
         Regulus.Remoting.IAgent _Agent;
 
         Regulus.Utility.Updater _Updater;
@@ -17,9 +17,9 @@ namespace Imdgame.RunLocusts
         public User(Regulus.Remoting.IAgent agent)
         {
             _Agent = agent;
-            _ConnectProvider = new Regulus.Remoting.Ghost.TProvider<Regulus.Game.IConnect>();
-            _OnlineProvider = new Regulus.Remoting.Ghost.TProvider<Regulus.Game.IOnline>();
-            _Machine = new Regulus.Game.StageMachine();
+            _ConnectProvider = new Regulus.Remoting.Ghost.TProvider<Regulus.Utility.IConnect>();
+            _OnlineProvider = new Regulus.Remoting.Ghost.TProvider<Regulus.Utility.IOnline>();
+            _Machine = new Regulus.Utility.StageMachine();
             _Updater = new Regulus.Utility.Updater();
         }
 
@@ -60,12 +60,12 @@ namespace Imdgame.RunLocusts
             _Updater.Shutdown();
         }
 
-        Regulus.Remoting.Ghost.IProviderNotice<Regulus.Game.IConnect> IUser.ConnectProvider
+        Regulus.Remoting.Ghost.IProviderNotice<Regulus.Utility.IConnect> IUser.ConnectProvider
         {
             get { return _ConnectProvider; }
         }
 
-        Regulus.Remoting.Ghost.IProviderNotice<Regulus.Game.IOnline> IUser.OnlineProvider
+        Regulus.Remoting.Ghost.IProviderNotice<Regulus.Utility.IOnline> IUser.OnlineProvider
         {
             get { return _OnlineProvider; }
         }

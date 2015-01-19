@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Console
 {
-    class BotSelectActorStage : Regulus.Game.IStage
+    class BotSelectActorStage : Regulus.Utility.IStage
     {
         private Regulus.Project.SamebestKeys.IUser _User;
         private string account;
@@ -16,7 +16,7 @@ namespace Console
             this._User = _User;
             this.account = account;
         }
-        void Regulus.Game.IStage.Enter()
+        void Regulus.Utility.IStage.Enter()
         {
             _User.ParkingProvider.Supply += ParkingProvider_Supply;
         }
@@ -26,12 +26,12 @@ namespace Console
             obj.Select(account + "-1").OnValue += ResultEvent;
         }
 
-        void Regulus.Game.IStage.Leave()
+        void Regulus.Utility.IStage.Leave()
         {
             _User.ParkingProvider.Supply -= ParkingProvider_Supply;
         }
 
-        void Regulus.Game.IStage.Update()
+        void Regulus.Utility.IStage.Update()
         {
             
         }

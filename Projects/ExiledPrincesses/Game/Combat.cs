@@ -140,7 +140,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
         public event OnWinner WinnerEvent;
         public delegate void OnDraw();
         public event OnDraw DrawEvent;
-        Regulus.Game.StageMachine _StageMachine;
+        Regulus.Utility.StageMachine _StageMachine;
         Team[] _Teams;
         CommonSkillSet _CommonSkillSet;
         
@@ -155,7 +155,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
             _CommonSkillSet.Shuffle();
             _CommonSkillSet.EmptyEvent += () => { DrawEvent(); };
             _Teams = new Team[] { team1 , team2 };
-            _StageMachine = new Regulus.Game.StageMachine();
+            _StageMachine = new Regulus.Utility.StageMachine();
 
 
             _Take(_Teams , _CommonSkillSet);
@@ -230,7 +230,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
     }
     partial class Combat
     {
-        class ActionStage : Regulus.Game.IStage
+        class ActionStage : Regulus.Utility.IStage
         {
             class Activists : Regulus.Utility.IUpdatable
             {
@@ -331,7 +331,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
                 _Activists = new Queue<Activists>(_GetSurvivor(teams, common_skill_set));
             }
 
-            void Regulus.Game.IStage.Enter()
+            void Regulus.Utility.IStage.Enter()
             {
                 _Current = _Activists.Dequeue();                
                 _Current.DoneEvent += _Next;
@@ -367,12 +367,12 @@ namespace Regulus.Project.ExiledPrincesses.Game
                     DoneEvent();
             }
 
-            void Regulus.Game.IStage.Leave()
+            void Regulus.Utility.IStage.Leave()
             {
                 _Current.Shutdown();
             }
             
-            void Regulus.Game.IStage.Update()
+            void Regulus.Utility.IStage.Update()
             {
                 _Current.Update();
             }
@@ -404,7 +404,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
     }
     partial class Combat
     {
-        class StrategyStage : Regulus.Game.IStage
+        class StrategyStage : Regulus.Utility.IStage
         {
             public delegate void OnDone();
             public event OnDone DoneEvent;
@@ -416,7 +416,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
             }
 
-            void Regulus.Game.IStage.Enter()
+            void Regulus.Utility.IStage.Enter()
             {
                 var strategys = _Generate();                
                 _Snatch(strategys);
@@ -490,12 +490,12 @@ namespace Regulus.Project.ExiledPrincesses.Game
                 return (from team in _Teams select team.Members.Length).Sum();
             }
 
-            void Regulus.Game.IStage.Leave()
+            void Regulus.Utility.IStage.Leave()
             {
                 
             }
 
-            void Regulus.Game.IStage.Update()
+            void Regulus.Utility.IStage.Update()
             {
                 
             }

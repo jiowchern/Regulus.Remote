@@ -8,7 +8,7 @@ namespace Regulus.Framework
     public interface ICommandParsable<T>
     {
 
-        void Setup();
+        void Setup(Regulus.Remoting.IGPIBinderFactory build);
         void Clear();
     }
 }

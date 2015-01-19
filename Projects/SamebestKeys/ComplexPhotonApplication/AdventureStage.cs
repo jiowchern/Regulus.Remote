@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
-    class AdventureStage : Regulus.Game.IStage
+    class AdventureStage : Regulus.Utility.IStage
     {
         IStorage _Stroage;
         DateTime _Save;
@@ -21,7 +21,7 @@ namespace Regulus.Project.SamebestKeys
             _Map = map;
 		}
       
-        void Regulus.Game.IStage.Enter()
+        void Regulus.Utility.IStage.Enter()
         {
             _Player = new Player(_User.Actor);
             _User.Provider.Bind<IPlayer>(_Player);
@@ -61,7 +61,7 @@ namespace Regulus.Project.SamebestKeys
         Action<IObservedAbility> _ObservedInto;
         
         
-        void Regulus.Game.IStage.Leave()
+        void Regulus.Utility.IStage.Leave()
         {            
             
             _Map.Left(_Player);
@@ -85,7 +85,7 @@ namespace Regulus.Project.SamebestKeys
         }
       
 
-        void Regulus.Game.IStage.Update()
+        void Regulus.Utility.IStage.Update()
         {
             var elapsed = DateTime.Now.Ticks - _Save.Ticks;
             var span = new TimeSpan(elapsed);

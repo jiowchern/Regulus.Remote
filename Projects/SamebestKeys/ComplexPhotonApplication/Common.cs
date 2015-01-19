@@ -37,7 +37,7 @@ namespace Regulus.Project.SamebestKeys
 
 	public interface IMapInfomation
 	{
-        Value<Types.Polygon[]> QueryWalls();
+        Value<CustomType.Polygon[]> QueryWalls();
 	}
     public interface IBelongings
     {
@@ -91,7 +91,7 @@ namespace Regulus.Project.SamebestKeys
         ActorMode Mode { get; }
         string Name { get; }
         Guid Id { get; }
-        Regulus.Types.Vector2 Position { get; }
+        Regulus.CustomType.Vector2 Position { get; }
         int Shell { get; }
         float Direction { get; }        
         event Action<MoveInfomation> ShowActionEvent;
@@ -107,11 +107,11 @@ namespace Regulus.Project.SamebestKeys
 	/// </summary>
     public interface IMoverAbility
     {
-        Regulus.Types.Polygon Polygon { get; }
+        Regulus.CustomType.Polygon Polygon { get; }
 
         void Act(ActionCommand action_command);
 
-        void Update(long time, System.Collections.Generic.IEnumerable<Regulus.Types.Polygon> obbs);
+        void Update(long time, System.Collections.Generic.IEnumerable<Regulus.CustomType.Polygon> obbs);
     }
 
     public interface ITraversable

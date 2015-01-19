@@ -5,15 +5,15 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPG
 {
-    class CrossStage : Regulus.Game.IStage<User>
+    class CrossStage : Regulus.Utility.IStage<User>
     {
         private Regulus.Project.TurnBasedRPG.IWorld _World;
         private string target_map;
-        private Regulus.Types.Vector2 target_position;
+        private Regulus.CustomType.Vector2 target_position;
         private string current_map;
-        private Regulus.Types.Vector2 current_position;
+        private Regulus.CustomType.Vector2 current_position;
 
-        public CrossStage(Regulus.Project.TurnBasedRPG.IWorld _World, string target_map, Regulus.Types.Vector2 target_position, string current_map, Regulus.Types.Vector2 current_position)
+        public CrossStage(Regulus.Project.TurnBasedRPG.IWorld _World, string target_map, Regulus.CustomType.Vector2 target_position, string current_map, Regulus.CustomType.Vector2 current_position)
         {
             // TODO: Complete member initialization
             this._World = _World;
@@ -23,7 +23,7 @@ namespace Regulus.Project.TurnBasedRPG
             this.current_position = current_position;
         }
 
-        Game.StageLock Game.IStage<User>.Enter(User obj)
+        Utility.StageLock Utility.IStage<User>.Enter(User obj)
         {
             var mapValue = _World.Find(target_map);
             mapValue.OnValue += (map) => 
@@ -44,12 +44,12 @@ namespace Regulus.Project.TurnBasedRPG
 
         
 
-        void Game.IStage<User>.Leave(User obj)
+        void Utility.IStage<User>.Leave(User obj)
         {
            
         }
 
-        void Game.IStage<User>.Update(User obj)
+        void Utility.IStage<User>.Update(User obj)
         {
             
         }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 
-namespace Regulus.Game
+namespace Regulus.Utility
 {
     public interface ICore : Regulus.Utility.IUpdatable
     {
@@ -13,13 +13,13 @@ namespace Regulus.Game
 
     public class Loader
     {
-        static public Regulus.Game.ICore Load(byte[] assembly_stream, string class_name)
+        static public Regulus.Utility.ICore Load(byte[] assembly_stream, string class_name)
         {
             var assembly = System.Reflection.Assembly.Load(assembly_stream);
             try
             {
                 var instance = assembly.CreateInstance(class_name);
-                return instance as Regulus.Game.ICore;
+                return instance as Regulus.Utility.ICore;
             }
             catch (System.MissingMethodException mme)
             {

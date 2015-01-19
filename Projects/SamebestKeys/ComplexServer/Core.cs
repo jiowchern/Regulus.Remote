@@ -6,10 +6,10 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {    
-    public class ComplexServer :Regulus.Game.ICore
+    public class ComplexServer :Regulus.Utility.ICore
     {
         Regulus.Utility.Updater _Updater;
-        Regulus.Game.ICore _Complex;
+        Regulus.Utility.ICore _Complex;
         Storage _Storage;
 
 
@@ -19,7 +19,7 @@ namespace Regulus.Project.SamebestKeys
             _Complex = new Complex(_Storage);
             _Updater = new Utility.Updater();
         }
-        void Game.ICore.ObtainController(Remoting.ISoulBinder binder)
+        void Utility.ICore.ObtainController(Remoting.ISoulBinder binder)
         {
             _Complex.ObtainController(binder);
         }

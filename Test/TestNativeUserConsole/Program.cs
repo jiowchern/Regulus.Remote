@@ -13,8 +13,8 @@ namespace TestNativeUserConsole
     public class Appliaction : Regulus.Utility.IUpdatable
     {
         private TestNativeUser.Application _Appliaction;
-        Regulus.Game.Framework<TestNativeUser.IUser>.IUserRequester _UserRequester;
-        Regulus.Game.Framework<TestNativeUser.IUser>.ISystemSelector _SystemSelector;
+        Regulus.Utility.Framework<TestNativeUser.IUser>.IUserRequester _UserRequester;
+        Regulus.Utility.Framework<TestNativeUser.IUser>.ISystemSelector _SystemSelector;
 
         Regulus.Utility.Updater _Bots;
         int _BotAmount;
@@ -101,7 +101,7 @@ namespace TestNativeUserConsole
 
         }
 
-        void _OnUserRequester(Regulus.Game.Framework<TestNativeUser.IUser>.IUserRequester obj)
+        void _OnUserRequester(Regulus.Utility.Framework<TestNativeUser.IUser>.IUserRequester obj)
         {
             if (obj != null)
             {
@@ -111,7 +111,7 @@ namespace TestNativeUserConsole
 
         
 
-        void _Appliaction_SelectSystemEvent(Regulus.Game.Framework<TestNativeUser.IUser>.ISystemSelector system_selector)
+        void _Appliaction_SelectSystemEvent(Regulus.Utility.Framework<TestNativeUser.IUser>.ISystemSelector system_selector)
         {
             _SystemSelector = system_selector;
         }

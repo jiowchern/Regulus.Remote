@@ -7,7 +7,7 @@ namespace Regulus.Remoting.Ghost.Native
 {
     public partial class Agent 
     {
-        class ConnectStage : Regulus.Game.IStage
+        class ConnectStage : Regulus.Utility.IStage
         {
             private System.Net.Sockets.Socket _Socket;
             private string _Ipaddress;
@@ -23,7 +23,7 @@ namespace Regulus.Remoting.Ghost.Native
                 this._Port = port;
             }
 
-            void Game.IStage.Enter()
+            void Utility.IStage.Enter()
             {
                 _AsyncResult = _Socket.BeginConnect(_Ipaddress, _Port, _ConnectResult, null);
             }
@@ -63,7 +63,7 @@ namespace Regulus.Remoting.Ghost.Native
 
                 return false;
             }
-            void Game.IStage.Leave()
+            void Utility.IStage.Leave()
             {
                 if (_Result.HasValue == false)
                 {
@@ -72,26 +72,26 @@ namespace Regulus.Remoting.Ghost.Native
                 
             }
 
-            void Game.IStage.Update()
+            void Utility.IStage.Update()
             {
                 _InvokeResultEvent();
             }
         }
 
-        class IdleStage : Regulus.Game.IStage
+        class IdleStage : Regulus.Utility.IStage
         {
 
-            void Game.IStage.Enter()
+            void Utility.IStage.Enter()
             {
 
             }
 
-            void Game.IStage.Leave()
+            void Utility.IStage.Leave()
             {
 
             }
 
-            void Game.IStage.Update()
+            void Utility.IStage.Update()
             {
 
             }

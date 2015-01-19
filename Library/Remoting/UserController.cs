@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Regulus.Game
+namespace Regulus.Utility
 {
-    public class UserController<TUser> : Regulus.Game.Framework<TUser>.IController
+    public class UserController<TUser> : Regulus.Utility.Framework<TUser>.IController
         where TUser : Regulus.Utility.IUpdatable
     {
         Regulus.Utility.Updater _Updater;
@@ -21,7 +21,7 @@ namespace Regulus.Game
 
 
         string _Name;
-        string Game.Framework<TUser>.IController.Name
+        string Utility.Framework<TUser>.IController.Name
         {
             get
             {
@@ -37,13 +37,13 @@ namespace Regulus.Game
         public delegate void OnLook(TUser user);
         public event OnLook LookEvent;
         public event OnLook UnlookEvent;
-        void Game.Framework<TUser>.IController.Look()
+        void Utility.Framework<TUser>.IController.Look()
         {
             if(LookEvent != null)
                 LookEvent(_User);
         }
 
-        void Game.Framework<TUser>.IController.NotLook()
+        void Utility.Framework<TUser>.IController.NotLook()
         {
             if(UnlookEvent!= null)
                 UnlookEvent(_User);
@@ -68,7 +68,7 @@ namespace Regulus.Game
         }
 
 
-        TUser Game.Framework<TUser>.IController.GetUser()
+        TUser Utility.Framework<TUser>.IController.GetUser()
         {
             return _User;
         }

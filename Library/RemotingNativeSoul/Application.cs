@@ -5,10 +5,10 @@ namespace Regulus.Remoting.Soul.Native
 {    
 	public class Application : Regulus.Utility.WindowConsole
 	{
-        Regulus.Game.StageMachine _Machine;
+        Regulus.Utility.StageMachine _Machine;
         protected override void _Launch()
         {
-            _Machine = new Game.StageMachine();
+            _Machine = new Utility.StageMachine();
             _ToStart();        
         }
 
@@ -29,7 +29,7 @@ namespace Regulus.Remoting.Soul.Native
             _Machine.Push(stage);
         }
 
-        private void _ToRun(Regulus.Game.ICore core, int port, float timeout)
+        private void _ToRun(Regulus.Utility.ICore core, int port, float timeout)
         {
             var stage = new Regulus.Remoting.Soul.Native.StageRun(core, base.Command, port, base.Viewer);
             stage.ShutdownEvent += _ToStart;

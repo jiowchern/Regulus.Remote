@@ -59,7 +59,7 @@ namespace Regulus.Project.TurnBasedRPG
     {
         string Name { get; }
         Guid Id { get; }
-        Regulus.Types.Vector2 Position { get; }
+        Regulus.CustomType.Vector2 Position { get; }
         float Direction { get; }        
         event Action<MoveInfomation> ShowActionEvent;
         event Action<string> SayEvent;
@@ -103,7 +103,7 @@ namespace Regulus.Project.TurnBasedRPG
         }
         long _CurrentTime;
         float _MoveSpeed;
-        Regulus.Types.Vector2 _UnitVector;
+        Regulus.CustomType.Vector2 _UnitVector;
         float _Direction;
 
         void _Act(ActionStatue action_statue, float move_speed, float direction /* 轉向角度 0~360 */)
@@ -121,7 +121,7 @@ namespace Regulus.Project.TurnBasedRPG
 
                 // 移動向量
                 //_UnitVector = new Types.Vector2() { X = (float)Math.Cos(t), Y = (float)Math.Sin(t) };
-                _UnitVector = new Types.Vector2() { X = -(float)Math.Sin(t), Y = -(float)Math.Cos(t) };
+                _UnitVector = new CustomType.Vector2() { X = -(float)Math.Sin(t), Y = -(float)Math.Cos(t) };
                 _Update = _First;
             }
         }
@@ -130,7 +130,7 @@ namespace Regulus.Project.TurnBasedRPG
             _Act(action_statue, move_speed, direction);
         }
 
-        public event Action<long, Regulus.Types.Vector2> PositionEvent;
+        public event Action<long, Regulus.CustomType.Vector2> PositionEvent;
         void _UpdateMover(long time, System.Collections.Generic.IEnumerable<Utility.OBB> obbs)
         {
             if (_MoveSpeed > 0)
@@ -138,7 +138,7 @@ namespace Regulus.Project.TurnBasedRPG
                 var dt = (float)new System.TimeSpan(time - _CurrentTime).TotalSeconds;
                 if (dt > 0)
                 {
-                    Regulus.Types.Vector2 moveVector = new Types.Vector2();
+                    Regulus.CustomType.Vector2 moveVector = new CustomType.Vector2();
                     moveVector.X = _UnitVector.X * dt * _MoveSpeed;
                     moveVector.Y = _UnitVector.Y * dt * _MoveSpeed;
 
@@ -183,7 +183,7 @@ namespace Regulus.Project.TurnBasedRPG
 
         }
 
-        public delegate void BeginAction(long begin_time, float speed, float direction, Regulus.Types.Vector2 vector, ActionStatue action_status);
+        public delegate void BeginAction(long begin_time, float speed, float direction, Regulus.CustomType.Vector2 vector, ActionStatue action_status);
         public event BeginAction ActionEvent;
 
         void _Empty(long time, System.Collections.Generic.IEnumerable<Utility.OBB> obbs)

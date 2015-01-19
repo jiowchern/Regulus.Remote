@@ -8,7 +8,7 @@ namespace Regulus.Project.UnboundarySnake
     class User : Regulus.Game.IUser
     {
         Zone _Zone;
-        Regulus.Game.StageMachine _Machine;
+        Regulus.Utility.StageMachine _Machine;
         
         IStorage _Storage;
         void Regulus.Game.IUser.OnKick(Guid id)
@@ -33,7 +33,7 @@ namespace Regulus.Project.UnboundarySnake
             _Zone = zone;
             _Binder.BreakEvent += _Break;
             this._Storage = _Storage;
-            _Machine = new Regulus.Game.StageMachine();
+            _Machine = new Regulus.Utility.StageMachine();
         }
         
         event Regulus.Game.OnQuit Regulus.Game.IUser.QuitEvent

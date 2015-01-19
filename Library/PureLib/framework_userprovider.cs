@@ -13,7 +13,7 @@ namespace Regulus.Framework
         private IUserFactoty<TUser> Factory;
         private Utility.Console.IViewer _View;
         private Utility.Command _Command;
-        Controller<TUser>? _Current;
+        Controller<TUser> _Current;
 
         Regulus.Utility.Updater _Updater;
         public UserProvider(IUserFactoty<TUser> factory, Utility.Console.IViewer view, Utility.Command command)
@@ -22,7 +22,7 @@ namespace Regulus.Framework
             this.Factory = factory;
             this._View = view;
             this._Command = command;
-            _Current = new Controller<TUser>?();
+            _Current = null;
             _Updater = new Utility.Updater();
         }
         
@@ -30,9 +30,7 @@ namespace Regulus.Framework
         public TUser Spawn(string name)
         {
             var user = Factory.SpawnUser();
-            var parser = Factory.SpawnParser(_Command, _View, user);
-
-            _Add(_Build(name, user, parser));
+            _Add(_Build(name, user));
             _View.WriteLine( string.Format("{0} user created." , name));
             return user;
         }
@@ -43,23 +41,25 @@ namespace Regulus.Framework
             _Updater.Add(controller.User);
         }
 
-        private Controller<TUser> _Build(string name, TUser user , ICommandParsable<TUser> parser)
+        private Controller<TUser> _Build(string name, TUser user )
         {
-            return new Controller<TUser>(name, user, parser);
+            return new Controller<TUser>(name, user);
         }
 
         public void Unspawn(string name)
         {
             var controller = _Find(name);
 
-            if (controller.HasValue)
+            if (controller != null)
             {
-
-                controller.Value.Parser.Clear();                
-                if (_Current.HasValue &&  _Current.Value.User == controller.Value.User)
-                    _Current = new Controller<TUser>?();
-
-                _Controllers.Remove(controller.Value);
+                controller.Parser.Clear();                
+                if (_Current != null &&  _Current.User == controller.User)
+                {
+                    _Current.Builder.Remove();
+                    _Current.Parser.Clear();       
+                    _Current = null;
+                }
+                _Controllers.Remove(controller);
                 _View.WriteLine(string.Format("{0} user removed.", name));
                 
             }
@@ -68,14 +68,14 @@ namespace Regulus.Framework
             
         }
 
-        private Controller<TUser>? _Find(string name)
+        private Controller<TUser> _Find(string name)
         {
             var controllers =  (from controller in _Controllers where controller.Name == name select controller).ToArray();
             if (controllers.Length == 1)
                 return controllers[0];
             else if (controllers.Length == 0)
             {
-                return new Controller<TUser>?();
+                return null;
             }
 
             throw new SystemException("controller名稱應該只有一個");
@@ -84,19 +84,36 @@ namespace Regulus.Framework
         public bool Select(string name)
         {
             var controller = _Find(name);
-            if (controller.HasValue)
+            if (controller != null)
             {
-                if (_Current.HasValue)
+                if (_Current != null)
                 {
-                    _Current.Value.Parser.Clear();       
+                    _Current.Builder.Remove();
+                    _Current.Parser.Clear();       
                 }
-                _View.WriteLine(string.Format("{0} selected.", name));                
+                
+                var parser = Factory.SpawnParser(_Command, _View, controller.User);
+                var builder = _CreateBuilder();
+
+                
+
+                controller.Parser = parser;
+                controller.Builder = builder;
+                controller.Parser.Setup(builder);
+                builder.Setup();
+                
                 _Current = controller;
-                _Current.Value.Parser.Setup();                
+
+                _View.WriteLine(string.Format("{0} selected.", name));                
                 return true;
             }
 
             return false;
+        }
+
+        private Regulus.Remoting.GPIBinderFactory _CreateBuilder()
+        {
+            return new Remoting.GPIBinderFactory(_Command);
         }
 
         bool Utility.IUpdatable.Update()

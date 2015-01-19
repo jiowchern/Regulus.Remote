@@ -7,9 +7,9 @@ namespace Regulus.Remoting
 {
     public class User : Regulus.Utility.IUpdatable
     {
-        Regulus.Remoting.Ghost.TProvider<Regulus.Game.IConnect> _ConnectProvider;
-        Regulus.Remoting.Ghost.TProvider<Regulus.Game.IOnline> _OnlineProvider;        
-        Regulus.Game.StageMachine _Machine;
+        Regulus.Remoting.Ghost.TProvider<Regulus.Utility.IConnect> _ConnectProvider;
+        Regulus.Remoting.Ghost.TProvider<Regulus.Utility.IOnline> _OnlineProvider;        
+        Regulus.Utility.StageMachine _Machine;
         Regulus.Remoting.IAgent _Agent;
 
         Regulus.Utility.Updater _Updater;
@@ -17,9 +17,9 @@ namespace Regulus.Remoting
         public User(Regulus.Remoting.IAgent agent)
         {
             _Agent = agent;
-            _ConnectProvider = new Regulus.Remoting.Ghost.TProvider<Regulus.Game.IConnect>();
-            _OnlineProvider = new Regulus.Remoting.Ghost.TProvider<Regulus.Game.IOnline>();
-            _Machine = new Regulus.Game.StageMachine();
+            _ConnectProvider = new Regulus.Remoting.Ghost.TProvider<Regulus.Utility.IConnect>();
+            _OnlineProvider = new Regulus.Remoting.Ghost.TProvider<Regulus.Utility.IOnline>();
+            _Machine = new Regulus.Utility.StageMachine();
             _Updater = new Regulus.Utility.Updater();
         }
 
@@ -60,12 +60,12 @@ namespace Regulus.Remoting
             _Updater.Shutdown();
         }
 
-        public Regulus.Remoting.Ghost.IProviderNotice<Regulus.Game.IConnect> ConnectProvider
+        public Regulus.Remoting.Ghost.IProviderNotice<Regulus.Utility.IConnect> ConnectProvider
         {
             get { return _ConnectProvider; }
         }
 
-        public Regulus.Remoting.Ghost.IProviderNotice<Regulus.Game.IOnline> OnlineProvider
+        public Regulus.Remoting.Ghost.IProviderNotice<Regulus.Utility.IOnline> OnlineProvider
         {
             get { return _OnlineProvider; }
         }

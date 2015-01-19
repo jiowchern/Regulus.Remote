@@ -8,7 +8,7 @@ namespace Regulus.Projects.SamebestKeys.Standalong
     internal class Game : Regulus.Utility.IUpdatable
     {
         Regulus.Utility.Updater _Updater;
-        Regulus.Game.ICore _Complex;
+        Regulus.Utility.ICore _Complex;
         Stroage _Stroage;
 
         int _UserCount;

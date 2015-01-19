@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Regulus.Extension;
-namespace Regulus.Game
+namespace Regulus.Utility
 {
     public abstract partial class Framework<TUser> : Regulus.Utility.IUpdatable
 		where TUser : Regulus.Utility.IUpdatable
@@ -33,7 +33,7 @@ namespace Regulus.Game
         Regulus.Utility.Console _Console;
         protected Regulus.Utility.Console.IInput _Input;
         protected Regulus.Utility.Console.IViewer _Viewer;
-        Regulus.Game.StageMachine _StageMachine;
+        Regulus.Utility.StageMachine _StageMachine;
 		Regulus.Utility.Updater _Loops;        
         
         public Regulus.Utility.Command Command { get { return _Console.Command; } }
@@ -145,7 +145,7 @@ namespace Regulus.Game
         }
         
 
-        class StageSelectSystem : Regulus.Game.IStage, ISystemSelector
+        class StageSelectSystem : Regulus.Utility.IStage, ISystemSelector
         {
             class SystemSelector : ISystemSelector
             {
@@ -266,7 +266,7 @@ namespace Regulus.Game
             }
         }
 
-        class StageSystemReady : Regulus.Game.IStage, IUserRequester
+        class StageSystemReady : Regulus.Utility.IStage, IUserRequester
         {
             private Utility.Console.IViewer _Viewer;
             private ControllerProvider _ControllerProvider;

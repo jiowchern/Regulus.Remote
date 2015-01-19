@@ -5,14 +5,14 @@ using System.Text;
 
 namespace Regulus.Project.KeysHearthstone
 {
-	class User : Regulus.Game.IUser
+    class User : Regulus.Game.IUser
 	{
 		private Remoting.ISoulBinder _Binder;
-		Regulus.Game.StageMachine _Machine;
+		Regulus.Utility.StageMachine _Machine;
 		IStorage _Storage;
 		public User(Remoting.ISoulBinder binder , IStorage storage)
 		{
-			_Machine = new Game.StageMachine();
+			_Machine = new Utility.StageMachine();
 			this._Binder = binder;
 			_Account = new Data.Account();
 			_Storage = storage;
@@ -26,14 +26,14 @@ namespace Regulus.Project.KeysHearthstone
 			}
 		}
 
-		event Game.OnNewUser _VerifySuccessEvent;
-		event Game.OnNewUser Game.IUser.VerifySuccessEvent
+        event Game.OnNewUser _VerifySuccessEvent;
+        event Game.OnNewUser Game.IUser.VerifySuccessEvent
 		{
 			add { _VerifySuccessEvent += value; }
 			remove { _VerifySuccessEvent -= value; }
 		}
-		event Game.OnQuit _QuitEvent;
-		event Game.OnQuit Game.IUser.QuitEvent
+        event Game.OnQuit _QuitEvent;
+        event Game.OnQuit Game.IUser.QuitEvent
 		{
 			add { _QuitEvent += value; }
 			remove { _QuitEvent -= value; }

@@ -93,8 +93,8 @@ namespace Regulus.Remoting.Soul
         {
             var argmants = new Dictionary<byte, byte[]>();
             argmants.Add(0, entity_id.ToByteArray());
-            argmants.Add(1, Regulus.PhotonExtension.TypeHelper.Serializer(name));
-            argmants.Add(2, Regulus.PhotonExtension.TypeHelper.Serializer(val));
+            argmants.Add(1, Regulus.Serializer.TypeHelper.Serializer(name));
+            argmants.Add(2, Regulus.Serializer.TypeHelper.Serializer(val));
             
             _Queue.Push((byte)ServerToClientOpCode.UpdateProperty, argmants);
         }
@@ -105,11 +105,11 @@ namespace Regulus.Remoting.Soul
 		{            
             var argmants = new Dictionary<byte, byte[]>();
             argmants.Add(0, entity_id.ToByteArray());
-            argmants.Add(1, Regulus.PhotonExtension.TypeHelper.Serializer(event_name));
+            argmants.Add(1, Regulus.Serializer.TypeHelper.Serializer(event_name));
 			byte i = 2;
 			foreach (var arg in args)
 			{
-				argmants.Add( i , Regulus.PhotonExtension.TypeHelper.Serializer(arg) );
+				argmants.Add( i , Regulus.Serializer.TypeHelper.Serializer(arg) );
 				++i;
 			}
             _InvokeEvent(argmants);
@@ -133,7 +133,7 @@ namespace Regulus.Remoting.Soul
                 var argmants = new Dictionary<byte, byte[]>();
                 argmants.Add(0, returnId.ToByteArray());
                 object value = returnValue.GetObject();
-                argmants.Add(1, PhotonExtension.TypeHelper.Serializer(value));
+                argmants.Add(1, Serializer.TypeHelper.Serializer(value));
                 _Queue.Push((byte)ServerToClientOpCode.ReturnValue, argmants);
 
                 _WaitValues.Remove(returnId);
@@ -142,7 +142,7 @@ namespace Regulus.Remoting.Soul
         private void _LoadSoulCompile(string type_name, Guid id)
         {
             var argmants = new Dictionary<byte, byte[]>();
-            argmants.Add(0, Regulus.PhotonExtension.TypeHelper.Serializer(type_name));
+            argmants.Add(0, Regulus.Serializer.TypeHelper.Serializer(type_name));
             argmants.Add(1, id.ToByteArray());
             _Queue.Push((byte)ServerToClientOpCode.LoadSoulCompile, argmants);
         }
@@ -150,7 +150,7 @@ namespace Regulus.Remoting.Soul
         private void _LoadSoul(string type_name, Guid id)
         {         
             var argmants = new Dictionary<byte, byte[]>();
-            argmants.Add(0, Regulus.PhotonExtension.TypeHelper.Serializer(type_name));
+            argmants.Add(0, Regulus.Serializer.TypeHelper.Serializer(type_name));
             argmants.Add(1, id.ToByteArray());
             _Queue.Push((byte)ServerToClientOpCode.LoadSoul, argmants);
         }
@@ -158,7 +158,7 @@ namespace Regulus.Remoting.Soul
         private void _UnloadSoul(string type_name, Guid id)
         {
             var argmants = new Dictionary<byte, byte[]>();
-            argmants.Add(0, Regulus.PhotonExtension.TypeHelper.Serializer(type_name));
+            argmants.Add(0, Regulus.Serializer.TypeHelper.Serializer(type_name));
             argmants.Add(1, id.ToByteArray());
             _Queue.Push((byte)ServerToClientOpCode.UnloadSoul, argmants);
         }
@@ -177,7 +177,7 @@ namespace Regulus.Remoting.Soul
                     int i = 0;
                     var argObjects = from pi in paramerInfos
                                         let arg = args[i++]
-                                        select Regulus.PhotonExtension.TypeHelper.DeserializeObject(pi.ParameterType, arg);
+                                        select Regulus.Serializer.TypeHelper.DeserializeObject(pi.ParameterType, arg);
 
                     if (soulInfo.ObjectInstance != null)
                     {

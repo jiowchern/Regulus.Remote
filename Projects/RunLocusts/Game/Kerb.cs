@@ -6,7 +6,7 @@ using System.Text;
 namespace Imdgame.RunLocusts
 {
     
-    class Kerb : Regulus.Game.IStage, IKerb, Regulus.Utility.Coroutine.IUpdateable
+    class Kerb : Regulus.Utility.IStage, IKerb, Regulus.Utility.Coroutine.IUpdateable
     {
         private Regulus.Remoting.ISoulBinder _Binder;
 
@@ -22,17 +22,17 @@ namespace Imdgame.RunLocusts
         }
 
 
-        void Regulus.Game.IStage.Enter()
+        void Regulus.Utility.IStage.Enter()
         {
             _Coroutine.Add(this);       
         }
 
-        void Regulus.Game.IStage.Leave()
+        void Regulus.Utility.IStage.Leave()
         {
             _Coroutine.Shutdown();
         }
 
-        void Regulus.Game.IStage.Update()
+        void Regulus.Utility.IStage.Update()
         {
             _Coroutine.Update();
         }

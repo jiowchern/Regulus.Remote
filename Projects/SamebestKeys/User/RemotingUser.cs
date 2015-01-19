@@ -7,7 +7,7 @@ namespace Regulus.Projects.SamebestKeys.Remoting
 {
     public partial class RemotingUser : Regulus.Project.SamebestKeys.IUser
     {
-        class OnlineStage : Regulus.Game.IStage, Regulus.Project.SamebestKeys.IOnline, Regulus.Remoting.Ghost.IGhost
+        class OnlineStage : Regulus.Utility.IStage, Regulus.Project.SamebestKeys.IOnline, Regulus.Remoting.Ghost.IGhost
         {
             Guid _Id;
             
@@ -21,7 +21,7 @@ namespace Regulus.Projects.SamebestKeys.Remoting
                 this._Agent = agent;
                 
             }
-            void Game.IStage.Enter()
+            void Utility.IStage.Enter()
             {
                 _Agent.DisconnectEvent += _Agent_DisconnectEvent; 
                 (_Provider as Regulus.Remoting.Ghost.IProvider).Add(this);
@@ -40,13 +40,13 @@ namespace Regulus.Projects.SamebestKeys.Remoting
                     _DisconnectEvent();
             }
 
-            void Game.IStage.Leave()
+            void Utility.IStage.Leave()
             {
                 _Agent.DisconnectEvent -= _Agent_DisconnectEvent; 
                 (_Provider as Regulus.Remoting.Ghost.IProvider).Remove(_Id);
             }
 
-            void Game.IStage.Update()
+            void Utility.IStage.Update()
             {
                 
                     
@@ -101,11 +101,11 @@ namespace Regulus.Projects.SamebestKeys.Remoting
         private Regulus.Remoting.Ghost.Native.Agent _Complex;
         private Regulus.Remoting.IAgent _Agent { get { return _Complex; } }
 
-        Regulus.Game.StageMachine _Machine;
+        Regulus.Utility.StageMachine _Machine;
         Regulus.Utility.Updater _Updater;
         public RemotingUser()
         {
-            _Machine = new Game.StageMachine();            
+            _Machine = new Utility.StageMachine();            
             _ConnectProvider = new Regulus.Remoting.Ghost.TProvider<Project.SamebestKeys.IConnect>();
             _OnlineProvider = new Regulus.Remoting.Ghost.TProvider<Project.SamebestKeys.IOnline>();
             _Complex = new Regulus.Remoting.Ghost.Native.Agent();
@@ -130,7 +130,7 @@ namespace Regulus.Projects.SamebestKeys.Remoting
             _ToConnect(_Machine);
         }
 
-        private void _ToConnect(Game.StageMachine machine)
+        private void _ToConnect(Utility.StageMachine machine)
         {
             var stage = new ConnectStage(_ConnectProvider, (ipaddr, port) => { return _Complex.Connect(ipaddr, port); });
             stage.ResultEvent += (result)=>
@@ -143,7 +143,7 @@ namespace Regulus.Projects.SamebestKeys.Remoting
             machine.Push(stage);
         }
 
-        private void _ToOnline(Game.StageMachine machine)
+        private void _ToOnline(Utility.StageMachine machine)
         {
             var stage = new OnlineStage(_OnlineProvider,_Complex);
             

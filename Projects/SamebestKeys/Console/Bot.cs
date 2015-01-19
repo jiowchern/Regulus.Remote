@@ -19,12 +19,12 @@ namespace Console
         public static int Port = 12345;
 
         private Regulus.Project.SamebestKeys.IUser _User;        
-        Regulus.Game.StageMachine _Machine;
+        Regulus.Utility.StageMachine _Machine;
         
         string _Account;
         public Bot(Regulus.Project.SamebestKeys.IUser user,string account)
         {
-            _Machine = new Regulus.Game.StageMachine();
+            _Machine = new Regulus.Utility.StageMachine();
             this._User = user;
             _Account = account;
         }
@@ -172,7 +172,7 @@ namespace Console
 
             _Machine.Push(stage);
         }
-        private void _ToMap(Regulus.Types.Point born_point)
+        private void _ToMap(Regulus.CustomType.Point born_point)
         {
             var stage = new BotMapStage(_User, born_point);
             stage.ResultResetEvent += (point) => 

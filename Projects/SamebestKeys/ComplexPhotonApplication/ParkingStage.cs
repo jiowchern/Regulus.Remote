@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
-    class ParkingStage : Regulus.Game.IStage
+    class ParkingStage : Regulus.Utility.IStage
     {
         IStorage _Storage;
         User _User;
@@ -15,7 +15,7 @@ namespace Regulus.Project.SamebestKeys
             _User = user;
             _Storage = storage;
         }
-        void Regulus.Game.IStage.Enter()
+        void Regulus.Utility.IStage.Enter()
         {
             _Parking = new Regulus.Project.SamebestKeys.Parking(_User.Id, _Storage);
             _Parking.BackEvent += _User.ToLogout;            
@@ -24,12 +24,12 @@ namespace Regulus.Project.SamebestKeys
             
         }
 
-        void Regulus.Game.IStage.Leave()
+        void Regulus.Utility.IStage.Leave()
         {
             _User.Provider.Unbind<IParking>(_Parking);
         }
 
-        void Regulus.Game.IStage.Update()
+        void Regulus.Utility.IStage.Update()
         {
             
         }

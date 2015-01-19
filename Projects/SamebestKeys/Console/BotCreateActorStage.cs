@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Console
 {
-    class BotCreateActorStage : Regulus.Game.IStage
+    class BotCreateActorStage : Regulus.Utility.IStage
     {
         private Regulus.Project.SamebestKeys.IUser _User;
         public event Action<bool> ResultEvent;
@@ -15,7 +15,7 @@ namespace Console
             _Account = account;
             this._User = _User;
         }
-        void Regulus.Game.IStage.Enter()
+        void Regulus.Utility.IStage.Enter()
         {
             _User.ParkingProvider.Supply += ParkingProvider_Supply;
         }
@@ -25,12 +25,12 @@ namespace Console
             obj.CreateActor(new Regulus.Project.SamebestKeys.Serializable.EntityLookInfomation() { Name = _Account + "-1" } , Regulus.Project.SamebestKeys.Serializable.EntityPropertyInfomation.IDENTITY.GUEST).OnValue += ResultEvent;
         }
 
-        void Regulus.Game.IStage.Leave()
+        void Regulus.Utility.IStage.Leave()
         {
             _User.ParkingProvider.Supply -= ParkingProvider_Supply;            
         }
 
-        void Regulus.Game.IStage.Update()
+        void Regulus.Utility.IStage.Update()
         {
             
         }

@@ -16,13 +16,13 @@ namespace Regulus.Project.SamebestKeys
     {
         Regulus.Utility.Updater _SelfUpdater;
         Entity _Entity;
-        Regulus.Game.StageMachine _Machine;
+        Regulus.Utility.StageMachine _Machine;
         public Behavior(Entity entity)
         {
             _SelfUpdater = new Utility.Updater();
             _SelfUpdater.Add(this);
             _Entity = entity;
-            _Machine = new Game.StageMachine();
+            _Machine = new Utility.StageMachine();
         }
 
         bool Utility.IUpdatable.Update()

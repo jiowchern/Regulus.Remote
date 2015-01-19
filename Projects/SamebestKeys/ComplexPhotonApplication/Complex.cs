@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
-    public class Complex : Regulus.Game.ICore
+    public class Complex : Regulus.Utility.ICore
     {
         Regulus.Project.SamebestKeys.Hall _Hall;
         World _World;
@@ -25,7 +25,7 @@ namespace Regulus.Project.SamebestKeys
             _TimeCounter = new Utility.TimeCounter();
         }
 
-        void Game.ICore.ObtainController(Remoting.ISoulBinder binder)
+        void Utility.ICore.ObtainController(Remoting.ISoulBinder binder)
         {
             _Hall.PushUser(new User(binder, _World, _Storage));
         }

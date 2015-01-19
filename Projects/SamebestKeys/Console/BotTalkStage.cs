@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Console
 {
-    class BotTalkStage: Regulus.Game.IStage
+    class BotTalkStage: Regulus.Utility.IStage
     {
         private Regulus.Project.SamebestKeys.IPlayer _Player;
         
@@ -45,18 +45,18 @@ namespace Console
                                     "NPK不要走",                                    
                                     "....",                                                                        
                                     };
-        void Regulus.Game.IStage.Enter()
+        void Regulus.Utility.IStage.Enter()
         {
             _Player.Say(_Messages[Regulus.Utility.Random.Next(0, _Messages.Length)]);
             DoneEvent();
         }
 
-        void Regulus.Game.IStage.Leave()
+        void Regulus.Utility.IStage.Leave()
         {
                      
         }
 
-        void Regulus.Game.IStage.Update()
+        void Regulus.Utility.IStage.Update()
         {
             
         }

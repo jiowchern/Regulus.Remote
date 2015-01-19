@@ -7,7 +7,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 {
     partial class Levels
     {
-        class ChoiceStage : Regulus.Game.IStage, IAdventureChoice
+        class ChoiceStage : Regulus.Utility.IStage, IAdventureChoice
         {
             public delegate void OnToTown(string name);
             public event OnToTown ToTownEvent;

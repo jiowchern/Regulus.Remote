@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Project.KeysHearthstone
 {
-	class Verify : Regulus.Game.IStage , IVerify
+	class Verify : Regulus.Utility.IStage , IVerify
 	{
 		private Remoting.ISoulBinder _Binder;
 		private IStorage _Storage;
@@ -18,17 +18,17 @@ namespace Regulus.Project.KeysHearthstone
 			this._Storage = storage;
 		}
 
-		void Game.IStage.Enter()
+		void Utility.IStage.Enter()
 		{
 			_Binder.Bind<IVerify>(this);
 		}
 
-		void Game.IStage.Leave()
+		void Utility.IStage.Leave()
 		{
 			_Binder.Unbind<IVerify>(this);
 		}
 
-		void Game.IStage.Update()
+		void Utility.IStage.Update()
 		{
 				
 		}

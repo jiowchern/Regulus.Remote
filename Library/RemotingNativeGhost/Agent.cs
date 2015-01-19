@@ -6,13 +6,13 @@ namespace Regulus.Remoting.Ghost.Native
     public partial class Agent :  IAgent
 	{        
         System.Net.Sockets.Socket _Socket;		
-        Regulus.Game.StageMachine _Machine;
+        Regulus.Utility.StageMachine _Machine;
         OnlineStage _OnlineStage;
         public event Action DisconnectEvent;
         
 		public Agent()
 		{            
-            _Machine = new Game.StageMachine();
+            _Machine = new Utility.StageMachine();
             _Socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
             _Socket.NoDelay = true;
             
@@ -62,14 +62,14 @@ namespace Regulus.Remoting.Ghost.Native
             }
         }
 
-        private void _ToOnline(Game.StageMachine machine)
+        private void _ToOnline(Utility.StageMachine machine)
         {            
             var stage = _OnlineStage;
             stage.SetSocket(_Socket);
             machine.Push(_OnlineStage);
         }
 
-        private void _ToOffline(Regulus.Game.StageMachine machine)
+        private void _ToOffline(Regulus.Utility.StageMachine machine)
         {
             
             machine.Push(new IdleStage());

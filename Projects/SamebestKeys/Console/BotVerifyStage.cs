@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Console
 {
-    class BotVerifyStage : Regulus.Game.IStage
+    class BotVerifyStage : Regulus.Utility.IStage
     {
         private Regulus.Project.SamebestKeys.IUser _User;
         private string account;
@@ -16,7 +16,7 @@ namespace Console
             this._User = _User;
             this.account = account;
         }
-        void Regulus.Game.IStage.Enter()
+        void Regulus.Utility.IStage.Enter()
         {
             _User.VerifyProvider.Supply += VerifyProvider_Supply;
         }
@@ -27,12 +27,12 @@ namespace Console
             val.OnValue += ResultEvent;            
         }
 
-        void Regulus.Game.IStage.Leave()
+        void Regulus.Utility.IStage.Leave()
         {
             _User.VerifyProvider.Supply -= VerifyProvider_Supply;
         }
 
-        void Regulus.Game.IStage.Update()
+        void Regulus.Utility.IStage.Update()
         {
             
         }

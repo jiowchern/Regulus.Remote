@@ -139,12 +139,12 @@ namespace UserConsole
        
         }
 
-        private static void _OnUserRequester(Regulus.Game.Framework<Regulus.Project.ExiledPrincesses.IUser>.IUserRequester user_requester)
+        private static void _OnUserRequester(Regulus.Utility.Framework<Regulus.Project.ExiledPrincesses.IUser>.IUserRequester user_requester)
         {
             user_requester.Spawn("1" , true);            
         }
 
-        private static void _OnSelectSystem(Regulus.Game.Framework<Regulus.Project.ExiledPrincesses.IUser>.ISystemSelector system_selector)
+        private static void _OnSelectSystem(Regulus.Utility.Framework<Regulus.Project.ExiledPrincesses.IUser>.ISystemSelector system_selector)
         {
             system_selector.Use("remoting");
             

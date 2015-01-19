@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Project.UnboundarySnake
 {
-    internal class Game :Regulus.Game.ICore
+    internal class Game :Regulus.Utility.ICore
     {
 
         Regulus.Utility.Updater _Update;
@@ -19,7 +19,7 @@ namespace Regulus.Project.UnboundarySnake
             _Storage = stroage;
             _Update = new Utility.Updater();
         }
-        void Regulus.Game.ICore.ObtainController(Remoting.ISoulBinder binder)
+        void Regulus.Utility.ICore.ObtainController(Remoting.ISoulBinder binder)
         {
             _Hall.PushUser(new User(binder, _Storage, _Zone));
         }

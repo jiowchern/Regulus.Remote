@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Project.UnboundarySnake
 {
-    class VerifyStage:Regulus.Game.IStage , IVerify
+    class VerifyStage:Regulus.Utility.IStage , IVerify
     {
         private Remoting.ISoulBinder _Binder;
         public delegate void DoneCallback(Account account);
@@ -18,17 +18,17 @@ namespace Regulus.Project.UnboundarySnake
             _Storage = storage;
         }
 
-        void Regulus.Game.IStage.Enter()
+        void Regulus.Utility.IStage.Enter()
         {
             
         }
 
-        void Regulus.Game.IStage.Leave()
+        void Regulus.Utility.IStage.Leave()
         {
             
         }
 
-        void Regulus.Game.IStage.Update()
+        void Regulus.Utility.IStage.Update()
         {
             
         }

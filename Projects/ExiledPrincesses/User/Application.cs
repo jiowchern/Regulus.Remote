@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Regulus.Project.ExiledPrincesses
 {
-    public class Application : Regulus.Game.Framework<Regulus.Project.ExiledPrincesses.IUser> 
+    public class Application : Regulus.Utility.Framework<Regulus.Project.ExiledPrincesses.IUser> 
     {
 
         private IController _BuildRemoting()
@@ -25,7 +25,7 @@ namespace Regulus.Project.ExiledPrincesses
         {
         }
 
-        protected override Regulus.Game.Framework<IUser>.ControllerProvider[] _ControllerProvider()
+        protected override Regulus.Utility.Framework<IUser>.ControllerProvider[] _ControllerProvider()
         {
             return new Application.ControllerProvider[] 
             {

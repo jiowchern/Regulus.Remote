@@ -60,7 +60,7 @@ namespace Regulus.Remoting
 				{
 
 					var entity_id = new Guid(args[0] as byte[]);
-					var eventName = Regulus.PhotonExtension.TypeHelper.Deserialize<string>(args[1] as byte[]) ;
+					var eventName = Regulus.Serializer.TypeHelper.Deserialize<string>(args[1] as byte[]) ;
 					var value = args[2] ;
 
 					System.Diagnostics.Debug.WriteLine("UpdateProperty id:" + entity_id + " name:" + eventName + " value:" + value);
@@ -72,7 +72,7 @@ namespace Regulus.Remoting
 				if (args.Count >= 2)
 				{
 					var entity_id = new Guid(args[0] as byte[]);
-					var eventName = Regulus.PhotonExtension.TypeHelper.Deserialize<string>(args[1] as byte[]) ;
+					var eventName = Regulus.Serializer.TypeHelper.Deserialize<string>(args[1] as byte[]) ;
 					var eventParams = (from p in args
 									   where p.Key >= 2
 									   select p.Value as object).ToArray();
@@ -94,7 +94,7 @@ namespace Regulus.Remoting
 			{
 				if (args.Count == 2)
 				{
-					var typeName = Regulus.PhotonExtension.TypeHelper.Deserialize<string>(args[0] as byte[]) ;
+					var typeName = Regulus.Serializer.TypeHelper.Deserialize<string>(args[0] as byte[]) ;
 					var entity_id = new Guid(args[1] as byte[]);
 					System.Diagnostics.Debug.WriteLine("load soul compile: " + typeName + " id: " + entity_id.ToString());
 					_LoadSoulCompile(typeName, entity_id);
@@ -104,7 +104,7 @@ namespace Regulus.Remoting
 			{
 				if (args.Count == 2)
 				{
-					var typeName = Regulus.PhotonExtension.TypeHelper.Deserialize<string>(args[0] as byte[]) ;
+					var typeName = Regulus.Serializer.TypeHelper.Deserialize<string>(args[0] as byte[]) ;
 					var entity_id = new Guid(args[1] as byte[]);
 					System.Diagnostics.Debug.WriteLine("load soul : " + typeName + " id: " + entity_id.ToString());
 					_LoadSoul(typeName, entity_id);
@@ -114,7 +114,7 @@ namespace Regulus.Remoting
 			{
 				if (args.Count == 2)
 				{
-					var typeName = Regulus.PhotonExtension.TypeHelper.Deserialize<string>(args[0] as byte[]) ;
+					var typeName = Regulus.Serializer.TypeHelper.Deserialize<string>(args[0] as byte[]) ;
 					var entity_id = new Guid(args[1] as byte[]);
 					System.Diagnostics.Debug.WriteLine("unload soul : " + typeName + " id: " + entity_id.ToString());
 					_UnloadSoul(typeName, entity_id);
@@ -318,7 +318,7 @@ namespace Regulus.Remoting
 				var field = type.GetField("_" + property, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
 				if (field != null)
 				{
-                    field.SetValue(instance, Regulus.PhotonExtension.TypeHelper.DeserializeObject(field.FieldType, value as byte[]) );
+                    field.SetValue(instance, Regulus.Serializer.TypeHelper.DeserializeObject(field.FieldType, value as byte[]) );
 				}
 			}
 		}
@@ -338,7 +338,7 @@ namespace Regulus.Remoting
                     Type[] parTypes = (from p in fieldValueDelegate.Method.GetParameters()
                                       select p.ParameterType).ToArray();
                     int i = 0;
-                    object[] pars = (from a in args select Regulus.PhotonExtension.TypeHelper.DeserializeObject(parTypes[i++], a as byte[])).ToArray();
+                    object[] pars = (from a in args select Regulus.Serializer.TypeHelper.DeserializeObject(parTypes[i++], a as byte[])).ToArray();
                     fieldValueDelegate.DynamicInvoke(pars);
 				}
 			}
@@ -525,12 +525,12 @@ namespace Regulus.Remoting
 
 				il.Emit(OpCodes.Ldarg_0);
 				il.Emit(OpCodes.Ldfld, idField);
-				var guidToByteArrayMethod = typeof(Regulus.PhotonExtension.TypeHelper).GetMethod("GuidToByteArray", BindingFlags.Public | BindingFlags.Static);
+				var guidToByteArrayMethod = typeof(Regulus.Serializer.TypeHelper).GetMethod("GuidToByteArray", BindingFlags.Public | BindingFlags.Static);
 				il.Emit(OpCodes.Call, guidToByteArrayMethod);
 				il.Emit(OpCodes.Stloc, varGuidByteArray);
 
                 il.Emit(OpCodes.Ldstr, m.Name);
-                var stringToByteArrayMethod = typeof(Regulus.PhotonExtension.TypeHelper).GetMethod("StringToByteArray", BindingFlags.Public | BindingFlags.Static);
+                var stringToByteArrayMethod = typeof(Regulus.Serializer.TypeHelper).GetMethod("StringToByteArray", BindingFlags.Public | BindingFlags.Static);
                 il.Emit(OpCodes.Call, stringToByteArrayMethod);
                 il.Emit(OpCodes.Stloc, varMethodNameByteArray);
 
@@ -581,7 +581,7 @@ namespace Regulus.Remoting
 					il.Emit(OpCodes.Stloc, varRVQId);
 
 					il.Emit(OpCodes.Ldloc, varRVQId);
-					il.Emit(OpCodes.Call, typeof(Regulus.PhotonExtension.TypeHelper).GetMethod("GuidToByteArray", BindingFlags.Public | BindingFlags.Static));
+					il.Emit(OpCodes.Call, typeof(Regulus.Serializer.TypeHelper).GetMethod("GuidToByteArray", BindingFlags.Public | BindingFlags.Static));
 					LocalBuilder varRVQIdByteArray = il.DeclareLocal(typeof(byte[]));
 					il.Emit(OpCodes.Stloc, varRVQIdByteArray);
 
@@ -612,7 +612,7 @@ namespace Regulus.Remoting
 					//il.Emit(OpCodes.Box, types[paramIndex]);
 
                     //使用TypeHelper類別裡的Serializer函式 屬性為Public Static..
-                    var serializer = typeof(Regulus.PhotonExtension.TypeHelper).GetMethod("Serializer", BindingFlags.Public | BindingFlags.Static).MakeGenericMethod(new Type[] { types[paramIndex] });
+                    var serializer = typeof(Regulus.Serializer.TypeHelper).GetMethod("Serializer", BindingFlags.Public | BindingFlags.Static).MakeGenericMethod(new Type[] { types[paramIndex] });
 					//指定呼叫函式的多載，因為沒有多載，所以填null
 					il.EmitCall(OpCodes.Call, serializer, null);
 					//byte array 存到 varBuffer
@@ -699,7 +699,7 @@ namespace Regulus.Remoting
 
 		private static void TestEmitYield(ILGenerator cil)
 		{
-			var yield = typeof(Regulus.PhotonExtension.TypeHelper).GetMethod("Yield", BindingFlags.Public | BindingFlags.Static);
+			var yield = typeof(Regulus.Serializer.TypeHelper).GetMethod("Yield", BindingFlags.Public | BindingFlags.Static);
 			cil.Emit(OpCodes.Call, yield);
 		}
 	}

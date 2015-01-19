@@ -25,7 +25,7 @@ namespace Regulus.Project.SamebestKeys
 
 
         string _Name;
-        string Game.Framework<Project.SamebestKeys.IUser>.IController.Name
+        string Utility.Framework<Project.SamebestKeys.IUser>.IController.Name
         {
             get
             {
@@ -40,12 +40,12 @@ namespace Regulus.Project.SamebestKeys
         
         
         
-        void Game.Framework<Project.SamebestKeys.IUser>.IController.Look()
+        void Utility.Framework<Project.SamebestKeys.IUser>.IController.Look()
         {
             _UserCommand.Register(_User);
         }
 
-        void Game.Framework<Project.SamebestKeys.IUser>.IController.NotLook()
+        void Utility.Framework<Project.SamebestKeys.IUser>.IController.NotLook()
         {
             _UserCommand.Unregister(_User);
         }
@@ -70,7 +70,7 @@ namespace Regulus.Project.SamebestKeys
         }
 
 
-        IUser Game.Framework<IUser>.IController.GetUser()
+        IUser Utility.Framework<IUser>.IController.GetUser()
         {
             return _User;
         }

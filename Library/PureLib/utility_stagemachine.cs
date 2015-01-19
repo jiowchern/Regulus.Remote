@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Regulus.Game
+namespace Regulus.Utility
 {
 
     public class EmptyStage : IStage
@@ -27,13 +27,13 @@ namespace Regulus.Game
     {
         class StageData
         {
-            public Regulus.Game.IStage Stage;            
+            public Regulus.Utility.IStage Stage;            
         }
-        System.Collections.Generic.Queue<Regulus.Game.IStage> _StandBys;
+        System.Collections.Generic.Queue<Regulus.Utility.IStage> _StandBys;
         StageData _Current;
 
 
-        public Regulus.Game.IStage Current { get 
+        public Regulus.Utility.IStage Current { get 
         {
             if (_Current != null)
                 return _Current.Stage;
@@ -46,7 +46,7 @@ namespace Regulus.Game
             _Current = new StageData();
             _Handle = _HandleStandByEnter;
         }
-        public void Push(Regulus.Game.IStage new_stage)
+        public void Push(Regulus.Utility.IStage new_stage)
         {
             _StandBys.Enqueue(new_stage);
         }
@@ -141,10 +141,10 @@ namespace Regulus.Game
 	{
         class StageData
         {
-            public Regulus.Game.IStage<T> Stage;
+            public Regulus.Utility.IStage<T> Stage;
             public StageLock Lock;
         }
-		System.Collections.Generic.Queue<Regulus.Game.IStage<T>> _StandBys;
+		System.Collections.Generic.Queue<Regulus.Utility.IStage<T>> _StandBys;
         StageData _Current;
 		T						_Param;
 		public StageMachine(T par)
@@ -154,7 +154,7 @@ namespace Regulus.Game
             _Current = new StageData();
             _Handle = _HandleStandByEnter;
 		}
-		public void Push(Regulus.Game.IStage<T> new_stage)
+		public void Push(Regulus.Utility.IStage<T> new_stage)
 		{
 			_StandBys.Enqueue(new_stage);
 		}

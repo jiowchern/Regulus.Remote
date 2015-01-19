@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Regulus.Types
+namespace Regulus.CustomType
 {
     [ProtoBuf.ProtoContract]
     public struct Triangle : System.IEquatable<Triangle>, IRotatable
     {
         [ProtoBuf.ProtoMember(1)]
-        public Regulus.Types.Vector2 Point1;
+        public Regulus.CustomType.Vector2 Point1;
         [ProtoBuf.ProtoMember(2)]
-        public Regulus.Types.Vector2 Point2;
+        public Regulus.CustomType.Vector2 Point2;
         [ProtoBuf.ProtoMember(3)]
-        public Regulus.Types.Vector2 Point3;
+        public Regulus.CustomType.Vector2 Point3;
 
         bool System.IEquatable<Triangle>.Equals(Triangle other)
         {
@@ -21,7 +21,7 @@ namespace Regulus.Types
         }
 
 
-        static Triangle[] Rotate(Regulus.Types.Vector2 center, Triangle[] tris, float angle)
+        static Triangle[] Rotate(Regulus.CustomType.Vector2 center, Triangle[] tris, float angle)
         {
             return new Rotator<Triangle>(center, tris).Rotation(angle);
         }

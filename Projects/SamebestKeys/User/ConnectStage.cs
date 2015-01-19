@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Projects.SamebestKeys
 {
-    public class ConnectStage : Regulus.Game.IStage
+    public class ConnectStage : Regulus.Utility.IStage
     {
         public delegate Regulus.Remoting.Value<bool> OnConnect(string ipaddr, int poirt);        
         Connect _Connecter;
@@ -21,7 +21,7 @@ namespace Regulus.Projects.SamebestKeys
             _Connecter = new Connect();
         }
 
-        void Game.IStage.Enter()
+        void Utility.IStage.Enter()
         {
             _Connecter.ConnectedEvent += _OnConnect;
             (_ConnectProvider as Regulus.Remoting.Ghost.IProvider).Add(_Connecter);
@@ -37,12 +37,12 @@ namespace Regulus.Projects.SamebestKeys
                 ResultEvent(ret);
             };
         }
-        void Game.IStage.Leave()
+        void Utility.IStage.Leave()
         {
             (_ConnectProvider as Regulus.Remoting.Ghost.IProvider).Remove(_Connecter.Id);
         }
 
-        void Game.IStage.Update()
+        void Utility.IStage.Update()
         {
 
         }

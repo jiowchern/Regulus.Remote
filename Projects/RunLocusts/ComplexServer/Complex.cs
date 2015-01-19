@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace Imdgame.RunLocusts
 {
-    public class Complex : Regulus.Game.ICore
+    public class Complex : Regulus.Utility.ICore
     {
         Imdgame.RunLocusts.Game _Game;
 
-        Regulus.Game.ICore _GameCore { get { return _Game; } }
+        Regulus.Utility.ICore _GameCore { get { return _Game; } }
 
         public Complex()
         {
             _Game = new Game();
         }
-        void Regulus.Game.ICore.ObtainController(Regulus.Remoting.ISoulBinder binder)
+        void Regulus.Utility.ICore.ObtainController(Regulus.Remoting.ISoulBinder binder)
         {
 
             _GameCore.ObtainController(binder);

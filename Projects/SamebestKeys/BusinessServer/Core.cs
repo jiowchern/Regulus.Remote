@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 namespace BusinessServer
 {
     public delegate void OnVerifySucess (int account_id);
-    public class Core : Regulus.Game.ICore
+    public class Core : Regulus.Utility.ICore
     {
         Storage _Storage;
         Regulus.Utility.TUpdater<User> _Hall;
-        void Regulus.Game.ICore.ObtainController(Regulus.Remoting.ISoulBinder binder)
+        void Regulus.Utility.ICore.ObtainController(Regulus.Remoting.ISoulBinder binder)
         {
             var user = new User(binder, _Storage);
             user.VerifySuccessEvent += _Relogin;

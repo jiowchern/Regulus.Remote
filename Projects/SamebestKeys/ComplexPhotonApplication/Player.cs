@@ -178,7 +178,7 @@ namespace Regulus.Project.SamebestKeys
 
         void IPlayer.Goto(string map, float x, float y)
         {
-            _CrossAbility.Move(map, new Types.Vector2(x, y));
+            _CrossAbility.Move(map, new CustomType.Vector2(x, y));
         }
 
 

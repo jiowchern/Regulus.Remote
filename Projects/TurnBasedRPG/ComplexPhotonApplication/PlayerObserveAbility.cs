@@ -23,13 +23,13 @@ namespace Regulus.Project.TurnBasedRPG
 
         
 
-        Regulus.Types.Rect IObserveAbility.Vision
+        Regulus.CustomType.Rect IObserveAbility.Vision
         {
             get 
             {
                 var position  = _Infomation.Property.Position;                    
                 var vision = _Infomation.Property.Vision;
-                return new Regulus.Types.Rect(position.X - vision / 2, position.Y - vision / 2, vision, vision); 
+                return new Regulus.CustomType.Rect(position.X - vision / 2, position.Y - vision / 2, vision, vision); 
             }
         }
 
@@ -46,7 +46,7 @@ namespace Regulus.Project.TurnBasedRPG
             remove { _Field.LeftEvent -= value; }
         }
 
-        Types.Vector2 IObserveAbility.Position
+        CustomType.Vector2 IObserveAbility.Position
         {
             get { return _Infomation.Property.Position; }
         }

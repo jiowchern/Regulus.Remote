@@ -5,15 +5,15 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
-    class CrossStage : Regulus.Game.IStage, ITraversable
+    class CrossStage : Regulus.Utility.IStage, ITraversable
     {
         private Regulus.Project.SamebestKeys.IWorld _World;
         private string _TargetMap;
-        private Regulus.Types.Vector2 _TargetPosition;
+        private Regulus.CustomType.Vector2 _TargetPosition;
         private string _CurrentMap;
-        private Regulus.Types.Vector2 _CurrentPosition;
+        private Regulus.CustomType.Vector2 _CurrentPosition;
 
-        public delegate void OnResult(string target_map,Regulus.Types.Vector2 target_position );
+        public delegate void OnResult(string target_map,Regulus.CustomType.Vector2 target_position );
         public event OnResult ResultEvent;
         private Remoting.ISoulBinder _Provider;
         
@@ -21,9 +21,9 @@ namespace Regulus.Project.SamebestKeys
         public CrossStage(Remoting.ISoulBinder provider 
                         , Regulus.Project.SamebestKeys.IWorld world
                         , string target_map
-                        , Regulus.Types.Vector2 target_position
+                        , Regulus.CustomType.Vector2 target_position
                         , string current_map
-                        , Regulus.Types.Vector2 current_position)
+                        , Regulus.CustomType.Vector2 current_position)
         {            
             this._World = world;
             this._TargetMap = target_map;
@@ -35,7 +35,7 @@ namespace Regulus.Project.SamebestKeys
 
         
 
-        void Game.IStage.Enter()
+        void Utility.IStage.Enter()
         {
             _Provider.Bind<ITraversable>(this);
             
@@ -43,12 +43,12 @@ namespace Regulus.Project.SamebestKeys
 
         
 
-        void Game.IStage.Leave()
+        void Utility.IStage.Leave()
         {
             _Provider.Unbind<ITraversable>(this);
         }
 
-        void Game.IStage.Update()
+        void Utility.IStage.Update()
         {
             
         }

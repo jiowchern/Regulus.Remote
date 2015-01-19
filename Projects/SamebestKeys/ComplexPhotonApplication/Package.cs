@@ -33,7 +33,7 @@ namespace Regulus.Project.SamebestKeys
 			public float Effective { get; set; }
 			public float End { get; set; }
 			public bool Capture { get; set; }
-			public Regulus.Types.Rect CaptureBounds { get; set; }
+			public Regulus.CustomType.Rect CaptureBounds { get; set; }
 			public int Param1 { get; set; }
 			public ActorMode UseMode { get; set; }
 		}
@@ -54,7 +54,7 @@ namespace Regulus.Project.SamebestKeys
 
 
 			[ProtoBuf.ProtoMember(3)]
-			public Regulus.Types.Rect Born;
+			public Regulus.CustomType.Rect Born;
 		}
 
 		[Serializable]
@@ -71,15 +71,15 @@ namespace Regulus.Project.SamebestKeys
 		{
 			public PortalEntity()
 			{
-				Vision = new Types.Rect();
-				TargetPosition = new Types.Vector2();
+				Vision = new CustomType.Rect();
+				TargetPosition = new CustomType.Vector2();
 			}
 			[ProtoBuf.ProtoMember(1)]
-			public Types.Rect Vision { get; set; }
+			public CustomType.Rect Vision { get; set; }
 			[ProtoBuf.ProtoMember(2)]
 			public string TargetMap { get; set; }
 			[ProtoBuf.ProtoMember(3)]
-			public Types.Vector2 TargetPosition { get; set; }
+			public CustomType.Vector2 TargetPosition { get; set; }
 		}
 
 		[Serializable]
@@ -87,9 +87,9 @@ namespace Regulus.Project.SamebestKeys
 		{
 			public TriangleEntity()
 			{
-				Polygon = new Types.Polygon();
+				Polygon = new CustomType.Polygon();
 			}
-			public Types.Polygon Polygon { get; set; }
+			public CustomType.Polygon Polygon { get; set; }
 		}
 		
 	}
@@ -180,12 +180,12 @@ namespace Regulus.Project.SamebestKeys.Serializable
 		[ProtoBuf.ProtoMember(1)]
 		public string SourceMap;
 		[ProtoBuf.ProtoMember(2)]
-		public Regulus.Types.Vector2 SourcePosition;
+		public Regulus.CustomType.Vector2 SourcePosition;
 
 		[ProtoBuf.ProtoMember(3)]
 		public string TargetMap;
 		[ProtoBuf.ProtoMember(4)]
-		public Regulus.Types.Vector2 TargetPosition;
+		public Regulus.CustomType.Vector2 TargetPosition;
 	}
 
     /*public struct Consumption
@@ -239,7 +239,7 @@ namespace Regulus.Project.SamebestKeys.Serializable
 			MaxEnergy = 50;
 			Energy = 50;
 			Skills = new System.Collections.Generic.List<Skill>();
-			Position = new Types.Vector2();
+			Position = new CustomType.Vector2();
             Identity = IDENTITY.GUEST;
 		}
 		
@@ -255,7 +255,7 @@ namespace Regulus.Project.SamebestKeys.Serializable
 		public float Direction { get; set; }
 
 		
-		public Regulus.Types.Vector2 Position { get; set; }
+		public Regulus.CustomType.Vector2 Position { get; set; }
 
 
 		
@@ -281,12 +281,12 @@ namespace Regulus.Project.SamebestKeys.Serializable
 	{
 		public EntityInfomation()
 		{
-			Position = new Types.Vector2();            
+			Position = new CustomType.Vector2();            
 		}
 		[ProtoBuf.ProtoMember(1)]
 		public Guid Id { get; set; }
 		[ProtoBuf.ProtoMember(2)]
-		public Regulus.Types.Vector2 Position { get; set; }        
+		public Regulus.CustomType.Vector2 Position { get; set; }        
 	}
 
 
@@ -351,7 +351,7 @@ namespace Regulus.Project.SamebestKeys.Serializable
 		/// 啟始位置
 		/// </summary>
 		[ProtoBuf.ProtoMember(2)]
-		public Regulus.Types.Vector2 BeginPosition { get; set; }
+		public Regulus.CustomType.Vector2 BeginPosition { get; set; }
 
 		/// <summary>
 		/// 動作狀態
@@ -369,7 +369,7 @@ namespace Regulus.Project.SamebestKeys.Serializable
 		/// 移動方向
 		/// </summary>
 		[ProtoBuf.ProtoMember(5)]
-		public Regulus.Types.Vector2 MoveDirection { get; set; }
+		public Regulus.CustomType.Vector2 MoveDirection { get; set; }
 
 		/// <summary>
 		/// 位移速度

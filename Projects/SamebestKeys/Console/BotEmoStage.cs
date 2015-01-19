@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Console
 {
-    class BotEmoStage : Regulus.Game.IStage
+    class BotEmoStage : Regulus.Utility.IStage
     {
         private Regulus.Project.SamebestKeys.IPlayer _Player;
         
@@ -21,19 +21,19 @@ namespace Console
          
         }
 
-        void Regulus.Game.IStage.Enter()
+        void Regulus.Utility.IStage.Enter()
         {
             var len = Enum.GetValues(typeof(Regulus.Project.SamebestKeys.ActionStatue)).Length - 1;
             _Player.BodyMovements((Regulus.Project.SamebestKeys.ActionStatue)len);
             _Timeup = Regulus.Utility.Random.Next(3,10);
         }
 
-        void Regulus.Game.IStage.Leave()
+        void Regulus.Utility.IStage.Leave()
         {
                      
         }
 
-        void Regulus.Game.IStage.Update()
+        void Regulus.Utility.IStage.Update()
         {
             if (_TimeCounter.Second > _Timeup)
                 DoneEvent();

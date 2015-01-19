@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Console
 {
-    class BotRoomStage : Regulus.Game.IStage
+    class BotRoomStage : Regulus.Utility.IStage
     {
         private Regulus.Project.SamebestKeys.IUser _User;
         public event Action DoneEvent;
@@ -15,7 +15,7 @@ namespace Console
             _User = user;
         }
 
-        void Regulus.Game.IStage.Enter()
+        void Regulus.Utility.IStage.Enter()
         {
             _User.RealmJumperProvider.Supply += RealmJumperProvider_Supply;
             _User.TraversableProvider.Supply += TraversableProvider_Supply;
@@ -32,13 +32,13 @@ namespace Console
             DoneEvent();
         }
 
-        void Regulus.Game.IStage.Leave()
+        void Regulus.Utility.IStage.Leave()
         {
             _User.RealmJumperProvider.Supply -= RealmJumperProvider_Supply;
             _User.TraversableProvider.Supply -= TraversableProvider_Supply;
         }
 
-        void Regulus.Game.IStage.Update()
+        void Regulus.Utility.IStage.Update()
         {
             
         }

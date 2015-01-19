@@ -5,16 +5,16 @@ using System.Text;
 
 namespace Imdgame.RunLocusts
 {
-    class User :Regulus.Game.IUser
+    class User : Regulus.Game.IUser
     {
         private Regulus.Remoting.ISoulBinder _Binder;
-        Regulus.Game.StageMachine _Machine;
+        Regulus.Utility.StageMachine _Machine;
 
 
         public User(Regulus.Remoting.ISoulBinder binder)
         {            
             this._Binder = binder;
-            _Machine = new Regulus.Game.StageMachine();
+            _Machine = new Regulus.Utility.StageMachine();
         }
 
         void Regulus.Game.IUser.OnKick(Guid id)

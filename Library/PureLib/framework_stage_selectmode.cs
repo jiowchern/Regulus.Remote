@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Framework.Stage
 {
-    class SelectMode<TUser> : Regulus.Game.IStage
+    class SelectMode<TUser> : Regulus.Utility.IStage
         where TUser : class , Regulus.Utility.IUpdatable
     {
         public delegate void OnDone<TUser>(Regulus.Framework.UserProvider<TUser> console) where TUser : class , Regulus.Utility.IUpdatable;
@@ -28,7 +28,7 @@ namespace Regulus.Framework.Stage
             DoneEvent(console);
         }
 
-        void Regulus.Game.IStage.Enter()
+        void Regulus.Utility.IStage.Enter()
         {
             _Selector.GameConsoleEvent += _ObtainConsole;
             _Command.Register<string>("CreateMode" , _CreateGameConsole );
@@ -36,14 +36,14 @@ namespace Regulus.Framework.Stage
             InitialedEvent();
         }
         
-        void Regulus.Game.IStage.Leave()
+        void Regulus.Utility.IStage.Leave()
         {
 
             _Command.Unregister("CreateMode");
             _Selector.GameConsoleEvent -= _ObtainConsole;
         }
 
-        void Regulus.Game.IStage.Update()
+        void Regulus.Utility.IStage.Update()
         {            
         }
 

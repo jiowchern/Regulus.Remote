@@ -54,8 +54,8 @@ namespace Regulus.Project.TurnBasedRPG
             base._SetAbility(abilitys);
         }
 
-        public event Action<string, Types.Vector2, string, Types.Vector2> CrossEvent;		
-        void _CrossAbility_MoveEvent(string target_map, Types.Vector2 target_position)
+        public event Action<string, CustomType.Vector2, string, CustomType.Vector2> CrossEvent;		
+        void _CrossAbility_MoveEvent(string target_map, CustomType.Vector2 target_position)
         {
             if (CrossEvent != null)
                 CrossEvent(target_map, target_position, _DBActorInfomation.Property.Map, _DBActorInfomation.Property.Position );

@@ -52,13 +52,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Agent.cs" />
-    <Compile Include="CommandAutoBuild.cs" />
-    <Compile Include="CommandParam.cs" />
-    <Compile Include="CommandParamBuilder.cs" />
     <Compile Include="Connect.cs" />
     <Compile Include="CoreThreadRequestHandler.cs" />
     <Compile Include="GameLoader.cs" />
-    <Compile Include="IGPIBinder.cs" />
     <Compile Include="User.cs" />
     <Compile Include="OfflineStage.cs" />
     <Compile Include="OnlineStage.cs" />
@@ -68,8 +64,6 @@
     <Compile Include="Package.cs" />
     <Compile Include="ResponseQueue.cs" />
     <Compile Include="RequestQueue.cs" />
-    <Compile Include="GhostProvider.cs" />
-    <Compile Include="IGhostEventListener.cs" />
     <Compile Include="PhotonOpCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReturnValueQueue.cs" />

@@ -6,10 +6,10 @@ using System.Text;
 
 namespace TestNativeGameCore
 {
-    public class GameCore : Regulus.Game.ICore, TestNativeGameCore.IMessager
+    public class GameCore : Regulus.Utility.ICore, TestNativeGameCore.IMessager
     {
         
-        void Regulus.Game.ICore.ObtainController(Regulus.Remoting.ISoulBinder binder)
+        void Regulus.Utility.ICore.ObtainController(Regulus.Remoting.ISoulBinder binder)
         {
             
             binder.Bind<TestNativeGameCore.IMessager>(this);

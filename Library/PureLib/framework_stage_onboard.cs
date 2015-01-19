@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Framework.Stage
 {
-    class OnBoard<TUser>: Regulus.Game.IStage
+    class OnBoard<TUser>: Regulus.Utility.IStage
         where TUser : class, Regulus.Utility.IUpdatable
     {
         public delegate void OnDone();
@@ -23,7 +23,7 @@ namespace Regulus.Framework.Stage
         }
 
         
-        void Regulus.Game.IStage.Enter()
+        void Regulus.Utility.IStage.Enter()
         {
 
             _Updater.Add(_UserProvider);
@@ -32,7 +32,7 @@ namespace Regulus.Framework.Stage
             _Command.Register<string>("SelectUser", _Select);
         }
 
-        void Regulus.Game.IStage.Leave()
+        void Regulus.Utility.IStage.Leave()
         {
             _Command.Unregister("SelectUser");
             _Command.Unregister("SpawnUser");
@@ -55,7 +55,7 @@ namespace Regulus.Framework.Stage
             _UserProvider.Select(name);            
         }
 
-        void Regulus.Game.IStage.Update()
+        void Regulus.Utility.IStage.Update()
         {
             _Updater.Update();
         }

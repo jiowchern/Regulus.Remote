@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
-    class VerifyStage : Regulus.Game.IStage
+    class VerifyStage : Regulus.Utility.IStage
     {
         Regulus.Project.SamebestKeys.Verify _Verify;
         User _User;
@@ -16,7 +16,7 @@ namespace Regulus.Project.SamebestKeys
             _Storage = storage;
             
         }
-        void Regulus.Game.IStage.Enter()
+        void Regulus.Utility.IStage.Enter()
         {
             _Verify = new Regulus.Project.SamebestKeys.Verify(_Storage);
             _Verify.LoginSuccess += _User.OnLoginSuccess;
@@ -25,12 +25,12 @@ namespace Regulus.Project.SamebestKeys
             _User.Provider.Bind<IVerify>(_Verify);
         }
 
-        void Regulus.Game.IStage.Leave()
+        void Regulus.Utility.IStage.Leave()
         {
             _User.Provider.Unbind<IVerify>(_Verify);
         }
 
-        void Regulus.Game.IStage.Update()
+        void Regulus.Utility.IStage.Update()
         {
             
         }

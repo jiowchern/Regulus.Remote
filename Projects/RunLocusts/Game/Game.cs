@@ -6,12 +6,12 @@ using System.Text;
 
 namespace Imdgame.RunLocusts
 {
-    public class Game  : Regulus.Game.ICore
+    public class Game  : Regulus.Utility.ICore
     {
         Hall _Hall;
        
 
-        void Regulus.Game.ICore.ObtainController(Regulus.Remoting.ISoulBinder binder)
+        void Regulus.Utility.ICore.ObtainController(Regulus.Remoting.ISoulBinder binder)
         {
             _Hall.PushUser(new User(binder));
         }

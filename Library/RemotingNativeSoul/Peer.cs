@@ -22,8 +22,8 @@ namespace Regulus.Remoting.Soul.Native
 		Regulus.Remoting.Soul.SoulProvider _SoulProvider;
 		System.Collections.Generic.Queue<Regulus.Remoting.Package> _Responses;
         System.Collections.Generic.Queue<Request> _Requests;
-		Regulus.Game.StageMachine _ReadMachine;
-		Regulus.Game.StageMachine _WriteMachine;
+		Regulus.Utility.StageMachine _ReadMachine;
+		Regulus.Utility.StageMachine _WriteMachine;
         bool _Enable;
         public Peer(System.Net.Sockets.Socket client)
 		{			
@@ -31,8 +31,8 @@ namespace Regulus.Remoting.Soul.Native
 			_SoulProvider = new Remoting.Soul.SoulProvider(this, this);
 			_Responses = new Queue<Remoting.Package>();
             _Requests = new Queue<Request>();
-			_ReadMachine = new Game.StageMachine();
-			_WriteMachine = new Game.StageMachine();
+			_ReadMachine = new Utility.StageMachine();
+			_WriteMachine = new Utility.StageMachine();
             _Enable = true;
 			
 		}

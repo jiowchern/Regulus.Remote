@@ -7,12 +7,12 @@ namespace Regulus.Remoting.Ghost.Native
 {
     public partial class Agent 
     {
-        class OnlineStage : Regulus.Game.IStage, Regulus.Utility.IUpdatable, Regulus.Remoting.IGhostRequest
+        class OnlineStage : Regulus.Utility.IStage, Regulus.Utility.IUpdatable, Regulus.Remoting.IGhostRequest
         {
             public event Action DoneEvent;
             
-            Regulus.Game.StageMachine _ReadMachine;
-            Regulus.Game.StageMachine _WriteMachine;
+            Regulus.Utility.StageMachine _ReadMachine;
+            Regulus.Utility.StageMachine _WriteMachine;
             Queue<Package> _Sends;
             Queue<Package> _Receives;
             private System.Net.Sockets.Socket _Socket;
@@ -26,22 +26,22 @@ namespace Regulus.Remoting.Ghost.Native
                 _Core = new Remoting.AgentCore(this);                
             }
             
-            void Game.IStage.Enter()
+            void Utility.IStage.Enter()
             {
-                _ReadMachine = new Game.StageMachine();
-                _WriteMachine = new Game.StageMachine();
+                _ReadMachine = new Utility.StageMachine();
+                _WriteMachine = new Utility.StageMachine();
                 IOHandler.Instance.Start(this);
                 
             }
 
-            void Game.IStage.Leave()
+            void Utility.IStage.Leave()
             {
                 IOHandler.Instance.Stop(this);
                 _ReadMachine.Termination();
                 _WriteMachine.Termination();
             }
 
-            void Game.IStage.Update()
+            void Utility.IStage.Update()
             {
                 
             }

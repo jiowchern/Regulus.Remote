@@ -9,25 +9,25 @@ namespace Regulus.Project.SamebestKeys
 	/// </summary>
     public class ActorMoverAbility2 : IMoverAbility
     {
-        Regulus.Types.Polygon _Polygon;
+        Regulus.CustomType.Polygon _Polygon;
         private float _Direction;
-        Action<long, System.Collections.Generic.IEnumerable<Types.Polygon>> _Update;
+        Action<long, System.Collections.Generic.IEnumerable<CustomType.Polygon>> _Update;
         private ActionStatue _CurrentAction;
         private float _MoveSpeed;
-        private Types.Vector2 _UnitVector;
+        private CustomType.Vector2 _UnitVector;
         private long _PrevTime;
-        public delegate void BeginAction(long begin_time, float speed, float direction, Regulus.Types.Vector2 vector, ActionStatue action_status);
+        public delegate void BeginAction(long begin_time, float speed, float direction, Regulus.CustomType.Vector2 vector, ActionStatue action_status);
         public event BeginAction ActionEvent;
-        public event Action<long, Regulus.Types.Vector2> PositionEvent;
+        public event Action<long, Regulus.CustomType.Vector2> PositionEvent;
 
         public ActorMoverAbility2(float direction, float x, float y)
         {
             _Direction = direction;
-            _Polygon = new Types.Polygon();
-            _Polygon.Points.Add(new Types.Vector2(x - 0.25f, y + 0.25f));
-            _Polygon.Points.Add(new Types.Vector2(x + 0.25f, y + 0.25f));
-            _Polygon.Points.Add(new Types.Vector2(x + 0.25f, y - 0.25f));
-            _Polygon.Points.Add(new Types.Vector2(x - 0.25f, y - 0.25f));
+            _Polygon = new CustomType.Polygon();
+            _Polygon.Points.Add(new CustomType.Vector2(x - 0.25f, y + 0.25f));
+            _Polygon.Points.Add(new CustomType.Vector2(x + 0.25f, y + 0.25f));
+            _Polygon.Points.Add(new CustomType.Vector2(x + 0.25f, y - 0.25f));
+            _Polygon.Points.Add(new CustomType.Vector2(x - 0.25f, y - 0.25f));
             _Polygon.BuildEdges();
             _Update = _Empty;
 
@@ -35,10 +35,10 @@ namespace Regulus.Project.SamebestKeys
         }
         public void SetPosition(float x, float y)
         {
-            var offset = Types.Vector2.FromPoint(x, y) - _Polygon.Center;
+            var offset = CustomType.Vector2.FromPoint(x, y) - _Polygon.Center;
             _Polygon.Offset(offset);
         }
-        Types.Polygon IMoverAbility.Polygon
+        CustomType.Polygon IMoverAbility.Polygon
         {
             get { return _Polygon; }
         }
@@ -62,7 +62,7 @@ namespace Regulus.Project.SamebestKeys
 
             // 移動向量            
             var t = (float)((moveDirection - 180) * Math.PI / 180);
-            var unitVector = new Types.Vector2() { X = -(float)Math.Sin(t), Y = -(float)Math.Cos(t) };
+            var unitVector = new CustomType.Vector2() { X = -(float)Math.Sin(t), Y = -(float)Math.Cos(t) };
             
             _UnitVector = unitVector;
             _Update = _First;
@@ -72,26 +72,26 @@ namespace Regulus.Project.SamebestKeys
         }
         
 
-        void IMoverAbility.Update(long time, System.Collections.Generic.IEnumerable<Types.Polygon> polygons)
+        void IMoverAbility.Update(long time, System.Collections.Generic.IEnumerable<CustomType.Polygon> polygons)
         {
             _Update(time , polygons);
         }
 
-        void _First(long time, System.Collections.Generic.IEnumerable<Types.Polygon> obbs)
+        void _First(long time, System.Collections.Generic.IEnumerable<CustomType.Polygon> obbs)
         {
             if (ActionEvent != null)
                 ActionEvent(_PrevTime, _MoveSpeed, _Direction, _UnitVector, _CurrentAction);
             _Update = _UpdateMover;            
         }
 
-        void _UpdateMover(long time, System.Collections.Generic.IEnumerable<Types.Polygon> polygons)
+        void _UpdateMover(long time, System.Collections.Generic.IEnumerable<CustomType.Polygon> polygons)
         {
             if (_MoveSpeed > 0)
             {
                 var dt = (float)new System.TimeSpan(time - _PrevTime).TotalSeconds;
                 if (dt > 0)
                 {
-                    Regulus.Types.Vector2 moveVector = new Types.Vector2();
+                    Regulus.CustomType.Vector2 moveVector = new CustomType.Vector2();
                     moveVector.X = _UnitVector.X * dt * _MoveSpeed;
                     moveVector.Y = _UnitVector.Y * dt * _MoveSpeed;
 
@@ -134,7 +134,7 @@ namespace Regulus.Project.SamebestKeys
 
         }
 
-        private Regulus.Types.Polygon.CollisionResult _Collision(System.Collections.Generic.IEnumerable<Types.Polygon> polygons, Regulus.Types.Vector2 moveVector)
+        private Regulus.CustomType.Polygon.CollisionResult _Collision(System.Collections.Generic.IEnumerable<CustomType.Polygon> polygons, Regulus.CustomType.Vector2 moveVector)
         {
             var p = _Polygon;
             //Regulus.Types.Polygon p = Regulus.Utility.ValueHelper.DeepCopy<Regulus.Types.Polygon>(_Polygon);
@@ -147,10 +147,10 @@ namespace Regulus.Project.SamebestKeys
             //p.BuildEdges();
             
 
-            Regulus.Types.Polygon.CollisionResult result = new Types.Polygon.CollisionResult();
+            Regulus.CustomType.Polygon.CollisionResult result = new CustomType.Polygon.CollisionResult();
             foreach (var polygon in polygons)
             {
-                result = Regulus.Types.Polygon.Collision(p, polygon, moveVector);
+                result = Regulus.CustomType.Polygon.Collision(p, polygon, moveVector);
                 if (result.WillIntersect || result.Intersect)
                 {
                     return result;                    
@@ -160,7 +160,7 @@ namespace Regulus.Project.SamebestKeys
             return result;
         }
 
-        private void _Empty(long arg1, IEnumerable<Types.Polygon> arg2)
+        private void _Empty(long arg1, IEnumerable<CustomType.Polygon> arg2)
         {
             
         }

@@ -6,9 +6,9 @@ using System.Text;
 
 namespace Regulus.Remoting.Soul.Native
 {
-    class StageStart : Regulus.Game.IStage
+    class StageStart : Regulus.Utility.IStage
     {
-        public event Action<Regulus.Game.ICore, int, float> DoneEvent;
+        public event Action<Regulus.Utility.ICore, int, float> DoneEvent;
 
         Regulus.Utility.Command _Command;
         Regulus.Utility.Console.IViewer _View;
@@ -17,7 +17,7 @@ namespace Regulus.Remoting.Soul.Native
             _View = view;
             _Command = command;
         }
-        void Game.IStage.Enter()
+        void Utility.IStage.Enter()
         {
             _Command.Register<int, string, string>("Launch", _Start);
             _Command.Register<string>("LaunchIni", _StartIni);
@@ -40,7 +40,7 @@ namespace Regulus.Remoting.Soul.Native
 
 
             var stream = System.IO.File.ReadAllBytes(path);
-            var core = Regulus.Game.Loader.Load(stream, class_name);
+            var core = Regulus.Utility.Loader.Load(stream, class_name);
 
             // _LoadLibrary(work_dir);
 
@@ -68,13 +68,13 @@ namespace Regulus.Remoting.Soul.Native
             }
         }*/
 
-        void Game.IStage.Leave()
+        void Utility.IStage.Leave()
         {
             _Command.Unregister("Launch");
             _Command.Unregister("LaunchIni");
         }
 
-        void Game.IStage.Update()
+        void Utility.IStage.Update()
         {
 
         }

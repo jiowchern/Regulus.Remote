@@ -53,13 +53,13 @@ namespace Regulus.Project.TurnBasedRPG.Serializable
     {
         public EntityPropertyInfomation()
         { 
-            Position = new Types.Vector2();
+            Position = new CustomType.Vector2();
             Map = "";
         }
 
         public Guid Id { get; set; }
         public string Map { get; set; }
-        public Regulus.Types.Vector2 Position { get; set; }
+        public Regulus.CustomType.Vector2 Position { get; set; }
         public int Vision { get; set; }
 		public float Speed { get; set; }
         public float Direction { get; set; }
@@ -70,10 +70,10 @@ namespace Regulus.Project.TurnBasedRPG.Serializable
     {
         public EntityInfomation()
         {
-            Position = new Types.Vector2();            
+            Position = new CustomType.Vector2();            
         }
         public Guid Id { get; set; }
-        public Regulus.Types.Vector2 Position { get; set; }        
+        public Regulus.CustomType.Vector2 Position { get; set; }        
     }
 
 
@@ -94,10 +94,10 @@ namespace Regulus.Project.TurnBasedRPG.Serializable
     {
         // 起始時間 , 啟始位置 , 動作 , 方向 , 位移速度
         public long BeginTime {get;set;}
-        public Regulus.Types.Vector2 BeginPosition { get; set; }
+        public Regulus.CustomType.Vector2 BeginPosition { get; set; }
         public ActionStatue ActionStatue { get; set; }
         public float MoveDirectionAngle { get; set; }
-        public Regulus.Types.Vector2 MoveDirection { get; set; }
+        public Regulus.CustomType.Vector2 MoveDirection { get; set; }
         public float Speed { get; set; }
     }
 

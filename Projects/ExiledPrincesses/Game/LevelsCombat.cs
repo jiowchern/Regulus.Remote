@@ -7,7 +7,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 {
     partial class Levels
     {
-        class CombatStage : Regulus.Game.IStage
+        class CombatStage : Regulus.Utility.IStage
         {
             public enum Result
             {
@@ -29,7 +29,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
                 _Combat = new Combat();
             }
-            void Regulus.Game.IStage.Enter()
+            void Regulus.Utility.IStage.Enter()
             {
                 var team1 = new Team(TeamSide.Left,_Platoon);
                 
@@ -55,13 +55,13 @@ namespace Regulus.Project.ExiledPrincesses.Game
                 
             }
 
-            void Regulus.Game.IStage.Leave()
+            void Regulus.Utility.IStage.Leave()
             {
                 _Platoons.Shutdown();
                 _Combat.Finial();
             }
 
-            void Regulus.Game.IStage.Update()
+            void Regulus.Utility.IStage.Update()
             {
                 _Platoons.Update();
                 _Combat.Update();

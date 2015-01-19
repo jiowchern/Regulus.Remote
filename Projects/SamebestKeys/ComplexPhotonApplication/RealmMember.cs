@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys.Dungeons
 {    
-    class MemberMapHandler : Regulus.Game.IStage
+    class MemberMapHandler : Regulus.Utility.IStage
     {
         private Member _Member;
         private IMap _Map;
@@ -23,7 +23,7 @@ namespace Regulus.Project.SamebestKeys.Dungeons
             this._Map = map;
         }
 
-        void Game.IStage.Enter()
+        void Utility.IStage.Enter()
         {
             
             var crossAbility = _Member.Player.FindAbility<ICrossAbility>();
@@ -49,24 +49,24 @@ namespace Regulus.Project.SamebestKeys.Dungeons
             }
         }
 
-        private void _OnCross(string target_map, Types.Vector2 target_position)
+        private void _OnCross(string target_map, CustomType.Vector2 target_position)
         {
             _Map.Left(_Member.Player);            
             _NextMap = target_map;
         }
 
-        void Game.IStage.Leave()
+        void Utility.IStage.Leave()
         {
             _Map.LeftDoneEvent -= _LeftDone;
             _Map.Left(_Member.Player);            
         }
 
-        void Game.IStage.Update()
+        void Utility.IStage.Update()
         {
             
         }
     }
-    class MemberQueryHandler : Regulus.Game.IStage , ITraversable
+    class MemberQueryHandler : Regulus.Utility.IStage , ITraversable
     {
         Member _Member;
         string _Map;
@@ -81,7 +81,7 @@ namespace Regulus.Project.SamebestKeys.Dungeons
             _Zone = zone;
             _Map = map;
         }
-        void Game.IStage.Enter()
+        void Utility.IStage.Enter()
         {
             if (_Member.BeginTraversable != null)
                 _Member.BeginTraversable(this); 
@@ -89,13 +89,13 @@ namespace Regulus.Project.SamebestKeys.Dungeons
 
         
 
-        void Game.IStage.Leave()
+        void Utility.IStage.Leave()
         {
             if (_Member.BeginTraversable != null)
                 _Member.EndTraversable(this);
         }
 
-        void Game.IStage.Update()
+        void Utility.IStage.Update()
         {            
         }
 
@@ -117,13 +117,13 @@ namespace Regulus.Project.SamebestKeys.Dungeons
     {
 
         Member _Member;
-        Regulus.Game.StageMachine _Machine;
+        Regulus.Utility.StageMachine _Machine;
         public Guid Id { get { return _Member.Id; } }
 
         public MemberHandler(Member member)
         {
             this._Member = member;
-            _Machine = new Game.StageMachine();
+            _Machine = new Utility.StageMachine();
         }
         bool Utility.IUpdatable.Update()
         {
@@ -141,7 +141,7 @@ namespace Regulus.Project.SamebestKeys.Dungeons
             _Machine.Termination();
         }
 
-        internal void ChangeState(Regulus.Game.IStage stage)
+        internal void ChangeState(Regulus.Utility.IStage stage)
         {
             _Machine.Push(stage);
         }

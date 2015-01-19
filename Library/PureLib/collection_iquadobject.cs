@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 
 
-namespace Regulus.Physics
+namespace Regulus.Collection
 {
-    using Regulus.Types;
+    using Regulus.CustomType;
 	public interface IQuadObject
 	{
 		

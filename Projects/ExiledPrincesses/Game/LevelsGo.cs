@@ -7,7 +7,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 {
     partial class Levels
     {
-        class GoForwardStage : Regulus.Game.IStage, IAdventureGo
+        class GoForwardStage : Regulus.Utility.IStage, IAdventureGo
         {
             Station _Station;
             private float _Position;
@@ -29,7 +29,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
             }
 
-            void Regulus.Game.IStage.Enter()
+            void Regulus.Utility.IStage.Enter()
             {
                 _Agent.Launch();
                 _Agent.Bind<IAdventureGo>(this);
@@ -40,7 +40,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 
             }
 
-            void Regulus.Game.IStage.Leave()
+            void Regulus.Utility.IStage.Leave()
             {
 
                 _ForwardEvent(LocalTime.Instance.Ticks, _Position, 0);
@@ -50,7 +50,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
                 _Agent.Shutdown();
             }
 
-            void Regulus.Game.IStage.Update()
+            void Regulus.Utility.IStage.Update()
             {
                 _Agent.Update();
                 _Position += (_DistancePerSeconds * LocalTime.Instance.DeltaSecond);

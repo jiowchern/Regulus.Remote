@@ -7,6 +7,6 @@ namespace Regulus.Project.UnboundarySnake
 {
     public interface ISnakeBodyItem
     {
-        Regulus.Types.Point Position { get; }
+        Regulus.CustomType.Point Position { get; }
     }
 }

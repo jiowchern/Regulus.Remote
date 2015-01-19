@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TestApplication
 {
-    public class Application : Regulus.Game.Framework<IUser>
+    public class Application : Regulus.Utility.Framework<IUser>
     {
         
         public Application(Regulus.Utility.Console.IViewer view, Regulus.Utility.Console.IInput input)
@@ -20,7 +20,7 @@ namespace TestApplication
  	        throw new NotImplementedException();
         }
 
-        protected override Regulus.Game.Framework<IUser>.ControllerProvider[] _ControllerProvider()
+        protected override Regulus.Utility.Framework<IUser>.ControllerProvider[] _ControllerProvider()
         {
             return new Application.ControllerProvider[] 
             {

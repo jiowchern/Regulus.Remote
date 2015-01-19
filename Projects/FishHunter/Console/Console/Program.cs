@@ -32,6 +32,15 @@ namespace Console
             var provider = selector.CreateGameConsole("standalong");
             provider.Spawn("1"); 
             provider.Select("1");
+
+            provider.Spawn("2");
+            provider.Select("2");
+
+            provider.Spawn("3");
+            provider.Select("3");
+
+            provider.Spawn("4");
+            provider.Select("4");
            
         }
     }

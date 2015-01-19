@@ -8,7 +8,7 @@ namespace Regulus.Framework
     public class Client<TUser> : Regulus.Utility.IUpdatable
        where TUser : class, Regulus.Utility.IUpdatable
     {
-        Regulus.Game.StageMachine _Machine;
+        Regulus.Utility.StageMachine _Machine;
 
         Regulus.Utility.Console _Console;
         Regulus.Utility.Command _Command { get { return _Console.Command; } }
@@ -24,7 +24,7 @@ namespace Regulus.Framework
             
             _Console = new Utility.Console(input, view);
             Enable = true;
-            _Machine = new Regulus.Game.StageMachine();
+            _Machine = new Regulus.Utility.StageMachine();
 
             
         }

@@ -8,8 +8,8 @@ namespace VGame.Project.FishHunter
     public class StandalongUserFactory 
         :Regulus.Framework.IUserFactoty<IUser>
     {
-        Regulus.Game.ICore _Standalong;
-        public StandalongUserFactory(Regulus.Game.ICore core)
+        Regulus.Utility.ICore _Standalong;
+        public StandalongUserFactory(Regulus.Utility.ICore core)
         {
             _Standalong = core;
         }

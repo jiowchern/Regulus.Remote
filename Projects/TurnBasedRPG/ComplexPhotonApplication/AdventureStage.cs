@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Project.TurnBasedRPG
 {
-    class AdventureStage : Regulus.Game.IStage<User> 
+    class AdventureStage : Regulus.Utility.IStage<User> 
     {
         DateTime _Save;
         Regulus.Project.TurnBasedRPG.Player _Player;
@@ -17,7 +17,7 @@ namespace Regulus.Project.TurnBasedRPG
             _Map = map;
 		}
       
-        Regulus.Game.StageLock Regulus.Game.IStage<User>.Enter(User obj)
+        Regulus.Utility.StageLock Regulus.Utility.IStage<User>.Enter(User obj)
         {            
             _Player = new Player(obj.Actor);
             obj.Provider.Bind<IPlayer>(_Player);
@@ -62,7 +62,7 @@ namespace Regulus.Project.TurnBasedRPG
 
         
         
-        void Regulus.Game.IStage<User>.Leave(User obj)
+        void Regulus.Utility.IStage<User>.Leave(User obj)
         {            
             
             _Map.Left(_Player);
@@ -83,7 +83,7 @@ namespace Regulus.Project.TurnBasedRPG
         }
       
 
-        void Regulus.Game.IStage<User>.Update(User obj)
+        void Regulus.Utility.IStage<User>.Update(User obj)
         {
             var elapsed = DateTime.Now.Ticks - _Save.Ticks;
             var span = new TimeSpan(elapsed);

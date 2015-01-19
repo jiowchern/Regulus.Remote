@@ -10,7 +10,7 @@ namespace VGame.Project.FishHunter
     public class CommandParser : Regulus.Framework.ICommandParsable<IUser>
     {
     
-        Regulus.Remoting.CommandAutoBuild _CommandAutoBuild;
+        
         private Regulus.Utility.Command _Command;
         private Regulus.Utility.Console.IViewer _View;
         private IUser _User;
@@ -19,27 +19,23 @@ namespace VGame.Project.FishHunter
         {            
             this._Command = command;
             this._View = view;
-            this._User = user;
-            _CommandAutoBuild = new Regulus.Remoting.CommandAutoBuild(_Command);
+            this._User = user;            
         }
-
-
-        void Regulus.Framework.ICommandParsable<IUser>.Setup()
-        {
-            var gpiBinder = _CommandAutoBuild.Add<Regulus.Game.IConnect>(_User.Remoting.ConnectProvider);
-            gpiBinder.Add("Connect", (connect) => { return new Regulus.Remoting.CommandParamBuilder().BuildRemoting<string, int, bool>(connect.Connect, _ConnectResult); });
-            
-        }
-
         void Regulus.Framework.ICommandParsable<IUser>.Clear()
         {
-            _CommandAutoBuild.Remove(_User.Remoting.OnlineProvider);
+            
         }
         
         private void _ConnectResult(bool result)
         {
             _View.WriteLine(string.Format("Connect result {0}", result));
 
+        }
+
+        void Regulus.Framework.ICommandParsable<IUser>.Setup(Regulus.Remoting.IGPIBinderFactory factory)
+        {            
+            var gpiBinder = factory.Create<Regulus.Utility.IConnect>(_User.Remoting.ConnectProvider);
+            gpiBinder.Bind("Connect", (connect) => { return new Regulus.Remoting.CommandParamBuilder().BuildRemoting<string, int, bool>(connect.Connect, _ConnectResult); });
         }
     }
 }

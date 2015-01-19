@@ -8,7 +8,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
     partial class Levels
     {
 
-        public class IdleStage : Regulus.Game.IStage, IAdventureIdle
+        public class IdleStage : Regulus.Utility.IStage, IAdventureIdle
         {
             public delegate void OnGoForward();
             public event OnGoForward GoForwardEvent;
@@ -24,7 +24,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
             {
                 _Commandable = commandable;
             }
-            void Regulus.Game.IStage.Enter()
+            void Regulus.Utility.IStage.Enter()
             {
                 _Agent.Launch();
                 _Agent.Bind<IAdventureIdle>(this);
@@ -44,14 +44,14 @@ namespace Regulus.Project.ExiledPrincesses.Game
                 GoForwardEvent = null;
             }
 
-            void Regulus.Game.IStage.Leave()
+            void Regulus.Utility.IStage.Leave()
             {
                 _Commandable.InterdictIdle(null);
                 _Agent.Unbind<IAdventureIdle>(this);
                 _Agent.Shutdown();
             }
 
-            void Regulus.Game.IStage.Update()
+            void Regulus.Utility.IStage.Update()
             {
                 _Agent.Update();
             }

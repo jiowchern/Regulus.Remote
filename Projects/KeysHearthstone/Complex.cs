@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Regulus.Project.KeysHearthstone
 {
-    public class Complex : Regulus.Game.ICore
+    public class Complex : Regulus.Utility.ICore
     {
 		Regulus.Project.KeysHearthstone.Hall _Hall;
 		Regulus.Utility.Updater _Updater;
@@ -17,7 +17,7 @@ namespace Regulus.Project.KeysHearthstone
 			_Updater = new Utility.Updater();
 			_Hall = new Hall();
 		}
-		void Game.ICore.ObtainController(Remoting.ISoulBinder binder)
+		void Utility.ICore.ObtainController(Remoting.ISoulBinder binder)
 		{
 			_Hall.PushUser(new User(binder, _Stroage));
 		}

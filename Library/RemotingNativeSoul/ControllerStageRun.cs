@@ -31,11 +31,11 @@ namespace Regulus.Remoting.Soul.Native
     {
         Regulus.Utility.Updater _RequesterHandlers;
         volatile bool _Run;
-        Regulus.Game.ICore _Core;
+        Regulus.Utility.ICore _Core;
         Queue<ISoulBinder> _Binders;
         Regulus.Utility.FPSCounter _FPS;
         public int FPS { get { return _FPS.Value; } }
-        public ThreadCoreHandler(Regulus.Game.ICore core)
+        public ThreadCoreHandler(Regulus.Utility.ICore core)
         {
             _Core = core;
             _Binders = new Queue<ISoulBinder>();
@@ -167,7 +167,7 @@ namespace Regulus.Remoting.Soul.Native
         }
 
     }
-    class StageRun : Regulus.Game.IStage
+    class StageRun : Regulus.Utility.IStage
     {
         public event Action ShutdownEvent;
 
@@ -180,7 +180,7 @@ namespace Regulus.Remoting.Soul.Native
         ThreadCoreHandler _ThreadCoreHandler;
         System.Threading.Thread _ThreadCore;
 
-        public StageRun(Regulus.Game.ICore core, Utility.Command command, int port, Utility.Console.IViewer viewer)
+        public StageRun(Regulus.Utility.ICore core, Utility.Command command, int port, Utility.Console.IViewer viewer)
         {
             _View = viewer;
             this._Command = command;
@@ -196,7 +196,7 @@ namespace Regulus.Remoting.Soul.Native
             _ThreadSocket.IsBackground = true;
         }
 
-        void Game.IStage.Enter()
+        void Utility.IStage.Enter()
         {
 
             _Command.Register("FPS", () =>
@@ -221,7 +221,7 @@ namespace Regulus.Remoting.Soul.Native
             ShutdownEvent();
         }
 
-        void Game.IStage.Leave()
+        void Utility.IStage.Leave()
         {
             _ThreadCoreHandler.Stop();
             _ThreadCore.Abort();
@@ -236,7 +236,7 @@ namespace Regulus.Remoting.Soul.Native
 
         }
 
-        void Game.IStage.Update()
+        void Utility.IStage.Update()
         {
 
 

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys.Dungeons
 {
-    partial class RealmStage : Regulus.Game.IStage, IRealmJumper
+    partial class RealmStage : Regulus.Utility.IStage, IRealmJumper
     {
         Belongings _Belongings;
         Regulus.Utility.Updater _Updater;
@@ -39,7 +39,7 @@ namespace Regulus.Project.SamebestKeys.Dungeons
          
         }
 
-        void Game.IStage.Enter() 
+        void Utility.IStage.Enter() 
         {
             _Binder.Bind<IBelongings>(_Belongings);
             _Member = new Member(_Player);
@@ -103,7 +103,7 @@ namespace Regulus.Project.SamebestKeys.Dungeons
             _Unbind(_Player, _Binder);            
             _Binder.Bind<ITraversable>(traversable);
         }
-        void Game.IStage.Leave()
+        void Utility.IStage.Leave()
         {
             _ResleaseSession();
             
@@ -184,7 +184,7 @@ namespace Regulus.Project.SamebestKeys.Dungeons
             player.LogoutEvent -= LogoutEvent;
         }
 
-        void Game.IStage.Update()
+        void Utility.IStage.Update()
         {
             _Updater.Update();
         }

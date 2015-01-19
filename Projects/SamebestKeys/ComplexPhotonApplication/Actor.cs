@@ -51,7 +51,7 @@ namespace Regulus.Project.SamebestKeys
             
             abilitys.AttechAbility<IMoverAbility>(_MoverAbility);
 
-            _QuadTreeObjectAbility = new PhysicalAbility(new Regulus.Types.Rect(_Property.Position.X - _BodyWidth / 2, _Property.Position.Y - _BodyHeight / 2, _BodyWidth, _BodyHeight), this);
+            _QuadTreeObjectAbility = new PhysicalAbility(new Regulus.CustomType.Rect(_Property.Position.X - _BodyWidth / 2, _Property.Position.Y - _BodyHeight / 2, _BodyWidth, _BodyHeight), this);
             abilitys.AttechAbility<PhysicalAbility>(_QuadTreeObjectAbility);
             abilitys.AttechAbility<IBehaviorAbility>(_Behavior);
             abilitys.AttechAbility<IBehaviorCommandAbility>(_Behavior);
@@ -68,9 +68,9 @@ namespace Regulus.Project.SamebestKeys
 		/// </summary>
 		/// <param name="time">目前時間Ticks</param>
 		/// <param name="unit_vector">單位時間移動向量</param>
-        private void _OnPosition(long time, Types.Vector2 unit_vector)
+        private void _OnPosition(long time, CustomType.Vector2 unit_vector)
         {
-            _Property.Position = Types.Vector2.FromPoint(unit_vector.X + _Property.Position.X, unit_vector.Y + _Property.Position.Y);            
+            _Property.Position = CustomType.Vector2.FromPoint(unit_vector.X + _Property.Position.X, unit_vector.Y + _Property.Position.Y);            
             _MoverAbility.SetPosition(_Property.Position.X, _Property.Position.Y);
             _QuadTreeObjectAbility.UpdateBounds(_Property.Position.X - _BodyWidth / 2, _Property.Position.Y - _BodyHeight / 2);
         }
@@ -94,7 +94,7 @@ namespace Regulus.Project.SamebestKeys
 		// 方向
         public float Direction { get { return _Property.Direction; } }
 
-        void _OnAction(long begin_time, float move_speed,float direction, Regulus.Types.Vector2 unit_vector, ActionStatue action_state)
+        void _OnAction(long begin_time, float move_speed,float direction, Regulus.CustomType.Vector2 unit_vector, ActionStatue action_state)
         {
             _Property.Direction = direction;
             
@@ -118,7 +118,7 @@ namespace Regulus.Project.SamebestKeys
 		/// </summary>
         public void SetPosition(float x, float y)
         {
-            _Property.Position = Types.Vector2.FromPoint(x,y);            
+            _Property.Position = CustomType.Vector2.FromPoint(x,y);            
             _MoverAbility.SetPosition(_Property.Position.X, _Property.Position.Y);
             _QuadTreeObjectAbility.UpdateBounds(_Property.Position.X - _BodyWidth / 2, _Property.Position.Y - _BodyHeight / 2);
         }

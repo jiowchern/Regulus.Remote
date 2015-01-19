@@ -1,4 +1,4 @@
-﻿using Regulus.Types;
+﻿using Regulus.CustomType;
 using System;
 
 namespace Regulus.Project.SamebestKeys
@@ -6,7 +6,7 @@ namespace Regulus.Project.SamebestKeys
 	/// <summary>
 	/// 物理功能
 	/// </summary>
-    class PhysicalAbility : Regulus.Physics.IQuadObject
+    class PhysicalAbility : Regulus.Collection.IQuadObject
     {
         Rect _Bounds;        
         public PhysicalAbility(Rect bounds ,Entity owner)

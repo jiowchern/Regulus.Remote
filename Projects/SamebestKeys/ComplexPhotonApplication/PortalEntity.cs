@@ -12,20 +12,20 @@ namespace Regulus.Project.SamebestKeys
     class PortalEntity : Entity, IObserveAbility
     {
         string _TargetMap;
-        Types.Vector2 _TargetPosition;
-        Types.Vector2 _Position;
-        Regulus.Types.Rect _Vision;
+        CustomType.Vector2 _TargetPosition;
+        CustomType.Vector2 _Position;
+        Regulus.CustomType.Rect _Vision;
 
-        public PortalEntity(Guid id, Regulus.Types.Rect vision,string target_map, Types.Vector2 target_position)
+        public PortalEntity(Guid id, Regulus.CustomType.Rect vision,string target_map, CustomType.Vector2 target_position)
             : base(id)
         {
-            _TargetPosition = new Types.Vector2();
+            _TargetPosition = new CustomType.Vector2();
             _TargetPosition.X = target_position.X;
             _TargetPosition.Y = target_position.Y;
             _TargetMap = target_map;
             _Vision = vision;
 
-            _Position = new Types.Vector2();
+            _Position = new CustomType.Vector2();
             _Position.X = (float)(_Vision.X + _Vision.Width /2);
             _Position.X = (float)(_Vision.Y + _Vision.Height / 2);
         }
@@ -59,12 +59,12 @@ namespace Regulus.Project.SamebestKeys
             }
         }
 
-        Types.Vector2 IObserveAbility.Position
+        CustomType.Vector2 IObserveAbility.Position
         {
             get { return _Position; }
         }
 
-        Regulus.Types.Rect IObserveAbility.Vision
+        Regulus.CustomType.Rect IObserveAbility.Vision
         {
             get { return _Vision; }
         }

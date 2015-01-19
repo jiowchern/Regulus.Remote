@@ -181,26 +181,26 @@ namespace Regulus.Project.SamebestKeys
         }
 
         bool _InEffect;
-        Types.Rect _Capture;
+        CustomType.Rect _Capture;
         internal void ClearCaptureRect()
         {
             _InEffect = false;
         }
 
-        internal void SetCaptureRect(Types.Rect rect)
+        internal void SetCaptureRect(CustomType.Rect rect)
         {
             _InEffect = true;
             
             _Capture = rect;            
         }
 
-        bool ISkillCaptureAbility.TryGetBounds(ref Types.Rect bounds , ref int skill)
+        bool ISkillCaptureAbility.TryGetBounds(ref CustomType.Rect bounds , ref int skill)
         {            
             if (_InEffect)
             {
                 skill = _CurrentActorCast.Skill;
                 bounds = _Capture;
-                bounds.Location = new Types.Point(_Capture.Location.X + _Property.Position.X, _Capture.Location.Y + _Property.Position.Y);                
+                bounds.Location = new CustomType.Point(_Capture.Location.X + _Property.Position.X, _Capture.Location.Y + _Property.Position.Y);                
             }
             return _InEffect;
         }

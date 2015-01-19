@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Console
 {
-    class BotConnectStage : Regulus.Game.IStage
+    class BotConnectStage : Regulus.Utility.IStage
     {
         private Regulus.Project.SamebestKeys.IUser _User;
         private string ip;
@@ -18,7 +18,7 @@ namespace Console
             this.ip = ip;
             this.port = port;
         }
-        void Regulus.Game.IStage.Enter()
+        void Regulus.Utility.IStage.Enter()
         {            
             _User.ConnectProvider.Supply += ConnectProvider_Supply;
         }
@@ -31,12 +31,12 @@ namespace Console
 
 
 
-        void Regulus.Game.IStage.Leave()
+        void Regulus.Utility.IStage.Leave()
         {
             _User.ConnectProvider.Supply -= ConnectProvider_Supply;
         }
 
-        void Regulus.Game.IStage.Update()
+        void Regulus.Utility.IStage.Update()
         {            
         }
     }

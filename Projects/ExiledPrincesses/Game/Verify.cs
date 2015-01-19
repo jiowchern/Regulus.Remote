@@ -6,25 +6,25 @@ using System.Text;
 namespace Regulus.Project.ExiledPrincesses.Game.Stage
 {
 	using Regulus.Project.ExiledPrincesses.Game;
-	public class Verify : Regulus.Game.IStage, Regulus.Project.ExiledPrincesses.IVerify
+	public class Verify : Regulus.Utility.IStage, Regulus.Project.ExiledPrincesses.IVerify
 	{
 		Core _Core;
         public Verify(Core core)
         {
             _Core = core;
         }
-        void Regulus.Game.IStage.Enter()
+        void Regulus.Utility.IStage.Enter()
 		{			
 			_Core.Binder.Bind<Regulus.Project.ExiledPrincesses.IVerify>(this);
             
 		}
 
-		void Regulus.Game.IStage.Leave()
+		void Regulus.Utility.IStage.Leave()
 		{
 			_Core.Binder.Unbind<Regulus.Project.ExiledPrincesses.IVerify>(this);
 		}
 
-		void Regulus.Game.IStage.Update()
+		void Regulus.Utility.IStage.Update()
 		{
 			
 		}

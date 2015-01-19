@@ -8,14 +8,14 @@ namespace Regulus.Game
 	public class Hall : Regulus.Utility.IUpdatable
 	{
 		public event Regulus.Game.OnNewUser NewUserEvent;
-		private Regulus.Utility.Updater _Users;
+        private Regulus.Utility.Updater _Users;
 
 		public Hall()
 		{
 
 			_Users = new Regulus.Utility.Updater();
 		}
-		public void PushUser(Regulus.Game.IUser user)
+        public void PushUser(Regulus.Game.IUser user)
 		{
 			user.VerifySuccessEvent += (id) =>
 			{

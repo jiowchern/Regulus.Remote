@@ -24,7 +24,7 @@ namespace Regulus.Project.SamebestKeys
             get { return _Infomation.Property.Id ; }
         }
 
-        Types.Vector2 IObservedAbility.Position
+        CustomType.Vector2 IObservedAbility.Position
         {
             get { return _Infomation.Property.Position; }
             

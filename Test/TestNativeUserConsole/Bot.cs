@@ -12,7 +12,7 @@ namespace TestNativeUserConsole
 
         public event Action ExitEvent;
 
-        Regulus.Game.StageMachine _Machine;
+        Regulus.Utility.StageMachine _Machine;
 
         Regulus.Utility.Console.IViewer _View;
         bool Regulus.Utility.IUpdatable.Update()
@@ -79,14 +79,14 @@ namespace TestNativeUserConsole
             // TODO: Complete member initialization
             this.User = user;
             this._Name = name;
-            _Machine = new Regulus.Game.StageMachine();
+            _Machine = new Regulus.Utility.StageMachine();
             _View = view;
         }
     }
 
     partial class Bot : Regulus.Utility.IUpdatable
     {
-        class ConnectStage : Regulus.Game.IStage
+        class ConnectStage : Regulus.Utility.IStage
         {
             string _Ip;
             int _Port;
@@ -98,7 +98,7 @@ namespace TestNativeUserConsole
                 _Port = port;
                 _User = user;
             }
-            void Regulus.Game.IStage.Enter()
+            void Regulus.Utility.IStage.Enter()
             {
                 _User.ConnectProvider.Supply += ConnectProvider_Supply;
             }
@@ -114,12 +114,12 @@ namespace TestNativeUserConsole
                 ConnectResultEvent(obj);
             }
 
-            void Regulus.Game.IStage.Leave()
+            void Regulus.Utility.IStage.Leave()
             {
                 _User.ConnectProvider.Supply -= ConnectProvider_Supply;
             }
 
-            void Regulus.Game.IStage.Update()
+            void Regulus.Utility.IStage.Update()
             {
                 
             }
@@ -128,7 +128,7 @@ namespace TestNativeUserConsole
 
     partial class Bot : Regulus.Utility.IUpdatable
     {
-        class SendStage : Regulus.Game.IStage
+        class SendStage : Regulus.Utility.IStage
         {
             TestNativeUser.IUser _User;
             Regulus.Utility.Console.IViewer _View;
@@ -138,7 +138,7 @@ namespace TestNativeUserConsole
                 _User = user;
                 _View = view;
             }
-            void Regulus.Game.IStage.Enter()
+            void Regulus.Utility.IStage.Enter()
             {
                 _User.MessagerProvider.Supply += MessagerProvider_Supply;
             }
@@ -161,12 +161,12 @@ namespace TestNativeUserConsole
                 return System.DateTime.Now.ToString();
             }
 
-            void Regulus.Game.IStage.Leave()
+            void Regulus.Utility.IStage.Leave()
             {
                 
             }
 
-            void Regulus.Game.IStage.Update()
+            void Regulus.Utility.IStage.Update()
             {
                 
             }

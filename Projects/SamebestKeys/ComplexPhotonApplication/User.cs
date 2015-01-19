@@ -11,7 +11,7 @@ namespace Regulus.Project.SamebestKeys
     {        
         public Remoting.ISoulBinder Provider { get; private set; }
 
-        Regulus.Game.StageMachine _Machine ;
+        Regulus.Utility.StageMachine _Machine ;
         public event OnNewUser VerifySuccessEvent;
         
 		IWorld _World;
@@ -20,7 +20,7 @@ namespace Regulus.Project.SamebestKeys
         {
             _Storage = storage;
 
-            _Machine = new Regulus.Game.StageMachine();
+            _Machine = new Regulus.Utility.StageMachine();
             Provider = provider;
             provider.BreakEvent += Quit;
 			_World = world;

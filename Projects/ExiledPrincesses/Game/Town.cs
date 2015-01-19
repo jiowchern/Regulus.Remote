@@ -24,7 +24,7 @@ namespace Regulus.Project.ExiledPrincesses.Game.Stage
         }
     }
 
-    class Town : Regulus.Game.IStage , ITown
+    class Town : Regulus.Utility.IStage , ITown
     {
 
         public delegate void OnToMap(string name);
@@ -40,7 +40,7 @@ namespace Regulus.Project.ExiledPrincesses.Game.Stage
             _Prototype = prototype;
             
         }
-        void Regulus.Game.IStage.Enter()
+        void Regulus.Utility.IStage.Enter()
         {
             _Binder.Bind<ITown>(this);
         }
@@ -53,12 +53,12 @@ namespace Regulus.Project.ExiledPrincesses.Game.Stage
                 ToLevelsEvent(destination);                
             }
         }
-        void Regulus.Game.IStage.Leave()
+        void Regulus.Utility.IStage.Leave()
         {
             _Binder.Unbind<ITown>(this);
         }
 
-        void Regulus.Game.IStage.Update()
+        void Regulus.Utility.IStage.Update()
         {
 
 

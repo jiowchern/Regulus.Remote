@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Regulus.Game
+namespace Regulus.Utility
 {
     namespace Data
     {
@@ -61,7 +61,7 @@ namespace Regulus.Game
 
 			private Array _GeneratePrototype(Type prototype_type, Func<System.Data.DataRow, bool> filter, string ext_name)
             {
-                var tableInfo = prototype_type.GetCustomAttributes(typeof(Regulus.Game.Data.TableAttribute), false).FirstOrDefault() as Regulus.Game.Data.TableAttribute;
+                var tableInfo = prototype_type.GetCustomAttributes(typeof(Regulus.Utility.Data.TableAttribute), false).FirstOrDefault() as Regulus.Utility.Data.TableAttribute;
                 if (tableInfo != null)
                 {
 
@@ -83,7 +83,7 @@ namespace Regulus.Game
                             foreach (var property in propertys)
                             {
                                 #region
-                                var fieldInfo = property.GetCustomAttributes(typeof(Regulus.Game.Data.FieldAttribute), false).FirstOrDefault() as Regulus.Game.Data.FieldAttribute;
+                                var fieldInfo = property.GetCustomAttributes(typeof(Regulus.Utility.Data.FieldAttribute), false).FirstOrDefault() as Regulus.Utility.Data.FieldAttribute;
                                 if (fieldInfo != null)
                                 {
                                     string fieldName = fieldInfo.Name;
@@ -97,7 +97,7 @@ namespace Regulus.Game
                                 #endregion
 
                                 #region
-                                var refFieldInfo = property.GetCustomAttributes(typeof(Regulus.Game.Data.ReferenceFieldAttribute), false).FirstOrDefault() as Regulus.Game.Data.ReferenceFieldAttribute;
+                                var refFieldInfo = property.GetCustomAttributes(typeof(Regulus.Utility.Data.ReferenceFieldAttribute), false).FirstOrDefault() as Regulus.Utility.Data.ReferenceFieldAttribute;
                                 if (refFieldInfo != null)
                                 {
 
@@ -120,7 +120,7 @@ namespace Regulus.Game
                                 #endregion
 
                                 #region
-                                var arrayFieldInfo = property.GetCustomAttributes(typeof(Regulus.Game.Data.ArrayFieldAttribute), false).FirstOrDefault() as Regulus.Game.Data.ArrayFieldAttribute;
+                                var arrayFieldInfo = property.GetCustomAttributes(typeof(Regulus.Utility.Data.ArrayFieldAttribute), false).FirstOrDefault() as Regulus.Utility.Data.ArrayFieldAttribute;
                                 if (arrayFieldInfo != null)
                                 {
                                     Array fields = Array.CreateInstance(property.PropertyType.GetElementType(), arrayFieldInfo.Fields.Length);
@@ -138,7 +138,7 @@ namespace Regulus.Game
 
 
                                 #region
-                                var blockFieldInfos = property.GetCustomAttributes(typeof(Regulus.Game.Data.BlockFieldAttribute), false) as Regulus.Game.Data.BlockFieldAttribute[];
+                                var blockFieldInfos = property.GetCustomAttributes(typeof(Regulus.Utility.Data.BlockFieldAttribute), false) as Regulus.Utility.Data.BlockFieldAttribute[];
 
                                 if (blockFieldInfos.Length > 0)
                                 {
@@ -166,7 +166,7 @@ namespace Regulus.Game
 
                                     foreach (var blockFieldInfo in blockFieldInfos)
                                     {
-                                        Regulus.Game.Data.BlockFieldAttribute bfa = blockFieldInfo as Regulus.Game.Data.BlockFieldAttribute;
+                                        Regulus.Utility.Data.BlockFieldAttribute bfa = blockFieldInfo as Regulus.Utility.Data.BlockFieldAttribute;
                                         var refProperty = refFieldType.GetProperty(bfa.Name);
 
                                         if (refProperty != null)

@@ -11,7 +11,7 @@ namespace BusinessServer
     }
 
 
-    class Verify : Regulus.Game.IStage, VerifyAPI
+    class Verify : Regulus.Utility.IStage, VerifyAPI
     {
         public event OnVerifySucess DoneEvent;
         private Regulus.Remoting.ISoulBinder _Binder;
@@ -22,17 +22,17 @@ namespace BusinessServer
             this._Binder = binder;
         }
 
-        void Regulus.Game.IStage.Enter()
+        void Regulus.Utility.IStage.Enter()
         {
             _Binder.Bind<VerifyAPI>(this);
         }
 
-        void Regulus.Game.IStage.Leave()
+        void Regulus.Utility.IStage.Leave()
         {
             _Binder.Unbind<VerifyAPI>(this);
         }
 
-        void Regulus.Game.IStage.Update()
+        void Regulus.Utility.IStage.Update()
         {            
 
         }

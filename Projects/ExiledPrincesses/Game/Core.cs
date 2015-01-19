@@ -11,7 +11,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 		public IStorage	Storage {get ; private set;}
         IZone _Zone;
 		public Regulus.Remoting.ISoulBinder Binder { get { return _Binder; }}
-		Regulus.Game.StageMachine _StageMachine;
+		Regulus.Utility.StageMachine _StageMachine;
         AccountInfomation _AccountInfomation;
         
         public Core(Regulus.Remoting.ISoulBinder binder, IStorage storage, IZone zone )
@@ -20,7 +20,7 @@ namespace Regulus.Project.ExiledPrincesses.Game
 			Storage = storage;
 			_Binder = binder;
             
-			_StageMachine = new Regulus.Game.StageMachine();
+			_StageMachine = new Regulus.Utility.StageMachine();
 
 			binder.BreakEvent += _OnInactive;
             _StatusEvent += (s) => { };

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Console
 {
-    class BotRunStage : Regulus.Game.IStage
+    class BotRunStage : Regulus.Utility.IStage
     {
         private Regulus.Project.SamebestKeys.IPlayer _Player;
         private Regulus.Project.SamebestKeys.IObservedAbility _Observed;
@@ -13,13 +13,13 @@ namespace Console
         float _Second;
         public event Action DoneEvent;
         private Regulus.Project.SamebestKeys.IUser _User;
-        private Regulus.Types.Point? _BornPoint;
+        private Regulus.CustomType.Point? _BornPoint;
         public BotRunStage()
         {
             _TimeUp = new Regulus.Utility.TimeCounter();            
         }
 
-        public BotRunStage(Regulus.Project.SamebestKeys.IUser _User, Regulus.Types.Point? _BornPoint) :this()
+        public BotRunStage(Regulus.Project.SamebestKeys.IUser _User, Regulus.CustomType.Point? _BornPoint) :this()
         {
            
             this._User = _User;
@@ -28,7 +28,7 @@ namespace Console
         
 
         
-        void Regulus.Game.IStage.Enter()
+        void Regulus.Utility.IStage.Enter()
         {
             _User.PlayerProvider.Supply += PlayerProvider_Supply;
             
@@ -71,7 +71,7 @@ namespace Console
             }
         }
 
-        void Regulus.Game.IStage.Leave()
+        void Regulus.Utility.IStage.Leave()
         {
             if (_Observed != null)
                 _Observed.ShowActionEvent -= _Observed_ShowActionEvent;
@@ -79,7 +79,7 @@ namespace Console
             _User.ObservedAbilityProvider.Supply -= ObservedAbilityProvider_Supply;
         }
 
-        void Regulus.Game.IStage.Update()
+        void Regulus.Utility.IStage.Update()
         {
             if(_TimeUp.Second > _Second)
             {

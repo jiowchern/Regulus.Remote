@@ -6,11 +6,11 @@ using System.Text;
 
 namespace Regulus.Remoting
 {
-    class OnlineStage : Regulus.Game.IStage
+    class OnlineStage : Regulus.Utility.IStage
     {
         private Regulus.Remoting.IAgent _Agent;
-        private Regulus.Remoting.Ghost.TProvider<Regulus.Game.IOnline> _OnlineProvider;
-        Regulus.Game.Online _Online;
+        private Regulus.Remoting.Ghost.TProvider<Regulus.Utility.IOnline> _OnlineProvider;
+        Regulus.Utility.Online _Online;
 
         public event Action BreakEvent
         {
@@ -18,14 +18,14 @@ namespace Regulus.Remoting
             remove { _Agent.DisconnectEvent -= value; }
         }
 
-        public OnlineStage(Regulus.Remoting.IAgent agent, Regulus.Remoting.Ghost.TProvider<Regulus.Game.IOnline> provider)
+        public OnlineStage(Regulus.Remoting.IAgent agent, Regulus.Remoting.Ghost.TProvider<Regulus.Utility.IOnline> provider)
         {            
             this._Agent = agent;
             this._OnlineProvider = provider;
-            _Online = new Regulus.Game.Online(agent);
+            _Online = new Regulus.Utility.Online(agent);
             
         }
-        void Regulus.Game.IStage.Enter()
+        void Regulus.Utility.IStage.Enter()
         {
             _Bind(_OnlineProvider);
         }
@@ -40,12 +40,12 @@ namespace Regulus.Remoting
             provider.Remove(_Online.Id);            
         }
 
-        void Regulus.Game.IStage.Leave()
+        void Regulus.Utility.IStage.Leave()
         {
             _Unbind(_OnlineProvider);
         }
 
-        void Regulus.Game.IStage.Update()
+        void Regulus.Utility.IStage.Update()
         {
             
         }

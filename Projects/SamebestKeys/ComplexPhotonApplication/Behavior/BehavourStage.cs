@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Project.SamebestKeys
 {
-    public class BehaviorStage : Regulus.Game.IStage
+    public class BehaviorStage : Regulus.Utility.IStage
     {
         Regulus.Utility.TUpdater<IBehaviorHandler> _Updater;
 
@@ -36,7 +36,7 @@ namespace Regulus.Project.SamebestKeys
             }
         }
 
-        void Game.IStage.Enter()
+        void Utility.IStage.Enter()
         {
             if (BeginEvent != null)
                 _BuildHandler(BeginEvent());
@@ -44,14 +44,14 @@ namespace Regulus.Project.SamebestKeys
 
 
 
-        void Game.IStage.Leave()
+        void Utility.IStage.Leave()
         {
             if (EndEvent != null)
                 EndEvent();
             _Updater.Shutdown();
         }
 
-        void Game.IStage.Update()
+        void Utility.IStage.Update()
         {
             _Updater.Update();
         }

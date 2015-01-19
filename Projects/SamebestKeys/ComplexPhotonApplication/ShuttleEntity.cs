@@ -9,15 +9,15 @@ namespace Regulus.Project.SamebestKeys
     class ShuttleEntity : Entity, IObserveAbility
     {
         string _Target;        
-        Regulus.Types.Rect _Vision;
-        Types.Vector2 _Position;
+        Regulus.CustomType.Rect _Vision;
+        CustomType.Vector2 _Position;
 
-        public ShuttleEntity(Guid id, Regulus.Types.Rect vision,string target ) : base(id)
+        public ShuttleEntity(Guid id, Regulus.CustomType.Rect vision,string target ) : base(id)
         { 
             _Target = target;
             _Vision = vision;
 
-            _Position = new Types.Vector2();
+            _Position = new CustomType.Vector2();
             _Position.X = (float)(_Vision.X + _Vision.Width /2);
             _Position.X = (float)(_Vision.Y + _Vision.Height / 2);
         }
@@ -43,12 +43,12 @@ namespace Regulus.Project.SamebestKeys
             }
         }
 
-        Types.Vector2 IObserveAbility.Position
+        CustomType.Vector2 IObserveAbility.Position
         {
             get { return _Position; }
         }
 
-        Types.Rect IObserveAbility.Vision
+        CustomType.Rect IObserveAbility.Vision
         {
             get { return _Vision; }
         }
