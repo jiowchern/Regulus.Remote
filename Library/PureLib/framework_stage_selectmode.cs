@@ -49,7 +49,7 @@ namespace Regulus.Framework.Stage
 
         void _CreateGameConsole(string name)
         {
-            _Selector.CreateGameConsole(name);
+            _Selector.CreateUserProvider(name);
         }
     }
 }

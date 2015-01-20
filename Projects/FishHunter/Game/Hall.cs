@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace User
+namespace VGame.Project.FishHunter
 {
-    public class Class1
+    class Hall : Regulus.Game.Hall
     {
     }
 }

@@ -12,11 +12,14 @@ namespace VGame.Project.FishHunter
         public StandalongUserFactory(Regulus.Utility.ICore core)
         {
             _Standalong = core;
+
+            if (_Standalong == null)
+                throw new ArgumentNullException("Core is null");
         }
         IUser Regulus.Framework.IUserFactoty<IUser>.SpawnUser()
         {
             var agent = new Regulus.Standalong.Agent();
-            //_Standalong.ObtainController(agent);
+            _Standalong.ObtainController(agent);
             return new User(agent);
         }
 

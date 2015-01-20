@@ -35,7 +35,7 @@ namespace Regulus.Framework
             _View.WriteLine( string.Format("Added {0} factory." , name));
         }
         
-        public UserProvider<TUser> CreateGameConsole(string name)
+        public UserProvider<TUser> CreateUserProvider(string name)
         {
             Regulus.Framework.IUserFactoty<TUser> factory = _Find(name);
             if (factory == null)

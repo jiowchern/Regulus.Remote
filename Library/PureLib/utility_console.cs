@@ -83,15 +83,25 @@
             if (cmdArgs.Count > 0)
             {          
                 var cmd = cmdArgs.Dequeue();
-                int runCount = Command.Run(cmd, cmdArgs.ToArray());
-                if (runCount != 0)
+
+                try
                 {
-                    _Viewer.WriteLine("執行完畢.");
+                    int runCount = Command.Run(cmd, cmdArgs.ToArray());
+                    if (runCount != 0)
+                    {
+                        _Viewer.WriteLine("執行完畢.");
+                    }
+                    else
+                    {
+                        _Viewer.WriteLine("無此命令.");
+                    }
                 }
-                else
+                catch (System.ArgumentException argument_exception)
                 {
-                    _Viewer.WriteLine("無此命令.");
+                    _Viewer.WriteLine("參數錯誤 : " + argument_exception.Message);
+                    
                 }
+                
             }
         }
     }

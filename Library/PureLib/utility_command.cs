@@ -69,10 +69,11 @@ namespace Regulus.Utility
 
             Action<string[]> func = (args) =>
             {
-                if (args.Length == 0)
-                {
-                    executer.Invoke();
-                }
+                if (args.Length != 0)
+                    throw new ArgumentException("命令參數數量為0");
+                
+                executer.Invoke();
+                
             };
 
             _AddCommand(command, func);
@@ -84,13 +85,12 @@ namespace Regulus.Utility
         {
             Action<string[]> func = (args) =>
             {
-                if (args.Length == 1)
-                {
-                    
-                    object arg0;
-                    _Cnv(args[0], out arg0, typeof(T1));
-                    executer.Invoke((T1)arg0);
-                }
+                if (args.Length != 1)
+                    throw new ArgumentException("命令參數數量為1");
+                                    
+                object arg0;
+                _Cnv(args[0], out arg0, typeof(T1));
+                executer.Invoke((T1)arg0);                
             };
 
             _AddCommand(command, func);
@@ -101,14 +101,15 @@ namespace Regulus.Utility
         {
             Action<string[]> func = (args) =>
             {
-                if (args.Length == 2)
-                {
-                    object arg0;
-                    _Cnv(args[0], out arg0, typeof(T1));
-                    object arg1;
-                    _Cnv(args[1], out arg1, typeof(T2));
-                    executer.Invoke((T1)arg0, (T2)arg1);
-                }
+                if (args.Length != 2)
+                    throw new ArgumentException("命令參數數量為2");
+                
+                object arg0;
+                _Cnv(args[0], out arg0, typeof(T1));
+                object arg1;
+                _Cnv(args[1], out arg1, typeof(T2));
+                executer.Invoke((T1)arg0, (T2)arg1);
+                
             };
 
             _AddCommand(command, func);
@@ -118,16 +119,17 @@ namespace Regulus.Utility
         {
             Action<string[]> func = (args) =>
             {
-                if (args.Length == 3)
-                {
-                    object arg0;
-                    _Cnv(args[0], out arg0, typeof(T1));
-                    object arg1;
-                    _Cnv(args[1], out arg1, typeof(T2));
-                    object arg2;
-                    _Cnv(args[2], out arg2, typeof(T3));
-                    executer.Invoke((T1)arg0, (T2)arg1, (T3)arg2);
-                }
+                if (args.Length != 3)
+                    throw new ArgumentException("命令參數數量為3");
+                
+                object arg0;
+                _Cnv(args[0], out arg0, typeof(T1));
+                object arg1;
+                _Cnv(args[1], out arg1, typeof(T2));
+                object arg2;
+                _Cnv(args[2], out arg2, typeof(T3));
+                executer.Invoke((T1)arg0, (T2)arg1, (T3)arg2);
+                
             };
 
             _AddCommand(command, func);
@@ -137,18 +139,21 @@ namespace Regulus.Utility
         {
             Action<string[]> func = (args) =>
             {
-                if (args.Length == 4)
-                {
-                    object arg0;
-                    _Cnv(args[0], out arg0, typeof(T1));
-                    object arg1;
-                    _Cnv(args[1], out arg1, typeof(T2));
-                    object arg2;
-                    _Cnv(args[2], out arg2, typeof(T3));
-                    object arg3;
-                    _Cnv(args[3], out arg3, typeof(T4));
-                    executer.Invoke((T1)arg0, (T2)arg1, (T3)arg2, (T4)arg3);
-                }
+
+                if (args.Length != 4)
+                    throw new ArgumentException("命令參數數量為4");
+
+                
+                object arg0;
+                _Cnv(args[0], out arg0, typeof(T1));
+                object arg1;
+                _Cnv(args[1], out arg1, typeof(T2));
+                object arg2;
+                _Cnv(args[2], out arg2, typeof(T3));
+                object arg3;
+                _Cnv(args[3], out arg3, typeof(T4));
+                executer.Invoke((T1)arg0, (T2)arg1, (T3)arg2, (T4)arg3);
+                
             };
 
             _AddCommand(command, func);
@@ -159,13 +164,13 @@ namespace Regulus.Utility
         {
             Action<string[]> func = (args) =>
             {
-                if (args.Length == 0)
+                if (args.Length != 0)
+                    throw new ArgumentException("命令參數數量為0");
+
+                var ret = executer.Invoke();
+                if (ret != null && value != null)
                 {
-                    var ret = executer.Invoke();
-                    if (ret != null && value != null)
-                    {
-                        value((TR)ret);
-                    }
+                    value((TR)ret);
                 }
             };
 
@@ -177,16 +182,18 @@ namespace Regulus.Utility
         {
             Action<string[]> func = (args) =>
             {
-                if (args.Length == 1)
+                if (args.Length != 1)
+                    throw new ArgumentException("命令參數數量為1");
+
+                
+                object arg0;
+                _Cnv(args[0], out arg0, typeof(T1));
+                var ret = executer.Invoke((T1)arg0);
+                if (ret != null && value != null)
                 {
-                    object arg0;
-                    _Cnv(args[0], out arg0, typeof(T1));
-                    var ret = executer.Invoke((T1)arg0);
-                    if (ret != null && value != null)
-                    {
-                        value((TR)ret);
-                    }
+                    value((TR)ret);
                 }
+                
             };
 
             _AddCommand(command, func);
@@ -197,19 +204,21 @@ namespace Regulus.Utility
         {
             Action<string[]> func = (args) =>
             {
-                if (args.Length == 2)
-                {
-                    object arg0;
-                    _Cnv(args[0], out arg0, typeof(T1));
-                    object arg1;
-                    _Cnv(args[1], out arg1, typeof(T2));
+                if (args.Length != 2)
+                    throw new ArgumentException("命令參數數量為2");
 
-                    var ret = executer.Invoke((T1)arg0, (T2)arg1);
-                    if (ret != null && value != null)
-                    {
-                        value((TR)ret);
-                    }
+                
+                object arg0;
+                _Cnv(args[0], out arg0, typeof(T1));
+                object arg1;
+                _Cnv(args[1], out arg1, typeof(T2));
+
+                var ret = executer.Invoke((T1)arg0, (T2)arg1);
+                if (ret != null && value != null)
+                {
+                    value((TR)ret);
                 }
+                
             };
 
             _AddCommand(command, func);
@@ -220,21 +229,23 @@ namespace Regulus.Utility
         {
             Action<string[]> func = (args) =>
             {
-                if (args.Length == 3)
-                {
-                    object arg0;
-                    _Cnv(args[0], out arg0, typeof(T1));
-                    object arg1;
-                    _Cnv(args[1], out arg1, typeof(T2));
-                    object arg2;
-                    _Cnv(args[2], out arg2, typeof(T3));
+                if (args.Length != 3)
+                    throw new ArgumentException("命令參數數量為3");
 
-                    var ret = executer.Invoke((T1)arg0, (T2)arg1, (T3)arg2);
-                    if (ret != null && value != null)
-                    {
-                        value((TR)ret);
-                    }
+                
+                object arg0;
+                _Cnv(args[0], out arg0, typeof(T1));
+                object arg1;
+                _Cnv(args[1], out arg1, typeof(T2));
+                object arg2;
+                _Cnv(args[2], out arg2, typeof(T3));
+
+                var ret = executer.Invoke((T1)arg0, (T2)arg1, (T3)arg2);
+                if (ret != null && value != null)
+                {
+                    value((TR)ret);
                 }
+                
             };
 
             _AddCommand(command, func);
@@ -245,23 +256,25 @@ namespace Regulus.Utility
         {
             Action<string[]> func = (args) =>
             {
-                if (args.Length == 4)
-                {
-                    object arg0;
-                    _Cnv(args[0], out arg0, typeof(T1));
-                    object arg1;
-                    _Cnv(args[1], out arg1, typeof(T2));
-                    object arg2;
-                    _Cnv(args[2], out arg2, typeof(T3));
-                    object arg3;
-                    _Cnv(args[3], out arg3, typeof(T4));
+                if (args.Length != 4)
+                    throw new ArgumentException("命令參數數量為4");
 
-                    var ret = executer.Invoke((T1)arg0, (T2)arg1, (T3)arg2, (T4)arg3);
-                    if (ret != null && value != null)
-                    {
-                        value((TR)ret);
-                    }
+                
+                object arg0;
+                _Cnv(args[0], out arg0, typeof(T1));
+                object arg1;
+                _Cnv(args[1], out arg1, typeof(T2));
+                object arg2;
+                _Cnv(args[2], out arg2, typeof(T3));
+                object arg3;
+                _Cnv(args[3], out arg3, typeof(T4));
+
+                var ret = executer.Invoke((T1)arg0, (T2)arg1, (T3)arg2, (T4)arg3);
+                if (ret != null && value != null)
+                {
+                    value((TR)ret);
                 }
+                
             };
 
             _AddCommand(command, func);

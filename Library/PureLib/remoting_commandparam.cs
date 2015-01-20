@@ -78,19 +78,20 @@ namespace Regulus.Remoting
                 Type[] genericTypes = return_type != null ? arg_types.Concat(new Type[] { return_type }).ToArray() : arg_types ;
                 int paramCount = return_type != null ? 3 : 2;
 
-
                 System.Reflection.MethodInfo[] methods = typeof(Regulus.Utility.Command).GetMethods();
                 var baseMethod = (from m in methods
-                        let genericParameters = m.GetGenericArguments()
-                        let parameters = m.GetParameters()
-                        where m.Name == "Register"
-                        && genericParameters.Length == genericTypes.Length
-                        && parameters.Length == paramCount                        
-                        select m).SingleOrDefault();
+                                  let genericParameters = m.GetGenericArguments()
+                                  let parameters = m.GetParameters()
+                                  where m.Name == "Register"
+                                  && genericParameters.Length == genericTypes.Length
+                                  && parameters.Length == paramCount
+                                  select m).SingleOrDefault();
 
-
-
-                return baseMethod.MakeGenericMethod(genericTypes);
+                if(genericTypes .Length > 0)
+                {
+                    return baseMethod.MakeGenericMethod(genericTypes);
+                }
+                return baseMethod;
             }
         }
 
