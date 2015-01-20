@@ -2,38 +2,39 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace VGame.Project.FishHunter
 {
-    public class Center : Regulus.Utility.ICore
+    class Complex : Regulus.Utility.ICore
     {
-        Regulus.Utility.Updater _Updater;
-        Hall _Hall;        
-        public Center()
+
+        VGame.Project.FishHunter.Center _Center;
+        Regulus.Utility.ICore _Core { get { return _Center; } }
+        public Complex()
         {
-            _Updater = new Regulus.Utility.Updater();
-            _Hall = new Hall();
+            _Center = new Center();
         }
+
         void Regulus.Utility.ICore.ObtainController(Regulus.Remoting.ISoulBinder binder)
         {
-            var user = new User();
-            _Hall.PushUser(user);
+            _Core.ObtainController(binder);
         }
 
         bool Regulus.Utility.IUpdatable.Update()
         {
-            _Updater.Update();
+            _Core.Update();
             return true;
         }
 
         void Regulus.Framework.ILaunched.Launch()
         {
-            _Updater.Add(_Hall);
+            _Core.Launch();
         }
 
         void Regulus.Framework.ILaunched.Shutdown()
         {
-            _Updater.Shutdown();
+            _Core.Shutdown();
         }
     }
 }

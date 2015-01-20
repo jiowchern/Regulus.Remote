@@ -42,7 +42,8 @@ namespace Regulus.Remoting.Ghost.Native
             var stage = new ConnectStage(_Socket, ipaddress, port);
             stage.ResultEvent += (result)=>
             {
-                _ConnectEvent();
+                if (_ConnectEvent != null)
+                    _ConnectEvent();
                 val.SetValue(result);
                 _ConnectResult(result);                
             };

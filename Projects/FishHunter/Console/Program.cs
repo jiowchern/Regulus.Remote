@@ -36,7 +36,7 @@ namespace Console
         private static Regulus.Utility.ICore _LoadGame(string path)
         {
             var stream = System.IO.File.ReadAllBytes(path);
-            return Regulus.Utility.Loader.Load(stream, "VGame.Project.FishHunter.Core");
+            return Regulus.Utility.Loader.Load(stream, "VGame.Project.FishHunter.Center");
         }
     }
 }

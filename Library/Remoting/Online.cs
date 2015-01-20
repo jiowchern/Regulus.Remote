@@ -7,7 +7,7 @@ namespace Regulus.Utility
 {
     public interface IOnline
     {        
-        float Ping { get; }
+        double Ping { get; }
         void Disconnect();
 
         event Action DisconnectEvent;
@@ -30,9 +30,9 @@ namespace Regulus.Utility
             this._Agent = agent;
             
         }
-        float IOnline.Ping
+        double IOnline.Ping
         {
-            get { return _Agent.Ping; }
+            get { return System.TimeSpan.FromTicks(_Agent.Ping).TotalSeconds; }
         }
 
         void IOnline.Disconnect()

@@ -32,9 +32,10 @@ namespace Regulus.Remoting
         {
             Regulus.Remoting.Value<bool> r = _Agent.Connect(account, password);
             r.OnValue += (success) =>
-            {
-                DoneEvent();
+            {                
                 result.SetValue(success);
+                if (success)
+                    DoneEvent();
             };
         }
 

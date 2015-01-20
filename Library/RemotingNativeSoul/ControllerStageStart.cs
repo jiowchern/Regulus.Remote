@@ -21,6 +21,15 @@ namespace Regulus.Remoting.Soul.Native
         {
             _Command.Register<int, string, string>("Launch", _Start);
             _Command.Register<string>("LaunchIni", _StartIni);
+
+            
+            _View.WriteLine("======Ini file format description=====");
+            _View.WriteLine("Example.");
+            _View.WriteLine("[Launch]");
+            _View.WriteLine("port = 12345");
+            _View.WriteLine("path = game.dll");
+            _View.WriteLine("class = Company.Project.Center");
+            _View.WriteLine("======================================");
         }
 
         private void _StartIni(string path)

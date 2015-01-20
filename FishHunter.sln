@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "User", "Projects\FishHunter
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity", "Library\Unity\Unity.csproj", "{B4123AE5-EED1-4FDB-89FD-4BBE4C67E7A0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Complex", "Projects\FishHunter\Complex\Complex.csproj", "{53A7DD3E-D3A3-4567-9B7E-CFDF2F3C2214}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Unity|Any CPU = Debug_Unity|Any CPU
@@ -118,6 +120,12 @@ Global
 		{B4123AE5-EED1-4FDB-89FD-4BBE4C67E7A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4123AE5-EED1-4FDB-89FD-4BBE4C67E7A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4123AE5-EED1-4FDB-89FD-4BBE4C67E7A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53A7DD3E-D3A3-4567-9B7E-CFDF2F3C2214}.Debug_Unity|Any CPU.ActiveCfg = Debug|Any CPU
+		{53A7DD3E-D3A3-4567-9B7E-CFDF2F3C2214}.Debug_Unity|Any CPU.Build.0 = Debug|Any CPU
+		{53A7DD3E-D3A3-4567-9B7E-CFDF2F3C2214}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53A7DD3E-D3A3-4567-9B7E-CFDF2F3C2214}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53A7DD3E-D3A3-4567-9B7E-CFDF2F3C2214}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53A7DD3E-D3A3-4567-9B7E-CFDF2F3C2214}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -136,5 +144,6 @@ Global
 		{5061BC1D-0C9E-4050-A51E-593B5C16D398} = {96CF9E09-80D6-4232-9952-CEC23ECE61FB}
 		{F6A0A01C-7FCF-4763-9E01-295E47D76E59} = {96CF9E09-80D6-4232-9952-CEC23ECE61FB}
 		{9E558B9C-1A42-4D5B-9C3A-9B443EC86835} = {96CF9E09-80D6-4232-9952-CEC23ECE61FB}
+		{53A7DD3E-D3A3-4567-9B7E-CFDF2F3C2214} = {96CF9E09-80D6-4232-9952-CEC23ECE61FB}
 	EndGlobalSection
 EndGlobal
