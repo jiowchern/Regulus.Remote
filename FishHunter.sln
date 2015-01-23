@@ -31,6 +31,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemotingTest", "Library\RemotingTest\RemotingTest.csproj", "{6C5AF73B-0D73-4A15-B762-BB2E889DE4AE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console", "Projects\FishHunter\Console\Console.csproj", "{F6A0A01C-7FCF-4763-9E01-295E47D76E59}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5061BC1D-0C9E-4050-A51E-593B5C16D398} = {5061BC1D-0C9E-4050-A51E-593B5C16D398}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "User", "Projects\FishHunter\User\User.csproj", "{9E558B9C-1A42-4D5B-9C3A-9B443EC86835}"
 EndProject
