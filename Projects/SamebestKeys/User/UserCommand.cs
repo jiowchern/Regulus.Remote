@@ -162,7 +162,7 @@ namespace Regulus.Projects.SamebestKeys
 
             _RemoveCommands.Add(obj, new string[] 
             {
-                "SessionDone"  , "SessionNext","SessionScore"  , "SessionTexture"
+                "SessionDone"  ,                "SessionNext","SessionScore"  , "SessionTexture"
             });
             
 
@@ -405,7 +405,7 @@ namespace Regulus.Projects.SamebestKeys
                 else
                     _View.WriteLine("建立失敗");
             });
-
+            
             _Command.RemotingRegister<string, string, Regulus.Project.SamebestKeys.LoginResult>("Login", verify.Login, (result) =>
             {
                 if (result == Project.SamebestKeys.LoginResult.Success)

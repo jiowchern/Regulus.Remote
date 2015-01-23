@@ -53,7 +53,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="GameModeTest.cs" />
+    <Compile Include="CommandAnalysisTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

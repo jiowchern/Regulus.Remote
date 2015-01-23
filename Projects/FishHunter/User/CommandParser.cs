@@ -35,7 +35,7 @@ namespace VGame.Project.FishHunter
         void Regulus.Framework.ICommandParsable<IUser>.Setup(Regulus.Remoting.IGPIBinderFactory factory)
         {            
             var connect = factory.Create<Regulus.Utility.IConnect>(_User.Remoting.ConnectProvider);
-            connect.Bind("Connect", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().BuildRemoting<string, int, bool>(gpi.Connect, _ConnectResult); });
+            connect.Bind("Connect[result , account ,password]", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().BuildRemoting<string, int, bool>(gpi.Connect, _ConnectResult); });
 
 
             var online = factory.Create<Regulus.Utility.IOnline>(_User.Remoting.OnlineProvider);

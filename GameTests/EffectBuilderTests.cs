@@ -7,15 +7,15 @@ using Regulus.Project.ItemMaker;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace Regulus.Project.ItemMaker.Tests
 {
-    [TestClass()]
+    [TestClass]
     public class EffectBuilderTests
     {
-        [TestMethod()]
+        /*[TestMethod]
         public void GetTest()
         {
             var effectCosts = new EffectCost[] {new EffectCost { Effect = new Effect { Property = Effect.TYPE.ATTACKUP , Value = 1} }};
             var effectBuilder = new EffectBuilder(effectCosts);
             Assert.Fail();
-        }
+        }*/
     }
 }

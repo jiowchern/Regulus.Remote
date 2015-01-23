@@ -49,7 +49,7 @@ namespace Regulus.Utility
             UnregisterEvent += (s) => { };
         }
 
-        void _EmptyRegisterEvent(string command, Type ret, Type[] args)
+        void _EmptyRegisterEvent(string command, Command.CommandParameter ret, Command.CommandParameter[] args)
         {
             //throw new NotImplementedException();
         }
@@ -58,14 +58,90 @@ namespace Regulus.Utility
             _Commands.Add(new Infomation() { Name = command, Handler = func });
         }
 
-        public delegate void OnRegister(string command, Type ret , Type[] args);
+        public class CommandParameter
+        {
+            Type _Param;
+            string _Description;
+            public Type Param { get { return _Param; } }
+            public string Description { get { return _Description; } }
+
+            public CommandParameter(Type p , string description)
+            {
+                _Param = p; _Description = description;
+            }
+
+            public static implicit operator CommandParameter (Type type)
+            {
+                return new CommandParameter(type, "");
+            }
+
+            
+        }
+        
+    
+        public delegate void OnRegister(string command, CommandParameter ret, CommandParameter[] args);
         public event OnRegister RegisterEvent;
 
         public delegate void OnUnregister(string command);
         public event OnUnregister UnregisterEvent;        
         
+        public class Analysis
+        {
+            public Analysis(string message)
+            {
+                _Analyze(message);
+            }
+
+            public string Command { get; private set; }            
+
+            public string[] Parameters { get; private set; }
+            
+
+            void _Analyze(string message)
+            {
+                var expansion = @"^\s*(?<command>\w+)\s*\[\s*(?<args>.+?)\]|^\s*(?<command>\w+)\s*";
+                var regex = new System.Text.RegularExpressions.Regex(expansion);
+                var match = regex.Match(message);
+                if(match.Success)
+                {
+                    var command = match.Groups["command"];
+                    Command = command.Value;
+                    var args = match.Groups["args"];
+                    _SetParameters(_AnalyzeArgs(args.Value));
+                }
+                
+                
+                
+                
+                
+            }
+
+            private void _SetParameters(string[] parameters)
+            {
+                Parameters = parameters;
+            }
+
+            private string[] _AnalyzeArgs(string message)
+            {
+                List<string> args = new List<string>();
+                //\s*(\w+)\s*,?
+                //^\s*(?<command>\w+)\s*\[\s*(?<args>.+)\]|^\s*(?<command>\w+)\s*
+                const string expansion = @"\s*(?<Arg>\w+)\s*,?";
+                var regex = new System.Text.RegularExpressions.Regex(expansion);
+                var matchs = regex.Matches(message);
+                foreach(System.Text.RegularExpressions.Match match in  matchs)
+                {
+                    args.Add( match.Groups["Arg"].Value);
+                }
+                return args.ToArray();
+            }            
+        }
+        
         public void Register(string command, Action executer)
         {
+
+            
+            
 
             Action<string[]> func = (args) =>
             {
@@ -76,8 +152,9 @@ namespace Regulus.Utility
                 
             };
 
-            _AddCommand(command, func);
-            RegisterEvent(command , null , new Type[0] );
+            var analysis = new Analysis(command);
+            _AddCommand(analysis.Command, func);
+            _RegisterEvent(analysis, null, new Type[0]);
         }
 
         
@@ -93,8 +170,9 @@ namespace Regulus.Utility
                 executer.Invoke((T1)arg0);                
             };
 
-            _AddCommand(command, func);
-            RegisterEvent(command, null, new Type[]{typeof(T1)});
+            var analysis = new Analysis(command);
+            _AddCommand(analysis.Command, func);
+            _RegisterEvent(analysis, null, new Type[] { typeof(T1) });
         }
 
         public void Register<T1, T2>(string command, Action<T1, T2> executer)
@@ -112,8 +190,9 @@ namespace Regulus.Utility
                 
             };
 
-            _AddCommand(command, func);
-            RegisterEvent(command, null, new Type[] { typeof(T1), typeof(T2) });
+            var analysis = new Analysis(command);
+            _AddCommand(analysis.Command, func);
+            _RegisterEvent(analysis, null, new Type[] { typeof(T1), typeof(T2) });
         }
         public void Register<T1, T2, T3>(string command, Action<T1, T2, T3> executer)
         {
@@ -132,8 +211,9 @@ namespace Regulus.Utility
                 
             };
 
-            _AddCommand(command, func);
-            RegisterEvent(command, null, new Type[] { typeof(T1), typeof(T2), typeof(T3) });
+            var analysis = new Analysis(command);
+            _AddCommand(analysis.Command, func);
+            _RegisterEvent(analysis, null, new Type[] { typeof(T1), typeof(T2), typeof(T3) });
         }
         public void Register<T1, T2, T3, T4>(string command, Action<T1, T2, T3, T4> executer)
         {
@@ -156,8 +236,9 @@ namespace Regulus.Utility
                 
             };
 
-            _AddCommand(command, func);
-            RegisterEvent(command, null, new Type[] { typeof(T1), typeof(T2), typeof(T3) , typeof(T4)});
+            var analysis = new Analysis(command);
+            _AddCommand(analysis.Command, func);
+            _RegisterEvent(analysis, null, new Type[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4) });
         }
 
         public void Register<TR>(string command, Func<TR> executer, Action<TR> value)
@@ -174,8 +255,9 @@ namespace Regulus.Utility
                 }
             };
 
-            _AddCommand(command, func);
-            RegisterEvent(command, typeof(TR) , new Type[0]);
+            var analysis = new Analysis(command);
+            _AddCommand(analysis.Command, func);
+            _RegisterEvent(analysis, typeof(TR), new Type[0]);
         }
 
         public void Register<T1, TR>(string command, Func<T1, TR> executer, Action<TR> value)
@@ -196,8 +278,9 @@ namespace Regulus.Utility
                 
             };
 
-            _AddCommand(command, func);
-            RegisterEvent(command, typeof(TR), new Type[] { typeof(T1) });
+            var analysis = new Analysis(command);
+            _AddCommand(analysis.Command, func);
+            _RegisterEvent(analysis, typeof(TR), new Type[] { typeof(T1) });
         }
 
         public void Register<T1, T2, TR>(string command, Func<T1, T2, TR> executer, Action<TR> value)
@@ -221,8 +304,9 @@ namespace Regulus.Utility
                 
             };
 
-            _AddCommand(command, func);
-            RegisterEvent(command, typeof(TR), new Type[] { typeof(T1), typeof(T2) });
+            var analysis = new Analysis(command);
+            _AddCommand(analysis.Command, func);
+            _RegisterEvent(analysis, typeof(TR), new Type[] { typeof(T1), typeof(T2) });
         }
 
         public void Register<T1, T2, T3, TR>(string command, Func<T1, T2, T3, TR> executer, Action<TR> value)
@@ -248,8 +332,9 @@ namespace Regulus.Utility
                 
             };
 
-            _AddCommand(command, func);
-            RegisterEvent(command, typeof(TR), new Type[] { typeof(T1), typeof(T2), typeof(T3) });
+            var analysis = new Analysis(command);
+            _AddCommand(analysis.Command, func);
+            _RegisterEvent(analysis, typeof(TR), new Type[] { typeof(T1), typeof(T2), typeof(T3) });
         }
 
         public void Register<T1, T2, T3, T4, TR>(string command, Func<T1, T2, T3, T4, TR> executer, Action<TR> value)
@@ -277,8 +362,9 @@ namespace Regulus.Utility
                 
             };
 
-            _AddCommand(command, func);
-            RegisterEvent(command, typeof(TR), new Type[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4) });
+            var analysis = new Analysis(command);
+            _AddCommand(analysis.Command, func);
+            _RegisterEvent(analysis, typeof(TR), new Type[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4) });
         }
 
         public void Unregister(string command)
@@ -307,6 +393,33 @@ namespace Regulus.Utility
             return commandInfomations.Count() ;
         }
 
+        void _RegisterEvent(Analysis analysis, Type ret, Type[] args)
+        {
+            if (ret != null)
+            {
+                var parameterTypes = args.ToArray();
+                var parameterDescs = analysis.Parameters.Skip(1).ToArray();
+                RegisterEvent(analysis.Command, new CommandParameter(ret, analysis.Parameters[0]), _BuildCommandParameters(parameterTypes, parameterDescs));
+            }
+            else
+            {
+                var parameterTypes = args.ToArray();
+                var parameterDescs = analysis.Parameters.ToArray();
+                RegisterEvent(analysis.Command, null, _BuildCommandParameters(parameterTypes, parameterDescs));
+            }
+            
+        }
 
+        private CommandParameter[] _BuildCommandParameters(Type[] parameterTypes, string[] parameterDescs)
+        {            
+            int count = parameterTypes.Length;
+            CommandParameter[] cps = new CommandParameter[count];
+            for (int i = 0; i < count; ++i)
+            {
+                cps[i] = new CommandParameter(parameterTypes[i], (i < parameterDescs.Length)?parameterDescs[i] : "" );
+            }
+
+            return cps;
+        }
     }
 }

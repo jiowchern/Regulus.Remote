@@ -27,9 +27,9 @@ namespace Regulus.Framework.Stage
         {
 
             _Updater.Add(_UserProvider);
-            _Command.Register<string>("SpawnUser" , _Spawn);
-            _Command.Register<string>("UnpawnUser", _Unspawn);
-            _Command.Register<string>("SelectUser", _Select);
+            _Command.Register<string>("SpawnUser[UserName]" , _Spawn);
+            _Command.Register<string>("UnpawnUser[UserName]", _Unspawn);
+            _Command.Register<string>("SelectUser[UserName]", _Select);
         }
 
         void Regulus.Utility.IStage.Leave()
