@@ -399,7 +399,7 @@ namespace Regulus.Utility
             {
                 var parameterTypes = args.ToArray();
                 var parameterDescs = analysis.Parameters.Skip(1).ToArray();
-                RegisterEvent(analysis.Command, new CommandParameter(ret, analysis.Parameters[0]), _BuildCommandParameters(parameterTypes, parameterDescs));
+                RegisterEvent(analysis.Command, new CommandParameter(ret, analysis.Parameters.Length > 0 ? analysis.Parameters[0] : "" ), _BuildCommandParameters(parameterTypes, parameterDescs));
             }
             else
             {
