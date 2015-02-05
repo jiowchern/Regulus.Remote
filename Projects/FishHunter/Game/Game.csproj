@@ -39,9 +39,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core.cs" />
+    <Compile Include="Center.cs" />
+    <Compile Include="DummyStorage.cs" />
     <Compile Include="Hall.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Stage\Verify.cs" />
+    <Compile Include="DummyStandalong.cs" />
+    <Compile Include="Verify.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -53,7 +57,12 @@
       <Project>{a4cfce46-bda8-4416-a1bb-77bd80514019}</Project>
       <Name>Remoting</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{72e9207f-cd57-4789-ad21-30132e541fb6}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

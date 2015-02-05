@@ -7,6 +7,9 @@ namespace Regulus.Standalong
 {
 	public class Agent : Regulus.Remoting.IRequestQueue, Regulus.Remoting.IResponseQueue, Regulus.Remoting.ISoulBinder , Regulus.Remoting.IAgent
 	{
+
+        public delegate void ConnectedCallback();
+        public event ConnectedCallback ConnectedEvent;
 		Regulus.Remoting.AgentCore	_Agent;	
 		Regulus.Remoting.Soul.SoulProvider	_SoulProvider;
 		GhostRequest	_GhostRequest;
@@ -94,7 +97,7 @@ namespace Regulus.Standalong
 
         Remoting.Value<bool> Remoting.IAgent.Connect(string account, int password)
         {
-           // _ConnectEvent();
+            ConnectedEvent();
             return true;
         }
 
@@ -140,7 +143,7 @@ namespace Regulus.Standalong
 
 
 
-
+        event Action _ConnectEvent;
         event Action Remoting.IAgent.ConnectEvent
         {
             add { throw new NotImplementedException(); }

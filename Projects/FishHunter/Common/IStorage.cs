@@ -5,5 +5,9 @@ using System.Text;
 
 namespace VGame.Project.FishHunter
 {
-   
+    
+    public interface IStorage
+    {
+        Regulus.Remoting.Value<Data.Account> FindAccount(string id);
+    }
 }

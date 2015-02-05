@@ -20,6 +20,7 @@ namespace Console
 
             selector.AddFactoty("standalong", new VGame.Project.FishHunter.StandalongUserFactory(core));
             selector.AddFactoty("remoting", new VGame.Project.FishHunter.RemotingUserFactory());
+            //var provider = selector.CreateUserProvider("standalong");
             var provider = selector.CreateUserProvider("remoting");
             
             

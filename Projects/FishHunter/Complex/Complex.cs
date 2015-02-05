@@ -9,11 +9,13 @@ namespace VGame.Project.FishHunter
     class Complex : Regulus.Utility.ICore
     {
 
+        DummyStorage _Storage;
         VGame.Project.FishHunter.Center _Center;
         Regulus.Utility.ICore _Core { get { return _Center; } }
         public Complex()
         {
-            _Center = new Center();
+            _Storage = new DummyStorage();
+            _Center = new Center(_Storage);
         }
 
         void Regulus.Utility.ICore.ObtainController(Regulus.Remoting.ISoulBinder binder)

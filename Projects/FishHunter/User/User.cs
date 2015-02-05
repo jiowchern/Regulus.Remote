@@ -13,8 +13,7 @@ namespace VGame.Project.FishHunter
         private Regulus.Remoting.IAgent _Agent;
 
         public User(Regulus.Remoting.IAgent agent)
-        {
-            // TODO: Complete member initialization
+        {            
             this._Agent = agent;
             _Updater = new Regulus.Utility.Updater();
             _User = new Regulus.Remoting.User(_Agent);
@@ -40,6 +39,12 @@ namespace VGame.Project.FishHunter
         Regulus.Remoting.User IUser.Remoting
         {
             get { return _User; }
+        }
+
+
+        Regulus.Remoting.Ghost.IProviderNotice<IVerify> IUser.VerifyProvider
+        {
+            get { return _Agent.QueryProvider<IVerify>(); }
         }
     }
 }

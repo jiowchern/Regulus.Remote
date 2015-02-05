@@ -9,7 +9,7 @@ namespace RemotingTest
     public class UnitTest1
     {
         [TestMethod]
-        public void TestMethod1()
+        public void TestCommandCall()
         {
             
             var param = NSubstitute.Substitute.For<Regulus.Remoting.CommandParam>();
@@ -27,7 +27,7 @@ namespace RemotingTest
         }
 
         [TestMethod]
-        public void TestMethod2()
+        public void TestCommandAdd()
         {
             var param = NSubstitute.Substitute.For<Regulus.Remoting.CommandParam>();
             float value = 0;
