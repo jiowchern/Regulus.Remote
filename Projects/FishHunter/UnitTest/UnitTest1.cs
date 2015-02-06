@@ -3,6 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 namespace VGame.Project.FishHunter.UnitTest
 {
+
+    
     [TestClass]
     public class UnitTest1
     {
@@ -52,5 +54,11 @@ namespace VGame.Project.FishHunter.UnitTest
             Assert.AreEqual(false, eventValue);
 
         }
+
+
+        
+
+        
+        
     }
 }
