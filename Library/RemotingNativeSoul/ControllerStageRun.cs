@@ -37,7 +37,12 @@ namespace Regulus.Remoting.Soul.Native
         public int FPS { get { return _FPS.Value; } }
         public ThreadCoreHandler(Regulus.Utility.ICore core)
         {
+            if (core == null)
+                throw new ArgumentNullException();
+
+
             _Core = core;
+            
             _Binders = new Queue<ISoulBinder>();
             _FPS = new Utility.FPSCounter();
             _RequesterHandlers = new Utility.Updater();
