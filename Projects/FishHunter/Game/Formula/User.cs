@@ -3,22 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VGame.Project.FishHunter
+namespace VGame.Project.FishHunter.Formula
 {
     class User : Regulus.Game.IUser
     {
+        IStorage _Storage;
         Regulus.Utility.StageMachine _Machine;
         Regulus.Remoting.ISoulBinder _Binder;
-        VGame.Project.FishHunter.IStorage _Storage;
-        public User(Regulus.Remoting.ISoulBinder binder , VGame.Project.FishHunter.IStorage storage)
+        Data.Account _Account;
+        public User(Regulus.Remoting.ISoulBinder binder)
         {
-            _Storage = storage;
-            _Binder = binder;
+            _Storage = new DummyStorage();
             _Machine = new Regulus.Utility.StageMachine();
+            _Binder = binder;
         }
         void Regulus.Game.IUser.OnKick(Guid id)
         {
-            if(_Account != null && _Account.Id == id)
+            if (_Account != null && _Account.Id == id)
             {
                 _QuitEvent();
             }
@@ -49,11 +50,6 @@ namespace VGame.Project.FishHunter
             _ToVerify();
         }
 
-        void Regulus.Framework.ILaunched.Shutdown()
-        {
-            _Machine.Termination();
-        }
-
         private void _ToVerify()
         {
             _Account = null;
@@ -63,11 +59,39 @@ namespace VGame.Project.FishHunter
             _Machine.Push(stage);
         }
 
-        Data.Account _Account;
         private void _VerifySuccess(Data.Account account)
         {
-            _VerifySuccessEvent(account.Id);
-            _Account = account;            
+            if(account.IsGameServer())
+            {
+                _Account = account;
+                _VerifySuccessEvent(_Account.Id);
+                _ToFishStage();
+            }
+            else
+            {
+                _ToVerify();
+            }
+        }
+
+        private void _ToFishStage()
+        {            
+            var stage = new VGame.Project.FishHunter.Stage.QueryFishStage(_Binder);
+            stage.DoneEvent += _ToFormula;
+            _Machine.Push(stage);
+        }
+
+        private void _ToFormula(long account , int stage_id ,HitBase formula)
+        {
+            var stage = new VGame.Project.FishHunter.Stage.Formula(_Binder, account, stage_id, formula);
+            stage.DoneEvent += _ToFishStage;
+            _Machine.Push(stage);
+        }
+
+        
+
+        void Regulus.Framework.ILaunched.Shutdown()
+        {
+            _Machine.Termination();
         }
     }
 }

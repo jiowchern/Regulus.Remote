@@ -7,7 +7,7 @@ namespace VGame.Project.FishHunter.Formula
 {
 
 
-    public class HitTest
+    public class HitTest : HitBase
     {
         private Regulus.Utility.IRandom _Random;
         
@@ -17,7 +17,7 @@ namespace VGame.Project.FishHunter.Formula
             this._Random = random;
         }
 
-        public HitResponse Request(HitRequest request)
+        public override HitResponse Request(HitRequest request)
         {
             const int MAX_WEPBET = 10000;
             const int MAX_WEPODDS = 10000;

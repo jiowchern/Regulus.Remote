@@ -54,7 +54,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Formula.cs" />
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="Verify.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

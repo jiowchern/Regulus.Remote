@@ -41,9 +41,14 @@
   <ItemGroup>
     <Compile Include="Center.cs" />
     <Compile Include="DummyStorage.cs" />
+    <Compile Include="Formula\Center.cs" />
+    <Compile Include="Formula\HitBase.cs" />
     <Compile Include="Formula\HitTest.cs" />
+    <Compile Include="Formula\User.cs" />
     <Compile Include="Hall.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Stage\Formula.cs" />
+    <Compile Include="Stage\QueryFishStage.cs" />
     <Compile Include="Stage\Verify.cs" />
     <Compile Include="DummyStandalong.cs" />
     <Compile Include="Verify.cs" />

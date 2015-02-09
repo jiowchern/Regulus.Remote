@@ -44,7 +44,7 @@ namespace VGame.Project.FishHunter
         [ProtoBuf.ProtoMember(9)]
         public short TotalHits;
         [ProtoBuf.ProtoMember(10)]
-        public byte HitCnt;
+        public short HitCnt;
         [ProtoBuf.ProtoMember(11)]
         public short TotalHitOdds;
     }
@@ -73,5 +73,8 @@ namespace VGame.Project.FishHunter
 
         event HitResponseCallback HitResponseEvent;
         event HitExceptionCallback HitExceptionEvent;
+
+        void Quit();
+
     }
 }

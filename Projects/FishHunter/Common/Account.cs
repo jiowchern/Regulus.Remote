@@ -10,9 +10,16 @@ namespace VGame.Project.FishHunter.Data
         public Guid Id;
         public string Name;
         public string Password;
+        public bool GameServer;
+        
         public bool IsPassword(string password)
         {
             return Password == password;
+        }
+
+        public bool IsGameServer()
+        {
+            return GameServer;
         }
     }
 }
