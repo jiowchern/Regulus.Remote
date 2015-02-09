@@ -5,6 +5,13 @@ using System.Text;
 
 namespace VGame.Project.FishHunter
 {
+    [Flags]
+    [ProtoBuf.ProtoContract]
+    public enum FISH_DETERMINATION
+    {
+        DEATH,
+        SURVIVAL
+    }
 
     [Flags]
     [ProtoBuf.ProtoContract]
@@ -35,7 +42,7 @@ namespace VGame.Project.FishHunter
         [ProtoBuf.ProtoMember(8)]
         public FISH_STATUS FishStatus;
         [ProtoBuf.ProtoMember(9)]
-        public byte TotalHits;
+        public short TotalHits;
         [ProtoBuf.ProtoMember(10)]
         public byte HitCnt;
         [ProtoBuf.ProtoMember(11)]
@@ -51,7 +58,7 @@ namespace VGame.Project.FishHunter
         [ProtoBuf.ProtoMember(2)]
         public short FishID;
         [ProtoBuf.ProtoMember(3)]
-        public byte DieResult;
+        public FISH_DETERMINATION DieResult;
         [ProtoBuf.ProtoMember(4)]
         public byte SpecAsn;
     }
