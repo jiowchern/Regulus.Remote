@@ -47,7 +47,7 @@ namespace VGame.Project.FishHunter.Formula
             verify.Bind("Login[result,id,password]", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().BuildRemoting<string, string, bool>(gpi.Login, _VerifyResult); });
 
             var fishStageQueryer = factory.Create<VGame.Project.FishHunter.IFishStageQueryer>(_User.FishStageQueryerProvider);
-            fishStageQueryer.Bind("Query[player_id,fish_stage]", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().BuildRemoting<long,byte, bool>(gpi.Query, _QueryResult); });
+            fishStageQueryer.Bind("Query[result,player_id,fish_stage]", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().BuildRemoting<long,byte, bool>(gpi.Query, _QueryResult); });
 
             var fishStage = factory.Create<VGame.Project.FishHunter.IFishStage>(_User.FishStageProvider);
             fishStage.Bind("Quit", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().Build(gpi.Quit); });

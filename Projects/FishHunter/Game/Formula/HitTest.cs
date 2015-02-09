@@ -23,7 +23,7 @@ namespace VGame.Project.FishHunter.Formula
             const int MAX_WEPODDS = 10000;
             const short MAX_TOTALHITS = 1000;
             const short MAX_FISHODDS = 1000;
-            const System.UInt32 gateOffset = 0x0fffffff;
+            const long gateOffset = 0x0fffffff;
 
 
             if (request.WepBet > MAX_WEPBET)
@@ -38,11 +38,11 @@ namespace VGame.Project.FishHunter.Formula
             if (request.FishOdds == 0 || request.FishOdds > MAX_FISHODDS)
                 return _Miss(request);
 
-            System.UInt32 gate = 1000;
+            long gate = 1000;
             gate *= gateOffset;
-            gate *= (uint)request.WepBet;
-            gate /= (uint)request.TotalHits;
-            gate /= (uint)request.FishOdds;
+            gate *= request.WepBet;
+            gate /= request.TotalHits;
+            gate /= request.FishOdds;
             gate /= 1000;
 
             if (gate > 0x0fffffff)

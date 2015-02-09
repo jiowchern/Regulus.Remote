@@ -67,7 +67,7 @@ namespace VGame.Project.FishHunter.UnitTest
             Regulus.Utility.IRandom random = NSubstitute.Substitute.For<Regulus.Utility.IRandom>();
 
             var formula = new VGame.Project.FishHunter.Formula.HitTest(random);
-            random.NextLong(NSubstitute.Arg.Any<long>(), NSubstitute.Arg.Any<long>()).Returns(2147481);
+            random.NextLong(NSubstitute.Arg.Any<long>(), NSubstitute.Arg.Any<long>()).Returns(0xffffffe);
             HitRequest request = new HitRequest();
             request.FishID = 1;
             request.FishOdds = 1;
@@ -90,7 +90,7 @@ namespace VGame.Project.FishHunter.UnitTest
             Regulus.Utility.IRandom random = NSubstitute.Substitute.For<Regulus.Utility.IRandom>();
 
             var formula = new VGame.Project.FishHunter.Formula.HitTest(random);
-            random.NextLong(NSubstitute.Arg.Any<long>(), NSubstitute.Arg.Any<long>()).Returns(2147482);
+            random.NextLong(NSubstitute.Arg.Any<long>(), NSubstitute.Arg.Any<long>()).Returns(0xfffffff);
             HitRequest request = new HitRequest();
             request.FishID = 1;
             request.FishOdds = 1;
