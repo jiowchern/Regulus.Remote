@@ -56,8 +56,8 @@ namespace VGame.Project.FishHunter.Stage
             _HitResponseEvent(response);
         }
 
-        event HitResponseCallback _HitResponseEvent;
-        event HitResponseCallback IFishStage.HitResponseEvent
+        event Action<HitResponse> _HitResponseEvent;
+        event Action<HitResponse> IFishStage.HitResponseEvent
         {
             add
             {
@@ -66,8 +66,8 @@ namespace VGame.Project.FishHunter.Stage
             remove { _HitResponseEvent -= value; }
         }
 
-        event HitExceptionCallback _HitExceptionEvent;
-        event HitExceptionCallback IFishStage.HitExceptionEvent
+        event Action<string> _HitExceptionEvent;
+        event Action<string> IFishStage.HitExceptionEvent
         {
             add { _HitExceptionEvent += value ; }
             remove { _HitExceptionEvent-= value; }

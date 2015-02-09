@@ -33,8 +33,8 @@ namespace Regulus.Remoting
             public string Name { get { return _Name; } }
         }
 
-        event OnSourceHandler SupplyEvent;
-        event OnSourceHandler UnsupplyEvent;
+        public event OnSourceHandler SupplyEvent;
+        public event OnSourceHandler UnsupplyEvent;
         Regulus.Utility.Command _Command;
         Regulus.Remoting.Ghost.IProviderNotice<T> _Notice;
         

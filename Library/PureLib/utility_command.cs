@@ -30,6 +30,33 @@ namespace Regulus.Utility
                 }
                 val = reault;
             }
+            else if (source == typeof(byte))
+            {
+                byte reault = byte.MinValue;
+                if (byte.TryParse(p, out reault))
+                {
+
+                }
+                val = reault;
+            }
+            else if (source == typeof(short))
+            {
+                short reault = short.MinValue;
+                if (short.TryParse(p, out reault))
+                {
+
+                }
+                val = reault;
+            }
+            else if (source == typeof(long))
+            {
+                long reault = long.MinValue;
+                if (long.TryParse(p, out reault))
+                {
+
+                }
+                val = reault;
+            }
 
 
 

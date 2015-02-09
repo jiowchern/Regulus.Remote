@@ -63,16 +63,16 @@ namespace VGame.Project.FishHunter
         public byte SpecAsn;
     }
 
-    public delegate void HitResponseCallback(HitResponse response);
-    public delegate void HitExceptionCallback(string message);
+    //public delegate void HitResponseCallback(HitResponse response);
+    //public delegate void HitExceptionCallback(string message);
     public interface IFishStage
     {
         long AccountId { get; }
         byte FishStage { get; }
         void Hit(HitRequest request);
 
-        event HitResponseCallback HitResponseEvent;
-        event HitExceptionCallback HitExceptionEvent;
+        event Action<HitResponse> HitResponseEvent;
+        event Action<string> HitExceptionEvent;
 
         void Quit();
 

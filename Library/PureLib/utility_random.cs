@@ -53,10 +53,11 @@ namespace Regulus.Utility
 
         long IRandom.NextLong(long min, long max)
         {
-            long result = _Random.Next((Int32)(min >> 32), (Int32)(max >> 32));
-            result = (result << 32);
-            result = result | (long)_Random.Next((Int32)min, (Int32)max);
-            return result;
+            byte[] buf = new byte[8];
+            _Random.NextBytes(buf);
+            long longRand = BitConverter.ToInt64(buf, 0);
+
+            return (Math.Abs(longRand % (max - min)) + min);
         }
     }
 }
