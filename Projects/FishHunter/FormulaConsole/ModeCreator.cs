@@ -20,12 +20,12 @@ namespace Console
 
             selector.AddFactoty("standalong", new VGame.Project.FishHunter.Formula.StandalongUserFactory(core));
             selector.AddFactoty("remoting", new VGame.Project.FishHunter.Formula.RemotingUserFactory());
-            var provider = selector.CreateUserProvider("standalong");
+            //var provider = selector.CreateUserProvider("standalong");
             //var provider = selector.CreateUserProvider("remoting");
             
             
-            provider.Spawn("1");
-            provider.Select("1");
+            //provider.Spawn("1");
+            //provider.Select("1");
         }
     }
 }

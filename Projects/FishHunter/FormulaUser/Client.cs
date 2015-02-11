@@ -11,7 +11,7 @@ namespace VGame.Project.FishHunter.Formula
         public Client(Regulus.Utility.Console.IViewer view, Regulus.Utility.Console.IInput input)
             : base(view , input)
         {
-
-        }
+            
+        }        
     }
 }
