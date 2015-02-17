@@ -80,12 +80,12 @@ namespace Regulus.Project.TurnBasedRPG
             if ( !(Actor.Property.Position.X >= 0 && Actor.Property.Position.X <= 100))
             {
                 var position = Actor.Property.Position;
-                position.X = Regulus.Utility.Random.Instance.R.Next(0, 100);
+                position.X = Regulus.Utility.Random.Instance.R.NextFloat(0, 100);
                 Actor.Property.Position = position;
             }
             if (!(Actor.Property.Position.Y >= 0 && Actor.Property.Position.Y <= 100))
             {
-                Actor.Property.Position = CustomType.Vector2.FromPoint(Actor.Property.Position.X, Regulus.Utility.Random.Instance.R.Next(0, 100));
+                Actor.Property.Position = CustomType.Vector2.FromPoint(Actor.Property.Position.X, Regulus.Utility.Random.Instance.R.NextFloat(0, 100));
             }
             if (Actor.Property.Map == "")
             {

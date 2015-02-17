@@ -68,6 +68,7 @@
     <Compile Include="game_data_prototypefactory.cs" />
     <Compile Include="game_framework.cs" />
     <Compile Include="game_hall.cs" />
+    <Compile Include="utility_enumdescription.cs" />
     <Compile Include="utility_stage.cs" />
     <Compile Include="utility_stagemachine.cs" />
     <Compile Include="game_user.cs" />

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Utility
 {
-    public class Random : Regulus.Utility.Singleton<Random>
+    public class Random : Singleton<Random>
 	{
         public IRandom R { get; private set; }
 		public Random()
@@ -28,8 +28,12 @@ namespace Regulus.Utility
     public interface IRandom
     {
         float NextFloat();
+
+        float NextFloat(float min , float max);
         int NextInt(int min , int max);
         long NextLong(long min, long max);
+
+        double NextDouble();
     }
 
     public class SystemRandom : IRandom
@@ -58,6 +62,18 @@ namespace Regulus.Utility
             long longRand = BitConverter.ToInt64(buf, 0);
 
             return (Math.Abs(longRand % (max - min)) + min);
+        }
+
+
+        double IRandom.NextDouble()
+        {
+            return _Random.NextDouble();
+        }
+
+
+        float IRandom.NextFloat(float min, float max)
+        {
+            return min + (float)_Random.NextDouble() * max;
         }
     }
 }

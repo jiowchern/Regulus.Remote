@@ -14,14 +14,14 @@ namespace Regulus.Project.ItemMaker
             _Costs = costs;
         }
 
-        public Effect[] Get(float quality , Regulus.Utility.IRandomProvider provider)
+        public Effect[] Get(float quality , Regulus.Utility.IRandom provider)
         {
             var effects = new List<Effect>();
             var effectCosts = new List<EffectCost>(_Costs) ;
             while(quality > 0)
             {
                 var cost = (from e in effectCosts
-                            where e.Quality >= quality && _RollOut(e.Chances, provider.Next() )
+                            where e.Quality >= quality && _RollOut(e.Chances, provider.NextFloat() )
                              orderby e.Quality descending
                              select e).FirstOrDefault();
                 if (cost == null)
