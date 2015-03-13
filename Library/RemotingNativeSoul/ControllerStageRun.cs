@@ -11,7 +11,7 @@ namespace Regulus.Remoting.Soul.Native
     {
         public void Update()
         {
-            Parallel.ForEach(base.Update(), _Update );
+            Parallel.ForEach(base.Update(), _Update );            
         }
 
         private void _Update(Regulus.Utility.IUpdatable updater)
@@ -24,6 +24,8 @@ namespace Regulus.Remoting.Soul.Native
             {
                 Remove(updater);
             }
+
+            System.Threading.Thread.Sleep(0);
         }
     }
 
