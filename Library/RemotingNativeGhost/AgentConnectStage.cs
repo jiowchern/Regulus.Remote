@@ -17,7 +17,8 @@ namespace Regulus.Remoting.Ghost.Native
             public event Action<bool> ResultEvent;
             public ConnectStage(System.Net.Sockets.Socket socket, string ipaddress, int port)
             {
-                // TODO: Complete member initialization
+                if (ipaddress == null)
+                    throw new ArgumentNullException();
                 this._Socket = socket;
                 this._Ipaddress = ipaddress;
                 this._Port = port;

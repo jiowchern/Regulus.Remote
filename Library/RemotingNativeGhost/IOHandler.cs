@@ -8,8 +8,8 @@ namespace Regulus.Remoting.Ghost.Native
 
     class IOHandler : Regulus.Utility.Singleton<IOHandler>
     {
-
-        System.Threading.Thread _Thread;
+        
+       
         int _ThreadCount;
         
         
@@ -38,26 +38,30 @@ namespace Regulus.Remoting.Ghost.Native
         {
             lock (_Sync)
             {
-                if (_Thread == null)
-                {
-                    _Thread = new System.Threading.Thread(_Handle);
-                    _Thread.IsBackground = true;
-                    _Thread.Start();
-                    _ThreadCount++;
-                    System.Diagnostics.Debug.WriteLine("IOHandler Threads:" + _ThreadCount);
-                }
+                System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(_Handle));
+                _ThreadCount++;
+                System.Diagnostics.Debug.WriteLine("IOHandler Threads:" + _ThreadCount);
             }
             
         }
 
         private void _Handle(object obj)
         {
-            
+            Regulus.Utility.TimeCounter counter = new Utility.TimeCounter();
             do
             {
                 
                 _Updater.Update();                
-                System.Threading.Thread.Sleep(0);
+
+
+                if(counter.Second > 1)
+                {
+                    System.Threading.Thread.Sleep(0);
+                    counter.Reset();
+                }
+                
+
+                
             } while (_Updater.Count > 0);            
             
             _Shutdown();            
@@ -68,15 +72,8 @@ namespace Regulus.Remoting.Ghost.Native
             lock (_Sync)
             {
 
-                if (_Thread != null)
-                {
-                    var thread = _Thread;
-                    _Thread = null;
-                    _ThreadCount--;
-                    System.Diagnostics.Debug.WriteLine("IOHandler Threads:" + _ThreadCount);
-                    //thread.Abort();
-                    //thread.Join();
-                }
+                _ThreadCount--;
+                System.Diagnostics.Debug.WriteLine("IOHandler Threads:" + _ThreadCount);
                 
             }
         }

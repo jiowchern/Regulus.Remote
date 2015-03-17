@@ -42,7 +42,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bot.cs" />
+    <Compile Include="BotConnectStage.cs" />
+    <Compile Include="BotPlayStage.cs" />
     <Compile Include="ClientHandler.cs" />
+    <Compile Include="HitHandler.cs" />
+    <Compile Include="Log.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

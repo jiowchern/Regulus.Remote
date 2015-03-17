@@ -8,19 +8,23 @@ namespace FormulaUserBot
 {
     class Program
     {
-        private static string IPAddress;
-        private static int Port;
+        private static string IPAddress = "210.65.10.160";
+        //private static string IPAddress = "127.0.0.1";
+        private static int Port = 38971;
         static void Main(string[] args)
         {
+            
             var clientHandler = new ClientHandler(IPAddress, Port , 1);
             var view = new Regulus.Utility.ConsoleViewer();
+            Log.Instance.SetView(view);
             var input = new Regulus.Utility.ConsoleInput(view);
             var client = new VGame.Project.FishHunter.Formula.Client(view, input);
             client.ModeSelectorEvent += clientHandler.Begin;
 
 
             var updater = new Regulus.Utility.Updater();
-            updater.Add(client);            
+            updater.Add(client);
+            updater.Add(clientHandler);
 
             while (client.Enable)
             {

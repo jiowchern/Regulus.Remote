@@ -22,7 +22,16 @@ namespace Regulus.Utility
         {
             return Instance.R.NextInt(min, max);
         }
-	}
+
+        public static T NextEnum<T>()
+        {            
+            return Enum
+                .GetValues(typeof(T))
+                .Cast<T>()
+                .OrderBy(x => Instance.R.NextFloat())
+                .FirstOrDefault();
+        }
+    }
 
 
     public interface IRandom

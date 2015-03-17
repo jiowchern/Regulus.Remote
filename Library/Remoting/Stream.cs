@@ -85,6 +85,7 @@
         public event System.Action ErrorEvent;
         Regulus.Utility.StageMachine _Machine;
 
+
         
         public static decimal TotalBytes { get; private set; }
         static Regulus.Utility.TimeCounter _AfterTime = new Utility.TimeCounter();
@@ -271,6 +272,7 @@
         public event System.Action ErrorEvent;       
 		System.Net.Sockets.Socket _Socket;
         Regulus.Utility.StageMachine _Machine;
+
         
         public static decimal TotalBytes { get; private set; }        
         static Regulus.Utility.TimeCounter _AfterTime = new Utility.TimeCounter();
@@ -282,7 +284,8 @@
             _Machine = new Utility.StageMachine();        
 		}
 		void Utility.IStage.Enter()
-		{        
+		{
+            
             _ToHead();
 		}
 
@@ -322,7 +325,7 @@
 
 		void Utility.IStage.Leave()
 		{
-            
+         
 		}
         
 		void Utility.IStage.Update()

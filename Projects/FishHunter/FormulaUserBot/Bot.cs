@@ -5,7 +5,7 @@ using System.Text;
 
 namespace FormulaUserBot
 {
-    class Bot
+    class Bot : Regulus.Utility.IUpdatable
     {
         static private long _IdSn;
         private long _Id;
@@ -13,6 +13,8 @@ namespace FormulaUserBot
         private int _Port;
         private VGame.Project.FishHunter.Formula.IUser _User;
 
+
+        Regulus.Utility.StageMachine _Machine;
         public Bot(string _IPAddress, int _Port, VGame.Project.FishHunter.Formula.IUser user)
         {
             // TODO: Complete member initialization
@@ -20,60 +22,41 @@ namespace FormulaUserBot
             this._Port = _Port;
             this._User = user;
             _Id = ++_IdSn ;
-            _Begin();
+            _Machine = new Regulus.Utility.StageMachine();
         }
-        public void End()
+        
+
+        bool Regulus.Utility.IUpdatable.Update()
         {
-            _User.Remoting.ConnectProvider.Supply -= _Connect;
-            _User.VerifyProvider.Supply -= _Verify;
-            _User.FishStageQueryerProvider.Supply -= _QueryStage;
-            _User.FishStageProvider.Supply -= _FishStage;
-        }
-        private void _Begin()
-        {
-            _User.Remoting.ConnectProvider.Supply += _Connect;
-            _User.VerifyProvider.Supply += _Verify;
-            _User.FishStageQueryerProvider.Supply += _QueryStage;
-            _User.FishStageProvider.Supply += _FishStage;
+            _Machine.Update();
+            return true;
         }
 
-        private void _FishStage(VGame.Project.FishHunter.IFishStage obj)
+        void Regulus.Framework.ILaunched.Shutdown()
         {
-            VGame.Project.FishHunter.HitRequest request = new VGame.Project.FishHunter.HitRequest();
+            _Machine.Termination();
         }
 
-        private void _QueryStage(VGame.Project.FishHunter.IFishStageQueryer obj)
+        void Regulus.Framework.ILaunched.Launch()
         {
-
-            _QueryResult(obj.Query(_Id, 0));
+            _ToConnect();
         }
 
-        private void _QueryResult(Regulus.Remoting.Value<bool> value)
+        private void _ToConnect()
         {
-            
+            var stage = new BotConnectStage(_User, _IPAddress, _Port, _Id);
+            stage.DoneEvent += _ToPlay;
+            _Machine.Push(stage);
+        }
+
+        private void _ToPlay(VGame.Project.FishHunter.IFishStage fish_stage)
+        {
+            var stage = new BotPlayStage(fish_stage);
+            stage.DoneEvent += _ToConnect;
+            _Machine.Push(stage);
         }
 
         
-
-        
-        private void _Connect(Regulus.Utility.IConnect obj)
-        {
-            _ConnectResult(obj.Connect(_IPAddress, _Port));
-        }
-
-        private void _ConnectResult(Regulus.Remoting.Value<bool> value)
-        {
-            
-        }
-        private void _Verify(VGame.Project.FishHunter.IVerify obj)
-        {
-            _VerifyResult(obj.Login("name", "pw"));
-        }
-
-        private void _VerifyResult(Regulus.Remoting.Value<bool> value)
-        {
-            
-        }
 
         
     }

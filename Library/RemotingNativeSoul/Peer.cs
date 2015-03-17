@@ -10,6 +10,8 @@ namespace Regulus.Remoting.Soul.Native
 
 	class Peer : Regulus.Remoting.IRequestQueue, Regulus.Remoting.IResponseQueue , Regulus.Utility.IUpdatable
 	{
+
+        public static bool IsIdle { get { return TotalRequest <= 0 && TotalResponse <= 0; } }
         class Request
         {
             public Guid EntityId { get; set; }
@@ -25,6 +27,9 @@ namespace Regulus.Remoting.Soul.Native
 		Regulus.Utility.StageMachine _ReadMachine;
 		Regulus.Utility.StageMachine _WriteMachine;
         bool _Enable;
+
+        public static decimal TotalRequest { get; private set; }
+        public static decimal TotalResponse { get; private set; }
         public Peer(System.Net.Sockets.Socket client)
 		{			
 			_Socket = client;
@@ -41,7 +46,8 @@ namespace Regulus.Remoting.Soul.Native
             lock (_Responses)
             {
                 if (_Responses.Count > 0)
-                {                    
+                {
+                    TotalResponse -= _Responses.Count;
                     var stage = new NetworkStreamWriteStage(_Socket, _Responses.ToArray());
                     _Responses.Clear();
                     stage.WriteCompletionEvent += _HandleWrite;
@@ -105,6 +111,7 @@ namespace Regulus.Remoting.Soul.Native
             lock (_Requests)
             {
                 _Requests.Enqueue(new Request() { EntityId = entity_id, MethodName = method_name, MethodParams = method_params, ReturnId = return_id });
+                TotalRequest++;
             }            
         }
 
@@ -120,6 +127,7 @@ namespace Regulus.Remoting.Soul.Native
             lock (_Responses)
             {
                 _Responses.Enqueue(new Regulus.Remoting.Package() { Code = cmd, Args = args });
+                TotalResponse++;
             }			
 		}
 
@@ -190,11 +198,13 @@ namespace Regulus.Remoting.Soul.Native
             lock (_Requests)
             {
                 while (_Requests.Count > 0)
-                {
+                {                    
                     var request = _Requests.Dequeue();
                     if (_InvokeMethodEvent != null)
                         _InvokeMethodEvent(request.EntityId, request.MethodName, request.ReturnId, request.MethodParams);
+                    TotalRequest--;
                 }
+                
             }
         }
     }

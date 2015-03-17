@@ -5,25 +5,27 @@ using System.Text;
 
 namespace FormulaUserBot
 {
-    class ClientHandler
+    class ClientHandler : Regulus.Utility.IUpdatable
     {
         private string _IPAddress;
         private int _Port;        
         private int _BotAmount;
         private int _BotCount;
 
+        Regulus.Utility.Updater _Bots;
+
         public ClientHandler(string IPAddress, int Port)
         {
             // TODO: Complete member initialization
             this._IPAddress = IPAddress;
             this._Port = Port;
+            _Bots = new Regulus.Utility.Updater();
         }
 
         public ClientHandler(string IPAddress, int Port, int bot_amount)
+            : this(IPAddress, Port)
         {
-            // TODO: Complete member initialization
-            this._IPAddress = IPAddress;
-            this._Port = Port;
+            
             this._BotAmount = bot_amount;
         }
 
@@ -46,11 +48,28 @@ namespace FormulaUserBot
         private void _OnUser(VGame.Project.FishHunter.Formula.IUser user)
         {
             var bot = new Bot(_IPAddress, _Port , user);
+            _Bots.Add(bot);
         }
 
         internal void End()
         {
-            throw new NotImplementedException();
+            _Bots.Shutdown();
+        }
+
+        bool Regulus.Utility.IUpdatable.Update()
+        {
+            _Bots.Update();
+            return true;
+        }
+
+        void Regulus.Framework.ILaunched.Launch()
+        {
+            
+        }
+
+        void Regulus.Framework.ILaunched.Shutdown()
+        {
+            
         }
     }
 }
