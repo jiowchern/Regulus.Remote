@@ -13,7 +13,7 @@ namespace FormulaUserBot
         private static int Port = 38971;
         static void Main(string[] args)
         {
-            
+            System.Threading.SpinWait sw = new System.Threading.SpinWait();
             var clientHandler = new ClientHandler(IPAddress, Port , 1);
             var view = new Regulus.Utility.ConsoleViewer();
             Log.Instance.SetView(view);
@@ -25,11 +25,12 @@ namespace FormulaUserBot
             var updater = new Regulus.Utility.Updater();
             updater.Add(client);
             updater.Add(clientHandler);
-
+            
             while (client.Enable)
             {
                 input.Update();
                 updater.Update();
+                sw.SpinOnce();
             }
 
             updater.Shutdown();
