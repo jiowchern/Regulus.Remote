@@ -48,7 +48,8 @@ namespace Regulus.Utility
         }
         public void Push(Regulus.Utility.IStage new_stage)
         {
-            _StandBys.Enqueue(new_stage);
+            lock (_StandBys)
+                _StandBys.Enqueue(new_stage);
         }
 
         Action _Handle;
@@ -59,7 +60,13 @@ namespace Regulus.Utility
                 if (_Current.Stage != null)
                     _Current.Stage.Leave();
 
-                var stage = _StandBys.Dequeue();
+
+                IStage stage;
+                lock(_StandBys)
+                {
+                    stage = _StandBys.Dequeue();
+                }
+                
 
                 
                 if (stage != null)
@@ -102,7 +109,11 @@ namespace Regulus.Utility
                 if (_Current.Stage != null)
                     _Current.Stage.Leave();
 
-                var stage = _StandBys.Dequeue();
+                IStage stage;
+                lock (_StandBys)
+                {
+                    stage = _StandBys.Dequeue();
+                }
 
 
                 if (stage != null)

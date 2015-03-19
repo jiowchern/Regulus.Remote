@@ -23,7 +23,7 @@ namespace VGame.Project.FishHunter.Formula
         }
         void Regulus.Framework.ICommandParsable<IUser>.Clear()
         {
-            
+            _Command.Unregister("Package");
         }
         
         private void _ConnectResult(bool result)
@@ -55,6 +55,14 @@ namespace VGame.Project.FishHunter.Formula
 
             fishStage.SupplyEvent += fishStage_SupplyEvent;
             fishStage.UnsupplyEvent += fishStage_UnsupplyEvent;
+
+
+            _Command.Register("Package", _ShowPackageState);
+        }
+
+        void _ShowPackageState()
+        {
+            _View.WriteLine(string.Format("Request Queue:{0} \tResponse Queue:{1}" , Regulus.Remoting.Ghost.Native.Agent.RequestQueueCount ,Regulus.Remoting.Ghost.Native.Agent.ResponseQueueCount) );
         }
 
         void fishStage_UnsupplyEvent(IFishStage source)

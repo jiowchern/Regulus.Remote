@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="collection_queue.cs" />
     <Compile Include="extebsion_showmember.cs" />
     <Compile Include="remoting_gpibinderfactory.cs" />
     <Compile Include="remoting_commandparam.cs" />

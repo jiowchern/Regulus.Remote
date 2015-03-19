@@ -339,9 +339,9 @@
 
 
         public event System.Action DoneEvent;
-        private System.Collections.Generic.Queue<Package> _Packages;
+        private PackageQueue _Packages;
 
-        public WaitQueueStage(System.Collections.Generic.Queue<Package> packages)
+        public WaitQueueStage(PackageQueue packages)
         {            
             this._Packages = packages;
         }

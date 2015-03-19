@@ -7,22 +7,37 @@ namespace Regulus.Remoting.Ghost.Native
 {
     public partial class Agent 
     {
+        public static int RequestQueueCount { get { return OnlineStage.RequestQueueCount; } }
+        public static int ResponseQueueCount { get { return OnlineStage.ResponseQueueCount; } }
+        
         class OnlineStage : Regulus.Utility.IStage, Regulus.Utility.IUpdatable, Regulus.Remoting.IGhostRequest
         {
             public event Action DoneEvent;
             
             Regulus.Utility.StageMachine _ReadMachine;
             Regulus.Utility.StageMachine _WriteMachine;
-            Queue<Package> _Sends;
-            Queue<Package> _Receives;
+
+
+
+
+            static object _LockRequest = new object();
+
+            public static int RequestQueueCount { get; private set; }
+
+
+            static object _LockResponse= new object();
+
+            public static int ResponseQueueCount { get; private set; }
+            PackageQueue _Sends;
+            PackageQueue _Receives;            
             private System.Net.Sockets.Socket _Socket;
             AgentCore _Core;
             bool _Enable;
             
             public OnlineStage()
-            {                
-                _Sends = new Queue<Package>();
-                _Receives = new Queue<Package>();                
+            {
+                _Sends = new PackageQueue();
+                _Receives = new PackageQueue();                
                 _Core = new Remoting.AgentCore(this);                
             }
             
@@ -72,14 +87,28 @@ namespace Regulus.Remoting.Ghost.Native
                 _Core.Finial();
                 _ReadMachine.Empty();
                 _WriteMachine.Empty();
+                lock(_LockRequest)
+                {
+                    RequestQueueCount -= _Sends.Count;
+                }
+                    
+
+                lock(_LockResponse)
+                {
+                    ResponseQueueCount -= _Receives.Count;
+                }
+                    
             }
 
             void IGhostRequest.Request(byte code, Dictionary<byte, byte[]> args)
-            {
-                lock (_Sends)
+            {                
+                _Sends.Enqueue(new Package() { Args = args, Code = code });
+                
+                lock(_LockRequest)
                 {
-                    _Sends.Enqueue(new Package() { Args = args, Code = code });
-                }			
+                    RequestQueueCount++;
+                }
+                    
             }
 
             private void _ToRead()
@@ -87,10 +116,15 @@ namespace Regulus.Remoting.Ghost.Native
                 var stage = new NetworkStreamReadStage(_Socket);
                 stage.ReadCompletionEvent += (package) =>
                 {
-                    lock (_Receives)
+                    
+                    _Receives.Enqueue(package);
+                
+                    lock(_LockResponse )
                     {
-                        _Receives.Enqueue(package);
+                        ResponseQueueCount++;
                     }
+                        
+                    
                     _ToRead();
                 };
                 stage.ErrorEvent += () => { _Enable = false; };
@@ -99,23 +133,37 @@ namespace Regulus.Remoting.Ghost.Native
 
             private void _ToWrite()
             {
-                lock (_Sends)
+                
+                if (_Sends.Count > 0)
                 {
-                    if (_Sends.Count > 0)
-                    {                        
-                        var stage = new NetworkStreamWriteStage(_Socket, _Sends.ToArray());
-                        _Sends.Clear();
-                        stage.WriteCompletionEvent += _ToWrite;
-                        stage.ErrorEvent += () => { _Enable = false; };
-                        _WriteMachine.Push(stage);
-                    }
-                    else
+                    var pkgs = _Sends.DequeueAll();
+                    var requestCount = pkgs.Length;
+                    lock (_LockRequest)
                     {
-                        var stage = new WaitQueueStage(_Sends);
-                        stage.DoneEvent += _ToWrite;
-                        _WriteMachine.Push(stage);
+                        RequestQueueCount -= requestCount;
                     }
+                        
+                    var stage = new NetworkStreamWriteStage(_Socket, pkgs);
+
+                    stage.WriteCompletionEvent += ()=>
+                    {
+                        
+                        
+                        _ToWrite();
+                    };
+                    stage.ErrorEvent += () => 
+                    {                        
+                        _Enable = false; 
+                    };
+                    _WriteMachine.Push(stage);
                 }
+                else
+                {
+                    var stage = new WaitQueueStage(_Sends);
+                    stage.DoneEvent += _ToWrite;
+                    _WriteMachine.Push(stage);
+                }
+                
             }
 
             internal void SetSocket(System.Net.Sockets.Socket socket)
@@ -134,16 +182,14 @@ namespace Regulus.Remoting.Ghost.Native
 
             internal void Process()
             {
-                lock (_Receives)
+                var pkgs = _Receives.DequeueAll();
+                lock (_LockResponse)
+                    ResponseQueueCount -= pkgs.Length;
+                foreach(var pkg in pkgs)
                 {
-                    while (_Receives.Count > 0)
-                    {
-
-                        var package = _Receives.Dequeue();
-                        _Core.OnResponse(package.Code, package.Args);
-
-                    }
+                    _Core.OnResponse(pkg.Code, pkg.Args);
                 }
+
             }
         }
     }

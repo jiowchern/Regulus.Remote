@@ -10,14 +10,12 @@ namespace Regulus.Remoting.Ghost.Native
     {
         
        
-        int _ThreadCount;
+        volatile bool _ThreadEnable;
         
-        
-        object _Sync;
         Regulus.Utility.Updater _Updater;
         public IOHandler()
         {
-            _Sync = new object();
+            
             _Updater = new Utility.Updater();
             
         }
@@ -36,12 +34,14 @@ namespace Regulus.Remoting.Ghost.Native
 
         private void _Launch()
         {
-            lock (_Sync)
+            
+            if (_ThreadEnable == false)
             {
+                _ThreadEnable = true;
                 System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(_Handle));
-                _ThreadCount++;
-                System.Diagnostics.Debug.WriteLine("IOHandler Threads:" + _ThreadCount);
             }
+                
+            
             
         }
 
@@ -51,12 +51,12 @@ namespace Regulus.Remoting.Ghost.Native
             do
             {
                 
-                _Updater.Update();                
+                _Updater.Update();
 
-
+                System.Threading.Thread.Sleep(1);
                 if(counter.Second > 1)
                 {
-                    System.Threading.Thread.Sleep(0);
+                    System.Threading.Thread.Sleep(1);
                     counter.Reset();
                 }
                 
@@ -69,13 +69,7 @@ namespace Regulus.Remoting.Ghost.Native
 
         private void _Shutdown()
         {
-            lock (_Sync)
-            {
-
-                _ThreadCount--;
-                System.Diagnostics.Debug.WriteLine("IOHandler Threads:" + _ThreadCount);
-                
-            }
+            _ThreadEnable = false;
         }
     }
 }

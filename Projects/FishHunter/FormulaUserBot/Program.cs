@@ -16,7 +16,7 @@ namespace FormulaUserBot
             System.Threading.SpinWait sw = new System.Threading.SpinWait();
             var clientHandler = new ClientHandler(IPAddress, Port , 1);
             var view = new Regulus.Utility.ConsoleViewer();
-            Log.Instance.SetView(view);
+            Log.Instance.Initial(view);
             var input = new Regulus.Utility.ConsoleInput(view);
             var client = new VGame.Project.FishHunter.Formula.Client(view, input);
             client.ModeSelectorEvent += clientHandler.Begin;
@@ -25,16 +25,25 @@ namespace FormulaUserBot
             var updater = new Regulus.Utility.Updater();
             updater.Add(client);
             updater.Add(clientHandler);
+
+
             
+
             while (client.Enable)
             {
-                input.Update();
-                updater.Update();
-                sw.SpinOnce();
+                
+                
+                
+                    input.Update();
+                    updater.Update();
+                        
+                
+                    
             }
 
             updater.Shutdown();
             clientHandler.End();
+            Log.Instance.Final();
         }
 
         private static void _OnSelector(Regulus.Framework.GameModeSelector<VGame.Project.FishHunter.Formula.IUser> selector)

@@ -59,9 +59,11 @@ namespace Regulus.Utility
 
                 lock (_Adds)
                     _Add(_Adds, _Ts);
+
+                return _Update();
             }
 
-            return _Update();
+            
         }
 
         System.Collections.Generic.IEnumerable<T> _Update()

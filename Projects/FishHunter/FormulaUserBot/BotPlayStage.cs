@@ -34,10 +34,10 @@ namespace FormulaUserBot
         void Regulus.Utility.IStage.Update()
         {
             _HitHandlers.Update();
-            if(_HitTime.Second > 1.0f / 30.0f)
+            if(_HitTime.Second > 0.010f)
             {
-                var totalHits = (byte)Regulus.Utility.Random.Next(1, 1000);
-                //var totalHits = (byte)1;
+                //var totalHits = (byte)Regulus.Utility.Random.Next(1, 1000);
+                var totalHits = (byte)1;
                 for (int i = 0; i < totalHits; ++i)
                     _HitRequest(totalHits);
                 _HitTime.Reset();

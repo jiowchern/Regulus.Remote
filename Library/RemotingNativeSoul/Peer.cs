@@ -22,20 +22,26 @@ namespace Regulus.Remoting.Soul.Native
 
 		System.Net.Sockets.Socket _Socket;
 		Regulus.Remoting.Soul.SoulProvider _SoulProvider;
-		System.Collections.Generic.Queue<Regulus.Remoting.Package> _Responses;
-        System.Collections.Generic.Queue<Request> _Requests;
+		PackageQueue _Responses;
+        PackageQueue _Requests;
+        
 		Regulus.Utility.StageMachine _ReadMachine;
 		Regulus.Utility.StageMachine _WriteMachine;
-        bool _Enable;
+        volatile bool _Enable;
 
-        public static decimal TotalRequest { get; private set; }
-        public static decimal TotalResponse { get; private set; }
+
+        static object _LockRequest = new object();        
+        public static int TotalRequest { get; private set; }
+
+        static object _LockResponse = new object();        
+        public static int TotalResponse { get; private set; }
         public Peer(System.Net.Sockets.Socket client)
-		{			
+		{
+            
 			_Socket = client;
 			_SoulProvider = new Remoting.Soul.SoulProvider(this, this);
-			_Responses = new Queue<Remoting.Package>();
-            _Requests = new Queue<Request>();
+            _Responses = new PackageQueue();
+            _Requests = new PackageQueue();
 			_ReadMachine = new Utility.StageMachine();
 			_WriteMachine = new Utility.StageMachine();
             _Enable = true;
@@ -43,24 +49,36 @@ namespace Regulus.Remoting.Soul.Native
 		}
 		private void _HandleWrite()
 		{
-            lock (_Responses)
+            
+            if (_Responses.Count > 0)
             {
-                if (_Responses.Count > 0)
+                var pkgs = _Responses.DequeueAll();
+                var responseCount = pkgs.Length;
+                lock (_LockResponse)
                 {
-                    TotalResponse -= _Responses.Count;
-                    var stage = new NetworkStreamWriteStage(_Socket, _Responses.ToArray());
-                    _Responses.Clear();
-                    stage.WriteCompletionEvent += _HandleWrite;
-                    stage.ErrorEvent += () => { _Enable = false; };
-                    _WriteMachine.Push(stage);
+                    TotalResponse -= responseCount;
                 }
-                else
+
+                var stage = new NetworkStreamWriteStage(_Socket, pkgs);                
+                stage.WriteCompletionEvent += () =>
                 {
-                    var stage = new WaitQueueStage(_Responses);
-                    stage.DoneEvent += _HandleWrite;
-                    _WriteMachine.Push(stage);
-                }
+                    _HandleWrite();
+                };
+                stage.ErrorEvent += () => 
+                {
+                    
+
+                    _Enable = false; 
+                };
+                _WriteMachine.Push(stage);
             }
+            else
+            {
+                var stage = new WaitQueueStage(_Responses);
+                stage.DoneEvent += _HandleWrite;
+                _WriteMachine.Push(stage);
+            }
+            
 			
 		}
 		private void _HandleRead()
@@ -69,19 +87,24 @@ namespace Regulus.Remoting.Soul.Native
 			stage.ReadCompletionEvent += (package) =>
 			{
                 if (package != null)
-				    _HandlePackage(package);
+                {
+                    _Requests.Enqueue(package);
+                    lock (_LockRequest)
+                        TotalRequest  ++;
+                }				    
 				_HandleRead();
 			};
             stage.ErrorEvent += () => { _Enable = false; };
 			_ReadMachine.Push(stage);
 		}
 
-		private void _HandlePackage(Package package)
+        private Request _TryGetRequest(Package package )
 		{
 			if (package.Code == (byte)ClientToServerOpCode.Ping)
 			{
 				
 				(this as Regulus.Remoting.IResponseQueue).Push((int)ServerToClientOpCode.Ping, new Dictionary<byte, byte[]>());
+                return null;
 			}
             else if (package.Code == (byte)ClientToServerOpCode.CallMethod)
             {
@@ -102,18 +125,16 @@ namespace Regulus.Remoting.Soul.Native
                                     orderby p.Key
                                     select p.Value).ToArray();
 
-                _PushRequest(entityId, methodName, returnId, methodParams);
+                return _ToRequest(entityId, methodName, returnId, methodParams);
+                
             }
+            return null;
 		}
-
-        private void _PushRequest(Guid entity_id, string method_name, Guid return_id, byte[][] method_params)
+        private Request _ToRequest(Guid entity_id, string method_name, Guid return_id, byte[][] method_params)
         {
-            lock (_Requests)
-            {
-                _Requests.Enqueue(new Request() { EntityId = entity_id, MethodName = method_name, MethodParams = method_params, ReturnId = return_id });
-                TotalRequest++;
-            }            
+            return new Request() { EntityId = entity_id, MethodName = method_name, MethodParams = method_params, ReturnId = return_id };
         }
+        
 
 		
 
@@ -124,11 +145,12 @@ namespace Regulus.Remoting.Soul.Native
 
 		void Remoting.IResponseQueue.Push(byte cmd, Dictionary<byte, byte[]> args)
 		{
-            lock (_Responses)
+            lock (_LockResponse)
             {
-                _Responses.Enqueue(new Regulus.Remoting.Package() { Code = cmd, Args = args });
                 TotalResponse++;
-            }			
+            }
+            _Responses.Enqueue(new Regulus.Remoting.Package() { Code = cmd, Args = args });
+            
 		}
 
         event Action<Guid, string, Guid, byte[][]> _InvokeMethodEvent;
@@ -190,22 +212,46 @@ namespace Regulus.Remoting.Soul.Native
             _Socket.Close();
             _ReadMachine.Termination();
             _WriteMachine.Termination();
+
+            lock (_LockRequest)
+            {
+                TotalRequest -= _Requests.Count;
+            }
+                
+
+            lock(_LockResponse)
+            {
+                TotalResponse -= _Responses.Count;
+            }
+                
         }
 
 
         void IRequestQueue.Update()
         {
-            lock (_Requests)
+
+            var pkgs = _Requests.DequeueAll();
+            lock (_LockRequest)
             {
-                while (_Requests.Count > 0)
-                {                    
-                    var request = _Requests.Dequeue();
-                    if (_InvokeMethodEvent != null)
+                TotalRequest -= pkgs.Length;
+            }
+                
+            foreach(var pkg in pkgs)
+            {
+                var request = _TryGetRequest(pkg);
+                
+                if (request != null)
+                {
+                    
+                    if(_InvokeMethodEvent != null  )
                         _InvokeMethodEvent(request.EntityId, request.MethodName, request.ReturnId, request.MethodParams);
-                    TotalRequest--;
                 }
+
+                
                 
             }
+                
+            
         }
     }
 	
