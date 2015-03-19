@@ -12,6 +12,7 @@ namespace Regulus.Framework
 
         Regulus.Utility.Console _Console;
         Regulus.Utility.Command _Command { get { return _Console.Command; } }
+        public Regulus.Utility.Command Command { get { return _Command; } }
         Regulus.Utility.Console.IViewer _View;        
 
         public delegate void OnModeSelector(Regulus.Framework.GameModeSelector<TUser> selector);

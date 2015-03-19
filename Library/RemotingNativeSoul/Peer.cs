@@ -139,8 +139,8 @@ namespace Regulus.Remoting.Soul.Native
 		
 
 		private bool _Connected()
-		{            
-            return _Enable && _Socket.Connected;
+		{
+            return _Enable && _Socket.Connected  ;
 		}
 
 		void Remoting.IResponseQueue.Push(byte cmd, Dictionary<byte, byte[]> args)
@@ -213,16 +213,6 @@ namespace Regulus.Remoting.Soul.Native
             _ReadMachine.Termination();
             _WriteMachine.Termination();
 
-            lock (_LockRequest)
-            {
-                TotalRequest -= _Requests.Count;
-            }
-                
-
-            lock(_LockResponse)
-            {
-                TotalResponse -= _Responses.Count;
-            }
                 
         }
 

@@ -33,35 +33,21 @@ namespace Regulus.Remoting.Ghost.Native
         }
 
         private void _Launch()
-        {
-            
+        {            
             if (_ThreadEnable == false)
             {
                 _ThreadEnable = true;
                 System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(_Handle));
             }
-                
-            
-            
         }
 
         private void _Handle(object obj)
         {
-            Regulus.Utility.TimeCounter counter = new Utility.TimeCounter();
+            
             do
-            {
-                
+            {                
                 _Updater.Update();
-
-                System.Threading.Thread.Sleep(1);
-                if(counter.Second > 1)
-                {
-                    System.Threading.Thread.Sleep(1);
-                    counter.Reset();
-                }
-                
-
-                
+                System.Threading.Thread.SpinWait(1);
             } while (_Updater.Count > 0);            
             
             _Shutdown();            

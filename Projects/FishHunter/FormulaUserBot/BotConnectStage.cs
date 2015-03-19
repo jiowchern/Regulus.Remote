@@ -86,8 +86,6 @@ namespace FormulaUserBot
             };
         }
 
-        
-
         void Regulus.Utility.IStage.Update()
         {
             

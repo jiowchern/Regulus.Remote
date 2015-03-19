@@ -87,16 +87,7 @@ namespace Regulus.Remoting.Ghost.Native
                 _Core.Finial();
                 _ReadMachine.Empty();
                 _WriteMachine.Empty();
-                lock(_LockRequest)
-                {
-                    RequestQueueCount -= _Sends.Count;
-                }
-                    
-
-                lock(_LockResponse)
-                {
-                    ResponseQueueCount -= _Receives.Count;
-                }
+                
                     
             }
 

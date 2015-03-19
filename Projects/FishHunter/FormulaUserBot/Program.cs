@@ -9,7 +9,7 @@ namespace FormulaUserBot
     class Program
     {
         private static string IPAddress = "210.65.10.160";
-        //private static string IPAddress = "127.0.0.1";
+        //private static string IPAddress = "127.0.0.1";//
         private static int Port = 38971;
         static void Main(string[] args)
         {
@@ -19,6 +19,7 @@ namespace FormulaUserBot
             Log.Instance.Initial(view);
             var input = new Regulus.Utility.ConsoleInput(view);
             var client = new VGame.Project.FishHunter.Formula.Client(view, input);
+            client.Command.Register("SendInterval", _ShowSendInterval);
             client.ModeSelectorEvent += clientHandler.Begin;
 
 
@@ -26,26 +27,22 @@ namespace FormulaUserBot
             updater.Add(client);
             updater.Add(clientHandler);
 
-
-            
-
             while (client.Enable)
             {
+                input.Update();
+                updater.Update();
                 
-                
-                
-                    input.Update();
-                    updater.Update();
-                        
-                
-                    
             }
-
+            client.Command.Unregister("SendInterval");
             updater.Shutdown();
             clientHandler.End();
             Log.Instance.Final();
         }
-
+        static void _ShowSendInterval()
+        {
+            Console.WriteLine(string.Format("Send Interval : {0}", HitHandler.Interval));
+            
+        }
         private static void _OnSelector(Regulus.Framework.GameModeSelector<VGame.Project.FishHunter.Formula.IUser> selector)
         {
             

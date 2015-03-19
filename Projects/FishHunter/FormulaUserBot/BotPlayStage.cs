@@ -8,6 +8,10 @@ namespace FormulaUserBot
     class BotPlayStage 
         : Regulus.Utility.IStage
     {
+
+        
+        
+        
         VGame.Project.FishHunter.IFishStage _Stage;
         public delegate void DoneCallback();
         public event DoneCallback DoneEvent;
@@ -20,6 +24,8 @@ namespace FormulaUserBot
             _HitHandlers = new Regulus.Utility.Updater();
             _HitTime = new Regulus.Utility.TimeCounter();
             _Stage = fish_stage;
+
+         
             
         }
         void Regulus.Utility.IStage.Leave()
@@ -34,7 +40,7 @@ namespace FormulaUserBot
         void Regulus.Utility.IStage.Update()
         {
             _HitHandlers.Update();
-            if(_HitTime.Second > 0.010f)
+            if (_HitTime.Second > HitHandler.Interval)
             {
                 //var totalHits = (byte)Regulus.Utility.Random.Next(1, 1000);
                 var totalHits = (byte)1;
@@ -42,6 +48,8 @@ namespace FormulaUserBot
                     _HitRequest(totalHits);
                 _HitTime.Reset();
             }
+            
+            
         }
 
         private void _HitRequest(byte total_hits)
