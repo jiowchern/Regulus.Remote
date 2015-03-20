@@ -88,8 +88,10 @@
 
         
         public static decimal TotalBytes { get; private set; }
-        static Regulus.Utility.TimeCounter _AfterTime = new Utility.TimeCounter();
-        public static decimal TotalBytesPerSecond { get { return TotalBytes / (decimal)(_AfterTime.Second + 1); } }
+        public static decimal SecondBytes { get; private set; }
+        static decimal _SecondBytes;
+        Regulus.Utility.TimeCounter _AfterTime = new Utility.TimeCounter();
+
         const int _HeadSize = 4;
         public NetworkStreamWriteStage(System.Net.Sockets.Socket socket, Package[] packages)
 		{
@@ -172,7 +174,8 @@
         private void _Done(int size)
         {
             WriteCompletionEvent();
-            TotalBytes += size;            
+
+            NetworkMonitor.Instance.Write.Set(size);
         }
 
 		void Utility.IStage.Leave()
@@ -274,9 +277,12 @@
         Regulus.Utility.StageMachine _Machine;
 
         
-        public static decimal TotalBytes { get; private set; }        
-        static Regulus.Utility.TimeCounter _AfterTime = new Utility.TimeCounter();
-        public static decimal TotalBytesPerSecond { get { return TotalBytes / (decimal) (_AfterTime.Second + 1); } }
+        public static decimal TotalBytes { get; private set; }
+        public static decimal SecondBytes { get; private set; }
+        static decimal _SecondBytes;
+
+        Regulus.Utility.TimeCounter _AfterTime = new Utility.TimeCounter();
+        
         const int _HeadSize = 4;
         public NetworkStreamReadStage(System.Net.Sockets.Socket socket )
 		{            
@@ -319,8 +325,8 @@
         private void _Done(byte[] body)
         {
             ReadCompletionEvent(Regulus.Serializer.TypeHelper.Deserialize<Package>(body) );
-            TotalBytes += (body.Length + _HeadSize);
-            
+            var size = (body.Length + _HeadSize);
+            NetworkMonitor.Instance.Read.Set(size);
         }
 
 		void Utility.IStage.Leave()
@@ -331,6 +337,8 @@
 		void Utility.IStage.Update()
 		{            
             _Machine.Update();
+
+            
 		}
 	}
 

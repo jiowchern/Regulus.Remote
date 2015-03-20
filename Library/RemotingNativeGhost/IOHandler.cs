@@ -9,7 +9,6 @@ namespace Regulus.Remoting.Ghost.Native
     class IOHandler : Regulus.Utility.Singleton<IOHandler>
     {
         
-       
         volatile bool _ThreadEnable;
         
         Regulus.Utility.Updater _Updater;

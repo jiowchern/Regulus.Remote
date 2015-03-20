@@ -81,7 +81,7 @@ namespace Regulus.Remoting.Soul.Native
                 _RequesterHandlers.Update();
                 _Core.Update();
                 _FPS.Update();
-                if (Peer.IsIdle )
+                if (Peer.TotalRequest <= 0)
                     sw.SpinOnce();
                 
             }
@@ -159,7 +159,7 @@ namespace Regulus.Remoting.Soul.Native
                 
                 _Peers.Update();
                 _FPS.Update();
-                if (Peer.IsIdle)
+                if (Peer.TotalResponse <= 0)
                     sw.SpinOnce();
             }
 
@@ -227,10 +227,12 @@ namespace Regulus.Remoting.Soul.Native
                 _View.WriteLine("PeerFPS:" + _ThreadSocketHandler.FPS.ToString());
                 _View.WriteLine("PeerCount:" + _ThreadSocketHandler.PeerCount.ToString());
                 _View.WriteLine("CoreFPS:" + _ThreadCoreHandler.FPS.ToString());
-                _View.WriteLine("Read:" + NetworkStreamReadStage.TotalBytesPerSecond.ToString());
-                _View.WriteLine("Write:" + NetworkStreamWriteStage.TotalBytesPerSecond.ToString());
-                _View.WriteLine("Requests:" + Peer.TotalRequest.ToString());
-                _View.WriteLine("Responses:" + Peer.TotalResponse.ToString());
+                _View.WriteLine("\nTotalReadBytes:" + string.Format("{0:N0}", NetworkMonitor.Instance.Read.TotalBytes));
+                _View.WriteLine("TotalWriteBytes:" + string.Format("{0:N0}", NetworkMonitor.Instance.Write.TotalBytes));
+                _View.WriteLine("\nSecondReadBytes:" + string.Format("{0:N0}", NetworkMonitor.Instance.Read.SecondBytes));
+                _View.WriteLine("SecondWriteBytes:" + string.Format("{0:N0}", NetworkMonitor.Instance.Write.SecondBytes));
+                _View.WriteLine("\nRequest Queue:" + Peer.TotalRequest.ToString());
+                _View.WriteLine("Response Queue:" + Peer.TotalResponse.ToString());
 
                 
             });
