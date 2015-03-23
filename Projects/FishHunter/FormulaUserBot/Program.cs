@@ -41,7 +41,7 @@ namespace FormulaUserBot
             {
                 input.Update();
                 updater.Update();
-                
+                sw.SpinOnce();
             }
             client.Command.Unregister("SendInterval");
             updater.Shutdown();

@@ -46,6 +46,7 @@ namespace VGame.Project.FishHunter
 
         void Regulus.Framework.ILaunched.Launch()
         {
+
             _ToVerify();
         }
 
@@ -56,8 +57,19 @@ namespace VGame.Project.FishHunter
 
         private void _ToVerify()
         {
+            var verify = _CreateVerify();
+            _AddVerifyToStage(verify);
+        }
+
+        private Verify _CreateVerify()
+        {
             _Account = null;
             var verify = new VGame.Project.FishHunter.Verify(_Storage);
+            return verify;
+        }
+
+        private void _AddVerifyToStage(Verify verify)
+        {
             var stage = new VGame.Project.FishHunter.Stage.Verify(_Binder, verify);
             stage.DoneEvent += _VerifySuccess;
             _Machine.Push(stage);
