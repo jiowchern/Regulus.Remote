@@ -81,7 +81,7 @@ namespace Regulus.Remoting.Soul.Native
                 _RequesterHandlers.Update();
                 _Core.Update();
                 _FPS.Update();
-                if (Peer.TotalRequest <= 0)
+                if (Peer.TotalResponse <= 0)
                     sw.SpinOnce();
                 
             }
@@ -159,7 +159,7 @@ namespace Regulus.Remoting.Soul.Native
                 
                 _Peers.Update();
                 _FPS.Update();
-                if (Peer.TotalResponse <= 0)
+                if (Peer.TotalRequest <= 0)
                     sw.SpinOnce();
             }
 

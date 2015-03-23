@@ -26,8 +26,8 @@ namespace Regulus.Projects.SamebestKeys
 
             _Command.Register("Package", () => 
             {
-                _View.WriteLine("Read:" + Regulus.Remoting.NetworkStreamReadStage.TotalBytesPerSecond.ToString());
-                _View.WriteLine("Write:" + Regulus.Remoting.NetworkStreamWriteStage.TotalBytesPerSecond.ToString()); 
+                _View.WriteLine("Read:" + Regulus.Remoting.Ghost.Native.Agent.ResponseQueueCount );
+                _View.WriteLine("Write:" + Regulus.Remoting.Ghost.Native.Agent.RequestQueueCount); 
             });
 
             user.SessionTeacherProvider.Supply += SessionTeacherProvider_Supply;

@@ -78,7 +78,7 @@ namespace Regulus.Remoting.Ghost.Native
                 _Enable = true;
                 _Core.Initial();
                 _ToRead();
-                _ToWrite();
+                _ToWriteWait();
             }
 
             void Framework.ILaunched.Shutdown()
@@ -122,40 +122,41 @@ namespace Regulus.Remoting.Ghost.Native
                 _ReadMachine.Push(stage);
             }
 
-            private void _ToWrite()
+            private void _ToWrite(Package[] packages)
             {
                 
-                if (_Sends.Count > 0)
+                
+                var pkgs = packages;
+                var requestCount = pkgs.Length;
+                lock (_LockRequest)
                 {
-                    var pkgs = _Sends.DequeueAll();
-                    var requestCount = pkgs.Length;
-                    lock (_LockRequest)
-                    {
-                        RequestQueueCount -= requestCount;
-                    }
+                    RequestQueueCount -= requestCount;
+                }
                         
-                    var stage = new NetworkStreamWriteStage(_Socket, pkgs);
+                var stage = new NetworkStreamWriteStage(_Socket, pkgs);
 
-                    stage.WriteCompletionEvent += ()=>
-                    {
-                        
-                        
-                        _ToWrite();
-                    };
-                    stage.ErrorEvent += () => 
-                    {                        
-                        _Enable = false; 
-                    };
-                    _WriteMachine.Push(stage);
-                }
-                else
+                stage.WriteCompletionEvent += ()=>
                 {
-                    var stage = new WaitQueueStage(_Sends);
-                    stage.DoneEvent += _ToWrite;
-                    _WriteMachine.Push(stage);
-                }
+                    _ToWriteWait();
+                };
+                stage.ErrorEvent += () => 
+                {                        
+                    _Enable = false; 
+                };
+                _WriteMachine.Push(stage);
+                
                 
             }
+
+            private void _ToWriteWait()
+            {
+                var stage = new WaitQueueStage(_Sends);
+                stage.DoneEvent += _ToWrite;
+                
+                _WriteMachine.Push(stage);
+            }
+
+            
 
             internal void SetSocket(System.Net.Sockets.Socket socket)
             {

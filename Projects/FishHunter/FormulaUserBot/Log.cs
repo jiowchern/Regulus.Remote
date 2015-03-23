@@ -30,12 +30,12 @@ namespace FormulaUserBot
             System.Threading.SpinWait sw = new System.Threading.SpinWait();
             while (_Enable)
             {
-                if (_Messages.Count > 0)
+                var messages = _Messages.DequeueAll();
+                foreach(var msg in messages)
                 {
-                    writer.WriteLine(_Messages.Dequeue());                    
-                }
-                else
-                    sw.SpinOnce();
+                    writer.WriteLine(msg);                    
+                }                
+                sw.SpinOnce();
             }
 
             writer.Close();

@@ -8,7 +8,7 @@ namespace FormulaUserBot
     class HitHandler : Regulus.Utility.IUpdatable
     {
         
-        public static float Interval = 1.0f / 30.0f;
+        public static float Interval = 1.0f / 10000.0f;
 
         private VGame.Project.FishHunter.IFishStage _Stage;
         private VGame.Project.FishHunter.HitRequest _Request;
@@ -40,8 +40,7 @@ namespace FormulaUserBot
             if (obj.FishID == _Request.FishID && obj.WepID == _Request.WepID )
             {
                 _Enable = false;
-                
-                Interval = _TimeCounter.Second;
+                                
                 Log.Instance.WriteLine(string.Format("時間{2}:請求{0}\n回應{1}", _Request.ShowMembers(), obj.ShowMembers(), _TimeCounter.Second));                
             }            
         }

@@ -23,14 +23,14 @@ namespace Regulus.Collection
 
         }
 
-        public int Count
+        /*public int Count
         {
             get
             {
                 lock (_Set)
                     return _Set.Count;
             }
-        }
+        }*/
 
 
 

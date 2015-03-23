@@ -85,13 +85,6 @@
         public event System.Action ErrorEvent;
         Regulus.Utility.StageMachine _Machine;
 
-
-        
-        public static decimal TotalBytes { get; private set; }
-        public static decimal SecondBytes { get; private set; }
-        static decimal _SecondBytes;
-        Regulus.Utility.TimeCounter _AfterTime = new Utility.TimeCounter();
-
         const int _HeadSize = 4;
         public NetworkStreamWriteStage(System.Net.Sockets.Socket socket, Package[] packages)
 		{
@@ -275,13 +268,6 @@
         public event System.Action ErrorEvent;       
 		System.Net.Sockets.Socket _Socket;
         Regulus.Utility.StageMachine _Machine;
-
-        
-        public static decimal TotalBytes { get; private set; }
-        public static decimal SecondBytes { get; private set; }
-        static decimal _SecondBytes;
-
-        Regulus.Utility.TimeCounter _AfterTime = new Utility.TimeCounter();
         
         const int _HeadSize = 4;
         public NetworkStreamReadStage(System.Net.Sockets.Socket socket )
@@ -345,13 +331,20 @@
     public partial class WaitQueueStage : Regulus.Utility.IStage
     {
 
+        public delegate void DoneCallback(Package[] packages);
+        public event DoneCallback DoneEvent;
 
-        public event System.Action DoneEvent;
+        
+
+        
+        
         private PackageQueue _Packages;
 
-        public WaitQueueStage(PackageQueue packages)
-        {            
+        public WaitQueueStage(PackageQueue packages )
+        {
+        
             this._Packages = packages;
+           
         }
         void Utility.IStage.Enter()
         {
@@ -365,9 +358,10 @@
 
         void Utility.IStage.Update()
         {
-            if (_Packages.Count > 0)
+            var pkgs = _Packages.DequeueAll();
+            if (pkgs.Length > 0)
             {
-                DoneEvent();
+                DoneEvent(pkgs);
             }
         }
     }

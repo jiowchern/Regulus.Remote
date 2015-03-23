@@ -47,40 +47,34 @@ namespace Regulus.Remoting.Soul.Native
             _Enable = true;
 			
 		}
-		private void _HandleWrite()
+		private void _HandleWrite(Package[] packages)
 		{
-            
-            if (_Responses.Count > 0)
+            var pkgs = packages;
+            var responseCount = pkgs.Length;
+            lock (_LockResponse)
             {
-                var pkgs = _Responses.DequeueAll();
-                var responseCount = pkgs.Length;
-                lock (_LockResponse)
-                {
-                    TotalResponse -= responseCount;
-                }
-
-                var stage = new NetworkStreamWriteStage(_Socket, pkgs);                
-                stage.WriteCompletionEvent += () =>
-                {
-                    _HandleWrite();
-                };
-                stage.ErrorEvent += () => 
-                {
-                    
-
-                    _Enable = false; 
-                };
-                _WriteMachine.Push(stage);
+                TotalResponse -= responseCount;
             }
-            else
+
+            var stage = new NetworkStreamWriteStage(_Socket, pkgs);                
+            stage.WriteCompletionEvent += () =>
             {
-                var stage = new WaitQueueStage(_Responses);
-                stage.DoneEvent += _HandleWrite;
-                _WriteMachine.Push(stage);
-            }
-            
+                _HandleWriteWait();
+            };
+            stage.ErrorEvent += () => 
+            {
+                _Enable = false; 
+            };
+            _WriteMachine.Push(stage);
 			
 		}
+
+        void _HandleWriteWait()
+        {
+            var stage = new WaitQueueStage(_Responses);
+            stage.DoneEvent += _HandleWrite;
+            _WriteMachine.Push(stage);
+        }
 		private void _HandleRead()
 		{
 			var stage = new NetworkStreamReadStage(_Socket);
@@ -192,7 +186,7 @@ namespace Regulus.Remoting.Soul.Native
                 _ReadMachine.Update();
                 _WriteMachine.Update();
 
-                
+                _TestConnect();
                 
 
                 return true;
@@ -201,9 +195,16 @@ namespace Regulus.Remoting.Soul.Native
             return false;
         }
 
+        private void _TestConnect()
+        {
+            
+        }
+
+        
+
         void Framework.ILaunched.Launch()
         {
-            _HandleWrite();
+            _HandleWriteWait();
             _HandleRead();
         }
 
@@ -213,6 +214,18 @@ namespace Regulus.Remoting.Soul.Native
             _ReadMachine.Termination();
             _WriteMachine.Termination();
 
+            lock (_LockResponse)
+            {
+                var pkgs = _Responses.DequeueAll();
+                TotalResponse -= pkgs.Length;
+            }
+                
+
+            lock (_LockRequest)
+            {
+                var pkgs = _Requests.DequeueAll();
+                TotalRequest -= pkgs.Length;
+            }
                 
         }
 
