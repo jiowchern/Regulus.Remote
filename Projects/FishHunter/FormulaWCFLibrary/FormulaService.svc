@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="VGame.Project.FishHunter.WCF.FormulaService" CodeBehind="FormulaService.svc.cs" %>

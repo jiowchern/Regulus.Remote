@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Microsoft.Owin.Security.Google.zh-Hant</id>
+    <version>2.0.0</version>
+    <title>Microsoft Owin Security Google 繁體中文 資源</title>
+    <authors>Microsoft</authors>
+    <owners>Microsoft</owners>
+    <licenseUrl>http://www.microsoft.com/web/webpi/eula/aspnetcomponent_rtw_CHT.htm</licenseUrl>
+    <projectUrl>http://katanaproject.codeplex.com/</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>此套件包含 Microsoft Owin Security Google 的 繁體中文 附屬組件</description>
+    <summary>Microsoft.Owin.Security.Google 套件的 繁體中文 資源</summary>
+    <copyright>© Microsoft Corporation. All rights reserved.</copyright>
+    <language>zh-Hant</language>
+    <tags>OWIN</tags>
+    <dependencies>
+      <dependency id="Microsoft.Owin.Security.Google" version="[2.0.0]" />
+    </dependencies>
+  </metadata>
+</package>

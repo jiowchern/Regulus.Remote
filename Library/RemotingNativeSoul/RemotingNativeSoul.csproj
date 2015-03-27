@@ -46,6 +46,7 @@
     <Compile Include="ControllerStageStart.cs" />
     <Compile Include="Peer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Server.cs" />
     <Compile Include="TcpController.cs" />
     <Compile Include="TcpUser.cs" />
   </ItemGroup>

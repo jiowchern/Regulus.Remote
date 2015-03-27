@@ -18,7 +18,7 @@ namespace Console
         internal void OnSelect(Regulus.Framework.GameModeSelector<VGame.Project.FishHunter.Formula.IUser> selector)
         {
 
-            selector.AddFactoty("standalong", new VGame.Project.FishHunter.Formula.StandalongUserFactory(core));
+            //selector.AddFactoty("standalong", new VGame.Project.FishHunter.Formula.StandalongUserFactory(core));
             selector.AddFactoty("remoting", new VGame.Project.FishHunter.Formula.RemotingUserFactory());
             //var provider = selector.CreateUserProvider("standalong");
             //var provider = selector.CreateUserProvider("remoting");

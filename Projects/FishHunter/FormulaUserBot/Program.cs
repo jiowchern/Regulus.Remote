@@ -29,13 +29,21 @@ namespace FormulaUserBot
             Log.Instance.Initial(view);
             var input = new Regulus.Utility.ConsoleInput(view);
             var client = new VGame.Project.FishHunter.Formula.Client(view, input);
-            client.Command.Register("SendInterval", _ShowSendInterval);            
+            var packetRegulator = new PacketRegulator();
+            client.Command.Register("si", () => 
+            {
+                Console.WriteLine(string.Format("Send Interval : {0}\nRequest Package Queue : {1}", HitHandler.Interval, packetRegulator.Sampling));
+                
+            });            
             client.ModeSelectorEvent += clientHandler.Begin;
 
+
+            
 
             var updater = new Regulus.Utility.Updater();
             updater.Add(client);
             updater.Add(clientHandler);
+            updater.Add(packetRegulator);
 
             while (client.Enable)
             {
@@ -43,16 +51,12 @@ namespace FormulaUserBot
                 updater.Update();
                 sw.SpinOnce();
             }
-            client.Command.Unregister("SendInterval");
+            client.Command.Unregister("si");
             updater.Shutdown();
             clientHandler.End();
             Log.Instance.Final();
         }
-        static void _ShowSendInterval()
-        {
-            Console.WriteLine(string.Format("Send Interval : {0}", HitHandler.Interval));
-            
-        }
+        
         private static void _OnSelector(Regulus.Framework.GameModeSelector<VGame.Project.FishHunter.Formula.IUser> selector)
         {
             

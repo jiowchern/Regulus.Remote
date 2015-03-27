@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Microsoft.AspNet.Identity.Owin.zh-Hant</id>
+    <version>1.0.0</version>
+    <title>Microsoft ASP.NET Identity Owin {繁體中文} 資源</title>
+    <authors>Microsoft</authors>
+    <owners>Microsoft</owners>
+    <licenseUrl>http://www.microsoft.com/web/webpi/eula/aspnetcomponent_rtw_CHT.htm</licenseUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>此套件包含 ASP.NET Identity Owin 程式庫的 {繁體中文} 附屬組件。</description>
+    <summary>Microsoft.AspNet.Identity.Owin 套件的 {繁體中文} 資源</summary>
+    <copyright>© Microsoft Corporation. All rights reserved.</copyright>
+    <language>zh-Hant</language>
+    <tags>Identity Membership</tags>
+    <dependencies>
+      <dependency id="Microsoft.AspNet.Identity.Owin" version="[1.0.0]" />
+    </dependencies>
+  </metadata>
+</package>

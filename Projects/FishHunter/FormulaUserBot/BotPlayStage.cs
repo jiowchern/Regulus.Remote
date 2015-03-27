@@ -48,8 +48,6 @@ namespace FormulaUserBot
                     _HitRequest(totalHits);
                 _HitTime.Reset();
             }
-            
-            
         }
 
         private void _HitRequest(byte total_hits)
@@ -62,7 +60,7 @@ namespace FormulaUserBot
             request.FishType = (byte)Regulus.Utility.Random.Next(1, 99);
             request.TotalHits = total_hits;
             request.HitCnt = (short)Regulus.Utility.Random.Next(1, request.TotalHits);
-            request.TotalHitOdds = (short)Regulus.Utility.Random.Next(0, 32767); ;
+            request.TotalHitOdds = (short)Regulus.Utility.Random.Next(0, 32767); 
             request.WepBet = (short)Regulus.Utility.Random.Next(1, 10000);
             request.WepID = (short)Regulus.Utility.Random.Next(0, 32767);
             request.WepOdds = (short)Regulus.Utility.Random.Next(1, 10000);

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Microsoft.Owin.Host.SystemWeb.zh-Hant</id>
+    <version>2.0.0</version>
+    <title>Microsoft ASP.NET Host for OWIN Web Applications 繁體中文資源</title>
+    <authors>Microsoft</authors>
+    <owners>Microsoft</owners>
+    <licenseUrl>http://www.microsoft.com/web/webpi/eula/aspnetcomponent_rtw_CHT.htm</licenseUrl>
+    <projectUrl>http://katanaproject.codeplex.com/</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>此套件包含 ASP.NET Host for OWIN Web Applications 的繁體中文附屬組件。</description>
+    <summary>Microsoft.Owin.Host.SystemWeb 套件的繁體中文資源。</summary>
+    <copyright>© Microsoft Corporation. All rights reserved.</copyright>
+    <language>zh-Hant</language>
+    <tags>microsoft owin aspnet katana</tags>
+    <dependencies>
+      <dependency id="Microsoft.Owin.Host.SystemWeb" version="[2.0.0]" />
+    </dependencies>
+  </metadata>
+</package>

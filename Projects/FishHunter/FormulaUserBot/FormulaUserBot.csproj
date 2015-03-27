@@ -47,6 +47,7 @@
     <Compile Include="ClientHandler.cs" />
     <Compile Include="HitHandler.cs" />
     <Compile Include="Log.cs" />
+    <Compile Include="PacketRegulator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

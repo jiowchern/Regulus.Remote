@@ -13,7 +13,7 @@ namespace Console
         {
             var view = new Regulus.Utility.ConsoleViewer();
             var input = new Regulus.Utility.ConsoleInput(view);
-            Regulus.Utility.ICore core = _LoadGame("Game.dll");
+            Regulus.Utility.ICore core = null;// _LoadGame("Game.dll");
 
             var client = new VGame.Project.FishHunter.Formula.Client(view, input);
 
@@ -21,7 +21,7 @@ namespace Console
 
             var updater = new Regulus.Utility.Updater();
             updater.Add(client);
-            updater.Add(core);
+           // updater.Add(core);
 
             while (client.Enable)
             {

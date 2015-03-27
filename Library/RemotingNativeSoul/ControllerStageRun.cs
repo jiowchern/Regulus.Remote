@@ -195,38 +195,26 @@ namespace Regulus.Remoting.Soul.Native
         private Utility.Command _Command;
         Utility.Console.IViewer _View;
 
-        ThreadSocketHandler _ThreadSocketHandler;
-        //System.Threading.Thread _ThreadSocket;
-
-        ThreadCoreHandler _ThreadCoreHandler;
-        //System.Threading.Thread _ThreadCore;
-        
+        Server _Server;
+        Regulus.Utility.Launcher _Launcher;
         public StageRun(Regulus.Utility.ICore core, Utility.Command command, int port, Utility.Console.IViewer viewer)
         {            
             _View = viewer;
             this._Command = command;
 
-            _ThreadCoreHandler = new ThreadCoreHandler(core);
-            
-            /*_ThreadCore = new System.Threading.Thread(_ThreadCoreHandler.DoWork);
-            _ThreadCore.Priority = System.Threading.ThreadPriority.Normal;
-            _ThreadCore.IsBackground = true;*/
-
-            _ThreadSocketHandler = new ThreadSocketHandler(port, _ThreadCoreHandler);
-            
-            /*_ThreadSocket = new System.Threading.Thread(_ThreadSocketHandler.DoWork);
-            _ThreadSocket.Priority = System.Threading.ThreadPriority.Normal;
-            _ThreadSocket.IsBackground = true;*/
+            _Server = new Server(core, port);
+            _Launcher = new Utility.Launcher();
+            _Launcher.Push(_Server);
         }
 
         void Utility.IStage.Enter()
         {
-
+            _Launcher.Launch();
             _Command.Register("FPS", () =>
             {
-                _View.WriteLine("PeerFPS:" + _ThreadSocketHandler.FPS.ToString());
-                _View.WriteLine("PeerCount:" + _ThreadSocketHandler.PeerCount.ToString());
-                _View.WriteLine("CoreFPS:" + _ThreadCoreHandler.FPS.ToString());
+                _View.WriteLine("PeerFPS:" + _Server.PeerFPS.ToString());
+                _View.WriteLine("PeerCount:" + _Server.PeerCount.ToString());
+                _View.WriteLine("CoreFPS:" + _Server.CoreFPS.ToString());
                 _View.WriteLine("\nTotalReadBytes:" + string.Format("{0:N0}", NetworkMonitor.Instance.Read.TotalBytes));
                 _View.WriteLine("TotalWriteBytes:" + string.Format("{0:N0}", NetworkMonitor.Instance.Write.TotalBytes));
                 _View.WriteLine("\nSecondReadBytes:" + string.Format("{0:N0}", NetworkMonitor.Instance.Read.SecondBytes));
@@ -238,8 +226,7 @@ namespace Regulus.Remoting.Soul.Native
             });
             _Command.Register("Shutdown", _ShutdownEvent);
 
-            System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(_ThreadCoreHandler.DoWork));
-            System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(_ThreadSocketHandler.DoWork));
+            
             //_ThreadCore.Start();
             //_ThreadSocket.Start();
         }
@@ -253,13 +240,8 @@ namespace Regulus.Remoting.Soul.Native
 
         void Utility.IStage.Leave()
         {
-            _ThreadCoreHandler.Stop();
-            //_ThreadCore.Abort();
-            //_ThreadCore.Join();
-
-            _ThreadSocketHandler.Stop();
-            //_ThreadSocket.Abort();
-            //_ThreadSocket.Join();
+            _Launcher.Shutdown();
+           
 
             _Command.Unregister("Shutdown");
             _Command.Unregister("FPS");

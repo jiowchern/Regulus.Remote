@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>EntityFramework.zh-Hant</id>
+    <version>6.0.0</version>
+    <title>Entity Framework 繁體中文資源</title>
+    <authors>Microsoft</authors>
+    <owners>Microsoft</owners>
+    <licenseUrl>http://go.microsoft.com/fwlink/?LinkId=316838&amp;clcid=0x404</licenseUrl>
+    <projectUrl>http://go.microsoft.com/fwlink/?LinkId=316837&amp;clcid=0x404</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>此套件包含 Entity Framework 的繁體中文附屬組件</description>
+    <summary>Entity Framework 套件的繁體中文資源</summary>
+    <language>zh-Hant</language>
+    <dependencies>
+      <dependency id="EntityFramework" version="[6.0.0]" />
+    </dependencies>
+  </metadata>
+</package>
