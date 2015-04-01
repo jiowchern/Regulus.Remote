@@ -38,9 +38,19 @@ namespace VGame.Project.FishHunter.WCF
             _Launcher.Shutdown();
         }
 
-        int IFormulaService.GetCoreFPS()
+        FormulaState IFormulaService.GetState()
         {
-            return _Server.CoreFPS;
+            return new FormulaState { 
+                CoreFps = _Server.CoreFPS ,
+                PeerCount = _Server.PeerCount , 
+                PeerFps = _Server.PeerFPS ,
+                TotalReadBytes = _Server.TotalReadBytes,
+                TotalWriteBytes = _Server.TotalWriteBytes,
+                ReadBytesPerSecond = _Server.ReadBytesPerSecond,
+                WriteBytesPerSecond = _Server.WriteBytesPerSecond,
+                WattToRead = _Server.WattToRead,
+                WattToWrite = _Server.WattToWrite
+            };
         }
     }
 }

@@ -31,5 +31,17 @@ namespace Regulus.Remoting.Soul.Native
             _ThreadCoreHandler.Stop();
             _ThreadSocketHandler.Stop();        
         }
+
+        public long TotalReadBytes { get { return (int)NetworkMonitor.Instance.Read.TotalBytes; } }
+
+        public long TotalWriteBytes {  get { return (int)NetworkMonitor.Instance.Write.TotalBytes; } }
+
+        public int ReadBytesPerSecond { get { return (int)NetworkMonitor.Instance.Read.SecondBytes; } }
+
+        public int WriteBytesPerSecond { get { return (int)NetworkMonitor.Instance.Write.SecondBytes; } }
+
+        public int WattToRead { get { return Peer.TotalRequest; } }
+
+        public int WattToWrite { get { return Peer.TotalResponse; } }
     }
 }

@@ -6,10 +6,14 @@ using System.Threading.Tasks;
 
 namespace Console
 {
+    
+
+    
     class Program
     {
         static void Main(string[] args)
         {
+            
             var view = new Regulus.Utility.ConsoleViewer();
             var input = new Regulus.Utility.ConsoleInput(view);
 
@@ -32,6 +36,8 @@ namespace Console
 
             updater.Shutdown();
         }
+
+        
 
         private static Regulus.Utility.ICore _LoadGame(string path)
         {

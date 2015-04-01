@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="bf5e54c4-e7c4-4201-9fd9-09525714194c" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:1390/FormulaService.svc" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="FormulaService.xsd" MetadataType="Schema" ID="2bf4f34e-d80b-400a-b3a2-f20face7f58d" SourceId="1" SourceUrl="http://localhost:1390/FormulaService.svc?xsd=xsd2" />
+    <MetadataFile FileName="FormulaService1.xsd" MetadataType="Schema" ID="1535f5b5-ebf9-4b68-9d18-708c7d619e02" SourceId="1" SourceUrl="http://localhost:1390/FormulaService.svc?xsd=xsd1" />
+    <MetadataFile FileName="FormulaService2.xsd" MetadataType="Schema" ID="2375d60d-2736-4d71-906a-98c47a87fc5f" SourceId="1" SourceUrl="http://localhost:1390/FormulaService.svc?xsd=xsd0" />
+    <MetadataFile FileName="FormulaService.wsdl" MetadataType="Wsdl" ID="af9372c6-4cd4-4249-b24c-a63b7ab6fc40" SourceId="1" SourceUrl="http://localhost:1390/FormulaService.svc?wsdl" />
+    <MetadataFile FileName="FormulaService.disco" MetadataType="Disco" ID="7f2efec3-c325-4b47-b7e3-db747f208f34" SourceId="1" SourceUrl="http://localhost:1390/FormulaService.svc?disco" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>
