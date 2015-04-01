@@ -5,6 +5,8 @@ using System.Text;
 
 namespace Regulus.Utility
 {
+
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class EnumDescriptionAttribute : System.Attribute
     {
         public string Message { get; private set; }

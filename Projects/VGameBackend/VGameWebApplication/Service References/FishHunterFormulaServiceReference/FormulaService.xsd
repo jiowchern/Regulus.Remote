@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/VGame.Project.FishHunter.WCF" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/VGame.Project.FishHunter.WCF" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="http://localhost:1390/FormulaService.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+  <xs:complexType name="FormulaState">
+    <xs:annotation>
+      <xs:appinfo>
+        <IsValueType xmlns="http://schemas.microsoft.com/2003/10/Serialization/">true</IsValueType>
+      </xs:appinfo>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="CoreFps" type="xs:int" />
+      <xs:element name="PeerCount" type="xs:int" />
+      <xs:element name="PeerFps" type="xs:int" />
+      <xs:element name="ReadBytesPerSecond" type="xs:int" />
+      <xs:element name="TotalReadBytes" type="xs:long" />
+      <xs:element name="TotalWriteBytes" type="xs:long" />
+      <xs:element name="WattToRead" type="xs:int" />
+      <xs:element name="WattToWrite" type="xs:int" />
+      <xs:element name="WriteBytesPerSecond" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="FormulaState" nillable="true" type="tns:FormulaState" />
+</xs:schema>
