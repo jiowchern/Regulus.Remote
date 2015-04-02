@@ -53,6 +53,7 @@ namespace VGame.Project.FishHunter.Stage
         void IFishStage.Hit(HitRequest request)
         {
             var response = _Formula.Request(request);
+            
             _HitResponseEvent(response);
         }
 
