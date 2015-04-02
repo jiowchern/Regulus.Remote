@@ -13,6 +13,9 @@ namespace VGameWebApplication
         {
             AreaRegistration.RegisterAllAreas();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+
+            var asm = System.Reflection.Assembly.Load("App_Code/AssemblyInfo.cs");
+            Application.Add("Assembly", asm);
         }
     }
 }

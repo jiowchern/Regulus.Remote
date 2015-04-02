@@ -1,9 +1,11 @@
-﻿<!DOCTYPE html>
+﻿
+
+<!DOCTYPE html>
 <html >
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - 全竤後端平台</title>
+    <title>@ViewBag.Title - VGame Backend</title>
     <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
     
@@ -32,15 +34,17 @@
             
         </div>
     </div>
-
     <div class="container body-content">
         @RenderBody()
+    </div>
+    <div >
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - 全竤科技</p>
+            <p >版號 @App["Assembly"].GetName().Version.ToString() </p>
+            <p >&copy; @DateTime.Now.Year - 全竤科技</p>
         </footer>
     </div>
 
-    
+
 </body>
 </html>
