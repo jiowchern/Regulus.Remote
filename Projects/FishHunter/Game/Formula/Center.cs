@@ -7,21 +7,30 @@ namespace VGame.Project.FishHunter.Formula
 {
     public class Center : Regulus.Utility.ICore
     {
+        
         Regulus.Utility.Updater _Update;
         Hall _Hall;
-
-        public Center()
+        private StorageController _Controller;
+        
+        private Center()
         {
+        
             _Hall = new Hall();
             _Update = new Regulus.Utility.Updater();
         }
-        void Regulus.Utility.ICore.ObtainController(Regulus.Remoting.ISoulBinder binder)
+
+        public Center(StorageController controller) : this()
         {
-            _Hall.PushUser(new User(binder));
+            // TODO: Complete member initialization
+            this._Controller = controller;
+        }
+        void Regulus.Utility.ICore.ObtainController(Regulus.Remoting.ISoulBinder binder)
+        {            
+            _Hall.PushUser(new User(binder, _Controller));
         }
 
         bool Regulus.Utility.IUpdatable.Update()
-        {
+        {         
             _Update.Update();
             return true;
         }
@@ -33,6 +42,7 @@ namespace VGame.Project.FishHunter.Formula
 
         void Regulus.Framework.ILaunched.Shutdown()
         {
+         
             _Update.Shutdown();
         }
     }

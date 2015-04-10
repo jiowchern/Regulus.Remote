@@ -7,15 +7,19 @@ namespace VGame.Project.FishHunter.Formula
 {
     class User : Regulus.Game.IUser
     {
-        IStorage _Storage;
+        
         Regulus.Utility.StageMachine _Machine;
         Regulus.Remoting.ISoulBinder _Binder;
         Data.Account _Account;
-        public User(Regulus.Remoting.ISoulBinder binder)
-        {
-            _Storage = new DummyStorage();
+        private User(Regulus.Remoting.ISoulBinder binder)
+        {            
             _Machine = new Regulus.Utility.StageMachine();
             _Binder = binder;
+        }
+
+        public User(Regulus.Remoting.ISoulBinder binder, StorageController _Controller) : this(binder)
+        {                        
+            this._Controller = _Controller;
         }
         void Regulus.Game.IUser.OnKick(Guid id)
         {
@@ -33,6 +37,8 @@ namespace VGame.Project.FishHunter.Formula
         }
 
         event Regulus.Game.OnQuit _QuitEvent;
+        private Regulus.Remoting.ISoulBinder binder;
+        private StorageController _Controller;
         event Regulus.Game.OnQuit Regulus.Game.IUser.QuitEvent
         {
             add { _QuitEvent += value; }
@@ -53,7 +59,7 @@ namespace VGame.Project.FishHunter.Formula
         private void _ToVerify()
         {
             _Account = null;
-            var verify = new VGame.Project.FishHunter.Verify(_Storage);
+            var verify = new VGame.Project.FishHunter.Verify(_Controller.AccountFinder);
             var stage = new VGame.Project.FishHunter.Stage.Verify(_Binder, verify);
             stage.DoneEvent += _VerifySuccess;
             _Machine.Push(stage);
@@ -61,7 +67,7 @@ namespace VGame.Project.FishHunter.Formula
 
         private void _VerifySuccess(Data.Account account)
         {
-            if(account.IsGameServer())
+            if(account.IsFormulaQueryer())
             {
                 _Account = account;
                 _VerifySuccessEvent(_Account.Id);

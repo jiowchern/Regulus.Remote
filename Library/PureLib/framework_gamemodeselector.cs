@@ -56,7 +56,6 @@ namespace Regulus.Framework
         {
             return (from provider in _Providers where provider.Name == name select provider.Factory).SingleOrDefault();
         }
-
         
     }
 }

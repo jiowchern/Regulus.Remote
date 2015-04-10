@@ -12,8 +12,8 @@ namespace VGame.Project.FishHunter
         public delegate void DoneCallback(Data.Account account);
         public event DoneCallback DoneEvent;
 
-        IStorage _Storage;
-        public Verify(IStorage storage)
+        IAccountFinder _Storage;
+        public Verify(IAccountFinder storage)
         {
             _Storage = storage;
         }

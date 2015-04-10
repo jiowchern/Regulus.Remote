@@ -19,7 +19,7 @@ namespace VGame.Project.FishHunter.WCF
 
         public FormulaService()
         {
-            _Formula = new Formula.Center();
+            _Formula = new Formula.Center( new Formula.StorageController());
             _Server = new Regulus.Remoting.Soul.Native.Server(_Formula, 38971);
             _Launcher = new Regulus.Utility.Launcher();
 

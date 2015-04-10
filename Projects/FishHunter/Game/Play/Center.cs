@@ -1,23 +1,25 @@
-﻿namespace VGame.Project.FishHunter
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace VGame.Project.FishHunter.Play
 {
-    public class DummyStandalong : Regulus.Utility.ICore
+    public class Center : Regulus.Utility.ICore
     {
-
-        VGame.Project.FishHunter.Center _Center;
-        VGame.Project.FishHunter.DummyStorage _Storage;
-
-        Regulus.Utility.ICore _Core { get { return _Center; } }
         Regulus.Utility.Updater _Updater;
-        public DummyStandalong()
+        Hall _Hall;
+        VGame.Project.FishHunter.IAccountFinder _Storage;
+        public Center(VGame.Project.FishHunter.IAccountFinder storage)
         {
-            _Storage = new DummyStorage();
+            _Storage = storage;
             _Updater = new Regulus.Utility.Updater();
-            _Center = new Center(_Storage);
+            _Hall = new Hall();
         }
-
         void Regulus.Utility.ICore.ObtainController(Regulus.Remoting.ISoulBinder binder)
         {
-            _Core.ObtainController(binder);
+            var user = new User(binder, _Storage);
+            _Hall.PushUser(user);
         }
 
         bool Regulus.Utility.IUpdatable.Update()
@@ -28,7 +30,7 @@
 
         void Regulus.Framework.ILaunched.Launch()
         {
-            _Updater.Add(_Center);
+            _Updater.Add(_Hall);
         }
 
         void Regulus.Framework.ILaunched.Shutdown()
@@ -36,5 +38,4 @@
             _Updater.Shutdown();
         }
     }
-
 }

@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VGame.Project.FishHunter
+namespace VGame.Project.FishHunter.Play
 {
     class User : Regulus.Game.IUser
     {
         Regulus.Utility.StageMachine _Machine;
         Regulus.Remoting.ISoulBinder _Binder;
-        VGame.Project.FishHunter.IStorage _Storage;
-        public User(Regulus.Remoting.ISoulBinder binder , VGame.Project.FishHunter.IStorage storage)
+        VGame.Project.FishHunter.IAccountFinder _Storage;
+        public User(Regulus.Remoting.ISoulBinder binder , VGame.Project.FishHunter.IAccountFinder storage)
         {
             _Storage = storage;
             _Binder = binder;

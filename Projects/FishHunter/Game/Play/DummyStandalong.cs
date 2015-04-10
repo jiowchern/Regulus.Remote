@@ -1,20 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VGame.Project.FishHunter.Play
+﻿namespace VGame.Project.FishHunter.Play
 {
-    class Complex : Regulus.Utility.ICore
+    public class DummyStandalong : Regulus.Utility.ICore
     {
 
-        DummyStorage _Storage;
         VGame.Project.FishHunter.Play.Center _Center;
+        VGame.Project.FishHunter.DummyStorage _Storage;
+
         Regulus.Utility.ICore _Core { get { return _Center; } }
-        public Complex()
+        Regulus.Utility.Updater _Updater;
+        public DummyStandalong()
         {
             _Storage = new DummyStorage();
+            _Updater = new Regulus.Utility.Updater();
             _Center = new Center(_Storage);
         }
 
@@ -25,18 +22,19 @@ namespace VGame.Project.FishHunter.Play
 
         bool Regulus.Utility.IUpdatable.Update()
         {
-            _Core.Update();
+            _Updater.Update();
             return true;
         }
 
         void Regulus.Framework.ILaunched.Launch()
         {
-            _Core.Launch();
+            _Updater.Add(_Center);
         }
 
         void Regulus.Framework.ILaunched.Shutdown()
         {
-            _Core.Shutdown();
+            _Updater.Shutdown();
         }
     }
+
 }

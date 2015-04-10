@@ -3,39 +3,38 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VGame.Project.FishHunter
+namespace VGame.Project.FishHunter.Storage
 {
     public class Center : Regulus.Utility.ICore
     {
-        Regulus.Utility.Updater _Updater;
+        Regulus.Utility.Updater _Update;
         Hall _Hall;
-        VGame.Project.FishHunter.IStorage _Storage;
-        public Center(VGame.Project.FishHunter.IStorage storage)
+        IStorage _Stroage;
+        public Center(IStorage storage)
         {
-            _Storage = storage;
-            _Updater = new Regulus.Utility.Updater();
+            _Stroage = storage;
             _Hall = new Hall();
+            _Update = new Regulus.Utility.Updater();
         }
         void Regulus.Utility.ICore.ObtainController(Regulus.Remoting.ISoulBinder binder)
         {
-            var user = new User(binder, _Storage);
-            _Hall.PushUser(user);
+            _Hall.PushUser(new User(binder, _Stroage));
         }
 
         bool Regulus.Utility.IUpdatable.Update()
         {
-            _Updater.Update();
+            _Update.Update();
             return true;
         }
 
         void Regulus.Framework.ILaunched.Launch()
         {
-            _Updater.Add(_Hall);
+            _Update.Add(_Hall);
         }
 
         void Regulus.Framework.ILaunched.Shutdown()
         {
-            _Updater.Shutdown();
+            _Update.Shutdown();
         }
     }
 }

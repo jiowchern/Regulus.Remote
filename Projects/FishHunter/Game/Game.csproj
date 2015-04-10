@@ -39,20 +39,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Center.cs" />
-    <Compile Include="DummyStorage.cs" />
+    <Compile Include="Formula\StorageController.cs" />
+    <Compile Include="Play\Center.cs" />
+    <Compile Include="Play\DummyStorage.cs" />
     <Compile Include="Formula\Center.cs" />
     <Compile Include="Formula\HitBase.cs" />
     <Compile Include="Formula\HitTest.cs" />
     <Compile Include="Formula\User.cs" />
-    <Compile Include="Hall.cs" />
+    <Compile Include="Play\Hall.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Stage\Formula.cs" />
     <Compile Include="Stage\QueryFishStage.cs" />
     <Compile Include="Stage\Verify.cs" />
-    <Compile Include="DummyStandalong.cs" />
+    <Compile Include="Play\DummyStandalong.cs" />
+    <Compile Include="Storage\Center.cs" />
+    <Compile Include="Storage\IUser.cs" />
+    <Compile Include="Stage\StroageAccess.cs" />
+    <Compile Include="Storage\User.cs" />
     <Compile Include="Verify.cs" />
-    <Compile Include="User.cs" />
+    <Compile Include="Play\User.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Library\PureLib\PureLib.csproj">

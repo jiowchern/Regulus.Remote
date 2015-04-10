@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{72E9207F-CD57-4789-AD21-30132E541FB6}</ProjectGuid>
+    <ProjectGuid>{C0F40A23-120C-4722-A9FE-1299A3F7AACF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VGame.Project.FishHunter</RootNamespace>
-    <AssemblyName>Common</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <RootNamespace>VGame.Project.FishHunter.Storage</RootNamespace>
+    <AssemblyName>StorageUser</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,7 +20,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\Common.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,36 +30,38 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="protobuf-net, Version=2.0.0.668, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Library\ThirdParty\Protobuf\protobuf-net.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Account.cs" />
-    <Compile Include="Define.cs" />
-    <Compile Include="IFishStage.cs" />
-    <Compile Include="IFishStageQueryer.cs" />
-    <Compile Include="IAccountFinder.cs" />
-    <Compile Include="IQuitable.cs" />
-    <Compile Include="IStorage.cs" />
-    <Compile Include="IVerify.cs" />
+    <Compile Include="Application.cs" />
+    <Compile Include="CommandParser.cs" />
+    <Compile Include="IUser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RemotingFactory.cs" />
+    <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Library\PureLib\PureLib.csproj">
       <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
       <Name>PureLib</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Library\RemotingNativeGhost\RemotingNativeGhost.csproj">
+      <Project>{6cb4cde6-4405-40e6-8bdf-5a2e9185cc04}</Project>
+      <Name>RemotingNativeGhost</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Library\Remoting\Remoting.csproj">
       <Project>{a4cfce46-bda8-4416-a1bb-77bd80514019}</Project>
       <Name>Remoting</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{72e9207f-cd57-4789-ad21-30132e541fb6}</Project>
+      <Name>Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

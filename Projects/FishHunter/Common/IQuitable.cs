@@ -5,8 +5,8 @@ using System.Text;
 
 namespace VGame.Project.FishHunter
 {
-    public interface IStorage : IAccountFinder
+    public interface IQuitable
     {
-
+        void Quit();
     }
 }
