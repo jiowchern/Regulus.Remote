@@ -23,8 +23,8 @@ namespace VGame.Project.FishHunter.Data
         };
         public Guid Id;
         public string Name;
-        public string Password;
 
+        public string Password;
         public COMPETENCE Competnce;
         
         public bool IsPassword(string password)

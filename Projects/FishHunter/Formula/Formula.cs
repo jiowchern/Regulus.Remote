@@ -9,7 +9,7 @@ namespace VGame.Project.FishHunter.Formula
     public class Server : Regulus.Utility.ICore
     {
         bool _Enable;
-        VGame.Project.FishHunter.Storage.Application _Storage;
+        VGame.Project.FishHunter.Storage.Proxy _Storage;
         Storage.IUser _StorageUser;
         Regulus.Utility.Updater _Updater;
         Regulus.Utility.StageMachine _Machine;
@@ -35,7 +35,7 @@ namespace VGame.Project.FishHunter.Formula
             _Password = config.Read("Storage", "password");
 
 
-            _Storage = new Storage.Application();
+            _Storage = new Storage.Proxy();
             _Machine = new Regulus.Utility.StageMachine();
             _Updater = new Regulus.Utility.Updater();
             _Binders = new Regulus.Collection.Queue<Regulus.Remoting.ISoulBinder>();
@@ -62,15 +62,15 @@ namespace VGame.Project.FishHunter.Formula
 
         void Regulus.Framework.ILaunched.Shutdown()
         {
-            _Storage.UserEvent -= _ToConnectStorage;
+                        
             _Updater.Shutdown();
             _Machine.Termination();
         }
 
         void Regulus.Framework.ILaunched.Launch()
-        {
-            _Storage.UserEvent += _ToConnectStorage;
+        {            
             _Updater.Add(_Storage);
+            _ToConnectStorage(_Storage.SpawnUser("user"));            
         }
 
         private void _ToConnectStorage(Storage.IUser user)

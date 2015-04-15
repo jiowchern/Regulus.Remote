@@ -19,9 +19,25 @@ namespace Regulus.Framework
         private Regulus.Utility.Console.IViewer _View;
 
         public delegate void OnGameConsole(UserProvider<TUser> console);
-        public event OnGameConsole GameConsoleEvent;
+
+        public event OnGameConsole GameConsoleEvent 
+        {
+            add 
+            {
+
+                _GameConsoleEvent += value;
+                if (_UserProvider != null)
+                    value(_UserProvider);
+            }
+            remove
+            {
+                _GameConsoleEvent -= value;
+            }
+        }
+        event OnGameConsole _GameConsoleEvent;
 
         Regulus.Utility.Command _Command;
+        private UserProvider<TUser> _UserProvider;
         public GameModeSelector(Regulus.Utility.Command command, Regulus.Utility.Console.IViewer view )
         {
             _Command = command;
@@ -37,6 +53,9 @@ namespace Regulus.Framework
         
         public UserProvider<TUser> CreateUserProvider(string name)
         {
+            if (_UserProvider != null)
+                throw new SystemException("has user proivder!");
+
             Regulus.Framework.IUserFactoty<TUser> factory = _Find(name);
             if (factory == null)
             {
@@ -46,10 +65,10 @@ namespace Regulus.Framework
             
             _View.WriteLine(string.Format("Create game console factory : {0}.", name));
 
-            var console = new UserProvider<TUser>(factory, _View, _Command);
-            if (GameConsoleEvent != null)
-                GameConsoleEvent(console);
-            return console;
+            _UserProvider = new UserProvider<TUser>(factory, _View, _Command);
+            if (_GameConsoleEvent != null)
+                _GameConsoleEvent(_UserProvider);
+            return _UserProvider;
         }
 
         private IUserFactoty<TUser> _Find(string name)

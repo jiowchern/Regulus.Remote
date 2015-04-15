@@ -5,8 +5,10 @@ using System.Text;
 
 namespace VGame.Project.FishHunter
 {
-    public interface IStorage : IAccountFinder, IAccountManager
+    public enum ACCOUNT_REQUEST_RESULT
     {
-
+        REPEAT,
+        OK,
+        NOTFOUND
     }
 }

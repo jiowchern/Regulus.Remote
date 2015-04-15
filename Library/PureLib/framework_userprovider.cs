@@ -32,6 +32,10 @@ namespace Regulus.Framework
             var user = Factory.SpawnUser();
             _Add(_Build(name, user));
             _View.WriteLine( string.Format("{0} user created." , name));
+
+            
+
+
             return user;
         }
 
@@ -43,7 +47,12 @@ namespace Regulus.Framework
 
         private Controller<TUser> _Build(string name, TUser user )
         {
-            return new Controller<TUser>(name, user);
+            var controller = new Controller<TUser>(name, user);
+            var parser = Factory.SpawnParser(_Command, _View, controller.User);
+            var builder = _CreateBuilder();
+            controller.Parser = parser;
+            controller.Builder = builder;
+            return controller;
         }
 
         public void Unspawn(string name)
@@ -92,15 +101,9 @@ namespace Regulus.Framework
                     _Current.Parser.Clear();       
                 }
                 
-                var parser = Factory.SpawnParser(_Command, _View, controller.User);
-                var builder = _CreateBuilder();
-
                 
-
-                controller.Parser = parser;
-                controller.Builder = builder;
-                controller.Parser.Setup(builder);
-                builder.Setup();
+                controller.Parser.Setup(controller.Builder);
+                controller.Builder.Setup();
                 
                 _Current = controller;
 

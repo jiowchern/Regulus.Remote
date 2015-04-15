@@ -27,7 +27,7 @@ namespace Regulus.Framework
             Enable = true;
             _Machine = new Regulus.Utility.StageMachine();
 
-            
+            Selector = new Regulus.Framework.GameModeSelector<TUser>(_Command, _View);
         }
 
         bool Regulus.Utility.IUpdatable.Update()
@@ -44,13 +44,13 @@ namespace Regulus.Framework
 
         private void _ToSelectMode()
         {
-            var selector = new Regulus.Framework.GameModeSelector<TUser>(_Command, _View);
-            var stage = new Stage.SelectMode<TUser>(selector, _Command);
+            
+            var stage = new Stage.SelectMode<TUser>(Selector, _Command);
             stage.DoneEvent += _ToOnBoard;
             stage.InitialedEvent += () =>
             {
                 if (ModeSelectorEvent != null)
-                    ModeSelectorEvent(selector);
+                    ModeSelectorEvent(Selector);
             };
             _Machine.Push(stage);
 
@@ -77,7 +77,9 @@ namespace Regulus.Framework
             _ToShutdown();
         }
 
-        
+
+
+        public GameModeSelector<TUser> Selector { get; private set; }
     }
 
 

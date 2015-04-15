@@ -20,8 +20,9 @@ namespace StorageIntegrateTest
             VGame.Project.FishHunter.Storage.Server server = new VGame.Project.FishHunter.Storage.Server();
             Regulus.Remoting.Soul.Native.Server serverAppliction = new Regulus.Remoting.Soul.Native.Server(server , 12345);
             
-            VGame.Project.FishHunter.Storage.Application client = new VGame.Project.FishHunter.Storage.Application();
-            client.UserEvent += client_UserEvent;
+            
+            VGame.Project.FishHunter.Storage.Proxy client = new VGame.Project.FishHunter.Storage.Proxy();
+            client_UserEvent(client.SpawnUser("user"));
 
             launcher.Push(serverAppliction);
             updater.Add(client);

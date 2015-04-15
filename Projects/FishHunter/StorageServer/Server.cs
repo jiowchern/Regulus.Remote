@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VGame.Project.FishHunter.Storage
 {
-    public class Server : Regulus.Utility.ICore , IStorage
+    public class Server : Regulus.Utility.ICore, IStorage 
     {
 
         Regulus.Utility.Updater _Updater;
@@ -73,12 +73,67 @@ namespace VGame.Project.FishHunter.Storage
 
         Regulus.Remoting.Value<Data.Account> IAccountFinder.FindAccount(string name)
         {
-            var account = (from a in _Database.Linq<Data.Account>() where a.Name == name select a).FirstOrDefault();
+            var account = _Find(name);
 
             if (account != null)
                 return account;
 
             return new Regulus.Remoting.Value<Data.Account>(null);
+        }
+
+        private Data.Account _Find(string name)
+        {
+            var account = (from a in _Database.Linq<Data.Account>() where a.Name == name select a).FirstOrDefault();
+            return account;
+        }
+
+        Regulus.Remoting.Value<ACCOUNT_REQUEST_RESULT> VGame.Project.FishHunter.IAccountManager.Create(Data.Account account)
+        {
+            var result = _Find(account.Name);
+            if(result != null)
+            {
+                return ACCOUNT_REQUEST_RESULT.REPEAT;
+            }
+            _Database.Add(account);
+            return ACCOUNT_REQUEST_RESULT.OK;
+        }
+
+        Regulus.Remoting.Value<ACCOUNT_REQUEST_RESULT> VGame.Project.FishHunter.IAccountManager.Delete(string account)
+        {
+            var result = _Find(account);
+            if(result != null)
+            {
+                _Database.Remove(result);
+                return ACCOUNT_REQUEST_RESULT.OK;
+            }
+
+            return ACCOUNT_REQUEST_RESULT.NOTFOUND;
+        }
+
+        Regulus.Remoting.Value<ACCOUNT_REQUEST_RESULT> IAccountManager.UpdatePassword(string account, string password)
+        {
+            var result = _Find(account);
+            if (result != null)
+            {
+                result.Password = password;
+                _Database.Update(result, a => a.Id == result.Id);
+                return ACCOUNT_REQUEST_RESULT.OK;
+            }
+
+            return ACCOUNT_REQUEST_RESULT.NOTFOUND;
+        }
+
+        Regulus.Remoting.Value<ACCOUNT_REQUEST_RESULT> IAccountManager.UpdateCompetence(string account, Data.Account.COMPETENCE competence)
+        {
+            var result = _Find(account);
+            if (result != null)
+            {
+                result.Competnce = competence;
+                _Database.Update(result, a => a.Id == result.Id);
+                return ACCOUNT_REQUEST_RESULT.OK;
+            }
+
+            return ACCOUNT_REQUEST_RESULT.NOTFOUND;
         }
     }
 }
