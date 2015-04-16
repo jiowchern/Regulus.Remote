@@ -46,6 +46,8 @@ namespace VGameWebApplication.Controllers
 
 
         
+
+        
         
         [AcceptVerbs(HttpVerbs.Post)]
         public async System.Threading.Tasks.Task<ActionResult> Verify(string user, string password)
@@ -68,6 +70,14 @@ namespace VGameWebApplication.Controllers
             }
 
             return RedirectToAction("Verify");
+        }
+
+        [Authorize]
+        public ActionResult Functions()
+        {
+            var id = (Guid)HttpContext.Items["StorageId"];
+            var model = new VGameWebApplication.Models.StorageApi(id);
+            return PartialView(model);            
         }
 
 	}

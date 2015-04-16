@@ -12,7 +12,7 @@ namespace VGameWebApplication.Storage
             public string Account;
             public VGame.Project.FishHunter.Storage.IUser User;
             VGame.Project.FishHunter.Storage.Proxy _Proxy;
-
+            bool _Break;
             public Key(Guid id, VGame.Project.FishHunter.Storage.Proxy proxy, string account)
             {
                 _Proxy = proxy;
@@ -20,6 +20,13 @@ namespace VGameWebApplication.Storage
                 this.User = _Proxy.SpawnUser(id.ToString());
                 this.Account = account;
                 _TimeCounter = new Regulus.Utility.TimeCounter();
+
+                User.Remoting.OnlineProvider.Unsupply += OnlineProvider_Unsupply;
+            }
+
+            void OnlineProvider_Unsupply(Regulus.Utility.IOnline obj)
+            {
+                _Break = true;
             }
 
 
@@ -27,7 +34,7 @@ namespace VGameWebApplication.Storage
             Regulus.Utility.TimeCounter _TimeCounter;
             internal bool IsTimeUp()
             {
-                return _TimeCounter.Second > 300;                
+                return _Break == false && _TimeCounter.Second > 300;                
             }
 
             internal void ResetTimeUp()
@@ -62,7 +69,8 @@ namespace VGameWebApplication.Storage
         internal Guid Build(string account)
         {
             var id = Guid.NewGuid();            
-            _Users.Add(new Key(id , _Client , account));
+            lock(_Users)
+                _Users.Add(new Key(id , _Client , account));
             return id;
         }
 
@@ -72,13 +80,17 @@ namespace VGameWebApplication.Storage
         {
 
             List<Key> timeUps = new List<Key>();
-            foreach(var user in _Users)
+            lock (_Users)
             {
-                if(user.IsTimeUp())
+                foreach (var user in _Users)
                 {
-                    timeUps.Add(user);
+                    if (user.IsTimeUp())
+                    {
+                        timeUps.Add(user);
+                    }
                 }
             }
+            
 
             foreach(var timeup in timeUps)
             {
@@ -89,7 +101,9 @@ namespace VGameWebApplication.Storage
         private void _Remove(Key timeup)
         {
             timeup.Release();
-            _Users.Remove(timeup);
+
+            lock (_Users)
+                _Users.Remove(timeup);
         }
 
         internal VGame.Project.FishHunter.Storage.IUser Find(Guid id)
@@ -97,6 +111,14 @@ namespace VGameWebApplication.Storage
             var user = _Users.Find(u => u.Id == id);
             if (user != null)
                 return user.User;
+            return null;
+        }
+
+        internal string FindAccount(Guid id)
+        {
+            var user = _Users.Find(u => u.Id == id);
+            if (user != null)
+                return user.Account;
             return null;
         }
 

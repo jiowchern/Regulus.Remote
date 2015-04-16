@@ -81,5 +81,26 @@ namespace VGame.Project.FishHunter.Storage
         {
             _Keys.Remove(id);
         }
+
+        internal T FindApi<T>(Guid id)
+        {
+            var key = _Keys.Find(id);   
+            if(key  != null)
+            {
+                var ghosts = key.QueryProvider<T>().Ghosts;
+                if (ghosts.Length == 1)
+                {
+                    return ghosts[0];
+                }
+                else if (ghosts.Length > 1)
+                    throw new SystemException("api only one");
+            }
+            return default(T);
+        }
+
+        internal string GetAccount(Guid id)
+        {
+            return _Keys.FindAccount(id);               
+        }
     }
 }

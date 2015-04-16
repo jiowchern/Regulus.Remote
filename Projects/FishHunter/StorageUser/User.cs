@@ -46,5 +46,11 @@ namespace VGame.Project.FishHunter.Storage
         {
             _Updater.Shutdown();
         }
+
+
+        Regulus.Remoting.Ghost.IProviderNotice<T> IUser.QueryProvider<T>()
+        {
+            return _Agent.QueryProvider<T>();
+        }
     }
 }

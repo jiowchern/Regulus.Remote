@@ -1,0 +1,33 @@
+﻿
+@{
+    ViewBag.Title = "Add";
+}
+
+<h2>Add</h2>
+
+
+<div>
+
+    @{
+        using (Html.BeginForm("AddHandle", "Account", FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return validateForm(this)" }))
+        {
+            <div class="form-group">
+                @Html.Label("帳號")
+                @Html.TextBox("account")
+            </div>
+            
+            <div class="form-group">
+                @Html.Label("密碼")
+                @Html.TextBox("password1")
+            </div>
+
+            <div class="form-group">
+                @Html.Label("確認密碼")
+                @Html.TextBox("password2")
+            </div>
+
+            <input type="submit" value="確認" class="btn btn-default" />
+        }
+    }
+</div>
+

@@ -86,6 +86,11 @@ namespace VGame.Project.FishHunter.Storage
             var account = (from a in _Database.Linq<Data.Account>() where a.Name == name select a).FirstOrDefault();
             return account;
         }
+        private Data.Account _Find(Guid id)
+        {
+            var account = (from a in _Database.Linq<Data.Account>() where a.Id == id select a).FirstOrDefault();
+            return account;
+        }
 
         Regulus.Remoting.Value<ACCOUNT_REQUEST_RESULT> VGame.Project.FishHunter.IAccountManager.Create(Data.Account account)
         {
@@ -134,6 +139,11 @@ namespace VGame.Project.FishHunter.Storage
             }
 
             return ACCOUNT_REQUEST_RESULT.NOTFOUND;
+        }
+
+        Regulus.Remoting.Value<Data.Account[]> IAccountManager.QueryAllAccount()
+        {
+            return (from a in _Database.Linq<Data.Account>() select a).ToArray();
         }
     }
 }

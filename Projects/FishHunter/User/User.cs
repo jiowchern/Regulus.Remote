@@ -46,5 +46,8 @@ namespace VGame.Project.FishHunter
         {
             get { return _Agent.QueryProvider<IVerify>(); }
         }
+
+
+        
     }
 }

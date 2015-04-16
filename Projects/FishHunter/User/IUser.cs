@@ -10,5 +10,9 @@ namespace VGame.Project.FishHunter
         Regulus.Remoting.User Remoting { get; }
 
         Regulus.Remoting.Ghost.IProviderNotice<VGame.Project.FishHunter.IVerify> VerifyProvider { get; }
+
+
+
+        
     }
 }

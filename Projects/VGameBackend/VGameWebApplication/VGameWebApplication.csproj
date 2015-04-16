@@ -155,7 +155,9 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
@@ -164,6 +166,8 @@
     <Content Include="Views\Server\ServerState.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Models\StorageApi.cs" />
     <Compile Include="Storage\Handler\ConnectHandler.cs" />
     <Compile Include="Storage\KeyPool.cs" />
     <Compile Include="Storage\Handler\Verify.cs" />
@@ -200,6 +204,10 @@
     <Content Include="Service References\FishHunterFormulaServiceReference\VGameWebApplication.FishHunterFormulaServiceReference.FormulaState.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Content>
+    <Content Include="Views\Home\Functions.cshtml" />
+    <Content Include="Views\Account\Index.cshtml" />
+    <Content Include="Views\Account\Password.cshtml" />
+    <Content Include="Views\Account\Add.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -209,7 +217,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
