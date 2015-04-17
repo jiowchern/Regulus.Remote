@@ -14,21 +14,7 @@ namespace VGameWebApplication.Controllers
         private VGame.Project.FishHunter.Data.Account[] _Accounts;
 
 
-        public ActionResult ModifyPassword(string password1)
-        {
-            var id = (Guid)HttpContext.Items["StorageId"];
-            var model = new VGameWebApplication.Models.StorageApi(id);
-            model.AccountManager.UpdatePassword(model.Account, password1);
-            return RedirectToAction("Index");
-        }
-        public ActionResult Password(string account)
-        {
-            Guid id;
-            if(Guid.TryParse(account , out id))
-                return View(id);
-            return RedirectToAction("Index");
-            
-        }
+        
         //
         // GET: /Account/
         public void IndexAsync()
@@ -54,5 +40,37 @@ namespace VGameWebApplication.Controllers
         {
             return View();
         }
+
+        public async System.Threading.Tasks.Task<ActionResult> Edit(string account)
+        {
+            Guid accountId;
+            if(Guid.TryParse(account , out accountId) == false)
+                return RedirectToAction("Index");
+
+            AsyncManager.OutstandingOperations.Increment();
+            var id = (Guid)HttpContext.Items["StorageId"];
+            var model = new VGameWebApplication.Models.StorageApi(id);
+
+            var handler = new VGameWebApplication.Storage.Handler.FindAccount(model.AccountFinder, accountId);
+            var result = await handler.Handle();
+            if (result.Id != Guid.Empty)
+            {
+                return View(result);
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        
+        public ActionResult EditCompleted()
+        {            
+            return View();
+        }
+
+        public ActionResult Modify(VGame.Project.FishHunter.Data.Account account)
+        {
+            return RedirectToAction("Index");
+        }
+        
 	}
 }

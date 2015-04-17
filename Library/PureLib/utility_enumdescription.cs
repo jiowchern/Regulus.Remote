@@ -44,6 +44,10 @@ namespace Regulus.Extension
 
     public static class EnumHelper
     {
+        public static IEnumerable<Enum> GetFlags<T>()
+        {
+            return Enum.GetValues(typeof(T)).Cast<Enum>();
+        }
         public static IEnumerable<Enum> GetFlags(this Enum enum_instance) 
         {
             var ienum = Convert.ToUInt64(enum_instance);

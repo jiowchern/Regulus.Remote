@@ -14,7 +14,7 @@ namespace VGame.Project.FishHunter.UnitTest
             string id = "12345678";
             string pw = "0000";
             var stroage = NSubstitute.Substitute.For<VGame.Project.FishHunter.IAccountFinder>();
-            stroage.FindAccount(id).Returns(new Regulus.Remoting.Value<VGame.Project.FishHunter.Data.Account>(new VGame.Project.FishHunter.Data.Account { Name = id, Password = pw }));
+            stroage.FindAccountByName(id).Returns(new Regulus.Remoting.Value<VGame.Project.FishHunter.Data.Account>(new VGame.Project.FishHunter.Data.Account { Name = id, Password = pw }));
 
             bool returnValue = false;
             bool eventValue = false;
@@ -38,7 +38,7 @@ namespace VGame.Project.FishHunter.UnitTest
             string id = "12345678";
             string pw = "0000";
             var stroage = NSubstitute.Substitute.For<VGame.Project.FishHunter.IAccountFinder>();
-            stroage.FindAccount(id).Returns(new Regulus.Remoting.Value<VGame.Project.FishHunter.Data.Account>(new VGame.Project.FishHunter.Data.Account { Name = id, Password = pw }));
+            stroage.FindAccountByName(id).Returns(new Regulus.Remoting.Value<VGame.Project.FishHunter.Data.Account>(new VGame.Project.FishHunter.Data.Account { Name = id, Password = pw }));
 
             bool returnValue = false;
             bool eventValue = false;

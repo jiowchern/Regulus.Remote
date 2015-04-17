@@ -1,0 +1,25 @@
+﻿@model VGame.Project.FishHunter.Data.Account
+@using MvcCheckBoxList.Model;
+@using Regulus.Extension;
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Edit</h2>
+
+
+@using (Html.BeginForm("Modify" , "Account"))
+{
+    <table>
+        <tr><td>ID</td><td>@Html.LabelFor(m=>m.Id)</td></tr>
+        <tr><td>帳號</td><td>@Html.EditorFor( m => m.Name )</td></tr>
+        <tr><td>密碼</td><td>@Html.EditorFor(m => m.Password)</td></tr>
+        
+        
+    </table>
+    
+    <input type="submit" value="更新" class="btn btn-default" />
+}
+
+
+

@@ -49,6 +49,7 @@ namespace PureLibTest
 
 
         }
+
         [TestMethod]
         public void TestAllFlagEnumDescription()
         {
@@ -82,7 +83,42 @@ namespace PureLibTest
             Assert.AreEqual("ENUM3", descs[1]);
         }
 
+        [TestMethod]
+        public void TestEnumFlags()
+        {
+            List<TESTFLAG> flags = new List<TESTFLAG>();
 
+            foreach (TESTFLAG f in EnumHelper.GetFlags<TESTFLAG>())
+            {
+                flags.Add(f);
+            }
+            Assert.AreEqual(TESTFLAG.ENUM1, flags[0]);
+            Assert.AreEqual(TESTFLAG.ENUM2, flags[1]);
+            Assert.AreEqual(TESTFLAG.ENUM3, flags[2]);
+            Assert.AreEqual(TESTFLAG.ALL, flags[3]);
+
+        }
+
+        [TestMethod]
+        public void TestCompareEnumFlags()
+        {
+            TESTFLAG flag = TESTFLAG.ENUM2 | TESTFLAG.ENUM3;
+            TESTFLAG flagAll = TESTFLAG.ALL;
+            List<TESTFLAG> flags = new List<TESTFLAG>();
+
+            foreach (TESTFLAG f in EnumHelper.GetFlags<TESTFLAG>())
+            {
+                flags.Add(f);
+            }
+            
+
+            Assert.AreEqual(false, flag.HasFlag(flags[0]));
+            Assert.AreEqual(true, flag.HasFlag(flags[1]));
+            Assert.AreEqual(true, flag.HasFlag(flags[2]));
+            Assert.AreEqual(true, flagAll.HasFlag(flags[3]));
+            
+
+        }        
         
     }
 }

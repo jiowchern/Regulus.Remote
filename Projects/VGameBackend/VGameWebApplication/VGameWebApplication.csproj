@@ -169,6 +169,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Models\StorageApi.cs" />
     <Compile Include="Storage\Handler\ConnectHandler.cs" />
+    <Compile Include="Storage\Handler\FindAccount.cs" />
     <Compile Include="Storage\KeyPool.cs" />
     <Compile Include="Storage\Handler\Verify.cs" />
     <Compile Include="Storage\WaitSomething.cs" />
@@ -208,6 +209,7 @@
     <Content Include="Views\Account\Index.cshtml" />
     <Content Include="Views\Account\Password.cshtml" />
     <Content Include="Views\Account\Add.cshtml" />
+    <Content Include="Views\Account\Edit.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -217,6 +219,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Extensions\" />
+    <Folder Include="ModelBinder\" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

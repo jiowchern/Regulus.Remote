@@ -5,7 +5,7 @@ using System.Text;
 
 namespace VGameWebApplication.Storage
 {
-    abstract class WaitSomething<T>
+    public abstract class WaitSomething<T>
     {
         private bool _Enable;
 

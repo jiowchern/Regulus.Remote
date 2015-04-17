@@ -1,5 +1,5 @@
 ﻿@model VGame.Project.FishHunter.Data.Account[]
-@using Regulus.Extension;
+
 <div>
     <p>@Html.ActionLink("新增", "Add", "Account")</p>
     <table>        
@@ -7,10 +7,10 @@
         {
             <tr>
                 <td>@acc.Name</td>                
-                <td>@Html.ActionLink("密碼", "Password", "Account", new  { account = acc.Id.ToString() }, null)</td>
-                <td>@Html.ActionLink("權限", "Competnce", "Account", new  { account = acc.Id.ToString() }, null)</td>
-                <td>@Html.ActionLink("算法", "Formula", "Account", new  { account = acc.Id.ToString() }, null)</td>
+                <td>@Html.ActionLink("編輯", "Edit", "Account", new { account = acc.Id.ToString() }, null)</td>                
                 <td>@Html.ActionLink("刪除", "Delete", "Account", new  { account = acc.Id.ToString() }, null)</td>
+                
+
             </tr>
         }
     </table>

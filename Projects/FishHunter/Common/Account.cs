@@ -29,14 +29,14 @@ namespace VGame.Project.FishHunter.Data
         };
 
         [ProtoBuf.ProtoMember(1)]
-        public Guid Id;
+        public Guid Id { get; set; }
         [ProtoBuf.ProtoMember(2)]
-        public string Name;
+        public string Name { get; set; }
 
         [ProtoBuf.ProtoMember(3)]
-        public string Password;
+        public string Password { get; set; }
         [ProtoBuf.ProtoMember(4)]
-        public COMPETENCE Competnce;
+        public COMPETENCE Competnce { get; set; }
         
         public bool IsPassword(string password)
         {

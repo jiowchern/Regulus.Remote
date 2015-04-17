@@ -11,7 +11,6 @@ namespace VGame.Project.FishHunter
 
         Regulus.Remoting.Value<ACCOUNT_REQUEST_RESULT> Create(Data.Account account);
         Regulus.Remoting.Value<ACCOUNT_REQUEST_RESULT> Delete(string account);
-        Regulus.Remoting.Value<ACCOUNT_REQUEST_RESULT> UpdatePassword(string account, string password);
-        Regulus.Remoting.Value<ACCOUNT_REQUEST_RESULT> UpdateCompetence(string account, VGame.Project.FishHunter.Data.Account.COMPETENCE Competence);
+        Regulus.Remoting.Value<ACCOUNT_REQUEST_RESULT> Update(Data.Account account);        
     }
 }

@@ -7,9 +7,15 @@ namespace VGame.Project.FishHunter
 {
     public class DummyStorage : IAccountFinder
     {
-        Regulus.Remoting.Value<Data.Account> IAccountFinder.FindAccount(string id)
+        Regulus.Remoting.Value<Data.Account> IAccountFinder.FindAccountByName(string id)
         {
-            return new Data.Account { Id = Guid.NewGuid(), Password = "pw", Name = "name" , Competnce = Data.Account.COMPETENCE.ALL };
+            return new Data.Account { Id = Guid.NewGuid(), Password = "pw", Name = id, Competnce = Data.Account.COMPETENCE.ALL };
+        }
+
+
+        Regulus.Remoting.Value<Data.Account> IAccountFinder.FindAccountById(Guid accountId)
+        {
+            return new Data.Account { Id = accountId, Password = "pw", Name = "name", Competnce = Data.Account.COMPETENCE.ALL };
         }
     }
 }
