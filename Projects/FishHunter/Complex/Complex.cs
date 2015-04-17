@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace VGame.Project.FishHunter.Play
 {
+
+
+
     class Complex : Regulus.Utility.ICore
     {
 
@@ -14,6 +18,7 @@ namespace VGame.Project.FishHunter.Play
         Regulus.Utility.ICore _Core { get { return _Center; } }
         public Complex()
         {
+            
             _Storage = new DummyStorage();
             _Center = new Center(_Storage);
         }

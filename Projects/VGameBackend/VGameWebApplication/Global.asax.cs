@@ -17,6 +17,10 @@ namespace VGameWebApplication
 
             var asm = System.Reflection.Assembly.Load("App_Code/AssemblyInfo.cs");
             Application.Add("Assembly", asm);
+
+            Application.Add("BuildDateTime", new System.IO.FileInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).LastWriteTime.ToShortDateString());
+
+            
         }
 
         protected void Application_PostAuthenticateRequest(Object sender, EventArgs e)
