@@ -26,7 +26,7 @@ namespace Console
 
             var updater = new Regulus.Utility.Updater();
             updater.Add(client);
-            updater.Add(core);
+            //updater.Add(core);
             
             while (client.Enable)
             {

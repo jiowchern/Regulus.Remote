@@ -12,13 +12,23 @@ namespace VGame.Project.FishHunter
         public event DoneCallback DoneEvent;
         StorageController _Controller;
         Storage.IUser _User;
+
+        IAccountFinder _Finder;
         public BuildStorageControllerStage(Storage.IUser user)
         {
             _User = user;
         }
         void Regulus.Utility.IStage.Enter()
         {
-            
+            _User.QueryProvider<IAccountFinder>().Supply += _GetFinder;
+        }
+
+        private void _GetFinder(IAccountFinder obj)
+        {
+            _Finder = obj;
+
+            _Controller = new StorageController(_Finder);
+            DoneEvent(_Controller);
         }
 
         void Regulus.Utility.IStage.Leave()

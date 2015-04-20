@@ -46,6 +46,7 @@ namespace VGame.Project.FishHunter.Storage
 
 
             _HandleAdministrator();
+            _HandleGuest();
         }
 
         private void _HandleAdministrator()
@@ -57,8 +58,25 @@ namespace VGame.Project.FishHunter.Storage
                 {
                     Id = Guid.NewGuid(),
                     Name = _DefaultAdministratorName,
-                    Password = "",
+                    Password = "vgame",
                     Competnce = Data.Account.COMPETENCE.ALL
+                };
+
+                _Database.Add(account);
+            }
+        }
+
+        private void _HandleGuest()
+        {
+            var account = (from a in _Database.Linq<Data.Account>() where a.Name == "Guest" select a).FirstOrDefault();
+            if (account == null)
+            {
+                account = new Data.Account()
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Guest",
+                    Password = "guest",
+                    Competnce = Data.Account.COMPETENCE.FORMULA_QUERYER
                 };
 
                 _Database.Add(account);
