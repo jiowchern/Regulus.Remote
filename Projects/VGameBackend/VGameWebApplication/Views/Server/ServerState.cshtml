@@ -1,6 +1,6 @@
-﻿@model VGameWebApplication.FishHunterFormulaServiceReference.FormulaServiceClient
+﻿@model object
 
-    @if (Model != null)
+@if (Model != null)
 {
     var state = Model.GetState();
     <table class="table table-striped">
@@ -19,6 +19,3 @@
         <tr><td>總共寫入</td><td>@state.TotalWriteBytes Bytes</td><td></td></tr>
     </table>
 }    
-
-           
-

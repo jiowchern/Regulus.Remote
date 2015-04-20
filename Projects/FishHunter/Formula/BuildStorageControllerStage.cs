@@ -33,7 +33,7 @@ namespace VGame.Project.FishHunter
 
         void Regulus.Utility.IStage.Leave()
         {
-            
+            _User.QueryProvider<IAccountFinder>().Supply -= _GetFinder;
         }
 
         void Regulus.Utility.IStage.Update()

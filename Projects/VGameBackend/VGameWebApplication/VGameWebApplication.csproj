@@ -148,13 +148,6 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\npm.js" />
-    <None Include="Service References\FishHunterFormulaServiceReference\FormulaService.disco" />
-    <None Include="Service References\FishHunterFormulaServiceReference\configuration91.svcinfo" />
-    <None Include="Service References\FishHunterFormulaServiceReference\configuration.svcinfo" />
-    <None Include="Service References\FishHunterFormulaServiceReference\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -182,29 +175,11 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Service References\FishHunterFormulaServiceReference\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Compile>
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
     <Content Include="packages.config" />
-    <None Include="Service References\FishHunterFormulaServiceReference\FormulaService.wsdl" />
-    <None Include="Service References\FishHunterFormulaServiceReference\FormulaService.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\FishHunterFormulaServiceReference\FormulaService1.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\FishHunterFormulaServiceReference\FormulaService2.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <Content Include="Service References\FishHunterFormulaServiceReference\VGameWebApplication.FishHunterFormulaServiceReference.FormulaState.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Content>
     <Content Include="Views\Home\Functions.cshtml" />
     <Content Include="Views\Account\Index.cshtml" />
     <Content Include="Views\Account\Password.cshtml" />
@@ -224,9 +199,6 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadataStorage Include="Service References\FishHunterFormulaServiceReference\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Library\PureLib\PureLib.csproj">

@@ -17,7 +17,7 @@ namespace VGame.Project.FishHunter
         private Regulus.Collection.Queue<Regulus.Remoting.ISoulBinder> _Binders;
         
 
-        public RunFormulaStage(Formula.StorageController controller)
+        private RunFormulaStage(Formula.StorageController controller)
         {
             _Updater = new Regulus.Utility.Updater();
             _Center = new Formula.Center(controller);

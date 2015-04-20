@@ -34,7 +34,9 @@ namespace Regulus.Serializer
 
         
         public static object DeserializeObject(Type type , byte[] b  )
-        {            
+        {
+
+            
             using (System.IO.MemoryStream stream = new System.IO.MemoryStream(b))
             {
                 return ProtoBuf.Serializer.NonGeneric.Deserialize(type, stream);
