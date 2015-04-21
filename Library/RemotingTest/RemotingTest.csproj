@@ -57,6 +57,7 @@
     <Compile Include="EmptyInputView.cs" />
     <Compile Include="ITestReturn.cs" />
     <Compile Include="IUser.cs" />
+    <Compile Include="RemotingProvider.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="StandalongProvider.cs" />
     <Compile Include="UnitTest1.cs" />

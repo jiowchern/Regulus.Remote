@@ -12,7 +12,7 @@ namespace RemotingTest
 
         private Regulus.Remoting.IAgent _Agent;
 
-        public User(Regulus.Standalong.Agent agent)
+        public User(Regulus.Remoting.IAgent agent)
         {
             this._Agent = agent;
             _Updater = new Regulus.Utility.Updater();

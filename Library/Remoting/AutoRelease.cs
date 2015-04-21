@@ -40,6 +40,8 @@ namespace Regulus.Remoting
             {
                 var args = new Dictionary<byte, byte[]>();
                 args[0] = id.ToByteArray();
+
+                _Exists.Remove(id);
                 _Requester.Request((int)ClientToServerOpCode.Release, args);
             }
         }
