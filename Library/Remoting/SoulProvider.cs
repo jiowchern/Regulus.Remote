@@ -114,20 +114,53 @@ namespace Regulus.Remoting.Soul
             _WaitValues.Add(returnId, returnValue);
             returnValue.QueryValue(new Action<object>((obj) =>
             {
-                var argmants = new Dictionary<byte, byte[]>();
-                argmants.Add(0, returnId.ToByteArray());
-                object value = returnValue.GetObject();
-                argmants.Add(1, Serializer.TypeHelper.Serializer(value));
-                _Queue.Push((byte)ServerToClientOpCode.ReturnValue, argmants);
+                if(returnValue.IsInterface() == false)
+                {
+                    _ReturnDataValue(returnId, returnValue);
+                }
+                else
+                {
+                    _ReturnSoulValue(returnId, returnValue);
+                }
+                
 
                 _WaitValues.Remove(returnId);
             }));            
         }
-        private void _LoadSoulCompile(string type_name, Guid id)
+
+        private void _ReturnSoulValue(Guid return_id, IValue returnValue)
+        {
+            object soul = returnValue.GetObject();
+            var type = returnValue.GetObjectType();
+            var prevSoul = (from soulInfo in _Souls.UpdateSet() where Object.ReferenceEquals(soulInfo.ObjectInstance, soul) && soulInfo.ObjectType == type select soulInfo).SingleOrDefault();
+
+            if (prevSoul == null)
+            {
+                Soul new_soul = _NewSoul(soul, type);
+
+
+                _LoadSoul(type.FullName, new_soul.ID, true);
+                new_soul.ProcessDiffentValues(_UpdateProperty);
+                _LoadSoulCompile(type.FullName, new_soul.ID, return_id);
+
+            }
+        }
+
+        private void _ReturnDataValue(Guid returnId, IValue returnValue)
+        {
+            var argmants = new Dictionary<byte, byte[]>();
+            argmants.Add(0, returnId.ToByteArray());
+            object value = returnValue.GetObject();
+            argmants.Add(1, Serializer.TypeHelper.Serializer(value));
+            _Queue.Push((byte)ServerToClientOpCode.ReturnValue, argmants);
+        }
+        private void _LoadSoulCompile(string type_name, Guid id , Guid return_id)
         {
             var argmants = new Dictionary<byte, byte[]>();
             argmants.Add(0, Regulus.Serializer.TypeHelper.Serializer(type_name));
             argmants.Add(1, id.ToByteArray());
+            argmants.Add(2, return_id.ToByteArray());
+            
             _Queue.Push((byte)ServerToClientOpCode.LoadSoulCompile, argmants);
         }
         
@@ -182,49 +215,56 @@ namespace Regulus.Remoting.Soul
 			
 		}
 		
-		private void _Bind<TSoul>(TSoul soul, bool return_type)
+		private void _Bind<TSoul>(TSoul soul, bool return_type , Guid return_id)
 		{
+            var type = typeof(TSoul);
             var prevSoul = (from soulInfo in _Souls.UpdateSet() where Object.ReferenceEquals(soulInfo.ObjectInstance, soul) && soulInfo.ObjectType == typeof(TSoul) select soulInfo).SingleOrDefault();
-            
             
             if (prevSoul == null)
             {
-                var new_soul = new Soul() { ID = Guid.NewGuid(), ObjectType = typeof(TSoul), ObjectInstance = soul, MethodInfos = typeof(TSoul).GetMethods() };
+                Soul new_soul = _NewSoul(soul, typeof(TSoul));
 
-                Type soulType = typeof(TSoul);
-
-
-                // event				
-                var eventInfos = soulType.GetEvents();
-                new_soul.EventHandlers = new List<Soul.EventHandler>();
-                foreach (var eventInfo in eventInfos)
-                {
-                    var genericArguments = eventInfo.EventHandlerType.GetGenericArguments();
-                    Delegate handler = _BuildDelegate(genericArguments, new_soul.ID, eventInfo.Name);
-                    Soul.EventHandler eh = new Soul.EventHandler();
-                    eh.EventInfo = eventInfo;
-                    eh.DelegateObject = handler;
-                    new_soul.EventHandlers.Add(eh);
-                    eventInfo.AddEventHandler(soul, handler);
-                }
-
-                // property 
-                var propertys = soulType.GetProperties(System.Reflection.BindingFlags.GetProperty | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-                new_soul.PropertyHandlers = new Soul.PropertyHandler[propertys.Length];
-                for (int i = 0; i < propertys.Length; ++i)
-                {
-                    new_soul.PropertyHandlers[i] = new Soul.PropertyHandler();
-                    new_soul.PropertyHandlers[i].PropertyInfo = propertys[i];
-                }
-                _Souls.Add(new_soul);
-                _LoadSoul(soulType.FullName, new_soul.ID , return_type);
+                _LoadSoul(type.FullName, new_soul.ID, return_type);
                 new_soul.ProcessDiffentValues(_UpdateProperty);
-                _LoadSoulCompile(soulType.FullName, new_soul.ID);
+                _LoadSoulCompile(type.FullName, new_soul.ID, return_id);
 
             }
 
             
 		}
+
+        private Soul _NewSoul(object soul, Type soulType)
+        {
+
+
+            var new_soul = new Soul() { ID = Guid.NewGuid(), ObjectType = soulType, ObjectInstance = soul, MethodInfos = soulType.GetMethods() };
+
+            // event				
+            var eventInfos = soulType.GetEvents();
+            new_soul.EventHandlers = new List<Soul.EventHandler>();
+            foreach (var eventInfo in eventInfos)
+            {
+                var genericArguments = eventInfo.EventHandlerType.GetGenericArguments();
+                Delegate handler = _BuildDelegate(genericArguments, new_soul.ID, eventInfo.Name);
+                Soul.EventHandler eh = new Soul.EventHandler();
+                eh.EventInfo = eventInfo;
+                eh.DelegateObject = handler;
+                new_soul.EventHandlers.Add(eh);
+                eventInfo.AddEventHandler(soul, handler);
+            }
+
+            // property 
+            var propertys = soulType.GetProperties(System.Reflection.BindingFlags.GetProperty | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+            new_soul.PropertyHandlers = new Soul.PropertyHandler[propertys.Length];
+            for (int i = 0; i < propertys.Length; ++i)
+            {
+                new_soul.PropertyHandlers[i] = new Soul.PropertyHandler();
+                new_soul.PropertyHandlers[i].PropertyInfo = propertys[i];
+            }
+            _Souls.Add(new_soul);
+
+            return new_soul;
+        }
 
         private void _Unbind(object soul , Type type)
         {
@@ -283,8 +323,7 @@ namespace Regulus.Remoting.Soul
 		}
 
 
-        System.DateTime _UpdatePropertyInterval;
-        System.DateTime _UpdateEventInterval;
+        System.DateTime _UpdatePropertyInterval;        
         public void Update()
         {
             
@@ -317,12 +356,12 @@ namespace Regulus.Remoting.Soul
 
         void ISoulBinder.Return<TSoul>(TSoul soul)
         {
-            _Bind(soul , true);
+            _Bind(soul , true , Guid.Empty);
         }
 
         void ISoulBinder.Bind<TSoul>(TSoul soul)
         {
-            _Bind(soul , false);
+            _Bind(soul, false, Guid.Empty);
         }
 
         void ISoulBinder.Unbind<TSoul>(TSoul soul)

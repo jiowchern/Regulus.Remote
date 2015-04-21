@@ -27,9 +27,9 @@ namespace RemotingTest
             
         }
 
-        Regulus.Remoting.Value<int> ITestReturn.Test(int a, int b)
+        Regulus.Remoting.Value<ITestInterface> ITestReturn.Test(int a, int b)
         {
-            return a * b;
+            return new TestInterface();
         }
     }
 }

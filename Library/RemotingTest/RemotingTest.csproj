@@ -60,6 +60,7 @@
     <Compile Include="RemotingProvider.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="StandalongProvider.cs" />
+    <Compile Include="TestInterface.cs" />
     <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnitTest2.cs" />

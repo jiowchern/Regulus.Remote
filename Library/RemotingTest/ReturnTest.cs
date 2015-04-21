@@ -83,6 +83,7 @@ namespace RemotingTest
             updater.Add(app);
             updater.Add(server);
             bool enable = true;
+            int result2 = 0;
             while (enable)
             {
                 updater.Update();
@@ -91,23 +92,24 @@ namespace RemotingTest
                 {
                     testReturn.Test(1, 2).OnValue += (r) =>
                     {
-                        Assert.AreEqual(0, user.TestReturnProvider.Returns.Length);
+                        r.Add(2, 3).OnValue += (r2) => { result2 = r2  ; };                        
                         enable = false;
                         
                     };
 
                     testReturn = null;
+                    System.GC.Collect();                    
                 }
             }
 
-            updater.Update();
+
+            while (result2 == 0)
+                updater.Update();
 
 
             System.GC.Collect();                    
             Assert.AreEqual(0, user.TestReturnProvider.Returns.Length);
-            
-
-
+            Assert.AreEqual(-3, result2);
             
             user.Remoting.ConnectProvider.Supply -= ConnectProvider_Supply;
             updater.Shutdown();

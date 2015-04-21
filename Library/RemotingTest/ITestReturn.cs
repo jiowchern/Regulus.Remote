@@ -5,8 +5,12 @@ using System.Text;
 
 namespace RemotingTest
 {
+    public interface ITestInterface
+    {
+        Regulus.Remoting.Value<int> Add(int a , int b); 
+    }
     public interface ITestReturn
     {
-        Regulus.Remoting.Value<int> Test(int a , int b);
+        Regulus.Remoting.Value<ITestInterface> Test(int a, int b);
     }
 }

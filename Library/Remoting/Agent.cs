@@ -99,12 +99,13 @@ namespace Regulus.Remoting
 			}
 			else if (id == (int)ServerToClientOpCode.LoadSoulCompile)
 			{
-				if (args.Count == 2)
+				if (args.Count == 3)
 				{
 					var typeName = Regulus.Serializer.TypeHelper.Deserialize<string>(args[0] as byte[]) ;
 					var entity_id = new Guid(args[1] as byte[]);
+                    var return_id = new Guid(args[2] as byte[]);
 					System.Diagnostics.Debug.WriteLine("load soul compile: " + typeName + " id: " + entity_id.ToString());
-					_LoadSoulCompile(typeName, entity_id);
+                    _LoadSoulCompile(typeName, entity_id, return_id);
 				}
 			}
 			else if (id == (int)ServerToClientOpCode.LoadSoul)
@@ -139,12 +140,26 @@ namespace Regulus.Remoting
 				value.SetValue(returnValue);
 			}
 		}
-		private void _LoadSoulCompile(string type_name, Guid entity_id)
+
+        private void _SetReturnValue(Guid return_id, Ghost.IGhost ghost)
+        {
+            IValue value = _ReturnValueQueue.PopReturnValue(return_id);
+            if (value != null)
+            {
+                value.SetValue(ghost);
+            }
+        }
+        private void _LoadSoulCompile(string type_name, Guid entity_id, Guid return_id)
 		{
 			Regulus.Remoting.Ghost.IProvider provider = _QueryProvider(type_name);
 			if (provider != null)
-				provider.Ready(entity_id);
+            {
+                var ghost = provider.Ready(entity_id);
+                _SetReturnValue(return_id, ghost);
+            }
 		}
+
+        
 		private void _LoadSoul(string type_name, Guid id , bool return_type)
 		{
 			Regulus.Remoting.Ghost.IProvider provider = _QueryProvider(type_name);

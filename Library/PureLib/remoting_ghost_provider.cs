@@ -20,7 +20,7 @@ namespace Regulus.Remoting.Ghost
 		IGhost[] Ghosts { get; }
 		void Add(IGhost entiry);
 		void Remove(Guid id);
-		void Ready(Guid id);
+        IGhost Ready(Guid id);
 	}
 
 
@@ -53,15 +53,16 @@ namespace Regulus.Remoting.Ghost
 		}
 
 		List<T> _Waits = new List<T>();
-		void IProvider.Ready(Guid id)
+        IGhost IProvider.Ready(Guid id)
 		{
 			var entity = (from e in _Waits where (e as IGhost).GetID() == id select e).FirstOrDefault();
 			_Waits.Remove(entity);
 			if (entity != null)
-                _Add(entity, entity as IGhost);
+                return _Add(entity, entity as IGhost);
+            return null;
 		}
 
-		void _Add(T entity, IGhost ghost )
+        IGhost _Add(T entity, IGhost ghost)
 		{
             if (ghost.IsReturnType() == false)
             {
@@ -75,6 +76,8 @@ namespace Regulus.Remoting.Ghost
                 if (_Return != null)
                     _Return(entity);
             }
+
+            return ghost;
 		}
 		void IProvider.Add(IGhost entity)
 		{

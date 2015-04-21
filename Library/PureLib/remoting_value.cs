@@ -11,7 +11,13 @@ namespace Regulus.Remoting
 		void SetValue(byte[] val);
 
 		void QueryValue(Action<object> action);
-	}
+
+        void SetValue(Ghost.IGhost ghost);
+
+        bool IsInterface();
+
+        Type GetObjectType();
+    }
     public static class Helper
     {
         public static Action<Value<T>> UnBox<T>(Action<T> callback)
@@ -29,13 +35,14 @@ namespace Regulus.Remoting
         {
             return new Value<T>(value);
         }
+        bool _Interface;
 		T _Value;
 		bool _Empty = true;
 		public Value()
 		{
-			
+            _Interface = typeof(T).IsInterface;
 		}
-		public Value(T val)
+		public Value(T val) : this()
 		{
 			_Empty = false;
 			_Value = val;
@@ -77,6 +84,17 @@ namespace Regulus.Remoting
                 _OnValue(_Value);
             }				
         }
+
+        void IValue.SetValue(Regulus.Remoting.Ghost.IGhost val)
+        {
+            _Empty = false;
+
+            _Value = (T)val;
+            if (_OnValue != null)
+            {
+                _OnValue(_Value);
+            }				
+        }
 		void IValue.SetValue(byte[] val)
 		{
 			_Empty = false;
@@ -111,5 +129,16 @@ namespace Regulus.Remoting
 		}
 
         public static Value<T> Empty { get { return default(T); } }
+
+
+        bool IValue.IsInterface()
+        {
+            return _Interface;
+        }
+
+        Type IValue.GetObjectType()
+        {
+            return typeof(T);
+        }
     }
 }
