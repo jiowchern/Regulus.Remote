@@ -12,6 +12,7 @@ namespace Regulus.Standalong
         public event ConnectedCallback ConnectedEvent;
 		Regulus.Remoting.AgentCore	_Agent;	
 		Regulus.Remoting.Soul.SoulProvider	_SoulProvider;
+        Regulus.Remoting.ISoulBinder _Binder { get { return _SoulProvider; } }
 		GhostRequest	_GhostRequest;
         public Agent()
         {
@@ -21,8 +22,9 @@ namespace Regulus.Standalong
         }
 		public void Launch()
 		{
-			
-			_GhostRequest.PingEvent	+= _OnRequestPing	;						
+		    	
+			_GhostRequest.PingEvent	+= _OnRequestPing	;
+            _GhostRequest.ReleaseEvent += _SoulProvider.Unbind;
 			
 			
 		}
@@ -31,7 +33,7 @@ namespace Regulus.Standalong
 			_Agent.OnResponse( (byte)Regulus.Remoting.ServerToClientOpCode.Ping , null ) ;
 		}		
 
-		public void Update()
+		private void _Update()
 		{
 			_SoulProvider.Update();
 			_GhostRequest.Update();
@@ -39,12 +41,15 @@ namespace Regulus.Standalong
 
 		public void Shutdown()
 		{
-            if (BreakEvent != null)
-                BreakEvent();
-            BreakEvent = null;
+            if (_BreakEvent != null)
+                _BreakEvent();
+            _BreakEvent = null;
 			_Agent.Finial();
-			_SoulProvider = null;
-			_GhostRequest.PingEvent -= _OnRequestPing;			
+			
+			_GhostRequest.PingEvent -= _OnRequestPing;
+            _GhostRequest.ReleaseEvent -= _SoulProvider.Unbind;
+
+            _SoulProvider = null;
 		}
 
 		event Action<Guid, string, Guid, byte[][]> Remoting.IRequestQueue.InvokeMethodEvent
@@ -52,9 +57,6 @@ namespace Regulus.Standalong
 			add { _GhostRequest.CallMethodEvent += value ; }
 			remove { _GhostRequest.CallMethodEvent -= value; }
 		}
-
-		
-		
 		
 
 		void Remoting.IResponseQueue.Push(byte cmd, Dictionary<byte, byte[]> args)
@@ -74,15 +76,15 @@ namespace Regulus.Standalong
 		}
 
 
-		public event Action BreakEvent;
+        private event Action _BreakEvent;
 
-		public void Bind<TSoul>(TSoul soul)
+		private void _Bind<TSoul>(TSoul soul)
 		{
-			_SoulProvider.Bind<TSoul>(soul);
+            _Binder.Bind<TSoul>(soul);
 		}
-		public void Unbind<TSoul>(TSoul soul)
+        private void _Unbind<TSoul>(TSoul soul)
 		{
-			_SoulProvider.Unbind<TSoul>(soul);
+            _Binder.Unbind<TSoul>(soul);
 		}
 
         public void Disconnect()
@@ -122,7 +124,7 @@ namespace Regulus.Standalong
 
         bool Utility.IUpdatable.Update()
         {
-            Update();
+            _Update();
 
             return true;
         }
@@ -146,8 +148,41 @@ namespace Regulus.Standalong
         event Action _ConnectEvent;
         event Action Remoting.IAgent.ConnectEvent
         {
-            add { throw new NotImplementedException(); }
-            remove { throw new NotImplementedException(); }
+            add { _ConnectEvent += value; }
+            remove { _ConnectEvent -= value; }
+        }
+
+        void Remoting.ISoulBinder.Return<TSoul>(TSoul soul)
+        {
+            _Binder.Return(soul);
+        }
+
+        void Remoting.ISoulBinder.Bind<TSoul>(TSoul soul)
+        {
+            _Bind(soul);
+        }
+
+        void Remoting.ISoulBinder.Unbind<TSoul>(TSoul soul)
+        {
+            _Unbind(soul);
+        }
+
+        event Action Remoting.ISoulBinder.BreakEvent
+        {
+            add { _BreakEvent += value; }
+            remove { _BreakEvent -= value; }
+        }
+
+
+        event Action Remoting.IRequestQueue.BreakEvent
+        {
+            add { _BreakEvent += value; }
+            remove { _BreakEvent -= value; }
+        }
+
+        void Remoting.IRequestQueue.Update()
+        {
+            _Update();
         }
     }
 }

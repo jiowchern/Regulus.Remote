@@ -9,8 +9,10 @@ namespace Regulus.Remoting.Ghost
 	{
 		event Action<T> Supply;
 		event Action<T> Unsupply;
+        event Action<T> Return;
 
 		T[] Ghosts { get; }
+        T[] Returns { get; }
 	}
 
 	public interface IProvider
@@ -22,9 +24,12 @@ namespace Regulus.Remoting.Ghost
 	}
 
 
-	public class TProvider<T> : IProviderNotice<T>, IProvider where T : class
+	public class TProvider<T> : IProviderNotice<T>, IProvider
+        where T : class 
+        
 	{
 		List<T> _Entitys = new List<T>();
+        List<WeakReference> _Returns = new List<WeakReference>();
 
 		event Action<T> _Supply;
 		event Action<T> IProviderNotice<T>.Supply
@@ -53,14 +58,23 @@ namespace Regulus.Remoting.Ghost
 			var entity = (from e in _Waits where (e as IGhost).GetID() == id select e).FirstOrDefault();
 			_Waits.Remove(entity);
 			if (entity != null)
-				_Add(entity);
+                _Add(entity, entity as IGhost);
 		}
 
-		void _Add(T entity)
+		void _Add(T entity, IGhost ghost )
 		{
-			_Entitys.Add(entity);
-			if (_Supply != null)
-				_Supply.Invoke(entity as T);
+            if (ghost.IsReturnType() == false)
+            {
+                _Entitys.Add(entity);
+                if (_Supply != null)
+                    _Supply.Invoke(entity);
+            }
+			else
+            {
+                _Returns.Add(new WeakReference(entity));
+                if (_Return != null)
+                    _Return(entity);
+            }
 		}
 		void IProvider.Add(IGhost entity)
 		{
@@ -69,19 +83,45 @@ namespace Regulus.Remoting.Ghost
 
 		void IProvider.Remove(Guid id)
 		{
-			var entity = (from e in _Entitys where (e as IGhost).GetID() == id select e).FirstOrDefault();
-			if (entity != null && _Unsupply != null)
-			{
-				_Unsupply.Invoke(entity);
-			}
-
-			_Entitys.Remove(entity);
+            _RemoveEntitys(id);
 
 
-			var waitentity = (from e in _Waits where (e as IGhost).GetID() == id select e).FirstOrDefault();
-			if (waitentity != null)
-				_Waits.Remove(waitentity);
+            _RemoveWaits(id);
+
+            _RemoveReturns(id);
+
 		}
+
+        private void _RemoveReturns(Guid id)
+        {
+            var entity = (from weakRef in _Returns
+                         let e = weakRef.Target as IGhost
+                         where weakRef.IsAlive && e.GetID() == id
+                          select weakRef).SingleOrDefault();
+
+            if(entity != null)
+            {
+                _Returns.Remove(entity);
+            }
+        }
+
+        private void _RemoveWaits(Guid id)
+        {
+            var waitentity = (from e in _Waits where (e as IGhost).GetID() == id select e).FirstOrDefault();
+            if (waitentity != null)
+                _Waits.Remove(waitentity);
+        }
+
+        private void _RemoveEntitys(Guid id)
+        {
+            var entity = (from e in _Entitys where (e as IGhost).GetID() == id select e).FirstOrDefault();
+            if (entity != null && _Unsupply != null)
+            {
+                _Unsupply.Invoke(entity);
+            }
+
+            _Entitys.Remove(entity);
+        }
 
 		IGhost[] IProvider.Ghosts
 		{
@@ -101,5 +141,29 @@ namespace Regulus.Remoting.Ghost
 				return _Entitys.ToArray();
 			}
 		}
-	}
+
+
+        event Action<T> _Return;
+        event Action<T> IProviderNotice<T>.Return
+        {
+            add { _Return += value; }
+            remove { _Return -= value; }
+        }
+
+
+        T[] IProviderNotice<T>.Returns
+        {
+            get 
+            {
+                return _RemoveNoRefenceReturns();
+            }
+        }
+
+        private T[] _RemoveNoRefenceReturns()
+        {
+            T[] alives = (from w in _Returns where w.IsAlive select w.Target as T).ToArray();
+            _Returns.RemoveAll(w => w.IsAlive == false);
+            return alives;
+        }
+    }
 }

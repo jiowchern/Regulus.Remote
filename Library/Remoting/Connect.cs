@@ -43,6 +43,15 @@ namespace Regulus.Utility
         {
             throw new NotImplementedException();
         }
+
+
+
+
+
+        bool Remoting.Ghost.IGhost.IsReturnType()
+        {
+            return false;
+        }
     }
 
 }

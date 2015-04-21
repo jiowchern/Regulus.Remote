@@ -19,14 +19,14 @@ namespace Regulus.Framework
         public event OnModeSelector ModeSelectorEvent;
         
         public bool Enable { get; private set; }
-        public Client(Regulus.Utility.Console.IViewer view , Regulus.Utility.Console.IInput input )
+        
+        public Client(Regulus.Utility.Console.IViewer view , Regulus.Utility.Console.IInput input ) 
         {
-            _View = view;
-            
-            _Console = new Utility.Console(input, view);
             Enable = true;
             _Machine = new Regulus.Utility.StageMachine();
 
+            _View = view;
+            _Console = new Utility.Console(input, view);
             Selector = new Regulus.Framework.GameModeSelector<TUser>(_Command, _View);
         }
 

@@ -21,24 +21,7 @@ namespace Regulus.Remoting.Soul
 			_Peer.InvokeMethodEvent += _InvokeMethod;	
 		}
 
-        public event Action BreakEvent
-        {
-            add
-            {
-                lock (_Peer)
-                {
-                    _Peer.BreakEvent += value;
-                }
-				
-            }
-            remove
-            {
-                lock (_Peer)
-                {
-                    _Peer.BreakEvent -= value;
-                }				
-            }
-        }
+        
 		class Soul
 		{
 			public Guid ID                                          { get; set; }
@@ -85,6 +68,7 @@ namespace Regulus.Remoting.Soul
                     }                                        
                 }
             }
+            
         }
         Regulus.Utility.Poller<Soul> _Souls = new Utility.Poller<Soul>();
 		//System.Collections.Generic.List<Soul>	_Souls = new List<Soul>();
@@ -147,19 +131,20 @@ namespace Regulus.Remoting.Soul
             _Queue.Push((byte)ServerToClientOpCode.LoadSoulCompile, argmants);
         }
         
-        private void _LoadSoul(string type_name, Guid id)
+        private void _LoadSoul(string type_name, Guid id, bool return_type)
         {         
             var argmants = new Dictionary<byte, byte[]>();
             argmants.Add(0, Regulus.Serializer.TypeHelper.Serializer(type_name));
             argmants.Add(1, id.ToByteArray());
+            argmants.Add(2, Regulus.Serializer.TypeHelper.Serializer(return_type));
             _Queue.Push((byte)ServerToClientOpCode.LoadSoul, argmants);
         }
 
-        private void _UnloadSoul(string type_name, Guid id)
+        private void _UnloadSoul(string type_name, Guid id )
         {
             var argmants = new Dictionary<byte, byte[]>();
             argmants.Add(0, Regulus.Serializer.TypeHelper.Serializer(type_name));
-            argmants.Add(1, id.ToByteArray());
+            argmants.Add(1, id.ToByteArray());            
             _Queue.Push((byte)ServerToClientOpCode.UnloadSoul, argmants);
         }
 		
@@ -181,6 +166,7 @@ namespace Regulus.Remoting.Soul
 
                     if (soulInfo.ObjectInstance != null)
                     {
+
                         var returnValue = methodInfo.Invoke(soulInfo.ObjectInstance, argObjects.ToArray());
                         if (returnId != Guid.Empty)
                         {
@@ -196,7 +182,7 @@ namespace Regulus.Remoting.Soul
 			
 		}
 		
-		public void Bind<TSoul>(TSoul soul)
+		private void _Bind<TSoul>(TSoul soul, bool return_type)
 		{
             var prevSoul = (from soulInfo in _Souls.UpdateSet() where Object.ReferenceEquals(soulInfo.ObjectInstance, soul) && soulInfo.ObjectType == typeof(TSoul) select soulInfo).SingleOrDefault();
             
@@ -231,7 +217,7 @@ namespace Regulus.Remoting.Soul
                     new_soul.PropertyHandlers[i].PropertyInfo = propertys[i];
                 }
                 _Souls.Add(new_soul);
-                _LoadSoul(soulType.FullName, new_soul.ID);
+                _LoadSoul(soulType.FullName, new_soul.ID , return_type);
                 new_soul.ProcessDiffentValues(_UpdateProperty);
                 _LoadSoulCompile(soulType.FullName, new_soul.ID);
 
@@ -240,9 +226,9 @@ namespace Regulus.Remoting.Soul
             
 		}
 
-        public void Unbind<TSoul>(TSoul soul)
+        private void _Unbind(object soul , Type type)
         {
-            var soulInfo = (from soul_info in _Souls.UpdateSet() where Object.ReferenceEquals(soul_info.ObjectInstance, soul) && soul_info.ObjectType == typeof(TSoul) select soul_info).SingleOrDefault();
+            var soulInfo = (from soul_info in _Souls.UpdateSet() where Object.ReferenceEquals(soul_info.ObjectInstance, soul) && soul_info.ObjectType == type select soul_info).SingleOrDefault();
             //var soulInfo = _Souls.Find((soul_info) => { return Object.ReferenceEquals(soul_info.ObjectInstance, soul) && soul_info.ObjectType == typeof(TSoul); });
             if (soulInfo != null)
             {
@@ -303,11 +289,13 @@ namespace Regulus.Remoting.Soul
         {
             
             var souls = _Souls.UpdateSet();            
-            if ((System.DateTime.Now - _UpdatePropertyInterval).TotalSeconds > 0.5)
+            var intervalSpan = System.DateTime.Now - _UpdatePropertyInterval;
+            var intervalSeconds = intervalSpan.TotalSeconds;
+            if (intervalSeconds > 0.5)
             {
                 foreach (var soul in souls)
                 {
-                    soul.ProcessDiffentValues(_UpdateProperty);
+                    soul.ProcessDiffentValues(_UpdateProperty);                    
                 }
                 _UpdatePropertyInterval = System.DateTime.Now;
             }
@@ -325,6 +313,50 @@ namespace Regulus.Remoting.Soul
             
         }
 
-        
+
+
+        void ISoulBinder.Return<TSoul>(TSoul soul)
+        {
+            _Bind(soul , true);
+        }
+
+        void ISoulBinder.Bind<TSoul>(TSoul soul)
+        {
+            _Bind(soul , false);
+        }
+
+        void ISoulBinder.Unbind<TSoul>(TSoul soul)
+        {
+            _Unbind(soul, typeof(TSoul));
+        }
+
+        event Action ISoulBinder.BreakEvent
+        {
+            add
+            {
+                lock (_Peer)
+                {
+                    _Peer.BreakEvent += value;
+                }
+
+            }
+            remove
+            {
+                lock (_Peer)
+                {
+                    _Peer.BreakEvent -= value;
+                }
+            }
+        }
+
+        public void Unbind(Guid entityId)
+        {
+            var soul = (from s in _Souls.UpdateSet() where s.ID == entityId select s).FirstOrDefault();
+            if(soul != null)
+            {
+                _Unbind(soul.ObjectInstance, soul.ObjectType);
+            }
+
+        }
     }
 }

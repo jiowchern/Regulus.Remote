@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+
 namespace Regulus.Remoting
 {
     
@@ -26,10 +27,13 @@ namespace Regulus.Remoting
 	public class AgentCore
 	{
 		IGhostRequest _Requester ;
+
+        AutoRelease _AutoRelease;
         
 		public AgentCore(IGhostRequest req)
 		{            
-			_Requester = req;				
+			_Requester = req;
+            _AutoRelease = new AutoRelease(_Requester);
 		}
 
 		public void Initial()
@@ -53,6 +57,9 @@ namespace Regulus.Remoting
 			{
 				Ping = _PingTimeCounter.Ticks;
 				_StartPing();
+
+                _AutoRelease.Update();
+
 			}
 			else if (id == (int)ServerToClientOpCode.UpdateProperty)
 			{
@@ -102,12 +109,13 @@ namespace Regulus.Remoting
 			}
 			else if (id == (int)ServerToClientOpCode.LoadSoul)
 			{
-				if (args.Count == 2)
+				if (args.Count == 3)
 				{
 					var typeName = Regulus.Serializer.TypeHelper.Deserialize<string>(args[0] as byte[]) ;
 					var entity_id = new Guid(args[1] as byte[]);
+                    var returnType = Regulus.Serializer.TypeHelper.Deserialize<bool>(args[2] as byte[]);
 					System.Diagnostics.Debug.WriteLine("load soul : " + typeName + " id: " + entity_id.ToString());
-					_LoadSoul(typeName, entity_id);
+                    _LoadSoul(typeName, entity_id, returnType);
 				}
 			}
 			else if (id == (int)ServerToClientOpCode.UnloadSoul)
@@ -137,12 +145,26 @@ namespace Regulus.Remoting
 			if (provider != null)
 				provider.Ready(entity_id);
 		}
-		private void _LoadSoul(string type_name, Guid id)
+		private void _LoadSoul(string type_name, Guid id , bool return_type)
 		{
 			Regulus.Remoting.Ghost.IProvider provider = _QueryProvider(type_name);
 			if (provider != null && _Requester != null)
-				provider.Add(_BuildGhost(_GetType(type_name), _Requester, id));
+            {
+                var ghost = _BuildGhost(_GetType(type_name), _Requester, id, return_type);
+                provider.Add(ghost);
+
+                if(ghost.IsReturnType())
+                {
+                    _RegisterRelease(ghost);
+                }
+            }
+                
 		}
+
+        private void _RegisterRelease(Ghost.IGhost ghost)
+        {
+            _AutoRelease.Register(ghost);
+        }
 
 		private void _UnloadSoul(string type_name, Guid id)
 		{
@@ -206,8 +228,7 @@ namespace Regulus.Remoting
 		}
 
         object _Sync = new object();
-        enum PingStatus { Wait , Send };
-        PingStatus _PingStatus;
+        
 		System.Timers.Timer _PingTimer;
 		protected void _StartPing()
 		{
@@ -219,7 +240,7 @@ namespace Regulus.Remoting
                 _PingTimer.AutoReset = true;
                 _PingTimer.Elapsed += new System.Timers.ElapsedEventHandler(_PingTimerElapsed);
                 _PingTimer.Start();
-                _PingStatus = PingStatus.Wait;
+                
             }
 			
 		}
@@ -229,7 +250,7 @@ namespace Regulus.Remoting
             {
                 if (_PingTimer != null)
                 {
-                    _PingStatus = PingStatus.Send;
+                    
                     _PingTimeCounter = new Regulus.Utility.TimeCounter();
                     _Requester.Request((int)ClientToServerOpCode.Ping, new Dictionary<byte, byte[]>());
                     
@@ -250,10 +271,10 @@ namespace Regulus.Remoting
             }
 		}
         
-		private Regulus.Remoting.Ghost.IGhost _BuildGhost(Type ghostBaseType, Regulus.Remoting.IGhostRequest peer, Guid id)
+		private Regulus.Remoting.Ghost.IGhost _BuildGhost(Type ghostBaseType, Regulus.Remoting.IGhostRequest peer, Guid id,bool return_type)
 		{
 			Type ghostType = _QueryGhostType(ghostBaseType);
-			object o = Activator.CreateInstance(ghostType, new Object[] { peer, id, _ReturnValueQueue }  );
+            object o = Activator.CreateInstance(ghostType, new Object[] { peer, id, _ReturnValueQueue, return_type });
             
 			return (Regulus.Remoting.Ghost.IGhost)o;
 		}
@@ -307,7 +328,10 @@ namespace Regulus.Remoting
             }
             return type;
         }
+        public static void ActiveNotification()
+        {
 
+        }
 
         //被_BuildGhostType參考
 		public static void UpdateProperty(string property, string type_name, object instance, object value)
@@ -366,8 +390,13 @@ namespace Regulus.Remoting
 			ConstructorBuilder c = type.DefineConstructor(
 										MethodAttributes.Public,
                                         CallingConventions.Standard,
-										new Type[] { typeof(Regulus.Remoting.IGhostRequest), typeof(Guid), typeof(Regulus.Remoting.Ghost.ReturnValueQueue) });
+										new Type[] { 
+                                            typeof(Regulus.Remoting.IGhostRequest), 
+                                            typeof(Guid), 
+                                            typeof(Regulus.Remoting.Ghost.ReturnValueQueue),
+                                            typeof(bool)});
 			// 產生field，一個欄位
+            FieldBuilder returnTypeField = type.DefineField("_ReturnType", typeof(bool), FieldAttributes.Private);
 			FieldBuilder peerField = type.DefineField("_Peer", typeof(Regulus.Remoting.IGhostRequest), FieldAttributes.Private);
 			FieldBuilder idField = type.DefineField("_ID", typeof(Guid), FieldAttributes.Private);
 			FieldBuilder rvqField = type.DefineField("_ReturnValueQueue", typeof(Regulus.Remoting.Ghost.ReturnValueQueue), FieldAttributes.Private);
@@ -386,11 +415,13 @@ namespace Regulus.Remoting
 			cil.Emit(OpCodes.Ldarg_2); // functioin第2個參數的值
 			cil.Emit(OpCodes.Stfld, idField); // 下設定指令
 
-            
-
 			cil.Emit(OpCodes.Ldarg_0); // this 指標
 			cil.Emit(OpCodes.Ldarg_3); // functioin第3個參數的值
 			cil.Emit(OpCodes.Stfld, rvqField); // 下設定指令
+
+            cil.Emit(OpCodes.Ldarg_0); // this 指標
+            cil.Emit(OpCodes.Ldarg_S,4); // functioin第3個參數的值
+            cil.Emit(OpCodes.Stfld, returnTypeField); // 下設定指令
 
             var objectType = typeof(Object);
             var objectTypeConstructor = objectType.GetConstructor(new Type[0]);
@@ -416,6 +447,20 @@ namespace Regulus.Remoting
 
 				type.DefineMethodOverride(methodBuilder, methodGetIDInfo);
 			}
+
+            var methodIsReturnTypeInfo = typeof(Regulus.Remoting.Ghost.IGhost).GetMethod("IsReturnType");
+            if (methodIsReturnTypeInfo != null)
+            {
+                var argTypes = (from parameter in methodIsReturnTypeInfo.GetParameters() orderby parameter.Position select parameter.ParameterType).ToArray();
+                var methodBuilder = type.DefineMethod(methodIsReturnTypeInfo.Name, methodIsReturnTypeInfo.Attributes & ~MethodAttributes.Abstract, typeof(bool), argTypes);
+                var methidIL = methodBuilder.GetILGenerator();
+                methidIL.Emit(OpCodes.Nop);
+                methidIL.Emit(OpCodes.Ldarg_0); // this
+                methidIL.Emit(OpCodes.Ldfld, returnTypeField); // id
+                methidIL.Emit(OpCodes.Ret);
+
+                type.DefineMethodOverride(methodBuilder, methodIsReturnTypeInfo);
+            }
 
 			var propertyInfos = baseType.GetProperties();
 			foreach (var propertyInfo in propertyInfos)
@@ -489,6 +534,8 @@ namespace Regulus.Remoting
 
 				type.DefineMethodOverride(methodBuilder, methodOnEventInfo);
 			}
+
+            
 
 
 

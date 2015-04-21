@@ -122,6 +122,12 @@ namespace Regulus.Remoting.Soul.Native
                 return _ToRequest(entityId, methodName, returnId, methodParams);
                 
             }
+            else if (package.Code == (byte)ClientToServerOpCode.Release)
+            {
+                var entityId = new Guid(package.Args[0]);
+                _SoulProvider.Unbind(entityId);
+                return null;
+            }
             return null;
 		}
         private Request _ToRequest(Guid entity_id, string method_name, Guid return_id, byte[][] method_params)

@@ -60,8 +60,17 @@ namespace Regulus.Utility
         {
             add { _Agent.DisconnectEvent += value; }
             remove { _Agent.DisconnectEvent -= value; }
-        }        
-        
+        }
+
+
+
+
+
+
+        bool Remoting.Ghost.IGhost.IsReturnType()
+        {
+            return false;
+        }
     }
 
 

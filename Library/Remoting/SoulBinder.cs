@@ -7,6 +7,8 @@ namespace Regulus.Remoting
 {
 	public interface ISoulBinder
 	{
+
+        void Return<TSoul>(TSoul soul);
 		void Bind<TSoul>(TSoul soul);
 		void Unbind<TSoul>(TSoul soul);
 		event Action BreakEvent;

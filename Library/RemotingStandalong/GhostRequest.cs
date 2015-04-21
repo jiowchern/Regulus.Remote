@@ -55,6 +55,8 @@ namespace Regulus.Standalong
 			}
 			else if( (int) Regulus.Remoting.ClientToServerOpCode.CallMethod == code)
 			{
+                if (args.Count < 2)
+                    return;
 				var entityId = new Guid(args[0]);
 
                 var methodName = System.Text.Encoding.Default.GetString(args[1]);
@@ -74,10 +76,16 @@ namespace Regulus.Standalong
 				if(CallMethodEvent != null)
 					CallMethodEvent(entityId, methodName, returnId, methodParams);
 			}
+            else if ((int)Regulus.Remoting.ClientToServerOpCode.Release == code) 
+            {
+                var entityId = new Guid(args[0]);
+                ReleaseEvent(entityId);
+            }
+
 			
 		}
 
-		
+        public event Action<Guid> ReleaseEvent;
 		public event Action<Guid , string , Guid , byte[][] > CallMethodEvent;
 		public event Action PingEvent;
 	}
