@@ -82,9 +82,13 @@ namespace Regulus.Remoting.Soul.Native
 			{
                 if (package != null)
                 {
-                    _Requests.Enqueue(package);
+                    
                     lock (_LockRequest)
-                        TotalRequest  ++;
+                    {
+                        _Requests.Enqueue(package);
+                        TotalRequest++;
+                    }
+                        
                 }				    
 				_HandleRead();
 			};
@@ -148,9 +152,8 @@ namespace Regulus.Remoting.Soul.Native
             lock (_LockResponse)
             {
                 TotalResponse++;
+                _Responses.Enqueue(new Regulus.Remoting.Package() { Code = cmd, Args = args });
             }
-            _Responses.Enqueue(new Regulus.Remoting.Package() { Code = cmd, Args = args });
-            
 		}
 
         event Action<Guid, string, Guid, byte[][]> _InvokeMethodEvent;
@@ -239,9 +242,10 @@ namespace Regulus.Remoting.Soul.Native
         void IRequestQueue.Update()
         {
 
-            var pkgs = _Requests.DequeueAll();
+            Package[] pkgs = null;
             lock (_LockRequest)
             {
+                pkgs = _Requests.DequeueAll();
                 TotalRequest -= pkgs.Length;
             }
                 
