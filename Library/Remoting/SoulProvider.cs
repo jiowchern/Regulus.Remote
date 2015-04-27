@@ -111,10 +111,17 @@ namespace Regulus.Remoting.Soul
         Dictionary<Guid, IValue> _WaitValues = new Dictionary<Guid, IValue>();
         private void _ReturnValue(Guid returnId, IValue returnValue)
         {
+            IValue outValue = null;
+            if (_WaitValues.TryGetValue(returnId, out outValue))
+                return;
+
             _WaitValues.Add(returnId, returnValue);
             returnValue.QueryValue(new Action<object>((obj) =>
             {
-                if(returnValue.IsInterface() == false)
+                if (obj == null)
+                    throw new ArgumentNullException("obj");
+
+                if (returnValue.IsInterface() == false)
                 {
                     _ReturnDataValue(returnId, returnValue);
                 }
@@ -137,7 +144,6 @@ namespace Regulus.Remoting.Soul
             if (prevSoul == null)
             {
                 Soul new_soul = _NewSoul(soul, type);
-
 
                 _LoadSoul(type.FullName, new_soul.ID, true);
                 new_soul.ProcessDiffentValues(_UpdateProperty);
@@ -192,26 +198,19 @@ namespace Regulus.Remoting.Soul
                 {
 
                     var paramerInfos = methodInfo.GetParameters();
+                    
                     int i = 0;
                     var argObjects = from pi in paramerInfos
                                         let arg = args[i++]
                                         select Regulus.Serializer.TypeHelper.DeserializeObject(pi.ParameterType, arg);
 
-                    if (soulInfo.ObjectInstance != null)
+                    var returnValue = methodInfo.Invoke(soulInfo.ObjectInstance, argObjects.ToArray());
+                    if (methodInfo.ReturnType != null)
                     {
-
-                        var returnValue = methodInfo.Invoke(soulInfo.ObjectInstance, argObjects.ToArray());
-                        if (returnId != Guid.Empty)
-                        {
-                            _ReturnValue(returnId, returnValue as IValue);
-                        }
-                    }
-                    else
-                        throw new System.Exception("soulInfo.ObjectInstance == null");
-                    
+                        _ReturnValue(returnId, returnValue as IValue);
+                    }                    
                 }
-            }	    
-            
+            }	                
 			
 		}
 		
@@ -356,16 +355,25 @@ namespace Regulus.Remoting.Soul
 
         void ISoulBinder.Return<TSoul>(TSoul soul)
         {
+            if (soul == null)
+                throw new ArgumentNullException("soul");
+
             _Bind(soul , true , Guid.Empty);
         }
 
         void ISoulBinder.Bind<TSoul>(TSoul soul)
         {
+            if (soul == null)
+                throw new ArgumentNullException("soul");
+
             _Bind(soul, false, Guid.Empty);
         }
 
         void ISoulBinder.Unbind<TSoul>(TSoul soul)
         {
+            if (soul == null)
+                throw new ArgumentNullException("soul");
+
             _Unbind(soul, typeof(TSoul));
         }
 

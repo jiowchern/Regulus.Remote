@@ -41,9 +41,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="INIFileParser">
-      <HintPath>..\ThirdParty\INIFileParser\INIFileParser.dll</HintPath>
-    </Reference>
     <Reference Include="protobuf-net">
       <HintPath>..\ThirdParty\Protobuf\protobuf-net.dll</HintPath>
     </Reference>

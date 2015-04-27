@@ -7,8 +7,8 @@
     <ProjectGuid>{485F551D-9155-4982-B653-F8D4EAC2FCA1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RemotingStandalong</RootNamespace>
-    <AssemblyName>RemotingStandalong</AssemblyName>
+    <RootNamespace>Regulus.Remoting.Standalong</RootNamespace>
+    <AssemblyName>RegulusRemotingStandalong</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

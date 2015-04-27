@@ -7,8 +7,8 @@
     <ProjectGuid>{D4580866-2273-4E9B-BE70-4FA2AB11434A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RemotingNativeSoul</RootNamespace>
-    <AssemblyName>RemotingNativeSoul</AssemblyName>
+    <RootNamespace>Regulus.Remoting.Native.Soul</RootNamespace>
+    <AssemblyName>RegulusRemotingNativeSoul</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -49,6 +49,8 @@
     <Compile Include="Server.cs" />
     <Compile Include="TcpController.cs" />
     <Compile Include="TcpUser.cs" />
+    <Compile Include="ValueAwaitExtension.cs" />
+    <Compile Include="ValueSpin.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PureLib\PureLib.csproj">

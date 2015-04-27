@@ -8,8 +8,8 @@
     <ProjectGuid>{A4CFCE46-BDA8-4416-A1BB-77BD80514019}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Remoting</RootNamespace>
-    <AssemblyName>Remoting</AssemblyName>
+    <RootNamespace>Regulus.Remoting</RootNamespace>
+    <AssemblyName>RegulusRemoting</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

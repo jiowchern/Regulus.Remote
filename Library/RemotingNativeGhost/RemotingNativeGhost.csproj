@@ -7,8 +7,8 @@
     <ProjectGuid>{6CB4CDE6-4405-40E6-8BDF-5A2E9185CC04}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RemotingNativeGhost</RootNamespace>
-    <AssemblyName>RemotingNativeGhost</AssemblyName>
+    <RootNamespace>Regulus.Remoting.Native.Ghost</RootNamespace>
+    <AssemblyName>RegulusRemotingNativeGhost</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
