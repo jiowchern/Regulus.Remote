@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="CommandParser.cs" />
     <Compile Include="EmptyInputView.cs" />
+    <Compile Include="Ghost.cs" />
     <Compile Include="ITestReturn.cs" />
     <Compile Include="IUser.cs" />
     <Compile Include="RemotingProvider.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="UnitTest2.cs" />
     <Compile Include="ReturnTest.cs" />
     <Compile Include="TestValue.cs" />
+    <Compile Include="AutoReleaseTest.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>

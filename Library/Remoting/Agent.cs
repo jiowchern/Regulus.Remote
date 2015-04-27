@@ -50,16 +50,15 @@ namespace Regulus.Remoting
 		public  void OnResponse(byte id, Dictionary<byte, byte[]> args)
 		{
 			_OnResponse(id , args);
+            _AutoRelease.Update();
 		}
 		protected void _OnResponse(byte id, Dictionary<byte, byte[]> args)
 		{
+            
 			if (id == (int)ServerToClientOpCode.Ping)
 			{
 				Ping = _PingTimeCounter.Ticks;
 				_StartPing();
-
-                _AutoRelease.Update();
-
 			}
 			else if (id == (int)ServerToClientOpCode.UpdateProperty)
 			{

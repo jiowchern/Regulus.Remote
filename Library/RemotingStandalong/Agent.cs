@@ -10,7 +10,8 @@ namespace Regulus.Standalong
 
         public delegate void ConnectedCallback();
         public event ConnectedCallback ConnectedEvent;
-		Regulus.Remoting.AgentCore	_Agent;	
+		Regulus.Remoting.AgentCore	_Agent;
+        
 		Regulus.Remoting.Soul.SoulProvider	_SoulProvider;
         Regulus.Remoting.ISoulBinder _Binder { get { return _SoulProvider; } }
 		GhostRequest	_GhostRequest;
@@ -25,8 +26,8 @@ namespace Regulus.Standalong
 		    	
 			_GhostRequest.PingEvent	+= _OnRequestPing	;
             _GhostRequest.ReleaseEvent += _SoulProvider.Unbind;
-			
-			
+
+            _Agent.Initial();
 		}
 		private void _OnRequestPing()
 		{

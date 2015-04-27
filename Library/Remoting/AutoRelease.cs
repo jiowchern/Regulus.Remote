@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Remoting
 {
-    class AutoRelease
+    public class AutoRelease
     {
         private Regulus.Remoting.IGhostRequest _Requester;
         Dictionary<Guid, WeakReference>_Exists;
@@ -15,7 +15,7 @@ namespace Regulus.Remoting
             this._Requester = _Requester;
             _Exists = new Dictionary<Guid, WeakReference>();
         }
-        internal void Register(Regulus.Remoting.Ghost.IGhost ghost)
+        public void Register(Regulus.Remoting.Ghost.IGhost ghost)
         {
             var id = ghost.GetID();
             WeakReference instance ;
@@ -23,7 +23,7 @@ namespace Regulus.Remoting
                 _Exists.Add(id, new WeakReference(ghost));
         }
 
-        internal void Update()
+        public void Update()
         {
             List<Guid> ids = new List<Guid>();
 
@@ -34,7 +34,6 @@ namespace Regulus.Remoting
                     ids.Add(e.Key);
                 }
             }
-
 
             foreach(var id in ids)
             {
