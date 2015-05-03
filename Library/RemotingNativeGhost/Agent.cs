@@ -8,9 +8,9 @@ namespace Regulus.Remoting.Ghost.Native
         System.Net.Sockets.Socket _Socket;		
         Regulus.Utility.StageMachine _Machine;
         OnlineStage _OnlineStage;
-        public event Action DisconnectEvent;
+        event Action _DisconnectEvent;
         
-		public Agent()
+		private Agent()
 		{            
             _Machine = new Utility.StageMachine();
             _Socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
@@ -21,14 +21,14 @@ namespace Regulus.Remoting.Ghost.Native
             _OnlineStage.DoneEvent += () =>
             {
                 _ToOffline(_Machine);
-                if(DisconnectEvent != null)
-                    DisconnectEvent();
+                if(_DisconnectEvent != null)
+                    _DisconnectEvent();
             };
 		}
         
-        public Regulus.Remoting.Value<bool> Connect(string ipaddress, int port)
+        Regulus.Remoting.Value<bool> _Connect(string ipaddress, int port)
         {
-            Disconnect();
+            _Disconnect();
             return _ToConnect(ipaddress, port);
         }
 
@@ -93,19 +93,19 @@ namespace Regulus.Remoting.Ghost.Native
 
 		void Framework.ILaunched.Shutdown()
 		{
-            Disconnect();
+            _Disconnect();
 		}
 
 		
 
-		public long Ping { get { return _OnlineStage.Ping ; } }
+		long _Ping { get { return _OnlineStage.Ping ; } }
 
         IProviderNotice<T> IAgent.QueryProvider<T>()
         {
             return _OnlineStage.QueryProvider<T>();
         }
 
-        public void Disconnect()
+        void _Disconnect()
         {
             if (_Socket.Connected)
                 _Socket.Close();                        
@@ -114,7 +114,7 @@ namespace Regulus.Remoting.Ghost.Native
 
         Value<bool> IAgent.Connect(string account, int password)
         {
-            return Connect(account, password);
+            return _Connect(account, password);
         }
 
         event Action _ConnectEvent;
@@ -126,18 +126,24 @@ namespace Regulus.Remoting.Ghost.Native
 
         long IAgent.Ping
         {
-            get { return Ping; }
+            get { return _Ping; }
         }
 
         event Action IAgent.DisconnectEvent
         {
-            add { DisconnectEvent += value; }
-            remove { DisconnectEvent -= value; }
+            add { _DisconnectEvent += value; }
+            remove { _DisconnectEvent -= value; }
         }
 
         void IAgent.Disconnect()
         {
-            Disconnect();
+            _Disconnect();
+        }
+
+
+        public static IAgent Create()
+        {
+            return new Agent();
         }
     }
 }

@@ -10,11 +10,11 @@ namespace Regulus.Remoting
 	using System.Reflection;
 	using System.Reflection.Emit;
 
-    public interface IAgent : Regulus.Utility.IUpdatable
+    public interface IAgent : Regulus.Utility.IUpdatable 
     {
         Regulus.Remoting.Ghost.IProviderNotice<T> QueryProvider<T>();
 
-        Value<bool> Connect(string account, int password);
+        Value<bool> Connect(string ipaddress, int port);
 
         event Action ConnectEvent;
 
@@ -29,7 +29,7 @@ namespace Regulus.Remoting
 		IGhostRequest _Requester ;
 
         AutoRelease _AutoRelease;
-        
+         
 		public AgentCore(IGhostRequest req)
 		{            
 			_Requester = req;
