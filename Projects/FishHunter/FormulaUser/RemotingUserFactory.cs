@@ -9,7 +9,7 @@ namespace VGame.Project.FishHunter.Formula
     {
         IUser Regulus.Framework.IUserFactoty<IUser>.SpawnUser()
         {
-            return new User(new Regulus.Remoting.Ghost.Native.Agent());
+            return new User(Regulus.Remoting.Ghost.Native.Agent.Create());
         }
 
         Regulus.Framework.ICommandParsable<IUser> Regulus.Framework.IUserFactoty<IUser>.SpawnParser(Regulus.Utility.Command command, Regulus.Utility.Console.IViewer view, IUser user)

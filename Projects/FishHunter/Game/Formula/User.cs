@@ -37,7 +37,7 @@ namespace VGame.Project.FishHunter.Formula
         }
 
         event Regulus.Game.OnQuit _QuitEvent;
-        private Regulus.Remoting.ISoulBinder binder;
+        
         private StorageController _Controller;
         event Regulus.Game.OnQuit Regulus.Game.IUser.QuitEvent
         {
