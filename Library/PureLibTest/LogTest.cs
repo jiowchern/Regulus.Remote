@@ -10,8 +10,13 @@ namespace PureLibTest
         public void TestWrite()
         {
             System.Collections.Generic.List<string> messages = new System.Collections.Generic.List<string>();
-
-            Regulus.Utility.Log.Instance.AsyncRecord = (message) => { messages.Add(message); };
+            
+            
+            Regulus.Utility.Log.Instance.AsyncRecord = (message) => 
+            {
+                lock (messages)
+                    messages.Add(message);                    
+            };
 
             Regulus.Utility.Log.Instance.Write("123");
             Regulus.Utility.Log.Instance.Write("456");
@@ -19,8 +24,16 @@ namespace PureLibTest
             Regulus.Utility.Log.Instance.Write("123");
             Regulus.Utility.Log.Instance.Write("1");
 
-            while (messages.Count < 5) ;
 
+            while(true )
+            {
+                lock(messages)
+                {
+                    if (messages.Count >= 5)
+                        break;
+                }
+                    
+            }
 
             Assert.AreEqual("123" , messages[0]);
             Assert.AreEqual("456", messages[1]);

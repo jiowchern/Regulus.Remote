@@ -28,7 +28,7 @@ namespace Regulus.Utility
 
         private void _Run()
         {
-            if (_AsyncResult.IsCompleted)
+            if (IsDone())
                 _AsyncResult =  _Async.BeginInvoke(null, null, null);
         }
 
@@ -44,12 +44,12 @@ namespace Regulus.Utility
 
         public void WaitDone()
         {
-            while (! _AsyncResult.IsCompleted ) ;
+            while (!IsDone()) ;
         }
 
         internal bool IsDone()
         {
-            return _AsyncResult.IsCompleted;
+            return _AsyncResult.IsCompleted ;
         }
 
         public void Push(Action callback)
