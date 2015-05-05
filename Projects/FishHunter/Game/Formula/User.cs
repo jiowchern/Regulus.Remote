@@ -23,10 +23,7 @@ namespace VGame.Project.FishHunter.Formula
         }
         void Regulus.Game.IUser.OnKick(Guid id)
         {
-            if (_Account != null && _Account.Id == id)
-            {
-                _QuitEvent();
-            }
+            
         }
 
         event Regulus.Game.OnNewUser _VerifySuccessEvent;
@@ -79,20 +76,13 @@ namespace VGame.Project.FishHunter.Formula
             }
         }
 
+        
         private void _ToFishStage()
         {            
-            var stage = new VGame.Project.FishHunter.Stage.QueryFishStage(_Binder);
-            stage.DoneEvent += _ToFormula;
+            var stage = new VGame.Project.FishHunter.Stage.FormulaStage(_Binder);
+            stage.DoneEvent += () => { _QuitEvent(); };
             _Machine.Push(stage);
         }
-
-        private void _ToFormula(long account , int stage_id ,HitBase formula)
-        {
-            var stage = new VGame.Project.FishHunter.Stage.Formula(_Binder, account, stage_id, formula);
-            stage.DoneEvent += _ToFishStage;
-            _Machine.Push(stage);
-        }
-
         
 
         void Regulus.Framework.ILaunched.Shutdown()

@@ -15,8 +15,8 @@ namespace VGame.Project.FishHunter
         /// </summary>
         /// <param name="玩家id"></param>
         /// <param name="魚場id"></param>
-        /// <returns>是否成功</returns>
-        Regulus.Remoting.Value<bool> Query(long player_id , byte fish_stage);
+        /// <returns>魚場</returns>
+        Regulus.Remoting.Value<IFishStage> Query(long player_id, byte fish_stage);
 
     }
 }

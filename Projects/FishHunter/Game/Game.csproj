@@ -39,6 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Formula\FishStage.cs" />
+    <Compile Include="Formula\FormulaStage.cs" />
     <Compile Include="Formula\StorageController.cs" />
     <Compile Include="Play\Center.cs" />
     <Compile Include="Play\DummyStorage.cs" />
@@ -48,8 +50,6 @@
     <Compile Include="Formula\User.cs" />
     <Compile Include="Play\Hall.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Stage\Formula.cs" />
-    <Compile Include="Stage\QueryFishStage.cs" />
     <Compile Include="Stage\Verify.cs" />
     <Compile Include="Play\DummyStandalong.cs" />
     <Compile Include="Storage\Center.cs" />

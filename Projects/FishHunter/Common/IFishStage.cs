@@ -163,10 +163,5 @@ namespace VGame.Project.FishHunter
         /// </summary>
         event Action<string> HitExceptionEvent;
 
-        /// <summary>
-        /// 返回魚場請求
-        /// </summary>
-        void Quit();
-
     }
 }

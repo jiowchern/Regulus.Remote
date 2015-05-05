@@ -82,10 +82,13 @@ namespace Regulus.Remoting.Ghost
 		void IProvider.Add(IGhost entity)
 		{
 			_Waits.Add(entity as T);
+            
 		}
 
 		void IProvider.Remove(Guid id)
 		{
+            _RemoveNoRefenceReturns();
+
             _RemoveEntitys(id);
 
 
@@ -131,7 +134,7 @@ namespace Regulus.Remoting.Ghost
 
 			get
 			{
-				var all = _Entitys.Concat(_Waits);
+                var all = _Entitys.Concat(_Waits).Concat( from r in _Returns where r.IsAlive select r.Target as T);
 				return (from entity in all select (IGhost)entity).ToArray();
 			}
 		}

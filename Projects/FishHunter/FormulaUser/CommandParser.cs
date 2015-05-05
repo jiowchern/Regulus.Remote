@@ -47,14 +47,9 @@ namespace VGame.Project.FishHunter.Formula
             verify.Bind("Login[result,id,password]", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().BuildRemoting<string, string, bool>(gpi.Login, _VerifyResult); });
 
             var fishStageQueryer = factory.Create<VGame.Project.FishHunter.IFishStageQueryer>(_User.FishStageQueryerProvider);
-            fishStageQueryer.Bind("Query[result,player_id,fish_stage]", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().BuildRemoting<long,byte, bool>(gpi.Query, _QueryResult); });
+            fishStageQueryer.Bind("Query[result,player_id,fish_stage]", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().BuildRemoting<long,byte, IFishStage>(gpi.Query, _QueryResult); });
 
-            var fishStage = factory.Create<VGame.Project.FishHunter.IFishStage>(_User.FishStageProvider);
-            fishStage.Bind("Quit", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().Build(gpi.Quit); });
-            fishStage.Bind("HitTest[WepBet,TotalHits,FishOdds]",(gpi)=>{ return new Regulus.Remoting.CommandParamBuilder().Build<short,short,short>(  new HitRequestConverter(gpi).Conver );  });
-
-            fishStage.SupplyEvent += fishStage_SupplyEvent;
-            fishStage.UnsupplyEvent += fishStage_UnsupplyEvent;
+            
 
 
             _Command.Register("Package", _ShowPackageState);
@@ -81,9 +76,9 @@ namespace VGame.Project.FishHunter.Formula
             
         }
 
-        private void _QueryResult(bool result)
+        private void _QueryResult(IFishStage result)
         {
-            _View.WriteLine(string.Format("Query fish stage result {0}", result));
+            _View.WriteLine(string.Format("Query fish stage result {0}", result.ShowMembers()));
         }
 
         private void _VerifyResult(bool result)

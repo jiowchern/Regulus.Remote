@@ -8,7 +8,7 @@ namespace FormulaUserBot
     class HitHandler : Regulus.Utility.IUpdatable
     {
         
-        public static double Interval = 1.0f / 1.0;
+        public static double Interval = 1.0f / 20.0;
 
         private VGame.Project.FishHunter.IFishStage _Stage;
         private VGame.Project.FishHunter.HitRequest _Request;

@@ -83,12 +83,13 @@ namespace VGame.Project.FishHunter.Formula
 
         private void _ConnectResult(bool result)
         {
-            if(result)
+            if (result)
             {
                 _ToVerifyStorage(_StorageUser);
             }
             else
-                _ToShutdown();
+                throw new SystemException("stroage connect fail");
+
         }
 
         private void _ToVerifyStorage(Storage.IUser user)
@@ -107,7 +108,7 @@ namespace VGame.Project.FishHunter.Formula
                 
             }
             else
-                _ToShutdown();
+                throw new SystemException("stroage verify fail");
         }
         
         private void _ToBuildStorageController()

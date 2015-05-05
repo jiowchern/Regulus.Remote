@@ -8,8 +8,8 @@ namespace FormulaUserBot
 {
     class Program
     {
-        private static string IPAddress = "210.65.10.160";
-        //private static string IPAddress = "192.168.0.136";
+        //private static string IPAddress = "210.65.10.160";
+        private static string IPAddress = "127.0.0.1";
         private static int Port = 38971;
         static void Main(string[] args)
         {
