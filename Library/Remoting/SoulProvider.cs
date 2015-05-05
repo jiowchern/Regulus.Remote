@@ -120,7 +120,6 @@ namespace Regulus.Remoting.Soul
             {
                 if (obj == null)
                     throw new ArgumentNullException("obj");
-
                 if (returnValue.IsInterface() == false)
                 {
                     _ReturnDataValue(returnId, returnValue);
@@ -205,7 +204,7 @@ namespace Regulus.Remoting.Soul
                                         select Regulus.Serializer.TypeHelper.DeserializeObject(pi.ParameterType, arg);
 
                     var returnValue = methodInfo.Invoke(soulInfo.ObjectInstance, argObjects.ToArray());
-                    if (methodInfo.ReturnType != null)
+                    if (returnValue != null)
                     {
                         _ReturnValue(returnId, returnValue as IValue);
                     }                    

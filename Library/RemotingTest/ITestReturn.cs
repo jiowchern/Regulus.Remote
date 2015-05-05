@@ -7,7 +7,8 @@ namespace RemotingTest
 {
     public interface ITestInterface
     {
-        Regulus.Remoting.Value<int> Add(int a , int b); 
+        Regulus.Remoting.Value<int> Add(int a , int b);
+        event Action<int> ReturnEvent;
     }
     public interface ITestReturn
     {

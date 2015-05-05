@@ -21,10 +21,7 @@ namespace VGame.Project.FishHunter.Storage
         Data.Account _Account;
         void Regulus.Game.IUser.OnKick(Guid id)
         {
-            if (_Account != null && _Account.Id == id)
-            {
-                _QuitEvent();
-            }
+            
         }
 
         event Regulus.Game.OnNewUser _VerifySuccessEvent;

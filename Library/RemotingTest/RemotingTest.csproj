@@ -53,6 +53,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="AgentUpdater.cs" />
     <Compile Include="CommandParser.cs" />
     <Compile Include="EmptyInputView.cs" />
     <Compile Include="Ghost.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="Server.cs" />
     <Compile Include="StandalongProvider.cs" />
     <Compile Include="TestInterface.cs" />
+    <Compile Include="TestUpdater.cs" />
     <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UnitTest2.cs" />

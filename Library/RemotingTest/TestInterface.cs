@@ -9,7 +9,19 @@ namespace RemotingTest
     {
         Regulus.Remoting.Value<int> ITestInterface.Add(int a, int b)
         {
-            return a - a - b;
+            var v = a - a - b;
+            _ReturnEvent(v);
+            return v;
+        }
+
+
+
+
+        event Action<int> _ReturnEvent;
+        event Action<int> ITestInterface.ReturnEvent
+        {
+            add { _ReturnEvent += value; }
+            remove { _ReturnEvent -= value; }
         }
     }
 }

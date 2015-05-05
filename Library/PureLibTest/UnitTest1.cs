@@ -18,7 +18,7 @@ Window Name = Jabberwocky
 Directory=C:\Rosetta Stone\Logs
  
 [Logging2]
-Directory=C:\Rosetta Stone\Logs
+Directory =
 ";
             var ini = new Regulus.Utility.Ini(data);
 
@@ -30,6 +30,9 @@ Directory=C:\Rosetta Stone\Logs
             
             var dir = ini.Read("Logging", "Directory");
             Assert.AreEqual(@"C:\Rosetta Stone\Logs", dir);
+
+            var dir2 = ini.Read("Logging2", "Directory");
+            Assert.AreEqual(@"", dir2);
 
         }
     }

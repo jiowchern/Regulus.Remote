@@ -28,11 +28,11 @@ namespace FormulaUserBot
             _User.Remoting.ConnectProvider.Supply -= _Connect;
             _User.VerifyProvider.Supply -= _Verify;
             _User.FishStageQueryerProvider.Supply -= _Query;
-            _User.FishStageProvider.Supply -= _Stage;
+            
         }
         void Regulus.Utility.IStage.Enter()
         {
-            _User.FishStageProvider.Supply += _Stage;
+
             _User.FishStageQueryerProvider.Supply += _Query;
             _User.VerifyProvider.Supply += _Verify;
             _User.Remoting.ConnectProvider.Supply += _Connect;
@@ -48,18 +48,20 @@ namespace FormulaUserBot
             _QueryResult(obj.Query(_Id, 1));
         }
 
-        private void _QueryResult(Regulus.Remoting.Value<bool> value)
+        private void _QueryResult(Regulus.Remoting.Value<VGame.Project.FishHunter.IFishStage> value)
         {
             value.OnValue += (result) =>
             {
-                if (result == false)
-                    throw new System.Exception("Stage Query Fail.");                
+                if (result == null)
+                    throw new System.Exception("Stage Query null.");
+                else
+                    _Stage(result);
             };
         }
 
         private void _Verify(VGame.Project.FishHunter.IVerify obj)
         {
-            _VerifyResult(obj.Login("name", "pw"));
+            _VerifyResult(obj.Login("Guest", "guest"));
         }
 
         private void _VerifyResult(Regulus.Remoting.Value<bool> value)

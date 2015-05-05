@@ -1,12 +1,40 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+using Regulus.Extension;
 namespace RemotingTest
 {
     [TestClass]
     public class ReturnTest
     {
+        async void _RemotingDataTest()
+        {
+            
 
+            Server server = new Server();
+            Regulus.Remoting.Soul.Native.Server serverAppliction = new Regulus.Remoting.Soul.Native.Server(server, 12345);
+
+            Regulus.Utility.Launcher launcher = new Regulus.Utility.Launcher();
+            launcher.Push(serverAppliction);
+            launcher.Launch();
+
+            var agent = Regulus.Remoting.Ghost.Native.Agent.Create();
+            var testUpdater = new TestUpdater(agent);            
+
+            new System.Threading.Tasks.Task(new AgentUpdater(agent).Run).Start();
+            var connectResult = await agent.Connect("127.0.0.1", 12345).ToTask();
+
+            var updateTask = testUpdater.Run();
+            updateTask.Start();
+            int eventAddResult = await updateTask;
+            agent.Disconnect();
+            launcher.Shutdown();
+
+            Assert.AreEqual(1616116, eventAddResult);
+        }
+
+        
+
+ 
         [TestMethod]
         public void RemotingTest()
         {
@@ -25,15 +53,13 @@ namespace RemotingTest
             user.Remoting.ConnectProvider.Supply += ConnectProvider_Supply;
             user.TestReturnProvider.Return += (test) =>
             {
-                testReturn = test;
+                testReturn = test;                
                 Assert.AreEqual(1, user.TestReturnProvider.Returns.Length);
 
             };
 
             Regulus.Utility.Updater updater = new Regulus.Utility.Updater();
             updater.Add(app);
-            updater.Add(server);
-
             launcher.Push(serverAppliction);
             launcher.Launch();
             bool enable = true;

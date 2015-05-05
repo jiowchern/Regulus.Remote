@@ -53,10 +53,6 @@ namespace VGame.Project.FishHunter.Formula
         {
             get { return _Agent.QueryProvider<IFishStageQueryer>(); }
         }
-
-        Regulus.Remoting.Ghost.IProviderNotice<IFishStage> IUser.FishStageProvider
-        {
-            get { return _Agent.QueryProvider<IFishStage>(); }
-        }
+        
     }
 }
