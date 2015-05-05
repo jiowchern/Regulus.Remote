@@ -55,8 +55,11 @@
   <ItemGroup>
     <Compile Include="AttribTest.cs" />
     <Compile Include="CommandAnalysisTest.cs" />
+    <Compile Include="EnqueueHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="IniTest.cs" />
+    <Compile Include="AsyncExecuter.cs" />
+    <Compile Include="LogTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PureLib\PureLib.csproj">
