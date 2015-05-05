@@ -19,10 +19,23 @@ namespace VGame.Project.FishHunter.Formula
         private int _Port;
 
         Regulus.Collection.Queue<Regulus.Remoting.ISoulBinder> _Binders;
+        private Regulus.Utility.LogFileRecorder _LogRecorder;
 
         public Server()
-        {            
+        {
+            
             _Setup();
+        }
+
+        private void _InitialLog()
+        {
+            _LogRecorder = new Regulus.Utility.LogFileRecorder("Formula");
+            Regulus.Utility.Log.Instance.AsyncRecord = _LogRecorder.Record;
+        }
+
+        private void _ReleaseLog()
+        {
+            _LogRecorder.Save();
         }
 
         private void _Setup()
@@ -62,13 +75,19 @@ namespace VGame.Project.FishHunter.Formula
 
         void Regulus.Framework.ILaunched.Shutdown()
         {
+
+            _ReleaseLog();
                         
             _Updater.Shutdown();
             _Machine.Termination();
         }
 
+        
+
         void Regulus.Framework.ILaunched.Launch()
-        {            
+        {
+            _InitialLog();
+
             _Updater.Add(_Storage);
             _ToConnectStorage(_Storage.SpawnUser("user"));            
         }

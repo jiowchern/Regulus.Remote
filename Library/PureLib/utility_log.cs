@@ -2,42 +2,40 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Regulus;
 
 namespace Regulus.Utility
 {
-    public interface ILogger 
+    
+    
+    sealed public class Log : Regulus.Utility.Singleton<Log>
     {
-        void Log(string message);                        
-    }
 
-    public class ConsoleLogger : Regulus.Utility.Singleton<ConsoleLogger>, ILogger , IDisposable
-    {
-        System.IO.StreamWriter _StreamWriter;
-        System.DateTime _Begin;
-        public void Launch(string name)
-        {
+        public delegate void RecordCallback(string message);
+        public RecordCallback AsyncRecord { set ; private get; }
 
-            _Begin = System.DateTime.Now;
-            _StreamWriter = new System.IO.StreamWriter(name + "_" + string.Format("{0:yyyyMMddHHmmssffff}" , _Begin) + ".log");
-            _StreamWriter.WriteLine("start log at : " + _Begin.ToString());
-        }
-        public void Log(string message)
-        {
-            if (_StreamWriter != null)
-            {
-                var current = System.DateTime.Now - _Begin;
-                _StreamWriter.WriteLine(current.TotalSeconds.ToString() + "\t" + message);
-            }
+        Regulus.Utility.AsyncExecuter _Executer;
+        
+        
+        
+
+        public Log()
+        {            
+            
+            AsyncRecord = _EmptyRecord;
+            _Executer = new AsyncExecuter();
         }
 
-        public void Shutdown()
+        private void _EmptyRecord(string message)
         {
-            _StreamWriter.Close();
+            
         }
 
-        void IDisposable.Dispose()
+        
+        public void Write(string message)
         {
-            Shutdown();
+
+            _Executer.Push(new LogWritter(message, AsyncRecord).Write );            
         }
     }
 }

@@ -9,10 +9,17 @@ namespace Regulus.Collection
     {
 
         System.Collections.Generic.Queue<T> _Set;
+        
 
         public Queue()
         {
             _Set = new System.Collections.Generic.Queue<T>();
+        }
+
+        public Queue(params T[] objs)
+        {
+            _Set = new System.Collections.Generic.Queue<T>(objs);
+        
         }
         public void Enqueue(T package)
         {
@@ -34,13 +41,18 @@ namespace Regulus.Collection
 
 
 
-        public T Dequeue()
+        public bool TryDequeue(out T obj)
         {
             lock (_Set)
             {
-
-                return _Set.Dequeue();
+                if (_Set.Count > 0)
+                {
+                    obj = _Set.Dequeue();
+                    return true;
+                }                    
             }
+            obj = default(T);
+            return false;
         }
 
         public T[] DequeueAll()

@@ -139,8 +139,7 @@ namespace Regulus.Utility
                 string commands = new string(chars.Reverse().ToArray());
                 commands = commands.Trim();
                 if (commands.Length > 0)
-                {
-                    Regulus.Utility.Singleton<Regulus.Utility.ConsoleLogger>.Instance.Log("Enter Command : " + commands);
+                {                    
                     chars.Clear();
 
                     _Viewer.Write("\n");

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using Regulus.Extension;
 namespace VGame.Project.FishHunter.Formula
 {
     class FishStage : IFishStage
@@ -31,6 +31,9 @@ namespace VGame.Project.FishHunter.Formula
         {
             var response = _Formula.Request(request);
             _HitResponseEvent(response);
+
+
+            Regulus.Utility.Log.Instance.Write(response.ShowMembers());
         }
         event Action<HitResponse> _HitResponseEvent;
         event Action<HitResponse> IFishStage.HitResponseEvent
