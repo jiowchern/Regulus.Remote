@@ -64,9 +64,9 @@
     <Compile Include="StandalongProvider.cs" />
     <Compile Include="TestInterface.cs" />
     <Compile Include="TestUpdater.cs" />
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="CommandCall.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnitTest2.cs" />
+    <Compile Include="EnumFlag.cs" />
     <Compile Include="ReturnTest.cs" />
     <Compile Include="TestValue.cs" />
     <Compile Include="AutoReleaseTest.cs" />
