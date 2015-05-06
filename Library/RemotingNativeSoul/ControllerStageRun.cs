@@ -93,8 +93,9 @@ namespace Regulus.Remoting.Soul.Native
             _Run = false;
         }
 
-        internal void Push(ISoulBinder soulBinder , CoreThreadRequestHandler handler)
-        {
+        internal void Push(ISoulBinder soulBinder , Regulus.Utility.IUpdatable handler)
+        {            
+            
             _RequesterHandlers.Add(handler);
             lock (_Binders)
             {

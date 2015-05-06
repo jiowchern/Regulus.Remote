@@ -11,7 +11,6 @@ namespace Regulus.Remoting
         Dictionary<Guid, WeakReference>_Exists;
         public AutoRelease(Regulus.Remoting.IGhostRequest _Requester)
         {
-            // TODO: Complete member initialization
             this._Requester = _Requester;
             _Exists = new Dictionary<Guid, WeakReference>();
         }

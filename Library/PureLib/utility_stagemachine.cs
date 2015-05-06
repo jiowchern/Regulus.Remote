@@ -23,6 +23,7 @@ namespace Regulus.Utility
             
         }
     }
+    
     public class StageMachine
     {
         class StageData

@@ -57,9 +57,9 @@ namespace VGame.Project.FishHunter.Formula
         {
             _Account = null;
             var verify = new VGame.Project.FishHunter.Verify(_Controller.AccountFinder);
-            var stage = new VGame.Project.FishHunter.Stage.Verify(_Binder, verify);
-            stage.DoneEvent += _VerifySuccess;
-            _Machine.Push(stage);
+            var stage = new VGame.Project.FishHunter.Stage.Verify(_Binder, verify);            
+            stage.DoneEvent += _VerifySuccess;                        
+            _Machine.Push(stage);            
         }
 
         private void _VerifySuccess(Data.Account account)
