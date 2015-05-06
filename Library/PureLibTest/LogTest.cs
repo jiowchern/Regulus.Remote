@@ -3,12 +3,20 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace PureLibTest
 {
+
+    
     [TestClass]
     public class LogTest
     {
+           
         [TestMethod]
         public void TestWrite()
         {
+            
+            
+
+
+
             System.Collections.Generic.List<string> messages = new System.Collections.Generic.List<string>();
             
             
