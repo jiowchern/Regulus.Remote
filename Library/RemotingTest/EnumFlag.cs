@@ -4,7 +4,7 @@ using Regulus.Extension;
 namespace RemotingTest
 {
     [TestClass]
-    public class UnitTest2
+    public class EnumFlag
     {
         [Flags]
         enum TESTFLAG

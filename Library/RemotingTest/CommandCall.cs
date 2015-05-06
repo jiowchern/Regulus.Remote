@@ -6,7 +6,7 @@ namespace RemotingTest
     using NSubstitute;
     using Regulus.Remoting.Extension;
     [TestClass]
-    public class UnitTest1
+    public class CommandCall
     {
         [TestMethod]
         public void TestCommandCall()
