@@ -64,5 +64,10 @@ namespace Regulus.Collection
                 return all;
             }
         }
+
+        public int Count { get     {
+            lock(_Set)
+                return _Set.Count;
+        } }
     }
 }
