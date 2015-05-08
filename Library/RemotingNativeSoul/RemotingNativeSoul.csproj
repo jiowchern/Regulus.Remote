@@ -49,8 +49,6 @@
     <Compile Include="Server.cs" />
     <Compile Include="TcpController.cs" />
     <Compile Include="TcpUser.cs" />
-    <Compile Include="ValueAwaitExtension.cs" />
-    <Compile Include="ValueSpin.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PureLib\PureLib.csproj">

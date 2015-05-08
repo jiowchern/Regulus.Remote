@@ -4,15 +4,15 @@
     {
 
         VGame.Project.FishHunter.Play.Center _Center;
-        VGame.Project.FishHunter.DummyStorage _Storage;
+        VGame.Project.FishHunter.DummyFrature _Storage;
 
         Regulus.Utility.ICore _Core { get { return _Center; } }
         Regulus.Utility.Updater _Updater;
         public DummyStandalong()
         {
-            _Storage = new DummyStorage();
+            _Storage = new DummyFrature();
             _Updater = new Regulus.Utility.Updater();
-            _Center = new Center(_Storage);
+            _Center = new Center(_Storage , _Storage);
         }
 
         void Regulus.Utility.ICore.ObtainController(Regulus.Remoting.ISoulBinder binder)

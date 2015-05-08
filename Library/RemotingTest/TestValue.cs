@@ -9,6 +9,7 @@ namespace RemotingTest
         async void _TestAwait()
         {
             Regulus.Remoting.Value<bool> val = new Regulus.Remoting.Value<bool>();
+            
             var task = val.ToTask();
 
             val.SetValue(true);
