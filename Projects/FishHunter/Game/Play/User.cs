@@ -9,12 +9,21 @@ namespace VGame.Project.FishHunter.Play
     {
         Regulus.Utility.StageMachine _Machine;
         Regulus.Remoting.ISoulBinder _Binder;
-        VGame.Project.FishHunter.IAccountFinder _Storage;
-        public User(Regulus.Remoting.ISoulBinder binder , VGame.Project.FishHunter.IAccountFinder storage)
+        VGame.Project.FishHunter.IAccountFinder _AccountFinder;
+        VGame.Project.FishHunter.IFishStageQueryer _FishStageQueryer;
+        Data.Account _Account;
+        Data.Record _Record;
+        public User(Regulus.Remoting.ISoulBinder binder , 
+            VGame.Project.FishHunter.IAccountFinder account_finder,
+            VGame.Project.FishHunter.IFishStageQueryer queryer)
         {
-            _Storage = storage;
+            _AccountFinder = account_finder;
             _Binder = binder;
             _Machine = new Regulus.Utility.StageMachine();
+            _FishStageQueryer = queryer;
+
+            _Record = new Data.Record();
+            _Record.Money = 1000;
         }
         void Regulus.Game.IUser.OnKick(Guid id)
         {
@@ -64,7 +73,7 @@ namespace VGame.Project.FishHunter.Play
         private Verify _CreateVerify()
         {
             _Account = null;
-            var verify = new VGame.Project.FishHunter.Verify(_Storage);
+            var verify = new VGame.Project.FishHunter.Verify(_AccountFinder);
             return verify;
         }
 
@@ -75,11 +84,37 @@ namespace VGame.Project.FishHunter.Play
             _Machine.Push(stage);
         }
 
-        Data.Account _Account;
+        
         private void _VerifySuccess(Data.Account account)
         {
             _VerifySuccessEvent(account.Id);
-            _Account = account;            
+            _Account = account;
+
+            _ToSelectStage();
+
         }
+
+        private void _ToSelectStage()
+        {
+            var stage = new VGame.Project.FishHunter.Play.SelectStage(_Binder, _FishStageQueryer);
+            stage.DoneEvent += _ToPlayStage;
+            _Machine.Push(stage);            
+        }
+
+        private void _ToPlayStage(IFishStage fish_stage)
+        {
+            var stage = new VGame.Project.FishHunter.Play.PlayStage(_Binder, fish_stage, _Record.Money);
+            stage.DoneEvent += _Save;
+            _Machine.Push(stage);            
+        }
+
+        private void _Save(int money)
+        {
+            _Record.Money = money;
+
+            _ToSelectStage();
+        }
+
+        
     }
 }

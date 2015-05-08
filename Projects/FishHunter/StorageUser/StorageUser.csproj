@@ -39,6 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConnectStorageStage.cs" />
+    <Compile Include="InitialStorageStage.cs" />
     <Compile Include="Proxy.cs" />
     <Compile Include="CommandParser.cs" />
     <Compile Include="IUser.cs" />

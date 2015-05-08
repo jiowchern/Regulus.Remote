@@ -5,7 +5,7 @@ using System.Text;
 
 namespace VGame.Project.FishHunter
 {
-    class ConnectStorageStage : Regulus.Utility.IStage
+    public class ConnectStorageStage : Regulus.Utility.IStage
     {
         private Storage.IUser _User;
         private string _IpAddress;

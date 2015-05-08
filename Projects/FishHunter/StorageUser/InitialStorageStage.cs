@@ -5,7 +5,7 @@ using System.Text;
 
 namespace VGame.Project.FishHunter
 {
-    class VerifyStorageStage : Regulus.Utility.IStage
+    public class VerifyStorageStage : Regulus.Utility.IStage
     {
         public delegate void DoneCallback(bool result);
         public event DoneCallback DoneEvent;

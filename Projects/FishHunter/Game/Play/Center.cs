@@ -9,16 +9,22 @@ namespace VGame.Project.FishHunter.Play
     {
         Regulus.Utility.Updater _Updater;
         Hall _Hall;
-        VGame.Project.FishHunter.IAccountFinder _Storage;
-        public Center(VGame.Project.FishHunter.IAccountFinder storage)
+        VGame.Project.FishHunter.IAccountFinder _AccountFinder;
+        
+        private IFishStageQueryer _FishStageQueryer;
+        
+
+        public Center(IAccountFinder accountFinder, IFishStageQueryer fishStageQueryer)
         {
-            _Storage = storage;
+            _AccountFinder = accountFinder;
             _Updater = new Regulus.Utility.Updater();
-            _Hall = new Hall();
+            _Hall = new Hall();            
+            
+            this._FishStageQueryer = fishStageQueryer;
         }
         void Regulus.Utility.ICore.ObtainController(Regulus.Remoting.ISoulBinder binder)
         {
-            var user = new User(binder, _Storage);
+            var user = new User(binder, _AccountFinder, _FishStageQueryer);
             _Hall.PushUser(user);
         }
 

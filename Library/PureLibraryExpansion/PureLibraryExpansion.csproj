@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5061BC1D-0C9E-4050-A51E-593B5C16D398}</ProjectGuid>
+    <ProjectGuid>{E977627A-CD89-4D30-892D-4679E10F45FA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>VGame.Project.FishHunter</RootNamespace>
-    <AssemblyName>Game</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <RootNamespace>PureLibraryExpansion</RootNamespace>
+    <AssemblyName>PureLibraryExpansion</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -35,48 +34,24 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Formula\FishStage.cs" />
-    <Compile Include="Formula\FormulaStage.cs" />
-    <Compile Include="Formula\StorageController.cs" />
-    <Compile Include="Play\Center.cs" />
-    <Compile Include="Play\DummyFeature.cs" />
-    <Compile Include="Formula\Center.cs" />
-    <Compile Include="Formula\HitBase.cs" />
-    <Compile Include="Formula\HitTest.cs" />
-    <Compile Include="Formula\User.cs" />
-    <Compile Include="Play\Hall.cs" />
-    <Compile Include="Play\PlayStage.cs" />
-    <Compile Include="Play\SelectStage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Stage\Verify.cs" />
-    <Compile Include="Play\DummyStandalong.cs" />
-    <Compile Include="Storage\Center.cs" />
-    <Compile Include="Storage\IUser.cs" />
-    <Compile Include="Stage\StroageAccess.cs" />
-    <Compile Include="Storage\User.cs" />
-    <Compile Include="Verify.cs" />
-    <Compile Include="Play\User.cs" />
+    <Compile Include="ValueAwaitExtension.cs" />
+    <Compile Include="ValueSpin.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Library\PureLib\PureLib.csproj">
+    <ProjectReference Include="..\PureLib\PureLib.csproj">
       <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
       <Name>PureLib</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Library\Remoting\Remoting.csproj">
+    <ProjectReference Include="..\Remoting\Remoting.csproj">
       <Project>{a4cfce46-bda8-4416-a1bb-77bd80514019}</Project>
       <Name>Remoting</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Common\Common.csproj">
-      <Project>{72e9207f-cd57-4789-ad21-30132e541fb6}</Project>
-      <Name>Common</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

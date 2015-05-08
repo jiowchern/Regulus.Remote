@@ -54,6 +54,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="collection_queue.cs" />
+    <Compile Include="customtype_verify.cs" />
+    <Compile Include="utility_dummyinput.cs" />
+    <Compile Include="utility_dummyview.cs" />
     <Compile Include="extebsion_showmember.cs" />
     <Compile Include="utility_launcher.cs" />
     <Compile Include="remoting_gpibinderfactory.cs" />

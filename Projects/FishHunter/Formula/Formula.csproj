@@ -43,9 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildStorageControllerStage.cs" />
-    <Compile Include="ConnectStorageStage.cs" />
     <Compile Include="Formula.cs" />
-    <Compile Include="InitialStorageStage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RunFormulaStage.cs" />
   </ItemGroup>
