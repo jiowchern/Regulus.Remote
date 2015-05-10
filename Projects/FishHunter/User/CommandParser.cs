@@ -33,19 +33,56 @@ namespace VGame.Project.FishHunter
         }
 
         void Regulus.Framework.ICommandParsable<IUser>.Setup(Regulus.Remoting.IGPIBinderFactory factory)
-        {            
-            var connect = factory.Create<Regulus.Utility.IConnect>(_User.Remoting.ConnectProvider);
-            connect.Bind("Connect[result , ipaddr ,port]", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().BuildRemoting<string, int, bool>(gpi.Connect, _ConnectResult); });
+        {
+            _CreateConnect(factory);
 
 
+            _CreateOnline(factory);
+
+
+            _CreateVerify(factory);
+
+            _CreatePlayer(factory);
+        }
+
+        private void _CreatePlayer(Regulus.Remoting.IGPIBinderFactory factory)
+        {
+            var player = factory.Create<VGame.Project.FishHunter.IPlayer>(_User.PlayerProvider);
+
+            player.Bind("Hit[bulletid,fishid]", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().Build<int, int>((b,f) => { gpi.Hit(b , new int[] {f}); }); });
+            player.Bind("RequestBullet", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().BuildRemoting<int>(gpi.RequestBullet, _GetBullet ); });
+
+            player.SupplyEvent += _RegisgetPlayerEvent;
+        }
+
+        private void _GetBullet(int obj)
+        {
+            _View.WriteLine("get bullet id" + obj.ToString());
+        }
+
+        private void _RegisgetPlayerEvent(IPlayer source)
+        {
+            source.MoneyEvent += (money) => { _View.WriteLine("player money " + money.ToString()); };
+            source.DeathFishEvent += (fish) => { _View.WriteLine(string.Format("fish{0} is dead", fish)); };
+        }
+
+        private void _CreateVerify(Regulus.Remoting.IGPIBinderFactory factory)
+        {
+            var verify = factory.Create<VGame.Project.FishHunter.IVerify>(_User.VerifyProvider);
+            verify.Bind("Login[result,id,password]", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().BuildRemoting<string, string, bool>(gpi.Login, _VerifyResult); });
+        }
+
+        private void _CreateOnline(Regulus.Remoting.IGPIBinderFactory factory)
+        {
             var online = factory.Create<Regulus.Utility.IOnline>(_User.Remoting.OnlineProvider);
             online.Bind("Disconnect", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().Build(gpi.Disconnect); });
-            online.Bind("Ping", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().Build(() => { _View.WriteLine( "Ping : " + gpi.Ping.ToString() ); }); });
+            online.Bind("Ping", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().Build(() => { _View.WriteLine("Ping : " + gpi.Ping.ToString()); }); });
+        }
 
-
-            var verify = factory.Create<VGame.Project.FishHunter.IVerify>(_User.VerifyProvider);
-
-            verify.Bind("Login[result,id,password]", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().BuildRemoting<string, string, bool>(gpi.Login, _VerifyResult); });
+        private void _CreateConnect(Regulus.Remoting.IGPIBinderFactory factory)
+        {
+            var connect = factory.Create<Regulus.Utility.IConnect>(_User.Remoting.ConnectProvider);
+            connect.Bind("Connect[result , ipaddr ,port]", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().BuildRemoting<string, int, bool>(gpi.Connect, _ConnectResult); });
         }
 
         private void _VerifyResult(bool result)

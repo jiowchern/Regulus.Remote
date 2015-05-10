@@ -20,7 +20,7 @@ namespace PureLibTest
             System.Collections.Generic.List<string> messages = new System.Collections.Generic.List<string>();
             
             
-            Regulus.Utility.Log.Instance.AsyncRecord = (message) => 
+            Regulus.Utility.Log.Instance.RecordEvent  += (message) => 
             {
                 lock (messages)
                     messages.Add(message);                    

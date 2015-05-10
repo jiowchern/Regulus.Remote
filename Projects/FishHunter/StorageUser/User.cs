@@ -14,7 +14,6 @@ namespace VGame.Project.FishHunter.Storage
             
             this._Agent = agent;
             _Updater = new Regulus.Utility.Updater();
-
             _Remoting = new Regulus.Remoting.User(agent);
         }
 

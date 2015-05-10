@@ -7,7 +7,9 @@ namespace VGame.Project.FishHunter
 {
     public interface IPlayer
     {
-        void Hit(int fishid,short bullet_score);
+        Regulus.Remoting.Value<int> RequestBullet();
+
+        void Hit(int bullet , int[] fishids);
 
         void Quit();
 

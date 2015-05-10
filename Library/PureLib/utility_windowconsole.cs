@@ -43,15 +43,23 @@ namespace Regulus.Utility
 
         void Framework.ILaunched.Launch()
         {
+
+            Regulus.Utility.Log.Instance.RecordEvent += _RecordView;
             _Updater.Add(_Input);
 
             _Launch();
+        }
+
+        private void _RecordView(string message)
+        {
+            _Viewer.WriteLine(message);
         }
 
         void Framework.ILaunched.Shutdown()
         {
             _Shutdown();
             _Updater.Shutdown();
+            Regulus.Utility.Log.Instance.RecordEvent -= _RecordView;
         }
     }
 
