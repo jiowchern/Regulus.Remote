@@ -12,7 +12,13 @@ namespace Regulus.Utility
     {
 
         public delegate void RecordCallback(string message);
-        public RecordCallback AsyncRecord { set ; private get;}
+
+        public event RecordCallback RecordEvent
+        {
+            add { _AsyncRecord += value; }
+            remove { _AsyncRecord -= value; }
+        }
+        RecordCallback _AsyncRecord;
         
 
         Regulus.Utility.AsyncExecuter _Executer;
@@ -21,7 +27,7 @@ namespace Regulus.Utility
         public Log()
         {
 
-            AsyncRecord = _EmptyRecord;
+            _AsyncRecord = _EmptyRecord;
             _Executer = new AsyncExecuter();
         }
 
@@ -34,7 +40,7 @@ namespace Regulus.Utility
         public void Write(string message)
         {
 
-            _Executer.Push(new LogWritter(message, AsyncRecord).Write);            
+            _Executer.Push(new LogWritter(message, _AsyncRecord).Write);            
         }
     }
 }

@@ -42,6 +42,7 @@
     <Compile Include="Formula\FishStage.cs" />
     <Compile Include="Formula\FormulaStage.cs" />
     <Compile Include="Formula\StorageController.cs" />
+    <Compile Include="Play\Bullet.cs" />
     <Compile Include="Play\Center.cs" />
     <Compile Include="Play\DummyFeature.cs" />
     <Compile Include="Formula\Center.cs" />

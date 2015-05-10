@@ -12,6 +12,7 @@ namespace Server
         
         static void Main(string[] args)
         {
+            
             Regulus.Remoting.Soul.Native.Application app = new Regulus.Remoting.Soul.Native.Application();
             app.Run();
         }

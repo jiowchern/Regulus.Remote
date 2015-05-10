@@ -56,6 +56,20 @@ namespace Regulus.Remoting
             return new CommandParam() { Callback = callback, Types = new Type[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4) }, Return = return_callback, ReturnType = typeof(TR) };
         }
 
+        public CommandParam BuildRemoting<TR>(Func<Regulus.Remoting.Value<TR>> callback, Action<TR> return_callback)
+        {
+            return new CommandParam()
+            {
+                Callback = callback,
+                Types = new Type[] {},
+                Return = new Action<Regulus.Remoting.Value<TR>>(
+                    (tr) =>
+                    {
+                        tr.OnValue += return_callback;
+                    }),
+                ReturnType = typeof(Regulus.Remoting.Value<TR>)
+            };
+        }
 
         public CommandParam BuildRemoting<T1, TR>(Func<T1, Regulus.Remoting.Value<TR>> callback, Action<TR> return_callback)
         {

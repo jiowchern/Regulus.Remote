@@ -30,7 +30,7 @@ namespace VGame.Project.FishHunter.Formula
         private void _InitialLog()
         {
             _LogRecorder = new Regulus.Utility.LogFileRecorder("Formula");
-            Regulus.Utility.Log.Instance.AsyncRecord = _LogRecorder.Record;            
+            Regulus.Utility.Log.Instance.RecordEvent += _LogRecorder.Record;            
         }
 
         private void _ReleaseLog()

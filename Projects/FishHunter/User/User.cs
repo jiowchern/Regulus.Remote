@@ -48,6 +48,12 @@ namespace VGame.Project.FishHunter
         }
 
 
-        
+
+
+
+        Regulus.Remoting.Ghost.IProviderNotice<IPlayer> IUser.PlayerProvider
+        {
+            get { return _Agent.QueryProvider<IPlayer>(); }
+        }
     }
 }

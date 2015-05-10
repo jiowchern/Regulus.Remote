@@ -5,14 +5,16 @@ using System.Text;
 
 namespace VGame.Project.FishHunter.Play
 {
+    
+
     class PlayStage : IPlayer , Regulus.Utility.IStage
     {
         private Regulus.Remoting.ISoulBinder _Binder;
         private IFishStage _FishStage;
         int _Money;
 
+        List<Bullet> _Bullets;
         
-
         public delegate void DoneCallback(int money);
         public event DoneCallback DoneEvent;
 
@@ -20,6 +22,7 @@ namespace VGame.Project.FishHunter.Play
 
         public PlayStage(Regulus.Remoting.ISoulBinder binder, IFishStage fish_stage , int money)
         {
+            _Bullets = new List<Bullet>();
             Requests = new Dictionary<int, HitRequest>();
             this._Binder = binder;
             this._FishStage = fish_stage;
@@ -35,7 +38,8 @@ namespace VGame.Project.FishHunter.Play
                 _DeathFishEvent(obj.FishID);
 
                 AddMoney(request.WepBet * request.WepOdds);
-                
+
+                Requests.Remove(obj.FishID);
             }
         }
 
@@ -56,27 +60,36 @@ namespace VGame.Project.FishHunter.Play
             
         }
 
-        void IPlayer.Hit(int fishid, short bullet_score)
+        void IPlayer.Hit(int bulletid, int[] fishids)
         {
-            if (bullet_score > 0 && HasMoney(bullet_score)  )
+            var hasBullet = _PopBullet(bulletid);
+            if (hasBullet  == false)
                 return;
 
-            AddMoney(-bullet_score);
+            foreach(var fishid in fishids)
+            {
+                VGame.Project.FishHunter.HitRequest request = new VGame.Project.FishHunter.HitRequest();
+                request.FishID = (short)fishid;
+                request.FishOdds = 1;
 
-            VGame.Project.FishHunter.HitRequest request = new VGame.Project.FishHunter.HitRequest();
-            request.FishID = (short)fishid;
-            request.FishOdds = 1;
+                request.FishStatus = VGame.Project.FishHunter.FISH_STATUS.NORMAL;
+                request.FishType = 1;
+                request.TotalHits = 1;
+                request.HitCnt = 1;
+                request.TotalHitOdds = 1;
+                request.WepBet = 1;
+                request.WepID = 1;
+                request.WepOdds = 2;
+                request.WepType = 1;
+                Requests.Add(fishid, request);
+                _FishStage.Hit(request);
+            }
+            
+        }
 
-            request.FishStatus = VGame.Project.FishHunter.FISH_STATUS.NORMAL;
-            request.FishType = 1;
-            request.TotalHits = 1;
-            request.HitCnt = 1;
-            request.TotalHitOdds = 1;
-            request.WepBet = bullet_score;
-            request.WepID = 1;
-            request.WepOdds = 2;
-            request.WepType = 1;
-            _FishStage.Hit(request);
+        private bool _PopBullet(int bulletid)
+        {            
+            return _Bullets.RemoveAll(b => b.Id == bulletid) >  0;
         }
 
         private void AddMoney(int p)
@@ -109,6 +122,23 @@ namespace VGame.Project.FishHunter.Play
         {
             add { _MoneyEvent += value; }
             remove { _MoneyEvent -= value; }
+        }
+
+        Regulus.Remoting.Value<int> IPlayer.RequestBullet()
+        {
+            if (HasMoney(1) == false)
+                return 0;
+
+            AddMoney(-1);
+
+            return _CreateBullet();
+        }
+
+        private Regulus.Remoting.Value<int> _CreateBullet()
+        {
+            var bullet = new Bullet();
+            _Bullets.Add(bullet);
+            return bullet.Id;
         }
     }
 }
