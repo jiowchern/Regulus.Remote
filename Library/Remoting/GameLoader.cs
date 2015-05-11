@@ -16,32 +16,8 @@ namespace Regulus.Utility
         static public Regulus.Utility.ICore Load(byte[] assembly_stream, string class_name)
         {
             var assembly = System.Reflection.Assembly.Load(assembly_stream);
-            try
-            {
-                var instance = assembly.CreateInstance(class_name);
-                return instance as Regulus.Utility.ICore;
-            }
-            catch (System.MissingMethodException mme)
-            {
-
-            }
-            catch (System.IO.FileNotFoundException fne)
-            {
-
-            }
-            catch (System.IO.FileLoadException fe)
-            {
-
-            }
-            catch (System.BadImageFormatException bfe)
-            {
-
-            }
-            catch (System.Reflection.TargetInvocationException tie)
-            {
-                var sss = tie.ToString();
-            }
-            return null;
+            var instance = assembly.CreateInstance(class_name);
+            return instance as Regulus.Utility.ICore;
         }
     }
 }
