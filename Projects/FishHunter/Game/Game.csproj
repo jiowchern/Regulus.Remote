@@ -49,6 +49,7 @@
     <Compile Include="Formula\HitBase.cs" />
     <Compile Include="Formula\HitTest.cs" />
     <Compile Include="Formula\User.cs" />
+    <Compile Include="Play\Fish.cs" />
     <Compile Include="Play\Hall.cs" />
     <Compile Include="Play\PlayStage.cs" />
     <Compile Include="Play\SelectStage.cs" />

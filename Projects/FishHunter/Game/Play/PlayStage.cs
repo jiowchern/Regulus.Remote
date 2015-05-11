@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using Regulus.Extension;
 namespace VGame.Project.FishHunter.Play
 {
     
@@ -14,16 +14,18 @@ namespace VGame.Project.FishHunter.Play
         int _Money;
 
         List<Bullet> _Bullets;
+        List<Fish> _Fishs;
         
         public delegate void DoneCallback(int money);
         public event DoneCallback DoneEvent;
 
-        Dictionary<int, HitRequest> Requests;
+        Dictionary<int, HitRequest> _Requests;
 
         public PlayStage(Regulus.Remoting.ISoulBinder binder, IFishStage fish_stage , int money)
         {
+            _Fishs = new List<Fish>();
             _Bullets = new List<Bullet>();
-            Requests = new Dictionary<int, HitRequest>();
+            _Requests = new Dictionary<int, HitRequest>();
             this._Binder = binder;
             this._FishStage = fish_stage;
             
@@ -33,14 +35,24 @@ namespace VGame.Project.FishHunter.Play
         private void _Response(HitResponse obj)
         {
             VGame.Project.FishHunter.HitRequest request ;
-            if(Requests.TryGetValue(obj.FishID , out request ))
+            if(_Requests.TryGetValue(obj.FishID , out request ))
             {
-                _DeathFishEvent(obj.FishID);
-
-                AddMoney(request.WepBet * request.WepOdds);
-
-                Requests.Remove(obj.FishID);
+                if (obj.DieResult == FISH_DETERMINATION.DEATH)
+                {
+                    _DeathFishEvent(obj.FishID);
+                    AddMoney(request.WepBet * request.WepOdds);
+                }
+                else if(obj.DieResult == FISH_DETERMINATION.SURVIVAL)
+                {
+                    _PushFish(obj.FishID);
+                }
+                _Requests.Remove(obj.FishID);
             }
+        }
+
+        private void _PushFish(short id)
+        {
+            _Fishs.Add(new Fish(id));
         }
 
         void Regulus.Utility.IStage.Enter()
@@ -67,10 +79,15 @@ namespace VGame.Project.FishHunter.Play
             if (hasBullet  == false)
                 return 0;
 
+
+            string logFishs ="";
             int count = 0;
             foreach(var fishid in fishids)
             {
-                if(Requests.ContainsKey(fishid) == false)
+                if (_PopFish(fishid) == false)
+                    continue;
+
+                if(_Requests.ContainsKey(fishid) == false)
                 {
                     VGame.Project.FishHunter.HitRequest request = new VGame.Project.FishHunter.HitRequest();
                     request.FishID = (short)fishid;
@@ -82,16 +99,35 @@ namespace VGame.Project.FishHunter.Play
                     request.HitCnt = 1;
                     request.TotalHitOdds = 1;
                     request.WepBet = 1;
-                    request.WepID = 1;
+                    request.WepID = (short)bulletid;
                     request.WepOdds = 2;
                     request.WepType = 1;
-                    Requests.Add(fishid, request);
+                    _Requests.Add(fishid, request);
                     _FishStage.Hit(request);
                     count++;
+                    logFishs += fishid.ToString() + ",";
                 }
                 
             }
+            if (count == 0)
+            {
+                _PushBullet(bulletid);
+            }
+
+            Regulus.Utility.Log.Instance.Write(string.Format("all bullet:{0} , targets:{1} , count:{2}", bulletid, string.Join(",", (from id in fishids select id.ToString()).ToArray()), fishids.Length));
+            Regulus.Utility.Log.Instance.Write(string.Format("requested bullet:{0} , targets:{1} , count:{2}", bulletid, logFishs, count));
+            Regulus.Utility.Log.Instance.Write(string.Format("request fishs:{0} count:{1} ", string.Join(",", (from id in _Requests.Keys select id.ToString()).ToArray()), _Requests.Count));
             return count;
+        }
+
+        private bool _PopFish(int fishid)
+        {
+            return _Fishs.RemoveAll(fish => fish.Id == fishid) > 0;
+        }
+
+        private void _PushBullet(int bulletid)
+        {
+            _Bullets.Add(new Bullet(bulletid));
         }
 
         
@@ -149,5 +185,18 @@ namespace VGame.Project.FishHunter.Play
             _Bullets.Add(bullet);
             return bullet.Id;
         }
+
+
+        Regulus.Remoting.Value<short> IPlayer.RequestFish()
+        {
+            checked
+            {
+                var fishid = ++_FishIdSn;
+                _Fishs.Add(new Fish(fishid));
+                return fishid;
+            }            
+        }
+
+        short _FishIdSn;
     }
 }
