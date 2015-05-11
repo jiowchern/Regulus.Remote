@@ -49,10 +49,10 @@ namespace VGame.Project.FishHunter.Play
             _StorageVerifyData.Account = config.Read("Storage", "account");
             _StorageVerifyData.Password = config.Read("Storage", "password");
 
-            _FormulaVerifyData.IPAddress = config.Read("formula", "ipaddr");
-            _FormulaVerifyData.Port = int.Parse(config.Read("formula", "port"));
-            _FormulaVerifyData.Account = config.Read("formula", "account");
-            _FormulaVerifyData.Password = config.Read("formula", "password");
+            _FormulaVerifyData.IPAddress = config.Read("Formula", "ipaddr");
+            _FormulaVerifyData.Port = int.Parse(config.Read("Formula", "port"));
+            _FormulaVerifyData.Account = config.Read("Formula", "account");
+            _FormulaVerifyData.Password = config.Read("Formula", "password");
         }
         private void _BuildUser()
         {

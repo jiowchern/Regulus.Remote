@@ -49,12 +49,20 @@ namespace Regulus.Remoting.Soul.Native
 
 
             var stream = System.IO.File.ReadAllBytes(path);
-            var core = Regulus.Utility.Loader.Load(stream, class_name);
 
-            // _LoadLibrary(work_dir);
+            try 
+            {
+                var core = Regulus.Utility.Loader.Load(stream, class_name);
+                DoneEvent(core, port, 0);
+            }
+            catch (SystemException ex)
+            {
+                _View.WriteLine(ex.ToString());
+            }
+            
 
 
-            DoneEvent(core, port, 0);
+            
         }
 
         /*private void _LoadLibrary(string work_dir)
