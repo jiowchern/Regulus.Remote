@@ -81,7 +81,7 @@ namespace Regulus.Remoting.Ghost.Native
 		{
             _Machine.Update();
             _OnlineStage.Process();
-            
+            System.Threading.Thread.SpinWait(1);
 
 			return true;
 		}
