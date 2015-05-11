@@ -81,8 +81,15 @@ namespace Regulus.Remoting.Soul.Native
                 _RequesterHandlers.Update();
                 _Core.Update();
                 _FPS.Update();
-                
-                sw.SpinOnce();
+
+                if (sw.NextSpinWillYield == false)
+                    sw.SpinOnce();
+                else
+                {
+                    sw.Reset();
+                    System.Threading.Thread.Yield();
+                }
+                    
                 
             }
             _Core.Shutdown();
@@ -160,8 +167,14 @@ namespace Regulus.Remoting.Soul.Native
                 
                 _Peers.Update();
                 _FPS.Update();
-                
-                sw.SpinOnce();
+
+                if (sw.NextSpinWillYield == false)
+                    sw.SpinOnce();
+                else
+                {
+                    sw.Reset();
+                    System.Threading.Thread.Yield();
+                }
             }
 
             

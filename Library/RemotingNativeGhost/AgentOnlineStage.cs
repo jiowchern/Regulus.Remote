@@ -10,7 +10,7 @@ namespace Regulus.Remoting.Ghost.Native
         public static int RequestQueueCount { get { return OnlineStage.RequestQueueCount; } }
         public static int ResponseQueueCount { get { return OnlineStage.ResponseQueueCount; } }
         
-        class OnlineStage : Regulus.Utility.IStage, Regulus.Utility.IUpdatable, Regulus.Remoting.IGhostRequest
+        class OnlineStage : Regulus.Utility.IStage, Regulus.Remoting.IGhostRequest
         {
             public event Action DoneEvent;
             
@@ -74,36 +74,7 @@ namespace Regulus.Remoting.Ghost.Native
                     DoneEvent();
                 }
             }
-
-            bool Utility.IUpdatable.Update()
-            {
-                while (_Socket.Connected && _Enable)
-                {
-                    _WriteMachine.Update();
-                    _ReadMachine.Update();
-                    return true;
-                }
-                DoneEvent();
-                return false;
-            }
-
-            void Framework.ILaunched.Launch()
-            {
-                _Enable = true;
-                _Core.Initial();
-                _ToRead();
-                _ToWriteWait();
-            }
-
-            void Framework.ILaunched.Shutdown()
-            {
-                _Enable = false;
-                _Core.Finial();
-                _ReadMachine.Empty();
-                _WriteMachine.Empty();
-                
-                    
-            }
+            
 
             void IGhostRequest.Request(byte code, Dictionary<byte, byte[]> args)
             {                
