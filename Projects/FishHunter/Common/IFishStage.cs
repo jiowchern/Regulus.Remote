@@ -127,6 +127,13 @@ namespace VGame.Project.FishHunter
         /// </summary>
         [ProtoBuf.ProtoMember(4)]
         public byte SpecAsn;
+
+        /// <summary>
+        /// 
+        /// 1 = 沒有翻倍        
+        /// </summary>
+        [ProtoBuf.ProtoMember(5)]
+        public int WUp;
     }
 
     //public delegate void HitResponseCallback(HitResponse response);
