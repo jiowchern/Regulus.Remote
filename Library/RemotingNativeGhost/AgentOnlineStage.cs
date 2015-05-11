@@ -45,30 +45,44 @@ namespace Regulus.Remoting.Ghost.Native
             {
                 _ReadMachine = new Utility.StageMachine();
                 _WriteMachine = new Utility.StageMachine();
-                IOHandler.Instance.Start(this);
-                
+               // IOHandler.Instance.Start(this);
+                _Enable = true;
+                _Core.Initial();
+                _ToRead();
+                _ToWriteWait();
             }
 
             void Utility.IStage.Leave()
             {
-                IOHandler.Instance.Stop(this);
+                _Enable = false;
+                _Core.Finial();
+                _ReadMachine.Empty();
+                _WriteMachine.Empty();
+                
+               // IOHandler.Instance.Stop(this);
                 _ReadMachine.Termination();
                 _WriteMachine.Termination();
             }
 
             void Utility.IStage.Update()
             {
-                
+                _WriteMachine.Update();
+                _ReadMachine.Update();
+
+                if( !(_Socket.Connected && _Enable) )
+                {
+                    DoneEvent();
+                }
             }
 
             bool Utility.IUpdatable.Update()
             {
                 while (_Socket.Connected && _Enable)
                 {
-                    _WriteMachine.Update();                    
-                    _ReadMachine.Update();                    
+                    _WriteMachine.Update();
+                    _ReadMachine.Update();
                     return true;
-                }                
+                }
                 DoneEvent();
                 return false;
             }

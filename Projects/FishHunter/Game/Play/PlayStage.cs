@@ -60,32 +60,41 @@ namespace VGame.Project.FishHunter.Play
             
         }
 
-        void IPlayer.Hit(int bulletid, int[] fishids)
-        {
+        Regulus.Remoting.Value<int> IPlayer.Hit(int bulletid, int[] fishids)
+        {            
+
             var hasBullet = _PopBullet(bulletid);
             if (hasBullet  == false)
-                return;
+                return 0;
 
+            int count = 0;
             foreach(var fishid in fishids)
             {
-                VGame.Project.FishHunter.HitRequest request = new VGame.Project.FishHunter.HitRequest();
-                request.FishID = (short)fishid;
-                request.FishOdds = 1;
+                if(Requests.ContainsKey(fishid) == false)
+                {
+                    VGame.Project.FishHunter.HitRequest request = new VGame.Project.FishHunter.HitRequest();
+                    request.FishID = (short)fishid;
+                    request.FishOdds = 1;
 
-                request.FishStatus = VGame.Project.FishHunter.FISH_STATUS.NORMAL;
-                request.FishType = 1;
-                request.TotalHits = 1;
-                request.HitCnt = 1;
-                request.TotalHitOdds = 1;
-                request.WepBet = 1;
-                request.WepID = 1;
-                request.WepOdds = 2;
-                request.WepType = 1;
-                Requests.Add(fishid, request);
-                _FishStage.Hit(request);
+                    request.FishStatus = VGame.Project.FishHunter.FISH_STATUS.NORMAL;
+                    request.FishType = 1;
+                    request.TotalHits = 1;
+                    request.HitCnt = 1;
+                    request.TotalHitOdds = 1;
+                    request.WepBet = 1;
+                    request.WepID = 1;
+                    request.WepOdds = 2;
+                    request.WepType = 1;
+                    Requests.Add(fishid, request);
+                    _FishStage.Hit(request);
+                    count++;
+                }
+                
             }
-            
+            return count;
         }
+
+        
 
         private bool _PopBullet(int bulletid)
         {            
