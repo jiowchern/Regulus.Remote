@@ -12,7 +12,7 @@ namespace VGame.Project.FishHunter.Play
 
 
 
-    class Complex : Regulus.Utility.ICore
+    public class Complex : Regulus.Utility.ICore
     {
         Regulus.Utility.StageMachine _Machine;
         Regulus.Utility.Updater _Updater;
