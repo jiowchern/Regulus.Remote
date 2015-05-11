@@ -9,7 +9,10 @@ namespace VGame.Project.FishHunter.Play
     {
         static int _Sn;
         public int Id { get; set; }
-
+        public Bullet(int id)
+        {
+            Id = id;
+        }
         public Bullet()
         {
             Id = ++_Sn;
