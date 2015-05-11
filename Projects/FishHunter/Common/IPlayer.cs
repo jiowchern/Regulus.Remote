@@ -9,7 +9,7 @@ namespace VGame.Project.FishHunter
     {
         Regulus.Remoting.Value<int> RequestBullet();
 
-        void Hit(int bullet , int[] fishids);
+        Regulus.Remoting.Value<int> Hit(int bullet , int[] fishids);
 
         void Quit();
 
