@@ -57,7 +57,12 @@ namespace VGame.Project.FishHunter.Formula
 
         private HitResponse _Die(HitRequest request)
         {
-            return new HitResponse { FishID = request.FishID, DieResult =  FISH_DETERMINATION.DEATH , SpecAsn = 0, WepID = request.WepID };
+            return new HitResponse {
+                FishID = request.FishID, 
+                DieResult =  FISH_DETERMINATION.DEATH , 
+                SpecAsn = 0, 
+                WepID = request.WepID ,
+                WUp = Regulus.Utility.Random.Next(1 , 5)};
         }
 
         private static HitResponse _Miss(HitRequest request)
