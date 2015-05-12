@@ -42,11 +42,11 @@ namespace Regulus.Remoting.Ghost.Native
 
         private void _Handle(object obj)
         {
-            
+            Regulus.Utility.SpinWait sw = new Regulus.Utility.SpinWait();
             do
             {                
                 _Updater.Update();
-                System.Threading.Thread.SpinWait(1);
+                sw.SpinOnce();
             } while (_Updater.Count > 0);            
             
             _Shutdown();            

@@ -9,8 +9,8 @@ namespace Regulus.Remoting.Ghost.Native
     {
         public static int RequestQueueCount { get { return OnlineStage.RequestQueueCount; } }
         public static int ResponseQueueCount { get { return OnlineStage.ResponseQueueCount; } }
-        
-        class OnlineStage : Regulus.Utility.IStage, Regulus.Remoting.IGhostRequest
+
+        class OnlineStage : Regulus.Utility.IStage, Regulus.Remoting.IGhostRequest, Regulus.Utility.IUpdatable 
         {
             public event Action DoneEvent;
             
@@ -45,34 +45,22 @@ namespace Regulus.Remoting.Ghost.Native
             {
                 _ReadMachine = new Utility.StageMachine();
                 _WriteMachine = new Utility.StageMachine();
-               // IOHandler.Instance.Start(this);
-                _Enable = true;
-                _Core.Initial();
-                _ToRead();
-                _ToWriteWait();
+                IOHandler.Instance.Start(this);
+                
             }
 
             void Utility.IStage.Leave()
             {
-                _Enable = false;
-                _Core.Finial();
-                _ReadMachine.Empty();
-                _WriteMachine.Empty();
+               
                 
-               // IOHandler.Instance.Stop(this);
+                IOHandler.Instance.Stop(this);
                 _ReadMachine.Termination();
                 _WriteMachine.Termination();
             }
 
             void Utility.IStage.Update()
             {
-                _WriteMachine.Update();
-                _ReadMachine.Update();
-
-                if( !(_Socket.Connected && _Enable) )
-                {
-                    DoneEvent();
-                }
+               
             }
             
 
@@ -167,6 +155,38 @@ namespace Regulus.Remoting.Ghost.Native
                     _Core.OnResponse(pkg.Code, pkg.Args);
                 }
 
+            }
+
+            bool Utility.IUpdatable.Update()
+            {
+                
+
+                if (!(_Socket.Connected && _Enable))
+                {
+                    DoneEvent();
+                    return false;
+                }
+
+                _WriteMachine.Update();
+                _ReadMachine.Update();
+
+                return true;
+            }
+
+            void Framework.ILaunched.Launch()
+            {
+                _Enable = true;
+                _Core.Initial();
+                _ToRead();
+                _ToWriteWait();
+            }
+
+            void Framework.ILaunched.Shutdown()
+            {
+                _Enable = false;
+                _Core.Finial();
+                _ReadMachine.Empty();
+                _WriteMachine.Empty();
             }
         }
     }
