@@ -11,10 +11,13 @@ namespace VGame.Project.FishHunter.Storage
     {
         KeyPool _Keys;
         Proxy _Proxy;
+        VGame.Project.FishHunter.Storage.Center _Center;
         public Appliction()
         {
-            
-            _Proxy = new Proxy();
+
+            _Center = new VGame.Project.FishHunter.Storage.Center(new DummyFrature());
+            var factory = new VGame.Project.FishHunter.Storage.StandalongFactory(_Center);
+            _Proxy = new Proxy(factory);
             _Keys = new KeyPool(_Proxy);
             Task task = new Task(_Run);
             task.Start();
@@ -25,6 +28,7 @@ namespace VGame.Project.FishHunter.Storage
             var updater = new Regulus.Utility.Updater();
             System.Threading.SpinWait sw = new System.Threading.SpinWait();
             updater.Add(_Proxy);
+            updater.Add(_Center);
             Enable = true;
             while(Enable)
             {
