@@ -17,11 +17,11 @@ namespace FormulaUserBot
         public event DoneCallback DoneEvent;
 
         Regulus.Utility.TimeCounter _HitTime;
-        Regulus.Utility.Updater _HitHandlers;
+        Regulus.Utility.CenterOfUpdateable _HitHandlers;
 
         public BotPlayStage(VGame.Project.FishHunter.IFishStage fish_stage)
         {
-            _HitHandlers = new Regulus.Utility.Updater();
+            _HitHandlers = new Regulus.Utility.CenterOfUpdateable();
             _HitTime = new Regulus.Utility.TimeCounter();
             _Stage = fish_stage;
 
@@ -39,7 +39,7 @@ namespace FormulaUserBot
 
         void Regulus.Utility.IStage.Update()
         {
-            _HitHandlers.Update();
+            _HitHandlers.GetObjectSet();
             if (_HitTime.Second > HitHandler.Interval)
             {
                 //var totalHits = (byte)Regulus.Utility.Random.Next(1, 1000);

@@ -5,9 +5,6 @@ using System.Text;
 
 namespace Regulus.Utility
 {
-    
-
-
     public interface IUpdatable : Regulus.Framework.ILaunched
     {
         bool Update();
@@ -18,15 +15,14 @@ namespace Regulus.Utility
         bool Update(T arg);
     }
 
-   
     public class Launcher<T > where T : Regulus.Framework.ILaunched
     {
-        
         Queue<T> _Adds = new Queue<T>();
         Queue<T> _Removes = new Queue<T>();
 
         List<T> _Ts = new List<T>();
 
+        public int Count { get { return _Ts.Count; } }
 
         public T[] Objects
         {
@@ -35,7 +31,21 @@ namespace Regulus.Utility
                 return _Ts.ToArray();                
             }
         }
-        public int Count { get { return _Ts.Count; } }
+
+        public System.Collections.Generic.IEnumerable<T> GetObjectSet()
+        {
+            lock (_Ts)
+            {
+                lock (_Removes)
+                    _Remove(_Removes, _Ts);
+
+                lock (_Adds)
+                    _Add(_Adds, _Ts);
+
+                return Objects;
+                //return _Update();
+            }
+        }
 
         public void Add(T framework)
         {
@@ -47,30 +57,6 @@ namespace Regulus.Utility
         {
             lock (_Removes) 
                 _Removes.Enqueue(framework);            
-        }
-
-        public System.Collections.Generic.IEnumerable<T> Update()
-        {
-            lock (_Ts)
-            {
-
-                lock (_Removes)
-                    _Remove(_Removes, _Ts);
-
-                lock (_Adds)
-                    _Add(_Adds, _Ts);
-
-                return _Update();
-            }
-
-            
-        }
-
-        System.Collections.Generic.IEnumerable<T> _Update()
-        {
-
-            return Objects;
-
         }
 
         private void _Remove(Queue<T> remove_framework, List<T> frameworks)
@@ -93,6 +79,12 @@ namespace Regulus.Utility
             }
         }
 
+        public void Shutdown()
+        {
+            _Shutdown(_Ts);
+            _Ts.Clear();
+        }
+
         private void _Shutdown(List<T> frameworks)
         {
 
@@ -101,20 +93,13 @@ namespace Regulus.Utility
                 framework.Shutdown();
             }
         }
-
-        public void Shutdown()
-        {
-            _Shutdown(_Ts);
-            _Ts.Clear();
-        }
-
     }
 
-    public class Updater<T> : Launcher<Regulus.Utility.IUpdatable<T>>             
+    public class CenterOfUpdateableToGenerics<T> : Launcher<Regulus.Utility.IUpdatable<T>>             
     {
-        public void Update(T arg)
+        public void Working(T arg)
         {
-            foreach (var t in base.Update())
+            foreach (var t in base.GetObjectSet())
             {
                 if (t.Update(arg) == false)
                 {
@@ -124,12 +109,11 @@ namespace Regulus.Utility
         }
     }
 
-
-    public class Updater : Launcher<Regulus.Utility.IUpdatable>             
+    public class CenterOfUpdateable : Launcher<Regulus.Utility.IUpdatable>
     {
-        new public void Update()
+        public void Working()
         {
-            foreach (var t in base.Update())
+            foreach (var t in base.GetObjectSet())
             {
                 if (t.Update() == false)
                 {
@@ -138,20 +122,4 @@ namespace Regulus.Utility
             }
         }
     }
-
-    public class TUpdater<T> : Launcher<T> where T : Regulus.Utility.IUpdatable
-    {
-        new public void Update()
-        {
-            foreach (var t in base.Update())
-            {
-                if (t.Update() == false)
-                {
-                    Remove(t);
-                }
-            }
-        }
-    }
-    
-    
 }

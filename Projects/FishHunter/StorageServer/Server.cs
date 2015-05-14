@@ -9,7 +9,7 @@ namespace VGame.Project.FishHunter.Storage
     public class Server : Regulus.Utility.ICore, IStorage 
     {
 
-        Regulus.Utility.Updater _Updater;
+        Regulus.Utility.CenterOfUpdateable _Updater;
         VGame.Project.FishHunter.Storage.Center _Center;
         Regulus.Utility.ICore _Core { get { return _Center; } }
         Regulus.NoSQL.Database _Database;
@@ -22,7 +22,7 @@ namespace VGame.Project.FishHunter.Storage
             _DefaultAdministratorName = "vgameadmini";
             _Ip = "mongodb://127.0.0.1:27017";
             _Name = "VGame";
-            _Updater = new Regulus.Utility.Updater();
+            _Updater = new Regulus.Utility.CenterOfUpdateable();
             _Database = new Regulus.NoSQL.Database();
             _Center = new Center(this);
         }
@@ -33,7 +33,7 @@ namespace VGame.Project.FishHunter.Storage
 
         bool Regulus.Utility.IUpdatable.Update()
         {
-            _Updater.Update();
+            _Updater.GetObjectSet();
             return true;
         }
 

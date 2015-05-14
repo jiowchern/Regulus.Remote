@@ -7,11 +7,11 @@
         VGame.Project.FishHunter.DummyFrature _Storage;
 
         Regulus.Utility.ICore _Core { get { return _Center; } }
-        Regulus.Utility.Updater _Updater;
+        Regulus.Utility.CenterOfUpdateable _Updater;
         public DummyStandalong()
         {
             _Storage = new DummyFrature();
-            _Updater = new Regulus.Utility.Updater();
+            _Updater = new Regulus.Utility.CenterOfUpdateable();
             _Center = new Center(_Storage , _Storage);
         }
 
@@ -22,7 +22,7 @@
 
         bool Regulus.Utility.IUpdatable.Update()
         {
-            _Updater.Update();
+            _Updater.GetObjectSet();
             return true;
         }
 

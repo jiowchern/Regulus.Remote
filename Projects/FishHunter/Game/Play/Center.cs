@@ -7,7 +7,7 @@ namespace VGame.Project.FishHunter.Play
 {
     public class Center : Regulus.Utility.ICore
     {
-        Regulus.Utility.Updater _Updater;
+        Regulus.Utility.CenterOfUpdateable _Updater;
         Hall _Hall;
         VGame.Project.FishHunter.IAccountFinder _AccountFinder;
         
@@ -17,7 +17,7 @@ namespace VGame.Project.FishHunter.Play
         public Center(IAccountFinder accountFinder, IFishStageQueryer fishStageQueryer)
         {
             _AccountFinder = accountFinder;
-            _Updater = new Regulus.Utility.Updater();
+            _Updater = new Regulus.Utility.CenterOfUpdateable();
             _Hall = new Hall();            
             
             this._FishStageQueryer = fishStageQueryer;
@@ -30,7 +30,7 @@ namespace VGame.Project.FishHunter.Play
 
         bool Regulus.Utility.IUpdatable.Update()
         {
-            _Updater.Update();
+            _Updater.GetObjectSet();
             return true;
         }
 

@@ -8,7 +8,7 @@ namespace VGame.Project.FishHunter.Formula
     public class Center : Regulus.Utility.ICore
     {
         
-        Regulus.Utility.Updater _Update;
+        Regulus.Utility.CenterOfUpdateable _Update;
         Hall _Hall;
         private StorageController _Controller;
         
@@ -16,7 +16,7 @@ namespace VGame.Project.FishHunter.Formula
         {
         
             _Hall = new Hall();
-            _Update = new Regulus.Utility.Updater();
+            _Update = new Regulus.Utility.CenterOfUpdateable();
         }
 
         public Center(StorageController controller) : this()
@@ -31,7 +31,7 @@ namespace VGame.Project.FishHunter.Formula
 
         bool Regulus.Utility.IUpdatable.Update()
         {         
-            _Update.Update();
+            _Update.Working();
             return true;
         }
 

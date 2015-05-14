@@ -12,14 +12,14 @@ namespace VGame.Project.FishHunter
         VGame.Project.FishHunter.Formula.Center _Center;
 
         Regulus.Utility.ICore _Core { get { return _Center; } }
-        Regulus.Utility.Updater _Updater;
+        Regulus.Utility.CenterOfUpdateable _Updater;
         
         private Regulus.Collection.Queue<Regulus.Remoting.ISoulBinder> _Binders;
         
 
         private RunFormulaStage(Formula.StorageController controller)
         {
-            _Updater = new Regulus.Utility.Updater();
+            _Updater = new Regulus.Utility.CenterOfUpdateable();
             _Center = new Formula.Center(controller);
             
         }
@@ -44,7 +44,7 @@ namespace VGame.Project.FishHunter
 
         void Regulus.Utility.IStage.Update()
         {
-            _Updater.Update();
+            _Updater.Working();
 
             foreach (var binder in _Binders.DequeueAll())
             {

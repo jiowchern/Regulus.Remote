@@ -10,7 +10,7 @@ namespace VGame.Project.FishHunter.Storage
         Regulus.Utility.IUpdatable, Regulus.Utility.Console.IViewer, Regulus.Utility.Console.IInput
     {
         Regulus.Framework.Client<IUser> _Client;
-        Regulus.Utility.Updater _Updater;
+        Regulus.Utility.CenterOfUpdateable _Updater;
         
         Regulus.Framework.IUserFactoty<IUser> _UserFactory;
 
@@ -18,7 +18,7 @@ namespace VGame.Project.FishHunter.Storage
         {
             _UserFactory = custom;
             _Client = new Regulus.Framework.Client<IUser>(this, this);            
-            _Updater = new Regulus.Utility.Updater();
+            _Updater = new Regulus.Utility.CenterOfUpdateable();
 
             Client_ModeSelectorEvent(_Client.Selector);
         }
@@ -32,7 +32,7 @@ namespace VGame.Project.FishHunter.Storage
         {
             _UserFactory = new RemotingFactory();
             _Client = new Regulus.Framework.Client<IUser>(this, this);            
-            _Updater = new Regulus.Utility.Updater();
+            _Updater = new Regulus.Utility.CenterOfUpdateable();
 
             Client_ModeSelectorEvent(_Client.Selector);
         }
@@ -66,7 +66,7 @@ namespace VGame.Project.FishHunter.Storage
 
         bool Regulus.Utility.IUpdatable.Update()
         {
-            _Updater.Update();
+            _Updater.Working();
             return _Client.Enable;
         }
 

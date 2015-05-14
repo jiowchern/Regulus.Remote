@@ -11,11 +11,11 @@ namespace Regulus.Remoting.Ghost.Native
         
         volatile bool _ThreadEnable;
         
-        Regulus.Utility.Updater _Updater;
+        Regulus.Utility.CenterOfUpdateable _Updater;
         public IOHandler()
         {
             
-            _Updater = new Utility.Updater();
+            _Updater = new Utility.CenterOfUpdateable();
             
         }
         public void Stop(Regulus.Utility.IUpdatable updater)
@@ -45,7 +45,7 @@ namespace Regulus.Remoting.Ghost.Native
             Regulus.Utility.SpinWait sw = new Regulus.Utility.SpinWait();
             do
             {                
-                _Updater.Update();
+                _Updater.Working();
                 sw.SpinOnce();
             } while (_Updater.Count > 0);            
             

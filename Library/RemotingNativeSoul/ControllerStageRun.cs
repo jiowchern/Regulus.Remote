@@ -16,7 +16,7 @@ namespace Regulus.Remoting.Soul.Native
         }
         public void Update()
         {
-            Parallel.ForEach(base.Update(), _Update );            
+            Parallel.ForEach(base.GetObjectSet(), _Update );            
             /*foreach(var up in base.Update())
             {
                 _Update(up);
@@ -38,7 +38,7 @@ namespace Regulus.Remoting.Soul.Native
 
     class ThreadCoreHandler
     {
-        Regulus.Utility.Updater _RequesterHandlers;
+        Regulus.Utility.CenterOfUpdateable _RequesterHandlers;
         volatile bool _Run;
         Regulus.Utility.ICore _Core;
         Queue<ISoulBinder> _Binders;
@@ -55,7 +55,7 @@ namespace Regulus.Remoting.Soul.Native
             
             _Binders = new Queue<ISoulBinder>();
             _FPS = new Utility.FPSCounter();
-            _RequesterHandlers = new Utility.Updater();
+            _RequesterHandlers = new Utility.CenterOfUpdateable();
             
         }
 
@@ -78,7 +78,7 @@ namespace Regulus.Remoting.Soul.Native
                     }
                     
                 }
-                _RequesterHandlers.Update();
+                _RequesterHandlers.Working();
                 _Core.Update();
                 _FPS.Update();
 
