@@ -15,7 +15,7 @@ namespace VGame.Project.FishHunter.Play
     public class Complex : Regulus.Utility.ICore
     {
         Regulus.Utility.StageMachine _Machine;
-        Regulus.Utility.Updater _Updater;
+        Regulus.Utility.CenterOfUpdateable _Updater;
         VGame.Project.FishHunter.Storage.Proxy _Storage;
         VGame.Project.FishHunter.Formula.Client _Formula;
         VGame.Project.FishHunter.Play.Center _Center;
@@ -35,7 +35,7 @@ namespace VGame.Project.FishHunter.Play
             _StorageVerifyData = new Regulus.CustomType.Verify();
             _FormulaVerifyData = new Regulus.CustomType.Verify();
             _Machine = new Regulus.Utility.StageMachine();
-            _Updater = new Regulus.Utility.Updater();
+            _Updater = new Regulus.Utility.CenterOfUpdateable();
 
             _BuildParams();
             _BuildUser();
@@ -105,7 +105,7 @@ namespace VGame.Project.FishHunter.Play
 
         bool Regulus.Utility.IUpdatable.Update()
         {
-            _Updater.Update();
+            _Updater.GetObjectSet();
             _Machine.Update();
             return true;
         }

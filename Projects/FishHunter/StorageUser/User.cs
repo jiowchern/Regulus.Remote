@@ -8,12 +8,12 @@ namespace VGame.Project.FishHunter.Storage
     class User : IUser
     {
         private Regulus.Remoting.IAgent _Agent;
-        Regulus.Utility.Updater _Updater;
+        Regulus.Utility.CenterOfUpdateable _Updater;
         public User(Regulus.Remoting.IAgent agent)
         {
             
             this._Agent = agent;
-            _Updater = new Regulus.Utility.Updater();
+            _Updater = new Regulus.Utility.CenterOfUpdateable();
             _Remoting = new Regulus.Remoting.User(agent);
         }
 
@@ -31,7 +31,7 @@ namespace VGame.Project.FishHunter.Storage
 
         bool Regulus.Utility.IUpdatable.Update()
         {
-            _Updater.Update();
+            _Updater.Working();
             return true;
         }
 

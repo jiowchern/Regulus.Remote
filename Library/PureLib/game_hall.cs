@@ -8,12 +8,12 @@ namespace Regulus.Game
 	public class Hall : Regulus.Utility.IUpdatable
 	{
 		public event Regulus.Game.OnNewUser NewUserEvent;
-        private Regulus.Utility.Updater _Users;
+        private Regulus.Utility.CenterOfUpdateable _Users;
 
 		public Hall()
 		{
 
-			_Users = new Regulus.Utility.Updater();
+			_Users = new Regulus.Utility.CenterOfUpdateable();
 		}
         public void PushUser(Regulus.Game.IUser user)
 		{
@@ -39,7 +39,7 @@ namespace Regulus.Game
 
 		bool Regulus.Utility.IUpdatable.Update()
 		{
-			_Users.Update();
+            _Users.GetObjectSet();
 			return true;
 		}
 

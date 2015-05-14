@@ -165,10 +165,10 @@ namespace Regulus.Utility
     public class Scheduler : Regulus.Utility.Singleton<Scheduler> 
     {
         Time _Time;
-        Regulus.Utility.Updater<long> _Tasks;
+        Regulus.Utility.CenterOfUpdateableToGenerics<long> _Tasks;
         public Scheduler()
         {
-            _Tasks = new Updater<long>();
+            _Tasks = new CenterOfUpdateableToGenerics<long>();
             _Time = new Time();
         }
 
@@ -186,7 +186,7 @@ namespace Regulus.Utility
         public void Update()
         {
             _Time.Update();
-            _Tasks.Update(_Time.Delta);
+            _Tasks.Working(_Time.Delta);
         }
     }
 

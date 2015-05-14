@@ -40,7 +40,7 @@ namespace FormulaUserBot
 
             
 
-            var updater = new Regulus.Utility.Updater();
+            var updater = new Regulus.Utility.CenterOfUpdateable();
             updater.Add(client);
             updater.Add(clientHandler);
             updater.Add(packetRegulator);
@@ -48,7 +48,7 @@ namespace FormulaUserBot
             while (client.Enable)
             {
                 input.Update();
-                updater.Update();
+                updater.GetObjectSet();
                 sw.SpinOnce();
             }
             client.Command.Unregister("si");

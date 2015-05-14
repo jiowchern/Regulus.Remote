@@ -90,7 +90,7 @@ namespace Regulus.Remoting
 
         private void _Update(object state)
         {
-            var updater = new Regulus.Utility.Updater();
+            var updater = new Regulus.Utility.CenterOfUpdateable();
             updater.Add(Read);
             updater.Add(Write);
 
@@ -98,8 +98,8 @@ namespace Regulus.Remoting
             Regulus.Utility.TimeCounter counter = new Utility.TimeCounter();
             do
             {
-                
-                updater.Update();
+
+                updater.GetObjectSet();
                 
                     
                 if (_Reset)

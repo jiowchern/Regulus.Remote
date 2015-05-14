@@ -34,14 +34,14 @@ namespace RemotingTest
 
             };
 
-            Regulus.Utility.Updater updater = new Regulus.Utility.Updater();
+            Regulus.Utility.CenterOfUpdateable updater = new Regulus.Utility.CenterOfUpdateable();
             updater.Add(app);
             launcher.Push(serverAppliction);
             launcher.Launch();
             bool enable = true;
             while (enable)
             {
-                updater.Update();
+                updater.GetObjectSet();
                 sw.SpinOnce();
                 if (testReturn != null)
                 {
@@ -51,7 +51,7 @@ namespace RemotingTest
                 }
             }
 
-            updater.Update();
+            updater.GetObjectSet();
 
             Assert.AreEqual(0, user.TestReturnProvider.Returns.Length);
 
@@ -81,7 +81,7 @@ namespace RemotingTest
 
             };
             
-            Regulus.Utility.Updater updater = new Regulus.Utility.Updater();
+            Regulus.Utility.CenterOfUpdateable updater = new Regulus.Utility.CenterOfUpdateable();
             updater.Add(app);
             updater.Add(server);
             bool enable = true;
@@ -90,8 +90,8 @@ namespace RemotingTest
             
             while (enable)
             {
-                
-                updater.Update();
+
+                updater.GetObjectSet();
                 
                 if(testReturn!= null)
                 {
@@ -106,11 +106,11 @@ namespace RemotingTest
                     
                 }
             }
-            
-            updater.Update();
+
+            updater.GetObjectSet();
             
             while (result2 == 0)
-                updater.Update();
+                updater.GetObjectSet();
 
             System.GC.Collect();
 

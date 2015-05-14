@@ -94,7 +94,7 @@ namespace Regulus.Utility.Coroutine
         
         public void Update()
         {
-            foreach (var cur in _Units.Update())
+            foreach (var cur in _Units.GetObjectSet())
             {
                 var updater = cur.Updateable;
 

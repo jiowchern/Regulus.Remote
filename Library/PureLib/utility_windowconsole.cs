@@ -11,7 +11,7 @@ namespace Regulus.Utility
         Regulus.Utility.Console.IViewer _Viewer;
         Regulus.Utility.ConsoleInput _Input;
 
-        Regulus.Utility.Updater _Updater;
+        Regulus.Utility.CenterOfUpdateable _Updater;
 
         public Regulus.Utility.Command Command
         {
@@ -28,7 +28,7 @@ namespace Regulus.Utility
             _Viewer = new Regulus.Utility.ConsoleViewer();
             _Input = new ConsoleInput(_Viewer);
             _Console = new Regulus.Utility.Console(_Input, _Viewer);
-            _Updater = new Updater();
+            _Updater = new CenterOfUpdateable();
         }
         protected abstract void _Launch();
         protected abstract void _Update();
@@ -37,7 +37,7 @@ namespace Regulus.Utility
         bool IUpdatable.Update()
         {
             _Update();
-            _Updater.Update();
+            _Updater.Working();
             return true;
         }
 

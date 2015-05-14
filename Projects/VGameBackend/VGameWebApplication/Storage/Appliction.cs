@@ -22,14 +22,14 @@ namespace VGame.Project.FishHunter.Storage
 
         private void _Run()
         {
-            var updater = new Regulus.Utility.Updater();
+            var updater = new Regulus.Utility.CenterOfUpdateable();
             System.Threading.SpinWait sw = new System.Threading.SpinWait();
             updater.Add(_Proxy);
             Enable = true;
             while(Enable)
             {
                 sw.SpinOnce();
-                updater.Update();
+                updater.GetObjectSet();
                 _Keys.Update();
             }
             updater.Shutdown();

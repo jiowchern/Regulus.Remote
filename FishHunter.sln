@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PureLib", "Library\PureLib\PureLib.csproj", "{2F28AA04-316D-4C20-BF46-987D4A59691D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Library", "Library", "{2C0B4D19-4D23-4793-8627-4E72FE94243F}"
+	ProjectSection(SolutionItems) = preProject
+		ServerCodeMap.dgml = ServerCodeMap.dgml
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remoting", "Library\Remoting\Remoting.csproj", "{A4CFCE46-BDA8-4416-A1BB-77BD80514019}"
 EndProject
@@ -318,8 +321,5 @@ Global
 		{56FC4752-193B-4E71-925F-A7096E1D22BF} = {28C6C4B9-7494-4D29-A8E1-F78D20084E4E}
 		{64C1D655-34D2-4580-A3EB-5D6BB8D81851} = {0EDA47AC-7FCC-416C-80F6-318015D85525}
 		{E977627A-CD89-4D30-892D-4679E10F45FA} = {2C0B4D19-4D23-4793-8627-4E72FE94243F}
-	EndGlobalSection
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

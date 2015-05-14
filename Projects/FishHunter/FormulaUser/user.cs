@@ -8,7 +8,7 @@ namespace VGame.Project.FishHunter.Formula
 {
     class User : IUser
     {
-        Regulus.Utility.Updater _Updater;
+        Regulus.Utility.CenterOfUpdateable _Updater;
         Regulus.Remoting.User _User;
 
         private Regulus.Remoting.IAgent _Agent;
@@ -16,14 +16,14 @@ namespace VGame.Project.FishHunter.Formula
         public User(Regulus.Remoting.IAgent agent)
         {
             this._Agent = agent;
-            _Updater = new Regulus.Utility.Updater();
+            _Updater = new Regulus.Utility.CenterOfUpdateable();
             _User = new Regulus.Remoting.User(_Agent);
 
         }
 
         bool Regulus.Utility.IUpdatable.Update()
         {
-            _Updater.Update();
+            _Updater.GetObjectSet();
             return true;
         }
 
