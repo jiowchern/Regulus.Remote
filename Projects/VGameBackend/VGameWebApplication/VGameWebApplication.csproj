@@ -160,7 +160,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="GuidModelBinder.cs" />
     <Compile Include="Models\StorageApi.cs" />
+    <Compile Include="Models\UpdateAccount.cs" />
     <Compile Include="Storage\Handler\ConnectHandler.cs" />
     <Compile Include="Storage\Handler\FindAccount.cs" />
     <Compile Include="Storage\KeyPool.cs" />
@@ -201,6 +203,10 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Library\PureLibraryExpansion\PureLibraryExpansion.csproj">
+      <Project>{e977627a-cd89-4d30-892d-4679e10f45fa}</Project>
+      <Name>PureLibraryExpansion</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Library\PureLib\PureLib.csproj">
       <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
       <Name>PureLib</Name>
@@ -216,6 +222,10 @@
     <ProjectReference Include="..\..\FishHunter\Common\Common.csproj">
       <Project>{72e9207f-cd57-4789-ad21-30132e541fb6}</Project>
       <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\FishHunter\Game\Game.csproj">
+      <Project>{5061bc1d-0c9e-4050-a51e-593b5c16d398}</Project>
+      <Name>Game</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\FishHunter\StorageUser\StorageUser.csproj">
       <Project>{c0f40a23-120c-4722-a9fe-1299a3f7aacf}</Project>

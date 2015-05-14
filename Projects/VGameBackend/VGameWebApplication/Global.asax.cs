@@ -20,7 +20,7 @@ namespace VGameWebApplication
 
             Application.Add("BuildDateTime", new System.IO.FileInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).LastWriteTime.ToShortDateString());
 
-            
+            ModelBinders.Binders.Add(typeof(Guid) , new GuidModelBinder()); 
         }
 
         protected void Application_PostAuthenticateRequest(Object sender, EventArgs e)
