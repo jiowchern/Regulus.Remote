@@ -191,7 +191,7 @@ namespace VGame.Project.FishHunter.Play
 
         private void _Play(BuildCenterStage.ExternalFeature features)
         {
-            _Center = new Center(features.AccountFinder, features.FishStageQueryer);
+            _Center = new Center(features.AccountFinder, features.FishStageQueryer, features.RecordQueriers);
 
             _Updater.Add(_Center);
         }

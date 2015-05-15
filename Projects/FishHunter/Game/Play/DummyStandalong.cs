@@ -12,7 +12,7 @@
         {
             _Storage = new DummyFrature();
             _Updater = new Regulus.Utility.CenterOfUpdateable();
-            _Center = new Center(_Storage , _Storage);
+            _Center = new Center(_Storage , _Storage , _Storage );
         }
 
         void Regulus.Utility.ICore.ObtainController(Regulus.Remoting.ISoulBinder binder)

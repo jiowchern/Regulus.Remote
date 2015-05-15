@@ -8,6 +8,10 @@ namespace VGame.Project.FishHunter.Data
     [ProtoBuf.ProtoContract]
     public class Record
     {
+        public Record()
+        {
+            Id = Guid.NewGuid();
+        }
         [ProtoBuf.ProtoMember(1)]
         public Guid Id { get; set; }
 
@@ -15,5 +19,7 @@ namespace VGame.Project.FishHunter.Data
         public int Money { get; set; }
 
 
+        [ProtoBuf.ProtoMember(3)]
+        public Guid Owner { get; set; }
     }
 }

@@ -54,6 +54,7 @@
     <Compile Include="IAccountFinder.cs" />
     <Compile Include="IPlayer.cs" />
     <Compile Include="IQuitable.cs" />
+    <Compile Include="IRecordQueriers.cs" />
     <Compile Include="IStorage.cs" />
     <Compile Include="IVerify.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

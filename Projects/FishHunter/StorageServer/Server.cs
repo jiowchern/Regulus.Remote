@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Regulus.Extension;
 namespace VGame.Project.FishHunter.Storage
 {
     public class Server : Regulus.Utility.ICore, IStorage 
@@ -177,6 +178,40 @@ namespace VGame.Project.FishHunter.Storage
         Regulus.Remoting.Value<Data.Account> IAccountFinder.FindAccountById(Guid accountId)
         {
             return _Find(accountId);
+        }
+
+        Regulus.Remoting.Value<Data.Record> IRecordQueriers.Load(Guid id)
+        {
+            var val = new Regulus.Remoting.Value<Data.Record>();
+            var account = _Find(id);
+            if(account.IsPlayer())
+            {
+                var recordTask = _Database.Find<Data.Record>(r => r.Owner == id);
+                recordTask.ContinueWith((task) =>
+                {
+                    if(task.Result.Count > 0)
+                    {
+                        val.SetValue(task.Result.FirstOrDefault());
+                    }
+                    else
+                    {
+                        var newRecord = new Data.Record() { Owner = id, Money = 1000 };
+                        _Database.Add(newRecord).Wait();
+                        val.SetValue(newRecord);
+                    }
+                    
+                });
+            }
+            else
+            {
+                val.SetValue(null);
+            }
+            return val;
+        }
+
+        void IRecordQueriers.Save(Data.Record record)
+        {
+            _Database.Update<Data.Record>(record, r => r.Id == record.Id);
         }
     }
 }

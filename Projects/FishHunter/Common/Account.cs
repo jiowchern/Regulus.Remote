@@ -64,5 +64,10 @@ namespace VGame.Project.FishHunter.Data
         {
             return _HasCompetence(cOMPETENCE);
         }
+
+        public bool IsPlayer()
+        {
+            return _HasCompetence(COMPETENCE.GAME_PLAYER);
+        }
     }
 }
