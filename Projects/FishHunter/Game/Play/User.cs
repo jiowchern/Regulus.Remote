@@ -13,10 +13,14 @@ namespace VGame.Project.FishHunter.Play
         VGame.Project.FishHunter.IFishStageQueryer _FishStageQueryer;
         Data.Account _Account;
         Data.Record _Record;
+
+        VGame.Project.FishHunter.IRecordQueriers _RecordQueriers;
         public User(Regulus.Remoting.ISoulBinder binder , 
             VGame.Project.FishHunter.IAccountFinder account_finder,
-            VGame.Project.FishHunter.IFishStageQueryer queryer)
+            VGame.Project.FishHunter.IFishStageQueryer queryer,
+            VGame.Project.FishHunter.IRecordQueriers record_queriers)
         {
+            _RecordQueriers = record_queriers;
             _AccountFinder = account_finder;
             _Binder = binder;
             _Machine = new Regulus.Utility.StageMachine();
@@ -90,8 +94,21 @@ namespace VGame.Project.FishHunter.Play
             _VerifySuccessEvent(account.Id);
             _Account = account;
 
-            _ToSelectStage();
+            _ToQueryRecord();
 
+            
+
+        }
+
+        private void _ToQueryRecord()
+        {
+            _RecordQueriers.Load(_Account.Id).OnValue += _GetRecord;
+        }
+
+        private void _GetRecord(Data.Record obj)
+        {
+            _Record = obj;
+            _ToSelectStage();
         }
 
         private void _ToSelectStage()
@@ -111,8 +128,8 @@ namespace VGame.Project.FishHunter.Play
         private void _Save(int money)
         {
             _Record.Money = money;
-
-            _ToSelectStage();
+            _RecordQueriers.Save(_Record);
+            _ToVerify();
         }
 
         

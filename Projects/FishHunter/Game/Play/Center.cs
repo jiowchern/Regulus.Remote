@@ -12,10 +12,12 @@ namespace VGame.Project.FishHunter.Play
         VGame.Project.FishHunter.IAccountFinder _AccountFinder;
         
         private IFishStageQueryer _FishStageQueryer;
+        private IRecordQueriers _RecordQueriers;
         
 
-        public Center(IAccountFinder accountFinder, IFishStageQueryer fishStageQueryer)
+        public Center(IAccountFinder accountFinder, IFishStageQueryer fishStageQueryer ,IRecordQueriers rq )
         {
+            _RecordQueriers = rq;
             _AccountFinder = accountFinder;
             _Updater = new Regulus.Utility.CenterOfUpdateable();
             _Hall = new Hall();            
@@ -24,7 +26,11 @@ namespace VGame.Project.FishHunter.Play
         }
         void Regulus.Utility.ICore.ObtainController(Regulus.Remoting.ISoulBinder binder)
         {
-            var user = new User(binder, _AccountFinder, _FishStageQueryer);
+            var user = new User(binder, 
+                _AccountFinder, 
+                _FishStageQueryer,
+                _RecordQueriers
+                );
             _Hall.PushUser(user);
         }
 
