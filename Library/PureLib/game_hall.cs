@@ -39,7 +39,7 @@ namespace Regulus.Game
 
 		bool Regulus.Utility.IUpdatable.Update()
 		{
-            _Users.GetObjectSet();
+            _Users.Working();
 			return true;
 		}
 

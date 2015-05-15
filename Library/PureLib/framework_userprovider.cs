@@ -121,7 +121,7 @@ namespace Regulus.Framework
 
         bool Utility.IUpdatable.Update()
         {
-            _Updater.GetObjectSet();
+            _Updater.Working();
             return true;
         }
 

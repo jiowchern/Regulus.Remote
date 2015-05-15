@@ -16,7 +16,7 @@ namespace Regulus.Remoting.Soul.Native
         }
         public void Update()
         {
-            Parallel.ForEach(base.GetObjectSet(), _Update );            
+            Parallel.ForEach(base._GetObjectSet(), _Update );            
             /*foreach(var up in base.Update())
             {
                 _Update(up);

@@ -39,7 +39,7 @@ namespace FormulaUserBot
 
         void Regulus.Utility.IStage.Update()
         {
-            _HitHandlers.GetObjectSet();
+            _HitHandlers.Working();
             if (_HitTime.Second > HitHandler.Interval)
             {
                 //var totalHits = (byte)Regulus.Utility.Random.Next(1, 1000);

@@ -48,7 +48,7 @@ namespace FormulaUserBot
             while (client.Enable)
             {
                 input.Update();
-                updater.GetObjectSet();
+                updater.Working();
                 sw.SpinOnce();
             }
             client.Command.Unregister("si");

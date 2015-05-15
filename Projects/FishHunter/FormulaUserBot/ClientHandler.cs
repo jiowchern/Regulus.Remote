@@ -58,7 +58,7 @@ namespace FormulaUserBot
 
         bool Regulus.Utility.IUpdatable.Update()
         {
-            _Bots.GetObjectSet();
+            _Bots.Working();
             return true;
         }
 

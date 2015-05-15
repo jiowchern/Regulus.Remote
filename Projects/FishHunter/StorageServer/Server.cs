@@ -34,7 +34,7 @@ namespace VGame.Project.FishHunter.Storage
 
         bool Regulus.Utility.IUpdatable.Update()
         {
-            _Updater.GetObjectSet();
+            _Updater.Working();
             return true;
         }
 

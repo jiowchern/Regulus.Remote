@@ -30,7 +30,7 @@ namespace VGame.Project.FishHunter.Play
 
         bool Regulus.Utility.IUpdatable.Update()
         {
-            _Updater.GetObjectSet();
+            _Updater.Working();
             return true;
         }
 
