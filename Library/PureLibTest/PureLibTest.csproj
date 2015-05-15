@@ -60,6 +60,7 @@
     <Compile Include="IniTest.cs" />
     <Compile Include="AsyncExecuter.cs" />
     <Compile Include="LogTest.cs" />
+    <Compile Include="FlagTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PureLib\PureLib.csproj">

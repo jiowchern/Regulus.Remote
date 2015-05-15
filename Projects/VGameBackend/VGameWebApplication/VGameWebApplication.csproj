@@ -159,7 +159,9 @@
     <Content Include="Views\Server\ServerState.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccountCompetenceModelBinder.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Extensions\CheckboxListForEnumList.cs" />
     <Compile Include="GuidModelBinder.cs" />
     <Compile Include="Models\StorageApi.cs" />
     <Compile Include="Models\UpdateAccount.cs" />
@@ -196,7 +198,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Extensions\" />
     <Folder Include="ModelBinder\" />
   </ItemGroup>
   <ItemGroup>
