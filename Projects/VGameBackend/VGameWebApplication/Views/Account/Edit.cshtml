@@ -1,4 +1,7 @@
-﻿@model VGameWebApplication.Models.UpdateAccount
+﻿@using VGameWebApplication.Extensions;
+@using VGame.Project.FishHunter.Data;
+
+@model VGameWebApplication.Models.UpdateAccount
 
 @using Regulus.Extension;
 @{
@@ -11,19 +14,20 @@
 @using (Html.BeginForm("Edit" , "Account" , FormMethod.Post ))
 {
     <table>
-        
-       
         <tr>
             <td>ID</td>
             <td>
                 @Html.DisplayFor( m=> m.TheAccount.Id)
                 @Html.HiddenFor(m => m.TheAccount.Id)                
-               
-                
             </td>
         </tr>
-        <tr><td>帳號</td><td>@Html.EditorFor(m => m.TheAccount.Name)</td></tr>
+        <tr><td>帳號</td><td>@Html.EditorFor(m => m.TheAccount.Name )</td></tr>
         <tr><td>密碼</td><td>@Html.EditorFor(m => m.TheAccount.Password)</td></tr>
+        @foreach (var t in Regulus.Extension.EnumHelper.GetFlags<VGame.Project.FishHunter.Data.Account.COMPETENCE>())
+        {
+            <tr><td>@t.GetEnumDescription()
+                </td><td>@Html.CheckBoxFor( m => m.TheAccount.Competnces[t])</td></tr>
+        }        
         
     </table>
     

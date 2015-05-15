@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Regulus.Extension;
 using Regulus.Utility;
 namespace VGame.Project.FishHunter.Data
 {
@@ -10,22 +11,21 @@ namespace VGame.Project.FishHunter.Data
     public class Account
     {
 
-        [Flags]
+        
         public enum COMPETENCE
         {
             [EnumDescription("帳號管理")]
-            ACCOUNT_MANAGER = 0x1,
+            ACCOUNT_MANAGER  ,
             [EnumDescription("算法查詢")]
-            FORMULA_QUERYER = 0x2,
+            FORMULA_QUERYER ,
             [EnumDescription("遊戲體驗")]
-            GAME_PLAYER = 0x4,
+            GAME_PLAYER ,
             [EnumDescription("後端管理")]
-            BACKEND_MANAGER = 0x8,
+            BACKEND_MANAGER ,
             [EnumDescription("算法記錄")]
-            FORMULA_RECORDER = 0x10,
+            FORMULA_RECORDER ,
             [EnumDescription("帳號查詢")]
-            ACCOUNT_FINDER = 0x20,            
-            ALL = int.MaxValue
+            ACCOUNT_FINDER ,                        
         };
 
         [ProtoBuf.ProtoMember(1)]
@@ -36,7 +36,7 @@ namespace VGame.Project.FishHunter.Data
         [ProtoBuf.ProtoMember(3)]
         public string Password { get; set; }
         [ProtoBuf.ProtoMember(4)]
-        public COMPETENCE Competnce { get; set; }
+        public Regulus.CustomType.Flag<COMPETENCE> Competnces { get; set; }
         
         public bool IsPassword(string password)
         {
@@ -45,8 +45,24 @@ namespace VGame.Project.FishHunter.Data
 
         public bool IsFormulaQueryer()
         {
-            var val = Competnce & COMPETENCE.FORMULA_QUERYER;
-            return val == COMPETENCE.FORMULA_QUERYER;
+            return _HasCompetence(COMPETENCE.FORMULA_QUERYER);
+        }
+
+        private bool _HasCompetence(COMPETENCE competence)
+        {
+            return Competnces[competence];
+        }
+
+        public static Regulus.CustomType.Flag<COMPETENCE> AllCompetnce()
+        {
+            var flags = EnumHelper.GetFlags<COMPETENCE>().ToArray();
+            var f =flags[0];
+            return new Regulus.CustomType.Flag<COMPETENCE>(flags);
+        }
+
+        public bool HasCompetnce(COMPETENCE cOMPETENCE)
+        {
+            return _HasCompetence(cOMPETENCE);
         }
     }
 }

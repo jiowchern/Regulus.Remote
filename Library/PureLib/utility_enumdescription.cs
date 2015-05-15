@@ -44,9 +44,9 @@ namespace Regulus.Extension
 
     public static class EnumHelper
     {
-        public static IEnumerable<Enum> GetFlags<T>()
+        public static IEnumerable<T> GetFlags<T>()
         {
-            return Enum.GetValues(typeof(T)).Cast<Enum>();
+            return Enum.GetValues(typeof(T)).Cast<T>();
         }
         public static IEnumerable<Enum> GetFlags(this Enum enum_instance) 
         {
@@ -57,6 +57,20 @@ namespace Regulus.Extension
                 var iflag = Convert.ToUInt64(suit);
                 if ((ienum & iflag) > 0)
                     yield return suit;
+            }
+            yield break;
+        }
+
+
+        public static IEnumerable<bool> ToFlags(this Enum enum_instance)
+        {
+            var ienum = Convert.ToUInt64(enum_instance);
+            var availableSuits = Enum.GetValues(enum_instance.GetType()).Cast<Enum>();
+            foreach (var suit in availableSuits)
+            {
+                var iflag = Convert.ToUInt64(suit);
+                var result = ienum & iflag;
+                yield return result > 0;
             }
             yield break;
         }
