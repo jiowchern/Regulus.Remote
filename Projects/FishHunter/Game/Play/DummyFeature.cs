@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using Regulus.Extension;
 namespace VGame.Project.FishHunter
 {
     public class DummyFrature : IAccountFinder , IFishStageQueryer , IStorage
@@ -11,8 +11,8 @@ namespace VGame.Project.FishHunter
         public DummyFrature()
         {
             _Accounts = new List<Data.Account>();
-            _Accounts.Add(new Data.Account { Id = Guid.NewGuid(), Password = "pw", Name = "name", Competnce = Data.Account.COMPETENCE.ALL });
-            _Accounts.Add(new Data.Account { Id = Guid.NewGuid(), Password = "vgame", Name = "vgameadmini", Competnce = Data.Account.COMPETENCE.ALL });
+            _Accounts.Add(new Data.Account { Id = Guid.NewGuid(), Password = "pw", Name = "name", Competnces = Data.Account.AllCompetnce() });
+            _Accounts.Add(new Data.Account { Id = Guid.NewGuid(), Password = "vgame", Name = "vgameadmini", Competnces = Data.Account.AllCompetnce() });
         }
 
         Regulus.Remoting.Value<Data.Account> IAccountFinder.FindAccountByName(string id)

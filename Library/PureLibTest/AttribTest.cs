@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -119,6 +120,16 @@ namespace PureLibTest
             
 
         }        
+        [TestMethod]
+        public void TestCompareEnumToBool()
+        {
+            TESTFLAG flag = TESTFLAG.ENUM2 | TESTFLAG.ENUM3;
+            var flags = flag.ToFlags().ToArray();
+            Assert.AreEqual(false, flags[0]);
+            Assert.AreEqual(true, flags[1]);
+            Assert.AreEqual(true, flags[2]);
+        }
+
         
     }
 }
