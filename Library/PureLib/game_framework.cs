@@ -120,7 +120,7 @@ namespace Regulus.Utility
         
 		bool Regulus.Utility.IUpdatable.Update()
         {
-            _Loops.GetObjectSet();
+            _Loops.Working();
             _StageMachine.Update();
             return _Runable;
         }
@@ -306,7 +306,7 @@ namespace Regulus.Utility
 
             void IStage.Update()
             {
-                _Loops.GetObjectSet();
+                _Loops.Working();
             }
 
             

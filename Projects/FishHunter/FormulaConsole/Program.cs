@@ -26,7 +26,7 @@ namespace Console
             while (client.Enable)
             {
                 input.Update();
-                updater.GetObjectSet();
+                updater.Working();
             }
 
             updater.Shutdown();

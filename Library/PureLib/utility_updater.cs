@@ -32,7 +32,7 @@ namespace Regulus.Utility
             }
         }
 
-        public System.Collections.Generic.IEnumerable<T> GetObjectSet()
+        protected System.Collections.Generic.IEnumerable<T> _GetObjectSet()
         {
             lock (_Ts)
             {
@@ -99,7 +99,7 @@ namespace Regulus.Utility
     {
         public void Working(T arg)
         {
-            foreach (var t in base.GetObjectSet())
+            foreach (var t in base._GetObjectSet())
             {
                 if (t.Update(arg) == false)
                 {
@@ -113,7 +113,7 @@ namespace Regulus.Utility
     {
         public void Working()
         {
-            foreach (var t in base.GetObjectSet())
+            foreach (var t in base._GetObjectSet())
             {
                 if (t.Update() == false)
                 {

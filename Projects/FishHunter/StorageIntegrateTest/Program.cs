@@ -30,7 +30,7 @@ namespace StorageIntegrateTest
             launcher.Launch();
             while (_Enable)
             {
-                updater.GetObjectSet();
+                updater.Working();
                 sw.SpinOnce();
                 
             }

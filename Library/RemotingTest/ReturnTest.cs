@@ -6,12 +6,12 @@ namespace RemotingTest
     [TestClass]
     public class ReturnTest
     {
-        
 
-        
 
- 
-        [TestMethod]
+
+
+
+        [TestMethod, Timeout(10000)]
         public void RemotingTest()
         {
             System.Threading.SpinWait sw = new System.Threading.SpinWait();            
@@ -41,7 +41,7 @@ namespace RemotingTest
             bool enable = true;
             while (enable)
             {
-                updater.GetObjectSet();
+                updater.Working();
                 sw.SpinOnce();
                 if (testReturn != null)
                 {
@@ -51,7 +51,7 @@ namespace RemotingTest
                 }
             }
 
-            updater.GetObjectSet();
+            updater.Working();
 
             Assert.AreEqual(0, user.TestReturnProvider.Returns.Length);
 
@@ -91,7 +91,8 @@ namespace RemotingTest
             while (enable)
             {
 
-                updater.GetObjectSet();
+                updater.Working();
+                
                 
                 if(testReturn!= null)
                 {
@@ -107,10 +108,10 @@ namespace RemotingTest
                 }
             }
 
-            updater.GetObjectSet();
+            updater.Working();
             
             while (result2 == 0)
-                updater.GetObjectSet();
+                updater.Working();
 
             System.GC.Collect();
 

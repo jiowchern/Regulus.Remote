@@ -34,7 +34,7 @@ namespace VGame.Project.FishHunter.Storage
             while(Enable)
             {
                 sw.SpinOnce();
-                updater.GetObjectSet();
+                updater.Working();
                 _Keys.Update();
             }
             updater.Shutdown();

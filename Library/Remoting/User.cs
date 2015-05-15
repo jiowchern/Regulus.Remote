@@ -25,7 +25,7 @@ namespace Regulus.Remoting
 
         bool Regulus.Utility.IUpdatable.Update()
         {
-            _Updater.GetObjectSet();
+            _Updater.Working();
             _Machine.Update();
             return true;
         }

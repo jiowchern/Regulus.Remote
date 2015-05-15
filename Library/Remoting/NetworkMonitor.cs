@@ -99,7 +99,7 @@ namespace Regulus.Remoting
             do
             {
 
-                updater.GetObjectSet();
+                updater.Working();
                 
                     
                 if (_Reset)

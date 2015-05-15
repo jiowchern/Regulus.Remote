@@ -96,7 +96,6 @@
     <Compile Include="framework_stage_selectmode.cs" />
     <Compile Include="customtype_triangle.cs" />
     <Compile Include="utility_command_extension.cs" />
-    <Compile Include="utility_coroutine.cs" />
     <Compile Include="utility_icommand.cs" />
     <Compile Include="customtype_vector2.cs" />
     <Compile Include="utility_command.cs" />
