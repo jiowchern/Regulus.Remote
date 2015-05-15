@@ -16,8 +16,9 @@ namespace VGame.Project.FishHunter.Storage
         {
 
             _Center = new VGame.Project.FishHunter.Storage.Center(new DummyFrature());
-            var factory = new VGame.Project.FishHunter.Storage.StandalongFactory(_Center);
-            _Proxy = new Proxy(factory);
+            //var factory = new VGame.Project.FishHunter.Storage.StandalongFactory(_Center);
+            //_Proxy = new Proxy(factory);
+            _Proxy = new Proxy();
             _Keys = new KeyPool(_Proxy);
             Task task = new Task(_Run);
             task.Start();

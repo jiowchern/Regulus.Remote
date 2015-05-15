@@ -43,16 +43,16 @@ namespace VGame.Project.FishHunter.Stage
 
         private void _Attach(Data.Account account)
         {
-            if ( (account.Competnce & Data.Account.COMPETENCE.ACCOUNT_FINDER) > 0)
+            if ( account.HasCompetnce( Data.Account.COMPETENCE.ACCOUNT_FINDER) )
                 _Binder.Bind<IAccountFinder>(_Storage);
-            if ( (account.Competnce & Data.Account.COMPETENCE.ACCOUNT_MANAGER) > 0)
+            if (account.HasCompetnce(Data.Account.COMPETENCE.ACCOUNT_MANAGER))
                 _Binder.Bind<IAccountManager>(_Storage);
         }
         private void _Detach(Data.Account account)
         {
-            if ((account.Competnce & Data.Account.COMPETENCE.ACCOUNT_FINDER)>0)
+            if (account.HasCompetnce(Data.Account.COMPETENCE.ACCOUNT_FINDER) )
                 _Binder.Unbind<IAccountFinder>(_Storage);
-            if ((account.Competnce & Data.Account.COMPETENCE.ACCOUNT_MANAGER) > 0)
+            if (account.HasCompetnce(Data.Account.COMPETENCE.ACCOUNT_MANAGER) )
                 _Binder.Unbind<IAccountManager>(_Storage);
         }
 
