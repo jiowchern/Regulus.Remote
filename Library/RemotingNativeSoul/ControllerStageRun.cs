@@ -64,6 +64,8 @@ namespace Regulus.Remoting.Soul.Native
             var sw = new System.Threading.SpinWait();
             _Run = true;
             _Core.Launch();
+
+            long secondBytes= 0;
             while (_Run)
             {
                 if (_Binders.Count > 0)
@@ -82,14 +84,18 @@ namespace Regulus.Remoting.Soul.Native
                 _Core.Update();
                 _FPS.Update();
 
-                if (sw.NextSpinWillYield == false)
+
+                var current = NetworkMonitor.Instance.Read.SecondBytes;
+                if (secondBytes <= current)
+                {
                     sw.SpinOnce();
+                }
                 else
                 {
                     sw.Reset();
-                    System.Threading.Thread.Yield();
                 }
-                    
+
+                secondBytes = current;
                 
             }
             _Core.Shutdown();
@@ -147,7 +153,7 @@ namespace Regulus.Remoting.Soul.Native
             
             _Socket.Listen(5);
             _Socket.BeginAccept(_Accept, null);
-
+            long secondBytes = 0;
             while (_Run)
             {
                 if (_Sockets.Count > 0)
@@ -168,13 +174,17 @@ namespace Regulus.Remoting.Soul.Native
                 _Peers.Update();
                 _FPS.Update();
 
-                if (sw.NextSpinWillYield == false)
+                var current = NetworkMonitor.Instance.Write.SecondBytes;
+                if (secondBytes <= current)
+                {
                     sw.SpinOnce();
+                }
                 else
                 {
                     sw.Reset();
-                    System.Threading.Thread.Yield();
                 }
+
+                secondBytes = current;
             }
 
             
