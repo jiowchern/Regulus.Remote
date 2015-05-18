@@ -26,9 +26,14 @@ namespace Regulus.Utility
 
         public Log()
         {
-
+            AppDomain.CurrentDomain.UnhandledException += _FinalError;
             _AsyncRecord = _EmptyRecord;
             _Executer = new AsyncExecuter();
+        }
+
+        private void _FinalError(object sender, UnhandledExceptionEventArgs e)
+        {            
+            Write(e.ToString());
         }
 
         private void _EmptyRecord(string message)
