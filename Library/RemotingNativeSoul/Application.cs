@@ -23,6 +23,7 @@ namespace Regulus.Remoting.Soul.Native
             {
                 _Machine.Update();
                 _TimeCounter.Reset();
+                _SpinWait.Reset();
             }
             else
             {                

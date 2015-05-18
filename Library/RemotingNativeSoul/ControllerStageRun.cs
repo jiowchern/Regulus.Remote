@@ -85,7 +85,7 @@ namespace Regulus.Remoting.Soul.Native
                 _FPS.Update();
 
 
-                var current = NetworkMonitor.Instance.Read.SecondBytes;
+                var current = Peer.TotalResponse;
                 if (secondBytes <= current)
                 {
                     sw.SpinOnce();
@@ -174,7 +174,7 @@ namespace Regulus.Remoting.Soul.Native
                 _Peers.Update();
                 _FPS.Update();
 
-                var current = NetworkMonitor.Instance.Write.SecondBytes;
+                var current = Peer.TotalRequest;
                 if (secondBytes <= current)
                 {
                     sw.SpinOnce();
