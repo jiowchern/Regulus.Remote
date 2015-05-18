@@ -43,10 +43,21 @@ namespace Regulus.Remoting.Ghost.Native
         private void _Handle(object obj)
         {
             Regulus.Utility.SpinWait sw = new Regulus.Utility.SpinWait();
+            long response = 0;
             do
-            {                
+            {
+                var current = Agent.ResponseQueueCount + Agent.RequestQueueCount;
+                if (current <= response)
+                {
+                    sw.SpinOnce();
+                }
+                else
+                    sw.Reset();
+
+
+                response = current;
                 _Updater.Working();
-                sw.SpinOnce();
+                
             } while (_Updater.Count > 0);            
             
             _Shutdown();            
