@@ -141,9 +141,10 @@ namespace Regulus.Remoting.Soul.Native
             _Run = true;
 
             _Socket.Bind(new System.Net.IPEndPoint(System.Net.IPAddress.Any, _Port));
-            
-            _Socket.Listen(5);
+            //_Socket.IOControl(System.Net.Sockets.IOControlCode.KeepAliveValues, _GetKeepAliveSetting(1, 5000, 5000), null);
+            _Socket.Listen(5);            
             _Socket.BeginAccept(_Accept, null);
+            
             
             while (_Run)
             {
@@ -170,6 +171,17 @@ namespace Regulus.Remoting.Soul.Native
 
             
         }
+
+        /*private byte[] _GetKeepAliveSetting(int onOff, int keepAliveTime, int keepAliveInterval)
+        {
+            byte[] buffer = new byte[12];
+
+            BitConverter.GetBytes(onOff).CopyTo(buffer, 0);
+            BitConverter.GetBytes(keepAliveTime).CopyTo(buffer, 4);
+            BitConverter.GetBytes(keepAliveInterval).CopyTo(buffer, 8);
+
+            return buffer;
+        }*/
 
         public void Stop()
         {

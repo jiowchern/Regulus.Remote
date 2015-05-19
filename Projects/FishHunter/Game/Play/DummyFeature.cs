@@ -81,7 +81,10 @@ namespace VGame.Project.FishHunter
             var account = _Accounts.Find(a => a.Id == record.Owner);
             if(account.IsPlayer())
             {
+                var old = _Records.Find(r => r.Owner == account.Id);
+                _Records.Remove(old);
                 _Records.Add(record);
+
             }            
         }
     }
