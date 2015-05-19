@@ -49,6 +49,7 @@
     <Compile Include="ACCOUNT_REQUEST_RESULT.cs" />
     <Compile Include="Define.cs" />
     <Compile Include="IAccountManager.cs" />
+    <Compile Include="IAccountStatus.cs" />
     <Compile Include="IFishStage.cs" />
     <Compile Include="IFishStageQueryer.cs" />
     <Compile Include="IAccountFinder.cs" />

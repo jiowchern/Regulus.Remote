@@ -45,7 +45,7 @@ namespace Regulus.Game
 
 		void Regulus.Framework.ILaunched.Shutdown()
 		{
-
+            _Users.Shutdown();
 		}
 	}
 }

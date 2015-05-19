@@ -41,32 +41,16 @@ namespace VGame.Project.FishHunter.Storage
 
         void Regulus.Framework.ILaunched.Launch()
         {
-            _RegisterCustomSerializer();    
+
             
             _Updater.Add(_Center);
             _Database.Launch(_Name);
 
-
-
-            
-
             _HandleAdministrator();
-
-
-            var account = _Find("vgameadmini");
+            
             _HandleGuest();
-
-
             
         }
-
-        private void _RegisterCustomSerializer()
-        {
-            
-            ///MongoDB.Bson.Serialization.BsonSerializer.RegisterGenericSerializerDefinition(typeof(Regulus.CustomType.Flag<>), typeof(FlagSerializer<>));
-        }
-
-        
 
         private async void _HandleAdministrator()
         {

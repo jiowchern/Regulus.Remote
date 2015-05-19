@@ -11,17 +11,17 @@ namespace VGame.Project.FishHunter.Play
     {
         private Regulus.Remoting.ISoulBinder _Binder;
         private IFishStage _FishStage;
-        int _Money;
+        Data.Record _Money;
 
         List<Bullet> _Bullets;
         List<Fish> _Fishs;
         
-        public delegate void DoneCallback(int money);
+        public delegate void DoneCallback();
         public event DoneCallback DoneEvent;
 
         Dictionary<int, HitRequest> _Requests;
 
-        public PlayStage(Regulus.Remoting.ISoulBinder binder, IFishStage fish_stage , int money)
+        public PlayStage(Regulus.Remoting.ISoulBinder binder, IFishStage fish_stage, Data.Record money)
         {
             _Fishs = new List<Fish>();
             _Bullets = new List<Bullet>();
@@ -139,19 +139,19 @@ namespace VGame.Project.FishHunter.Play
 
         private void AddMoney(int p)
         {
-            _Money += p;
-            _MoneyEvent(_Money);
+            _Money.Money += p;
+            _MoneyEvent(_Money.Money);
         }
 
         private bool HasMoney(short bullet_score)
         {
-            return _Money >= bullet_score;
+            return _Money.Money >= bullet_score;
         }
 
 
         void IPlayer.Quit()
         {
-            DoneEvent(_Money);
+            DoneEvent();
         }
 
 

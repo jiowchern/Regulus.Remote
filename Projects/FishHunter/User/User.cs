@@ -55,5 +55,11 @@ namespace VGame.Project.FishHunter
         {
             get { return _Agent.QueryProvider<IPlayer>(); }
         }
+
+
+        Regulus.Remoting.Ghost.IProviderNotice<IAccountStatus> IUser.AccountStatusProvider
+        {
+            get { return _Agent.QueryProvider<IAccountStatus>(); }
+        }
     }
 }

@@ -240,7 +240,11 @@
             {
                 try
                 {
-                    _Offset += _Socket.EndReceive(ar);
+                    var readSize = _Socket.EndReceive(ar);
+                    if (readSize == 0)
+                        _Result = SocketIOResult.Break; 
+
+                    _Offset += readSize;
                     if (_Offset == _Size)
                     {
                         _Result = SocketIOResult.Done;
