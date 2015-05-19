@@ -13,7 +13,13 @@ namespace Regulus.Utility
         {
             var file = string.Format("{0}_{1}.log",name, System.DateTime.Now.ToString("yyyy_MM_dd_hh_mm_ss"));
             _Writer = System.IO.File.AppendText(file);
-            
+
+            AppDomain.CurrentDomain.UnhandledException += _FinalError;
+        }
+
+        private void _FinalError(object sender, UnhandledExceptionEventArgs e)
+        {
+            Record(e.ToString());
         }
 
         public void Record(string message)

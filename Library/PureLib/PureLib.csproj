@@ -76,6 +76,7 @@
     <Compile Include="utility_enumdescription.cs" />
     <Compile Include="utility_logfilerecorder.cs" />
     <Compile Include="utility_logwritter.cs" />
+    <Compile Include="utility_powerregulator.cs" />
     <Compile Include="utility_stage.cs" />
     <Compile Include="utility_stagemachine.cs" />
     <Compile Include="game_user.cs" />
