@@ -30,7 +30,6 @@ namespace Regulus.Utility
             _AsyncRecord = _EmptyRecord;
             _Executer = new AsyncExecuter();
         }
-
         
 
         private void _EmptyRecord(string message)
