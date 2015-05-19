@@ -95,6 +95,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsService", "Tool\Wind
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PureLibraryExpansion", "Library\PureLibraryExpansion\PureLibraryExpansion.csproj", "{E977627A-CD89-4D30-892D-4679E10F45FA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogExceptionTest", "Library\LogExceptionTest\LogExceptionTest.csproj", "{9FA4B2C1-03EC-4F26-B78D-09275EE0F89D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Unity|Any CPU = Debug_Unity|Any CPU
@@ -282,6 +284,12 @@ Global
 		{E977627A-CD89-4D30-892D-4679E10F45FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E977627A-CD89-4D30-892D-4679E10F45FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E977627A-CD89-4D30-892D-4679E10F45FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FA4B2C1-03EC-4F26-B78D-09275EE0F89D}.Debug_Unity|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FA4B2C1-03EC-4F26-B78D-09275EE0F89D}.Debug_Unity|Any CPU.Build.0 = Debug|Any CPU
+		{9FA4B2C1-03EC-4F26-B78D-09275EE0F89D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FA4B2C1-03EC-4F26-B78D-09275EE0F89D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FA4B2C1-03EC-4F26-B78D-09275EE0F89D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FA4B2C1-03EC-4F26-B78D-09275EE0F89D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -321,6 +329,7 @@ Global
 		{56FC4752-193B-4E71-925F-A7096E1D22BF} = {28C6C4B9-7494-4D29-A8E1-F78D20084E4E}
 		{64C1D655-34D2-4580-A3EB-5D6BB8D81851} = {0EDA47AC-7FCC-416C-80F6-318015D85525}
 		{E977627A-CD89-4D30-892D-4679E10F45FA} = {2C0B4D19-4D23-4793-8627-4E72FE94243F}
+		{9FA4B2C1-03EC-4F26-B78D-09275EE0F89D} = {2C0B4D19-4D23-4793-8627-4E72FE94243F}
 	EndGlobalSection
 	GlobalSection(Performance) = preSolution
 		HasPerformanceSessions = true

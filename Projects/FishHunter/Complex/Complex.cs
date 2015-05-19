@@ -113,15 +113,24 @@ namespace VGame.Project.FishHunter.Play
         {            
             _Updater.Shutdown();
             Regulus.Utility.Log.Instance.RecordEvent -= _LogRecorder.Record;
+            AppDomain.CurrentDomain.UnhandledException -= CurrentDomain_UnhandledException;
         }
 
         
         void Regulus.Framework.ILaunched.Launch()
         {
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             Regulus.Utility.Log.Instance.RecordEvent += _LogRecorder.Record;                                  
             _Updater.Add(_Storage);
             _Updater.Add(_Formula);
             _ToConnectStorage(_StorageUser);            
+        }
+
+        void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            var ex =(Exception)e.ExceptionObject;
+            _LogRecorder.Record(ex.ToString());
+            _LogRecorder.Save();
         }
 
         private void _ToConnectStorage(Storage.IUser user)

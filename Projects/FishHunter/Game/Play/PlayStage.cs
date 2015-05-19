@@ -194,7 +194,8 @@ namespace VGame.Project.FishHunter.Play
                 var fishid = ++_FishIdSn;
                 _Fishs.Add(new Fish(fishid));
                 return fishid;
-            }            
+            }      
+            
         }
 
         short _FishIdSn;

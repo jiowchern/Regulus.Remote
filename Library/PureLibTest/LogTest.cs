@@ -8,7 +8,8 @@ namespace PureLibTest
     [TestClass]
     public class LogTest
     {
-           
+
+      
         [TestMethod]
         public void TestWrite()
         {

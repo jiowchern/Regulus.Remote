@@ -15,12 +15,14 @@ namespace VGame.Project.FishHunter.Storage
         VGame.Project.FishHunter.Storage.Center _Center;
         Regulus.Utility.ICore _Core { get { return _Center; } }
         Regulus.NoSQL.Database _Database;
+        private Regulus.Utility.LogFileRecorder _LogRecorder;
         private string _Ip;
         private string _Name;
         private string _DefaultAdministratorName;
 
         public Server()
         {
+            _LogRecorder = new Regulus.Utility.LogFileRecorder("Storage");
             _DefaultAdministratorName = "vgameadmini";
             _Ip = "mongodb://127.0.0.1:27017";
             _Name = "VGame";
@@ -41,8 +43,9 @@ namespace VGame.Project.FishHunter.Storage
 
         void Regulus.Framework.ILaunched.Launch()
         {
+            Regulus.Utility.Log.Instance.RecordEvent += _LogRecorder.Record;
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
-            
             _Updater.Add(_Center);
             _Database.Launch(_Name);
 
@@ -50,6 +53,13 @@ namespace VGame.Project.FishHunter.Storage
             
             _HandleGuest();
             
+        }
+
+        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            var ex = (Exception)e.ExceptionObject;
+            _LogRecorder.Record(ex.ToString());
+            _LogRecorder.Save();
         }
 
         private async void _HandleAdministrator()
@@ -91,6 +101,9 @@ namespace VGame.Project.FishHunter.Storage
         {
             _Database.Shutdown();
             _Updater.Shutdown();
+
+            AppDomain.CurrentDomain.UnhandledException -= CurrentDomain_UnhandledException;
+            Regulus.Utility.Log.Instance.RecordEvent -= _LogRecorder.Record;
         }
 
         Regulus.Remoting.Value<Data.Account> IAccountFinder.FindAccountByName(string name)
