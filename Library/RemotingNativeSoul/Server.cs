@@ -14,6 +14,10 @@ namespace Regulus.Remoting.Soul.Native
 
         public int PeerFPS { get { return _ThreadSocketHandler.FPS; } }
         public int CoreFPS { get { return _ThreadCoreHandler.FPS; } }
+
+        public float PeerPower { get { return _ThreadSocketHandler.Power; } }
+        public float CorePower { get { return _ThreadCoreHandler.Power; } }
+
         public int PeerCount { get { return _ThreadSocketHandler.PeerCount; } }
         public Server(Regulus.Utility.ICore core,int port)
         {

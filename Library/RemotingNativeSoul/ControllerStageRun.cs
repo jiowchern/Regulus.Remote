@@ -41,10 +41,12 @@ namespace Regulus.Remoting.Soul.Native
         Regulus.Utility.CenterOfUpdateable _RequesterHandlers;
         volatile bool _Run;
         Regulus.Utility.ICore _Core;
-        Queue<ISoulBinder> _Binders;
-        Regulus.Utility.FPSCounter _FPS;
-        
-        public int FPS { get { return _FPS.Value; } }
+        Queue<ISoulBinder> _Binders;        
+
+
+        Regulus.Utility.PowerRegulator _Spin ;
+        public int FPS { get { return _Spin.FPS; } }
+        public float Power { get { return _Spin.Power; } }
         public ThreadCoreHandler(Regulus.Utility.ICore core )
         {
             if (core == null)
@@ -54,18 +56,18 @@ namespace Regulus.Remoting.Soul.Native
             _Core = core;
             
             _Binders = new Queue<ISoulBinder>();
-            _FPS = new Utility.FPSCounter();
+            
             _RequesterHandlers = new Utility.CenterOfUpdateable();
+            _Spin = new Utility.PowerRegulator();
             
         }
 
         public void DoWork(object obj)
         {
-            var sw = new System.Threading.SpinWait();
+            
             _Run = true;
             _Core.Launch();
-
-            long secondBytes= 0;
+            
             while (_Run)
             {
                 if (_Binders.Count > 0)
@@ -82,20 +84,8 @@ namespace Regulus.Remoting.Soul.Native
                 }
                 _RequesterHandlers.Working();
                 _Core.Update();
-                _FPS.Update();
-
-
-                var current = Peer.TotalResponse;
-                if (secondBytes <= current)
-                {
-                    sw.SpinOnce();
-                }
-                else
-                {
-                    sw.Reset();
-                }
-
-                secondBytes = current;
+                _Spin.Operate(Peer.TotalResponse);
+                
                 
             }
             _Core.Shutdown();
@@ -127,9 +117,10 @@ namespace Regulus.Remoting.Soul.Native
         int _Port;
         volatile bool _Run;
         ParallelUpdate _Peers;
-        Regulus.Utility.FPSCounter _FPS;
         
-        public int FPS { get { return _FPS.Value; } }
+        Regulus.Utility.PowerRegulator _Spin;
+        public int FPS { get { return _Spin.FPS; } }
+        public float Power { get { return _Spin.Power; } }
         public int PeerCount { get { return _Peers.Count; } }
         public ThreadSocketHandler(int port , ThreadCoreHandler core_handler)
         {
@@ -141,19 +132,19 @@ namespace Regulus.Remoting.Soul.Native
             _Socket.NoDelay = true;
 
             _Peers = new ParallelUpdate();
-            _FPS = new Utility.FPSCounter();
+            
+            _Spin = new Utility.PowerRegulator();
             
         }
         public void DoWork(object obj)
-        {
-            var sw = new System.Threading.SpinWait();
+        {            
             _Run = true;
 
             _Socket.Bind(new System.Net.IPEndPoint(System.Net.IPAddress.Any, _Port));
             
             _Socket.Listen(5);
             _Socket.BeginAccept(_Accept, null);
-            long secondBytes = 0;
+            
             while (_Run)
             {
                 if (_Sockets.Count > 0)
@@ -172,19 +163,9 @@ namespace Regulus.Remoting.Soul.Native
      
                 
                 _Peers.Update();
-                _FPS.Update();
+                
 
-                var current = Peer.TotalRequest;
-                if (secondBytes <= current)
-                {
-                    sw.SpinOnce();
-                }
-                else
-                {
-                    sw.Reset();
-                }
-
-                secondBytes = current;
+                _Spin.Operate(Peer.TotalRequest);                
             }
 
             
@@ -239,6 +220,11 @@ namespace Regulus.Remoting.Soul.Native
                 _View.WriteLine("PeerFPS:" + _Server.PeerFPS.ToString());
                 _View.WriteLine("PeerCount:" + _Server.PeerCount.ToString());
                 _View.WriteLine("CoreFPS:" + _Server.CoreFPS.ToString());
+
+
+                _View.WriteLine(string.Format("PeerPower:{0:0.00%}", _Server.PeerPower));
+                _View.WriteLine(string.Format("CorePower:{0:0.00%}", _Server.CorePower));                                
+
                 _View.WriteLine("\nTotalReadBytes:" + string.Format("{0:N0}", NetworkMonitor.Instance.Read.TotalBytes));
                 _View.WriteLine("TotalWriteBytes:" + string.Format("{0:N0}", NetworkMonitor.Instance.Write.TotalBytes));
                 _View.WriteLine("\nSecondReadBytes:" + string.Format("{0:N0}", NetworkMonitor.Instance.Read.SecondBytes));

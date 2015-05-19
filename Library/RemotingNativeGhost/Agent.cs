@@ -108,7 +108,11 @@ namespace Regulus.Remoting.Ghost.Native
         void _Disconnect()
         {
             if (_Socket.Connected)
-                _Socket.Close();                        
+            {
+                _Socket.Disconnect(false);
+                _Socket.Close(1);                        
+            }
+            
         }
 
 
