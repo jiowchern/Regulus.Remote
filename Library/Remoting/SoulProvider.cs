@@ -118,8 +118,7 @@ namespace Regulus.Remoting.Soul
             _WaitValues.Add(returnId, returnValue);
             returnValue.QueryValue(new Action<object>((obj) =>
             {
-                if (obj == null)
-                    throw new ArgumentNullException("obj");
+               
                 if (returnValue.IsInterface() == false)
                 {
                     _ReturnDataValue(returnId, returnValue);
