@@ -161,23 +161,20 @@
   <ItemGroup>
     <Compile Include="AccountCompetenceModelBinder.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Storage\KeyPool.cs" />
+    <Compile Include="Storage\Service.cs" />
     <Compile Include="Extensions\CheckboxListForEnumList.cs" />
     <Compile Include="GuidModelBinder.cs" />
-    <Compile Include="Models\StorageApi.cs" />
+    <Compile Include="Models\AccountFunctions.cs" />
     <Compile Include="Models\UpdateAccount.cs" />
-    <Compile Include="Storage\Handler\ConnectHandler.cs" />
-    <Compile Include="Storage\Handler\FindAccount.cs" />
-    <Compile Include="Storage\KeyPool.cs" />
-    <Compile Include="Storage\Handler\Verify.cs" />
-    <Compile Include="Storage\WaitSomething.cs" />
     <Content Include="App_Code\AssemblyInfo.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Storage\Appliction.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ServerController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\VerifyData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>

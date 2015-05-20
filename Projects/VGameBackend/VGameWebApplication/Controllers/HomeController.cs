@@ -17,11 +17,8 @@ namespace VGameWebApplication.Controllers
             HttpCookie authCookie = Request.Cookies[System.Web.Security.FormsAuthentication.FormsCookieName];
 
             FormsAuthenticationTicket authTicket = FormsAuthentication.Decrypt(authCookie.Value);
-            Guid id;
-            if(Guid.TryParse(authTicket.UserData , out id) )
-            {
-                VGame.Project.FishHunter.Storage.Appliction.Instance.Destroy(id);
-            }
+            VGame.Project.FishHunter.Storage.Service.Destroy((Guid)HttpContext.Items["StorageId"]);
+
             
             return RedirectToAction("Verify");
         }
@@ -52,7 +49,8 @@ namespace VGameWebApplication.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public async System.Threading.Tasks.Task<ActionResult> Verify(string user, string password)
         {
-            var id = await VGame.Project.FishHunter.Storage.Appliction.Instance.Create("127.0.0.1", 38973, user, password);
+            var id = VGame.Project.FishHunter.Storage.Service.Verify(user, password);
+
             if (id != Guid.Empty)
             {
                 FormsAuthenticationTicket ticket = new FormsAuthenticationTicket
@@ -75,9 +73,12 @@ namespace VGameWebApplication.Controllers
         [Authorize]
         public ActionResult Functions()
         {
-            var id = (Guid)HttpContext.Items["StorageId"];
-            var model = new VGameWebApplication.Models.StorageApi(id);
-            return PartialView(model);            
+            VGame.Project.FishHunter.Storage.Service service = VGame.Project.FishHunter.Storage.Service.Create(HttpContext.Items["StorageId"]);
+            VGameWebApplication.Models.AccountFunctions accountFunctions = new Models.AccountFunctions();
+
+            accountFunctions.AccountManager = service.AccountManager != null;
+            accountFunctions.AccountFinder = service.AccountFinder != null;
+            return PartialView(accountFunctions);            
         }
 
 	}

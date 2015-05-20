@@ -18,5 +18,14 @@ namespace Regulus.Extension
             t.Start();
             return t;
         }
+
+        public static T WaitResult<T>(this Regulus.Remoting.Value<T> value)
+        {
+            var t = value.ToTask();
+            t.Wait();
+            return t.Result;
+        }
     }
 }
+
+

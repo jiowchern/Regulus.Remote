@@ -5,7 +5,7 @@ using System.Text;
 
 namespace VGame.Project.FishHunter.Stage
 {
-    public class StroageAccess : Regulus.Utility.IStage, VGame.Project.FishHunter.IQuitable
+    public class StroageAccess : Regulus.Utility.IStage, VGame.Project.FishHunter.IQuitable, IStorageCompetnces
     {
 
         public delegate void DoneCallback();
@@ -43,6 +43,7 @@ namespace VGame.Project.FishHunter.Stage
 
         private void _Attach(Data.Account account)
         {
+            _Binder.Bind<IStorageCompetnces>(this);
             if (account.HasCompetnce(Data.Account.COMPETENCE.ACCOUNT_FINDER))
             {
                 _Binder.Bind<IAccountFinder>(_Storage);
@@ -65,8 +66,15 @@ namespace VGame.Project.FishHunter.Stage
                 
             if (account.HasCompetnce(Data.Account.COMPETENCE.ACCOUNT_MANAGER) )
                 _Binder.Unbind<IAccountManager>(_Storage);
+
+            _Binder.Unbind<IStorageCompetnces>(this);
         }
 
 
+
+        Regulus.Remoting.Value<Data.Account.COMPETENCE[]> IStorageCompetnces.Query()
+        {
+            return _Account.Competnces.ToArray();
+        }
     }
 }

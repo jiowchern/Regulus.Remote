@@ -3,129 +3,42 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace VGameWebApplication.Storage
+namespace VGame.Project.FishHunter.Storage
 {
-    class KeyPool
+    class KeyPool : Regulus.Utility.Singleton<KeyPool>
     {
-        class Key
+
+        System.Collections.Generic.Dictionary<Guid, VGameWebApplication.Models.VerifyData> _Keys;
+
+        public KeyPool()
         {
-            public string Account;
-            public VGame.Project.FishHunter.Storage.IUser User;
-            VGame.Project.FishHunter.Storage.Proxy _Proxy;
-            bool _Break;
-            public Key(Guid id, VGame.Project.FishHunter.Storage.Proxy proxy, string account)
-            {
-                _Proxy = proxy;
-                Id = id;                
-                this.User = _Proxy.SpawnUser(id.ToString());
-                this.Account = account;
-                _TimeCounter = new Regulus.Utility.TimeCounter();
-
-                User.Remoting.OnlineProvider.Unsupply += OnlineProvider_Unsupply;
-            }
-
-            void OnlineProvider_Unsupply(Regulus.Utility.IOnline obj)
-            {
-                _Break = true;
-            }
-
-
-            public Guid Id { get; set; }
-            Regulus.Utility.TimeCounter _TimeCounter;
-            internal bool IsTimeUp()
-            {
-                return _Break == false && _TimeCounter.Second > 300;                
-            }
-
-            internal void ResetTimeUp()
-            {
-                _TimeCounter.Reset();
-            }
-
-            internal void Release()
-            {
-                _Proxy.UnspawnUser(Id.ToString());
-            }
+            _Keys = new Dictionary<Guid, VGameWebApplication.Models.VerifyData>();
         }
-
-        public KeyPool(VGame.Project.FishHunter.Storage.Proxy proxy)
-        {
-            _Client = proxy;
-            _Users = new List<Key>();
-        }
-        VGame.Project.FishHunter.Storage.Proxy _Client;
-        List<Key> _Users;
-        internal Guid Find(string account)
-        {
-            var u = _Users.Find(user => user.Account == account);
-            if(u != null)
-            {
-                u.ResetTimeUp();
-                return u.Id;
-            }
-            return Guid.Empty;
-        }
-
-        internal Guid Build(string account)
-        {
-            var id = Guid.NewGuid();            
-            lock(_Users)
-                _Users.Add(new Key(id , _Client , account));
-            return id;
-        }
-
         
 
-        internal void Update()
+        internal Guid Query(string user, string password)
         {
-
-            List<Key> timeUps = new List<Key>();
-            lock (_Users)
+            var id = (from kp in _Keys where kp.Value.Account == user select kp.Key).FirstOrDefault();
+            if(id == Guid.Empty)
             {
-                foreach (var user in _Users)
-                {
-                    if (user.IsTimeUp())
-                    {
-                        timeUps.Add(user);
-                    }
-                }
+                id = Guid.NewGuid();
+                _Keys.Add(id, new VGameWebApplication.Models.VerifyData { Account = user, Password = password });
             }
-            
 
-            foreach(var timeup in timeUps)
-            {
-                _Remove(timeup);
-            }
+            return id;
+
         }
 
-        private void _Remove(Key timeup)
+        internal void Destroy(Guid guid)
         {
-            timeup.Release();
-
-            lock (_Users)
-                _Users.Remove(timeup);
+            _Keys.Remove(guid);
         }
 
-        internal VGame.Project.FishHunter.Storage.IUser Find(Guid id)
+        internal VGameWebApplication.Models.VerifyData Find(Guid id)
         {
-            var user = _Users.Find(u => u.Id == id);
-            if (user != null)
-                return user.User;
-            return null;
-        }
-
-        internal string FindAccount(Guid id)
-        {
-            var user = _Users.Find(u => u.Id == id);
-            if (user != null)
-                return user.Account;
-            return null;
-        }
-
-        internal void Remove(Guid id)
-        {
-            var user = _Users.Find(u => u.Id == id);
-            _Remove(user);
+            VGameWebApplication.Models.VerifyData data = null;
+            _Keys.TryGetValue(id, out data);
+            return data;
         }
     }
 }

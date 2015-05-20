@@ -36,11 +36,17 @@ namespace Regulus.Remoting.Ghost
 		{
 			add
 			{
+                
 				_Supply += value;
-				foreach (var e in _Entitys)
-				{
-					value(e);
-				}
+
+                lock (_Entitys)
+                {
+                    foreach (var e in _Entitys)
+                    {
+                        value(e);
+                    }
+                }
+				
 			}
 			remove { _Supply -= value; }
 		}
@@ -66,7 +72,8 @@ namespace Regulus.Remoting.Ghost
 		{
             if (ghost.IsReturnType() == false)
             {
-                _Entitys.Add(entity);
+                lock (_Entitys)
+                    _Entitys.Add(entity);
                 if (_Supply != null)
                     _Supply.Invoke(entity);
             }
@@ -120,20 +127,24 @@ namespace Regulus.Remoting.Ghost
 
         private void _RemoveEntitys(Guid id)
         {
-            var entity = (from e in _Entitys where (e as IGhost).GetID() == id select e).FirstOrDefault();
-            if (entity != null && _Unsupply != null)
+            lock (_Entitys)
             {
-                _Unsupply.Invoke(entity);
-            }
+                var entity = (from e in _Entitys where (e as IGhost).GetID() == id select e).FirstOrDefault();
+                if (entity != null && _Unsupply != null)
+                {
+                    _Unsupply.Invoke(entity);
+                }
 
-            _Entitys.Remove(entity);
+                _Entitys.Remove(entity);
+            }
+            
         }
 
 		IGhost[] IProvider.Ghosts
 		{
 
 			get
-			{
+			{                
                 var all = _Entitys.Concat(_Waits).Concat( from r in _Returns where r.IsAlive select r.Target as T);
 				return (from entity in all select (IGhost)entity).ToArray();
 			}
@@ -144,7 +155,8 @@ namespace Regulus.Remoting.Ghost
 		{
 			get
 			{
-				return _Entitys.ToArray();
+                lock (_Entitys)
+				    return _Entitys.ToArray();
 			}
 		}
 

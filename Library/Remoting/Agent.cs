@@ -191,15 +191,19 @@ namespace Regulus.Remoting
 		private Regulus.Remoting.Ghost.IProvider _QueryProvider(string type_name)
 		{
 			Regulus.Remoting.Ghost.IProvider provider = null;
-			if (_Providers.TryGetValue(type_name, out provider) == false)
-			{
-				var type = _GetType(type_name);
-				if (type != null)
-				{
-					provider = _BuildProvider(type);
-					_Providers.Add(type_name, provider);
-				}
-			}
+            lock (_Providers)
+            {
+                if (_Providers.TryGetValue(type_name, out provider) == false)
+                {
+                    var type = _GetType(type_name);
+                    if (type != null)
+                    {
+                        provider = _BuildProvider(type);
+                        _Providers.Add(type_name, provider);
+                    }
+                }
+            }
+			
 			return provider;
 		}
 
@@ -235,10 +239,14 @@ namespace Regulus.Remoting
 
 		private Regulus.Remoting.Ghost.IGhost _FindGhost(Guid ghost_id)
 		{
-			return (from provider in _Providers
-					let r = (from g in provider.Value.Ghosts where ghost_id == g.GetID() select g).FirstOrDefault()
-					where r != null
-					select r).FirstOrDefault();
+            lock (_Providers)
+            {
+                return (from provider in _Providers
+                        let r = (from g in provider.Value.Ghosts where ghost_id == g.GetID() select g).FirstOrDefault()
+                        where r != null
+                        select r).FirstOrDefault();
+            }
+			
 		}
 
         object _Sync = new object();

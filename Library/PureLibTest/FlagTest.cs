@@ -14,6 +14,19 @@ namespace PureLibTest
     public class FlagTest
     {
         [TestMethod]
+        public void TestToArray()
+        {
+            var flags = new Regulus.CustomType.Flag<TESTENUM>();
+            flags[TESTENUM._1] = true;
+            flags[TESTENUM._2] = false;
+            flags[TESTENUM._3] = true;
+
+            var array = flags.ToArray();
+
+            Assert.AreNotEqual(TESTENUM._2, array[0]);
+            Assert.AreNotEqual(TESTENUM._2, array[1]);
+        }
+        [TestMethod]
         public void TestCustomFlag1()
         {
             var flags = new Regulus.CustomType.Flag<TESTENUM>();

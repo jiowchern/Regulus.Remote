@@ -32,12 +32,17 @@ namespace VGameWebApplication
             {
                 FormsAuthenticationTicket authTicket = FormsAuthentication.Decrypt(authCookie.Value);
                 Guid id;
-                if(Guid.TryParse(authTicket.UserData , out id) == false || VGame.Project.FishHunter.Storage.Appliction.Instance.Valid(id) == false)
+                if(Guid.TryParse(authTicket.UserData , out id) == false || VGame.Project.FishHunter.Storage.Service.Create(id) == null)
                 {
+                    VGame.Project.FishHunter.Storage.Service.Destroy(id);
                     HttpContext.Current.User = new System.Security.Principal.GenericPrincipal(new System.Security.Principal.GenericIdentity(""), new string[0]);                    
                 }
                 else
+                {
+
                     HttpContext.Current.Items["StorageId"] = id;
+                }
+                    
             }
 
         }

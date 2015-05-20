@@ -12,6 +12,8 @@ namespace VGame.Project.FishHunter.Storage
 
         Regulus.Remoting.Ghost.IProviderNotice<VGame.Project.FishHunter.IVerify> VerifyProvider { get; }
 
+        Regulus.Remoting.Ghost.IProviderNotice<VGame.Project.FishHunter.IStorageCompetnces> StorageCompetncesProvider { get; }
+
         Regulus.Remoting.Ghost.IProviderNotice<T> QueryProvider<T>();
     }
 }
