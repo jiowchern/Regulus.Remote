@@ -27,7 +27,13 @@ namespace VGame.Project.FishHunter.Data
             [EnumDescription("帳號查詢")]
             ACCOUNT_FINDER ,                        
         };
-
+        public Account()
+        {
+            Competnces = new Regulus.CustomType.Flag<COMPETENCE>();
+            Id = Guid.NewGuid();
+            Name = Id.ToString();
+            Password = Id.ToString();
+        }
         [ProtoBuf.ProtoMember(1)]
         public Guid Id { get; set; }
         [ProtoBuf.ProtoMember(2)]
