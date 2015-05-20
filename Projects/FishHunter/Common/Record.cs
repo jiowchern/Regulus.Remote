@@ -11,6 +11,7 @@ namespace VGame.Project.FishHunter.Data
         public Record()
         {
             Id = Guid.NewGuid();
+            Owner = Guid.Empty;
         }
         [ProtoBuf.ProtoMember(1)]
         public Guid Id { get; set; }

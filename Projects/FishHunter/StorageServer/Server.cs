@@ -186,13 +186,14 @@ namespace VGame.Project.FishHunter.Storage
                 var recordTask = _Database.Find<Data.Record>(r => r.Owner == id);
                 recordTask.ContinueWith((task) =>
                 {
+                   
                     if(task.Result.Count > 0)
                     {
                         val.SetValue(task.Result.FirstOrDefault());
                     }
                     else
                     {
-                        var newRecord = new Data.Record() { Owner = id, Money = 1000 };
+                        var newRecord = new Data.Record() { Owner = id, Money = 0 };
                         _Database.Add(newRecord).Wait();
                         val.SetValue(newRecord);
                     }
