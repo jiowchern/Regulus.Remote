@@ -193,7 +193,7 @@ namespace VGame.Project.FishHunter.Storage
                     }
                     else
                     {
-                        var newRecord = new Data.Record() { Owner = id, Money = 0 };
+                        var newRecord = new Data.Record() { Owner = id, Money = 100 };
                         _Database.Add(newRecord).Wait();
                         val.SetValue(newRecord);
                     }
