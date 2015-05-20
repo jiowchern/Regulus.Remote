@@ -138,7 +138,11 @@ namespace VGame.Project.FishHunter.Storage
             
             var service = new Service(new VGameWebApplication.Models.VerifyData { Account = user, Password = password });
             if(service._Initial())
+            {
+                service.Release();
                 return VGame.Project.FishHunter.Storage.KeyPool.Instance.Query(user, password);
+            }
+                
             return Guid.Empty;
         }
 
