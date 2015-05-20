@@ -34,6 +34,10 @@ namespace VGame.Project.FishHunter.Storage
             _User = _Proxy.SpawnUser("1");
             
         }
+        ~Service()
+        {
+            Release();
+        }
 
         private void _GetStorageCompetnces()
         {
@@ -71,7 +75,7 @@ namespace VGame.Project.FishHunter.Storage
         {
             _Enable = false;
         }
-
+        
 
         private void _GetAccountFinder()
         {
