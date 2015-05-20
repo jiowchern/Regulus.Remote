@@ -1,9 +1,9 @@
-﻿@model VGameWebApplication.Models.StorageApi
+﻿@model VGameWebApplication.Models.AccountFunctions
 
 
 
 @Html.ActionLink("登出", "Logout", "Home", null, new { @class = "navbar-brand" })
-@if(Model.AccountManager != null)
+@if(Model.AccountManager)
 {    
     @Html.ActionLink("帳號管理", "Index", "Account", null, new { @class = "navbar-brand" });
 }

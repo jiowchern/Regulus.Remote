@@ -90,6 +90,8 @@ namespace VGame.Project.FishHunter.Storage
             stage.DoneEvent += _ToVerify;
             _Machine.Push(stage);
         }
- 
+
+
+        
     }
 }

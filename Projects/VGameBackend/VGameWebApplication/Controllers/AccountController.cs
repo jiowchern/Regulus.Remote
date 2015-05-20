@@ -5,6 +5,8 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using Regulus.Extension;
+using System.Threading.Tasks;
+using Regulus.Extension;
 namespace VGameWebApplication.Controllers
 {
 
@@ -17,23 +19,18 @@ namespace VGameWebApplication.Controllers
         
         //
         // GET: /Account/
-        public void IndexAsync()
-        {
-            AsyncManager.OutstandingOperations.Increment();
-            var id = (Guid)HttpContext.Items["StorageId"];
-            var model = new VGameWebApplication.Models.StorageApi(id);
-            model.AccountManager.QueryAllAccount().OnValue += _GetAccounts;            
-        }
-
-        public ActionResult IndexCompleted()
-        {
-            return View(_Accounts);
+        public ActionResult Index()
+        {            
+            
+            VGame.Project.FishHunter.Storage.Service model = VGame.Project.FishHunter.Storage.Service.Create(HttpContext.Items["StorageId"]);
+            var accounts = model.AccountManager.QueryAllAccount().WaitResult();
+            model.Release();
+            return View(accounts);
         }
 
         private void _GetAccounts(VGame.Project.FishHunter.Data.Account[] obj)
         {
-            _Accounts = obj;
-            AsyncManager.OutstandingOperations.Decrement();
+            _Accounts = obj;            
         }
 
         public ActionResult Add()
@@ -43,11 +40,13 @@ namespace VGameWebApplication.Controllers
 
         async public System.Threading.Tasks.Task<ActionResult> AddHandle(VGame.Project.FishHunter.Data.Account account)
         {
-            var id = (Guid)HttpContext.Items["StorageId"];
-            var model = new VGameWebApplication.Models.StorageApi(id);
+            
+            var model = VGame.Project.FishHunter.Storage.Service.Create(HttpContext.Items["StorageId"]);
 
             account.Id = Guid.NewGuid();
             var result = await model.AccountManager.Create(account).ToTask();
+
+            model.Release();
             return RedirectToAction("Index");
         }
 
@@ -57,10 +56,11 @@ namespace VGameWebApplication.Controllers
             if (Guid.TryParse(accountid, out accountId) == false)
                 return RedirectToAction("Index");
 
-            
-            var id = (Guid)HttpContext.Items["StorageId"];
-            var model = new VGameWebApplication.Models.StorageApi(id);
-            var result = await model.AccountFinder.FindAccountById(accountId).ToTask();            
+
+
+            var model = VGame.Project.FishHunter.Storage.Service.Create(HttpContext.Items["StorageId"]);
+            var result = await model.AccountFinder.FindAccountById(accountId).ToTask();
+            model.Release();
             if (result.Id != Guid.Empty)
             {
                 var updateAccount = new VGameWebApplication.Models.UpdateAccount();
@@ -77,10 +77,10 @@ namespace VGameWebApplication.Controllers
         async public System.Threading.Tasks.Task<ActionResult> Edit( VGameWebApplication.Models.UpdateAccount account)
         {
             if(ModelState.IsValid)
-            {
-                var id = (Guid)HttpContext.Items["StorageId"];
-                var model = new VGameWebApplication.Models.StorageApi(id);
+            {                
+                var model = VGame.Project.FishHunter.Storage.Service.Create(HttpContext.Items["StorageId"]);
                 var result = await model.AccountManager.Update(account.TheAccount).ToTask();
+                model.Release();
                 return View(account);
             }
             return RedirectToAction("Index");
