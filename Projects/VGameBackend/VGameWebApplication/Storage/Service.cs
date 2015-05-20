@@ -22,21 +22,24 @@ namespace VGame.Project.FishHunter.Storage
         Regulus.Utility.SpinWait _Soin;
         private VGameWebApplication.Models.VerifyData data;
         private IUser _User;
-
+        object _Key;
         public Service(VGameWebApplication.Models.VerifyData data)
         {
+            _Key = new object();
             this.data = data;
             _Soin = new Regulus.Utility.SpinWait();
             _Enable = true;
             _Proxy = new VGame.Project.FishHunter.Storage.Proxy();
-            _ProxyUpdate = new System.Threading.Tasks.Task(_UpdateProxy);
+            (_Proxy as Regulus.Utility.IUpdatable).Launch();
+            _ProxyUpdate = new System.Threading.Tasks.Task(_UpdateProxy, new WeakReference<Regulus.Utility.IUpdatable>(_Proxy));
             _ProxyUpdate.Start();
             _User = _Proxy.SpawnUser("1");
             
         }
         ~Service()
         {
-            Release();
+            lock (_Proxy)
+                (_Proxy as Regulus.Utility.IUpdatable).Shutdown();
         }
 
         private void _GetStorageCompetnces()
@@ -72,8 +75,7 @@ namespace VGame.Project.FishHunter.Storage
             }
         }
         public void Release()
-        {
-            _Enable = false;
+        {            
         }
         
 
@@ -121,21 +123,35 @@ namespace VGame.Project.FishHunter.Storage
 
         
 
-        private void _UpdateProxy()
+        static private void _UpdateProxy(object obj)
         {
+            WeakReference<Regulus.Utility.IUpdatable> weak = (WeakReference<Regulus.Utility.IUpdatable>)obj;
+            
+            
             Regulus.Utility.SpinWait spin = new Regulus.Utility.SpinWait();
-            Regulus.Utility.CenterOfUpdateable updater = new Regulus.Utility.CenterOfUpdateable();
-            updater.Add(_Proxy);
-            while (_Enable)
+
+
+            
+            bool enable = true;
+
+            while (enable)
             {
+                Regulus.Utility.IUpdatable updater;
+                enable  = weak.TryGetTarget(out updater);
                 if (Regulus.Utility.Random.NextFloat(0, 1) <= 0.1f) 
                     spin.SpinOnce();
                 else
                     spin.Reset();
-                updater.Working();
+
+                lock (updater)
+                    updater.Update();
             }
-            updater.Shutdown();
+
+            
+            
         }
+
+        
 
         internal static Guid Verify(string user, string password)
         {
