@@ -13,8 +13,7 @@ namespace Regulus.Remoting.Ghost.Native
 		private Agent()
 		{            
             _Machine = new Utility.StageMachine();
-            _Socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
-            _Socket.NoDelay = true;
+            
             
 
             _OnlineStage = new OnlineStage();
@@ -107,10 +106,10 @@ namespace Regulus.Remoting.Ghost.Native
 
         void _Disconnect()
         {
-            if (_Socket.Connected)
-            {
-                _Socket.Disconnect(false);
-                _Socket.Close(1);                        
+            if (_Socket != null)
+            {                
+                _Socket.Close();
+                _Socket = null;
             }
             
         }
