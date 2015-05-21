@@ -88,12 +88,8 @@ namespace Regulus.Remoting.Soul.Native
 			{
                 if (package != null)
                 {
-                    
-                    lock (_LockRequest)
-                    {
-                        _Requests.Enqueue(package);
-                        TotalRequest++;
-                    }
+
+                    _RequestPush(package);
                         
                 }				    
 				_HandleRead();
@@ -101,6 +97,15 @@ namespace Regulus.Remoting.Soul.Native
             stage.ErrorEvent += () => { _Enable = false; };
 			_ReadMachine.Push(stage);
 		}
+
+        private void _RequestPush(Package package)
+        {
+            lock (_LockRequest)
+            {
+                _Requests.Enqueue(package);
+                TotalRequest++;
+            }
+        }
 
         private Request _TryGetRequest(Package package )
 		{
@@ -222,9 +227,26 @@ namespace Regulus.Remoting.Soul.Native
             //_HandleWriteWait();
             //_HandleRead();
 
+            _Reader.DoneEvent += _RequestPush ;
+            _Reader.ErrorEvent += () => { _Enable = false; };
             _Reader.Start(_Socket);
-            _Writer.Start(_Socket, _Responses);
+
+
+            _Writer.CheckSourceEvent += _ResponsePop;
+            _Writer.Start(_Socket);
         }
+
+        private Package[] _ResponsePop()
+        {
+            lock (_LockResponse)
+            {
+                var pkgs = _Responses.DequeueAll();
+                TotalResponse -= pkgs.Length;
+                return pkgs;
+            }
+        }
+
+    
 
         void Framework.ILaunched.Shutdown()
         {

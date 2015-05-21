@@ -39,12 +39,22 @@ namespace RemotingTest
             launcher.Push(serverAppliction);
             launcher.Launch();
             bool enable = true;
+            int result2 = 0;
             while (enable)
             {
                 updater.Working();
                 sw.SpinOnce();
                 if (testReturn != null)
                 {
+
+                    testReturn.Test(1, 2).OnValue += (r) =>
+                    {
+                        r.Add(2, 3).OnValue += (r2) => { result2 = r2; };
+                        enable = false;
+
+                    };
+
+                    
                     enable = false;
                     testReturn = null;
                     System.GC.Collect();
@@ -53,8 +63,13 @@ namespace RemotingTest
 
             updater.Working();
 
-            Assert.AreEqual(0, user.TestReturnProvider.Returns.Length);
+            while (result2 == 0)
+                updater.Working();
 
+            System.GC.Collect();
+
+            Assert.AreEqual(0, user.TestReturnProvider.Returns.Length);
+            Assert.AreEqual(-3, result2);
 
             launcher.Shutdown();
 

@@ -7,25 +7,27 @@ namespace Regulus.Remoting.Native
 {
     public class PackageWriter
     {
-
+        public delegate Package[] CheckSourceCallback();
+        public event CheckSourceCallback CheckSourceEvent;
         const int _HeadSize = 4;
         System.Net.Sockets.Socket _Socket;
-        PackageQueue _Sends;
+        
         private byte[] _Buffer;
         private IAsyncResult _AsyncResult;
 
         event OnErrorCallback ErrorEvent;
-        public void Start(System.Net.Sockets.Socket socket, PackageQueue sends)
+        public void Start(System.Net.Sockets.Socket socket)
         {
             _Socket = socket;
-            _Sends = sends;
+            
 
             _Write();
         }
 
         private void _Write()
         {
-            _Buffer = _CreateBuffer(_Sends.DequeueAll());
+
+            _Buffer = _CreateBuffer(CheckSourceEvent());
             
 
             _AsyncResult = _Socket.BeginSend(_Buffer, 0, _Buffer.Length, 0, _WriteCompletion, null);
