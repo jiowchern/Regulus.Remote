@@ -10,6 +10,7 @@ namespace Regulus.Utility
         const int YIELD_THRESHOLD = 10;
         const int SLEEP_0_EVERY_HOW_MANY_TIMES = 5;
         const int SLEEP_1_EVERY_HOW_MANY_TIMES = 20;
+        
 
         private Int32 _Count;
         /// <summary>获取已对此实例调用 <see cref="SpinOnce" /> 的次数。</summary>
@@ -27,6 +28,11 @@ namespace Regulus.Utility
                 return true;
             }
         }
+
+        public SpinWait()
+        {
+            
+        }
         /// <summary>执行单一自旋。</summary>
         public void SpinOnce()
         {
@@ -39,6 +45,7 @@ namespace Regulus.Utility
                     System.Threading.Thread.Sleep(0);
                 else
                     SwitchToThread();
+
             }
             else
                 System.Threading.Thread.SpinWait(((int)(SLEEP_0_EVERY_HOW_MANY_TIMES - 1)) << this._Count);

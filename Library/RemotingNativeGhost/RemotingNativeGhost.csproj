@@ -43,7 +43,9 @@
     <Compile Include="AgentConnectStage.cs" />
     <Compile Include="AgentOnlineStage.cs" />
     <Compile Include="IOHandler.cs" />
+    <Compile Include="PackageWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SocketReader.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PureLib\PureLib.csproj">

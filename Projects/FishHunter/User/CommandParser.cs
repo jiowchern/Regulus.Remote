@@ -23,7 +23,12 @@ namespace VGame.Project.FishHunter
         }
         void Regulus.Framework.ICommandParsable<IUser>.Clear()
         {
-            
+            _DestroySystem();   
+        }
+
+        private void _DestroySystem()
+        {
+            _Command.Unregister("Agent");
         }
         
         private void _ConnectResult(bool result)
@@ -34,6 +39,8 @@ namespace VGame.Project.FishHunter
 
         void Regulus.Framework.ICommandParsable<IUser>.Setup(Regulus.Remoting.IGPIBinderFactory factory)
         {
+            _CreateSystem();
+
             _CreateConnect(factory);
 
 
@@ -43,6 +50,17 @@ namespace VGame.Project.FishHunter
             _CreateVerify(factory);
 
             _CreatePlayer(factory);
+        }
+
+        private void _CreateSystem()
+        {
+            _Command.Register("Agent", _ShowIOHandler);
+        }
+
+        private void _ShowIOHandler()
+        {
+
+            _View.WriteLine(string.Format("Agent Fps:{0} Power:{1:0.00%}", Regulus.Remoting.Ghost.Native.Agent.Fps, Regulus.Remoting.Ghost.Native.Agent.Power));
         }
 
         private void _CreatePlayer(Regulus.Remoting.IGPIBinderFactory factory)

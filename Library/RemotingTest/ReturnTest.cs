@@ -11,7 +11,7 @@ namespace RemotingTest
 
 
 
-        [TestMethod, Timeout(10000)]
+        [TestMethod]
         public void RemotingTest()
         {
             System.Threading.SpinWait sw = new System.Threading.SpinWait();            
