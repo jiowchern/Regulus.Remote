@@ -26,12 +26,18 @@ namespace Regulus.Remoting.Native.Ghost
         private void _Write()
         {
             _Buffer = _CreateBuffer(_Sends.DequeueAll());
+            
+
             _AsyncResult = _Socket.BeginSend(_Buffer, 0, _Buffer.Length, 0, _WriteCompletion, null);
         }
 
         private void _WriteCompletion(IAsyncResult ar)
         {
             _Socket.EndSend(ar);
+
+            if (_Buffer.Length == 0)
+                System.Threading.Thread.Sleep(TimeSpan.FromSeconds(1.0 / 20.0));
+
             _Write();
         }
 
