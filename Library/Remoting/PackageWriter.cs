@@ -15,7 +15,7 @@ namespace Regulus.Remoting.Native
         private byte[] _Buffer;
         private IAsyncResult _AsyncResult;
 
-        event OnErrorCallback ErrorEvent;
+        public event OnErrorCallback ErrorEvent;
         public void Start(System.Net.Sockets.Socket socket)
         {
             _Socket = socket;

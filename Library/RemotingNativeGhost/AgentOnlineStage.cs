@@ -192,6 +192,7 @@ namespace Regulus.Remoting.Ghost.Native
             
             private void _WriterStart()
             {
+                _Writer.ErrorEvent += _Disable;
                 _Writer.CheckSourceEvent += _SendsPop;
                 _Writer.Start(_Socket);
                 
