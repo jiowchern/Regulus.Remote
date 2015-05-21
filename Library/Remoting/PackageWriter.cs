@@ -75,8 +75,7 @@ namespace Regulus.Remoting.Native
 
 
         public void Stop()
-        {
-            throw new NotImplementedException();
+        {         
         }
     }
 }
