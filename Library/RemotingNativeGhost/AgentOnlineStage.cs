@@ -192,14 +192,25 @@ namespace Regulus.Remoting.Ghost.Native
             
             private void _WriterStart()
             {
-                _Writer.Start(_Socket, _Sends);
-                _Reader.ErrorEvent += _Disable;
+                _Writer.CheckSourceEvent += _SendsPop;
+                _Writer.Start(_Socket);
+                
+            }
+
+            private Package[] _SendsPop()
+            {
+                lock (_LockRequest)
+                {
+                    var pkg = _Sends.DequeueAll();
+                    RequestQueueCount -= pkg.Length;
+                    return pkg;
+                }
             }
             private void _ReaderStart()
             {
-                _Reader.Start(_Socket);
                 _Reader.DoneEvent += _ReceivePackage;
                 _Reader.ErrorEvent += _Disable;
+                _Reader.Start(_Socket);                
             }
 
             private void _Disable()
