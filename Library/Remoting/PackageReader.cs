@@ -72,21 +72,36 @@ namespace Regulus.Remoting.Native
         internal void Read(int size)
         {
             _Offset = 0;
-            _Buffer = new byte[size];       
-            _Socket.BeginReceive(_Buffer, _Offset, _Buffer.Length - _Offset, 0, _Readed, null);
+            _Buffer = new byte[size];
+            try
+            {
+                _Socket.BeginReceive(_Buffer, _Offset, _Buffer.Length - _Offset, 0, _Readed, null);
+            }
+            catch
+            {
+                ErrorEvent();
+            }
         }
 
         private void _Readed(IAsyncResult ar)
         {
-            var readSize = _Socket.EndReceive(ar);
-            _Offset += readSize;
+            try
+            {
+                var readSize = _Socket.EndReceive(ar);
+                _Offset += readSize;
 
-            if (readSize == 0)
+                if (readSize == 0)
+                    ErrorEvent();
+                else if (_Offset == _Buffer.Length)
+                    DoneEvent(_Buffer);
+                else
+                    _Socket.BeginReceive(_Buffer, _Offset, _Buffer.Length - _Offset, 0, _Readed, null);
+            }
+            catch
+            {
                 ErrorEvent();
-            else if (_Offset == _Buffer.Length)
-                DoneEvent(_Buffer);
-            else
-                _Socket.BeginReceive(_Buffer, _Offset, _Buffer.Length - _Offset, 0, _Readed, null);
+            }
+            
 
         }
     }

@@ -29,18 +29,32 @@ namespace Regulus.Remoting.Native
 
             _Buffer = _CreateBuffer(CheckSourceEvent());
             
-
-            _AsyncResult = _Socket.BeginSend(_Buffer, 0, _Buffer.Length, 0, _WriteCompletion, null);
+            try
+            {
+                _AsyncResult = _Socket.BeginSend(_Buffer, 0, _Buffer.Length, 0, _WriteCompletion, null);
+            }
+            catch
+            {
+                ErrorEvent();
+            }
         }
 
         private void _WriteCompletion(IAsyncResult ar)
         {
-            _Socket.EndSend(ar);
+            try
+            {
+                _Socket.EndSend(ar);
+                if (_Buffer.Length == 0)
+                    System.Threading.Thread.Sleep(TimeSpan.FromSeconds(1.0 / 20.0));
 
-            if (_Buffer.Length == 0)
-                System.Threading.Thread.Sleep(TimeSpan.FromSeconds(1.0 / 20.0));
 
-            _Write();
+                _Write();
+            }
+            catch
+            {
+                ErrorEvent();
+            }
+            
         }
 
         byte[] _CreateBuffer(Package[] packages)
