@@ -232,6 +232,7 @@ namespace Regulus.Remoting.Soul.Native
             _Reader.Start(_Socket);
 
 
+            _Writer.ErrorEvent += () => { _Enable = false; };
             _Writer.CheckSourceEvent += _ResponsePop;
             _Writer.Start(_Socket);
         }
