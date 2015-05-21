@@ -8,13 +8,19 @@ namespace Regulus.Remoting.Ghost.Native
 
     class IOHandler : Regulus.Utility.Singleton<IOHandler>
     {
-        
+        Regulus.Utility.PowerRegulator _PowerRegulator;
+
+
+        Regulus.Utility.FPSCounter _Fps;
+
+        public int Fps { get { return _PowerRegulator.FPS; } }
+        public float Power { get { return _PowerRegulator.Power; } }
         volatile bool _ThreadEnable;
         
         Regulus.Utility.CenterOfUpdateable _Updater;
         public IOHandler()
-        {
-            
+        {            
+            _PowerRegulator = new Utility.PowerRegulator(30);
             _Updater = new Utility.CenterOfUpdateable();
             
         }
@@ -47,13 +53,7 @@ namespace Regulus.Remoting.Ghost.Native
             do
             {
                 var current = Agent.ResponseQueueCount + Agent.RequestQueueCount;
-                if (current <= response)
-                {
-                    sw.SpinOnce();
-                }
-                else
-                    sw.Reset();
-
+                _PowerRegulator.Operate(current);                
 
                 response = current;
                 _Updater.Working();

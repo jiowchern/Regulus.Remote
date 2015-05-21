@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Regulus.Remoting.Native.Ghost;
 
 namespace Regulus.Remoting.Ghost.Native
 {
@@ -10,7 +11,9 @@ namespace Regulus.Remoting.Ghost.Native
         public static int RequestQueueCount { get { return OnlineStage.RequestQueueCount; } }
         public static int ResponseQueueCount { get { return OnlineStage.ResponseQueueCount; } }
 
-        class OnlineStage : Regulus.Utility.IStage, Regulus.Remoting.IGhostRequest, Regulus.Utility.IUpdatable 
+        public static int Fps { get { return IOHandler.Instance.Fps; } }
+        public static float Power { get { return IOHandler.Instance.Power; } }
+        class OnlineStage : Regulus.Utility.IStage, Regulus.Remoting.IGhostRequest
         {
             public event Action DoneEvent;
             
@@ -18,7 +21,8 @@ namespace Regulus.Remoting.Ghost.Native
             Regulus.Utility.StageMachine _WriteMachine;
 
 
-
+            PackageReader _Reader;
+            PackageWriter _Writer;
 
             static object _LockRequest = new object();
 
@@ -36,6 +40,8 @@ namespace Regulus.Remoting.Ghost.Native
             
             public OnlineStage()
             {
+                _Reader = new PackageReader();
+                _Writer = new PackageWriter();
                 _Sends = new PackageQueue();
                 _Receives = new PackageQueue();                
                 _Core = new Remoting.AgentCore(this);                
@@ -45,54 +51,80 @@ namespace Regulus.Remoting.Ghost.Native
             {
                 _ReadMachine = new Utility.StageMachine();
                 _WriteMachine = new Utility.StageMachine();
-                IOHandler.Instance.Start(this);
                 
+                _Core.Initial();
+                _Enable = true;
+                _ReaderStart();
+                _WriterStart();
+                //_ToWriteWait();
             }
+
+            
 
             void Utility.IStage.Leave()
             {
-               
+                _Core.Finial();
+                _WriterStop();
+                _ReaderStop();
+                _Enable = false;
                 
-                IOHandler.Instance.Stop(this);
+                
                 _ReadMachine.Termination();
                 _WriteMachine.Termination();
             }
 
+            private void _WriterStop()
+            {
+                
+                _Writer.Stop();
+            }
+
             void Utility.IStage.Update()
             {
-               
+                if (!(_Socket.Connected && _Enable))
+                {
+                    DoneEvent();
+                    
+                }
+
+                _WriteMachine.Update();
+                _ReadMachine.Update();
             }
             
 
             void IGhostRequest.Request(byte code, Dictionary<byte, byte[]> args)
             {                
-                _Sends.Enqueue(new Package() { Args = args, Code = code });
+                
                 
                 lock(_LockRequest)
                 {
+                    _Sends.Enqueue(new Package() { Args = args, Code = code });
                     RequestQueueCount++;
                 }
                     
             }
-
+            
             private void _ToRead()
             {
                 var stage = new NetworkStreamReadStage(_Socket);
                 stage.ReadCompletionEvent += (package) =>
                 {
-                    
-                    _Receives.Enqueue(package);
-                
-                    lock(_LockResponse )
-                    {
-                        ResponseQueueCount++;
-                    }
-                        
+
+                    _ReceivePackage(package);
                     
                     _ToRead();
                 };
                 stage.ErrorEvent += () => { _Enable = false; };
                 _ReadMachine.Push(stage);
+            }
+
+            private void _ReceivePackage(Package package)
+            {
+                lock (_LockResponse)
+                {
+                    _Receives.Enqueue(package);
+                    ResponseQueueCount++;
+                }
             }
 
             private void _ToWrite(Package[] packages)
@@ -157,36 +189,29 @@ namespace Regulus.Remoting.Ghost.Native
 
             }
 
-            bool Utility.IUpdatable.Update()
+            
+            private void _WriterStart()
             {
-                
-
-                if (!(_Socket.Connected && _Enable))
-                {
-                    DoneEvent();
-                    return false;
-                }
-
-                _WriteMachine.Update();
-                _ReadMachine.Update();
-
-                return true;
+                _Writer.Start(_Socket, _Sends);
+                _Reader.ErrorEvent += _Disable;
+            }
+            private void _ReaderStart()
+            {
+                _Reader.Start(_Socket);
+                _Reader.DoneEvent += _ReceivePackage;
+                _Reader.ErrorEvent += _Disable;
             }
 
-            void Framework.ILaunched.Launch()
-            {
-                _Enable = true;
-                _Core.Initial();
-                _ToRead();
-                _ToWriteWait();
-            }
-
-            void Framework.ILaunched.Shutdown()
+            private void _Disable()
             {
                 _Enable = false;
-                _Core.Finial();
-                _ReadMachine.Empty();
-                _WriteMachine.Empty();
+            }
+            
+            private void _ReaderStop()
+            {
+                _Reader.DoneEvent -= _ReceivePackage;
+                _Reader.ErrorEvent -= _Disable;
+                _Reader.Stop();
             }
         }
     }

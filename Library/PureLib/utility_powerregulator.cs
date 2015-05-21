@@ -19,6 +19,11 @@ namespace Regulus.Utility
 
         public float Power { get; private set; }
 
+        public PowerRegulator(int low_power) :this()
+        {
+            _LowPower = low_power;
+        }
+
         public PowerRegulator()
         {
             _Sample = 1.0f;
@@ -34,7 +39,7 @@ namespace Regulus.Utility
         {
             _FPS.Update();
 
-            if (_Busy <= busy)
+            if (_Busy <= busy && _FPS.Value > _LowPower )
             {
                 _SpinWait.SpinOnce();
                 _SpinCount++;
@@ -56,5 +61,7 @@ namespace Regulus.Utility
 
             _Busy = busy;
         }
+
+        private int _LowPower;
     }
 }
