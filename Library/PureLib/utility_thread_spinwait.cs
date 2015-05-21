@@ -45,7 +45,6 @@ namespace Regulus.Utility
                     System.Threading.Thread.Sleep(0);
                 else
                     SwitchToThread();
-
             }
             else
                 System.Threading.Thread.SpinWait(((int)(SLEEP_0_EVERY_HOW_MANY_TIMES - 1)) << this._Count);
