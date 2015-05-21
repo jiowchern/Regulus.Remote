@@ -242,7 +242,11 @@
                 {
                     var readSize = _Socket.EndReceive(ar);
                     if (readSize == 0)
-                        _Result = SocketIOResult.Break; 
+                    {
+                        _Result = SocketIOResult.Break;
+                        return;
+                    }
+                        
 
                     _Offset += readSize;
                     if (_Offset == _Size)
