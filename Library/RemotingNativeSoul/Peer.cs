@@ -24,7 +24,10 @@ namespace Regulus.Remoting.Soul.Native
 		Regulus.Remoting.Soul.SoulProvider _SoulProvider;
 		PackageQueue _Responses;
         PackageQueue _Requests;
-        
+
+
+        Regulus.Remoting.Native.PackageReader _Reader;
+        Regulus.Remoting.Native.PackageWriter _Writer;
 		Regulus.Utility.StageMachine _ReadMachine;
 		Regulus.Utility.StageMachine _WriteMachine;
         volatile bool _Enable;
@@ -45,6 +48,9 @@ namespace Regulus.Remoting.Soul.Native
 			_ReadMachine = new Utility.StageMachine();
 			_WriteMachine = new Utility.StageMachine();
             _Enable = true;
+
+            _Reader = new Remoting.Native.PackageReader();
+            _Writer = new Remoting.Native.PackageWriter();
 			
 		}
 		private void _HandleWrite(Package[] packages)
@@ -213,13 +219,18 @@ namespace Regulus.Remoting.Soul.Native
 
         void Framework.ILaunched.Launch()
         {
-            _HandleWriteWait();
-            _HandleRead();
+            //_HandleWriteWait();
+            //_HandleRead();
+
+            _Reader.Start(_Socket);
+            _Writer.Start(_Socket, _Responses);
         }
 
         void Framework.ILaunched.Shutdown()
         {
             _Socket.Close();
+            _Reader.Stop();
+            _Writer.Stop();
             _ReadMachine.Termination();
             _WriteMachine.Termination();
 

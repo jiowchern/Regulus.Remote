@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Regulus.Remoting.Native.Ghost;
+
 
 namespace Regulus.Remoting.Ghost.Native
 {
@@ -21,8 +21,8 @@ namespace Regulus.Remoting.Ghost.Native
             Regulus.Utility.StageMachine _WriteMachine;
 
 
-            PackageReader _Reader;
-            PackageWriter _Writer;
+            Regulus.Remoting.Native.PackageReader _Reader;
+            Regulus.Remoting.Native.PackageWriter _Writer;
 
             static object _LockRequest = new object();
 
@@ -40,8 +40,8 @@ namespace Regulus.Remoting.Ghost.Native
             
             public OnlineStage()
             {
-                _Reader = new PackageReader();
-                _Writer = new PackageWriter();
+                _Reader = new Regulus.Remoting.Native.PackageReader();
+                _Writer = new Regulus.Remoting.Native.PackageWriter();
                 _Sends = new PackageQueue();
                 _Receives = new PackageQueue();                
                 _Core = new Remoting.AgentCore(this);                
