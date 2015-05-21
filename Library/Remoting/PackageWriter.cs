@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Regulus.Remoting.Native.Ghost
+namespace Regulus.Remoting.Native
 {
-    class PackageWriter
+    public class PackageWriter
     {
 
         const int _HeadSize = 4;
@@ -15,7 +15,7 @@ namespace Regulus.Remoting.Native.Ghost
         private IAsyncResult _AsyncResult;
 
         event OnErrorCallback ErrorEvent;
-        internal void Start(System.Net.Sockets.Socket socket, PackageQueue sends)
+        public void Start(System.Net.Sockets.Socket socket, PackageQueue sends)
         {
             _Socket = socket;
             _Sends = sends;
@@ -58,7 +58,7 @@ namespace Regulus.Remoting.Native.Ghost
         }
 
 
-        internal void Stop()
+        public void Stop()
         {
             throw new NotImplementedException();
         }

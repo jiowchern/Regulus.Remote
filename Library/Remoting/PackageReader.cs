@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Regulus.Remoting.Native.Ghost
+namespace Regulus.Remoting.Native
 {
     public delegate void OnErrorCallback();
     public delegate void OnByteDataCallback(byte[] bytes);
     public delegate void OnPackageCallback(Package package);
-    class PackageReader
+    public class PackageReader
     {
         public event OnErrorCallback ErrorEvent;
         public event OnPackageCallback DoneEvent;
@@ -19,7 +19,7 @@ namespace Regulus.Remoting.Native.Ghost
 
         SocketReader _Reader;
 
-        internal void Start(System.Net.Sockets.Socket socket)
+        public void Start(System.Net.Sockets.Socket socket)
         {
             _Socket = socket;            
             _ReadHead();    
@@ -50,7 +50,7 @@ namespace Regulus.Remoting.Native.Ghost
 
 
 
-        internal void Stop()
+        public void Stop()
         {
             
         }
