@@ -40,7 +40,8 @@ namespace Regulus.Remoting
                 args[0] = id.ToByteArray();
 
                 _Exists.Remove(id);
-                _Requester.Request((int)ClientToServerOpCode.Release, args);
+                if (_Requester != null)
+                    _Requester.Request((int)ClientToServerOpCode.Release, args);
             }
         }
     }

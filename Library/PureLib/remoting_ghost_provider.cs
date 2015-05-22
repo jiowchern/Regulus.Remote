@@ -21,7 +21,9 @@ namespace Regulus.Remoting.Ghost
 		void Add(IGhost entiry);
 		void Remove(Guid id);
         IGhost Ready(Guid id);
-	}
+
+        void ClearGhosts();
+    }
 
 
 	public class TProvider<T> : IProviderNotice<T>, IProvider
@@ -182,6 +184,14 @@ namespace Regulus.Remoting.Ghost
             T[] alives = (from w in _Returns where w.IsAlive select w.Target as T).ToArray();
             _Returns.RemoveAll(w => w.IsAlive == false);
             return alives;
+        }
+
+
+        void IProvider.ClearGhosts()
+        {
+            _Entitys.Clear();
+            _Waits.Clear();
+            _Returns.Clear();
         }
     }
 }

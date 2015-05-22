@@ -79,7 +79,8 @@ namespace Regulus.Remoting.Native
             }
             catch
             {
-                ErrorEvent();
+                if (ErrorEvent != null)
+                    ErrorEvent();
             }
         }
 
@@ -99,7 +100,8 @@ namespace Regulus.Remoting.Native
             }
             catch
             {
-                ErrorEvent();
+                if (ErrorEvent != null)
+                    ErrorEvent();
             }
             
 

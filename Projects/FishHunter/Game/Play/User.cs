@@ -31,7 +31,8 @@ namespace VGame.Project.FishHunter.Play
         {
             if(_Account != null && _Account.Id == id)
             {
-                _KickEvent();
+                if (_KickEvent != null)
+                    _KickEvent();
                 _ToVerify();
             }
         }

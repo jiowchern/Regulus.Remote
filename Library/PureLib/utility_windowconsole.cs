@@ -43,11 +43,25 @@ namespace Regulus.Utility
 
         void Framework.ILaunched.Launch()
         {
-
-            Regulus.Utility.Log.Instance.RecordEvent += _RecordView;
+            _HideLog();
+            
             _Updater.Add(_Input);
 
             _Launch();
+        }
+
+        private void _ShowLog()
+        {
+            Regulus.Utility.Log.Instance.RecordEvent += _RecordView;
+            _Console.Command.Unregister("ShowLog");
+            _Console.Command.Register("HideLog" , _HideLog );
+        }
+
+        private void _HideLog()
+        {
+            Regulus.Utility.Log.Instance.RecordEvent -= _RecordView;
+            _Console.Command.Unregister("HideLog");
+            _Console.Command.Register("ShowLog", _ShowLog);
         }
 
         private void _RecordView(string message)
