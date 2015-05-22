@@ -7,8 +7,8 @@ namespace RemotingTest
     public class RemotingTest
     {
 
-        static bool _ConnectEnable;
-        [TestMethod]
+        volatile static bool _ConnectEnable;
+        [TestMethod , Timeout(5)]
         public void ConnectTest()
         {
             
@@ -31,9 +31,9 @@ namespace RemotingTest
                 while (agent.QueryProvider<ITestGPI>().Ghosts.Length == 0) ;
                 int result = agent.QueryProvider<ITestGPI>().Ghosts[0].Add(1, 2).WaitResult();
 
-                agent.Disconnect();
-                _ConnectEnable = false;
+                agent.Disconnect();                
             }
+            _ConnectEnable = false;
             task.Wait();
 
 
@@ -46,8 +46,54 @@ namespace RemotingTest
                 int result = agent.QueryProvider<ITestGPI>().Ghosts[0].Add(1, 2).WaitResult();
 
                 agent.Disconnect();
-                _ConnectEnable = false;
+                
             }
+            _ConnectEnable = false;
+            task.Wait();
+
+
+            _ConnectEnable = true;
+            task = new System.Threading.Tasks.Task(NewMethod(agent));
+            task.Start();
+            if (agent.Connect("127.0.0.1", 12345).WaitResult())
+            {
+                while (agent.QueryProvider<ITestGPI>().Ghosts.Length == 0) ;
+                int result = agent.QueryProvider<ITestGPI>().Ghosts[0].Add(1, 2).WaitResult();
+
+                agent.Disconnect();
+
+            }
+            _ConnectEnable = false;
+            task.Wait();
+
+
+            _ConnectEnable = true;
+            task = new System.Threading.Tasks.Task(NewMethod(agent));
+            task.Start();
+            if (agent.Connect("127.0.0.1", 12345).WaitResult())
+            {
+                while (agent.QueryProvider<ITestGPI>().Ghosts.Length == 0) ;
+                int result = agent.QueryProvider<ITestGPI>().Ghosts[0].Add(1, 2).WaitResult();
+
+                agent.Disconnect();
+
+            }
+            _ConnectEnable = false;
+            task.Wait();
+
+
+            _ConnectEnable = true;
+            task = new System.Threading.Tasks.Task(NewMethod(agent));
+            task.Start();
+            if (agent.Connect("127.0.0.1", 12345).WaitResult())
+            {
+                while (agent.QueryProvider<ITestGPI>().Ghosts.Length == 0) ;
+                int result = agent.QueryProvider<ITestGPI>().Ghosts[0].Add(1, 2).WaitResult();
+
+                agent.Disconnect();
+
+            }
+            _ConnectEnable = false;
             task.Wait();
 
             launcher.Shutdown();

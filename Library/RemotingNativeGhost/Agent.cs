@@ -5,7 +5,7 @@ namespace Regulus.Remoting.Ghost.Native
     
     public partial class Agent :  IAgent
 	{        
-        System.Net.Sockets.Socket _Socket;		
+        
         Regulus.Utility.StageMachine _Machine;
         OnlineStage _OnlineStage;
         event Action _DisconnectEvent;
@@ -24,28 +24,24 @@ namespace Regulus.Remoting.Ghost.Native
 
         private Regulus.Remoting.Value<bool> _ToConnect(string ipaddress, int port)
         {            
-            _Socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
-            _Socket.NoDelay = true;
-            
-            
             var val = new Regulus.Remoting.Value<bool>();
-            var stage = new ConnectStage(_Socket, ipaddress, port);
-            stage.ResultEvent += (result)=>
+            var stage = new ConnectStage(ipaddress, port);
+            stage.ResultEvent += (result,socket)=>
             {
                 if (_ConnectEvent != null)
                     _ConnectEvent();
                 val.SetValue(result);
-                _ConnectResult(result);                
+                _ConnectResult(result, socket);                
             };
             _Machine.Push(stage);
             return val;
         }
         
-        void _ConnectResult(bool success)
+        void _ConnectResult(bool success , System.Net.Sockets.Socket socket)
         {
             if (success == true)
             {
-                _ToOnline(_Machine);                                
+                _ToOnline(_Machine, socket);                                
             }
             else
             {
@@ -53,15 +49,16 @@ namespace Regulus.Remoting.Ghost.Native
             }
         }
 
-        private void _ToOnline(Utility.StageMachine machine)
+        private void _ToOnline(Utility.StageMachine machine, System.Net.Sockets.Socket socket)
         {
-            _OnlineStage = new OnlineStage(_Socket);
+            _OnlineStage = new OnlineStage(socket);
             _OnlineStage.DoneEvent += () =>
             {
                 _OnlineStage = null;
+
+                //_ToOffline(_Machine);
                 if (_DisconnectEvent != null)
                     _DisconnectEvent();
-                _ToOffline(_Machine);
             };
             _Core.Finial();
             _Core.Initial(_OnlineStage);
@@ -70,8 +67,7 @@ namespace Regulus.Remoting.Ghost.Native
 
         private void _ToOffline(Regulus.Utility.StageMachine machine)
         {
-            
-            machine.Push(new IdleStage());
+            _Machine.Termination();            
         }
 
         
@@ -109,13 +105,8 @@ namespace Regulus.Remoting.Ghost.Native
         }
 
         void _Disconnect()
-        {            
-            _Machine.Termination();
-            if (_Socket != null)
-            {                
-                _Socket.Close();
-                _Socket = null;
-            }
+        {
+            _Machine.Empty();
         }
 
 
