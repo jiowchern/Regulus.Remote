@@ -15,7 +15,7 @@ namespace FormulaUserBot
         {
             System.Threading.SpinWait sw = new System.Threading.SpinWait();
 
-            int botCount = 100;
+            int botCount = 150;
             if(args.Length > 0)
             {
                 botCount = int.Parse(args[0]);

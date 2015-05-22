@@ -36,6 +36,19 @@ namespace FormulaUserBot
             _User.FishStageQueryerProvider.Supply += _Query;
             _User.VerifyProvider.Supply += _Verify;
             _User.Remoting.ConnectProvider.Supply += _Connect;
+            _User.Remoting.OnlineProvider.Supply += OnlineProvider_Supply;
+            
+            
+        }
+
+        void OnlineProvider_Supply(Regulus.Utility.IOnline obj)
+        {
+            obj.DisconnectEvent += obj_DisconnectEvent;
+        }
+
+        void obj_DisconnectEvent()
+        {
+            _ConnectResult(_Con.Connect(_IPAddress, _Port));
         }
 
         private void _Stage(VGame.Project.FishHunter.IFishStage obj)
@@ -72,10 +85,11 @@ namespace FormulaUserBot
                     throw new System.Exception("Verify Fail.");                    
             };
         }
-
+        Regulus.Utility.IConnect _Con;
         private void _Connect(Regulus.Utility.IConnect obj)
         {
-            _ConnectResult(obj.Connect(_IPAddress, _Port));
+            _Con = obj;
+            _ConnectResult(_Con.Connect(_IPAddress, _Port));
         }
 
         private void _ConnectResult(Regulus.Remoting.Value<bool> value)
@@ -83,7 +97,10 @@ namespace FormulaUserBot
             value.OnValue += (result) => 
             {
                 if (result == false)
-                    throw new System.Exception("Connect Fail.");
+                {
+                    _ConnectResult(_Con.Connect(_IPAddress, _Port));
+                }
+                    
                 
             };
         }

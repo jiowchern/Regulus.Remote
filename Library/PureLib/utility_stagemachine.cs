@@ -26,26 +26,20 @@ namespace Regulus.Utility
     
     public class StageMachine
     {
-        class StageData
-        {
-            public Regulus.Utility.IStage Stage;            
-        }
+        
         System.Collections.Generic.Queue<Regulus.Utility.IStage> _StandBys;
-        StageData _Current;
+        Regulus.Utility.IStage _Current;
 
 
         public Regulus.Utility.IStage Current { get 
         {
-            if (_Current != null)
-                return _Current.Stage;
-            return null;
+            
+            return _Current;
+
         } }
         public StageMachine()
-        {
-            
-            _StandBys = new Queue<IStage>();
-            _Current = new StageData();
-            _Handle = _HandleStandByEnter;
+        {            
+            _StandBys = new Queue<IStage>();                        
         }
         public void Push(Regulus.Utility.IStage new_stage)
         {
@@ -53,93 +47,47 @@ namespace Regulus.Utility
                 _StandBys.Enqueue(new_stage);
         }
 
-        Action _Handle;
-        void _HandleStandByEnter()
-        {
-            if (_StandBys.Count > 0)
-            {
-                if (_Current.Stage != null)
-                    _Current.Stage.Leave();
-
-
-                IStage stage;
-                lock(_StandBys)
-                {
-                    stage = _StandBys.Dequeue();
-                }
-                
-
-                
-                if (stage != null)
-                {
-                    stage.Enter();                    
-                }
-                _Current.Stage = stage;
-            }
-
-            _Handle = _HandleCurrentStage;
-        }
-        void _HandleCheckStabdBy()
-        {
-            if (_StandBys.Count > 0)
-            {
-                _Handle = _HandleCurrentStageWait;
-            }
-            else
-                _Handle = _HandleCurrentStage;
-        }
-        void _HandleCurrentStageWait()
-        {            
-            _Handle = _HandleStandByEnter;
-        }
-        void _HandleCurrentStage()
-        {
-            if (_Current.Stage != null)
-            {
-                _Current.Stage.Update();
-            }
-
-            _Handle = _HandleCheckStabdBy;
-        }
+        
+        
         public bool Update()
         {
-            //_Handle();
-
-            if (_StandBys.Count > 0)
+            lock (_StandBys)
             {
-                if (_Current.Stage != null)
-                    _Current.Stage.Leave();
-
-                IStage stage;
-                lock (_StandBys)
+                if (_StandBys.Count > 0)
                 {
+                    if (_Current != null)
+                        _Current.Leave();
+
+                    IStage stage;
                     stage = _StandBys.Dequeue();
+
+                    if (stage != null)
+                    {
+                        stage.Enter();
+                    }
+                    _Current = stage;
                 }
 
-
-                if (stage != null)
+                if (_Current != null)
                 {
-                    stage.Enter();
+                    _Current.Update();
                 }
-                _Current.Stage = stage;
             }
-
-            if (_Current.Stage != null)
-            {
-                _Current.Stage.Update();
-            }
-
-            return _Current.Stage != null;
+            return _Current != null;
         }
 
         public void Termination()
         {
-            _StandBys.Clear();
-            if (_Current != null && _Current.Stage != null)
+            lock (_StandBys)
             {
-                _Current.Stage.Leave();
-                _Current.Stage = null;
+                _StandBys.Clear();
+                if (_Current != null)
+                {
+                    _Current.Leave();
+                    _Current = null;
+                }
             }
+
         }
 
         public void Empty()

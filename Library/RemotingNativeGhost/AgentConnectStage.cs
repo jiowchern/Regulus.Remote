@@ -14,12 +14,13 @@ namespace Regulus.Remoting.Ghost.Native
             private int _Port;
             IAsyncResult _AsyncResult;
             bool? _Result;
-            public event Action<bool> ResultEvent;
-            public ConnectStage(System.Net.Sockets.Socket socket, string ipaddress, int port)
+            public event Action<bool, System.Net.Sockets.Socket> ResultEvent;
+            public ConnectStage( string ipaddress, int port)
             {
+                _Socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
+                _Socket.NoDelay = true;
                 if (ipaddress == null)
-                    throw new ArgumentNullException();
-                this._Socket = socket;
+                    throw new ArgumentNullException();                
                 this._Ipaddress = ipaddress;
                 this._Port = port;
             }
@@ -58,7 +59,7 @@ namespace Regulus.Remoting.Ghost.Native
 
                 if (_Result.HasValue && ResultEvent != null)
                 {
-                    ResultEvent(_Result.Value);
+                    ResultEvent(_Result.Value, _Socket);
                     ResultEvent = null;
                 }
 
@@ -68,7 +69,7 @@ namespace Regulus.Remoting.Ghost.Native
             {
                 if (_Result.HasValue == false)
                 {
-                    ResultEvent(false);
+                    ResultEvent(false , null);
                 }
                 
             }

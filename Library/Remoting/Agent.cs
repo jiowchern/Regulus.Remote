@@ -44,11 +44,14 @@ namespace Regulus.Remoting
 		}
 		public void Finial()
         {
-
-            foreach(var providerPair in _Providers)
+            lock (_Providers)
             {
-                providerPair.Value.ClearGhosts();
+                foreach (var providerPair in _Providers)
+                {
+                    providerPair.Value.ClearGhosts();
+                }
             }
+            
             _Requester = null;
 			_EndPing();            
 		}
