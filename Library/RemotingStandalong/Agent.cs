@@ -18,7 +18,7 @@ namespace Regulus.Standalong
         public Agent()
         {
             _GhostRequest = new GhostRequest();
-            _Agent = new Remoting.AgentCore(_GhostRequest);
+            _Agent = new Remoting.AgentCore();
             _SoulProvider = new Remoting.Soul.SoulProvider(this, this);
         }
 		public void Launch()
@@ -27,7 +27,7 @@ namespace Regulus.Standalong
 			_GhostRequest.PingEvent	+= _OnRequestPing	;
             _GhostRequest.ReleaseEvent += _SoulProvider.Unbind;
 
-            _Agent.Initial();
+            _Agent.Initial(_GhostRequest);
 		}
 		private void _OnRequestPing()
 		{

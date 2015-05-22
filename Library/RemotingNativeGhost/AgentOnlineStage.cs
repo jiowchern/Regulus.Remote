@@ -35,16 +35,17 @@ namespace Regulus.Remoting.Ghost.Native
             PackageQueue _Sends;
             PackageQueue _Receives;            
             private System.Net.Sockets.Socket _Socket;
-            AgentCore _Core;
+            
             bool _Enable;
             
-            public OnlineStage()
+            public OnlineStage(System.Net.Sockets.Socket  socket)
             {
+                _Socket = socket;
                 _Reader = new Regulus.Remoting.Native.PackageReader();
                 _Writer = new Regulus.Remoting.Native.PackageWriter();
                 _Sends = new PackageQueue();
                 _Receives = new PackageQueue();                
-                _Core = new Remoting.AgentCore(this);                
+                
             }
             
             void Utility.IStage.Enter()
@@ -52,7 +53,7 @@ namespace Regulus.Remoting.Ghost.Native
                 _ReadMachine = new Utility.StageMachine();
                 _WriteMachine = new Utility.StageMachine();
                 
-                _Core.Initial();
+                
                 _Enable = true;
                 _ReaderStart();
                 _WriterStart();
@@ -62,8 +63,7 @@ namespace Regulus.Remoting.Ghost.Native
             
 
             void Utility.IStage.Leave()
-            {
-                _Core.Finial();
+            {                
                 _WriterStop();
                 _ReaderStop();
                 _Enable = false;
@@ -73,11 +73,7 @@ namespace Regulus.Remoting.Ghost.Native
                 _WriteMachine.Termination();
             }
 
-            private void _WriterStop()
-            {
-                
-                _Writer.Stop();
-            }
+            
 
             void Utility.IStage.Update()
             {
@@ -163,30 +159,19 @@ namespace Regulus.Remoting.Ghost.Native
 
             
 
-            internal void SetSocket(System.Net.Sockets.Socket socket)
+            internal void Process(AgentCore core)
             {
-                _Socket = socket;
-            }
-
-            public long Ping { get { return _Core.Ping; } }
-
-            internal IProviderNotice<T> QueryProvider<T>()
-            {
-                return _Core.QueryProvider<T>();
-            }
-
-
-
-            internal void Process()
-            {
-                var pkgs = _Receives.DequeueAll();
+                
                 lock (_LockResponse)
-                    ResponseQueueCount -= pkgs.Length;
-                foreach(var pkg in pkgs)
                 {
-                    _Core.OnResponse(pkg.Code, pkg.Args);
-                }
+                    var pkgs = _Receives.DequeueAll();
+                    ResponseQueueCount -= pkgs.Length;
 
+                    foreach (var pkg in pkgs)
+                    {
+                        core.OnResponse(pkg.Code, pkg.Args);
+                    }
+                }
             }
 
             
@@ -196,6 +181,13 @@ namespace Regulus.Remoting.Ghost.Native
                 _Writer.CheckSourceEvent += _SendsPop;
                 _Writer.Start(_Socket);
                 
+            }
+
+            private void _WriterStop()
+            {
+                _Writer.ErrorEvent -= _Disable;
+                _Writer.CheckSourceEvent -= _SendsPop;
+                _Writer.Stop();
             }
 
             private Package[] _SendsPop()

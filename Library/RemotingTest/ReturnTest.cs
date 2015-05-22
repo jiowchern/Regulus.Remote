@@ -4,15 +4,77 @@ using Regulus.Extension;
 namespace RemotingTest
 {
     [TestClass]
-    public class ReturnTest
+    public class RemotingTest
     {
 
+        static bool _ConnectEnable;
+        [TestMethod]
+        public void ConnectTest()
+        {
+            
+            Regulus.Utility.Launcher launcher = new Regulus.Utility.Launcher();
+            Server server = new Server();
+            Regulus.Remoting.Soul.Native.Server serverAppliction = new Regulus.Remoting.Soul.Native.Server(server, 12345);
+            launcher.Push(serverAppliction);
+            launcher.Launch();
+
+            
+            var agent = Regulus.Remoting.Ghost.Native.Agent.Create();
 
 
+            _ConnectEnable = true;
+            System.Threading.Tasks.Task task = new System.Threading.Tasks.Task(NewMethod(  agent));
+            task.Start();
+            if(agent.Connect("127.0.0.1", 12345).WaitResult())
+            {
+
+                while (agent.QueryProvider<ITestGPI>().Ghosts.Length == 0) ;
+                int result = agent.QueryProvider<ITestGPI>().Ghosts[0].Add(1, 2).WaitResult();
+
+                agent.Disconnect();
+                _ConnectEnable = false;
+            }
+            task.Wait();
+
+
+            _ConnectEnable = true; 
+            task = new System.Threading.Tasks.Task(NewMethod(  agent));
+            task.Start();                      
+            if (agent.Connect("127.0.0.1", 12345).WaitResult())
+            {
+                while (agent.QueryProvider<ITestGPI>().Ghosts.Length == 0) ;
+                int result = agent.QueryProvider<ITestGPI>().Ghosts[0].Add(1, 2).WaitResult();
+
+                agent.Disconnect();
+                _ConnectEnable = false;
+            }
+            task.Wait();
+
+            launcher.Shutdown();
+        }
+
+        private static Action NewMethod(Regulus.Remoting.IAgent agent)
+        {
+            return () =>
+            {
+               
+                System.Threading.SpinWait sw = new System.Threading.SpinWait();
+                
+                agent.Launch();
+                while (_ConnectEnable)
+                {
+                    agent.Update();
+                   
+                    sw.SpinOnce();
+                }
+              
+                agent.Shutdown();
+            };
+        }
 
 
         [TestMethod]
-        public void RemotingTest()
+        public void RemotingReturnTest()
         {
             System.Threading.SpinWait sw = new System.Threading.SpinWait();            
             Regulus.Utility.Launcher launcher = new Regulus.Utility.Launcher();
@@ -77,7 +139,7 @@ namespace RemotingTest
             updater.Shutdown();
         }
         [TestMethod]
-        public void StandalongTest()
+        public void StandalongReturnTest()
         {
             var server = new Server();
 

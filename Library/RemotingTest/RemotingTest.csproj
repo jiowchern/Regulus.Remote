@@ -57,6 +57,7 @@
     <Compile Include="CommandParser.cs" />
     <Compile Include="EmptyInputView.cs" />
     <Compile Include="Ghost.cs" />
+    <Compile Include="ITestGPI.cs" />
     <Compile Include="ITestReturn.cs" />
     <Compile Include="IUser.cs" />
     <Compile Include="RemotingProvider.cs" />

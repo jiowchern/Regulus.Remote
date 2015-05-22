@@ -9,20 +9,11 @@ namespace Regulus.Remoting.Ghost.Native
         Regulus.Utility.StageMachine _Machine;
         OnlineStage _OnlineStage;
         event Action _DisconnectEvent;
-        
+        AgentCore _Core;
 		private Agent()
 		{            
             _Machine = new Utility.StageMachine();
-            
-            
-
-            _OnlineStage = new OnlineStage();
-            _OnlineStage.DoneEvent += () =>
-            {
-                _ToOffline(_Machine);
-                if(_DisconnectEvent != null)
-                    _DisconnectEvent();
-            };
+            _Core = new AgentCore();
 		}
         
         Regulus.Remoting.Value<bool> _Connect(string ipaddress, int port)
@@ -63,9 +54,17 @@ namespace Regulus.Remoting.Ghost.Native
         }
 
         private void _ToOnline(Utility.StageMachine machine)
-        {            
-            var stage = _OnlineStage;
-            stage.SetSocket(_Socket);
+        {
+            _OnlineStage = new OnlineStage(_Socket);
+            _OnlineStage.DoneEvent += () =>
+            {
+                _OnlineStage = null;
+                if (_DisconnectEvent != null)
+                    _DisconnectEvent();
+                _ToOffline(_Machine);
+            };
+            _Core.Finial();
+            _Core.Initial(_OnlineStage);
             machine.Push(_OnlineStage);
         }
 
@@ -79,7 +78,8 @@ namespace Regulus.Remoting.Ghost.Native
 		bool Utility.IUpdatable.Update()
 		{
             _Machine.Update();
-            _OnlineStage.Process();
+            if (_OnlineStage != null)
+                _OnlineStage.Process(_Core);
             
 
 			return true;
@@ -92,26 +92,30 @@ namespace Regulus.Remoting.Ghost.Native
 
 		void Framework.ILaunched.Shutdown()
 		{
+            
             _Disconnect();
 		}
 
 		
 
-		long _Ping { get { return _OnlineStage.Ping ; } }
+		long _Ping { get 
+        {
+            return _Core.Ping;
+        } }
 
         IProviderNotice<T> IAgent.QueryProvider<T>()
         {
-            return _OnlineStage.QueryProvider<T>();
+            return _Core.QueryProvider<T>();
         }
 
         void _Disconnect()
-        {
+        {            
+            _Machine.Termination();
             if (_Socket != null)
             {                
                 _Socket.Close();
                 _Socket = null;
             }
-            
         }
 
 

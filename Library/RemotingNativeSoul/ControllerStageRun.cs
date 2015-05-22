@@ -128,8 +128,7 @@ namespace Regulus.Remoting.Soul.Native
             _Port = port;
             
             _Sockets = new Queue<System.Net.Sockets.Socket>();
-            _Socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
-            _Socket.NoDelay = true;
+            
 
             _Peers = new ParallelUpdate();
             
@@ -140,6 +139,8 @@ namespace Regulus.Remoting.Soul.Native
         {            
             _Run = true;
 
+            _Socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
+            _Socket.NoDelay = true;
             _Socket.Bind(new System.Net.IPEndPoint(System.Net.IPAddress.Any, _Port));
             //_Socket.IOControl(System.Net.Sockets.IOControlCode.KeepAliveValues, _GetKeepAliveSetting(1, 5000, 5000), null);
             _Socket.Listen(5);            
@@ -168,7 +169,7 @@ namespace Regulus.Remoting.Soul.Native
 
                 _Spin.Operate(Peer.TotalRequest);                
             }
-
+            _Socket.Close();
             
         }
 

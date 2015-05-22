@@ -27,22 +27,30 @@ namespace Regulus.Remoting
 	public class AgentCore
 	{
 		IGhostRequest _Requester ;
-
+        Dictionary<string, Regulus.Remoting.Ghost.IProvider> _Providers ;
         AutoRelease _AutoRelease;
          
-		public AgentCore(IGhostRequest req)
-		{            
-			_Requester = req;
+		public AgentCore()
+		{
+            _Providers = new Dictionary<string, Regulus.Remoting.Ghost.IProvider>();
+			
             _AutoRelease = new AutoRelease(_Requester);
 		}
 
-		public void Initial()
+        public void Initial(IGhostRequest req)
 		{
+            _Requester = req;
 			_StartPing();
 		}
 		public void Finial()
-		{
-			_EndPing();
+        {
+
+            foreach(var providerPair in _Providers)
+            {
+                providerPair.Value.ClearGhosts();
+            }
+            _Requester = null;
+			_EndPing();            
 		}
 		Regulus.Utility.TimeCounter _PingTimeCounter = new Regulus.Utility.TimeCounter();
 		public long Ping { get; private set; }
@@ -162,15 +170,12 @@ namespace Regulus.Remoting
 		private void _LoadSoul(string type_name, Guid id , bool return_type)
 		{
 			Regulus.Remoting.Ghost.IProvider provider = _QueryProvider(type_name);
-			if (provider != null && _Requester != null)
-            {
-                var ghost = _BuildGhost(_GetType(type_name), _Requester, id, return_type);
-                provider.Add(ghost);
+            var ghost = _BuildGhost(_GetType(type_name), _Requester, id, return_type);
+            provider.Add(ghost);
 
-                if(ghost.IsReturnType())
-                {
-                    _RegisterRelease(ghost);
-                }
+            if (ghost.IsReturnType())
+            {
+                _RegisterRelease(ghost);
             }
                 
 		}
@@ -187,7 +192,7 @@ namespace Regulus.Remoting
 				provider.Remove(id);
 		}
 
-		Dictionary<string, Regulus.Remoting.Ghost.IProvider> _Providers = new Dictionary<string, Regulus.Remoting.Ghost.IProvider>();
+		
 		private Regulus.Remoting.Ghost.IProvider _QueryProvider(string type_name)
 		{
 			Regulus.Remoting.Ghost.IProvider provider = null;

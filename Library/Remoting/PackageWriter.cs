@@ -19,8 +19,6 @@ namespace Regulus.Remoting.Native
         public void Start(System.Net.Sockets.Socket socket)
         {
             _Socket = socket;
-            
-
             _Write();
         }
 
@@ -52,7 +50,8 @@ namespace Regulus.Remoting.Native
             }
             catch
             {
-                ErrorEvent();
+                if (ErrorEvent != null)
+                    ErrorEvent();
             }
             
         }
@@ -75,7 +74,14 @@ namespace Regulus.Remoting.Native
 
 
         public void Stop()
-        {         
+        {
+            _Socket = null;
+            CheckSourceEvent = _Empty;
+        }
+
+        private Package[] _Empty()
+        {
+            return new Package[0];
         }
     }
 }

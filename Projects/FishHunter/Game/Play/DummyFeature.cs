@@ -15,6 +15,7 @@ namespace VGame.Project.FishHunter
             _Accounts = new List<Data.Account>();
             _Accounts.Add(new Data.Account { Id = Guid.NewGuid(), Password = "pw", Name = "name", Competnces = Data.Account.AllCompetnce() });
             _Accounts.Add(new Data.Account { Id = Guid.NewGuid(), Password = "vgame", Name = "vgameadmini", Competnces = Data.Account.AllCompetnce() });
+            _Accounts.Add(new Data.Account { Id = Guid.NewGuid(), Password = "user", Name = "user1", Competnces = Data.Account.AllCompetnce() });
         }
 
         Regulus.Remoting.Value<Data.Account> IAccountFinder.FindAccountByName(string id)
