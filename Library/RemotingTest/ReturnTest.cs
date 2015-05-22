@@ -8,7 +8,7 @@ namespace RemotingTest
     {
 
         volatile static bool _ConnectEnable;
-        [TestMethod , Timeout(5)]
+        [TestMethod , Timeout(5000)]
         public void ConnectTest()
         {
             

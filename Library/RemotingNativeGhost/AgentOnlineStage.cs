@@ -69,7 +69,10 @@ namespace Regulus.Remoting.Ghost.Native
                 }
                 if (_Enable != false)
                 {
-                    DoneEvent();
+                    if (DoneEvent != null)
+                    {
+                        DoneEvent();
+                    }
                     DoneEvent = null;
                 }
             }
@@ -81,7 +84,11 @@ namespace Regulus.Remoting.Ghost.Native
 
                 if (_Enable == false)
                 {
-                    DoneEvent();
+                    if (DoneEvent!=null)
+                    {
+                        DoneEvent();
+                    }
+                    
                     DoneEvent = null;
                 }
                     

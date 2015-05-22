@@ -89,8 +89,7 @@ namespace Regulus.Remoting.Native
         public void Stop()
         {
             _Stop = true;
-
-            while (_Status == Status.Begin) ;
+            
             _Socket = null;
             CheckSourceEvent = _Empty;
         }
