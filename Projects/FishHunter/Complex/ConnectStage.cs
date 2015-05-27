@@ -7,7 +7,7 @@ namespace Regulus.Utility
 {
     class ConnectStage : Regulus.Utility.IStage
     {
-        private Remoting.Ghost.IProviderNotice<IConnect> _Provider;
+        private Remoting.Ghost.INotifier<IConnect> _Provider;
         private string _Ip;
         private int _Port;
 
@@ -15,7 +15,7 @@ namespace Regulus.Utility
         public event DoneCallback SuccessEvent;
         public event DoneCallback FailEvent;
 
-        public ConnectStage(Remoting.Ghost.IProviderNotice<IConnect> provider, string ip, int port)
+        public ConnectStage(Remoting.Ghost.INotifier<IConnect> provider, string ip, int port)
         {
             
             this._Provider = provider;

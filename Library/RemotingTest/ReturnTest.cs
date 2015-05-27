@@ -11,10 +11,10 @@ namespace RemotingTest
         [TestMethod , Timeout(5000)]
         public void ConnectTest()
         {
-            
+
             Regulus.Utility.Launcher launcher = new Regulus.Utility.Launcher();
             Server server = new Server();
-            Regulus.Remoting.Soul.Native.Server serverAppliction = new Regulus.Remoting.Soul.Native.Server(server, 12345);
+            var serverAppliction = new Regulus.Remoting.Soul.Native.Server(server, 12345);
             launcher.Push(serverAppliction);
             launcher.Launch();
 
@@ -27,9 +27,8 @@ namespace RemotingTest
             task.Start();
             if(agent.Connect("127.0.0.1", 12345).WaitResult())
             {
-
-                while (agent.QueryProvider<ITestGPI>().Ghosts.Length == 0) ;
-                int result = agent.QueryProvider<ITestGPI>().Ghosts[0].Add(1, 2).WaitResult();
+                while (agent.QueryNotifier<ITestGPI>().Ghosts.Length == 0) ;
+                int result = agent.QueryNotifier<ITestGPI>().Ghosts[0].Add(1, 2).WaitResult();
 
                 agent.Disconnect();                
             }
@@ -42,10 +41,10 @@ namespace RemotingTest
             task.Start();                      
             if (agent.Connect("127.0.0.1", 12345).WaitResult())
             {
-                while (agent.QueryProvider<ITestGPI>().Ghosts.Length == 0) ;
-                int result = agent.QueryProvider<ITestGPI>().Ghosts[0].Add(1, 2).WaitResult();
+                while (agent.QueryNotifier<ITestGPI>().Ghosts.Length == 0) ;
+                int result = agent.QueryNotifier<ITestGPI>().Ghosts[0].Add(1, 2).WaitResult();
 
-                agent.Disconnect();
+                //agent.Disconnect();
                 
             }
             _ConnectEnable = false;
@@ -57,8 +56,8 @@ namespace RemotingTest
             task.Start();
             if (agent.Connect("127.0.0.1", 12345).WaitResult())
             {
-                while (agent.QueryProvider<ITestGPI>().Ghosts.Length == 0) ;
-                int result = agent.QueryProvider<ITestGPI>().Ghosts[0].Add(1, 2).WaitResult();
+                while (agent.QueryNotifier<ITestGPI>().Ghosts.Length == 0) ;
+                int result = agent.QueryNotifier<ITestGPI>().Ghosts[0].Add(1, 2).WaitResult();
 
                 agent.Disconnect();
 
@@ -72,10 +71,10 @@ namespace RemotingTest
             task.Start();
             if (agent.Connect("127.0.0.1", 12345).WaitResult())
             {
-                while (agent.QueryProvider<ITestGPI>().Ghosts.Length == 0) ;
-                int result = agent.QueryProvider<ITestGPI>().Ghosts[0].Add(1, 2).WaitResult();
+                while (agent.QueryNotifier<ITestGPI>().Ghosts.Length == 0) ;
+                int result = agent.QueryNotifier<ITestGPI>().Ghosts[0].Add(1, 2).WaitResult();
 
-                agent.Disconnect();
+                //agent.Disconnect();
 
             }
             _ConnectEnable = false;
@@ -87,10 +86,10 @@ namespace RemotingTest
             task.Start();
             if (agent.Connect("127.0.0.1", 12345).WaitResult())
             {
-                while (agent.QueryProvider<ITestGPI>().Ghosts.Length == 0) ;
-                int result = agent.QueryProvider<ITestGPI>().Ghosts[0].Add(1, 2).WaitResult();
+                while (agent.QueryNotifier<ITestGPI>().Ghosts.Length == 0) ;
+                int result = agent.QueryNotifier<ITestGPI>().Ghosts[0].Add(1, 2).WaitResult();
 
-                agent.Disconnect();
+                //agent.Disconnect();
 
             }
             _ConnectEnable = false;

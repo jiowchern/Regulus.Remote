@@ -151,12 +151,12 @@ namespace Regulus.Utility
             return _Update(arg) == false;
         }
 
-        void Framework.ILaunched.Launch()
+        void Framework.IBootable.Launch()
         {
             
         }
 
-        void Framework.ILaunched.Shutdown()
+        void Framework.IBootable.Shutdown()
         {
             
         }

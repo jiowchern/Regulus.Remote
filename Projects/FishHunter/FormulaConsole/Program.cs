@@ -13,7 +13,7 @@ namespace Console
         {
             var view = new Regulus.Utility.ConsoleViewer();
             var input = new Regulus.Utility.ConsoleInput(view);
-            Regulus.Utility.ICore core = null;// _LoadGame("Game.dll");
+            Regulus.Remoting.ICore core = null;// _LoadGame("Game.dll");
 
             var client = new VGame.Project.FishHunter.Formula.Client(view, input);
 
@@ -32,7 +32,7 @@ namespace Console
             updater.Shutdown();
         }
 
-        private static Regulus.Utility.ICore _LoadGame(string path)
+        private static Regulus.Remoting.ICore _LoadGame(string path)
         {
             var stream = System.IO.File.ReadAllBytes(path);
             return Regulus.Utility.Loader.Load(stream, "VGame.Project.FishHunter.Formula.Center");

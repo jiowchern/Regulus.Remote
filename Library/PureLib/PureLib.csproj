@@ -30,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\RegulusLibrary.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug_Unity|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -65,7 +66,7 @@
     <Compile Include="remoting_commandparambuilder.cs" />
     <Compile Include="extension_datatable.cs" />
     <Compile Include="extension_dict.cs" />
-    <Compile Include="framework_launched.cs" />
+    <Compile Include="framework_bootable.cs" />
     <Compile Include="framework_client.cs" />
     <Compile Include="framework_userprovider.cs" />
     <Compile Include="framework_gamemodeselector.cs" />

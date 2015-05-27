@@ -9,11 +9,11 @@ namespace VGame.Project.FishHunter
     {
         Regulus.Remoting.User Remoting { get; }
 
-        Regulus.Remoting.Ghost.IProviderNotice<VGame.Project.FishHunter.IVerify> VerifyProvider { get; }
+        Regulus.Remoting.Ghost.INotifier<VGame.Project.FishHunter.IVerify> VerifyProvider { get; }
 
-        Regulus.Remoting.Ghost.IProviderNotice<VGame.Project.FishHunter.IPlayer> PlayerProvider { get; }
+        Regulus.Remoting.Ghost.INotifier<VGame.Project.FishHunter.IPlayer> PlayerProvider { get; }
 
-        Regulus.Remoting.Ghost.IProviderNotice<VGame.Project.FishHunter.IAccountStatus> AccountStatusProvider { get; }
+        Regulus.Remoting.Ghost.INotifier<VGame.Project.FishHunter.IAccountStatus> AccountStatusProvider { get; }
 
 
 

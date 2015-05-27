@@ -52,7 +52,7 @@ namespace Regulus.Remoting.Ghost.Native
             long response = 0;
             do
             {
-                var current = Agent.ResponseQueueCount + Agent.RequestQueueCount;
+                var current = Agent.ResponsePackages + Agent.RequestPackages;
                 _PowerRegulator.Operate(current);                
 
                 response = current;

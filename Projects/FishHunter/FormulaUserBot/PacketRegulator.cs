@@ -23,7 +23,7 @@ namespace FormulaUserBot
         }
         bool Regulus.Utility.IUpdatable.Update()
         {
-            _Sampling += (Regulus.Remoting.Ghost.Native.Agent.RequestQueueCount + Regulus.Remoting.Ghost.Native.Agent.ResponseQueueCount);
+            _Sampling += (Regulus.Remoting.Ghost.Native.Agent.RequestPackages + Regulus.Remoting.Ghost.Native.Agent.ReResponsePackages
             _SamplingCount++;
 
             if (_Counter.Second > 0.016f)
@@ -50,12 +50,12 @@ namespace FormulaUserBot
             return true;
         }
 
-        void Regulus.Framework.ILaunched.Launch()
+        void Regulus.Framework.IBootable.Launch()
         {
             
         }
 
-        void Regulus.Framework.ILaunched.Shutdown()
+        void Regulus.Framework.IBootable.Shutdown()
         {
             
         }

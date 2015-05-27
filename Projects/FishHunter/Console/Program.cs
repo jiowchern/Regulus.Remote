@@ -19,7 +19,7 @@ namespace Console
 
             
 
-            Regulus.Utility.ICore core = _LoadGame("Game.dll");
+            Regulus.Remoting.ICore core = _LoadGame("Game.dll");
 
             var client = new Regulus.Framework.Client<VGame.Project.FishHunter.IUser>(view, input);
             client.ModeSelectorEvent += new ModeCreator(core).OnSelect;
@@ -39,7 +39,7 @@ namespace Console
 
         
 
-        private static Regulus.Utility.ICore _LoadGame(string path)
+        private static Regulus.Remoting.ICore _LoadGame(string path)
         {
             var stream = System.IO.File.ReadAllBytes(path);
             return Regulus.Utility.Loader.Load(stream, "VGame.Project.FishHunter.DummyStandalong");

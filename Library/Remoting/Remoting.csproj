@@ -29,6 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\RegulusRemoting.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug_Unity|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -55,6 +56,7 @@
     <Compile Include="Agent.cs" />
     <Compile Include="AutoRelease.cs" />
     <Compile Include="Connect.cs" />
+    <Compile Include="Core.cs" />
     <Compile Include="CoreThreadRequestHandler.cs" />
     <Compile Include="GameLoader.cs" />
     <Compile Include="NetworkMonitor.cs" />

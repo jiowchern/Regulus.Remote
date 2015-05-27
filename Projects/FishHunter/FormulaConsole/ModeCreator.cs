@@ -7,9 +7,9 @@ namespace Console
 {
     public class ModeCreator
     {
-        private Regulus.Utility.ICore core;
+        private Regulus.Remoting.ICore core;
 
-        public ModeCreator(Regulus.Utility.ICore core)
+        public ModeCreator(Regulus.Remoting.ICore core)
         {
             // TODO: Complete member initialization
             this.core = core;

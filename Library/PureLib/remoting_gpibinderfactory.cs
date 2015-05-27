@@ -9,7 +9,7 @@ namespace Regulus.Remoting
 
     public interface IGPIBinderFactory
     {
-        GPIBinder<T> Create<T>(Regulus.Remoting.Ghost.IProviderNotice<T> notice) where T : class;
+        GPIBinder<T> Create<T>(Regulus.Remoting.Ghost.INotifier<T> notice) where T : class;
     }
     public class GPIBinderFactory : IGPIBinderFactory
     {
@@ -44,7 +44,7 @@ namespace Regulus.Remoting
             _Binders.Clear();
         }
 
-        public GPIBinder<T> Create<T>(Regulus.Remoting.Ghost.IProviderNotice<T> notice) where T : class
+        public GPIBinder<T> Create<T>(Regulus.Remoting.Ghost.INotifier<T> notice) where T : class
         {
             var binder = new GPIBinder<T>(notice , _Command);
             _Binders.Add( new Data { Binder = binder });

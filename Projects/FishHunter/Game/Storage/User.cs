@@ -44,12 +44,12 @@ namespace VGame.Project.FishHunter.Storage
             return true;
         }
 
-        void Regulus.Framework.ILaunched.Launch()
+        void Regulus.Framework.IBootable.Launch()
         {
             _ToVerify();
         }
 
-        void Regulus.Framework.ILaunched.Shutdown()
+        void Regulus.Framework.IBootable.Shutdown()
         {
             
             _Machine.Termination();

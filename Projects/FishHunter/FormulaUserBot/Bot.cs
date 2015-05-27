@@ -32,12 +32,12 @@ namespace FormulaUserBot
             return true;
         }
 
-        void Regulus.Framework.ILaunched.Shutdown()
+        void Regulus.Framework.IBootable.Shutdown()
         {
             _Machine.Termination();
         }
 
-        void Regulus.Framework.ILaunched.Launch()
+        void Regulus.Framework.IBootable.Launch()
         {
             _ToConnect();
         }

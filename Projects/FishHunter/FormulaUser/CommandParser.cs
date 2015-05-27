@@ -57,7 +57,7 @@ namespace VGame.Project.FishHunter.Formula
 
         void _ShowPackageState()
         {
-            _View.WriteLine(string.Format("Request Queue:{0} \tResponse Queue:{1}" , Regulus.Remoting.Ghost.Native.Agent.RequestQueueCount ,Regulus.Remoting.Ghost.Native.Agent.ResponseQueueCount) );
+            _View.WriteLine(string.Format("Request Queue:{0} \tResponse Queue:{1}" , Regulus.Remoting.Ghost.Native.Agent.RequestPackages ,Regulus.Remoting.Ghost.Native.Agent.ResponsePackages));
         }
 
         void fishStage_UnsupplyEvent(IFishStage source)

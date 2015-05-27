@@ -71,7 +71,7 @@ namespace Regulus.Standalong
 			get { return _Agent.Ping; }
 		}
 
-		public Regulus.Remoting.Ghost.IProviderNotice<T> QueryProvider<T>()
+		public Regulus.Remoting.Ghost.INotifier<T> QueryProvider<T>()
 		{
 			return _Agent.QueryProvider<T>();
 		}
@@ -93,7 +93,7 @@ namespace Regulus.Standalong
             Shutdown();
         }
 
-        Remoting.Ghost.IProviderNotice<T> Remoting.IAgent.QueryProvider<T>()
+        Remoting.Ghost.INotifier<T> Remoting.IAgent.QueryNotifier<T>()
         {
             return QueryProvider<T>();
         }
@@ -130,12 +130,12 @@ namespace Regulus.Standalong
             return true;
         }
 
-        void Framework.ILaunched.Launch()
+        void Framework.IBootable.Launch()
         {
             Launch();
         }
 
-        void Framework.ILaunched.Shutdown()
+        void Framework.IBootable.Shutdown()
         {
             Shutdown();
         }

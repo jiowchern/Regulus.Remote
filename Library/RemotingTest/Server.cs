@@ -5,10 +5,10 @@ using System.Text;
 
 namespace RemotingTest
 {
-    class Server : Regulus.Utility.ICore, ITestReturn, ITestGPI
+    class Server : Regulus.Remoting.ICore, ITestReturn, ITestGPI
     {
         Regulus.Remoting.ISoulBinder _Binder;
-        void Regulus.Utility.ICore.ObtainController(Regulus.Remoting.ISoulBinder binder)
+        void Regulus.Remoting.ICore.ObtainBinder(Regulus.Remoting.ISoulBinder binder)
         {
             binder.Return<ITestReturn>(this);
             _Binder = binder;
@@ -20,12 +20,12 @@ namespace RemotingTest
             return true;
         }
 
-        void Regulus.Framework.ILaunched.Launch()
+        void Regulus.Framework.IBootable.Launch()
         {
             
         }
 
-        void Regulus.Framework.ILaunched.Shutdown()
+        void Regulus.Framework.IBootable.Shutdown()
         {            
         }
 

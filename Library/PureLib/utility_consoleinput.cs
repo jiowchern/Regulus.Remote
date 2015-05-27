@@ -193,12 +193,12 @@ namespace Regulus.Utility
             return true;
         }
 
-        void Framework.ILaunched.Launch()
+        void Framework.IBootable.Launch()
         {
             
         }
 
-        void Framework.ILaunched.Shutdown()
+        void Framework.IBootable.Shutdown()
         {
             
         }

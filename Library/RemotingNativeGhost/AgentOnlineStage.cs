@@ -8,12 +8,17 @@ namespace Regulus.Remoting.Ghost.Native
 {
     public partial class Agent 
     {
-        public static int RequestQueueCount { get { return OnlineStage.RequestQueueCount; } }
-        public static int ResponseQueueCount { get { return OnlineStage.ResponseQueueCount; } }
+        
+        /// <summary>
+        /// 請求的封包
+        /// </summary>
+        public static int RequestPackages { get { return OnlineStage.RequestQueueCount; } }
 
-        public static int Fps { get { return IOHandler.Instance.Fps; } }
-        public static float Power { get { return IOHandler.Instance.Power; } }
-
+        /// <summary>
+        /// 回應的封包
+        /// </summary>
+        public static int ResponsePackages { get { return OnlineStage.ResponseQueueCount; } }
+        
 
         class OnlineStage : Regulus.Utility.IStage, Regulus.Remoting.IGhostRequest
         {

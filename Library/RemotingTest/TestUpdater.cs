@@ -15,7 +15,7 @@ namespace RemotingTest
         {
             // TODO: Complete member initialization
             this.agent = agent;
-            agent.QueryProvider<ITestReturn>().Return += _Set ;
+            agent.QueryNotifier<ITestReturn>().Return += _Set ;
         }
 
         private void _Set(ITestReturn obj)

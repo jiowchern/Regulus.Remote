@@ -8,8 +8,8 @@ namespace VGame.Project.FishHunter.Storage
 {
     public class StandalongFactory : Regulus.Framework.IUserFactoty<IUser>
     {
-        Regulus.Utility.ICore _Core; 
-        public StandalongFactory(Regulus.Utility.ICore core)
+        Regulus.Remoting.ICore _Core; 
+        public StandalongFactory(Regulus.Remoting.ICore core)
         {
             _Core = core;
         }
@@ -18,7 +18,7 @@ namespace VGame.Project.FishHunter.Storage
         {
       
             var agent = new Regulus.Standalong.Agent();
-            agent.ConnectedEvent += () => { _Core.ObtainController(agent); };            
+            agent.ConnectedEvent += () => { _Core.ObtainBinder(agent); };            
             return new User(agent);
         }
 

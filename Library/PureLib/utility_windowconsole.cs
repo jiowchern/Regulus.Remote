@@ -41,7 +41,7 @@ namespace Regulus.Utility
             return true;
         }
 
-        void Framework.ILaunched.Launch()
+        void Framework.IBootable.Launch()
         {
             _HideLog();
             
@@ -69,7 +69,7 @@ namespace Regulus.Utility
             _Viewer.WriteLine(message);
         }
 
-        void Framework.ILaunched.Shutdown()
+        void Framework.IBootable.Shutdown()
         {
             _Shutdown();
             _Updater.Shutdown();

@@ -11,7 +11,7 @@ namespace VGame.Project.FishHunter
         public event DoneCallback DoneEvent;
         VGame.Project.FishHunter.Formula.Center _Center;
 
-        Regulus.Utility.ICore _Core { get { return _Center; } }
+        Regulus.Remoting.ICore _Core { get { return _Center; } }
         Regulus.Utility.CenterOfUpdateable _Updater;
         
         private Regulus.Collection.Queue<Regulus.Remoting.ISoulBinder> _Binders;
@@ -48,7 +48,7 @@ namespace VGame.Project.FishHunter
 
             foreach (var binder in _Binders.DequeueAll())
             {
-                _Core.ObtainController(binder);
+                _Core.ObtainBinder(binder);
             }
         }
     }

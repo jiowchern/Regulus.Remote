@@ -5,7 +5,7 @@ using System.Text;
 
 namespace VGame.Project.FishHunter.Storage
 {
-    public class Center : Regulus.Utility.ICore
+    public class Center : Regulus.Remoting.ICore
     {
         Regulus.Utility.CenterOfUpdateable _Update;
         Hall _Hall;
@@ -16,7 +16,7 @@ namespace VGame.Project.FishHunter.Storage
             _Hall = new Hall();
             _Update = new Regulus.Utility.CenterOfUpdateable();
         }
-        void Regulus.Utility.ICore.ObtainController(Regulus.Remoting.ISoulBinder binder)
+        void Regulus.Remoting.ICore.ObtainBinder(Regulus.Remoting.ISoulBinder binder)
         {
             _Hall.PushUser(new User(binder, _Stroage));
         }
@@ -27,12 +27,12 @@ namespace VGame.Project.FishHunter.Storage
             return true;
         }
 
-        void Regulus.Framework.ILaunched.Launch()
+        void Regulus.Framework.IBootable.Launch()
         {
             _Update.Add(_Hall);
         }
 
-        void Regulus.Framework.ILaunched.Shutdown()
+        void Regulus.Framework.IBootable.Shutdown()
         {
             _Update.Shutdown();
         }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace VGame.Project.FishHunter.Formula
 {
-    public class Server : Regulus.Utility.ICore
+    public class Server : Regulus.Remoting.ICore
     {
         bool _Enable;
         VGame.Project.FishHunter.Storage.Proxy _Storage;
@@ -71,7 +71,7 @@ namespace VGame.Project.FishHunter.Formula
         }
 
 
-        void Regulus.Utility.ICore.ObtainController(Regulus.Remoting.ISoulBinder binder)
+        void Regulus.Remoting.ICore.ObtainBinder(Regulus.Remoting.ISoulBinder binder)
         {
             _Binders.Enqueue(binder);
         }
@@ -83,7 +83,7 @@ namespace VGame.Project.FishHunter.Formula
             return _Enable;
         }
 
-        void Regulus.Framework.ILaunched.Shutdown()
+        void Regulus.Framework.IBootable.Shutdown()
         {
 
             _ReleaseLog();
@@ -94,7 +94,7 @@ namespace VGame.Project.FishHunter.Formula
 
         
 
-        void Regulus.Framework.ILaunched.Launch()
+        void Regulus.Framework.IBootable.Launch()
         {
             _InitialLog();
 

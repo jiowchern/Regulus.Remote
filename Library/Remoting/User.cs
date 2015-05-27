@@ -30,7 +30,7 @@ namespace Regulus.Remoting
             return true;
         }
 
-        void Regulus.Framework.ILaunched.Launch()
+        void Regulus.Framework.IBootable.Launch()
         {
             _Updater.Add(_Agent);
             _ToOffline();
@@ -54,18 +54,18 @@ namespace Regulus.Remoting
             _Machine.Push(stage);
         }
 
-        void Regulus.Framework.ILaunched.Shutdown()
+        void Regulus.Framework.IBootable.Shutdown()
         {
             _Machine.Termination();
             _Updater.Shutdown();
         }
 
-        public Regulus.Remoting.Ghost.IProviderNotice<Regulus.Utility.IConnect> ConnectProvider
+        public Regulus.Remoting.Ghost.INotifier<Regulus.Utility.IConnect> ConnectProvider
         {
             get { return _ConnectProvider; }
         }
 
-        public Regulus.Remoting.Ghost.IProviderNotice<Regulus.Utility.IOnline> OnlineProvider
+        public Regulus.Remoting.Ghost.INotifier<Regulus.Utility.IOnline> OnlineProvider
         {
             get { return _OnlineProvider; }
         }

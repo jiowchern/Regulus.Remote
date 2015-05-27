@@ -81,12 +81,12 @@ namespace Regulus.Remoting.Ghost.Native
 			return true;
 		}
 
-		void Framework.ILaunched.Launch()
+		void Framework.IBootable.Launch()
 		{
             
 		}
 
-		void Framework.ILaunched.Shutdown()
+		void Framework.IBootable.Shutdown()
 		{
             
             _Disconnect();
@@ -99,7 +99,7 @@ namespace Regulus.Remoting.Ghost.Native
             return _Core.Ping;
         } }
 
-        IProviderNotice<T> IAgent.QueryProvider<T>()
+        INotifier<T> IAgent.QueryNotifier<T>()
         {
             return _Core.QueryProvider<T>();
         }
@@ -138,7 +138,10 @@ namespace Regulus.Remoting.Ghost.Native
             _Disconnect();
         }
 
-
+        /// <summary>
+        /// 建立代理器
+        /// </summary>
+        /// <returns></returns>
         public static IAgent Create()
         {
             return new Agent();
