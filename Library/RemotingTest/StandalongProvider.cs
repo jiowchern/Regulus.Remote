@@ -7,15 +7,15 @@ namespace RemotingTest
 {
     public class StandalongProvider : Regulus.Framework.IUserFactoty<IUser>
     {
-        Regulus.Utility.ICore _Standalong;
-        public StandalongProvider(Regulus.Utility.ICore core)
+        Regulus.Remoting.ICore _Standalong;
+        public StandalongProvider(Regulus.Remoting.ICore core)
         {
             _Standalong = core;
         }
         IUser Regulus.Framework.IUserFactoty<IUser>.SpawnUser()
         {
             var agent = new Regulus.Standalong.Agent();
-            agent.ConnectedEvent += () => { _Standalong.ObtainController(agent); };
+            agent.ConnectedEvent += () => { _Standalong.ObtainBinder(agent); };
             return new User(agent);
         }
 

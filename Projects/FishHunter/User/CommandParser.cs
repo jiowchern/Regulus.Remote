@@ -59,8 +59,7 @@ namespace VGame.Project.FishHunter
 
         private void _ShowIOHandler()
         {
-
-            _View.WriteLine(string.Format("Agent Fps:{0} Power:{1:0.00%}", Regulus.Remoting.Ghost.Native.Agent.Fps, Regulus.Remoting.Ghost.Native.Agent.Power));
+            
         }
 
         private void _CreatePlayer(Regulus.Remoting.IGPIBinderFactory factory)

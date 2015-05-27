@@ -9,6 +9,6 @@ namespace RemotingTest
     {
         Regulus.Remoting.User Remoting { get; }
 
-        Regulus.Remoting.Ghost.IProviderNotice<ITestReturn> TestReturnProvider {get;}
+        Regulus.Remoting.Ghost.INotifier<ITestReturn> TestReturnProvider {get;}
     }
 }

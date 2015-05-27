@@ -70,12 +70,12 @@ namespace VGame.Project.FishHunter.Storage
             return _Client.Enable;
         }
 
-        void Regulus.Framework.ILaunched.Launch()
+        void Regulus.Framework.IBootable.Launch()
         {
             _Updater.Add(_Client);
         }
 
-        void Regulus.Framework.ILaunched.Shutdown()
+        void Regulus.Framework.IBootable.Shutdown()
         {
             _Updater.Shutdown();
         }

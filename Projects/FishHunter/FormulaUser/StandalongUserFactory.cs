@@ -8,8 +8,8 @@ namespace VGame.Project.FishHunter.Formula
     public class StandalongUserFactory 
         :Regulus.Framework.IUserFactoty<IUser>
     {
-        Regulus.Utility.ICore _Standalong;
-        public StandalongUserFactory(Regulus.Utility.ICore core)
+        Regulus.Remoting.ICore _Standalong;
+        public StandalongUserFactory(Regulus.Remoting.ICore core)
         {
             _Standalong = core;
 
@@ -19,7 +19,7 @@ namespace VGame.Project.FishHunter.Formula
         IUser Regulus.Framework.IUserFactoty<IUser>.SpawnUser()
         {
             var agent = new Regulus.Standalong.Agent();
-            agent.ConnectedEvent += () => { _Standalong.ObtainController(agent); };            
+            agent.ConnectedEvent += () => { _Standalong.ObtainBinder(agent); };            
             return new User(agent);
         }
 

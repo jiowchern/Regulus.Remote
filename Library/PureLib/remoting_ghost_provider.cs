@@ -5,13 +5,34 @@ using System.Text;
 
 namespace Regulus.Remoting.Ghost
 {
-	public interface IProviderNotice<T>
+    /// <summary>
+    /// 介面物件通知器
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+	public interface INotifier<T>
 	{
+        /// <summary>
+        /// 伺服器端如果有物件傳入則會發生此事件
+        /// </summary>
 		event Action<T> Supply;
+        /// <summary>
+        /// 伺服器端如果有物件關閉則會發生此事件
+        /// </summary>
 		event Action<T> Unsupply;
+        /// <summary>
+        /// 伺服器端如果有物件傳入則會發生此事件
+        /// 此事件傳回的物件如果沒有備參考到則會發生Unsupply
+        /// </summary>
         event Action<T> Return;
 
+        /// <summary>
+        /// 在系統裡的介面物件數量
+        /// </summary>
 		T[] Ghosts { get; }
+
+        /// <summary>
+        /// 在系統裡的介面物件數量(弱參考型別)
+        /// </summary>
         T[] Returns { get; }
 	}
 
@@ -26,7 +47,7 @@ namespace Regulus.Remoting.Ghost
     }
 
 
-	public class TProvider<T> : IProviderNotice<T>, IProvider
+	public class TProvider<T> : INotifier<T>, IProvider
         where T : class 
         
 	{
@@ -34,7 +55,7 @@ namespace Regulus.Remoting.Ghost
         List<WeakReference> _Returns = new List<WeakReference>();
 
 		event Action<T> _Supply;
-		event Action<T> IProviderNotice<T>.Supply
+		event Action<T> INotifier<T>.Supply
 		{
 			add
 			{
@@ -54,7 +75,7 @@ namespace Regulus.Remoting.Ghost
 		}
 
 		event Action<T> _Unsupply;
-		event Action<T> IProviderNotice<T>.Unsupply
+		event Action<T> INotifier<T>.Unsupply
 		{
 			add { _Unsupply += value; }
 			remove { _Unsupply -= value; }
@@ -153,7 +174,7 @@ namespace Regulus.Remoting.Ghost
 		}
 
 
-		T[] IProviderNotice<T>.Ghosts
+		T[] INotifier<T>.Ghosts
 		{
 			get
 			{
@@ -164,14 +185,14 @@ namespace Regulus.Remoting.Ghost
 
 
         event Action<T> _Return;
-        event Action<T> IProviderNotice<T>.Return
+        event Action<T> INotifier<T>.Return
         {
             add { _Return += value; }
             remove { _Return -= value; }
         }
 
 
-        T[] IProviderNotice<T>.Returns
+        T[] INotifier<T>.Returns
         {
             get 
             {

@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 using Regulus.Extension;
 namespace VGame.Project.FishHunter.Storage
 {
-    public class Server : Regulus.Utility.ICore, IStorage 
+    public class Server : Regulus.Remoting.ICore, IStorage 
     {
 
         Regulus.Utility.CenterOfUpdateable _Updater;
         VGame.Project.FishHunter.Storage.Center _Center;
-        Regulus.Utility.ICore _Core { get { return _Center; } }
+        Regulus.Remoting.ICore _Core { get { return _Center; } }
         Regulus.NoSQL.Database _Database;
         private Regulus.Utility.LogFileRecorder _LogRecorder;
         private string _Ip;
@@ -30,9 +30,9 @@ namespace VGame.Project.FishHunter.Storage
             _Database = new Regulus.NoSQL.Database(_Ip);
             _Center = new Center(this);
         }
-        void Regulus.Utility.ICore.ObtainController(Regulus.Remoting.ISoulBinder binder)
+        void Regulus.Remoting.ICore.ObtainBinder(Regulus.Remoting.ISoulBinder binder)
         {
-            _Core.ObtainController(binder);
+            _Core.ObtainBinder(binder);
         }
 
         bool Regulus.Utility.IUpdatable.Update()
@@ -41,7 +41,7 @@ namespace VGame.Project.FishHunter.Storage
             return true;
         }
 
-        void Regulus.Framework.ILaunched.Launch()
+        void Regulus.Framework.IBootable.Launch()
         {
             Regulus.Utility.Log.Instance.RecordEvent += _LogRecorder.Record;
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
@@ -97,7 +97,7 @@ namespace VGame.Project.FishHunter.Storage
             }
         }
 
-        void Regulus.Framework.ILaunched.Shutdown()
+        void Regulus.Framework.IBootable.Shutdown()
         {
             _Database.Shutdown();
             _Updater.Shutdown();

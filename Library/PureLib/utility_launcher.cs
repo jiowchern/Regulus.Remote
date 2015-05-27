@@ -7,14 +7,14 @@ namespace Regulus.Utility
 {
     public class Launcher 
     {
-        List<Regulus.Framework.ILaunched> _Launchers;
+        List<Regulus.Framework.IBootable> _Launchers;
 
         public Launcher ()
         {
-            _Launchers = new List<Framework.ILaunched>();
+            _Launchers = new List<Framework.IBootable>();
         }
 
-        public void Push(Regulus.Framework.ILaunched laucnher)
+        public void Push(Regulus.Framework.IBootable laucnher)
         {
             _Launchers.Add(laucnher);
         }

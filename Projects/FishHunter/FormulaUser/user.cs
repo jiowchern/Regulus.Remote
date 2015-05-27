@@ -27,12 +27,12 @@ namespace VGame.Project.FishHunter.Formula
             return true;
         }
 
-        void Regulus.Framework.ILaunched.Launch()
+        void Regulus.Framework.IBootable.Launch()
         {
             _Updater.Add(_User);
         }
 
-        void Regulus.Framework.ILaunched.Shutdown()
+        void Regulus.Framework.IBootable.Shutdown()
         {
             _Updater.Shutdown();
         }
@@ -43,15 +43,15 @@ namespace VGame.Project.FishHunter.Formula
         }
 
 
-        Regulus.Remoting.Ghost.IProviderNotice<IVerify> IUser.VerifyProvider
+        Regulus.Remoting.Ghost.INotifier<IVerify> IUser.VerifyProvider
         {
-            get { return _Agent.QueryProvider<IVerify>(); }
+            get { return _Agent.QueryNotifier<IVerify>(); }
         }
 
 
-        Regulus.Remoting.Ghost.IProviderNotice<IFishStageQueryer> IUser.FishStageQueryerProvider
+        Regulus.Remoting.Ghost.INotifier<IFishStageQueryer> IUser.FishStageQueryerProvider
         {
-            get { return _Agent.QueryProvider<IFishStageQueryer>(); }
+            get { return _Agent.QueryNotifier<IFishStageQueryer>(); }
         }
         
     }

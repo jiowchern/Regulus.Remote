@@ -55,13 +55,13 @@ namespace Regulus.Utility
             return true;
         }
 
-        void Framework.ILaunched.Launch()
+        void Framework.IBootable.Launch()
         {
 
             _Updater.Add(_User);
         }
 
-        void Framework.ILaunched.Shutdown()
+        void Framework.IBootable.Shutdown()
         {
 
             _Updater.Shutdown();

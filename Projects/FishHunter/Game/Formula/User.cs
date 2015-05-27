@@ -48,7 +48,7 @@ namespace VGame.Project.FishHunter.Formula
             return true;
         }
 
-        void Regulus.Framework.ILaunched.Launch()
+        void Regulus.Framework.IBootable.Launch()
         {
             _ToVerify();
         }
@@ -85,7 +85,7 @@ namespace VGame.Project.FishHunter.Formula
         }
         
 
-        void Regulus.Framework.ILaunched.Shutdown()
+        void Regulus.Framework.IBootable.Shutdown()
         {
             _Machine.Termination();
         }

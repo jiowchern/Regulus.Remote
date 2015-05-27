@@ -25,7 +25,7 @@ namespace Regulus.Remoting.Soul.Native
             return _Enable;
         }
 
-        void Framework.ILaunched.Launch()
+        void Framework.IBootable.Launch()
         {
             _Enable = true;
             _Requester.BreakEvent += _End;
@@ -36,7 +36,7 @@ namespace Regulus.Remoting.Soul.Native
             _Enable = false;
         }
 
-        void Framework.ILaunched.Shutdown()
+        void Framework.IBootable.Shutdown()
         {
             _Requester.BreakEvent -= _End;
         }

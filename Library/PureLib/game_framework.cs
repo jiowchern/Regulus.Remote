@@ -108,7 +108,7 @@ namespace Regulus.Utility
 
         protected virtual void _Launch(Regulus.Utility.CenterOfUpdateable updater)
         { }
-		void Regulus.Framework.ILaunched.Launch()
+		void Regulus.Framework.IBootable.Launch()
         {
             _Runable = true;
 
@@ -126,7 +126,7 @@ namespace Regulus.Utility
         }
 
         protected virtual void _Shutdown(Regulus.Utility.CenterOfUpdateable updater) { }
-		void Regulus.Framework.ILaunched.Shutdown()
+		void Regulus.Framework.IBootable.Shutdown()
         {
             _Shutdown(_Loops);
             _Stop();

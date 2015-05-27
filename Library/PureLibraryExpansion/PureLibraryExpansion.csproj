@@ -7,8 +7,8 @@
     <ProjectGuid>{E977627A-CD89-4D30-892D-4679E10F45FA}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PureLibraryExpansion</RootNamespace>
-    <AssemblyName>PureLibraryExpansion</AssemblyName>
+    <RootNamespace>RegulusLibraryExpansion</RootNamespace>
+    <AssemblyName>RegulusLibraryExpansion</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

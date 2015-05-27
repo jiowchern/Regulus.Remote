@@ -12,7 +12,7 @@ namespace VGame.Project.FishHunter.Play
 
 
 
-    public class Complex : Regulus.Utility.ICore
+    public class Complex : Regulus.Remoting.ICore
     {
         Regulus.Utility.StageMachine _Machine;
         Regulus.Utility.CenterOfUpdateable _Updater;
@@ -23,7 +23,7 @@ namespace VGame.Project.FishHunter.Play
         Regulus.CustomType.Verify _StorageVerifyData;
         Regulus.CustomType.Verify _FormulaVerifyData;
         
-        Regulus.Utility.ICore _Core { get { return _Center; } }
+        Regulus.Remoting.ICore _Core { get { return _Center; } }
         Storage.IUser _StorageUser;
         Formula.IUser _FormulaUser;
 
@@ -98,9 +98,9 @@ namespace VGame.Project.FishHunter.Play
             return System.Net.IPAddress.TryParse(ip, out ipaddr);
         }
 
-        void Regulus.Utility.ICore.ObtainController(Regulus.Remoting.ISoulBinder binder)
+        void Regulus.Remoting.ICore.ObtainBinder(Regulus.Remoting.ISoulBinder binder)
         {
-            _Core.ObtainController(binder);
+            _Core.ObtainBinder(binder);
         }
 
         bool Regulus.Utility.IUpdatable.Update()
@@ -109,7 +109,7 @@ namespace VGame.Project.FishHunter.Play
             _Machine.Update();
             return true;
         }
-        void Regulus.Framework.ILaunched.Shutdown()
+        void Regulus.Framework.IBootable.Shutdown()
         {            
             _Updater.Shutdown();
             Regulus.Utility.Log.Instance.RecordEvent -= _LogRecorder.Record;
@@ -117,7 +117,7 @@ namespace VGame.Project.FishHunter.Play
         }
 
         
-        void Regulus.Framework.ILaunched.Launch()
+        void Regulus.Framework.IBootable.Launch()
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             Regulus.Utility.Log.Instance.RecordEvent += _LogRecorder.Record;                                  

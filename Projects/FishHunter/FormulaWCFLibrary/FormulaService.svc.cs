@@ -48,8 +48,8 @@ namespace VGame.Project.FishHunter.WCF
                 TotalWriteBytes = _Server.TotalWriteBytes,
                 ReadBytesPerSecond = _Server.ReadBytesPerSecond,
                 WriteBytesPerSecond = _Server.WriteBytesPerSecond,
-                WattToRead = _Server.WattToRead,
-                WattToWrite = _Server.WattToWrite
+                WattToRead = _Server.WaitingForReadPackages,
+                WattToWrite = _Server.WaitingToWrittenPackages
             };
         }
     }

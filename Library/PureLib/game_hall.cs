@@ -32,7 +32,7 @@ namespace Regulus.Game
 			_Users.Add(user);
 		}
 
-		void Regulus.Framework.ILaunched.Launch()
+		void Regulus.Framework.IBootable.Launch()
 		{
 
 		}
@@ -43,7 +43,7 @@ namespace Regulus.Game
 			return true;
 		}
 
-		void Regulus.Framework.ILaunched.Shutdown()
+		void Regulus.Framework.IBootable.Shutdown()
 		{
             _Users.Shutdown();
 		}

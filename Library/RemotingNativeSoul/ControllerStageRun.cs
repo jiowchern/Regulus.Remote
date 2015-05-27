@@ -40,14 +40,14 @@ namespace Regulus.Remoting.Soul.Native
     {
         Regulus.Utility.CenterOfUpdateable _RequesterHandlers;
         volatile bool _Run;
-        Regulus.Utility.ICore _Core;
+        Regulus.Remoting.ICore _Core;
         Queue<ISoulBinder> _Binders;        
 
 
         Regulus.Utility.PowerRegulator _Spin ;
         public int FPS { get { return _Spin.FPS; } }
         public float Power { get { return _Spin.Power; } }
-        public ThreadCoreHandler(Regulus.Utility.ICore core )
+        public ThreadCoreHandler(Regulus.Remoting.ICore core )
         {
             if (core == null)
                 throw new ArgumentNullException();
@@ -77,7 +77,7 @@ namespace Regulus.Remoting.Soul.Native
                         while (_Binders.Count > 0)
                         {
                             var provider = _Binders.Dequeue();
-                            _Core.ObtainController(provider);
+                            _Core.ObtainBinder(provider);
                         }
                     }
                     
@@ -215,7 +215,7 @@ namespace Regulus.Remoting.Soul.Native
 
         Server _Server;
         Regulus.Utility.Launcher _Launcher;
-        public StageRun(Regulus.Utility.ICore core, Utility.Command command, int port, Utility.Console.IViewer viewer)
+        public StageRun(Regulus.Remoting.ICore core, Utility.Command command, int port, Utility.Console.IViewer viewer)
         {            
             _View = viewer;
             this._Command = command;
@@ -235,8 +235,8 @@ namespace Regulus.Remoting.Soul.Native
                 _View.WriteLine("CoreFPS:" + _Server.CoreFPS.ToString());
 
 
-                _View.WriteLine(string.Format("PeerPower:{0:0.00%}", _Server.PeerPower));
-                _View.WriteLine(string.Format("CorePower:{0:0.00%}", _Server.CorePower));                                
+                _View.WriteLine(string.Format("PeerPower:{0:0.00%}", _Server.PeerUsage));
+                _View.WriteLine(string.Format("CorePower:{0:0.00%}", _Server.CoreUsage));                                
 
                 _View.WriteLine("\nTotalReadBytes:" + string.Format("{0:N0}", NetworkMonitor.Instance.Read.TotalBytes));
                 _View.WriteLine("TotalWriteBytes:" + string.Format("{0:N0}", NetworkMonitor.Instance.Write.TotalBytes));

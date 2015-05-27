@@ -24,9 +24,9 @@ namespace VGame.Project.FishHunter.Storage
             get { return _Remoting; }
         }
 
-        Regulus.Remoting.Ghost.IProviderNotice<IVerify> IUser.VerifyProvider
+        Regulus.Remoting.Ghost.INotifier<IVerify> IUser.VerifyProvider
         {
-            get { return _Agent.QueryProvider<IVerify>(); }
+            get { return _Agent.QueryNotifier<IVerify>(); }
         }
 
         bool Regulus.Utility.IUpdatable.Update()
@@ -35,27 +35,27 @@ namespace VGame.Project.FishHunter.Storage
             return true;
         }
 
-        void Regulus.Framework.ILaunched.Launch()
+        void Regulus.Framework.IBootable.Launch()
         {
             _Updater.Add(_Agent);
             _Updater.Add(_Remoting);
         }
 
-        void Regulus.Framework.ILaunched.Shutdown()
+        void Regulus.Framework.IBootable.Shutdown()
         {
             _Updater.Shutdown();
         }
 
 
-        Regulus.Remoting.Ghost.IProviderNotice<T> IUser.QueryProvider<T>()
+        Regulus.Remoting.Ghost.INotifier<T> IUser.QueryProvider<T>()
         {
-            return _Agent.QueryProvider<T>();
+            return _Agent.QueryNotifier<T>();
         }
 
 
-        Regulus.Remoting.Ghost.IProviderNotice<IStorageCompetnces> IUser.StorageCompetncesProvider
+        Regulus.Remoting.Ghost.INotifier<IStorageCompetnces> IUser.StorageCompetncesProvider
         {
-            get { return _Agent.QueryProvider<IStorageCompetnces>(); }
+            get { return _Agent.QueryNotifier<IStorageCompetnces>(); }
         }
     }
 }

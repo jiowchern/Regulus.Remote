@@ -7,7 +7,7 @@ using System.Text;
 namespace Regulus.Remoting
 {
     using Extension;
-    public interface IGPIBinder   : Regulus.Framework.ILaunched
+    public interface IGPIBinder   : Regulus.Framework.IBootable
     {        
     }
 
@@ -36,7 +36,7 @@ namespace Regulus.Remoting
         public event OnSourceHandler SupplyEvent;
         public event OnSourceHandler UnsupplyEvent;
         Regulus.Utility.Command _Command;
-        Regulus.Remoting.Ghost.IProviderNotice<T> _Notice;
+        Regulus.Remoting.Ghost.INotifier<T> _Notice;
         
         struct Source
         {
@@ -45,7 +45,7 @@ namespace Regulus.Remoting
         }
         List<Source> _GPIs;
         List<Data> _Handlers;        
-        public GPIBinder(Regulus.Remoting.Ghost.IProviderNotice<T> notice ,Regulus.Utility.Command command )
+        public GPIBinder(Regulus.Remoting.Ghost.INotifier<T> notice ,Regulus.Utility.Command command )
         {
             _Command = command;
             _Notice = notice;            
@@ -118,13 +118,13 @@ namespace Regulus.Remoting
             return sn.ToString() + name;
         }
 
-        void Regulus.Framework.ILaunched.Launch()
+        void Regulus.Framework.IBootable.Launch()
         {
             _Notice.Supply += _Notice_Supply;
             _Notice.Unsupply += _Notice_Unsupply;            
         }
 
-        void Regulus.Framework.ILaunched.Shutdown()
+        void Regulus.Framework.IBootable.Shutdown()
         {
             _Notice.Unsupply -= _Notice_Unsupply;
             _Notice.Supply -= _Notice_Supply;

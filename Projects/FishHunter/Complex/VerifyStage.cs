@@ -7,7 +7,7 @@ namespace VGame.Project.FishHunter
 {
     class VerifyStage :Regulus.Utility.IStage
     {
-        private Regulus.Remoting.Ghost.IProviderNotice<IVerify> _Provider;
+        private Regulus.Remoting.Ghost.INotifier<IVerify> _Provider;
         private string _Account;
         private string _Password;
 
@@ -15,7 +15,7 @@ namespace VGame.Project.FishHunter
         public event DoneCallback SuccessEvent;
         public event DoneCallback FailEvent;
 
-        public VerifyStage(Regulus.Remoting.Ghost.IProviderNotice<IVerify> provider, string account, string password)
+        public VerifyStage(Regulus.Remoting.Ghost.INotifier<IVerify> provider, string account, string password)
         {
             
             this._Provider = provider;

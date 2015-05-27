@@ -29,6 +29,12 @@ namespace Regulus.Remoting
             };
         }
     }
+
+    /// <summary>
+    /// 
+    /// 接收或傳送遠端來的資料
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     sealed public class Value<T> : IValue 
 	{
         public static implicit operator Value<T>(T value) 
@@ -38,10 +44,19 @@ namespace Regulus.Remoting
         bool _Interface;
 		T _Value;
 		bool _Empty = true;
-		public Value()
-		{
+
+        /// <summary>
+        /// 建構子
+        /// </summary>
+        public Value()
+        {
             _Interface = typeof(T).IsInterface;
-		}
+        }
+
+        /// <summary>
+        /// 預設已經填入資料
+        /// </summary>
+        /// <param name="val"></param>
 		public Value(T val) : this()
 		{
 			_Empty = false;
@@ -52,6 +67,10 @@ namespace Regulus.Remoting
 			}				
 		}
         event Action<T> _OnValue;
+
+        /// <summary>
+        /// 如果有設定資料則會發生此事件
+        /// </summary>
         public event Action<T> OnValue 
         {
             add 
@@ -74,7 +93,10 @@ namespace Regulus.Remoting
 		{
 			return _Value;
 		}
-
+        /// <summary>
+        /// 設定資料，將會發生OnValue事件
+        /// </summary>
+        /// <param name="val"></param>
         public void SetValue(T val)
         {
             _Empty = false;
@@ -105,7 +127,11 @@ namespace Regulus.Remoting
                 _OnValue(_Value);
 			}				
 		}
-
+        /// <summary>
+        /// 取得資料
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns>如果有資料則傳回真</returns>
         public bool TryGetValue(out T val)
         {
             if (_Empty == false)
@@ -127,7 +153,9 @@ namespace Regulus.Remoting
 				OnValue += (obj)=>{ action.Invoke(obj) ;};
 			}
 		}
-
+        /// <summary>
+        /// 空物件
+        /// </summary>
         public static Value<T> Empty { get { return default(T); } }
 
 

@@ -125,12 +125,12 @@ namespace Regulus.Framework
             return true;
         }
 
-        void ILaunched.Launch()
+        void IBootable.Launch()
         {
             
         }
 
-        void ILaunched.Shutdown()
+        void IBootable.Shutdown()
         {
             _Updater.Shutdown();
         }

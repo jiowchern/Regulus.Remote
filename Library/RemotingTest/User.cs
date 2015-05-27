@@ -24,12 +24,12 @@ namespace RemotingTest
             return true;
         }
 
-        void Regulus.Framework.ILaunched.Launch()
+        void Regulus.Framework.IBootable.Launch()
         {
             _Updater.Add(_User);
         }
 
-        void Regulus.Framework.ILaunched.Shutdown()
+        void Regulus.Framework.IBootable.Shutdown()
         {
             _Updater.Shutdown();
         }
@@ -43,9 +43,9 @@ namespace RemotingTest
         
 
 
-        Regulus.Remoting.Ghost.IProviderNotice<ITestReturn> IUser.TestReturnProvider
+        Regulus.Remoting.Ghost.INotifier<ITestReturn> IUser.TestReturnProvider
         {
-            get { return _Agent.QueryProvider<ITestReturn>(); }
+            get { return _Agent.QueryNotifier<ITestReturn>(); }
         }
     }
 }

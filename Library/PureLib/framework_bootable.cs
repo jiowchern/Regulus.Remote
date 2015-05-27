@@ -7,12 +7,16 @@ using Regulus;
 namespace Regulus.Framework
 {
 
-    public interface ILaunched<T>
+    public interface IBootable<T>
     {
         void Launch();
         void Shutdown();
     }
-    public interface ILaunched
+
+    /// <summary>
+    /// 啟動器
+    /// </summary>
+    public interface IBootable
     {
         void Launch();
         void Shutdown();

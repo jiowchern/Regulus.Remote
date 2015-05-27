@@ -10,7 +10,7 @@ namespace VGame.Project.FishHunter.Formula
     {
         Regulus.Remoting.User Remoting { get; }
 
-        Regulus.Remoting.Ghost.IProviderNotice<VGame.Project.FishHunter.IVerify> VerifyProvider { get; }
-        Regulus.Remoting.Ghost.IProviderNotice<VGame.Project.FishHunter.IFishStageQueryer> FishStageQueryerProvider { get; }        
+        Regulus.Remoting.Ghost.INotifier<VGame.Project.FishHunter.IVerify> VerifyProvider { get; }
+        Regulus.Remoting.Ghost.INotifier<VGame.Project.FishHunter.IFishStageQueryer> FishStageQueryerProvider { get; }        
     }
 }

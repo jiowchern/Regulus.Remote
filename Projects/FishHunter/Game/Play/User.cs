@@ -57,7 +57,7 @@ namespace VGame.Project.FishHunter.Play
             return true;
         }
 
-        void Regulus.Framework.ILaunched.Launch()
+        void Regulus.Framework.IBootable.Launch()
         {
             _Binder.BreakEvent += _Quit ;
             _Binder.Bind<IAccountStatus>(this);
@@ -69,7 +69,7 @@ namespace VGame.Project.FishHunter.Play
             _QuitEvent();
         }
 
-        void Regulus.Framework.ILaunched.Shutdown()
+        void Regulus.Framework.IBootable.Shutdown()
         {
             _Binder.Unbind<IAccountStatus>(this);
             _SaveRecord();

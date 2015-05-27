@@ -36,7 +36,7 @@ namespace Regulus.Framework
             return Enable;
         }
 
-        void Regulus.Framework.ILaunched.Launch()
+        void Regulus.Framework.IBootable.Launch()
         {
             _Command.Register("Quit" , _ToShutdown );
             _ToSelectMode();
@@ -72,7 +72,7 @@ namespace Regulus.Framework
             _Command.Unregister("Quit");
         }
 
-        void Regulus.Framework.ILaunched.Shutdown()
+        void Regulus.Framework.IBootable.Shutdown()
         {
             _ToShutdown();
         }

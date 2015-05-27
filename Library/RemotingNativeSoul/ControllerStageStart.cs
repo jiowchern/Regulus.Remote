@@ -8,7 +8,7 @@ namespace Regulus.Remoting.Soul.Native
 {
     class StageStart : Regulus.Utility.IStage
     {
-        public event Action<Regulus.Utility.ICore, int, float> DoneEvent;
+        public event Action<Regulus.Remoting.ICore, int, float> DoneEvent;
 
         Regulus.Utility.Command _Command;
         Regulus.Utility.Console.IViewer _View;

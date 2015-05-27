@@ -28,7 +28,7 @@ namespace FormulaUserBot
             return _Enable;
         }
 
-        void Regulus.Framework.ILaunched.Launch()
+        void Regulus.Framework.IBootable.Launch()
         {
             _Stage.HitResponseEvent += _Response;
             _Stage.Hit(_Request);
@@ -48,7 +48,7 @@ namespace FormulaUserBot
             }            
         }
 
-        void Regulus.Framework.ILaunched.Shutdown()
+        void Regulus.Framework.IBootable.Shutdown()
         {
             _Stage.HitResponseEvent -= _Response;
         }

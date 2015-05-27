@@ -10,10 +10,10 @@ namespace VGame.Project.FishHunter.Storage
     {
         Regulus.Remoting.User Remoting { get; }
 
-        Regulus.Remoting.Ghost.IProviderNotice<VGame.Project.FishHunter.IVerify> VerifyProvider { get; }
+        Regulus.Remoting.Ghost.INotifier<VGame.Project.FishHunter.IVerify> VerifyProvider { get; }
 
-        Regulus.Remoting.Ghost.IProviderNotice<VGame.Project.FishHunter.IStorageCompetnces> StorageCompetncesProvider { get; }
+        Regulus.Remoting.Ghost.INotifier<VGame.Project.FishHunter.IStorageCompetnces> StorageCompetncesProvider { get; }
 
-        Regulus.Remoting.Ghost.IProviderNotice<T> QueryProvider<T>();
+        Regulus.Remoting.Ghost.INotifier<T> QueryProvider<T>();
     }
 }

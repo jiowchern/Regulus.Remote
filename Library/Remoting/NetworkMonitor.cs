@@ -47,13 +47,13 @@ namespace Regulus.Remoting
             return true;
         }
 
-        void Framework.ILaunched.Launch()
+        void Framework.IBootable.Launch()
         {
             lock (_Counter)
                 _Counter.Reset();
         }
 
-        void Framework.ILaunched.Shutdown()
+        void Framework.IBootable.Shutdown()
         {
             lock (_Counter)
                 SecondBytes = 0;

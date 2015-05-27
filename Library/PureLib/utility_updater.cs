@@ -5,17 +5,20 @@ using System.Text;
 
 namespace Regulus.Utility
 {
-    public interface IUpdatable : Regulus.Framework.ILaunched
-    {
+    /// <summary>
+    /// 更新器
+    /// </summary>
+    public interface IUpdatable : Regulus.Framework.IBootable
+    {        
         bool Update();
     }
 
-    public interface IUpdatable<T> : Regulus.Framework.ILaunched
+    public interface IUpdatable<T> : Regulus.Framework.IBootable
     {
         bool Update(T arg);
     }
 
-    public class Launcher<T > where T : Regulus.Framework.ILaunched
+    public class Launcher<T > where T : Regulus.Framework.IBootable
     {
         Queue<T> _Adds = new Queue<T>();
         Queue<T> _Removes = new Queue<T>();

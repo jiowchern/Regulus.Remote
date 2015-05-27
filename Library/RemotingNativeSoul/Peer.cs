@@ -222,7 +222,7 @@ namespace Regulus.Remoting.Soul.Native
 
         
 
-        void Framework.ILaunched.Launch()
+        void Framework.IBootable.Launch()
         {
             //_HandleWriteWait();
             //_HandleRead();
@@ -249,7 +249,7 @@ namespace Regulus.Remoting.Soul.Native
 
     
 
-        void Framework.ILaunched.Shutdown()
+        void Framework.IBootable.Shutdown()
         {
             _Socket.Close();
             _Reader.Stop();

@@ -10,17 +10,46 @@ namespace Regulus.Remoting
 	using System.Reflection;
 	using System.Reflection.Emit;
 
+    /// <summary>
+    /// 代理器
+    /// </summary>
     public interface IAgent : Regulus.Utility.IUpdatable 
     {
-        Regulus.Remoting.Ghost.IProviderNotice<T> QueryProvider<T>();
+        /// <summary>
+        /// 查詢介面物件通知者        
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        Regulus.Remoting.Ghost.INotifier<T> QueryNotifier<T>();
 
+
+        /// <summary>
+        /// 連線
+        /// </summary>
+        /// <param name="ipaddress"></param>
+        /// <param name="port"></param>
+        /// <returns>如果連線成功會發生OnValue傳回true</returns>
         Value<bool> Connect(string ipaddress, int port);
 
+        /// <summary>
+        /// 連線成功事件
+        /// </summary>
         event Action ConnectEvent;
 
+
+        /// <summary>
+        /// Ping
+        /// </summary>
         long Ping { get; }
 
+        /// <summary>
+        /// 與遠端發生斷線
+        /// </summary>
         event Action DisconnectEvent;
+
+        /// <summary>
+        /// 斷線
+        /// </summary>
         void Disconnect();
     }
 
@@ -223,9 +252,9 @@ namespace Regulus.Remoting
 		}
 
 
-		public Regulus.Remoting.Ghost.IProviderNotice<T> QueryProvider<T>()
+		public Regulus.Remoting.Ghost.INotifier<T> QueryProvider<T>()
 		{
-			return _QueryProvider(typeof(T).FullName) as Regulus.Remoting.Ghost.IProviderNotice<T>;
+			return _QueryProvider(typeof(T).FullName) as Regulus.Remoting.Ghost.INotifier<T>;
 		}
 		private void _UpdateProperty(Guid entity_id, string name, byte[] value)
 		{
