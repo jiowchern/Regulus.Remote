@@ -23,7 +23,7 @@ namespace FormulaUserBot
         }
         bool Regulus.Utility.IUpdatable.Update()
         {
-            _Sampling += (Regulus.Remoting.Ghost.Native.Agent.RequestPackages + Regulus.Remoting.Ghost.Native.Agent.ReResponsePackages
+            _Sampling += (Regulus.Remoting.Ghost.Native.Agent.RequestPackages + Regulus.Remoting.Ghost.Native.Agent.ResponsePackages);
             _SamplingCount++;
 
             if (_Counter.Second > 0.016f)
