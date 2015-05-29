@@ -90,7 +90,7 @@ namespace Regulus.Remoting
 
         private void _Update(object state)
         {
-            var updater = new Regulus.Utility.CenterOfUpdateable();
+            var updater = new Regulus.Utility.Updater();
             updater.Add(Read);
             updater.Add(Write);
 

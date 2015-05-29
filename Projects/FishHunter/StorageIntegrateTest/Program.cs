@@ -13,7 +13,7 @@ namespace StorageIntegrateTest
         {
             System.Threading.SpinWait sw = new System.Threading.SpinWait();
             _Enable = true;
-            Regulus.Utility.CenterOfUpdateable updater = new Regulus.Utility.CenterOfUpdateable();
+            Regulus.Utility.Updater updater = new Regulus.Utility.Updater();
             Regulus.Utility.Launcher launcher = new Regulus.Utility.Launcher();
 
 

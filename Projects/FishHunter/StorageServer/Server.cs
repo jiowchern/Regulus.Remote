@@ -11,7 +11,7 @@ namespace VGame.Project.FishHunter.Storage
     public class Server : Regulus.Remoting.ICore, IStorage 
     {
 
-        Regulus.Utility.CenterOfUpdateable _Updater;
+        Regulus.Utility.Updater _Updater;
         VGame.Project.FishHunter.Storage.Center _Center;
         Regulus.Remoting.ICore _Core { get { return _Center; } }
         Regulus.NoSQL.Database _Database;
@@ -26,7 +26,7 @@ namespace VGame.Project.FishHunter.Storage
             _DefaultAdministratorName = "vgameadmini";
             _Ip = "mongodb://127.0.0.1:27017";
             _Name = "VGame";
-            _Updater = new Regulus.Utility.CenterOfUpdateable();
+            _Updater = new Regulus.Utility.Updater();
             _Database = new Regulus.NoSQL.Database(_Ip);
             _Center = new Center(this);
         }

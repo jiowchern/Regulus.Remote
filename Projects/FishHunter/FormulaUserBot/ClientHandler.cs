@@ -12,14 +12,14 @@ namespace FormulaUserBot
         private int _BotAmount;
         private int _BotCount;
 
-        Regulus.Utility.CenterOfUpdateable _Bots;
+        Regulus.Utility.Updater _Bots;
 
         public ClientHandler(string IPAddress, int Port)
         {
             // TODO: Complete member initialization
             this._IPAddress = IPAddress;
             this._Port = Port;
-            _Bots = new Regulus.Utility.CenterOfUpdateable();
+            _Bots = new Regulus.Utility.Updater();
         }
 
         public ClientHandler(string IPAddress, int Port, int bot_amount)

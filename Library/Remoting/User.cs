@@ -12,7 +12,7 @@ namespace Regulus.Remoting
         Regulus.Utility.StageMachine _Machine;
         Regulus.Remoting.IAgent _Agent;
 
-        Regulus.Utility.CenterOfUpdateable _Updater;
+        Regulus.Utility.Updater _Updater;
 
         public User(Regulus.Remoting.IAgent agent)
         {
@@ -20,7 +20,7 @@ namespace Regulus.Remoting
             _ConnectProvider = new Regulus.Remoting.Ghost.TProvider<Regulus.Utility.IConnect>();
             _OnlineProvider = new Regulus.Remoting.Ghost.TProvider<Regulus.Utility.IOnline>();
             _Machine = new Regulus.Utility.StageMachine();
-            _Updater = new Regulus.Utility.CenterOfUpdateable();
+            _Updater = new Regulus.Utility.Updater();
         }
 
         bool Regulus.Utility.IUpdatable.Update()

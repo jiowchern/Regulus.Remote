@@ -17,11 +17,11 @@ namespace FormulaUserBot
         public event DoneCallback DoneEvent;
 
         Regulus.Utility.TimeCounter _HitTime;
-        Regulus.Utility.CenterOfUpdateable _HitHandlers;
+        Regulus.Utility.Updater _HitHandlers;
 
         public BotPlayStage(VGame.Project.FishHunter.IFishStage fish_stage)
         {
-            _HitHandlers = new Regulus.Utility.CenterOfUpdateable();
+            _HitHandlers = new Regulus.Utility.Updater();
             _HitTime = new Regulus.Utility.TimeCounter();
             _Stage = fish_stage;
 

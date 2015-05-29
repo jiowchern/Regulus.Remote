@@ -16,12 +16,12 @@ namespace Regulus.Remoting.Ghost.Native
         public int Fps { get { return _PowerRegulator.FPS; } }
         public float Power { get { return _PowerRegulator.Power; } }
         volatile bool _ThreadEnable;
-        
-        Regulus.Utility.CenterOfUpdateable _Updater;
+
+        Regulus.Utility.Updater _Updater;
         public IOHandler()
         {            
             _PowerRegulator = new Utility.PowerRegulator(30);
-            _Updater = new Utility.CenterOfUpdateable();
+            _Updater = new Utility.Updater();
             
         }
         public void Stop(Regulus.Utility.IUpdatable updater)

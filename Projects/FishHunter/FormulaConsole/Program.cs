@@ -19,7 +19,7 @@ namespace Console
 
             client.ModeSelectorEvent += new ModeCreator(core).OnSelect;
 
-            var updater = new Regulus.Utility.CenterOfUpdateable();
+            var updater = new Regulus.Utility.Updater();
             updater.Add(client);
            // updater.Add(core);
 

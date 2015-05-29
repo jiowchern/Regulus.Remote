@@ -141,7 +141,7 @@ namespace RemotingTest
 
             };
 
-            Regulus.Utility.CenterOfUpdateable updater = new Regulus.Utility.CenterOfUpdateable();
+            Regulus.Utility.Updater updater = new Regulus.Utility.Updater();
             updater.Add(app);
             launcher.Push(serverAppliction);
             launcher.Launch();
@@ -202,8 +202,8 @@ namespace RemotingTest
                 Assert.AreEqual(1, user.TestReturnProvider.Returns.Length);
 
             };
-            
-            Regulus.Utility.CenterOfUpdateable updater = new Regulus.Utility.CenterOfUpdateable();
+
+            Regulus.Utility.Updater updater = new Regulus.Utility.Updater();
             updater.Add(app);
             updater.Add(server);
             bool enable = true;

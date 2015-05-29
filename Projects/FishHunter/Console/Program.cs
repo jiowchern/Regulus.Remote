@@ -24,7 +24,7 @@ namespace Console
             var client = new Regulus.Framework.Client<VGame.Project.FishHunter.IUser>(view, input);
             client.ModeSelectorEvent += new ModeCreator(core).OnSelect;
 
-            var updater = new Regulus.Utility.CenterOfUpdateable();
+            var updater = new Regulus.Utility.Updater();
             updater.Add(client);
             //updater.Add(core);
             

@@ -15,7 +15,7 @@ namespace Regulus.Framework
         private Utility.Command _Command;
         Controller<TUser> _Current;
 
-        Regulus.Utility.CenterOfUpdateable _Updater;
+        Regulus.Utility.Updater _Updater;
         public UserProvider(IUserFactoty<TUser> factory, Utility.Console.IViewer view, Utility.Command command)
         {
             _Controllers = new List<Controller<TUser>>();
@@ -23,7 +23,7 @@ namespace Regulus.Framework
             this._View = view;
             this._Command = command;
             _Current = null;
-            _Updater = new Utility.CenterOfUpdateable();
+            _Updater = new Utility.Updater();
         }
         
 

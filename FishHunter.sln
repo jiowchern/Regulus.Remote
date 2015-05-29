@@ -55,6 +55,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormulaUser", "Projects\FishHunter\FormulaUser\FormulaUser.csproj", "{8D1A45AA-6918-4DEB-A37F-AEDE57FE8794}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormulaConsole", "Projects\FishHunter\FormulaConsole\FormulaConsole.csproj", "{221E99E2-3C94-41A3-9B11-B84313A71EDF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5061BC1D-0C9E-4050-A51E-593B5C16D398} = {5061BC1D-0C9E-4050-A51E-593B5C16D398}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormulaUserBot", "Projects\FishHunter\FormulaUserBot\FormulaUserBot.csproj", "{242F3836-C5C9-4910-B908-794409EAFE39}"
 EndProject
@@ -338,8 +341,5 @@ Global
 		{E977627A-CD89-4D30-892D-4679E10F45FA} = {2C0B4D19-4D23-4793-8627-4E72FE94243F}
 		{9FA4B2C1-03EC-4F26-B78D-09275EE0F89D} = {2C0B4D19-4D23-4793-8627-4E72FE94243F}
 		{06CC7AF7-6795-4231-AE6F-E87BCF8799E3} = {96CF9E09-80D6-4232-9952-CEC23ECE61FB}
-	EndGlobalSection
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

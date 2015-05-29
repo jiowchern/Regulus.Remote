@@ -15,7 +15,7 @@ namespace VGame.Project.FishHunter.Play
     public class Complex : Regulus.Remoting.ICore
     {
         Regulus.Utility.StageMachine _Machine;
-        Regulus.Utility.CenterOfUpdateable _Updater;
+        Regulus.Utility.Updater _Updater;
         VGame.Project.FishHunter.Storage.Proxy _Storage;
         VGame.Project.FishHunter.Formula.Client _Formula;
         VGame.Project.FishHunter.Play.Center _Center;
@@ -35,7 +35,7 @@ namespace VGame.Project.FishHunter.Play
             _StorageVerifyData = new Regulus.CustomType.Verify();
             _FormulaVerifyData = new Regulus.CustomType.Verify();
             _Machine = new Regulus.Utility.StageMachine();
-            _Updater = new Regulus.Utility.CenterOfUpdateable();
+            _Updater = new Regulus.Utility.Updater();
 
             _BuildParams();
             _BuildUser();

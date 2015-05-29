@@ -7,7 +7,7 @@ namespace VGame.Project.FishHunter.Play
 {
     public class Center : Regulus.Remoting.ICore
     {
-        Regulus.Utility.CenterOfUpdateable _Updater;
+        Regulus.Utility.Updater _Updater;
         Hall _Hall;
         VGame.Project.FishHunter.IAccountFinder _AccountFinder;
         
@@ -19,7 +19,7 @@ namespace VGame.Project.FishHunter.Play
         {
             _RecordQueriers = rq;
             _AccountFinder = accountFinder;
-            _Updater = new Regulus.Utility.CenterOfUpdateable();
+            _Updater = new Regulus.Utility.Updater();
             _Hall = new Hall();            
             
             this._FishStageQueryer = fishStageQueryer;
