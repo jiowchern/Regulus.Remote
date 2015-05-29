@@ -14,7 +14,6 @@ namespace VGame.Project.FishHunter.Formula
         
         private Center()
         {
-        
             _Hall = new Hall();
             _Update = new Regulus.Utility.CenterOfUpdateable();
         }
