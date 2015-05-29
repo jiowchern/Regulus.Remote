@@ -17,10 +17,8 @@ namespace RemotingTest
             var serverAppliction = new Regulus.Remoting.Soul.Native.Server(server, 12345);
             launcher.Push(serverAppliction);
             launcher.Launch();
-
             
             var agent = Regulus.Remoting.Ghost.Native.Agent.Create();
-
 
             _ConnectEnable = true;
             System.Threading.Tasks.Task task = new System.Threading.Tasks.Task(NewMethod(  agent));
@@ -253,6 +251,17 @@ namespace RemotingTest
             obj.Connect("127.0.0.1", 12345);
         }
 
+
+        [TestMethod]
+        public void TestUnsupportedBindChecker()
+        {
+            var bindChecker = new Regulus.Remoting.BindGuard();
+            bindChecker.Check(typeof(IUnsupportedMethodIntefaceParam));            
+        }
+
         
     }
+
+
+
 }

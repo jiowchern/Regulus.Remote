@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="Agent.cs" />
     <Compile Include="AutoRelease.cs" />
+    <Compile Include="BindGuard.cs" />
     <Compile Include="Connect.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="CoreThreadRequestHandler.cs" />

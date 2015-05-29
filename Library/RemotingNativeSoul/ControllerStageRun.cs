@@ -16,7 +16,19 @@ namespace Regulus.Remoting.Soul.Native
         }
         public void Update()
         {
-            Parallel.ForEach(base._GetObjectSet(), _Update );            
+            var exceptions = new System.Collections.Concurrent.ConcurrentQueue<Exception>();
+
+            Parallel.ForEach(base._GetObjectSet(), (updater) => 
+            {
+                try
+                {
+                    _Update(updater);
+                }
+                catch (Exception e) { exceptions.Enqueue(e); }
+            });
+
+            if (exceptions.Count > 0) 
+                throw new AggregateException(exceptions);
             /*foreach(var up in base.Update())
             {
                 _Update(up);
