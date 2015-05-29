@@ -7,11 +7,11 @@
         VGame.Project.FishHunter.DummyFrature _Storage;
 
         Regulus.Remoting.ICore _Core { get { return _Center; } }
-        Regulus.Utility.CenterOfUpdateable _Updater;
+        Regulus.Utility.Updater _Updater;
         public DummyStandalong()
         {
             _Storage = new DummyFrature();
-            _Updater = new Regulus.Utility.CenterOfUpdateable();
+            _Updater = new Regulus.Utility.Updater();
             _Center = new Center(_Storage , _Storage , _Storage );
         }
 

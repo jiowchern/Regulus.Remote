@@ -8,7 +8,7 @@ namespace VGame.Project.FishHunter.Formula
     public class Center : Regulus.Remoting.ICore
     {
         
-        Regulus.Utility.CenterOfUpdateable _Update;
+        Regulus.Utility.Updater _Update;
         Hall _Hall;
         private StorageController _Controller;
         
@@ -16,7 +16,7 @@ namespace VGame.Project.FishHunter.Formula
         {
         
             _Hall = new Hall();
-            _Update = new Regulus.Utility.CenterOfUpdateable();
+            _Update = new Regulus.Utility.Updater();
         }
 
         public Center(StorageController controller) : this()

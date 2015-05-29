@@ -7,7 +7,7 @@ namespace RemotingTest
 {
     class User : IUser
     {
-        Regulus.Utility.CenterOfUpdateable _Updater;
+        Regulus.Utility.Updater _Updater;
         Regulus.Remoting.User _User;
 
         private Regulus.Remoting.IAgent _Agent;
@@ -15,7 +15,7 @@ namespace RemotingTest
         public User(Regulus.Remoting.IAgent agent)
         {
             this._Agent = agent;
-            _Updater = new Regulus.Utility.CenterOfUpdateable();
+            _Updater = new Regulus.Utility.Updater();
             _User = new Regulus.Remoting.User(_Agent);
         }
         bool Regulus.Utility.IUpdatable.Update()

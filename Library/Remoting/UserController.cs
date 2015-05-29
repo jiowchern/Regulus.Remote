@@ -8,7 +8,7 @@ namespace Regulus.Utility
     public class UserController<TUser> : Regulus.Utility.Framework<TUser>.IController
         where TUser : Regulus.Utility.IUpdatable
     {
-        Regulus.Utility.CenterOfUpdateable _Updater;
+        Regulus.Utility.Updater _Updater;
         
         TUser _User;
 
@@ -16,7 +16,7 @@ namespace Regulus.Utility
         public UserController(TUser user)
         {
             _User = user;
-            _Updater = new Utility.CenterOfUpdateable();
+            _Updater = new Utility.Updater();
         }
 
 

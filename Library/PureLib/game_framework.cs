@@ -34,7 +34,7 @@ namespace Regulus.Utility
         protected Regulus.Utility.Console.IInput _Input;
         protected Regulus.Utility.Console.IViewer _Viewer;
         Regulus.Utility.StageMachine _StageMachine;
-		Regulus.Utility.CenterOfUpdateable _Loops;        
+        Regulus.Utility.Updater _Loops;        
         
         public Regulus.Utility.Command Command { get { return _Console.Command; } }
         public Regulus.Utility.Console.IViewer Viewer { get { return _Viewer; } }
@@ -44,7 +44,7 @@ namespace Regulus.Utility
         {
             _Viewer = viewer;
             _Input = input;
-            _Loops = new Regulus.Utility.CenterOfUpdateable();
+            _Loops = new Regulus.Utility.Updater();
             _Console = console;
 
         }
@@ -53,7 +53,7 @@ namespace Regulus.Utility
             
             _Viewer = viewer;
             _Input = input;
-            _Loops = new Regulus.Utility.CenterOfUpdateable();
+            _Loops = new Regulus.Utility.Updater();
 			_Console = new Regulus.Utility.Console(_Input, _Viewer);
         }
         
@@ -106,7 +106,7 @@ namespace Regulus.Utility
 
 
 
-        protected virtual void _Launch(Regulus.Utility.CenterOfUpdateable updater)
+        protected virtual void _Launch(Regulus.Utility.Updater updater)
         { }
 		void Regulus.Framework.IBootable.Launch()
         {
@@ -125,7 +125,7 @@ namespace Regulus.Utility
             return _Runable;
         }
 
-        protected virtual void _Shutdown(Regulus.Utility.CenterOfUpdateable updater) { }
+        protected virtual void _Shutdown(Regulus.Utility.Updater updater) { }
 		void Regulus.Framework.IBootable.Shutdown()
         {
             _Shutdown(_Loops);
@@ -271,7 +271,7 @@ namespace Regulus.Utility
             private Utility.Console.IViewer _Viewer;
             private ControllerProvider _ControllerProvider;
             private Utility.Command _Command;
-			Regulus.Utility.CenterOfUpdateable _Loops;
+            Regulus.Utility.Updater _Loops;
             System.Collections.Generic.List<IController> _Controlls;
             System.Collections.Generic.List<IController> _SelectedControlls;
             
@@ -285,7 +285,7 @@ namespace Regulus.Utility
 
                 _SelectedControlls = new List<IController>();
                 _Controlls = new List<IController>();
-                _Loops = new Regulus.Utility.CenterOfUpdateable();
+                _Loops = new Regulus.Utility.Updater();
             }
             void IStage.Enter()
             {

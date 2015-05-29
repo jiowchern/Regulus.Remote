@@ -11,7 +11,7 @@ namespace VGame.Project.FishHunter.Formula
         bool _Enable;
         VGame.Project.FishHunter.Storage.Proxy _Storage;
         Storage.IUser _StorageUser;
-        Regulus.Utility.CenterOfUpdateable _Updater;
+        Regulus.Utility.Updater _Updater;
         Regulus.Utility.StageMachine _Machine;
         private string _Account;
         private string _Password;
@@ -60,7 +60,7 @@ namespace VGame.Project.FishHunter.Formula
 
             _Storage = new Storage.Proxy();
             _Machine = new Regulus.Utility.StageMachine();
-            _Updater = new Regulus.Utility.CenterOfUpdateable();
+            _Updater = new Regulus.Utility.Updater();
             _Binders = new Regulus.Collection.Queue<Regulus.Remoting.ISoulBinder>();
             _Enable = true;
         }

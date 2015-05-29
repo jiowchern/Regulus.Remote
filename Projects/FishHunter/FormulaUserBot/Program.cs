@@ -38,9 +38,9 @@ namespace FormulaUserBot
             client.ModeSelectorEvent += clientHandler.Begin;
 
 
-            
 
-            var updater = new Regulus.Utility.CenterOfUpdateable();
+
+            var updater = new Regulus.Utility.Updater();
             updater.Add(client);
             updater.Add(clientHandler);
             updater.Add(packetRegulator);

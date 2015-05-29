@@ -26,7 +26,6 @@ namespace Regulus.Utility
     
     public class StageMachine
     {
-        
         System.Collections.Generic.Queue<Regulus.Utility.IStage> _StandBys;
         Regulus.Utility.IStage _Current;
 
@@ -46,34 +45,43 @@ namespace Regulus.Utility
             lock (_StandBys)
                 _StandBys.Enqueue(new_stage);
         }
-
-        
         
         public bool Update()
         {
             lock (_StandBys)
             {
-                if (_StandBys.Count > 0)
-                {
-                    if (_Current != null)
-                        _Current.Leave();
-
-                    IStage stage;
-                    stage = _StandBys.Dequeue();
-
-                    if (stage != null)
-                    {
-                        stage.Enter();
-                    }
-                    _Current = stage;
-                }
-
-                if (_Current != null)
-                {
-                    _Current.Update();
-                }
+                _SetCurrentStage();
+                _UpdateCurrentStage();
             }
             return _Current != null;
+        }
+
+        private void _SetCurrentStage()
+        {
+            if (_StandBys.Count > 0)
+            {
+                if (_Current != null)
+                {
+                    _Current.Leave();
+                }
+                    
+                IStage stage;
+                stage = _StandBys.Dequeue();
+
+                if (stage != null)
+                {
+                    stage.Enter();
+                }
+                _Current = stage;
+            }
+        }
+
+        private void _UpdateCurrentStage()
+        {
+            if (_Current != null)
+            {
+                _Current.Update();
+            }
         }
 
         public void Termination()
@@ -87,14 +95,12 @@ namespace Regulus.Utility
                     _Current = null;
                 }
             }
-
         }
 
         public void Empty()
         {
             Push(new EmptyStage());
         }
-        
     }
 
 	public class StageMachine<T> 
@@ -104,48 +110,57 @@ namespace Regulus.Utility
             public Regulus.Utility.IStage<T> Stage;
             public StageLock Lock;
         }
+
 		System.Collections.Generic.Queue<Regulus.Utility.IStage<T>> _StandBys;
         StageData _Current;
 		T						_Param;
-		public StageMachine(T par)
+        Action _Handle;
+		
+        public StageMachine(T par)
 		{
 			_Param = par;
 			_StandBys = new Queue<IStage<T>>();
             _Current = new StageData();
             _Handle = _HandleStandByEnter;
-		}
-		public void Push(Regulus.Utility.IStage<T> new_stage)
+        }
+
+        public void Push(Regulus.Utility.IStage<T> new_stage)
 		{
 			_StandBys.Enqueue(new_stage);
 		}
 
-        Action _Handle;
         void _HandleStandByEnter()
         {
-            if (_StandBys.Count > 0)
+            if (_StandBys.Count == 0)
             {
-                if (_Current.Stage != null)
-                    _Current.Stage.Leave(_Param);
+                _Handle = _HandleCurrentStage;
+                return;
+            }
 
-                var stage = _StandBys.Dequeue();
+            if (_Current.Stage != null)
+            {
+                _Current.Stage.Leave(_Param);
+            }
 
-                var unlock = new StageLock();
-                unlock.Unlock();
+            var stage = _StandBys.Dequeue();
 
-                _Current.Lock = unlock;
-                if (stage != null)
+            var unlock = new StageLock();
+            unlock.Unlock();
+
+            _Current.Lock = unlock;
+            
+            if (stage != null)
+            {
+                var stageLock = stage.Enter(_Param);
+                if (stageLock != null)
                 {
-                    var stageLock = stage.Enter(_Param);
-                    if (stageLock != null)
-                    {
-                        _Current.Lock = stageLock;
-                    }
+                    _Current.Lock = stageLock;
                 }
-                _Current.Stage = stage;
             }
             
-            _Handle = _HandleCurrentStage;
+            _Current.Stage = stage;
         }
+
         void _HandleCheckStabdBy()
         {
             if (_StandBys.Count > 0)
@@ -155,6 +170,7 @@ namespace Regulus.Utility
             else
                 _Handle = _HandleCurrentStage;                   
         }
+
         void _HandleCurrentStageWait()
         {
             if (_Current.Stage != null)
@@ -169,6 +185,7 @@ namespace Regulus.Utility
                 _Handle = _HandleStandByEnter;
             }
         }
+
         void _HandleCurrentStage()
         {
             if (_Current.Stage != null)
@@ -178,6 +195,7 @@ namespace Regulus.Utility
 
             _Handle = _HandleCheckStabdBy;
         }
+
 		public bool Update()
 		{
             _Handle();
@@ -194,8 +212,5 @@ namespace Regulus.Utility
                 _Current = null;
             }
         }
-		
 	}
-
-    
 }

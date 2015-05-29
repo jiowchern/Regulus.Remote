@@ -27,14 +27,6 @@ namespace Regulus.Utility
 
         public int Count { get { return _Ts.Count; } }
 
-        public T[] Objects
-        {
-            get
-            {                
-                return _Ts.ToArray();                
-            }
-        }
-
         protected System.Collections.Generic.IEnumerable<T> _GetObjectSet()
         {
             lock (_Ts)
@@ -45,8 +37,15 @@ namespace Regulus.Utility
                 lock (_Adds)
                     _Add(_Adds, _Ts);
 
-                return Objects;
-                //return _Update();
+                return _Objects;
+            }
+        }
+
+        private T[] _Objects
+        {
+            get
+            {
+                return _Ts.ToArray();
             }
         }
 
@@ -62,16 +61,6 @@ namespace Regulus.Utility
                 _Removes.Enqueue(framework);            
         }
 
-        private void _Remove(Queue<T> remove_framework, List<T> frameworks)
-        {
-            while (remove_framework.Count > 0)
-            {
-                var fw = remove_framework.Dequeue();
-                frameworks.Remove(fw);
-                fw.Shutdown();
-            }
-        }
-
         private void _Add(Queue<T> add_frameworks, List<T> frameworks)
         {
             while (add_frameworks.Count > 0)
@@ -79,6 +68,16 @@ namespace Regulus.Utility
                 var fw = add_frameworks.Dequeue();
                 frameworks.Add(fw);
                 fw.Launch();
+            }
+        }
+
+        private void _Remove(Queue<T> remove_framework, List<T> frameworks)
+        {
+            while (remove_framework.Count > 0)
+            {
+                var fw = remove_framework.Dequeue();
+                frameworks.Remove(fw);
+                fw.Shutdown();
             }
         }
 
@@ -90,7 +89,6 @@ namespace Regulus.Utility
 
         private void _Shutdown(List<T> frameworks)
         {
-
             foreach (var framework in frameworks)
             {
                 framework.Shutdown();
@@ -98,7 +96,7 @@ namespace Regulus.Utility
         }
     }
 
-    public class CenterOfUpdateableToGenerics<T> : Launcher<Regulus.Utility.IUpdatable<T>>             
+    public class UpdaterToGenerics<T> : Launcher<Regulus.Utility.IUpdatable<T>>             
     {
         public void Working(T arg)
         {
@@ -112,7 +110,7 @@ namespace Regulus.Utility
         }
     }
 
-    public class CenterOfUpdateable : Launcher<Regulus.Utility.IUpdatable>
+    public class Updater : Launcher<Regulus.Utility.IUpdatable>
     {
         public void Working()
         {

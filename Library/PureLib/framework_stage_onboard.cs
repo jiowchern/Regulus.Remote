@@ -12,12 +12,12 @@ namespace Regulus.Framework.Stage
         public event OnDone DoneEvent;
         private UserProvider<TUser> _UserProvider;
         private Utility.Command _Command;
-        Regulus.Utility.CenterOfUpdateable _Updater;
+        Regulus.Utility.Updater _Updater;
         
         
         public OnBoard(UserProvider<TUser> user_provider, Utility.Command command)
         {
-            _Updater = new Utility.CenterOfUpdateable();
+            _Updater = new Utility.Updater();
             this._UserProvider = user_provider;
             this._Command = command;
         }

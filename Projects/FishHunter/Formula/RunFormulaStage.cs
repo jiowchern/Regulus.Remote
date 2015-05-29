@@ -12,14 +12,14 @@ namespace VGame.Project.FishHunter
         VGame.Project.FishHunter.Formula.Center _Center;
 
         Regulus.Remoting.ICore _Core { get { return _Center; } }
-        Regulus.Utility.CenterOfUpdateable _Updater;
+        Regulus.Utility.Updater _Updater;
         
         private Regulus.Collection.Queue<Regulus.Remoting.ISoulBinder> _Binders;
         
 
         private RunFormulaStage(Formula.StorageController controller)
         {
-            _Updater = new Regulus.Utility.CenterOfUpdateable();
+            _Updater = new Regulus.Utility.Updater();
             _Center = new Formula.Center(controller);
             
         }

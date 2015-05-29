@@ -11,7 +11,7 @@ namespace Regulus.Utility
         Regulus.Utility.Console.IViewer _Viewer;
         Regulus.Utility.ConsoleInput _Input;
 
-        Regulus.Utility.CenterOfUpdateable _Updater;
+        Regulus.Utility.Updater _Updater;
 
         public Regulus.Utility.Command Command
         {
@@ -28,33 +28,36 @@ namespace Regulus.Utility
             _Viewer = new Regulus.Utility.ConsoleViewer();
             _Input = new ConsoleInput(_Viewer);
             _Console = new Regulus.Utility.Console(_Input, _Viewer);
-            _Updater = new CenterOfUpdateable();
+            _Updater = new Updater();
         }
+
         protected abstract void _Launch();
+        
         protected abstract void _Update();
+        
         protected abstract void _Shutdown();
+
+        void Framework.IBootable.Launch()
+        {
+            _HideLog();
+
+            _Updater.Add(_Input);
+
+            _Launch();
+        }
+
+        void Framework.IBootable.Shutdown()
+        {
+            _Shutdown();
+            _Updater.Shutdown();
+            Regulus.Utility.Log.Instance.RecordEvent -= _RecordView;
+        }
 
         bool IUpdatable.Update()
         {
             _Update();
             _Updater.Working();
             return true;
-        }
-
-        void Framework.IBootable.Launch()
-        {
-            _HideLog();
-            
-            _Updater.Add(_Input);
-
-            _Launch();
-        }
-
-        private void _ShowLog()
-        {
-            Regulus.Utility.Log.Instance.RecordEvent += _RecordView;
-            _Console.Command.Unregister("ShowLog");
-            _Console.Command.Register("HideLog" , _HideLog );
         }
 
         private void _HideLog()
@@ -64,17 +67,19 @@ namespace Regulus.Utility
             _Console.Command.Register("ShowLog", _ShowLog);
         }
 
+        private void _ShowLog()
+        {
+            Regulus.Utility.Log.Instance.RecordEvent += _RecordView;
+            _Console.Command.Unregister("ShowLog");
+            _Console.Command.Register("HideLog", _HideLog);
+        }
+
         private void _RecordView(string message)
         {
             _Viewer.WriteLine(message);
         }
 
-        void Framework.IBootable.Shutdown()
-        {
-            _Shutdown();
-            _Updater.Shutdown();
-            Regulus.Utility.Log.Instance.RecordEvent -= _RecordView;
-        }
+        
     }
 
     namespace WindowConsoleStand

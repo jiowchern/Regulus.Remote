@@ -7,14 +7,14 @@ namespace VGame.Project.FishHunter.Storage
 {
     public class Center : Regulus.Remoting.ICore
     {
-        Regulus.Utility.CenterOfUpdateable _Update;
+        Regulus.Utility.Updater _Update;
         Hall _Hall;
         IStorage _Stroage;
         public Center(IStorage storage)
         {
             _Stroage = storage;
             _Hall = new Hall();
-            _Update = new Regulus.Utility.CenterOfUpdateable();
+            _Update = new Regulus.Utility.Updater();
         }
         void Regulus.Remoting.ICore.ObtainBinder(Regulus.Remoting.ISoulBinder binder)
         {
