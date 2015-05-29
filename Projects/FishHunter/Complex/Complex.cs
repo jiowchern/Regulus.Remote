@@ -98,9 +98,9 @@ namespace VGame.Project.FishHunter.Play
             return System.Net.IPAddress.TryParse(ip, out ipaddr);
         }
 
-        void Regulus.Remoting.ICore.ObtainBinder(Regulus.Remoting.ISoulBinder binder)
+        void Regulus.Remoting.ICore.AssignBinder(Regulus.Remoting.ISoulBinder binder)
         {
-            _Core.ObtainBinder(binder);
+            _Core.AssignBinder(binder);
         }
 
         bool Regulus.Utility.IUpdatable.Update()

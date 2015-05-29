@@ -24,7 +24,7 @@ namespace VGame.Project.FishHunter.Play
             
             this._FishStageQueryer = fishStageQueryer;
         }
-        void Regulus.Remoting.ICore.ObtainBinder(Regulus.Remoting.ISoulBinder binder)
+        void Regulus.Remoting.ICore.AssignBinder(Regulus.Remoting.ISoulBinder binder)
         {
             var user = new User(binder, 
                 _AccountFinder, 

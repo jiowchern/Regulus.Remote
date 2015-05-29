@@ -1,0 +1,944 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DirectedGraph DataVirtualized="True" Layout="Sugiyama" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+  <Nodes>
+    <Node Id="(@22 @13 @23 Member=(Name=_LoadSoul OverloadingParameters=[@53,@32,(@14 @15 Type=Boolean)]))" Category="CodeSchema_Method" Bounds="209.974999999999,634.122500000001,94.03,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="_LoadSoul" FunctionTypeFlags="方法" Label="_LoadSoul" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/Remoting/Agent.cs StartLineNumber=210 StartCharacterOffset=0 EndLineNumber=210 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="(@22 @13 Type=AutoRelease Member=Update)" Category="CodeSchema_Method" Bounds="338.111666666667,576.475000000001,77.7566666666667,25.96" CodeSchemaProperty_IsPublic="True" CommonLabel="Update" FunctionTypeFlags="方法" Label="Update" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/Remoting/AutoRelease.cs StartLineNumber=25 StartCharacterOffset=0 EndLineNumber=25 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="(@25 @26 @27 Member=_InitialLog)" Category="CodeSchema_Method" Bounds="2525.19833333333,345.885,93.5833333333335,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="_InitialLog" FunctionTypeFlags="方法" Label="_InitialLog" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Projects/FishHunter/Formula/Formula.cs StartLineNumber=70 StartCharacterOffset=0 EndLineNumber=70 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="(@25 @26 @27 Member=_ToBuildStorageController)" Category="CodeSchema_Method" Bounds="22.4449999999997,864.712500000001,185.09,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="_ToBuildStorageController" FunctionTypeFlags="方法" Label="_ToBuildStorageController" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Projects/FishHunter/Formula/Formula.cs StartLineNumber=126 StartCharacterOffset=0 EndLineNumber=126 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="(@37 @38 @27 Member=Launch)" Category="CodeSchema_Method" Bounds="719.734999999999,749.417500000001,76.51,25.96" CodeSchemaProperty_IsPublic="True" CommonLabel="Launch" FunctionTypeFlags="方法" Label="Launch" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/RemotingNativeSoul/Server.cs StartLineNumber=58 StartCharacterOffset=0 EndLineNumber=58 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="(@37 @38 @70 Member=_ToStart)" Category="CodeSchema_Method" Bounds="243.846666666666,403.5325,82.2866666666666,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="_ToStart" FunctionTypeFlags="方法" Label="_ToStart" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/RemotingNativeSoul/Application.cs StartLineNumber=42 StartCharacterOffset=0 EndLineNumber=42 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="(@37 @38 Type=ThreadCoreHandler Member=(@39 OverloadingParameters=[@40]))" Category="CodeSchema_Method" Bounds="1836.37666666667,980.007500000001,147.226666666667,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CommonLabel="ThreadCoreHandler" FunctionTypeFlags="建構函式" Label="ThreadCoreHandler" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/RemotingNativeSoul/ControllerStageRun.cs StartLineNumber=52 StartCharacterOffset=0 EndLineNumber=52 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="(@45 @26 Type=Center Member=.ctor)" Category="CodeSchema_Method" Bounds="433.16,1095.3025,73.6600000000001,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPrivate="True" CommonLabel="Center" FunctionTypeFlags="建構函式" Label="Center" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Projects/FishHunter/Game/Formula/Center.cs StartLineNumber=15 StartCharacterOffset=0 EndLineNumber=15 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="(@6 @34 Type=ConnectStorageStage Member=(@39 OverloadingParameters=[@12,@49,@65]))" Category="CodeSchema_Method" Bounds="2218.18333333333,403.5325,159.613333333333,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CommonLabel="ConnectStorageStage" FunctionTypeFlags="建構函式" Label="ConnectStorageStage" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Projects/FishHunter/StorageUser/ConnectStorageStage.cs StartLineNumber=16 StartCharacterOffset=0 EndLineNumber=16 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="(@6 @34 Type=ConnectStorageStage Member=(Name=_Connect OverloadingParameters=[(@22 @18 Type=IConnect)]))" Category="CodeSchema_Method" Bounds="302.663333333333,807.065000000001,88.6533333333334,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="_Connect" FunctionTypeFlags="方法" Label="_Connect" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Projects/FishHunter/StorageUser/ConnectStorageStage.cs StartLineNumber=34 StartCharacterOffset=0 EndLineNumber=34 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="(@6 @34 Type=VerifyStorageStage Member=(@39 OverloadingParameters=[@12,@49,@49]))" Category="CodeSchema_Method" Bounds="725.536666666666,980.007500000001,144.906666666667,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CommonLabel="VerifyStorageStage" FunctionTypeFlags="建構函式" Label="VerifyStorageStage" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Projects/FishHunter/StorageUser/InitialStorageStage.cs StartLineNumber=16 StartCharacterOffset=0 EndLineNumber=16 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="(@6 @34 Type=VerifyStorageStage Member=(Name=_ToVerify OverloadingParameters=[(@35 @34 Type=IVerify)]))" Category="CodeSchema_Method" Bounds="548.863333333333,807.065000000001,88.2533333333333,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="_ToVerify" FunctionTypeFlags="方法" Label="_ToVerify" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Projects/FishHunter/StorageUser/InitialStorageStage.cs StartLineNumber=39 StartCharacterOffset=0 EndLineNumber=39 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="(@6 @7 @8 Member=(Name=Client_ModeSelectorEvent OverloadingParameters=[(@9 @10 Type=(Name=GameModeSelector @11 GenericArguments=[@12]))]))" Category="CodeSchema_Method" Bounds="1981.73333333333,1383.54,184.513333333333,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="Client_ModeSelectorEvent" FunctionTypeFlags="方法" Label="Client_ModeSelectorEvent" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Projects/FishHunter/StorageUser/Proxy.cs StartLineNumber=26 StartCharacterOffset=0 EndLineNumber=26 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="(@9 @10 @52 Member=_CreateBuilder)" Category="CodeSchema_Method" Bounds="2385.97333333333,518.8275,118.033333333333,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="_CreateBuilder" FunctionTypeFlags="方法" Label="_CreateBuilder" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/PureLib/framework_userprovider.cs StartLineNumber=117 StartCharacterOffset=0 EndLineNumber=117 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="(Name=Server.Program.Main @109 @4 OverloadingParameters=[(Type=&quot;string[]&quot; Name=args)] @3)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="520.708333333333,115.295,64.5633333333333,25.96" Label="Main">
+      <Category Ref="CallStackEntry" />
+    </Node>
+    <Node Id="(Name=System.Threading.ThreadPoolWorkQueue.Dispatch @1 @2 @3)" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1307.275,0,85.4300000000003,25.96" Label="Dispatch">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CurrentCallStackEntry" />
+    </Node>
+    <Node Id="@100" Category="CodeSchema_Method" Bounds="1960.54666666667,403.5325,226.886666666667,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="Regulus‎.Utility‎.IUpdatable‎.Update" FunctionTypeFlags="方法" Label="Regulus‎.Utility‎.IUpdatable‎.Update" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/PureLib/utility_consoleinput.cs StartLineNumber=191 StartCharacterOffset=0 EndLineNumber=191 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@101" Category="CodeSchema_Method" Bounds="901.546666666666,403.532500000001,226.886666666667,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="Regulus‎.Utility‎.IUpdatable‎.Update" ErrorMessage="找到涉及下列項目的循環參考:   Regulus‎.Utility‎.IUpdatable‎.Update ((Assembly=file:///D:/Projects/Regulus/Projects/FishHunter/StorageUser/bin/Debug/StorageUser.dll Namespace=VGame.Project.FishHunter.Storage Type=Proxy Member=Regulus.Utility.IUpdatable.Update))" FunctionTypeFlags="方法" IsStronglyConnected="True" Label="Regulus‎.Utility‎.IUpdatable‎.Update" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Projects/FishHunter/StorageUser/Proxy.cs StartLineNumber=68 StartCharacterOffset=0 EndLineNumber=68 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+      <Category Ref="CurrentCallStackEntry" />
+    </Node>
+    <Node Id="@102" Category="CodeSchema_Method" Bounds="1236.54666666667,288.2375,226.886666666667,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="Regulus‎.Utility‎.IUpdatable‎.Update" FunctionTypeFlags="方法" Label="Regulus‎.Utility‎.IUpdatable‎.Update" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Projects/FishHunter/Formula/Formula.cs StartLineNumber=56 StartCharacterOffset=0 EndLineNumber=56 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+      <Category Ref="CurrentCallStackEntry" />
+    </Node>
+    <Node Id="@103" Category="CodeSchema_Method" Bounds="1415.54666666667,403.5325,226.886666666667,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="Regulus‎.Utility‎.IUpdatable‎.Update" ErrorMessage="找到涉及下列項目的循環參考:   Regulus‎.Utility‎.IUpdatable‎.Update ((Assembly=file:///D:/Projects/Regulus/Library/Remoting/bin/Debug/RegulusRemoting.dll Namespace=Regulus.Remoting Type=User Member=Regulus.Utility.IUpdatable.Update))" FunctionTypeFlags="方法" IsStronglyConnected="True" Label="Regulus‎.Utility‎.IUpdatable‎.Update" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/Remoting/User.cs StartLineNumber=27 StartCharacterOffset=0 EndLineNumber=27 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@104" Category="CodeSchema_Method" Bounds="1158.54666666667,403.5325,226.886666666667,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="Regulus‎.Utility‎.IUpdatable‎.Update" ErrorMessage="找到涉及下列項目的循環參考:   Regulus‎.Utility‎.IUpdatable‎.Update ((Assembly=file:///D:/Projects/Regulus/Projects/FishHunter/StorageUser/bin/Debug/StorageUser.dll Namespace=VGame.Project.FishHunter.Storage Type=User Member=Regulus.Utility.IUpdatable.Update))" FunctionTypeFlags="方法" IsStronglyConnected="True" Label="Regulus‎.Utility‎.IUpdatable‎.Update" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Projects/FishHunter/StorageUser/User.cs StartLineNumber=33 StartCharacterOffset=0 EndLineNumber=33 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+      <Category Ref="CurrentCallStackEntry" />
+    </Node>
+    <Node Id="@105" Category="CodeSchema_Method" Bounds="439.546666666666,288.2375,226.886666666667,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="Regulus‎.Utility‎.IUpdatable‎.Update" FunctionTypeFlags="方法" Label="Regulus‎.Utility‎.IUpdatable‎.Update" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/PureLib/utility_windowconsole.cs StartLineNumber=57 StartCharacterOffset=0 EndLineNumber=57 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@106" Category="CodeSchema_Method" Bounds="2035.11166666667,461.18,77.7566666666662,25.96" CodeSchemaProperty_IsPublic="True" CommonLabel="Update" FunctionTypeFlags="方法" Label="Update" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/PureLib/utility_consoleinput.cs StartLineNumber=84 StartCharacterOffset=0 EndLineNumber=84 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@107" Category="CodeSchema_Method" Bounds="719.111666666666,461.180000000001,77.7566666666667,25.96" CodeSchemaProperty_IsPublic="True" CommonLabel="Update" ErrorMessage="找到涉及下列項目的循環參考:   Update ((Assembly=file:///D:/Projects/Regulus/Library/PureLib/bin/Debug/RegulusLibrary.dll Namespace=Regulus.Utility Type=StageMachine Member=Update))" FunctionTypeFlags="方法" IsStronglyConnected="True" Label="Update" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/PureLib/utility_stagemachine.cs StartLineNumber=53 StartCharacterOffset=0 EndLineNumber=53 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+      <Category Ref="CurrentCallStackEntry" />
+    </Node>
+    <Node Id="@108" Category="CodeSchema_Method" Bounds="1307.74833333333,345.885,84.4833333333336,25.96" CodeSchemaProperty_IsPublic="True" CommonLabel="Working" ErrorMessage="找到涉及下列項目的循環參考:   Working ((Assembly=file:///D:/Projects/Regulus/Library/PureLib/bin/Debug/RegulusLibrary.dll Namespace=Regulus.Utility Type=Updater Member=Working))" FunctionTypeFlags="方法" IsStronglyConnected="True" Label="Working" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/PureLib/utility_updater.cs StartLineNumber=118 StartCharacterOffset=0 EndLineNumber=118 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+      <Category Ref="CurrentCallStackEntry" />
+    </Node>
+    <Node Id="@111" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2013.955,864.712500000001,120.07,25.96" Label="CreateInstance">
+      <Category Ref="CallStackEntry" />
+    </Node>
+    <Node Id="@112" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2013.955,1095.3025,120.07,25.96" Label="CreateInstance">
+      <Category Ref="CallStackEntry" />
+    </Node>
+    <Node Id="@113" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1320.83666666667,115.295000000001,58.3066666666664,25.96" Label="Run">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CurrentCallStackEntry" />
+    </Node>
+    <Node Id="@114" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1299.20166666667,172.9425,101.576666666667,25.96" Label="RunInternal">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CurrentCallStackEntry" />
+    </Node>
+    <Node Id="@115" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2000.535,1152.95,146.91,25.96" Label="CreateInstanceSlow">
+      <Category Ref="CallStackEntry" />
+    </Node>
+    <Node Id="@116" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2013.955,980.007500000001,120.07,25.96" Label="CreateInstance">
+      <Category Ref="CallStackEntry" />
+    </Node>
+    <Node Id="@117" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2001.34333333333,1037.655,145.293333333333,25.96" Label="CreateInstanceImpl">
+      <Category Ref="CallStackEntry" />
+    </Node>
+    <Node Id="@118" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="2013.955,922.360000000001,120.07,25.96" Label="CreateInstance">
+      <Category Ref="CallStackEntry" />
+    </Node>
+    <Node Id="@17" Category="CodeSchema_Method" Bounds="0,691.770000000001,229.98,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="Regulus‎.Remoting‎.IValue‎.SetValue" FunctionTypeFlags="方法" Label="Regulus‎.Remoting‎.IValue‎.SetValue" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/PureLib/remoting_value.cs StartLineNumber=126 StartCharacterOffset=0 EndLineNumber=126 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@19" Category="CodeSchema_Method" Bounds="2042.14666666667,518.8275,63.6866666666665,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="_Run" FunctionTypeFlags="方法" Label="_Run" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/PureLib/utility_console.cs StartLineNumber=89 StartCharacterOffset=0 EndLineNumber=89 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@24" Category="CodeSchema_Method" Bounds="285.526666666667,461.180000000001,78.9266666666667,25.96" CodeSchemaProperty_IsInternal="True" CommonLabel="Process" FunctionTypeFlags="方法" Label="Process" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/RemotingNativeGhost/AgentOnlineStage.cs StartLineNumber=140 StartCharacterOffset=0 EndLineNumber=140 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+      <Category Ref="CurrentCallStackEntry" />
+    </Node>
+    <Node Id="@29" Category="CodeSchema_Method" Bounds="736.309999999999,864.712500000001,123.36,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="_ConnectResult" FunctionTypeFlags="方法" Label="_ConnectResult" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Projects/FishHunter/Formula/Formula.cs StartLineNumber=102 StartCharacterOffset=0 EndLineNumber=102 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@30" Category="CodeSchema_Method" Bounds="60.663333333333,807.065000000001,108.653333333333,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="_VerifyResult" FunctionTypeFlags="方法" Label="_VerifyResult" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Projects/FishHunter/Formula/Formula.cs StartLineNumber=119 StartCharacterOffset=0 EndLineNumber=119 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@33" Category="CodeSchema_Method" Bounds="336.466666666666,691.770000000001,267.046666666667,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="Regulus‎.Remoting‎.Ghost‎.IProvider‎.Ready" FunctionTypeFlags="方法" Label="Regulus‎.Remoting‎.Ghost‎.IProvider‎.Ready" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/PureLib/remoting_ghost_provider.cs StartLineNumber=87 StartCharacterOffset=0 EndLineNumber=87 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+      <Category Ref="CurrentCallStackEntry" />
+    </Node>
+    <Node Id="@36" Category="CodeSchema_Method" Bounds="421.536666666666,807.065000000001,96.9066666666668,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="_GetFinder" FunctionTypeFlags="方法" Label="_GetFinder" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Projects/FishHunter/Formula/BuildStorageControllerStage.cs StartLineNumber=30 StartCharacterOffset=0 EndLineNumber=30 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+      <Category Ref="CurrentCallStackEntry" />
+    </Node>
+    <Node Id="@41" Category="CodeSchema_Method" Bounds="506.606666666667,634.122500000001,66.7666666666667,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="_Bind" FunctionTypeFlags="方法" Label="_Bind" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/Remoting/OfflineStage.cs StartLineNumber=55 StartCharacterOffset=0 EndLineNumber=55 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@42" Category="CodeSchema_Method" Bounds="2217.41666666667,345.885,147.146666666667,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="_ToConnectStorage" FunctionTypeFlags="方法" Label="_ToConnectStorage" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Projects/FishHunter/Formula/Formula.cs StartLineNumber=93 StartCharacterOffset=0 EndLineNumber=93 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@43" Category="CodeSchema_Method" Bounds="731.769999999999,922.360000000001,132.44,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="_ToVerifyStorage" FunctionTypeFlags="方法" Label="_ToVerifyStorage" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Projects/FishHunter/Formula/Formula.cs StartLineNumber=110 StartCharacterOffset=0 EndLineNumber=110 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@44" Category="CodeSchema_Method" Bounds="1308.44166666667,230.59,83.0966666666668,25.96" CodeSchemaProperty_IsPublic="True" CommonLabel="DoWork" FunctionTypeFlags="方法" Label="DoWork" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/RemotingNativeSoul/ControllerStageRun.cs StartLineNumber=85 StartCharacterOffset=0 EndLineNumber=85 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+      <Category Ref="CurrentCallStackEntry" />
+    </Node>
+    <Node Id="@46" Category="CodeSchema_Method" Bounds="433.16,1037.655,73.6600000000001,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CommonLabel="Center" FunctionTypeFlags="建構函式" Label="Center" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Projects/FishHunter/Game/Formula/Center.cs StartLineNumber=19 StartCharacterOffset=0 EndLineNumber=19 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@47" Category="CodeSchema_Method" Bounds="401.545,980.007500000001,136.89,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPrivate="True" CommonLabel="RunFormulaStage" FunctionTypeFlags="建構函式" Label="RunFormulaStage" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Projects/FishHunter/Formula/RunFormulaStage.cs StartLineNumber=29 StartCharacterOffset=0 EndLineNumber=29 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@48" Category="CodeSchema_Method" Bounds="407.778333333333,864.712500000001,124.423333333333,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="_ToRunFormula" FunctionTypeFlags="方法" Label="_ToRunFormula" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Projects/FishHunter/Formula/Formula.cs StartLineNumber=134 StartCharacterOffset=0 EndLineNumber=134 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+      <Category Ref="CurrentCallStackEntry" />
+    </Node>
+    <Node Id="@5" Category="CodeSchema_CallStackUnresolvedMethod" Bounds="1282.15833333333,57.6475000000005,135.663333333333,25.96" Label="ExecuteWorkItem">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CurrentCallStackEntry" />
+    </Node>
+    <Node Id="@50" Category="CodeSchema_Method" Bounds="2033.09,691.77,81.7999999999997,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="_StartIni" FunctionTypeFlags="方法" Label="_StartIni" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/RemotingNativeSoul/ControllerStageStart.cs StartLineNumber=41 StartCharacterOffset=0 EndLineNumber=41 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@51" Category="CodeSchema_Method" Bounds="2395.39333333333,345.885,99.1933333333332,25.96" CodeSchemaProperty_IsPublic="True" CommonLabel="SpawnUser" FunctionTypeFlags="方法" Label="SpawnUser" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Projects/FishHunter/StorageUser/Proxy.cs StartLineNumber=61 StartCharacterOffset=0 EndLineNumber=61 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@54" Category="CodeSchema_Method" Bounds="2408.18166666667,403.5325,73.6166666666668,25.96" CodeSchemaProperty_IsPublic="True" CommonLabel="Spawn" FunctionTypeFlags="方法" Label="Spawn" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/PureLib/framework_userprovider.cs StartLineNumber=32 StartCharacterOffset=0 EndLineNumber=32 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@55" Category="CodeSchema_Method" Bounds="406.735,230.59,76.51,25.96" CodeSchemaProperty_IsExtension="True" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" CommonLabel="Launch" FunctionTypeFlags="方法" Label="Launch" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/PureLib/utility_windowconsole.cs StartLineNumber=91 StartCharacterOffset=0 EndLineNumber=91 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@56" Category="CodeSchema_Method" Bounds="523.836666666667,172.9425,58.3066666666666,25.96" CodeSchemaProperty_IsExtension="True" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" CommonLabel="Run" FunctionTypeFlags="方法" Label="Run" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/PureLib/utility_windowconsole.cs StartLineNumber=119 StartCharacterOffset=0 EndLineNumber=119 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@57" Category="CodeSchema_Method" Bounds="514.111666666667,230.59,77.7566666666667,25.96" CodeSchemaProperty_IsExtension="True" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" CommonLabel="Update" FunctionTypeFlags="方法" Label="Update" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/PureLib/utility_windowconsole.cs StartLineNumber=97 StartCharacterOffset=0 EndLineNumber=97 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@58" Category="CodeSchema_Method" Bounds="953.124999999999,749.417500000001,85.73,25.96" CodeSchemaProperty_IsPublic="True" CommonLabel="SetValue" ErrorMessage="找到涉及下列項目的循環參考:   SetValue ((Assembly=file:///D:/Projects/Regulus/Library/PureLib/bin/Debug/RegulusLibrary.dll Namespace=Regulus.Remoting Type=(Name=Value GenericParameterCount=1) Member=(Name=SetValue OverloadingParameters=[(Assembly=file:///D:/Projects/Regulus/Library/PureLib/bin/Debug/RegulusLibrary.dll Namespace=Regulus.Remoting Type=(Name=Value GenericParameterCount=1) ParameterIdentifier=0)])))" FunctionTypeFlags="方法" IsStronglyConnected="True" Label="SetValue" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/PureLib/remoting_value.cs StartLineNumber=105 StartCharacterOffset=0 EndLineNumber=105 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@59" Category="CodeSchema_Method" Bounds="401.545,922.360000000001,136.89,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CommonLabel="RunFormulaStage" FunctionTypeFlags="建構函式" Label="RunFormulaStage" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Projects/FishHunter/Formula/RunFormulaStage.cs StartLineNumber=22 StartCharacterOffset=0 EndLineNumber=22 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+      <Category Ref="CurrentCallStackEntry" />
+    </Node>
+    <Node Id="@60" Category="CodeSchema_Method" Bounds="194.448333333333,576.475000000001,113.083333333333,25.96" CodeSchemaProperty_IsProtected="True" CommonLabel="_OnResponse" FunctionTypeFlags="方法" Label="_OnResponse" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/Remoting/Agent.cs StartLineNumber=155 StartCharacterOffset=0 EndLineNumber=155 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+      <Category Ref="CurrentCallStackEntry" />
+    </Node>
+    <Node Id="@61" Category="CodeSchema_Method" Bounds="271.138333333333,518.827500000001,107.703333333333,25.96" CodeSchemaProperty_IsPublic="True" CommonLabel="OnResponse" FunctionTypeFlags="方法" Label="OnResponse" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/Remoting/Agent.cs StartLineNumber=100 StartCharacterOffset=0 EndLineNumber=100 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+      <Category Ref="CurrentCallStackEntry" />
+    </Node>
+    <Node Id="@62" Category="CodeSchema_Method" Bounds="50.4916666666663,634.122500000001,128.996666666667,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="_SetReturnValue" FunctionTypeFlags="方法" Label="_SetReturnValue" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/Remoting/Agent.cs StartLineNumber=186 StartCharacterOffset=0 EndLineNumber=186 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@63" Category="CodeSchema_Method" Bounds="2044.83666666667,576.475,58.3066666666668,25.96" CodeSchemaProperty_IsPublic="True" CommonLabel="Run" FunctionTypeFlags="方法" Label="Run" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/PureLib/utility_command.cs StartLineNumber=416 StartCharacterOffset=0 EndLineNumber=416 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@64" Category="CodeSchema_Method" Bounds="437.536666666666,749.417500000001,64.9066666666668,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="_Add" FunctionTypeFlags="方法" Label="_Add" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/PureLib/remoting_ghost_provider.cs StartLineNumber=98 StartCharacterOffset=0 EndLineNumber=98 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+      <Category Ref="CurrentCallStackEntry" />
+    </Node>
+    <Node Id="@66" Category="CodeSchema_Method" Bounds="1874.25666666667,922.360000000001,71.4666666666667,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CommonLabel="Server" FunctionTypeFlags="建構函式" Label="Server" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/RemotingNativeSoul/Server.cs StartLineNumber=50 StartCharacterOffset=0 EndLineNumber=50 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@67" Category="CodeSchema_Method" Bounds="2042.085,807.065000000001,63.8099999999995,25.96" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsStatic="True" CommonLabel="Load" FunctionTypeFlags="方法" Label="Load" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/Remoting/GameLoader.cs StartLineNumber=15 StartCharacterOffset=0 EndLineNumber=15 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@68" Category="CodeSchema_Method" Bounds="2410.05166666667,461.18,69.8766666666666,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="_Build" FunctionTypeFlags="方法" Label="_Build" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/PureLib/framework_userprovider.cs StartLineNumber=51 StartCharacterOffset=0 EndLineNumber=51 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@69" Category="CodeSchema_Method" Bounds="334.338333333333,634.122500000001,141.303333333333,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="_LoadSoulCompile" FunctionTypeFlags="方法" Label="_LoadSoulCompile" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/Remoting/Agent.cs StartLineNumber=204 StartCharacterOffset=0 EndLineNumber=204 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+      <Category Ref="CurrentCallStackEntry" />
+    </Node>
+    <Node Id="@71" Category="CodeSchema_Method" Bounds="1933.99333333333,807.065000000001,77.9933333333333,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="_ToRun" FunctionTypeFlags="方法" Label="_ToRun" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/RemotingNativeSoul/Application.cs StartLineNumber=49 StartCharacterOffset=0 EndLineNumber=49 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@72" Category="CodeSchema_Method" Bounds="2040,749.4175,67.9799999999996,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="_Start" FunctionTypeFlags="方法" Label="_Start" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/RemotingNativeSoul/ControllerStageStart.cs StartLineNumber=55 StartCharacterOffset=0 EndLineNumber=55 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@73" Category="CodeSchema_Method" Bounds="1864.76,864.712500000001,90.46,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CommonLabel="StageRun" FunctionTypeFlags="建構函式" Label="StageRun" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/RemotingNativeSoul/ControllerStageRun.cs StartLineNumber=206 StartCharacterOffset=0 EndLineNumber=206 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@74" Category="CodeSchema_Method" Bounds="2040.32,1325.8925,67.3400000000001,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CommonLabel="Proxy" FunctionTypeFlags="建構函式" Label="Proxy" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Projects/FishHunter/StorageUser/Proxy.cs StartLineNumber=35 StartCharacterOffset=0 EndLineNumber=35 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@75" Category="CodeSchema_Method" Bounds="2038.25666666667,1210.5975,71.4666666666672,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CommonLabel="Server" FunctionTypeFlags="建構函式" Label="Server" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Projects/FishHunter/Formula/Formula.cs StartLineNumber=25 StartCharacterOffset=0 EndLineNumber=25 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@76" Category="CodeSchema_Method" Bounds="923.603333333333,634.122500000001,144.773333333333,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="_InvokeResultEvent" FunctionTypeFlags="方法" Label="_InvokeResultEvent" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/RemotingNativeGhost/AgentConnectStage.cs StartLineNumber=61 StartCharacterOffset=0 EndLineNumber=61 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@77" Category="CodeSchema_Method" Bounds="244.045,345.885,81.89,25.96" CodeSchemaProperty_IsProtected="True" CommonLabel="_Launch" FunctionTypeFlags="方法" IsOverloaded="True" Label="_Launch" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/RemotingNativeSoul/Application.cs StartLineNumber=15 StartCharacterOffset=0 EndLineNumber=15 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@78" Category="CodeSchema_Method" Bounds="690.905,518.827500000001,134.17,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="_SetCurrentStage" FunctionTypeFlags="方法" Label="_SetCurrentStage" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/PureLib/utility_stagemachine.cs StartLineNumber=72 StartCharacterOffset=0 EndLineNumber=72 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@79" Category="CodeSchema_Method" Bounds="2036.86833333333,1268.245,74.2433333333338,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="_Setup" FunctionTypeFlags="方法" Label="_Setup" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Projects/FishHunter/Formula/Formula.cs StartLineNumber=36 StartCharacterOffset=0 EndLineNumber=36 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@80" Category="CodeSchema_Method" Bounds="511.421666666666,345.885,83.1366666666668,25.96" CodeSchemaProperty_IsProtected="True" CommonLabel="_Update" FunctionTypeFlags="方法" IsOverloaded="True" Label="_Update" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/RemotingNativeSoul/Application.cs StartLineNumber=23 StartCharacterOffset=0 EndLineNumber=23 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@81" Category="CodeSchema_Method" Bounds="917.014999999999,518.827500000001,157.95,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="_UpdateCurrentStage" ErrorMessage="找到涉及下列項目的循環參考:   _UpdateCurrentStage ((Assembly=file:///D:/Projects/Regulus/Library/PureLib/bin/Debug/RegulusLibrary.dll Namespace=Regulus.Utility Type=StageMachine Member=_UpdateCurrentStage))" FunctionTypeFlags="方法" IsStronglyConnected="True" Label="_UpdateCurrentStage" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/PureLib/utility_stagemachine.cs StartLineNumber=82 StartCharacterOffset=0 EndLineNumber=82 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+      <Category Ref="CurrentCallStackEntry" />
+    </Node>
+    <Node Id="@83" Category="CodeSchema_Method" Bounds="912.456666666666,691.770000000001,167.066666666667,25.96" CodeSchemaProperty_IsAnonymous="True" Label="AnonymousMethod__0" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/RemotingNativeGhost/Agent.cs StartLineNumber=32 StartCharacterOffset=0 EndLineNumber=32 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@84" Category="CodeSchema_Method" Bounds="714.456666666666,807.065000000001,167.066666666667,25.96" CodeSchemaProperty_IsAnonymous="True" Label="AnonymousMethod__0" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Projects/FishHunter/StorageUser/ConnectStorageStage.cs StartLineNumber=35 StartCharacterOffset=0 EndLineNumber=35 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@85" Category="CodeSchema_Method" Bounds="912.456666666666,807.065000000001,167.066666666667,25.96" CodeSchemaProperty_IsAnonymous="True" ErrorMessage="找到涉及下列項目的循環參考:   AnonymousMethod__0 ((Assembly=file:///D:/Projects/Regulus/Library/Remoting/bin/Debug/RegulusRemoting.dll Namespace=Regulus.Remoting Type=OfflineStage Member=AnonymousMethod__0))" IsStronglyConnected="True" Label="AnonymousMethod__0" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/Remoting/OfflineStage.cs StartLineNumber=35 StartCharacterOffset=0 EndLineNumber=35 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@86" Category="CodeSchema_Method" Bounds="31.4566666666665,749.417500000001,167.066666666667,25.96" CodeSchemaProperty_IsAnonymous="True" Label="AnonymousMethod__0" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Projects/FishHunter/StorageUser/InitialStorageStage.cs StartLineNumber=40 StartCharacterOffset=0 EndLineNumber=40 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@87" Category="CodeSchema_Method" Bounds="1990.45666666667,634.1225,167.066666666667,25.96" CodeSchemaProperty_IsAnonymous="True" Label="AnonymousMethod__6" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/PureLib/utility_command.cs StartLineNumber=196 StartCharacterOffset=0 EndLineNumber=196 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@88" Category="CodeSchema_Method" Bounds="719.734999999999,634.122500000001,76.51,25.96" CodeSchemaProperty_IsPublic="True" CommonLabel="Launch" FunctionTypeFlags="方法" Label="Launch" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/PureLib/utility_launcher.cs StartLineNumber=29 StartCharacterOffset=0 EndLineNumber=29 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@89" Category="CodeSchema_Method" Bounds="634.336666666666,691.770000000001,247.306666666667,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="Regulus‎.Framework‎.IBootable‎.Launch" FunctionTypeFlags="方法" Label="Regulus‎.Framework‎.IBootable‎.Launch" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/RemotingNativeSoul/Server.cs StartLineNumber=63 StartCharacterOffset=0 EndLineNumber=63 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@90" Category="CodeSchema_Method" Bounds="2167.33666666667,288.2375,247.306666666667,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="Regulus‎.Framework‎.IBootable‎.Launch" FunctionTypeFlags="方法" Label="Regulus‎.Framework‎.IBootable‎.Launch" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Projects/FishHunter/Formula/Formula.cs StartLineNumber=66 StartCharacterOffset=0 EndLineNumber=66 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@91" Category="CodeSchema_Method" Bounds="161.336666666667,288.2375,247.306666666667,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="Regulus‎.Framework‎.IBootable‎.Launch" FunctionTypeFlags="方法" Label="Regulus‎.Framework‎.IBootable‎.Launch" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/PureLib/utility_windowconsole.cs StartLineNumber=44 StartCharacterOffset=0 EndLineNumber=44 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@92" Category="CodeSchema_Method" Bounds="446.153333333333,576.475000000001,187.673333333333,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="Regulus‎.Utility‎.IStage‎.Enter" FunctionTypeFlags="方法" Label="Regulus‎.Utility‎.IStage‎.Enter" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/Remoting/OfflineStage.cs StartLineNumber=26 StartCharacterOffset=0 EndLineNumber=26 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@93" Category="CodeSchema_Method" Bounds="664.153333333333,576.475000000001,187.673333333333,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="Regulus‎.Utility‎.IStage‎.Enter" FunctionTypeFlags="方法" Label="Regulus‎.Utility‎.IStage‎.Enter" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/RemotingNativeSoul/ControllerStageRun.cs StartLineNumber=214 StartCharacterOffset=0 EndLineNumber=214 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@94" Category="CodeSchema_Method" Bounds="1813.98166666667,576.475,200.016666666666,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="Regulus‎.Utility‎.IStage‎.Update" ErrorMessage="找到涉及下列項目的循環參考:   Regulus‎.Utility‎.IStage‎.Update ((Assembly=file:///D:/Projects/Regulus/Library/PureLib/bin/Debug/RegulusLibrary.dll Namespace=Regulus.Framework.Stage Type=(Name=OnBoard GenericParameterCount=1) Member=Regulus.Utility.IStage.Update))" FunctionTypeFlags="方法" IsStronglyConnected="True" Label="Regulus‎.Utility‎.IStage‎.Update" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/PureLib/framework_stage_onboard.cs StartLineNumber=59 StartCharacterOffset=0 EndLineNumber=59 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+      <Category Ref="CurrentCallStackEntry" />
+    </Node>
+    <Node Id="@95" Category="CodeSchema_Method" Bounds="895.981666666666,576.475000000001,200.016666666667,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="Regulus‎.Utility‎.IStage‎.Update" FunctionTypeFlags="方法" Label="Regulus‎.Utility‎.IStage‎.Update" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/RemotingNativeGhost/AgentConnectStage.cs StartLineNumber=78 StartCharacterOffset=0 EndLineNumber=78 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+    </Node>
+    <Node Id="@97" Category="CodeSchema_Method" Bounds="644.546666666666,403.5325,226.886666666667,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="Regulus‎.Utility‎.IUpdatable‎.Update" ErrorMessage="找到涉及下列項目的循環參考:   Regulus‎.Utility‎.IUpdatable‎.Update ((Assembly=file:///D:/Projects/Regulus/Library/PureLib/bin/Debug/RegulusLibrary.dll Namespace=Regulus.Framework Type=(Name=Client GenericParameterCount=1) Member=Regulus.Utility.IUpdatable.Update))" FunctionTypeFlags="方法" IsStronglyConnected="True" Label="Regulus‎.Utility‎.IUpdatable‎.Update" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/PureLib/framework_client.cs StartLineNumber=34 StartCharacterOffset=0 EndLineNumber=34 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+      <Category Ref="CurrentCallStackEntry" />
+    </Node>
+    <Node Id="@98" Category="CodeSchema_Method" Bounds="1672.54666666667,403.5325,226.886666666667,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="Regulus‎.Utility‎.IUpdatable‎.Update" ErrorMessage="找到涉及下列項目的循環參考:   Regulus‎.Utility‎.IUpdatable‎.Update ((Assembly=file:///D:/Projects/Regulus/Library/PureLib/bin/Debug/RegulusLibrary.dll Namespace=Regulus.Framework Type=(Name=UserProvider GenericParameterCount=1) Member=Regulus.Utility.IUpdatable.Update))" FunctionTypeFlags="方法" IsStronglyConnected="True" Label="Regulus‎.Utility‎.IUpdatable‎.Update" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/PureLib/framework_userprovider.cs StartLineNumber=123 StartCharacterOffset=0 EndLineNumber=123 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+      <Category Ref="CurrentCallStackEntry" />
+    </Node>
+    <Node Id="@99" Category="CodeSchema_Method" Bounds="387.546666666666,403.5325,226.886666666667,25.96" CodeSchemaProperty_IsPrivate="True" CommonLabel="Regulus‎.Utility‎.IUpdatable‎.Update" ErrorMessage="找到涉及下列項目的循環參考:   Regulus‎.Utility‎.IUpdatable‎.Update ((Assembly=file:///D:/Projects/Regulus/Library/RemotingNativeGhost/bin/Debug/RegulusRemotingNativeGhost.dll Namespace=Regulus.Remoting.Ghost.Native Type=Agent Member=Regulus.Utility.IUpdatable.Update))" FunctionTypeFlags="方法" IsStronglyConnected="True" Label="Regulus‎.Utility‎.IUpdatable‎.Update" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///d:/Projects/Regulus/Library/RemotingNativeGhost/Agent.cs StartLineNumber=77 StartCharacterOffset=0 EndLineNumber=77 EndCharacterOffset=0)">
+      <Category Ref="CallStackEntry" />
+      <Category Ref="CodeSchema_SourceLocation" />
+      <Category Ref="CurrentCallStackEntry" />
+    </Node>
+  </Nodes>
+  <Links>
+    <Link Source="(Name=Server.Program.Main @109 @4 OverloadingParameters=[(Type=&quot;string[]&quot; Name=args)] @3)" Target="@56" Category="CallStackDirectCall" Bounds="552.989990234375,141.255004882813,0,22.6875" />
+    <Link Source="(Name=System.Threading.ThreadPoolWorkQueue.Dispatch @1 @2 @3)" Target="@5" Category="CallStackDirectCall" Bounds="1349.98999023438,25.9599990844727,0,22.6875">
+      <Category Ref="CurrentCallStackCall" />
+    </Link>
+    <Link Source="@100" Target="@106" Category="CallStackDirectCall" Bounds="2073.98999023438,429.492492675781,0,22.6875" />
+    <Link Source="@101" Target="@108" Category="CallStackDirectCall" Bounds="1078.03527832031,366.424926757813,220.809814453125,37.1075744628906" IsCircularLink="True">
+      <Category Ref="CurrentCallStackCall" />
+    </Link>
+    <Link Source="@102" Target="@108" Category="CallStackDirectCall" Bounds="1349.98999023438,314.197509765625,0,22.6875">
+      <Category Ref="CurrentCallStackCall" />
+    </Link>
+    <Link Source="@103" Target="@107" Category="CallStackDirectCall" Bounds="805.849792480469,429.220977783203,611.449645996094,41.8599853515625" IsCircularLink="True" />
+    <Link Source="@103" Target="@108" Category="CallStackDirectCall" Bounds="1375.05102539063,376.822235107422,90.893798828125,26.7102661132813" IsCircularLink="True" />
+    <Link Source="@104" Target="@108" Category="CallStackDirectCall" Bounds="1271.98999023438,375.010437011719,34.4498291015625,28.5220642089844" IsCircularLink="True">
+      <Category Ref="CurrentCallStackCall" />
+    </Link>
+    <Link Source="@105" Target="@108" Category="CallStackDirectCall" Bounds="666.433349609375,309.422912597656,632.33837890625,45.7374572753906" />
+    <Link Source="@105" Target="@80" Category="CallStackDirectCall" Bounds="552.989990234375,314.197509765625,0,22.6875" />
+    <Link Source="@106" Target="@19" Category="CallStackDirectCall" Bounds="2073.98999023438,487.140014648438,0,22.6875" />
+    <Link Source="@107" Target="@78" Category="CallStackDirectCall" Bounds="757.989990234375,487.140014648438,0,22.6875" />
+    <Link Source="@107" Target="@81" Category="CallStackDirectCall" Bounds="796.868347167969,483.576965332031,136.7861328125,33.1318359375" IsCircularLink="True">
+      <Category Ref="CurrentCallStackCall" />
+    </Link>
+    <Link Source="@108" Target="@100" Category="CallStackDirectCall" Bounds="1392.23168945313,360.857727050781,622.140747070313,40.4909057617188" />
+    <Link Source="@108" Target="@101" Category="CallStackDirectCall" Bounds="1122.08276367188,369.264282226563,185.695068359375,33.0885009765625" IsCircularLink="True">
+      <Category Ref="CurrentCallStackCall" />
+    </Link>
+    <Link Source="@108" Target="@103" Category="CallStackDirectCall" Bounds="1392.20227050781,369.264282226563,100.67578125,30.5408935546875" IsCircularLink="True" />
+    <Link Source="@108" Target="@104" Category="CallStackDirectCall" Bounds="1315.54016113281,371.845001220703,34.4498291015625,28.5220336914063" IsCircularLink="True">
+      <Category Ref="CurrentCallStackCall" />
+    </Link>
+    <Link Source="@108" Target="@97" Category="CallStackDirectCall" Bounds="880.180114746094,362.978393554688,427.568176269531,41.57568359375" IsCircularLink="True">
+      <Category Ref="CurrentCallStackCall" />
+    </Link>
+    <Link Source="@108" Target="@98" Category="CallStackDirectCall" Bounds="1392.23168945313,364.068267822266,293.88330078125,38.19287109375" IsCircularLink="True">
+      <Category Ref="CurrentCallStackCall" />
+    </Link>
+    <Link Source="@108" Target="@99" Category="CallStackDirectCall" Bounds="616.640930175781,361.733215332031,691.107360839844,40.9736633300781" IsCircularLink="True">
+      <Category Ref="CurrentCallStackCall" />
+    </Link>
+    <Link Source="@111" Target="@118" Category="CallStackDirectCall" Bounds="2073.98999023438,890.672485351563,0,22.6875" />
+    <Link Source="@112" Target="@115" Category="CallStackDirectCall" Bounds="2073.98999023438,1121.26245117188,0,22.6875" />
+    <Link Source="@113" Target="@114" Category="CallStackDirectCall" Bounds="1349.98999023438,141.255004882813,0,22.6875">
+      <Category Ref="CurrentCallStackCall" />
+    </Link>
+    <Link Source="@114" Target="@44" Category="CallStackDirectCall" Bounds="1349.98999023438,198.902496337891,0,22.6875">
+      <Category Ref="CurrentCallStackCall" />
+    </Link>
+    <Link Source="@115" Target="@75" Category="CallStackIndirectCall" Bounds="2073.98999023438,1178.91003417969,0,22.6875" />
+    <Link Source="@116" Target="@117" Category="CallStackDirectCall" Bounds="2073.98999023438,1005.96752929688,0,22.6875" />
+    <Link Source="@117" Target="@112" Category="CallStackDirectCall" Bounds="2073.98999023438,1063.61499023438,0,22.6875" />
+    <Link Source="@118" Target="@116" Category="CallStackDirectCall" Bounds="2073.98999023438,948.320007324219,0,22.6875" />
+    <Link Source="@17" Target="@86" Category="CallStackDirectCall" Bounds="114.98999786377,717.72998046875,0,22.6875" />
+    <Link Source="@19" Target="@63" Category="CallStackDirectCall" Bounds="2073.98999023438,544.787475585938,0,22.6875" />
+    <Link Source="@24" Target="@61" Category="CallStackDirectCall" Bounds="324.989990234375,487.140014648438,0,22.6875">
+      <Category Ref="CurrentCallStackCall" />
+    </Link>
+    <Link Source="@29" Target="@43" Category="CallStackDirectCall" Bounds="797.989990234375,890.672485351563,0,22.6875" />
+    <Link Source="@30" Target="(@25 @26 @27 Member=_ToBuildStorageController)" Category="CallStackDirectCall" Bounds="114.98999786377,833.025024414063,0,22.6875" />
+    <Link Source="@33" Target="@64" Category="CallStackDirectCall" Bounds="469.989990234375,717.72998046875,0,22.6875">
+      <Category Ref="CurrentCallStackCall" />
+    </Link>
+    <Link Source="@36" Target="@48" Category="CallStackDirectCall" Bounds="469.989990234375,833.025024414063,0,22.6875">
+      <Category Ref="CurrentCallStackCall" />
+    </Link>
+    <Link Source="@41" Target="@33" Category="CallStackDirectCall" Bounds="492.698669433594,660.08251953125,31.530029296875,25.966064453125" />
+    <Link Source="@42" Target="(@6 @34 Type=ConnectStorageStage Member=(@39 OverloadingParameters=[@12,@49,@65]))" Category="CallStackDirectCall" Bounds="2292.56616210938,371.845001220703,2.762939453125,22.7531127929688" />
+    <Link Source="@43" Target="(@6 @34 Type=VerifyStorageStage Member=(@39 OverloadingParameters=[@12,@49,@49]))" Category="CallStackDirectCall" Bounds="797.989990234375,948.320007324219,0,22.6875" />
+    <Link Source="@44" Target="@102" Category="CallStackDirectCall" Bounds="1349.98999023438,256.549987792969,0,22.6875">
+      <Category Ref="CurrentCallStackCall" />
+    </Link>
+    <Link Source="@44" Target="@90" Category="CallStackDirectCall" Bounds="1391.53833007813,246.115325927734,766.815185546875,46.9765930175781" />
+    <Link Source="@46" Target="(@45 @26 Type=Center Member=.ctor)" Category="CallStackDirectCall" Bounds="469.989990234375,1063.61499023438,0,22.6875" />
+    <Link Source="@47" Target="@46" Category="CallStackDirectCall" Bounds="469.989990234375,1005.96752929688,0,22.6875" />
+    <Link Source="@48" Target="@59" Category="CallStackDirectCall" Bounds="469.989990234375,890.672485351563,0,22.6875">
+      <Category Ref="CurrentCallStackCall" />
+    </Link>
+    <Link Source="@5" Target="@113" Category="CallStackDirectCall" Bounds="1349.98999023438,83.6074981689453,0,22.6875">
+      <Category Ref="CurrentCallStackCall" />
+    </Link>
+    <Link Source="@50" Target="@72" Category="CallStackDirectCall" Bounds="2073.98999023438,717.72998046875,0,22.6875" />
+    <Link Source="@51" Target="@54" Category="CallStackDirectCall" Bounds="2444.98999023438,371.845001220703,0,22.6875" />
+    <Link Source="@54" Target="@68" Category="CallStackDirectCall" Bounds="2444.98999023438,429.492492675781,0,22.6875" />
+    <Link Source="@55" Target="@91" Category="CallStackDirectCall" Bounds="329.483032226563,256.489044189453,79.6502990722656,28.69775390625" />
+    <Link Source="@56" Target="@55" Category="CallStackDirectCall" Bounds="477.247161865234,198.902496337891,51.4253845214844,27.4494934082031" />
+    <Link Source="@56" Target="@57" Category="CallStackDirectCall" Bounds="552.989990234375,198.902496337891,0,22.6875" />
+    <Link Source="@57" Target="@105" Category="CallStackDirectCall" Bounds="552.989990234375,256.549987792969,0,22.6875" />
+    <Link Source="@58" Target="@84" Category="CallStackDirectCall" Bounds="851.213195800781,774.593078613281,102.889099121094,29.9560546875" />
+    <Link Source="@58" Target="@85" Category="CallStackDirectCall" Bounds="1013.55261230469,775.377502441406,11.6873779296875,25.9268188476563" IsCircularLink="True" />
+    <Link Source="@59" Target="@47" Category="CallStackDirectCall" Bounds="469.989990234375,948.320007324219,0,22.6875" />
+    <Link Source="@60" Target="(@22 @13 @23 Member=(Name=_LoadSoul OverloadingParameters=[@53,@32,(@14 @15 Type=Boolean)]))" Category="CallStackDirectCall" Bounds="252.340972900391,602.434997558594,2.36636352539063,22.73583984375" />
+    <Link Source="@60" Target="@62" Category="CallStackDirectCall" Bounds="153.898284912109,602.434997558594,66.4697418212891,28.1751098632813" />
+    <Link Source="@60" Target="@69" Category="CallStackDirectCall" Bounds="285.664886474609,602.434997558594,76.221435546875,28.5322875976563">
+      <Category Ref="CurrentCallStackCall" />
+    </Link>
+    <Link Source="@61" Target="(@22 @13 Type=AutoRelease Member=Update)" Category="CallStackDirectCall" Bounds="336.698394775391,544.787475585938,22.5550231933594,25.004638671875" />
+    <Link Source="@61" Target="@60" Category="CallStackDirectCall" Bounds="274.751861572266,544.787475585938,33.576171875,26.1565551757813">
+      <Category Ref="CurrentCallStackCall" />
+    </Link>
+    <Link Source="@62" Target="@17" Category="CallStackDirectCall" Bounds="114.98999786377,660.08251953125,0,22.6875" />
+    <Link Source="@63" Target="@87" Category="CallStackDirectCall" Bounds="2073.98999023438,602.434997558594,0,22.6875" />
+    <Link Source="@64" Target="(@6 @34 Type=ConnectStorageStage Member=(Name=_Connect OverloadingParameters=[(@22 @18 Type=IConnect)]))" Category="CallStackDirectCall" Bounds="382.834228515625,775.377502441406,59.4609069824219,27.8680419921875" />
+    <Link Source="@64" Target="(@6 @34 Type=VerifyStorageStage Member=(Name=_ToVerify OverloadingParameters=[(@35 @34 Type=IVerify)]))" Category="CallStackDirectCall" Bounds="497.684875488281,775.377502441406,59.4608764648438,27.8680419921875" />
+    <Link Source="@64" Target="@36" Category="CallStackDirectCall" Bounds="469.989990234375,775.377502441406,0,22.6875">
+      <Category Ref="CurrentCallStackCall" />
+    </Link>
+    <Link Source="@66" Target="(@37 @38 Type=ThreadCoreHandler Member=(@39 OverloadingParameters=[@40]))" Category="CallStackDirectCall" Bounds="1909.98999023438,948.320007324219,0,22.6875" />
+    <Link Source="@67" Target="@111" Category="CallStackDirectCall" Bounds="2073.98999023438,833.025024414063,0,22.6875" />
+    <Link Source="@68" Target="(@9 @10 @52 Member=_CreateBuilder)" Category="CallStackDirectCall" Bounds="2444.98999023438,487.140014648438,0,22.6875" />
+    <Link Source="@69" Target="@33" Category="CallStackDirectCall" Bounds="419.850646972656,660.08251953125,29.0361633300781,25.6703491210938">
+      <Category Ref="CurrentCallStackCall" />
+    </Link>
+    <Link Source="@71" Target="@73" Category="CallStackDirectCall" Bounds="1930.81494140625,833.025024414063,27.9898681640625,25.61181640625" />
+    <Link Source="@72" Target="@67" Category="CallStackDirectCall" Bounds="2073.98999023438,775.377502441406,0,22.6875" />
+    <Link Source="@72" Target="@71" Category="CallStackDirectCall" Bounds="2003.54772949219,775.377502441406,47.7010498046875,27.2261352539063" />
+    <Link Source="@73" Target="@66" Category="CallStackDirectCall" Bounds="1909.98999023438,890.672485351563,0,22.6875" />
+    <Link Source="@74" Target="(@6 @7 @8 Member=(Name=Client_ModeSelectorEvent OverloadingParameters=[(@9 @10 Type=(Name=GameModeSelector @11 GenericArguments=[@12]))]))" Category="CallStackDirectCall" Bounds="2073.98999023438,1351.8525390625,0,22.6875" />
+    <Link Source="@75" Target="@79" Category="CallStackDirectCall" Bounds="2073.98999023438,1236.55749511719,0,22.6875" />
+    <Link Source="@76" Target="@83" Category="CallStackDirectCall" Bounds="995.989990234375,660.08251953125,0,22.6875" />
+    <Link Source="@77" Target="(@37 @38 @70 Member=_ToStart)" Category="CallStackDirectCall" Bounds="284.989990234375,371.845001220703,0,22.6875" />
+    <Link Source="@78" Target="@92" Category="CallStackDirectCall" Bounds="597.776123046875,544.787475585938,111.128662109375,29.3866577148438" />
+    <Link Source="@78" Target="@93" Category="CallStackDirectCall" Bounds="757.989990234375,544.787475585938,0,22.6875" />
+    <Link Source="@79" Target="@74" Category="CallStackDirectCall" Bounds="2073.98999023438,1294.20495605469,0,22.6875" />
+    <Link Source="@80" Target="@107" Category="CallStackDirectCall" Bounds="356.989990234375,364.97802734375,353.144836425781,105.742156982422" />
+    <Link Source="@81" Target="@94" Category="CallStackDirectCall" Bounds="1074.96496582031,536.766906738281,730.034423828125,45.8438110351563" IsCircularLink="True">
+      <Category Ref="CurrentCallStackCall" />
+    </Link>
+    <Link Source="@81" Target="@95" Category="CallStackDirectCall" Bounds="995.989990234375,544.787475585938,0,22.6875" />
+    <Link Source="@83" Target="@58" Category="CallStackDirectCall" Bounds="995.989990234375,717.72998046875,0,22.6875" />
+    <Link Source="@84" Target="@29" Category="CallStackDirectCall" Bounds="797.989990234375,833.025024414063,0,22.6875" />
+    <Link Source="@85" Target="@58" Category="CallStackDirectCall" Bounds="966.739990234375,781.138122558594,11.6874389648438,25.9268798828125" IsCircularLink="True" />
+    <Link Source="@86" Target="@30" Category="CallStackDirectCall" Bounds="114.98999786377,775.377502441406,0,22.6875" />
+    <Link Source="@87" Target="@50" Category="CallStackDirectCall" Bounds="2073.98999023438,660.08251953125,0,22.6875" />
+    <Link Source="@88" Target="@89" Category="CallStackDirectCall" Bounds="757.989990234375,660.08251953125,0,22.6875" />
+    <Link Source="@89" Target="(@37 @38 @27 Member=Launch)" Category="CallStackDirectCall" Bounds="757.989990234375,717.72998046875,0,22.6875" />
+    <Link Source="@90" Target="(@25 @26 @27 Member=_InitialLog)" Category="CallStackDirectCall" Bounds="2354.26049804688,314.197509765625,162.121337890625,33.2594299316406" />
+    <Link Source="@90" Target="@42" Category="CallStackDirectCall" Bounds="2290.98999023438,314.197509765625,0,22.6875" />
+    <Link Source="@90" Target="@51" Category="CallStackDirectCall" Bounds="2325.66479492188,314.197509765625,76.221435546875,28.5322875976563" />
+    <Link Source="@91" Target="@77" Category="CallStackDirectCall" Bounds="284.989990234375,314.197509765625,0,22.6875" />
+    <Link Source="@92" Target="@41" Category="CallStackDirectCall" Bounds="539.989990234375,602.434997558594,0,22.6875" />
+    <Link Source="@93" Target="@88" Category="CallStackDirectCall" Bounds="757.989990234375,602.434997558594,0,22.6875" />
+    <Link Source="@94" Target="@108" Category="CallStackDirectCall" Bounds="1401.22058105469,361.410949707031,528.769409179688,215.064025878906" IsCircularLink="True">
+      <Category Ref="CurrentCallStackCall" />
+    </Link>
+    <Link Source="@95" Target="@76" Category="CallStackDirectCall" Bounds="995.989990234375,602.434997558594,0,22.6875" />
+    <Link Source="@97" Target="@107" Category="CallStackDirectCall" Bounds="757.989990234375,429.492492675781,0,22.6875" IsCircularLink="True">
+      <Category Ref="CurrentCallStackCall" />
+    </Link>
+    <Link Source="@98" Target="@108" Category="CallStackDirectCall" Bounds="1401.08190917969,368.305114746094,271.95751953125,36.5800170898438" IsCircularLink="True">
+      <Category Ref="CurrentCallStackCall" />
+    </Link>
+    <Link Source="@99" Target="@107" Category="CallStackDirectCall" Bounds="558.856506347656,429.492492675781,151.473388671875,33.9768981933594" IsCircularLink="True" />
+    <Link Source="@99" Target="@24" Category="CallStackDirectCall" Bounds="329.369903564453,429.492492675781,92.3632202148438,23.8251647949219">
+      <Category Ref="CurrentCallStackCall" />
+    </Link>
+  </Links>
+  <Categories>
+    <Category Id="BaseCustomContent" CanBeDataDriven="True" IsProviderRoot="False" />
+    <Category Id="CallStackDirectCall" Label="呼叫堆疊直接呼叫" CanBeDataDriven="True" CanLinkedNodesBeDataDriven="True" IncomingActionLabel="呼叫堆疊直接呼叫" OutgoingActionLabel="呼叫堆疊直接呼叫" />
+    <Category Id="CallStackEntry" Label="呼叫堆疊項目" CanBeDataDriven="True" IsProviderRoot="False" NavigationActionLabel="呼叫堆疊項目" />
+    <Category Id="CallStackIndirectCall" Label="呼叫堆疊間接呼叫" CanBeDataDriven="True" CanLinkedNodesBeDataDriven="True" IncomingActionLabel="呼叫堆疊間接呼叫" OutgoingActionLabel="呼叫堆疊間接呼叫" />
+    <Category Id="CodeSchema_CallStackUnresolvedMethod" Label="無法解析的方法" CanBeDataDriven="True" DefaultAction="Microsoft.AllOutBoundLinks" IsProviderRoot="False" NavigationActionLabel="無法解析的方法" />
+    <Category Id="CodeSchema_Member" Label="成員" CanBeDataDriven="True" DefaultAction="Microsoft.Contains" Icon="CodeSchema_Field" NavigationActionLabel="成員" />
+    <Category Id="CodeSchema_Method" Label="方法" BasedOn="CodeSchema_Member" CanBeDataDriven="True" DefaultAction="Link:Forward:CodeSchema_Calls" Icon="CodeSchema_Method" NavigationActionLabel="方法" />
+    <Category Id="CodeSchema_SourceLocation" Label="來源位置" Icon="File" />
+    <Category Id="CurrentCallStackCall" Label="目前的呼叫堆疊呼叫" CanBeDataDriven="True" CanLinkedNodesBeDataDriven="True" IncomingActionLabel="目前的呼叫堆疊呼叫" OutgoingActionLabel="目前的呼叫堆疊呼叫" />
+    <Category Id="CurrentCallStackEntry" Label="目前的呼叫堆疊項目" BasedOn="BaseCustomContent" CanBeDataDriven="True" IsProviderRoot="False" NavigationActionLabel="目前的呼叫堆疊項目" />
+  </Categories>
+  <Properties>
+    <Property Id="Bounds" DataType="System.Windows.Rect" />
+    <Property Id="CanBeDataDriven" Label="CanBeDataDriven" Description="CanBeDataDriven" DataType="System.Boolean" />
+    <Property Id="CanLinkedNodesBeDataDriven" Label="CanLinkedNodesBeDataDriven" Description="CanLinkedNodesBeDataDriven" DataType="System.Boolean" />
+    <Property Id="CodeSchemaProperty_IsAnonymous" Label="為匿名" Description="表示此委派、類型或方法是否為匿名的旗標" DataType="System.Boolean" />
+    <Property Id="CodeSchemaProperty_IsConstructor" Label="為建構函式" Description="表示方法為建構函式的旗標" DataType="System.Boolean" />
+    <Property Id="CodeSchemaProperty_IsExtension" Label="為擴充" Description="表示方法是否為擴充方法的旗標" DataType="System.Boolean" />
+    <Property Id="CodeSchemaProperty_IsInternal" Label="為外部" Description="表示方法為「外部」的旗標" DataType="System.Boolean" />
+    <Property Id="CodeSchemaProperty_IsPrivate" Label="為私用" Description="表示範圍為私用的旗標" DataType="System.Boolean" />
+    <Property Id="CodeSchemaProperty_IsProtected" Label="為受保護的" Description="表示範圍為「受保護的」的旗標" DataType="System.Boolean" />
+    <Property Id="CodeSchemaProperty_IsPublic" Label="為公用" Description="表示範圍為「公用」的旗標" DataType="System.Boolean" />
+    <Property Id="CodeSchemaProperty_IsStatic" Label="為靜態" Description="表示成員為靜態成員的旗標" DataType="System.Boolean" />
+    <Property Id="CommonLabel" DataType="System.String" />
+    <Property Id="DataVirtualized" Label="虛擬化資料" Description="如果為 true，就表示圖形可以包含代表虛擬化節點/連結 (亦即，實際上並未在圖形中建立) 之資料的節點和連結。" DataType="System.Boolean" />
+    <Property Id="DefaultAction" Label="DefaultAction" Description="DefaultAction" DataType="System.String" />
+    <Property Id="ErrorMessage" Label="錯誤" Description="錯誤" DataType="System.String" />
+    <Property Id="Expression" DataType="System.String" />
+    <Property Id="FunctionTypeFlags" Label="FunctionTypeFlags" Description="FunctionTypeFlags" DataType="System.String" />
+    <Property Id="GroupLabel" DataType="System.String" />
+    <Property Id="Icon" Label="圖示" Description="圖示" DataType="System.String" />
+    <Property Id="IncomingActionLabel" Label="IncomingActionLabel" Description="IncomingActionLabel" DataType="System.String" />
+    <Property Id="IsCircularLink" Label="循環連結" Description="連結會連接強固結合元件的部分" DataType="System.Boolean" />
+    <Property Id="IsEnabled" DataType="System.Boolean" />
+    <Property Id="IsOverloaded" Label="IsOverloaded" Description="IsOverloaded" DataType="System.Boolean" />
+    <Property Id="IsProviderRoot" Label="IsProviderRoot" Description="IsProviderRoot" DataType="System.Boolean" />
+    <Property Id="IsStronglyConnected" Label="循環參考" Description="節點是強固結合之元件的一部分" DataType="System.Boolean" />
+    <Property Id="Label" Label="標籤" Description="可註釋物件的可顯示標籤" DataType="System.String" />
+    <Property Id="Language" Label="語言" Description="語言" DataType="System.String" />
+    <Property Id="Layout" DataType="System.String" />
+    <Property Id="NavigationActionLabel" Label="NavigationActionLabel" Description="NavigationActionLabel" DataType="System.String" />
+    <Property Id="OutgoingActionLabel" Label="OutgoingActionLabel" Description="OutgoingActionLabel" DataType="System.String" />
+    <Property Id="SourceLocation" Label="開始行號" DataType="Microsoft.VisualStudio.GraphModel.CodeSchema.SourceLocation" />
+    <Property Id="TargetType" DataType="System.Type" />
+    <Property Id="ToolTip" DataType="System.String" />
+    <Property Id="Value" DataType="System.String" />
+    <Property Id="ValueLabel" DataType="System.String" />
+    <Property Id="Visibility" Label="Visibility" Description="Defines whether a node in the graph is visible or not" DataType="System.Windows.Visibility" />
+  </Properties>
+  <QualifiedNames>
+    <Name Id="ArrayRank" Label="陣列陣序" ValueType="System.String" />
+    <Name Id="Assembly" Label="組件" ValueType="Uri" />
+    <Name Id="GenericArguments" Label="泛型引數" ValueType="Microsoft.VisualStudio.GraphModel.GraphNodeIdCollection" />
+    <Name Id="GenericParameterCount" Label="泛型參數計數" ValueType="System.String" />
+    <Name Id="IsUnresolved" Label="為無法解析" ValueType="System.String" />
+    <Name Id="Member" Label="成員" ValueType="System.Object" />
+    <Name Id="Name" Label="名稱" ValueType="System.String" />
+    <Name Id="Namespace" Label="命名空間" ValueType="System.String" />
+    <Name Id="OverloadingParameters" Label="參數" ValueType="Microsoft.VisualStudio.GraphModel.GraphNodeIdCollection" Formatter="NameValueNoEscape" />
+    <Name Id="ParameterIdentifier" Label="參數識別項" ValueType="System.String" />
+    <Name Id="ParentType" Label="父類型" ValueType="System.Object" />
+    <Name Id="Type" Label="類型" ValueType="System.Object" />
+  </QualifiedNames>
+  <IdentifierAliases>
+    <Alias n="1" Uri="Assembly=mscorlib.dll" />
+    <Alias n="2" Id="Type=bool" />
+    <Alias n="3" Id="IsUnresolved=True" />
+    <Alias n="4" Id="Type=void" />
+    <Alias n="5" Id="(Name=System.Threading.QueueUserWorkItemCallback.System.Threading.IThreadPoolWorkItem.ExecuteWorkItem @1 @4 @3)" />
+    <Alias n="6" Uri="Assembly=$(c0f40a23-120c-4722-a9fe-1299a3f7aacf.OutputPathUri)" />
+    <Alias n="7" Id="Namespace=VGame.Project.FishHunter.Storage" />
+    <Alias n="8" Id="Type=Proxy" />
+    <Alias n="9" Uri="Assembly=$(2f28aa04-316d-4c20-bf46-987d4a59691d.OutputPathUri)" />
+    <Alias n="10" Id="Namespace=Regulus.Framework" />
+    <Alias n="11" Id="GenericParameterCount=1" />
+    <Alias n="12" Id="(@6 @7 Type=IUser)" />
+    <Alias n="13" Id="Namespace=Regulus.Remoting" />
+    <Alias n="14" Uri="Assembly=$(FxRootUri)/v2.0.50727/mscorlib.dll" />
+    <Alias n="15" Id="Namespace=System" />
+    <Alias n="16" Id="(@14 @15 Type=(Name=Byte ArrayRank=1 ParentType=Byte))" />
+    <Alias n="17" Id="(@9 @13 Type=(Name=Value @11) Member=(Name=Regulus.Remoting.IValue.SetValue OverloadingParameters=[@16]))" />
+    <Alias n="18" Id="Namespace=Regulus.Utility" />
+    <Alias n="19" Id="(@9 @18 Type=Console Member=(Name=_Run OverloadingParameters=[(@14 @15 Type=(Name=String ArrayRank=1 ParentType=String))]))" />
+    <Alias n="20" Uri="Assembly=$(6cb4cde6-4405-40e6-8bdf-5a2e9185cc04.OutputPathUri)" />
+    <Alias n="21" Id="Namespace=Regulus.Remoting.Ghost.Native" />
+    <Alias n="22" Uri="Assembly=$(a4cfce46-bda8-4416-a1bb-77bd80514019.OutputPathUri)" />
+    <Alias n="23" Id="Type=AgentCore" />
+    <Alias n="24" Id="(@20 @21 Type=(Name=OnlineStage ParentType=Agent) Member=(Name=Process OverloadingParameters=[(@22 @13 @23)]))" />
+    <Alias n="25" Uri="Assembly=$(c948251a-5d79-4480-9887-3cb6fdb59517.OutputPathUri)" />
+    <Alias n="26" Id="Namespace=VGame.Project.FishHunter.Formula" />
+    <Alias n="27" Id="Type=Server" />
+    <Alias n="28" Uri="Assembly=$(FxReferenceAssembliesUri)/.NETFramework/v4.5/mscorlib.dll" />
+    <Alias n="29" Id="(@25 @26 @27 Member=(Name=_ConnectResult OverloadingParameters=[(@28 @15 Type=Boolean)]))" />
+    <Alias n="30" Id="(@25 @26 @27 Member=(Name=_VerifyResult OverloadingParameters=[(@28 @15 Type=Boolean)]))" />
+    <Alias n="31" Id="Namespace=Regulus.Remoting.Ghost" />
+    <Alias n="32" Id="(@14 @15 Type=Guid)" />
+    <Alias n="33" Id="(@9 @31 Type=(Name=TProvider @11) Member=(Name=Regulus.Remoting.Ghost.IProvider.Ready OverloadingParameters=[@32]))" />
+    <Alias n="34" Id="Namespace=VGame.Project.FishHunter" />
+    <Alias n="35" Uri="Assembly=$(72e9207f-cd57-4789-ad21-30132e541fb6.OutputPathUri)" />
+    <Alias n="36" Id="(@25 @34 Type=BuildStorageControllerStage Member=(Name=_GetFinder OverloadingParameters=[(@35 @34 Type=IAccountFinder)]))" />
+    <Alias n="37" Uri="Assembly=$(d4580866-2273-4e9b-be70-4fa2ab11434a.OutputPathUri)" />
+    <Alias n="38" Id="Namespace=Regulus.Remoting.Soul.Native" />
+    <Alias n="39" Id="Name=.ctor" />
+    <Alias n="40" Id="(@22 @13 Type=ICore)" />
+    <Alias n="41" Id="(@22 @13 Type=OfflineStage Member=(Name=_Bind OverloadingParameters=[(@9 @31 Type=IProvider)]))" />
+    <Alias n="42" Id="(@25 @26 @27 Member=(Name=_ToConnectStorage OverloadingParameters=[@12]))" />
+    <Alias n="43" Id="(@25 @26 @27 Member=(Name=_ToVerifyStorage OverloadingParameters=[@12]))" />
+    <Alias n="44" Id="(@37 @38 Type=ThreadCoreHandler Member=(Name=DoWork OverloadingParameters=[(@28 @15 Type=Object)]))" />
+    <Alias n="45" Uri="Assembly=$(5061bc1d-0c9e-4050-a51e-593b5c16d398.OutputPathUri)" />
+    <Alias n="46" Id="(@45 @26 Type=Center Member=(@39 OverloadingParameters=[(@45 @26 Type=StorageController)]))" />
+    <Alias n="47" Id="(@25 @34 Type=RunFormulaStage Member=(@39 OverloadingParameters=[(@45 @26 Type=StorageController)]))" />
+    <Alias n="48" Id="(@25 @26 @27 Member=(Name=_ToRunFormula OverloadingParameters=[(@45 @26 Type=StorageController)]))" />
+    <Alias n="49" Id="(@28 @15 Type=String)" />
+    <Alias n="50" Id="(@37 @38 Type=StageStart Member=(Name=_StartIni OverloadingParameters=[@49]))" />
+    <Alias n="51" Id="(@6 @7 @8 Member=(Name=SpawnUser OverloadingParameters=[@49]))" />
+    <Alias n="52" Id="Type=(Name=UserProvider @11)" />
+    <Alias n="53" Id="(@14 @15 Type=String)" />
+    <Alias n="54" Id="(@9 @10 @52 Member=(Name=Spawn OverloadingParameters=[@53]))" />
+    <Alias n="55" Id="(@9 Namespace=Regulus.Utility.WindowConsoleStand Type=StandExtension Member=(Name=Launch OverloadingParameters=[(@9 @18 Type=WindowConsole)]))" />
+    <Alias n="56" Id="(@9 Namespace=Regulus.Utility.WindowConsoleAppliction Type=ApplictionExtension Member=(Name=Run OverloadingParameters=[(@9 @18 Type=WindowConsole)]))" />
+    <Alias n="57" Id="(@9 Namespace=Regulus.Utility.WindowConsoleStand Type=StandExtension Member=(Name=Update OverloadingParameters=[(@9 @18 Type=WindowConsole)]))" />
+    <Alias n="58" Id="(@9 @13 Type=(Name=Value @11) Member=(Name=SetValue OverloadingParameters=[(@9 @13 Type=(Name=Value @11) ParameterIdentifier=0)]))" />
+    <Alias n="59" Id="(@25 @34 Type=RunFormulaStage Member=(@39 OverloadingParameters=[(@45 @26 Type=StorageController),(@9 Namespace=Regulus.Collection Type=(Name=Queue @11 GenericArguments=[(@22 @13 Type=ISoulBinder)]))]))" />
+    <Alias n="60" Id="(@22 @13 @23 Member=(Name=_OnResponse OverloadingParameters=[(@14 @15 Type=Byte),(@14 Namespace=System.Collections.Generic Type=(Name=Dictionary GenericParameterCount=2 GenericArguments=[(@14 @15 Type=Byte),@16]))]))" />
+    <Alias n="61" Id="(@22 @13 @23 Member=(Name=OnResponse OverloadingParameters=[(@14 @15 Type=Byte),(@14 Namespace=System.Collections.Generic Type=(Name=Dictionary GenericParameterCount=2 GenericArguments=[(@14 @15 Type=Byte),@16]))]))" />
+    <Alias n="62" Id="(@22 @13 @23 Member=(Name=_SetReturnValue OverloadingParameters=[@32,@16]))" />
+    <Alias n="63" Id="(@9 @18 Type=Command Member=(Name=Run OverloadingParameters=[@53,(@14 @15 Type=(Name=String ArrayRank=1 ParentType=String))]))" />
+    <Alias n="64" Id="(@9 @31 Type=(Name=TProvider @11) Member=(Name=_Add OverloadingParameters=[(@9 @31 Type=(Name=TProvider @11) ParameterIdentifier=0),(@9 @31 Type=IGhost)]))" />
+    <Alias n="65" Id="(@28 @15 Type=Int32)" />
+    <Alias n="66" Id="(@37 @38 @27 Member=(@39 OverloadingParameters=[@40,@65]))" />
+    <Alias n="67" Id="(@22 @18 Type=Loader Member=(Name=Load OverloadingParameters=[@16,@53]))" />
+    <Alias n="68" Id="(@9 @10 @52 Member=(Name=_Build OverloadingParameters=[@53,(@9 @10 @52 ParameterIdentifier=0)]))" />
+    <Alias n="69" Id="(@22 @13 @23 Member=(Name=_LoadSoulCompile OverloadingParameters=[@53,@32,@32]))" />
+    <Alias n="70" Id="Type=Application" />
+    <Alias n="71" Id="(@37 @38 @70 Member=(Name=_ToRun OverloadingParameters=[@40,@65,(@28 @15 Type=Single)]))" />
+    <Alias n="72" Id="(@37 @38 Type=StageStart Member=(Name=_Start OverloadingParameters=[@65,@49,@49]))" />
+    <Alias n="73" Id="(@37 @38 Type=StageRun Member=(@39 OverloadingParameters=[@40,(@9 @18 Type=Command),@65,(@9 @18 Type=(Name=IViewer ParentType=Console))]))" />
+    <Alias n="74" Id="(@6 @7 @8 Member=.ctor)" />
+    <Alias n="75" Id="(@25 @26 @27 Member=.ctor)" />
+    <Alias n="76" Id="(@20 @21 Type=(Name=ConnectStage ParentType=Agent) Member=_InvokeResultEvent)" />
+    <Alias n="77" Id="(@37 @38 @70 Member=_Launch)" />
+    <Alias n="78" Id="(@9 @18 Type=StageMachine Member=_SetCurrentStage)" />
+    <Alias n="79" Id="(@25 @26 @27 Member=_Setup)" />
+    <Alias n="80" Id="(@37 @38 @70 Member=_Update)" />
+    <Alias n="81" Id="(@9 @18 Type=StageMachine Member=_UpdateCurrentStage)" />
+    <Alias n="82" Id="Member=AnonymousMethod__0" />
+    <Alias n="83" Id="(@20 @21 Type=Agent @82)" />
+    <Alias n="84" Id="(@6 @34 Type=ConnectStorageStage @82)" />
+    <Alias n="85" Id="(@22 @13 Type=OfflineStage @82)" />
+    <Alias n="86" Id="(@6 @34 Type=VerifyStorageStage @82)" />
+    <Alias n="87" Id="(@9 @18 Type=Command Member=AnonymousMethod__6)" />
+    <Alias n="88" Id="(@9 @18 Type=Launcher Member=Launch)" />
+    <Alias n="89" Id="(@37 @38 @27 Member=Regulus.Framework.IBootable.Launch)" />
+    <Alias n="90" Id="(@25 @26 @27 Member=Regulus.Framework.IBootable.Launch)" />
+    <Alias n="91" Id="(@9 @18 Type=WindowConsole Member=Regulus.Framework.IBootable.Launch)" />
+    <Alias n="92" Id="(@22 @13 Type=OfflineStage Member=Regulus.Utility.IStage.Enter)" />
+    <Alias n="93" Id="(@37 @38 Type=StageRun Member=Regulus.Utility.IStage.Enter)" />
+    <Alias n="94" Id="(@9 Namespace=Regulus.Framework.Stage Type=(Name=OnBoard @11) Member=Regulus.Utility.IStage.Update)" />
+    <Alias n="95" Id="(@20 @21 Type=(Name=ConnectStage ParentType=Agent) Member=Regulus.Utility.IStage.Update)" />
+    <Alias n="96" Id="Member=Regulus.Utility.IUpdatable.Update" />
+    <Alias n="97" Id="(@9 @10 Type=(Name=Client @11) @96)" />
+    <Alias n="98" Id="(@9 @10 @52 @96)" />
+    <Alias n="99" Id="(@20 @21 Type=Agent @96)" />
+    <Alias n="100" Id="(@9 @18 Type=ConsoleInput @96)" />
+    <Alias n="101" Id="(@6 @7 @8 @96)" />
+    <Alias n="102" Id="(@25 @26 @27 @96)" />
+    <Alias n="103" Id="(@22 @13 Type=User @96)" />
+    <Alias n="104" Id="(@6 @7 Type=User @96)" />
+    <Alias n="105" Id="(@9 @18 Type=WindowConsole @96)" />
+    <Alias n="106" Id="(@9 @18 Type=ConsoleInput Member=Update)" />
+    <Alias n="107" Id="(@9 @18 Type=StageMachine Member=Update)" />
+    <Alias n="108" Id="(@9 @18 Type=Updater Member=Working)" />
+    <Alias n="109" Uri="Assembly=Server.exe" />
+    <Alias n="110" Id="Type=object" />
+    <Alias n="111" Id="(Name=System.Reflection.Assembly.CreateInstance @1 @110 OverloadingParameters=[(Type=string Name=typeName)] @3)" />
+    <Alias n="112" Id="(Name=System.Activator.CreateInstance @1 @110 OverloadingParameters=[(Type=System.Type Name=type),(@2 Name=nonPublic)] @3)" />
+    <Alias n="113" Id="(Name=System.Threading.ExecutionContext.Run @1 @4 OverloadingParameters=[(Type=System.Threading.ExecutionContext Name=executionContext),(Type=System.Threading.ContextCallback Name=callback),(@110 Name=state),(@2 Name=preserveSyncCtx)] @3)" />
+    <Alias n="114" Id="(Name=System.Threading.ExecutionContext.RunInternal @1 @4 OverloadingParameters=[(Type=System.Threading.ExecutionContext Name=executionContext),(Type=System.Threading.ContextCallback Name=callback),(@110 Name=state),(@2 Name=preserveSyncCtx)] @3)" />
+    <Alias n="115" Id="(Name=System.RuntimeType.CreateInstanceSlow @1 @110 OverloadingParameters=[(@2 Name=publicOnly),(@2 Name=skipCheckThis),(@2 Name=fillCache),(Type=System.Threading.StackCrawlMark Name=stackMark)] @3)" />
+    <Alias n="116" Id="(Name=System.Activator.CreateInstance @1 @110 OverloadingParameters=[(Type=System.Type Name=type),(Type=System.Reflection.BindingFlags Name=bindingAttr),(Type=System.Reflection.Binder Name=binder),(Type=&quot;object[]&quot; Name=args),(Type=System.Globalization.CultureInfo Name=culture),(Type=&quot;object[]&quot; Name=activationAttributes)] @3)" />
+    <Alias n="117" Id="(Name=System.RuntimeType.CreateInstanceImpl @1 @110 OverloadingParameters=[(Type=System.Reflection.BindingFlags Name=bindingAttr),(Type=System.Reflection.Binder Name=binder),(Type=&quot;object[]&quot; Name=args),(Type=System.Globalization.CultureInfo Name=culture),(Type=&quot;object[]&quot; Name=activationAttributes),(Type=System.Threading.StackCrawlMark Name=stackMark)] @3)" />
+    <Alias n="118" Id="(Name=System.Reflection.Assembly.CreateInstance @1 @110 OverloadingParameters=[(Type=string Name=typeName),(@2 Name=ignoreCase),(Type=System.Reflection.BindingFlags Name=bindingAttr),(Type=System.Reflection.Binder Name=binder),(Type=&quot;object[]&quot; Name=args),(Type=System.Globalization.CultureInfo Name=culture),(Type=&quot;object[]&quot; Name=activationAttributes)] @3)" />
+  </IdentifierAliases>
+  <Styles>
+    <Style TargetType="Link" GroupLabel="Current Call Stack Link" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="HasCategory('CurrentCallStackCall')" />
+      <Setter Property="Stroke" Value="#FFD93701" />
+      <Setter Property="Weight" Value="1" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="Call Stack Indirect Link" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="HasCategory('CallStackIndirectCall')" />
+      <Setter Property="Stroke" Value="#FFB8B8B8" />
+      <Setter Property="StrokeDashArray" Value="4 1" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="Call Stack Direct Link" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="HasCategory('CallStackDirectCall')" />
+      <Setter Property="Stroke" Value="#FFB8B8B8" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="External And Current" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="HasCategory('ExternalCallStackEntry') And HasCategory('CurrentCallStackEntry')" />
+      <Setter Property="Background" Value="#FFFFF8F0" />
+      <Setter Property="Stroke" Value="#FFCE5100" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="循環參考" ToolTip="節點是強固結合之元件的一部分" ValueLabel="節點">
+      <Condition Expression="IsStronglyConnected" />
+      <Setter Property="Stroke" Value="#D02030" />
+      <Setter Property="StrokeThickness" Value="2" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="循環參考" ToolTip="節點是強固結合之元件的一部分" ValueLabel="連結">
+      <Condition Expression="IsCircularLink" />
+      <Setter Property="Stroke" Value="#D02030" />
+      <Setter Property="StrokeThickness" Value="2" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="目前的呼叫堆疊節點" ValueLabel="是">
+      <Condition Expression="HasCategory('CurrentCallStackEntry') And !HasCategory('QueryResult')" />
+      <Setter Property="Background" Value="#FFFFE3C6" />
+      <Setter Property="Stroke" Value="#FFD93701" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="外部呼叫堆疊項目" ValueLabel="是">
+      <Condition Expression="HasCategory('ExternalCallStackEntry')" />
+      <Setter Property="Background" Value="#FFF7F7F7" />
+      <Setter Property="StrokeDashArray" Value="1 3" />
+      <Setter Property="Foreground" Value="#FFA5A5A5" />
+      <Setter Property="Stroke" Value="#FFA5A5A5" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="結果" ValueLabel="是">
+      <Condition Expression="HasCategory('QueryResult')" />
+      <Setter Property="Background" Value="#FFBCFFBE" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="組件" ValueLabel="有分類">
+      <Condition Expression="HasCategory('CodeSchema_Assembly')" />
+      <Setter Property="Background" Value="#FF094167" />
+      <Setter Property="Stroke" Value="#FF094167" />
+      <Setter Property="Icon" Value="CodeSchema_Assembly" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="命名空間" ValueLabel="有分類">
+      <Condition Expression="HasCategory('CodeSchema_Namespace')" />
+      <Setter Property="Background" Value="#FF0E619A" />
+      <Setter Property="Stroke" Value="#FF0E619A" />
+      <Setter Property="Icon" Value="CodeSchema_Namespace" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="介面" ValueLabel="有分類">
+      <Condition Expression="HasCategory('CodeSchema_Interface')" />
+      <Setter Property="Background" Value="#FF1382CE" />
+      <Setter Property="Stroke" Value="#FF1382CE" />
+      <Setter Property="Icon" Value="CodeSchema_Interface" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="結構" ValueLabel="有分類">
+      <Condition Expression="HasCategory('CodeSchema_Struct')" />
+      <Setter Property="Background" Value="#FF1382CE" />
+      <Setter Property="Stroke" Value="#FF1382CE" />
+      <Setter Property="Icon" Value="CodeSchema_Struct" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="列舉" ValueLabel="有分類">
+      <Condition Expression="HasCategory('CodeSchema_Enum')" />
+      <Setter Property="Background" Value="#FF1382CE" />
+      <Setter Property="Stroke" Value="#FF1382CE" />
+      <Setter Property="Icon" Value="CodeSchema_Enum" />
+      <Setter Property="LayoutSettings" Value="List" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="委派" ValueLabel="有分類">
+      <Condition Expression="HasCategory('CodeSchema_Delegate')" />
+      <Setter Property="Background" Value="#FF1382CE" />
+      <Setter Property="Stroke" Value="#FF1382CE" />
+      <Setter Property="Icon" Value="CodeSchema_Delegate" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="類別" ValueLabel="有分類">
+      <Condition Expression="HasCategory('CodeSchema_Type')" />
+      <Setter Property="Background" Value="#FF1382CE" />
+      <Setter Property="Stroke" Value="#FF1382CE" />
+      <Setter Property="Icon" Value="CodeSchema_Class" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="屬性" ValueLabel="有分類">
+      <Condition Expression="HasCategory('CodeSchema_Property')" />
+      <Setter Property="Background" Value="#FFE0E0E0" />
+      <Setter Property="Stroke" Value="#FFE0E0E0" />
+      <Setter Property="Icon" Value="CodeSchema_Property" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="方法" ValueLabel="有分類">
+      <Condition Expression="HasCategory('CodeSchema_Method') Or HasCategory('CodeSchema_CallStackUnresolvedMethod')" />
+      <Setter Property="Background" Value="#FFE0E0E0" />
+      <Setter Property="Stroke" Value="#FFE0E0E0" />
+      <Setter Property="Icon" Value="CodeSchema_Method" />
+      <Setter Property="LayoutSettings" Value="List" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="事件" ValueLabel="有分類">
+      <Condition Expression="HasCategory('CodeSchema_Event')" />
+      <Setter Property="Background" Value="#FFE0E0E0" />
+      <Setter Property="Stroke" Value="#FFE0E0E0" />
+      <Setter Property="Icon" Value="CodeSchema_Event" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="欄位" ValueLabel="有分類">
+      <Condition Expression="HasCategory('CodeSchema_Field')" />
+      <Setter Property="Background" Value="#FFE0E0E0" />
+      <Setter Property="Stroke" Value="#FFE0E0E0" />
+      <Setter Property="Icon" Value="CodeSchema_Field" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="輸出參數" ValueLabel="有分類">
+      <Condition Expression="CodeSchemaProperty_IsOut = 'True'" />
+      <Setter Property="Icon" Value="CodeSchema_OutParameter" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="參數" ValueLabel="有分類">
+      <Condition Expression="HasCategory('CodeSchema_Parameter')" />
+      <Setter Property="Icon" Value="CodeSchema_Parameter" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="區域變數" ValueLabel="有分類">
+      <Condition Expression="HasCategory('CodeSchema_LocalExpression')" />
+      <Setter Property="Icon" Value="CodeSchema_LocalExpression" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="外部" ValueLabel="有分類">
+      <Condition Expression="HasCategory('Externals')" />
+      <Setter Property="Background" Value="#FF424242" />
+      <Setter Property="Stroke" Value="#FF424242" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="繼承自" ValueLabel="有分類">
+      <Condition Expression="HasCategory('InheritsFrom')" />
+      <Setter Property="Stroke" Value="#FF00A600" />
+      <Setter Property="StrokeDashArray" Value="2 0" />
+      <Setter Property="DrawArrow" Value="true" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="實作" ValueLabel="有分類">
+      <Condition Expression="HasCategory('Implements')" />
+      <Setter Property="Stroke" Value="#8000A600" />
+      <Setter Property="StrokeDashArray" Value="2 2" />
+      <Setter Property="DrawArrow" Value="true" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="呼叫" ValueLabel="有分類">
+      <Condition Expression="HasCategory('CodeSchema_Calls')" />
+      <Setter Property="Stroke" Value="#FFFF00FF" />
+      <Setter Property="StrokeDashArray" Value="2 0" />
+      <Setter Property="DrawArrow" Value="true" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="函式指標" ValueLabel="有分類">
+      <Condition Expression="HasCategory('CodeSchema_FunctionPointer')" />
+      <Setter Property="Stroke" Value="#FFFF00FF" />
+      <Setter Property="StrokeDashArray" Value="2 2" />
+      <Setter Property="DrawArrow" Value="true" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="欄位參考" ValueLabel="有分類">
+      <Condition Expression="HasCategory('CodeSchema_FieldReference')" />
+      <Setter Property="Stroke" Value="#FF00AEEF" />
+      <Setter Property="DrawArrow" Value="true" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="Inherits From" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="HasCategory('InheritsFrom') And Target.HasCategory('CodeSchema_Class')" />
+      <Setter Property="TargetDecorator" Value="OpenArrow" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="Implements" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="HasCategory('Implements') And Target.HasCategory('CodeSchema_Interface')" />
+      <Setter Property="TargetDecorator" Value="OpenArrow" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="Field Read" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="Target.HasCategory('CodeSchema_Field') And HasCategory('CodeSchema_FieldRead')" />
+      <Setter Property="StrokeDashArray" Value="2 2" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="Comment Link" ValueLabel="True" Visibility="Hidden">
+      <Condition Expression="Source.HasCategory('Comment')" />
+      <Setter Property="Stroke" Value="#FFE5C365" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Cursor Location Changed" ValueLabel="是" Visibility="Hidden">
+      <Condition Expression="IsCursorLocation" />
+      <Setter Property="IndicatorWest" Value="WestIndicator" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Disabled Breakpoint Location Changed" ValueLabel="是" Visibility="Hidden">
+      <Condition Expression="DisabledBreakpointCount" />
+      <Setter Property="IndicatorWest" Value="WestIndicator" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Enabled Breakpoint Location Changed" ValueLabel="是" Visibility="Hidden">
+      <Condition Expression="EnabledBreakpointCount" />
+      <Setter Property="IndicatorWest" Value="WestIndicator" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Instruction Pointer Location Changed" ValueLabel="是" Visibility="Hidden">
+      <Condition Expression="IsInstructionPointerLocation" />
+      <Setter Property="IndicatorWest" Value="WestIndicator" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Current Callstack Changed" ValueLabel="是" Visibility="Hidden">
+      <Condition Expression="IsCurrentCallstackFrame" />
+      <Setter Property="IndicatorWest" Value="WestIndicator" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="註解" ValueLabel="有註解">
+      <Condition Expression="HasCategory('Comment')" />
+      <Setter Property="Background" Value="#FFFFFACD" />
+      <Setter Property="Stroke" Value="#FFE5C365" />
+      <Setter Property="StrokeThickness" Value="1" />
+      <Setter Property="NodeRadius" Value="2" />
+      <Setter Property="MaxWidth" Value="250" />
+    </Style>
+  </Styles>
+  <Paths>
+    <Path Id="2f28aa04-316d-4c20-bf46-987d4a59691d.OutputPathUri" Value="file:///D:/Projects/Regulus/Library/PureLib/bin/Debug/RegulusLibrary.dll" />
+    <Path Id="5061bc1d-0c9e-4050-a51e-593b5c16d398.OutputPathUri" Value="file:///D:/Projects/Regulus/Projects/FishHunter/Game/bin/Debug/Game.dll" />
+    <Path Id="6cb4cde6-4405-40e6-8bdf-5a2e9185cc04.OutputPathUri" Value="file:///D:/Projects/Regulus/Library/RemotingNativeGhost/bin/Debug/RegulusRemotingNativeGhost.dll" />
+    <Path Id="72e9207f-cd57-4789-ad21-30132e541fb6.OutputPathUri" Value="file:///D:/Projects/Regulus/Projects/FishHunter/Common/bin/Debug/Common.dll" />
+    <Path Id="a4cfce46-bda8-4416-a1bb-77bd80514019.OutputPathUri" Value="file:///D:/Projects/Regulus/Library/Remoting/bin/Debug/RegulusRemoting.dll" />
+    <Path Id="c0f40a23-120c-4722-a9fe-1299a3f7aacf.OutputPathUri" Value="file:///D:/Projects/Regulus/Projects/FishHunter/StorageUser/bin/Debug/StorageUser.dll" />
+    <Path Id="c948251a-5d79-4480-9887-3cb6fdb59517.OutputPathUri" Value="file:///D:/Projects/Regulus/Projects/FishHunter/Formula/bin/Debug/Formula.dll" />
+    <Path Id="d4580866-2273-4e9b-be70-4fa2ab11434a.OutputPathUri" Value="file:///D:/Projects/Regulus/Library/RemotingNativeSoul/bin/Debug/RegulusRemotingNativeSoul.dll" />
+    <Path Id="FxReferenceAssembliesUri" Value="file:///C:/Program Files (x86)/Reference Assemblies/Microsoft/Framework" />
+    <Path Id="FxRootUri" Value="file:///C:/Windows/Microsoft.NET/Framework" />
+  </Paths>
+</DirectedGraph>

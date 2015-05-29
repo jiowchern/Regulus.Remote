@@ -14,6 +14,6 @@ namespace Regulus.Remoting
         /// 如果客戶端連線成功系統會呼叫此方法並把SoulBinder傳入。
         /// </summary>
         /// <param name="binder"></param>
-        void ObtainBinder(Regulus.Remoting.ISoulBinder binder);
+        void AssignBinder(Regulus.Remoting.ISoulBinder binder);
     }
 }

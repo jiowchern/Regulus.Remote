@@ -78,7 +78,7 @@ namespace Regulus.Remoting.Soul.Native
                         while (_Binders.Count > 0)
                         {
                             var provider = _Binders.Dequeue();
-                            _Core.ObtainBinder(provider);
+                            _Core.AssignBinder(provider);
                         }
                     }
                 }
