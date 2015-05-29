@@ -8,7 +8,7 @@ namespace RemotingTest
     class Server : Regulus.Remoting.ICore, ITestReturn, ITestGPI
     {
         Regulus.Remoting.ISoulBinder _Binder;
-        void Regulus.Remoting.ICore.ObtainBinder(Regulus.Remoting.ISoulBinder binder)
+        void Regulus.Remoting.ICore.AssignBinder(Regulus.Remoting.ISoulBinder binder)
         {
             binder.Return<ITestReturn>(this);
             _Binder = binder;

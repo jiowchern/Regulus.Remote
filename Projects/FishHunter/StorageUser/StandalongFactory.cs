@@ -18,7 +18,7 @@ namespace VGame.Project.FishHunter.Storage
         {
       
             var agent = new Regulus.Standalong.Agent();
-            agent.ConnectedEvent += () => { _Core.ObtainBinder(agent); };            
+            agent.ConnectedEvent += () => { _Core.AssignBinder(agent); };            
             return new User(agent);
         }
 

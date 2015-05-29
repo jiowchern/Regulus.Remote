@@ -19,7 +19,7 @@ namespace VGame.Project.FishHunter.Formula
         IUser Regulus.Framework.IUserFactoty<IUser>.SpawnUser()
         {
             var agent = new Regulus.Standalong.Agent();
-            agent.ConnectedEvent += () => { _Standalong.ObtainBinder(agent); };            
+            agent.ConnectedEvent += () => { _Standalong.AssignBinder(agent); };            
             return new User(agent);
         }
 

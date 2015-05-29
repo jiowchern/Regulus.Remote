@@ -16,7 +16,7 @@ namespace VGame.Project.FishHunter.Storage
             _Hall = new Hall();
             _Update = new Regulus.Utility.Updater();
         }
-        void Regulus.Remoting.ICore.ObtainBinder(Regulus.Remoting.ISoulBinder binder)
+        void Regulus.Remoting.ICore.AssignBinder(Regulus.Remoting.ISoulBinder binder)
         {
             _Hall.PushUser(new User(binder, _Stroage));
         }

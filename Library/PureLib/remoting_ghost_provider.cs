@@ -49,7 +49,6 @@ namespace Regulus.Remoting.Ghost
 
 	public class TProvider<T> : INotifier<T>, IProvider
         where T : class 
-        
 	{
 		List<T> _Entitys = new List<T>();
         List<WeakReference> _Returns = new List<WeakReference>();
@@ -59,7 +58,6 @@ namespace Regulus.Remoting.Ghost
 		{
 			add
 			{
-                
 				_Supply += value;
 
                 lock (_Entitys)
@@ -69,7 +67,6 @@ namespace Regulus.Remoting.Ghost
                         value(e);
                     }
                 }
-				
 			}
 			remove { _Supply -= value; }
 		}
@@ -82,6 +79,7 @@ namespace Regulus.Remoting.Ghost
 		}
 
 		List<T> _Waits = new List<T>();
+
         IGhost IProvider.Ready(Guid id)
 		{
 			var entity = (from e in _Waits where (e as IGhost).GetID() == id select e).FirstOrDefault();
@@ -106,13 +104,12 @@ namespace Regulus.Remoting.Ghost
                 if (_Return != null)
                     _Return(entity);
             }
-
             return ghost;
 		}
+
 		void IProvider.Add(IGhost entity)
 		{
 			_Waits.Add(entity as T);
-            
 		}
 
 		void IProvider.Remove(Guid id)
@@ -125,7 +122,6 @@ namespace Regulus.Remoting.Ghost
             _RemoveWaits(id);
 
             _RemoveReturns(id);
-
 		}
 
         private void _RemoveReturns(Guid id)
@@ -160,12 +156,10 @@ namespace Regulus.Remoting.Ghost
 
                 _Entitys.Remove(entity);
             }
-            
         }
 
 		IGhost[] IProvider.Ghosts
 		{
-
 			get
 			{                
                 var all = _Entitys.Concat(_Waits).Concat( from r in _Returns where r.IsAlive select r.Target as T);

@@ -7,33 +7,31 @@ namespace VGame.Project.FishHunter
 {
     class RunFormulaStage : Regulus.Utility.IStage
     {
-        public delegate void DoneCallback();
-        public event DoneCallback DoneEvent;
         VGame.Project.FishHunter.Formula.Center _Center;
 
         Regulus.Remoting.ICore _Core { get { return _Center; } }
+        
         Regulus.Utility.Updater _Updater;
-        
-        private Regulus.Collection.Queue<Regulus.Remoting.ISoulBinder> _Binders;
-        
 
-        private RunFormulaStage(Formula.StorageController controller)
-        {
-            _Updater = new Regulus.Utility.Updater();
-            _Center = new Formula.Center(controller);
-            
-        }
+        Regulus.Collection.Queue<Regulus.Remoting.ISoulBinder> _Binders;
 
+        public delegate void DoneCallback();
+        public event DoneCallback DoneEvent;
+        
         public RunFormulaStage(Formula.StorageController controller, Regulus.Collection.Queue<Regulus.Remoting.ISoulBinder> binders) : this(controller)
         {
             // TODO: Complete member initialization        
             this._Binders = binders;
         }
 
-        
+        private RunFormulaStage(Formula.StorageController controller)
+        {
+            _Updater = new Regulus.Utility.Updater();
+            _Center = new Formula.Center(controller);
+        }
+
         void Regulus.Utility.IStage.Enter()
         {
-            
             _Updater.Add(_Center);
         }
 
@@ -48,7 +46,7 @@ namespace VGame.Project.FishHunter
 
             foreach (var binder in _Binders.DequeueAll())
             {
-                _Core.ObtainBinder(binder);
+                _Core.AssignBinder(binder);
             }
         }
     }

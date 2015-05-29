@@ -8,17 +8,14 @@ namespace Regulus.Remoting.Soul.Native
     
     public class CoreThreadRequestHandler : Regulus.Utility.IUpdatable 
     {
-        
         Regulus.Remoting.IRequestQueue _Requester;
         bool _Enable;
         
         public CoreThreadRequestHandler(Regulus.Remoting.IRequestQueue requester)
         {
-            
-            
-            
             _Requester = requester;
         }
+
         bool Utility.IUpdatable.Update()
         {
             _Requester.Update();

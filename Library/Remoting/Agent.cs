@@ -56,8 +56,18 @@ namespace Regulus.Remoting
 	public class AgentCore
 	{
 		IGhostRequest _Requester ;
+        
         Dictionary<string, Regulus.Remoting.Ghost.IProvider> _Providers ;
+
         AutoRelease _AutoRelease;
+
+        Regulus.Utility.TimeCounter _PingTimeCounter = new Regulus.Utility.TimeCounter();
+
+        Regulus.Remoting.Ghost.ReturnValueQueue _ReturnValueQueue = new Regulus.Remoting.Ghost.ReturnValueQueue();
+
+        object _Sync = new object();
+
+        public long Ping { get; private set; }
          
 		public AgentCore()
 		{
@@ -71,6 +81,7 @@ namespace Regulus.Remoting
             _Requester = req;
 			_StartPing();
 		}
+
 		public void Finial()
         {
             lock (_Providers)
@@ -84,17 +95,15 @@ namespace Regulus.Remoting
             _Requester = null;
 			_EndPing();            
 		}
-		Regulus.Utility.TimeCounter _PingTimeCounter = new Regulus.Utility.TimeCounter();
-		public long Ping { get; private set; }
 
 		public  void OnResponse(byte id, Dictionary<byte, byte[]> args)
 		{
 			_OnResponse(id , args);
             _AutoRelease.Update();
 		}
-		protected void _OnResponse(byte id, Dictionary<byte, byte[]> args)
+
+        protected void _OnResponse(byte id, Dictionary<byte, byte[]> args)
 		{
-            
 			if (id == (int)ServerToClientOpCode.Ping)
 			{
 				Ping = _PingTimeCounter.Ticks;
@@ -169,8 +178,7 @@ namespace Regulus.Remoting
 				}
 			}
 		}
-
-		Regulus.Remoting.Ghost.ReturnValueQueue _ReturnValueQueue = new Regulus.Remoting.Ghost.ReturnValueQueue();
+		
 		private void _SetReturnValue(Guid returnTarget, byte[] returnValue)
 		{
 			IValue value = _ReturnValueQueue.PopReturnValue(returnTarget);
@@ -188,6 +196,7 @@ namespace Regulus.Remoting
                 value.SetValue(ghost);
             }
         }
+
         private void _LoadSoulCompile(string type_name, Guid entity_id, Guid return_id)
 		{
 			Regulus.Remoting.Ghost.IProvider provider = _QueryProvider(type_name);
@@ -197,7 +206,6 @@ namespace Regulus.Remoting
                 _SetReturnValue(return_id, ghost);
             }
 		}
-
         
 		private void _LoadSoul(string type_name, Guid id , bool return_type)
 		{
@@ -209,7 +217,6 @@ namespace Regulus.Remoting
             {
                 _RegisterRelease(ghost);
             }
-                
 		}
 
         private void _RegisterRelease(Ghost.IGhost ghost)
@@ -223,7 +230,6 @@ namespace Regulus.Remoting
 			if (provider != null)
 				provider.Remove(id);
 		}
-
 		
 		private Regulus.Remoting.Ghost.IProvider _QueryProvider(string type_name)
 		{
@@ -240,7 +246,6 @@ namespace Regulus.Remoting
                     }
                 }
             }
-			
 			return provider;
 		}
 
@@ -251,11 +256,11 @@ namespace Regulus.Remoting
 			return Activator.CreateInstance(providerType) as Regulus.Remoting.Ghost.IProvider;
 		}
 
-
 		public Regulus.Remoting.Ghost.INotifier<T> QueryProvider<T>()
 		{
 			return _QueryProvider(typeof(T).FullName) as Regulus.Remoting.Ghost.INotifier<T>;
 		}
+
 		private void _UpdateProperty(Guid entity_id, string name, byte[] value)
 		{
 			Regulus.Remoting.Ghost.IGhost ghost = _FindGhost(entity_id);
@@ -265,7 +270,7 @@ namespace Regulus.Remoting
 			}
 		}
 
-		private void _InvokeEvent(Guid ghost_id, string eventName, object[] eventParams)
+        private void _InvokeEvent(Guid ghost_id, string eventName, object[] eventParams)
 		{
 			Regulus.Remoting.Ghost.IGhost ghost = _FindGhost(ghost_id);
 			if (ghost != null)
@@ -283,11 +288,8 @@ namespace Regulus.Remoting
                         where r != null
                         select r).FirstOrDefault();
             }
-			
 		}
 
-        object _Sync = new object();
-        
 		System.Timers.Timer _PingTimer;
 		protected void _StartPing()
 		{
@@ -301,8 +303,8 @@ namespace Regulus.Remoting
                 _PingTimer.Start();
                 
             }
-			
 		}
+
 		void _PingTimerElapsed(object sender, System.Timers.ElapsedEventArgs e)
 		{
             lock (_Sync)
@@ -339,7 +341,8 @@ namespace Regulus.Remoting
 		}
 
 		static System.Collections.Generic.Dictionary<Type, Type> _GhostTypes = new Dictionary<Type, Type>();
-		private Type _QueryGhostType(Type ghostBaseType)
+		
+        private Type _QueryGhostType(Type ghostBaseType)
 		{
 			Type ghostType = null;
 			if (_GhostTypes.TryGetValue(ghostBaseType, out ghostType))
