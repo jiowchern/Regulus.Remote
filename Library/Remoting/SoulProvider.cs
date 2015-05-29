@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Regulus.Remoting;
 
 
 namespace Regulus.Remoting.Soul
@@ -232,23 +233,29 @@ namespace Regulus.Remoting.Soul
 
         private Soul _NewSoul(object soul, Type soulType)
         {
+            //var bindChecker = new BindGuard(soulType);
 
-
-            var new_soul = new Soul() { ID = Guid.NewGuid(), ObjectType = soulType, ObjectInstance = soul, MethodInfos = soulType.GetMethods() };
+            var new_soul = new Soul() { ID = Guid.NewGuid(), ObjectType = soulType, ObjectInstance = soul, MethodInfos = soulType.GetMethods() };            
 
             // event				
             var eventInfos = soulType.GetEvents();
             new_soul.EventHandlers = new List<Soul.EventHandler>();
+
+            
             foreach (var eventInfo in eventInfos)
             {
+                
                 var genericArguments = eventInfo.EventHandlerType.GetGenericArguments();
                 Delegate handler = _BuildDelegate(genericArguments, new_soul.ID, eventInfo.Name);
+                
                 Soul.EventHandler eh = new Soul.EventHandler();
                 eh.EventInfo = eventInfo;
                 eh.DelegateObject = handler;
                 new_soul.EventHandlers.Add(eh);
+                
                 eventInfo.AddEventHandler(soul, handler);
             }
+            
 
             // property 
             var propertys = soulType.GetProperties(System.Reflection.BindingFlags.GetProperty | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
@@ -262,6 +269,8 @@ namespace Regulus.Remoting.Soul
 
             return new_soul;
         }
+
+        
 
         private void _Unbind(object soul , Type type)
         {

@@ -33,8 +33,7 @@ namespace Regulus.Remoting.Native
         }
 
         private void _ReadHead()
-        {
-            
+        {            
             _Reader = new SocketReader(_Socket);
             _Reader.DoneEvent += _ReadBody;
             _Reader.ErrorEvent += ErrorEvent;
@@ -52,15 +51,11 @@ namespace Regulus.Remoting.Native
 
         private void _Package(byte[] bytes)
         {
-            
-
             DoneEvent(Regulus.Serializer.TypeHelper.Deserialize<Package>(bytes));
 
             if(_Stop == false)
                 _ReadHead();
         }
-
-
 
         public void Stop()
         {
