@@ -20,6 +20,8 @@ namespace Regulus.Remoting
         public delegate CommandParam OnBuilder(T source);
         public delegate void OnSourceHandler(T source);
 
+
+        
         public struct Data
         {
             OnBuilder _Builder;
@@ -44,13 +46,15 @@ namespace Regulus.Remoting
             public T GPI;
         }
         List<Source> _GPIs;
-        List<Data> _Handlers;        
+        List<Data> _Handlers;
+        List<CommandRegister> _InvokeDatas;        
         public GPIBinder(Regulus.Remoting.Ghost.INotifier<T> notice ,Regulus.Utility.Command command )
         {
             _Command = command;
             _Notice = notice;            
             _GPIs = new List<Source>();
             _Handlers = new List<Data>();
+            _InvokeDatas = new List<CommandRegister>();
         }
 
         void _Notice_Supply(T obj)
@@ -77,15 +81,28 @@ namespace Regulus.Remoting
                 var param = handler.Builder(obj);
                 _Command.Register(_BuileName(sn, handler.Name), param);
             }
+
+            foreach (var id in _InvokeDatas)
+            {
+                id.Register(obj);
+            }
         }
         
 
         private void _Unregister(int sn)
         {
+            foreach (var id in _InvokeDatas)
+            {
+                id.Unregister();
+            }
+
+
             foreach (var handler in _Handlers)
             {
                 _Command.Unregister(_BuileName(sn , handler.Name));
             }
+
+            
         }
 
         private int _Checkin(T obj)
@@ -139,6 +156,83 @@ namespace Regulus.Remoting
         public void Bind( string name , OnBuilder builder)
         {
             _Handlers.Add(new Data(name, builder));
+        }
+
+        public void Bind( System.Linq.Expressions.Expression<Action<T>> exp)
+        {
+            var name = _GetName(exp);            
+            _InvokeDatas.Add(new CommandRegister<T>(name[0], name.Skip(1).ToArray(), _Command, exp));            
+        }
+
+        public void Bind<T1>(System.Linq.Expressions.Expression<Action<T,T1>> exp)
+        {
+            var name = _GetName(exp);
+            _InvokeDatas.Add(new CommandRegister<T,T1>(name[0], name.Skip(1).ToArray(), _Command, exp));                        
+        }
+        public void Bind<T1, T2>(System.Linq.Expressions.Expression<Action<T, T1, T2>> exp)
+        {
+            var name = _GetName(exp);
+            _InvokeDatas.Add(new CommandRegister<T, T1, T2>(name[0], name.Skip(1).ToArray(), _Command, exp));
+            
+        }
+
+        public void Bind<T1, T2,T3>(System.Linq.Expressions.Expression<Action<T, T1, T2, T3>> exp)
+        {
+            var name = _GetName(exp);
+            _InvokeDatas.Add(new CommandRegister<T, T1, T2,T3>(name[0], name.Skip(1).ToArray(), _Command, exp));            
+        }
+
+        public void Bind<T1, T2, T3, T4>(System.Linq.Expressions.Expression<Regulus.Remoting.Callback<T, T1, T2, T3, T4>> exp)
+        {
+            var name = _GetName(exp);
+            _InvokeDatas.Add(new CommandRegister<T, T1, T2, T3, T4>(name[0], name.Skip(1).ToArray(), _Command, exp));            
+        }
+
+        public void Bind<TR>(System.Linq.Expressions.Expression<Func<T,TR>> exp , Action<TR> ret)
+        {
+            var name = _GetName(exp);
+            _InvokeDatas.Add(new CommandRegisterReturn<T, TR>(name[0], name.Skip(1).ToArray(), _Command, exp , ret) );            
+        }
+
+        public void Bind<T1, TR>(System.Linq.Expressions.Expression<Func<T, T1, TR>> exp, Action<TR> ret)
+        {
+            var name = _GetName(exp);
+            _InvokeDatas.Add(new CommandRegisterReturn<T, T1, TR>(name[0], name.Skip(1).ToArray(), _Command, exp, ret));
+        }
+        public void Bind<T1, T2, TR>(System.Linq.Expressions.Expression<Func<T, T1, T2, TR>> exp, Action<TR> ret)
+        {
+            var name = _GetName(exp);
+            _InvokeDatas.Add(new CommandRegisterReturn<T, T1, T2, TR>(name[0], name.Skip(1).ToArray(), _Command, exp, ret));
+        }
+
+        public void Bind<T1, T2, T3, TR>(System.Linq.Expressions.Expression<Func<T, T1, T2, T3, TR>> exp, Action<TR> ret)
+        {
+            var name = _GetName(exp);
+            _InvokeDatas.Add(new CommandRegisterReturn<T, T1, T2, T3, TR>(name[0], name.Skip(1).ToArray(), _Command, exp, ret));
+        }
+
+        public void Bind<T1, T2, T3, T4, TR>(System.Linq.Expressions.Expression<Regulus.Remoting.Callback<T,T1, T2, T3, T4, TR>> exp, Action<TR> ret)
+        {
+            var name = _GetName(exp);
+            _InvokeDatas.Add(new CommandRegisterReturn<T, T1, T2, T3, T4, TR>(name[0], name.Skip(1).ToArray(), _Command, exp, ret));
+        }
+
+        private string[] _GetName(System.Linq.Expressions.LambdaExpression exp)
+        {
+            string methodName;
+
+            if (exp.Body.NodeType != System.Linq.Expressions.ExpressionType.Call)
+            {
+                throw new ArgumentException();
+            }
+
+            var methodCall = exp.Body as System.Linq.Expressions.MethodCallExpression;
+            methodName = methodCall.Method.Name;
+
+
+            var argNames = (from par in exp.Parameters.Skip(1) select par.Name);
+            return new string[] { methodName }.Concat(argNames).ToArray();
+
         }
     }
 }

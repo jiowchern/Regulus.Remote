@@ -53,6 +53,7 @@
     <Compile Include="IFishStage.cs" />
     <Compile Include="IFishStageQueryer.cs" />
     <Compile Include="IAccountFinder.cs" />
+    <Compile Include="ILevelSelector.cs" />
     <Compile Include="IPlayer.cs" />
     <Compile Include="IQuitable.cs" />
     <Compile Include="IRecordQueriers.cs" />

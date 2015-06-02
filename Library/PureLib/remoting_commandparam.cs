@@ -7,7 +7,14 @@ namespace Regulus.Remoting
 {
     public class CommandParam
     {                
+        public CommandParam()
+        {
+            Return = new Action(_Empty);
+        }
 
+        private void _Empty()
+        {            
+        }
         public Type[] Types { get; set; }
         public object Callback { get; set; }
 

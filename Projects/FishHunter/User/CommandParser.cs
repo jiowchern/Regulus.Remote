@@ -47,9 +47,25 @@ namespace VGame.Project.FishHunter
             _CreateOnline(factory);
 
 
+            _CreateSelectLevel(factory);
+
             _CreateVerify(factory);
 
             _CreatePlayer(factory);
+        }
+
+        private void _CreateSelectLevel(Regulus.Remoting.IGPIBinderFactory factory)
+        {
+            
+            var binder = factory.Create<VGame.Project.FishHunter.ILevelSelector>(_User.LevelSelectorProvider);
+
+            binder.Bind<byte , Regulus.Remoting.Value<bool> >((gpi, level) => gpi.Select(level) , _SelectLevelQueryResult);
+                        
+        }
+
+        private void _SelectLevelQueryResult(Regulus.Remoting.Value<bool> obj)
+        {
+            obj.OnValue += (result) => _View.WriteLine(string.Format("SelectLevelQueryResult = {0}", result));
         }
 
         private void _CreateSystem()

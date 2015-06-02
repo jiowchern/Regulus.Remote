@@ -57,6 +57,7 @@
     <Compile Include="collection_queue.cs" />
     <Compile Include="customtype_flag.cs" />
     <Compile Include="customtype_verify.cs" />
+    <Compile Include="remoting_commandregister.cs" />
     <Compile Include="utility_dummyinput.cs" />
     <Compile Include="utility_dummyview.cs" />
     <Compile Include="extebsion_showmember.cs" />

@@ -54,7 +54,8 @@
   </Choose>
   <ItemGroup>
     <Compile Include="AttribTest.cs" />
-    <Compile Include="CommandAnalysisTest.cs" />
+    <Compile Include="CallTester.cs" />
+    <Compile Include="CommandTest.cs" />
     <Compile Include="EnqueueHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IniTest.cs" />
