@@ -34,7 +34,9 @@ namespace VGame.Project.FishHunter.Stage
 
         Regulus.Remoting.Value<IFishStage> IFishStageQueryer.Query(long player_id, byte fish_stage)
         {
-            var stage = new FishStage(player_id, fish_stage);            
+            if (fish_stage == 200)
+                return null;
+            var stage = new FishStage(player_id, fish_stage); 
             return stage;
         }
 

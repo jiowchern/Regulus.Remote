@@ -164,26 +164,21 @@ namespace Regulus.Utility
             }            
         }
         
+        
         public void Register(string command, Action executer)
         {
-
-            
-            
-
             Action<string[]> func = (args) =>
             {
                 if (args.Length != 0)
                     throw new ArgumentException("命令參數數量為0");
                 
-                executer.Invoke();
-                
+                executer.Invoke();                
             };
 
             var analysis = new Analysis(command);
             _AddCommand(analysis.Command, func);
             _RegisterEvent(analysis, null, new Type[0]);
         }
-
         
         public void Register<T1>(string command, Action<T1> executer)
         {

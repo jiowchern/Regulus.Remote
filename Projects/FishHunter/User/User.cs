@@ -61,5 +61,11 @@ namespace VGame.Project.FishHunter
         {
             get { return _Agent.QueryNotifier<IAccountStatus>(); }
         }
+
+
+        Regulus.Remoting.Ghost.INotifier<ILevelSelector> IUser.LevelSelectorProvider
+        {
+            get { return _Agent.QueryNotifier<ILevelSelector>(); }
+        }
     }
 }

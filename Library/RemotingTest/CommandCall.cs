@@ -45,6 +45,24 @@ namespace RemotingTest
         }
 
 
+
+        [TestMethod]
+        public void TestGPIBinder()
+        {
+            var command =new  Regulus.Utility.Command();
+            var notifier = NSubstitute.Substitute.For<Regulus.Remoting.Ghost.INotifier<IBinderTest>>();
+
+            var binder = new Regulus.Remoting.GPIBinder<IBinderTest>(notifier, command);
+            
+            binder.Bind((tester) => tester.Function1() );
+
+            binder.Bind<int>((tester, arg) => tester.Function2(arg));
+
+            binder.Bind<int>((tester) => tester.Function3(), (ret) => { });
+        }
+
+
+        
         
     }
 }

@@ -22,5 +22,6 @@ namespace VGame.Project.FishHunter.Data
 
         [ProtoBuf.ProtoMember(3)]
         public Guid Owner { get; set; }
+        
     }
 }

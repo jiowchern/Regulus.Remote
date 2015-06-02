@@ -13,6 +13,8 @@ namespace VGame.Project.FishHunter
 
         Regulus.Remoting.Ghost.INotifier<VGame.Project.FishHunter.IPlayer> PlayerProvider { get; }
 
+        Regulus.Remoting.Ghost.INotifier<VGame.Project.FishHunter.ILevelSelector> LevelSelectorProvider { get; }
+
         Regulus.Remoting.Ghost.INotifier<VGame.Project.FishHunter.IAccountStatus> AccountStatusProvider { get; }
 
 
