@@ -7,7 +7,8 @@ namespace VGame.Project.FishHunter
 {
     public interface ILevelSelector
     {
+        Regulus.Remoting.Value<int[]> QueryStages();
 
-        Regulus.Remoting.Value<bool> Select(byte level);
+        Regulus.Remoting.Value<bool> Select(int level);
     }
 }

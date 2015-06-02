@@ -15,6 +15,8 @@ namespace VGame.Project.FishHunter.Play
         Data.Record _Record;
 
         VGame.Project.FishHunter.IRecordQueriers _RecordQueriers;
+        StageTicketInspector _StageTicketInspector;
+        
         public User(Regulus.Remoting.ISoulBinder binder , 
             VGame.Project.FishHunter.IAccountFinder account_finder,
             VGame.Project.FishHunter.IFishStageQueryer queryer,
@@ -25,6 +27,8 @@ namespace VGame.Project.FishHunter.Play
             _Binder = binder;
             _Machine = new Regulus.Utility.StageMachine();
             _FishStageQueryer = queryer;
+            var locks = new Data.StageLock[] { new Data.StageLock { Requires = new int[] { 1, 2 }, Stage = 3 } };
+            _StageTicketInspector = new StageTicketInspector(new VGame.Project.FishHunter.Play.StageGate(locks));
             
         }
         void Regulus.Game.IUser.OnKick(Guid id)
@@ -121,12 +125,13 @@ namespace VGame.Project.FishHunter.Play
         private void _GetRecord(Data.Record obj)
         {
             _Record = obj;
+            _StageTicketInspector.Initial( new Data.Stage[]  { new Data.Stage { Id = 1 , Pass = true } ,new Data.Stage { Id = 2 , Pass = false} });
             _ToSelectStage();
         }
 
         private void _ToSelectStage()
         {
-            var stage = new VGame.Project.FishHunter.Play.SelectStage(_Binder, _FishStageQueryer);
+            var stage = new VGame.Project.FishHunter.Play.SelectStage(_StageTicketInspector.PlayableStages , _Binder, _FishStageQueryer);
             stage.DoneEvent += _ToPlayStage;
             _Machine.Push(stage);            
         }
@@ -134,13 +139,15 @@ namespace VGame.Project.FishHunter.Play
         private void _ToPlayStage(IFishStage fish_stage)
         {
             var stage = new VGame.Project.FishHunter.Play.PlayStage(_Binder, fish_stage, _Record);
-            stage.DoneEvent += _Save;
+            stage.PassEvent += _Save;
+            stage.FailEvent += _ToSelectStage;
             _Machine.Push(stage);            
-        }
+        }        
 
-        private void _Save()
-        {            
-            _ToVerify();
+        private void _Save(int pass_stage)
+        {
+            _StageTicketInspector.Pass(pass_stage);
+            _ToSelectStage();
         }
 
 

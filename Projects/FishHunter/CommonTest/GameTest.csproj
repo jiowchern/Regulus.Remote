@@ -6,8 +6,8 @@
     <ProjectGuid>{06CC7AF7-6795-4231-AE6F-E87BCF8799E3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CommonTest</RootNamespace>
-    <AssemblyName>CommonTest</AssemblyName>
+    <RootNamespace>GameTest</RootNamespace>
+    <AssemblyName>GameTest</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="DataTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StageTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Library\PureLib\PureLib.csproj">
@@ -65,6 +66,10 @@
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{72e9207f-cd57-4789-ad21-30132e541fb6}</Project>
       <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Game\Game.csproj">
+      <Project>{5061bc1d-0c9e-4050-a51e-593b5c16d398}</Project>
+      <Name>Game</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>
