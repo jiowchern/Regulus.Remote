@@ -100,7 +100,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PureLibraryExpansion", "Lib
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogExceptionTest", "Library\LogExceptionTest\LogExceptionTest.csproj", "{9FA4B2C1-03EC-4F26-B78D-09275EE0F89D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonTest", "Projects\FishHunter\CommonTest\CommonTest.csproj", "{06CC7AF7-6795-4231-AE6F-E87BCF8799E3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameTest", "Projects\FishHunter\CommonTest\GameTest.csproj", "{06CC7AF7-6795-4231-AE6F-E87BCF8799E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

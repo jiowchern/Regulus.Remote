@@ -15,12 +15,14 @@ namespace VGame.Project.FishHunter.Play
         public event DoneCallback DoneEvent;
 
         bool _Querying;
-            
-        public SelectStage(Regulus.Remoting.ISoulBinder binder, IFishStageQueryer fish_stag_queryer)
-        {            
+        int[] _Stages;
+        public SelectStage(int[] stages , Regulus.Remoting.ISoulBinder binder, IFishStageQueryer fish_stag_queryer)
+        {      
+      
             this._Binder = binder;
             this._FishStageQueryer = fish_stag_queryer;
             _Querying = false;
+            _Stages = stages;
         }
         
         void Regulus.Utility.IStage.Enter()
@@ -38,29 +40,46 @@ namespace VGame.Project.FishHunter.Play
             
         }
 
-        Regulus.Remoting.Value<bool> ILevelSelector.Select(byte level)
+        Regulus.Remoting.Value<bool> ILevelSelector.Select(int level)
         {
+            if (_Check(level) == false)
+                return false;
+
             if(_Querying == false)
             {
                 _Querying = true;
                 Regulus.Remoting.Value<bool> val = new Regulus.Remoting.Value<bool>();
-                _FishStageQueryer.Query(0, level).OnValue += (fish_stage) =>
+                checked
                 {
-                    if (fish_stage != null)
+                    _FishStageQueryer.Query(0, (byte)level).OnValue += (fish_stage) =>
                     {
-                        DoneEvent(fish_stage);
-                        val.SetValue(true);
-                    }
-                    else
-                    {
-                        val.SetValue(false);
-                    }
-                    _Querying = false;
-                };
+                        if (fish_stage != null)
+                        {
+                            DoneEvent(fish_stage);
+                            val.SetValue(true);
+                        }
+                        else
+                        {
+                            val.SetValue(false);
+                        }
+                        _Querying = false;
+                    };
+                }
+                
 
                 return val;
             }
             return false;
+        }
+
+        private bool _Check(int level)
+        {
+            return _Stages.Any((stage) => stage == level);
+        }
+
+        Regulus.Remoting.Value<int[]> ILevelSelector.QueryStages()
+        {
+            return _Stages;
         }
     }
 }

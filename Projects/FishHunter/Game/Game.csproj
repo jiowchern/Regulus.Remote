@@ -53,6 +53,8 @@
     <Compile Include="Play\Hall.cs" />
     <Compile Include="Play\PlayStage.cs" />
     <Compile Include="Play\SelectStage.cs" />
+    <Compile Include="Play\StageGate.cs" />
+    <Compile Include="Play\StageTicketInspector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Stage\Verify.cs" />
     <Compile Include="Play\DummyStandalong.cs" />
