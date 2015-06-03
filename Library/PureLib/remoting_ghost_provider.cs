@@ -204,6 +204,19 @@ namespace Regulus.Remoting.Ghost
 
         void IProvider.ClearGhosts()
         {
+
+            _RemoveNoRefenceReturns();
+
+            if (_Unsupply != null)
+            {
+                foreach(var e in _Entitys)
+                {
+                    _Unsupply.Invoke(e);
+                }
+                
+            }
+            
+
             _Entitys.Clear();
             _Waits.Clear();
             _Returns.Clear();

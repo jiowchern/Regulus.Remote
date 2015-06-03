@@ -12,10 +12,12 @@ namespace Regulus.Remoting
         private Regulus.Remoting.Ghost.TProvider<Regulus.Utility.IOnline> _OnlineProvider;
         Regulus.Utility.Online _Online;
 
+
+        event Action _BreakEvent;
         public event Action BreakEvent
         {
-            add { _Agent.DisconnectEvent += value; }
-            remove { _Agent.DisconnectEvent -= value; }
+            add { _BreakEvent += value; }
+            remove { _BreakEvent -= value; }
         }
 
         public OnlineStage(Regulus.Remoting.IAgent agent, Regulus.Remoting.Ghost.TProvider<Regulus.Utility.IOnline> provider)
@@ -27,6 +29,7 @@ namespace Regulus.Remoting
         }
         void Regulus.Utility.IStage.Enter()
         {
+            _Agent.DisconnectEvent += _BreakEvent;
             _Bind(_OnlineProvider);
         }
 
@@ -43,6 +46,7 @@ namespace Regulus.Remoting
         void Regulus.Utility.IStage.Leave()
         {
             _Unbind(_OnlineProvider);
+            _Agent.DisconnectEvent -= _BreakEvent;
         }
 
         void Regulus.Utility.IStage.Update()

@@ -24,4 +24,5 @@ namespace VGame.Project.FishHunter.Data
         public Guid Owner { get; set; }
         
     }
+
 }

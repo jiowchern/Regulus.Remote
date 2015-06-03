@@ -12,7 +12,8 @@ namespace Regulus.Utility
         Regulus.Utility.ConsoleInput _Input;
 
         Regulus.Utility.Updater _Updater;
-
+        public delegate void QuitCallback();
+        public event QuitCallback QuitEvent;
         public Regulus.Utility.Command Command
         {
             get { return _Console.Command; }
@@ -39,6 +40,8 @@ namespace Regulus.Utility
 
         void Framework.IBootable.Launch()
         {
+            SetConsoleCtrlHandler(new HandlerRoutine(ConsoleCtrlCheck), true);
+
             _HideLog();
 
             _Updater.Add(_Input);
@@ -79,7 +82,60 @@ namespace Regulus.Utility
             _Viewer.WriteLine(message);
         }
 
-        
+        #region unmanaged
+        // Declare the SetConsoleCtrlHandler function
+        // as external and receiving a delegate.
+
+        [System.Runtime.InteropServices.DllImport("Kernel32")]
+        public static extern bool SetConsoleCtrlHandler(HandlerRoutine Handler, bool Add);
+
+        // A delegate type to be used as the handler routine
+        // for SetConsoleCtrlHandler.
+        public delegate bool HandlerRoutine(CtrlTypes CtrlType);
+
+        // An enumerated type for the control messages
+        // sent to the handler routine.
+        public enum CtrlTypes
+        {
+            CTRL_C_EVENT = 0,
+            CTRL_BREAK_EVENT,
+            CTRL_CLOSE_EVENT,
+            CTRL_LOGOFF_EVENT = 5,
+            CTRL_SHUTDOWN_EVENT
+        }
+
+        #endregion
+
+
+        private bool ConsoleCtrlCheck(CtrlTypes ctrlType)
+        {
+            // Put your own handler here
+            switch (ctrlType)
+            {
+                case CtrlTypes.CTRL_C_EVENT:
+                    QuitEvent();
+                    
+                    break;
+
+                case CtrlTypes.CTRL_BREAK_EVENT:
+                    QuitEvent();
+                    
+                    break;
+
+                case CtrlTypes.CTRL_CLOSE_EVENT:
+                    QuitEvent();
+                    
+                    break;
+
+                case CtrlTypes.CTRL_LOGOFF_EVENT:
+                case CtrlTypes.CTRL_SHUTDOWN_EVENT:
+                    QuitEvent();
+                    
+                    break;
+
+            }
+            return true;
+        }
     }
 
     namespace WindowConsoleStand
@@ -114,6 +170,7 @@ namespace Regulus.Utility
             {
                 bool run = true;
                 windowconsole.Command.Register("quit", () => { run = false; });
+                windowconsole.QuitEvent += () => { run = false; };
                 windowconsole.Launch();
                 while(run)
                 {

@@ -62,6 +62,7 @@
     <Compile Include="AsyncExecuter.cs" />
     <Compile Include="LogTest.cs" />
     <Compile Include="FlagTest.cs" />
+    <Compile Include="DosKeyTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PureLib\PureLib.csproj">

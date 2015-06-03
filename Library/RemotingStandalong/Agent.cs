@@ -23,7 +23,7 @@ namespace Regulus.Standalong
         }
 		public void Launch()
 		{
-		    	
+        
 			_GhostRequest.PingEvent	+= _OnRequestPing	;
             _GhostRequest.ReleaseEvent += _SoulProvider.Unbind;
 
@@ -42,6 +42,10 @@ namespace Regulus.Standalong
 
 		public void Shutdown()
 		{
+            
+            if (_DisconnectEvent != null)
+                _DisconnectEvent();
+
             if (_BreakEvent != null)
                 _BreakEvent();
             _BreakEvent = null;
@@ -50,7 +54,7 @@ namespace Regulus.Standalong
 			_GhostRequest.PingEvent -= _OnRequestPing;
             _GhostRequest.ReleaseEvent -= _SoulProvider.Unbind;
 
-            _SoulProvider = null;
+
 		}
 
 		event Action<Guid, string, Guid, byte[][]> Remoting.IRequestQueue.InvokeMethodEvent
@@ -88,11 +92,7 @@ namespace Regulus.Standalong
             _Binder.Unbind<TSoul>(soul);
 		}
 
-        public void Disconnect()
-        {
-            Shutdown();
-        }
-
+        
         Remoting.Ghost.INotifier<T> Remoting.IAgent.QueryNotifier<T>()
         {
             return QueryProvider<T>();
@@ -119,8 +119,8 @@ namespace Regulus.Standalong
 
         void Remoting.IAgent.Disconnect()
         {
-            if (_DisconnectEvent != null)
-                _DisconnectEvent();
+            Shutdown();
+            
         }
 
         bool Utility.IUpdatable.Update()
@@ -139,10 +139,6 @@ namespace Regulus.Standalong
         {
             Shutdown();
         }
-
-
-
-
 
 
 

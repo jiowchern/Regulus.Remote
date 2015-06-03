@@ -47,7 +47,8 @@ namespace Regulus.Remoting
 
         public void Unregister()
         {
-            _Command.Unregister(_Name);
+
+            _Command.Unregister(new Regulus.Utility.Command.Analysis(_Name).Command);
         }
     }
 

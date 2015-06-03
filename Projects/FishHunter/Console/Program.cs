@@ -26,7 +26,7 @@ namespace Console
 
             var updater = new Regulus.Utility.Updater();
             updater.Add(client);
-            //updater.Add(core);
+            updater.Add(core);
             
             while (client.Enable)
             {
@@ -42,7 +42,7 @@ namespace Console
         private static Regulus.Remoting.ICore _LoadGame(string path)
         {
             var stream = System.IO.File.ReadAllBytes(path);
-            return Regulus.Utility.Loader.Load(stream, "VGame.Project.FishHunter.DummyStandalong");
+            return Regulus.Utility.Loader.Load(stream, "VGame.Project.FishHunter.Play.DummyStandalong");
         }
     }
 }

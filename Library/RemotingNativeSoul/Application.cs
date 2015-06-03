@@ -8,8 +8,12 @@ namespace Regulus.Remoting.Soul.Native
         System.Threading.SpinWait _SpinWait;
         Regulus.Utility.TimeCounter _TimeCounter;
         Regulus.Utility.StageMachine _Machine;
+       
+
         protected override void _Launch()
         {
+            
+
             _SpinWait = new System.Threading.SpinWait();
             _TimeCounter = new Utility.TimeCounter();
             _Machine = new Utility.StageMachine();
@@ -17,8 +21,7 @@ namespace Regulus.Remoting.Soul.Native
         }
 
         protected override void _Update()
-        {
-            
+        {            
             if (_TimeCounter.Second > 1.0f / 30.0f)
             {
                 _Machine.Update();
@@ -29,8 +32,6 @@ namespace Regulus.Remoting.Soul.Native
             {                
                 _SpinWait.SpinOnce();
             }
-                
-                
         }
 
         protected override void _Shutdown()
@@ -51,5 +52,8 @@ namespace Regulus.Remoting.Soul.Native
             stage.ShutdownEvent += _ToStart;
             _Machine.Push(stage);
         }
+
+
+        
     }
 }
