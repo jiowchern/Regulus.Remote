@@ -26,10 +26,14 @@
         IViewer _Viewer;
         LogFilter _Filter;
 
+        System.Collections.Generic.Dictionary<string, string> _Commands;
+
 		public Console(IInput input, IViewer viewer)
         {
+
             Command = new Command();
             _Filter = LogFilter.All;
+            _Commands = new System.Collections.Generic.Dictionary<string, string>();
 			_Initial(input , viewer);
         }
 
@@ -46,8 +50,18 @@
             
             Command.RegisterEvent += _OnRegister;
             Command.UnregisterEvent += _OnUnregister;
+
+            Command.Register("help" , _Help);
         }
        
+        void _Help()
+        {            
+            foreach(var cmd in _Commands)
+            {
+                _Viewer.WriteLine(string.Format("{0}\t[{1}]" , cmd.Key , cmd.Value ));
+            }
+        }
+
         public void SetLogFilter(LogFilter flag)
         {
             _Filter = flag;
@@ -55,27 +69,36 @@
         void _OnUnregister(string command)
         {
             if ( (_Filter & LogFilter.RegisterCommand) == LogFilter.RegisterCommand )
-                _Viewer.WriteLine("Remove Command> " + command);
+            {
+                _Viewer.WriteLine("Remove Command > " + command);
+                
+            }
+            _Commands.Remove(command);
         }
         void _Release()
         {
+            Command.Unregister("help");
             Command.UnregisterEvent -= _OnUnregister;
-            Command.RegisterEvent -= _OnRegister;
+            Command.RegisterEvent -= _OnRegister;            
             _Input.OutputEvent -= _Run;
         }
 
         void _OnRegister(string command, Command.CommandParameter ret, Command.CommandParameter[] args)
         {
+            string argString = "";
+            foreach (var arg in args)
+            {
+                argString += (string.IsNullOrEmpty(arg.Description) ? "" : arg.Description + ":") + arg.Param.Name + " ";
+            }
             if ((_Filter & LogFilter.RegisterCommand) == LogFilter.RegisterCommand)
             {
-                string argString = "";
-                foreach (var arg in args)
-                {
+               
+                _Viewer.WriteLine("Add Command > " + command + " " + argString);
 
-                    argString +=  (string.IsNullOrEmpty(arg.Description)? "": arg.Description + ":") + arg.Param.Name + " ";
-                }
-                _Viewer.WriteLine("Add Command> " + command + " " + argString);
-            }            
+                
+            }
+            _Commands.Add(command, argString);
+
         }
 
         void _Run(string[] command_paraments)
@@ -94,7 +117,7 @@
                     }
                     else
                     {
-                        _Viewer.WriteLine("Without this command.");
+                        _Viewer.WriteLine(string.Format("Invalid command. {0}", cmd));
                     }
                 }
                 catch (System.ArgumentException argument_exception)

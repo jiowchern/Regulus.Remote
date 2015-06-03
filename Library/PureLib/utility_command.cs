@@ -412,7 +412,7 @@ namespace Regulus.Utility
                 info.Handler(args);
             }
 
-            return commandInfomations.Count() ;
+            return infos.Count();
         }
 
         void _RegisterEvent(Analysis analysis, Type ret, Type[] args)

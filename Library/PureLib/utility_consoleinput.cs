@@ -60,10 +60,14 @@ namespace Regulus.Utility
         Doskey _Doskey;
         Stack<char> _InputData = new Stack<char>();
         Console.IViewer _Viewer;
+
+        string _Prompt;
         public ConsoleInput(Console.IViewer viewer)
         {
             _Viewer = viewer;
             _Doskey = new Doskey(10);
+
+            _Prompt = ">>";
         }
 
         public void Update()
@@ -72,6 +76,7 @@ namespace Regulus.Utility
             if (cmd != null)
             {
                 _OutputEvent(cmd);
+                _Viewer.Write(_Prompt);
             }
         }
 
@@ -120,10 +125,14 @@ namespace Regulus.Utility
             if (keyInfo.Key == ConsoleKey.Escape)
                 return null;
 
-            if (keyInfo.Key == ConsoleKey.Backspace && chars.Count() > 0)
+            if (keyInfo.Key == ConsoleKey.Backspace )
             {
-                chars.Pop();
-                _Viewer.Write("\b \b");
+                if (chars.Count() > 0)
+                {
+                    chars.Pop();
+                    _Viewer.Write("\b \b");                
+                }
+                
             }
             else if (keyInfo.Key == ConsoleKey.Enter)
             {
@@ -158,7 +167,7 @@ namespace Regulus.Utility
                 foreach (var c in chars)
                     _Viewer.Write(" ");
                 _Viewer.Write("\r");
-                _Viewer.Write(message);                
+                _Viewer.Write(_Prompt + message);                
 
                 chars.Clear();
 
