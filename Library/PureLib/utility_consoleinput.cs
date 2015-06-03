@@ -6,65 +6,54 @@ using System.Text;
 namespace Regulus.Utility
 {
 
-    class Doskey
+    internal class Doskey
     {
-        int _Current;
+        System.Collections.Generic.List<string> _Stack;
         int _Capacity;
-
-        List<string> _Records;        
-        
-
+        int _Current;
         public Doskey(int capacity)
         {
             _Capacity = capacity;
-            _Records = new List<string>();
+            _Stack = new List<string>(capacity);
         }
-        private string _Get(int current)
+
+
+        internal void Record(string p)
         {
-            if (current < _Records.Count)
-                return _Records[current];
+            
+            _Stack.Add(p);
+            
+            if (_Stack.Count > _Capacity)
+                _Stack.RemoveAt(0);
+
+            _Current = _Stack.Count ;
+        }
+
+        internal string TryGetPrev()
+        {
+            if (_Stack.Count <= 0)
+                return null;
+            if(_Current - 1 >= 0 )
+            {
+                return _Stack[--_Current];
+            }            
             return null;
         }
-        int _Next()
+        internal string TryGetNext()
         {
-            if (++_Current > _Records.Count)
+            if (_Stack.Count <= 0)
+                return null;
+
+            if (_Current + 1 < _Stack.Count)
             {
-                _Current = 0;
+                return _Stack[++_Current];
             }
-            return _Current;
+
+            return null;
         }
 
-        private int _Prev()
-        {
-
-            if (--_Current < 0)
-            {
-                _Current = _Records.Count;
-            }
-            return _Current;
-        }
-
-        internal string GetPrev()
-        {
-            return _Get(_Prev());
-        }
-
-        internal string GetNext()
-        {
-            return _Get(_Next());
-        }
-
+       
         
-
-        internal void Record(string commands)
-        {
-            _Current = 0;
-            _Records = _Records.Union(new string[] {commands}).ToList() ;
-            if(_Records.Count > _Capacity)
-            {
-                _Records.RemoveAt(_Records.Count - 1);
-            }
-        }
     }
     public class ConsoleInput : Console.IInput , Regulus.Utility.IUpdatable
     {
@@ -112,13 +101,16 @@ namespace Regulus.Utility
             // Ignore tab key.
             if (keyInfo.Key == ConsoleKey.DownArrow)
             {
-                string message = _Doskey.GetNext();
-                _ResetLine(chars, message);                
+                var message = _Doskey.TryGetNext();
+                if (message != null)
+                    _ResetLine(chars, message);                
             }
             if (keyInfo.Key == ConsoleKey.UpArrow)
             {
-                string message = _Doskey.GetPrev();
-                _ResetLine(chars, message);                
+                var message = _Doskey.TryGetPrev();
+                
+                if (message != null)
+                    _ResetLine(chars, message);                
             }
             if (keyInfo.KeyChar == '\u0000')
                 return null;

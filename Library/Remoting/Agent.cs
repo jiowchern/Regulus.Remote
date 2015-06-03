@@ -91,8 +91,7 @@ namespace Regulus.Remoting
                     providerPair.Value.ClearGhosts();
                 }
             }
-            
-            _Requester = null;
+                        
 			_EndPing();            
 		}
 
@@ -334,6 +333,9 @@ namespace Regulus.Remoting
         
 		private Regulus.Remoting.Ghost.IGhost _BuildGhost(Type ghostBaseType, Regulus.Remoting.IGhostRequest peer, Guid id,bool return_type)
 		{
+
+            if (peer == null)
+                throw new ArgumentNullException("peer is null");
 			Type ghostType = _QueryGhostType(ghostBaseType);
             object o = Activator.CreateInstance(ghostType, new Object[] { peer, id, _ReturnValueQueue, return_type });
             

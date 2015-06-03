@@ -33,6 +33,10 @@ namespace Regulus.Remoting
             }
             public OnBuilder Builder { get { return _Builder; } }
             public string Name { get { return _Name; } }
+
+            public string UnregisterName { get {
+                return new Regulus.Utility.Command.Analysis(_Name).Command;
+            } }
         }
 
         public event OnSourceHandler SupplyEvent;
@@ -99,7 +103,7 @@ namespace Regulus.Remoting
 
             foreach (var handler in _Handlers)
             {
-                _Command.Unregister(_BuileName(sn , handler.Name));
+                _Command.Unregister(_BuileName(sn , handler.UnregisterName));
             }
 
             
@@ -227,11 +231,15 @@ namespace Regulus.Remoting
             }
 
             var methodCall = exp.Body as System.Linq.Expressions.MethodCallExpression;
-            methodName = methodCall.Method.Name;
+            var method = methodCall.Method;            
+            methodName = method.Name;
 
 
             var argNames = (from par in exp.Parameters.Skip(1) select par.Name);
-            return new string[] { methodName }.Concat(argNames).ToArray();
+            if (method.ReturnType == null)
+                return new string[] { methodName }.Concat(argNames).ToArray();
+
+            return new string[] { methodName }.Concat(new string[] { "return" }).Concat(argNames).ToArray();
 
         }
     }
