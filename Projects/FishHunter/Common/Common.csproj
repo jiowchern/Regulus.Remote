@@ -64,6 +64,7 @@
     <Compile Include="Record.cs" />
     <Compile Include="Stage.cs" />
     <Compile Include="StageLock.cs" />
+    <Compile Include="TradeRecorder.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Library\PureLib\PureLib.csproj">

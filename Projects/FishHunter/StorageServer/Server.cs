@@ -6,9 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Regulus.Extension;
+
+using Regulus.Remoting;
+
 namespace VGame.Project.FishHunter.Storage
 {
-    public class Server : Regulus.Remoting.ICore, IStorage 
+    public class Server : Regulus.Remoting.ICore, IStorage
     {
 
         Regulus.Utility.Updater _Updater;
@@ -30,6 +33,7 @@ namespace VGame.Project.FishHunter.Storage
             _Database = new Regulus.NoSQL.Database(_Ip);
             _Center = new Center(this);
         }
+
         void Regulus.Remoting.ICore.AssignBinder(Regulus.Remoting.ISoulBinder binder)
         {
             _Core.AssignBinder(binder);
@@ -52,8 +56,12 @@ namespace VGame.Project.FishHunter.Storage
             _HandleAdministrator();
             
             _HandleGuest();
+
+            //_HandleTradeRecord();
             
         }
+
+        
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
@@ -96,6 +104,24 @@ namespace VGame.Project.FishHunter.Storage
                 await _Database.Add(account);
             }
         }
+
+        private void _HandleTradeRecord()
+        {
+            //_QueryAllAccount().OnValue += ((accounts) =>
+            //{
+            //    foreach (var acc in accounts)
+            //    {
+            //        var trades = _TradeCorder.FindHistory(acc.Id);
+
+
+                  
+            //    }
+            //);
+
+            
+        }
+
+        
 
         void Regulus.Framework.IBootable.Shutdown()
         {
@@ -210,6 +236,56 @@ namespace VGame.Project.FishHunter.Storage
         void IRecordQueriers.Save(Data.Record record)
         {
             _Database.Update<Data.Record>(record, r => r.Id == record.Id);
+        }
+
+        Regulus.Remoting.Value<TradeNotes> ITradeAccount.Find(Guid id)
+        {
+            return _LoadTradeNotes(id);
+        }
+
+        Regulus.Remoting.Value<TradeNotes> ITradeAccount.Load(Guid id)
+        {
+            return _LoadTradeNotes(id);
+        }
+
+        private Regulus.Remoting.Value<TradeNotes> _LoadTradeNotes(Guid id)
+        {
+            var val = new Regulus.Remoting.Value<TradeNotes>();
+            var account = _Find(id);
+            if (account.IsPlayer())
+            {
+                var tradeTask = _Database.Find<TradeNotes>(t => t.OwnerId == id);
+                tradeTask.ContinueWith((task) =>
+                {
+
+                    if (task.Result.Count > 0)
+                    {
+                        val.SetValue(task.Result.FirstOrDefault());
+                    }
+                    else
+                    {
+                        var newPlayerNotes = new TradeNotes(id);
+                        _Database.Add(newPlayerNotes).Wait();
+                        val.SetValue(newPlayerNotes);
+                    }
+                });
+            }
+            else
+            {
+                val.SetValue(null);
+            }
+            return val;
+        }
+
+
+        Regulus.Remoting.Value<Data.TradeData> ITradeAccount.Saving(Data.TradeData data)
+        {
+           var notes = _LoadTradeNotes(data.BuyerId).Result();
+           notes.TradeData.Add(data);
+
+            _Database.Update<TradeNotes>(notes, a => notes.OwnerId == a.OwnerId);
+
+            return null;
         }
     }
 }

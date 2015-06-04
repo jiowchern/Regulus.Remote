@@ -12,7 +12,14 @@ namespace VGame.Project.FishHunter.Storage
     class Service
     {
         public IAccountManager AccountManager { get; private set; }
+        
         public IAccountFinder AccountFinder { get; private set; }
+        
+        public IRecordQueriers RecodeQueriers { get; private set; }
+
+        public ITradeAccount TradeAccount { get; private set; }
+
+
         System.Threading.Tasks.Task _ProxyUpdate;
         VGame.Project.FishHunter.Storage.Proxy _Proxy;
         volatile bool _Enable;
@@ -64,6 +71,7 @@ namespace VGame.Project.FishHunter.Storage
                     if (_Competnces[Data.Account.COMPETENCE.ACCOUNT_FINDER])
                         _GetAccountFinder();
 
+                    _GetAllAccountRecode();
                     return true;
                 }
                 else
@@ -74,6 +82,17 @@ namespace VGame.Project.FishHunter.Storage
                 throw new SystemException("storage verify fail.");
             }
         }
+
+        private void _GetAllAccountRecode()
+        {
+            var accounts = AccountManager.QueryAllAccount().WaitResult();
+
+            var provider = _User.QueryProvider<IRecordQueriers>();
+
+            int money = provider.Ghosts[0].Load(accounts[0].Id).WaitResult().Money;
+        }
+
+        
         public void Release()
         {            
         }

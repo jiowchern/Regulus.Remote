@@ -161,6 +161,8 @@
   <ItemGroup>
     <Compile Include="AccountCompetenceModelBinder.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\RecodeController.cs" />
+    <Compile Include="Models\RecodeData.cs" />
     <Compile Include="Storage\KeyPool.cs" />
     <Compile Include="Storage\Service.cs" />
     <Compile Include="Extensions\CheckboxListForEnumList.cs" />
@@ -186,6 +188,7 @@
     <Content Include="Views\Account\Password.cshtml" />
     <Content Include="Views\Account\Add.cshtml" />
     <Content Include="Views\Account\Edit.cshtml" />
+    <Content Include="Views\Recode\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

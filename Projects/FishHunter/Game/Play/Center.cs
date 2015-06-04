@@ -9,28 +9,31 @@ namespace VGame.Project.FishHunter.Play
     {
         Regulus.Utility.Updater _Updater;
         Hall _Hall;
-        VGame.Project.FishHunter.IAccountFinder _AccountFinder;
-        
-        private IFishStageQueryer _FishStageQueryer;
-        private IRecordQueriers _RecordQueriers;
-        
 
-        public Center(IAccountFinder accountFinder, IFishStageQueryer fishStageQueryer ,IRecordQueriers rq )
+        IAccountFinder _AccountFinder;
+        IFishStageQueryer _FishStageQueryer;
+        IRecordQueriers _RecordQueriers;
+        ITradeAccount _Tradefinder;
+        
+        public Center(IAccountFinder accountFinder, IFishStageQueryer fishStageQueryer ,IRecordQueriers rq, ITradeAccount tradeAccount)
         {
             _RecordQueriers = rq;
             _AccountFinder = accountFinder;
+            _FishStageQueryer = fishStageQueryer;
+            _Tradefinder = tradeAccount;
+            
             _Updater = new Regulus.Utility.Updater();
             _Hall = new Hall();            
-            
-            this._FishStageQueryer = fishStageQueryer;
         }
+
         void Regulus.Remoting.ICore.AssignBinder(Regulus.Remoting.ISoulBinder binder)
         {
             var user = new User(binder, 
                 _AccountFinder, 
                 _FishStageQueryer,
-                _RecordQueriers
-                );
+                _RecordQueriers,
+                _Tradefinder);
+
             _Hall.PushUser(user);
         }
 
