@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Regulus;
 
 namespace Regulus.Remoting
 {
@@ -27,6 +28,15 @@ namespace Regulus.Remoting
             {
                 val.OnValue += callback;
             };
+        }
+
+        public static T Result<T>(this Regulus.Remoting.Value<T> value)
+        {
+            System.Threading.WaitHandle handle = new System.Threading.AutoResetEvent(false);
+            var valueSpin = new ValueWaiter<T>(value);
+            System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(valueSpin.Run), handle);
+            System.Threading.WaitHandle.WaitAll(new[] { handle });
+            return valueSpin.Value;
         }
     }
 
