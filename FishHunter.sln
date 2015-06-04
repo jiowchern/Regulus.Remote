@@ -7,6 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PureLib", "Library\PureLib\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Library", "Library", "{2C0B4D19-4D23-4793-8627-4E72FE94243F}"
 	ProjectSection(SolutionItems) = preProject
+		CodeMap-20150529.dgml = CodeMap-20150529.dgml
 		ServerCodeMap.dgml = ServerCodeMap.dgml
 	EndProjectSection
 EndProject
