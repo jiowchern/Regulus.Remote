@@ -5,7 +5,7 @@ using System.Text;
 using Regulus.Extension;
 namespace VGame.Project.FishHunter
 {
-    public class DummyFrature : IAccountFinder , IFishStageQueryer , IStorage , IRecordQueriers
+    public class DummyFrature : IAccountFinder , IFishStageQueryer , IStorage
     {
         List<Data.Account> _Accounts;
         List<Data.Record> _Records;
@@ -87,6 +87,21 @@ namespace VGame.Project.FishHunter
                 _Records.Add(record);
 
             }            
+        }
+
+        Regulus.Remoting.Value<TradeNotes> ITradeAccount.Find(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        Regulus.Remoting.Value<TradeNotes> ITradeAccount.Load(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        Regulus.Remoting.Value<Data.TradeData> ITradeAccount.Saving(Data.TradeData data)
+        {
+            throw new NotImplementedException();
         }
     }
 }

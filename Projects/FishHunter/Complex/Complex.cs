@@ -10,8 +10,6 @@ using VGame.Project.FishHunter;
 namespace VGame.Project.FishHunter.Play
 {
 
-
-
     public class Complex : Regulus.Remoting.ICore
     {
         Regulus.Utility.StageMachine _Machine;
@@ -61,7 +59,6 @@ namespace VGame.Project.FishHunter.Play
                 _Formula = new VGame.Project.FishHunter.Formula.Client();
                 _Formula.Selector.AddFactoty("remoting", new VGame.Project.FishHunter.Formula.RemotingUserFactory());
                 _FormulaUser = _Formula.Selector.CreateUserProvider("remoting").Spawn("1");
-                
             }
             else
             {
@@ -200,7 +197,7 @@ namespace VGame.Project.FishHunter.Play
 
         private void _Play(BuildCenterStage.ExternalFeature features)
         {
-            _Center = new Center(features.AccountFinder, features.FishStageQueryer, features.RecordQueriers);
+            _Center = new Center(features.AccountFinder, features.FishStageQueryer, features.RecordQueriers, features.TradeAccount);
 
             _Updater.Add(_Center);
         }

@@ -6,7 +6,11 @@ using System.Web.Mvc;
 using System.Web.Security;
 using Regulus.Extension;
 using System.Threading.Tasks;
+<<<<<<< .merge_file_a08128
+using Regulus.Extension;
+=======
 
+>>>>>>> .merge_file_a08784
 namespace VGameWebApplication.Controllers
 {
 
