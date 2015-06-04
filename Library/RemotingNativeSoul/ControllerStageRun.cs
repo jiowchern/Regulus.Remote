@@ -50,6 +50,8 @@ namespace Regulus.Remoting.Soul.Native
 
     class ThreadCoreHandler
     {
+
+        
         Regulus.Utility.Updater _RequesterHandlers;
         Regulus.Utility.PowerRegulator _Spin;
         
@@ -80,8 +82,8 @@ namespace Regulus.Remoting.Soul.Native
         {
             _Run = true;
             _Core.Launch();
-            
-            while (_Run)
+
+            while (_Run )
             {
                 if (_Binders.Count > 0)
                 {
@@ -94,11 +96,14 @@ namespace Regulus.Remoting.Soul.Native
                         }
                     }
                 }
-                _RequesterHandlers.Working();
+
                 _Core.Update();
+                _RequesterHandlers.Working();                
                 _Spin.Operate(Peer.TotalResponse);
             }
             _Core.Shutdown();
+
+            
         }
 
         public void Stop()
