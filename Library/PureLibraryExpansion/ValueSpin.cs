@@ -10,6 +10,8 @@ namespace Regulus.Remoting.Native.Soul
         private Value<T> value;
         volatile bool _HasValue;
         T _Value;
+
+        public T Value { get { return _Value; } }
         public ValueSpin(Value<T> value)
         {
             // TODO: Complete member initialization
@@ -21,12 +23,27 @@ namespace Regulus.Remoting.Native.Soul
         internal T Wait()
         {
             value.OnValue += _Getted;
-            var sw = new System.Threading.SpinWait();
+
+
+            var sw = new Regulus.Utility.SpinWait();
             while (_HasValue == false)
                 sw.SpinOnce();
 
 
             return _Value;
+        }
+
+        internal void Run(object obj)
+        {
+            value.OnValue += _Getted;
+
+
+            var sw = new Regulus.Utility.SpinWait();
+            while (_HasValue == false)
+                sw.SpinOnce();
+
+
+            
         }
 
         private void _Getted(T obj)

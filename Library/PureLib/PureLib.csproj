@@ -123,6 +123,7 @@
     <Compile Include="utility_consoleviewer.cs" />
     <Compile Include="remoting_value.cs" />
     <Compile Include="utility_windowconsole.cs" />
+    <Compile Include="remoting_valuewaiter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
