@@ -28,8 +28,7 @@ namespace Regulus.Remoting.Soul.Native
 
         Regulus.Remoting.Native.PackageReader _Reader;
         Regulus.Remoting.Native.PackageWriter _Writer;
-		Regulus.Utility.StageMachine _ReadMachine;
-		Regulus.Utility.StageMachine _WriteMachine;
+		
         volatile bool _Enable;
 
 
@@ -45,58 +44,17 @@ namespace Regulus.Remoting.Soul.Native
 			_SoulProvider = new Remoting.Soul.SoulProvider(this, this);
             _Responses = new PackageQueue();
             _Requests = new PackageQueue();
-			_ReadMachine = new Utility.StageMachine();
-			_WriteMachine = new Utility.StageMachine();
+			
             _Enable = true;
 
             _Reader = new Remoting.Native.PackageReader();
             _Writer = new Remoting.Native.PackageWriter();
 			
 		}
-		private void _HandleWrite(Package[] packages)
-		{
-            var pkgs = packages;
-            var responseCount = pkgs.Length;
-            lock (_LockResponse)
-            {
-                TotalResponse -= responseCount;
-            }
+		
 
-            var stage = new NetworkStreamWriteStage(_Socket, pkgs);                
-            stage.WriteCompletionEvent += () =>
-            {
-                _HandleWriteWait();
-            };
-            stage.ErrorEvent += () => 
-            {
-                _Enable = false; 
-            };
-            _WriteMachine.Push(stage);
-			
-		}
-
-        void _HandleWriteWait()
-        {
-            var stage = new WaitQueueStage(_Responses);
-            stage.DoneEvent += _HandleWrite;
-            _WriteMachine.Push(stage);
-        }
-		private void _HandleRead()
-		{
-			var stage = new NetworkStreamReadStage(_Socket);
-			stage.ReadCompletionEvent += (package) =>
-			{
-                if (package != null)
-                {
-
-                    _RequestPush(package);
-                        
-                }				    
-				_HandleRead();
-			};
-            stage.ErrorEvent += () => { _Enable = false; };
-			_ReadMachine.Push(stage);
-		}
+        
+		
 
         private void _RequestPush(Package package)
         {
@@ -203,30 +161,15 @@ namespace Regulus.Remoting.Soul.Native
             {
                 _SoulProvider.Update();
 
-                _ReadMachine.Update();
-                _WriteMachine.Update();
-
-                _TestConnect();
-                
-
                 return true;
             }
             Disconnect();
             return false;
         }
 
-        private void _TestConnect()
-        {
-            
-        }
-
-        
-
         void Framework.IBootable.Launch()
         {
-            //_HandleWriteWait();
-            //_HandleRead();
-
+            
             _Reader.DoneEvent += _RequestPush ;
             _Reader.ErrorEvent += () => { _Enable = false; };
             _Reader.Start(_Socket);
@@ -253,9 +196,7 @@ namespace Regulus.Remoting.Soul.Native
         {
             _Socket.Close();
             _Reader.Stop();
-            _Writer.Stop();
-            _ReadMachine.Termination();
-            _WriteMachine.Termination();
+            _Writer.Stop();            
 
             lock (_LockResponse)
             {
