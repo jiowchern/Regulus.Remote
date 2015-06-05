@@ -54,7 +54,7 @@ namespace VGame.Project.FishHunter.Play
             _Binder = binder;
             _AccountFinder = account_finder;
             _FishStageQueryer = queryer;
-            var locks = new Data.StageLock[] { new Data.StageLock { Requires = new int[] { 1, 2 }, Stage = 3 } };
+            var locks = new Data.StageLock[] { new Data.StageLock { KillCount = 200 , Stage = 3 } };
             _StageTicketInspector = new StageTicketInspector(new VGame.Project.FishHunter.Play.StageGate(locks));
             
             _RecordQueriers = record_queriers;
@@ -164,6 +164,7 @@ namespace VGame.Project.FishHunter.Play
 
         private void _ToSelectStage()
         {
+            
             var stage = new VGame.Project.FishHunter.Play.SelectStage(_StageTicketInspector.PlayableStages , _Binder, _FishStageQueryer);
             stage.DoneEvent += _ToPlayStage;
             _Machine.Push(stage);            
@@ -172,12 +173,18 @@ namespace VGame.Project.FishHunter.Play
         private void _ToPlayStage(IFishStage fish_stage)
         {
             var stage = new VGame.Project.FishHunter.Play.PlayStage(_Binder, fish_stage, _Record);
-            stage.PassEvent += _Save;
-            stage.FailEvent += _ToSelectStage;
+            stage.PassEvent += _Pass;
+            stage.KillEvent += _Kill;
             _Machine.Push(stage);            
+        }
+
+        private void _Kill(int kill_count)
+        {
+            _StageTicketInspector.Kill(kill_count);
+            _ToSelectStage();
         }        
 
-        private void _Save(int pass_stage)
+        private void _Pass(int pass_stage)
         {
             _StageTicketInspector.Pass(pass_stage);
             _ToSelectStage();

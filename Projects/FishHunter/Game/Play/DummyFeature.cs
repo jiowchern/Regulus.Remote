@@ -91,17 +91,17 @@ namespace VGame.Project.FishHunter
 
         Regulus.Remoting.Value<TradeNotes> ITradeAccount.Find(Guid id)
         {
-            throw new NotImplementedException();
+            return new TradeNotes(Guid.NewGuid());
         }
 
         Regulus.Remoting.Value<TradeNotes> ITradeAccount.Load(Guid id)
         {
-            throw new NotImplementedException();
+            return new TradeNotes(Guid.NewGuid());
         }
 
         Regulus.Remoting.Value<Data.TradeData> ITradeAccount.Saving(Data.TradeData data)
         {
-            throw new NotImplementedException();
+            return data;
         }
     }
 }
