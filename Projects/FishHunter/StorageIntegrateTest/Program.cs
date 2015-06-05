@@ -37,7 +37,6 @@ namespace StorageIntegrateTest
             updater.Shutdown();
             launcher.Shutdown();
 
-
             Console.ReadKey();
         }
 

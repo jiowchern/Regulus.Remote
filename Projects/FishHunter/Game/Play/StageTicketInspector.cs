@@ -9,6 +9,7 @@ namespace VGame.Project.FishHunter.Play
     {
         private StageGate _StageGate;
         HashSet<Data.Stage> _Current;
+        int _KillCount;
         public StageTicketInspector(StageGate sg)
         {            
             this._StageGate = sg;
@@ -20,7 +21,11 @@ namespace VGame.Project.FishHunter.Play
             _Current = new HashSet<Data.Stage>(stages);
             _Update();
         }
-
+        internal void Kill(int count)
+        {
+            _KillCount += count;
+            _Update();
+        }
         internal void Pass(int stage)
         {            
             _Current.Add(new Data.Stage { Id = stage, Pass = true } );
@@ -30,7 +35,7 @@ namespace VGame.Project.FishHunter.Play
         private void _Update()
         {
             var passs = from stage in _Current where stage.Pass == true select stage.Id;
-            foreach( var stage  in _StageGate.FindUnlockStage(passs) )
+            foreach( var stage  in _StageGate.FindUnlockStage(passs , _KillCount) )
             {
                 _Current.Add(new Data.Stage() { Id = stage, Pass = false } );
             }

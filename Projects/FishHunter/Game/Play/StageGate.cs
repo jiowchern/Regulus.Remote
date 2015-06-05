@@ -12,7 +12,7 @@ namespace VGame.Project.FishHunter.Play
         {
             _Locks = locks;
         }
-        internal IEnumerable<int> FindUnlockStage(IEnumerable<int> passs)
+        internal IEnumerable<int> FindUnlockStage(IEnumerable<int> passs , int kill_count)
         {
             List<int> unlocks = new List<int>();
             foreach( var l in _Locks)
@@ -20,7 +20,8 @@ namespace VGame.Project.FishHunter.Play
                 var total = l.Requires.Length;
                 if(l.Requires.Intersect( passs).Count() == total)
                 {
-                    unlocks.Add(l.Stage);
+                    if (l.KillCount <= kill_count)
+                        unlocks.Add(l.Stage);
                 }
             }
 

@@ -26,5 +26,17 @@ namespace CommonTest
             Assert.AreEqual(0, record.Money);
             Assert.AreEqual(Guid.Empty, record.Owner);
         }
+
+
+        [TestMethod]
+        public void TestStageLock()
+        {
+            VGame.Project.FishHunter.Data.StageLock stageLock = new VGame.Project.FishHunter.Data.StageLock();
+
+
+            Assert.AreEqual(0, stageLock.KillCount );
+            Assert.AreNotEqual(null, stageLock.Requires);
+            Assert.AreEqual(0, stageLock.Stage);
+        }
     }
 }

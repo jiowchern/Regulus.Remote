@@ -19,8 +19,10 @@ namespace VGame.Project.FishHunter.Play
         public delegate void PassCallback(int pass_stage);
         public event PassCallback PassEvent;
 
-        public delegate void FailCallback();
-        public event FailCallback FailEvent;
+        
+
+        public delegate void KillCallback(int kill_count);
+        public event KillCallback KillEvent;
 
         Dictionary<int, HitRequest> _Requests;
         int _DeadFishCount;
@@ -31,7 +33,7 @@ namespace VGame.Project.FishHunter.Play
             _Requests = new Dictionary<int, HitRequest>();
             this._Binder = binder;
             this._FishStage = fish_stage;
-            _DeadFishCount = 100;
+            _DeadFishCount = 0;
             _Money = money;
         }
 
@@ -44,7 +46,7 @@ namespace VGame.Project.FishHunter.Play
                 {
                     _DeathFishEvent(obj.FishID);
                     AddMoney(request.WepBet * request.WepOdds);
-                    _CheckPass();
+                    _DeadFishCount++;
                 }
                 else if(obj.DieResult == FISH_DETERMINATION.SURVIVAL)
                 {
@@ -54,12 +56,6 @@ namespace VGame.Project.FishHunter.Play
             }
 
             
-        }
-
-        private void _CheckPass()
-        {
-            if (--_DeadFishCount == 0)
-                PassEvent(_FishStage.FishStage);
         }
 
         private void _PushFish(short id)
@@ -163,7 +159,7 @@ namespace VGame.Project.FishHunter.Play
 
         void IPlayer.Quit()
         {
-            FailEvent();
+            KillEvent(_DeadFishCount);
         }
 
 
