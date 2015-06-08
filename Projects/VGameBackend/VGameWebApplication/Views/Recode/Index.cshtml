@@ -15,11 +15,10 @@
         <table>
             @foreach (var acc in Model)
             {
-                <tr><td>@acc.Name</td></tr>
-
-                
-                
-                <tr><td>儲值金額</td><td>@Html.EditorFor(m => m.TheAccount.Name)</td></tr>
+                <tr>
+                    <td>@acc.Name</td>
+                    @Html.Label("儲值金額")
+                </tr>
             }
         </table>
     </div>
@@ -30,9 +29,16 @@
     @{
         using (Html.BeginForm("AddMoney", "Recode", FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return validateForm(this)" }))
         {
-            <div class="form-group">
-                @Html.Label("儲值金額")
-                @Html.EditorFor(m => m.Name)
+            <div>
+                <table>
+                    @foreach (var acc in Model)
+                    {
+                        <tr>
+                            <td>@acc.Name</td>
+                            @Html.Label("儲值金額")
+                        </tr>
+                    }
+                </table>
             </div>
 
             <input type="submit" value="確認" class="btn btn-default" />
