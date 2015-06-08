@@ -9,7 +9,7 @@
 
 
     
-@using (Html.BeginForm("AddMoney", "Recode", FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return validateForm(this)" }))
+@using (Html.BeginForm("Index", "Record", FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return validateForm(this)" }))
 {
     <div>
         <table>
@@ -27,7 +27,7 @@
 
 <div>
     @{
-        using (Html.BeginForm("AddMoney", "Recode", FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return validateForm(this)" }))
+        using (Html.BeginForm("Index", "Record", FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return validateForm(this)" }))
         {
             <div>
                 <table>
