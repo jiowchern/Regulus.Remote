@@ -23,7 +23,7 @@ namespace VGameWebApplication.Controllers
             var money = service.TradeAccount.Find(accs[0].Id).WaitResult();
 
             //return PartialView(record);            
-            return View(record);
+            return View(accs);
         }
 
         public ActionResult AddMoney()
