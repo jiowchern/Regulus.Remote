@@ -5,7 +5,10 @@ using System.Web;
 
 namespace VGameWebApplication.Models
 {
-    public class RecodeData
+    public class RecordData
     {
+        public bool RecordManager { get; set; }
+
+        public bool RecordFinder { get; set; }
     }
 }
