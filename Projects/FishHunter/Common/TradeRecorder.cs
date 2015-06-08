@@ -17,6 +17,11 @@ namespace VGame.Project.FishHunter
 
         public List<Data.TradeData> TradeData { get { return _TradeDatas; } }
 
+
+        public TradeNotes()
+        {
+            _TradeDatas = new List<Data.TradeData>();
+        }
         public TradeNotes(Guid id)
         {
             OwnerId = id;
