@@ -14,28 +14,29 @@ namespace VGameWebApplication.Controllers
         // GET: Recode
         public ActionResult Index()
         {
-            //var service = VGame.Project.FishHunter.Storage.Service.Create(HttpContext.Items["StorageId"]);
+            VGame.Project.FishHunter.Storage.Service service = VGame.Project.FishHunter.Storage.Service.Create(HttpContext.Items["StorageId"]);
+            VGameWebApplication.Models.RecordData record = new Models.RecordData();
 
-            //service.AccountManager
-
-            var service = VGame.Project.FishHunter.Storage.Service.Create(HttpContext.Items["StorageId"]);
-
-            var accounts = service.AccountManager.QueryAllAccount().WaitResult();
-
-            //var provider = _User.QueryProvider<IRecordQueriers>();
-
-            //int money = provider.Ghosts[0].Load(accounts[0].Id).WaitResult().Money;
-
-
-            //var result = await model.AccountFinder.FindAccountById(accountId).ToTask();
+            record.RecordManager = service.TradeAccount != null;
             
+            var accs = service.AccountManager.QueryAllAccount().WaitResult();
+            var money = service.TradeAccount.Find(accs[0].Id).WaitResult();
 
-            return View(accounts);
+            //return PartialView(record);            
+            return View(record);
         }
 
         public ActionResult AddMoney()
         {
-            return View();
+            VGame.Project.FishHunter.Storage.Service service = VGame.Project.FishHunter.Storage.Service.Create(HttpContext.Items["StorageId"]);
+            VGameWebApplication.Models.RecordData record = new Models.RecordData();
+            
+            record.RecordFinder = service.TradeAccount != null;
+
+            var accs = service.AccountManager.QueryAllAccount().WaitResult();
+            var money = service.TradeAccount.Find(accs[0].Id).WaitResult();
+
+            return View(record);
         }
 
     }

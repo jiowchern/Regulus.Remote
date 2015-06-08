@@ -21,42 +21,44 @@ namespace VGame.Project.FishHunter.Storage
 
 
         System.Threading.Tasks.Task _ProxyUpdate;
+
         VGame.Project.FishHunter.Storage.Proxy _Proxy;
+
         volatile bool _Enable;
+
         Regulus.CustomType.Flag<VGame.Project.FishHunter.Data.Account.COMPETENCE> _Competnces;
+
         public bool Enable {  get {return _Enable;}}
         
         Regulus.Utility.SpinWait _Soin;
-        private VGameWebApplication.Models.VerifyData data;
+
+        private VGameWebApplication.Models.VerifyData _Data;
+
         private IUser _User;
+
         object _Key;
+
         public Service(VGameWebApplication.Models.VerifyData data)
         {
             _Key = new object();
-            this.data = data;
+            this._Data = data;
             _Soin = new Regulus.Utility.SpinWait();
             _Enable = true;
+            
             _Proxy = new VGame.Project.FishHunter.Storage.Proxy();
             (_Proxy as Regulus.Utility.IUpdatable).Launch();
             _ProxyUpdate = new System.Threading.Tasks.Task(_UpdateProxy, new WeakReference<Regulus.Utility.IUpdatable>(_Proxy));
             _ProxyUpdate.Start();
+
             _User = _Proxy.SpawnUser("1");
-            
         }
+       
         ~Service()
         {
             lock (_Proxy)
                 (_Proxy as Regulus.Utility.IUpdatable).Shutdown();
         }
 
-        private void _GetStorageCompetnces()
-        {
-            var provider = _User.QueryProvider<IStorageCompetnces>();
-            while (provider.Ghosts.Length <= 0)
-                _Wait();
-
-            _Competnces = new Regulus.CustomType.Flag<Data.Account.COMPETENCE>(provider.Ghosts[0].Query().WaitResult());
-        }
         bool _Initial()
         {
             if (_Connect())
@@ -83,28 +85,29 @@ namespace VGame.Project.FishHunter.Storage
             }
         }
 
-        private void _GetAllAccountRecode()
+        private bool _Connect()
         {
-            var accounts = AccountManager.QueryAllAccount().WaitResult();
+            while (_User.Remoting.ConnectProvider.Ghosts.Length <= 0)
+                _Wait();
 
-            var provider = _User.QueryProvider<IRecordQueriers>();
-
-            int money = provider.Ghosts[0].Load(accounts[0].Id).WaitResult().Money;
+            return _User.Remoting.ConnectProvider.Ghosts[0].Connect("127.0.0.1", 38973).WaitResult();
         }
 
-        
-        public void Release()
-        {            
-        }
-        
-
-        private void _GetAccountFinder()
+        private bool _Verify()
         {
-            var provider = _User.QueryProvider<IAccountFinder>();
+            while (_User.VerifyProvider.Ghosts.Length <= 0)
+                _Wait();
+
+            return _User.VerifyProvider.Ghosts[0].Login(_Data.Account, _Data.Password).WaitResult();
+        }
+
+        private void _GetStorageCompetnces()
+        {
+            var provider = _User.QueryProvider<IStorageCompetnces>();
             while (provider.Ghosts.Length <= 0)
                 _Wait();
 
-            AccountFinder = provider.Ghosts[0];
+            _Competnces = new Regulus.CustomType.Flag<Data.Account.COMPETENCE>(provider.Ghosts[0].Query().WaitResult());
         }
 
         private void _GetAccountManager()
@@ -116,48 +119,58 @@ namespace VGame.Project.FishHunter.Storage
             AccountManager = provider.Ghosts[0];
         }
 
-
-        private bool _Verify()
+        private void _GetAccountFinder()
         {
-            while (_User.VerifyProvider.Ghosts.Length <= 0)
+            var provider = _User.QueryProvider<IAccountFinder>();
+            while (provider.Ghosts.Length <= 0)
                 _Wait();
 
-            return _User.VerifyProvider.Ghosts[0].Login(data.Account, data.Password).WaitResult();
+            AccountFinder = provider.Ghosts[0];
         }
 
-        private bool _Connect()
+        private void _GetAllAccountRecode()
         {
-            while (_User.Remoting.ConnectProvider.Ghosts.Length <= 0)
-                _Wait();
+            //var accounts = AccountManager.QueryAllAccount().WaitResult();
 
-            return _User.Remoting.ConnectProvider.Ghosts[0].Connect("127.0.0.1", 38973).WaitResult();
+            var provider = _User.QueryProvider<IRecordQueriers>();
+            while (provider.Ghosts.Length <= 0)
+                _Wait();
+            
+            RecodeQueriers = provider.Ghosts[0];
+
+            
+            var p = _User.QueryProvider<ITradeAccount>();
+            while (p.Ghosts.Length <= 0)
+                _Wait();
+            TradeAccount = p.Ghosts[0];
+            
+            //int money = provider.Ghosts[0].Load(accounts[0].Id).WaitResult().Money;
         }
+
+        
+        public void Release()
+        {            
+        }
+       
 
         private void _Wait()
         {
             _Soin.SpinOnce();
         }
 
-        
-
-        
-
         static private void _UpdateProxy(object obj)
         {
             WeakReference<Regulus.Utility.IUpdatable> weak = (WeakReference<Regulus.Utility.IUpdatable>)obj;
-            
-            
+
             Regulus.Utility.SpinWait spin = new Regulus.Utility.SpinWait();
 
-
-            
             bool enable = true;
 
             while (enable)
             {
                 Regulus.Utility.IUpdatable updater;
-                enable  = weak.TryGetTarget(out updater);
-                if (Regulus.Utility.Random.NextFloat(0, 1) <= 0.1f) 
+                enable = weak.TryGetTarget(out updater);
+                if (Regulus.Utility.Random.NextFloat(0, 1) <= 0.1f)
                     spin.SpinOnce();
                 else
                     spin.Reset();
@@ -165,12 +178,7 @@ namespace VGame.Project.FishHunter.Storage
                 lock (updater)
                     updater.Update();
             }
-
-            
-            
         }
-
-        
 
         internal static Guid Verify(string user, string password)
         {
@@ -197,14 +205,14 @@ namespace VGame.Project.FishHunter.Storage
             return null;
         }
 
-        internal static void Destroy(Guid guid)
-        {
-            VGame.Project.FishHunter.Storage.KeyPool.Instance.Destroy(guid);
-        }
-
         internal static Service Create(object p)
         {
             return Create((Guid)p);
+        }
+
+        internal static void Destroy(Guid guid)
+        {
+            VGame.Project.FishHunter.Storage.KeyPool.Instance.Destroy(guid);
         }
     }
 }
