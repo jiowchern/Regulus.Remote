@@ -16,36 +16,33 @@ namespace VGame.Project.FishHunter
         public Guid OwnerId { get; set; }
 
         [ProtoBuf.ProtoMember(3)]
-        List<Data.TradeData> _TradeDatas;
-
-        public List<Data.TradeData> TradeData { get { return _TradeDatas; } }
-
+        public List<Data.TradeData> TradeDatas { get; set; }
 
         public TradeNotes()
         {
             Id = Guid.NewGuid();
-            _TradeDatas = new List<Data.TradeData>();
+            TradeDatas = new List<Data.TradeData>();
         }
         public TradeNotes(Guid id)
         {
             Id = Guid.NewGuid();
             OwnerId = id;
-            _TradeDatas = new List<Data.TradeData>();
+            TradeDatas = new List<Data.TradeData>();
         }
 
         public void SavingTrade(Data.TradeData data)
         {
-            _TradeDatas.Add(data);
+            TradeDatas.Add(data);
         }
 
         public int GetTotalDeposit()
         {
-            return (from a in _TradeDatas where a.IsUsed == false select a.Money).Sum();
+            return (from a in TradeDatas where a.IsUsed == false select a.Money).Sum();
         }
 
         public void SetTradeIsUsed()
         {
-            foreach (var a in _TradeDatas)
+            foreach (var a in TradeDatas)
             {
                 a.IsUsed = true;
             }
