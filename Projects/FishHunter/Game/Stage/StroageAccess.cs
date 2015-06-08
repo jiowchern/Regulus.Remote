@@ -43,6 +43,8 @@ namespace VGame.Project.FishHunter.Stage
 
         private void _Attach(Data.Account account)
         {
+
+            _Binder.Bind<ITradeAccount>(_Storage);
             _Binder.Bind<IStorageCompetnces>(this);
             if (account.HasCompetnce(Data.Account.COMPETENCE.ACCOUNT_FINDER))
             {
@@ -68,6 +70,9 @@ namespace VGame.Project.FishHunter.Stage
                 _Binder.Unbind<IAccountManager>(_Storage);
 
             _Binder.Unbind<IStorageCompetnces>(this);
+
+            
+            _Binder.Unbind<ITradeAccount>(_Storage);
         }
 
 
