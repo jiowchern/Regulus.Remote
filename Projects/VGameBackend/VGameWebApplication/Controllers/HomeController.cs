@@ -40,11 +40,6 @@ namespace VGameWebApplication.Controllers
         {            
             return View();
         }
-
-
-        
-
-        
         
         [AcceptVerbs(HttpVerbs.Post)]
         public async System.Threading.Tasks.Task<ActionResult> Verify(string user, string password)
@@ -83,7 +78,5 @@ namespace VGameWebApplication.Controllers
 
 	}
 
-
-
-
 }
+
