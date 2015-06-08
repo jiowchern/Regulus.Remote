@@ -9,7 +9,7 @@ using Regulus.Extension;
 
 namespace VGameWebApplication.Controllers
 {
-    public class RecodeController : Controller
+    public class RecordController : Controller
     {
         // GET: Recode
         public ActionResult Index()

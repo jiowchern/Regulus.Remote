@@ -290,7 +290,7 @@ namespace VGame.Project.FishHunter.Storage
         Regulus.Remoting.Value<Data.TradeData> ITradeAccount.Saving(Data.TradeData data)
         {
            var notes = _LoadTradeNotes(data.BuyerId).Result();
-           notes.TradeData.Add(data);
+           notes.TradeDatas.Add(data);
 
             _Database.Update<TradeNotes>(notes, a => notes.OwnerId == a.OwnerId);
 
