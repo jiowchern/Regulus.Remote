@@ -10,20 +10,25 @@ namespace VGame.Project.FishHunter
     public class TradeNotes
     {
         [ProtoBuf.ProtoMember(1)]
-        public Guid OwnerId { get; set; }
+        public Guid Id { get; set; }
 
         [ProtoBuf.ProtoMember(2)]
-        List<Data.TradeData> _TradeDatas ;
+        public Guid OwnerId { get; set; }
+
+        [ProtoBuf.ProtoMember(3)]
+        List<Data.TradeData> _TradeDatas;
 
         public List<Data.TradeData> TradeData { get { return _TradeDatas; } }
 
 
         public TradeNotes()
         {
+            Id = Guid.NewGuid();
             _TradeDatas = new List<Data.TradeData>();
         }
         public TradeNotes(Guid id)
         {
+            Id = Guid.NewGuid();
             OwnerId = id;
             _TradeDatas = new List<Data.TradeData>();
         }

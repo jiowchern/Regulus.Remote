@@ -257,16 +257,25 @@ namespace VGame.Project.FishHunter.Storage
                 var tradeTask = _Database.Find<TradeNotes>(t => t.OwnerId == id);
                 tradeTask.ContinueWith((task) =>
                 {
-
+                    Regulus.Utility.Log.Instance.Write(string.Format("TradeNotes Find Done."));
+                    if(task.Exception != null)
+                    {
+                        Regulus.Utility.Log.Instance.Write(string.Format("TradeNotes Exception {0}.", task.Exception.ToString()));
+                    }
+                    
                     if (task.Result.Count > 0)
                     {
                         val.SetValue(task.Result.FirstOrDefault());
+
+                        Regulus.Utility.Log.Instance.Write(string.Format("have TradeNotes . id = {0}" , id));
                     }
                     else
                     {
                         var newPlayerNotes = new TradeNotes(id);
                         _Database.Add(newPlayerNotes).Wait();
                         val.SetValue(newPlayerNotes);
+                        Regulus.Utility.Log.Instance.Write(string.Format("new TradeNotes . id = {0}", id));
+
                     }
                 });
             }
