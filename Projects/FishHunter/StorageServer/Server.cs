@@ -243,30 +243,42 @@ namespace VGame.Project.FishHunter.Storage
 
         Regulus.Remoting.Value<Data.TradeNotes> ITradeNotes.Find(Guid id)
         {
-            return _LoadTradeNotes(id);
+            Regulus.Remoting.Value<Data.TradeNotes> val = new Value<Data.TradeNotes>();
+            var t = _LoadTradeNotesTask(id);
+            t.ContinueWith((task) =>
+            {
+                var notes = task.Result.SingleOrDefault();
+                val.SetValue(notes);
+            });
+
+            return val;
         }
 
         Regulus.Remoting.Value<Data.TradeNotes> ITradeNotes.Load(Guid id)
         {
-            var val = _LoadTradeNotes(id);
+            Regulus.Remoting.Value<Data.TradeNotes> val = new Value<Data.TradeNotes>();
+            var t = _LoadTradeNotesTask(id);
+            t.ContinueWith((task) =>
+            {
 
-            if(val == null)
-            {
-                return _CreateTradeNotes(id);    
-            }
-            else 
-            {
-                return val;
-            }
+                var notes = task.Result.SingleOrDefault();
+                if (notes == null)
+                    val.SetValue(_CreateTradeNotes(id));
+                else
+                    val.SetValue(notes);
+            });
+
+            return val;
         }
 
-        private Regulus.Remoting.Value<Data.TradeNotes> _LoadTradeNotes(Guid id)
+       
+        private Task<List<Data.TradeNotes>> _LoadTradeNotesTask(Guid id)
         {
-            var val = new Regulus.Remoting.Value<Data.TradeNotes>();
+            //var val = new Regulus.Remoting.Value<Data.TradeNotes>();
             
             var tradeTask = _Database.Find<Data.TradeNotes>(t => t.Owner == id);
                 
-            tradeTask.ContinueWith((task) =>
+            var returnTask = tradeTask.ContinueWith((task) =>
             {
                 Regulus.Utility.Log.Instance.Write(string.Format("TradeNotes Find Done."));
                     
@@ -274,48 +286,39 @@ namespace VGame.Project.FishHunter.Storage
                 {
                     Regulus.Utility.Log.Instance.Write(string.Format("TradeNotes Exception {0}.", task.Exception.ToString()));
                 }
-                    
-                if (task.Result.Count > 0)
-                {
-                    val.SetValue(task.Result.FirstOrDefault());
-
-                    Regulus.Utility.Log.Instance.Write(string.Format("have TradeNotes . id = {0}" , id));
-                }
+               
+                return task.Result;
             });
-            
-            return val;
+
+            return returnTask;
         }
 
-        private Regulus.Remoting.Value<Data.TradeNotes> _CreateTradeNotes(Guid id)
+        private Data.TradeNotes _CreateTradeNotes(Guid id)
         {
-            var val = new Regulus.Remoting.Value<Data.TradeNotes>();
+            
             var newPlayerNotes = new Data.TradeNotes(id);
             
             _Database.Add(newPlayerNotes).Wait();
-            val.SetValue(newPlayerNotes);
+            
             
             Regulus.Utility.Log.Instance.Write(string.Format("new TradeNotes . id = {0}", id));
-            return val;
+            return newPlayerNotes;
         }
-
-
 
 
         Regulus.Remoting.Value<bool> ITradeNotes.Write(Data.TradeNotes.TradeData data)
         {
-            //data.IsUsed = true;
-
-            var notes = _LoadTradeNotes(data.BuyerId).Result();
+            Regulus.Remoting.Value<bool> val = new Value<bool>();
+            var t = _LoadTradeNotesTask(data.BuyerId);
+            t.ContinueWith((task) =>
+            {
+                var notes = task.Result.SingleOrDefault();
+                notes.TradeDatas.Add(data);
+                val.SetValue(_Database.Update<Data.TradeNotes>(notes, a => a.Owner == notes.Owner));
+            });
             
-            notes.TradeDatas.Add(data);
-
-            return _Database.Update<Data.TradeNotes>(notes, t => t.Owner == notes.Owner);
-            
-
+            return val;
             //更新交易記錄
-            
         }
-
-       
     }
 }
