@@ -76,8 +76,9 @@ namespace VGame.Project.FishHunter.Data
 
         public int GetTotalMoney()
         {
+            int total = CalculateTotalDeposit();
             _SetTradeIsUsed();
-            return CalculateTotalDeposit();
+            return total;
         }
 
         public  int CalculateTotalDeposit()
