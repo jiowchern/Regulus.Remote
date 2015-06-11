@@ -69,6 +69,8 @@ namespace VGameWebApplication.Controllers
         public ActionResult Functions()
         {
             VGame.Project.FishHunter.Storage.Service service = VGame.Project.FishHunter.Storage.Service.Create(HttpContext.Items["StorageId"]);
+
+
             VGameWebApplication.Models.AccountFunctions accountFunctions = new Models.AccountFunctions();
 
             accountFunctions.AccountManager = service.AccountManager != null;

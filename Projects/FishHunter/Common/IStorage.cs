@@ -5,7 +5,7 @@ using System.Text;
 
 namespace VGame.Project.FishHunter
 {
-    public interface IStorage : IAccountFinder, IAccountManager , IRecordQueriers, ITradeAccount
+    public interface IStorage : IAccountFinder, IAccountManager , IRecordQueriers, ITradeNotes
     {
 
     }

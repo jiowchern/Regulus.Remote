@@ -13,11 +13,11 @@ namespace VGame.Project.FishHunter.Play
         IAccountFinder _AccountFinder;
         IFishStageQueryer _FishStageQueryer;
         IRecordQueriers _RecordQueriers;
-        ITradeAccount _TradeAccount;
+        ITradeNotes _TradeAccount;
         
         Data.Account _Account;
         Data.Record _Record;
-        TradeNotes _TradeNotes;
+        Data.TradeNotes _TradeNotes;
         
 
         event Regulus.Game.OnNewUser _VerifySuccessEvent;
@@ -47,7 +47,7 @@ namespace VGame.Project.FishHunter.Play
             IAccountFinder account_finder,
             IFishStageQueryer queryer,
             IRecordQueriers record_queriers,
-            ITradeAccount trade_account)
+            ITradeNotes trade_account)
         {
             _Machine = new Regulus.Utility.StageMachine();
 
@@ -129,25 +129,17 @@ namespace VGame.Project.FishHunter.Play
             _VerifySuccessEvent(account.Id);
             _Account = account;
 
-            _ToLoadTrade();
+            _ToLoadTradeNotes();
         }
 
-        private void _ToLoadTrade()
+        private void _ToLoadTradeNotes()
         {
-            _TradeAccount.Load(_Account.Id).OnValue += _LoadTradeRecord;
+            _TradeAccount.Load(_Account.Id).OnValue += (notes) =>
+            {
+                _TradeNotes = notes;
+                _ToQueryRecord();
+            };
         }
-
-        void _LoadTradeRecord(TradeNotes trade_notes)
-        {
-            _TradeNotes = trade_notes;
-            
-            _TradeNotes.GetTotalDeposit();
-            _TradeNotes.SetTradeIsUsed();
-            
-            _ToQueryRecord();
-        }
-
-     
 
         private void _ToQueryRecord()
         {
@@ -158,7 +150,9 @@ namespace VGame.Project.FishHunter.Play
         {
             _Record = obj;
             _StageTicketInspector.Initial( new Data.Stage[]  { new Data.Stage { Id = 1 , Pass = true } ,new Data.Stage { Id = 2 , Pass = false} });
-			_Record.Money += _TradeNotes.GetTotalDeposit();
+            
+            _Record.Money += _TradeNotes.GetTotalMoney();
+            
             _ToSelectStage();
         }
 

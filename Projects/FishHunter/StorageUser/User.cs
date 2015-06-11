@@ -53,9 +53,9 @@ namespace VGame.Project.FishHunter.Storage
         }
 
 
-        Regulus.Remoting.Ghost.INotifier<IStorageCompetnces> IUser.StorageCompetncesProvider
+        Regulus.Remoting.Ghost.INotifier<IStorageCompetences> IUser.StorageCompetncesProvider
         {
-            get { return _Agent.QueryNotifier<IStorageCompetnces>(); }
+            get { return _Agent.QueryNotifier<IStorageCompetences>(); }
         }
     }
 }

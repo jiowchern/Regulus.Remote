@@ -85,6 +85,9 @@ namespace VGame.Project.FishHunter.Storage
                 };
 
                 await _Database.Add(account);
+
+                await _Database.Add<Data.TradeNotes>(new Data.TradeNotes() { Owner = account.Id });
+
             }
         }
 
@@ -238,63 +241,81 @@ namespace VGame.Project.FishHunter.Storage
             _Database.Update<Data.Record>(record, r => r.Id == record.Id);
         }
 
-        Regulus.Remoting.Value<TradeNotes> ITradeAccount.Find(Guid id)
+        Regulus.Remoting.Value<Data.TradeNotes> ITradeNotes.Find(Guid id)
         {
             return _LoadTradeNotes(id);
         }
 
-        Regulus.Remoting.Value<TradeNotes> ITradeAccount.Load(Guid id)
+        Regulus.Remoting.Value<Data.TradeNotes> ITradeNotes.Load(Guid id)
         {
-            return _LoadTradeNotes(id);
-        }
+            var val = _LoadTradeNotes(id);
 
-        private Regulus.Remoting.Value<TradeNotes> _LoadTradeNotes(Guid id)
-        {
-            var val = new Regulus.Remoting.Value<TradeNotes>();
-            var account = _Find(id);
-            if (account.IsPlayer())
+            if(val == null)
             {
-                var tradeTask = _Database.Find<TradeNotes>(t => t.OwnerId == id);
-                tradeTask.ContinueWith((task) =>
-                {
-                    Regulus.Utility.Log.Instance.Write(string.Format("TradeNotes Find Done."));
-                    if(task.Exception != null)
-                    {
-                        Regulus.Utility.Log.Instance.Write(string.Format("TradeNotes Exception {0}.", task.Exception.ToString()));
-                    }
+                return _CreateTradeNotes(id);    
+            }
+            else 
+            {
+                return val;
+            }
+        }
+
+        private Regulus.Remoting.Value<Data.TradeNotes> _LoadTradeNotes(Guid id)
+        {
+            var val = new Regulus.Remoting.Value<Data.TradeNotes>();
+            
+            var tradeTask = _Database.Find<Data.TradeNotes>(t => t.Owner == id);
+                
+            tradeTask.ContinueWith((task) =>
+            {
+                Regulus.Utility.Log.Instance.Write(string.Format("TradeNotes Find Done."));
                     
-                    if (task.Result.Count > 0)
-                    {
-                        val.SetValue(task.Result.FirstOrDefault());
+                if(task.Exception != null)
+                {
+                    Regulus.Utility.Log.Instance.Write(string.Format("TradeNotes Exception {0}.", task.Exception.ToString()));
+                }
+                    
+                if (task.Result.Count > 0)
+                {
+                    val.SetValue(task.Result.FirstOrDefault());
 
-                        Regulus.Utility.Log.Instance.Write(string.Format("have TradeNotes . id = {0}" , id));
-                    }
-                    else
-                    {
-                        var newPlayerNotes = new TradeNotes(id);
-                        _Database.Add(newPlayerNotes).Wait();
-                        val.SetValue(newPlayerNotes);
-                        Regulus.Utility.Log.Instance.Write(string.Format("new TradeNotes . id = {0}", id));
+                    Regulus.Utility.Log.Instance.Write(string.Format("have TradeNotes . id = {0}" , id));
+                }
+            });
+            
+            return val;
+        }
 
-                    }
-                });
-            }
-            else
-            {
-                val.SetValue(null);
-            }
+        private Regulus.Remoting.Value<Data.TradeNotes> _CreateTradeNotes(Guid id)
+        {
+            var val = new Regulus.Remoting.Value<Data.TradeNotes>();
+            var newPlayerNotes = new Data.TradeNotes(id);
+            
+            _Database.Add(newPlayerNotes).Wait();
+            val.SetValue(newPlayerNotes);
+            
+            Regulus.Utility.Log.Instance.Write(string.Format("new TradeNotes . id = {0}", id));
             return val;
         }
 
 
-        Regulus.Remoting.Value<Data.TradeData> ITradeAccount.Saving(Data.TradeData data)
+
+
+        Regulus.Remoting.Value<bool> ITradeNotes.Write(Data.TradeNotes.TradeData data)
         {
-           var notes = _LoadTradeNotes(data.BuyerId).Result();
-           notes.TradeDatas.Add(data);
+            //data.IsUsed = true;
 
-            _Database.Update<TradeNotes>(notes, a => notes.OwnerId == a.OwnerId);
+            var notes = _LoadTradeNotes(data.BuyerId).Result();
+            
+            notes.TradeDatas.Add(data);
 
-            return null;
+            return _Database.Update<Data.TradeNotes>(notes, t => t.Owner == notes.Owner);
+            
+
+            //更新交易記錄
+            
         }
+
+       
     }
 }

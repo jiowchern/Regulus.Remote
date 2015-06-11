@@ -1,0 +1,30 @@
+﻿
+@{
+    ViewBag.Title = "儲值頁面";
+}
+
+<h2>AddMoney</h2>
+
+@model VGameWebApplication.Models.TradeData.Data
+
+@using (Html.BeginForm("InputMoney", "Record", FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return validateForm(this)" }))
+{
+    <div>
+        <table class=" table-condensed">
+
+                <tr>
+                    <td>
+                        @Html.DisplayFor(m => Model.OwnerId)
+                        @Html.HiddenFor(m => Model.OwnerId)
+                    </td>
+                    <td>帳號</td>
+                    <td>@Model.Name</td>
+                    <td>財產</td>
+                    <td>@Model.Money</td>
+                    <td>輸入儲值金額</td>
+                    <td>@Html.EditorFor(m => m.Deposit)</td>
+                </tr>
+        </table>
+    </div>
+    <input type="submit" value="確認" class="btn btn-default" />
+}

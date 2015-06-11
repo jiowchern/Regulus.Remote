@@ -5,8 +5,9 @@ using System.Text;
 
 namespace VGame.Project.FishHunter
 {
-    public interface IStorageCompetnces
+    public interface IStorageCompetences
     {
         Regulus.Remoting.Value<VGame.Project.FishHunter.Data.Account.COMPETENCE[]> Query();
+        Regulus.Remoting.Value<Guid> QueryForId();
     }
 }
