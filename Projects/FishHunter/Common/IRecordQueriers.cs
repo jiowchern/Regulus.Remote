@@ -13,13 +13,13 @@ namespace VGame.Project.FishHunter
     }
     
 
-    public interface ITradeAccount
+    public interface ITradeNotes
     {
-        Regulus.Remoting.Value<TradeNotes> Find(Guid id);
+        Regulus.Remoting.Value<Data.TradeNotes> Find(Guid id);
         
-        Regulus.Remoting.Value<TradeNotes> Load(Guid id);
+        Regulus.Remoting.Value<Data.TradeNotes> Load(Guid id);
 
         //Regulus.Remoting.Value<Data.TradeData> Saving(Guid id);
-        Regulus.Remoting.Value<Data.TradeData> Saving(Data.TradeData data);
+        Regulus.Remoting.Value<bool> Write(Data.TradeNotes.TradeData data);
     }
 }

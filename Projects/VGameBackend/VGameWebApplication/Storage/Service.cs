@@ -17,7 +17,7 @@ namespace VGame.Project.FishHunter.Storage
         
         public IRecordQueriers RecodeQueriers { get; private set; }
 
-        public ITradeAccount TradeAccount { get; private set; }
+        public ITradeNotes TradeNotes { get; private set; }
 
 
         System.Threading.Tasks.Task _ProxyUpdate;
@@ -27,6 +27,9 @@ namespace VGame.Project.FishHunter.Storage
         volatile bool _Enable;
 
         Regulus.CustomType.Flag<VGame.Project.FishHunter.Data.Account.COMPETENCE> _Competnces;
+
+        public Guid ConnecterId { get; private set; }
+
 
         public bool Enable {  get {return _Enable;}}
         
@@ -103,11 +106,13 @@ namespace VGame.Project.FishHunter.Storage
 
         private void _GetStorageCompetnces()
         {
-            var provider = _User.QueryProvider<IStorageCompetnces>();
+            var provider = _User.QueryProvider<IStorageCompetences>();
             while (provider.Ghosts.Length <= 0)
                 _Wait();
 
             _Competnces = new Regulus.CustomType.Flag<Data.Account.COMPETENCE>(provider.Ghosts[0].Query().WaitResult());
+
+            ConnecterId = provider.Ghosts[0].QueryForId().WaitResult();
         }
 
         private void _GetAccountManager()
@@ -139,10 +144,10 @@ namespace VGame.Project.FishHunter.Storage
             RecodeQueriers = provider.Ghosts[0];
 
             
-            var p = _User.QueryProvider<ITradeAccount>();
+            var p = _User.QueryProvider<ITradeNotes>();
             while (p.Ghosts.Length <= 0)
                 _Wait();
-            TradeAccount = p.Ghosts[0];
+            TradeNotes = p.Ghosts[0];
             
             //int money = provider.Ghosts[0].Load(accounts[0].Id).WaitResult().Money;
         }

@@ -12,7 +12,7 @@ namespace VGame.Project.FishHunter.Play
             public IFishStageQueryer FishStageQueryer;
             public IAccountFinder AccountFinder;
             public IRecordQueriers RecordQueriers;
-            public ITradeAccount TradeAccount;
+            public ITradeNotes TradeAccount;
         }
 
         ExternalFeature _Feature;
@@ -45,12 +45,12 @@ namespace VGame.Project.FishHunter.Play
             _StorageUser.QueryProvider<IAccountFinder>().Supply -= _AccountFinder;
             _Feature.AccountFinder = obj;
 
-            _StorageUser.QueryProvider<ITradeAccount>().Supply += BuildCenterStage_Supply;
+            _StorageUser.QueryProvider<ITradeNotes>().Supply += BuildCenterStage_Supply;
         }
 
-        void BuildCenterStage_Supply(ITradeAccount obj)
+        void BuildCenterStage_Supply(ITradeNotes obj)
         {
-            _StorageUser.QueryProvider<ITradeAccount>().Supply -= BuildCenterStage_Supply;
+            _StorageUser.QueryProvider<ITradeNotes>().Supply -= BuildCenterStage_Supply;
             _Feature.TradeAccount = obj;
             
             _StorageUser.QueryProvider<IRecordQueriers>().Supply += _RecordQueriers;

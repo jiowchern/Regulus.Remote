@@ -13,9 +13,9 @@ namespace VGame.Project.FishHunter.Play
         IAccountFinder _AccountFinder;
         IFishStageQueryer _FishStageQueryer;
         IRecordQueriers _RecordQueriers;
-        ITradeAccount _Tradefinder;
+        ITradeNotes _Tradefinder;
         
-        public Center(IAccountFinder accountFinder, IFishStageQueryer fishStageQueryer ,IRecordQueriers rq, ITradeAccount tradeAccount)
+        public Center(IAccountFinder accountFinder, IFishStageQueryer fishStageQueryer ,IRecordQueriers rq, ITradeNotes tradeAccount)
         {
             _RecordQueriers = rq;
             _AccountFinder = accountFinder;

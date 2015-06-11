@@ -1,23 +1,30 @@
 ﻿
 @{
-    ViewBag.Title = "Recode";
+    ViewBag.Title = "帳號餘額資料";
 }
 
-<h2>Recode</h2>
+<h2>Record</h2>
 
-@model VGame.Project.FishHunter.Data.Account[]
+@model VGameWebApplication.Models.TradeData.Data[]
 
 
-    
+
+
 @using (Html.BeginForm("Index", "Record", FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return validateForm(this)" }))
 {
     <div>
-        <table>
-            @foreach (var acc in Model)
+        <table>@Html.Label("帳號餘額資料")</table>
+        <table class=" table-condensed">
+
+
+            @for (int i = 0; i < Model.Length; i++)
             {
                 <tr>
-                    <td>@acc.Name</td>
-                    @Html.Label("儲值金額")
+                    <td>帳號</td>
+                    <td>@Model[i].Name</td>
+                    <td>餘額</td>
+                    <td>@Model[i].Money</td>
+                    <td>@Html.ActionLink("儲值", "InputMoney", "Record", Model[i], null)</td>
                 </tr>
             }
         </table>
@@ -25,25 +32,5 @@
 }
 
 
-<div>
-    @{
-        using (Html.BeginForm("Index", "Record", FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return validateForm(this)" }))
-        {
-            <div>
-                <table>
-                    @foreach (var acc in Model)
-                    {
-                        <tr>
-                            <td>@acc.Name</td>
-                            @Html.Label("儲值金額")
-                        </tr>
-                    }
-                </table>
-            </div>
-
-            <input type="submit" value="確認" class="btn btn-default" />
-        }
-    }
-</div>
 
 

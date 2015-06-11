@@ -89,19 +89,19 @@ namespace VGame.Project.FishHunter
             }            
         }
 
-        Regulus.Remoting.Value<TradeNotes> ITradeAccount.Find(Guid id)
+        Regulus.Remoting.Value<Data.TradeNotes> ITradeNotes.Find(Guid id)
         {
-            return new TradeNotes(Guid.NewGuid());
+            return new Data.TradeNotes(Guid.NewGuid());
         }
 
-        Regulus.Remoting.Value<TradeNotes> ITradeAccount.Load(Guid id)
+        Regulus.Remoting.Value<Data.TradeNotes> ITradeNotes.Load(Guid id)
         {
-            return new TradeNotes(Guid.NewGuid());
+            return new Data.TradeNotes(Guid.NewGuid());
         }
 
-        Regulus.Remoting.Value<Data.TradeData> ITradeAccount.Saving(Data.TradeData data)
+        Regulus.Remoting.Value<bool> ITradeNotes.Write(Data.TradeNotes.TradeData data)
         {
-            return data;
+            return true;
         }
     }
 }

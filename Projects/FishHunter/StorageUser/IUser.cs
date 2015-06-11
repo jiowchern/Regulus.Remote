@@ -12,7 +12,7 @@ namespace VGame.Project.FishHunter.Storage
 
         Regulus.Remoting.Ghost.INotifier<VGame.Project.FishHunter.IVerify> VerifyProvider { get; }
 
-        Regulus.Remoting.Ghost.INotifier<VGame.Project.FishHunter.IStorageCompetnces> StorageCompetncesProvider { get; }
+        Regulus.Remoting.Ghost.INotifier<VGame.Project.FishHunter.IStorageCompetences> StorageCompetncesProvider { get; }
 
         Regulus.Remoting.Ghost.INotifier<T> QueryProvider<T>();
     }
