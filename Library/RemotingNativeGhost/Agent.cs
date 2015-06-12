@@ -106,7 +106,7 @@ namespace Regulus.Remoting.Ghost.Native
 
         void _Disconnect()
         {
-            _Machine.Empty();
+            _Machine.Termination();
         }
 
 
