@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Regulus.Remoting.Native.Soul</RootNamespace>
     <AssemblyName>RegulusRemotingNativeSoul</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -46,6 +46,7 @@
     <Compile Include="ControllerStageRun.cs" />
     <Compile Include="ControllerStageStart.cs" />
     <Compile Include="Peer.cs" />
+    <Compile Include="PeerSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server.cs" />
   </ItemGroup>

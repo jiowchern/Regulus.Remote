@@ -16,12 +16,15 @@ namespace Regulus.Remoting.Native
         private IAsyncResult _AsyncResult;
 
         public event OnErrorCallback ErrorEvent;
-        enum Status {
-            Begin ,End
-        }
-
+        
         volatile bool _Stop;
-        Status _Status;
+        
+
+        
+        public PackageWriter()
+        {
+            
+        }
         public void Start(System.Net.Sockets.Socket socket)
         {
             _Stop = false;
@@ -36,7 +39,7 @@ namespace Regulus.Remoting.Native
             
             try
             {
-                _Status = Status.Begin;
+                
                 _AsyncResult = _Socket.BeginSend(_Buffer, 0, _Buffer.Length, 0, _WriteCompletion, null);
             }
             catch
@@ -50,13 +53,14 @@ namespace Regulus.Remoting.Native
         {
             try
             {
-                _Status = Status.End;
+                
                 if (_Stop == false)
                 {
                     _Socket.EndSend(ar);
                     if (_Buffer.Length == 0)
+                    {
                         System.Threading.Thread.Sleep(TimeSpan.FromSeconds(1.0 / 20.0));
-
+                    }
                     _Write();
                 }
                 

@@ -17,6 +17,7 @@ namespace Regulus.Utility
         public Int32 Count { get { return _Count; } }
 
         private static readonly Int32 ProcessorCount = Environment.ProcessorCount;
+        private static readonly bool IsWindows = Environment.OSVersion.Platform == PlatformID.Win32Windows || Environment.OSVersion.Platform == PlatformID.Win32S || Environment.OSVersion.Platform == PlatformID.Win32NT ;
 
         /// <summary>获取对 <see cref="SpinOnce" /> 的下一次调用是否将产生处理器，同时触发强制上下文切换。</summary>
         /// <returns>对 <see cref="SpinOnce" /> 的下一次调用是否将产生处理器，同时触发强制上下文切换。</returns>
@@ -43,11 +44,15 @@ namespace Regulus.Utility
                     System.Threading.Thread.Sleep(1);
                 else if (num % SLEEP_0_EVERY_HOW_MANY_TIMES == SLEEP_0_EVERY_HOW_MANY_TIMES - 1)
                     System.Threading.Thread.Sleep(0);
-                else
+                else if (IsWindows)
                     SwitchToThread();
+                else
+                    System.Threading.Thread.SpinWait(((int)(SLEEP_0_EVERY_HOW_MANY_TIMES - 1)) << this._Count);
             }
             else
                 System.Threading.Thread.SpinWait(((int)(SLEEP_0_EVERY_HOW_MANY_TIMES - 1)) << this._Count);
+
+
             this._Count = (this._Count == Int32.MaxValue) ? YIELD_THRESHOLD : (this._Count + 1);
         }
 

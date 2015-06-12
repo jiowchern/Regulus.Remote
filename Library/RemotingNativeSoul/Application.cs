@@ -5,16 +5,17 @@ namespace Regulus.Remoting.Soul.Native
 {    
 	public class Application : Regulus.Utility.WindowConsole
 	{
-        System.Threading.SpinWait _SpinWait;
+
+        Regulus.Utility.SpinWait _SpinWait;
         Regulus.Utility.TimeCounter _TimeCounter;
         Regulus.Utility.StageMachine _Machine;
        
 
         protected override void _Launch()
         {
-            
 
-            _SpinWait = new System.Threading.SpinWait();
+
+            _SpinWait = new Regulus.Utility.SpinWait();
             _TimeCounter = new Utility.TimeCounter();
             _Machine = new Utility.StageMachine();
             _ToStart();        

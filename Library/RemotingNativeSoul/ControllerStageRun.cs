@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using Regulus.Remoting.Native.Soul;
+
 
 namespace Regulus.Remoting.Soul.Native
 {
@@ -16,7 +17,7 @@ namespace Regulus.Remoting.Soul.Native
         }
         public void Update()
         {
-            var exceptions = new System.Collections.Concurrent.ConcurrentQueue<Exception>();
+            /*var exceptions = new System.Collections.Concurrent.ConcurrentQueue<Exception>();
 
             Parallel.ForEach(base._GetObjectSet(), (updater) => 
             {
@@ -28,11 +29,11 @@ namespace Regulus.Remoting.Soul.Native
             });
 
             if (exceptions.Count > 0) 
-                throw new AggregateException(exceptions);
-            /*foreach(var up in base.Update())
+                throw new AggregateException(exceptions);*/
+            foreach(var up in base._GetObjectSet())
             {
                 _Update(up);
-            }*/
+            }
         }
 
         private void _Update(Regulus.Utility.IUpdatable updater)
@@ -128,7 +129,10 @@ namespace Regulus.Remoting.Soul.Native
         System.Net.Sockets.Socket _Socket;
         System.Collections.Generic.Queue<System.Net.Sockets.Socket> _Sockets;
         ThreadCoreHandler _CoreHandler;
-        ParallelUpdate _Peers;
+
+        PeerSet _Peers;
+        
+        //ParallelUpdate _Peers;
 
         Regulus.Utility.PowerRegulator _Spin;
         
@@ -147,8 +151,8 @@ namespace Regulus.Remoting.Soul.Native
             _Port = port;
             
             _Sockets = new Queue<System.Net.Sockets.Socket>();
-            
-            _Peers = new ParallelUpdate();
+
+            _Peers = new PeerSet();
             
             _Spin = new Utility.PowerRegulator();
             
@@ -173,14 +177,20 @@ namespace Regulus.Remoting.Soul.Native
                         {
                             var socket = _Sockets.Dequeue();
                             var peer = new Peer(socket);
-                            _Peers.Add(peer);
+
+                            _Peers.Join(peer);                            
+
                             _CoreHandler.Push(peer.Binder , peer.Handler);                            
                         }
                     }
-                }           
-                _Peers.Update();
+                }
+
+                
+
                 _Spin.Operate(Peer.TotalRequest);                
             }
+            _Peers.Release();
+            
             _Socket.Close();
         }
 
