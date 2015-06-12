@@ -84,5 +84,7 @@ namespace VGame.Project.FishHunter.Storage
         {
             _UserProvider.Unspawn(name);
         }
+
+        public bool Enable { get { return _Client.Enable; } }
     }
 }
