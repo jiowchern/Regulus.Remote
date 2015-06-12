@@ -103,5 +103,10 @@ namespace VGame.Project.FishHunter
         {
             return true;
         }
+
+        Regulus.Remoting.Value<int> ITradeNotes.GetTotalMoney(Guid id)
+        {
+            return 0;
+        }
     }
 }

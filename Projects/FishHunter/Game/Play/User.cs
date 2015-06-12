@@ -17,7 +17,7 @@ namespace VGame.Project.FishHunter.Play
         
         Data.Account _Account;
         Data.Record _Record;
-        Data.TradeNotes _TradeNotes;
+        
         
 
         event Regulus.Game.OnNewUser _VerifySuccessEvent;
@@ -128,37 +128,32 @@ namespace VGame.Project.FishHunter.Play
         {
             _VerifySuccessEvent(account.Id);
             _Account = account;
+            _ToQueryRecord();
+        }
 
-            _ToLoadTradeNotes();
+        
+
+        private void _ToQueryRecord()
+        {
+            _RecordQueriers.Load(_Account.Id).OnValue += (obj)=>
+            {
+                _Record = obj;
+                _StageTicketInspector.Initial(new Data.Stage[] { new Data.Stage { Id = 1, Pass = true }, new Data.Stage { Id = 2, Pass = false } });
+                _ToLoadTradeNotes();
+            };
         }
 
         private void _ToLoadTradeNotes()
         {
-            _TradeAccount.Load(_Account.Id).OnValue += (notes) =>
+            _TradeAccount.GetTotalMoney(_Account.Id).OnValue +=(money) =>
             {
-                _TradeNotes = notes;
-                _ToQueryRecord();
+                _Record.Money += money;
+                _ToSelectStage();
             };
-        }
-
-        private void _ToQueryRecord()
-        {
-            _RecordQueriers.Load(_Account.Id).OnValue += _GetRecord;
-        }
-
-        private void _GetRecord(Data.Record obj)
-        {
-            _Record = obj;
-            _StageTicketInspector.Initial( new Data.Stage[]  { new Data.Stage { Id = 1 , Pass = true } ,new Data.Stage { Id = 2 , Pass = false} });
-            
-            _Record.Money += _TradeNotes.GetTotalMoney();
-            
-            _ToSelectStage();
         }
 
         private void _ToSelectStage()
         {
-            
             var stage = new VGame.Project.FishHunter.Play.SelectStage(_StageTicketInspector.PlayableStages , _Binder, _FishStageQueryer);
             stage.DoneEvent += _ToPlayStage;
             _Machine.Push(stage);            

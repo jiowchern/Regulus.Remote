@@ -260,51 +260,21 @@ namespace VGame.Project.FishHunter.Storage
             var t = _LoadTradeNotesTask(id);
             t.ContinueWith((task) =>
             {
-
                 var notes = task.Result.SingleOrDefault();
                 if (notes == null)
-                    val.SetValue(_CreateTradeNotes(id));
+                {
+                     var newPlayerNotes = new Data.TradeNotes(id);
+                    _Database.Add(newPlayerNotes).Wait();
+                    Regulus.Utility.Log.Instance.Write(string.Format("new TradeNotes . id = {0}", id));
+                    val.SetValue(newPlayerNotes);
+                }
                 else
+                {
                     val.SetValue(notes);
+                }
             });
-
             return val;
         }
-
-       
-        private Task<List<Data.TradeNotes>> _LoadTradeNotesTask(Guid id)
-        {
-            //var val = new Regulus.Remoting.Value<Data.TradeNotes>();
-            
-            var tradeTask = _Database.Find<Data.TradeNotes>(t => t.Owner == id);
-                
-            var returnTask = tradeTask.ContinueWith((task) =>
-            {
-                Regulus.Utility.Log.Instance.Write(string.Format("TradeNotes Find Done."));
-                    
-                if(task.Exception != null)
-                {
-                    Regulus.Utility.Log.Instance.Write(string.Format("TradeNotes Exception {0}.", task.Exception.ToString()));
-                }
-               
-                return task.Result;
-            });
-
-            return returnTask;
-        }
-
-        private Data.TradeNotes _CreateTradeNotes(Guid id)
-        {
-            
-            var newPlayerNotes = new Data.TradeNotes(id);
-            
-            _Database.Add(newPlayerNotes).Wait();
-            
-            
-            Regulus.Utility.Log.Instance.Write(string.Format("new TradeNotes . id = {0}", id));
-            return newPlayerNotes;
-        }
-
 
         Regulus.Remoting.Value<bool> ITradeNotes.Write(Data.TradeNotes.TradeData data)
         {
@@ -318,7 +288,41 @@ namespace VGame.Project.FishHunter.Storage
             });
             
             return val;
-            //更新交易記錄
+        }
+
+        Regulus.Remoting.Value<int> ITradeNotes.GetTotalMoney(Guid id)
+        {
+            Regulus.Remoting.Value<int> val = new Value<int>();
+            
+            var t = _LoadTradeNotesTask(id);
+            t.ContinueWith((task) =>
+            {
+                var notes = task.Result.SingleOrDefault();
+                
+                val.SetValue(notes.GetTotalMoney());
+                notes.SetTradeIsUsed();
+
+                _Database.Update<Data.TradeNotes>(notes, a => a.Owner == notes.Owner);
+            });
+            return val;
+        }
+
+        private Task<List<Data.TradeNotes>> _LoadTradeNotesTask(Guid id)
+        {
+            var tradeTask = _Database.Find<Data.TradeNotes>(t => t.Owner == id);
+
+            var returnTask = tradeTask.ContinueWith((task) =>
+            {
+                Regulus.Utility.Log.Instance.Write(string.Format("TradeNotes Find Done."));
+
+                if (task.Exception != null)
+                {
+                    Regulus.Utility.Log.Instance.Write(string.Format("TradeNotes Exception {0}.", task.Exception.ToString()));
+                }
+
+                return task.Result;
+            });
+            return returnTask;
         }
     }
 }
