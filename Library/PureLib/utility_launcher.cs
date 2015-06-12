@@ -29,5 +29,7 @@ namespace Regulus.Utility
             foreach (var l in _Launchers)
                 l.Launch();
         }
+
+        public int Count { get { return _Launchers.Count; } }
     }
 }

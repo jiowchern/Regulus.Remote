@@ -46,8 +46,6 @@ namespace Regulus.Remoting.Soul.Native
         private void _Start(int port, string path, string class_name)
         {
 
-
-
             var stream = System.IO.File.ReadAllBytes(path);
 
             try 
@@ -59,10 +57,7 @@ namespace Regulus.Remoting.Soul.Native
             {
                 _View.WriteLine(ex.ToString());
             }
-            
-
-
-            
+           
         }
 
         /*private void _LoadLibrary(string work_dir)
