@@ -55,7 +55,8 @@ namespace Regulus.Utility
         }
         float IRandom.NextFloat()
         {
-            return (float)_Random.NextDouble();
+            var val = _Random.NextDouble();
+            return (float)val;
         }
 
         int IRandom.NextInt(int min, int max)

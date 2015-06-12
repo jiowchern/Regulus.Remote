@@ -24,14 +24,14 @@ namespace VGame.Project.FishHunter.Storage
 
         VGame.Project.FishHunter.Storage.Proxy _Proxy;
 
-        volatile bool _Enable;
+        
 
         Regulus.CustomType.Flag<VGame.Project.FishHunter.Data.Account.COMPETENCE> _Competnces;
 
         public Guid ConnecterId { get; private set; }
 
 
-        public bool Enable {  get {return _Enable;}}
+        
         
         Regulus.Utility.SpinWait _Soin;
 
@@ -45,12 +45,11 @@ namespace VGame.Project.FishHunter.Storage
         {
             _Key = new object();
             this._Data = data;
-            _Soin = new Regulus.Utility.SpinWait();
-            _Enable = true;
+            _Soin = new Regulus.Utility.SpinWait();            
             
             _Proxy = new VGame.Project.FishHunter.Storage.Proxy();
             (_Proxy as Regulus.Utility.IUpdatable).Launch();
-            _ProxyUpdate = new System.Threading.Tasks.Task(_UpdateProxy, new WeakReference<Regulus.Utility.IUpdatable>(_Proxy));
+            _ProxyUpdate = new System.Threading.Tasks.Task(_UpdateProxy, new WeakReference<VGame.Project.FishHunter.Storage.Proxy>(_Proxy));
             _ProxyUpdate.Start();
 
             _User = _Proxy.SpawnUser("1");
@@ -58,8 +57,8 @@ namespace VGame.Project.FishHunter.Storage
        
         ~Service()
         {
-            lock (_Proxy)
-                (_Proxy as Regulus.Utility.IUpdatable).Shutdown();
+            
+            (_Proxy as Regulus.Utility.IUpdatable).Shutdown();
         }
 
         bool _Initial()
@@ -165,23 +164,30 @@ namespace VGame.Project.FishHunter.Storage
 
         static private void _UpdateProxy(object obj)
         {
-            WeakReference<Regulus.Utility.IUpdatable> weak = (WeakReference<Regulus.Utility.IUpdatable>)obj;
+            WeakReference<VGame.Project.FishHunter.Storage.Proxy> weak = (WeakReference<VGame.Project.FishHunter.Storage.Proxy>)obj;
 
             Regulus.Utility.SpinWait spin = new Regulus.Utility.SpinWait();
 
-            bool enable = true;
-
-            while (enable)
+            Regulus.Utility.TimeCounter counter = new Regulus.Utility.TimeCounter();
+            while (true)
             {
-                Regulus.Utility.IUpdatable updater;
-                enable = weak.TryGetTarget(out updater);
-                if (Regulus.Utility.Random.NextFloat(0, 1) <= 0.1f)
-                    spin.SpinOnce();
-                else
-                    spin.Reset();
+                
+                VGame.Project.FishHunter.Storage.Proxy proxy;
 
-                lock (updater)
-                    updater.Update();
+                if (weak.TryGetTarget(out proxy) == false)
+                    break;
+                if (proxy.Enable == false)
+                    break;
+                Regulus.Utility.IUpdatable updater = proxy;
+                updater.Update();
+                updater = null;
+                proxy = null;
+                if (counter.Second >= 1.0f)
+                {
+                    System.GC.Collect();
+                    counter.Reset();
+                }
+                    
             }
         }
 

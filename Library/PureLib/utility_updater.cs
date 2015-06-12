@@ -83,8 +83,12 @@ namespace Regulus.Utility
 
         public void Shutdown()
         {
-            _Shutdown(_Ts);
-            _Ts.Clear();
+            lock (_Ts)
+            {
+                _Shutdown(_Ts);
+                _Ts.Clear();
+            }
+            
         }
 
         private void _Shutdown(List<T> frameworks)
