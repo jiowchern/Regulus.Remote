@@ -6,11 +6,13 @@ using System.Text;
 
 namespace Regulus.Remoting.Soul.Native
 {
-    
 
-	class Peer : Regulus.Remoting.IRequestQueue, Regulus.Remoting.IResponseQueue , Regulus.Utility.IUpdatable
+
+    class Peer : Regulus.Remoting.IRequestQueue, Regulus.Remoting.IResponseQueue, Regulus.Framework.IBootable
 	{
 
+
+        
         public static bool IsIdle { get { return TotalRequest <= 0 && TotalResponse <= 0; } }
         class Request
         {
@@ -28,7 +30,10 @@ namespace Regulus.Remoting.Soul.Native
 
         Regulus.Remoting.Native.PackageReader _Reader;
         Regulus.Remoting.Native.PackageWriter _Writer;
-		
+
+        public delegate void DisconnectCallback();
+        public event DisconnectCallback DisconnectEvent;
+
         volatile bool _Enable;
 
 
@@ -70,7 +75,8 @@ namespace Regulus.Remoting.Soul.Native
 			if (package.Code == (byte)ClientToServerOpCode.Ping)
 			{
 				
-				(this as Regulus.Remoting.IResponseQueue).Push((int)ServerToClientOpCode.Ping, new Dictionary<byte, byte[]>());
+				
+                (this as Regulus.Remoting.IResponseQueue).Push((int)ServerToClientOpCode.Ping, new Dictionary<byte, byte[]>());
                 return null;
 			}
             else if (package.Code == (byte)ClientToServerOpCode.CallMethod)
@@ -149,23 +155,15 @@ namespace Regulus.Remoting.Soul.Native
         internal void Disconnect()
         {
             if (_BreakEvent != null)
-                _BreakEvent();
+            {
+                _BreakEvent();                
+            }                
         }
 
         public ISoulBinder Binder { get { return _SoulProvider; } }
         public CoreThreadRequestHandler Handler { get { return new CoreThreadRequestHandler(this); } }
 
-        bool Utility.IUpdatable.Update()
-        {
-            if (_Connected())
-            {
-                _SoulProvider.Update();
-
-                return true;
-            }
-            Disconnect();
-            return false;
-        }
+        
 
         void Framework.IBootable.Launch()
         {
@@ -216,7 +214,14 @@ namespace Regulus.Remoting.Soul.Native
 
         void IRequestQueue.Update()
         {
+            if (_Connected() == false)
+            {
+                Disconnect();
+                DisconnectEvent();
+                return ;
+            }
 
+            _SoulProvider.Update();
             Package[] pkgs = null;
             lock (_LockRequest)
             {
