@@ -19,7 +19,10 @@ namespace VGame.Project.FishHunter
         
         Regulus.Remoting.Value<Data.TradeNotes> Load(Guid id);
 
-        //Regulus.Remoting.Value<Data.TradeData> Saving(Guid id);
         Regulus.Remoting.Value<bool> Write(Data.TradeNotes.TradeData data);
+
+        Regulus.Remoting.Value<int> GetTotalMoney(Guid id);
+
+
     }
 }

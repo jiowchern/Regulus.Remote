@@ -12,8 +12,6 @@ namespace VGameWebApplication.Controllers
 {
     public class RecordController : Controller
     {
-        
-        // GET: Recode
         public ActionResult Index()
         {
             VGame.Project.FishHunter.Storage.Service service = VGame.Project.FishHunter.Storage.Service.Create(HttpContext.Items["StorageId"]);
@@ -30,29 +28,8 @@ namespace VGameWebApplication.Controllers
                 tradeData.Add(a.Id, a.Name, money);
             }
 
-            return View(tradeData.Datas.ToArray());
+            return View(tradeData.Datas.ToArray()); 
         }
-
-        //public ActionResult InputMoney(string accountid)
-        //{
-        //    Guid accountId;
-        //    if (Guid.TryParse(accountid, out accountId) == false)
-        //        return RedirectToAction("Index");
-
-        //    var service = VGame.Project.FishHunter.Storage.Service.Create(HttpContext.Items["StorageId"]);
-        //    var result = service.AccountFinder.FindAccountById(accountId).WaitResult();
-            
-        //    if (result.Id != Guid.Empty)
-        //    {
-        //        var updateAccount = new VGameWebApplication.Models.UpdateAccount();
-        //        updateAccount.TheAccount = result;
-        //        //return View(updateAccount);
-        //        RedirectToAction("AddMoney");
-        //    }
-
-        //    return RedirectToAction("Index");
-        //}
-
 
         public ActionResult InputMoney(Models.TradeData.Data data)
         {
@@ -62,8 +39,6 @@ namespace VGameWebApplication.Controllers
             }
 
             VGame.Project.FishHunter.Storage.Service service = VGame.Project.FishHunter.Storage.Service.Create(HttpContext.Items["StorageId"]);
-
-            var notes = service.TradeNotes.Find(data.OwnerId).WaitResult();
 
             var t = new VGame.Project.FishHunter.Data.TradeNotes.TradeData(service.ConnecterId, data.OwnerId, data.Deposit, 0);
             service.TradeNotes.Write(t).WaitResult();

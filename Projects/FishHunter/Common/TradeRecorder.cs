@@ -69,24 +69,12 @@ namespace VGame.Project.FishHunter.Data
             TradeDatas = new List<Data.TradeNotes.TradeData>();
         }
 
-        public void Write(Data.TradeNotes.TradeData data)
-        {
-            TradeDatas.Add(data);
-        }
-
         public int GetTotalMoney()
-        {
-            int total = CalculateTotalDeposit();
-            _SetTradeIsUsed();
-            return total;
-        }
-
-        public  int CalculateTotalDeposit()
         {
             return (from a in TradeDatas where a.IsUsed == false select a.Money).Sum();
         }
 
-        private void _SetTradeIsUsed()
+        public void SetTradeIsUsed()
         {
             foreach (var a in TradeDatas)
             {
