@@ -68,6 +68,8 @@ namespace VGame.Project.FishHunter.UnitTest
 
             var formula = new VGame.Project.FishHunter.Formula.HitTest(random);
             random.NextLong(NSubstitute.Arg.Any<long>(), NSubstitute.Arg.Any<long>()).Returns(0xffffffe);
+            
+
             HitRequest request = new HitRequest();
             request.FishID = 1;
             request.FishOdds = 1;

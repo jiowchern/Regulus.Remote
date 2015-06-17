@@ -58,20 +58,18 @@ namespace Regulus.Utility
 
         private void _SetCurrentStage()
         {
-            if (_StandBys.Count > 0)
+            IStage stage;
+            if (_StandBys.TryDequeue(out stage))
             {
                 if (_Current != null)
                 {
                     _Current.Leave();
                 }
 
-                IStage stage;
-                if(_StandBys.TryDequeue(out stage))
-                {
-                    stage.Enter();
-                }                
+                stage.Enter();
                 _Current = stage;
-            }
+            }                
+            
         }
 
         private void _UpdateCurrentStage()
@@ -84,16 +82,12 @@ namespace Regulus.Utility
 
         public void Termination()
         {
-            lock (_StandBys)
+            _StandBys.DequeueAll();
+            if (_Current != null)
             {
-
-                _StandBys.DequeueAll();
-                if (_Current != null)
-                {
-                    _Current.Leave();
-                    _Current = null;
-                }
-            }
+                _Current.Leave();
+                _Current = null;
+            }            
         }
 
         public void Empty()

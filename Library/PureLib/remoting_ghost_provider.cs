@@ -61,8 +61,8 @@ namespace Regulus.Remoting.Ghost
 				_Supply += value;
 
                 lock (_Entitys)
-                {
-                    foreach (var e in _Entitys)
+                {                    
+                    foreach (var e in _Entitys.ToArray())
                     {
                         value(e);
                     }

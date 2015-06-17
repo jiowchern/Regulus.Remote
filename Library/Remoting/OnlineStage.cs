@@ -29,6 +29,9 @@ namespace Regulus.Remoting
         }
         void Regulus.Utility.IStage.Enter()
         {
+
+            _Online.DisconnectEvent += _CallDisconnect;
+
             _Agent.DisconnectEvent += _BreakEvent;
             _Bind(_OnlineProvider);
         }
@@ -47,6 +50,14 @@ namespace Regulus.Remoting
         {
             _Unbind(_OnlineProvider);
             _Agent.DisconnectEvent -= _BreakEvent;
+
+            _Online.DisconnectEvent -= _CallDisconnect;
+        }
+
+        private void _CallDisconnect()
+        {
+            _Unbind(_OnlineProvider);
+            _Agent.Disconnect();
         }
 
         void Regulus.Utility.IStage.Update()

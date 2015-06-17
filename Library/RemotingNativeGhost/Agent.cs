@@ -7,7 +7,7 @@ namespace Regulus.Remoting.Ghost.Native
 	{        
         
         Regulus.Utility.StageMachine _Machine;
-        OnlineStage _OnlineStage;
+        
         event Action _DisconnectEvent;
         AgentCore _Core;
 		private Agent()
@@ -28,8 +28,9 @@ namespace Regulus.Remoting.Ghost.Native
             var stage = new ConnectStage(ipaddress, port);
             stage.ResultEvent += (result,socket)=>
             {
-                if (_ConnectEvent != null)
+                if (result && _ConnectEvent != null)
                     _ConnectEvent();
+
                 val.SetValue(result);
                 _ConnectResult(result, socket);                
             };
@@ -45,37 +46,33 @@ namespace Regulus.Remoting.Ghost.Native
             }
             else
             {
-                _ToOffline(_Machine);            
+                _Disconnect();  
             }
         }
 
         private void _ToOnline(Utility.StageMachine machine, System.Net.Sockets.Socket socket)
         {
-            _OnlineStage = new OnlineStage(socket);
-            _OnlineStage.DoneEvent += () =>
+            var onlineStage = new OnlineStage(socket, _Core);
+            onlineStage.DoneEvent += () =>
             {
-                _OnlineStage = null;
-
-                //_ToOffline(_Machine);
                 if (_DisconnectEvent != null)
                     _DisconnectEvent();
+
+                _Disconnect();
             };
-            _Core.Finial();
-            _Core.Initial(_OnlineStage);
-            machine.Push(_OnlineStage);
+            
+            machine.Push(onlineStage);
         }
 
-        private void _ToOffline(Regulus.Utility.StageMachine machine)
+        private void _Termination(Regulus.Utility.StageMachine machine)
         {
-            _Machine.Termination();            
+            _Machine.Termination();
         }
 
         
 		bool Utility.IUpdatable.Update()
 		{
-            _Machine.Update();
-            if (_OnlineStage != null)
-                _OnlineStage.Process(_Core);
+            _Machine.Update();            
             
 
 			return true;
@@ -106,7 +103,7 @@ namespace Regulus.Remoting.Ghost.Native
 
         void _Disconnect()
         {
-            _Machine.Termination();
+            _Termination(_Machine);
         }
 
 
@@ -135,7 +132,7 @@ namespace Regulus.Remoting.Ghost.Native
 
         void IAgent.Disconnect()
         {
-            _Disconnect();
+            _Termination(_Machine);
         }
 
         /// <summary>

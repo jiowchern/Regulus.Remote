@@ -41,6 +41,8 @@ namespace Regulus.Remoting.Ghost.Native
 
             volatile bool _Enable;
             
+            private AgentCore _Core;
+            
             public OnlineStage(System.Net.Sockets.Socket  socket)
             {
                 _Socket = socket;
@@ -50,9 +52,17 @@ namespace Regulus.Remoting.Ghost.Native
                 _Receives = new PackageQueue();                
                 
             }
+
+            public OnlineStage(System.Net.Sockets.Socket socket, AgentCore core)
+                : this(socket)
+            {
+                
+                this._Core = core;
+            }
             
             void Utility.IStage.Enter()
             {
+                _Core.Initial(this);
                 _Enable = true;
                 _ReaderStart();
                 _WriterStart();
@@ -69,7 +79,7 @@ namespace Regulus.Remoting.Ghost.Native
                 
                 if (_Socket != null)
                 {
-                    _Socket.Close(1000);
+                    _Socket.Close();
                     _Socket = null;
                 }
                 if (_Enable != false)
@@ -80,6 +90,8 @@ namespace Regulus.Remoting.Ghost.Native
                     }
                     DoneEvent = null;
                 }
+
+                _Core.Finial();
             }
 
             
@@ -96,8 +108,8 @@ namespace Regulus.Remoting.Ghost.Native
                     
                     DoneEvent = null;
                 }
-                    
-                
+                else
+                    _Process(_Core);
             }
             
 
@@ -128,7 +140,7 @@ namespace Regulus.Remoting.Ghost.Native
 
             
 
-            internal void Process(AgentCore core)
+            void _Process(AgentCore core)
             {
                 
                 lock (_LockResponse)

@@ -33,6 +33,8 @@ namespace Regulus.Utility
 
         Regulus.Remoting.Value<bool> IConnect.Connect(string ipaddr, int port)
         {
+            if (ConnectedEvent == null)
+                throw new SystemException("Invalid Connect, to regain from the provider.");
             var val = new Regulus.Remoting.Value<bool>();
             ConnectedEvent(ipaddr, port, val);
             return val;

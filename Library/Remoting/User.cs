@@ -49,6 +49,7 @@ namespace Regulus.Remoting
         {
             var stage = new OnlineStage(_Agent, _OnlineProvider);
 
+            
             stage.BreakEvent += _ToOffline;
             
             _Machine.Push(stage);

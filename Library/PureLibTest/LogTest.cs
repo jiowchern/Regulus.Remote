@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+using NSubstitute;
 namespace PureLibTest
 {
 
@@ -8,15 +8,10 @@ namespace PureLibTest
     [TestClass]
     public class LogTest
     {
-
-      
+       
         [TestMethod]
         public void TestWrite()
         {
-            
-            
-
-
 
             System.Collections.Generic.List<string> messages = new System.Collections.Generic.List<string>();
             

@@ -8,6 +8,110 @@ namespace RemotingTest
     {
 
         volatile static bool _ConnectEnable;
+
+        [TestMethod]
+        public void TestUserMutiConnectDisconnect()
+        {
+            Regulus.Utility.Launcher launcher = new Regulus.Utility.Launcher();
+            Server server = new Server();
+            var serverAppliction = new Regulus.Remoting.Soul.Native.Server(server, 12345);
+            launcher.Push(serverAppliction);
+            launcher.Launch();
+
+            var user = new Regulus.Remoting.User(Regulus.Remoting.Ghost.Native.Agent.Create());
+            System.Threading.Tasks.Task task = new System.Threading.Tasks.Task(_UpdateUser(user));
+            _ConnectEnable = true;
+            task.Start();
+            while (user.ConnectProvider.Ghosts.Length == 0)
+                ;
+            var ghost = user.ConnectProvider.Ghosts[0];
+            ghost.Connect("127.0.0.1", 12345);
+            
+            
+            while (user.OnlineProvider.Ghosts.Length == 0)
+                ;
+
+            var ghostOnline = user.OnlineProvider.Ghosts[0];
+            ghostOnline.Disconnect();
+            ghostOnline.Disconnect();
+            
+            bool excep = false;
+            try
+            {
+                ghost.Connect("127.0.0.1", 12345);
+            }
+            catch(SystemException se)
+            {
+                excep = se.Message == "Invalid Connect, to regain from the provider.";
+            }
+
+
+            _ConnectEnable = false;
+            task.Wait();
+
+
+            launcher.Shutdown();
+
+            Assert.AreEqual(true, excep);
+        }
+
+        [TestMethod]
+        public void UserTestInvalidConnect()
+        {
+            
+                
+            var user = new Regulus.Remoting.User(Regulus.Remoting.Ghost.Native.Agent.Create());
+            System.Threading.Tasks.Task task = new System.Threading.Tasks.Task(_UpdateUser(user));
+            _ConnectEnable = true;
+            task.Start();
+            while (user.ConnectProvider.Ghosts.Length == 0)
+                ;
+            var ghost = user.ConnectProvider.Ghosts[0];
+            var result1 = ghost.Connect("127.0.0.1", 12345).WaitResult();
+            
+            
+            bool excep = false;
+            try
+            {
+                ghost.Connect("127.0.0.1", 12345);            
+            }
+            catch (SystemException se)
+            {
+                excep = se.Message == "Invalid Connect, to regain from the provider.";
+            }
+            
+
+            _ConnectEnable = false;
+            task.Wait();
+
+
+            Assert.AreEqual(false, excep);
+            Assert.AreEqual(false, result1);
+            
+            
+           
+        }
+
+        [TestMethod]
+        public void ConnectFailTest()
+        {
+
+            for (int i = 0; i < 3; ++i )
+            {
+                var agent = Regulus.Remoting.Ghost.Native.Agent.Create();
+                _ConnectEnable = true;
+                System.Threading.Tasks.Task task = new System.Threading.Tasks.Task(_UpdateAgent(agent));
+                task.Start();
+                var connectResult = agent.Connect("127.0.0.1", 12345).WaitResult();
+                agent.Disconnect();
+                _ConnectEnable = false;
+                task.Wait();
+
+                Assert.AreEqual(false, connectResult);
+            }
+
+            
+        }
         [TestMethod , Timeout(5000)]
         public void ConnectTest()
         {
@@ -21,7 +125,7 @@ namespace RemotingTest
             var agent = Regulus.Remoting.Ghost.Native.Agent.Create();
 
             _ConnectEnable = true;
-            System.Threading.Tasks.Task task = new System.Threading.Tasks.Task(NewMethod(  agent));
+            System.Threading.Tasks.Task task = new System.Threading.Tasks.Task(_UpdateAgent(  agent));
             task.Start();
             if(agent.Connect("127.0.0.1", 12345).WaitResult())
             {
@@ -35,7 +139,7 @@ namespace RemotingTest
 
 
             _ConnectEnable = true; 
-            task = new System.Threading.Tasks.Task(NewMethod(  agent));
+            task = new System.Threading.Tasks.Task(_UpdateAgent(  agent));
             task.Start();                      
             if (agent.Connect("127.0.0.1", 12345).WaitResult())
             {
@@ -50,7 +154,7 @@ namespace RemotingTest
 
 
             _ConnectEnable = true;
-            task = new System.Threading.Tasks.Task(NewMethod(agent));
+            task = new System.Threading.Tasks.Task(_UpdateAgent(agent));
             task.Start();
             if (agent.Connect("127.0.0.1", 12345).WaitResult())
             {
@@ -65,7 +169,7 @@ namespace RemotingTest
 
 
             _ConnectEnable = true;
-            task = new System.Threading.Tasks.Task(NewMethod(agent));
+            task = new System.Threading.Tasks.Task(_UpdateAgent(agent));
             task.Start();
             if (agent.Connect("127.0.0.1", 12345).WaitResult())
             {
@@ -80,7 +184,7 @@ namespace RemotingTest
 
 
             _ConnectEnable = true;
-            task = new System.Threading.Tasks.Task(NewMethod(agent));
+            task = new System.Threading.Tasks.Task(_UpdateAgent(agent));
             task.Start();
             if (agent.Connect("127.0.0.1", 12345).WaitResult())
             {
@@ -96,7 +200,7 @@ namespace RemotingTest
             launcher.Shutdown();
         }
 
-        private static Action NewMethod(Regulus.Remoting.IAgent agent)
+        private static Action _UpdateAgent(Regulus.Remoting.IAgent agent)
         {
             return () =>
             {
@@ -114,7 +218,24 @@ namespace RemotingTest
                 agent.Shutdown();
             };
         }
+        private Action _UpdateUser(Regulus.Utility.IUpdatable user)
+        {
+            return () =>
+            {
 
+                System.Threading.SpinWait sw = new System.Threading.SpinWait();
+
+                user.Launch();
+                while (_ConnectEnable)
+                {
+                    user.Update();
+
+                    sw.SpinOnce();
+                }
+
+                user.Shutdown();
+            };
+        }
 
         [TestMethod]
         public void RemotingReturnTest()

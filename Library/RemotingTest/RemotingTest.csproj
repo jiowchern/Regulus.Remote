@@ -35,8 +35,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="NSubstitute">
       <HintPath>..\..\packages\NSubstitute.1.8.1.0\lib\net45\NSubstitute.dll</HintPath>
+    </Reference>
+    <Reference Include="RegulusRemotingNativeGhost.Fakes">
+      <HintPath>FakesAssemblies\RegulusRemotingNativeGhost.Fakes.dll</HintPath>
     </Reference>
     <Reference Include="System" />
   </ItemGroup>
@@ -103,6 +107,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Fakes Include="Fakes\RegulusRemotingNativeGhost.fakes" />
     <None Include="packages.config" />
   </ItemGroup>
   <Choose>

@@ -158,7 +158,9 @@ namespace Regulus.Remoting.Soul.Native
             
         }
         public void DoWork(object obj)
-        {            
+        {
+
+            System.Threading.AutoResetEvent are = (System.Threading.AutoResetEvent)obj;
             _Run = true;
 
             _Socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
@@ -192,6 +194,8 @@ namespace Regulus.Remoting.Soul.Native
             _Peers.Release();
             
             _Socket.Close();
+
+            are.Set();
         }
 
         private void _Accept(IAsyncResult ar)
@@ -247,8 +251,8 @@ namespace Regulus.Remoting.Soul.Native
                 _View.WriteLine("CoreFPS:" + _Server.CoreFPS.ToString());
 
 
-                _View.WriteLine(string.Format("PeerPower:{0:0.00%}", _Server.PeerUsage));
-                _View.WriteLine(string.Format("CorePower:{0:0.00%}", _Server.CoreUsage));                                
+                _View.WriteLine(string.Format("PeerUsage:{0:0.00%}", _Server.PeerUsage));
+                _View.WriteLine(string.Format("CoreUsage:{0:0.00%}", _Server.CoreUsage));                                
 
                 _View.WriteLine("\nTotalReadBytes:" + string.Format("{0:N0}", NetworkMonitor.Instance.Read.TotalBytes));
                 _View.WriteLine("TotalWriteBytes:" + string.Format("{0:N0}", NetworkMonitor.Instance.Write.TotalBytes));
