@@ -30,14 +30,6 @@ namespace Regulus.Collection
 
         }
 
-        /*public int Count
-        {
-            get
-            {
-                lock (_Set)
-                    return _Set.Count;
-            }
-        }*/
 
 
 
@@ -65,9 +57,5 @@ namespace Regulus.Collection
             }
         }
 
-        public int Count { get     {
-            lock(_Set)
-                return _Set.Count;
-        } }
     }
 }

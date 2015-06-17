@@ -59,17 +59,20 @@ namespace Regulus.Remoting.Ghost.Native
 
                 if (_Result.HasValue && ResultEvent != null)
                 {
-                    ResultEvent(_Result.Value, _Socket);
+                    var call = ResultEvent;
                     ResultEvent = null;
+                    call(_Result.Value, _Socket);                    
                 }
 
                 return false;
             }
             void Utility.IStage.Leave()
             {
-                if (_Result.HasValue == false)
+                if (_Result.HasValue == false && ResultEvent != null)
                 {
-                    ResultEvent(false , null);
+                    var call = ResultEvent;
+                    ResultEvent = null;
+                    call(false, null);                    
                 }
                 
             }
@@ -79,26 +82,6 @@ namespace Regulus.Remoting.Ghost.Native
                 _InvokeResultEvent();
             }
         }
-
-        class IdleStage : Regulus.Utility.IStage
-        {
-
-            void Utility.IStage.Enter()
-            {
-
-            }
-
-            void Utility.IStage.Leave()
-            {
-
-            }
-
-            void Utility.IStage.Update()
-            {
-
-            }
-        }
-
 
     }
 }

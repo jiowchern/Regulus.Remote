@@ -25,8 +25,9 @@ namespace VGame.Project.FishHunter
             {
                 var found = account != null;
                 if (found && account.IsPassword(password))
-                {                    
-                    DoneEvent(account);
+                {
+                    if (DoneEvent != null)
+                        DoneEvent(account);
                     returnValue.SetValue(true);
                 }
                 else

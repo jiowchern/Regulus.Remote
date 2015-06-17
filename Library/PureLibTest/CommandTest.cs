@@ -50,12 +50,17 @@ namespace Regulus.UnitTest
         [TestMethod]
         public void TestCommandRegister1()
         {
+            // data
             var command = new Regulus.Utility.Command();
             var cr = new Regulus.Remoting.CommandRegister<ICallTester, int>("Function2", new string[] { "arg1" }, command, (caller, arg1) => caller.Function2(arg1));
             var callTester = NSubstitute.Substitute.For<ICallTester>();
+
+            // test
             cr.Register(callTester);
             command.Run("Function2", new string[] {"1"} );
-            callTester.Received(1).Function2( NSubstitute.Arg.Any<int>() );
+
+            // verify
+            callTester.Received(1).Function2( NSubstitute.Arg.Any<int>() ); //
             cr.Unregister();
         }
 

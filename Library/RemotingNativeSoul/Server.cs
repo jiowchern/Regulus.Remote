@@ -15,6 +15,8 @@ namespace Regulus.Remoting.Soul.Native
         ThreadSocketHandler _ThreadSocketHandler;
         ThreadCoreHandler _ThreadCoreHandler;
 
+        System.Threading.WaitHandle _WaitSocket  ;
+
         /// <summary>
         /// 網路核心每秒執行次數
         /// </summary>
@@ -49,6 +51,8 @@ namespace Regulus.Remoting.Soul.Native
         {
             _ThreadCoreHandler = new ThreadCoreHandler(core);
             _ThreadSocketHandler = new ThreadSocketHandler(port, _ThreadCoreHandler);
+
+            _WaitSocket = new System.Threading.AutoResetEvent(false);
         }
 
         /// <summary>
@@ -57,7 +61,7 @@ namespace Regulus.Remoting.Soul.Native
         public void Launch()
         {
             System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(_ThreadCoreHandler.DoWork));
-            System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(_ThreadSocketHandler.DoWork));
+            System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(_ThreadSocketHandler.DoWork), _WaitSocket);
         }
         void Framework.IBootable.Launch()
         {
@@ -71,7 +75,9 @@ namespace Regulus.Remoting.Soul.Native
         public void Shutdown()
         {
             _ThreadCoreHandler.Stop();
-            _ThreadSocketHandler.Stop();        
+            _ThreadSocketHandler.Stop();
+
+            System.Threading.WaitHandle.WaitAll(new[] { _WaitSocket });
         }
 
         

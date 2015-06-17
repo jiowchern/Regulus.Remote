@@ -18,8 +18,9 @@ namespace Regulus.Utility
     {
         Guid _Id;
 
-        public Guid Id { get { return _Id;  } }        
-        
+        public Guid Id { get { return _Id;  } }
+        public delegate void DisconnectCallback();
+        public event DisconnectCallback DisconnectEvent;
         public Online()
         {
             _Id = Guid.NewGuid();
@@ -37,7 +38,7 @@ namespace Regulus.Utility
 
         void IOnline.Disconnect()
         {
-            _Agent.Disconnect();            
+            DisconnectEvent();       
         }
 
         void Regulus.Remoting.Ghost.IGhost.OnEvent(string name_event, object[] args)

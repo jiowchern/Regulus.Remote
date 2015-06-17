@@ -11,6 +11,7 @@ namespace VGame.Project.FishHunter.UnitTest
         [TestMethod]
         public void TestVerifySuccess()
         {
+            // data 
             string id = "12345678";
             string pw = "0000";
             var stroage = NSubstitute.Substitute.For<VGame.Project.FishHunter.IAccountFinder>();
@@ -22,10 +23,14 @@ namespace VGame.Project.FishHunter.UnitTest
             stage.DoneEvent += (account) => { eventValue = true; };
 
             VGame.Project.FishHunter.IVerify verify = stage;
+
+            // test
             var val = verify.Login("12345678" , "0000");
+
+            //data
             val.OnValue += (result) => { returnValue = result; };
             
-
+            // verify
             Assert.AreEqual(true, returnValue);
             Assert.AreEqual(true , eventValue );
 

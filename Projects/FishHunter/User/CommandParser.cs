@@ -70,11 +70,6 @@ namespace VGame.Project.FishHunter
 
         private void _CreateSystem()
         {
-            _Command.Register("Agent", _ShowIOHandler);
-        }
-
-        private void _ShowIOHandler()
-        {
             
         }
 
