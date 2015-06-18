@@ -104,6 +104,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameTest", "Projects\FishHunter\CommonTest\GameTest.csproj", "{06CC7AF7-6795-4231-AE6F-E87BCF8799E3}"
 EndProject
 Global
+	GlobalSection(AutomaticVersions) = postSolution
+		UpdateAssemblyVersion = False
+		UpdateAssemblyFileVersion = True
+		UpdateAssemblyInfoVersion = False
+		AssemblyFileVersionSettings = None.None.Increment.IncrementOnDemandWithReset
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Unity|Any CPU = Debug_Unity|Any CPU
 		Debug|Any CPU = Debug|Any CPU
