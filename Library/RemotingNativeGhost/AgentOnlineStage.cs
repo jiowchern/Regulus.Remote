@@ -49,7 +49,9 @@ namespace Regulus.Remoting.Ghost.Native
                 _Reader = new Regulus.Remoting.Native.PackageReader();
                 _Writer = new Regulus.Remoting.Native.PackageWriter();
                 _Sends = new PackageQueue();
-                _Receives = new PackageQueue();                
+                _Receives = new PackageQueue();
+                
+                
                 
             }
 
@@ -86,9 +88,10 @@ namespace Regulus.Remoting.Ghost.Native
                 {
                     if (DoneEvent != null)
                     {
-                        DoneEvent();
-                    }
-                    DoneEvent = null;
+                        var call = DoneEvent;
+                        DoneEvent = null;
+                        call();
+                    }                    
                 }
 
                 _Core.Finial();
@@ -101,12 +104,12 @@ namespace Regulus.Remoting.Ghost.Native
 
                 if (_Enable == false)
                 {
-                    if (DoneEvent!=null)
+                    if (DoneEvent != null)
                     {
-                        DoneEvent();
-                    }
-                    
-                    DoneEvent = null;
+                        var call = DoneEvent;
+                        DoneEvent = null;
+                        call();
+                    }    
                 }
                 else
                     _Process(_Core);
