@@ -10,9 +10,9 @@ namespace Regulus.Utility
     {
         private static T _Instance;
         static Type _Sync = typeof(T);
-        public static T GetInstance()
+        public static T GetInstance() 
         {
-            return Instance;
+            return Instance;   
         }
 
 		public static T Instance	
