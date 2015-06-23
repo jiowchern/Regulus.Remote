@@ -102,9 +102,9 @@ namespace VGame.Project.FishHunter
 
         private void _CreateOnline(Regulus.Remoting.IGPIBinderFactory factory)
         {
-            var online = factory.Create<Regulus.Utility.IOnline>(_User.Remoting.OnlineProvider);
-            online.Bind("Disconnect", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().Build(gpi.Disconnect); });
+            var online = factory.Create<Regulus.Utility.IOnline>(_User.Remoting.OnlineProvider);            
             online.Bind("Ping", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().Build(() => { _View.WriteLine("Ping : " + gpi.Ping.ToString()); }); });
+            online.Bind((gpi) => gpi.Disconnect() );
         }
 
         private void _CreateConnect(Regulus.Remoting.IGPIBinderFactory factory)

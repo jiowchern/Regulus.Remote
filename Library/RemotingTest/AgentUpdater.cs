@@ -19,7 +19,7 @@ namespace RemotingTest
             _Agent.Launch();
             
             bool enable = true;
-            _Agent.DisconnectEvent += () => enable = false;
+            _Agent.BreakEvent += () => enable = false;
             while (enable)
             {
                 _Agent.Update();

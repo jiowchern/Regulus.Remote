@@ -9,8 +9,6 @@ namespace Regulus.Utility
     {        
         double Ping { get; }
         void Disconnect();
-
-        event Action DisconnectEvent;
     }
 
 
@@ -18,9 +16,7 @@ namespace Regulus.Utility
     {
         Guid _Id;
 
-        public Guid Id { get { return _Id;  } }
-        public delegate void DisconnectCallback();
-        public event DisconnectCallback DisconnectEvent;
+        public Guid Id { get { return _Id;  } }        
         public Online()
         {
             _Id = Guid.NewGuid();
@@ -36,10 +32,7 @@ namespace Regulus.Utility
             get { return System.TimeSpan.FromTicks(_Agent.Ping).TotalSeconds; }
         }
 
-        void IOnline.Disconnect()
-        {
-            DisconnectEvent();       
-        }
+        
 
         void Regulus.Remoting.Ghost.IGhost.OnEvent(string name_event, object[] args)
         {
@@ -57,11 +50,7 @@ namespace Regulus.Utility
         }
         
         private Remoting.IAgent _Agent;
-        event Action IOnline.DisconnectEvent
-        {
-            add { _Agent.DisconnectEvent += value; }
-            remove { _Agent.DisconnectEvent -= value; }
-        }
+        
 
 
 
@@ -71,6 +60,12 @@ namespace Regulus.Utility
         bool Remoting.Ghost.IGhost.IsReturnType()
         {
             return false;
+        }
+
+
+        void IOnline.Disconnect()
+        {
+            _Agent.Disconnect();
         }
     }
 

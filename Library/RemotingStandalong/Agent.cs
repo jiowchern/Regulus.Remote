@@ -80,7 +80,7 @@ namespace Regulus.Standalong
 			return _Agent.QueryProvider<T>();
 		}
 
-
+        event Action _DisconnectEvent;
         private event Action _BreakEvent;
 
 		private void _Bind<TSoul>(TSoul soul)
@@ -110,12 +110,7 @@ namespace Regulus.Standalong
             get { return _Agent.Ping; }
         }
 
-        event Action _DisconnectEvent;
-        event Action Remoting.IAgent.DisconnectEvent
-        {
-            add { _DisconnectEvent += value; }
-            remove { _DisconnectEvent -= value; }
-        }
+        
 
         void Remoting.IAgent.Disconnect()
         {
@@ -164,6 +159,8 @@ namespace Regulus.Standalong
             _Unbind(soul);
         }
 
+        
+
         event Action Remoting.ISoulBinder.BreakEvent
         {
             add { _BreakEvent += value; }
@@ -180,6 +177,20 @@ namespace Regulus.Standalong
         void Remoting.IRequestQueue.Update()
         {
             _Update();
+        }
+
+
+        event Action Remoting.IAgent.BreakEvent
+        {
+            add { _BreakEvent += value;  }
+            remove { _BreakEvent -= value; }
+        }
+
+        
+        event Action Remoting.IAgent.DisconnectionEvent
+        {
+            add { _DisconnectEvent += value; }
+            remove { _DisconnectEvent -= value; }
         }
     }
 }

@@ -18,7 +18,8 @@ namespace RemotingTest
             launcher.Push(serverAppliction);
             launcher.Launch();
 
-            var user = new Regulus.Remoting.User(Regulus.Remoting.Ghost.Native.Agent.Create());
+            var agent = Regulus.Remoting.Ghost.Native.Agent.Create();
+            var user = new Regulus.Remoting.User(agent);
             System.Threading.Tasks.Task task = new System.Threading.Tasks.Task(_UpdateUser(user));
             _ConnectEnable = true;
             task.Start();
@@ -30,10 +31,9 @@ namespace RemotingTest
             
             while (user.OnlineProvider.Ghosts.Length == 0)
                 ;
-
-            var ghostOnline = user.OnlineProvider.Ghosts[0];
-            ghostOnline.Disconnect();
-            ghostOnline.Disconnect();
+            agent.Disconnect();
+            agent.Disconnect();
+            
             
             bool excep = false;
             try
@@ -54,12 +54,43 @@ namespace RemotingTest
 
             Assert.AreEqual(true, excep);
         }
+        [TestMethod]
+        public void TestUserReconnect()
+        {
+            Regulus.Utility.Launcher launcher = new Regulus.Utility.Launcher();
+            Server server = new Server();
+            var serverAppliction = new Regulus.Remoting.Soul.Native.Server(server, 12345);
+            launcher.Push(serverAppliction);
+            launcher.Launch();
+
+            var agent = Regulus.Remoting.Ghost.Native.Agent.Create();            
+            var user = new Regulus.Remoting.User(agent);
+            System.Threading.Tasks.Task task = new System.Threading.Tasks.Task(_UpdateUser(user));
+            _ConnectEnable = true;
+            task.Start();
+
+            while (user.ConnectProvider.Ghosts.Length == 0) ;
+            user.ConnectProvider.Ghosts[0].Connect("127.0.0.1", 12345).WaitResult();
+
+            while (user.OnlineProvider.Ghosts.Length == 0) ;
+            user.OnlineProvider.Ghosts[0].Disconnect();
+
+            while (user.ConnectProvider.Ghosts.Length == 0) ;
+            user.ConnectProvider.Ghosts[0].Connect("127.0.0.1", 12345).WaitResult();
+
+            while (user.OnlineProvider.Ghosts.Length == 0) ;
+            user.OnlineProvider.Ghosts[0].Disconnect();
+
+
+            _ConnectEnable = false;
+            task.Wait();
+            launcher.Shutdown();
+        }
 
         [TestMethod]
         public void UserTestInvalidConnect()
         {
             
-                
             var user = new Regulus.Remoting.User(Regulus.Remoting.Ghost.Native.Agent.Create());
             System.Threading.Tasks.Task task = new System.Threading.Tasks.Task(_UpdateUser(user));
             _ConnectEnable = true;
@@ -68,7 +99,6 @@ namespace RemotingTest
                 ;
             var ghost = user.ConnectProvider.Ghosts[0];
             var result1 = ghost.Connect("127.0.0.1", 12345).WaitResult();
-            
             
             bool excep = false;
             try
@@ -112,6 +142,46 @@ namespace RemotingTest
 
             
         }
+        [TestMethod, Timeout(5000)]
+        public void ServerReconnectTest()
+        {
+            Regulus.Utility.Launcher launcher = new Regulus.Utility.Launcher();
+            Server server = new Server();
+            var serverAppliction = new Regulus.Remoting.Soul.Native.Server(server, 12345);
+            launcher.Push(serverAppliction);
+
+            var agent = Regulus.Remoting.Ghost.Native.Agent.Create();
+            agent.BreakEvent += () =>
+            {
+                _ConnectEnable = false;
+            };
+
+            launcher.Launch();
+            
+            _ConnectEnable = true;
+            System.Threading.Tasks.Task task = new System.Threading.Tasks.Task(_UpdateAgent(agent));
+            task.Start();
+            if (agent.Connect("127.0.0.1", 12345).WaitResult())
+            {                
+                launcher.Shutdown();
+            }            
+            task.Wait();
+
+
+            launcher.Launch();            
+            _ConnectEnable = true;
+            System.Threading.Tasks.Task task2 = new System.Threading.Tasks.Task(_UpdateAgent(agent));
+            task2.Start();
+            if (agent.Connect("127.0.0.1", 12345).WaitResult())
+            {
+                launcher.Shutdown();
+            }
+            task2.Wait();
+
+
+            
+        }
+
         [TestMethod , Timeout(5000)]
         public void ConnectTest()
         {
