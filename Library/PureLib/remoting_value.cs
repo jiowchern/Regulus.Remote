@@ -55,6 +55,11 @@ namespace Regulus.Remoting
 		T _Value;
 		bool _Empty = true;
 
+        public bool HasValue ()
+        {
+            return _Empty == false;
+        }
+
         /// <summary>
         /// 建構子
         /// </summary>

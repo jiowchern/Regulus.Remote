@@ -54,7 +54,7 @@ namespace Regulus.Remoting.Ghost.Native
                 _Result = result;
             }
 
-            bool _InvokeResultEvent()
+            void _InvokeResultEvent()
             {
 
                 if (_Result.HasValue && ResultEvent != null)
@@ -64,17 +64,11 @@ namespace Regulus.Remoting.Ghost.Native
                     call(_Result.Value, _Socket);                    
                 }
 
-                return false;
+                
             }
             void Utility.IStage.Leave()
             {
-                if (_Result.HasValue == false && ResultEvent != null)
-                {
-                    var call = ResultEvent;
-                    ResultEvent = null;
-                    call(false, null);                    
-                }
-                
+
             }
 
             void Utility.IStage.Update()

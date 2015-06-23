@@ -8,7 +8,7 @@ namespace Regulus.Remoting.Ghost.Native
         
         Regulus.Utility.StageMachine _Machine;
         
-        event Action _DisconnectEvent;
+        event Action _BreakEvent;
         AgentCore _Core;
 		private Agent()
 		{            
@@ -23,19 +23,21 @@ namespace Regulus.Remoting.Ghost.Native
         }
 
         private Regulus.Remoting.Value<bool> _ToConnect(string ipaddress, int port)
-        {            
-            var val = new Regulus.Remoting.Value<bool>();
+        {
+            if (_ConnectValue != null && _ConnectValue.HasValue() == false)
+                _ConnectValue.SetValue(false);
+            _ConnectValue = new Regulus.Remoting.Value<bool>();
             var stage = new ConnectStage(ipaddress, port);
             stage.ResultEvent += (result,socket)=>
             {
                 if (result && _ConnectEvent != null)
                     _ConnectEvent();
 
-                val.SetValue(result);
+                _ConnectValue.SetValue(result);
                 _ConnectResult(result, socket);                
             };
             _Machine.Push(stage);
-            return val;
+            return _ConnectValue;
         }
         
         void _ConnectResult(bool success , System.Net.Sockets.Socket socket)
@@ -53,12 +55,18 @@ namespace Regulus.Remoting.Ghost.Native
         private void _ToOnline(Utility.StageMachine machine, System.Net.Sockets.Socket socket)
         {
             var onlineStage = new OnlineStage(socket, _Core);
-            onlineStage.DoneEvent += () =>
+            onlineStage.DoneFromServerEvent += () =>
             {
-                if (_DisconnectEvent != null)
-                    _DisconnectEvent();
-
                 _Disconnect();
+                if (_BreakEvent != null)
+                    _BreakEvent();
+            };
+
+            onlineStage.DoneFromClientEvent += () =>
+            {
+                _Disconnect();
+                if (_DisconnectionEvent != null)
+                    _DisconnectionEvent();
             };
             
             machine.Push(onlineStage);
@@ -67,6 +75,8 @@ namespace Regulus.Remoting.Ghost.Native
         private void _Termination(Regulus.Utility.StageMachine machine)
         {
             _Machine.Termination();
+            if (_ConnectValue != null && _ConnectValue.HasValue() == false)
+                _ConnectValue.SetValue(false);
         }
 
         
@@ -87,6 +97,8 @@ namespace Regulus.Remoting.Ghost.Native
 		{
             
             _Disconnect();
+
+            
 		}
 
 		
@@ -124,15 +136,15 @@ namespace Regulus.Remoting.Ghost.Native
             get { return _Ping; }
         }
 
-        event Action IAgent.DisconnectEvent
+        event Action IAgent.BreakEvent
         {
-            add { _DisconnectEvent += value; }
-            remove { _DisconnectEvent -= value; }
+            add { _BreakEvent += value; }
+            remove { _BreakEvent -= value; }
         }
 
         void IAgent.Disconnect()
         {
-            _Termination(_Machine);
+            _Termination(_Machine);            
         }
 
         /// <summary>
@@ -142,6 +154,15 @@ namespace Regulus.Remoting.Ghost.Native
         public static IAgent Create()
         {
             return new Agent();
+        }
+
+
+        event Action _DisconnectionEvent;
+        private Value<bool> _ConnectValue;
+        event Action IAgent.DisconnectionEvent
+        {
+            add { _DisconnectionEvent += value; }
+            remove { _DisconnectionEvent -= value; }
         }
     }
 }

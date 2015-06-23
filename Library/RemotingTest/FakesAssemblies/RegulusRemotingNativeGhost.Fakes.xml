@@ -34,6 +34,12 @@
         <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.Behavior">
             <summary>指派填充類型之所有方法的行為</summary>
         </member>
+        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.BreakEventRegulusRemotingIAgentaddAction">
+            <summary>設定 Agent.Regulus.Remoting.IAgent.add_BreakEvent(Action value) 的 填充碼</summary>
+        </member>
+        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.BreakEventRegulusRemotingIAgentremoveAction">
+            <summary>設定 Agent.Regulus.Remoting.IAgent.remove_BreakEvent(Action value) 的 填充碼</summary>
+        </member>
         <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.ConnectEventRegulusRemotingIAgentaddAction">
             <summary>設定 Agent.Regulus.Remoting.IAgent.add_ConnectEvent(Action value) 的 填充碼</summary>
         </member>
@@ -46,11 +52,11 @@
         <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.Create">
             <summary>設定 Agent.Create() 的 填充碼</summary>
         </member>
-        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.DisconnectEventRegulusRemotingIAgentaddAction">
-            <summary>設定 Agent.Regulus.Remoting.IAgent.add_DisconnectEvent(Action value) 的 填充碼</summary>
+        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.DisconnectionEventRegulusRemotingIAgentaddAction">
+            <summary>設定 Agent.Regulus.Remoting.IAgent.add_DisconnectionEvent(Action value) 的 填充碼</summary>
         </member>
-        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.DisconnectEventRegulusRemotingIAgentremoveAction">
-            <summary>設定 Agent.Regulus.Remoting.IAgent.remove_DisconnectEvent(Action value) 的 填充碼</summary>
+        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.DisconnectionEventRegulusRemotingIAgentremoveAction">
+            <summary>設定 Agent.Regulus.Remoting.IAgent.remove_DisconnectionEvent(Action value) 的 填充碼</summary>
         </member>
         <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.PingRegulusRemotingIAgentget">
             <summary>設定 Agent.Regulus.Remoting.IAgent.get_Ping() 的 填充碼</summary>
@@ -76,6 +82,12 @@
         <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.ResponsePackagesGet">
             <summary>設定 Agent.get_ResponsePackages() 的 填充碼</summary>
         </member>
+        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent._BreakEventAddAction">
+            <summary>設定 Agent.add__BreakEvent(Action value) 的 填充碼</summary>
+        </member>
+        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent._BreakEventRemoveAction">
+            <summary>設定 Agent.remove__BreakEvent(Action value) 的 填充碼</summary>
+        </member>
         <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent._ConnectEventAddAction">
             <summary>設定 Agent.add__ConnectEvent(Action value) 的 填充碼</summary>
         </member>
@@ -91,11 +103,11 @@
         <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent._Disconnect">
             <summary>設定 Agent._Disconnect() 的 填充碼</summary>
         </member>
-        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent._DisconnectEventAddAction">
-            <summary>設定 Agent.add__DisconnectEvent(Action value) 的 填充碼</summary>
+        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent._DisconnectionEventAddAction">
+            <summary>設定 Agent.add__DisconnectionEvent(Action value) 的 填充碼</summary>
         </member>
-        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent._DisconnectEventRemoveAction">
-            <summary>設定 Agent.remove__DisconnectEvent(Action value) 的 填充碼</summary>
+        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent._DisconnectionEventRemoveAction">
+            <summary>設定 Agent.remove__DisconnectionEvent(Action value) 的 填充碼</summary>
         </member>
         <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent._PingGet">
             <summary>設定 Agent.get__Ping() 的 填充碼</summary>
@@ -109,8 +121,14 @@
         <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent._ToOnlineStageMachineSocket">
             <summary>設定 Agent._ToOnline(StageMachine machine, Socket socket) 的 填充碼</summary>
         </member>
-        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.__ToOnlineb__3">
-            <summary>設定 Agent.&lt;_ToOnline&gt;b__3() 的 填充碼</summary>
+        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.__ToConnectb__0BooleanSocket">
+            <summary>設定 Agent.&lt;_ToConnect&gt;b__0(Boolean result, Socket socket) 的 填充碼</summary>
+        </member>
+        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.__ToOnlineb__1">
+            <summary>設定 Agent.&lt;_ToOnline&gt;b__1() 的 填充碼</summary>
+        </member>
+        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.__ToOnlineb__2">
+            <summary>設定 Agent.&lt;_ToOnline&gt;b__2() 的 填充碼</summary>
         </member>
         <member name="T:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances">
             <summary>定義所有執行個體成員的填充碼</summary>
@@ -118,17 +136,23 @@
         <member name="M:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances.RegulusRemotingIAgentQueryNotifierOf1``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.Func{Regulus.Remoting.Ghost.Native.Agent,Regulus.Remoting.Ghost.INotifier{``0}})">
             <summary>設定 Agent.Regulus.Remoting.IAgent.QueryNotifier() 的 填充碼</summary>
         </member>
+        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances.BreakEventRegulusRemotingIAgentaddAction">
+            <summary>設定 Agent.Regulus.Remoting.IAgent.add_BreakEvent(Action value) 的 填充碼</summary>
+        </member>
+        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances.BreakEventRegulusRemotingIAgentremoveAction">
+            <summary>設定 Agent.Regulus.Remoting.IAgent.remove_BreakEvent(Action value) 的 填充碼</summary>
+        </member>
         <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances.ConnectEventRegulusRemotingIAgentaddAction">
             <summary>設定 Agent.Regulus.Remoting.IAgent.add_ConnectEvent(Action value) 的 填充碼</summary>
         </member>
         <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances.ConnectEventRegulusRemotingIAgentremoveAction">
             <summary>設定 Agent.Regulus.Remoting.IAgent.remove_ConnectEvent(Action value) 的 填充碼</summary>
         </member>
-        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances.DisconnectEventRegulusRemotingIAgentaddAction">
-            <summary>設定 Agent.Regulus.Remoting.IAgent.add_DisconnectEvent(Action value) 的 填充碼</summary>
+        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances.DisconnectionEventRegulusRemotingIAgentaddAction">
+            <summary>設定 Agent.Regulus.Remoting.IAgent.add_DisconnectionEvent(Action value) 的 填充碼</summary>
         </member>
-        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances.DisconnectEventRegulusRemotingIAgentremoveAction">
-            <summary>設定 Agent.Regulus.Remoting.IAgent.remove_DisconnectEvent(Action value) 的 填充碼</summary>
+        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances.DisconnectionEventRegulusRemotingIAgentremoveAction">
+            <summary>設定 Agent.Regulus.Remoting.IAgent.remove_DisconnectionEvent(Action value) 的 填充碼</summary>
         </member>
         <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances.PingRegulusRemotingIAgentget">
             <summary>設定 Agent.Regulus.Remoting.IAgent.get_Ping() 的 填充碼</summary>
@@ -148,6 +172,12 @@
         <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances.RegulusUtilityIUpdatableUpdate">
             <summary>設定 Agent.Regulus.Utility.IUpdatable.Update() 的 填充碼</summary>
         </member>
+        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances._BreakEventAddAction">
+            <summary>設定 Agent.add__BreakEvent(Action value) 的 填充碼</summary>
+        </member>
+        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances._BreakEventRemoveAction">
+            <summary>設定 Agent.remove__BreakEvent(Action value) 的 填充碼</summary>
+        </member>
         <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances._ConnectEventAddAction">
             <summary>設定 Agent.add__ConnectEvent(Action value) 的 填充碼</summary>
         </member>
@@ -163,11 +193,11 @@
         <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances._Disconnect">
             <summary>設定 Agent._Disconnect() 的 填充碼</summary>
         </member>
-        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances._DisconnectEventAddAction">
-            <summary>設定 Agent.add__DisconnectEvent(Action value) 的 填充碼</summary>
+        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances._DisconnectionEventAddAction">
+            <summary>設定 Agent.add__DisconnectionEvent(Action value) 的 填充碼</summary>
         </member>
-        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances._DisconnectEventRemoveAction">
-            <summary>設定 Agent.remove__DisconnectEvent(Action value) 的 填充碼</summary>
+        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances._DisconnectionEventRemoveAction">
+            <summary>設定 Agent.remove__DisconnectionEvent(Action value) 的 填充碼</summary>
         </member>
         <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances._PingGet">
             <summary>設定 Agent.get__Ping() 的 填充碼</summary>
@@ -181,8 +211,14 @@
         <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances._ToOnlineStageMachineSocket">
             <summary>設定 Agent._ToOnline(StageMachine machine, Socket socket) 的 填充碼</summary>
         </member>
-        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances.__ToOnlineb__3">
-            <summary>設定 Agent.&lt;_ToOnline&gt;b__3() 的 填充碼</summary>
+        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances.__ToConnectb__0BooleanSocket">
+            <summary>設定 Agent.&lt;_ToConnect&gt;b__0(Boolean result, Socket socket) 的 填充碼</summary>
+        </member>
+        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances.__ToOnlineb__1">
+            <summary>設定 Agent.&lt;_ToOnline&gt;b__1() 的 填充碼</summary>
+        </member>
+        <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances.__ToOnlineb__2">
+            <summary>設定 Agent.&lt;_ToOnline&gt;b__2() 的 填充碼</summary>
         </member>
     </members>
 </doc>

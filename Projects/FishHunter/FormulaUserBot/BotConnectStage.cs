@@ -25,6 +25,7 @@ namespace FormulaUserBot
 
         void Regulus.Utility.IStage.Leave()
         {
+            _User.Remoting.OnlineProvider.Unsupply -= OnlineProvider_Unsupply;
             _User.Remoting.ConnectProvider.Supply -= _Connect;
             _User.VerifyProvider.Supply -= _Verify;
             _User.FishStageQueryerProvider.Supply -= _Query;
@@ -36,15 +37,18 @@ namespace FormulaUserBot
             _User.FishStageQueryerProvider.Supply += _Query;
             _User.VerifyProvider.Supply += _Verify;
             _User.Remoting.ConnectProvider.Supply += _Connect;
-            _User.Remoting.OnlineProvider.Supply += OnlineProvider_Supply;
+            
+            _User.Remoting.OnlineProvider.Unsupply += OnlineProvider_Unsupply;
             
             
         }
 
-        void OnlineProvider_Supply(Regulus.Utility.IOnline obj)
+        void OnlineProvider_Unsupply(Regulus.Utility.IOnline obj)
         {
-            obj.DisconnectEvent += obj_DisconnectEvent;
+            obj_DisconnectEvent();
         }
+
+        
 
         void obj_DisconnectEvent()
         {

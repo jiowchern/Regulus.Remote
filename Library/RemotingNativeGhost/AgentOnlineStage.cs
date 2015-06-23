@@ -22,7 +22,8 @@ namespace Regulus.Remoting.Ghost.Native
 
         class OnlineStage : Regulus.Utility.IStage, Regulus.Remoting.IGhostRequest
         {
-            public event Action DoneEvent;
+            public event Action DoneFromServerEvent;
+            public event Action DoneFromClientEvent;
 
             Regulus.Remoting.Native.PackageReader _Reader;
             Regulus.Remoting.Native.PackageWriter _Writer;
@@ -68,14 +69,14 @@ namespace Regulus.Remoting.Ghost.Native
                 _Enable = true;
                 _ReaderStart();
                 _WriterStart();
-                
+                Regulus.Utility.Log.Instance.Write("OnlineStage Enter.");
             }
 
             
 
             void Utility.IStage.Leave()
             {
-                
+                Regulus.Utility.Log.Instance.Write("OnlineStage Leave.");
                 _WriterStop();
                 _ReaderStop();
                 
@@ -84,13 +85,15 @@ namespace Regulus.Remoting.Ghost.Native
                     _Socket.Close();
                     _Socket = null;
                 }
-                if (_Enable != false)
+                if (_Enable == true)
                 {
-                    if (DoneEvent != null)
+                    if (DoneFromClientEvent != null)
                     {
-                        var call = DoneEvent;
-                        DoneEvent = null;
+                        Regulus.Utility.Log.Instance.Write("OnlineStage DoneFromClientEvent.");
+                        var call = DoneFromClientEvent;
+                        DoneFromClientEvent = null;
                         call();
+
                     }                    
                 }
 
@@ -104,10 +107,11 @@ namespace Regulus.Remoting.Ghost.Native
 
                 if (_Enable == false)
                 {
-                    if (DoneEvent != null)
+                    if (DoneFromServerEvent != null)
                     {
-                        var call = DoneEvent;
-                        DoneEvent = null;
+                        Regulus.Utility.Log.Instance.Write("OnlineStage DoneFromServerEvent.");
+                        var call = DoneFromServerEvent;
+                        DoneFromServerEvent = null;
                         call();
                     }    
                 }
