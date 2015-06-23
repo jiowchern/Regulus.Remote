@@ -50,12 +50,6 @@ namespace Regulus.Utility
         }
         
         private Remoting.IAgent _Agent;
-        
-
-
-
-
-
 
         bool Remoting.Ghost.IGhost.IsReturnType()
         {

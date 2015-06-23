@@ -57,6 +57,8 @@ namespace RemotingTest
         [TestMethod]
         public void TestUserReconnect()
         {
+
+            
             Regulus.Utility.Launcher launcher = new Regulus.Utility.Launcher();
             Server server = new Server();
             var serverAppliction = new Regulus.Remoting.Soul.Native.Server(server, 12345);
@@ -69,22 +71,30 @@ namespace RemotingTest
             _ConnectEnable = true;
             task.Start();
 
-            while (user.ConnectProvider.Ghosts.Length == 0) ;
-            user.ConnectProvider.Ghosts[0].Connect("127.0.0.1", 12345).WaitResult();
+            Regulus.Utility.Log.Instance.RecordEvent += Instance_RecordEvent;
+            for (int i = 0; i < 10; ++i )
+            {
+                System.Diagnostics.Debug.WriteLine("i " + i);
+                while (user.ConnectProvider.Ghosts.Length == 0) ;
+                var connectResult = user.ConnectProvider.Ghosts[0].Connect("127.0.0.1", 12345).WaitResult();
 
-            while (user.OnlineProvider.Ghosts.Length == 0) ;
-            user.OnlineProvider.Ghosts[0].Disconnect();
-
-            while (user.ConnectProvider.Ghosts.Length == 0) ;
-            user.ConnectProvider.Ghosts[0].Connect("127.0.0.1", 12345).WaitResult();
-
-            while (user.OnlineProvider.Ghosts.Length == 0) ;
-            user.OnlineProvider.Ghosts[0].Disconnect();
+                if (connectResult )
+                {
+                    while (user.OnlineProvider.Ghosts.Length == 0) ;
+                    user.OnlineProvider.Ghosts[0].Disconnect();
+                }
+                //System.Threading.Thread.Sleep(3000);
+            }
 
 
             _ConnectEnable = false;
             task.Wait();
             launcher.Shutdown();
+        }
+
+        void Instance_RecordEvent(string message)
+        {
+            System.Diagnostics.Debug.WriteLine(message);
         }
 
         [TestMethod]

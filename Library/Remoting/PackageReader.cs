@@ -105,11 +105,15 @@ namespace Regulus.Remoting.Native
                     DoneEvent(_Buffer);
                 else
                     _Socket.BeginReceive(_Buffer, _Offset, _Buffer.Length - _Offset, 0, _Readed, null);
-            }
-            catch
+            }            
+            catch 
             {
                 if (ErrorEvent != null)
                     ErrorEvent();
+            }
+            finally 
+            {
+                
             }
             
 

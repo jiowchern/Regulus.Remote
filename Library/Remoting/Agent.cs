@@ -48,11 +48,7 @@ namespace Regulus.Remoting
         /// </summary>
         event Action BreakEvent;
 
-        /// <summary>
-        /// 與遠端發生斷線
-        /// 呼叫Disconnect不會發生此事件
-        /// </summary>
-        event Action DisconnectionEvent;
+        bool Connected { get; }
 
         /// <summary>
         /// 斷線

@@ -52,8 +52,6 @@ namespace Regulus.Remoting.Ghost.Native
                 _Sends = new PackageQueue();
                 _Receives = new PackageQueue();
                 
-                
-                
             }
 
             public OnlineStage(System.Net.Sockets.Socket socket, AgentCore core)
@@ -69,14 +67,12 @@ namespace Regulus.Remoting.Ghost.Native
                 _Enable = true;
                 _ReaderStart();
                 _WriterStart();
-                Regulus.Utility.Log.Instance.Write("OnlineStage Enter.");
+                
             }
-
-            
 
             void Utility.IStage.Leave()
             {
-                Regulus.Utility.Log.Instance.Write("OnlineStage Leave.");
+                
                 _WriterStop();
                 _ReaderStop();
                 
@@ -87,33 +83,20 @@ namespace Regulus.Remoting.Ghost.Native
                 }
                 if (_Enable == true)
                 {
-                    if (DoneFromClientEvent != null)
-                    {
-                        Regulus.Utility.Log.Instance.Write("OnlineStage DoneFromClientEvent.");
-                        var call = DoneFromClientEvent;
-                        DoneFromClientEvent = null;
-                        call();
-
-                    }                    
+                    Regulus.Utility.Log.Instance.Write("OnlineStage DoneFromClientEvent.");
+                    DoneFromClientEvent();
                 }
 
                 _Core.Finial();
-            }
-
-            
+            }            
 
             void Utility.IStage.Update()
             {
 
                 if (_Enable == false)
                 {
-                    if (DoneFromServerEvent != null)
-                    {
-                        Regulus.Utility.Log.Instance.Write("OnlineStage DoneFromServerEvent.");
-                        var call = DoneFromServerEvent;
-                        DoneFromServerEvent = null;
-                        call();
-                    }    
+                    Regulus.Utility.Log.Instance.Write("OnlineStage DoneFromServerEvent.");
+                    DoneFromServerEvent();
                 }
                 else
                     _Process(_Core);
@@ -122,14 +105,11 @@ namespace Regulus.Remoting.Ghost.Native
 
             void IGhostRequest.Request(byte code, Dictionary<byte, byte[]> args)
             {                
-                
-                
                 lock(_LockRequest)
                 {
                     _Sends.Enqueue(new Package() { Args = args, Code = code });
                     RequestQueueCount++;
-                }
-                    
+                }                    
             }
             
             
@@ -142,10 +122,6 @@ namespace Regulus.Remoting.Ghost.Native
                     ResponseQueueCount++;
                 }
             }
-
-            
-
-            
 
             void _Process(AgentCore core)
             {
