@@ -11,7 +11,7 @@ namespace Regulus.Standalong
         public delegate void ConnectedCallback();
         public event ConnectedCallback ConnectedEvent;
 		Regulus.Remoting.AgentCore	_Agent;
-        
+        bool _Connected;
 		Regulus.Remoting.Soul.SoulProvider	_SoulProvider;
         Regulus.Remoting.ISoulBinder _Binder { get { return _SoulProvider; } }
 		GhostRequest	_GhostRequest;
@@ -42,10 +42,8 @@ namespace Regulus.Standalong
 
 		public void Shutdown()
 		{
-            
-            if (_DisconnectEvent != null)
-                _DisconnectEvent();
 
+            _Connected = false;
             if (_BreakEvent != null)
                 _BreakEvent();
             _BreakEvent = null;
@@ -80,7 +78,7 @@ namespace Regulus.Standalong
 			return _Agent.QueryProvider<T>();
 		}
 
-        event Action _DisconnectEvent;
+        
         private event Action _BreakEvent;
 
 		private void _Bind<TSoul>(TSoul soul)
@@ -101,6 +99,7 @@ namespace Regulus.Standalong
         Remoting.Value<bool> Remoting.IAgent.Connect(string account, int password)
         {
             ConnectedEvent();
+            _Connected = true;
             return true;
         }
 
@@ -186,11 +185,13 @@ namespace Regulus.Standalong
             remove { _BreakEvent -= value; }
         }
 
-        
-        event Action Remoting.IAgent.DisconnectionEvent
+
+
+
+
+        bool Remoting.IAgent.Connected
         {
-            add { _DisconnectEvent += value; }
-            remove { _DisconnectEvent -= value; }
+            get { return _Connected; }
         }
     }
 }

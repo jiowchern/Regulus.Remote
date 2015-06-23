@@ -25,9 +25,6 @@ namespace Regulus.Extension
             t.Wait();
             return t.Result;
         }
-
-
-        
     }
 }
 

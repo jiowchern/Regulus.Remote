@@ -23,36 +23,29 @@ namespace Regulus.Remoting
         }
         void Regulus.Utility.IStage.Enter()
         {
-            
-
             _Bind(_ConnectProvider);
         }
 
         void _Connect_ConnectedEvent(string account, int password, Regulus.Remoting.Value<bool> result)
         {
-            _Unbind(_ConnectProvider);
-
             var connectResult = _Agent.Connect(account, password);
             connectResult.OnValue += (success) =>
             {                
-                result.SetValue(success);
-                if (success )
-                    DoneEvent();
-                else
-                    _Bind(_ConnectProvider);
+                result.SetValue(success);                
             };
         }
 
         void Regulus.Utility.IStage.Leave()
-        {
-            
+        {            
             _Unbind(_ConnectProvider);
-
-            
         }
 
         void Regulus.Utility.IStage.Update()
-        {            
+        {     
+            if(_Agent.Connected == true)
+            {
+                DoneEvent();
+            }
         }
 
         void _Bind(Regulus.Remoting.Ghost.IProvider provider)

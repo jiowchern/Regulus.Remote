@@ -41,7 +41,7 @@ namespace Regulus.Remoting
             var stage = new OfflineStage(_Agent , _ConnectProvider);
 
             stage.DoneEvent += _ToOnline;
-
+            Regulus.Utility.Log.Instance.Write("1.user start offline");
             _Machine.Push(stage);
         }
 
@@ -51,7 +51,7 @@ namespace Regulus.Remoting
 
             
             stage.BreakEvent += _ToOffline;
-            
+            Regulus.Utility.Log.Instance.Write("5.user start online");
             _Machine.Push(stage);
         }
 
