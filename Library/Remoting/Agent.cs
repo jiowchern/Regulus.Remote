@@ -393,21 +393,13 @@ namespace Regulus.Remoting
             var type = Type.GetType(type_name);
             if (type == null)
             {
-                Regulus.Utility.Log.Instance.Write(string.Format("Find Type {0}", type_name));
+                
                 foreach (var a in AppDomain.CurrentDomain.GetAssemblies())
                 {
-                    var types = a.GetTypes();
-                    Regulus.Utility.Log.Instance.Write(string.Format("Assemblies {0}" , a.FullName));
-
-                    foreach(var t in types)
-                    {
-                        Regulus.Utility.Log.Instance.Write(string.Format("Type {0}", t.FullName));
-                        if (t.FullName != type_name)
-                            continue;
-
-                        return t;
-                    }
-                    
+                    type = a.GetType(type_name);
+                    if (type != null)
+                        return type;
+                   
                 }
                 
                 throw new System.Exception("找不到gpi " + type_name);
