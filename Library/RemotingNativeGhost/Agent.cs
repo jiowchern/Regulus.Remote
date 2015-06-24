@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+
+
 namespace Regulus.Remoting.Ghost.Native
 {
     
@@ -7,7 +9,7 @@ namespace Regulus.Remoting.Ghost.Native
 	{        
         
         Regulus.Utility.StageMachine _Machine;
-        bool _Connected;        
+        
         event Action _BreakEvent;
         AgentCore _Core;
 		private Agent()
@@ -24,20 +26,19 @@ namespace Regulus.Remoting.Ghost.Native
         private Regulus.Remoting.Value<bool> _ToConnect(string ipaddress, int port)
         {
             lock (_Machine)
-            {
-                _SendConnectResult();
+            {                
 
                 Regulus.Utility.Log.Instance.Write(string.Format("2.agent start connect"));
-                _ConnectValue = new Regulus.Remoting.Value<bool>();
+                var connectValue = new Regulus.Remoting.Value<bool>();
                 var stage = new ConnectStage(ipaddress, port);
                 stage.ResultEvent += (result, socket) =>
                 {
                     Regulus.Utility.Log.Instance.Write(string.Format("3.connect result {0}", result));
                     _ConnectResult(result, socket);
-                    _ConnectValue.SetValue(result);
+                    connectValue.SetValue(result);
                 };
                 _Machine.Push(stage);
-                return _ConnectValue;
+                return connectValue;
             }
             
         }
@@ -45,8 +46,7 @@ namespace Regulus.Remoting.Ghost.Native
         void _ConnectResult(bool success , System.Net.Sockets.Socket socket)
         {
             if (success == true)
-            {
-                _Connected = true;
+            {                
                 if (_ConnectEvent != null)
                 {                    
                     _ConnectEvent();
@@ -55,7 +55,7 @@ namespace Regulus.Remoting.Ghost.Native
             }
             else
             {
-                _Termination();  
+                _ToTermination();  
             }
         }
 
@@ -64,42 +64,25 @@ namespace Regulus.Remoting.Ghost.Native
             var onlineStage = new OnlineStage(socket, _Core);
             onlineStage.DoneFromServerEvent += () =>
             {
-                _Termination();
+                _ToTermination();
                 if (_BreakEvent != null)
                     _BreakEvent();
             };
 
-            onlineStage.DoneFromClientEvent += () =>
-            {
-                _Termination();
-
-            };
+            
             Regulus.Utility.Log.Instance.Write(string.Format("4.agent start online"));
             machine.Push(onlineStage);
         }
 
-        private void _Termination()
+        private void _ToTermination()
         {
             lock (_Machine)
             {
                 Regulus.Utility.Log.Instance.Write(string.Format("agent start termination"));
-                _Machine.Empty();
-                _Connected = false;
-                _SendConnectResult();
-            }
-        }
-
-        private void _SendConnectResult()
-        {
-            if (_ConnectValue != null && _ConnectValue.HasValue() == false)
-            {
-
-                _ConnectValue.SetValue(false);
-                Regulus.Utility.Log.Instance.Write(string.Format("agent sendConnectResult {0}" , false));
-            }
                 
-        }
-
+                _Machine.Push(new TerminationStage(this));
+            }
+        }        
         
 		bool Utility.IUpdatable.Update()
 		{
@@ -116,8 +99,18 @@ namespace Regulus.Remoting.Ghost.Native
 		void Framework.IBootable.Shutdown()
 		{
 
-            _Termination();
+            if (_Core.Enable == true)
+            {
+                _ToTermination();
 
+                while (_Core.Enable)
+                {
+                    lock (_Machine)
+                    {
+                        _Machine.Update();
+                    }
+                }
+            }
             
 		}
 
@@ -162,7 +155,7 @@ namespace Regulus.Remoting.Ghost.Native
         void IAgent.Disconnect()
         {
             Regulus.Utility.Log.Instance.Write(string.Format("6.agent start disconnect"));
-            _Termination();            
+            _ToTermination();            
         }
 
         /// <summary>
@@ -175,13 +168,9 @@ namespace Regulus.Remoting.Ghost.Native
         }
 
 
-        
-        private Value<bool> _ConnectValue;        
-
-
         bool IAgent.Connected
         {
-            get { return _Connected; }
+            get { return _Core.Enable; }
         }
     }
 }

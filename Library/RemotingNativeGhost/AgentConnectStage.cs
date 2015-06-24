@@ -68,7 +68,12 @@ namespace Regulus.Remoting.Ghost.Native
             }
             void Utility.IStage.Leave()
             {
-
+                if (_Result.HasValue == false && ResultEvent != null)
+                {
+                    var call = ResultEvent;
+                    ResultEvent = null;
+                    call(false, _Socket);                    
+                }
             }
 
             void Utility.IStage.Update()
