@@ -28,6 +28,8 @@ namespace VGame.Project.FishHunter.Formula
 
         private void _Setup()
         {
+            _InitialLog();
+
             Regulus.Utility.Ini config = new Regulus.Utility.Ini(_ReadConfig());
 
             _IpAddress = config.Read("Storage", "ipaddr");
@@ -40,6 +42,8 @@ namespace VGame.Project.FishHunter.Formula
             _Updater = new Regulus.Utility.Updater();
             _Binders = new Regulus.Collection.Queue<Regulus.Remoting.ISoulBinder>();
             _Enable = true;
+
+            
         }
 
         private string _ReadConfig()
@@ -60,11 +64,17 @@ namespace VGame.Project.FishHunter.Formula
         }
 
         void Regulus.Framework.IBootable.Launch()
-        {
-            _InitialLog();
+        {            
+
+            _PreloadAssembly();
 
             _Updater.Add(_Storage);
             _ToConnectStorage(_Storage.SpawnUser("user"));            
+        }
+
+        private static void _PreloadAssembly()
+        {
+            System.Reflection.Assembly.Load("Common");
         }
 
         private void _InitialLog()
@@ -73,6 +83,8 @@ namespace VGame.Project.FishHunter.Formula
             Regulus.Utility.Log.Instance.RecordEvent += _LogRecorder.Record;
 
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
+            
         }
 
         private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
