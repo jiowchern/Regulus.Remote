@@ -48,6 +48,9 @@ namespace Regulus.Remoting
         /// </summary>
         event Action BreakEvent;
 
+        /// <summary>
+        /// 是否為連線狀態
+        /// </summary>
         bool Connected { get; }
 
         /// <summary>
@@ -71,6 +74,8 @@ namespace Regulus.Remoting
         object _Sync = new object();
 
         public long Ping { get; private set; }
+
+        public bool Enable { get; private set; }
          
 		public AgentCore()
 		{
@@ -83,10 +88,13 @@ namespace Regulus.Remoting
 		{
             _Requester = req;
 			_StartPing();
+
+            Enable = true;
 		}
 
 		public void Finial()
         {
+            Enable = false;
             lock (_Providers)
             {
                 foreach (var providerPair in _Providers)
@@ -95,7 +103,8 @@ namespace Regulus.Remoting
                 }
             }
                         
-			_EndPing();            
+			_EndPing();   
+         
 		}
 
 		public  void OnResponse(byte id, Dictionary<byte, byte[]> args)
@@ -826,5 +835,6 @@ namespace Regulus.Remoting
 			var yield = typeof(Regulus.Serializer.TypeHelper).GetMethod("Yield", BindingFlags.Public | BindingFlags.Static);
 			cil.Emit(OpCodes.Call, yield);
 		}
-	}
+
+        }
 }

@@ -22,8 +22,7 @@ namespace Regulus.Remoting.Ghost.Native
 
         class OnlineStage : Regulus.Utility.IStage, Regulus.Remoting.IGhostRequest
         {
-            public event Action DoneFromServerEvent;
-            public event Action DoneFromClientEvent;
+            public event Action DoneFromServerEvent;            
 
             Regulus.Remoting.Native.PackageReader _Reader;
             Regulus.Remoting.Native.PackageWriter _Writer;
@@ -42,10 +41,14 @@ namespace Regulus.Remoting.Ghost.Native
 
             volatile bool _Enable;
             
-            private AgentCore _Core;
-            
-            public OnlineStage(System.Net.Sockets.Socket  socket)
+            private AgentCore _Core;            
+                        
+
+            public OnlineStage(System.Net.Sockets.Socket socket, AgentCore core)
             {
+                
+                this._Core = core;
+
                 _Socket = socket;
                 _Reader = new Regulus.Remoting.Native.PackageReader();
                 _Writer = new Regulus.Remoting.Native.PackageWriter();
@@ -53,16 +56,10 @@ namespace Regulus.Remoting.Ghost.Native
                 _Receives = new PackageQueue();
                 
             }
-
-            public OnlineStage(System.Net.Sockets.Socket socket, AgentCore core)
-                : this(socket)
-            {
-                
-                this._Core = core;
-            }
             
             void Utility.IStage.Enter()
             {
+                
                 _Core.Initial(this);
                 _Enable = true;
                 _ReaderStart();
@@ -80,14 +77,10 @@ namespace Regulus.Remoting.Ghost.Native
                 {
                     _Socket.Close();
                     _Socket = null;
-                }
-                if (_Enable == true)
-                {
-                    Regulus.Utility.Log.Instance.Write("OnlineStage DoneFromClientEvent.");
-                    DoneFromClientEvent();
-                }
+                }                
 
                 _Core.Finial();
+                
             }            
 
             void Utility.IStage.Update()

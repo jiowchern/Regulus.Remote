@@ -45,6 +45,7 @@
     <Compile Include="AgentOnlineStage.cs" />
     <Compile Include="IOHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TerminationStage.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PureLib\PureLib.csproj">

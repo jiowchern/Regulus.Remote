@@ -152,7 +152,7 @@ namespace RemotingTest
 
             
         }
-        [TestMethod, Timeout(5000)]
+        [TestMethod]
         public void ServerReconnectTest()
         {
             Regulus.Utility.Launcher launcher = new Regulus.Utility.Launcher();
@@ -166,33 +166,41 @@ namespace RemotingTest
                 _ConnectEnable = false;
             };
 
-            launcher.Launch();
-            
+            launcher.Launch();            
             _ConnectEnable = true;
             System.Threading.Tasks.Task task = new System.Threading.Tasks.Task(_UpdateAgent(agent));
             task.Start();
-            if (agent.Connect("127.0.0.1", 12345).WaitResult())
+            if (agent.Connect("127.0.0.1", 12345).WaitResult() == true)
             {                
                 launcher.Shutdown();
             }            
+            else
+            {
+                throw new System.Exception("connect fail. 1");
+            }
             task.Wait();
+
+            System.Threading.Thread.Sleep(3000);
 
 
             launcher.Launch();            
             _ConnectEnable = true;
             System.Threading.Tasks.Task task2 = new System.Threading.Tasks.Task(_UpdateAgent(agent));
             task2.Start();
-            if (agent.Connect("127.0.0.1", 12345).WaitResult())
+            if (agent.Connect("127.0.0.1", 12345).WaitResult() == true)
             {
                 launcher.Shutdown();
             }
+            else
+            {
+                throw new System.Exception("connect fail. 2");
+            }
+
             task2.Wait();
-
-
             
         }
 
-        [TestMethod , Timeout(5000)]
+        [TestMethod ]
         public void ConnectTest()
         {
 
