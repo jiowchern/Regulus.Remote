@@ -13,7 +13,7 @@ namespace PureLibTest
       
         string _Message;
         string _OutMessage;
-       
+        volatile bool _GetData;
         public LogSteps()
         {
             _Log = new Regulus.Utility.Log();
@@ -23,6 +23,7 @@ namespace PureLibTest
         void _Log_RecordEvent(string message)
         {
             _OutMessage = message;
+            _GetData = true;
         }                
         [Given(@"資料是""(.*)""")]
         public void 假設資料是(string p0)
@@ -44,9 +45,12 @@ namespace PureLibTest
         }
 
         
-        [Then(@"輸出為""(.*)""")]
+        [Then(@"輸出為""(.*)""") , Timeout(10000)]
         public void 那麼輸出為(string p0)
         {
+            while(_GetData == false)
+                ;
+
             Assert.AreEqual(p0, _OutMessage);
         }
     }
