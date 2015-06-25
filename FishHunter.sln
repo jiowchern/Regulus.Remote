@@ -108,7 +108,7 @@ Global
 		UpdateAssemblyVersion = False
 		UpdateAssemblyFileVersion = True
 		UpdateAssemblyInfoVersion = False
-		AssemblyFileVersionSettings = None.None.Increment.IncrementOnDemandWithReset
+		AssemblyFileVersionSettings = None.None.None.IncrementOnDemandWithReset
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Unity|Any CPU = Debug_Unity|Any CPU
