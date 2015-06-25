@@ -264,8 +264,7 @@ namespace VGame.Project.FishHunter.Storage
                 if (notes == null)
                 {
                      var newPlayerNotes = new Data.TradeNotes(id);
-                    _Database.Add(newPlayerNotes).Wait();
-                    Regulus.Utility.Log.Instance.Write(string.Format("new TradeNotes . id = {0}", id));
+                    _Database.Add(newPlayerNotes).Wait();                    
                     val.SetValue(newPlayerNotes);
                 }
                 else
@@ -313,11 +312,11 @@ namespace VGame.Project.FishHunter.Storage
 
             var returnTask = tradeTask.ContinueWith((task) =>
             {
-                Regulus.Utility.Log.Instance.Write(string.Format("TradeNotes Find Done."));
+                Regulus.Utility.Log.Instance.WriteDebug(string.Format("TradeNotes Find Done."));
 
                 if (task.Exception != null)
                 {
-                    Regulus.Utility.Log.Instance.Write(string.Format("TradeNotes Exception {0}.", task.Exception.ToString()));
+                    Regulus.Utility.Log.Instance.WriteDebug(string.Format("TradeNotes Exception {0}.", task.Exception.ToString()));
                 }
 
                 return task.Result;

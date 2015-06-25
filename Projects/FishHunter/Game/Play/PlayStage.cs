@@ -122,9 +122,9 @@ namespace VGame.Project.FishHunter.Play
                 _PushBullet(bulletid);
             }
 
-            Regulus.Utility.Log.Instance.Write(string.Format("all bullet:{0} , targets:{1} , count:{2}", bulletid, string.Join(",", (from id in fishids select id.ToString()).ToArray()), fishids.Length));
-            Regulus.Utility.Log.Instance.Write(string.Format("requested bullet:{0} , targets:{1} , count:{2}", bulletid, logFishs, count));
-            Regulus.Utility.Log.Instance.Write(string.Format("request fishs:{0} count:{1} ", string.Join(",", (from id in _Requests.Keys select id.ToString()).ToArray()), _Requests.Count));
+            Regulus.Utility.Log.Instance.WriteInfo(string.Format("all bullet:{0} , targets:{1} , count:{2}", bulletid, string.Join(",", (from id in fishids select id.ToString()).ToArray()), fishids.Length));
+            Regulus.Utility.Log.Instance.WriteInfo(string.Format("requested bullet:{0} , targets:{1} , count:{2}", bulletid, logFishs, count));
+            Regulus.Utility.Log.Instance.WriteInfo(string.Format("request fishs:{0} count:{1} ", string.Join(",", (from id in _Requests.Keys select id.ToString()).ToArray()), _Requests.Count));
             return count;
         }
 

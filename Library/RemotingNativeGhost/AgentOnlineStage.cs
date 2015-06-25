@@ -87,8 +87,7 @@ namespace Regulus.Remoting.Ghost.Native
             {
 
                 if (_Enable == false)
-                {
-                    Regulus.Utility.Log.Instance.Write("OnlineStage DoneFromServerEvent.");
+                {                    
                     DoneFromServerEvent();
                 }
                 else

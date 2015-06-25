@@ -21,13 +21,13 @@ namespace PureLibTest
                 lock (messages)
                     messages.Add(message);                    
             };
-
-            Regulus.Utility.Log.Instance.Write("123");
-            Regulus.Utility.Log.Instance.Write("456");
-            Regulus.Utility.Log.Instance.Write("789");
-            Regulus.Utility.Log.Instance.Write("123");
-            Regulus.Utility.Log.Instance.Write("1");
-
+            
+            Regulus.Utility.Log.Instance.WriteInfo("123");
+            Regulus.Utility.Log.Instance.WriteInfo("456");
+            Regulus.Utility.Log.Instance.WriteInfo("789");
+            Regulus.Utility.Log.Instance.WriteInfo("123");
+            Regulus.Utility.Log.Instance.WriteInfo("1");
+            
 
             while(true )
             {
@@ -39,11 +39,13 @@ namespace PureLibTest
                     
             }
 
-            Assert.AreEqual("123" , messages[0]);
-            Assert.AreEqual("456", messages[1]);
-            Assert.AreEqual("789", messages[2]);
-            Assert.AreEqual("123", messages[3]);
-            Assert.AreEqual("1", messages[4]);
+            Assert.AreEqual("[Info]123" , messages[0]);
+            Assert.AreEqual("[Info]456", messages[1]);
+            Assert.AreEqual("[Info]789", messages[2]);
+            Assert.AreEqual("[Info]123", messages[3]);
+            Assert.AreEqual("[Info]1", messages[4]);
+            
+
         }
     }
 }

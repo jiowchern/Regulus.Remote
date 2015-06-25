@@ -27,13 +27,12 @@ namespace Regulus.Remoting.Ghost.Native
         {
             lock (_Machine)
             {                
-
-                Regulus.Utility.Log.Instance.Write(string.Format("2.agent start connect"));
+                
                 var connectValue = new Regulus.Remoting.Value<bool>();
                 var stage = new ConnectStage(ipaddress, port);
                 stage.ResultEvent += (result, socket) =>
                 {
-                    Regulus.Utility.Log.Instance.Write(string.Format("3.connect result {0}", result));
+                    
                     _ConnectResult(result, socket);
                     connectValue.SetValue(result);
                 };
@@ -70,15 +69,14 @@ namespace Regulus.Remoting.Ghost.Native
             };
 
             
-            Regulus.Utility.Log.Instance.Write(string.Format("4.agent start online"));
+            
             machine.Push(onlineStage);
         }
 
         private void _ToTermination()
         {
             lock (_Machine)
-            {
-                Regulus.Utility.Log.Instance.Write(string.Format("agent start termination"));
+            {                
                 
                 _Machine.Push(new TerminationStage(this));
             }
@@ -153,8 +151,7 @@ namespace Regulus.Remoting.Ghost.Native
         }
 
         void IAgent.Disconnect()
-        {
-            Regulus.Utility.Log.Instance.Write(string.Format("6.agent start disconnect"));
+        {            
             _ToTermination();            
         }
 

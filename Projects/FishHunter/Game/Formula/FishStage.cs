@@ -38,7 +38,7 @@ namespace VGame.Project.FishHunter.Formula
         {
             string format = "Player:{0}\tStage:{1}\nRequest:{2}\nResponse:{3}";
             var log = string.Format(format, _AccountId, _FishStage , request.ShowMembers(" ") , response.ShowMembers(" "));
-            Regulus.Utility.Log.Instance.Write(log);
+            Regulus.Utility.Log.Instance.WriteInfo(log);
         }
         event Action<HitResponse> _HitResponseEvent;
         event Action<HitResponse> IFishStage.HitResponseEvent
