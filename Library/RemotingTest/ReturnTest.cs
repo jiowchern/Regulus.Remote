@@ -338,15 +338,15 @@ namespace RemotingTest
             var userProvider = app.Selector.CreateUserProvider("1");
             var user = userProvider.Spawn("1");
 
-
             ITestReturn testReturn = null;
-            user.Remoting.ConnectProvider.Supply += ConnectProvider_Supply;
+            
             user.TestReturnProvider.Return += (test) =>
             {
                 testReturn = test;                
                 Assert.AreEqual(1, user.TestReturnProvider.Returns.Length);
 
             };
+            user.Remoting.ConnectProvider.Supply += ConnectProvider_Supply;
 
             Regulus.Utility.Updater updater = new Regulus.Utility.Updater();
             updater.Add(app);
