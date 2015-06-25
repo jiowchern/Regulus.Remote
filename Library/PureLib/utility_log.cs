@@ -10,7 +10,7 @@ namespace Regulus.Utility
     
     sealed public class Log : Regulus.Utility.Singleton<Log>
     {
-
+        
         public delegate void RecordCallback(string message);
 
         public event RecordCallback RecordEvent
@@ -38,10 +38,19 @@ namespace Regulus.Utility
         }
 
         
-        public void Write(string message)
+        void _Write(string message)
         {
-
             _Executer.Push(new LogWritter(message, _AsyncRecord).Write);            
+        }
+
+        public void WriteInfo(string message)
+        {
+            _Write(string.Format("[Info]{0}", message));
+        }
+
+        public void WriteDebug(string message)
+        {
+            _Write(string.Format("[Debug]{0}", message));
         }
     }
 }
