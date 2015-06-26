@@ -85,8 +85,9 @@ namespace Regulus.Remoting.Native
             {
                 _Socket.BeginReceive(_Buffer, _Offset, _Buffer.Length - _Offset, 0, _Readed, null);
             }
-            catch
+            catch (SystemException e)
             {
+                Regulus.Utility.Log.Instance.WriteInfo(string.Format("SocketReader Error Read {0}.", e.ToString()));
                 if (ErrorEvent != null)
                     ErrorEvent();
             }
@@ -105,9 +106,10 @@ namespace Regulus.Remoting.Native
                     DoneEvent(_Buffer);
                 else
                     _Socket.BeginReceive(_Buffer, _Offset, _Buffer.Length - _Offset, 0, _Readed, null);
-            }            
-            catch 
+            }
+            catch (SystemException e)
             {
+                Regulus.Utility.Log.Instance.WriteInfo(string.Format("SocketReader Error Readed {0}.", e.ToString()));
                 if (ErrorEvent != null)
                     ErrorEvent();
             }

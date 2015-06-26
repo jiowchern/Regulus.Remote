@@ -18,12 +18,12 @@ namespace Regulus.Remoting.Native
         public event OnErrorCallback ErrorEvent;
         
         volatile bool _Stop;
-        
+        Regulus.Utility.SpinWait _Wait;
 
         
         public PackageWriter()
         {
-            
+            _Wait = new Utility.SpinWait();
         }
         public void Start(System.Net.Sockets.Socket socket)
         {
@@ -38,12 +38,12 @@ namespace Regulus.Remoting.Native
             _Buffer = _CreateBuffer(CheckSourceEvent());
             
             try
-            {
-                
+            {                
                 _AsyncResult = _Socket.BeginSend(_Buffer, 0, _Buffer.Length, 0, _WriteCompletion, null);
             }
-            catch
+            catch (SystemException e)
             {
+                Regulus.Utility.Log.Instance.WriteInfo(string.Format("PackageWriter Error Write {0}.", e.ToString()));
                 if (ErrorEvent != null)
                     ErrorEvent();
             }
@@ -59,14 +59,18 @@ namespace Regulus.Remoting.Native
                     _Socket.EndSend(ar);
                     if (_Buffer.Length == 0)
                     {
-                        System.Threading.Thread.Sleep(TimeSpan.FromSeconds(1.0 / 20.0));
+                        _Wait.SpinOnce();
                     }
+                    else
+                        _Wait.Reset();
+
                     _Write();
                 }
                 
             }
-            catch
+            catch (SystemException e)
             {
+                Regulus.Utility.Log.Instance.WriteInfo(string.Format("PackageWriter Error WriteCompletion {0}.", e.ToString()));
                 if (ErrorEvent != null)
                     ErrorEvent();
             }
