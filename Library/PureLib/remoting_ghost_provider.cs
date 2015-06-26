@@ -58,6 +58,8 @@ namespace Regulus.Remoting.Ghost
 		{
 			add
 			{
+
+                Regulus.Utility.Log.Instance.WriteDebug(string.Format("{1} Provider add supply {0}", value.ToString() , typeof(T).FullName ) );
 				_Supply += value;
 
                 lock (_Entitys)
@@ -68,7 +70,11 @@ namespace Regulus.Remoting.Ghost
                     }
                 }
 			}
-			remove { _Supply -= value; }
+			remove 
+            {
+                Regulus.Utility.Log.Instance.WriteDebug(string.Format("{1} Provider remove supply {0}", value.ToString(), typeof(T).FullName));
+                _Supply -= value; 
+            }
 		}
 
 		event Action<T> _Unsupply;
@@ -91,6 +97,8 @@ namespace Regulus.Remoting.Ghost
 
         IGhost _Add(T entity, IGhost ghost)
 		{
+
+            Regulus.Utility.Log.Instance.WriteDebug(string.Format("Add ghost to provider {0}" , typeof(T).FullName ));
             if (ghost.IsReturnType() == false)
             {
                 lock (_Entitys)
@@ -109,6 +117,7 @@ namespace Regulus.Remoting.Ghost
 
 		void IProvider.Add(IGhost entity)
 		{
+            Regulus.Utility.Log.Instance.WriteDebug(string.Format("Add ghost to provider wait {0}", typeof(T).FullName));
 			_Waits.Add(entity as T);
 		}
 

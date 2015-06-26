@@ -87,6 +87,56 @@ namespace VGame.Project.FishHunter.UnitTest
         }
 
         [TestMethod]
+        public void TestHitFormulaSurvival2()
+        {
+            Regulus.Utility.IRandom random = NSubstitute.Substitute.For<Regulus.Utility.IRandom>();
+
+            var formula = new VGame.Project.FishHunter.Formula.HitTest(random);
+            random.NextLong(NSubstitute.Arg.Any<long>(), NSubstitute.Arg.Any<long>()).Returns(0x0fffffff / 25);
+
+
+            HitRequest request = new HitRequest();
+            request.FishID = 1;
+            request.FishOdds = 25;
+            request.TotalHits = 1;
+            request.WepBet = 1;
+            request.WepOdds = 1;
+            request.WepID = 1;
+
+            HitResponse response = formula.Request(request);
+            Assert.AreEqual(1, response.WepID);
+            Assert.AreEqual(0, response.SpecAsn);
+            Assert.AreEqual(1, response.FishID);
+            Assert.AreEqual(FISH_DETERMINATION.SURVIVAL, response.DieResult);
+
+        }
+
+        [TestMethod]
+        public void TestHitFormulaDeath2()
+        {
+            Regulus.Utility.IRandom random = NSubstitute.Substitute.For<Regulus.Utility.IRandom>();
+
+            var formula = new VGame.Project.FishHunter.Formula.HitTest(random);
+            random.NextLong(NSubstitute.Arg.Any<long>(), NSubstitute.Arg.Any<long>()).Returns(0x0fffffff / 26);//9d89d8
+
+
+            HitRequest request = new HitRequest();
+            request.FishID = 1;
+            request.FishOdds = 25;
+            request.TotalHits = 1;
+            request.WepBet = 1;
+            request.WepOdds = 1;
+            request.WepID = 1;
+
+            HitResponse response = formula.Request(request); // a3d70a
+            Assert.AreEqual(1, response.WepID);
+            Assert.AreEqual(0, response.SpecAsn);
+            Assert.AreEqual(1, response.FishID);
+            Assert.AreEqual(FISH_DETERMINATION.DEATH, response.DieResult);
+
+        }
+
+        [TestMethod]
         public void TestHitFormulaSurvival1()
         {
             Regulus.Utility.IRandom random = NSubstitute.Substitute.For<Regulus.Utility.IRandom>();

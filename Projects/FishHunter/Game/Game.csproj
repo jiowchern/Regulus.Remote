@@ -68,6 +68,7 @@
     <Compile Include="Storage\User.cs" />
     <Compile Include="Verify.cs" />
     <Compile Include="Play\User.cs" />
+    <Compile Include="WeaponChancesTable.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Library\PureLib\PureLib.csproj">
