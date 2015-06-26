@@ -10,10 +10,16 @@ namespace VGame.Project.FishHunter.Formula
     public class HitTest : HitBase
     {
         private Regulus.Utility.IRandom _Random;
-        
+        WeaponChancesTable _WeaponChancesTable;
         public HitTest(Regulus.Utility.IRandom random)
         {
-            
+            var datas = new WeaponChancesTable.Data[] { 
+                new WeaponChancesTable.Data { Id = 0, Rate = 0.9f } , 
+                new WeaponChancesTable.Data { Id = 2, Rate = 0.033f },
+                new WeaponChancesTable.Data { Id = 3, Rate = 0.033f },
+                new WeaponChancesTable.Data { Id = 4, Rate = 0.033f }
+            };
+            _WeaponChancesTable = new WeaponChancesTable(datas);
             this._Random = random;
         }
 
@@ -48,8 +54,10 @@ namespace VGame.Project.FishHunter.Formula
             if (gate > 0x0fffffff)
                 gate = 0x10000000;
             
-            var value = _Random.NextLong(long.MinValue,long.MaxValue) % 0x10000000;
-            if(value < gate )
+            var rValue = _Random.NextLong(0,long.MaxValue);
+            var value = rValue % 0x10000000;
+            Regulus.Utility.Log.Instance.WriteDebug(string.Format("HitResponse gate {0} value {1} r-value {2}", gate, value, rValue));
+            if (value < gate) 
                 return _Die(request);
 
             return _Miss(request);
@@ -59,10 +67,11 @@ namespace VGame.Project.FishHunter.Formula
         {
             return new HitResponse {
                 FishID = request.FishID, 
-                DieResult =  FISH_DETERMINATION.DEATH , 
-                SpecAsn = 0, 
+                DieResult =  FISH_DETERMINATION.DEATH ,
+                SpecAsn = (byte)_WeaponChancesTable.Dice(Regulus.Utility.Random.NextFloat(0, 1)) , 
                 WepID = request.WepID ,
-                WUp = Regulus.Utility.Random.Next(1 , 5)};
+                WUp = Regulus.Utility.Random.Next(1 , 5)
+            };
         }
 
         private static HitResponse _Miss(HitRequest request)

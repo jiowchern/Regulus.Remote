@@ -170,7 +170,8 @@ namespace Regulus.Remoting.Soul
         }
         
         private void _LoadSoul(string type_name, Guid id, bool return_type)
-        {         
+        {
+            Regulus.Utility.Log.Instance.WriteDebug(string.Format("ServerToClientOpCode {0}", type_name ));
             var argmants = new Dictionary<byte, byte[]>();
             argmants.Add(0, Regulus.Serializer.TypeHelper.Serializer(type_name));
             argmants.Add(1, id.ToByteArray());
@@ -215,7 +216,11 @@ namespace Regulus.Remoting.Soul
 		
 		private void _Bind<TSoul>(TSoul soul, bool return_type , Guid return_id)
 		{
+            
+
             var type = typeof(TSoul);
+
+            Regulus.Utility.Log.Instance.WriteDebug(string.Format("Bind {0}", type.ToString() ));
             var prevSoul = (from soulInfo in _Souls.UpdateSet() where Object.ReferenceEquals(soulInfo.ObjectInstance, soul) && soulInfo.ObjectType == typeof(TSoul) select soulInfo).SingleOrDefault();
             
             if (prevSoul == null)
