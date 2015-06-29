@@ -11,7 +11,28 @@ namespace VGame.Project.FishHunter.Formula
     {
         private Regulus.Utility.IRandom _Random;
         WeaponChancesTable _WeaponChancesTable;
+        ScoreOddsTable _ScoreOddsTable;
+        
         public HitTest(Regulus.Utility.IRandom random)
+        {
+            _InitialWeapon();
+            _InitialScore();
+            this._Random = random;
+        }
+
+        private void _InitialScore()
+        {
+            var datas = new ScoreOddsTable.Data[] { 
+                new ScoreOddsTable.Data { Id = 1, Rate = 0.9f } , 
+                new ScoreOddsTable.Data { Id = 2, Rate = 0.025f },
+                new ScoreOddsTable.Data { Id = 3, Rate = 0.025f },
+                new ScoreOddsTable.Data { Id = 5, Rate = 0.025f },
+                new ScoreOddsTable.Data { Id = 10, Rate = 0.025f }
+            };
+            _ScoreOddsTable = new ScoreOddsTable(datas);
+        }
+
+        private void _InitialWeapon()
         {
             var datas = new WeaponChancesTable.Data[] { 
                 new WeaponChancesTable.Data { Id = 0, Rate = 0.9f } , 
@@ -20,7 +41,6 @@ namespace VGame.Project.FishHunter.Formula
                 new WeaponChancesTable.Data { Id = 4, Rate = 0.033f }
             };
             _WeaponChancesTable = new WeaponChancesTable(datas);
-            this._Random = random;
         }
 
         public override HitResponse Request(HitRequest request)
@@ -70,7 +90,7 @@ namespace VGame.Project.FishHunter.Formula
                 DieResult =  FISH_DETERMINATION.DEATH ,
                 SpecAsn = (byte)_WeaponChancesTable.Dice(Regulus.Utility.Random.NextFloat(0, 1)) , 
                 WepID = request.WepID ,
-                WUp = Regulus.Utility.Random.Next(1 , 5)
+                WUp = _ScoreOddsTable.Dice(Regulus.Utility.Random.NextFloat(0, 1))
             };
         }
 

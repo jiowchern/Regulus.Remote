@@ -5,12 +5,14 @@ using System.Text;
 
 namespace VGame.Project.FishHunter
 {
-    class WeaponChancesTable : Regulus.Game.ChancesTable<int>
+    class ScoreOddsTable : Regulus.Game.ChancesTable<int>
     {
-        public WeaponChancesTable(Data[] datas)
+
+
+        public ScoreOddsTable(Regulus.Game.ChancesTable<int>.Data[] datas)
             : base(datas)
         {
+        
         }
-      
     }
 }

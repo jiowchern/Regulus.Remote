@@ -63,6 +63,7 @@
     <Reference Include="System.Data.DataSetExtensions" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChancesTable.cs" />
     <Compile Include="collection_queue.cs" />
     <Compile Include="customtype_flag.cs" />
     <Compile Include="customtype_verify.cs" />
