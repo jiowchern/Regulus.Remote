@@ -56,6 +56,12 @@
   <ItemGroup>
     <Compile Include="DataTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScoreOdds.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ScoreOdds.feature</DependentUpon>
+    </Compile>
+    <Compile Include="ScoreOddsSteps.cs" />
     <Compile Include="StageTest.cs" />
     <Compile Include="WeaponChancesTable.feature.cs">
       <AutoGen>True</AutoGen>
@@ -85,6 +91,10 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="ScoreOdds.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>ScoreOdds.feature.cs</LastGenOutput>
+    </None>
     <None Include="WeaponChancesTable.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>WeaponChancesTable.feature.cs</LastGenOutput>
