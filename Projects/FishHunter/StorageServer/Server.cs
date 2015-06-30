@@ -297,11 +297,18 @@ namespace VGame.Project.FishHunter.Storage
             t.ContinueWith((task) =>
             {
                 var notes = task.Result.SingleOrDefault();
-                
-                val.SetValue(notes.GetTotalMoney());
-                notes.SetTradeIsUsed();
 
-                _Database.Update<Data.TradeNotes>(notes, a => a.Owner == notes.Owner);
+                if (notes == null)
+                {
+                    val.SetValue(0);
+                }
+                else
+                {
+                    val.SetValue(notes.GetTotalMoney());
+                    notes.SetTradeIsUsed();
+                    _Database.Update<Data.TradeNotes>(notes, a => a.Owner == notes.Owner);
+                }
+                
             });
             return val;
         }
