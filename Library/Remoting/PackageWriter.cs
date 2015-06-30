@@ -122,7 +122,7 @@ namespace Regulus.Remoting.Native
         {
             _Stop = true;
             
-            _Socket = null;
+            //_Socket = null;
             CheckSourceEvent = _Empty;
         }
 

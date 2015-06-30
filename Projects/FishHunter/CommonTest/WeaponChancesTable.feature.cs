@@ -31,7 +31,7 @@ namespace GameTest
         public static void FeatureSetup(Microsoft.VisualStudio.TestTools.UnitTesting.TestContext testContext)
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "WeaponChancesTable", "In order to 得到特武用\nAs a math idiot 擊中公式 \nI want to be 根據亂數表取得對應武器", ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "WeaponChancesTable", "In order to 得到特武用\r\nAs a math idiot 擊中公式 \r\nI want to be 根據亂數表取得對應武器", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -165,7 +165,7 @@ this.ScenarioSetup(scenarioInfo);
 #line 30
  testRunner.Given("武器清單是", ((string)(null)), table3, "Given ");
 #line 36
- testRunner.When("機率是\"0.96599999\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("機率是\"0.965999\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 38
  testRunner.Then("武器是3", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden

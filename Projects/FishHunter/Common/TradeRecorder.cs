@@ -70,7 +70,7 @@ namespace VGame.Project.FishHunter.Data
         }
 
         public int GetTotalMoney()
-        {
+        {            
             return (from a in TradeDatas where a.IsUsed == false select a.Money).Sum();
         }
 
