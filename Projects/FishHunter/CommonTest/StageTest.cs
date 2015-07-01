@@ -13,7 +13,7 @@ namespace VGame.Project.FishHunter
             var locks = new Data.StageLock[] { new Data.StageLock { Requires = new int[] {1,2} , Stage = 3} };
             var sg = new VGame.Project.FishHunter.Play.StageGate(locks);
             var sti = new VGame.Project.FishHunter.Play.StageTicketInspector(sg);
-            sti.Initial(new Data.Stage[] { new Data.Stage { Id = 1, Pass = false }, new Data.Stage { Id = 2, Pass = false } });
+            sti.Initial(new Data.Stage[] { new Data.Stage { Id = 1, Pass = false }, new Data.Stage { Id = 2, Pass = false },new Data.Stage { Id = 4, Pass = false }});
 
             sti.Pass(1);
 

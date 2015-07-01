@@ -25,11 +25,11 @@ namespace PureLibTest
             _OutMessage = message;
             _GetData = true;
         }                
-        [Given(@"資料是""(.*)""")]
-        public void 假設資料是(string p0)
+      
+        [Given(@"Log寫入資料是""(.*)""")]
+        public void 假設Log寫入資料是(string p0)
         {
             _Message = p0;
-            
         }
 
         [When(@"寫入到LogInfo")]
@@ -43,6 +43,7 @@ namespace PureLibTest
         {
             _Log.WriteDebug(_Message);
         }
+
 
         
         [Then(@"輸出為""(.*)""") , Timeout(10000)]

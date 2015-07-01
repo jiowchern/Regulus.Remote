@@ -19,19 +19,19 @@ namespace PureLibTest
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "1.9.0.77")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [Microsoft.VisualStudio.TestTools.UnitTesting.TestClassAttribute()]
-    public partial class LogFeature
+    public partial class CSVFeature
     {
         
         private static TechTalk.SpecFlow.ITestRunner testRunner;
         
-#line 1 "Log.feature"
+#line 1 "CSV.feature"
 #line hidden
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.ClassInitializeAttribute()]
         public static void FeatureSetup(Microsoft.VisualStudio.TestTools.UnitTesting.TestContext testContext)
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("zh-TW"), "Log", "In Order to 寫入訊息\r\nAs a 程式物件\r\nI Want to 輸出到Dummy物件", ProgrammingLanguage.CSharp, ((string[])(null)));
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "CSV", "In order to 解析CSV格式資料\nAs a 程式物件\nI want to 把CSV資料轉成對應物件", ProgrammingLanguage.CSharp, ((string[])(null)));
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -46,9 +46,9 @@ namespace PureLibTest
         public virtual void TestInitialize()
         {
             if (((TechTalk.SpecFlow.FeatureContext.Current != null) 
-                        && (TechTalk.SpecFlow.FeatureContext.Current.FeatureInfo.Title != "Log")))
+                        && (TechTalk.SpecFlow.FeatureContext.Current.FeatureInfo.Title != "CSV")))
             {
-                PureLibTest.LogFeature.FeatureSetup(null);
+                PureLibTest.CSVFeature.FeatureSetup(null);
             }
         }
         
@@ -69,37 +69,38 @@ namespace PureLibTest
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("當訊息為Message時，印出[Info]Message")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Log")]
-        public virtual void 當訊息為Message時印出InfoMessage()
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("讀取串流資料")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "CSV")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("mytag")]
+        public virtual void 讀取串流資料()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("當訊息為Message時，印出[Info]Message", ((string[])(null)));
-#line 8
- this.ScenarioSetup(scenarioInfo);
-#line 9
-  testRunner.Given("Log寫入資料是\"Message\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "假設");
-#line 10
-  testRunner.When("寫入到LogInfo", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "當");
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("讀取串流資料", new string[] {
+                        "mytag"});
 #line 11
-  testRunner.Then("輸出為\"[Info]Message\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "那麼");
-#line hidden
-            this.ScenarioCleanup();
-        }
-        
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("當訊息為Message時，印出[Debug]Message")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "Log")]
-        public virtual void 當訊息為Message時印出DebugMessage()
-        {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("當訊息為Message時，印出[Debug]Message", ((string[])(null)));
-#line 13
 this.ScenarioSetup(scenarioInfo);
+#line 12
+ testRunner.Given("資料是field1,field2,field3 1,2,3 4,5,6", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 13
+ testRunner.And("段落符號為\" \"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 14
-  testRunner.Given("Log寫入資料是\"Message\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "假設");
+ testRunner.And("分格符號為\",\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 15
-  testRunner.When("寫入到LogDebug", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "當");
+ testRunner.When("執行解析", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+            TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
+                        "field1",
+                        "field2",
+                        "field3"});
+            table1.AddRow(new string[] {
+                        "1",
+                        "2",
+                        "3"});
+            table1.AddRow(new string[] {
+                        "4",
+                        "5",
+                        "6"});
 #line 16
-  testRunner.Then("輸出為\"[Debug]Message\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "那麼");
+ testRunner.Then("結果為", ((string)(null)), table1, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

@@ -60,6 +60,12 @@
     <Compile Include="AttribTest.cs" />
     <Compile Include="CallTester.cs" />
     <Compile Include="CommandTest.cs" />
+    <Compile Include="CSV.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CSV.feature</DependentUpon>
+    </Compile>
+    <Compile Include="CSVSteps.cs" />
     <Compile Include="EnqueueHelper.cs" />
     <Compile Include="Log.feature.cs">
       <AutoGen>True</AutoGen>
@@ -83,6 +89,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="CSV.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>CSV.feature.cs</LastGenOutput>
+    </None>
     <None Include="Log.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Log.feature.cs</LastGenOutput>

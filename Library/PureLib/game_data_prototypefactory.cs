@@ -48,7 +48,9 @@ namespace Regulus.Utility
         public class PrototypeFactory : IDisposable
         {
             System.Data.DataSet _Datas = new System.Data.DataSet("PrototypeFactory");
-            public void LoadCSV(string name, string path , string ext_name = "")
+
+            
+            public void LoadCSV(string name, string path , string ext_name )
             {
 				System.Data.DataTable dt = new System.Data.DataTable(name + ext_name);
                 dt.ReadCSV(path, "\t");
