@@ -79,8 +79,7 @@ namespace VGame.Project.FishHunter.UnitTest
             request.WepID = 1;
 
             HitResponse response = formula.Request(request);
-            Assert.AreEqual(1, response.WepID);
-            Assert.AreEqual(0, response.SpecAsn);
+            Assert.AreEqual(1, response.WepID);            
             Assert.AreEqual(1, response.FishID);
             Assert.AreEqual(FISH_DETERMINATION.DEATH, response.DieResult);
 
@@ -129,8 +128,7 @@ namespace VGame.Project.FishHunter.UnitTest
             request.WepID = 1;
 
             HitResponse response = formula.Request(request); // a3d70a
-            Assert.AreEqual(1, response.WepID);
-            Assert.AreEqual(0, response.SpecAsn);
+            Assert.AreEqual(1, response.WepID);            
             Assert.AreEqual(1, response.FishID);
             Assert.AreEqual(FISH_DETERMINATION.DEATH, response.DieResult);
 

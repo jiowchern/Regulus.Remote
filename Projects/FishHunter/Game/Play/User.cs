@@ -138,7 +138,20 @@ namespace VGame.Project.FishHunter.Play
             _RecordQueriers.Load(_Account.Id).OnValue += (obj)=>
             {
                 _Record = obj;
-                _StageTicketInspector.Initial(new Data.Stage[] { new Data.Stage { Id = 1, Pass = true }, new Data.Stage { Id = 2, Pass = false } });
+                _StageTicketInspector.Initial(new Data.Stage[] { 
+                    new Data.Stage { Id = 1, Pass = true }, 
+                    new Data.Stage { Id = 2, Pass = false },
+                    new Data.Stage { Id = 4, Pass = false },
+                    new Data.Stage { Id = 5, Pass = false },
+                    new Data.Stage { Id = 6, Pass = false },
+                    new Data.Stage { Id = 7, Pass = false },
+                    new Data.Stage { Id = 8, Pass = false },
+                    new Data.Stage { Id = 9, Pass = false },
+                    new Data.Stage { Id = 10, Pass = false },
+                    new Data.Stage { Id = 11, Pass = false },
+                    new Data.Stage { Id = 12, Pass = false },
+                    new Data.Stage { Id = 13, Pass = false },
+                    new Data.Stage { Id = 14, Pass = false },});
                 _ToLoadTradeNotes();
             };
         }
