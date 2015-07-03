@@ -45,12 +45,13 @@ namespace Regulus.Utility
 
         public void WriteInfo(string message)
         {
+            
             _Write(string.Format("[Info]{0}", message));
         }
 
         public void WriteDebug(string message)
         {
-            _Write(string.Format("[Debug]{0}", message));
+            _Write(string.Format("[Debug]{0}\r\n{1}", message, System.Environment.StackTrace));
         }
     }
 }

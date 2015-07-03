@@ -8,7 +8,55 @@ namespace RemotingTest
     {
 
         volatile static bool _ConnectEnable;
+        [TestMethod]
+        public void ServerReconnectTest()
+        {
+            Regulus.Utility.Log.Instance.RecordEvent += (msg) =>
+            {
+                System.Diagnostics.Debug.Write(msg);
+            };
+            Regulus.Utility.Launcher launcher = new Regulus.Utility.Launcher();
+            Server server = new Server();
+            var serverAppliction = new Regulus.Remoting.Soul.Native.Server(server, 12345);
+            launcher.Push(serverAppliction);
+            var agent = Regulus.Remoting.Ghost.Native.Agent.Create();
+            agent.BreakEvent += () =>
+            {
+                _ConnectEnable = false;
+            };
 
+            launcher.Launch();
+            System.Threading.Thread.Sleep(1000);
+            _ConnectEnable = true;
+            System.Threading.Tasks.Task task = new System.Threading.Tasks.Task(_UpdateAgent(agent));
+            task.Start();
+            if (agent.Connect("127.0.0.1", 12345).WaitResult() == true)
+            {
+                launcher.Shutdown();
+            }
+            else
+            {
+                throw new System.Exception("connect fail. 1");
+            }
+            task.Wait();
+            System.Threading.Thread.Sleep(1000);
+            launcher.Launch();
+            System.Threading.Thread.Sleep(1000);
+            _ConnectEnable = true;
+            System.Threading.Tasks.Task task2 = new System.Threading.Tasks.Task(_UpdateAgent(agent));
+            task2.Start();
+            if (agent.Connect("127.0.0.1", 12345).WaitResult() == true)
+            {
+                launcher.Shutdown();
+            }
+            else
+            {
+                throw new System.Exception("connect fail. 2");
+            }
+
+            task2.Wait();
+
+        }
         [TestMethod]
         public void TestUserMutiConnectDisconnect()
         {
@@ -152,53 +200,7 @@ namespace RemotingTest
 
             
         }
-        [TestMethod]
-        public void ServerReconnectTest()
-        {
-            Regulus.Utility.Launcher launcher = new Regulus.Utility.Launcher();
-            Server server = new Server();
-            var serverAppliction = new Regulus.Remoting.Soul.Native.Server(server, 12345);
-            launcher.Push(serverAppliction);
-
-            var agent = Regulus.Remoting.Ghost.Native.Agent.Create();
-            agent.BreakEvent += () =>
-            {
-                _ConnectEnable = false;
-            };
-
-            launcher.Launch();            
-            _ConnectEnable = true;
-            System.Threading.Tasks.Task task = new System.Threading.Tasks.Task(_UpdateAgent(agent));
-            task.Start();
-            if (agent.Connect("127.0.0.1", 12345).WaitResult() == true)
-            {                
-                launcher.Shutdown();
-            }            
-            else
-            {
-                throw new System.Exception("connect fail. 1");
-            }
-            task.Wait();
-
-            System.Threading.Thread.Sleep(3000);
-
-
-            launcher.Launch();            
-            _ConnectEnable = true;
-            System.Threading.Tasks.Task task2 = new System.Threading.Tasks.Task(_UpdateAgent(agent));
-            task2.Start();
-            if (agent.Connect("127.0.0.1", 12345).WaitResult() == true)
-            {
-                launcher.Shutdown();
-            }
-            else
-            {
-                throw new System.Exception("connect fail. 2");
-            }
-
-            task2.Wait();
-            
-        }
+        
 
         [TestMethod ]
         public void ConnectTest()
@@ -234,7 +236,7 @@ namespace RemotingTest
                 while (agent.QueryNotifier<ITestGPI>().Ghosts.Length == 0) ;
                 int result = agent.QueryNotifier<ITestGPI>().Ghosts[0].Add(1, 2).WaitResult();
 
-                //agent.Disconnect();
+                agent.Disconnect();
                 
             }
             _ConnectEnable = false;
@@ -264,7 +266,7 @@ namespace RemotingTest
                 while (agent.QueryNotifier<ITestGPI>().Ghosts.Length == 0) ;
                 int result = agent.QueryNotifier<ITestGPI>().Ghosts[0].Add(1, 2).WaitResult();
 
-                //agent.Disconnect();
+                agent.Disconnect();
 
             }
             _ConnectEnable = false;
@@ -279,7 +281,7 @@ namespace RemotingTest
                 while (agent.QueryNotifier<ITestGPI>().Ghosts.Length == 0) ;
                 int result = agent.QueryNotifier<ITestGPI>().Ghosts[0].Add(1, 2).WaitResult();
 
-                //agent.Disconnect();
+                agent.Disconnect();
 
             }
             _ConnectEnable = false;
@@ -296,7 +298,7 @@ namespace RemotingTest
                 System.Threading.SpinWait sw = new System.Threading.SpinWait();
                 
                 agent.Launch();
-                while (_ConnectEnable)
+                while (_ConnectEnable || agent.Connected)
                 {
                     agent.Update();
                    

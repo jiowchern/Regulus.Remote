@@ -44,6 +44,20 @@ namespace PureLibTest
             _Log.WriteDebug(_Message);
         }
 
+        [Then(@"頭(.*)個字元是""(.*)""")]
+        public void 那麼頭個字元是(int p0, string p1)
+        {
+            while (_GetData == false)
+                ;
+
+            var chars1 = _OutMessage.ToCharArray();
+            var chars2 = p1.ToCharArray();
+
+            for (int i = 0; i < chars2.Length; ++i )
+            {
+                Assert.AreEqual(chars1[i], chars2[i]);
+            }
+        }
 
         
         [Then(@"輸出為""(.*)""") , Timeout(10000)]

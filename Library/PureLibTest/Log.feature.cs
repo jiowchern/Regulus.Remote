@@ -99,7 +99,7 @@ this.ScenarioSetup(scenarioInfo);
 #line 15
   testRunner.When("寫入到LogDebug", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "當");
 #line 16
-  testRunner.Then("輸出為\"[Debug]Message\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "那麼");
+  testRunner.Then("頭7個字元是\"[Debug]\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "那麼");
 #line hidden
             this.ScenarioCleanup();
         }

@@ -164,7 +164,7 @@ namespace Regulus.Remoting
 					var typeName = Regulus.Serializer.TypeHelper.Deserialize<string>(args[0] as byte[]) ;
 					var entity_id = new Guid(args[1] as byte[]);
                     var return_id = new Guid(args[2] as byte[]);					
-                    Regulus.Utility.Log.Instance.WriteDebug(string.Format("Load soul compile {0} id {1}", typeName, entity_id.ToString()));
+                    
                     _LoadSoulCompile(typeName, entity_id, return_id);
 				}
 			}
@@ -175,7 +175,7 @@ namespace Regulus.Remoting
 					var typeName = Regulus.Serializer.TypeHelper.Deserialize<string>(args[0] as byte[]) ;
 					var entity_id = new Guid(args[1] as byte[]);
                     var returnType = Regulus.Serializer.TypeHelper.Deserialize<bool>(args[2] as byte[]);					
-                    Regulus.Utility.Log.Instance.WriteDebug(string.Format("Load soul {0} id {1}", typeName, entity_id.ToString()));
+                    
                     _LoadSoul(typeName, entity_id, returnType);
 				}
 			}
@@ -185,7 +185,7 @@ namespace Regulus.Remoting
 				{
 					var typeName = Regulus.Serializer.TypeHelper.Deserialize<string>(args[0] as byte[]) ;
 					var entity_id = new Guid(args[1] as byte[]);
-					System.Diagnostics.Debug.WriteLine("unload soul : " + typeName + " id: " + entity_id.ToString());
+					
 					_UnloadSoul(typeName, entity_id);
 				}
 			}
@@ -244,8 +244,7 @@ namespace Regulus.Remoting
 		}
 		
 		private Regulus.Remoting.Ghost.IProvider _QueryProvider(string type_name)
-		{
-            Regulus.Utility.Log.Instance.WriteDebug(string.Format("Query provider {0}", type_name ));
+		{            
 			Regulus.Remoting.Ghost.IProvider provider = null;
             lock (_Providers)
             {
@@ -352,7 +351,7 @@ namespace Regulus.Remoting
                 throw new ArgumentNullException("peer is null");
 			Type ghostType = _QueryGhostType(ghostBaseType);
 
-            Regulus.Utility.Log.Instance.WriteDebug(string.Format("Build Ghost {0}", ghostType.FullName ));
+            
             object o = Activator.CreateInstance(ghostType, new Object[] { peer, id, _ReturnValueQueue, return_type });
             
 			return (Regulus.Remoting.Ghost.IGhost)o;
@@ -362,7 +361,7 @@ namespace Regulus.Remoting
 		
         private Type _QueryGhostType(Type ghostBaseType)
 		{
-            Regulus.Utility.Log.Instance.WriteDebug(string.Format("Query ghost base {0}", ghostBaseType.FullName));
+            
 			Type ghostType = null;
 			if (_GhostTypes.TryGetValue(ghostBaseType, out ghostType))
 			{
@@ -384,7 +383,7 @@ namespace Regulus.Remoting
                     result = _Find(type_name);                    
                     _Types.Add(type_name , result);                 
                 }
-                Regulus.Utility.Log.Instance.WriteDebug(string.Format("Get Type {0}", type_name));
+                
                 return result;
             }
 			
@@ -392,7 +391,7 @@ namespace Regulus.Remoting
 
         private static Type _Find(string type_name)
         {
-            Regulus.Utility.Log.Instance.WriteDebug(string.Format("Find Type {0}", type_name));
+            
             var type = Type.GetType(type_name);
             if (type == null)
             {
@@ -447,7 +446,7 @@ namespace Regulus.Remoting
 		static private Type _BuildGhostType(Type ghostBaseType)
 		{
 
-            Regulus.Utility.Log.Instance.WriteDebug(string.Format("Build ghost base {0}", ghostBaseType.FullName));
+            
 			//反射機制
 			Type baseType = ghostBaseType;
 			//產生class的組態

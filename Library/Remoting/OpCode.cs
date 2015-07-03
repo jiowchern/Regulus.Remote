@@ -7,7 +7,7 @@ namespace Regulus.Remoting
 {
 	public enum ClientToServerOpCode
 	{		       
-		CallMethod = 1,
+		CallMethod = 100,
         Ping,		
         Release
 	};

@@ -13,6 +13,6 @@
 場景: 當訊息為Message時，印出[Debug]Message
 	 假設 Log寫入資料是"Message" 	 
 	 當 寫入到LogDebug
-	 那麼 輸出為"[Debug]Message"
+	 那麼 頭7個字元是"[Debug]"
 @mytag
  

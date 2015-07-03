@@ -56,15 +56,11 @@ namespace Regulus.Remoting.Soul.Native
             _Writer = new Remoting.Native.PackageWriter();
 			
 		}
-		
-
-        
-		
 
         private void _RequestPush(Package package)
-        {
+        {            
             lock (_LockRequest)
-            {
+            {                
                 _Requests.Enqueue(package);
                 TotalRequest++;
             }
@@ -124,19 +120,8 @@ namespace Regulus.Remoting.Soul.Native
 
 		void Remoting.IResponseQueue.Push(byte cmd, Dictionary<byte, byte[]> args)
 		{
-
-            if (cmd == (byte)ServerToClientOpCode.LoadSoul)
-            {
-                Regulus.Utility.Log.Instance.WriteDebug("1.Push ServerToClientOpCode.LoadSoul");
-            }
             lock (_LockResponse)
             {
-
-                if (cmd == (byte)ServerToClientOpCode.LoadSoul)
-                {
-                    Regulus.Utility.Log.Instance.WriteDebug("2.Push ServerToClientOpCode.LoadSoul");
-                }
-
                 TotalResponse++;
                 _Responses.Enqueue(new Regulus.Remoting.Package() { Code = cmd, Args = args });
             }
@@ -191,34 +176,24 @@ namespace Regulus.Remoting.Soul.Native
 
         private Package[] _ResponsePop()
         {
-            //Regulus.Utility.Log.Instance.WriteDebug(string.Format("1 ._ResponsePop"));
-            lock (_LockResponse)
+            lock(_LockResponse)
             {
-                //Regulus.Utility.Log.Instance.WriteDebug(string.Format("2 ._ResponsePop"));
                 var pkgs = _Responses.DequeueAll();
-                _DebugLoadSoulLog(pkgs);
                 TotalResponse -= pkgs.Length;
                 return pkgs;
             }
+            
         }
-
-        private void _DebugLoadSoulLog(Package[] packages)
-        {
-            foreach (var p in packages)
-            {
-                if (p.Code == (byte)ServerToClientOpCode.LoadSoul)
-                {
-                    Regulus.Utility.Log.Instance.WriteDebug(string.Format("Peer Dequeue ServerToClientOpCode.LoadSoul"));
-                }
-            }
-        }
-
     
 
         void Framework.IBootable.Shutdown()
         {
+            
+            _Socket.Shutdown(System.Net.Sockets.SocketShutdown.Both);
             _Socket.Close();
+            _Reader.DoneEvent -= _RequestPush;
             _Reader.Stop();
+            _Writer.CheckSourceEvent -= _ResponsePop;
             _Writer.Stop();            
 
             lock (_LockResponse)

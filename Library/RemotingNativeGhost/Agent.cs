@@ -90,7 +90,7 @@ namespace Regulus.Remoting.Ghost.Native
 
 		void Framework.IBootable.Launch()
 		{
-            
+            Regulus.Utility.Log.Instance.WriteInfo("Agent Launch.");
 		}
 
 		void Framework.IBootable.Shutdown()
@@ -108,7 +108,11 @@ namespace Regulus.Remoting.Ghost.Native
                     }
                 }
             }
-            
+            else
+            {
+                _Machine.Termination();
+            }
+            Regulus.Utility.Log.Instance.WriteInfo("Agent Shutdown.");
 		}
 
 		

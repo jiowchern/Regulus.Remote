@@ -75,8 +75,7 @@ namespace VGame.Project.FishHunter.Formula
                 gate = 0x10000000;
             
             var rValue = _Random.NextLong(0,long.MaxValue);
-            var value = rValue % 0x10000000;
-            Regulus.Utility.Log.Instance.WriteDebug(string.Format("HitResponse gate {0} value {1} r-value {2}", gate, value, rValue));
+            var value = rValue % 0x10000000;            
             if (value < gate) 
                 return _Die(request);
 
