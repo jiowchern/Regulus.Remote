@@ -81,6 +81,7 @@ namespace Regulus.Remoting.Soul.Native
 
         public void DoWork(object obj)
         {
+            Regulus.Utility.Log.Instance.WriteInfo(string.Format("server core launch"));
             _Run = true;
             _Core.Launch();
 
@@ -104,7 +105,7 @@ namespace Regulus.Remoting.Soul.Native
             }
             _Core.Shutdown();
 
-            
+            Regulus.Utility.Log.Instance.WriteInfo(string.Format("server core shutdown"));
         }
 
         public void Stop()
@@ -159,12 +160,14 @@ namespace Regulus.Remoting.Soul.Native
         }
         public void DoWork(object obj)
         {
-
+            Regulus.Utility.Log.Instance.WriteInfo(string.Format("server socket launch"));
             System.Threading.AutoResetEvent are = (System.Threading.AutoResetEvent)obj;
             _Run = true;
 
             _Socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
             _Socket.NoDelay = true;
+
+            //_Socket.SetSocketOption(System.Net.Sockets.SocketOptionLevel.Socket, System.Net.Sockets.SocketOptionName.ReuseAddress, true);
             _Socket.Bind(new System.Net.IPEndPoint(System.Net.IPAddress.Any, _Port));
             _Socket.Listen(5);            
             _Socket.BeginAccept(_Accept, null);
@@ -178,6 +181,9 @@ namespace Regulus.Remoting.Soul.Native
                         while (_Sockets.Count > 0)
                         {
                             var socket = _Sockets.Dequeue();
+                            
+                            Regulus.Utility.Log.Instance.WriteInfo(
+                                string.Format("socket accept Remot {0} Local {1} .", socket.RemoteEndPoint.ToString(), socket.LocalEndPoint.ToString() ));
                             var peer = new Peer(socket);
 
                             _Peers.Join(peer);                            
@@ -192,10 +198,13 @@ namespace Regulus.Remoting.Soul.Native
                 _Spin.Operate(Peer.TotalRequest);                
             }
             _Peers.Release();
-            
+
+            if (_Socket.Connected)
+                _Socket.Shutdown(System.Net.Sockets.SocketShutdown.Both);
             _Socket.Close();
 
             are.Set();
+            Regulus.Utility.Log.Instance.WriteInfo(string.Format("server socket shutdown"));
         }
 
         private void _Accept(IAsyncResult ar)
@@ -208,10 +217,37 @@ namespace Regulus.Remoting.Soul.Native
                     _Sockets.Enqueue(socket);
                 }
                 _Socket.BeginAccept(_Accept, null);
-            }
-            catch
+            }                 
+        //   System.ArgumentNullException:
+        //     asyncResult 為 null。
+        //
+        //   System.ArgumentException:
+        //     asyncResult 不是透過呼叫 System.Net.Sockets.Socket.BeginAccept(System.AsyncCallback,System.Object)
+        //     所建立。
+        //
+        //   System.Net.Sockets.SocketException:
+        //     嘗試存取通訊端時發生錯誤。如需詳細資訊，請參閱備註章節。
+        //
+        //   System.ObjectDisposedException:
+        //     System.Net.Sockets.Socket 已經關閉。
+        //
+        //   System.InvalidOperationException:
+        //     先前已呼叫 System.Net.Sockets.Socket.EndAccept(System.IAsyncResult) 方法。
+            catch (System.Net.Sockets.SocketException se)
             {
-
+                Regulus.Utility.Log.Instance.WriteInfo(se.ToString());                
+            }
+            catch (System.ObjectDisposedException ode)
+            {
+                Regulus.Utility.Log.Instance.WriteInfo(ode.ToString());                
+            }
+            catch (System.InvalidOperationException ioe)
+            {
+                Regulus.Utility.Log.Instance.WriteInfo(ioe.ToString());                
+            }
+            catch (System.Exception e)
+            {
+                Regulus.Utility.Log.Instance.WriteInfo(e.ToString());                
             }
         }
 

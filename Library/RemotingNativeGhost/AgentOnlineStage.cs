@@ -59,7 +59,9 @@ namespace Regulus.Remoting.Ghost.Native
             
             void Utility.IStage.Enter()
             {
-                
+                Regulus.Utility.Log.Instance.WriteInfo(string.Format("Agent online enter."));
+
+                Regulus.Utility.Log.Instance.WriteInfo(string.Format("Agent Socket Local {0} Remot {1}." , _Socket.LocalEndPoint.ToString() , _Socket.RemoteEndPoint.ToString() ));                    
                 _Core.Initial(this);
                 _Enable = true;
                 _ReaderStart();
@@ -75,12 +77,13 @@ namespace Regulus.Remoting.Ghost.Native
                 
                 if (_Socket != null)
                 {
+                    _Socket.Shutdown(System.Net.Sockets.SocketShutdown.Both);
                     _Socket.Close();
                     _Socket = null;
                 }                
 
                 _Core.Finial();
-                
+                Regulus.Utility.Log.Instance.WriteInfo(string.Format("Agent online leave."));                    
             }            
 
             void Utility.IStage.Update()
@@ -98,7 +101,7 @@ namespace Regulus.Remoting.Ghost.Native
             void IGhostRequest.Request(byte code, Dictionary<byte, byte[]> args)
             {                
                 lock(_LockRequest)
-                {
+                {                    
                     _Sends.Enqueue(new Package() { Args = args, Code = code });
                     RequestQueueCount++;
                 }                    
@@ -109,7 +112,7 @@ namespace Regulus.Remoting.Ghost.Native
             private void _ReceivePackage(Package package)
             {
                 lock (_LockResponse)
-                {
+                {                                        
                     _Receives.Enqueue(package);
                     ResponseQueueCount++;
                 }
@@ -124,7 +127,7 @@ namespace Regulus.Remoting.Ghost.Native
                     ResponseQueueCount -= pkgs.Length;
 
                     foreach (var pkg in pkgs)
-                    {
+                    {                        
                         core.OnResponse(pkg.Code, pkg.Args);
                     }
                 }
@@ -156,11 +159,12 @@ namespace Regulus.Remoting.Ghost.Native
                 }
             }
             private void _ReaderStart()
-            {
+            {                
                 _Reader.DoneEvent += _ReceivePackage;
+                
                 _Reader.ErrorEvent += _Disable;
                 _Reader.Start(_Socket);                
-            }
+            }            
 
             private void _Disable()
             {
@@ -168,7 +172,7 @@ namespace Regulus.Remoting.Ghost.Native
             }
             
             private void _ReaderStop()
-            {
+            {             
                 _Reader.DoneEvent -= _ReceivePackage;
                 _Reader.ErrorEvent -= _Disable;
                 _Reader.Stop();

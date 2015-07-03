@@ -8,7 +8,21 @@ namespace Regulus.Remoting.Native
     public class PackageWriter
     {
         public delegate Package[] CheckSourceCallback();
-        public event CheckSourceCallback CheckSourceEvent;
+        CheckSourceCallback _CheckSourceEvent;
+        public event CheckSourceCallback CheckSourceEvent
+        {
+            add 
+            {
+                
+                _CheckSourceEvent += value;
+            }
+
+            remove
+            {
+                
+                _CheckSourceEvent -= value;
+            }
+        }
         const int _HeadSize = 4;
         System.Net.Sockets.Socket _Socket;
         
@@ -18,43 +32,35 @@ namespace Regulus.Remoting.Native
         public event OnErrorCallback ErrorEvent;
         
         volatile bool _Stop;
-        Regulus.Utility.SpinWait _Wait;
-
+        Regulus.Utility.PowerRegulator _PowerRegulator;
         
         public PackageWriter()
         {
-            _Wait = new Utility.SpinWait();
+            
+            _PowerRegulator = new Utility.PowerRegulator();
         }
         public void Start(System.Net.Sockets.Socket socket)
         {
             _Stop = false;
             _Socket = socket;
+
+            
             _Write();
+
         }
 
         private void _Write()
         {
             try
             {
-                Package[] pkgs ;
-                pkgs = CheckSourceEvent();
-
-                if (pkgs.Length == 0)
-                {
-                    _Wait.SpinOnce();
-                    if (_Wait.Count > 1000)
-                        System.Threading.Thread.Sleep(1000);
-                }
-                else
-                {
-                    _Wait.Reset();                
-                }                        
+                
+                Package[] pkgs = _CheckSourceEvent();
 
                 _Buffer = _CreateBuffer(pkgs);
-
-                //Regulus.Utility.Log.Instance.WriteDebug(string.Format("0.Write {0}", _Buffer.Length));
-                _AsyncResult = _Socket.BeginSend(_Buffer, 0, _Buffer.Length, 0, _WriteCompletion, null);
-                //Regulus.Utility.Log.Instance.WriteDebug(string.Format("1.Write {0}", _Buffer.Length));
+                _PowerRegulator.Operate(_Buffer.Length);                
+                    
+                _AsyncResult = _Socket.BeginSendTo(_Buffer, 0, _Buffer.Length, 0, _Socket.RemoteEndPoint, _WriteCompletion, null);
+                
             }
             catch (SystemException e)
             {
@@ -71,10 +77,10 @@ namespace Regulus.Remoting.Native
                 
                 if (_Stop == false)
                 {
-                    //Regulus.Utility.Log.Instance.WriteDebug(string.Format("1.Write Completion {0}", _Buffer.Length ));
-                    _Socket.EndSend(ar);
                     
-                    //Regulus.Utility.Log.Instance.WriteDebug(string.Format("2.Write Completion {0}", _Buffer.Length));
+                    var sendSize = _Socket.EndSendTo(ar);
+                    
+                                        
                     _Write();
                 }
                 
@@ -89,8 +95,7 @@ namespace Regulus.Remoting.Native
         }
 
         byte[] _CreateBuffer(Package[] packages)
-        {
-            //_DebugLoadSoulLog(packages);
+        {            
             var buffers = from p in packages select Regulus.Serializer.TypeHelper.Serializer<Package>(p);
             //Regulus.Utility.Log.Instance.WriteDebug(string.Format("Serializer to Buffer size {0}", buffers.Sum( b => b.Length )));
             using (System.IO.MemoryStream stream = new System.IO.MemoryStream())
@@ -106,16 +111,7 @@ namespace Regulus.Remoting.Native
             }
         }
 
-        private void _DebugLoadSoulLog(Package[] packages)
-        {
-            foreach(var p in  packages)
-            {
-                if(p.Code == (byte)ServerToClientOpCode.LoadSoul)
-                {
-                    Regulus.Utility.Log.Instance.WriteDebug(string.Format("DebugLoadSoulLog "));
-                }
-            }
-        }
+        
 
 
         public void Stop()
@@ -123,7 +119,7 @@ namespace Regulus.Remoting.Native
             _Stop = true;
             
             //_Socket = null;
-            CheckSourceEvent = _Empty;
+            _CheckSourceEvent = _Empty;
         }
 
         private Package[] _Empty()

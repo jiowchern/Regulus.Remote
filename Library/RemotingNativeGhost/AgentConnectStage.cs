@@ -27,7 +27,24 @@ namespace Regulus.Remoting.Ghost.Native
 
             void Utility.IStage.Enter()
             {
-                _AsyncResult = _Socket.BeginConnect(_Ipaddress, _Port, _ConnectResult, null);
+                Regulus.Utility.Log.Instance.WriteInfo(string.Format("connect stage enter."));                    
+                Regulus.Utility.Log.Instance.WriteInfo(string.Format("Agent connect start .")); 
+                
+                try
+                {
+                    //_Socket.SetSocketOption(System.Net.Sockets.SocketOptionLevel.Socket, System.Net.Sockets.SocketOptionName.ReuseAddress, true);
+                    //_Socket.Bind(new System.Net.IPEndPoint(System.Net.IPAddress.Any, 42255));
+                    _AsyncResult = _Socket.BeginConnect(_Ipaddress, _Port, _ConnectResult , null);
+                }                
+                catch (System.Exception e)
+                {
+                    Regulus.Utility.Log.Instance.WriteInfo(string.Format("begin connect fail {0}.", e.ToString()));
+                    ResultEvent(false , null);
+                }
+                finally
+                {
+                    Regulus.Utility.Log.Instance.WriteInfo(string.Format("agent connect started .")); 
+                }
             }
 
             private void _ConnectResult(IAsyncResult ar)
@@ -41,17 +58,18 @@ namespace Regulus.Remoting.Ghost.Native
                 }
                 catch (System.Net.Sockets.SocketException ex)
                 {
-                    
+                    Regulus.Utility.Log.Instance.WriteInfo(ex.ToString());
                 }
                 catch (ObjectDisposedException ode)
                 {
-                    
+                    Regulus.Utility.Log.Instance.WriteInfo(ode.ToString());
                 }
-                catch 
+                finally
                 {
-                    
+                    _Result = result;
+                    Regulus.Utility.Log.Instance.WriteInfo(string.Format("connect result {0}.", _Result));                    
                 }
-                _Result = result;
+                
             }
 
             void _InvokeResultEvent()
@@ -70,10 +88,15 @@ namespace Regulus.Remoting.Ghost.Native
             {
                 if (_Result.HasValue == false && ResultEvent != null)
                 {
+                    
                     var call = ResultEvent;
                     ResultEvent = null;
-                    call(false, _Socket);                    
+                    call(false, null);                    
                 }
+
+                if(_Result.HasValue && _Result.Value == false)
+                    _Socket.Close();                
+                Regulus.Utility.Log.Instance.WriteInfo(string.Format("Agent connect leave."));                    
             }
 
             void Utility.IStage.Update()
