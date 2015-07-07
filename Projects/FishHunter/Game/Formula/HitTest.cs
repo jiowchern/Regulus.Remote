@@ -87,9 +87,9 @@ namespace VGame.Project.FishHunter.Formula
             return new HitResponse {
                 FishID = request.FishID, 
                 DieResult =  FISH_DETERMINATION.DEATH ,
-                SpecAsn = (byte)_WeaponChancesTable.Dice(Regulus.Utility.Random.NextFloat(0, 1)) , 
+                SpecAsn = (byte)_WeaponChancesTable.Dice(Regulus.Utility.Random.Instance.NextFloat(0, 1)), 
                 WepID = request.WepID ,
-                WUp = _ScoreOddsTable.Dice(Regulus.Utility.Random.NextFloat(0, 1))
+                WUp = _ScoreOddsTable.Dice(Regulus.Utility.Random.Instance.NextFloat(0, 1))
             };
         }
 

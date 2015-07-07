@@ -9,11 +9,7 @@ namespace Regulus.Utility
     public class Singleton<T> where T : class, new()
     {
         private static T _Instance;
-        static Type _Sync = typeof(T);
-        public static T GetInstance() 
-        {
-            return Instance;   
-        }
+        static Type _Sync = typeof(T);        
 
 		public static T Instance	
 		{

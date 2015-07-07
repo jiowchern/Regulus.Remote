@@ -13,7 +13,7 @@ namespace VGame.Project.FishHunter.Formula
         long _AccountId;
         public FishStage(long account, int stage_id)
         {
-            _Formula = new FishHunter.Formula.HitTest(Regulus.Utility.Random.Instance.R);
+            _Formula = new FishHunter.Formula.HitTest(Regulus.Utility.Random.Instance);
             _AccountId = account;
             _FishStage =(byte) stage_id;
         }

@@ -7,30 +7,15 @@ namespace Regulus.Utility
 {
     public class Random : Singleton<Random>
 	{
-        public IRandom R { get; private set; }
+        private IRandom _R;
 		public Random()
 		{
-            R = new SystemRandom();
+            _R = new SystemRandom();
 		}
-		
-        public static float NextFloat(float min, float max)
+		public new static IRandom Instance
         {
-            var number = Instance.R.NextFloat();
-            return (max - min) * number + min;
-        }
-        public static int Next(int min , int max)
-        {
-            return Instance.R.NextInt(min, max);
-        }
-
-        public static T NextEnum<T>()
-        {            
-            return Enum
-                .GetValues(typeof(T))
-                .Cast<T>()
-                .OrderBy(x => Instance.R.NextFloat())
-                .FirstOrDefault();
-        }
+            get { return Singleton< Random >.Instance._R; }
+        }                
     }
 
 
@@ -43,6 +28,8 @@ namespace Regulus.Utility
         long NextLong(long min, long max);
 
         double NextDouble();
+
+        T NextEnum<T>();
     }
 
     public class SystemRandom : IRandom
@@ -54,6 +41,11 @@ namespace Regulus.Utility
             _Random = new System.Random();
         }
         float IRandom.NextFloat()
+        {
+            return _NextFloat();
+        }
+
+        private float _NextFloat()
         {
             var val = _Random.NextDouble();
             return (float)val;
@@ -83,7 +75,22 @@ namespace Regulus.Utility
 
         float IRandom.NextFloat(float min, float max)
         {
+            return _NextFloat(min, max);
+        }
+
+        private float _NextFloat(float min, float max)
+        {
             return min + (float)_Random.NextDouble() * max;
+        }
+
+
+        T IRandom.NextEnum<T>()
+        {
+            return Enum
+                .GetValues(typeof(T))
+                .Cast<T>()
+                .OrderBy(x => _NextFloat())
+                .FirstOrDefault();
         }
     }
 }
