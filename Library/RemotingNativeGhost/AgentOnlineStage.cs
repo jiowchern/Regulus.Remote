@@ -77,7 +77,8 @@ namespace Regulus.Remoting.Ghost.Native
                 
                 if (_Socket != null)
                 {
-                    _Socket.Shutdown(System.Net.Sockets.SocketShutdown.Both);
+                    if (_Socket.Connected)
+                        _Socket.Shutdown(System.Net.Sockets.SocketShutdown.Both);
                     _Socket.Close();
                     _Socket = null;
                 }                
