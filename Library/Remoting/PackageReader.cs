@@ -14,20 +14,16 @@ namespace Regulus.Remoting.Native
         OnPackageCallback _DoneEvent;
         public event OnPackageCallback DoneEvent
         {
-            add {
-                Regulus.Utility.Log.Instance.WriteInfo(string.Format("pakcage done event add {0}" , value.Method.Name ));                    
+            add {                
                 _DoneEvent += value;
             }
             remove {
-                Regulus.Utility.Log.Instance.WriteInfo(string.Format("pakcage done event remove ."));                    
                 _DoneEvent -= value;
             }
         }
         const int _HeadSize = 4;
         System.Net.Sockets.Socket _Socket;
-        private byte[] _Buffer;
-        private int _Offset;
-
+       
         SocketReader _Reader;
         enum Status
         {
