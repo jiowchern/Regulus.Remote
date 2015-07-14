@@ -12,6 +12,10 @@ namespace Regulus.CustomType
         // Structure that stores the results of the PolygonCollision function
         static public CollisionResult Collision(Polygon polygonA, Polygon polygonB, Vector2 velocity)
         {
+
+            if (polygonA._Points.Count == 0 || polygonA._Points.Count == 0)
+                throw new ArgumentException("param polygonA or polygonB point count are zero.");
+
             CollisionResult result = new CollisionResult();
             result.Intersect = true;
             result.WillIntersect = true;
