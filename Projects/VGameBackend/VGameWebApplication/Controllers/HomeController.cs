@@ -78,6 +78,14 @@ namespace VGameWebApplication.Controllers
             return PartialView(accountFunctions);            
         }
 
+
+        public ActionResult Download()
+        {
+            byte[] fileBytes = System.IO.File.ReadAllBytes(@"c:\Ftp\FishHunter.apk");
+            string fileName = "FishHunter.apk";
+            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet , fileName);
+        }
+
 	}
 
 }
