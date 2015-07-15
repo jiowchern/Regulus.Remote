@@ -53,17 +53,18 @@ namespace FormulaUserBot
         private void _HitRequest(byte total_hits)
         {
             VGame.Project.FishHunter.HitRequest request = new VGame.Project.FishHunter.HitRequest();
-            request.FishID = (short)Regulus.Utility.Random.Next(0,32767);
-            request.FishOdds = (short)Regulus.Utility.Random.Next(1, 1000);
-            
-            request.FishStatus = Regulus.Utility.Random.NextEnum<VGame.Project.FishHunter.FISH_STATUS>();
-            request.FishType = (byte)Regulus.Utility.Random.Next(1, 99);
+
+            request.FishID = (short)Regulus.Utility.Random.Instance.NextInt(0, 32767);
+            request.FishOdds = (short)Regulus.Utility.Random.Instance.NextInt(1, 1000);
+
+            request.FishStatus = Regulus.Utility.Random.Instance.NextEnum<VGame.Project.FishHunter.FISH_STATUS>();
+            request.FishType = (byte)Regulus.Utility.Random.Instance.NextInt(1, 99);
             request.TotalHits = total_hits;
-            request.HitCnt = (short)Regulus.Utility.Random.Next(1, request.TotalHits);
-            request.TotalHitOdds = (short)Regulus.Utility.Random.Next(0, 32767); 
-            request.WepBet = (short)Regulus.Utility.Random.Next(1, 10000);
-            request.WepID = (short)Regulus.Utility.Random.Next(0, 32767);
-            request.WepOdds = (short)Regulus.Utility.Random.Next(1, 10000);
+            request.HitCnt = (short)Regulus.Utility.Random.Instance.NextInt(1, request.TotalHits);
+            request.TotalHitOdds = (short)Regulus.Utility.Random.Instance.NextInt(0, 32767);
+            request.WepBet = (short)Regulus.Utility.Random.Instance.NextInt(1, 10000);
+            request.WepID = (short)Regulus.Utility.Random.Instance.NextInt(0, 32767);
+            request.WepOdds = (short)Regulus.Utility.Random.Instance.NextInt(1, 10000);
             request.WepType = 1;
 
 
