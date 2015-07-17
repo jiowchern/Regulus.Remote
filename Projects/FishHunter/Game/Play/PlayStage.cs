@@ -1,211 +1,278 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Regulus.Extension;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="PlayStage.cs" company="">
+//   
+// </copyright>
+// --------------------------------------------------------------------------------------------------------------------
 namespace VGame.Project.FishHunter.Play
 {
-    
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
-    class PlayStage : IPlayer , Regulus.Utility.IStage
+    using Regulus.Remoting;
+    using Regulus.Utility;
+
+    using VGame.Project.FishHunter.Data;
+
+    internal class PlayStage : IPlayer, IStage
     {
-        private Regulus.Remoting.ISoulBinder _Binder;
-        private IFishStage _FishStage;
-        Data.Record _Money;
-
-        List<Bullet> _Bullets;
-        List<Fish> _Fishs;
-        
         public delegate void PassCallback(int pass_stage);
-        public event PassCallback PassEvent;
-
-        
 
         public delegate void KillCallback(int kill_count);
+
+        private event Action<int> _DeathFishEvent;
+
+        private event Action<int> _MoneyEvent;
+
         public event KillCallback KillEvent;
 
-        Dictionary<int, HitRequest> _Requests;
-        int _DeadFishCount;
-        public PlayStage(Regulus.Remoting.ISoulBinder binder, IFishStage fish_stage, Data.Record money)
+        public event PassCallback PassEvent;
+
+        private readonly ISoulBinder _Binder;
+
+        private readonly List<Bullet> _Bullets;
+
+        private readonly List<Fish> _Fishs;
+
+        private readonly IFishStage _FishStage;
+
+        private readonly Record _Money;
+
+        private readonly Dictionary<int, HitRequest> _Requests;
+
+        private int _DeadFishCount;
+
+        private short _FishIdSn;
+
+        public PlayStage(ISoulBinder binder, IFishStage fish_stage, Record money)
         {
-            _Fishs = new List<Fish>();
-            _Bullets = new List<Bullet>();
-            _Requests = new Dictionary<int, HitRequest>();
+            this._Fishs = new List<Fish>();
+            this._Bullets = new List<Bullet>();
+            this._Requests = new Dictionary<int, HitRequest>();
             this._Binder = binder;
             this._FishStage = fish_stage;
-            _DeadFishCount = 0;
-            _Money = money;
+            this._DeadFishCount = 0;
+            this._Money = money;
+            _Weapon = WEAPON.WEAPON1;
+            _WeaponOdds = 10;
         }
+
+        Value<int> IPlayer.Hit(int bulletid, int[] fishids)
+        {
+            var hasBullet = this._PopBullet(bulletid);
+            if (hasBullet == false)
+            {
+                return 0;
+            }
+
+            var logFishs = string.Empty;
+            var count = 0;
+            foreach (var fishid in fishids)
+            {
+                if (this._PopFish(fishid) == false)
+                {
+                    continue;
+                }
+
+                if (this._Requests.ContainsKey(fishid))
+                {
+                    continue;
+                }
+
+                count++;
+                var request = new HitRequest
+                                  {
+                                      FishID = (short)fishid, 
+                                      FishOdds = 1, 
+                                      FishStatus = FISH_STATUS.NORMAL, 
+                                      FishType = 1, 
+                                      TotalHits = (short)fishids.Length, 
+                                      HitCnt = (short)count, 
+                                      TotalHitOdds = 1, 
+                                      WepBet = 1, 
+                                      WepID = (short)bulletid,
+                                      WepOdds = (short)_WeaponOdds,
+                                      WepType = (byte)_Weapon
+                                  };
+
+                _Requests.Add(fishid, request);
+                _FishStage.Hit(request);
+
+                logFishs += fishid + ",";
+            }
+
+            if (count == 0)
+            {
+                this._PushBullet(bulletid);
+            }
+
+            Singleton<Log>.Instance.WriteInfo(
+                string.Format(
+                    "all bullet:{0} , targets:{1} , count:{2}", 
+                    bulletid, 
+                    string.Join(",", (from id in fishids select id.ToString()).ToArray()), 
+                    fishids.Length));
+            Singleton<Log>.Instance.WriteInfo(
+                string.Format("requested bullet:{0} , targets:{1} , count:{2}", bulletid, logFishs, count));
+            Singleton<Log>.Instance.WriteInfo(
+                string.Format(
+                    "request fishs:{0} count:{1} ", 
+                    string.Join(",", (from id in this._Requests.Keys select id.ToString()).ToArray()), 
+                    this._Requests.Count));
+            return count;
+        }
+
+        void IPlayer.Quit()
+        {
+            this.KillEvent(this._DeadFishCount);
+        }
+
+        event Action<int> IPlayer.DeathFishEvent
+        {
+            add
+            {
+                this._DeathFishEvent += value;
+            }
+
+            remove
+            {
+                this._DeathFishEvent -= value;
+            }
+        }
+
+        event Action<int> IPlayer.MoneyEvent
+        {
+            add
+            {
+                this._MoneyEvent += value;
+            }
+
+            remove
+            {
+                this._MoneyEvent -= value;
+            }
+        }
+
+
+        private int _WeaponOdds;
+        int IPlayer.WeaponOdds
+        {
+            get
+            {
+                return _WeaponOdds;
+            }
+        }
+
+        private WEAPON _Weapon;
+        WEAPON IPlayer.Weapon
+        {
+            get
+            {
+                return _Weapon;
+            }
+        }
+
+        Value<int> IPlayer.RequestBullet()
+        {
+            if (this.HasMoney(1) == false)
+            {
+                return 0;
+            }
+
+            this.AddMoney(-1);
+
+            return this._CreateBullet();
+        }
+
+        Value<short> IPlayer.RequestFish()
+        {
+            checked
+            {
+                var fishid = ++this._FishIdSn;
+                this._Fishs.Add(new Fish(fishid));
+                return fishid;
+            }
+        }
+
+        void IPlayer.EquipWeapon(WEAPON weapon, int odds)
+        {
+
+            _Weapon = weapon;
+            _WeaponOdds = odds;
+        }
+
+        void IStage.Enter()
+        {
+            this._Binder.Bind<IPlayer>(this);
+            this._FishStage.HitResponseEvent += this._Response;
+        }
+
+        void IStage.Leave()
+        {
+            this._FishStage.HitResponseEvent -= this._Response;
+            this._Binder.Unbind<IPlayer>(this);
+        }
+
+        void IStage.Update()
+        {
+        }        
 
         private void _Response(HitResponse obj)
         {
-            VGame.Project.FishHunter.HitRequest request ;
-            if(_Requests.TryGetValue(obj.FishID , out request ))
+            HitRequest request;
+            if (this._Requests.TryGetValue(obj.FishID, out request))
             {
                 if (obj.DieResult == FISH_DETERMINATION.DEATH)
                 {
-                    _DeathFishEvent(obj.FishID);
-                    AddMoney(request.WepBet * request.WepOdds);
-                    _DeadFishCount++;
+                    this._DeathFishEvent(obj.FishID);
+                    this.AddMoney(request.WepBet * request.WepOdds);
+                    this._DeadFishCount++;
                 }
-                else if(obj.DieResult == FISH_DETERMINATION.SURVIVAL)
+                else if (obj.DieResult == FISH_DETERMINATION.SURVIVAL)
                 {
-                    _PushFish(obj.FishID);
+                    this._PushFish(obj.FishID);
                 }
-                _Requests.Remove(obj.FishID);
-            }
 
-            
+                this._Requests.Remove(obj.FishID);
+            }
         }
 
         private void _PushFish(short id)
         {
-            _Fishs.Add(new Fish(id));
-        }
-
-        void Regulus.Utility.IStage.Enter()
-        {
-            _Binder.Bind<IPlayer>(this);
-            _FishStage.HitResponseEvent += _Response;
-        }
-
-        void Regulus.Utility.IStage.Leave()
-        {
-            _FishStage.HitResponseEvent -= _Response;
-            _Binder.Unbind<IPlayer>(this);
-        }
-
-        void Regulus.Utility.IStage.Update()
-        {
-            
-        }
-
-        Regulus.Remoting.Value<int> IPlayer.Hit(int bulletid, int[] fishids)
-        {            
-
-            var hasBullet = _PopBullet(bulletid);
-            if (hasBullet  == false)
-                return 0;
-
-
-            string logFishs ="";
-            int count = 0;
-            foreach(var fishid in fishids)
-            {
-                if (_PopFish(fishid) == false)
-                    continue;
-
-                if(_Requests.ContainsKey(fishid) == false)
-                {
-                    VGame.Project.FishHunter.HitRequest request = new VGame.Project.FishHunter.HitRequest();
-                    request.FishID = (short)fishid;
-                    request.FishOdds = 1;
-
-                    request.FishStatus = VGame.Project.FishHunter.FISH_STATUS.NORMAL;
-                    request.FishType = 1;
-                    request.TotalHits = 1;
-                    request.HitCnt = 1;
-                    request.TotalHitOdds = 1;
-                    request.WepBet = 1;
-                    request.WepID = (short)bulletid;
-                    request.WepOdds = 2;
-                    request.WepType = 1;
-                    _Requests.Add(fishid, request);
-                    _FishStage.Hit(request);
-                    count++;
-                    logFishs += fishid.ToString() + ",";
-                }
-                
-            }
-            if (count == 0)
-            {
-                _PushBullet(bulletid);
-            }
-
-            Regulus.Utility.Log.Instance.WriteInfo(string.Format("all bullet:{0} , targets:{1} , count:{2}", bulletid, string.Join(",", (from id in fishids select id.ToString()).ToArray()), fishids.Length));
-            Regulus.Utility.Log.Instance.WriteInfo(string.Format("requested bullet:{0} , targets:{1} , count:{2}", bulletid, logFishs, count));
-            Regulus.Utility.Log.Instance.WriteInfo(string.Format("request fishs:{0} count:{1} ", string.Join(",", (from id in _Requests.Keys select id.ToString()).ToArray()), _Requests.Count));
-            return count;
+            this._Fishs.Add(new Fish(id));
         }
 
         private bool _PopFish(int fishid)
-        {
+        {            
             return _Fishs.RemoveAll(fish => fish.Id == fishid) > 0;
         }
 
         private void _PushBullet(int bulletid)
         {
-            _Bullets.Add(new Bullet(bulletid));
+            this._Bullets.Add(new Bullet(bulletid));
         }
 
-        
-
         private bool _PopBullet(int bulletid)
-        {            
-            return _Bullets.RemoveAll(b => b.Id == bulletid) >  0;
+        {
+            return this._Bullets.RemoveAll(b => b.Id == bulletid) > 0;
         }
 
         private void AddMoney(int p)
         {
-            _Money.Money += p;
-            _MoneyEvent(_Money.Money);
+            this._Money.Money += p;
+            this._MoneyEvent(this._Money.Money);
         }
 
         private bool HasMoney(short bullet_score)
         {
-            return _Money.Money >= bullet_score;
+            return this._Money.Money >= bullet_score;
         }
 
-
-        void IPlayer.Quit()
-        {
-            KillEvent(_DeadFishCount);
-        }
-
-
-        event Action<int> _DeathFishEvent;
-        event Action<int> IPlayer.DeathFishEvent
-        {
-            add { _DeathFishEvent += value; }
-            remove { _DeathFishEvent -= value; }
-        }
-
-        event Action<int> _MoneyEvent;
-        event Action<int> IPlayer.MoneyEvent
-        {
-            add { _MoneyEvent += value; }
-            remove { _MoneyEvent -= value; }
-        }
-
-        Regulus.Remoting.Value<int> IPlayer.RequestBullet()
-        {
-            if (HasMoney(1) == false)
-                return 0;
-
-            AddMoney(-1);
-
-            return _CreateBullet();
-        }
-
-        private Regulus.Remoting.Value<int> _CreateBullet()
+        private Value<int> _CreateBullet()
         {
             var bullet = new Bullet();
-            _Bullets.Add(bullet);
+            this._Bullets.Add(bullet);
             return bullet.Id;
         }
-
-
-        Regulus.Remoting.Value<short> IPlayer.RequestFish()
-        {
-            checked
-            {
-                var fishid = ++_FishIdSn;
-                _Fishs.Add(new Fish(fishid));
-                return fishid;
-            }      
-            
-        }
-
-        short _FishIdSn;
     }
 }
