@@ -55,7 +55,9 @@
     <Compile Include="Formula\User.cs" />
     <Compile Include="Play\Fish.cs" />
     <Compile Include="Play\Hall.cs" />
-    <Compile Include="Play\PlayStage.cs" />
+    <Compile Include="Play\PlayStage.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
     <Compile Include="Play\SelectStage.cs" />
     <Compile Include="Play\StageGate.cs" />
     <Compile Include="Play\StageTicketInspector.cs" />
