@@ -23,8 +23,7 @@ namespace Regulus.Remoting.Native.Soul
         internal T Wait()
         {
             value.OnValue += _Getted;
-
-
+            
             var sw = new Regulus.Utility.SpinWait();
             while (_HasValue == false)
                 sw.SpinOnce();
