@@ -33,7 +33,20 @@ namespace Regulus.Remoting.Native
         
         volatile bool _Stop;
         Regulus.Utility.PowerRegulator _PowerRegulator;
-        
+
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="low_fps">保證最低fps</param>
+        public PackageWriter(int low_fps)
+        {
+
+            _PowerRegulator = new Utility.PowerRegulator(low_fps);
+        }
+
         public PackageWriter()
         {
             
