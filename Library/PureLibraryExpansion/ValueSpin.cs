@@ -7,17 +7,16 @@ namespace Regulus.Remoting.Native.Soul
 {
     class ValueSpin<T>
     {
+                
         private Value<T> value;
         volatile bool _HasValue;
         T _Value;
 
         public T Value { get { return _Value; } }
         public ValueSpin(Value<T> value)
-        {
-            // TODO: Complete member initialization
+        {            
             this.value = value;
             _HasValue = false;
-
         }
 
         internal T Wait()

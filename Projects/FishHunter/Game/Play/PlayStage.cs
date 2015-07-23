@@ -53,7 +53,7 @@ namespace VGame.Project.FishHunter.Play
             this._FishStage = fish_stage;
             this._DeadFishCount = 0;
             this._Money = money;
-            _Weapon = WEAPON.WEAPON1;
+            this._Bullet = BULLET.WEAPON1;
             _WeaponOdds = 10;
         }
 
@@ -92,7 +92,7 @@ namespace VGame.Project.FishHunter.Play
                                       WepBet = 1, 
                                       WepID = (short)bulletid,
                                       WepOdds = (short)_WeaponOdds,
-                                      WepType = (byte)_Weapon
+                                      WepType = (byte)this._Bullet
                                   };
 
                 _Requests.Add(fishid, request);
@@ -163,12 +163,12 @@ namespace VGame.Project.FishHunter.Play
             }
         }
 
-        private WEAPON _Weapon;
-        WEAPON IPlayer.Weapon
+        private BULLET _Bullet;
+        BULLET IPlayer.Bullet
         {
             get
             {
-                return _Weapon;
+                return this._Bullet;
             }
         }
 
@@ -194,10 +194,10 @@ namespace VGame.Project.FishHunter.Play
             }
         }
 
-        void IPlayer.EquipWeapon(WEAPON weapon, int odds)
+        void IPlayer.EquipWeapon(BULLET bullet, int odds)
         {
 
-            _Weapon = weapon;
+            this._Bullet = bullet;
             _WeaponOdds = odds;
         }
 

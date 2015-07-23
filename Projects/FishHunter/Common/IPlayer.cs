@@ -9,7 +9,7 @@ namespace VGame.Project.FishHunter
     {
 
         int WeaponOdds { get; }
-        WEAPON Weapon { get; }
+        BULLET Bullet { get; }
 
         Regulus.Remoting.Value<int> RequestBullet();
         Regulus.Remoting.Value<short> RequestFish();
@@ -18,7 +18,7 @@ namespace VGame.Project.FishHunter
 
         
 
-        void EquipWeapon(WEAPON weapon, int odds);
+        void EquipWeapon(BULLET bullet, int odds);
 
         void Quit();
 
