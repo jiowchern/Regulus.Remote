@@ -3,7 +3,7 @@ namespace VGame.Project.FishHunter
     /// <summary>
     /// 武器類型
     /// </summary>
-    public enum WEAPON
+    public enum BULLET
     {
         /// <summary>
         /// 無效
@@ -13,6 +13,13 @@ namespace VGame.Project.FishHunter
         /// 一般武器
         /// </summary>
         WEAPON1,
-        WEAPON2, WEAPON3, WEAPON4
+        WEAPON2, 
+        WEAPON3, 
+        WEAPON4,
+        WEAPON5,
+        WEAPON6,
+        WEAPON7,
+        WEAPON8
+
     };
 }
