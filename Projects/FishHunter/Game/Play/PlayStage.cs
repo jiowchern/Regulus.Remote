@@ -224,7 +224,11 @@ namespace VGame.Project.FishHunter.Play
             {
                 if (obj.DieResult == FISH_DETERMINATION.DEATH)
                 {
-                    this._DeathFishEvent(obj.FishID);
+                    var onDeathFish = this._DeathFishEvent;
+                    if (onDeathFish != null)
+                    {
+                        onDeathFish(obj.FishID);
+                    }
                     this.AddMoney(request.WepBet * request.WepOdds);
                     this._DeadFishCount++;
                 }
