@@ -20,7 +20,7 @@ namespace VGame.Project.FishHunter.UnitTest
             bool returnValue = false;
             bool eventValue = false;
             var stage = new VGame.Project.FishHunter.Verify(stroage);
-            stage.DoneEvent += (account) => { eventValue = true; };
+            stage.OnDoneEvent += (account) => { eventValue = true; };
 
             VGame.Project.FishHunter.IVerify verify = stage;
 
@@ -48,7 +48,7 @@ namespace VGame.Project.FishHunter.UnitTest
             bool returnValue = false;
             bool eventValue = false;
             var stage = new VGame.Project.FishHunter.Verify(stroage);
-            stage.DoneEvent += (account) => { eventValue = true; };
+            stage.OnDoneEvent += (account) => { eventValue = true; };
 
             VGame.Project.FishHunter.IVerify verify = stage;
             var val = verify.Login("12345678", "011111001");

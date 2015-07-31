@@ -18,7 +18,7 @@ namespace VGame.Project.FishHunter.Stage
         }
         void Regulus.Utility.IStage.Enter()
         {
-            _Verify.DoneEvent += DoneEvent;
+            _Verify.OnDoneEvent += DoneEvent;
 
             _Binder.Bind<VGame.Project.FishHunter.IVerify>(_Verify);
         }
@@ -27,7 +27,7 @@ namespace VGame.Project.FishHunter.Stage
         void Regulus.Utility.IStage.Leave()
         {
             _Binder.Unbind<VGame.Project.FishHunter.IVerify>(_Verify);
-            _Verify.DoneEvent -= DoneEvent;
+            _Verify.OnDoneEvent -= DoneEvent;
         }
 
         void Regulus.Utility.IStage.Update()

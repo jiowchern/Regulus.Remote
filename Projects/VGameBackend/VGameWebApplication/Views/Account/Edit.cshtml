@@ -23,7 +23,7 @@
         </tr>
         <tr><td>帳號</td><td>@Html.EditorFor(m => m.TheAccount.Name )</td></tr>
         <tr><td>密碼</td><td>@Html.EditorFor(m => m.TheAccount.Password)</td></tr>
-        @foreach (var t in Regulus.Extension.EnumHelper.GetFlags<VGame.Project.FishHunter.Data.Account.COMPETENCE>())
+        @foreach (var t in Regulus.Extension.EnumHelper.GetEnums<VGame.Project.FishHunter.Data.Account.COMPETENCE>())
         {
             <tr><td>@t.GetEnumDescription()
                 </td><td>@Html.CheckBoxFor( m => m.TheAccount.Competnces[t])</td></tr>

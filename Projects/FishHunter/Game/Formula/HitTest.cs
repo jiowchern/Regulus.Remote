@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using VGame.Project.FishHunter.ZsFormula;
+using VGame.Project.FishHunter.ZsFormula.DataStructs;
+
 namespace VGame.Project.FishHunter.Formula
 {
-
-
     public class HitTest : HitBase
     {
         private Regulus.Utility.IRandom _Random;
-        WeaponChancesTable _WeaponChancesTable;
-        ScoreOddsTable _ScoreOddsTable;
+        private WeaponChancesTable _WeaponChancesTable;
+        private ScoreOddsTable _ScoreOddsTable;
         
         public HitTest(Regulus.Utility.IRandom random)
         {
@@ -23,11 +24,11 @@ namespace VGame.Project.FishHunter.Formula
         private void _InitialScore()
         {
             var datas = new ScoreOddsTable.Data[] { 
-                new ScoreOddsTable.Data { Id = 1, Rate = 0.9f } , 
-                new ScoreOddsTable.Data { Id = 2, Rate = 0.025f },
-                new ScoreOddsTable.Data { Id = 3, Rate = 0.025f },
-                new ScoreOddsTable.Data { Id = 5, Rate = 0.025f },
-                new ScoreOddsTable.Data { Id = 10, Rate = 0.025f }
+                new ScoreOddsTable.Data { Key = 1, Value = 0.9f } , 
+                new ScoreOddsTable.Data { Key = 2, Value = 0.025f },
+                new ScoreOddsTable.Data { Key = 3, Value = 0.025f },
+                new ScoreOddsTable.Data { Key = 5, Value = 0.025f },
+                new ScoreOddsTable.Data { Key = 10, Value = 0.025f }
             };
             _ScoreOddsTable = new ScoreOddsTable(datas);
         }
@@ -35,10 +36,10 @@ namespace VGame.Project.FishHunter.Formula
         private void _InitialWeapon()
         {
             var datas = new WeaponChancesTable.Data[] { 
-                new WeaponChancesTable.Data { Id = 0, Rate = 0.9f } , 
-                new WeaponChancesTable.Data { Id = 2, Rate = 0.033f },
-                new WeaponChancesTable.Data { Id = 3, Rate = 0.033f },
-                new WeaponChancesTable.Data { Id = 4, Rate = 0.033f }
+                new WeaponChancesTable.Data { Key = 0, Value = 0.9f } , 
+                new WeaponChancesTable.Data { Key = 2, Value = 0.033f },
+                new WeaponChancesTable.Data { Key = 3, Value = 0.033f },
+                new WeaponChancesTable.Data { Key = 4, Value = 0.033f }
             };
             _WeaponChancesTable = new WeaponChancesTable(datas);
         }

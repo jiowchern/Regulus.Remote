@@ -44,7 +44,7 @@ namespace Regulus.Extension
 
     public static class EnumHelper
     {
-        public static IEnumerable<T> GetFlags<T>()
+        public static IEnumerable<T> GetEnums<T>()
         {
             return Enum.GetValues(typeof(T)).Cast<T>();
         }

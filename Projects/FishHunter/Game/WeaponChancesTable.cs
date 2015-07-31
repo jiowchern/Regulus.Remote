@@ -1,16 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="WeaponChancesTable.cs" company="Regulus Framework">
+//   Regulus Framework
+// </copyright>
+// <summary>
+//   Defines the WeaponChancesTable type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+
+
+
+using Regulus.Game;
 
 namespace VGame.Project.FishHunter
 {
-    class WeaponChancesTable : Regulus.Game.ChancesTable<int>
-    {
-        public WeaponChancesTable(Data[] datas)
-            : base(datas)
-        {
-        }
-      
-    }
+	internal class WeaponChancesTable : ChancesTable<int>
+	{
+		public WeaponChancesTable(Data[] datas)
+			: base(datas)
+		{
+		}
+	}
 }
