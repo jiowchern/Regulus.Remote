@@ -35,6 +35,8 @@ namespace Regulus.Remoting.Ghost.Native
             static object _LockResponse= new object();
 
             public static int ResponseQueueCount { get; private set; }
+
+            public static int LowFps = 30;
             PackageQueue _Sends;
             PackageQueue _Receives;            
             private System.Net.Sockets.Socket _Socket;
@@ -51,7 +53,7 @@ namespace Regulus.Remoting.Ghost.Native
 
                 _Socket = socket;
                 _Reader = new Regulus.Remoting.Native.PackageReader();
-                _Writer = new Regulus.Remoting.Native.PackageWriter();
+                _Writer = new Regulus.Remoting.Native.PackageWriter(LowFps);
                 _Sends = new PackageQueue();
                 _Receives = new PackageQueue();
                 
