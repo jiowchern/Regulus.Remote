@@ -89,7 +89,7 @@ namespace PureLibTest
         public void TestForeachEnum1()
         {
             List<TEST> flags = new List<TEST>();
-            foreach (TEST f in EnumHelper.GetFlags<TEST>())                
+            foreach (TEST f in EnumHelper.GetEnums<TEST>())                
             {
                 flags.Add(f);
             }
