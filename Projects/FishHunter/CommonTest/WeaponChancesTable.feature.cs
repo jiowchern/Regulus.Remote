@@ -80,8 +80,8 @@ namespace GameTest
 this.ScenarioSetup(scenarioInfo);
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Id",
-                        "Rate"});
+                        "Key",
+                        "Value"});
             table1.AddRow(new string[] {
                         "0",
                         "0.9"});
@@ -114,8 +114,8 @@ this.ScenarioSetup(scenarioInfo);
 this.ScenarioSetup(scenarioInfo);
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Id",
-                        "Rate"});
+                        "Key",
+                        "Value"});
             table2.AddRow(new string[] {
                         "0",
                         "0.9"});
@@ -148,8 +148,8 @@ this.ScenarioSetup(scenarioInfo);
 this.ScenarioSetup(scenarioInfo);
 #line hidden
             TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Id",
-                        "Rate"});
+                        "Key",
+                        "Value"});
             table3.AddRow(new string[] {
                         "0",
                         "0.9"});
@@ -182,8 +182,8 @@ this.ScenarioSetup(scenarioInfo);
 this.ScenarioSetup(scenarioInfo);
 #line hidden
             TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Id",
-                        "Rate"});
+                        "Key",
+                        "Value"});
             table4.AddRow(new string[] {
                         "0",
                         "0.9"});
@@ -216,8 +216,8 @@ this.ScenarioSetup(scenarioInfo);
 this.ScenarioSetup(scenarioInfo);
 #line hidden
             TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Id",
-                        "Rate"});
+                        "Key",
+                        "Value"});
             table5.AddRow(new string[] {
                         "0",
                         "0.9"});

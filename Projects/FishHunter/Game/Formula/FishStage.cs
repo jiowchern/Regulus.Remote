@@ -1,62 +1,83 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="FishStage.cs" company="Regulus Framework">
+//   Regulus Framework
+// </copyright>
+// <summary>
+//   Defines the FishStage type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+using System;
+
 using Regulus.Extension;
+using Regulus.Utility;
+
+using Random = Regulus.Utility.Random;
+
 namespace VGame.Project.FishHunter.Formula
 {
-    class FishStage : IFishStage
+    internal class FishStage : IFishStage
     {
-        private FishHunter.Formula.HitBase _Formula;
+        private event Action<string> _OnHitExceptionEvent;
 
-        byte _FishStage;
-        long _AccountId;
+        private event Action<HitResponse> _OnHitResponseEvent;
+
+        private readonly long _AccountId;
+
+        private readonly byte _FishStage;
+
+        private readonly HitBase _Formula;
+
         public FishStage(long account, int stage_id)
         {
-            _Formula = new FishHunter.Formula.HitTest(Regulus.Utility.Random.Instance);
-            _AccountId = account;
-            _FishStage =(byte) stage_id;
+            this._Formula = new HitTest(Random.Instance);
+            this._AccountId = account;
+            this._FishStage = (byte)stage_id;
         }
+
+        event Action<string> IFishStage.HitExceptionEvent
+        {
+            add { this._OnHitExceptionEvent += value; }
+            remove { this._OnHitExceptionEvent -= value; }
+        }
+
+        event Action<HitResponse> IFishStage.HitResponseEvent
+        {
+            add { this._OnHitResponseEvent += value; }
+            remove { this._OnHitResponseEvent -= value; }
+        }
+
         long IFishStage.AccountId
         {
-            get { return _AccountId; }
+            get { return this._AccountId; }
         }
 
         byte IFishStage.FishStage
         {
-            get { return _FishStage; }
+            get { return this._FishStage; }
         }
 
         void IFishStage.Hit(HitRequest request)
         {
-            var response = _Formula.Request(request);
-            _HitResponseEvent(response);
-            _MakeLog(request, response);
+            var response = this._Formula.Request(request);
+
+            this._OnHitResponseEvent.Invoke(response);
+
+            this._MakeLog(request, response);
         }
 
         private void _MakeLog(HitRequest request, HitResponse response)
         {
-            string format = "Player:{0}\tStage:{1}\nRequest:{2}\nResponse:{3}";
-            var log = string.Format(format, _AccountId, _FishStage , request.ShowMembers(" ") , response.ShowMembers(" "));
-            Regulus.Utility.Log.Instance.WriteInfo(log);
-        }
-        event Action<HitResponse> _HitResponseEvent;
-        event Action<HitResponse> IFishStage.HitResponseEvent
-        {
-            add
-            {
-                _HitResponseEvent += value;
-            }
-            remove { _HitResponseEvent -= value; }
-        }
+            var format = "Player:{0}\tStage:{1}\nRequest:{2}\nResponse:{3}";
 
-        event Action<string> _HitExceptionEvent;
-        event Action<string> IFishStage.HitExceptionEvent
-        {
-            add { _HitExceptionEvent += value; }
-            remove { _HitExceptionEvent -= value; }
-        }
+            var log = string.Format(
+                format, 
+                this._AccountId, 
+                this._FishStage, 
+                request.ShowMembers(" "), 
+                response.ShowMembers(" "));
 
-        
+            Singleton<Log>.Instance.WriteInfo(log);
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace VGame.Project.FishHunter.Formula
@@ -80,7 +81,7 @@ namespace VGame.Project.FishHunter.Formula
         private void _ToFishStage()
         {            
             var stage = new VGame.Project.FishHunter.Stage.FormulaStage(_Binder);
-            stage.DoneEvent += () => { _QuitEvent(); };
+            stage.OnDoneEvent += () => { _QuitEvent(); };
             _Machine.Push(stage);
         }
         
@@ -89,5 +90,7 @@ namespace VGame.Project.FishHunter.Formula
         {
             _Machine.Termination();
         }
+
+        
     }
 }

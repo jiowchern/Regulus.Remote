@@ -3,10 +3,13 @@ using System.Linq;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using VGame.Project.FishHunter;
+using VGame.Project.FishHunter.ZsFormula;
+using VGame.Project.FishHunter.ZsFormula.DataStructs;
 
 namespace GameTest
 {
     [Binding]
+	[Scope(Feature = "ScoreOdds")]
     public class ScoreOddsSteps
     {
         ScoreOddsTable _SorceOddsTable;
@@ -31,9 +34,9 @@ namespace GameTest
             Microsoft.VisualStudio.TestTools.UnitTesting.Assert.AreEqual(p0, odds);
         }
 
-        private VGame.Project.FishHunter.ScoreOddsTable.Data[] _ToData(Table table)
+        private ScoreOddsTable.Data[] _ToData(Table table)
         {
-            var datas = table.CreateSet<VGame.Project.FishHunter.ScoreOddsTable.Data>();
+            var datas = table.CreateSet<ScoreOddsTable.Data>();
             return datas.ToArray();                    
         }
     }

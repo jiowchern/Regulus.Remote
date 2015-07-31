@@ -6,6 +6,7 @@ using TechTalk.SpecFlow.Assist;
 namespace GameTest
 {
     [Binding]
+	[Scope(Feature = "WeaponChancesTable")]
     public class WeaponChancesTableSteps
     {
         VGame.Project.FishHunter.WeaponChancesTable _WeaponChancesTable;

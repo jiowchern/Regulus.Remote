@@ -54,6 +54,30 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="FishHitAllocate.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FishHitAllocate.feature</DependentUpon>
+    </Compile>
+    <Compile Include="FishHitAllocateSteps.cs" />
+    <Compile Include="MultipleRule.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MultipleRule.feature</DependentUpon>
+    </Compile>
+    <Compile Include="MultipleRuleSteps.cs" />
+    <Compile Include="NatureBufferChancesTable.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>NatureBufferChancesTable.feature</DependentUpon>
+    </Compile>
+    <Compile Include="NatureBufferChancesTableSteps.cs" />
+    <Compile Include="ZsBetRangeTest.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ZsBetRangeTest.feature</DependentUpon>
+    </Compile>
+    <Compile Include="ZsBetRangeTestSteps.cs" />
     <Compile Include="DataTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScoreOdds.feature.cs">
@@ -69,6 +93,12 @@
       <DependentUpon>WeaponChancesTable.feature</DependentUpon>
     </Compile>
     <Compile Include="WeaponChancesTableSteps.cs" />
+    <Compile Include="ZsFishStageDataCheck.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ZsFishStageDataCheck.feature</DependentUpon>
+    </Compile>
+    <Compile Include="ZsFishStageDataCheckSteps.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Library\PureLib\PureLib.csproj">
@@ -90,6 +120,22 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="FishHitAllocate.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>FishHitAllocate.feature.cs</LastGenOutput>
+    </None>
+    <None Include="MultipleRule.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>MultipleRule.feature.cs</LastGenOutput>
+    </None>
+    <None Include="NatureBufferChancesTable.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>NatureBufferChancesTable.feature.cs</LastGenOutput>
+    </None>
+    <None Include="ZsBetRangeTest.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>ZsBetRangeTest.feature.cs</LastGenOutput>
+    </None>
     <None Include="packages.config" />
     <None Include="ScoreOdds.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
@@ -98,6 +144,10 @@
     <None Include="WeaponChancesTable.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>WeaponChancesTable.feature.cs</LastGenOutput>
+    </None>
+    <None Include="ZsFishStageDataCheck.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>ZsFishStageDataCheck.feature.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <Choose>

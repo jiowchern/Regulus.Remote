@@ -61,7 +61,7 @@ namespace VGame.Project.FishHunter.Data
 
         public static Regulus.CustomType.Flag<COMPETENCE> AllCompetnce()
         {
-            var flags = EnumHelper.GetFlags<COMPETENCE>().ToArray();
+            var flags = EnumHelper.GetEnums<COMPETENCE>().ToArray();
             var f =flags[0];
             return new Regulus.CustomType.Flag<COMPETENCE>(flags);
         }

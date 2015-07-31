@@ -114,7 +114,7 @@ namespace VGame.Project.FishHunter.Storage
             //{
             //    foreach (var acc in accounts)
             //    {
-            //        var trades = _TradeCorder.FindHistory(acc.Id);
+            //        var trades = _TradeCorder.FindHistory(acc.Key);
 
 
                   

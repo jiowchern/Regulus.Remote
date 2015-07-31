@@ -148,7 +148,7 @@ namespace VGame.Project.FishHunter.Storage
                 _Wait();
             TradeNotes = p.Ghosts[0];
             
-            //int money = provider.Ghosts[0].Load(accounts[0].Id).WaitResult().Money;
+            //int money = provider.Ghosts[0].Load(accounts[0].Key).WaitResult().Money;
         }
 
         

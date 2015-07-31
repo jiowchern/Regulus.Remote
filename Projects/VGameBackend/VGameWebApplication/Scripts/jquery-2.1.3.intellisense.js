@@ -53,7 +53,7 @@ intellisense.annotate(jQuery, {
   },
   'contains': function() {
     /// <signature>
-    ///   <summary>Check to see if a DOM element is a descendant of another DOM element.</summary>
+    ///   <summary>CheckNatureBuffer to see if a DOM element is a descendant of another DOM element.</summary>
     ///   <param name="container" type="Element">The DOM element that may contain the other element.</param>
     ///   <param name="contained" type="Element">The DOM element that may be contained by (a descendant of) the other element.</param>
     ///   <returns type="Boolean" />
@@ -201,7 +201,7 @@ intellisense.annotate(jQuery, {
   },
   'isEmptyObject': function() {
     /// <signature>
-    ///   <summary>Check to see if an object is empty (contains no enumerable properties).</summary>
+    ///   <summary>CheckNatureBuffer to see if an object is empty (contains no enumerable properties).</summary>
     ///   <param name="object" type="Object">The object that will be checked to see if it's empty.</param>
     ///   <returns type="Boolean" />
     /// </signature>
@@ -222,7 +222,7 @@ intellisense.annotate(jQuery, {
   },
   'isPlainObject': function() {
     /// <signature>
-    ///   <summary>Check to see if an object is a plain object (created using "{}" or "new Object").</summary>
+    ///   <summary>CheckNatureBuffer to see if an object is a plain object (created using "{}" or "new Object").</summary>
     ///   <param name="object" type="PlainObject">The object that will be checked to see if it's a plain object.</param>
     ///   <returns type="Boolean" />
     /// </signature>
@@ -236,7 +236,7 @@ intellisense.annotate(jQuery, {
   },
   'isXMLDoc': function() {
     /// <signature>
-    ///   <summary>Check to see if a DOM node is within an XML document (or is an XML document).</summary>
+    ///   <summary>CheckNatureBuffer to see if a DOM node is within an XML document (or is an XML document).</summary>
     ///   <param name="node" type="Element">The DOM node that will be checked to see if it's in an XML document.</param>
     ///   <returns type="Boolean" />
     /// </signature>
@@ -1017,7 +1017,7 @@ intellisense.annotate(jQuery.fn, {
   },
   'children': function() {
     /// <signature>
-    ///   <summary>Get the children of each element in the set of matched elements, optionally filtered by a selector.</summary>
+    ///   <summary>FindStageData the children of each element in the set of matched elements, optionally filtered by a selector.</summary>
     ///   <param name="selector" type="String">A string containing a selector expression to match elements against.</param>
     ///   <returns type="jQuery" />
     /// </signature>
@@ -1091,7 +1091,7 @@ intellisense.annotate(jQuery.fn, {
     /// </signature>
   },
   'contents': function() {
-    /// <summary>Get the children of each element in the set of matched elements, including text and comment nodes.</summary>
+    /// <summary>FindStageData the children of each element in the set of matched elements, including text and comment nodes.</summary>
     /// <returns type="jQuery" />
   },
   'context': function() {
@@ -1358,17 +1358,17 @@ intellisense.annotate(jQuery.fn, {
   },
   'find': function() {
     /// <signature>
-    ///   <summary>Get the descendants of each element in the current set of matched elements, filtered by a selector, jQuery object, or element.</summary>
+    ///   <summary>FindStageData the descendants of each element in the current set of matched elements, filtered by a selector, jQuery object, or element.</summary>
     ///   <param name="selector" type="String">A string containing a selector expression to match elements against.</param>
     ///   <returns type="jQuery" />
     /// </signature>
     /// <signature>
-    ///   <summary>Get the descendants of each element in the current set of matched elements, filtered by a selector, jQuery object, or element.</summary>
+    ///   <summary>FindStageData the descendants of each element in the current set of matched elements, filtered by a selector, jQuery object, or element.</summary>
     ///   <param name="jQuery object" type="Object">A jQuery object to match elements against.</param>
     ///   <returns type="jQuery" />
     /// </signature>
     /// <signature>
-    ///   <summary>Get the descendants of each element in the current set of matched elements, filtered by a selector, jQuery object, or element.</summary>
+    ///   <summary>FindStageData the descendants of each element in the current set of matched elements, filtered by a selector, jQuery object, or element.</summary>
     ///   <param name="element" type="Element">An element to match elements against.</param>
     ///   <returns type="jQuery" />
     /// </signature>
@@ -1572,11 +1572,11 @@ intellisense.annotate(jQuery.fn, {
     /// </signature>
   },
   'innerHeight': function() {
-    /// <summary>Get the current computed height for the first element in the set of matched elements, including padding but not border.</summary>
+    /// <summary>FindStageData the current computed height for the first element in the set of matched elements, including padding but not border.</summary>
     /// <returns type="Number" />
   },
   'innerWidth': function() {
-    /// <summary>Get the current computed width for the first element in the set of matched elements, including padding but not border.</summary>
+    /// <summary>FindStageData the current computed width for the first element in the set of matched elements, including padding but not border.</summary>
     /// <returns type="Number" />
   },
   'input': function() {
@@ -1598,22 +1598,22 @@ intellisense.annotate(jQuery.fn, {
   },
   'is': function() {
     /// <signature>
-    ///   <summary>Check the current matched set of elements against a selector, element, or jQuery object and return true if at least one of these elements matches the given arguments.</summary>
+    ///   <summary>CheckNatureBuffer the current matched set of elements against a selector, element, or jQuery object and return true if at least one of these elements matches the given arguments.</summary>
     ///   <param name="selector" type="String">A string containing a selector expression to match elements against.</param>
     ///   <returns type="Boolean" />
     /// </signature>
     /// <signature>
-    ///   <summary>Check the current matched set of elements against a selector, element, or jQuery object and return true if at least one of these elements matches the given arguments.</summary>
+    ///   <summary>CheckNatureBuffer the current matched set of elements against a selector, element, or jQuery object and return true if at least one of these elements matches the given arguments.</summary>
     ///   <param name="function(index)" type="Function">A function used as a test for the set of elements. It accepts one argument, index, which is the element's index in the jQuery collection.Within the function, this refers to the current DOM element.</param>
     ///   <returns type="Boolean" />
     /// </signature>
     /// <signature>
-    ///   <summary>Check the current matched set of elements against a selector, element, or jQuery object and return true if at least one of these elements matches the given arguments.</summary>
+    ///   <summary>CheckNatureBuffer the current matched set of elements against a selector, element, or jQuery object and return true if at least one of these elements matches the given arguments.</summary>
     ///   <param name="jQuery object" type="Object">An existing jQuery object to match the current set of elements against.</param>
     ///   <returns type="Boolean" />
     /// </signature>
     /// <signature>
-    ///   <summary>Check the current matched set of elements against a selector, element, or jQuery object and return true if at least one of these elements matches the given arguments.</summary>
+    ///   <summary>CheckNatureBuffer the current matched set of elements against a selector, element, or jQuery object and return true if at least one of these elements matches the given arguments.</summary>
     ///   <param name="element" type="Element">An element to match the current set of elements against.</param>
     ///   <returns type="Boolean" />
     /// </signature>
@@ -1831,7 +1831,7 @@ intellisense.annotate(jQuery.fn, {
   },
   'next': function() {
     /// <signature>
-    ///   <summary>Get the immediately following sibling of each element in the set of matched elements. If a selector is provided, it retrieves the next sibling only if it matches that selector.</summary>
+    ///   <summary>FindStageData the immediately following sibling of each element in the set of matched elements. If a selector is provided, it retrieves the next sibling only if it matches that selector.</summary>
     ///   <param name="selector" type="String">A string containing a selector expression to match elements against.</param>
     ///   <returns type="jQuery" />
     /// </signature>
@@ -1852,20 +1852,20 @@ intellisense.annotate(jQuery.fn, {
   },
   'nextAll': function() {
     /// <signature>
-    ///   <summary>Get all following siblings of each element in the set of matched elements, optionally filtered by a selector.</summary>
+    ///   <summary>FindStageData all following siblings of each element in the set of matched elements, optionally filtered by a selector.</summary>
     ///   <param name="selector" type="String">A string containing a selector expression to match elements against.</param>
     ///   <returns type="jQuery" />
     /// </signature>
   },
   'nextUntil': function() {
     /// <signature>
-    ///   <summary>Get all following siblings of each element up to but not including the element matched by the selector, DOM node, or jQuery object passed.</summary>
+    ///   <summary>FindStageData all following siblings of each element up to but not including the element matched by the selector, DOM node, or jQuery object passed.</summary>
     ///   <param name="selector" type="String">A string containing a selector expression to indicate where to stop matching following sibling elements.</param>
     ///   <param name="filter" type="String">A string containing a selector expression to match elements against.</param>
     ///   <returns type="jQuery" />
     /// </signature>
     /// <signature>
-    ///   <summary>Get all following siblings of each element up to but not including the element matched by the selector, DOM node, or jQuery object passed.</summary>
+    ///   <summary>FindStageData all following siblings of each element up to but not including the element matched by the selector, DOM node, or jQuery object passed.</summary>
     ///   <param name="element" type="Element">A DOM node or jQuery object indicating where to stop matching following sibling elements.</param>
     ///   <param name="filter" type="String">A string containing a selector expression to match elements against.</param>
     ///   <returns type="jQuery" />
@@ -1948,7 +1948,7 @@ intellisense.annotate(jQuery.fn, {
     /// </signature>
   },
   'offsetParent': function() {
-    /// <summary>Get the closest ancestor element that is positioned.</summary>
+    /// <summary>FindStageData the closest ancestor element that is positioned.</summary>
     /// <returns type="jQuery" />
   },
   'on': function() {
@@ -2000,41 +2000,41 @@ intellisense.annotate(jQuery.fn, {
   },
   'outerHeight': function() {
     /// <signature>
-    ///   <summary>Get the current computed height for the first element in the set of matched elements, including padding, border, and optionally margin. Returns an integer (without "px") representation of the value or null if called on an empty set of elements.</summary>
+    ///   <summary>FindStageData the current computed height for the first element in the set of matched elements, including padding, border, and optionally margin. Returns an integer (without "px") representation of the value or null if called on an empty set of elements.</summary>
     ///   <param name="includeMargin" type="Boolean">A Boolean indicating whether to include the element's margin in the calculation.</param>
     ///   <returns type="Number" />
     /// </signature>
   },
   'outerWidth': function() {
     /// <signature>
-    ///   <summary>Get the current computed width for the first element in the set of matched elements, including padding and border.</summary>
+    ///   <summary>FindStageData the current computed width for the first element in the set of matched elements, including padding and border.</summary>
     ///   <param name="includeMargin" type="Boolean">A Boolean indicating whether to include the element's margin in the calculation.</param>
     ///   <returns type="Number" />
     /// </signature>
   },
   'parent': function() {
     /// <signature>
-    ///   <summary>Get the parent of each element in the current set of matched elements, optionally filtered by a selector.</summary>
+    ///   <summary>FindStageData the parent of each element in the current set of matched elements, optionally filtered by a selector.</summary>
     ///   <param name="selector" type="String">A string containing a selector expression to match elements against.</param>
     ///   <returns type="jQuery" />
     /// </signature>
   },
   'parents': function() {
     /// <signature>
-    ///   <summary>Get the ancestors of each element in the current set of matched elements, optionally filtered by a selector.</summary>
+    ///   <summary>FindStageData the ancestors of each element in the current set of matched elements, optionally filtered by a selector.</summary>
     ///   <param name="selector" type="String">A string containing a selector expression to match elements against.</param>
     ///   <returns type="jQuery" />
     /// </signature>
   },
   'parentsUntil': function() {
     /// <signature>
-    ///   <summary>Get the ancestors of each element in the current set of matched elements, up to but not including the element matched by the selector, DOM node, or jQuery object.</summary>
+    ///   <summary>FindStageData the ancestors of each element in the current set of matched elements, up to but not including the element matched by the selector, DOM node, or jQuery object.</summary>
     ///   <param name="selector" type="String">A string containing a selector expression to indicate where to stop matching ancestor elements.</param>
     ///   <param name="filter" type="String">A string containing a selector expression to match elements against.</param>
     ///   <returns type="jQuery" />
     /// </signature>
     /// <signature>
-    ///   <summary>Get the ancestors of each element in the current set of matched elements, up to but not including the element matched by the selector, DOM node, or jQuery object.</summary>
+    ///   <summary>FindStageData the ancestors of each element in the current set of matched elements, up to but not including the element matched by the selector, DOM node, or jQuery object.</summary>
     ///   <param name="element" type="Element">A DOM node or jQuery object indicating where to stop matching ancestor elements.</param>
     ///   <param name="filter" type="String">A string containing a selector expression to match elements against.</param>
     ///   <returns type="jQuery" />
@@ -2044,7 +2044,7 @@ intellisense.annotate(jQuery.fn, {
     /// <summary>Selects all elements of type password.</summary>
   },
   'position': function() {
-    /// <summary>Get the current coordinates of the first element in the set of matched elements, relative to the offset parent.</summary>
+    /// <summary>FindStageData the current coordinates of the first element in the set of matched elements, relative to the offset parent.</summary>
     /// <returns type="Object" />
   },
   'prepend': function() {
@@ -2069,27 +2069,27 @@ intellisense.annotate(jQuery.fn, {
   },
   'prev': function() {
     /// <signature>
-    ///   <summary>Get the immediately preceding sibling of each element in the set of matched elements, optionally filtered by a selector.</summary>
+    ///   <summary>FindStageData the immediately preceding sibling of each element in the set of matched elements, optionally filtered by a selector.</summary>
     ///   <param name="selector" type="String">A string containing a selector expression to match elements against.</param>
     ///   <returns type="jQuery" />
     /// </signature>
   },
   'prevAll': function() {
     /// <signature>
-    ///   <summary>Get all preceding siblings of each element in the set of matched elements, optionally filtered by a selector.</summary>
+    ///   <summary>FindStageData all preceding siblings of each element in the set of matched elements, optionally filtered by a selector.</summary>
     ///   <param name="selector" type="String">A string containing a selector expression to match elements against.</param>
     ///   <returns type="jQuery" />
     /// </signature>
   },
   'prevUntil': function() {
     /// <signature>
-    ///   <summary>Get all preceding siblings of each element up to but not including the element matched by the selector, DOM node, or jQuery object.</summary>
+    ///   <summary>FindStageData all preceding siblings of each element up to but not including the element matched by the selector, DOM node, or jQuery object.</summary>
     ///   <param name="selector" type="String">A string containing a selector expression to indicate where to stop matching preceding sibling elements.</param>
     ///   <param name="filter" type="String">A string containing a selector expression to match elements against.</param>
     ///   <returns type="jQuery" />
     /// </signature>
     /// <signature>
-    ///   <summary>Get all preceding siblings of each element up to but not including the element matched by the selector, DOM node, or jQuery object.</summary>
+    ///   <summary>FindStageData all preceding siblings of each element up to but not including the element matched by the selector, DOM node, or jQuery object.</summary>
     ///   <param name="element" type="Element">A DOM node or jQuery object indicating where to stop matching preceding sibling elements.</param>
     ///   <param name="filter" type="String">A string containing a selector expression to match elements against.</param>
     ///   <returns type="jQuery" />
@@ -2320,7 +2320,7 @@ intellisense.annotate(jQuery.fn, {
   },
   'siblings': function() {
     /// <signature>
-    ///   <summary>Get the siblings of each element in the set of matched elements, optionally filtered by a selector.</summary>
+    ///   <summary>FindStageData the siblings of each element in the set of matched elements, optionally filtered by a selector.</summary>
     ///   <param name="selector" type="String">A string containing a selector expression to match elements against.</param>
     ///   <returns type="jQuery" />
     /// </signature>

@@ -89,7 +89,7 @@ namespace PureLibTest
         {
             List<TESTFLAG> flags = new List<TESTFLAG>();
 
-            foreach (TESTFLAG f in EnumHelper.GetFlags<TESTFLAG>())
+            foreach (TESTFLAG f in EnumHelper.GetEnums<TESTFLAG>())
             {
                 flags.Add(f);
             }
@@ -107,7 +107,7 @@ namespace PureLibTest
             TESTFLAG flagAll = TESTFLAG.ALL;
             List<TESTFLAG> flags = new List<TESTFLAG>();
 
-            foreach (TESTFLAG f in EnumHelper.GetFlags<TESTFLAG>())
+            foreach (TESTFLAG f in EnumHelper.GetEnums<TESTFLAG>())
             {
                 flags.Add(f);
             }

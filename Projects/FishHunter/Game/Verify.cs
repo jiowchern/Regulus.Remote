@@ -1,41 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VGame.Project.FishHunter;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Verify.cs" company="Regulus Framework">
+//   Regulus Framework
+// </copyright>
+// <summary>
+//   Defines the Verify type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+using Regulus.Remoting;
+
+using VGame.Project.FishHunter.Data;
 
 namespace VGame.Project.FishHunter
 {
-    public class Verify : IVerify 
-    {
+	public class Verify : IVerify
+	{
+		public event DoneCallback OnDoneEvent;
 
-        public delegate void DoneCallback(Data.Account account);
-        public event DoneCallback DoneEvent;
+		private readonly IAccountFinder _Storage;
 
-        IAccountFinder _Storage;
-        public Verify(IAccountFinder storage)
-        {
-            _Storage = storage;
-        }
-        Regulus.Remoting.Value<bool> IVerify.Login(string id, string password)
-        {
-            Regulus.Remoting.Value<bool> returnValue = new Regulus.Remoting.Value<bool>();
-            var val = _Storage.FindAccountByName(id);
-            val.OnValue += (account) =>
-            {
-                var found = account != null;
-                if (found && account.IsPassword(password))
-                {
-                    if (DoneEvent != null)
-                        DoneEvent(account);
-                    returnValue.SetValue(true);
-                }
-                else
-                    returnValue.SetValue(false);
-            };
-            return returnValue;
-        }
+		public Verify(IAccountFinder storage)
+		{
+			_Storage = storage;
+		}
 
-        
-    }
+		Value<bool> IVerify.Login(string id, string password)
+		{
+			var returnValue = new Value<bool>();
+			var val = _Storage.FindAccountByName(id);
+			val.OnValue += account =>
+			{
+				var found = account != null;
+				if (found && account.IsPassword(password))
+				{
+					if (OnDoneEvent != null)
+					{
+						OnDoneEvent(account);
+					}
+
+					returnValue.SetValue(true);
+				}
+				else
+				{
+					returnValue.SetValue(false);
+				}
+			};
+			return returnValue;
+		}
+
+		public delegate void DoneCallback(Account account);
+	}
 }
