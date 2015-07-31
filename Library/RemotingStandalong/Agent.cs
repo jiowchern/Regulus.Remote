@@ -1,197 +1,205 @@
-﻿using System;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Agent.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the Agent type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace Regulus.Standalong
+using Regulus.Framework;
+using Regulus.Utility;
+
+#endregion
+
+namespace Regulus.Remoting.Standalong
 {
-	public class Agent : Regulus.Remoting.IRequestQueue, Regulus.Remoting.IResponseQueue, Regulus.Remoting.ISoulBinder , Regulus.Remoting.IAgent
+	public class Agent : IRequestQueue, IResponseQueue, ISoulBinder, IAgent
 	{
+		private event Action _BreakEvent;
 
-        public delegate void ConnectedCallback();
-        public event ConnectedCallback ConnectedEvent;
-		Regulus.Remoting.AgentCore	_Agent;
-        bool _Connected;
-		Regulus.Remoting.Soul.SoulProvider	_SoulProvider;
-        Regulus.Remoting.ISoulBinder _Binder { get { return _SoulProvider; } }
-		GhostRequest	_GhostRequest;
-        public Agent()
-        {
-            _GhostRequest = new GhostRequest();
-            _Agent = new Remoting.AgentCore();
-            _SoulProvider = new Remoting.Soul.SoulProvider(this, this);
-        }
+		private event Action _ConnectEvent;
+
+		public event ConnectedCallback ConnectedEvent;
+
+		private readonly AgentCore _Agent;
+
+		private readonly GhostRequest _GhostRequest;
+
+		private readonly SoulProvider _SoulProvider;
+
+		private bool _Connected;
+
+		private ISoulBinder _Binder
+		{
+			get { return this._SoulProvider; }
+		}
+
+		public long Ping
+		{
+			get { return this._Agent.Ping; }
+		}
+
+		public Agent()
+		{
+			this._GhostRequest = new GhostRequest();
+			this._Agent = new AgentCore();
+			this._SoulProvider = new SoulProvider(this, this);
+		}
+
+		INotifier<T> IAgent.QueryNotifier<T>()
+		{
+			return this.QueryProvider<T>();
+		}
+
+		Value<bool> IAgent.Connect(string account, int password)
+		{
+			this.ConnectedEvent();
+			this._Connected = true;
+			return true;
+		}
+
+		long IAgent.Ping
+		{
+			get { return this._Agent.Ping; }
+		}
+
+		void IAgent.Disconnect()
+		{
+			this.Shutdown();
+		}
+
+		bool IUpdatable.Update()
+		{
+			this._Update();
+
+			return true;
+		}
+
+		void IBootable.Launch()
+		{
+			this.Launch();
+		}
+
+		void IBootable.Shutdown()
+		{
+			this.Shutdown();
+		}
+
+		event Action IAgent.ConnectEvent
+		{
+			add { this._ConnectEvent += value; }
+			remove { this._ConnectEvent -= value; }
+		}
+
+		event Action IAgent.BreakEvent
+		{
+			add { this._BreakEvent += value; }
+			remove { this._BreakEvent -= value; }
+		}
+
+		bool IAgent.Connected
+		{
+			get { return this._Connected; }
+		}
+
+		event Action<Guid, string, Guid, byte[][]> IRequestQueue.InvokeMethodEvent
+		{
+			add { this._GhostRequest.CallMethodEvent += value; }
+			remove { this._GhostRequest.CallMethodEvent -= value; }
+		}
+
+		event Action IRequestQueue.BreakEvent
+		{
+			add { this._BreakEvent += value; }
+			remove { this._BreakEvent -= value; }
+		}
+
+		void IRequestQueue.Update()
+		{
+			this._Update();
+		}
+
+		void IResponseQueue.Push(byte cmd, Dictionary<byte, byte[]> args)
+		{
+			this._Agent.OnResponse(cmd, args);
+		}
+
+		void ISoulBinder.Return<TSoul>(TSoul soul)
+		{
+			this._Binder.Return(soul);
+		}
+
+		void ISoulBinder.Bind<TSoul>(TSoul soul)
+		{
+			this._Bind(soul);
+		}
+
+		void ISoulBinder.Unbind<TSoul>(TSoul soul)
+		{
+			this._Unbind(soul);
+		}
+
+		event Action ISoulBinder.BreakEvent
+		{
+			add { this._BreakEvent += value; }
+			remove { this._BreakEvent -= value; }
+		}
+
+		public delegate void ConnectedCallback();
+
 		public void Launch()
 		{
-        
-			_GhostRequest.PingEvent	+= _OnRequestPing	;
-            _GhostRequest.ReleaseEvent += _SoulProvider.Unbind;
+			this._GhostRequest.PingEvent += this._OnRequestPing;
+			this._GhostRequest.ReleaseEvent += this._SoulProvider.Unbind;
 
-            _Agent.Initial(_GhostRequest);
+			this._Agent.Initial(this._GhostRequest);
 		}
+
 		private void _OnRequestPing()
 		{
-			_Agent.OnResponse( (byte)Regulus.Remoting.ServerToClientOpCode.Ping , null ) ;
-		}		
+			this._Agent.OnResponse((byte)ServerToClientOpCode.Ping, null);
+		}
 
 		private void _Update()
 		{
-			_SoulProvider.Update();
-			_GhostRequest.Update();
+			this._SoulProvider.Update();
+			this._GhostRequest.Update();
 		}
 
 		public void Shutdown()
 		{
+			this._Connected = false;
+			if (this._BreakEvent != null)
+			{
+				this._BreakEvent();
+			}
 
-            _Connected = false;
-            if (_BreakEvent != null)
-                _BreakEvent();
-            _BreakEvent = null;
-			_Agent.Finial();
-			
-			_GhostRequest.PingEvent -= _OnRequestPing;
-            _GhostRequest.ReleaseEvent -= _SoulProvider.Unbind;
+			this._BreakEvent = null;
+			this._Agent.Finial();
 
-
+			this._GhostRequest.PingEvent -= this._OnRequestPing;
+			this._GhostRequest.ReleaseEvent -= this._SoulProvider.Unbind;
 		}
 
-		event Action<Guid, string, Guid, byte[][]> Remoting.IRequestQueue.InvokeMethodEvent
+		public INotifier<T> QueryProvider<T>()
 		{
-			add { _GhostRequest.CallMethodEvent += value ; }
-			remove { _GhostRequest.CallMethodEvent -= value; }
+			return this._Agent.QueryProvider<T>();
 		}
-		
-
-		void Remoting.IResponseQueue.Push(byte cmd, Dictionary<byte, byte[]> args)
-		{
-			_Agent.OnResponse(cmd , args);
-		}
-
-
-		public long Ping
-		{
-			get { return _Agent.Ping; }
-		}
-
-		public Regulus.Remoting.Ghost.INotifier<T> QueryProvider<T>()
-		{
-			return _Agent.QueryProvider<T>();
-		}
-
-        
-        private event Action _BreakEvent;
 
 		private void _Bind<TSoul>(TSoul soul)
 		{
-            _Binder.Bind<TSoul>(soul);
+			this._Binder.Bind(soul);
 		}
-        private void _Unbind<TSoul>(TSoul soul)
+
+		private void _Unbind<TSoul>(TSoul soul)
 		{
-            _Binder.Unbind<TSoul>(soul);
+			this._Binder.Unbind(soul);
 		}
-
-        
-        Remoting.Ghost.INotifier<T> Remoting.IAgent.QueryNotifier<T>()
-        {
-            return QueryProvider<T>();
-        }
-
-        Remoting.Value<bool> Remoting.IAgent.Connect(string account, int password)
-        {
-            ConnectedEvent();
-            _Connected = true;
-            return true;
-        }
-
-
-        long Remoting.IAgent.Ping
-        {
-            get { return _Agent.Ping; }
-        }
-
-        
-
-        void Remoting.IAgent.Disconnect()
-        {
-            Shutdown();
-            
-        }
-
-        bool Utility.IUpdatable.Update()
-        {
-            _Update();
-
-            return true;
-        }
-
-        void Framework.IBootable.Launch()
-        {
-            Launch();
-        }
-
-        void Framework.IBootable.Shutdown()
-        {
-            Shutdown();
-        }
-
-
-
-        event Action _ConnectEvent;
-        event Action Remoting.IAgent.ConnectEvent
-        {
-            add { _ConnectEvent += value; }
-            remove { _ConnectEvent -= value; }
-        }
-
-        void Remoting.ISoulBinder.Return<TSoul>(TSoul soul)
-        {
-            _Binder.Return(soul);
-        }
-
-        void Remoting.ISoulBinder.Bind<TSoul>(TSoul soul)
-        {
-            _Bind(soul);
-        }
-
-        void Remoting.ISoulBinder.Unbind<TSoul>(TSoul soul)
-        {
-            _Unbind(soul);
-        }
-
-        
-
-        event Action Remoting.ISoulBinder.BreakEvent
-        {
-            add { _BreakEvent += value; }
-            remove { _BreakEvent -= value; }
-        }
-
-
-        event Action Remoting.IRequestQueue.BreakEvent
-        {
-            add { _BreakEvent += value; }
-            remove { _BreakEvent -= value; }
-        }
-
-        void Remoting.IRequestQueue.Update()
-        {
-            _Update();
-        }
-
-
-        event Action Remoting.IAgent.BreakEvent
-        {
-            add { _BreakEvent += value;  }
-            remove { _BreakEvent -= value; }
-        }
-
-
-
-
-
-        bool Remoting.IAgent.Connected
-        {
-            get { return _Connected; }
-        }
-    }
+	}
 }

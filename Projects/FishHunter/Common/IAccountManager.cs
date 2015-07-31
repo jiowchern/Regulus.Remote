@@ -1,16 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="IAccountManager.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the IAccountManager type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace VGame.Project.FishHunter
+#region Test_Region
+
+using Regulus.Remoting;
+
+#endregion
+
+namespace VGame.Project.FishHunter.Common
 {
-    public interface IAccountManager 
-    {
-        Regulus.Remoting.Value<Data.Account[]> QueryAllAccount();
+	public interface IAccountManager
+	{
+		Value<Account[]> QueryAllAccount();
 
-        Regulus.Remoting.Value<ACCOUNT_REQUEST_RESULT> Create(Data.Account account);
-        Regulus.Remoting.Value<ACCOUNT_REQUEST_RESULT> Delete(string account);
-        Regulus.Remoting.Value<ACCOUNT_REQUEST_RESULT> Update(Data.Account account);        
-    }
+		Value<ACCOUNT_REQUEST_RESULT> Create(Account account);
+
+		Value<ACCOUNT_REQUEST_RESULT> Delete(string account);
+
+		Value<ACCOUNT_REQUEST_RESULT> Update(Account account);
+	}
 }

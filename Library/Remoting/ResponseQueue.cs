@@ -1,12 +1,22 @@
-﻿using System;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ResponseQueue.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the IResponseQueue type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
+#endregion
 
 namespace Regulus.Remoting
 {
-    public interface IResponseQueue
-    {        
-        void Push(byte cmd, Dictionary<byte, byte[]> args);        
-    }
+	public interface IResponseQueue
+	{
+		void Push(byte cmd, Dictionary<byte, byte[]> args);
+	}
 }

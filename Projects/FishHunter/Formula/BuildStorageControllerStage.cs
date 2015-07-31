@@ -1,44 +1,60 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using VGame.Project.FishHunter.Formula;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="BuildStorageControllerStage.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the BuildStorageControllerStage type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace VGame.Project.FishHunter
+#region Test_Region
+
+using Regulus.Utility;
+
+using VGame.Project.FishHunter.Common;
+using VGame.Project.FishHunter.Storage;
+
+#endregion
+
+namespace VGame.Project.FishHunter.Formula
 {
-    class BuildStorageControllerStage : Regulus.Utility.IStage
-    {
-        public delegate void DoneCallback(StorageController controller);
-        public event DoneCallback DoneEvent;
-        StorageController _Controller;
-        Storage.IUser _User;
+	internal class BuildStorageControllerStage : IStage
+	{
+		public event DoneCallback DoneEvent;
 
-        IAccountFinder _Finder;
-        public BuildStorageControllerStage(Storage.IUser user)
-        {
-            _User = user;
-        }
-        void Regulus.Utility.IStage.Enter()
-        {
-            _User.QueryProvider<IAccountFinder>().Supply += _GetFinder;
-        }
+		private readonly IUser _User;
 
-        private void _GetFinder(IAccountFinder obj)
-        {
-            _Finder = obj;
+		private StorageController _Controller;
 
-            _Controller = new StorageController(_Finder);
-            DoneEvent(_Controller);
-        }
+		private IAccountFinder _Finder;
 
-        void Regulus.Utility.IStage.Leave()
-        {
-            _User.QueryProvider<IAccountFinder>().Supply -= _GetFinder;
-        }
+		public BuildStorageControllerStage(IUser user)
+		{
+			this._User = user;
+		}
 
-        void Regulus.Utility.IStage.Update()
-        {
-            
-        }
-    }
+		void IStage.Enter()
+		{
+			this._User.QueryProvider<IAccountFinder>().Supply += this._GetFinder;
+		}
+
+		void IStage.Leave()
+		{
+			this._User.QueryProvider<IAccountFinder>().Supply -= this._GetFinder;
+		}
+
+		void IStage.Update()
+		{
+		}
+
+		public delegate void DoneCallback(StorageController controller);
+
+		private void _GetFinder(IAccountFinder obj)
+		{
+			this._Finder = obj;
+
+			this._Controller = new StorageController(this._Finder);
+			this.DoneEvent(this._Controller);
+		}
+	}
 }

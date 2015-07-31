@@ -1,92 +1,99 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="HomeController.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the HomeController type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using System;
+using System.Net.Mime;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 
+using VGameWebApplication.Models;
+using VGameWebApplication.Storage;
+
+#endregion
+
 namespace VGameWebApplication.Controllers
 {
-    public class HomeController : AsyncController
-    {
-      
-        public ActionResult Logout()
-        {
+	public class HomeController : AsyncController
+	{
+		public ActionResult Logout()
+		{
+			FormsAuthentication.SignOut();
+			var authCookie = Request.Cookies[FormsAuthentication.FormsCookieName];
 
-            FormsAuthentication.SignOut();
-            HttpCookie authCookie = Request.Cookies[System.Web.Security.FormsAuthentication.FormsCookieName];
+			var authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+			Service.Destroy((Guid)HttpContext.Items["StorageId"]);
 
-            FormsAuthenticationTicket authTicket = FormsAuthentication.Decrypt(authCookie.Value);
-            VGame.Project.FishHunter.Storage.Service.Destroy((Guid)HttpContext.Items["StorageId"]);
+			return RedirectToAction("Verify");
+		}
 
-            
-            return RedirectToAction("Verify");
-        }
-        //
-        // GET: /Home/        
-        public ActionResult Index()
-        {
+		// GET: /Home/        
+		public ActionResult Index()
+		{
+			if (User.Identity.IsAuthenticated == false)
+			{
+				return RedirectToAction("Verify");
+			}
 
-            if (User.Identity.IsAuthenticated == false)            
-            {                
-                return RedirectToAction("Verify");
-            }
-            return View();
-        }
+			return View();
+		}
 
-        //
-        // GET: /Home/        
-        public ActionResult Verify()
-        {            
-            return View();
-        }
-        
-        [AcceptVerbs(HttpVerbs.Post)]
-        public async System.Threading.Tasks.Task<ActionResult> Verify(string user, string password)
-        {
-            var id = VGame.Project.FishHunter.Storage.Service.Verify(user, password);
+		// GET: /Home/        
+		public ActionResult Verify()
+		{
+			return View();
+		}
 
-            if (id != Guid.Empty)
-            {
-                FormsAuthenticationTicket ticket = new FormsAuthenticationTicket
-                    (1
-                    ,user,
-                    DateTime.Now,
-                    DateTime.Now.AddSeconds(300),
-                    false,
-                    id.ToString());
+		[AcceptVerbs(HttpVerbs.Post)]
+		public async Task<ActionResult> Verify(string user, string password)
+		{
+			var id = Service.Verify(user, password);
 
-                string encTicket = FormsAuthentication.Encrypt(ticket);
-                var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, encTicket);
-                Response.Cookies.Add(cookie);
-                return RedirectToAction("Index", "Home");
-            }
+			if (id != Guid.Empty)
+			{
+				var ticket = new FormsAuthenticationTicket
+					(1
+						, user, 
+						DateTime.Now, 
+						DateTime.Now.AddSeconds(300), 
+						false, 
+						id.ToString());
 
-            return RedirectToAction("Verify");
-        }
+				var encTicket = FormsAuthentication.Encrypt(ticket);
+				var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, encTicket);
+				Response.Cookies.Add(cookie);
+				return RedirectToAction("Index", "Home");
+			}
 
-        [Authorize]
-        public ActionResult Functions()
-        {
-            VGame.Project.FishHunter.Storage.Service service = VGame.Project.FishHunter.Storage.Service.Create(HttpContext.Items["StorageId"]);
+			return RedirectToAction("Verify");
+		}
 
+		[Authorize]
+		public ActionResult Functions()
+		{
+			var service = Service.Create(HttpContext.Items["StorageId"]);
 
-            VGameWebApplication.Models.AccountFunctions accountFunctions = new Models.AccountFunctions();
+			var accountFunctions = new AccountFunctions();
 
-            accountFunctions.AccountManager = service.AccountManager != null;
-            accountFunctions.AccountFinder = service.AccountFinder != null;
-            return PartialView(accountFunctions);            
-        }
+			accountFunctions.AccountManager = service.AccountManager != null;
+			accountFunctions.AccountFinder = service.AccountFinder != null;
+			return PartialView(accountFunctions);
+		}
 
-
-        public ActionResult Download()
-        {
-            byte[] fileBytes = System.IO.File.ReadAllBytes(@"c:\Ftp\FishHunter.apk");
-            string fileName = "FishHunter.apk";
-            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet , fileName);
-        }
-
+		public ActionResult Download()
+		{
+			var fileBytes = System.IO.File.ReadAllBytes(@"c:\Ftp\FishHunter.apk");
+			var fileName = "FishHunter.apk";
+			return File(fileBytes, MediaTypeNames.Application.Octet, fileName);
+		}
 	}
-
 }
-

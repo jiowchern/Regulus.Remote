@@ -1,74 +1,87 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="User.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the User type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using Regulus.Framework;
+using Regulus.Utility;
+
+#endregion
 
 namespace Regulus.Remoting
 {
-    public class User : Regulus.Utility.IUpdatable
-    {
-        Regulus.Remoting.Ghost.TProvider<Regulus.Utility.IConnect> _ConnectProvider;
-        Regulus.Remoting.Ghost.TProvider<Regulus.Utility.IOnline> _OnlineProvider;        
-        Regulus.Utility.StageMachine _Machine;
-        Regulus.Remoting.IAgent _Agent;
+	public class User : IUpdatable
+	{
+		private readonly IAgent _Agent;
 
-        Regulus.Utility.Updater _Updater;
+		private readonly TProvider<IConnect> _ConnectProvider;
 
-        public User(Regulus.Remoting.IAgent agent)
-        {
-            _Agent = agent;
-            _ConnectProvider = new Regulus.Remoting.Ghost.TProvider<Regulus.Utility.IConnect>();
-            _OnlineProvider = new Regulus.Remoting.Ghost.TProvider<Regulus.Utility.IOnline>();
-            _Machine = new Regulus.Utility.StageMachine();
-            _Updater = new Regulus.Utility.Updater();
-        }
+		private readonly StageMachine _Machine;
 
-        bool Regulus.Utility.IUpdatable.Update()
-        {
-            _Updater.Working();
-            _Machine.Update();
-            return true;
-        }
+		private readonly TProvider<IOnline> _OnlineProvider;
 
-        void Regulus.Framework.IBootable.Launch()
-        {
-            _Updater.Add(_Agent);
-            _ToOffline();
-        }
+		private readonly Updater _Updater;
 
-        private void _ToOffline()
-        {
-            var stage = new OfflineStage(_Agent , _ConnectProvider);
+		public INotifier<IConnect> ConnectProvider
+		{
+			get { return _ConnectProvider; }
+		}
 
-            stage.DoneEvent += _ToOnline;
-            
-            _Machine.Push(stage);
-        }
+		public INotifier<IOnline> OnlineProvider
+		{
+			get { return _OnlineProvider; }
+		}
 
-        private void _ToOnline()
-        {
-            var stage = new OnlineStage(_Agent, _OnlineProvider);
+		public User(IAgent agent)
+		{
+			_Agent = agent;
+			_ConnectProvider = new TProvider<IConnect>();
+			_OnlineProvider = new TProvider<IOnline>();
+			_Machine = new StageMachine();
+			_Updater = new Updater();
+		}
 
-            
-            stage.BreakEvent += _ToOffline;
-            
-            _Machine.Push(stage);
-        }
+		bool IUpdatable.Update()
+		{
+			_Updater.Working();
+			_Machine.Update();
+			return true;
+		}
 
-        void Regulus.Framework.IBootable.Shutdown()
-        {
-            _Machine.Termination();
-            _Updater.Shutdown();
-        }
+		void IBootable.Launch()
+		{
+			_Updater.Add(_Agent);
+			_ToOffline();
+		}
 
-        public Regulus.Remoting.Ghost.INotifier<Regulus.Utility.IConnect> ConnectProvider
-        {
-            get { return _ConnectProvider; }
-        }
+		void IBootable.Shutdown()
+		{
+			_Machine.Termination();
+			_Updater.Shutdown();
+		}
 
-        public Regulus.Remoting.Ghost.INotifier<Regulus.Utility.IOnline> OnlineProvider
-        {
-            get { return _OnlineProvider; }
-        }
-    }
+		private void _ToOffline()
+		{
+			var stage = new OfflineStage(_Agent, _ConnectProvider);
+
+			stage.DoneEvent += _ToOnline;
+
+			_Machine.Push(stage);
+		}
+
+		private void _ToOnline()
+		{
+			var stage = new OnlineStage(_Agent, _OnlineProvider);
+
+			stage.BreakEvent += _ToOffline;
+
+			_Machine.Push(stage);
+		}
+	}
 }

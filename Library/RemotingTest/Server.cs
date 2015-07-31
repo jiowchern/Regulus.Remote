@@ -1,44 +1,54 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Server.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the Server type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using Regulus.Framework;
+using Regulus.Remoting;
+using Regulus.Utility;
+
+#endregion
 
 namespace RemotingTest
 {
-    class Server : Regulus.Remoting.ICore, ITestReturn, ITestGPI
-    {
-        Regulus.Remoting.ISoulBinder _Binder;
-        void Regulus.Remoting.ICore.AssignBinder(Regulus.Remoting.ISoulBinder binder)
-        {
-            binder.Return<ITestReturn>(this);
-            _Binder = binder;
-            _Binder.Bind<ITestGPI>(this);
-        }
+	internal class Server : ICore, ITestReturn, ITestGPI
+	{
+		private ISoulBinder _Binder;
 
-        bool Regulus.Utility.IUpdatable.Update()
-        {
-            return true;
-        }
+		void ICore.AssignBinder(ISoulBinder binder)
+		{
+			binder.Return<ITestReturn>(this);
+			_Binder = binder;
+			_Binder.Bind<ITestGPI>(this);
+		}
 
-        void Regulus.Framework.IBootable.Launch()
-        {
-            
-        }
+		bool IUpdatable.Update()
+		{
+			return true;
+		}
 
-        void Regulus.Framework.IBootable.Shutdown()
-        {            
-        }
+		void IBootable.Launch()
+		{
+		}
 
-        Regulus.Remoting.Value<ITestInterface> ITestReturn.Test(int a, int b)
-        {
-            return new TestInterface();
-        }
+		void IBootable.Shutdown()
+		{
+		}
 
+		Value<int> ITestGPI.Add(int a, int b)
+		{
+			return a + b;
+		}
 
-
-        Regulus.Remoting.Value<int> ITestGPI.Add(int a, int b)
-        {
-            return a + b;
-        }
-    }
+		Value<ITestInterface> ITestReturn.Test(int a, int b)
+		{
+			return new TestInterface();
+		}
+	}
 }

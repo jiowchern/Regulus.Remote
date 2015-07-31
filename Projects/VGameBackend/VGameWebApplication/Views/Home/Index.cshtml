@@ -1,10 +1,15 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "索引";
 }
 
 <h2>伺服器</h2>
 <div >
-    <p>@Html.ActionLink("魚機算法", "Dashboard", "Server", new { server = "FishHunterFormula" }, new { @class = "navbar-brand" })</p>
+    <p>
+        @Html.ActionLink("魚機算法", "Dashboard", "Server", new
+        {
+            server = "FishHunterFormula"
+        }, new
+        {
+            @class = "navbar-brand"
+        })</p>
 </div>
-

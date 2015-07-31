@@ -1,15 +1,21 @@
-﻿@model VGame.Project.FishHunter.Data.Account[]
+﻿@model VGame.Project.FishHunter.Common.Account[]
 
 <div>
     <p>@Html.ActionLink("新增", "Add", "Account")</p>
-    <table>        
-        @foreach(var acc in Model)
+    <table>
+        @foreach (var acc in Model)
         {
-            <tr>
-                <td>@acc.Name</td>                
-                <td>@Html.ActionLink("編輯", "Edit", "Account", new { accountid = acc.Id.ToString() }, null)</td>                
-                <td>@Html.ActionLink("刪除", "Delete", "Account", new { accountid = acc.Id.ToString() }, null)</td>
-                
+            _Page_Views_Account_Index_cshtml.<tr>
+                <td>@acc.Name</td>
+                <td>@Html.ActionLink("編輯", "Edit", "Account", new
+                {
+                    accountid = acc.Id.ToString()
+                }, null)</td>
+                <td>@Html.ActionLink("刪除", "Delete", "Account", new
+                {
+                    accountid = acc.Id.ToString()
+                }, null)</td>
+
 
             </tr>
         }

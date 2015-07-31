@@ -1,65 +1,79 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Log.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the Log type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using System;
+using System.IO;
+using System.Threading;
+
+using Regulus.Collection;
+using Regulus.Utility;
+
+using Console = Regulus.Utility.Console;
+using SpinWait = System.Threading.SpinWait;
+
+#endregion
 
 namespace FormulaUserBot
 {
-    class Log : Regulus.Utility.Singleton<Log> 
-    {
-        Regulus.Utility.Console.IViewer _View;
-        string _File;
-        
+	internal class Log : Singleton<Log>
+	{
+		private readonly string _File;
 
-        Regulus.Collection.Queue<string> _Messages;
-        bool _Enable ;
-        public Log()
-        {
-            _File = string.Format("log_{0}.log", System.DateTime.Now.ToString("yyyy_MM_dd_hh_mm_ss"));
+		private readonly Queue<string> _Messages;
 
-            
-            _Messages = new Regulus.Collection.Queue<string>();
-            _Enable = true;
-            System.Threading.ThreadPool.QueueUserWorkItem(new System.Threading.WaitCallback(_Loging));    
-        }
+		private bool _Enable;
 
-        private void _Loging(object state)
-        {
-            System.IO.StreamWriter writer = System.IO.File.AppendText(_File);
-            
-            System.Threading.SpinWait sw = new System.Threading.SpinWait();
-            while (_Enable)
-            {
-                var messages = _Messages.DequeueAll();
-                foreach(var msg in messages)
-                {
-                    writer.WriteLine(msg);                    
-                }                
-                sw.SpinOnce();
-            }
+		private Console.IViewer _View;
 
-            writer.Close();
-            
-        }
-        internal void Initial(Regulus.Utility.Console.IViewer view)
-        {
-            _View = view;
-            
-        }
+		public Log()
+		{
+			_File = string.Format("log_{0}.log", DateTime.Now.ToString("yyyy_MM_dd_hh_mm_ss"));
 
+			_Messages = new Queue<string>();
+			_Enable = true;
+			ThreadPool.QueueUserWorkItem(this._Loging);
+		}
 
-        internal void WriteLine(string message)
-        {            
-            _Messages.Enqueue(message);
-            
-                
-        }
+		private void _Loging(object state)
+		{
+			var writer = File.AppendText(_File);
 
+			var sw = new SpinWait();
+			while (_Enable)
+			{
+				var messages = _Messages.DequeueAll();
+				foreach (var msg in messages)
+				{
+					writer.WriteLine(msg);
+				}
 
+				sw.SpinOnce();
+			}
 
-        internal void Final()
-        {
-            _Enable = false;
-        }
-    }
+			writer.Close();
+		}
+
+		internal void Initial(Console.IViewer view)
+		{
+			_View = view;
+		}
+
+		internal void WriteLine(string message)
+		{
+			_Messages.Enqueue(message);
+		}
+
+		internal void Final()
+		{
+			_Enable = false;
+		}
+	}
 }

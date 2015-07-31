@@ -1,251 +1,265 @@
-﻿using System;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Peer.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the Peer type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 
+using Regulus.Framework;
+
+#endregion
 
 namespace Regulus.Remoting.Soul.Native
 {
-
-
-    class Peer : Regulus.Remoting.IRequestQueue, Regulus.Remoting.IResponseQueue, Regulus.Framework.IBootable
+	internal class Peer : IRequestQueue, IResponseQueue, IBootable
 	{
+		private event Action _BreakEvent;
 
+		private event Action<Guid, string, Guid, byte[][]> _InvokeMethodEvent;
 
-        
-        public static bool IsIdle { get { return TotalRequest <= 0 && TotalResponse <= 0; } }
-        class Request
-        {
-            public Guid EntityId { get; set; }
-            public string MethodName { get; set; }
-            public Guid ReturnId { get; set; }
-            public byte[][] MethodParams { get; set; }
-        }
+		public event DisconnectCallback DisconnectEvent;
 
-		System.Net.Sockets.Socket _Socket;
-		Regulus.Remoting.Soul.SoulProvider _SoulProvider;
-		PackageQueue _Responses;
-        PackageQueue _Requests;
+		private static readonly object _LockRequest = new object();
 
+		private static readonly object _LockResponse = new object();
 
-        Regulus.Remoting.Native.PackageReader _Reader;
-        Regulus.Remoting.Native.PackageWriter _Writer;
+		private readonly PackageReader _Reader;
 
-        public delegate void DisconnectCallback();
-        public event DisconnectCallback DisconnectEvent;
+		private readonly PackageQueue _Requests;
 
-        volatile bool _Enable;
+		private readonly PackageQueue _Responses;
 
+		private readonly Socket _Socket;
 
-        static object _LockRequest = new object();        
-        public static int TotalRequest { get; private set; }
+		private readonly SoulProvider _SoulProvider;
 
-        static object _LockResponse = new object();        
-        public static int TotalResponse { get; private set; }
-        public Peer(System.Net.Sockets.Socket client)
+		private readonly PackageWriter _Writer;
+
+		private volatile bool _Enable;
+
+		public static bool IsIdle
 		{
-            
-			_Socket = client;
-			_SoulProvider = new Remoting.Soul.SoulProvider(this, this);
-            _Responses = new PackageQueue();
-            _Requests = new PackageQueue();
-			
-            _Enable = true;
-
-            _Reader = new Remoting.Native.PackageReader();
-            _Writer = new Remoting.Native.PackageWriter();
-			
+			get { return Peer.TotalRequest <= 0 && Peer.TotalResponse <= 0; }
 		}
 
-        private void _RequestPush(Package package)
-        {            
-            lock (_LockRequest)
-            {                
-                _Requests.Enqueue(package);
-                TotalRequest++;
-            }
-        }
+		public static int TotalRequest { get; private set; }
 
-        private Request _TryGetRequest(Package package )
+		public static int TotalResponse { get; private set; }
+
+		public ISoulBinder Binder
+		{
+			get { return this._SoulProvider; }
+		}
+
+		public CoreThreadRequestHandler Handler
+		{
+			get { return new CoreThreadRequestHandler(this); }
+		}
+
+		public Peer(Socket client)
+		{
+			this._Socket = client;
+			this._SoulProvider = new SoulProvider(this, this);
+			this._Responses = new PackageQueue();
+			this._Requests = new PackageQueue();
+
+			this._Enable = true;
+
+			this._Reader = new PackageReader();
+			this._Writer = new PackageWriter();
+		}
+
+		void IBootable.Launch()
+		{
+			this._Reader.DoneEvent += this._RequestPush;
+			this._Reader.ErrorEvent += () => { this._Enable = false; };
+			this._Reader.Start(this._Socket);
+
+			this._Writer.ErrorEvent += () => { this._Enable = false; };
+			this._Writer.CheckSourceEvent += this._ResponsePop;
+			this._Writer.Start(this._Socket);
+		}
+
+		void IBootable.Shutdown()
+		{
+			this._Socket.Shutdown(SocketShutdown.Both);
+			this._Socket.Close();
+			this._Reader.DoneEvent -= this._RequestPush;
+			this._Reader.Stop();
+			this._Writer.CheckSourceEvent -= this._ResponsePop;
+			this._Writer.Stop();
+
+			lock (Peer._LockResponse)
+			{
+				var pkgs = this._Responses.DequeueAll();
+				Peer.TotalResponse -= pkgs.Length;
+			}
+
+			lock (Peer._LockRequest)
+			{
+				var pkgs = this._Requests.DequeueAll();
+				Peer.TotalRequest -= pkgs.Length;
+			}
+		}
+
+		event Action<Guid, string, Guid, byte[][]> IRequestQueue.InvokeMethodEvent
+		{
+			add { this._InvokeMethodEvent += value; }
+			remove { this._InvokeMethodEvent -= value; }
+		}
+
+		event Action IRequestQueue.BreakEvent
+		{
+			add { this._BreakEvent += value; }
+			remove { this._BreakEvent -= value; }
+		}
+
+		void IRequestQueue.Update()
+		{
+			if (this._Connected() == false)
+			{
+				this.Disconnect();
+				this.DisconnectEvent();
+				return;
+			}
+
+			this._SoulProvider.Update();
+			Package[] pkgs = null;
+			lock (Peer._LockRequest)
+			{
+				pkgs = this._Requests.DequeueAll();
+				Peer.TotalRequest -= pkgs.Length;
+			}
+
+			foreach (var pkg in pkgs)
+			{
+				var request = this._TryGetRequest(pkg);
+
+				if (request != null)
+				{
+					if (this._InvokeMethodEvent != null)
+					{
+						this._InvokeMethodEvent(request.EntityId, request.MethodName, request.ReturnId, request.MethodParams);
+					}
+				}
+			}
+		}
+
+		void IResponseQueue.Push(byte cmd, Dictionary<byte, byte[]> args)
+		{
+			lock (Peer._LockResponse)
+			{
+				Peer.TotalResponse++;
+				this._Responses.Enqueue(new Package
+				{
+					Code = cmd, 
+					Args = args
+				});
+			}
+		}
+
+		private class Request
+		{
+			public Guid EntityId { get; set; }
+
+			public string MethodName { get; set; }
+
+			public Guid ReturnId { get; set; }
+
+			public byte[][] MethodParams { get; set; }
+		}
+
+		public delegate void DisconnectCallback();
+
+		private void _RequestPush(Package package)
+		{
+			lock (Peer._LockRequest)
+			{
+				this._Requests.Enqueue(package);
+				Peer.TotalRequest++;
+			}
+		}
+
+		private Request _TryGetRequest(Package package)
 		{
 			if (package.Code == (byte)ClientToServerOpCode.Ping)
 			{
-				
-				
-                (this as Regulus.Remoting.IResponseQueue).Push((int)ServerToClientOpCode.Ping, new Dictionary<byte, byte[]>());
-                return null;
+				(this as IResponseQueue).Push((int)ServerToClientOpCode.Ping, new Dictionary<byte, byte[]>());
+				return null;
 			}
-            else if (package.Code == (byte)ClientToServerOpCode.CallMethod)
-            {
 
-                var entityId = new Guid(package.Args[0]);
-                var methodName = System.Text.Encoding.Default.GetString(package.Args[1]);
-                    
-                    
-                byte[] par = null;
-                Guid returnId = Guid.Empty;
-                if (package.Args.TryGetValue(2, out par))
-                {
-                    returnId = new Guid(par as byte[]);
-                }
+			if (package.Code == (byte)ClientToServerOpCode.CallMethod)
+			{
+				var entityId = new Guid(package.Args[0]);
+				var methodName = Encoding.Default.GetString(package.Args[1]);
 
-                var methodParams = (from p in package.Args
-                                    where p.Key >= 3
-                                    orderby p.Key
-                                    select p.Value).ToArray();
+				byte[] par = null;
+				var returnId = Guid.Empty;
+				if (package.Args.TryGetValue(2, out par))
+				{
+					returnId = new Guid(par);
+				}
 
-                return _ToRequest(entityId, methodName, returnId, methodParams);
-                
-            }
-            else if (package.Code == (byte)ClientToServerOpCode.Release)
-            {
-                var entityId = new Guid(package.Args[0]);
-                _SoulProvider.Unbind(entityId);
-                return null;
-            }
-            return null;
+				var methodParams = (from p in package.Args
+				                    where p.Key >= 3
+				                    orderby p.Key
+				                    select p.Value).ToArray();
+
+				return this._ToRequest(entityId, methodName, returnId, methodParams);
+			}
+
+			if (package.Code == (byte)ClientToServerOpCode.Release)
+			{
+				var entityId = new Guid(package.Args[0]);
+				this._SoulProvider.Unbind(entityId);
+				return null;
+			}
+
+			return null;
 		}
-        private Request _ToRequest(Guid entity_id, string method_name, Guid return_id, byte[][] method_params)
-        {
-            return new Request() { EntityId = entity_id, MethodName = method_name, MethodParams = method_params, ReturnId = return_id };
-        }
-        
 
-		
+		private Request _ToRequest(Guid entity_id, string method_name, Guid return_id, byte[][] method_params)
+		{
+			return new Request
+			{
+				EntityId = entity_id, 
+				MethodName = method_name, 
+				MethodParams = method_params, 
+				ReturnId = return_id
+			};
+		}
 
 		private bool _Connected()
 		{
-            return _Enable && _Socket.Connected  ;
+			return this._Enable && this._Socket.Connected;
 		}
 
-		void Remoting.IResponseQueue.Push(byte cmd, Dictionary<byte, byte[]> args)
+		internal void Disconnect()
 		{
-            lock (_LockResponse)
-            {
-                TotalResponse++;
-                _Responses.Enqueue(new Regulus.Remoting.Package() { Code = cmd, Args = args });
-            }
-		}
-
-        event Action<Guid, string, Guid, byte[][]> _InvokeMethodEvent;
-        event Action<Guid, string, Guid, byte[][]> Remoting.IRequestQueue.InvokeMethodEvent
-		{
-			add
+			if (this._BreakEvent != null)
 			{
-                _InvokeMethodEvent += value;
-			}
-			remove
-			{
-                _InvokeMethodEvent -= value;
+				this._BreakEvent();
 			}
 		}
 
-        event Action _BreakEvent;
-		event Action Remoting.IRequestQueue.BreakEvent
+		private Package[] _ResponsePop()
 		{
-            add { _BreakEvent += value; }
-            remove { _BreakEvent -= value; }
+			lock (Peer._LockResponse)
+			{
+				var pkgs = this._Responses.DequeueAll();
+				Peer.TotalResponse -= pkgs.Length;
+				return pkgs;
+			}
 		}
-
-
-        internal void Disconnect()
-        {
-            if (_BreakEvent != null)
-            {
-                _BreakEvent();                
-            }                
-        }
-
-        public ISoulBinder Binder { get { return _SoulProvider; } }
-        public CoreThreadRequestHandler Handler { get { return new CoreThreadRequestHandler(this); } }
-
-        
-
-        void Framework.IBootable.Launch()
-        {
-            
-            _Reader.DoneEvent += _RequestPush ;
-            _Reader.ErrorEvent += () => { _Enable = false; };
-            _Reader.Start(_Socket);
-
-
-            _Writer.ErrorEvent += () => { _Enable = false; };
-            _Writer.CheckSourceEvent += _ResponsePop;
-            _Writer.Start(_Socket);
-        }
-
-        private Package[] _ResponsePop()
-        {
-            lock(_LockResponse)
-            {
-                var pkgs = _Responses.DequeueAll();
-                TotalResponse -= pkgs.Length;
-                return pkgs;
-            }
-            
-        }
-    
-
-        void Framework.IBootable.Shutdown()
-        {
-            
-            _Socket.Shutdown(System.Net.Sockets.SocketShutdown.Both);
-            _Socket.Close();
-            _Reader.DoneEvent -= _RequestPush;
-            _Reader.Stop();
-            _Writer.CheckSourceEvent -= _ResponsePop;
-            _Writer.Stop();            
-
-            lock (_LockResponse)
-            {
-                var pkgs = _Responses.DequeueAll();
-                TotalResponse -= pkgs.Length;
-            }
-                
-
-            lock (_LockRequest)
-            {
-                var pkgs = _Requests.DequeueAll();
-                TotalRequest -= pkgs.Length;
-            }
-                
-        }
-
-
-        void IRequestQueue.Update()
-        {
-            if (_Connected() == false)
-            {
-                Disconnect();
-                DisconnectEvent();
-                return ;
-            }
-
-            _SoulProvider.Update();
-            Package[] pkgs = null;
-            lock (_LockRequest)
-            {
-                pkgs = _Requests.DequeueAll();
-                TotalRequest -= pkgs.Length;
-            }
-                
-            foreach(var pkg in pkgs)
-            {
-                var request = _TryGetRequest(pkg);
-                
-                if (request != null)
-                {
-                    
-                    if(_InvokeMethodEvent != null  )
-                        _InvokeMethodEvent(request.EntityId, request.MethodName, request.ReturnId, request.MethodParams);
-                }
-
-                
-                
-            }
-                
-            
-        }
-    }
-	
+	}
 }

@@ -1,53 +1,69 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="RunFormulaStage.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the RunFormulaStage type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace VGame.Project.FishHunter
+#region Test_Region
+
+using Regulus.Collection;
+using Regulus.Remoting;
+using Regulus.Utility;
+
+#endregion
+
+namespace VGame.Project.FishHunter.Formula
 {
-    class RunFormulaStage : Regulus.Utility.IStage
-    {
-        VGame.Project.FishHunter.Formula.Center _Center;
+	internal class RunFormulaStage : IStage
+	{
+		public event DoneCallback DoneEvent;
 
-        Regulus.Remoting.ICore _Core { get { return _Center; } }
-        
-        Regulus.Utility.Updater _Updater;
+		private readonly Queue<ISoulBinder> _Binders;
 
-        Regulus.Collection.Queue<Regulus.Remoting.ISoulBinder> _Binders;
+		private readonly Center _Center;
 
-        public delegate void DoneCallback();
-        public event DoneCallback DoneEvent;
-        
-        public RunFormulaStage(Formula.StorageController controller, Regulus.Collection.Queue<Regulus.Remoting.ISoulBinder> binders) : this(controller)
-        {
-            // TODO: Complete member initialization        
-            this._Binders = binders;
-        }
+		private readonly Updater _Updater;
 
-        private RunFormulaStage(Formula.StorageController controller)
-        {
-            _Updater = new Regulus.Utility.Updater();
-            _Center = new Formula.Center(controller);
-        }
+		private ICore _Core
+		{
+			get { return this._Center; }
+		}
 
-        void Regulus.Utility.IStage.Enter()
-        {
-            _Updater.Add(_Center);
-        }
+		public RunFormulaStage(StorageController controller, Queue<ISoulBinder> binders) : this(controller)
+		{
+			// TODO: Complete member initialization        
+			this._Binders = binders;
+		}
 
-        void Regulus.Utility.IStage.Leave()
-        {
-            _Updater.Shutdown();
-        }
+		private RunFormulaStage(StorageController controller)
+		{
+			this._Updater = new Updater();
+			this._Center = new Center(controller);
+		}
 
-        void Regulus.Utility.IStage.Update()
-        {
-            _Updater.Working();
+		void IStage.Enter()
+		{
+			this._Updater.Add(this._Center);
+		}
 
-            foreach (var binder in _Binders.DequeueAll())
-            {
-                _Core.AssignBinder(binder);
-            }
-        }
-    }
+		void IStage.Leave()
+		{
+			this._Updater.Shutdown();
+		}
+
+		void IStage.Update()
+		{
+			this._Updater.Working();
+
+			foreach (var binder in this._Binders.DequeueAll())
+			{
+				this._Core.AssignBinder(binder);
+			}
+		}
+
+		public delegate void DoneCallback();
+	}
 }

@@ -1,18 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="IVerify.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   驗證介面
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace VGame.Project.FishHunter
+
+
+using Regulus.Remoting;
+
+namespace VGame.Project.FishHunter.Common
 {
-    public interface IVerify
-    {        
-        /// <summary>
-        /// 驗證
-        /// </summary>
-        /// <param name="帳號"></param>
-        /// <param name="密碼"></param>
-        /// <returns>回傳真則為成功</returns>
-        Regulus.Remoting.Value<bool> Login(string id , string password);
-    }
+	/// <summary>
+	///     驗證介面
+	/// </summary>
+	public interface IVerify
+	{
+		/// <summary>
+		///     登入
+		/// </summary>
+		/// <param name="id">
+		///     帳號.
+		/// </param>
+		/// <param name="password">
+		///     密碼.
+		/// </param>
+		/// <returns>
+		///     回傳真則為成功
+		/// </returns>
+		Value<bool> Login(string id, string password);
+	}
 }

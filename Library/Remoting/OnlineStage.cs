@@ -1,59 +1,74 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="OnlineStage.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the OnlineStage type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
+#region Test_Region
+
+using System;
+
+using Regulus.Utility;
+
+#endregion
 
 namespace Regulus.Remoting
 {
-    class OnlineStage : Regulus.Utility.IStage
-    {
-        private Regulus.Remoting.IAgent _Agent;
-        private Regulus.Remoting.Ghost.TProvider<Regulus.Utility.IOnline> _OnlineProvider;
-        Regulus.Utility.Online _Online;
+	internal class OnlineStage : IStage
+	{
+		private event Action _BreakEvent;
 
+		public event Action BreakEvent
+		{
+			add { _BreakEvent += value; }
+			remove { _BreakEvent -= value; }
+		}
 
-        event Action _BreakEvent;
-        public event Action BreakEvent
-        {
-            add { _BreakEvent += value; }
-            remove { _BreakEvent -= value; }
-        }
+		private readonly IAgent _Agent;
 
-        public OnlineStage(Regulus.Remoting.IAgent agent, Regulus.Remoting.Ghost.TProvider<Regulus.Utility.IOnline> provider)
-        {            
-            this._Agent = agent;
-            this._OnlineProvider = provider;
-            _Online = new Regulus.Utility.Online(agent);
-            
-        }
-        void Regulus.Utility.IStage.Enter()
-        {
-            _Agent.BreakEvent += _BreakEvent;            
-            _Bind(_OnlineProvider);
-        }
+		private readonly Online _Online;
 
-        private void _Bind(Regulus.Remoting.Ghost.IProvider provider)
-        {
-            provider.Add(_Online);
-            provider.Ready(_Online.Id);
-        }
-        private void _Unbind(Regulus.Remoting.Ghost.IProvider provider)
-        {
-            provider.Remove(_Online.Id);            
-        }
+		private readonly TProvider<IOnline> _OnlineProvider;
 
-        void Regulus.Utility.IStage.Leave()
-        {
-            _Unbind(_OnlineProvider);
-            _Agent.BreakEvent -= _BreakEvent;            
-            
-        }
+		public OnlineStage(IAgent agent, TProvider<IOnline> provider)
+		{
+			this._Agent = agent;
+			this._OnlineProvider = provider;
+			_Online = new Online(agent);
+		}
 
-        void Regulus.Utility.IStage.Update()
-        {
-            if (_Agent.Connected == false)
-                _BreakEvent();
-        }
-    }
+		void IStage.Enter()
+		{
+			_Agent.BreakEvent += _BreakEvent;
+			_Bind(_OnlineProvider);
+		}
+
+		void IStage.Leave()
+		{
+			_Unbind(_OnlineProvider);
+			_Agent.BreakEvent -= _BreakEvent;
+		}
+
+		void IStage.Update()
+		{
+			if (_Agent.Connected == false)
+			{
+				_BreakEvent();
+			}
+		}
+
+		private void _Bind(IProvider provider)
+		{
+			provider.Add(_Online);
+			provider.Ready(_Online.Id);
+		}
+
+		private void _Unbind(IProvider provider)
+		{
+			provider.Remove(_Online.Id);
+		}
+	}
 }

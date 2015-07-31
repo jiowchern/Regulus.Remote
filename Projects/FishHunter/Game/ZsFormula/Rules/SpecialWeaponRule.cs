@@ -7,6 +7,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+#region Test_Region
 
 using System;
 
@@ -14,10 +15,12 @@ using VGame.Project.FishHunter.ZsFormula.DataStructs;
 
 using Random = Regulus.Utility.Random;
 
+#endregion
+
 namespace VGame.Project.FishHunter.ZsFormula.Rules
 {
 	/// <summary>
-	///  特殊武器的處理
+	///     特殊武器的處理
 	/// </summary>
 	public class SpecialWeaponRule
 	{

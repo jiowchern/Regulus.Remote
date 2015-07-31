@@ -3,17 +3,19 @@
 //   Regulus Framework
 // </copyright>
 // <summary>
-//   Defines the WeaponPowerRule type.
+//   Defines the IRuleCheck type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+#region Test_Region
 
 using System.Linq;
 
-using Regulus.Extension;
 using Regulus.Utility;
 
 using VGame.Project.FishHunter.ZsFormula.DataStructs;
+
+#endregion
 
 namespace VGame.Project.FishHunter.ZsFormula.Rules
 {
@@ -35,7 +37,7 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 		}
 
 		/// <summary>
-		/// 是否取得特殊道具（特殊武器）
+		///     是否取得特殊道具（特殊武器）
 		/// </summary>
 		public void Run()
 		{

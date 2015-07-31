@@ -6,9 +6,14 @@
 //   Defines the Verify type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
 using Regulus.Remoting;
 
-using VGame.Project.FishHunter.Data;
+using VGame.Project.FishHunter.Common;
+
+#endregion
 
 namespace VGame.Project.FishHunter
 {

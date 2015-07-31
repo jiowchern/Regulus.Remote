@@ -1,15 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AccountFunctions.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the AccountFunctions type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace VGameWebApplication.Models
 {
-    public class AccountFunctions
-    {
+	public class AccountFunctions
+	{
+		public bool AccountManager { get; set; }
 
-        public bool AccountManager { get; set; }
-
-        public bool AccountFinder { get; set; }
-    }
+		public bool AccountFinder { get; set; }
+	}
 }

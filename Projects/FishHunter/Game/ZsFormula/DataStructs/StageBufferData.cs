@@ -1,11 +1,16 @@
-﻿
-
-
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="StageBufferData.cs" company="Regulus Framework">
+//   Regulus Framework
+// </copyright>
+// <summary>
+//   The data.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace VGame.Project.FishHunter.ZsFormula.DataStructs
 {
 	/// <summary>
-	/// The data.
+	///     The data.
 	/// </summary>
 	public partial class StageDataTable
 	{

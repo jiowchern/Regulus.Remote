@@ -1,13 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="IAccountStatus.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the IAccountStatus type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace VGame.Project.FishHunter
+#region Test_Region
+
+using System;
+
+#endregion
+
+namespace VGame.Project.FishHunter.Common
 {
-    public interface IAccountStatus
-    {
-        event Action KickEvent;
-       
-    }
+	public interface IAccountStatus
+	{
+		event Action KickEvent;
+	}
 }

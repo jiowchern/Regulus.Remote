@@ -7,10 +7,13 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+#region Test_Region
 
 using System;
 
 using VGame.Project.FishHunter.ZsFormula.DataStructs;
+
+#endregion
 
 namespace VGame.Project.FishHunter.ZsFormula.Rules
 {
@@ -24,7 +27,6 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		/// <param name="win_func"></param>
 		/// <param name="player_data"></param>

@@ -1,47 +1,59 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="InitialStorageStage.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the VerifyStorageStage type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace VGame.Project.FishHunter
+#region Test_Region
+
+using Regulus.Utility;
+
+using VGame.Project.FishHunter.Common;
+
+#endregion
+
+namespace VGame.Project.FishHunter.Storage
 {
-    public class VerifyStorageStage : Regulus.Utility.IStage
-    {
-        public delegate void DoneCallback(bool result);
-        public event DoneCallback DoneEvent;
-        Storage.IUser _User;
-        private string _Account;
-        private string _Password;
-        public VerifyStorageStage(Storage.IUser user , string account , string password)
-        {
-            _Account = account;
-            _Password = password;
-            _User = user;
-        }
-        void Regulus.Utility.IStage.Update()
-        {
+	public class VerifyStorageStage : IStage
+	{
+		public event DoneCallback DoneEvent;
 
-        }
+		private readonly string _Account;
 
-        void Regulus.Utility.IStage.Leave()
-        {
-            _User.VerifyProvider.Supply -= _ToVerify;
-        }
+		private readonly string _Password;
 
-        
+		private readonly IUser _User;
 
-        void Regulus.Utility.IStage.Enter()
-        {
-            _User.VerifyProvider.Supply += _ToVerify;
-        }
+		public VerifyStorageStage(IUser user, string account, string password)
+		{
+			this._Account = account;
+			this._Password = password;
+			this._User = user;
+		}
 
-        private void _ToVerify(IVerify obj)
-        {
-            var result = obj.Login(_Account, _Password);
-            result.OnValue += (val) => { DoneEvent(val); };
-        }
+		void IStage.Update()
+		{
+		}
 
-        
-        
-    }
+		void IStage.Leave()
+		{
+			this._User.VerifyProvider.Supply -= this._ToVerify;
+		}
+
+		void IStage.Enter()
+		{
+			this._User.VerifyProvider.Supply += this._ToVerify;
+		}
+
+		public delegate void DoneCallback(bool result);
+
+		private void _ToVerify(IVerify obj)
+		{
+			var result = obj.Login(this._Account, this._Password);
+			result.OnValue += val => { this.DoneEvent(val); };
+		}
+	}
 }

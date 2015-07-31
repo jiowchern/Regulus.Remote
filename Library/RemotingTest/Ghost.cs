@@ -1,35 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Ghost.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the Ghost type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using System;
+
+using Regulus.Remoting;
+
+#endregion
 
 namespace RemotingTest
 {
-    class Ghost : Regulus.Remoting.Ghost.IGhost
-    {
-        Guid _Id;
-        public Ghost()
-        {
-            _Id = Guid.NewGuid();
-        }
-        void Regulus.Remoting.Ghost.IGhost.OnEvent(string name_event, object[] args)
-        {
-            throw new NotImplementedException();
-        }
+	internal class Ghost : IGhost
+	{
+		private readonly Guid _Id;
 
-        Guid Regulus.Remoting.Ghost.IGhost.GetID()
-        {
-            return _Id;
-        }
+		public Ghost()
+		{
+			_Id = Guid.NewGuid();
+		}
 
-        void Regulus.Remoting.Ghost.IGhost.OnProperty(string name, byte[] value)
-        {
-            throw new NotImplementedException();
-        }
+		void IGhost.OnEvent(string name_event, object[] args)
+		{
+			throw new NotImplementedException();
+		}
 
-        bool Regulus.Remoting.Ghost.IGhost.IsReturnType()
-        {
-            throw new NotImplementedException();
-        }
-    }
+		Guid IGhost.GetID()
+		{
+			return _Id;
+		}
+
+		void IGhost.OnProperty(string name, byte[] value)
+		{
+			throw new NotImplementedException();
+		}
+
+		bool IGhost.IsReturnType()
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

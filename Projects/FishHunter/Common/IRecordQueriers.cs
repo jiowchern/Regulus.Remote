@@ -1,28 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="IRecordQueriers.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the IRecordQueriers type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace VGame.Project.FishHunter
+#region Test_Region
+
+using System;
+
+using Regulus.Remoting;
+
+#endregion
+
+namespace VGame.Project.FishHunter.Common
 {
-    public interface IRecordQueriers
-    {
-        Regulus.Remoting.Value<Data.Record> Load(Guid id);
+	public interface IRecordQueriers
+	{
+		Value<Record> Load(Guid id);
 
-        void Save(Data.Record record);
-    }
-    
-
-    public interface ITradeNotes
-    {
-        Regulus.Remoting.Value<Data.TradeNotes> Find(Guid id);
-        
-        Regulus.Remoting.Value<Data.TradeNotes> Load(Guid id);
-
-        Regulus.Remoting.Value<bool> Write(Data.TradeNotes.TradeData data);
-
-        Regulus.Remoting.Value<int> GetTotalMoney(Guid id);
+		void Save(Record record);
+	}
 
 
-    }
+	public interface ITradeNotes
+	{
+		Value<TradeNotes> Find(Guid id);
+
+		Value<TradeNotes> Load(Guid id);
+
+		Value<bool> Write(TradeNotes.TradeData data);
+
+		Value<int> GetTotalMoney(Guid id);
+	}
 }

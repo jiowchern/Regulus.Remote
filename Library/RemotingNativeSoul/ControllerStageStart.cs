@@ -1,66 +1,54 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ControllerStageStart.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the StageStart type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
+#region Test_Region
+
+using System;
+using System.IO;
+
+using Regulus.Utility;
+
+using Console = Regulus.Utility.Console;
+
+#endregion
 
 namespace Regulus.Remoting.Soul.Native
 {
-    class StageStart : Regulus.Utility.IStage
-    {
-        public event Action<Regulus.Remoting.ICore, int, float> DoneEvent;
+	internal class StageStart : IStage
+	{
+		public event Action<ICore, int, float> DoneEvent;
 
-        Regulus.Utility.Command _Command;
-        Regulus.Utility.Console.IViewer _View;
-        public StageStart(Regulus.Utility.Command command, Regulus.Utility.Console.IViewer view)
-        {
-            _View = view;
-            _Command = command;
-        }
-        void Utility.IStage.Enter()
-        {
-            _Command.Register<int, string, string>("Launch", _Start);
-            _Command.Register<string>("LaunchIni", _StartIni);
+		private readonly Command _Command;
 
-            
-            _View.WriteLine("======Ini file format description=====");
-            _View.WriteLine("Example.");
-            _View.WriteLine("[Launch]");
-            _View.WriteLine("port = 12345");
-            _View.WriteLine("path = game.dll");
-            _View.WriteLine("class = Company.Project.Center");
-            _View.WriteLine("======================================");
-        }
+		private readonly Console.IViewer _View;
 
-        private void _StartIni(string path)
-        {
-            var ini = new Regulus.Utility.Ini(System.IO.File.ReadAllText(path));
-            var port_string = ini.Read("Launch", "port");
-            int port = int.Parse(port_string);
-            string dllpath = ini.Read("Launch", "path");
-            string className = ini.Read("Launch", "class");
+		public StageStart(Command command, Console.IViewer view)
+		{
+			this._View = view;
+			this._Command = command;
+		}
 
-            _Start(port, dllpath, className);
-        }
+		void IStage.Enter()
+		{
+			this._Command.Register<int, string, string>("Launch", this._Start);
+			this._Command.Register<string>("LaunchIni", this._StartIni);
 
-        private void _Start(int port, string path, string class_name)
-        {
+			this._View.WriteLine("======Ini file format description=====");
+			this._View.WriteLine("Example.");
+			this._View.WriteLine("[Launch]");
+			this._View.WriteLine("port = 12345");
+			this._View.WriteLine("path = game.dll");
+			this._View.WriteLine("class = Company.Project.Center");
+			this._View.WriteLine("======================================");
+		}
 
-            var stream = System.IO.File.ReadAllBytes(path);
-
-            try 
-            {
-                var core = Regulus.Utility.Loader.Load(stream, class_name);
-                DoneEvent(core, port, 0);
-            }
-            catch (SystemException ex)
-            {
-                _View.WriteLine(ex.ToString());
-            }
-           
-        }
-
-        /*private void _LoadLibrary(string work_dir)
+		/*private void _LoadLibrary(string work_dir)
         {
                 
             var files = from f in System.IO.Directory.EnumerateFiles(work_dir, "*.dll", System.IO.SearchOption.AllDirectories) select f;
@@ -79,16 +67,40 @@ namespace Regulus.Remoting.Soul.Native
                     
             }
         }*/
+		void IStage.Leave()
+		{
+			this._Command.Unregister("Launch");
+			this._Command.Unregister("LaunchIni");
+		}
 
-        void Utility.IStage.Leave()
-        {
-            _Command.Unregister("Launch");
-            _Command.Unregister("LaunchIni");
-        }
+		void IStage.Update()
+		{
+		}
 
-        void Utility.IStage.Update()
-        {
+		private void _StartIni(string path)
+		{
+			var ini = new Ini(File.ReadAllText(path));
+			var port_string = ini.Read("Launch", "port");
+			var port = int.Parse(port_string);
+			var dllpath = ini.Read("Launch", "path");
+			var className = ini.Read("Launch", "class");
 
-        }
-    }
+			this._Start(port, dllpath, className);
+		}
+
+		private void _Start(int port, string path, string class_name)
+		{
+			var stream = File.ReadAllBytes(path);
+
+			try
+			{
+				var core = Loader.Load(stream, class_name);
+				this.DoneEvent(core, port, 0);
+			}
+			catch (SystemException ex)
+			{
+				this._View.WriteLine(ex.ToString());
+			}
+		}
+	}
 }

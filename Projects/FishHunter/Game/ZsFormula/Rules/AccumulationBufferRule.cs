@@ -7,13 +7,16 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+#region Test_Region
 
 using VGame.Project.FishHunter.ZsFormula.DataStructs;
+
+#endregion
 
 namespace VGame.Project.FishHunter.ZsFormula.Rules
 {
 	/// <summary>
-	/// 累積buffer
+	///     累積buffer
 	/// </summary>
 	public class AccumulationBufferRule
 	{

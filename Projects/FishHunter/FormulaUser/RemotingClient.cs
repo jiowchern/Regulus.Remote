@@ -1,57 +1,69 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="RemotingClient.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the DummyInputView type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
+#region Test_Region
+
+using Regulus.Framework;
+using Regulus.Utility;
+
+#endregion
 
 namespace VGame.Project.FishHunter.Formula
 {
-    class DummyInputView : Regulus.Utility.Console.IInput, Regulus.Utility.Console.IViewer
-    {
+	internal class DummyInputView : Console.IInput, Console.IViewer
+	{
+		event Console.OnOutput Console.IInput.OutputEvent
+		{
+			add { }
+			remove { }
+		}
 
-        void Regulus.Utility.Console.IViewer.WriteLine(string message)
-        {
-            
-        }
+		void Console.IViewer.WriteLine(string message)
+		{
+		}
 
-        void Regulus.Utility.Console.IViewer.Write(string message)
-        {
-            
-        }
+		void Console.IViewer.Write(string message)
+		{
+		}
+	}
 
-        event Regulus.Utility.Console.OnOutput Regulus.Utility.Console.IInput.OutputEvent
-        {
-            add {  }
-            remove {  }
-        }
-    }
-    public class RemotingClient : Client
-    {
-        public delegate void UserCallback(IUser user);
-        public event UserCallback UserEvent;
-        RemotingClient(Regulus.Utility.Console.IInput input, Regulus.Utility.Console.IViewer view)
-            : base(view, input)
-        {
-            ModeSelectorEvent += RemotingClient_ModeSelectorEvent;
-        }
-        void RemotingClient_ModeSelectorEvent(Regulus.Framework.GameModeSelector<IUser> selector)
-        {            
-            selector.AddFactoty("remoting", new VGame.Project.FishHunter.Formula.RemotingUserFactory());
-            
-            var provider = selector.CreateUserProvider("remoting");
+	public class RemotingClient : Client
+	{
+		public event UserCallback UserEvent;
 
-            var user = provider.Spawn("1");
-            provider.Select("1");
-            if (UserEvent != null)
-                UserEvent(user);
-        }
+		private RemotingClient(Console.IInput input, Console.IViewer view)
+			: base(view, input)
+		{
+			ModeSelectorEvent += RemotingClient_ModeSelectorEvent;
+		}
 
+		public delegate void UserCallback(IUser user);
 
-        static public RemotingClient Create()
-        {
-            var dummpy = new DummyInputView();
-            var client = new RemotingClient(dummpy ,dummpy);
-            return client;
-        }
-    }
+		private void RemotingClient_ModeSelectorEvent(GameModeSelector<IUser> selector)
+		{
+			selector.AddFactoty("remoting", new RemotingUserFactory());
+
+			var provider = selector.CreateUserProvider("remoting");
+
+			var user = provider.Spawn("1");
+			provider.Select("1");
+			if (UserEvent != null)
+			{
+				UserEvent(user);
+			}
+		}
+
+		public static RemotingClient Create()
+		{
+			var dummpy = new DummyInputView();
+			var client = new RemotingClient(dummpy, dummpy);
+			return client;
+		}
+	}
 }

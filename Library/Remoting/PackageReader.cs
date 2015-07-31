@@ -1,142 +1,169 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="PackageReader.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the OnErrorCallback type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace Regulus.Remoting.Native
+#region Test_Region
+
+using System;
+using System.Net.Sockets;
+
+using Regulus.Utility;
+
+#endregion
+
+namespace Regulus.Remoting
 {
-    public delegate void OnErrorCallback();
-    public delegate void OnByteDataCallback(byte[] bytes);
-    public delegate void OnPackageCallback(Package package);
-    public class PackageReader
-    {
-        public event OnErrorCallback ErrorEvent;
-        OnPackageCallback _DoneEvent;
-        public event OnPackageCallback DoneEvent
-        {
-            add {                
-                _DoneEvent += value;
-            }
-            remove {
-                _DoneEvent -= value;
-            }
-        }
-        const int _HeadSize = 4;
-        System.Net.Sockets.Socket _Socket;
-       
-        SocketReader _Reader;
-        enum Status
-        {
-            Begin, End
-        }
+	public delegate void OnErrorCallback();
 
-        volatile bool _Stop;        
+	public delegate void OnByteDataCallback(byte[] bytes);
 
-        public void Start(System.Net.Sockets.Socket socket)
-        {
-            Regulus.Utility.Log.Instance.WriteInfo(string.Format("pakcage read start."));                    
-            _Stop = false;
-            _Socket = socket;            
-            _ReadHead();    
-        }
+	public delegate void OnPackageCallback(Package package);
 
-        private void _ReadHead()
-        {
-            
-            _Reader = new SocketReader(_Socket);
-            _Reader.DoneEvent += _ReadBody;
-            _Reader.ErrorEvent += ErrorEvent;
+	public class PackageReader
+	{
+		public event OnPackageCallback DoneEvent
+		{
+			add { this._DoneEvent += value; }
+			remove { this._DoneEvent -= value; }
+		}
 
-            
-            _Reader.Read(_HeadSize);            
-        }
+		public event OnErrorCallback ErrorEvent;
 
-        private void _ReadBody(byte[] bytes)
-        {
-            
-            var bodySize = System.BitConverter.ToInt32(bytes, 0);
-            _Reader = new SocketReader(_Socket);
-            _Reader.DoneEvent += _Package;
-            _Reader.ErrorEvent += ErrorEvent;
+		private enum Status
+		{
+			Begin, 
 
-            
-            _Reader.Read(bodySize);            
-        }
+			End
+		}
 
-        private void _Package(byte[] bytes)
-        {
-            var pkg = Regulus.Serializer.TypeHelper.Deserialize<Package>(bytes);
-            
-            _DoneEvent.Invoke(pkg);   
-            
-            if(_Stop == false)
-                _ReadHead();
-        }
+		private const int _HeadSize = 4;
 
-        public void Stop()
-        {
-            _Stop = true;
-            _Socket = null;
+		private OnPackageCallback _DoneEvent;
 
-            Regulus.Utility.Log.Instance.WriteInfo(string.Format("pakcage read stop."));                    
-        }
-    }
+		private SocketReader _Reader;
 
-    class SocketReader
-    {
-        private System.Net.Sockets.Socket _Socket;
-        private byte[] _Buffer;
-        private int _Offset;
-        public event OnErrorCallback ErrorEvent;
-        public event OnByteDataCallback DoneEvent;
-        public SocketReader(System.Net.Sockets.Socket _Socket)
-        {            
-            this._Socket = _Socket;
-        }
+		private Socket _Socket;
 
+		private volatile bool _Stop;
 
-        internal void Read(int size)
-        {
-            _Offset = 0;
-            _Buffer = new byte[size];
-            try
-            {
-                _Socket.BeginReceive(_Buffer, _Offset, _Buffer.Length - _Offset, 0, _Readed, null);
-            }
-            catch (SystemException e)
-            {
-                
-                if (ErrorEvent != null)
-                    ErrorEvent();
-            }
-        }
+		public void Start(Socket socket)
+		{
+			Singleton<Log>.Instance.WriteInfo("pakcage read start.");
+			this._Stop = false;
+			this._Socket = socket;
+			this._ReadHead();
+		}
 
-        private void _Readed(IAsyncResult ar)
-        {
-            try
-            {
-                var readSize = _Socket.EndReceive(ar);
-                _Offset += readSize;
+		private void _ReadHead()
+		{
+			this._Reader = new SocketReader(this._Socket);
+			this._Reader.DoneEvent += this._ReadBody;
+			this._Reader.ErrorEvent += this.ErrorEvent;
 
-                if (readSize == 0)
-                    ErrorEvent();
-                else if (_Offset == _Buffer.Length)
-                    DoneEvent(_Buffer);
-                else
-                    _Socket.BeginReceive(_Buffer, _Offset, _Buffer.Length - _Offset, System.Net.Sockets.SocketFlags.None ,_Readed,  null);
-            }
-            catch (SystemException e)
-            {
-                
-                if (ErrorEvent != null)
-                    ErrorEvent();
-            }
-            finally 
-            {
-                
-            }
-            
+			this._Reader.Read(PackageReader._HeadSize);
+		}
 
-        }
-    }
+		private void _ReadBody(byte[] bytes)
+		{
+			var bodySize = BitConverter.ToInt32(bytes, 0);
+			this._Reader = new SocketReader(this._Socket);
+			this._Reader.DoneEvent += this._Package;
+			this._Reader.ErrorEvent += this.ErrorEvent;
+
+			this._Reader.Read(bodySize);
+		}
+
+		private void _Package(byte[] bytes)
+		{
+			var pkg = TypeHelper.Deserialize<Package>(bytes);
+
+			this._DoneEvent.Invoke(pkg);
+
+			if (this._Stop == false)
+			{
+				this._ReadHead();
+			}
+		}
+
+		public void Stop()
+		{
+			this._Stop = true;
+			this._Socket = null;
+
+			Singleton<Log>.Instance.WriteInfo("pakcage read stop.");
+		}
+	}
+
+	internal class SocketReader
+	{
+		public event OnByteDataCallback DoneEvent;
+
+		public event OnErrorCallback ErrorEvent;
+
+		private readonly Socket _Socket;
+
+		private byte[] _Buffer;
+
+		private int _Offset;
+
+		public SocketReader(Socket _Socket)
+		{
+			this._Socket = _Socket;
+		}
+
+		internal void Read(int size)
+		{
+			this._Offset = 0;
+			this._Buffer = new byte[size];
+			try
+			{
+				this._Socket.BeginReceive(this._Buffer, this._Offset, this._Buffer.Length - this._Offset, 0, this._Readed, null);
+			}
+			catch (SystemException e)
+			{
+				if (this.ErrorEvent != null)
+				{
+					this.ErrorEvent();
+				}
+			}
+		}
+
+		private void _Readed(IAsyncResult ar)
+		{
+			try
+			{
+				var readSize = this._Socket.EndReceive(ar);
+				this._Offset += readSize;
+
+				if (readSize == 0)
+				{
+					this.ErrorEvent();
+				}
+				else if (this._Offset == this._Buffer.Length)
+				{
+					this.DoneEvent(this._Buffer);
+				}
+				else
+				{
+					this._Socket.BeginReceive(this._Buffer, this._Offset, this._Buffer.Length - this._Offset, SocketFlags.None, 
+						this._Readed, null);
+				}
+			}
+			catch (SystemException e)
+			{
+				if (this.ErrorEvent != null)
+				{
+					this.ErrorEvent();
+				}
+			}
+			finally
+			{
+			}
+		}
+	}
 }

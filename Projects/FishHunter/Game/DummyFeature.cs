@@ -7,14 +7,17 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+#region Test_Region
 
 using System;
 using System.Collections.Generic;
 
 using Regulus.Remoting;
 
-using VGame.Project.FishHunter.Data;
+using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Formula;
+
+#endregion
 
 namespace VGame.Project.FishHunter
 {

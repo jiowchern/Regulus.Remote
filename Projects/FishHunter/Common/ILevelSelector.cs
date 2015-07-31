@@ -1,14 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ILevelSelector.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the ILevelSelector type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace VGame.Project.FishHunter
+#region Test_Region
+
+using Regulus.Remoting;
+
+#endregion
+
+namespace VGame.Project.FishHunter.Common
 {
-    public interface ILevelSelector
-    {
-        Regulus.Remoting.Value<int[]> QueryStages();
+	public interface ILevelSelector
+	{
+		Value<int[]> QueryStages();
 
-        Regulus.Remoting.Value<bool> Select(int level);
-    }
+		Value<bool> Select(int level);
+	}
 }

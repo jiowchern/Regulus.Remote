@@ -1,12 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="IUnsupportedMethodIntefaceParam.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the IUnsupportedMethodIntefaceParam type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace RemotingTest
 {
-    public interface IUnsupportedMethodIntefaceParam
-    {
-        void Function(IUnsupportedMethodIntefaceParam method);
-    }
+	public interface IUnsupportedMethodIntefaceParam
+	{
+		void Function(IUnsupportedMethodIntefaceParam method);
+	}
 }

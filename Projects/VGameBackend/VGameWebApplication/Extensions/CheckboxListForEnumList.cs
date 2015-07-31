@@ -1,76 +1,89 @@
-﻿using System;
-using System.Collections;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="CheckboxListForEnumList.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the CheckboxListForEnumListExtensions type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
-using System.Web;
 using System.Web.Mvc;
 
-using Regulus.Extension;
+using Regulus.Utility;
+
+#endregion
 
 namespace VGameWebApplication.Extensions
 {
-    public static class CheckboxListForEnumListExtensions
-    {
-        public static MvcHtmlString CheckboxListForEnum<TModel, TProperty>(this HtmlHelper<TModel> html,
-          Expression<Func<TModel, TProperty>> expression,
-           IDictionary<string, object> htmlAttributes = null) where TProperty : struct, IConvertible
-        {
-            if (!typeof(TProperty).IsEnum)
-                throw new ArgumentException("TProperty must be an enumerated type");
+	public static class CheckboxListForEnumListExtensions
+	{
+		public static MvcHtmlString CheckboxListForEnum<TModel, TProperty>(this HtmlHelper<TModel> html, 
+			Expression<Func<TModel, TProperty>> expression, 
+			IDictionary<string, object> htmlAttributes = null) where TProperty : struct, IConvertible
+		{
+			if (!typeof (TProperty).IsEnum)
+			{
+				throw new ArgumentException("TProperty must be an enumerated type");
+			}
 
-            TProperty value = expression.Compile()((TModel)html.ViewContext.ViewData.Model);
+			var value = expression.Compile()((TModel)html.ViewContext.ViewData.Model);
 
+			var enumValue = (Enum)Enum.Parse(typeof (TProperty), value.ToString());
 
-            var enumValue = (Enum)Enum.Parse(typeof(TProperty), value.ToString());
+			var itens = Enum
+				.GetValues(typeof (TProperty))
+				.Cast<Enum>()
+				.Select(c => new SelectListItem
+				{
+					Text = c.GetEnumDescription(), 
+					Value = c.ToString(), 
+					Selected = null != enumValue && enumValue.HasFlag(c)
+				});
 
+			var name = ExpressionHelper.GetExpressionText(expression);
 
-            var itens = Enum
-                .GetValues(typeof(TProperty))
-                .Cast<Enum>()
-                .Select(c => new SelectListItem
-                                 {
-                                     Text = c.GetEnumDescription(),
-                                     Value = c.ToString(),
-                                     Selected = null != enumValue && enumValue.HasFlag(c)
-                                 });
+			var sb = new StringBuilder();
+			var ul = new TagBuilder("ul");
 
-            var name = ExpressionHelper.GetExpressionText(expression);
+			ul.MergeAttributes(htmlAttributes);
 
-            var sb = new StringBuilder();
-            var ul = new TagBuilder("ul");
+			foreach (var item in itens)
+			{
+				var id = string.Format("{0}_{1}", name, item.Value);
 
-            ul.MergeAttributes(htmlAttributes);
+				var li = new TagBuilder("li");
 
-            foreach (var item in itens)
-            {
-                var id = string.Format("{0}_{1}", name, item.Value);
+				var checkBox = new TagBuilder("input");
+				checkBox.Attributes.Add("id", id);
+				checkBox.Attributes.Add("value", item.Value);
+				checkBox.Attributes.Add("name", name);
+				checkBox.Attributes.Add("type", "checkbox");
+				if (item.Selected)
+				{
+					checkBox.Attributes.Add("checked", "checked");
+				}
 
-                var li = new TagBuilder("li");
+				var label = new TagBuilder("label");
+				label.Attributes.Add("for", id);
 
-                var checkBox = new TagBuilder("input");
-                checkBox.Attributes.Add("id", id);
-                checkBox.Attributes.Add("value", item.Value);
-                checkBox.Attributes.Add("name", name);
-                checkBox.Attributes.Add("type", "checkbox");
-                if (item.Selected)
-                    checkBox.Attributes.Add("checked", "checked");
+				label.SetInnerText(item.Text);
 
-                var label = new TagBuilder("label");
-                label.Attributes.Add("for", id);
+				li.InnerHtml = checkBox.ToString(TagRenderMode.SelfClosing) + "\r\n" +
+				               label.ToString(TagRenderMode.Normal);
 
-                label.SetInnerText(item.Text);
+				sb.AppendLine(li.ToString(TagRenderMode.Normal));
+			}
 
-                li.InnerHtml = checkBox.ToString(TagRenderMode.SelfClosing) + "\r\n" +
-                               label.ToString(TagRenderMode.Normal);
+			ul.InnerHtml = sb.ToString();
 
-                sb.AppendLine(li.ToString(TagRenderMode.Normal));
-            }
-
-            ul.InnerHtml = sb.ToString();
-
-            return new MvcHtmlString(ul.ToString(TagRenderMode.Normal));
-        }
-    }
+			return new MvcHtmlString(ul.ToString(TagRenderMode.Normal));
+		}
+	}
 }

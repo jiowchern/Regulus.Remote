@@ -5,9 +5,11 @@
 // <summary>
 //   00以上为特殊鱼（死亡后，有爆炸效果的），直接变成特殊武器
 //   海绵宝宝x80、电鳗x150、贪食蛇x120、铁球x200、小章鱼x200、大章鱼xN（必死）
+//   翻倍規則檢查,
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+#region Test_Region
 
 using System.Linq;
 
@@ -15,12 +17,14 @@ using Regulus.Utility;
 
 using VGame.Project.FishHunter.ZsFormula.DataStructs;
 
+#endregion
+
 namespace VGame.Project.FishHunter.ZsFormula.Rules
 {
 	/// <summary>
-	/// 00以上为特殊鱼（死亡后，有爆炸效果的），直接变成特殊武器
-	/// 海绵宝宝x80、电鳗x150、贪食蛇x120、铁球x200、小章鱼x200、大章鱼xN（必死）
-	/// 翻倍規則檢查,
+	///     00以上为特殊鱼（死亡后，有爆炸效果的），直接变成特殊武器
+	///     海绵宝宝x80、电鳗x150、贪食蛇x120、铁球x200、小章鱼x200、大章鱼xN（必死）
+	///     翻倍規則檢查,
 	/// </summary>
 	public class OddsRuler
 	{

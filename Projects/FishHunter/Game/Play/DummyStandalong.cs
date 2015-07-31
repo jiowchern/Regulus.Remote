@@ -1,40 +1,61 @@
-﻿namespace VGame.Project.FishHunter.Play
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="DummyStandalong.cs" company="Regulus Framework">
+//   Regulus Framework
+// </copyright>
+// <summary>
+//   Defines the DummyStandalong type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using Regulus.Framework;
+using Regulus.Remoting;
+using Regulus.Utility;
+
+#endregion
+
+namespace VGame.Project.FishHunter.Play
 {
-    public class DummyStandalong : Regulus.Remoting.ICore
-    {
+	public class DummyStandalong : ICore
+	{
+		private readonly Center _Center;
 
-        VGame.Project.FishHunter.Play.Center _Center;
-        VGame.Project.FishHunter.DummyFrature _Storage;
+		private readonly DummyFrature _Storage;
 
-        Regulus.Remoting.ICore _Core { get { return _Center; } }
-        Regulus.Utility.Updater _Updater;
-        public DummyStandalong()
-        {
-            _Storage = new DummyFrature();
-            _Updater = new Regulus.Utility.Updater();
-            _Center = new Center(_Storage , _Storage , _Storage, _Storage );
-        }
+		private readonly Updater _Updater;
 
-        void Regulus.Remoting.ICore.AssignBinder(Regulus.Remoting.ISoulBinder binder)
-        {
-            _Core.AssignBinder(binder);
-        }
+		private ICore _Core
+		{
+			get { return _Center; }
+		}
 
-        bool Regulus.Utility.IUpdatable.Update()
-        {
-            _Updater.Working();
-            return true;
-        }
+		public DummyStandalong()
+		{
+			_Storage = new DummyFrature();
+			_Updater = new Updater();
+			_Center = new Center(_Storage, _Storage, _Storage, _Storage);
+		}
 
-        void Regulus.Framework.IBootable.Launch()
-        {
-            _Updater.Add(_Center);
-        }
+		void ICore.AssignBinder(ISoulBinder binder)
+		{
+			_Core.AssignBinder(binder);
+		}
 
-        void Regulus.Framework.IBootable.Shutdown()
-        {
-            _Updater.Shutdown();
-        }
-    }
+		bool IUpdatable.Update()
+		{
+			_Updater.Working();
+			return true;
+		}
 
+		void IBootable.Launch()
+		{
+			_Updater.Add(_Center);
+		}
+
+		void IBootable.Shutdown()
+		{
+			_Updater.Shutdown();
+		}
+	}
 }

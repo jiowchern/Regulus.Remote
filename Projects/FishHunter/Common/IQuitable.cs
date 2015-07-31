@@ -1,12 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="IQuitable.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the IQuitable type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace VGame.Project.FishHunter
+namespace VGame.Project.FishHunter.Common
 {
-    public interface IQuitable
-    {
-        void Quit();
-    }
+	public interface IQuitable
+	{
+		void Quit();
+	}
 }

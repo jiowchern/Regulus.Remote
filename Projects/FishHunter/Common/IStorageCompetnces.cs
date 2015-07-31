@@ -1,13 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="IStorageCompetnces.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the IStorageCompetences type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace VGame.Project.FishHunter
+#region Test_Region
+
+using System;
+
+using Regulus.Remoting;
+
+#endregion
+
+namespace VGame.Project.FishHunter.Common
 {
-    public interface IStorageCompetences
-    {
-        Regulus.Remoting.Value<VGame.Project.FishHunter.Data.Account.COMPETENCE[]> Query();
-        Regulus.Remoting.Value<Guid> QueryForId();
-    }
+	public interface IStorageCompetences
+	{
+		Value<Account.COMPETENCE[]> Query();
+
+		Value<Guid> QueryForId();
+	}
 }

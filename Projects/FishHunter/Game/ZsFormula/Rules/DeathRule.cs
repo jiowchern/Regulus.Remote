@@ -7,6 +7,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+#region Test_Region
 
 using System;
 
@@ -14,10 +15,12 @@ using VGame.Project.FishHunter.ZsFormula.DataStructs;
 
 using Random = Regulus.Utility.Random;
 
+#endregion
+
 namespace VGame.Project.FishHunter.ZsFormula.Rules
 {
 	/// <summary>
-	/// // 是否死亡的判断
+	///     // 是否死亡的判断
 	/// </summary>
 	public class DeathRule
 	{
@@ -37,7 +40,7 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 		}
 
 		/// <param name="attack_data">
-		/// The attack_data.
+		///     The attack_data.
 		/// </param>
 		public void Run(AttackData attack_data)
 		{

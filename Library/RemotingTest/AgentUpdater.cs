@@ -1,30 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AgentUpdater.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the AgentUpdater type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using Regulus.Remoting;
+
+#endregion
 
 namespace RemotingTest
 {
-    class AgentUpdater
-    {
-        private Regulus.Remoting.IAgent _Agent;
+	internal class AgentUpdater
+	{
+		private readonly IAgent _Agent;
 
-        public AgentUpdater(Regulus.Remoting.IAgent agent)
-        {        
-            this._Agent = agent;
-        }
+		public AgentUpdater(IAgent agent)
+		{
+			this._Agent = agent;
+		}
 
-        internal void Run()
-        {
-            _Agent.Launch();
-            
-            bool enable = true;
-            _Agent.BreakEvent += () => enable = false;
-            while (enable)
-            {
-                _Agent.Update();
-            }
-            _Agent.Shutdown();
-        }
-    }
+		internal void Run()
+		{
+			_Agent.Launch();
+
+			var enable = true;
+			_Agent.BreakEvent += () => enable = false;
+			while (enable)
+			{
+				_Agent.Update();
+			}
+
+			_Agent.Shutdown();
+		}
+	}
 }

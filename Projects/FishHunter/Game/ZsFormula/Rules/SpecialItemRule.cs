@@ -7,13 +7,16 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+#region Test_Region
 
 using VGame.Project.FishHunter.ZsFormula.DataStructs;
+
+#endregion
 
 namespace VGame.Project.FishHunter.ZsFormula.Rules
 {
 	/// <summary>
-	/// 取得道具
+	///     取得道具
 	/// </summary>
 	public class SpecialItemRule
 	{
@@ -27,7 +30,6 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		/// <param name="player_data"></param>
 		/// <returns></returns>
