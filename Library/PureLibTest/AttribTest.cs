@@ -83,7 +83,21 @@ namespace PureLibTest
             Assert.AreEqual("ENUM1", descs[0]);
             Assert.AreEqual("ENUM3", descs[1]);
         }
+        
 
+        [TestMethod]
+        public void TestForeachEnum1()
+        {
+            List<TEST> flags = new List<TEST>();
+            foreach (TEST f in EnumHelper.GetFlags<TEST>())                
+            {
+                flags.Add(f);
+            }
+
+            Assert.AreEqual(TEST.ENUM1, flags[0]);
+            Assert.AreEqual(TEST.ENUM2, flags[1]);
+            Assert.AreEqual(TEST.ENUM3, flags[2]);
+        }
         [TestMethod]
         public void TestEnumFlags()
         {

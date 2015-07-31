@@ -32,6 +32,7 @@ namespace VGame.Project.FishHunter.Play
 
         void Regulus.Utility.IStage.Leave()
         {
+            // ReSharper disable once ArrangeThisQualifier
             _Binder.Unbind<VGame.Project.FishHunter.ILevelSelector>(this);
         }
 

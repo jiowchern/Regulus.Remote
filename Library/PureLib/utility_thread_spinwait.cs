@@ -43,11 +43,11 @@ namespace Regulus.Utility
                 if (num % SLEEP_1_EVERY_HOW_MANY_TIMES == SLEEP_1_EVERY_HOW_MANY_TIMES - 1)
                     System.Threading.Thread.Sleep(1);
                 else if (num % SLEEP_0_EVERY_HOW_MANY_TIMES == SLEEP_0_EVERY_HOW_MANY_TIMES - 1)
-                    System.Threading.Thread.Sleep(0);
+                    System.Threading.Thread.Sleep(0);                    
                 else if (IsWindows)
                     SwitchToThread();
                 else
-                    System.Threading.Thread.SpinWait(((int)(SLEEP_0_EVERY_HOW_MANY_TIMES - 1)) << this._Count);
+                    this.Reset();
             }
             else
                 System.Threading.Thread.SpinWait(((int)(SLEEP_0_EVERY_HOW_MANY_TIMES - 1)) << this._Count);
