@@ -1,30 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="StandalongFactory.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the StandalongFactory type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using Regulus.Framework;
+using Regulus.Remoting;
+using Regulus.Remoting.Standalong;
+using Regulus.Utility;
+
+#endregion
 
 namespace VGame.Project.FishHunter.Storage
 {
-    public class StandalongFactory : Regulus.Framework.IUserFactoty<IUser>
-    {
-        Regulus.Remoting.ICore _Core; 
-        public StandalongFactory(Regulus.Remoting.ICore core)
-        {
-            _Core = core;
-        }
-        
-        IUser Regulus.Framework.IUserFactoty<IUser>.SpawnUser()
-        {
-      
-            var agent = new Regulus.Standalong.Agent();
-            agent.ConnectedEvent += () => { _Core.AssignBinder(agent); };            
-            return new User(agent);
-        }
+	public class StandalongFactory : IUserFactoty<IUser>
+	{
+		private readonly ICore _Core;
 
-        Regulus.Framework.ICommandParsable<IUser> Regulus.Framework.IUserFactoty<IUser>.SpawnParser(Regulus.Utility.Command command, Regulus.Utility.Console.IViewer view, IUser user)
-        {
-            return new CommandParser(command, view, user);
-        }
-    }
+		public StandalongFactory(ICore core)
+		{
+			_Core = core;
+		}
+
+		IUser IUserFactoty<IUser>.SpawnUser()
+		{
+			var agent = new Agent();
+			agent.ConnectedEvent += () => { _Core.AssignBinder(agent); };
+			return new User(agent);
+		}
+
+		ICommandParsable<IUser> IUserFactoty<IUser>.SpawnParser(Command command, Console.IViewer view, IUser user)
+		{
+			return new CommandParser(command, view, user);
+		}
+	}
 }

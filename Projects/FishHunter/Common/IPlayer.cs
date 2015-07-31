@@ -1,28 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="IPlayer.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the IPlayer type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace VGame.Project.FishHunter
+#region Test_Region
+
+using System;
+
+using Regulus.Remoting;
+
+#endregion
+
+namespace VGame.Project.FishHunter.Common
 {
-    public interface IPlayer
-    {
+	public interface IPlayer
+	{
+		event Action<int> DeathFishEvent;
 
-        int WeaponOdds { get; }
-        BULLET Bullet { get; }
+		event Action<int> MoneyEvent;
 
-        Regulus.Remoting.Value<int> RequestBullet();
-        Regulus.Remoting.Value<short> RequestFish();
+		int WeaponOdds { get; }
 
-        Regulus.Remoting.Value<int> Hit(int bullet , int[] fishids);
+		BULLET Bullet { get; }
 
-        
+		Value<int> RequestBullet();
 
-        void EquipWeapon(BULLET bullet, int odds);
+		Value<short> RequestFish();
 
-        void Quit();
+		Value<int> Hit(int bullet, int[] fishids);
 
-        event Action<int> DeathFishEvent;
-        event Action<int> MoneyEvent;
-    }
+		void EquipWeapon(BULLET bullet, int odds);
+
+		void Quit();
+	}
 }

@@ -1,24 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="MultipleRuleSteps.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the MultipleRuleSteps type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
-using VGame.Project.FishHunter;
-using VGame.Project.FishHunter.ZsFormula;
 using VGame.Project.FishHunter.ZsFormula.DataStructs;
+
+#endregion
 
 namespace GameTest
 {
-    [Binding]
+	[Binding]
 	[Scope(Feature = "MultipleRule")]
-    public class MultipleRuleSteps
-    {
-	    private MultipleTable _MultipleTable;
+	public class MultipleRuleSteps
+	{
+		private MultipleTable _MultipleTable;
 
 		[Given(@"倍數表是")]
 		public void Given倍數表是(Table table)
@@ -40,8 +46,8 @@ namespace GameTest
 			var key = ScenarioContext.Current.Get<int>("key");
 
 			var data = _MultipleTable.Find(key);
-			
+
 			Assert.AreEqual(value, data.Value);
 		}
-    }
+	}
 }

@@ -1,42 +1,60 @@
-﻿using System;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="WeaponChancesTableSteps.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the WeaponChancesTableSteps type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
 using System.Linq;
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+using Regulus.Game;
+
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
+using VGame.Project.FishHunter;
+
+#endregion
+
 namespace GameTest
 {
-    [Binding]
+	[Binding]
 	[Scope(Feature = "WeaponChancesTable")]
-    public class WeaponChancesTableSteps
-    {
-        VGame.Project.FishHunter.WeaponChancesTable _WeaponChancesTable;
-        [Given(@"武器清單是")]
-        public void Given武器清單是(Table table)
-        {
-            _WeaponChancesTable = new VGame.Project.FishHunter.WeaponChancesTable(_ToData(table));
-        }
+	public class WeaponChancesTableSteps
+	{
+		private WeaponChancesTable _WeaponChancesTable;
 
-        private VGame.Project.FishHunter.WeaponChancesTable.Data[] _ToData(Table table)
-        {
-            var datas = table.CreateSet<VGame.Project.FishHunter.WeaponChancesTable.Data>();
+		[Given(@"武器清單是")]
+		public void Given武器清單是(Table table)
+		{
+			_WeaponChancesTable = new WeaponChancesTable(_ToData(table));
+		}
 
-            return datas.ToArray();
-        }
-        
-        [When(@"機率是""(.*)""")]
-        public void When機率是(Decimal p0)
-        {
-            
-            var id = _WeaponChancesTable.Dice(float.Parse(p0.ToString()));
-            ScenarioContext.Current.Set<int>(id, "WeaponId");
-        }
-               
-        
-        [Then(@"武器是(.*)")]
-        public void Then武器是(int p0)
-        {
-            var weapon = ScenarioContext.Current.Get<int>("WeaponId");
-            Microsoft.VisualStudio.TestTools.UnitTesting.Assert.AreEqual(p0, weapon);
-        }
-    }
+		private ChancesTable<int>.Data[] _ToData(Table table)
+		{
+			var datas = table.CreateSet<ChancesTable<int>.Data>();
+
+			return datas.ToArray();
+		}
+
+		[When(@"機率是""(.*)""")]
+		public void When機率是(decimal p0)
+		{
+			var id = _WeaponChancesTable.Dice(float.Parse(p0.ToString()));
+			ScenarioContext.Current.Set(id, "WeaponId");
+		}
+
+		[Then(@"武器是(.*)")]
+		public void Then武器是(int p0)
+		{
+			var weapon = ScenarioContext.Current.Get<int>("WeaponId");
+			Assert.AreEqual(p0, weapon);
+		}
+	}
 }

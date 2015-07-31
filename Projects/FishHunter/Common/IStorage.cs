@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="IStorage.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the IStorage type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace VGame.Project.FishHunter
+namespace VGame.Project.FishHunter.Common
 {
-    public interface IStorage : IAccountFinder, IAccountManager , IRecordQueriers, ITradeNotes
-    {
-
-    }
+	public interface IStorage : IAccountFinder, IAccountManager, IRecordQueriers, ITradeNotes
+	{
+	}
 }

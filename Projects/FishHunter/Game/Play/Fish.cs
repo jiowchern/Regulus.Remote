@@ -1,20 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Fish.cs" company="Regulus Framework">
+//   Regulus Framework
+// </copyright>
+// <summary>
+//   Defines the Fish type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace VGame.Project.FishHunter.Play
 {
-    class Fish
-    {
-        private short id;
+	internal class Fish
+	{
+		private readonly short id;
 
-        public Fish(short id)
-        {
-            // TODO: Complete member initialization
-            this.id = id;
-        }
+		public int Id
+		{
+			get { return id; }
+		}
 
-        public int Id { get { return id; } }
-    }
+		public Fish(short id)
+		{
+			// TODO: Complete member initialization
+			this.id = id;
+		}
+	}
 }

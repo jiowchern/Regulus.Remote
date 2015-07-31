@@ -1,12 +1,20 @@
-﻿using System;
-using System.Linq;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="FishHitAllocateSteps.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the FishHitAllocateSteps type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
 
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
-using VGame.Project.FishHunter;
-using VGame.Project.FishHunter.ZsFormula;
 using VGame.Project.FishHunter.ZsFormula.DataStructs;
+
+#endregion
 
 namespace GameTest
 {
@@ -23,26 +31,21 @@ namespace GameTest
 
 			_FishHitAllocateTable = new FishHitAllocateTable(datas);
 		}
-		
+
 		[When(@"擊中數量是(.*)")]
 		public void When擊中數量是(int hit_number)
 		{
 			ScenarioContext.Current.Set(hit_number, "key");
-			
 		}
-		
+
 		[Then(@"取出資料為")]
 		public void Then取出資料為(Table table)
 		{
 			var hitnumber = ScenarioContext.Current.Get<int>("key");
-			
+
 			var data = _FishHitAllocateTable.GetAllocateData(hitnumber);
 
 			table.CompareToInstance(data);
 		}
 	}
 }
-
-
-
-

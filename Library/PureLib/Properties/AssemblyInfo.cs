@@ -1,6 +1,19 @@
-﻿using System.Reflection;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AssemblyInfo.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   AssemblyInfo.cs
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+
+#endregion
 
 // 組件的一般資訊是由下列的屬性集控制。
 // 變更這些屬性的值即可修改組件的相關
@@ -23,16 +36,14 @@ using System.Runtime.InteropServices;
 [assembly: Guid("65d2641f-e723-4dfe-afa9-d850559ac44c")]
 
 // 組件的版本資訊是由下列四項值構成:
-//
 //      主要版本
 //      次要版本 
 //      組建編號
 //      修訂編號
-//
 // 您可以指定所有的值，也可以依照以下的方式，使用 '*' 將組建和修訂編號
 // 指定為預設值:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.0.0.1")] 
-[assembly: AssemblyFileVersion("0.0.74.2")]             
+[assembly: AssemblyVersion("0.1.0.1")]
+[assembly: AssemblyFileVersion("0.0.94.2")]
 [assembly: AssemblyInformationalVersion("0.0.8.3")]
-[assembly: InternalsVisibleToAttribute("PureLibTest")] 
+[assembly: InternalsVisibleTo("RegulusLibraryTest")]

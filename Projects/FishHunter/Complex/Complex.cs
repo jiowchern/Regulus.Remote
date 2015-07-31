@@ -1,230 +1,248 @@
-﻿
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Complex.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the Complex type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Regulus.Extension;
-using VGame.Project.FishHunter;
+using System.IO;
+using System.Net;
 
-namespace VGame.Project.FishHunter.Play
+using Regulus.Framework;
+using Regulus.Remoting;
+using Regulus.Utility;
+
+using VGame.Project.FishHunter.Formula;
+using VGame.Project.FishHunter.Storage;
+
+using Center = VGame.Project.FishHunter.Play.Center;
+using IUser = VGame.Project.FishHunter.Formula.IUser;
+
+#endregion
+
+namespace VGame.Project.FishHunter
 {
+	public class Complex : ICore
+	{
+		private readonly LogFileRecorder _LogRecorder;
 
-    public class Complex : Regulus.Remoting.ICore
-    {
-        Regulus.Utility.StageMachine _Machine;
-        Regulus.Utility.Updater _Updater;
-        VGame.Project.FishHunter.Storage.Proxy _Storage;
-        VGame.Project.FishHunter.Formula.Client _Formula;
-        VGame.Project.FishHunter.Play.Center _Center;
+		private readonly StageMachine _Machine;
 
-        Regulus.CustomType.Verify _StorageVerifyData;
-        Regulus.CustomType.Verify _FormulaVerifyData;
-        
-        Regulus.Remoting.ICore _Core { get { return _Center; } }
-        Storage.IUser _StorageUser;
-        Formula.IUser _FormulaUser;
+		private readonly Updater _Updater;
 
-        Regulus.Utility.LogFileRecorder _LogRecorder;
-        public Complex()
-        {
-            _LogRecorder = new Regulus.Utility.LogFileRecorder("Play");            
+		private Center _Center;
 
-            _StorageVerifyData = new Regulus.CustomType.Verify();
-            _FormulaVerifyData = new Regulus.CustomType.Verify();
-            _Machine = new Regulus.Utility.StageMachine();
-            _Updater = new Regulus.Utility.Updater();
+		private Client _Formula;
 
-            _BuildParams();
-            _BuildUser();
-        }
-        private void _BuildParams()
-        {
-            Regulus.Utility.Ini config = new Regulus.Utility.Ini(_ReadConfig());
+		private IUser _FormulaUser;
 
-            _StorageVerifyData.IPAddress = config.Read("Storage", "ipaddr");
-            _StorageVerifyData.Port = int.Parse(config.Read("Storage", "port"));
-            _StorageVerifyData.Account = config.Read("Storage", "account");
-            _StorageVerifyData.Password = config.Read("Storage", "password");
+		private Regulus.CustomType.Verify _FormulaVerifyData;
 
-            _FormulaVerifyData.IPAddress = config.Read("Formula", "ipaddr");
-            _FormulaVerifyData.Port = int.Parse(config.Read("Formula", "port"));
-            _FormulaVerifyData.Account = config.Read("Formula", "account");
-            _FormulaVerifyData.Password = config.Read("Formula", "password");
-        }
-        private void _BuildUser()
-        {
-            if(_IsIpAddress(_FormulaVerifyData.IPAddress))
-            {
-                _Formula = new VGame.Project.FishHunter.Formula.Client();
-                _Formula.Selector.AddFactoty("remoting", new VGame.Project.FishHunter.Formula.RemotingUserFactory());
-                _FormulaUser = _Formula.Selector.CreateUserProvider("remoting").Spawn("1");
-            }
-            else
-            {
-                var center = new VGame.Project.FishHunter.Formula.Center( new VGame.Project.FishHunter.Formula.StorageController( new DummyFrature() ));
-                _Updater.Add(center);
-                _Formula = new VGame.Project.FishHunter.Formula.Client();
-                _Formula.Selector.AddFactoty("remoting", new VGame.Project.FishHunter.Formula.StandalongUserFactory(center));                
-                _FormulaUser = _Formula.Selector.CreateUserProvider("remoting").Spawn("1");
-                
-            }
+		private Proxy _Storage;
 
-            if (_IsIpAddress(_StorageVerifyData.IPAddress))
-            {
-                
-                
-                _Storage = new VGame.Project.FishHunter.Storage.Proxy(new VGame.Project.FishHunter.Storage.RemotingFactory());
-                _StorageUser = _Storage.SpawnUser("user");
-            }
-            else
-            {
+		private Storage.IUser _StorageUser;
 
-                var center = new VGame.Project.FishHunter.Storage.Center( new DummyFrature() );
-                _Updater.Add(center);
-                var factory = new VGame.Project.FishHunter.Storage.StandalongFactory(center);
-                _Storage = new VGame.Project.FishHunter.Storage.Proxy(factory);
-                _StorageUser = _Storage.SpawnUser("user");
-            }
-            
-        }
+		private Regulus.CustomType.Verify _StorageVerifyData;
 
-        private bool _IsIpAddress(string ip)
-        {
-            System.Net.IPAddress ipaddr;
-            return System.Net.IPAddress.TryParse(ip, out ipaddr);
-        }
+		private ICore _Core
+		{
+			get { return this._Center; }
+		}
 
-        void Regulus.Remoting.ICore.AssignBinder(Regulus.Remoting.ISoulBinder binder)
-        {
-            _Core.AssignBinder(binder);
-        }
+		public Complex()
+		{
+			this._LogRecorder = new LogFileRecorder("Play");
 
-        bool Regulus.Utility.IUpdatable.Update()
-        {
-            _Updater.Working();
-            _Machine.Update();
-            return true;
-        }
-        void Regulus.Framework.IBootable.Shutdown()
-        {            
-            _Updater.Shutdown();
-            Regulus.Utility.Log.Instance.RecordEvent -= _LogRecorder.Record;
-            AppDomain.CurrentDomain.UnhandledException -= CurrentDomain_UnhandledException;
-        }
+			this._StorageVerifyData = new Regulus.CustomType.Verify();
+			this._FormulaVerifyData = new Regulus.CustomType.Verify();
+			this._Machine = new StageMachine();
+			this._Updater = new Updater();
 
-        
-        void Regulus.Framework.IBootable.Launch()
-        {
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            Regulus.Utility.Log.Instance.RecordEvent += _LogRecorder.Record;                                  
-            _Updater.Add(_Storage);
-            _Updater.Add(_Formula);
-            _ToConnectStorage(_StorageUser);            
-        }
+			this._BuildParams();
+			this._BuildUser();
+		}
 
-        void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            var ex =(Exception)e.ExceptionObject;
-            _LogRecorder.Record(ex.ToString());
-            _LogRecorder.Save();
-        }
+		void ICore.AssignBinder(ISoulBinder binder)
+		{
+			this._Core.AssignBinder(binder);
+		}
 
-        private void _ToConnectStorage(Storage.IUser user)
-        {            
-            var stage = new VGame.Project.FishHunter.ConnectStorageStage(user, _StorageVerifyData.IPAddress , _StorageVerifyData.Port);
-            stage.DoneEvent += _ConnectResult;
-            _Machine.Push(stage);
-        }
+		bool IUpdatable.Update()
+		{
+			this._Updater.Working();
+			this._Machine.Update();
+			return true;
+		}
 
-        private void _ConnectResult(bool result)
-        {
-            if (result)
-            {
-                _ToVerifyStorage(_StorageUser);
-            }
-            else
-                throw new SystemException("stroage connect fail");
+		void IBootable.Shutdown()
+		{
+			this._Updater.Shutdown();
+			Singleton<Log>.Instance.RecordEvent -= this._LogRecorder.Record;
+			AppDomain.CurrentDomain.UnhandledException -= this.CurrentDomain_UnhandledException;
+		}
 
-        }
+		void IBootable.Launch()
+		{
+			AppDomain.CurrentDomain.UnhandledException += this.CurrentDomain_UnhandledException;
+			Singleton<Log>.Instance.RecordEvent += this._LogRecorder.Record;
+			this._Updater.Add(this._Storage);
+			this._Updater.Add(this._Formula);
+			this._ToConnectStorage(this._StorageUser);
+		}
 
-        private void _ToVerifyStorage(Storage.IUser user)
-        {
-            var stage = new VGame.Project.FishHunter.VerifyStorageStage(user, _StorageVerifyData.Account, _StorageVerifyData.Password);
-            stage.DoneEvent += _VerifyResult;
-            _Machine.Push(stage);
-        }
+		private void _BuildParams()
+		{
+			var config = new Ini(this._ReadConfig());
 
-        private void _VerifyResult(bool verify_result)
-        {
+			this._StorageVerifyData.IPAddress = config.Read("Storage", "ipaddr");
+			this._StorageVerifyData.Port = int.Parse(config.Read("Storage", "port"));
+			this._StorageVerifyData.Account = config.Read("Storage", "account");
+			this._StorageVerifyData.Password = config.Read("Storage", "password");
 
-            if (verify_result)
-            {
-                _ToConnectFormula();
-            }
-            else
-                throw new SystemException("stroage verify fail");
-        }
+			this._FormulaVerifyData.IPAddress = config.Read("Formula", "ipaddr");
+			this._FormulaVerifyData.Port = int.Parse(config.Read("Formula", "port"));
+			this._FormulaVerifyData.Account = config.Read("Formula", "account");
+			this._FormulaVerifyData.Password = config.Read("Formula", "password");
+		}
 
-        private void _ToConnectFormula()
-        {
+		private void _BuildUser()
+		{
+			if (this._IsIpAddress(this._FormulaVerifyData.IPAddress))
+			{
+				this._Formula = new Client();
+				this._Formula.Selector.AddFactoty("remoting", new RemotingUserFactory());
+				this._FormulaUser = this._Formula.Selector.CreateUserProvider("remoting").Spawn("1");
+			}
+			else
+			{
+				var center = new Formula.Center(new StorageController(new DummyFrature()));
+				this._Updater.Add(center);
+				this._Formula = new Client();
+				this._Formula.Selector.AddFactoty("remoting", new StandalongUserFactory(center));
+				this._FormulaUser = this._Formula.Selector.CreateUserProvider("remoting").Spawn("1");
+			}
 
-            var stage = new Regulus.Utility.ConnectStage(_FormulaUser.Remoting.ConnectProvider , _FormulaVerifyData.IPAddress , _FormulaVerifyData.Port );
+			if (this._IsIpAddress(this._StorageVerifyData.IPAddress))
+			{
+				this._Storage = new Proxy(new RemotingFactory());
+				this._StorageUser = this._Storage.SpawnUser("user");
+			}
+			else
+			{
+				var center = new Storage.Center(new DummyFrature());
+				this._Updater.Add(center);
+				var factory = new StandalongFactory(center);
+				this._Storage = new Proxy(factory);
+				this._StorageUser = this._Storage.SpawnUser("user");
+			}
+		}
 
-            stage.SuccessEvent += _ToFormulaVerify;
-            stage.FailEvent += _FormulaConnectFail;
-            _Machine.Push(stage);
-        }
-        
+		private bool _IsIpAddress(string ip)
+		{
+			IPAddress ipaddr;
+			return IPAddress.TryParse(ip, out ipaddr);
+		}
 
-        private void _ToFormulaVerify()
-        {
-            var stage = new VGame.Project.FishHunter.VerifyStage(_FormulaUser.VerifyProvider , _FormulaVerifyData.Account , _FormulaVerifyData.Password );
+		private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+		{
+			var ex = (Exception)e.ExceptionObject;
+			this._LogRecorder.Record(ex.ToString());
+			this._LogRecorder.Save();
+		}
 
-            stage.SuccessEvent += _ToBuildClient;
-            stage.FailEvent += _FormulaVerifyFail;
-            _Machine.Push(stage);
-        }
+		private void _ToConnectStorage(Storage.IUser user)
+		{
+			var stage = new ConnectStorageStage(user, this._StorageVerifyData.IPAddress, this._StorageVerifyData.Port);
+			stage.DoneEvent += this._ConnectResult;
+			this._Machine.Push(stage);
+		}
 
-        private void _ToBuildClient()
-        {
-            var stage = new VGame.Project.FishHunter.Play.BuildCenterStage(_FormulaUser, _StorageUser);
+		private void _ConnectResult(bool result)
+		{
+			if (result)
+			{
+				this._ToVerifyStorage(this._StorageUser);
+			}
+			else
+			{
+				throw new SystemException("stroage connect fail");
+			}
+		}
 
-            stage.BuiledEvent += _Play;
-            
-            _Machine.Push(stage);
-        }
+		private void _ToVerifyStorage(Storage.IUser user)
+		{
+			var stage = new VerifyStorageStage(user, this._StorageVerifyData.Account, this._StorageVerifyData.Password);
+			stage.DoneEvent += this._VerifyResult;
+			this._Machine.Push(stage);
+		}
 
-        private void _Play(BuildCenterStage.ExternalFeature features)
-        {
-            _Center = new Center(features.AccountFinder, features.FishStageQueryer, features.RecordQueriers, features.TradeAccount);
+		private void _VerifyResult(bool verify_result)
+		{
+			if (verify_result)
+			{
+				this._ToConnectFormula();
+			}
+			else
+			{
+				throw new SystemException("stroage verify fail");
+			}
+		}
 
-            _Updater.Add(_Center);
-        }
+		private void _ToConnectFormula()
+		{
+			var stage = new ConnectStage(this._FormulaUser.Remoting.ConnectProvider, this._FormulaVerifyData.IPAddress, 
+				this._FormulaVerifyData.Port);
 
-       
+			stage.SuccessEvent += this._ToFormulaVerify;
+			stage.FailEvent += this._FormulaConnectFail;
+			this._Machine.Push(stage);
+		}
 
-        private void _FormulaVerifyFail()
-        {
-            throw new SystemException("formula verify fail");
-        }
+		private void _ToFormulaVerify()
+		{
+			var stage = new VerifyStage(this._FormulaUser.VerifyProvider, this._FormulaVerifyData.Account, 
+				this._FormulaVerifyData.Password);
 
-        private void _FormulaConnectFail()
-        {
-            throw new SystemException("formula connect fail");
-        }
+			stage.SuccessEvent += this._ToBuildClient;
+			stage.FailEvent += this._FormulaVerifyFail;
+			this._Machine.Push(stage);
+		}
 
-        
+		private void _ToBuildClient()
+		{
+			var stage = new BuildCenterStage(this._FormulaUser, this._StorageUser);
 
-        
+			stage.BuiledEvent += this._Play;
 
-        
+			this._Machine.Push(stage);
+		}
 
-        private string _ReadConfig()
-        {
-            return System.IO.File.ReadAllText("config.ini");
-        }
+		private void _Play(BuildCenterStage.ExternalFeature features)
+		{
+			this._Center = new Center(features.AccountFinder, features.FishStageQueryer, features.RecordQueriers, 
+				features.TradeAccount);
 
-        
-    }
+			this._Updater.Add(this._Center);
+		}
+
+		private void _FormulaVerifyFail()
+		{
+			throw new SystemException("formula verify fail");
+		}
+
+		private void _FormulaConnectFail()
+		{
+			throw new SystemException("formula connect fail");
+		}
+
+		private string _ReadConfig()
+		{
+			return File.ReadAllText("config.ini");
+		}
+	}
 }

@@ -1,23 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Regulus.Remoting.Native.Soul;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ControllerStageRun.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the ParallelUpdate type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
+#region Test_Region
+
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Sockets;
+using System.Threading;
+
+using Regulus.Utility;
+
+using Console = Regulus.Utility.Console;
+
+#endregion
 
 namespace Regulus.Remoting.Soul.Native
 {
-    
-    class ParallelUpdate : Regulus.Utility.Launcher<Regulus.Utility.IUpdatable>
-    {
-        
-        public ParallelUpdate()
-        {
-            
-        }
-        public void Update()
-        {
-            /*var exceptions = new System.Collections.Concurrent.ConcurrentQueue<Exception>();
+	internal class ParallelUpdate : Launcher<IUpdatable>
+	{
+		public void Update()
+		{
+			/*var exceptions = new System.Collections.Concurrent.ConcurrentQueue<Exception>();
 
             Parallel.ForEach(base._GetObjectSet(), (updater) => 
             {
@@ -30,291 +40,314 @@ namespace Regulus.Remoting.Soul.Native
 
             if (exceptions.Count > 0) 
                 throw new AggregateException(exceptions);*/
-            foreach(var up in base._GetObjectSet())
-            {
-                _Update(up);
-            }
-        }
+			foreach (var up in this._GetObjectSet())
+			{
+				this._Update(up);
+			}
+		}
 
-        private void _Update(Regulus.Utility.IUpdatable updater)
-        {
-            bool result = false;
-            
-            result = updater.Update();
+		private void _Update(IUpdatable updater)
+		{
+			var result = false;
 
-            if (result == false)
-            {
-                Remove(updater);
-            }            
-        }
-    }
+			result = updater.Update();
 
-    class ThreadCoreHandler
-    {
+			if (result == false)
+			{
+				this.Remove(updater);
+			}
+		}
+	}
 
-        
-        Regulus.Utility.Updater _RequesterHandlers;
-        Regulus.Utility.PowerRegulator _Spin;
-        
-        Regulus.Remoting.ICore _Core;
-        Queue<ISoulBinder> _Binders;
-       
-        volatile bool _Run;
-                
-        public int FPS { get { return _Spin.FPS; } }
+	internal class ThreadCoreHandler
+	{
+		private readonly Queue<ISoulBinder> _Binders;
 
-        public float Power { get { return _Spin.Power; } }
-        
-        public ThreadCoreHandler(Regulus.Remoting.ICore core )
-        {
-            if (core == null)
-            {
-                throw new ArgumentNullException();
-            }
+		private readonly ICore _Core;
 
-            _Core = core;
+		private readonly Updater _RequesterHandlers;
 
-            _RequesterHandlers = new Utility.Updater();
-            _Spin = new Utility.PowerRegulator();
-            _Binders = new Queue<ISoulBinder>();
-        }
+		private readonly PowerRegulator _Spin;
 
-        public void DoWork(object obj)
-        {
-            Regulus.Utility.Log.Instance.WriteInfo(string.Format("server core launch"));
-            _Run = true;
-            _Core.Launch();
+		private volatile bool _Run;
 
-            while (_Run )
-            {
-                if (_Binders.Count > 0)
-                {
-                    lock (_Binders)
-                    {
-                        while (_Binders.Count > 0)
-                        {
-                            var provider = _Binders.Dequeue();
-                            _Core.AssignBinder(provider);
-                        }
-                    }
-                }
+		public int FPS
+		{
+			get { return this._Spin.FPS; }
+		}
 
-                _Core.Update();
-                _RequesterHandlers.Working();                
-                _Spin.Operate(Peer.TotalResponse);
-            }
-            _Core.Shutdown();
+		public float Power
+		{
+			get { return this._Spin.Power; }
+		}
 
-            Regulus.Utility.Log.Instance.WriteInfo(string.Format("server core shutdown"));
-        }
+		public ThreadCoreHandler(ICore core)
+		{
+			if (core == null)
+			{
+				throw new ArgumentNullException();
+			}
 
-        public void Stop()
-        {
-            _Run = false;
-        }
+			this._Core = core;
 
-        internal void Push(ISoulBinder soulBinder , Regulus.Utility.IUpdatable handler)
-        {            
-            _RequesterHandlers.Add(handler);
+			this._RequesterHandlers = new Updater();
+			this._Spin = new PowerRegulator();
+			this._Binders = new Queue<ISoulBinder>();
+		}
 
-            lock (_Binders)
-            {
-                _Binders.Enqueue(soulBinder);
-            }
-        }
-    }
+		public void DoWork(object obj)
+		{
+			Singleton<Log>.Instance.WriteInfo("server core launch");
+			this._Run = true;
+			this._Core.Launch();
 
+			while (this._Run)
+			{
+				if (this._Binders.Count > 0)
+				{
+					lock (this._Binders)
+					{
+						while (this._Binders.Count > 0)
+						{
+							var provider = this._Binders.Dequeue();
+							this._Core.AssignBinder(provider);
+						}
+					}
+				}
 
-    class ThreadSocketHandler
-    {
-        System.Net.Sockets.Socket _Socket;
-        System.Collections.Generic.Queue<System.Net.Sockets.Socket> _Sockets;
-        ThreadCoreHandler _CoreHandler;
+				this._Core.Update();
+				this._RequesterHandlers.Working();
+				this._Spin.Operate(Peer.TotalResponse);
+			}
 
-        PeerSet _Peers;
-        
-        //ParallelUpdate _Peers;
+			this._Core.Shutdown();
 
-        Regulus.Utility.PowerRegulator _Spin;
-        
-        int _Port;
-        volatile bool _Run;
-        
-        public int FPS { get { return _Spin.FPS; } }
+			Singleton<Log>.Instance.WriteInfo("server core shutdown");
+		}
 
-        public float Power { get { return _Spin.Power; } }
+		public void Stop()
+		{
+			this._Run = false;
+		}
 
-        public int PeerCount { get { return _Peers.Count; } }
+		internal void Push(ISoulBinder soulBinder, IUpdatable handler)
+		{
+			this._RequesterHandlers.Add(handler);
 
-        public ThreadSocketHandler(int port , ThreadCoreHandler core_handler)
-        {
-            _CoreHandler = core_handler;
-            _Port = port;
-            
-            _Sockets = new Queue<System.Net.Sockets.Socket>();
-
-            _Peers = new PeerSet();
-            
-            _Spin = new Utility.PowerRegulator();
-            
-        }
-        public void DoWork(object obj)
-        {
-            Regulus.Utility.Log.Instance.WriteInfo(string.Format("server socket launch"));
-            System.Threading.AutoResetEvent are = (System.Threading.AutoResetEvent)obj;
-            _Run = true;
-
-            _Socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
-            _Socket.NoDelay = true;
-
-            //_Socket.SetSocketOption(System.Net.Sockets.SocketOptionLevel.Socket, System.Net.Sockets.SocketOptionName.ReuseAddress, true);
-            _Socket.Bind(new System.Net.IPEndPoint(System.Net.IPAddress.Any, _Port));
-            _Socket.Listen(5);            
-            _Socket.BeginAccept(_Accept, null);
-            
-            while (_Run)
-            {
-                if (_Sockets.Count > 0)
-                {
-                    lock (_Sockets)
-                    {
-                        while (_Sockets.Count > 0)
-                        {
-                            var socket = _Sockets.Dequeue();
-                            
-                            Regulus.Utility.Log.Instance.WriteInfo(
-                                string.Format("socket accept Remot {0} Local {1} .", socket.RemoteEndPoint.ToString(), socket.LocalEndPoint.ToString() ));
-                            var peer = new Peer(socket);
-
-                            _Peers.Join(peer);                            
-
-                            _CoreHandler.Push(peer.Binder , peer.Handler);                            
-                        }
-                    }
-                }
-
-                
-
-                _Spin.Operate(Peer.TotalRequest);                
-            }
-            _Peers.Release();
-
-            if (_Socket.Connected)
-                _Socket.Shutdown(System.Net.Sockets.SocketShutdown.Both);
-            _Socket.Close();
-
-            are.Set();
-            Regulus.Utility.Log.Instance.WriteInfo(string.Format("server socket shutdown"));
-        }
-
-        private void _Accept(IAsyncResult ar)
-        {
-            try
-            {
-                var socket = _Socket.EndAccept(ar);
-                lock (_Sockets)
-                {
-                    _Sockets.Enqueue(socket);
-                }
-                _Socket.BeginAccept(_Accept, null);
-            }                 
-        //   System.ArgumentNullException:
-        //     asyncResult 為 null。
-        //
-        //   System.ArgumentException:
-        //     asyncResult 不是透過呼叫 System.Net.Sockets.Socket.BeginAccept(System.AsyncCallback,System.Object)
-        //     所建立。
-        //
-        //   System.Net.Sockets.SocketException:
-        //     嘗試存取通訊端時發生錯誤。如需詳細資訊，請參閱備註章節。
-        //
-        //   System.ObjectDisposedException:
-        //     System.Net.Sockets.Socket 已經關閉。
-        //
-        //   System.InvalidOperationException:
-        //     先前已呼叫 System.Net.Sockets.Socket.EndAccept(System.IAsyncResult) 方法。
-            catch (System.Net.Sockets.SocketException se)
-            {
-                Regulus.Utility.Log.Instance.WriteInfo(se.ToString());                
-            }
-            catch (System.ObjectDisposedException ode)
-            {
-                Regulus.Utility.Log.Instance.WriteInfo(ode.ToString());                
-            }
-            catch (System.InvalidOperationException ioe)
-            {
-                Regulus.Utility.Log.Instance.WriteInfo(ioe.ToString());                
-            }
-            catch (System.Exception e)
-            {
-                Regulus.Utility.Log.Instance.WriteInfo(e.ToString());                
-            }
-        }
-
-        public void Stop()
-        {
-            _Run = false;
-        }
-    }
-
-    class StageRun : Regulus.Utility.IStage
-    {
-        Regulus.Utility.Command _Command;
-        Regulus.Utility.Console.IViewer _View;
-        Regulus.Utility.Launcher _Launcher;
-
-        Server _Server;
-        
-        public event Action ShutdownEvent;
-        
-        public StageRun(Regulus.Remoting.ICore core, Utility.Command command, int port, Utility.Console.IViewer viewer)
-        {            
-            _View = viewer;
-            this._Command = command;
-
-            _Server = new Server(core, port);
-            _Launcher = new Utility.Launcher();
-            _Launcher.Push(_Server);
-        }
-
-        void Utility.IStage.Enter()
-        {
-            _Launcher.Launch();
-            _Command.Register("FPS", () =>
-            {
-                _View.WriteLine("PeerFPS:" + _Server.PeerFPS.ToString());
-                _View.WriteLine("PeerCount:" + _Server.PeerCount.ToString());
-                _View.WriteLine("CoreFPS:" + _Server.CoreFPS.ToString());
+			lock (this._Binders)
+			{
+				this._Binders.Enqueue(soulBinder);
+			}
+		}
+	}
 
 
-                _View.WriteLine(string.Format("PeerUsage:{0:0.00%}", _Server.PeerUsage));
-                _View.WriteLine(string.Format("CoreUsage:{0:0.00%}", _Server.CoreUsage));                                
+	internal class ThreadSocketHandler
+	{
+		private readonly ThreadCoreHandler _CoreHandler;
 
-                _View.WriteLine("\nTotalReadBytes:" + string.Format("{0:N0}", NetworkMonitor.Instance.Read.TotalBytes));
-                _View.WriteLine("TotalWriteBytes:" + string.Format("{0:N0}", NetworkMonitor.Instance.Write.TotalBytes));
-                _View.WriteLine("\nSecondReadBytes:" + string.Format("{0:N0}", NetworkMonitor.Instance.Read.SecondBytes));
-                _View.WriteLine("SecondWriteBytes:" + string.Format("{0:N0}", NetworkMonitor.Instance.Write.SecondBytes));
-                _View.WriteLine("\nRequest Queue:" + Peer.TotalRequest.ToString());
-                _View.WriteLine("Response Queue:" + Peer.TotalResponse.ToString());
-            });
-            _Command.Register("Shutdown", _ShutdownEvent);
-        }
+		private readonly PeerSet _Peers;
 
-        void Utility.IStage.Leave()
-        {
-            _Launcher.Shutdown();
+		private readonly int _Port;
 
-            _Command.Unregister("Shutdown");
-            _Command.Unregister("FPS");
-        }
+		private readonly Queue<Socket> _Sockets;
 
-        void Utility.IStage.Update()
-        {
+		// ParallelUpdate _Peers;
+		private readonly PowerRegulator _Spin;
 
-        }
-        private void _ShutdownEvent()
-        {
-            ShutdownEvent();
-        }
-    }
+		private volatile bool _Run;
+
+		private Socket _Socket;
+
+		public int FPS
+		{
+			get { return this._Spin.FPS; }
+		}
+
+		public float Power
+		{
+			get { return this._Spin.Power; }
+		}
+
+		public int PeerCount
+		{
+			get { return this._Peers.Count; }
+		}
+
+		public ThreadSocketHandler(int port, ThreadCoreHandler core_handler)
+		{
+			this._CoreHandler = core_handler;
+			this._Port = port;
+
+			this._Sockets = new Queue<Socket>();
+
+			this._Peers = new PeerSet();
+
+			this._Spin = new PowerRegulator();
+		}
+
+		public void DoWork(object obj)
+		{
+			Singleton<Log>.Instance.WriteInfo("server socket launch");
+			var are = (AutoResetEvent)obj;
+			this._Run = true;
+
+			this._Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+			this._Socket.NoDelay = true;
+
+			// _Socket.SetSocketOption(System.Net.Sockets.SocketOptionLevel.Socket, System.Net.Sockets.SocketOptionName.ReuseAddress, true);
+			this._Socket.Bind(new IPEndPoint(IPAddress.Any, this._Port));
+			this._Socket.Listen(5);
+			this._Socket.BeginAccept(this._Accept, null);
+
+			while (this._Run)
+			{
+				if (this._Sockets.Count > 0)
+				{
+					lock (this._Sockets)
+					{
+						while (this._Sockets.Count > 0)
+						{
+							var socket = this._Sockets.Dequeue();
+
+							Singleton<Log>.Instance.WriteInfo(
+								string.Format("socket accept Remot {0} Local {1} .", socket.RemoteEndPoint, socket.LocalEndPoint));
+							var peer = new Peer(socket);
+
+							this._Peers.Join(peer);
+
+							this._CoreHandler.Push(peer.Binder, peer.Handler);
+						}
+					}
+				}
+
+				this._Spin.Operate(Peer.TotalRequest);
+			}
+
+			this._Peers.Release();
+
+			if (this._Socket.Connected)
+			{
+				this._Socket.Shutdown(SocketShutdown.Both);
+			}
+
+			this._Socket.Close();
+
+			are.Set();
+			Singleton<Log>.Instance.WriteInfo("server socket shutdown");
+		}
+
+		private void _Accept(IAsyncResult ar)
+		{
+			try
+			{
+				var socket = this._Socket.EndAccept(ar);
+				lock (this._Sockets)
+				{
+					this._Sockets.Enqueue(socket);
+				}
+
+				this._Socket.BeginAccept(this._Accept, null);
+			}
+
+				// System.ArgumentNullException:
+				// asyncResult 為 null。
+				// System.ArgumentException:
+				// asyncResult 不是透過呼叫 System.Net.Sockets.Socket.BeginAccept(System.AsyncCallback,System.Object)
+				// 所建立。
+				// System.Net.Sockets.SocketException:
+				// 嘗試存取通訊端時發生錯誤。如需詳細資訊，請參閱備註章節。
+				// System.ObjectDisposedException:
+				// System.Net.Sockets.Socket 已經關閉。
+				// System.InvalidOperationException:
+				// 先前已呼叫 System.Net.Sockets.Socket.EndAccept(System.IAsyncResult) 方法。
+			catch (SocketException se)
+			{
+				Singleton<Log>.Instance.WriteInfo(se.ToString());
+			}
+			catch (ObjectDisposedException ode)
+			{
+				Singleton<Log>.Instance.WriteInfo(ode.ToString());
+			}
+			catch (InvalidOperationException ioe)
+			{
+				Singleton<Log>.Instance.WriteInfo(ioe.ToString());
+			}
+			catch (Exception e)
+			{
+				Singleton<Log>.Instance.WriteInfo(e.ToString());
+			}
+		}
+
+		public void Stop()
+		{
+			this._Run = false;
+		}
+	}
+
+	internal class StageRun : IStage
+	{
+		public event Action ShutdownEvent;
+
+		private readonly Command _Command;
+
+		private readonly Launcher _Launcher;
+
+		private readonly Server _Server;
+
+		private readonly Console.IViewer _View;
+
+		public StageRun(ICore core, Command command, int port, Console.IViewer viewer)
+		{
+			this._View = viewer;
+			this._Command = command;
+
+			this._Server = new Server(core, port);
+			this._Launcher = new Launcher();
+			this._Launcher.Push(this._Server);
+		}
+
+		void IStage.Enter()
+		{
+			this._Launcher.Launch();
+			this._Command.Register("FPS", () =>
+			{
+				this._View.WriteLine("PeerFPS:" + this._Server.PeerFPS);
+				this._View.WriteLine("PeerCount:" + this._Server.PeerCount);
+				this._View.WriteLine("CoreFPS:" + this._Server.CoreFPS);
+
+				this._View.WriteLine(string.Format("PeerUsage:{0:0.00%}", this._Server.PeerUsage));
+				this._View.WriteLine(string.Format("CoreUsage:{0:0.00%}", this._Server.CoreUsage));
+
+				this._View.WriteLine("\nTotalReadBytes:"
+				                     + string.Format("{0:N0}", Singleton<NetworkMonitor>.Instance.Read.TotalBytes));
+				this._View.WriteLine("TotalWriteBytes:"
+				                     + string.Format("{0:N0}", Singleton<NetworkMonitor>.Instance.Write.TotalBytes));
+				this._View.WriteLine("\nSecondReadBytes:"
+				                     + string.Format("{0:N0}", Singleton<NetworkMonitor>.Instance.Read.SecondBytes));
+				this._View.WriteLine("SecondWriteBytes:"
+				                     + string.Format("{0:N0}", Singleton<NetworkMonitor>.Instance.Write.SecondBytes));
+				this._View.WriteLine("\nRequest Queue:" + Peer.TotalRequest);
+				this._View.WriteLine("Response Queue:" + Peer.TotalResponse);
+			});
+			this._Command.Register("Shutdown", this._ShutdownEvent);
+		}
+
+		void IStage.Leave()
+		{
+			this._Launcher.Shutdown();
+
+			this._Command.Unregister("Shutdown");
+			this._Command.Unregister("FPS");
+		}
+
+		void IStage.Update()
+		{
+		}
+
+		private void _ShutdownEvent()
+		{
+			this.ShutdownEvent();
+		}
+	}
 }

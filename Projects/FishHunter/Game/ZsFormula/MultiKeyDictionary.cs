@@ -7,10 +7,13 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+#region Test_Region
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
+#endregion
 
 namespace VGame.Project.FishHunter.ZsFormula
 {

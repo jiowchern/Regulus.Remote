@@ -1,31 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Program.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the Program type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using Regulus.Remoting.Soul.Native;
 using Regulus.Utility.WindowConsoleAppliction;
+
+#endregion
 
 namespace Server
 {
-    using Regulus.Utility.WindowConsoleAppliction;
-    class Program
-    {
-        
-        static void Main(string[] args)
-        {
-           
-
-
-            Regulus.Remoting.Soul.Native.Application app = new Regulus.Remoting.Soul.Native.Application();
-            app.Run();
-        }
-
-        
- 
- 
- 
-        
- 
-    
-        
-    }
+	internal class Program
+	{
+		private static void Main(string[] args)
+		{
+			var app = new Application();
+			app.Run();
+		}
+	}
 }

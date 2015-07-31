@@ -1,11 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="CallTester.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the CallTester type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace RemotingTest
 {
-    class CallTester
-    {
-    }
+	internal class CallTester
+	{
+	}
 }

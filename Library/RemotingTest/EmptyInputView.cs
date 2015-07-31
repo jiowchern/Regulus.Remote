@@ -1,26 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="EmptyInputView.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the EmptyInputView type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using Regulus.Utility;
+
+#endregion
 
 namespace RemotingTest
 {
-    class EmptyInputView : Regulus.Utility.Console.IInput, Regulus.Utility.Console.IViewer
-    {
-        void Regulus.Utility.Console.IViewer.WriteLine(string message)
-        {
-            
-        }
+	internal class EmptyInputView : Console.IInput, Console.IViewer
+	{
+		event Console.OnOutput Console.IInput.OutputEvent
+		{
+			add { }
+			remove { }
+		}
 
-        void Regulus.Utility.Console.IViewer.Write(string message)
-        {
-            
-        }
+		void Console.IViewer.WriteLine(string message)
+		{
+		}
 
-        event Regulus.Utility.Console.OnOutput Regulus.Utility.Console.IInput.OutputEvent
-        {
-            add {  }
-            remove {  }
-        }
-    }
+		void Console.IViewer.Write(string message)
+		{
+		}
+	}
 }

@@ -3,15 +3,18 @@
 //   Regulus Framework
 // </copyright>
 // <summary>
-//   Defines the WeaponDataTable type.
+//   Defines the WeaponOddsRuler type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+#region Test_Region
 
 using System.Collections.Generic;
 using System.Linq;
 
 using Regulus.Utility;
+
+#endregion
 
 namespace VGame.Project.FishHunter.ZsFormula.DataStructs
 {

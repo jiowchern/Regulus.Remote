@@ -7,9 +7,12 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+#region Test_Region
 
 using VGame.Project.FishHunter.ZsFormula.DataStructs;
 using VGame.Project.FishHunter.ZsFormula.Rules;
+
+#endregion
 
 namespace VGame.Project.FishHunter.ZsFormula
 {
@@ -84,7 +87,7 @@ namespace VGame.Project.FishHunter.ZsFormula
 		}
 
 		/// <summary>
-		/// // 只有第一發才能累積buffer
+		///     // 只有第一發才能累積buffer
 		/// </summary>
 		private void _CheckIsFirstFire()
 		{

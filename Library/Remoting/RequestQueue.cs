@@ -1,14 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="RequestQueue.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the IRequestQueue type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using System;
+
+#endregion
 
 namespace Regulus.Remoting
 {
-	public interface IRequestQueue	
+	public interface IRequestQueue
 	{
-		event Action<Guid, string, Guid, byte[][]> InvokeMethodEvent;
 		event Action BreakEvent;
+
+		event Action<Guid, string, Guid, byte[][]> InvokeMethodEvent;
 
 		void Update();
 	}

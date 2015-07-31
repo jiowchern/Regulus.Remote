@@ -1,54 +1,57 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="serializer_typehelper.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the TypeHelper type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+using System;
+using System.IO;
 using System.Text;
 
-///////////////////////////////////////////////////////////////////////////////////////
-/// 將物件轉成Serializer的元件
-///////////////////////////////////////////////////////////////////////////////////////
-namespace Regulus.Serializer
-{	
+namespace Regulus
+{
 	public class TypeHelper
 	{
 		public static void Yield()
 		{
-
 		}
-        public static byte[] StringToByteArray(string str)
-        {
-            return System.Text.Encoding.Default.GetBytes(str);
-        }
+
+		public static byte[] StringToByteArray(string str)
+		{
+			return Encoding.Default.GetBytes(str);
+		}
+
 		public static byte[] GuidToByteArray(Guid guid)
 		{
 			return guid.ToByteArray();
 		}
+
 		public static byte[] Serializer<T>(T o)
-		{            
-            using (System.IO.MemoryStream stream = new System.IO.MemoryStream())
-            {
-                ProtoBuf.Serializer.Serialize<T>(stream, o);
-                return stream.ToArray();
-            }
-
+		{
+			using (var stream = new MemoryStream())
+			{
+				ProtoBuf.Serializer.Serialize(stream, o);
+				return stream.ToArray();
+			}
 		}
 
-        
-        public static object DeserializeObject(Type type , byte[] b  )
-        {
+		public static object DeserializeObject(Type type, byte[] b)
+		{
+			using (var stream = new MemoryStream(b))
+			{
+				return ProtoBuf.Serializer.NonGeneric.Deserialize(type, stream);
+			}
+		}
 
-            
-            using (System.IO.MemoryStream stream = new System.IO.MemoryStream(b))
-            {
-                return ProtoBuf.Serializer.NonGeneric.Deserialize(type, stream);
-            }
-        }
 		public static T Deserialize<T>(byte[] b)
-		{            
-            using (System.IO.MemoryStream stream = new System.IO.MemoryStream(b))
-            {
-                return ProtoBuf.Serializer.Deserialize<T>(stream);
-            }
+		{
+			using (var stream = new MemoryStream(b))
+			{
+				return ProtoBuf.Serializer.Deserialize<T>(stream);
+			}
 		}
-		
 	}
 }

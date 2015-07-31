@@ -1,121 +1,131 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="NetworkMonitor.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the PackageRecorder type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using System.Threading;
+
+using Regulus.Framework;
+using Regulus.Utility;
+
+#endregion
 
 namespace Regulus.Remoting
 {
-    public class PackageRecorder : Regulus.Utility.IUpdatable
-    {
-        public delegate void ChangeCallback();
-        public event ChangeCallback ChangeEvent;
-        public Int64 TotalBytes { get; private set; }
+	public class PackageRecorder : IUpdatable
+	{
+		public event ChangeCallback ChangeEvent;
 
+		private readonly TimeCounter _Counter;
 
-        public Int64 _SecondBytes;
-        public Int64 SecondBytes { get; private set; }
-        Regulus.Utility.TimeCounter _Counter;
+		public long _SecondBytes;
 
-        public PackageRecorder()
-        {
-            _Counter = new Utility.TimeCounter();
-        }
+		public long TotalBytes { get; private set; }
 
-        internal void Set(int size)
-        {
-            lock (_Counter)
-            {
-                TotalBytes += size;
-                _SecondBytes += size;                
-                ChangeEvent();
-            }
-            
-        }
+		public long SecondBytes { get; private set; }
 
-        bool Utility.IUpdatable.Update()
-        {
-            lock (_Counter)
-            {
-                if (_Counter.Second > 1)
-                {
-                    SecondBytes = _SecondBytes;
-                    _SecondBytes = 0;
-                    _Counter.Reset();
-                }
-            }
-            
-            return true;
-        }
+		public PackageRecorder()
+		{
+			_Counter = new TimeCounter();
+		}
 
-        void Framework.IBootable.Launch()
-        {
-            lock (_Counter)
-                _Counter.Reset();
-        }
+		bool IUpdatable.Update()
+		{
+			lock (_Counter)
+			{
+				if (_Counter.Second > 1)
+				{
+					SecondBytes = _SecondBytes;
+					_SecondBytes = 0;
+					_Counter.Reset();
+				}
+			}
 
-        void Framework.IBootable.Shutdown()
-        {
-            lock (_Counter)
-                SecondBytes = 0;
-        }
-    }
+			return true;
+		}
 
-    public class NetworkMonitor : Regulus.Utility.Singleton<NetworkMonitor>
-    {
-        public PackageRecorder Read { get;private set; }
-        public PackageRecorder Write { get; private set; }
+		void IBootable.Launch()
+		{
+			lock (_Counter)
+				_Counter.Reset();
+		}
 
-        
-        volatile  bool _ThreadEnable = false;
-        volatile bool _Reset = false;
-        public NetworkMonitor()
-        {
-            Read = new PackageRecorder();
-            Read.ChangeEvent += _ResetTime;
-            Write = new PackageRecorder();
-            Write.ChangeEvent += _ResetTime;
-        }
+		void IBootable.Shutdown()
+		{
+			lock (_Counter)
+				SecondBytes = 0;
+		}
 
-        void _ResetTime()
-        {
-            if(_ThreadEnable == false)
-            {
-                _ThreadEnable = true;
-                System.Threading.ThreadPool.QueueUserWorkItem(_Update);
-                
-            }
+		public delegate void ChangeCallback();
 
-            _Reset = true;
-        }
+		internal void Set(int size)
+		{
+			lock (_Counter)
+			{
+				TotalBytes += size;
+				_SecondBytes += size;
+				ChangeEvent();
+			}
+		}
+	}
 
-        private void _Update(object state)
-        {
-            var updater = new Regulus.Utility.Updater();
-            updater.Add(Read);
-            updater.Add(Write);
+	public class NetworkMonitor : Singleton<NetworkMonitor>
+	{
+		private volatile bool _Reset;
 
-            
-            Regulus.Utility.TimeCounter counter = new Utility.TimeCounter();
-            do
-            {
+		private volatile bool _ThreadEnable;
 
-                updater.Working();
-                
-                    
-                if (_Reset)
-                {
-                    counter.Reset();
-                    _Reset = false;
-                }
+		public PackageRecorder Read { get; private set; }
 
-                System.Threading.Thread.Sleep(1000);
-            }
-            while (counter.Second <= 30);
-            updater.Shutdown();
-            _ThreadEnable = false;
+		public PackageRecorder Write { get; private set; }
 
-            
-        }
-    }
+		public NetworkMonitor()
+		{
+			Read = new PackageRecorder();
+			Read.ChangeEvent += _ResetTime;
+			Write = new PackageRecorder();
+			Write.ChangeEvent += _ResetTime;
+		}
+
+		private void _ResetTime()
+		{
+			if (_ThreadEnable == false)
+			{
+				_ThreadEnable = true;
+				ThreadPool.QueueUserWorkItem(_Update);
+			}
+
+			_Reset = true;
+		}
+
+		private void _Update(object state)
+		{
+			var updater = new Updater();
+			updater.Add(Read);
+			updater.Add(Write);
+
+			var counter = new TimeCounter();
+			do
+			{
+				updater.Working();
+
+				if (_Reset)
+				{
+					counter.Reset();
+					_Reset = false;
+				}
+
+				Thread.Sleep(1000);
+			}
+			while (counter.Second <= 30);
+			updater.Shutdown();
+			_ThreadEnable = false;
+		}
+	}
 }
-

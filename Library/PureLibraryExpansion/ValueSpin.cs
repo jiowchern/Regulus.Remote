@@ -1,53 +1,63 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ValueSpin.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the ValueSpin type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace Regulus.Remoting.Native.Soul
+#region Test_Region
+
+using Regulus.Remoting;
+using Regulus.Utility;
+
+#endregion
+
+namespace Regulus.Net45
 {
-    class ValueSpin<T>
-    {
-                
-        private Value<T> value;
-        volatile bool _HasValue;
-        T _Value;
+	internal class ValueSpin<T>
+	{
+		private readonly Value<T> value;
 
-        public T Value { get { return _Value; } }
-        public ValueSpin(Value<T> value)
-        {            
-            this.value = value;
-            _HasValue = false;
-        }
+		private volatile bool _HasValue;
 
-        internal T Wait()
-        {
-            value.OnValue += _Getted;
-            
-            var sw = new Regulus.Utility.SpinWait();
-            while (_HasValue == false)
-                sw.SpinOnce();
+		public T Value { get; private set; }
 
+		public ValueSpin(Value<T> value)
+		{
+			this.value = value;
+			this._HasValue = false;
+		}
 
-            return _Value;
-        }
+		internal T Wait()
+		{
+			this.value.OnValue += this._Getted;
 
-        internal void Run(object obj)
-        {
-            value.OnValue += _Getted;
+			var sw = new SpinWait();
+			while (this._HasValue == false)
+			{
+				sw.SpinOnce();
+			}
 
+			return this.Value;
+		}
 
-            var sw = new Regulus.Utility.SpinWait();
-            while (_HasValue == false)
-                sw.SpinOnce();
+		internal void Run(object obj)
+		{
+			this.value.OnValue += this._Getted;
 
+			var sw = new SpinWait();
+			while (this._HasValue == false)
+			{
+				sw.SpinOnce();
+			}
+		}
 
-            
-        }
-
-        private void _Getted(T obj)
-        {
-            _Value = obj;
-            _HasValue = true;            
-        }
-    }
+		private void _Getted(T obj)
+		{
+			this.Value = obj;
+			this._HasValue = true;
+		}
+	}
 }

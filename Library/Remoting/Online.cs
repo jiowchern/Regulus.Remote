@@ -1,67 +1,72 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Online.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the IOnline type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace Regulus.Utility
+#region Test_Region
+
+using System;
+
+#endregion
+
+namespace Regulus.Remoting
 {
-    public interface IOnline
-    {        
-        double Ping { get; }
-        void Disconnect();
-    }
+	public interface IOnline
+	{
+		double Ping { get; }
+
+		void Disconnect();
+	}
 
 
-    public class Online : IOnline, Regulus.Remoting.Ghost.IGhost
-    {
-        Guid _Id;
+	public class Online : IOnline, IGhost
+	{
+		private readonly IAgent _Agent;
 
-        public Guid Id { get { return _Id;  } }        
-        public Online()
-        {
-            _Id = Guid.NewGuid();
-        }
+		public Guid Id { get; private set; }
 
-        public Online(Remoting.IAgent agent) : this()
-        {            
-            this._Agent = agent;
-            
-        }
-        double IOnline.Ping
-        {
-            get { return System.TimeSpan.FromTicks(_Agent.Ping).TotalSeconds; }
-        }
+		public Online()
+		{
+			this.Id = Guid.NewGuid();
+		}
 
-        
+		public Online(IAgent agent) : this()
+		{
+			this._Agent = agent;
+		}
 
-        void Regulus.Remoting.Ghost.IGhost.OnEvent(string name_event, object[] args)
-        {
-            throw new NotImplementedException();
-        }
+		void IGhost.OnEvent(string name_event, object[] args)
+		{
+			throw new NotImplementedException();
+		}
 
-        Guid Regulus.Remoting.Ghost.IGhost.GetID()
-        {
-            return _Id;
-        }
+		Guid IGhost.GetID()
+		{
+			return this.Id;
+		}
 
-        void Regulus.Remoting.Ghost.IGhost.OnProperty(string name, byte[] value)
-        {
-            throw new NotImplementedException();
-        }
-        
-        private Remoting.IAgent _Agent;
+		void IGhost.OnProperty(string name, byte[] value)
+		{
+			throw new NotImplementedException();
+		}
 
-        bool Remoting.Ghost.IGhost.IsReturnType()
-        {
-            return false;
-        }
+		bool IGhost.IsReturnType()
+		{
+			return false;
+		}
 
+		double IOnline.Ping
+		{
+			get { return TimeSpan.FromTicks(this._Agent.Ping).TotalSeconds; }
+		}
 
-        void IOnline.Disconnect()
-        {
-            _Agent.Disconnect();
-        }
-    }
-
-
+		void IOnline.Disconnect()
+		{
+			this._Agent.Disconnect();
+		}
+	}
 }

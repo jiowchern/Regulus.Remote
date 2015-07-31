@@ -1,14 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="VerifyData.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the VerifyData type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace VGameWebApplication.Models
 {
-    public class VerifyData
-    {
-        public string Account { get; set; }
+	public class VerifyData
+	{
+		public string Account { get; set; }
 
-        public string Password { get; set; }
-    }
+		public string Password { get; set; }
+	}
 }

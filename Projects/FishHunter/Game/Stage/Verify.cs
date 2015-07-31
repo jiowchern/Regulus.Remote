@@ -1,38 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Verify.cs" company="Regulus Framework">
+//   Regulus Framework
+// </copyright>
+// <summary>
+//   Defines the Verify type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using Regulus.Remoting;
+using Regulus.Utility;
+
+using VGame.Project.FishHunter.Common;
+
+#endregion
 
 namespace VGame.Project.FishHunter.Stage
 {
-    class Verify : Regulus.Utility.IStage
-    {
-        VGame.Project.FishHunter.Verify _Verify;
-        Regulus.Remoting.ISoulBinder _Binder;
+	internal class Verify : IStage
+	{
+		public event FishHunter.Verify.DoneCallback DoneEvent;
 
-        public event VGame.Project.FishHunter.Verify.DoneCallback DoneEvent;
-        public Verify(Regulus.Remoting.ISoulBinder binder , VGame.Project.FishHunter.Verify verify)
-        {
-            _Verify = verify;
-            _Binder = binder;
-        }
-        void Regulus.Utility.IStage.Enter()
-        {
-            _Verify.OnDoneEvent += DoneEvent;
+		private readonly ISoulBinder _Binder;
 
-            _Binder.Bind<VGame.Project.FishHunter.IVerify>(_Verify);
-        }
+		private readonly FishHunter.Verify _Verify;
 
-        
-        void Regulus.Utility.IStage.Leave()
-        {
-            _Binder.Unbind<VGame.Project.FishHunter.IVerify>(_Verify);
-            _Verify.OnDoneEvent -= DoneEvent;
-        }
+		public Verify(ISoulBinder binder, FishHunter.Verify verify)
+		{
+			_Verify = verify;
+			_Binder = binder;
+		}
 
-        void Regulus.Utility.IStage.Update()
-        {
-            
-        }
-    }
+		void IStage.Enter()
+		{
+			_Verify.OnDoneEvent += DoneEvent;
+
+			_Binder.Bind<IVerify>(_Verify);
+		}
+
+		void IStage.Leave()
+		{
+			_Binder.Unbind<IVerify>(_Verify);
+			_Verify.OnDoneEvent -= DoneEvent;
+		}
+
+		void IStage.Update()
+		{
+		}
+	}
 }

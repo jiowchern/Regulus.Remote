@@ -1,117 +1,135 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="BotConnectStage.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the BotConnectStage type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using System;
+
+using Regulus.Remoting;
+using Regulus.Utility;
+
+using VGame.Project.FishHunter.Common;
+using VGame.Project.FishHunter.Formula;
+
+#endregion
 
 namespace FormulaUserBot
 {
-    class BotConnectStage : Regulus.Utility.IStage
-    {
-        public delegate void DoneCallback(VGame.Project.FishHunter.IFishStage stage);
-        public event DoneCallback DoneEvent;
-        
-        private VGame.Project.FishHunter.Formula.IUser _User;
-        private string _IPAddress;
-        private int _Port;
-        private long _Id;
-        
-        public BotConnectStage(VGame.Project.FishHunter.Formula.IUser user, string ip, int port, long id)
-        {
-            _Id = id;
-            this._User = user;
-            this._IPAddress = ip;
-            this._Port = port;
-        }
+	internal class BotConnectStage : IStage
+	{
+		public event DoneCallback DoneEvent;
 
-        void Regulus.Utility.IStage.Leave()
-        {
-            _User.Remoting.OnlineProvider.Unsupply -= OnlineProvider_Unsupply;
-            _User.Remoting.ConnectProvider.Supply -= _Connect;
-            _User.VerifyProvider.Supply -= _Verify;
-            _User.FishStageQueryerProvider.Supply -= _Query;
-            
-        }
-        void Regulus.Utility.IStage.Enter()
-        {
+		private readonly long _Id;
 
-            _User.FishStageQueryerProvider.Supply += _Query;
-            _User.VerifyProvider.Supply += _Verify;
-            _User.Remoting.ConnectProvider.Supply += _Connect;
-            
-            _User.Remoting.OnlineProvider.Unsupply += OnlineProvider_Unsupply;
-            
-            
-        }
+		private readonly string _IPAddress;
 
-        void OnlineProvider_Unsupply(Regulus.Utility.IOnline obj)
-        {
-            obj_DisconnectEvent();
-        }
+		private readonly int _Port;
 
-        
+		private readonly IUser _User;
 
-        void obj_DisconnectEvent()
-        {
-            _ConnectResult(_Con.Connect(_IPAddress, _Port));
-        }
+		private IConnect _Con;
 
-        private void _Stage(VGame.Project.FishHunter.IFishStage obj)
-        {
-            DoneEvent(obj);
-        }
+		public BotConnectStage(IUser user, string ip, int port, long id)
+		{
+			_Id = id;
+			this._User = user;
+			this._IPAddress = ip;
+			this._Port = port;
+		}
 
-        private void _Query(VGame.Project.FishHunter.IFishStageQueryer obj)
-        {
-            _QueryResult(obj.Query(_Id, 1));
-        }
+		void IStage.Leave()
+		{
+			_User.Remoting.OnlineProvider.Unsupply -= OnlineProvider_Unsupply;
+			_User.Remoting.ConnectProvider.Supply -= _Connect;
+			_User.VerifyProvider.Supply -= _Verify;
+			_User.FishStageQueryerProvider.Supply -= _Query;
+		}
 
-        private void _QueryResult(Regulus.Remoting.Value<VGame.Project.FishHunter.IFishStage> value)
-        {
-            value.OnValue += (result) =>
-            {
-                if (result == null)
-                    throw new System.Exception("Stage Query null.");
-                else
-                    _Stage(result);
-            };
-        }
+		void IStage.Enter()
+		{
+			_User.FishStageQueryerProvider.Supply += _Query;
+			_User.VerifyProvider.Supply += _Verify;
+			_User.Remoting.ConnectProvider.Supply += _Connect;
 
-        private void _Verify(VGame.Project.FishHunter.IVerify obj)
-        {
-            _VerifyResult(obj.Login("Guest", "guest"));
-        }
+			_User.Remoting.OnlineProvider.Unsupply += OnlineProvider_Unsupply;
+		}
 
-        private void _VerifyResult(Regulus.Remoting.Value<bool> value)
-        {
-            value.OnValue += (result) =>
-            {
-                if (result == false)
-                    throw new System.Exception("Verify Fail.");                    
-            };
-        }
-        Regulus.Utility.IConnect _Con;
-        private void _Connect(Regulus.Utility.IConnect obj)
-        {
-            _Con = obj;
-            _ConnectResult(_Con.Connect(_IPAddress, _Port));
-        }
+		void IStage.Update()
+		{
+		}
 
-        private void _ConnectResult(Regulus.Remoting.Value<bool> value)
-        {
-            value.OnValue += (result) => 
-            {
-                if (result == false)
-                {
-                    _ConnectResult(_Con.Connect(_IPAddress, _Port));
-                }
-                    
-                
-            };
-        }
+		public delegate void DoneCallback(IFishStage stage);
 
-        void Regulus.Utility.IStage.Update()
-        {
-            
-        }
-    }
+		private void OnlineProvider_Unsupply(IOnline obj)
+		{
+			obj_DisconnectEvent();
+		}
+
+		private void obj_DisconnectEvent()
+		{
+			_ConnectResult(_Con.Connect(_IPAddress, _Port));
+		}
+
+		private void _Stage(IFishStage obj)
+		{
+			DoneEvent(obj);
+		}
+
+		private void _Query(IFishStageQueryer obj)
+		{
+			_QueryResult(obj.Query(_Id, 1));
+		}
+
+		private void _QueryResult(Value<IFishStage> value)
+		{
+			value.OnValue += result =>
+			{
+				if (result == null)
+				{
+					throw new Exception("Stage Query null.");
+				}
+
+				this._Stage(result);
+			};
+		}
+
+		private void _Verify(IVerify obj)
+		{
+			_VerifyResult(obj.Login("Guest", "guest"));
+		}
+
+		private void _VerifyResult(Value<bool> value)
+		{
+			value.OnValue += result =>
+			{
+				if (result == false)
+				{
+					throw new Exception("Verify Fail.");
+				}
+			};
+		}
+
+		private void _Connect(IConnect obj)
+		{
+			_Con = obj;
+			_ConnectResult(_Con.Connect(_IPAddress, _Port));
+		}
+
+		private void _ConnectResult(Value<bool> value)
+		{
+			value.OnValue += result =>
+			{
+				if (result == false)
+				{
+					_ConnectResult(_Con.Connect(_IPAddress, _Port));
+				}
+			};
+		}
+	}
 }

@@ -1,28 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Service1.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the Service1 type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
 using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
+
+#endregion
 
 namespace WindowsService
 {
-    public partial class Service1 : ServiceBase
-    {
-        public Service1()
-        {
-            InitializeComponent();
-        }
+	public partial class Service1 : ServiceBase
+	{
+		public Service1()
+		{
+			InitializeComponent();
+		}
 
-        protected override void OnStart(string[] args)
-        {
-        }
+		protected override void OnStart(string[] args)
+		{
+		}
 
-        protected override void OnStop()
-        {
-        }
-    }
+		protected override void OnStop()
+		{
+		}
+	}
 }

@@ -1,30 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ZsBetRangeTestSteps.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the ZsBetRangeTestSteps type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
 using System.Linq;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using Regulus.Extension;
+using Regulus.Game;
 
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
-using VGame.Project.FishHunter;
-using VGame.Project.FishHunter.ZsFormula;
 using VGame.Project.FishHunter.ZsFormula.DataStructs;
+
+#endregion
 
 namespace GameTest
 {
-    [Binding]
+	[Binding]
 	[Scope(Feature = "ZsBetRangeTestSteps")]
-    public class ZsBetRangeTestSteps
-    {
-	    private BetChancesTable _BetChancesTable;
+	public class ZsBetRangeTestSteps
+	{
+		private BetChancesTable _BetChancesTable;
 
 		[Given(@"buffer資料是")]
 		public void GivenBuffer資料是(Table table)
 		{
-			var datas = table.CreateSet<BetChancesTable.Data>().ToArray();
+			var datas = table.CreateSet<ChancesTable<int>.Data>().ToArray();
 			_BetChancesTable = new BetChancesTable(datas);
 		}
 
@@ -43,11 +52,9 @@ namespace GameTest
 		[Then(@"取得的Buffer是")]
 		public void Then取得的Buffer是(Table table)
 		{
-			
-			var data = table.CreateInstance<BetChancesTable.Data>();
+			var data = table.CreateInstance<ChancesTable<int>.Data>();
 
 			Assert.AreEqual(data.Key, _BetChancesTable.GetDiceKey());
 		}
- 
-    }
+	}
 }

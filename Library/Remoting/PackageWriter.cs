@@ -1,143 +1,147 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="PackageWriter.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the PackageWriter type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using System;
+using System.IO;
 using System.Linq;
-using System.Text;
+using System.Net.Sockets;
 
-namespace Regulus.Remoting.Native
+using Regulus.Utility;
+
+#endregion
+
+namespace Regulus.Remoting
 {
-    public class PackageWriter
-    {
-        public delegate Package[] CheckSourceCallback();
-        CheckSourceCallback _CheckSourceEvent;
-        public event CheckSourceCallback CheckSourceEvent
-        {
-            add 
-            {
-                
-                _CheckSourceEvent += value;
-            }
+	public class PackageWriter
+	{
+		public event CheckSourceCallback CheckSourceEvent
+		{
+			add { this._CheckSourceEvent += value; }
 
-            remove
-            {
-                
-                _CheckSourceEvent -= value;
-            }
-        }
-        const int _HeadSize = 4;
-        System.Net.Sockets.Socket _Socket;
-        
-        private byte[] _Buffer;
-        private IAsyncResult _AsyncResult;
+			remove { this._CheckSourceEvent -= value; }
+		}
 
-        public event OnErrorCallback ErrorEvent;
-        
-        volatile bool _Stop;
-        Regulus.Utility.PowerRegulator _PowerRegulator;
+		public event OnErrorCallback ErrorEvent;
 
+		private const int _HeadSize = 4;
 
+		private readonly PowerRegulator _PowerRegulator;
 
+		private IAsyncResult _AsyncResult;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="low_fps">保證最低fps</param>
-        public PackageWriter(int low_fps)
-        {
+		private byte[] _Buffer;
 
-            _PowerRegulator = new Utility.PowerRegulator(low_fps);
-        }
+		private CheckSourceCallback _CheckSourceEvent;
 
-        public PackageWriter()
-        {
-            
-            _PowerRegulator = new Utility.PowerRegulator();
-        }
-        public void Start(System.Net.Sockets.Socket socket)
-        {
-            _Stop = false;
-            _Socket = socket;
+		private Socket _Socket;
 
-            
-            _Write();
+		private volatile bool _Stop;
 
-        }
+		/// <summary>
+		/// Initializes a new instance of the <see cref="PackageWriter"/> class. 
+		/// </summary>
+		/// <param name="low_fps">
+		/// 保證最低fps
+		/// </param>
+		public PackageWriter(int low_fps)
+		{
+			this._PowerRegulator = new PowerRegulator(low_fps);
+		}
 
-        private void _Write()
-        {
-            try
-            {
-                
-                Package[] pkgs = _CheckSourceEvent();
+		public PackageWriter()
+		{
+			this._PowerRegulator = new PowerRegulator();
+		}
 
-                _Buffer = _CreateBuffer(pkgs);
-                _PowerRegulator.Operate(_Buffer.Length);                
-                    
-                _AsyncResult = _Socket.BeginSendTo(_Buffer, 0, _Buffer.Length, 0, _Socket.RemoteEndPoint, _WriteCompletion, null);
-                
-            }
-            catch (SystemException e)
-            {
-                Regulus.Utility.Log.Instance.WriteInfo(string.Format("PackageWriter Error Write {0}.", e.ToString()));
-                if (ErrorEvent != null)
-                    ErrorEvent();
-            }
-        }
+		public delegate Package[] CheckSourceCallback();
 
-        private void _WriteCompletion(IAsyncResult ar)
-        {
-            try
-            {
-                
-                if (_Stop == false)
-                {
-                    
-                    var sendSize = _Socket.EndSendTo(ar);
-                    
-                                        
-                    _Write();
-                }
-                
-            }
-            catch (SystemException e)
-            {
-                Regulus.Utility.Log.Instance.WriteInfo(string.Format("PackageWriter Error WriteCompletion {0}.", e.ToString()));
-                if (ErrorEvent != null)
-                    ErrorEvent();
-            }
-            
-        }
+		public void Start(Socket socket)
+		{
+			this._Stop = false;
+			this._Socket = socket;
 
-        byte[] _CreateBuffer(Package[] packages)
-        {            
-            var buffers = from p in packages select Regulus.Serializer.TypeHelper.Serializer<Package>(p);
-            //Regulus.Utility.Log.Instance.WriteDebug(string.Format("Serializer to Buffer size {0}", buffers.Sum( b => b.Length )));
-            using (System.IO.MemoryStream stream = new System.IO.MemoryStream())
-            {
+			this._Write();
+		}
 
-                foreach (var buffer in buffers)
-                {
-                    stream.Write(System.BitConverter.GetBytes((int)buffer.Length), 0, _HeadSize);
-                    stream.Write(buffer, 0, buffer.Length);
-                }
-                
-                return stream.ToArray();
-            }
-        }
+		private void _Write()
+		{
+			try
+			{
+				var pkgs = this._CheckSourceEvent();
 
-        
+				this._Buffer = this._CreateBuffer(pkgs);
+				this._PowerRegulator.Operate(this._Buffer.Length);
 
+				this._AsyncResult = this._Socket.BeginSendTo(this._Buffer, 0, this._Buffer.Length, 0, this._Socket.RemoteEndPoint, 
+					this._WriteCompletion, null);
+			}
+			catch (SystemException e)
+			{
+				Singleton<Log>.Instance.WriteInfo(string.Format("PackageWriter Error Write {0}.", e));
+				if (this.ErrorEvent != null)
+				{
+					this.ErrorEvent();
+				}
+			}
+		}
 
-        public void Stop()
-        {
-            _Stop = true;
-            
-            //_Socket = null;
-            _CheckSourceEvent = _Empty;
-        }
+		private void _WriteCompletion(IAsyncResult ar)
+		{
+			try
+			{
+				if (this._Stop == false)
+				{
+					var sendSize = this._Socket.EndSendTo(ar);
 
-        private Package[] _Empty()
-        {
-            return new Package[0];
-        }
-    }
+					this._Write();
+				}
+			}
+			catch (SystemException e)
+			{
+				Singleton<Log>.Instance.WriteInfo(string.Format("PackageWriter Error WriteCompletion {0}.", e));
+				if (this.ErrorEvent != null)
+				{
+					this.ErrorEvent();
+				}
+			}
+		}
+
+		private byte[] _CreateBuffer(Package[] packages)
+		{
+			var buffers = from p in packages select TypeHelper.Serializer(p);
+
+			// Regulus.Utility.Log.Instance.WriteDebug(string.Format("Serializer to Buffer size {0}", buffers.Sum( b => b.Length )));
+			using (var stream = new MemoryStream())
+			{
+				foreach (var buffer in buffers)
+				{
+					stream.Write(BitConverter.GetBytes(buffer.Length), 0, PackageWriter._HeadSize);
+					stream.Write(buffer, 0, buffer.Length);
+				}
+
+				return stream.ToArray();
+			}
+		}
+
+		public void Stop()
+		{
+			this._Stop = true;
+
+			// _Socket = null;
+			this._CheckSourceEvent = this._Empty;
+		}
+
+		private Package[] _Empty()
+		{
+			return new Package[0];
+		}
+	}
 }

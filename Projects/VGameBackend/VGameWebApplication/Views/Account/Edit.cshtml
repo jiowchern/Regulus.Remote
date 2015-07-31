@@ -1,9 +1,7 @@
-﻿@using VGameWebApplication.Extensions;
-@using VGame.Project.FishHunter.Data;
-
+﻿@using Regulus.Utility
+@using VGame.Project.FishHunter.Common
+@using EnumHelper = Regulus.Utility.EnumHelper
 @model VGameWebApplication.Models.UpdateAccount
-
-@using Regulus.Extension;
 @{
     ViewBag.Title = "Edit";
 }
@@ -11,28 +9,32 @@
 <h2>Edit</h2>
 
 
-@using (Html.BeginForm("Edit" , "Account" , FormMethod.Post ))
+@using (Html.BeginForm("Edit", "Account", FormMethod.Post))
 {
-    <table>
+    _Page_Views_Account_Edit_cshtml.<table>
         <tr>
             <td>ID</td>
             <td>
-                @Html.DisplayFor( m=> m.TheAccount.Id)
-                @Html.HiddenFor(m => m.TheAccount.Id)                
+                @Html.DisplayFor(m => m.TheAccount.Id)
+                @Html.HiddenFor(m => m.TheAccount.Id)
             </td>
         </tr>
-        <tr><td>帳號</td><td>@Html.EditorFor(m => m.TheAccount.Name )</td></tr>
-        <tr><td>密碼</td><td>@Html.EditorFor(m => m.TheAccount.Password)</td></tr>
-        @foreach (var t in Regulus.Extension.EnumHelper.GetEnums<VGame.Project.FishHunter.Data.Account.COMPETENCE>())
+        <tr>
+            <td>帳號</td><td>@Html.EditorFor(m => m.TheAccount.Name)</td>
+        </tr>
+        <tr>
+            <td>密碼</td><td>@Html.EditorFor(m => m.TheAccount.Password)</td>
+        </tr>
+        @foreach (var t in EnumHelper.GetEnums<Account.COMPETENCE>())
         {
-            <tr><td>@t.GetEnumDescription()
-                </td><td>@Html.CheckBoxFor( m => m.TheAccount.Competnces[t])</td></tr>
-        }        
-        
+            _Page_Views_Account_Edit_cshtml.<tr>
+                <td>
+                    @t.GetEnumDescription()
+                </td><td>@Html.CheckBoxFor(m => m.TheAccount.Competnces[t])</td>
+            </tr>
+        }
+
     </table>
-    
-    <input type="submit" value="更新" class="btn btn-default" />
+
+    _Page_Views_Account_Edit_cshtml.<input type="submit" value="更新" class="btn btn-default"/>
 }
-
-
-

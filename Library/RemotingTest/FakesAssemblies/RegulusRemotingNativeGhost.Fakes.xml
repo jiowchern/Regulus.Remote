@@ -28,7 +28,7 @@
         <member name="M:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.Bind(Regulus.Remoting.IAgent)">
             <summary>將介面的成員繫結至填充碼。</summary>
         </member>
-        <member name="M:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.RegulusRemotingIAgentQueryNotifierOf1``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.Func{Regulus.Remoting.Ghost.INotifier{``0}})">
+        <member name="M:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.RegulusRemotingIAgentQueryNotifierOf1``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.Func{Regulus.Remoting.INotifier{``0}})">
             <summary>設定 Agent.Regulus.Remoting.IAgent.QueryNotifier() 的 填充碼</summary>
         </member>
         <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.Behavior">
@@ -115,7 +115,7 @@
         <member name="T:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances">
             <summary>定義所有執行個體成員的填充碼</summary>
         </member>
-        <member name="M:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances.RegulusRemotingIAgentQueryNotifierOf1``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.Func{Regulus.Remoting.Ghost.Native.Agent,Regulus.Remoting.Ghost.INotifier{``0}})">
+        <member name="M:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances.RegulusRemotingIAgentQueryNotifierOf1``1(Microsoft.QualityTools.Testing.Fakes.FakesDelegates.Func{Regulus.Remoting.Ghost.Native.Agent,Regulus.Remoting.INotifier{``0}})">
             <summary>設定 Agent.Regulus.Remoting.IAgent.QueryNotifier() 的 填充碼</summary>
         </member>
         <member name="P:Regulus.Remoting.Ghost.Native.Fakes.ShimAgent.AllInstances.BreakEventRegulusRemotingIAgentaddAction">

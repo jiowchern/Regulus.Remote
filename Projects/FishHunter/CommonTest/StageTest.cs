@@ -1,54 +1,116 @@
-﻿using System;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="StageTest.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the StageTest type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
 using System.Linq;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace VGame.Project.FishHunter
+using VGame.Project.FishHunter.Common.Data;
+using VGame.Project.FishHunter.Play;
+
+#endregion
+
+namespace GameTest
 {
-    [TestClass]
-    public class StageTest
-    {
-        [TestMethod]
-        public void TestPassStageTicketInspector()
-        {
-            var locks = new Data.StageLock[] { new Data.StageLock { Requires = new int[] {1,2} , Stage = 3} };
-            var sg = new VGame.Project.FishHunter.Play.StageGate(locks);
-            var sti = new VGame.Project.FishHunter.Play.StageTicketInspector(sg);
-            sti.Initial(new Data.Stage[] { new Data.Stage { Id = 1, Pass = false }, new Data.Stage { Id = 2, Pass = false },new Data.Stage { Id = 4, Pass = false }});
+	[TestClass]
+	public class StageTest
+	{
+		[TestMethod]
+		public void TestPassStageTicketInspector()
+		{
+			var locks = new[]
+			{
+				new StageLock
+				{
+					Requires = new[]
+					{
+						1, 
+						2
+					}, 
+					Stage = 3
+				}
+			};
+			var sg = new StageGate(locks);
+			var sti = new StageTicketInspector(sg);
+			sti.Initial(new[]
+			{
+				new Stage
+				{
+					Id = 1, 
+					Pass = false
+				}, 
+				new Stage
+				{
+					Id = 2, 
+					Pass = false
+				}, 
+				new Stage
+				{
+					Id = 4, 
+					Pass = false
+				}
+			});
 
-            sti.Pass(1);
+			sti.Pass(1);
 
-            Assert.AreEqual(true, sti.PlayableStages.Any(Stage => Stage == 1));
-            Assert.AreEqual(true, sti.PlayableStages.Any(Stage => Stage == 2));
-            Assert.AreEqual(false, sti.PlayableStages.Any(Stage => Stage == 3));
+			Assert.AreEqual(true, sti.PlayableStages.Any(Stage => Stage == 1));
+			Assert.AreEqual(true, sti.PlayableStages.Any(Stage => Stage == 2));
+			Assert.AreEqual(false, sti.PlayableStages.Any(Stage => Stage == 3));
 
-            sti.Pass(2);
+			sti.Pass(2);
 
-            Assert.AreEqual(true, sti.PlayableStages.Any(Stage => Stage == 1));
-            Assert.AreEqual(true, sti.PlayableStages.Any(Stage => Stage == 2));
-            Assert.AreEqual(true, sti.PlayableStages.Any(Stage => Stage == 3));
-            
-        }
-        [TestMethod]
-        public void TestKillStageTicketInspector()
-        {
-            var locks = new Data.StageLock[] { new Data.StageLock { KillCount = 10 , Stage = 3 } };
-            var sg = new VGame.Project.FishHunter.Play.StageGate(locks);
-            var sti = new VGame.Project.FishHunter.Play.StageTicketInspector(sg);
-            sti.Initial(new Data.Stage[] { new Data.Stage { Id = 1, Pass = false }, new Data.Stage { Id = 2, Pass = false } });
+			Assert.AreEqual(true, sti.PlayableStages.Any(Stage => Stage == 1));
+			Assert.AreEqual(true, sti.PlayableStages.Any(Stage => Stage == 2));
+			Assert.AreEqual(true, sti.PlayableStages.Any(Stage => Stage == 3));
+		}
 
-            sti.Kill(1);
-            sti.Pass(2);
+		[TestMethod]
+		public void TestKillStageTicketInspector()
+		{
+			var locks = new[]
+			{
+				new StageLock
+				{
+					KillCount = 10, 
+					Stage = 3
+				}
+			};
+			var sg = new StageGate(locks);
+			var sti = new StageTicketInspector(sg);
+			sti.Initial(new[]
+			{
+				new Stage
+				{
+					Id = 1, 
+					Pass = false
+				}, 
+				new Stage
+				{
+					Id = 2, 
+					Pass = false
+				}
+			});
 
-            Assert.AreEqual(true, sti.PlayableStages.Any(Stage => Stage == 1));
-            Assert.AreEqual(true, sti.PlayableStages.Any(Stage => Stage == 2));
-            Assert.AreEqual(false, sti.PlayableStages.Any(Stage => Stage == 3));
+			sti.Kill(1);
+			sti.Pass(2);
 
-            sti.Kill(9);
+			Assert.AreEqual(true, sti.PlayableStages.Any(Stage => Stage == 1));
+			Assert.AreEqual(true, sti.PlayableStages.Any(Stage => Stage == 2));
+			Assert.AreEqual(false, sti.PlayableStages.Any(Stage => Stage == 3));
 
-            Assert.AreEqual(true, sti.PlayableStages.Any(Stage => Stage == 1));
-            Assert.AreEqual(true, sti.PlayableStages.Any(Stage => Stage == 2));
-            Assert.AreEqual(true, sti.PlayableStages.Any(Stage => Stage == 3));
-        }
+			sti.Kill(9);
 
-    }
+			Assert.AreEqual(true, sti.PlayableStages.Any(Stage => Stage == 1));
+			Assert.AreEqual(true, sti.PlayableStages.Any(Stage => Stage == 2));
+			Assert.AreEqual(true, sti.PlayableStages.Any(Stage => Stage == 3));
+		}
+	}
 }

@@ -1,97 +1,113 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="User.cs" company="Regulus Framework">
+//   Regulus Framework
+// </copyright>
+// <summary>
+//   Defines the User type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using System;
+
+using Regulus.Framework;
+using Regulus.Game;
+using Regulus.Remoting;
+using Regulus.Utility;
+
+using VGame.Project.FishHunter.Common;
+using VGame.Project.FishHunter.Stage;
+
+#endregion
 
 namespace VGame.Project.FishHunter.Storage
 {
-    class User : Regulus.Game.IUser
-    {
+	internal class User : IUser
+	{
+		private event OnQuit _QuitEvent;
 
+		private event OnNewUser _VerifySuccessEvent;
 
-        Regulus.Utility.StageMachine _Machine;
-        private Regulus.Remoting.ISoulBinder _Binder;
-        IStorage _Storage;
-        public User(Regulus.Remoting.ISoulBinder binder, IStorage storage)
-        {
-            _Storage = storage;
-            this._Binder = binder;
-            _Machine = new Regulus.Utility.StageMachine();
-        }
-        Data.Account _Account;
-        void Regulus.Game.IUser.OnKick(Guid id)
-        {
-            
-        }
+		private readonly ISoulBinder _Binder;
 
-        event Regulus.Game.OnNewUser _VerifySuccessEvent;
-        event Regulus.Game.OnNewUser Regulus.Game.IUser.VerifySuccessEvent
-        {
-            add { _VerifySuccessEvent += value; }
-            remove { _VerifySuccessEvent -= value; }
-        }
+		private readonly StageMachine _Machine;
 
-        event Regulus.Game.OnQuit _QuitEvent;
-        event Regulus.Game.OnQuit Regulus.Game.IUser.QuitEvent
-        {
-            add { _QuitEvent += value; }
-            remove { _QuitEvent -= value; }
-        }
+		private readonly IStorage _Storage;
 
-        bool Regulus.Utility.IUpdatable.Update()
-        {
-            _Machine.Update();
-            return true;
-        }
+		private Account _Account;
 
-        void Regulus.Framework.IBootable.Launch()
-        {
-            _ToVerify();
-        }
+		public User(ISoulBinder binder, IStorage storage)
+		{
+			_Storage = storage;
+			this._Binder = binder;
+			_Machine = new StageMachine();
+		}
 
-        void Regulus.Framework.IBootable.Shutdown()
-        {
-            
-            _Machine.Termination();
-        }
+		void IUser.OnKick(Guid id)
+		{
+		}
 
-        
+		event OnNewUser IUser.VerifySuccessEvent
+		{
+			add { _VerifySuccessEvent += value; }
+			remove { _VerifySuccessEvent -= value; }
+		}
 
-        private void _ToVerify()
-        {
-            var verify = _CreateVerify();
-            _AddVerifyToStage(verify);
-        }
+		event OnQuit IUser.QuitEvent
+		{
+			add { _QuitEvent += value; }
+			remove { _QuitEvent -= value; }
+		}
 
-        private Verify _CreateVerify()
-        {
-            _Account = null;
-            var verify = new VGame.Project.FishHunter.Verify(_Storage);
-            return verify;
-        }
+		bool IUpdatable.Update()
+		{
+			_Machine.Update();
+			return true;
+		}
 
-        private void _AddVerifyToStage(Verify verify)
-        {
-            var stage = new VGame.Project.FishHunter.Stage.Verify(_Binder, verify);
-            stage.DoneEvent += _VerifySuccess;
-            _Machine.Push(stage);
-        }
+		void IBootable.Launch()
+		{
+			_ToVerify();
+		}
 
-        private void _VerifySuccess(Data.Account account)
-        {
-            _VerifySuccessEvent(account.Id);
-            _Account = account;
-            _ToRelease(account);
-        }
+		void IBootable.Shutdown()
+		{
+			_Machine.Termination();
+		}
 
-        private void _ToRelease(Data.Account account)
-        {
-            var stage = new VGame.Project.FishHunter.Stage.StroageAccess(_Binder, account , _Storage);
-            stage.DoneEvent += _ToVerify;
-            _Machine.Push(stage);
-        }
+		private void _ToVerify()
+		{
+			var verify = _CreateVerify();
+			_AddVerifyToStage(verify);
+		}
 
+		private Verify _CreateVerify()
+		{
+			_Account = null;
+			var verify = new Verify(_Storage);
+			return verify;
+		}
 
-        
-    }
+		private void _AddVerifyToStage(Verify verify)
+		{
+			var stage = new Stage.Verify(_Binder, verify);
+			stage.DoneEvent += _VerifySuccess;
+			_Machine.Push(stage);
+		}
+
+		private void _VerifySuccess(Account account)
+		{
+			_VerifySuccessEvent(account.Id);
+			_Account = account;
+			_ToRelease(account);
+		}
+
+		private void _ToRelease(Account account)
+		{
+			var stage = new StroageAccess(_Binder, account, _Storage);
+			stage.DoneEvent += _ToVerify;
+			_Machine.Push(stage);
+		}
+	}
 }

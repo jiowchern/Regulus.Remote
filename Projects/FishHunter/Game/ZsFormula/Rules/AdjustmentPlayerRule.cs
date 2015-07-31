@@ -7,15 +7,18 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+#region Test_Region
 
 using Regulus.Utility;
 
 using VGame.Project.FishHunter.ZsFormula.DataStructs;
 
+#endregion
+
 namespace VGame.Project.FishHunter.ZsFormula.Rules
 {
 	/// <summary>
-	/// 玩家阶段起伏的调整
+	///     玩家阶段起伏的调整
 	/// </summary>
 	public class AdjustmentPlayerRule
 	{

@@ -1,14 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ACCOUNT_REQUEST_RESULT.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the ACCOUNT_REQUEST_RESULT type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace VGame.Project.FishHunter
+namespace VGame.Project.FishHunter.Common
 {
-    public enum ACCOUNT_REQUEST_RESULT
-    {
-        REPEAT,
-        OK,
-        NOTFOUND
-    }
+	
+	/// <summary>
+	/// 
+	/// </summary>
+	public enum ACCOUNT_REQUEST_RESULT
+	{
+		REPEAT, 
+
+		OK, 
+
+		NOTFOUND
+	}
 }

@@ -3,13 +3,16 @@
 //   Regulus Framework
 // </copyright>
 // <summary>
-//   倍數表定義
+//   Defines the MultipleTable type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+#region Test_Region
 
 using System.Collections.Generic;
 using System.Linq;
+
+#endregion
 
 namespace VGame.Project.FishHunter.ZsFormula.DataStructs
 {

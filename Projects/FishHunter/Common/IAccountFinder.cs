@@ -1,15 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="IAccountFinder.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the IAccountFinder type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace VGame.Project.FishHunter
+#region Test_Region
+
+using System;
+
+using Regulus.Remoting;
+
+#endregion
+
+namespace VGame.Project.FishHunter.Common
 {
-    
-    public interface IAccountFinder
-    {
-        Regulus.Remoting.Value<Data.Account> FindAccountByName(string id);
+	public interface IAccountFinder
+	{
+		Value<Account> FindAccountByName(string id);
 
-        Regulus.Remoting.Value<Data.Account> FindAccountById(Guid accountId);
-    }
+		Value<Account> FindAccountById(Guid accountId);
+	}
 }

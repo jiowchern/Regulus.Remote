@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Define.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the Define type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace VGame.Project.FishHunter
+namespace VGame.Project.FishHunter.Common
 {
-    interface Define
-    {
-
-    }
+	internal interface Define
+	{
+	}
 }

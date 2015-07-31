@@ -1,60 +1,67 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Application.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the Application type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using Regulus.Utility;
+
+#endregion
 
 namespace Regulus.Remoting.Soul.Native
-{    
-	public class Application : Regulus.Utility.WindowConsole
+{
+	public class Application : WindowConsole
 	{
+		private StageMachine _Machine;
 
-        Regulus.Utility.SpinWait _SpinWait;
-        Regulus.Utility.TimeCounter _TimeCounter;
-        Regulus.Utility.StageMachine _Machine;
-       
+		private SpinWait _SpinWait;
 
-        protected override void _Launch()
-        {
+		private TimeCounter _TimeCounter;
 
+		protected override void _Launch()
+		{
+			this._SpinWait = new SpinWait();
+			this._TimeCounter = new TimeCounter();
+			this._Machine = new StageMachine();
+			this._ToStart();
+		}
 
-            _SpinWait = new Regulus.Utility.SpinWait();
-            _TimeCounter = new Utility.TimeCounter();
-            _Machine = new Utility.StageMachine();
-            _ToStart();        
-        }
+		protected override void _Update()
+		{
+			if (this._TimeCounter.Second > 1.0f / 30.0f)
+			{
+				this._Machine.Update();
+				this._TimeCounter.Reset();
+				this._SpinWait.Reset();
+			}
+			else
+			{
+				this._SpinWait.SpinOnce();
+			}
+		}
 
-        protected override void _Update()
-        {            
-            if (_TimeCounter.Second > 1.0f / 30.0f)
-            {
-                _Machine.Update();
-                _TimeCounter.Reset();
-                _SpinWait.Reset();
-            }
-            else
-            {                
-                _SpinWait.SpinOnce();
-            }
-        }
+		protected override void _Shutdown()
+		{
+			this._Machine.Termination();
+		}
 
-        protected override void _Shutdown()
-        {
-            _Machine.Termination();
-        }
+		private void _ToStart()
+		{
+			var stage = new StageStart(this.Command, this.Viewer);
+			stage.DoneEvent += this._ToRun;
+			this._Machine.Push(stage);
+		}
 
-        private void _ToStart()
-        {
-            var stage = new Regulus.Remoting.Soul.Native.StageStart(base.Command, base.Viewer);
-            stage.DoneEvent += _ToRun;
-            _Machine.Push(stage);
-        }
-
-        private void _ToRun(Regulus.Remoting.ICore core, int port, float timeout)
-        {
-            var stage = new Regulus.Remoting.Soul.Native.StageRun(core, base.Command, port, base.Viewer);
-            stage.ShutdownEvent += _ToStart;
-            _Machine.Push(stage);
-        }
-
-
-        
-    }
+		private void _ToRun(ICore core, int port, float timeout)
+		{
+			var stage = new StageRun(core, this.Command, port, this.Viewer);
+			stage.ShutdownEvent += this._ToStart;
+			this._Machine.Push(stage);
+		}
+	}
 }

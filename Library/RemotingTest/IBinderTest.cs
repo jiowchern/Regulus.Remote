@@ -1,15 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="IBinderTest.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the IBinderTest type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace RemotingTest
 {
-    public interface IBinderTest
-    {
-        void Function1();
-        void Function2(int arg);
+	public interface IBinderTest
+	{
+		void Function1();
 
-        int Function3();
-    }
+		void Function2(int arg);
+
+		int Function3();
+	}
 }

@@ -1,419 +1,453 @@
-﻿using System;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="SoulProvider.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the SoulProvider type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Regulus.Remoting;
+using System.Reflection;
 
+using Regulus.Utility;
 
-namespace Regulus.Remoting.Soul
+#endregion
+
+namespace Regulus.Remoting
 {
-
-	public class SoulProvider : IDisposable, Regulus.Remoting.ISoulBinder
+	public class SoulProvider : IDisposable, ISoulBinder
 	{
-		Regulus.Remoting.IRequestQueue _Peer;
-        Regulus.Remoting.IResponseQueue _Queue;
+		private readonly Queue<Dictionary<byte, byte[]>> _EventFilter = new Queue<Dictionary<byte, byte[]>>();
 
-        
+		private readonly IRequestQueue _Peer;
 
-		public SoulProvider(Regulus.Remoting.IRequestQueue peer, Regulus.Remoting.IResponseQueue queue)
+		private readonly IResponseQueue _Queue;
+
+		private readonly Poller<Soul> _Souls = new Poller<Soul>();
+
+		private readonly Dictionary<Guid, IValue> _WaitValues = new Dictionary<Guid, IValue>();
+
+		private DateTime _UpdatePropertyInterval;
+
+		public SoulProvider(IRequestQueue peer, IResponseQueue queue)
 		{
-            _Queue = queue;
-            _Peer = peer;
-			_Peer.InvokeMethodEvent += _InvokeMethod;	
+			this._Queue = queue;
+			this._Peer = peer;
+			this._Peer.InvokeMethodEvent += this._InvokeMethod;
 		}
-
-        
-		class Soul
-		{
-			public Guid ID                                          { get; set; }
-			public object							ObjectInstance	{ get; set; }
-			public Type								ObjectType		{ get; set; }
-            
-			public System.Reflection.MethodInfo[]	MethodInfos		{ get; set; }
-
-            public class EventHandler
-            {
-                public System.Reflection.EventInfo EventInfo;
-                public Delegate DelegateObject;
-            }
-            public System.Collections.Generic.List<EventHandler> EventHandlers { get; set; }
-
-
-            public class PropertyHandler
-            {
-                public System.Reflection.PropertyInfo PropertyInfo;
-                public object Value;
-            
-                internal bool UpdateProperty(object val)
-                {
-
-                    if (!Regulus.Utility.ValueHelper.DeepEqual(Value, val))
-                    {
-                        Value = Regulus.Utility.ValueHelper.DeepCopy(val);
-                        return true;
-                    }
-                    return false;
-                }　
-            }
-            public PropertyHandler[] PropertyHandlers { get; set; }
-            internal void ProcessDiffentValues(Action<Guid, string, object> update_property)
-            {
-                foreach (var handler in PropertyHandlers)
-                {
-                    var val = handler.PropertyInfo.GetValue(ObjectInstance, null);                    
-                    
-                    if(handler.UpdateProperty(val))
-                    {
-                        if (update_property != null)
-                            update_property(ID, handler.PropertyInfo.Name, val);
-                    }                                        
-                }
-            }
-            
-        }
-        Regulus.Utility.Poller<Soul> _Souls = new Utility.Poller<Soul>();
-		//System.Collections.Generic.List<Soul>	_Souls = new List<Soul>();
-
-        private void _UpdateProperty(Guid entity_id, string name, object val)
-        {
-            var argmants = new Dictionary<byte, byte[]>();
-            argmants.Add(0, entity_id.ToByteArray());
-            argmants.Add(1, Regulus.Serializer.TypeHelper.Serializer(name));
-            argmants.Add(2, Regulus.Serializer.TypeHelper.Serializer(val));
-            
-            _Queue.Push((byte)ServerToClientOpCode.UpdateProperty, argmants);
-        }
-
-
-        
-		void _InvokeEvent(Guid entity_id, string event_name, object[] args)
-		{            
-            var argmants = new Dictionary<byte, byte[]>();
-            argmants.Add(0, entity_id.ToByteArray());
-            argmants.Add(1, Regulus.Serializer.TypeHelper.Serializer(event_name));
-			byte i = 2;
-			foreach (var arg in args)
-			{
-				argmants.Add( i , Regulus.Serializer.TypeHelper.Serializer(arg) );
-				++i;
-			}
-            _InvokeEvent(argmants);
-            
-		}
-        Queue<Dictionary<byte, byte[]>> _EventFilter = new Queue<Dictionary<byte, byte[]>>();
-        private void _InvokeEvent(Dictionary<byte, byte[]> argmants)
-        {
-            lock (_EventFilter)
-            {
-                _EventFilter.Enqueue(argmants);            
-            }
-            
-        }
-        Dictionary<Guid, IValue> _WaitValues = new Dictionary<Guid, IValue>();
-        private void _ReturnValue(Guid returnId, IValue returnValue)
-        {
-            IValue outValue = null;
-            if (_WaitValues.TryGetValue(returnId, out outValue))
-                return;
-
-            _WaitValues.Add(returnId, returnValue);
-            returnValue.QueryValue(new Action<object>((obj) =>
-            {
-               
-                if (returnValue.IsInterface() == false)
-                {
-                    _ReturnDataValue(returnId, returnValue);
-                }
-                else
-                {
-                    _ReturnSoulValue(returnId, returnValue);
-                }
-                
-
-                _WaitValues.Remove(returnId);
-            }));            
-        }
-
-        private void _ReturnSoulValue(Guid return_id, IValue returnValue)
-        {
-            object soul = returnValue.GetObject();
-            var type = returnValue.GetObjectType();
-            var prevSoul = (from soulInfo in _Souls.UpdateSet() where Object.ReferenceEquals(soulInfo.ObjectInstance, soul) && soulInfo.ObjectType == type select soulInfo).SingleOrDefault();
-
-            if (prevSoul == null)
-            {
-                Soul new_soul = _NewSoul(soul, type);
-
-                _LoadSoul(type.FullName, new_soul.ID, true);
-                new_soul.ProcessDiffentValues(_UpdateProperty);
-                _LoadSoulCompile(type.FullName, new_soul.ID, return_id);
-
-            }
-        }
-
-        private void _ReturnDataValue(Guid returnId, IValue returnValue)
-        {
-            var argmants = new Dictionary<byte, byte[]>();
-            argmants.Add(0, returnId.ToByteArray());
-            object value = returnValue.GetObject();
-            argmants.Add(1, Serializer.TypeHelper.Serializer(value));
-            _Queue.Push((byte)ServerToClientOpCode.ReturnValue, argmants);
-        }
-        private void _LoadSoulCompile(string type_name, Guid id , Guid return_id)
-        {
-            var argmants = new Dictionary<byte, byte[]>();
-            argmants.Add(0, Regulus.Serializer.TypeHelper.Serializer(type_name));
-            argmants.Add(1, id.ToByteArray());
-            argmants.Add(2, return_id.ToByteArray());
-            
-            _Queue.Push((byte)ServerToClientOpCode.LoadSoulCompile, argmants);
-        }
-        
-        private void _LoadSoul(string type_name, Guid id, bool return_type)
-        {            
-            var argmants = new Dictionary<byte, byte[]>();
-            argmants.Add(0, Regulus.Serializer.TypeHelper.Serializer(type_name));
-            argmants.Add(1, id.ToByteArray());
-            argmants.Add(2, Regulus.Serializer.TypeHelper.Serializer(return_type));
-            _Queue.Push((byte)ServerToClientOpCode.LoadSoul, argmants);
-        }
-
-        private void _UnloadSoul(string type_name, Guid id )
-        {
-            var argmants = new Dictionary<byte, byte[]>();
-            argmants.Add(0, Regulus.Serializer.TypeHelper.Serializer(type_name));
-            argmants.Add(1, id.ToByteArray());            
-            _Queue.Push((byte)ServerToClientOpCode.UnloadSoul, argmants);
-        }
-		
-		void _InvokeMethod(Guid entity_id , string method_name ,Guid returnId , byte[][] args)
-		{
-            
-            var soulInfo = (from soul in _Souls.UpdateSet() where soul.ID == entity_id select new { MethodInfos = soul.MethodInfos, ObjectInstance = soul.ObjectInstance }).FirstOrDefault();
-            if (soulInfo != null)
-            {
-                System.Reflection.MethodInfo methodInfo = (from m in soulInfo.MethodInfos where m.Name == method_name && m.GetParameters().Count() == args.Count() select m).FirstOrDefault();
-                if (methodInfo != null)
-                {
-
-                    var paramerInfos = methodInfo.GetParameters();
-                    
-                    int i = 0;
-                    var argObjects = from pi in paramerInfos
-                                        let arg = args[i++]
-                                        select Regulus.Serializer.TypeHelper.DeserializeObject(pi.ParameterType, arg);
-
-                    var returnValue = methodInfo.Invoke(soulInfo.ObjectInstance, argObjects.ToArray());
-                    if (returnValue != null)
-                    {
-                        _ReturnValue(returnId, returnValue as IValue);
-                    }                    
-                }
-            }	                
-			
-		}
-		
-		private void _Bind<TSoul>(TSoul soul, bool return_type , Guid return_id)
-		{
-            
-
-            var type = typeof(TSoul);
-            
-            var prevSoul = (from soulInfo in _Souls.UpdateSet() where Object.ReferenceEquals(soulInfo.ObjectInstance, soul) && soulInfo.ObjectType == typeof(TSoul) select soulInfo).SingleOrDefault();
-            
-            if (prevSoul == null)
-            {
-                Soul new_soul = _NewSoul(soul, typeof(TSoul));
-
-                _LoadSoul(type.FullName, new_soul.ID, return_type);
-                new_soul.ProcessDiffentValues(_UpdateProperty);
-                _LoadSoulCompile(type.FullName, new_soul.ID, return_id);
-
-            }
-
-            
-		}
-
-        private Soul _NewSoul(object soul, Type soulType)
-        {
-            //var bindChecker = new BindGuard(soulType);
-
-            var new_soul = new Soul() { ID = Guid.NewGuid(), ObjectType = soulType, ObjectInstance = soul, MethodInfos = soulType.GetMethods() };            
-
-            // event				
-            var eventInfos = soulType.GetEvents();
-            new_soul.EventHandlers = new List<Soul.EventHandler>();
-
-            
-            foreach (var eventInfo in eventInfos)
-            {
-                
-                var genericArguments = eventInfo.EventHandlerType.GetGenericArguments();
-                Delegate handler = _BuildDelegate(genericArguments, new_soul.ID, eventInfo.Name);
-                
-                Soul.EventHandler eh = new Soul.EventHandler();
-                eh.EventInfo = eventInfo;
-                eh.DelegateObject = handler;
-                new_soul.EventHandlers.Add(eh);
-                
-                eventInfo.AddEventHandler(soul, handler);
-            }
-            
-
-            // property 
-            var propertys = soulType.GetProperties(System.Reflection.BindingFlags.GetProperty | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-            new_soul.PropertyHandlers = new Soul.PropertyHandler[propertys.Length];
-            for (int i = 0; i < propertys.Length; ++i)
-            {
-                new_soul.PropertyHandlers[i] = new Soul.PropertyHandler();
-                new_soul.PropertyHandlers[i].PropertyInfo = propertys[i];
-            }
-            _Souls.Add(new_soul);
-
-            return new_soul;
-        }
-
-        
-
-        private void _Unbind(object soul , Type type)
-        {
-            var soulInfo = (from soul_info in _Souls.UpdateSet() where Object.ReferenceEquals(soul_info.ObjectInstance, soul) && soul_info.ObjectType == type select soul_info).SingleOrDefault();
-            //var soulInfo = _Souls.Find((soul_info) => { return Object.ReferenceEquals(soul_info.ObjectInstance, soul) && soul_info.ObjectType == typeof(TSoul); });
-            if (soulInfo != null)
-            {
-                foreach (var eventHandler in soulInfo.EventHandlers)
-                {
-                    eventHandler.EventInfo.RemoveEventHandler(soulInfo.ObjectInstance, eventHandler.DelegateObject);
-                }
-                _UnloadSoul(soulInfo.ObjectType.FullName, soulInfo.ID);                
-                _Souls.Remove((s) => { return s == soulInfo; });
-
-            }
-        }
-				
-		private Delegate _BuildDelegate(Type[] generic_arguments, Guid entity_id, string event_name)
-		{
-            
-			Type closureType = null;
-
-			Type delegateType = null;
-			System.Reflection.MethodInfo run = null;
-			Type[] closureTypes = new Type[]	{	typeof(GenericEventClosure)
-												,	typeof(GenericEventClosure<>)
-												,	typeof(GenericEventClosure<,>)
-												,	typeof(GenericEventClosure<,,>)
-												,	typeof(GenericEventClosure<,,,>)
-												,	typeof(GenericEventClosure<,,,,>)};
-
-			closureType = closureTypes[generic_arguments.Length]; 
-			if (generic_arguments.Length != 0)
-			{                
-				closureType = closureType.MakeGenericType(generic_arguments);
-				var getDelegateTypeMethod = closureType.GetMethod("GetDelegateType", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
-				delegateType = (Type)getDelegateTypeMethod.Invoke(null, null);											
-			}
-			else 
-			{
-				delegateType = GenericEventClosure.GetDelegateType();				
-			}
-
-			run = closureType.GetMethod("Run");
-			object closureInstance = Activator.CreateInstance(closureType, new object[] { entity_id, event_name, new Action<Guid, string, object[]>(_InvokeEvent) });
-            
-			return Delegate.CreateDelegate(delegateType, closureInstance, run);            
-		}
-
-		
 
 		public void Dispose()
 		{
-			_Peer.InvokeMethodEvent -= _InvokeMethod;
-
+			this._Peer.InvokeMethodEvent -= this._InvokeMethod;
 		}
 
+		void ISoulBinder.Return<TSoul>(TSoul soul)
+		{
+			if (soul == null)
+			{
+				throw new ArgumentNullException("soul");
+			}
 
-        System.DateTime _UpdatePropertyInterval;        
-        public void Update()
-        {
-            
-            var souls = _Souls.UpdateSet();            
-            var intervalSpan = System.DateTime.Now - _UpdatePropertyInterval;
-            var intervalSeconds = intervalSpan.TotalSeconds;
-            if (intervalSeconds > 0.5)
-            {
-                foreach (var soul in souls)
-                {
-                    soul.ProcessDiffentValues(_UpdateProperty);                    
-                }
-                _UpdatePropertyInterval = System.DateTime.Now;
-            }
+			this._Bind(soul, true, Guid.Empty);
+		}
+
+		void ISoulBinder.Bind<TSoul>(TSoul soul)
+		{
+			if (soul == null)
+			{
+				throw new ArgumentNullException("soul");
+			}
+
+			this._Bind(soul, false, Guid.Empty);
+		}
+
+		void ISoulBinder.Unbind<TSoul>(TSoul soul)
+		{
+			if (soul == null)
+			{
+				throw new ArgumentNullException("soul");
+			}
+
+			this._Unbind(soul, typeof (TSoul));
+		}
+
+		event Action ISoulBinder.BreakEvent
+		{
+			add
+			{
+				lock (this._Peer)
+				{
+					this._Peer.BreakEvent += value;
+				}
+			}
+
+			remove
+			{
+				lock (this._Peer)
+				{
+					this._Peer.BreakEvent -= value;
+				}
+			}
+		}
+
+		private class Soul
+		{
+			public Guid ID { get; set; }
+
+			public object ObjectInstance { get; set; }
+
+			public Type ObjectType { get; set; }
+
+			public MethodInfo[] MethodInfos { get; set; }
+
+			public List<EventHandler> EventHandlers { get; set; }
+
+			public PropertyHandler[] PropertyHandlers { get; set; }
+
+			public class EventHandler
+			{
+				public Delegate DelegateObject;
+
+				public EventInfo EventInfo;
+			}
+
+			public class PropertyHandler
+			{
+				public PropertyInfo PropertyInfo;
+
+				public object Value;
+
+				internal bool UpdateProperty(object val)
+				{
+					if (!ValueHelper.DeepEqual(this.Value, val))
+					{
+						this.Value = ValueHelper.DeepCopy(val);
+						return true;
+					}
+
+					return false;
+				}
+			}
+
+			internal void ProcessDiffentValues(Action<Guid, string, object> update_property)
+			{
+				foreach (var handler in this.PropertyHandlers)
+				{
+					var val = handler.PropertyInfo.GetValue(this.ObjectInstance, null);
+
+					if (handler.UpdateProperty(val))
+					{
+						if (update_property != null)
+						{
+							update_property(this.ID, handler.PropertyInfo.Name, val);
+						}
+					}
+				}
+			}
+		}
+
+		// System.Collections.Generic.List<Soul>	_Souls = new List<Soul>();
+		private void _UpdateProperty(Guid entity_id, string name, object val)
+		{
+			var argmants = new Dictionary<byte, byte[]>();
+			argmants.Add(0, entity_id.ToByteArray());
+			argmants.Add(1, TypeHelper.Serializer(name));
+			argmants.Add(2, TypeHelper.Serializer(val));
+
+			this._Queue.Push((byte)ServerToClientOpCode.UpdateProperty, argmants);
+		}
+
+		private void _InvokeEvent(Guid entity_id, string event_name, object[] args)
+		{
+			var argmants = new Dictionary<byte, byte[]>();
+			argmants.Add(0, entity_id.ToByteArray());
+			argmants.Add(1, TypeHelper.Serializer(event_name));
+			byte i = 2;
+			foreach (var arg in args)
+			{
+				argmants.Add(i, TypeHelper.Serializer(arg));
+				++i;
+			}
+
+			this._InvokeEvent(argmants);
+		}
+
+		private void _InvokeEvent(Dictionary<byte, byte[]> argmants)
+		{
+			lock (this._EventFilter)
+			{
+				this._EventFilter.Enqueue(argmants);
+			}
+		}
+
+		private void _ReturnValue(Guid returnId, IValue returnValue)
+		{
+			IValue outValue = null;
+			if (this._WaitValues.TryGetValue(returnId, out outValue))
+			{
+				return;
+			}
+
+			this._WaitValues.Add(returnId, returnValue);
+			returnValue.QueryValue(obj =>
+			{
+				if (returnValue.IsInterface() == false)
+				{
+					this._ReturnDataValue(returnId, returnValue);
+				}
+				else
+				{
+					this._ReturnSoulValue(returnId, returnValue);
+				}
+
+				this._WaitValues.Remove(returnId);
+			});
+		}
+
+		private void _ReturnSoulValue(Guid return_id, IValue returnValue)
+		{
+			var soul = returnValue.GetObject();
+			var type = returnValue.GetObjectType();
+			var prevSoul = (from soulInfo in this._Souls.UpdateSet()
+			                where object.ReferenceEquals(soulInfo.ObjectInstance, soul) && soulInfo.ObjectType == type
+			                select soulInfo).SingleOrDefault();
+
+			if (prevSoul == null)
+			{
+				var new_soul = this._NewSoul(soul, type);
+
+				this._LoadSoul(type.FullName, new_soul.ID, true);
+				new_soul.ProcessDiffentValues(this._UpdateProperty);
+				this._LoadSoulCompile(type.FullName, new_soul.ID, return_id);
+			}
+		}
+
+		private void _ReturnDataValue(Guid returnId, IValue returnValue)
+		{
+			var argmants = new Dictionary<byte, byte[]>();
+			argmants.Add(0, returnId.ToByteArray());
+			var value = returnValue.GetObject();
+			argmants.Add(1, TypeHelper.Serializer(value));
+			this._Queue.Push((byte)ServerToClientOpCode.ReturnValue, argmants);
+		}
+
+		private void _LoadSoulCompile(string type_name, Guid id, Guid return_id)
+		{
+			var argmants = new Dictionary<byte, byte[]>();
+			argmants.Add(0, TypeHelper.Serializer(type_name));
+			argmants.Add(1, id.ToByteArray());
+			argmants.Add(2, return_id.ToByteArray());
+
+			this._Queue.Push((byte)ServerToClientOpCode.LoadSoulCompile, argmants);
+		}
+
+		private void _LoadSoul(string type_name, Guid id, bool return_type)
+		{
+			var argmants = new Dictionary<byte, byte[]>();
+			argmants.Add(0, TypeHelper.Serializer(type_name));
+			argmants.Add(1, id.ToByteArray());
+			argmants.Add(2, TypeHelper.Serializer(return_type));
+			this._Queue.Push((byte)ServerToClientOpCode.LoadSoul, argmants);
+		}
+
+		private void _UnloadSoul(string type_name, Guid id)
+		{
+			var argmants = new Dictionary<byte, byte[]>();
+			argmants.Add(0, TypeHelper.Serializer(type_name));
+			argmants.Add(1, id.ToByteArray());
+			this._Queue.Push((byte)ServerToClientOpCode.UnloadSoul, argmants);
+		}
+
+		private void _InvokeMethod(Guid entity_id, string method_name, Guid returnId, byte[][] args)
+		{
+			var soulInfo = (from soul in this._Souls.UpdateSet()
+			                where soul.ID == entity_id
+			                select new
+			                {
+				                soul.MethodInfos, 
+				                soul.ObjectInstance
+			                }).FirstOrDefault();
+			if (soulInfo != null)
+			{
+				var methodInfo =
+					(from m in soulInfo.MethodInfos where m.Name == method_name && m.GetParameters().Count() == args.Count() select m)
+						.FirstOrDefault();
+				if (methodInfo != null)
+				{
+					var paramerInfos = methodInfo.GetParameters();
+
+					var i = 0;
+					var argObjects = from pi in paramerInfos
+					                 let arg = args[i++]
+					                 select TypeHelper.DeserializeObject(pi.ParameterType, arg);
+
+					var returnValue = methodInfo.Invoke(soulInfo.ObjectInstance, argObjects.ToArray());
+					if (returnValue != null)
+					{
+						this._ReturnValue(returnId, returnValue as IValue);
+					}
+				}
+			}
+		}
+
+		private void _Bind<TSoul>(TSoul soul, bool return_type, Guid return_id)
+		{
+			var type = typeof (TSoul);
+
+			var prevSoul = (from soulInfo in this._Souls.UpdateSet()
+			                where object.ReferenceEquals(soulInfo.ObjectInstance, soul) && soulInfo.ObjectType == typeof (TSoul)
+			                select soulInfo).SingleOrDefault();
+
+			if (prevSoul == null)
+			{
+				var new_soul = this._NewSoul(soul, typeof (TSoul));
+
+				this._LoadSoul(type.FullName, new_soul.ID, return_type);
+				new_soul.ProcessDiffentValues(this._UpdateProperty);
+				this._LoadSoulCompile(type.FullName, new_soul.ID, return_id);
+			}
+		}
+
+		private Soul _NewSoul(object soul, Type soulType)
+		{
+			// var bindChecker = new BindGuard(soulType);
+			var new_soul = new Soul
+			{
+				ID = Guid.NewGuid(), 
+				ObjectType = soulType, 
+				ObjectInstance = soul, 
+				MethodInfos = soulType.GetMethods()
+			};
+
+			// event				
+			var eventInfos = soulType.GetEvents();
+			new_soul.EventHandlers = new List<Soul.EventHandler>();
+
+			foreach (var eventInfo in eventInfos)
+			{
+				var genericArguments = eventInfo.EventHandlerType.GetGenericArguments();
+				var handler = this._BuildDelegate(genericArguments, new_soul.ID, eventInfo.Name);
+
+				var eh = new Soul.EventHandler();
+				eh.EventInfo = eventInfo;
+				eh.DelegateObject = handler;
+				new_soul.EventHandlers.Add(eh);
+
+				eventInfo.AddEventHandler(soul, handler);
+			}
 
 
-            lock (_EventFilter)
-            {
-                foreach (var filter in _EventFilter)
-                {
-                    _Queue.Push((byte)ServerToClientOpCode.InvokeEvent, filter);
-                }
-                _EventFilter.Clear();
-            }
-            
-            
-        }
+			// property 
+			var propertys = soulType.GetProperties(BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public);
+			new_soul.PropertyHandlers = new Soul.PropertyHandler[propertys.Length];
+			for (var i = 0; i < propertys.Length; ++i)
+			{
+				new_soul.PropertyHandlers[i] = new Soul.PropertyHandler();
+				new_soul.PropertyHandlers[i].PropertyInfo = propertys[i];
+			}
 
+			this._Souls.Add(new_soul);
 
+			return new_soul;
+		}
 
-        void ISoulBinder.Return<TSoul>(TSoul soul)
-        {
-            if (soul == null)
-                throw new ArgumentNullException("soul");
+		private void _Unbind(object soul, Type type)
+		{
+			var soulInfo = (from soul_info in this._Souls.UpdateSet()
+			                where object.ReferenceEquals(soul_info.ObjectInstance, soul) && soul_info.ObjectType == type
+			                select soul_info).SingleOrDefault();
 
-            _Bind(soul , true , Guid.Empty);
-        }
+			// var soulInfo = _Souls.Find((soul_info) => { return Object.ReferenceEquals(soul_info.ObjectInstance, soul) && soul_info.ObjectType == typeof(TSoul); });
+			if (soulInfo != null)
+			{
+				foreach (var eventHandler in soulInfo.EventHandlers)
+				{
+					eventHandler.EventInfo.RemoveEventHandler(soulInfo.ObjectInstance, eventHandler.DelegateObject);
+				}
 
-        void ISoulBinder.Bind<TSoul>(TSoul soul)
-        {
-            if (soul == null)
-                throw new ArgumentNullException("soul");
+				this._UnloadSoul(soulInfo.ObjectType.FullName, soulInfo.ID);
+				this._Souls.Remove(s => { return s == soulInfo; });
+			}
+		}
 
-            _Bind(soul, false, Guid.Empty);
-        }
+		private Delegate _BuildDelegate(Type[] generic_arguments, Guid entity_id, string event_name)
+		{
+			Type closureType = null;
 
-        void ISoulBinder.Unbind<TSoul>(TSoul soul)
-        {
-            if (soul == null)
-                throw new ArgumentNullException("soul");
+			Type delegateType = null;
+			MethodInfo run = null;
+			Type[] closureTypes =
+			{
+				typeof (GenericEventClosure)
+				, 
+				typeof (GenericEventClosure<>)
+				, 
+				typeof (GenericEventClosure<,>)
+				, 
+				typeof (GenericEventClosure<,,>)
+				, 
+				typeof (GenericEventClosure<,,,>)
+				, 
+				typeof (GenericEventClosure<,,,,>)
+			};
 
-            _Unbind(soul, typeof(TSoul));
-        }
+			closureType = closureTypes[generic_arguments.Length];
+			if (generic_arguments.Length != 0)
+			{
+				closureType = closureType.MakeGenericType(generic_arguments);
+				var getDelegateTypeMethod = closureType.GetMethod("GetDelegateType", BindingFlags.Static | BindingFlags.Public);
+				delegateType = (Type)getDelegateTypeMethod.Invoke(null, null);
+			}
+			else
+			{
+				delegateType = GenericEventClosure.GetDelegateType();
+			}
 
-        event Action ISoulBinder.BreakEvent
-        {
-            add
-            {
-                lock (_Peer)
-                {
-                    _Peer.BreakEvent += value;
-                }
+			run = closureType.GetMethod("Run");
+			var closureInstance = Activator.CreateInstance(closureType, entity_id, event_name, 
+				new Action<Guid, string, object[]>(this._InvokeEvent));
 
-            }
-            remove
-            {
-                lock (_Peer)
-                {
-                    _Peer.BreakEvent -= value;
-                }
-            }
-        }
+			return Delegate.CreateDelegate(delegateType, closureInstance, run);
+		}
 
-        public void Unbind(Guid entityId)
-        {
-            var soul = (from s in _Souls.UpdateSet() where s.ID == entityId select s).FirstOrDefault();
-            if(soul != null)
-            {
-                _Unbind(soul.ObjectInstance, soul.ObjectType);
-            }
+		public void Update()
+		{
+			var souls = this._Souls.UpdateSet();
+			var intervalSpan = DateTime.Now - this._UpdatePropertyInterval;
+			var intervalSeconds = intervalSpan.TotalSeconds;
+			if (intervalSeconds > 0.5)
+			{
+				foreach (var soul in souls)
+				{
+					soul.ProcessDiffentValues(this._UpdateProperty);
+				}
 
-        }
-    }
+				this._UpdatePropertyInterval = DateTime.Now;
+			}
+
+			lock (this._EventFilter)
+			{
+				foreach (var filter in this._EventFilter)
+				{
+					this._Queue.Push((byte)ServerToClientOpCode.InvokeEvent, filter);
+				}
+
+				this._EventFilter.Clear();
+			}
+		}
+
+		public void Unbind(Guid entityId)
+		{
+			var soul = (from s in this._Souls.UpdateSet() where s.ID == entityId select s).FirstOrDefault();
+			if (soul != null)
+			{
+				this._Unbind(soul.ObjectInstance, soul.ObjectType);
+			}
+		}
+	}
 }

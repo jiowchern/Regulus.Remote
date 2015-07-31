@@ -3,13 +3,16 @@
 //   Regulus Framework
 // </copyright>
 // <summary>
-//   Defines the StageDataTable type.
+//   Defines the StageDataVisit type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+#region Test_Region
 
 using System.Collections.Generic;
 using System.Linq;
+
+#endregion
 
 namespace VGame.Project.FishHunter.ZsFormula.DataStructs
 {
@@ -104,7 +107,7 @@ namespace VGame.Project.FishHunter.ZsFormula.DataStructs
 	}
 
 	/// <summary>
-	/// 一個stage裡面有n個buffer
+	///     一個stage裡面有n個buffer
 	/// </summary>
 	public partial class StageDataTable
 	{

@@ -1,50 +1,60 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="RecordController.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the RecordController type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
 using System.Web.Mvc;
-using System.Threading.Tasks;
 
-using Regulus.Extension;
+using Regulus.Net45;
 
+using VGame.Project.FishHunter.Common;
+
+using VGameWebApplication.Models;
+using VGameWebApplication.Storage;
+
+#endregion
 
 namespace VGameWebApplication.Controllers
 {
-    public class RecordController : Controller
-    {
-        public ActionResult Index()
-        {
-            VGame.Project.FishHunter.Storage.Service service = VGame.Project.FishHunter.Storage.Service.Create(HttpContext.Items["StorageId"]);
+	public class RecordController : Controller
+	{
+		public ActionResult Index()
+		{
+			var service = Service.Create(HttpContext.Items["StorageId"]);
 
-            Models.TradeData tradeData = new Models.TradeData();
+			var tradeData = new TradeData();
 
-            
-            var accs = service.AccountManager.QueryAllAccount().WaitResult();
+			var accs = service.AccountManager.QueryAllAccount().WaitResult();
 
-            foreach(var a in accs)
-            {
-                var money = service.RecodeQueriers.Load(a.Id).WaitResult().Money;
-                
-                tradeData.Add(a.Id, a.Name, money);
-            }
+			foreach (var a in accs)
+			{
+				var money = service.RecodeQueriers.Load(a.Id).WaitResult().Money;
 
-            return View(tradeData.Datas.ToArray()); 
-        }
+				tradeData.Add(a.Id, a.Name, money);
+			}
 
-        public ActionResult InputMoney(Models.TradeData.Data data)
-        {
-            if(data.Deposit == 0)
-            {
-                return View(data);
-            }
+			return View(tradeData.Datas.ToArray());
+		}
 
-            VGame.Project.FishHunter.Storage.Service service = VGame.Project.FishHunter.Storage.Service.Create(HttpContext.Items["StorageId"]);
+		public ActionResult InputMoney(TradeData.Data data)
+		{
+			if (data.Deposit == 0)
+			{
+				return View(data);
+			}
 
-            var t = new VGame.Project.FishHunter.Data.TradeNotes.TradeData(service.ConnecterId, data.OwnerId, data.Deposit, 0);
-            service.TradeNotes.Write(t).WaitResult();
+			var service = Service.Create(HttpContext.Items["StorageId"]);
 
-            return RedirectToAction("Index");
-        }
+			var t = new TradeNotes.TradeData(service.ConnecterId, data.OwnerId, data.Deposit, 0);
+			service.TradeNotes.Write(t).WaitResult();
 
-    }
+			return RedirectToAction("Index");
+		}
+	}
 }

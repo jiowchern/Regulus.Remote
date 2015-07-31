@@ -1,41 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="CoreThreadRequestHandler.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the CoreThreadRequestHandler type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace Regulus.Remoting.Soul.Native
+#region Test_Region
+
+using Regulus.Framework;
+using Regulus.Utility;
+
+#endregion
+
+namespace Regulus.Remoting
 {
-    
-    public class CoreThreadRequestHandler : Regulus.Utility.IUpdatable 
-    {
-        Regulus.Remoting.IRequestQueue _Requester;
-        bool _Enable;
-        
-        public CoreThreadRequestHandler(Regulus.Remoting.IRequestQueue requester)
-        {
-            _Requester = requester;
-        }
+	public class CoreThreadRequestHandler : IUpdatable
+	{
+		private readonly IRequestQueue _Requester;
 
-        bool Utility.IUpdatable.Update()
-        {
-            _Requester.Update();
-            return _Enable;
-        }
+		private bool _Enable;
 
-        void Framework.IBootable.Launch()
-        {
-            _Enable = true;
-            _Requester.BreakEvent += _End;
-        }
+		public CoreThreadRequestHandler(IRequestQueue requester)
+		{
+			this._Requester = requester;
+		}
 
-        private void _End()
-        {
-            _Enable = false;
-        }
+		bool IUpdatable.Update()
+		{
+			this._Requester.Update();
+			return this._Enable;
+		}
 
-        void Framework.IBootable.Shutdown()
-        {
-            _Requester.BreakEvent -= _End;
-        }
-    }
+		void IBootable.Launch()
+		{
+			this._Enable = true;
+			this._Requester.BreakEvent += this._End;
+		}
+
+		void IBootable.Shutdown()
+		{
+			this._Requester.BreakEvent -= this._End;
+		}
+
+		private void _End()
+		{
+			this._Enable = false;
+		}
+	}
 }
