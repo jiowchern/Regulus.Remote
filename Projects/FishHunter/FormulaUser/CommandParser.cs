@@ -16,6 +16,7 @@ using Regulus.Remoting.Ghost.Native;
 using Regulus.Utility;
 
 using VGame.Project.FishHunter.Common;
+using VGame.Project.FishHunter.Common.GPIs;
 
 #endregion
 

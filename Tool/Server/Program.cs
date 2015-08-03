@@ -7,12 +7,8 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-#region Test_Region
-
 using Regulus.Remoting.Soul.Native;
 using Regulus.Utility.WindowConsoleAppliction;
-
-#endregion
 
 namespace Server
 {

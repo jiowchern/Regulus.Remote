@@ -16,6 +16,7 @@ using System.Web.Mvc;
 using Regulus.Net45;
 
 using VGame.Project.FishHunter.Common;
+using VGame.Project.FishHunter.Common.Datas;
 
 using VGameWebApplication.Models;
 using VGameWebApplication.Storage;

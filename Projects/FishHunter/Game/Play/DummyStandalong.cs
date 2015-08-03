@@ -7,13 +7,9 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-#region Test_Region
-
 using Regulus.Framework;
 using Regulus.Remoting;
 using Regulus.Utility;
-
-#endregion
 
 namespace VGame.Project.FishHunter.Play
 {

@@ -7,11 +7,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-#region Test_Region
-
 using System.ServiceProcess;
-
-#endregion
 
 namespace WindowsService
 {

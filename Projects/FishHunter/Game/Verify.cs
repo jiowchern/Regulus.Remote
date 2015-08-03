@@ -12,6 +12,8 @@
 using Regulus.Remoting;
 
 using VGame.Project.FishHunter.Common;
+using VGame.Project.FishHunter.Common.Datas;
+using VGame.Project.FishHunter.Common.GPIs;
 
 #endregion
 

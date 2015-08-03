@@ -7,11 +7,9 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-#region Test_Region
+
 
 using VGame.Project.FishHunter.ZsFormula.DataStructs;
-
-#endregion
 
 namespace VGame.Project.FishHunter.ZsFormula.Rules
 {
@@ -26,18 +24,22 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 
 		public void Run(AttackData attack_data, Player.Data player_data)
 		{
-			if (attack_data.FishData.FishType >= FishDataTable.Data.FISH_TYPE.DEF_100)
+			if (attack_data.FishData.FishType < FishDataTable.Data.FISH_TYPE.DEF_100)
 			{
-				var type = attack_data.FishData.FishType - 100;
-
-				if (type < FishDataTable.Data.FISH_TYPE.TYPE_7)
-				{
-					// TODO index問題
-					player_data.Recode.Sp03WinTimes++;
-
-					_StageDataVisit.NowUseData.Recode.Sp03WinTimes++;
-				}
+				return;
 			}
+
+			var type = attack_data.FishData.FishType - 100;
+
+			if (type >= FishDataTable.Data.FISH_TYPE.TYPE_7)
+			{
+				return;
+			}
+
+			// TODO index問題
+			player_data.Recode.Sp03WinTimes++;
+
+			this._StageDataVisit.NowUseData.Recode.Sp03WinTimes++;
 		}
 	}
 }

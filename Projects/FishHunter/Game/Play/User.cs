@@ -17,8 +17,10 @@ using Regulus.Remoting;
 using Regulus.Utility;
 
 using VGame.Project.FishHunter.Common;
+using VGame.Project.FishHunter.Common.Datas;
+using VGame.Project.FishHunter.Common.GPIs;
 
-using StageLock = VGame.Project.FishHunter.Common.Data.StageLock;
+using StageLock = VGame.Project.FishHunter.Common.Datas.StageLock;
 
 #endregion
 
@@ -175,67 +177,67 @@ namespace VGame.Project.FishHunter.Play
 				_Record = obj;
 				_StageTicketInspector.Initial(new[]
 				{
-					new Common.Data.Stage
+					new Common.Datas.Stage
 					{
 						Id = 1, 
 						Pass = true
 					}, 
-					new Common.Data.Stage
+					new Common.Datas.Stage
 					{
 						Id = 2, 
 						Pass = false
 					}, 
-					new Common.Data.Stage
+					new Common.Datas.Stage
 					{
 						Id = 4, 
 						Pass = false
 					}, 
-					new Common.Data.Stage
+					new Common.Datas.Stage
 					{
 						Id = 5, 
 						Pass = false
 					}, 
-					new Common.Data.Stage
+					new Common.Datas.Stage
 					{
 						Id = 6, 
 						Pass = false
 					}, 
-					new Common.Data.Stage
+					new Common.Datas.Stage
 					{
 						Id = 7, 
 						Pass = false
 					}, 
-					new Common.Data.Stage
+					new Common.Datas.Stage
 					{
 						Id = 8, 
 						Pass = false
 					}, 
-					new Common.Data.Stage
+					new Common.Datas.Stage
 					{
 						Id = 9, 
 						Pass = false
 					}, 
-					new Common.Data.Stage
+					new Common.Datas.Stage
 					{
 						Id = 10, 
 						Pass = false
 					}, 
-					new Common.Data.Stage
+					new Common.Datas.Stage
 					{
 						Id = 11, 
 						Pass = false
 					}, 
-					new Common.Data.Stage
+					new Common.Datas.Stage
 					{
 						Id = 12, 
 						Pass = false
 					}, 
-					new Common.Data.Stage
+					new Common.Datas.Stage
 					{
 						Id = 13, 
 						Pass = false
 					}, 
-					new Common.Data.Stage
+					new Common.Datas.Stage
 					{
 						Id = 14, 
 						Pass = false
