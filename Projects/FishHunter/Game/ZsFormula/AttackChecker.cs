@@ -7,12 +7,8 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-#region Test_Region
-
 using VGame.Project.FishHunter.ZsFormula.DataStructs;
 using VGame.Project.FishHunter.ZsFormula.Rules;
-
-#endregion
 
 namespace VGame.Project.FishHunter.ZsFormula
 {

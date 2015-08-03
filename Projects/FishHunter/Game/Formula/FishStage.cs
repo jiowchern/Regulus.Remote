@@ -15,6 +15,7 @@ using Regulus.Extension;
 using Regulus.Utility;
 
 using VGame.Project.FishHunter.Common;
+using VGame.Project.FishHunter.Common.GPIs;
 
 using Random = Regulus.Utility.Random;
 

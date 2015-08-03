@@ -7,8 +7,6 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-#region Test_Region
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,8 +15,8 @@ using Regulus.Remoting;
 using Regulus.Utility;
 
 using VGame.Project.FishHunter.Common;
-
-#endregion
+using VGame.Project.FishHunter.Common.Datas;
+using VGame.Project.FishHunter.Common.GPIs;
 
 namespace VGame.Project.FishHunter.Play
 {

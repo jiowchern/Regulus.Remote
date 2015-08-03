@@ -15,6 +15,7 @@ using Regulus.CustomType;
 using Regulus.Utility;
 
 using VGame.Project.FishHunter.Common;
+using VGame.Project.FishHunter.Common.Datas;
 
 #endregion
 
@@ -29,7 +30,7 @@ namespace VGameWebApplication
 			{
 				var val = string.Format("{0}[{1}]", bindingContext.ModelName, t);
 				var parameter = bindingContext.ValueProvider.GetValue(val);
-				var check = (bool)parameter.ConvertTo(typeof (bool));
+				var check = (bool)parameter.ConvertTo(typeof(bool));
 				flags[t] = check;
 			}
 

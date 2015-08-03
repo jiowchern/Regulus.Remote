@@ -7,8 +7,6 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-#region Test_Region
-
 using System;
 using System.IO;
 using System.Net;
@@ -18,12 +16,11 @@ using Regulus.Remoting;
 using Regulus.Utility;
 
 using VGame.Project.FishHunter.Formula;
+using VGame.Project.FishHunter.Play;
 using VGame.Project.FishHunter.Storage;
 
 using Center = VGame.Project.FishHunter.Play.Center;
 using IUser = VGame.Project.FishHunter.Formula.IUser;
-
-#endregion
 
 namespace VGame.Project.FishHunter
 {

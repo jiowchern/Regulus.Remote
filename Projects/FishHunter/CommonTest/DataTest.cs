@@ -7,16 +7,12 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-#region Test_Region
-
 using System;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using VGame.Project.FishHunter.Common;
-using VGame.Project.FishHunter.Common.Data;
-
-#endregion
+using VGame.Project.FishHunter.Common.Datas;
 
 namespace GameTest
 {

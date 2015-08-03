@@ -7,11 +7,9 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-#region Test_Region
+
 
 using VGame.Project.FishHunter.ZsFormula.DataStructs;
-
-#endregion
 
 namespace VGame.Project.FishHunter.ZsFormula.Rules
 {
@@ -26,11 +24,13 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 
 		public void Run(AttackData attack_data, Player.Data player_data)
 		{
-			if (attack_data.WeaponData.WeaponType == WeaponDataTable.Data.WEAPON_TYPE.FREE_NORMAL_4)
+			if (attack_data.WeaponData.WeaponType != WeaponDataTable.Data.WEAPON_TYPE.FREE_NORMAL_4)
 			{
-				player_data.Recode.Sp02WinTotal++;
-				_StageDataVisit.NowUseData.Recode.Sp02WinTotal++;
+				return;
 			}
+
+			player_data.Recode.Sp02WinTotal++;
+			this._StageDataVisit.NowUseData.Recode.Sp02WinTotal++;
 		}
 	}
 }

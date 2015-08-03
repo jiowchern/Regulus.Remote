@@ -13,6 +13,7 @@ using Regulus.Game;
 using Regulus.Utility;
 
 using VGame.Project.FishHunter.Common;
+using VGame.Project.FishHunter.Common.GPIs;
 using VGame.Project.FishHunter.ZsFormula.DataStructs;
 
 #endregion
