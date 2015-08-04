@@ -11,13 +11,16 @@
 
 using System.Linq;
 
+
 using Regulus.Utility;
 
-using VGame.Project.FishHunter.ZsFormula.DataStructs;
+
+using VGame.Project.FishHunter.Common.Datas.FishStage;
+using VGame.Project.FishHunter.ZsFormula.Data;
 
 #endregion
 
-namespace VGame.Project.FishHunter.ZsFormula.Rules
+namespace VGame.Project.FishHunter.ZsFormula.Rule
 {
 	public interface IRuleCheck
 	{
@@ -51,9 +54,9 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 
 			foreach (var weaponower in EnumHelper.GetEnums<WeaponDataTable.Data.WEAPON_POWER>())
 			{
-				var bufferData = _StageDataVisit.FindBufferData(
+				var bufferData = _StageDataVisit.FindBuffer(
 					_StageDataVisit.NowUseBlock, 
-					StageDataTable.BufferData.BUFFER_TYPE.SPEC);
+					StageBuffer.BUFFER_TYPE.SPEC);
 
 				var gate = bufferData.Rate / enumCount;
 				

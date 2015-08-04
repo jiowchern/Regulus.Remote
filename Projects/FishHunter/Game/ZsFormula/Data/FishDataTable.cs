@@ -13,7 +13,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace VGame.Project.FishHunter.ZsFormula.DataStructs
+namespace VGame.Project.FishHunter.ZsFormula.Data
 {
 	public interface IFishDataFinder
 	{

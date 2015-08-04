@@ -7,14 +7,13 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-#region Test_Region
+using System.Collections.Generic;
+using System.Linq;
 
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
-using VGame.Project.FishHunter.ZsFormula.DataStructs;
-
-#endregion
+using VGame.Project.FishHunter.Common.Datas.FishStage;
 
 namespace GameTest.ZsFormulaTest
 {
@@ -22,19 +21,18 @@ namespace GameTest.ZsFormulaTest
 	[Scope(Feature = "ZsFishStageDataCheck")]
 	public class ZsFishStageDataCheckSteps
 	{
-		private StageDataTable _StageDataTable;
+		private Dictionary<int, StageData> _Datas;
 
-		public ZsFishStageDataCheckSteps(StageDataTable stage_data_table)
+		public ZsFishStageDataCheckSteps(IEnumerable<StageData> datas)
 		{
-			this._StageDataTable = stage_data_table;
 		}
 
 		[Given(@"魚場資料表是")]
 		public void Given魚場資料表是(Table table)
 		{
-			var datas = table.CreateSet<StageDataTable.Data>();
+			var datas = table.CreateSet<StageData>();
 
-			this._StageDataTable = new StageDataTable(datas);
+			_Datas = datas.ToDictionary(x => x.StageId);
 		}
 
 		[When(@"當輸入魚場id是 (.*)")]
@@ -48,7 +46,7 @@ namespace GameTest.ZsFormulaTest
 		{
 			var key = ScenarioContext.Current.Get<int>("key");
 
-			var sourceData = this._StageDataTable.TableDatas[key];
+			var sourceData = _Datas[key];
 
 			table.CompareToInstance(sourceData);
 		}

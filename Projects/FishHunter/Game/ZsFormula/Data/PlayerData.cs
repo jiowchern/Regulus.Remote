@@ -7,14 +7,12 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-#region Test_Region
-
 using System.Collections.Generic;
 using System.Linq;
 
-#endregion
+using VGame.Project.FishHunter.Common.Datas.FishStage;
 
-namespace VGame.Project.FishHunter.ZsFormula.DataStructs
+namespace VGame.Project.FishHunter.ZsFormula.Data
 {
 	public class Player
 	{
@@ -30,13 +28,13 @@ namespace VGame.Project.FishHunter.ZsFormula.DataStructs
 
 			public int BufferValue { get; set; }
 
-			public RecodeData.SpecialWeaponData NowSpecialWeaponData { get; set; }
+			public SpecialWeaponData NowSpecialWeaponData { get; set; }
 
-			public RecodeData RecodeData { get; set; }
+			public StageRecode RecodeData { get; set; }
 
 			public Data()
 			{
-				this.RecodeData = new RecodeData();
+				RecodeData = new StageRecode();
 			}
 		}
 

@@ -6,12 +6,13 @@
 //   是否死亡的判断
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
 using System;
 
-using VGame.Project.FishHunter.ZsFormula.DataStructs;
 
-namespace VGame.Project.FishHunter.ZsFormula.Rules
+using VGame.Project.FishHunter.Common.Datas.FishStage;
+using VGame.Project.FishHunter.ZsFormula.Data;
+
+namespace VGame.Project.FishHunter.ZsFormula.Rule
 {
 	/// <summary>
 	///     // 是否死亡的判断
@@ -37,9 +38,9 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 		public void Run(AttackData attack_data)
 		{
 			var fireRate = _StageDataVisit.NowUseData.GameRate - 10;
-			var bufferData = _StageDataVisit.FindBufferData(
-				_StageDataVisit.NowUseBlock, 
-				StageDataTable.BufferData.BUFFER_TYPE.SPEC);
+			var bufferData = _StageDataVisit.FindBuffer(
+				_StageDataVisit.NowUseBlock,
+				StageBuffer.BUFFER_TYPE.SPEC);
 
 			fireRate -= (int)bufferData.Rate;
 

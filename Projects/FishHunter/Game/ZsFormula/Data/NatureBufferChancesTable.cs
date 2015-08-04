@@ -6,15 +6,13 @@
 //   Defines the NatureBufferChancesTable type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
-
-
 using System.Collections.Generic;
 using System.Linq;
 
+
 using Regulus.Game;
 
-namespace VGame.Project.FishHunter.ZsFormula.DataStructs
+namespace VGame.Project.FishHunter.ZsFormula.Data
 {
 	public class NatureBufferChancesTable : RangeChancesTable<int>
 	{

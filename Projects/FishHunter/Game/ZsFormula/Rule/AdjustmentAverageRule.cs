@@ -9,11 +9,12 @@
 
 #region Test_Region
 
-using VGame.Project.FishHunter.ZsFormula.DataStructs;
+using VGame.Project.FishHunter.Common.Datas.FishStage;
+using VGame.Project.FishHunter.ZsFormula.Data;
 
 #endregion
 
-namespace VGame.Project.FishHunter.ZsFormula.Rules
+namespace VGame.Project.FishHunter.ZsFormula.Rule
 {
 	/// <summary>
 	///     平均押注的调整
@@ -29,9 +30,9 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 
 		public void Run(int bet)
 		{
-			var bufferData = _StageDataVisit.FindBufferData(
-				_StageDataVisit.NowUseBlock, 
-				StageDataTable.BufferData.BUFFER_TYPE.NORMAL);
+			var bufferData = _StageDataVisit.FindBuffer(
+				_StageDataVisit.NowUseBlock,
+				StageBuffer.BUFFER_TYPE.NORMAL);
 			var avgBet = 0;
 
 			// 前1000局，按照实际总玩分/总玩次，获得平均押注

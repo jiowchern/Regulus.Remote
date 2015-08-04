@@ -9,17 +9,15 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-#region Test_Region
-
 using System.Linq;
+
 
 using Regulus.Utility;
 
-using VGame.Project.FishHunter.ZsFormula.DataStructs;
+using VGame.Project.FishHunter.Common.Datas.FishStage;
+using VGame.Project.FishHunter.ZsFormula.Data;
 
-#endregion
-
-namespace VGame.Project.FishHunter.ZsFormula.Rules
+namespace VGame.Project.FishHunter.ZsFormula.Rule
 {
 	/// <summary>
 	///     00以上为特殊鱼（死亡后，有爆炸效果的），直接变成特殊武器
@@ -28,11 +26,11 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 	/// </summary>
 	public class OddsRuler
 	{
-		private readonly StageDataTable.BufferData _BufferData;
+		private readonly StageBuffer _BufferData;
 
 		private readonly FishDataTable.Data _FishData;
 
-		public OddsRuler(FishDataTable.Data fish_data, StageDataTable.BufferData buffer_data)
+		public OddsRuler(FishDataTable.Data fish_data, StageBuffer buffer_data)
 		{
 			_FishData = fish_data;
 			_BufferData = buffer_data;
@@ -91,7 +89,7 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 			return true;
 		}
 
-		private bool _CheckStageBufferToOddsRule(StageDataTable.BufferData data)
+		private bool _CheckStageBufferToOddsRule(StageBuffer data)
 		{
 			var natrue = new NatureBufferChancesTable(null);
 

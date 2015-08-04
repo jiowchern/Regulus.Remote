@@ -13,7 +13,7 @@ using Regulus.Game;
 
 #endregion
 
-namespace VGame.Project.FishHunter.ZsFormula.DataStructs
+namespace VGame.Project.FishHunter.ZsFormula.Data
 {
 	internal class ScoreOddsTable : ChancesTable<int>
 	{

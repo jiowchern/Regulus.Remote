@@ -14,7 +14,7 @@ using System.Linq;
 
 #endregion
 
-namespace VGame.Project.FishHunter.ZsFormula.DataStructs
+namespace VGame.Project.FishHunter.ZsFormula.Data
 {
 	public class MultipleTable
 	{

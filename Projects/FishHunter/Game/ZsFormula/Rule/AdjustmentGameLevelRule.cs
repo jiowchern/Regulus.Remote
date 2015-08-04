@@ -9,11 +9,12 @@
 
 #region Test_Region
 
-using VGame.Project.FishHunter.ZsFormula.DataStructs;
+using VGame.Project.FishHunter.Common.Datas.FishStage;
+using VGame.Project.FishHunter.ZsFormula.Data;
 
 #endregion
 
-namespace VGame.Project.FishHunter.ZsFormula.Rules
+namespace VGame.Project.FishHunter.ZsFormula.Rule
 {
 	public class AdjustmentGameLevelRule
 	{
@@ -29,9 +30,9 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 		/// </summary>
 		public void Run()
 		{
-			var bufferData = _StageDataVisit.FindBufferData(
+			var bufferData = _StageDataVisit.FindBuffer(
 				_StageDataVisit.NowUseBlock, 
-				StageDataTable.BufferData.BUFFER_TYPE.NORMAL);
+				StageBuffer.BUFFER_TYPE.NORMAL);
 			var bufferTemp = bufferData.BufferTempValue;
 			bufferTemp.PlayerTime += 1;
 			if (bufferTemp.RealTime != 0 && bufferTemp.PlayerTime <= 500)

@@ -8,8 +8,8 @@
 // --------------------------------------------------------------------------------------------------------------------
 using VGame.Project.FishHunter.Common.Datas;
 using VGame.Project.FishHunter.Formula;
-using VGame.Project.FishHunter.ZsFormula.DataStructs;
-using VGame.Project.FishHunter.ZsFormula.Rules;
+using VGame.Project.FishHunter.ZsFormula.Data;
+using VGame.Project.FishHunter.ZsFormula.Rule;
 
 namespace VGame.Project.FishHunter.ZsFormula
 {
@@ -47,9 +47,9 @@ namespace VGame.Project.FishHunter.ZsFormula
 
 		public AttackChecker(StageDataVisit stage_data_visit, AttackData attack_data)
 		{
-			_StageDataVisit.GetBufferBlock(attack_data.GetWeaponBet());
 			_StageDataVisit = stage_data_visit;
-
+			_StageDataVisit.GetBufferBlock(attack_data.GetWeaponBet());
+			
 			_AttackData = attack_data;
 
 			_AdjustmentGameLevelRule = new AdjustmentGameLevelRule(_StageDataVisit);

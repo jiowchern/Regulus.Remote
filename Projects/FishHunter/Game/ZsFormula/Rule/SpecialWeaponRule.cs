@@ -11,13 +11,16 @@
 
 using System;
 
-using VGame.Project.FishHunter.ZsFormula.DataStructs;
+
+using VGame.Project.FishHunter.Common.Datas.FishStage;
+using VGame.Project.FishHunter.ZsFormula.Data;
+
 
 using Random = Regulus.Utility.Random;
 
 #endregion
 
-namespace VGame.Project.FishHunter.ZsFormula.Rules
+namespace VGame.Project.FishHunter.ZsFormula.Rule
 {
 	/// <summary>
 	///     特殊武器的處理
@@ -45,8 +48,8 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 			gate /= attack_data.TotalHitOdds; // 总倍数
 
 			var oddsRule = new OddsRuler(
-				attack_data.FishData, 
-				_StageDataVisit.FindBufferData(_StageDataVisit.NowUseBlock, StageDataTable.BufferData.BUFFER_TYPE.NORMAL))
+				attack_data.FishData,
+				_StageDataVisit.FindBuffer(_StageDataVisit.NowUseBlock, StageBuffer.BUFFER_TYPE.NORMAL))
 				.RuleResult();
 
 			gate /= oddsRule;
