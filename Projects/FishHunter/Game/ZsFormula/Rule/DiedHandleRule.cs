@@ -11,12 +11,14 @@
 
 using System;
 
-using VGame.Project.FishHunter.ZsFormula.DataStructs;
+
+using VGame.Project.FishHunter.Common.Datas.FishStage;
+using VGame.Project.FishHunter.ZsFormula.Data;
 
 #endregion
 
 
-namespace VGame.Project.FishHunter.ZsFormula.Rules
+namespace VGame.Project.FishHunter.ZsFormula.Rule
 {
 	/// <summary>
 	/// 分數記錄
@@ -43,9 +45,9 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 
 			var win = win_func();
 
-			var bufferData = _StageDataVisit.FindBufferData(
-				_StageDataVisit.NowUseBlock, 
-				StageDataTable.BufferData.BUFFER_TYPE.NORMAL);
+			var bufferData = _StageDataVisit.FindBuffer(
+				_StageDataVisit.NowUseBlock,
+				StageBuffer.BUFFER_TYPE.NORMAL);
 
 			bufferData.Buffer -= win;
 

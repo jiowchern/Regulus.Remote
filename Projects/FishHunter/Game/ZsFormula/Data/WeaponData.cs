@@ -6,15 +6,10 @@
 //   Defines the WeaponOddsRuler type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
-
-
 using System.Collections.Generic;
 using System.Linq;
 
-using Regulus.Utility;
-
-namespace VGame.Project.FishHunter.ZsFormula.DataStructs
+namespace VGame.Project.FishHunter.ZsFormula.Data
 {
 	/*
 	 武器的 _Attack.WepType

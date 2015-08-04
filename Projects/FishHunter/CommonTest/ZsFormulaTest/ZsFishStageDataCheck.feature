@@ -19,5 +19,4 @@ Scenario: 取得0號魚場資料
     | StageId | Name | SizeType | BaseOdds | GameRate | MaxBet | NowBaseOdds | BaseChgOddsCnt |
     | 0       | 魚場1  | SMALL    | 100      | 995      | 1000   | 0           | 0              |
 
-
 	

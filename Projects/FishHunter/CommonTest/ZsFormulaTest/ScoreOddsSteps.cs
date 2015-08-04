@@ -7,8 +7,6 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-#region Test_Region
-
 using System.Linq;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -18,9 +16,7 @@ using Regulus.Game;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
-using VGame.Project.FishHunter.ZsFormula.DataStructs;
-
-#endregion
+using VGame.Project.FishHunter.ZsFormula.Data;
 
 namespace GameTest.ZsFormulaTest
 {

@@ -7,15 +7,11 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-#region Test_Region
-
 using System.Linq;
 
 using Regulus.Game;
 
-#endregion
-
-namespace VGame.Project.FishHunter.ZsFormula.DataStructs
+namespace VGame.Project.FishHunter.ZsFormula.Data
 {
 	public class BetChancesTable : RangeChancesTable<int>
 	{

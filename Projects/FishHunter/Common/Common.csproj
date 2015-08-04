@@ -51,6 +51,10 @@
   <ItemGroup>
     <Compile Include="Datas\Account.cs" />
     <Compile Include="Datas\ACCOUNT_REQUEST_RESULT.cs" />
+    <Compile Include="Datas\FishStage\SpecialWeaponData.cs" />
+    <Compile Include="Datas\FishStage\StageRecode.cs" />
+    <Compile Include="Datas\FishStage\StageBuffer.cs" />
+    <Compile Include="Datas\FishStage\StageData.cs" />
     <Compile Include="Datas\Stage.cs" />
     <Compile Include="Datas\StageLock.cs" />
     <Compile Include="Datas\HitResponse.cs" />
@@ -66,6 +70,7 @@
     <Compile Include="GPIs\IPlayer.cs" />
     <Compile Include="GPIs\IQuitable.cs" />
     <Compile Include="GPIs\IRecordQueriers.cs" />
+    <Compile Include="GPIs\IStageDataFinder.cs" />
     <Compile Include="GPIs\IStorage.cs" />
     <Compile Include="GPIs\IStorageCompetnces.cs" />
     <Compile Include="GPIs\ITradeNotes.cs" />

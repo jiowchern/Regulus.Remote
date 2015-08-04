@@ -6,12 +6,9 @@
 //   Defines the FishTypeRule type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
+using VGame.Project.FishHunter.ZsFormula.Data;
 
-
-
-using VGame.Project.FishHunter.ZsFormula.DataStructs;
-
-namespace VGame.Project.FishHunter.ZsFormula.Rules
+namespace VGame.Project.FishHunter.ZsFormula.Rule
 {
 	/// <summary>
 	/// 記下特殊魚拿到幾次

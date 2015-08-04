@@ -6,14 +6,16 @@
 //   玩家阶段起伏的调整
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
 using System.Linq;
+
 
 using Regulus.Utility;
 
-using VGame.Project.FishHunter.ZsFormula.DataStructs;
 
-namespace VGame.Project.FishHunter.ZsFormula.Rules
+using VGame.Project.FishHunter.Common.Datas.FishStage;
+using VGame.Project.FishHunter.ZsFormula.Data;
+
+namespace VGame.Project.FishHunter.ZsFormula.Rule
 {
 	/// <summary>
 	///     玩家阶段起伏的调整
@@ -53,12 +55,12 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 			}
 
 			//從VIR00 - VIR03
-			var enums = EnumHelper.GetEnums<StageDataTable.BufferData.BUFFER_TYPE>().ToArray();
+			var enums = EnumHelper.GetEnums<StageBuffer.BUFFER_TYPE>().ToArray();
 
-			for (var i = enums[(int)StageDataTable.BufferData.BUFFER_TYPE.BUFFER_VIR_BEGIN];
-			     i < enums[(int)StageDataTable.BufferData.BUFFER_TYPE.BUFFER_VIR_END]; ++i)
+			for (var i = enums[(int)StageBuffer.BUFFER_TYPE.BUFFER_VIR_BEGIN];
+				 i < enums[(int)StageBuffer.BUFFER_TYPE.BUFFER_VIR_END]; ++i)
 			{
-				var bufferData = _StageDataVisit.FindBufferData(_StageDataVisit.NowUseBlock, i);
+				var bufferData = _StageDataVisit.FindBuffer(_StageDataVisit.NowUseBlock, i);
 
 				var top = bufferData.Top * bufferData.BufferTempValue.AverageValue;
 

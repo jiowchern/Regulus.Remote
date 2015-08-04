@@ -7,13 +7,9 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-#region Test_Region
-
 using TechTalk.SpecFlow;
 
-using VGame.Project.FishHunter.ZsFormula.DataStructs;
-
-#endregion
+using VGame.Project.FishHunter.ZsFormula.Data;
 
 namespace GameTest.ZsFormulaTest
 {

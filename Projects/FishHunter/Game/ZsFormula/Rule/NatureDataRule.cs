@@ -9,11 +9,11 @@
 
 #region Test_Region
 
-using VGame.Project.FishHunter.ZsFormula.DataStructs;
+using VGame.Project.FishHunter.ZsFormula.Data;
 
 #endregion
 
-namespace VGame.Project.FishHunter.ZsFormula.Rules
+namespace VGame.Project.FishHunter.ZsFormula.Rule
 {
 	public class NatureDataRule
 	{

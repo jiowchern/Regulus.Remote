@@ -9,11 +9,12 @@
 
 #region Test_Region
 
-using VGame.Project.FishHunter.ZsFormula.DataStructs;
+using VGame.Project.FishHunter.Common.Datas.FishStage;
+using VGame.Project.FishHunter.ZsFormula.Data;
 
 #endregion
 
-namespace VGame.Project.FishHunter.ZsFormula.Rules
+namespace VGame.Project.FishHunter.ZsFormula.Rule
 {
 	/// <summary>
 	///     累積buffer
@@ -29,9 +30,9 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 
 		public void Run(int bet, Player.Data player_data)
 		{
-			for (var i = StageDataTable.BufferData.BUFFER_TYPE.NORMAL; i < StageDataTable.BufferData.BUFFER_TYPE.COUNT; ++i)
+			for (var i = StageBuffer.BUFFER_TYPE.NORMAL; i < StageBuffer.BUFFER_TYPE.COUNT; ++i)
 			{
-				var data = _StageDataVisit.FindBufferData(_StageDataVisit.NowUseBlock, i);
+				var data = _StageDataVisit.FindBuffer(_StageDataVisit.NowUseBlock, i);
 
 				_AddBufferRate(data, bet);
 			}
@@ -43,7 +44,7 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 			player_data.RecodeData.PlayTotal += bet;
 		}
 
-		private void _AddBufferRate(StageDataTable.BufferData data, int bet)
+		private void _AddBufferRate(StageBuffer data, int bet)
 		{
 			data.Count += bet * data.Rate;
 			if (data.Count >= 1000)

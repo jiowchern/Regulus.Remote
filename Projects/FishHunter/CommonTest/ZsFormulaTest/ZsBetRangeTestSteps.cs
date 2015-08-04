@@ -18,7 +18,8 @@ using Regulus.Game;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
-using VGame.Project.FishHunter.ZsFormula.DataStructs;
+
+using VGame.Project.FishHunter.ZsFormula.Data;
 
 #endregion
 

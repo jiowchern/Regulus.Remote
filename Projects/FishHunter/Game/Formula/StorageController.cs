@@ -9,6 +9,14 @@
 
 #region Test_Region
 
+using System.CodeDom;
+using System.ComponentModel.Design.Serialization;
+using System.Data;
+
+
+using Regulus.Remoting;
+
+
 using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.GPIs;
 
@@ -20,9 +28,15 @@ namespace VGame.Project.FishHunter.Formula
 	{
 		private readonly IAccountFinder _AccountFinder;
 
+		//private IStageFinder IStageFinder;
+
 		public IAccountFinder AccountFinder
 		{
 			get { return _AccountFinder; }
+
+
+
+
 		}
 
 		public StorageController(IAccountFinder account_finder)

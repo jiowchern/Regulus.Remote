@@ -6,12 +6,12 @@
 //   取得道具
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
 using System;
 
-using VGame.Project.FishHunter.ZsFormula.DataStructs;
 
-namespace VGame.Project.FishHunter.ZsFormula.Rules
+using VGame.Project.FishHunter.ZsFormula.Data;
+
+namespace VGame.Project.FishHunter.ZsFormula.Rule
 {
 	/// <summary>
 	///     取得道具

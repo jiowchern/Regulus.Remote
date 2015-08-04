@@ -6,6 +6,8 @@
 //   Defines the FormulaStage type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
+using System.Collections.Generic;
+
 
 using Regulus.Game;
 using Regulus.Remoting;
@@ -23,14 +25,27 @@ namespace VGame.Project.FishHunter.Stage
 
 		private readonly ISoulBinder _Binder;
 
+		private StageGeter[] _Stages;
+
 		public FormulaStage(ISoulBinder binder)
 		{
 			// TODO: Complete member initialization
 			this._Binder = binder;
+
+			_Initital(_Stages);
+		}
+
+		private void _Initital(StageGeter[] stages)
+		{
+			//stages[0] = new StageGeter(IStroage , "Zs" , HitBase);// zs
+			//stages[1] = new StageGeter(IStroage, "My"  ,myHitBase);// my
+
 		}
 
 		Value<IFishStage> IFishStageQueryer.Query(long player_id, byte fish_stage)
 		{
+			
+
 			switch (fish_stage)
 			{
 				case 200:
@@ -38,12 +53,16 @@ namespace VGame.Project.FishHunter.Stage
 				case 100:
 					return new FishStage(player_id, fish_stage);
 				default:
-					return new CsFishStage(player_id, fish_stage);
+					return new CsFishStage(player_id, fish_stage  /*,stage member*/);
 			}
 		}
 
 		void IStage.Enter()
 		{
+			//create new stage obj; member
+			// new Stage(new HitZs , IStorage , )
+
+
 			this._Binder.Bind<IFishStageQueryer>(this);
 		}
 
@@ -54,6 +73,14 @@ namespace VGame.Project.FishHunter.Stage
 
 		void IStage.Update()
 		{
+		}
+	}
+
+	internal class StageGeter
+	{
+		public StageGeter(long player_id, byte fish_stage)
+		{
+			
 		}
 	}
 }
