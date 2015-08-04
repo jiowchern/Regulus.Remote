@@ -6,7 +6,7 @@
 //   Defines the AttackChecker type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-using VGame.Project.FishHunter.Common.Datas;
+using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Formula;
 using VGame.Project.FishHunter.ZsFormula.DataStructs;
 using VGame.Project.FishHunter.ZsFormula.Rules;

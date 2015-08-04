@@ -13,7 +13,8 @@ using System.Linq;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using VGame.Project.FishHunter.Common.Datas;
+
+using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Play;
 
 #endregion

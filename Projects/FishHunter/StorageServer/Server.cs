@@ -21,8 +21,8 @@ using Regulus.Remoting;
 using Regulus.Utility;
 
 using VGame.Project.FishHunter.Common;
-using VGame.Project.FishHunter.Common.Datas;
-using VGame.Project.FishHunter.Common.GPIs;
+using VGame.Project.FishHunter.Common.Data;
+using VGame.Project.FishHunter.Common.GPI;
 
 #endregion
 
@@ -107,7 +107,7 @@ namespace VGame.Project.FishHunter.Storage
 			return new Value<Account>(null);
 		}
 
-        Value<ACCOUNT_REQUEST_RESULT> Common.GPIs.IAccountCreator.Create(Account account)
+        Value<ACCOUNT_REQUEST_RESULT> IAccountCreator.Create(Account account)
 		{
 			var result = _Find(account.Name);
 			if (result != null)
@@ -119,7 +119,7 @@ namespace VGame.Project.FishHunter.Storage
 			return ACCOUNT_REQUEST_RESULT.OK;
 		}
 
-        Value<ACCOUNT_REQUEST_RESULT> Common.GPIs.IAccountManager.Delete(string account)
+        Value<ACCOUNT_REQUEST_RESULT> IAccountManager.Delete(string account)
 		{
 			var result = _Find(account);
 			if (result != null && _Database.Remove<Account>(a => a.Id == result.Id))
@@ -130,7 +130,7 @@ namespace VGame.Project.FishHunter.Storage
 			return ACCOUNT_REQUEST_RESULT.NOTFOUND;
 		}
 
-        Value<Account[]> Common.GPIs.IAccountManager.QueryAllAccount()
+        Value<Account[]> IAccountManager.QueryAllAccount()
 		{
 			return _QueryAllAccount();
 		}

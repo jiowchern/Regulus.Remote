@@ -1,8 +1,6 @@
 ﻿using ProtoBuf;
 
-using VGame.Project.FishHunter.Common.GPIs;
-
-namespace VGame.Project.FishHunter.Common.Datas
+namespace VGame.Project.FishHunter.Common.Data
 {
 	/// <summary>
 	///     判定請求

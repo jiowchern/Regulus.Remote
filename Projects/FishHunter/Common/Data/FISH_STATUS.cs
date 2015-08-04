@@ -1,8 +1,9 @@
 ﻿using System;
 
+
 using ProtoBuf;
 
-namespace VGame.Project.FishHunter.Common.Datas
+namespace VGame.Project.FishHunter.Common.Data
 {
 	/// <summary>
 	///     鱼的状态。

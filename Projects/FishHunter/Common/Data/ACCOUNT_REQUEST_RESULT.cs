@@ -1,16 +1,24 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IQuitable.cs" company="">
+// <copyright file="ACCOUNT_REQUEST_RESULT.cs" company="">
 //   
 // </copyright>
 // <summary>
-//   Defines the IQuitable type.
+//   Defines the ACCOUNT_REQUEST_RESULT type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace VGame.Project.FishHunter.Common.GPIs
+namespace VGame.Project.FishHunter.Common.Data
 {
-	public interface IQuitable
+	
+	/// <summary>
+	/// 
+	/// </summary>
+	public enum ACCOUNT_REQUEST_RESULT
 	{
-		void Quit();
+		REPEAT, 
+
+		OK, 
+
+		NOTFOUND
 	}
 }
