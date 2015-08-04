@@ -6,10 +6,9 @@
 //   魚場請求
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
 using Regulus.Remoting;
 
-namespace VGame.Project.FishHunter.Common.GPIs
+namespace VGame.Project.FishHunter.Common.GPI
 {
 	/// <summary>
 	///     魚場請求

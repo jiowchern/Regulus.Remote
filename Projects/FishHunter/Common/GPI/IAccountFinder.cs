@@ -1,9 +1,9 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IRecordQueriers.cs" company="">
+// <copyright file="IAccountFinder.cs" company="">
 //   
 // </copyright>
 // <summary>
-//   Defines the IRecordQueriers type.
+//   Defines the IAccountFinder type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -11,18 +11,20 @@
 
 using System;
 
+
 using Regulus.Remoting;
 
-using VGame.Project.FishHunter.Common.Datas;
+
+using VGame.Project.FishHunter.Common.Data;
 
 #endregion
 
-namespace VGame.Project.FishHunter.Common.GPIs
+namespace VGame.Project.FishHunter.Common.GPI
 {
-	public interface IRecordQueriers
+	public interface IAccountFinder
 	{
-		Value<Record> Load(Guid id);
+		Value<Account> FindAccountByName(string id);
 
-		void Save(Record record);
+		Value<Account> FindAccountById(Guid accountId);
 	}
 }

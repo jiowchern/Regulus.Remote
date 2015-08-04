@@ -7,7 +7,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace VGame.Project.FishHunter.Common.Datas
+namespace VGame.Project.FishHunter.Common.Data
 {
 	
 	public class StageLock

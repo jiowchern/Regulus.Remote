@@ -15,7 +15,7 @@ using Regulus.CustomType;
 using Regulus.Utility;
 
 using VGame.Project.FishHunter.Common;
-using VGame.Project.FishHunter.Common.Datas;
+using VGame.Project.FishHunter.Common.Data;
 
 #endregion
 

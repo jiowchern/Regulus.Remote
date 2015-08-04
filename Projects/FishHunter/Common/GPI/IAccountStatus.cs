@@ -1,9 +1,9 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IAccountFinder.cs" company="">
+// <copyright file="IAccountStatus.cs" company="">
 //   
 // </copyright>
 // <summary>
-//   Defines the IAccountFinder type.
+//   Defines the IAccountStatus type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -11,18 +11,12 @@
 
 using System;
 
-using Regulus.Remoting;
-
-using VGame.Project.FishHunter.Common.Datas;
-
 #endregion
 
-namespace VGame.Project.FishHunter.Common.GPIs
+namespace VGame.Project.FishHunter.Common.GPI
 {
-	public interface IAccountFinder
+	public interface IAccountStatus
 	{
-		Value<Account> FindAccountByName(string id);
-
-		Value<Account> FindAccountById(Guid accountId);
+		event Action KickEvent;
 	}
 }

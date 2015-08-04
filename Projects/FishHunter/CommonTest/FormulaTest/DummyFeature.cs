@@ -15,8 +15,8 @@ using System.Collections.Generic;
 using Regulus.Remoting;
 
 using VGame.Project.FishHunter.Common;
-using VGame.Project.FishHunter.Common.Datas;
-using VGame.Project.FishHunter.Common.GPIs;
+using VGame.Project.FishHunter.Common.Data;
+using VGame.Project.FishHunter.Common.GPI;
 using VGame.Project.FishHunter.Formula;
 
 #endregion
@@ -87,7 +87,7 @@ namespace GameTest.FormulaTest
 			return this._Accounts.ToArray();
 		}
 
-		Value<ACCOUNT_REQUEST_RESULT> IAccountManager.Create(Account account)
+        Value<ACCOUNT_REQUEST_RESULT> IAccountCreator.Create(Account account)
 		{
 			this._Accounts.Add(account);
 			return ACCOUNT_REQUEST_RESULT.OK;

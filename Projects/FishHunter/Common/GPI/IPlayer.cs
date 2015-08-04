@@ -11,13 +11,15 @@
 
 using System;
 
+
 using Regulus.Remoting;
 
-using VGame.Project.FishHunter.Common.Datas;
+
+using VGame.Project.FishHunter.Common.Data;
 
 #endregion
 
-namespace VGame.Project.FishHunter.Common.GPIs
+namespace VGame.Project.FishHunter.Common.GPI
 {
 	public interface IPlayer
 	{

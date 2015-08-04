@@ -6,12 +6,12 @@
 //   Defines the FISH_DETERMINATION type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
 using System;
 
-using VGame.Project.FishHunter.Common.Datas;
 
-namespace VGame.Project.FishHunter.Common.GPIs
+using VGame.Project.FishHunter.Common.Data;
+
+namespace VGame.Project.FishHunter.Common.GPI
 {
 	// public delegate void HitResponseCallback(HitResponse response);
 	// public delegate void HitExceptionCallback(string message);

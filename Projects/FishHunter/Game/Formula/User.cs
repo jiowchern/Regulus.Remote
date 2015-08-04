@@ -17,14 +17,14 @@ using Regulus.Remoting;
 using Regulus.Utility;
 
 using VGame.Project.FishHunter.Common;
-using VGame.Project.FishHunter.Common.Datas;
+using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Stage;
 
 #endregion
 
 namespace VGame.Project.FishHunter.Formula
 {
-	internal class User : IUser
+    internal class User : Regulus.Game.IUser
 	{
 		private event OnQuit _QuitEvent;
 
@@ -49,17 +49,17 @@ namespace VGame.Project.FishHunter.Formula
 			this._Controller = _Controller;
 		}
 
-		void IUser.OnKick(Guid id)
+		void Regulus.Game.IUser.OnKick(Guid id)
 		{
 		}
 
-		event OnNewUser IUser.VerifySuccessEvent
+		event OnNewUser Regulus.Game.IUser.VerifySuccessEvent
 		{
 			add { _VerifySuccessEvent += value; }
 			remove { _VerifySuccessEvent -= value; }
 		}
 
-		event OnQuit IUser.QuitEvent
+		event OnQuit Regulus.Game.IUser.QuitEvent
 		{
 			add { _QuitEvent += value; }
 			remove { _QuitEvent -= value; }

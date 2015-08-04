@@ -17,16 +17,17 @@ using Regulus.Remoting;
 using Regulus.Utility;
 
 using VGame.Project.FishHunter.Common;
-using VGame.Project.FishHunter.Common.Datas;
-using VGame.Project.FishHunter.Common.GPIs;
+using VGame.Project.FishHunter.Common.Data;
+using VGame.Project.FishHunter.Common.GPI;
 
-using StageLock = VGame.Project.FishHunter.Common.Datas.StageLock;
+
+using StageLock = VGame.Project.FishHunter.Common.Data.StageLock;
 
 #endregion
 
 namespace VGame.Project.FishHunter.Play
 {
-	internal class User : IUser, IAccountStatus
+    internal class User : Regulus.Game.IUser, IAccountStatus
 	{
 		private event Action _KickEvent;
 
@@ -84,19 +85,19 @@ namespace VGame.Project.FishHunter.Play
 			remove { _KickEvent -= value; }
 		}
 
-		event OnNewUser IUser.VerifySuccessEvent
+		event OnNewUser Regulus.Game.IUser.VerifySuccessEvent
 		{
 			add { _VerifySuccessEvent += value; }
 			remove { _VerifySuccessEvent -= value; }
 		}
 
-		event OnQuit IUser.QuitEvent
+		event OnQuit Regulus.Game.IUser.QuitEvent
 		{
 			add { _QuitEvent += value; }
 			remove { _QuitEvent -= value; }
 		}
 
-		void IUser.OnKick(Guid id)
+		void Regulus.Game.IUser.OnKick(Guid id)
 		{
 			if (_Account != null && _Account.Id == id)
 			{
@@ -177,67 +178,67 @@ namespace VGame.Project.FishHunter.Play
 				_Record = obj;
 				_StageTicketInspector.Initial(new[]
 				{
-					new Common.Datas.Stage
+					new Common.Data.Stage
 					{
 						Id = 1, 
 						Pass = true
 					}, 
-					new Common.Datas.Stage
+					new Common.Data.Stage
 					{
 						Id = 2, 
 						Pass = false
 					}, 
-					new Common.Datas.Stage
+					new Common.Data.Stage
 					{
 						Id = 4, 
 						Pass = false
 					}, 
-					new Common.Datas.Stage
+					new Common.Data.Stage
 					{
 						Id = 5, 
 						Pass = false
 					}, 
-					new Common.Datas.Stage
+					new Common.Data.Stage
 					{
 						Id = 6, 
 						Pass = false
 					}, 
-					new Common.Datas.Stage
+					new Common.Data.Stage
 					{
 						Id = 7, 
 						Pass = false
 					}, 
-					new Common.Datas.Stage
+					new Common.Data.Stage
 					{
 						Id = 8, 
 						Pass = false
 					}, 
-					new Common.Datas.Stage
+					new Common.Data.Stage
 					{
 						Id = 9, 
 						Pass = false
 					}, 
-					new Common.Datas.Stage
+					new Common.Data.Stage
 					{
 						Id = 10, 
 						Pass = false
 					}, 
-					new Common.Datas.Stage
+					new Common.Data.Stage
 					{
 						Id = 11, 
 						Pass = false
 					}, 
-					new Common.Datas.Stage
+					new Common.Data.Stage
 					{
 						Id = 12, 
 						Pass = false
 					}, 
-					new Common.Datas.Stage
+					new Common.Data.Stage
 					{
 						Id = 13, 
 						Pass = false
 					}, 
-					new Common.Datas.Stage
+					new Common.Data.Stage
 					{
 						Id = 14, 
 						Pass = false

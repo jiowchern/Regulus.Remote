@@ -14,7 +14,7 @@ using Regulus.Remoting;
 using Regulus.Utility;
 
 using VGame.Project.FishHunter.Common;
-using VGame.Project.FishHunter.Common.GPIs;
+using VGame.Project.FishHunter.Common.GPI;
 
 #endregion
 
@@ -34,17 +34,17 @@ namespace VGame.Project.FishHunter.Play
 
 		private readonly Updater _Updater;
 
-		public Center(IAccountFinder accountFinder, IFishStageQueryer fishStageQueryer, IRecordQueriers rq, 
-			ITradeNotes tradeAccount)
-		{
-			_RecordQueriers = rq;
-			_AccountFinder = accountFinder;
-			_FishStageQueryer = fishStageQueryer;
-			_Tradefinder = tradeAccount;
+	    public Center(IAccountFinder account_finder, IFishStageQueryer fish_stage_queryer, IRecordQueriers rq,
+	        ITradeNotes trade_account)
+	    {
+	        _RecordQueriers = rq;
+	        _AccountFinder = account_finder;
+	        _FishStageQueryer = fish_stage_queryer;
+	        _Tradefinder = trade_account;
 
-			_Updater = new Updater();
-			_Hall = new Hall();
-		}
+	        _Updater = new Updater();
+	        _Hall = new Hall();
+	    }
 
 		void ICore.AssignBinder(ISoulBinder binder)
 		{
