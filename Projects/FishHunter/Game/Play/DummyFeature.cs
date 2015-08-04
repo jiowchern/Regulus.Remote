@@ -80,24 +80,24 @@ namespace VGame.Project.FishHunter.Play
 			// return new FishStage(player_id, fish_stage);
 		}
 
-		Value<Account[]> IAccountManager.QueryAllAccount()
+        Value<Account[]> Common.GPIs.IAccountManager.QueryAllAccount()
 		{
 			return this._Accounts.ToArray();
 		}
 
-		Value<ACCOUNT_REQUEST_RESULT> IAccountManager.Create(Account account)
+        Value<ACCOUNT_REQUEST_RESULT> Common.GPIs.IAccountCreator.Create(Account account)
 		{
 			this._Accounts.Add(account);
 			return ACCOUNT_REQUEST_RESULT.OK;
 		}
 
-		Value<ACCOUNT_REQUEST_RESULT> IAccountManager.Delete(string account)
+        Value<ACCOUNT_REQUEST_RESULT> Common.GPIs.IAccountManager.Delete(string account)
 		{
 			this._Accounts.RemoveAll(a => a.Name == account);
 			return ACCOUNT_REQUEST_RESULT.OK;
 		}
 
-		Value<ACCOUNT_REQUEST_RESULT> IAccountManager.Update(Account account)
+        Value<ACCOUNT_REQUEST_RESULT> Common.GPIs.IAccountManager.Update(Account account)
 		{
 			if (this._Accounts.RemoveAll(a => a.Id == account.Id) > 0)
 			{
@@ -159,5 +159,7 @@ namespace VGame.Project.FishHunter.Play
 		{
 			return 0;
 		}
-	}
+
+       
+    }
 }

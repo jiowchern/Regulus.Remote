@@ -89,7 +89,7 @@ namespace GameTest.FormulaTest
 			return this._Accounts.ToArray();
 		}
 
-		Value<ACCOUNT_REQUEST_RESULT> IAccountManager.Create(Account account)
+        Value<ACCOUNT_REQUEST_RESULT> VGame.Project.FishHunter.Common.GPIs.IAccountCreator.Create(Account account)
 		{
 			this._Accounts.Add(account);
 			return ACCOUNT_REQUEST_RESULT.OK;
