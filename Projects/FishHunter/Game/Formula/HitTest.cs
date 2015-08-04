@@ -7,22 +7,10 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-#region Test_Region
-
 using Regulus.Game;
 using Regulus.Utility;
-
-using VGame.Project.FishHunter.Common;
-<<<<<<< HEAD
-using VGame.Project.FishHunter.Common.Datas;
-using VGame.Project.FishHunter.Common.GPIs;
-using VGame.Project.FishHunter.ZsFormula.Data;
-=======
 using VGame.Project.FishHunter.Common.Data;
-using VGame.Project.FishHunter.ZsFormula.DataStructs;
->>>>>>> c23bceac3375bb2fe280e93a479e00a8b0c811a9
-
-#endregion
+using VGame.Project.FishHunter.ZsFormula.Data;
 
 namespace VGame.Project.FishHunter.Formula
 {
