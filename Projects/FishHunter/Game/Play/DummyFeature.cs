@@ -65,23 +65,20 @@ namespace VGame.Project.FishHunter.Play
 			return this._Accounts.Find(a => a.Id == account_id);
 		}
 
-		Value<IFishStage> IFishStageQueryer.Query(long player_id, byte fish_stage)
-		{
-			switch (fish_stage)
-			{
-				case 200:
-					return null;
-				case 100:
-					return new FishStage(player_id, fish_stage);
-				default:
-					return new CsFishStage(player_id, fish_stage);
-			}
+	    Value<IFishStage> IFishStageQueryer.Query(long player_id, byte fish_stage)
+	    {
+	        switch (fish_stage)
+	        {
+	            case 200:
+	                return null;
+	            case 100:
+	                return new FishStage(player_id, fish_stage);
+	            default:
+	                return new CsFishStage(player_id, fish_stage);
+	        }
+	    }
 
-        Regulus.Remoting.Value<ACCOUNT_REQUEST_RESULT> IAccountCreator.Create(Data.Account account)
-        {
-            _Accounts.Add(account);
-            return ACCOUNT_REQUEST_RESULT.OK;
-        }
+        
 
         Value<Account[]> Common.GPIs.IAccountManager.QueryAllAccount()
 		{
