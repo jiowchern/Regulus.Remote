@@ -7,15 +7,9 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-#region Test_Region
-
 using System;
 
 using VGame.Project.FishHunter.ZsFormula.DataStructs;
-
-using Random = Regulus.Utility.Random;
-
-#endregion
 
 namespace VGame.Project.FishHunter.ZsFormula.Rules
 {
@@ -39,9 +33,7 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 			_FishHitAllocateTable = new FishHitAllocateTable(null);
 		}
 
-		/// <param name="attack_data">
-		///     The attack_data.
-		/// </param>
+
 		public void Run(AttackData attack_data)
 		{
 			var fireRate = _StageDataVisit.NowUseData.GameRate - 10;
@@ -58,7 +50,7 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 				fireRate += 200; // 提高20%
 			}
 
-			if (attack_data.WeaponData.WeaponType == WeaponDataTable.Data.WEAPON_TYPE.FREE_NORMAL_4)
+			if (attack_data.WeaponData.WeaponType == WeaponDataTable.Data.WEAPON_TYPE.FREE_4)
 			{
 				// 特武 免费炮
 				fireRate /= 2;
@@ -70,7 +62,9 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 			}
 
 			var gate = fireRate; // 自然死亡率
+
 			gate *= 0x0FFFFFFF;
+
 			gate *= attack_data.WeaponData.WeaponBet; // 子弹威力
 
 			gate *= _FishHitAllocateTable.GetAllocateData(attack_data.AttCount).HitNumber;
@@ -80,7 +74,9 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 			gate /= attack_data.FishData.Odds; // 鱼的倍数
 
 			var oddsRule = new OddsRuler(attack_data.FishData, bufferData).RuleResult();
+			
 			gate /= oddsRule; // 翻倍
+			
 			gate /= 1000; // 死亡率换算回实际百分比
 
 			if (gate > 0x0FFFFFFF)
@@ -88,14 +84,16 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 				gate = 0x10000000; // > 100%
 			}
 
-			var rand = Random.Instance.NextInt(0, 1000) % 0x10000000;
-			if (rand < gate)
+			if (Regulus.Utility.Random.Instance.NextInt(0, 0x10000000) >= gate)
 			{
-				var win = attack_data.FishData.Odds * attack_data.GetWeaponBet() * oddsRule;
-
-				Win = () => win;
-				Win.Invoke();
+				return;
 			}
+			
+			var win = attack_data.FishData.Odds * attack_data.GetWeaponBet() * oddsRule;
+
+			this.Win = () => win;
+
+			this.Win.Invoke();
 		}
 	}
 }

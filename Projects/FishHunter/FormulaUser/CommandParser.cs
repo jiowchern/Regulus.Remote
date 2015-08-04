@@ -16,6 +16,7 @@ using Regulus.Remoting.Ghost.Native;
 using Regulus.Utility;
 
 using VGame.Project.FishHunter.Common;
+using VGame.Project.FishHunter.Common.Datas;
 using VGame.Project.FishHunter.Common.GPIs;
 
 #endregion
@@ -75,12 +76,12 @@ namespace VGame.Project.FishHunter.Formula
 
 		private void fishStage_UnsupplyEvent(IFishStage source)
 		{
-			source.HitResponseEvent -= source_HitResponseEvent;
+			source.OnHitResponseEvent -= source_HitResponseEvent;
 		}
 
 		private void fishStage_SupplyEvent(IFishStage source)
 		{
-			source.HitResponseEvent += source_HitResponseEvent;
+			source.OnHitResponseEvent += source_HitResponseEvent;
 		}
 
 		private void source_HitResponseEvent(HitResponse response)

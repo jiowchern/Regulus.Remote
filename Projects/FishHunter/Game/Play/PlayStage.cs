@@ -188,12 +188,12 @@ namespace VGame.Project.FishHunter.Play
 		void IStage.Enter()
 		{
 			this._Binder.Bind<IPlayer>(this);
-			this._FishStage.HitResponseEvent += this._Response;
+			this._FishStage.OnHitResponseEvent += this._Response;
 		}
 
 		void IStage.Leave()
 		{
-			this._FishStage.HitResponseEvent -= this._Response;
+			this._FishStage.OnHitResponseEvent -= this._Response;
 			this._Binder.Unbind<IPlayer>(this);
 		}
 

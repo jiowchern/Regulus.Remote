@@ -14,6 +14,7 @@ using Regulus.Framework;
 using Regulus.Utility;
 
 using VGame.Project.FishHunter.Common;
+using VGame.Project.FishHunter.Common.Datas;
 using VGame.Project.FishHunter.Common.GPIs;
 
 #endregion
@@ -47,14 +48,14 @@ namespace FormulaUserBot
 
 		void IBootable.Launch()
 		{
-			_Stage.HitResponseEvent += _Response;
+			_Stage.OnHitResponseEvent += _Response;
 			_Stage.Hit(_Request);
 			_TimeCounter.Reset();
 		}
 
 		void IBootable.Shutdown()
 		{
-			_Stage.HitResponseEvent -= _Response;
+			_Stage.OnHitResponseEvent -= _Response;
 		}
 
 		private void _Response(HitResponse obj)

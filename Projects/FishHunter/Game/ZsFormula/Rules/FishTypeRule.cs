@@ -13,6 +13,9 @@ using VGame.Project.FishHunter.ZsFormula.DataStructs;
 
 namespace VGame.Project.FishHunter.ZsFormula.Rules
 {
+	/// <summary>
+	/// 記下特殊魚拿到幾次
+	/// </summary>
 	public class FishTypeRule
 	{
 		private readonly StageDataVisit _StageDataVisit;
@@ -29,17 +32,16 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 				return;
 			}
 
-			var type = attack_data.FishData.FishType - 100;
+			// 沒用過的就可以
+			// 存玩家的
+			var data = player_data.RecodeData.SpecialWeaponDatas.Find(x => x.IsUsed == false);
+			data.SpId = (int)attack_data.FishData.FishType;
+			data.WinFrequency++;
 
-			if (type >= FishDataTable.Data.FISH_TYPE.TYPE_7)
-			{
-				return;
-			}
-
-			// TODO index問題
-			player_data.Recode.Sp03WinTimes++;
-
-			this._StageDataVisit.NowUseData.Recode.Sp03WinTimes++;
+			// 存stage的
+			var stageData = _StageDataVisit.NowUseData.RecodeData.SpecialWeaponDatas.Find(x => x.IsUsed == false);
+			stageData.SpId = (int)attack_data.FishData.FishType;
+			stageData.WinFrequency++;
 		}
 	}
 }

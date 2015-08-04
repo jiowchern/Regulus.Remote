@@ -30,13 +30,13 @@ namespace VGame.Project.FishHunter.ZsFormula.DataStructs
 
 			public int BufferValue { get; set; }
 
-			public int Item { get; set; }
+			public RecodeData.SpecialWeaponData NowSpecialWeaponData { get; set; }
 
-			public Recode Recode { get; set; }
+			public RecodeData RecodeData { get; set; }
 
 			public Data()
 			{
-				Recode = new Recode();
+				this.RecodeData = new RecodeData();
 			}
 		}
 

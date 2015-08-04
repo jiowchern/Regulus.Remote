@@ -80,8 +80,6 @@ namespace GameTest.FormulaTest
 				default:
 					return new CsFishStage(player_id, fish_stage);
 			}
-
-			// return new FishStage(player_id, fish_stage);
 		}
 
 		Value<Account[]> IAccountManager.QueryAllAccount()
@@ -103,45 +101,48 @@ namespace GameTest.FormulaTest
 
 		Value<ACCOUNT_REQUEST_RESULT> IAccountManager.Update(Account account)
 		{
-			if (this._Accounts.RemoveAll(a => a.Id == account.Id) > 0)
+			if (this._Accounts.RemoveAll(a => a.Id == account.Id) <= 0)
 			{
-				this._Accounts.Add(account);
-				return ACCOUNT_REQUEST_RESULT.OK;
+				return ACCOUNT_REQUEST_RESULT.NOTFOUND;
 			}
 
-			return ACCOUNT_REQUEST_RESULT.NOTFOUND;
+			this._Accounts.Add(account);
+			return ACCOUNT_REQUEST_RESULT.OK;
 		}
 
 		Value<Record> IRecordQueriers.Load(Guid id)
 		{
 			var account = this._Accounts.Find(a => a.Id == id);
-			if (account.IsPlayer())
+			if (!account.IsPlayer())
 			{
-				var record = this._Records.Find(r => r.Owner == account.Id);
-				if (record == null)
+				return null;
+			}
+			
+			var record = this._Records.Find(r => r.Owner == account.Id);
+			
+			if (record == null)
+			{
+				record = new Record
 				{
-					record = new Record
-					{
-						Money = 1000, 
-						Owner = id
-					};
-				}
-
-				return record;
+					Money = 1000, 
+					Owner = id
+				};
 			}
 
-			return null;
+			return record;
 		}
 
 		void IRecordQueriers.Save(Record record)
 		{
 			var account = this._Accounts.Find(a => a.Id == record.Owner);
-			if (account.IsPlayer())
+			if (!account.IsPlayer())
 			{
-				var old = this._Records.Find(r => r.Owner == account.Id);
-				this._Records.Remove(old);
-				this._Records.Add(record);
+				return;
 			}
+
+			var old = this._Records.Find(r => r.Owner == account.Id);
+			this._Records.Remove(old);
+			this._Records.Add(record);
 		}
 
 		Value<TradeNotes> ITradeNotes.Find(Guid id)

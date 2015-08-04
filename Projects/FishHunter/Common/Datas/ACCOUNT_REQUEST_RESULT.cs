@@ -1,15 +1,24 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="GameData.cs" company="Regulus Framework">
-//   Regulus Framework
+// <copyright file="ACCOUNT_REQUEST_RESULT.cs" company="">
+//   
 // </copyright>
 // <summary>
-//   Defines the GameData type.
+//   Defines the ACCOUNT_REQUEST_RESULT type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace VGame.Project.FishHunter.ZsFormula.DataStructs
+namespace VGame.Project.FishHunter.Common.Datas
 {
-	public class GameData
+	
+	/// <summary>
+	/// 
+	/// </summary>
+	public enum ACCOUNT_REQUEST_RESULT
 	{
+		REPEAT, 
+
+		OK, 
+
+		NOTFOUND
 	}
 }

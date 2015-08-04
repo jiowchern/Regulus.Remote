@@ -7,8 +7,6 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-#region Test_Region
-
 using Regulus.Game;
 using Regulus.Remoting;
 using Regulus.Utility;
@@ -16,8 +14,6 @@ using Regulus.Utility;
 using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.GPIs;
 using VGame.Project.FishHunter.Formula;
-
-#endregion
 
 namespace VGame.Project.FishHunter.Stage
 {
