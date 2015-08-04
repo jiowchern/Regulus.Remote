@@ -1,22 +1,15 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IAccountStatus.cs" company="">
+// <copyright file="IStorage.cs" company="">
 //   
 // </copyright>
 // <summary>
-//   Defines the IAccountStatus type.
+//   Defines the IStorage type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-#region Test_Region
-
-using System;
-
-#endregion
-
-namespace VGame.Project.FishHunter.Common.GPIs
+namespace VGame.Project.FishHunter.Common.GPI
 {
-	public interface IAccountStatus
+	public interface IStorage : IAccountFinder, IAccountManager, IRecordQueriers, ITradeNotes
 	{
-		event Action KickEvent;
 	}
 }

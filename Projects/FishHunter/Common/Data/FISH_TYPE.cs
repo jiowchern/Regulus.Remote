@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Regulus.Utility;
 
-using Regulus.Extension;
-namespace VGame.Project.FishHunter
+namespace VGame.Project.FishHunter.Common.Data
 {
-    using Regulus.Utility;
-
-    
     public enum FISH_TYPE
     {
 

@@ -1,6 +1,6 @@
 ﻿using ProtoBuf;
 
-namespace VGame.Project.FishHunter.Common.Datas
+namespace VGame.Project.FishHunter.Common.Data
 {
 	/// <summary>
 	///     判定结果

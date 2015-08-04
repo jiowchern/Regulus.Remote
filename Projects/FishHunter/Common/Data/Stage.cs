@@ -1,24 +1,29 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ILevelSelector.cs" company="">
+// <copyright file="Stage.cs" company="">
 //   
 // </copyright>
 // <summary>
-//   Defines the ILevelSelector type.
+//   Defines the Stage type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
 #region Test_Region
 
-using Regulus.Remoting;
+using System;
 
 #endregion
 
-namespace VGame.Project.FishHunter.Common.GPIs
+namespace VGame.Project.FishHunter.Common.Data
 {
-	public interface ILevelSelector
+	public class Stage : IEquatable<Stage>
 	{
-		Value<int[]> QueryStages();
+		public int Id { get; set; }
 
-		Value<bool> Select(int level);
+		public bool Pass { get; set; }
+
+		bool IEquatable<Stage>.Equals(Stage other)
+		{
+			return other.Id == this.Id;
+		}
 	}
 }

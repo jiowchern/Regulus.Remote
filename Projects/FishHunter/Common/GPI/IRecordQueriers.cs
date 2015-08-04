@@ -1,9 +1,9 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IStorageCompetnces.cs" company="">
+// <copyright file="IRecordQueriers.cs" company="">
 //   
 // </copyright>
 // <summary>
-//   Defines the IStorageCompetences type.
+//   Defines the IRecordQueriers type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -11,18 +11,20 @@
 
 using System;
 
+
 using Regulus.Remoting;
 
-using VGame.Project.FishHunter.Common.Datas;
+
+using VGame.Project.FishHunter.Common.Data;
 
 #endregion
 
-namespace VGame.Project.FishHunter.Common.GPIs
+namespace VGame.Project.FishHunter.Common.GPI
 {
-	public interface IStorageCompetences
+	public interface IRecordQueriers
 	{
-		Value<Account.COMPETENCE[]> Query();
+		Value<Record> Load(Guid id);
 
-		Value<Guid> QueryForId();
+		void Save(Record record);
 	}
 }

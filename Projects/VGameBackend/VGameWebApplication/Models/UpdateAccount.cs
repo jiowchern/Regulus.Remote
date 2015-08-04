@@ -10,7 +10,7 @@
 #region Test_Region
 
 using VGame.Project.FishHunter.Common;
-using VGame.Project.FishHunter.Common.Datas;
+using VGame.Project.FishHunter.Common.Data;
 
 #endregion
 
