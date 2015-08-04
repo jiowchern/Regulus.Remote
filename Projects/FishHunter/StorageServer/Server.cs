@@ -158,7 +158,7 @@ namespace VGame.Project.FishHunter.Storage
             return task.Result.FirstOrDefault();
         }
 
-        Regulus.Remoting.Value<ACCOUNT_REQUEST_RESULT> VGame.Project.FishHunter.IAccountManager.Create(Data.Account account)
+        Regulus.Remoting.Value<ACCOUNT_REQUEST_RESULT> VGame.Project.FishHunter.IAccountCreator.Create(Data.Account account)
         {
             var result = _Find(account.Name);
             if(result != null)

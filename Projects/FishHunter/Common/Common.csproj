@@ -52,6 +52,8 @@
     <Compile Include="Account.cs" />
     <Compile Include="ACCOUNT_REQUEST_RESULT.cs" />
     <Compile Include="Define.cs" />
+    <Compile Include="FISH_TYPE.cs" />
+    <Compile Include="IAccountCreator.cs" />
     <Compile Include="IAccountManager.cs" />
     <Compile Include="IAccountStatus.cs" />
     <Compile Include="IFishStage.cs" />
