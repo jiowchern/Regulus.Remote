@@ -74,9 +74,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NoSQL\NoSQL.cs" />
+    <Compile Include="DB_NoSQL\NoSQL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SQL\SQL.cs" />
+    <Compile Include="DB_SQL\SQL.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

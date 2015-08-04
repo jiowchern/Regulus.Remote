@@ -36,11 +36,11 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 				_AddBufferRate(data, bet);
 			}
 
-			_StageDataVisit.NowUseData.Recode.PlayTimes += 1;
-			_StageDataVisit.NowUseData.Recode.PlayTotal += bet;
+			_StageDataVisit.NowUseData.RecodeData.PlayTimes += 1;
+			_StageDataVisit.NowUseData.RecodeData.PlayTotal += bet;
 
-			player_data.Recode.PlayTimes += 1;
-			player_data.Recode.PlayTotal += bet;
+			player_data.RecodeData.PlayTimes += 1;
+			player_data.RecodeData.PlayTotal += bet;
 		}
 
 		private void _AddBufferRate(StageDataTable.BufferData data, int bet)
@@ -50,6 +50,8 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 			{
 				data.Buffer += data.Count / 1000;
 				data.Count = data.Count % 1000;
+
+				
 			}
 		}
 	}

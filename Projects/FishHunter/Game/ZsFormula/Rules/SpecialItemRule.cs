@@ -7,11 +7,9 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-#region Test_Region
+using System;
 
 using VGame.Project.FishHunter.ZsFormula.DataStructs;
-
-#endregion
 
 namespace VGame.Project.FishHunter.ZsFormula.Rules
 {
@@ -24,30 +22,30 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 
 		private readonly StageDataVisit _StageDataVisit;
 
+		public Func<int> WeaponIdFunc { get; set; }
+
 		public SpecialItemRule(StageDataVisit stage_data_visit)
 		{
 			_StageDataVisit = stage_data_visit;
 		}
 
-		/// <summary>
-		/// </summary>
-		/// <param name="player_data"></param>
-		/// <returns></returns>
-		public int Run(Player.Data player_data)
+		public void Run(Player.Data player_data)
 		{
-			var item = player_data.Item;
-			if (item == 0)
+			if (player_data.NowSpecialWeaponData.IsUsed)
 			{
-				return item;
+				return;
 			}
 
-			player_data.Item = 0;
+			var playerWeaponData = player_data.RecodeData.SpecialWeaponDatas.Find(x => x.SpId == player_data.NowSpecialWeaponData.SpId);
+			playerWeaponData.WinFrequency++;
 
-			// TODO index操作有問題
-			player_data.Recode.Sp00WinTimes++;
-			_StageDataVisit.NowUseData.Recode.Sp00WinTimes++;
+			var stageWeaponData  = _StageDataVisit.NowUseData.RecodeData.SpecialWeaponDatas.Find(x => x.SpId == player_data.NowSpecialWeaponData.SpId);
+			stageWeaponData.WinFrequency++;
 
-			return item;
+			player_data.NowSpecialWeaponData.IsUsed = false;
+
+			this.WeaponIdFunc = () => player_data.NowSpecialWeaponData.SpId;
+
 		}
 	}
 }

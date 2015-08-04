@@ -50,9 +50,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Datas\Account.cs" />
-    <Compile Include="GPIs\ACCOUNT_REQUEST_RESULT.cs" />
+    <Compile Include="Datas\ACCOUNT_REQUEST_RESULT.cs" />
     <Compile Include="Datas\Stage.cs" />
     <Compile Include="Datas\StageLock.cs" />
+    <Compile Include="Datas\HitResponse.cs" />
+    <Compile Include="Datas\HitRequest.cs" />
+    <Compile Include="Datas\FISH_DETERMINATION.cs" />
+    <Compile Include="Datas\FISH_STATUS.cs" />
     <Compile Include="GPIs\IAccountManager.cs" />
     <Compile Include="GPIs\IAccountStatus.cs" />
     <Compile Include="GPIs\IFishStage.cs" />
@@ -64,6 +68,7 @@
     <Compile Include="GPIs\IRecordQueriers.cs" />
     <Compile Include="GPIs\IStorage.cs" />
     <Compile Include="GPIs\IStorageCompetnces.cs" />
+    <Compile Include="GPIs\ITradeNotes.cs" />
     <Compile Include="GPIs\IVerify.cs" />
     <Compile Include="Account.cs" />
     <Compile Include="ACCOUNT_REQUEST_RESULT.cs" />

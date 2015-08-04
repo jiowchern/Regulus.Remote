@@ -65,13 +65,12 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 				gate2 = 0x10000000; // > 100% 
 			}
 
-			var rand = Random.Instance.NextInt(0, 1000);
-
-			if ((rand % 0x10000000) >= gate2)
+			if (Random.Instance.NextInt(0, 0x10000000) >= gate2)
 			{
 				return;
 			}
 
+			//return win
 			Win = () => attack_data.FishData.Odds * attack_data.GetWeaponBet() * oddsRule;
 		}
 	}
