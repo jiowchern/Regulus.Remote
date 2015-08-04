@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace FormulaServerServiceConsoleView.FormulaServiceReference {
+namespace FormulaServerServiceConsoleView.Service_References.FormulaServiceReference {
     
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -23,12 +23,12 @@ namespace FormulaServerServiceConsoleView.FormulaServiceReference {
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface IFormulaServiceChannel : FormulaServerServiceConsoleView.FormulaServiceReference.IFormulaService, System.ServiceModel.IClientChannel {
+    public interface IFormulaServiceChannel : IFormulaService, System.ServiceModel.IClientChannel {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class FormulaServiceClient : System.ServiceModel.ClientBase<FormulaServerServiceConsoleView.FormulaServiceReference.IFormulaService>, FormulaServerServiceConsoleView.FormulaServiceReference.IFormulaService {
+    public partial class FormulaServiceClient : System.ServiceModel.ClientBase<IFormulaService>, IFormulaService {
         
         public FormulaServiceClient() {
         }

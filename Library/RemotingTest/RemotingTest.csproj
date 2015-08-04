@@ -81,21 +81,21 @@
     <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PureLibraryExpansion\PureLibraryExpansion.csproj">
+    <ProjectReference Include="..\PureLibraryExpansion\PureLibraryNet4.5.csproj">
       <Project>{e977627a-cd89-4d30-892d-4679e10f45fa}</Project>
-      <Name>PureLibraryExpansion</Name>
+      <Name>PureLibraryNet4.5</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PureLib\PureLib.csproj">
+    <ProjectReference Include="..\PureLib\RegulusLibrary.csproj">
       <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
-      <Name>PureLib</Name>
+      <Name>RegulusLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RemotingNativeGhost\RemotingNativeGhost.csproj">
+    <ProjectReference Include="..\RemotingNativeGhost\RemotingGhostNative.csproj">
       <Project>{6cb4cde6-4405-40e6-8bdf-5a2e9185cc04}</Project>
-      <Name>RemotingNativeGhost</Name>
+      <Name>RemotingGhostNative</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RemotingNativeSoul\RemotingNativeSoul.csproj">
+    <ProjectReference Include="..\RemotingNativeSoul\RemotingSoulNative.csproj">
       <Project>{d4580866-2273-4e9b-be70-4fa2ab11434a}</Project>
-      <Name>RemotingNativeSoul</Name>
+      <Name>RemotingSoulNative</Name>
     </ProjectReference>
     <ProjectReference Include="..\RemotingStandalong\RemotingStandalong.csproj">
       <Project>{485f551d-9155-4982-b653-f8d4eac2fca1}</Project>
@@ -107,7 +107,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Fakes Include="Fakes\RegulusRemotingNativeGhost.fakes" />
     <None Include="packages.config" />
   </ItemGroup>
   <Choose>

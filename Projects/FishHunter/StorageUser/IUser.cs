@@ -1,19 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="IUser.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the IUser type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using Regulus.Remoting;
+using Regulus.Utility;
+
+using VGame.Project.FishHunter.Common;
+using VGame.Project.FishHunter.Common.GPIs;
+
+#endregion
 
 namespace VGame.Project.FishHunter.Storage
 {
-    public interface IUser : Regulus.Utility.IUpdatable
-    {
-        Regulus.Remoting.User Remoting { get; }
+	public interface IUser : IUpdatable
+	{
+		Regulus.Remoting.User Remoting { get; }
 
-        Regulus.Remoting.Ghost.INotifier<VGame.Project.FishHunter.IVerify> VerifyProvider { get; }
+		INotifier<IVerify> VerifyProvider { get; }
 
-        Regulus.Remoting.Ghost.INotifier<VGame.Project.FishHunter.IStorageCompetences> StorageCompetncesProvider { get; }
+		INotifier<IStorageCompetences> StorageCompetncesProvider { get; }
 
-        Regulus.Remoting.Ghost.INotifier<T> QueryProvider<T>();
-    }
+		INotifier<T> QueryProvider<T>();
+	}
 }

@@ -1,19 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="GuidModelBinder.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the GuidModelBinder type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using System;
+using System.Web.Mvc;
+
+#endregion
 
 namespace VGameWebApplication
 {
-    class GuidModelBinder : System.Web.Mvc.IModelBinder
-    {
-        object System.Web.Mvc.IModelBinder.BindModel(System.Web.Mvc.ControllerContext controllerContext, System.Web.Mvc.ModelBindingContext bindingContext)
-        {
-            var parameter = bindingContext
-            .ValueProvider
-            .GetValue(bindingContext.ModelName);
+	internal class GuidModelBinder : IModelBinder
+	{
+		object IModelBinder.BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
+		{
+			var parameter = bindingContext
+				.ValueProvider
+				.GetValue(bindingContext.ModelName);
 
-            return Guid.Parse(parameter.AttemptedValue);
-        }
-    }
+			return Guid.Parse(parameter.AttemptedValue);
+		}
+	}
 }

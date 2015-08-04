@@ -1,18 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ITestReturn.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the ITestInterface type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using System;
+
+using Regulus.Remoting;
+
+#endregion
 
 namespace RemotingTest
 {
-    public interface ITestInterface
-    {
-        Regulus.Remoting.Value<int> Add(int a , int b);
-        event Action<int> ReturnEvent;
-    }
-    public interface ITestReturn 
-    {
-        
-        Regulus.Remoting.Value<ITestInterface> Test(int a, int b);
-    }
+	public interface ITestInterface
+	{
+		event Action<int> ReturnEvent;
+
+		Value<int> Add(int a, int b);
+	}
+
+	public interface ITestReturn
+	{
+		Value<ITestInterface> Test(int a, int b);
+	}
 }

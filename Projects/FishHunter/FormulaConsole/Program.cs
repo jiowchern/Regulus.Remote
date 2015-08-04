@@ -1,41 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VGame.Project.FishHunter.Formula;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Program.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the Program type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace Console
+#region Test_Region
+
+using System.IO;
+
+using Regulus.Remoting;
+using Regulus.Utility;
+
+#endregion
+
+namespace VGame.Project.FishHunter.Formula
 {
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            var view = new Regulus.Utility.ConsoleViewer();
-            var input = new Regulus.Utility.ConsoleInput(view);
-            Regulus.Remoting.ICore core = null;// _LoadGame("Game.dll");
+	internal class Program
+	{
+		private static void Main(string[] args)
+		{
+			var view = new ConsoleViewer();
+			var input = new ConsoleInput(view);
+			ICore core = null; // _LoadGame("Game.dll");
 
-            var client = new VGame.Project.FishHunter.Formula.Client(view, input);
+			var client = new Client(view, input);
 
-            client.ModeSelectorEvent += new ModeCreator(core).OnSelect;
+			client.ModeSelectorEvent += new ModeCreator(core).OnSelect;
 
-            var updater = new Regulus.Utility.Updater();
-            updater.Add(client);
-           // updater.Add(core);
+			var updater = new Updater();
+			updater.Add(client);
 
-            while (client.Enable)
-            {
-                input.Update();
-                updater.Working();
-            }
+			// updater.Add(core);
+			while (client.Enable)
+			{
+				input.Update();
+				updater.Working();
+			}
 
-            updater.Shutdown();
-        }
+			updater.Shutdown();
+		}
 
-        private static Regulus.Remoting.ICore _LoadGame(string path)
-        {
-            var stream = System.IO.File.ReadAllBytes(path);
-            return Regulus.Utility.Loader.Load(stream, "VGame.Project.FishHunter.Formula.Center");
-        }
-    }
+		private static ICore _LoadGame(string path)
+		{
+			var stream = File.ReadAllBytes(path);
+			return Loader.Load(stream, "VGame.Project.FishHunter.Formula.Center");
+		}
+	}
 }

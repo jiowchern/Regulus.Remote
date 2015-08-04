@@ -1,30 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="StandalongUserFactory.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the StandalongUserFactory type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using Regulus.Framework;
+using Regulus.Remoting;
+using Regulus.Remoting.Standalong;
+using Regulus.Utility;
+
+#endregion
 
 namespace VGame.Project.FishHunter
 {
-    public class StandalongUserFactory 
-        :Regulus.Framework.IUserFactoty<IUser>
-    {
-        Regulus.Remoting.ICore _Standalong;
-        public StandalongUserFactory(Regulus.Remoting.ICore core)
-        {
-            _Standalong = core;
-            
-        }
-        IUser Regulus.Framework.IUserFactoty<IUser>.SpawnUser()
-        {
-            var agent = new Regulus.Standalong.Agent();
-            agent.ConnectedEvent += () => { _Standalong.AssignBinder(agent); };
-            
-            return new User(agent);
-        }
+	public class StandalongUserFactory
+		: IUserFactoty<IUser>
+	{
+		private readonly ICore _Standalong;
 
-        Regulus.Framework.ICommandParsable<IUser> Regulus.Framework.IUserFactoty<IUser>.SpawnParser(Regulus.Utility.Command command, Regulus.Utility.Console.IViewer view, IUser user)
-        {
-            return new CommandParser(command , view , user);
-        }
-    }
+		public StandalongUserFactory(ICore core)
+		{
+			_Standalong = core;
+		}
+
+		IUser IUserFactoty<IUser>.SpawnUser()
+		{
+			var agent = new Agent();
+			agent.ConnectedEvent += () => { _Standalong.AssignBinder(agent); };
+
+			return new User(agent);
+		}
+
+		ICommandParsable<IUser> IUserFactoty<IUser>.SpawnParser(Command command, Console.IViewer view, IUser user)
+		{
+			return new CommandParser(command, view, user);
+		}
+	}
 }

@@ -55,13 +55,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Library\PureLib\PureLib.csproj">
+    <ProjectReference Include="..\..\Library\PureLib\RegulusLibrary.csproj">
       <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
-      <Name>PureLib</Name>
+      <Name>RegulusLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\RemotingNativeSoul\RemotingNativeSoul.csproj">
+    <ProjectReference Include="..\..\Library\RemotingNativeSoul\RemotingSoulNative.csproj">
       <Project>{d4580866-2273-4e9b-be70-4fa2ab11434a}</Project>
-      <Name>RemotingNativeSoul</Name>
+      <Name>RemotingSoulNative</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Library\Remoting\Remoting.csproj">
       <Project>{a4cfce46-bda8-4416-a1bb-77bd80514019}</Project>

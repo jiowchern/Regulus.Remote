@@ -1,7 +1,4 @@
-﻿
-
-@{
-    
+﻿@{
     ViewBag.Title = "Dashboard";
 }
 
@@ -13,22 +10,20 @@
 
 
 <script type="text/javascript">
-    function UpdateServerState()
-    {        
-        
+    function UpdateServerState() {
+
         $.ajax({
             url: '@Url.Action("ServerState", "Server")',
-            data : {},
+            data: {},
             type: "POST",
-            success : function (response) 
-            {
-                
+            success: function(response) {
+
                 document.getElementById("State").innerHTML = response;
                 UpdateServerState();
             }
-        })
+        });
     }
-    UpdateServerState();
-    
-</script>
 
+    UpdateServerState();
+
+</script>

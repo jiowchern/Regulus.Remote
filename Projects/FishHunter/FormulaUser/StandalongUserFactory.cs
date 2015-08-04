@@ -1,31 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="StandalongUserFactory.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the StandalongUserFactory type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+
+
+using System;
+
+using Regulus.Framework;
+using Regulus.Remoting;
+using Regulus.Remoting.Standalong;
+using Regulus.Utility;
+
+using Console = Regulus.Utility.Console;
 
 namespace VGame.Project.FishHunter.Formula
 {
-    public class StandalongUserFactory 
-        :Regulus.Framework.IUserFactoty<IUser>
-    {
-        Regulus.Remoting.ICore _Standalong;
-        public StandalongUserFactory(Regulus.Remoting.ICore core)
-        {
-            _Standalong = core;
+	public class StandalongUserFactory : IUserFactoty<IUser>
+	{
+		private readonly ICore _Standalong;
 
-            if (_Standalong == null)
-                throw new ArgumentNullException("Core is null");
-        }
-        IUser Regulus.Framework.IUserFactoty<IUser>.SpawnUser()
-        {
-            var agent = new Regulus.Standalong.Agent();
-            agent.ConnectedEvent += () => { _Standalong.AssignBinder(agent); };            
-            return new User(agent);
-        }
+		public StandalongUserFactory(ICore core)
+		{
+			this._Standalong = core;
 
-        Regulus.Framework.ICommandParsable<IUser> Regulus.Framework.IUserFactoty<IUser>.SpawnParser(Regulus.Utility.Command command, Regulus.Utility.Console.IViewer view, IUser user)
-        {
-            return new CommandParser(command , view , user);
-        }
-    }
+			if (this._Standalong == null)
+			{
+				throw new ArgumentNullException("Core is null");
+			}
+		}
+
+		IUser IUserFactoty<IUser>.SpawnUser()
+		{
+			var agent = new Agent();
+			agent.ConnectedEvent += () => { this._Standalong.AssignBinder(agent); };
+			return new User(agent);
+		}
+
+		ICommandParsable<IUser> IUserFactoty<IUser>.SpawnParser(Command command, Console.IViewer view, IUser user)
+		{
+			return new CommandParser(command, view, user);
+		}
+	}
 }

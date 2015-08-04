@@ -3,13 +3,15 @@
 //   Regulus Framework
 // </copyright>
 // <summary>
-//   00以上为特殊鱼（死亡后，有爆炸效果的），直接变成特殊武器
-//   海绵宝宝x80、电鳗x150、贪食蛇x120、铁球x200、小章鱼x200、大章鱼xN（必死）
+//   Defines the IFishDataFinder type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+#region Test_Region
 
 using System.Collections.Generic;
+
+#endregion
 
 namespace VGame.Project.FishHunter.ZsFormula.DataStructs
 {
@@ -54,11 +56,11 @@ namespace VGame.Project.FishHunter.ZsFormula.DataStructs
 
 				DEF_100 = 100, 
 
-				DEF_100_A, 
+				DEF_100_A = 101, 
 
-				DEF_200_A, 
+				DEF_200_A = 102, 
 
-				DEF_400_A
+				DEF_400_A = 103
 			}
 
 			public int Odds { get; set; }
@@ -69,10 +71,6 @@ namespace VGame.Project.FishHunter.ZsFormula.DataStructs
 			{
 				FishType = fish_type;
 				Odds = odds;
-			}
-
-			public Data()
-			{
 			}
 		}
 	}

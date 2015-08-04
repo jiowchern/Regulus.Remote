@@ -1,176 +1,184 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Agent.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the Agent type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
+#region Test_Region
+
+using System;
+using System.Net.Sockets;
+
+using Regulus.Framework;
+using Regulus.Utility;
+
+#endregion
 
 namespace Regulus.Remoting.Ghost.Native
 {
-    
-    public partial class Agent :  IAgent
-	{        
-        
-        Regulus.Utility.StageMachine _Machine;
-        
-        event Action _BreakEvent;
-        AgentCore _Core;
-		private Agent()
-		{            
-            _Machine = new Utility.StageMachine();
-            _Core = new AgentCore();
-		}
-        
-        Regulus.Remoting.Value<bool> _Connect(string ipaddress, int port)
-        {            
-            return _ToConnect(ipaddress, port);
-        }
+	public partial class Agent : IAgent
+	{
+		private event Action _BreakEvent;
 
-        private Regulus.Remoting.Value<bool> _ToConnect(string ipaddress, int port)
-        {
-            lock (_Machine)
-            {                
-                
-                var connectValue = new Regulus.Remoting.Value<bool>();
-                var stage = new ConnectStage(ipaddress, port);
-                stage.ResultEvent += (result, socket) =>
-                {
-                    _ConnectResult(result, socket);
-                    connectValue.SetValue(result);
-                };
-                _Machine.Push(stage);
-                return connectValue;
-            }
-            
-        }
-        
-        void _ConnectResult(bool success , System.Net.Sockets.Socket socket)
-        {
-            if (success == true)
-            {                
-                if (_ConnectEvent != null)
-                {                    
-                    _ConnectEvent();
-                }
-                _ToOnline(_Machine, socket);                                
-            }
-            else
-            {
-                _ToTermination();  
-            }
-        }
+		private event Action _ConnectEvent;
 
-        private void _ToOnline(Utility.StageMachine machine, System.Net.Sockets.Socket socket)
-        {
-            var onlineStage = new OnlineStage(socket, _Core);
-            onlineStage.DoneFromServerEvent += () =>
-            {
-                _ToTermination();
-                if (_BreakEvent != null)
-                    _BreakEvent();
-            };
+		private readonly AgentCore _Core;
 
-            
-            
-            machine.Push(onlineStage);
-        }
+		private readonly StageMachine _Machine;
 
-        private void _ToTermination()
-        {
-            lock (_Machine)
-            {                
-                
-                _Machine.Push(new TerminationStage(this));
-            }
-        }        
-        
-		bool Utility.IUpdatable.Update()
+		private long _Ping
 		{
-            lock (_Machine)
-                _Machine.Update();            
+			get { return _Core.Ping; }
+		}
+
+		private Agent()
+		{
+			_Machine = new StageMachine();
+			_Core = new AgentCore();
+		}
+
+		bool IUpdatable.Update()
+		{
+			lock (_Machine)
+				_Machine.Update();
 			return true;
 		}
 
-		void Framework.IBootable.Launch()
+		void IBootable.Launch()
 		{
-            Regulus.Utility.Log.Instance.WriteInfo("Agent Launch.");
+			Singleton<Log>.Instance.WriteInfo("Agent Launch.");
 		}
 
-		void Framework.IBootable.Shutdown()
+		void IBootable.Shutdown()
 		{
+			if (this._Core.Enable)
+			{
+				_ToTermination();
 
-            if (_Core.Enable == true)
-            {
-                _ToTermination();
+				while (_Core.Enable)
+				{
+					lock (_Machine)
+					{
+						_Machine.Update();
+					}
+				}
+			}
+			else
+			{
+				_Machine.Termination();
+			}
 
-                while (_Core.Enable)
-                {
-                    lock (_Machine)
-                    {
-                        _Machine.Update();
-                    }
-                }
-            }
-            else
-            {
-                _Machine.Termination();
-            }
-            Regulus.Utility.Log.Instance.WriteInfo("Agent Shutdown.");
+			Singleton<Log>.Instance.WriteInfo("Agent Shutdown.");
 		}
 
-		
+		INotifier<T> IAgent.QueryNotifier<T>()
+		{
+			return _Core.QueryProvider<T>();
+		}
 
-		long _Ping { get 
-        {
-            return _Core.Ping;
-        } }
+		Value<bool> IAgent.Connect(string account, int password)
+		{
+			return _Connect(account, password);
+		}
 
-        INotifier<T> IAgent.QueryNotifier<T>()
-        {
-            return _Core.QueryProvider<T>();
-        }
+		event Action IAgent.ConnectEvent
+		{
+			add { _ConnectEvent += value; }
+			remove { _ConnectEvent -= value; }
+		}
 
-        
+		long IAgent.Ping
+		{
+			get { return _Ping; }
+		}
 
+		event Action IAgent.BreakEvent
+		{
+			add { _BreakEvent += value; }
+			remove { _BreakEvent -= value; }
+		}
 
-        Value<bool> IAgent.Connect(string account, int password)
-        {
-            return _Connect(account, password);
-        }
+		void IAgent.Disconnect()
+		{
+			_ToTermination();
+		}
 
-        event Action _ConnectEvent;
-        event Action IAgent.ConnectEvent
-        {
-            add { _ConnectEvent += value; }
-            remove { _ConnectEvent -= value; }
-        }
+		bool IAgent.Connected
+		{
+			get { return _Core.Enable; }
+		}
 
-        long IAgent.Ping
-        {
-            get { return _Ping; }
-        }
+		private Value<bool> _Connect(string ipaddress, int port)
+		{
+			return _ToConnect(ipaddress, port);
+		}
 
-        event Action IAgent.BreakEvent
-        {
-            add { _BreakEvent += value; }
-            remove { _BreakEvent -= value; }
-        }
+		private Value<bool> _ToConnect(string ipaddress, int port)
+		{
+			lock (_Machine)
+			{
+				var connectValue = new Value<bool>();
+				var stage = new ConnectStage(ipaddress, port);
+				stage.ResultEvent += (result, socket) =>
+				{
+					_ConnectResult(result, socket);
+					connectValue.SetValue(result);
+				};
+				_Machine.Push(stage);
+				return connectValue;
+			}
+		}
 
-        void IAgent.Disconnect()
-        {            
-            _ToTermination();            
-        }
+		private void _ConnectResult(bool success, Socket socket)
+		{
+			if (success)
+			{
+				if (_ConnectEvent != null)
+				{
+					_ConnectEvent();
+				}
 
-        /// <summary>
-        /// 建立代理器
-        /// </summary>
-        /// <returns></returns>
-        public static IAgent Create()
-        {
-            return new Agent();
-        }
+				_ToOnline(_Machine, socket);
+			}
+			else
+			{
+				_ToTermination();
+			}
+		}
 
+		private void _ToOnline(StageMachine machine, Socket socket)
+		{
+			var onlineStage = new OnlineStage(socket, _Core);
+			onlineStage.DoneFromServerEvent += () =>
+			{
+				_ToTermination();
+				if (_BreakEvent != null)
+				{
+					_BreakEvent();
+				}
+			};
 
-        bool IAgent.Connected
-        {
-            get { return _Core.Enable; }
-        }
-    }
+			machine.Push(onlineStage);
+		}
+
+		private void _ToTermination()
+		{
+			lock (_Machine)
+			{
+				_Machine.Push(new TerminationStage(this));
+			}
+		}
+
+		/// <summary>
+		///     建立代理器
+		/// </summary>
+		/// <returns></returns>
+		public static IAgent Create()
+		{
+			return new Agent();
+		}
+	}
 }

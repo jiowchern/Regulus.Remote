@@ -1,54 +1,70 @@
-﻿using System;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="CSVSteps.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the CSVSteps type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using Regulus.Utility;
+
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
-namespace PureLibTest
+
+#endregion
+
+namespace PureLibraryTest
 {
-    [Binding]
-    public class CSVSteps
-    {
-        public class TestData
-        {
-            public string field1 {get;set;}
-            public int field2 {get;set;}
-            public float field3 {get;set;}
+	[Binding]
+	public class CSVSteps
+	{
+		public class TestData
+		{
+			public string field1 { get; set; }
 
-        }
-        
-        [Given(@"資料是(.*)")]
-        public void Given資料是(string p0)
-        {
-            ScenarioContext.Current.Set<string>( p0 , "Text");
-            
-        }
-        [Given(@"段落符號為""(.*)""")]
-        public void Given段落符號為(string p0)
-        {
-            ScenarioContext.Current.Set<string>(p0, "Paragraph");
-        }
+			public int field2 { get; set; }
 
-        [Given(@"分格符號為""(.*)""")]
-        public void Given分格符號為(string p0)
-        {
-            ScenarioContext.Current.Set<string>(p0 , "Separator" );
-        }
+			public float field3 { get; set; }
+		}
 
-        [When(@"執行解析")]
-        public void When執行解析()
-        {
-            var text  = ScenarioContext.Current.Get<string>("Text");
-            var paragraph = ScenarioContext.Current.Get<string>("Paragraph");
-            var separator = ScenarioContext.Current.Get<string>("Separator");
+		[Given(@"資料是(.*)")]
+		public void Given資料是(string p0)
+		{
+			ScenarioContext.Current.Set(p0, "Text");
+		}
 
-            TestData[] testDatas = Regulus.Utility.CSV.Parse<TestData>(text, separator, paragraph);
-                        
-            ScenarioContext.Current.Set<TestData[]>(testDatas, "Datas");        
-        }
-        
-        [Then(@"結果為")]
-        public void Then結果為(Table table)
-        {
-            var testDatas = ScenarioContext.Current.Get<TestData[]>("Datas" );
-            table.CompareToSet(testDatas);
-        }
-    }
+		[Given(@"段落符號為""(.*)""")]
+		public void Given段落符號為(string p0)
+		{
+			ScenarioContext.Current.Set(p0, "Paragraph");
+		}
+
+		[Given(@"分格符號為""(.*)""")]
+		public void Given分格符號為(string p0)
+		{
+			ScenarioContext.Current.Set(p0, "Separator");
+		}
+
+		[When(@"執行解析")]
+		public void When執行解析()
+		{
+			var text = ScenarioContext.Current.Get<string>("Text");
+			var paragraph = ScenarioContext.Current.Get<string>("Paragraph");
+			var separator = ScenarioContext.Current.Get<string>("Separator");
+
+			var testDatas = CSV.Parse<TestData>(text, separator, paragraph);
+
+			ScenarioContext.Current.Set(testDatas, "Datas");
+		}
+
+		[Then(@"結果為")]
+		public void Then結果為(Table table)
+		{
+			var testDatas = ScenarioContext.Current.Get<TestData[]>("Datas");
+			table.CompareToSet(testDatas);
+		}
+	}
 }

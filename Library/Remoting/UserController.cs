@@ -1,76 +1,78 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="UserController.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the UserController type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace Regulus.Utility
+#region Test_Region
+
+using Regulus.Framework;
+using Regulus.Game;
+using Regulus.Utility;
+
+#endregion
+
+namespace Regulus.Remoting
 {
-    public class UserController<TUser> : Regulus.Utility.Framework<TUser>.IController
-        where TUser : Regulus.Utility.IUpdatable
-    {
-        Regulus.Utility.Updater _Updater;
-        
-        TUser _User;
+	public class UserController<TUser> : Framework<TUser>.IController
+		where TUser : IUpdatable
+	{
+		public event OnLook LookEvent;
 
+		public event OnLook UnlookEvent;
 
-        public UserController(TUser user)
-        {
-            _User = user;
-            _Updater = new Utility.Updater();
-        }
+		private readonly Updater _Updater;
 
+		private readonly TUser _User;
 
-        string _Name;
-        string Utility.Framework<TUser>.IController.Name
-        {
-            get
-            {
-                return _Name;
-            }
-            set
-            {
-                _Name = value;
-            }
-        }
+		public UserController(TUser user)
+		{
+			this._User = user;
+			this._Updater = new Updater();
+		}
 
+		string Framework<TUser>.IController.Name { get; set; }
 
-        public delegate void OnLook(TUser user);
-        public event OnLook LookEvent;
-        public event OnLook UnlookEvent;
-        void Utility.Framework<TUser>.IController.Look()
-        {
-            if(LookEvent != null)
-                LookEvent(_User);
-        }
+		void Framework<TUser>.IController.Look()
+		{
+			if (this.LookEvent != null)
+			{
+				this.LookEvent(this._User);
+			}
+		}
 
-        void Utility.Framework<TUser>.IController.NotLook()
-        {
-            if(UnlookEvent!= null)
-                UnlookEvent(_User);
-        }
+		void Framework<TUser>.IController.NotLook()
+		{
+			if (this.UnlookEvent != null)
+			{
+				this.UnlookEvent(this._User);
+			}
+		}
 
-        bool Utility.IUpdatable.Update()
-        {
-            _Updater.Working();
-            return true;
-        }
+		bool IUpdatable.Update()
+		{
+			this._Updater.Working();
+			return true;
+		}
 
-        void Framework.IBootable.Launch()
-        {
+		void IBootable.Launch()
+		{
+			this._Updater.Add(this._User);
+		}
 
-            _Updater.Add(_User);
-        }
+		void IBootable.Shutdown()
+		{
+			this._Updater.Shutdown();
+		}
 
-        void Framework.IBootable.Shutdown()
-        {
+		TUser Framework<TUser>.IController.GetUser()
+		{
+			return this._User;
+		}
 
-            _Updater.Shutdown();
-        }
-
-
-        TUser Utility.Framework<TUser>.IController.GetUser()
-        {
-            return _User;
-        }
-    }
+		public delegate void OnLook(TUser user);
+	}
 }

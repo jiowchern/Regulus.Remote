@@ -7,13 +7,20 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+#region Test_Region
 
 using System;
 
 using VGame.Project.FishHunter.ZsFormula.DataStructs;
 
+#endregion
+
+
 namespace VGame.Project.FishHunter.ZsFormula.Rules
 {
+	/// <summary>
+	/// 分數記錄
+	/// </summary>
 	public class DiedHandleRule
 	{
 		private readonly StageDataVisit _StageDataVisit;
@@ -24,7 +31,6 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		/// <param name="win_func"></param>
 		/// <param name="player_data"></param>
@@ -43,11 +49,11 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 
 			bufferData.Buffer -= win;
 
-			_StageDataVisit.NowUseData.Recode.WinTimes += 1;
-			_StageDataVisit.NowUseData.Recode.WinTotal += win;
+			_StageDataVisit.NowUseData.RecodeData.WinFrequency += 1;
+			_StageDataVisit.NowUseData.RecodeData.WinScore += win;
 
-			player_data.Recode.WinTimes += 1;
-			player_data.Recode.WinTotal += win;
+			player_data.RecodeData.WinFrequency += 1;
+			player_data.RecodeData.WinScore += win;
 
 			// 玩家阶段起伏的调整
 			if (player_data.Status <= 0)
@@ -56,7 +62,7 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 			}
 
 			player_data.BufferValue -= win;
-			player_data.Recode.AsnWin += win;
+			player_data.RecodeData.AsnWin += win;
 		}
 	}
 }

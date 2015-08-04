@@ -1,90 +1,99 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Proxy.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the Proxy type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using Regulus.Framework;
+using Regulus.Utility;
+
+#endregion
 
 namespace VGame.Project.FishHunter.Storage
 {
-    public class Proxy :         
-        Regulus.Utility.IUpdatable, Regulus.Utility.Console.IViewer, Regulus.Utility.Console.IInput
-    {
-        Regulus.Framework.Client<IUser> _Client;
-        Regulus.Utility.Updater _Updater;
-        
-        Regulus.Framework.IUserFactoty<IUser> _UserFactory;
+	public class Proxy :
+		IUpdatable, Console.IViewer, Console.IInput
+	{
+		private readonly Client<IUser> _Client;
 
-        public Proxy(Regulus.Framework.IUserFactoty<IUser> custom)
-        {
-            _UserFactory = custom;
-            _Client = new Regulus.Framework.Client<IUser>(this, this);
-            _Updater = new Regulus.Utility.Updater();
+		private readonly Updater _Updater;
 
-            Client_ModeSelectorEvent(_Client.Selector);
-        }
+		private readonly IUserFactoty<IUser> _UserFactory;
 
-        void Client_ModeSelectorEvent(Regulus.Framework.GameModeSelector<IUser> selector)
-        {
-            selector.AddFactoty("fac", _UserFactory);
-            _UserProvider = selector.CreateUserProvider("fac");
-        }
-        public Proxy()
-        {
-            _UserFactory = new RemotingFactory();
-            _Client = new Regulus.Framework.Client<IUser>(this, this);
-            _Updater = new Regulus.Utility.Updater();
+		private UserProvider<IUser> _UserProvider;
 
-            Client_ModeSelectorEvent(_Client.Selector);
-        }
+		public bool Enable
+		{
+			get { return _Client.Enable; }
+		}
 
-        
+		public Proxy(IUserFactoty<IUser> custom)
+		{
+			_UserFactory = custom;
+			_Client = new Client<IUser>(this, this);
+			_Updater = new Updater();
 
-       
+			Client_ModeSelectorEvent(_Client.Selector);
+		}
 
-        void Regulus.Utility.Console.IViewer.WriteLine(string message)
-        {
-            
-        }
+		public Proxy()
+		{
+			_UserFactory = new RemotingFactory();
+			_Client = new Client<IUser>(this, this);
+			_Updater = new Updater();
 
-        void Regulus.Utility.Console.IViewer.Write(string message)
-        {
-            
-        }
+			Client_ModeSelectorEvent(_Client.Selector);
+		}
 
-        event Regulus.Utility.Console.OnOutput Regulus.Utility.Console.IInput.OutputEvent
-        {
-            add {  }
-            remove {  }
-        }
+		event Console.OnOutput Console.IInput.OutputEvent
+		{
+			add { }
+			remove { }
+		}
 
-        public IUser SpawnUser(string name)
-        {
-            return _UserProvider.Spawn(name);
-        }
+		bool IUpdatable.Update()
+		{
+			_Updater.Working();
+			return _Client.Enable;
+		}
 
-        private Regulus.Framework.UserProvider<IUser> _UserProvider;
+		void IBootable.Launch()
+		{
+			_Updater.Add(_Client);
+		}
 
-        bool Regulus.Utility.IUpdatable.Update()
-        {
-            _Updater.Working();
-            return _Client.Enable;
-        }
+		void IBootable.Shutdown()
+		{
+			_Updater.Shutdown();
+		}
 
-        void Regulus.Framework.IBootable.Launch()
-        {
-            _Updater.Add(_Client);
-        }
+		void Console.IViewer.WriteLine(string message)
+		{
+		}
 
-        void Regulus.Framework.IBootable.Shutdown()
-        {
-            _Updater.Shutdown();
-        }
+		void Console.IViewer.Write(string message)
+		{
+		}
 
-        public void UnspawnUser(string name)
-        {
-            _UserProvider.Unspawn(name);
-        }
+		private void Client_ModeSelectorEvent(GameModeSelector<IUser> selector)
+		{
+			selector.AddFactoty("fac", _UserFactory);
+			_UserProvider = selector.CreateUserProvider("fac");
+		}
 
-        public bool Enable { get { return _Client.Enable; } }
-    }
+		public IUser SpawnUser(string name)
+		{
+			return _UserProvider.Spawn(name);
+		}
+
+		public void UnspawnUser(string name)
+		{
+			_UserProvider.Unspawn(name);
+		}
+	}
 }

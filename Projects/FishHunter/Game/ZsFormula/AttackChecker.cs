@@ -6,14 +6,14 @@
 //   Defines the AttackChecker type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
-
+using VGame.Project.FishHunter.Common.Datas;
+using VGame.Project.FishHunter.Formula;
 using VGame.Project.FishHunter.ZsFormula.DataStructs;
 using VGame.Project.FishHunter.ZsFormula.Rules;
 
 namespace VGame.Project.FishHunter.ZsFormula
 {
-	public class AttackChecker
+	public class AttackChecker : HitBase
 	{
 		private readonly AccumulationBufferRule _AccumulationBufferRule;
 
@@ -70,8 +70,8 @@ namespace VGame.Project.FishHunter.ZsFormula
 
 		public void StartCheck()
 		{
-			if (_AttackData.WeaponData.WeaponType == WeaponDataTable.Data.WEAPON_TYPE.FREE_NORMAL_1
-			    || _AttackData.WeaponData.WeaponType == WeaponDataTable.Data.WEAPON_TYPE.FREE_NORMAL_4)
+			if (_AttackData.WeaponData.WeaponType == WeaponDataTable.Data.WEAPON_TYPE.NORMAL_1
+			    || _AttackData.WeaponData.WeaponType == WeaponDataTable.Data.WEAPON_TYPE.FREE_4)
 			{
 				_CheckIsFirstFire();
 			}
@@ -84,11 +84,11 @@ namespace VGame.Project.FishHunter.ZsFormula
 		}
 
 		/// <summary>
-		/// // 只有第一發才能累積buffer
+		///     // 只有第一發才能累積buffer
 		/// </summary>
 		private void _CheckIsFirstFire()
 		{
-			if (_AttackData.WeaponData.WeaponType != WeaponDataTable.Data.WEAPON_TYPE.FREE_NORMAL_1 || _AttackData.AttCount != 1)
+			if (_AttackData.WeaponData.WeaponType != WeaponDataTable.Data.WEAPON_TYPE.NORMAL_1 || _AttackData.AttCount != 1)
 			{
 				return;
 			}
@@ -109,12 +109,19 @@ namespace VGame.Project.FishHunter.ZsFormula
 
 			_FishTypeRule.Run(_AttackData, _GetPlayerData());
 
-			_WeaponTypeRule.Run(_AttackData, _GetPlayerData());
+			_WeaponTypeRule.Run(_DeathRule.Win, _AttackData, _GetPlayerData());
+
+			Regulus.Utility.Random.Instance.NextInt(0, 0x10000000);
 		}
 
 		private Player.Data _GetPlayerData()
 		{
 			return _Player.FindStageData(_StageDataVisit.NowUseData.StageId);
+		}
+
+		public override HitResponse Request(HitRequest request)
+		{
+			throw new System.NotImplementedException();
 		}
 	}
 }

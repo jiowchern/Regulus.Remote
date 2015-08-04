@@ -1,29 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AccountCompetenceModelBinder.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the AccountCompetenceModelBinder type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-using Regulus.Extension;
+#region Test_Region
+
+using System.Web.Mvc;
+
+using Regulus.CustomType;
+using Regulus.Utility;
+
+using VGame.Project.FishHunter.Common;
+using VGame.Project.FishHunter.Common.Datas;
+
+#endregion
 
 namespace VGameWebApplication
 {
-    class AccountCompetenceModelBinder : System.Web.Mvc.IModelBinder
-    {
-        object System.Web.Mvc.IModelBinder.BindModel(System.Web.Mvc.ControllerContext controllerContext, System.Web.Mvc.ModelBindingContext bindingContext)
-        {
-            var flags = new Regulus.CustomType.Flag<VGame.Project.FishHunter.Data.Account.COMPETENCE>();
-            foreach (var t in EnumHelper.GetEnums<VGame.Project.FishHunter.Data.Account.COMPETENCE>())
-            {
-                var val = string.Format("{0}[{1}]", bindingContext.ModelName, t);
-                var parameter = bindingContext.ValueProvider.GetValue(val);
-                var check = (bool)parameter.ConvertTo(typeof(bool));
-                flags[t] = check;                 
-            }
+	internal class AccountCompetenceModelBinder : IModelBinder
+	{
+		object IModelBinder.BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
+		{
+			var flags = new Flag<Account.COMPETENCE>();
+			foreach (var t in EnumHelper.GetEnums<Account.COMPETENCE>())
+			{
+				var val = string.Format("{0}[{1}]", bindingContext.ModelName, t);
+				var parameter = bindingContext.ValueProvider.GetValue(val);
+				var check = (bool)parameter.ConvertTo(typeof(bool));
+				flags[t] = check;
+			}
 
-
-
-            return flags;
-                 
-        }
-    }
+			return flags;
+		}
+	}
 }

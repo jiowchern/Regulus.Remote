@@ -1,11 +1,16 @@
-﻿
-
-
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="StageBufferData.cs" company="Regulus Framework">
+//   Regulus Framework
+// </copyright>
+// <summary>
+//   The data.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace VGame.Project.FishHunter.ZsFormula.DataStructs
 {
 	/// <summary>
-	/// The data.
+	///     The data.
 	/// </summary>
 	public partial class StageDataTable
 	{
@@ -29,18 +34,20 @@ namespace VGame.Project.FishHunter.ZsFormula.DataStructs
 			public enum BUFFER_TYPE
 			{
 				NORMAL, 
-
 				SPEC, 
 
-				VIR00, 
+				BUFFER_VIR_BEGIN,
+	
+				VIR00 = BUFFER_TYPE.BUFFER_VIR_BEGIN, 
 
 				VIR01, 
 
 				VIR02, 
 
-				VIR03, 
+				VIR03,
 
-				COUNT
+				BUFFER_VIR_END,
+				COUNT = BUFFER_TYPE.BUFFER_VIR_END,
 			}
 
 			public BUFFER_BLOCK BufferBlock { get; set; }

@@ -1,61 +1,75 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="User.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the User type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using Regulus.Framework;
+using Regulus.Remoting;
+using Regulus.Utility;
+
+using VGame.Project.FishHunter.Common;
+using VGame.Project.FishHunter.Common.GPIs;
+
+#endregion
 
 namespace VGame.Project.FishHunter.Storage
 {
-    class User : IUser
-    {
-        private Regulus.Remoting.IAgent _Agent;
-        Regulus.Utility.Updater _Updater;
-        public User(Regulus.Remoting.IAgent agent)
-        {
-            
-            this._Agent = agent;
-            _Updater = new Regulus.Utility.Updater();
-            _Remoting = new Regulus.Remoting.User(agent);
-        }
+	internal class User : IUser
+	{
+		private readonly IAgent _Agent;
 
+		private readonly Regulus.Remoting.User _Remoting;
 
-        Regulus.Remoting.User _Remoting;
-        Regulus.Remoting.User IUser.Remoting
-        {
-            get { return _Remoting; }
-        }
+		private readonly Updater _Updater;
 
-        Regulus.Remoting.Ghost.INotifier<IVerify> IUser.VerifyProvider
-        {
-            get { return _Agent.QueryNotifier<IVerify>(); }
-        }
+		public User(IAgent agent)
+		{
+			this._Agent = agent;
+			_Updater = new Updater();
+			_Remoting = new Regulus.Remoting.User(agent);
+		}
 
-        bool Regulus.Utility.IUpdatable.Update()
-        {
-            _Updater.Working();
-            return true;
-        }
+		Regulus.Remoting.User IUser.Remoting
+		{
+			get { return _Remoting; }
+		}
 
-        void Regulus.Framework.IBootable.Launch()
-        {
-            _Updater.Add(_Agent);
-            _Updater.Add(_Remoting);
-        }
+		INotifier<IVerify> IUser.VerifyProvider
+		{
+			get { return _Agent.QueryNotifier<IVerify>(); }
+		}
 
-        void Regulus.Framework.IBootable.Shutdown()
-        {
-            _Updater.Shutdown();
-        }
+		bool IUpdatable.Update()
+		{
+			_Updater.Working();
+			return true;
+		}
 
+		void IBootable.Launch()
+		{
+			_Updater.Add(_Agent);
+			_Updater.Add(_Remoting);
+		}
 
-        Regulus.Remoting.Ghost.INotifier<T> IUser.QueryProvider<T>()
-        {
-            return _Agent.QueryNotifier<T>();
-        }
+		void IBootable.Shutdown()
+		{
+			_Updater.Shutdown();
+		}
 
+		INotifier<T> IUser.QueryProvider<T>()
+		{
+			return _Agent.QueryNotifier<T>();
+		}
 
-        Regulus.Remoting.Ghost.INotifier<IStorageCompetences> IUser.StorageCompetncesProvider
-        {
-            get { return _Agent.QueryNotifier<IStorageCompetences>(); }
-        }
-    }
+		INotifier<IStorageCompetences> IUser.StorageCompetncesProvider
+		{
+			get { return _Agent.QueryNotifier<IStorageCompetences>(); }
+		}
+	}
 }

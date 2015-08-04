@@ -1,42 +1,53 @@
-﻿using System;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="DataTest.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the DataTest type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+using System;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace CommonTest
+using VGame.Project.FishHunter.Common;
+using VGame.Project.FishHunter.Common.Datas;
+
+namespace GameTest
 {
-    [TestClass]
-    public class DataTest
-    {
-        [TestMethod]
-        public void TestAccountValid()
-        {
-            VGame.Project.FishHunter.Data.Account account = new VGame.Project.FishHunter.Data.Account();
+	[TestClass]
+	public class DataTest
+	{
+		[TestMethod]
+		public void TestAccountValid()
+		{
+			var account = new Account();
 
-            Assert.AreNotEqual(null, account.Competnces);
-            Assert.AreNotEqual(null, account.Name);
-            Assert.AreNotEqual(null, account.Id);
-            Assert.AreNotEqual(null, account.Password);            
-        }
+			Assert.AreNotEqual(null, account.Competnces);
+			Assert.AreNotEqual(null, account.Name);
+			Assert.AreNotEqual(null, account.Id);
+			Assert.AreNotEqual(null, account.Password);
+		}
 
-        [TestMethod]
-        public void TestValidRecord()
-        {
-            VGame.Project.FishHunter.Data.Record record = new VGame.Project.FishHunter.Data.Record();
+		[TestMethod]
+		public void TestValidRecord()
+		{
+			var record = new Record();
 
-            Assert.AreNotEqual(null, record.Id);
-            Assert.AreEqual(0, record.Money);
-            Assert.AreEqual(Guid.Empty, record.Owner);
-        }
+			Assert.AreNotEqual(null, record.Id);
+			Assert.AreEqual(0, record.Money);
+			Assert.AreEqual(Guid.Empty, record.Owner);
+		}
 
+		[TestMethod]
+		public void TestStageLock()
+		{
+			var stageLock = new StageLock();
 
-        [TestMethod]
-        public void TestStageLock()
-        {
-            VGame.Project.FishHunter.Data.StageLock stageLock = new VGame.Project.FishHunter.Data.StageLock();
-
-
-            Assert.AreEqual(0, stageLock.KillCount );
-            Assert.AreNotEqual(null, stageLock.Requires);
-            Assert.AreEqual(0, stageLock.Stage);
-        }
-    }
+			Assert.AreEqual(0, stageLock.KillCount);
+			Assert.AreNotEqual(null, stageLock.Requires);
+			Assert.AreEqual(0, stageLock.Stage);
+		}
+	}
 }

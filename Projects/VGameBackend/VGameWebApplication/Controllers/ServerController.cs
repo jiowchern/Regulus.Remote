@@ -1,34 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ServerController.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the ServerController type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
 using System.Web.Mvc;
+
+#endregion
 
 namespace VGameWebApplication.Controllers
 {
-    [Authorize]
-    public class ServerController : AsyncController
-    {
-        
-        public ServerController()
-        {
-            
-            
-        }
-        //
-        // GET: /Server/
-        public ActionResult Dashboard(string server)
-        {
-            return View();
-        }
+	[Authorize]
+	public class ServerController : AsyncController
+	{
+		// GET: /Server/
+		public ActionResult Dashboard(string server)
+		{
+			return View();
+		}
 
-        
-        
-        
-        public ActionResult ServerState()
-        {
-            return PartialView(null);
-        }
-        
+		public ActionResult ServerState()
+		{
+			return PartialView(null);
+		}
 	}
 }

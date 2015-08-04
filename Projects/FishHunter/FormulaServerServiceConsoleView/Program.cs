@@ -1,38 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Program.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the Program type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using FormulaServerServiceConsoleView.Service_References.FormulaServiceReference;
+
+using Regulus.Utility;
+
+#endregion
 
 namespace FormulaServerServiceConsoleView
 {
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            
+	internal class Program
+	{
+		private static void Main(string[] args)
+		{
+			var enable = true;
+			var view = new ConsoleViewer();
+			var input = new ConsoleInput(view);
 
-            bool enable = true;
-            var view = new Regulus.Utility.ConsoleViewer();
-            var input = new Regulus.Utility.ConsoleInput(view);
+			var console = new Console(input, view);
+			console.Command.Register("quit", () => enable = false);
+			console.Command.Register("CoreFPS", Program._CoreFPS);
 
-            Regulus.Utility.Console console = new Regulus.Utility.Console(input, view);
-            console.Command.Register("quit" ,()=> enable = false);
-            console.Command.Register("CoreFPS", _CoreFPS );
-     
-            while(enable)
-            {
-                input.Update();
-            }
+			while (enable)
+			{
+				input.Update();
+			}
+		}
 
-        }
-
-        async private static void _CoreFPS()
-        {
-            FormulaServiceReference.FormulaServiceClient client = new FormulaServiceReference.FormulaServiceClient("BasicHttpBinding_IFormulaService");
-            System.Console.WriteLine(await client.GetCoreFPSAsync());
-        }
-
-        
-    }
+		private static async void _CoreFPS()
+		{
+			var client = new FormulaServiceClient("BasicHttpBinding_IFormulaService");
+			System.Console.WriteLine(await client.GetCoreFPSAsync());
+		}
+	}
 }

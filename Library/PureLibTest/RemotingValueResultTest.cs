@@ -1,22 +1,37 @@
-﻿using System;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="RemotingValueResultTest.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the RemotingValueResultTest type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using System.Timers;
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using Regulus.Remoting;
-namespace PureLibTest
+
+#endregion
+
+namespace PureLibraryTest
 {
-    [TestClass]
-    public class RemotingValueResultTest
-    {
-        [TestMethod , Timeout(5000)]
-        public void TestRemotingValueResult()
-        {
+	[TestClass]
+	public class RemotingValueResultTest
+	{
+		[TestMethod]
+		[Timeout(5000)]
+		public void TestRemotingValueResult()
+		{
+			var val = new Value<bool>();
+			var timer = new Timer(1);
+			timer.Start();
+			timer.Elapsed += (object sender, ElapsedEventArgs e) => { val.SetValue(true); };
 
-            Regulus.Remoting.Value<bool> val = new Regulus.Remoting.Value<bool>();
-            System.Timers.Timer timer = new System.Timers.Timer(1);
-            timer.Start();
-            timer.Elapsed += (object sender, System.Timers.ElapsedEventArgs e) => { val.SetValue(true); };
-
-            val.Result();            
-        }
-       
-    }
+			val.Result();
+		}
+	}
 }

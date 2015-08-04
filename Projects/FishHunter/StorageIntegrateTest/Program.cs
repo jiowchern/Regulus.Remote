@@ -1,80 +1,100 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Program.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the Program type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using Regulus.Remoting;
+using Regulus.Utility;
+
+using VGame.Project.FishHunter.Common;
+using VGame.Project.FishHunter.Common.GPIs;
+using VGame.Project.FishHunter.Storage;
+
+using Console = System.Console;
+using SpinWait = System.Threading.SpinWait;
+
+#endregion
 
 namespace StorageIntegrateTest
 {
-    class Program
-    {
-        static bool _Enable;
-        static void Main(string[] args)
-        {
-            System.Threading.SpinWait sw = new System.Threading.SpinWait();
-            _Enable = true;
-            Regulus.Utility.Updater updater = new Regulus.Utility.Updater();
-            Regulus.Utility.Launcher launcher = new Regulus.Utility.Launcher();
+	internal class Program
+	{
+		private static bool _Enable;
 
+		private static void Main(string[] args)
+		{
+			var sw = new SpinWait();
+			Program._Enable = true;
+			var updater = new Updater();
+			var launcher = new Launcher();
 
-            VGame.Project.FishHunter.Storage.Server server = new VGame.Project.FishHunter.Storage.Server();
-            Regulus.Remoting.Soul.Native.Server serverAppliction = new Regulus.Remoting.Soul.Native.Server(server , 12345);
-            
-            
-            VGame.Project.FishHunter.Storage.Proxy client = new VGame.Project.FishHunter.Storage.Proxy();
-            client_UserEvent(client.SpawnUser("user"));
+			var server = new Server();
+			var serverAppliction = new Regulus.Remoting.Soul.Native.Server(server, 12345);
 
-            launcher.Push(serverAppliction);
-            updater.Add(client);
+			var client = new Proxy();
+			Program.client_UserEvent(client.SpawnUser("user"));
 
-            launcher.Launch();
-            while (_Enable)
-            {
-                updater.Working();
-                sw.SpinOnce();
-                
-            }
-            updater.Shutdown();
-            launcher.Shutdown();
+			launcher.Push(serverAppliction);
+			updater.Add(client);
 
-            Console.ReadKey();
-        }
+			launcher.Launch();
+			while (Program._Enable)
+			{
+				updater.Working();
+				sw.SpinOnce();
+			}
 
-        static void client_UserEvent(VGame.Project.FishHunter.Storage.IUser usee)
-        {
-            usee.Remoting.ConnectProvider.Supply += ConnectProvider_Supply;
-            usee.VerifyProvider.Supply += VerifyProvider_Supply;
-        }
+			updater.Shutdown();
+			launcher.Shutdown();
 
-        static void VerifyProvider_Supply(VGame.Project.FishHunter.IVerify obj)
-        {
-            var result = obj.Login("vgameadmini", "");
-            result.OnValue += (val) =>
-            {
-                if (val)
-                    Console.WriteLine("驗證成功");
-                else
-                {
-                    Console.WriteLine("驗證失敗");                    
-                }
-                _Enable = false;
-            };
-        }
+			Console.ReadKey();
+		}
 
-        static void ConnectProvider_Supply(Regulus.Utility.IConnect obj)
-        {
-            var result = obj.Connect("127.0.0.1", 12345);
-            result.OnValue += (val) => 
-            {
-                if (val)
-                    Console.WriteLine("連線成功");
-                else
-                {
-                    Console.WriteLine("連線失敗");
-                    _Enable = false;
-                }
-                    
-            };
-        }
-    }
+		private static void client_UserEvent(IUser usee)
+		{
+			usee.Remoting.ConnectProvider.Supply += Program.ConnectProvider_Supply;
+			usee.VerifyProvider.Supply += Program.VerifyProvider_Supply;
+		}
+
+		private static void VerifyProvider_Supply(IVerify obj)
+		{
+			var result = obj.Login("vgameadmini", string.Empty);
+			result.OnValue += val =>
+			{
+				if (val)
+				{
+					Console.WriteLine("驗證成功");
+				}
+				else
+				{
+					Console.WriteLine("驗證失敗");
+				}
+
+				Program._Enable = false;
+			};
+		}
+
+		private static void ConnectProvider_Supply(IConnect obj)
+		{
+			var result = obj.Connect("127.0.0.1", 12345);
+			result.OnValue += val =>
+			{
+				if (val)
+				{
+					Console.WriteLine("連線成功");
+				}
+				else
+				{
+					Console.WriteLine("連線失敗");
+					Program._Enable = false;
+				}
+			};
+		}
+	}
 }

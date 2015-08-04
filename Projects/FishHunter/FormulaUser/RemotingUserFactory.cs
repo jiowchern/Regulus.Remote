@@ -1,20 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="RemotingUserFactory.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the RemotingUserFactory type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using Regulus.Framework;
+using Regulus.Remoting.Ghost.Native;
+using Regulus.Utility;
+
+#endregion
 
 namespace VGame.Project.FishHunter.Formula
 {
-    public class RemotingUserFactory : Regulus.Framework.IUserFactoty<IUser>
-    {
-        IUser Regulus.Framework.IUserFactoty<IUser>.SpawnUser()
-        {
-            return new User(Regulus.Remoting.Ghost.Native.Agent.Create());
-        }
+	public class RemotingUserFactory : IUserFactoty<IUser>
+	{
+		IUser IUserFactoty<IUser>.SpawnUser()
+		{
+			return new User(Agent.Create());
+		}
 
-        Regulus.Framework.ICommandParsable<IUser> Regulus.Framework.IUserFactoty<IUser>.SpawnParser(Regulus.Utility.Command command, Regulus.Utility.Console.IViewer view, IUser user)
-        {
-            return new CommandParser(command, view, user);
-        }
-    }
+		ICommandParsable<IUser> IUserFactoty<IUser>.SpawnParser(Command command, Console.IViewer view, IUser user)
+		{
+			return new CommandParser(command, view, user);
+		}
+	}
 }
