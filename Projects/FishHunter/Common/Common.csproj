@@ -87,6 +87,8 @@
     <Compile Include="GPIs\IStorageCompetnces.cs" />
     <Compile Include="GPIs\ITradeNotes.cs" />
     <Compile Include="GPIs\IVerify.cs" />
+    <Compile Include="FISH_TYPE.cs" />
+    <Compile Include="IAccountCreator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Datas\Record.cs" />
     <Compile Include="Datas\TradeRecorder.cs" />
