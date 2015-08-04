@@ -1,23 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Client.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the Client type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
+#region Test_Region
+
+using Regulus.Framework;
+using Regulus.Utility;
+
+#endregion
 
 namespace VGame.Project.FishHunter.Formula
 {
-    public class Client :Regulus.Framework.Client<IUser>
-    {
+	public class Client : Client<IUser>
+	{
+		public Client()
+			: base(new DummyView(), new DummyInput())
+		{
+		}
 
-        public Client()
-            : base(new Regulus.Utility.DummyView(), new Regulus.Utility.DummyInput())
-        {
-
-        }
-        public Client(Regulus.Utility.Console.IViewer view, Regulus.Utility.Console.IInput input)
-            : base(view , input)
-        {
-            
-        }        
-    }
+		public Client(Console.IViewer view, Console.IInput input)
+			: base(view, input)
+		{
+		}
+	}
 }

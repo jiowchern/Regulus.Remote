@@ -8,7 +8,7 @@
     <ProjectGuid>{E51E2098-C578-4637-807C-F67067A54535}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Database</RootNamespace>
+    <RootNamespace>Regulus.Database</RootNamespace>
     <AssemblyName>RegulusDatabase</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -74,9 +74,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="database_nosql.cs" />
-    <Compile Include="database_sql.cs" />
+    <Compile Include="DB_NoSQL\NoSQL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="DB_SQL\SQL.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

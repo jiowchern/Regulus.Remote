@@ -7,13 +7,16 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+#region Test_Region
 
 using VGame.Project.FishHunter.ZsFormula.DataStructs;
+
+#endregion
 
 namespace VGame.Project.FishHunter.ZsFormula.Rules
 {
 	/// <summary>
-	/// stage buffer區段取得規則
+	///     stage buffer區段取得規則
 	/// </summary>
 	public class StageBufferBlockRuler
 	{

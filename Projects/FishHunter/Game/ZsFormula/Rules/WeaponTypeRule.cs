@@ -7,6 +7,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System;
 
 using VGame.Project.FishHunter.ZsFormula.DataStructs;
 
@@ -21,13 +22,27 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 			_StageDataVisit = stage_data_visit;
 		}
 
-		public void Run(AttackData attack_data, Player.Data player_data)
+		public void Run(Func<int> win_func, AttackData attack_data, Player.Data player_data)
 		{
-			if (attack_data.WeaponData.WeaponType == WeaponDataTable.Data.WEAPON_TYPE.FREE_NORMAL_4)
+			if (win_func == null)
 			{
-				player_data.Recode.Sp02WinTotal++;
-				_StageDataVisit.NowUseData.Recode.Sp02WinTotal++;
+				return;
 			}
+
+			var win = win_func();
+
+			if (attack_data.WeaponData.WeaponType != WeaponDataTable.Data.WEAPON_TYPE.FREE_4)
+			{
+				return;
+			}
+
+			var playerWeaponData = player_data.RecodeData.SpecialWeaponDatas.Find(x => x.IsUsed == false);
+
+			playerWeaponData.WinScore += win;
+
+			var stageWeaponData = _StageDataVisit.NowUseData.RecodeData.SpecialWeaponDatas.Find(x => x.IsUsed == false);
+			stageWeaponData.WinScore += win;
+			
 		}
 	}
 }

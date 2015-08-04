@@ -1,44 +1,59 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ConnectStorageStage.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the ConnectStorageStage type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace VGame.Project.FishHunter
+#region Test_Region
+
+using Regulus.Remoting;
+using Regulus.Utility;
+
+#endregion
+
+namespace VGame.Project.FishHunter.Storage
 {
-    public class ConnectStorageStage : Regulus.Utility.IStage
-    {
-        private Storage.IUser _User;
-        private string _IpAddress;
-        private int _Port;
-        public delegate void DoneCallback(bool result);
-        public event DoneCallback DoneEvent;
-        public ConnectStorageStage(Storage.IUser user, string ipaddress , int port)
-        {
-            // TODO: Complete member initialization
-            this._User = user;
-            this._IpAddress = ipaddress;
-            _Port = port;
-        }
+	public class ConnectStorageStage : IStage
+	{
+		public event DoneCallback DoneEvent;
 
-        void Regulus.Utility.IStage.Enter()
-        {
-            _User.Remoting.ConnectProvider.Supply += _Connect;
-        }
+		private readonly string _IpAddress;
 
-        void Regulus.Utility.IStage.Leave()
-        {
-            _User.Remoting.ConnectProvider.Supply -= _Connect;
-        }
+		private readonly int _Port;
 
-        private void _Connect(Regulus.Utility.IConnect obj)
-        {            
-            var result = obj.Connect(_IpAddress, _Port);
-            result.OnValue += (val) => { DoneEvent(val); };
-        }
+		private readonly IUser _User;
 
-        void Regulus.Utility.IStage.Update()
-        {
-            
-        }
-    }
+		public ConnectStorageStage(IUser user, string ipaddress, int port)
+		{
+			// TODO: Complete member initialization
+			this._User = user;
+			this._IpAddress = ipaddress;
+			this._Port = port;
+		}
+
+		void IStage.Enter()
+		{
+			this._User.Remoting.ConnectProvider.Supply += this._Connect;
+		}
+
+		void IStage.Leave()
+		{
+			this._User.Remoting.ConnectProvider.Supply -= this._Connect;
+		}
+
+		void IStage.Update()
+		{
+		}
+
+		public delegate void DoneCallback(bool result);
+
+		private void _Connect(IConnect obj)
+		{
+			var result = obj.Connect(this._IpAddress, this._Port);
+			result.OnValue += val => { this.DoneEvent(val); };
+		}
+	}
 }

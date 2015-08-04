@@ -1,54 +1,73 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="VerifyStage.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the VerifyStage type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using Regulus.Remoting;
+using Regulus.Utility;
+
+using VGame.Project.FishHunter.Common;
+using VGame.Project.FishHunter.Common.GPIs;
+
+#endregion
 
 namespace VGame.Project.FishHunter
 {
-    class VerifyStage :Regulus.Utility.IStage
-    {
-        private Regulus.Remoting.Ghost.INotifier<IVerify> _Provider;
-        private string _Account;
-        private string _Password;
+	internal class VerifyStage : IStage
+	{
+		public event DoneCallback FailEvent;
 
-        public delegate void DoneCallback();
-        public event DoneCallback SuccessEvent;
-        public event DoneCallback FailEvent;
+		public event DoneCallback SuccessEvent;
 
-        public VerifyStage(Regulus.Remoting.Ghost.INotifier<IVerify> provider, string account, string password)
-        {
-            
-            this._Provider = provider;
-            this._Account = account;
-            this._Password = password;
-        }
+		private readonly string _Account;
 
-        void Regulus.Utility.IStage.Enter()
-        {
-            _Provider.Supply += _Provider_Supply;
-        }
+		private readonly string _Password;
 
-        void _Provider_Supply(IVerify obj)
-        {
-            obj.Login(_Account , _Password).OnValue += _Result;
-        }
+		private readonly INotifier<IVerify> _Provider;
 
-        private void _Result(bool obj)
-        {
-            if (obj)
-                SuccessEvent();
-            else
-                FailEvent();
-        }
+		public VerifyStage(INotifier<IVerify> provider, string account, string password)
+		{
+			this._Provider = provider;
+			this._Account = account;
+			this._Password = password;
+		}
 
-        void Regulus.Utility.IStage.Leave()
-        {
-            
-        }
+		void IStage.Enter()
+		{
+			_Provider.Supply += _Provider_Supply;
+		}
 
-        void Regulus.Utility.IStage.Update()
-        {
-            
-        }
-    }
+		void IStage.Leave()
+		{
+		}
+
+		void IStage.Update()
+		{
+		}
+
+		public delegate void DoneCallback();
+
+		private void _Provider_Supply(IVerify obj)
+		{
+			obj.Login(_Account, _Password).OnValue += _Result;
+		}
+
+		private void _Result(bool obj)
+		{
+			if (obj)
+			{
+				SuccessEvent();
+			}
+			else
+			{
+				FailEvent();
+			}
+		}
+	}
 }

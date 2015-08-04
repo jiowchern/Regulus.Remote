@@ -7,6 +7,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+#region Test_Region
 
 using System;
 
@@ -14,10 +15,12 @@ using VGame.Project.FishHunter.ZsFormula.DataStructs;
 
 using Random = Regulus.Utility.Random;
 
+#endregion
+
 namespace VGame.Project.FishHunter.ZsFormula.Rules
 {
 	/// <summary>
-	///  特殊武器的處理
+	///     特殊武器的處理
 	/// </summary>
 	public class SpecialWeaponRule
 	{
@@ -62,13 +65,12 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 				gate2 = 0x10000000; // > 100% 
 			}
 
-			var rand = Random.Instance.NextInt(0, 1000);
-
-			if ((rand % 0x10000000) >= gate2)
+			if (Random.Instance.NextInt(0, 0x10000000) >= gate2)
 			{
 				return;
 			}
 
+			//return win
 			Win = () => attack_data.FishData.Odds * attack_data.GetWeaponBet() * oddsRule;
 		}
 	}

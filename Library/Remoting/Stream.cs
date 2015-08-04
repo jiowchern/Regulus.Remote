@@ -1,376 +1,412 @@
-﻿namespace Regulus.Remoting
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Stream.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the SocketIOResult type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Net.Sockets;
+
+using Regulus.Utility;
+
+#endregion
+
+namespace Regulus.Remoting
 {
-    using System.Linq;
-
-    public enum SocketIOResult
-    {
-        None, Done, Break
-    }
-    public partial class NetworkStreamWriteStage : Regulus.Utility.IStage
-    {
-        
-        class WrittingStage : Regulus.Utility.IStage
-        {
-            System.Net.Sockets.Socket _Socket;
-            System.IAsyncResult _AsyncResult;
-            byte[] _Buffer;
-            public event System.Action<SocketIOResult> DoneEvent;            
-            SocketIOResult _Result;
-
-            public WrittingStage(System.Net.Sockets.Socket socket, byte[] buffer)
-            {                
-                
-                this._Socket = socket;                
-                _Buffer = buffer;
-                
-            }
-            void Utility.IStage.Enter()            
-            {
-                try
-                {
-                    _Result = SocketIOResult.None;
-                    _AsyncResult = _Socket.BeginSend(_Buffer, 0, _Buffer.Length, 0, _WriteCompletion, null);
-                }
-                catch (System.Net.Sockets.SocketException ex)
-                {
-                    System.Diagnostics.Debug.WriteLine(ex.ToString() + ex.ErrorCode);
-                    _Result = SocketIOResult.Break;
-                }
-                catch
-                {
-                    _Result = SocketIOResult.Break;
-                }
-                    
-            }
-
-            void Utility.IStage.Leave()
-            {
-                
-            }
-
-            void Utility.IStage.Update()
-            {
-                if (_Result != SocketIOResult.None)
-                {
-                    DoneEvent(_Result);
-                }
-            }
-
-            private void _WriteCompletion(System.IAsyncResult ar)
-            {
-                try                
-                {
-                    _Socket.EndSend(ar);
-                    _Result = SocketIOResult.Done;
-                }
-                catch (System.Net.Sockets.SocketException ex)
-                {
-                    System.Diagnostics.Debug.WriteLine(ex.ToString() + ex.ErrorCode);
-                    _Result = SocketIOResult.Break;
-                }                
-                catch
-                {
-                    _Result = SocketIOResult.Break;
-                }
-            }
-        }
-    }
-
-	public partial class NetworkStreamWriteStage : Regulus.Utility.IStage
+	public enum SocketIOResult
 	{
-		System.Net.Sockets.Socket _Socket;
-        Package[] _Packages;
-        
-        public event System.Action WriteCompletionEvent;
-        public event System.Action ErrorEvent;
-        Regulus.Utility.StageMachine _Machine;
+		None, 
 
-        const int _HeadSize = 4;
-        public NetworkStreamWriteStage(System.Net.Sockets.Socket socket, Package[] packages)
+		Done, 
+
+		Break
+	}
+
+	public partial class NetworkStreamWriteStage : IStage
+	{
+		private class WrittingStage : IStage
 		{
-            _Socket = socket;
-            _Packages = packages;
-            _Machine = new Utility.StageMachine();
-            
-		}
-		void Utility.IStage.Enter()
-		{            
-            var packages = _Packages;
-            var buffer = _CreateBuffer(packages);
-            _ToWrite(buffer);
-		}
+			public event Action<SocketIOResult> DoneEvent;
 
-        private void _ToWrite(byte[] buffer)
-        {
-            var stage = new WrittingStage(_Socket, buffer);
-            stage.DoneEvent += (result) =>
-            {
-                if (result == SocketIOResult.Done)
-                {
-                    _Done(buffer.Length);
-                }
-                else
-                    ErrorEvent();
-            };
+			private readonly byte[] _Buffer;
 
-            _Machine.Push(stage);
-        }
+			private readonly Socket _Socket;
 
-        byte[] _CreateBuffer(Package[] packages)
-        {
-            
-            var buffers = from p in packages select Regulus.Serializer.TypeHelper.Serializer<Package>(p);            
+			private IAsyncResult _AsyncResult;
 
-            using (System.IO.MemoryStream stream = new System.IO.MemoryStream())
-            { 
-                foreach(var buffer in buffers)
-                {
-                    stream.Write(System.BitConverter.GetBytes((int)buffer.Length) ,0 , _HeadSize );
-                    stream.Write(buffer, 0, buffer.Length);
-                }
-                return stream.ToArray();
-            }
-        }
+			private SocketIOResult _Result;
 
-        private void _ToHead(byte[] buffer)
-        {
-            
-            var header = System.BitConverter.GetBytes((int)buffer.Length);            
-            var stage = new WrittingStage(_Socket, header);
-            stage.DoneEvent += (result) => 
-            {
-                if (result == SocketIOResult.Done)
-                    _ToBody(buffer);
-                else
-                    ErrorEvent();
-            };
-            
-            _Machine.Push(stage);
-        }
+			public WrittingStage(Socket socket, byte[] buffer)
+			{
+				this._Socket = socket;
+				_Buffer = buffer;
+			}
 
-        private void _ToBody(byte[] buffer)
-        {            
-            var stage = new WrittingStage(_Socket, buffer);
-            stage.DoneEvent += (result) => 
-            {
-                if (result == SocketIOResult.Done)
-                {
-                    _Done(buffer.Length + _HeadSize);
-                }
-                else
-                    ErrorEvent();
-            };
-            
-            _Machine.Push(stage);
-        }
+			void IStage.Enter()
+			{
+				try
+				{
+					_Result = SocketIOResult.None;
+					_AsyncResult = _Socket.BeginSend(_Buffer, 0, _Buffer.Length, 0, _WriteCompletion, null);
+				}
+				catch (SocketException ex)
+				{
+					Debug.WriteLine(ex.ToString() + ex.ErrorCode);
+					_Result = SocketIOResult.Break;
+				}
+				catch
+				{
+					_Result = SocketIOResult.Break;
+				}
+			}
 
-        private void _Done(int size)
-        {
-            WriteCompletionEvent();
+			void IStage.Leave()
+			{
+			}
 
-            NetworkMonitor.Instance.Write.Set(size);
-        }
+			void IStage.Update()
+			{
+				if (_Result != SocketIOResult.None)
+				{
+					DoneEvent(_Result);
+				}
+			}
 
-		void Utility.IStage.Leave()
-		{
-            
-		}
-
-		void Utility.IStage.Update()
-		{
-            
-            _Machine.Update();
-            
-            
+			private void _WriteCompletion(IAsyncResult ar)
+			{
+				try
+				{
+					_Socket.EndSend(ar);
+					_Result = SocketIOResult.Done;
+				}
+				catch (SocketException ex)
+				{
+					Debug.WriteLine(ex.ToString() + ex.ErrorCode);
+					_Result = SocketIOResult.Break;
+				}
+				catch
+				{
+					_Result = SocketIOResult.Break;
+				}
+			}
 		}
 	}
 
-
-    public partial class NetworkStreamReadStage : Regulus.Utility.IStage
-    {
-        
-        class ReadingStage : Regulus.Utility.IStage
-        {
-            public event System.Action<byte[]> DoneEvent;            
-            private System.Net.Sockets.Socket _Socket;
-            private int _Size;
-            int _Offset;
-            byte[] _Buffer;
-            SocketIOResult _Result;
-            public ReadingStage(System.Net.Sockets.Socket socket, int size)
-            {                
-                this._Socket = socket;
-                
-                this._Size = size;
-            }
-
-
-            void Utility.IStage.Enter()
-            {
-
-                try
-                {
-                    _Buffer = new byte[_Size];                
-                    _Result = SocketIOResult.None;
-                    _Socket.BeginReceive(_Buffer, _Offset, _Buffer.Length - _Offset, 0, _Readed, null);
-                }
-                catch 
-                {
-                    _Result = SocketIOResult.Break;
-                }
-                
-            }
-
-            void Utility.IStage.Leave()
-            {
-                
-            }
-
-            void Utility.IStage.Update()
-            {
-                if (_Result == SocketIOResult.Done)
-                { 
-                    DoneEvent(_Buffer);                    
-                }
-                else if (_Result == SocketIOResult.Break)
-                    DoneEvent(null);                    
-            }
-
-            private void _Readed(System.IAsyncResult ar)
-            {
-                try
-                {
-                    var readSize = _Socket.EndReceive(ar);
-                    if (readSize == 0)
-                    {
-                        _Result = SocketIOResult.Break;
-                        return;
-                    }
-                        
-
-                    _Offset += readSize;
-                    if (_Offset == _Size)
-                    {
-                        _Result = SocketIOResult.Done;
-                    }
-                    else
-                    {
-                        _Result = SocketIOResult.None;
-                        _Socket.BeginReceive(_Buffer, _Offset, _Buffer.Length - _Offset, 0, _Readed, null);
-                    }                
-                }
-                catch 
-                {
-                    _Result = SocketIOResult.Break; 
-                }
-                
-            }
-
-        }
-    }
-    
-	public partial class NetworkStreamReadStage : Regulus.Utility.IStage
+	public partial class NetworkStreamWriteStage : IStage
 	{
-        public delegate void OnReadCompletion(Package package);
-        public event OnReadCompletion ReadCompletionEvent;
-        public event System.Action ErrorEvent;       
-		System.Net.Sockets.Socket _Socket;
-        Regulus.Utility.StageMachine _Machine;
-        
-        const int _HeadSize = 4;
-        public NetworkStreamReadStage(System.Net.Sockets.Socket socket )
-		{            
+		public event Action ErrorEvent;
+
+		public event Action WriteCompletionEvent;
+
+		private const int _HeadSize = 4;
+
+		private readonly StageMachine _Machine;
+
+		private readonly Package[] _Packages;
+
+		private readonly Socket _Socket;
+
+		public NetworkStreamWriteStage(Socket socket, Package[] packages)
+		{
 			_Socket = socket;
-            _Machine = new Utility.StageMachine();        
+			_Packages = packages;
+			_Machine = new StageMachine();
 		}
-		void Utility.IStage.Enter()
+
+		void IStage.Enter()
 		{
-            
-            _ToHead();
+			var packages = _Packages;
+			var buffer = _CreateBuffer(packages);
+			_ToWrite(buffer);
 		}
 
-        private void _ToHead()
-        {
-            var stage = new ReadingStage(_Socket, _HeadSize);
-            stage.DoneEvent += (buffer)=>
-            {
-                if (buffer != null)
-                    _ToBody(buffer);
-                else
-                    ErrorEvent();
-            };
-            
-            _Machine.Push(stage);
-        }
-        private void _ToBody(byte[] head)
-        {                       
-            var bodySize = System.BitConverter.ToInt32(head, 0);
-            var stage = new ReadingStage(_Socket, bodySize);
-            stage.DoneEvent += (buffer)=>
-            {
-                if (buffer != null)
-                    _Done(buffer);
-                else
-                    ErrorEvent();
-            };
-            
-            _Machine.Push(stage);
-        }
-        private void _Done(byte[] body)
-        {
-            ReadCompletionEvent(Regulus.Serializer.TypeHelper.Deserialize<Package>(body) );
-            var size = (body.Length + _HeadSize);
-            NetworkMonitor.Instance.Read.Set(size);
-        }
-
-		void Utility.IStage.Leave()
+		void IStage.Leave()
 		{
-         
 		}
-        
-		void Utility.IStage.Update()
-		{            
-            _Machine.Update();
 
-            
+		void IStage.Update()
+		{
+			_Machine.Update();
+		}
+
+		private void _ToWrite(byte[] buffer)
+		{
+			var stage = new WrittingStage(_Socket, buffer);
+			stage.DoneEvent += result =>
+			{
+				if (result == SocketIOResult.Done)
+				{
+					_Done(buffer.Length);
+				}
+				else
+				{
+					ErrorEvent();
+				}
+			};
+
+			_Machine.Push(stage);
+		}
+
+		private byte[] _CreateBuffer(Package[] packages)
+		{
+			var buffers = from p in packages select TypeHelper.Serializer(p);
+
+			using (var stream = new MemoryStream())
+			{
+				foreach (var buffer in buffers)
+				{
+					stream.Write(BitConverter.GetBytes(buffer.Length), 0, NetworkStreamWriteStage._HeadSize);
+					stream.Write(buffer, 0, buffer.Length);
+				}
+
+				return stream.ToArray();
+			}
+		}
+
+		private void _ToHead(byte[] buffer)
+		{
+			var header = BitConverter.GetBytes(buffer.Length);
+			var stage = new WrittingStage(_Socket, header);
+			stage.DoneEvent += result =>
+			{
+				if (result == SocketIOResult.Done)
+				{
+					_ToBody(buffer);
+				}
+				else
+				{
+					ErrorEvent();
+				}
+			};
+
+			_Machine.Push(stage);
+		}
+
+		private void _ToBody(byte[] buffer)
+		{
+			var stage = new WrittingStage(_Socket, buffer);
+			stage.DoneEvent += result =>
+			{
+				if (result == SocketIOResult.Done)
+				{
+					_Done(buffer.Length + NetworkStreamWriteStage._HeadSize);
+				}
+				else
+				{
+					ErrorEvent();
+				}
+			};
+
+			_Machine.Push(stage);
+		}
+
+		private void _Done(int size)
+		{
+			WriteCompletionEvent();
+
+			Singleton<NetworkMonitor>.Instance.Write.Set(size);
 		}
 	}
 
-    public partial class WaitQueueStage : Regulus.Utility.IStage
-    {
 
-        public delegate void DoneCallback(Package[] packages);
-        public event DoneCallback DoneEvent;
+	public partial class NetworkStreamReadStage : IStage
+	{
+		private class ReadingStage : IStage
+		{
+			public event Action<byte[]> DoneEvent;
 
-        
+			private readonly int _Size;
 
-        
-        
-        private PackageQueue _Packages;
+			private readonly Socket _Socket;
 
-        public WaitQueueStage(PackageQueue packages )
-        {
-        
-            this._Packages = packages;
-           
-        }
-        void Utility.IStage.Enter()
-        {
-            
-        }
+			private byte[] _Buffer;
 
-        void Utility.IStage.Leave()
-        {
-            
-        }
+			private int _Offset;
 
-        void Utility.IStage.Update()
-        {
-            var pkgs = _Packages.DequeueAll();
-            if (pkgs.Length > 0)
-            {
-                DoneEvent(pkgs);
-            }
-        }
-    }
+			private SocketIOResult _Result;
+
+			public ReadingStage(Socket socket, int size)
+			{
+				this._Socket = socket;
+
+				this._Size = size;
+			}
+
+			void IStage.Enter()
+			{
+				try
+				{
+					_Buffer = new byte[_Size];
+					_Result = SocketIOResult.None;
+					_Socket.BeginReceive(_Buffer, _Offset, _Buffer.Length - _Offset, 0, _Readed, null);
+				}
+				catch
+				{
+					_Result = SocketIOResult.Break;
+				}
+			}
+
+			void IStage.Leave()
+			{
+			}
+
+			void IStage.Update()
+			{
+				if (_Result == SocketIOResult.Done)
+				{
+					DoneEvent(_Buffer);
+				}
+				else if (_Result == SocketIOResult.Break)
+				{
+					DoneEvent(null);
+				}
+			}
+
+			private void _Readed(IAsyncResult ar)
+			{
+				try
+				{
+					var readSize = _Socket.EndReceive(ar);
+					if (readSize == 0)
+					{
+						_Result = SocketIOResult.Break;
+						return;
+					}
+
+					_Offset += readSize;
+					if (_Offset == _Size)
+					{
+						_Result = SocketIOResult.Done;
+					}
+					else
+					{
+						_Result = SocketIOResult.None;
+						_Socket.BeginReceive(_Buffer, _Offset, _Buffer.Length - _Offset, 0, _Readed, null);
+					}
+				}
+				catch
+				{
+					_Result = SocketIOResult.Break;
+				}
+			}
+		}
+	}
+
+	public partial class NetworkStreamReadStage : IStage
+	{
+		public event Action ErrorEvent;
+
+		public event OnReadCompletion ReadCompletionEvent;
+
+		private const int _HeadSize = 4;
+
+		private readonly StageMachine _Machine;
+
+		private readonly Socket _Socket;
+
+		public NetworkStreamReadStage(Socket socket)
+		{
+			_Socket = socket;
+			_Machine = new StageMachine();
+		}
+
+		void IStage.Enter()
+		{
+			_ToHead();
+		}
+
+		void IStage.Leave()
+		{
+		}
+
+		void IStage.Update()
+		{
+			_Machine.Update();
+		}
+
+		public delegate void OnReadCompletion(Package package);
+
+		private void _ToHead()
+		{
+			var stage = new ReadingStage(_Socket, NetworkStreamReadStage._HeadSize);
+			stage.DoneEvent += buffer =>
+			{
+				if (buffer != null)
+				{
+					_ToBody(buffer);
+				}
+				else
+				{
+					ErrorEvent();
+				}
+			};
+
+			_Machine.Push(stage);
+		}
+
+		private void _ToBody(byte[] head)
+		{
+			var bodySize = BitConverter.ToInt32(head, 0);
+			var stage = new ReadingStage(_Socket, bodySize);
+			stage.DoneEvent += buffer =>
+			{
+				if (buffer != null)
+				{
+					_Done(buffer);
+				}
+				else
+				{
+					ErrorEvent();
+				}
+			};
+
+			_Machine.Push(stage);
+		}
+
+		private void _Done(byte[] body)
+		{
+			ReadCompletionEvent(TypeHelper.Deserialize<Package>(body));
+			var size = body.Length + NetworkStreamReadStage._HeadSize;
+			Singleton<NetworkMonitor>.Instance.Read.Set(size);
+		}
+	}
+
+	public class WaitQueueStage : IStage
+	{
+		public event DoneCallback DoneEvent;
+
+		private readonly PackageQueue _Packages;
+
+		public WaitQueueStage(PackageQueue packages)
+		{
+			this._Packages = packages;
+		}
+
+		void IStage.Enter()
+		{
+		}
+
+		void IStage.Leave()
+		{
+		}
+
+		void IStage.Update()
+		{
+			var pkgs = _Packages.DequeueAll();
+			if (pkgs.Length > 0)
+			{
+				DoneEvent(pkgs);
+			}
+		}
+
+		public delegate void DoneCallback(Package[] packages);
+	}
 }

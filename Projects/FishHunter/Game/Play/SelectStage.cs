@@ -1,86 +1,106 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="SelectStage.cs" company="Regulus Framework">
+//   Regulus Framework
+// </copyright>
+// <summary>
+//   Defines the SelectStage type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
 using System.Linq;
-using System.Text;
+
+using Regulus.Remoting;
+using Regulus.Utility;
+
+using VGame.Project.FishHunter.Common;
+using VGame.Project.FishHunter.Common.GPIs;
+
+#endregion
 
 namespace VGame.Project.FishHunter.Play
 {
-    class SelectStage : Regulus.Utility.IStage, VGame.Project.FishHunter.ILevelSelector
-    {
-        private Regulus.Remoting.ISoulBinder _Binder;
-        private IFishStageQueryer _FishStageQueryer;
+	internal class SelectStage : IStage, ILevelSelector
+	{
+		public event DoneCallback DoneEvent;
 
+		private readonly ISoulBinder _Binder;
 
-        public delegate void DoneCallback(IFishStage fish_stage);
-        public event DoneCallback DoneEvent;
+		private readonly IFishStageQueryer _FishStageQueryer;
 
-        bool _Querying;
-        int[] _Stages;
-        public SelectStage(int[] stages , Regulus.Remoting.ISoulBinder binder, IFishStageQueryer fish_stag_queryer)
-        {      
-      
-            this._Binder = binder;
-            this._FishStageQueryer = fish_stag_queryer;
-            _Querying = false;
-            _Stages = stages;
-        }
-        
-        void Regulus.Utility.IStage.Enter()
-        {
-            _Binder.Bind<VGame.Project.FishHunter.ILevelSelector>(this);
-        }
+		private readonly int[] _Stages;
 
-        void Regulus.Utility.IStage.Leave()
-        {
-            // ReSharper disable once ArrangeThisQualifier
-            _Binder.Unbind<VGame.Project.FishHunter.ILevelSelector>(this);
-        }
+		private bool _Querying;
 
-        void Regulus.Utility.IStage.Update()
-        {
-            
-        }
+		public SelectStage(int[] stages, ISoulBinder binder, IFishStageQueryer fish_stag_queryer)
+		{
+			this._Binder = binder;
+			this._FishStageQueryer = fish_stag_queryer;
+			_Querying = false;
+			_Stages = stages;
+		}
 
-        Regulus.Remoting.Value<bool> ILevelSelector.Select(int level)
-        {
-            if (_Check(level) == false)
-                return false;
+		Value<bool> ILevelSelector.Select(int level)
+		{
+			if (_Check(level) == false)
+			{
+				return false;
+			}
 
-            if(_Querying == false)
-            {
-                _Querying = true;
-                Regulus.Remoting.Value<bool> val = new Regulus.Remoting.Value<bool>();
-                checked
-                {
-                    _FishStageQueryer.Query(0, (byte)level).OnValue += (fish_stage) =>
-                    {
-                        if (fish_stage != null)
-                        {
-                            DoneEvent(fish_stage);
-                            val.SetValue(true);
-                        }
-                        else
-                        {
-                            val.SetValue(false);
-                        }
-                        _Querying = false;
-                    };
-                }
-                
+			if (_Querying == false)
+			{
+				_Querying = true;
+				var val = new Value<bool>();
+				checked
+				{
+					_FishStageQueryer.Query(0, (byte)level).OnValue += fish_stage =>
+					{
+						if (fish_stage != null)
+						{
+							DoneEvent(fish_stage);
+							val.SetValue(true);
+						}
+						else
+						{
+							val.SetValue(false);
+						}
 
-                return val;
-            }
-            return false;
-        }
+						_Querying = false;
+					};
+				}
 
-        private bool _Check(int level)
-        {
-            return _Stages.Any((stage) => stage == level);
-        }
+				return val;
+			}
 
-        Regulus.Remoting.Value<int[]> ILevelSelector.QueryStages()
-        {
-            return _Stages;
-        }
-    }
+			return false;
+		}
+
+		Value<int[]> ILevelSelector.QueryStages()
+		{
+			return _Stages;
+		}
+
+		void IStage.Enter()
+		{
+			_Binder.Bind<ILevelSelector>(this);
+		}
+
+		void IStage.Leave()
+		{
+			// ReSharper disable once ArrangeThisQualifier
+			_Binder.Unbind<ILevelSelector>(this);
+		}
+
+		void IStage.Update()
+		{
+		}
+
+		public delegate void DoneCallback(IFishStage fish_stage);
+
+		private bool _Check(int level)
+		{
+			return _Stages.Any(stage => stage == level);
+		}
+	}
 }

@@ -1,24 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="HitRequestConverter.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the HitRequestConverter type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+using VGame.Project.FishHunter.Common;
+using VGame.Project.FishHunter.Common.Datas;
+using VGame.Project.FishHunter.Common.GPIs;
 
 namespace VGame.Project.FishHunter.Formula
 {
-    class HitRequestConverter
-    {
-        private IFishStage _Gpi;
+	internal class HitRequestConverter
+	{
+		private readonly IFishStage _Gpi;
 
-        public HitRequestConverter(IFishStage gpi)
-        {
-            
-            this._Gpi = gpi;
-        }
+		public HitRequestConverter(IFishStage gpi)
+		{
+			this._Gpi = gpi;
+		}
 
-
-        internal void Conver(short wepbet, short totalhits, short fishodds)
-        {
-            _Gpi.Hit(new HitRequest { WepBet = wepbet , TotalHits = totalhits , FishOdds = fishodds } );
-        }
-    }
+		internal void Conver(short wepbet, short totalhits, short fishodds)
+		{
+			_Gpi.Hit(new HitRequest
+			{
+				WepBet = wepbet, 
+				TotalHits = totalhits, 
+				FishOdds = fishodds
+			});
+		}
+	}
 }

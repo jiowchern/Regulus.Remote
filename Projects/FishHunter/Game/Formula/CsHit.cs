@@ -7,19 +7,27 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+#region Test_Region
+
+using System;
+
+using VGame.Project.FishHunter.Common;
+using VGame.Project.FishHunter.Common.Datas;
+using VGame.Project.FishHunter.Common.GPIs;
+
+#endregion
+
 namespace VGame.Project.FishHunter.Formula
 {
+	public class CsHit : HitBase
+	{
+		public void Test()
+		{
+		}
 
-    public class CsHit : HitBase
-    {
-        public void Test()
-        {
-            
-        }
-
-        public override HitResponse Request(HitRequest request)
-        {
-            throw new System.NotImplementedException();
-        }
-    }
+		public override HitResponse Request(HitRequest request)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

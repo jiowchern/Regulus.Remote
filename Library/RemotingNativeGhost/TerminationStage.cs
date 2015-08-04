@@ -1,36 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="TerminationStage.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the Agent type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using Regulus.Utility;
+
+#endregion
 
 namespace Regulus.Remoting.Ghost.Native
 {
-    public partial class Agent
-    {
-        class TerminationStage : Regulus.Utility.IStage
-        {
-            private Remoting.Ghost.Native.Agent agent;
+	public partial class Agent
+	{
+		private class TerminationStage : IStage
+		{
+			private Agent agent;
 
-            public TerminationStage(Remoting.Ghost.Native.Agent agent)
-            {
-                // TODO: Complete member initialization
-                this.agent = agent;
-            }
+			public TerminationStage(Agent agent)
+			{
+				// TODO: Complete member initialization
+				this.agent = agent;
+			}
 
-            void Utility.IStage.Enter()
-            {                
-            }
+			void IStage.Enter()
+			{
+			}
 
-            void Utility.IStage.Leave()
-            {
-                
-            }
+			void IStage.Leave()
+			{
+			}
 
-            void Utility.IStage.Update()
-            {
-                
-            }
-        }
-    }
-    
+			void IStage.Update()
+			{
+			}
+		}
+	}
 }

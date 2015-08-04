@@ -1,12 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="PackageQueue.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the PackageQueue type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using Regulus.Collection;
+
+#endregion
 
 namespace Regulus.Remoting
 {
-    public class PackageQueue : Regulus.Collection.Queue<Package>
-    {
-        
-    }
+	public class PackageQueue : Queue<Package>
+	{
+	}
 }

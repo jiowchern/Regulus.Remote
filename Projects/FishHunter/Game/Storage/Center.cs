@@ -1,40 +1,60 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Center.cs" company="Regulus Framework">
+//   Regulus Framework
+// </copyright>
+// <summary>
+//   Defines the Center type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using Regulus.Framework;
+using Regulus.Remoting;
+using Regulus.Utility;
+
+using VGame.Project.FishHunter.Common;
+using VGame.Project.FishHunter.Common.GPIs;
+using VGame.Project.FishHunter.Play;
+
+#endregion
 
 namespace VGame.Project.FishHunter.Storage
 {
-    public class Center : Regulus.Remoting.ICore
-    {
-        Regulus.Utility.Updater _Update;
-        Hall _Hall;
-        IStorage _Stroage;
-        public Center(IStorage storage)
-        {
-            _Stroage = storage;
-            _Hall = new Hall();
-            _Update = new Regulus.Utility.Updater();
-        }
-        void Regulus.Remoting.ICore.AssignBinder(Regulus.Remoting.ISoulBinder binder)
-        {
-            _Hall.PushUser(new User(binder, _Stroage));
-        }
+	public class Center : ICore
+	{
+		private readonly Hall _Hall;
 
-        bool Regulus.Utility.IUpdatable.Update()
-        {
-            _Update.Working();
-            return true;
-        }
+		private readonly IStorage _Stroage;
 
-        void Regulus.Framework.IBootable.Launch()
-        {
-            _Update.Add(_Hall);
-        }
+		private readonly Updater _Update;
 
-        void Regulus.Framework.IBootable.Shutdown()
-        {
-            _Update.Shutdown();
-        }
-    }
+		public Center(IStorage storage)
+		{
+			_Stroage = storage;
+			_Hall = new Hall();
+			_Update = new Updater();
+		}
+
+		void ICore.AssignBinder(ISoulBinder binder)
+		{
+			_Hall.PushUser(new User(binder, _Stroage));
+		}
+
+		bool IUpdatable.Update()
+		{
+			_Update.Working();
+			return true;
+		}
+
+		void IBootable.Launch()
+		{
+			_Update.Add(_Hall);
+		}
+
+		void IBootable.Shutdown()
+		{
+			_Update.Shutdown();
+		}
+	}
 }

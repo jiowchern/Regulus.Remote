@@ -1,14 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="UserCommand.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the IUserCommand type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace Regulus.Utility
+namespace Regulus.Remoting
 {
-    public interface IUserCommand
-    {
-        void Register();
+	public interface IUserCommand
+	{
+		void Register();
 
-        void Unregister();
-    }
+		void Unregister();
+	}
 }

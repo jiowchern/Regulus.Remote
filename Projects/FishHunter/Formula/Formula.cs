@@ -1,165 +1,191 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Formula.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the Server type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using System;
+using System.IO;
+using System.Reflection;
+
+using Regulus.Collection;
+using Regulus.Framework;
+using Regulus.Remoting;
+using Regulus.Utility;
+
+using VGame.Project.FishHunter.Storage;
+
+#endregion
 
 namespace VGame.Project.FishHunter.Formula
 {
-    public class Server : Regulus.Remoting.ICore
-    {
-        bool _Enable;
-        VGame.Project.FishHunter.Storage.Proxy _Storage;
-        Storage.IUser _StorageUser;
-        Regulus.Utility.Updater _Updater;
-        Regulus.Utility.StageMachine _Machine;
-        private string _Account;
-        private string _Password;
-        private string _IpAddress;
-        private int _Port;
+	public class Server : ICore
+	{
+		private string _Account;
 
-        Regulus.Collection.Queue<Regulus.Remoting.ISoulBinder> _Binders;
-        private Regulus.Utility.LogFileRecorder _LogRecorder;
+		private Queue<ISoulBinder> _Binders;
 
-        public Server()
-        {
-            _Setup();
-        }
+		private bool _Enable;
 
-        private void _Setup()
-        {
-            _InitialLog();
+		private string _IpAddress;
 
-            Regulus.Utility.Ini config = new Regulus.Utility.Ini(_ReadConfig());
+		private LogFileRecorder _LogRecorder;
 
-            _IpAddress = config.Read("Storage", "ipaddr");
-            _Port = int.Parse(config.Read("Storage", "port"));
-            _Account = config.Read("Storage", "account");
-            _Password = config.Read("Storage", "password");
+		private StageMachine _Machine;
 
-            _Storage = new Storage.Proxy();
-            _Machine = new Regulus.Utility.StageMachine();
-            _Updater = new Regulus.Utility.Updater();
-            _Binders = new Regulus.Collection.Queue<Regulus.Remoting.ISoulBinder>();
-            _Enable = true;
+		private string _Password;
 
-            
-        }
+		private int _Port;
 
-        private string _ReadConfig()
-        {
-            return System.IO.File.ReadAllText("config.ini");
-        }
+		private Proxy _Storage;
 
-        void Regulus.Remoting.ICore.AssignBinder(Regulus.Remoting.ISoulBinder binder)
-        {
-            _Binders.Enqueue(binder);
-        }
+		private IUser _StorageUser;
 
-        bool Regulus.Utility.IUpdatable.Update()
-        {
-            _Updater.Working();
-            _Machine.Update();
-            return _Enable;
-        }
+		private Updater _Updater;
 
-        void Regulus.Framework.IBootable.Launch()
-        {            
+		public Server()
+		{
+			_Setup();
+		}
 
-            _PreloadAssembly();
+		void ICore.AssignBinder(ISoulBinder binder)
+		{
+			_Binders.Enqueue(binder);
+		}
 
-            _Updater.Add(_Storage);
-            _ToConnectStorage(_Storage.SpawnUser("user"));            
-        }
+		bool IUpdatable.Update()
+		{
+			_Updater.Working();
+			_Machine.Update();
+			return _Enable;
+		}
 
-        private static void _PreloadAssembly()
-        {
-            System.Reflection.Assembly.Load("Common");
-        }
+		void IBootable.Launch()
+		{
+			Server._PreloadAssembly();
 
-        private void _InitialLog()
-        {
-            _LogRecorder = new Regulus.Utility.LogFileRecorder("Formula");
-            Regulus.Utility.Log.Instance.RecordEvent += _LogRecorder.Record;
+			_Updater.Add(_Storage);
+			_ToConnectStorage(_Storage.SpawnUser("user"));
+		}
 
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+		void IBootable.Shutdown()
+		{
+			_ReleaseLog();
 
-            
-        }
+			_Updater.Shutdown();
+			_Machine.Termination();
+		}
 
-        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            var ex = (Exception)e.ExceptionObject;
-            _LogRecorder.Record(ex.ToString());
-            _LogRecorder.Save();
-        }
+		private void _Setup()
+		{
+			_InitialLog();
 
-        private void _ReleaseLog()
-        {
-            AppDomain.CurrentDomain.UnhandledException -= CurrentDomain_UnhandledException;
-            _LogRecorder.Save();
-        }
+			var config = new Ini(_ReadConfig());
 
-        private void _ToConnectStorage(Storage.IUser user)
-        {
-            _StorageUser = user;
-            var stage = new VGame.Project.FishHunter.ConnectStorageStage(user, _IpAddress, _Port);
-            stage.DoneEvent += _ConnectResult;
-            _Machine.Push(stage);
-        }
+			_IpAddress = config.Read("Storage", "ipaddr");
+			_Port = int.Parse(config.Read("Storage", "port"));
+			_Account = config.Read("Storage", "account");
+			_Password = config.Read("Storage", "password");
 
-        private void _ConnectResult(bool result)
-        {
-            if (result)
-            {
-                _ToVerifyStorage(_StorageUser);
-            }
-            else
-                throw new SystemException("stroage connect fail");
-        }
+			_Storage = new Proxy();
+			_Machine = new StageMachine();
+			_Updater = new Updater();
+			_Binders = new Queue<ISoulBinder>();
+			_Enable = true;
+		}
 
-        private void _ToVerifyStorage(Storage.IUser user)
-        {            
-            var stage = new VGame.Project.FishHunter.VerifyStorageStage(user , _Account , _Password);
-            stage.DoneEvent += _VerifyResult;
-            _Machine.Push(stage);
-        }
+		private string _ReadConfig()
+		{
+			return File.ReadAllText("config.ini");
+		}
 
-        private void _VerifyResult(bool verify_result)
-        {
-            if (verify_result)
-            {
-                _ToBuildStorageController();
-            }
-            else
-                throw new SystemException("stroage verify fail");
-        }
-        
-        private void _ToBuildStorageController()
-        {
-            var stage = new VGame.Project.FishHunter.BuildStorageControllerStage(_StorageUser);
-            stage.DoneEvent += _ToRunFormula;
-            _Machine.Push(stage);
-        }
+		private static void _PreloadAssembly()
+		{
+			Assembly.Load("Common");
+		}
 
-        private void _ToRunFormula(StorageController controller)
-        {
-            var stage = new VGame.Project.FishHunter.RunFormulaStage(controller, _Binders);
-            stage.DoneEvent += _ToShutdown;
-            _Machine.Push(stage);
-        }
+		private void _InitialLog()
+		{
+			_LogRecorder = new LogFileRecorder("Formula");
+			Singleton<Log>.Instance.RecordEvent += _LogRecorder.Record;
 
-        void _ToShutdown()
-        {
-            _Enable = false;
-        }
+			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+		}
 
-        void Regulus.Framework.IBootable.Shutdown()
-        {
-            _ReleaseLog();
+		private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+		{
+			var ex = (Exception)e.ExceptionObject;
+			_LogRecorder.Record(ex.ToString());
+			_LogRecorder.Save();
+		}
 
-            _Updater.Shutdown();
-            _Machine.Termination();
-        }
-    }
+		private void _ReleaseLog()
+		{
+			AppDomain.CurrentDomain.UnhandledException -= CurrentDomain_UnhandledException;
+			_LogRecorder.Save();
+		}
+
+		private void _ToConnectStorage(IUser user)
+		{
+			_StorageUser = user;
+			var stage = new ConnectStorageStage(user, _IpAddress, _Port);
+			stage.DoneEvent += _ConnectResult;
+			_Machine.Push(stage);
+		}
+
+		private void _ConnectResult(bool result)
+		{
+			if (result)
+			{
+				_ToVerifyStorage(_StorageUser);
+			}
+			else
+			{
+				throw new SystemException("stroage connect fail");
+			}
+		}
+
+		private void _ToVerifyStorage(IUser user)
+		{
+			var stage = new VerifyStorageStage(user, _Account, _Password);
+			stage.DoneEvent += _VerifyResult;
+			_Machine.Push(stage);
+		}
+
+		private void _VerifyResult(bool verify_result)
+		{
+			if (verify_result)
+			{
+				_ToBuildStorageController();
+			}
+			else
+			{
+				throw new SystemException("stroage verify fail");
+			}
+		}
+
+		private void _ToBuildStorageController()
+		{
+			var stage = new BuildStorageControllerStage(_StorageUser);
+			stage.DoneEvent += _ToRunFormula;
+			_Machine.Push(stage);
+		}
+
+		private void _ToRunFormula(StorageController controller)
+		{
+			var stage = new RunFormulaStage(controller, _Binders);
+			stage.DoneEvent += _ToShutdown;
+			_Machine.Push(stage);
+		}
+
+		private void _ToShutdown()
+		{
+			_Enable = false;
+		}
+	}
 }

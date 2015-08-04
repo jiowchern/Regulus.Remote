@@ -1,14 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="IUser.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the IUser type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using Regulus.Remoting;
+using Regulus.Utility;
+
+#endregion
 
 namespace RemotingTest
 {
-    public interface IUser : Regulus.Utility.IUpdatable
-    {
-        Regulus.Remoting.User Remoting { get; }
+	public interface IUser : IUpdatable
+	{
+		Regulus.Remoting.User Remoting { get; }
 
-        Regulus.Remoting.Ghost.INotifier<ITestReturn> TestReturnProvider {get;}
-    }
+		INotifier<ITestReturn> TestReturnProvider { get; }
+	}
 }

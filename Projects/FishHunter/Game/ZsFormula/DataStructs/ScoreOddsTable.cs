@@ -7,8 +7,11 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+#region Test_Region
 
 using Regulus.Game;
+
+#endregion
 
 namespace VGame.Project.FishHunter.ZsFormula.DataStructs
 {

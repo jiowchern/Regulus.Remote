@@ -1,123 +1,142 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Regulus;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="CommandParser.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the CommandParser type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using Regulus.Framework;
+using Regulus.Remoting;
+using Regulus.Utility;
+
+using VGame.Project.FishHunter.Common;
+using VGame.Project.FishHunter.Common.GPIs;
+
+#endregion
 
 namespace VGame.Project.FishHunter
 {
-    using Regulus.Extension;
-    public class CommandParser : Regulus.Framework.ICommandParsable<IUser>
-    {
-    
-        
-        private Regulus.Utility.Command _Command;
-        private Regulus.Utility.Console.IViewer _View;
-        private IUser _User;
+	public class CommandParser : ICommandParsable<IUser>
+	{
+		private readonly Command _Command;
 
-        public CommandParser(Regulus.Utility.Command command, Regulus.Utility.Console.IViewer view, IUser user)
-        {            
-            this._Command = command;
-            this._View = view;
-            this._User = user;            
-        }
-        void Regulus.Framework.ICommandParsable<IUser>.Clear()
-        {
-            _DestroySystem();   
-        }
+		private readonly IUser _User;
 
-        private void _DestroySystem()
-        {
-            _Command.Unregister("Agent");
-        }
-        
-        private void _ConnectResult(bool result)
-        {
-            _View.WriteLine(string.Format("Connect result {0}", result));
+		private readonly Console.IViewer _View;
 
-        }
+		public CommandParser(Command command, Console.IViewer view, IUser user)
+		{
+			this._Command = command;
+			this._View = view;
+			this._User = user;
+		}
 
-        void Regulus.Framework.ICommandParsable<IUser>.Setup(Regulus.Remoting.IGPIBinderFactory factory)
-        {
-            _CreateSystem();
+		void ICommandParsable<IUser>.Clear()
+		{
+			_DestroySystem();
+		}
 
-            _CreateConnect(factory);
+		void ICommandParsable<IUser>.Setup(IGPIBinderFactory factory)
+		{
+			_CreateSystem();
 
+			_CreateConnect(factory);
 
-            _CreateOnline(factory);
+			_CreateOnline(factory);
 
+			_CreateSelectLevel(factory);
 
-            _CreateSelectLevel(factory);
+			_CreateVerify(factory);
 
-            _CreateVerify(factory);
+			_CreatePlayer(factory);
+		}
 
-            _CreatePlayer(factory);
-        }
+		private void _DestroySystem()
+		{
+			_Command.Unregister("Agent");
+		}
 
-        private void _CreateSelectLevel(Regulus.Remoting.IGPIBinderFactory factory)
-        {
-            
-            var binder = factory.Create<VGame.Project.FishHunter.ILevelSelector>(_User.LevelSelectorProvider);
+		private void _ConnectResult(bool result)
+		{
+			_View.WriteLine(string.Format("Connect result {0}", result));
+		}
 
-            binder.Bind<byte , Regulus.Remoting.Value<bool> >((gpi, level) => gpi.Select(level) , _SelectLevelQueryResult);
-                        
-        }
+		private void _CreateSelectLevel(IGPIBinderFactory factory)
+		{
+			var binder = factory.Create(_User.LevelSelectorProvider);
 
-        private void _SelectLevelQueryResult(Regulus.Remoting.Value<bool> obj)
-        {
-            obj.OnValue += (result) => _View.WriteLine(string.Format("SelectLevelQueryResult = {0}", result));
-        }
+			binder.Bind<byte, Value<bool>>((gpi, level) => gpi.Select(level), _SelectLevelQueryResult);
+		}
 
-        private void _CreateSystem()
-        {
-            
-        }
+		private void _SelectLevelQueryResult(Value<bool> obj)
+		{
+			obj.OnValue += result => _View.WriteLine(string.Format("SelectLevelQueryResult = {0}", result));
+		}
 
-        private void _CreatePlayer(Regulus.Remoting.IGPIBinderFactory factory)
-        {
-            var player = factory.Create<VGame.Project.FishHunter.IPlayer>(_User.PlayerProvider);
+		private void _CreateSystem()
+		{
+		}
 
-            player.Bind("Hit[bulletid,fishid]", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().Build<int, int>((b,f) => { gpi.Hit(b , new int[] {f}); }); });
-            player.Bind("RequestBullet", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().BuildRemoting<int>(gpi.RequestBullet, _GetBullet ); });
+		private void _CreatePlayer(IGPIBinderFactory factory)
+		{
+			var player = factory.Create(_User.PlayerProvider);
 
-            player.SupplyEvent += _RegisgetPlayerEvent;
-        }
+			player.Bind("Hit[bulletid,fishid]", gpi =>
+			{
+				return new CommandParamBuilder().Build<int, int>((b, f) =>
+				{
+					gpi.Hit(b, new[]
+					{
+						f
+					});
+				});
+			});
+			player.Bind("RequestBullet", 
+				gpi => { return new CommandParamBuilder().BuildRemoting(gpi.RequestBullet, _GetBullet); });
 
-        private void _GetBullet(int obj)
-        {
-            _View.WriteLine("get bullet id" + obj.ToString());
-        }
+			player.SupplyEvent += _RegisgetPlayerEvent;
+		}
 
-        private void _RegisgetPlayerEvent(IPlayer source)
-        {
-            source.MoneyEvent += (money) => { _View.WriteLine("player money " + money.ToString()); };
-            source.DeathFishEvent += (fish) => { _View.WriteLine(string.Format("fish{0} is dead", fish)); };
-        }
+		private void _GetBullet(int obj)
+		{
+			_View.WriteLine("get bullet id" + obj);
+		}
 
-        private void _CreateVerify(Regulus.Remoting.IGPIBinderFactory factory)
-        {
-            var verify = factory.Create<VGame.Project.FishHunter.IVerify>(_User.VerifyProvider);
-            verify.Bind("Login[result,id,password]", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().BuildRemoting<string, string, bool>(gpi.Login, _VerifyResult); });
-        }
+		private void _RegisgetPlayerEvent(IPlayer source)
+		{
+			source.MoneyEvent += money => { _View.WriteLine("player money " + money.ToString()); };
+			source.DeathFishEvent += fish => { _View.WriteLine(string.Format("fish{0} is dead", fish)); };
+		}
 
-        private void _CreateOnline(Regulus.Remoting.IGPIBinderFactory factory)
-        {
-            var online = factory.Create<Regulus.Utility.IOnline>(_User.Remoting.OnlineProvider);            
-            online.Bind("Ping", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().Build(() => { _View.WriteLine("Ping : " + gpi.Ping.ToString()); }); });
-            online.Bind((gpi) => gpi.Disconnect() );
-        }
+		private void _CreateVerify(IGPIBinderFactory factory)
+		{
+			var verify = factory.Create(_User.VerifyProvider);
+			verify.Bind("Login[result,id,password]", 
+				gpi => { return new CommandParamBuilder().BuildRemoting<string, string, bool>(gpi.Login, _VerifyResult); });
+		}
 
-        private void _CreateConnect(Regulus.Remoting.IGPIBinderFactory factory)
-        {
-            var connect = factory.Create<Regulus.Utility.IConnect>(_User.Remoting.ConnectProvider);
-            connect.Bind("Connect[result , ipaddr ,port]", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().BuildRemoting<string, int, bool>(gpi.Connect, _ConnectResult); });
-        }
+		private void _CreateOnline(IGPIBinderFactory factory)
+		{
+			var online = factory.Create(_User.Remoting.OnlineProvider);
+			online.Bind("Ping", 
+				gpi => { return new CommandParamBuilder().Build(() => { _View.WriteLine("Ping : " + gpi.Ping); }); });
+			online.Bind(gpi => gpi.Disconnect());
+		}
 
-        private void _VerifyResult(bool result)
-        {
-            _View.WriteLine(string.Format("Verify result {0}", result));
-        }
+		private void _CreateConnect(IGPIBinderFactory factory)
+		{
+			var connect = factory.Create(_User.Remoting.ConnectProvider);
+			connect.Bind("Connect[result , ipaddr ,port]", 
+				gpi => { return new CommandParamBuilder().BuildRemoting<string, int, bool>(gpi.Connect, _ConnectResult); });
+		}
 
-        
-    }
+		private void _VerifyResult(bool result)
+		{
+			_View.WriteLine(string.Format("Verify result {0}", result));
+		}
+	}
 }

@@ -1,15 +1,27 @@
-﻿using System.Reflection;
-using System.Runtime.CompilerServices;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AssemblyInfo.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   AssemblyInfo.cs
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using System.Reflection;
 using System.Runtime.InteropServices;
+
+#endregion
 
 // 組件的一般資訊是由下列的屬性集控制。
 // 變更這些屬性的值即可修改組件的相關
 // 資訊。
-[assembly: AssemblyTitle("PureLibTest")]
+[assembly: AssemblyTitle("RegulusLibraryTest")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("PureLibTest")]
+[assembly: AssemblyProduct("RegulusLibraryTest")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -23,12 +35,10 @@ using System.Runtime.InteropServices;
 [assembly: Guid("214bf61b-ba8d-439e-8ca0-c7fe1e58e7cd")]
 
 // 組件的版本資訊是由下列四項值構成: 
-//
 //      主要版本
 //      次要版本 
 //      組建編號
 //      修訂編號
-//
 // 您可以指定所有的值，也可以依照以下的方式，使用 '*' 將組建和修訂編號 
 // 指定為預設值: 
 // [assembly:  AssemblyVersion("1.0.*")]

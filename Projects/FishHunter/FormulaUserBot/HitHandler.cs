@@ -1,56 +1,72 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="HitHandler.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the HitHandler type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
 using Regulus.Extension;
+using Regulus.Framework;
+using Regulus.Utility;
+
+using VGame.Project.FishHunter.Common;
+using VGame.Project.FishHunter.Common.Datas;
+using VGame.Project.FishHunter.Common.GPIs;
+
+#endregion
+
 namespace FormulaUserBot
 {
-    class HitHandler : Regulus.Utility.IUpdatable
-    {
-        
-        public static double Interval = 1.0f / 20.0;
+	internal class HitHandler : IUpdatable
+	{
+		public static double Interval = 1.0f / 20.0;
 
-        private VGame.Project.FishHunter.IFishStage _Stage;
-        private VGame.Project.FishHunter.HitRequest _Request;
-        bool _Enable;
-        Regulus.Utility.TimeCounter _TimeCounter;
+		private readonly IFishStage _Stage;
 
-        public HitHandler(VGame.Project.FishHunter.IFishStage _Stage, VGame.Project.FishHunter.HitRequest request)
-        {            
-            this._Stage = _Stage;
-            this._Request = request;
-            _Enable = true;
-            _TimeCounter = new Regulus.Utility.TimeCounter();
-        }
+		private readonly TimeCounter _TimeCounter;
 
-        bool Regulus.Utility.IUpdatable.Update()
-        {
-            return _Enable;
-        }
+		private bool _Enable;
 
-        void Regulus.Framework.IBootable.Launch()
-        {
-            _Stage.HitResponseEvent += _Response;
-            _Stage.Hit(_Request);
-            _TimeCounter.Reset();
-        }
+		private HitRequest _Request;
 
-        private void _Response(VGame.Project.FishHunter.HitResponse obj)
-        {
-            if (obj.FishID == _Request.FishID && obj.WepID == _Request.WepID )
-            {
-                _Enable = false;
-                                
-                Log.Instance.WriteLine(string.Format("時間{2}:請求{0}\n回應{1}", _Request.ShowMembers(), obj.ShowMembers(), _TimeCounter.Second));                
+		public HitHandler(IFishStage _Stage, HitRequest request)
+		{
+			this._Stage = _Stage;
+			this._Request = request;
+			_Enable = true;
+			_TimeCounter = new TimeCounter();
+		}
 
-                
+		bool IUpdatable.Update()
+		{
+			return _Enable;
+		}
 
-            }            
-        }
+		void IBootable.Launch()
+		{
+			_Stage.OnHitResponseEvent += _Response;
+			_Stage.Hit(_Request);
+			_TimeCounter.Reset();
+		}
 
-        void Regulus.Framework.IBootable.Shutdown()
-        {
-            _Stage.HitResponseEvent -= _Response;
-        }
-    }
+		void IBootable.Shutdown()
+		{
+			_Stage.OnHitResponseEvent -= _Response;
+		}
+
+		private void _Response(HitResponse obj)
+		{
+			if (obj.FishID == _Request.FishID && obj.WepID == _Request.WepID)
+			{
+				_Enable = false;
+
+				Singleton<Log>.Instance.WriteLine(string.Format("時間{2}:請求{0}\n回應{1}", _Request.ShowMembers(), obj.ShowMembers(), 
+					_TimeCounter.Second));
+			}
+		}
+	}
 }

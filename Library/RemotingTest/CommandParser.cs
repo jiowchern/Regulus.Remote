@@ -1,20 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="CommandParser.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the CommandParser type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using Regulus.Framework;
+using Regulus.Remoting;
+
+#endregion
 
 namespace RemotingTest
 {
-    class CommandParser : Regulus.Framework.ICommandParsable<IUser>
-    {
-        void Regulus.Framework.ICommandParsable<IUser>.Setup(Regulus.Remoting.IGPIBinderFactory build)
-        {
-            
-        }
+	internal class CommandParser : ICommandParsable<IUser>
+	{
+		void ICommandParsable<IUser>.Setup(IGPIBinderFactory build)
+		{
+		}
 
-        void Regulus.Framework.ICommandParsable<IUser>.Clear()
-        {
-            
-        }
-    }
+		void ICommandParsable<IUser>.Clear()
+		{
+		}
+	}
 }

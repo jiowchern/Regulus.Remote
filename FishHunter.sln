@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PureLib", "Library\PureLib\PureLib.csproj", "{2F28AA04-316D-4C20-BF46-987D4A59691D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegulusLibrary", "Library\PureLib\RegulusLibrary.csproj", "{2F28AA04-316D-4C20-BF46-987D4A59691D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Library", "Library", "{2C0B4D19-4D23-4793-8627-4E72FE94243F}"
 	ProjectSection(SolutionItems) = preProject
@@ -17,9 +17,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database", "Library\Databas
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemotingStandalong", "Library\RemotingStandalong\RemotingStandalong.csproj", "{485F551D-9155-4982-B653-F8D4EAC2FCA1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemotingNativeGhost", "Library\RemotingNativeGhost\RemotingNativeGhost.csproj", "{6CB4CDE6-4405-40E6-8BDF-5A2E9185CC04}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemotingGhostNative", "Library\RemotingNativeGhost\RemotingGhostNative.csproj", "{6CB4CDE6-4405-40E6-8BDF-5A2E9185CC04}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemotingNativeSoul", "Library\RemotingNativeSoul\RemotingNativeSoul.csproj", "{D4580866-2273-4E9B-BE70-4FA2AB11434A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemotingSoulNative", "Library\RemotingNativeSoul\RemotingSoulNative.csproj", "{D4580866-2273-4E9B-BE70-4FA2AB11434A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Project", "Project", "{96CF9E09-80D6-4232-9952-CEC23ECE61FB}"
 EndProject
@@ -30,7 +30,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Game", "Projects\FishHunter
 		{FAE04BC0-81CB-41C1-8B33-DDF0C6B5C318} = {FAE04BC0-81CB-41C1-8B33-DDF0C6B5C318}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PureLibTest", "Library\PureLibTest\PureLibTest.csproj", "{1F93F34D-B41D-4D70-B49F-F8011D46F374}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegulusLibraryTest", "Library\PureLibTest\RegulusLibraryTest.csproj", "{1F93F34D-B41D-4D70-B49F-F8011D46F374}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemotingTest", "Library\RemotingTest\RemotingTest.csproj", "{6C5AF73B-0D73-4A15-B762-BB2E889DE4AE}"
 EndProject
@@ -41,7 +41,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console", "Projects\FishHun
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "User", "Projects\FishHunter\User\User.csproj", "{9E558B9C-1A42-4D5B-9C3A-9B443EC86835}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity", "Library\Unity\Unity.csproj", "{B4123AE5-EED1-4FDB-89FD-4BBE4C67E7A0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityLibrary", "Library\Unity\UnityLibrary.csproj", "{B4123AE5-EED1-4FDB-89FD-4BBE4C67E7A0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Complex", "Projects\FishHunter\Complex\Complex.csproj", "{53A7DD3E-D3A3-4567-9B7E-CFDF2F3C2214}"
 EndProject
@@ -97,19 +97,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StorageIntegrateTest", "Pro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsService", "Tool\WindowsService\WindowsService.csproj", "{64C1D655-34D2-4580-A3EB-5D6BB8D81851}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PureLibraryExpansion", "Library\PureLibraryExpansion\PureLibraryExpansion.csproj", "{E977627A-CD89-4D30-892D-4679E10F45FA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PureLibraryNet4.5", "Library\PureLibraryExpansion\PureLibraryNet4.5.csproj", "{E977627A-CD89-4D30-892D-4679E10F45FA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogExceptionTest", "Library\LogExceptionTest\LogExceptionTest.csproj", "{9FA4B2C1-03EC-4F26-B78D-09275EE0F89D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameTest", "Projects\FishHunter\CommonTest\GameTest.csproj", "{06CC7AF7-6795-4231-AE6F-E87BCF8799E3}"
 EndProject
 Global
-	GlobalSection(AutomaticVersions) = postSolution
-		UpdateAssemblyVersion = False
-		UpdateAssemblyFileVersion = True
-		UpdateAssemblyInfoVersion = False
-		AssemblyFileVersionSettings = None.None.None.IncrementOnDemandWithReset
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Unity|Any CPU = Debug_Unity|Any CPU
 		Debug|Any CPU = Debug|Any CPU

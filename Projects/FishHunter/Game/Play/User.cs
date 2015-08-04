@@ -1,195 +1,286 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="User.cs" company="Regulus Framework">
+//   Regulus Framework
+// </copyright>
+// <summary>
+//   Defines the User type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using System;
+
+using Regulus.Framework;
+using Regulus.Game;
+using Regulus.Remoting;
+using Regulus.Utility;
+
+using VGame.Project.FishHunter.Common;
+using VGame.Project.FishHunter.Common.Datas;
+using VGame.Project.FishHunter.Common.GPIs;
+
+using StageLock = VGame.Project.FishHunter.Common.Datas.StageLock;
+
+#endregion
 
 namespace VGame.Project.FishHunter.Play
 {
-    class User : Regulus.Game.IUser, IAccountStatus
-    {
-        Regulus.Utility.StageMachine _Machine;
-        
-        Regulus.Remoting.ISoulBinder _Binder;
-        IAccountFinder _AccountFinder;
-        IFishStageQueryer _FishStageQueryer;
-        IRecordQueriers _RecordQueriers;
-        ITradeNotes _TradeAccount;
-        
-        Data.Account _Account;
-        Data.Record _Record;
-        
-        
+	internal class User : IUser, IAccountStatus
+	{
+		private event Action _KickEvent;
 
-        event Regulus.Game.OnNewUser _VerifySuccessEvent;
-        event Regulus.Game.OnNewUser Regulus.Game.IUser.VerifySuccessEvent
-        {
-            add { _VerifySuccessEvent += value; }
-            remove { _VerifySuccessEvent -= value; }
-        }
+		private event OnQuit _QuitEvent;
 
-        event Regulus.Game.OnQuit _QuitEvent;
-        event Regulus.Game.OnQuit Regulus.Game.IUser.QuitEvent
-        {
-            add { _QuitEvent += value; }
-            remove { _QuitEvent -= value; }
-        }
+		private event OnNewUser _VerifySuccessEvent;
 
-        event Action _KickEvent;
-        event Action IAccountStatus.KickEvent
-        {
-            add { _KickEvent += value; }
-            remove { _KickEvent -= value; }
-        }
+		private readonly IAccountFinder _AccountFinder;
 
-        StageTicketInspector _StageTicketInspector;
-        
-        public User(Regulus.Remoting.ISoulBinder binder , 
-            IAccountFinder account_finder,
-            IFishStageQueryer queryer,
-            IRecordQueriers record_queriers,
-            ITradeNotes trade_account)
-        {
-            _Machine = new Regulus.Utility.StageMachine();
+		private readonly ISoulBinder _Binder;
 
-            _Binder = binder;
-            _AccountFinder = account_finder;
-            _FishStageQueryer = queryer;
-            var locks = new Data.StageLock[] { new Data.StageLock { KillCount = 200 , Stage = 3 } };
-            _StageTicketInspector = new StageTicketInspector(new VGame.Project.FishHunter.Play.StageGate(locks));
-            
-            _RecordQueriers = record_queriers;
-            
-            _TradeAccount = trade_account;        
-        }
+		private readonly IFishStageQueryer _FishStageQueryer;
 
-        void Regulus.Game.IUser.OnKick(Guid id)
-        {
-            if(_Account != null && _Account.Id == id)
-            {
-                if (_KickEvent != null)
-                    _KickEvent();
-                _ToVerify();
-            }
-        }
+		private readonly StageMachine _Machine;
 
-        bool Regulus.Utility.IUpdatable.Update()
-        {
-            _Machine.Update();
-            return true;
-        }
+		private readonly IRecordQueriers _RecordQueriers;
 
-        void Regulus.Framework.IBootable.Launch()
-        {
-            _Binder.BreakEvent += _Quit ;
-            _Binder.Bind<IAccountStatus>(this);
-            _ToVerify();
-        }
+		private readonly StageTicketInspector _StageTicketInspector;
 
-        private void _Quit()
-        {            
-            _QuitEvent();
-        }
+		private readonly ITradeNotes _TradeAccount;
 
-        void Regulus.Framework.IBootable.Shutdown()
-        {
-            _SaveRecord();
-            _Binder.Unbind<IAccountStatus>(this);
-            _Machine.Termination();
-            _Binder.BreakEvent -= _Quit;
-        }
+		private Account _Account;
 
-        private void _SaveRecord()
-        {
-            if (_Record != null)
-                _RecordQueriers.Save(_Record);
-        }
+		private Record _Record;
 
-        private void _ToVerify()
-        {
-            var verify = _CreateVerify();
-            _AddVerifyToStage(verify);
-        }
+		public User(ISoulBinder binder, 
+			IAccountFinder account_finder, 
+			IFishStageQueryer queryer, 
+			IRecordQueriers record_queriers, 
+			ITradeNotes trade_account)
+		{
+			_Machine = new StageMachine();
 
-        private Verify _CreateVerify()
-        {
-            _Account = null;
-            var verify = new VGame.Project.FishHunter.Verify(_AccountFinder);
-            return verify;
-        }
+			_Binder = binder;
+			_AccountFinder = account_finder;
+			_FishStageQueryer = queryer;
+			var locks = new[]
+			{
+				new StageLock
+				{
+					KillCount = 200, 
+					Stage = 3
+				}
+			};
+			_StageTicketInspector = new StageTicketInspector(new StageGate(locks));
 
-        private void _AddVerifyToStage(Verify verify)
-        {
-            var stage = new VGame.Project.FishHunter.Stage.Verify(_Binder, verify);
-            stage.DoneEvent += _VerifySuccess;
-            _Machine.Push(stage);
-        }
+			_RecordQueriers = record_queriers;
 
-        private void _VerifySuccess(Data.Account account)
-        {
-            _VerifySuccessEvent(account.Id);
-            _Account = account;
-            _ToQueryRecord();
-        }
+			_TradeAccount = trade_account;
+		}
 
-        
+		event Action IAccountStatus.KickEvent
+		{
+			add { _KickEvent += value; }
+			remove { _KickEvent -= value; }
+		}
 
-        private void _ToQueryRecord()
-        {
-            _RecordQueriers.Load(_Account.Id).OnValue += (obj)=>
-            {
-                _Record = obj;
-                _StageTicketInspector.Initial(new Data.Stage[] { 
-                    new Data.Stage { Id = 1, Pass = true }, 
-                    new Data.Stage { Id = 2, Pass = false },
-                    new Data.Stage { Id = 4, Pass = false },
-                    new Data.Stage { Id = 5, Pass = false },
-                    new Data.Stage { Id = 6, Pass = false },
-                    new Data.Stage { Id = 7, Pass = false },
-                    new Data.Stage { Id = 8, Pass = false },
-                    new Data.Stage { Id = 9, Pass = false },
-                    new Data.Stage { Id = 10, Pass = false },
-                    new Data.Stage { Id = 11, Pass = false },
-                    new Data.Stage { Id = 12, Pass = false },
-                    new Data.Stage { Id = 13, Pass = false },
-                    new Data.Stage { Id = 14, Pass = false },});
-                _ToLoadTradeNotes();
-            };
-        }
+		event OnNewUser IUser.VerifySuccessEvent
+		{
+			add { _VerifySuccessEvent += value; }
+			remove { _VerifySuccessEvent -= value; }
+		}
 
-        private void _ToLoadTradeNotes()
-        {
-            _TradeAccount.GetTotalMoney(_Account.Id).OnValue +=(money) =>
-            {
-                _Record.Money += money;
-                _ToSelectStage();
-            };
-        }
+		event OnQuit IUser.QuitEvent
+		{
+			add { _QuitEvent += value; }
+			remove { _QuitEvent -= value; }
+		}
 
-        private void _ToSelectStage()
-        {
-            var stage = new VGame.Project.FishHunter.Play.SelectStage(_StageTicketInspector.PlayableStages , _Binder, _FishStageQueryer);
-            stage.DoneEvent += _ToPlayStage;
-            _Machine.Push(stage);            
-        }
+		void IUser.OnKick(Guid id)
+		{
+			if (_Account != null && _Account.Id == id)
+			{
+				if (_KickEvent != null)
+				{
+					_KickEvent();
+				}
 
-        private void _ToPlayStage(IFishStage fish_stage)
-        {
-            var stage = new VGame.Project.FishHunter.Play.PlayStage(_Binder, fish_stage, _Record);
-            stage.PassEvent += _Pass;
-            stage.KillEvent += _Kill;
-            _Machine.Push(stage);            
-        }
+				_ToVerify();
+			}
+		}
 
-        private void _Kill(int kill_count)
-        {
-            _StageTicketInspector.Kill(kill_count);
-            _ToSelectStage();
-        }        
+		bool IUpdatable.Update()
+		{
+			_Machine.Update();
+			return true;
+		}
 
-        private void _Pass(int pass_stage)
-        {
-            _StageTicketInspector.Pass(pass_stage);
-            _ToSelectStage();
-        }
-    }
+		void IBootable.Launch()
+		{
+			_Binder.BreakEvent += _Quit;
+			_Binder.Bind<IAccountStatus>(this);
+			_ToVerify();
+		}
+
+		void IBootable.Shutdown()
+		{
+			_SaveRecord();
+			_Binder.Unbind<IAccountStatus>(this);
+			_Machine.Termination();
+			_Binder.BreakEvent -= _Quit;
+		}
+
+		private void _Quit()
+		{
+			_QuitEvent();
+		}
+
+		private void _SaveRecord()
+		{
+			if (_Record != null)
+			{
+				_RecordQueriers.Save(_Record);
+			}
+		}
+
+		private void _ToVerify()
+		{
+			var verify = _CreateVerify();
+			_AddVerifyToStage(verify);
+		}
+
+		private Verify _CreateVerify()
+		{
+			_Account = null;
+			var verify = new Verify(_AccountFinder);
+			return verify;
+		}
+
+		private void _AddVerifyToStage(Verify verify)
+		{
+			var stage = new Stage.Verify(_Binder, verify);
+			stage.DoneEvent += _VerifySuccess;
+			_Machine.Push(stage);
+		}
+
+		private void _VerifySuccess(Account account)
+		{
+			_VerifySuccessEvent(account.Id);
+			_Account = account;
+			_ToQueryRecord();
+		}
+
+		private void _ToQueryRecord()
+		{
+			_RecordQueriers.Load(_Account.Id).OnValue += obj =>
+			{
+				_Record = obj;
+				_StageTicketInspector.Initial(new[]
+				{
+					new Common.Datas.Stage
+					{
+						Id = 1, 
+						Pass = true
+					}, 
+					new Common.Datas.Stage
+					{
+						Id = 2, 
+						Pass = false
+					}, 
+					new Common.Datas.Stage
+					{
+						Id = 4, 
+						Pass = false
+					}, 
+					new Common.Datas.Stage
+					{
+						Id = 5, 
+						Pass = false
+					}, 
+					new Common.Datas.Stage
+					{
+						Id = 6, 
+						Pass = false
+					}, 
+					new Common.Datas.Stage
+					{
+						Id = 7, 
+						Pass = false
+					}, 
+					new Common.Datas.Stage
+					{
+						Id = 8, 
+						Pass = false
+					}, 
+					new Common.Datas.Stage
+					{
+						Id = 9, 
+						Pass = false
+					}, 
+					new Common.Datas.Stage
+					{
+						Id = 10, 
+						Pass = false
+					}, 
+					new Common.Datas.Stage
+					{
+						Id = 11, 
+						Pass = false
+					}, 
+					new Common.Datas.Stage
+					{
+						Id = 12, 
+						Pass = false
+					}, 
+					new Common.Datas.Stage
+					{
+						Id = 13, 
+						Pass = false
+					}, 
+					new Common.Datas.Stage
+					{
+						Id = 14, 
+						Pass = false
+					}
+				});
+				_ToLoadTradeNotes();
+			};
+		}
+
+		private void _ToLoadTradeNotes()
+		{
+			_TradeAccount.GetTotalMoney(_Account.Id).OnValue += money =>
+			{
+				_Record.Money += money;
+				_ToSelectStage();
+			};
+		}
+
+		private void _ToSelectStage()
+		{
+			var stage = new SelectStage(_StageTicketInspector.PlayableStages, _Binder, _FishStageQueryer);
+			stage.DoneEvent += _ToPlayStage;
+			_Machine.Push(stage);
+		}
+
+		private void _ToPlayStage(IFishStage fish_stage)
+		{
+			var stage = new PlayStage(_Binder, fish_stage, _Record);
+			stage.PassEvent += _Pass;
+			stage.KillEvent += _Kill;
+			_Machine.Push(stage);
+		}
+
+		private void _Kill(int kill_count)
+		{
+			_StageTicketInspector.Kill(kill_count);
+			_ToSelectStage();
+		}
+
+		private void _Pass(int pass_stage)
+		{
+			_StageTicketInspector.Pass(pass_stage);
+			_ToSelectStage();
+		}
+	}
 }

@@ -1,47 +1,63 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Center.cs" company="Regulus Framework">
+//   Regulus Framework
+// </copyright>
+// <summary>
+//   Defines the Center type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using Regulus.Framework;
+using Regulus.Remoting;
+using Regulus.Utility;
+
+using VGame.Project.FishHunter.Play;
+
+#endregion
 
 namespace VGame.Project.FishHunter.Formula
 {
-    public class Center : Regulus.Remoting.ICore
-    {
-        Regulus.Utility.Updater _Updater;
-        Hall _Hall;
-        StorageController _Controller;
-        
-        private Center()
-        {
-            _Hall = new Hall();
-            _Updater = new Regulus.Utility.Updater();
-        }
+	public class Center : ICore
+	{
+		private readonly StorageController _Controller;
 
-        public Center(StorageController controller) : this()
-        {
-            // TODO: Complete member initialization
-            this._Controller = controller;
-        }
+		private readonly Hall _Hall;
 
-        void Regulus.Remoting.ICore.AssignBinder(Regulus.Remoting.ISoulBinder binder)
-        {            
-            _Hall.PushUser(new User(binder, _Controller));
-        }
+		private readonly Updater _Updater;
 
-        bool Regulus.Utility.IUpdatable.Update()
-        {
-            _Updater.Working();
-            return true;
-        }
+		private Center()
+		{
+			_Hall = new Hall();
+			_Updater = new Updater();
+		}
 
-        void Regulus.Framework.IBootable.Launch()
-        {
-            _Updater.Add(_Hall);
-        }
+		public Center(StorageController controller) : this()
+		{
+			// TODO: Complete member initialization
+			this._Controller = controller;
+		}
 
-        void Regulus.Framework.IBootable.Shutdown()
-        {
-            _Updater.Shutdown();
-        }
-    }
+		void ICore.AssignBinder(ISoulBinder binder)
+		{
+			_Hall.PushUser(new User(binder, _Controller));
+		}
+
+		bool IUpdatable.Update()
+		{
+			_Updater.Working();
+			return true;
+		}
+
+		void IBootable.Launch()
+		{
+			_Updater.Add(_Hall);
+		}
+
+		void IBootable.Shutdown()
+		{
+			_Updater.Shutdown();
+		}
+	}
 }

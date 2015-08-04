@@ -1,59 +1,67 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="Connect.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the IConnect type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace Regulus.Utility
+#region Test_Region
+
+using System;
+
+#endregion
+
+namespace Regulus.Remoting
 {
-    public interface IConnect
-    {        
-        Regulus.Remoting.Value<bool> Connect(string ipaddr, int port);        
-    }
+	public interface IConnect
+	{
+		Value<bool> Connect(string ipaddr, int port);
+	}
 
 
-    public class Connect : Regulus.Remoting.Ghost.IGhost, IConnect
-    {
-        Guid _Id;
-        public Guid Id { get { return _Id; } }
+	public class Connect : IGhost, IConnect
+	{
+		public event Action<string, int, Value<bool>> ConnectedEvent;
 
-        public event Action<string, int, Regulus.Remoting.Value<bool>> ConnectedEvent;
-        public Connect()
-        {
-            _Id = Guid.NewGuid();
-        }
-        void Regulus.Remoting.Ghost.IGhost.OnEvent(string name_event, object[] args)
-        {
-            throw new NotImplementedException();
-        }
+		public Guid Id { get; private set; }
 
-        Guid Regulus.Remoting.Ghost.IGhost.GetID()
-        {
-            return _Id;
-        }
+		public Connect()
+		{
+			this.Id = Guid.NewGuid();
+		}
 
-        Regulus.Remoting.Value<bool> IConnect.Connect(string ipaddr, int port)
-        {
-            if (ConnectedEvent == null)
-                throw new SystemException("Invalid Connect, to regain from the provider.");
-            var val = new Regulus.Remoting.Value<bool>();
-            ConnectedEvent(ipaddr, port, val);
-            return val;
-        }
+		Value<bool> IConnect.Connect(string ipaddr, int port)
+		{
+			if (this.ConnectedEvent == null)
+			{
+				throw new SystemException("Invalid Connect, to regain from the provider.");
+			}
 
+			var val = new Value<bool>();
+			this.ConnectedEvent(ipaddr, port, val);
+			return val;
+		}
 
-        void Regulus.Remoting.Ghost.IGhost.OnProperty(string name, byte[] value)
-        {
-            throw new NotImplementedException();
-        }
+		void IGhost.OnEvent(string name_event, object[] args)
+		{
+			throw new NotImplementedException();
+		}
 
+		Guid IGhost.GetID()
+		{
+			return this.Id;
+		}
 
+		void IGhost.OnProperty(string name, byte[] value)
+		{
+			throw new NotImplementedException();
+		}
 
-
-
-        bool Remoting.Ghost.IGhost.IsReturnType()
-        {
-            return false;
-        }
-    }
-
+		bool IGhost.IsReturnType()
+		{
+			return false;
+		}
+	}
 }

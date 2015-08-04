@@ -3,17 +3,19 @@
 //   Regulus Framework
 // </copyright>
 // <summary>
-//   Defines the WeaponPowerRule type.
+//   Defines the IRuleCheck type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+#region Test_Region
 
 using System.Linq;
 
-using Regulus.Extension;
 using Regulus.Utility;
 
 using VGame.Project.FishHunter.ZsFormula.DataStructs;
+
+#endregion
 
 namespace VGame.Project.FishHunter.ZsFormula.Rules
 {
@@ -35,23 +37,28 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 		}
 
 		/// <summary>
-		/// 是否取得特殊道具（特殊武器）
+		///     是否取得特殊道具（特殊武器）
 		/// </summary>
 		public void Run()
 		{
-			if (_PlayerData.Item != 0)
+			if (_PlayerData.NowSpecialWeaponData.IsUsed == true)
 			{
 				return;
 			}
 
 			var enumCount = EnumHelper.GetEnums<WeaponDataTable.Data.WEAPON_POWER>().Count();
+
+
 			foreach (var weaponower in EnumHelper.GetEnums<WeaponDataTable.Data.WEAPON_POWER>())
 			{
 				var bufferData = _StageDataVisit.FindBufferData(
 					_StageDataVisit.NowUseBlock, 
 					StageDataTable.BufferData.BUFFER_TYPE.SPEC);
+
 				var gate = bufferData.Rate / enumCount;
+				
 				gate = (0x0FFFFFFF / (int)weaponower) * gate;
+
 
 				gate = gate / 1000;
 
@@ -65,15 +72,22 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 					gate /= 2;
 				}
 
-				// TODO
-				var rand = Random.Instance.NextInt(0, 1000) % 0x10000000;
+				var rand = Random.Instance.NextInt(0, 0x10000000);
 				if (rand >= gate)
 				{
 					continue;
 				}
 
 				// 这个值就是，玩家是否可以取到 特殊道具 的值	
-				_PlayerData.Item = (int)weaponower + 2; // 2 3 4 
+				var data = _PlayerData.RecodeData.SpecialWeaponDatas.Find(x => x.SpId == 0);
+
+				//_PlayerData.HaveSpecialWeapon = true;
+				//_PlayerData.SpecialWeaponId = (int)weaponower + 2; // 2 3 4 
+
+				var weaponData = _PlayerData.RecodeData.SpecialWeaponDatas.Find(x => x.IsUsed == false);
+				weaponData.IsUsed = true;
+				_PlayerData.NowSpecialWeaponData = weaponData;
+
 				break;
 			}
 		}

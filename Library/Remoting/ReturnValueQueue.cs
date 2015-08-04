@@ -1,33 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="ReturnValueQueue.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the ReturnValueQueue type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
-namespace Regulus.Remoting.Ghost
+#region Test_Region
+
+using System;
+using System.Collections.Generic;
+
+#endregion
+
+namespace Regulus.Remoting
 {
 	public class ReturnValueQueue
-	{	
-		
+	{
+		private readonly Dictionary<Guid, IValue> _ReturnValues = new Dictionary<Guid, IValue>();
+
 		internal IValue PopReturnValue(Guid returnTarget)
 		{
-			return _PopReturnValue(returnTarget);
+			return this._PopReturnValue(returnTarget);
 		}
 
 		public Guid PushReturnValue(IValue value)
 		{
 			var id = Guid.NewGuid();
-			_ReturnValues.Add(id, value);
+			this._ReturnValues.Add(id, value);
 			return id;
 		}
 
-		Dictionary<Guid, IValue> _ReturnValues = new Dictionary<Guid, IValue>();
 		private IValue _PopReturnValue(Guid returnTarget)
 		{
 			IValue val = null;
-			if (_ReturnValues.TryGetValue(returnTarget, out val))
+			if (this._ReturnValues.TryGetValue(returnTarget, out val))
 			{
-				_ReturnValues.Remove(returnTarget);
+				this._ReturnValues.Remove(returnTarget);
 			}
+
 			return val;
 		}
 	}

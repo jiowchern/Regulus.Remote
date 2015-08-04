@@ -1,6 +1,18 @@
-﻿using System.Reflection;
-using System.Runtime.CompilerServices;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AssemblyInfo.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   AssemblyInfo.cs
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using System.Reflection;
 using System.Runtime.InteropServices;
+
+#endregion
 
 // 一般的組件資訊是由下列這組屬性所控制。
 // 變更這些屬性的值即可修改組件的相關
@@ -23,12 +35,10 @@ using System.Runtime.InteropServices;
 [assembly: Guid("852d20fb-dfb2-44e7-b6ae-adb3f1b9a446")]
 
 // 組件的版本資訊由下列四個值所組成:
-//
 //      主要版本
 //      次要版本 
 //      組建編號
 //      修訂
-//
 // 您可以自行指定所有的值，也可以使用 '*' 將修訂和組建編號指定為
 // 預設值，如下所示:
 // [assembly: AssemblyVersion("1.0.*")]

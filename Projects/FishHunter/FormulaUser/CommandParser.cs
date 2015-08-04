@@ -1,90 +1,102 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Regulus;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="CommandParser.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the CommandParser type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using Regulus.Extension;
+using Regulus.Framework;
+using Regulus.Remoting;
+using Regulus.Remoting.Ghost.Native;
+using Regulus.Utility;
+
+using VGame.Project.FishHunter.Common;
+using VGame.Project.FishHunter.Common.Datas;
+using VGame.Project.FishHunter.Common.GPIs;
+
+#endregion
 
 namespace VGame.Project.FishHunter.Formula
 {
-    using Regulus.Extension;
-    public class CommandParser : Regulus.Framework.ICommandParsable<IUser>
-    {
-    
-        
-        private Regulus.Utility.Command _Command;
-        private Regulus.Utility.Console.IViewer _View;
-        private IUser _User;
+	public class CommandParser : ICommandParsable<IUser>
+	{
+		private readonly Command _Command;
 
-        public CommandParser(Regulus.Utility.Command command, Regulus.Utility.Console.IViewer view, IUser user)
-        {            
-            this._Command = command;
-            this._View = view;
-            this._User = user;            
-        }
-        void Regulus.Framework.ICommandParsable<IUser>.Clear()
-        {
-            _Command.Unregister("Package");
-        }
-        
-        private void _ConnectResult(bool result)
-        {
-            _View.WriteLine(string.Format("Connect result {0}", result));
+		private readonly IUser _User;
 
-        }
+		private readonly Console.IViewer _View;
 
-        void Regulus.Framework.ICommandParsable<IUser>.Setup(Regulus.Remoting.IGPIBinderFactory factory)
-        {            
-            var connect = factory.Create<Regulus.Utility.IConnect>(_User.Remoting.ConnectProvider);
-            connect.Bind("Connect[result , ipaddr ,port]", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().BuildRemoting<string, int, bool>(gpi.Connect, _ConnectResult); });
+		public CommandParser(Command command, Console.IViewer view, IUser user)
+		{
+			this._Command = command;
+			this._View = view;
+			this._User = user;
+		}
 
+		void ICommandParsable<IUser>.Clear()
+		{
+			_Command.Unregister("Package");
+		}
 
-            var online = factory.Create<Regulus.Utility.IOnline>(_User.Remoting.OnlineProvider);            
-            online.Bind("Ping", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().Build(() => { _View.WriteLine( "Ping : " + gpi.Ping.ToString() ); }); });
+		void ICommandParsable<IUser>.Setup(IGPIBinderFactory factory)
+		{
+			var connect = factory.Create(_User.Remoting.ConnectProvider);
+			connect.Bind("Connect[result , ipaddr ,port]", 
+				gpi => { return new CommandParamBuilder().BuildRemoting<string, int, bool>(gpi.Connect, _ConnectResult); });
 
+			var online = factory.Create(_User.Remoting.OnlineProvider);
+			online.Bind("Ping", 
+				gpi => { return new CommandParamBuilder().Build(() => { _View.WriteLine("Ping : " + gpi.Ping); }); });
 
-            var verify = factory.Create<VGame.Project.FishHunter.IVerify>(_User.VerifyProvider);
-            verify.Bind("Login[result,id,password]", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().BuildRemoting<string, string, bool>(gpi.Login, _VerifyResult); });
+			var verify = factory.Create(_User.VerifyProvider);
+			verify.Bind("Login[result,id,password]", 
+				gpi => { return new CommandParamBuilder().BuildRemoting<string, string, bool>(gpi.Login, _VerifyResult); });
 
-            var fishStageQueryer = factory.Create<VGame.Project.FishHunter.IFishStageQueryer>(_User.FishStageQueryerProvider);
-            fishStageQueryer.Bind("Query[result,player_id,fish_stage]", (gpi) => { return new Regulus.Remoting.CommandParamBuilder().BuildRemoting<long,byte, IFishStage>(gpi.Query, _QueryResult); });
+			var fishStageQueryer = factory.Create(_User.FishStageQueryerProvider);
+			fishStageQueryer.Bind("Query[result,player_id,fish_stage]", 
+				gpi => { return new CommandParamBuilder().BuildRemoting<long, byte, IFishStage>(gpi.Query, _QueryResult); });
 
-            
+			_Command.Register("Package", _ShowPackageState);
+		}
 
+		private void _ConnectResult(bool result)
+		{
+			_View.WriteLine(string.Format("Connect result {0}", result));
+		}
 
-            _Command.Register("Package", _ShowPackageState);
-        }
+		private void _ShowPackageState()
+		{
+			_View.WriteLine(string.Format("Request Queue:{0} \tResponse Queue:{1}", Agent.RequestPackages, Agent.ResponsePackages));
+		}
 
-        void _ShowPackageState()
-        {
-            _View.WriteLine(string.Format("Request Queue:{0} \tResponse Queue:{1}" , Regulus.Remoting.Ghost.Native.Agent.RequestPackages ,Regulus.Remoting.Ghost.Native.Agent.ResponsePackages));
-        }
+		private void fishStage_UnsupplyEvent(IFishStage source)
+		{
+			source.OnHitResponseEvent -= source_HitResponseEvent;
+		}
 
-        void fishStage_UnsupplyEvent(IFishStage source)
-        {
-            source.HitResponseEvent -= source_HitResponseEvent;
-        }
+		private void fishStage_SupplyEvent(IFishStage source)
+		{
+			source.OnHitResponseEvent += source_HitResponseEvent;
+		}
 
-        void fishStage_SupplyEvent(IFishStage source)
-        {
-            source.HitResponseEvent += source_HitResponseEvent;
-        }
+		private void source_HitResponseEvent(HitResponse response)
+		{
+			_View.WriteLine("Hit response : " + response.ShowMembers());
+		}
 
-        void source_HitResponseEvent(HitResponse response)
-        {
-            _View.WriteLine("Hit response : " + response.ShowMembers());
-            
-        }
+		private void _QueryResult(IFishStage result)
+		{
+			_View.WriteLine(string.Format("Query fish stage result {0}", result.ShowMembers()));
+		}
 
-        private void _QueryResult(IFishStage result)
-        {
-            _View.WriteLine(string.Format("Query fish stage result {0}", result.ShowMembers()));
-        }
-
-        private void _VerifyResult(bool result)
-        {
-            _View.WriteLine(string.Format("Verify result {0}", result));
-        }
-
-        
-    }
+		private void _VerifyResult(bool result)
+		{
+			_View.WriteLine(string.Format("Verify result {0}", result));
+		}
+	}
 }
