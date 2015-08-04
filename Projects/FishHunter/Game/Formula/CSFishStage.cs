@@ -7,16 +7,13 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-#region Test_Region
-
 using System;
 
 using VGame.Project.FishHunter.Common;
+using VGame.Project.FishHunter.Common.Datas;
 using VGame.Project.FishHunter.Common.GPIs;
 
 using Random = Regulus.Utility.Random;
-
-#endregion
 
 namespace VGame.Project.FishHunter.Formula
 {
@@ -53,13 +50,13 @@ namespace VGame.Project.FishHunter.Formula
 			// this._MakeLog(request, response);
 		}
 
-		event Action<string> IFishStage.HitExceptionEvent
+		event Action<string> IFishStage.OnHitExceptionEvent
 		{
 			add { _OnHitExceptionEvent += value; }
 			remove { _OnHitExceptionEvent -= value; }
 		}
 
-		event Action<HitResponse> IFishStage.HitResponseEvent
+		event Action<HitResponse> IFishStage.OnHitResponseEvent
 		{
 			add { this._OnHitResponseEvent += value; }
 			remove { this._OnHitResponseEvent -= value; }

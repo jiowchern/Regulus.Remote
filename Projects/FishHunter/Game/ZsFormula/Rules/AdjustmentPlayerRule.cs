@@ -7,7 +7,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-
+using System.Linq;
 
 using Regulus.Utility;
 
@@ -26,7 +26,7 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 
 		private static int RandNumber
 		{
-			get { return Random.Instance.NextInt(0, 1000) % 1000; }
+			get { return Random.Instance.NextInt(0, 1000); }
 		}
 
 		public AdjustmentPlayerRule(StageDataVisit stage_data_visit, Player.Data player_data)
@@ -52,7 +52,11 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 				return;
 			}
 
-			for (var i = StageDataTable.BufferData.BUFFER_TYPE.NORMAL; i < StageDataTable.BufferData.BUFFER_TYPE.COUNT; ++i)
+			//從VIR00 - VIR03
+			var enums = EnumHelper.GetEnums<StageDataTable.BufferData.BUFFER_TYPE>().ToArray();
+
+			for (var i = enums[(int)StageDataTable.BufferData.BUFFER_TYPE.BUFFER_VIR_BEGIN];
+			     i < enums[(int)StageDataTable.BufferData.BUFFER_TYPE.BUFFER_VIR_END]; ++i)
 			{
 				var bufferData = _StageDataVisit.FindBufferData(_StageDataVisit.NowUseBlock, i);
 
@@ -68,7 +72,7 @@ namespace VGame.Project.FishHunter.ZsFormula.Rules
 					bufferData.Buffer -= top;
 					_PlayerData.Status = (int)(bufferData.Top * 5);
 					_PlayerData.BufferValue = (int)top;
-					_PlayerData.Recode.AsnTimes += 1;
+					_PlayerData.RecodeData.AsnTimes += 1;
 				}
 				else
 				{

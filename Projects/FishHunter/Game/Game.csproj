@@ -61,7 +61,7 @@
     <Compile Include="ZsFormula\Rules\SpecialWeaponRule.cs" />
     <Compile Include="ZsFormula\Rules\WeaponPowerRule.cs" />
     <Compile Include="ZsFormula\Rules\StageBufferBlockRuler.cs" />
-    <Compile Include="ZsFormula\DataStructs\StageRecodeData.cs" />
+    <Compile Include="ZsFormula\DataStructs\RecodeData.cs" />
     <Compile Include="ZsFormula\DataStructs\StageBufferData.cs" />
     <Compile Include="ZsFormula\DataStructs\FishDataTable.cs" />
     <Compile Include="ZsFormula\DataStructs\FishHitAllocateTable.cs" />
@@ -73,7 +73,6 @@
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
     <Compile Include="Formula\StorageController.cs" />
-    <Compile Include="ZsFormula\DataStructs\GameData.cs" />
     <Compile Include="ZsFormula\DataStructs\MultipleTable.cs" />
     <Compile Include="ZsFormula\DataStructs\NatureBufferChancesTable.cs" />
     <Compile Include="ZsFormula\DataStructs\PlayerData.cs" />

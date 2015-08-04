@@ -151,7 +151,7 @@ namespace VGame.Project.FishHunter.ZsFormula.DataStructs
 
 			public List<BufferData> BufferDatas { get; set; }
 
-			public Recode Recode { get; set; }
+			public RecodeData RecodeData { get; set; }
 
 			public Data()
 			{
