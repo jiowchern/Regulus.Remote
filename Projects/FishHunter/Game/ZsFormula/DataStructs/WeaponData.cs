@@ -7,14 +7,12 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-#region Test_Region
+
 
 using System.Collections.Generic;
 using System.Linq;
 
 using Regulus.Utility;
-
-#endregion
 
 namespace VGame.Project.FishHunter.ZsFormula.DataStructs
 {
@@ -25,23 +23,6 @@ namespace VGame.Project.FishHunter.ZsFormula.DataStructs
 	吃小鱼绿安康（100~200）、吃小鱼红安康（60~600）、变倍银鲸（100~300/50）、变倍七彩鲸（300~600/50）
 	 * ULONG const ulChanceSpecOdds[3] = { 250 , 150 , 120 } ; // 炸弹、电网、免费炮
 */
-	public class WeaponOddsRuler
-	{
-		public int CheckOddsRule(WeaponDataTable.Data data)
-		{
-			if ((int)data.WeaponType != 1)
-			{
-				var randNumber = Random.Instance.NextInt(0, 1000);
-				if (randNumber < 750)
-				{
-					return 1;
-				}
-			}
-
-			return 0;
-		}
-	}
-
 	public class WeaponDataTable
 	{
 		public List<Data> WeaponDatas;
@@ -50,10 +31,15 @@ namespace VGame.Project.FishHunter.ZsFormula.DataStructs
 		{
 			WeaponDatas = new List<Data>
 			{
-				new Data(Data.WEAPON_TYPE.BOMB_2, Data.WEAPON_POWER.BOMB_2, 100, 100, 3), 
-				new Data(Data.WEAPON_TYPE.ELECTRIC_GRID_3, Data.WEAPON_POWER.ELECTRIC_GRID_3, 100, 100, 4), 
-				new Data(Data.WEAPON_TYPE.TYPE_102, Data.WEAPON_POWER.FREE_1, 100, 100, 5), 
-				new Data(Data.WEAPON_TYPE.FREE_NORMAL_1, Data.WEAPON_POWER.FREE_1, 100, 100, 5)
+				new Data(type: Data.WEAPON_TYPE.NORMAL_1, power: Data.WEAPON_POWER.BOMB_2, odds: 100, bet: 100), 
+
+				new Data(type: Data.WEAPON_TYPE.BOMB_2, power: Data.WEAPON_POWER.BOMB_2, odds: 100, bet: 100), 
+
+				new Data(Data.WEAPON_TYPE.ELECTRIC_GRID_3, Data.WEAPON_POWER.ELECTRIC_GRID_3, 100, 100), 
+				
+				new Data(Data.WEAPON_TYPE.TYPE_101, Data.WEAPON_POWER.FREE_1, 100, 100), 
+				
+				new Data(Data.WEAPON_TYPE.TYPE_102, Data.WEAPON_POWER.FREE_1, 100, 100)
 			};
 		}
 
@@ -61,7 +47,7 @@ namespace VGame.Project.FishHunter.ZsFormula.DataStructs
 		{
 			public enum WEAPON_POWER
 			{
-				FREE_1 = 120, // 免费炮
+				FREE_1 = 120, // 免费炮 //倍率 打了一隻小於120倍的魚，理論上一定死
 
 				BOMB_2 = 250, // 炸弹
 
@@ -70,15 +56,16 @@ namespace VGame.Project.FishHunter.ZsFormula.DataStructs
 
 			public enum WEAPON_TYPE
 			{
-				FREE_NORMAL_1 = 1, 
+				NORMAL_1 = 1, // 正常子彈
 
 				BOMB_2 = 2, 
 
-				ELECTRIC_GRID_3 = 3, 
+				ELECTRIC_GRID_3 = 3,
 
-				FREE_NORMAL_4 = 4, 
+				FREE_4 = 4, // 免費炮
 
-				BOMB_101 = 101, // 海綿寶寶
+				// 特殊魚的編號跟特武編號一樣
+				TYPE_101 = 101, // 海綿寶寶
 
 				TYPE_102 = 102, // 電鰻
 
@@ -101,15 +88,13 @@ namespace VGame.Project.FishHunter.ZsFormula.DataStructs
 
 			public int WeaponBet { get; set; }
 
-			public int SpecialID { get; set; }
 
-			public Data(WEAPON_TYPE type, WEAPON_POWER power, int odds, int bet, int special_id)
+			public Data(WEAPON_TYPE type, WEAPON_POWER power, int odds, int bet)
 			{
 				WeaponType = type;
 				Power = power;
 				WeaponOdds = odds;
 				WeaponBet = bet;
-				SpecialID = special_id;
 			}
 		}
 

@@ -1,21 +1,16 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="FishStage.cs" company="Regulus Framework">
-//   Regulus Framework
-// </copyright>
-// <summary>
-//   Defines the FishStage type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
+﻿#region Test_Region
 
 using System;
+
 
 using Regulus.Extension;
 using Regulus.Utility;
 
+
 using VGame.Project.FishHunter.Common;
+using VGame.Project.FishHunter.Common.Datas;
 using VGame.Project.FishHunter.Common.GPIs;
+
 
 using Random = Regulus.Utility.Random;
 
@@ -23,6 +18,53 @@ using Random = Regulus.Utility.Random;
 
 namespace VGame.Project.FishHunter.Formula
 {
+	internal class ZsFishStage : IFishStage
+	{
+		public ZsFishStage(byte fish_stage, long account_id)
+		{
+
+			_FishStage = fish_stage;
+			_AccountId = account_id;
+
+			//read file get stage data
+
+
+		}
+
+		private event Action<HitResponse> _OnHitResponseEvent;
+
+		private readonly long _AccountId;
+
+		private readonly byte _FishStage;
+
+		event Action<string> IFishStage.OnHitExceptionEvent
+		{
+			add { throw new NotImplementedException(); }
+			remove { throw new NotImplementedException(); }
+		}
+
+		event Action<HitResponse> IFishStage.OnHitResponseEvent
+		{
+			add { throw new NotImplementedException(); }
+			remove { throw new NotImplementedException(); }
+		}
+
+		long IFishStage.AccountId
+		{
+			get { throw new NotImplementedException(); }
+		}
+
+		byte IFishStage.FishStage
+		{
+			get { throw new NotImplementedException(); }
+		}
+
+		void IFishStage.Hit(HitRequest request)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
 	internal class FishStage : IFishStage
 	{
 		private event Action<string> _OnHitExceptionEvent;
@@ -37,18 +79,18 @@ namespace VGame.Project.FishHunter.Formula
 
 		public FishStage(long account, int stage_id)
 		{
-			this._Formula = new HitTest(Random.Instance);
-			this._AccountId = account;
-			this._FishStage = (byte)stage_id;
+			_Formula = new HitTest(Random.Instance);
+			_AccountId = account;
+			_FishStage = (byte)stage_id;
 		}
 
-		event Action<string> IFishStage.HitExceptionEvent
+		event Action<string> IFishStage.OnHitExceptionEvent
 		{
 			add { this._OnHitExceptionEvent += value; }
 			remove { this._OnHitExceptionEvent -= value; }
 		}
 
-		event Action<HitResponse> IFishStage.HitResponseEvent
+		event Action<HitResponse> IFishStage.OnHitResponseEvent
 		{
 			add { this._OnHitResponseEvent += value; }
 			remove { this._OnHitResponseEvent -= value; }
@@ -66,11 +108,11 @@ namespace VGame.Project.FishHunter.Formula
 
 		void IFishStage.Hit(HitRequest request)
 		{
-			var response = this._Formula.Request(request);
+			var response = _Formula.Request(request);
 
-			this._OnHitResponseEvent.Invoke(response);
+			_OnHitResponseEvent.Invoke(response);
 
-			this._MakeLog(request, response);
+			_MakeLog(request, response);
 		}
 
 		private void _MakeLog(HitRequest request, HitResponse response)
@@ -79,8 +121,8 @@ namespace VGame.Project.FishHunter.Formula
 
 			var log = string.Format(
 				format, 
-				this._AccountId, 
-				this._FishStage, 
+				_AccountId, 
+				_FishStage, 
 				request.ShowMembers(" "), 
 				response.ShowMembers(" "));
 

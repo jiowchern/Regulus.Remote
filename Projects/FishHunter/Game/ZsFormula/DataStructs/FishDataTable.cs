@@ -56,11 +56,11 @@ namespace VGame.Project.FishHunter.ZsFormula.DataStructs
 
 				DEF_100 = 100, 
 
-				DEF_100_A, 
+				DEF_100_A = 101, 
 
-				DEF_200_A, 
+				DEF_200_A = 102, 
 
-				DEF_400_A
+				DEF_400_A = 103
 			}
 
 			public int Odds { get; set; }
@@ -71,10 +71,6 @@ namespace VGame.Project.FishHunter.ZsFormula.DataStructs
 			{
 				FishType = fish_type;
 				Odds = odds;
-			}
-
-			public Data()
-			{
 			}
 		}
 	}
