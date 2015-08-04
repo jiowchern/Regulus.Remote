@@ -43,9 +43,5 @@ using System.Runtime.InteropServices;
 // 指定為預設值:
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("0.1.0.0")]
-<<<<<<< HEAD
-[assembly: AssemblyFileVersion("0.0.217.1")]
-=======
-[assembly: AssemblyFileVersion("0.0.214.1")]
->>>>>>> c23bceac3375bb2fe280e93a479e00a8b0c811a9
+[assembly: AssemblyFileVersion("0.0.223.1")]
 [assembly: AssemblyInformationalVersion("0.0.0.0")]
