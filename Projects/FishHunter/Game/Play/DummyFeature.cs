@@ -40,7 +40,7 @@ namespace VGame.Project.FishHunter
             return _Accounts.ToArray();
         }
 
-        Regulus.Remoting.Value<ACCOUNT_REQUEST_RESULT> IAccountManager.Create(Data.Account account)
+        Regulus.Remoting.Value<ACCOUNT_REQUEST_RESULT> IAccountCreator.Create(Data.Account account)
         {
             _Accounts.Add(account);
             return ACCOUNT_REQUEST_RESULT.OK;
