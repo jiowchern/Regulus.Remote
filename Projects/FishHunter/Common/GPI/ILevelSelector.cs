@@ -1,24 +1,24 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ACCOUNT_REQUEST_RESULT.cs" company="">
+// <copyright file="ILevelSelector.cs" company="">
 //   
 // </copyright>
 // <summary>
-//   Defines the ACCOUNT_REQUEST_RESULT type.
+//   Defines the ILevelSelector type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace VGame.Project.FishHunter.Common.Datas
+#region Test_Region
+
+using Regulus.Remoting;
+
+#endregion
+
+namespace VGame.Project.FishHunter.Common.GPI
 {
-	
-	/// <summary>
-	/// 
-	/// </summary>
-	public enum ACCOUNT_REQUEST_RESULT
+	public interface ILevelSelector
 	{
-		REPEAT, 
+		Value<int[]> QueryStages();
 
-		OK, 
-
-		NOTFOUND
+		Value<bool> Select(int level);
 	}
 }

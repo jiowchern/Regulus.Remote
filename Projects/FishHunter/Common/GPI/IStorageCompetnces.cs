@@ -1,9 +1,9 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Stage.cs" company="">
+// <copyright file="IStorageCompetnces.cs" company="">
 //   
 // </copyright>
 // <summary>
-//   Defines the Stage type.
+//   Defines the IStorageCompetences type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -11,19 +11,20 @@
 
 using System;
 
+
+using Regulus.Remoting;
+
+
+using VGame.Project.FishHunter.Common.Data;
+
 #endregion
 
-namespace VGame.Project.FishHunter.Common.Datas
+namespace VGame.Project.FishHunter.Common.GPI
 {
-	public class Stage : IEquatable<Stage>
+	public interface IStorageCompetences
 	{
-		public int Id { get; set; }
+		Value<Account.COMPETENCE[]> Query();
 
-		public bool Pass { get; set; }
-
-		bool IEquatable<Stage>.Equals(Stage other)
-		{
-			return other.Id == this.Id;
-		}
+		Value<Guid> QueryForId();
 	}
 }

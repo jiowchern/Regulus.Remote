@@ -12,7 +12,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using VGame.Project.FishHunter.Common.Datas;
+
+using VGame.Project.FishHunter.Common.Data;
 
 #endregion
 

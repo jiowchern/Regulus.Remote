@@ -6,10 +6,9 @@
 //   驗證介面
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
 using Regulus.Remoting;
 
-namespace VGame.Project.FishHunter.Common.GPIs
+namespace VGame.Project.FishHunter.Common.GPI
 {
 	/// <summary>
 	///     驗證介面

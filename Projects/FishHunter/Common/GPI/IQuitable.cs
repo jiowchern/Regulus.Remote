@@ -1,15 +1,16 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IStorage.cs" company="">
+// <copyright file="IQuitable.cs" company="">
 //   
 // </copyright>
 // <summary>
-//   Defines the IStorage type.
+//   Defines the IQuitable type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace VGame.Project.FishHunter.Common.GPIs
+namespace VGame.Project.FishHunter.Common.GPI
 {
-	public interface IStorage : IAccountFinder, IAccountManager, IRecordQueriers, ITradeNotes
+	public interface IQuitable
 	{
+		void Quit();
 	}
 }

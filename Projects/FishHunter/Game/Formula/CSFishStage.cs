@@ -10,8 +10,9 @@
 using System;
 
 using VGame.Project.FishHunter.Common;
-using VGame.Project.FishHunter.Common.Datas;
-using VGame.Project.FishHunter.Common.GPIs;
+using VGame.Project.FishHunter.Common.Data;
+using VGame.Project.FishHunter.Common.GPI;
+
 
 using Random = Regulus.Utility.Random;
 
