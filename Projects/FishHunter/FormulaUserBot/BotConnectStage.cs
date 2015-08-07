@@ -84,7 +84,7 @@ namespace FormulaUserBot
 
 		private void _Query(IFishStageQueryer obj)
 		{
-			_QueryResult(obj.Query(_Id, 1));
+			_QueryResult(obj.Query((byte)_Id, 1));
 		}
 
 		private void _QueryResult(Value<IFishStage> value)

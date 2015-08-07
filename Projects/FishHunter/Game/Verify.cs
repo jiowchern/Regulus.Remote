@@ -1,15 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Verify.cs" company="Regulus Framework">
-//   Regulus Framework
-// </copyright>
-// <summary>
-//   Defines the Verify type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
+﻿#region Test_Region
 
 using Regulus.Remoting;
+
 
 using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.Data;
@@ -21,6 +13,9 @@ namespace VGame.Project.FishHunter
 {
 	public class Verify : IVerify
 	{
+
+		public delegate void DoneCallback(Account account);
+
 		public event DoneCallback OnDoneEvent;
 
 		private readonly IAccountFinder _Storage;
@@ -53,7 +48,5 @@ namespace VGame.Project.FishHunter
 			};
 			return returnValue;
 		}
-
-		public delegate void DoneCallback(Account account);
 	}
 }

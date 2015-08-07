@@ -73,8 +73,8 @@ namespace GameTest.ZsFormulaTest
 #line 8
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
-                        "Multiple",
-                        "Value"});
+                        "Odds",
+                        "Number"});
             table1.AddRow(new string[] {
                         "1",
                         "1"});

@@ -18,7 +18,7 @@ namespace Regulus.Game
 {
 	public class ChancesTable<T>
 	{
-		protected readonly Data[] _Datas;
+		protected Data[] _Datas;
 
 		protected ChancesTable(Data[] datas)
 		{
@@ -30,8 +30,24 @@ namespace Regulus.Game
 			this._Datas = datas;
 		}
 
+		protected ChancesTable()
+		{
+			
+		}
+
+
 		public class Data
 		{
+			public Data()
+			{
+			}
+
+			public Data(T key, float value)
+			{
+				Key = key;
+				Value = value;
+			}
+
 			public T Key { get; set; }
 
 			public float Value { get; set; }

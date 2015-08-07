@@ -6,16 +6,13 @@
 //   Defines the BotPlayStage type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
+using System.Collections.Generic;
 
-#region Test_Region
 
 using Regulus.Utility;
 
-using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
-
-#endregion
 
 namespace FormulaUserBot
 {
@@ -52,7 +49,8 @@ namespace FormulaUserBot
 			if (_HitTime.Second > HitHandler.Interval)
 			{
 				// var totalHits = (byte)Regulus.Utility.Random.Next(1, 1000);
-				var totalHits = (byte)1;
+				var totalHits = 1;
+
 				for (var i = 0; i < totalHits; ++i)
 				{
 					_HitRequest(totalHits);
@@ -64,24 +62,39 @@ namespace FormulaUserBot
 
 		public delegate void DoneCallback();
 
-		private void _HitRequest(byte total_hits)
+		private void _HitRequest(int total_hits)
 		{
-			var request = new HitRequest();
 
-			request.FishID = (short)Random.Instance.NextInt(0, 32767);
-			request.FishOdds = (short)Random.Instance.NextInt(1, 1000);
+			var fishDatas = new List<RequsetFishData>
+			{
+				new RequsetFishData
+				{
+					FishID = Random.Instance.NextInt(0, 32767),
+					FishOdds = Random.Instance.NextInt(1, 1000),
+					FishStatus = Random.Instance.NextEnum<FISH_STATUS>(),
+					FishType = Random.Instance.NextEnum<FISH_TYPE>()
+				}
+			};
 
-			request.FishStatus = Random.Instance.NextEnum<FISH_STATUS>();
-			request.FishType = (byte)Random.Instance.NextInt(1, 99);
-			request.TotalHits = total_hits;
-			request.HitCnt = (short)Random.Instance.NextInt(1, request.TotalHits);
-			request.TotalHitOdds = (short)Random.Instance.NextInt(0, 32767);
-			request.WepBet = (short)Random.Instance.NextInt(1, 10000);
-			request.WepID = (short)Random.Instance.NextInt(0, 32767);
-			request.WepOdds = (short)Random.Instance.NextInt(1, 10000);
-			request.WepType = 1;
 
-			var hitHandler = new HitHandler(_Stage, request);
+			var weapon = new RequestWeaponData
+			{
+				WepID = Random.Instance.NextInt(0, 32767),
+
+				WeaponType = Random.Instance.NextEnum<WEAPON_TYPE>(),
+
+				WepBet = Random.Instance.NextInt(1, 10000),
+
+				WepOdds = Random.Instance.NextInt(1, 10000),
+
+				TotalHits = total_hits,
+
+				TotalHitOdds = Random.Instance.NextInt(0, 32767)
+			};
+			
+			var hitRequest = new HitRequest(fishDatas.ToArray(), weapon);
+
+			var hitHandler = new HitHandler(_Stage, hitRequest);
 			_HitHandlers.Add(hitHandler);
 		}
 	}

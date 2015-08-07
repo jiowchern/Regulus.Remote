@@ -1,12 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Complex.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Complex type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
+﻿
 using System;
 using System.IO;
 using System.Net;
@@ -48,94 +40,94 @@ namespace VGame.Project.FishHunter
 
 		private ICore _Core
 		{
-			get { return this._Center; }
+			get { return _Center; }
 		}
 
 		public Complex()
 		{
-			this._LogRecorder = new LogFileRecorder("Play");
+			_LogRecorder = new LogFileRecorder("Play");
 
-			this._StorageVerifyData = new Regulus.CustomType.Verify();
-			this._FormulaVerifyData = new Regulus.CustomType.Verify();
-			this._Machine = new StageMachine();
-			this._Updater = new Updater();
+			_StorageVerifyData = new Regulus.CustomType.Verify();
+			_FormulaVerifyData = new Regulus.CustomType.Verify();
+			_Machine = new StageMachine();
+			_Updater = new Updater();
 
-			this._BuildParams();
-			this._BuildUser();
+			_BuildParams();
+			_BuildUser();
 		}
 
 		void ICore.AssignBinder(ISoulBinder binder)
 		{
-			this._Core.AssignBinder(binder);
+			_Core.AssignBinder(binder);
 		}
 
 		bool IUpdatable.Update()
 		{
-			this._Updater.Working();
-			this._Machine.Update();
+			_Updater.Working();
+			_Machine.Update();
 			return true;
 		}
 
 		void IBootable.Shutdown()
 		{
-			this._Updater.Shutdown();
-			Singleton<Log>.Instance.RecordEvent -= this._LogRecorder.Record;
-			AppDomain.CurrentDomain.UnhandledException -= this.CurrentDomain_UnhandledException;
+			_Updater.Shutdown();
+			Singleton<Log>.Instance.RecordEvent -= _LogRecorder.Record;
+			AppDomain.CurrentDomain.UnhandledException -= CurrentDomain_UnhandledException;
 		}
 
 		void IBootable.Launch()
 		{
-			AppDomain.CurrentDomain.UnhandledException += this.CurrentDomain_UnhandledException;
-			Singleton<Log>.Instance.RecordEvent += this._LogRecorder.Record;
-			this._Updater.Add(this._Storage);
-			this._Updater.Add(this._Formula);
-			this._ToConnectStorage(this._StorageUser);
+			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+			Singleton<Log>.Instance.RecordEvent += _LogRecorder.Record;
+			_Updater.Add(_Storage);
+			_Updater.Add(_Formula);
+			_ToConnectStorage(_StorageUser);
 		}
 
 		private void _BuildParams()
 		{
-			var config = new Ini(this._ReadConfig());
+			var config = new Ini(_ReadConfig());
 
-			this._StorageVerifyData.IPAddress = config.Read("Storage", "ipaddr");
-			this._StorageVerifyData.Port = int.Parse(config.Read("Storage", "port"));
-			this._StorageVerifyData.Account = config.Read("Storage", "account");
-			this._StorageVerifyData.Password = config.Read("Storage", "password");
+			_StorageVerifyData.IPAddress = config.Read("Storage", "ipaddr");
+			_StorageVerifyData.Port = int.Parse(config.Read("Storage", "port"));
+			_StorageVerifyData.Account = config.Read("Storage", "account");
+			_StorageVerifyData.Password = config.Read("Storage", "password");
 
-			this._FormulaVerifyData.IPAddress = config.Read("Formula", "ipaddr");
-			this._FormulaVerifyData.Port = int.Parse(config.Read("Formula", "port"));
-			this._FormulaVerifyData.Account = config.Read("Formula", "account");
-			this._FormulaVerifyData.Password = config.Read("Formula", "password");
+			_FormulaVerifyData.IPAddress = config.Read("Formula", "ipaddr");
+			_FormulaVerifyData.Port = int.Parse(config.Read("Formula", "port"));
+			_FormulaVerifyData.Account = config.Read("Formula", "account");
+			_FormulaVerifyData.Password = config.Read("Formula", "password");
 		}
 
 		private void _BuildUser()
 		{
-			if (this._IsIpAddress(this._FormulaVerifyData.IPAddress))
+			if (_IsIpAddress(_FormulaVerifyData.IPAddress))
 			{
-				this._Formula = new Client();
-				this._Formula.Selector.AddFactoty("remoting", new RemotingUserFactory());
-				this._FormulaUser = this._Formula.Selector.CreateUserProvider("remoting").Spawn("1");
+				_Formula = new Client();
+				_Formula.Selector.AddFactoty("remoting", new RemotingUserFactory());
+				_FormulaUser = _Formula.Selector.CreateUserProvider("remoting").Spawn("1");
 			}
 			else
 			{
-				var center = new Formula.Center(new StorageController(new DummyFrature()));
-				this._Updater.Add(center);
-				this._Formula = new Client();
-				this._Formula.Selector.AddFactoty("remoting", new StandalongUserFactory(center));
-				this._FormulaUser = this._Formula.Selector.CreateUserProvider("remoting").Spawn("1");
+				var center = new Formula.Center(new ExpansionFeature(new DummyFrature(), new DummyFrature()));
+				_Updater.Add(center);
+				_Formula = new Client();
+				_Formula.Selector.AddFactoty("remoting", new StandalongUserFactory(center));
+				_FormulaUser = _Formula.Selector.CreateUserProvider("remoting").Spawn("1");
 			}
 
-			if (this._IsIpAddress(this._StorageVerifyData.IPAddress))
+			if (_IsIpAddress(_StorageVerifyData.IPAddress))
 			{
-				this._Storage = new Proxy(new RemotingFactory());
-				this._StorageUser = this._Storage.SpawnUser("user");
+				_Storage = new Proxy(new RemotingFactory());
+				_StorageUser = _Storage.SpawnUser("user");
 			}
 			else
 			{
 				var center = new Storage.Center(new DummyFrature());
-				this._Updater.Add(center);
+				_Updater.Add(center);
 				var factory = new StandalongFactory(center);
-				this._Storage = new Proxy(factory);
-				this._StorageUser = this._Storage.SpawnUser("user");
+				_Storage = new Proxy(factory);
+				_StorageUser = _Storage.SpawnUser("user");
 			}
 		}
 
@@ -148,22 +140,22 @@ namespace VGame.Project.FishHunter
 		private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
 		{
 			var ex = (Exception)e.ExceptionObject;
-			this._LogRecorder.Record(ex.ToString());
-			this._LogRecorder.Save();
+			_LogRecorder.Record(ex.ToString());
+			_LogRecorder.Save();
 		}
 
 		private void _ToConnectStorage(Storage.IUser user)
 		{
-			var stage = new ConnectStorageStage(user, this._StorageVerifyData.IPAddress, this._StorageVerifyData.Port);
-			stage.DoneEvent += this._ConnectResult;
-			this._Machine.Push(stage);
+			var stage = new ConnectStorageStage(user, _StorageVerifyData.IPAddress, _StorageVerifyData.Port);
+			stage.DoneEvent += _ConnectResult;
+			_Machine.Push(stage);
 		}
 
 		private void _ConnectResult(bool result)
 		{
 			if (result)
 			{
-				this._ToVerifyStorage(this._StorageUser);
+				_ToVerifyStorage(_StorageUser);
 			}
 			else
 			{
@@ -173,16 +165,16 @@ namespace VGame.Project.FishHunter
 
 		private void _ToVerifyStorage(Storage.IUser user)
 		{
-			var stage = new VerifyStorageStage(user, this._StorageVerifyData.Account, this._StorageVerifyData.Password);
-			stage.DoneEvent += this._VerifyResult;
-			this._Machine.Push(stage);
+			var stage = new VerifyStorageStage(user, _StorageVerifyData.Account, _StorageVerifyData.Password);
+			stage.DoneEvent += _VerifyResult;
+			_Machine.Push(stage);
 		}
 
 		private void _VerifyResult(bool verify_result)
 		{
 			if (verify_result)
 			{
-				this._ToConnectFormula();
+				_ToConnectFormula();
 			}
 			else
 			{
@@ -192,39 +184,46 @@ namespace VGame.Project.FishHunter
 
 		private void _ToConnectFormula()
 		{
-			var stage = new ConnectStage(this._FormulaUser.Remoting.ConnectProvider, this._FormulaVerifyData.IPAddress, 
-				this._FormulaVerifyData.Port);
+			var stage = new ConnectStage(
+				_FormulaUser.Remoting.ConnectProvider, 
+				_FormulaVerifyData.IPAddress, 
+				_FormulaVerifyData.Port);
 
-			stage.SuccessEvent += this._ToFormulaVerify;
-			stage.FailEvent += this._FormulaConnectFail;
-			this._Machine.Push(stage);
+			stage.SuccessEvent += _ToFormulaVerify;
+			stage.FailEvent += _FormulaConnectFail;
+			_Machine.Push(stage);
 		}
 
 		private void _ToFormulaVerify()
 		{
-			var stage = new VerifyStage(this._FormulaUser.VerifyProvider, this._FormulaVerifyData.Account, 
-				this._FormulaVerifyData.Password);
+			var stage = new VerifyStage(
+				_FormulaUser.VerifyProvider, 
+				_FormulaVerifyData.Account, 
+				_FormulaVerifyData.Password);
 
-			stage.SuccessEvent += this._ToBuildClient;
-			stage.FailEvent += this._FormulaVerifyFail;
-			this._Machine.Push(stage);
+			stage.SuccessEvent += _ToBuildClient;
+			stage.FailEvent += _FormulaVerifyFail;
+			_Machine.Push(stage);
 		}
 
 		private void _ToBuildClient()
 		{
-			var stage = new BuildCenterStage(this._FormulaUser, this._StorageUser);
+			var stage = new BuildCenterStage(_FormulaUser, _StorageUser);
 
-			stage.BuiledEvent += this._Play;
+			stage.OnBuiledEvent += _Play;
 
-			this._Machine.Push(stage);
+			_Machine.Push(stage);
 		}
 
 		private void _Play(BuildCenterStage.ExternalFeature features)
 		{
-			this._Center = new Center(features.AccountFinder, features.FishStageQueryer, features.RecordQueriers, 
+			_Center = new Center(
+				features.AccountFinder, 
+				features.FishStageQueryer, 
+				features.RecordHandler,
 				features.TradeAccount);
 
-			this._Updater.Add(this._Center);
+			_Updater.Add(_Center);
 		}
 
 		private void _FormulaVerifyFail()

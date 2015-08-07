@@ -1,15 +1,6 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AdjustmentGameLevelRule.cs" company="Regulus Framework">
-//   Regulus Framework
-// </copyright>
-// <summary>
-//   Defines the AdjustmentGameLevelRule type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿#region Test_Region
 
-#region Test_Region
-
-using VGame.Project.FishHunter.Common.Datas.FishStage;
+using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.ZsFormula.Data;
 
 #endregion
@@ -18,11 +9,11 @@ namespace VGame.Project.FishHunter.ZsFormula.Rule
 {
 	public class AdjustmentGameLevelRule
 	{
-		private readonly StageDataVisit _StageDataVisit;
+		private readonly FishStageVisitor _StageVisitor;
 
-		public AdjustmentGameLevelRule(StageDataVisit stage_data_visit1)
+		public AdjustmentGameLevelRule(FishStageVisitor stage_visitor)
 		{
-			_StageDataVisit = stage_data_visit1;
+			_StageVisitor = stage_visitor;
 		}
 
 		/// <summary>
@@ -30,12 +21,10 @@ namespace VGame.Project.FishHunter.ZsFormula.Rule
 		/// </summary>
 		public void Run()
 		{
-			var bufferData = _StageDataVisit.FindBuffer(
-				_StageDataVisit.NowUseBlock, 
-				StageBuffer.BUFFER_TYPE.NORMAL);
+			var bufferData = _StageVisitor.NowData.FindBuffer(_StageVisitor.NowBlock, StageBuffer.BUFFER_TYPE.NORMAL);
 			var bufferTemp = bufferData.BufferTempValue;
-			bufferTemp.PlayerTime += 1;
-			if (bufferTemp.RealTime != 0 && bufferTemp.PlayerTime <= 500)
+			bufferTemp.FireCount += 1;
+			if (bufferTemp.RealTime != 0 && bufferTemp.FireCount <= 500)
 			{
 				return;
 			}
@@ -44,9 +33,9 @@ namespace VGame.Project.FishHunter.ZsFormula.Rule
 			bufferTemp.RealTime = 60; // sec
 
 			// 或是已经发射500发子弹了，就微调一次
-			bufferTemp.PlayerTime -= 500;
+			bufferTemp.FireCount -= 500;
 
-			var baseValue = _StageDataVisit.NowUseData.NowBaseOdds * bufferTemp.AverageValue;
+			var baseValue = _StageVisitor.NowData.NowBaseOdds * bufferTemp.AverageValue;
 
 			// TODO:
 			bufferTemp.HiLoRate = new NatureDataRule().Run(bufferData.Buffer, baseValue);

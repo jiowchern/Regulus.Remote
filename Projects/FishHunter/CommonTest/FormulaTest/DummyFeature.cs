@@ -14,7 +14,6 @@ using System.Collections.Generic;
 
 using Regulus.Remoting;
 
-using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
 using VGame.Project.FishHunter.Formula;
@@ -27,11 +26,11 @@ namespace GameTest.FormulaTest
 	{
 		private readonly List<Account> _Accounts;
 
-		private readonly List<Record> _Records;
+		private readonly List<PlayerRecord> _Records;
 
 		public DummyFrature()
 		{
-			this._Records = new List<Record>();
+			this._Records = new List<PlayerRecord>();
 
 			this._Accounts = new List<Account>
 			{
@@ -69,7 +68,7 @@ namespace GameTest.FormulaTest
 			return this._Accounts.Find(a => a.Id == accountId);
 		}
 
-		Value<IFishStage> IFishStageQueryer.Query(long player_id, byte fish_stage)
+		Value<IFishStage> IFishStageQueryer.Query(long player_id, int fish_stage)
 		{
 			switch (fish_stage)
 			{
@@ -110,7 +109,7 @@ namespace GameTest.FormulaTest
 			return ACCOUNT_REQUEST_RESULT.OK;
 		}
 
-		Value<Record> IRecordQueriers.Load(Guid id)
+		Value<PlayerRecord> IRecordHandler.Load(Guid id)
 		{
 			var account = this._Accounts.Find(a => a.Id == id);
 			if (!account.IsPlayer())
@@ -122,7 +121,7 @@ namespace GameTest.FormulaTest
 			
 			if (record == null)
 			{
-				record = new Record
+				record = new PlayerRecord
 				{
 					Money = 1000, 
 					Owner = id
@@ -132,9 +131,9 @@ namespace GameTest.FormulaTest
 			return record;
 		}
 
-		void IRecordQueriers.Save(Record record)
+		void IRecordHandler.Save(PlayerRecord player_record)
 		{
-			var account = this._Accounts.Find(a => a.Id == record.Owner);
+			var account = this._Accounts.Find(a => a.Id == player_record.Owner);
 			if (!account.IsPlayer())
 			{
 				return;
@@ -142,7 +141,7 @@ namespace GameTest.FormulaTest
 
 			var old = this._Records.Find(r => r.Owner == account.Id);
 			this._Records.Remove(old);
-			this._Records.Add(record);
+			this._Records.Add(player_record);
 		}
 
 		Value<TradeNotes> ITradeNotes.Find(Guid id)
@@ -163,6 +162,21 @@ namespace GameTest.FormulaTest
 		Value<int> ITradeNotes.GetTotalMoney(Guid id)
 		{
 			return 0;
+		}
+
+		Value<StageData> IFishStageDataHandler.Load(int stage_id)
+		{
+			throw new NotImplementedException();
+		}
+
+		Value<bool> IFishStageDataHandler.Save(StageData data)
+		{
+			throw new NotImplementedException();
+		}
+
+		Value<StageData> IFishStageDataHandler.Find(int stage_id)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

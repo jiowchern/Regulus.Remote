@@ -13,7 +13,8 @@ using System.Linq;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
-using VGame.Project.FishHunter.Common.Datas.FishStage;
+
+using VGame.Project.FishHunter.Common.Data;
 
 namespace GameTest.ZsFormulaTest
 {
@@ -36,7 +37,7 @@ namespace GameTest.ZsFormulaTest
 		}
 
 		[When(@"當輸入魚場id是 (.*)")]
-		public void When當輸入魚場Id是(int input_Id)
+		public void When當輸入魚場Id是(byte input_Id)
 		{
 			ScenarioContext.Current.Set(input_Id, "key");
 		}
@@ -44,7 +45,7 @@ namespace GameTest.ZsFormulaTest
 		[Then(@"取得的魚場資料是")]
 		public void Then取得的魚場資料是(Table table)
 		{
-			var key = ScenarioContext.Current.Get<int>("key");
+			var key = ScenarioContext.Current.Get<byte>("key");
 
 			var sourceData = _Datas[key];
 

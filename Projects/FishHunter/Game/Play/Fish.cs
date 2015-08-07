@@ -11,17 +11,17 @@ namespace VGame.Project.FishHunter.Play
 {
 	internal class Fish
 	{
-		private readonly short id;
+		private readonly int _Id;
 
 		public int Id
 		{
-			get { return id; }
+			get { return _Id; }
 		}
 
-		public Fish(short id)
+		public Fish(int id)
 		{
 			// TODO: Complete member initialization
-			this.id = id;
+			_Id = id;
 		}
 	}
 }

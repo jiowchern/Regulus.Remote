@@ -21,27 +21,23 @@ namespace VGame.Project.FishHunter.Formula
 {
 	public class Center : ICore
 	{
-		private readonly StorageController _Controller;
+		private readonly ExpansionFeature _ExpansionFeature;
 
 		private readonly Hall _Hall;
 
 		private readonly Updater _Updater;
 
-		private Center()
+		public Center(ExpansionFeature expansion_feature) 
 		{
+			_ExpansionFeature = expansion_feature;
+
 			_Hall = new Hall();
 			_Updater = new Updater();
 		}
 
-		public Center(StorageController controller) : this()
-		{
-			// TODO: Complete member initialization
-			this._Controller = controller;
-		}
-
 		void ICore.AssignBinder(ISoulBinder binder)
 		{
-			_Hall.PushUser(new User(binder, _Controller));
+			_Hall.PushUser(new User(binder, _ExpansionFeature));
 		}
 
 		bool IUpdatable.Update()

@@ -3,44 +3,62 @@
 //   Regulus Framework
 // </copyright>
 // <summary>
-//   Defines the Player type.
+//   Defines the PlayerVisitor type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
-using System.Linq;
 
-using VGame.Project.FishHunter.Common.Datas.FishStage;
+
+using VGame.Project.FishHunter.Common.Data;
 
 namespace VGame.Project.FishHunter.ZsFormula.Data
 {
-	public class Player
+	public class PlayerVisitor
 	{
-		private List<Data> _StageDatas;
+		private readonly List<PlayerRecord> _Players;
 
-		public class Data
+		public PlayerRecord FocusPlayer { get; private set; }
+
+		public PlayerVisitor(Guid player_id, int stage_id)
 		{
-			public int Id { get; set; }
-
-			public int StageId { get; set; }
-
-			public int Status { get; set; }
-
-			public int BufferValue { get; set; }
-
-			public SpecialWeaponData NowSpecialWeaponData { get; set; }
-
-			public StageRecode RecodeData { get; set; }
-
-			public Data()
-			{
-				RecodeData = new StageRecode();
-			}
+			_Players = new List<PlayerRecord>();
+			
+			QueryPlayer(player_id, stage_id);
 		}
 
-		public Data FindStageData(int stage_id)
+		private PlayerRecord _FindPlayer(Guid player_id)
 		{
-			return _StageDatas.Select(x => x.StageId == stage_id) as Data;
+			return _Players.Find(x => x.Id == player_id);
+		}
+
+		/// <summary>
+		/// 找不到 自動加入
+		/// </summary>
+		/// <param name="player_id"></param>
+		/// <param name="stage_id"></param>
+		/// <returns></returns>
+		public StageRecord QueryPlayer(Guid player_id, int stage_id)
+		{
+			FocusPlayer  = _Players.Find(x => x.Id == player_id);
+			if (FocusPlayer == null)
+			{
+				_Players.Add(new PlayerRecord(player_id));
+			}
+
+			var record = FocusPlayer.FindStageRecord(stage_id);
+
+			if (record != null)
+			{
+				return record;
+			}
+
+			record = new StageRecord(stage_id);
+
+			_FindPlayer(player_id).StageRecord.Add(record);
+
+			return record;
 		}
 	}
 }

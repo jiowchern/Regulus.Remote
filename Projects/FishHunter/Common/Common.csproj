@@ -49,10 +49,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\FishStage\SpecialWeaponData.cs" />
-    <Compile Include="Data\FishStage\StageRecode.cs" />
-    <Compile Include="Data\FishStage\StageBuffer.cs" />
-    <Compile Include="Data\FishStage\StageData.cs" />
+    <Compile Include="Data\BusinessStage.cs" />
+    <Compile Include="Data\SpecialWeaponData.cs" />
+    <Compile Include="Data\StageRecord.cs" />
+    <Compile Include="Data\StageBuffer.cs" />
+    <Compile Include="Data\StageData.cs" />
     <Compile Include="GPI\IAccountCreator.cs" />
     <Compile Include="Data\Account.cs" />
     <Compile Include="Data\ACCOUNT_REQUEST_RESULT.cs" />
@@ -65,20 +66,21 @@
     <Compile Include="GPI\IAccountManager.cs" />
     <Compile Include="GPI\IAccountStatus.cs" />
     <Compile Include="GPI\IFishStage.cs" />
+    <Compile Include="GPI\IFishStageDataHandler.cs" />
     <Compile Include="GPI\IFishStageQueryer.cs" />
     <Compile Include="GPI\IAccountFinder.cs" />
     <Compile Include="GPI\ILevelSelector.cs" />
     <Compile Include="GPI\IPlayer.cs" />
     <Compile Include="GPI\IQuitable.cs" />
-    <Compile Include="GPI\IRecordQueriers.cs" />
+    <Compile Include="GPI\IPlayerRecordHandler.cs" />
     <Compile Include="GPI\IStorage.cs" />
     <Compile Include="GPI\IStorageCompetnces.cs" />
     <Compile Include="GPI\ITradeNotes.cs" />
     <Compile Include="GPI\IVerify.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Data\Record.cs" />
+    <Compile Include="Data\PlayerRecord.cs" />
     <Compile Include="Data\TradeRecorder.cs" />
-    <Compile Include="Data\BULLET.cs" />
+    <Compile Include="Data\WEAPON_TYPE.cs" />
     <Compile Include="Data\FISH_TYPE.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -93,6 +95,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Data\FishStage\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

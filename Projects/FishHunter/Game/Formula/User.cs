@@ -1,30 +1,18 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="User.cs" company="Regulus Framework">
-//   Regulus Framework
-// </copyright>
-// <summary>
-//   Defines the User type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
+﻿
 using System;
+
 
 using Regulus.Framework;
 using Regulus.Game;
 using Regulus.Remoting;
 using Regulus.Utility;
 
-using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Stage;
 
-#endregion
-
 namespace VGame.Project.FishHunter.Formula
 {
-    internal class User : Regulus.Game.IUser
+	internal class User : IUser
 	{
 		private event OnQuit _QuitEvent;
 
@@ -36,7 +24,7 @@ namespace VGame.Project.FishHunter.Formula
 
 		private Account _Account;
 
-		private StorageController _Controller;
+		private ExpansionFeature _ExpansionFeature;
 
 		private User(ISoulBinder binder)
 		{
@@ -44,22 +32,22 @@ namespace VGame.Project.FishHunter.Formula
 			_Binder = binder;
 		}
 
-		public User(ISoulBinder binder, StorageController _Controller) : this(binder)
+		public User(ISoulBinder binder, ExpansionFeature expansion_feature) : this(binder)
 		{
-			this._Controller = _Controller;
+			_ExpansionFeature = expansion_feature;
 		}
 
-		void Regulus.Game.IUser.OnKick(Guid id)
+		void IUser.OnKick(Guid id)
 		{
 		}
 
-		event OnNewUser Regulus.Game.IUser.VerifySuccessEvent
+		event OnNewUser IUser.VerifySuccessEvent
 		{
 			add { _VerifySuccessEvent += value; }
 			remove { _VerifySuccessEvent -= value; }
 		}
 
-		event OnQuit Regulus.Game.IUser.QuitEvent
+		event OnQuit IUser.QuitEvent
 		{
 			add { _QuitEvent += value; }
 			remove { _QuitEvent -= value; }
@@ -84,7 +72,7 @@ namespace VGame.Project.FishHunter.Formula
 		private void _ToVerify()
 		{
 			_Account = null;
-			var verify = new Verify(_Controller.AccountFinder);
+			var verify = new Verify(_ExpansionFeature.AccountFinder);
 			var stage = new Stage.Verify(_Binder, verify);
 			stage.DoneEvent += _VerifySuccess;
 			_Machine.Push(stage);
@@ -106,7 +94,8 @@ namespace VGame.Project.FishHunter.Formula
 
 		private void _ToFishStage()
 		{
-			var stage = new FormulaStage(_Binder);
+			var stage = new FormulaStage(_Binder, _ExpansionFeature);
+			
 			stage.OnDoneEvent += () => { _QuitEvent(); };
 			_Machine.Push(stage);
 		}

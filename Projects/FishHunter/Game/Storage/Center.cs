@@ -7,17 +7,12 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-#region Test_Region
-
 using Regulus.Framework;
 using Regulus.Remoting;
 using Regulus.Utility;
 
-using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.GPI;
 using VGame.Project.FishHunter.Play;
-
-#endregion
 
 namespace VGame.Project.FishHunter.Storage
 {

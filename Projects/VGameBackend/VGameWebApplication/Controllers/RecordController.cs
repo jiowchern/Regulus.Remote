@@ -36,7 +36,7 @@ namespace VGameWebApplication.Controllers
 
 			foreach (var a in accs)
 			{
-				var money = service.RecodeQueriers.Load(a.Id).WaitResult().Money;
+				var money = service.RecordHandler.Load(a.Id).WaitResult().Money;
 
 				tradeData.Add(a.Id, a.Name, money);
 			}

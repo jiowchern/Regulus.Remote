@@ -33,7 +33,7 @@ namespace VGame.Project.FishHunter.WCF
 
 		public FormulaService()
 		{
-			_Formula = new Center(new StorageController());
+			_Formula = new Center(new ExpansionFeature());
 			_Server = new Server(_Formula, 38971);
 			_Launcher = new Launcher();
 

@@ -9,7 +9,7 @@
 
 namespace VGame.Project.FishHunter.Common.GPI
 {
-	public interface IStorage : IAccountFinder, IAccountManager, IRecordQueriers, ITradeNotes
+	public interface IStorage : IAccountFinder, IAccountManager, IRecordHandler, ITradeNotes, IFishStageDataHandler
 	{
 	}
 }

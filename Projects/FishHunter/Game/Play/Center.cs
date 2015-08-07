@@ -28,16 +28,16 @@ namespace VGame.Project.FishHunter.Play
 
 		private readonly Hall _Hall;
 
-		private readonly IRecordQueriers _RecordQueriers;
+		private readonly IRecordHandler _RecordHandler;
 
 		private readonly ITradeNotes _Tradefinder;
 
 		private readonly Updater _Updater;
 
-	    public Center(IAccountFinder account_finder, IFishStageQueryer fish_stage_queryer, IRecordQueriers rq,
+	    public Center(IAccountFinder account_finder, IFishStageQueryer fish_stage_queryer, IRecordHandler rq,
 	        ITradeNotes trade_account)
 	    {
-	        _RecordQueriers = rq;
+	        _RecordHandler = rq;
 	        _AccountFinder = account_finder;
 	        _FishStageQueryer = fish_stage_queryer;
 	        _Tradefinder = trade_account;
@@ -51,7 +51,7 @@ namespace VGame.Project.FishHunter.Play
 			var user = new User(binder, 
 				_AccountFinder, 
 				_FishStageQueryer, 
-				_RecordQueriers, 
+				_RecordHandler, 
 				_Tradefinder);
 
 			_Hall.PushUser(user);

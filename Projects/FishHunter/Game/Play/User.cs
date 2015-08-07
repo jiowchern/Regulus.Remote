@@ -43,7 +43,7 @@ namespace VGame.Project.FishHunter.Play
 
 		private readonly StageMachine _Machine;
 
-		private readonly IRecordQueriers _RecordQueriers;
+		private readonly IRecordHandler _RecordHandler;
 
 		private readonly StageTicketInspector _StageTicketInspector;
 
@@ -51,12 +51,12 @@ namespace VGame.Project.FishHunter.Play
 
 		private Account _Account;
 
-		private Record _Record;
+		private PlayerRecord _PlayerRecord;
 
 		public User(ISoulBinder binder, 
 			IAccountFinder account_finder, 
 			IFishStageQueryer queryer, 
-			IRecordQueriers record_queriers, 
+			IRecordHandler record_handler, 
 			ITradeNotes trade_account)
 		{
 			_Machine = new StageMachine();
@@ -74,7 +74,7 @@ namespace VGame.Project.FishHunter.Play
 			};
 			_StageTicketInspector = new StageTicketInspector(new StageGate(locks));
 
-			_RecordQueriers = record_queriers;
+			_RecordHandler = record_handler;
 
 			_TradeAccount = trade_account;
 		}
@@ -138,9 +138,9 @@ namespace VGame.Project.FishHunter.Play
 
 		private void _SaveRecord()
 		{
-			if (_Record != null)
+			if (_PlayerRecord != null)
 			{
-				_RecordQueriers.Save(_Record);
+				_RecordHandler.Save(_PlayerRecord);
 			}
 		}
 
@@ -173,9 +173,9 @@ namespace VGame.Project.FishHunter.Play
 
 		private void _ToQueryRecord()
 		{
-			_RecordQueriers.Load(_Account.Id).OnValue += obj =>
+			_RecordHandler.Load(_Account.Id).OnValue += obj =>
 			{
-				_Record = obj;
+				_PlayerRecord = obj;
 				_StageTicketInspector.Initial(new[]
 				{
 					new Common.Data.Stage
@@ -252,7 +252,7 @@ namespace VGame.Project.FishHunter.Play
 		{
 			_TradeAccount.GetTotalMoney(_Account.Id).OnValue += money =>
 			{
-				_Record.Money += money;
+				_PlayerRecord.Money += money;
 				_ToSelectStage();
 			};
 		}
@@ -266,7 +266,7 @@ namespace VGame.Project.FishHunter.Play
 
 		private void _ToPlayStage(IFishStage fish_stage)
 		{
-			var stage = new PlayStage(_Binder, fish_stage, _Record);
+			var stage = new PlayStage(_Binder, fish_stage, _PlayerRecord);
 			stage.PassEvent += _Pass;
 			stage.KillEvent += _Kill;
 			_Machine.Push(stage);

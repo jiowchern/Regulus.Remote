@@ -34,7 +34,7 @@ namespace Regulus.Remoting
 			this._Binders = new List<Data>();
 		}
 
-		public GPIBinder<T> Create<T>(INotifier<T> notice) where T : class
+		GPIBinder<T> IGPIBinderFactory.Create<T>(INotifier<T> notice)
 		{
 			var binder = new GPIBinder<T>(notice, this._Command);
 			this._Binders.Add(new Data

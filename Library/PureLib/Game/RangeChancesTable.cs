@@ -21,6 +21,11 @@ namespace Regulus.Game
 		{
 		}
 
+		protected RangeChancesTable()
+		{
+			
+		}
+
 		public override T Dice(float chances)
 		{
 			var minGate = 0.0f;

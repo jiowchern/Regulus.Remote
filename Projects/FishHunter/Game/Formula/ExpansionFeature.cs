@@ -1,9 +1,9 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="StorageController.cs" company="Regulus Framework">
+// <copyright file="ExpansionFeature.cs" company="Regulus Framework">
 //   Regulus Framework
 // </copyright>
 // <summary>
-//   Defines the StorageController type.
+//   Defines the ExpansionFeature type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -24,24 +24,16 @@ using VGame.Project.FishHunter.Common.GPI;
 
 namespace VGame.Project.FishHunter.Formula
 {
-	public struct StorageController
+	public struct ExpansionFeature
 	{
-		private readonly IAccountFinder _AccountFinder;
+		public IFishStageDataHandler FishStageDataHandler { get; private set; }
 
-		//private IStageFinder IStageFinder;
+		public IAccountFinder AccountFinder { get; private set; }
 
-		public IAccountFinder AccountFinder
+		public ExpansionFeature(IAccountFinder account_finder, IFishStageDataHandler fish_stage_data_data_loader) : this()
 		{
-			get { return _AccountFinder; }
-
-
-
-
-		}
-
-		public StorageController(IAccountFinder account_finder)
-		{
-			_AccountFinder = account_finder;
+			AccountFinder = account_finder;
+			FishStageDataHandler = fish_stage_data_data_loader;
 		}
 	}
 }

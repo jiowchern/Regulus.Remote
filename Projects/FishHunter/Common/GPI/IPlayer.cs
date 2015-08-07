@@ -29,7 +29,7 @@ namespace VGame.Project.FishHunter.Common.GPI
 
 		int WeaponOdds { get; }
 
-		BULLET Bullet { get; }
+		WEAPON_TYPE WeaponType { get; }
 
 		Value<int> RequestBullet();
 
@@ -37,7 +37,7 @@ namespace VGame.Project.FishHunter.Common.GPI
 
 		Value<int> Hit(int bullet, int[] fishids);
 
-		void EquipWeapon(BULLET bullet, int odds);
+		void EquipWeapon(WEAPON_TYPE weapon_type, int odds);
 
 		void Quit();
 	}

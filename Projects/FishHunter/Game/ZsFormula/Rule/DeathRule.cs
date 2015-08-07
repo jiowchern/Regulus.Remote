@@ -7,9 +7,11 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 using System;
+using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 
 
-using VGame.Project.FishHunter.Common.Datas.FishStage;
+using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.ZsFormula.Data;
 
 namespace VGame.Project.FishHunter.ZsFormula.Rule
@@ -19,82 +21,114 @@ namespace VGame.Project.FishHunter.ZsFormula.Rule
 	/// </summary>
 	public class DeathRule
 	{
-		private readonly FishHitAllocateTable _FishHitAllocateTable;
+		private readonly FishStageVisitor _StageVisitor;
 
-		private readonly StageDataVisit _StageDataVisit;
+		private readonly HitRequest _Request;
 
-		private Player.Data _PlayerData;
+		private readonly PlayerRecord _PlayerRecord;
 
-		public Func<int> Win { get; private set; }
-
-		public DeathRule(StageDataVisit stage_data_visit)
+		public DeathRule(FishStageVisitor stage_visitor, HitRequest request, PlayerRecord player_record)
 		{
-			_StageDataVisit = stage_data_visit;
-
-			_FishHitAllocateTable = new FishHitAllocateTable(null);
+			_StageVisitor = stage_visitor;
+			_Request = request;
+			_PlayerRecord = player_record;
 		}
 
 
-		public void Run(AttackData attack_data)
+		public HitResponse Run()
 		{
-			var fireRate = _StageDataVisit.NowUseData.GameRate - 10;
-			var bufferData = _StageDataVisit.FindBuffer(
-				_StageDataVisit.NowUseBlock,
-				StageBuffer.BUFFER_TYPE.SPEC);
-
-			fireRate -= (int)bufferData.Rate;
-
-			fireRate += bufferData.BufferTempValue.HiLoRate;
-
-			if (_PlayerData.Status != 0)
+			foreach (var fishData in _Request.FishDatas)
 			{
-				fireRate += 200; // 提高20%
+				var fireRate = _StageVisitor.NowData.GameRate - 10;
+				var bufferData = _StageVisitor.NowData.FindBuffer(
+					_StageVisitor.NowBlock,
+					StageBuffer.BUFFER_TYPE.SPEC);
+
+				fireRate -= (int)bufferData.Rate;
+
+				fireRate += bufferData.BufferTempValue.HiLoRate;
+
+				if (_PlayerRecord.Status != 0)
+				{
+					fireRate += 200; // 提高20%
+				}
+
+				if (_Request.WeaponData.WeaponType == WEAPON_TYPE.FREE_POWER)
+				{
+					// 特武 免费炮
+					fireRate /= 2;
+				}
+
+				if (fireRate < 0)
+				{
+					fireRate = 0;
+				}
+
+				var gate = fireRate; // 自然死亡率
+
+				gate *= 0x0FFFFFFF;
+
+				gate *= _Request.WeaponData.WepBet; // 子弹威力
+
+				gate *= new FishHitAllocateTable().GetAllocateData(_Request.WeaponData.TotalHits).HitNumber;
+
+				gate /= 1000;
+
+				gate /= _Request.WeaponData.TotalHitOdds; // 鱼的倍数
+
+				var oddsRule = new OddsRuler(fishData, bufferData).RuleResult();
+
+				gate /= oddsRule; // 翻倍
+
+				gate /= 1000; // 死亡率换算回实际百分比
+
+				if (gate > 0x0FFFFFFF)
+				{
+					gate = 0x10000000; // > 100%
+				}
+
+				if (Regulus.Utility.Random.Instance.NextInt(0, 0x10000000) >= gate)
+				{
+					return _Miss(fishData, _Request.WeaponData);
+				}
+
+				var win = fishData.FishOdds * _Request.WeaponData.WepBet * oddsRule;
+
+				new DiedHandleRule(_StageVisitor, _PlayerRecord, win).Run();
+				new FishTypeRule(_StageVisitor, fishData, _PlayerRecord).Run();
+				new WeaponTypeRule(_StageVisitor, _Request.WeaponData, _PlayerRecord, win).Run();
+				new SpecialItemRule(_StageVisitor, _PlayerRecord).Run();
+				
+				return _Die(fishData, _Request.WeaponData);
 			}
 
-			if (attack_data.WeaponData.WeaponType == WeaponDataTable.Data.WEAPON_TYPE.FREE_4)
+			return new HitResponse();
+		}
+
+		private HitResponse _Die(RequsetFishData fish_data, RequestWeaponData weapon_data)
+		{
+			var bufferData = _StageVisitor.NowData.FindBuffer(_StageVisitor.NowBlock, StageBuffer.BUFFER_TYPE.NORMAL);
+			return new HitResponse
 			{
-				// 特武 免费炮
-				fireRate /= 2;
-			}
+				WepID = weapon_data.WepID,
+				FishID = fish_data.FishID,
+				DieResult = FISH_DETERMINATION.DEATH,
+				SpecialWeaponType = _PlayerRecord.NowSpecialWeaponData.WeaponType,
+				WUp = new OddsRuler(fish_data, bufferData).RuleResult(),
+			};
+		}
 
-			if (fireRate < 0)
+		private HitResponse _Miss(RequsetFishData fish_data, RequestWeaponData weapon_data)
+		{
+			var bufferData = _StageVisitor.NowData.FindBuffer(_StageVisitor.NowBlock, StageBuffer.BUFFER_TYPE.NORMAL);
+			return new HitResponse
 			{
-				fireRate = 0;
-			}
-
-			var gate = fireRate; // 自然死亡率
-
-			gate *= 0x0FFFFFFF;
-
-			gate *= attack_data.WeaponData.WeaponBet; // 子弹威力
-
-			gate *= _FishHitAllocateTable.GetAllocateData(attack_data.AttCount).HitNumber;
-
-			gate /= 1000;
-
-			gate /= attack_data.FishData.Odds; // 鱼的倍数
-
-			var oddsRule = new OddsRuler(attack_data.FishData, bufferData).RuleResult();
-			
-			gate /= oddsRule; // 翻倍
-			
-			gate /= 1000; // 死亡率换算回实际百分比
-
-			if (gate > 0x0FFFFFFF)
-			{
-				gate = 0x10000000; // > 100%
-			}
-
-			if (Regulus.Utility.Random.Instance.NextInt(0, 0x10000000) >= gate)
-			{
-				return;
-			}
-			
-			var win = attack_data.FishData.Odds * attack_data.GetWeaponBet() * oddsRule;
-
-			this.Win = () => win;
-
-			this.Win.Invoke();
+				WepID = weapon_data.WepID,
+				FishID = fish_data.FishID,
+				DieResult = FISH_DETERMINATION.SURVIVAL,
+				SpecialWeaponType = _PlayerRecord.NowSpecialWeaponData.WeaponType,
+				WUp = new OddsRuler(fish_data, bufferData).RuleResult(),
+			};
 		}
 	}
 }

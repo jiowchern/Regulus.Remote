@@ -1,9 +1,9 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Bullet.cs" company="Regulus Framework">
+// <copyright file="WEAPON_TYPE.cs" company="Regulus Framework">
 //   Regulus Framework
 // </copyright>
 // <summary>
-//   Defines the Bullet type.
+//   Defines the WEAPON_TYPE type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 

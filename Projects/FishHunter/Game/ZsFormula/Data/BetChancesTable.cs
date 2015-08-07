@@ -32,10 +32,5 @@ namespace VGame.Project.FishHunter.ZsFormula.Data
 		{
 			return Dice(Precent);
 		}
-
-		public int GetCount()
-		{
-			return _Datas.Count();
-		}
 	}
 }

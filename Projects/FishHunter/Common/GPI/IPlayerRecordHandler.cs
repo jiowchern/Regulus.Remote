@@ -1,9 +1,9 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IRecordQueriers.cs" company="">
+// <copyright file="IRecordHandler.cs" company="">
 //   
 // </copyright>
 // <summary>
-//   Defines the IRecordQueriers type.
+//   Defines the IRecordHandler type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -21,10 +21,10 @@ using VGame.Project.FishHunter.Common.Data;
 
 namespace VGame.Project.FishHunter.Common.GPI
 {
-	public interface IRecordQueriers
+	public interface IRecordHandler
 	{
-		Value<Record> Load(Guid id);
+		Value<PlayerRecord> Load(Guid id);
 
-		void Save(Record record);
+		void Save(PlayerRecord player_record);
 	}
 }

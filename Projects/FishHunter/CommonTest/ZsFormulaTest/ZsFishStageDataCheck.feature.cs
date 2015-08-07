@@ -90,7 +90,7 @@ this.ScenarioSetup(scenarioInfo);
                         "NowBaseOdds",
                         "BaseChgOddsCnt"});
             table1.AddRow(new string[] {
-                        "0",
+                        "1",
                         "魚場1",
                         "SMALL",
                         "100",
@@ -99,7 +99,7 @@ this.ScenarioSetup(scenarioInfo);
                         "0",
                         "0"});
             table1.AddRow(new string[] {
-                        "1",
+                        "2",
                         "魚場2",
                         "MEDIUM",
                         "200",
@@ -108,7 +108,7 @@ this.ScenarioSetup(scenarioInfo);
                         "0",
                         "0"});
             table1.AddRow(new string[] {
-                        "2",
+                        "3",
                         "魚場3",
                         "MEDIUM",
                         "200",
@@ -117,7 +117,7 @@ this.ScenarioSetup(scenarioInfo);
                         "0",
                         "0"});
             table1.AddRow(new string[] {
-                        "3",
+                        "4",
                         "魚場4",
                         "LARGE",
                         "300",
@@ -128,7 +128,7 @@ this.ScenarioSetup(scenarioInfo);
 #line 9
  testRunner.Given("魚場資料表是", ((string)(null)), table1, "Given ");
 #line 16
- testRunner.When("當輸入魚場id是 0", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("當輸入魚場id是 1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                         "StageId",
@@ -140,7 +140,7 @@ this.ScenarioSetup(scenarioInfo);
                         "NowBaseOdds",
                         "BaseChgOddsCnt"});
             table2.AddRow(new string[] {
-                        "0",
+                        "1",
                         "魚場1",
                         "SMALL",
                         "100",
@@ -149,7 +149,7 @@ this.ScenarioSetup(scenarioInfo);
                         "0",
                         "0"});
 #line 18
-    testRunner.Then("取得的魚場資料是", ((string)(null)), table2, "Then ");
+ testRunner.Then("取得的魚場資料是", ((string)(null)), table2, "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

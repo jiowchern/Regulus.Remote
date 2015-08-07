@@ -1,27 +1,15 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ApproachBaseOddsRule.cs" company="Regulus Framework">
-//   Regulus Framework
-// </copyright>
-// <summary>
-//   Defines the ApproachBaseOddsRule type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
+﻿
 using VGame.Project.FishHunter.ZsFormula.Data;
-
-#endregion
 
 namespace VGame.Project.FishHunter.ZsFormula.Rule
 {
 	public class ApproachBaseOddsRule
 	{
-		private readonly StageDataVisit _StageDataVisit;
+		private readonly FishStageVisitor _StageVisitor;
 
-		public ApproachBaseOddsRule(StageDataVisit stage_data_visit)
+		public ApproachBaseOddsRule(FishStageVisitor stage_visitor)
 		{
-			_StageDataVisit = stage_data_visit;
+			_StageVisitor = stage_visitor;
 		}
 
 		/// <summary>
@@ -29,20 +17,20 @@ namespace VGame.Project.FishHunter.ZsFormula.Rule
 		/// </summary>
 		public void Run()
 		{
-			if (_StageDataVisit.NowUseData.BaseOddsCount != 0)
+			if (_StageVisitor.NowData.BaseOddsCount != 0)
 			{
-				_StageDataVisit.NowUseData.BaseOddsCount--;
+				_StageVisitor.NowData.BaseOddsCount--;
 			}
 			else
 			{
-				_StageDataVisit.NowUseData.BaseOddsCount = 3000;
-				if (_StageDataVisit.NowUseData.NowBaseOdds > _StageDataVisit.NowUseData.BaseOdds)
+				_StageVisitor.NowData.BaseOddsCount = 3000;
+				if (_StageVisitor.NowData.NowBaseOdds > _StageVisitor.NowData.BaseOdds)
 				{
-					_StageDataVisit.NowUseData.NowBaseOdds--;
+					_StageVisitor.NowData.NowBaseOdds--;
 				}
-				else if (_StageDataVisit.NowUseData.NowBaseOdds < _StageDataVisit.NowUseData.BaseOdds)
+				else if (_StageVisitor.NowData.NowBaseOdds < _StageVisitor.NowData.BaseOdds)
 				{
-					_StageDataVisit.NowUseData.NowBaseOdds++;
+					_StageVisitor.NowData.NowBaseOdds++;
 				}
 			}
 		}
