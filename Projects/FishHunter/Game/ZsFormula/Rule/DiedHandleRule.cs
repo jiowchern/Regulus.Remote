@@ -1,70 +1,57 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="DiedHandleRule.cs" company="Regulus Framework">
-//   Regulus Framework
-// </copyright>
-// <summary>
-//   Defines the DiedHandleRule type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using Regulus.Utility;
 
 
-using VGame.Project.FishHunter.Common.Datas.FishStage;
+using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.ZsFormula.Data;
-
-#endregion
-
 
 namespace VGame.Project.FishHunter.ZsFormula.Rule
 {
 	/// <summary>
-	/// 分數記錄
+	///     分數記錄
 	/// </summary>
 	public class DiedHandleRule
 	{
-		private readonly StageDataVisit _StageDataVisit;
+		private readonly FishStageVisitor _FishStageVisitor;
 
-		public DiedHandleRule(StageDataVisit stage_data_visit)
+		private readonly PlayerRecord _PlayerRecord;
+
+		private readonly int _Win;
+
+		public DiedHandleRule(FishStageVisitor fish_stage_visitor, PlayerRecord player_record, int win)
 		{
-			_StageDataVisit = stage_data_visit;
+			_FishStageVisitor = fish_stage_visitor;
+			_PlayerRecord = player_record;
+			_Win = win;
 		}
 
 		/// <summary>
 		/// </summary>
-		/// <param name="win_func"></param>
-		/// <param name="player_data"></param>
-		public void Run(Func<int> win_func, Player.Data player_data)
+		public void Run()
 		{
-			if (win_func == null)
+			if (_Win == 0)
 			{
 				return;
 			}
 
-			var win = win_func();
+			var bufferData = _FishStageVisitor.NowData.FindBuffer(_FishStageVisitor.NowBlock, StageBuffer.BUFFER_TYPE.NORMAL);
 
-			var bufferData = _StageDataVisit.FindBuffer(
-				_StageDataVisit.NowUseBlock,
-				StageBuffer.BUFFER_TYPE.NORMAL);
+			bufferData.Buffer -= _Win;
 
-			bufferData.Buffer -= win;
+			_FishStageVisitor.NowData.RecordData.WinFrequency += 1;
+			_FishStageVisitor.NowData.RecordData.WinScore += _Win;
 
-			_StageDataVisit.NowUseData.RecodeData.WinFrequency += 1;
-			_StageDataVisit.NowUseData.RecodeData.WinScore += win;
-
-			player_data.RecodeData.WinFrequency += 1;
-			player_data.RecodeData.WinScore += win;
+			_PlayerRecord.StageRecord.Find(x => x.StageId == _FishStageVisitor.NowData.StageId).WinFrequency += 1;
+			_PlayerRecord.StageRecord.Find(x => x.StageId == _FishStageVisitor.NowData.StageId).WinScore += 1;
 
 			// 玩家阶段起伏的调整
-			if (player_data.Status <= 0)
+			if (_PlayerRecord.Status <= 0)
 			{
 				return;
 			}
 
-			player_data.BufferValue -= win;
-			player_data.RecodeData.AsnWin += win;
+			_PlayerRecord.BufferValue -= _Win;
+
+			_PlayerRecord.StageRecord.Find(x => x.StageId == _FishStageVisitor.NowData.StageId).AsnWin += _Win;
 		}
 	}
 }

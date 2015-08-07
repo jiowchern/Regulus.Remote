@@ -9,6 +9,9 @@
 
 #region Test_Region
 
+using System.Linq;
+
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using TechTalk.SpecFlow;
@@ -25,14 +28,14 @@ namespace GameTest.ZsFormulaTest
 	[Scope(Feature = "MultipleRule")]
 	public class MultipleRuleSteps
 	{
-		private MultipleTable _MultipleTable;
+		private OddsTable _OddsTable;
 
 		[Given(@"倍數表是")]
 		public void Given倍數表是(Table table)
 		{
-			var datas = table.CreateSet<MultipleTable.Data>();
+			var datas = table.CreateSet<OddsTable.Data>();
 
-			this._MultipleTable = new MultipleTable(datas);
+			_OddsTable = new OddsTable(datas);
 		}
 
 		[When(@"輸入倍數表id是(.*)")]
@@ -46,9 +49,11 @@ namespace GameTest.ZsFormulaTest
 		{
 			var key = ScenarioContext.Current.Get<int>("key");
 
-			var data = this._MultipleTable.Find(key);
+			var datas = _OddsTable.Get().ToDictionary(x => x.Odds);
 
-			Assert.AreEqual(value, data.Value);
+			var data = datas[key];
+
+			Assert.AreEqual(value, data.Number);
 		}
 	}
 }

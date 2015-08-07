@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 using Regulus.Remoting;
 
-using VGame.Project.FishHunter.Common;
+
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
 using VGame.Project.FishHunter.Formula;
@@ -23,11 +23,11 @@ namespace VGame.Project.FishHunter.Play
 	{
 		private readonly List<Account> _Accounts;
 
-		private readonly List<Record> _Records;
+		private readonly List<PlayerRecord> _Records;
 
 		public DummyFrature()
 		{
-			this._Records = new List<Record>();
+			this._Records = new List<PlayerRecord>();
 
 			this._Accounts = new List<Account>
 			{
@@ -65,7 +65,7 @@ namespace VGame.Project.FishHunter.Play
 			return this._Accounts.Find(a => a.Id == account_id);
 		}
 
-	    Value<IFishStage> IFishStageQueryer.Query(long player_id, byte fish_stage)
+	    Value<IFishStage> IFishStageQueryer.Query(long player_id, int fish_stage)
 	    {
 	        switch (fish_stage)
 	        {
@@ -108,7 +108,7 @@ namespace VGame.Project.FishHunter.Play
 			return ACCOUNT_REQUEST_RESULT.NOTFOUND;
 		}
 
-		Value<Record> IRecordQueriers.Load(Guid id)
+		Value<PlayerRecord> IRecordHandler.Load(Guid id)
 		{
 			var account = this._Accounts.Find(a => a.Id == id);
 			if (account.IsPlayer())
@@ -116,7 +116,7 @@ namespace VGame.Project.FishHunter.Play
 				var record = this._Records.Find(r => r.Owner == account.Id);
 				if (record == null)
 				{
-					record = new Record
+					record = new PlayerRecord
 					{
 						Money = 1000, 
 						Owner = id
@@ -129,14 +129,14 @@ namespace VGame.Project.FishHunter.Play
 			return null;
 		}
 
-		void IRecordQueriers.Save(Record record)
+		void IRecordHandler.Save(PlayerRecord player_record)
 		{
-			var account = this._Accounts.Find(a => a.Id == record.Owner);
+			var account = this._Accounts.Find(a => a.Id == player_record.Owner);
 			if (account.IsPlayer())
 			{
 				var old = this._Records.Find(r => r.Owner == account.Id);
 				this._Records.Remove(old);
-				this._Records.Add(record);
+				this._Records.Add(player_record);
 			}
 		}
 
@@ -160,6 +160,19 @@ namespace VGame.Project.FishHunter.Play
 			return 0;
 		}
 
-       
-    }
+		Value<StageData> IFishStageDataHandler.Load(int stage_id)
+		{
+			throw new NotImplementedException();
+		}
+
+		Value<bool> IFishStageDataHandler.Save(StageData data)
+		{
+			throw new NotImplementedException();
+		}
+
+		Value<StageData> IFishStageDataHandler.Find(int stage_id)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

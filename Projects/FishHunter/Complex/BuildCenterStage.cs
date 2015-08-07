@@ -1,27 +1,14 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="BuildCenterStage.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the BuildCenterStage type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
+﻿
 using Regulus.Utility;
 
-using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.GPI;
 using VGame.Project.FishHunter.Formula;
-
-#endregion
 
 namespace VGame.Project.FishHunter
 {
 	internal class BuildCenterStage : IStage
 	{
-		public event SuccessBuiledCallback BuiledEvent;
+		public event SuccessBuiledCallback OnBuiledEvent;
 
 		private readonly IUser _FormulaUser;
 
@@ -29,16 +16,16 @@ namespace VGame.Project.FishHunter
 
 		private ExternalFeature _Feature;
 
-		public BuildCenterStage(IUser _FormulaUser, Storage.IUser _StorageUser)
+		public BuildCenterStage(IUser formula_user, Storage.IUser storage_user)
 		{
-			this._Feature = new ExternalFeature();
-			this._FormulaUser = _FormulaUser;
-			this._StorageUser = _StorageUser;
+			_Feature = new ExternalFeature();
+			_FormulaUser = formula_user;
+			_StorageUser = storage_user;
 		}
 
 		void IStage.Enter()
 		{
-			this._FormulaUser.FishStageQueryerProvider.Supply += this._GetFishStageQuery;
+			_FormulaUser.FishStageQueryerProvider.Supply += _GetFishStageQuery;
 		}
 
 		void IStage.Leave()
@@ -55,7 +42,7 @@ namespace VGame.Project.FishHunter
 
 			public IFishStageQueryer FishStageQueryer;
 
-			public IRecordQueriers RecordQueriers;
+			public IRecordHandler RecordHandler;
 
 			public ITradeNotes TradeAccount;
 		}
@@ -64,33 +51,34 @@ namespace VGame.Project.FishHunter
 
 		private void _GetFishStageQuery(IFishStageQueryer obj)
 		{
-			this._FormulaUser.FishStageQueryerProvider.Supply -= this._GetFishStageQuery;
-			this._Feature.FishStageQueryer = obj;
+			_FormulaUser.FishStageQueryerProvider.Supply -= _GetFishStageQuery;
+			_Feature.FishStageQueryer = obj;
 
-			this._StorageUser.QueryProvider<IAccountFinder>().Supply += this._AccountFinder;
+			_StorageUser.QueryProvider<IAccountFinder>().Supply += _AccountFinder;
 		}
 
 		private void _AccountFinder(IAccountFinder obj)
 		{
-			this._StorageUser.QueryProvider<IAccountFinder>().Supply -= this._AccountFinder;
-			this._Feature.AccountFinder = obj;
+			_StorageUser.QueryProvider<IAccountFinder>().Supply -= _AccountFinder;
+			_Feature.AccountFinder = obj;
 
-			this._StorageUser.QueryProvider<ITradeNotes>().Supply += this.BuildCenterStage_Supply;
+			_StorageUser.QueryProvider<ITradeNotes>().Supply += BuildCenterStage_Supply;
 		}
 
 		private void BuildCenterStage_Supply(ITradeNotes obj)
 		{
-			this._StorageUser.QueryProvider<ITradeNotes>().Supply -= this.BuildCenterStage_Supply;
-			this._Feature.TradeAccount = obj;
+			_StorageUser.QueryProvider<ITradeNotes>().Supply -= BuildCenterStage_Supply;
+			_Feature.TradeAccount = obj;
 
-			this._StorageUser.QueryProvider<IRecordQueriers>().Supply += this._RecordQueriers;
+			_StorageUser.QueryProvider<IRecordHandler>().Supply += _RecordQueriers;
 		}
 
-		private void _RecordQueriers(IRecordQueriers obj)
+		private void _RecordQueriers(IRecordHandler obj)
 		{
-			this._StorageUser.QueryProvider<IRecordQueriers>().Supply -= this._RecordQueriers;
-			this._Feature.RecordQueriers = obj;
-			this.BuiledEvent(this._Feature);
+			_StorageUser.QueryProvider<IRecordHandler>().Supply -= _RecordQueriers;
+			_Feature.RecordHandler = obj;
+
+			OnBuiledEvent(_Feature);
 		}
 	}
 }

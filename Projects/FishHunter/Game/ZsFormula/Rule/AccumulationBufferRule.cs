@@ -1,18 +1,6 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AccumulationBufferRule.cs" company="Regulus Framework">
-//   Regulus Framework
-// </copyright>
-// <summary>
-//   累積buffer
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using VGame.Project.FishHunter.Common.Datas.FishStage;
+﻿
+using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.ZsFormula.Data;
-
-#endregion
 
 namespace VGame.Project.FishHunter.ZsFormula.Rule
 {
@@ -21,27 +9,34 @@ namespace VGame.Project.FishHunter.ZsFormula.Rule
 	/// </summary>
 	public class AccumulationBufferRule
 	{
-		private readonly StageDataVisit _StageDataVisit;
+		private readonly PlayerRecord _PlayerRecord;
 
-		public AccumulationBufferRule(StageDataVisit stage_data_visit)
+		private readonly HitRequest _Request;
+
+		private readonly FishStageVisitor _StageVisitor;
+
+		public AccumulationBufferRule(FishStageVisitor stage_visitor, HitRequest request, PlayerRecord player_record)
 		{
-			_StageDataVisit = stage_data_visit;
+			_StageVisitor = stage_visitor;
+			_Request = request;
+			_PlayerRecord = player_record;
 		}
 
-		public void Run(int bet, Player.Data player_data)
+
+		public void Run()
 		{
 			for (var i = StageBuffer.BUFFER_TYPE.NORMAL; i < StageBuffer.BUFFER_TYPE.COUNT; ++i)
 			{
-				var data = _StageDataVisit.FindBuffer(_StageDataVisit.NowUseBlock, i);
+				var data = _StageVisitor.NowData.FindBuffer(_StageVisitor.NowBlock, i);
 
-				_AddBufferRate(data, bet);
+				_AddBufferRate(data, _Request.WeaponData.WepBet);
 			}
 
-			_StageDataVisit.NowUseData.RecodeData.PlayTimes += 1;
-			_StageDataVisit.NowUseData.RecodeData.PlayTotal += bet;
+			_StageVisitor.NowData.RecordData.PlayTimes += 1;
+			_StageVisitor.NowData.RecordData.PlayTotal += _Request.WeaponData.WepBet;
 
-			player_data.RecodeData.PlayTimes += 1;
-			player_data.RecodeData.PlayTotal += bet;
+			_PlayerRecord.FindStageRecord(_StageVisitor.NowData.StageId).PlayTimes += 1;
+			_PlayerRecord.FindStageRecord(_StageVisitor.NowData.StageId).PlayTotal += _Request.WeaponData.WepBet;
 		}
 
 		private void _AddBufferRate(StageBuffer data, int bet)
@@ -51,8 +46,6 @@ namespace VGame.Project.FishHunter.ZsFormula.Rule
 			{
 				data.Buffer += data.Count / 1000;
 				data.Count = data.Count % 1000;
-
-				
 			}
 		}
 	}

@@ -3,7 +3,7 @@
 //   Regulus Framework
 // </copyright>
 // <summary>
-//   Defines the NatureBufferChancesTable type.
+//   ¦ÛµMbufferªí
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 using System.Collections.Generic;
@@ -16,22 +16,30 @@ namespace VGame.Project.FishHunter.ZsFormula.Data
 {
 	public class NatureBufferChancesTable : RangeChancesTable<int>
 	{
-		public Dictionary<int, Data> Datas { get; private set; }
-
 		public NatureBufferChancesTable(Data[] datas) : base(datas)
 		{
 		}
 
-		public Data Find(int id)
+		public NatureBufferChancesTable() : base()
 		{
-			this.Datas = this._Datas.ToDictionary(x => x.Key);
-			return this.Datas[id];
+			_Datas = new Data[]
+			{
+				new ChancesTable<int>.Data(-3, -500),
+				new ChancesTable<int>.Data(-2, -150),
+				new ChancesTable<int>.Data(-1, -100),
+				new ChancesTable<int>.Data(0, -50),
+				new ChancesTable<int>.Data(1, -30),
+				new ChancesTable<int>.Data(2, 0),
+				new ChancesTable<int>.Data(3, 20),
+				new ChancesTable<int>.Data(4, 50),
+				new ChancesTable<int>.Data(5, 100),
+				new ChancesTable<int>.Data(6, 150),
+			};
 		}
 
-		public int FindValue(int id)
+		public IEnumerable<Data> Get()
 		{
-			var datas = this._Datas.ToDictionary(x => x.Key);
-			return (int)datas[id].Value;
+			return _Datas;
 		}
 	}
 }

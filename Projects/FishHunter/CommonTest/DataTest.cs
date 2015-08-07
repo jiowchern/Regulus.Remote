@@ -33,7 +33,7 @@ namespace GameTest
 		[TestMethod]
 		public void TestValidRecord()
 		{
-			var record = new Record();
+			var record = new PlayerRecord();
 
 			Assert.AreNotEqual(null, record.Id);
 			Assert.AreEqual(0, record.Money);

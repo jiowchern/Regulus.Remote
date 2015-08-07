@@ -7,7 +7,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace VGame.Project.FishHunter.Common.Datas.FishStage
+namespace VGame.Project.FishHunter.Common.Data
 {
 	/// <summary>
 	///     The data.
@@ -67,28 +67,27 @@ namespace VGame.Project.FishHunter.Common.Datas.FishStage
 
 		public BufferValue BufferTempValue { get; set; }
 
-		public StageBuffer(
-			BUFFER_BLOCK buffer_block,
-			BUFFER_TYPE buffer_type,
-			long buffer,
-			long rate,
-			long count,
-			long top,
-			long gate)
+		public StageBuffer(BUFFER_BLOCK buffer_block, BUFFER_TYPE buffer_type)
 		{
 			BufferBlock = buffer_block;
 			BufferType = buffer_type;
-			Buffer = buffer;
-			Rate = rate;
-			Count = count;
-			Top = top;
-			Gate = gate;
+			Buffer = 0;
+			Rate = 0;
+			Count = 0;
+			Top = 0;
+			Gate = 0;
+			
 			BufferTempValue = new BufferValue();
+		}
+
+		public StageBuffer()
+		{
+			throw new System.NotImplementedException();
 		}
 
 		public class BufferValue
 		{
-			public int PlayerTime { get; set; }
+			public int FireCount { get; set; }
 
 			public int AverageValue { get; set; }
 

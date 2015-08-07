@@ -1,23 +1,10 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="HitHandler.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the HitHandler type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Extension;
+﻿using Regulus.Extension;
 using Regulus.Framework;
 using Regulus.Utility;
 
-using VGame.Project.FishHunter.Common;
+
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
-
-#endregion
 
 namespace FormulaUserBot
 {
@@ -25,18 +12,18 @@ namespace FormulaUserBot
 	{
 		public static double Interval = 1.0f / 20.0;
 
+		private readonly HitRequest _Request;
+
 		private readonly IFishStage _Stage;
 
 		private readonly TimeCounter _TimeCounter;
 
 		private bool _Enable;
 
-		private HitRequest _Request;
-
 		public HitHandler(IFishStage _Stage, HitRequest request)
 		{
 			this._Stage = _Stage;
-			this._Request = request;
+			_Request = request;
 			_Enable = true;
 			_TimeCounter = new TimeCounter();
 		}
@@ -60,12 +47,19 @@ namespace FormulaUserBot
 
 		private void _Response(HitResponse obj)
 		{
-			if (obj.FishID == _Request.FishID && obj.WepID == _Request.WepID)
+			foreach(var fishData in _Request.FishDatas)
 			{
-				_Enable = false;
+				if(obj.FishID == fishData.FishID && obj.WepID == _Request.WeaponData.WepID)
+				{
+					_Enable = false;
 
-				Singleton<Log>.Instance.WriteLine(string.Format("時間{2}:請求{0}\n回應{1}", _Request.ShowMembers(), obj.ShowMembers(), 
-					_TimeCounter.Second));
+					Singleton<Log>.Instance.WriteLine(
+						string.Format(
+							"時間{2}:請求{0}\n回應{1}", 
+							_Request.ShowMembers(), 
+							obj.ShowMembers(), 
+							_TimeCounter.Second));
+				}
 			}
 		}
 	}

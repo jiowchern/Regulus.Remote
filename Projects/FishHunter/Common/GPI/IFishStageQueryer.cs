@@ -16,12 +16,16 @@ namespace VGame.Project.FishHunter.Common.GPI
 	public interface IFishStageQueryer
 	{
 		/// <summary>
-		///     查詢請求
+		/// 查詢請求
 		/// </summary>
-		/// <param name="玩家id"></param>
-		/// <param name="魚場id"></param>
-		/// <returns>魚場</returns>
-		Value<IFishStage> Query(long player_id, byte fish_stage);
+		/// <param name="player_id">
+		/// </param>
+		/// <param name="fish_stage">
+		/// </param>
+		/// <returns>
+		/// 魚場
+		/// </returns>
+		Value<IFishStage> Query(long player_id, int fish_stage);
 	}
 
 }

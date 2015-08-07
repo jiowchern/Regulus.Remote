@@ -59,7 +59,7 @@ namespace VGame.Project.FishHunter.Formula
 
 			var fishStageQueryer = factory.Create(_User.FishStageQueryerProvider);
 			fishStageQueryer.Bind("Query[result,player_id,fish_stage]", 
-				gpi => { return new CommandParamBuilder().BuildRemoting<long, byte, IFishStage>(gpi.Query, _QueryResult); });
+				gpi => { return new CommandParamBuilder().BuildRemoting<long, byte, IFishStage>((player_id, fish_stage) => gpi.Query((byte)player_id, fish_stage), _QueryResult); });
 
 			_Command.Register("Package", _ShowPackageState);
 		}

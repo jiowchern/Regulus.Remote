@@ -1,24 +1,14 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="RunFormulaStage.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the RunFormulaStage type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
+﻿
 using Regulus.Collection;
 using Regulus.Remoting;
 using Regulus.Utility;
-
-#endregion
 
 namespace VGame.Project.FishHunter.Formula
 {
 	internal class RunFormulaStage : IStage
 	{
+		public delegate void DoneCallback();
+
 		public event DoneCallback DoneEvent;
 
 		private readonly Queue<ISoulBinder> _Binders;
@@ -29,41 +19,34 @@ namespace VGame.Project.FishHunter.Formula
 
 		private ICore _Core
 		{
-			get { return this._Center; }
+			get { return _Center; }
 		}
 
-		public RunFormulaStage(StorageController controller, Queue<ISoulBinder> binders) : this(controller)
+		public RunFormulaStage(ExpansionFeature expansion_feature, Queue<ISoulBinder> binders)
 		{
-			// TODO: Complete member initialization        
-			this._Binders = binders;
-		}
-
-		private RunFormulaStage(StorageController controller)
-		{
-			this._Updater = new Updater();
-			this._Center = new Center(controller);
+			_Binders = binders;
+			_Updater = new Updater();
+			_Center = new Center(expansion_feature);
 		}
 
 		void IStage.Enter()
 		{
-			this._Updater.Add(this._Center);
+			_Updater.Add(_Center);
 		}
 
 		void IStage.Leave()
 		{
-			this._Updater.Shutdown();
+			_Updater.Shutdown();
 		}
 
 		void IStage.Update()
 		{
-			this._Updater.Working();
+			_Updater.Working();
 
-			foreach (var binder in this._Binders.DequeueAll())
+			foreach (var binder in _Binders.DequeueAll())
 			{
-				this._Core.AssignBinder(binder);
+				_Core.AssignBinder(binder);
 			}
 		}
-
-		public delegate void DoneCallback();
 	}
 }

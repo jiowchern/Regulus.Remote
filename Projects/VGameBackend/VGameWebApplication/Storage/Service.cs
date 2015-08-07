@@ -48,7 +48,7 @@ namespace VGameWebApplication.Storage
 
 		public IAccountFinder AccountFinder { get; private set; }
 
-		public IRecordQueriers RecodeQueriers { get; private set; }
+		public IRecordHandler RecordHandler { get; private set; }
 
 		public ITradeNotes TradeNotes { get; private set; }
 
@@ -91,7 +91,7 @@ namespace VGameWebApplication.Storage
 						this._GetAccountFinder();
 					}
 
-					this._GetAllAccountRecode();
+					this._GetAllAccountRecord();
 					return true;
 				}
 
@@ -156,16 +156,15 @@ namespace VGameWebApplication.Storage
 			this.AccountFinder = provider.Ghosts[0];
 		}
 
-		private void _GetAllAccountRecode()
+		private void _GetAllAccountRecord()
 		{
-			// var accounts = AccountManager.QueryAllAccount().WaitResult();
-			var provider = this._User.QueryProvider<IRecordQueriers>();
+			var provider = this._User.QueryProvider<IRecordHandler>();
 			while (provider.Ghosts.Length <= 0)
 			{
 				this._Wait();
 			}
 
-			this.RecodeQueriers = provider.Ghosts[0];
+			this.RecordHandler = provider.Ghosts[0];
 
 			var p = this._User.QueryProvider<ITradeNotes>();
 			while (p.Ghosts.Length <= 0)
@@ -174,8 +173,6 @@ namespace VGameWebApplication.Storage
 			}
 
 			this.TradeNotes = p.Ghosts[0];
-
-			// int money = provider.Ghosts[0].Load(accounts[0].Key).WaitResult().Money;
 		}
 
 		public void Release()

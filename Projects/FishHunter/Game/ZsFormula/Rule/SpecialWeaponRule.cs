@@ -1,24 +1,8 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SpecialWeaponRule.cs" company="Regulus Framework">
-//   Regulus Framework
-// </copyright>
-// <summary>
-//   特殊武器的處理
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
-
-
-using VGame.Project.FishHunter.Common.Datas.FishStage;
+﻿using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.ZsFormula.Data;
 
 
 using Random = Regulus.Utility.Random;
-
-#endregion
 
 namespace VGame.Project.FishHunter.ZsFormula.Rule
 {
@@ -27,54 +11,93 @@ namespace VGame.Project.FishHunter.ZsFormula.Rule
 	/// </summary>
 	public class SpecialWeaponRule
 	{
-		private readonly StageDataVisit _StageDataVisit;
+		private readonly PlayerRecord _PlayerRecord;
 
-		public Func<int> Win { get; private set; }
+		private readonly HitRequest _Request;
 
-		public SpecialWeaponRule(StageDataVisit stage_data_visit)
+		private readonly FishStageVisitor _StageVisitor;
+
+		public SpecialWeaponRule(FishStageVisitor stage_visitor, HitRequest request, PlayerRecord player_record)
 		{
-			_StageDataVisit = stage_data_visit;
+			_StageVisitor = stage_visitor;
+			_Request = request;
+			_PlayerRecord = player_record;
 		}
 
-		public void Run(AttackData attack_data)
+		public HitResponse Run()
 		{
-			var weaponData = new WeaponDataTable().FindWeaponData(attack_data.WeaponData.WeaponType);
-
-			var gate = (int)weaponData.Power; // 特武威力
-			var gate2 = 0;
-
-			gate *= 0x0FFFFFFF;
-
-			gate /= attack_data.TotalHitOdds; // 总倍数
-
-			var oddsRule = new OddsRuler(
-				attack_data.FishData,
-				_StageDataVisit.FindBuffer(_StageDataVisit.NowUseBlock, StageBuffer.BUFFER_TYPE.NORMAL))
-				.RuleResult();
-
-			gate /= oddsRule;
-
-			if (gate > 0x0FFFFFFF)
+			foreach (var fishData in _Request.FishDatas)
 			{
-				gate2 = 0x10000000; // > 100%
-			}
-			else
-			{
-				gate2 = gate;
-			}
+				var specialWeapon = _PlayerRecord.FindStageRecord(_StageVisitor.NowData.StageId)
+					.SpecialWeaponDatas.Find(x => x.WeaponType == _Request.WeaponData.WeaponType);
 
-			if (attack_data.WeaponData.WeaponType == WeaponDataTable.Data.WEAPON_TYPE.TYPE_106)
-			{
-				gate2 = 0x10000000; // > 100% 
-			}
+				var gate = (int)specialWeapon.Power; // 特武威力
 
-			if (Random.Instance.NextInt(0, 0x10000000) >= gate2)
-			{
-				return;
-			}
+				var gate2 = 0;
 
-			//return win
-			Win = () => attack_data.FishData.Odds * attack_data.GetWeaponBet() * oddsRule;
+				gate *= 0x0FFFFFFF;
+
+				gate /= _Request.WeaponData.TotalHitOdds; // 总倍数
+
+				var bufferData = _StageVisitor.NowData.FindBuffer(_StageVisitor.NowBlock, StageBuffer.BUFFER_TYPE.NORMAL);
+
+				var oddsRule = new OddsRuler(fishData, bufferData).RuleResult();
+
+				gate /= oddsRule;
+
+				if (gate > 0x0FFFFFFF)
+				{
+					gate2 = 0x10000000; // > 100%
+				}
+				else
+				{
+					gate2 = gate;
+				}
+
+				if (_Request.WeaponData.WeaponType == WEAPON_TYPE.BIG_OCTOPUS_BOMB)
+				{
+					gate2 = 0x10000000; // > 100% 
+				}
+
+				if (Random.Instance.NextInt(0, 0x10000000) >= gate2)
+				{
+
+					return _Miss(fishData, _Request.WeaponData);
+				}
+
+				var win = fishData.FishOdds * _Request.WeaponData.WepBet * oddsRule;
+
+				new DiedHandleRule(_StageVisitor, _PlayerRecord, win).Run();
+				
+				return _Die(fishData, _Request.WeaponData);
+			}
+			return new HitResponse();
+		}
+
+		private HitResponse _Die(RequsetFishData fish_data, RequestWeaponData weapon_data)
+		{
+			var bufferData = _StageVisitor.NowData.FindBuffer(_StageVisitor.NowBlock, StageBuffer.BUFFER_TYPE.NORMAL);
+			return new HitResponse
+			{
+				WepID = weapon_data.WepID, 
+				FishID = fish_data.FishID, 
+				DieResult = FISH_DETERMINATION.DEATH, 
+				SpecialWeaponType = _PlayerRecord.NowSpecialWeaponData.WeaponType, 
+				WUp = new OddsRuler(fish_data, bufferData).RuleResult()
+			};
+		}
+
+		private HitResponse _Miss(RequsetFishData fish_data, RequestWeaponData weapon_data)
+		{
+			var bufferData = _StageVisitor.NowData.FindBuffer(_StageVisitor.NowBlock, StageBuffer.BUFFER_TYPE.NORMAL);
+			return new HitResponse
+			{
+				WepID = weapon_data.WepID, 
+				FishID = fish_data.FishID, 
+				DieResult = FISH_DETERMINATION.SURVIVAL, 
+				SpecialWeaponType = _PlayerRecord.NowSpecialWeaponData.WeaponType, 
+				WUp = new OddsRuler(fish_data, bufferData).RuleResult()
+			};
 		}
 	}
 }

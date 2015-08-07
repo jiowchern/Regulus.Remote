@@ -7,22 +7,27 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace VGame.Project.FishHunter.Common.Datas.FishStage
+namespace VGame.Project.FishHunter.Common.Data
 {
 	public class SpecialWeaponData
 	{
-		public bool IsUsed { get; set; }
+		public WEAPON_TYPE WeaponType { get; set; }
+		public bool HaveWeapon { get; set; }
 
 		public int SpId { get; set; }
 
-		public int WinFrequency { get; set; } // 6
+		public float Power { get; set; }
+
+		public int WinFrequency { get; set; }
 
 		public int WinScore { get; set; }
 
-		public SpecialWeaponData(int sp_id)
+		public SpecialWeaponData(WEAPON_TYPE weapon_type , int sp_id, float power)
 		{
+			WeaponType = weapon_type;
 			SpId = sp_id;
-			IsUsed = false;
+			Power = power;
+			HaveWeapon = false;
 			WinFrequency = 0;
 			WinScore = 0;
 		}

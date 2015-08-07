@@ -40,7 +40,7 @@ namespace VGame.Project.FishHunter.Common.GPI
 		/// <summary>
 		///     魚場id
 		/// </summary>
-		byte FishStage { get; }
+		int FishStage { get; }
 
 		/// <summary>
 		///     判定請求

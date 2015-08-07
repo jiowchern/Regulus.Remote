@@ -17,7 +17,7 @@ namespace GameTest.ZsFormulaTest
 	[Scope(Feature = "NatureBufferChancesTable")]
 	public class NatureBufferChancesTableSteps
 	{
-		private NatureBufferChancesTable _NatureBufferChancesTable;
+		//private NatureBufferChancesTable _NatureBufferChancesTable;
 
 		[Given(@"buffer資料是")]
 		public void GivenBuffer資料是(Table table)

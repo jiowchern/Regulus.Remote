@@ -9,6 +9,9 @@
 
 #region Test_Region
 
+using System.Collections.Generic;
+
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using NSubstitute;
@@ -60,13 +63,24 @@ namespace UnitTest
 			var formula = new HitTest(random);
 			random.NextLong(Arg.Any<long>(), Arg.Any<long>()).Returns(0xffffffe);
 
-			var request = new HitRequest();
-			request.FishID = 1;
-			request.FishOdds = 1;
-			request.TotalHits = 1;
-			request.WepBet = 1;
-			request.WepOdds = 1;
-			request.WepID = 1;
+			var fishs = new List<RequsetFishData>
+			{
+				new RequsetFishData
+				{
+					FishID = 1,
+					FishOdds = 1,
+				}
+			};
+			var weapon = new RequestWeaponData
+			{
+				TotalHits = 1,
+				WepBet = 1,
+				WepOdds = 1,
+				WepID = 1,
+			};
+
+			var request = new HitRequest(fishs.ToArray(), weapon);
+			
 
 			var response = formula.Request(request);
 			Assert.AreEqual(1, response.WepID);
@@ -82,17 +96,27 @@ namespace UnitTest
 			var formula = new HitTest(random);
 			random.NextLong(Arg.Any<long>(), Arg.Any<long>()).Returns(0x0fffffff / 25);
 
-			var request = new HitRequest();
-			request.FishID = 1;
-			request.FishOdds = 25;
-			request.TotalHits = 1;
-			request.WepBet = 1;
-			request.WepOdds = 1;
-			request.WepID = 1;
+			var fishs = new List<RequsetFishData>
+			{
+				new RequsetFishData
+				{
+					FishID = 1,
+					FishOdds = 25,
+				}
+			};
+			var weapon = new RequestWeaponData
+			{
+				TotalHits = 1,
+				WepBet = 1,
+				WepOdds = 1,
+				WepID = 1,
+			};
+
+			var request = new HitRequest(fishs.ToArray(), weapon);
 
 			var response = formula.Request(request);
 			Assert.AreEqual(1, response.WepID);
-			Assert.AreEqual(0, response.SpecAsn);
+			Assert.AreEqual(WEAPON_TYPE.INVALID, response.SpecialWeaponType);
 			Assert.AreEqual(1, response.FishID);
 			Assert.AreEqual(FISH_DETERMINATION.SURVIVAL, response.DieResult);
 		}
@@ -105,13 +129,24 @@ namespace UnitTest
 			var formula = new HitTest(random);
 			random.NextLong(Arg.Any<long>(), Arg.Any<long>()).Returns(0x0fffffff / 26); // 9d89d8
 
-			var request = new HitRequest();
-			request.FishID = 1;
-			request.FishOdds = 25;
-			request.TotalHits = 1;
-			request.WepBet = 1;
-			request.WepOdds = 1;
-			request.WepID = 1;
+
+			var fishs = new List<RequsetFishData>
+			{
+				new RequsetFishData
+				{
+					FishID = 1,
+					FishOdds = 25,
+				}
+			};
+			var weapon = new RequestWeaponData
+			{
+				TotalHits = 1,
+				WepBet = 1,
+				WepOdds = 1,
+				WepID = 1,
+			};
+
+			var request = new HitRequest(fishs.ToArray(), weapon);
 
 			var response = formula.Request(request); // a3d70a
 			Assert.AreEqual(1, response.WepID);
@@ -126,17 +161,28 @@ namespace UnitTest
 
 			var formula = new HitTest(random);
 			random.NextLong(Arg.Any<long>(), Arg.Any<long>()).Returns(0xfffffff);
-			var request = new HitRequest();
-			request.FishID = 1;
-			request.FishOdds = 1;
-			request.TotalHits = 1;
-			request.WepBet = 1;
-			request.WepOdds = 1;
-			request.WepID = 1;
+
+			var fishs = new List<RequsetFishData>
+			{
+				new RequsetFishData
+				{
+					FishID = 1,
+					FishOdds = 1,
+				}
+			};
+			var weapon = new RequestWeaponData
+			{
+				TotalHits = 1,
+				WepBet = 1,
+				WepOdds = 1,
+				WepID = 1,
+			};
+
+			var request = new HitRequest(fishs.ToArray(), weapon);
 
 			var response = formula.Request(request);
 			Assert.AreEqual(1, response.WepID);
-			Assert.AreEqual(0, response.SpecAsn);
+			Assert.AreEqual(WEAPON_TYPE.INVALID, response.SpecialWeaponType);
 			Assert.AreEqual(1, response.FishID);
 			Assert.AreEqual(FISH_DETERMINATION.SURVIVAL, response.DieResult);
 		}

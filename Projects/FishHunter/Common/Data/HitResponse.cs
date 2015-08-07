@@ -9,16 +9,22 @@ namespace VGame.Project.FishHunter.Common.Data
 	public struct HitResponse
 	{
 		/// <summary>
-		///     死亡结果
+		///     子弹编号
 		/// </summary>
-		[ProtoMember(3)]
-		public FISH_DETERMINATION DieResult;
+		[ProtoMember(1)]
+		public int WepID;
 
 		/// <summary>
 		///     鱼的编号
 		/// </summary>
 		[ProtoMember(2)]
-		public short FishID;
+		public int FishID;
+
+		/// <summary>
+		///     死亡结果
+		/// </summary>
+		[ProtoMember(3)]
+		public FISH_DETERMINATION DieResult;
 
 		/// <summary>
 		///     取得特殊武器。
@@ -26,13 +32,7 @@ namespace VGame.Project.FishHunter.Common.Data
 		///     有取得特殊武器从“2”开始。对应特武编号。
 		/// </summary>
 		[ProtoMember(4)]
-		public byte SpecAsn;
-
-		/// <summary>
-		///     子弹编号
-		/// </summary>
-		[ProtoMember(1)]
-		public short WepID;
+		public WEAPON_TYPE SpecialWeaponType;
 
 		/// <summary>
 		///     1 = 沒有翻倍

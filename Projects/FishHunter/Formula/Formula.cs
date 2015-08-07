@@ -172,13 +172,13 @@ namespace VGame.Project.FishHunter.Formula
 		private void _ToBuildStorageController()
 		{
 			var stage = new BuildStorageControllerStage(_StorageUser);
-			stage.DoneEvent += _ToRunFormula;
+			stage.OnDoneEvent += _ToRunFormula;
 			_Machine.Push(stage);
 		}
 
-		private void _ToRunFormula(StorageController controller)
+		private void _ToRunFormula(ExpansionFeature expansion_feature)
 		{
-			var stage = new RunFormulaStage(controller, _Binders);
+			var stage = new RunFormulaStage(expansion_feature, _Binders);
 			stage.DoneEvent += _ToShutdown;
 			_Machine.Push(stage);
 		}

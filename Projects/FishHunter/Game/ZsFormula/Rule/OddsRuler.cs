@@ -1,36 +1,27 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="OddsRuler.cs" company="Regulus Framework">
-//   Regulus Framework
-// </copyright>
-// <summary>
-//   00以上为特殊鱼（死亡后，有爆炸效果的），直接变成特殊武器
-//   海绵宝宝x80、电鳗x150、贪食蛇x120、铁球x200、小章鱼x200、大章鱼xN（必死）
-//   翻倍規則檢查,
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 
+using Regulus.Game;
 using Regulus.Utility;
 
-using VGame.Project.FishHunter.Common.Datas.FishStage;
+
+using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.ZsFormula.Data;
 
 namespace VGame.Project.FishHunter.ZsFormula.Rule
 {
 	/// <summary>
-	///     00以上为特殊鱼（死亡后，有爆炸效果的），直接变成特殊武器
-	///     海绵宝宝x80、电鳗x150、贪食蛇x120、铁球x200、小章鱼x200、大章鱼xN（必死）
-	///     翻倍規則檢查,
+	///     翻倍規則檢查
 	/// </summary>
 	public class OddsRuler
 	{
 		private readonly StageBuffer _BufferData;
 
-		private readonly FishDataTable.Data _FishData;
+		private readonly RequsetFishData _FishData;
 
-		public OddsRuler(FishDataTable.Data fish_data, StageBuffer buffer_data)
+		public OddsRuler(RequsetFishData fish_data, StageBuffer buffer_data)
 		{
 			_FishData = fish_data;
 			_BufferData = buffer_data;
@@ -38,51 +29,55 @@ namespace VGame.Project.FishHunter.ZsFormula.Rule
 
 		public int RuleResult()
 		{
-			_CheckFishTypeToOddsRule(_FishData);
+			if (!_CheckFishTypeToOddsRule(_FishData))
+			{
+				return 1;
+			}
 
-			_CheckStageBufferToOddsRule(_BufferData);
+			if (!_CheckStageBufferToOddsRule(_BufferData))
+			{
+				return 1;
+			}
 
-			var wup = _CheckMultipleTableToOddsRule();
-
-			return _CheckFishMultipleToOddsRule(_FishData, wup);
+			return _CheckMultipleTableToOddsRule();
 		}
 
-		private bool _CheckFishTypeToOddsRule(FishDataTable.Data fish_data)
+		private bool _CheckFishTypeToOddsRule(RequsetFishData fish_data)
 		{
-			if ((int)fish_data.FishType >= 100)
+			if (fish_data.FishType >= FISH_TYPE.SPECIAL_FISH_BEGIN)
 			{
 				return false; // 特殊鱼 不翻倍
 			}
 
-			if (fish_data.Odds < 10)
+			if (fish_data.FishOdds < 10)
 			{
 				return false; // 小鱼 不翻倍 
 			}
 
-			if (fish_data.FishType == FishDataTable.Data.FISH_TYPE.DEF_100_A)
+			if (fish_data.FishType == FISH_TYPE.BLUE_WHALE)
 			{
-				var randNumber = Random.Instance.NextInt(0, 1000) % 1000;
+				var randNumber = Random.Instance.NextInt(0, 1000);
 				if (randNumber < 500)
 				{
-					return false;
+					return false; // 藍鯨 50%不翻倍 
 				}
 			}
 
-			if (fish_data.FishType == FishDataTable.Data.FISH_TYPE.DEF_200_A)
+			if (fish_data.FishType == FISH_TYPE.RED_WHALE)
 			{
-				var randNumber = Random.Instance.NextInt(0, 1000) % 1000;
+				var randNumber = Random.Instance.NextInt(0, 1000);
 				if (randNumber < 750)
 				{
-					return false;
+					return false; // 藍鯨 75%不翻倍
 				}
 			}
 
-			if (fish_data.FishType == FishDataTable.Data.FISH_TYPE.DEF_400_A)
+			if (fish_data.FishType == FISH_TYPE.GOLDEN_WHALE)
 			{
-				var randNumber = Random.Instance.NextInt(0, 1000) % 1000;
+				var randNumber = Random.Instance.NextInt(0, 1000);
 				if (randNumber < 875)
 				{
-					return false;
+					return false; // 金鯨 87%不翻倍
 				}
 			}
 
@@ -91,13 +86,13 @@ namespace VGame.Project.FishHunter.ZsFormula.Rule
 
 		private bool _CheckStageBufferToOddsRule(StageBuffer data)
 		{
-			var natrue = new NatureBufferChancesTable(null);
+			var natrue = new NatureBufferChancesTable().Get().ToDictionary(x=>x.Key);
 
 			var hiLoRate = data.BufferTempValue.HiLoRate;
 
 			var rand = Random.Instance.NextInt(0, 1000);
 
-			if (hiLoRate <= natrue.FindValue(-3))
+			if (hiLoRate <= natrue[-3].Value)
 			{
 				if (rand < 750)
 				{
@@ -105,7 +100,7 @@ namespace VGame.Project.FishHunter.ZsFormula.Rule
 					return false;
 				}
 			}
-			else if (hiLoRate <= natrue.FindValue(-2))
+			else if (hiLoRate <= natrue[-2].Value)
 			{
 				if (rand < 500)
 				{
@@ -113,7 +108,7 @@ namespace VGame.Project.FishHunter.ZsFormula.Rule
 					return false;
 				}
 			}
-			else if (hiLoRate <= natrue.FindValue(-1))
+			else if (hiLoRate <= natrue[-1].Value)
 			{
 				if (rand < 250)
 				{
@@ -121,7 +116,7 @@ namespace VGame.Project.FishHunter.ZsFormula.Rule
 					return false;
 				}
 			}
-			else if (hiLoRate <= natrue.FindValue(0))
+			else if (hiLoRate <= natrue[0].Value)
 			{
 				if (rand < 100)
 				{
@@ -136,32 +131,37 @@ namespace VGame.Project.FishHunter.ZsFormula.Rule
 		private int _CheckMultipleTableToOddsRule()
 		{
 			var rand = Random.Instance.NextInt(0, 1000);
-			var multiple = new MultipleTable(null);
 
-			var lastKey = 0;
+			var oddsTable = new OddsTable().Get();
 
-			foreach (var data in multiple.Datas.Values)
+			OddsTable.Data temp = null;
+
+			foreach (var d in oddsTable)
 			{
-				lastKey = data.Multiple;
-				if (rand < data.Value)
+				temp = d;
+				if (rand < d.Odds)
 				{
 					break;
 				}
 
-				rand -= data.Value;
+				rand -= d.Odds;
 			}
 
-			return multiple.Datas.Last(x => x.Value.Multiple != lastKey).Value.Value;
+			Debug.Assert(temp != null, "temp != null");
+
+			return !_CheckFishToOddsRule(_FishData, temp.Number)
+				? 1
+				: temp.Number;
 		}
 
-		private int _CheckFishMultipleToOddsRule(FishDataTable.Data fish_data, int wup)
+		private bool _CheckFishToOddsRule(RequsetFishData fish_data, int wup)
 		{
-			if ((fish_data.Odds < 50) && (wup == 10))
+			if ((fish_data.FishOdds < 50) && (wup == 10))
 			{
-				wup = 1;
+				return false;
 			}
 
-			return wup;
+			return true;
 		}
 	}
 }

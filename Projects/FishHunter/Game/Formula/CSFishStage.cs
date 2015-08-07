@@ -9,10 +9,8 @@
 
 using System;
 
-using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
-
 
 using Random = Regulus.Utility.Random;
 
@@ -26,27 +24,27 @@ namespace VGame.Project.FishHunter.Formula
 
 		private readonly long _AccountId;
 
-		private readonly byte _FishStage;
+		private readonly int _FishStage;
 
 		private readonly HitBase _Formula;
 
-		public CsFishStage(long player_id, byte stage_id)
+		public CsFishStage(long player_id, int stage_id)
 		{
-			this._Formula = new HitTest(Random.Instance);
-			this._AccountId = player_id;
-			this._FishStage = stage_id;
+			_Formula = new HitTest(Random.Instance);
+			_AccountId = player_id;
+			_FishStage = stage_id;
 		}
 
-		byte IFishStage.FishStage
+		int IFishStage.FishStage
 		{
-			get { return this._FishStage; }
+			get { return _FishStage; }
 		}
 
 		void IFishStage.Hit(HitRequest request)
 		{
-			var response = this._Formula.Request(request);
+			var response = _Formula.Request(request);
 
-			this._OnHitResponseEvent.Invoke(response);
+			_OnHitResponseEvent.Invoke(response);
 
 			// this._MakeLog(request, response);
 		}
@@ -59,13 +57,13 @@ namespace VGame.Project.FishHunter.Formula
 
 		event Action<HitResponse> IFishStage.OnHitResponseEvent
 		{
-			add { this._OnHitResponseEvent += value; }
-			remove { this._OnHitResponseEvent -= value; }
+			add { _OnHitResponseEvent += value; }
+			remove { _OnHitResponseEvent -= value; }
 		}
 
 		long IFishStage.AccountId
 		{
-			get { return this._AccountId; }
+			get { return _AccountId; }
 		}
 	}
 }

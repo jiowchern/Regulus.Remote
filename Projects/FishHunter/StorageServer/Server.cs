@@ -1,14 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Server.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Server type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,11 +10,9 @@ using Regulus.Framework;
 using Regulus.Remoting;
 using Regulus.Utility;
 
-using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
-
-#endregion
+using VGame.Project.FishHunter.ZsFormula.Data;
 
 namespace VGame.Project.FishHunter.Storage
 {
@@ -107,7 +95,7 @@ namespace VGame.Project.FishHunter.Storage
 			return new Value<Account>(null);
 		}
 
-        Value<ACCOUNT_REQUEST_RESULT> IAccountCreator.Create(Account account)
+		Value<ACCOUNT_REQUEST_RESULT> IAccountCreator.Create(Account account)
 		{
 			var result = _Find(account.Name);
 			if (result != null)
@@ -119,7 +107,7 @@ namespace VGame.Project.FishHunter.Storage
 			return ACCOUNT_REQUEST_RESULT.OK;
 		}
 
-        Value<ACCOUNT_REQUEST_RESULT> IAccountManager.Delete(string account)
+		Value<ACCOUNT_REQUEST_RESULT> IAccountManager.Delete(string account)
 		{
 			var result = _Find(account);
 			if (result != null && _Database.Remove<Account>(a => a.Id == result.Id))
@@ -130,7 +118,7 @@ namespace VGame.Project.FishHunter.Storage
 			return ACCOUNT_REQUEST_RESULT.NOTFOUND;
 		}
 
-        Value<Account[]> IAccountManager.QueryAllAccount()
+		Value<Account[]> IAccountManager.QueryAllAccount()
 		{
 			return _QueryAllAccount();
 		}
@@ -150,13 +138,13 @@ namespace VGame.Project.FishHunter.Storage
 			return _Find(accountId);
 		}
 
-		Value<Record> IRecordQueriers.Load(Guid id)
+		Value<PlayerRecord> IRecordHandler.Load(Guid id)
 		{
-			var val = new Value<Record>();
+			var val = new Value<PlayerRecord>();
 			var account = _Find(id);
 			if (account.IsPlayer())
 			{
-				var recordTask = _Database.Find<Record>(r => r.Owner == id);
+				var recordTask = _Database.Find<PlayerRecord>(r => r.Owner == id);
 				recordTask.ContinueWith(task =>
 				{
 					if (task.Result.Count > 0)
@@ -165,7 +153,7 @@ namespace VGame.Project.FishHunter.Storage
 					}
 					else
 					{
-						var newRecord = new Record
+						var newRecord = new PlayerRecord
 						{
 							Owner = id, 
 							Money = 100
@@ -183,7 +171,7 @@ namespace VGame.Project.FishHunter.Storage
 			return val;
 		}
 
-		void IRecordQueriers.Save(Record record)
+		void IRecordHandler.Save(PlayerRecord record)
 		{
 			_Database.Update(record, r => r.Id == record.Id);
 		}
@@ -259,6 +247,64 @@ namespace VGame.Project.FishHunter.Storage
 			return val;
 		}
 
+		Value<StageData> IFishStageDataHandler.Load(int stage_id)
+		{
+			var val = new Value<StageData>();
+			var t = _LoadStageData(stage_id);
+
+			t.ContinueWith(task =>
+			{
+				var data = task.Result;
+				if (data == null)
+				{
+					var stageData = new StageDataBuilder().Get(stage_id);
+					_Database.Add(stageData).Wait();
+					val.SetValue(stageData);
+				}
+				else
+				{
+					val.SetValue(data);
+				}
+			});
+			return val;
+		}
+
+		Value<bool> IFishStageDataHandler.Save(StageData data)
+		{
+			var val = new Value<bool>();
+			var t = _LoadStageData(data.StageId);
+
+			t.ContinueWith(task =>
+			{
+				var d = task.Result;
+
+				if (d == null)
+				{
+					val.SetValue(false);
+				}
+				else
+				{
+					val.SetValue(true);
+
+					_Database.Update(d, a => a.StageId == data.StageId);
+				}
+			});
+			return val;
+		}
+
+		Value<StageData> IFishStageDataHandler.Find(int stage_id)
+		{
+			var val = new Value<StageData>();
+			var t = _LoadStageData(stage_id);
+
+			t.ContinueWith(task =>
+			{
+				var data = task.Result;
+				val.SetValue(data ?? null);
+			});
+			return val;
+		}
+
 		private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
 		{
 			var ex = (Exception)e.ExceptionObject;
@@ -306,18 +352,6 @@ namespace VGame.Project.FishHunter.Storage
 			}
 		}
 
-		private void _HandleTradeRecord()
-		{
-			// _QueryAllAccount().OnValue += ((accounts) =>
-			// {
-			// foreach (var acc in accounts)
-			// {
-			// var trades = _TradeCorder.FindHistory(acc.Key);
-
-			// }
-			// );
-		}
-
 		private Account _Find(string name)
 		{
 			var task = _Database.Find<Account>(a => a.Name == name);
@@ -358,6 +392,23 @@ namespace VGame.Project.FishHunter.Storage
 			return returnTask;
 		}
 
-        
-    }
+		private Task<StageData> _LoadStageData(int stage_id)
+		{
+			var tradeTask = _Database.Find<StageData>(t => t.StageId == stage_id);
+
+			var returnTask = tradeTask.ContinueWith(
+				task =>
+				{
+					Singleton<Log>.Instance.WriteDebug("StageData Find Done.");
+					if (task.Exception != null)
+					{
+						Singleton<Log>.Instance.WriteDebug(string.Format("StageData Exception {0}.", task.Exception.ToString()));
+					}
+
+					return task.Result.FirstOrDefault();
+				});
+
+			return returnTask;
+		}
+	}
 }

@@ -1,48 +1,51 @@
-// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="WeaponTypeRule.cs" company="Regulus Framework">
-//   Regulus Framework
-// </copyright>
-// <summary>
-//   Defines the WeaponTypeRule type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
 using System;
 
 
+using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.ZsFormula.Data;
 
 namespace VGame.Project.FishHunter.ZsFormula.Rule
 {
 	public class WeaponTypeRule
 	{
-		private readonly StageDataVisit _StageDataVisit;
+		private readonly PlayerRecord _PlayerRecord;
 
-		public WeaponTypeRule(StageDataVisit stage_data_visit)
+		private readonly FishStageVisitor _StageVisitor;
+
+		private readonly RequestWeaponData _WeaponData;
+
+		private readonly int _Win;
+
+		public WeaponTypeRule(FishStageVisitor stage_visitor, RequestWeaponData weapon_data, PlayerRecord player_record, int win)
 		{
-			_StageDataVisit = stage_data_visit;
+			_StageVisitor = stage_visitor;
+			_WeaponData = weapon_data;
+			_PlayerRecord = player_record;
+			_Win = win;
 		}
 
-		public void Run(Func<int> win_func, AttackData attack_data, Player.Data player_data)
+		public void Run()
 		{
-			if (win_func == null)
+			if (_Win == 0)
 			{
 				return;
 			}
 
-			var win = win_func();
-
-			if (attack_data.WeaponData.WeaponType != WeaponDataTable.Data.WEAPON_TYPE.FREE_4)
+			if (_WeaponData.WeaponType != WEAPON_TYPE.FREE_POWER)
 			{
 				return;
 			}
 
-			var playerWeaponData = player_data.RecodeData.SpecialWeaponDatas.Find(x => x.IsUsed == false);
+			// ª±®aªº
+			var data =
+				_PlayerRecord.FindStageRecord(_StageVisitor.NowData.StageId)
+					.SpecialWeaponDatas.Find(x => x.WeaponType == _WeaponData.WeaponType);
+			data.WinScore += _Win;
 
-			playerWeaponData.WinScore += win;
-
-			var stageWeaponData = _StageDataVisit.NowUseData.RecodeData.SpecialWeaponDatas.Find(x => x.IsUsed == false);
-			stageWeaponData.WinScore += win;
-			
+			// stageªº
+			var stageWeaponData =
+				_StageVisitor.NowData.RecordData.SpecialWeaponDatas.Find(x => x.WeaponType == _WeaponData.WeaponType);
+			stageWeaponData.WinScore += _Win;
 		}
 	}
 }

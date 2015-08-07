@@ -1,20 +1,12 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="PlayStage.cs" company="Regulus Framework">
-//   Regulus Framework
-// </copyright>
-// <summary>
-//   Defines the PlayStage type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
+
 using Regulus.Remoting;
 using Regulus.Utility;
 
-using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
 
@@ -38,11 +30,9 @@ namespace VGame.Project.FishHunter.Play
 
 		private readonly IFishStage _FishStage;
 
-		private readonly Record _Money;
+		private readonly PlayerRecord _Money;
 
 		private readonly Dictionary<int, HitRequest> _Requests;
-
-		private BULLET _Bullet;
 
 		private int _DeadFishCount;
 
@@ -50,101 +40,109 @@ namespace VGame.Project.FishHunter.Play
 
 		private int _WeaponOdds;
 
-		public PlayStage(ISoulBinder binder, IFishStage fish_stage, Record money)
+		private WEAPON_TYPE _WeaponType;
+
+		public PlayStage(ISoulBinder binder, IFishStage fish_stage, PlayerRecord money)
 		{
-			this._Fishs = new List<Fish>();
-			this._Bullets = new List<Bullet>();
-			this._Requests = new Dictionary<int, HitRequest>();
-			this._Binder = binder;
-			this._FishStage = fish_stage;
-			this._DeadFishCount = 0;
-			this._Money = money;
-			this._Bullet = BULLET.WEAPON1;
+			_Fishs = new List<Fish>();
+			_Bullets = new List<Bullet>();
+			_Requests = new Dictionary<int, HitRequest>();
+			_Binder = binder;
+			_FishStage = fish_stage;
+			_DeadFishCount = 0;
+			_Money = money;
+			_WeaponType = WEAPON_TYPE.NORMAL;
 			_WeaponOdds = 10;
 		}
 
 		Value<int> IPlayer.Hit(int bulletid, int[] fishids)
 		{
-			var hasBullet = this._PopBullet(bulletid);
-			if (hasBullet == false)
+			var hasBullet = _PopBullet(bulletid);
+			if(hasBullet == false)
 			{
 				return 0;
 			}
 
 			var logFishs = string.Empty;
 			var count = 0;
-			foreach (var fishid in fishids)
+			foreach(var fishid in fishids)
 			{
-				if (this._PopFish(fishid) == false)
+				if(_PopFish(fishid) == false)
 				{
 					continue;
 				}
 
-				if (this._Requests.ContainsKey(fishid))
+				if(_Requests.ContainsKey(fishid))
 				{
 					continue;
 				}
 
 				count++;
-				var request = new HitRequest
+
+				var fishs = new List<RequsetFishData>
 				{
-					FishID = (short)fishid, 
-					FishOdds = 1, 
-					FishStatus = FISH_STATUS.NORMAL, 
-					FishType = 1, 
-					TotalHits = (short)fishids.Length, 
-					HitCnt = (short)count, 
-					TotalHitOdds = 1, 
-					WepBet = 1, 
-					WepID = (short)bulletid, 
-					WepOdds = (short)_WeaponOdds, 
-					WepType = (byte)this._Bullet
+					new RequsetFishData
+					{
+						FishID = fishid, 
+						FishOdds = 1, 
+						FishStatus = FISH_STATUS.NORMAL, 
+						FishType = FISH_TYPE.TROPICAL_FISH
+					}
 				};
 
+				var weapon = new RequestWeaponData
+				{
+					TotalHits = fishids.Length, 
+					TotalHitOdds = 1, 
+					WepBet = 1, 
+					WepID = bulletid, 
+					WepOdds = _WeaponOdds, 
+					WeaponType = _WeaponType
+				};
+
+				var request = new HitRequest(fishs.ToArray(), weapon);
 				_Requests.Add(fishid, request);
 				_FishStage.Hit(request);
 
 				logFishs += fishid + ",";
 			}
 
-			if (count == 0)
+			if(count == 0)
 			{
-				this._PushBullet(bulletid);
+				_PushBullet(bulletid);
 			}
 
 			Singleton<Log>.Instance.WriteInfo(
 				string.Format(
-					"all bullet:{0} , targets:{1} , count:{2}", 
+					"all WEAPON_TYPE:{0} , targets:{1} , count:{2}", 
 					bulletid, 
 					string.Join(",", (from id in fishids select id.ToString()).ToArray()), 
 					fishids.Length));
 			Singleton<Log>.Instance.WriteInfo(
-				string.Format("requested bullet:{0} , targets:{1} , count:{2}", bulletid, logFishs, count));
+				string.Format("requested WEAPON_TYPE:{0} , targets:{1} , count:{2}", bulletid, logFishs, count));
 			Singleton<Log>.Instance.WriteInfo(
 				string.Format(
 					"request fishs:{0} count:{1} ", 
-					string.Join(",", (from id in this._Requests.Keys select id.ToString()).ToArray()), 
-					this._Requests.Count));
+					string.Join(",", (from id in _Requests.Keys select id.ToString()).ToArray()), 
+					_Requests.Count));
 			return count;
 		}
 
 		void IPlayer.Quit()
 		{
-			this.KillEvent(this._DeadFishCount);
+			KillEvent(_DeadFishCount);
 		}
 
 		event Action<int> IPlayer.DeathFishEvent
 		{
-			add { this._DeathFishEvent += value; }
-
-			remove { this._DeathFishEvent -= value; }
+			add { _DeathFishEvent += value; }
+			remove { _DeathFishEvent -= value; }
 		}
 
 		event Action<int> IPlayer.MoneyEvent
 		{
-			add { this._MoneyEvent += value; }
-
-			remove { this._MoneyEvent -= value; }
+			add { _MoneyEvent += value; }
+			remove { _MoneyEvent -= value; }
 		}
 
 		int IPlayer.WeaponOdds
@@ -152,49 +150,49 @@ namespace VGame.Project.FishHunter.Play
 			get { return _WeaponOdds; }
 		}
 
-		BULLET IPlayer.Bullet
+		WEAPON_TYPE IPlayer.WeaponType
 		{
-			get { return this._Bullet; }
+			get { return _WeaponType; }
 		}
 
 		Value<int> IPlayer.RequestBullet()
 		{
-			if (this.HasMoney(1) == false)
+			if(HasMoney(1) == false)
 			{
 				return 0;
 			}
 
-			this.AddMoney(-1);
+			AddMoney(-1);
 
-			return this._CreateBullet();
+			return _CreateBullet();
 		}
 
 		Value<short> IPlayer.RequestFish()
 		{
 			checked
 			{
-				var fishid = ++this._FishIdSn;
-				this._Fishs.Add(new Fish(fishid));
+				var fishid = ++_FishIdSn;
+				_Fishs.Add(new Fish(fishid));
 				return fishid;
 			}
 		}
 
-		void IPlayer.EquipWeapon(BULLET bullet, int odds)
+		void IPlayer.EquipWeapon(WEAPON_TYPE weapon_type, int odds)
 		{
-			this._Bullet = bullet;
+			_WeaponType = weapon_type;
 			_WeaponOdds = odds;
 		}
 
 		void IStage.Enter()
 		{
-			this._Binder.Bind<IPlayer>(this);
-			this._FishStage.OnHitResponseEvent += this._Response;
+			_Binder.Bind<IPlayer>(this);
+			_FishStage.OnHitResponseEvent += _Response;
 		}
 
 		void IStage.Leave()
 		{
-			this._FishStage.OnHitResponseEvent -= this._Response;
-			this._Binder.Unbind<IPlayer>(this);
+			_FishStage.OnHitResponseEvent -= _Response;
+			_Binder.Unbind<IPlayer>(this);
 		}
 
 		void IStage.Update()
@@ -208,31 +206,35 @@ namespace VGame.Project.FishHunter.Play
 		private void _Response(HitResponse obj)
 		{
 			HitRequest request;
-			if (this._Requests.TryGetValue(obj.FishID, out request))
+			if(!_Requests.TryGetValue(obj.FishID, out request))
 			{
-				if (obj.DieResult == FISH_DETERMINATION.DEATH)
-				{
-					var onDeathFish = this._DeathFishEvent;
-					if (onDeathFish != null)
+				return;
+			}
+
+			switch(obj.DieResult)
+			{
+				case FISH_DETERMINATION.DEATH:
+					var onDeathFish = _DeathFishEvent;
+					if(onDeathFish != null)
 					{
 						onDeathFish(obj.FishID);
 					}
 
-					this.AddMoney(request.WepBet * request.WepOdds);
-					this._DeadFishCount++;
-				}
-				else if (obj.DieResult == FISH_DETERMINATION.SURVIVAL)
-				{
-					this._PushFish(obj.FishID);
-				}
+					AddMoney(request.WeaponData.WepBet * request.WeaponData.WepOdds);
+					_DeadFishCount++;
+					break;
 
-				this._Requests.Remove(obj.FishID);
+				case FISH_DETERMINATION.SURVIVAL:
+					_PushFish(obj.FishID);
+					break;
 			}
+
+			_Requests.Remove(obj.FishID);
 		}
 
-		private void _PushFish(short id)
+		private void _PushFish(int id)
 		{
-			this._Fishs.Add(new Fish(id));
+			_Fishs.Add(new Fish(id));
 		}
 
 		private bool _PopFish(int fishid)
@@ -242,29 +244,29 @@ namespace VGame.Project.FishHunter.Play
 
 		private void _PushBullet(int bulletid)
 		{
-			this._Bullets.Add(new Bullet(bulletid));
+			_Bullets.Add(new Bullet(bulletid));
 		}
 
 		private bool _PopBullet(int bulletid)
 		{
-			return this._Bullets.RemoveAll(b => b.Id == bulletid) > 0;
+			return _Bullets.RemoveAll(b => b.Id == bulletid) > 0;
 		}
 
 		private void AddMoney(int p)
 		{
-			this._Money.Money += p;
-			this._MoneyEvent(this._Money.Money);
+			_Money.Money += p;
+			_MoneyEvent(_Money.Money);
 		}
 
 		private bool HasMoney(short bullet_score)
 		{
-			return this._Money.Money >= bullet_score;
+			return _Money.Money >= bullet_score;
 		}
 
 		private Value<int> _CreateBullet()
 		{
 			var bullet = new Bullet();
-			this._Bullets.Add(bullet);
+			_Bullets.Add(bullet);
 			return bullet.Id;
 		}
 	}

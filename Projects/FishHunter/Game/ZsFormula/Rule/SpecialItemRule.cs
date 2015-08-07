@@ -1,14 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SpecialItemRule.cs" company="Regulus Framework">
-//   Regulus Framework
-// </copyright>
-// <summary>
-//   取得道具
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-using System;
-
-
+using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.ZsFormula.Data;
 
 namespace VGame.Project.FishHunter.ZsFormula.Rule
@@ -18,34 +8,30 @@ namespace VGame.Project.FishHunter.ZsFormula.Rule
 	/// </summary>
 	public class SpecialItemRule
 	{
-		private readonly AttackData _AttackData;
+		private readonly PlayerRecord _PlayerRecord;
 
-		private readonly StageDataVisit _StageDataVisit;
+		private readonly FishStageVisitor _StageVisitor;
 
-		public Func<int> WeaponIdFunc { get; set; }
-
-		public SpecialItemRule(StageDataVisit stage_data_visit)
+		public SpecialItemRule(FishStageVisitor stage_visitor, PlayerRecord player_record)
 		{
-			_StageDataVisit = stage_data_visit;
+			_StageVisitor = stage_visitor;
+			_PlayerRecord = player_record;
 		}
 
-		public void Run(Player.Data player_data)
+		public void Run()
 		{
-			if (player_data.NowSpecialWeaponData.IsUsed)
+			if (_PlayerRecord.NowSpecialWeaponData.HaveWeapon)
 			{
 				return;
 			}
 
-			var playerWeaponData = player_data.RecodeData.SpecialWeaponDatas.Find(x => x.SpId == player_data.NowSpecialWeaponData.SpId);
-			playerWeaponData.WinFrequency++;
+			// 武器出現次數+1
+			_PlayerRecord.NowSpecialWeaponData.WinFrequency++;
 
-			var stageWeaponData  = _StageDataVisit.NowUseData.RecodeData.SpecialWeaponDatas.Find(x => x.SpId == player_data.NowSpecialWeaponData.SpId);
+			// 武器出現次數+1
+			var stageWeaponData =
+				_StageVisitor.NowData.RecordData.SpecialWeaponDatas.Find(x => x.SpId == _PlayerRecord.NowSpecialWeaponData.SpId);
 			stageWeaponData.WinFrequency++;
-
-			player_data.NowSpecialWeaponData.IsUsed = false;
-
-			this.WeaponIdFunc = () => player_data.NowSpecialWeaponData.SpId;
-
 		}
 	}
 }

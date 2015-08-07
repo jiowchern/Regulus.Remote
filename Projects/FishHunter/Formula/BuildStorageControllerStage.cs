@@ -21,41 +21,59 @@ namespace VGame.Project.FishHunter.Formula
 {
 	internal class BuildStorageControllerStage : IStage
 	{
-		public event DoneCallback DoneEvent;
+		public delegate void DoneCallback(ExpansionFeature controller);
+
+		public event DoneCallback OnDoneEvent;
 
 		private readonly IUser _User;
 
-		private StorageController _Controller;
+		private ExpansionFeature _ExpansionFeature;
 
 		private IAccountFinder _Finder;
 
+		private IFishStageDataHandler _StageDataHandler;
+
 		public BuildStorageControllerStage(IUser user)
 		{
-			this._User = user;
+			_User = user;
 		}
 
 		void IStage.Enter()
 		{
-			this._User.QueryProvider<IAccountFinder>().Supply += this._GetFinder;
+			_User.QueryProvider<IAccountFinder>().Supply += _GetFinder;
+		}
+
+		private void _GetFinder(IAccountFinder obj)
+		{
+			_User.QueryProvider<IAccountFinder>().Supply -= _GetFinder;
+			
+			_Finder = obj;
+			
+			_User.QueryProvider<IFishStageDataHandler>().Supply += _GetFishDataLoader;
+		}
+
+		private void _GetFishDataLoader(IFishStageDataHandler obj)
+		{
+			_User.QueryProvider<IFishStageDataHandler>().Supply -= _GetFishDataLoader;
+			
+			_StageDataHandler = obj;
+			
+			_Finish();
 		}
 
 		void IStage.Leave()
 		{
-			this._User.QueryProvider<IAccountFinder>().Supply -= this._GetFinder;
 		}
 
 		void IStage.Update()
 		{
 		}
 
-		public delegate void DoneCallback(StorageController controller);
-
-		private void _GetFinder(IAccountFinder obj)
+		private void _Finish()
 		{
-			this._Finder = obj;
+			_ExpansionFeature = new ExpansionFeature(_Finder, _StageDataHandler);
 
-			this._Controller = new StorageController(this._Finder);
-			this.DoneEvent(this._Controller);
+			OnDoneEvent(_ExpansionFeature);
 		}
 	}
 }

@@ -103,7 +103,7 @@ namespace VGame.Project.FishHunter
 
 		private void _GetBullet(int obj)
 		{
-			_View.WriteLine("get bullet id" + obj);
+			_View.WriteLine("get WEAPON_TYPE id" + obj);
 		}
 
 		private void _RegisgetPlayerEvent(IPlayer source)

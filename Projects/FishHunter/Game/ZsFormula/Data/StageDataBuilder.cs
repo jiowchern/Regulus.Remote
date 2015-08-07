@@ -1,45 +1,52 @@
 ﻿using System.Collections.Generic;
 
 
-using VGame.Project.FishHunter.Common.Datas.FishStage;
+using VGame.Project.FishHunter.Common.Data;
 
 namespace VGame.Project.FishHunter.ZsFormula.Data
 {
 	public class StageDataBuilder
 	{
-		private readonly StageDataVisit _StageDataVisit;
-
-		public StageDataBuilder(IEnumerable<StageData> datas)
+		public StageData Get(int stage_id)
 		{
-			_StageDataVisit = new StageDataVisit();
+			// | StageId | Name | SizeType | BaseOdds | GameRate | MaxBet | NowBaseOdds | BaseChgOddsCnt |
+			// | 1       | 魚場1  | SMALL    | 100      | 995      | 1000   | 0           | 0              |
+			// 讀檔，取出預設值
+			var stageData = new StageData
+			{
+				StageId = stage_id, 
+				Name = "魚場1", 
+				SizeType = StageData.SIZE_TYPE.SMALL, 
+				BaseOdds = 100, 
+				GameRate = 995, 
+				MaxBet = 1000, 
+				NowBaseOdds = 0, 
+				BaseOddsCount = 0
+			};
+			_DefaultBufferData(stageData);
 
-			_InitBufferData(datas);
+			return stageData;
 		}
 
-		private void _InitBufferData(IEnumerable<StageData> datas)
+		private void _DefaultBufferData(StageData stage_data)
 		{
-			foreach (var d in datas)
+			for (var i = StageBuffer.BUFFER_BLOCK.BLOCK_1; i < StageBuffer.BUFFER_BLOCK.COUNT; ++i)
 			{
-				_StageDataVisit.NowUseData = d;
-
-				for (var i = StageBuffer.BUFFER_BLOCK.BLOCK_1; i < StageBuffer.BUFFER_BLOCK.COUNT; ++i)
+				for (var j = StageBuffer.BUFFER_TYPE.NORMAL; j < StageBuffer.BUFFER_TYPE.COUNT; ++j)
 				{
-					for (var j = StageBuffer.BUFFER_TYPE.NORMAL; j < StageBuffer.BUFFER_TYPE.COUNT; ++j)
-					{
-						var buffer = _StageDataVisit.FindBuffer(i, j);
+					var buffer = stage_data.FindBuffer(i, j);
 
-						_SetDefaultBufferData(buffer, _StageDataVisit.NowUseData.GameRate, 0, 0);
+					_SetDefaultBufferData(buffer, stage_data.GameRate, 0, 0);
 
-						_SetDefaultBufferData(buffer, 20, 3000, 1000);
+					_SetDefaultBufferData(buffer, 20, 3000, 1000);
 
-						_SetDefaultBufferData(buffer, 5, 3000, 1000);
+					_SetDefaultBufferData(buffer, 5, 3000, 1000);
 
-						_SetDefaultBufferData(buffer, 3, 1000, 1000);
+					_SetDefaultBufferData(buffer, 3, 1000, 1000);
 
-						_SetDefaultBufferData(buffer, 1, 1000, 1000);
+					_SetDefaultBufferData(buffer, 1, 1000, 1000);
 
-						_SetDefaultBufferData(buffer, 1, 1000, 1000);
-					}
+					_SetDefaultBufferData(buffer, 1, 1000, 1000);
 				}
 			}
 		}

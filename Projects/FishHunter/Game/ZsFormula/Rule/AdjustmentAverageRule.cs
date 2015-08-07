@@ -1,15 +1,6 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AdjustmentAverageRule.cs" company="Regulus Framework">
-//   Regulus Framework
-// </copyright>
-// <summary>
-//   平均押注的调整
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿#region Test_Region
 
-#region Test_Region
-
-using VGame.Project.FishHunter.Common.Datas.FishStage;
+using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.ZsFormula.Data;
 
 #endregion
@@ -21,17 +12,20 @@ namespace VGame.Project.FishHunter.ZsFormula.Rule
 	/// </summary>
 	public class AdjustmentAverageRule
 	{
-		private readonly StageDataVisit _StageDataVisit;
+		private readonly FishStageVisitor _FishStageVisitor;
 
-		public AdjustmentAverageRule(StageDataVisit stage_data_visit)
+		private readonly HitRequest _HitRequest;
+
+		public AdjustmentAverageRule(FishStageVisitor fish_stage_visitor, HitRequest hit_request)
 		{
-			_StageDataVisit = stage_data_visit;
+			_FishStageVisitor = fish_stage_visitor;
+			_HitRequest = hit_request;
 		}
 
-		public void Run(int bet)
+		public void Run()
 		{
-			var bufferData = _StageDataVisit.FindBuffer(
-				_StageDataVisit.NowUseBlock,
+			var bufferData = _FishStageVisitor.NowData.FindBuffer(
+				_FishStageVisitor.NowBlock, 
 				StageBuffer.BUFFER_TYPE.NORMAL);
 			var avgBet = 0;
 
@@ -41,7 +35,7 @@ namespace VGame.Project.FishHunter.ZsFormula.Rule
 			{
 				bufferData.BufferTempValue.AverageTimes += 1;
 
-				bufferData.BufferTempValue.AverageTotal += bet;
+				bufferData.BufferTempValue.AverageTotal += _HitRequest.WeaponData.WepBet;
 
 				avgBet = bufferData.BufferTempValue.AverageTotal / bufferData.BufferTempValue.AverageTimes;
 
@@ -53,7 +47,7 @@ namespace VGame.Project.FishHunter.ZsFormula.Rule
 			else
 			{
 				bufferData.BufferTempValue.AverageTotal -= bufferData.BufferTempValue.AverageTotal / 100000;
-				bufferData.BufferTempValue.AverageTotal += bet;
+				bufferData.BufferTempValue.AverageTotal += _HitRequest.WeaponData.WepBet;
 				avgBet = bufferData.BufferTempValue.AverageTotal / 100000;
 			}
 

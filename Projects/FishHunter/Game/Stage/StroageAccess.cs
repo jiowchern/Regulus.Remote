@@ -79,7 +79,7 @@ namespace VGame.Project.FishHunter.Stage
 			if (account.HasCompetnce(Account.COMPETENCE.ACCOUNT_FINDER))
 			{
 				_Binder.Bind<IAccountFinder>(_Storage);
-				_Binder.Bind<IRecordQueriers>(_Storage);
+				_Binder.Bind<IRecordHandler>(_Storage);
 			}
 
 			if (account.HasCompetnce(Account.COMPETENCE.ACCOUNT_MANAGER))
@@ -95,7 +95,7 @@ namespace VGame.Project.FishHunter.Stage
 			if (account.HasCompetnce(Account.COMPETENCE.ACCOUNT_FINDER))
 			{
 				_Binder.Unbind<IAccountFinder>(_Storage);
-				_Binder.Unbind<IRecordQueriers>(_Storage);
+				_Binder.Unbind<IRecordHandler>(_Storage);
 			}
 
 			if (account.HasCompetnce(Account.COMPETENCE.ACCOUNT_MANAGER))
