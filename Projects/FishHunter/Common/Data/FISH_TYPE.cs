@@ -5,6 +5,8 @@ namespace VGame.Project.FishHunter.Common.Data
     public enum FISH_TYPE
     {
 
+        [EnumDescription("無效")]
+        INVALID,
         [EnumDescription("熱帶小魚")]
         TROPICAL_FISH,
         [EnumDescription("神仙魚")]
