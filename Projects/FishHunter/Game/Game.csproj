@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Stage\QuarterStage.cs" />
     <Compile Include="ZsFormula\ZsFishStage.cs" />
     <Compile Include="Play\DummyFeature.cs" />
     <Compile Include="ZsFormula\Data\CalculationBufferBlock.cs" />

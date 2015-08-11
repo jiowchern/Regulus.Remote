@@ -69,12 +69,11 @@ namespace VGame.Project.FishHunter.Play
 	    {
 	        switch (fish_stage)
 	        {
-	            case 200:
-	                return null;
-	            case 100:
-	                return new FishStage(player_id, fish_stage);
-	            default:
-	                return new CsFishStage(player_id, fish_stage);
+                
+                case 111:
+                    return new VGame.Project.FishHunter.Stage.QuarterStage(player_id, fish_stage);
+                default:
+                    return new FishStage(player_id, fish_stage);
 	        }
 	    }
 
