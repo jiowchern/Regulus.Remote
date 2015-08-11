@@ -44,5 +44,5 @@ using System.Runtime.InteropServices;
 // 指定為預設值: 
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("0.0.0.0")]
-[assembly: AssemblyFileVersion("0.0.559.0")]
+[assembly: AssemblyFileVersion("0.0.570.0")]
 [assembly: InternalsVisibleTo("GameTest")]

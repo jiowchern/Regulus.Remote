@@ -35,13 +35,14 @@ namespace VGame.Project.FishHunter.Stage
 			switch(fish_stage)
 			{
 				case 100:
-					return new FishStage(player_id, fish_stage);
-
+                    return new CsFishStage(player_id, fish_stage);
 				case 2:
 					return new ZsFishStage(player_id, _StageDatas.Find(x => x.StageId == fish_stage));
-
+                case 111:
+                    return new QuarterStage(player_id, fish_stage);
 				default:
-					return new CsFishStage(player_id, fish_stage);
+                    return new FishStage(player_id, fish_stage);
+					
 			}
 		}
 

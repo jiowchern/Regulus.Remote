@@ -242,6 +242,11 @@ namespace VGame.Project.FishHunter.Play
 					{
 						Id = 14, 
 						Pass = false
+					},
+                    new Common.Data.Stage
+					{
+						Id = 111, 
+						Pass = true
 					}
 				});
 				_ToLoadTradeNotes();
