@@ -28,10 +28,10 @@ namespace VGame.Project.FishHunter.Formula
 
 		internal void OnSelect(GameModeSelector<IUser> selector)
 		{
-			// selector.AddFactoty("standalong", new VGame.Project.FishHunter.Formula.StandalongUserFactory(core));
+			// selector.AddFactoty("Standalone", new VGame.Project.FishHunter.Formula.StandaloneUserFactory(core));
 			selector.AddFactoty("remoting", new RemotingUserFactory());
 
-			// var provider = selector.CreateUserProvider("standalong");
+			// var provider = selector.CreateUserProvider("Standalone");
 			// var provider = selector.CreateUserProvider("remoting");
 
 			// provider.Spawn("1");

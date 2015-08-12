@@ -97,9 +97,9 @@
       <Project>{d4580866-2273-4e9b-be70-4fa2ab11434a}</Project>
       <Name>RemotingSoulNative</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RemotingStandalong\RemotingStandalong.csproj">
+    <ProjectReference Include="..\RemotingStandalong\RemotingStandalone.csproj">
       <Project>{485f551d-9155-4982-b653-f8d4eac2fca1}</Project>
-      <Name>RemotingStandalong</Name>
+      <Name>RemotingStandalone</Name>
     </ProjectReference>
     <ProjectReference Include="..\Remoting\Remoting.csproj">
       <Project>{a4cfce46-bda8-4416-a1bb-77bd80514019}</Project>

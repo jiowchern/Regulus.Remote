@@ -17,7 +17,7 @@ using Regulus.Utility;
 
 #endregion
 
-namespace Regulus.Remoting.Standalong
+namespace Regulus.Remoting.Standalone
 {
 	public class Agent : IRequestQueue, IResponseQueue, ISoulBinder, IAgent
 	{

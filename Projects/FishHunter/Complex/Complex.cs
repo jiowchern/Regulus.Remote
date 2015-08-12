@@ -112,7 +112,7 @@ namespace VGame.Project.FishHunter
 				var center = new Formula.Center(new ExpansionFeature(new DummyFrature(), new DummyFrature()));
 				_Updater.Add(center);
 				_Formula = new Client();
-				_Formula.Selector.AddFactoty("remoting", new StandalongUserFactory(center));
+				_Formula.Selector.AddFactoty("remoting", new StandaloneUserFactory(center));
 				_FormulaUser = _Formula.Selector.CreateUserProvider("remoting").Spawn("1");
 			}
 
@@ -125,7 +125,7 @@ namespace VGame.Project.FishHunter
 			{
 				var center = new Storage.Center(new DummyFrature());
 				_Updater.Add(center);
-				var factory = new StandalongFactory(center);
+				var factory = new StandaloneFactory(center);
 				_Storage = new Proxy(factory);
 				_StorageUser = _Storage.SpawnUser("user");
 			}
