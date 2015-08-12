@@ -1,9 +1,9 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="StandalongProvider.cs" company="">
+// <copyright file="StandaloneProvider.cs" company="">
 //   
 // </copyright>
 // <summary>
-//   Defines the StandalongProvider type.
+//   Defines the StandaloneProvider type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -11,26 +11,26 @@
 
 using Regulus.Framework;
 using Regulus.Remoting;
-using Regulus.Remoting.Standalong;
+using Regulus.Remoting.Standalone;
 using Regulus.Utility;
 
 #endregion
 
 namespace RemotingTest
 {
-	public class StandalongProvider : IUserFactoty<IUser>
+	public class StandaloneProvider : IUserFactoty<IUser>
 	{
-		private readonly ICore _Standalong;
+		private readonly ICore _Standalone;
 
-		public StandalongProvider(ICore core)
+		public StandaloneProvider(ICore core)
 		{
-			_Standalong = core;
+			_Standalone = core;
 		}
 
 		IUser IUserFactoty<IUser>.SpawnUser()
 		{
 			var agent = new Agent();
-			agent.ConnectedEvent += () => { _Standalong.AssignBinder(agent); };
+			agent.ConnectedEvent += () => { _Standalone.AssignBinder(agent); };
 			return new User(agent);
 		}
 

@@ -35,7 +35,7 @@ namespace PureLibraryTest
 		[TestMethod]
 		public void TestToArray()
 		{
-			var flags = new Flag<TESTENUM>();
+			var flags = new Flag<TESTENUM>();            
 			flags[TESTENUM._1] = true;
 			flags[TESTENUM._2] = false;
 			flags[TESTENUM._3] = true;

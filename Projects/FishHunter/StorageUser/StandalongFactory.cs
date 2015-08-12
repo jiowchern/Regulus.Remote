@@ -1,9 +1,9 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="StandalongFactory.cs" company="">
+// <copyright file="StandaloneFactory.cs" company="">
 //   
 // </copyright>
 // <summary>
-//   Defines the StandalongFactory type.
+//   Defines the StandaloneFactory type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -11,18 +11,18 @@
 
 using Regulus.Framework;
 using Regulus.Remoting;
-using Regulus.Remoting.Standalong;
+using Regulus.Remoting.Standalone;
 using Regulus.Utility;
 
 #endregion
 
 namespace VGame.Project.FishHunter.Storage
 {
-	public class StandalongFactory : IUserFactoty<IUser>
+	public class StandaloneFactory : IUserFactoty<IUser>
 	{
 		private readonly ICore _Core;
 
-		public StandalongFactory(ICore core)
+		public StandaloneFactory(ICore core)
 		{
 			_Core = core;
 		}

@@ -16,7 +16,7 @@ using System.Text;
 
 #endregion
 
-namespace Regulus.Remoting.Standalong
+namespace Regulus.Remoting.Standalone
 {
 	public class GhostRequest : IGhostRequest
 	{
