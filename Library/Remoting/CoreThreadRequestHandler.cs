@@ -1,18 +1,5 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CoreThreadRequestHandler.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the CoreThreadRequestHandler type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Framework;
+﻿using Regulus.Framework;
 using Regulus.Utility;
-
-#endregion
 
 namespace Regulus.Remoting
 {
@@ -24,29 +11,29 @@ namespace Regulus.Remoting
 
 		public CoreThreadRequestHandler(IRequestQueue requester)
 		{
-			this._Requester = requester;
+			_Requester = requester;
 		}
 
 		bool IUpdatable.Update()
 		{
-			this._Requester.Update();
-			return this._Enable;
+			_Requester.Update();
+			return _Enable;
 		}
 
 		void IBootable.Launch()
 		{
-			this._Enable = true;
-			this._Requester.BreakEvent += this._End;
+			_Enable = true;
+			_Requester.BreakEvent += _End;
 		}
 
 		void IBootable.Shutdown()
 		{
-			this._Requester.BreakEvent -= this._End;
+			_Requester.BreakEvent -= _End;
 		}
 
 		private void _End()
 		{
-			this._Enable = false;
+			_Enable = false;
 		}
 	}
 }

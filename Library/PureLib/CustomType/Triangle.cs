@@ -1,20 +1,8 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Triangle.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Triangle type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-using ProtoBuf;
 
-#endregion
+using ProtoBuf;
 
 namespace Regulus.CustomType
 {
@@ -32,7 +20,7 @@ namespace Regulus.CustomType
 
 		bool IEquatable<Triangle>.Equals(Triangle other)
 		{
-			return other.Point1 == this.Point1 && other.Point3 == this.Point3 && other.Point2 == this.Point2;
+			return other.Point1 == Point1 && other.Point3 == Point3 && other.Point2 == Point2;
 		}
 
 		Vector2[] IRotatable.Points
@@ -41,17 +29,17 @@ namespace Regulus.CustomType
 			{
 				return new[]
 				{
-					this.Point1, 
-					this.Point2, 
-					this.Point3
+					Point1, 
+					Point2, 
+					Point3
 				};
 			}
 
 			set
 			{
-				this.Point1 = value[0];
-				this.Point2 = value[1];
-				this.Point3 = value[2];
+				Point1 = value[0];
+				Point2 = value[1];
+				Point3 = value[2];
 			}
 		}
 
@@ -75,17 +63,17 @@ namespace Regulus.CustomType
 
 		public Rotator(Vector2 center, T[] tris)
 		{
-			this._Center = center;
+			_Center = center;
 			this.tris = tris;
 		}
 
 		public T[] Rotation(float angle)
 		{
 			var rotaters = new List<T>();
-			foreach (var t in this.tris)
+			foreach(var t in tris)
 			{
 				var tri = new T();
-				tri.Points = this._RotatePoint(t.Points, this._Center, angle);
+				tri.Points = _RotatePoint(t.Points, _Center, angle);
 				rotaters.Add(tri);
 			}
 
@@ -95,9 +83,9 @@ namespace Regulus.CustomType
 		public Vector2[] _RotatePoint(Vector2[] points, Vector2 centroid, double angle)
 		{
 			var ret = new List<Vector2>();
-			foreach (var point in points)
+			foreach(var point in points)
 			{
-				ret.Add(this._RotatePoint(point, centroid, angle));
+				ret.Add(_RotatePoint(point, centroid, angle));
 			}
 
 			return ret.ToArray();

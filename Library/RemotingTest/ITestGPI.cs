@@ -1,17 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ITestGPI.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the ITestGPI type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Remoting;
-
-#endregion
+﻿using Regulus.Remoting;
 
 namespace RemotingTest
 {

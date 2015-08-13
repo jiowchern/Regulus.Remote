@@ -1,18 +1,5 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Hall.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Hall type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Framework;
+﻿using Regulus.Framework;
 using Regulus.Utility;
-
-#endregion
 
 namespace Regulus.Game
 {
@@ -24,7 +11,7 @@ namespace Regulus.Game
 
 		public Hall()
 		{
-			this._Users = new Updater();
+			_Users = new Updater();
 		}
 
 		void IBootable.Launch()
@@ -33,33 +20,33 @@ namespace Regulus.Game
 
 		bool IUpdatable.Update()
 		{
-			this._Users.Working();
+			_Users.Working();
 			return true;
 		}
 
 		void IBootable.Shutdown()
 		{
-			this._Users.Shutdown();
+			_Users.Shutdown();
 		}
 
 		public void PushUser(IUser user)
 		{
 			user.VerifySuccessEvent += id =>
 			{
-				if (this.NewUserEvent != null)
+				if(NewUserEvent != null)
 				{
-					this.NewUserEvent(id);
+					NewUserEvent(id);
 				}
 
-				this.NewUserEvent += user.OnKick;
+				NewUserEvent += user.OnKick;
 			};
 
 			user.QuitEvent += () =>
 			{
-				this.NewUserEvent -= user.OnKick;
-				this._Users.Remove(user);
+				NewUserEvent -= user.OnKick;
+				_Users.Remove(user);
 			};
-			this._Users.Add(user);
+			_Users.Add(user);
 		}
 	}
 }

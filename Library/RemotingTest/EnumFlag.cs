@@ -1,21 +1,10 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="EnumFlag.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the EnumFlag type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System;
 
-#region Test_Region
-
-using System;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using Regulus.Utility;
 
-#endregion
+using Regulus.Utility;
 
 namespace RemotingTest
 {
@@ -40,7 +29,7 @@ namespace RemotingTest
 			var flags = TESTFLAG.F2 | TESTFLAG.F3;
 			var result = new TESTFLAG[2];
 			var i = 0;
-			foreach (TESTFLAG flag in flags.GetFlags())
+			foreach(TESTFLAG flag in flags.GetFlags())
 			{
 				result[i++] = flag;
 			}

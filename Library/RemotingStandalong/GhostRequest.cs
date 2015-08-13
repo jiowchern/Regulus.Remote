@@ -1,20 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="GhostRequest.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the GhostRequest type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
-#endregion
 
 namespace Regulus.Remoting.Standalong
 {
@@ -26,25 +13,6 @@ namespace Regulus.Remoting.Standalong
 
 		public event Action<Guid> ReleaseEvent;
 
-		private readonly Queue<Request> _Requests;
-
-		public GhostRequest()
-		{
-			this._Requests = new Queue<Request>();
-		}
-
-		void IGhostRequest.Request(byte code, Dictionary<byte, byte[]> args)
-		{
-			lock (this._Requests)
-			{
-				this._Requests.Enqueue(new Request
-				{
-					Code = code, 
-					Argments = args
-				});
-			}
-		}
-
 		private class Request
 		{
 			public Dictionary<byte, byte[]> Argments;
@@ -52,36 +20,56 @@ namespace Regulus.Remoting.Standalong
 			public byte Code;
 		}
 
+		private readonly Queue<Request> _Requests;
+
+		public GhostRequest()
+		{
+			_Requests = new Queue<Request>();
+		}
+
+		void IGhostRequest.Request(byte code, Dictionary<byte, byte[]> args)
+		{
+			lock(_Requests)
+			{
+				_Requests.Enqueue(
+					new Request
+					{
+						Code = code, 
+						Argments = args
+					});
+			}
+		}
+
 		public void Update()
 		{
 			var requests = new Queue<Request>();
-			lock (this._Requests)
+			lock(_Requests)
 			{
-				while (this._Requests.Count > 0)
+				while(_Requests.Count > 0)
 				{
-					requests.Enqueue(this._Requests.Dequeue());
+					requests.Enqueue(_Requests.Dequeue());
 				}
 			}
 
-			while (requests.Count > 0)
+			while(requests.Count > 0)
 			{
 				var request = requests.Dequeue();
-				this._Apportion(request.Code, request.Argments);
+				_Apportion(request.Code, request.Argments);
 			}
 		}
 
 		private void _Apportion(byte code, Dictionary<byte, byte[]> args)
 		{
-			if ((int)ClientToServerOpCode.Ping == code)
+			if((int)ClientToServerOpCode.Ping == code)
 			{
-				if (this.PingEvent != null)
+				if(PingEvent != null)
 				{
-					this.PingEvent();
+					PingEvent();
 				}
 			}
-			else if ((int)ClientToServerOpCode.CallMethod == code)
+			else if((int)ClientToServerOpCode.CallMethod == code)
 			{
-				if (args.Count < 2)
+				if(args.Count < 2)
 				{
 					return;
 				}
@@ -92,7 +80,7 @@ namespace Regulus.Remoting.Standalong
 
 				byte[] par = null;
 				var returnId = Guid.Empty;
-				if (args.TryGetValue(2, out par))
+				if(args.TryGetValue(2, out par))
 				{
 					returnId = new Guid(par);
 				}
@@ -102,15 +90,15 @@ namespace Regulus.Remoting.Standalong
 				                    orderby p.Key
 				                    select p.Value).ToArray();
 
-				if (this.CallMethodEvent != null)
+				if(CallMethodEvent != null)
 				{
-					this.CallMethodEvent(entityId, methodName, returnId, methodParams);
+					CallMethodEvent(entityId, methodName, returnId, methodParams);
 				}
 			}
-			else if ((int)ClientToServerOpCode.Release == code)
+			else if((int)ClientToServerOpCode.Release == code)
 			{
 				var entityId = new Guid(args[0]);
-				this.ReleaseEvent(entityId);
+				ReleaseEvent(entityId);
 			}
 		}
 	}

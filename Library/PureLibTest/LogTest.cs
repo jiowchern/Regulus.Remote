@@ -1,23 +1,12 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="LogTest.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the LogTest type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System.Collections.Generic;
 
-#region Test_Region
-
-using System.Collections.Generic;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+
 using Regulus.Utility;
 
-#endregion
-
-namespace PureLibraryTest
+namespace RegulusLibraryTest
 {
 	[TestClass]
 	public class LogTest
@@ -29,7 +18,7 @@ namespace PureLibraryTest
 
 			Singleton<Log>.Instance.RecordEvent += message =>
 			{
-				lock (messages)
+				lock(messages)
 					messages.Add(message);
 			};
 
@@ -39,11 +28,11 @@ namespace PureLibraryTest
 			Singleton<Log>.Instance.WriteInfo("123");
 			Singleton<Log>.Instance.WriteInfo("1");
 
-			while (true)
+			while(true)
 			{
-				lock (messages)
+				lock(messages)
 				{
-					if (messages.Count >= 5)
+					if(messages.Count >= 5)
 					{
 						break;
 					}

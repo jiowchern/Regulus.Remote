@@ -1,19 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="OnlineStage.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the OnlineStage type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System;
 
-#region Test_Region
-
-using System;
 
 using Regulus.Utility;
-
-#endregion
 
 namespace Regulus.Remoting
 {
@@ -35,8 +23,8 @@ namespace Regulus.Remoting
 
 		public OnlineStage(IAgent agent, TProvider<IOnline> provider)
 		{
-			this._Agent = agent;
-			this._OnlineProvider = provider;
+			_Agent = agent;
+			_OnlineProvider = provider;
 			_Online = new Online(agent);
 		}
 
@@ -54,7 +42,7 @@ namespace Regulus.Remoting
 
 		void IStage.Update()
 		{
-			if (_Agent.Connected == false)
+			if(_Agent.Connected == false)
 			{
 				_BreakEvent();
 			}

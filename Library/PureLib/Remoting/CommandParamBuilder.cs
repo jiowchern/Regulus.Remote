@@ -1,17 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CommandParamBuilder.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the CommandParamBuilder type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
-
-#endregion
+﻿using System;
 
 namespace Regulus.Remoting
 {
@@ -35,7 +22,7 @@ namespace Regulus.Remoting
 				Callback = callback, 
 				Types = new[]
 				{
-					typeof (T1)
+					typeof(T1)
 				}, 
 				Return = null, 
 				ReturnType = null
@@ -49,8 +36,8 @@ namespace Regulus.Remoting
 				Callback = callback, 
 				Types = new[]
 				{
-					typeof (T1), 
-					typeof (T2)
+					typeof(T1), 
+					typeof(T2)
 				}, 
 				Return = null, 
 				ReturnType = null
@@ -64,9 +51,9 @@ namespace Regulus.Remoting
 				Callback = callback, 
 				Types = new[]
 				{
-					typeof (T1), 
-					typeof (T2), 
-					typeof (T3)
+					typeof(T1), 
+					typeof(T2), 
+					typeof(T3)
 				}, 
 				Return = null, 
 				ReturnType = null
@@ -80,10 +67,10 @@ namespace Regulus.Remoting
 				Callback = callback, 
 				Types = new[]
 				{
-					typeof (T1), 
-					typeof (T2), 
-					typeof (T3), 
-					typeof (T4)
+					typeof(T1), 
+					typeof(T2), 
+					typeof(T3), 
+					typeof(T4)
 				}, 
 				Return = null, 
 				ReturnType = null
@@ -99,7 +86,7 @@ namespace Regulus.Remoting
 				{
 				}, 
 				Return = return_callback, 
-				ReturnType = typeof (TR)
+				ReturnType = typeof(TR)
 			};
 		}
 
@@ -110,10 +97,10 @@ namespace Regulus.Remoting
 				Callback = callback, 
 				Types = new[]
 				{
-					typeof (T1)
+					typeof(T1)
 				}, 
 				Return = return_callback, 
-				ReturnType = typeof (TR)
+				ReturnType = typeof(TR)
 			};
 		}
 
@@ -124,11 +111,11 @@ namespace Regulus.Remoting
 				Callback = callback, 
 				Types = new[]
 				{
-					typeof (T1), 
-					typeof (T2)
+					typeof(T1), 
+					typeof(T2)
 				}, 
 				Return = return_callback, 
-				ReturnType = typeof (TR)
+				ReturnType = typeof(TR)
 			};
 		}
 
@@ -139,12 +126,12 @@ namespace Regulus.Remoting
 				Callback = callback, 
 				Types = new[]
 				{
-					typeof (T1), 
-					typeof (T2), 
-					typeof (T3)
+					typeof(T1), 
+					typeof(T2), 
+					typeof(T3)
 				}, 
 				Return = return_callback, 
-				ReturnType = typeof (TR)
+				ReturnType = typeof(TR)
 			};
 		}
 
@@ -155,13 +142,13 @@ namespace Regulus.Remoting
 				Callback = callback, 
 				Types = new[]
 				{
-					typeof (T1), 
-					typeof (T2), 
-					typeof (T3), 
-					typeof (T4)
+					typeof(T1), 
+					typeof(T2), 
+					typeof(T3), 
+					typeof(T4)
 				}, 
 				Return = return_callback, 
-				ReturnType = typeof (TR)
+				ReturnType = typeof(TR)
 			};
 		}
 
@@ -175,7 +162,7 @@ namespace Regulus.Remoting
 				}, 
 				Return = new Action<Value<TR>>(
 					tr => { tr.OnValue += return_callback; }), 
-				ReturnType = typeof (Value<TR>)
+				ReturnType = typeof(Value<TR>)
 			};
 		}
 
@@ -186,11 +173,11 @@ namespace Regulus.Remoting
 				Callback = callback, 
 				Types = new[]
 				{
-					typeof (T1)
+					typeof(T1)
 				}, 
 				Return = new Action<Value<TR>>(
 					tr => { tr.OnValue += return_callback; }), 
-				ReturnType = typeof (Value<TR>)
+				ReturnType = typeof(Value<TR>)
 			};
 		}
 
@@ -201,12 +188,12 @@ namespace Regulus.Remoting
 				Callback = callback, 
 				Types = new[]
 				{
-					typeof (T1), 
-					typeof (T2)
+					typeof(T1), 
+					typeof(T2)
 				}, 
 				Return = new Action<Value<TR>>(
 					tr => { tr.OnValue += return_callback; }), 
-				ReturnType = typeof (Value<TR>)
+				ReturnType = typeof(Value<TR>)
 			};
 		}
 
@@ -217,17 +204,18 @@ namespace Regulus.Remoting
 				Callback = callback, 
 				Types = new[]
 				{
-					typeof (T1), 
-					typeof (T2), 
-					typeof (T3)
+					typeof(T1), 
+					typeof(T2), 
+					typeof(T3)
 				}, 
 				Return = new Action<Value<TR>>(
 					tr => { tr.OnValue += return_callback; }), 
-				ReturnType = typeof (Value<TR>)
+				ReturnType = typeof(Value<TR>)
 			};
 		}
 
-		public CommandParam BuildRemoting<T1, T2, T3, T4, TR>(Func<T1, T2, T3, T4, Value<TR>> callback, 
+		public CommandParam BuildRemoting<T1, T2, T3, T4, TR>(
+			Func<T1, T2, T3, T4, Value<TR>> callback, 
 			Action<TR> return_callback)
 		{
 			return new CommandParam
@@ -235,14 +223,14 @@ namespace Regulus.Remoting
 				Callback = callback, 
 				Types = new[]
 				{
-					typeof (T1), 
-					typeof (T2), 
-					typeof (T3), 
-					typeof (T4)
+					typeof(T1), 
+					typeof(T2), 
+					typeof(T3), 
+					typeof(T4)
 				}, 
 				Return = new Action<Value<TR>>(
 					tr => { tr.OnValue += return_callback; }), 
-				ReturnType = typeof (Value<TR>)
+				ReturnType = typeof(Value<TR>)
 			};
 		}
 	}

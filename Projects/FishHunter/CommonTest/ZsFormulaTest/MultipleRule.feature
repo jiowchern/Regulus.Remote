@@ -3,8 +3,6 @@
 	As a math 翻倍表
 	I want to be 回傳取得的倍數
     
-
-
 Background: 
 Given 倍數表是
     | Multiple | Value |

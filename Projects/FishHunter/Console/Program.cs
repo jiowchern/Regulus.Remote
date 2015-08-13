@@ -1,23 +1,12 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Program.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Program type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System.IO;
 
-#region Test_Region
-
-using System.IO;
 
 using Regulus.Framework;
 using Regulus.Remoting;
 using Regulus.Utility;
 
-using VGame.Project.FishHunter;
 
-#endregion
+using VGame.Project.FishHunter;
 
 namespace Console
 {
@@ -37,7 +26,7 @@ namespace Console
 			updater.Add(client);
 			updater.Add(core);
 
-			while (client.Enable)
+			while(client.Enable)
 			{
 				input.Update();
 				updater.Working();

@@ -1,18 +1,5 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Random.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Random type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Linq;
-
-#endregion
 
 namespace Regulus.Utility
 {
@@ -27,10 +14,9 @@ namespace Regulus.Utility
 
 		public Random()
 		{
-			this._R = new SystemRandom();
+			_R = new SystemRandom();
 		}
 	}
-
 
 	public interface IRandom
 	{
@@ -53,23 +39,23 @@ namespace Regulus.Utility
 
 		public SystemRandom()
 		{
-			this._Random = new System.Random();
+			_Random = new System.Random();
 		}
 
 		float IRandom.NextFloat()
 		{
-			return this._NextFloat();
+			return _NextFloat();
 		}
 
 		int IRandom.NextInt(int min, int max)
 		{
-			return this._Random.Next(min, max);
+			return _Random.Next(min, max);
 		}
 
 		long IRandom.NextLong(long min, long max)
 		{
 			var buf = new byte[8];
-			this._Random.NextBytes(buf);
+			_Random.NextBytes(buf);
 			var longRand = BitConverter.ToInt64(buf, 0);
 
 			return Math.Abs(longRand % (max - min)) + min;
@@ -77,32 +63,32 @@ namespace Regulus.Utility
 
 		double IRandom.NextDouble()
 		{
-			return this._Random.NextDouble();
+			return _Random.NextDouble();
 		}
 
 		float IRandom.NextFloat(float min, float max)
 		{
-			return this._NextFloat(min, max);
+			return _NextFloat(min, max);
 		}
 
 		T IRandom.NextEnum<T>()
 		{
 			return Enum
-				.GetValues(typeof (T))
+				.GetValues(typeof(T))
 				.Cast<T>()
-				.OrderBy(x => this._NextFloat())
+				.OrderBy(x => _NextFloat())
 				.FirstOrDefault();
 		}
 
 		private float _NextFloat()
 		{
-			var val = this._Random.NextDouble();
+			var val = _Random.NextDouble();
 			return (float)val;
 		}
 
 		private float _NextFloat(float min, float max)
 		{
-			return min + (float)this._Random.NextDouble() * max;
+			return min + (float)_Random.NextDouble() * max;
 		}
 	}
 }

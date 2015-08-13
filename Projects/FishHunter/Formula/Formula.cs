@@ -1,26 +1,16 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Formula.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Server type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
+
 
 using Regulus.Collection;
 using Regulus.Framework;
 using Regulus.Remoting;
 using Regulus.Utility;
 
-using VGame.Project.FishHunter.Storage;
 
-#endregion
+using VGame.Project.FishHunter.Storage;
 
 namespace VGame.Project.FishHunter.Formula
 {
@@ -134,13 +124,13 @@ namespace VGame.Project.FishHunter.Formula
 		{
 			_StorageUser = user;
 			var stage = new ConnectStorageStage(user, _IpAddress, _Port);
-			stage.DoneEvent += _ConnectResult;
+			stage.OnDoneEvent += _ConnectResult;
 			_Machine.Push(stage);
 		}
 
 		private void _ConnectResult(bool result)
 		{
-			if (result)
+			if(result)
 			{
 				_ToVerifyStorage(_StorageUser);
 			}
@@ -153,13 +143,13 @@ namespace VGame.Project.FishHunter.Formula
 		private void _ToVerifyStorage(IUser user)
 		{
 			var stage = new VerifyStorageStage(user, _Account, _Password);
-			stage.DoneEvent += _VerifyResult;
+			stage.OnDoneEvent += _VerifyResult;
 			_Machine.Push(stage);
 		}
 
 		private void _VerifyResult(bool verify_result)
 		{
-			if (verify_result)
+			if(verify_result)
 			{
 				_ToBuildStorageController();
 			}

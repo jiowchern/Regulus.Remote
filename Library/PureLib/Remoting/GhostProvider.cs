@@ -1,19 +1,6 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="GhostProvider.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   介面物件通知器
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
-#endregion
 
 namespace Regulus.Remoting
 {
@@ -63,7 +50,6 @@ namespace Regulus.Remoting
 		void ClearGhosts();
 	}
 
-
 	public class TProvider<T> : INotifier<T>, IProvider
 		where T : class
 	{
@@ -83,53 +69,53 @@ namespace Regulus.Remoting
 		{
 			add
 			{
-				this._Supply += value;
+				_Supply += value;
 
-				lock (this._Entitys)
+				lock(_Entitys)
 				{
-					foreach (var e in this._Entitys.ToArray())
+					foreach(var e in _Entitys.ToArray())
 					{
 						value(e);
 					}
 				}
 			}
 
-			remove { this._Supply -= value; }
+			remove { _Supply -= value; }
 		}
 
 		event Action<T> INotifier<T>.Unsupply
 		{
-			add { this._Unsupply += value; }
-			remove { this._Unsupply -= value; }
+			add { _Unsupply += value; }
+			remove { _Unsupply -= value; }
 		}
 
 		T[] INotifier<T>.Ghosts
 		{
 			get
 			{
-				lock (this._Entitys)
-					return this._Entitys.ToArray();
+				lock(_Entitys)
+					return _Entitys.ToArray();
 			}
 		}
 
 		event Action<T> INotifier<T>.Return
 		{
-			add { this._Return += value; }
-			remove { this._Return -= value; }
+			add { _Return += value; }
+			remove { _Return -= value; }
 		}
 
 		T[] INotifier<T>.Returns
 		{
-			get { return this._RemoveNoRefenceReturns(); }
+			get { return _RemoveNoRefenceReturns(); }
 		}
 
 		IGhost IProvider.Ready(Guid id)
 		{
-			var entity = (from e in this._Waits where (e as IGhost).GetID() == id select e).FirstOrDefault();
-			this._Waits.Remove(entity);
-			if (entity != null)
+			var entity = (from e in _Waits where (e as IGhost).GetID() == id select e).FirstOrDefault();
+			_Waits.Remove(entity);
+			if(entity != null)
 			{
-				return this._Add(entity, entity as IGhost);
+				return _Add(entity, entity as IGhost);
 			}
 
 			return null;
@@ -137,63 +123,63 @@ namespace Regulus.Remoting
 
 		void IProvider.Add(IGhost entity)
 		{
-			this._Waits.Add(entity as T);
+			_Waits.Add(entity as T);
 		}
 
 		void IProvider.Remove(Guid id)
 		{
-			this._RemoveNoRefenceReturns();
+			_RemoveNoRefenceReturns();
 
-			this._RemoveEntitys(id);
+			_RemoveEntitys(id);
 
-			this._RemoveWaits(id);
+			_RemoveWaits(id);
 
-			this._RemoveReturns(id);
+			_RemoveReturns(id);
 		}
 
 		IGhost[] IProvider.Ghosts
 		{
 			get
 			{
-				var all = this._Entitys.Concat(this._Waits).Concat(from r in this._Returns where r.IsAlive select r.Target as T);
+				var all = _Entitys.Concat(_Waits).Concat(from r in _Returns where r.IsAlive select r.Target as T);
 				return (from entity in all select (IGhost)entity).ToArray();
 			}
 		}
 
 		void IProvider.ClearGhosts()
 		{
-			this._RemoveNoRefenceReturns();
+			_RemoveNoRefenceReturns();
 
-			if (this._Unsupply != null)
+			if(_Unsupply != null)
 			{
-				foreach (var e in this._Entitys)
+				foreach(var e in _Entitys)
 				{
-					this._Unsupply.Invoke(e);
+					_Unsupply.Invoke(e);
 				}
 			}
 
-			this._Entitys.Clear();
-			this._Waits.Clear();
-			this._Returns.Clear();
+			_Entitys.Clear();
+			_Waits.Clear();
+			_Returns.Clear();
 		}
 
 		private IGhost _Add(T entity, IGhost ghost)
 		{
-			if (ghost.IsReturnType() == false)
+			if(ghost.IsReturnType() == false)
 			{
-				lock (this._Entitys)
-					this._Entitys.Add(entity);
-				if (this._Supply != null)
+				lock(_Entitys)
+					_Entitys.Add(entity);
+				if(_Supply != null)
 				{
-					this._Supply.Invoke(entity);
+					_Supply.Invoke(entity);
 				}
 			}
 			else
 			{
-				this._Returns.Add(new WeakReference(entity));
-				if (this._Return != null)
+				_Returns.Add(new WeakReference(entity));
+				if(_Return != null)
 				{
-					this._Return(entity);
+					_Return(entity);
 				}
 			}
 
@@ -202,44 +188,44 @@ namespace Regulus.Remoting
 
 		private void _RemoveReturns(Guid id)
 		{
-			var entity = (from weakRef in this._Returns
+			var entity = (from weakRef in _Returns
 			              let e = weakRef.Target as IGhost
 			              where weakRef.IsAlive && e.GetID() == id
 			              select weakRef).SingleOrDefault();
 
-			if (entity != null)
+			if(entity != null)
 			{
-				this._Returns.Remove(entity);
+				_Returns.Remove(entity);
 			}
 		}
 
 		private void _RemoveWaits(Guid id)
 		{
-			var waitentity = (from e in this._Waits where (e as IGhost).GetID() == id select e).FirstOrDefault();
-			if (waitentity != null)
+			var waitentity = (from e in _Waits where (e as IGhost).GetID() == id select e).FirstOrDefault();
+			if(waitentity != null)
 			{
-				this._Waits.Remove(waitentity);
+				_Waits.Remove(waitentity);
 			}
 		}
 
 		private void _RemoveEntitys(Guid id)
 		{
-			lock (this._Entitys)
+			lock(_Entitys)
 			{
-				var entity = (from e in this._Entitys where (e as IGhost).GetID() == id select e).FirstOrDefault();
-				if (entity != null && this._Unsupply != null)
+				var entity = (from e in _Entitys where (e as IGhost).GetID() == id select e).FirstOrDefault();
+				if(entity != null && _Unsupply != null)
 				{
-					this._Unsupply.Invoke(entity);
+					_Unsupply.Invoke(entity);
 				}
 
-				this._Entitys.Remove(entity);
+				_Entitys.Remove(entity);
 			}
 		}
 
 		private T[] _RemoveNoRefenceReturns()
 		{
-			var alives = (from w in this._Returns where w.IsAlive select w.Target as T).ToArray();
-			this._Returns.RemoveAll(w => w.IsAlive == false);
+			var alives = (from w in _Returns where w.IsAlive select w.Target as T).ToArray();
+			_Returns.RemoveAll(w => w.IsAlive == false);
 			return alives;
 		}
 	}

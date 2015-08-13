@@ -1,12 +1,3 @@
-// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="MultiKeyDictionary.cs" company="Regulus Framework">
-//   Regulus Framework
-// </copyright>
-// <summary>
-//   Defines the MultiKeyDictionary type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +10,7 @@ namespace Regulus.Collection
 		{
 			get
 			{
-				if (!this.ContainsKey(key1) || !this[key1].ContainsKey(key2))
+				if(!ContainsKey(key1) || !this[key1].ContainsKey(key2))
 				{
 					throw new ArgumentOutOfRangeException();
 				}
@@ -29,7 +20,7 @@ namespace Regulus.Collection
 
 			set
 			{
-				if (!this.ContainsKey(key1))
+				if(!ContainsKey(key1))
 				{
 					this[key1] = new Dictionary<TK2, TV>();
 				}
@@ -50,7 +41,7 @@ namespace Regulus.Collection
 
 		public void Add(TK1 key1, TK2 key2, TV value)
 		{
-			if (!this.ContainsKey(key1))
+			if(!ContainsKey(key1))
 			{
 				this[key1] = new Dictionary<TK2, TV>();
 			}
@@ -60,7 +51,7 @@ namespace Regulus.Collection
 
 		public bool ContainsKey(TK1 key1, TK2 key2)
 		{
-			return this.ContainsKey(key1) && this[key1].ContainsKey(key2);
+			return ContainsKey(key1) && this[key1].ContainsKey(key2);
 		}
 
 		public Dictionary<TK2, TV>.ValueCollection FindValueByKey1(TK1 key1)
@@ -75,14 +66,14 @@ namespace Regulus.Collection
 		{
 			get
 			{
-				return this.ContainsKey(key1)
-					? this[key1][key2, key3]
-					: default(V);
+				return ContainsKey(key1)
+					       ? this[key1][key2, key3]
+					       : default(V);
 			}
 
 			set
 			{
-				if (!this.ContainsKey(key1))
+				if(!ContainsKey(key1))
 				{
 					this[key1] = new MultiKeyDictionary<K2, K3, V>();
 				}
@@ -93,7 +84,7 @@ namespace Regulus.Collection
 
 		public bool ContainsKey(K1 key1, K2 key2, K3 key3)
 		{
-			return this.ContainsKey(key1) && this[key1].ContainsKey(key2, key3);
+			return ContainsKey(key1) && this[key1].ContainsKey(key2, key3);
 		}
 	}
 }

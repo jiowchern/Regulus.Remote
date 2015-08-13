@@ -6,16 +6,15 @@
 {
     @class = "navbar-brand"
 })
-@if (Model.AccountManager)
+@if(Model.AccountManager)
 {
     _Page_Views_Home_Functions_cshtml.@Html.ActionLink("帳號管理", "Index", "Account", null, new
     {
         @class = "navbar-brand"
     })
-    
+
     _Page_Views_Home_Functions_cshtml.@Html.ActionLink("儲值", "Index", "Record", null, new
     {
         @class = "navbar-brand"
     })
-    
 }

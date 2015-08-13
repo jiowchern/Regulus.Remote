@@ -1,22 +1,11 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ControllerStageStart.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the StageStart type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.IO;
+
 
 using Regulus.Utility;
 
-using Console = Regulus.Utility.Console;
 
-#endregion
+using Console = Regulus.Utility.Console;
 
 namespace Regulus.Remoting.Soul.Native
 {
@@ -30,22 +19,22 @@ namespace Regulus.Remoting.Soul.Native
 
 		public StageStart(Command command, Console.IViewer view)
 		{
-			this._View = view;
-			this._Command = command;
+			_View = view;
+			_Command = command;
 		}
 
 		void IStage.Enter()
 		{
-			this._Command.Register<int, string, string>("Launch", this._Start);
-			this._Command.Register<string>("LaunchIni", this._StartIni);
+			_Command.Register<int, string, string>("Launch", _Start);
+			_Command.Register<string>("LaunchIni", _StartIni);
 
-			this._View.WriteLine("======Ini file format description=====");
-			this._View.WriteLine("Example.");
-			this._View.WriteLine("[Launch]");
-			this._View.WriteLine("port = 12345");
-			this._View.WriteLine("path = game.dll");
-			this._View.WriteLine("class = Company.Project.Center");
-			this._View.WriteLine("======================================");
+			_View.WriteLine("======Ini file format description=====");
+			_View.WriteLine("Example.");
+			_View.WriteLine("[Launch]");
+			_View.WriteLine("port = 12345");
+			_View.WriteLine("path = game.dll");
+			_View.WriteLine("class = Company.Project.Center");
+			_View.WriteLine("======================================");
 		}
 
 		/*private void _LoadLibrary(string work_dir)
@@ -69,8 +58,8 @@ namespace Regulus.Remoting.Soul.Native
         }*/
 		void IStage.Leave()
 		{
-			this._Command.Unregister("Launch");
-			this._Command.Unregister("LaunchIni");
+			_Command.Unregister("Launch");
+			_Command.Unregister("LaunchIni");
 		}
 
 		void IStage.Update()
@@ -85,7 +74,7 @@ namespace Regulus.Remoting.Soul.Native
 			var dllpath = ini.Read("Launch", "path");
 			var className = ini.Read("Launch", "class");
 
-			this._Start(port, dllpath, className);
+			_Start(port, dllpath, className);
 		}
 
 		private void _Start(int port, string path, string class_name)
@@ -95,11 +84,11 @@ namespace Regulus.Remoting.Soul.Native
 			try
 			{
 				var core = Loader.Load(stream, class_name);
-				this.DoneEvent(core, port, 0);
+				DoneEvent(core, port, 0);
 			}
-			catch (SystemException ex)
+			catch(SystemException ex)
 			{
-				this._View.WriteLine(ex.ToString());
+				_View.WriteLine(ex.ToString());
 			}
 		}
 	}

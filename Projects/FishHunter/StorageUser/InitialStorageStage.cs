@@ -1,26 +1,15 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="InitialStorageStage.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the VerifyStorageStage type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using Regulus.Utility;
 
-#region Test_Region
 
-using Regulus.Utility;
-
-using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.GPI;
-
-#endregion
 
 namespace VGame.Project.FishHunter.Storage
 {
 	public class VerifyStorageStage : IStage
 	{
-		public event DoneCallback DoneEvent;
+		public delegate void DoneCallback(bool result);
+
+		public event DoneCallback OnDoneEvent;
 
 		private readonly string _Account;
 
@@ -30,9 +19,9 @@ namespace VGame.Project.FishHunter.Storage
 
 		public VerifyStorageStage(IUser user, string account, string password)
 		{
-			this._Account = account;
-			this._Password = password;
-			this._User = user;
+			_Account = account;
+			_Password = password;
+			_User = user;
 		}
 
 		void IStage.Update()
@@ -41,20 +30,18 @@ namespace VGame.Project.FishHunter.Storage
 
 		void IStage.Leave()
 		{
-			this._User.VerifyProvider.Supply -= this._ToVerify;
+			_User.VerifyProvider.Supply -= _ToVerify;
 		}
 
 		void IStage.Enter()
 		{
-			this._User.VerifyProvider.Supply += this._ToVerify;
+			_User.VerifyProvider.Supply += _ToVerify;
 		}
-
-		public delegate void DoneCallback(bool result);
 
 		private void _ToVerify(IVerify obj)
 		{
-			var result = obj.Login(this._Account, this._Password);
-			result.OnValue += val => { this.DoneEvent(val); };
+			var result = obj.Login(_Account, _Password);
+			result.OnValue += val => { OnDoneEvent(val); };
 		}
 	}
 }

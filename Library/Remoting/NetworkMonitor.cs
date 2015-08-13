@@ -1,25 +1,15 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="NetworkMonitor.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the PackageRecorder type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System.Threading;
 
-#region Test_Region
-
-using System.Threading;
 
 using Regulus.Framework;
 using Regulus.Utility;
-
-#endregion
 
 namespace Regulus.Remoting
 {
 	public class PackageRecorder : IUpdatable
 	{
+		public delegate void ChangeCallback();
+
 		public event ChangeCallback ChangeEvent;
 
 		private readonly TimeCounter _Counter;
@@ -37,9 +27,9 @@ namespace Regulus.Remoting
 
 		bool IUpdatable.Update()
 		{
-			lock (_Counter)
+			lock(_Counter)
 			{
-				if (_Counter.Second > 1)
+				if(_Counter.Second > 1)
 				{
 					SecondBytes = _SecondBytes;
 					_SecondBytes = 0;
@@ -52,21 +42,19 @@ namespace Regulus.Remoting
 
 		void IBootable.Launch()
 		{
-			lock (_Counter)
+			lock(_Counter)
 				_Counter.Reset();
 		}
 
 		void IBootable.Shutdown()
 		{
-			lock (_Counter)
+			lock(_Counter)
 				SecondBytes = 0;
 		}
 
-		public delegate void ChangeCallback();
-
 		internal void Set(int size)
 		{
-			lock (_Counter)
+			lock(_Counter)
 			{
 				TotalBytes += size;
 				_SecondBytes += size;
@@ -95,7 +83,7 @@ namespace Regulus.Remoting
 
 		private void _ResetTime()
 		{
-			if (_ThreadEnable == false)
+			if(_ThreadEnable == false)
 			{
 				_ThreadEnable = true;
 				ThreadPool.QueueUserWorkItem(_Update);
@@ -115,7 +103,7 @@ namespace Regulus.Remoting
 			{
 				updater.Working();
 
-				if (_Reset)
+				if(_Reset)
 				{
 					counter.Reset();
 					_Reset = false;
@@ -123,7 +111,7 @@ namespace Regulus.Remoting
 
 				Thread.Sleep(1000);
 			}
-			while (counter.Second <= 30);
+			while(counter.Second <= 30);
 			updater.Shutdown();
 			_ThreadEnable = false;
 		}

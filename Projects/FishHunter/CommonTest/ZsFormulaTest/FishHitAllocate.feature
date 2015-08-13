@@ -4,8 +4,7 @@
 	I want to be 得到命中機率
 
 
-
-
+    
 Background: 
 	Given 威力分配表
     | HitNumber | Hit1 | Hit2 | Hit3 | Hit4 |

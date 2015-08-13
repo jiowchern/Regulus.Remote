@@ -1,18 +1,5 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Proxy.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Proxy type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Framework;
+﻿using Regulus.Framework;
 using Regulus.Utility;
-
-#endregion
 
 namespace VGame.Project.FishHunter.Storage
 {

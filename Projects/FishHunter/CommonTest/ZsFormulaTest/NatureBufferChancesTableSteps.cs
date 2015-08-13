@@ -1,15 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="NatureBufferChancesTableSteps.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the NatureBufferChancesTableSteps type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-using TechTalk.SpecFlow;
-
-using VGame.Project.FishHunter.ZsFormula.Data;
+﻿using TechTalk.SpecFlow;
 
 namespace GameTest.ZsFormulaTest
 {
@@ -17,8 +6,7 @@ namespace GameTest.ZsFormulaTest
 	[Scope(Feature = "NatureBufferChancesTable")]
 	public class NatureBufferChancesTableSteps
 	{
-		//private NatureBufferChancesTable _NatureBufferChancesTable;
-
+		// private NatureBufferChancesTable _NatureBufferChancesTable;
 		[Given(@"buffer資料是")]
 		public void GivenBuffer資料是(Table table)
 		{

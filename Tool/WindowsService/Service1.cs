@@ -1,17 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Service1.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Service1 type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System.ServiceProcess;
-
-#endregion
+﻿using System.ServiceProcess;
 
 namespace WindowsService
 {

@@ -1,19 +1,10 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AccountController.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the AccountController type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
+
 using Regulus.Net45;
+
 
 using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.Data;
@@ -21,8 +12,6 @@ using VGame.Project.FishHunter.Common.Data;
 
 using VGameWebApplication.Models;
 using VGameWebApplication.Storage;
-
-#endregion
 
 namespace VGameWebApplication.Controllers
 {
@@ -64,7 +53,7 @@ namespace VGameWebApplication.Controllers
 		public async Task<ActionResult> Edit(string accountid)
 		{
 			Guid accountId;
-			if (Guid.TryParse(accountid, out accountId) == false)
+			if(Guid.TryParse(accountid, out accountId) == false)
 			{
 				return RedirectToAction("Index");
 			}
@@ -72,7 +61,7 @@ namespace VGameWebApplication.Controllers
 			var model = Service.Create(HttpContext.Items["StorageId"]);
 			var result = await model.AccountFinder.FindAccountById(accountId).ToTask();
 			model.Release();
-			if (result.Id != Guid.Empty)
+			if(result.Id != Guid.Empty)
 			{
 				var updateAccount = new UpdateAccount();
 				updateAccount.TheAccount = result;
@@ -85,7 +74,7 @@ namespace VGameWebApplication.Controllers
 		[AcceptVerbs(HttpVerbs.Post)]
 		public async Task<ActionResult> Edit(UpdateAccount account)
 		{
-			if (ModelState.IsValid)
+			if(ModelState.IsValid)
 			{
 				var model = Service.Create(HttpContext.Items["StorageId"]);
 				var result = await model.AccountManager.Update(account.TheAccount).ToTask();

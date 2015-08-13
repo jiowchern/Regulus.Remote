@@ -1,19 +1,6 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="EnumDescription.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the EnumDescriptionAttribute type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
-#endregion
 
 namespace Regulus.Utility
 {
@@ -24,7 +11,7 @@ namespace Regulus.Utility
 
 		public EnumDescriptionAttribute(string message)
 		{
-			this.Message = message;
+			Message = message;
 		}
 	}
 
@@ -32,14 +19,14 @@ namespace Regulus.Utility
 	{
 		public static string GetEnumDescription<T>(this T enum_instance)
 		{
-			var memberInfo = typeof (T).GetMember(enum_instance.ToString())
-				.FirstOrDefault();
-			if (memberInfo != null)
+			var memberInfo = typeof(T).GetMember(enum_instance.ToString())
+			                          .FirstOrDefault();
+			if(memberInfo != null)
 			{
 				var attribute =
-					memberInfo.GetCustomAttributes(typeof (EnumDescriptionAttribute), false).FirstOrDefault() as
-						EnumDescriptionAttribute;
-				if (attribute != null)
+					memberInfo.GetCustomAttributes(typeof(EnumDescriptionAttribute), false).FirstOrDefault() as
+					EnumDescriptionAttribute;
+				if(attribute != null)
 				{
 					return attribute.Message;
 				}
@@ -55,17 +42,17 @@ namespace Regulus.Utility
 	{
 		public static IEnumerable<T> GetEnums<T>()
 		{
-			return Enum.GetValues(typeof (T)).Cast<T>();
+			return Enum.GetValues(typeof(T)).Cast<T>();
 		}
 
 		public static IEnumerable<Enum> GetFlags(this Enum enum_instance)
 		{
 			var ienum = Convert.ToUInt64(enum_instance);
 			var availableSuits = Enum.GetValues(enum_instance.GetType()).Cast<Enum>();
-			foreach (var suit in availableSuits)
+			foreach(var suit in availableSuits)
 			{
 				var iflag = Convert.ToUInt64(suit);
-				if ((ienum & iflag) > 0)
+				if((ienum & iflag) > 0)
 				{
 					yield return suit;
 				}
@@ -76,7 +63,7 @@ namespace Regulus.Utility
 		{
 			var ienum = Convert.ToUInt64(enum_instance);
 			var availableSuits = Enum.GetValues(enum_instance.GetType()).Cast<Enum>();
-			foreach (var suit in availableSuits)
+			foreach(var suit in availableSuits)
 			{
 				var iflag = Convert.ToUInt64(suit);
 				var result = ienum & iflag;

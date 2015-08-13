@@ -1,13 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Bootable.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the IBootable type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-namespace Regulus.Framework
+﻿namespace Regulus.Framework
 {
 	public interface IBootable<T>
 	{

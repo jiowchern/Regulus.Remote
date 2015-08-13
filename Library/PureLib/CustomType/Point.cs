@@ -1,19 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Point.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Point type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System;
 
-#region Test_Region
-
-using System;
 
 using ProtoBuf;
-
-#endregion
 
 namespace Regulus.CustomType
 {
@@ -30,8 +18,8 @@ namespace Regulus.CustomType
 		public Point(float x, float y)
 		{
 			// TODO: Complete member initialization
-			this.X = x;
-			this.Y = y;
+			X = x;
+			Y = y;
 		}
 	}
 }

@@ -1,19 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Time.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the ITime type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System;
 
-#region Test_Region
-
-using System;
 
 using Regulus.Utility;
-
-#endregion
 
 namespace Regulus.Remoting
 {
@@ -30,7 +18,7 @@ namespace Regulus.Remoting
 
 		public Time(ITime time) : this()
 		{
-			if (time != null)
+			if(time != null)
 			{
 				_Time = time;
 				_Request.Reset();
@@ -40,14 +28,16 @@ namespace Regulus.Remoting
 
 		public Time()
 		{
-			_TimingTimer = new Timer(new TimeSpan(0, 1, 0), current =>
-			{
-				if (_Time != null)
+			_TimingTimer = new Timer(
+				new TimeSpan(0, 1, 0), 
+				current =>
 				{
-					_Request.Reset();
-					_Time.GetTick().OnValue += _Timing;
-				}
-			});
+					if(_Time != null)
+					{
+						_Request.Reset();
+						_Time.GetTick().OnValue += _Timing;
+					}
+				});
 		}
 
 		Value<long> ITime.GetTick()

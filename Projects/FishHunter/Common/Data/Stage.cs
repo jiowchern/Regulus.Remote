@@ -1,17 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Stage.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Stage type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
-
-#endregion
+﻿using System;
 
 namespace VGame.Project.FishHunter.Common.Data
 {
@@ -23,7 +10,7 @@ namespace VGame.Project.FishHunter.Common.Data
 
 		bool IEquatable<Stage>.Equals(Stage other)
 		{
-			return other.Id == this.Id;
+			return other.Id == Id;
 		}
 	}
 }

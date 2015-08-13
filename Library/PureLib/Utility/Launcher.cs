@@ -1,19 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Launcher.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Launcher type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System.Collections.Generic;
 
-#region Test_Region
-
-using System.Collections.Generic;
 
 using Regulus.Framework;
-
-#endregion
 
 namespace Regulus.Utility
 {
@@ -23,22 +11,22 @@ namespace Regulus.Utility
 
 		public int Count
 		{
-			get { return this._Launchers.Count; }
+			get { return _Launchers.Count; }
 		}
 
 		public Launcher()
 		{
-			this._Launchers = new List<IBootable>();
+			_Launchers = new List<IBootable>();
 		}
 
 		public void Push(IBootable laucnher)
 		{
-			this._Launchers.Add(laucnher);
+			_Launchers.Add(laucnher);
 		}
 
 		public void Shutdown()
 		{
-			foreach (var l in this._Launchers)
+			foreach(var l in _Launchers)
 			{
 				l.Shutdown();
 			}
@@ -46,7 +34,7 @@ namespace Regulus.Utility
 
 		public void Launch()
 		{
-			foreach (var l in this._Launchers)
+			foreach(var l in _Launchers)
 			{
 				l.Launch();
 			}

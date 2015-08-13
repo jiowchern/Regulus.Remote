@@ -1,11 +1,13 @@
-﻿
-using System;
+﻿using System;
+
 
 using Regulus.Extension;
 using Regulus.Utility;
 
+
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
+
 
 using Random = Regulus.Utility.Random;
 
@@ -17,17 +19,17 @@ namespace VGame.Project.FishHunter.Formula
 
 		private event Action<HitResponse> _OnHitResponseEvent;
 
-		private readonly long _AccountId;
+		private readonly Guid _AccountId;
 
-		private readonly byte _FishStage;
+		private readonly int _FishStage;
 
 		private readonly HitBase _Formula;
 
-		public FishStage(long account, int stage_id)
+		public FishStage(Guid account, int stage_id)
 		{
 			_Formula = new HitTest(Random.Instance);
 			_AccountId = account;
-			_FishStage = (byte)stage_id;
+			_FishStage = stage_id;
 		}
 
 		event Action<string> IFishStage.OnHitExceptionEvent
@@ -42,7 +44,9 @@ namespace VGame.Project.FishHunter.Formula
 			remove { _OnHitResponseEvent -= value; }
 		}
 
-		long IFishStage.AccountId
+		public event Action<HitResponse[]> OnTotalHitResponseEvent;
+
+		Guid IFishStage.AccountId
 		{
 			get { return _AccountId; }
 		}

@@ -1,13 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="DummyView.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the DummyView type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-namespace Regulus.Utility
+﻿namespace Regulus.Utility
 {
 	public class DummyView : Console.IViewer
 	{

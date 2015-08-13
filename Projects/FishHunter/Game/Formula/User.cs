@@ -1,11 +1,11 @@
-﻿
-using System;
+﻿using System;
 
 
 using Regulus.Framework;
 using Regulus.Game;
 using Regulus.Remoting;
 using Regulus.Utility;
+
 
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Stage;
@@ -73,14 +73,14 @@ namespace VGame.Project.FishHunter.Formula
 		{
 			_Account = null;
 			var verify = new Verify(_ExpansionFeature.AccountFinder);
-			var stage = new Stage.Verify(_Binder, verify);
+			var stage = new Storage.Verify(_Binder, verify);
 			stage.DoneEvent += _VerifySuccess;
 			_Machine.Push(stage);
 		}
 
 		private void _VerifySuccess(Account account)
 		{
-			if (account.IsFormulaQueryer())
+			if(account.IsFormulaQueryer())
 			{
 				_Account = account;
 				_VerifySuccessEvent(_Account.Id);
@@ -95,7 +95,7 @@ namespace VGame.Project.FishHunter.Formula
 		private void _ToFishStage()
 		{
 			var stage = new FormulaStage(_Binder, _ExpansionFeature);
-			
+
 			stage.OnDoneEvent += () => { _QuitEvent(); };
 			_Machine.Push(stage);
 		}

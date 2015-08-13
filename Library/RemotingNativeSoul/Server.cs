@@ -1,20 +1,8 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Server.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   伺服器端
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System.Threading;
 
-#region Test_Region
-
-using System.Threading;
 
 using Regulus.Framework;
 using Regulus.Utility;
-
-#endregion
 
 namespace Regulus.Remoting.Soul.Native
 {
@@ -34,7 +22,7 @@ namespace Regulus.Remoting.Soul.Native
 		/// </summary>
 		public int PeerFPS
 		{
-			get { return this._ThreadSocketHandler.FPS; }
+			get { return _ThreadSocketHandler.FPS; }
 		}
 
 		/// <summary>
@@ -42,7 +30,7 @@ namespace Regulus.Remoting.Soul.Native
 		/// </summary>
 		public int CoreFPS
 		{
-			get { return this._ThreadCoreHandler.FPS; }
+			get { return _ThreadCoreHandler.FPS; }
 		}
 
 		/// <summary>
@@ -50,7 +38,7 @@ namespace Regulus.Remoting.Soul.Native
 		/// </summary>
 		public float PeerUsage
 		{
-			get { return this._ThreadSocketHandler.Power; }
+			get { return _ThreadSocketHandler.Power; }
 		}
 
 		/// <summary>
@@ -58,7 +46,7 @@ namespace Regulus.Remoting.Soul.Native
 		/// </summary>
 		public float CoreUsage
 		{
-			get { return this._ThreadCoreHandler.Power; }
+			get { return _ThreadCoreHandler.Power; }
 		}
 
 		/// <summary>
@@ -66,7 +54,7 @@ namespace Regulus.Remoting.Soul.Native
 		/// </summary>
 		public int PeerCount
 		{
-			get { return this._ThreadSocketHandler.PeerCount; }
+			get { return _ThreadSocketHandler.PeerCount; }
 		}
 
 		/// <summary>
@@ -118,30 +106,30 @@ namespace Regulus.Remoting.Soul.Native
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Server"/> class. 
+		///     Initializes a new instance of the <see cref="Server" /> class.
 		/// </summary>
 		/// <param name="core">
-		/// 進入點物件
+		///     進入點物件
 		/// </param>
 		/// <param name="port">
-		/// 監聽的埠
+		///     監聽的埠
 		/// </param>
 		public Server(ICore core, int port)
 		{
-			this._ThreadCoreHandler = new ThreadCoreHandler(core);
-			this._ThreadSocketHandler = new ThreadSocketHandler(port, this._ThreadCoreHandler);
+			_ThreadCoreHandler = new ThreadCoreHandler(core);
+			_ThreadSocketHandler = new ThreadSocketHandler(port, _ThreadCoreHandler);
 
-			this._WaitSocket = new AutoResetEvent(false);
+			_WaitSocket = new AutoResetEvent(false);
 		}
 
 		void IBootable.Launch()
 		{
-			this.Launch();
+			Launch();
 		}
 
 		void IBootable.Shutdown()
 		{
-			this.Shutdown();
+			Shutdown();
 		}
 
 		/// <summary>
@@ -149,8 +137,8 @@ namespace Regulus.Remoting.Soul.Native
 		/// </summary>
 		public void Launch()
 		{
-			ThreadPool.QueueUserWorkItem(this._ThreadCoreHandler.DoWork);
-			ThreadPool.QueueUserWorkItem(this._ThreadSocketHandler.DoWork, this._WaitSocket);
+			ThreadPool.QueueUserWorkItem(_ThreadCoreHandler.DoWork);
+			ThreadPool.QueueUserWorkItem(_ThreadSocketHandler.DoWork, _WaitSocket);
 		}
 
 		/// <summary>
@@ -158,13 +146,14 @@ namespace Regulus.Remoting.Soul.Native
 		/// </summary>
 		public void Shutdown()
 		{
-			this._ThreadCoreHandler.Stop();
-			this._ThreadSocketHandler.Stop();
+			_ThreadCoreHandler.Stop();
+			_ThreadSocketHandler.Stop();
 
-			WaitHandle.WaitAll(new[]
-			{
-				this._WaitSocket
-			});
+			WaitHandle.WaitAll(
+				new[]
+				{
+					_WaitSocket
+				});
 		}
 	}
 }

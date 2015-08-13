@@ -1,13 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="DummyStandalong.cs" company="Regulus Framework">
-//   Regulus Framework
-// </copyright>
-// <summary>
-//   Defines the DummyStandalong type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-using Regulus.Framework;
+﻿using Regulus.Framework;
 using Regulus.Remoting;
 using Regulus.Utility;
 

@@ -1,19 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Time.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the FPSCounter type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System;
 
-#region Test_Region
-
-using System;
 
 using Regulus.Framework;
-
-#endregion
 
 namespace Regulus.Utility
 {
@@ -27,21 +15,20 @@ namespace Regulus.Utility
 
 		public FPSCounter()
 		{
-			this._Counter = new TimeCounter();
+			_Counter = new TimeCounter();
 		}
 
 		public void Update()
 		{
-			this._Frames++;
-			if (this._Counter.Second > 1.0f)
+			_Frames++;
+			if(_Counter.Second > 1.0f)
 			{
-				this.Value = this._Frames;
-				this._Frames = 0;
-				this._Counter.Reset();
+				Value = _Frames;
+				_Frames = 0;
+				_Counter.Reset();
 			}
 		}
 	}
-
 
 	public class TimeCounter
 	{
@@ -49,22 +36,22 @@ namespace Regulus.Utility
 
 		public long Ticks
 		{
-			get { return DateTime.Now.Ticks - this._Begin; }
+			get { return DateTime.Now.Ticks - _Begin; }
 		}
 
 		public float Second
 		{
-			get { return (float)new TimeSpan(this.Ticks).TotalSeconds; }
+			get { return (float)new TimeSpan(Ticks).TotalSeconds; }
 		}
 
 		public TimeCounter()
 		{
-			this.Reset();
+			Reset();
 		}
 
 		public void Reset()
 		{
-			this._Begin = DateTime.Now.Ticks;
+			_Begin = DateTime.Now.Ticks;
 		}
 	}
 
@@ -84,34 +71,34 @@ namespace Regulus.Utility
 		{
 			get
 			{
-				if (this._Pause == false)
+				if(_Pause == false)
 				{
-					return this._Current.Ticks - this._Interval;
+					return _Current.Ticks - _Interval;
 				}
 
-				return this._StopTick;
+				return _StopTick;
 			}
 		}
 
 		public void Reset()
 		{
-			this._Current.Reset();
-			this._Stop.Reset();
-			this._Interval = 0;
-			this._StopTick = 0;
+			_Current.Reset();
+			_Stop.Reset();
+			_Interval = 0;
+			_StopTick = 0;
 		}
 
 		public void Continue()
 		{
-			this._Pause = false;
-			this._Interval += this._Stop.Ticks;
+			_Pause = false;
+			_Interval += _Stop.Ticks;
 		}
 
 		public void Stop()
 		{
-			this._Pause = true;
-			this._Stop.Reset();
-			this._StopTick = this._Current.Ticks;
+			_Pause = true;
+			_Stop.Reset();
+			_StopTick = _Current.Ticks;
 		}
 	}
 
@@ -129,29 +116,29 @@ namespace Regulus.Utility
 
 		public Timer(TimeSpan interval, Action<long> time_up)
 		{
-			this._TimeUp = time_up;
-			this._Interval = interval.Ticks;
-			this._Current = 0;
+			_TimeUp = time_up;
+			_Interval = interval.Ticks;
+			_Current = 0;
 		}
 
 		protected bool _Update(long delta)
 		{
-			var newTime = this._Current + delta;
+			var newTime = _Current + delta;
 
-			if (newTime > this._Interval)
+			if(newTime > _Interval)
 			{
-				this._Current = newTime - this._Interval;
-				this._TimeUp(this._Current);
+				_Current = newTime - _Interval;
+				_TimeUp(_Current);
 				return true;
 			}
 
-			this._Current = newTime;
+			_Current = newTime;
 			return false;
 		}
 
 		public void Update(long delta)
 		{
-			this._Update(delta);
+			_Update(delta);
 		}
 	}
 
@@ -164,7 +151,7 @@ namespace Regulus.Utility
 
 		bool IUpdatable<long>.Update(long arg)
 		{
-			return this._Update(arg) == false;
+			return _Update(arg) == false;
 		}
 
 		void IBootable.Launch()
@@ -184,26 +171,26 @@ namespace Regulus.Utility
 
 		public Scheduler()
 		{
-			this._Tasks = new UpdaterToGenerics<long>();
-			this._Time = new Time();
+			_Tasks = new UpdaterToGenerics<long>();
+			_Time = new Time();
 		}
 
 		public Task Add(TimeSpan interval, Action<long> time_up)
 		{
 			var task = new Task(interval, time_up);
-			this._Tasks.Add(task);
+			_Tasks.Add(task);
 			return task;
 		}
 
 		public void Remove(Task task)
 		{
-			this._Tasks.Remove(task);
+			_Tasks.Remove(task);
 		}
 
 		public void Update()
 		{
-			this._Time.Update();
-			this._Tasks.Working(this._Time.Delta);
+			_Time.Update();
+			_Tasks.Working(_Time.Delta);
 		}
 	}
 
@@ -220,29 +207,29 @@ namespace Regulus.Utility
 		/// </summary>
 		public long Ticks
 		{
-			get { return this._Real; }
+			get { return _Real; }
 		}
 
 		public long Delta { get; private set; }
 
 		public float DeltaSecond
 		{
-			get { return (float)new TimeSpan(this.Delta).TotalSeconds; }
+			get { return (float)new TimeSpan(Delta).TotalSeconds; }
 		}
 
 		public Time()
 		{
-			this._Current = DateTime.Now.Ticks;
-			this._Real = this._Current;
+			_Current = DateTime.Now.Ticks;
+			_Real = _Current;
 		}
 
 		public void Update()
 		{
 			var current = DateTime.Now.Ticks;
-			this.Delta = current - this._Current;
-			this._Real += this.Delta;
+			Delta = current - _Current;
+			_Real += Delta;
 
-			this._Current = current;
+			_Current = current;
 		}
 
 		~Time()
@@ -258,14 +245,14 @@ namespace Regulus.Utility
 
 		public IndependentTimer(TimeSpan interval, Action<long> time_up)
 		{
-			this._Timer = new Timer(interval, time_up);
-			this._Time = new Time();
+			_Timer = new Timer(interval, time_up);
+			_Time = new Time();
 		}
 
 		public void Update()
 		{
-			this._Time.Update();
-			this._Timer.Update(this._Time.Delta);
+			_Time.Update();
+			_Timer.Update(_Time.Delta);
 		}
 	}
 }

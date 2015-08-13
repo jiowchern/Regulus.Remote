@@ -1,22 +1,10 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CommandParser.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the CommandParser type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Framework;
+﻿using Regulus.Framework;
 using Regulus.Remoting;
 using Regulus.Utility;
 
+
 using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.GPI;
-
-#endregion
 
 namespace VGame.Project.FishHunter
 {
@@ -30,9 +18,9 @@ namespace VGame.Project.FishHunter
 
 		public CommandParser(Command command, Console.IViewer view, IUser user)
 		{
-			this._Command = command;
-			this._View = view;
-			this._User = user;
+			_Command = command;
+			_View = view;
+			_User = user;
 		}
 
 		void ICommandParsable<IUser>.Clear()
@@ -85,17 +73,23 @@ namespace VGame.Project.FishHunter
 		{
 			var player = factory.Create(_User.PlayerProvider);
 
-			player.Bind("Hit[bulletid,fishid]", gpi =>
-			{
-				return new CommandParamBuilder().Build<int, int>((b, f) =>
+			player.Bind(
+				"Hit[bulletid,fishid]", 
+				gpi =>
 				{
-					gpi.Hit(b, new[]
-					{
-						f
-					});
+					return new CommandParamBuilder().Build<int, int>(
+						(b, f) =>
+						{
+							gpi.Hit(
+								b, 
+								new[]
+								{
+									f
+								});
+						});
 				});
-			});
-			player.Bind("RequestBullet", 
+			player.Bind(
+				"RequestBullet", 
 				gpi => { return new CommandParamBuilder().BuildRemoting(gpi.RequestBullet, _GetBullet); });
 
 			player.SupplyEvent += _RegisgetPlayerEvent;
@@ -115,14 +109,16 @@ namespace VGame.Project.FishHunter
 		private void _CreateVerify(IGPIBinderFactory factory)
 		{
 			var verify = factory.Create(_User.VerifyProvider);
-			verify.Bind("Login[result,id,password]", 
+			verify.Bind(
+				"Login[result,id,password]", 
 				gpi => { return new CommandParamBuilder().BuildRemoting<string, string, bool>(gpi.Login, _VerifyResult); });
 		}
 
 		private void _CreateOnline(IGPIBinderFactory factory)
 		{
 			var online = factory.Create(_User.Remoting.OnlineProvider);
-			online.Bind("Ping", 
+			online.Bind(
+				"Ping", 
 				gpi => { return new CommandParamBuilder().Build(() => { _View.WriteLine("Ping : " + gpi.Ping); }); });
 			online.Bind(gpi => gpi.Disconnect());
 		}
@@ -130,7 +126,8 @@ namespace VGame.Project.FishHunter
 		private void _CreateConnect(IGPIBinderFactory factory)
 		{
 			var connect = factory.Create(_User.Remoting.ConnectProvider);
-			connect.Bind("Connect[result , ipaddr ,port]", 
+			connect.Bind(
+				"Connect[result , ipaddr ,port]", 
 				gpi => { return new CommandParamBuilder().BuildRemoting<string, int, bool>(gpi.Connect, _ConnectResult); });
 		}
 

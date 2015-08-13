@@ -1,20 +1,8 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Flag.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Flag type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 
-using ProtoBuf;
 
-#endregion
+using ProtoBuf;
 
 namespace Regulus.CustomType
 {
@@ -26,79 +14,79 @@ namespace Regulus.CustomType
 
 		private ICollection<T> _Collection
 		{
-			get { return this._Flags; }
+			get { return _Flags; }
 		}
 
 		public bool this[T index]
 		{
-			get { return this._Get(index); }
-			set { this._Set(index, value); }
+			get { return _Get(index); }
+			set { _Set(index, value); }
 		}
 
 		public Flag()
 		{
-			this._Flags = new HashSet<T>();
+			_Flags = new HashSet<T>();
 		}
 
 		public Flag(params T[] args)
 		{
-			this._Flags = new HashSet<T>(args);
+			_Flags = new HashSet<T>(args);
 		}
 
 		public Flag(IEnumerable<T> flags)
 		{
-			this._Flags = new HashSet<T>(flags);
+			_Flags = new HashSet<T>(flags);
 		}
 
 		void ICollection<T>.Add(T item)
 		{
-			this._Collection.Add(item);
+			_Collection.Add(item);
 		}
 
 		void ICollection<T>.Clear()
 		{
-			this._Collection.Clear();
+			_Collection.Clear();
 		}
 
 		bool ICollection<T>.Contains(T item)
 		{
-			return this._Collection.Contains(item);
+			return _Collection.Contains(item);
 		}
 
 		void ICollection<T>.CopyTo(T[] array, int arrayIndex)
 		{
-			this._Collection.CopyTo(array, arrayIndex);
+			_Collection.CopyTo(array, arrayIndex);
 		}
 
 		int ICollection<T>.Count
 		{
-			get { return this._Collection.Count; }
+			get { return _Collection.Count; }
 		}
 
 		bool ICollection<T>.IsReadOnly
 		{
-			get { return this._Collection.IsReadOnly; }
+			get { return _Collection.IsReadOnly; }
 		}
 
 		bool ICollection<T>.Remove(T item)
 		{
-			return this._Collection.Remove(item);
+			return _Collection.Remove(item);
 		}
 
 		IEnumerator<T> IEnumerable<T>.GetEnumerator()
 		{
-			return this._Flags.GetEnumerator();
+			return _Flags.GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return this._Flags.GetEnumerator();
+			return _Flags.GetEnumerator();
 		}
 
 		public static implicit operator Flag<T>(object[] objs)
 		{
 			var m = new Flag<T>();
-			foreach (var o in objs)
+			foreach(var o in objs)
 			{
 				m[(T)o] = true;
 			}
@@ -108,22 +96,22 @@ namespace Regulus.CustomType
 
 		private void _Set(T index, bool value)
 		{
-			if (value)
+			if(value)
 			{
-				if (this._Flags.Contains(index) == false)
+				if(_Flags.Contains(index) == false)
 				{
-					this._Flags.Add(index);
+					_Flags.Add(index);
 				}
 			}
 			else
 			{
-				this._Flags.Remove(index);
+				_Flags.Remove(index);
 			}
 		}
 
 		private bool _Get(T index)
 		{
-			return this._Flags.Contains(index);
+			return _Flags.Contains(index);
 		}
 	}
 }

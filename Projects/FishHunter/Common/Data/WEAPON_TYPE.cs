@@ -1,15 +1,28 @@
-﻿
-using Regulus.Utility;
+﻿using Regulus.Utility;
 
 namespace VGame.Project.FishHunter.Common.Data
 {
+	/// <summary>
+	///     伤害类型,公式判断用
+	/// </summary>
+	internal enum DAMAGE_TYPE
+	{
+		NORMAL, 
+
+		FULL_SCREEN_BOMB_1, // 死一半
+
+		FULL_SCREEN_BOMB_2, 
+
+		ICE_
+	}
+
 	/// <summary>
 	///     武器類型
 	/// </summary>
 	public enum WEAPON_TYPE
 	{
 		/// <summary>
-		///    0 無效
+		///     0 無效
 		/// </summary>
 		INVALID, 
 
@@ -34,18 +47,7 @@ namespace VGame.Project.FishHunter.Common.Data
 		FREE_POWER = 4, 
 
 		/// <summary>
-		///     5貪食蛇
-		/// </summary>
-		FIRE_SNAKE = 5, 
-
-		/// <summary>
-		///     6章魚
-		/// </summary>
-		OCTOPUS = 6,
-
-
-		/// <summary>
-		/// 101全屏炸彈
+		///     101全屏炸彈
 		/// </summary>
 		SCREEN_BOMB = 101, 
 
@@ -79,6 +81,4 @@ namespace VGame.Project.FishHunter.Common.Data
 		[EnumDescription("大章魚")]
 		BIG_OCTOPUS_BOMB = 106
 	};
-
-
 }

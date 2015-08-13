@@ -1,24 +1,13 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CommandTest.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the CommandTest type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-#region Test_Region
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using NSubstitute;
+
 
 using Regulus.Remoting;
 using Regulus.Utility;
 
-#endregion
-
-namespace PureLibraryTest
+namespace RegulusLibraryTest
 {
 	[TestClass]
 	public class CommandTest
@@ -60,18 +49,24 @@ namespace PureLibraryTest
 		{
 			// data
 			var command = new Command();
-			var cr = new CommandRegister<ICallTester, int>("Function2", new[]
-			{
-				"arg1"
-			}, command, (caller, arg1) => caller.Function2(arg1));
+			var cr = new CommandRegister<ICallTester, int>(
+				"Function2", 
+				new[]
+				{
+					"arg1"
+				}, 
+				command, 
+				(caller, arg1) => caller.Function2(arg1));
 			var callTester = Substitute.For<ICallTester>();
 
 			// test
 			cr.Register(callTester);
-			command.Run("Function2", new[]
-			{
-				"1"
-			});
+			command.Run(
+				"Function2", 
+				new[]
+				{
+					"1"
+				});
 
 			// verify
 			cr.Unregister();
@@ -81,14 +76,21 @@ namespace PureLibraryTest
 		public void TestCommandRegister2()
 		{
 			var command = new Command();
-			var cr = new CommandRegisterReturn<ICallTester, int>("Function3", new string[]
-			{
-			}, command, caller => caller.Function3(), ret => { });
+			var cr = new CommandRegisterReturn<ICallTester, int>(
+				"Function3", 
+				new string[]
+				{
+				}, 
+				command, 
+				caller => caller.Function3(), 
+				ret => { });
 			var callTester = Substitute.For<ICallTester>();
 			cr.Register(callTester);
-			command.Run("Function3", new string[]
-			{
-			});
+			command.Run(
+				"Function3", 
+				new string[]
+				{
+				});
 			callTester.Received(1).Function3();
 			cr.Unregister();
 		}
@@ -97,17 +99,24 @@ namespace PureLibraryTest
 		public void TestCommandRegister3()
 		{
 			var command = new Command();
-			var cr = new CommandRegisterReturn<ICallTester, int, byte, float, int>("Function4", new string[]
-			{
-			}, command, (caller, arg1, arg2, arg3) => caller.Function4(arg1, arg2, arg3), ret => { });
+			var cr = new CommandRegisterReturn<ICallTester, int, byte, float, int>(
+				"Function4", 
+				new string[]
+				{
+				}, 
+				command, 
+				(caller, arg1, arg2, arg3) => caller.Function4(arg1, arg2, arg3), 
+				ret => { });
 			var callTester = Substitute.For<ICallTester>();
 			cr.Register(callTester);
-			command.Run("Function4", new[]
-			{
-				"1", 
-				"2", 
-				"3"
-			});
+			command.Run(
+				"Function4", 
+				new[]
+				{
+					"1", 
+					"2", 
+					"3"
+				});
 			callTester.Received(1).Function4(Arg.Any<int>(), Arg.Any<byte>(), Arg.Any<float>());
 			cr.Unregister();
 		}

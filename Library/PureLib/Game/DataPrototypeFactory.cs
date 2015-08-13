@@ -1,17 +1,9 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="DataPrototypeFactory.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   DataPrototypeFactory.cs
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
+﻿#region Test_Region
 
 using System;
 using System.Data;
 using System.Linq;
+
 
 using Regulus.Extension;
 
@@ -28,7 +20,7 @@ namespace Regulus.Game
 
 			public TableAttribute(string name)
 			{
-				this.Name = name;
+				Name = name;
 			}
 		}
 
@@ -39,7 +31,7 @@ namespace Regulus.Game
 
 			public FieldAttribute(string name = "")
 			{
-				this.Name = name;
+				Name = name;
 			}
 		}
 
@@ -52,8 +44,8 @@ namespace Regulus.Game
 
 			public BlockFieldAttribute(string name, string[] fields)
 			{
-				this.Name = name;
-				this.Fields = fields;
+				Name = name;
+				Fields = fields;
 			}
 		}
 
@@ -64,7 +56,7 @@ namespace Regulus.Game
 
 			public ArrayFieldAttribute(string[] fields)
 			{
-				this.Fields = fields;
+				Fields = fields;
 			}
 		}
 
@@ -77,8 +69,8 @@ namespace Regulus.Game
 
 			public ReferenceFieldAttribute(string name, string key_field)
 			{
-				this.Name = name;
-				this.Key = key_field;
+				Name = name;
+				Key = key_field;
 			}
 		}
 
@@ -88,30 +80,30 @@ namespace Regulus.Game
 
 			void IDisposable.Dispose()
 			{
-				this._Datas.Dispose();
+				_Datas.Dispose();
 			}
 
 			public void LoadCSV(string name, string path, string ext_name)
 			{
 				var dt = new DataTable(name + ext_name);
 				dt.ReadCSV(path, "\t");
-				if (this._Datas.Tables.Contains(name + ext_name))
+				if(_Datas.Tables.Contains(name + ext_name))
 				{
-					this._Datas.Tables.Remove(name + ext_name);
+					_Datas.Tables.Remove(name + ext_name);
 				}
 
-				this._Datas.Tables.Add(dt);
+				_Datas.Tables.Add(dt);
 			}
 
 			private Array _GeneratePrototype(Type prototype_type, Func<DataRow, bool> filter, string ext_name)
 			{
 				var tableInfo =
-					prototype_type.GetCustomAttributes(typeof (TableAttribute), false).FirstOrDefault() as TableAttribute;
-				if (tableInfo != null)
+					prototype_type.GetCustomAttributes(typeof(TableAttribute), false).FirstOrDefault() as TableAttribute;
+				if(tableInfo != null)
 				{
-					if (this._Datas.Tables.Contains(tableInfo.Name + ext_name))
+					if(_Datas.Tables.Contains(tableInfo.Name + ext_name))
 					{
-						var table = this._Datas.Tables[tableInfo.Name + ext_name];
+						var table = _Datas.Tables[tableInfo.Name + ext_name];
 
 						var rows = table.Rows.Cast<DataRow>().Where(filter);
 						var prototypeIdx = 0;
@@ -121,20 +113,20 @@ namespace Regulus.Game
 
 						#region
 
-						foreach (var row in rows)
+						foreach(var row in rows)
 						{
 							var dr = row;
 							var prototype = Activator.CreateInstance(prototype_type);
 							prototypes.SetValue(prototype, prototypeIdx++);
-							foreach (var property in propertys)
+							foreach(var property in propertys)
 							{
 								#region
 
-								var fieldInfo = property.GetCustomAttributes(typeof (FieldAttribute), false).FirstOrDefault() as FieldAttribute;
-								if (fieldInfo != null)
+								var fieldInfo = property.GetCustomAttributes(typeof(FieldAttribute), false).FirstOrDefault() as FieldAttribute;
+								if(fieldInfo != null)
 								{
 									var fieldName = fieldInfo.Name;
-									if (fieldName == string.Empty)
+									if(fieldName == string.Empty)
 									{
 										fieldName = property.Name;
 									}
@@ -147,19 +139,22 @@ namespace Regulus.Game
 								#region
 
 								var refFieldInfo =
-									property.GetCustomAttributes(typeof (ReferenceFieldAttribute), false).FirstOrDefault() as
-										ReferenceFieldAttribute;
-								if (refFieldInfo != null)
+									property.GetCustomAttributes(typeof(ReferenceFieldAttribute), false).FirstOrDefault() as
+									ReferenceFieldAttribute;
+								if(refFieldInfo != null)
 								{
 									var refFieldType = property.PropertyType.GetElementType();
 									var key1Name = refFieldInfo.Name;
 
-									var fields = this._GeneratePrototype(refFieldType, data_row =>
-									{
-										var k1 = data_row[refFieldInfo.Key].ToString();
-										var k2 = dr[key1Name].ToString();
-										return k1 == k2;
-									}, string.Empty);
+									var fields = _GeneratePrototype(
+										refFieldType, 
+										data_row =>
+										{
+											var k1 = data_row[refFieldInfo.Key].ToString();
+											var k2 = dr[key1Name].ToString();
+											return k1 == k2;
+										}, 
+										string.Empty);
 
 									property.SetValue(prototype, fields, null);
 								}
@@ -169,12 +164,12 @@ namespace Regulus.Game
 								#region
 
 								var arrayFieldInfo =
-									property.GetCustomAttributes(typeof (ArrayFieldAttribute), false).FirstOrDefault() as ArrayFieldAttribute;
-								if (arrayFieldInfo != null)
+									property.GetCustomAttributes(typeof(ArrayFieldAttribute), false).FirstOrDefault() as ArrayFieldAttribute;
+								if(arrayFieldInfo != null)
 								{
 									var fields = Array.CreateInstance(property.PropertyType.GetElementType(), arrayFieldInfo.Fields.Length);
 									var objIdx = 0;
-									foreach (var field in arrayFieldInfo.Fields)
+									foreach(var field in arrayFieldInfo.Fields)
 									{
 										var col = table.Columns[field];
 										var colType = col.DataType;
@@ -188,15 +183,15 @@ namespace Regulus.Game
 
 								#region
 
-								var blockFieldInfos = property.GetCustomAttributes(typeof (BlockFieldAttribute), false) as BlockFieldAttribute[];
+								var blockFieldInfos = property.GetCustomAttributes(typeof(BlockFieldAttribute), false) as BlockFieldAttribute[];
 
-								if (blockFieldInfos.Length > 0)
+								if(blockFieldInfos.Length > 0)
 								{
 									var refFieldType = property.PropertyType.GetElementType();
 									var eleCount = 0;
-									foreach (var bfi in blockFieldInfos)
+									foreach(var bfi in blockFieldInfos)
 									{
-										if (bfi.Fields.Length > eleCount)
+										if(bfi.Fields.Length > eleCount)
 										{
 											eleCount = bfi.Fields.Length;
 										}
@@ -205,21 +200,21 @@ namespace Regulus.Game
 									var fields = Array.CreateInstance(refFieldType, eleCount);
 
 									var eles = new object[eleCount];
-									for (var i = 0; i < eleCount; ++i)
+									for(var i = 0; i < eleCount; ++i)
 									{
 										eles[i] = Activator.CreateInstance(refFieldType);
 										fields.SetValue(eles[i], i);
 									}
 
-									foreach (var blockFieldInfo in blockFieldInfos)
+									foreach(var blockFieldInfo in blockFieldInfos)
 									{
 										var bfa = blockFieldInfo;
 										var refProperty = refFieldType.GetProperty(bfa.Name);
 
-										if (refProperty != null)
+										if(refProperty != null)
 										{
 											var fieldIdx = 0;
-											foreach (var rowName in bfa.Fields)
+											foreach(var rowName in bfa.Fields)
 											{
 												refProperty.SetValue(eles[fieldIdx], dr[rowName], null);
 												fieldIdx++;
@@ -245,8 +240,8 @@ namespace Regulus.Game
 
 			public T[] GeneratePrototype<T>(string ext_name = "") where T : new()
 			{
-				var prototypes = this._GeneratePrototype(typeof (T), row => { return true; }, ext_name);
-				if (prototypes != null)
+				var prototypes = _GeneratePrototype(typeof(T), row => { return true; }, ext_name);
+				if(prototypes != null)
 				{
 					return prototypes.Cast<T>().ToArray<T>();
 				}

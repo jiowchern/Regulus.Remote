@@ -1,13 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="VerifyData.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the VerifyData type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-namespace VGameWebApplication.Models
+﻿namespace VGameWebApplication.Models
 {
 	public class VerifyData
 	{

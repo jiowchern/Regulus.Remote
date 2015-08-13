@@ -1,17 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Connect.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the IConnect type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
-
-#endregion
+﻿using System;
 
 namespace Regulus.Remoting
 {
@@ -19,7 +6,6 @@ namespace Regulus.Remoting
 	{
 		Value<bool> Connect(string ipaddr, int port);
 	}
-
 
 	public class Connect : IGhost, IConnect
 	{
@@ -29,18 +15,18 @@ namespace Regulus.Remoting
 
 		public Connect()
 		{
-			this.Id = Guid.NewGuid();
+			Id = Guid.NewGuid();
 		}
 
 		Value<bool> IConnect.Connect(string ipaddr, int port)
 		{
-			if (this.ConnectedEvent == null)
+			if(ConnectedEvent == null)
 			{
 				throw new SystemException("Invalid Connect, to regain from the provider.");
 			}
 
 			var val = new Value<bool>();
-			this.ConnectedEvent(ipaddr, port, val);
+			ConnectedEvent(ipaddr, port, val);
 			return val;
 		}
 
@@ -51,7 +37,7 @@ namespace Regulus.Remoting
 
 		Guid IGhost.GetID()
 		{
-			return this.Id;
+			return Id;
 		}
 
 		void IGhost.OnProperty(string name, byte[] value)

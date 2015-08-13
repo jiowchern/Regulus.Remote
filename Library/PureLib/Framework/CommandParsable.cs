@@ -1,17 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CommandParsable.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the ICommandParsable type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Remoting;
-
-#endregion
+﻿using Regulus.Remoting;
 
 namespace Regulus.Framework
 {

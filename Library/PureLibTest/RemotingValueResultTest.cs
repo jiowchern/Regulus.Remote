@@ -1,23 +1,12 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="RemotingValueResultTest.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the RemotingValueResultTest type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System.Timers;
 
-#region Test_Region
-
-using System.Timers;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+
 using Regulus.Remoting;
 
-#endregion
-
-namespace PureLibraryTest
+namespace RegulusLibraryTest
 {
 	[TestClass]
 	public class RemotingValueResultTest

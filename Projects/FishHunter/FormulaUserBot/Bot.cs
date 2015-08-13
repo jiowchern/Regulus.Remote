@@ -1,32 +1,21 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Bot.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Bot type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System;
 
-#region Test_Region
 
 using Regulus.Framework;
 using Regulus.Utility;
+
 
 using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.GPI;
 using VGame.Project.FishHunter.Formula;
 
-#endregion
-
 namespace FormulaUserBot
 {
 	internal class Bot : IUpdatable
 	{
-		private static long _IdSn;
+		private readonly Guid _Id;
 
-		private readonly long _Id;
-
-		private readonly string _IPAddress;
+		private readonly string _IpAddress;
 
 		private readonly StageMachine _Machine;
 
@@ -34,13 +23,13 @@ namespace FormulaUserBot
 
 		private readonly IUser _User;
 
-		public Bot(string _IPAddress, int _Port, IUser user)
+		public Bot(string ip_address, int port, IUser user)
 		{
 			// TODO: Complete member initialization
-			this._IPAddress = _IPAddress;
-			this._Port = _Port;
-			this._User = user;
-			_Id = ++Bot._IdSn;
+			_IpAddress = ip_address;
+			_Port = port;
+			_User = user;
+			_Id = Guid.NewGuid();
 			_Machine = new StageMachine();
 		}
 
@@ -62,7 +51,7 @@ namespace FormulaUserBot
 
 		private void _ToConnect()
 		{
-			var stage = new BotConnectStage(_User, _IPAddress, _Port, _Id);
+			var stage = new BotConnectStage(_User, _IpAddress, _Port, _Id);
 			stage.DoneEvent += _ToPlay;
 			_Machine.Push(stage);
 		}

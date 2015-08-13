@@ -1,25 +1,14 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Program.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Program type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Remoting;
+﻿using Regulus.Remoting;
 using Regulus.Utility;
+
 
 using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.GPI;
 using VGame.Project.FishHunter.Storage;
 
+
 using Console = System.Console;
 using SpinWait = System.Threading.SpinWait;
-
-#endregion
 
 namespace StorageIntegrateTest
 {
@@ -44,7 +33,7 @@ namespace StorageIntegrateTest
 			updater.Add(client);
 
 			launcher.Launch();
-			while (Program._Enable)
+			while(Program._Enable)
 			{
 				updater.Working();
 				sw.SpinOnce();
@@ -67,7 +56,7 @@ namespace StorageIntegrateTest
 			var result = obj.Login("vgameadmini", string.Empty);
 			result.OnValue += val =>
 			{
-				if (val)
+				if(val)
 				{
 					Console.WriteLine("驗證成功");
 				}
@@ -85,7 +74,7 @@ namespace StorageIntegrateTest
 			var result = obj.Connect("127.0.0.1", 12345);
 			result.OnValue += val =>
 			{
-				if (val)
+				if(val)
 				{
 					Console.WriteLine("連線成功");
 				}

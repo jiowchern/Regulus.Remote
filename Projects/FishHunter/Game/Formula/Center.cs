@@ -1,21 +1,9 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Center.cs" company="Regulus Framework">
-//   Regulus Framework
-// </copyright>
-// <summary>
-//   Defines the Center type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Framework;
+﻿using Regulus.Framework;
 using Regulus.Remoting;
 using Regulus.Utility;
 
-using VGame.Project.FishHunter.Play;
 
-#endregion
+using VGame.Project.FishHunter.Play;
 
 namespace VGame.Project.FishHunter.Formula
 {
@@ -27,7 +15,7 @@ namespace VGame.Project.FishHunter.Formula
 
 		private readonly Updater _Updater;
 
-		public Center(ExpansionFeature expansion_feature) 
+		public Center(ExpansionFeature expansion_feature)
 		{
 			_ExpansionFeature = expansion_feature;
 

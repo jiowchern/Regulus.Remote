@@ -1,33 +1,21 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="User.cs" company="Regulus Framework">
-//   Regulus Framework
-// </copyright>
-// <summary>
-//   Defines the User type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System;
 
-#region Test_Region
-
-using System;
 
 using Regulus.Framework;
 using Regulus.Game;
 using Regulus.Remoting;
 using Regulus.Utility;
 
-using VGame.Project.FishHunter.Common;
+
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
 
 
 using StageLock = VGame.Project.FishHunter.Common.Data.StageLock;
 
-#endregion
-
 namespace VGame.Project.FishHunter.Play
 {
-    internal class User : Regulus.Game.IUser, IAccountStatus
+	internal class User : IUser, IAccountStatus
 	{
 		private event Action _KickEvent;
 
@@ -43,7 +31,7 @@ namespace VGame.Project.FishHunter.Play
 
 		private readonly StageMachine _Machine;
 
-		private readonly IRecordHandler _RecordHandler;
+		private readonly IGameRecorder _GameRecorder;
 
 		private readonly StageTicketInspector _StageTicketInspector;
 
@@ -51,12 +39,13 @@ namespace VGame.Project.FishHunter.Play
 
 		private Account _Account;
 
-		private PlayerRecord _PlayerRecord;
+		private GamePlayerRecord _GamePlayerRecord;
 
-		public User(ISoulBinder binder, 
+		public User(
+			ISoulBinder binder, 
 			IAccountFinder account_finder, 
 			IFishStageQueryer queryer, 
-			IRecordHandler record_handler, 
+			IGameRecorder game_record_handler, 
 			ITradeNotes trade_account)
 		{
 			_Machine = new StageMachine();
@@ -74,7 +63,7 @@ namespace VGame.Project.FishHunter.Play
 			};
 			_StageTicketInspector = new StageTicketInspector(new StageGate(locks));
 
-			_RecordHandler = record_handler;
+			_GameRecorder = game_record_handler;
 
 			_TradeAccount = trade_account;
 		}
@@ -85,23 +74,23 @@ namespace VGame.Project.FishHunter.Play
 			remove { _KickEvent -= value; }
 		}
 
-		event OnNewUser Regulus.Game.IUser.VerifySuccessEvent
+		event OnNewUser IUser.VerifySuccessEvent
 		{
 			add { _VerifySuccessEvent += value; }
 			remove { _VerifySuccessEvent -= value; }
 		}
 
-		event OnQuit Regulus.Game.IUser.QuitEvent
+		event OnQuit IUser.QuitEvent
 		{
 			add { _QuitEvent += value; }
 			remove { _QuitEvent -= value; }
 		}
 
-		void Regulus.Game.IUser.OnKick(Guid id)
+		void IUser.OnKick(Guid id)
 		{
-			if (_Account != null && _Account.Id == id)
+			if(_Account != null && _Account.Id == id)
 			{
-				if (_KickEvent != null)
+				if(_KickEvent != null)
 				{
 					_KickEvent();
 				}
@@ -138,9 +127,9 @@ namespace VGame.Project.FishHunter.Play
 
 		private void _SaveRecord()
 		{
-			if (_PlayerRecord != null)
+			if(_GamePlayerRecord != null)
 			{
-				_RecordHandler.Save(_PlayerRecord);
+				_GameRecorder.Save(_GamePlayerRecord);
 			}
 		}
 
@@ -159,7 +148,7 @@ namespace VGame.Project.FishHunter.Play
 
 		private void _AddVerifyToStage(Verify verify)
 		{
-			var stage = new Stage.Verify(_Binder, verify);
+			var stage = new Storage.Verify(_Binder, verify);
 			stage.DoneEvent += _VerifySuccess;
 			_Machine.Push(stage);
 		}
@@ -173,77 +162,78 @@ namespace VGame.Project.FishHunter.Play
 
 		private void _ToQueryRecord()
 		{
-			_RecordHandler.Load(_Account.Id).OnValue += obj =>
+			_GameRecorder.Load(_Account.Id).OnValue += obj =>
 			{
-				_PlayerRecord = obj;
-				_StageTicketInspector.Initial(new[]
-				{
-					new Common.Data.Stage
+				_GamePlayerRecord = obj;
+				_StageTicketInspector.Initial(
+					new[]
 					{
-						Id = 1, 
-						Pass = true
-					}, 
-					new Common.Data.Stage
-					{
-						Id = 2, 
-						Pass = false
-					}, 
-					new Common.Data.Stage
-					{
-						Id = 4, 
-						Pass = false
-					}, 
-					new Common.Data.Stage
-					{
-						Id = 5, 
-						Pass = false
-					}, 
-					new Common.Data.Stage
-					{
-						Id = 6, 
-						Pass = false
-					}, 
-					new Common.Data.Stage
-					{
-						Id = 7, 
-						Pass = false
-					}, 
-					new Common.Data.Stage
-					{
-						Id = 8, 
-						Pass = false
-					}, 
-					new Common.Data.Stage
-					{
-						Id = 9, 
-						Pass = false
-					}, 
-					new Common.Data.Stage
-					{
-						Id = 10, 
-						Pass = false
-					}, 
-					new Common.Data.Stage
-					{
-						Id = 11, 
-						Pass = false
-					}, 
-					new Common.Data.Stage
-					{
-						Id = 12, 
-						Pass = false
-					}, 
-					new Common.Data.Stage
-					{
-						Id = 13, 
-						Pass = false
-					}, 
-					new Common.Data.Stage
-					{
-						Id = 14, 
-						Pass = false
-					}
-				});
+						new Common.Data.Stage
+						{
+							Id = 1, 
+							Pass = true
+						}, 
+						new Common.Data.Stage
+						{
+							Id = 2, 
+							Pass = false
+						}, 
+						new Common.Data.Stage
+						{
+							Id = 4, 
+							Pass = false
+						}, 
+						new Common.Data.Stage
+						{
+							Id = 5, 
+							Pass = false
+						}, 
+						new Common.Data.Stage
+						{
+							Id = 6, 
+							Pass = false
+						}, 
+						new Common.Data.Stage
+						{
+							Id = 7, 
+							Pass = false
+						}, 
+						new Common.Data.Stage
+						{
+							Id = 8, 
+							Pass = false
+						}, 
+						new Common.Data.Stage
+						{
+							Id = 9, 
+							Pass = false
+						}, 
+						new Common.Data.Stage
+						{
+							Id = 10, 
+							Pass = false
+						}, 
+						new Common.Data.Stage
+						{
+							Id = 11, 
+							Pass = false
+						}, 
+						new Common.Data.Stage
+						{
+							Id = 12, 
+							Pass = false
+						}, 
+						new Common.Data.Stage
+						{
+							Id = 13, 
+							Pass = false
+						}, 
+						new Common.Data.Stage
+						{
+							Id = 14, 
+							Pass = false
+						}
+					});
 				_ToLoadTradeNotes();
 			};
 		}
@@ -252,7 +242,7 @@ namespace VGame.Project.FishHunter.Play
 		{
 			_TradeAccount.GetTotalMoney(_Account.Id).OnValue += money =>
 			{
-				_PlayerRecord.Money += money;
+				_GamePlayerRecord.Money += money;
 				_ToSelectStage();
 			};
 		}
@@ -266,7 +256,7 @@ namespace VGame.Project.FishHunter.Play
 
 		private void _ToPlayStage(IFishStage fish_stage)
 		{
-			var stage = new PlayStage(_Binder, fish_stage, _PlayerRecord);
+			var stage = new PlayStage(_Binder, fish_stage, _GamePlayerRecord);
 			stage.PassEvent += _Pass;
 			stage.KillEvent += _Kill;
 			_Machine.Push(stage);

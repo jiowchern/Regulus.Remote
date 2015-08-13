@@ -1,18 +1,5 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ShowMember.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the ShowMember type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Collections.Generic;
-
-#endregion
 
 namespace Regulus.Extension
 {
@@ -30,7 +17,7 @@ namespace Regulus.Extension
 
 		private static string _ShowMembers<T>(T obj, string join_token)
 		{
-			var type = typeof (T);
+			var type = typeof(T);
 			var fields = type.GetFields();
 			var properties = type.GetProperties();
 			var user = obj;
@@ -38,13 +25,15 @@ namespace Regulus.Extension
 			var values = new List<string>();
 
 			Array.ForEach(fields, field => values.Add(field.Name + " : " + field.GetValue(user)));
-			Array.ForEach(properties, property =>
-			{
-				if (property.CanRead)
+			Array.ForEach(
+				properties, 
+				property =>
 				{
-					values.Add(property.Name + " : " + property.GetValue(user, null));
-				}
-			});
+					if(property.CanRead)
+					{
+						values.Add(property.Name + " : " + property.GetValue(user, null));
+					}
+				});
 
 			return string.Join(join_token, values.ToArray());
 		}

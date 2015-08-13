@@ -1,22 +1,10 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Io.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Serialization type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System.IO;
+﻿using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Xml.Serialization;
 
-using ProtoBuf;
 
-#endregion
+using ProtoBuf;
 
 namespace Regulus.Utility
 {
@@ -30,7 +18,7 @@ namespace Regulus.Utility
 
 		private static byte[] _WriteProtobuf<T>(T obj)
 		{
-			using (var stream = new MemoryStream())
+			using(var stream = new MemoryStream())
 			{
 				Serializer.Serialize(stream, obj);
 				return stream.ToArray();
@@ -39,9 +27,9 @@ namespace Regulus.Utility
 
 		private static string _WriteXml<T>(T obj)
 		{
-			using (var stream = new StringWriter())
+			using(var stream = new StringWriter())
 			{
-				var x = new XmlSerializer(typeof (T));
+				var x = new XmlSerializer(typeof(T));
 				x.Serialize(stream, obj);
 				return stream.ToString();
 			}
@@ -66,9 +54,9 @@ namespace Regulus.Utility
 
 		private static T _ReadXmlStream<T>(byte[] buffer)
 		{
-			using (var stream = new StringReader(Encoding.Default.GetString(buffer)))
+			using(var stream = new StringReader(Encoding.Default.GetString(buffer)))
 			{
-				var ser = new XmlSerializer(typeof (T));
+				var ser = new XmlSerializer(typeof(T));
 				return (T)ser.Deserialize(stream);
 			}
 		}

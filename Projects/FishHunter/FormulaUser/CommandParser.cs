@@ -1,13 +1,5 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CommandParser.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the CommandParser type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System;
 
-#region Test_Region
 
 using Regulus.Extension;
 using Regulus.Framework;
@@ -15,11 +7,13 @@ using Regulus.Remoting;
 using Regulus.Remoting.Ghost.Native;
 using Regulus.Utility;
 
+
 using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
 
-#endregion
+
+using Console = Regulus.Utility.Console;
 
 namespace VGame.Project.FishHunter.Formula
 {
@@ -33,9 +27,9 @@ namespace VGame.Project.FishHunter.Formula
 
 		public CommandParser(Command command, Console.IViewer view, IUser user)
 		{
-			this._Command = command;
-			this._View = view;
-			this._User = user;
+			_Command = command;
+			_View = view;
+			_User = user;
 		}
 
 		void ICommandParsable<IUser>.Clear()
@@ -46,20 +40,26 @@ namespace VGame.Project.FishHunter.Formula
 		void ICommandParsable<IUser>.Setup(IGPIBinderFactory factory)
 		{
 			var connect = factory.Create(_User.Remoting.ConnectProvider);
-			connect.Bind("Connect[result , ipaddr ,port]", 
-				gpi => { return new CommandParamBuilder().BuildRemoting<string, int, bool>(gpi.Connect, _ConnectResult); });
+			connect.Bind(
+				"Connect[result , ipaddr ,port]", 
+				gpi => new CommandParamBuilder().BuildRemoting<string, int, bool>(gpi.Connect, _ConnectResult));
 
 			var online = factory.Create(_User.Remoting.OnlineProvider);
-			online.Bind("Ping", 
-				gpi => { return new CommandParamBuilder().Build(() => { _View.WriteLine("Ping : " + gpi.Ping); }); });
+			online.Bind(
+				"Ping", 
+				gpi => new CommandParamBuilder().Build(() => { _View.WriteLine("Ping : " + gpi.Ping); }));
 
 			var verify = factory.Create(_User.VerifyProvider);
-			verify.Bind("Login[result,id,password]", 
-				gpi => { return new CommandParamBuilder().BuildRemoting<string, string, bool>(gpi.Login, _VerifyResult); });
+			verify.Bind(
+				"Login[result,id,password]", 
+				gpi => new CommandParamBuilder().BuildRemoting<string, string, bool>(gpi.Login, _VerifyResult));
 
 			var fishStageQueryer = factory.Create(_User.FishStageQueryerProvider);
-			fishStageQueryer.Bind("Query[result,player_id,fish_stage]", 
-				gpi => { return new CommandParamBuilder().BuildRemoting<long, byte, IFishStage>((player_id, fish_stage) => gpi.Query((byte)player_id, fish_stage), _QueryResult); });
+			fishStageQueryer.Bind(
+				"Query[result,player_id,fish_stage]", 
+				gpi => new CommandParamBuilder().BuildRemoting<Guid, byte, IFishStage>(
+					(player_id, fish_stage) => gpi.Query(player_id, fish_stage), 
+					_QueryResult));
 
 			_Command.Register("Package", _ShowPackageState);
 		}
@@ -71,20 +71,31 @@ namespace VGame.Project.FishHunter.Formula
 
 		private void _ShowPackageState()
 		{
-			_View.WriteLine(string.Format("Request Queue:{0} \tResponse Queue:{1}", Agent.RequestPackages, Agent.ResponsePackages));
+			_View.WriteLine(
+				string.Format("Request Queue:{0} \tResponse Queue:{1}", Agent.RequestPackages, Agent.ResponsePackages));
 		}
 
-		private void fishStage_UnsupplyEvent(IFishStage source)
+		private void _FishStage_UnsupplyEvent(IFishStage source)
 		{
-			source.OnHitResponseEvent -= source_HitResponseEvent;
+			source.OnHitResponseEvent -= _Source_HitResponseEvent;
+			source.OnTotalHitResponseEvent -= source_OnTotalHitResponseEvent;
 		}
 
-		private void fishStage_SupplyEvent(IFishStage source)
+		private void _FishStage_SupplyEvent(IFishStage source)
 		{
-			source.OnHitResponseEvent += source_HitResponseEvent;
+			source.OnHitResponseEvent += _Source_HitResponseEvent;
+			source.OnTotalHitResponseEvent += source_OnTotalHitResponseEvent;
 		}
 
-		private void source_HitResponseEvent(HitResponse response)
+		void source_OnTotalHitResponseEvent(HitResponse[] hit_responses)
+		{
+			foreach(var hit in hit_responses)
+			{
+				_Source_HitResponseEvent(hit);
+			}
+		}
+
+		private void _Source_HitResponseEvent(HitResponse response)
 		{
 			_View.WriteLine("Hit response : " + response.ShowMembers());
 		}

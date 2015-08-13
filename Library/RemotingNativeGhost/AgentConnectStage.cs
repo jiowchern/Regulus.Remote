@@ -1,20 +1,8 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AgentConnectStage.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Agent type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Net.Sockets;
 
-using Regulus.Utility;
 
-#endregion
+using Regulus.Utility;
 
 namespace Regulus.Remoting.Ghost.Native
 {
@@ -38,13 +26,13 @@ namespace Regulus.Remoting.Ghost.Native
 			{
 				_Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 				_Socket.NoDelay = true;
-				if (ipaddress == null)
+				if(ipaddress == null)
 				{
 					throw new ArgumentNullException();
 				}
 
-				this._Ipaddress = ipaddress;
-				this._Port = port;
+				_Ipaddress = ipaddress;
+				_Port = port;
 			}
 
 			void IStage.Enter()
@@ -58,7 +46,7 @@ namespace Regulus.Remoting.Ghost.Native
 					// _Socket.Bind(new System.Net.IPEndPoint(System.Net.IPAddress.Any, 42255));
 					_AsyncResult = _Socket.BeginConnect(_Ipaddress, _Port, _ConnectResult, null);
 				}
-				catch (Exception e)
+				catch(Exception e)
 				{
 					Singleton<Log>.Instance.WriteInfo(string.Format("begin connect fail {0}.", e));
 					ResultEvent(false, null);
@@ -71,14 +59,14 @@ namespace Regulus.Remoting.Ghost.Native
 
 			void IStage.Leave()
 			{
-				if (_Result.HasValue == false && ResultEvent != null)
+				if(_Result.HasValue == false && ResultEvent != null)
 				{
 					var call = ResultEvent;
 					ResultEvent = null;
 					call(false, null);
 				}
 
-				if (_Result.HasValue && _Result.Value == false)
+				if(_Result.HasValue && _Result.Value == false)
 				{
 					_Socket.Close();
 				}
@@ -99,11 +87,11 @@ namespace Regulus.Remoting.Ghost.Native
 					_Socket.EndConnect(ar);
 					result = true;
 				}
-				catch (SocketException ex)
+				catch(SocketException ex)
 				{
 					Singleton<Log>.Instance.WriteInfo(ex.ToString());
 				}
-				catch (ObjectDisposedException ode)
+				catch(ObjectDisposedException ode)
 				{
 					Singleton<Log>.Instance.WriteInfo(ode.ToString());
 				}
@@ -116,7 +104,7 @@ namespace Regulus.Remoting.Ghost.Native
 
 			private void _InvokeResultEvent()
 			{
-				if (_Result.HasValue && ResultEvent != null)
+				if(_Result.HasValue && ResultEvent != null)
 				{
 					var call = ResultEvent;
 					ResultEvent = null;

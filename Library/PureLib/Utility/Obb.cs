@@ -1,19 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Obb.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the OBB type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System;
 
-#region Test_Region
-
-using System;
 
 using ProtoBuf;
-
-#endregion
 
 namespace Regulus.Utility
 {
@@ -62,17 +50,17 @@ namespace Regulus.Utility
 
 		public OBB(float x, float y, float width, float height)
 		{
-			this.axisX = new float[2];
-			this.axisY = new float[2];
+			axisX = new float[2];
+			axisY = new float[2];
 
-			this.setRotation(0.0f);
+			setRotation(0.0f);
 
-			this.halfWidth = width / 2;
-			this.halfHeight = height / 2;
+			halfWidth = width / 2;
+			halfHeight = height / 2;
 
-			this.centerPoint = new float[2];
+			centerPoint = new float[2];
 
-			this.setXY(x, y);
+			setXY(x, y);
 		}
 
 		/**
@@ -83,12 +71,12 @@ namespace Regulus.Utility
 			// axis, axisX and axisY are unit vector
 
 			// projected axisX to axis
-			var projectionAxisX = this.dot(axis, this.axisX);
+			var projectionAxisX = dot(axis, axisX);
 
 			// projected axisY to axis
-			var projectionAxisY = this.dot(axis, this.axisY);
+			var projectionAxisY = dot(axis, axisY);
 
-			return this.halfWidth * projectionAxisX + this.halfHeight * projectionAxisY;
+			return halfWidth * projectionAxisX + halfHeight * projectionAxisY;
 		}
 
 		/**
@@ -99,22 +87,22 @@ namespace Regulus.Utility
 			// two OBB center distance vector
 			float[] centerDistanceVertor =
 			{
-				this.centerPoint[0] - obb.centerPoint[0], 
-				this.centerPoint[1] - obb.centerPoint[1]
+				centerPoint[0] - obb.centerPoint[0], 
+				centerPoint[1] - obb.centerPoint[1]
 			};
 
 			float[][] axes =
 			{
-				this.axisX, 
-				this.axisY, 
+				axisX, 
+				axisY, 
 				obb.axisX, 
 				obb.axisY
 			};
 
-			for (var i = 0; i < axes.Length; i++)
+			for(var i = 0; i < axes.Length; i++)
 			{
 				// compare OBB1 radius projection add OBB2 radius projection to centerDistance projection
-				if (this.getProjectionRadius(axes[i]) + obb.getProjectionRadius(axes[i]) <= this.dot(centerDistanceVertor, axes[i]))
+				if(getProjectionRadius(axes[i]) + obb.getProjectionRadius(axes[i]) <= dot(centerDistanceVertor, axes[i]))
 				{
 					return false;
 				}
@@ -142,11 +130,11 @@ namespace Regulus.Utility
 
 			var t = (float)(-(rotation - 180) * Math.PI / 180);
 
-			this.axisX[0] = (float)Math.Cos(t);
-			this.axisX[1] = (float)Math.Sin(t);
+			axisX[0] = (float)Math.Cos(t);
+			axisX[1] = (float)Math.Sin(t);
 
-			this.axisY[0] = (float)-Math.Sin(t);
-			this.axisY[1] = (float)Math.Cos(t);
+			axisY[0] = (float)-Math.Sin(t);
+			axisY[1] = (float)Math.Cos(t);
 
 			// this.axisX[0] = -(float)Math.Cos(t);
 			// this.axisX[1] = -(float)Math.Sin(t);
@@ -167,59 +155,59 @@ namespace Regulus.Utility
 		 */
 		public OBB setLeftTop(float l, float t)
 		{
-			this.centerPoint[0] = l + this.halfWidth;
-			this.centerPoint[1] = t + this.halfHeight;
+			centerPoint[0] = l + halfWidth;
+			centerPoint[1] = t + halfHeight;
 
 			return this;
 		}
 
 		public OBB setXY(float x, float y)
 		{
-			this.centerPoint[0] = x;
-			this.centerPoint[1] = y;
+			centerPoint[0] = x;
+			centerPoint[1] = y;
 
 			return this;
 		}
 
 		public float getRotation()
 		{
-			return this.rotation;
+			return rotation;
 		}
 
 		public float getLeft()
 		{
-			return this.centerPoint[0] - this.halfWidth;
+			return centerPoint[0] - halfWidth;
 		}
 
 		public float getX()
 		{
-			return this.centerPoint[0];
+			return centerPoint[0];
 		}
 
 		public float getTop()
 		{
-			return this.centerPoint[1] - this.halfHeight;
+			return centerPoint[1] - halfHeight;
 		}
 
 		public float getY()
 		{
-			return this.centerPoint[1];
+			return centerPoint[1];
 		}
 
 		public float getWidth()
 		{
-			return this.halfWidth * 2;
+			return halfWidth * 2;
 		}
 
 		public float getHeight()
 		{
-			return this.halfHeight * 2;
+			return halfHeight * 2;
 		}
 
 		public static OBB[] Read(string path)
 		{
 			var obbs = Serialization.Read<OBB[]>(path);
-			foreach (var obb in obbs)
+			foreach(var obb in obbs)
 			{
 				obb.setXY(obb.getX(), obb.getY());
 				obb.setRotation(obb.getRotation());

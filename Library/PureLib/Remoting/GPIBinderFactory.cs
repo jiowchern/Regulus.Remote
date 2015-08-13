@@ -1,19 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="GPIBinderFactory.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the IGPIBinderFactory type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System.Collections.Generic;
 
-#region Test_Region
-
-using System.Collections.Generic;
 
 using Regulus.Utility;
-
-#endregion
 
 namespace Regulus.Remoting
 {
@@ -24,34 +12,35 @@ namespace Regulus.Remoting
 
 	public class GPIBinderFactory : IGPIBinderFactory
 	{
+		private struct Data
+		{
+			public IGPIBinder Binder;
+		}
+
 		private readonly List<Data> _Binders;
 
 		private readonly Command _Command;
 
 		public GPIBinderFactory(Command command)
 		{
-			this._Command = command;
-			this._Binders = new List<Data>();
+			_Command = command;
+			_Binders = new List<Data>();
 		}
 
 		GPIBinder<T> IGPIBinderFactory.Create<T>(INotifier<T> notice)
 		{
-			var binder = new GPIBinder<T>(notice, this._Command);
-			this._Binders.Add(new Data
-			{
-				Binder = binder
-			});
+			var binder = new GPIBinder<T>(notice, _Command);
+			_Binders.Add(
+				new Data
+				{
+					Binder = binder
+				});
 			return binder;
-		}
-
-		private struct Data
-		{
-			public IGPIBinder Binder;
 		}
 
 		public void Setup()
 		{
-			foreach (var binder in  this._Binders)
+			foreach(var binder in  _Binders)
 			{
 				binder.Binder.Launch();
 			}
@@ -59,12 +48,12 @@ namespace Regulus.Remoting
 
 		public void Remove()
 		{
-			foreach (var binder in  this._Binders)
+			foreach(var binder in  _Binders)
 			{
 				binder.Binder.Shutdown();
 			}
 
-			this._Binders.Clear();
+			_Binders.Clear();
 		}
 	}
 }

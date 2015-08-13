@@ -1,21 +1,9 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CommandParam.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the CommandParam type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Linq;
 using System.Reflection;
 
-using Regulus.Utility;
 
-#endregion
+using Regulus.Utility;
 
 namespace Regulus.Remoting
 {
@@ -31,7 +19,7 @@ namespace Regulus.Remoting
 
 		public CommandParam()
 		{
-			this.Return = new Action(this._Empty);
+			Return = new Action(_Empty);
 		}
 
 		private void _Empty()
@@ -55,40 +43,44 @@ namespace Regulus.Remoting
 
 			public CommandAdapter(Command command)
 			{
-				this._Command = command;
+				_Command = command;
 			}
 
 			public void Register(string name, CommandParam param)
 			{
-				this._InvokeRegister(name, param);
+				_InvokeRegister(name, param);
 			}
 
 			private void _InvokeRegister(string name, CommandParam param)
 			{
-				var registerMethod = this.GetRegister(param.Types, param.ReturnType);
+				var registerMethod = GetRegister(param.Types, param.ReturnType);
 
-				if (param.ReturnType != null)
+				if(param.ReturnType != null)
 				{
-					var returnValue = registerMethod.Invoke(this._Command, new[]
-					{
-						name, 
-						param.Callback, 
-						param.Return
-					});
+					var returnValue = registerMethod.Invoke(
+						_Command, 
+						new[]
+						{
+							name, 
+							param.Callback, 
+							param.Return
+						});
 				}
 				else
 				{
-					var returnValue = registerMethod.Invoke(this._Command, new[]
-					{
-						name, 
-						param.Callback
-					});
+					var returnValue = registerMethod.Invoke(
+						_Command, 
+						new[]
+						{
+							name, 
+							param.Callback
+						});
 				}
 			}
 
 			private MethodInfo _GetReturn(CommandParam param)
 			{
-				var methods = typeof (CommandParam).GetMethods();
+				var methods = typeof(CommandParam).GetMethods();
 				var baseMethod = (from m in methods
 				                  let parameters = m.GetParameters()
 				                  where m.Name == "Return"
@@ -100,16 +92,17 @@ namespace Regulus.Remoting
 			private MethodInfo GetRegister(Type[] arg_types, Type return_type)
 			{
 				var genericTypes = return_type != null
-					? arg_types.Concat(new[]
-					{
-						return_type
-					}).ToArray()
-					: arg_types;
+					                   ? arg_types.Concat(
+						                   new[]
+						                   {
+							                   return_type
+						                   }).ToArray()
+					                   : arg_types;
 				var paramCount = return_type != null
-					? 3
-					: 2;
+					                 ? 3
+					                 : 2;
 
-				var methods = typeof (Command).GetMethods();
+				var methods = typeof(Command).GetMethods();
 				var baseMethod = (from m in methods
 				                  let genericParameters = m.GetGenericArguments()
 				                  let parameters = m.GetParameters()
@@ -118,7 +111,7 @@ namespace Regulus.Remoting
 				                        && parameters.Length == paramCount
 				                  select m).SingleOrDefault();
 
-				if (genericTypes.Length > 0)
+				if(genericTypes.Length > 0)
 				{
 					return baseMethod.MakeGenericMethod(genericTypes);
 				}

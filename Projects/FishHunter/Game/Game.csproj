@@ -43,27 +43,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ZsFormula\ZsFishStage.cs" />
+    <Compile Include="Formula\ZsFormula\ZsFishStage.cs" />
     <Compile Include="Play\DummyFeature.cs" />
-    <Compile Include="ZsFormula\Data\CalculationBufferBlock.cs" />
-    <Compile Include="ZsFormula\Data\StageDataBuilder.cs" />
-    <Compile Include="ZsFormula\Rule\AccumulationBufferRule.cs" />
-    <Compile Include="ZsFormula\Rule\AdjustmentAverageRule.cs" />
-    <Compile Include="ZsFormula\Rule\AdjustmentGameLevelRule.cs" />
-    <Compile Include="ZsFormula\Rule\AdjustmentPlayerPhaseRule.cs" />
-    <Compile Include="ZsFormula\Rule\ApproachBaseOddsRule.cs" />
-    <Compile Include="ZsFormula\ZsHitChecker.cs" />
-    <Compile Include="ZsFormula\Data\BetChancesTable.cs" />
-    <Compile Include="ZsFormula\Rule\DeathRule.cs" />
-    <Compile Include="ZsFormula\Rule\DiedHandleRule.cs" />
-    <Compile Include="ZsFormula\Rule\FishTypeRule.cs" />
-    <Compile Include="ZsFormula\Rule\NatureDataRule.cs" />
-    <Compile Include="ZsFormula\Rule\OddsRuler.cs" />
-    <Compile Include="ZsFormula\Rule\SpecialItemRule.cs" />
-    <Compile Include="ZsFormula\Rule\SpecialWeaponRule.cs" />
-    <Compile Include="ZsFormula\Rule\AcquisitionSpecialWeaponRule.cs" />
-    <Compile Include="ZsFormula\Rule\StageBufferBlockRuler.cs" />
-    <Compile Include="ZsFormula\Data\FishHitAllocateTable.cs" />
+    <Compile Include="Formula\ZsFormula\Data\CalculationBufferBlock.cs" />
+    <Compile Include="Formula\ZsFormula\Data\StageDataBuilder.cs" />
+    <Compile Include="Formula\ZsFormula\Rule\AccumulationBufferRule.cs" />
+    <Compile Include="Formula\ZsFormula\Rule\AdjustmentAverageRule.cs" />
+    <Compile Include="Formula\ZsFormula\Rule\AdjustmentGameLevelRule.cs" />
+    <Compile Include="Formula\ZsFormula\Rule\AdjustmentPlayerPhaseRule.cs" />
+    <Compile Include="Formula\ZsFormula\Rule\ApproachBaseOddsRule.cs" />
+    <Compile Include="Formula\ZsFormula\ZsHitChecker.cs" />
+    <Compile Include="Formula\ZsFormula\Data\BetChancesTable.cs" />
+    <Compile Include="Formula\ZsFormula\Rule\DeathRule.cs" />
+    <Compile Include="Formula\ZsFormula\Rule\SaveScoreHistory.cs" />
+    <Compile Include="Formula\ZsFormula\Rule\SaveDeathFishHistory.cs" />
+    <Compile Include="Formula\ZsFormula\Rule\NatureDataRule.cs" />
+    <Compile Include="Formula\ZsFormula\Rule\OddsRuler.cs" />
+    <Compile Include="Formula\ZsFormula\Rule\SpecialItemRule.cs" />
+    <Compile Include="Formula\ZsFormula\Rule\SpecialWeaponRule.cs" />
+    <Compile Include="Formula\ZsFormula\Rule\GetSpecialWeaponRule.cs" />
+    <Compile Include="Formula\ZsFormula\Rule\StageBufferBlockRuler.cs" />
+    <Compile Include="Formula\ZsFormula\Data\FishHitAllocateTable.cs" />
     <Compile Include="Formula\CSFishStage.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
@@ -72,9 +72,8 @@
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
     <Compile Include="Formula\ExpansionFeature.cs" />
-    <Compile Include="ZsFormula\Data\OddsTable.cs" />
-    <Compile Include="ZsFormula\Data\NatureBufferChancesTable.cs" />
-    <Compile Include="ZsFormula\Data\PlayerData.cs" />
+    <Compile Include="Formula\ZsFormula\Data\OddsTable.cs" />
+    <Compile Include="Formula\ZsFormula\Data\NatureBufferChancesTable.cs" />
     <Compile Include="Play\Bullet.cs" />
     <Compile Include="Play\Center.cs" />
     <Compile Include="Formula\Center.cs" />
@@ -92,10 +91,10 @@
     <Compile Include="Play\StageGate.cs" />
     <Compile Include="Play\StageTicketInspector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ZsFormula\Data\ScoreOddsTable.cs" />
-    <Compile Include="ZsFormula\Data\FishStageVisitor.cs" />
+    <Compile Include="Formula\ZsFormula\Data\ScoreOddsTable.cs" />
+    <Compile Include="Formula\ZsFormula\Data\StageDataVisitor.cs" />
     <Compile Include="Stage\FormulaStage.cs" />
-    <Compile Include="Stage\Verify.cs" />
+    <Compile Include="Storage\Verify.cs" />
     <Compile Include="Play\DummyStandalong.cs" />
     <Compile Include="Storage\Center.cs" />
     <Compile Include="Storage\IUser.cs" />
@@ -104,7 +103,7 @@
     <Compile Include="Verify.cs" />
     <Compile Include="Play\User.cs" />
     <Compile Include="Formula\WeaponChancesTable.cs" />
-    <Compile Include="ZsFormula\Rule\WeaponTypeRule.cs" />
+    <Compile Include="Formula\ZsFormula\Rule\WeaponTypeRule.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Library\PureLib\RegulusLibrary.csproj">

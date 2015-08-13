@@ -1,20 +1,8 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Asyncexecuter.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the AsyncExecuter type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Threading;
 
-using Regulus.Collection;
 
-#endregion
+using Regulus.Collection;
 
 namespace Regulus.Utility
 {
@@ -26,17 +14,17 @@ namespace Regulus.Utility
 
 		public AsyncExecuter(params Action[] callbacks)
 		{
-			this._Tasks = new Queue<Action>();
+			_Tasks = new Queue<Action>();
 
-			foreach (var task in callbacks)
+			foreach(var task in callbacks)
 			{
-				this.Push(task);
+				Push(task);
 			}
 		}
 
 		public void WaitDone()
 		{
-			while (this.IsDone() == false)
+			while(IsDone() == false)
 			{
 				;
 			}
@@ -44,32 +32,32 @@ namespace Regulus.Utility
 
 		internal bool IsDone()
 		{
-			lock (this)
-				return this._Count == 0;
+			lock(this)
+				return _Count == 0;
 		}
 
 		public void Push(Action callback)
 		{
 			var execute = false;
-			lock (this)
+			lock(this)
 			{
-				execute = this._Count == 0;
-				this._Count++;
-				this._Tasks.Enqueue(callback);
+				execute = _Count == 0;
+				_Count++;
+				_Tasks.Enqueue(callback);
 			}
 
-			if (execute)
+			if(execute)
 			{
-				this._Execute();
+				_Execute();
 			}
 		}
 
 		private void _Execute()
 		{
 			Action task;
-			if (this._Tasks.TryDequeue(out task))
+			if(_Tasks.TryDequeue(out task))
 			{
-				ThreadPool.QueueUserWorkItem(this._Run, task);
+				ThreadPool.QueueUserWorkItem(_Run, task);
 			}
 		}
 
@@ -77,9 +65,9 @@ namespace Regulus.Utility
 		{
 			var task = (Action)state;
 			task();
-			lock (this)
-				this._Count--;
-			this._Execute();
+			lock(this)
+				_Count--;
+			_Execute();
 		}
 	}
 }

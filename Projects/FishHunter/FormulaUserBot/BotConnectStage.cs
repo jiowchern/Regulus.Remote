@@ -1,32 +1,23 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="BotConnectStage.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the BotConnectStage type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System;
 
-#region Test_Region
-
-using System;
 
 using Regulus.Remoting;
 using Regulus.Utility;
+
 
 using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.GPI;
 using VGame.Project.FishHunter.Formula;
 
-#endregion
-
 namespace FormulaUserBot
 {
 	internal class BotConnectStage : IStage
 	{
+		public delegate void DoneCallback(IFishStage stage);
+
 		public event DoneCallback DoneEvent;
 
-		private readonly long _Id;
+		private readonly Guid _Id;
 
 		private readonly string _IPAddress;
 
@@ -36,12 +27,12 @@ namespace FormulaUserBot
 
 		private IConnect _Con;
 
-		public BotConnectStage(IUser user, string ip, int port, long id)
+		public BotConnectStage(IUser user, string ip, int port, Guid id)
 		{
 			_Id = id;
-			this._User = user;
-			this._IPAddress = ip;
-			this._Port = port;
+			_User = user;
+			_IPAddress = ip;
+			_Port = port;
 		}
 
 		void IStage.Leave()
@@ -65,8 +56,6 @@ namespace FormulaUserBot
 		{
 		}
 
-		public delegate void DoneCallback(IFishStage stage);
-
 		private void OnlineProvider_Unsupply(IOnline obj)
 		{
 			obj_DisconnectEvent();
@@ -84,19 +73,19 @@ namespace FormulaUserBot
 
 		private void _Query(IFishStageQueryer obj)
 		{
-			_QueryResult(obj.Query((byte)_Id, 1));
+			_QueryResult(obj.Query(_Id, 1));
 		}
 
 		private void _QueryResult(Value<IFishStage> value)
 		{
 			value.OnValue += result =>
 			{
-				if (result == null)
+				if(result == null)
 				{
 					throw new Exception("Stage Query null.");
 				}
 
-				this._Stage(result);
+				_Stage(result);
 			};
 		}
 
@@ -109,7 +98,7 @@ namespace FormulaUserBot
 		{
 			value.OnValue += result =>
 			{
-				if (result == false)
+				if(result == false)
 				{
 					throw new Exception("Verify Fail.");
 				}
@@ -126,7 +115,7 @@ namespace FormulaUserBot
 		{
 			value.OnValue += result =>
 			{
-				if (result == false)
+				if(result == false)
 				{
 					_ConnectResult(_Con.Connect(_IPAddress, _Port));
 				}

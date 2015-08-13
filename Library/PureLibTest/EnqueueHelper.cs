@@ -1,19 +1,6 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="EnqueueHelper.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the EnqueueHelper type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using Regulus.Collection;
 
-#region Test_Region
-
-using Regulus.Collection;
-
-#endregion
-
-namespace PureLibraryTest
+namespace RegulusLibraryTest
 {
 	internal class EnqueueHelper
 	{
@@ -30,7 +17,7 @@ namespace PureLibraryTest
 
 		internal void Run()
 		{
-			this.ints.Enqueue(this.i);
+			ints.Enqueue(i);
 		}
 	}
 }

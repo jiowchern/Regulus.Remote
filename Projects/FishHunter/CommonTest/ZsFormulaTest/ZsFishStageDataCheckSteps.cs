@@ -1,14 +1,6 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ZsFishStageDataCheckSteps.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the ZsFishStageDataCheckSteps type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+
 
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;

@@ -1,19 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Size.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Size type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System;
 
-#region Test_Region
-
-using System;
 
 using ProtoBuf;
-
-#endregion
 
 namespace Regulus.CustomType
 {
@@ -29,8 +17,8 @@ namespace Regulus.CustomType
 
 		public Size(float width, float height)
 		{
-			this.Width = width;
-			this.Height = height;
+			Width = width;
+			Height = height;
 		}
 	}
 }

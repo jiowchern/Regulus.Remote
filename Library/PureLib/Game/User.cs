@@ -1,19 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="User.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the OnNewUser type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System;
 
-#region Test_Region
-
-using System;
 
 using Regulus.Utility;
-
-#endregion
 
 namespace Regulus.Game
 {

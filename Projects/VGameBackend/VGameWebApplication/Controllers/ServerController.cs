@@ -1,17 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ServerController.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the ServerController type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System.Web.Mvc;
-
-#endregion
+﻿using System.Web.Mvc;
 
 namespace VGameWebApplication.Controllers
 {

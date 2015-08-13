@@ -1,19 +1,12 @@
-﻿#region Test_Region
+﻿using Regulus.Remoting;
 
-using Regulus.Remoting;
-
-
-using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
-
-#endregion
 
 namespace VGame.Project.FishHunter
 {
 	public class Verify : IVerify
 	{
-
 		public delegate void DoneCallback(Account account);
 
 		public event DoneCallback OnDoneEvent;
@@ -32,9 +25,9 @@ namespace VGame.Project.FishHunter
 			val.OnValue += account =>
 			{
 				var found = account != null;
-				if (found && account.IsPassword(password))
+				if(found && account.IsPassword(password))
 				{
-					if (OnDoneEvent != null)
+					if(OnDoneEvent != null)
 					{
 						OnDoneEvent(account);
 					}

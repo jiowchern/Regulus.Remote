@@ -1,23 +1,12 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AsyncExecuter.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the AsyncExecuter type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System;
 
-#region Test_Region
-
-using System;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+
 using Regulus.Collection;
 
-#endregion
-
-namespace PureLibraryTest
+namespace RegulusLibraryTest
 {
 	[TestClass]
 	public class AsyncExecuter
@@ -28,7 +17,7 @@ namespace PureLibraryTest
 			var ints = new Queue<int>();
 			var actions = new Queue<Action>();
 
-			for (var i = 0; i < 10; ++i)
+			for(var i = 0; i < 10; ++i)
 			{
 				actions.Enqueue(new EnqueueHelper(ints, i).Run);
 			}

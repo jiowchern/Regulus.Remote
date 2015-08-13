@@ -1,20 +1,8 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="FormulaService.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the FormulaService type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System.ServiceModel;
+﻿using System.ServiceModel;
 using System.ServiceProcess;
 
-using VGame.Project.FishHunter.WCF;
 
-#endregion
+using VGame.Project.FishHunter.WCF;
 
 namespace VGame.Project.FishHunter
 {
@@ -35,7 +23,7 @@ namespace VGame.Project.FishHunter
 		{
 			_FormulaService.Launch();
 
-			_GameHost.AddServiceEndpoint(typeof (IFormulaService), new BasicHttpBinding(), "http://localhost:38972/Formula");
+			_GameHost.AddServiceEndpoint(typeof(IFormulaService), new BasicHttpBinding(), "http://localhost:38972/Formula");
 			_GameHost.Open();
 		}
 

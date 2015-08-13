@@ -1,17 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ILevelSelector.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the ILevelSelector type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Remoting;
-
-#endregion
+﻿using Regulus.Remoting;
 
 namespace VGame.Project.FishHunter.Common.GPI
 {

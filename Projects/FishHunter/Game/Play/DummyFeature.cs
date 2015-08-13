@@ -1,14 +1,6 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="DummyFeature.cs" company="Regulus Framework">
-//   Regulus Framework
-// </copyright>
-// <summary>
-//   Defines the DummyFrature type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-using System;
+﻿using System;
 using System.Collections.Generic;
+
 
 using Regulus.Remoting;
 
@@ -23,13 +15,13 @@ namespace VGame.Project.FishHunter.Play
 	{
 		private readonly List<Account> _Accounts;
 
-		private readonly List<PlayerRecord> _Records;
+		private readonly List<GamePlayerRecord> _Records;
 
 		public DummyFrature()
 		{
-			this._Records = new List<PlayerRecord>();
+			_Records = new List<GamePlayerRecord>();
 
-			this._Accounts = new List<Account>
+			_Accounts = new List<Account>
 			{
 				new Account
 				{
@@ -57,69 +49,68 @@ namespace VGame.Project.FishHunter.Play
 
 		Value<Account> IAccountFinder.FindAccountByName(string id)
 		{
-			return this._Accounts.Find(a => a.Name == id);
+			return _Accounts.Find(a => a.Name == id);
 		}
 
 		Value<Account> IAccountFinder.FindAccountById(Guid account_id)
 		{
-			return this._Accounts.Find(a => a.Id == account_id);
+			return _Accounts.Find(a => a.Id == account_id);
 		}
 
-	    Value<IFishStage> IFishStageQueryer.Query(long player_id, int fish_stage)
-	    {
-	        switch (fish_stage)
-	        {
-	            case 200:
-	                return null;
-	            case 100:
-	                return new FishStage(player_id, fish_stage);
-	            default:
-	                return new CsFishStage(player_id, fish_stage);
-	        }
-	    }
-
-        
-
-        Value<Account[]> IAccountManager.QueryAllAccount()
+		Value<IFishStage> IFishStageQueryer.Query(Guid player_id, int fish_stage)
 		{
-			return this._Accounts.ToArray();
-		}
-
-        Value<ACCOUNT_REQUEST_RESULT> IAccountCreator.Create(Account account)
-		{
-			this._Accounts.Add(account);
-			return ACCOUNT_REQUEST_RESULT.OK;
-		}
-
-        Value<ACCOUNT_REQUEST_RESULT> IAccountManager.Delete(string account)
-		{
-			this._Accounts.RemoveAll(a => a.Name == account);
-			return ACCOUNT_REQUEST_RESULT.OK;
-		}
-
-        Value<ACCOUNT_REQUEST_RESULT> IAccountManager.Update(Account account)
-		{
-			if (this._Accounts.RemoveAll(a => a.Id == account.Id) > 0)
+			switch(fish_stage)
 			{
-				this._Accounts.Add(account);
+				case 200:
+					return null;
+				case 100:
+					return new FishStage(player_id, fish_stage);
+				default:
+					return new CsFishStage(player_id, fish_stage);
+			}
+		}
+
+		Value<Account[]> IAccountManager.QueryAllAccount()
+		{
+			return _Accounts.ToArray();
+		}
+
+		Value<ACCOUNT_REQUEST_RESULT> IAccountCreator.Create(Account account)
+		{
+			_Accounts.Add(account);
+			return ACCOUNT_REQUEST_RESULT.OK;
+		}
+
+		Value<ACCOUNT_REQUEST_RESULT> IAccountManager.Delete(string account)
+		{
+			_Accounts.RemoveAll(a => a.Name == account);
+			return ACCOUNT_REQUEST_RESULT.OK;
+		}
+
+		Value<ACCOUNT_REQUEST_RESULT> IAccountManager.Update(Account account)
+		{
+			if(_Accounts.RemoveAll(a => a.Id == account.Id) > 0)
+			{
+				_Accounts.Add(account);
 				return ACCOUNT_REQUEST_RESULT.OK;
 			}
 
 			return ACCOUNT_REQUEST_RESULT.NOTFOUND;
 		}
 
-		Value<PlayerRecord> IRecordHandler.Load(Guid id)
+		Value<GamePlayerRecord> IGameRecorder.Load(Guid account_id)
 		{
-			var account = this._Accounts.Find(a => a.Id == id);
-			if (account.IsPlayer())
+			var account = _Accounts.Find(a => a.Id == account_id);
+			if(account.IsPlayer())
 			{
-				var record = this._Records.Find(r => r.Owner == account.Id);
-				if (record == null)
+				var record = _Records.Find(r => r.Owner == account.Id);
+				if(record == null)
 				{
-					record = new PlayerRecord
+					record = new GamePlayerRecord
 					{
+						Id = Guid.NewGuid(),
 						Money = 1000, 
-						Owner = id
+						Owner = account_id
 					};
 				}
 
@@ -129,14 +120,14 @@ namespace VGame.Project.FishHunter.Play
 			return null;
 		}
 
-		void IRecordHandler.Save(PlayerRecord player_record)
+		void IGameRecorder.Save(GamePlayerRecord game_player_record)
 		{
-			var account = this._Accounts.Find(a => a.Id == player_record.Owner);
-			if (account.IsPlayer())
+			var account = _Accounts.Find(a => a.Id == game_player_record.Owner);
+			if(account.IsPlayer())
 			{
-				var old = this._Records.Find(r => r.Owner == account.Id);
-				this._Records.Remove(old);
-				this._Records.Add(player_record);
+				var old = _Records.Find(r => r.Owner == account.Id);
+				_Records.Remove(old);
+				_Records.Add(game_player_record);
 			}
 		}
 
@@ -145,7 +136,7 @@ namespace VGame.Project.FishHunter.Play
 			return new TradeNotes(Guid.NewGuid());
 		}
 
-		Value<TradeNotes> ITradeNotes.Load(Guid id)
+		Value<TradeNotes> ITradeNotes.Load(Guid account_id)
 		{
 			return new TradeNotes(Guid.NewGuid());
 		}
@@ -160,17 +151,22 @@ namespace VGame.Project.FishHunter.Play
 			return 0;
 		}
 
-		Value<StageData> IFishStageDataHandler.Load(int stage_id)
+		Value<StageData> IFormulaStageDataRecorder.Load(int stage_id)
 		{
 			throw new NotImplementedException();
 		}
 
-		Value<bool> IFishStageDataHandler.Save(StageData data)
+		Value<bool> IFormulaStageDataRecorder.Save(StageData data)
 		{
 			throw new NotImplementedException();
 		}
 
-		Value<StageData> IFishStageDataHandler.Find(int stage_id)
+		Value<FormulaPlayerRecord> IFormulaPlayerRecorder.Query(Guid player_id)
+		{
+			throw new NotImplementedException();
+		}
+
+		Value<bool> IFormulaPlayerRecorder.Save(FormulaPlayerRecord record)
 		{
 			throw new NotImplementedException();
 		}

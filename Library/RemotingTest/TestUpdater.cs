@@ -1,20 +1,8 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="TestUpdater.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the TestUpdater type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System.Threading.Tasks;
 
-#region Test_Region
-
-using System.Threading.Tasks;
 
 using Regulus.Net45;
 using Regulus.Remoting;
-
-#endregion
 
 namespace RemotingTest
 {
@@ -38,7 +26,7 @@ namespace RemotingTest
 
 		internal async Task<int> Run()
 		{
-			while (testReturn == null)
+			while(testReturn == null)
 			{
 			}
 

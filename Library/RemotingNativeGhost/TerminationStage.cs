@@ -1,17 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="TerminationStage.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Agent type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Utility;
-
-#endregion
+﻿using Regulus.Utility;
 
 namespace Regulus.Remoting.Ghost.Native
 {

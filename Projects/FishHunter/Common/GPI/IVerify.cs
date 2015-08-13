@@ -1,12 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IVerify.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   驗證介面
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-using Regulus.Remoting;
+﻿using Regulus.Remoting;
 
 namespace VGame.Project.FishHunter.Common.GPI
 {

@@ -1,25 +1,15 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CommandCall.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the CommandCall type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System;
 
-#region Test_Region
-
-using System;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+
 using NSubstitute;
+
 
 using Regulus.Remoting;
 using Regulus.Remoting.Extension;
 using Regulus.Utility;
-
-#endregion
 
 namespace RemotingTest
 {
@@ -33,16 +23,18 @@ namespace RemotingTest
 			var called = false;
 			param.Types = new[]
 			{
-				typeof (string)
+				typeof(string)
 			};
 			param.Callback = new Action<string>(msg => { called = true; });
 
 			var command = new Command();
 			command.Register("123", param);
-			command.Run("123", new[]
-			{
-				" Hello World."
-			});
+			command.Run(
+				"123", 
+				new[]
+				{
+					" Hello World."
+				});
 
 			Assert.AreEqual(true, called);
 		}
@@ -54,21 +46,23 @@ namespace RemotingTest
 			float value = 0;
 			param.Types = new[]
 			{
-				typeof (int), 
-				typeof (int)
+				typeof(int), 
+				typeof(int)
 			};
-			param.ReturnType = typeof (float);
+			param.ReturnType = typeof(float);
 
 			param.Callback = new Func<int, int, float>((a, b) => { return a + b; });
 			param.Return = new Action<float>(val => { value = val; });
 
 			var command = new Command();
 			command.Register("123", param);
-			command.Run("123", new[]
-			{
-				"1", 
-				"2"
-			});
+			command.Run(
+				"123", 
+				new[]
+				{
+					"1", 
+					"2"
+				});
 
 			Assert.AreEqual(3, value);
 		}

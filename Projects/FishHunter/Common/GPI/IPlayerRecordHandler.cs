@@ -1,15 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IRecordHandler.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the IRecordHandler type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 
 
 using Regulus.Remoting;
@@ -17,14 +6,12 @@ using Regulus.Remoting;
 
 using VGame.Project.FishHunter.Common.Data;
 
-#endregion
-
 namespace VGame.Project.FishHunter.Common.GPI
 {
-	public interface IRecordHandler
+	public interface IGameRecorder
 	{
-		Value<PlayerRecord> Load(Guid id);
+		Value<GamePlayerRecord> Load(Guid account_id);
 
-		void Save(PlayerRecord player_record);
+		void Save(GamePlayerRecord game_player_record);
 	}
 }

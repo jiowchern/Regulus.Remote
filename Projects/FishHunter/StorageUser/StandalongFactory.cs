@@ -1,20 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="StandalongFactory.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the StandalongFactory type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Framework;
+﻿using Regulus.Framework;
 using Regulus.Remoting;
 using Regulus.Remoting.Standalong;
 using Regulus.Utility;
-
-#endregion
 
 namespace VGame.Project.FishHunter.Storage
 {

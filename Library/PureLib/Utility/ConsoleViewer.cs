@@ -1,13 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ConsoleViewer.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the ConsoleViewer type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-namespace Regulus.Utility
+﻿namespace Regulus.Utility
 {
 	public class ConsoleViewer : Console.IViewer
 	{

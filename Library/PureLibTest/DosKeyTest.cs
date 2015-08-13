@@ -1,21 +1,9 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="DosKeyTest.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the DosKeyTest type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-#region Test_Region
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using Regulus.Utility;
 
-#endregion
-
-namespace PureLibraryTest
+namespace RegulusLibraryTest
 {
 	[TestClass]
 	public class DosKeyTest

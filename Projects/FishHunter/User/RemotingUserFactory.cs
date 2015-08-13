@@ -1,19 +1,6 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="RemotingUserFactory.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the RemotingUserFactory type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Framework;
+﻿using Regulus.Framework;
 using Regulus.Remoting.Ghost.Native;
 using Regulus.Utility;
-
-#endregion
 
 namespace VGame.Project.FishHunter
 {

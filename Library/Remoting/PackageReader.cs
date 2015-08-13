@@ -1,20 +1,8 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="PackageReader.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the OnErrorCallback type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Net.Sockets;
 
-using Regulus.Utility;
 
-#endregion
+using Regulus.Utility;
 
 namespace Regulus.Remoting
 {
@@ -28,8 +16,8 @@ namespace Regulus.Remoting
 	{
 		public event OnPackageCallback DoneEvent
 		{
-			add { this._DoneEvent += value; }
-			remove { this._DoneEvent -= value; }
+			add { _DoneEvent += value; }
+			remove { _DoneEvent -= value; }
 		}
 
 		public event OnErrorCallback ErrorEvent;
@@ -54,46 +42,46 @@ namespace Regulus.Remoting
 		public void Start(Socket socket)
 		{
 			Singleton<Log>.Instance.WriteInfo("pakcage read start.");
-			this._Stop = false;
-			this._Socket = socket;
-			this._ReadHead();
+			_Stop = false;
+			_Socket = socket;
+			_ReadHead();
 		}
 
 		private void _ReadHead()
 		{
-			this._Reader = new SocketReader(this._Socket);
-			this._Reader.DoneEvent += this._ReadBody;
-			this._Reader.ErrorEvent += this.ErrorEvent;
+			_Reader = new SocketReader(_Socket);
+			_Reader.DoneEvent += _ReadBody;
+			_Reader.ErrorEvent += ErrorEvent;
 
-			this._Reader.Read(PackageReader._HeadSize);
+			_Reader.Read(PackageReader._HeadSize);
 		}
 
 		private void _ReadBody(byte[] bytes)
 		{
 			var bodySize = BitConverter.ToInt32(bytes, 0);
-			this._Reader = new SocketReader(this._Socket);
-			this._Reader.DoneEvent += this._Package;
-			this._Reader.ErrorEvent += this.ErrorEvent;
+			_Reader = new SocketReader(_Socket);
+			_Reader.DoneEvent += _Package;
+			_Reader.ErrorEvent += ErrorEvent;
 
-			this._Reader.Read(bodySize);
+			_Reader.Read(bodySize);
 		}
 
 		private void _Package(byte[] bytes)
 		{
 			var pkg = TypeHelper.Deserialize<Package>(bytes);
 
-			this._DoneEvent.Invoke(pkg);
+			_DoneEvent.Invoke(pkg);
 
-			if (this._Stop == false)
+			if(_Stop == false)
 			{
-				this._ReadHead();
+				_ReadHead();
 			}
 		}
 
 		public void Stop()
 		{
-			this._Stop = true;
-			this._Socket = null;
+			_Stop = true;
+			_Socket = null;
 
 			Singleton<Log>.Instance.WriteInfo("pakcage read stop.");
 		}
@@ -118,17 +106,17 @@ namespace Regulus.Remoting
 
 		internal void Read(int size)
 		{
-			this._Offset = 0;
-			this._Buffer = new byte[size];
+			_Offset = 0;
+			_Buffer = new byte[size];
 			try
 			{
-				this._Socket.BeginReceive(this._Buffer, this._Offset, this._Buffer.Length - this._Offset, 0, this._Readed, null);
+				_Socket.BeginReceive(_Buffer, _Offset, _Buffer.Length - _Offset, 0, _Readed, null);
 			}
-			catch (SystemException e)
+			catch(SystemException e)
 			{
-				if (this.ErrorEvent != null)
+				if(ErrorEvent != null)
 				{
-					this.ErrorEvent();
+					ErrorEvent();
 				}
 			}
 		}
@@ -137,28 +125,33 @@ namespace Regulus.Remoting
 		{
 			try
 			{
-				var readSize = this._Socket.EndReceive(ar);
-				this._Offset += readSize;
+				var readSize = _Socket.EndReceive(ar);
+				_Offset += readSize;
 
-				if (readSize == 0)
+				if(readSize == 0)
 				{
-					this.ErrorEvent();
+					ErrorEvent();
 				}
-				else if (this._Offset == this._Buffer.Length)
+				else if(_Offset == _Buffer.Length)
 				{
-					this.DoneEvent(this._Buffer);
+					DoneEvent(_Buffer);
 				}
 				else
 				{
-					this._Socket.BeginReceive(this._Buffer, this._Offset, this._Buffer.Length - this._Offset, SocketFlags.None, 
-						this._Readed, null);
+					_Socket.BeginReceive(
+						_Buffer, 
+						_Offset, 
+						_Buffer.Length - _Offset, 
+						SocketFlags.None, 
+						_Readed, 
+						null);
 				}
 			}
-			catch (SystemException e)
+			catch(SystemException e)
 			{
-				if (this.ErrorEvent != null)
+				if(ErrorEvent != null)
 				{
-					this.ErrorEvent();
+					ErrorEvent();
 				}
 			}
 			finally

@@ -1,19 +1,10 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ReturnTest.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the RemotingTest type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Threading;
 
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 
 using Regulus.Framework;
 using Regulus.Net45;
@@ -21,10 +12,9 @@ using Regulus.Remoting;
 using Regulus.Remoting.Ghost.Native;
 using Regulus.Utility;
 
+
 using SpinWait = System.Threading.SpinWait;
 using Task = System.Threading.Tasks.Task;
-
-#endregion
 
 namespace RemotingTest
 {
@@ -49,7 +39,7 @@ namespace RemotingTest
 			RemotingTest._ConnectEnable = true;
 			var task = new Task(RemotingTest._UpdateAgent(agent));
 			task.Start();
-			if (agent.Connect("127.0.0.1", 12345).WaitResult())
+			if(agent.Connect("127.0.0.1", 12345).WaitResult())
 			{
 				launcher.Shutdown();
 			}
@@ -65,7 +55,7 @@ namespace RemotingTest
 			RemotingTest._ConnectEnable = true;
 			var task2 = new Task(RemotingTest._UpdateAgent(agent));
 			task2.Start();
-			if (agent.Connect("127.0.0.1", 12345).WaitResult())
+			if(agent.Connect("127.0.0.1", 12345).WaitResult())
 			{
 				launcher.Shutdown();
 			}
@@ -91,7 +81,7 @@ namespace RemotingTest
 			var task = new Task(_UpdateUser(user));
 			RemotingTest._ConnectEnable = true;
 			task.Start();
-			while (user.ConnectProvider.Ghosts.Length == 0)
+			while(user.ConnectProvider.Ghosts.Length == 0)
 			{
 				;
 			}
@@ -99,7 +89,7 @@ namespace RemotingTest
 			var ghost = user.ConnectProvider.Ghosts[0];
 			ghost.Connect("127.0.0.1", 12345);
 
-			while (user.OnlineProvider.Ghosts.Length == 0)
+			while(user.OnlineProvider.Ghosts.Length == 0)
 			{
 				;
 			}
@@ -112,7 +102,7 @@ namespace RemotingTest
 			{
 				ghost.Connect("127.0.0.1", 12345);
 			}
-			catch (SystemException se)
+			catch(SystemException se)
 			{
 				excep = se.Message == "Invalid Connect, to regain from the provider.";
 			}
@@ -141,19 +131,19 @@ namespace RemotingTest
 			task.Start();
 
 			Singleton<Log>.Instance.RecordEvent += Instance_RecordEvent;
-			for (var i = 0; i < 10; ++i)
+			for(var i = 0; i < 10; ++i)
 			{
 				Debug.WriteLine("i " + i);
-				while (user.ConnectProvider.Ghosts.Length == 0)
+				while(user.ConnectProvider.Ghosts.Length == 0)
 				{
 					;
 				}
 
 				var connectResult = user.ConnectProvider.Ghosts[0].Connect("127.0.0.1", 12345).WaitResult();
 
-				if (connectResult)
+				if(connectResult)
 				{
-					while (user.OnlineProvider.Ghosts.Length == 0)
+					while(user.OnlineProvider.Ghosts.Length == 0)
 					{
 						;
 					}
@@ -181,7 +171,7 @@ namespace RemotingTest
 			var task = new Task(_UpdateUser(user));
 			RemotingTest._ConnectEnable = true;
 			task.Start();
-			while (user.ConnectProvider.Ghosts.Length == 0)
+			while(user.ConnectProvider.Ghosts.Length == 0)
 			{
 				;
 			}
@@ -194,7 +184,7 @@ namespace RemotingTest
 			{
 				ghost.Connect("127.0.0.1", 12345);
 			}
-			catch (SystemException se)
+			catch(SystemException se)
 			{
 				excep = se.Message == "Invalid Connect, to regain from the provider.";
 			}
@@ -209,7 +199,7 @@ namespace RemotingTest
 		[TestMethod]
 		public void ConnectFailTest()
 		{
-			for (var i = 0; i < 3; ++i)
+			for(var i = 0; i < 3; ++i)
 			{
 				var agent = Agent.Create();
 				RemotingTest._ConnectEnable = true;
@@ -238,9 +228,9 @@ namespace RemotingTest
 			RemotingTest._ConnectEnable = true;
 			var task = new Task(RemotingTest._UpdateAgent(agent));
 			task.Start();
-			if (agent.Connect("127.0.0.1", 12345).WaitResult())
+			if(agent.Connect("127.0.0.1", 12345).WaitResult())
 			{
-				while (agent.QueryNotifier<ITestGPI>().Ghosts.Length == 0)
+				while(agent.QueryNotifier<ITestGPI>().Ghosts.Length == 0)
 				{
 					;
 				}
@@ -256,9 +246,9 @@ namespace RemotingTest
 			RemotingTest._ConnectEnable = true;
 			task = new Task(RemotingTest._UpdateAgent(agent));
 			task.Start();
-			if (agent.Connect("127.0.0.1", 12345).WaitResult())
+			if(agent.Connect("127.0.0.1", 12345).WaitResult())
 			{
-				while (agent.QueryNotifier<ITestGPI>().Ghosts.Length == 0)
+				while(agent.QueryNotifier<ITestGPI>().Ghosts.Length == 0)
 				{
 					;
 				}
@@ -274,9 +264,9 @@ namespace RemotingTest
 			RemotingTest._ConnectEnable = true;
 			task = new Task(RemotingTest._UpdateAgent(agent));
 			task.Start();
-			if (agent.Connect("127.0.0.1", 12345).WaitResult())
+			if(agent.Connect("127.0.0.1", 12345).WaitResult())
 			{
-				while (agent.QueryNotifier<ITestGPI>().Ghosts.Length == 0)
+				while(agent.QueryNotifier<ITestGPI>().Ghosts.Length == 0)
 				{
 					;
 				}
@@ -292,9 +282,9 @@ namespace RemotingTest
 			RemotingTest._ConnectEnable = true;
 			task = new Task(RemotingTest._UpdateAgent(agent));
 			task.Start();
-			if (agent.Connect("127.0.0.1", 12345).WaitResult())
+			if(agent.Connect("127.0.0.1", 12345).WaitResult())
 			{
-				while (agent.QueryNotifier<ITestGPI>().Ghosts.Length == 0)
+				while(agent.QueryNotifier<ITestGPI>().Ghosts.Length == 0)
 				{
 					;
 				}
@@ -310,9 +300,9 @@ namespace RemotingTest
 			RemotingTest._ConnectEnable = true;
 			task = new Task(RemotingTest._UpdateAgent(agent));
 			task.Start();
-			if (agent.Connect("127.0.0.1", 12345).WaitResult())
+			if(agent.Connect("127.0.0.1", 12345).WaitResult())
 			{
-				while (agent.QueryNotifier<ITestGPI>().Ghosts.Length == 0)
+				while(agent.QueryNotifier<ITestGPI>().Ghosts.Length == 0)
 				{
 					;
 				}
@@ -335,7 +325,7 @@ namespace RemotingTest
 				var sw = new SpinWait();
 
 				agent.Launch();
-				while (RemotingTest._ConnectEnable || agent.Connected)
+				while(RemotingTest._ConnectEnable || agent.Connected)
 				{
 					agent.Update();
 
@@ -353,7 +343,7 @@ namespace RemotingTest
 				var sw = new SpinWait();
 
 				user.Launch();
-				while (RemotingTest._ConnectEnable)
+				while(RemotingTest._ConnectEnable)
 				{
 					user.Update();
 
@@ -392,11 +382,11 @@ namespace RemotingTest
 			launcher.Launch();
 			var enable = true;
 			var result2 = 0;
-			while (enable)
+			while(enable)
 			{
 				updater.Working();
 				sw.SpinOnce();
-				if (testReturn != null)
+				if(testReturn != null)
 				{
 					testReturn.Test(1, 2).OnValue += r =>
 					{
@@ -412,7 +402,7 @@ namespace RemotingTest
 
 			updater.Working();
 
-			while (result2 == 0)
+			while(result2 == 0)
 			{
 				updater.Working();
 			}
@@ -453,11 +443,11 @@ namespace RemotingTest
 			var enable = true;
 			var result2 = 0;
 
-			while (enable)
+			while(enable)
 			{
 				updater.Working();
 
-				if (testReturn != null)
+				if(testReturn != null)
 				{
 					testReturn.Test(1, 2).OnValue += r =>
 					{
@@ -471,7 +461,7 @@ namespace RemotingTest
 
 			updater.Working();
 
-			while (result2 == 0)
+			while(result2 == 0)
 			{
 				updater.Working();
 			}

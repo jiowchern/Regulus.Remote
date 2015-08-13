@@ -1,17 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="StageMachine.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the EmptyStage type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Collection;
-
-#endregion
+﻿using Regulus.Collection;
 
 namespace Regulus.Utility
 {
@@ -38,58 +25,58 @@ namespace Regulus.Utility
 
 		public StageMachine()
 		{
-			this._StandBys = new Queue<IStage>();
+			_StandBys = new Queue<IStage>();
 		}
 
 		public void Push(IStage new_stage)
 		{
-			this._StandBys.Enqueue(new_stage);
+			_StandBys.Enqueue(new_stage);
 		}
 
 		public bool Update()
 		{
-			this._SetCurrentStage();
-			this._UpdateCurrentStage();
+			_SetCurrentStage();
+			_UpdateCurrentStage();
 
-			return this.Current != null;
+			return Current != null;
 		}
 
 		private void _SetCurrentStage()
 		{
 			IStage stage;
-			if (this._StandBys.TryDequeue(out stage))
+			if(_StandBys.TryDequeue(out stage))
 			{
-				if (this.Current != null)
+				if(Current != null)
 				{
-					this.Current.Leave();
+					Current.Leave();
 				}
 
 				stage.Enter();
-				this.Current = stage;
+				Current = stage;
 			}
 		}
 
 		private void _UpdateCurrentStage()
 		{
-			if (this.Current != null)
+			if(Current != null)
 			{
-				this.Current.Update();
+				Current.Update();
 			}
 		}
 
 		public void Termination()
 		{
-			this._StandBys.DequeueAll();
-			if (this.Current != null)
+			_StandBys.DequeueAll();
+			if(Current != null)
 			{
-				this.Current.Leave();
-				this.Current = null;
+				Current.Leave();
+				Current = null;
 			}
 		}
 
 		public void Empty()
 		{
-			this.Push(new EmptyStage());
+			Push(new EmptyStage());
 		}
 	}
 }

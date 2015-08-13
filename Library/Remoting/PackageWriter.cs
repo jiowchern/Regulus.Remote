@@ -1,32 +1,21 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="PackageWriter.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the PackageWriter type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 
-using Regulus.Utility;
 
-#endregion
+using Regulus.Utility;
 
 namespace Regulus.Remoting
 {
 	public class PackageWriter
 	{
+		public delegate Package[] CheckSourceCallback();
+
 		public event CheckSourceCallback CheckSourceEvent
 		{
-			add { this._CheckSourceEvent += value; }
-
-			remove { this._CheckSourceEvent -= value; }
+			add { _CheckSourceEvent += value; }
+			remove { _CheckSourceEvent -= value; }
 		}
 
 		public event OnErrorCallback ErrorEvent;
@@ -46,49 +35,53 @@ namespace Regulus.Remoting
 		private volatile bool _Stop;
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="PackageWriter"/> class. 
+		///     Initializes a new instance of the <see cref="PackageWriter" /> class.
 		/// </summary>
 		/// <param name="low_fps">
-		/// 保證最低fps
+		///     保證最低fps
 		/// </param>
 		public PackageWriter(int low_fps)
 		{
-			this._PowerRegulator = new PowerRegulator(low_fps);
+			_PowerRegulator = new PowerRegulator(low_fps);
 		}
 
 		public PackageWriter()
 		{
-			this._PowerRegulator = new PowerRegulator();
+			_PowerRegulator = new PowerRegulator();
 		}
-
-		public delegate Package[] CheckSourceCallback();
 
 		public void Start(Socket socket)
 		{
-			this._Stop = false;
-			this._Socket = socket;
+			_Stop = false;
+			_Socket = socket;
 
-			this._Write();
+			_Write();
 		}
 
 		private void _Write()
 		{
 			try
 			{
-				var pkgs = this._CheckSourceEvent();
+				var pkgs = _CheckSourceEvent();
 
-				this._Buffer = this._CreateBuffer(pkgs);
-				this._PowerRegulator.Operate(this._Buffer.Length);
+				_Buffer = _CreateBuffer(pkgs);
+				_PowerRegulator.Operate(_Buffer.Length);
 
-				this._AsyncResult = this._Socket.BeginSendTo(this._Buffer, 0, this._Buffer.Length, 0, this._Socket.RemoteEndPoint, 
-					this._WriteCompletion, null);
+				_AsyncResult = _Socket.BeginSendTo(
+					_Buffer, 
+					0, 
+					_Buffer.Length, 
+					0, 
+					_Socket.RemoteEndPoint, 
+					_WriteCompletion, 
+					null);
 			}
-			catch (SystemException e)
+			catch(SystemException e)
 			{
 				Singleton<Log>.Instance.WriteInfo(string.Format("PackageWriter Error Write {0}.", e));
-				if (this.ErrorEvent != null)
+				if(ErrorEvent != null)
 				{
-					this.ErrorEvent();
+					ErrorEvent();
 				}
 			}
 		}
@@ -97,19 +90,19 @@ namespace Regulus.Remoting
 		{
 			try
 			{
-				if (this._Stop == false)
+				if(_Stop == false)
 				{
-					var sendSize = this._Socket.EndSendTo(ar);
+					var sendSize = _Socket.EndSendTo(ar);
 
-					this._Write();
+					_Write();
 				}
 			}
-			catch (SystemException e)
+			catch(SystemException e)
 			{
 				Singleton<Log>.Instance.WriteInfo(string.Format("PackageWriter Error WriteCompletion {0}.", e));
-				if (this.ErrorEvent != null)
+				if(ErrorEvent != null)
 				{
-					this.ErrorEvent();
+					ErrorEvent();
 				}
 			}
 		}
@@ -119,9 +112,9 @@ namespace Regulus.Remoting
 			var buffers = from p in packages select TypeHelper.Serializer(p);
 
 			// Regulus.Utility.Log.Instance.WriteDebug(string.Format("Serializer to Buffer size {0}", buffers.Sum( b => b.Length )));
-			using (var stream = new MemoryStream())
+			using(var stream = new MemoryStream())
 			{
-				foreach (var buffer in buffers)
+				foreach(var buffer in buffers)
 				{
 					stream.Write(BitConverter.GetBytes(buffer.Length), 0, PackageWriter._HeadSize);
 					stream.Write(buffer, 0, buffer.Length);
@@ -133,10 +126,10 @@ namespace Regulus.Remoting
 
 		public void Stop()
 		{
-			this._Stop = true;
+			_Stop = true;
 
 			// _Socket = null;
-			this._CheckSourceEvent = this._Empty;
+			_CheckSourceEvent = _Empty;
 		}
 
 		private Package[] _Empty()

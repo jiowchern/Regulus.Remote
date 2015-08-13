@@ -1,19 +1,6 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Server.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Server type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Framework;
+﻿using Regulus.Framework;
 using Regulus.Remoting;
 using Regulus.Utility;
-
-#endregion
 
 namespace RemotingTest
 {

@@ -1,29 +1,19 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="VerifyStage.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the VerifyStage type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Remoting;
+﻿using Regulus.Remoting;
 using Regulus.Utility;
+
 
 using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.GPI;
-
-#endregion
 
 namespace VGame.Project.FishHunter
 {
 	internal class VerifyStage : IStage
 	{
-		public event DoneCallback FailEvent;
+		public delegate void DoneCallback();
 
-		public event DoneCallback SuccessEvent;
+		public event DoneCallback OnFailEvent;
+
+		public event DoneCallback OnSuccessEvent;
 
 		private readonly string _Account;
 
@@ -33,9 +23,9 @@ namespace VGame.Project.FishHunter
 
 		public VerifyStage(INotifier<IVerify> provider, string account, string password)
 		{
-			this._Provider = provider;
-			this._Account = account;
-			this._Password = password;
+			_Provider = provider;
+			_Account = account;
+			_Password = password;
 		}
 
 		void IStage.Enter()
@@ -51,8 +41,6 @@ namespace VGame.Project.FishHunter
 		{
 		}
 
-		public delegate void DoneCallback();
-
 		private void _Provider_Supply(IVerify obj)
 		{
 			obj.Login(_Account, _Password).OnValue += _Result;
@@ -60,13 +48,13 @@ namespace VGame.Project.FishHunter
 
 		private void _Result(bool obj)
 		{
-			if (obj)
+			if(obj)
 			{
-				SuccessEvent();
+				OnSuccessEvent();
 			}
 			else
 			{
-				FailEvent();
+				OnFailEvent();
 			}
 		}
 	}

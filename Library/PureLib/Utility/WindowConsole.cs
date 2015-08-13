@@ -1,15 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="WindowConsole.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the WindowConsole type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
+﻿#region Test_Region
 
 using System.Runtime.InteropServices;
+
 
 using Regulus.Framework;
 using Regulus.Utility.WindowConsoleStand;
@@ -20,6 +12,8 @@ namespace Regulus.Utility
 {
 	public abstract class WindowConsole : IUpdatable
 	{
+		public delegate void QuitCallback();
+
 		public event QuitCallback QuitEvent;
 
 		private readonly Console _Console;
@@ -30,45 +24,43 @@ namespace Regulus.Utility
 
 		public Command Command
 		{
-			get { return this._Console.Command; }
+			get { return _Console.Command; }
 		}
 
 		public Console.IViewer Viewer { get; private set; }
 
 		protected WindowConsole()
 		{
-			this.Viewer = new ConsoleViewer();
-			this._Input = new ConsoleInput(this.Viewer);
-			this._Console = new Console(this._Input, this.Viewer);
-			this._Updater = new Updater();
+			Viewer = new ConsoleViewer();
+			_Input = new ConsoleInput(Viewer);
+			_Console = new Console(_Input, Viewer);
+			_Updater = new Updater();
 		}
 
 		void IBootable.Launch()
 		{
-			WindowConsole.SetConsoleCtrlHandler(this.ConsoleCtrlCheck, true);
+			WindowConsole.SetConsoleCtrlHandler(ConsoleCtrlCheck, true);
 
-			this._HideLog();
+			_HideLog();
 
-			this._Updater.Add(this._Input);
+			_Updater.Add(_Input);
 
-			this._Launch();
+			_Launch();
 		}
 
 		void IBootable.Shutdown()
 		{
-			this._Shutdown();
-			this._Updater.Shutdown();
-			Singleton<Log>.Instance.RecordEvent -= this._RecordView;
+			_Shutdown();
+			_Updater.Shutdown();
+			Singleton<Log>.Instance.RecordEvent -= _RecordView;
 		}
 
 		bool IUpdatable.Update()
 		{
-			this._Update();
-			this._Updater.Working();
+			_Update();
+			_Updater.Working();
 			return true;
 		}
-
-		public delegate void QuitCallback();
 
 		protected abstract void _Launch();
 
@@ -78,21 +70,21 @@ namespace Regulus.Utility
 
 		private void _HideLog()
 		{
-			Singleton<Log>.Instance.RecordEvent -= this._RecordView;
-			this._Console.Command.Unregister("HideLog");
-			this._Console.Command.Register("ShowLog", this._ShowLog);
+			Singleton<Log>.Instance.RecordEvent -= _RecordView;
+			_Console.Command.Unregister("HideLog");
+			_Console.Command.Register("ShowLog", _ShowLog);
 		}
 
 		private void _ShowLog()
 		{
-			Singleton<Log>.Instance.RecordEvent += this._RecordView;
-			this._Console.Command.Unregister("ShowLog");
-			this._Console.Command.Register("HideLog", this._HideLog);
+			Singleton<Log>.Instance.RecordEvent += _RecordView;
+			_Console.Command.Unregister("ShowLog");
+			_Console.Command.Register("HideLog", _HideLog);
 		}
 
 		private void _RecordView(string message)
 		{
-			this.Viewer.WriteLine(message);
+			Viewer.WriteLine(message);
 		}
 
 		#region unmanaged
@@ -126,26 +118,26 @@ namespace Regulus.Utility
 		private bool ConsoleCtrlCheck(CtrlTypes ctrlType)
 		{
 			// Put your own handler here
-			switch (ctrlType)
+			switch(ctrlType)
 			{
 				case CtrlTypes.CTRL_C_EVENT:
-					this.QuitEvent();
+					QuitEvent();
 
 					break;
 
 				case CtrlTypes.CTRL_BREAK_EVENT:
-					this.QuitEvent();
+					QuitEvent();
 
 					break;
 
 				case CtrlTypes.CTRL_CLOSE_EVENT:
-					this.QuitEvent();
+					QuitEvent();
 
 					break;
 
 				case CtrlTypes.CTRL_LOGOFF_EVENT:
 				case CtrlTypes.CTRL_SHUTDOWN_EVENT:
-					this.QuitEvent();
+					QuitEvent();
 
 					break;
 			}
@@ -188,7 +180,7 @@ namespace Regulus.Utility
 				windowconsole.Command.Register("quit", () => { run = false; });
 				windowconsole.QuitEvent += () => { run = false; };
 				windowconsole.Launch();
-				while (run)
+				while(run)
 				{
 					windowconsole.Update();
 				}

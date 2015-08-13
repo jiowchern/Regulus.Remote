@@ -1,27 +1,17 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ZsBetRangeTestSteps.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the ZsBetRangeTestSteps type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System.Linq;
 
-#region Test_Region
-
-using System.Linq;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+
 using Regulus.Game;
+
 
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
 
-using VGame.Project.FishHunter.ZsFormula.Data;
-
-#endregion
+using VGame.Project.FishHunter.Formula.ZsFormula.Data;
 
 namespace GameTest.ZsFormulaTest
 {
@@ -35,19 +25,19 @@ namespace GameTest.ZsFormulaTest
 		public void GivenBuffer資料是(Table table)
 		{
 			var datas = table.CreateSet<ChancesTable<int>.Data>().ToArray();
-			this._BetChancesTable = new BetChancesTable(datas);
+			_BetChancesTable = new BetChancesTable(datas);
 		}
 
 		[When(@"最大押分是(.*)")]
 		public void When最大押分是(int max_bet)
 		{
-			this._BetChancesTable.MaxBet = max_bet;
+			_BetChancesTable.MaxBet = max_bet;
 		}
 
 		[When(@"玩家押分是(.*)")]
 		public void When玩家押分是(int player_bet)
 		{
-			this._BetChancesTable.PlayerBet = player_bet;
+			_BetChancesTable.PlayerBet = player_bet;
 		}
 
 		[Then(@"取得的Buffer是")]
@@ -55,7 +45,7 @@ namespace GameTest.ZsFormulaTest
 		{
 			var data = table.CreateInstance<ChancesTable<int>.Data>();
 
-			Assert.AreEqual(data.Key, this._BetChancesTable.GetDiceKey());
+			Assert.AreEqual(data.Key, _BetChancesTable.GetDiceKey());
 		}
 	}
 }

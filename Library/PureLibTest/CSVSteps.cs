@@ -1,24 +1,13 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CSVSteps.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the CSVSteps type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using Regulus.Utility;
 
-#region Test_Region
-
-using Regulus.Utility;
 
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
-#endregion
-
-namespace PureLibraryTest
+namespace RegulusLibraryTest
 {
 	[Binding]
+	[Scope(Feature = "CSV")]
 	public class CSVSteps
 	{
 		public class TestData

@@ -1,22 +1,10 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="User.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the User type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Framework;
+﻿using Regulus.Framework;
 using Regulus.Remoting;
 using Regulus.Utility;
 
+
 using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.GPI;
-
-#endregion
 
 namespace VGame.Project.FishHunter
 {
@@ -30,7 +18,7 @@ namespace VGame.Project.FishHunter
 
 		public User(IAgent agent)
 		{
-			this._Agent = agent;
+			_Agent = agent;
 			_Updater = new Updater();
 			_User = new Regulus.Remoting.User(_Agent);
 		}

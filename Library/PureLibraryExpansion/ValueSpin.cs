@@ -1,18 +1,5 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ValueSpin.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the ValueSpin type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Remoting;
+﻿using Regulus.Remoting;
 using Regulus.Utility;
-
-#endregion
 
 namespace Regulus.Net45
 {
@@ -27,28 +14,28 @@ namespace Regulus.Net45
 		public ValueSpin(Value<T> value)
 		{
 			this.value = value;
-			this._HasValue = false;
+			_HasValue = false;
 		}
 
 		internal T Wait()
 		{
-			this.value.OnValue += this._Getted;
+			value.OnValue += _Getted;
 
 			var sw = new SpinWait();
-			while (this._HasValue == false)
+			while(_HasValue == false)
 			{
 				sw.SpinOnce();
 			}
 
-			return this.Value;
+			return Value;
 		}
 
 		internal void Run(object obj)
 		{
-			this.value.OnValue += this._Getted;
+			value.OnValue += _Getted;
 
 			var sw = new SpinWait();
-			while (this._HasValue == false)
+			while(_HasValue == false)
 			{
 				sw.SpinOnce();
 			}
@@ -56,8 +43,8 @@ namespace Regulus.Net45
 
 		private void _Getted(T obj)
 		{
-			this.Value = obj;
-			this._HasValue = true;
+			Value = obj;
+			_HasValue = true;
 		}
 	}
 }

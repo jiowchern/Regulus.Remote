@@ -1,19 +1,6 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Ini.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Ini type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-
-#endregion
 
 namespace Regulus.Utility
 {
@@ -23,17 +10,17 @@ namespace Regulus.Utility
 
 		public Ini(string stream)
 		{
-			this._Data = this._Build(stream);
+			_Data = _Build(stream);
 		}
 
 		public void Write(string Section, string Key, string Value)
 		{
-			this._Data[Section][Key] = Value;
+			_Data[Section][Key] = Value;
 		}
 
 		public string Read(string Section, string Key)
 		{
-			return this._Data[Section][Key];
+			return _Data[Section][Key];
 		}
 
 		private Dictionary<string, Dictionary<string, string>> _Build(string data)
@@ -58,18 +45,21 @@ namespace Regulus.Utility
 				   select new
 				   {
 					   Section = m.Groups["Section"].Value, 
-					   kvps = (from cpKey in m.Groups["Key"].Captures.Cast<Capture>().Select((a, i) => new
-					   {
-						   a.Value, 
-						   i
-					   })
-					           join cpValue in m.Groups["Value"].Captures.Cast<Capture>().Select((b, i) => new
-					           {
-						           b.Value, 
-						           i
-					           }) on cpKey.i equals cpValue.i
+					   kvps = (from cpKey in m.Groups["Key"].Captures.Cast<Capture>().Select(
+						   (a, i) => new
+						   {
+							   a.Value, 
+							   i
+						   })
+					           join cpValue in m.Groups["Value"].Captures.Cast<Capture>().Select(
+						           (b, i) => new
+						           {
+							           b.Value, 
+							           i
+						           }) on cpKey.i equals cpValue.i
 					           select new KeyValuePair<string, string>(cpKey.Value, cpValue.Value)).ToDictionary(
-						           kvp => kvp.Key.Trim(), kvp => kvp.Value.Trim())
+						           kvp => kvp.Key.Trim(), 
+						           kvp => kvp.Value.Trim())
 				   }).ToDictionary(itm => itm.Section, itm => itm.kvps);
 
 			return inifile;

@@ -1,19 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="TestInterface.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the TestInterface type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System;
 
-#region Test_Region
-
-using System;
 
 using Regulus.Remoting;
-
-#endregion
 
 namespace RemotingTest
 {

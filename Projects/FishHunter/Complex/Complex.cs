@@ -1,15 +1,17 @@
-﻿
-using System;
+﻿using System;
 using System.IO;
 using System.Net;
+
 
 using Regulus.Framework;
 using Regulus.Remoting;
 using Regulus.Utility;
 
+
 using VGame.Project.FishHunter.Formula;
 using VGame.Project.FishHunter.Play;
 using VGame.Project.FishHunter.Storage;
+
 
 using Center = VGame.Project.FishHunter.Play.Center;
 using IUser = VGame.Project.FishHunter.Formula.IUser;
@@ -101,7 +103,7 @@ namespace VGame.Project.FishHunter
 
 		private void _BuildUser()
 		{
-			if (_IsIpAddress(_FormulaVerifyData.IPAddress))
+			if(_IsIpAddress(_FormulaVerifyData.IPAddress))
 			{
 				_Formula = new Client();
 				_Formula.Selector.AddFactoty("remoting", new RemotingUserFactory());
@@ -109,14 +111,14 @@ namespace VGame.Project.FishHunter
 			}
 			else
 			{
-				var center = new Formula.Center(new ExpansionFeature(new DummyFrature(), new DummyFrature()));
+				var center = new Formula.Center(new ExpansionFeature(new DummyFrature(), new DummyFrature(), new DummyFrature()));
 				_Updater.Add(center);
 				_Formula = new Client();
 				_Formula.Selector.AddFactoty("remoting", new StandalongUserFactory(center));
 				_FormulaUser = _Formula.Selector.CreateUserProvider("remoting").Spawn("1");
 			}
 
-			if (_IsIpAddress(_StorageVerifyData.IPAddress))
+			if(_IsIpAddress(_StorageVerifyData.IPAddress))
 			{
 				_Storage = new Proxy(new RemotingFactory());
 				_StorageUser = _Storage.SpawnUser("user");
@@ -147,13 +149,13 @@ namespace VGame.Project.FishHunter
 		private void _ToConnectStorage(Storage.IUser user)
 		{
 			var stage = new ConnectStorageStage(user, _StorageVerifyData.IPAddress, _StorageVerifyData.Port);
-			stage.DoneEvent += _ConnectResult;
+			stage.OnDoneEvent += _ConnectResult;
 			_Machine.Push(stage);
 		}
 
 		private void _ConnectResult(bool result)
 		{
-			if (result)
+			if(result)
 			{
 				_ToVerifyStorage(_StorageUser);
 			}
@@ -166,13 +168,13 @@ namespace VGame.Project.FishHunter
 		private void _ToVerifyStorage(Storage.IUser user)
 		{
 			var stage = new VerifyStorageStage(user, _StorageVerifyData.Account, _StorageVerifyData.Password);
-			stage.DoneEvent += _VerifyResult;
+			stage.OnDoneEvent += _VerifyResult;
 			_Machine.Push(stage);
 		}
 
 		private void _VerifyResult(bool verify_result)
 		{
-			if (verify_result)
+			if(verify_result)
 			{
 				_ToConnectFormula();
 			}
@@ -189,8 +191,10 @@ namespace VGame.Project.FishHunter
 				_FormulaVerifyData.IPAddress, 
 				_FormulaVerifyData.Port);
 
-			stage.SuccessEvent += _ToFormulaVerify;
-			stage.FailEvent += _FormulaConnectFail;
+			stage.OnSuccessEvent += _ToFormulaVerify;
+
+			stage.OnFailEvent += _FormulaConnectFail;
+
 			_Machine.Push(stage);
 		}
 
@@ -201,8 +205,10 @@ namespace VGame.Project.FishHunter
 				_FormulaVerifyData.Account, 
 				_FormulaVerifyData.Password);
 
-			stage.SuccessEvent += _ToBuildClient;
-			stage.FailEvent += _FormulaVerifyFail;
+			stage.OnSuccessEvent += _ToBuildClient;
+
+			stage.OnFailEvent += _FormulaVerifyFail;
+
 			_Machine.Push(stage);
 		}
 
@@ -220,7 +226,7 @@ namespace VGame.Project.FishHunter
 			_Center = new Center(
 				features.AccountFinder, 
 				features.FishStageQueryer, 
-				features.RecordHandler,
+				features.GameRecorder, 
 				features.TradeAccount);
 
 			_Updater.Add(_Center);

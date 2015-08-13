@@ -1,30 +1,21 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Service.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Service type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System;
 
-#region Test_Region
-
-using System;
 
 using Regulus.CustomType;
 using Regulus.Net45;
 using Regulus.Utility;
+
 
 using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
 using VGame.Project.FishHunter.Storage;
 
+
 using VGameWebApplication.Models;
 
-using Task = System.Threading.Tasks.Task;
 
-#endregion
+using Task = System.Threading.Tasks.Task;
 
 namespace VGameWebApplication.Storage
 {
@@ -48,7 +39,7 @@ namespace VGameWebApplication.Storage
 
 		public IAccountFinder AccountFinder { get; private set; }
 
-		public IRecordHandler RecordHandler { get; private set; }
+		public IGameRecorder GameRecorder { get; private set; }
 
 		public ITradeNotes TradeNotes { get; private set; }
 
@@ -56,42 +47,42 @@ namespace VGameWebApplication.Storage
 
 		public Service(VerifyData data)
 		{
-			this._Key = new object();
-			this._Data = data;
-			this._Soin = new SpinWait();
+			_Key = new object();
+			_Data = data;
+			_Soin = new SpinWait();
 
-			this._Proxy = new Proxy();
-			(this._Proxy as IUpdatable).Launch();
-			this._ProxyUpdate = new Task(Service._UpdateProxy, new WeakReference<Proxy>(this._Proxy));
-			this._ProxyUpdate.Start();
+			_Proxy = new Proxy();
+			(_Proxy as IUpdatable).Launch();
+			_ProxyUpdate = new Task(Service._UpdateProxy, new WeakReference<Proxy>(_Proxy));
+			_ProxyUpdate.Start();
 
-			this._User = this._Proxy.SpawnUser("1");
+			_User = _Proxy.SpawnUser("1");
 		}
 
 		~Service()
 		{
-			(this._Proxy as IUpdatable).Shutdown();
+			(_Proxy as IUpdatable).Shutdown();
 		}
 
 		private bool _Initial()
 		{
-			if (this._Connect())
+			if(_Connect())
 			{
-				if (this._Verify())
+				if(_Verify())
 				{
-					this._GetStorageCompetnces();
+					_GetStorageCompetnces();
 
-					if (this._Competnces[Account.COMPETENCE.ACCOUNT_MANAGER])
+					if(_Competnces[Account.COMPETENCE.ACCOUNT_MANAGER])
 					{
-						this._GetAccountManager();
+						_GetAccountManager();
 					}
 
-					if (this._Competnces[Account.COMPETENCE.ACCOUNT_FINDER])
+					if(_Competnces[Account.COMPETENCE.ACCOUNT_FINDER])
 					{
-						this._GetAccountFinder();
+						_GetAccountFinder();
 					}
 
-					this._GetAllAccountRecord();
+					_GetAllAccountRecord();
 					return true;
 				}
 
@@ -103,76 +94,76 @@ namespace VGameWebApplication.Storage
 
 		private bool _Connect()
 		{
-			while (this._User.Remoting.ConnectProvider.Ghosts.Length <= 0)
+			while(_User.Remoting.ConnectProvider.Ghosts.Length <= 0)
 			{
-				this._Wait();
+				_Wait();
 			}
 
-			return this._User.Remoting.ConnectProvider.Ghosts[0].Connect("127.0.0.1", 38973).WaitResult();
+			return _User.Remoting.ConnectProvider.Ghosts[0].Connect("127.0.0.1", 38973).WaitResult();
 		}
 
 		private bool _Verify()
 		{
-			while (this._User.VerifyProvider.Ghosts.Length <= 0)
+			while(_User.VerifyProvider.Ghosts.Length <= 0)
 			{
-				this._Wait();
+				_Wait();
 			}
 
-			return this._User.VerifyProvider.Ghosts[0].Login(this._Data.Account, this._Data.Password).WaitResult();
+			return _User.VerifyProvider.Ghosts[0].Login(_Data.Account, _Data.Password).WaitResult();
 		}
 
 		private void _GetStorageCompetnces()
 		{
-			var provider = this._User.QueryProvider<IStorageCompetences>();
-			while (provider.Ghosts.Length <= 0)
+			var provider = _User.QueryProvider<IStorageCompetences>();
+			while(provider.Ghosts.Length <= 0)
 			{
-				this._Wait();
+				_Wait();
 			}
 
-			this._Competnces = new Flag<Account.COMPETENCE>(provider.Ghosts[0].Query().WaitResult());
+			_Competnces = new Flag<Account.COMPETENCE>(provider.Ghosts[0].Query().WaitResult());
 
-			this.ConnecterId = provider.Ghosts[0].QueryForId().WaitResult();
+			ConnecterId = provider.Ghosts[0].QueryForId().WaitResult();
 		}
 
 		private void _GetAccountManager()
 		{
-			var provider = this._User.QueryProvider<IAccountManager>();
-			while (provider.Ghosts.Length <= 0)
+			var provider = _User.QueryProvider<IAccountManager>();
+			while(provider.Ghosts.Length <= 0)
 			{
-				this._Wait();
+				_Wait();
 			}
 
-			this.AccountManager = provider.Ghosts[0];
+			AccountManager = provider.Ghosts[0];
 		}
 
 		private void _GetAccountFinder()
 		{
-			var provider = this._User.QueryProvider<IAccountFinder>();
-			while (provider.Ghosts.Length <= 0)
+			var provider = _User.QueryProvider<IAccountFinder>();
+			while(provider.Ghosts.Length <= 0)
 			{
-				this._Wait();
+				_Wait();
 			}
 
-			this.AccountFinder = provider.Ghosts[0];
+			AccountFinder = provider.Ghosts[0];
 		}
 
 		private void _GetAllAccountRecord()
 		{
-			var provider = this._User.QueryProvider<IRecordHandler>();
-			while (provider.Ghosts.Length <= 0)
+			var provider = _User.QueryProvider<IGameRecorder>();
+			while(provider.Ghosts.Length <= 0)
 			{
-				this._Wait();
+				_Wait();
 			}
 
-			this.RecordHandler = provider.Ghosts[0];
+			GameRecorder = provider.Ghosts[0];
 
-			var p = this._User.QueryProvider<ITradeNotes>();
-			while (p.Ghosts.Length <= 0)
+			var p = _User.QueryProvider<ITradeNotes>();
+			while(p.Ghosts.Length <= 0)
 			{
-				this._Wait();
+				_Wait();
 			}
 
-			this.TradeNotes = p.Ghosts[0];
+			TradeNotes = p.Ghosts[0];
 		}
 
 		public void Release()
@@ -181,7 +172,7 @@ namespace VGameWebApplication.Storage
 
 		private void _Wait()
 		{
-			this._Soin.SpinOnce();
+			_Soin.SpinOnce();
 		}
 
 		private static void _UpdateProxy(object obj)
@@ -191,16 +182,16 @@ namespace VGameWebApplication.Storage
 			var spin = new SpinWait();
 
 			var counter = new TimeCounter();
-			while (true)
+			while(true)
 			{
 				Proxy proxy;
 
-				if (weak.TryGetTarget(out proxy) == false)
+				if(weak.TryGetTarget(out proxy) == false)
 				{
 					break;
 				}
 
-				if (proxy.Enable == false)
+				if(proxy.Enable == false)
 				{
 					break;
 				}
@@ -209,7 +200,7 @@ namespace VGameWebApplication.Storage
 				updater.Update();
 				updater = null;
 				proxy = null;
-				if (counter.Second >= 1.0f)
+				if(counter.Second >= 1.0f)
 				{
 					GC.Collect();
 					counter.Reset();
@@ -219,12 +210,13 @@ namespace VGameWebApplication.Storage
 
 		internal static Guid Verify(string user, string password)
 		{
-			var service = new Service(new VerifyData
-			{
-				Account = user, 
-				Password = password
-			});
-			if (service._Initial())
+			var service = new Service(
+				new VerifyData
+				{
+					Account = user, 
+					Password = password
+				});
+			if(service._Initial())
 			{
 				service.Release();
 				return Singleton<KeyPool>.Instance.Query(user, password);
@@ -236,10 +228,10 @@ namespace VGameWebApplication.Storage
 		internal static Service Create(Guid id)
 		{
 			var data = Singleton<KeyPool>.Instance.Find(id);
-			if (data != null)
+			if(data != null)
 			{
 				var service = new Service(data);
-				if (service._Initial())
+				if(service._Initial())
 				{
 					return service;
 				}

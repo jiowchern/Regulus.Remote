@@ -1,18 +1,5 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="TradeData.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   view model
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Collections.Generic;
-
-#endregion
 
 namespace VGameWebApplication.Models
 {
@@ -21,13 +8,6 @@ namespace VGameWebApplication.Models
 	/// </summary>
 	public class TradeData
 	{
-		public List<Data> Datas { get; set; }
-
-		public TradeData()
-		{
-			Datas = new List<Data>();
-		}
-
 		public class Data
 		{
 			public Guid OwnerId { get; set; }
@@ -49,6 +29,13 @@ namespace VGameWebApplication.Models
 				Money = money;
 				Deposit = 0;
 			}
+		}
+
+		public List<Data> Datas { get; set; }
+
+		public TradeData()
+		{
+			Datas = new List<Data>();
 		}
 
 		public void Add(Guid id, string name, int money)

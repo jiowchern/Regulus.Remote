@@ -1,19 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IOHandler.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the IOHandler type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System.Threading;
 
-#region Test_Region
-
-using System.Threading;
 
 using Regulus.Utility;
-
-#endregion
 
 namespace Regulus.Remoting.Ghost.Native
 {
@@ -56,10 +44,10 @@ namespace Regulus.Remoting.Ghost.Native
 
 		private void _Launch()
 		{
-			if (_ThreadEnable == false)
+			if(_ThreadEnable == false)
 			{
 				_ThreadEnable = true;
-				ThreadPool.QueueUserWorkItem(this._Handle);
+				ThreadPool.QueueUserWorkItem(_Handle);
 			}
 		}
 
@@ -75,7 +63,7 @@ namespace Regulus.Remoting.Ghost.Native
 				response = current;
 				_Updater.Working();
 			}
-			while (_Updater.Count > 0);
+			while(_Updater.Count > 0);
 
 			_Shutdown();
 		}

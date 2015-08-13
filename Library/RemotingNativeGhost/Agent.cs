@@ -1,21 +1,9 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Agent.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Agent type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Net.Sockets;
+
 
 using Regulus.Framework;
 using Regulus.Utility;
-
-#endregion
 
 namespace Regulus.Remoting.Ghost.Native
 {
@@ -42,7 +30,7 @@ namespace Regulus.Remoting.Ghost.Native
 
 		bool IUpdatable.Update()
 		{
-			lock (_Machine)
+			lock(_Machine)
 				_Machine.Update();
 			return true;
 		}
@@ -54,13 +42,13 @@ namespace Regulus.Remoting.Ghost.Native
 
 		void IBootable.Shutdown()
 		{
-			if (this._Core.Enable)
+			if(_Core.Enable)
 			{
 				_ToTermination();
 
-				while (_Core.Enable)
+				while(_Core.Enable)
 				{
-					lock (_Machine)
+					lock(_Machine)
 					{
 						_Machine.Update();
 					}
@@ -118,7 +106,7 @@ namespace Regulus.Remoting.Ghost.Native
 
 		private Value<bool> _ToConnect(string ipaddress, int port)
 		{
-			lock (_Machine)
+			lock(_Machine)
 			{
 				var connectValue = new Value<bool>();
 				var stage = new ConnectStage(ipaddress, port);
@@ -134,9 +122,9 @@ namespace Regulus.Remoting.Ghost.Native
 
 		private void _ConnectResult(bool success, Socket socket)
 		{
-			if (success)
+			if(success)
 			{
-				if (_ConnectEvent != null)
+				if(_ConnectEvent != null)
 				{
 					_ConnectEvent();
 				}
@@ -155,7 +143,7 @@ namespace Regulus.Remoting.Ghost.Native
 			onlineStage.DoneFromServerEvent += () =>
 			{
 				_ToTermination();
-				if (_BreakEvent != null)
+				if(_BreakEvent != null)
 				{
 					_BreakEvent();
 				}
@@ -166,7 +154,7 @@ namespace Regulus.Remoting.Ghost.Native
 
 		private void _ToTermination()
 		{
-			lock (_Machine)
+			lock(_Machine)
 			{
 				_Machine.Push(new TerminationStage(this));
 			}

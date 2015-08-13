@@ -1,19 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="PeerSet.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the PeerSet type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System.Collections.Generic;
 
-#region Test_Region
-
-using System.Collections.Generic;
 
 using Regulus.Framework;
-
-#endregion
 
 namespace Regulus.Remoting.Soul.Native
 {
@@ -23,32 +11,32 @@ namespace Regulus.Remoting.Soul.Native
 
 		public int Count
 		{
-			get { return this._Peers.Count; }
+			get { return _Peers.Count; }
 		}
 
 		public PeerSet()
 		{
-			this._Peers = new List<Peer>();
+			_Peers = new List<Peer>();
 		}
 
 		internal void Join(Peer peer)
 		{
-			this._Join(peer, peer);
+			_Join(peer, peer);
 		}
 
 		internal void _Join(Peer peer, IBootable bootable)
 		{
-			lock (this._Peers)
-				this._Peers.Add(peer);
-			peer.DisconnectEvent += () => { this._Leave(peer, peer); };
+			lock(_Peers)
+				_Peers.Add(peer);
+			peer.DisconnectEvent += () => { _Leave(peer, peer); };
 			bootable.Launch();
 		}
 
 		internal void _Leave(Peer peer, IBootable bootable)
 		{
-			lock (this._Peers)
+			lock(_Peers)
 			{
-				if (this._Peers.Remove(peer))
+				if(_Peers.Remove(peer))
 				{
 					bootable.Shutdown();
 				}
@@ -57,14 +45,14 @@ namespace Regulus.Remoting.Soul.Native
 
 		internal void Release()
 		{
-			lock (this._Peers)
+			lock(_Peers)
 			{
-				foreach (IBootable peer in this._Peers)
+				foreach(IBootable peer in _Peers)
 				{
 					peer.Shutdown();
 				}
 
-				this._Peers.Clear();
+				_Peers.Clear();
 			}
 		}
 	}

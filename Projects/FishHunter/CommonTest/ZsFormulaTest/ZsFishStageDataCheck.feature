@@ -3,7 +3,6 @@
 	As a math idiot
 	I want to be told the sum of two numbers
 
-@mytag
 Scenario: 取得0號魚場資料
 
 	Given 魚場資料表是
