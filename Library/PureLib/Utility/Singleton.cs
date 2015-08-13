@@ -1,17 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Singleton.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Singleton type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
-
-#endregion
+﻿using System;
 
 namespace Regulus.Utility
 {
@@ -19,15 +6,15 @@ namespace Regulus.Utility
 	{
 		private static T _Instance;
 
-		private static readonly Type _Sync = typeof (T);
+		private static readonly Type _Sync = typeof(T);
 
 		public static T Instance
 		{
 			get
 			{
-				lock (Singleton<T>._Sync)
+				lock(Singleton<T>._Sync)
 				{
-					if (Singleton<T>._Instance == null)
+					if(Singleton<T>._Instance == null)
 					{
 						Singleton<T>._Instance = new T();
 					}

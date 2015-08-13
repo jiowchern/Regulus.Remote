@@ -1,26 +1,14 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="MultipleRuleSteps.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the MultipleRuleSteps type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System.Linq;
+﻿using System.Linq;
 
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
 
-using VGame.Project.FishHunter.ZsFormula.Data;
-
-#endregion
+using VGame.Project.FishHunter.Formula.ZsFormula.Data;
 
 namespace GameTest.ZsFormulaTest
 {

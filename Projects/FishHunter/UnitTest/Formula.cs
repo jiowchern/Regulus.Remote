@@ -1,22 +1,16 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Formula.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Formula 的摘要描述
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
+﻿#region Test_Region
 
 using System.Collections.Generic;
 
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+
 using NSubstitute;
 
+
 using Regulus.Utility;
+
 
 using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.Data;
@@ -67,20 +61,19 @@ namespace UnitTest
 			{
 				new RequsetFishData
 				{
-					FishID = 1,
-					FishOdds = 1,
+					FishID = 1, 
+					FishOdds = 1
 				}
 			};
 			var weapon = new RequestWeaponData
 			{
-				TotalHits = 1,
-				WepBet = 1,
-				WepOdds = 1,
-				WepID = 1,
+				TotalHits = 1, 
+				WepBet = 1, 
+				WepOdds = 1, 
+				WepID = 1
 			};
 
 			var request = new HitRequest(fishs.ToArray(), weapon);
-			
 
 			var response = formula.Request(request);
 			Assert.AreEqual(1, response.WepID);
@@ -100,23 +93,23 @@ namespace UnitTest
 			{
 				new RequsetFishData
 				{
-					FishID = 1,
-					FishOdds = 25,
+					FishID = 1, 
+					FishOdds = 25
 				}
 			};
 			var weapon = new RequestWeaponData
 			{
-				TotalHits = 1,
-				WepBet = 1,
-				WepOdds = 1,
-				WepID = 1,
+				TotalHits = 1, 
+				WepBet = 1, 
+				WepOdds = 1, 
+				WepID = 1
 			};
 
 			var request = new HitRequest(fishs.ToArray(), weapon);
 
 			var response = formula.Request(request);
 			Assert.AreEqual(1, response.WepID);
-			Assert.AreEqual(WEAPON_TYPE.INVALID, response.SpecialWeaponType);
+			Assert.AreEqual(WEAPON_TYPE.INVALID, response.FeedbackWeaponType);
 			Assert.AreEqual(1, response.FishID);
 			Assert.AreEqual(FISH_DETERMINATION.SURVIVAL, response.DieResult);
 		}
@@ -129,21 +122,20 @@ namespace UnitTest
 			var formula = new HitTest(random);
 			random.NextLong(Arg.Any<long>(), Arg.Any<long>()).Returns(0x0fffffff / 26); // 9d89d8
 
-
 			var fishs = new List<RequsetFishData>
 			{
 				new RequsetFishData
 				{
-					FishID = 1,
-					FishOdds = 25,
+					FishID = 1, 
+					FishOdds = 25
 				}
 			};
 			var weapon = new RequestWeaponData
 			{
-				TotalHits = 1,
-				WepBet = 1,
-				WepOdds = 1,
-				WepID = 1,
+				TotalHits = 1, 
+				WepBet = 1, 
+				WepOdds = 1, 
+				WepID = 1
 			};
 
 			var request = new HitRequest(fishs.ToArray(), weapon);
@@ -166,23 +158,23 @@ namespace UnitTest
 			{
 				new RequsetFishData
 				{
-					FishID = 1,
-					FishOdds = 1,
+					FishID = 1, 
+					FishOdds = 1
 				}
 			};
 			var weapon = new RequestWeaponData
 			{
-				TotalHits = 1,
-				WepBet = 1,
-				WepOdds = 1,
-				WepID = 1,
+				TotalHits = 1, 
+				WepBet = 1, 
+				WepOdds = 1, 
+				WepID = 1
 			};
 
 			var request = new HitRequest(fishs.ToArray(), weapon);
 
 			var response = formula.Request(request);
 			Assert.AreEqual(1, response.WepID);
-			Assert.AreEqual(WEAPON_TYPE.INVALID, response.SpecialWeaponType);
+			Assert.AreEqual(WEAPON_TYPE.INVALID, response.FeedbackWeaponType);
 			Assert.AreEqual(1, response.FishID);
 			Assert.AreEqual(FISH_DETERMINATION.SURVIVAL, response.DieResult);
 		}

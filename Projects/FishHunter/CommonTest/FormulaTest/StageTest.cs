@@ -1,23 +1,11 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="StageTest.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the StageTest type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System.Linq;
 
-#region Test_Region
-
-using System.Linq;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Play;
-
-#endregion
 
 namespace GameTest.FormulaTest
 {
@@ -41,24 +29,25 @@ namespace GameTest.FormulaTest
 			};
 			var sg = new StageGate(locks);
 			var sti = new StageTicketInspector(sg);
-			sti.Initial(new[]
-			{
-				new Stage
+			sti.Initial(
+				new[]
 				{
-					Id = 1, 
-					Pass = false
-				}, 
-				new Stage
-				{
-					Id = 2, 
-					Pass = false
-				}, 
-				new Stage
-				{
-					Id = 4, 
-					Pass = false
-				}
-			});
+					new Stage
+					{
+						Id = 1, 
+						Pass = false
+					}, 
+					new Stage
+					{
+						Id = 2, 
+						Pass = false
+					}, 
+					new Stage
+					{
+						Id = 4, 
+						Pass = false
+					}
+				});
 
 			sti.Pass(1);
 
@@ -86,19 +75,20 @@ namespace GameTest.FormulaTest
 			};
 			var sg = new StageGate(locks);
 			var sti = new StageTicketInspector(sg);
-			sti.Initial(new[]
-			{
-				new Stage
+			sti.Initial(
+				new[]
 				{
-					Id = 1, 
-					Pass = false
-				}, 
-				new Stage
-				{
-					Id = 2, 
-					Pass = false
-				}
-			});
+					new Stage
+					{
+						Id = 1, 
+						Pass = false
+					}, 
+					new Stage
+					{
+						Id = 2, 
+						Pass = false
+					}
+				});
 
 			sti.Kill(1);
 			sti.Pass(2);

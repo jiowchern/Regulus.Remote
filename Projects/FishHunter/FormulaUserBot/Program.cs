@@ -1,24 +1,13 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Program.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Program type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Framework;
+﻿using Regulus.Framework;
 using Regulus.Remoting;
 using Regulus.Utility;
 
+
 using VGame.Project.FishHunter.Formula;
+
 
 using Console = System.Console;
 using SpinWait = System.Threading.SpinWait;
-
-#endregion
 
 namespace FormulaUserBot
 {
@@ -34,12 +23,12 @@ namespace FormulaUserBot
 			var sw = new SpinWait();
 
 			var botCount = 1;
-			if (args.Length > 0)
+			if(args.Length > 0)
 			{
 				botCount = int.Parse(args[0]);
 			}
 
-			if (args.Length > 1)
+			if(args.Length > 1)
 			{
 				Program.IPAddress = args[1];
 			}
@@ -50,10 +39,14 @@ namespace FormulaUserBot
 			var input = new ConsoleInput(view);
 			var client = new Client(view, input);
 			var packetRegulator = new PacketRegulator();
-			client.Command.Register("si", 
+			client.Command.Register(
+				"si", 
 				() =>
 				{
-					Console.WriteLine("Send Interval : {0}\nRequest Package Queue : {1}", HitHandler.Interval, packetRegulator.Sampling);
+					Console.WriteLine(
+						"Send Interval : {0}\nRequest Package Queue : {1}", 
+						HitHandler.Interval, 
+						packetRegulator.Sampling);
 				});
 			client.ModeSelectorEvent += clientHandler.Begin;
 
@@ -62,7 +55,7 @@ namespace FormulaUserBot
 			updater.Add(clientHandler);
 			updater.Add(packetRegulator);
 
-			while (client.Enable)
+			while(client.Enable)
 			{
 				input.Update();
 				updater.Working();

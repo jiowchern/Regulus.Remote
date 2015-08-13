@@ -1,19 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Ghost.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Ghost type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System;
 
-#region Test_Region
-
-using System;
 
 using Regulus.Remoting;
-
-#endregion
 
 namespace RemotingTest
 {

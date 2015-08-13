@@ -1,51 +1,41 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CheckboxListForEnumList.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the CheckboxListForEnumListExtensions type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Web.Mvc;
 
-using Regulus.Utility;
 
-#endregion
+using Regulus.Utility;
 
 namespace VGameWebApplication.Extensions
 {
 	public static class CheckboxListForEnumListExtensions
 	{
-		public static MvcHtmlString CheckboxListForEnum<TModel, TProperty>(this HtmlHelper<TModel> html, 
+		public static MvcHtmlString CheckboxListForEnum<TModel, TProperty>(
+			this HtmlHelper<TModel> html, 
 			Expression<Func<TModel, TProperty>> expression, 
 			IDictionary<string, object> htmlAttributes = null) where TProperty : struct, IConvertible
 		{
-			if (!typeof (TProperty).IsEnum)
+			if(!typeof(TProperty).IsEnum)
 			{
 				throw new ArgumentException("TProperty must be an enumerated type");
 			}
 
 			var value = expression.Compile()((TModel)html.ViewContext.ViewData.Model);
 
-			var enumValue = (Enum)Enum.Parse(typeof (TProperty), value.ToString());
+			var enumValue = (Enum)Enum.Parse(typeof(TProperty), value.ToString());
 
 			var itens = Enum
-				.GetValues(typeof (TProperty))
+				.GetValues(typeof(TProperty))
 				.Cast<Enum>()
-				.Select(c => new SelectListItem
-				{
-					Text = c.GetEnumDescription(), 
-					Value = c.ToString(), 
-					Selected = null != enumValue && enumValue.HasFlag(c)
-				});
+				.Select(
+					c => new SelectListItem
+					{
+						Text = c.GetEnumDescription(), 
+						Value = c.ToString(), 
+						Selected = null != enumValue && enumValue.HasFlag(c)
+					});
 
 			var name = ExpressionHelper.GetExpressionText(expression);
 
@@ -54,7 +44,7 @@ namespace VGameWebApplication.Extensions
 
 			ul.MergeAttributes(htmlAttributes);
 
-			foreach (var item in itens)
+			foreach(var item in itens)
 			{
 				var id = string.Format("{0}_{1}", name, item.Value);
 
@@ -65,7 +55,7 @@ namespace VGameWebApplication.Extensions
 				checkBox.Attributes.Add("value", item.Value);
 				checkBox.Attributes.Add("name", name);
 				checkBox.Attributes.Add("type", "checkbox");
-				if (item.Selected)
+				if(item.Selected)
 				{
 					checkBox.Attributes.Add("checked", "checked");
 				}

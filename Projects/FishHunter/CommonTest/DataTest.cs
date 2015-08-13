@@ -1,15 +1,8 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="DataTest.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the DataTest type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System;
 
-using System;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 
 using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.Data;
@@ -33,7 +26,7 @@ namespace GameTest
 		[TestMethod]
 		public void TestValidRecord()
 		{
-			var record = new PlayerRecord();
+			var record = new GamePlayerRecord();
 
 			Assert.AreNotEqual(null, record.Id);
 			Assert.AreEqual(0, record.Money);

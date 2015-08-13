@@ -50,10 +50,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\BusinessStage.cs" />
-    <Compile Include="Data\SpecialWeaponData.cs" />
+    <Compile Include="Data\FishToItem.cs" />
+    <Compile Include="Data\FormulaPlayerRecord.cs" />
+    <Compile Include="Data\PlayerData.cs" />
+    <Compile Include="Data\RequestWeaponData.cs" />
+    <Compile Include="Data\RequsetFishData.cs" />
+    <Compile Include="Data\WeaponPower.cs" />
     <Compile Include="Data\StageRecord.cs" />
     <Compile Include="Data\StageBuffer.cs" />
     <Compile Include="Data\StageData.cs" />
+    <Compile Include="Data\WeaponPowerTable.cs" />
     <Compile Include="GPI\IAccountCreator.cs" />
     <Compile Include="Data\Account.cs" />
     <Compile Include="Data\ACCOUNT_REQUEST_RESULT.cs" />
@@ -66,9 +72,10 @@
     <Compile Include="GPI\IAccountManager.cs" />
     <Compile Include="GPI\IAccountStatus.cs" />
     <Compile Include="GPI\IFishStage.cs" />
-    <Compile Include="GPI\IFishStageDataHandler.cs" />
+    <Compile Include="GPI\IFormulaStageDataRecorder.cs" />
     <Compile Include="GPI\IFishStageQueryer.cs" />
     <Compile Include="GPI\IAccountFinder.cs" />
+    <Compile Include="GPI\IFormulaPlayerRecorder.cs" />
     <Compile Include="GPI\ILevelSelector.cs" />
     <Compile Include="GPI\IPlayer.cs" />
     <Compile Include="GPI\IQuitable.cs" />
@@ -78,7 +85,7 @@
     <Compile Include="GPI\ITradeNotes.cs" />
     <Compile Include="GPI\IVerify.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Data\PlayerRecord.cs" />
+    <Compile Include="Data\GamePlayerRecord.cs" />
     <Compile Include="Data\TradeRecorder.cs" />
     <Compile Include="Data\WEAPON_TYPE.cs" />
     <Compile Include="Data\FISH_TYPE.cs" />
@@ -96,9 +103,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Data\FishStage\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

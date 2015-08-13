@@ -1,15 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Account.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Account type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Linq;
 
 
@@ -18,8 +7,6 @@ using ProtoBuf;
 
 using Regulus.CustomType;
 using Regulus.Utility;
-
-#endregion
 
 namespace VGame.Project.FishHunter.Common.Data
 {
@@ -61,25 +48,25 @@ namespace VGame.Project.FishHunter.Common.Data
 
 		public Account()
 		{
-			this.Competnces = new Flag<COMPETENCE>();
-			this.Id = Guid.NewGuid();
-			this.Name = this.Id.ToString();
-			this.Password = this.Id.ToString();
+			Competnces = new Flag<COMPETENCE>();
+			Id = Guid.NewGuid();
+			Name = Id.ToString();
+			Password = Id.ToString();
 		}
 
 		public bool IsPassword(string password)
 		{
-			return this.Password == password;
+			return Password == password;
 		}
 
 		public bool IsFormulaQueryer()
 		{
-			return this._HasCompetence(COMPETENCE.FORMULA_QUERYER);
+			return _HasCompetence(COMPETENCE.FORMULA_QUERYER);
 		}
 
 		private bool _HasCompetence(COMPETENCE competence)
 		{
-			return this.Competnces[competence];
+			return Competnces[competence];
 		}
 
 		public static Flag<COMPETENCE> AllCompetnce()
@@ -91,12 +78,12 @@ namespace VGame.Project.FishHunter.Common.Data
 
 		public bool HasCompetnce(COMPETENCE cOMPETENCE)
 		{
-			return this._HasCompetence(cOMPETENCE);
+			return _HasCompetence(cOMPETENCE);
 		}
 
 		public bool IsPlayer()
 		{
-			return this._HasCompetence(COMPETENCE.GAME_PLAYER);
+			return _HasCompetence(COMPETENCE.GAME_PLAYER);
 		}
 	}
 }

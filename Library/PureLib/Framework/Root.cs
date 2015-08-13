@@ -1,17 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Root.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Root type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System.Collections.Generic;
-
-#endregion
+﻿using System.Collections.Generic;
 
 namespace Regulus.Framework
 {
@@ -23,20 +10,20 @@ namespace Regulus.Framework
 
 		public Root(IUserFactoty<TUser> provider)
 		{
-			this._Provider = provider;
-			this._Users = new List<TUser>();
+			_Provider = provider;
+			_Users = new List<TUser>();
 		}
 
 		public TUser Spawn()
 		{
-			var user = this._Provider.SpawnUser();
-			this._Users.Add(user);
+			var user = _Provider.SpawnUser();
+			_Users.Add(user);
 			return user;
 		}
 
 		public void Unspawn(TUser user)
 		{
-			this._Users.Remove(user);
+			_Users.Remove(user);
 		}
 	}
 }

@@ -1,13 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Queue.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Queue type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-namespace Regulus.Collection
+﻿namespace Regulus.Collection
 {
 	public class Queue<T>
 	{
@@ -15,29 +6,29 @@ namespace Regulus.Collection
 
 		public Queue()
 		{
-			this._Set = new System.Collections.Generic.Queue<T>();
+			_Set = new System.Collections.Generic.Queue<T>();
 		}
 
 		public Queue(params T[] objs)
 		{
-			this._Set = new System.Collections.Generic.Queue<T>(objs);
+			_Set = new System.Collections.Generic.Queue<T>(objs);
 		}
 
 		public void Enqueue(T package)
 		{
-			lock (this._Set)
+			lock(_Set)
 			{
-				this._Set.Enqueue(package);
+				_Set.Enqueue(package);
 			}
 		}
 
 		public bool TryDequeue(out T obj)
 		{
-			lock (this._Set)
+			lock(_Set)
 			{
-				if (this._Set.Count > 0)
+				if(_Set.Count > 0)
 				{
-					obj = this._Set.Dequeue();
+					obj = _Set.Dequeue();
 					return true;
 				}
 			}
@@ -48,10 +39,10 @@ namespace Regulus.Collection
 
 		public T[] DequeueAll()
 		{
-			lock (this._Set)
+			lock(_Set)
 			{
-				var all = this._Set.ToArray();
-				this._Set.Clear();
+				var all = _Set.ToArray();
+				_Set.Clear();
 				return all;
 			}
 		}

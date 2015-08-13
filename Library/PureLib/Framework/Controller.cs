@@ -1,18 +1,5 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Controller.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Controller type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Remoting;
+﻿using Regulus.Remoting;
 using Regulus.Utility;
-
-#endregion
 
 namespace Regulus.Framework
 {
@@ -24,7 +11,7 @@ namespace Regulus.Framework
 
 		public string Name
 		{
-			get { return this._Name; }
+			get { return _Name; }
 		}
 
 		public ICommandParsable<T> Parser { get; set; }
@@ -33,8 +20,8 @@ namespace Regulus.Framework
 
 		public Controller(string name, T user)
 		{
-			this.User = user;
-			this._Name = name;
+			User = user;
+			_Name = name;
 		}
 	}
 }

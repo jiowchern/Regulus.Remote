@@ -1,17 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Doskey.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Doskey type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System.Collections.Generic;
-
-#endregion
+﻿using System.Collections.Generic;
 
 namespace Regulus.Utility
 {
@@ -25,32 +12,32 @@ namespace Regulus.Utility
 
 		public Doskey(int capacity)
 		{
-			this._Capacity = capacity;
-			this._Stack = new List<string>(capacity);
+			_Capacity = capacity;
+			_Stack = new List<string>(capacity);
 		}
 
 		public void Record(string p)
 		{
-			this._Stack.Add(p);
+			_Stack.Add(p);
 
-			if (this._Stack.Count > this._Capacity)
+			if(_Stack.Count > _Capacity)
 			{
-				this._Stack.RemoveAt(0);
+				_Stack.RemoveAt(0);
 			}
 
-			this._Current = this._Stack.Count;
+			_Current = _Stack.Count;
 		}
 
 		public string TryGetPrev()
 		{
-			if (this._Stack.Count <= 0)
+			if(_Stack.Count <= 0)
 			{
 				return null;
 			}
 
-			if (this._Current - 1 >= 0)
+			if(_Current - 1 >= 0)
 			{
-				return this._Stack[--this._Current];
+				return _Stack[--_Current];
 			}
 
 			return null;
@@ -58,14 +45,14 @@ namespace Regulus.Utility
 
 		public string TryGetNext()
 		{
-			if (this._Stack.Count <= 0)
+			if(_Stack.Count <= 0)
 			{
 				return null;
 			}
 
-			if (this._Current + 1 < this._Stack.Count)
+			if(_Current + 1 < _Stack.Count)
 			{
-				return this._Stack[++this._Current];
+				return _Stack[++_Current];
 			}
 
 			return null;

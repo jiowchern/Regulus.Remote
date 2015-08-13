@@ -1,20 +1,8 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ModeCreator.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the ModeCreator type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Framework;
+﻿using Regulus.Framework;
 using Regulus.Remoting;
 
-using VGame.Project.FishHunter;
 
-#endregion
+using VGame.Project.FishHunter;
 
 namespace Console
 {

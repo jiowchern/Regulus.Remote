@@ -1,25 +1,14 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="UserController.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the UserController type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Framework;
+﻿using Regulus.Framework;
 using Regulus.Game;
 using Regulus.Utility;
-
-#endregion
 
 namespace Regulus.Remoting
 {
 	public class UserController<TUser> : Framework<TUser>.IController
 		where TUser : IUpdatable
 	{
+		public delegate void OnLook(TUser user);
+
 		public event OnLook LookEvent;
 
 		public event OnLook UnlookEvent;
@@ -30,49 +19,47 @@ namespace Regulus.Remoting
 
 		public UserController(TUser user)
 		{
-			this._User = user;
-			this._Updater = new Updater();
+			_User = user;
+			_Updater = new Updater();
 		}
 
 		string Framework<TUser>.IController.Name { get; set; }
 
 		void Framework<TUser>.IController.Look()
 		{
-			if (this.LookEvent != null)
+			if(LookEvent != null)
 			{
-				this.LookEvent(this._User);
+				LookEvent(_User);
 			}
 		}
 
 		void Framework<TUser>.IController.NotLook()
 		{
-			if (this.UnlookEvent != null)
+			if(UnlookEvent != null)
 			{
-				this.UnlookEvent(this._User);
+				UnlookEvent(_User);
 			}
 		}
 
 		bool IUpdatable.Update()
 		{
-			this._Updater.Working();
+			_Updater.Working();
 			return true;
 		}
 
 		void IBootable.Launch()
 		{
-			this._Updater.Add(this._User);
+			_Updater.Add(_User);
 		}
 
 		void IBootable.Shutdown()
 		{
-			this._Updater.Shutdown();
+			_Updater.Shutdown();
 		}
 
 		TUser Framework<TUser>.IController.GetUser()
 		{
-			return this._User;
+			return _User;
 		}
-
-		public delegate void OnLook(TUser user);
 	}
 }

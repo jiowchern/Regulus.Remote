@@ -2,34 +2,55 @@
     ViewBag.Title = "帳號餘額資料";
 }
 
-<h2>PlayerRecord</h2>
+<h2>GamePlayerRecord</h2>
 
 @model VGameWebApplication.Models.TradeData.Data[]
 
 
 
 
-@using (Html.BeginForm("Index", "Record", FormMethod.Post, new
+@using(Html.BeginForm("Index", "Record", FormMethod.Post, new
 {
     enctype = "multipart/form-data", 
     onsubmit = "return validateForm(this)"
 }))
 {
-    _Page_Views_Record_Index_cshtml.<div>
-        <table>@Html.Label("帳號餘額資料")</table>
-        <table class=" table-condensed">
+    _Page_Views_Record_Index_cshtml.<
+    div >
+    <
+    table > @Html.Label("帳號餘額資料") </
+    table >
+    <
+    table class=
+    " table-condensed" >
+    @for(var
+    i = 0;
+    i < Model.Length;
+    i++)
+    {
+        _Page_Views_Record_Index_cshtml.<
+        tr >
+        <
+        td > 帳號 </
+        td >
+        <
+        td > @Model[i].Name </
+        td >
+        <
+        td > 餘額 </
+        td >
+        <
+        td > @Model[i].Money </
+        td >
+        <
+        td > @Html.ActionLink("儲值", "InputMoney", "Record", Model[i], null) </
+        td >
+        </
+        tr >
+    }
 
-
-            @for (var i = 0; i < Model.Length; i++)
-            {
-                _Page_Views_Record_Index_cshtml.<tr>
-                    <td>帳號</td>
-                    <td>@Model[i].Name</td>
-                    <td>餘額</td>
-                    <td>@Model[i].Money</td>
-                    <td>@Html.ActionLink("儲值", "InputMoney", "Record", Model[i], null)</td>
-                </tr>
-            }
-        </table>
-    </div>
+</
+    table >
+    </
+    div >
 }

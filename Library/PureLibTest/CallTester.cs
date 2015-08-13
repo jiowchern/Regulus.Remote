@@ -1,13 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CallTester.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the ICallTester type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-namespace PureLibraryTest
+﻿namespace RegulusLibraryTest
 {
 	public interface ICallTester
 	{

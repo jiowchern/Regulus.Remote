@@ -1,22 +1,9 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Center.cs" company="Regulus Framework">
-//   Regulus Framework
-// </copyright>
-// <summary>
-//   Defines the Center type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
+﻿
 using Regulus.Framework;
 using Regulus.Remoting;
 using Regulus.Utility;
 
-using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.GPI;
-
-#endregion
 
 namespace VGame.Project.FishHunter.Play
 {
@@ -28,30 +15,34 @@ namespace VGame.Project.FishHunter.Play
 
 		private readonly Hall _Hall;
 
-		private readonly IRecordHandler _RecordHandler;
+		private readonly IGameRecorder _GameRecorder;
 
 		private readonly ITradeNotes _Tradefinder;
 
 		private readonly Updater _Updater;
 
-	    public Center(IAccountFinder account_finder, IFishStageQueryer fish_stage_queryer, IRecordHandler rq,
-	        ITradeNotes trade_account)
-	    {
-	        _RecordHandler = rq;
-	        _AccountFinder = account_finder;
-	        _FishStageQueryer = fish_stage_queryer;
-	        _Tradefinder = trade_account;
+		public Center(
+			IAccountFinder account_finder, 
+			IFishStageQueryer fish_stage_queryer, 
+			IGameRecorder rq, 
+			ITradeNotes trade_account)
+		{
+			_GameRecorder = rq;
+			_AccountFinder = account_finder;
+			_FishStageQueryer = fish_stage_queryer;
+			_Tradefinder = trade_account;
 
-	        _Updater = new Updater();
-	        _Hall = new Hall();
-	    }
+			_Updater = new Updater();
+			_Hall = new Hall();
+		}
 
 		void ICore.AssignBinder(ISoulBinder binder)
 		{
-			var user = new User(binder, 
+			var user = new User(
+				binder, 
 				_AccountFinder, 
 				_FishStageQueryer, 
-				_RecordHandler, 
+				_GameRecorder, 
 				_Tradefinder);
 
 			_Hall.PushUser(user);

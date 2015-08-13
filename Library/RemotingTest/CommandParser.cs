@@ -1,18 +1,5 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CommandParser.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the CommandParser type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Framework;
+﻿using Regulus.Framework;
 using Regulus.Remoting;
-
-#endregion
 
 namespace RemotingTest
 {

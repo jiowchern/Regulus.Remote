@@ -1,19 +1,6 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="PacketRegulator.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the PacketRegulator type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Framework;
+﻿using Regulus.Framework;
 using Regulus.Remoting.Ghost.Native;
 using Regulus.Utility;
-
-#endregion
 
 namespace FormulaUserBot
 {
@@ -44,9 +31,9 @@ namespace FormulaUserBot
 			_Sampling += Agent.RequestPackages + Agent.ResponsePackages;
 			_SamplingCount++;
 
-			if (_Counter.Second > 0.016f)
+			if(_Counter.Second > 0.016f)
 			{
-				if (_PrevSampling < _Sampling)
+				if(_PrevSampling < _Sampling)
 				{
 					HitHandler.Interval *= 1.01f;
 				}

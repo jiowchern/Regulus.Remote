@@ -1,25 +1,14 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ControllerStageRun.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the ParallelUpdate type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 
+
 using Regulus.Utility;
 
-using Console = Regulus.Utility.Console;
 
-#endregion
+using Console = Regulus.Utility.Console;
 
 namespace Regulus.Remoting.Soul.Native
 {
@@ -40,9 +29,9 @@ namespace Regulus.Remoting.Soul.Native
 
             if (exceptions.Count > 0) 
                 throw new AggregateException(exceptions);*/
-			foreach (var up in this._GetObjectSet())
+			foreach(var up in _GetObjectSet())
 			{
-				this._Update(up);
+				_Update(up);
 			}
 		}
 
@@ -52,9 +41,9 @@ namespace Regulus.Remoting.Soul.Native
 
 			result = updater.Update();
 
-			if (result == false)
+			if(result == false)
 			{
-				this.Remove(updater);
+				Remove(updater);
 			}
 		}
 	}
@@ -73,74 +62,73 @@ namespace Regulus.Remoting.Soul.Native
 
 		public int FPS
 		{
-			get { return this._Spin.FPS; }
+			get { return _Spin.FPS; }
 		}
 
 		public float Power
 		{
-			get { return this._Spin.Power; }
+			get { return _Spin.Power; }
 		}
 
 		public ThreadCoreHandler(ICore core)
 		{
-			if (core == null)
+			if(core == null)
 			{
 				throw new ArgumentNullException();
 			}
 
-			this._Core = core;
+			_Core = core;
 
-			this._RequesterHandlers = new Updater();
-			this._Spin = new PowerRegulator();
-			this._Binders = new Queue<ISoulBinder>();
+			_RequesterHandlers = new Updater();
+			_Spin = new PowerRegulator();
+			_Binders = new Queue<ISoulBinder>();
 		}
 
 		public void DoWork(object obj)
 		{
 			Singleton<Log>.Instance.WriteInfo("server core launch");
-			this._Run = true;
-			this._Core.Launch();
+			_Run = true;
+			_Core.Launch();
 
-			while (this._Run)
+			while(_Run)
 			{
-				if (this._Binders.Count > 0)
+				if(_Binders.Count > 0)
 				{
-					lock (this._Binders)
+					lock(_Binders)
 					{
-						while (this._Binders.Count > 0)
+						while(_Binders.Count > 0)
 						{
-							var provider = this._Binders.Dequeue();
-							this._Core.AssignBinder(provider);
+							var provider = _Binders.Dequeue();
+							_Core.AssignBinder(provider);
 						}
 					}
 				}
 
-				this._Core.Update();
-				this._RequesterHandlers.Working();
-				this._Spin.Operate(Peer.TotalResponse);
+				_Core.Update();
+				_RequesterHandlers.Working();
+				_Spin.Operate(Peer.TotalResponse);
 			}
 
-			this._Core.Shutdown();
+			_Core.Shutdown();
 
 			Singleton<Log>.Instance.WriteInfo("server core shutdown");
 		}
 
 		public void Stop()
 		{
-			this._Run = false;
+			_Run = false;
 		}
 
 		internal void Push(ISoulBinder soulBinder, IUpdatable handler)
 		{
-			this._RequesterHandlers.Add(handler);
+			_RequesterHandlers.Add(handler);
 
-			lock (this._Binders)
+			lock(_Binders)
 			{
-				this._Binders.Enqueue(soulBinder);
+				_Binders.Enqueue(soulBinder);
 			}
 		}
 	}
-
 
 	internal class ThreadSocketHandler
 	{
@@ -161,77 +149,77 @@ namespace Regulus.Remoting.Soul.Native
 
 		public int FPS
 		{
-			get { return this._Spin.FPS; }
+			get { return _Spin.FPS; }
 		}
 
 		public float Power
 		{
-			get { return this._Spin.Power; }
+			get { return _Spin.Power; }
 		}
 
 		public int PeerCount
 		{
-			get { return this._Peers.Count; }
+			get { return _Peers.Count; }
 		}
 
 		public ThreadSocketHandler(int port, ThreadCoreHandler core_handler)
 		{
-			this._CoreHandler = core_handler;
-			this._Port = port;
+			_CoreHandler = core_handler;
+			_Port = port;
 
-			this._Sockets = new Queue<Socket>();
+			_Sockets = new Queue<Socket>();
 
-			this._Peers = new PeerSet();
+			_Peers = new PeerSet();
 
-			this._Spin = new PowerRegulator();
+			_Spin = new PowerRegulator();
 		}
 
 		public void DoWork(object obj)
 		{
 			Singleton<Log>.Instance.WriteInfo("server socket launch");
 			var are = (AutoResetEvent)obj;
-			this._Run = true;
+			_Run = true;
 
-			this._Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			this._Socket.NoDelay = true;
+			_Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+			_Socket.NoDelay = true;
 
 			// _Socket.SetSocketOption(System.Net.Sockets.SocketOptionLevel.Socket, System.Net.Sockets.SocketOptionName.ReuseAddress, true);
-			this._Socket.Bind(new IPEndPoint(IPAddress.Any, this._Port));
-			this._Socket.Listen(5);
-			this._Socket.BeginAccept(this._Accept, null);
+			_Socket.Bind(new IPEndPoint(IPAddress.Any, _Port));
+			_Socket.Listen(5);
+			_Socket.BeginAccept(_Accept, null);
 
-			while (this._Run)
+			while(_Run)
 			{
-				if (this._Sockets.Count > 0)
+				if(_Sockets.Count > 0)
 				{
-					lock (this._Sockets)
+					lock(_Sockets)
 					{
-						while (this._Sockets.Count > 0)
+						while(_Sockets.Count > 0)
 						{
-							var socket = this._Sockets.Dequeue();
+							var socket = _Sockets.Dequeue();
 
 							Singleton<Log>.Instance.WriteInfo(
 								string.Format("socket accept Remot {0} Local {1} .", socket.RemoteEndPoint, socket.LocalEndPoint));
 							var peer = new Peer(socket);
 
-							this._Peers.Join(peer);
+							_Peers.Join(peer);
 
-							this._CoreHandler.Push(peer.Binder, peer.Handler);
+							_CoreHandler.Push(peer.Binder, peer.Handler);
 						}
 					}
 				}
 
-				this._Spin.Operate(Peer.TotalRequest);
+				_Spin.Operate(Peer.TotalRequest);
 			}
 
-			this._Peers.Release();
+			_Peers.Release();
 
-			if (this._Socket.Connected)
+			if(_Socket.Connected)
 			{
-				this._Socket.Shutdown(SocketShutdown.Both);
+				_Socket.Shutdown(SocketShutdown.Both);
 			}
 
-			this._Socket.Close();
+			_Socket.Close();
 
 			are.Set();
 			Singleton<Log>.Instance.WriteInfo("server socket shutdown");
@@ -241,13 +229,13 @@ namespace Regulus.Remoting.Soul.Native
 		{
 			try
 			{
-				var socket = this._Socket.EndAccept(ar);
-				lock (this._Sockets)
+				var socket = _Socket.EndAccept(ar);
+				lock(_Sockets)
 				{
-					this._Sockets.Enqueue(socket);
+					_Sockets.Enqueue(socket);
 				}
 
-				this._Socket.BeginAccept(this._Accept, null);
+				_Socket.BeginAccept(_Accept, null);
 			}
 
 				// System.ArgumentNullException:
@@ -261,19 +249,19 @@ namespace Regulus.Remoting.Soul.Native
 				// System.Net.Sockets.Socket 已經關閉。
 				// System.InvalidOperationException:
 				// 先前已呼叫 System.Net.Sockets.Socket.EndAccept(System.IAsyncResult) 方法。
-			catch (SocketException se)
+			catch(SocketException se)
 			{
 				Singleton<Log>.Instance.WriteInfo(se.ToString());
 			}
-			catch (ObjectDisposedException ode)
+			catch(ObjectDisposedException ode)
 			{
 				Singleton<Log>.Instance.WriteInfo(ode.ToString());
 			}
-			catch (InvalidOperationException ioe)
+			catch(InvalidOperationException ioe)
 			{
 				Singleton<Log>.Instance.WriteInfo(ioe.ToString());
 			}
-			catch (Exception e)
+			catch(Exception e)
 			{
 				Singleton<Log>.Instance.WriteInfo(e.ToString());
 			}
@@ -281,7 +269,7 @@ namespace Regulus.Remoting.Soul.Native
 
 		public void Stop()
 		{
-			this._Run = false;
+			_Run = false;
 		}
 	}
 
@@ -299,46 +287,52 @@ namespace Regulus.Remoting.Soul.Native
 
 		public StageRun(ICore core, Command command, int port, Console.IViewer viewer)
 		{
-			this._View = viewer;
-			this._Command = command;
+			_View = viewer;
+			_Command = command;
 
-			this._Server = new Server(core, port);
-			this._Launcher = new Launcher();
-			this._Launcher.Push(this._Server);
+			_Server = new Server(core, port);
+			_Launcher = new Launcher();
+			_Launcher.Push(_Server);
 		}
 
 		void IStage.Enter()
 		{
-			this._Launcher.Launch();
-			this._Command.Register("FPS", () =>
-			{
-				this._View.WriteLine("PeerFPS:" + this._Server.PeerFPS);
-				this._View.WriteLine("PeerCount:" + this._Server.PeerCount);
-				this._View.WriteLine("CoreFPS:" + this._Server.CoreFPS);
+			_Launcher.Launch();
+			_Command.Register(
+				"FPS", 
+				() =>
+				{
+					_View.WriteLine("PeerFPS:" + _Server.PeerFPS);
+					_View.WriteLine("PeerCount:" + _Server.PeerCount);
+					_View.WriteLine("CoreFPS:" + _Server.CoreFPS);
 
-				this._View.WriteLine(string.Format("PeerUsage:{0:0.00%}", this._Server.PeerUsage));
-				this._View.WriteLine(string.Format("CoreUsage:{0:0.00%}", this._Server.CoreUsage));
+					_View.WriteLine(string.Format("PeerUsage:{0:0.00%}", _Server.PeerUsage));
+					_View.WriteLine(string.Format("CoreUsage:{0:0.00%}", _Server.CoreUsage));
 
-				this._View.WriteLine("\nTotalReadBytes:"
-				                     + string.Format("{0:N0}", Singleton<NetworkMonitor>.Instance.Read.TotalBytes));
-				this._View.WriteLine("TotalWriteBytes:"
-				                     + string.Format("{0:N0}", Singleton<NetworkMonitor>.Instance.Write.TotalBytes));
-				this._View.WriteLine("\nSecondReadBytes:"
-				                     + string.Format("{0:N0}", Singleton<NetworkMonitor>.Instance.Read.SecondBytes));
-				this._View.WriteLine("SecondWriteBytes:"
-				                     + string.Format("{0:N0}", Singleton<NetworkMonitor>.Instance.Write.SecondBytes));
-				this._View.WriteLine("\nRequest Queue:" + Peer.TotalRequest);
-				this._View.WriteLine("Response Queue:" + Peer.TotalResponse);
-			});
-			this._Command.Register("Shutdown", this._ShutdownEvent);
+					_View.WriteLine(
+						"\nTotalReadBytes:"
+						+ string.Format("{0:N0}", Singleton<NetworkMonitor>.Instance.Read.TotalBytes));
+					_View.WriteLine(
+						"TotalWriteBytes:"
+						+ string.Format("{0:N0}", Singleton<NetworkMonitor>.Instance.Write.TotalBytes));
+					_View.WriteLine(
+						"\nSecondReadBytes:"
+						+ string.Format("{0:N0}", Singleton<NetworkMonitor>.Instance.Read.SecondBytes));
+					_View.WriteLine(
+						"SecondWriteBytes:"
+						+ string.Format("{0:N0}", Singleton<NetworkMonitor>.Instance.Write.SecondBytes));
+					_View.WriteLine("\nRequest Queue:" + Peer.TotalRequest);
+					_View.WriteLine("Response Queue:" + Peer.TotalResponse);
+				});
+			_Command.Register("Shutdown", _ShutdownEvent);
 		}
 
 		void IStage.Leave()
 		{
-			this._Launcher.Shutdown();
+			_Launcher.Shutdown();
 
-			this._Command.Unregister("Shutdown");
-			this._Command.Unregister("FPS");
+			_Command.Unregister("Shutdown");
+			_Command.Unregister("FPS");
 		}
 
 		void IStage.Update()
@@ -347,7 +341,7 @@ namespace Regulus.Remoting.Soul.Native
 
 		private void _ShutdownEvent()
 		{
-			this.ShutdownEvent();
+			ShutdownEvent();
 		}
 	}
 }

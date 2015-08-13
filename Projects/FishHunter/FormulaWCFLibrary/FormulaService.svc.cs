@@ -1,22 +1,11 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="FormulaService.svc.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the FormulaService type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System.ServiceModel;
 
-#region Test_Region
-
-using System.ServiceModel;
 
 using Regulus.Remoting.Soul.Native;
 using Regulus.Utility;
 
-using VGame.Project.FishHunter.Formula;
 
-#endregion
+using VGame.Project.FishHunter.Formula;
 
 namespace VGame.Project.FishHunter.WCF
 {

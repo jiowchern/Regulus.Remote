@@ -1,23 +1,12 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Client.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Client type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Utility;
-
-#endregion
+﻿using Regulus.Utility;
 
 namespace Regulus.Framework
 {
 	public class Client<TUser> : IUpdatable
 		where TUser : class, IUpdatable
 	{
+		public delegate void OnModeSelector(GameModeSelector<TUser> selector);
+
 		public event OnModeSelector ModeSelectorEvent;
 
 		private readonly Console _Console;
@@ -28,12 +17,12 @@ namespace Regulus.Framework
 
 		private Command _Command
 		{
-			get { return this._Console.Command; }
+			get { return _Console.Command; }
 		}
 
 		public Command Command
 		{
-			get { return this._Command; }
+			get { return _Command; }
 		}
 
 		public bool Enable { get; private set; }
@@ -42,63 +31,60 @@ namespace Regulus.Framework
 
 		public Client(Console.IViewer view, Console.IInput input)
 		{
-			this.Enable = true;
-			this._Machine = new StageMachine();
+			Enable = true;
+			_Machine = new StageMachine();
 
-			this._View = view;
-			this._Console = new Console(input, view);
-			this.Selector = new GameModeSelector<TUser>(this._Command, this._View);
+			_View = view;
+			_Console = new Console(input, view);
+			Selector = new GameModeSelector<TUser>(_Command, _View);
 		}
 
 		bool IUpdatable.Update()
 		{
-			this._Machine.Update();
-			return this.Enable;
+			_Machine.Update();
+			return Enable;
 		}
 
 		void IBootable.Launch()
 		{
-			this._Command.Register("Quit", this._ToShutdown);
-			this._ToSelectMode();
+			_Command.Register("Quit", _ToShutdown);
+			_ToSelectMode();
 		}
 
 		void IBootable.Shutdown()
 		{
-			this._ToShutdown();
+			_ToShutdown();
 		}
-
-		public delegate void OnModeSelector(GameModeSelector<TUser> selector);
 
 		private void _ToSelectMode()
 		{
-			var stage = new SelectMode<TUser>(this.Selector, this._Command);
-			stage.DoneEvent += this._ToOnBoard;
+			var stage = new SelectMode<TUser>(Selector, _Command);
+			stage.DoneEvent += _ToOnBoard;
 			stage.InitialedEvent += () =>
 			{
-				if (this.ModeSelectorEvent != null)
+				if(ModeSelectorEvent != null)
 				{
-					this.ModeSelectorEvent(this.Selector);
+					ModeSelectorEvent(Selector);
 				}
 			};
-			this._Machine.Push(stage);
+			_Machine.Push(stage);
 		}
 
 		private void _ToOnBoard(UserProvider<TUser> user_provider)
 		{
-			this._View.WriteLine("Onboard ready.");
-			var stage = new OnBoard<TUser>(user_provider, this._Command);
-			stage.DoneEvent += this._ToShutdown;
-			this._Machine.Push(stage);
+			_View.WriteLine("Onboard ready.");
+			var stage = new OnBoard<TUser>(user_provider, _Command);
+			stage.DoneEvent += _ToShutdown;
+			_Machine.Push(stage);
 		}
 
 		private void _ToShutdown()
 		{
-			this.Enable = false;
-			this._Machine.Termination();
-			this._Command.Unregister("Quit");
+			Enable = false;
+			_Machine.Termination();
+			_Command.Unregister("Quit");
 		}
 	}
-
 
 	namespace Extension
 	{

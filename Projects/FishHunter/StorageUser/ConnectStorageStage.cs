@@ -1,24 +1,13 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ConnectStorageStage.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the ConnectStorageStage type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Remoting;
+﻿using Regulus.Remoting;
 using Regulus.Utility;
-
-#endregion
 
 namespace VGame.Project.FishHunter.Storage
 {
 	public class ConnectStorageStage : IStage
 	{
-		public event DoneCallback DoneEvent;
+		public delegate void DoneCallback(bool result);
+
+		public event DoneCallback OnDoneEvent;
 
 		private readonly string _IpAddress;
 
@@ -29,31 +18,29 @@ namespace VGame.Project.FishHunter.Storage
 		public ConnectStorageStage(IUser user, string ipaddress, int port)
 		{
 			// TODO: Complete member initialization
-			this._User = user;
-			this._IpAddress = ipaddress;
-			this._Port = port;
+			_User = user;
+			_IpAddress = ipaddress;
+			_Port = port;
 		}
 
 		void IStage.Enter()
 		{
-			this._User.Remoting.ConnectProvider.Supply += this._Connect;
+			_User.Remoting.ConnectProvider.Supply += _Connect;
 		}
 
 		void IStage.Leave()
 		{
-			this._User.Remoting.ConnectProvider.Supply -= this._Connect;
+			_User.Remoting.ConnectProvider.Supply -= _Connect;
 		}
 
 		void IStage.Update()
 		{
 		}
 
-		public delegate void DoneCallback(bool result);
-
 		private void _Connect(IConnect obj)
 		{
-			var result = obj.Connect(this._IpAddress, this._Port);
-			result.OnValue += val => { this.DoneEvent(val); };
+			var result = obj.Connect(_IpAddress, _Port);
+			result.OnValue += val => { OnDoneEvent(val); };
 		}
 	}
 }

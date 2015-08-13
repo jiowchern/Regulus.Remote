@@ -1,5 +1,4 @@
-﻿
-using Regulus.Collection;
+﻿using Regulus.Collection;
 using Regulus.Remoting;
 using Regulus.Utility;
 
@@ -43,7 +42,7 @@ namespace VGame.Project.FishHunter.Formula
 		{
 			_Updater.Working();
 
-			foreach (var binder in _Binders.DequeueAll())
+			foreach(var binder in _Binders.DequeueAll())
 			{
 				_Core.AssignBinder(binder);
 			}

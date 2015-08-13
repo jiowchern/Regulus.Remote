@@ -1,42 +1,14 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AgentOnlineStage.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Agent type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 
-using Regulus.Utility;
 
-#endregion
+using Regulus.Utility;
 
 namespace Regulus.Remoting.Ghost.Native
 {
 	public partial class Agent
 	{
-		/// <summary>
-		///     請求的封包
-		/// </summary>
-		public static int RequestPackages
-		{
-			get { return OnlineStage.RequestQueueCount; }
-		}
-
-		/// <summary>
-		///     回應的封包
-		/// </summary>
-		public static int ResponsePackages
-		{
-			get { return OnlineStage.ResponseQueueCount; }
-		}
-
 		private class OnlineStage : IStage, IGhostRequest
 		{
 			public event Action DoneFromServerEvent;
@@ -67,7 +39,7 @@ namespace Regulus.Remoting.Ghost.Native
 
 			public OnlineStage(Socket socket, AgentCore core)
 			{
-				this._Core = core;
+				_Core = core;
 
 				_Socket = socket;
 				_Reader = new PackageReader();
@@ -78,13 +50,14 @@ namespace Regulus.Remoting.Ghost.Native
 
 			void IGhostRequest.Request(byte code, Dictionary<byte, byte[]> args)
 			{
-				lock (OnlineStage._LockRequest)
+				lock(OnlineStage._LockRequest)
 				{
-					_Sends.Enqueue(new Package
-					{
-						Args = args, 
-						Code = code
-					});
+					_Sends.Enqueue(
+						new Package
+						{
+							Args = args, 
+							Code = code
+						});
 					OnlineStage.RequestQueueCount++;
 				}
 			}
@@ -93,8 +66,11 @@ namespace Regulus.Remoting.Ghost.Native
 			{
 				Singleton<Log>.Instance.WriteInfo("Agent online enter.");
 
-				Singleton<Log>.Instance.WriteInfo(string.Format("Agent Socket Local {0} Remot {1}.", this._Socket.LocalEndPoint, 
-					this._Socket.RemoteEndPoint));
+				Singleton<Log>.Instance.WriteInfo(
+					string.Format(
+						"Agent Socket Local {0} Remot {1}.", 
+						_Socket.LocalEndPoint, 
+						_Socket.RemoteEndPoint));
 				_Core.Initial(this);
 				_Enable = true;
 				_ReaderStart();
@@ -106,9 +82,9 @@ namespace Regulus.Remoting.Ghost.Native
 				_WriterStop();
 				_ReaderStop();
 
-				if (_Socket != null)
+				if(_Socket != null)
 				{
-					if (_Socket.Connected)
+					if(_Socket.Connected)
 					{
 						_Socket.Shutdown(SocketShutdown.Both);
 					}
@@ -123,7 +99,7 @@ namespace Regulus.Remoting.Ghost.Native
 
 			void IStage.Update()
 			{
-				if (_Enable == false)
+				if(_Enable == false)
 				{
 					DoneFromServerEvent();
 				}
@@ -135,7 +111,7 @@ namespace Regulus.Remoting.Ghost.Native
 
 			private void _ReceivePackage(Package package)
 			{
-				lock (OnlineStage._LockResponse)
+				lock(OnlineStage._LockResponse)
 				{
 					_Receives.Enqueue(package);
 					OnlineStage.ResponseQueueCount++;
@@ -144,12 +120,12 @@ namespace Regulus.Remoting.Ghost.Native
 
 			private void _Process(AgentCore core)
 			{
-				lock (OnlineStage._LockResponse)
+				lock(OnlineStage._LockResponse)
 				{
 					var pkgs = _Receives.DequeueAll();
 					OnlineStage.ResponseQueueCount -= pkgs.Length;
 
-					foreach (var pkg in pkgs)
+					foreach(var pkg in pkgs)
 					{
 						core.OnResponse(pkg.Code, pkg.Args);
 					}
@@ -172,7 +148,7 @@ namespace Regulus.Remoting.Ghost.Native
 
 			private Package[] _SendsPop()
 			{
-				lock (OnlineStage._LockRequest)
+				lock(OnlineStage._LockRequest)
 				{
 					var pkg = _Sends.DequeueAll();
 					OnlineStage.RequestQueueCount -= pkg.Length;
@@ -199,6 +175,22 @@ namespace Regulus.Remoting.Ghost.Native
 				_Reader.ErrorEvent -= _Disable;
 				_Reader.Stop();
 			}
+		}
+
+		/// <summary>
+		///     請求的封包
+		/// </summary>
+		public static int RequestPackages
+		{
+			get { return OnlineStage.RequestQueueCount; }
+		}
+
+		/// <summary>
+		///     回應的封包
+		/// </summary>
+		public static int ResponsePackages
+		{
+			get { return OnlineStage.ResponseQueueCount; }
 		}
 	}
 }

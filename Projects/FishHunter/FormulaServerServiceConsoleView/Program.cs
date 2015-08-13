@@ -1,19 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Program.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Program type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using FormulaServerServiceConsoleView.Service_References.FormulaServiceReference;
 
-#region Test_Region
-
-using FormulaServerServiceConsoleView.Service_References.FormulaServiceReference;
 
 using Regulus.Utility;
-
-#endregion
 
 namespace FormulaServerServiceConsoleView
 {
@@ -29,7 +17,7 @@ namespace FormulaServerServiceConsoleView
 			console.Command.Register("quit", () => enable = false);
 			console.Command.Register("CoreFPS", Program._CoreFPS);
 
-			while (enable)
+			while(enable)
 			{
 				input.Update();
 			}

@@ -3,7 +3,6 @@
 	As a math 賭注分配公式
 	I want to be 根據公式得到5個押分區間(最小~最大)
 
-@mytag
 
 Background: 
 Given buffer資料是

@@ -1,13 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CallTester.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the CallTester type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-namespace RemotingTest
+﻿namespace RemotingTest
 {
 	internal class CallTester
 	{

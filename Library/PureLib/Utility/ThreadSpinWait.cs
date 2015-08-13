@@ -1,19 +1,6 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ThreadSpinWait.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the SpinWait type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading;
-
-#endregion
 
 namespace Regulus.Utility
 {
@@ -40,7 +27,7 @@ namespace Regulus.Utility
 		{
 			get
 			{
-				if (this.Count <= SpinWait.YIELD_THRESHOLD)
+				if(Count <= SpinWait.YIELD_THRESHOLD)
 				{
 					return SpinWait.ProcessorCount == 1;
 				}
@@ -52,36 +39,36 @@ namespace Regulus.Utility
 		/// <summary>执行单一自旋。</summary>
 		public void SpinOnce()
 		{
-			if (this.NextSpinWillYield)
+			if(NextSpinWillYield)
 			{
-				var num = (this.Count >= SpinWait.YIELD_THRESHOLD)
-					? (this.Count - SpinWait.YIELD_THRESHOLD)
-					: this.Count;
-				if (num % SpinWait.SLEEP_1_EVERY_HOW_MANY_TIMES == SpinWait.SLEEP_1_EVERY_HOW_MANY_TIMES - 1)
+				var num = (Count >= SpinWait.YIELD_THRESHOLD)
+					          ? (Count - SpinWait.YIELD_THRESHOLD)
+					          : Count;
+				if(num % SpinWait.SLEEP_1_EVERY_HOW_MANY_TIMES == SpinWait.SLEEP_1_EVERY_HOW_MANY_TIMES - 1)
 				{
 					Thread.Sleep(1);
 				}
-				else if (num % SpinWait.SLEEP_0_EVERY_HOW_MANY_TIMES == SpinWait.SLEEP_0_EVERY_HOW_MANY_TIMES - 1)
+				else if(num % SpinWait.SLEEP_0_EVERY_HOW_MANY_TIMES == SpinWait.SLEEP_0_EVERY_HOW_MANY_TIMES - 1)
 				{
 					Thread.Sleep(0);
 				}
-				else if (SpinWait.IsWindows)
+				else if(SpinWait.IsWindows)
 				{
 					SpinWait.SwitchToThread();
 				}
 				else
 				{
-					this.Reset();
+					Reset();
 				}
 			}
 			else
 			{
-				Thread.SpinWait(SpinWait.SLEEP_0_EVERY_HOW_MANY_TIMES - 1 << this.Count);
+				Thread.SpinWait(SpinWait.SLEEP_0_EVERY_HOW_MANY_TIMES - 1 << Count);
 			}
 
-			this.Count = (this.Count == int.MaxValue)
-				? SpinWait.YIELD_THRESHOLD
-				: (this.Count + 1);
+			Count = (Count == int.MaxValue)
+				        ? SpinWait.YIELD_THRESHOLD
+				        : (Count + 1);
 		}
 
 		[DllImport("Kernel32.dll")]
@@ -90,7 +77,7 @@ namespace Regulus.Utility
 		/// <summary>重置自旋计数器。</summary>
 		public void Reset()
 		{
-			this.Count = 0;
+			Count = 0;
 		}
 
 		/// <summary>在指定条件得到满足之前自旋。</summary>
@@ -113,7 +100,7 @@ namespace Regulus.Utility
 		public static bool SpinUntil(Func<bool> condition, TimeSpan timeout)
 		{
 			var totalMilliseconds = (long)timeout.TotalMilliseconds;
-			if (totalMilliseconds < -1 || totalMilliseconds > int.MaxValue)
+			if(totalMilliseconds < -1 || totalMilliseconds > int.MaxValue)
 			{
 				throw new ArgumentOutOfRangeException("timeout");
 			}
@@ -132,33 +119,33 @@ namespace Regulus.Utility
 		/// </exception>
 		public static bool SpinUntil(Func<bool> condition, int millisecondsTimeout)
 		{
-			if (millisecondsTimeout < -1)
+			if(millisecondsTimeout < -1)
 			{
 				throw new ArgumentOutOfRangeException("millisecondsTimeout");
 			}
 
-			if (condition == null)
+			if(condition == null)
 			{
 				throw new ArgumentNullException("condition");
 			}
 
 			long ticks = 0;
-			if (millisecondsTimeout != 0 && millisecondsTimeout != -1)
+			if(millisecondsTimeout != 0 && millisecondsTimeout != -1)
 			{
 				ticks = DateTime.UtcNow.Ticks;
 			}
 
 			var wait = new SpinWait();
-			while (!condition())
+			while(!condition())
 			{
-				if (millisecondsTimeout == 0)
+				if(millisecondsTimeout == 0)
 				{
 					return false;
 				}
 
 				wait.SpinOnce();
-				if (millisecondsTimeout != -1 && wait.NextSpinWillYield
-				    && millisecondsTimeout <= (DateTime.UtcNow.Ticks - ticks) / 10000)
+				if(millisecondsTimeout != -1 && wait.NextSpinWillYield
+				   && millisecondsTimeout <= (DateTime.UtcNow.Ticks - ticks) / 10000)
 				{
 					return false;
 				}

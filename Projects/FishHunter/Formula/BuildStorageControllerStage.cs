@@ -1,21 +1,8 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="BuildStorageControllerStage.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the BuildStorageControllerStage type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
+﻿
 using Regulus.Utility;
 
-using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.GPI;
 using VGame.Project.FishHunter.Storage;
-
-#endregion
 
 namespace VGame.Project.FishHunter.Formula
 {
@@ -31,7 +18,9 @@ namespace VGame.Project.FishHunter.Formula
 
 		private IAccountFinder _Finder;
 
-		private IFishStageDataHandler _StageDataHandler;
+		private IFormulaStageDataRecorder _FormulaStageDataRecorder;
+
+		private IFormulaPlayerRecorder _FormulaPlayerRecorder;
 
 		public BuildStorageControllerStage(IUser user)
 		{
@@ -43,24 +32,6 @@ namespace VGame.Project.FishHunter.Formula
 			_User.QueryProvider<IAccountFinder>().Supply += _GetFinder;
 		}
 
-		private void _GetFinder(IAccountFinder obj)
-		{
-			_User.QueryProvider<IAccountFinder>().Supply -= _GetFinder;
-			
-			_Finder = obj;
-			
-			_User.QueryProvider<IFishStageDataHandler>().Supply += _GetFishDataLoader;
-		}
-
-		private void _GetFishDataLoader(IFishStageDataHandler obj)
-		{
-			_User.QueryProvider<IFishStageDataHandler>().Supply -= _GetFishDataLoader;
-			
-			_StageDataHandler = obj;
-			
-			_Finish();
-		}
-
 		void IStage.Leave()
 		{
 		}
@@ -69,9 +40,34 @@ namespace VGame.Project.FishHunter.Formula
 		{
 		}
 
+		private void _GetFinder(IAccountFinder obj)
+		{
+			_User.QueryProvider<IAccountFinder>().Supply -= _GetFinder;
+
+			_Finder = obj;
+
+			_User.QueryProvider<IFormulaStageDataRecorder>().Supply += _GetFishDataLoader;
+		}
+
+		private void _GetFishDataLoader(IFormulaStageDataRecorder obj)
+		{
+			_User.QueryProvider<IFormulaStageDataRecorder>().Supply -= _GetFishDataLoader;
+
+			_FormulaStageDataRecorder = obj;
+
+			_User.QueryProvider<IFormulaPlayerRecorder>().Supply += _GetRecorder;
+		}
+
+		private void _GetRecorder(IFormulaPlayerRecorder obj)
+		{
+			_FormulaPlayerRecorder = obj;
+			_User.QueryProvider<IFormulaPlayerRecorder>().Supply -= _GetRecorder;
+			_Finish();
+		}
+
 		private void _Finish()
 		{
-			_ExpansionFeature = new ExpansionFeature(_Finder, _StageDataHandler);
+			_ExpansionFeature = new ExpansionFeature(_Finder, _FormulaStageDataRecorder, _FormulaPlayerRecorder);
 
 			OnDoneEvent(_ExpansionFeature);
 		}

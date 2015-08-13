@@ -1,19 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Rect.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Rect type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System;
 
-#region Test_Region
-
-using System;
 
 using ProtoBuf;
-
-#endregion
 
 namespace Regulus.CustomType
 {
@@ -29,82 +17,82 @@ namespace Regulus.CustomType
 
 		public float Width
 		{
-			get { return this._Size.Width; }
-			set { this._Size.Width = value; }
+			get { return _Size.Width; }
+			set { _Size.Width = value; }
 		}
 
 		public float Height
 		{
-			get { return this._Size.Height; }
-			set { this._Size.Height = value; }
+			get { return _Size.Height; }
+			set { _Size.Height = value; }
 		}
 
 		public float X
 		{
-			get { return this.Location.X; }
-			set { this.Location.X = value; }
+			get { return Location.X; }
+			set { Location.X = value; }
 		}
 
 		public float Y
 		{
-			get { return this.Location.Y; }
-			set { this.Location.Y = value; }
+			get { return Location.Y; }
+			set { Location.Y = value; }
 		}
 
 		public float Left
 		{
-			get { return this.Location.X; }
-			set { this.Location.X = value; }
+			get { return Location.X; }
+			set { Location.X = value; }
 		}
 
 		public float Top
 		{
-			get { return this.Location.Y; }
-			set { this.Location.Y = value; }
+			get { return Location.Y; }
+			set { Location.Y = value; }
 		}
 
 		public float Right
 		{
-			get { return this.Location.X + this._Size.Width; }
-			set { this._Size.Width = value - this.Location.X; }
+			get { return Location.X + _Size.Width; }
+			set { _Size.Width = value - Location.X; }
 		}
 
 		public float Bottom
 		{
-			get { return this.Location.Y + this._Size.Height; }
-			set { this._Size.Height = value - this.Location.Y; }
+			get { return Location.Y + _Size.Height; }
+			set { _Size.Height = value - Location.Y; }
 		}
 
 		public Rect(Point rootOrigin, Size rootSize)
 		{
 			// TODO: Complete member initialization
-			this.Location = rootOrigin;
-			this._Size = rootSize;
+			Location = rootOrigin;
+			_Size = rootSize;
 		}
 
 		public Rect(float x, float y, float w, float h)
 		{
 			// TODO: Complete member initialization
-			this.Location.X = x;
-			this.Location.Y = y;
-			this._Size.Width = w;
-			this._Size.Height = h;
+			Location.X = x;
+			Location.Y = y;
+			_Size.Width = w;
+			_Size.Height = h;
 		}
 
 		public bool Contains(Rect rect)
 		{
-			return this.X <= rect.X &&
-			        this.Y <= rect.Y &&
-			        this.X + this.Width >= rect.X + rect.Width &&
-			        this.Y + this.Height >= rect.Y + rect.Height;
+			return X <= rect.X &&
+			       Y <= rect.Y &&
+			       X + Width >= rect.X + rect.Width &&
+			       Y + Height >= rect.Y + rect.Height;
 		}
 
 		public bool IntersectsWith(Rect rect)
 		{
-			return (rect.Left <= this.Right) &&
-			       (rect.Right >= this.Left) &&
-			       (rect.Top <= this.Bottom) &&
-			       (rect.Bottom >= this.Top);
+			return (rect.Left <= Right) &&
+			       (rect.Right >= Left) &&
+			       (rect.Top <= Bottom) &&
+			       (rect.Bottom >= Top);
 		}
 	}
 }

@@ -10,9 +10,9 @@ namespace VGame.Project.FishHunter.Common.Data
 	{
 		public enum SIZE_TYPE
 		{
-			SMALL,
+			SMALL, 
 
-			MEDIUM,
+			MEDIUM, 
 
 			LARGE
 		}
@@ -42,14 +42,14 @@ namespace VGame.Project.FishHunter.Common.Data
 			BufferDatas = new List<StageBuffer>();
 			RecordData = new StageRecord(StageId);
 
-			foreach (var i in EnumHelper.GetEnums<StageBuffer.BUFFER_BLOCK>())
+			foreach(var i in EnumHelper.GetEnums<StageBuffer.BUFFER_BLOCK>())
 			{
-				foreach (var j in EnumHelper.GetEnums<StageBuffer.BUFFER_TYPE>())
+				foreach(var j in EnumHelper.GetEnums<StageBuffer.BUFFER_TYPE>())
 				{
 					BufferDatas.Add(
 						new StageBuffer
 						{
-							BufferBlock = i,
+							BufferBlock = i, 
 							BufferType = j
 						});
 				}

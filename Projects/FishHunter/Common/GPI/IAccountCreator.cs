@@ -1,9 +1,12 @@
-﻿using VGame.Project.FishHunter.Common.Data;
+﻿using Regulus.Remoting;
+
+
+using VGame.Project.FishHunter.Common.Data;
 
 namespace VGame.Project.FishHunter.Common.GPI
 {
-    public interface IAccountCreator
-    {
-        Regulus.Remoting.Value<ACCOUNT_REQUEST_RESULT> Create(Account account);
-    }
+	public interface IAccountCreator
+	{
+		Value<ACCOUNT_REQUEST_RESULT> Create(Account account);
+	}
 }

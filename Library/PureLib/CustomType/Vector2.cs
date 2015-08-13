@@ -1,19 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Vector2.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Vector2 type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System;
 
-#region Test_Region
-
-using System;
 
 using ProtoBuf;
-
-#endregion
 
 namespace Regulus.CustomType
 {
@@ -29,7 +17,7 @@ namespace Regulus.CustomType
 
 		public float Magnitude
 		{
-			get { return (float)Math.Sqrt(this.X * this.X + this.Y * this.Y); }
+			get { return (float)Math.Sqrt(X * X + Y * Y); }
 		}
 
 		public Vector2()
@@ -38,8 +26,8 @@ namespace Regulus.CustomType
 
 		public Vector2(float x, float y)
 		{
-			this.X = x;
-			this.Y = y;
+			X = x;
+			Y = y;
 		}
 
 		public static Vector2 FromPoint(Point p)
@@ -54,26 +42,26 @@ namespace Regulus.CustomType
 
 		public void Normalize()
 		{
-			var magnitude = this.Magnitude;
-			this.X = this.X / magnitude;
-			this.Y = this.Y / magnitude;
+			var magnitude = Magnitude;
+			X = X / magnitude;
+			Y = Y / magnitude;
 		}
 
 		public Vector2 GetNormalized()
 		{
-			var magnitude = this.Magnitude;
+			var magnitude = Magnitude;
 
-			return new Vector2(this.X / magnitude, this.Y / magnitude);
+			return new Vector2(X / magnitude, Y / magnitude);
 		}
 
 		public float DotProduct(Vector2 vector)
 		{
-			return this.X * vector.X + this.Y * vector.Y;
+			return X * vector.X + Y * vector.Y;
 		}
 
 		public float DistanceTo(Vector2 vector)
 		{
-			return (float)Math.Sqrt(Math.Pow(vector.X - this.X, 2) + Math.Pow(vector.Y - this.Y, 2));
+			return (float)Math.Sqrt(Math.Pow(vector.X - X, 2) + Math.Pow(vector.Y - Y, 2));
 		}
 
 		public static implicit operator Point(Vector2 p)
@@ -115,17 +103,17 @@ namespace Regulus.CustomType
 		{
 			var v = (Vector2)obj;
 
-			return this.X == v.X && this.Y == v.Y;
+			return X == v.X && Y == v.Y;
 		}
 
 		public bool Equals(Vector2 v)
 		{
-			return this.X == v.X && this.Y == v.Y;
+			return X == v.X && Y == v.Y;
 		}
 
 		public override int GetHashCode()
 		{
-			return this.X.GetHashCode() ^ this.Y.GetHashCode();
+			return X.GetHashCode() ^ Y.GetHashCode();
 		}
 
 		public static bool operator ==(Vector2 a, Vector2 b)
@@ -140,17 +128,17 @@ namespace Regulus.CustomType
 
 		public override string ToString()
 		{
-			return this.X + ", " + this.Y;
+			return X + ", " + Y;
 		}
 
 		public string ToString(bool rounded)
 		{
-			if (rounded)
+			if(rounded)
 			{
-				return (int)Math.Round(this.X) + ", " + (int)Math.Round(this.Y);
+				return (int)Math.Round(X) + ", " + (int)Math.Round(Y);
 			}
 
-			return this.ToString();
+			return ToString();
 		}
 	}
 }

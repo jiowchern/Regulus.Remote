@@ -1,5 +1,5 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+
 
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
@@ -15,7 +15,7 @@ namespace VGame.Project.FishHunter.Formula
 			_Gpi = gpi;
 		}
 
-		internal void Conver(short wepbet, short totalhits, short fishodds)
+		internal void Conver(int wepbet, int totalhits, int fishodds)
 		{
 			var weaponData = new RequestWeaponData
 			{

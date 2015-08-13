@@ -1,26 +1,16 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Verify.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the UnitTest1 type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-#region Test_Region
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using NSubstitute;
 
+
 using Regulus.Remoting;
+
 
 using VGame.Project.FishHunter;
 using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
-
-#endregion
 
 namespace UnitTest
 {
@@ -34,11 +24,13 @@ namespace UnitTest
 			var id = "12345678";
 			var pw = "0000";
 			var stroage = Substitute.For<IAccountFinder>();
-			stroage.FindAccountByName(id).Returns(new Value<Account>(new Account
-			{
-				Name = id, 
-				Password = pw
-			}));
+			stroage.FindAccountByName(id).Returns(
+				new Value<Account>(
+					new Account
+					{
+						Name = id, 
+						Password = pw
+					}));
 
 			var returnValue = false;
 			var eventValue = false;
@@ -64,11 +56,13 @@ namespace UnitTest
 			var id = "12345678";
 			var pw = "0000";
 			var stroage = Substitute.For<IAccountFinder>();
-			stroage.FindAccountByName(id).Returns(new Value<Account>(new Account
-			{
-				Name = id, 
-				Password = pw
-			}));
+			stroage.FindAccountByName(id).Returns(
+				new Value<Account>(
+					new Account
+					{
+						Name = id, 
+						Password = pw
+					}));
 
 			var returnValue = false;
 			var eventValue = false;

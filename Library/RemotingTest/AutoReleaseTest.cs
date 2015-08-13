@@ -1,24 +1,14 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AutoReleaseTest.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the AutoReleaseTest type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Collections.Generic;
+
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+
 using NSubstitute;
 
-using Regulus.Remoting;
 
-#endregion
+using Regulus.Remoting;
 
 namespace RemotingTest
 {

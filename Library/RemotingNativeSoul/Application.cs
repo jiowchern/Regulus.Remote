@@ -1,17 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Application.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Application type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Utility;
-
-#endregion
+﻿using Regulus.Utility;
 
 namespace Regulus.Remoting.Soul.Native
 {
@@ -25,43 +12,43 @@ namespace Regulus.Remoting.Soul.Native
 
 		protected override void _Launch()
 		{
-			this._SpinWait = new SpinWait();
-			this._TimeCounter = new TimeCounter();
-			this._Machine = new StageMachine();
-			this._ToStart();
+			_SpinWait = new SpinWait();
+			_TimeCounter = new TimeCounter();
+			_Machine = new StageMachine();
+			_ToStart();
 		}
 
 		protected override void _Update()
 		{
-			if (this._TimeCounter.Second > 1.0f / 30.0f)
+			if(_TimeCounter.Second > 1.0f / 30.0f)
 			{
-				this._Machine.Update();
-				this._TimeCounter.Reset();
-				this._SpinWait.Reset();
+				_Machine.Update();
+				_TimeCounter.Reset();
+				_SpinWait.Reset();
 			}
 			else
 			{
-				this._SpinWait.SpinOnce();
+				_SpinWait.SpinOnce();
 			}
 		}
 
 		protected override void _Shutdown()
 		{
-			this._Machine.Termination();
+			_Machine.Termination();
 		}
 
 		private void _ToStart()
 		{
-			var stage = new StageStart(this.Command, this.Viewer);
-			stage.DoneEvent += this._ToRun;
-			this._Machine.Push(stage);
+			var stage = new StageStart(Command, Viewer);
+			stage.DoneEvent += _ToRun;
+			_Machine.Push(stage);
 		}
 
 		private void _ToRun(ICore core, int port, float timeout)
 		{
-			var stage = new StageRun(core, this.Command, port, this.Viewer);
-			stage.ShutdownEvent += this._ToStart;
-			this._Machine.Push(stage);
+			var stage = new StageRun(core, Command, port, Viewer);
+			stage.ShutdownEvent += _ToStart;
+			_Machine.Push(stage);
 		}
 	}
 }

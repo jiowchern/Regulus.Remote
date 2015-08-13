@@ -1,11 +1,11 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
 
 using Regulus.Remoting;
 using Regulus.Utility;
+
 
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
@@ -14,6 +14,10 @@ namespace VGame.Project.FishHunter.Play
 {
 	internal class PlayStage : IPlayer, IStage
 	{
+		public delegate void KillCallback(int kill_count);
+
+		public delegate void PassCallback(int pass_stage);
+
 		private event Action<int> _DeathFishEvent;
 
 		private event Action<int> _MoneyEvent;
@@ -30,7 +34,7 @@ namespace VGame.Project.FishHunter.Play
 
 		private readonly IFishStage _FishStage;
 
-		private readonly PlayerRecord _Money;
+		private readonly GamePlayerRecord _Money;
 
 		private readonly Dictionary<int, HitRequest> _Requests;
 
@@ -42,7 +46,7 @@ namespace VGame.Project.FishHunter.Play
 
 		private WEAPON_TYPE _WeaponType;
 
-		public PlayStage(ISoulBinder binder, IFishStage fish_stage, PlayerRecord money)
+		public PlayStage(ISoulBinder binder, IFishStage fish_stage, GamePlayerRecord money)
 		{
 			_Fishs = new List<Fish>();
 			_Bullets = new List<Bullet>();
@@ -187,21 +191,28 @@ namespace VGame.Project.FishHunter.Play
 		{
 			_Binder.Bind<IPlayer>(this);
 			_FishStage.OnHitResponseEvent += _Response;
+			_FishStage.OnTotalHitResponseEvent += _FishStage_OnTotalHitResponseEvent;
+		}
+
+		void _FishStage_OnTotalHitResponseEvent(HitResponse[] hit_responses)
+		{
+			foreach(var hit in hit_responses)
+			{
+				_Response(hit);
+			}
+			
 		}
 
 		void IStage.Leave()
 		{
 			_FishStage.OnHitResponseEvent -= _Response;
+			_FishStage.OnTotalHitResponseEvent -= _FishStage_OnTotalHitResponseEvent;
 			_Binder.Unbind<IPlayer>(this);
 		}
 
 		void IStage.Update()
 		{
 		}
-
-		public delegate void PassCallback(int pass_stage);
-
-		public delegate void KillCallback(int kill_count);
 
 		private void _Response(HitResponse obj)
 		{

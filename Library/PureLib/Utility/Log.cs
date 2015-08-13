@@ -1,26 +1,15 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Log.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Log type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
-
-#endregion
+﻿using System;
 
 namespace Regulus.Utility
 {
 	public sealed class Log : Singleton<Log>
 	{
+		public delegate void RecordCallback(string message);
+
 		public event RecordCallback RecordEvent
 		{
-			add { this._AsyncRecord += value; }
-			remove { this._AsyncRecord -= value; }
+			add { _AsyncRecord += value; }
+			remove { _AsyncRecord -= value; }
 		}
 
 		private readonly AsyncExecuter _Executer;
@@ -29,11 +18,9 @@ namespace Regulus.Utility
 
 		public Log()
 		{
-			this._AsyncRecord = this._EmptyRecord;
-			this._Executer = new AsyncExecuter();
+			_AsyncRecord = _EmptyRecord;
+			_Executer = new AsyncExecuter();
 		}
-
-		public delegate void RecordCallback(string message);
 
 		private void _EmptyRecord(string message)
 		{
@@ -41,17 +28,17 @@ namespace Regulus.Utility
 
 		private void _Write(string message)
 		{
-			this._Executer.Push(new LogWritter(message, this._AsyncRecord).Write);
+			_Executer.Push(new LogWritter(message, _AsyncRecord).Write);
 		}
 
 		public void WriteInfo(string message)
 		{
-			this._Write(string.Format("[Info]{0}", message));
+			_Write(string.Format("[Info]{0}", message));
 		}
 
 		public void WriteDebug(string message)
 		{
-			this._Write(string.Format("[Debug]{0}\r\n{1}", message, Environment.StackTrace));
+			_Write(string.Format("[Debug]{0}\r\n{1}", message, Environment.StackTrace));
 		}
 	}
 }

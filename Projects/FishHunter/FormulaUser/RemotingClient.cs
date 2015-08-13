@@ -1,18 +1,5 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="RemotingClient.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the DummyInputView type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Framework;
+﻿using Regulus.Framework;
 using Regulus.Utility;
-
-#endregion
 
 namespace VGame.Project.FishHunter.Formula
 {
@@ -35,6 +22,8 @@ namespace VGame.Project.FishHunter.Formula
 
 	public class RemotingClient : Client
 	{
+		public delegate void UserCallback(IUser user);
+
 		public event UserCallback UserEvent;
 
 		private RemotingClient(Console.IInput input, Console.IViewer view)
@@ -42,8 +31,6 @@ namespace VGame.Project.FishHunter.Formula
 		{
 			ModeSelectorEvent += RemotingClient_ModeSelectorEvent;
 		}
-
-		public delegate void UserCallback(IUser user);
 
 		private void RemotingClient_ModeSelectorEvent(GameModeSelector<IUser> selector)
 		{
@@ -53,7 +40,7 @@ namespace VGame.Project.FishHunter.Formula
 
 			var user = provider.Spawn("1");
 			provider.Select("1");
-			if (UserEvent != null)
+			if(UserEvent != null)
 			{
 				UserEvent(user);
 			}

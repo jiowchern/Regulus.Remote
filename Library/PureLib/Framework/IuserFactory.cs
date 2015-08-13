@@ -1,17 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IuserFactory.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the IUserFactoty type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Utility;
-
-#endregion
+﻿using Regulus.Utility;
 
 namespace Regulus.Framework
 {

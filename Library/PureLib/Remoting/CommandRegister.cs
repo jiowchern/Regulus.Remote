@@ -1,28 +1,20 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CommandRegister.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the CommandRegister type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 
+
 using Regulus.Remoting.Extension;
 using Regulus.Utility;
-
-#endregion
 
 namespace Regulus.Remoting
 {
 	internal abstract class CommandRegister
 	{
+		protected class RegisterData : CommandParam
+		{
+		}
+
 		private readonly Command _Command;
 
 		private readonly string[] _ParamNames;
@@ -31,19 +23,15 @@ namespace Regulus.Remoting
 
 		protected CommandRegister(string name, string[] param_names, Command command)
 		{
-			this._ParamNames = param_names;
-			this._Command = command;
-			this.Name = name;
-		}
-
-		protected class RegisterData : CommandParam
-		{
+			_ParamNames = param_names;
+			_Command = command;
+			Name = name;
 		}
 
 		public void Register(object instance)
 		{
-			var data = this._RegisterAction(instance);
-			this._Command.Register(this._BuildName(this.Name, this._ParamNames), data);
+			var data = _RegisterAction(instance);
+			_Command.Register(_BuildName(Name, _ParamNames), data);
 		}
 
 		private string _BuildName(string _Name, string[] _ParamNames)
@@ -60,7 +48,7 @@ namespace Regulus.Remoting
 
 		public void Unregister()
 		{
-			this._Command.Unregister(new Command.Analysis(this.Name).Command);
+			_Command.Unregister(new Command.Analysis(Name).Command);
 		}
 	}
 
@@ -75,13 +63,13 @@ namespace Regulus.Remoting
 			Expression<Action<T>> exp)
 			: base(method_name, param_names, command)
 		{
-			this._Expression = exp;
+			_Expression = exp;
 		}
 
 		protected override RegisterData _RegisterAction(object instance)
 		{
-			var callback = this._Expression.Compile();
-			var paramTypes = this._GetTypes(this._Expression.Parameters);
+			var callback = _Expression.Compile();
+			var paramTypes = _GetTypes(_Expression.Parameters);
 
 			return new RegisterData
 			{
@@ -104,13 +92,13 @@ namespace Regulus.Remoting
 			Expression<Action<T, T1>> exp)
 			: base(method_name, param_names, command)
 		{
-			this._Expression = exp;
+			_Expression = exp;
 		}
 
 		protected override RegisterData _RegisterAction(object instance)
 		{
-			var callback = this._Expression.Compile();
-			var paramTypes = this._GetTypes(this._Expression.Parameters);
+			var callback = _Expression.Compile();
+			var paramTypes = _GetTypes(_Expression.Parameters);
 
 			return new RegisterData
 			{
@@ -133,13 +121,13 @@ namespace Regulus.Remoting
 			Expression<Action<T, T1, T2>> exp)
 			: base(method_name, param_names, command)
 		{
-			this._Expression = exp;
+			_Expression = exp;
 		}
 
 		protected override RegisterData _RegisterAction(object instance)
 		{
-			var callback = this._Expression.Compile();
-			var paramTypes = this._GetTypes(this._Expression.Parameters);
+			var callback = _Expression.Compile();
+			var paramTypes = _GetTypes(_Expression.Parameters);
 
 			return new RegisterData
 			{
@@ -162,13 +150,13 @@ namespace Regulus.Remoting
 			Expression<Action<T, T1, T2, T3>> exp)
 			: base(method_name, param_names, command)
 		{
-			this._Expression = exp;
+			_Expression = exp;
 		}
 
 		protected override RegisterData _RegisterAction(object instance)
 		{
-			var callback = this._Expression.Compile();
-			var paramTypes = this._GetTypes(this._Expression.Parameters);
+			var callback = _Expression.Compile();
+			var paramTypes = _GetTypes(_Expression.Parameters);
 
 			return new RegisterData
 			{
@@ -182,7 +170,6 @@ namespace Regulus.Remoting
 
 	public delegate void Callback<T, T1, T2, T3, T4>(T instance, T1 arg1, T2 arg2, T3 arg3, T4 arg4);
 
-
 	internal class CommandRegister<T, T1, T2, T3, T4> : CommandRegister
 	{
 		private readonly Expression<Callback<T, T1, T2, T3, T4>> _Expression;
@@ -194,13 +181,13 @@ namespace Regulus.Remoting
 			Expression<Callback<T, T1, T2, T3, T4>> exp)
 			: base(method_name, param_names, command)
 		{
-			this._Expression = exp;
+			_Expression = exp;
 		}
 
 		protected override RegisterData _RegisterAction(object instance)
 		{
-			var callback = this._Expression.Compile();
-			var paramTypes = this._GetTypes(this._Expression.Parameters);
+			var callback = _Expression.Compile();
+			var paramTypes = _GetTypes(_Expression.Parameters);
 
 			return new RegisterData
 			{
@@ -211,7 +198,6 @@ namespace Regulus.Remoting
 			};
 		}
 	}
-
 
 	internal class CommandRegisterReturn<T, TR> : CommandRegister
 	{
@@ -227,19 +213,19 @@ namespace Regulus.Remoting
 			Action<TR> return_callback)
 			: base(method_name, param_names, command)
 		{
-			this._ReturnCallback = return_callback;
-			this._Expression = exp;
+			_ReturnCallback = return_callback;
+			_Expression = exp;
 		}
 
 		protected override RegisterData _RegisterAction(object instance)
 		{
-			var callback = this._Expression.Compile();
-			var paramTypes = this._GetTypes(this._Expression.Parameters);
+			var callback = _Expression.Compile();
+			var paramTypes = _GetTypes(_Expression.Parameters);
 			return new RegisterData
 			{
 				Callback = new Func<TR>(() => { return callback((T)instance); }), 
-				Return = this._ReturnCallback, 
-				ReturnType = typeof (TR), 
+				Return = _ReturnCallback, 
+				ReturnType = typeof(TR), 
 				Types = paramTypes
 			};
 		}
@@ -259,19 +245,19 @@ namespace Regulus.Remoting
 			Action<TR> return_callback)
 			: base(method_name, param_names, command)
 		{
-			this._ReturnCallback = return_callback;
-			this._Expression = exp;
+			_ReturnCallback = return_callback;
+			_Expression = exp;
 		}
 
 		protected override RegisterData _RegisterAction(object instance)
 		{
-			var callback = this._Expression.Compile();
-			var paramTypes = this._GetTypes(this._Expression.Parameters);
+			var callback = _Expression.Compile();
+			var paramTypes = _GetTypes(_Expression.Parameters);
 			return new RegisterData
 			{
 				Callback = new Func<T1, TR>(t1 => { return callback((T)instance, t1); }), 
-				Return = this._ReturnCallback, 
-				ReturnType = typeof (TR), 
+				Return = _ReturnCallback, 
+				ReturnType = typeof(TR), 
 				Types = paramTypes
 			};
 		}
@@ -291,19 +277,19 @@ namespace Regulus.Remoting
 			Action<TR> return_callback)
 			: base(method_name, param_names, command)
 		{
-			this._ReturnCallback = return_callback;
-			this._Expression = exp;
+			_ReturnCallback = return_callback;
+			_Expression = exp;
 		}
 
 		protected override RegisterData _RegisterAction(object instance)
 		{
-			var callback = this._Expression.Compile();
-			var paramTypes = this._GetTypes(this._Expression.Parameters);
+			var callback = _Expression.Compile();
+			var paramTypes = _GetTypes(_Expression.Parameters);
 			return new RegisterData
 			{
 				Callback = new Func<T1, T2, TR>((t1, t2) => { return callback((T)instance, t1, t2); }), 
-				Return = this._ReturnCallback, 
-				ReturnType = typeof (TR), 
+				Return = _ReturnCallback, 
+				ReturnType = typeof(TR), 
 				Types = paramTypes
 			};
 		}
@@ -323,19 +309,19 @@ namespace Regulus.Remoting
 			Action<TR> return_callback)
 			: base(method_name, param_names, command)
 		{
-			this._ReturnCallback = return_callback;
-			this._Expression = exp;
+			_ReturnCallback = return_callback;
+			_Expression = exp;
 		}
 
 		protected override RegisterData _RegisterAction(object instance)
 		{
-			var callback = this._Expression.Compile();
-			var paramTypes = this._GetTypes(this._Expression.Parameters);
+			var callback = _Expression.Compile();
+			var paramTypes = _GetTypes(_Expression.Parameters);
 			return new RegisterData
 			{
 				Callback = new Func<T1, T2, T3, TR>((t1, t2, t3) => { return callback((T)instance, t1, t2, t3); }), 
-				Return = this._ReturnCallback, 
-				ReturnType = typeof (TR), 
+				Return = _ReturnCallback, 
+				ReturnType = typeof(TR), 
 				Types = paramTypes
 			};
 		}
@@ -357,19 +343,19 @@ namespace Regulus.Remoting
 			Action<TR> return_callback)
 			: base(method_name, param_names, command)
 		{
-			this._ReturnCallback = return_callback;
-			this._Expression = exp;
+			_ReturnCallback = return_callback;
+			_Expression = exp;
 		}
 
 		protected override RegisterData _RegisterAction(object instance)
 		{
-			var callback = this._Expression.Compile();
-			var paramTypes = this._GetTypes(this._Expression.Parameters);
+			var callback = _Expression.Compile();
+			var paramTypes = _GetTypes(_Expression.Parameters);
 			return new RegisterData
 			{
 				Callback = new Func<T1, T2, T3, T4, TR>((t1, t2, t3, t4) => { return callback((T)instance, t1, t2, t3, t4); }), 
-				Return = this._ReturnCallback, 
-				ReturnType = typeof (TR), 
+				Return = _ReturnCallback, 
+				ReturnType = typeof(TR), 
 				Types = paramTypes
 			};
 		}

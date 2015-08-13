@@ -1,23 +1,11 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Stream.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the SocketIOResult type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 
-using Regulus.Utility;
 
-#endregion
+using Regulus.Utility;
 
 namespace Regulus.Remoting
 {
@@ -46,7 +34,7 @@ namespace Regulus.Remoting
 
 			public WrittingStage(Socket socket, byte[] buffer)
 			{
-				this._Socket = socket;
+				_Socket = socket;
 				_Buffer = buffer;
 			}
 
@@ -57,7 +45,7 @@ namespace Regulus.Remoting
 					_Result = SocketIOResult.None;
 					_AsyncResult = _Socket.BeginSend(_Buffer, 0, _Buffer.Length, 0, _WriteCompletion, null);
 				}
-				catch (SocketException ex)
+				catch(SocketException ex)
 				{
 					Debug.WriteLine(ex.ToString() + ex.ErrorCode);
 					_Result = SocketIOResult.Break;
@@ -74,7 +62,7 @@ namespace Regulus.Remoting
 
 			void IStage.Update()
 			{
-				if (_Result != SocketIOResult.None)
+				if(_Result != SocketIOResult.None)
 				{
 					DoneEvent(_Result);
 				}
@@ -87,7 +75,7 @@ namespace Regulus.Remoting
 					_Socket.EndSend(ar);
 					_Result = SocketIOResult.Done;
 				}
-				catch (SocketException ex)
+				catch(SocketException ex)
 				{
 					Debug.WriteLine(ex.ToString() + ex.ErrorCode);
 					_Result = SocketIOResult.Break;
@@ -142,7 +130,7 @@ namespace Regulus.Remoting
 			var stage = new WrittingStage(_Socket, buffer);
 			stage.DoneEvent += result =>
 			{
-				if (result == SocketIOResult.Done)
+				if(result == SocketIOResult.Done)
 				{
 					_Done(buffer.Length);
 				}
@@ -159,9 +147,9 @@ namespace Regulus.Remoting
 		{
 			var buffers = from p in packages select TypeHelper.Serializer(p);
 
-			using (var stream = new MemoryStream())
+			using(var stream = new MemoryStream())
 			{
-				foreach (var buffer in buffers)
+				foreach(var buffer in buffers)
 				{
 					stream.Write(BitConverter.GetBytes(buffer.Length), 0, NetworkStreamWriteStage._HeadSize);
 					stream.Write(buffer, 0, buffer.Length);
@@ -177,7 +165,7 @@ namespace Regulus.Remoting
 			var stage = new WrittingStage(_Socket, header);
 			stage.DoneEvent += result =>
 			{
-				if (result == SocketIOResult.Done)
+				if(result == SocketIOResult.Done)
 				{
 					_ToBody(buffer);
 				}
@@ -195,7 +183,7 @@ namespace Regulus.Remoting
 			var stage = new WrittingStage(_Socket, buffer);
 			stage.DoneEvent += result =>
 			{
-				if (result == SocketIOResult.Done)
+				if(result == SocketIOResult.Done)
 				{
 					_Done(buffer.Length + NetworkStreamWriteStage._HeadSize);
 				}
@@ -216,7 +204,6 @@ namespace Regulus.Remoting
 		}
 	}
 
-
 	public partial class NetworkStreamReadStage : IStage
 	{
 		private class ReadingStage : IStage
@@ -235,9 +222,9 @@ namespace Regulus.Remoting
 
 			public ReadingStage(Socket socket, int size)
 			{
-				this._Socket = socket;
+				_Socket = socket;
 
-				this._Size = size;
+				_Size = size;
 			}
 
 			void IStage.Enter()
@@ -260,11 +247,11 @@ namespace Regulus.Remoting
 
 			void IStage.Update()
 			{
-				if (_Result == SocketIOResult.Done)
+				if(_Result == SocketIOResult.Done)
 				{
 					DoneEvent(_Buffer);
 				}
-				else if (_Result == SocketIOResult.Break)
+				else if(_Result == SocketIOResult.Break)
 				{
 					DoneEvent(null);
 				}
@@ -275,14 +262,14 @@ namespace Regulus.Remoting
 				try
 				{
 					var readSize = _Socket.EndReceive(ar);
-					if (readSize == 0)
+					if(readSize == 0)
 					{
 						_Result = SocketIOResult.Break;
 						return;
 					}
 
 					_Offset += readSize;
-					if (_Offset == _Size)
+					if(_Offset == _Size)
 					{
 						_Result = SocketIOResult.Done;
 					}
@@ -302,6 +289,8 @@ namespace Regulus.Remoting
 
 	public partial class NetworkStreamReadStage : IStage
 	{
+		public delegate void OnReadCompletion(Package package);
+
 		public event Action ErrorEvent;
 
 		public event OnReadCompletion ReadCompletionEvent;
@@ -332,14 +321,12 @@ namespace Regulus.Remoting
 			_Machine.Update();
 		}
 
-		public delegate void OnReadCompletion(Package package);
-
 		private void _ToHead()
 		{
 			var stage = new ReadingStage(_Socket, NetworkStreamReadStage._HeadSize);
 			stage.DoneEvent += buffer =>
 			{
-				if (buffer != null)
+				if(buffer != null)
 				{
 					_ToBody(buffer);
 				}
@@ -358,7 +345,7 @@ namespace Regulus.Remoting
 			var stage = new ReadingStage(_Socket, bodySize);
 			stage.DoneEvent += buffer =>
 			{
-				if (buffer != null)
+				if(buffer != null)
 				{
 					_Done(buffer);
 				}
@@ -381,13 +368,15 @@ namespace Regulus.Remoting
 
 	public class WaitQueueStage : IStage
 	{
+		public delegate void DoneCallback(Package[] packages);
+
 		public event DoneCallback DoneEvent;
 
 		private readonly PackageQueue _Packages;
 
 		public WaitQueueStage(PackageQueue packages)
 		{
-			this._Packages = packages;
+			_Packages = packages;
 		}
 
 		void IStage.Enter()
@@ -401,12 +390,10 @@ namespace Regulus.Remoting
 		void IStage.Update()
 		{
 			var pkgs = _Packages.DequeueAll();
-			if (pkgs.Length > 0)
+			if(pkgs.Length > 0)
 			{
 				DoneEvent(pkgs);
 			}
 		}
-
-		public delegate void DoneCallback(Package[] packages);
 	}
 }

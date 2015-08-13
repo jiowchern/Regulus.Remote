@@ -1,13 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AccountFunctions.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the AccountFunctions type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-namespace VGameWebApplication.Models
+﻿namespace VGameWebApplication.Models
 {
 	public class AccountFunctions
 	{

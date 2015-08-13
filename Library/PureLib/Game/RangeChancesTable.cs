@@ -1,17 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="RangeChancesTable.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the RangeChancesTable type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
 using System.Linq;
-
-#endregion
 
 namespace Regulus.Game
 {
@@ -23,15 +10,14 @@ namespace Regulus.Game
 
 		protected RangeChancesTable()
 		{
-			
 		}
 
 		public override T Dice(float chances)
 		{
 			var minGate = 0.0f;
-			foreach (var data in this._Datas)
+			foreach(var data in _Datas)
 			{
-				if (minGate < chances && chances <= data.Value)
+				if(minGate < chances && chances <= data.Value)
 				{
 					return data.Key;
 				}
@@ -39,7 +25,7 @@ namespace Regulus.Game
 				minGate = data.Value;
 			}
 
-			return this._Datas.First().Key;
+			return _Datas.First().Key;
 		}
 	}
 }

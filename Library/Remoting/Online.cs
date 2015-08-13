@@ -1,17 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Online.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the IOnline type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
-
-#endregion
+﻿using System;
 
 namespace Regulus.Remoting
 {
@@ -22,7 +9,6 @@ namespace Regulus.Remoting
 		void Disconnect();
 	}
 
-
 	public class Online : IOnline, IGhost
 	{
 		private readonly IAgent _Agent;
@@ -31,12 +17,12 @@ namespace Regulus.Remoting
 
 		public Online()
 		{
-			this.Id = Guid.NewGuid();
+			Id = Guid.NewGuid();
 		}
 
 		public Online(IAgent agent) : this()
 		{
-			this._Agent = agent;
+			_Agent = agent;
 		}
 
 		void IGhost.OnEvent(string name_event, object[] args)
@@ -46,7 +32,7 @@ namespace Regulus.Remoting
 
 		Guid IGhost.GetID()
 		{
-			return this.Id;
+			return Id;
 		}
 
 		void IGhost.OnProperty(string name, byte[] value)
@@ -61,12 +47,12 @@ namespace Regulus.Remoting
 
 		double IOnline.Ping
 		{
-			get { return TimeSpan.FromTicks(this._Agent.Ping).TotalSeconds; }
+			get { return TimeSpan.FromTicks(_Agent.Ping).TotalSeconds; }
 		}
 
 		void IOnline.Disconnect()
 		{
-			this._Agent.Disconnect();
+			_Agent.Disconnect();
 		}
 	}
 }

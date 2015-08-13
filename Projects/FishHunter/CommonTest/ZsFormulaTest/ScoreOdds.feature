@@ -3,7 +3,6 @@
 	As a math : 擊中公式
 	I want to be : 根據亂數表取得相對分數
 
-@mytag
 Scenario: 魚的賠率為1
 	Given 賠率表
 	| Id | Rate  |

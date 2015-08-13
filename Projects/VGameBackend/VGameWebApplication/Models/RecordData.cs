@@ -1,13 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="RecordData.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the RecordData type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-namespace VGameWebApplication.Models
+﻿namespace VGameWebApplication.Models
 {
 	public class RecordData
 	{

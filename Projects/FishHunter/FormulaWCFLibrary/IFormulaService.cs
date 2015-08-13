@@ -1,18 +1,5 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IFormulaService.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the FormulaState type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.ServiceModel;
-
-#endregion
 
 namespace VGame.Project.FishHunter.WCF
 {

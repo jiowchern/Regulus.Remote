@@ -1,20 +1,8 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="TestValue.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the ValueTest type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-#region Test_Region
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using Regulus.Net45;
 using Regulus.Remoting;
-
-#endregion
 
 namespace RemotingTest
 {

@@ -1,17 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AgentUpdater.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the AgentUpdater type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Remoting;
-
-#endregion
+﻿using Regulus.Remoting;
 
 namespace RemotingTest
 {
@@ -21,7 +8,7 @@ namespace RemotingTest
 
 		public AgentUpdater(IAgent agent)
 		{
-			this._Agent = agent;
+			_Agent = agent;
 		}
 
 		internal void Run()
@@ -30,7 +17,7 @@ namespace RemotingTest
 
 			var enable = true;
 			_Agent.BreakEvent += () => enable = false;
-			while (enable)
+			while(enable)
 			{
 				_Agent.Update();
 			}

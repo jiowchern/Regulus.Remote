@@ -1,6 +1,4 @@
-﻿#region Test_Region
-
-using System;
+﻿using System;
 
 
 using Regulus.Framework;
@@ -9,12 +7,9 @@ using Regulus.Remoting;
 using Regulus.Utility;
 
 
-using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
 using VGame.Project.FishHunter.Stage;
-
-#endregion
 
 namespace VGame.Project.FishHunter.Storage
 {
@@ -80,13 +75,13 @@ namespace VGame.Project.FishHunter.Storage
 		private Verify _CreateVerify()
 		{
 			_Account = null;
-			var verify = new Verify(_Storage);
+			var verify = new Verify(_Binder, _Storage);
 			return verify;
 		}
 
 		private void _AddVerifyToStage(Verify verify)
 		{
-			var stage = new Stage.Verify(_Binder, verify);
+			var stage = new Verify(_Binder, verify);
 			stage.DoneEvent += _VerifySuccess;
 			_Machine.Push(stage);
 		}

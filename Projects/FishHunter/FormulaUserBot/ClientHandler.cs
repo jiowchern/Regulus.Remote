@@ -1,20 +1,8 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ClientHandler.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the ClientHandler type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Framework;
+﻿using Regulus.Framework;
 using Regulus.Utility;
 
-using VGame.Project.FishHunter.Formula;
 
-#endregion
+using VGame.Project.FishHunter.Formula;
 
 namespace FormulaUserBot
 {
@@ -33,15 +21,15 @@ namespace FormulaUserBot
 		public ClientHandler(string IPAddress, int Port)
 		{
 			// TODO: Complete member initialization
-			this._IPAddress = IPAddress;
-			this._Port = Port;
+			_IPAddress = IPAddress;
+			_Port = Port;
 			_Bots = new Updater();
 		}
 
 		public ClientHandler(string IPAddress, int Port, int bot_amount)
 			: this(IPAddress, Port)
 		{
-			this._BotAmount = bot_amount;
+			_BotAmount = bot_amount;
 		}
 
 		bool IUpdatable.Update()
@@ -66,7 +54,7 @@ namespace FormulaUserBot
 
 		private void _OnProvider(UserProvider<IUser> userProvider)
 		{
-			while (_BotCount < _BotAmount)
+			while(_BotCount < _BotAmount)
 			{
 				_OnUser(userProvider.Spawn("bot" + _BotCount));
 				_BotCount++;

@@ -1,18 +1,5 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Value.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the IValue type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Threading;
-
-#endregion
 
 namespace Regulus.Remoting
 {
@@ -43,10 +30,11 @@ namespace Regulus.Remoting
 			WaitHandle handle = new AutoResetEvent(false);
 			var valueSpin = new ValueWaiter<T>(value);
 			ThreadPool.QueueUserWorkItem(valueSpin.Run, handle);
-			WaitHandle.WaitAll(new[]
-			{
-				handle
-			});
+			WaitHandle.WaitAll(
+				new[]
+				{
+					handle
+				});
 			return valueSpin.Value;
 		}
 	}
@@ -66,15 +54,15 @@ namespace Regulus.Remoting
 		{
 			add
 			{
-				this._OnValue += value;
+				_OnValue += value;
 
-				if (this._Empty == false)
+				if(_Empty == false)
 				{
-					value(this._Value);
+					value(_Value);
 				}
 			}
 
-			remove { this._OnValue -= value; }
+			remove { _OnValue -= value; }
 		}
 
 		private readonly bool _Interface;
@@ -92,77 +80,77 @@ namespace Regulus.Remoting
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Value{T}"/> class. 
+		///     Initializes a new instance of the <see cref="Value{T}" /> class.
 		///     建構子
 		/// </summary>
 		public Value()
 		{
-			this._Interface = typeof (T).IsInterface;
+			_Interface = typeof(T).IsInterface;
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="Value{T}"/> class. 
+		///     Initializes a new instance of the <see cref="Value{T}" /> class.
 		///     預設已經填入資料
 		/// </summary>
 		/// <param name="val">
 		/// </param>
 		public Value(T val) : this()
 		{
-			this._Empty = false;
-			this._Value = val;
-			if (this._OnValue != null)
+			_Empty = false;
+			_Value = val;
+			if(_OnValue != null)
 			{
-				this._OnValue(this._Value);
+				_OnValue(_Value);
 			}
 		}
 
 		object IValue.GetObject()
 		{
-			return this._Value;
+			return _Value;
 		}
 
 		void IValue.SetValue(IGhost val)
 		{
-			this._Empty = false;
+			_Empty = false;
 
-			this._Value = (T)val;
-			if (this._OnValue != null)
+			_Value = (T)val;
+			if(_OnValue != null)
 			{
-				this._OnValue(this._Value);
+				_OnValue(_Value);
 			}
 		}
 
 		void IValue.SetValue(byte[] val)
 		{
-			this._Empty = false;
+			_Empty = false;
 
-			this._Value = TypeHelper.Deserialize<T>(val);
-			if (this._OnValue != null)
+			_Value = TypeHelper.Deserialize<T>(val);
+			if(_OnValue != null)
 			{
-				this._OnValue(this._Value);
+				_OnValue(_Value);
 			}
 		}
 
 		void IValue.QueryValue(Action<object> action)
 		{
-			if (this._Empty == false)
+			if(_Empty == false)
 			{
-				action.Invoke(this._Value);
+				action.Invoke(_Value);
 			}
 			else
 			{
-				this.OnValue += obj => { action.Invoke(obj); };
+				OnValue += obj => { action.Invoke(obj); };
 			}
 		}
 
 		bool IValue.IsInterface()
 		{
-			return this._Interface;
+			return _Interface;
 		}
 
 		Type IValue.GetObjectType()
 		{
-			return typeof (T);
+			return typeof(T);
 		}
 
 		public static implicit operator Value<T>(T value)
@@ -172,7 +160,7 @@ namespace Regulus.Remoting
 
 		public bool HasValue()
 		{
-			return this._Empty == false;
+			return _Empty == false;
 		}
 
 		/// <summary>
@@ -181,11 +169,11 @@ namespace Regulus.Remoting
 		/// <param name="val"></param>
 		public void SetValue(T val)
 		{
-			this._Empty = false;
-			this._Value = val;
-			if (this._OnValue != null)
+			_Empty = false;
+			_Value = val;
+			if(_OnValue != null)
 			{
-				this._OnValue(this._Value);
+				_OnValue(_Value);
 			}
 		}
 
@@ -196,9 +184,9 @@ namespace Regulus.Remoting
 		/// <returns>如果有資料則傳回真</returns>
 		public bool TryGetValue(out T val)
 		{
-			if (this._Empty == false)
+			if(_Empty == false)
 			{
-				val = this._Value;
+				val = _Value;
 				return true;
 			}
 

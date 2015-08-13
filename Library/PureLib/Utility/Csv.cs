@@ -1,21 +1,8 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Csv.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the CSV type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-
-#endregion
 
 namespace Regulus.Utility
 {
@@ -29,42 +16,42 @@ namespace Regulus.Utility
 
 		public CSV(string head, string separator)
 		{
-			var type = typeof (T);
-			this._Properties = type.GetProperties();
-			this._Separator = separator.ToCharArray();
-			this._Propertys = (from line in this._Parse(head) select line.Trim()).ToArray();
+			var type = typeof(T);
+			_Properties = type.GetProperties();
+			_Separator = separator.ToCharArray();
+			_Propertys = (from line in _Parse(head) select line.Trim()).ToArray();
 		}
 
 		private string[] _Parse(string row)
 		{
-			return row.Split(this._Separator, StringSplitOptions.RemoveEmptyEntries);
+			return row.Split(_Separator, StringSplitOptions.RemoveEmptyEntries);
 		}
 
 		public void Parse(string row, ref T value)
 		{
-			var cols = this._Parse(row);
+			var cols = _Parse(row);
 
-			if (cols.Length != this._Propertys.Length)
+			if(cols.Length != _Propertys.Length)
 			{
 				throw new Exception("csv parse error , Col Length != Property Length.");
 			}
 
-			for (var i = 0; i < cols.Length; ++i)
+			for(var i = 0; i < cols.Length; ++i)
 			{
-				var name = this._Propertys[i];
+				var name = _Propertys[i];
 
-				var info = this._Find(name);
-				if (info.CanWrite == false)
+				var info = _Find(name);
+				if(info.CanWrite == false)
 				{
 					throw new Exception(string.Format("csv parse error , Property {0} can't write.", name));
 				}
 
-				if ((info.MemberType | MemberTypes.Property) == 0)
+				if((info.MemberType | MemberTypes.Property) == 0)
 				{
 					throw new Exception(string.Format("csv parse error , Member {0} is not propert."));
 				}
 
-				info.SetValue(value, this._ParseValue(cols[i], info.PropertyType), null);
+				info.SetValue(value, _ParseValue(cols[i], info.PropertyType), null);
 			}
 		}
 
@@ -75,7 +62,7 @@ namespace Regulus.Utility
 
 		private PropertyInfo _Find(string name)
 		{
-			return (from info in this._Properties where info.Name == name select info).Single();
+			return (from info in _Properties where info.Name == name select info).Single();
 		}
 	}
 
@@ -89,8 +76,8 @@ namespace Regulus.Utility
 
 			public Row(int idx, string[] fields)
 			{
-				this.Index = idx;
-				this.Fields = fields;
+				Index = idx;
+				Fields = fields;
 			}
 		}
 
@@ -99,13 +86,13 @@ namespace Regulus.Utility
 		{
 			var values = new List<T>();
 			var lines = CSV._ToLine(text, paragraph);
-			if (lines.Length == 0)
+			if(lines.Length == 0)
 			{
 				throw new Exception("CSV Parse error , text lines 0");
 			}
 
 			var csv = new CSV<T>(lines[0], separator);
-			for (var i = 1; i < lines.Length; ++i)
+			for(var i = 1; i < lines.Length; ++i)
 			{
 				var row = lines[i];
 				var value = new T();
@@ -113,7 +100,7 @@ namespace Regulus.Utility
 				{
 					csv.Parse(row, ref value);
 				}
-				catch (Exception e)
+				catch(Exception e)
 				{
 					var ex = new Exception(string.Format("cav parse error at Col{0}", i), e);
 
@@ -146,9 +133,9 @@ namespace Regulus.Utility
 
 			var i = 0;
 			var lineText = string.Empty;
-			foreach (var text in textArr)
+			foreach(var text in textArr)
 			{
-				if (i == 0)
+				if(i == 0)
 				{
 					i++;
 					continue;
@@ -156,7 +143,7 @@ namespace Regulus.Utility
 
 				lineText += text;
 				string[] stringFields = null;
-				if (CSV.TryParseLine(lineText, ref stringFields, descArr.Length))
+				if(CSV.TryParseLine(lineText, ref stringFields, descArr.Length))
 				{
 					lineText = string.Empty;
 					yield return new Row(i++, stringFields);
@@ -189,12 +176,12 @@ namespace Regulus.Utility
 		private static bool TryParseLine(string text, ref string[] resArr, int refLength = 0)
 		{
 			resArr = text.Split('\t');
-			if (refLength != 0 && resArr.Length < refLength)
+			if(refLength != 0 && resArr.Length < refLength)
 			{
 				return false;
 			}
 
-			for (var i = 0; i < resArr.Length; i++)
+			for(var i = 0; i < resArr.Length; i++)
 			{
 				resArr[i] = resArr[i].Trim('"');
 			}

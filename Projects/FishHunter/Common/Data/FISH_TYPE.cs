@@ -1,21 +1,20 @@
-﻿
-using Regulus.Utility;
+﻿using Regulus.Utility;
 
 namespace VGame.Project.FishHunter.Common.Data
 {
 	/// <summary>
-	/// 所有魚的定義
+	///     所有魚的定義
 	/// </summary>
 	public enum FISH_TYPE
 	{
 		/// <summary>
-		///	一般魚開始
+		///     一般魚開始
 		/// </summary>
 		[EnumDescription("一般魚開始")]
-		ORDINARY_FISH_BEGIN = 0,
-		
+		ORDINARY_FISH_BEGIN = 0, 
+
 		/// <summary>
-		///		小紅魚(熱帶小魚)
+		///     小紅魚(熱帶小魚)
 		/// </summary>
 		[EnumDescription("熱帶小魚")]
 		TROPICAL_FISH = FISH_TYPE.ORDINARY_FISH_BEGIN, 
@@ -138,13 +137,13 @@ namespace VGame.Project.FishHunter.Common.Data
 		///     金鯨
 		/// </summary>
 		[EnumDescription("金鯨")]
-		GOLDEN_WHALE,
+		GOLDEN_WHALE, 
 
 		/// <summary>
-		/// 一般魚結束
+		///     一般魚結束
 		/// </summary>
 		[EnumDescription("一般魚結束")]
-		ORDINARY_FISH_END = FISH_TYPE.GOLDEN_WHALE,
+		ORDINARY_FISH_END = FISH_TYPE.GOLDEN_WHALE, 
 
 		/// <summary>
 		///     特殊魚開始

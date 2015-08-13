@@ -36,13 +36,23 @@ namespace FormulaUserBot
 		void IBootable.Launch()
 		{
 			_Stage.OnHitResponseEvent += _Response;
+			_Stage.OnTotalHitResponseEvent += _Stage_OnTotalHitResponseEvent;
 			_Stage.Hit(_Request);
 			_TimeCounter.Reset();
+		}
+
+		void _Stage_OnTotalHitResponseEvent(HitResponse[] hit_responses)
+		{
+			foreach(var hit in hit_responses)
+			{
+				_Response(hit);
+			}
 		}
 
 		void IBootable.Shutdown()
 		{
 			_Stage.OnHitResponseEvent -= _Response;
+			_Stage.OnTotalHitResponseEvent -= _Stage_OnTotalHitResponseEvent;
 		}
 
 		private void _Response(HitResponse obj)

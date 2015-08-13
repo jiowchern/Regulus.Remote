@@ -1,21 +1,9 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SQL.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Database type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System;
 
-#region Test_Region
-
-using System;
 
 using MySql.Data.MySqlClient;
 
-#endregion
-
-namespace Regulus.Database.SQL
+namespace Regulus.Database.DB_SQL
 {
 	public class Database : IDisposable
 	{
@@ -25,15 +13,15 @@ namespace Regulus.Database.SQL
 
 		void IDisposable.Dispose()
 		{
-			this.Disconnect();
+			Disconnect();
 		}
 
 		public void Connect(string host, string user, string password, string database_name)
 		{
 			var connect = "Server = " + host + "; UserId = " + user + "; Password = " + password + "; Database = "
 			              + database_name + string.Empty;
-			this._ConnectParams = connect;
-			this._Connect = this._CreateConnector(connect);
+			_ConnectParams = connect;
+			_Connect = _CreateConnector(connect);
 		}
 
 		private MySqlConnection _CreateConnector(string connect)
@@ -44,9 +32,9 @@ namespace Regulus.Database.SQL
 			{
 				c.Open();
 			}
-			catch (MySqlException ex)
+			catch(MySqlException ex)
 			{
-				switch (ex.Number)
+				switch(ex.Number)
 				{
 					case 0:
 						throw new SystemException("MySQL:無法連線到資料庫.");
@@ -62,25 +50,25 @@ namespace Regulus.Database.SQL
 
 		public void Disconnect()
 		{
-			if (this._Connect != null)
+			if(_Connect != null)
 			{
-				this._Connect.Close();
+				_Connect.Close();
 			}
 
-			this._Connect = null;
+			_Connect = null;
 		}
 
 		public void ExecuteNonQuery(string command_str)
 		{
 			try
 			{
-				var cmd = new MySqlCommand(command_str, this._Connect);
+				var cmd = new MySqlCommand(command_str, _Connect);
 				cmd.ExecuteNonQuery();
 			}
 			catch
 			{
-				this._Connect = this._CreateConnector(this._ConnectParams);
-				this.ExecuteNonQuery(command_str);
+				_Connect = _CreateConnector(_ConnectParams);
+				ExecuteNonQuery(command_str);
 			}
 		}
 
@@ -88,13 +76,13 @@ namespace Regulus.Database.SQL
 		{
 			try
 			{
-				var cmd = new MySqlCommand(command_str, this._Connect);
+				var cmd = new MySqlCommand(command_str, _Connect);
 				return cmd.ExecuteReader();
 			}
 			catch
 			{
-				this._Connect = this._CreateConnector(this._ConnectParams);
-				return this.Execute(command_str);
+				_Connect = _CreateConnector(_ConnectParams);
+				return Execute(command_str);
 			}
 		}
 	}

@@ -1,24 +1,12 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Package.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Package type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System.Collections.Generic;
 
-#region Test_Region
-
-using System.Collections.Generic;
 
 using ProtoBuf;
-
-#endregion
 
 namespace Regulus.Remoting
 {
 	[ProtoContract]
-	[ProtoInclude(1, typeof (Dictionary<byte, byte[]>))]
+	[ProtoInclude(1, typeof(Dictionary<byte, byte[]>))]
 	public class Package
 	{
 		[ProtoMember(2)]

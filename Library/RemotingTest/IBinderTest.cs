@@ -1,13 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IBinderTest.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the IBinderTest type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-namespace RemotingTest
+﻿namespace RemotingTest
 {
 	public interface IBinderTest
 	{

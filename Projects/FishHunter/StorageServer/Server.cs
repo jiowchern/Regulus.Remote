@@ -1,18 +1,19 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+
 using Regulus.CustomType;
-using Regulus.Database.NoSQL;
+using Regulus.Database.DB_NoSQL;
 using Regulus.Framework;
 using Regulus.Remoting;
 using Regulus.Utility;
 
+
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
-using VGame.Project.FishHunter.ZsFormula.Data;
+using VGame.Project.FishHunter.Formula.ZsFormula.Data;
 
 namespace VGame.Project.FishHunter.Storage
 {
@@ -87,7 +88,7 @@ namespace VGame.Project.FishHunter.Storage
 		{
 			var account = _Find(name);
 
-			if (account != null)
+			if(account != null)
 			{
 				return account;
 			}
@@ -98,7 +99,7 @@ namespace VGame.Project.FishHunter.Storage
 		Value<ACCOUNT_REQUEST_RESULT> IAccountCreator.Create(Account account)
 		{
 			var result = _Find(account.Name);
-			if (result != null)
+			if(result != null)
 			{
 				return ACCOUNT_REQUEST_RESULT.REPEAT;
 			}
@@ -110,7 +111,7 @@ namespace VGame.Project.FishHunter.Storage
 		Value<ACCOUNT_REQUEST_RESULT> IAccountManager.Delete(string account)
 		{
 			var result = _Find(account);
-			if (result != null && _Database.Remove<Account>(a => a.Id == result.Id))
+			if(result != null && _Database.Remove<Account>(a => a.Id == result.Id))
 			{
 				return ACCOUNT_REQUEST_RESULT.OK;
 			}
@@ -125,7 +126,7 @@ namespace VGame.Project.FishHunter.Storage
 
 		Value<ACCOUNT_REQUEST_RESULT> IAccountManager.Update(Account account)
 		{
-			if (_Database.Update(account, a => a.Id == account.Id))
+			if(_Database.Update(account, a => a.Id == account.Id))
 			{
 				return ACCOUNT_REQUEST_RESULT.OK;
 			}
@@ -138,30 +139,32 @@ namespace VGame.Project.FishHunter.Storage
 			return _Find(accountId);
 		}
 
-		Value<PlayerRecord> IRecordHandler.Load(Guid id)
+		Value<GamePlayerRecord> IGameRecorder.Load(Guid account_id)
 		{
-			var val = new Value<PlayerRecord>();
-			var account = _Find(id);
-			if (account.IsPlayer())
+			var val = new Value<GamePlayerRecord>();
+			var account = _Find(account_id);
+			if(account.IsPlayer())
 			{
-				var recordTask = _Database.Find<PlayerRecord>(r => r.Owner == id);
-				recordTask.ContinueWith(task =>
-				{
-					if (task.Result.Count > 0)
+				var recordTask = _Database.Find<GamePlayerRecord>(r => r.Owner == account_id);
+				recordTask.ContinueWith(
+					task =>
 					{
-						val.SetValue(task.Result.FirstOrDefault());
-					}
-					else
-					{
-						var newRecord = new PlayerRecord
+						if(task.Result.Count > 0)
 						{
-							Owner = id, 
-							Money = 100
-						};
-						_Database.Add(newRecord).Wait();
-						val.SetValue(newRecord);
-					}
-				});
+							val.SetValue(task.Result.FirstOrDefault());
+						}
+						else
+						{
+							var newRecord = new GamePlayerRecord
+							{
+								Id = Guid.NewGuid(),
+								Owner = account_id, 
+								Money = 100
+							};
+							_Database.Add(newRecord).Wait();
+							val.SetValue(newRecord);
+						}
+					});
 			}
 			else
 			{
@@ -171,7 +174,7 @@ namespace VGame.Project.FishHunter.Storage
 			return val;
 		}
 
-		void IRecordHandler.Save(PlayerRecord record)
+		void IGameRecorder.Save(GamePlayerRecord record)
 		{
 			_Database.Update(record, r => r.Id == record.Id);
 		}
@@ -180,33 +183,35 @@ namespace VGame.Project.FishHunter.Storage
 		{
 			var val = new Value<TradeNotes>();
 			var t = _LoadTradeNotesTask(id);
-			t.ContinueWith(task =>
-			{
-				var notes = task.Result.SingleOrDefault();
-				val.SetValue(notes);
-			});
+			t.ContinueWith(
+				task =>
+				{
+					var notes = task.Result.SingleOrDefault();
+					val.SetValue(notes);
+				});
 
 			return val;
 		}
 
-		Value<TradeNotes> ITradeNotes.Load(Guid id)
+		Value<TradeNotes> ITradeNotes.Load(Guid account_id)
 		{
 			var val = new Value<TradeNotes>();
-			var t = _LoadTradeNotesTask(id);
-			t.ContinueWith(task =>
-			{
-				var notes = task.Result.SingleOrDefault();
-				if (notes == null)
+			var t = _LoadTradeNotesTask(account_id);
+			t.ContinueWith(
+				task =>
 				{
-					var newPlayerNotes = new TradeNotes(id);
-					_Database.Add(newPlayerNotes).Wait();
-					val.SetValue(newPlayerNotes);
-				}
-				else
-				{
-					val.SetValue(notes);
-				}
-			});
+					var notes = task.Result.SingleOrDefault();
+					if(notes == null)
+					{
+						var newPlayerNotes = new TradeNotes(account_id);
+						_Database.Add(newPlayerNotes).Wait();
+						val.SetValue(newPlayerNotes);
+					}
+					else
+					{
+						val.SetValue(notes);
+					}
+				});
 			return val;
 		}
 
@@ -214,12 +219,13 @@ namespace VGame.Project.FishHunter.Storage
 		{
 			var val = new Value<bool>();
 			var t = _LoadTradeNotesTask(data.BuyerId);
-			t.ContinueWith(task =>
-			{
-				var notes = task.Result.SingleOrDefault();
-				notes.TradeDatas.Add(data);
-				val.SetValue(_Database.Update(notes, a => a.Owner == notes.Owner));
-			});
+			t.ContinueWith(
+				task =>
+				{
+					var notes = task.Result.SingleOrDefault();
+					notes.TradeDatas.Add(data);
+					val.SetValue(_Database.Update(notes, a => a.Owner == notes.Owner));
+				});
 
 			return val;
 		}
@@ -229,79 +235,121 @@ namespace VGame.Project.FishHunter.Storage
 			var val = new Value<int>();
 
 			var t = _LoadTradeNotesTask(id);
-			t.ContinueWith(task =>
-			{
-				var notes = task.Result.SingleOrDefault();
+			t.ContinueWith(
+				task =>
+				{
+					var notes = task.Result.SingleOrDefault();
 
-				if (notes == null)
-				{
-					val.SetValue(0);
-				}
-				else
-				{
-					val.SetValue(notes.GetTotalMoney());
-					notes.SetTradeIsUsed();
-					_Database.Update(notes, a => a.Owner == notes.Owner);
-				}
-			});
+					if(notes == null)
+					{
+						val.SetValue(0);
+					}
+					else
+					{
+						val.SetValue(notes.GetTotalMoney());
+						notes.SetTradeIsUsed();
+						_Database.Update(notes, a => a.Owner == notes.Owner);
+					}
+				});
 			return val;
 		}
 
-		Value<StageData> IFishStageDataHandler.Load(int stage_id)
+		Value<StageData> IFormulaStageDataRecorder.Load(int stage_id)
 		{
 			var val = new Value<StageData>();
 			var t = _LoadStageData(stage_id);
 
-			t.ContinueWith(task =>
-			{
-				var data = task.Result;
-				if (data == null)
+			t.ContinueWith(
+				task =>
 				{
-					var stageData = new StageDataBuilder().Get(stage_id);
-					_Database.Add(stageData).Wait();
-					val.SetValue(stageData);
-				}
-				else
-				{
-					val.SetValue(data);
-				}
-			});
+					var data = task.Result;
+					if(data == null)
+					{
+						var stageData = new StageDataBuilder().Get(stage_id);
+						_Database.Add(stageData).Wait();
+						val.SetValue(stageData);
+					}
+					else
+					{
+						val.SetValue(data);
+					}
+				});
 			return val;
 		}
 
-		Value<bool> IFishStageDataHandler.Save(StageData data)
+		Value<bool> IFormulaStageDataRecorder.Save(StageData data)
 		{
 			var val = new Value<bool>();
 			var t = _LoadStageData(data.StageId);
 
-			t.ContinueWith(task =>
-			{
-				var d = task.Result;
-
-				if (d == null)
+			t.ContinueWith(
+				task =>
 				{
-					val.SetValue(false);
-				}
-				else
-				{
-					val.SetValue(true);
+					var stageData = task.Result;
 
-					_Database.Update(d, a => a.StageId == data.StageId);
-				}
-			});
+					if(stageData == null)
+					{
+						val.SetValue(false);
+					}
+					else
+					{
+						val.SetValue(true);
+
+						_Database.Update(stageData, a => a.StageId == data.StageId);
+					}
+				});
 			return val;
 		}
 
-		Value<StageData> IFishStageDataHandler.Find(int stage_id)
+		Value<FormulaPlayerRecord> IFormulaPlayerRecorder.Query(Guid account_id)
 		{
-			var val = new Value<StageData>();
-			var t = _LoadStageData(stage_id);
+			var val = new Value<FormulaPlayerRecord>();
+			var t = _LoadFormulaPlayerRecord(account_id);
 
-			t.ContinueWith(task =>
-			{
-				var data = task.Result;
-				val.SetValue(data ?? null);
-			});
+			t.ContinueWith(
+				task =>
+				{
+					var data = task.Result;
+					if (data == null)
+					{
+						var record = new FormulaPlayerRecord
+						{
+							Id = Guid.NewGuid(),
+							Owner = account_id
+						};
+
+						_Database.Add(record).Wait();
+						val.SetValue(record);
+					}
+					else
+					{
+						val.SetValue(data);
+					}
+				});
+			return val;
+		}
+
+		Value<bool> IFormulaPlayerRecorder.Save(FormulaPlayerRecord record)
+		{
+			var val = new Value<bool>();
+			var t = _LoadFormulaPlayerRecord(record.Owner);
+
+			t.ContinueWith(
+				task =>
+				{
+					var recordData = task.Result;
+
+					if (recordData == null)
+					{
+						val.SetValue(false);
+					}
+					else
+					{
+						val.SetValue(true);
+
+						_Database.Update(recordData, a => a.Id == record.Id);
+					}
+				});
 			return val;
 		}
 
@@ -316,7 +364,7 @@ namespace VGame.Project.FishHunter.Storage
 		{
 			var accounts = await _Database.Find<Account>(a => a.Name == _DefaultAdministratorName);
 
-			if (accounts.Count == 0)
+			if(accounts.Count == 0)
 			{
 				var account = new Account
 				{
@@ -328,10 +376,11 @@ namespace VGame.Project.FishHunter.Storage
 
 				await _Database.Add(account);
 
-				await _Database.Add(new TradeNotes
-				{
-					Owner = account.Id
-				});
+				await _Database.Add(
+					new TradeNotes
+					{
+						Owner = account.Id
+					});
 			}
 		}
 
@@ -339,7 +388,7 @@ namespace VGame.Project.FishHunter.Storage
 		{
 			var accounts = await _Database.Find<Account>(a => a.Name == "Guest");
 
-			if (accounts.Count == 0)
+			if(accounts.Count == 0)
 			{
 				var account = new Account
 				{
@@ -374,21 +423,22 @@ namespace VGame.Project.FishHunter.Storage
 			return val;
 		}
 
-		private Task<List<TradeNotes>> _LoadTradeNotesTask(Guid id)
+		private Task<List<TradeNotes>> _LoadTradeNotesTask(Guid account_id)
 		{
-			var tradeTask = _Database.Find<TradeNotes>(t => t.Owner == id);
+			var tradeTask = _Database.Find<TradeNotes>(t => t.Owner == account_id);
 
-			var returnTask = tradeTask.ContinueWith(task =>
-			{
-				Singleton<Log>.Instance.WriteDebug("TradeNotes Find Done.");
-
-				if (task.Exception != null)
+			var returnTask = tradeTask.ContinueWith(
+				task =>
 				{
-					Singleton<Log>.Instance.WriteDebug(string.Format("TradeNotes Exception {0}.", task.Exception.ToString()));
-				}
+					Singleton<Log>.Instance.WriteDebug("TradeNotes Find Done.");
 
-				return task.Result;
-			});
+					if(task.Exception != null)
+					{
+						Singleton<Log>.Instance.WriteDebug(string.Format("TradeNotes Exception {0}.", task.Exception.ToString()));
+					}
+
+					return task.Result;
+				});
 			return returnTask;
 		}
 
@@ -400,9 +450,28 @@ namespace VGame.Project.FishHunter.Storage
 				task =>
 				{
 					Singleton<Log>.Instance.WriteDebug("StageData Find Done.");
-					if (task.Exception != null)
+					if(task.Exception != null)
 					{
 						Singleton<Log>.Instance.WriteDebug(string.Format("StageData Exception {0}.", task.Exception.ToString()));
+					}
+
+					return task.Result.FirstOrDefault();
+				});
+
+			return returnTask;
+		}
+
+		private Task<FormulaPlayerRecord> _LoadFormulaPlayerRecord(Guid account_id)
+		{
+			var tradeTask = _Database.Find<FormulaPlayerRecord>(t => t.Owner == account_id);
+
+			var returnTask = tradeTask.ContinueWith(
+				task =>
+				{
+					Singleton<Log>.Instance.WriteDebug("FormulaPlayerRecord Load Done.");
+					if (task.Exception != null)
+					{
+						Singleton<Log>.Instance.WriteDebug(string.Format("FormulaPlayerRecord Exception {0}.", task.Exception.ToString()));
 					}
 
 					return task.Result.FirstOrDefault();

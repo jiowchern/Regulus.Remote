@@ -1,18 +1,5 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="StageTicketInspector.cs" company="Regulus Framework">
-//   Regulus Framework
-// </copyright>
-// <summary>
-//   Defines the StageTicketInspector type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-
-#endregion
 
 namespace VGame.Project.FishHunter.Play
 {
@@ -31,7 +18,7 @@ namespace VGame.Project.FishHunter.Play
 
 		public StageTicketInspector(StageGate sg)
 		{
-			this._StageGate = sg;
+			_StageGate = sg;
 			_Current = new HashSet<Common.Data.Stage>();
 		}
 
@@ -49,24 +36,26 @@ namespace VGame.Project.FishHunter.Play
 
 		internal void Pass(int stage)
 		{
-			_Current.Add(new Common.Data.Stage
-			{
-				Id = stage, 
-				Pass = true
-			});
+			_Current.Add(
+				new Common.Data.Stage
+				{
+					Id = stage, 
+					Pass = true
+				});
 			_Update();
 		}
 
 		private void _Update()
 		{
 			var passs = from stage in _Current where stage.Pass select stage.Id;
-			foreach (var stage  in _StageGate.FindUnlockStage(passs, _KillCount))
+			foreach(var stage  in _StageGate.FindUnlockStage(passs, _KillCount))
 			{
-				_Current.Add(new Common.Data.Stage
-				{
-					Id = stage, 
-					Pass = false
-				});
+				_Current.Add(
+					new Common.Data.Stage
+					{
+						Id = stage, 
+						Pass = false
+					});
 			}
 		}
 	}

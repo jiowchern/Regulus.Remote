@@ -1,13 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="OpCode.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the ClientToServerOpCode type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-namespace Regulus.Remoting
+﻿namespace Regulus.Remoting
 {
 	public enum ClientToServerOpCode
 	{

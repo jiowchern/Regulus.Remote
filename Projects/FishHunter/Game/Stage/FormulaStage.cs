@@ -1,5 +1,6 @@
-﻿
+﻿using System;
 using System.Collections.Generic;
+
 
 using Regulus.Game;
 using Regulus.Remoting;
@@ -9,7 +10,7 @@ using Regulus.Utility;
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
 using VGame.Project.FishHunter.Formula;
-using VGame.Project.FishHunter.ZsFormula;
+using VGame.Project.FishHunter.Formula.ZsFormula;
 
 namespace VGame.Project.FishHunter.Stage
 {
@@ -19,9 +20,9 @@ namespace VGame.Project.FishHunter.Stage
 
 		private readonly ISoulBinder _Binder;
 
-		private ExpansionFeature _ExpansionFeature;
-
 		private readonly List<StageData> _StageDatas;
+
+		private ExpansionFeature _ExpansionFeature;
 
 		public FormulaStage(ISoulBinder binder, ExpansionFeature expansion_feature)
 		{
@@ -30,7 +31,7 @@ namespace VGame.Project.FishHunter.Stage
 			_StageDatas = new List<StageData>();
 		}
 
-		Value<IFishStage> IFishStageQueryer.Query(long player_id, int fish_stage)
+		Value<IFishStage> IFishStageQueryer.Query(Guid player_id, int fish_stage)
 		{
 			switch(fish_stage)
 			{
@@ -38,7 +39,7 @@ namespace VGame.Project.FishHunter.Stage
 					return new FishStage(player_id, fish_stage);
 
 				case 2:
-					return new ZsFishStage(player_id, _StageDatas.Find(x => x.StageId == fish_stage));
+					return new ZsFishStage(player_id, _StageDatas.Find(x => x.StageId == fish_stage), _ExpansionFeature.FormulaPlayerRecorder, _ExpansionFeature.FormulaStageDataRecorder);
 
 				default:
 					return new CsFishStage(player_id, fish_stage);
@@ -48,7 +49,7 @@ namespace VGame.Project.FishHunter.Stage
 		void IStage.Enter()
 		{
 			OnDoneEvent += OnDoneEvent;
-	
+
 			_InitStageData();
 
 			_Binder.Bind<IFishStageQueryer>(this);
@@ -57,7 +58,7 @@ namespace VGame.Project.FishHunter.Stage
 		void IStage.Leave()
 		{
 			_Binder.Unbind<IFishStageQueryer>(this);
-			
+
 			OnDoneEvent.Invoke();
 		}
 
@@ -69,13 +70,16 @@ namespace VGame.Project.FishHunter.Stage
 		{
 			var returnValue = new Value<StageData>();
 
-			var val = _ExpansionFeature.FishStageDataHandler.Load(stage_id);
+			var val = _ExpansionFeature.FormulaStageDataRecorder.Load(stage_id);
 
-			val.OnValue += stage_data => { returnValue.SetValue(stage_data ?? null); };
+			val.OnValue += stage_data => { returnValue.SetValue(stage_data); };
 
 			return returnValue;
 		}
 
+		/// <summary>
+		///     戴入所有營業中的魚場資料
+		/// </summary>
 		private void _InitStageData()
 		{
 			foreach(var t in BusinessStage.StageIds)

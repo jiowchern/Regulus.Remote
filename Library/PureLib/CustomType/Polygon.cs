@@ -1,20 +1,8 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Polygon.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Polygon type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-using ProtoBuf;
 
-#endregion
+using ProtoBuf;
 
 namespace Regulus.CustomType
 {
@@ -22,38 +10,6 @@ namespace Regulus.CustomType
 	[ProtoContract]
 	public class Polygon
 	{
-		[ProtoMember(2)]
-		private readonly List<Vector2> _Edges = new List<Vector2>();
-
-		[ProtoMember(1)]
-		private List<Vector2> _Points = new List<Vector2>();
-
-		public List<Vector2> Edges
-		{
-			get { return this._Edges; }
-		}
-
-		public List<Vector2> Points
-		{
-			get { return this._Points; }
-		}
-
-		public Vector2 Center
-		{
-			get
-			{
-				float totalX = 0;
-				float totalY = 0;
-				for (var i = 0; i < this._Points.Count; i++)
-				{
-					totalX += this._Points[i].X;
-					totalY += this._Points[i].Y;
-				}
-
-				return new Vector2(totalX / this._Points.Count, totalY / this._Points.Count);
-			}
-		}
-
 		public struct CollisionResult
 		{
 			public bool Intersect; // Are the polygons currently intersecting
@@ -63,10 +19,42 @@ namespace Regulus.CustomType
 			public bool WillIntersect; // Are the polygons going to intersect forward in time?
 		}
 
+		[ProtoMember(2)]
+		private readonly List<Vector2> _Edges = new List<Vector2>();
+
+		[ProtoMember(1)]
+		private List<Vector2> _Points = new List<Vector2>();
+
+		public List<Vector2> Edges
+		{
+			get { return _Edges; }
+		}
+
+		public List<Vector2> Points
+		{
+			get { return _Points; }
+		}
+
+		public Vector2 Center
+		{
+			get
+			{
+				float totalX = 0;
+				float totalY = 0;
+				for(var i = 0; i < _Points.Count; i++)
+				{
+					totalX += _Points[i].X;
+					totalY += _Points[i].Y;
+				}
+
+				return new Vector2(totalX / _Points.Count, totalY / _Points.Count);
+			}
+		}
+
 		// Structure that stores the results of the PolygonCollision function
 		public static CollisionResult Collision(Polygon polygonA, Polygon polygonB, Vector2 velocity)
 		{
-			if (polygonA._Points.Count == 0 || polygonA._Points.Count == 0)
+			if(polygonA._Points.Count == 0 || polygonA._Points.Count == 0)
 			{
 				throw new ArgumentException("param polygonA or polygonB point count are zero.");
 			}
@@ -82,9 +70,9 @@ namespace Regulus.CustomType
 			Vector2 edge;
 
 			// Loop through all the edges of both polygons
-			for (var edgeIndex = 0; edgeIndex < edgeCountA + edgeCountB; edgeIndex++)
+			for(var edgeIndex = 0; edgeIndex < edgeCountA + edgeCountB; edgeIndex++)
 			{
-				if (edgeIndex < edgeCountA)
+				if(edgeIndex < edgeCountA)
 				{
 					edge = polygonA.Edges[edgeIndex];
 				}
@@ -108,7 +96,7 @@ namespace Regulus.CustomType
 				Polygon.ProjectPolygon(axis, polygonB, ref minB, ref maxB);
 
 				// Check if the polygon projections are currentlty intersecting
-				if (Polygon.IntervalDistance(minA, maxA, minB, maxB) > 0)
+				if(Polygon.IntervalDistance(minA, maxA, minB, maxB) > 0)
 				{
 					result.Intersect = false;
 				}
@@ -119,7 +107,7 @@ namespace Regulus.CustomType
 				var velocityProjection = axis.DotProduct(velocity);
 
 				// Get the projection of polygon A during the movement
-				if (velocityProjection < 0)
+				if(velocityProjection < 0)
 				{
 					minA += velocityProjection;
 				}
@@ -130,13 +118,13 @@ namespace Regulus.CustomType
 
 				// Do the same test as above for the new projection
 				var intervalDistance = Polygon.IntervalDistance(minA, maxA, minB, maxB);
-				if (intervalDistance > 0)
+				if(intervalDistance > 0)
 				{
 					result.WillIntersect = false;
 				}
 
 				// If the polygons are not intersecting and won't intersect, exit the loop
-				if (!result.Intersect && !result.WillIntersect)
+				if(!result.Intersect && !result.WillIntersect)
 				{
 					break;
 				}
@@ -145,13 +133,13 @@ namespace Regulus.CustomType
 				// the interval distance and the current distance.
 				// This will be used to calculate the minimum translation Vector2
 				intervalDistance = Math.Abs(intervalDistance);
-				if (intervalDistance < minIntervalDistance)
+				if(intervalDistance < minIntervalDistance)
 				{
 					minIntervalDistance = intervalDistance;
 					translationAxis = axis;
 
 					var d = polygonA.Center - polygonB.Center;
-					if (d.DotProduct(translationAxis) < 0)
+					if(d.DotProduct(translationAxis) < 0)
 					{
 						translationAxis = -translationAxis;
 					}
@@ -161,7 +149,7 @@ namespace Regulus.CustomType
 			// The minimum translation Vector2 can be used to push the polygons appart.
 			// First moves the polygons by their velocity
 			// then move polygonA by MinimumTranslationVector2.
-			if (result.WillIntersect)
+			if(result.WillIntersect)
 			{
 				result.MinimumTranslationVector2 = translationAxis * minIntervalDistance;
 			}
@@ -173,7 +161,7 @@ namespace Regulus.CustomType
 		// The distance will be negative if the intervals overlap
 		public static float IntervalDistance(float minA, float maxA, float minB, float maxB)
 		{
-			if (minA < minB)
+			if(minA < minB)
 			{
 				return minB - maxA;
 			}
@@ -188,16 +176,16 @@ namespace Regulus.CustomType
 			var d = axis.DotProduct(polygon.Points[0]);
 			min = d;
 			max = d;
-			for (var i = 0; i < polygon.Points.Count; i++)
+			for(var i = 0; i < polygon.Points.Count; i++)
 			{
 				d = polygon.Points[i].DotProduct(axis);
-				if (d < min)
+				if(d < min)
 				{
 					min = d;
 				}
 				else
 				{
-					if (d > max)
+					if(d > max)
 					{
 						max = d;
 					}
@@ -209,34 +197,34 @@ namespace Regulus.CustomType
 		{
 			Vector2 p1;
 			Vector2 p2;
-			this._Edges.Clear();
-			for (var i = 0; i < this._Points.Count; i++)
+			_Edges.Clear();
+			for(var i = 0; i < _Points.Count; i++)
 			{
-				p1 = this._Points[i];
-				if (i + 1 >= this._Points.Count)
+				p1 = _Points[i];
+				if(i + 1 >= _Points.Count)
 				{
-					p2 = this._Points[0];
+					p2 = _Points[0];
 				}
 				else
 				{
-					p2 = this._Points[i + 1];
+					p2 = _Points[i + 1];
 				}
 
-				this._Edges.Add(p2 - p1);
+				_Edges.Add(p2 - p1);
 			}
 		}
 
 		public void Offset(Vector2 v)
 		{
-			this.Offset(v.X, v.Y);
+			Offset(v.X, v.Y);
 		}
 
 		public void Offset(float x, float y)
 		{
-			for (var i = 0; i < this._Points.Count; i++)
+			for(var i = 0; i < _Points.Count; i++)
 			{
-				var p = this._Points[i];
-				this._Points[i] = new Vector2(p.X + x, p.Y + y);
+				var p = _Points[i];
+				_Points[i] = new Vector2(p.X + x, p.Y + y);
 			}
 		}
 
@@ -244,14 +232,14 @@ namespace Regulus.CustomType
 		{
 			var result = string.Empty;
 
-			for (var i = 0; i < this._Points.Count; i++)
+			for(var i = 0; i < _Points.Count; i++)
 			{
-				if (result != string.Empty)
+				if(result != string.Empty)
 				{
 					result += " ";
 				}
 
-				result += "{" + this._Points[i].ToString(true) + "}";
+				result += "{" + _Points[i].ToString(true) + "}";
 			}
 
 			return result;
@@ -259,12 +247,12 @@ namespace Regulus.CustomType
 
 		private void MergeSort(int left, int right)
 		{
-			if (left < right)
+			if(left < right)
 			{
 				var mid = (left + right) / 2;
-				this.MergeSort(left, mid);
-				this.MergeSort(mid + 1, right);
-				this.Merge(left, mid, right);
+				MergeSort(left, mid);
+				MergeSort(mid + 1, right);
+				Merge(left, mid, right);
 			}
 		}
 
@@ -274,31 +262,31 @@ namespace Regulus.CustomType
 			    j = mid + 1, 
 			    top = 0;
 			var data = new Point[right + 1];
-			while (i <= mid && j <= right)
+			while(i <= mid && j <= right)
 			{
-				if (this.cmp(this._Points[i], this._Points[j]))
+				if(cmp(_Points[i], _Points[j]))
 				{
-					data[top++] = this._Points[i++];
+					data[top++] = _Points[i++];
 				}
 				else
 				{
-					data[top++] = this._Points[j++];
+					data[top++] = _Points[j++];
 				}
 			}
 
-			while (i <= mid)
+			while(i <= mid)
 			{
-				data[top++] = this._Points[i++];
+				data[top++] = _Points[i++];
 			}
 
-			while (j <= right)
+			while(j <= right)
 			{
-				data[top++] = this._Points[j++];
+				data[top++] = _Points[j++];
 			}
 
-			for (i = 0, j = left; i < top; i++, j++)
+			for(i = 0, j = left; i < top; i++, j++)
 			{
-				this._Points[j] = Vector2.FromPoint(data[i].X, data[i].Y);
+				_Points[j] = Vector2.FromPoint(data[i].X, data[i].Y);
 			}
 		}
 
@@ -314,51 +302,53 @@ namespace Regulus.CustomType
 
 		public void Convex()
 		{
-			this.MergeSort(0, this._Points.Count - 1);
+			MergeSort(0, _Points.Count - 1);
 
-			var CH = new Vector2[this._Points.Count + 1];
+			var CH = new Vector2[_Points.Count + 1];
 			var m = 0;
-			for (var i = 0; i < this._Points.Count; i++)
+			for(var i = 0; i < _Points.Count; i++)
 			{
-				while (m >= 2 && this.cross(CH[m - 2], CH[m - 1], this._Points[i]) <= 0)
+				while(m >= 2 && cross(CH[m - 2], CH[m - 1], _Points[i]) <= 0)
 				{
 					m--;
 				}
 
-				CH[m++] = this._Points[i];
+				CH[m++] = _Points[i];
 			}
 
-			for (int i = this._Points.Count - 2, 
-			         t = m + 1; i >= 0; i--)
+			for(int i = _Points.Count - 2, 
+			        t = m + 1;
+			    i >= 0;
+			    i--)
 			{
-				while (m >= t && this.cross(CH[m - 2], CH[m - 1], this._Points[i]) <= 0)
+				while(m >= t && cross(CH[m - 2], CH[m - 1], _Points[i]) <= 0)
 				{
 					m--;
 				}
 
-				CH[m++] = this._Points[i];
+				CH[m++] = _Points[i];
 			}
 
-			this._Points.Clear();
-			for (var i = 0; i < m - 1; ++i)
+			_Points.Clear();
+			for(var i = 0; i < m - 1; ++i)
 			{
-				this._Points.Add(CH[i]);
+				_Points.Add(CH[i]);
 			}
 
-			this.BuildEdges();
+			BuildEdges();
 		}
 
 		public void Rotation(float angle)
 		{
 			var points = new List<Vector2>();
-			var center = new Vector2(this.Center.X, this.Center.Y);
-			foreach (var point in this.Points)
+			var center = new Vector2(Center.X, Center.Y);
+			foreach(var point in Points)
 			{
-				points.Add(this._RotatePoint(point, center, angle));
+				points.Add(_RotatePoint(point, center, angle));
 			}
 
-			this._Points = points;
-			this.BuildEdges();
+			_Points = points;
+			BuildEdges();
 		}
 
 		public Vector2 _RotatePoint(Vector2 point, Vector2 centroid, double angle)

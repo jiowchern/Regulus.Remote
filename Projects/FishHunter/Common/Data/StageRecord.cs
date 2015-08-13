@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using Regulus.Utility;
 
 namespace VGame.Project.FishHunter.Common.Data
 {
@@ -18,27 +18,27 @@ namespace VGame.Project.FishHunter.Common.Data
 
 		public int AsnWin { get; set; }
 
-		public List<SpecialWeaponData> SpecialWeaponDatas { get; private set; }
+		public class HitHistory
+		{
+			public HitHistory(FISH_TYPE fish, int kill_conunt)
+			{
+				FishType = fish;
+				KillCount = kill_conunt;
+			}
+
+			public FISH_TYPE FishType { get; private set; }
+
+			public int KillCount { get; set; }
+		}
+
+		public FishCorrespondenceItem FishHitReuslt { get; set; }
+
+		
 
 		public StageRecord(int stage_id)
 		{
 			StageId = stage_id;
-			_CreateSpacialWeaponDatas();
-		}
-
-		private void _CreateSpacialWeaponDatas()
-		{
-			SpecialWeaponDatas = new List<SpecialWeaponData>
-			{
-				new SpecialWeaponData(weapon_type: WEAPON_TYPE.SUPER_BOMB, sp_id: 0, power: 250), 
-				new SpecialWeaponData(WEAPON_TYPE.ELECTRIC_NET, 1, 150 / 15), 
-				new SpecialWeaponData(WEAPON_TYPE.SCREEN_BOMB, 3, 80), 
-				new SpecialWeaponData(WEAPON_TYPE.THUNDER_BOMB, 4, 150), 
-				new SpecialWeaponData(WEAPON_TYPE.FIRE_BOMB, 5, 120 / 15), 
-				new SpecialWeaponData(WEAPON_TYPE.DAMAGE_BALL, 6, 200 / 15), 
-				new SpecialWeaponData(WEAPON_TYPE.OCTOPUS_BOMB, 7, 200), 
-				new SpecialWeaponData(WEAPON_TYPE.BIG_OCTOPUS_BOMB, 8, 10000)
-			};
+			FishHitReuslt = new FishCorrespondenceItem();
 		}
 	}
 }

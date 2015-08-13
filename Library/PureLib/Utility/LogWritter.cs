@@ -1,13 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="LogWritter.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the LogWritter type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-namespace Regulus.Utility
+﻿namespace Regulus.Utility
 {
 	public class LogWritter
 	{
@@ -24,7 +15,7 @@ namespace Regulus.Utility
 
 		internal void Write()
 		{
-			this.AsyncRecord(this.message);
+			AsyncRecord(message);
 		}
 	}
 }

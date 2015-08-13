@@ -1,13 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="serializer_typehelper.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the TypeHelper type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
 
@@ -31,7 +22,7 @@ namespace Regulus
 
 		public static byte[] Serializer<T>(T o)
 		{
-			using (var stream = new MemoryStream())
+			using(var stream = new MemoryStream())
 			{
 				ProtoBuf.Serializer.Serialize(stream, o);
 				return stream.ToArray();
@@ -40,7 +31,7 @@ namespace Regulus
 
 		public static object DeserializeObject(Type type, byte[] b)
 		{
-			using (var stream = new MemoryStream(b))
+			using(var stream = new MemoryStream(b))
 			{
 				return ProtoBuf.Serializer.NonGeneric.Deserialize(type, stream);
 			}
@@ -48,7 +39,7 @@ namespace Regulus
 
 		public static T Deserialize<T>(byte[] b)
 		{
-			using (var stream = new MemoryStream(b))
+			using(var stream = new MemoryStream(b))
 			{
 				return ProtoBuf.Serializer.Deserialize<T>(stream);
 			}

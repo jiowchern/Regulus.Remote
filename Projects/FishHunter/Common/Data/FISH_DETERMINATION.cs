@@ -9,8 +9,14 @@ namespace VGame.Project.FishHunter.Common.Data
 	[ProtoContract]
 	public enum FISH_DETERMINATION
 	{
+		/// <summary>
+		///     死亡
+		/// </summary>
 		DEATH, 
 
+		/// <summary>
+		///     存活
+		/// </summary>
 		SURVIVAL
 	}
 }

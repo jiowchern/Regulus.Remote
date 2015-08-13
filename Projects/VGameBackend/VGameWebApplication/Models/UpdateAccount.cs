@@ -1,18 +1,5 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="UpdateAccount.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the UpdateAccount type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using VGame.Project.FishHunter.Common;
+﻿using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.Data;
-
-#endregion
 
 namespace VGameWebApplication.Models
 {

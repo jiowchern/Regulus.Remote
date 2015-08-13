@@ -1,19 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ValueAwaitExtension.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the ValueAwaitExtension type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System.Threading.Tasks;
 
-#region Test_Region
-
-using System.Threading.Tasks;
 
 using Regulus.Remoting;
-
-#endregion
 
 namespace Regulus.Net45
 {

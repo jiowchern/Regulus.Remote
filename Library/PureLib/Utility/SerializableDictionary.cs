@@ -1,13 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SerializableDictionary.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Map type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
+﻿#region Test_Region
 
 using System;
 using System.Collections.Generic;
@@ -30,7 +21,7 @@ namespace Regulus.Utility
 		{
 			public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 			{
-				if (sourceType == typeof (Map<TKey, TVal>))
+				if(sourceType == typeof(Map<TKey, TVal>))
 				{
 					return true;
 				}
@@ -41,10 +32,10 @@ namespace Regulus.Utility
 			public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
 			{
 				var qn = new Map<TKey, TVal>();
-				if (value != null)
+				if(value != null)
 				{
 					var parts = (object[])value;
-					foreach (var part in parts)
+					foreach(var part in parts)
 					{
 						var kv = (KeyValuePair<TKey, TVal>)part;
 						qn.Add(kv.Key, kv.Value);
@@ -58,7 +49,7 @@ namespace Regulus.Utility
 
 			public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
 			{
-				if (destinationType == typeof (Map<TKey, TVal>))
+				if(destinationType == typeof(Map<TKey, TVal>))
 				{
 					return true;
 				}
@@ -66,18 +57,21 @@ namespace Regulus.Utility
 				return base.CanConvertFrom(context, destinationType);
 			}
 
-			public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, 
+			public override object ConvertTo(
+				ITypeDescriptorContext context, 
+				CultureInfo culture, 
+				object value, 
 				Type destinationType)
 			{
 				var objs = new object[0];
-				if (value != null)
+				if(value != null)
 				{
-					if (destinationType == typeof (Map<TKey, TVal>))
+					if(destinationType == typeof(Map<TKey, TVal>))
 					{
 						var qn = (Map<TKey, TVal>)value;
 						objs = new object[qn.Count];
 						var idx = 0;
-						foreach (var page in qn)
+						foreach(var page in qn)
 						{
 							objs[idx] = page;
 							idx++;
@@ -94,7 +88,7 @@ namespace Regulus.Utility
 		public static Map<TKey, TVal> ToMap(Dictionary<TKey, TVal> value)
 		{
 			var map = new Map<TKey, TVal>();
-			foreach (var pair in value)
+			foreach(var pair in value)
 			{
 				map.Add(pair.Key, pair.Value);
 			}
@@ -135,7 +129,7 @@ namespace Regulus.Utility
 
 		public Map()
 		{
-			if (Map<TKey, TVal>.conv == null)
+			if(Map<TKey, TVal>.conv == null)
 			{
 			}
 		}
@@ -172,21 +166,21 @@ namespace Regulus.Utility
 		protected Map(SerializationInfo info, StreamingContext context)
 		{
 			var itemCount = info.GetInt32("ItemCount");
-			for (var i = 0; i < itemCount; i++)
+			for(var i = 0; i < itemCount; i++)
 			{
-				var kvp = (KeyValuePair<TKey, TVal>)info.GetValue(string.Format("Item{0}", i), typeof (KeyValuePair<TKey, TVal>));
-				this.Add(kvp.Key, kvp.Value);
+				var kvp = (KeyValuePair<TKey, TVal>)info.GetValue(string.Format("Item{0}", i), typeof(KeyValuePair<TKey, TVal>));
+				Add(kvp.Key, kvp.Value);
 			}
 		}
 
 		[SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
 		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue("ItemCount", this.Count);
+			info.AddValue("ItemCount", Count);
 			var itemIdx = 0;
-			foreach (var kvp in this)
+			foreach(var kvp in this)
 			{
-				info.AddValue(string.Format("Item{0}", itemIdx), kvp, typeof (KeyValuePair<TKey, TVal>));
+				info.AddValue(string.Format("Item{0}", itemIdx), kvp, typeof(KeyValuePair<TKey, TVal>));
 				itemIdx++;
 			}
 		}
@@ -198,14 +192,14 @@ namespace Regulus.Utility
 		void IXmlSerializable.WriteXml(XmlWriter writer)
 		{
 			// writer.WriteStartElement(DictionaryNodeName);
-			foreach (var kvp in this)
+			foreach(var kvp in this)
 			{
 				writer.WriteStartElement(Map<TKey, TVal>.ItemNodeName);
 				writer.WriteStartElement(Map<TKey, TVal>.KeyNodeName);
-				this.KeySerializer.Serialize(writer, kvp.Key);
+				KeySerializer.Serialize(writer, kvp.Key);
 				writer.WriteEndElement();
 				writer.WriteStartElement(Map<TKey, TVal>.ValueNodeName);
-				this.ValueSerializer.Serialize(writer, kvp.Value);
+				ValueSerializer.Serialize(writer, kvp.Value);
 				writer.WriteEndElement();
 				writer.WriteEndElement();
 			}
@@ -215,29 +209,29 @@ namespace Regulus.Utility
 
 		void IXmlSerializable.ReadXml(XmlReader reader)
 		{
-			if (reader.IsEmptyElement)
+			if(reader.IsEmptyElement)
 			{
 				return;
 			}
 
 			// Move past container
-			if (!reader.Read())
+			if(!reader.Read())
 			{
 				throw new XmlException("Error in Deserialization of Dictionary");
 			}
 
 			// reader.ReadStartElement(DictionaryNodeName);
-			while (reader.NodeType != XmlNodeType.EndElement)
+			while(reader.NodeType != XmlNodeType.EndElement)
 			{
 				reader.ReadStartElement(Map<TKey, TVal>.ItemNodeName);
 				reader.ReadStartElement(Map<TKey, TVal>.KeyNodeName);
-				var key = (TKey)this.KeySerializer.Deserialize(reader);
+				var key = (TKey)KeySerializer.Deserialize(reader);
 				reader.ReadEndElement();
 				reader.ReadStartElement(Map<TKey, TVal>.ValueNodeName);
-				var value = (TVal)this.ValueSerializer.Deserialize(reader);
+				var value = (TVal)ValueSerializer.Deserialize(reader);
 				reader.ReadEndElement();
 				reader.ReadEndElement();
-				this.Add(key, value);
+				Add(key, value);
 				reader.MoveToContent();
 			}
 
@@ -258,12 +252,12 @@ namespace Regulus.Utility
 		{
 			get
 			{
-				if (this.valueSerializer == null)
+				if(valueSerializer == null)
 				{
-					this.valueSerializer = new XmlSerializer(typeof (TVal));
+					valueSerializer = new XmlSerializer(typeof(TVal));
 				}
 
-				return this.valueSerializer;
+				return valueSerializer;
 			}
 		}
 
@@ -271,12 +265,12 @@ namespace Regulus.Utility
 		{
 			get
 			{
-				if (this.keySerializer == null)
+				if(keySerializer == null)
 				{
-					this.keySerializer = new XmlSerializer(typeof (TKey));
+					keySerializer = new XmlSerializer(typeof(TKey));
 				}
 
-				return this.keySerializer;
+				return keySerializer;
 			}
 		}
 

@@ -1,17 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="GameLoader.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Loader type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System.Reflection;
-
-#endregion
+﻿using System.Reflection;
 
 namespace Regulus.Remoting
 {

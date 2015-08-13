@@ -1,25 +1,14 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AttribTest.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   AttribTest 的摘要描述
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 
 using Regulus.Utility;
 
-#endregion
-
-namespace PureLibraryTest
+namespace RegulusLibraryTest
 {
 	/// <summary>
 	///     AttribTest 的摘要描述
@@ -73,7 +62,7 @@ namespace PureLibraryTest
 			var flags = TESTFLAG.ALL;
 
 			var descs = new List<string>();
-			foreach (TESTFLAG flag in flags.GetFlags())
+			foreach(TESTFLAG flag in flags.GetFlags())
 			{
 				descs.Add(flag.GetEnumDescription());
 			}
@@ -90,7 +79,7 @@ namespace PureLibraryTest
 			var flags = TESTFLAG.ENUM1 | TESTFLAG.ENUM3;
 
 			var descs = new List<string>();
-			foreach (TESTFLAG flag in flags.GetFlags())
+			foreach(TESTFLAG flag in flags.GetFlags())
 			{
 				descs.Add(flag.GetEnumDescription());
 			}
@@ -103,7 +92,7 @@ namespace PureLibraryTest
 		public void TestForeachEnum1()
 		{
 			var flags = new List<TEST>();
-			foreach (var f in EnumHelper.GetEnums<TEST>())
+			foreach(var f in EnumHelper.GetEnums<TEST>())
 			{
 				flags.Add(f);
 			}
@@ -118,7 +107,7 @@ namespace PureLibraryTest
 		{
 			var flags = new List<TESTFLAG>();
 
-			foreach (var f in EnumHelper.GetEnums<TESTFLAG>())
+			foreach(var f in EnumHelper.GetEnums<TESTFLAG>())
 			{
 				flags.Add(f);
 			}
@@ -136,7 +125,7 @@ namespace PureLibraryTest
 			var flagAll = TESTFLAG.ALL;
 			var flags = new List<TESTFLAG>();
 
-			foreach (var f in EnumHelper.GetEnums<TESTFLAG>())
+			foreach(var f in EnumHelper.GetEnums<TESTFLAG>())
 			{
 				flags.Add(f);
 			}

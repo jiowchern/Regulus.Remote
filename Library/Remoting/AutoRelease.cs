@@ -1,18 +1,5 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AutoRelease.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the AutoRelease type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Collections.Generic;
-
-#endregion
 
 namespace Regulus.Remoting
 {
@@ -32,7 +19,7 @@ namespace Regulus.Remoting
 		{
 			var id = ghost.GetID();
 			WeakReference instance;
-			if (_Exists.TryGetValue(id, out instance) == false)
+			if(_Exists.TryGetValue(id, out instance) == false)
 			{
 				_Exists.Add(id, new WeakReference(ghost));
 			}
@@ -42,21 +29,21 @@ namespace Regulus.Remoting
 		{
 			var ids = new List<Guid>();
 
-			foreach (var e in _Exists)
+			foreach(var e in _Exists)
 			{
-				if (e.Value.IsAlive == false)
+				if(e.Value.IsAlive == false)
 				{
 					ids.Add(e.Key);
 				}
 			}
 
-			foreach (var id in ids)
+			foreach(var id in ids)
 			{
 				var args = new Dictionary<byte, byte[]>();
 				args[0] = id.ToByteArray();
 
 				_Exists.Remove(id);
-				if (_Requester != null)
+				if(_Requester != null)
 				{
 					_Requester.Request((int)ClientToServerOpCode.Release, args);
 				}

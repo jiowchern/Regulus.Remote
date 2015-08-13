@@ -1,18 +1,5 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="GuidModelBinder.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the GuidModelBinder type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Web.Mvc;
-
-#endregion
 
 namespace VGameWebApplication
 {

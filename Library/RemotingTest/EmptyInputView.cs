@@ -1,17 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="EmptyInputView.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the EmptyInputView type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Utility;
-
-#endregion
+﻿using Regulus.Utility;
 
 namespace RemotingTest
 {

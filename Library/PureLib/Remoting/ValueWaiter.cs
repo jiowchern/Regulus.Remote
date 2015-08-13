@@ -1,17 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ValueWaiter.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the ValueWaiter type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System.Threading;
-
-#endregion
+﻿using System.Threading;
 
 namespace Regulus.Remoting
 {
@@ -27,23 +14,23 @@ namespace Regulus.Remoting
 		{
 			// TODO: Complete member initialization
 			this.value = value;
-			this._HasValue = false;
+			_HasValue = false;
 		}
 
 		internal void Run(object obj)
 		{
 			var are = (AutoResetEvent)obj;
-			this.value.OnValue += this._Getted;
+			value.OnValue += _Getted;
 
 			var count = 0;
-			while (this._HasValue == false)
+			while(_HasValue == false)
 			{
 				count++;
-				if (count % 10 == 0)
+				if(count % 10 == 0)
 				{
 					Thread.Sleep(0);
 				}
-				else if (count % 20 == 0)
+				else if(count % 20 == 0)
 				{
 					Thread.Sleep(1);
 				}
@@ -52,7 +39,7 @@ namespace Regulus.Remoting
 					Thread.SpinWait(count);
 				}
 
-				if (count > 20 * 1000)
+				if(count > 20 * 1000)
 				{
 					count = 0;
 					Thread.Sleep(1000);
@@ -64,8 +51,8 @@ namespace Regulus.Remoting
 
 		private void _Getted(T obj)
 		{
-			this.Value = obj;
-			this._HasValue = true;
+			Value = obj;
+			_HasValue = true;
 		}
 	}
 }

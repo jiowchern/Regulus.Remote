@@ -1,16 +1,9 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="CSFishStage.cs" company="Regulus Framework">
-//   Regulus Framework
-// </copyright>
-// <summary>
-//   Defines the CsFishStage type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System;
 
-using System;
 
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
+
 
 using Random = Regulus.Utility.Random;
 
@@ -22,13 +15,13 @@ namespace VGame.Project.FishHunter.Formula
 
 		private event Action<HitResponse> _OnHitResponseEvent;
 
-		private readonly long _AccountId;
+		private readonly Guid _AccountId;
 
 		private readonly int _FishStage;
 
 		private readonly HitBase _Formula;
 
-		public CsFishStage(long player_id, int stage_id)
+		public CsFishStage(Guid player_id, int stage_id)
 		{
 			_Formula = new HitTest(Random.Instance);
 			_AccountId = player_id;
@@ -61,7 +54,9 @@ namespace VGame.Project.FishHunter.Formula
 			remove { _OnHitResponseEvent -= value; }
 		}
 
-		long IFishStage.AccountId
+		public event Action<HitResponse[]> OnTotalHitResponseEvent;
+
+		Guid IFishStage.AccountId
 		{
 			get { return _AccountId; }
 		}

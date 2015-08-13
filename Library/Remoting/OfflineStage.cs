@@ -1,22 +1,11 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="OfflineStage.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the OfflineStage type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Utility;
-
-#endregion
+﻿using Regulus.Utility;
 
 namespace Regulus.Remoting
 {
 	internal class OfflineStage : IStage
 	{
+		public delegate void OnDone();
+
 		public event OnDone DoneEvent;
 
 		private readonly IAgent _Agent;
@@ -27,7 +16,7 @@ namespace Regulus.Remoting
 
 		public OfflineStage(IAgent agent, TProvider<IConnect> _ConnectProvider)
 		{
-			this._Agent = agent;
+			_Agent = agent;
 			this._ConnectProvider = _ConnectProvider;
 			_Connect = new Connect();
 		}
@@ -44,13 +33,11 @@ namespace Regulus.Remoting
 
 		void IStage.Update()
 		{
-			if (this._Agent.Connected)
+			if(_Agent.Connected)
 			{
 				DoneEvent();
 			}
 		}
-
-		public delegate void OnDone();
 
 		private void _Connect_ConnectedEvent(string account, int password, Value<bool> result)
 		{

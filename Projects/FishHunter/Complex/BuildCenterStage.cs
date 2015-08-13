@@ -8,7 +8,22 @@ namespace VGame.Project.FishHunter
 {
 	internal class BuildCenterStage : IStage
 	{
+		public delegate void SuccessBuiledCallback(ExternalFeature features);
+
 		public event SuccessBuiledCallback OnBuiledEvent;
+
+		public struct ExternalFeature
+		{
+			public IAccountFinder AccountFinder;
+
+			public IFishStageQueryer FishStageQueryer;
+
+			public IGameRecorder GameRecorder;
+
+			public ITradeNotes TradeAccount;
+
+			public IFormulaPlayerRecorder FormulaPlayerRecorder;
+		}
 
 		private readonly IUser _FormulaUser;
 
@@ -36,19 +51,6 @@ namespace VGame.Project.FishHunter
 		{
 		}
 
-		public struct ExternalFeature
-		{
-			public IAccountFinder AccountFinder;
-
-			public IFishStageQueryer FishStageQueryer;
-
-			public IRecordHandler RecordHandler;
-
-			public ITradeNotes TradeAccount;
-		}
-
-		public delegate void SuccessBuiledCallback(ExternalFeature features);
-
 		private void _GetFishStageQuery(IFishStageQueryer obj)
 		{
 			_FormulaUser.FishStageQueryerProvider.Supply -= _GetFishStageQuery;
@@ -70,13 +72,22 @@ namespace VGame.Project.FishHunter
 			_StorageUser.QueryProvider<ITradeNotes>().Supply -= BuildCenterStage_Supply;
 			_Feature.TradeAccount = obj;
 
-			_StorageUser.QueryProvider<IRecordHandler>().Supply += _RecordQueriers;
+			_StorageUser.QueryProvider<IGameRecorder>().Supply += _RecordQueriers;
 		}
 
-		private void _RecordQueriers(IRecordHandler obj)
+		private void _RecordQueriers(IGameRecorder obj)
 		{
-			_StorageUser.QueryProvider<IRecordHandler>().Supply -= _RecordQueriers;
-			_Feature.RecordHandler = obj;
+			_StorageUser.QueryProvider<IGameRecorder>().Supply -= _RecordQueriers;
+			_Feature.GameRecorder = obj;
+
+			_StorageUser.QueryProvider<IFormulaPlayerRecorder>().Supply += FormulaPlayerRecord;
+		}
+
+		private void FormulaPlayerRecord(IFormulaPlayerRecorder obj)
+		{
+			_Feature.FormulaPlayerRecorder = obj;
+
+			_StorageUser.QueryProvider<IFormulaPlayerRecorder>().Supply -= FormulaPlayerRecord;
 
 			OnBuiledEvent(_Feature);
 		}

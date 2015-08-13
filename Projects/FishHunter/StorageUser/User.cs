@@ -1,22 +1,10 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="User.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the User type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Framework;
+﻿using Regulus.Framework;
 using Regulus.Remoting;
 using Regulus.Utility;
 
+
 using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.GPI;
-
-#endregion
 
 namespace VGame.Project.FishHunter.Storage
 {
@@ -30,7 +18,7 @@ namespace VGame.Project.FishHunter.Storage
 
 		public User(IAgent agent)
 		{
-			this._Agent = agent;
+			_Agent = agent;
 			_Updater = new Updater();
 			_Remoting = new Regulus.Remoting.User(agent);
 		}
@@ -67,7 +55,7 @@ namespace VGame.Project.FishHunter.Storage
 			return _Agent.QueryNotifier<T>();
 		}
 
-		INotifier<IStorageCompetences> IUser.StorageCompetncesProvider
+		INotifier<IStorageCompetences> IUser.StorageCompetencesProvider
 		{
 			get { return _Agent.QueryNotifier<IStorageCompetences>(); }
 		}

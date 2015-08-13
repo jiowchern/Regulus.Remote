@@ -1,13 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Stage.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the IStage type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-namespace Regulus.Utility
+﻿namespace Regulus.Utility
 {
 	public interface IStage
 	{
@@ -17,7 +8,6 @@ namespace Regulus.Utility
 
 		void Update();
 	}
-
 
 	public class StageLock
 	{
@@ -32,12 +22,12 @@ namespace Regulus.Utility
 
 		public StageLock()
 		{
-			this.Current = Status.Locked;
+			Current = Status.Locked;
 		}
 
 		public void Unlock()
 		{
-			this.Current = Status.Unlock;
+			Current = Status.Unlock;
 		}
 	}
 

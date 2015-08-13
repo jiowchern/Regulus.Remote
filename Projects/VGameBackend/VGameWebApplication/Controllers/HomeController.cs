@@ -1,25 +1,13 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="HomeController.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the HomeController type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 
+
 using VGameWebApplication.Models;
 using VGameWebApplication.Storage;
-
-#endregion
 
 namespace VGameWebApplication.Controllers
 {
@@ -39,7 +27,7 @@ namespace VGameWebApplication.Controllers
 		// GET: /Home/        
 		public ActionResult Index()
 		{
-			if (User.Identity.IsAuthenticated == false)
+			if(User.Identity.IsAuthenticated == false)
 			{
 				return RedirectToAction("Verify");
 			}
@@ -58,15 +46,17 @@ namespace VGameWebApplication.Controllers
 		{
 			var id = Service.Verify(user, password);
 
-			if (id != Guid.Empty)
+			if(id != Guid.Empty)
 			{
 				var ticket = new FormsAuthenticationTicket
-					(1
-						, user, 
-						DateTime.Now, 
-						DateTime.Now.AddSeconds(300), 
-						false, 
-						id.ToString());
+					(
+					1
+					, 
+					user, 
+					DateTime.Now, 
+					DateTime.Now.AddSeconds(300), 
+					false, 
+					id.ToString());
 
 				var encTicket = FormsAuthentication.Encrypt(ticket);
 				var cookie = new HttpCookie(FormsAuthentication.FormsCookieName, encTicket);

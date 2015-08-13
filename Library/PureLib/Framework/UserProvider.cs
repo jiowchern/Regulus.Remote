@@ -1,24 +1,13 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="UserProvider.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the UserProvider type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 
 using Regulus.Remoting;
 using Regulus.Utility;
 
-using Console = Regulus.Utility.Console;
 
-#endregion
+using Console = Regulus.Utility.Console;
 
 namespace Regulus.Framework
 {
@@ -39,17 +28,17 @@ namespace Regulus.Framework
 
 		public UserProvider(IUserFactoty<TUser> factory, Console.IViewer view, Command command)
 		{
-			this._Controllers = new List<Controller<TUser>>();
-			this.Factory = factory;
-			this._View = view;
-			this._Command = command;
-			this._Current = null;
-			this._Updater = new Updater();
+			_Controllers = new List<Controller<TUser>>();
+			Factory = factory;
+			_View = view;
+			_Command = command;
+			_Current = null;
+			_Updater = new Updater();
 		}
 
 		bool IUpdatable.Update()
 		{
-			this._Updater.Working();
+			_Updater.Working();
 			return true;
 		}
 
@@ -59,29 +48,29 @@ namespace Regulus.Framework
 
 		void IBootable.Shutdown()
 		{
-			this._Updater.Shutdown();
+			_Updater.Shutdown();
 		}
 
 		public TUser Spawn(string name)
 		{
-			var user = this.Factory.SpawnUser();
-			this._Add(this._Build(name, user));
-			this._View.WriteLine(string.Format("{0} user created.", name));
+			var user = Factory.SpawnUser();
+			_Add(_Build(name, user));
+			_View.WriteLine(string.Format("{0} user created.", name));
 
 			return user;
 		}
 
 		private void _Add(Controller<TUser> controller)
 		{
-			this._Controllers.Add(controller);
-			this._Updater.Add(controller.User);
+			_Controllers.Add(controller);
+			_Updater.Add(controller.User);
 		}
 
 		private Controller<TUser> _Build(string name, TUser user)
 		{
 			var controller = new Controller<TUser>(name, user);
-			var parser = this.Factory.SpawnParser(this._Command, this._View, controller.User);
-			var builder = this._CreateBuilder();
+			var parser = Factory.SpawnParser(_Command, _View, controller.User);
+			var builder = _CreateBuilder();
 			controller.Parser = parser;
 			controller.Builder = builder;
 			return controller;
@@ -89,34 +78,34 @@ namespace Regulus.Framework
 
 		public void Unspawn(string name)
 		{
-			var controller = this._Find(name);
+			var controller = _Find(name);
 
-			if (controller != null)
+			if(controller != null)
 			{
 				controller.Parser.Clear();
-				if (this._Current != null && this._Current.User == controller.User)
+				if(_Current != null && _Current.User == controller.User)
 				{
-					this._Current.Builder.Remove();
-					this._Current.Parser.Clear();
-					this._Current = null;
+					_Current.Builder.Remove();
+					_Current.Parser.Clear();
+					_Current = null;
 				}
 
-				this._Controllers.Remove(controller);
-				this._View.WriteLine(string.Format("{0} user removed.", name));
+				_Controllers.Remove(controller);
+				_View.WriteLine(string.Format("{0} user removed.", name));
 			}
 
-			this._View.WriteLine(string.Format("not found {0}.", name));
+			_View.WriteLine(string.Format("not found {0}.", name));
 		}
 
 		private Controller<TUser> _Find(string name)
 		{
-			var controllers = (from controller in this._Controllers where controller.Name == name select controller).ToArray();
-			if (controllers.Length == 1)
+			var controllers = (from controller in _Controllers where controller.Name == name select controller).ToArray();
+			if(controllers.Length == 1)
 			{
 				return controllers[0];
 			}
 
-			if (controllers.Length == 0)
+			if(controllers.Length == 0)
 			{
 				return null;
 			}
@@ -126,21 +115,21 @@ namespace Regulus.Framework
 
 		public bool Select(string name)
 		{
-			var controller = this._Find(name);
-			if (controller != null)
+			var controller = _Find(name);
+			if(controller != null)
 			{
-				if (this._Current != null)
+				if(_Current != null)
 				{
-					this._Current.Builder.Remove();
-					this._Current.Parser.Clear();
+					_Current.Builder.Remove();
+					_Current.Parser.Clear();
 				}
 
 				controller.Parser.Setup(controller.Builder);
 				controller.Builder.Setup();
 
-				this._Current = controller;
+				_Current = controller;
 
-				this._View.WriteLine(string.Format("{0} selected.", name));
+				_View.WriteLine(string.Format("{0} selected.", name));
 				return true;
 			}
 
@@ -149,7 +138,7 @@ namespace Regulus.Framework
 
 		private GPIBinderFactory _CreateBuilder()
 		{
-			return new GPIBinderFactory(this._Command);
+			return new GPIBinderFactory(_Command);
 		}
 	}
 }

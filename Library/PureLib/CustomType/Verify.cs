@@ -1,13 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Verify.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Verify type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-namespace Regulus.CustomType
+﻿namespace Regulus.CustomType
 {
 	public struct Verify
 	{

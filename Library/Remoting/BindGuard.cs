@@ -1,21 +1,9 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="BindGuard.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the BindGuard type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-using ProtoBuf;
 
-#endregion
+using ProtoBuf;
 
 namespace Regulus.Remoting
 {
@@ -39,7 +27,7 @@ namespace Regulus.Remoting
 
 		private void _CheckEvent(EventInfo[] eventInfos)
 		{
-			foreach (var eventInfo in eventInfos)
+			foreach(var eventInfo in eventInfos)
 			{
 			}
 		}
@@ -47,9 +35,9 @@ namespace Regulus.Remoting
 		private void _CheckMethod(MethodInfo[] methodInfos)
 		{
 			var names = new HashSet<string>();
-			foreach (var method in methodInfos)
+			foreach(var method in methodInfos)
 			{
-				if (names.Contains(method.Name))
+				if(names.Contains(method.Name))
 				{
 					_ThrowErrorMethod(method, "The method name can not be repeated.");
 				}
@@ -58,16 +46,16 @@ namespace Regulus.Remoting
 					names.Add(method.Name);
 				}
 
-				foreach (var args in method.GetParameters())
+				foreach(var args in method.GetParameters())
 				{
-					if (args.ParameterType.IsInterface)
+					if(args.ParameterType.IsInterface)
 					{
 						_ThrowErrorMethod(method);
 					}
 
-					if (args.ParameterType.IsClass)
+					if(args.ParameterType.IsClass)
 					{
-						if (args.ParameterType.GetCustomAttributes(typeof (ProtoContractAttribute), true).Length == 0)
+						if(args.ParameterType.GetCustomAttributes(typeof(ProtoContractAttribute), true).Length == 0)
 						{
 							_ThrowErrorMethod(method);
 						}

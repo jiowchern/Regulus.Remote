@@ -1,17 +1,8 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="RecordController.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the RecordController type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System.Web.Mvc;
 
-#region Test_Region
-
-using System.Web.Mvc;
 
 using Regulus.Net45;
+
 
 using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.Data;
@@ -19,8 +10,6 @@ using VGame.Project.FishHunter.Common.Data;
 
 using VGameWebApplication.Models;
 using VGameWebApplication.Storage;
-
-#endregion
 
 namespace VGameWebApplication.Controllers
 {
@@ -34,9 +23,9 @@ namespace VGameWebApplication.Controllers
 
 			var accs = service.AccountManager.QueryAllAccount().WaitResult();
 
-			foreach (var a in accs)
+			foreach(var a in accs)
 			{
-				var money = service.RecordHandler.Load(a.Id).WaitResult().Money;
+				var money = service.GameRecorder.Load(a.Id).WaitResult().Money;
 
 				tradeData.Add(a.Id, a.Name, money);
 			}
@@ -46,7 +35,7 @@ namespace VGameWebApplication.Controllers
 
 		public ActionResult InputMoney(TradeData.Data data)
 		{
-			if (data.Deposit == 0)
+			if(data.Deposit == 0)
 			{
 				return View(data);
 			}

@@ -1,24 +1,13 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="FlagTest.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the TESTENUM type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System.Linq;
 
-#region Test_Region
-
-using System.Linq;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 
 using Regulus;
 using Regulus.CustomType;
 
-#endregion
-
-namespace PureLibraryTest
+namespace RegulusLibraryTest
 {
 	internal enum TESTENUM
 	{

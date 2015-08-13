@@ -1,13 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IUnsupportedMethodIntefaceParam.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the IUnsupportedMethodIntefaceParam type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-namespace RemotingTest
+﻿namespace RemotingTest
 {
 	public interface IUnsupportedMethodIntefaceParam
 	{

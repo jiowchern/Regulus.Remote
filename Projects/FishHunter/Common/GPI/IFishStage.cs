@@ -1,12 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IFishStage.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the FISH_DETERMINATION type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-using System;
+﻿using System;
 
 
 using VGame.Project.FishHunter.Common.Data;
@@ -15,8 +7,6 @@ namespace VGame.Project.FishHunter.Common.GPI
 {
 	// public delegate void HitResponseCallback(HitResponse response);
 	// public delegate void HitExceptionCallback(string message);
-
-
 	/// <summary>
 	///     魚場
 	/// </summary>
@@ -33,9 +23,14 @@ namespace VGame.Project.FishHunter.Common.GPI
 		event Action<HitResponse> OnHitResponseEvent;
 
 		/// <summary>
+		/// 一次判定所有hit事件
+		/// </summary>
+		event Action<HitResponse[]> OnTotalHitResponseEvent;
+
+		/// <summary>
 		///     玩家id
 		/// </summary>
-		long AccountId { get; }
+		Guid AccountId { get; }
 
 		/// <summary>
 		///     魚場id

@@ -1,19 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Updater.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   更新器
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System.Collections.Generic;
 
-#region Test_Region
-
-using System.Collections.Generic;
 
 using Regulus.Framework;
-
-#endregion
 
 namespace Regulus.Utility
 {
@@ -40,43 +28,43 @@ namespace Regulus.Utility
 
 		public int Count
 		{
-			get { return this._Ts.Count; }
+			get { return _Ts.Count; }
 		}
 
 		private T[] _Objects
 		{
-			get { return this._Ts.ToArray(); }
+			get { return _Ts.ToArray(); }
 		}
 
 		protected IEnumerable<T> _GetObjectSet()
 		{
-			lock (this._Ts)
+			lock(_Ts)
 			{
-				lock (this._Removes)
-					this._Remove(this._Removes, this._Ts);
+				lock(_Removes)
+					_Remove(_Removes, _Ts);
 
-				lock (this._Adds)
-					this._Add(this._Adds, this._Ts);
+				lock(_Adds)
+					_Add(_Adds, _Ts);
 
-				return this._Objects;
+				return _Objects;
 			}
 		}
 
 		public void Add(T framework)
 		{
-			lock (this._Adds)
-				this._Adds.Enqueue(framework);
+			lock(_Adds)
+				_Adds.Enqueue(framework);
 		}
 
 		public void Remove(T framework)
 		{
-			lock (this._Removes)
-				this._Removes.Enqueue(framework);
+			lock(_Removes)
+				_Removes.Enqueue(framework);
 		}
 
 		private void _Add(Queue<T> add_frameworks, List<T> frameworks)
 		{
-			while (add_frameworks.Count > 0)
+			while(add_frameworks.Count > 0)
 			{
 				var fw = add_frameworks.Dequeue();
 				frameworks.Add(fw);
@@ -86,7 +74,7 @@ namespace Regulus.Utility
 
 		private void _Remove(Queue<T> remove_framework, List<T> frameworks)
 		{
-			while (remove_framework.Count > 0)
+			while(remove_framework.Count > 0)
 			{
 				var fw = remove_framework.Dequeue();
 				frameworks.Remove(fw);
@@ -96,16 +84,16 @@ namespace Regulus.Utility
 
 		public void Shutdown()
 		{
-			lock (this._Ts)
+			lock(_Ts)
 			{
-				this._Shutdown(this._Ts);
-				this._Ts.Clear();
+				_Shutdown(_Ts);
+				_Ts.Clear();
 			}
 		}
 
 		private void _Shutdown(List<T> frameworks)
 		{
-			foreach (var framework in frameworks)
+			foreach(var framework in frameworks)
 			{
 				framework.Shutdown();
 			}
@@ -116,11 +104,11 @@ namespace Regulus.Utility
 	{
 		public void Working(T arg)
 		{
-			foreach (var t in this._GetObjectSet())
+			foreach(var t in _GetObjectSet())
 			{
-				if (t.Update(arg) == false)
+				if(t.Update(arg) == false)
 				{
-					this.Remove(t);
+					Remove(t);
 				}
 			}
 		}
@@ -130,11 +118,11 @@ namespace Regulus.Utility
 	{
 		public void Working()
 		{
-			foreach (var t in this._GetObjectSet())
+			foreach(var t in _GetObjectSet())
 			{
-				if (t.Update() == false)
+				if(t.Update() == false)
 				{
-					this.Remove(t);
+					Remove(t);
 				}
 			}
 		}

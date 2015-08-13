@@ -1,17 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="UnitTest1.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the UnitTest1 type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-#endregion
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace VGameWebApplication.Tests
 {

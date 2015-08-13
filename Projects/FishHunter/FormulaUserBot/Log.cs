@@ -1,25 +1,14 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Log.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Log type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using System;
+﻿using System;
 using System.IO;
 using System.Threading;
+
 
 using Regulus.Collection;
 using Regulus.Utility;
 
+
 using Console = Regulus.Utility.Console;
 using SpinWait = System.Threading.SpinWait;
-
-#endregion
 
 namespace FormulaUserBot
 {
@@ -39,7 +28,7 @@ namespace FormulaUserBot
 
 			_Messages = new Queue<string>();
 			_Enable = true;
-			ThreadPool.QueueUserWorkItem(this._Loging);
+			ThreadPool.QueueUserWorkItem(_Loging);
 		}
 
 		private void _Loging(object state)
@@ -47,10 +36,10 @@ namespace FormulaUserBot
 			var writer = File.AppendText(_File);
 
 			var sw = new SpinWait();
-			while (_Enable)
+			while(_Enable)
 			{
 				var messages = _Messages.DequeueAll();
-				foreach (var msg in messages)
+				foreach(var msg in messages)
 				{
 					writer.WriteLine(msg);
 				}

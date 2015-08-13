@@ -1,25 +1,14 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Startup.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Startup type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Microsoft.AspNet.Identity;
+﻿using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 
+
 using Owin;
+
 
 using VGameWebApplication;
 
-#endregion
-
-[assembly: OwinStartup(typeof (Startup))]
+[assembly: OwinStartup(typeof(Startup))]
 
 namespace VGameWebApplication
 {
@@ -30,11 +19,12 @@ namespace VGameWebApplication
 			// 如需如何設定應用程式的詳細資訊，請參閱  http://go.microsoft.com/fwlink/?LinkID=316888
 
 			// 讓應用程式使用 Cookie 儲存已登入使用者的資訊
-			app.UseCookieAuthentication(new CookieAuthenticationOptions
-			{
-				AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie, 
-				LoginPath = new PathString("/Home/Verify")
-			});
+			app.UseCookieAuthentication(
+				new CookieAuthenticationOptions
+				{
+					AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie, 
+					LoginPath = new PathString("/Home/Verify")
+				});
 
 			// Use a cookie to temporarily store information about a user logging in with a third party login provider
 			app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);

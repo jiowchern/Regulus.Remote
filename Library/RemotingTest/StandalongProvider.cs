@@ -1,20 +1,7 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="StandalongProvider.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the StandalongProvider type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
-using Regulus.Framework;
+﻿using Regulus.Framework;
 using Regulus.Remoting;
 using Regulus.Remoting.Standalong;
 using Regulus.Utility;
-
-#endregion
 
 namespace RemotingTest
 {

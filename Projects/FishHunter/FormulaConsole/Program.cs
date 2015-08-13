@@ -1,20 +1,8 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="Program.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the Program type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System.IO;
 
-#region Test_Region
-
-using System.IO;
 
 using Regulus.Remoting;
 using Regulus.Utility;
-
-#endregion
 
 namespace VGame.Project.FishHunter.Formula
 {
@@ -34,7 +22,7 @@ namespace VGame.Project.FishHunter.Formula
 			updater.Add(client);
 
 			// updater.Add(core);
-			while (client.Enable)
+			while(client.Enable)
 			{
 				input.Update();
 				updater.Working();

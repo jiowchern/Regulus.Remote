@@ -1,28 +1,20 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SelectStage.cs" company="Regulus Framework">
-//   Regulus Framework
-// </copyright>
-// <summary>
-//   Defines the SelectStage type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-#region Test_Region
-
+﻿using System;
 using System.Linq;
+
 
 using Regulus.Remoting;
 using Regulus.Utility;
 
+
 using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.GPI;
-
-#endregion
 
 namespace VGame.Project.FishHunter.Play
 {
 	internal class SelectStage : IStage, ILevelSelector
 	{
+		public delegate void DoneCallback(IFishStage fish_stage);
+
 		public event DoneCallback DoneEvent;
 
 		private readonly ISoulBinder _Binder;
@@ -35,28 +27,28 @@ namespace VGame.Project.FishHunter.Play
 
 		public SelectStage(int[] stages, ISoulBinder binder, IFishStageQueryer fish_stag_queryer)
 		{
-			this._Binder = binder;
-			this._FishStageQueryer = fish_stag_queryer;
+			_Binder = binder;
+			_FishStageQueryer = fish_stag_queryer;
 			_Querying = false;
 			_Stages = stages;
 		}
 
 		Value<bool> ILevelSelector.Select(int level)
 		{
-			if (_Check(level) == false)
+			if(_Check(level) == false)
 			{
 				return false;
 			}
 
-			if (_Querying == false)
+			if(_Querying == false)
 			{
 				_Querying = true;
 				var val = new Value<bool>();
 				checked
 				{
-					_FishStageQueryer.Query(0, (byte)level).OnValue += fish_stage =>
+					_FishStageQueryer.Query(Guid.Empty, (byte)level).OnValue += fish_stage =>
 					{
-						if (fish_stage != null)
+						if(fish_stage != null)
 						{
 							DoneEvent(fish_stage);
 							val.SetValue(true);
@@ -95,8 +87,6 @@ namespace VGame.Project.FishHunter.Play
 		void IStage.Update()
 		{
 		}
-
-		public delegate void DoneCallback(IFishStage fish_stage);
 
 		private bool _Check(int level)
 		{
