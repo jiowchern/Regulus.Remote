@@ -1,6 +1,4 @@
-<<<<<<< HEAD
-﻿using Regulus.Framework;
-=======
+
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="StandaloneProvider.cs" company="">
 //   
@@ -10,10 +8,8 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-#region Test_Region
-
 using Regulus.Framework;
->>>>>>> bb08c0b8a8aa5ec0c708cd9f624c302cd192eb5d
+
 using Regulus.Remoting;
 using Regulus.Remoting.Standalone;
 using Regulus.Utility;

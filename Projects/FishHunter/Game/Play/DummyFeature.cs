@@ -57,11 +57,12 @@ namespace VGame.Project.FishHunter.Play
 			return _Accounts.Find(a => a.Id == account_id);
 		}
 
-<<<<<<< HEAD
 		Value<IFishStage> IFishStageQueryer.Query(Guid player_id, int fish_stage)
 		{
 			switch(fish_stage)
 			{
+				case 111:
+					return new VGame.Project.FishHunter.Stage.QuarterStage(player_id, fish_stage);
 				case 200:
 					return null;
 				case 100:
@@ -70,21 +71,6 @@ namespace VGame.Project.FishHunter.Play
 					return new CsFishStage(player_id, fish_stage);
 			}
 		}
-=======
-	    Value<IFishStage> IFishStageQueryer.Query(long player_id, int fish_stage)
-	    {
-	        switch (fish_stage)
-	        {
-                
-                case 111:
-                    return new VGame.Project.FishHunter.Stage.QuarterStage(player_id, fish_stage);
-                default:
-                    return new FishStage(player_id, fish_stage);
-	        }
-	    }
-
-        
->>>>>>> bb08c0b8a8aa5ec0c708cd9f624c302cd192eb5d
 
 		Value<Account[]> IAccountManager.QueryAllAccount()
 		{
