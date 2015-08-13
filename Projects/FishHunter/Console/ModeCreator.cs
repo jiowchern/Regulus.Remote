@@ -18,10 +18,10 @@ namespace Console
 
 		internal void OnSelect(GameModeSelector<IUser> selector)
 		{
-			selector.AddFactoty("standalong", new StandalongUserFactory(core));
+			selector.AddFactoty("Standalone", new StandaloneUserFactory(core));
 			selector.AddFactoty("remoting", new RemotingUserFactory());
 
-			// var provider = selector.CreateUserProvider("standalong");
+			// var provider = selector.CreateUserProvider("Standalone");
 			var provider = selector.CreateUserProvider("remoting");
 
 			provider.Spawn("1");

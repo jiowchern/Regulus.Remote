@@ -62,9 +62,9 @@
       <Project>{6cb4cde6-4405-40e6-8bdf-5a2e9185cc04}</Project>
       <Name>RemotingGhostNative</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Library\RemotingStandalong\RemotingStandalong.csproj">
+    <ProjectReference Include="..\..\..\Library\RemotingStandalong\RemotingStandalone.csproj">
       <Project>{485f551d-9155-4982-b653-f8d4eac2fca1}</Project>
-      <Name>RemotingStandalong</Name>
+      <Name>RemotingStandalone</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Library\Remoting\Remoting.csproj">
       <Project>{a4cfce46-bda8-4416-a1bb-77bd80514019}</Project>

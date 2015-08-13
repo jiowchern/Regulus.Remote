@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remoting", "Library\Remotin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database", "Library\Database\Database.csproj", "{E51E2098-C578-4637-807C-F67067A54535}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemotingStandalong", "Library\RemotingStandalong\RemotingStandalong.csproj", "{485F551D-9155-4982-B653-F8D4EAC2FCA1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemotingStandalone", "Library\RemotingStandalong\RemotingStandalone.csproj", "{485F551D-9155-4982-B653-F8D4EAC2FCA1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemotingGhostNative", "Library\RemotingNativeGhost\RemotingGhostNative.csproj", "{6CB4CDE6-4405-40E6-8BDF-5A2E9185CC04}"
 EndProject

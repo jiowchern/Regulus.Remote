@@ -1,24 +1,39 @@
+<<<<<<< HEAD
 ﻿using Regulus.Framework;
+=======
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="StandaloneUserFactory.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the StandaloneUserFactory type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using Regulus.Framework;
+>>>>>>> bb08c0b8a8aa5ec0c708cd9f624c302cd192eb5d
 using Regulus.Remoting;
-using Regulus.Remoting.Standalong;
+using Regulus.Remoting.Standalone;
 using Regulus.Utility;
 
 namespace VGame.Project.FishHunter
 {
-	public class StandalongUserFactory
+	public class StandaloneUserFactory
 		: IUserFactoty<IUser>
 	{
-		private readonly ICore _Standalong;
+		private readonly ICore _Standalone;
 
-		public StandalongUserFactory(ICore core)
+		public StandaloneUserFactory(ICore core)
 		{
-			_Standalong = core;
+			_Standalone = core;
 		}
 
 		IUser IUserFactoty<IUser>.SpawnUser()
 		{
 			var agent = new Agent();
-			agent.ConnectedEvent += () => { _Standalong.AssignBinder(agent); };
+			agent.ConnectedEvent += () => { _Standalone.AssignBinder(agent); };
 
 			return new User(agent);
 		}

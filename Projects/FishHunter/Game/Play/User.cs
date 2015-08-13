@@ -168,6 +168,7 @@ namespace VGame.Project.FishHunter.Play
 				_StageTicketInspector.Initial(
 					new[]
 					{
+<<<<<<< HEAD
 						new Common.Data.Stage
 						{
 							Id = 1, 
@@ -234,6 +235,17 @@ namespace VGame.Project.FishHunter.Play
 							Pass = false
 						}
 					});
+=======
+						Id = 14, 
+						Pass = false
+					},
+                    new Common.Data.Stage
+					{
+						Id = 111, 
+						Pass = true
+					}
+				});
+>>>>>>> bb08c0b8a8aa5ec0c708cd9f624c302cd192eb5d
 				_ToLoadTradeNotes();
 			};
 		}
