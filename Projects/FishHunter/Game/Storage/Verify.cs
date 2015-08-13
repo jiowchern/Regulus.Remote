@@ -1,6 +1,7 @@
-﻿using Regulus.Remoting;
-using Regulus.Utility;
+﻿
+using Regulus.Remoting;
 
+using Regulus.Utility;
 
 using VGame.Project.FishHunter.Common.GPI;
 

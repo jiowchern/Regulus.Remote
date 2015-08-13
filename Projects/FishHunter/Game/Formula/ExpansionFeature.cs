@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-﻿using VGame.Project.FishHunter.Common.GPI;
-=======
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="ExpansionFeature.cs" company="Regulus Framework">
 //   Regulus Framework
@@ -10,21 +7,8 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-#region Test_Region
-
-using System.CodeDom;
-using System.ComponentModel.Design.Serialization;
-
-
-
-using Regulus.Remoting;
-
-
-using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.GPI;
 
-#endregion
->>>>>>> bb08c0b8a8aa5ec0c708cd9f624c302cd192eb5d
 
 namespace VGame.Project.FishHunter.Formula
 {

@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
+using System;
 
+using System.Collections.Generic;
 
 using Regulus.Framework;
 using Regulus.Utility;
 
-<<<<<<< HEAD
-namespace Regulus.Remoting.Standalong
-=======
-#endregion
-
 namespace Regulus.Remoting.Standalone
->>>>>>> bb08c0b8a8aa5ec0c708cd9f624c302cd192eb5d
 {
 	public class Agent : IRequestQueue, IResponseQueue, ISoulBinder, IAgent
 	{

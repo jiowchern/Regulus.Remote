@@ -1,15 +1,12 @@
-﻿using System;
+﻿
+using System;
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-<<<<<<< HEAD
-namespace Regulus.Remoting.Standalong
-=======
-#endregion
-
 namespace Regulus.Remoting.Standalone
->>>>>>> bb08c0b8a8aa5ec0c708cd9f624c302cd192eb5d
+
 {
 	public class GhostRequest : IGhostRequest
 	{

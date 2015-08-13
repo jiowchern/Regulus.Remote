@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-﻿using Regulus.Framework;
-=======
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="DummyStandalone.cs" company="Regulus Framework">
 //   Regulus Framework
@@ -11,7 +8,6 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 using Regulus.Framework;
->>>>>>> bb08c0b8a8aa5ec0c708cd9f624c302cd192eb5d
 using Regulus.Remoting;
 using Regulus.Utility;
 
