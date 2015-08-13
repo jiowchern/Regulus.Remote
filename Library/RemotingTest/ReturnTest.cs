@@ -419,13 +419,13 @@ namespace RemotingTest
 		}
 
 		[TestMethod]
-		public void StandalongReturnTest()
+		public void StandaloneReturnTest()
 		{
 			var server = new Server();
 
 			var empty = new EmptyInputView();
 			var app = new Client<IUser>(empty, empty);
-			app.Selector.AddFactoty("1", new StandalongProvider(server));
+			app.Selector.AddFactoty("1", new StandaloneProvider(server));
 			var userProvider = app.Selector.CreateUserProvider("1");
 			var user = userProvider.Spawn("1");
 

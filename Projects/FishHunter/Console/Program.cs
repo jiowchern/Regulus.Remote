@@ -38,7 +38,7 @@ namespace Console
 		private static ICore _LoadGame(string path)
 		{
 			var stream = File.ReadAllBytes(path);
-			return Loader.Load(stream, "VGame.Project.FishHunter.Play.DummyStandalong");
+			return Loader.Load(stream, "VGame.Project.FishHunter.Play.DummyStandalone");
 		}
 	}
 }

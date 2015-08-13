@@ -1,4 +1,19 @@
+<<<<<<< HEAD
 ﻿using Regulus.Framework;
+=======
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="User.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the User type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+
+
+using Regulus.Framework;
+>>>>>>> bb08c0b8a8aa5ec0c708cd9f624c302cd192eb5d
 using Regulus.Remoting;
 using Regulus.Utility;
 
@@ -6,6 +21,11 @@ using Regulus.Utility;
 using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.GPI;
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> bb08c0b8a8aa5ec0c708cd9f624c302cd192eb5d
 namespace VGame.Project.FishHunter.Storage
 {
 	internal class User : IUser

@@ -44,6 +44,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Formula\ZsFormula\ZsFishStage.cs" />
+    <Compile Include="Stage\QuarterStage.cs" />
+    <Compile Include="ZsFormula\ZsFishStage.cs" />
     <Compile Include="Play\DummyFeature.cs" />
     <Compile Include="Formula\ZsFormula\Data\CalculationBufferBlock.cs" />
     <Compile Include="Formula\ZsFormula\Data\StageDataBuilder.cs" />

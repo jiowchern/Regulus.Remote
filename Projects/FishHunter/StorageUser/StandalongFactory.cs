@@ -1,15 +1,30 @@
+<<<<<<< HEAD
 ﻿using Regulus.Framework;
+=======
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="StandaloneFactory.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the StandaloneFactory type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+#region Test_Region
+
+using Regulus.Framework;
+>>>>>>> bb08c0b8a8aa5ec0c708cd9f624c302cd192eb5d
 using Regulus.Remoting;
-using Regulus.Remoting.Standalong;
+using Regulus.Remoting.Standalone;
 using Regulus.Utility;
 
 namespace VGame.Project.FishHunter.Storage
 {
-	public class StandalongFactory : IUserFactoty<IUser>
+	public class StandaloneFactory : IUserFactoty<IUser>
 	{
 		private readonly ICore _Core;
 
-		public StandalongFactory(ICore core)
+		public StandaloneFactory(ICore core)
 		{
 			_Core = core;
 		}

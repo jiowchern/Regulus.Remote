@@ -1,9 +1,20 @@
+<<<<<<< HEAD
 ﻿using System;
+=======
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="StandaloneUserFactory.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the StandaloneUserFactory type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+>>>>>>> bb08c0b8a8aa5ec0c708cd9f624c302cd192eb5d
 
 
 using Regulus.Framework;
 using Regulus.Remoting;
-using Regulus.Remoting.Standalong;
+using Regulus.Remoting.Standalone;
 using Regulus.Utility;
 
 
@@ -11,15 +22,21 @@ using Console = Regulus.Utility.Console;
 
 namespace VGame.Project.FishHunter.Formula
 {
-	public class StandalongUserFactory : IUserFactoty<IUser>
+	public class StandaloneUserFactory : IUserFactoty<IUser>
 	{
-		private readonly ICore _Standalong;
+		private readonly ICore _Standalone;
 
-		public StandalongUserFactory(ICore core)
+		public StandaloneUserFactory(ICore core)
 		{
+<<<<<<< HEAD
 			_Standalong = core;
 
 			if(_Standalong == null)
+=======
+			this._Standalone = core;
+
+			if (this._Standalone == null)
+>>>>>>> bb08c0b8a8aa5ec0c708cd9f624c302cd192eb5d
 			{
 				throw new ArgumentNullException("Core is null");
 			}
@@ -28,7 +45,11 @@ namespace VGame.Project.FishHunter.Formula
 		IUser IUserFactoty<IUser>.SpawnUser()
 		{
 			var agent = new Agent();
+<<<<<<< HEAD
 			agent.ConnectedEvent += () => { _Standalong.AssignBinder(agent); };
+=======
+			agent.ConnectedEvent += () => { this._Standalone.AssignBinder(agent); };
+>>>>>>> bb08c0b8a8aa5ec0c708cd9f624c302cd192eb5d
 			return new User(agent);
 		}
 

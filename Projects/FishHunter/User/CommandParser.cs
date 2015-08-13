@@ -102,8 +102,7 @@ namespace VGame.Project.FishHunter
 
 		private void _RegisgetPlayerEvent(IPlayer source)
 		{
-			source.MoneyEvent += money => { _View.WriteLine("player money " + money.ToString()); };
-			source.DeathFishEvent += fish => { _View.WriteLine(string.Format("fish{0} is dead", fish)); };
+			
 		}
 
 		private void _CreateVerify(IGPIBinderFactory factory)

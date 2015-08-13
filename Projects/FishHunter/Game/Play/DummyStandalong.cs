@@ -1,10 +1,23 @@
+<<<<<<< HEAD
 ﻿using Regulus.Framework;
+=======
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="DummyStandalone.cs" company="Regulus Framework">
+//   Regulus Framework
+// </copyright>
+// <summary>
+//   Defines the DummyStandalone type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+using Regulus.Framework;
+>>>>>>> bb08c0b8a8aa5ec0c708cd9f624c302cd192eb5d
 using Regulus.Remoting;
 using Regulus.Utility;
 
 namespace VGame.Project.FishHunter.Play
 {
-	public class DummyStandalong : ICore
+	public class DummyStandalone : ICore
 	{
 		private readonly Center _Center;
 
@@ -17,7 +30,7 @@ namespace VGame.Project.FishHunter.Play
 			get { return _Center; }
 		}
 
-		public DummyStandalong()
+		public DummyStandalone()
 		{
 			_Storage = new DummyFrature();
 			_Updater = new Updater();
