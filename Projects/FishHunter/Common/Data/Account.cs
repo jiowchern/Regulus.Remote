@@ -71,8 +71,7 @@ namespace VGame.Project.FishHunter.Common.Data
 
 		public static Flag<COMPETENCE> AllCompetnce()
 		{
-			var flags = EnumHelper.GetEnums<COMPETENCE>().ToArray();
-			var f = flags[0];
+			var flags = EnumHelper.GetEnums<COMPETENCE>().ToArray();			
 			return new Flag<COMPETENCE>(flags);
 		}
 

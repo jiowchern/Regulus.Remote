@@ -59,7 +59,8 @@ namespace VGame.Project.FishHunter.Play
 
 		Value<Account> IAccountFinder.FindAccountById(Guid account_id)
 		{
-			return _Accounts.Find(a => a.Id == account_id);
+            var result = _Accounts.Find(a => a.Id == account_id);
+		    return result;
 		}
 
 		Value<IFishStage> IFishStageQueryer.Query(Guid player_id, int fish_stage)
