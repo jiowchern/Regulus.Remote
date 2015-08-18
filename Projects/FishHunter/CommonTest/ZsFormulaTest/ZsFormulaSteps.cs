@@ -72,7 +72,7 @@ namespace GameTest.ZsFormulaTest
 		/// arrange
 		/// </summary>
 		/// <param name="random_value"></param>
-		[Given(@"亂數資料是 (.*)")]
+		[Given(@"亂數資料是(.*)")]
 		public void Given亂數資料是(int random_value)
 		{
 			var output = new List<string>();
@@ -106,8 +106,8 @@ namespace GameTest.ZsFormulaTest
 			Assert.AreEqual(result, _HitResponses[0].DieResult);
 			
 			WEAPON_TYPE weapon;
-			Enum.TryParse(die_result, out weapon);
-			Assert.AreEqual(0, _HitResponses[0].FeedbackWeaponType.Length);
+			Enum.TryParse(weapon_type, out weapon);
+			Assert.AreEqual(weapon, _HitResponses[0].FeedbackWeaponType[0]);
 
 			Assert.AreEqual(wup, _HitResponses[0].WUp);
 		}
