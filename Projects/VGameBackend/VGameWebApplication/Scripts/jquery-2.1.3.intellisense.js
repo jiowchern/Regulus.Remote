@@ -1956,7 +1956,7 @@ intellisense.annotate(jQuery.fn, {
     ///   <summary>Attach an event handler function for one or more events to the selected elements.</summary>
     ///   <param name="events" type="String">One or more space-separated event types and optional namespaces, such as "click" or "keydown.myPlugin".</param>
     ///   <param name="selector" type="String">A selector string to filter the descendants of the selected elements that trigger the event. If the selector is null or omitted, the event is always triggered when it reaches the selected element.</param>
-    ///   <param name="data" type="Anything">StageData to be passed to the handler in event.data when an event is triggered.</param>
+    ///   <param name="data" type="Anything">FishFarmData to be passed to the handler in event.data when an event is triggered.</param>
     ///   <param name="handler(eventObject)" type="Function">A function to execute when the event is triggered. The Number false is also allowed as a shorthand for a function that simply does return false.</param>
     ///   <returns type="jQuery" />
     /// </signature>
@@ -1964,7 +1964,7 @@ intellisense.annotate(jQuery.fn, {
     ///   <summary>Attach an event handler function for one or more events to the selected elements.</summary>
     ///   <param name="events" type="PlainObject">An object in which the string keys represent one or more space-separated event types and optional namespaces, and the values represent a handler function to be called for the event(s).</param>
     ///   <param name="selector" type="String">A selector string to filter the descendants of the selected elements that will call the handler. If the selector is null or omitted, the handler is always called when it reaches the selected element.</param>
-    ///   <param name="data" type="Anything">StageData to be passed to the handler in event.data when an event occurs.</param>
+    ///   <param name="data" type="Anything">FishFarmData to be passed to the handler in event.data when an event occurs.</param>
     ///   <returns type="jQuery" />
     /// </signature>
   },
@@ -1980,7 +1980,7 @@ intellisense.annotate(jQuery.fn, {
     ///   <summary>Attach a handler to an event for the elements. The handler is executed at most once per element.</summary>
     ///   <param name="events" type="String">One or more space-separated event types and optional namespaces, such as "click" or "keydown.myPlugin".</param>
     ///   <param name="selector" type="String">A selector string to filter the descendants of the selected elements that trigger the event. If the selector is null or omitted, the event is always triggered when it reaches the selected element.</param>
-    ///   <param name="data" type="Anything">StageData to be passed to the handler in event.data when an event is triggered.</param>
+    ///   <param name="data" type="Anything">FishFarmData to be passed to the handler in event.data when an event is triggered.</param>
     ///   <param name="handler(eventObject)" type="Function">A function to execute when the event is triggered. The Number false is also allowed as a shorthand for a function that simply does return false.</param>
     ///   <returns type="jQuery" />
     /// </signature>
@@ -1988,7 +1988,7 @@ intellisense.annotate(jQuery.fn, {
     ///   <summary>Attach a handler to an event for the elements. The handler is executed at most once per element.</summary>
     ///   <param name="events" type="PlainObject">An object in which the string keys represent one or more space-separated event types and optional namespaces, and the values represent a handler function to be called for the event(s).</param>
     ///   <param name="selector" type="String">A selector string to filter the descendants of the selected elements that will call the handler. If the selector is null or omitted, the handler is always called when it reaches the selected element.</param>
-    ///   <param name="data" type="Anything">StageData to be passed to the handler in event.data when an event occurs.</param>
+    ///   <param name="data" type="Anything">FishFarmData to be passed to the handler in event.data when an event occurs.</param>
     ///   <returns type="jQuery" />
     /// </signature>
   },

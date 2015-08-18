@@ -18,12 +18,17 @@ namespace FormulaUserBot
 
 		private int _BotCount;
 
+		public bool _IsStandalone = true;
+
+		private VGame.Project.FishHunter.Formula.DummyStandalone _DummyStandalone;
+
 		public ClientHandler(string IPAddress, int Port)
 		{
 			// TODO: Complete member initialization
 			_IPAddress = IPAddress;
 			_Port = Port;
 			_Bots = new Updater();
+			_DummyStandalone = new VGame.Project.FishHunter.Formula.DummyStandalone();
 		}
 
 		public ClientHandler(string IPAddress, int Port, int bot_amount)
@@ -40,6 +45,7 @@ namespace FormulaUserBot
 
 		void IBootable.Launch()
 		{
+			_Bots.Add(_DummyStandalone);
 		}
 
 		void IBootable.Shutdown()
@@ -48,8 +54,16 @@ namespace FormulaUserBot
 
 		internal void Begin(GameModeSelector<IUser> selector)
 		{
-			selector.AddFactoty("remoting", new RemotingUserFactory());
-			_OnProvider(selector.CreateUserProvider("remoting"));
+			if(_IsStandalone)
+			{
+				selector.AddFactoty("standalone", new StandaloneUserFactory(_DummyStandalone));
+				_OnProvider(selector.CreateUserProvider("standalone"));
+			}
+			else
+			{
+				selector.AddFactoty("remoting", new RemotingUserFactory());
+				_OnProvider(selector.CreateUserProvider("remoting"));	
+			}
 		}
 
 		private void _OnProvider(UserProvider<IUser> userProvider)

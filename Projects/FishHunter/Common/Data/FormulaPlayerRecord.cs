@@ -16,16 +16,16 @@ namespace VGame.Project.FishHunter.Common.Data
 
 		public int BufferValue { get; set; }
 
-		public List<StageRecord> StageRecords { get; set; }
+		public List<FarmRecord> StageRecords { get; set; }
 
 		public FormulaPlayerRecord()
 		{
-			StageRecords = new List<StageRecord>();
+			StageRecords = new List<FarmRecord>();
 		}
 
-		public StageRecord FindStageRecord(int stage_id)
-		{
-			return StageRecords.Find(x => x.StageId == stage_id);
+		public FarmRecord FindStageRecord(int stage_id)
+		{			
+			return StageRecords.Find(x => x.FarmId == stage_id);
 		}
 	}
 }

@@ -9,10 +9,10 @@ using VGame.Project.FishHunter.Common.Data;
 
 namespace VGame.Project.FishHunter.Common.GPI
 {
-	public interface IFormulaStageDataRecorder
+	public interface IFormulaFarmRecorder
 	{
-		Value<StageData> Load(int stage_id);
+		Value<FishFarmData> Load(int stage_id);
 
-		Value<bool> Save(StageData data);
+		Value<bool> Save(FishFarmData data);
 	}
 }

@@ -42,13 +42,9 @@ namespace FormulaUserBot
 			_HitHandlers.Working();
 			if(_HitTime.Second > HitHandler.Interval)
 			{
-				// var totalHits = (byte)Regulus.Utility.Random.Next(1, 1000);
-				var totalHits = 1;
+				var totalHits = Random.Instance.NextInt(1, 5);
 
-				for(var i = 0; i < totalHits; ++i)
-				{
-					_HitRequest(totalHits);
-				}
+				_HitRequest(totalHits);
 
 				_HitTime.Reset();
 			}
@@ -56,31 +52,48 @@ namespace FormulaUserBot
 
 		private void _HitRequest(int total_hits)
 		{
-			var fishDatas = new List<RequsetFishData>
-			{
-				new RequsetFishData
-				{
-					FishID = Random.Instance.NextInt(0, 32767), 
-					FishOdds = Random.Instance.NextInt(1, 1000), 
-					FishStatus = Random.Instance.NextEnum<FISH_STATUS>(), 
-					FishType = Random.Instance.NextEnum<FISH_TYPE>()
-				}
-			};
+			var hitFishs = _SimulateRequsetFishData(total_hits);
 
-			var weapon = new RequestWeaponData
-			{
-				WepID = Random.Instance.NextInt(0, 32767), 
-				WeaponType = Random.Instance.NextEnum<WEAPON_TYPE>(), 
-				WepBet = Random.Instance.NextInt(1, 10000), 
-				WepOdds = Random.Instance.NextInt(1, 10000), 
-				TotalHits = total_hits, 
-				TotalHitOdds = Random.Instance.NextInt(0, 32767)
-			};
+			var weaponData = _SimulateRequestWeaponData(total_hits);
 
-			var hitRequest = new HitRequest(fishDatas.ToArray(), weapon);
+			var hitRequest = new HitRequest(hitFishs.ToArray(), weaponData);
 
 			var hitHandler = new HitHandler(_Stage, hitRequest);
+
 			_HitHandlers.Add(hitHandler);
+		}
+
+		private List<RequsetFishData> _SimulateRequsetFishData(int total_hits)
+		{
+			var hitFishs = new List<RequsetFishData>();
+
+			for(var i = 0; i < total_hits; ++i)
+			{
+				hitFishs.Add(
+					new RequsetFishData
+					{
+						FishId = Random.Instance.NextInt(0, 32767),
+						FishOdds = Random.Instance.NextInt(1, 1),
+						FishStatus = Random.Instance.NextEnum<FISH_STATUS>(),
+						FishType = Random.Instance.NextEnum<FISH_TYPE>()
+					});
+			}
+
+			return hitFishs;
+		}
+
+		private RequestWeaponData _SimulateRequestWeaponData(int total_hits)
+		{
+			var weapon = new RequestWeaponData
+			{
+				WepId = Random.Instance.NextInt(0, 32767),
+				WeaponType = Random.Instance.NextEnum<WEAPON_TYPE>(),
+				WepBet = 1,
+				WepOdds = Random.Instance.NextInt(1, 10000),
+				TotalHits = total_hits,
+				TotalHitOdds = Random.Instance.NextInt(0, 32767)
+			};
+			return weapon;
 		}
 	}
 }

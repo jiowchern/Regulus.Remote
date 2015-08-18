@@ -33,7 +33,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		public void Run()
 		{
-			var bufferData = _StageVisitor.FocusStageData.FindBuffer(_StageVisitor.FocusBufferBlock, StageBuffer.BUFFER_TYPE.NORMAL);
+			var bufferData = _StageVisitor.FocusFishFarmData.FindBuffer(_StageVisitor.FocusBufferBlock, FarmBuffer.BUFFER_TYPE.NORMAL);
 			var bufferTemp = bufferData.BufferTempValue;
 			bufferTemp.FireCount += 1;
 
@@ -52,11 +52,11 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		private void _Update()
 		{
-			var bufferData = _StageVisitor.FocusStageData.FindBuffer(_StageVisitor.FocusBufferBlock, StageBuffer.BUFFER_TYPE.NORMAL);
+			var bufferData = _StageVisitor.FocusFishFarmData.FindBuffer(_StageVisitor.FocusBufferBlock, FarmBuffer.BUFFER_TYPE.NORMAL);
 			
 			var bufferTemp = bufferData.BufferTempValue;
 			
-			var baseValue = _StageVisitor.FocusStageData.NowBaseOdds * bufferTemp.AverageValue;
+			var baseValue = _StageVisitor.FocusFishFarmData.NowBaseOdds * bufferTemp.AverageValue;
 			
 			bufferTemp.HiLoRate = new NatureDataRule().Run(bufferData.Buffer, baseValue);
 
@@ -65,11 +65,11 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		private void _Update2()
 		{
-			var bufferData = _StageVisitor.FocusStageData.FindBuffer(_StageVisitor.FocusBufferBlock, StageBuffer.BUFFER_TYPE.NORMAL);
+			var bufferData = _StageVisitor.FocusFishFarmData.FindBuffer(_StageVisitor.FocusBufferBlock, FarmBuffer.BUFFER_TYPE.NORMAL);
 
 			var bufferTemp = bufferData.BufferTempValue;
 
-			var baseValue = _StageVisitor.FocusStageData.NowBaseOdds * bufferTemp.AverageValue;
+			var baseValue = _StageVisitor.FocusFishFarmData.NowBaseOdds * bufferTemp.AverageValue;
 
 			bufferTemp.HiLoRate = new NatureDataRule().Run(bufferData.Buffer, baseValue);
 

@@ -43,13 +43,13 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		private void _SaveStageScore()
 		{
-			var bufferData = _StageDataVisitor.FocusStageData.FindBuffer(
+			var bufferData = _StageDataVisitor.FocusFishFarmData.FindBuffer(
 				_StageDataVisitor.FocusBufferBlock,
-				StageBuffer.BUFFER_TYPE.NORMAL);
+				FarmBuffer.BUFFER_TYPE.NORMAL);
 
 			bufferData.Buffer -= _Win;
 
-			_StageDataVisitor.FocusStageData.RecordData.WinScore += _Win;
+			_StageDataVisitor.FocusFishFarmData.RecordData.WinScore += _Win;
 		}
 
 		private void _SavePlayerScore()
@@ -61,7 +61,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 			}
 			_StageDataVisitor.PlayerRecord.BufferValue -= _Win;
 
-			_StageDataVisitor.PlayerRecord.StageRecords.Find(x => x.StageId == _StageDataVisitor.FocusStageData.StageId).AsnWin
+			_StageDataVisitor.PlayerRecord.StageRecords.Find(x => x.FarmId == _StageDataVisitor.FocusFishFarmData.FarmId).AsnWin
 				+= _Win;
 		}
 	}

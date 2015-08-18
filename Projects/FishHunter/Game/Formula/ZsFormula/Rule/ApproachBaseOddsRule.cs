@@ -25,20 +25,20 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		/// </summary>
 		public void Run()
 		{
-			if(_StageVisitor.FocusStageData.BaseOddsCount != 0)
+			if(_StageVisitor.FocusFishFarmData.BaseOddsCount != 0)
 			{
-				_StageVisitor.FocusStageData.BaseOddsCount--;
+				_StageVisitor.FocusFishFarmData.BaseOddsCount--;
 			}
 			else
 			{
-				_StageVisitor.FocusStageData.BaseOddsCount = 3000;
-				if(_StageVisitor.FocusStageData.NowBaseOdds > _StageVisitor.FocusStageData.BaseOdds)
+				_StageVisitor.FocusFishFarmData.BaseOddsCount = 3000;
+				if(_StageVisitor.FocusFishFarmData.NowBaseOdds > _StageVisitor.FocusFishFarmData.BaseOdds)
 				{
-					_StageVisitor.FocusStageData.NowBaseOdds--;
+					_StageVisitor.FocusFishFarmData.NowBaseOdds--;
 				}
-				else if(_StageVisitor.FocusStageData.NowBaseOdds < _StageVisitor.FocusStageData.BaseOdds)
+				else if(_StageVisitor.FocusFishFarmData.NowBaseOdds < _StageVisitor.FocusFishFarmData.BaseOdds)
 				{
-					_StageVisitor.FocusStageData.NowBaseOdds++;
+					_StageVisitor.FocusFishFarmData.NowBaseOdds++;
 				}
 			}
 		}

@@ -29,9 +29,9 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		public void Run()
 		{
-			var bufferData = _StageDataVisitor.FocusStageData.FindBuffer(
+			var bufferData = _StageDataVisitor.FocusFishFarmData.FindBuffer(
 				_StageDataVisitor.FocusBufferBlock, 
-				StageBuffer.BUFFER_TYPE.NORMAL);
+				FarmBuffer.BUFFER_TYPE.NORMAL);
 
 			var bet = _HitRequest.WeaponData.WepOdds * _HitRequest.WeaponData.WepBet;
 

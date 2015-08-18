@@ -30,12 +30,12 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		public void Run()
 		{
 			// 存player打死的魚
-			_StageVisitor.PlayerRecord.FindStageRecord(_StageVisitor.FocusStageData.StageId)
-			             .FishHitReuslt.FishToItems.Find(x => x.FishType == _Fish.FishType)
+			_StageVisitor.PlayerRecord.FindStageRecord(_StageVisitor.FocusFishFarmData.FarmId)
+			             .FishHitReuslt.Items.Find(x => x.FishType == _Fish.FishType)
 			             .KillCount++;
 			             
 			// 存stage的死亡的魚
-			_StageVisitor.FocusStageData.RecordData.FishHitReuslt.FishToItems.Find(x => x.FishType == _Fish.FishType).KillCount++;
+			_StageVisitor.FocusFishFarmData.RecordData.FishHitReuslt.Items.Find(x => x.FishType == _Fish.FishType).KillCount++;
 		}
 	}
 }

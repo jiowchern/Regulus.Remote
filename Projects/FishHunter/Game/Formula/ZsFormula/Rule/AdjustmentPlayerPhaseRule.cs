@@ -25,15 +25,9 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 	{
 		private readonly StageDataVisitor _StageVisitor;
 
-		private static int RandNumber
-		{
-			get { return Random.Instance.NextInt(0, 1000); }
-		}
-
 		public AdjustmentPlayerPhaseRule(StageDataVisitor stage_visitor)
 		{
 			_StageVisitor = stage_visitor;
-			
 		}
 
 		public void Run()
@@ -47,20 +41,20 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 			{
 				_StageVisitor.PlayerRecord.Status--;
 			}
-			else if(AdjustmentPlayerPhaseRule.RandNumber >= 200)
+			else if(_StageVisitor.Random.NextInt(0, 1000) >= 200)
 			{
 				// 20%
 				return;
 			}
 
 			// 從VIR00 - VIR03
-			var enums = EnumHelper.GetEnums<StageBuffer.BUFFER_TYPE>().ToArray();
+			var enums = EnumHelper.GetEnums<FarmBuffer.BUFFER_TYPE>().ToArray();
 
-			for(var i = enums[(int)StageBuffer.BUFFER_TYPE.BUFFER_VIR_BEGIN];
-			    i < enums[(int)StageBuffer.BUFFER_TYPE.BUFFER_VIR_END];
+			for(var i = enums[(int)FarmBuffer.BUFFER_TYPE.BUFFER_VIR_BEGIN];
+			    i < enums[(int)FarmBuffer.BUFFER_TYPE.BUFFER_VIR_END];
 			    ++i)
 			{
-				var bufferData = _StageVisitor.FocusStageData.FindBuffer(_StageVisitor.FocusBufferBlock, i);
+				var bufferData = _StageVisitor.FocusFishFarmData.FindBuffer(_StageVisitor.FocusBufferBlock, i);
 
 				var top = bufferData.Top * bufferData.BufferTempValue.AverageValue;
 
@@ -69,13 +63,13 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 					continue;
 				}
 
-				if(AdjustmentPlayerPhaseRule.RandNumber < bufferData.Gate)
+				if(_StageVisitor.Random.NextInt(0, 1000) < bufferData.Gate)
 				{
 					bufferData.Buffer -= top;
 
 					_StageVisitor.PlayerRecord.Status = bufferData.Top * 5;
 					_StageVisitor.PlayerRecord.BufferValue = top;
-					_StageVisitor.PlayerRecord.StageRecords.Find(x => x.StageId == _StageVisitor.FocusStageData.StageId).AsnTimes += 1;
+					_StageVisitor.PlayerRecord.StageRecords.Find(x => x.FarmId == _StageVisitor.FocusFishFarmData.FarmId).AsnTimes += 1;
 				}
 				else
 				{

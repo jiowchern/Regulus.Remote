@@ -49,16 +49,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\BusinessStage.cs" />
+    <Compile Include="Data\BusinessFarm.cs" />
     <Compile Include="Data\FishToItem.cs" />
     <Compile Include="Data\FormulaPlayerRecord.cs" />
     <Compile Include="Data\PlayerData.cs" />
     <Compile Include="Data\RequestWeaponData.cs" />
     <Compile Include="Data\RequsetFishData.cs" />
     <Compile Include="Data\WeaponPower.cs" />
-    <Compile Include="Data\StageRecord.cs" />
-    <Compile Include="Data\StageBuffer.cs" />
-    <Compile Include="Data\StageData.cs" />
+    <Compile Include="Data\FarmRecord.cs" />
+    <Compile Include="Data\FarmBuffer.cs" />
+    <Compile Include="Data\FishFarmData.cs" />
     <Compile Include="Data\WeaponPowerTable.cs" />
     <Compile Include="GPI\IAccountCreator.cs" />
     <Compile Include="Data\Account.cs" />
@@ -72,7 +72,7 @@
     <Compile Include="GPI\IAccountManager.cs" />
     <Compile Include="GPI\IAccountStatus.cs" />
     <Compile Include="GPI\IFishStage.cs" />
-    <Compile Include="GPI\IFormulaStageDataRecorder.cs" />
+    <Compile Include="GPI\IFormulaFarmRecorder.cs" />
     <Compile Include="GPI\IFishStageQueryer.cs" />
     <Compile Include="GPI\IAccountFinder.cs" />
     <Compile Include="GPI\IFormulaPlayerRecorder.cs" />

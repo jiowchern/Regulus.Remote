@@ -75,6 +75,10 @@
       <Project>{8d1a45aa-6918-4deb-a37f-aede57fe8794}</Project>
       <Name>FormulaUser</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Game\Game.csproj">
+      <Project>{5061bc1d-0c9e-4050-a51e-593b5c16d398}</Project>
+      <Name>Game</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

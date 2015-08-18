@@ -30,7 +30,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 			//			foreach(var fishData in _Request.FishDatas)
 			//			{
 			//				
-			//				var specialWeapon = _StageVisitor.PlayerRecord.FindStageRecord(_StageVisitor.FocusStageData.StageId)
+			//				var specialWeapon = _StageVisitor.PlayerRecord.FindStageRecord(_StageVisitor.FocusFishFarmData.FarmId)
 			//				                                 .SpecialWeaponDatas.Find(x => x.WeaponType == _Request.WeaponData.WeaponType);
 			//
 			//				var gate = (int)specialWeapon.Power; // 特武威力
@@ -41,7 +41,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 			//
 			//				gate /= _Request.WeaponData.TotalHitOdds; // 总倍数
 			//
-			//				var bufferData = _StageVisitor.FocusStageData.FindBuffer(_StageVisitor.FocusBufferBlock, StageBuffer.BUFFER_TYPE.NORMAL);
+			//				var bufferData = _StageVisitor.FocusFishFarmData.FindBuffer(_StageVisitor.FocusBufferBlock, FarmBuffer.BUFFER_TYPE.NORMAL);
 			//
 			//				var oddsRule = new OddsRuler(fishData, bufferData).RuleResult();
 			//
@@ -75,38 +75,38 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 			//				_Die(fishData, _Request.WeaponData);
 			//			}
 			//
-			//			_StageVisitor.FormulaStageDataRecorder.Save(_StageVisitor.FocusStageData);
+			//			_StageVisitor.FormulaFarmRecorder.Save(_StageVisitor.FocusFishFarmData);
 			//			_StageVisitor.FormulaPlayerRecorder.Save(_StageVisitor.PlayerRecord);
 			//			return _HitResponses.ToArray();
 		}
 
 		private void _Die(RequsetFishData fish_data, RequestWeaponData weapon_data)
 		{
-			var bufferData = _StageVisitor.FocusStageData.FindBuffer(_StageVisitor.FocusBufferBlock, StageBuffer.BUFFER_TYPE.NORMAL);
+			var bufferData = _StageVisitor.FocusFishFarmData.FindBuffer(_StageVisitor.FocusBufferBlock, FarmBuffer.BUFFER_TYPE.NORMAL);
 
 			_HitResponses.Add(
 				new HitResponse
 			{
-				WepID = weapon_data.WepID, 
-				FishID = fish_data.FishID, 
+				WepId = weapon_data.WepId, 
+				FishId = fish_data.FishId, 
 				DieResult = FISH_DETERMINATION.DEATH, 
 				FeedbackWeaponType = new[]
 				{
 					WEAPON_TYPE.ELECTRIC_NET, 
 					WEAPON_TYPE.DAMAGE_BALL
-				}, 
-				WUp = new OddsRuler(fish_data, bufferData).RuleResult()
+				},
+				WUp = new OddsRuler(_StageVisitor, fish_data, bufferData).RuleResult()
 			});
 		}
 
 		private void _Miss(RequsetFishData fish_data, RequestWeaponData weapon_data)
 		{
-			var bufferData = _StageVisitor.FocusStageData.FindBuffer(_StageVisitor.FocusBufferBlock, StageBuffer.BUFFER_TYPE.NORMAL);
+			var bufferData = _StageVisitor.FocusFishFarmData.FindBuffer(_StageVisitor.FocusBufferBlock, FarmBuffer.BUFFER_TYPE.NORMAL);
 			_HitResponses.Add(
 				new HitResponse
 			{
-				WepID = weapon_data.WepID, 
-				FishID = fish_data.FishID, 
+				WepId = weapon_data.WepId, 
+				FishId = fish_data.FishId, 
 				DieResult = FISH_DETERMINATION.SURVIVAL, 
 				FeedbackWeaponType = new[]
 				{

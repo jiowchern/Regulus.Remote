@@ -27,11 +27,13 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 
 			public int Hit4 { get; private set; }
 
-			public int HitNumber { get; private set; }
+			public int HitTotal { get; private set; }
 
-			public Data(int hit_number, int hit1, int hit2, int hit3, int hit4)
+			public object Hit { get; set; }
+
+			public Data(int hit_total, int hit1, int hit2, int hit3, int hit4)
 			{
-				HitNumber = hit_number;
+				HitTotal = hit_total;
 				Hit1 = hit1;
 				Hit2 = hit2;
 				Hit3 = hit3;
@@ -57,28 +59,27 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 			};
 		}
 
-		/// <summary>
-		///同時擊中4隻以上分配一樣
-		/// </summary>
-		/// <param name="total_hits"></param>
-		/// <returns></returns>
-		public Data GetAllocateData(int total_hits)
-		{
-			var dictionary = _Datas.ToDictionary(x => x.HitNumber);
 
-			switch(total_hits)
+		public int GetAllocateData(int total_hits, int hit_sequence)
+		{
+			if(hit_sequence == 0)
 			{
-				case 1:
-					return dictionary[1];
-				case 2:
-					return dictionary[2];
-				case 3:
-					return dictionary[3];
-				case 4:
-					return dictionary[4];
-				default:
-					return dictionary[4];
+				return (from d in _Datas where d.HitTotal == total_hits select d.Hit1).DefaultIfEmpty<int>(_Datas.Last().Hit1).First();
 			}
+			if (hit_sequence == 1)
+			{
+				return (from d in _Datas where d.HitTotal == total_hits select d.Hit2).DefaultIfEmpty<int>(_Datas.Last().Hit2).First();
+			}
+			if (hit_sequence == 2)
+			{
+				return (from d in _Datas where d.HitTotal == total_hits select d.Hit3).DefaultIfEmpty<int>(_Datas.Last().Hit3).First();
+			}
+			if (hit_sequence == 3)
+			{
+				return (from d in _Datas where d.HitTotal == total_hits select d.Hit4).DefaultIfEmpty<int>(_Datas.Last().Hit4).First();
+			}
+
+			return 0;
 		}
 	}
 }

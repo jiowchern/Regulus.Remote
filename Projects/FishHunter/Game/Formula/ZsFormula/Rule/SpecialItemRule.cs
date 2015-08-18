@@ -21,7 +21,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 //
 //			// 武器出現次數+1
 //			var stageWeaponData =
-//				_StageVisitor.FocusStageData.RecordData.SpecialWeaponDatas.Find(x => x.SpId == _StageVisitor.PlayerRecord.NowWeaponPower.SpId);
+//				_StageVisitor.FocusFishFarmData.RecordData.SpecialWeaponDatas.Find(x => x.SpId == _StageVisitor.PlayerRecord.NowWeaponPower.SpId);
 //			stageWeaponData.WinFrequency++;
 		}
 	}

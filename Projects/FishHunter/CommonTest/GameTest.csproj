@@ -35,6 +35,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NSubstitute, Version=1.8.1.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\NSubstitute.1.8.1.0\lib\net45\NSubstitute.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="TechTalk.SpecFlow, Version=1.9.0.77, Culture=neutral, PublicKeyToken=0778194805d6db41, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\SpecFlow.1.9.0\lib\net35\TechTalk.SpecFlow.dll</HintPath>
@@ -55,38 +59,38 @@
   </Choose>
   <ItemGroup>
     <Compile Include="FormulaTest\DummyFeature.cs" />
-    <Compile Include="ZsFormulaTest\FishHitAllocate.feature.cs">
+    <Compile Include="ZsFormulaTest\DataTest\FishHitAllocate.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>FishHitAllocate.feature</DependentUpon>
     </Compile>
-    <Compile Include="ZsFormulaTest\FishHitAllocateSteps.cs" />
-    <Compile Include="ZsFormulaTest\MultipleRule.feature.cs">
+    <Compile Include="ZsFormulaTest\DataTest\FishHitAllocateSteps.cs" />
+    <Compile Include="ZsFormulaTest\DataTest\MultipleRule.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>MultipleRule.feature</DependentUpon>
     </Compile>
-    <Compile Include="ZsFormulaTest\MultipleRuleSteps.cs" />
-    <Compile Include="ZsFormulaTest\NatureBufferChancesTable.feature.cs">
+    <Compile Include="ZsFormulaTest\DataTest\MultipleRuleSteps.cs" />
+    <Compile Include="ZsFormulaTest\DataTest\NatureBufferChancesTable.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>NatureBufferChancesTable.feature</DependentUpon>
     </Compile>
-    <Compile Include="ZsFormulaTest\NatureBufferChancesTableSteps.cs" />
-    <Compile Include="ZsFormulaTest\ZsBetRangeTest.feature.cs">
+    <Compile Include="ZsFormulaTest\DataTest\NatureBufferChancesTableSteps.cs" />
+    <Compile Include="ZsFormulaTest\DataTest\ZsBetRangeTest.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ZsBetRangeTest.feature</DependentUpon>
     </Compile>
-    <Compile Include="ZsFormulaTest\ZsBetRangeTestSteps.cs" />
+    <Compile Include="ZsFormulaTest\DataTest\ZsBetRangeTestSteps.cs" />
     <Compile Include="DataTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ZsFormulaTest\ScoreOdds.feature.cs">
+    <Compile Include="ZsFormulaTest\DataTest\ScoreOdds.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ScoreOdds.feature</DependentUpon>
     </Compile>
-    <Compile Include="ZsFormulaTest\ScoreOddsSteps.cs" />
+    <Compile Include="ZsFormulaTest\DataTest\ScoreOddsSteps.cs" />
     <Compile Include="FormulaTest\StageTest.cs" />
     <Compile Include="FormulaTest\WeaponChancesTable.feature.cs">
       <AutoGen>True</AutoGen>
@@ -94,12 +98,18 @@
       <DependentUpon>WeaponChancesTable.feature</DependentUpon>
     </Compile>
     <Compile Include="FormulaTest\WeaponChancesTableSteps.cs" />
-    <Compile Include="ZsFormulaTest\ZsFishStageDataCheck.feature.cs">
+    <Compile Include="ZsFormulaTest\DataTest\ZsFishStageDataCheck.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ZsFishStageDataCheck.feature</DependentUpon>
     </Compile>
-    <Compile Include="ZsFormulaTest\ZsFishStageDataCheckSteps.cs" />
+    <Compile Include="ZsFormulaTest\DataTest\ZsFishStageDataCheckSteps.cs" />
+    <Compile Include="ZsFormulaTest\ZsFormula.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ZsFormula.feature</DependentUpon>
+    </Compile>
+    <Compile Include="ZsFormulaTest\ZsFormulaSteps.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Library\PureLib\RegulusLibrary.csproj">
@@ -125,24 +135,24 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="ZsFormulaTest\FishHitAllocate.feature">
+    <None Include="ZsFormulaTest\DataTest\FishHitAllocate.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>FishHitAllocate.feature.cs</LastGenOutput>
     </None>
-    <None Include="ZsFormulaTest\MultipleRule.feature">
+    <None Include="ZsFormulaTest\DataTest\MultipleRule.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>MultipleRule.feature.cs</LastGenOutput>
     </None>
-    <None Include="ZsFormulaTest\NatureBufferChancesTable.feature">
+    <None Include="ZsFormulaTest\DataTest\NatureBufferChancesTable.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>NatureBufferChancesTable.feature.cs</LastGenOutput>
     </None>
-    <None Include="ZsFormulaTest\ZsBetRangeTest.feature">
+    <None Include="ZsFormulaTest\DataTest\ZsBetRangeTest.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ZsBetRangeTest.feature.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
-    <None Include="ZsFormulaTest\ScoreOdds.feature">
+    <None Include="ZsFormulaTest\DataTest\ScoreOdds.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ScoreOdds.feature.cs</LastGenOutput>
     </None>
@@ -150,9 +160,13 @@
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>WeaponChancesTable.feature.cs</LastGenOutput>
     </None>
-    <None Include="ZsFormulaTest\ZsFishStageDataCheck.feature">
+    <None Include="ZsFormulaTest\DataTest\ZsFishStageDataCheck.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>ZsFishStageDataCheck.feature.cs</LastGenOutput>
+    </None>
+    <None Include="ZsFormulaTest\ZsFormula.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>ZsFormula.feature.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <Choose>

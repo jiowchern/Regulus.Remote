@@ -29,9 +29,9 @@ namespace GameTest.ZsFormulaTest
 		[Then(@"取出資料為")]
 		public void Then取出資料為(Table table)
 		{
-			var hitnumber = ScenarioContext.Current.Get<int>("key");
+			var hitTotal = ScenarioContext.Current.Get<int>("key");
 
-			var data = _FishHitAllocateTable.GetAllocateData(hitnumber);
+			var data = _FishHitAllocateTable.GetAllocateData(hitTotal, 0);
 
 			table.CompareToInstance(data);
 		}

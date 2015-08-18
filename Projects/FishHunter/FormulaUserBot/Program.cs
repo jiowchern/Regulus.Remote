@@ -1,12 +1,16 @@
 ﻿using Regulus.Framework;
+using Regulus.Framework.Extension;
 using Regulus.Remoting;
 using Regulus.Utility;
 
 
 using VGame.Project.FishHunter.Formula;
+using VGame.Project.FishHunter.Play;
 
 
+using Center = VGame.Project.FishHunter.Formula.Center;
 using Console = System.Console;
+
 using SpinWait = System.Threading.SpinWait;
 
 namespace FormulaUserBot
@@ -50,6 +54,7 @@ namespace FormulaUserBot
 				});
 			client.ModeSelectorEvent += clientHandler.Begin;
 
+
 			var updater = new Updater();
 			updater.Add(client);
 			updater.Add(clientHandler);
@@ -66,28 +71,6 @@ namespace FormulaUserBot
 			updater.Shutdown();
 			clientHandler.End();
 			Singleton<Log>.Instance.Final();
-		}
-
-		private static void _OnSelector(GameModeSelector<IUser> selector)
-		{
-			selector.AddFactoty("remoting", new RemotingUserFactory());
-			Program._OnProvider(selector.CreateUserProvider("remoting"));
-		}
-
-		private static void _OnProvider(UserProvider<IUser> userProvider)
-		{
-			Program._OnUser(userProvider.Spawn("this"));
-			userProvider.Select("this");
-		}
-
-		private static void _OnUser(IUser user)
-		{
-			user.Remoting.ConnectProvider.Supply += Program._Connect;
-		}
-
-		private static void _Connect(IConnect obj)
-		{
-			obj.Connect(Program.IPAddress, Program.Port);
 		}
 	}
 }

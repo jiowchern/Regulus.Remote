@@ -149,8 +149,8 @@ namespace VGame.Project.FishHunter.Formula
 		{
 			return new HitResponse
 			{
-				WepID = weapon_data.WepID, 
-				FishID = fish_data.FishID, 
+				WepId = weapon_data.WepId, 
+				FishId = fish_data.FishId, 
 				DieResult = FISH_DETERMINATION.DEATH, 
 				FeedbackWeaponType = new[]
 				{
@@ -164,8 +164,8 @@ namespace VGame.Project.FishHunter.Formula
 		{
 			return new HitResponse
 			{
-				WepID = weapon_data.WepID, 
-				FishID = fish_data.FishID, 
+				WepId = weapon_data.WepId, 
+				FishId = fish_data.FishId, 
 				DieResult = FISH_DETERMINATION.SURVIVAL, 
 				FeedbackWeaponType = new[]
 				{

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-
 using Regulus.Utility;
 
 namespace Regulus.Remoting

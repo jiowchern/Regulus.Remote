@@ -20,7 +20,7 @@ namespace VGame.Project.FishHunter.Stage
 
 		private readonly ISoulBinder _Binder;
 
-		private readonly List<StageData> _StageDatas;
+		private readonly List<FishFarmData> _StageDatas;
 
 		private ExpansionFeature _ExpansionFeature;
 
@@ -28,7 +28,7 @@ namespace VGame.Project.FishHunter.Stage
 		{
 			_Binder = binder;
 			_ExpansionFeature = expansion_feature;
-			_StageDatas = new List<StageData>();
+			_StageDatas = new List<FishFarmData>();
 		}
 
 		Value<IFishStage> IFishStageQueryer.Query(Guid player_id, int fish_stage)
@@ -36,16 +36,13 @@ namespace VGame.Project.FishHunter.Stage
 			switch(fish_stage)
 			{
 				case 100:
-                    return new CsFishStage(player_id, fish_stage);
-				case 2:
+					return new ZsFishStage(player_id, _StageDatas.Find(x => x.FarmId == fish_stage), _ExpansionFeature.FormulaPlayerRecorder, _ExpansionFeature.FormulaFarmRecorder);
 
-					return new ZsFishStage(player_id, _StageDatas.Find(x => x.StageId == fish_stage), _ExpansionFeature.FormulaPlayerRecorder, _ExpansionFeature.FormulaStageDataRecorder);
-
-                case 111:
-                    return new QuarterStage(player_id, fish_stage);
+				case 111:
+					return new QuarterStage(player_id, fish_stage);
 
 				default:
-                    return new FishStage(player_id, fish_stage);
+					return new FishStage(player_id, fish_stage);
 					
 			}
 		}
@@ -70,11 +67,11 @@ namespace VGame.Project.FishHunter.Stage
 		{
 		}
 
-		private Value<StageData> _StroageLoad(int stage_id)
+		private Value<FishFarmData> _StroageLoad(int stage_id)
 		{
-			var returnValue = new Value<StageData>();
+			var returnValue = new Value<FishFarmData>();
 
-			var val = _ExpansionFeature.FormulaStageDataRecorder.Load(stage_id);
+			var val = _ExpansionFeature.FormulaFarmRecorder.Load(stage_id);
 
 			val.OnValue += stage_data => { returnValue.SetValue(stage_data); };
 
@@ -86,7 +83,7 @@ namespace VGame.Project.FishHunter.Stage
 		/// </summary>
 		private void _InitStageData()
 		{
-			foreach(var t in BusinessStage.StageIds)
+			foreach(var t in new BusinessFarm().FarmIds)
 			{
 				var data = _StroageLoad(t);
 

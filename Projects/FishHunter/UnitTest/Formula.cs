@@ -61,7 +61,7 @@ namespace UnitTest
 			{
 				new RequsetFishData
 				{
-					FishID = 1, 
+					FishId = 1, 
 					FishOdds = 1
 				}
 			};
@@ -70,14 +70,14 @@ namespace UnitTest
 				TotalHits = 1, 
 				WepBet = 1, 
 				WepOdds = 1, 
-				WepID = 1
+				WepId = 1
 			};
 
 			var request = new HitRequest(fishs.ToArray(), weapon);
 
 			var response = formula.Request(request);
-			Assert.AreEqual(1, response.WepID);
-			Assert.AreEqual(1, response.FishID);
+			Assert.AreEqual(1, response.WepId);
+			Assert.AreEqual(1, response.FishId);
 			Assert.AreEqual(FISH_DETERMINATION.DEATH, response.DieResult);
 		}
 
@@ -93,7 +93,7 @@ namespace UnitTest
 			{
 				new RequsetFishData
 				{
-					FishID = 1, 
+					FishId = 1, 
 					FishOdds = 25
 				}
 			};
@@ -102,15 +102,15 @@ namespace UnitTest
 				TotalHits = 1, 
 				WepBet = 1, 
 				WepOdds = 1, 
-				WepID = 1
+				WepId = 1
 			};
 
 			var request = new HitRequest(fishs.ToArray(), weapon);
 
 			var response = formula.Request(request);
-			Assert.AreEqual(1, response.WepID);
+			Assert.AreEqual(1, response.WepId);
 			Assert.AreEqual(WEAPON_TYPE.INVALID, response.FeedbackWeaponType);
-			Assert.AreEqual(1, response.FishID);
+			Assert.AreEqual(1, response.FishId);
 			Assert.AreEqual(FISH_DETERMINATION.SURVIVAL, response.DieResult);
 		}
 
@@ -126,7 +126,7 @@ namespace UnitTest
 			{
 				new RequsetFishData
 				{
-					FishID = 1, 
+					FishId = 1, 
 					FishOdds = 25
 				}
 			};
@@ -135,14 +135,14 @@ namespace UnitTest
 				TotalHits = 1, 
 				WepBet = 1, 
 				WepOdds = 1, 
-				WepID = 1
+				WepId = 1
 			};
 
 			var request = new HitRequest(fishs.ToArray(), weapon);
 
 			var response = formula.Request(request); // a3d70a
-			Assert.AreEqual(1, response.WepID);
-			Assert.AreEqual(1, response.FishID);
+			Assert.AreEqual(1, response.WepId);
+			Assert.AreEqual(1, response.FishId);
 			Assert.AreEqual(FISH_DETERMINATION.DEATH, response.DieResult);
 		}
 
@@ -158,7 +158,7 @@ namespace UnitTest
 			{
 				new RequsetFishData
 				{
-					FishID = 1, 
+					FishId = 1, 
 					FishOdds = 1
 				}
 			};
@@ -167,15 +167,15 @@ namespace UnitTest
 				TotalHits = 1, 
 				WepBet = 1, 
 				WepOdds = 1, 
-				WepID = 1
+				WepId = 1
 			};
 
 			var request = new HitRequest(fishs.ToArray(), weapon);
 
 			var response = formula.Request(request);
-			Assert.AreEqual(1, response.WepID);
+			Assert.AreEqual(1, response.WepId);
 			Assert.AreEqual(WEAPON_TYPE.INVALID, response.FeedbackWeaponType);
-			Assert.AreEqual(1, response.FishID);
+			Assert.AreEqual(1, response.FishId);
 			Assert.AreEqual(FISH_DETERMINATION.SURVIVAL, response.DieResult);
 		}
 	}

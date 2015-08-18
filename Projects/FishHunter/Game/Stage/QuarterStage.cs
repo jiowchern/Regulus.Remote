@@ -50,8 +50,8 @@ namespace VGame.Project.FishHunter.Stage
                 var response = new Common.Data.HitResponse();
 
                 response.DieResult = Regulus.Utility.Random.Instance.NextInt(1,4) == 1 ? FISH_DETERMINATION.DEATH : FISH_DETERMINATION.SURVIVAL ;
-                response.FishID = requsetFishData.FishID;
-                response.WepID = request.WeaponData.WepID;
+                response.FishId = requsetFishData.FishId;
+                response.WepId = request.WeaponData.WepId;
 				response.FeedbackWeaponType = new WEAPON_TYPE[] { WEAPON_TYPE.NORMAL };            
 
                 _HitResponseEvent(response);    

@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DirectedGraph GraphDirection="LeftToRight" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+  <Nodes>
+    <Node Id="Project\GameTest" Label="GameTest" Category="專案" />
+    <Node Id="NSubstitute 1.8.1.0" Label="NSubstitute 1.8.1.0" Category="套件" />
+    <Node Id="SpecFlow 1.9.0" Label="SpecFlow 1.9.0" Category="套件" />
+    <Node Id="Project\Storage\StorageServer" Label="StorageServer" Category="專案" />
+    <Node Id="protobuf-net 2.0.0.668" Label="protobuf-net 2.0.0.668" Category="套件" />
+    <Node Id="Project\Backend\VGameWebApplication" Label="VGameWebApplication" Category="專案" />
+    <Node Id="bootstrap 3.3.4" Label="bootstrap 3.3.4" Category="套件" />
+    <Node Id="Project\Formula\Formula" Label="Formula" Category="專案" />
+    <Node Id="protobuf-net 2.0.0.668" Label="protobuf-net 2.0.0.668" Category="套件" />
+    <Node Id="Project\Play\UnitTest" Label="UnitTest" Category="專案" />
+    <Node Id="NSubstitute 1.8.1.0" Label="NSubstitute 1.8.1.0" Category="套件" />
+    <Node Id="Project\Common" Label="Common" Category="專案" />
+    <Node Id="protobuf-net 2.0.0.668" Label="protobuf-net 2.0.0.668" Category="套件" />
+    <Node Id="Library\RemotingTest" Label="RemotingTest" Category="專案" />
+    <Node Id="NSubstitute 1.8.1.0" Label="NSubstitute 1.8.1.0" Category="套件" />
+    <Node Id="Library\RegulusLibraryTest" Label="RegulusLibraryTest" Category="專案" />
+    <Node Id="NSubstitute 1.8.1.0" Label="NSubstitute 1.8.1.0" Category="套件" />
+    <Node Id="SpecFlow 1.9.0" Label="SpecFlow 1.9.0" Category="套件" />
+    <Node Id="Library\Database" Label="Database" Category="專案" />
+    <Node Id="MongoDB.Bson 2.0.0" Label="MongoDB.Bson 2.0.0" Category="套件" />
+    <Node Id="MongoDB.Driver 2.0.0" Label="MongoDB.Driver 2.0.0" Category="套件" />
+    <Node Id="MongoDB.Driver.Core 2.0.0" Label="MongoDB.Driver.Core 2.0.0" Category="套件" />
+    <Node Id="Library\Remoting" Label="Remoting" Category="專案" />
+    <Node Id="protobuf-net 2.0.0.668" Label="protobuf-net 2.0.0.668" Category="套件" />
+    <Node Id="Library\RegulusLibrary" Label="RegulusLibrary" Category="專案" />
+    <Node Id="protobuf-net 2.0.0.668" Label="protobuf-net 2.0.0.668" Category="套件" />
+  </Nodes>
+  <Links>
+    <Link Source="Project\GameTest" Target="NSubstitute 1.8.1.0" Category="已安裝的套件" />
+    <Link Source="Project\GameTest" Target="SpecFlow 1.9.0" Category="已安裝的套件" />
+    <Link Source="Project\Storage\StorageServer" Target="protobuf-net 2.0.0.668" Category="已安裝的套件" />
+    <Link Source="Project\Backend\VGameWebApplication" Target="bootstrap 3.3.4" Category="已安裝的套件" />
+    <Link Source="Project\Formula\Formula" Target="protobuf-net 2.0.0.668" Category="已安裝的套件" />
+    <Link Source="Project\Play\UnitTest" Target="NSubstitute 1.8.1.0" Category="已安裝的套件" />
+    <Link Source="Project\Common" Target="protobuf-net 2.0.0.668" Category="已安裝的套件" />
+    <Link Source="Library\RemotingTest" Target="NSubstitute 1.8.1.0" Category="已安裝的套件" />
+    <Link Source="Library\RegulusLibraryTest" Target="NSubstitute 1.8.1.0" Category="已安裝的套件" />
+    <Link Source="Library\RegulusLibraryTest" Target="SpecFlow 1.9.0" Category="已安裝的套件" />
+    <Link Source="MongoDB.Driver 2.0.0" Target="MongoDB.Bson 2.0.0" Category="套件相依性" />
+    <Link Source="MongoDB.Driver 2.0.0" Target="MongoDB.Driver.Core 2.0.0" Category="套件相依性" />
+    <Link Source="MongoDB.Driver.Core 2.0.0" Target="MongoDB.Bson 2.0.0" Category="套件相依性" />
+    <Link Source="Library\Database" Target="MongoDB.Driver 2.0.0" Category="已安裝的套件" />
+    <Link Source="Library\Remoting" Target="protobuf-net 2.0.0.668" Category="已安裝的套件" />
+    <Link Source="Library\RegulusLibrary" Target="protobuf-net 2.0.0.668" Category="已安裝的套件" />
+  </Links>
+  <Categories>
+    <Category Id="專案" />
+    <Category Id="套件" />
+  </Categories>
+  <Styles>
+    <Style TargetType="Node" GroupLabel="專案" ValueLabel="True">
+      <Condition Expression="HasCategory('專案')" />
+      <Setter Property="Background" Value="Blue" />
+    </Style>
+    <Style TargetType="Link" GroupLabel="套件相依性" ValueLabel="True">
+      <Condition Expression="HasCategory('套件相依性')" />
+      <Setter Property="Background" Value="Yellow" />
+    </Style>
+  </Styles>
+</DirectedGraph>
