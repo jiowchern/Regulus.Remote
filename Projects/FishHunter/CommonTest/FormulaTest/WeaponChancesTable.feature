@@ -6,7 +6,7 @@
 @mytag
 Scenario: 取得0號武器
 	Given 武器清單是
-	| Id | Rate  |
+	| Key | Value|
 	| 0  | 0.9   |
 	| 2  | 0.033 |
 	| 3  | 0.033 |
@@ -17,7 +17,7 @@ Scenario: 取得0號武器
 
 Scenario: 取得2號武器
 	Given 武器清單是
-	| Id | Rate  |
+	| Key | Value|
 	| 0  | 0.9   |
 	| 2  | 0.033 |
 	| 3  | 0.033 |
@@ -29,7 +29,7 @@ Scenario: 取得2號武器
 
 Scenario: 取得3號武器
 	Given 武器清單是
-	| Id | Rate  |
+	| Key| Value |
 	| 0  | 0.9   |
 	| 2  | 0.033 |
 	| 3  | 0.033 |
@@ -40,7 +40,7 @@ Scenario: 取得3號武器
 
 Scenario: 取得4號武器
 	Given 武器清單是
-	| Id | Rate  |
+	| Key| Value |
 	| 0  | 0.9   |
 	| 2  | 0.033 |
 	| 3  | 0.033 |
@@ -51,7 +51,7 @@ Scenario: 取得4號武器
 
 Scenario: 取得預設武器
 	Given 武器清單是
-	| Id | Rate  |
+	| Key| Value |
 	| 0  | 0.9   |
 	| 2  | 0.033 |
 	| 3  | 0.033 |

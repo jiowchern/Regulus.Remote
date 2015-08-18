@@ -59,38 +59,8 @@
   </Choose>
   <ItemGroup>
     <Compile Include="FormulaTest\DummyFeature.cs" />
-    <Compile Include="ZsFormulaTest\DataTest\FishHitAllocate.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>FishHitAllocate.feature</DependentUpon>
-    </Compile>
-    <Compile Include="ZsFormulaTest\DataTest\FishHitAllocateSteps.cs" />
-    <Compile Include="ZsFormulaTest\DataTest\MultipleRule.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>MultipleRule.feature</DependentUpon>
-    </Compile>
-    <Compile Include="ZsFormulaTest\DataTest\MultipleRuleSteps.cs" />
-    <Compile Include="ZsFormulaTest\DataTest\NatureBufferChancesTable.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>NatureBufferChancesTable.feature</DependentUpon>
-    </Compile>
-    <Compile Include="ZsFormulaTest\DataTest\NatureBufferChancesTableSteps.cs" />
-    <Compile Include="ZsFormulaTest\DataTest\ZsBetRangeTest.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ZsBetRangeTest.feature</DependentUpon>
-    </Compile>
-    <Compile Include="ZsFormulaTest\DataTest\ZsBetRangeTestSteps.cs" />
     <Compile Include="DataTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ZsFormulaTest\DataTest\ScoreOdds.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ScoreOdds.feature</DependentUpon>
-    </Compile>
-    <Compile Include="ZsFormulaTest\DataTest\ScoreOddsSteps.cs" />
     <Compile Include="FormulaTest\StageTest.cs" />
     <Compile Include="FormulaTest\WeaponChancesTable.feature.cs">
       <AutoGen>True</AutoGen>
@@ -98,12 +68,6 @@
       <DependentUpon>WeaponChancesTable.feature</DependentUpon>
     </Compile>
     <Compile Include="FormulaTest\WeaponChancesTableSteps.cs" />
-    <Compile Include="ZsFormulaTest\DataTest\ZsFishStageDataCheck.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ZsFishStageDataCheck.feature</DependentUpon>
-    </Compile>
-    <Compile Include="ZsFormulaTest\DataTest\ZsFishStageDataCheckSteps.cs" />
     <Compile Include="ZsFormulaTest\ZsFormula.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -135,34 +99,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="ZsFormulaTest\DataTest\FishHitAllocate.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>FishHitAllocate.feature.cs</LastGenOutput>
-    </None>
-    <None Include="ZsFormulaTest\DataTest\MultipleRule.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>MultipleRule.feature.cs</LastGenOutput>
-    </None>
-    <None Include="ZsFormulaTest\DataTest\NatureBufferChancesTable.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>NatureBufferChancesTable.feature.cs</LastGenOutput>
-    </None>
-    <None Include="ZsFormulaTest\DataTest\ZsBetRangeTest.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>ZsBetRangeTest.feature.cs</LastGenOutput>
-    </None>
     <None Include="packages.config" />
-    <None Include="ZsFormulaTest\DataTest\ScoreOdds.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>ScoreOdds.feature.cs</LastGenOutput>
-    </None>
     <None Include="FormulaTest\WeaponChancesTable.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>WeaponChancesTable.feature.cs</LastGenOutput>
-    </None>
-    <None Include="ZsFormulaTest\DataTest\ZsFishStageDataCheck.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>ZsFishStageDataCheck.feature.cs</LastGenOutput>
     </None>
     <None Include="ZsFormulaTest\ZsFormula.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>

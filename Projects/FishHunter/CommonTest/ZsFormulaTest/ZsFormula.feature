@@ -17,11 +17,11 @@ Scenario:公式檢查
 	| WepId | WeaponType | WepBet | WepOdds | TotalHits | TotalHitOdds |
 	| 1     | NORMAL     | 1      | 1       | 1         | 1            |
 
-	And 亂數資料是 1000
+	And 亂數資料是1
 	
 	When 得到檢查結果
 	
-	Then 比對資料 fishId是1 WepId是1 DieResult是'die' Feeddack是'NOVILD' Wup是1
+	Then 比對資料 fishId是1 WepId是1 DieResult是'die' Feeddack是'SUPER_BOMB' Wup是1
     
 	
 
