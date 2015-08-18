@@ -1,11 +1,16 @@
 ﻿using System;
 
+
+using ProtoBuf;
+
 namespace VGame.Project.FishHunter.Common.Data
 {
-	/// <summary>
-	///     The data.
-	/// </summary>
-	public class FarmBuffer
+    /// <summary>
+    ///     The data.
+    /// </summary>
+    /// [ProtoContract]
+    [ProtoContract]
+    public class FarmBuffer
 	{
 		public enum BUFFER_BLOCK
 		{
@@ -43,36 +48,51 @@ namespace VGame.Project.FishHunter.Common.Data
 			COUNT = BUFFER_TYPE.BUFFER_VIR_END
 		}
 
-		public class BufferValue
+        [ProtoContract]
+        public class BufferValue
 		{
-			public int FireCount { get; set; }
+            [ProtoMember(1)]
+            public int FireCount { get; set; }
 
-			public int AverageValue { get; set; }
+            [ProtoMember(2)]
+            public int AverageValue { get; set; }
 
-			public int AverageTimes { get; set; }
+            [ProtoMember(3)]
+            public int AverageTimes { get; set; }
 
-			public int AverageTotal { get; set; }
+            [ProtoMember(4)]
+            public int AverageTotal { get; set; }
 
-			public int HiLoRate { get; set; }
+            [ProtoMember(5)]
+            public int HiLoRate { get; set; }
 
-			public int RealTime { get; set; }
+            [ProtoMember(6)]
+            public int RealTime { get; set; }
 		}
 
+        [ProtoMember(1)]
 		public BUFFER_BLOCK BufferBlock { get; set; }
 
-		public BUFFER_TYPE BufferType { get; set; }
+        [ProtoMember(2)]
+        public BUFFER_TYPE BufferType { get; set; }
 
-		public int Buffer { get; set; }
+        [ProtoMember(3)]
+        public int Buffer { get; set; }
 
-		public int Rate { get; set; }
+        [ProtoMember(4)]
+        public int Rate { get; set; }
 
-		public int Count { get; set; }
+        [ProtoMember(5)]
+        public int Count { get; set; }
 
-		public int Top { get; set; }
+        [ProtoMember(6)]
+        public int Top { get; set; }
 
-		public int Gate { get; set; }
+        [ProtoMember(7)]
+        public int Gate { get; set; }
 
-		public BufferValue BufferTempValue { get; private set; }
+        [ProtoMember(8)]
+        public BufferValue BufferTempValue { get; private set; }
 
 		public FarmBuffer()
 		{

@@ -6,7 +6,7 @@
 //   記錄道具獲得次數
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
+using System.Linq;
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
 
@@ -31,11 +31,10 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		{
 			// 存player打死的魚
 			_StageVisitor.PlayerRecord.FindStageRecord(_StageVisitor.FocusFishFarmData.FarmId)
-			             .FishHitReuslt.Items.Find(x => x.FishType == _Fish.FishType)
-			             .KillCount++;
+			             .FishHitReuslt.Items.Where(x => x.FishType == _Fish.FishType).First().KillCount++;
 			             
 			// 存stage的死亡的魚
-			_StageVisitor.FocusFishFarmData.RecordData.FishHitReuslt.Items.Find(x => x.FishType == _Fish.FishType).KillCount++;
+			_StageVisitor.FocusFishFarmData.RecordData.FishHitReuslt.Items.Where(x => x.FishType == _Fish.FishType).First().KillCount++;
 		}
 	}
 }

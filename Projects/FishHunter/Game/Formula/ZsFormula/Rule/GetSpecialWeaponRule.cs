@@ -52,7 +52,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		{
 			var CertainWeapons =
 				_StageVisitor.PlayerRecord.FindStageRecord(_StageVisitor.FocusFishFarmData.FarmId)
-							 .FishHitReuslt.Items.Find(x => x.FishType == _FishData.FishType).CertainWeapons;
+							 .FishHitReuslt.Items.Where(x => x.FishType == _FishData.FishType).First().CertainWeapons;
 			if (CertainWeapons != WEAPON_TYPE.INVALID)
 			{
 				_StageVisitor.GetItems.Add(CertainWeapons);
@@ -64,7 +64,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 			// 拿到魚的掉落物品清單
 			var randomWeapons =
 				_StageVisitor.PlayerRecord.FindStageRecord(_StageVisitor.FocusFishFarmData.FarmId)
-							 .FishHitReuslt.Items.Find(x => x.FishType == _FishData.FishType).RandomWeapons;
+							 .FishHitReuslt.Items.Where(x => x.FishType == _FishData.FishType).First().RandomWeapons;
 
 			var bufferData = _StageVisitor.FocusFishFarmData.FindBuffer(_StageVisitor.FocusBufferBlock, FarmBuffer.BUFFER_TYPE.SPEC);
 
