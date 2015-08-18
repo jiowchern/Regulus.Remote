@@ -11,6 +11,9 @@ using VGame.Project.FishHunter.Formula;
 using VGame.Project.FishHunter.Formula.ZsFormula;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
 
+
+using Account = VGame.Project.FishHunter.Common.Data.Account;
+
 namespace VGame.Project.FishHunter.Play
 {
 	public class DummyFrature : IAccountFinder, IFishStageQueryer, IStorage
@@ -153,9 +156,9 @@ namespace VGame.Project.FishHunter.Play
 			return 0;
 		}
 
-		Value<FishFarmData> IFormulaFarmRecorder.Load(int stage_id)
+		Value<FishFarmData> IFormulaFarmRecorder.Load(int farm_id)
 		{
-			return new FishFarmBuilder().Get(stage_id);
+			return new FishFarmBuilder().Get(farm_id);
 		}
 
 		Value<bool> IFormulaFarmRecorder.Save(FishFarmData data)

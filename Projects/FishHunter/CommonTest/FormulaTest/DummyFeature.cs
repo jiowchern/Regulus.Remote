@@ -11,6 +11,9 @@ using VGame.Project.FishHunter.Formula;
 using VGame.Project.FishHunter.Formula.ZsFormula;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
 
+
+using Account = VGame.Project.FishHunter.Common.Data.Account;
+
 namespace GameTest.FormulaTest
 {
 	public class DummyFrature : IAccountFinder, IFishStageQueryer, IStorage

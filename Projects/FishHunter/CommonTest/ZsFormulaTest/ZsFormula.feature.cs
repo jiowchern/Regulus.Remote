@@ -117,11 +117,11 @@ this.FeatureBackground();
 #line 16
  testRunner.Given("玩家武器資料是", ((string)(null)), table2, "Given ");
 #line 20
- testRunner.And("亂數資料是 1000", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+ testRunner.And("亂數資料是1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 22
  testRunner.When("得到檢查結果", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 24
- testRunner.Then("比對資料 fishId是1 WepId是1 DieResult是\'die\' Feeddack是\'NOVILD\' Wup是1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("比對資料 fishId是1 WepId是1 DieResult是\'die\' Feeddack是\'SUPER_BOMB\' Wup是1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

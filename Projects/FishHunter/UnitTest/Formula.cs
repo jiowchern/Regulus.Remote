@@ -1,29 +1,18 @@
-﻿#region Test_Region
-
+﻿
 using System.Collections.Generic;
-
-
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-
 using NSubstitute;
 
-
 using Regulus.Utility;
-
-
-using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Formula;
 
-#endregion
-
 namespace UnitTest
 {
-	/// <summary>
-	///     Formula 的摘要描述
-	/// </summary>
-	[TestClass]
+    /// <summary>
+    ///     Formula 的摘要描述
+    /// </summary>
+    [TestClass]
 	public class Formula
 	{
 		/// <summary>
@@ -109,7 +98,7 @@ namespace UnitTest
 
 			var response = formula.Request(request);
 			Assert.AreEqual(1, response.WepId);
-			Assert.AreEqual(WEAPON_TYPE.INVALID, response.FeedbackWeaponType);
+			Assert.AreEqual(WEAPON_TYPE.INVALID, response.FeedbackWeaponType[0]);
 			Assert.AreEqual(1, response.FishId);
 			Assert.AreEqual(FISH_DETERMINATION.SURVIVAL, response.DieResult);
 		}
@@ -135,7 +124,8 @@ namespace UnitTest
 				TotalHits = 1, 
 				WepBet = 1, 
 				WepOdds = 1, 
-				WepId = 1
+				WepId = 1,
+                WeaponType =WEAPON_TYPE.INVALID
 			};
 
 			var request = new HitRequest(fishs.ToArray(), weapon);
@@ -159,8 +149,8 @@ namespace UnitTest
 				new RequsetFishData
 				{
 					FishId = 1, 
-					FishOdds = 1
-				}
+					FishOdds = 1,
+                }
 			};
 			var weapon = new RequestWeaponData
 			{
@@ -174,7 +164,7 @@ namespace UnitTest
 
 			var response = formula.Request(request);
 			Assert.AreEqual(1, response.WepId);
-			Assert.AreEqual(WEAPON_TYPE.INVALID, response.FeedbackWeaponType);
+			Assert.AreEqual(WEAPON_TYPE.INVALID, response.FeedbackWeaponType[0]);
 			Assert.AreEqual(1, response.FishId);
 			Assert.AreEqual(FISH_DETERMINATION.SURVIVAL, response.DieResult);
 		}
