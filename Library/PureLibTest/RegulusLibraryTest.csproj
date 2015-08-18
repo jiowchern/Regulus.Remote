@@ -79,6 +79,7 @@
     <Compile Include="LogTest.cs" />
     <Compile Include="FlagTest.cs" />
     <Compile Include="DosKeyTest.cs" />
+    <Compile Include="TypeTest.cs" />
     <Compile Include="RemotingValueResultTest.cs" />
   </ItemGroup>
   <ItemGroup>
