@@ -96,17 +96,7 @@ namespace VGame.Project.FishHunter.Storage
 			return new Value<Account>(null);
 		}
 
-		Value<ACCOUNT_REQUEST_RESULT> IAccountCreator.Create(Account account)
-		{
-			var result = _Find(account.Name);
-			if(result != null)
-			{
-				return ACCOUNT_REQUEST_RESULT.REPEAT;
-			}
-
-			_Database.Add(account);
-			return ACCOUNT_REQUEST_RESULT.OK;
-		}
+		
 
 		Value<ACCOUNT_REQUEST_RESULT> IAccountManager.Delete(string account)
 		{
@@ -479,5 +469,17 @@ namespace VGame.Project.FishHunter.Storage
 
 			return returnTask;
 		}
-	}
+
+        Value<ACCOUNT_REQUEST_RESULT> IAccountManager.Create(Account account)
+        {
+            var result = _Find(account.Name);
+            if (result != null)
+            {
+                return ACCOUNT_REQUEST_RESULT.REPEAT;
+            }
+
+            _Database.Add(account);
+            return ACCOUNT_REQUEST_RESULT.OK;
+        }
+    }
 }

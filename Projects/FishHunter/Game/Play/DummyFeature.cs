@@ -75,16 +75,17 @@ namespace VGame.Project.FishHunter.Play
 			}
 		}
 
-		Value<Account[]> IAccountManager.QueryAllAccount()
+	    Value<ACCOUNT_REQUEST_RESULT> IAccountManager.Create(Account account)
+	    {
+            _Accounts.Add(account);
+            return ACCOUNT_REQUEST_RESULT.OK;
+	    }
+
+	    Value<Account[]> IAccountManager.QueryAllAccount()
 		{
 			return _Accounts.ToArray();
 		}
-
-		Value<ACCOUNT_REQUEST_RESULT> IAccountCreator.Create(Account account)
-		{
-			_Accounts.Add(account);
-			return ACCOUNT_REQUEST_RESULT.OK;
-		}
+		
 
 		Value<ACCOUNT_REQUEST_RESULT> IAccountManager.Delete(string account)
 		{

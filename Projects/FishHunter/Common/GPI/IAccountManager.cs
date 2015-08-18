@@ -5,8 +5,9 @@ using VGame.Project.FishHunter.Common.Data;
 
 namespace VGame.Project.FishHunter.Common.GPI
 {
-	public interface IAccountManager : IAccountCreator
+	public interface IAccountManager 
 	{
+		Value<ACCOUNT_REQUEST_RESULT> Create(Account account);
 		Value<Account[]> QueryAllAccount();
 
 		Value<ACCOUNT_REQUEST_RESULT> Delete(string account);
