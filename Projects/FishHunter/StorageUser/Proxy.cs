@@ -1,4 +1,7 @@
-﻿using Regulus.Framework;
+﻿using System.Runtime.CompilerServices;
+
+
+using Regulus.Framework;
 using Regulus.Utility;
 
 namespace VGame.Project.FishHunter.Storage
@@ -14,7 +17,9 @@ namespace VGame.Project.FishHunter.Storage
 
 		private UserProvider<IUser> _UserProvider;
 
-		public bool Enable
+	    private Center _Standalone;
+
+	    public bool Enable
 		{
 			get { return _Client.Enable; }
 		}
@@ -28,7 +33,12 @@ namespace VGame.Project.FishHunter.Storage
 			Client_ModeSelectorEvent(_Client.Selector);
 		}
 
-		public Proxy()
+	    public Proxy(IUserFactoty<IUser> custom, Center standalone):this(custom)
+	    {
+	        _Standalone = standalone;
+	    }
+
+        public Proxy()
 		{
 			_UserFactory = new RemotingFactory();
 			_Client = new Client<IUser>(this, this);
@@ -52,6 +62,11 @@ namespace VGame.Project.FishHunter.Storage
 		void IBootable.Launch()
 		{
 			_Updater.Add(_Client);
+
+		    if(_Standalone != null)
+		    {
+                _Updater.Add(_Standalone);
+            }
 		}
 
 		void IBootable.Shutdown()

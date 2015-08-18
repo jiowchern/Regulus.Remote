@@ -3,29 +3,13 @@
 <div>
     <p>@Html.ActionLink("新增", "Add", "Account")</p>
     <table>
-        @foreach(var acc in Model)
+        @foreach (var acc in Model)
         {
-            _Page_Views_Account_Index_cshtml.<
-            tr >
-            <
-            td > @acc.Name </
-            td >
-            <
-            td > @Html.ActionLink("編輯", "Edit", "Account", new
-            {
-                accountid = acc.Id.ToString()
-            }, null) </
-            td >
-            <
-            td > @Html.ActionLink("刪除", "Delete", "Account", new
-            {
-                accountid = acc.Id.ToString()
-            }, null) </
-            td >
-
-
-            </
-            tr >
+            <tr>
+                <td>@acc.Name</td>
+                <td>@Html.ActionLink("編輯", "Edit", "Account", new { accountid = acc.Id.ToString() }, null)</td>
+                <td>@Html.ActionLink("刪除", "Delete", "Account", new { accountid = acc.Id.ToString() }, null)</td>
+            </tr>
         }
     </table>
 </div>

@@ -2,19 +2,8 @@
 
 
 
-@Html.ActionLink("登出", "Logout", "Home", null, new
+@Html.ActionLink("登出", "Logout", "Home", null, new { @class = "navbar-brand" })
+@if (Model.AccountManager)
 {
-    @class = "navbar-brand"
-})
-@if(Model.AccountManager)
-{
-    _Page_Views_Home_Functions_cshtml.@Html.ActionLink("帳號管理", "Index", "Account", null, new
-    {
-        @class = "navbar-brand"
-    })
-
-    _Page_Views_Home_Functions_cshtml.@Html.ActionLink("儲值", "Index", "Record", null, new
-    {
-        @class = "navbar-brand"
-    })
+    @Html.ActionLink("帳號管理", "Index", "Account", null, new { @class = "navbar-brand" });
 }

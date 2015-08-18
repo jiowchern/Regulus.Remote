@@ -26,7 +26,7 @@
             })
             @if(User.Identity.IsAuthenticated)
             {
-                _Page_Views_Shared__Layout_cshtml.@Html.Action("Functions", "Home")
+                @Html.Action("Functions", "Home")
             }
 
 

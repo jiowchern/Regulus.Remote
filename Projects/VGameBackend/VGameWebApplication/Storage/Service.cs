@@ -9,12 +9,14 @@ using Regulus.Utility;
 using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
+using VGame.Project.FishHunter.Play;
 using VGame.Project.FishHunter.Storage;
 
 
 using VGameWebApplication.Models;
 
 
+using Center = VGame.Project.FishHunter.Storage.Center;
 using Task = System.Threading.Tasks.Task;
 
 namespace VGameWebApplication.Storage
@@ -35,7 +37,9 @@ namespace VGameWebApplication.Storage
 
 		private object _Key;
 
-		public IAccountManager AccountManager { get; private set; }
+	    
+
+	    public IAccountManager AccountManager { get; private set; }
 
 		public IAccountFinder AccountFinder { get; private set; }
 
@@ -45,14 +49,16 @@ namespace VGameWebApplication.Storage
 
 		public Guid ConnecterId { get; private set; }
 
-		public Service(VerifyData data)
+	    
+        public Service(VerifyData data)
 		{
 			_Key = new object();
 			_Data = data;
 			_Soin = new SpinWait();
-
-			_Proxy = new Proxy();
-			(_Proxy as IUpdatable).Launch();
+            
+            
+            _Proxy = new Proxy(new RemotingFactory());
+            (_Proxy as IUpdatable).Launch();
 			_ProxyUpdate = new Task(Service._UpdateProxy, new WeakReference<Proxy>(_Proxy));
 			_ProxyUpdate.Start();
 
@@ -89,7 +95,7 @@ namespace VGameWebApplication.Storage
 				return false;
 			}
 
-			throw new SystemException("storage verify fail.");
+			throw new SystemException("storage connect fail.");
 		}
 
 		private bool _Connect()
@@ -120,7 +126,8 @@ namespace VGameWebApplication.Storage
 				_Wait();
 			}
 
-			_Competnces = new Flag<Account.COMPETENCE>(provider.Ghosts[0].Query().WaitResult());
+		    var competnces = provider.Ghosts[0].Query().WaitResult();
+            _Competnces = new Flag<Account.COMPETENCE>(competnces);
 
 			ConnecterId = provider.Ghosts[0].QueryForId().WaitResult();
 		}

@@ -74,6 +74,10 @@
       <Project>{72e9207f-cd57-4789-ad21-30132e541fb6}</Project>
       <Name>Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Game\Game.csproj">
+      <Project>{5061BC1D-0C9E-4050-A51E-593B5C16D398}</Project>
+      <Name>Game</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
