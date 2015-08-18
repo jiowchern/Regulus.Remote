@@ -8,6 +8,8 @@ using Regulus.Remoting;
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
 using VGame.Project.FishHunter.Formula;
+using VGame.Project.FishHunter.Formula.ZsFormula;
+using VGame.Project.FishHunter.Formula.ZsFormula.Data;
 
 namespace GameTest.FormulaTest
 {
@@ -61,12 +63,12 @@ namespace GameTest.FormulaTest
 		{
 			switch(fish_stage)
 			{
-				case 200:
-					return null;
+				case 111:
+					return new VGame.Project.FishHunter.Stage.QuarterStage(player_id, fish_stage);
 				case 100:
-					return new FishStage(player_id, fish_stage);
+					return new ZsFishStage(player_id, new FishFarmBuilder().Get(fish_stage), this, this);
 				default:
-					return new CsFishStage(player_id, fish_stage);
+					return new FishStage(player_id, fish_stage);
 			}
 		}
 
@@ -153,12 +155,12 @@ namespace GameTest.FormulaTest
 			return 0;
 		}
 
-		Value<StageData> IFormulaStageDataRecorder.Load(int stage_id)
+		Value<FishFarmData> IFormulaFarmRecorder.Load(int stage_id)
 		{
 			throw new NotImplementedException();
 		}
 
-		Value<bool> IFormulaStageDataRecorder.Save(StageData data)
+		Value<bool> IFormulaFarmRecorder.Save(FishFarmData data)
 		{
 			throw new NotImplementedException();
 		}

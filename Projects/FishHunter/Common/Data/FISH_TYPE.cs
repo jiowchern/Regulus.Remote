@@ -191,7 +191,7 @@ namespace VGame.Project.FishHunter.Common.Data
 		///     鳯凰 200~600倍, X1~X10
 		/// </summary>
 		[EnumDescription("鳯凰")]
-		PHOENIX = 100, 
+		EAT_FISH_CRAZY = 100,
 
 		/// <summary>
 		///     全屏炸彈

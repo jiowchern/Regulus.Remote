@@ -5,7 +5,7 @@ namespace VGame.Project.FishHunter.Common.Data
 	/// <summary>
 	///     The data.
 	/// </summary>
-	public class StageBuffer
+	public class FarmBuffer
 	{
 		public enum BUFFER_BLOCK
 		{
@@ -72,24 +72,12 @@ namespace VGame.Project.FishHunter.Common.Data
 
 		public int Gate { get; set; }
 
-		public BufferValue BufferTempValue { get; set; }
+		public BufferValue BufferTempValue { get; private set; }
 
-		public StageBuffer(BUFFER_BLOCK buffer_block, BUFFER_TYPE buffer_type)
+		public FarmBuffer()
 		{
-			BufferBlock = buffer_block;
-			BufferType = buffer_type;
-			Buffer = 0;
-			Rate = 0;
-			Count = 0;
-			Top = 0;
-			Gate = 0;
-
 			BufferTempValue = new BufferValue();
-		}
-
-		public StageBuffer()
-		{
-			throw new NotImplementedException();
+			
 		}
 	}
 }

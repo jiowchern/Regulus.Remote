@@ -2,9 +2,9 @@
 
 namespace VGame.Project.FishHunter.Common.Data
 {
-	public class StageRecord
+	public class FarmRecord
 	{
-		public int StageId { get; set; }
+		public int FarmId { get; set; }
 
 		public int PlayTotal { get; set; } // 0
 
@@ -31,14 +31,13 @@ namespace VGame.Project.FishHunter.Common.Data
 			public int KillCount { get; set; }
 		}
 
-		public FishCorrespondenceItem FishHitReuslt { get; set; }
+		public FishPocket FishHitReuslt { get; set; }
 
-		
-
-		public StageRecord(int stage_id)
+		public FarmRecord(int farm_id)
 		{
-			StageId = stage_id;
-			FishHitReuslt = new FishCorrespondenceItem();
+			FarmId = farm_id;
+			FishHitReuslt = new FishPocket();
 		}
+
 	}
 }

@@ -4,13 +4,17 @@ namespace VGame.Project.FishHunter.Common.Data
 {
 	
 
-	public class FishCorrespondenceItem
+	public class FishPocket
 	{
-		public class FishToItem
+		public class Item
 		{
 			public FISH_TYPE FishType;
 
-			public WEAPON_TYPE[] OwnWeapons;
+			//隨機
+			public WEAPON_TYPE[] RandomWeapons;
+			
+			//必出
+			public WEAPON_TYPE CertainWeapons;
 
 			public int KillCount;
 
@@ -19,118 +23,120 @@ namespace VGame.Project.FishHunter.Common.Data
 			public int WinScore;
 		}
 
-		public List<FishToItem> FishToItems { get; private set; }
+		public List<Item> Items { get; private set; }
 
-		public FishCorrespondenceItem()
+		public FishPocket()
 		{
-			FishToItems = new List<FishToItem>();
+			Items = new List<Item>();
 
 			for(var i = FISH_TYPE.ORDINARY_FISH_BEGIN; i < FISH_TYPE.SCREEN_BOMB; ++i)
 			{
-				var fti = new FishToItem
+				var fti = new Item
 				{
 					FishType = i, 
 					KillCount = 0,
 					WinScore = 0,
-					OwnWeapons = new[]
+					RandomWeapons = new[]
 					{
 						WEAPON_TYPE.SUPER_BOMB, 
 						WEAPON_TYPE.ELECTRIC_NET, 
 						WEAPON_TYPE.FREE_POWER
-					}
+					},
+					CertainWeapons = WEAPON_TYPE.INVALID
 				};
 
-				FishToItems.Add(fti);
+				Items.Add(fti);
 			}
 
-			FishToItems.Add(
-				new FishToItem
+			Items.Add(
+				new Item
 				{
 					FishType = FISH_TYPE.SCREEN_BOMB,
 					KillCount = 0,
 					WinScore = 0,
-					OwnWeapons = new[]
+					RandomWeapons = new[]
 					{
 						WEAPON_TYPE.SUPER_BOMB, 
 						WEAPON_TYPE.ELECTRIC_NET, 
 						WEAPON_TYPE.FREE_POWER, 
-						WEAPON_TYPE.SCREEN_BOMB
-					}
+					},
+					CertainWeapons = WEAPON_TYPE.SCREEN_BOMB
 				});
 
-			FishToItems.Add(
-				new FishToItem
+			Items.Add(
+				new Item
 				{
 					FishType = FISH_TYPE.THUNDER_BOMB,
 					KillCount = 0,
 					WinScore = 0,
-					OwnWeapons = new[]
+					RandomWeapons = new[]
 					{
 						WEAPON_TYPE.SUPER_BOMB, 
 						WEAPON_TYPE.ELECTRIC_NET, 
 						WEAPON_TYPE.FREE_POWER, 
-						WEAPON_TYPE.THUNDER_BOMB
-					}
+						
+					},
+					CertainWeapons = WEAPON_TYPE.THUNDER_BOMB
 				});
 
-			FishToItems.Add(
-				new FishToItem
+			Items.Add(
+				new Item
 				{
 					FishType = FISH_TYPE.FIRE_BOMB,
 					KillCount = 0,
 					WinScore = 0,
-					OwnWeapons = new[]
+					RandomWeapons = new[]
 					{
 						WEAPON_TYPE.SUPER_BOMB, 
 						WEAPON_TYPE.ELECTRIC_NET, 
 						WEAPON_TYPE.FREE_POWER, 
-						WEAPON_TYPE.FIRE_BOMB
-					}
+					},
+					CertainWeapons = WEAPON_TYPE.FIRE_BOMB
 				});
 
-			FishToItems.Add(
-				new FishToItem
+			Items.Add(
+				new Item
 				{
 					FishType = FISH_TYPE.DAMAGE_BALL,
 					KillCount = 0,
 					WinScore = 0,
-					OwnWeapons = new[]
+					RandomWeapons = new[]
 					{
 						WEAPON_TYPE.SUPER_BOMB, 
 						WEAPON_TYPE.ELECTRIC_NET, 
 						WEAPON_TYPE.FREE_POWER, 
-						WEAPON_TYPE.DAMAGE_BALL
-					}
+					},
+					CertainWeapons = WEAPON_TYPE.DAMAGE_BALL
 				});
 
-			FishToItems.Add(
-				new FishToItem
+			Items.Add(
+				new Item
 				{
 					FishType = FISH_TYPE.OCTOPUS_BOMB,
 					KillCount = 0,
 					WinScore = 0,
-					OwnWeapons = new[]
+					RandomWeapons = new[]
 					{
-						WEAPON_TYPE.SUPER_BOMB, 
-						WEAPON_TYPE.ELECTRIC_NET, 
-						WEAPON_TYPE.FREE_POWER, 
-						WEAPON_TYPE.OCTOPUS_BOMB
-					}
+						WEAPON_TYPE.SUPER_BOMB,
+						WEAPON_TYPE.ELECTRIC_NET,
+						WEAPON_TYPE.FREE_POWER,
+					},
+					CertainWeapons = WEAPON_TYPE.OCTOPUS_BOMB
 				});
-
-			FishToItems.Add(
-				new FishToItem
+			
+			Items.Add(
+				new Item
 				{
 					FishType = FISH_TYPE.BIG_OCTOPUS_BOMB,
 					KillCount = 0,
 					WinScore = 0,
-					OwnWeapons = new[]
+					RandomWeapons = new[]
 					{
 						WEAPON_TYPE.SUPER_BOMB, 
 						WEAPON_TYPE.ELECTRIC_NET, 
 						WEAPON_TYPE.FREE_POWER, 
-						WEAPON_TYPE.BIG_OCTOPUS_BOMB
-					}
+					},
+					CertainWeapons = WEAPON_TYPE.BIG_OCTOPUS_BOMB
 				});
 		}
 	}

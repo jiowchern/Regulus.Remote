@@ -87,7 +87,7 @@ namespace VGame.Project.FishHunter.Play
 				{
 					new RequsetFishData
 					{
-						FishID = fishid, 
+						FishId = fishid, 
 						FishOdds = 1, 
 						FishStatus = FISH_STATUS.NORMAL, 
 						FishType = FISH_TYPE.TROPICAL_FISH
@@ -99,7 +99,7 @@ namespace VGame.Project.FishHunter.Play
 					TotalHits = fishids.Length, 
 					TotalHitOdds = 1, 
 					WepBet = 1, 
-					WepID = bulletid, 
+					WepId = bulletid, 
 					WepOdds = _WeaponOdds, 
 					WeaponType = _WeaponType
 				};
@@ -217,7 +217,7 @@ namespace VGame.Project.FishHunter.Play
 		private void _Response(HitResponse obj)
 		{
 			HitRequest request;
-			if(!_Requests.TryGetValue(obj.FishID, out request))
+			if(!_Requests.TryGetValue(obj.FishId, out request))
 			{
 				return;
 			}
@@ -228,7 +228,7 @@ namespace VGame.Project.FishHunter.Play
 					var onDeathFish = _DeathFishEvent;
 					if(onDeathFish != null)
 					{
-						onDeathFish(obj.FishID);
+						onDeathFish(obj.FishId);
 					}
 
 					AddMoney(request.WeaponData.WepBet * request.WeaponData.WepOdds);
@@ -236,11 +236,11 @@ namespace VGame.Project.FishHunter.Play
 					break;
 
 				case FISH_DETERMINATION.SURVIVAL:
-					_PushFish(obj.FishID);
+					_PushFish(obj.FishId);
 					break;
 			}
 
-			_Requests.Remove(obj.FishID);
+			_Requests.Remove(obj.FishId);
 		}
 
 		private void _PushFish(int id)

@@ -75,7 +75,7 @@ namespace VGame.Project.FishHunter.Stage
 			}
 
 			_Binder.Bind<ITradeNotes>(_Storage);
-			_Binder.Bind<IFormulaStageDataRecorder>(_Storage);
+			_Binder.Bind<IFormulaFarmRecorder>(_Storage);
 			_Binder.Bind<IFormulaPlayerRecorder>(_Storage);
 		}
 
@@ -93,7 +93,7 @@ namespace VGame.Project.FishHunter.Stage
 			}
 
 			_Binder.Unbind<ITradeNotes>(_Storage);
-			_Binder.Unbind<IFormulaStageDataRecorder>(_Storage);
+			_Binder.Unbind<IFormulaFarmRecorder>(_Storage);
 			_Binder.Unbind<IFormulaPlayerRecorder>(_Storage);
 
 			_Binder.Unbind<IStorageCompetences>(this);

@@ -43,11 +43,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Formula\DummyStandalong.cs" />
     <Compile Include="Formula\ZsFormula\ZsFishStage.cs" />
     <Compile Include="Stage\QuarterStage.cs" />
     <Compile Include="Play\DummyFeature.cs" />
     <Compile Include="Formula\ZsFormula\Data\CalculationBufferBlock.cs" />
-    <Compile Include="Formula\ZsFormula\Data\StageDataBuilder.cs" />
+    <Compile Include="Formula\ZsFormula\Data\FishFarmBuilder.cs" />
     <Compile Include="Formula\ZsFormula\Rule\AccumulationBufferRule.cs" />
     <Compile Include="Formula\ZsFormula\Rule\AdjustmentAverageRule.cs" />
     <Compile Include="Formula\ZsFormula\Rule\AdjustmentGameLevelRule.cs" />
@@ -65,9 +66,6 @@
     <Compile Include="Formula\ZsFormula\Rule\GetSpecialWeaponRule.cs" />
     <Compile Include="Formula\ZsFormula\Rule\StageBufferBlockRuler.cs" />
     <Compile Include="Formula\ZsFormula\Data\FishHitAllocateTable.cs" />
-    <Compile Include="Formula\CSFishStage.cs">
-      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
-    </Compile>
     <Compile Include="Formula\CsHit.cs" />
     <Compile Include="Formula\FishStage.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>

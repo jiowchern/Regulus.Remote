@@ -18,7 +18,7 @@ namespace VGame.Project.FishHunter.Formula
 
 		private IAccountFinder _Finder;
 
-		private IFormulaStageDataRecorder _FormulaStageDataRecorder;
+		private IFormulaFarmRecorder _FormulaFarmRecorder;
 
 		private IFormulaPlayerRecorder _FormulaPlayerRecorder;
 
@@ -46,14 +46,14 @@ namespace VGame.Project.FishHunter.Formula
 
 			_Finder = obj;
 
-			_User.QueryProvider<IFormulaStageDataRecorder>().Supply += _GetFishDataLoader;
+			_User.QueryProvider<IFormulaFarmRecorder>().Supply += _GetFishDataLoader;
 		}
 
-		private void _GetFishDataLoader(IFormulaStageDataRecorder obj)
+		private void _GetFishDataLoader(IFormulaFarmRecorder obj)
 		{
-			_User.QueryProvider<IFormulaStageDataRecorder>().Supply -= _GetFishDataLoader;
+			_User.QueryProvider<IFormulaFarmRecorder>().Supply -= _GetFishDataLoader;
 
-			_FormulaStageDataRecorder = obj;
+			_FormulaFarmRecorder = obj;
 
 			_User.QueryProvider<IFormulaPlayerRecorder>().Supply += _GetRecorder;
 		}
@@ -67,7 +67,7 @@ namespace VGame.Project.FishHunter.Formula
 
 		private void _Finish()
 		{
-			_ExpansionFeature = new ExpansionFeature(_Finder, _FormulaStageDataRecorder, _FormulaPlayerRecorder);
+			_ExpansionFeature = new ExpansionFeature(_Finder, _FormulaFarmRecorder, _FormulaPlayerRecorder);
 
 			OnDoneEvent(_ExpansionFeature);
 		}

@@ -36,13 +36,13 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 //
 //			// ª±®aªº
 //			var data =
-//				_StageVisitor.PlayerRecord.FindStageRecord(_StageVisitor.FocusStageData.StageId)
+//				_StageVisitor.PlayerRecord.FindStageRecord(_StageVisitor.FocusFishFarmData.FarmId)
 //				             .SpecialWeaponDatas.Find(x => x.WeaponType == _WeaponData.WeaponType);
 //			data.WinScore += _Win;
 //
 //			// stageªº
 //			var stageWeaponData =
-//				_StageVisitor.FocusStageData.RecordData.SpecialWeaponDatas.Find(x => x.WeaponType == _WeaponData.WeaponType);
+//				_StageVisitor.FocusFishFarmData.RecordData.SpecialWeaponDatas.Find(x => x.WeaponType == _WeaponData.WeaponType);
 //			stageWeaponData.WinScore += _Win;
 		}
 	}

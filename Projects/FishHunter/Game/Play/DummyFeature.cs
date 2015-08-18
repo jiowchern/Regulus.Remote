@@ -8,6 +8,8 @@ using Regulus.Remoting;
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
 using VGame.Project.FishHunter.Formula;
+using VGame.Project.FishHunter.Formula.ZsFormula;
+using VGame.Project.FishHunter.Formula.ZsFormula.Data;
 
 namespace VGame.Project.FishHunter.Play
 {
@@ -63,12 +65,10 @@ namespace VGame.Project.FishHunter.Play
 			{
 				case 111:
 					return new VGame.Project.FishHunter.Stage.QuarterStage(player_id, fish_stage);
-				case 200:
-					return null;
 				case 100:
-					return new FishStage(player_id, fish_stage);
+					return new ZsFishStage(player_id, new FishFarmBuilder().Get(fish_stage), this, this);
 				default:
-					return new CsFishStage(player_id, fish_stage);
+					return new FishStage(player_id, fish_stage);
 			}
 		}
 
@@ -153,24 +153,24 @@ namespace VGame.Project.FishHunter.Play
 			return 0;
 		}
 
-		Value<StageData> IFormulaStageDataRecorder.Load(int stage_id)
+		Value<FishFarmData> IFormulaFarmRecorder.Load(int stage_id)
 		{
-			throw new NotImplementedException();
+			return new FishFarmBuilder().Get(stage_id);
 		}
 
-		Value<bool> IFormulaStageDataRecorder.Save(StageData data)
+		Value<bool> IFormulaFarmRecorder.Save(FishFarmData data)
 		{
-			throw new NotImplementedException();
+			return true;
 		}
 
 		Value<FormulaPlayerRecord> IFormulaPlayerRecorder.Query(Guid player_id)
 		{
-			throw new NotImplementedException();
+			return new FormulaPlayerRecord();
 		}
 
 		Value<bool> IFormulaPlayerRecorder.Save(FormulaPlayerRecord record)
 		{
-			throw new NotImplementedException();
+			return true;
 		}
 	}
 }

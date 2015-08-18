@@ -254,9 +254,9 @@ namespace VGame.Project.FishHunter.Storage
 			return val;
 		}
 
-		Value<StageData> IFormulaStageDataRecorder.Load(int stage_id)
+		Value<FishFarmData> IFormulaFarmRecorder.Load(int stage_id)
 		{
-			var val = new Value<StageData>();
+			var val = new Value<FishFarmData>();
 			var t = _LoadStageData(stage_id);
 
 			t.ContinueWith(
@@ -265,7 +265,7 @@ namespace VGame.Project.FishHunter.Storage
 					var data = task.Result;
 					if(data == null)
 					{
-						var stageData = new StageDataBuilder().Get(stage_id);
+						var stageData = new FishFarmBuilder().Get(stage_id);
 						_Database.Add(stageData).Wait();
 						val.SetValue(stageData);
 					}
@@ -277,10 +277,10 @@ namespace VGame.Project.FishHunter.Storage
 			return val;
 		}
 
-		Value<bool> IFormulaStageDataRecorder.Save(StageData data)
+		Value<bool> IFormulaFarmRecorder.Save(FishFarmData data)
 		{
 			var val = new Value<bool>();
-			var t = _LoadStageData(data.StageId);
+			var t = _LoadStageData(data.FarmId);
 
 			t.ContinueWith(
 				task =>
@@ -295,7 +295,7 @@ namespace VGame.Project.FishHunter.Storage
 					{
 						val.SetValue(true);
 
-						_Database.Update(stageData, a => a.StageId == data.StageId);
+						_Database.Update(stageData, a => a.FarmId == data.FarmId);
 					}
 				});
 			return val;
@@ -312,7 +312,7 @@ namespace VGame.Project.FishHunter.Storage
 					var data = task.Result;
 					if (data == null)
 					{
-						var record = new FormulaPlayerRecord
+						var record = new FormulaPlayerRecord()
 						{
 							Id = Guid.NewGuid(),
 							Owner = account_id
@@ -442,17 +442,17 @@ namespace VGame.Project.FishHunter.Storage
 			return returnTask;
 		}
 
-		private Task<StageData> _LoadStageData(int stage_id)
+		private Task<FishFarmData> _LoadStageData(int stage_id)
 		{
-			var tradeTask = _Database.Find<StageData>(t => t.StageId == stage_id);
+			var tradeTask = _Database.Find<FishFarmData>(t => t.FarmId == stage_id);
 
 			var returnTask = tradeTask.ContinueWith(
 				task =>
 				{
-					Singleton<Log>.Instance.WriteDebug("StageData Find Done.");
+					Singleton<Log>.Instance.WriteDebug("FishFarmData Find Done.");
 					if(task.Exception != null)
 					{
-						Singleton<Log>.Instance.WriteDebug(string.Format("StageData Exception {0}.", task.Exception.ToString()));
+						Singleton<Log>.Instance.WriteDebug(string.Format("FishFarmData Exception {0}.", task.Exception.ToString()));
 					}
 
 					return task.Result.FirstOrDefault();

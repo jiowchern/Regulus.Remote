@@ -32,21 +32,21 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		{
 			var bet = _Request.WeaponData.WepOdds * _Request.WeaponData.WepBet;
 
-			for(var i = StageBuffer.BUFFER_TYPE.NORMAL; i < StageBuffer.BUFFER_TYPE.COUNT; ++i)
+			for(var i = FarmBuffer.BUFFER_TYPE.NORMAL; i < FarmBuffer.BUFFER_TYPE.COUNT; ++i)
 			{
-				var data = _StageVisitor.FocusStageData.FindBuffer(_StageVisitor.FocusBufferBlock, i);
+				var data = _StageVisitor.FocusFishFarmData.FindBuffer(_StageVisitor.FocusBufferBlock, i);
 
 				_AddBufferRate(data, bet);
 			}
 
-			_StageVisitor.FocusStageData.RecordData.PlayTimes += 1;
-			_StageVisitor.FocusStageData.RecordData.PlayTotal += bet;
+			_StageVisitor.FocusFishFarmData.RecordData.PlayTimes += 1;
+			_StageVisitor.FocusFishFarmData.RecordData.PlayTotal += bet;
 
-			_StageVisitor.PlayerRecord.FindStageRecord(_StageVisitor.FocusStageData.StageId).PlayTimes += 1;
-			_StageVisitor.PlayerRecord.FindStageRecord(_StageVisitor.FocusStageData.StageId).PlayTotal += bet;
+			_StageVisitor.PlayerRecord.FindStageRecord(_StageVisitor.FocusFishFarmData.FarmId).PlayTimes += 1;
+			_StageVisitor.PlayerRecord.FindStageRecord(_StageVisitor.FocusFishFarmData.FarmId).PlayTotal += bet;
 		}
 
-		private void _AddBufferRate(StageBuffer data, int bet)
+		private void _AddBufferRate(FarmBuffer data, int bet)
 		{
 			data.Count += bet * data.Rate;
 			if(data.Count < 1000)

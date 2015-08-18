@@ -14,18 +14,18 @@ namespace GameTest.ZsFormulaTest
 	[Scope(Feature = "ZsFishStageDataCheck")]
 	public class ZsFishStageDataCheckSteps
 	{
-		private Dictionary<int, StageData> _Datas;
+		private Dictionary<int, FishFarmData> _Datas;
 
-		public ZsFishStageDataCheckSteps(IEnumerable<StageData> datas)
+		public ZsFishStageDataCheckSteps(IEnumerable<FishFarmData> datas)
 		{
 		}
 
 		[Given(@"魚場資料表是")]
 		public void Given魚場資料表是(Table table)
 		{
-			var datas = table.CreateSet<StageData>();
+			var datas = table.CreateSet<FishFarmData>();
 
-			_Datas = datas.ToDictionary(x => x.StageId);
+			_Datas = datas.ToDictionary(x => x.FarmId);
 		}
 
 		[When(@"當輸入魚場id是 (.*)")]

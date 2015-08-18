@@ -1,4 +1,5 @@
-﻿using Regulus.Extension;
+﻿
+using Regulus.Extension;
 using Regulus.Framework;
 using Regulus.Utility;
 
@@ -10,8 +11,6 @@ namespace FormulaUserBot
 {
 	internal class HitHandler : IUpdatable
 	{
-		public static double Interval = 1.0f / 20.0;
-
 		private readonly HitRequest _Request;
 
 		private readonly IFishStage _Stage;
@@ -19,6 +18,9 @@ namespace FormulaUserBot
 		private readonly TimeCounter _TimeCounter;
 
 		private bool _Enable;
+
+		public static double Interval = 1.0f / 20.0;
+
 
 		public HitHandler(IFishStage _Stage, HitRequest request)
 		{
@@ -41,7 +43,13 @@ namespace FormulaUserBot
 			_TimeCounter.Reset();
 		}
 
-		void _Stage_OnTotalHitResponseEvent(HitResponse[] hit_responses)
+		void IBootable.Shutdown()
+		{
+			_Stage.OnHitResponseEvent -= _Response;
+			_Stage.OnTotalHitResponseEvent -= _Stage_OnTotalHitResponseEvent;
+		}
+
+		private void _Stage_OnTotalHitResponseEvent(HitResponse[] hit_responses)
 		{
 			foreach(var hit in hit_responses)
 			{
@@ -49,27 +57,23 @@ namespace FormulaUserBot
 			}
 		}
 
-		void IBootable.Shutdown()
-		{
-			_Stage.OnHitResponseEvent -= _Response;
-			_Stage.OnTotalHitResponseEvent -= _Stage_OnTotalHitResponseEvent;
-		}
-
 		private void _Response(HitResponse obj)
 		{
 			foreach(var fishData in _Request.FishDatas)
 			{
-				if(obj.FishID == fishData.FishID && obj.WepID == _Request.WeaponData.WepID)
+				if(obj.FishId != fishData.FishId || obj.WepId != _Request.WeaponData.WepId)
 				{
-					_Enable = false;
-
-					Singleton<Log>.Instance.WriteLine(
-						string.Format(
-							"時間{2}:請求{0}\n回應{1}", 
-							_Request.ShowMembers(), 
-							obj.ShowMembers(), 
-							_TimeCounter.Second));
+					continue;
 				}
+				
+				_Enable = false;
+
+				Singleton<Log>.Instance.WriteLine(
+					string.Format(
+						"時間{2}:請求{0}\n回應{1}", 
+						_Request.ShowMembers(), 
+						obj.ShowMembers(), 
+						_TimeCounter.Second));
 			}
 		}
 	}

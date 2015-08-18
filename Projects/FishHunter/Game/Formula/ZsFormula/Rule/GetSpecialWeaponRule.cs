@@ -7,6 +7,10 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.Collections.Generic;
+using System.Linq;
+
+
 using Regulus.Utility;
 
 
@@ -38,77 +42,66 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 //				return;
 //			}
 
-			//拿到魚的掉落物品清單
-			var fishOwnItems =
-				_StageVisitor.PlayerRecord.FindStageRecord(_StageVisitor.FocusStageData.StageId)
-				             .FishHitReuslt.FishToItems.Find(x => x.FishType == _FishData.FishType)
-				             .OwnWeapons;
+			// 檢查一定得到的物品
+			_CheckCertain();
 
-			var bufferData = _StageVisitor.FocusStageData.FindBuffer(_StageVisitor.FocusBufferBlock, StageBuffer.BUFFER_TYPE.SPEC);
+			_CheckRandom();
+		}
 
-
-			// 計算魚掉那個寶
-			for(int i = 0; i < fishOwnItems.Length; ++i)
+		private void _CheckCertain()
+		{
+			var CertainWeapons =
+				_StageVisitor.PlayerRecord.FindStageRecord(_StageVisitor.FocusFishFarmData.FarmId)
+							 .FishHitReuslt.Items.Find(x => x.FishType == _FishData.FishType).CertainWeapons;
+			if (CertainWeapons != WEAPON_TYPE.INVALID)
 			{
-				var gate = bufferData.Rate / fishOwnItems.Length;
+				_StageVisitor.GetItems.Add(CertainWeapons);
+			}
+		}
 
-				var power = new WeaponPowerTable().WeaponPowers.Find(x => x.WeaponType == fishOwnItems[i]).Power;
-				
+		private void _CheckRandom()
+		{
+			// 拿到魚的掉落物品清單
+			var randomWeapons =
+				_StageVisitor.PlayerRecord.FindStageRecord(_StageVisitor.FocusFishFarmData.FarmId)
+							 .FishHitReuslt.Items.Find(x => x.FishType == _FishData.FishType).RandomWeapons;
+
+			var bufferData = _StageVisitor.FocusFishFarmData.FindBuffer(_StageVisitor.FocusBufferBlock, FarmBuffer.BUFFER_TYPE.SPEC);
+
+			System.Collections.Generic.List<WEAPON_TYPE> list = new List<WEAPON_TYPE>();
+			// 計算魚掉那個寶
+			foreach (var t in randomWeapons)
+			{
+				long gate = bufferData.Rate / randomWeapons.Length;
+
+				var power = new WeaponPowerTable().WeaponPowers.Find(x => x.WeaponType == t).Power;
+
 				gate = (0x0FFFFFFF / power) * gate;
-				
+
 				gate = gate / 1000;
-				
+
 				if (bufferData.BufferTempValue.HiLoRate >= 0)
 				{
 					gate *= 2;
 				}
-				
+
 				if (bufferData.BufferTempValue.HiLoRate < -200)
 				{
 					gate /= 2;
 				}
-				
-				var rand = Random.Instance.NextInt(0, 0x10000000);
-				if (rand >= gate)
+
+				if (_StageVisitor.Random.NextInt(0, 0x10000000) >= gate)
 				{
 					continue;
 				}
-				
+
 				// 在這隻魚身上得到的道具
-				_StageVisitor.GetItems.Add(fishOwnItems[i]);
+				list.Add(t);
 			}
 
-//			foreach(var specialWeaponData in specialWeaponDatas)
-//			{
-//				var bufferData = _StageVisitor.FocusStageData.FindBuffer(_StageVisitor.FocusBufferBlock, StageBuffer.BUFFER_TYPE.SPEC);
-//
-//				var gate = bufferData.Rate / specialWeaponDatas.Count;
-//
-//				gate = (0x0FFFFFFF / (int)specialWeaponData.Power) * gate;
-//				
-//				gate = gate / 1000;
-//				
-//				if(bufferData.BufferTempValue.HiLoRate >= 0)
-//				{
-//					gate *= 2;
-//				}
-//
-//				if(bufferData.BufferTempValue.HiLoRate < -200)
-//				{
-//					gate /= 2;
-//				}
-//
-//				var rand = Random.Instance.NextInt(0, 0x10000000);
-//				if(rand >= gate)
-//				{
-//					continue;
-//				}
-//
-//				specialWeaponData.HaveWeapon = true;
-//				_StageVisitor.PlayerRecord.NowWeaponPower = specialWeaponData;
-//
-//				break;
-//			}
+			var randomWeapon = list.OrderBy(x => _StageVisitor.Random.NextFloat(0, 1)).FirstOrDefault();
+			if(randomWeapon != WEAPON_TYPE.INVALID)
+				_StageVisitor.GetItems.Add(randomWeapon);
 		}
 	}
 }

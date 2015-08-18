@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 
 
+using Regulus.Utility;
+
+
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
 
@@ -8,23 +11,22 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 {
 	public class StageDataVisitor
 	{
-		public IFormulaStageDataRecorder FormulaStageDataRecorder { get; private set; }
+		public IRandom Random { get; set; }
 
-		public IFormulaPlayerRecorder FormulaPlayerRecorder { get; private set; }
+		public FormulaPlayerRecord PlayerRecord { get; private set; }
 
-		public FormulaPlayerRecord PlayerRecord { get; set; }
+		public FishFarmData FocusFishFarmData { get; private set; }
 
-		public StageData FocusStageData { get; private set; }
+		public FarmBuffer.BUFFER_BLOCK FocusBufferBlock { get; set; }
 
-		public StageBuffer.BUFFER_BLOCK FocusBufferBlock { get; set; }
+		public List<WEAPON_TYPE> GetItems { get; private set; }
 
-		public List<WEAPON_TYPE> GetItems;
-
-		public StageDataVisitor(StageData stage_data, IFormulaPlayerRecorder formula_player_recorder, IFormulaStageDataRecorder formula_stage_data_recorder)
+		public StageDataVisitor(FishFarmData fish_farm_data, FormulaPlayerRecord formula_player_record, IRandom random)
 		{
-			FocusStageData = stage_data;
-			FormulaStageDataRecorder = formula_stage_data_recorder;
-			FormulaPlayerRecorder = formula_player_recorder;
+			PlayerRecord = formula_player_record;
+			Random = random;
+			FocusFishFarmData = fish_farm_data;
+			GetItems = new List<WEAPON_TYPE>();
 		}
 	}
 }

@@ -73,7 +73,7 @@ namespace FormulaUserBot
 
 		private void _Query(IFishStageQueryer obj)
 		{
-			_QueryResult(obj.Query(_Id, 1));
+			_QueryResult(obj.Query(_Id, 100));
 		}
 
 		private void _QueryResult(Value<IFishStage> value)
@@ -91,7 +91,7 @@ namespace FormulaUserBot
 
 		private void _Verify(IVerify obj)
 		{
-			_VerifyResult(obj.Login("Guest", "guest"));
+			_VerifyResult(obj.Login("name", "pw"));
 		}
 
 		private void _VerifyResult(Value<bool> value)
