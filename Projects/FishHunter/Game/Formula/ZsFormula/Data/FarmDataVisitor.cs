@@ -9,7 +9,7 @@ using VGame.Project.FishHunter.Common.GPI;
 
 namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 {
-	public class StageDataVisitor
+	public class FarmDataVisitor
 	{
 		public IRandom Random { get; set; }
 
@@ -21,7 +21,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 
 		public List<WEAPON_TYPE> GetItems { get; private set; }
 
-		public StageDataVisitor(FishFarmData fish_farm_data, FormulaPlayerRecord formula_player_record, IRandom random)
+		public FarmDataVisitor(FishFarmData fish_farm_data, FormulaPlayerRecord formula_player_record, IRandom random)
 		{
 			PlayerRecord = formula_player_record;
 			Random = random;

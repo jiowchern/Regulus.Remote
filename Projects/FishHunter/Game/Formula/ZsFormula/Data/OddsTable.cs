@@ -20,14 +20,9 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 
 		private readonly List<Data> _Datas;
 
-		public OddsTable(IEnumerable<Data> datas)
-		{
-			_Datas = datas.ToList();
-		}
-
 		public OddsTable()
 		{
-			var datas = new List<Data>
+            _Datas = new List<Data>
 			{
 				new Data(1, 1), 
 				new Data(2, 2), 

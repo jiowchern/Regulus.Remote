@@ -23,38 +23,38 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 	/// </summary>
 	public class AdjustmentPlayerPhaseRule
 	{
-		private readonly StageDataVisitor _StageVisitor;
+		private readonly FarmDataVisitor _FarmVisitor;
 
-		public AdjustmentPlayerPhaseRule(StageDataVisitor stage_visitor)
+		public AdjustmentPlayerPhaseRule(FarmDataVisitor farm_visitor)
 		{
-			_StageVisitor = stage_visitor;
+			_FarmVisitor = farm_visitor;
 		}
 
 		public void Run()
 		{
-			if (_StageVisitor.PlayerRecord.BufferValue < 0)
+			if (_FarmVisitor.PlayerRecord.BufferValue < 0)
 			{
-				_StageVisitor.PlayerRecord.Status = 0;
+				_FarmVisitor.PlayerRecord.Status = 0;
 			}
 
-			if (_StageVisitor.PlayerRecord.Status > 0)
+			if (_FarmVisitor.PlayerRecord.Status > 0)
 			{
-				_StageVisitor.PlayerRecord.Status--;
+				_FarmVisitor.PlayerRecord.Status--;
 			}
-			else if(_StageVisitor.Random.NextInt(0, 1000) >= 200)
+			else if(_FarmVisitor.Random.NextInt(0, 1000) >= 200)
 			{
 				// 20%
 				return;
 			}
 
 			// 從VIR00 - VIR03
-			var enums = EnumHelper.GetEnums<FarmBuffer.BUFFER_TYPE>().ToArray();
+		    var enums =
+		        EnumHelper.GetEnums<FarmBuffer.BUFFER_TYPE>()
+		                  .Where(x => x >= FarmBuffer.BUFFER_TYPE.VIR00 && x <= FarmBuffer.BUFFER_TYPE.VIR03);
 
-			for(var i = enums[(int)FarmBuffer.BUFFER_TYPE.BUFFER_VIR_BEGIN];
-			    i < enums[(int)FarmBuffer.BUFFER_TYPE.BUFFER_VIR_END];
-			    ++i)
+            foreach (var i in enums)
 			{
-				var bufferData = _StageVisitor.FocusFishFarmData.FindBuffer(_StageVisitor.FocusBufferBlock, i);
+				var bufferData = _FarmVisitor.FocusFishFarmData.FindBuffer(_FarmVisitor.FocusBufferBlock, i);
 
 				var top = bufferData.Top * bufferData.BufferTempValue.AverageValue;
 
@@ -63,13 +63,13 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 					continue;
 				}
 
-				if(_StageVisitor.Random.NextInt(0, 1000) < bufferData.Gate)
+				if(_FarmVisitor.Random.NextInt(0, 1000) < bufferData.Gate)
 				{
 					bufferData.Buffer -= top;
 
-					_StageVisitor.PlayerRecord.Status = bufferData.Top * 5;
-					_StageVisitor.PlayerRecord.BufferValue = top;
-					_StageVisitor.PlayerRecord.StageRecords.Find(x => x.FarmId == _StageVisitor.FocusFishFarmData.FarmId).AsnTimes += 1;
+					_FarmVisitor.PlayerRecord.Status = bufferData.Top * 5;
+					_FarmVisitor.PlayerRecord.BufferValue = top;
+					_FarmVisitor.PlayerRecord.StageRecords.First(x => x.FarmId == _FarmVisitor.FocusFishFarmData.FarmId).AsnTimes += 1;
 				}
 				else
 				{

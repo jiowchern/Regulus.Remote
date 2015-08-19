@@ -11,8 +11,8 @@ namespace VGame.Project.FishHunter.Common.GPI
 {
 	public interface IFormulaFarmRecorder
 	{
-		Value<FishFarmData> Load(int stage_id);
+		Value<FishFarmData> Load(int farm_id);
 
-		Value<bool> Save(FishFarmData data);
+        Value<bool> Save(FishFarmData data);
 	}
 }

@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 
 
+using Regulus.Utility;
+
+
 using VGame.Project.FishHunter.Common.Data;
 
 namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
@@ -32,24 +35,25 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 	
 		private void _DefaultBufferData(FishFarmData fish_farm_data)
 		{
-			for(var i = FarmBuffer.BUFFER_BLOCK.BLOCK_1; i < FarmBuffer.BUFFER_BLOCK.COUNT; ++i)
+
+			foreach(var bufferBlack in EnumHelper.GetEnums<FarmBuffer.BUFFER_BLOCK>())
 			{
-				var buffer = fish_farm_data.FindBuffer(i, FarmBuffer.BUFFER_TYPE.NORMAL);
+				var buffer = fish_farm_data.FindBuffer(bufferBlack, FarmBuffer.BUFFER_TYPE.NORMAL);
 				_SetDefaultBufferData(buffer, fish_farm_data.GameRate, 0, 0);
 					
-				buffer = fish_farm_data.FindBuffer(i, FarmBuffer.BUFFER_TYPE.SPEC);
+				buffer = fish_farm_data.FindBuffer(bufferBlack, FarmBuffer.BUFFER_TYPE.SPEC);
 				_SetDefaultBufferData(buffer, 20, 3000, 1000);
 				
-				buffer = fish_farm_data.FindBuffer(i, FarmBuffer.BUFFER_TYPE.VIR00);
+				buffer = fish_farm_data.FindBuffer(bufferBlack, FarmBuffer.BUFFER_TYPE.VIR00);
 				_SetDefaultBufferData(buffer, 5, 3000, 1000);
 				
-				buffer = fish_farm_data.FindBuffer(i, FarmBuffer.BUFFER_TYPE.VIR01);
+				buffer = fish_farm_data.FindBuffer(bufferBlack, FarmBuffer.BUFFER_TYPE.VIR01);
 				_SetDefaultBufferData(buffer, 3, 1000, 1000);
 				
-				buffer = fish_farm_data.FindBuffer(i, FarmBuffer.BUFFER_TYPE.VIR02);
+				buffer = fish_farm_data.FindBuffer(bufferBlack, FarmBuffer.BUFFER_TYPE.VIR02);
 				_SetDefaultBufferData(buffer, 1, 1000, 1000);
 				
-				buffer = fish_farm_data.FindBuffer(i, FarmBuffer.BUFFER_TYPE.VIR03);
+				buffer = fish_farm_data.FindBuffer(bufferBlack, FarmBuffer.BUFFER_TYPE.VIR03);
 				_SetDefaultBufferData(buffer, 1, 1000, 1000);
 			}
 		}

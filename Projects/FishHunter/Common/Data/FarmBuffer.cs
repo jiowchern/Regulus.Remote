@@ -11,93 +11,96 @@ namespace VGame.Project.FishHunter.Common.Data
     /// [ProtoContract]
     [ProtoContract]
     public class FarmBuffer
-	{
-		public enum BUFFER_BLOCK
-		{
-			BLOCK_1, 
+    {
+        public enum BUFFER_BLOCK
+        {
+            BLOCK_1, 
 
-			BLOCK_2, 
+            BLOCK_2, 
 
-			BLOCK_3, 
+            BLOCK_3, 
 
-			BLOCK_4, 
+            BLOCK_4, 
 
-			BLOCK_5, 
+            BLOCK_5, 
+        }
 
-			COUNT
-		}
+        public enum BUFFER_TYPE
+        {
+            NORMAL, 
 
-		public enum BUFFER_TYPE
-		{
-			NORMAL, 
+            SPEC, 
 
-			SPEC, 
+            VIR00, 
 
-			BUFFER_VIR_BEGIN, 
+            VIR01, 
 
-			VIR00 = BUFFER_TYPE.BUFFER_VIR_BEGIN, 
+            VIR02, 
 
-			VIR01, 
-
-			VIR02, 
-
-			VIR03, 
-
-			BUFFER_VIR_END, 
-
-			COUNT = BUFFER_TYPE.BUFFER_VIR_END
-		}
+            VIR03, 
+        }
 
         [ProtoContract]
         public class BufferValue
-		{
+        {
             [ProtoMember(1)]
-            public int FireCount { get; set; }
+            public Guid Id { get; set; }
 
             [ProtoMember(2)]
-            public int AverageValue { get; set; }
+            public int FireCount { get; set; }
 
             [ProtoMember(3)]
-            public int AverageTimes { get; set; }
+            public int AverageValue { get; set; }
 
             [ProtoMember(4)]
-            public int AverageTotal { get; set; }
+            public int AverageTimes { get; set; }
 
             [ProtoMember(5)]
-            public int HiLoRate { get; set; }
+            public int AverageTotal { get; set; }
 
             [ProtoMember(6)]
+            public int HiLoRate { get; set; }
+
+            [ProtoMember(7)]
             public int RealTime { get; set; }
-		}
+
+            public BufferValue()
+            {
+                Id = new Guid();
+            }
+        }
 
         [ProtoMember(1)]
-		public BUFFER_BLOCK BufferBlock { get; set; }
+        public Guid Id { get; set; }
 
         [ProtoMember(2)]
-        public BUFFER_TYPE BufferType { get; set; }
+        public BUFFER_BLOCK BufferBlock { get; set; }
 
         [ProtoMember(3)]
-        public int Buffer { get; set; }
+        public BUFFER_TYPE BufferType { get; set; }
 
         [ProtoMember(4)]
-        public int Rate { get; set; }
+        public int Buffer { get; set; }
 
         [ProtoMember(5)]
-        public int Count { get; set; }
+        public int Rate { get; set; }
 
         [ProtoMember(6)]
-        public int Top { get; set; }
+        public int Count { get; set; }
 
         [ProtoMember(7)]
-        public int Gate { get; set; }
+        public int Top { get; set; }
 
         [ProtoMember(8)]
+        public int Gate { get; set; }
+
+        [ProtoMember(9)]
         public BufferValue BufferTempValue { get; private set; }
 
-		public FarmBuffer()
-		{
-			BufferTempValue = new BufferValue();
-			
-		}
-	}
+        public FarmBuffer()
+        {
+            Id = new Guid();
+            BufferTempValue = new BufferValue();
+        }
+    }
 }

@@ -5,18 +5,18 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 {
 	public class WeaponTypeRule
 	{
-		private readonly StageDataVisitor _StageVisitor;
+		private readonly FarmDataVisitor _FarmVisitor;
 
 		private readonly RequestWeaponData _WeaponData;
 
 		private readonly int _Win;
 
 		public WeaponTypeRule(
-			StageDataVisitor stage_visitor, 
+			FarmDataVisitor farm_visitor, 
 			RequestWeaponData weapon_data, 
 			int win)
 		{
-			_StageVisitor = stage_visitor;
+			_FarmVisitor = farm_visitor;
 			_WeaponData = weapon_data;
 			_Win = win;
 		}
@@ -36,13 +36,13 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 //
 //			// ª±®aªº
 //			var data =
-//				_StageVisitor.PlayerRecord.FindStageRecord(_StageVisitor.FocusFishFarmData.FarmId)
+//				_FarmVisitor.PlayerRecord.FindFarmRecord(_FarmVisitor.FocusFishFarmData.FarmId)
 //				             .SpecialWeaponDatas.Find(x => x.WeaponType == _WeaponData.WeaponType);
 //			data.WinScore += _Win;
 //
 //			// stageªº
 //			var stageWeaponData =
-//				_StageVisitor.FocusFishFarmData.RecordData.SpecialWeaponDatas.Find(x => x.WeaponType == _WeaponData.WeaponType);
+//				_FarmVisitor.FocusFishFarmData.RecordData.SpecialWeaponDatas.Find(x => x.WeaponType == _WeaponData.WeaponType);
 //			stageWeaponData.WinScore += _Win;
 		}
 	}

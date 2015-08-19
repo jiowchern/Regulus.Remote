@@ -7,6 +7,9 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.Linq;
+
+
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
 
@@ -17,13 +20,13 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 	/// </summary>
 	public class SaveScoreHistory
 	{
-		private readonly StageDataVisitor _StageDataVisitor;
+		private readonly FarmDataVisitor _FarmDataVisitor;
 
 		private readonly int _Win;
 
-		public SaveScoreHistory(StageDataVisitor fish_stage_visitor, int win)
+		public SaveScoreHistory(FarmDataVisitor fish_farm_visitor, int win)
 		{
-			_StageDataVisitor = fish_stage_visitor;
+			_FarmDataVisitor = fish_farm_visitor;
 			_Win = win;
 		}
 
@@ -43,25 +46,25 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		private void _SaveStageScore()
 		{
-			var bufferData = _StageDataVisitor.FocusFishFarmData.FindBuffer(
-				_StageDataVisitor.FocusBufferBlock,
+			var bufferData = _FarmDataVisitor.FocusFishFarmData.FindBuffer(
+				_FarmDataVisitor.FocusBufferBlock,
 				FarmBuffer.BUFFER_TYPE.NORMAL);
 
 			bufferData.Buffer -= _Win;
 
-			_StageDataVisitor.FocusFishFarmData.RecordData.WinScore += _Win;
+			_FarmDataVisitor.FocusFishFarmData.RecordData.WinScore += _Win;
 		}
 
 		private void _SavePlayerScore()
 		{
 			// 玩家阶段起伏的调整
-			if(_StageDataVisitor.PlayerRecord.Status <= 0)
+			if(_FarmDataVisitor.PlayerRecord.Status <= 0)
 			{
 				return;
 			}
-			_StageDataVisitor.PlayerRecord.BufferValue -= _Win;
+			_FarmDataVisitor.PlayerRecord.BufferValue -= _Win;
 
-			_StageDataVisitor.PlayerRecord.StageRecords.Find(x => x.FarmId == _StageDataVisitor.FocusFishFarmData.FarmId).AsnWin
+			_FarmDataVisitor.PlayerRecord.StageRecords.First(x => x.FarmId == _FarmDataVisitor.FocusFishFarmData.FarmId).AsnWin
 				+= _Win;
 		}
 	}

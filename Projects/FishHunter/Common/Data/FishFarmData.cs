@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,38 +23,42 @@ namespace VGame.Project.FishHunter.Common.Data
 		}
 
         [ProtoMember(1)]
-		public int FarmId { get; set; }
+        public Guid Id { get; set; }
 
         [ProtoMember(2)]
-        public string Name { get; set; }
+		public int FarmId { get; set; }
 
         [ProtoMember(3)]
-        public SIZE_TYPE SizeType { get; set; }
+        public string Name { get; set; }
 
         [ProtoMember(4)]
-        public int BaseOdds { get; set; }
+        public SIZE_TYPE SizeType { get; set; }
 
         [ProtoMember(5)]
-        public int MaxBet { get; set; }
+        public int BaseOdds { get; set; }
 
         [ProtoMember(6)]
-        public int GameRate { get; set; }
+        public int MaxBet { get; set; }
 
         [ProtoMember(7)]
-        public int NowBaseOdds { get; set; }
+        public int GameRate { get; set; }
 
         [ProtoMember(8)]
-        public int BaseOddsCount { get; set; }
+        public int NowBaseOdds { get; set; }
 
         [ProtoMember(9)]
-        public FarmBuffer[] BufferDatas { get; set; }
+        public int BaseOddsCount { get; set; }
 
         [ProtoMember(10)]
+        public FarmBuffer[] BufferDatas { get; set; }
+
+        [ProtoMember(11)]
         public FarmRecord RecordData { get; set; }
 
 		public FishFarmData()
 		{
-			var bufferDatas = new List<FarmBuffer>();
+            Id = new Guid();
+            var bufferDatas = new List<FarmBuffer>();
 
 			foreach(var i in EnumHelper.GetEnums<FarmBuffer.BUFFER_BLOCK>())
 			{

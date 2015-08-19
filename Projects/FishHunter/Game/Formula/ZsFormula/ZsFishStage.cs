@@ -17,8 +17,6 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 {
 	internal class ZsFishStage : IFishStage
 	{
-		private event Action<HitResponse> _OnHitResponseEvent;
-
 		private event Action<HitResponse[]> _OnTotalHitResponseEvent;
 
 		private readonly Guid _AccountId;
@@ -59,12 +57,6 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 		{
 			add { _OnHitExceptionEvent += value; }
 			remove { _OnHitExceptionEvent -= value; }
-		}
-
-		event Action<HitResponse> IFishStage.OnHitResponseEvent
-		{
-			add { _OnHitResponseEvent += value; }
-			remove { _OnHitResponseEvent -= value; }
 		}
 
 		event Action<HitResponse[]> IFishStage.OnTotalHitResponseEvent

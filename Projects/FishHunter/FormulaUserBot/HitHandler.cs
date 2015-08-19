@@ -37,7 +37,6 @@ namespace FormulaUserBot
 
 		void IBootable.Launch()
 		{
-			_Stage.OnHitResponseEvent += _Response;
 			_Stage.OnTotalHitResponseEvent += _Stage_OnTotalHitResponseEvent;
 			_Stage.Hit(_Request);
 			_TimeCounter.Reset();
@@ -45,7 +44,6 @@ namespace FormulaUserBot
 
 		void IBootable.Shutdown()
 		{
-			_Stage.OnHitResponseEvent -= _Response;
 			_Stage.OnTotalHitResponseEvent -= _Stage_OnTotalHitResponseEvent;
 		}
 

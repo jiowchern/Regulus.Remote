@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Regulus.Game;
 using Regulus.Remoting;
 using Regulus.Utility;
+using Regulus.Extension;
 
 
 using VGame.Project.FishHunter.Common.Data;
@@ -36,7 +37,8 @@ namespace VGame.Project.FishHunter.Stage
 			switch(fish_stage)
 			{
 				case 100:
-					return new ZsFishStage(player_id, _StageDatas.Find(x => x.FarmId == fish_stage), _ExpansionFeature.FormulaPlayerRecorder, _ExpansionFeature.FormulaFarmRecorder);
+					var data = _StageDatas.Find(x => x.FarmId == fish_stage);
+					return new ZsFishStage(player_id, data, _ExpansionFeature.FormulaPlayerRecorder, _ExpansionFeature.FormulaFarmRecorder);
 
 				case 111:
 					return new QuarterStage(player_id, fish_stage);
@@ -67,13 +69,17 @@ namespace VGame.Project.FishHunter.Stage
 		{
 		}
 
-		private Value<FishFarmData> _StroageLoad(int stage_id)
+		private Value<FishFarmData> _StroageLoad(int farm_id)
 		{
 			var returnValue = new Value<FishFarmData>();
 
-			var val = _ExpansionFeature.FormulaFarmRecorder.Load(stage_id);
+			var val = _ExpansionFeature.FormulaFarmRecorder.Load(farm_id);
 
-			val.OnValue += stage_data => { returnValue.SetValue(stage_data); };
+			val.OnValue += stage_data =>
+			{
+                Log.Instance.WriteDebug("_StroageLoad");
+			    returnValue.SetValue(stage_data);
+			};
 
 			return returnValue;
 		}
@@ -83,12 +89,21 @@ namespace VGame.Project.FishHunter.Stage
 		/// </summary>
 		private void _InitStageData()
 		{
-			foreach(var t in new BusinessFarm().FarmIds)
+            Singleton<Log>.Instance.WriteDebug("Init farm data.");
+
+            foreach (var t in new BusinessFarm().FarmIds)
 			{
 				var data = _StroageLoad(t);
 
-				data.OnValue += data_on_value => _StageDatas.Add(data_on_value);
+				//data.OnValue += data_on_value => _StageDatas.Add(data_on_value);
+
+				var dataOnValue = data.Result();
+
+				_StageDatas.Add(dataOnValue);
+				
 			}
-		}
+
+            Singleton<Log>.Instance.WriteDebug("farm data loading finish");
+        }
 	}
 }

@@ -62,7 +62,6 @@
     <Compile Include="Formula\ZsFormula\Rule\NatureDataRule.cs" />
     <Compile Include="Formula\ZsFormula\Rule\OddsRuler.cs" />
     <Compile Include="Formula\ZsFormula\Rule\SpecialItemRule.cs" />
-    <Compile Include="Formula\ZsFormula\Rule\SpecialWeaponRule.cs" />
     <Compile Include="Formula\ZsFormula\Rule\GetSpecialWeaponRule.cs" />
     <Compile Include="Formula\ZsFormula\Rule\StageBufferBlockRuler.cs" />
     <Compile Include="Formula\ZsFormula\Data\FishHitAllocateTable.cs" />
@@ -91,7 +90,7 @@
     <Compile Include="Play\StageTicketInspector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Formula\ZsFormula\Data\ScoreOddsTable.cs" />
-    <Compile Include="Formula\ZsFormula\Data\StageDataVisitor.cs" />
+    <Compile Include="Formula\ZsFormula\Data\FarmDataVisitor.cs" />
     <Compile Include="Stage\FormulaStage.cs" />
     <Compile Include="Storage\Verify.cs" />
     <Compile Include="Play\DummyStandalong.cs" />

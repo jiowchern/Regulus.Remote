@@ -13,13 +13,13 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 	{
 		private readonly HitRequest _Request;
 
-		private readonly StageDataVisitor _StageVisitor;
+		private readonly FarmDataVisitor _FarmVisitor;
 
 		private readonly List<HitResponse> _HitResponses;
 
-		public DeathRule(StageDataVisitor stage_visitor, HitRequest request)
+		public DeathRule(FarmDataVisitor farm_visitor, HitRequest request)
 		{
-			_StageVisitor = stage_visitor;
+			_FarmVisitor = farm_visitor;
 			_Request = request;
 			_HitResponses = new List<HitResponse>();
 		}
@@ -50,11 +50,11 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 			dieRate /= _Request.WeaponData.TotalHitOdds; // 总倍数
 
-			var bufferData = _StageVisitor.FocusFishFarmData.FindBuffer(
-				_StageVisitor.FocusBufferBlock, 
+			var bufferData = _FarmVisitor.FocusFishFarmData.FindBuffer(
+				_FarmVisitor.FocusBufferBlock, 
 				FarmBuffer.BUFFER_TYPE.NORMAL);
 
-			var oddsRule = new OddsRuler(_StageVisitor, fish_data, bufferData).RuleResult();
+			var oddsRule = new OddsRuler(_FarmVisitor, fish_data, bufferData).RuleResult();
 
 			dieRate /= oddsRule;
 
@@ -72,7 +72,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 				gate2 = 0x10000000; // > 100% 
 			}
 
-			if (_StageVisitor.Random.NextInt(0, 0x10000000) >= gate2)
+			if (_FarmVisitor.Random.NextInt(0, 0x10000000) >= gate2)
 			{
 				_Miss(fish_data, _Request.WeaponData);
 				return 0;
@@ -86,17 +86,17 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		private int _NomralWeapon(RequsetFishData fish_data, int hit_sequence)
 		{
-			var bufferData = _StageVisitor.FocusFishFarmData.FindBuffer(
-				_StageVisitor.FocusBufferBlock, 
+			var bufferData = _FarmVisitor.FocusFishFarmData.FindBuffer(
+				_FarmVisitor.FocusBufferBlock, 
 				FarmBuffer.BUFFER_TYPE.SPEC);
 
-			long dieRate = _StageVisitor.FocusFishFarmData.GameRate - 10;
+			long dieRate = _FarmVisitor.FocusFishFarmData.GameRate - 10;
 
 			dieRate -= bufferData.Rate;
 
 			dieRate += bufferData.BufferTempValue.HiLoRate;
 
-			if(_StageVisitor.PlayerRecord.Status != 0)
+			if(_FarmVisitor.PlayerRecord.Status != 0)
 			{
 				dieRate += 200; // 提高20%
 			}
@@ -123,7 +123,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 			dieRate /= fish_data.FishOdds; // 鱼的倍数
 
-			var oddsRule = new OddsRuler(_StageVisitor, fish_data, bufferData).RuleResult();
+			var oddsRule = new OddsRuler(_FarmVisitor, fish_data, bufferData).RuleResult();
 
 			dieRate /= oddsRule; // 翻倍
 
@@ -134,7 +134,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 				dieRate = 0x10000000; // > 100%
 			}
 
-			if (_StageVisitor.Random.NextInt(0, 0x10000000) >= dieRate)
+			if (_FarmVisitor.Random.NextInt(0, 0x10000000) >= dieRate)
 			{
 				_Miss(fish_data, _Request.WeaponData);
 				return 0;
@@ -148,17 +148,17 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		private void _DieHandle(int win, RequsetFishData fish_data)
 		{
-			new SaveScoreHistory(_StageVisitor, win).Run();
-			new SaveDeathFishHistory(_StageVisitor, fish_data).Run();
-			new GetSpecialWeaponRule(_StageVisitor, fish_data).Run();
+			new SaveScoreHistory(_FarmVisitor, win).Run();
+			new SaveDeathFishHistory(_FarmVisitor, fish_data).Run();
+			new GetSpecialWeaponRule(_FarmVisitor, fish_data).Run();
 
 			_Die(fish_data, _Request.WeaponData);
 		}
 
 		private void _Die(RequsetFishData fish_data, RequestWeaponData weapon_data)
 		{
-			var bufferData = _StageVisitor.FocusFishFarmData.FindBuffer(
-				_StageVisitor.FocusBufferBlock, 
+			var bufferData = _FarmVisitor.FocusFishFarmData.FindBuffer(
+				_FarmVisitor.FocusBufferBlock, 
 				FarmBuffer.BUFFER_TYPE.NORMAL);
 
 			_HitResponses.Add(
@@ -167,8 +167,8 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 					WepId = weapon_data.WepId, 
 					FishId = fish_data.FishId, 
 					DieResult = FISH_DETERMINATION.DEATH, 
-					FeedbackWeaponType = _StageVisitor.GetItems.ToArray(),
-					WUp = new OddsRuler(_StageVisitor, fish_data, bufferData).RuleResult()
+					FeedbackWeaponType = _FarmVisitor.GetItems.ToArray(),
+					WUp = new OddsRuler(_FarmVisitor, fish_data, bufferData).RuleResult()
 				});
 		}
 

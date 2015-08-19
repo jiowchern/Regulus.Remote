@@ -160,7 +160,7 @@ namespace GameTest.FormulaTest
 			return 0;
 		}
 
-		Value<FishFarmData> IFormulaFarmRecorder.Load(int stage_id)
+		Value<FishFarmData> IFormulaFarmRecorder.Load(int farm_id)
 		{
 			throw new NotImplementedException();
 		}

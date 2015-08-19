@@ -12,11 +12,6 @@ namespace VGame.Project.FishHunter.Formula
 		{
 		}
 
-		public override HitResponse Request(HitRequest request)
-		{
-			throw new NotImplementedException();
-		}
-
 		public override HitResponse[] TotalRequest(HitRequest request)
 		{
 			throw new NotImplementedException();

@@ -21,13 +21,13 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 {
 	public class GetSpecialWeaponRule
 	{
-		private readonly StageDataVisitor _StageVisitor;
+		private readonly FarmDataVisitor _FarmVisitor;
 
 		private readonly RequsetFishData _FishData;
 
-		public GetSpecialWeaponRule(StageDataVisitor stage_visitor, RequsetFishData fish_data)
+		public GetSpecialWeaponRule(FarmDataVisitor farm_visitor, RequsetFishData fish_data)
 		{
-			_StageVisitor = stage_visitor;
+			_FarmVisitor = farm_visitor;
 			_FishData = fish_data;
 		}
 
@@ -37,7 +37,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		public void Run()
 		{
 			// todo 如道具可以累積獲得，這個判斷就有問題，原版公式的意思就是只能一次一個
-//			if (_StageVisitor.PlayerRecord.NowWeaponPower.HaveWeapon)
+//			if (_FarmVisitor.PlayerRecord.NowWeaponPower.HaveWeapon)
 //			{
 //				return;
 //			}
@@ -51,11 +51,11 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		private void _CheckCertain()
 		{
 			var CertainWeapons =
-				_StageVisitor.PlayerRecord.FindStageRecord(_StageVisitor.FocusFishFarmData.FarmId)
-							 .FishHitReuslt.Items.Where(x => x.FishType == _FishData.FishType).First().CertainWeapons;
+				_FarmVisitor.PlayerRecord.FindFarmRecord(_FarmVisitor.FocusFishFarmData.FarmId)
+				            .FishHitReuslt.Items.Where(x => x.FishType == _FishData.FishType).First().CertainWeapons;
 			if (CertainWeapons != WEAPON_TYPE.INVALID)
 			{
-				_StageVisitor.GetItems.Add(CertainWeapons);
+				_FarmVisitor.GetItems.Add(CertainWeapons);
 			}
 		}
 
@@ -63,10 +63,10 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		{
 			// 拿到魚的掉落物品清單
 			var randomWeapons =
-				_StageVisitor.PlayerRecord.FindStageRecord(_StageVisitor.FocusFishFarmData.FarmId)
-							 .FishHitReuslt.Items.Where(x => x.FishType == _FishData.FishType).First().RandomWeapons;
+				_FarmVisitor.PlayerRecord.FindFarmRecord(_FarmVisitor.FocusFishFarmData.FarmId)
+				            .FishHitReuslt.Items.Where(x => x.FishType == _FishData.FishType).First().RandomWeapons;
 
-			var bufferData = _StageVisitor.FocusFishFarmData.FindBuffer(_StageVisitor.FocusBufferBlock, FarmBuffer.BUFFER_TYPE.SPEC);
+			var bufferData = _FarmVisitor.FocusFishFarmData.FindBuffer(_FarmVisitor.FocusBufferBlock, FarmBuffer.BUFFER_TYPE.SPEC);
 
 			System.Collections.Generic.List<WEAPON_TYPE> list = new List<WEAPON_TYPE>();
 			// 計算魚掉那個寶
@@ -90,7 +90,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 					gate /= 2;
 				}
 
-				if (_StageVisitor.Random.NextInt(0, 0x10000000) >= gate)
+				if (_FarmVisitor.Random.NextInt(0, 0x10000000) >= gate)
 				{
 					continue;
 				}
@@ -99,9 +99,9 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 				list.Add(t);
 			}
 
-			var randomWeapon = list.OrderBy(x => _StageVisitor.Random.NextFloat(0, 1)).FirstOrDefault();
+			var randomWeapon = list.OrderBy(x => _FarmVisitor.Random.NextFloat(0, 1)).FirstOrDefault();
 			if(randomWeapon != WEAPON_TYPE.INVALID)
-				_StageVisitor.GetItems.Add(randomWeapon);
+				_FarmVisitor.GetItems.Add(randomWeapon);
 		}
 	}
 }
