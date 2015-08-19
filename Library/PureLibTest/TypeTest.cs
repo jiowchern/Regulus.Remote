@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-
 using Regulus.CustomType;
 using Regulus.Extension;
+using Regulus.Utility;
 
 namespace RegulusLibraryTest
 {
@@ -53,6 +53,22 @@ namespace RegulusLibraryTest
             Assert.AreEqual(1, rect.Height);
         }
 
+        [TestMethod]
+        public void PolygonClone()
+        {
+            Polygon a = new Polygon();
+            a.SetPoints( new[]{
+                new Vector2(0, 0), 
+                new Vector2(2, 0), 
+                new Vector2(2, 1), 
+                new Vector2(0, 1),                 
+            });
+
+            var b = a.Clone();
+            Assert.AreEqual( 0 , b.Points[0].X );
+            Assert.AreEqual(2, b.Points[1].X);
+            Assert.AreEqual(1, b.Points[3].Y);
+        }
 
         [TestMethod]
         public void TestPolygonCollision()
@@ -62,18 +78,20 @@ namespace RegulusLibraryTest
             Polygon c = new Polygon();
 
 
-            a.Points.Add(new Vector2(0, 0));
-            a.Points.Add(new Vector2(1, 0));
-            a.Points.Add(new Vector2(1, 1));
-            a.Points.Add(new Vector2(0, 1));
+            a.SetPoints(new Vector2[]
+            {
+                new Vector2(0, 0),
+                new Vector2(1, 0),
+                new Vector2(1, 1),
+                new Vector2(0, 1)
+            });            
 
-            b.Points.AddRange(a.Points);            
+            b.SetPoints(a.Points);            
             b.Offset(0.9f,0);
-            b.BuildEdges();
+            
 
-            c.Points.AddRange(b.Points);
-            c.Offset(0.9f, 0);
-            c.BuildEdges();
+            c.SetPoints(b.Points);
+            c.Offset(0.9f, 0);            
 
 
             var resultA = Polygon.Collision(a, b, new Vector2());
@@ -86,5 +104,43 @@ namespace RegulusLibraryTest
             Assert.AreEqual(false, resultC.Intersect);
 
         }
+        [TestMethod]
+        public void TestProtobufEnum()
+        {
+            PROTOBUFENUM e = PROTOBUFENUM.AAA2;
+
+            var obj = Regulus.TypeHelper.Serializer<PROTOBUFENUM>(e);
+            var e2 = Regulus.TypeHelper.Deserialize<PROTOBUFENUM>(obj);
+
+            Assert.AreEqual(e2, PROTOBUFENUM.AAA2);
+        }        
+        enum PROTOBUFENUM
+        {
+            AAA1,
+            AAA2,
+            AAA3 = AAA2,
+            AAA4,
+            AAA5,
+            AAA6 = 100,
+            AAA7,
+            AAA8,
+            AAA9,
+
+        }
+        [TestMethod]
+        public void TestEnumCount()
+        {
+            int count=0;
+            
+            foreach (var e in EnumHelper.GetEnums<PROTOBUFENUM>())
+            {
+                count++;
+            }
+
+            Assert.AreEqual(9,count);
+        }
+
+        
+
     }
 }
