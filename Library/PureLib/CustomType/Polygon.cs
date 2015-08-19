@@ -8,7 +8,7 @@ namespace Regulus.CustomType
 {
 	[Serializable]
 	[ProtoContract]
-	public class Polygon
+	public class Polygon : ICloneable
 	{
 		public struct CollisionResult
 		{
@@ -20,19 +20,32 @@ namespace Regulus.CustomType
 		}
 
 		[ProtoMember(2)]
-		private readonly List<Vector2> _Edges = new List<Vector2>();
+		private readonly List<Vector2> _Edges ;
 
 		[ProtoMember(1)]
-		private List<Vector2> _Points = new List<Vector2>();
+		private List<Vector2> _Points ;
 
-		public List<Vector2> Edges
+	    public Polygon()
+	    {
+	        _Edges = new List<Vector2>();
+	        _Points = new List<Vector2>();
+	    }
+
+
+	    public void SetPoints(Vector2[] points)
+	    {
+            _Points.Clear();
+            _Points.AddRange(points);
+            _BuildEdges();
+        }
+        public Vector2[] Edges
 		{
-			get { return _Edges; }
+			get { return _Edges.ToArray(); }
 		}
 
-		public List<Vector2> Points
+		public Vector2[] Points
 		{
-			get { return _Points; }
+			get { return _Points.ToArray(); }
 		}
 
 		public Vector2 Center
@@ -63,8 +76,8 @@ namespace Regulus.CustomType
 			result.Intersect = true;
 			result.WillIntersect = true;
 
-			var edgeCountA = polygonA.Edges.Count;
-			var edgeCountB = polygonB.Edges.Count;
+			var edgeCountA = polygonA.Edges.Length;
+		    var edgeCountB = polygonB.Edges.Length;
 			var minIntervalDistance = float.PositiveInfinity;
 			var translationAxis = new Vector2();
 			Vector2 edge;
@@ -176,7 +189,7 @@ namespace Regulus.CustomType
 			var d = axis.DotProduct(polygon.Points[0]);
 			min = d;
 			max = d;
-			for(var i = 0; i < polygon.Points.Count; i++)
+			for(var i = 0; i < polygon.Points.Length; i++)
 			{
 				d = polygon.Points[i].DotProduct(axis);
 				if(d < min)
@@ -193,7 +206,7 @@ namespace Regulus.CustomType
 			}
 		}
 
-		public void BuildEdges()
+		private void _BuildEdges()
 		{
 			Vector2 p1;
 			Vector2 p2;
@@ -245,7 +258,18 @@ namespace Regulus.CustomType
 			return result;
 		}
 
-		private void MergeSort(int left, int right)
+	    public Polygon Clone()
+	    {
+            var other = new Polygon();
+            other.SetPoints(_Points.ToArray());
+            return other;
+        }
+	    object ICloneable.Clone()
+	    {
+	        return Clone();
+	    }
+
+	    private void MergeSort(int left, int right)
 		{
 			if(left < right)
 			{
@@ -335,7 +359,7 @@ namespace Regulus.CustomType
 				_Points.Add(CH[i]);
 			}
 
-			BuildEdges();
+			_BuildEdges();
 		}
 
 		public void Rotation(float angle)
@@ -348,7 +372,7 @@ namespace Regulus.CustomType
 			}
 
 			_Points = points;
-			BuildEdges();
+			_BuildEdges();
 		}
 
 		public Vector2 _RotatePoint(Vector2 point, Vector2 centroid, double angle)
