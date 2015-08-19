@@ -1,4 +1,7 @@
-﻿using Regulus.Game;
+﻿using System.Collections.Generic;
+
+
+using Regulus.Game;
 using Regulus.Utility;
 
 
@@ -83,8 +86,9 @@ namespace VGame.Project.FishHunter.Formula
 			_WeaponChancesTable = new WeaponChancesTable(datas);
 		}
 
-		public override HitResponse Request(HitRequest request)
+		public override HitResponse[] TotalRequest(HitRequest request)
 		{
+		    var hitResponses = new List<HitResponse>();
 			foreach(var fishData in request.FishDatas)
 			{
 				const int MAX_WEPBET = 10000;
@@ -95,54 +99,56 @@ namespace VGame.Project.FishHunter.Formula
 
 				if(request.WeaponData.WepBet > MAX_WEPBET)
 				{
-					return HitTest._Miss(fishData, request.WeaponData);
+                    hitResponses.Add(HitTest._Miss(fishData, request.WeaponData));
+				    continue;
 				}
 
 				if(request.WeaponData.WepOdds > MAX_WEPODDS)
 				{
-					return HitTest._Miss(fishData, request.WeaponData);
-				}
+                    hitResponses.Add(HitTest._Miss(fishData, request.WeaponData));
+                    continue;
+                }
 
 				if(request.WeaponData.TotalHits == 0 || request.WeaponData.TotalHits > MAX_TOTALHITS)
 				{
-					return HitTest._Miss(fishData, request.WeaponData);
-				}
+                    hitResponses.Add(HitTest._Miss(fishData, request.WeaponData));
+                    continue;
+                }
 
 				if(fishData.FishOdds == 0 || fishData.FishOdds > MAX_FISHODDS)
 				{
-					return HitTest._Miss(fishData, request.WeaponData);
+                    hitResponses.Add(HitTest._Miss(fishData, request.WeaponData));
 				}
-
-				long gate = 1000;
-				gate *= gateOffset;
-				gate *= request.WeaponData.WepBet;
-				gate /= request.WeaponData.TotalHits;
-				gate /= fishData.FishOdds;
-				gate /= 1000;
-
-				if(gate > 0x0fffffff)
+				else
 				{
-					gate = 0x10000000;
-				}
+                    long gate = 1000;
+                    gate *= gateOffset;
+                    gate *= request.WeaponData.WepBet;
+                    gate /= request.WeaponData.TotalHits;
+                    gate /= fishData.FishOdds;
+                    gate /= 1000;
 
-				var rValue = _Random.NextLong(0, long.MaxValue);
+                    if (gate > 0x0fffffff)
+                    {
+                        gate = 0x10000000;
+                    }
 
-				var value = rValue % 0x10000000;
+                    var rValue = _Random.NextLong(0, long.MaxValue);
 
-				if(value < gate)
-				{
-					return _Die(fishData, request.WeaponData);
-				}
+                    var value = rValue % 0x10000000;
 
-				return HitTest._Miss(fishData, request.WeaponData);
+                    if (value < gate)
+                    {
+                        hitResponses.Add(_Die(fishData, request.WeaponData));
+                    }
+                    else
+                    {
+                        hitResponses.Add(HitTest._Miss(fishData, request.WeaponData));
+                    }
+                }
 			}
 
-			return new HitResponse();
-		}
-
-		public override HitResponse[] TotalRequest(HitRequest request)
-		{
-			throw new System.NotImplementedException();
+			return hitResponses.ToArray();
 		}
 
 		private HitResponse _Die(RequsetFishData fish_data, RequestWeaponData weapon_data)

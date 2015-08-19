@@ -77,13 +77,11 @@ namespace VGame.Project.FishHunter.Formula
 
 		private void _FishStage_UnsupplyEvent(IFishStage source)
 		{
-			source.OnHitResponseEvent -= _Source_HitResponseEvent;
 			source.OnTotalHitResponseEvent -= source_OnTotalHitResponseEvent;
 		}
 
 		private void _FishStage_SupplyEvent(IFishStage source)
 		{
-			source.OnHitResponseEvent += _Source_HitResponseEvent;
 			source.OnTotalHitResponseEvent += source_OnTotalHitResponseEvent;
 		}
 

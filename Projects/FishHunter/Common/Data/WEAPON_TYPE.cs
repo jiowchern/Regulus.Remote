@@ -3,20 +3,6 @@
 namespace VGame.Project.FishHunter.Common.Data
 {
 	/// <summary>
-	///     伤害类型,公式判断用
-	/// </summary>
-	internal enum DAMAGE_TYPE
-	{
-		NORMAL, 
-
-		FULL_SCREEN_BOMB_1, // 死一半
-
-		FULL_SCREEN_BOMB_2, 
-
-		ICE_
-	}
-
-	/// <summary>
 	///     武器類型
 	/// </summary>
 	public enum WEAPON_TYPE
@@ -49,36 +35,36 @@ namespace VGame.Project.FishHunter.Common.Data
 		/// <summary>
 		///     101全屏炸彈
 		/// </summary>
-		SCREEN_BOMB = 101, 
+		SCREEN_BOMB, 
 
 		/// <summary>
 		///     皮卡丘 電鰻
 		/// </summary>
 		[EnumDescription("皮卡丘")]
-		THUNDER_BOMB = 102, 
+		THUNDER_BOMB, 
 
 		/// <summary>
 		///     貪食蛇
 		/// </summary>
 		[EnumDescription("貪食蛇")]
-		FIRE_BOMB = 103, 
+		FIRE_BOMB, 
 
 		/// <summary>
 		///     河豚 鐵球
 		/// </summary>
 		[EnumDescription("河豚")]
-		DAMAGE_BALL = 104, 
+		DAMAGE_BALL, 
 
 		/// <summary>
 		///     小章魚
 		/// </summary>
 		[EnumDescription("小章魚")]
-		OCTOPUS_BOMB = 105, 
+		OCTOPUS_BOMB, 
 
 		/// <summary>
 		///     大章魚
 		/// </summary>
 		[EnumDescription("大章魚")]
-		BIG_OCTOPUS_BOMB = 106
+		BIG_OCTOPUS_BOMB
 	};
 }

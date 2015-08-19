@@ -8,16 +8,10 @@ namespace VGame.Project.FishHunter.Common.Data
 	public enum FISH_TYPE
 	{
 		/// <summary>
-		///     一般魚開始
-		/// </summary>
-		[EnumDescription("一般魚開始")]
-		ORDINARY_FISH_BEGIN = 0, 
-
-		/// <summary>
 		///     小紅魚(熱帶小魚)
 		/// </summary>
 		[EnumDescription("熱帶小魚")]
-		TROPICAL_FISH = FISH_TYPE.ORDINARY_FISH_BEGIN, 
+		TROPICAL_FISH = 0,
 
 		/// <summary>
 		///     條紋魚(神仙魚)
@@ -140,99 +134,81 @@ namespace VGame.Project.FishHunter.Common.Data
 		GOLDEN_WHALE, 
 
 		/// <summary>
-		///     一般魚結束
-		/// </summary>
-		[EnumDescription("一般魚結束")]
-		ORDINARY_FISH_END = FISH_TYPE.GOLDEN_WHALE, 
-
-		/// <summary>
-		///     特殊魚開始
-		/// </summary>
-		[EnumDescription("特殊魚開始")]
-		SPECIAL_FISH_BEGIN = FISH_TYPE.WHALE_SLIVER, 
-
-		/// <summary>
 		///     銀鯨
 		/// </summary>
 		[EnumDescription("銀鯨")]
-		WHALE_SLIVER = 94, 
+		WHALE_SLIVER,
 
 		/// <summary>
 		///     彩鯨
 		/// </summary>
 		[EnumDescription("彩鯨")]
-		WHALE_COLOR = 95, 
+		WHALE_COLOR,
 
 		/// <summary>
 		///     魚王
 		/// </summary>
 		[EnumDescription("魚王")]
-		SAME_BOMB = 96, 
+		SAME_BOMB,
 
 		/// <summary>
 		///     大三元 大四喜
 		/// </summary>
 		[EnumDescription("大三元、大四喜")]
-		RING = 97, 
+		RING,
 
 		/// <summary>
 		///     冰凍碼錶
 		/// </summary>
 		[EnumDescription("冰凍碼錶")]
-		FREEZE_BOMB = 98, 
+		FREEZE_BOMB,
 
 		/// <summary>
 		///     大魚吃小魚
 		/// </summary>
 		[EnumDescription("大魚吃小魚")]
-		EAT_FISH = 99, 
+		EAT_FISH,
 
 		/// <summary>
 		///     鳯凰 200~600倍, X1~X10
 		/// </summary>
 		[EnumDescription("鳯凰")]
-		EAT_FISH_CRAZY = 100,
+		EAT_FISH_CRAZY,
 
 		/// <summary>
 		///     全屏炸彈
 		/// </summary>
 		[EnumDescription("全屏炸彈")]
-		SCREEN_BOMB = 101, 
+		SPECIAL_SCREEN_BOMB,
 
 		/// <summary>
 		///     皮卡丘
 		/// </summary>
 		[EnumDescription("皮卡丘")]
-		THUNDER_BOMB = 102, 
+		SPECIAL_THUNDER_BOMB, 
 
 		/// <summary>
 		///     貪食蛇
 		/// </summary>
 		[EnumDescription("貪食蛇")]
-		FIRE_BOMB = 103, 
+		SPECIAL_FIRE_BOMB, 
 
 		/// <summary>
 		///     河豚
 		/// </summary>
 		[EnumDescription("河豚")]
-		DAMAGE_BALL = 104, 
+		SPECIAL_DAMAGE_BALL, 
 
 		/// <summary>
 		///     小章魚
 		/// </summary>
 		[EnumDescription("小章魚")]
-		OCTOPUS_BOMB = 105, 
+		SPECIAL_OCTOPUS_BOMB, 
 
 		/// <summary>
 		///     大章魚
 		/// </summary>
 		[EnumDescription("大章魚")]
-		BIG_OCTOPUS_BOMB = 106, 
-
-		/// <summary>
-		///     特殊魚結束
-		/// </summary>
-		[EnumDescription("特殊魚結束")]
-		SPECAIL_FISH_END = FISH_TYPE.BIG_OCTOPUS_BOMB
+		SPECIAL_BIG_OCTOPUS_BOMB, 
 	}
 }

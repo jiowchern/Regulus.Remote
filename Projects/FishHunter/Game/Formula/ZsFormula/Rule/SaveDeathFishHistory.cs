@@ -19,22 +19,22 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 	{
 		private readonly RequsetFishData _Fish;
 
-		private readonly StageDataVisitor _StageVisitor;
+		private readonly FarmDataVisitor _FarmVisitor;
 
-		public SaveDeathFishHistory(StageDataVisitor stage_visitor, RequsetFishData fish)
+		public SaveDeathFishHistory(FarmDataVisitor farm_visitor, RequsetFishData fish)
 		{
 			_Fish = fish;
-			_StageVisitor = stage_visitor;
+			_FarmVisitor = farm_visitor;
 		}
 
 		public void Run()
 		{
 			// 存player打死的魚
-			_StageVisitor.PlayerRecord.FindStageRecord(_StageVisitor.FocusFishFarmData.FarmId)
-			             .FishHitReuslt.Items.Where(x => x.FishType == _Fish.FishType).First().KillCount++;
+			_FarmVisitor.PlayerRecord.FindFarmRecord(_FarmVisitor.FocusFishFarmData.FarmId)
+			            .FishHitReuslt.Items.First(x => x.FishType == _Fish.FishType).KillCount++;
 			             
 			// 存stage的死亡的魚
-			_StageVisitor.FocusFishFarmData.RecordData.FishHitReuslt.Items.Where(x => x.FishType == _Fish.FishType).First().KillCount++;
+			_FarmVisitor.FocusFishFarmData.RecordData.FishHitReuslt.Items.First(x => x.FishType == _Fish.FishType).KillCount++;
 		}
 	}
 }

@@ -7,21 +7,21 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 	/// </summary>
 	public class SpecialItemRule
 	{
-		private readonly StageDataVisitor _StageVisitor;
+		private readonly FarmDataVisitor _FarmVisitor;
 
-		public SpecialItemRule(StageDataVisitor stage_visitor)
+		public SpecialItemRule(FarmDataVisitor farm_visitor)
 		{
-			_StageVisitor = stage_visitor;
+			_FarmVisitor = farm_visitor;
 		}
 
 		public void Run()
 		{
 			// 武器出現次數+1
-//			_StageVisitor.PlayerRecord.NowWeaponPower.WinFrequency++;
+//			_FarmVisitor.PlayerRecord.NowWeaponPower.WinFrequency++;
 //
 //			// 武器出現次數+1
 //			var stageWeaponData =
-//				_StageVisitor.FocusFishFarmData.RecordData.SpecialWeaponDatas.Find(x => x.SpId == _StageVisitor.PlayerRecord.NowWeaponPower.SpId);
+//				_FarmVisitor.FocusFishFarmData.RecordData.SpecialWeaponDatas.Find(x => x.SpId == _FarmVisitor.PlayerRecord.NowWeaponPower.SpId);
 //			stageWeaponData.WinFrequency++;
 		}
 	}

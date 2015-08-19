@@ -50,9 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\BusinessFarm.cs" />
-    <Compile Include="Data\FishToItem.cs" />
     <Compile Include="Data\FormulaPlayerRecord.cs" />
-    <Compile Include="Data\PlayerData.cs" />
     <Compile Include="Data\RequestWeaponData.cs" />
     <Compile Include="Data\RequsetFishData.cs" />
     <Compile Include="Data\WeaponPower.cs" />

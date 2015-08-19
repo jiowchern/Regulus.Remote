@@ -18,11 +18,6 @@ namespace VGame.Project.FishHunter.Common.GPI
 		event Action<string> OnHitExceptionEvent;
 
 		/// <summary>
-		///     判定結果事件
-		/// </summary>
-		event Action<HitResponse> OnHitResponseEvent;
-
-		/// <summary>
 		/// 一次判定所有hit事件
 		/// </summary>
 		event Action<HitResponse[]> OnTotalHitResponseEvent;

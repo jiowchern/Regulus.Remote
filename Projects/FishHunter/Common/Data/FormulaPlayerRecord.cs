@@ -1,31 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+
+
+using ProtoBuf;
 
 namespace VGame.Project.FishHunter.Common.Data
 {
-	/// <summary>
-	/// 算法 player 記錄
-	/// </summary>
-	public class FormulaPlayerRecord
+    /// <summary>
+    /// 算法 player 記錄
+    /// </summary>
+    [ProtoContract]
+    public class FormulaPlayerRecord
 	{
+        [ProtoMember(1)]
 		public Guid Id { get; set; }
 
-		public Guid Owner { get; set; }
+        [ProtoMember(2)]
+        public Guid Owner { get; set; }
 
-		public int Status { get; set; }
+        [ProtoMember(3)]
+        public int Status { get; set; }
 
-		public int BufferValue { get; set; }
+        [ProtoMember(4)]
+        public int BufferValue { get; set; }
 
-		public List<FarmRecord> StageRecords { get; set; }
+        [ProtoMember(5)]
+        public FarmRecord[] StageRecords { get; set; }
 
-		public FormulaPlayerRecord()
+        public FormulaPlayerRecord()
 		{
-			StageRecords = new List<FarmRecord>();
+			StageRecords = new List<FarmRecord>().ToArray();
 		}
 
-		public FarmRecord FindStageRecord(int stage_id)
+        public FarmRecord FindFarmRecord(int farm_id)
 		{			
-			return StageRecords.Find(x => x.FarmId == stage_id);
+			return StageRecords.First(x => x.FarmId == farm_id);
 		}
 	}
 }

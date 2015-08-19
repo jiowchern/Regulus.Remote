@@ -7,6 +7,9 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using Regulus.Utility;
+
+
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
 
@@ -19,11 +22,11 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 	{
 		private readonly HitRequest _Request;
 
-		private readonly StageDataVisitor _StageVisitor;
+		private readonly FarmDataVisitor _FarmVisitor;
 
-		public AccumulationBufferRule(StageDataVisitor stage_visitor, HitRequest request)
+		public AccumulationBufferRule(FarmDataVisitor farm_visitor, HitRequest request)
 		{
-			_StageVisitor = stage_visitor;
+			_FarmVisitor = farm_visitor;
 			_Request = request;
 
 		}
@@ -32,18 +35,19 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		{
 			var bet = _Request.WeaponData.WepOdds * _Request.WeaponData.WepBet;
 
-			for(var i = FarmBuffer.BUFFER_TYPE.NORMAL; i < FarmBuffer.BUFFER_TYPE.COUNT; ++i)
-			{
-				var data = _StageVisitor.FocusFishFarmData.FindBuffer(_StageVisitor.FocusBufferBlock, i);
+            var enumData = EnumHelper.GetEnums<FarmBuffer.BUFFER_TYPE>();
 
-				_AddBufferRate(data, bet);
-			}
+		    foreach(var bufferType in enumData)
+		    {
+                var data = _FarmVisitor.FocusFishFarmData.FindBuffer(_FarmVisitor.FocusBufferBlock, bufferType);
+                _AddBufferRate(data, bet);
+            }
 
-			_StageVisitor.FocusFishFarmData.RecordData.PlayTimes += 1;
-			_StageVisitor.FocusFishFarmData.RecordData.PlayTotal += bet;
+			_FarmVisitor.FocusFishFarmData.RecordData.PlayTimes += 1;
+			_FarmVisitor.FocusFishFarmData.RecordData.PlayTotal += bet;
 
-			_StageVisitor.PlayerRecord.FindStageRecord(_StageVisitor.FocusFishFarmData.FarmId).PlayTimes += 1;
-			_StageVisitor.PlayerRecord.FindStageRecord(_StageVisitor.FocusFishFarmData.FarmId).PlayTotal += bet;
+			_FarmVisitor.PlayerRecord.FindFarmRecord(_FarmVisitor.FocusFishFarmData.FarmId).PlayTimes += 1;
+			_FarmVisitor.PlayerRecord.FindFarmRecord(_FarmVisitor.FocusFishFarmData.FarmId).PlayTotal += bet;
 		}
 
 		private void _AddBufferRate(FarmBuffer data, int bet)

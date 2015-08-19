@@ -96,7 +96,7 @@ namespace VGame.Project.FishHunter.Formula
 
 		private static void _PreloadAssembly()
 		{
-			Assembly.Load("Common");
+			Assembly.Load("FishHunterCommon");
 		}
 
 		private void _InitialLog()

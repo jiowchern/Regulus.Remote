@@ -15,13 +15,13 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 	{
 		private readonly FarmBuffer _BufferData;
 
-		private readonly StageDataVisitor _StageVisitor;
+		private readonly FarmDataVisitor _FarmVisitor;
 
 		private readonly RequsetFishData _FishData;
 
-		public OddsRuler(StageDataVisitor stage_visitor, RequsetFishData fish_data, FarmBuffer buffer_data)
+		public OddsRuler(FarmDataVisitor farm_visitor, RequsetFishData fish_data, FarmBuffer buffer_data)
 		{
-			_StageVisitor = stage_visitor;
+			_FarmVisitor = farm_visitor;
 			_FishData = fish_data;
 			_BufferData = buffer_data;
 		}
@@ -43,7 +43,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		private bool _CheckFishTypeToOddsRule(RequsetFishData fish_data)
 		{
-			if(fish_data.FishType >= FISH_TYPE.SPECIAL_FISH_BEGIN)
+			if(fish_data.FishType >= FISH_TYPE.SPECIAL_SCREEN_BOMB && fish_data.FishType <= FISH_TYPE.SPECIAL_BIG_OCTOPUS_BOMB)
 			{
 				return false; // 特殊鱼 不翻倍
 			}
@@ -55,7 +55,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 			if(fish_data.FishType == FISH_TYPE.BLUE_WHALE)
 			{
-				var randNumber = _StageVisitor.Random.NextInt(0, 1000);
+				var randNumber = _FarmVisitor.Random.NextInt(0, 1000);
 				if(randNumber < 500)
 				{
 					return false; // 藍鯨 50%不翻倍 
@@ -64,7 +64,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 			if(fish_data.FishType == FISH_TYPE.RED_WHALE)
 			{
-				var randNumber = _StageVisitor.Random.NextInt(0, 1000);
+				var randNumber = _FarmVisitor.Random.NextInt(0, 1000);
 				if(randNumber < 750)
 				{
 					return false; // 藍鯨 75%不翻倍
@@ -73,7 +73,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 			if(fish_data.FishType == FISH_TYPE.GOLDEN_WHALE)
 			{
-				var randNumber = _StageVisitor.Random.NextInt(0, 1000);
+				var randNumber = _FarmVisitor.Random.NextInt(0, 1000);
 				if(randNumber < 875)
 				{
 					return false; // 金鯨 87%不翻倍
@@ -89,7 +89,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 			var hiLoRate = data.BufferTempValue.HiLoRate;
 
-			var rand = _StageVisitor.Random.NextInt(0, 1000);
+			var rand = _FarmVisitor.Random.NextInt(0, 1000);
 
 			if(hiLoRate <= natrue[-3].Value)
 			{
@@ -129,7 +129,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		private int _CheckMultipleTableToOddsRule()
 		{
-			var rand = _StageVisitor.Random.NextInt(0, 1000);
+			var rand = _FarmVisitor.Random.NextInt(0, 1000);
 
 			var oddsTable = new OddsTable().Get();
 

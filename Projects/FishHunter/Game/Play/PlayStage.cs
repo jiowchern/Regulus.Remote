@@ -190,7 +190,6 @@ namespace VGame.Project.FishHunter.Play
 		void IStage.Enter()
 		{
 			_Binder.Bind<IPlayer>(this);
-			_FishStage.OnHitResponseEvent += _Response;
 			_FishStage.OnTotalHitResponseEvent += _FishStage_OnTotalHitResponseEvent;
 		}
 
@@ -205,7 +204,6 @@ namespace VGame.Project.FishHunter.Play
 
 		void IStage.Leave()
 		{
-			_FishStage.OnHitResponseEvent -= _Response;
 			_FishStage.OnTotalHitResponseEvent -= _FishStage_OnTotalHitResponseEvent;
 			_Binder.Unbind<IPlayer>(this);
 		}

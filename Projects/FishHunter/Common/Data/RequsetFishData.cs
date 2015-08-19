@@ -1,7 +1,19 @@
-﻿using ProtoBuf;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="RequsetFishData.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the RequsetFishData type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+using ProtoBuf;
 
 namespace VGame.Project.FishHunter.Common.Data
 {
+	/// <summary>
+	/// 魚的封包定義
+	/// </summary>
 	[ProtoContract]
 	public class RequsetFishData
 	{
@@ -12,10 +24,10 @@ namespace VGame.Project.FishHunter.Common.Data
 		public int FishId { get; set; }
 
 		/// <summary>
-		///     鱼的倍数。应该从1~1000。目前只预留到1000倍。
+		/// 鱼的种类。一般鱼从1~99。特殊鱼从201开始。。。
 		/// </summary>
-		[ProtoMember(4)]
-		public int FishOdds { get; set; }
+		[ProtoMember(2)]
+		public FISH_TYPE FishType { get; set; }
 
 		/// <summary>
 		///     鱼的状态。
@@ -24,9 +36,9 @@ namespace VGame.Project.FishHunter.Common.Data
 		public FISH_STATUS FishStatus { get; set; }
 
 		/// <summary>
-		///     鱼的种类。一般鱼从1~99。特殊鱼从201开始。。。
+		///     鱼的倍数。应该从1~1000。目前只预留到1000倍。
 		/// </summary>
-		[ProtoMember(2)]
-		public FISH_TYPE FishType { get; set; }
+		[ProtoMember(4)]
+		public int FishOdds { get; set; }
 	}
 }

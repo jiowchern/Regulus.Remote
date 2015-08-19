@@ -9,10 +9,10 @@ using VGame.Project.FishHunter.Formula;
 
 namespace UnitTest
 {
-    /// <summary>
-    ///     Formula 的摘要描述
-    /// </summary>
-    [TestClass]
+	/// <summary>
+	///     Formula 的摘要描述
+	/// </summary>
+	[TestClass]
 	public class Formula
 	{
 		/// <summary>
@@ -64,10 +64,14 @@ namespace UnitTest
 
 			var request = new HitRequest(fishs.ToArray(), weapon);
 
-			var response = formula.Request(request);
-			Assert.AreEqual(1, response.WepId);
-			Assert.AreEqual(1, response.FishId);
-			Assert.AreEqual(FISH_DETERMINATION.DEATH, response.DieResult);
+			var hitResponses = formula.TotalRequest(request);
+			foreach(var respones in hitResponses)
+			{
+				Assert.AreEqual(1, respones.WepId);
+				Assert.AreEqual(1, respones.FishId);
+				Assert.AreEqual(FISH_DETERMINATION.DEATH, respones.DieResult);
+			}
+			
 		}
 
 		[TestMethod]
@@ -96,11 +100,14 @@ namespace UnitTest
 
 			var request = new HitRequest(fishs.ToArray(), weapon);
 
-			var response = formula.Request(request);
-			Assert.AreEqual(1, response.WepId);
-			Assert.AreEqual(WEAPON_TYPE.INVALID, response.FeedbackWeaponType[0]);
-			Assert.AreEqual(1, response.FishId);
-			Assert.AreEqual(FISH_DETERMINATION.SURVIVAL, response.DieResult);
+			var hitResponses = formula.TotalRequest(request);
+		    foreach(var response in hitResponses)
+		    {
+                Assert.AreEqual(1, response.WepId);
+                Assert.AreEqual(WEAPON_TYPE.INVALID, response.FeedbackWeaponType[0]);
+                Assert.AreEqual(1, response.FishId);
+                Assert.AreEqual(FISH_DETERMINATION.SURVIVAL, response.DieResult);
+            }
 		}
 
 		[TestMethod]
@@ -125,15 +132,20 @@ namespace UnitTest
 				WepBet = 1, 
 				WepOdds = 1, 
 				WepId = 1,
-                WeaponType =WEAPON_TYPE.INVALID
+				WeaponType =WEAPON_TYPE.INVALID
 			};
 
-			var request = new HitRequest(fishs.ToArray(), weapon);
+			var hitRequest = new HitRequest(fishs.ToArray(), weapon);
 
-			var response = formula.Request(request); // a3d70a
-			Assert.AreEqual(1, response.WepId);
-			Assert.AreEqual(1, response.FishId);
-			Assert.AreEqual(FISH_DETERMINATION.DEATH, response.DieResult);
+			var hitResponses = formula.TotalRequest(hitRequest); // a3d70a
+
+		    foreach(var response in hitResponses)
+		    {
+                Assert.AreEqual(1, response.WepId);
+                Assert.AreEqual(1, response.FishId);
+                Assert.AreEqual(FISH_DETERMINATION.DEATH, response.DieResult);
+            }
+            
 		}
 
 		[TestMethod]
@@ -150,7 +162,7 @@ namespace UnitTest
 				{
 					FishId = 1, 
 					FishOdds = 1,
-                }
+				}
 			};
 			var weapon = new RequestWeaponData
 			{
@@ -162,11 +174,17 @@ namespace UnitTest
 
 			var request = new HitRequest(fishs.ToArray(), weapon);
 
-			var response = formula.Request(request);
-			Assert.AreEqual(1, response.WepId);
-			Assert.AreEqual(WEAPON_TYPE.INVALID, response.FeedbackWeaponType[0]);
-			Assert.AreEqual(1, response.FishId);
-			Assert.AreEqual(FISH_DETERMINATION.SURVIVAL, response.DieResult);
+            var hitResponses = formula.TotalRequest(request);
+
+		    foreach(var response in hitResponses)
+		    {
+                Assert.AreEqual(1, response.WepId);
+                Assert.AreEqual(WEAPON_TYPE.INVALID, response.FeedbackWeaponType[0]);
+                Assert.AreEqual(1, response.FishId);
+                Assert.AreEqual(FISH_DETERMINATION.SURVIVAL, response.DieResult);
+
+            }
+			
 		}
 	}
 }

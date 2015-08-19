@@ -17,13 +17,13 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 {
 	public class AdjustmentGameLevelRule
 	{
-		private readonly StageDataVisitor _StageVisitor;
+		private readonly FarmDataVisitor _FarmVisitor;
 
 		private readonly TimeCounter _TimeCounter;
 
-		public AdjustmentGameLevelRule(StageDataVisitor stage_visitor)
+		public AdjustmentGameLevelRule(FarmDataVisitor farm_visitor)
 		{
-			_StageVisitor = stage_visitor;
+			_FarmVisitor = farm_visitor;
 			_TimeCounter = new TimeCounter();
 		}
 
@@ -33,7 +33,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		public void Run()
 		{
-			var bufferData = _StageVisitor.FocusFishFarmData.FindBuffer(_StageVisitor.FocusBufferBlock, FarmBuffer.BUFFER_TYPE.NORMAL);
+			var bufferData = _FarmVisitor.FocusFishFarmData.FindBuffer(_FarmVisitor.FocusBufferBlock, FarmBuffer.BUFFER_TYPE.NORMAL);
 			var bufferTemp = bufferData.BufferTempValue;
 			bufferTemp.FireCount += 1;
 
@@ -52,11 +52,11 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		private void _Update()
 		{
-			var bufferData = _StageVisitor.FocusFishFarmData.FindBuffer(_StageVisitor.FocusBufferBlock, FarmBuffer.BUFFER_TYPE.NORMAL);
+			var bufferData = _FarmVisitor.FocusFishFarmData.FindBuffer(_FarmVisitor.FocusBufferBlock, FarmBuffer.BUFFER_TYPE.NORMAL);
 			
 			var bufferTemp = bufferData.BufferTempValue;
 			
-			var baseValue = _StageVisitor.FocusFishFarmData.NowBaseOdds * bufferTemp.AverageValue;
+			var baseValue = _FarmVisitor.FocusFishFarmData.NowBaseOdds * bufferTemp.AverageValue;
 			
 			bufferTemp.HiLoRate = new NatureDataRule().Run(bufferData.Buffer, baseValue);
 
@@ -65,11 +65,11 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		private void _Update2()
 		{
-			var bufferData = _StageVisitor.FocusFishFarmData.FindBuffer(_StageVisitor.FocusBufferBlock, FarmBuffer.BUFFER_TYPE.NORMAL);
+			var bufferData = _FarmVisitor.FocusFishFarmData.FindBuffer(_FarmVisitor.FocusBufferBlock, FarmBuffer.BUFFER_TYPE.NORMAL);
 
 			var bufferTemp = bufferData.BufferTempValue;
 
-			var baseValue = _StageVisitor.FocusFishFarmData.NowBaseOdds * bufferTemp.AverageValue;
+			var baseValue = _FarmVisitor.FocusFishFarmData.NowBaseOdds * bufferTemp.AverageValue;
 
 			bufferTemp.HiLoRate = new NatureDataRule().Run(bufferData.Buffer, baseValue);
 

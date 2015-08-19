@@ -42,5 +42,19 @@ namespace GameTest
 			Assert.AreNotEqual(null, stageLock.Requires);
 			Assert.AreEqual(0, stageLock.Stage);
 		}
-	}
+
+
+        [TestMethod]
+        public void Serializer()
+        {
+            var data1 = new FishFarmData();
+
+            var serData = Regulus.TypeHelper.Serializer(data1);
+
+            var data2 = Regulus.TypeHelper.Deserialize<FishFarmData>(serData);
+            
+
+            Assert.AreEqual(data1.Id, data2.Id);
+        }
+    }
 }
