@@ -49,7 +49,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\BusinessFarm.cs" />
     <Compile Include="Data\FormulaPlayerRecord.cs" />
     <Compile Include="Data\RequestWeaponData.cs" />
     <Compile Include="Data\RequsetFishData.cs" />
@@ -57,7 +56,7 @@
     <Compile Include="Data\FarmRecord.cs" />
     <Compile Include="Data\FarmBuffer.cs" />
     <Compile Include="Data\FishFarmData.cs" />
-    <Compile Include="Data\WeaponPowerTable.cs" />
+    <Compile Include="Data\SpecialWeaponPowerTable.cs" />
     <Compile Include="GPI\IAccountCreator.cs" />
     <Compile Include="Data\Account.cs" />
     <Compile Include="Data\ACCOUNT_REQUEST_RESULT.cs" />

@@ -42,29 +42,45 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 //				return;
 //			}
 
-			// 檢查一定得到的物品
 			_CheckCertain();
 
 			_CheckRandom();
+
+		    _CheckCount();
 		}
 
+	    private void _CheckCount()
+	    {
+	        if(_FarmVisitor.GetItems.Count == 0)
+	        {
+                _FarmVisitor.GetItems.Add(WEAPON_TYPE.INVALID);
+            }
+        }
+
+	    /// <summary>
+        /// 檢查必掉道具
+        /// </summary>
 		private void _CheckCertain()
 		{
-			var CertainWeapons =
+			var certainWeapons =
 				_FarmVisitor.PlayerRecord.FindFarmRecord(_FarmVisitor.FocusFishFarmData.FarmId)
-				            .FishHitReuslt.Items.Where(x => x.FishType == _FishData.FishType).First().CertainWeapons;
-			if (CertainWeapons != WEAPON_TYPE.INVALID)
+				            .FishHitReuslt.Items.First(x => x.FishType == _FishData.FishType).CertainWeapons;
+
+			if (certainWeapons != WEAPON_TYPE.INVALID)
 			{
-				_FarmVisitor.GetItems.Add(CertainWeapons);
+				_FarmVisitor.GetItems.Add(certainWeapons);
 			}
 		}
 
+        /// <summary>
+        /// 檢查隨機道具
+        /// </summary>
 		private void _CheckRandom()
 		{
 			// 拿到魚的掉落物品清單
 			var randomWeapons =
 				_FarmVisitor.PlayerRecord.FindFarmRecord(_FarmVisitor.FocusFishFarmData.FarmId)
-				            .FishHitReuslt.Items.Where(x => x.FishType == _FishData.FishType).First().RandomWeapons;
+				            .FishHitReuslt.Items.First(x => x.FishType == _FishData.FishType).RandomWeapons;
 
 			var bufferData = _FarmVisitor.FocusFishFarmData.FindBuffer(_FarmVisitor.FocusBufferBlock, FarmBuffer.BUFFER_TYPE.SPEC);
 
@@ -74,7 +90,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 			{
 				long gate = bufferData.Rate / randomWeapons.Length;
 
-				var power = new WeaponPowerTable().WeaponPowers.Find(x => x.WeaponType == t).Power;
+				var power = new SpecialWeaponPowerTable().WeaponPowers.Find(x => x.WeaponType == t).Power;
 
 				gate = (0x0FFFFFFF / power) * gate;
 
@@ -100,8 +116,11 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 			}
 
 			var randomWeapon = list.OrderBy(x => _FarmVisitor.Random.NextFloat(0, 1)).FirstOrDefault();
-			if(randomWeapon != WEAPON_TYPE.INVALID)
-				_FarmVisitor.GetItems.Add(randomWeapon);
+
+		    if(randomWeapon != WEAPON_TYPE.INVALID)
+		    {
+		        _FarmVisitor.GetItems.Add(randomWeapon);
+		    }
 		}
 	}
 }
