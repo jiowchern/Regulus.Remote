@@ -15,11 +15,13 @@ namespace VGame.Project.FishHunter.Stage
     {
         private event Action<HitResponse[]> _OnTotalHitResponseEvent;
 
+        private readonly Guid _AccountId;
+
         private readonly int _FishStage;
 
         public QuarterStage(Guid player_id, int fish_stage)
         {
-            AccountId = player_id;
+            _AccountId = player_id;
             _FishStage = fish_stage;
         }
 
@@ -35,7 +37,10 @@ namespace VGame.Project.FishHunter.Stage
             remove { _OnTotalHitResponseEvent -= value; }
         }
 
-        public Guid AccountId { get; }
+        Guid IFishStage.AccountId
+        {
+            get { return _AccountId; }
+        }
 
         int IFishStage.FishStage
         {
