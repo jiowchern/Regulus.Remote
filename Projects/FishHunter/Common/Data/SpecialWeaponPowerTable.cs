@@ -2,7 +2,7 @@
 
 namespace VGame.Project.FishHunter.Common.Data
 {
-	public class WeaponPowerTable
+	public class SpecialWeaponPowerTable
 	{
 		public class WeaponPower
 		{
@@ -19,7 +19,7 @@ namespace VGame.Project.FishHunter.Common.Data
 
 		public List<WeaponPower> WeaponPowers { get; private set; }
 
-		public WeaponPowerTable()
+		public SpecialWeaponPowerTable()
 		{
 			WeaponPowers = new List<WeaponPower>
 			{

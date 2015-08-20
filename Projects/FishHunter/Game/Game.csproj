@@ -92,6 +92,7 @@
     <Compile Include="Formula\ZsFormula\Data\ScoreOddsTable.cs" />
     <Compile Include="Formula\ZsFormula\Data\FarmDataVisitor.cs" />
     <Compile Include="Stage\FormulaStage.cs" />
+    <Compile Include="Stage\StageLoadFarmData.cs" />
     <Compile Include="Storage\Verify.cs" />
     <Compile Include="Play\DummyStandalong.cs" />
     <Compile Include="Storage\Center.cs" />
