@@ -8,24 +8,6 @@ namespace VGame.Project.FishHunter.Common.Data
     [ProtoContract]
     public class FarmRecord
     {
-        [ProtoContract]
-        public class HitHistory
-        {
-            [ProtoMember(1)]
-            public Guid Id { get; set; }
-
-            [ProtoMember(2)]
-            public FISH_TYPE FishType { get; private set; }
-
-            [ProtoMember(3)]
-            public int KillCount { get; set; }
-
-            public HitHistory()
-            {
-                Id = new Guid();
-            }
-        }
-
         [ProtoMember(1)]
         public Guid Id { get; set; }
 
