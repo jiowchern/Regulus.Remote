@@ -15,22 +15,22 @@ namespace VGame.Project.FishHunter.Common.Data
 		/// <summary>
 		///     1一般武器
 		/// </summary>
-		NORMAL = 1, // 正常子彈
+		NORMAL, // 正常子彈
 
 		/// <summary>
 		///     2超級炮
 		/// </summary>
-		SUPER_BOMB = 2, 
+		SUPER_BOMB, 
 
 		/// <summary>
 		///     3電網
 		/// </summary>
-		ELECTRIC_NET = 3, 
+		ELECTRIC_NET, 
 
 		/// <summary>
 		///     4免費炮
 		/// </summary>
-		FREE_POWER = 4, 
+		FREE_POWER, 
 
 		/// <summary>
 		///     101全屏炸彈
@@ -65,6 +65,12 @@ namespace VGame.Project.FishHunter.Common.Data
 		///     大章魚
 		/// </summary>
 		[EnumDescription("大章魚")]
-		BIG_OCTOPUS_BOMB
-	};
+		BIG_OCTOPUS_BOMB,
+
+        /// <summary>
+        /// 魚王
+        /// </summary>
+        [EnumDescription("魚王")]
+        KING
+    };
 }

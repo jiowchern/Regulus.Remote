@@ -172,7 +172,7 @@ namespace VGame.Project.FishHunter.Common.Data
 		/// <summary>
 		///     鳯凰 200~600倍, X1~X10
 		/// </summary>
-		[EnumDescription("鳯凰")]
+		[EnumDescription("鳯凰、大魚吃小魚600倍")]
 		EAT_FISH_CRAZY,
 
 		/// <summary>
