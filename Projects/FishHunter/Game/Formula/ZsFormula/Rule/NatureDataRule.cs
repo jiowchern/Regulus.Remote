@@ -25,12 +25,9 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 			var datas = new NatureBufferChancesTable().Get().ToDictionary(x => x.Key);
 
-			foreach(var data in datas)
+			foreach(var data in datas.Where(data => buffer_value > (data.Key * base_value)))
 			{
-				if(buffer_value > (data.Key * base_value))
-				{
-					natureValue = (int)data.Value.Value;
-				}
+			    natureValue = (int)data.Value.Value;
 			}
 
 			return natureValue;

@@ -33,13 +33,12 @@ namespace VGame.Project.FishHunter.Common.Data
         public int AsnWin { get; set; }
 
         [ProtoMember(9)]
-        public FishPocket FishHitReuslt { get; set; }
+        public FishHitRecord[] FishHits { get; set; }
 
         public FarmRecord(int farm_id)
         {
             Id = new Guid();
             FarmId = farm_id;
-            FishHitReuslt = new FishPocket();
         }
 
         public FarmRecord()

@@ -12,45 +12,41 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 {
 	public class ZsHitChecker : HitBase
 	{
-		private readonly FormulaPlayerRecord _FormulaPlayerRecord;
-
-		private readonly FarmDataVisitor _FarmVisitor;
+	    private readonly DataVisitor _DataVisitor;
 
 		public ZsHitChecker(FishFarmData fish_farm_data, FormulaPlayerRecord formula_player_record, IRandom random)
 		{
-			_FormulaPlayerRecord = formula_player_record;
-
 		    var data = new List<FarmRecord>
 		    {
-		        fish_farm_data.RecordData
+		        fish_farm_data.Record
 		    };
 
-		    _FormulaPlayerRecord.StageRecords = data.ToArray();
+            formula_player_record.FarmRecords = data.ToArray();
 
-			_FarmVisitor = new FarmDataVisitor(fish_farm_data, _FormulaPlayerRecord, random);
+			_DataVisitor = new DataVisitor(fish_farm_data, formula_player_record, random);
 		}
 
 		public override HitResponse[] TotalRequest(HitRequest request)
 		{
-			var block = CalculationBufferBlock.GetBlock(request, _FarmVisitor.FocusFishFarmData.MaxBet);
+			var block = CalculationBufferBlock.GetBlock(request, _DataVisitor.Farm.MaxBet);
 
-			_FarmVisitor.FocusBufferBlock = block;
+			_DataVisitor.FocusBufferBlock = block;
 
 			// 只有第一發才能累積buffer
 			if(request.WeaponData.WeaponType == WEAPON_TYPE.NORMAL && request.WeaponData.TotalHits == 1)
 			{
-				new AccumulationBufferRule(_FarmVisitor, request).Run();
+				new AccumulationBufferRule(_DataVisitor, request).Run();
 
-				new ApproachBaseOddsRule(_FarmVisitor).Run();
+				new ApproachBaseOddsRule(_DataVisitor).Run();
 
-				new AdjustmentAverageRule(_FarmVisitor, request).Run();
+				new AdjustmentAverageRule(_DataVisitor, request).Run();
 			}
 
-			new AdjustmentGameLevelRule(_FarmVisitor).Run();
+			new AdjustmentGameLevelRule(_DataVisitor).Run();
 
-			new AdjustmentPlayerPhaseRule(_FarmVisitor).Run();
+			new AdjustmentPlayerPhaseRule(_DataVisitor).Run();
 
-			return new DeathRule(_FarmVisitor, request).Run();
+			return new DeathRule(_DataVisitor, request).Run();
 		}
 	}
 }

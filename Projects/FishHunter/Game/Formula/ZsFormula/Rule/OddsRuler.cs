@@ -15,13 +15,13 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 	{
 		private readonly FarmBuffer _BufferData;
 
-		private readonly FarmDataVisitor _FarmVisitor;
+		private readonly DataVisitor _Visitor;
 
 		private readonly RequsetFishData _FishData;
 
-		public OddsRuler(FarmDataVisitor farm_visitor, RequsetFishData fish_data, FarmBuffer buffer_data)
+		public OddsRuler(DataVisitor visitor, RequsetFishData fish_data, FarmBuffer buffer_data)
 		{
-			_FarmVisitor = farm_visitor;
+			_Visitor = visitor;
 			_FishData = fish_data;
 			_BufferData = buffer_data;
 		}
@@ -55,7 +55,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 			if(fish_data.FishType == FISH_TYPE.BLUE_WHALE)
 			{
-				var randNumber = _FarmVisitor.Random.NextInt(0, 1000);
+				var randNumber = _Visitor.Random.NextInt(0, 1000);
 				if(randNumber < 500)
 				{
 					return false; // 藍鯨 50%不翻倍 
@@ -64,7 +64,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 			if(fish_data.FishType == FISH_TYPE.RED_WHALE)
 			{
-				var randNumber = _FarmVisitor.Random.NextInt(0, 1000);
+				var randNumber = _Visitor.Random.NextInt(0, 1000);
 				if(randNumber < 750)
 				{
 					return false; // 藍鯨 75%不翻倍
@@ -73,7 +73,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 			if(fish_data.FishType == FISH_TYPE.GOLDEN_WHALE)
 			{
-				var randNumber = _FarmVisitor.Random.NextInt(0, 1000);
+				var randNumber = _Visitor.Random.NextInt(0, 1000);
 				if(randNumber < 875)
 				{
 					return false; // 金鯨 87%不翻倍
@@ -89,7 +89,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 			var hiLoRate = data.BufferTempValue.HiLoRate;
 
-			var rand = _FarmVisitor.Random.NextInt(0, 1000);
+			var rand = _Visitor.Random.NextInt(0, 1000);
 
 			if(hiLoRate <= natrue[-3].Value)
 			{
@@ -129,7 +129,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		private int _CheckMultipleTableToOddsRule()
 		{
-			var rand = _FarmVisitor.Random.NextInt(0, 1000);
+			var rand = _Visitor.Random.NextInt(0, 1000);
 
 			var oddsTable = new OddsTable().Get();
 

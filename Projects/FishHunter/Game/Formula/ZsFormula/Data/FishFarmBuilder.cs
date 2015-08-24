@@ -26,7 +26,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 				MaxBet = 1000, 
 				NowBaseOdds = 0, 
 				BaseOddsCount = 0,
-				RecordData = new FarmRecord(farm_id)
+				Record = new FarmRecord(farm_id)
 			};
 			_DefaultBufferData(stageData);
 

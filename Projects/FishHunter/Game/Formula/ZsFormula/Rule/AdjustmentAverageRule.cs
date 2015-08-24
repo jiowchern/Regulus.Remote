@@ -17,20 +17,20 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 	/// </summary>
 	public class AdjustmentAverageRule
 	{
-		private readonly FarmDataVisitor _FarmDataVisitor;
+		private readonly DataVisitor _DataVisitor;
 
 		private readonly HitRequest _HitRequest;
 
-		public AdjustmentAverageRule(FarmDataVisitor fish_farm_visitor, HitRequest hit_request)
+		public AdjustmentAverageRule(DataVisitor fish_visitor, HitRequest hit_request)
 		{
-			_FarmDataVisitor = fish_farm_visitor;
+			_DataVisitor = fish_visitor;
 			_HitRequest = hit_request;
 		}
 
 		public void Run()
 		{
-			var bufferData = _FarmDataVisitor.FocusFishFarmData.FindBuffer(
-				_FarmDataVisitor.FocusBufferBlock, 
+			var bufferData = _DataVisitor.Farm.FindBuffer(
+				_DataVisitor.FocusBufferBlock, 
 				FarmBuffer.BUFFER_TYPE.NORMAL);
 
 			var bet = _HitRequest.WeaponData.WepOdds * _HitRequest.WeaponData.WepBet;

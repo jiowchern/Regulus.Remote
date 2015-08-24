@@ -49,10 +49,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\FishHitRecord.cs" />
     <Compile Include="Data\FormulaPlayerRecord.cs" />
     <Compile Include="Data\RequestWeaponData.cs" />
     <Compile Include="Data\RequsetFishData.cs" />
-    <Compile Include="Data\WeaponPower.cs" />
     <Compile Include="Data\FarmRecord.cs" />
     <Compile Include="Data\FarmBuffer.cs" />
     <Compile Include="Data\FishFarmData.cs" />
