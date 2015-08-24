@@ -2,14 +2,14 @@
     ViewBag.Title = "帳號餘額資料";
 }
 
-<h2>GamePlayerRecord</h2>
+<h2>GamePlayerFishHits</h2>
 
 @model VGameWebApplication.Models.TradeData.Data[]
 
 
 
 
-@using (Html.BeginForm("Index", "Record", FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return validateForm(this)" }))
+@using (Html.BeginForm("Index", "FishHits", FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return validateForm(this)" }))
 {
     <div>
         <table>@Html.Label("帳號餘額資料")</table>
@@ -23,7 +23,7 @@
                     <td>@Model[i].Name</td>
                     <td>餘額</td>
                     <td>@Model[i].Money</td>
-                    <td>@Html.ActionLink("儲值", "InputMoney", "Record", Model[i], null)</td>
+                    <td>@Html.ActionLink("儲值", "InputMoney", "FishHits", Model[i], null)</td>
                 </tr>
             }
         </table>

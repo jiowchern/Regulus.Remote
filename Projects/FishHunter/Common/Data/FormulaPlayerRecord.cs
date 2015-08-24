@@ -26,16 +26,16 @@ namespace VGame.Project.FishHunter.Common.Data
         public int BufferValue { get; set; }
 
         [ProtoMember(5)]
-        public FarmRecord[] StageRecords { get; set; }
+        public FarmRecord[] FarmRecords { get; set; }
 
         public FormulaPlayerRecord()
 		{
-			StageRecords = new List<FarmRecord>().ToArray();
+			FarmRecords = new List<FarmRecord>().ToArray();
 		}
 
         public FarmRecord FindFarmRecord(int farm_id)
 		{			
-			return StageRecords.First(x => x.FarmId == farm_id);
+			return FarmRecords.First(x => x.FarmId == farm_id);
 		}
 	}
 }

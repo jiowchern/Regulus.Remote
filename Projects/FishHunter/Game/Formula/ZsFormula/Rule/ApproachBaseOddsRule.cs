@@ -13,11 +13,11 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 {
 	public class ApproachBaseOddsRule
 	{
-		private readonly FarmDataVisitor _FarmVisitor;
+		private readonly DataVisitor _Visitor;
 
-		public ApproachBaseOddsRule(FarmDataVisitor farm_visitor)
+		public ApproachBaseOddsRule(DataVisitor visitor)
 		{
-			_FarmVisitor = farm_visitor;
+			_Visitor = visitor;
 		}
 
 		/// <summary>
@@ -25,20 +25,20 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		/// </summary>
 		public void Run()
 		{
-			if(_FarmVisitor.FocusFishFarmData.BaseOddsCount != 0)
+			if(_Visitor.Farm.BaseOddsCount != 0)
 			{
-				_FarmVisitor.FocusFishFarmData.BaseOddsCount--;
+				_Visitor.Farm.BaseOddsCount--;
 			}
 			else
 			{
-				_FarmVisitor.FocusFishFarmData.BaseOddsCount = 3000;
-				if(_FarmVisitor.FocusFishFarmData.NowBaseOdds > _FarmVisitor.FocusFishFarmData.BaseOdds)
+				_Visitor.Farm.BaseOddsCount = 3000;
+				if(_Visitor.Farm.NowBaseOdds > _Visitor.Farm.BaseOdds)
 				{
-					_FarmVisitor.FocusFishFarmData.NowBaseOdds--;
+					_Visitor.Farm.NowBaseOdds--;
 				}
-				else if(_FarmVisitor.FocusFishFarmData.NowBaseOdds < _FarmVisitor.FocusFishFarmData.BaseOdds)
+				else if(_Visitor.Farm.NowBaseOdds < _Visitor.Farm.BaseOdds)
 				{
-					_FarmVisitor.FocusFishFarmData.NowBaseOdds++;
+					_Visitor.Farm.NowBaseOdds++;
 				}
 			}
 		}

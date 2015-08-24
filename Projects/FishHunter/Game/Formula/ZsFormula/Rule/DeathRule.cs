@@ -12,15 +12,15 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
     /// </summary>
     public class DeathRule
     {
-        private readonly FarmDataVisitor _FarmVisitor;
+        private readonly DataVisitor _Visitor;
 
         private readonly List<HitResponse> _HitResponses;
 
         private readonly HitRequest _Request;
 
-        public DeathRule(FarmDataVisitor farm_visitor, HitRequest request)
+        public DeathRule(DataVisitor visitor, HitRequest request)
         {
-            _FarmVisitor = farm_visitor;
+            _Visitor = visitor;
             _Request = request;
             _HitResponses = new List<HitResponse>();
         }
@@ -61,11 +61,11 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
             dieRate /= _Request.WeaponData.TotalHitOdds; // 总倍数
 
-            var bufferData = _FarmVisitor.FocusFishFarmData.FindBuffer(
-                _FarmVisitor.FocusBufferBlock, 
+            var bufferData = _Visitor.Farm.FindBuffer(
+                _Visitor.FocusBufferBlock, 
                 FarmBuffer.BUFFER_TYPE.NORMAL);
 
-            var oddsRule = new OddsRuler(_FarmVisitor, fish_data, bufferData).RuleResult();
+            var oddsRule = new OddsRuler(_Visitor, fish_data, bufferData).RuleResult();
 
             dieRate /= oddsRule;
 
@@ -83,7 +83,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
                 gate2 = 0x10000000; // > 100% 
             }
 
-            if(_FarmVisitor.Random.NextInt(0, 0x10000000) >= gate2)
+            if(_Visitor.Random.NextInt(0, 0x10000000) >= gate2)
             {
                 _Miss(fish_data, _Request.WeaponData);
                 return;
@@ -97,17 +97,17 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
         private void _NomralWeapon(RequsetFishData fish_data, int hit_sequence)
         {
-            var bufferData = _FarmVisitor.FocusFishFarmData.FindBuffer(
-                _FarmVisitor.FocusBufferBlock, 
+            var bufferData = _Visitor.Farm.FindBuffer(
+                _Visitor.FocusBufferBlock, 
                 FarmBuffer.BUFFER_TYPE.SPEC);
 
-            long dieRate = _FarmVisitor.FocusFishFarmData.GameRate - 10;
+            long dieRate = _Visitor.Farm.GameRate - 10;
 
             dieRate -= bufferData.Rate;
 
             dieRate += bufferData.BufferTempValue.HiLoRate;
 
-            if(_FarmVisitor.PlayerRecord.Status != 0)
+            if(_Visitor.PlayerRecord.Status != 0)
             {
                 dieRate += 200; // 提高20%
             }
@@ -127,14 +127,13 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
             dieRate *= _Request.WeaponData.WepBet; // 子弹威力
 
-            // TODO 公式有疑問
             dieRate *= new FishHitAllocateTable().GetAllocateData(_Request.WeaponData.TotalHits, hit_sequence);
 
             dieRate /= 1000;
 
             dieRate /= fish_data.FishOdds; // 鱼的倍数
 
-            var oddsRule = new OddsRuler(_FarmVisitor, fish_data, bufferData).RuleResult();
+            var oddsRule = new OddsRuler(_Visitor, fish_data, bufferData).RuleResult();
 
             dieRate /= oddsRule; // 翻倍
 
@@ -145,7 +144,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
                 dieRate = 0x10000000; // > 100%
             }
 
-            if(_FarmVisitor.Random.NextInt(0, 0x10000000) >= dieRate)
+            if(_Visitor.Random.NextInt(0, 0x10000000) >= dieRate)
             {
                 _Miss(fish_data, _Request.WeaponData);
                 return;
@@ -159,17 +158,17 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
         private void _DieHandle(int win, RequsetFishData fish_data)
         {
-            new SaveScoreHistory(_FarmVisitor, win).Run();
-            new SaveDeathFishHistory(_FarmVisitor, fish_data).Run();
-            new GetSpecialWeaponRule(_FarmVisitor, fish_data).Run();
-
+            new SaveDeathFishHistory(_Visitor, fish_data).Run();
+            new CheckTreasureRule(_Visitor, fish_data).Run();
+            new SaveScoreHistory(_Visitor, win).Run();
+            
             _Die(fish_data, _Request.WeaponData);
         }
 
         private void _Die(RequsetFishData fish_data, RequestWeaponData weapon_data)
         {
-            var bufferData = _FarmVisitor.FocusFishFarmData.FindBuffer(
-                _FarmVisitor.FocusBufferBlock, 
+            var bufferData = _Visitor.Farm.FindBuffer(
+                _Visitor.FocusBufferBlock, 
                 FarmBuffer.BUFFER_TYPE.NORMAL);
 
             _HitResponses.Add(
@@ -178,8 +177,8 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
                     WepId = weapon_data.WepId, 
                     FishId = fish_data.FishId, 
                     DieResult = FISH_DETERMINATION.DEATH, 
-                    FeedbackWeaponType = _FarmVisitor.GetItems.ToArray(), 
-                    WUp = new OddsRuler(_FarmVisitor, fish_data, bufferData).RuleResult()
+                    FeedbackWeaponType = _Visitor.GotTreasures.ToArray(), 
+                    WUp = new OddsRuler(_Visitor, fish_data, bufferData).RuleResult()
                 });
         }
 
@@ -191,7 +190,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
                     WepId = weapon_data.WepId, 
                     FishId = fish_data.FishId, 
                     DieResult = FISH_DETERMINATION.SURVIVAL, 
-                    FeedbackWeaponType = _FarmVisitor.GetItems.ToArray(), 
+                    FeedbackWeaponType = _Visitor.GotTreasures.ToArray(), 
                     WUp = 0
                 });
         }

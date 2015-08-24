@@ -11,22 +11,22 @@ using Regulus.Utility;
 namespace VGame.Project.FishHunter.Common.Data
 {
     [ProtoContract]
-	public class FishFarmData
-	{
-		public enum SIZE_TYPE
-		{
-			SMALL, 
+    public class FishFarmData
+    {
+        public enum SIZE_TYPE
+        {
+            SMALL, 
 
-			MEDIUM, 
+            MEDIUM, 
 
-			LARGE
-		}
+            LARGE
+        }
 
         [ProtoMember(1)]
         public Guid Id { get; set; }
 
         [ProtoMember(2)]
-		public int FarmId { get; set; }
+        public int FarmId { get; set; }
 
         [ProtoMember(3)]
         public string Name { get; set; }
@@ -53,33 +53,25 @@ namespace VGame.Project.FishHunter.Common.Data
         public FarmBuffer[] BufferDatas { get; set; }
 
         [ProtoMember(11)]
-        public FarmRecord RecordData { get; set; }
+        public FarmRecord Record { get; set; }
 
-		public FishFarmData()
-		{
+        public FishFarmData()
+        {
             Id = new Guid();
-            var bufferDatas = new List<FarmBuffer>();
 
-			foreach(var i in EnumHelper.GetEnums<FarmBuffer.BUFFER_BLOCK>())
-			{
-				foreach(var j in EnumHelper.GetEnums<FarmBuffer.BUFFER_TYPE>())
-				{
-                    bufferDatas.Add(
-						new FarmBuffer
-						{
-							BufferBlock = i, 
-							BufferType = j
-						});
-				}
-			}
+            BufferDatas = (from i in EnumHelper.GetEnums<FarmBuffer.BUFFER_BLOCK>()
+                           from j in EnumHelper.GetEnums<FarmBuffer.BUFFER_TYPE>()
+                           select new FarmBuffer
+                           {
+                               BufferBlock = i,
+                               BufferType = j
+                           }).ToArray();
+        }
 
-		    BufferDatas = bufferDatas.ToArray();
-		}
-
-		public FarmBuffer FindBuffer(FarmBuffer.BUFFER_BLOCK block, FarmBuffer.BUFFER_TYPE type)
-		{
-			var data = BufferDatas.First(s => s.BufferBlock == block && s.BufferType == type);
-			return data;
-		}
-	}
+        public FarmBuffer FindBuffer(FarmBuffer.BUFFER_BLOCK block, FarmBuffer.BUFFER_TYPE type)
+        {
+            var data = BufferDatas.First(s => s.BufferBlock == block && s.BufferType == type);
+            return data;
+        }
+    }
 }

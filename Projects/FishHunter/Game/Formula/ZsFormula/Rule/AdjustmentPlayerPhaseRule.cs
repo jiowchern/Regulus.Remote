@@ -23,25 +23,25 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 	/// </summary>
 	public class AdjustmentPlayerPhaseRule
 	{
-		private readonly FarmDataVisitor _FarmVisitor;
+		private readonly DataVisitor _Visitor;
 
-		public AdjustmentPlayerPhaseRule(FarmDataVisitor farm_visitor)
+		public AdjustmentPlayerPhaseRule(DataVisitor visitor)
 		{
-			_FarmVisitor = farm_visitor;
+			_Visitor = visitor;
 		}
 
 		public void Run()
 		{
-			if (_FarmVisitor.PlayerRecord.BufferValue < 0)
+			if (_Visitor.PlayerRecord.BufferValue < 0)
 			{
-				_FarmVisitor.PlayerRecord.Status = 0;
+				_Visitor.PlayerRecord.Status = 0;
 			}
 
-			if (_FarmVisitor.PlayerRecord.Status > 0)
+			if (_Visitor.PlayerRecord.Status > 0)
 			{
-				_FarmVisitor.PlayerRecord.Status--;
+				_Visitor.PlayerRecord.Status--;
 			}
-			else if(_FarmVisitor.Random.NextInt(0, 1000) >= 200)
+			else if(_Visitor.Random.NextInt(0, 1000) >= 200)
 			{
 				// 20%
 				return;
@@ -54,7 +54,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
             foreach (var i in enums)
 			{
-				var bufferData = _FarmVisitor.FocusFishFarmData.FindBuffer(_FarmVisitor.FocusBufferBlock, i);
+				var bufferData = _Visitor.Farm.FindBuffer(_Visitor.FocusBufferBlock, i);
 
 				var top = bufferData.Top * bufferData.BufferTempValue.AverageValue;
 
@@ -63,13 +63,13 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 					continue;
 				}
 
-				if(_FarmVisitor.Random.NextInt(0, 1000) < bufferData.Gate)
+				if(_Visitor.Random.NextInt(0, 1000) < bufferData.Gate)
 				{
 					bufferData.Buffer -= top;
 
-					_FarmVisitor.PlayerRecord.Status = bufferData.Top * 5;
-					_FarmVisitor.PlayerRecord.BufferValue = top;
-					_FarmVisitor.PlayerRecord.StageRecords.First(x => x.FarmId == _FarmVisitor.FocusFishFarmData.FarmId).AsnTimes += 1;
+					_Visitor.PlayerRecord.Status = bufferData.Top * 5;
+					_Visitor.PlayerRecord.BufferValue = top;
+					_Visitor.PlayerRecord.FarmRecords.First(x => x.FarmId == _Visitor.Farm.FarmId).AsnTimes += 1;
 				}
 				else
 				{

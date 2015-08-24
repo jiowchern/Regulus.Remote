@@ -7,6 +7,9 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.Linq;
+
+
 using Regulus.Utility;
 
 
@@ -22,11 +25,11 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 	{
 		private readonly HitRequest _Request;
 
-		private readonly FarmDataVisitor _FarmVisitor;
+		private readonly DataVisitor _Visitor;
 
-		public AccumulationBufferRule(FarmDataVisitor farm_visitor, HitRequest request)
+		public AccumulationBufferRule(DataVisitor visitor, HitRequest request)
 		{
-			_FarmVisitor = farm_visitor;
+			_Visitor = visitor;
 			_Request = request;
 
 		}
@@ -37,17 +40,16 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
             var enumData = EnumHelper.GetEnums<FarmBuffer.BUFFER_TYPE>();
 
-		    foreach(var bufferType in enumData)
+		    foreach(var data in enumData.Select(buffer_type => _Visitor.Farm.FindBuffer(_Visitor.FocusBufferBlock, buffer_type)))
 		    {
-                var data = _FarmVisitor.FocusFishFarmData.FindBuffer(_FarmVisitor.FocusBufferBlock, bufferType);
-                _AddBufferRate(data, bet);
-            }
+		        _AddBufferRate(data, bet);
+		    }
 
-			_FarmVisitor.FocusFishFarmData.RecordData.PlayTimes += 1;
-			_FarmVisitor.FocusFishFarmData.RecordData.PlayTotal += bet;
+			_Visitor.Farm.Record.PlayTimes += 1;
+			_Visitor.Farm.Record.PlayTotal += bet;
 
-			_FarmVisitor.PlayerRecord.FindFarmRecord(_FarmVisitor.FocusFishFarmData.FarmId).PlayTimes += 1;
-			_FarmVisitor.PlayerRecord.FindFarmRecord(_FarmVisitor.FocusFishFarmData.FarmId).PlayTotal += bet;
+			_Visitor.PlayerRecord.FindFarmRecord(_Visitor.Farm.FarmId).PlayTimes += 1;
+			_Visitor.PlayerRecord.FindFarmRecord(_Visitor.Farm.FarmId).PlayTotal += bet;
 		}
 
 		private void _AddBufferRate(FarmBuffer data, int bet)
