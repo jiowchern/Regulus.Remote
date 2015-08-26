@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml.Serialization;
 
 
 using ProtoBuf;
@@ -7,12 +8,15 @@ namespace Regulus.CustomType
 {
 	[ProtoContract]
 	[Serializable]
-	public class Vector2
+    [XmlRoot("Vector2")]
+    public class Vector2
 	{
-		[ProtoMember(1)]
+        [XmlAttribute("x")]
+        [ProtoMember(1)]
 		public float X;
 
-		[ProtoMember(2)]
+        [XmlAttribute("y")]
+        [ProtoMember(2)]
 		public float Y;
 
 		public float Magnitude

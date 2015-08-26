@@ -1,4 +1,8 @@
 ﻿using System;
+using System.IO;
+using System.Xml.Serialization;
+
+
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using Regulus.CustomType;
@@ -140,7 +144,50 @@ namespace RegulusLibraryTest
             Assert.AreEqual(9,count);
         }
 
-        
+
+        [TestMethod]
+        public void TestPolygonSerializ()
+        {
+            var polygon1 = new Polygon();
+            polygon1.SetPoints(new[]{
+                    new Vector2(0,0),
+                    new Vector2(1,0),
+                    new Vector2(1,1),
+                    new Vector2(0,1)});
+
+            var buffer = Regulus.TypeHelper.Serializer(polygon1);
+            var polygon2 = Regulus.TypeHelper.Deserialize<Polygon>(buffer);
+
+
+            Assert.AreEqual(polygon2.Points[0] , polygon1.Points[0]);
+
+        }
+        [TestMethod]
+        public void TestPolygonXMLSerializ()
+        {
+            var polygon1 = new Polygon();
+            polygon1.SetPoints(new[]{
+                    new Vector2(0,0),
+                    new Vector2(1,0),
+                    new Vector2(1,1),
+                    new Vector2(0,1)});
+            var xml = "";
+            using (var stream = new StringWriter())
+            {
+                var x = new XmlSerializer(typeof(Polygon));
+                x.Serialize(stream, polygon1);
+                xml= stream.ToString();
+            }
+            Polygon polygon2;
+            using (var stream = new StringReader(xml))
+            {
+                var ser = new XmlSerializer(typeof(Polygon));
+                polygon2=(Polygon)ser.Deserialize(stream);
+            }
+
+
+            Assert.AreEqual(polygon2.Points[0], polygon1.Points[0]);
+        }
 
     }
 }

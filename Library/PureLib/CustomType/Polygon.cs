@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
 
 
 using ProtoBuf;
 
 namespace Regulus.CustomType
 {
-	[Serializable]
-	[ProtoContract]
-	public class Polygon : ICloneable
-	{
+    
+    
+    [ProtoContract]    
+    public class Polygon : ICloneable , IXmlSerializable
+    {
 		public struct CollisionResult
 		{
 			public bool Intersect; // Are the polygons currently intersecting
@@ -19,11 +24,13 @@ namespace Regulus.CustomType
 
 			public bool WillIntersect; // Are the polygons going to intersect forward in time?
 		}
-
-		[ProtoMember(2)]
+        
+        
+        [ProtoMember(2)]
 		private Vector2[] _Edges ;
-
-		[ProtoMember(1)]
+        
+        
+        [ProtoMember(1)]
 		private Vector2[] _Points ;
 
 	    public Polygon(Vector2[] points)
@@ -44,13 +51,13 @@ namespace Regulus.CustomType
 	        _Points = points.ToArray();            
             _BuildEdges();
         }
-
+        
         public Vector2[] Edges
 		{
 			get { return _Edges; }
 		}
-
-		public Vector2[] Points
+        
+        public Vector2[] Points
 		{
 			get { return _Points; }
 		}
@@ -389,5 +396,25 @@ namespace Regulus.CustomType
 
 			return new Vector2((float)x, (float)y);
 		}
-	}
+
+        XmlSchema IXmlSerializable.GetSchema()
+        {
+            throw new NotImplementedException();
+        }
+
+        void IXmlSerializable.ReadXml(XmlReader reader)
+        {
+            reader.ReadToFollowing("ArrayOfVector2");
+            var serializer = new XmlSerializer(typeof(Vector2[]));
+            var points = (Vector2[])serializer.Deserialize(reader);
+            SetPoints(points);
+        }
+
+        void IXmlSerializable.WriteXml(XmlWriter writer)
+        {
+            var ns = new XmlSerializerNamespaces();
+            ns.Add("", "");
+            new XmlSerializer(typeof(Vector2[])).Serialize(writer, _Points, ns);
+        }
+    }
 }
