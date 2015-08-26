@@ -63,6 +63,7 @@
     <Reference Include="System.Data.DataSetExtensions" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collection\DifferenceNoticer.cs" />
     <Compile Include="Collection\Iquadobject.cs" />
     <Compile Include="Collection\MultiKeyDictionary.cs" />
     <Compile Include="Collection\Quadtree.cs" />
