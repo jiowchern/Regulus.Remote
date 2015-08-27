@@ -26,7 +26,8 @@ namespace Regulus.Utility
 
 		public void Save()
 		{
-			_Writer.Flush();
+            lock (_Writer)
+                _Writer.Flush();
 		}
 	}
 }
