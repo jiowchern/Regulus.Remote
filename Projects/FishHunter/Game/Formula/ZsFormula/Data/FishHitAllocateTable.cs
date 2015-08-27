@@ -62,24 +62,19 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 
 		public int GetAllocateData(int total_hits, int hit_sequence)
 		{
-			if(hit_sequence == 0)
+			switch(hit_sequence)
 			{
-				return (from d in _Datas where d.HitTotal == total_hits select d.Hit1).DefaultIfEmpty<int>(_Datas.Last().Hit1).First();
-			}
-			if (hit_sequence == 1)
-			{
-				return (from d in _Datas where d.HitTotal == total_hits select d.Hit2).DefaultIfEmpty<int>(_Datas.Last().Hit2).First();
-			}
-			if (hit_sequence == 2)
-			{
-				return (from d in _Datas where d.HitTotal == total_hits select d.Hit3).DefaultIfEmpty<int>(_Datas.Last().Hit3).First();
-			}
-			if (hit_sequence == 3)
-			{
-				return (from d in _Datas where d.HitTotal == total_hits select d.Hit4).DefaultIfEmpty<int>(_Datas.Last().Hit4).First();
+			    case 0:
+			        return (from d in _Datas where d.HitTotal == total_hits select d.Hit1).DefaultIfEmpty<int>(_Datas.Last().Hit1).First();
+			    case 1:
+			        return (from d in _Datas where d.HitTotal == total_hits select d.Hit2).DefaultIfEmpty<int>(_Datas.Last().Hit2).First();
+			    case 2:
+			        return (from d in _Datas where d.HitTotal == total_hits select d.Hit3).DefaultIfEmpty<int>(_Datas.Last().Hit3).First();
+			    case 3:
+			        return (from d in _Datas where d.HitTotal == total_hits select d.Hit4).DefaultIfEmpty<int>(_Datas.Last().Hit4).First();
 			}
 
-			return 0;
+		    return 0;
 		}
 	}
 }

@@ -12,16 +12,16 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 {
 	public class ZsHitChecker : HitBase
 	{
-	    private readonly DataVisitor _DataVisitor;
+		private readonly DataVisitor _DataVisitor;
 
 		public ZsHitChecker(FishFarmData fish_farm_data, FormulaPlayerRecord formula_player_record, IRandom random)
 		{
-		    var data = new List<FarmRecord>
-		    {
-		        fish_farm_data.Record
-		    };
+			var data = new List<FarmRecord>
+			{
+				fish_farm_data.Record
+			};
 
-            formula_player_record.FarmRecords = data.ToArray();
+			formula_player_record.FarmRecords = data.ToArray();
 
 			_DataVisitor = new DataVisitor(fish_farm_data, formula_player_record, random);
 		}

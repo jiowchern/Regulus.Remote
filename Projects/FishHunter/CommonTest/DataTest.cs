@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Net.Mime;
 
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -6,6 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.Data;
+using VGame.Project.FishHunter.Formula.ZsFormula.Data;
 
 namespace GameTest
 {
@@ -44,17 +47,72 @@ namespace GameTest
 		}
 
 
-        [TestMethod]
-        public void Serializer()
-        {
-            var data1 = new FishFarmData();
+		[TestMethod]
+		public void Serializer()
+		{
+			var data1 = new FishFarmData();
 
-            var serData = Regulus.TypeHelper.Serializer(data1);
+			var serData = Regulus.TypeHelper.Serializer(data1);
 
-            var data2 = Regulus.TypeHelper.Deserialize<FishFarmData>(serData);
-            
+			var data2 = Regulus.TypeHelper.Deserialize<FishFarmData>(serData);
+			
 
-            Assert.AreEqual(data1.Id, data2.Id);
-        }
-    }
+			Assert.AreEqual(data1.Id, data2.Id);
+		}
+
+
+		[TestMethod]
+		public void OddsTest()
+		{
+			var oddsTable = new OddsTable().Datas;
+
+			var rand = 752;
+
+			var numSum = oddsTable.Sum(o => o.Number);
+
+			var index = (rand / numSum) -1;
+
+			var data1 = oddsTable.ToArray()[index];
+
+			OddsTable.Data data2 = null;
+
+			foreach (var d in oddsTable)
+			{
+				data2 = d;
+
+				if (rand < d.Number)
+				{
+					break;
+				}
+
+				rand -= d.Number;
+			}
+
+			Assert.AreEqual(data1.Number, data2.Number);
+
+		}
+
+		public void TT()
+		{
+			var oddsTable = new OddsTable().Datas;
+			var rand = 752;
+
+			foreach (var d in (from d in oddsTable let t = d select d).TakeWhile(d => rand >= d.Number))
+			{
+				rand -= d.Number;
+			}
+
+
+			foreach(var i in oddsTable)
+			{
+				foreach(var j in oddsTable)
+				{
+					var x = i.Number * j.Number;
+				}
+			}
+		}
+
+
+
+	}
 }

@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿
+using System.Collections.Generic;
+
 
 namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 {
@@ -11,30 +12,24 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 
 			public int Number { get; set; }
 
-			public Data(int key, int number)
+			public Data(int odds, int number)
 			{
-				Odds = key;
+				Odds = odds;
 				Number = number;
 			}
 		}
 
-		private readonly List<Data> _Datas;
+	    public List<Data> Datas { get; }
 
-		public OddsTable()
+	    public OddsTable()
 		{
-            _Datas = new List<Data>
+            Datas = new List<Data>
 			{
-				new Data(1, 1), 
-				new Data(2, 2), 
-				new Data(3, 3), 
-				new Data(5, 5), 
-				new Data(10, 10)
+				new Data(2, 89), 
+				new Data(3, 50), 
+				new Data(5, 28), 
+				new Data(10, 54)
 			};
-		}
-
-		public IEnumerable<Data> Get()
-		{
-			return _Datas;
 		}
 	}
 }

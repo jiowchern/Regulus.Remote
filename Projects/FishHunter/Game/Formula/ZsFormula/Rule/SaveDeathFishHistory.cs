@@ -1,5 +1,5 @@
-using System.Linq;
 
+using System.Linq;
 
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;

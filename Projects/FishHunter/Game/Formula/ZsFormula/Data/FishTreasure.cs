@@ -14,6 +14,8 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
     {
         public FISH_TYPE FishType { get; set; }
 
+        public FISH_STATUS FishStatus { get; set; }
+
         /// <summary>
         ///     隨機武器
         /// </summary>
@@ -22,7 +24,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
         /// <summary>
         ///     必出武器
         /// </summary>
-        public WEAPON_TYPE CertainWeapons { get; private set; }
+        public WEAPON_TYPE[] CertainWeapons { get; private set; }
 
         /// <summary>
         /// 所有魚的掉寶資料
@@ -33,7 +35,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
         {
             Treasures =
                 EnumHelper.GetEnums<FISH_TYPE>()
-                          .Where(x => x >= FISH_TYPE.TROPICAL_FISH && x <= FISH_TYPE.EAT_FISH_CRAZY)
+                          .Where(x => x >= FISH_TYPE.TROPICAL_FISH && x <= FISH_TYPE.SPECIAL_EAT_FISH_CRAZY)
                           .Select(
                               i => new FishTreasure
                               {
@@ -44,9 +46,30 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
                                       WEAPON_TYPE.ELECTRIC_NET, 
                                       WEAPON_TYPE.FREE_POWER
                                   }, 
-                                  CertainWeapons = WEAPON_TYPE.INVALID
+                                  CertainWeapons = new[]
+                                  {
+									  WEAPON_TYPE.INVALID,
+									  WEAPON_TYPE.KING
+								  } 
                               }).ToList();
 
+
+            Treasures.Add(
+                new FishTreasure
+                {
+                    FishType = FISH_TYPE.SPECIAL_FREEZE_BOMB,
+                    RandomWeapons = new[]
+                    {
+                        WEAPON_TYPE.SUPER_BOMB,
+                        WEAPON_TYPE.ELECTRIC_NET,
+                        WEAPON_TYPE.FREE_POWER
+                    },
+                    CertainWeapons = new[]
+                    {
+						WEAPON_TYPE.FREEZE_BOMB,
+					} 
+                });
+			
             Treasures.Add(
                 new FishTreasure
                 {
@@ -56,8 +79,11 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
                         WEAPON_TYPE.SUPER_BOMB, 
                         WEAPON_TYPE.ELECTRIC_NET, 
                         WEAPON_TYPE.FREE_POWER
-                    }, 
-                    CertainWeapons = WEAPON_TYPE.SCREEN_BOMB
+                    },
+	                CertainWeapons = new[]
+	                {
+		                WEAPON_TYPE.SCREEN_BOMB
+	                }
                 });
 
             Treasures.Add(
@@ -69,11 +95,14 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
                         WEAPON_TYPE.SUPER_BOMB, 
                         WEAPON_TYPE.ELECTRIC_NET, 
                         WEAPON_TYPE.FREE_POWER
-                    }, 
-                    CertainWeapons = WEAPON_TYPE.THUNDER_BOMB
+                    },
+	                CertainWeapons = new[]
+	                {
+		                WEAPON_TYPE.THUNDER_BOMB
+	                }
                 });
 
-            Treasures.Add(
+	        Treasures.Add(
                 new FishTreasure
                 {
                     FishType = FISH_TYPE.SPECIAL_FIRE_BOMB, 
@@ -82,11 +111,14 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
                         WEAPON_TYPE.SUPER_BOMB, 
                         WEAPON_TYPE.ELECTRIC_NET, 
                         WEAPON_TYPE.FREE_POWER
-                    }, 
-                    CertainWeapons = WEAPON_TYPE.FIRE_BOMB
+                    },
+	                CertainWeapons = new[]
+	                {
+		                WEAPON_TYPE.FIRE_BOMB
+	                }
                 });
 
-            Treasures.Add(
+	        Treasures.Add(
                 new FishTreasure
                 {
                     FishType = FISH_TYPE.SPECIAL_DAMAGE_BALL, 
@@ -95,11 +127,14 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
                         WEAPON_TYPE.SUPER_BOMB, 
                         WEAPON_TYPE.ELECTRIC_NET, 
                         WEAPON_TYPE.FREE_POWER
-                    }, 
-                    CertainWeapons = WEAPON_TYPE.DAMAGE_BALL
+                    },
+	                CertainWeapons = new[]
+	                {
+		                WEAPON_TYPE.DAMAGE_BALL
+	                }
                 });
 
-            Treasures.Add(
+	        Treasures.Add(
                 new FishTreasure
                 {
                     FishType = FISH_TYPE.SPECIAL_OCTOPUS_BOMB, 
@@ -108,11 +143,14 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
                         WEAPON_TYPE.SUPER_BOMB, 
                         WEAPON_TYPE.ELECTRIC_NET, 
                         WEAPON_TYPE.FREE_POWER
-                    }, 
-                    CertainWeapons = WEAPON_TYPE.OCTOPUS_BOMB
+                    },
+	                CertainWeapons = new[]
+	                {
+		                WEAPON_TYPE.OCTOPUS_BOMB
+	                }
                 });
 
-            Treasures.Add(
+	        Treasures.Add(
                 new FishTreasure
                 {
                     FishType = FISH_TYPE.SPECIAL_BIG_OCTOPUS_BOMB, 
@@ -121,8 +159,11 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
                         WEAPON_TYPE.SUPER_BOMB, 
                         WEAPON_TYPE.ELECTRIC_NET, 
                         WEAPON_TYPE.FREE_POWER
-                    }, 
-                    CertainWeapons = WEAPON_TYPE.BIG_OCTOPUS_BOMB
+                    },
+	                CertainWeapons = new[]
+	                {
+		                WEAPON_TYPE.BIG_OCTOPUS_BOMB
+	                }
                 });
         }
     }

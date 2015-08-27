@@ -1,5 +1,6 @@
 ﻿
 using System.Collections.Generic;
+using System.Linq;
 
 
 using VGame.Project.FishHunter.Common.Data;
@@ -18,23 +19,29 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
         private readonly HitRequest _Request;
 
+        private readonly int[] _Randoms;
+
         public DeathRule(DataVisitor visitor, HitRequest request)
         {
             _Visitor = visitor;
             _Request = request;
             _HitResponses = new List<HitResponse>();
+
+            _Randoms =
+                _Visitor.RandomDatas.Find(x => x.RandomType == DataVisitor.RandomData.RULE.DEATH).RandomValue;
         }
 
         public HitResponse[] Run()
         {
             var hitSequence = 0;
 
-            foreach(var fishData in _Request.FishDatas)
+            foreach (var fishData in _Request.FishDatas)
             {
+                // 有值代表是特殊武器
                 var specialWeaponPower = new SpecialWeaponPowerTable().WeaponPowers.Find(
                     x => x.WeaponType == _Request.WeaponData.WeaponType);
 
-                if(specialWeaponPower != null)
+                if (specialWeaponPower != null)
                 {
                     _SpecialWeapon(fishData);
                 }
@@ -59,7 +66,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
             dieRate *= 0x0FFFFFFF;
 
-            dieRate /= _Request.WeaponData.TotalHitOdds; // 总倍数
+            dieRate /= _Request.FishDatas.Sum(x => x.FishOdds); // 总倍数
 
             var bufferData = _Visitor.Farm.FindBuffer(
                 _Visitor.FocusBufferBlock, 
@@ -71,19 +78,15 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
             if(dieRate > 0x0FFFFFFF)
             {
-                gate2 = 0x10000000; // > 100%
+				dieRate = 0x10000000; // > 100%
             }
-            else
-            {
-                gate2 = dieRate;
-            }
-
+            
             if(_Request.WeaponData.WeaponType == WEAPON_TYPE.BIG_OCTOPUS_BOMB)
             {
-                gate2 = 0x10000000; // > 100% 
+				dieRate = 0x10000000; // > 100% 
             }
 
-            if(_Visitor.Random.NextInt(0, 0x10000000) >= gate2)
+            if(_Randoms[0] >= dieRate)
             {
                 _Miss(fish_data, _Request.WeaponData);
                 return;
@@ -144,7 +147,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
                 dieRate = 0x10000000; // > 100%
             }
 
-            if(_Visitor.Random.NextInt(0, 0x10000000) >= dieRate)
+            if(_Randoms[1]>= dieRate)
             {
                 _Miss(fish_data, _Request.WeaponData);
                 return;

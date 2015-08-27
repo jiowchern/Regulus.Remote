@@ -38,7 +38,7 @@ namespace VGame.Project.FishHunter.Common.Data
 		/// <summary>
 		///     武器同时击中的鱼倍数总和。
 		/// </summary>
-		[ProtoMember(6)]
-		public int TotalHitOdds { get; set; }
+		///[ProtoMember(6)]
+		///public int TotalHitOdds { get; set; }
 	}
 }
