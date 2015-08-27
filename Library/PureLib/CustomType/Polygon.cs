@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
 
 
 using ProtoBuf;
 
 namespace Regulus.CustomType
 {
-	[Serializable]
-	[ProtoContract]
-	public class Polygon : ICloneable
-	{
+    
+    
+    [ProtoContract]    
+    public class Polygon : ICloneable , IXmlSerializable
+    {
 		public struct CollisionResult
 		{
 			public bool Intersect; // Are the polygons currently intersecting
@@ -18,34 +24,42 @@ namespace Regulus.CustomType
 
 			public bool WillIntersect; // Are the polygons going to intersect forward in time?
 		}
+        
+        
+        [ProtoMember(2)]
+		private Vector2[] _Edges ;
+        
+        
+        [ProtoMember(1)]
+		private Vector2[] _Points ;
 
-		[ProtoMember(2)]
-		private readonly List<Vector2> _Edges ;
-
-		[ProtoMember(1)]
-		private List<Vector2> _Points ;
-
-	    public Polygon()
+	    public Polygon(Vector2[] points)
 	    {
-	        _Edges = new List<Vector2>();
-	        _Points = new List<Vector2>();
-	    }
-
-
-	    public void SetPoints(Vector2[] points)
+            _Edges = new Vector2[0];
+            _Points = new Vector2[0];
+            SetPoints(points);
+        }
+        public Polygon()
 	    {
-            _Points.Clear();
-            _Points.AddRange(points);
+            _Edges = new Vector2[0];
+            _Points = new Vector2[0];
+        }
+
+
+	    public void SetPoints( IEnumerable<Vector2> points)
+	    {
+	        _Points = points.ToArray();            
             _BuildEdges();
         }
+        
         public Vector2[] Edges
 		{
-			get { return _Edges.ToArray(); }
+			get { return _Edges; }
 		}
-
-		public Vector2[] Points
+        
+        public Vector2[] Points
 		{
-			get { return _Points.ToArray(); }
+			get { return _Points; }
 		}
 
 		public Vector2 Center
@@ -54,20 +68,20 @@ namespace Regulus.CustomType
 			{
 				float totalX = 0;
 				float totalY = 0;
-				for(var i = 0; i < _Points.Count; i++)
+				for(var i = 0; i < _Points.Length; i++)
 				{
 					totalX += _Points[i].X;
 					totalY += _Points[i].Y;
 				}
 
-				return new Vector2(totalX / _Points.Count, totalY / _Points.Count);
+				return new Vector2(totalX / _Points.Length, totalY / _Points.Length);
 			}
 		}
 
 		// Structure that stores the results of the PolygonCollision function
 		public static CollisionResult Collision(Polygon polygonA, Polygon polygonB, Vector2 velocity)
 		{
-			if(polygonA._Points.Count == 0 || polygonA._Points.Count == 0)
+			if(polygonA._Points.Length== 0 || polygonA._Points.Length== 0)
 			{
 				throw new ArgumentException("param polygonA or polygonB point count are zero.");
 			}
@@ -208,13 +222,14 @@ namespace Regulus.CustomType
 
 		private void _BuildEdges()
 		{
+		    var edges = new List<Vector2>();
 			Vector2 p1;
 			Vector2 p2;
-			_Edges.Clear();
-			for(var i = 0; i < _Points.Count; i++)
+			
+			for(var i = 0; i < _Points.Length; i++)
 			{
 				p1 = _Points[i];
-				if(i + 1 >= _Points.Count)
+				if(i + 1 >= _Points.Length)
 				{
 					p2 = _Points[0];
 				}
@@ -223,8 +238,10 @@ namespace Regulus.CustomType
 					p2 = _Points[i + 1];
 				}
 
-				_Edges.Add(p2 - p1);
+                edges.Add(p2 - p1);
 			}
+
+		    _Edges = edges.ToArray();
 		}
 
 		public void Offset(Vector2 v)
@@ -234,18 +251,20 @@ namespace Regulus.CustomType
 
 		public void Offset(float x, float y)
 		{
-			for(var i = 0; i < _Points.Count; i++)
+			for(var i = 0; i < _Points.Length; i++)
 			{
 				var p = _Points[i];
 				_Points[i] = new Vector2(p.X + x, p.Y + y);
 			}
+
+            _BuildEdges();
 		}
 
 		public override string ToString()
 		{
 			var result = string.Empty;
 
-			for(var i = 0; i < _Points.Count; i++)
+			for(var i = 0; i < _Points.Length; i++)
 			{
 				if(result != string.Empty)
 				{
@@ -326,11 +345,11 @@ namespace Regulus.CustomType
 
 		public void Convex()
 		{
-			MergeSort(0, _Points.Count - 1);
+			MergeSort(0, _Points.Length- 1);
 
-			var CH = new Vector2[_Points.Count + 1];
+			var CH = new Vector2[_Points.Length+ 1];
 			var m = 0;
-			for(var i = 0; i < _Points.Count; i++)
+			for(var i = 0; i < _Points.Length; i++)
 			{
 				while(m >= 2 && cross(CH[m - 2], CH[m - 1], _Points[i]) <= 0)
 				{
@@ -340,7 +359,7 @@ namespace Regulus.CustomType
 				CH[m++] = _Points[i];
 			}
 
-			for(int i = _Points.Count - 2, 
+			for(int i = _Points.Length- 2, 
 			        t = m + 1;
 			    i >= 0;
 			    i--)
@@ -353,13 +372,7 @@ namespace Regulus.CustomType
 				CH[m++] = _Points[i];
 			}
 
-			_Points.Clear();
-			for(var i = 0; i < m - 1; ++i)
-			{
-				_Points.Add(CH[i]);
-			}
-
-			_BuildEdges();
+            SetPoints(CH);
 		}
 
 		public void Rotation(float angle)
@@ -371,8 +384,8 @@ namespace Regulus.CustomType
 				points.Add(_RotatePoint(point, center, angle));
 			}
 
-			_Points = points;
-			_BuildEdges();
+            SetPoints(points);
+			
 		}
 
 		public Vector2 _RotatePoint(Vector2 point, Vector2 centroid, double angle)
@@ -383,5 +396,25 @@ namespace Regulus.CustomType
 
 			return new Vector2((float)x, (float)y);
 		}
-	}
+
+        XmlSchema IXmlSerializable.GetSchema()
+        {
+            throw new NotImplementedException();
+        }
+
+        void IXmlSerializable.ReadXml(XmlReader reader)
+        {
+            reader.ReadToFollowing("ArrayOfVector2");
+            var serializer = new XmlSerializer(typeof(Vector2[]));
+            var points = (Vector2[])serializer.Deserialize(reader);
+            SetPoints(points);
+        }
+
+        void IXmlSerializable.WriteXml(XmlWriter writer)
+        {
+            var ns = new XmlSerializerNamespaces();
+            ns.Add("", "");
+            new XmlSerializer(typeof(Vector2[])).Serialize(writer, _Points, ns);
+        }
+    }
 }

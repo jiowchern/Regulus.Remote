@@ -43,6 +43,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Xml" />
     <Reference Include="TechTalk.SpecFlow, Version=1.9.0.77, Culture=neutral, PublicKeyToken=0778194805d6db41, processorArchitecture=MSIL">
       <HintPath>..\..\packages\SpecFlow.1.9.0\lib\net35\TechTalk.SpecFlow.dll</HintPath>
       <Private>True</Private>
@@ -56,7 +57,9 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+          <Private>False</Private>
+        </Reference>
       </ItemGroup>
     </Otherwise>
   </Choose>
@@ -85,6 +88,7 @@
     <Compile Include="DosKeyTest.cs" />
     <Compile Include="TypeTest.cs" />
     <Compile Include="RemotingValueResultTest.cs" />
+    <Compile Include="UnitTestDifferenceNoticer.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PureLib\RegulusLibrary.csproj">
