@@ -63,7 +63,7 @@ namespace VGame.Project.FishHunter.Storage
         void IBootable.Launch()
         {
             Singleton<Log>.Instance.RecordEvent += _LogRecorder.Record;
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            
 
             _Updater.Add(_Center);
             _Database.Launch(_Name);
@@ -79,8 +79,7 @@ namespace VGame.Project.FishHunter.Storage
         {
             _Database.Shutdown();
             _Updater.Shutdown();
-
-            AppDomain.CurrentDomain.UnhandledException -= CurrentDomain_UnhandledException;
+            
             Singleton<Log>.Instance.RecordEvent -= _LogRecorder.Record;
         }
 
@@ -356,12 +355,7 @@ namespace VGame.Project.FishHunter.Storage
         }
 
 
-        private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            var ex = (Exception)e.ExceptionObject;
-            _LogRecorder.Record(ex.ToString());
-            _LogRecorder.Save();
-        }
+        
 
         private async void _HandleAdministrator()
         {
