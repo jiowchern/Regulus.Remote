@@ -125,6 +125,9 @@ namespace Regulus.Utility
 
 				// Array copied = Array.CreateInstance(elementType, array.Length);
 				var copied = obj1 as Array;
+			    if(copied.Length != array.Length)
+			        return false;
+
 				for(var i = 0; i < array.Length; i++)
 				{
 					if(ValueHelper._EqualProcess(array.GetValue(i), copied.GetValue(i)) == false)
