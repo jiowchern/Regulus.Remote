@@ -74,12 +74,12 @@ namespace VGame.Project.FishHunter
 		{
 			_Updater.Shutdown();
 			Singleton<Log>.Instance.RecordEvent -= _LogRecorder.Record;
-			AppDomain.CurrentDomain.UnhandledException -= CurrentDomain_UnhandledException;
+			
 		}
 
 		void IBootable.Launch()
 		{
-			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+			
 			Singleton<Log>.Instance.RecordEvent += _LogRecorder.Record;
 			_Updater.Add(_Storage);
 			_Updater.Add(_Formula);
@@ -139,12 +139,7 @@ namespace VGame.Project.FishHunter
 			return IPAddress.TryParse(ip, out ipaddr);
 		}
 
-		private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-		{
-			var ex = (Exception)e.ExceptionObject;
-			_LogRecorder.Record(ex.ToString());
-			_LogRecorder.Save();
-		}
+		
 
 		private void _ToConnectStorage(Storage.IUser user)
 		{
