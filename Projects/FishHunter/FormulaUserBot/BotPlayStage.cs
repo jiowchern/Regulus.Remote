@@ -91,7 +91,7 @@ namespace FormulaUserBot
 				WepBet = 1,
 				WepOdds = Random.Instance.NextInt(1, 10000),
 				TotalHits = total_hits,
-				TotalHitOdds = Random.Instance.NextInt(0, 32767)
+				//TotalHitOdds = Random.Instance.NextInt(0, 32767)
 			};
 			return weapon;
 		}

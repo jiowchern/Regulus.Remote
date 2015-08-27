@@ -97,7 +97,7 @@ namespace VGame.Project.FishHunter.Play
 				var weapon = new RequestWeaponData
 				{
 					TotalHits = fishids.Length, 
-					TotalHitOdds = 1, 
+					//TotalHitOdds = 1, 
 					WepBet = 1, 
 					WepId = bulletid, 
 					WepOdds = _WeaponOdds, 

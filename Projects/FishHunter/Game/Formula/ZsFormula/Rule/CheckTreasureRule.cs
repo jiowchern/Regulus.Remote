@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿
+using System.Collections.Generic;
 using System.Linq;
-
 
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
@@ -13,10 +13,15 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		private readonly RequsetFishData _FishData;
 
+		private readonly int[] _Randoms;
+
 		public CheckTreasureRule(DataVisitor data_visitor, RequsetFishData fish_data)
 		{
 			_DataVisitor = data_visitor;
 			_FishData = fish_data;
+
+			_Randoms =
+				_DataVisitor.RandomDatas.Find(x => x.RandomType == DataVisitor.RandomData.RULE.CHECK_TREASURE).RandomValue;
 		}
 
 		/// <summary>
@@ -28,31 +33,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 			_CheckRandom();
 
-			_CheckCount();
-
 			_SavePlayerHit();
-		}
-
-		private void _SavePlayerHit()
-		{
-			var fishHitRecord =
-				_DataVisitor.PlayerRecord.FindFarmRecord(_DataVisitor.Farm.FarmId)
-							.FishHits.First(x => x.FishType == _FishData.FishType);
-
-			fishHitRecord.Records = _DataVisitor.GotTreasures.Select(
-				treasure => new FishHitRecord.TreasureRecord
-				{
-					WeaponType = treasure, 
-					Count = 1
-				}).ToArray();
-		}
-
-		private void _CheckCount()
-		{
-			if(_DataVisitor.GotTreasures.Count == 0)
-			{
-				_DataVisitor.GotTreasures.Add(WEAPON_TYPE.INVALID);
-			}
 		}
 
 		/// <summary>
@@ -60,14 +41,22 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		/// </summary>
 		private void _CheckCertain()
 		{
-			var certainWeapons = new FishTreasure().Treasures.Find(x => x.FishType == _FishData.FishType).CertainWeapons;
-
-			if(certainWeapons == WEAPON_TYPE.INVALID)
+			if(_FishData.FishType >= FISH_TYPE.TROPICAL_FISH && _FishData.FishType <= FISH_TYPE.WHALE_COLOR)
 			{
-				return;
+				_DataVisitor.GotTreasures.Add(
+				_FishData.FishStatus == FISH_STATUS.KING
+					? WEAPON_TYPE.KING
+					: WEAPON_TYPE.INVALID);
 			}
+			else
+			{
+				var certainWeapons = new FishTreasure().Treasures.Find(x => x.FishType == _FishData.FishType).CertainWeapons;
 
-			_DataVisitor.GotTreasures.Add(certainWeapons);
+				foreach(var weapon in certainWeapons)
+				{
+					_DataVisitor.GotTreasures.Add(weapon);
+				}
+			}
 		}
 
 		/// <summary>
@@ -103,7 +92,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 					gate /= 2;
 				}
 
-				if(_DataVisitor.Random.NextInt(0, 0x10000000) >= gate)
+				if(_Randoms[0] >= gate)
 				{
 					continue;
 				}
@@ -112,12 +101,26 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 				list.Add(t);
 			}
 
-			var randomWeapon = list.OrderBy(x => _DataVisitor.Random.NextFloat(0, 1)).FirstOrDefault();
+			var randomWeapon = list.OrderBy(x => _Randoms[1]).FirstOrDefault();
 
 			if(randomWeapon != WEAPON_TYPE.INVALID)
 			{
 				_DataVisitor.GotTreasures.Add(randomWeapon);
 			}
+		}
+
+		private void _SavePlayerHit()
+		{
+			var fishHitRecord =
+				_DataVisitor.PlayerRecord.FindFarmRecord(_DataVisitor.Farm.FarmId)
+							.FishHits.First(x => x.FishType == _FishData.FishType);
+
+			fishHitRecord.Datas = _DataVisitor.GotTreasures.Select(
+				treasure => new FishHitRecord.TreasureData
+				{
+					WeaponType = treasure, 
+					Count = 1
+				}).ToArray();
 		}
 	}
 }

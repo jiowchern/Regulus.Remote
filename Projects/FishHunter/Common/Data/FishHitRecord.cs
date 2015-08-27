@@ -9,7 +9,7 @@ namespace VGame.Project.FishHunter.Common.Data
     public class FishHitRecord
     {
         [ProtoContract]
-        public class TreasureRecord
+        public class TreasureData
         {
             [ProtoMember(1)]
             public WEAPON_TYPE WeaponType { get; set; }
@@ -27,6 +27,6 @@ namespace VGame.Project.FishHunter.Common.Data
         public int WinScore { get; set; }
 
         [ProtoMember(4)]
-        public TreasureRecord[] Records { get; set; }
+        public TreasureData[] Datas { get; set; }
     }
 }

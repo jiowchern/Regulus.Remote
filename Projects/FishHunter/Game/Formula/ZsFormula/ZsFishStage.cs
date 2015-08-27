@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 
 using Regulus.Extension;
@@ -77,14 +78,13 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 
 		void IFishStage.Hit(HitRequest request)
 		{
-
-			if(request.WeaponData.TotalHitOdds <= 0)
+			if (!_CheckDataLegality(request))
 			{
-				_OnHitExceptionEvent.Invoke("WeaponData.TotalHitOdds 此數值不可為0");
-				Singleton<Log>.Instance.WriteInfo("WeaponData.TotalHitOdds 此數值不可為0");
 				return;
 			}
 
+			_SetFishKingOdds(request);
+			
 			var totalRequest = new ZsHitChecker(_FishFarmData, _FormulaPlayerRecord, Random.Instance).TotalRequest(request);
 
 			_FormulaFarmRecorder.Save(_FishFarmData);
@@ -95,13 +95,79 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 			_MakeLog(request, totalRequest);
 		}
 
+		/// <summary>
+		/// 檢查資料合法性
+		/// </summary>
+		/// <param name="request"></param>
+		/// <returns></returns>
+		private bool _CheckDataLegality(HitRequest request)
+		{
+			if(request.FishDatas.Any(x => x.FishOdds <= 0))
+			{
+				_OnHitExceptionEvent.Invoke("FishData.Odds 不可為0");
+				Singleton<Log>.Instance.WriteInfo("FishData.Odds 不可為0");
+				return false;
+			}
+
+			if(request.FishDatas.Any(x => x.FishStatus < FISH_STATUS.NORMAL || x.FishStatus > FISH_STATUS.FREEZE))
+			{
+				_OnHitExceptionEvent.Invoke("FishData.FishStatus 無此狀態");
+				Singleton<Log>.Instance.WriteInfo("FishData.FishStatus 無此狀態");
+				return false;
+			}
+
+			if (request.WeaponData.TotalHits <= 0)
+			{
+				_OnHitExceptionEvent.Invoke("WeaponData.TotalHitOdds 不可為0");
+				Singleton<Log>.Instance.WriteInfo("WeaponData.TotalHitOdds 不可為0");
+				return false;
+			}
+			
+			if(request.WeaponData.WeaponType < WEAPON_TYPE.NORMAL || request.WeaponData.WeaponType > WEAPON_TYPE.FREEZE_BOMB)
+			{
+				_OnHitExceptionEvent.Invoke("WeaponData.WeaponType，無此編號");
+				Singleton<Log>.Instance.WriteInfo("WeaponData.WeaponType，無此編號");
+				return false;
+			}
+
+			if(request.WeaponData.WepOdds <= 0 || request.WeaponData.WepOdds > 1000)
+			{
+				_OnHitExceptionEvent.Invoke("WeaponData.WepOdds，押注分數錯誤");
+				Singleton<Log>.Instance.WriteInfo("WeaponData.WepOdds，押注分數錯誤");
+				return false;
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// 魚王倍數 = 所有同種類魚的 total odds
+		/// </summary>
+		/// <param name="request"></param>
+		private void _SetFishKingOdds(HitRequest request)
+		{
+			var fishKings = request.FishDatas.Where(x => x.FishStatus == FISH_STATUS.KING).ToArray();
+
+			if (!fishKings.Any())
+			{
+				return;
+			}
+			
+			foreach (var king in fishKings)
+			{
+				var smallFishs = request.FishDatas.Where(x => x.FishStatus != FISH_STATUS.KING && x.FishType == king.FishType);
+
+				king.FishOdds += smallFishs.Sum(x => x.FishOdds);
+			}
+		}
+
 		private Value<FormulaPlayerRecord> _StroageLoad(Guid account_id)
 		{
 			var returnValue = new Value<FormulaPlayerRecord>();
 
 			var val = _FormulaPlayerRecorder.Query(account_id);
 
-			val.OnValue += gamePlayerRecord => { returnValue.SetValue(gamePlayerRecord); };
+			val.OnValue += game_player_record => { returnValue.SetValue(game_player_record); };
 
 			return returnValue;
 		}

@@ -10,13 +10,13 @@ namespace VGame.Project.FishHunter.Common.Data
 		/// <summary>
 		///     小紅魚(熱帶小魚)
 		/// </summary>
-		[EnumDescription("熱帶小魚")]
+		[EnumDescription("小紅魚 熱帶小魚")]
 		TROPICAL_FISH = 0,
 
 		/// <summary>
 		///     條紋魚(神仙魚)
 		/// </summary>
-		[EnumDescription("熱帶小魚")]
+		[EnumDescription("條紋魚(神仙魚)")]
 		ANGEL_FISH, 
 
 		/// <summary>
@@ -146,39 +146,37 @@ namespace VGame.Project.FishHunter.Common.Data
 		WHALE_COLOR,
 
 		/// <summary>
-		///     魚王
-		/// </summary>
-		[EnumDescription("魚王")]
-		SAME_BOMB,
-
-		/// <summary>
 		///     大三元 大四喜
 		/// </summary>
 		[EnumDescription("大三元、大四喜")]
-		RING,
-
-		/// <summary>
-		///     冰凍碼錶
-		/// </summary>
-		[EnumDescription("冰凍碼錶")]
-		FREEZE_BOMB,
+		SPECIAL_RING,
 
 		/// <summary>
 		///     大魚吃小魚
 		/// </summary>
 		[EnumDescription("大魚吃小魚")]
-		EAT_FISH,
+		SPECIAL_EAT_FISH,
+
+        /// <summary>
+        ///     鳯凰 200~600倍, X1~X10
+        /// </summary>
+        [EnumDescription("鳯凰、大魚吃小魚600倍")]
+		SPECIAL_EAT_FISH_CRAZY,
 
 		/// <summary>
-		///     鳯凰 200~600倍, X1~X10
+		///     特殊魚往下開始
 		/// </summary>
-		[EnumDescription("鳯凰、大魚吃小魚600倍")]
-		EAT_FISH_CRAZY,
 
 		/// <summary>
-		///     全屏炸彈
+		///     冰凍碼錶
 		/// </summary>
-		[EnumDescription("全屏炸彈")]
+		[EnumDescription("冰凍碼錶")]
+        SPECIAL_FREEZE_BOMB,
+
+        /// <summary>
+        ///     全屏炸彈
+        /// </summary>
+        [EnumDescription("全屏炸彈")]
 		SPECIAL_SCREEN_BOMB,
 
 		/// <summary>

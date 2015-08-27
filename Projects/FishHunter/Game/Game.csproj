@@ -62,9 +62,7 @@
     <Compile Include="Formula\ZsFormula\Rule\SaveDeathFishHistory.cs" />
     <Compile Include="Formula\ZsFormula\Rule\NatureDataRule.cs" />
     <Compile Include="Formula\ZsFormula\Rule\OddsRuler.cs" />
-    <Compile Include="Formula\ZsFormula\Rule\SpecialItemRule.cs" />
     <Compile Include="Formula\ZsFormula\Rule\CheckTreasureRule.cs" />
-    <Compile Include="Formula\ZsFormula\Rule\StageBufferBlockRuler.cs" />
     <Compile Include="Formula\ZsFormula\Data\FishHitAllocateTable.cs" />
     <Compile Include="Formula\CsHit.cs" />
     <Compile Include="Formula\FishStage.cs">
@@ -103,7 +101,6 @@
     <Compile Include="Verify.cs" />
     <Compile Include="Play\User.cs" />
     <Compile Include="Formula\WeaponChancesTable.cs" />
-    <Compile Include="Formula\ZsFormula\Rule\WeaponTypeRule.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Library\PureLib\RegulusLibrary.csproj">

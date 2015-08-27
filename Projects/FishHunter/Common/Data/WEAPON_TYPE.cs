@@ -25,17 +25,19 @@ namespace VGame.Project.FishHunter.Common.Data
 		/// <summary>
 		///     3電網
 		/// </summary>
-		ELECTRIC_NET, 
+		ELECTRIC_NET,
 
-		/// <summary>
-		///     4免費炮
-		/// </summary>
-		FREE_POWER, 
+        /// <summary>
+        ///     4免費炮
+        /// </summary>
+        [EnumDescription("免費炮")]
+        FREE_POWER,
 
-		/// <summary>
-		///     101全屏炸彈
-		/// </summary>
-		SCREEN_BOMB, 
+        /// <summary>
+        ///     101全屏炸彈
+        /// </summary>
+        [EnumDescription("全屏炸彈")]
+        SCREEN_BOMB, 
 
 		/// <summary>
 		///     皮卡丘 電鰻
@@ -71,6 +73,12 @@ namespace VGame.Project.FishHunter.Common.Data
         /// 魚王
         /// </summary>
         [EnumDescription("魚王")]
-        KING
+        KING,
+
+        /// <summary>
+        /// 冰凍碼錶(炸彈)
+        /// </summary>
+        [EnumDescription("冰凍碼錶")]
+        FREEZE_BOMB,
     };
 }
