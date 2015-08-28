@@ -1,10 +1,14 @@
-﻿using Regulus.Utility;
+﻿using ProtoBuf;
+
+
+using Regulus.Utility;
 
 namespace VGame.Project.FishHunter.Common.Data
 {
 	/// <summary>
 	///     武器類型
 	/// </summary>
+	[ProtoContract]
 	public enum WEAPON_TYPE
 	{
 		/// <summary>

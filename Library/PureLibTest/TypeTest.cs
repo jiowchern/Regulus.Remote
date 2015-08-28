@@ -144,7 +144,42 @@ namespace RegulusLibraryTest
             Assert.AreEqual(9,count);
         }
 
+        [TestMethod]
+        public void TestPolygonsXMLSerializ()
+        {
+            var polygon1 = new Polygon();
+            polygon1.SetPoints(new[]{
+                    new Vector2(0,0),
+                    new Vector2(1,0),
+                    new Vector2(1,1),
+                    new Vector2(0,1)});
+            var polygon2 = new Polygon();
+            polygon2.SetPoints(new[]{
+                    new Vector2(2,0),
+                    new Vector2(1,0),
+                    new Vector2(1,1),
+                    new Vector2(0,1)});
+            var polygons1 = new Polygon[]
+            {
+                polygon1,
+                polygon2
+            };            
+            var xml = "";
+            using (var stream = new StringWriter())
+            {
+                var x = new XmlSerializer(typeof(Polygon[]));
+                x.Serialize(stream, polygons1);
+                xml = stream.ToString();
+            }
+            Polygon[] polygons2;
+            using (var stream = new StringReader(xml))
+            {
+                var ser = new XmlSerializer(typeof(Polygon[]));
+                polygons2 = (Polygon[])ser.Deserialize(stream);
+            }
 
+            Assert.IsTrue( Regulus.Utility.ValueHelper.DeepEqual(polygons2 , polygons1));
+        }
         [TestMethod]
         public void TestPolygonSerializ()
         {

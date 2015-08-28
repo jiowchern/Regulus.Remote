@@ -15,17 +15,24 @@ namespace LogExceptionTest
 			var recorder = new LogFileRecorder("LogTest");
 			Singleton<Log>.Instance.RecordEvent += recorder.Record;
 
-			throw new Exception("aaa");
+		    while(true)
+		    {
+		        
+                System.Threading.Tasks.Parallel.For(
+		            1,
+		            100,
+		            (i) =>
+		            {
+                        Singleton<Log>.Instance.WriteDebug(System.DateTime.Now.ToString());
+                        if(System.Console.KeyAvailable)
+                            throw new Exception("aaa");
+                    });
+                
+            }
+
+            
 		}
 
-		private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-		{
-			Console.WriteLine(e.ToString());
-		}
-
-		private static void Instance_RecordEvent(string message)
-		{
-			Console.WriteLine(message);
-		}
+		
 	}
 }
