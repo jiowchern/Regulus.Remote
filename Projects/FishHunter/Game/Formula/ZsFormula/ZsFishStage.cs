@@ -33,17 +33,11 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 
 		private Action<string> _OnHitExceptionEvent;
 
-		public ZsFishStage(Guid account_id, FishFarmData fish_farm_data)
-		{
-			_AccountId = account_id;
-
-			_FishFarmData = fish_farm_data;
-		}
-
 		public ZsFishStage(
 			Guid account_id, 
 			FishFarmData fish_farm_data, 
-			IFormulaPlayerRecorder formula_player_recorder, 
+            FormulaPlayerRecord formula_player_record,
+            IFormulaPlayerRecorder formula_player_recorder, 
 			IFormulaFarmRecorder formula_stage_data_recorder)
 		{
 			_AccountId = account_id;
@@ -52,7 +46,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 			_FormulaFarmRecorder = formula_stage_data_recorder;
 			_FormulaPlayerRecorder = formula_player_recorder;
 
-			_StroageLoad(account_id).OnValue += obj => { _FormulaPlayerRecord = obj; };
+		    _FormulaPlayerRecord = formula_player_record;
 		}
 
 		event Action<string> IFishStage.OnHitExceptionEvent

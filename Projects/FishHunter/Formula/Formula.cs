@@ -104,19 +104,14 @@ namespace VGame.Project.FishHunter.Formula
 			_LogRecorder = new LogFileRecorder("Formula");
 			Singleton<Log>.Instance.RecordEvent += _LogRecorder.Record;
 
-			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+			
 		}
 
-		private void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-		{
-			var ex = (Exception)e.ExceptionObject;
-			_LogRecorder.Record(ex.ToString());
-			_LogRecorder.Save();
-		}
+		
 
 		private void _ReleaseLog()
 		{
-			AppDomain.CurrentDomain.UnhandledException -= CurrentDomain_UnhandledException;
+			
 			_LogRecorder.Save();
 		}
 

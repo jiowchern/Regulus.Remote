@@ -5,6 +5,8 @@ using System.Runtime.Serialization;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using System.Xml.Linq;
+using System.Xml.XPath;
 
 
 using ProtoBuf;
@@ -404,10 +406,20 @@ namespace Regulus.CustomType
 
         void IXmlSerializable.ReadXml(XmlReader reader)
         {
-            reader.ReadToFollowing("ArrayOfVector2");
-            var serializer = new XmlSerializer(typeof(Vector2[]));
-            var points = (Vector2[])serializer.Deserialize(reader);
-            SetPoints(points);
+            
+            var sub = reader.ReadSubtree();
+            if (sub.ReadToFollowing("ArrayOfVector2"))
+            {
+                var serializer = new XmlSerializer(typeof(Vector2[]));
+                var points = (Vector2[])serializer.Deserialize(sub);
+
+                
+                sub.Close();
+
+                SetPoints(points);
+
+            }
+            reader.Skip();
         }
 
         void IXmlSerializable.WriteXml(XmlWriter writer)

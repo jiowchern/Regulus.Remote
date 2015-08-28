@@ -35,14 +35,17 @@ namespace VGame.Project.FishHunter.Common.Data
         [ProtoMember(9)]
         public FishHitRecord[] FishHits { get; set; }
 
-        public FarmRecord(int farm_id)
+        public FarmRecord(int farm_id):base()
         {
             Id = new Guid();
             FarmId = farm_id;
+
+            
         }
 
         public FarmRecord()
         {
+            FishHits = new FishHitRecord[0];
         }
     }
 }
