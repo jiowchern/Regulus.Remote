@@ -111,7 +111,7 @@ namespace GameTest.ZsFormulaTest
 			var data = new RandomData
 			{
 				RandomType = RandomData.RULE.CHECK_TREASURE,
-                Randoms = new List<IRandom>()
+				Randoms = new List<IRandom>()
 			};
 			
 			var r = Substitute.For<IRandom>();
@@ -182,9 +182,21 @@ namespace GameTest.ZsFormulaTest
 			_HitResponses = new ZsHitChecker(_FarmData, new FormulaPlayerRecord(), _CreateRandoms()).TotalRequest(_HitRequest);
 		}
 
-		
+
+		[Then(@"比對資料")]
+		public void Then比對資料()
+		{
+			Assert.AreEqual(1, _HitResponses[0].FishId);
+
+			Assert.AreEqual(1, _HitResponses[0].WepId);
+
+			Assert.AreEqual(1, _HitResponses[0].OddsResult);
+		}
+
+
+
 		[Then(@"比對資料 fishId是1 BulletId是1 DieResult是'DEATH' Feedback是'SUPER_BOMB' OddsResult是1")]
-		public void Then比對資料FishId是WepId是DieResult是Feeddack是Wup是(int fish_id, int bullet_id, string die_result, string weapon_type, int odds_result)
+		public void Then比對資料FishId是WepId是DieResult是Feeddack是OddsResult是(int fish_id, int bullet_id, string die_result, string weapon_type, int odds_result)
 		{
 			Assert.AreEqual(fish_id, _HitResponses[0].FishId);
 			

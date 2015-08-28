@@ -36,8 +36,8 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 		public ZsFishStage(
 			Guid account_id, 
 			FishFarmData fish_farm_data, 
-            FormulaPlayerRecord formula_player_record,
-            IFormulaPlayerRecorder formula_player_recorder, 
+			FormulaPlayerRecord formula_player_record,
+			IFormulaPlayerRecorder formula_player_recorder, 
 			IFormulaFarmRecorder formula_stage_data_recorder)
 		{
 			_AccountId = account_id;
@@ -46,7 +46,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 			_FormulaFarmRecorder = formula_stage_data_recorder;
 			_FormulaPlayerRecorder = formula_player_recorder;
 
-		    _FormulaPlayerRecord = formula_player_record;
+			_FormulaPlayerRecord = formula_player_record;
 		}
 
 		event Action<string> IFishStage.OnHitExceptionEvent
@@ -215,7 +215,8 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 		{
 			var data = new RandomData
 			{
-				RandomType = RandomData.RULE.ADJUSTMENT_PLAYER_PHASE
+				RandomType = RandomData.RULE.ADJUSTMENT_PLAYER_PHASE,
+				Randoms = new List<IRandom>()
 			};
 
 			data.Randoms.Add(Random.Instance);
@@ -227,7 +228,8 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 		{
 			var data = new RandomData
 			{
-				RandomType = RandomData.RULE.CHECK_TREASURE
+				RandomType = RandomData.RULE.CHECK_TREASURE,
+				Randoms = new List<IRandom>()
 			};
 
 			data.Randoms.Add(Random.Instance);
@@ -240,7 +242,8 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 		{
 			var data = new RandomData
 			{
-				RandomType = RandomData.RULE.DEATH
+				RandomType = RandomData.RULE.DEATH,
+				Randoms = new List<IRandom>()
 			};
 
 			data.Randoms.Add(Random.Instance);
@@ -253,7 +256,8 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 		{
 			var data = new RandomData
 			{
-				RandomType = RandomData.RULE.ODDS
+				RandomType = RandomData.RULE.ODDS,
+				Randoms = new List<IRandom>()
 			};
 
 			data.Randoms.Add(Random.Instance);

@@ -21,7 +21,8 @@ Scenario:公式檢查
 	
 	When 得到檢查結果
 	
-	Then 比對資料 fishId是1 BulletId是1 DieResult是'DEATH' Feedback是'SUPER_BOMB' OddsResult是1	
+		
+	Then 比對資料	
 
 
 	
