@@ -118,8 +118,8 @@ this.FeatureBackground();
  testRunner.And("亂數資料是1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line 22
  testRunner.When("得到檢查結果", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 24
- testRunner.Then("比對資料 fishId是1 BulletId是1 DieResult是\'DEATH\' Feedback是\'SUPER_BOMB\' OddsResult是1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 25
+ testRunner.Then("比對資料", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
