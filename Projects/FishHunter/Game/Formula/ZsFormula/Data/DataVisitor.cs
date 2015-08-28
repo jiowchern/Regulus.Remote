@@ -40,48 +40,58 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 
 			RandomDatas = random;
 
-			//			RandomDatas = new List<RandomData>
-			//			{
-			//				new RandomData
-			//				{
-			//					RandomType = RandomData.RULE.ADJUSTMENT_PLAYER_PHASE,
-			//					RandomValue = new[]
-			//					{
-			//						random.NextInt(0, 1000)
-			//					}
-			//				},
-			//				new RandomData
-			//				{
-			//					RandomType = RandomData.RULE.CHECK_TREASURE,
-			//					RandomValue = new[]
-			//					{
-			//						random.NextInt(0, 0x10000000),
-			//						random.NextInt(0, 3)
-			//					}
-			//				},
-			//
-			//				new RandomData
-			//				{
-			//					RandomType = RandomData.RULE.DEATH,
-			//					RandomValue = new[]
-			//					{
-			//						random.NextInt(0, 0x10000000),
-			//						random.NextInt(0, 0x10000000),
-			//					}
-			//				},
-			//				new RandomData
-			//				{
-			//					RandomType = RandomData.RULE.ODDS,
-			//					RandomValue = new[]
-			//					{
-			//						random.NextInt(0, 1000),
-			//						random.NextInt(0, 1000),
-			//						random.NextInt(0, 1000),
-			//						random.NextInt(0, 1000),
-			//						random.NextInt(0, 1000),
-			//					}
-			//				}
-			//			};
-		}
-	}
+        public List<RandomData> RandomDatas { get; }
+
+        public DataVisitor(FishFarmData fish_farm, FormulaPlayerRecord formula_player_record, IRandom random)
+        {
+            Farm = fish_farm;
+            PlayerRecord = formula_player_record;
+
+            GotTreasures = new List<WEAPON_TYPE>();
+
+            RandomDatas = new List<RandomData>
+            {
+                new RandomData
+                {
+                    RandomType = RandomData.RULE.ADJUSTMENT_PLAYER_PHASE,
+                    RandomValue = new[]
+                    {
+                        random.NextInt(0, 1000),
+                        random.NextInt(0, 1000)
+                    }
+                },
+                new RandomData
+                {
+                    RandomType = RandomData.RULE.CHECK_TREASURE,
+                    RandomValue = new[]
+                    {
+                        random.NextInt(0, 0x10000000),
+                        random.NextInt(0, 3)
+                    }
+                },
+
+                new RandomData
+                {
+                    RandomType = RandomData.RULE.DEATH,
+                    RandomValue = new[]
+                    {
+                        random.NextInt(0, 0x10000000),
+                        random.NextInt(0, 0x10000000),
+                    }
+                },
+                new RandomData
+                {
+                    RandomType = RandomData.RULE.ODDS,
+                    RandomValue = new[]
+                    {
+                        random.NextInt(0, 1000),
+                        random.NextInt(0, 1000),
+                        random.NextInt(0, 1000),
+                        random.NextInt(0, 1000),
+                        random.NextInt(0, 1000),
+                    }
+                }
+            };
+        }
+    }
 }
