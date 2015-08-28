@@ -55,6 +55,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
                     RandomType = RandomData.RULE.ADJUSTMENT_PLAYER_PHASE,
                     RandomValue = new[]
                     {
+                        random.NextInt(0, 1000),
                         random.NextInt(0, 1000)
                     }
                 },

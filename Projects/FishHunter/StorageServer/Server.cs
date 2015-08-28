@@ -447,13 +447,17 @@ namespace VGame.Project.FishHunter.Storage
             var returnTask = tradeTask.ContinueWith(
                 task =>
                 {
-                    Singleton<Log>.Instance.WriteDebug("FishFarmData Find Done.");
+                    
                     if(task.Exception != null)
                     {
-                        Singleton<Log>.Instance.WriteDebug(
-                            string.Format("FishFarmData Exception {0}.", task.Exception.ToString()));
-                    }
 
+                        foreach(var exception in task.Exception.InnerExceptions)
+                        {
+                            Singleton<Log>.Instance.WriteDebug(
+                            string.Format("FishFarmData Exception {0}.", exception.ToString()));
+                        }                        
+                    }
+                    Singleton<Log>.Instance.WriteInfo("FishFarmData Find Done.");
                     return task.Result.FirstOrDefault();
                 });
 
