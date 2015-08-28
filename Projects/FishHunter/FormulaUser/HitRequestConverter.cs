@@ -19,7 +19,7 @@ namespace VGame.Project.FishHunter.Formula
 		{
 			var weaponData = new RequestWeaponData
 			{
-				WepBet = wepbet, 
+				WeaponBet = wepbet, 
 				TotalHits = totalhits
 			};
 

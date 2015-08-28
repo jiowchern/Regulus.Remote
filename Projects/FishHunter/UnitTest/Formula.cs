@@ -57,9 +57,9 @@ namespace UnitTest
 			var weapon = new RequestWeaponData
 			{
 				TotalHits = 1, 
-				WepBet = 1, 
-				WepOdds = 1, 
-				WepId = 1
+				WeaponBet = 1, 
+				WeaponOdds = 1, 
+				BulletId = 1
 			};
 
 			var request = new HitRequest(fishs.ToArray(), weapon);
@@ -93,9 +93,9 @@ namespace UnitTest
 			var weapon = new RequestWeaponData
 			{
 				TotalHits = 1, 
-				WepBet = 1, 
-				WepOdds = 1, 
-				WepId = 1
+				WeaponBet = 1, 
+				WeaponOdds = 1, 
+				BulletId = 1
 			};
 
 			var request = new HitRequest(fishs.ToArray(), weapon);
@@ -104,7 +104,7 @@ namespace UnitTest
 		    foreach(var response in hitResponses)
 		    {
                 Assert.AreEqual(1, response.WepId);
-                Assert.AreEqual(WEAPON_TYPE.INVALID, response.FeedbackWeaponType[0]);
+                Assert.AreEqual(WEAPON_TYPE.INVALID, response.FeedbackWeapons[0]);
                 Assert.AreEqual(1, response.FishId);
                 Assert.AreEqual(FISH_DETERMINATION.SURVIVAL, response.DieResult);
             }
@@ -129,9 +129,9 @@ namespace UnitTest
 			var weapon = new RequestWeaponData
 			{
 				TotalHits = 1, 
-				WepBet = 1, 
-				WepOdds = 1, 
-				WepId = 1,
+				WeaponBet = 1, 
+				WeaponOdds = 1, 
+				BulletId = 1,
 				WeaponType =WEAPON_TYPE.INVALID
 			};
 
@@ -167,9 +167,9 @@ namespace UnitTest
 			var weapon = new RequestWeaponData
 			{
 				TotalHits = 1, 
-				WepBet = 1, 
-				WepOdds = 1, 
-				WepId = 1
+				WeaponBet = 1, 
+				WeaponOdds = 1, 
+				BulletId = 1
 			};
 
 			var request = new HitRequest(fishs.ToArray(), weapon);
@@ -179,7 +179,7 @@ namespace UnitTest
 		    foreach(var response in hitResponses)
 		    {
                 Assert.AreEqual(1, response.WepId);
-                Assert.AreEqual(WEAPON_TYPE.INVALID, response.FeedbackWeaponType[0]);
+                Assert.AreEqual(WEAPON_TYPE.INVALID, response.FeedbackWeapons[0]);
                 Assert.AreEqual(1, response.FishId);
                 Assert.AreEqual(FISH_DETERMINATION.SURVIVAL, response.DieResult);
 

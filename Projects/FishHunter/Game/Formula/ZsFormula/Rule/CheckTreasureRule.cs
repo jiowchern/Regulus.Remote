@@ -1,6 +1,6 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+
 
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
@@ -13,15 +13,10 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		private readonly RequsetFishData _FishData;
 
-		private readonly int[] _Randoms;
-
 		public CheckTreasureRule(DataVisitor data_visitor, RequsetFishData fish_data)
 		{
 			_DataVisitor = data_visitor;
 			_FishData = fish_data;
-
-			_Randoms =
-				_DataVisitor.RandomDatas.Find(x => x.RandomType == DataVisitor.RandomData.RULE.CHECK_TREASURE).RandomValue;
 		}
 
 		/// <summary>
@@ -44,9 +39,9 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 			if(_FishData.FishType >= FISH_TYPE.TROPICAL_FISH && _FishData.FishType <= FISH_TYPE.WHALE_COLOR)
 			{
 				_DataVisitor.GotTreasures.Add(
-				_FishData.FishStatus == FISH_STATUS.KING
-					? WEAPON_TYPE.KING
-					: WEAPON_TYPE.INVALID);
+					_FishData.FishStatus == FISH_STATUS.KING
+						? WEAPON_TYPE.KING
+						: WEAPON_TYPE.INVALID);
 			}
 			else
 			{
@@ -76,6 +71,8 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 			{
 				long gate = bufferData.Rate / randomWeapons.Length;
 
+				var dd = new SpecialWeaponPowerTable().WeaponPowers.FirstOrDefault(x => x.WeaponType == t);
+
 				var power = new SpecialWeaponPowerTable().WeaponPowers.Find(x => x.WeaponType == t).Power;
 
 				gate = (0x0FFFFFFF / power) * gate;
@@ -92,7 +89,8 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 					gate /= 2;
 				}
 
-				if(_Randoms[0] >= gate)
+				var randomValue = _DataVisitor.FindIRandom(RandomData.RULE.CHECK_TREASURE, 0).NextInt(0, 1000);
+				if(randomValue >= gate)
 				{
 					continue;
 				}
@@ -101,7 +99,14 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 				list.Add(t);
 			}
 
-			var randomWeapon = list.OrderBy(x => _Randoms[1]).FirstOrDefault();
+			OrderByWeapon(list);
+		}
+
+		private void OrderByWeapon(IEnumerable<WEAPON_TYPE> list)
+		{
+			var weaponrandomValue = _DataVisitor.FindIRandom(RandomData.RULE.CHECK_TREASURE, 1).NextFloat(0, 1);
+
+			var randomWeapon = list.OrderBy(x => weaponrandomValue).FirstOrDefault();
 
 			if(randomWeapon != WEAPON_TYPE.INVALID)
 			{

@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Formula\DummyStandalong.cs" />
     <Compile Include="Formula\ZsFormula\Data\FishTreasure.cs" />
+    <Compile Include="Formula\ZsFormula\Data\RandomData.cs" />
     <Compile Include="Formula\ZsFormula\ZsFishStage.cs" />
     <Compile Include="Stage\QuarterStage.cs" />
     <Compile Include="Play\DummyFeature.cs" />

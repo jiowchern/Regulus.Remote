@@ -39,13 +39,13 @@ namespace GameTest.FormulaTest
 		public void When機率是(decimal p0)
 		{
 			var id = _WeaponChancesTable.Dice(float.Parse(p0.ToString()));
-			ScenarioContext.Current.Set(id, "WeaponId");
+			ScenarioContext.Current.Set(id, "BulletId");
 		}
 
 		[Then(@"武器是(.*)")]
 		public void Then武器是(int p0)
 		{
-			var weapon = ScenarioContext.Current.Get<int>("WeaponId");
+			var weapon = ScenarioContext.Current.Get<int>("BulletId");
 			Assert.AreEqual(p0, weapon);
 		}
 	}

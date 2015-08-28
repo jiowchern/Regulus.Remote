@@ -9,7 +9,7 @@ namespace VGame.Project.FishHunter.Common.Data
 		///     子彈编号，识别是那颗子弹（网）用的。
 		/// </summary>
 		[ProtoMember(1)]
-		public int WepId { get; set; }
+		public int BulletId { get; set; }
 
 		/// <summary>
 		///     武器形态。一般子弹为“1”。特殊子弹从“2”开始。。。
@@ -18,16 +18,18 @@ namespace VGame.Project.FishHunter.Common.Data
 		public WEAPON_TYPE WeaponType { get; set; }
 
 		/// <summary>
-		///     武器分数，就是该子弹的玩家押注分数。从1~10000。
+		///     武器分数，就是该子弹的玩家押注分数。从1~1000。(目前無用)
+		///		TODO 改用這個值 傳押注比較合理
 		/// </summary>
 		[ProtoMember(3)]
-		public int WepBet { get; set; }
+		public int WeaponBet { get; set; }
 
 		/// <summary>
-		///     武器倍数，就是该子弹的玩家押注倍数。从1~10000。
+		///     武器倍数，就是该子弹的玩家押注倍数。从1~1000。
+		///		TODO 應該是這個值沒用
 		/// </summary>
 		[ProtoMember(4)]
-		public int WepOdds { get; set; }
+		public int WeaponOdds { get; set; }
 
 		/// <summary>
 		///     武器同时击中的鱼总数量。应该从1~1000。
@@ -36,9 +38,12 @@ namespace VGame.Project.FishHunter.Common.Data
 		public int TotalHits { get; set; }
 
 		/// <summary>
-		///     武器同时击中的鱼倍数总和。
+		/// 目前的押注公式
 		/// </summary>
-		///[ProtoMember(6)]
-		///public int TotalHitOdds { get; set; }
+		/// <returns></returns>
+		public int GetTotalBet()
+		{
+			return WeaponOdds * WeaponBet;
+		}
 	}
 }

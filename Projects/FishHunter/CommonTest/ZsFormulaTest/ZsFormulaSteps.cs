@@ -8,8 +8,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
 using NSubstitute;
+using NSubstitute.Routing.Handlers;
 
 
+using Regulus.Extension;
 using Regulus.Utility;
 
 
@@ -33,8 +35,6 @@ namespace GameTest.ZsFormulaTest
 		private RequsetFishData[] _FishDatas;
 
 		private HitResponse[] _HitResponses;
-
-		private IRandom _Random;
 
 		private HitRequest _HitRequest;
 
@@ -75,31 +75,120 @@ namespace GameTest.ZsFormulaTest
 		[Given(@"亂數資料是(.*)")]
 		public void Given亂數資料是(int random_value)
 		{
-			var output = new List<string>();
 			
-			_Random = Substitute.For<IRandom>();
+		}
+
+		private List<RandomData> _CreateRandoms()
+		{
+			var rs = new List<RandomData>
+			{
+				_CreateAdjustPlayerPhaseRandom(),
+				_CreateTreasureRandom(),
+				_CreateDeathRandom(),
+				_CreateOddsRandom()
+			};
+
+			return rs;
+		}
+
+		private RandomData _CreateAdjustPlayerPhaseRandom()
+		{
+			var data = new RandomData
+			{
+				RandomType = RandomData.RULE.ADJUSTMENT_PLAYER_PHASE,
+				Randoms = new List<IRandom>()
+			};
+
+			var r = Substitute.For<IRandom>();
+			r.NextInt(0, 1000).Returns(1000);
+			data.Randoms.Add(r);
+
+			return data;
+		}
+
+		private RandomData _CreateTreasureRandom()
+		{
+			var data = new RandomData
+			{
+				RandomType = RandomData.RULE.CHECK_TREASURE,
+                Randoms = new List<IRandom>()
+			};
 			
-			_Random.NextInt(Arg.Any<int>(), Arg.Any<int>()).Returns(
-				info =>
-				{
-					output.Add(Environment.StackTrace);
-					return random_value;
-				});
+			var r = Substitute.For<IRandom>();
+			r.NextInt(0, 0x10000000).Returns(0x10000000);
+			data.Randoms.Add(r);
+
+			r = Substitute.For<IRandom>();
+			r.NextFloat(0, 1).Returns(1);
+			data.Randoms.Add(r);
+
+			return data;
+		}
+
+		private RandomData _CreateDeathRandom()
+		{
+			var data = new RandomData
+			{
+				RandomType = RandomData.RULE.DEATH,
+				Randoms = new List<IRandom>()
+			};
+			
+			var r = Substitute.For<IRandom>();
+			r.NextInt(0, 0x10000000).Returns(0x10000000);
+			data.Randoms.Add(r);
+
+			r = Substitute.For<IRandom>();
+			r.NextInt(0, 0x10000000).Returns(0x10000000);
+			data.Randoms.Add(r);
+
+			return data;
+		}
+
+		private RandomData _CreateOddsRandom()
+		{
+			var data = new RandomData
+			{
+				RandomType = RandomData.RULE.ODDS,
+				Randoms = new List<IRandom>()
+			};
+
+			var r = Substitute.For<IRandom>();
+			r.NextInt(0, 1000).Returns(1000);
+			data.Randoms.Add(r);
+
+			r = Substitute.For<IRandom>();
+			r.NextInt(0, 1000).Returns(1000);
+			data.Randoms.Add(r);
+
+			r = Substitute.For<IRandom>();
+			r.NextInt(0, 1000).Returns(1000);
+			data.Randoms.Add(r);
+
+			r = Substitute.For<IRandom>();
+			r.NextInt(0, 1000).Returns(1000);
+			data.Randoms.Add(r);
+
+			r = Substitute.For<IRandom>();
+			r.NextInt(0, 1000).Returns(1000);
+			data.Randoms.Add(r);
+
+			return data;
 		}
 
 		[When(@"得到檢查結果")]
 		public void When得到檢查結果()
 		{
 			_HitRequest = new HitRequest(_FishDatas, _WeaponData);
-			_HitResponses = new ZsHitChecker(_FarmData, new FormulaPlayerRecord(), _Random).TotalRequest(_HitRequest);
+			_HitResponses = new ZsHitChecker(_FarmData, new FormulaPlayerRecord(), _CreateRandoms()).TotalRequest(_HitRequest);
 		}
 
-		[Then(@"比對資料 fishId是(.*) WepId是(.*) DieResult是'(.*)' Feeddack是'(.*)' Wup是(.*)")]
-		public void Then比對資料FishId是WepId是DieResult是Feeddack是Wup是(int fish_id, int wep_id, string die_result, string weapon_type, int wup)
+		
+		[Then(@"比對資料 fishId是1 BulletId是1 DieResult是'DEATH' Feedback是'SUPER_BOMB' OddsResult是1")]
+		public void Then比對資料FishId是WepId是DieResult是Feeddack是Wup是(int fish_id, int bullet_id, string die_result, string weapon_type, int odds_result)
 		{
 			Assert.AreEqual(fish_id, _HitResponses[0].FishId);
 			
-			Assert.AreEqual(wep_id, _HitResponses[0].WepId);
+			Assert.AreEqual(bullet_id, _HitResponses[0].WepId);
 
 			FISH_DETERMINATION result;
 			Enum.TryParse(die_result, out result);
@@ -107,9 +196,9 @@ namespace GameTest.ZsFormulaTest
 			
 			WEAPON_TYPE weapon;
 			Enum.TryParse(weapon_type, out weapon);
-			Assert.AreEqual(weapon, _HitResponses[0].FeedbackWeaponType[0]);
+			Assert.AreEqual(weapon, _HitResponses[0].FeedbackWeapons[0]);
 
-			Assert.AreEqual(wup, _HitResponses[0].WUp);
+			Assert.AreEqual(odds_result, _HitResponses[0].OddsResult);
 		}
 
 

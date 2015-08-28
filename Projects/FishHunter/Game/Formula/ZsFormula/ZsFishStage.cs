@@ -10,6 +10,7 @@ using Regulus.Utility;
 
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
+using VGame.Project.FishHunter.Formula.ZsFormula.Data;
 
 
 using Random = Regulus.Utility.Random;
@@ -85,7 +86,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 
 			_SetFishKingOdds(request);
 			
-			var totalRequest = new ZsHitChecker(_FishFarmData, _FormulaPlayerRecord, Random.Instance).TotalRequest(request);
+			var totalRequest = new ZsHitChecker(_FishFarmData, _FormulaPlayerRecord, _CreateRandoms()).TotalRequest(request);
 
 			_FormulaFarmRecorder.Save(_FishFarmData);
 			_FormulaPlayerRecorder.Save(_FormulaPlayerRecord);
@@ -130,10 +131,24 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 				return false;
 			}
 
-			if(request.WeaponData.WepOdds <= 0 || request.WeaponData.WepOdds > 1000)
+			if(request.WeaponData.WeaponBet <= 0 || request.WeaponData.WeaponBet > 1000)
 			{
-				_OnHitExceptionEvent.Invoke("WeaponData.WepOdds，押注分數錯誤");
-				Singleton<Log>.Instance.WriteInfo("WeaponData.WepOdds，押注分數錯誤");
+				_OnHitExceptionEvent.Invoke("WeaponData.WeaponBet，押注分數錯誤");
+				Singleton<Log>.Instance.WriteInfo("WeaponData.WeaponBet，押注分數錯誤");
+				return false;
+			}
+
+			if(request.WeaponData.WeaponOdds != 1)
+			{
+				_OnHitExceptionEvent.Invoke("WeaponData.OddsResult，目前只能為1");
+				Singleton<Log>.Instance.WriteInfo("WeaponData.OddsResult，目前只能為1");
+				return false;
+			}
+
+			if(request.WeaponData.TotalHits != request.FishDatas.Length)
+			{
+				_OnHitExceptionEvent.Invoke("WeaponData.TotalHits，擊中數量不符");
+				Singleton<Log>.Instance.WriteInfo("WeaponData.TotalHits，擊中數量不符");
 				return false;
 			}
 
@@ -187,6 +202,77 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 
 				Singleton<Log>.Instance.WriteInfo(log);
 			}
+		}
+
+		private List<RandomData> _CreateRandoms()
+		{
+			var rs = new List<RandomData>
+			{
+				_CreateAdjustPlayerPhaseRandom(),
+				_CreateTreasureRandom(),
+				_CreateDeathRandom(),
+				_CreateOddsRandom()
+			};
+
+			return rs;
+		}
+
+		private RandomData _CreateAdjustPlayerPhaseRandom()
+		{
+			var data = new RandomData
+			{
+				RandomType = RandomData.RULE.ADJUSTMENT_PLAYER_PHASE
+			};
+
+			data.Randoms.Add(Random.Instance);
+
+			return data;
+		}
+
+		private RandomData _CreateTreasureRandom()
+		{
+			var data = new RandomData
+			{
+				RandomType = RandomData.RULE.CHECK_TREASURE
+			};
+
+			data.Randoms.Add(Random.Instance);
+			data.Randoms.Add(Random.Instance);
+
+			return data;
+		}
+
+		private RandomData _CreateDeathRandom()
+		{
+			var data = new RandomData
+			{
+				RandomType = RandomData.RULE.DEATH
+			};
+
+			data.Randoms.Add(Random.Instance);
+			data.Randoms.Add(Random.Instance);
+
+			return data;
+		}
+
+		private RandomData _CreateOddsRandom()
+		{
+			var data = new RandomData
+			{
+				RandomType = RandomData.RULE.ODDS
+			};
+
+			data.Randoms.Add(Random.Instance);
+
+			data.Randoms.Add(Random.Instance);
+
+			data.Randoms.Add(Random.Instance);
+
+			data.Randoms.Add(Random.Instance);
+
+			data.Randoms.Add(Random.Instance);
+
+			return data;
 		}
 	}
 }

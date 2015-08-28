@@ -42,7 +42,7 @@ namespace VGame.Project.FishHunter.Play
 
 		private short _FishIdSn;
 
-		private int _WeaponOdds;
+		private int _WeaponBet;
 
 		private WEAPON_TYPE _WeaponType;
 
@@ -56,12 +56,12 @@ namespace VGame.Project.FishHunter.Play
 			_DeadFishCount = 0;
 			_Money = money;
 			_WeaponType = WEAPON_TYPE.NORMAL;
-			_WeaponOdds = 10;
+			_WeaponBet = 10;
 		}
 
-		Value<int> IPlayer.Hit(int bulletid, int[] fishids)
+		Value<int> IPlayer.Hit(int bullet_id, int[] fishids)
 		{
-			var hasBullet = _PopBullet(bulletid);
+			var hasBullet = _PopBullet(bullet_id);
 			if(hasBullet == false)
 			{
 				return 0;
@@ -97,10 +97,9 @@ namespace VGame.Project.FishHunter.Play
 				var weapon = new RequestWeaponData
 				{
 					TotalHits = fishids.Length, 
-					//TotalHitOdds = 1, 
-					WepBet = 1, 
-					WepId = bulletid, 
-					WepOdds = _WeaponOdds, 
+					WeaponBet = _WeaponBet, 
+					BulletId = bullet_id, 
+					WeaponOdds = 1, 
 					WeaponType = _WeaponType
 				};
 
@@ -113,17 +112,17 @@ namespace VGame.Project.FishHunter.Play
 
 			if(count == 0)
 			{
-				_PushBullet(bulletid);
+				_PushBullet(bullet_id);
 			}
 
 			Singleton<Log>.Instance.WriteInfo(
 				string.Format(
 					"all WEAPON_TYPE:{0} , targets:{1} , count:{2}", 
-					bulletid, 
+					bullet_id, 
 					string.Join(",", (from id in fishids select id.ToString()).ToArray()), 
 					fishids.Length));
 			Singleton<Log>.Instance.WriteInfo(
-				string.Format("requested WEAPON_TYPE:{0} , targets:{1} , count:{2}", bulletid, logFishs, count));
+				string.Format("requested WEAPON_TYPE:{0} , targets:{1} , count:{2}", bullet_id, logFishs, count));
 			Singleton<Log>.Instance.WriteInfo(
 				string.Format(
 					"request fishs:{0} count:{1} ", 
@@ -151,7 +150,7 @@ namespace VGame.Project.FishHunter.Play
 
 		int IPlayer.WeaponOdds
 		{
-			get { return _WeaponOdds; }
+			get { return _WeaponBet; }
 		}
 
 		WEAPON_TYPE IPlayer.WeaponType
@@ -184,7 +183,7 @@ namespace VGame.Project.FishHunter.Play
 		void IPlayer.EquipWeapon(WEAPON_TYPE weapon_type, int odds)
 		{
 			_WeaponType = weapon_type;
-			_WeaponOdds = odds;
+			_WeaponBet = odds;
 		}
 
 		void IStage.Enter()
@@ -229,7 +228,7 @@ namespace VGame.Project.FishHunter.Play
 						onDeathFish(obj.FishId);
 					}
 
-					AddMoney(request.WeaponData.WepBet * request.WeaponData.WepOdds);
+					AddMoney(request.WeaponData.GetTotalBet());
 					_DeadFishCount++;
 					break;
 
