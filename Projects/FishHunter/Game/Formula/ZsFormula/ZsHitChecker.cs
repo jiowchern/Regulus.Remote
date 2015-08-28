@@ -14,7 +14,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 	{
 		private readonly DataVisitor _DataVisitor;
 
-		public ZsHitChecker(FishFarmData fish_farm_data, FormulaPlayerRecord formula_player_record, IRandom random)
+		public ZsHitChecker(FishFarmData fish_farm_data, FormulaPlayerRecord formula_player_record, List<RandomData> random)
 		{
 			var data = new List<FarmRecord>
 			{

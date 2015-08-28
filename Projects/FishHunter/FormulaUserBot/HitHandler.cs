@@ -59,7 +59,7 @@ namespace FormulaUserBot
 		{
 			foreach(var fishData in _Request.FishDatas)
 			{
-				if(obj.FishId != fishData.FishId || obj.WepId != _Request.WeaponData.WepId)
+				if(obj.FishId != fishData.FishId || obj.WepId != _Request.WeaponData.BulletId)
 				{
 					continue;
 				}

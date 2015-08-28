@@ -32,12 +32,18 @@ namespace VGame.Project.FishHunter.Common.Data
 		///     有取得特殊武器从“2”开始。对应特武编号。
 		/// </summary>
 		[ProtoMember(4)]
-		public WEAPON_TYPE[] FeedbackWeaponType { get; set; }
+		public WEAPON_TYPE[] FeedbackWeapons { get; set; }
 
+		/// <summary>
+		/// 下注金額
+		/// </summary>
+		[ProtoMember(5)]
+		public int WeaponBet { get; set; }
+		
 		/// <summary>
 		///     1 = 沒有翻倍
 		/// </summary>
-		[ProtoMember(5)]
-		public int WUp { get; set; }
+		[ProtoMember(6)]
+		public int OddsResult { get; set; }
 	}
 }

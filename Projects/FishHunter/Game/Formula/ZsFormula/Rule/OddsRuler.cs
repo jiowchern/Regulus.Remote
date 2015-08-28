@@ -20,16 +20,11 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
         private readonly DataVisitor _Visitor;
 
-        private readonly int[] _Randoms;
-
         public OddsRuler(DataVisitor visitor, RequsetFishData fish_data, FarmBuffer buffer_data)
         {
             _Visitor = visitor;
             _FishData = fish_data;
             _BufferData = buffer_data;
-
-            _Randoms =
-                _Visitor.RandomDatas.Find(x => x.RandomType == DataVisitor.RandomData.RULE.ODDS).RandomValue;
         }
 
 	    public int RuleResult()
@@ -79,7 +74,9 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
             if(fish_data.FishType == FISH_TYPE.BLUE_WHALE)
             {
-                var randNumber = _Randoms[0];
+
+
+	            var randNumber = _Visitor.FindIRandom(RandomData.RULE.ODDS, 0).NextInt(0, 1000);
                 if(randNumber < 500)
                 {
                     return false; // 藍鯨 50%不翻倍 
@@ -88,8 +85,8 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
             if(fish_data.FishType == FISH_TYPE.RED_WHALE)
             {
-                var randNumber = _Randoms[1];
-                if(randNumber < 750)
+				var randNumber = _Visitor.FindIRandom(RandomData.RULE.ODDS, 1).NextInt(0, 1000);
+				if (randNumber < 750)
                 {
                     return false; // 藍鯨 75%不翻倍
                 }
@@ -97,8 +94,8 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
             if(fish_data.FishType == FISH_TYPE.GOLDEN_WHALE)
             {
-                var randNumber = _Randoms[2];
-                if(randNumber < 875)
+				var randNumber = _Visitor.FindIRandom(RandomData.RULE.ODDS, 2).NextInt(0, 1000);
+				if (randNumber < 875)
                 {
                     return false; // 金鯨 87%不翻倍
                 }
@@ -113,11 +110,11 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
             var hiLoRate = data.BufferTempValue.HiLoRate;
 
-            var rand = _Randoms[3];
+			var randNumber = _Visitor.FindIRandom(RandomData.RULE.ODDS, 3).NextInt(0, 1000);
 
-            if(hiLoRate <= natrue[-3].Value)
+			if (hiLoRate <= natrue[-3].Value)
             {
-                if(rand < 750)
+                if(randNumber < 750)
                 {
                     // 有75% 不翻倍
                     return false;
@@ -125,7 +122,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
             }
             else if(hiLoRate <= natrue[-2].Value)
             {
-                if(rand < 500)
+                if(randNumber < 500)
                 {
                     // 有50% 不翻倍
                     return false;
@@ -133,7 +130,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
             }
             else if(hiLoRate <= natrue[-1].Value)
             {
-                if(rand < 250)
+                if(randNumber < 250)
                 {
                     // 有25% 不翻倍
                     return false;
@@ -141,7 +138,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
             }
             else if(hiLoRate <= natrue[0].Value)
             {
-                if(rand < 100)
+                if(randNumber < 100)
                 {
                     // 有10% 不翻倍
                     return false;
@@ -153,21 +150,21 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
         private int _CheckMultipleTableToOddsRule()
         {
-            var rand = _Randoms[4];
+			var randNumber = _Visitor.FindIRandom(RandomData.RULE.ODDS, 4).NextInt(0, 1000);
 
-            var oddsTable = new OddsTable().Datas;
+			var oddsTable = new OddsTable().Datas;
 
 			OddsTable.Data temp = null;
 
             foreach (var d in oddsTable)
             {
                 temp = d;
-                if(rand < d.Number)
+                if(randNumber < d.Number)
                 {
                     break;
                 }
 
-                rand -= d.Number;
+				randNumber -= d.Number;
             }
 
             Debug.Assert(temp != null, "temp != null");

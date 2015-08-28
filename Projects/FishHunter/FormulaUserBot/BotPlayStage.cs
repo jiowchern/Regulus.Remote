@@ -86,12 +86,11 @@ namespace FormulaUserBot
 		{
 			var weapon = new RequestWeaponData
 			{
-				WepId = Random.Instance.NextInt(0, 32767),
+				BulletId = Random.Instance.NextInt(0, 32767),
 				WeaponType = Random.Instance.NextEnum<WEAPON_TYPE>(),
-				WepBet = 1,
-				WepOdds = Random.Instance.NextInt(1, 10000),
+				WeaponBet = Random.Instance.NextInt(1, 10000),
+				WeaponOdds = 1,
 				TotalHits = total_hits,
-				//TotalHitOdds = Random.Instance.NextInt(0, 32767)
 			};
 			return weapon;
 		}

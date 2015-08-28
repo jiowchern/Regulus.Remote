@@ -72,7 +72,7 @@ namespace GameTest.ZsFormulaTest
         {
 #line 7
 #line 8
- testRunner.Given("魚場編號是1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("魚場編號是100", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
             TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
                         "FishId",
@@ -101,16 +101,14 @@ this.ScenarioSetup(scenarioInfo);
 this.FeatureBackground();
 #line hidden
             TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
-                        "WepId",
+                        "BulletId",
                         "WeaponType",
-                        "WepBet",
-                        "WepOdds",
-                        "TotalHits",
-                        "TotalHitOdds"});
+                        "WeaponBet",
+                        "WeaponOdds",
+                        "TotalHits"});
             table2.AddRow(new string[] {
                         "1",
                         "NORMAL",
-                        "1",
                         "1",
                         "1",
                         "1"});
@@ -121,7 +119,7 @@ this.FeatureBackground();
 #line 22
  testRunner.When("得到檢查結果", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 24
- testRunner.Then("比對資料 fishId是1 WepId是1 DieResult是\'die\' Feeddack是\'SUPER_BOMB\' Wup是1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+ testRunner.Then("比對資料 fishId是1 BulletId是1 DieResult是\'DEATH\' Feedback是\'SUPER_BOMB\' OddsResult是1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }

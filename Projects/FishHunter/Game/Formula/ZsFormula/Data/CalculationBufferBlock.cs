@@ -9,7 +9,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 	{
 		public static FarmBuffer.BUFFER_BLOCK GetBlock(HitRequest request, int max_bet)
 		{
-			var bet = request.WeaponData.WepOdds * request.WeaponData.WepBet;
+			var bet = request.WeaponData.GetTotalBet();
 
 			if(bet >= ((750 * max_bet) / 1000))
 			{

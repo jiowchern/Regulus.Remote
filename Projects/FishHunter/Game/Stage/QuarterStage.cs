@@ -56,8 +56,8 @@ namespace VGame.Project.FishHunter.Stage
                         DieResult =
                             Random.Instance.NextInt(1, 4) == 1 ? FISH_DETERMINATION.DEATH : FISH_DETERMINATION.SURVIVAL, 
                         FishId = requset_fish_data.FishId, 
-                        WepId = request.WeaponData.WepId, 
-                        FeedbackWeaponType = new[]
+                        WepId = request.WeaponData.BulletId, 
+                        FeedbackWeapons = new[]
                         {
                             WEAPON_TYPE.INVALID
                         }

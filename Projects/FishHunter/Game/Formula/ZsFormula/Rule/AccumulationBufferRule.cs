@@ -1,13 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AccumulationBufferRule.cs" company="Regulus Framework">
-//   Regulus Framework
-// </copyright>
-// <summary>
-//     算法伺服器-累積buffer規則
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-using System.Linq;
+﻿using System.Linq;
 
 
 using Regulus.Utility;
@@ -31,30 +22,24 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		{
 			_Visitor = visitor;
 			_Request = request;
-
 		}
 
 		public void Run()
 		{
-			var bet = _Request.WeaponData.WepOdds * _Request.WeaponData.WepBet;
+			var enumData = EnumHelper.GetEnums<FarmBuffer.BUFFER_TYPE>();
 
-            var enumData = EnumHelper.GetEnums<FarmBuffer.BUFFER_TYPE>();
+			foreach(var data in enumData.Select(buffer_type => _Visitor.Farm.FindBuffer(_Visitor.FocusBufferBlock, buffer_type)))
+			{
+				_AddBufferRate(data);
+			}
 
-		    foreach(var data in enumData.Select(buffer_type => _Visitor.Farm.FindBuffer(_Visitor.FocusBufferBlock, buffer_type)))
-		    {
-		        _AddBufferRate(data, bet);
-		    }
-
-			_Visitor.Farm.Record.PlayTimes += 1;
-			_Visitor.Farm.Record.PlayTotal += bet;
-
-			_Visitor.PlayerRecord.FindFarmRecord(_Visitor.Farm.FarmId).PlayTimes += 1;
-			_Visitor.PlayerRecord.FindFarmRecord(_Visitor.Farm.FarmId).PlayTotal += bet;
+			_Record();
 		}
 
-		private void _AddBufferRate(FarmBuffer data, int bet)
+		private void _AddBufferRate(FarmBuffer data)
 		{
-			data.Count += bet * data.Rate;
+			data.Count += _Request.WeaponData.GetTotalBet() * data.Rate;
+
 			if(data.Count < 1000)
 			{
 				return;
@@ -63,5 +48,16 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 			data.Buffer += data.Count / 1000;
 			data.Count = data.Count % 1000;
 		}
+
+		private void _Record()
+		{
+			_Visitor.Farm.Record.PlayTimes += 1;
+			_Visitor.Farm.Record.PlayTotal += _Request.WeaponData.GetTotalBet();
+
+			_Visitor.PlayerRecord.FindFarmRecord(_Visitor.Farm.FarmId).PlayTimes += 1;
+			_Visitor.PlayerRecord.FindFarmRecord(_Visitor.Farm.FarmId).PlayTotal += _Request.WeaponData.GetTotalBet();
+		}
+
+		
 	}
 }
