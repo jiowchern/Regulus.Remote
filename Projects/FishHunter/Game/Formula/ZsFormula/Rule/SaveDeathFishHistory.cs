@@ -30,27 +30,42 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
         private void _SaveFarmHit()
         {
-            var data = _DataVisitor.Farm.Record.FishHits.First(x => x.FishType == _Fish.FishType)
-                       ?? new FishHitRecord
-                       {
-                           FishType = _Fish.FishType, 
-                           KillCount = 0, 
-                           WinScore = 0
-                       };
+            var data = _DataVisitor.Farm.Record.FishHits.Where(x => x.FishType == _Fish.FishType).FirstOrDefault();
+            if (data == null)
+            {
+                data = new FishHitRecord
+                {
+                    FishType = _Fish.FishType,
+                    KillCount = 0,
+                    WinScore = 0
+                };
+                var list = _DataVisitor.Farm.Record.FishHits.ToList();
+                list.Add(data);
+                _DataVisitor.Farm.Record.FishHits = list.ToArray();
+            }
 
             data.KillCount++;
+
+            
         }
 
         private void _SavePlayerHit()
         {
             var data = _DataVisitor.PlayerRecord.FindFarmRecord(_DataVisitor.Farm.FarmId)
-                                   .FishHits.First(x => x.FishType == _Fish.FishType)
-                       ?? new FishHitRecord
-                       {
-                           FishType = _Fish.FishType, 
-                           KillCount = 0, 
-                           WinScore = 0
-                       };
+                                   .FishHits.Where(x => x.FishType == _Fish.FishType).FirstOrDefault();
+            if (data == null)
+            {
+                data = new FishHitRecord
+                {
+                    FishType = _Fish.FishType,
+                    KillCount = 0,
+                    WinScore = 0
+                };
+                var list = _DataVisitor.PlayerRecord.FindFarmRecord(_DataVisitor.Farm.FarmId).FishHits.ToList();
+                list.Add(data);
+                _DataVisitor.PlayerRecord.FindFarmRecord(_DataVisitor.Farm.FarmId).FishHits = list.ToArray();
+            }
+
 
             data.KillCount++;
         }

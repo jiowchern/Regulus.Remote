@@ -70,7 +70,7 @@ namespace VGame.Project.FishHunter.Play
 				case 111:
 					return new VGame.Project.FishHunter.Stage.QuarterStage(player_id, fish_stage);
 				case 100:
-					return new ZsFishStage(player_id, new FishFarmBuilder().Get(fish_stage), this, this);
+					return new ZsFishStage(player_id, new FishFarmBuilder().Get(fish_stage), new FormulaPlayerRecord(), this, this);
 				default:
 					return new FishStage(player_id, fish_stage);
 			}

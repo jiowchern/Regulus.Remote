@@ -50,7 +50,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 			}
 			else
 			{
-				var certainWeapons = new FishTreasure().Treasures.Find(x => x.FishType == _FishData.FishType).CertainWeapons;
+				var certainWeapons = FishTreasure.Get().Find(x => x.FishType == _FishData.FishType).CertainWeapons;
 
 				foreach(var weapon in certainWeapons)
 				{
@@ -65,7 +65,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		private void _CheckRandom()
 		{
 			// 拿到魚的掉落物品清單
-			var randomWeapons = new FishTreasure().Treasures.Find(x => x.FishType == _FishData.FishType).RandomWeapons;
+			var randomWeapons = FishTreasure.Get().Find(x => x.FishType == _FishData.FishType).RandomWeapons;
 
 			var bufferData = _DataVisitor.Farm.FindBuffer(_DataVisitor.FocusBufferBlock, FarmBuffer.BUFFER_TYPE.SPEC);
 
