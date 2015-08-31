@@ -82,7 +82,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 				dieRate = 0x10000000; // > 100% 
 			}
 
-			var randomValue = _Visitor.FindIRandom(RandomData.RULE.DEATH, 0).NextInt(0, 1000);
+			var randomValue = _Visitor.FindIRandom(RandomData.RULE.DEATH, 0).NextInt(0, 0x10000000);
 
 			if(randomValue >= dieRate)
 			{
@@ -144,7 +144,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 				dieRate = 0x10000000; // > 100%
 			}
 
-			var randomValue = _Visitor.FindIRandom(RandomData.RULE.DEATH, 1).NextInt(0, 1000);
+			var randomValue = _Visitor.FindIRandom(RandomData.RULE.DEATH, 1).NextInt(0, 0x10000000);
 			if (randomValue >= dieRate)
 			{
 				_Miss(fish_data, _Request.WeaponData);
@@ -189,9 +189,12 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 				new HitResponse
 				{
 					WepId = weapon_data.BulletId, 
-					FishId = fish_data.FishId, 
-					DieResult = FISH_DETERMINATION.SURVIVAL, 
-					FeedbackWeapons = _Visitor.GotTreasures.ToArray(), 
+					FishId = fish_data.FishId,
+					DieResult = FISH_DETERMINATION.SURVIVAL,
+					FeedbackWeapons = new[]
+					{
+						WEAPON_TYPE.INVALID
+					},
 					OddsResult = 0
 				});
 		}
