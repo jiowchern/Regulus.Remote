@@ -13,11 +13,14 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		private readonly RequsetFishData _FishData;
 
+		private List<WEAPON_TYPE> _GotTreasures;
+
 		public CheckTreasureRule(DataVisitor data_visitor, RequsetFishData fish_data)
 		{
 			_DataVisitor = data_visitor;
 			_FishData = fish_data;
-		}
+			_GotTreasures = new List<WEAPON_TYPE>();
+        }
 
 		/// <summary>
 		///     是否取得特殊道具（特殊武器
@@ -29,6 +32,8 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 			_CheckRandom();
 
 			_SavePlayerHit();
+
+			_DataVisitor.GotTreasures = _GotTreasures;
 		}
 
 		/// <summary>
@@ -38,7 +43,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		{
 			if(_FishData.FishType >= FISH_TYPE.TROPICAL_FISH && _FishData.FishType <= FISH_TYPE.WHALE_COLOR)
 			{
-				_DataVisitor.GotTreasures.Add(
+				_GotTreasures.Add(
 					_FishData.FishStatus == FISH_STATUS.KING
 						? WEAPON_TYPE.KING
 						: WEAPON_TYPE.INVALID);
@@ -49,7 +54,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 				foreach(var weapon in certainWeapons)
 				{
-					_DataVisitor.GotTreasures.Add(weapon);
+					_GotTreasures.Add(weapon);
 				}
 			}
 		}
@@ -89,7 +94,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 					gate /= 2;
 				}
 
-				var randomValue = _DataVisitor.FindIRandom(RandomData.RULE.CHECK_TREASURE, 0).NextInt(0, 1000);
+				var randomValue = _DataVisitor.FindIRandom(RandomData.RULE.CHECK_TREASURE, 0).NextInt(0, 0x10000000);
 				if(randomValue >= gate)
 				{
 					continue;
@@ -110,7 +115,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 			if(randomWeapon != WEAPON_TYPE.INVALID)
 			{
-				_DataVisitor.GotTreasures.Add(randomWeapon);
+				_GotTreasures.Add(randomWeapon);
 			}
 		}
 
@@ -120,7 +125,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 				_DataVisitor.PlayerRecord.FindFarmRecord(_DataVisitor.Farm.FarmId)
 							.FishHits.First(x => x.FishType == _FishData.FishType);
 
-			fishHitRecord.Datas = _DataVisitor.GotTreasures.Select(
+			fishHitRecord.Datas = _GotTreasures.Select(
 				treasure => new FishHitRecord.TreasureData
 				{
 					WeaponType = treasure, 
