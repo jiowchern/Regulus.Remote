@@ -1,4 +1,7 @@
-﻿using Regulus.Framework;
+﻿using System;
+
+
+using Regulus.Framework;
 using Regulus.Remoting;
 using Regulus.Utility;
 
@@ -31,12 +34,14 @@ namespace VGame.Project.FishHunter.Formula
 
 		void IBootable.Launch()
 		{
-			_Updater.Add(_User);
+		    _Agent.ErrorMethodEvent += _ErrorMethodEvent;
+            _Updater.Add(_User);
 		}
 
 		void IBootable.Shutdown()
 		{
-			_Updater.Shutdown();
+            _Agent.ErrorMethodEvent -= _ErrorMethodEvent;
+            _Updater.Shutdown();
 		}
 
 		Regulus.Remoting.User IUser.Remoting
@@ -53,5 +58,13 @@ namespace VGame.Project.FishHunter.Formula
 		{
 			get { return _Agent.QueryNotifier<IFishStageQueryer>(); }
 		}
+
+	    private event Action<string, string> _ErrorMethodEvent;
+
+	    event Action<string, string> IUser.ErrorMethodEvent
+	    {
+	        add { this._ErrorMethodEvent += value; }
+	        remove { this._ErrorMethodEvent -= value; }
+	    }
 	}
 }
