@@ -31,10 +31,18 @@ namespace Regulus
 
 		public static object DeserializeObject(Type type, byte[] b)
 		{
-			using(var stream = new MemoryStream(b))
-			{
-				return ProtoBuf.Serializer.NonGeneric.Deserialize(type, stream);
-			}
+		    try
+		    {
+                using (var stream = new MemoryStream(b))
+                {
+                    return ProtoBuf.Serializer.NonGeneric.Deserialize(type, stream);
+                }
+            }
+		    catch(Exception e )
+		    {		        
+		        throw new DeserializeException(e);
+		    }
+			
 		}
 
 		public static T Deserialize<T>(byte[] b)

@@ -256,8 +256,8 @@ namespace Regulus.Remoting
 			var soulInfo = (from soul in _Souls.UpdateSet()
 			                where soul.ID == entity_id
 			                select new
-			                {
-				                soul.MethodInfos, 
+			                {                                
+                                soul.MethodInfos, 
 				                soul.ObjectInstance
 			                }).FirstOrDefault();
 			if(soulInfo != null)
@@ -269,21 +269,46 @@ namespace Regulus.Remoting
 				{
 					var paramerInfos = methodInfo.GetParameters();
 
-					var i = 0;
-					var argObjects = from pi in paramerInfos
-					                 let arg = args[i++]
-					                 select TypeHelper.DeserializeObject(pi.ParameterType, arg);
+				    try
+				    {
+				        var i = 0;
+				        var argObjects = from pi in paramerInfos
+				                         let arg = args[i++]
+				                         select TypeHelper.DeserializeObject(pi.ParameterType, arg);
 
-					var returnValue = methodInfo.Invoke(soulInfo.ObjectInstance, argObjects.ToArray());
-					if(returnValue != null)
-					{
-						_ReturnValue(returnId, returnValue as IValue);
-					}
+				        var returnValue = methodInfo.Invoke(soulInfo.ObjectInstance, argObjects.ToArray());
+				        if(returnValue != null)
+				        {
+				            _ReturnValue(returnId, returnValue as IValue);
+				        }
+				    }
+				    catch(DeserializeException deserialize_exception)
+				    {
+				        var message  =  deserialize_exception.ToString();                        
+				        _ErrorDeserialize(method_name, returnId , message);
+				    }
+				    catch(Exception e)
+				    {
+				        Log.Instance.WriteDebug(e.ToString());   
+				        throw e;
+				    }
+                    
 				}
 			}
 		}
 
-		private void _Bind<TSoul>(TSoul soul, bool return_type, Guid return_id)
+	    private void _ErrorDeserialize(string method_name, Guid return_id, string message)
+	    {
+            Log.Instance.WriteDebug(string.Format("error method! {0} :{1}.", method_name ,message));
+
+            var argmants = new Dictionary<byte, byte[]>();
+            argmants.Add(0, return_id.ToByteArray());            
+            argmants.Add(1, TypeHelper.Serializer(method_name));
+            argmants.Add(2, TypeHelper.Serializer(message));
+            _Queue.Push((byte)ServerToClientOpCode.ErrorMethod, argmants);
+        }
+
+	    private void _Bind<TSoul>(TSoul soul, bool return_type, Guid return_id)
 		{
 			var type = typeof(TSoul);
 

@@ -16,6 +16,7 @@ namespace Regulus.Remoting
 		bool IsInterface();
 
 		Type GetObjectType();
+	    
 	}
 
 	public static class Helper
@@ -47,10 +48,10 @@ namespace Regulus.Remoting
 	{
 		private event Action<T> _OnValue;
 
-		/// <summary>
-		///     如果有設定資料則會發生此事件
-		/// </summary>
-		public event Action<T> OnValue
+        /// <summary>
+        ///     如果有設定資料則會發生此事件
+        /// </summary>
+        public event Action<T> OnValue
 		{
 			add
 			{
@@ -153,7 +154,9 @@ namespace Regulus.Remoting
 			return typeof(T);
 		}
 
-		public static implicit operator Value<T>(T value)
+	    
+
+	    public static implicit operator Value<T>(T value)
 		{
 			return new Value<T>(value);
 		}
