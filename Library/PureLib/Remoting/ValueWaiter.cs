@@ -17,10 +17,9 @@ namespace Regulus.Remoting
 
         public ValueWaiter(Value<T> value)
 		{
+            _HasValue = false;
             value.OnValue += _Getted;
             this.value = value;
-			_HasValue = false;
-
             
 
         }

@@ -2,7 +2,7 @@
 {
 	public enum ClientToServerOpCode
 	{
-		CallMethod = 100, 
+		CallMethod = 1, 
 
 		Ping, 
 
@@ -23,6 +23,8 @@
 
 		LoadSoulCompile, 
 
-		Ping
+		Ping,
+
+	    ErrorMethod
 	}
 }
