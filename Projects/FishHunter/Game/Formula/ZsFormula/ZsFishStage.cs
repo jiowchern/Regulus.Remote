@@ -220,6 +220,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 			};
 
 			data.Randoms.Add(Random.Instance);
+			data.Randoms.Add(Random.Instance);
 
 			return data;
 		}
