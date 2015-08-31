@@ -20,17 +20,12 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 
 		public FarmBuffer.BUFFER_BLOCK FocusBufferBlock { get; set; }
 
-		public List<WEAPON_TYPE> GotTreasures { get; private set; }
+		public List<WEAPON_TYPE> GotTreasures { get; set; }
 
 		public List<RandomData> RandomDatas { get; }
 
 		public DataVisitor(FishFarmData fish_farm, FormulaPlayerRecord formula_player_record, List<RandomData> random)
 		{
-			Farm = fish_farm;
-			PlayerRecord = formula_player_record;
-
-			GotTreasures = new List<WEAPON_TYPE>();
-
 			RandomDatas = random;
 
 			Farm = fish_farm;
