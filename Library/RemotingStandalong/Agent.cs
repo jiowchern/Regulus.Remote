@@ -65,7 +65,15 @@ namespace Regulus.Remoting.Standalone
 			Shutdown();
 		}
 
-		bool IUpdatable.Update()
+	    private event Action<string, string> _ErrorMethodEvent;
+
+	    event Action<string, string> IAgent.ErrorMethodEvent
+	    {
+	        add { this._ErrorMethodEvent += value; }
+	        remove { this._ErrorMethodEvent -= value; }
+	    }
+
+	    bool IUpdatable.Update()
 		{
 			_Update();
 
@@ -147,7 +155,9 @@ namespace Regulus.Remoting.Standalone
 			_GhostRequest.PingEvent += _OnRequestPing;
 			_GhostRequest.ReleaseEvent += _SoulProvider.Unbind;
 
-			_Agent.Initial(_GhostRequest);
+		    _Agent.ErrorMethodEvent += _ErrorMethodEvent;
+
+            _Agent.Initial(_GhostRequest);
 		}
 
 		private void _OnRequestPing()
@@ -163,7 +173,8 @@ namespace Regulus.Remoting.Standalone
 
 		public void Shutdown()
 		{
-			_Connected = false;
+            _Agent.ErrorMethodEvent -= _ErrorMethodEvent;
+            _Connected = false;
 			if(_BreakEvent != null)
 			{
 				_BreakEvent();

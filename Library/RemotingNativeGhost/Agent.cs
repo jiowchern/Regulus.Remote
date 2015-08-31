@@ -26,6 +26,9 @@ namespace Regulus.Remoting.Ghost.Native
 		{
 			_Machine = new StageMachine();
 			_Core = new AgentCore();
+
+		    
+
 		}
 
 		bool IUpdatable.Update()
@@ -38,11 +41,13 @@ namespace Regulus.Remoting.Ghost.Native
 		void IBootable.Launch()
 		{
 			Singleton<Log>.Instance.WriteInfo("Agent Launch.");
-		}
+            _Core.ErrorMethodEvent += _ErrorMethodEvent;
+        }
 
 		void IBootable.Shutdown()
 		{
-			if(_Core.Enable)
+            _Core.ErrorMethodEvent -= _ErrorMethodEvent;
+            if (_Core.Enable)
 			{
 				_ToTermination();
 
@@ -94,7 +99,15 @@ namespace Regulus.Remoting.Ghost.Native
 			_ToTermination();
 		}
 
-		bool IAgent.Connected
+	    private event Action<string, string> _ErrorMethodEvent;
+
+	    event Action<string, string> IAgent.ErrorMethodEvent
+	    {
+	        add { this._ErrorMethodEvent += value; }
+	        remove { this._ErrorMethodEvent -= value; }
+	    }
+
+	    bool IAgent.Connected
 		{
 			get { return _Core.Enable; }
 		}

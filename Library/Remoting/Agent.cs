@@ -63,6 +63,16 @@ namespace Regulus.Remoting
 		///     斷線
 		/// </summary>
 		void Disconnect();
+
+        /// <summary>
+        /// 錯誤的方法呼叫
+        /// 如果呼叫的方法參數有誤則會回傳此訊息.
+        /// 事件參數:
+        ///     1.方法名稱
+        ///     2.錯誤訊息
+        /// 會發生此訊息通常是因為client與server版本不相容所致.
+        /// </summary>
+	    event Action<string , string> ErrorMethodEvent;
 	}
 
 	public class AgentCore
@@ -156,7 +166,17 @@ namespace Regulus.Remoting
 					_InvokeEvent(entity_id, eventName, eventParams);
 				}
 			}
-			else if(id == (int)ServerToClientOpCode.ReturnValue)
+            else if(id == (int)ServerToClientOpCode.ErrorMethod)
+            {
+                if(args.Count == 3)
+                {
+                    var returnTarget = new Guid(args[0]);
+                    var method = TypeHelper.Deserialize<string>(args[1]);
+                    var message = TypeHelper.Deserialize<string>(args[2]);
+                    _ErrorReturnValue(returnTarget, method , message);
+                }
+            }
+            else if(id == (int)ServerToClientOpCode.ReturnValue)
 			{
 				if(args.Count == 2)
 				{
@@ -200,7 +220,14 @@ namespace Regulus.Remoting
 			}
 		}
 
-		private void _SetReturnValue(Guid returnTarget, byte[] returnValue)
+	    private void _ErrorReturnValue(Guid return_target, string method, string message)
+	    {
+            _ReturnValueQueue.PopReturnValue(return_target);
+
+	        ErrorMethodEvent(method , message);
+	    }
+
+	    private void _SetReturnValue(Guid returnTarget, byte[] returnValue)
 		{
 			var value = _ReturnValueQueue.PopReturnValue(returnTarget);
 			if(value != null)
@@ -944,5 +971,7 @@ namespace Regulus.Remoting
 			var yield = typeof(TypeHelper).GetMethod("Yield", BindingFlags.Public | BindingFlags.Static);
 			cil.Emit(OpCodes.Call, yield);
 		}
+
+	    public event Action<string, string> ErrorMethodEvent;
 	}
 }
