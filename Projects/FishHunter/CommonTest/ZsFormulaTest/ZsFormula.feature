@@ -17,11 +17,8 @@ Scenario:公式檢查
 	| BulletId | WeaponType | WeaponBet | WeaponOdds | TotalHits |
 	| 1        | NORMAL     | 1         | 1          | 1         |
 
-	And 亂數資料是1
-	
 	When 得到檢查結果
 	
-		
 	Then 比對資料	
 
 
