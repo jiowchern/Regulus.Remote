@@ -178,8 +178,9 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 					WepId = weapon_data.BulletId, 
 					FishId = fish_data.FishId, 
 					DieResult = FISH_DETERMINATION.DEATH, 
-					FeedbackWeapons = _Visitor.GotTreasures.ToArray(), 
-					OddsResult = new OddsRuler(_Visitor, fish_data, bufferData).RuleResult()
+					FeedbackWeapons = _Visitor.GotTreasures.ToArray(),
+					WeaponBet = weapon_data.WeaponBet,
+                    OddsResult = new OddsRuler(_Visitor, fish_data, bufferData).RuleResult()
 				});
 		}
 
@@ -195,6 +196,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 					{
 						WEAPON_TYPE.INVALID
 					},
+					WeaponBet = weapon_data.WeaponBet,
 					OddsResult = 0
 				});
 		}
