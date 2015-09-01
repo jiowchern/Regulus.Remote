@@ -1,8 +1,4 @@
-﻿
-using System.Collections.Generic;
-
-
-using Regulus.Utility;
+﻿using System.Collections.Generic;
 
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;

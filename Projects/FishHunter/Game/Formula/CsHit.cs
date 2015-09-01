@@ -6,7 +6,7 @@ using VGame.Project.FishHunter.Common.Data;
 
 namespace VGame.Project.FishHunter.Formula
 {
-	public class CsHit : HitBase
+	public class CsHit : HitBase 
 	{
 		public void Test()
 		{
