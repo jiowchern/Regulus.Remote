@@ -184,23 +184,63 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 		private void _MakeLog(HitRequest request, IEnumerable<HitResponse> responses)
 		{
 
-            var format = "PlayerVisitor:{0}\tStage:{1}\nRequest:{2}\nResponse:{3}";
+            var format = 
+                @"PlayerVisitor:{0}\tStage:{1}\r\n
+                    \tRequest:{2}\r\n
+                    \tResponse:{3}";
 
             var log = string.Format(
                 format,
                 _AccountId,
                 _FishFarmData.FarmId,
-                request.ShowMembers(" "),
-                _GetResponesLog(responses));
+                _MakeRequestLog(request),
+                _MakeResponesLog(responses));
 
             Singleton<Log>.Instance.WriteInfo(log);
             
 		}
 
-	    private string _GetResponesLog(IEnumerable<HitResponse> responses)
+	    private string _MakeRequestLog(HitRequest request)
 	    {
-	        var messages = from response in responses select response.ShowMembers(" ");
-	        return string.Join(" ", messages.ToArray());
+	        var weapon = request.WeaponData;
+            var formatWeapon = @"WeaponData\r\nBullte\tWeaponType\tBet\tOdds\Hits\r\n{0}\t{1}\t{2}\t{3}\t{4}\r\n";
+	        string weaponDataLog = string.Format(
+	            formatWeapon,
+	            weapon.BulletId,
+	            weapon.WeaponType,
+	            weapon.WeaponBet,
+	            weapon.WeaponOdds,
+	            weapon.TotalHits);
+
+	        var fishTitle = @"FishData\r\nId\tFishType\tFishStatus\tOdds\r\n";
+	        var fishs = request.FishDatas;
+            List<string> fishDataLogs = new List<string>();
+            foreach (var fishData in fishs)
+	        {
+                var fishFormat = @"{0}\t{1}\t{2}\t{3}";
+                string fishDataLog = string.Format(
+                fishFormat,
+                fishData.FishId,
+                fishData.FishType,
+                fishData.FishStatus,
+                fishData.FishOdds);
+                fishDataLogs.Add(fishDataLog);
+            }
+
+	        return weaponDataLog + fishTitle + string.Join("\r\n", fishDataLogs.ToArray());
+	    }
+
+	    private string _MakeResponesLog(IEnumerable<HitResponse> responses)
+	    {
+	        var title = @"WepId\tFishId\tDisResult\tFeedbackWeapons\t\t\t\Bet\tOddsResult\r\n";
+
+            List<string> lines = new List<string>();
+	        foreach(var response in responses)
+	        {
+                lines.Add(string.Format("{0}\t{1}\t{2}\t{3}\t\t\t{4}\t{5}" , response.FishId , response.DieResult , response.FeedbackWeapons.ShowMembers(",") , response.WeaponBet , response.OddsResult ));
+            }
+	        
+	        return title + String.Join("\r\n" , lines.ToArray());
 	    }
 
 	    private List<RandomData> _CreateRandoms()
