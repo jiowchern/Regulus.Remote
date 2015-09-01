@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -27,16 +28,16 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 
 		private readonly IFormulaFarmRecorder _FormulaFarmRecorder;
 
-		private readonly IFormulaPlayerRecorder _FormulaPlayerRecorder;
+		private readonly FormulaPlayerRecord _FormulaPlayerRecord;
 
-		private FormulaPlayerRecord _FormulaPlayerRecord;
+		private readonly IFormulaPlayerRecorder _FormulaPlayerRecorder;
 
 		private Action<string> _OnHitExceptionEvent;
 
 		public ZsFishStage(
 			Guid account_id, 
 			FishFarmData fish_farm_data, 
-			FormulaPlayerRecord formula_player_record,
+			FormulaPlayerRecord formula_player_record, 
 			IFormulaPlayerRecorder formula_player_recorder, 
 			IFormulaFarmRecorder formula_stage_data_recorder)
 		{
@@ -73,13 +74,13 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 
 		void IFishStage.Hit(HitRequest request)
 		{
-			if (!_CheckDataLegality(request))
+			if(!_CheckDataLegality(request))
 			{
 				return;
 			}
 
 			_SetFishKingOdds(request);
-			
+
 			var totalRequest = new ZsHitChecker(_FishFarmData, _FormulaPlayerRecord, _CreateRandoms()).TotalRequest(request);
 
 			_FormulaFarmRecorder.Save(_FishFarmData);
@@ -91,7 +92,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 		}
 
 		/// <summary>
-		/// 檢查資料合法性
+		///     檢查資料合法性
 		/// </summary>
 		/// <param name="request"></param>
 		/// <returns></returns>
@@ -111,13 +112,13 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 				return false;
 			}
 
-			if (request.WeaponData.TotalHits <= 0)
+			if(request.WeaponData.TotalHits <= 0)
 			{
 				_OnHitExceptionEvent.Invoke("WeaponData.TotalHitOdds 不可為0");
 				Singleton<Log>.Instance.WriteInfo("WeaponData.TotalHitOdds 不可為0");
 				return false;
 			}
-			
+
 			if(request.WeaponData.WeaponType < WEAPON_TYPE.NORMAL || request.WeaponData.WeaponType > WEAPON_TYPE.FREEZE_BOMB)
 			{
 				_OnHitExceptionEvent.Invoke("WeaponData.WeaponType，無此編號");
@@ -150,19 +151,19 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 		}
 
 		/// <summary>
-		/// 魚王倍數 = 所有同種類魚的 total odds
+		///     魚王倍數 = 所有同種類魚的 total odds
 		/// </summary>
 		/// <param name="request"></param>
 		private void _SetFishKingOdds(HitRequest request)
 		{
 			var fishKings = request.FishDatas.Where(x => x.FishStatus == FISH_STATUS.KING).ToArray();
 
-			if (!fishKings.Any())
+			if(!fishKings.Any())
 			{
 				return;
 			}
-			
-			foreach (var king in fishKings)
+
+			foreach(var king in fishKings)
 			{
 				var smallFishs = request.FishDatas.Where(x => x.FishStatus != FISH_STATUS.KING && x.FishType == king.FishType);
 
@@ -183,77 +184,82 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 
 		private void _MakeLog(HitRequest request, IEnumerable<HitResponse> responses)
 		{
+			const string formats = "PlayerVisitor:{0}\tStage:{1}\r\n<Request>\r\n{2}\r\n<Response>\r\n{3}";
 
-            var format = "PlayerVisitor:{0}\tStage:{1}\r\n<Request>\r\n{2}\r\n<Response>\r\n{3}";
+			var log = string.Format(
+				formats, 
+				_AccountId, 
+				_FishFarmData.FarmId, 
+				_MakeRequestLog(request), 
+				_MakeResponesLog(responses));
 
-            var log = string.Format(
-                format,
-                _AccountId,
-                _FishFarmData.FarmId,
-                _MakeRequestLog(request),
-                _MakeResponesLog(responses));
-
-            Singleton<Log>.Instance.WriteInfo(log);
-            
+			Singleton<Log>.Instance.WriteInfo(log);
 		}
 
-	    private string _MakeRequestLog(HitRequest request)
-	    {
-	        var weapon = request.WeaponData;
-            
-	        string weaponDataLog =$"WeaponData\r\n{"Bullte",-7}{"WeaponType",-32}{"Bet",-7}{"Odds",-7}{"Hits",-7}\r\n{weapon.BulletId,-7}{weapon.WeaponType,-32}{weapon.WeaponBet,-7}{weapon.WeaponOdds,-7}{weapon.TotalHits,-7}\r\n";
+		private string _MakeRequestLog(HitRequest request)
+		{
+			var weapon = request.WeaponData;
 
-	        var fishTitle = string.Format(
-	            "FishData\r\n{0,-7}{1,-32}{2,-32}{3,-7}\r\n",
-	            "Id",
-	            "FishType",
-	            "FishStatus",
-	            "Odds");
+			string weaponDataLog =
+				$"WeaponData\r\n{"Bullte", -7}{"WeaponType", -32}{"Bet", -7}{"Odds", -7}{"Hits", -7}\r\n{weapon.BulletId, -7}{weapon.WeaponType, -32}{weapon.WeaponBet, -7}{weapon.WeaponOdds, -7}{weapon.TotalHits, -7}\r\n";
 
-	        var fishs = request.FishDatas;
-            List<string> fishDataLogs = new List<string>();
-            foreach (var fishData in fishs)
-	        {
-                
-                string fishDataLog = string.Format(
-                "{0,-7}{1,-32}{2,-32}{3,-7}",
-                fishData.FishId,
-                fishData.FishType,
-                fishData.FishStatus,
-                fishData.FishOdds);
-                fishDataLogs.Add(fishDataLog);
-            }
+			var fishTitle = string.Format(
+				"FishData\r\n{0,-7}{1,-32}{2,-32}{3,-7}\r\n", 
+				"Id", 
+				"FishType", 
+				"FishStatus", 
+				"Odds");
 
-	        return weaponDataLog + fishTitle + string.Join("\r\n", fishDataLogs.ToArray());
-	    }
+			var fishs = request.FishDatas;
 
-	    private string _MakeResponesLog(IEnumerable<HitResponse> responses)
-	    {
-	        var title = String.Format("{0,-7}{1,-7}{2,-16}{3,-64}{4,-7}{5,-7}\r\n" , "WepId" ,"FishId", "DisResult" , "FeedbackWeapons","Bet","OddsResult");
+			return weaponDataLog + fishTitle
+					+ string.Join(
+						"\r\n", 
+						fishs.Select(
+							fish_data =>
+							string.Format(
+								"{0,-7}{1,-32}{2,-32}{3,-7}", 
+								fish_data.FishId, 
+								fish_data.FishType, 
+								fish_data.FishStatus, 
+								fish_data.FishOdds)).ToArray());
+		}
 
-            List<string> lines = new List<string>();
-	        foreach(var response in responses)
-	        {
-	            var fws = response.FeedbackWeapons.ShowMembers(",");
-                lines.Add(string.Format("{0,-7}{1,-7}{2,-16}{3,-64}{4,-7}{5,-7}" , 
-                    response.WepId, 
-                    response.FishId , 
-                    response.DieResult , 
-                    fws, 
-                    response.WeaponBet , 
-                    response.OddsResult ));
-            }
-	        
-	        return title + String.Join("\r\n" , lines.ToArray());
-	    }
+		private string _MakeResponesLog(IEnumerable<HitResponse> responses)
+		{
+			var title = string.Format(
+				"{0,-7}{1,-7}{2,-16}{3,-64}{4,-7}{5,-24}{6,-24}\r\n", 
+				"WepId", 
+				"FishId", 
+				"DisResult", 
+				"FeedbackWeapons", 
+				"Bet", 
+				"OddsResult", 
+				"DieRate");
 
-	    private List<RandomData> _CreateRandoms()
+			return title + string.Join(
+				"\r\n", 
+				(from response in responses
+				let fws = response.FeedbackWeapons.ShowMembers(",")
+				select
+					string.Format(
+						"{0,-7}{1,-7}{2,-16}{3,-64}{4,-7}{5,-24}{6,-24}", 
+						response.WepId, 
+						response.FishId, 
+						response.DieResult, 
+						fws, 
+						response.WeaponBet, 
+						response.OddsResult, 
+						response.DieRate)).ToArray());
+		}
+
+		private List<RandomData> _CreateRandoms()
 		{
 			var rs = new List<RandomData>
 			{
-				_CreateAdjustPlayerPhaseRandom(),
-				_CreateTreasureRandom(),
-				_CreateDeathRandom(),
+				_CreateAdjustPlayerPhaseRandom(), 
+				_CreateTreasureRandom(), 
+				_CreateDeathRandom(), 
 				_CreateOddsRandom()
 			};
 
@@ -264,7 +270,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 		{
 			var data = new RandomData
 			{
-				RandomType = RandomData.RULE.ADJUSTMENT_PLAYER_PHASE,
+				RandomType = RandomData.RULE.ADJUSTMENT_PLAYER_PHASE, 
 				Randoms = new List<IRandom>()
 			};
 
@@ -278,7 +284,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 		{
 			var data = new RandomData
 			{
-				RandomType = RandomData.RULE.CHECK_TREASURE,
+				RandomType = RandomData.RULE.CHECK_TREASURE, 
 				Randoms = new List<IRandom>()
 			};
 
@@ -292,7 +298,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 		{
 			var data = new RandomData
 			{
-				RandomType = RandomData.RULE.DEATH,
+				RandomType = RandomData.RULE.DEATH, 
 				Randoms = new List<IRandom>()
 			};
 
@@ -306,7 +312,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 		{
 			var data = new RandomData
 			{
-				RandomType = RandomData.RULE.ODDS,
+				RandomType = RandomData.RULE.ODDS, 
 				Randoms = new List<IRandom>()
 			};
 

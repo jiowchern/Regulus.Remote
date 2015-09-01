@@ -37,15 +37,15 @@ namespace VGame.Project.FishHunter.Formula
 			remove { _OnHitExceptionEvent -= value; }
 		}
 
-	    private event Action<HitResponse[]> _OnTotalHitResponseEvent;
+		private event Action<HitResponse[]> _OnTotalHitResponseEvent;
 
-	    event Action<HitResponse[]> IFishStage.OnTotalHitResponseEvent
-	    {
-	        add { this._OnTotalHitResponseEvent += value; }
-	        remove { this._OnTotalHitResponseEvent -= value; }
-	    }
+		event Action<HitResponse[]> IFishStage.OnTotalHitResponseEvent
+		{
+			add { this._OnTotalHitResponseEvent += value; }
+			remove { this._OnTotalHitResponseEvent -= value; }
+		}
 
-	    Guid IFishStage.AccountId
+		Guid IFishStage.AccountId
 		{
 			get { return _AccountId; }
 		}
@@ -59,7 +59,7 @@ namespace VGame.Project.FishHunter.Formula
 		{
 			var responses = _Formula.TotalRequest(request);
 
-            _OnTotalHitResponseEvent.Invoke(responses);
+			_OnTotalHitResponseEvent.Invoke(responses);
 
 			_MakeLog(request, responses);
 		}

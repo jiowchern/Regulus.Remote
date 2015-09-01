@@ -1,4 +1,6 @@
-﻿using ProtoBuf;
+﻿
+
+using ProtoBuf;
 
 namespace VGame.Project.FishHunter.Common.Data
 {
@@ -45,5 +47,7 @@ namespace VGame.Project.FishHunter.Common.Data
 		/// </summary>
 		[ProtoMember(6)]
 		public int OddsResult { get; set; }
+
+		public long DieRate { get; set; }
 	}
 }
