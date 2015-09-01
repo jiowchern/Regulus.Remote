@@ -25,7 +25,14 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 			var datas = new NatureBufferChancesTable().Get().ToDictionary(x => x.Key);
 
-			foreach(var data in datas.Where(data => buffer_value > (data.Key * base_value)))
+			// 沒有的話要回傳最小值
+			if (!datas.Any(data => buffer_value > (data.Key * base_value)))
+			{
+				return (int)datas.First().Value.Value;
+			}
+
+			// 比對最大值
+			foreach (var data in datas.Where(data => buffer_value > (data.Key * base_value)))
 			{
 			    natureValue = (int)data.Value.Value;
 			}
