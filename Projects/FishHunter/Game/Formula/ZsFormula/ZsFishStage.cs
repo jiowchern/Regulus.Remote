@@ -184,10 +184,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 		private void _MakeLog(HitRequest request, IEnumerable<HitResponse> responses)
 		{
 
-            var format = 
-                @"PlayerVisitor:{0}\tStage:{1}\r\n
-                    \tRequest:{2}\r\n
-                    \tResponse:{3}";
+            var format = "PlayerVisitor:{0}\tStage:{1}\r\n<Request>\r\n{2}\r\n<Response>\r\n{3}";
 
             var log = string.Format(
                 format,
@@ -203,23 +200,23 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 	    private string _MakeRequestLog(HitRequest request)
 	    {
 	        var weapon = request.WeaponData;
-            var formatWeapon = @"WeaponData\r\nBullte\tWeaponType\tBet\tOdds\Hits\r\n{0}\t{1}\t{2}\t{3}\t{4}\r\n";
-	        string weaponDataLog = string.Format(
-	            formatWeapon,
-	            weapon.BulletId,
-	            weapon.WeaponType,
-	            weapon.WeaponBet,
-	            weapon.WeaponOdds,
-	            weapon.TotalHits);
+            
+	        string weaponDataLog =$"WeaponData\r\n{"Bullte",-7}{"WeaponType",-32}{"Bet",-7}{"Odds",-7}{"Hits",-7}\r\n{weapon.BulletId,-7}{weapon.WeaponType,-32}{weapon.WeaponBet,-7}{weapon.WeaponOdds,-7}{weapon.TotalHits,-7}\r\n";
 
-	        var fishTitle = @"FishData\r\nId\tFishType\tFishStatus\tOdds\r\n";
+	        var fishTitle = string.Format(
+	            "FishData\r\n{0,-7}{1,-32}{2,-32}{3,-7}\r\n",
+	            "Id",
+	            "FishType",
+	            "FishStatus",
+	            "Odds");
+
 	        var fishs = request.FishDatas;
             List<string> fishDataLogs = new List<string>();
             foreach (var fishData in fishs)
 	        {
-                var fishFormat = @"{0}\t{1}\t{2}\t{3}";
+                
                 string fishDataLog = string.Format(
-                fishFormat,
+                "{0,-7}{1,-32}{2,-32}{3,-7}",
                 fishData.FishId,
                 fishData.FishType,
                 fishData.FishStatus,
@@ -232,12 +229,19 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 
 	    private string _MakeResponesLog(IEnumerable<HitResponse> responses)
 	    {
-	        var title = @"WepId\tFishId\tDisResult\tFeedbackWeapons\t\t\t\Bet\tOddsResult\r\n";
+	        var title = String.Format("{0,-7}{1,-7}{2,-16}{3,-64}{4,-7}{5,-7}\r\n" , "WepId" ,"FishId", "DisResult" , "FeedbackWeapons","Bet","OddsResult");
 
             List<string> lines = new List<string>();
 	        foreach(var response in responses)
 	        {
-                lines.Add(string.Format("{0}\t{1}\t{2}\t{3}\t\t\t{4}\t{5}" , response.FishId , response.DieResult , response.FeedbackWeapons.ShowMembers(",") , response.WeaponBet , response.OddsResult ));
+	            var fws = response.FeedbackWeapons.ShowMembers(",");
+                lines.Add(string.Format("{0,-7}{1,-7}{2,-16}{3,-64}{4,-7}{5,-7}" , 
+                    response.WepId, 
+                    response.FishId , 
+                    response.DieResult , 
+                    fws, 
+                    response.WeaponBet , 
+                    response.OddsResult ));
             }
 	        
 	        return title + String.Join("\r\n" , lines.ToArray());
