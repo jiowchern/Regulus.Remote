@@ -181,24 +181,29 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 			return returnValue;
 		}
 
-		private void _MakeLog(HitRequest request, IEnumerable<HitResponse> response)
+		private void _MakeLog(HitRequest request, IEnumerable<HitResponse> responses)
 		{
-			foreach(var hit in response)
-			{
-				var format = "PlayerVisitor:{0}\tStage:{1}\nRequest:{2}\nResponse:{3}";
 
-				var log = string.Format(
-					format, 
-					_AccountId, 
-					_FishFarmData.FarmId, 
-					request.ShowMembers(" "), 
-					hit.ShowMembers(" "));
+            var format = "PlayerVisitor:{0}\tStage:{1}\nRequest:{2}\nResponse:{3}";
 
-				Singleton<Log>.Instance.WriteInfo(log);
-			}
+            var log = string.Format(
+                format,
+                _AccountId,
+                _FishFarmData.FarmId,
+                request.ShowMembers(" "),
+                _GetResponesLog(responses));
+
+            Singleton<Log>.Instance.WriteInfo(log);
+            
 		}
 
-		private List<RandomData> _CreateRandoms()
+	    private string _GetResponesLog(IEnumerable<HitResponse> responses)
+	    {
+	        var messages = from response in responses select response.ShowMembers(" ");
+	        return string.Join(" ", messages.ToArray());
+	    }
+
+	    private List<RandomData> _CreateRandoms()
 		{
 			var rs = new List<RandomData>
 			{
