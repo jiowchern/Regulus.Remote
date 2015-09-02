@@ -74,8 +74,9 @@ namespace VGame.Project.FishHunter
 		{
 			_Updater.Shutdown();
 			Singleton<Log>.Instance.RecordEvent -= _LogRecorder.Record;
-			
-		}
+            _LogRecorder.Save();
+
+        }
 
 		void IBootable.Launch()
 		{
