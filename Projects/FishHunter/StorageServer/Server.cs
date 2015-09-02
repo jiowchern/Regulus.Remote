@@ -81,6 +81,7 @@ namespace VGame.Project.FishHunter.Storage
             _Updater.Shutdown();
             
             Singleton<Log>.Instance.RecordEvent -= _LogRecorder.Record;
+            _LogRecorder.Save();
         }
 
         Value<Account> IAccountFinder.FindAccountByName(string name)
