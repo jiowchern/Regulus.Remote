@@ -2,7 +2,7 @@
 
 
 using Regulus.Framework;
-using Regulus.Game;
+
 using Regulus.Remoting;
 using Regulus.Utility;
 
@@ -13,11 +13,11 @@ using VGame.Project.FishHunter.Stage;
 
 namespace VGame.Project.FishHunter.Storage
 {
-	internal class User : IUser
-	{
-		private event OnQuit _QuitEvent;
+	internal class User : Regulus.Game.IUser
+    {
+		private event Regulus.Game.OnQuit _QuitEvent;
 
-		private event OnNewUser _VerifySuccessEvent;
+		private event Regulus.Game.OnNewUser _VerifySuccessEvent;
 
 		private readonly ISoulBinder _Binder;
 
@@ -34,17 +34,17 @@ namespace VGame.Project.FishHunter.Storage
 			_Machine = new StageMachine();
 		}
 
-		void IUser.OnKick(Guid id)
+		void Regulus.Game.IUser.OnKick(Guid id)
 		{
 		}
 
-		event OnNewUser IUser.VerifySuccessEvent
+		event Regulus.Game.OnNewUser Regulus.Game.IUser.VerifySuccessEvent
 		{
 			add { _VerifySuccessEvent += value; }
 			remove { _VerifySuccessEvent -= value; }
 		}
 
-		event OnQuit IUser.QuitEvent
+		event Regulus.Game.OnQuit Regulus.Game.IUser.QuitEvent
 		{
 			add { _QuitEvent += value; }
 			remove { _QuitEvent -= value; }

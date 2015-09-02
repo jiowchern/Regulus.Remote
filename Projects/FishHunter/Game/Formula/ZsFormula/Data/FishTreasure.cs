@@ -29,7 +29,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
         /// <summary>
         /// 所有魚的掉寶資料
         /// </summary>
-        public List<FishTreasure> Treasures { get; }
+        public List<FishTreasure> Treasures { get; private set; }
 
         public static List<FishTreasure> Get()
         {

@@ -22,7 +22,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 
 		public List<WEAPON_TYPE> GotTreasures { get; set; }
 
-		public List<RandomData> RandomDatas { get; }
+		public List<RandomData> RandomDatas { get; private set; }
 
 		public DataVisitor(FishFarmData fish_farm, FormulaPlayerRecord formula_player_record, List<RandomData> random)
 		{
