@@ -15,7 +15,7 @@ using StageLock = VGame.Project.FishHunter.Common.Data.StageLock;
 
 namespace VGame.Project.FishHunter.Play
 {
-	internal class User : IUser, IAccountStatus
+	internal class User : Regulus.Game.IUser, IAccountStatus
 	{
 		private event Action _KickEvent;
 
@@ -74,19 +74,19 @@ namespace VGame.Project.FishHunter.Play
 			remove { _KickEvent -= value; }
 		}
 
-		event OnNewUser IUser.VerifySuccessEvent
+		event OnNewUser Regulus.Game.IUser.VerifySuccessEvent
 		{
 			add { _VerifySuccessEvent += value; }
 			remove { _VerifySuccessEvent -= value; }
 		}
 
-		event OnQuit IUser.QuitEvent
+		event OnQuit Regulus.Game.IUser.QuitEvent
 		{
 			add { _QuitEvent += value; }
 			remove { _QuitEvent -= value; }
 		}
 
-		void IUser.OnKick(Guid id)
+		void Regulus.Game.IUser.OnKick(Guid id)
 		{
 			if(_Account != null && _Account.Id == id)
 			{

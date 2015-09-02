@@ -200,8 +200,10 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 		{
 			var weapon = request.WeaponData;
 
-			string weaponDataLog =
-				$"WeaponData\r\n{"Bullte", -7}{"WeaponType", -32}{"Bet", -7}{"Odds", -7}{"Hits", -7}\r\n{weapon.BulletId, -7}{weapon.WeaponType, -32}{weapon.WeaponBet, -7}{weapon.WeaponOdds, -7}{weapon.TotalHits, -7}\r\n";
+		    string weaponDataLog =
+		        string.Format("WeaponData\r\n{0,-7}{1,-32}{2,-7}{3,-7}{4,-7}\r\n{5,-7}{6,-7}{7,-7}{8,-7}{9,-7}\r\n" 
+                ,"Bullet" , "WeaponType" , "Bet" , "Odds" , "Hits" 
+                , weapon.BulletId , weapon.WeaponType , weapon.WeaponBet , weapon.WeaponOdds , weapon.TotalHits);            
 
 			var fishTitle = string.Format(
 				"FishData\r\n{0,-7}{1,-32}{2,-32}{3,-7}\r\n", 
