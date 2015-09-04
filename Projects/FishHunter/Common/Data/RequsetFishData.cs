@@ -40,5 +40,13 @@ namespace VGame.Project.FishHunter.Common.Data
 		/// </summary>
 		[ProtoMember(4)]
 		public int FishOdds { get; set; }
+
+		/// <summary>
+		/// 陪葬品
+		/// 條件觸發後，跟發動者一起死
+		/// 例如 炸彈炸到的魚、魚王的小魚
+		/// </summary>
+		[ProtoMember(5)]
+		public RequsetFishData[] GraveGoods { get; set; }
 	}
 }

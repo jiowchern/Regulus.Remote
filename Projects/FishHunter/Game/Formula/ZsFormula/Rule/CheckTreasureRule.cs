@@ -20,7 +20,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 			_DataVisitor = data_visitor;
 			_FishData = fish_data;
 			_GotTreasures = new List<WEAPON_TYPE>();
-        }
+		}
 
 		/// <summary>
 		///     是否取得特殊道具（特殊武器
@@ -41,7 +41,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		/// </summary>
 		private void _CheckCertain()
 		{
-			if(_FishData.FishType >= FISH_TYPE.TROPICAL_FISH && _FishData.FishType <= FISH_TYPE.WHALE_COLOR)
+			if(_FishData.FishType >= FISH_TYPE.TROPICAL_FISH && _FishData.FishType <= FISH_TYPE.SPECIAL_EAT_FISH_CRAZY)
 			{
 				_GotTreasures.Add(
 					_FishData.FishStatus == FISH_STATUS.KING

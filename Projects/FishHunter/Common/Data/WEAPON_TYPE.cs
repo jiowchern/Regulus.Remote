@@ -14,75 +14,79 @@ namespace VGame.Project.FishHunter.Common.Data
 		/// <summary>
 		///     0 無效
 		/// </summary>
-		INVALID, 
+		[EnumDescription("0無效")]
+		INVALID = 0,
 
 		/// <summary>
 		///     1一般武器
 		/// </summary>
-		NORMAL, // 正常子彈
+		[EnumDescription("1一般子彈")]
+		NORMAL = 1, // 正常子彈
 
 		/// <summary>
 		///     2超級炮
 		/// </summary>
-		SUPER_BOMB, 
+		[EnumDescription("2超級炮")]
+		SUPER_BOMB = 2,
 
 		/// <summary>
 		///     3電網
 		/// </summary>
-		ELECTRIC_NET,
+		[EnumDescription("3電網")]
+		ELECTRIC_NET = 3,
 
-        /// <summary>
-        ///     4免費炮
-        /// </summary>
-        [EnumDescription("免費炮")]
-        FREE_POWER,
+		/// <summary>
+		///     4免費炮
+		/// </summary>
+		[EnumDescription("4免費炮")]
+		FREE_POWER = 4,
 
-        /// <summary>
-        ///     101全屏炸彈
-        /// </summary>
-        [EnumDescription("全屏炸彈")]
-        SCREEN_BOMB, 
+		/// <summary>
+		///     101全屏炸彈
+		/// </summary>
+		[EnumDescription("5全屏炸彈")]
+		SCREEN_BOMB = 5, 
 
 		/// <summary>
 		///     皮卡丘 電鰻
 		/// </summary>
-		[EnumDescription("皮卡丘")]
-		THUNDER_BOMB, 
+		[EnumDescription("6皮卡丘、電鰻")]
+		THUNDER_BOMB = 6, 
 
 		/// <summary>
 		///     貪食蛇
 		/// </summary>
-		[EnumDescription("貪食蛇")]
-		FIRE_BOMB, 
+		[EnumDescription("7貪食蛇")]
+		FIRE_BOMB = 7, 
 
 		/// <summary>
 		///     河豚 鐵球
 		/// </summary>
-		[EnumDescription("河豚")]
-		DAMAGE_BALL, 
+		[EnumDescription("8河豚")]
+		DAMAGE_BALL = 8, 
 
 		/// <summary>
 		///     小章魚
 		/// </summary>
-		[EnumDescription("小章魚")]
-		OCTOPUS_BOMB, 
+		[EnumDescription("9小章魚")]
+		OCTOPUS_BOMB = 9, 
 
 		/// <summary>
 		///     大章魚
 		/// </summary>
-		[EnumDescription("大章魚")]
-		BIG_OCTOPUS_BOMB,
+		[EnumDescription("10大章魚")]
+		BIG_OCTOPUS_BOMB = 10,
 
-        /// <summary>
-        /// 魚王
-        /// </summary>
-        [EnumDescription("魚王")]
-        KING,
+		/// <summary>
+		/// 魚王
+		/// </summary>
+		[EnumDescription("11魚王")]
+		KING = 11,
 
-        /// <summary>
-        /// 冰凍碼錶(炸彈)
-        /// </summary>
-        [EnumDescription("冰凍碼錶")]
-        FREEZE_BOMB,
-    };
+		/// <summary>
+		/// 冰凍碼錶(炸彈)
+		/// </summary>
+		[EnumDescription("12冰凍碼錶")]
+		FREEZE_BOMB = 12,
+	};
 }

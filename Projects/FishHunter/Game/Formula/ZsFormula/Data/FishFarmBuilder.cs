@@ -9,6 +9,7 @@ using VGame.Project.FishHunter.Common.Data;
 
 namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 {
+	// TODO 目前有六個魚場
 	public class FishFarmBuilder
 	{
 		public FishFarmData Get(int farm_id)

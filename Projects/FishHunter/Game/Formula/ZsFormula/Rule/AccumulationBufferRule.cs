@@ -28,7 +28,8 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		{
 			var enumData = EnumHelper.GetEnums<FarmBuffer.BUFFER_TYPE>();
 
-			foreach(var data in enumData.Select(buffer_type => _Visitor.Farm.FindBuffer(_Visitor.FocusBufferBlock, buffer_type)))
+			foreach(var data in enumData.Select(buffer_type => _Visitor.Farm.FindBuffer(_Visitor.FocusBufferBlock, buffer_type))
+				)
 			{
 				_AddBufferRate(data);
 			}
@@ -57,7 +58,5 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 			_Visitor.PlayerRecord.FindFarmRecord(_Visitor.Farm.FarmId).PlayTimes += 1;
 			_Visitor.PlayerRecord.FindFarmRecord(_Visitor.Farm.FarmId).PlayTotal += _Request.WeaponData.GetTotalBet();
 		}
-
-		
 	}
 }
