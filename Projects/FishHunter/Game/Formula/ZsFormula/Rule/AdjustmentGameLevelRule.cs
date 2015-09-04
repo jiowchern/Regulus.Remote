@@ -62,6 +62,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 			_TimeCounter.Reset();
 		}
 
+		// TODO 印LOG
 		private void _Update2()
 		{
 			var bufferData = _Visitor.Farm.FindBuffer(_Visitor.FocusBufferBlock, FarmBuffer.BUFFER_TYPE.NORMAL);

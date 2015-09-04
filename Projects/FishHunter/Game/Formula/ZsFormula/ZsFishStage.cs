@@ -79,7 +79,9 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 				return;
 			}
 
-			_SetFishKingOdds(request);
+			// TODO 大章魚爆彈
+			// TODO 判斷魚王和小魚是否在網子內的邏輯
+			_CheckFishKingRule(request);
 
 			var totalRequest = new ZsHitChecker(_FishFarmData, _FormulaPlayerRecord, _CreateRandoms()).TotalRequest(request);
 
@@ -109,6 +111,23 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 			{
 				_OnHitExceptionEvent.Invoke("FishData.FishStatus 無此狀態");
 				Singleton<Log>.Instance.WriteInfo("FishData.FishStatus 無此狀態");
+				return false;
+			}
+
+			if(request.FishDatas.Where(x => x.FishStatus == FISH_STATUS.KING)
+					.Any(
+						fishdata => fishdata.FishType < FISH_TYPE.TROPICAL_FISH
+									|| fishdata.FishType > FISH_TYPE.WHALE_COLOR))
+			{
+				_OnHitExceptionEvent.Invoke("此魚不可為魚王");
+				Singleton<Log>.Instance.WriteInfo("此魚不可為魚王");
+				return false;
+			}
+
+			if(request.FishDatas.Length == 0)
+			{
+				_OnHitExceptionEvent.Invoke("FishDatas長度 不可為0");
+				Singleton<Log>.Instance.WriteInfo("FishDatas長度 不可為0");
 				return false;
 			}
 
@@ -154,7 +173,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 		///     魚王倍數 = 所有同種類魚的 total odds
 		/// </summary>
 		/// <param name="request"></param>
-		private void _SetFishKingOdds(HitRequest request)
+		private void _CheckFishKingRule(HitRequest request)
 		{
 			var fishKings = request.FishDatas.Where(x => x.FishStatus == FISH_STATUS.KING).ToArray();
 
@@ -165,21 +184,20 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 
 			foreach(var king in fishKings)
 			{
-				var smallFishs = request.FishDatas.Where(x => x.FishStatus != FISH_STATUS.KING && x.FishType == king.FishType);
+				if(king.GraveGoods.Length == 0)
+				{
+					continue;
+				}
 
-				king.FishOdds += smallFishs.Sum(x => x.FishOdds);
+				if(king.GraveGoods.Any(x => x.FishType != king.FishType))
+				{
+					_OnHitExceptionEvent.Invoke("king.GraveGoods，陪葬魚型態不符");
+					Singleton<Log>.Instance.WriteInfo("king.GraveGoods，陪葬魚型態不符");
+					return;
+				}
+
+				king.FishOdds += king.GraveGoods.Sum(x => x.FishOdds);
 			}
-		}
-
-		private Value<FormulaPlayerRecord> _StroageLoad(Guid account_id)
-		{
-			var returnValue = new Value<FormulaPlayerRecord>();
-
-			var val = _FormulaPlayerRecorder.Query(account_id);
-
-			val.OnValue += game_player_record => { returnValue.SetValue(game_player_record); };
-
-			return returnValue;
 		}
 
 		private void _MakeLog(HitRequest request, IEnumerable<HitResponse> responses)
@@ -228,14 +246,15 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 		private string _MakeResponesLog(IEnumerable<HitResponse> responses)
 		{
 			var title = string.Format(
-				"{0,-7}{1,-7}{2,-16}{3,-64}{4,-7}{5,-24}{6,-24}\r\n", 
+				"{0,-7}{1,-7}{2,-16}{3,-64}{4,-7}{5,-24}{6,-24}{7,-24}\r\n", 
 				"WepId", 
 				"FishId", 
 				"DisResult", 
 				"FeedbackWeapons", 
 				"Bet", 
 				"OddsResult", 
-				"DieRate");
+				"DieRate", 
+				"DiePrecent");
 
 			return title + string.Join(
 				"\r\n", 
@@ -243,14 +262,15 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 				let fws = response.FeedbackWeapons.ShowMembers(",")
 				select
 					string.Format(
-						"{0,-7}{1,-7}{2,-16}{3,-64}{4,-7}{5,-24}{6,-24}", 
+						"{0,-7}{1,-7}{2,-16}{3,-64}{4,-7}{5,-24}{6,-24}{7,-24:P7}", 
 						response.WepId, 
 						response.FishId, 
 						response.DieResult, 
 						fws, 
 						response.WeaponBet, 
 						response.OddsResult, 
-						response.DieRate)).ToArray());
+						response.DieRate, 
+						(float)response.DieRate / (float)0x10000000)).ToArray());
 		}
 
 		private List<RandomData> _CreateRandoms()
