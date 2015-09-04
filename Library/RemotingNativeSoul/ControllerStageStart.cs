@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 
 
 using Regulus.Utility;
@@ -17,10 +18,13 @@ namespace Regulus.Remoting.Soul.Native
 
 		private readonly Console.IViewer _View;
 
-		public StageStart(Command command, Console.IViewer view)
+	    private readonly string[] _FirstCommand;
+
+	    public StageStart(Command command, Console.IViewer view ,string[] first_command)
 		{
 			_View = view;
-			_Command = command;
+	        _FirstCommand = first_command;
+	        _Command = command;
 		}
 
 		void IStage.Enter()
@@ -35,9 +39,36 @@ namespace Regulus.Remoting.Soul.Native
 			_View.WriteLine("path = game.dll");
 			_View.WriteLine("class = Company.Project.Center");
 			_View.WriteLine("======================================");
+
+
+		    if(_HasFirstCommand())
+		    {
+		        _RunFirstCommand();
+		    }
+		    
 		}
 
-		/*private void _LoadLibrary(string work_dir)
+	    private void _RunFirstCommand()
+	    {
+	        var command = _FirstCommand[0];
+	        var args = _FirstCommand.Skip(1);
+	        var arg = string.Join(" ", args.ToArray());
+            _View.WriteLine(string.Format("First Run Command {0} {1}.", command, arg));
+            _Command.Run(
+	            command,
+	            new []
+	            {
+	                arg
+	            });
+	        
+	    }
+
+	    private bool _HasFirstCommand()
+	    {
+	        return _FirstCommand.Length > 0;
+	    }
+
+	    /*private void _LoadLibrary(string work_dir)
         {
                 
             var files = from f in System.IO.Directory.EnumerateFiles(work_dir, "*.dll", System.IO.SearchOption.AllDirectories) select f;

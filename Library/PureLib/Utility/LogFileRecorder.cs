@@ -14,7 +14,7 @@ namespace Regulus.Utility
 			var file = string.Format("{0}_{1}.log", name, DateTime.Now.ToString("yyyy_MM_dd_hh_mm_ss"));
 			_Writer = File.AppendText(file);
 
-			AppDomain.CurrentDomain.UnhandledException += _FinalSave;
+			//AppDomain.CurrentDomain.UnhandledException += _FinalSave;
 		}
 
 		private void _FinalSave(object sender, UnhandledExceptionEventArgs e)
