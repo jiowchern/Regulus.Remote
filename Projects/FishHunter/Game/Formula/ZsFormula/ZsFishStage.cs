@@ -138,7 +138,8 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 				return false;
 			}
 
-			if(request.WeaponData.WeaponType < WEAPON_TYPE.NORMAL || request.WeaponData.WeaponType > WEAPON_TYPE.FREEZE_BOMB)
+			if(request.WeaponData.WeaponType < WEAPON_TYPE.NORMAL
+				|| request.WeaponData.WeaponType > WEAPON_TYPE.FREEZE_BOMB)
 			{
 				_OnHitExceptionEvent.Invoke("WeaponData.WeaponType，無此編號");
 				Singleton<Log>.Instance.WriteInfo("WeaponData.WeaponType，無此編號");
@@ -177,23 +178,19 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 		{
 			var fishKings = request.FishDatas.Where(x => x.FishStatus == FISH_STATUS.KING).ToArray();
 
-			if(!fishKings.Any())
+			if(fishKings.Any(king => king.GraveGoods == null))
 			{
+				_OnHitExceptionEvent.Invoke("king.GraveGoods，此值不可為null");
 				return;
 			}
 
-			foreach(var king in fishKings)
+			foreach(var king in fishKings.Where(king => king.GraveGoods.Any()))
 			{
-				if(king.GraveGoods.Length == 0)
-				{
-					continue;
-				}
-
 				if(king.GraveGoods.Any(x => x.FishType != king.FishType))
 				{
 					_OnHitExceptionEvent.Invoke("king.GraveGoods，陪葬魚型態不符");
 					Singleton<Log>.Instance.WriteInfo("king.GraveGoods，陪葬魚型態不符");
-					return;
+					continue;
 				}
 
 				king.FishOdds += king.GraveGoods.Sum(x => x.FishOdds);
@@ -218,10 +215,21 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 		{
 			var weapon = request.WeaponData;
 
-		    string weaponDataLog =
-		        string.Format("WeaponData\r\n{0,-7}{1,-32}{2,-7}{3,-7}{4,-7}\r\n{5,-7}{6,-7}{7,-7}{8,-7}{9,-7}\r\n" 
-                ,"Bullet" , "WeaponType" , "Bet" , "Odds" , "Hits" 
-                , weapon.BulletId , weapon.WeaponType , weapon.WeaponBet , weapon.WeaponOdds , weapon.TotalHits);            
+			var weaponDataLog =
+				string.Format(
+					"WeaponData\r\n{0,-7}{1,-32}{2,-7}{3,-7}{4,-7}\r\n{5,-7}{6,-7}{7,-7}{8,-7}{9,-7}\r\n"
+					, 
+					"Bullet", 
+					"WeaponType", 
+					"Bet", 
+					"Odds", 
+					"Hits"
+					, 
+					weapon.BulletId, 
+					weapon.WeaponType, 
+					weapon.WeaponBet, 
+					weapon.WeaponOdds, 
+					weapon.TotalHits);
 
 			var fishTitle = string.Format(
 				"FishData\r\n{0,-7}{1,-32}{2,-32}{3,-7}\r\n", 
