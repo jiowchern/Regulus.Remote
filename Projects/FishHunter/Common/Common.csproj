@@ -56,7 +56,6 @@
     <Compile Include="Data\FarmRecord.cs" />
     <Compile Include="Data\FarmBuffer.cs" />
     <Compile Include="Data\FishFarmData.cs" />
-    <Compile Include="Data\SpecialWeaponPowerTable.cs" />
     <Compile Include="GPI\IAccountCreator.cs" />
     <Compile Include="Data\Account.cs" />
     <Compile Include="Data\ACCOUNT_REQUEST_RESULT.cs" />

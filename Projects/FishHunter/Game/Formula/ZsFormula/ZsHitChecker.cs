@@ -29,7 +29,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 			_DataVisitor.FocusBufferBlock = block;
 
 			// 只有第一發才能累積buffer
-			if(request.WeaponData.WeaponType == WEAPON_TYPE.NORMAL && request.WeaponData.TotalHits == 1)
+			if(request.WeaponData.WeaponType == WEAPON_TYPE.NORMAL)
 			{
 				new AccumulationBufferRule(_DataVisitor, request).Run();
 
