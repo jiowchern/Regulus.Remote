@@ -46,7 +46,7 @@ namespace VGame.Project.FishHunter
 		}
 
 		public Complex()
-		{
+		{           
 			_LogRecorder = new LogFileRecorder("Play");
 
 			_StorageVerifyData = new Regulus.CustomType.Verify();
@@ -80,14 +80,26 @@ namespace VGame.Project.FishHunter
 
 		void IBootable.Launch()
 		{
-			
+		    _UnhandleCrash();
 			Singleton<Log>.Instance.RecordEvent += _LogRecorder.Record;
 			_Updater.Add(_Storage);
 			_Updater.Add(_Formula);
 			_ToConnectStorage(_StorageUser);
 		}
 
-		private void _BuildParams()
+	    private void _UnhandleCrash()
+	    {
+	        AppDomain.CurrentDomain.UnhandledException += _WriteError;
+	    }
+
+	    private void _WriteError(object sender, UnhandledExceptionEventArgs e)
+	    {
+	        Regulus.Utility.CrashDump.Write();
+            _LogRecorder.Record(e.ExceptionObject.ToString());
+            _LogRecorder.Save();
+        }
+
+	    private void _BuildParams()
 		{
 			var config = new Ini(_ReadConfig());
 

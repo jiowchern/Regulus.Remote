@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 
 
@@ -57,11 +58,14 @@ namespace VGame.Project.FishHunter.Storage
         bool IUpdatable.Update()
         {
             _Updater.Working();
+
+            throw new Exception();
             return true;
         }
 
         void IBootable.Launch()
         {
+            _UnhandleCrash();
             Singleton<Log>.Instance.RecordEvent += _LogRecorder.Record;
             
 
@@ -73,6 +77,28 @@ namespace VGame.Project.FishHunter.Storage
             _HandleGuest();
 
             // _HandleTradeRecord();
+        }
+
+        private void _UnhandleCrash()
+        {
+            AppDomain.CurrentDomain.UnhandledException += _WriteError;
+            //AppDomain.CurrentDomain.FirstChanceException += _WriteError;
+
+        }
+
+        private void _WriteError(object sender, FirstChanceExceptionEventArgs e)
+        {
+            Regulus.Utility.CrashDump.Write();
+            
+            _LogRecorder.Record(e.Exception.ToString());
+            _LogRecorder.Save();
+        }
+
+        private void _WriteError(object sender, UnhandledExceptionEventArgs e)
+        {
+            Regulus.Utility.CrashDump.Write();
+            _LogRecorder.Record(e.ExceptionObject.ToString());
+            _LogRecorder.Save();
         }
 
         void IBootable.Shutdown()

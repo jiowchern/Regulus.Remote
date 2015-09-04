@@ -73,6 +73,7 @@ namespace VGame.Project.FishHunter.Formula
 
 		private void _Setup()
 		{
+		    _UnhandleCrash();
 			_InitialLog();
 
 			var config = new Ini(_ReadConfig());
@@ -89,7 +90,19 @@ namespace VGame.Project.FishHunter.Formula
 			_Enable = true;
 		}
 
-		private string _ReadConfig()
+	    private void _UnhandleCrash()
+	    {
+	        AppDomain.CurrentDomain.UnhandledException += _WriteDump;
+	    }
+
+	    private void _WriteDump(object sender, UnhandledExceptionEventArgs e)
+	    {
+            Regulus.Utility.CrashDump.Write();
+            _LogRecorder.Record(e.ExceptionObject.ToString());
+            _LogRecorder.Save();            
+	    }
+
+	    private string _ReadConfig()
 		{
 			return File.ReadAllText("config.ini");
 		}
