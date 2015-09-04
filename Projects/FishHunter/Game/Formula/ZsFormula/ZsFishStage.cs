@@ -74,6 +74,8 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 
 		void IFishStage.Hit(HitRequest request)
 		{
+			_SerializeRule(request);
+
 			if(!_CheckDataLegality(request))
 			{
 				return;
@@ -91,6 +93,19 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 			_OnTotalHitResponseEvent.Invoke(totalRequest);
 
 			_MakeLog(request, totalRequest);
+		}
+
+		/// <summary>
+		///     因為Serialize 無法實現空array，因應下面邏輯判斷，
+		///     如果是null 就產生空array
+		/// </summary>
+		/// <param name="request"></param>
+		private void _SerializeRule(HitRequest request)
+		{
+			foreach(var fishData in request.FishDatas.Where(fish_data => fish_data.GraveGoods == null))
+			{
+				fishData.GraveGoods = new RequsetFishData[0];
+			}
 		}
 
 		/// <summary>
@@ -178,12 +193,6 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 		{
 			var fishKings = request.FishDatas.Where(x => x.FishStatus == FISH_STATUS.KING).ToArray();
 
-			if(fishKings.Any(king => king.GraveGoods == null))
-			{
-				_OnHitExceptionEvent.Invoke("king.GraveGoods，此值不可為null");
-				return;
-			}
-
 			foreach(var king in fishKings.Where(king => king.GraveGoods.Any()))
 			{
 				if(king.GraveGoods.Any(x => x.FishType != king.FishType))
@@ -217,14 +226,12 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 
 			var weaponDataLog =
 				string.Format(
-					"WeaponData\r\n{0,-7}{1,-32}{2,-7}{3,-7}{4,-7}\r\n{5,-7}{6,-7}{7,-7}{8,-7}{9,-7}\r\n"
-					, 
+					"WeaponData\r\n{0,-10}{1,-24}{2,-7}{3,-7}{4,-7}\r\n{5,-10}{6,-24}{7,-7}{8,-7}{9,-7}\r\n", 
 					"Bullet", 
 					"WeaponType", 
 					"Bet", 
 					"Odds", 
-					"Hits"
-					, 
+					"Hits", 
 					weapon.BulletId, 
 					weapon.WeaponType, 
 					weapon.WeaponBet, 
@@ -232,7 +239,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 					weapon.TotalHits);
 
 			var fishTitle = string.Format(
-				"FishData\r\n{0,-7}{1,-32}{2,-32}{3,-7}\r\n", 
+				"FishData\r\n{0,-7}{1,-24}{2,-24}{3,-7}\r\n", 
 				"Id", 
 				"FishType", 
 				"FishStatus", 
@@ -246,7 +253,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 						fishs.Select(
 							fish_data =>
 							string.Format(
-								"{0,-7}{1,-32}{2,-32}{3,-7}", 
+								"{0,-7}{1,-24}{2,-24}{3,-7}", 
 								fish_data.FishId, 
 								fish_data.FishType, 
 								fish_data.FishStatus, 
@@ -256,7 +263,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 		private string _MakeResponesLog(IEnumerable<HitResponse> responses)
 		{
 			var title = string.Format(
-				"{0,-7}{1,-7}{2,-16}{3,-64}{4,-7}{5,-24}{6,-24}{7,-24}\r\n", 
+				"{0,-7}{1,-7}{2,-16}{3,-32}{4,-7}{5,-12}{6,-12}{7,-12}\r\n", 
 				"WepId", 
 				"FishId", 
 				"DisResult", 
@@ -272,7 +279,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 				let fws = response.FeedbackWeapons.ShowMembers(",")
 				select
 					string.Format(
-						"{0,-7}{1,-7}{2,-16}{3,-64}{4,-7}{5,-24}{6,-24}{7,-24:P7}", 
+						"{0,-7}{1,-7}{2,-16}{3,-32}{4,-7}{5,-12}{6,-12}{7,-12:P7}", 
 						response.WepId, 
 						response.FishId, 
 						response.DieResult, 

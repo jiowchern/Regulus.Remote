@@ -50,14 +50,15 @@ namespace GameTest
 		[TestMethod]
 		public void Serializer()
 		{
-			var data1 = new FishFarmData();
+			RequsetFishData data1 = new RequsetFishData();
+			data1.GraveGoods = new RequsetFishData[0];
 
 			var serData = Regulus.TypeHelper.Serializer(data1);
 
-			var data2 = Regulus.TypeHelper.Deserialize<FishFarmData>(serData);
+			var data2 = Regulus.TypeHelper.Deserialize<RequsetFishData>(serData);
 			
 
-			Assert.AreEqual(data1.Id, data2.Id);
+			Assert.AreEqual(data2.GraveGoods, null);
 		}
 	}
 }
