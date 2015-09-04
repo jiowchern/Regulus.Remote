@@ -10,7 +10,14 @@ namespace Regulus.Remoting.Soul.Native
 
 		private TimeCounter _TimeCounter;
 
-		protected override void _Launch()
+	    private readonly string[] _Args;
+
+	    public Application(string[] args)
+	    {
+	        _Args = args;
+	    }
+
+        protected override void _Launch()
 		{
 			_SpinWait = new SpinWait();
 			_TimeCounter = new TimeCounter();
@@ -39,7 +46,7 @@ namespace Regulus.Remoting.Soul.Native
 
 		private void _ToStart()
 		{
-			var stage = new StageStart(Command, Viewer);
+			var stage = new StageStart(Command, Viewer , _Args);
 			stage.DoneEvent += _ToRun;
 			_Machine.Push(stage);
 		}

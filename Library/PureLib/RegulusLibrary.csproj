@@ -68,6 +68,7 @@
     <Compile Include="Collection\MultiKeyDictionary.cs" />
     <Compile Include="Collection\Quadtree.cs" />
     <Compile Include="Collection\Queue.cs" />
+    <Compile Include="CrashDump.cs" />
     <Compile Include="CustomType\Flag.cs" />
     <Compile Include="CustomType\Point.cs" />
     <Compile Include="CustomType\Polygon.cs" />
