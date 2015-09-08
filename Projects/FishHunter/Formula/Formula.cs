@@ -116,8 +116,6 @@ namespace VGame.Project.FishHunter.Formula
 		{
 			_LogRecorder = new LogFileRecorder("Formula");
 			Singleton<Log>.Instance.RecordEvent += _LogRecorder.Record;
-
-			
 		}
 
 		
@@ -128,7 +126,11 @@ namespace VGame.Project.FishHunter.Formula
 			_LogRecorder.Save();
 		}
 
-		private void _ToConnectStorage(IUser user)
+	    private void _ToConnectStorage()
+	    {            
+	        _ToConnectStorage(_StorageUser);
+	    }
+        private void _ToConnectStorage(IUser user)
 		{
 			_StorageUser = user;
 			var stage = new ConnectStorageStage(user, _IpAddress, _Port);
@@ -144,11 +146,21 @@ namespace VGame.Project.FishHunter.Formula
 			}
 			else
 			{
-				throw new SystemException("stroage connect fail");
+			    _ToWaitReconnect();
 			}
 		}
 
-		private void _ToVerifyStorage(IUser user)
+	    private void _ToWaitReconnect()
+	    {
+	        float second = 3.0f;	        
+	        Log.Instance.WriteInfo(string.Format("Can't connect storage server , waittig {0} second to reconnect ... ", second));
+
+	        var stage = new Regulus.Game.TimerStage(second);
+	        stage.DoneEvent += _ToConnectStorage;
+            _Machine.Push(stage);
+        }
+
+	    private void _ToVerifyStorage(IUser user)
 		{
 			var stage = new VerifyStorageStage(user, _Account, _Password);
 			stage.OnDoneEvent += _VerifyResult;
@@ -187,3 +199,5 @@ namespace VGame.Project.FishHunter.Formula
 		}
 	}
 }
+
+
