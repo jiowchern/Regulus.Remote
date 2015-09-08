@@ -98,6 +98,7 @@
     <Compile Include="Game\Framework.cs" />
     <Compile Include="Game\Hall.cs" />
     <Compile Include="Game\RangeChancesTable.cs" />
+    <Compile Include="Game\TimerStage.cs" />
     <Compile Include="Game\User.cs" />
     <Compile Include="Remoting\CommandParam.cs" />
     <Compile Include="Remoting\CommandParamBuilder.cs" />
