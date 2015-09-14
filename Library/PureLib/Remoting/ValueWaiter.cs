@@ -29,10 +29,11 @@ namespace Regulus.Remoting
 			var are = (AutoResetEvent)obj;
 
             var powerRegulator = new PowerRegulator(10);
-		    FPSCounter counter = new FPSCounter();
+            var autoPowerRegulator = new AutoPowerRegulator(powerRegulator);
+            
 			while(_HasValue == false)
-			{                
-                powerRegulator.Operate(counter.Value);
+			{
+                autoPowerRegulator.Operate();
             }
 
 			are.Set();
