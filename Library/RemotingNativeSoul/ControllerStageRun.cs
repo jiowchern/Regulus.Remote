@@ -58,7 +58,9 @@ namespace Regulus.Remoting.Soul.Native
 
 		private readonly PowerRegulator _Spin;
 
-		private volatile bool _Run;
+	    private readonly AutoPowerRegulator _AutoPowerRegulator;
+
+        private volatile bool _Run;
 
 		public int FPS
 		{
@@ -81,7 +83,8 @@ namespace Regulus.Remoting.Soul.Native
 
 			_RequesterHandlers = new Updater();
 			_Spin = new PowerRegulator();
-			_Binders = new Queue<ISoulBinder>();
+            _AutoPowerRegulator = new AutoPowerRegulator(_Spin);
+            _Binders = new Queue<ISoulBinder>();
 		}
 
 		public void DoWork(object obj)
@@ -106,7 +109,7 @@ namespace Regulus.Remoting.Soul.Native
 
 				_Core.Update();
 				_RequesterHandlers.Working();
-				_Spin.Operate(Peer.TotalResponse);
+                _AutoPowerRegulator.Operate();
 			}
 
 			_Core.Shutdown();
@@ -143,7 +146,9 @@ namespace Regulus.Remoting.Soul.Native
 		// ParallelUpdate _Peers;
 		private readonly PowerRegulator _Spin;
 
-		private volatile bool _Run;
+        private readonly AutoPowerRegulator _AutoPowerRegulator;
+
+        private volatile bool _Run;
 
 		private Socket _Socket;
 
@@ -172,7 +177,8 @@ namespace Regulus.Remoting.Soul.Native
 			_Peers = new PeerSet();
 
 			_Spin = new PowerRegulator();
-		}
+            _AutoPowerRegulator = new AutoPowerRegulator(_Spin);
+        }
 
 		public void DoWork(object obj)
 		{
@@ -209,7 +215,7 @@ namespace Regulus.Remoting.Soul.Native
 					}
 				}
 
-				_Spin.Operate(Peer.TotalRequest);
+                _AutoPowerRegulator.Operate();
 			}
 
 			_Peers.Release();

@@ -6,11 +6,7 @@ namespace Regulus.Remoting.Soul.Native
 	{
 		private StageMachine _Machine;
 
-		private SpinWait _SpinWait;
-
-		private TimeCounter _TimeCounter;
-
-	    private readonly string[] _Args;
+        private readonly string[] _Args;
 
 	    public Application(string[] args)
 	    {
@@ -19,24 +15,13 @@ namespace Regulus.Remoting.Soul.Native
 
         protected override void _Launch()
 		{
-			_SpinWait = new SpinWait();
-			_TimeCounter = new TimeCounter();
-			_Machine = new StageMachine();
+            _Machine = new StageMachine();
 			_ToStart();
 		}
 
 		protected override void _Update()
-		{
-			if(_TimeCounter.Second > 1.0f / 30.0f)
-			{
-				_Machine.Update();
-				_TimeCounter.Reset();
-				_SpinWait.Reset();
-			}
-			else
-			{
-				_SpinWait.SpinOnce();
-			}
+		{			            
+            _Machine.Update();			
 		}
 
 		protected override void _Shutdown()

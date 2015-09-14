@@ -22,7 +22,10 @@ namespace Regulus.Utility
 
 		private readonly Updater _Updater;
 
-		public Command Command
+        private AutoPowerRegulator _AutoPowerRegulator;
+
+
+        public Command Command
 		{
 			get { return _Console.Command; }
 		}
@@ -30,8 +33,9 @@ namespace Regulus.Utility
 		public Console.IViewer Viewer { get; private set; }
 
 		protected WindowConsole()
-		{
-			Viewer = new ConsoleViewer();
+		{            
+            _AutoPowerRegulator = new AutoPowerRegulator(new PowerRegulator());
+            Viewer = new ConsoleViewer();
 			_Input = new ConsoleInput(Viewer);
 			_Console = new Console(_Input, Viewer);
 			_Updater = new Updater();
@@ -57,7 +61,8 @@ namespace Regulus.Utility
 
 		bool IUpdatable.Update()
 		{
-			_Update();
+            _AutoPowerRegulator.Operate();
+            _Update();
 			_Updater.Working();
 			return true;
 		}
