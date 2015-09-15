@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 
 
 using Regulus.Collection;
@@ -92,13 +93,13 @@ namespace VGame.Project.FishHunter.Formula
 
 	    private void _UnhandleCrash()
 	    {
-	        AppDomain.CurrentDomain.UnhandledException += _WriteDump;
+	        
+	        AppDomain.CurrentDomain.FirstChanceException += _WriteDump;
 	    }
 
-	    private void _WriteDump(object sender, UnhandledExceptionEventArgs e)
+	    private void _WriteDump(object sender, FirstChanceExceptionEventArgs e)
 	    {
-            Regulus.Utility.CrashDump.Write();
-            _LogRecorder.Record(e.ExceptionObject.ToString());
+            _LogRecorder.Record($"Exception:{e.Exception.Message}\r\nStackTrace:{e.Exception.StackTrace}");
             _LogRecorder.Save();            
 	    }
 

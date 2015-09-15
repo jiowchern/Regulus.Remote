@@ -58,8 +58,7 @@ namespace VGame.Project.FishHunter.Storage
         bool IUpdatable.Update()
         {
             _Updater.Working();
-
-            throw new Exception();
+            
             return true;
         }
 
@@ -80,26 +79,18 @@ namespace VGame.Project.FishHunter.Storage
         }
 
         private void _UnhandleCrash()
-        {
-            AppDomain.CurrentDomain.UnhandledException += _WriteError;
-            //AppDomain.CurrentDomain.FirstChanceException += _WriteError;
+        {            
+            AppDomain.CurrentDomain.FirstChanceException += _WriteError;
 
         }
 
         private void _WriteError(object sender, FirstChanceExceptionEventArgs e)
         {
-            Regulus.Utility.CrashDump.Write();
-            
-            _LogRecorder.Record(e.Exception.ToString());
+            _LogRecorder.Record($"Exception:{e.Exception.Message}\r\nStackTrace:{e.Exception.StackTrace}");
             _LogRecorder.Save();
         }
 
-        private void _WriteError(object sender, UnhandledExceptionEventArgs e)
-        {
-            Regulus.Utility.CrashDump.Write();
-            _LogRecorder.Record(e.ExceptionObject.ToString());
-            _LogRecorder.Save();
-        }
+        
 
         void IBootable.Shutdown()
         {

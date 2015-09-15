@@ -1,5 +1,7 @@
 ﻿#region Test_Region
 
+using System;
+using System.Net.Mime;
 using System.Runtime.InteropServices;
 
 
@@ -181,8 +183,15 @@ namespace Regulus.Utility
 		{
 			public static void Run(this WindowConsole windowconsole)
 			{
-				var run = true;
-				windowconsole.Command.Register("quit", () => { run = false; });
+
+                
+                AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+			    {
+			        Regulus.Utility.CrashDump.Write();
+			        Environment.Exit(0);
+			    };
+                var run = true;			    
+                windowconsole.Command.Register("quit", () => { run = false; });
 				windowconsole.QuitEvent += () => { run = false; };
 				windowconsole.Launch();
 				while(run)
@@ -193,6 +202,8 @@ namespace Regulus.Utility
 				windowconsole.Shutdown();
 				windowconsole.Command.Unregister("quit");
 			}
+
+		    
 		}
 	}
 }
