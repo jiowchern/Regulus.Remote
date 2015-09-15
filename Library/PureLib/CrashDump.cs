@@ -7,19 +7,20 @@ namespace Regulus.Utility
 {
     public static class CrashDump
     {
+        [DllImport("kernel32.dll")]
+        static extern uint GetCurrentThreadId();
+
         [DllImport("dbghelp.dll", EntryPoint = "MiniDumpWriteDump", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
-        static extern bool MiniDumpWriteDump(IntPtr hProcess, uint processId, SafeHandle hFile, uint dumpType, IntPtr expParam, IntPtr userStreamParam, IntPtr callbackParam);
+        static extern bool MiniDumpWriteDump(IntPtr hProcess, uint processId, SafeHandle hFile, uint dumpType, ref MINIDUMP_EXCEPTION_INFORMATION ExceptionParam, IntPtr userStreamParam, IntPtr callbackParam);
 
 
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
-        struct MiniDumpExceptionInformation
+        public struct MINIDUMP_EXCEPTION_INFORMATION
         {
             public uint ThreadId;
             public IntPtr ExceptionPointers;
-            [MarshalAs(UnmanagedType.Bool)]
-            public bool ClientPointers;
+            public int ClientPointers;
         }
-
         [Flags]
         public enum MINIDUMP_TYPE
         {
@@ -61,16 +62,20 @@ namespace Regulus.Utility
         public static bool Write(MINIDUMP_TYPE options )
         {
 
+            
             string fileName = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".dmp");
             using (FileStream fs = new FileStream(fileName, FileMode.Create, FileAccess.ReadWrite, FileShare.Write))
             {
+                MINIDUMP_EXCEPTION_INFORMATION Mdinfo = new MINIDUMP_EXCEPTION_INFORMATION();
                 Process currentProcess = Process.GetCurrentProcess();
 
                 IntPtr currentProcessHandle = currentProcess.Handle;
 
                 uint currentProcessId = (uint)currentProcess.Id;
-                
-                return MiniDumpWriteDump(currentProcessHandle, currentProcessId, fs.SafeFileHandle, (uint)options, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+                Mdinfo.ThreadId = CrashDump.GetCurrentThreadId();
+                Mdinfo.ExceptionPointers = Marshal.GetExceptionPointers();
+                Mdinfo.ClientPointers = 1;
+                return MiniDumpWriteDump(currentProcessHandle, currentProcessId, fs.SafeFileHandle, (uint)options, ref Mdinfo, IntPtr.Zero, IntPtr.Zero);
             }
         }
     }

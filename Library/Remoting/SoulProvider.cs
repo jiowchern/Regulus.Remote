@@ -284,7 +284,7 @@ namespace Regulus.Remoting
 				    }
 				    catch(DeserializeException deserialize_exception)
 				    {
-				        var message  =  deserialize_exception.ToString();                        
+				        var message  =  deserialize_exception.Base.ToString();                        
 				        _ErrorDeserialize(method_name, returnId , message);
 				    }
 				    catch(Exception e)
