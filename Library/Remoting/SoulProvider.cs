@@ -289,9 +289,9 @@ namespace Regulus.Remoting
 				    }
 				    catch(Exception e)
 				    {
-				        Log.Instance.WriteDebug(e.ToString());   
-				        throw e;
-				    }
+				        Log.Instance.WriteDebug(e.ToString());
+                        _ErrorDeserialize(method_name, returnId, e.Message);
+                    }
                     
 				}
 			}
