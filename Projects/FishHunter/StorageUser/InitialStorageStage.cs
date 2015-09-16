@@ -22,10 +22,11 @@ namespace VGame.Project.FishHunter.Storage
 			_Account = account;
 			_Password = password;
 			_User = user;
-		}
+            
+        }
 
 		void IStage.Update()
-		{
+		{            
 		}
 
 		void IStage.Leave()
