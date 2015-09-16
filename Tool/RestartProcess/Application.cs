@@ -65,9 +65,9 @@ namespace Regulus.Project.RestartProcess
                 info.Arguments = args;
                 info.WorkingDirectory = file.DirectoryName;
 
-                Viewer.WriteLine($"Parse path [{path}]");
-                Viewer.WriteLine($"Parse args [{args}]");
-                Viewer.WriteLine($"Parse WorkingDirectory [{file.DirectoryName}]");
+                Log.Instance.WriteInfo($"Parse path [{path}]");
+                Log.Instance.WriteInfo($"Parse args [{args}]");
+                Log.Instance.WriteInfo($"Parse WorkingDirectory [{file.DirectoryName}]");
 
                 var process = Process.Start(info);
                 process.EnableRaisingEvents = true;                
@@ -76,30 +76,28 @@ namespace Regulus.Project.RestartProcess
                 
                 
                 _Restarts.Add(command);
-                Viewer.WriteLine($"Launch process [{process.Id}] ");
+                Log.Instance.WriteInfo($"Launch process [{process.Id}] ");
             }
             catch(Exception e)
             {
-                Viewer.WriteLine($"Launch fail. {e.ToString()}");                
+                Log.Instance.WriteInfo($"Launch fail. {e.ToString()}");                
             }
             
         }
 
-        private void _Error(object sender, DataReceivedEventArgs e)
-        {
-            Viewer.WriteLine($"error tag.");
-        }
+       
 
         private void _LauchError(string command)
         {
-            Viewer.WriteLine($"Launch fail. {command}");
+            Log.Instance.WriteInfo($"Launch fail. {command}");
         }
 
         private void _Restart(string path)
         {
             if(_Restarts.Any(p => p == path))
             {
-                Viewer.WriteLine($"5 second restart. {path}");
+
+                Log.Instance.WriteInfo($"5 second restart. {path}");
                 var timer = new System.Timers.Timer();
                 timer.Interval = 5000f;                
                 timer.Enabled = true;
