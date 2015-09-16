@@ -39,7 +39,9 @@ namespace VGame.Project.FishHunter.Formula
 
 		private Updater _Updater;
 
-		public Server()
+	    
+
+	    public Server()
 		{
 			_Setup();
 		}
@@ -133,17 +135,29 @@ namespace VGame.Project.FishHunter.Formula
 	    }
         private void _ToConnectStorage(IUser user)
 		{
+            if(_StorageUser != null)
+            {
+                _StorageUser.Remoting.OnlineProvider.Unsupply -= _Restart;
+            }
 			_StorageUser = user;
-			var stage = new ConnectStorageStage(user, _IpAddress, _Port);
+            _StorageUser.Remoting.OnlineProvider.Unsupply += _Restart;
+            var stage = new ConnectStorageStage(user, _IpAddress, _Port);
 			stage.OnDoneEvent += _ConnectResult;
 			_Machine.Push(stage);
 		}
 
-		private void _ConnectResult(bool result)
+	    private void _Restart(IOnline obj)
+	    {
+	        Log.Instance.WriteInfo("Storage disconnect , need restart.");
+            _ToConnectStorage();
+	    }
+
+	    private void _ConnectResult(bool result)
 		{
 			if(result)
 			{
-				_ToVerifyStorage(_StorageUser);
+			    
+                _ToVerifyStorage(_StorageUser);
 			}
 			else
 			{
@@ -189,7 +203,7 @@ namespace VGame.Project.FishHunter.Formula
 
 		private void _ToRunFormula(ExpansionFeature expansion_feature)
 		{
-			var stage = new RunFormulaStage(expansion_feature, _Binders);
+			var stage = new RunFormulaStage( expansion_feature, _Binders);
 			stage.DoneEvent += _ToShutdown;
 			_Machine.Push(stage);
 		}

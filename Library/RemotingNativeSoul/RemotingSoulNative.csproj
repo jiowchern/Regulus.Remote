@@ -54,6 +54,8 @@
     <Compile Include="PeerSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Server.cs" />
+    <Compile Include="ThreadCoreHandler.cs" />
+    <Compile Include="ThreadSocketHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PureLib\RegulusLibrary.csproj">
