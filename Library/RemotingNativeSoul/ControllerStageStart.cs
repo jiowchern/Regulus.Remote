@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 
 using Regulus.Utility;
@@ -114,8 +115,13 @@ namespace Regulus.Remoting.Soul.Native
 
 			try
 			{
-				var core = Loader.Load(stream, class_name);
-				DoneEvent(core, port, 0);
+                var assembly = Assembly.Load(stream);
+                var instance = assembly.CreateInstance(class_name);
+			    var asm = assembly.GetName();
+
+                _View.WriteLine($"Version : {asm.Version.ToString()}");             
+                Log.Instance.WriteInfo($"Assembly Version : {asm.Version.ToString()}");
+                DoneEvent(instance as ICore, port, 0);
 			}
 			catch(SystemException ex)
 			{
