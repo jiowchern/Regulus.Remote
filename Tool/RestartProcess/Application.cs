@@ -97,7 +97,7 @@ namespace Regulus.Project.RestartProcess
             if(_Restarts.Any(p => p == path))
             {
 
-                Log.Instance.WriteInfo($"5 second restart. {path}");
+                Log.Instance.WriteInfo($"5 second restart. {path} at {System.DateTime.Now}");
                 var timer = new System.Timers.Timer();
                 timer.Interval = 5000f;                
                 timer.Enabled = true;

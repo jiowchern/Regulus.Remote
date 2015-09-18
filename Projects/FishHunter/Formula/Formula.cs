@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Net.Configuration;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 
@@ -112,7 +113,7 @@ namespace VGame.Project.FishHunter.Formula
 
 		private static void _PreloadAssembly()
 		{
-			Assembly.Load("FishHunterCommon");
+			
 		}
 
 		private void _InitialLog()
@@ -138,13 +139,17 @@ namespace VGame.Project.FishHunter.Formula
             if(_StorageUser != null)
             {
                 _StorageUser.Remoting.OnlineProvider.Unsupply -= _Restart;
+        
             }
 			_StorageUser = user;
+            _StorageUser.Remoting.ErrorMessageEvent += (msg) => { Log.Instance.WriteInfo(string.Format("StorageErrorLog:{0}", msg)); };
             _StorageUser.Remoting.OnlineProvider.Unsupply += _Restart;
             var stage = new ConnectStorageStage(user, _IpAddress, _Port);
 			stage.OnDoneEvent += _ConnectResult;
 			_Machine.Push(stage);
 		}
+
+	    
 
 	    private void _Restart(IOnline obj)
 	    {
