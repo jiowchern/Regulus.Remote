@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // 組件的一般資訊是由下列的屬性集控制。
@@ -32,4 +33,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("0.1.0.0")]
 [assembly: AssemblyFileVersion("0.0.307.1")]
 [assembly: AssemblyInformationalVersion("0.0.0.0")]
+[assembly: InternalsVisibleTo("RemotingTest")]
 

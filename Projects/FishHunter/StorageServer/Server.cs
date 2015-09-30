@@ -488,8 +488,7 @@ namespace VGame.Project.FishHunter.Storage
 
             var returnTask = tradeTask.ContinueWith(
                 task =>
-                {
-                    Singleton<Log>.Instance.WriteDebug("FormulaPlayerRecord Load Done.");
+                {                    
                     if(task.Exception != null)
                     {
                         Singleton<Log>.Instance.WriteDebug(

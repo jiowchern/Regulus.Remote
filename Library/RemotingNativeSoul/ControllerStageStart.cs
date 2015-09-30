@@ -52,15 +52,12 @@ namespace Regulus.Remoting.Soul.Native
 	    private void _RunFirstCommand()
 	    {
 	        var command = _FirstCommand[0];
-	        var args = _FirstCommand.Skip(1);
-	        var arg = string.Join(" ", args.ToArray());
+	        var args = _FirstCommand.Skip(1).ToArray();
+	        var arg = string.Join(" ", args);
             _View.WriteLine(string.Format("First Run Command {0} {1}.", command, arg));
             _Command.Run(
 	            command,
-	            new []
-	            {
-	                arg
-	            });
+                args);
 	        
 	    }
 
