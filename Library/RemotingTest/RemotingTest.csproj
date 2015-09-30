@@ -80,6 +80,7 @@
     <Compile Include="ReturnTest.cs" />
     <Compile Include="TestValue.cs" />
     <Compile Include="AutoReleaseTest.cs" />
+    <Compile Include="ControllerStageStartTest.cs" />
     <Compile Include="UnitTestSoulProvider.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>
