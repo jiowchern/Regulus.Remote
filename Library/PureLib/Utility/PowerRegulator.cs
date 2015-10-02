@@ -41,7 +41,7 @@
 			_FPS = new FPSCounter();
 		}
 
-		public void Operate(int busy)
+		public void Operate(long busy)
 		{
 			_FPS.Update();
 

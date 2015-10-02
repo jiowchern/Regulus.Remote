@@ -1,4 +1,7 @@
-﻿using Regulus.Framework;
+﻿using System;
+
+
+using Regulus.Framework;
 using Regulus.Utility;
 
 namespace Regulus.Remoting
@@ -15,7 +18,9 @@ namespace Regulus.Remoting
 
 		private readonly Updater _Updater;
 
-		public INotifier<IConnect> ConnectProvider
+	    public event Action<string> ErrorMessageEvent;
+
+        public INotifier<IConnect> ConnectProvider
 		{
 			get { return _ConnectProvider; }
 		}
@@ -43,15 +48,26 @@ namespace Regulus.Remoting
 
 		void IBootable.Launch()
 		{
-			_Updater.Add(_Agent);
+		    _Agent.ErrorMethodEvent += _ErrorMethod;
+            _Updater.Add(_Agent);
 			_ToOffline();
 		}
 
-		void IBootable.Shutdown()
+	    private void _ErrorMethod(string arg1, string arg2)
+	    {
+	        if(ErrorMessageEvent != null)
+	        {
+	            ErrorMessageEvent(string.Format("Error method call. mrthod[{0}] message[{1}]" , arg1 ,arg2));
+	        }
+        }
+
+	    void IBootable.Shutdown()
 		{
-			_Machine.Termination();
+            
+            _Machine.Termination();
 			_Updater.Shutdown();
-		}
+            _Agent.ErrorMethodEvent -= _ErrorMethod;
+        }
 
 		private void _ToOffline()
 		{

@@ -24,7 +24,7 @@ namespace Regulus.Remoting
 
 		private readonly PowerRegulator _PowerRegulator;
 
-		private IAsyncResult _AsyncResult;
+	    private readonly AutoPowerRegulator _AutoPowerRegulator;
 
 		private byte[] _Buffer;
 
@@ -42,13 +42,15 @@ namespace Regulus.Remoting
 		/// </param>
 		public PackageWriter(int low_fps)
 		{
-			_PowerRegulator = new PowerRegulator(low_fps);
-		}
+            _PowerRegulator = new PowerRegulator(low_fps);
+            _AutoPowerRegulator = new AutoPowerRegulator(_PowerRegulator);
+        }
 
 		public PackageWriter()
 		{
 			_PowerRegulator = new PowerRegulator();
-		}
+            _AutoPowerRegulator = new AutoPowerRegulator(_PowerRegulator);
+        }
 
 		public void Start(Socket socket)
 		{
@@ -65,9 +67,9 @@ namespace Regulus.Remoting
 				var pkgs = _CheckSourceEvent();
 
 				_Buffer = _CreateBuffer(pkgs);
-				_PowerRegulator.Operate(_Buffer.Length);
+                _AutoPowerRegulator.Operate();
 
-				_AsyncResult = _Socket.BeginSendTo(
+                _Socket.BeginSendTo(
 					_Buffer, 
 					0, 
 					_Buffer.Length, 
@@ -78,7 +80,8 @@ namespace Regulus.Remoting
 			}
 			catch(SystemException e)
 			{
-				Singleton<Log>.Instance.WriteInfo(string.Format("PackageWriter Error Write {0}.", e));
+			    var info = string.Format("PackageWriter Error Write {0}.", e);
+                Singleton<Log>.Instance.WriteInfo(info);
 				if(ErrorEvent != null)
 				{
 					ErrorEvent();

@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+<<<<<<< HEAD
 using System.Net;
+=======
+using System.Net.Configuration;
+>>>>>>> master
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 
 
 using Regulus.Collection;
@@ -40,7 +45,9 @@ namespace VGame.Project.FishHunter.Formula
 
 		private Updater _Updater;
 
-		public Server()
+	    
+
+	    public Server()
 		{
 			_Setup();
 		}
@@ -116,13 +123,13 @@ namespace VGame.Project.FishHunter.Formula
 
 		private void _UnhandleCrash()
 	    {
-	        AppDomain.CurrentDomain.UnhandledException += _WriteDump;
+	        
+	        AppDomain.CurrentDomain.FirstChanceException += _WriteDump;
 	    }
 
-	    private void _WriteDump(object sender, UnhandledExceptionEventArgs e)
+	    private void _WriteDump(object sender, FirstChanceExceptionEventArgs e)
 	    {
-            Regulus.Utility.CrashDump.Write();
-            _LogRecorder.Record(e.ExceptionObject.ToString());
+            _LogRecorder.Record($"Exception:{e.Exception.Message}\r\nStackTrace:{e.Exception.StackTrace}");
             _LogRecorder.Save();            
 	    }
 
@@ -133,15 +140,13 @@ namespace VGame.Project.FishHunter.Formula
 
 		private static void _PreloadAssembly()
 		{
-			Assembly.Load("FishHunterCommon");
+			
 		}
 
 		private void _InitialLog()
 		{
 			_LogRecorder = new LogFileRecorder("Formula");
 			Singleton<Log>.Instance.RecordEvent += _LogRecorder.Record;
-
-			
 		}
 
 		
@@ -152,27 +157,57 @@ namespace VGame.Project.FishHunter.Formula
 			_LogRecorder.Save();
 		}
 
-		private void _ToConnectStorage(IUser user)
+	    private void _ToConnectStorage()
+	    {            
+	        _ToConnectStorage(_StorageUser);
+	    }
+        private void _ToConnectStorage(IUser user)
 		{
+            if(_StorageUser != null)
+            {
+                _StorageUser.Remoting.OnlineProvider.Unsupply -= _Restart;
+        
+            }
 			_StorageUser = user;
-			var stage = new ConnectStorageStage(user, _IpAddress, _Port);
+            _StorageUser.Remoting.ErrorMessageEvent += (msg) => { Log.Instance.WriteInfo(string.Format("StorageErrorLog:{0}", msg)); };
+            _StorageUser.Remoting.OnlineProvider.Unsupply += _Restart;
+            var stage = new ConnectStorageStage(user, _IpAddress, _Port);
 			stage.OnDoneEvent += _ConnectResult;
 			_Machine.Push(stage);
 		}
 
-		private void _ConnectResult(bool result)
+	    
+
+	    private void _Restart(IOnline obj)
+	    {
+	        Log.Instance.WriteInfo("Storage disconnect , need restart.");
+            _ToConnectStorage();
+	    }
+
+	    private void _ConnectResult(bool result)
 		{
 			if(result)
 			{
-				_ToVerifyStorage(_StorageUser);
+			    
+                _ToVerifyStorage(_StorageUser);
 			}
 			else
 			{
-				throw new SystemException("stroage connect fail");
+			    _ToWaitReconnect();
 			}
 		}
 
-		private void _ToVerifyStorage(IUser user)
+	    private void _ToWaitReconnect()
+	    {
+	        float second = 3.0f;	        
+	        Log.Instance.WriteInfo(string.Format("Can't connect storage server , waittig {0} second to reconnect ... ", second));
+
+	        var stage = new Regulus.Game.TimerStage(second);
+	        stage.DoneEvent += _ToConnectStorage;
+            _Machine.Push(stage);
+        }
+
+	    private void _ToVerifyStorage(IUser user)
 		{
 			var stage = new VerifyStorageStage(user, _Account, _Password);
 			stage.OnDoneEvent += _VerifyResult;
@@ -200,7 +235,7 @@ namespace VGame.Project.FishHunter.Formula
 
 		private void _ToRunFormula(ExpansionFeature expansion_feature)
 		{
-			var stage = new RunFormulaStage(expansion_feature, _Binders);
+			var stage = new RunFormulaStage( expansion_feature, _Binders);
 			stage.DoneEvent += _ToShutdown;
 			_Machine.Push(stage);
 		}
@@ -211,3 +246,5 @@ namespace VGame.Project.FishHunter.Formula
 		}
 	}
 }
+
+

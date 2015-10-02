@@ -1,4 +1,11 @@
+<<<<<<< HEAD
 ﻿
+=======
+﻿#region Test_Region
+
+using System;
+using System.Net.Mime;
+>>>>>>> master
 using System.Runtime.InteropServices;
 
 using Regulus.Framework;
@@ -19,7 +26,10 @@ namespace Regulus.Utility
 
 		private readonly Updater _Updater;
 
-		public Command Command
+        private AutoPowerRegulator _AutoPowerRegulator;
+
+
+        public Command Command
 		{
 			get { return _Console.Command; }
 		}
@@ -27,8 +37,9 @@ namespace Regulus.Utility
 		public Console.IViewer Viewer { get; private set; }
 
 		protected WindowConsole()
-		{
-			Viewer = new ConsoleViewer();
+		{            
+            _AutoPowerRegulator = new AutoPowerRegulator(new PowerRegulator());
+            Viewer = new ConsoleViewer();
 			_Input = new ConsoleInput(Viewer);
 			_Console = new Console(_Input, Viewer);
 			_Updater = new Updater();
@@ -54,7 +65,8 @@ namespace Regulus.Utility
 
 		bool IUpdatable.Update()
 		{
-			_Update();
+            _AutoPowerRegulator.Operate();
+            _Update();
 			_Updater.Working();
 			return true;
 		}
@@ -173,8 +185,15 @@ namespace Regulus.Utility
 		{
 			public static void Run(this WindowConsole windowconsole)
 			{
-				var run = true;
-				windowconsole.Command.Register("quit", () => { run = false; });
+
+                
+                AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+			    {
+			        Regulus.Utility.CrashDump.Write();
+			        Environment.Exit(0);
+			    };
+                var run = true;			    
+                windowconsole.Command.Register("quit", () => { run = false; });
 				windowconsole.QuitEvent += () => { run = false; };
 				windowconsole.Launch();
 				while(run)
@@ -185,6 +204,8 @@ namespace Regulus.Utility
 				windowconsole.Shutdown();
 				windowconsole.Command.Unregister("quit");
 			}
+
+		    
 		}
 	}
 }

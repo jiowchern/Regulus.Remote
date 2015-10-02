@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using System.Runtime.ExceptionServices;
 
 
 using Regulus.Framework;
@@ -80,22 +81,20 @@ namespace VGame.Project.FishHunter
 
 		void IBootable.Launch()
 		{
-		    _UnhandleCrash();
+		    AppDomain.CurrentDomain.FirstChanceException += _WriteError;
+            
 			Singleton<Log>.Instance.RecordEvent += _LogRecorder.Record;
 			_Updater.Add(_Storage);
 			_Updater.Add(_Formula);
 			_ToConnectStorage(_StorageUser);
 		}
 
-	    private void _UnhandleCrash()
-	    {
-	        AppDomain.CurrentDomain.UnhandledException += _WriteError;
-	    }
+	    
 
-	    private void _WriteError(object sender, UnhandledExceptionEventArgs e)
+	    private void _WriteError(object sender, FirstChanceExceptionEventArgs e)
 	    {
-	        Regulus.Utility.CrashDump.Write();
-            _LogRecorder.Record(e.ExceptionObject.ToString());
+	        
+            _LogRecorder.Record($"Exception:{e.Exception.Message}\r\nStackTrace:{e.Exception.StackTrace}");
             _LogRecorder.Save();
         }
 
@@ -116,6 +115,8 @@ namespace VGame.Project.FishHunter
 
 		private void _BuildUser()
 		{
+
+            
 			if(_IsIpAddress(_FormulaVerifyData.IPAddress))
 			{
 				_Formula = new Client();
@@ -230,8 +231,8 @@ namespace VGame.Project.FishHunter
 		}
 
 		private void _Play(BuildCenterStage.ExternalFeature features)
-		{
-			_Center = new Center(
+		{            
+            _Center = new Center(
 				features.AccountFinder, 
 				features.FishStageQueryer, 
 				features.GameRecorder, 
