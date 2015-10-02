@@ -1,6 +1,9 @@
 ﻿using Regulus.Remoting.Soul.Native;
 using Regulus.Utility.WindowConsoleAppliction;
 
+using NLog;
+using NLog.Fluent_2;
+
 namespace Server
 {
 	internal class Program

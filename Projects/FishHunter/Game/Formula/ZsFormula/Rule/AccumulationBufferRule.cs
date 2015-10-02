@@ -1,6 +1,10 @@
 ﻿using System.Linq;
 
 
+using NLog;
+using NLog.Fluent;
+
+
 using Regulus.Utility;
 
 
@@ -28,8 +32,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		{
 			var enumData = EnumHelper.GetEnums<FarmBuffer.BUFFER_TYPE>();
 
-			foreach(var data in enumData.Select(buffer_type => _Visitor.Farm.FindBuffer(_Visitor.FocusBufferBlock, buffer_type))
-				)
+			foreach(var data in enumData.Select(buffer_type => _Visitor.Farm.FindBuffer(_Visitor.FocusBufferBlock, buffer_type)))
 			{
 				_AddBufferRate(data);
 			}
@@ -54,9 +57,29 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		{
 			_Visitor.Farm.Record.PlayTimes += 1;
 			_Visitor.Farm.Record.PlayTotal += _Request.WeaponData.GetTotalBet();
+			_MakeLog();
 
 			_Visitor.PlayerRecord.FindFarmRecord(_Visitor.Farm.FarmId).PlayTimes += 1;
 			_Visitor.PlayerRecord.FindFarmRecord(_Visitor.Farm.FarmId).PlayTotal += _Request.WeaponData.GetTotalBet();
+		}
+
+		private void _MakeLog()
+		{
+			if(_Visitor.Farm.Record.PlayTimes % 500 != 0)
+			{
+				return;
+			}
+			var log = LogManager.GetLogger("AccumulationBufferRule");
+			log.Info()
+				.Message("AccumulationBufferRule")
+				.Property("FarmId", _Visitor.Farm.FarmId)
+				.Property("PlayTotal", _Visitor.Farm.Record.PlayTotal)
+				.Property("WinScore", _Visitor.Farm.Record.WinScore)
+				.Property("PlayTimes", _Visitor.Farm.Record.PlayTimes)
+				.Property("WinFrequency", _Visitor.Farm.Record.WinFrequency)
+				.Property("AsnTimes", _Visitor.Farm.Record.AsnTimes)
+				.Property("AsnWin", _Visitor.Farm.Record.AsnWin)
+				.Write();
 		}
 	}
 }
