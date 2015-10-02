@@ -58,12 +58,6 @@ namespace VGame.Project.FishHunter.Storage
         bool IUpdatable.Update()
         {
             _Updater.Working();
-<<<<<<< HEAD
-
-            //throw new Exception();
-=======
-            
->>>>>>> master
             return true;
         }
 
