@@ -98,6 +98,7 @@
     <Compile Include="Game\Framework.cs" />
     <Compile Include="Game\Hall.cs" />
     <Compile Include="Game\RangeChancesTable.cs" />
+    <Compile Include="Game\TimerStage.cs" />
     <Compile Include="Game\User.cs" />
     <Compile Include="Remoting\CommandParam.cs" />
     <Compile Include="Remoting\CommandParamBuilder.cs" />
@@ -109,6 +110,7 @@
     <Compile Include="Remoting\Value.cs" />
     <Compile Include="Remoting\ValueWaiter.cs" />
     <Compile Include="Utility\Asyncexecuter.cs" />
+    <Compile Include="Utility\AutoPowerRegulator.cs" />
     <Compile Include="Utility\Command.cs" />
     <Compile Include="Utility\CommandSender.cs" />
     <Compile Include="Utility\CommandExtension.cs" />

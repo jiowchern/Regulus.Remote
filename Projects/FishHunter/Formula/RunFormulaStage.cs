@@ -2,6 +2,9 @@
 using Regulus.Remoting;
 using Regulus.Utility;
 
+
+using VGame.Project.FishHunter.Storage;
+
 namespace VGame.Project.FishHunter.Formula
 {
 	internal class RunFormulaStage : IStage
@@ -10,7 +13,9 @@ namespace VGame.Project.FishHunter.Formula
 
 		public event DoneCallback DoneEvent;
 
-		private readonly Queue<ISoulBinder> _Binders;
+	    
+
+	    private readonly Queue<ISoulBinder> _Binders;
 
 		private readonly Center _Center;
 
@@ -21,22 +26,26 @@ namespace VGame.Project.FishHunter.Formula
 			get { return _Center; }
 		}
 
-		public RunFormulaStage(ExpansionFeature expansion_feature, Queue<ISoulBinder> binders)
+		public RunFormulaStage( ExpansionFeature expansion_feature, Queue<ISoulBinder> binders)
 		{
-			_Binders = binders;
+		    
+		    _Binders = binders;
 			_Updater = new Updater();
 			_Center = new Center(expansion_feature);
 		}
 
 		void IStage.Enter()
 		{
-			_Updater.Add(_Center);
+		    
+            _Updater.Add(_Center);
 		}
+	    
 
-		void IStage.Leave()
+	    void IStage.Leave()
 		{
 			_Updater.Shutdown();
-		}
+            
+        }
 
 		void IStage.Update()
 		{
@@ -46,6 +55,8 @@ namespace VGame.Project.FishHunter.Formula
 			{
 				_Core.AssignBinder(binder);
 			}
+
+            
 		}
 	}
 }

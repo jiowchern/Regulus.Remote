@@ -222,9 +222,12 @@ namespace Regulus.Remoting
 
 	    private void _ErrorReturnValue(Guid return_target, string method, string message)
 	    {
-            _ReturnValueQueue.PopReturnValue(return_target);
+	        _ReturnValueQueue.PopReturnValue(return_target);
 
-	        ErrorMethodEvent(method , message);
+	        if(ErrorMethodEvent != null)
+	        {
+	            ErrorMethodEvent(method , message);
+	        }
 	    }
 
 	    private void _SetReturnValue(Guid returnTarget, byte[] returnValue)

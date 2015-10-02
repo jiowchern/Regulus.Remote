@@ -1,4 +1,8 @@
-﻿using Regulus.Remoting.Soul.Native;
+﻿using System;
+using System.Collections.Generic;
+
+
+using Regulus.Remoting.Soul.Native;
 using Regulus.Utility.WindowConsoleAppliction;
 
 using NLog;
@@ -10,7 +14,17 @@ namespace Server
 	{
 		private static void Main(string[] args)
 		{
-			var app = new Application(args);
+            List<string> command = new List<string>();
+            
+            foreach (var a in args)
+                command.AddRange(a.Split(
+		            new[]
+		            {
+		                ' '
+		            },
+		            StringSplitOptions.RemoveEmptyEntries));
+			var app = new Application(command.ToArray());
+
 			app.Run();
 		}
 	}

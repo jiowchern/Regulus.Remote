@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 
 using Regulus.Utility;
@@ -51,15 +52,12 @@ namespace Regulus.Remoting.Soul.Native
 	    private void _RunFirstCommand()
 	    {
 	        var command = _FirstCommand[0];
-	        var args = _FirstCommand.Skip(1);
-	        var arg = string.Join(" ", args.ToArray());
+	        var args = _FirstCommand.Skip(1).ToArray();
+	        var arg = string.Join(" ", args);
             _View.WriteLine(string.Format("First Run Command {0} {1}.", command, arg));
             _Command.Run(
 	            command,
-	            new []
-	            {
-	                arg
-	            });
+                args);
 	        
 	    }
 
@@ -114,8 +112,13 @@ namespace Regulus.Remoting.Soul.Native
 
 			try
 			{
-				var core = Loader.Load(stream, class_name);
-				DoneEvent(core, port, 0);
+                var assembly = Assembly.Load(stream);
+                var instance = assembly.CreateInstance(class_name);
+			    var asm = assembly.GetName();
+
+                _View.WriteLine($"Version : {asm.Version.ToString()}");             
+                Log.Instance.WriteInfo($"Assembly Version : {asm.Version.ToString()}");
+                DoneEvent(instance as ICore, port, 0);
 			}
 			catch(SystemException ex)
 			{

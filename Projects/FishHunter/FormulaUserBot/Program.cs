@@ -17,9 +17,9 @@ namespace FormulaUserBot
 {
 	internal class Program
 	{
-		private static string IPAddress = "210.65.10.160";
+		//private static string IPAddress = "210.65.10.160";
 
-		// private static string IPAddress = "127.0.0.1";
+		 private static string IPAddress = "127.0.0.1";
 		private static readonly int Port = 38971;
 
 		private static void Main(string[] args)

@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 
 
 using Regulus.Framework;
@@ -17,7 +18,9 @@ namespace Regulus.Remoting.Soul.Native
 
 		private readonly WaitHandle _WaitSocket;
 
-		/// <summary>
+	    public event Action BreakEvent;
+
+	    /// <summary>
 		///     網路核心每秒執行次數
 		/// </summary>
 		public int PeerFPS
@@ -137,11 +140,17 @@ namespace Regulus.Remoting.Soul.Native
 		/// </summary>
 		public void Launch()
 		{
-			ThreadPool.QueueUserWorkItem(_ThreadCoreHandler.DoWork);
+		    _ThreadCoreHandler.ShutdownEvent += _Shutdown;
+            ThreadPool.QueueUserWorkItem(_ThreadCoreHandler.DoWork);
 			ThreadPool.QueueUserWorkItem(_ThreadSocketHandler.DoWork, _WaitSocket);
 		}
 
-		/// <summary>
+	    private void _Shutdown()
+	    {
+	        BreakEvent();            
+	    }
+
+	    /// <summary>
 		///     關閉系統
 		/// </summary>
 		public void Shutdown()
