@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-<<<<<<< HEAD
 using System.Net;
-=======
 using System.Net.Configuration;
->>>>>>> master
 using System.Reflection;
 using System.Runtime.ExceptionServices;
 

@@ -1,11 +1,5 @@
-<<<<<<< HEAD
-﻿
-=======
-﻿#region Test_Region
-
 using System;
 using System.Net.Mime;
->>>>>>> master
 using System.Runtime.InteropServices;
 
 using Regulus.Framework;

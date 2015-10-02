@@ -184,16 +184,11 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 
 			if(request.WeaponData.WeaponBet <= 0 || request.WeaponData.WeaponBet > 10000)
 			{
-<<<<<<< HEAD
-				_OnHitExceptionEvent.Invoke("WeaponData.WeaponBet，押注分數錯誤");
-				Singleton<Log>.Instance.WriteInfo("WeaponData.WeaponBet，押注分數錯誤");
-
 				LogManager.GetCurrentClassLogger().Fatal("WeaponData.WeaponBet，押注分數錯誤");
-=======
+
 			    var msg = string.Format("WeaponData.WeaponBet = {0}，押注分數錯誤", request.WeaponData.WeaponBet);
                 _OnHitExceptionEvent.Invoke(msg);
 				Singleton<Log>.Instance.WriteInfo(msg);
->>>>>>> master
 				return false;
 			}
 
