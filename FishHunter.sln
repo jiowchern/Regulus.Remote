@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegulusLibrary", "Library\PureLib\RegulusLibrary.csproj", "{2F28AA04-316D-4C20-BF46-987D4A59691D}"
 EndProject
@@ -102,6 +102,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogExceptionTest", "Library\LogExceptionTest\LogExceptionTest.csproj", "{9FA4B2C1-03EC-4F26-B78D-09275EE0F89D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameTest", "Projects\FishHunter\CommonTest\GameTest.csproj", "{06CC7AF7-6795-4231-AE6F-E87BCF8799E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogTool", "Log\LogTool.csproj", "{216E610C-4BB5-4ED0-B5E7-6BF01EDE4A98}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -301,6 +303,12 @@ Global
 		{06CC7AF7-6795-4231-AE6F-E87BCF8799E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06CC7AF7-6795-4231-AE6F-E87BCF8799E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06CC7AF7-6795-4231-AE6F-E87BCF8799E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{216E610C-4BB5-4ED0-B5E7-6BF01EDE4A98}.Debug_Unity|Any CPU.ActiveCfg = Debug|Any CPU
+		{216E610C-4BB5-4ED0-B5E7-6BF01EDE4A98}.Debug_Unity|Any CPU.Build.0 = Debug|Any CPU
+		{216E610C-4BB5-4ED0-B5E7-6BF01EDE4A98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{216E610C-4BB5-4ED0-B5E7-6BF01EDE4A98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{216E610C-4BB5-4ED0-B5E7-6BF01EDE4A98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{216E610C-4BB5-4ED0-B5E7-6BF01EDE4A98}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -342,5 +350,6 @@ Global
 		{E977627A-CD89-4D30-892D-4679E10F45FA} = {2C0B4D19-4D23-4793-8627-4E72FE94243F}
 		{9FA4B2C1-03EC-4F26-B78D-09275EE0F89D} = {2C0B4D19-4D23-4793-8627-4E72FE94243F}
 		{06CC7AF7-6795-4231-AE6F-E87BCF8799E3} = {96CF9E09-80D6-4232-9952-CEC23ECE61FB}
+		{216E610C-4BB5-4ED0-B5E7-6BF01EDE4A98} = {2C0B4D19-4D23-4793-8627-4E72FE94243F}
 	EndGlobalSection
 EndGlobal

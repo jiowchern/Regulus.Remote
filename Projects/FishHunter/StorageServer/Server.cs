@@ -59,7 +59,7 @@ namespace VGame.Project.FishHunter.Storage
         {
             _Updater.Working();
 
-            throw new Exception();
+            //throw new Exception();
             return true;
         }
 

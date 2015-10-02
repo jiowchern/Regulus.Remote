@@ -1,12 +1,9 @@
-﻿#region Test_Region
-
+﻿
 using System.Runtime.InteropServices;
-
 
 using Regulus.Framework;
 using Regulus.Utility.WindowConsoleStand;
 
-#endregion
 
 namespace Regulus.Utility
 {

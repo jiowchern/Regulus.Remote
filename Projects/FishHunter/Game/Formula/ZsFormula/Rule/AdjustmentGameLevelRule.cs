@@ -7,6 +7,9 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using NLog;
+using NLog.Fluent;
+
 using Regulus.Utility;
 
 using VGame.Project.FishHunter.Common.Data;
@@ -62,7 +65,6 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 			_TimeCounter.Reset();
 		}
 
-		// TODO 印LOG
 		private void _Update2()
 		{
 			var bufferData = _Visitor.Farm.FindBuffer(_Visitor.FocusBufferBlock, FarmBuffer.BUFFER_TYPE.NORMAL);
@@ -73,7 +75,23 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 			bufferTemp.HiLoRate = new NatureDataRule().Run(bufferData.Buffer, baseValue);
 
-			bufferTemp.FireCount -= 500;	
+			bufferTemp.FireCount -= 500;
+
+			_MakeLog(bufferTemp, bufferData);
+		}
+
+		private void _MakeLog(FarmBuffer.BufferValue buffer_temp, FarmBuffer buffer_data)
+		{
+			var log = LogManager.GetLogger("AdjustmentGameLevelRule");
+			log.Info()
+				.Message("Request Data")
+				.Property("FarmId", _Visitor.Farm.FarmId)
+				.Property("FocusBufferBlock", _Visitor.FocusBufferBlock)
+				.Property("NowBaseOdds", _Visitor.Farm.NowBaseOdds)
+				.Property("AverageValue", buffer_temp.AverageValue)
+				.Property("Buffer", buffer_data.Buffer)
+				.Property("HiLoRate", buffer_temp.HiLoRate)
+				.Write();
 		}
 	}
 }

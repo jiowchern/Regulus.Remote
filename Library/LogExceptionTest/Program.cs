@@ -15,22 +15,22 @@ namespace LogExceptionTest
 			var recorder = new LogFileRecorder("LogTest");
 			Singleton<Log>.Instance.RecordEvent += recorder.Record;
 
-		    while(true)
-		    {
-		        
-                System.Threading.Tasks.Parallel.For(
-		            1,
-		            100,
-		            (i) =>
-		            {
-                        Singleton<Log>.Instance.WriteDebug(System.DateTime.Now.ToString());
-                        if(System.Console.KeyAvailable)
-                            throw new Exception("aaa");
-                    });
-                
-            }
+			while(true)
+			{
+				
+				System.Threading.Tasks.Parallel.For(
+					1,
+					100,
+					(i) =>
+					{
+						Singleton<Log>.Instance.WriteDebug(System.DateTime.Now.ToString());
+						if(System.Console.KeyAvailable)
+							throw new Exception("aaa");
+					});
+				
+			}
 
-            
+			
 		}
 
 		

@@ -18,17 +18,17 @@ namespace Regulus.Remoting.Soul.Native
 		{
 			/*var exceptions = new System.Collections.Concurrent.ConcurrentQueue<Exception>();
 
-            Parallel.ForEach(base._GetObjectSet(), (updater) => 
-            {
-                try
-                {
-                    _Update(updater);
-                }
-                catch (Exception e) { exceptions.Enqueue(e); }
-            });
+			Parallel.ForEach(base._GetObjectSet(), (updater) => 
+			{
+				try
+				{
+					_Update(updater);
+				}
+				catch (Exception e) { exceptions.Enqueue(e); }
+			});
 
-            if (exceptions.Count > 0) 
-                throw new AggregateException(exceptions);*/
+			if (exceptions.Count > 0) 
+				throw new AggregateException(exceptions);*/
 			foreach(var up in _GetObjectSet())
 			{
 				_Update(up);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Net;
 using System.Reflection;
 
 
@@ -10,6 +11,7 @@ using Regulus.Remoting;
 using Regulus.Utility;
 
 
+using VGame.Project.FishHunter.Play;
 using VGame.Project.FishHunter.Storage;
 
 namespace VGame.Project.FishHunter.Formula
@@ -70,12 +72,28 @@ namespace VGame.Project.FishHunter.Formula
 			_Updater.Shutdown();
 			_Machine.Termination();
 		}
-
+		private bool _IsIpAddress(string ip)
+		{
+			IPAddress ipaddr;
+			return IPAddress.TryParse(ip, out ipaddr);
+		}
 		private void _Setup()
 		{
-		    _UnhandleCrash();
+			_Machine = new StageMachine();
+			_Updater = new Updater();
+			_Binders = new Queue<ISoulBinder>();
+
+
+			_UnhandleCrash();
 			_InitialLog();
 
+			_CreateStorage();
+
+			_Enable = true;
+		}
+
+		private void _CreateStorage()
+		{
 			var config = new Ini(_ReadConfig());
 
 			_IpAddress = config.Read("Storage", "ipaddr");
@@ -83,14 +101,20 @@ namespace VGame.Project.FishHunter.Formula
 			_Account = config.Read("Storage", "account");
 			_Password = config.Read("Storage", "password");
 
-			_Storage = new Proxy();
-			_Machine = new StageMachine();
-			_Updater = new Updater();
-			_Binders = new Queue<ISoulBinder>();
-			_Enable = true;
+			if(_IsIpAddress(_IpAddress))
+			{
+				_Storage = new Proxy();
+			}
+			else
+			{
+				var center = new Storage.Center(new DummyFrature());
+				_Updater.Add(center);
+				var factory = new StandaloneFactory(center);
+				_Storage = new Proxy(factory);
+			}
 		}
 
-	    private void _UnhandleCrash()
+		private void _UnhandleCrash()
 	    {
 	        AppDomain.CurrentDomain.UnhandledException += _WriteDump;
 	    }
