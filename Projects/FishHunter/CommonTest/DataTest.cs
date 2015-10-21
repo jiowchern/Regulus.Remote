@@ -6,6 +6,9 @@ using System.Net.Mime;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
+using ProtoBuf;
+
+
 using VGame.Project.FishHunter.Common;
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
@@ -59,6 +62,64 @@ namespace GameTest
 			
 
 			Assert.AreEqual(data2.GraveGoods, null);
+		}
+
+		[ProtoContract]
+		public class Data
+		{
+			[ProtoContract]
+			public class T
+			{
+				[ProtoMember(1)]
+				public int t1;
+				[ProtoMember(2)]
+				public int t2;
+
+				public T()
+				{
+					t1 = 123;
+					t2 = 456;
+				}
+			}
+
+			[ProtoMember(1)]
+			public int[] ary;
+
+			[ProtoMember(2)]
+			public T[] Tary;
+
+			public Data()
+			{
+				//ary = new int [0];
+				//Tary = new T[] {new T() };
+			}
+		}
+		[TestMethod]
+		public void DeSerializer2()
+		{
+			Data data1 = new Data();
+
+			data1.ary = new int[2];
+
+			var serData = Regulus.TypeHelper.Serializer(data1);
+
+			var data2 = Regulus.TypeHelper.Deserialize<Data>(serData);
+
+
+			Assert.AreEqual(data2.ary.Length, 1);
+		}
+
+		[TestMethod]
+		public void DeSerializer()
+		{
+			FishFarmData data1 = new FishFarmData();
+
+			var serData = Regulus.TypeHelper.Serializer(data1);
+
+			var data2 = Regulus.TypeHelper.Deserialize<FishFarmData>(serData);
+
+
+			Assert.AreEqual(data2.DataRootRoots.Length, 0);
 		}
 	}
 }

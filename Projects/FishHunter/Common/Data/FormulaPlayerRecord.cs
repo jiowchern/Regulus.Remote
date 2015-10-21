@@ -20,7 +20,7 @@ namespace VGame.Project.FishHunter.Common.Data
         public Guid Owner { get; set; }
 
         [ProtoMember(3)]
-        public int Status { get; set; }
+        public int Status { get; set; } //開啟好贏計數器、flag，(倒數)
 
         [ProtoMember(4)]
         public int BufferValue { get; set; }
@@ -29,13 +29,13 @@ namespace VGame.Project.FishHunter.Common.Data
         public FarmRecord[] FarmRecords { get; set; }
 
         public FormulaPlayerRecord()
-		{
-			FarmRecords = new List<FarmRecord>().ToArray();
-		}
+        {
+	        FarmRecords = new FarmRecord[0];
+        }
 
         public FarmRecord FindFarmRecord(int farm_id)
 		{			
-			return FarmRecords.First(x => x.FarmId == farm_id);
+			return FarmRecords.FirstOrDefault(x => x.FarmId == farm_id);
 		}
 	}
 }

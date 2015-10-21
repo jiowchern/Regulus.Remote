@@ -13,7 +13,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		private readonly RequsetFishData _FishData;
 
-		private List<WEAPON_TYPE> _GotTreasures;
+		private readonly List<WEAPON_TYPE> _GotTreasures;
 
 		public CheckTreasureRule(DataVisitor data_visitor, RequsetFishData fish_data)
 		{
@@ -67,29 +67,29 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 			// 拿到魚的掉落物品清單
 			var randomWeapons = FishTreasure.Get().Find(x => x.FishType == _FishData.FishType).RandomWeapons;
 
-			var bufferData = _DataVisitor.Farm.FindBuffer(_DataVisitor.FocusBufferBlock, FarmBuffer.BUFFER_TYPE.SPEC);
+			var farmDataRoot = _DataVisitor.Farm.FindDataRoot(
+				_DataVisitor.FocusBlockName, 
+				FarmDataRoot.BufferNode.BUFFER_NAME.SPEC);
 
 			var list = new List<WEAPON_TYPE>();
 
 			// 計算魚掉那個寶
 			foreach(var t in randomWeapons)
 			{
-				long gate = bufferData.Rate / randomWeapons.Length;
+				long gate = farmDataRoot.Buffer.Rate / randomWeapons.Length;
 
-				var dd = new SpecialWeaponPowerTable().WeaponPowers.FirstOrDefault(x => x.WeaponType == t);
+				var rate = new SpecialWeaponRateTable().WeaponRates.Find(x => x.WeaponType == t).Rate;
 
-				var power = new SpecialWeaponPowerTable().WeaponPowers.Find(x => x.WeaponType == t).Power;
-
-				gate = (0x0FFFFFFF / power) * gate;
+				gate = (0x0FFFFFFF / rate) * gate;
 
 				gate = gate / 1000;
 
-				if(bufferData.BufferTempValue.HiLoRate >= 0)
+				if(farmDataRoot.TempValueNode.HiLoRate >= 0)
 				{
 					gate *= 2;
 				}
 
-				if(bufferData.BufferTempValue.HiLoRate < -200)
+				if(farmDataRoot.TempValueNode.HiLoRate < -200)
 				{
 					gate /= 2;
 				}
@@ -121,16 +121,26 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		private void _SavePlayerHit()
 		{
-			var fishHitRecord =
-				_DataVisitor.PlayerRecord.FindFarmRecord(_DataVisitor.Farm.FarmId)
-							.FishHits.First(x => x.FishType == _FishData.FishType);
+			var fishHitRecords = _DataVisitor.PlayerRecord.FindFarmRecord(_DataVisitor.Farm.FarmId).FishHits;
 
-			fishHitRecord.Datas = _GotTreasures.Select(
-				treasure => new FishHitRecord.TreasureData
-				{
-					WeaponType = treasure, 
-					Count = 1
-				}).ToArray();
+			var record = fishHitRecords.FirstOrDefault(x => x.FishType == _FishData.FishType);
+
+			if(record == null)
+			{
+				return;
+			}
+
+			var list = record.TreasureDatas.ToList();
+
+			foreach(var t in _GotTreasures.Select(
+				treasure => list.FirstOrDefault(x => x.WeaponType == treasure)
+							?? new FishHitRecord.TreasureData(treasure)))
+			{
+				list.Add(t);
+				t.Count++;
+			}
+
+			record.TreasureDatas = list.ToArray();
 		}
 	}
 }

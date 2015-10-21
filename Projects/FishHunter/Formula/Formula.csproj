@@ -93,7 +93,10 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy ..\..\..\..\..\Tool\Server\$(OutDir)Server.exe
-copy ..\..\..\..\..\Tool\Server\$(OutDir)NLog.config</PostBuildEvent>
+copy ..\..\..\..\..\Tool\Server\$(OutDir)Server.exe.config
+copy ..\..\..\..\..\Tool\Server\$(OutDir)NLog.config
+copy ..\..\..\..\..\Tool\Server\$(OutDir)System.Data.SQLite.dll
+xcopy ..\..\..\..\..\Tool\Server\$(OutDir)\x64 x64 /e /y /i</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

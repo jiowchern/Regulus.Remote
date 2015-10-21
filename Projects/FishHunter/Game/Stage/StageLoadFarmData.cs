@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 
 
+using NLog;
+
+
 using Regulus.Remoting;
 using Regulus.Utility;
 
@@ -29,7 +32,18 @@ namespace VGame.Project.FishHunter.Stage
 
             _WorkFarmIds = new List<int>
             {
-                100
+                100,
+				101,
+				102,
+				103,
+				104,
+				105,
+				106,
+				107,
+				108,
+				109,
+				110,
+				111
             };
         }
 
@@ -58,31 +72,36 @@ namespace VGame.Project.FishHunter.Stage
         /// </summary>
         private void _StartLoad()
         {
-            Singleton<Log>.Instance.WriteDebug("Init farm data.");
+			LogManager.GetCurrentClassLogger().Debug("Init farm data.");
 
-            foreach(var t in _WorkFarmIds)
+			foreach (var t in _WorkFarmIds)
             {
                 var data = _StroageLoad(t);
 
-                data.OnValue += data_on_value => { _FishFarmDatas.Add(data_on_value); };
+				data.OnValue += _Data_OnValue; 
             }
 
-            Singleton<Log>.Instance.WriteDebug("farm data loading finish");
+			LogManager.GetCurrentClassLogger().Debug("Farm data loading finish.");
         }
 
-        private Value<FishFarmData> _StroageLoad(int farm_id)
+		private void _Data_OnValue(FishFarmData obj)
+		{
+			_FishFarmDatas.Add(obj); 
+		}
+
+		private Value<FishFarmData> _StroageLoad(int farm_id)
         {
             var returnValue = new Value<FishFarmData>();
 
             var val = _FormulaFarmRecorder.Load(farm_id);
 
-            val.OnValue += stage_data =>
+			val.OnValue += farm_data =>
             {
-                Singleton<Log>.Instance.WriteDebug("_StroageLoad");
-                returnValue.SetValue(stage_data);
+				LogManager.GetCurrentClassLogger().Debug("Load Farm Data From Stroage.");
+                returnValue.SetValue(farm_data);
             };
 
             return returnValue;
         }
-    }
+	}
 }

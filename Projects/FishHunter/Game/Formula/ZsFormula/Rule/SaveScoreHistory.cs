@@ -1,13 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="SaveScoreHistory.cs" company="Regulus Framework">
-//   Regulus Framework
-// </copyright>
-// <summary>
-//   分數記錄
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-using System.Linq;
+﻿using System.Linq;
 
 
 using VGame.Project.FishHunter.Common.Data;
@@ -22,50 +13,60 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 	{
 		private readonly DataVisitor _DataVisitor;
 
-		private readonly int _Win;
+		private readonly int _WinScore;
 
-		public SaveScoreHistory(DataVisitor data_visitor, int win)
+		public SaveScoreHistory(DataVisitor data_visitor, int win_Score)
 		{
 			_DataVisitor = data_visitor;
-			_Win = win;
+			_WinScore = win_Score;
 		}
 
 		/// <summary>
+		/// 
 		/// </summary>
 		public void Run()
 		{
-			if(_Win == 0)
+			if(_WinScore == 0)
 			{
 				return;
 			}
 
-			_SaveStageScore();
+			_SaveHitWinScore();
 
-			_SavePlayerScore();
+			_SaveBlockScore();
+
+			_SavePlayerLuck();
 		}
 
-		private void _SaveStageScore()
+		private void _SaveHitWinScore()
 		{
-			var bufferData = _DataVisitor.Farm.FindBuffer(
-				_DataVisitor.FocusBufferBlock,
-				FarmBuffer.BUFFER_TYPE.NORMAL);
+			_DataVisitor.Farm.Record.WinScore += _WinScore;
 
-			bufferData.Buffer -= _Win;
-
-			_DataVisitor.Farm.Record.WinScore += _Win;
+			_DataVisitor.PlayerRecord.FindFarmRecord(_DataVisitor.Farm.FarmId).WinScore += _WinScore;
 		}
 
-		private void _SavePlayerScore()
+		private void _SaveBlockScore()
+		{
+			var farmDataRoot = _DataVisitor.Farm.FindDataRoot(
+				_DataVisitor.FocusBlockName, 
+				FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
+
+			farmDataRoot.Block.WinScore += _WinScore;
+			farmDataRoot.Buffer.WinScore -= _WinScore;
+		}
+
+
+		private void _SavePlayerLuck()
 		{
 			// 玩家阶段起伏的调整
-			if(_DataVisitor.PlayerRecord.Status <= 0)
+			if (_DataVisitor.PlayerRecord.Status <= 0)
 			{
 				return;
 			}
-			_DataVisitor.PlayerRecord.BufferValue -= _Win;
 
-			_DataVisitor.PlayerRecord.FarmRecords.First(x => x.FarmId == _DataVisitor.Farm.FarmId).AsnWin
-				+= _Win;
+			_DataVisitor.PlayerRecord.BufferValue -= _WinScore;
+
+			_DataVisitor.PlayerRecord.FindFarmRecord(_DataVisitor.Farm.FarmId).AsnWin += _WinScore;
 		}
 	}
 }

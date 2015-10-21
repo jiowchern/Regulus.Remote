@@ -30,56 +30,71 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		public void Run()
 		{
-			var enumData = EnumHelper.GetEnums<FarmBuffer.BUFFER_TYPE>();
+			var enumData = EnumHelper.GetEnums<FarmDataRoot.BufferNode.BUFFER_NAME>();
 
-			foreach(var data in enumData.Select(buffer_type => _Visitor.Farm.FindBuffer(_Visitor.FocusBufferBlock, buffer_type)))
+			foreach(var data in enumData.Select(buffer_type => _Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName, buffer_type)))
 			{
 				_AddBufferRate(data);
+				
 			}
 
-			_Record();
+			_MoveSpecBufferToNormalBuffer();
+
+			_RecordAll();
 		}
 
-		private void _AddBufferRate(FarmBuffer data)
+		/// <summary>
+		/// 當block裡的spec type裡有錢大於0就要搬動)，就要把spec的錢移到normal，spec清空
+		/// </summary>
+		private void _MoveSpecBufferToNormalBuffer()
 		{
-			data.Count += _Request.WeaponData.GetTotalBet() * data.Rate;
+			var spec = _Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName, FarmDataRoot.BufferNode.BUFFER_NAME.SPEC);
+			var normal = _Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName, FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
+			normal.Buffer.WinScore += spec.Buffer.WinScore;
+			spec.Buffer.WinScore = 0;
+		}
 
-			if(data.Count < 1000)
+		private void _AddBufferRate(FarmDataRoot root)
+		{
+			root.Buffer.Count += _Request.WeaponData.GetTotalBet() * root.Buffer.Rate;
+
+			if(root.Buffer.Count < 1000)
 			{
 				return;
 			}
 
-			data.Buffer += data.Count / 1000;
-			data.Count = data.Count % 1000;
+			root.Buffer.WinScore += root.Buffer.Count / 1000;
+			root.Buffer.Count = root.Buffer.Count % 1000;
 		}
 
-		private void _Record()
+		/// <summary>
+		/// 各個block各別加總GetTotalBet，win也要各別計算
+		/// </summary>
+		private void _RecordAll()
 		{
-			_Visitor.Farm.Record.PlayTimes += 1;
-			_Visitor.Farm.Record.PlayTotal += _Request.WeaponData.GetTotalBet();
-			_MakeLog();
-
-			_Visitor.PlayerRecord.FindFarmRecord(_Visitor.Farm.FarmId).PlayTimes += 1;
-			_Visitor.PlayerRecord.FindFarmRecord(_Visitor.Farm.FarmId).PlayTotal += _Request.WeaponData.GetTotalBet();
+			_RecordToFocusBlock();
+			_RecordToFarm();
+			_RecordToPlayer();
 		}
 
-		private void _MakeLog()
+		private void _RecordToFocusBlock()
 		{
-			if(_Visitor.Farm.Record.PlayTimes % 500 != 0)
-			{
-				return;
-			}
-			var log = LogManager.GetLogger("AccumulationBufferRule");
-			log.Info()
-				.Message("AccumulationBufferRule")
-				.Property("FarmId", _Visitor.Farm.FarmId)
-				.Property("PlayTotal", _Visitor.Farm.Record.PlayTotal)
-				.Property("WinScore", _Visitor.Farm.Record.WinScore)
-				.Property("PlayTimes", _Visitor.Farm.Record.PlayTimes)
-				.Property("WinFrequency", _Visitor.Farm.Record.WinFrequency)
-				.Property("AsnTimes", _Visitor.Farm.Record.AsnTimes)
-				.Property("AsnWin", _Visitor.Farm.Record.AsnWin)
-				.Write();
+			var data = _Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName, FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
+
+			data.Block.FireCount += 1;
+			data.Block.TotalSpending += _Request.WeaponData.GetTotalBet();
+		}
+
+		private void _RecordToPlayer()
+		{
+			_Visitor.PlayerRecord.FindFarmRecord(_Visitor.Farm.FarmId).FireCount += 1;
+			_Visitor.PlayerRecord.FindFarmRecord(_Visitor.Farm.FarmId).TotalSpending += _Request.WeaponData.GetTotalBet();
+		}
+
+		private void _RecordToFarm()
+		{
+			_Visitor.Farm.Record.FireCount += 1;
+			_Visitor.Farm.Record.TotalSpending += _Request.WeaponData.GetTotalBet();
 		}
 	}
 }

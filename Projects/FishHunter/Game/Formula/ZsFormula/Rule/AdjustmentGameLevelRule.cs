@@ -1,16 +1,14 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="AdjustmentGameLevelRule.cs" company="Regulus Framework">
-//   Regulus Framework
-// </copyright>
-// <summary>
-//   Defines the AdjustmentGameLevelRule type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+
 
 using NLog;
 using NLog.Fluent;
 
+
 using Regulus.Utility;
+
 
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
@@ -19,9 +17,22 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 {
 	public class AdjustmentGameLevelRule
 	{
-		private readonly DataVisitor _Visitor;
+		private struct Data
+		{
+			public int BufferValue;
+
+			public string Name;
+
+			public Data(string name, int buffer_value)
+			{
+				Name = name;
+				BufferValue = buffer_value;
+			}
+		}
 
 		private readonly TimeCounter _TimeCounter;
+
+		private readonly DataVisitor _Visitor;
 
 		public AdjustmentGameLevelRule(DataVisitor visitor)
 		{
@@ -30,22 +41,20 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		}
 
 		/// <summary>
-		///		游戏难度的调整
+		///     游戏难度的调整
 		/// </summary>
-
 		public void Run()
 		{
-			var bufferData = _Visitor.Farm.FindBuffer(_Visitor.FocusBufferBlock, FarmBuffer.BUFFER_TYPE.NORMAL);
-			var bufferTemp = bufferData.BufferTempValue;
+			var bufferData = _Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName, FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
+			var bufferTemp = bufferData.TempValueNode;
 			bufferTemp.FireCount += 1;
 
 			// 一分內 未遠500發子彈
-			if (_TimeCounter.Second > bufferTemp.RealTime && bufferTemp.FireCount < 500)
+			if(_TimeCounter.Second > bufferTemp.RealTime && bufferTemp.FireCount < 500)
 			{
 				_Update();
 			}
 
-			// 達500子彈 馬上
 			if(bufferTemp.FireCount >= 500)
 			{
 				_Update2();
@@ -54,44 +63,28 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		private void _Update()
 		{
-			var bufferData = _Visitor.Farm.FindBuffer(_Visitor.FocusBufferBlock, FarmBuffer.BUFFER_TYPE.NORMAL);
-			
-			var bufferTemp = bufferData.BufferTempValue;
-			
-			var baseValue = _Visitor.Farm.NowBaseOdds * bufferTemp.AverageValue;
-			
-			bufferTemp.HiLoRate = new NatureDataRule().Run(bufferData.Buffer, baseValue);
+			_SetHiLoRate();
 
 			_TimeCounter.Reset();
 		}
 
 		private void _Update2()
 		{
-			var bufferData = _Visitor.Farm.FindBuffer(_Visitor.FocusBufferBlock, FarmBuffer.BUFFER_TYPE.NORMAL);
+			var bufferTemp = _SetHiLoRate();
+			bufferTemp.FireCount -= 500;
+		}
 
-			var bufferTemp = bufferData.BufferTempValue;
+		private FarmDataRoot.ValueNode _SetHiLoRate()
+		{
+			var bufferData = _Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName, FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
+
+			var bufferTemp = bufferData.TempValueNode;
 
 			var baseValue = _Visitor.Farm.NowBaseOdds * bufferTemp.AverageValue;
 
-			bufferTemp.HiLoRate = new NatureDataRule().Run(bufferData.Buffer, baseValue);
+			bufferTemp.HiLoRate = new NatureDataRule().Run(bufferData.Buffer.WinScore, baseValue);
 
-			bufferTemp.FireCount -= 500;
-
-			_MakeLog(bufferTemp, bufferData);
-		}
-
-		private void _MakeLog(FarmBuffer.BufferValue buffer_temp, FarmBuffer buffer_data)
-		{
-			var log = LogManager.GetLogger("AdjustmentGameLevelRule");
-			log.Info()
-				.Message("Request Data")
-				.Property("FarmId", _Visitor.Farm.FarmId)
-				.Property("FocusBufferBlock", _Visitor.FocusBufferBlock)
-				.Property("NowBaseOdds", _Visitor.Farm.NowBaseOdds)
-				.Property("AverageValue", buffer_temp.AverageValue)
-				.Property("Buffer", buffer_data.Buffer)
-				.Property("HiLoRate", buffer_temp.HiLoRate)
-				.Write();
+			return bufferTemp;
 		}
 	}
 }

@@ -112,6 +112,10 @@ namespace Regulus.Remoting
 
 		void IValue.SetValue(IGhost val)
 		{
+			if (_Empty == false)
+			{
+				throw new Exception("重覆的set value");
+			}
 			_Empty = false;
 
 			_Value = (T)val;
@@ -123,6 +127,10 @@ namespace Regulus.Remoting
 
 		void IValue.SetValue(byte[] val)
 		{
+			if (_Empty == false)
+			{
+				throw new Exception("重覆的set value");
+			}
 			_Empty = false;
 
 			_Value = TypeHelper.Deserialize<T>(val);
@@ -172,6 +180,10 @@ namespace Regulus.Remoting
 		/// <param name="val"></param>
 		public void SetValue(T val)
 		{
+			if(_Empty == false)
+			{
+				throw new Exception("重覆的set value");
+			}
 			_Empty = false;
 			_Value = val;
 			if(_OnValue != null)

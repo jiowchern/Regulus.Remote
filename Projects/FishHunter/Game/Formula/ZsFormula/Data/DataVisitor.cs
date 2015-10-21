@@ -18,7 +18,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 
 		public FishFarmData Farm { get; private set; }
 
-		public FarmBuffer.BUFFER_BLOCK FocusBufferBlock { get; set; }
+		public FarmDataRoot.BlockNode.BLOCK_NAME FocusBlockName { get; set; }
 
 		public List<WEAPON_TYPE> GotTreasures { get; set; }
 

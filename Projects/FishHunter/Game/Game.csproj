@@ -55,6 +55,8 @@
     <Compile Include="Formula\ZsFormula\Data\FishTreasure.cs" />
     <Compile Include="Formula\ZsFormula\Data\RandomData.cs" />
     <Compile Include="Formula\ZsFormula\Data\SpecialWeaponPowerTable.cs" />
+    <Compile Include="Formula\ZsFormula\Data\SpecialWeaponRateTable.cs" />
+    <Compile Include="Formula\ZsFormula\Rule\LogHandle.cs" />
     <Compile Include="Formula\ZsFormula\ZsFishStage.cs" />
     <Compile Include="Stage\QuarterStage.cs" />
     <Compile Include="Play\DummyFeature.cs" />
@@ -102,6 +104,7 @@
     <Compile Include="Formula\ZsFormula\Data\DataVisitor.cs" />
     <Compile Include="Stage\FormulaStage.cs" />
     <Compile Include="Stage\StageLoadFarmData.cs" />
+    <Compile Include="Stage\ZsFishFormulaInitialer.cs" />
     <Compile Include="Storage\Verify.cs" />
     <Compile Include="Play\DummyStandalong.cs" />
     <Compile Include="Storage\Center.cs" />

@@ -91,14 +91,14 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 			// TODO 判斷魚王和小魚是否在網子內的邏輯
 			_CheckFishKingRule(request);
 
-			var totalRequest = new ZsHitChecker(_FishFarmData, _FormulaPlayerRecord, _CreateRandoms()).TotalRequest(request);
+			var hitResponses = new ZsHitChecker(_FishFarmData, _FormulaPlayerRecord, _CreateRandoms()).TotalRequest(request);
 
 			_FormulaFarmRecorder.Save(_FishFarmData);
 			_FormulaPlayerRecorder.Save(_FormulaPlayerRecord);
 
-			_OnTotalHitResponseEvent.Invoke(totalRequest);
+			_OnTotalHitResponseEvent.Invoke(hitResponses);
 
-			_MakeLog(request, totalRequest);
+			_MakeLog(request, hitResponses);
 		}
 
 		/// <summary>
@@ -186,8 +186,8 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 			{
 				LogManager.GetCurrentClassLogger().Fatal("WeaponData.WeaponBet，押注分數錯誤");
 
-			    var msg = string.Format("WeaponData.WeaponBet = {0}，押注分數錯誤", request.WeaponData.WeaponBet);
-                _OnHitExceptionEvent.Invoke(msg);
+				var msg = string.Format("WeaponData.WeaponBet = {0}，押注分數錯誤", request.WeaponData.WeaponBet);
+				_OnHitExceptionEvent.Invoke(msg);
 				Singleton<Log>.Instance.WriteInfo(msg);
 				return false;
 			}
@@ -244,23 +244,23 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 
 		private void _MakeRequestLog(HitRequest request)
 		{
-			foreach (var data in request.FishDatas)
+			foreach(var data in request.FishDatas)
 			{
 				var log = LogManager.GetLogger("Request");
 				log.Info()
-				.Message("Request Data")
-				.Property("FarmId", _FishFarmData.FarmId)
-				.Property("PlayerId", _AccountId)
-				.Property("BulletId", request.WeaponData.BulletId)
-				.Property("WeaponType", request.WeaponData.WeaponType)
-				.Property("Bet", request.WeaponData.WeaponBet)
-				.Property("Odds", request.WeaponData.WeaponOdds)
-				.Property("Hits", request.WeaponData.TotalHits)
-				.Property("FishId", data.FishId)
-				.Property("FishType", data.FishType)
-				.Property("FishStatus", data.FishStatus)
-				.Property("FishOdds", data.FishOdds)
-				.Write();
+					.Message("Request Data")
+					.Property("FarmId", _FishFarmData.FarmId)
+					.Property("PlayerId", _AccountId)
+					.Property("BulletId", request.WeaponData.BulletId)
+					.Property("WeaponType", request.WeaponData.WeaponType)
+					.Property("Bet", request.WeaponData.WeaponBet)
+					.Property("Odds", request.WeaponData.WeaponOdds)
+					.Property("Hits", request.WeaponData.TotalHits)
+					.Property("FishId", data.FishId)
+					.Property("FishType", data.FishType)
+					.Property("FishStatus", data.FishStatus)
+					.Property("FishOdds", data.FishOdds)
+					.Write();
 			}
 		}
 
@@ -268,130 +268,127 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 		{
 			foreach(var response in responses)
 			{
-				var log = LogManager.GetLogger("Response");
-				var guid = Guid.NewGuid();
-				log.Info()
+				foreach (var weapon in response.FeedbackWeapons)
+				{
+					var log = LogManager.GetLogger("Response");
+                    log.Info()
 					.Message("Response Data")
+					.Property("FarmId", _FishFarmData.FarmId)
 					.Property("PlayerId", _AccountId)
 					.Property("BulletId", response.WepId)
 					.Property("FishId", response.FishId)
+					.Property("FishOdds", response.FishOdds)
 					.Property("DieResult", response.DieResult)
-					.Property("FeedbackWeapons", guid)
 					.Property("Bet", response.WeaponBet)
 					.Property("OddsResult", response.OddsResult)
 					.Property("DieRate", response.DieRate)
-					.Property("DieRatePrecent{0}%", (float)response.DieRate / (float)0x10000000)
+					.Property("DieRatePrecent", string.Format("{0:p}", response.DieRate / (float)0x10000000))
+					.Property("Feedback", weapon)
 					.Write();
+				}
 
-				_MakFeedbackWeaponLog(response, guid);
+				//_MakFeedbackWeaponLog(response, guid);
 			}
 		}
 
-		private void _MakFeedbackWeaponLog(HitResponse response, Guid guid)
-		{
-			foreach(var weapon in response.FeedbackWeapons)
-			{
-				var log = LogManager.GetLogger("FeedbackWeapon");
-				log.Info()
-					.Message("FeedbackWeapons")
-					.Property("FarmId", _FishFarmData.FarmId)
-					.Property("Guid", guid)
-					.Property("BulletId", response.WepId)
-					.Property("WeaponType", weapon)
-					.Write();
-			}
-		}
-		//		private void _MakeLog(HitRequest request, IEnumerable<HitResponse> responses)
-		//	{
-		//			const string formats = "PlayerVisitor:{0}\tStage:{1}\r\n<Request>\r\n{2}\r\n<Response>\r\n{3}";
-
-		//			var log = string.Format(
-		//				formats, 
-		//				_AccountId, 
-		//				_FishFarmData.FarmId, 
-		//				_MakeRequestLog(request), 
-		//				_MakeResponesLog(responses));
-		//			Singleton<Log>.Instance.WriteInfo(log);
-
-
-		//		private static readonly Logger _Logger = LogManager.GetCurrentClassLogger();
-		//		private static readonly Logger _RequestLogger = LogManager.GetLogger("Request");
-		//		private static readonly Logger _ResponseLogger = LogManager.GetLogger("Response");
-		//		private static readonly Logger _FeedbackWeaponLogger = LogManager.GetLogger("FeedbackWeapon");
-
-		//_Logger.Info().Message("TTTTTTT").Write();
-		//		}
-
-//		private string _MakeRequestLog(HitRequest request)
+//		private void _MakFeedbackWeaponLog(HitResponse response, Guid guid)
 //		{
-//			var weapon = request.WeaponData;
-//
-//			var weaponDataLog =
-//				string.Format(
-//					"WeaponData\r\n{0,-10}{1,-24}{2,-7}{3,-7}{4,-7}\r\n{5,-10}{6,-24}{7,-7}{8,-7}{9,-7}\r\n", 
-//					"Bullet", 
-//					"WeaponType", 
-//					"Bet", 
-//					"Odds", 
-//					"Hits", 
-//					weapon.BulletId, 
-//					weapon.WeaponType, 
-//					weapon.WeaponBet, 
-//					weapon.WeaponOdds, 
-//					weapon.TotalHits);
-//
-//			var fishTitle = string.Format(
-//				"FishData\r\n{0,-7}{1,-24}{2,-24}{3,-7}\r\n", 
-//				"Id", 
-//				"FishType", 
-//				"FishStatus", 
-//				"Odds");
-//
-//			var fishs = request.FishDatas;
-//
-//			return weaponDataLog + fishTitle
-//					+ string.Join(
-//						"\r\n", 
-//						fishs.Select(
-//							fish_data =>
-//							string.Format(
-//								"{0,-7}{1,-24}{2,-24}{3,-7}", 
-//								fish_data.FishId, 
-//								fish_data.FishType, 
-//								fish_data.FishStatus, 
-//								fish_data.FishOdds)).ToArray());
-//		}
-//
-//		private string _MakeResponesLog(IEnumerable<HitResponse> responses)
-//		{
-//			var title = string.Format(
-//				"{0,-7}{1,-7}{2,-16}{3,-32}{4,-7}{5,-12}{6,-12}{7,-12}\r\n", 
-//				"WepId", 
-//				"FishId", 
-//				"DisResult", 
-//				"FeedbackWeapons", 
-//				"Bet", 
-//				"OddsResult", 
-//				"DieRate", 
-//				"DiePrecent");
-//
-//			return title + string.Join(
-//				"\r\n", 
-//				(from response in responses
-//				let fws = response.FeedbackWeapons.ShowMembers(",")
-//				select
-//					string.Format(
-//						"{0,-7}{1,-7}{2,-16}{3,-32}{4,-7}{5,-12}{6,-12}{7,-12:P7}", 
-//						response.WepId, 
-//						response.FishId, 
-//						response.DieResult, 
-//						fws, 
-//						response.WeaponBet, 
-//						response.OddsResult, 
-//						response.DieRate, 
-//						(float)response.DieRate / (float)0x10000000)).ToArray());
+//			foreach(var weapon in response.FeedbackWeapons)
+//			{
+//				var log = LogManager.GetLogger("FeedbackWeapon");
+//				log.Info()
+//					.Message("FeedbackWeapons")
+//					.Property("FarmId", _FishFarmData.FarmId)
+//					.Property("Guid", guid)
+//					.Property("BulletId", response.WepId)
+//					.Property("WeaponType", weapon)
+//					.Write();
+//			}
 //		}
 
+		// 		private void _MakeLog(HitRequest request, IEnumerable<HitResponse> responses)
+		// 	{
+		// 			const string formats = "PlayerVisitor:{0}\tStage:{1}\r\n<Request>\r\n{2}\r\n<Response>\r\n{3}";
+
+		// 			var log = string.Format(
+		// 				formats, 
+		// 				_AccountId, 
+		// 				_FishFarmData.FarmId, 
+		// 				_MakeRequestLog(request), 
+		// 				_MakeResponesLog(responses));
+		// 			Singleton<Log>.Instance.WriteInfo(log);
+
+		// 		private static readonly Logger _Logger = LogManager.GetCurrentClassLogger();
+		// 		private static readonly Logger _RequestLogger = LogManager.GetLogger("Request");
+		// 		private static readonly Logger _ResponseLogger = LogManager.GetLogger("Response");
+		// 		private static readonly Logger _FeedbackWeaponLogger = LogManager.GetLogger("FeedbackWeapon");
+
+		// _Logger.Info().Message("TTTTTTT").Write();
+		// 		}
+
+		// 		private string _MakeRequestLog(HitRequest request)
+		// 		{
+		// 			var weapon = request.WeaponData;
+		// 			var weaponDataLog =
+		// 				string.Format(
+		// 					"WeaponData\r\n{0,-10}{1,-24}{2,-7}{3,-7}{4,-7}\r\n{5,-10}{6,-24}{7,-7}{8,-7}{9,-7}\r\n", 
+		// 					"Bullet", 
+		// 					"WeaponType", 
+		// 					"Bet", 
+		// 					"Odds", 
+		// 					"Hits", 
+		// 					weapon.BulletId, 
+		// 					weapon.WeaponType, 
+		// 					weapon.WeaponBet, 
+		// 					weapon.WeaponOdds, 
+		// 					weapon.TotalHits);
+		// 			var fishTitle = string.Format(
+		// 				"FishData\r\n{0,-7}{1,-24}{2,-24}{3,-7}\r\n", 
+		// 				"Id", 
+		// 				"FishType", 
+		// 				"FishStatus", 
+		// 				"Odds");
+		// 			var fishs = request.FishDatas;
+		// 			return weaponDataLog + fishTitle
+		// 					+ string.Join(
+		// 						"\r\n", 
+		// 						fishs.Select(
+		// 							fish_data =>
+		// 							string.Format(
+		// 								"{0,-7}{1,-24}{2,-24}{3,-7}", 
+		// 								fish_data.FishId, 
+		// 								fish_data.FishType, 
+		// 								fish_data.FishStatus, 
+		// 								fish_data.FishOdds)).ToArray());
+		// 		}
+		// 		private string _MakeResponesLog(IEnumerable<HitResponse> responses)
+		// 		{
+		// 			var title = string.Format(
+		// 				"{0,-7}{1,-7}{2,-16}{3,-32}{4,-7}{5,-12}{6,-12}{7,-12}\r\n", 
+		// 				"WepId", 
+		// 				"FishId", 
+		// 				"DisResult", 
+		// 				"FeedbackWeapons", 
+		// 				"Bet", 
+		// 				"OddsResult", 
+		// 				"DieRate", 
+		// 				"DiePrecent");
+		// 			return title + string.Join(
+		// 				"\r\n", 
+		// 				(from response in responses
+		// 				let fws = response.FeedbackWeapons.ShowMembers(",")
+		// 				select
+		// 					string.Format(
+		// 						"{0,-7}{1,-7}{2,-16}{3,-32}{4,-7}{5,-12}{6,-12}{7,-12:P7}", 
+		// 						response.WepId, 
+		// 						response.FishId, 
+		// 						response.DieResult, 
+		// 						fws, 
+		// 						response.WeaponBet, 
+		// 						response.OddsResult, 
+		// 						response.DieRate, 
+		// 						(float)response.DieRate / (float)0x10000000)).ToArray());
+		// 		}
 		private List<RandomData> _CreateRandoms()
 		{
 			var rs = new List<RandomData>
@@ -415,7 +412,6 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 
 			data.Randoms.Add(Random.Instance);
 			data.Randoms.Add(Random.Instance);
-
 			return data;
 		}
 

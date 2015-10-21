@@ -2,6 +2,9 @@
 
 using ProtoBuf;
 
+
+using Regulus.Utility;
+
 namespace VGame.Project.FishHunter.Common.Data
 {
 	/// <summary>
@@ -41,7 +44,7 @@ namespace VGame.Project.FishHunter.Common.Data
 		/// </summary>
 		[ProtoMember(5)]
 		public int WeaponBet { get; set; }
-		
+
 		/// <summary>
 		///     1 = 沒有翻倍
 		/// </summary>
@@ -49,5 +52,7 @@ namespace VGame.Project.FishHunter.Common.Data
 		public int OddsResult { get; set; }
 
 		public long DieRate { get; set; }
+
+		public int FishOdds { get; set; }
 	}
 }
