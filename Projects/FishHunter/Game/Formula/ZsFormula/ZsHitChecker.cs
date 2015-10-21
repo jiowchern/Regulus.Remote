@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+
 
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
@@ -12,13 +14,15 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 
 		public ZsHitChecker(FishFarmData fish_farm_data, FormulaPlayerRecord formula_player_record, List<RandomData> random)
 		{
-			var data = new List<FarmRecord>
+			var record = formula_player_record.FindFarmRecord(fish_farm_data.FarmId);
+			if(record == null)
 			{
-				fish_farm_data.Record
-			};
-
-			formula_player_record.FarmRecords = data.ToArray();
-
+				formula_player_record.FarmRecords = new List<FarmRecord>
+				{
+					new FarmRecord(fish_farm_data.FarmId)
+				}.ToArray();
+			}
+			
 			_DataVisitor = new DataVisitor(fish_farm_data, formula_player_record, random);
 		}
 
@@ -26,9 +30,8 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 		{
 			var block = CalculationBufferBlock.GetBlock(request, _DataVisitor.Farm.MaxBet);
 
-			_DataVisitor.FocusBufferBlock = block;
+			_DataVisitor.FocusBlockName = block;
 
-			// 只有第一發才能累積buffer
 			if(request.WeaponData.WeaponType == WEAPON_TYPE.NORMAL)
 			{
 				new AccumulationBufferRule(_DataVisitor, request).Run();

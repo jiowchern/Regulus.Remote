@@ -11,41 +11,66 @@ namespace VGame.Project.FishHunter.Common.Data
         [ProtoMember(1)]
         public Guid Id { get; set; }
 
+		/// <summary>
+		/// 漁場id
+		/// </summary>
         [ProtoMember(2)]
         public int FarmId { get; set; }
 
+		/// <summary>
+		/// 花費總合
+		/// </summary>
         [ProtoMember(3)]
-        public int PlayTotal { get; set; } // 0
+        public int TotalSpending { get; set; }
 
-        [ProtoMember(4)]
+		/// <summary>
+		/// 贏分
+		/// </summary>
+		[ProtoMember(4)]
         public int WinScore { get; set; }
 
+		/// <summary>
+		/// 遊戲次數
+		/// </summary>
         [ProtoMember(5)]
-        public int PlayTimes { get; set; }
+        public int FireCount { get; set; }
 
-        [ProtoMember(6)]
+		/// <summary>
+		/// 目前沒在用
+		/// </summary>
+		[ProtoMember(6)]
         public int WinFrequency { get; set; }
 
-        [ProtoMember(7)]
+		/// <summary>
+		/// 記錄開啟好贏的次數
+		/// </summary>
+		[ProtoMember(7)]
         public int AsnTimes { get; set; }
 
-        [ProtoMember(8)]
-        public int AsnWin { get; set; }
+		/// <summary>
+		/// 記錄開啟好贏的總贏分
+		/// </summary>
+		[ProtoMember(8)]
+        public int AsnWin { get; set; } 
 
+		/// <summary>
+		/// 記錄打死的魚
+		/// </summary>
         [ProtoMember(9)]
         public FishHitRecord[] FishHits { get; set; }
 
-	    public FarmRecord(int farm_id) : this()
+	    public FarmRecord(int farm_id) 
 	    {
-		    Id = new Guid();
+		    Id = Guid.NewGuid();
 
 			FarmId = farm_id;
-			
+			FishHits = new FishHitRecord[0];
 		}
 
         public FarmRecord()
         {
-            FishHits = new FishHitRecord[0];
-        }
+			Id = Guid.NewGuid();
+			FishHits = new FishHitRecord[0];
+		}
     }
 }

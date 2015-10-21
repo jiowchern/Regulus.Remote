@@ -46,22 +46,22 @@ namespace VGame.Project.FishHunter.Formula
 
 			_Finder = obj;
 
-			_User.QueryProvider<IFormulaFarmRecorder>().Supply += _GetFishDataLoader;
+			_User.QueryProvider<IFormulaFarmRecorder>().Supply += _GetFarmDataLoader;
 		}
 
-		private void _GetFishDataLoader(IFormulaFarmRecorder obj)
+		private void _GetFarmDataLoader(IFormulaFarmRecorder obj)
 		{
-			_User.QueryProvider<IFormulaFarmRecorder>().Supply -= _GetFishDataLoader;
+			_User.QueryProvider<IFormulaFarmRecorder>().Supply -= _GetFarmDataLoader;
 
 			_FormulaFarmRecorder = obj;
 
-			_User.QueryProvider<IFormulaPlayerRecorder>().Supply += _GetRecorder;
+			_User.QueryProvider<IFormulaPlayerRecorder>().Supply += _GetFormulaPlayerRecorder;
 		}
 
-		private void _GetRecorder(IFormulaPlayerRecorder obj)
+		private void _GetFormulaPlayerRecorder(IFormulaPlayerRecorder obj)
 		{
 			_FormulaPlayerRecorder = obj;
-			_User.QueryProvider<IFormulaPlayerRecorder>().Supply -= _GetRecorder;
+			_User.QueryProvider<IFormulaPlayerRecorder>().Supply -= _GetFormulaPlayerRecorder;
 			_Finish();
 		}
 

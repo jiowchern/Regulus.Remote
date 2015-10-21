@@ -5,6 +5,9 @@ using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 
 
+using NLog;
+using NLog.Fluent;
+
 using Regulus.CustomType;
 using Regulus.Database.DB_NoSQL;
 using Regulus.Framework;
@@ -12,9 +15,13 @@ using Regulus.Remoting;
 using Regulus.Utility;
 
 
+
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
+
+
+using Log = Regulus.Utility.Log;
 
 namespace VGame.Project.FishHunter.Storage
 {
@@ -34,12 +41,11 @@ namespace VGame.Project.FishHunter.Storage
 
         private readonly Updater _Updater;
 
-        private ICore _Core
-        {
-            get { return _Center; }
-        }
+		private static readonly Logger _Logger = LogManager.GetCurrentClassLogger();
 
-        public Server()
+		private ICore _Core => _Center;
+
+	    public Server()
         {
             _LogRecorder = new LogFileRecorder("Storage");
             _DefaultAdministratorName = "vgameadmini";
@@ -64,7 +70,7 @@ namespace VGame.Project.FishHunter.Storage
         void IBootable.Launch()
         {
             _UnhandleCrash();
-            Singleton<Log>.Instance.RecordEvent += _LogRecorder.Record;
+            Singleton<Regulus.Utility.Log>.Instance.RecordEvent += _LogRecorder.Record;
             
 
             _Updater.Add(_Center);
@@ -85,10 +91,9 @@ namespace VGame.Project.FishHunter.Storage
 
         private void _WriteError(object sender, FirstChanceExceptionEventArgs e)
         {
-            _LogRecorder.Record($"Exception:{e.Exception.Message}\r\nStackTrace:{e.Exception.StackTrace}");
-            _LogRecorder.Save();
-        }
-
+			_Logger.Error("error{0}", e.Exception.Message);
+			_Logger.Error("error{0}", e.Exception.StackTrace);
+		}
         
 
         void IBootable.Shutdown()
@@ -261,7 +266,7 @@ namespace VGame.Project.FishHunter.Storage
         Value<FishFarmData> IFormulaFarmRecorder.Load(int farm_id)
         {
             var val = new Value<FishFarmData>();
-            var t = _LoadStageData(farm_id);
+            var t = _LoadFarmData(farm_id);
 
             t.ContinueWith(
                 task =>
@@ -269,16 +274,20 @@ namespace VGame.Project.FishHunter.Storage
                     var data = task.Result;
                     if(data == null)
                     {
-                        var stageData = new FishFarmBuilder().Get(farm_id);
-                        _Database.Add(stageData).Wait();
-                        val.SetValue(stageData);
-                        Singleton<Log>.Instance.WriteDebug("Builder new farm data.");
-                    }
+                        var fishFarmData = new FishFarmBuilder().Get(farm_id);
+
+						_Database.Add(fishFarmData).Wait();
+
+						val.SetValue(fishFarmData);
+
+						_Logger.Info().Message("Builder new farm data.").Write();
+					}
                     else
                     {
                         val.SetValue(data);
-                        Singleton<Log>.Instance.WriteDebug("Load db farm data.");
-                    }
+
+						_Logger.Info().Message("Load db farm data.").Write();
+					}
                 });
             return val;
         }
@@ -286,23 +295,26 @@ namespace VGame.Project.FishHunter.Storage
         Value<bool> IFormulaFarmRecorder.Save(FishFarmData data)
         {
             var val = new Value<bool>();
-            var t = _LoadStageData(data.FarmId);
+            var t = _LoadFarmData(data.FarmId);
 
             t.ContinueWith(
                 task =>
                 {
-                    var stageData = task.Result;
+                    var farmData = task.Result;
 
-                    if(stageData == null)
+                    if(farmData == null)
                     {
                         val.SetValue(false);
+
                     }
                     else
                     {
                         val.SetValue(true);
 
-                        _Database.Update(stageData, a => a.FarmId == data.FarmId);
-                    }
+                        _Database.Update(data, a => a.FarmId == data.FarmId);
+
+						_Logger.Info().Message("Load db farm data.").Write();
+					}
                 });
             return val;
         }
@@ -326,6 +338,8 @@ namespace VGame.Project.FishHunter.Storage
 
                         _Database.Add(record).Wait();
                         val.SetValue(record);
+
+                        _Logger.Info().Message("new player").Property("PlayerId", account_id).Write();
                     }
                     else
                     {
@@ -348,12 +362,15 @@ namespace VGame.Project.FishHunter.Storage
                     if(recordData == null)
                     {
                         val.SetValue(false);
-                    }
+						_Logger.Fatal().Message("update player data fail").Write();
+					}
                     else
                     {
                         val.SetValue(true);
+                        _Database.Update(record, a => a.Id == record.Id);
+	                  
 
-                        _Database.Update(recordData, a => a.Id == record.Id);
+	                    _Logger.Info().Message("update player data to db").Write();
                     }
                 });
             return val;
@@ -370,9 +387,6 @@ namespace VGame.Project.FishHunter.Storage
             _Database.Add(account);
             return ACCOUNT_REQUEST_RESULT.OK;
         }
-
-
-        
 
         private async void _HandleAdministrator()
         {
@@ -446,10 +460,11 @@ namespace VGame.Project.FishHunter.Storage
                 {
                     Singleton<Log>.Instance.WriteDebug("TradeNotes Find Done.");
 
-                    if(task.Exception != null)
+					_Logger.Info().Message("TradeNotes Find Done.").Write();
+
+					if (task.Exception != null)
                     {
-                        Singleton<Log>.Instance.WriteDebug(
-                            string.Format("TradeNotes Exception {0}.", task.Exception.ToString()));
+						_Logger.Fatal().Message("TradeNotes Exception").Exception(task.Exception).Write();
                     }
 
                     return task.Result;
@@ -457,25 +472,24 @@ namespace VGame.Project.FishHunter.Storage
             return returnTask;
         }
 
-        private Task<FishFarmData> _LoadStageData(int farm_id)
+        private Task<FishFarmData> _LoadFarmData(int farm_id)
         {
             var tradeTask = _Database.Find<FishFarmData>(t => t.FarmId == farm_id);
 
             var returnTask = tradeTask.ContinueWith(
                 task =>
                 {
-                    
                     if(task.Exception != null)
                     {
-
                         foreach(var exception in task.Exception.InnerExceptions)
                         {
-                            Singleton<Log>.Instance.WriteDebug(
-                            string.Format("FishFarmData Exception {0}.", exception.ToString()));
+							_Logger.Fatal().Message("FishFarmData Exception").Exception(exception).Write();
                         }                        
                     }
-                    Singleton<Log>.Instance.WriteInfo("FishFarmData Find Done.");
-                    return task.Result.FirstOrDefault();
+
+					_Logger.Info().Message("FishFarmData Find Done.").Write();
+
+					return task.Result.FirstOrDefault();
                 });
 
             return returnTask;
@@ -490,8 +504,7 @@ namespace VGame.Project.FishHunter.Storage
                 {                    
                     if(task.Exception != null)
                     {
-                        Singleton<Log>.Instance.WriteDebug(
-                            string.Format("FormulaPlayerRecord Exception {0}.", task.Exception.ToString()));
+						_Logger.Fatal().Message("FormulaPlayerRecord Exception").Exception(task.Exception).Write();
                     }
 
                     return task.Result.FirstOrDefault();

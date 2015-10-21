@@ -31,40 +31,41 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 				return;
 			}
 
-			randomValue = _Visitor.FindIRandom(RandomData.RULE.ADJUSTMENT_PLAYER_PHASE, 1).NextInt(0, 1000);
-
 			// 從VIR00 - VIR03
-			CheckFarmBufferType(randomValue);
+			CheckFarmBufferType();
 		}
 
-		private void CheckFarmBufferType(int random_value)
+		private void CheckFarmBufferType()
 		{
 			var enums =
-				EnumHelper.GetEnums<FarmBuffer.BUFFER_TYPE>()
-						.Where(x => x >= FarmBuffer.BUFFER_TYPE.VIR00 && x <= FarmBuffer.BUFFER_TYPE.VIR03);
+				EnumHelper.GetEnums<FarmDataRoot.BufferNode.BUFFER_NAME>()
+						.Where(x => x >= FarmDataRoot.BufferNode.BUFFER_NAME.VIR00 && x <= FarmDataRoot.BufferNode.BUFFER_NAME.VIR03);
 
 			foreach(var i in enums)
 			{
-				var bufferData = _Visitor.Farm.FindBuffer(_Visitor.FocusBufferBlock, i);
+				var farmDataRoot = _Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName, i);
 
-				var top = bufferData.Top * bufferData.BufferTempValue.AverageValue;
+				var normal = _Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName, FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
 
-				if(bufferData.Buffer <= top)
+				var top = farmDataRoot.Buffer.Top * normal.TempValueNode.AverageValue;
+
+				if (farmDataRoot.Buffer.WinScore <= top)
 				{
 					continue;
 				}
 
-				if(random_value < bufferData.Gate)
+				var randomValue = _Visitor.FindIRandom(RandomData.RULE.ADJUSTMENT_PLAYER_PHASE, 1).NextInt(0, 1000);
+				if (randomValue < farmDataRoot.Buffer.Gate)
 				{
-					bufferData.Buffer -= top;
+					farmDataRoot.Buffer.WinScore -= top;
 
-					_Visitor.PlayerRecord.Status = bufferData.Top * 5;
+					_Visitor.PlayerRecord.Status = farmDataRoot.Buffer.Top * 5;
 					_Visitor.PlayerRecord.BufferValue = top;
-					_Visitor.PlayerRecord.FarmRecords.First(x => x.FarmId == _Visitor.Farm.FarmId).AsnTimes += 1;
+					_Visitor.PlayerRecord.FindFarmRecord(_Visitor.Farm.FarmId).AsnTimes += 1;
 				}
 				else
 				{
-					bufferData.Buffer = 0;
+					farmDataRoot.Buffer.WinScore = 0;
 				}
 			}
 		}

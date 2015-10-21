@@ -2,7 +2,7 @@
 
 namespace Regulus.Utility
 {
-	public class Singleton<T> where T : class, new()
+	public class Singleton<T> where T : new()
 	{
 		private static T _Instance;
 

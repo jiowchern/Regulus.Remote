@@ -11,128 +11,95 @@ using Regulus.Extension;
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
 using VGame.Project.FishHunter.Formula;
-using VGame.Project.FishHunter.Formula.ZsFormula;
 
 namespace VGame.Project.FishHunter.Stage
 {
-    internal class FormulaStage : IStage, IFishStageQueryer
-    {
-        public event DoneCallback OnDoneEvent;
+	internal class FormulaStage : IStage, IFishStageQueryer
+	{
+		public event DoneCallback OnDoneEvent;
 
-        private readonly ISoulBinder _Binder;
+		private readonly ISoulBinder _Binder;
 
-        private ExpansionFeature _ExpansionFeature;
+		private readonly ZsFishFormulaInitialer _ZsFishFormulaInitialer;
 
-        private List<FishFarmData> _FishFarmDatas;
+		private ExpansionFeature _ExpansionFeature;
 
-        private StageMachine _StageMachine;
+		private List<FishFarmData> _FishFarmDatas;
 
+		private StageMachine _StageMachine;
 
-        private ZsFishFormulaInitialer _ZsFishFormulaInitialer;
-        public FormulaStage(ISoulBinder binder, ExpansionFeature expansion_feature)
-        {
-            _Binder = binder;
-            _ExpansionFeature = expansion_feature;
+		public FormulaStage(ISoulBinder binder, ExpansionFeature expansion_feature)
+		{
+			_Binder = binder;
+			_ExpansionFeature = expansion_feature;
 
-            _ZsFishFormulaInitialer= new ZsFishFormulaInitialer(expansion_feature.FormulaPlayerRecorder , expansion_feature.FormulaFarmRecorder);
-        }
+			_ZsFishFormulaInitialer = new ZsFishFormulaInitialer(
+				expansion_feature.FormulaPlayerRecorder, 
+				expansion_feature.FormulaFarmRecorder);
+		}
 
-        Value<IFishStage> IFishStageQueryer.Query(Guid player_id, int fish_stage)
-        {
-            switch(fish_stage)
-            {
-                case 100:
-                    var data = _FishFarmDatas.Find(x => x.FarmId == fish_stage);
-                    return _QueryZsFishStage(player_id , data);
-                /*case 100:
-                    var data = _FishFarmDatas.Find(x => x.FarmId == fish_stage);
-                    return new ZsFishStage(
-                        player_id, 
-                        data, 
-                        _ExpansionFeature.FormulaPlayerRecorder, 
-                        _ExpansionFeature.FormulaFarmRecorder);*/
+		Value<IFishStage> IFishStageQueryer.Query(Guid player_id, int fish_stage)
+		{
+			if(fish_stage >= 100 && fish_stage <= 111)
+			{
+				var data = _FishFarmDatas.Find(x => x.FarmId == fish_stage);
+				return _QueryZsFishStage(player_id, data);
+			}
+			else if(fish_stage == 200)
+			{
+				return new QuarterStage(player_id, fish_stage);
+			}
+			else
+			{
+				return new FishStage(player_id, fish_stage);
+			}
+		}
 
-                case 111:
-                    return new QuarterStage(player_id, fish_stage);
+		void IStage.Enter()
+		{
+			OnDoneEvent += OnDoneEvent;
 
-                default:
-                    return new FishStage(player_id, fish_stage);
-            }
-        }
+			_StageMachine = _CreateStage();
+		}
 
-        private Value<IFishStage> _QueryZsFishStage(Guid player_id, FishFarmData data)
-        {
-            return _ZsFishFormulaInitialer.Query(player_id, data);
-        }
+		void IStage.Leave()
+		{
+			_Binder.Unbind<IFishStageQueryer>(this);
 
-        void IStage.Enter()
-        {
-            OnDoneEvent += OnDoneEvent;
+			_StageMachine.Termination();
+			_StageMachine = null;
 
-            _StageMachine = _CreateStage();
-        }
+			OnDoneEvent.Invoke();
+		}
 
-        void IStage.Leave()
-        {
-            _Binder.Unbind<IFishStageQueryer>(this);
+		void IStage.Update()
+		{
+			_StageMachine.Update();
+		}
 
-            _StageMachine.Termination();
-            _StageMachine = null;
+		private Value<IFishStage> _QueryZsFishStage(Guid player_id, FishFarmData data)
+		{
+			return _ZsFishFormulaInitialer.Query(player_id, data);
+		}
 
-            OnDoneEvent.Invoke();
-        }
+		private StageMachine _CreateStage()
+		{
+			var stageMachine = new StageMachine();
 
-        void IStage.Update()
-        {
-            _StageMachine.Update();
-        }
+			var stage = new StageLoadFarmData(_ExpansionFeature.FormulaFarmRecorder);
 
-        private StageMachine _CreateStage()
-        {
-            var stageMachine = new StageMachine();
+			stage.OnDoneEvent += _StageLoadFinish;
 
-            var stage = new StageLoadFarmData(_ExpansionFeature.FormulaFarmRecorder);
+			stageMachine.Push(stage);
 
-            stage.OnDoneEvent += _StageLoadFinish; 
+			return stageMachine;
+		}
 
-            stageMachine.Push(stage);
+		private void _StageLoadFinish(List<FishFarmData> obj)
+		{
+			_FishFarmDatas = obj;
 
-            return stageMachine;
-        }
-
-        private void _StageLoadFinish(List<FishFarmData> obj)
-        {
-            _FishFarmDatas = obj;
-
-            _Binder.Bind<IFishStageQueryer>(this);
-        }
-    }
-
-    internal class ZsFishFormulaInitialer
-    {
-        private IFormulaPlayerRecorder _FormulaPlayerRecorder;
-
-        private IFormulaFarmRecorder _FormulaFarmRecorder;
-        public ZsFishFormulaInitialer(IFormulaPlayerRecorder formula_player_recorder, IFormulaFarmRecorder i_formula_farm_recorder)
-        {
-            _FormulaPlayerRecorder = formula_player_recorder;
-            _FormulaFarmRecorder = i_formula_farm_recorder;
-        }
-
-        public Value<IFishStage> Query(Guid player_id, FishFarmData data)
-        {
-            var val = new Value<IFishStage>();
-            _FormulaPlayerRecorder.Query(player_id).OnValue += record =>
-            {
-                val.SetValue(new ZsFishStage(
-                        player_id,
-                        data,
-                        record,
-                        _FormulaPlayerRecorder,
-                        _FormulaFarmRecorder));
-            };
-
-            return val;
-        }
-    }
+			_Binder.Bind<IFishStageQueryer>(this);
+		}
+	}
 }

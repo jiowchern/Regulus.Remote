@@ -49,8 +49,8 @@ namespace Regulus.Utility
 
 			if(type.IsArray)
 			{
-				var elementType = Type.GetType(
-					type.FullName.Replace("[]", string.Empty));
+				var elementType  = type.GetElementType();
+				
 				var array = obj as Array;
 				var copied = Array.CreateInstance(elementType, array.Length);
 				for(var i = 0; i < array.Length; i++)

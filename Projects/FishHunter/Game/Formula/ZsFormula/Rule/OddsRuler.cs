@@ -14,17 +14,17 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 	/// </summary>
 	public class OddsRuler
 	{
-		private readonly FarmBuffer _BufferData;
+		private readonly FarmDataRoot _DataRootRoot;
 
 		private readonly RequsetFishData _FishData;
 
 		private readonly DataVisitor _Visitor;
 
-		public OddsRuler(DataVisitor visitor, RequsetFishData fish_data, FarmBuffer buffer_data)
+		public OddsRuler(DataVisitor visitor, RequsetFishData fish_data, FarmDataRoot data_root_root)
 		{
 			_Visitor = visitor;
 			_FishData = fish_data;
-			_BufferData = buffer_data;
+			_DataRootRoot = data_root_root;
 		}
 
 		public int RuleResult()
@@ -39,7 +39,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 				return 1;
 			}
 
-			if(!_CheckStageBufferToOddsRule(_BufferData))
+			if(!_CheckStageBufferToOddsRule(_DataRootRoot))
 			{
 				return 1;
 			}
@@ -104,11 +104,11 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 			return true;
 		}
 
-		private bool _CheckStageBufferToOddsRule(FarmBuffer data)
+		private bool _CheckStageBufferToOddsRule(FarmDataRoot root)
 		{
 			var natrue = new NatureBufferChancesTable().Get().ToDictionary(x => x.Key);
 
-			var hiLoRate = data.BufferTempValue.HiLoRate;
+			var hiLoRate = root.TempValueNode.HiLoRate;
 
 			var randNumber = _Visitor.FindIRandom(RandomData.RULE.ODDS, 3).NextInt(0, 1000);
 
