@@ -23,7 +23,7 @@ namespace VGame.Project.FishHunter.Common.Data
 		}
 
 		[ProtoMember(1)]
-		public Guid Id { get; set; }
+		public Guid Guid { get; set; }
 
 		[ProtoMember(2)]
 		public int FarmId { get; set; }
@@ -56,9 +56,12 @@ namespace VGame.Project.FishHunter.Common.Data
 		[ProtoMember(11)]
 		public FarmRecord Record { get; set; }
 
+		[ProtoMember(12)]
+		public long Id { get; set; }
+
 		public void Init()
 		{
-			Id = Guid.NewGuid();
+			Guid = Guid.NewGuid();
 
 			DataRootRoots = (from i in EnumHelper.GetEnums<FarmDataRoot.BlockNode.BLOCK_NAME>()
 								from j in EnumHelper.GetEnums<FarmDataRoot.BufferNode.BUFFER_NAME>()

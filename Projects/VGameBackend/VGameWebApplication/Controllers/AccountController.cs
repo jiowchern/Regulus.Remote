@@ -43,7 +43,7 @@ namespace VGameWebApplication.Controllers
 		{
 			var model = Service.Create(HttpContext.Items["StorageId"]);
 
-			account.Id = Guid.NewGuid();
+			account.Guid = Guid.NewGuid();
 			var result = await model.AccountManager.Create(account).ToTask();
 
 			model.Release();
@@ -61,7 +61,7 @@ namespace VGameWebApplication.Controllers
 			var model = Service.Create(HttpContext.Items["StorageId"]);
 			var result = await model.AccountFinder.FindAccountById(accountId).ToTask();
 			model.Release();
-			if(result.Id != Guid.Empty)
+			if(result.Guid != Guid.Empty)
 			{
 				var updateAccount = new UpdateAccount();
 				updateAccount.TheAccount = result;

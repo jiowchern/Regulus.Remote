@@ -1,21 +1,11 @@
-// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="NatureDataRule.cs" company="Regulus Framework">
-//   Regulus Framework
-// </copyright>
-// <summary>
-//   Defines the NatureDataRule type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
 using System.Linq;
-
 
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
 
 namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 {
 	/// <summary>
-	/// 計算自然buffer的規則
+	///     計算自然buffer的規則
 	/// </summary>
 	public class NatureDataRule
 	{
@@ -26,15 +16,15 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 			var datas = new NatureBufferChancesTable().Get().ToDictionary(x => x.Key);
 
 			// 沒有的話要回傳最小值
-			if (!datas.Any(data => buffer_value > (data.Key * base_value)))
+			if(!datas.Any(data => buffer_value > (data.Key * base_value)))
 			{
 				return (int)datas.First().Value.Value;
 			}
 
 			// 比對最大值
-			foreach (var data in datas.Where(data => buffer_value > (data.Key * base_value)))
+			foreach(var data in datas.Where(data => buffer_value > (data.Key * base_value)))
 			{
-			    natureValue = (int)data.Value.Value;
+				natureValue = (int)data.Value.Value;
 			}
 
 			return natureValue;

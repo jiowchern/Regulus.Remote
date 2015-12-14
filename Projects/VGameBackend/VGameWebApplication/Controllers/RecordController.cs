@@ -25,9 +25,9 @@ namespace VGameWebApplication.Controllers
 
 			foreach(var a in accs)
 			{
-				var money = service.GameRecorder.Load(a.Id).WaitResult().Money;
+				var money = service.GameRecorder.Load(a.Guid).WaitResult().Money;
 
-				tradeData.Add(a.Id, a.Name, money);
+				tradeData.Add(a.Guid, a.Name, money);
 			}
 
 			return View(tradeData.Datas.ToArray());

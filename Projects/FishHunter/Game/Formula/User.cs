@@ -1,31 +1,26 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Net.Mail;
-
+﻿using System;
 
 using Regulus.Framework;
 
 using Regulus.Remoting;
 using Regulus.Utility;
 
-
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Stage;
 
 namespace VGame.Project.FishHunter.Formula
 {
-    internal class User : Regulus.Game.IUser
+	internal class User : Regulus.Game.IUser
 	{
-		private event Regulus.Game.OnQuit _QuitEvent;
+		private event Regulus.Game.OnQuit _OnQuitEvent;
 
-		private event Regulus.Game.OnNewUser _VerifySuccessEvent;
+		private event Regulus.Game.OnNewUser _OnVerifySuccessEvent;
 
 		private readonly ISoulBinder _Binder;
 
 		private readonly StageMachine _Machine;
 
-		private Common.Data.Account _Account;
+		private Account _Account;
 
 		private ExpansionFeature _ExpansionFeature;
 
@@ -46,14 +41,14 @@ namespace VGame.Project.FishHunter.Formula
 
 		event Regulus.Game.OnNewUser Regulus.Game.IUser.VerifySuccessEvent
 		{
-			add { _VerifySuccessEvent += value; }
-			remove { _VerifySuccessEvent -= value; }
+			add { _OnVerifySuccessEvent += value; }
+			remove { _OnVerifySuccessEvent -= value; }
 		}
 
 		event Regulus.Game.OnQuit Regulus.Game.IUser.QuitEvent
 		{
-			add { _QuitEvent += value; }
-			remove { _QuitEvent -= value; }
+			add { _OnQuitEvent += value; }
+			remove { _OnQuitEvent -= value; }
 		}
 
 		bool IUpdatable.Update()
@@ -81,12 +76,12 @@ namespace VGame.Project.FishHunter.Formula
 			_Machine.Push(stage);
 		}
 
-		private void _VerifySuccess(Common.Data.Account account)
+		private void _VerifySuccess(Account account)
 		{
 			if(account.IsFormulaQueryer())
 			{
 				_Account = account;
-				_VerifySuccessEvent(_Account.Id);
+				_OnVerifySuccessEvent(_Account.Guid);
 				_ToFishStage();
 			}
 			else
@@ -99,7 +94,7 @@ namespace VGame.Project.FishHunter.Formula
 		{
 			var stage = new FormulaStage(_Binder, _ExpansionFeature);
 
-			stage.OnDoneEvent += () => { _QuitEvent(); };
+			stage.OnDoneEvent += () => { _OnQuitEvent(); };
 			_Machine.Push(stage);
 		}
 	}

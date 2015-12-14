@@ -30,21 +30,21 @@ namespace GameTest.FormulaTest
 			{
 				new Account
 				{
-					Id = Guid.NewGuid(), 
+					Guid = Guid.NewGuid(), 
 					Password = "pw", 
 					Name = "name", 
 					Competnces = Account.AllCompetnce()
 				}, 
 				new Account
 				{
-					Id = Guid.NewGuid(), 
+					Guid = Guid.NewGuid(), 
 					Password = "vgame", 
 					Name = "vgameadmini", 
 					Competnces = Account.AllCompetnce()
 				}, 
 				new Account
 				{
-					Id = Guid.NewGuid(), 
+					Guid = Guid.NewGuid(), 
 					Password = "user", 
 					Name = "user1", 
 					Competnces = Account.AllCompetnce()
@@ -59,7 +59,7 @@ namespace GameTest.FormulaTest
 
 		Value<Account> IAccountFinder.FindAccountById(Guid accountId)
 		{
-			return _Accounts.Find(a => a.Id == accountId);
+			return _Accounts.Find(a => a.Guid == accountId);
 		}
 
 		Value<IFishStage> IFishStageQueryer.Query(Guid player_id, int fish_stage)
@@ -107,13 +107,13 @@ namespace GameTest.FormulaTest
 
 		Value<GamePlayerRecord> IGameRecorder.Load(Guid account_id)
 		{
-			var account = _Accounts.Find(a => a.Id == account_id);
+			var account = _Accounts.Find(a => a.Guid == account_id);
 			if(!account.IsPlayer())
 			{
 				return null;
 			}
 
-			var record = _Records.Find(r => r.Owner == account.Id);
+			var record = _Records.Find(r => r.Owner == account.Guid);
 
 			if(record == null)
 			{
@@ -129,13 +129,13 @@ namespace GameTest.FormulaTest
 
 		void IGameRecorder.Save(GamePlayerRecord game_player_record)
 		{
-			var account = _Accounts.Find(a => a.Id == game_player_record.Owner);
+			var account = _Accounts.Find(a => a.Guid == game_player_record.Owner);
 			if(!account.IsPlayer())
 			{
 				return;
 			}
 
-			var old = _Records.Find(r => r.Owner == account.Id);
+			var old = _Records.Find(r => r.Owner == account.Guid);
 			_Records.Remove(old);
 			_Records.Add(game_player_record);
 		}

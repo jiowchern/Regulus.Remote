@@ -1,8 +1,6 @@
-﻿
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Linq;
-
 
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
@@ -14,17 +12,17 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 	/// </summary>
 	public class OddsRuler
 	{
-		private readonly FarmDataRoot _DataRootRoot;
+		private readonly FarmDataRoot _FarmDataRoot;
 
 		private readonly RequsetFishData _FishData;
 
 		private readonly DataVisitor _Visitor;
 
-		public OddsRuler(DataVisitor visitor, RequsetFishData fish_data, FarmDataRoot data_root_root)
+		public OddsRuler(DataVisitor visitor, RequsetFishData fish_data, FarmDataRoot farm_data_root)
 		{
 			_Visitor = visitor;
 			_FishData = fish_data;
-			_DataRootRoot = data_root_root;
+			_FarmDataRoot = farm_data_root;
 		}
 
 		public int RuleResult()
@@ -34,12 +32,12 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 				return 2;
 			}
 
-			if (!_CheckFishTypeToOddsRule(_FishData))
+			if(!_CheckFishTypeToOddsRule(_FishData))
 			{
 				return 1;
 			}
 
-			if(!_CheckStageBufferToOddsRule(_DataRootRoot))
+			if(!_CheckStageBufferToOddsRule(_FarmDataRoot))
 			{
 				return 1;
 			}
@@ -49,7 +47,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		private bool _CheckIsFreeze(RequsetFishData fish_data)
 		{
-			if (fish_data.FishType >= FISH_TYPE.SPECIAL_SCREEN_BOMB
+			if(fish_data.FishType >= FISH_TYPE.SPECIAL_SCREEN_BOMB
 				&& fish_data.FishType <= FISH_TYPE.SPECIAL_BIG_OCTOPUS_BOMB)
 			{
 				return false; // 特殊鱼 不翻倍
@@ -62,7 +60,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		private bool _CheckFishTypeToOddsRule(RequsetFishData fish_data)
 		{
 			if(fish_data.FishType >= FISH_TYPE.SPECIAL_SCREEN_BOMB
-			   && fish_data.FishType <= FISH_TYPE.SPECIAL_BIG_OCTOPUS_BOMB)
+				&& fish_data.FishType <= FISH_TYPE.SPECIAL_BIG_OCTOPUS_BOMB)
 			{
 				return false; // 特殊鱼 不翻倍
 			}
@@ -74,9 +72,8 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 			if(fish_data.FishType == FISH_TYPE.BLUE_WHALE)
 			{
-
-
-				var randNumber = _Visitor.FindIRandom(RandomData.RULE.ODDS, 0).NextInt(0, 1000);
+				var randNumber = _Visitor.FindIRandom(RandomData.RULE.ODDS, 0)
+										.NextInt(0, 1000);
 				if(randNumber < 500)
 				{
 					return false; // 藍鯨 50%不翻倍 
@@ -85,8 +82,9 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 			if(fish_data.FishType == FISH_TYPE.RED_WHALE)
 			{
-				var randNumber = _Visitor.FindIRandom(RandomData.RULE.ODDS, 1).NextInt(0, 1000);
-				if (randNumber < 750)
+				var randNumber = _Visitor.FindIRandom(RandomData.RULE.ODDS, 1)
+										.NextInt(0, 1000);
+				if(randNumber < 750)
 				{
 					return false; // 藍鯨 75%不翻倍
 				}
@@ -94,8 +92,9 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 			if(fish_data.FishType == FISH_TYPE.GOLDEN_WHALE)
 			{
-				var randNumber = _Visitor.FindIRandom(RandomData.RULE.ODDS, 2).NextInt(0, 1000);
-				if (randNumber < 875)
+				var randNumber = _Visitor.FindIRandom(RandomData.RULE.ODDS, 2)
+										.NextInt(0, 1000);
+				if(randNumber < 875)
 				{
 					return false; // 金鯨 87%不翻倍
 				}
@@ -106,13 +105,15 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		private bool _CheckStageBufferToOddsRule(FarmDataRoot root)
 		{
-			var natrue = new NatureBufferChancesTable().Get().ToDictionary(x => x.Key);
+			var natrue = new NatureBufferChancesTable().Get()
+														.ToDictionary(x => x.Key);
 
 			var hiLoRate = root.TempValueNode.HiLoRate;
 
-			var randNumber = _Visitor.FindIRandom(RandomData.RULE.ODDS, 3).NextInt(0, 1000);
+			var randNumber = _Visitor.FindIRandom(RandomData.RULE.ODDS, 3)
+									.NextInt(0, 1000);
 
-			if (hiLoRate <= natrue[-3].Value)
+			if(hiLoRate <= natrue[-3].Value)
 			{
 				if(randNumber < 750)
 				{
@@ -150,13 +151,14 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		private int _CheckMultipleTableToOddsRule()
 		{
-			var randNumber = _Visitor.FindIRandom(RandomData.RULE.ODDS, 4).NextInt(0, 1000);
+			var randNumber = _Visitor.FindIRandom(RandomData.RULE.ODDS, 4)
+									.NextInt(0, 1000);
 
 			var oddsValue = new OddsTable().CheckRule(randNumber);
 
 			return _CheckFishToOddsRule(_FishData, oddsValue)
-					   ? oddsValue
-					   : 1;
+							? oddsValue
+							: 1;
 		}
 
 		private bool _CheckFishToOddsRule(RequsetFishData fish_data, int odds)

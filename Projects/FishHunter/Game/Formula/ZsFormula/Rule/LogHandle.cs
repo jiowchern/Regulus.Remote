@@ -1,12 +1,7 @@
-﻿using System.Linq;
-
-
-using NLog;
+﻿using NLog;
 using NLog.Fluent;
 
-
 using Regulus.Utility;
-
 
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
@@ -20,37 +15,22 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		public LogHandle(DataVisitor visitor)
 		{
 			_Visitor = visitor;
-			//_BlockRecord();
+		}
+
+		public void Run()
+		{
 			_PlayerLog();
 			_FarmDataLog();
 		}
 
 		/// <summary>
-		/// 各個block各別加總GetTotalBet，win也要各別計算
-		/// </summary>
-		private void _BlockRecord()
-		{
-			var root = _Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName, FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
-
-			var log = LogManager.GetLogger("BlockRecord");
-			log.Info()
-				.Message("BlockRecord")
-				.Property("FarmId", _Visitor.Farm.FarmId)
-				.Property("BlockName", _Visitor.FocusBlockName)
-				.Property("TotalSpending", root.Block.TotalSpending)
-				.Property("WinScore", root.Block.WinScore)
-				.Property("FireCount", root.Block.FireCount)
-				.Write();
-		}
-
-		/// <summary>
-		/// 玩家子彈數每500發，當下區段的buffer value
+		///     玩家子彈數每500發，當下區段的buffer value
 		/// </summary>
 		private void _PlayerLog()
 		{
 			var playerData = _Visitor.PlayerRecord.FindFarmRecord(_Visitor.Farm.FarmId);
 
-			if (playerData.FireCount % 500 != 0)
+			if(playerData.FireCount % 500 != 0)
 			{
 				return;
 			}
@@ -70,18 +50,18 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		}
 
 		/// <summary>
-		/// 漁場累積的子彈，每500發印一次。
+		///     漁場累積的子彈，每500發印一次。
 		/// </summary>
 		private void _FarmDataLog()
 		{
-			if (_Visitor.Farm.Record.FireCount % 500 != 0)
+			if(_Visitor.Farm.Record.FireCount % 500 != 0)
 			{
 				return;
 			}
 
-			foreach (var block in EnumHelper.GetEnums<FarmDataRoot.BlockNode.BLOCK_NAME>())
+			foreach(var block in EnumHelper.GetEnums<FarmDataRoot.BlockNode.BLOCK_NAME>())
 			{
-				foreach (var type in EnumHelper.GetEnums<FarmDataRoot.BufferNode.BUFFER_NAME>())
+				foreach(var type in EnumHelper.GetEnums<FarmDataRoot.BufferNode.BUFFER_NAME>())
 				{
 					var farmDataRoot = _Visitor.Farm.FindDataRoot(block, type);
 					var tempValueNode = farmDataRoot.TempValueNode;
@@ -89,7 +69,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 					log.Info()
 						.Message("StageRecord")
 						.Property("FarmId", _Visitor.Farm.FarmId)
-						.Property("FarmName", _Visitor.Farm.Name)   //拿掉
+						.Property("FarmName", _Visitor.Farm.Name) // 拿掉
 						.Property("FarmBaseOdds", _Visitor.Farm.BaseOdds)
 						.Property("FarmMaxBet", _Visitor.Farm.MaxBet)
 						.Property("FarmRate", _Visitor.Farm.GameRate)
@@ -98,18 +78,15 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 						.Property("FarmTotalSpending", _Visitor.Farm.Record.TotalSpending)
 						.Property("FarmWinScore", _Visitor.Farm.Record.WinScore)
 						.Property("FarmFireCount", _Visitor.Farm.Record.FireCount)
-
 						.Property("BlockName", farmDataRoot.Block.BlockName)
 						.Property("BlockTotal", farmDataRoot.Block.TotalSpending)
 						.Property("BlockWinScore", farmDataRoot.Block.WinScore)
 						.Property("BlockFireCount", farmDataRoot.Block.FireCount)
-
 						.Property("BufferName", farmDataRoot.Buffer.BufferName)
 						.Property("BufferWinScore", farmDataRoot.Buffer.WinScore)
 						.Property("BufferRate", farmDataRoot.Buffer.Rate)
 						.Property("BufferTop", farmDataRoot.Buffer.Top)
 						.Property("BufferGate", farmDataRoot.Buffer.Gate)
-
 						.Property("TempFireCount", tempValueNode.FireCount)
 						.Property("TempAverageValue", tempValueNode.AverageValue)
 						.Property("TempAverageTimes", tempValueNode.AverageTimes)

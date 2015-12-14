@@ -11,7 +11,7 @@ namespace VGame.Project.FishHunter.Common.Data
     public partial class FarmDataRoot
 	{ 
 		[ProtoMember(1)]
-		public Guid Id { get; set; }
+		public Guid Guid { get; set; }
 
 		[ProtoMember(2)]
 		public BlockNode Block { get; set; }
@@ -22,10 +22,13 @@ namespace VGame.Project.FishHunter.Common.Data
 		[ProtoMember(4)]
 		public ValueNode TempValueNode { get; private set; }
 
+		[ProtoMember(5)]
+		public long Id { get; set; }
+
 
 		public FarmDataRoot(BlockNode.BLOCK_NAME block_name, BufferNode.BUFFER_NAME buffer_name)
         {
-            Id = Guid.NewGuid();
+            Guid = Guid.NewGuid();
 
 			Block = new BlockNode(block_name);
 
@@ -36,7 +39,7 @@ namespace VGame.Project.FishHunter.Common.Data
 
 		public FarmDataRoot()
 		{
-			Id = Guid.NewGuid();
+			Guid = Guid.NewGuid();
 
 			Block = new BlockNode();
 

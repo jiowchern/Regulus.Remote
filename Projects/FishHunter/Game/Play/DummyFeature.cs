@@ -10,13 +10,13 @@ using VGame.Project.FishHunter.Common.GPI;
 using VGame.Project.FishHunter.Formula;
 using VGame.Project.FishHunter.Formula.ZsFormula;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
-
+using VGame.Project.FishHunter.Stage;
 
 using Account = VGame.Project.FishHunter.Common.Data.Account;
 
 namespace VGame.Project.FishHunter.Play
 {
-	public class DummyFrature : IAccountFinder, IFishStageQueryer, IStorage
+	public class DummyFrature : IFishStageQueryer, IStorage
 	{
 		private readonly List<Account> _Accounts;
 
@@ -30,23 +30,31 @@ namespace VGame.Project.FishHunter.Play
 			{
 				new Account
 				{
-					Id = Guid.NewGuid(), 
+					Guid = Guid.NewGuid(),
+					Name = "Guest",
+					Password = "vgame",
+					Competnces = Account.AllCompetnce()
+				},
+
+				new Account
+				{
+					Guid = Guid.NewGuid(),
+					Name = "name",
 					Password = "pw", 
-					Name = "name", 
 					Competnces = Account.AllCompetnce()
 				}, 
 				new Account
 				{
-					Id = Guid.NewGuid(), 
+					Guid = Guid.NewGuid(),
+					Name = "vgameadmini",
 					Password = "vgame", 
-					Name = "vgameadmini", 
 					Competnces = Account.AllCompetnce()
 				}, 
 				new Account
 				{
-					Id = Guid.NewGuid(), 
+					Guid = Guid.NewGuid(),
+					Name = "user1",
 					Password = "user", 
-					Name = "user1", 
 					Competnces = Account.AllCompetnce()
 				}
 			};
@@ -59,7 +67,7 @@ namespace VGame.Project.FishHunter.Play
 
 		Value<Account> IAccountFinder.FindAccountById(Guid account_id)
 		{
-            var result = _Accounts.Find(a => a.Id == account_id);
+            var result = _Accounts.Find(a => a.Guid == account_id);
 		    return result;
 		}
 
@@ -68,7 +76,7 @@ namespace VGame.Project.FishHunter.Play
 			switch(fish_stage)
 			{
 				case 111:
-					return new VGame.Project.FishHunter.Stage.QuarterStage(player_id, fish_stage);
+					return new QuarterStage(player_id, fish_stage);
 				case 100:
 					return new ZsFishStage(player_id, new FishFarmBuilder().Get(fish_stage), new FormulaPlayerRecord(), this, this);
 				default:
@@ -107,10 +115,10 @@ namespace VGame.Project.FishHunter.Play
 
 		Value<GamePlayerRecord> IGameRecorder.Load(Guid account_id)
 		{
-			var account = _Accounts.Find(a => a.Id == account_id);
+			var account = _Accounts.Find(a => a.Guid == account_id);
 			if(account.IsPlayer())
 			{
-				var record = _Records.Find(r => r.Owner == account.Id);
+				var record = _Records.Find(r => r.Owner == account.Guid);
 				if(record == null)
 				{
 					record = new GamePlayerRecord
@@ -129,10 +137,10 @@ namespace VGame.Project.FishHunter.Play
 
 		void IGameRecorder.Save(GamePlayerRecord game_player_record)
 		{
-			var account = _Accounts.Find(a => a.Id == game_player_record.Owner);
+			var account = _Accounts.Find(a => a.Guid == game_player_record.Owner);
 			if(account.IsPlayer())
 			{
-				var old = _Records.Find(r => r.Owner == account.Id);
+				var old = _Records.Find(r => r.Owner == account.Guid);
 				_Records.Remove(old);
 				_Records.Add(game_player_record);
 			}
