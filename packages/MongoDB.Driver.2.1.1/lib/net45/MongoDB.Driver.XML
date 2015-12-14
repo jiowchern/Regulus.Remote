@@ -27,9 +27,17 @@
       <typeparam name="TNewResult">The type of the result of the stage.</typeparam>
       <returns>The fluent aggregate interface.</returns>
     </member>
+    <member name="M:MongoDB.Driver.AggregateFluentBase`1.As``1(MongoDB.Bson.Serialization.IBsonSerializer{``0})">
+      <summary>
+            Appends a project stage to the pipeline.
+            </summary>
+      <param name="newResultSerializer">The new result serializer.</param>
+      <typeparam name="TNewResult">The type of the new result.</typeparam>
+      <returns>The fluent aggregate interface.</returns>
+    </member>
     <member name="M:MongoDB.Driver.AggregateFluentBase`1.Group``1(MongoDB.Driver.ProjectionDefinition{`0,``0})">
       <summary>
-            Appends a group stage to the stages.
+            Appends a group stage to the pipeline.
             </summary>
       <param name="group">The group projection.</param>
       <typeparam name="TNewResult">The type of the result of the stage.</typeparam>
@@ -42,11 +50,38 @@
       <param name="limit">The limit.</param>
       <returns>The fluent aggregate interface.</returns>
     </member>
+    <member name="M:MongoDB.Driver.AggregateFluentBase`1.Lookup``1(System.String,MongoDB.Driver.FieldDefinition{`0},MongoDB.Driver.FieldDefinition{MongoDB.Bson.BsonDocument},MongoDB.Driver.FieldDefinition{``0},MongoDB.Bson.Serialization.IBsonSerializer{``0})">
+      <summary>
+            Appens a lookup stage to the pipeline.
+            </summary>
+      <param name="from">From.</param>
+      <param name="localField">The local field.</param>
+      <param name="foreignField">The foreign field.</param>
+      <param name="as">As.</param>
+      <param name="newResultSerializer">The new result serializer.</param>
+      <typeparam name="TNewResult">The type of the new result.</typeparam>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:MongoDB.Driver.AggregateFluentBase`1.Lookup``1(System.String,MongoDB.Driver.FieldDefinition{`0},MongoDB.Driver.FieldDefinition{MongoDB.Bson.BsonDocument},MongoDB.Driver.FieldDefinition{``0},MongoDB.Bson.Serialization.IBsonSerializer{``0})</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
     <member name="M:MongoDB.Driver.AggregateFluentBase`1.Match(MongoDB.Driver.FilterDefinition{`0})">
       <summary>
             Appends a match stage to the pipeline.
             </summary>
       <param name="filter">The filter.</param>
+      <returns>The fluent aggregate interface.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.AggregateFluentBase`1.OfType``1(MongoDB.Bson.Serialization.IBsonSerializer{``0})">
+      <summary>
+            Appends a match stage to the pipeline that matches derived documents and changes the result type to the derived type.
+            </summary>
+      <param name="newResultSerializer">The new result serializer.</param>
+      <typeparam name="TNewResult">The type of the derived documents.</typeparam>
       <returns>The fluent aggregate interface.</returns>
     </member>
     <member name="P:MongoDB.Driver.AggregateFluentBase`1.Options">
@@ -623,6 +658,65 @@
             Gets the index.
             </summary>
     </member>
+    <member name="T:MongoDB.Driver.ClientSideDeserializationProjectionDefinition`2">
+      <summary>
+            A client side only projection that is implemented solely by deserializing using a different serializer.
+            </summary>
+      <typeparam name="TSource">The type of the source.</typeparam>
+      <typeparam name="TProjection">The type of the projection.</typeparam>
+    </member>
+    <member name="M:MongoDB.Driver.ClientSideDeserializationProjectionDefinition`2.#ctor(MongoDB.Bson.Serialization.IBsonSerializer{`1})">
+      <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.ClientSideDeserializationProjectionDefinition`2" /> class.
+            </summary>
+      <param name="projectionSerializer">The projection serializer.</param>
+    </member>
+    <member name="M:MongoDB.Driver.ClientSideDeserializationProjectionDefinition`2.Render(MongoDB.Bson.Serialization.IBsonSerializer{`0},MongoDB.Bson.Serialization.IBsonSerializerRegistry)">
+      <summary>
+            Renders the projection to a <see cref="T:MongoDB.Driver.RenderedProjectionDefinition`1" />.
+            </summary>
+      <param name="sourceSerializer">The source serializer.</param>
+      <param name="serializerRegistry">The serializer registry.</param>
+      <returns>A <see cref="T:MongoDB.Driver.RenderedProjectionDefinition`1" />.</returns>
+    </member>
+    <member name="P:MongoDB.Driver.ClientSideDeserializationProjectionDefinition`2.ResultSerializer">
+      <summary>
+            Gets the result serializer.
+            </summary>
+    </member>
+    <member name="T:MongoDB.Driver.CombinedPipelineDefinition`3">
+      <summary>
+            A pipeline defined by combining two pipeline definitions.
+            </summary>
+      <typeparam name="TInput">The type of the input.</typeparam>
+      <typeparam name="TIntermediateOutput">The type of the intermediate output.</typeparam>
+      <typeparam name="TOutput">The type of the output.</typeparam>
+    </member>
+    <member name="M:MongoDB.Driver.CombinedPipelineDefinition`3.#ctor(MongoDB.Driver.PipelineDefinition{`0,`1},MongoDB.Driver.PipelineDefinition{`1,`2})">
+      <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.CombinedPipelineDefinition`3" /> class.
+            </summary>
+      <param name="first">The first pipeline.</param>
+      <param name="second">The second pipeline.</param>
+    </member>
+    <member name="P:MongoDB.Driver.CombinedPipelineDefinition`3.First">
+      <summary>
+            Gets the first pipeline.
+            </summary>
+    </member>
+    <member name="M:MongoDB.Driver.CombinedPipelineDefinition`3.Render(MongoDB.Bson.Serialization.IBsonSerializer{`0},MongoDB.Bson.Serialization.IBsonSerializerRegistry)">
+      <summary>
+            Renders the pipeline.
+            </summary>
+      <param name="inputSerializer">The input serializer.</param>
+      <param name="serializerRegistry">The serializer registry.</param>
+      <returns>A <see cref="T:MongoDB.Driver.RenderedPipelineDefinition`1" /></returns>
+    </member>
+    <member name="P:MongoDB.Driver.CombinedPipelineDefinition`3.Second">
+      <summary>
+            Gets the second pipeline.
+            </summary>
+    </member>
     <member name="T:MongoDB.Driver.Command`1">
       <summary>
             Base class for commands.
@@ -769,6 +863,29 @@
     <member name="P:MongoDB.Driver.CreateCollectionOptions.UsePowerOf2Sizes">
       <summary>
             Gets or sets a value indicating whether to use power of 2 sizes.
+            </summary>
+    </member>
+    <member name="T:MongoDB.Driver.CreateIndexModel`1">
+      <summary>
+            Model for creating an index.
+            </summary>
+      <typeparam name="TDocument">The type of the document.</typeparam>
+    </member>
+    <member name="M:MongoDB.Driver.CreateIndexModel`1.#ctor(MongoDB.Driver.IndexKeysDefinition{`0},MongoDB.Driver.CreateIndexOptions)">
+      <summary>
+            Initializes a new instance of the <see cref="T:MongoDB.Driver.CreateIndexModel`1" /> class.
+            </summary>
+      <param name="keys">The keys.</param>
+      <param name="options">The options.</param>
+    </member>
+    <member name="P:MongoDB.Driver.CreateIndexModel`1.Keys">
+      <summary>
+            Gets the keys.
+            </summary>
+    </member>
+    <member name="P:MongoDB.Driver.CreateIndexModel`1.Options">
+      <summary>
+            Gets the options.
             </summary>
     </member>
     <member name="T:MongoDB.Driver.CreateIndexOptions">
@@ -1161,6 +1278,15 @@
         </markup>
       </summary>
     </member>
+    <member name="M:MongoDB.Driver.FieldDefinition`2.op_Implicit(MongoDB.Driver.FieldDefinition{`0,`1})~MongoDB.Driver.FieldDefinition{`0}">
+      <summary>
+            Performs an implicit conversion from <see cref="T:MongoDB.Driver.FieldDefinition`2" /> to <see cref="T:MongoDB.Driver.FieldDefinition`1" />.
+            </summary>
+      <param name="field">The field.</param>
+      <returns>
+            The result of the conversion.
+            </returns>
+    </member>
     <member name="M:MongoDB.Driver.FieldDefinition`2.op_Implicit(System.String)~MongoDB.Driver.FieldDefinition{`0,`1}">
       <summary>
             Performs an implicit conversion from <see cref="T:System.String" /> to <see cref="T:MongoDB.Driver.FieldDefinition`2" />.
@@ -1192,6 +1318,11 @@
           </include>
         </markup>
       </summary>
+    </member>
+    <member name="P:MongoDB.Driver.FilterDefinition`1.Empty">
+      <summary>
+            Gets an empty filter. An empty filter matches everything.
+            </summary>
     </member>
     <member name="M:MongoDB.Driver.FilterDefinition`1.op_BitwiseAnd(MongoDB.Driver.FilterDefinition{`0},MongoDB.Driver.FilterDefinition{`0})">
       <summary>
@@ -1474,6 +1605,11 @@
       <param name="filter">The filter.</param>
       <typeparam name="TItem">The type of the item.</typeparam>
       <returns>An element match filter.</returns>
+    </member>
+    <member name="P:MongoDB.Driver.FilterDefinitionBuilder`1.Empty">
+      <summary>
+            Gets an empty filter. An empty filter matches everything.
+            </summary>
     </member>
     <member name="M:MongoDB.Driver.FilterDefinitionBuilder`1.Eq``1(MongoDB.Driver.FieldDefinition{`0,``0},``0)">
       <summary>
@@ -1862,6 +1998,67 @@
       <param name="filter">The filter.</param>
       <returns>A not filter.</returns>
     </member>
+    <member name="M:MongoDB.Driver.FilterDefinitionBuilder`1.OfType``1">
+      <summary>
+            Creates an OfType filter that matches documents of a derived type.
+            </summary>
+      <typeparam name="TDerived">The type of the matching derived documents.</typeparam>
+      <returns>An OfType filter.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.FilterDefinitionBuilder`1.OfType``2(MongoDB.Driver.FieldDefinition{`0,``0})">
+      <summary>
+            Creates an OfType filter that matches documents with a field of a derived typer.
+            </summary>
+      <param name="field">The field.</param>
+      <typeparam name="TField">The type of the field.</typeparam>
+      <typeparam name="TDerived">The type of the matching derived field value.</typeparam>
+      <returns>An OfType filter.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.FilterDefinitionBuilder`1.OfType``2(MongoDB.Driver.FieldDefinition{`0,``0},MongoDB.Driver.FilterDefinition{``1})">
+      <summary>
+            Creates an OfType filter that matches documents with a field of a derived type and that also match a filter on the derived field.
+            </summary>
+      <param name="field">The field.</param>
+      <param name="derivedFieldFilter">A filter on the derived field.</param>
+      <typeparam name="TField">The type of the field.</typeparam>
+      <typeparam name="TDerived">The type of the matching derived field value.</typeparam>
+      <returns>An OfType filter.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.FilterDefinitionBuilder`1.OfType``1(MongoDB.Driver.FilterDefinition{``0})">
+      <summary>
+            Creates an OfType filter that matches documents of a derived type and that also match a filter on the derived document.
+            </summary>
+      <param name="derivedDocumentFilter">A filter on the derived document.</param>
+      <typeparam name="TDerived">The type of the matching derived documents.</typeparam>
+      <returns>An OfType filter.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.FilterDefinitionBuilder`1.OfType``1(System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
+      <summary>
+            Creates an OfType filter that matches documents of a derived type and that also match a filter on the derived document.
+            </summary>
+      <param name="derivedDocumentFilter">A filter on the derived document.</param>
+      <typeparam name="TDerived">The type of the matching derived documents.</typeparam>
+      <returns>An OfType filter.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.FilterDefinitionBuilder`1.OfType``2(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+      <summary>
+            Creates an OfType filter that matches documents with a field of a derived type.
+            </summary>
+      <param name="field">The field.</param>
+      <typeparam name="TField">The type of the field.</typeparam>
+      <typeparam name="TDerived">The type of the matching derived field value.</typeparam>
+      <returns>An OfType filter.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.FilterDefinitionBuilder`1.OfType``2(System.Linq.Expressions.Expression{System.Func{`0,``0}},System.Linq.Expressions.Expression{System.Func{``1,System.Boolean}})">
+      <summary>
+            Creates an OfType filter that matches documents with a field of a derived type and that also match a filter on the derived field.
+            </summary>
+      <param name="field">The field.</param>
+      <param name="derivedFieldFilter">A filter on the derived field.</param>
+      <typeparam name="TField">The type of the field.</typeparam>
+      <typeparam name="TDerived">The type of the matching derived field value.</typeparam>
+      <returns>An OfType filter.</returns>
+    </member>
     <member name="M:MongoDB.Driver.FilterDefinitionBuilder`1.Or(MongoDB.Driver.FilterDefinition{`0}[])">
       <summary>
             Creates an or filter.
@@ -2044,6 +2241,14 @@
           </include>
         </markup>
       </summary>
+    </member>
+    <member name="M:MongoDB.Driver.FindFluentBase`2.As``1(MongoDB.Bson.Serialization.IBsonSerializer{``0})">
+      <summary>
+            A simplified type of projection that changes the result type by using a different serializer.
+            </summary>
+      <param name="resultSerializer">The result serializer.</param>
+      <typeparam name="TResult">The type of the result.</typeparam>
+      <returns>The fluent find interface.</returns>
     </member>
     <member name="M:MongoDB.Driver.FindFluentBase`2.CountAsync(System.Threading.CancellationToken)">
       <summary>
@@ -2358,6 +2563,11 @@
             Gets or sets whether a cursor will time out.
             </summary>
     </member>
+    <member name="P:MongoDB.Driver.FindOptionsBase.OplogReplay">
+      <summary>
+            Gets or sets whether the OplogReplay bit will be set.
+            </summary>
+    </member>
     <member name="T:MongoDB.Driver.IAggregateFluent`1">
       <summary>
             Fluent interface for aggregate.
@@ -2372,9 +2582,17 @@
       <typeparam name="TNewResult">The type of the result of the stage.</typeparam>
       <returns>The fluent aggregate interface.</returns>
     </member>
+    <member name="M:MongoDB.Driver.IAggregateFluent`1.As``1(MongoDB.Bson.Serialization.IBsonSerializer{``0})">
+      <summary>
+            Appends a project stage to the pipeline.
+            </summary>
+      <param name="newResultSerializer">The new result serializer.</param>
+      <typeparam name="TNewResult">The type of the new result.</typeparam>
+      <returns>The fluent aggregate interface.</returns>
+    </member>
     <member name="M:MongoDB.Driver.IAggregateFluent`1.Group``1(MongoDB.Driver.ProjectionDefinition{`0,``0})">
       <summary>
-            Appends a group stage to the stages.
+            Appends a group stage to the pipeline.
             </summary>
       <param name="group">The group projection.</param>
       <typeparam name="TNewResult">The type of the result of the stage.</typeparam>
@@ -2387,11 +2605,38 @@
       <param name="limit">The limit.</param>
       <returns>The fluent aggregate interface.</returns>
     </member>
+    <member name="M:MongoDB.Driver.IAggregateFluent`1.Lookup``1(System.String,MongoDB.Driver.FieldDefinition{`0},MongoDB.Driver.FieldDefinition{MongoDB.Bson.BsonDocument},MongoDB.Driver.FieldDefinition{``0},MongoDB.Bson.Serialization.IBsonSerializer{``0})">
+      <summary>
+            Appens a lookup stage to the pipeline.
+            </summary>
+      <param name="from">From.</param>
+      <param name="localField">The local field.</param>
+      <param name="foreignField">The foreign field.</param>
+      <param name="as">As.</param>
+      <param name="newResultSerializer">The new result serializer.</param>
+      <typeparam name="TNewResult">The type of the new result.</typeparam>
+      <returns>
+        <markup>
+          <include item="SMCMissingTag">
+            <parameter>returns</parameter>
+            <parameter>M:MongoDB.Driver.IAggregateFluent`1.Lookup``1(System.String,MongoDB.Driver.FieldDefinition{`0},MongoDB.Driver.FieldDefinition{MongoDB.Bson.BsonDocument},MongoDB.Driver.FieldDefinition{``0},MongoDB.Bson.Serialization.IBsonSerializer{``0})</parameter>
+          </include>
+        </markup>
+      </returns>
+    </member>
     <member name="M:MongoDB.Driver.IAggregateFluent`1.Match(MongoDB.Driver.FilterDefinition{`0})">
       <summary>
             Appends a match stage to the pipeline.
             </summary>
       <param name="filter">The filter.</param>
+      <returns>The fluent aggregate interface.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.IAggregateFluent`1.OfType``1(MongoDB.Bson.Serialization.IBsonSerializer{``0})">
+      <summary>
+            Appends a match stage to the pipeline that matches derived documents and changes the result type to the derived type.
+            </summary>
+      <param name="newResultSerializer">The new result serializer.</param>
+      <typeparam name="TNewResult">The type of the derived documents.</typeparam>
       <returns>The fluent aggregate interface.</returns>
     </member>
     <member name="P:MongoDB.Driver.IAggregateFluent`1.Options">
@@ -2461,7 +2706,6 @@
       <returns>
             The fluent aggregate interface.
             </returns>
-      <exception cref="T:System.InvalidOperationException">The aggregate sequence is empty.</exception>
     </member>
     <member name="M:MongoDB.Driver.IAggregateFluentExtensions.FirstOrDefaultAsync``1(MongoDB.Driver.IAggregateFluent{``0},System.Threading.CancellationToken)">
       <summary>
@@ -2543,7 +2787,6 @@
       <returns>
             The fluent aggregate interface.
             </returns>
-      <exception cref="T:System.InvalidOperationException">The aggregate sequence is empty.</exception>
     </member>
     <member name="M:MongoDB.Driver.IAggregateFluentExtensions.SingleOrDefaultAsync``1(MongoDB.Driver.IAggregateFluent{``0},System.Threading.CancellationToken)">
       <summary>
@@ -2635,12 +2878,31 @@
             The fluent aggregate interface.
             </returns>
     </member>
+    <member name="T:MongoDB.Driver.IFilteredMongoCollection`1">
+      <summary>
+            A filtered mongo collection. The filter will be and'ed with all filters.
+            </summary>
+      <typeparam name="TDocument">The type of the document.</typeparam>
+    </member>
+    <member name="P:MongoDB.Driver.IFilteredMongoCollection`1.Filter">
+      <summary>
+            Gets the filter.
+            </summary>
+    </member>
     <member name="T:MongoDB.Driver.IFindFluent`2">
       <summary>
             Fluent interface for find.
             </summary>
       <typeparam name="TDocument">The type of the document.</typeparam>
       <typeparam name="TProjection">The type of the projection (same as TDocument if there is no projection).</typeparam>
+    </member>
+    <member name="M:MongoDB.Driver.IFindFluent`2.As``1(MongoDB.Bson.Serialization.IBsonSerializer{``0})">
+      <summary>
+            A simplified type of projection that changes the result type by using a different serializer.
+            </summary>
+      <param name="resultSerializer">The result serializer.</param>
+      <typeparam name="TResult">The type of the result.</typeparam>
+      <returns>The fluent find interface.</returns>
     </member>
     <member name="M:MongoDB.Driver.IFindFluent`2.CountAsync(System.Threading.CancellationToken)">
       <summary>
@@ -2796,6 +3058,11 @@
     <member name="T:MongoDB.Driver.IMongoClient">
       <summary>
             The client interface to MongoDB.
+            </summary>
+    </member>
+    <member name="P:MongoDB.Driver.IMongoClient.Cluster">
+      <summary>
+            Gets the cluster.
             </summary>
     </member>
     <member name="M:MongoDB.Driver.IMongoClient.DropDatabaseAsync(System.String,System.Threading.CancellationToken)">
@@ -2993,6 +3260,14 @@
       <typeparam name="TResult">The type of the result.</typeparam>
       <returns>A Task whose result is a cursor.</returns>
     </member>
+    <member name="M:MongoDB.Driver.IMongoCollection`1.OfType``1">
+      <summary>
+            Returns a filtered collection that appears to contain only documents of the derived type.
+            All operations using this filtered collection will automatically use discriminators as necessary.
+            </summary>
+      <typeparam name="TDerivedDocument">The type of the derived document.</typeparam>
+      <returns>A filtered collection.</returns>
+    </member>
     <member name="M:MongoDB.Driver.IMongoCollection`1.ReplaceOneAsync(MongoDB.Driver.FilterDefinition{`0},`0,MongoDB.Driver.UpdateOptions,System.Threading.CancellationToken)">
       <summary>
             Replaces a single document.
@@ -3063,6 +3338,14 @@
       <returns>
             A fluent aggregate interface.
             </returns>
+    </member>
+    <member name="M:MongoDB.Driver.IMongoCollectionExtensions.AsQueryable``1(MongoDB.Driver.IMongoCollection{``0})">
+      <summary>
+            Creates a queryable source of documents.
+            </summary>
+      <param name="collection">The collection.</param>
+      <typeparam name="TDocument">The type of the document.</typeparam>
+      <returns>A queryable source of documents.</returns>
     </member>
     <member name="M:MongoDB.Driver.IMongoCollectionExtensions.CountAsync``1(MongoDB.Driver.IMongoCollection{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},MongoDB.Driver.CountOptions,System.Threading.CancellationToken)">
       <summary>
@@ -3446,6 +3729,16 @@
       <summary>
             Gets the namespace of the collection.
             </summary>
+    </member>
+    <member name="M:MongoDB.Driver.IMongoIndexManager`1.CreateManyAsync(System.Collections.Generic.IEnumerable{MongoDB.Driver.CreateIndexModel{`0}},System.Threading.CancellationToken)">
+      <summary>
+            Creates multiple indexes.
+            </summary>
+      <param name="models">The models defining each of the indexes.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <returns>
+            A task whose result is an <see cref="T:System.Collections.Generic.IEnumerable`1" /> of the names of the indexes that were created.
+            </returns>
     </member>
     <member name="M:MongoDB.Driver.IMongoIndexManager`1.CreateOneAsync(MongoDB.Driver.IndexKeysDefinition{`0},MongoDB.Driver.CreateIndexOptions,System.Threading.CancellationToken)">
       <summary>
@@ -4423,6 +4716,11 @@
         </markup>
       </summary>
     </member>
+    <member name="P:MongoDB.Driver.MongoClientBase.Cluster">
+      <summary>
+            Gets the cluster.
+            </summary>
+    </member>
     <member name="M:MongoDB.Driver.MongoClientBase.DropDatabaseAsync(System.String,System.Threading.CancellationToken)">
       <summary>
             Drops the database with the specified name.
@@ -4613,6 +4911,11 @@
     <member name="P:MongoDB.Driver.MongoClientSettings.Servers">
       <summary>
             Gets or sets the list of server addresses (see also Server if using only one address).
+            </summary>
+    </member>
+    <member name="P:MongoDB.Driver.MongoClientSettings.ServerSelectionTimeout">
+      <summary>
+            Gets or sets the server selection timeout.
             </summary>
     </member>
     <member name="P:MongoDB.Driver.MongoClientSettings.SocketTimeout">
@@ -4836,6 +5139,14 @@
       <param name="cancellationToken">The cancellation token.</param>
       <typeparam name="TResult">The type of the result.</typeparam>
       <returns>A Task whose result is a cursor.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.MongoCollectionBase`1.OfType``1">
+      <summary>
+            Returns a filtered collection that appears to contain only documents of the derived type.
+            All operations using this filtered collection will automatically use discriminators as necessary.
+            </summary>
+      <typeparam name="TDerivedDocument">The type of the derived document.</typeparam>
+      <returns>A filtered collection.</returns>
     </member>
     <member name="M:MongoDB.Driver.MongoCollectionBase`1.ReplaceOneAsync(MongoDB.Driver.FilterDefinition{`0},`0,MongoDB.Driver.UpdateOptions,System.Threading.CancellationToken)">
       <summary>
@@ -5533,6 +5844,11 @@
             Gets or sets the Read Encoding.
             </summary>
     </member>
+    <member name="P:MongoDB.Driver.MongoDefaults.ServerSelectionTimeout">
+      <summary>
+            Gets or sets the server selection timeout.
+            </summary>
+    </member>
     <member name="P:MongoDB.Driver.MongoDefaults.SocketTimeout">
       <summary>
             Gets or sets the socket timeout.
@@ -5700,6 +6016,16 @@
       <summary>
             Gets the namespace of the collection.
             </summary>
+    </member>
+    <member name="M:MongoDB.Driver.MongoIndexManagerBase`1.CreateManyAsync(System.Collections.Generic.IEnumerable{MongoDB.Driver.CreateIndexModel{`0}},System.Threading.CancellationToken)">
+      <summary>
+            Creates multiple indexes.
+            </summary>
+      <param name="models">The models defining each of the indexes.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <returns>
+            A task whose result is an <see cref="T:System.Collections.Generic.IEnumerable`1" /> of the names of the indexes that were created.
+            </returns>
     </member>
     <member name="M:MongoDB.Driver.MongoIndexManagerBase`1.CreateOneAsync(MongoDB.Driver.IndexKeysDefinition{`0},MongoDB.Driver.CreateIndexOptions,System.Threading.CancellationToken)">
       <summary>
@@ -6013,6 +6339,11 @@
             Gets the list of server addresses (see also Server if using only one address).
             </summary>
     </member>
+    <member name="P:MongoDB.Driver.MongoUrl.ServerSelectionTimeout">
+      <summary>
+            Gets the server selection timeout.
+            </summary>
+    </member>
     <member name="P:MongoDB.Driver.MongoUrl.SocketTimeout">
       <summary>
             Gets the socket timeout.
@@ -6202,6 +6533,11 @@
     <member name="P:MongoDB.Driver.MongoUrlBuilder.Servers">
       <summary>
             Gets or sets the list of server addresses (see also Server if using only one address).
+            </summary>
+    </member>
+    <member name="P:MongoDB.Driver.MongoUrlBuilder.ServerSelectionTimeout">
+      <summary>
+            Gets or sets the server selection timeout.
             </summary>
     </member>
     <member name="P:MongoDB.Driver.MongoUrlBuilder.SocketTimeout">
@@ -6602,6 +6938,11 @@
         </markup>
       </summary>
     </member>
+    <member name="P:MongoDB.Driver.PipelineStageDefinition`2.InputType">
+      <summary>
+            Gets the type of the input.
+            </summary>
+    </member>
     <member name="M:MongoDB.Driver.PipelineStageDefinition`2.op_Implicit(MongoDB.Bson.BsonDocument)~MongoDB.Driver.PipelineStageDefinition{`0,`1}">
       <summary>
             Performs an implicit conversion from <see cref="T:MongoDB.Bson.BsonDocument" /> to <see cref="T:MongoDB.Driver.PipelineStageDefinition`2" />.
@@ -6623,6 +6964,11 @@
     <member name="P:MongoDB.Driver.PipelineStageDefinition`2.OperatorName">
       <summary>
             Gets the name of the pipeline operator.
+            </summary>
+    </member>
+    <member name="P:MongoDB.Driver.PipelineStageDefinition`2.OutputType">
+      <summary>
+            Gets the type of the output.
             </summary>
     </member>
     <member name="M:MongoDB.Driver.PipelineStageDefinition`2.Render(MongoDB.Bson.Serialization.IBsonSerializer{`0},MongoDB.Bson.Serialization.IBsonSerializerRegistry)">
@@ -6679,14 +7025,6 @@
           </include>
         </markup>
       </summary>
-    </member>
-    <member name="M:MongoDB.Driver.ProjectionDefinition`1.As``1(MongoDB.Bson.Serialization.IBsonSerializer{``0})">
-      <summary>
-            Turns the projection into a projection whose projection type is known.
-            </summary>
-      <param name="projectionSerializer">The projection serializer.</param>
-      <typeparam name="TProjection">The type of the projection.</typeparam>
-      <returns>A typed projection.</returns>
     </member>
     <member name="M:MongoDB.Driver.ProjectionDefinition`1.op_Implicit(MongoDB.Bson.BsonDocument)~MongoDB.Driver.ProjectionDefinition{`0}">
       <summary>
@@ -6779,6 +7117,14 @@
           </include>
         </markup>
       </summary>
+    </member>
+    <member name="M:MongoDB.Driver.ProjectionDefinitionBuilder`1.As``1(MongoDB.Bson.Serialization.IBsonSerializer{``0})">
+      <summary>
+            Creates a client side projection that is implemented solely by using a different serializer.
+            </summary>
+      <param name="projectionSerializer">The projection serializer.</param>
+      <typeparam name="TProjection">The type of the projection.</typeparam>
+      <returns>A client side deserialization projection.</returns>
     </member>
     <member name="M:MongoDB.Driver.ProjectionDefinitionBuilder`1.Combine(MongoDB.Driver.ProjectionDefinition{`0}[])">
       <summary>
@@ -10951,6 +11297,896 @@
       <param name="context">The serialization context.</param>
       <param name="args">The serialization args.</param>
       <param name="value">The value.</param>
+    </member>
+    <member name="T:MongoDB.Driver.Linq.AggregateQueryableExecutionModel`1">
+      <summary>
+            A model for a queryable to be executed using the aggregation framework.
+            </summary>
+      <typeparam name="TOutput">The type of the output.</typeparam>
+    </member>
+    <member name="P:MongoDB.Driver.Linq.AggregateQueryableExecutionModel`1.OutputSerializer">
+      <summary>
+            Gets the output serializer.
+            </summary>
+    </member>
+    <member name="P:MongoDB.Driver.Linq.AggregateQueryableExecutionModel`1.OutputType">
+      <summary>
+            Gets the type of the output.
+            </summary>
+    </member>
+    <member name="P:MongoDB.Driver.Linq.AggregateQueryableExecutionModel`1.Stages">
+      <summary>
+            Gets the stages.
+            </summary>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.AggregateQueryableExecutionModel`1.ToString">
+      <summary>
+            Returns a <see cref="T:System.String" /> that represents this instance.
+            </summary>
+      <returns>
+            A <see cref="T:System.String" /> that represents this instance.
+            </returns>
+    </member>
+    <member name="T:MongoDB.Driver.Linq.IMongoQueryable">
+      <summary>
+            Provides functionality to evaluate queries against MongoDB.
+            </summary>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.IMongoQueryable.GetExecutionModel">
+      <summary>
+            Gets the execution model.
+            </summary>
+      <returns>
+            The execution model.
+            </returns>
+    </member>
+    <member name="T:MongoDB.Driver.Linq.IMongoQueryable`1">
+      <summary>
+            Provides functionality to evaluate queries against MongoDB
+            wherein the type of the data is known.
+            </summary>
+      <typeparam name="T">
+            The type of the data in the data source.
+            This type parameter is covariant.
+            That is, you can use either the type you specified or any type that is more
+            derived. For more information about covariance and contravariance, see Covariance
+            and Contravariance in Generics.
+            </typeparam>
+    </member>
+    <member name="T:MongoDB.Driver.Linq.IOrderedMongoQueryable`1">
+      <summary>
+            Represents the result of a sorting operation.
+            </summary>
+      <typeparam name="T">
+            The type of the data in the data source.
+            This type parameter is covariant.
+            That is, you can use either the type you specified or any type that is more
+            derived. For more information about covariance and contravariance, see Covariance
+            and Contravariance in Generics.
+            </typeparam>
+    </member>
+    <member name="T:MongoDB.Driver.Linq.MongoQueryable">
+      <summary>
+            Extension for <see cref="T:MongoDB.Driver.Linq.IMongoQueryable" />.
+            </summary>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.AnyAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Threading.CancellationToken)">
+      <summary>
+            Determines whether any element of a sequence satisfies a condition.
+            </summary>
+      <param name="source">A sequence whose elements to test for a condition.</param>
+      <param name="predicate">A function to test each element for a condition.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            true if any elements in the source sequence pass the test in the specified predicate; otherwise, false.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.AnyAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Threading.CancellationToken)">
+      <summary>
+            Determines whether a sequence contains any elements.
+            </summary>
+      <param name="source">A sequence to check for being empty.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            true if the source sequence contains any elements; otherwise, false.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.AverageAsync(MongoDB.Driver.Linq.IMongoQueryable{System.Decimal},System.Threading.CancellationToken)">
+      <summary>
+            Computes the average of a sequence of <see cref="T:System.Decimal" /> values.
+            </summary>
+      <param name="source">A sequence of values to calculate the average of.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <returns>The average of the values in the sequence.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.AverageAsync(MongoDB.Driver.Linq.IMongoQueryable{System.Double},System.Threading.CancellationToken)">
+      <summary>
+            Computes the average of a sequence of <see cref="T:System.Double" /> values.
+            </summary>
+      <param name="source">A sequence of values to calculate the average of.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <returns>The average of the values in the sequence.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.AverageAsync(MongoDB.Driver.Linq.IMongoQueryable{System.Int32},System.Threading.CancellationToken)">
+      <summary>
+            Computes the average of a sequence of <see cref="T:System.Int32" /> values.
+            </summary>
+      <param name="source">A sequence of values to calculate the average of.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <returns>The average of the values in the sequence.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.AverageAsync(MongoDB.Driver.Linq.IMongoQueryable{System.Int64},System.Threading.CancellationToken)">
+      <summary>
+            Computes the average of a sequence of <see cref="T:System.Int64" /> values.
+            </summary>
+      <param name="source">A sequence of values to calculate the average of.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <returns>The average of the values in the sequence.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.AverageAsync(MongoDB.Driver.Linq.IMongoQueryable{System.Nullable{System.Decimal}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the average of a sequence of <see cref="T:System.Nullable`1" /> values.
+            </summary>
+      <param name="source">A sequence of values to calculate the average of.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <returns>The average of the values in the sequence.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.AverageAsync(MongoDB.Driver.Linq.IMongoQueryable{System.Nullable{System.Double}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the average of a sequence of <see cref="T:System.Nullable`1" /> values.
+            </summary>
+      <param name="source">A sequence of values to calculate the average of.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <returns>The average of the values in the sequence.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.AverageAsync(MongoDB.Driver.Linq.IMongoQueryable{System.Nullable{System.Int32}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the average of a sequence of <see cref="T:System.Nullable`1" /> values.
+            </summary>
+      <param name="source">A sequence of values to calculate the average of.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <returns>The average of the values in the sequence.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.AverageAsync(MongoDB.Driver.Linq.IMongoQueryable{System.Nullable{System.Int64}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the average of a sequence of <see cref="T:System.Nullable`1" /> values.
+            </summary>
+      <param name="source">A sequence of values to calculate the average of.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <returns>The average of the values in the sequence.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.AverageAsync(MongoDB.Driver.Linq.IMongoQueryable{System.Nullable{System.Single}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the average of a sequence of <see cref="T:System.Nullable`1" /> values.
+            </summary>
+      <param name="source">A sequence of values to calculate the average of.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <returns>The average of the values in the sequence.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.AverageAsync(MongoDB.Driver.Linq.IMongoQueryable{System.Single},System.Threading.CancellationToken)">
+      <summary>
+            Computes the average of a sequence of <see cref="T:System.Single" /> values.
+            </summary>
+      <param name="source">A sequence of values to calculate the average of.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <returns>The average of the values in the sequence.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.AverageAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Decimal}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the average of the sequence of <see cref="T:System.Decimal" /> values that is obtained
+            by invoking a projection function on each element of the input sequence.
+            </summary>
+      <param name="source">A sequence of values.</param>
+      <param name="selector">A projection function to apply to each element.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The average of the projected values.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.AverageAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Double}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the average of the sequence of <see cref="T:System.Double" /> values that is obtained
+            by invoking a projection function on each element of the input sequence.
+            </summary>
+      <param name="source">A sequence of values.</param>
+      <param name="selector">A projection function to apply to each element.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The average of the projected values.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.AverageAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Int32}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the average of the sequence of <see cref="T:System.Int32" /> values that is obtained
+            by invoking a projection function on each element of the input sequence.
+            </summary>
+      <param name="source">A sequence of values.</param>
+      <param name="selector">A projection function to apply to each element.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The average of the projected values.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.AverageAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Int64}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the average of the sequence of <see cref="T:System.Int64" /> values that is obtained
+            by invoking a projection function on each element of the input sequence.
+            </summary>
+      <param name="source">A sequence of values.</param>
+      <param name="selector">A projection function to apply to each element.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The average of the projected values.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.AverageAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Nullable{System.Decimal}}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the average of the sequence of <see cref="T:System.Nullable`1" /> values that is obtained
+            by invoking a projection function on each element of the input sequence.
+            </summary>
+      <param name="source">A sequence of values.</param>
+      <param name="selector">A projection function to apply to each element.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The average of the projected values.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.AverageAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Nullable{System.Double}}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the average of the sequence of <see cref="T:System.Nullable`1" /> values that is obtained
+            by invoking a projection function on each element of the input sequence.
+            </summary>
+      <param name="source">A sequence of values.</param>
+      <param name="selector">A projection function to apply to each element.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The average of the projected values.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.AverageAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Nullable{System.Int32}}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the average of the sequence of <see cref="T:System.Nullable`1" /> values that is obtained
+            by invoking a projection function on each element of the input sequence.
+            </summary>
+      <param name="source">A sequence of values.</param>
+      <param name="selector">A projection function to apply to each element.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The average of the projected values.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.AverageAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Nullable{System.Int64}}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the average of the sequence of <see cref="T:System.Nullable`1" /> values that is obtained
+            by invoking a projection function on each element of the input sequence.
+            </summary>
+      <param name="source">A sequence of values.</param>
+      <param name="selector">A projection function to apply to each element.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The average of the projected values.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.AverageAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Nullable{System.Single}}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the average of the sequence of <see cref="T:System.Nullable`1" /> values that is obtained
+            by invoking a projection function on each element of the input sequence.
+            </summary>
+      <param name="source">A sequence of values.</param>
+      <param name="selector">A projection function to apply to each element.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The average of the projected values.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.AverageAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Single}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the average of the sequence of <see cref="T:System.Single" /> values that is obtained
+            by invoking a projection function on each element of the input sequence.
+            </summary>
+      <param name="source">A sequence of values.</param>
+      <param name="selector">A projection function to apply to each element.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The average of the projected values.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.CountAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Threading.CancellationToken)">
+      <summary>
+            Returns the number of elements in the specified sequence that satisfies a condition.
+            </summary>
+      <param name="source">An <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> that contains the elements to be counted.</param>
+      <param name="predicate">A function to test each element for a condition.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The number of elements in the sequence that satisfies the condition in the predicate function.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.CountAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Threading.CancellationToken)">
+      <summary>
+            Returns the number of elements in a sequence.
+            </summary>
+      <param name="source">The <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> that contains the elements to be counted.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The number of elements in the input sequence.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.Distinct``1(MongoDB.Driver.Linq.IMongoQueryable{``0})">
+      <summary>
+            Returns distinct elements from a sequence by using the default equality comparer to compare values.
+            </summary>
+      <param name="source">The <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> to remove duplicates from.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            An <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> that contains distinct elements from <paramref name="source" />.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.FirstAsync``1(System.Linq.IQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Threading.CancellationToken)">
+      <summary>
+            Returns the first element of a sequence that satisfies a specified condition.
+            </summary>
+      <param name="source">An <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> to return an element from.</param>
+      <param name="predicate">A function to test each element for a condition.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The first element in <paramref name="source" /> that passes the test in <paramref name="predicate" />.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.FirstAsync``1(System.Linq.IQueryable{``0},System.Threading.CancellationToken)">
+      <summary>
+            Returns the first element of a sequence.
+            </summary>
+      <param name="source">The <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> to return the first element of.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The first element in <paramref name="source" />.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.FirstOrDefaultAsync``1(System.Linq.IQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Threading.CancellationToken)">
+      <summary>
+            Returns the first element of a sequence that satisfies a specified condition or a default value if no such element is found.
+            </summary>
+      <param name="source">An <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> to return an element from.</param>
+      <param name="predicate">A function to test each element for a condition.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            default(<typeparamref name="TSource" />) if <paramref name="source" /> is empty or if no element passes the test specified by <paramref name="predicate" />; otherwise, the first element in <paramref name="source" /> that passes the test specified by <paramref name="predicate" />.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.FirstOrDefaultAsync``1(System.Linq.IQueryable{``0},System.Threading.CancellationToken)">
+      <summary>
+            Returns the first element of a sequence, or a default value if the sequence contains no elements.
+            </summary>
+      <param name="source">The <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> to return the first element of.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            default(<typeparamref name="TSource" />) if <paramref name="source" /> is empty; otherwise, the first element in <paramref name="source" />.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.GroupBy``2(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}})">
+      <summary>
+            Groups the elements of a sequence according to a specified key selector function.
+            </summary>
+      <param name="source">An <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> whose elements to group.</param>
+      <param name="keySelector">A function to extract the key for each element.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">The type of the key returned by the function represented in keySelector.</typeparam>
+      <returns>
+            An <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> that has a type argument of <see cref="T:System.Linq.IGrouping`2" /> 
+            and where each <see cref="T:System.Linq.IGrouping`2" /> object contains a sequence of objects 
+            and a key.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.GroupBy``3(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},System.Linq.Expressions.Expression{System.Func{``1,System.Collections.Generic.IEnumerable{``0},``2}})">
+      <summary>
+            Groups the elements of a sequence according to a specified key selector function
+            and creates a result value from each group and its key.
+            </summary>
+      <param name="source">An <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> whose elements to group.</param>
+      <param name="keySelector">A function to extract the key for each element.</param>
+      <param name="resultSelector">A function to create a result value from each group.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">The type of the key returned by the function represented in keySelector.</typeparam>
+      <typeparam name="TResult">The type of the result value returned by resultSelector.</typeparam>
+      <returns>
+            An <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> that has a type argument of TResult and where
+            each element represents a projection over a group and its key.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.LongCountAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Threading.CancellationToken)">
+      <summary>
+            Returns the number of elements in the specified sequence that satisfies a condition.
+            </summary>
+      <param name="source">An <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> that contains the elements to be counted.</param>
+      <param name="predicate">A function to test each element for a condition.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The number of elements in the sequence that satisfies the condition in the predicate function.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.LongCountAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Threading.CancellationToken)">
+      <summary>
+            Returns the number of elements in a sequence.
+            </summary>
+      <param name="source">The <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> that contains the elements to be counted.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The number of elements in the input sequence.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.MaxAsync``2(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},System.Threading.CancellationToken)">
+      <summary>
+            Invokes a projection function on each element of a generic <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> and returns the maximum resulting value.
+            </summary>
+      <param name="source">A sequence of values to determine the maximum of.</param>
+      <param name="selector">A projection function to apply to each element.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <typeparam name="TResult">The type of the value returned by the function represented by <paramref name="selector" />.</typeparam>
+      <returns>
+            The maximum value in the sequence.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.MaxAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Threading.CancellationToken)">
+      <summary>
+            Returns the maximum value in a generic <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" />.
+            </summary>
+      <param name="source">A sequence of values to determine the maximum of.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The maximum value in the sequence.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.MinAsync``2(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}},System.Threading.CancellationToken)">
+      <summary>
+            Invokes a projection function on each element of a generic <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> and returns the minimum resulting value.
+            </summary>
+      <param name="source">A sequence of values to determine the minimum of.</param>
+      <param name="selector">A projection function to apply to each element.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <typeparam name="TResult">The type of the value returned by the function represented by <paramref name="selector" />.</typeparam>
+      <returns>
+            The minimum value in the sequence.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.MinAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Threading.CancellationToken)">
+      <summary>
+            Returns the minimum value in a generic <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" />.
+            </summary>
+      <param name="source">A sequence of values to determine the minimum of.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The minimum value in the sequence.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.OfType``1(MongoDB.Driver.Linq.IMongoQueryable)">
+      <summary>
+            Filters the elements of an <see cref="T:MongoDB.Driver.Linq.IMongoQueryable" /> based on a specified type.
+            </summary>
+      <param name="source">An <see cref="T:MongoDB.Driver.Linq.IMongoQueryable" /> whose elements to filter.</param>
+      <typeparam name="TResult">The type to filter the elements of the sequence on.</typeparam>
+      <returns>
+            A collection that contains the elements from <paramref name="source" /> that have type <typeparamref name="TResult" />.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.OrderBy``2(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}})">
+      <summary>
+            Sorts the elements of a sequence in ascending order according to a key.
+            </summary>
+      <param name="source">A sequence of values to order.</param>
+      <param name="keySelector">A function to extract a key from an element.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">The type of the key returned by the function that is represented by keySelector.</typeparam>
+      <returns>
+            An <see cref="T:MongoDB.Driver.Linq.IOrderedMongoQueryable`1" /> whose elements are sorted according to a key.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.OrderByDescending``2(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}})">
+      <summary>
+            Sorts the elements of a sequence in descending order according to a key.
+            </summary>
+      <param name="source">A sequence of values to order.</param>
+      <param name="keySelector">A function to extract a key from an element.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">The type of the key returned by the function that is represented by keySelector.</typeparam>
+      <returns>
+            An <see cref="T:MongoDB.Driver.Linq.IOrderedMongoQueryable`1" /> whose elements are sorted in descending order according to a key.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.Select``2(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}})">
+      <summary>
+            Projects each element of a sequence into a new form by incorporating the
+            element's index.
+            </summary>
+      <param name="source">A sequence of values to project.</param>
+      <param name="selector">A projection function to apply to each element.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <typeparam name="TResult"> The type of the value returned by the function represented by selector.</typeparam>
+      <returns>
+            An <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> whose elements are the result of invoking a
+            projection function on each element of source.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.SelectMany``3(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Collections.Generic.IEnumerable{``1}}},System.Linq.Expressions.Expression{System.Func{``0,``1,``2}})">
+      <summary>
+            Projects each element of a sequence to an <see cref="T:System.Collections.Generic.IEnumerable`1" /> and 
+            invokes a result selector function on each element therein. The resulting values from 
+            each intermediate sequence are combined into a single, one-dimensional sequence and returned.
+            </summary>
+      <param name="source">A sequence of values to project.</param>
+      <param name="collectionSelector">A projection function to apply to each element of the input sequence.</param>
+      <param name="resultSelector">A projection function to apply to each element of each intermediate sequence.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <typeparam name="TCollection">The type of the intermediate elements collected by the function represented by <paramref name="collectionSelector" />.</typeparam>
+      <typeparam name="TResult">The type of the elements of the resulting sequence.</typeparam>
+      <returns>
+            An <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> whose elements are the result of invoking the one-to-many projection function <paramref name="collectionSelector" /> on each element of <paramref name="source" /> and then mapping each of those sequence elements and their corresponding <paramref name="source" /> element to a result element.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.SelectMany``2(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Collections.Generic.IEnumerable{``1}}})">
+      <summary>
+            Projects each element of a sequence to an <see cref="T:System.Collections.Generic.IEnumerable`1" /> and combines the resulting sequences into one sequence.
+            </summary>
+      <param name="source">A sequence of values to project.</param>
+      <param name="selector">A projection function to apply to each element.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <typeparam name="TResult">The type of the elements of the sequence returned by the function represented by <paramref name="selector" />.</typeparam>
+      <returns>
+            An <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> whose elements are the result of invoking a one-to-many projection function on each element of the input sequence.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.SingleAsync``1(System.Linq.IQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Threading.CancellationToken)">
+      <summary>
+            Returns the only element of a sequence that satisfies a specified condition, and throws an exception if more than one such element exists.
+            </summary>
+      <param name="source">An <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> to return a single element from.</param>
+      <param name="predicate">A function to test an element for a condition.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The single element of the input sequence that satisfies the condition in <paramref name="predicate" />.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.SingleAsync``1(System.Linq.IQueryable{``0},System.Threading.CancellationToken)">
+      <summary>
+            Returns the only element of a sequence, and throws an exception if there is not exactly one element in the sequence.
+            </summary>
+      <param name="source">An <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> to return the single element of.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The single element of the input sequence.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.SingleOrDefaultAsync``1(System.Linq.IQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}},System.Threading.CancellationToken)">
+      <summary>
+            Returns the only element of a sequence that satisfies a specified condition or a default value if no such element exists; this method throws an exception if more than one element satisfies the condition.
+            </summary>
+      <param name="source">An <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> to return a single element from.</param>
+      <param name="predicate">A function to test an element for a condition.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The single element of the input sequence that satisfies the condition in <paramref name="predicate" />, or default(<typeparamref name="TSource" />) if no such element is found.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.SingleOrDefaultAsync``1(System.Linq.IQueryable{``0},System.Threading.CancellationToken)">
+      <summary>
+            Returns the only element of a sequence, or a default value if the sequence is empty; this method throws an exception if there is more than one element in the sequence.
+            </summary>
+      <param name="source">An <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> to return the single element of.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The single element of the input sequence, or default(<typeparamref name="TSource" />) if the sequence contains no elements.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.Skip``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Int32)">
+      <summary>
+            Bypasses a specified number of elements in a sequence and then returns the
+            remaining elements.
+            </summary>
+      <param name="source">An <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> to return elements from.</param>
+      <param name="count">The number of elements to skip before returning the remaining elements.</param>
+      <typeparam name="TSource">The type of the elements of source</typeparam>
+      <returns>
+            An <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> that contains elements that occur after the
+            specified index in the input sequence.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.SumAsync(MongoDB.Driver.Linq.IMongoQueryable{System.Decimal},System.Threading.CancellationToken)">
+      <summary>
+            Computes the sum of a sequence of <see cref="T:System.Decimal" /> values.
+            </summary>
+      <param name="source">A sequence of values to calculate the sum of.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <returns>The sum of the values in the sequence.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.SumAsync(MongoDB.Driver.Linq.IMongoQueryable{System.Double},System.Threading.CancellationToken)">
+      <summary>
+            Computes the sum of a sequence of <see cref="T:System.Double" /> values.
+            </summary>
+      <param name="source">A sequence of values to calculate the sum of.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <returns>The sum of the values in the sequence.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.SumAsync(MongoDB.Driver.Linq.IMongoQueryable{System.Int32},System.Threading.CancellationToken)">
+      <summary>
+            Computes the sum of a sequence of <see cref="T:System.Int32" /> values.
+            </summary>
+      <param name="source">A sequence of values to calculate the sum of.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <returns>The sum of the values in the sequence.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.SumAsync(MongoDB.Driver.Linq.IMongoQueryable{System.Int64},System.Threading.CancellationToken)">
+      <summary>
+            Computes the sum of a sequence of <see cref="T:System.Int64" /> values.
+            </summary>
+      <param name="source">A sequence of values to calculate the sum of.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <returns>The sum of the values in the sequence.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.SumAsync(MongoDB.Driver.Linq.IMongoQueryable{System.Nullable{System.Decimal}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the sum of a sequence of <see cref="T:System.Nullable`1" /> values.
+            </summary>
+      <param name="source">A sequence of values to calculate the sum of.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <returns>The sum of the values in the sequence.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.SumAsync(MongoDB.Driver.Linq.IMongoQueryable{System.Nullable{System.Double}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the sum of a sequence of <see cref="T:System.Nullable`1" /> values.
+            </summary>
+      <param name="source">A sequence of values to calculate the sum of.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <returns>The sum of the values in the sequence.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.SumAsync(MongoDB.Driver.Linq.IMongoQueryable{System.Nullable{System.Int32}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the sum of a sequence of <see cref="T:System.Nullable`1" /> values.
+            </summary>
+      <param name="source">A sequence of values to calculate the sum of.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <returns>The sum of the values in the sequence.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.SumAsync(MongoDB.Driver.Linq.IMongoQueryable{System.Nullable{System.Int64}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the sum of a sequence of <see cref="T:System.Nullable`1" /> values.
+            </summary>
+      <param name="source">A sequence of values to calculate the sum of.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <returns>The sum of the values in the sequence.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.SumAsync(MongoDB.Driver.Linq.IMongoQueryable{System.Nullable{System.Single}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the sum of a sequence of <see cref="T:System.Nullable`1" /> values.
+            </summary>
+      <param name="source">A sequence of values to calculate the sum of.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <returns>The sum of the values in the sequence.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.SumAsync(MongoDB.Driver.Linq.IMongoQueryable{System.Single},System.Threading.CancellationToken)">
+      <summary>
+            Computes the sum of a sequence of <see cref="T:System.Single" /> values.
+            </summary>
+      <param name="source">A sequence of values to calculate the sum of.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <returns>The sum of the values in the sequence.</returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.SumAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Decimal}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the sum of the sequence of <see cref="T:System.Decimal" /> values that is obtained
+            by invoking a projection function on each element of the input sequence.
+            </summary>
+      <param name="source">A sequence of values.</param>
+      <param name="selector">A projection function to apply to each element.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The sum of the projected values.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.SumAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Double}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the sum of the sequence of <see cref="T:System.Double" /> values that is obtained
+            by invoking a projection function on each element of the input sequence.
+            </summary>
+      <param name="source">A sequence of values.</param>
+      <param name="selector">A projection function to apply to each element.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The sum of the projected values.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.SumAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Int32}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the sum of the sequence of <see cref="T:System.Int32" /> values that is obtained
+            by invoking a projection function on each element of the input sequence.
+            </summary>
+      <param name="source">A sequence of values.</param>
+      <param name="selector">A projection function to apply to each element.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The sum of the projected values.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.SumAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Int64}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the sum of the sequence of <see cref="T:System.Int64" /> values that is obtained
+            by invoking a projection function on each element of the input sequence.
+            </summary>
+      <param name="source">A sequence of values.</param>
+      <param name="selector">A projection function to apply to each element.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The sum of the projected values.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.SumAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Nullable{System.Decimal}}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the sum of the sequence of <see cref="T:System.Nullable`1" /> values that is obtained
+            by invoking a projection function on each element of the input sequence.
+            </summary>
+      <param name="source">A sequence of values.</param>
+      <param name="selector">A projection function to apply to each element.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The sum of the projected values.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.SumAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Nullable{System.Double}}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the sum of the sequence of <see cref="T:System.Nullable`1" /> values that is obtained
+            by invoking a projection function on each element of the input sequence.
+            </summary>
+      <param name="source">A sequence of values.</param>
+      <param name="selector">A projection function to apply to each element.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The sum of the projected values.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.SumAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Nullable{System.Int32}}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the sum of the sequence of <see cref="T:System.Nullable`1" /> values that is obtained
+            by invoking a projection function on each element of the input sequence.
+            </summary>
+      <param name="source">A sequence of values.</param>
+      <param name="selector">A projection function to apply to each element.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The sum of the projected values.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.SumAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Nullable{System.Int64}}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the sum of the sequence of <see cref="T:System.Nullable`1" /> values that is obtained
+            by invoking a projection function on each element of the input sequence.
+            </summary>
+      <param name="source">A sequence of values.</param>
+      <param name="selector">A projection function to apply to each element.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The sum of the projected values.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.SumAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Nullable{System.Single}}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the sum of the sequence of <see cref="T:System.Nullable`1" /> values that is obtained
+            by invoking a projection function on each element of the input sequence.
+            </summary>
+      <param name="source">A sequence of values.</param>
+      <param name="selector">A projection function to apply to each element.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The sum of the projected values.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.SumAsync``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Single}},System.Threading.CancellationToken)">
+      <summary>
+            Computes the sum of the sequence of <see cref="T:System.Single" /> values that is obtained
+            by invoking a projection function on each element of the input sequence.
+            </summary>
+      <param name="source">A sequence of values.</param>
+      <param name="selector">A projection function to apply to each element.</param>
+      <param name="cancellationToken">The cancellation token.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            The sum of the projected values.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.Take``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Int32)">
+      <summary>
+            Returns a specified number of contiguous elements from the start of a sequence.
+            </summary>
+      <param name="source">The sequence to return elements from.</param>
+      <param name="count">The number of elements to return.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            An <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> that contains the specified number of elements
+            from the start of source.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.ThenBy``2(MongoDB.Driver.Linq.IOrderedMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}})">
+      <summary>
+            Performs a subsequent ordering of the elements in a sequence in ascending
+            order according to a key.
+            </summary>
+      <param name="source">A sequence of values to order.</param>
+      <param name="keySelector">A function to extract a key from an element.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">The type of the key returned by the function that is represented by keySelector.</typeparam>
+      <returns>
+            An <see cref="T:MongoDB.Driver.Linq.IOrderedMongoQueryable`1" /> whose elements are sorted according to a key.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.ThenByDescending``2(MongoDB.Driver.Linq.IOrderedMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}})">
+      <summary>
+            Performs a subsequent ordering of the elements in a sequence in descending
+            order according to a key.
+            </summary>
+      <param name="source">A sequence of values to order.</param>
+      <param name="keySelector">A function to extract a key from an element.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <typeparam name="TKey">The type of the key returned by the function that is represented by keySelector.</typeparam>
+      <returns>
+            An <see cref="T:MongoDB.Driver.Linq.IOrderedMongoQueryable`1" /> whose elements are sorted in descending order according to a key.
+            </returns>
+    </member>
+    <member name="M:MongoDB.Driver.Linq.MongoQueryable.Where``1(MongoDB.Driver.Linq.IMongoQueryable{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Boolean}})">
+      <summary>
+            Filters a sequence of values based on a predicate.
+            </summary>
+      <param name="source">An <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> to return elements from.</param>
+      <param name="predicate">A function to test each element for a condition.</param>
+      <typeparam name="TSource">The type of the elements of <paramref name="source" />.</typeparam>
+      <returns>
+            An <see cref="T:MongoDB.Driver.Linq.IMongoQueryable`1" /> that contains elements from the input sequence
+            that satisfy the condition specified by predicate.
+            </returns>
+    </member>
+    <member name="T:MongoDB.Driver.Linq.QueryableExecutionModel">
+      <summary>
+            An execution model.
+            </summary>
+    </member>
+    <member name="P:MongoDB.Driver.Linq.QueryableExecutionModel.OutputType">
+      <summary>
+            Gets the type of the output.
+            </summary>
     </member>
   </members>
 </doc>

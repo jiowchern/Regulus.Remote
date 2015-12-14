@@ -1,14 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-
-
-using NLog;
-using NLog.Fluent;
-
-
-using Regulus.Utility;
-
+﻿using Regulus.Utility;
 
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
@@ -17,18 +7,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 {
 	public class AdjustmentGameLevelRule
 	{
-		private struct Data
-		{
-			public int BufferValue;
-
-			public string Name;
-
-			public Data(string name, int buffer_value)
-			{
-				Name = name;
-				BufferValue = buffer_value;
-			}
-		}
+		private const int _CheckNumbers = 100;
 
 		private readonly TimeCounter _TimeCounter;
 
@@ -45,17 +24,20 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		/// </summary>
 		public void Run()
 		{
-			var bufferData = _Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName, FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
-			var bufferTemp = bufferData.TempValueNode;
+			var normal = _Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName,
+														FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
+			var bufferTemp = normal.TempValueNode;
+
 			bufferTemp.FireCount += 1;
 
 			// 一分內 未遠500發子彈
-			if(_TimeCounter.Second > bufferTemp.RealTime && bufferTemp.FireCount < 500)
+			if(_TimeCounter.Second > bufferTemp.RealTime &&
+				bufferTemp.FireCount < AdjustmentGameLevelRule._CheckNumbers)
 			{
 				_Update();
 			}
 
-			if(bufferTemp.FireCount >= 500)
+			if(bufferTemp.FireCount >= AdjustmentGameLevelRule._CheckNumbers)
 			{
 				_Update2();
 			}
@@ -71,18 +53,19 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		private void _Update2()
 		{
 			var bufferTemp = _SetHiLoRate();
-			bufferTemp.FireCount -= 500;
+			bufferTemp.FireCount -= AdjustmentGameLevelRule._CheckNumbers;
 		}
 
 		private FarmDataRoot.ValueNode _SetHiLoRate()
 		{
-			var bufferData = _Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName, FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
+			var normal = _Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName,
+														FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
 
-			var bufferTemp = bufferData.TempValueNode;
+			var bufferTemp = normal.TempValueNode;
 
 			var baseValue = _Visitor.Farm.NowBaseOdds * bufferTemp.AverageValue;
 
-			bufferTemp.HiLoRate = new NatureDataRule().Run(bufferData.Buffer.WinScore, baseValue);
+			bufferTemp.HiLoRate = new NatureDataRule().Run(normal.Buffer.WinScore, baseValue);
 
 			return bufferTemp;
 		}

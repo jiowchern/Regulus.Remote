@@ -88,7 +88,7 @@ namespace VGame.Project.FishHunter.Storage
 
 		private void _VerifySuccess(Account account)
 		{
-			_VerifySuccessEvent(account.Id);
+			_VerifySuccessEvent(account.Guid);
 			_Account = account;
 			_ToRelease(account);
 		}
@@ -96,7 +96,7 @@ namespace VGame.Project.FishHunter.Storage
 		private void _ToRelease(Account account)
 		{
 			var stage = new StroageAccess(_Binder, account, _Storage);
-			stage.DoneEvent += _ToVerify;
+			stage.OnDoneEvent += _ToVerify;
 			_Machine.Push(stage);
 		}
 	}

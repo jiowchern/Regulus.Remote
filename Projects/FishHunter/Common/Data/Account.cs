@@ -34,9 +34,11 @@ namespace VGame.Project.FishHunter.Common.Data
 			ACCOUNT_FINDER
 		};
 
-		[ProtoMember(1)]
-		public Guid Id { get; set; }
+		
 
+		[ProtoMember(1)]
+		public long Id { get; set; }
+		
 		[ProtoMember(2)]
 		public string Name { get; set; }
 
@@ -46,10 +48,13 @@ namespace VGame.Project.FishHunter.Common.Data
 		[ProtoMember(4)]
 		public Flag<COMPETENCE> Competnces { get; set; }
 
+		[ProtoMember(5)]
+		public Guid Guid { get; set; }
+
 		public Account()
 		{
 			Competnces = new Flag<COMPETENCE>();
-			Id = Guid.NewGuid();
+			Guid = Guid.NewGuid();
 			Name = Id.ToString();
 			Password = Id.ToString();
 		}

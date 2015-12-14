@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 
-
 using VGame.Project.FishHunter.Common.Data;
 
 namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 {
 	/// <summary>
-	/// 特武出現率使用
+	///     特武出現率使用
 	/// </summary>
 	public class SpecialWeaponRateTable
 	{
@@ -27,15 +26,13 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 
 		public SpecialWeaponRateTable()
 		{
-			//ULONG const ulChanceSpecOdds[3] = { 250, 150, 120 }; // 炸弹、电网、免费炮
-
+			// ULONG const ulChanceSpecOdds[3] = { 250, 150, 120 }; // 炸弹、电网、免费炮
 			WeaponRates = new List<WeaponRate>
 			{
-				new WeaponRate(WEAPON_TYPE.SUPER_BOMB, 250),
-				new WeaponRate(WEAPON_TYPE.ELECTRIC_NET, 150),
-				new WeaponRate(WEAPON_TYPE.FREE_POWER, 120),
+				new WeaponRate(WEAPON_TYPE.SUPER_BOMB, 250), 
+				new WeaponRate(WEAPON_TYPE.ELECTRIC_NET, 150), 
+				new WeaponRate(WEAPON_TYPE.FREE_POWER, 120)
 			};
 		}
-
 	}
 }

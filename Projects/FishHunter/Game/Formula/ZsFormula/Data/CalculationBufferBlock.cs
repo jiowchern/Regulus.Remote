@@ -1,7 +1,4 @@
-﻿using System;
-
-
-using VGame.Project.FishHunter.Common.Data;
+﻿using VGame.Project.FishHunter.Common.Data;
 
 namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 {

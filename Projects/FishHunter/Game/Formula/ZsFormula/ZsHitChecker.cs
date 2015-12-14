@@ -15,14 +15,14 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 		public ZsHitChecker(FishFarmData fish_farm_data, FormulaPlayerRecord formula_player_record, List<RandomData> random)
 		{
 			var record = formula_player_record.FindFarmRecord(fish_farm_data.FarmId);
-			if(record == null)
-			{
-				formula_player_record.FarmRecords = new List<FarmRecord>
-				{
-					new FarmRecord(fish_farm_data.FarmId)
-				}.ToArray();
+
+            if(record == null)
+            {
+				var tmp = formula_player_record.FarmRecords.ToList();
+				tmp.Add(new FarmRecord(fish_farm_data.FarmId));
+				formula_player_record.FarmRecords = tmp.ToArray();
 			}
-			
+
 			_DataVisitor = new DataVisitor(fish_farm_data, formula_player_record, random);
 		}
 

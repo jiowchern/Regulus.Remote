@@ -1,13 +1,12 @@
 using System.Linq;
 
-
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
 
 namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 {
 	/// <summary>
-	///     記錄特殊魚獲得次數
+	///     記錄擊殺魚的資料
 	/// </summary>
 	public class SaveDeathFishHistory
 	{
@@ -32,15 +31,19 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		private void _SavePlayerHit()
 		{
-			var hitRecords = _DataVisitor.PlayerRecord.FindFarmRecord(_DataVisitor.Farm.FarmId).FishHits.ToList();
+			var hitRecords = _DataVisitor.PlayerRecord
+										.FindFarmRecord(_DataVisitor.Farm.FarmId)
+										.FishHits.ToList();
 
 			var data = hitRecords.FirstOrDefault(x => x.FishType == _Fish.FishType);
 
-			if (data == null)
+			if(data == null)
 			{
 				data = new FishHitRecord(_Fish.FishType);
 				hitRecords.Add(data);
-				_DataVisitor.PlayerRecord.FindFarmRecord(_DataVisitor.Farm.FarmId).FishHits = hitRecords.ToArray();
+				_DataVisitor.PlayerRecord
+							.FindFarmRecord(_DataVisitor.Farm.FarmId)
+							.FishHits = hitRecords.ToArray();
 			}
 
 			data.KillCount++;
@@ -53,28 +56,11 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 			var data = hitRecords.FirstOrDefault(x => x.FishType == _Fish.FishType);
 
-			if (data == null)
+			if(data == null)
 			{
 				data = new FishHitRecord(_Fish.FishType);
 				hitRecords.Add(data);
 				_DataVisitor.Farm.Record.FishHits = hitRecords.ToArray();
-			}
-
-			data.KillCount++;
-			data.WinScore += _WinScore;
-		}
-
-		private void _Record(FishHitRecord[] fish_hit_records)
-		{
-			var list = fish_hit_records.ToList();
-
-			var data = list.FirstOrDefault(x => x.FishType == _Fish.FishType);
-
-            if (data == null)
-			{
-				data = new FishHitRecord(_Fish.FishType);
-				list.Add(data);
-				fish_hit_records = list.ToArray();
 			}
 
 			data.KillCount++;
