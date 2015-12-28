@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 
-
 using Regulus.Utility;
 
 namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
@@ -9,11 +8,11 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 	{
 		public enum RULE
 		{
-			ADJUSTMENT_PLAYER_PHASE,
+			ADJUSTMENT_PLAYER_PHASE, 
 
-			CHECK_TREASURE,
+			CHECK_TREASURE, 
 
-			DEATH,
+			DEATH, 
 
 			ODDS
 		}

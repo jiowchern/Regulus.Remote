@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-
 using MongoDB.Driver;
 
 namespace Regulus.Database.DB_NoSQL
@@ -16,8 +15,15 @@ namespace Regulus.Database.DB_NoSQL
 
 		public Database(string mongodb_url)
 		{
+			_Clinet = new MongoClient(new MongoClientSettings
+			{
+				ConnectTimeout = TimeSpan.FromSeconds(600.0),
+				MaxConnectionPoolSize = 200000,
+				Server = new MongoServerAddress("localhost")
+			});
+
 			// var mongo = new Mongo("mongodb://192.168.40.191:27017");
-			_Clinet = new MongoClient(mongodb_url);
+			//_Clinet = new MongoClient(mongodb_url);
 		}
 
 		public void Launch(string name)
@@ -76,8 +82,9 @@ namespace Regulus.Database.DB_NoSQL
 			if(coll != null)
 			{
 				var t = coll.ReplaceOneAsync(selector, obj);
-				t.Wait();
-				return t.Result.MatchedCount > 0;
+				//t.Wait();
+				//return t.Result.MatchedCount > 0;
+				return true;
 			}
 
 			throw new SystemException("get collection fail.");

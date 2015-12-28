@@ -1,7 +1,5 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-
 
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
@@ -13,11 +11,11 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 	/// </summary>
 	public class DeathRule
 	{
-		private readonly DataVisitor _Visitor;
-
 		private readonly List<HitResponse> _HitResponses;
 
 		private readonly HitRequest _Request;
+
+		private readonly DataVisitor _Visitor;
 
 		public DeathRule(DataVisitor visitor, HitRequest request)
 		{
@@ -30,13 +28,13 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		{
 			var hitSequence = 0;
 
-			foreach (var fishData in _Request.FishDatas)
+			foreach(var fishData in _Request.FishDatas)
 			{
 				// 有值代表是特殊武器
-				var specialWeaponPower = new SpecialWeaponPowerTable().WeaponPowers.Find(
-					x => x.WeaponType == _Request.WeaponData.WeaponType);
+				var specialWeaponPower =
+						new SpecialWeaponPowerTable().WeaponPowers.Find(x => x.WeaponType == _Request.WeaponData.WeaponType);
 
-				if (specialWeaponPower != null)
+				if(specialWeaponPower != null)
 				{
 					_SpecialWeapon(fishData);
 				}
@@ -48,25 +46,25 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 				++hitSequence;
 			}
 
-			new LogHandle(_Visitor);
+			new LogHandle(_Visitor).Run();
 
 			return _HitResponses.ToArray();
 		}
 
 		private void _SpecialWeapon(RequsetFishData fish_data)
 		{
-			long dieRate =
-				new SpecialWeaponPowerTable().WeaponPowers.Find(x => x.WeaponType == _Request.WeaponData.WeaponType).Power;
+			long dieRate = new SpecialWeaponPowerTable().WeaponPowers
+														.Find(x => x.WeaponType == _Request.WeaponData.WeaponType)
+														.Power;
 
 			dieRate *= 0x0FFFFFFF;
 
 			dieRate /= _Request.FishDatas.Sum(x => x.FishOdds); // 总倍数
 
-			var bufferData = _Visitor.Farm.FindDataRoot(
-				_Visitor.FocusBlockName, 
-				FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
+			var normal = _Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName,
+														FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
 
-			var oddsRule = new OddsRuler(_Visitor, fish_data, bufferData).RuleResult();
+			var oddsRule = new OddsRuler(_Visitor, fish_data, normal).RuleResult();
 
 			dieRate /= oddsRule;
 
@@ -74,13 +72,14 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 			{
 				dieRate = 0x10000000; // > 100%
 			}
-			
+
 			if(_Request.WeaponData.WeaponType == WEAPON_TYPE.BIG_OCTOPUS_BOMB)
 			{
 				dieRate = 0x10000000; // > 100% 
 			}
 
-			var randomValue = _Visitor.FindIRandom(RandomData.RULE.DEATH, 0).NextInt(0, 0x10000000);
+			var randomValue = _Visitor.FindIRandom(RandomData.RULE.DEATH, 0)
+									.NextInt(0, 0x10000000);
 
 			if(randomValue >= dieRate)
 			{
@@ -95,15 +94,12 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		private void _NomralWeapon(RequsetFishData fish_data, int hit_sequence)
 		{
-			var farmDataRoot = _Visitor.Farm.FindDataRoot(
-				_Visitor.FocusBlockName, 
-				FarmDataRoot.BufferNode.BUFFER_NAME.SPEC);
+			var normal = _Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName,
+															FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
 
-			long dieRate = _Visitor.Farm.GameRate - 10;
+			long dieRate = _Visitor.Farm.GameRate;
 
-			dieRate -= farmDataRoot.Buffer.Rate;
-
-			dieRate += farmDataRoot.TempValueNode.HiLoRate;
+			dieRate += normal.TempValueNode.HiLoRate;
 
 			if(_Visitor.PlayerRecord.Status != 0)
 			{
@@ -131,7 +127,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 			dieRate /= fish_data.FishOdds; // 鱼的倍数
 
-			var oddsRule = new OddsRuler(_Visitor, fish_data, farmDataRoot).RuleResult();
+			var oddsRule = new OddsRuler(_Visitor, fish_data, normal).RuleResult();
 
 			dieRate /= oddsRule; // 翻倍
 
@@ -142,8 +138,9 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 				dieRate = 0x10000000; // > 100%
 			}
 
-			var randomValue = _Visitor.FindIRandom(RandomData.RULE.DEATH, 1).NextInt(0, 0x10000000);
-			if (randomValue >= dieRate)
+			var randomValue = _Visitor.FindIRandom(RandomData.RULE.DEATH, 1)
+									.NextInt(0, 0x10000000);
+			if(randomValue >= dieRate)
 			{
 				_Miss(fish_data, _Request.WeaponData, dieRate);
 				return;
@@ -160,47 +157,46 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 			new SaveDeathFishHistory(_Visitor, fish_data, win_score).Run();
 			new CheckTreasureRule(_Visitor, fish_data).Run();
 			new SaveScoreHistory(_Visitor, win_score).Run();
-			
+
 			_Die(fish_data, _Request.WeaponData, die_rate);
 		}
 
 		private void _Die(RequsetFishData fish_data, RequestWeaponData weapon_data, long die_rate)
 		{
-			var bufferData = _Visitor.Farm.FindDataRoot(
-				_Visitor.FocusBlockName, 
-				FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
+			var bufferData = _Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName,
+														FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
 
 			_HitResponses.Add(
-				new HitResponse()
-				{
-					WepId = weapon_data.BulletId, 
-					FishId = fish_data.FishId,
-					FishOdds = fish_data.FishOdds,
-                    DieResult = FISH_DETERMINATION.DEATH, 
-					FeedbackWeapons = _Visitor.GotTreasures.ToArray(),
-					WeaponBet = weapon_data.WeaponBet,
-					DieRate = die_rate,
-					OddsResult = new OddsRuler(_Visitor, fish_data, bufferData).RuleResult()
-				});
+							 new HitResponse
+							 {
+								 WepId = weapon_data.BulletId,
+								 FishId = fish_data.FishId,
+								 FishOdds = fish_data.FishOdds,
+								 DieResult = FISH_DETERMINATION.DEATH,
+								 FeedbackWeapons = _Visitor.GotTreasures.ToArray(),
+								 WeaponBet = weapon_data.WeaponBet,
+								 DieRate = die_rate,
+								 OddsResult = new OddsRuler(_Visitor, fish_data, bufferData).RuleResult()
+							 });
 		}
 
 		private void _Miss(RequsetFishData fish_data, RequestWeaponData weapon_data, long die_rate)
 		{
 			_HitResponses.Add(
-				new HitResponse()
-				{
-					WepId = weapon_data.BulletId, 
-					FishId = fish_data.FishId,
-					FishOdds = fish_data.FishOdds,
-					DieResult = FISH_DETERMINATION.SURVIVAL,
-					FeedbackWeapons = new[]
-					{
-						WEAPON_TYPE.INVALID
-					},
-					WeaponBet = weapon_data.WeaponBet,
-					OddsResult = 0,
-					DieRate = die_rate
-				});
+							 new HitResponse
+							 {
+								 WepId = weapon_data.BulletId,
+								 FishId = fish_data.FishId,
+								 FishOdds = fish_data.FishOdds,
+								 DieResult = FISH_DETERMINATION.SURVIVAL,
+								 FeedbackWeapons = new[]
+								 {
+									 WEAPON_TYPE.INVALID
+								 },
+								 WeaponBet = weapon_data.WeaponBet,
+								 OddsResult = 0,
+								 DieRate = die_rate
+							 });
 		}
 	}
 }

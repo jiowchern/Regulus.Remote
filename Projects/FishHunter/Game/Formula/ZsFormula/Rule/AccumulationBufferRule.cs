@@ -1,12 +1,6 @@
 ﻿using System.Linq;
 
-
-using NLog;
-using NLog.Fluent;
-
-
 using Regulus.Utility;
-
 
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
@@ -32,10 +26,12 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		{
 			var enumData = EnumHelper.GetEnums<FarmDataRoot.BufferNode.BUFFER_NAME>();
 
-			foreach(var data in enumData.Select(buffer_type => _Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName, buffer_type)))
+			foreach(var data 
+					in enumData.Select(buffer_type =>
+										_Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName, buffer_type)))
+
 			{
 				_AddBufferRate(data);
-				
 			}
 
 			_MoveSpecBufferToNormalBuffer();
@@ -44,13 +40,18 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		}
 
 		/// <summary>
-		/// 當block裡的spec type裡有錢大於0就要搬動)，就要把spec的錢移到normal，spec清空
+		///     當block裡的spec type裡有錢大於0就要搬動)，就要把spec的錢移到normal，spec清空
 		/// </summary>
 		private void _MoveSpecBufferToNormalBuffer()
 		{
-			var spec = _Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName, FarmDataRoot.BufferNode.BUFFER_NAME.SPEC);
-			var normal = _Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName, FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
+			var spec = _Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName,
+												FarmDataRoot.BufferNode.BUFFER_NAME.SPEC);
+
+			var normal = _Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName,
+													FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
+
 			normal.Buffer.WinScore += spec.Buffer.WinScore;
+
 			spec.Buffer.WinScore = 0;
 		}
 
@@ -68,7 +69,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		}
 
 		/// <summary>
-		/// 各個block各別加總GetTotalBet，win也要各別計算
+		///     各個block各別加總GetTotalBet，win也要各別計算
 		/// </summary>
 		private void _RecordAll()
 		{
@@ -79,16 +80,22 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		private void _RecordToFocusBlock()
 		{
-			var data = _Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName, FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
+			var normal = _Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName,
+												FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
 
-			data.Block.FireCount += 1;
-			data.Block.TotalSpending += _Request.WeaponData.GetTotalBet();
+			normal.Block.FireCount += 1;
+			normal.Block.TotalSpending += _Request.WeaponData.GetTotalBet();
 		}
 
 		private void _RecordToPlayer()
 		{
-			_Visitor.PlayerRecord.FindFarmRecord(_Visitor.Farm.FarmId).FireCount += 1;
-			_Visitor.PlayerRecord.FindFarmRecord(_Visitor.Farm.FarmId).TotalSpending += _Request.WeaponData.GetTotalBet();
+			_Visitor.PlayerRecord
+					.FindFarmRecord(_Visitor.Farm.FarmId)
+					.FireCount += 1;
+
+			_Visitor.PlayerRecord
+					.FindFarmRecord(_Visitor.Farm.FarmId)
+					.TotalSpending += _Request.WeaponData.GetTotalBet();
 		}
 
 		private void _RecordToFarm()

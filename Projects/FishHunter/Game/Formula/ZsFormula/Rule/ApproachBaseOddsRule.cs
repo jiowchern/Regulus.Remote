@@ -1,18 +1,11 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ApproachBaseOddsRule.cs" company="Regulus Framework">
-//   Regulus Framework
-// </copyright>
-// <summary>
-//   Defines the ApproachBaseOddsRule type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-using VGame.Project.FishHunter.Formula.ZsFormula.Data;
+﻿using VGame.Project.FishHunter.Formula.ZsFormula.Data;
 
 namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 {
 	public class ApproachBaseOddsRule
 	{
+		private const int _CheckNumbers = 10000;
+
 		private readonly DataVisitor _Visitor;
 
 		public ApproachBaseOddsRule(DataVisitor visitor)
@@ -25,21 +18,14 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		/// </summary>
 		public void Run()
 		{
-			if(_Visitor.Farm.BaseOddsCount != 0)
+			if(_Visitor.Farm.NowBaseOdds >= _Visitor.Farm.BaseOdds)
 			{
-				_Visitor.Farm.BaseOddsCount--;
+				return;
 			}
-			else
+
+			if(_Visitor.Farm.Record.FireCount % ApproachBaseOddsRule._CheckNumbers == 0)
 			{
-				_Visitor.Farm.BaseOddsCount = 3000;
-				if(_Visitor.Farm.NowBaseOdds > _Visitor.Farm.BaseOdds)
-				{
-					_Visitor.Farm.NowBaseOdds--;
-				}
-				else if(_Visitor.Farm.NowBaseOdds < _Visitor.Farm.BaseOdds)
-				{
-					_Visitor.Farm.NowBaseOdds++;
-				}
+				_Visitor.Farm.NowBaseOdds += 1;
 			}
 		}
 	}
