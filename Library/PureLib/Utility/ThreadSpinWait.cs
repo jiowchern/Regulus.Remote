@@ -14,9 +14,17 @@ namespace Regulus.Utility
 
 		private static readonly int ProcessorCount = Environment.ProcessorCount;
 
-		private static readonly bool IsWindows = Environment.OSVersion.Platform == PlatformID.Win32Windows
+		private static bool IsWindows = Environment.OSVersion.Platform == PlatformID.Win32Windows
 		                                         || Environment.OSVersion.Platform == PlatformID.Win32S
 		                                         || Environment.OSVersion.Platform == PlatformID.Win32NT;
+
+        
+        ///    <summary>for unity web player or not windows system</summary>
+        
+        public static void NotWindowsPlatform()
+        {
+            IsWindows = false;
+        }
 
 		/// <summary>获取已对此实例调用 <see cref="SpinOnce" /> 的次数。</summary>
 		public int Count { get; private set; }
