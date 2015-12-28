@@ -52,10 +52,6 @@
       <Project>{e51e2098-c578-4637-807c-f67067a54535}</Project>
       <Name>Database</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Library\PureLib\PureLib.csproj">
-      <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
-      <Name>PureLib</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -75,10 +75,6 @@
     <Compile Include="ServerPeer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PureLib\PureLib.csproj">
-      <Project>{2F28AA04-316D-4C20-BF46-987D4A59691D}</Project>
-      <Name>PureLib</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Remoting\Remoting.csproj">
       <Project>{A4CFCE46-BDA8-4416-A1BB-77BD80514019}</Project>
       <Name>Remoting</Name>

@@ -69,14 +69,15 @@ namespace Regulus.Remoting
 				_Buffer = _CreateBuffer(pkgs);
                 _AutoPowerRegulator.Operate();
 
-                _Socket.BeginSendTo(
+                _Socket.BeginSend(_Buffer, 0, _Buffer.Length, SocketFlags.None, _WriteCompletion, null);
+                /*_Socket.BeginSendTo(
 					_Buffer, 
 					0, 
 					_Buffer.Length, 
 					0, 
 					_Socket.RemoteEndPoint, 
 					_WriteCompletion, 
-					null);
+					null);*/
 			}
 			catch(SystemException e)
 			{
