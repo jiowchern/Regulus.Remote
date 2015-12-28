@@ -47,7 +47,7 @@ namespace VGame.Project.FishHunter.Common.Data
 		}
 
 		[ProtoMember(1)]
-		public Guid Id { get; set; }
+		public Guid Guid { get; set; }
 
 		[ProtoMember(2)]
 		public Guid Owner { get; set; }
@@ -55,15 +55,18 @@ namespace VGame.Project.FishHunter.Common.Data
 		[ProtoMember(3)]
 		public List<TradeData> TradeDatas { get; set; }
 
+		[ProtoMember(4)]
+		public long Id { get; set; }
+
 		public TradeNotes()
 		{
-			Id = Guid.NewGuid();
+			Guid = Guid.NewGuid();
 			TradeDatas = new List<TradeData>();
 		}
 
 		public TradeNotes(Guid id)
 		{
-			Id = Guid.NewGuid();
+			Guid = Guid.NewGuid();
 			Owner = id;
 			TradeDatas = new List<TradeData>();
 		}

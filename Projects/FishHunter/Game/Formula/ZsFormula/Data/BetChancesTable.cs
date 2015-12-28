@@ -8,7 +8,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 
 		public int PlayerBet { private get; set; }
 
-		private float Precent
+		private float _Precent
 		{
 			get { return PlayerBet / (float)MaxBet; }
 		}
@@ -19,7 +19,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 
 		public int GetDiceKey()
 		{
-			return Dice(Precent);
+			return Dice(_Precent);
 		}
 	}
 }

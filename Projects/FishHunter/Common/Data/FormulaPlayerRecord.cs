@@ -14,7 +14,7 @@ namespace VGame.Project.FishHunter.Common.Data
     public class FormulaPlayerRecord
 	{
         [ProtoMember(1)]
-		public Guid Id { get; set; }
+		public Guid Guid { get; set; }
 
         [ProtoMember(2)]
         public Guid Owner { get; set; }
@@ -28,7 +28,10 @@ namespace VGame.Project.FishHunter.Common.Data
         [ProtoMember(5)]
         public FarmRecord[] FarmRecords { get; set; }
 
-        public FormulaPlayerRecord()
+		[ProtoMember(6)]
+		public long Id { get; set; }
+
+		public FormulaPlayerRecord()
         {
 	        FarmRecords = new FarmRecord[0];
         }

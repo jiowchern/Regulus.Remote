@@ -1,6 +1,4 @@
-﻿
-using VGame.Project.FishHunter.Common.Data;
-
+﻿using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
 
 namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
@@ -22,31 +20,30 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		public void Run()
 		{
-			var bufferData = _DataVisitor.Farm.FindDataRoot(
-				_DataVisitor.FocusBlockName, 
-				FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
+			var normal = _DataVisitor.Farm.FindDataRoot(_DataVisitor.FocusBlockName,
+															FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
 
 			// 前1000局，按照实际总玩分/总玩次，获得平均押注
 			// 之后，每次减去1/100000，再补上最新的押注
-			if(bufferData.TempValueNode.AverageTimes < 1000)
+			if(normal.TempValueNode.AverageTimes < 1000)
 			{
-				bufferData.TempValueNode.AverageTimes += 1;
+				normal.TempValueNode.AverageTimes += 1;
 
-				bufferData.TempValueNode.AverageTotal += _HitRequest.WeaponData.GetTotalBet();
+				normal.TempValueNode.AverageTotal += _HitRequest.WeaponData.GetTotalBet();
 
-				bufferData.TempValueNode.AverageValue = bufferData.TempValueNode.AverageTotal
-														/ bufferData.TempValueNode.AverageTimes;
+				normal.TempValueNode.AverageValue = normal.TempValueNode.AverageTotal
+														/ normal.TempValueNode.AverageTimes;
 
-				if(bufferData.TempValueNode.AverageTimes == 1000)
+				if(normal.TempValueNode.AverageTimes == 1000)
 				{
-					bufferData.TempValueNode.AverageTotal = bufferData.TempValueNode.AverageTotal / 1000 * 100000;
+					normal.TempValueNode.AverageTotal = normal.TempValueNode.AverageTotal / 1000 * 100000;
 				}
 			}
 			else
 			{
-				bufferData.TempValueNode.AverageTotal -= bufferData.TempValueNode.AverageTotal / 100000;
-				bufferData.TempValueNode.AverageTotal += _HitRequest.WeaponData.GetTotalBet();
-				bufferData.TempValueNode.AverageValue = bufferData.TempValueNode.AverageTotal / 100000;
+				normal.TempValueNode.AverageTotal -= normal.TempValueNode.AverageTotal / 100000;
+				normal.TempValueNode.AverageTotal += _HitRequest.WeaponData.GetTotalBet();
+				normal.TempValueNode.AverageValue = normal.TempValueNode.AverageTotal / 100000;
 			}
 		}
 	}

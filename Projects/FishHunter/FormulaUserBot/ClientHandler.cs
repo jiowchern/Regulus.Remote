@@ -12,27 +12,27 @@ namespace FormulaUserBot
 
 		private readonly Updater _Bots;
 
-		private readonly string _IPAddress;
+		private readonly string _IpAddress;
 
 		private readonly int _Port;
 
 		private int _BotCount;
 
-		public bool _IsStandalone = true;
+		private const bool _IsStandalone = false;
 
-		private VGame.Project.FishHunter.Formula.DummyStandalone _DummyStandalone;
+		private readonly DummyStandalone _DummyStandalone;
 
-		public ClientHandler(string IPAddress, int Port)
+		public ClientHandler(string ip_address, int port)
 		{
 			// TODO: Complete member initialization
-			_IPAddress = IPAddress;
-			_Port = Port;
+			_IpAddress = ip_address;
+			_Port = port;
 			_Bots = new Updater();
-			_DummyStandalone = new VGame.Project.FishHunter.Formula.DummyStandalone();
+			_DummyStandalone = new DummyStandalone();
 		}
 
-		public ClientHandler(string IPAddress, int Port, int bot_amount)
-			: this(IPAddress, Port)
+		public ClientHandler(string ip_address, int port, int bot_amount)
+			: this(ip_address, port)
 		{
 			_BotAmount = bot_amount;
 		}
@@ -54,7 +54,7 @@ namespace FormulaUserBot
 
 		internal void Begin(GameModeSelector<IUser> selector)
 		{
-			if(_IsStandalone)
+			if(ClientHandler._IsStandalone)
 			{
 				selector.AddFactoty("standalone", new StandaloneUserFactory(_DummyStandalone));
 				_OnProvider(selector.CreateUserProvider("standalone"));
@@ -66,18 +66,18 @@ namespace FormulaUserBot
 			}
 		}
 
-		private void _OnProvider(UserProvider<IUser> userProvider)
+		private void _OnProvider(UserProvider<IUser> user_provider)
 		{
 			while(_BotCount < _BotAmount)
 			{
-				_OnUser(userProvider.Spawn("bot" + _BotCount));
+				_OnUser(user_provider.Spawn("bot" + _BotCount));
 				_BotCount++;
 			}
 		}
 
 		private void _OnUser(IUser user)
 		{
-			var bot = new Bot(_IPAddress, _Port, user);
+			var bot = new Bot(_IpAddress, _Port, user);
 			_Bots.Add(bot);
 		}
 

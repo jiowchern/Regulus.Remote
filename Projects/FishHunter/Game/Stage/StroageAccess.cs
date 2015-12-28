@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Linq;
 
-
 using Regulus.Remoting;
 using Regulus.Utility;
-
 
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
@@ -15,7 +13,7 @@ namespace VGame.Project.FishHunter.Stage
 	{
 		public delegate void DoneCallback();
 
-		public event DoneCallback DoneEvent;
+		public event DoneCallback OnDoneEvent;
 
 		private readonly Account _Account;
 
@@ -32,7 +30,7 @@ namespace VGame.Project.FishHunter.Stage
 
 		void IQuitable.Quit()
 		{
-			DoneEvent();
+			OnDoneEvent();
 		}
 
 		void IStage.Enter()
@@ -56,7 +54,7 @@ namespace VGame.Project.FishHunter.Stage
 
 		Value<Guid> IStorageCompetences.QueryForId()
 		{
-			return _Account.Id;
+			return _Account.Guid;
 		}
 
 		private void _Attach(Account account)

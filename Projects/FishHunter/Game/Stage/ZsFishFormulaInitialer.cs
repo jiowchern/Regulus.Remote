@@ -1,8 +1,6 @@
 ﻿using System;
 
-
 using Regulus.Remoting;
-
 
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
@@ -17,8 +15,8 @@ namespace VGame.Project.FishHunter.Stage
 		private readonly IFormulaPlayerRecorder _FormulaPlayerRecorder;
 
 		public ZsFishFormulaInitialer(
-			IFormulaPlayerRecorder formula_player_recorder, 
-			IFormulaFarmRecorder formula_farm_recorder)
+				IFormulaPlayerRecorder formula_player_recorder,
+				IFormulaFarmRecorder formula_farm_recorder)
 		{
 			_FormulaPlayerRecorder = formula_player_recorder;
 			_FormulaFarmRecorder = formula_farm_recorder;
@@ -31,12 +29,12 @@ namespace VGame.Project.FishHunter.Stage
 			_FormulaPlayerRecorder.Query(player_id).OnValue += record =>
 			{
 				val.SetValue(
-					new ZsFishStage(
-						player_id, 
-						data, 
-						record, 
-						_FormulaPlayerRecorder, 
-						_FormulaFarmRecorder));
+							 new ZsFishStage(
+									player_id,
+									data,
+									record,
+									_FormulaPlayerRecorder,
+									_FormulaFarmRecorder));
 			};
 
 			return val;

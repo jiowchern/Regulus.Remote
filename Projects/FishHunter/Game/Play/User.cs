@@ -86,9 +86,9 @@ namespace VGame.Project.FishHunter.Play
 			remove { _QuitEvent -= value; }
 		}
 
-		void Regulus.Game.IUser.OnKick(Guid id)
+		void Regulus.Game.IUser.OnKick(Guid guid)
 		{
-			if(_Account != null && _Account.Id == id)
+			if(_Account != null && _Account.Guid == guid)
 			{
 				if(_KickEvent != null)
 				{
@@ -155,14 +155,14 @@ namespace VGame.Project.FishHunter.Play
 
 		private void _VerifySuccess(Account account)
 		{
-			_VerifySuccessEvent(account.Id);
+			_VerifySuccessEvent(account.Guid);
 			_Account = account;
 			_ToQueryRecord();
 		}
 
 		private void _ToQueryRecord()
 		{
-			_GameRecorder.Load(_Account.Id).OnValue += obj =>
+			_GameRecorder.Load(_Account.Guid).OnValue += obj =>
 			{
 				_GamePlayerRecord = obj;
 				_StageTicketInspector.Initial(
@@ -246,7 +246,7 @@ namespace VGame.Project.FishHunter.Play
 
 		private void _ToLoadTradeNotes()
 		{
-			_TradeAccount.GetTotalMoney(_Account.Id).OnValue += money =>
+			_TradeAccount.GetTotalMoney(_Account.Guid).OnValue += money =>
 			{
 				_GamePlayerRecord.Money += money;
 				_ToSelectStage();

@@ -1,6 +1,4 @@
-﻿
-using System.Collections.Generic;
-
+﻿using System.Collections.Generic;
 
 namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 {
@@ -21,10 +19,9 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 
 		private readonly List<Data> _Datas;
 
-		// TODO 不成立要為1 ODDS
-	    public OddsTable()
+		public OddsTable()
 		{
-            _Datas = new List<Data>
+			_Datas = new List<Data>
 			{
 				new Data(2, 89), 
 				new Data(3, 50), 
@@ -33,13 +30,18 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 			};
 		}
 
+		/// <summary>
+		///     不成立要為1 ODDS
+		/// </summary>
+		/// <param name="rand_number"></param>
+		/// <returns></returns>
 		public int CheckRule(int rand_number)
 		{
 			Data tmp = null;
 
-			foreach (var d in _Datas)
+			foreach(var d in _Datas)
 			{
-				if (rand_number < d.Number)
+				if(rand_number < d.Number)
 				{
 					tmp = d;
 					break;
@@ -48,7 +50,9 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 				rand_number -= d.Number;
 			}
 
-			return tmp == null ? 1 : tmp.Odds;
+			return tmp == null
+						? 1
+						: tmp.Odds;
 		}
 	}
 }

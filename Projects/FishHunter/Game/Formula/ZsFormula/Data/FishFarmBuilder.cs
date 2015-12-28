@@ -1,19 +1,13 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-
+﻿using System;
 
 using Regulus.Utility;
-
 
 using VGame.Project.FishHunter.Common.Data;
 
 namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 {
 	/// <summary>
-	/// 建立漁場的預設值
+	///     建立漁場的預設值
 	/// </summary>
 	public class FishFarmBuilder
 	{
@@ -35,161 +29,161 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 				case 100:
 					return new FishFarmData
 					{
-						FarmId = farm_id,
-						Name = "海洋天堂",
-						MaxBet = 100,
-						GameRate = 992,
-						SpecialRate = 10,
-						BaseOdds = 500,
-						NowBaseOdds = 500,
-						BaseOddsCount = 0,
+						FarmId = farm_id, 
+						Name = "海洋天堂", 
+						MaxBet = 100, 
+						GameRate = 992, 
+						SpecialRate = 10, 
+						BaseOdds = 1000, 
+						NowBaseOdds = 300, 
+						BaseOddsCount = 0, 
 						Record = new FarmRecord(farm_id)
 					};
 				case 101:
 					return new FishFarmData
 					{
-						FarmId = farm_id,
-						Name = "深海蛇王",
-						MaxBet = 100,
-						GameRate = 994,
-						SpecialRate = 10,
-						BaseOdds = 1000,
-						NowBaseOdds = 1000,
-						BaseOddsCount = 0,
+						FarmId = farm_id, 
+						Name = "深海蛇王", 
+						MaxBet = 100, 
+						GameRate = 994, 
+						SpecialRate = 10, 
+						BaseOdds = 1000, 
+						NowBaseOdds = 300, 
+						BaseOddsCount = 0, 
 						Record = new FarmRecord(farm_id)
 					};
 				case 102:
 					return new FishFarmData
 					{
-						FarmId = farm_id,
-						Name = "漁人俱樂部",
-						MaxBet = 1000,
-						GameRate = 996,
-						SpecialRate = 15,
-						BaseOdds = 1500,
-						NowBaseOdds = 1500,
-						BaseOddsCount = 0,
+						FarmId = farm_id, 
+						Name = "漁人俱樂部", 
+						MaxBet = 1000, 
+						GameRate = 996, 
+						SpecialRate = 15, 
+						BaseOdds = 1000, 
+						NowBaseOdds = 300, 
+						BaseOddsCount = 0, 
 						Record = new FarmRecord(farm_id)
 					};
 				case 103:
 					return new FishFarmData
 					{
-						FarmId = farm_id,
-						Name = "海洋嘉年華",
-						MaxBet = 1000,
-						GameRate = 997,
-						SpecialRate = 20,
-						BaseOdds = 2000,
-						NowBaseOdds = 2000,
-						BaseOddsCount = 0,
+						FarmId = farm_id, 
+						Name = "海洋嘉年華", 
+						MaxBet = 1000, 
+						GameRate = 997, 
+						SpecialRate = 20, 
+						BaseOdds = 1000, 
+						NowBaseOdds = 300, 
+						BaseOddsCount = 0, 
 						Record = new FarmRecord(farm_id)
 					};
 				case 104:
 					return new FishFarmData
 					{
-						FarmId = farm_id,
-						Name = "無敵轟天雷",
-						MaxBet = 9999,
-						GameRate = 998,
-						SpecialRate = 25,
-						BaseOdds = 2500,
-						NowBaseOdds = 2500,
-						BaseOddsCount = 0,
+						FarmId = farm_id, 
+						Name = "無敵轟天雷", 
+						MaxBet = 9999, 
+						GameRate = 998, 
+						SpecialRate = 25, 
+						BaseOdds = 1000, 
+						NowBaseOdds = 300, 
+						BaseOddsCount = 0, 
 						Record = new FarmRecord(farm_id)
 					};
 
 				case 105:
 					return new FishFarmData
 					{
-						FarmId = farm_id,
-						Name = "漁人碼頭",
-						MaxBet = 9999,
-						GameRate = 999,
-						SpecialRate = 30,
-						BaseOdds = 3000,
-						NowBaseOdds = 3000,
-						BaseOddsCount = 0,
+						FarmId = farm_id, 
+						Name = "漁人碼頭", 
+						MaxBet = 9999, 
+						GameRate = 999, 
+						SpecialRate = 30, 
+						BaseOdds = 1000, 
+						NowBaseOdds = 300, 
+						BaseOddsCount = 0, 
 						Record = new FarmRecord(farm_id)
 					};
-				
-					// 以下昌盛版本
+
+				// 以下昌盛版本
 				case 106:
 					return new FishFarmData
 					{
-						FarmId = farm_id,
-						Name = "鱼乐无穷",
-						MaxBet = 100,
-						GameRate = 992,
-						SpecialRate = 10,
-						BaseOdds = 500,
-						NowBaseOdds = 500,
-						BaseOddsCount = 0,
+						FarmId = farm_id, 
+						Name = "鱼乐无穷", 
+						MaxBet = 100, 
+						GameRate = 992, 
+						SpecialRate = 10, 
+						BaseOdds = 1000, 
+						NowBaseOdds = 300, 
+						BaseOddsCount = 0, 
 						Record = new FarmRecord(farm_id)
 					};
 				case 107:
 					return new FishFarmData
 					{
-						FarmId = farm_id,
-						Name = "火山巨蛇",
-						MaxBet = 100,
-						GameRate = 994,
-						SpecialRate = 10,
-						BaseOdds = 1000,
-						NowBaseOdds = 1000,
-						BaseOddsCount = 0,
+						FarmId = farm_id, 
+						Name = "火山巨蛇", 
+						MaxBet = 100, 
+						GameRate = 994, 
+						SpecialRate = 10, 
+						BaseOdds = 1000, 
+						NowBaseOdds = 300, 
+						BaseOddsCount = 0, 
 						Record = new FarmRecord(farm_id)
 					};
 				case 108:
 					return new FishFarmData
 					{
-						FarmId = farm_id,
-						Name = "大鱼吃小鱼",
-						MaxBet = 1000,
-						GameRate = 996,
-						SpecialRate = 15,
-						BaseOdds = 1500,
-						NowBaseOdds = 1500,
-						BaseOddsCount = 0,
+						FarmId = farm_id, 
+						Name = "大鱼吃小鱼", 
+						MaxBet = 1000, 
+						GameRate = 996, 
+						SpecialRate = 15, 
+						BaseOdds = 1000, 
+						NowBaseOdds = 300, 
+						BaseOddsCount = 0, 
 						Record = new FarmRecord(farm_id)
 					};
 				case 109:
 					return new FishFarmData
 					{
-						FarmId = farm_id,
-						Name = "破坏铁球",
-						MaxBet = 1000,
-						GameRate = 997,
-						SpecialRate = 20,
-						BaseOdds = 2000,
-						NowBaseOdds = 2000,
-						BaseOddsCount = 0,
+						FarmId = farm_id, 
+						Name = "破坏铁球", 
+						MaxBet = 1000, 
+						GameRate = 997, 
+						SpecialRate = 20, 
+						BaseOdds = 1000, 
+						NowBaseOdds = 300, 
+						BaseOddsCount = 0, 
 						Record = new FarmRecord(farm_id)
 					};
 				case 110:
 					return new FishFarmData
 					{
-						FarmId = farm_id,
-						Name = "群鲸来袭",
-						MaxBet = 9999,
-						GameRate = 998,
-						SpecialRate = 25,
-						BaseOdds = 2500,
-						NowBaseOdds = 2500,
-						BaseOddsCount = 0,
+						FarmId = farm_id, 
+						Name = "群鲸来袭", 
+						MaxBet = 9999, 
+						GameRate = 998, 
+						SpecialRate = 25, 
+						BaseOdds = 1000, 
+						NowBaseOdds = 300, 
+						BaseOddsCount = 0, 
 						Record = new FarmRecord(farm_id)
 					};
 
 				case 111:
 					return new FishFarmData
 					{
-						FarmId = farm_id,
-						Name = "七彩霸王鲸",
-						MaxBet = 9999,
-						GameRate = 999,
-						SpecialRate = 30,
-						BaseOdds = 3000,
-						NowBaseOdds = 3000,
-						BaseOddsCount = 0,
+						FarmId = farm_id, 
+						Name = "七彩霸王鲸", 
+						MaxBet = 9999, 
+						GameRate = 999, 
+						SpecialRate = 30, 
+						BaseOdds = 1000, 
+						NowBaseOdds = 300, 
+						BaseOddsCount = 0, 
 						Record = new FarmRecord(farm_id)
 					};
 
@@ -200,25 +194,25 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 
 		private void _DefaultBufferData(FishFarmData fish_farm_data)
 		{
-			foreach (var bufferBlock in EnumHelper.GetEnums<FarmDataRoot.BlockNode.BLOCK_NAME>())
+			foreach(var bufferBlock in EnumHelper.GetEnums<FarmDataRoot.BlockNode.BLOCK_NAME>())
 			{
-				var buffer = fish_farm_data.FindDataRoot(bufferBlock, FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
-				_SetDefaultBufferData(buffer, fish_farm_data.GameRate - fish_farm_data.SpecialRate, 0, 0);
-					
-				buffer = fish_farm_data.FindDataRoot(bufferBlock, FarmDataRoot.BufferNode.BUFFER_NAME.SPEC);
-				_SetDefaultBufferData(buffer, fish_farm_data.SpecialRate, 3000, 1000);
-				
-				buffer = fish_farm_data.FindDataRoot(bufferBlock, FarmDataRoot.BufferNode.BUFFER_NAME.VIR00);
-				_SetDefaultBufferData(buffer, 5, 3000, 1000);
-				
-				buffer = fish_farm_data.FindDataRoot(bufferBlock, FarmDataRoot.BufferNode.BUFFER_NAME.VIR01);
-				_SetDefaultBufferData(buffer, 3, 1000, 1000);
-				
-				buffer = fish_farm_data.FindDataRoot(bufferBlock, FarmDataRoot.BufferNode.BUFFER_NAME.VIR02);
-				_SetDefaultBufferData(buffer, 1, 1000, 1000);
-				
-				buffer = fish_farm_data.FindDataRoot(bufferBlock, FarmDataRoot.BufferNode.BUFFER_NAME.VIR03);
-				_SetDefaultBufferData(buffer, 1, 1000, 1000);
+				var dataRoot = fish_farm_data.FindDataRoot(bufferBlock, FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
+				_SetDefaultBufferData(dataRoot, fish_farm_data.GameRate - fish_farm_data.SpecialRate, 0, 0);
+
+				dataRoot = fish_farm_data.FindDataRoot(bufferBlock, FarmDataRoot.BufferNode.BUFFER_NAME.SPEC);
+				_SetDefaultBufferData(dataRoot, fish_farm_data.SpecialRate, 3000, 1000);
+
+				dataRoot = fish_farm_data.FindDataRoot(bufferBlock, FarmDataRoot.BufferNode.BUFFER_NAME.VIR00);
+				_SetDefaultBufferData(dataRoot, 5, 3000, 1000);
+
+				dataRoot = fish_farm_data.FindDataRoot(bufferBlock, FarmDataRoot.BufferNode.BUFFER_NAME.VIR01);
+				_SetDefaultBufferData(dataRoot, 3, 1000, 1000);
+
+				dataRoot = fish_farm_data.FindDataRoot(bufferBlock, FarmDataRoot.BufferNode.BUFFER_NAME.VIR02);
+				_SetDefaultBufferData(dataRoot, 1, 1000, 1000);
+
+				dataRoot = fish_farm_data.FindDataRoot(bufferBlock, FarmDataRoot.BufferNode.BUFFER_NAME.VIR03);
+				_SetDefaultBufferData(dataRoot, 1, 1000, 1000);
 			}
 		}
 

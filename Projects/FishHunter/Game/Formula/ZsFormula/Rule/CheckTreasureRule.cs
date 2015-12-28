@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
 
@@ -23,7 +22,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		}
 
 		/// <summary>
-		///     是否取得特殊道具（特殊武器
+		///     是否取得特殊道具（特殊武器)
 		/// </summary>
 		public void Run()
 		{
@@ -31,7 +30,9 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 			_CheckRandom();
 
-			_SavePlayerHit();
+			_SaveTreasureForPlayer();
+
+			_SaveTreasureForFarm();
 
 			_DataVisitor.GotTreasures = _GotTreasures;
 		}
@@ -41,16 +42,19 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		/// </summary>
 		private void _CheckCertain()
 		{
-			if(_FishData.FishType >= FISH_TYPE.TROPICAL_FISH && _FishData.FishType <= FISH_TYPE.SPECIAL_EAT_FISH_CRAZY)
+			if(_FishData.FishType >= FISH_TYPE.TROPICAL_FISH &&
+				_FishData.FishType <= FISH_TYPE.SPECIAL_EAT_FISH_CRAZY)
 			{
 				_GotTreasures.Add(
-					_FishData.FishStatus == FISH_STATUS.KING
-						? WEAPON_TYPE.KING
-						: WEAPON_TYPE.INVALID);
+								 _FishData.FishStatus == FISH_STATUS.KING
+										? WEAPON_TYPE.KING
+										: WEAPON_TYPE.INVALID);
 			}
 			else
 			{
-				var certainWeapons = FishTreasure.Get().Find(x => x.FishType == _FishData.FishType).CertainWeapons;
+				var certainWeapons = FishTreasure.Get()
+												.Find(x => x.FishType == _FishData.FishType)
+												.CertainWeapons;
 
 				foreach(var weapon in certainWeapons)
 				{
@@ -65,18 +69,19 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 		private void _CheckRandom()
 		{
 			// 拿到魚的掉落物品清單
-			var randomWeapons = FishTreasure.Get().Find(x => x.FishType == _FishData.FishType).RandomWeapons;
+			var randomWeapons = FishTreasure.Get()
+											.Find(x => x.FishType == _FishData.FishType)
+											.RandomWeapons;
 
-			var farmDataRoot = _DataVisitor.Farm.FindDataRoot(
-				_DataVisitor.FocusBlockName, 
-				FarmDataRoot.BufferNode.BUFFER_NAME.SPEC);
+			var spec = _DataVisitor.Farm.FindDataRoot(_DataVisitor.FocusBlockName,
+															FarmDataRoot.BufferNode.BUFFER_NAME.SPEC);
 
 			var list = new List<WEAPON_TYPE>();
 
 			// 計算魚掉那個寶
 			foreach(var t in randomWeapons)
 			{
-				long gate = farmDataRoot.Buffer.Rate / randomWeapons.Length;
+				long gate = spec.Buffer.Rate / randomWeapons.Length;
 
 				var rate = new SpecialWeaponRateTable().WeaponRates.Find(x => x.WeaponType == t).Rate;
 
@@ -84,17 +89,18 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 				gate = gate / 1000;
 
-				if(farmDataRoot.TempValueNode.HiLoRate >= 0)
+				if(spec.TempValueNode.HiLoRate >= 0)
 				{
 					gate *= 2;
 				}
 
-				if(farmDataRoot.TempValueNode.HiLoRate < -200)
+				if(spec.TempValueNode.HiLoRate < -200)
 				{
 					gate /= 2;
 				}
 
-				var randomValue = _DataVisitor.FindIRandom(RandomData.RULE.CHECK_TREASURE, 0).NextInt(0, 0x10000000);
+				var randomValue = _DataVisitor.FindIRandom(RandomData.RULE.CHECK_TREASURE, 0)
+											.NextInt(0, 0x10000000);
 				if(randomValue >= gate)
 				{
 					continue;
@@ -109,9 +115,11 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 		private void OrderByWeapon(IEnumerable<WEAPON_TYPE> list)
 		{
-			var weaponrandomValue = _DataVisitor.FindIRandom(RandomData.RULE.CHECK_TREASURE, 1).NextFloat(0, 1);
+			var weaponrandomValue = _DataVisitor.FindIRandom(RandomData.RULE.CHECK_TREASURE, 1)
+												.NextFloat(0, 1);
 
-			var randomWeapon = list.OrderBy(x => weaponrandomValue).FirstOrDefault();
+			var randomWeapon = list.OrderBy(x => weaponrandomValue)
+									.FirstOrDefault();
 
 			if(randomWeapon != WEAPON_TYPE.INVALID)
 			{
@@ -119,11 +127,25 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 			}
 		}
 
-		private void _SavePlayerHit()
+		private void _SaveTreasureForPlayer()
 		{
-			var fishHitRecords = _DataVisitor.PlayerRecord.FindFarmRecord(_DataVisitor.Farm.FarmId).FishHits;
+			var fishHitRecords = _DataVisitor.PlayerRecord
+											.FindFarmRecord(_DataVisitor.Farm.FarmId)
+											.FishHits;
 
-			var record = fishHitRecords.FirstOrDefault(x => x.FishType == _FishData.FishType);
+			_SaveTreasureHistory(fishHitRecords);
+		}
+
+		private void _SaveTreasureForFarm()
+		{
+			var fishHitRecords = _DataVisitor.Farm.Record.FishHits;
+
+			_SaveTreasureHistory(fishHitRecords);
+		}
+
+		private void _SaveTreasureHistory(IEnumerable<FishHitRecord> fish_hits)
+		{
+			var record = fish_hits.FirstOrDefault(x => x.FishType == _FishData.FishType);
 
 			if(record == null)
 			{
@@ -132,12 +154,16 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 			var list = record.TreasureDatas.ToList();
 
-			foreach(var t in _GotTreasures.Select(
-				treasure => list.FirstOrDefault(x => x.WeaponType == treasure)
-							?? new FishHitRecord.TreasureData(treasure)))
+			foreach(var treasure in _GotTreasures)
 			{
-				list.Add(t);
-				t.Count++;
+				var d = list.FirstOrDefault(x => x.WeaponType == treasure);
+				if(d == null)
+				{
+					d = new FishHitRecord.TreasureData(treasure);
+					list.Add(d);
+				}
+
+				d.Count++;
 			}
 
 			record.TreasureDatas = list.ToArray();

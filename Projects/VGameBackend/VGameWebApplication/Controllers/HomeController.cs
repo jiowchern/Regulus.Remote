@@ -49,9 +49,7 @@ namespace VGameWebApplication.Controllers
 			if(id != Guid.Empty)
 			{
 				var ticket = new FormsAuthenticationTicket
-					(
-					1
-					, 
+					(1, 
 					user, 
 					DateTime.Now, 
 					DateTime.Now.AddSeconds(300), 
