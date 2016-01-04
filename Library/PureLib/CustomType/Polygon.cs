@@ -377,20 +377,34 @@ namespace Regulus.CustomType
             SetPoints(CH);
 		}
 
-		public void Rotation(float angle)
-		{
-			var points = new List<Vector2>();
-			var center = new Vector2(Center.X, Center.Y);
-			foreach(var point in Points)
-			{
-				points.Add(_RotatePoint(point, center, angle));
-			}
+
+        public void RotationByDegree(float degree)
+        {
+            Rotation(degree * (float)Math.PI / 180f , new Vector2(Center.X , Center.Y));
+        }
+
+        public void RotationByDegree(float degree , Vector2 center)
+        {
+            Rotation(degree * (float)Math.PI / 180f , center);
+        }
+
+        public void Rotation(float radians , Vector2 center)
+        {
+            var points = new List<Vector2>();            
+            foreach (var point in Points)
+            {
+                points.Add(Polygon.RotatePoint(point, center, radians));
+            }
 
             SetPoints(points);
-			
+        }
+        public void Rotation(float radians)
+        {
+            var center = new Vector2(Center.X, Center.Y);
+            Rotation(radians , center);            
 		}
 
-		public Vector2 _RotatePoint(Vector2 point, Vector2 centroid, double angle)
+		public  static Vector2 RotatePoint(Vector2 point, Vector2 centroid, double angle)
 		{
 			var x = centroid.X + ((point.X - centroid.X) * Math.Cos(angle) - (point.Y - centroid.Y) * Math.Sin(angle));
 
