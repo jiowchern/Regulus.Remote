@@ -25,7 +25,11 @@ namespace Regulus.Utility
 			}
 		}
 
-		private static string _WriteXml<T>(T obj)
+	    public static string WriteXml<T>(T obj)
+	    {
+	        return _WriteXml<T>(obj);
+	    }
+        private static string _WriteXml<T>(T obj)
 		{
 			using(var stream = new StringWriter())
 			{
