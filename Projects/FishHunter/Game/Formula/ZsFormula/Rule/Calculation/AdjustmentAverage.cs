@@ -1,27 +1,41 @@
-﻿using VGame.Project.FishHunter.Common.Data;
+﻿using System;
+
+using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
 
-namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
+namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Calculation
 {
 	/// <summary>
 	///     平均押注的调整
 	/// </summary>
-	public class AdjustmentAverageRule
+	public class AdjustmentAverage : IPipelineElement
 	{
 		private readonly DataVisitor _DataVisitor;
 
 		private readonly HitRequest _HitRequest;
 
-		public AdjustmentAverageRule(DataVisitor fish_visitor, HitRequest hit_request)
+		public AdjustmentAverage(DataVisitor fish_visitor, HitRequest hit_request)
 		{
 			_DataVisitor = fish_visitor;
 			_HitRequest = hit_request;
 		}
 
-		public void Run()
+		bool IPipelineElement.IsComplete
 		{
-			var normal = _DataVisitor.Farm.FindDataRoot(_DataVisitor.FocusBlockName,
-															FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
+			get
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+		void IPipelineElement.Connect(IPipelineElement next)
+		{
+			throw new NotImplementedException();
+		}
+
+		void IPipelineElement.Process()
+		{
+			var normal = _DataVisitor.Farm.FindDataRoot(_DataVisitor.FocusBlockName, FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
 
 			// 前1000局，按照实际总玩分/总玩次，获得平均押注
 			// 之后，每次减去1/100000，再补上最新的押注
@@ -31,8 +45,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 				normal.TempValueNode.AverageTotal += _HitRequest.WeaponData.GetTotalBet();
 
-				normal.TempValueNode.AverageValue = normal.TempValueNode.AverageTotal
-														/ normal.TempValueNode.AverageTimes;
+				normal.TempValueNode.AverageValue = normal.TempValueNode.AverageTotal / normal.TempValueNode.AverageTimes;
 
 				if(normal.TempValueNode.AverageTimes == 1000)
 				{

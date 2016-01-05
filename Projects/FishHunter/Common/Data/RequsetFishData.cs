@@ -1,18 +1,10 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="RequsetFishData.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   Defines the RequsetFishData type.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
+﻿
 using ProtoBuf;
 
 namespace VGame.Project.FishHunter.Common.Data
 {
 	/// <summary>
-	/// 魚的封包定義
+	///     魚的封包定義
 	/// </summary>
 	[ProtoContract]
 	public class RequsetFishData
@@ -24,7 +16,7 @@ namespace VGame.Project.FishHunter.Common.Data
 		public int FishId { get; set; }
 
 		/// <summary>
-		/// 鱼的种类。一般鱼从1~99。特殊鱼从201开始。。。
+		///     鱼的种类。一般鱼从1~99。特殊鱼从201开始。。。
 		/// </summary>
 		[ProtoMember(2)]
 		public FISH_TYPE FishType { get; set; }
@@ -42,11 +34,28 @@ namespace VGame.Project.FishHunter.Common.Data
 		public int FishOdds { get; set; }
 
 		/// <summary>
-		/// 陪葬品
-		/// 條件觸發後，跟發動者一起死
-		/// 例如 炸彈炸到的魚、魚王的小魚
+		///     陪葬品
+		///     條件觸發後，跟發動者一起死
+		///     例如 炸彈炸到的魚、魚王的小魚
 		/// </summary>
 		[ProtoMember(5)]
 		public RequsetFishData[] GraveGoods { get; set; }
+
+		/// <summary>
+		///     判斷是否為禮物
+		/// </summary>
+		public bool IsGift { get; set; }
+
+		/// <summary>
+		/// 判斷真正死亡
+		/// </summary>
+		public bool IsDead { get; set; }
+
+		/// <summary>
+		/// 翻倍結果
+		/// </summary>
+		public int OddsValue { get; set; }
+
+		public long HitDieRate { get; set; }
 	}
 }

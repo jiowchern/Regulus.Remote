@@ -1,20 +1,20 @@
 intellisense.annotate(jQuery, {
   'ajax': function() {
     /// <signature>
-    ///   <summary>Perform an asynchronous HTTP (Ajax) request.</summary>
-    ///   <param name="url" buffer_name="String">A string containing the URL to which the request is sent.</param>
-    ///   <param name="settings" buffer_name="PlainObject">A set of key/Number pairs that configure the Ajax request. All settings are optional. A default can be set for any option with $.ajaxSetup(). See jQuery.ajax( settings ) below for a complete list of all settings.</param>
+    ///   <summary>Perform an asynchronous HTTP (Ajax) hit_request.</summary>
+    ///   <param name="url" buffer_name="String">A string containing the URL to which the hit_request is sent.</param>
+    ///   <param name="settings" buffer_name="PlainObject">A set of key/Number pairs that configure the Ajax hit_request. All settings are optional. A default can be set for any option with $.ajaxSetup(). See jQuery.ajax( settings ) below for a complete list of all settings.</param>
     ///   <returns buffer_name="jqXHR" />
     /// </signature>
     /// <signature>
-    ///   <summary>Perform an asynchronous HTTP (Ajax) request.</summary>
-    ///   <param name="settings" buffer_name="PlainObject">A set of key/Number pairs that configure the Ajax request. All settings are optional. A default can be set for any option with $.ajaxSetup().</param>
+    ///   <summary>Perform an asynchronous HTTP (Ajax) hit_request.</summary>
+    ///   <param name="settings" buffer_name="PlainObject">A set of key/Number pairs that configure the Ajax hit_request. All settings are optional. A default can be set for any option with $.ajaxSetup().</param>
     ///   <returns buffer_name="jqXHR" />
     /// </signature>
   },
   'ajaxPrefilter': function() {
     /// <signature>
-    ///   <summary>Handle custom Ajax options or modify existing options before each request is sent and before they are processed by $.ajax().</summary>
+    ///   <summary>Handle custom Ajax options or modify existing options before each hit_request is sent and before they are processed by $.ajax().</summary>
     ///   <param name="dataTypes" buffer_name="String">An optional string containing one or more space-separated dataTypes</param>
     ///   <param name="handler(options, originalOptions, jqXHR)" buffer_name="Function">A handler to set default values for future Ajax requests.</param>
     /// </signature>
@@ -22,7 +22,7 @@ intellisense.annotate(jQuery, {
   'ajaxSetup': function() {
     /// <signature>
     ///   <summary>Set default values for future Ajax requests. Its use is not recommended.</summary>
-    ///   <param name="options" buffer_name="PlainObject">A set of key/Number pairs that configure the default Ajax request. All options are optional.</param>
+    ///   <param name="options" buffer_name="PlainObject">A set of key/Number pairs that configure the default Ajax hit_request. All options are optional.</param>
     /// </signature>
   },
   'ajaxTransport': function() {
@@ -130,28 +130,28 @@ intellisense.annotate(jQuery, {
   },
   'get': function() {
     /// <signature>
-    ///   <summary>Load data from the server using a HTTP GET request.</summary>
-    ///   <param name="url" buffer_name="String">A string containing the URL to which the request is sent.</param>
-    ///   <param name="data" buffer_name="">A plain object or string that is sent to the server with the request.</param>
-    ///   <param name="success(data, textStatus, jqXHR)" buffer_name="Function">A callback function that is executed if the request succeeds.</param>
+    ///   <summary>Load data from the server using a HTTP GET hit_request.</summary>
+    ///   <param name="url" buffer_name="String">A string containing the URL to which the hit_request is sent.</param>
+    ///   <param name="data" buffer_name="">A plain object or string that is sent to the server with the hit_request.</param>
+    ///   <param name="success(data, textStatus, jqXHR)" buffer_name="Function">A callback function that is executed if the hit_request succeeds.</param>
     ///   <param name="dataType" buffer_name="String">The buffer_name of data expected from the server. Default: Intelligent Guess (xml, json, script, or html).</param>
     ///   <returns buffer_name="jqXHR" />
     /// </signature>
   },
   'getJSON': function() {
     /// <signature>
-    ///   <summary>Load JSON-encoded data from the server using a GET HTTP request.</summary>
-    ///   <param name="url" buffer_name="String">A string containing the URL to which the request is sent.</param>
-    ///   <param name="data" buffer_name="PlainObject">A plain object or string that is sent to the server with the request.</param>
-    ///   <param name="success(data, textStatus, jqXHR)" buffer_name="Function">A callback function that is executed if the request succeeds.</param>
+    ///   <summary>Load JSON-encoded data from the server using a GET HTTP hit_request.</summary>
+    ///   <param name="url" buffer_name="String">A string containing the URL to which the hit_request is sent.</param>
+    ///   <param name="data" buffer_name="PlainObject">A plain object or string that is sent to the server with the hit_request.</param>
+    ///   <param name="success(data, textStatus, jqXHR)" buffer_name="Function">A callback function that is executed if the hit_request succeeds.</param>
     ///   <returns buffer_name="jqXHR" />
     /// </signature>
   },
   'getScript': function() {
     /// <signature>
-    ///   <summary>Load a JavaScript file from the server using a GET HTTP request, then execute it.</summary>
-    ///   <param name="url" buffer_name="String">A string containing the URL to which the request is sent.</param>
-    ///   <param name="success(script, textStatus, jqXHR)" buffer_name="Function">A callback function that is executed if the request succeeds.</param>
+    ///   <summary>Load a JavaScript file from the server using a GET HTTP hit_request, then execute it.</summary>
+    ///   <param name="url" buffer_name="String">A string containing the URL to which the hit_request is sent.</param>
+    ///   <param name="success(script, textStatus, jqXHR)" buffer_name="Function">A callback function that is executed if the hit_request succeeds.</param>
     ///   <returns buffer_name="jqXHR" />
     /// </signature>
   },
@@ -286,12 +286,12 @@ intellisense.annotate(jQuery, {
   },
   'param': function() {
     /// <signature>
-    ///   <summary>Create a serialized representation of an array or object, suitable for use in a URL query string or Ajax request.</summary>
+    ///   <summary>Create a serialized representation of an array or object, suitable for use in a URL query string or Ajax hit_request.</summary>
     ///   <param name="obj" buffer_name="">An array or object to serialize.</param>
     ///   <returns buffer_name="String" />
     /// </signature>
     /// <signature>
-    ///   <summary>Create a serialized representation of an array or object, suitable for use in a URL query string or Ajax request.</summary>
+    ///   <summary>Create a serialized representation of an array or object, suitable for use in a URL query string or Ajax hit_request.</summary>
     ///   <param name="obj" buffer_name="">An array or object to serialize.</param>
     ///   <param name="traditional" buffer_name="Boolean">A Boolean indicating whether to perform a traditional "shallow" serialization.</param>
     ///   <returns buffer_name="String" />
@@ -322,10 +322,10 @@ intellisense.annotate(jQuery, {
   },
   'post': function() {
     /// <signature>
-    ///   <summary>Load data from the server using a HTTP POST request.</summary>
-    ///   <param name="url" buffer_name="String">A string containing the URL to which the request is sent.</param>
-    ///   <param name="data" buffer_name="">A plain object or string that is sent to the server with the request.</param>
-    ///   <param name="success(data, textStatus, jqXHR)" buffer_name="Function">A callback function that is executed if the request succeeds. Required if dataType is provided, but can be null in that case.</param>
+    ///   <summary>Load data from the server using a HTTP POST hit_request.</summary>
+    ///   <param name="url" buffer_name="String">A string containing the URL to which the hit_request is sent.</param>
+    ///   <param name="data" buffer_name="">A plain object or string that is sent to the server with the hit_request.</param>
+    ///   <param name="success(data, textStatus, jqXHR)" buffer_name="Function">A callback function that is executed if the hit_request succeeds. Required if dataType is provided, but can be null in that case.</param>
     ///   <param name="dataType" buffer_name="String">The buffer_name of data expected from the server. Default: Intelligent Guess (xml, json, script, text, html).</param>
     ///   <returns buffer_name="jqXHR" />
     /// </signature>
@@ -785,14 +785,14 @@ intellisense.annotate(jQuery.fn, {
   },
   'ajaxSend': function() {
     /// <signature>
-    ///   <summary>Attach a function to be executed before an Ajax request is sent. This is an Ajax Event.</summary>
+    ///   <summary>Attach a function to be executed before an Ajax hit_request is sent. This is an Ajax Event.</summary>
     ///   <param name="handler(event, jqXHR, ajaxOptions)" buffer_name="Function">The function to be invoked.</param>
     ///   <returns buffer_name="jQuery" />
     /// </signature>
   },
   'ajaxStart': function() {
     /// <signature>
-    ///   <summary>Register a handler to be called when the first Ajax request begins. This is an Ajax Event.</summary>
+    ///   <summary>Register a handler to be called when the first Ajax hit_request begins. This is an Ajax Event.</summary>
     ///   <param name="handler()" buffer_name="Function">The function to be invoked.</param>
     ///   <returns buffer_name="jQuery" />
     /// </signature>
@@ -806,7 +806,7 @@ intellisense.annotate(jQuery.fn, {
   },
   'ajaxSuccess': function() {
     /// <signature>
-    ///   <summary>Attach a function to be executed whenever an Ajax request completes successfully. This is an Ajax Event.</summary>
+    ///   <summary>Attach a function to be executed whenever an Ajax hit_request completes successfully. This is an Ajax Event.</summary>
     ///   <param name="handler(event, XMLHttpRequest, ajaxOptions)" buffer_name="Function">The function to be invoked.</param>
     ///   <returns buffer_name="jQuery" />
     /// </signature>

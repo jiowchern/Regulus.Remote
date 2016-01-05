@@ -1,66 +1,76 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
 
-namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
+namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Calculation
 {
 	/// <summary>
 	///     翻倍規則檢查
 	/// </summary>
-	public class OddsRuler
+	public class Odds : IPipelineElement
 	{
-		private readonly FarmDataRoot _FarmDataRoot;
-
-		private readonly RequsetFishData _FishData;
+		private readonly HitRequest _HitRequest;
 
 		private readonly DataVisitor _Visitor;
 
-		public OddsRuler(DataVisitor visitor, RequsetFishData fish_data, FarmDataRoot farm_data_root)
+		public Odds(DataVisitor visitor, HitRequest hit_request)
 		{
 			_Visitor = visitor;
-			_FishData = fish_data;
-			_FarmDataRoot = farm_data_root;
+			_HitRequest = hit_request;
 		}
 
-		public int RuleResult()
+		bool IPipelineElement.IsComplete
 		{
-			if(_CheckIsFreeze(_FishData))
+			get
 			{
-				return 2;
+				throw new NotImplementedException();
 			}
+		}
 
-			if(!_CheckFishTypeToOddsRule(_FishData))
+		void IPipelineElement.Connect(IPipelineElement next)
+		{
+			throw new NotImplementedException();
+		}
+
+		void IPipelineElement.Process()
+		{
+			foreach(var fishData in _HitRequest.FishDatas)
 			{
-				return 1;
-			}
+				if(_CheckIsFreeze(fishData))
+				{
+					fishData.OddsValue = 2;
+				}
 
-			if(!_CheckStageBufferToOddsRule(_FarmDataRoot))
-			{
-				return 1;
-			}
+				if(!_CheckFishTypeToOddsRule(fishData))
+				{
+					fishData.OddsValue = 1;
+				}
 
-			return _CheckMultipleTableToOddsRule();
+				if(!_CheckStageBufferToOddsRule())
+				{
+					fishData.OddsValue = 1;
+				}
+
+				_CheckMultipleTableToOddsRule(fishData);
+			}
 		}
 
 		private bool _CheckIsFreeze(RequsetFishData fish_data)
 		{
-			if(fish_data.FishType >= FISH_TYPE.SPECIAL_SCREEN_BOMB
-				&& fish_data.FishType <= FISH_TYPE.SPECIAL_BIG_OCTOPUS_BOMB)
+			if(fish_data.FishType >= FISH_TYPE.SPECIAL_SCREEN_BOMB && fish_data.FishType <= FISH_TYPE.SPECIAL_BIG_OCTOPUS_BOMB)
 			{
 				return false; // 特殊鱼 不翻倍
 			}
 
 			// 其它魚只要冰凍必翻2倍
-			return _FishData.FishStatus == FISH_STATUS.FREEZE;
+			return fish_data.FishStatus == FISH_STATUS.FREEZE;
 		}
 
 		private bool _CheckFishTypeToOddsRule(RequsetFishData fish_data)
 		{
-			if(fish_data.FishType >= FISH_TYPE.SPECIAL_SCREEN_BOMB
-				&& fish_data.FishType <= FISH_TYPE.SPECIAL_BIG_OCTOPUS_BOMB)
+			if(fish_data.FishType >= FISH_TYPE.SPECIAL_SCREEN_BOMB && fish_data.FishType <= FISH_TYPE.SPECIAL_BIG_OCTOPUS_BOMB)
 			{
 				return false; // 特殊鱼 不翻倍
 			}
@@ -103,12 +113,13 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 			return true;
 		}
 
-		private bool _CheckStageBufferToOddsRule(FarmDataRoot root)
+		private bool _CheckStageBufferToOddsRule()
 		{
+			var normal = _Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName, FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
 			var natrue = new NatureBufferChancesTable().Get()
 														.ToDictionary(x => x.Key);
 
-			var hiLoRate = root.TempValueNode.HiLoRate;
+			var hiLoRate = normal.TempValueNode.HiLoRate;
 
 			var randNumber = _Visitor.FindIRandom(RandomData.RULE.ODDS, 3)
 									.NextInt(0, 1000);
@@ -149,16 +160,14 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 			return true;
 		}
 
-		private int _CheckMultipleTableToOddsRule()
+		private void _CheckMultipleTableToOddsRule(RequsetFishData fish_data)
 		{
 			var randNumber = _Visitor.FindIRandom(RandomData.RULE.ODDS, 4)
 									.NextInt(0, 1000);
 
 			var oddsValue = new OddsTable().CheckRule(randNumber);
 
-			return _CheckFishToOddsRule(_FishData, oddsValue)
-							? oddsValue
-							: 1;
+			fish_data.OddsValue = _CheckFishToOddsRule(fish_data, oddsValue) ? oddsValue : 1;
 		}
 
 		private bool _CheckFishToOddsRule(RequsetFishData fish_data, int odds)

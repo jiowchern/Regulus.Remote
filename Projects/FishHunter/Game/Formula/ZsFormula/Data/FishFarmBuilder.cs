@@ -34,8 +34,8 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 						MaxBet = 100, 
 						GameRate = 992, 
 						SpecialRate = 10, 
-						BaseOdds = 1000, 
-						NowBaseOdds = 300, 
+						BaseOdds = 500, 
+						NowBaseOdds = 100, 
 						BaseOddsCount = 0, 
 						Record = new FarmRecord(farm_id)
 					};
@@ -44,11 +44,11 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 					{
 						FarmId = farm_id, 
 						Name = "深海蛇王", 
-						MaxBet = 100, 
+						MaxBet = 500, 
 						GameRate = 994, 
 						SpecialRate = 10, 
 						BaseOdds = 1000, 
-						NowBaseOdds = 300, 
+						NowBaseOdds = 200, 
 						BaseOddsCount = 0, 
 						Record = new FarmRecord(farm_id)
 					};
@@ -57,10 +57,10 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 					{
 						FarmId = farm_id, 
 						Name = "漁人俱樂部", 
-						MaxBet = 1000, 
+						MaxBet = 2000, 
 						GameRate = 996, 
 						SpecialRate = 15, 
-						BaseOdds = 1000, 
+						BaseOdds = 1500, 
 						NowBaseOdds = 300, 
 						BaseOddsCount = 0, 
 						Record = new FarmRecord(farm_id)
@@ -70,11 +70,11 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 					{
 						FarmId = farm_id, 
 						Name = "海洋嘉年華", 
-						MaxBet = 1000, 
+						MaxBet = 5000, 
 						GameRate = 997, 
 						SpecialRate = 20, 
-						BaseOdds = 1000, 
-						NowBaseOdds = 300, 
+						BaseOdds = 2000, 
+						NowBaseOdds = 400, 
 						BaseOddsCount = 0, 
 						Record = new FarmRecord(farm_id)
 					};
@@ -86,8 +86,8 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 						MaxBet = 9999, 
 						GameRate = 998, 
 						SpecialRate = 25, 
-						BaseOdds = 1000, 
-						NowBaseOdds = 300, 
+						BaseOdds = 2500, 
+						NowBaseOdds = 500, 
 						BaseOddsCount = 0, 
 						Record = new FarmRecord(farm_id)
 					};
@@ -100,8 +100,8 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 						MaxBet = 9999, 
 						GameRate = 999, 
 						SpecialRate = 30, 
-						BaseOdds = 1000, 
-						NowBaseOdds = 300, 
+						BaseOdds = 3000, 
+						NowBaseOdds = 600, 
 						BaseOddsCount = 0, 
 						Record = new FarmRecord(farm_id)
 					};
@@ -115,8 +115,8 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 						MaxBet = 100, 
 						GameRate = 992, 
 						SpecialRate = 10, 
-						BaseOdds = 1000, 
-						NowBaseOdds = 300, 
+						BaseOdds = 500, 
+						NowBaseOdds = 100, 
 						BaseOddsCount = 0, 
 						Record = new FarmRecord(farm_id)
 					};
@@ -125,11 +125,11 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 					{
 						FarmId = farm_id, 
 						Name = "火山巨蛇", 
-						MaxBet = 100, 
+						MaxBet = 500, 
 						GameRate = 994, 
 						SpecialRate = 10, 
 						BaseOdds = 1000, 
-						NowBaseOdds = 300, 
+						NowBaseOdds = 200, 
 						BaseOddsCount = 0, 
 						Record = new FarmRecord(farm_id)
 					};
@@ -138,10 +138,10 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 					{
 						FarmId = farm_id, 
 						Name = "大鱼吃小鱼", 
-						MaxBet = 1000, 
+						MaxBet = 2000, 
 						GameRate = 996, 
 						SpecialRate = 15, 
-						BaseOdds = 1000, 
+						BaseOdds = 1500, 
 						NowBaseOdds = 300, 
 						BaseOddsCount = 0, 
 						Record = new FarmRecord(farm_id)
@@ -151,11 +151,11 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 					{
 						FarmId = farm_id, 
 						Name = "破坏铁球", 
-						MaxBet = 1000, 
+						MaxBet = 5000, 
 						GameRate = 997, 
 						SpecialRate = 20, 
-						BaseOdds = 1000, 
-						NowBaseOdds = 300, 
+						BaseOdds = 2000, 
+						NowBaseOdds = 400, 
 						BaseOddsCount = 0, 
 						Record = new FarmRecord(farm_id)
 					};
@@ -167,8 +167,8 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 						MaxBet = 9999, 
 						GameRate = 998, 
 						SpecialRate = 25, 
-						BaseOdds = 1000, 
-						NowBaseOdds = 300, 
+						BaseOdds = 2500, 
+						NowBaseOdds = 500, 
 						BaseOddsCount = 0, 
 						Record = new FarmRecord(farm_id)
 					};
@@ -181,8 +181,8 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 						MaxBet = 9999, 
 						GameRate = 999, 
 						SpecialRate = 30, 
-						BaseOdds = 1000, 
-						NowBaseOdds = 300, 
+						BaseOdds = 3000, 
+						NowBaseOdds = 600, 
 						BaseOddsCount = 0, 
 						Record = new FarmRecord(farm_id)
 					};
@@ -197,22 +197,22 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 			foreach(var bufferBlock in EnumHelper.GetEnums<FarmDataRoot.BlockNode.BLOCK_NAME>())
 			{
 				var dataRoot = fish_farm_data.FindDataRoot(bufferBlock, FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
-				_SetDefaultBufferData(dataRoot, fish_farm_data.GameRate - fish_farm_data.SpecialRate, 0, 0);
+				_SetDefaultBufferData(dataRoot, rate: fish_farm_data.GameRate - fish_farm_data.SpecialRate, top: 0, gate: 0);
 
 				dataRoot = fish_farm_data.FindDataRoot(bufferBlock, FarmDataRoot.BufferNode.BUFFER_NAME.SPEC);
-				_SetDefaultBufferData(dataRoot, fish_farm_data.SpecialRate, 3000, 1000);
+				_SetDefaultBufferData(dataRoot, rate: fish_farm_data.SpecialRate, top: 3000, gate: 1000);
 
 				dataRoot = fish_farm_data.FindDataRoot(bufferBlock, FarmDataRoot.BufferNode.BUFFER_NAME.VIR00);
-				_SetDefaultBufferData(dataRoot, 5, 3000, 1000);
+				_SetDefaultBufferData(dataRoot, rate: 5, top: 3000, gate: 1000);
 
 				dataRoot = fish_farm_data.FindDataRoot(bufferBlock, FarmDataRoot.BufferNode.BUFFER_NAME.VIR01);
-				_SetDefaultBufferData(dataRoot, 3, 1000, 1000);
+				_SetDefaultBufferData(dataRoot, rate: 3, top: 1000, gate: 1000);
 
 				dataRoot = fish_farm_data.FindDataRoot(bufferBlock, FarmDataRoot.BufferNode.BUFFER_NAME.VIR02);
-				_SetDefaultBufferData(dataRoot, 1, 1000, 1000);
+				_SetDefaultBufferData(dataRoot, rate: 1, top: 1000, gate: 1000);
 
 				dataRoot = fish_farm_data.FindDataRoot(bufferBlock, FarmDataRoot.BufferNode.BUFFER_NAME.VIR03);
-				_SetDefaultBufferData(dataRoot, 1, 1000, 1000);
+				_SetDefaultBufferData(dataRoot, rate: 1, top: 1000, gate: 1000);
 			}
 		}
 

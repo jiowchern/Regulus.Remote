@@ -95,9 +95,40 @@ namespace Regulus.Database.DB_Redis
 
 			var redis = db.RedisClient.As<T>();
 
+			
+
 			redis.Store(source);
 
+			
 			return true;
+			/*
+			class Table
+			{
+				int a; FireCount; 
+				int b;
+				int c;
+				SkillTable
+				Weapon
+				Item
+			}
+
+			class t2
+			{
+				field count  =100;
+			}
+
+			class t3
+			{
+				field count  =50;
+				class t4
+				{
+					field count  =50;
+				}
+			}
+
+			Update(Table table) //增量
+			
+			*/
 		}
 
 		/// <summary>

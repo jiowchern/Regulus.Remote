@@ -55,37 +55,29 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 			switch(hit_sequence)
 			{
 				case 0:
-					return
-						(from d in _Datas
-						where d.HitTotal == total_hits
-						select d.Hit1).DefaultIfEmpty<int>(
-							_Datas.Last()
-								.Hit1)
-									.First();
+					return (from d in _Datas
+							where d.HitTotal == total_hits
+							select d.Hit1).DefaultIfEmpty(_Datas.Last()
+																.Hit1)
+										.First();
 				case 1:
-					return
-						(from d in _Datas
-						where d.HitTotal == total_hits
-						select d.Hit2).DefaultIfEmpty<int>(
-							_Datas.Last()
-								.Hit2)
-									.First();
+					return (from d in _Datas
+							where d.HitTotal == total_hits
+							select d.Hit2).DefaultIfEmpty(_Datas.Last()
+																.Hit2)
+										.First();
 				case 2:
-					return
-						(from d in _Datas
-						where d.HitTotal == total_hits
-						select d.Hit3).DefaultIfEmpty<int>(
-							_Datas.Last()
-								.Hit3)
-									.First();
+					return (from d in _Datas
+							where d.HitTotal == total_hits
+							select d.Hit3).DefaultIfEmpty(_Datas.Last()
+																.Hit3)
+										.First();
 				case 3:
-					return
-						(from d in _Datas
-						where d.HitTotal == total_hits
-						select d.Hit4).DefaultIfEmpty<int>(
-							_Datas.Last()
-								.Hit4)
-									.First();
+					return (from d in _Datas
+							where d.HitTotal == total_hits
+							select d.Hit4).DefaultIfEmpty(_Datas.Last()
+																.Hit4)
+										.First();
 			}
 
 			return 0;

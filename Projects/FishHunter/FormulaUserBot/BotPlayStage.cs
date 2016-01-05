@@ -56,6 +56,7 @@ namespace FormulaUserBot
 
 			var weaponData = _SimulateRequestWeaponData(total_hits);
 
+				
 			var hitRequest = new HitRequest(hitFishs.ToArray(), weaponData);
 
 			var hitHandler = new HitHandler(_Stage, hitRequest);
