@@ -163,7 +163,7 @@ namespace GameTest.ZsFormulaTest
 		public void When得到檢查結果()
 		{
 			_HitRequest = new HitRequest(_FishDatas, _WeaponData);
-			_HitResponses = new ZsHitChecker(_FarmData, new FormulaPlayerRecord(), _CreateRandoms()).TotalRequest(_HitRequest);
+			_HitResponses = new ZsHitChecker(_FarmData, new FormulaPlayerRecord()).TotalRequest(_HitRequest);
 		}
 
 		[Then(@"比對資料")]

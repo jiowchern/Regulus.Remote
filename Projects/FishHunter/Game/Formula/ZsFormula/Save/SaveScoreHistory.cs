@@ -1,7 +1,7 @@
 ﻿using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
 
-namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
+namespace VGame.Project.FishHunter.Formula.ZsFormula.Save
 {
 	/// <summary>
 	///     分數記錄

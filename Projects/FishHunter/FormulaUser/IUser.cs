@@ -12,6 +12,8 @@ namespace VGame.Project.FishHunter.Formula
 {
 	public interface IUser : IUpdatable
 	{
+		event Action VersionErrorEvent;
+
 		Regulus.Remoting.User Remoting { get; }
 
 		INotifier<IVerify> VerifyProvider { get; }

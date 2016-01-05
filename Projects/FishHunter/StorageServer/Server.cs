@@ -24,7 +24,7 @@ namespace VGame.Project.FishHunter.Storage
 {
 	public class Server : ICore, IStorage
 	{
-		private static readonly Logger _Logger = LogManager.GetCurrentClassLogger();
+		private static readonly Logger _Logger = LogManager.GetLogger("DBServer");
 
 		private readonly Center _Center;
 
@@ -42,7 +42,7 @@ namespace VGame.Project.FishHunter.Storage
 
 		public Server()
 		{
-			_LogRecorder = new LogFileRecorder("Storage");
+			//_LogRecorder = new LogFileRecorder("Storage");
 			_DefaultAdministratorName = "vgameadmini";
 
 			//const string mongodbUrls = "mongodb://127.0.0.1:27017";
@@ -66,7 +66,7 @@ namespace VGame.Project.FishHunter.Storage
 		void IBootable.Launch()
 		{
 			_UnhandleCrash();
-			Singleton<Log>.Instance.RecordEvent += _LogRecorder.Record;
+			//Singleton<Log>.Instance.RecordEvent += _LogRecorder.Record;
 
 			_Updater.Add(_Center);
 			_Database.Launch(_Name);
@@ -83,8 +83,8 @@ namespace VGame.Project.FishHunter.Storage
 			_Database.Shutdown();
 			_Updater.Shutdown();
 
-			Singleton<Log>.Instance.RecordEvent -= _LogRecorder.Record;
-			_LogRecorder.Save();
+			//Singleton<Log>.Instance.RecordEvent -= _LogRecorder.Record;
+			//_LogRecorder.Save();
 		}
 
 		Value<Account> IAccountFinder.FindAccountByName(string name)
@@ -242,6 +242,8 @@ namespace VGame.Project.FishHunter.Storage
 
 		Value<FishFarmData> IFormulaFarmRecorder.Load(int farm_id)
 		{
+			_Logger.Info().Message("Load Farm Data To DB Start.").Property("FarmId", farm_id).Write();
+
 			var val = new Value<FishFarmData>();
 			var data = _LoadFarmData(farm_id);
 
@@ -253,13 +255,14 @@ namespace VGame.Project.FishHunter.Storage
 
 				val.SetValue(fishFarmData);
 
-				Server._Logger.Info().Message("Builder new farm data.").Write();
+				_Logger.Info().Message("Create New Farm Data To DB Finish.").Property("FarmId", farm_id).Write();
 			}
 			else
 			{
 				val.SetValue(data);
 
-				Server._Logger.Info().Message("Load db farm data.").Write();
+				_Logger.Info().Message("Load Farm Data To DB Finish.").Property("FarmId", farm_id).Write();
+				
 			}
 
 			return val;
@@ -267,6 +270,8 @@ namespace VGame.Project.FishHunter.Storage
 
 		Value<bool> IFormulaFarmRecorder.Save(FishFarmData data)
 		{
+			Server._Logger.Info().Message("Save Farm Data To DB Start.").Property("FarmId", data.FarmId).Write();
+
 			var val = new Value<bool>();
 			var farmData = _LoadFarmData(data);
 
@@ -280,7 +285,7 @@ namespace VGame.Project.FishHunter.Storage
 
 				_Database.Update(data, a => a.Id);
 
-				Server._Logger.Info().Message("Load db farm data.").Write();
+				Server._Logger.Info().Message("Save Farm Data To DB Finish.").Property("FarmId", data.FarmId).Write();
 			}
 
 			return val;
@@ -288,6 +293,8 @@ namespace VGame.Project.FishHunter.Storage
 
 		Value<FormulaPlayerRecord> IFormulaPlayerRecorder.Query(Guid account_id)
 		{
+			Server._Logger.Info().Message("Player Query Record Start.").Property("PlayerId", account_id).Write();
+
 			var val = new Value<FormulaPlayerRecord>();
 			var data = _LoadFormulaPlayerRecord(account_id);
 
@@ -302,32 +309,35 @@ namespace VGame.Project.FishHunter.Storage
 				_Database.Add(record, obj => obj.Id);
 				val.SetValue(record);
 
-				Server._Logger.Info().Message("new player").Property("PlayerId", account_id).Write();
+				Server._Logger.Info().Message("Create New Player Record.").Property("PlayerId", account_id).Write();
 			}
 			else
 			{
 				val.SetValue(data);
 			}
 
+			Server._Logger.Info().Message("Player Query Record Finish.").Property("PlayerId", account_id).Write();
+
 			return val;
 		}
 
 		Value<bool> IFormulaPlayerRecorder.Save(FormulaPlayerRecord record)
 		{
+			Server._Logger.Info().Message("Save Player Record Start.").Property("PlayerId", record.Guid).Write();
 			var val = new Value<bool>();
 			var recordData = _LoadFormulaPlayerRecord(record);
 
 			if(recordData == null)
 			{
 				val.SetValue(false);
-				Server._Logger.Fatal().Message("update player data fail").Write();
+				Server._Logger.Fatal().Message("Save player data fail.").Write();
 			}
 			else
 			{
 				val.SetValue(true);
 				_Database.Update(record, a => a.Id);
 
-				Server._Logger.Info().Message("update player data to db").Write();
+				Server._Logger.Info().Message("Save Player Record Finish.").Property("PlayerId", record.Guid).Write();
 			}
 
 			return val;
@@ -358,9 +368,13 @@ namespace VGame.Project.FishHunter.Storage
 
 		private void _HandleAdministrator()
 		{
-			var accounts = _Database.FindAll<Account>().FirstOrDefault(a => a.Name == _DefaultAdministratorName);
+			_Logger.Info().Message("_HandleAdministrator From DB Start.").Write();
 
-			if(accounts == null)
+			var accounts = _Find(_DefaultAdministratorName);
+
+			_Logger.Info().Message("_HandleAdministrator From DB Finish.").Write();
+
+			if (accounts == null)
 			{
 				var account = new Account
 				{
@@ -381,9 +395,13 @@ namespace VGame.Project.FishHunter.Storage
 
 		private void _HandleGuest()
 		{
-			var accounts = _Database.FindAll<Account>().FirstOrDefault(a => a.Name == "Guest");
+			_Logger.Info().Message("_HandleGuest From DB Start.").Write();
 
-			if(accounts == null)
+			var accounts = _Find("Guest");
+			
+			_Logger.Info().Message("_HandleGuest From DB Finish.").Write();
+
+			if (accounts == null)
 			{
 				var account = new Account
 				{
@@ -409,20 +427,25 @@ namespace VGame.Project.FishHunter.Storage
 
 		private Value<Account[]> _QueryAllAccount()
 		{
+			_Logger.Info().Message("QueryAllAccount From DB Start.").Write();
+
 			var val = new Value<Account[]>();
 
 			var result = _Database.FindAll<Account>();
 
 			val.SetValue(result.ToArray());
 
+			_Logger.Info().Message("QueryAllAccount From DB Finish.").Write();
+
 			return val;
 		}
 
 		private List<TradeNotes> _LoadTradeNotes(Guid account_id)
 		{
+			_Logger.Info().Message("Load TradeNotes From DB Start.").Write();
 			var tradeList = _Database.FindAll<TradeNotes>().Where(obj => obj.Guid == account_id);
-			Singleton<Log>.Instance.WriteDebug("TradeNotes Find Done.");
-			Server._Logger.Info().Message("TradeNotes Find Done.").Write();
+
+			_Logger.Info().Message("Load TradeNotes From DB Finish.").Write();
 			return tradeList.ToList();
 		}
 

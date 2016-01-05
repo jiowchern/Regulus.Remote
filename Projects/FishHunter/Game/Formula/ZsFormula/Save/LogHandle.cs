@@ -1,14 +1,17 @@
-﻿using NLog;
+﻿using System;
+
+using NLog;
 using NLog.Fluent;
 
 using Regulus.Utility;
 
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
+using VGame.Project.FishHunter.Formula.ZsFormula.Rule.Calculation;
 
-namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
+namespace VGame.Project.FishHunter.Formula.ZsFormula.Save
 {
-	public class LogHandle
+	public class LogHandle : IPipelineElement
 	{
 		private readonly DataVisitor _Visitor;
 
@@ -17,7 +20,20 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 			_Visitor = visitor;
 		}
 
-		public void Run()
+		bool IPipelineElement.IsComplete
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+		void IPipelineElement.Connect(IPipelineElement next)
+		{
+			throw new NotImplementedException();
+		}
+
+		void IPipelineElement.Process()
 		{
 			_PlayerLog();
 			_FarmDataLog();
@@ -97,5 +113,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 				}
 			}
 		}
+
+
 	}
 }
