@@ -1211,7 +1211,7 @@ $.format = $.validator.format;
 
 // ajax mode: abort
 // usage: $.ajax({ mode: "abort"[, port: "uniqueport"]});
-// if mode:"abort" is used, the previous request on that port (port can be undefined) is aborted via XMLHttpRequest.abort() 
+// if mode:"abort" is used, the previous hit_request on that port (port can be undefined) is aborted via XMLHttpRequest.abort() 
 ;(function($) {
 	var pendingRequests = {};
 		// Use a prefilter if available (1.5+)

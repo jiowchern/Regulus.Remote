@@ -1,27 +1,42 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 using Regulus.Utility;
 
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
 
-namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
+namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Calculation
 {
 	/// <summary>
 	///     玩家阶段起伏的调整
 	/// </summary>
-	public class AdjustmentPlayerPhaseRule
+	public class AdjustmentPlayerPhase : IPipelineElement
 	{
 		private readonly DataVisitor _Visitor;
 
-		public AdjustmentPlayerPhaseRule(DataVisitor visitor)
+		public AdjustmentPlayerPhase(DataVisitor visitor)
 		{
 			_Visitor = visitor;
 		}
 
-		public void Run()
+		bool IPipelineElement.IsComplete
 		{
-			var randomValue = _Visitor.FindIRandom(RandomData.RULE.ADJUSTMENT_PLAYER_PHASE, 0).NextInt(0, 1000);
+			get
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+		void IPipelineElement.Connect(IPipelineElement next)
+		{
+			throw new NotImplementedException();
+		}
+
+		void IPipelineElement.Process()
+		{
+			var randomValue = _Visitor.FindIRandom(RandomData.RULE.ADJUSTMENT_PLAYER_PHASE, 0)
+									.NextInt(0, 1000);
 
 			if(_CheckPlayerRecord(randomValue))
 			{
@@ -29,22 +44,19 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 			}
 
 			// 從VIR00 - VIR03
-			CheckFarmBufferType();
+			_CheckFarmBufferType();
 		}
 
-		private void CheckFarmBufferType()
+		private void _CheckFarmBufferType()
 		{
 			var enums = EnumHelper.GetEnums<FarmDataRoot.BufferNode.BUFFER_NAME>()
-								.Where(x =>
-										x >= FarmDataRoot.BufferNode.BUFFER_NAME.VIR00 &&
-										x <= FarmDataRoot.BufferNode.BUFFER_NAME.VIR03);
+								.Where(x => x >= FarmDataRoot.BufferNode.BUFFER_NAME.VIR00 && x <= FarmDataRoot.BufferNode.BUFFER_NAME.VIR03);
 
 			foreach(var i in enums)
 			{
 				var farmDataRoot = _Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName, i);
 
-				var normal = _Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName,
-														FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
+				var normal = _Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName, FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
 
 				var top = farmDataRoot.Buffer.Top * normal.TempValueNode.AverageValue;
 
@@ -62,7 +74,8 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule
 
 					_Visitor.PlayerRecord.Status = farmDataRoot.Buffer.Top * 5;
 					_Visitor.PlayerRecord.BufferValue = top;
-					_Visitor.PlayerRecord.FindFarmRecord(_Visitor.Farm.FarmId).AsnTimes += 1;
+					_Visitor.PlayerRecord.FindFarmRecord(_Visitor.Farm.FarmId)
+							.AsnTimes += 1;
 				}
 				else
 				{

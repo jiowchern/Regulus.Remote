@@ -1,20 +1,21 @@
 ﻿using System;
 
 using Regulus.Framework;
-
+using Regulus.Game;
 using Regulus.Remoting;
 using Regulus.Utility;
 
 using VGame.Project.FishHunter.Common.Data;
+using VGame.Project.FishHunter.Common.GPI;
 using VGame.Project.FishHunter.Stage;
 
 namespace VGame.Project.FishHunter.Formula
 {
-	internal class User : Regulus.Game.IUser
+	internal class User : IUser, IVersion
 	{
-		private event Regulus.Game.OnQuit _OnQuitEvent;
+		private event OnQuit _OnQuitEvent;
 
-		private event Regulus.Game.OnNewUser _OnVerifySuccessEvent;
+		private event OnNewUser _OnVerifySuccessEvent;
 
 		private readonly ISoulBinder _Binder;
 
@@ -24,10 +25,15 @@ namespace VGame.Project.FishHunter.Formula
 
 		private ExpansionFeature _ExpansionFeature;
 
+		private readonly string _Version;
+
 		private User(ISoulBinder binder)
 		{
 			_Machine = new StageMachine();
 			_Binder = binder;
+
+			_Version = typeof(IVerify).Assembly.GetName()
+									.Version.ToString();
 		}
 
 		public User(ISoulBinder binder, ExpansionFeature expansion_feature) : this(binder)
@@ -35,20 +41,34 @@ namespace VGame.Project.FishHunter.Formula
 			_ExpansionFeature = expansion_feature;
 		}
 
-		void Regulus.Game.IUser.OnKick(Guid id)
+		void IUser.OnKick(Guid id)
 		{
 		}
 
-		event Regulus.Game.OnNewUser Regulus.Game.IUser.VerifySuccessEvent
+		event OnNewUser IUser.VerifySuccessEvent
 		{
-			add { _OnVerifySuccessEvent += value; }
-			remove { _OnVerifySuccessEvent -= value; }
+			add
+			{
+				_OnVerifySuccessEvent += value;
+			}
+
+			remove
+			{
+				_OnVerifySuccessEvent -= value;
+			}
 		}
 
-		event Regulus.Game.OnQuit Regulus.Game.IUser.QuitEvent
+		event OnQuit IUser.QuitEvent
 		{
-			add { _OnQuitEvent += value; }
-			remove { _OnQuitEvent -= value; }
+			add
+			{
+				_OnQuitEvent += value;
+			}
+
+			remove
+			{
+				_OnQuitEvent -= value;
+			}
 		}
 
 		bool IUpdatable.Update()
@@ -59,12 +79,22 @@ namespace VGame.Project.FishHunter.Formula
 
 		void IBootable.Launch()
 		{
+			_Binder.Bind<IVersion>(this);
 			_ToVerify();
 		}
 
 		void IBootable.Shutdown()
 		{
+			_Binder.Unbind<IVersion>(this);
 			_Machine.Termination();
+		}
+
+		string IVersion.Number
+		{
+			get
+			{
+				return _Version;
+			}
 		}
 
 		private void _ToVerify()

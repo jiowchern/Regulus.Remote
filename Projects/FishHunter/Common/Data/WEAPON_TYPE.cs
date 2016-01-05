@@ -44,7 +44,7 @@ namespace VGame.Project.FishHunter.Common.Data
 		/// <summary>
 		///     101全屏炸彈
 		/// </summary>
-		[EnumDescription("5全屏炸彈")]
+		[EnumDescription("皮卡丘、電鰻皮卡丘、電鰻")]
 		SCREEN_BOMB = 5, 
 
 		/// <summary>

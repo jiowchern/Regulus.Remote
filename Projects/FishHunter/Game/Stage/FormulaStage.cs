@@ -24,8 +24,6 @@ namespace VGame.Project.FishHunter.Stage
 
 		private ExpansionFeature _ExpansionFeature;
 
-		private List<FishFarmData> _FishFarmDatas;
-
 		private StageMachine _StageMachine;
 
 		public FormulaStage(ISoulBinder binder, ExpansionFeature expansion_feature)
@@ -38,28 +36,26 @@ namespace VGame.Project.FishHunter.Stage
 				expansion_feature.FormulaFarmRecorder);
 		}
 
-		Value<IFishStage> IFishStageQueryer.Query(Guid player_id, int fish_stage)
+		Value<IFishStage> IFishStageQueryer.Query(Guid player_id, int farm_id)
 		{
-			if(fish_stage >= 100 && fish_stage <= 111)
-			{
-				var data = _FishFarmDatas.Find(x => x.FarmId == fish_stage);
-				return _QueryZsFishStage(player_id, data);
-			}
-			else if(fish_stage == 200)
-			{
-				return new QuarterStage(player_id, fish_stage);
-			}
-			else
-			{
-				return new FishStage(player_id, fish_stage);
-			}
+			var val = new Value<IFishStage>();
+
+			new StageLoadFarmData(_ExpansionFeature.FormulaFarmRecorder).Load(farm_id).OnValue +=
+					farm_data =>
+					{
+						_QueryZsFishStage(player_id, farm_data).OnValue += data => val.SetValue(data);
+					};
+
+			return val;
 		}
 
 		void IStage.Enter()
 		{
+			_Binder.Bind<IFishStageQueryer>(this);
+
 			OnDoneEvent += OnDoneEvent;
 
-			_StageMachine = _CreateStage();
+			_StageMachine = new StageMachine();
 		}
 
 		void IStage.Leave()
@@ -80,26 +76,6 @@ namespace VGame.Project.FishHunter.Stage
 		private Value<IFishStage> _QueryZsFishStage(Guid player_id, FishFarmData data)
 		{
 			return _ZsFishFormulaInitialer.Query(player_id, data);
-		}
-
-		private StageMachine _CreateStage()
-		{
-			var stageMachine = new StageMachine();
-
-			var stage = new StageLoadFarmData(_ExpansionFeature.FormulaFarmRecorder);
-
-			stage.OnDoneEvent += _StageLoadFinish;
-
-			stageMachine.Push(stage);
-
-			return stageMachine;
-		}
-
-		private void _StageLoadFinish(List<FishFarmData> obj)
-		{
-			_FishFarmDatas = obj;
-
-			_Binder.Bind<IFishStageQueryer>(this);
 		}
 	}
 }

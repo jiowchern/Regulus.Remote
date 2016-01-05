@@ -50,9 +50,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 				rand_number -= d.Number;
 			}
 
-			return tmp == null
-						? 1
-						: tmp.Odds;
+			return tmp?.Odds ?? 1;
 		}
 	}
 }

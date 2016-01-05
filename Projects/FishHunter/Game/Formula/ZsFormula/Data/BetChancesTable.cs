@@ -8,10 +8,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 
 		public int PlayerBet { private get; set; }
 
-		private float _Precent
-		{
-			get { return PlayerBet / (float)MaxBet; }
-		}
+		private float _Precent => PlayerBet / (float)MaxBet;
 
 		public BetChancesTable(Data[] datas) : base(datas)
 		{
