@@ -17,6 +17,11 @@ namespace VGame.Project.FishHunter.Common.Data
 		/// <summary>
 		///     存活
 		/// </summary>
-		SURVIVAL
+		SURVIVAL,
+
+		/// <summary>
+		/// 重覆死亡
+		/// </summary>
+		REPEAT_DEATH,
 	}
 }

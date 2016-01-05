@@ -59,18 +59,26 @@ namespace VGame.Project.FishHunter.Common.Data
         [ProtoMember(9)]
         public FishHitRecord[] FishHits { get; set; }
 
-	    public FarmRecord(int farm_id) 
+	    /// <summary>
+	    /// 記錄得到的隨機寶物
+	    /// </summary>
+	    [ProtoMember(10)]
+	    public TreasureRecord[] RandomTreasures { get; set; }
+
+		public FarmRecord(int farm_id) 
 	    {
 		    Id = Guid.NewGuid();
 
 			FarmId = farm_id;
 			FishHits = new FishHitRecord[0];
-		}
+			RandomTreasures = new TreasureRecord[0];
+        }
 
         public FarmRecord()
         {
 			Id = Guid.NewGuid();
 			FishHits = new FishHitRecord[0];
+			RandomTreasures = new TreasureRecord[0];
 		}
     }
 }

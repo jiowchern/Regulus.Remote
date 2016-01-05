@@ -14,11 +14,6 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 		public FISH_STATUS FishStatus { get; set; }
 
 		/// <summary>
-		///     隨機武器
-		/// </summary>
-		public WEAPON_TYPE[] RandomWeapons { get; private set; }
-
-		/// <summary>
 		///     必出武器
 		/// </summary>
 		public WEAPON_TYPE[] CertainWeapons { get; private set; }
@@ -27,135 +22,79 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 		{
 			var treasures = EnumHelper.GetEnums<FISH_TYPE>()
 									.Where(x => x >= FISH_TYPE.TROPICAL_FISH && x <= FISH_TYPE.SPECIAL_EAT_FISH_CRAZY)
-									.Select(
-										i => new FishTreasure
+									.Select(i => new FishTreasure
+									{
+										FishType = i, 
+										CertainWeapons = new[]
 										{
-											FishType = i, 
-											RandomWeapons = new[]
-											{
-												WEAPON_TYPE.SUPER_BOMB, 
-												WEAPON_TYPE.ELECTRIC_NET, 
-												WEAPON_TYPE.FREE_POWER
-											}, 
-											CertainWeapons = new[]
-											{
-												WEAPON_TYPE.INVALID, 
-												WEAPON_TYPE.KING
-											}
-										})
+											WEAPON_TYPE.INVALID, 
+											WEAPON_TYPE.KING
+										}
+									})
 									.ToList();
 
-			treasures.Add(
-				new FishTreasure
+			treasures.Add(new FishTreasure
+			{
+				FishType = FISH_TYPE.SPECIAL_FREEZE_BOMB, 
+				CertainWeapons = new[]
 				{
-					FishType = FISH_TYPE.SPECIAL_FREEZE_BOMB, 
-					RandomWeapons = new[]
-					{
-						WEAPON_TYPE.SUPER_BOMB, 
-						WEAPON_TYPE.ELECTRIC_NET, 
-						WEAPON_TYPE.FREE_POWER
-					}, 
-					CertainWeapons = new[]
-					{
-						WEAPON_TYPE.FREEZE_BOMB
-					}
-				});
+					WEAPON_TYPE.FREEZE_BOMB
+				}
+			});
 
-			treasures.Add(
-				new FishTreasure
+			treasures.Add(new FishTreasure
+			{
+				FishType = FISH_TYPE.SPECIAL_SCREEN_BOMB, 
+				CertainWeapons = new[]
 				{
-					FishType = FISH_TYPE.SPECIAL_SCREEN_BOMB, 
-					RandomWeapons = new[]
-					{
-						WEAPON_TYPE.SUPER_BOMB, 
-						WEAPON_TYPE.ELECTRIC_NET, 
-						WEAPON_TYPE.FREE_POWER
-					}, 
-					CertainWeapons = new[]
-					{
-						WEAPON_TYPE.SCREEN_BOMB
-					}
-				});
+					WEAPON_TYPE.SCREEN_BOMB
+				}
+			});
 
-			treasures.Add(
-				new FishTreasure
+			treasures.Add(new FishTreasure
+			{
+				FishType = FISH_TYPE.SPECIAL_THUNDER_BOMB, 
+				CertainWeapons = new[]
 				{
-					FishType = FISH_TYPE.SPECIAL_THUNDER_BOMB, 
-					RandomWeapons = new[]
-					{
-						WEAPON_TYPE.SUPER_BOMB, 
-						WEAPON_TYPE.ELECTRIC_NET, 
-						WEAPON_TYPE.FREE_POWER
-					}, 
-					CertainWeapons = new[]
-					{
-						WEAPON_TYPE.THUNDER_BOMB
-					}
-				});
+					WEAPON_TYPE.THUNDER_BOMB
+				}
+			});
 
-			treasures.Add(
-				new FishTreasure
+			treasures.Add(new FishTreasure
+			{
+				FishType = FISH_TYPE.SPECIAL_FIRE_BOMB, 
+				CertainWeapons = new[]
 				{
-					FishType = FISH_TYPE.SPECIAL_FIRE_BOMB, 
-					RandomWeapons = new[]
-					{
-						WEAPON_TYPE.SUPER_BOMB, 
-						WEAPON_TYPE.ELECTRIC_NET, 
-						WEAPON_TYPE.FREE_POWER
-					}, 
-					CertainWeapons = new[]
-					{
-						WEAPON_TYPE.FIRE_BOMB
-					}
-				});
+					WEAPON_TYPE.FIRE_BOMB
+				}
+			});
 
-			treasures.Add(
-				new FishTreasure
+			treasures.Add(new FishTreasure
+			{
+				FishType = FISH_TYPE.SPECIAL_DAMAGE_BALL, 
+				CertainWeapons = new[]
 				{
-					FishType = FISH_TYPE.SPECIAL_DAMAGE_BALL, 
-					RandomWeapons = new[]
-					{
-						WEAPON_TYPE.SUPER_BOMB, 
-						WEAPON_TYPE.ELECTRIC_NET, 
-						WEAPON_TYPE.FREE_POWER
-					}, 
-					CertainWeapons = new[]
-					{
-						WEAPON_TYPE.DAMAGE_BALL
-					}
-				});
+					WEAPON_TYPE.DAMAGE_BALL
+				}
+			});
 
-			treasures.Add(
-				new FishTreasure
+			treasures.Add(new FishTreasure
+			{
+				FishType = FISH_TYPE.SPECIAL_OCTOPUS_BOMB, 
+				CertainWeapons = new[]
 				{
-					FishType = FISH_TYPE.SPECIAL_OCTOPUS_BOMB, 
-					RandomWeapons = new[]
-					{
-						WEAPON_TYPE.SUPER_BOMB, 
-						WEAPON_TYPE.ELECTRIC_NET, 
-						WEAPON_TYPE.FREE_POWER
-					}, 
-					CertainWeapons = new[]
-					{
-						WEAPON_TYPE.OCTOPUS_BOMB
-					}
-				});
+					WEAPON_TYPE.OCTOPUS_BOMB
+				}
+			});
 
-			treasures.Add(
-				new FishTreasure
+			treasures.Add(new FishTreasure
+			{
+				FishType = FISH_TYPE.SPECIAL_BIG_OCTOPUS_BOMB, 
+				CertainWeapons = new[]
 				{
-					FishType = FISH_TYPE.SPECIAL_BIG_OCTOPUS_BOMB, 
-					RandomWeapons = new[]
-					{
-						WEAPON_TYPE.SUPER_BOMB, 
-						WEAPON_TYPE.ELECTRIC_NET, 
-						WEAPON_TYPE.FREE_POWER
-					}, 
-					CertainWeapons = new[]
-					{
-						WEAPON_TYPE.BIG_OCTOPUS_BOMB
-					}
-				});
+					WEAPON_TYPE.BIG_OCTOPUS_BOMB
+				}
+			});
 			return treasures;
 		}
 	}

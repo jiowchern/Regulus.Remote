@@ -59,6 +59,7 @@
     <Compile Include="Data\FarmRecord.cs" />
     <Compile Include="Data\FarmDataRoot.cs" />
     <Compile Include="Data\FishFarmData.cs" />
+    <Compile Include="Data\TreasureRecord.cs" />
     <Compile Include="GPI\IAccountCreator.cs" />
     <Compile Include="Data\Account.cs" />
     <Compile Include="Data\ACCOUNT_REQUEST_RESULT.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="GPI\IStorageCompetnces.cs" />
     <Compile Include="GPI\ITradeNotes.cs" />
     <Compile Include="GPI\IVerify.cs" />
+    <Compile Include="GPI\IVersion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Data\GamePlayerRecord.cs" />
     <Compile Include="Data\TradeRecorder.cs" />
