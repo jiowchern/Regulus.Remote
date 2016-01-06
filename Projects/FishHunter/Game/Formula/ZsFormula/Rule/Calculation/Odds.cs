@@ -40,20 +40,26 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Calculation
 			{
 				if(_CheckIsFreeze(fishData))
 				{
-					fishData.OddsValue = 2;
+					fishData.IsDoubled = true;
+					continue;
 				}
 
 				if(!_CheckFishTypeToOddsRule(fishData))
 				{
-					fishData.OddsValue = 1;
+					fishData.IsDoubled = false;
+					continue;
 				}
 
 				if(!_CheckStageBufferToOddsRule())
 				{
-					fishData.OddsValue = 1;
+					fishData.IsDoubled = false;
+					continue;
 				}
 
-				_CheckMultipleTableToOddsRule(fishData);
+				if(_CheckMultipleTableToOddsRule(fishData))
+				{
+					fishData.IsDoubled = true;
+				}
 			}
 		}
 
@@ -160,14 +166,14 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Calculation
 			return true;
 		}
 
-		private void _CheckMultipleTableToOddsRule(RequsetFishData fish_data)
+		private bool _CheckMultipleTableToOddsRule(RequsetFishData fish_data)
 		{
 			var randNumber = _Visitor.FindIRandom(RandomData.RULE.ODDS, 4)
 									.NextInt(0, 1000);
 
 			var oddsValue = new OddsTable().CheckRule(randNumber);
 
-			fish_data.OddsValue = _CheckFishToOddsRule(fish_data, oddsValue) ? oddsValue : 1;
+			return _CheckFishToOddsRule(fish_data, oddsValue);
 		}
 
 		private bool _CheckFishToOddsRule(RequsetFishData fish_data, int odds)

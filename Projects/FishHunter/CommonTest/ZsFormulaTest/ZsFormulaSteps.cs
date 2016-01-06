@@ -162,7 +162,7 @@ namespace GameTest.ZsFormulaTest
 		[When(@"得到檢查結果")]
 		public void When得到檢查結果()
 		{
-			_HitRequest = new HitRequest(_FishDatas, _WeaponData);
+			_HitRequest = new HitRequest(_FishDatas, _WeaponData, true);
 			_HitResponses = new ZsHitChecker(_FarmData, new FormulaPlayerRecord()).TotalRequest(_HitRequest);
 		}
 

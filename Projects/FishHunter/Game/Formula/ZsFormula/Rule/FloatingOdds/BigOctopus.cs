@@ -13,7 +13,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.FloatingOdds
 
 			foreach(var oct in octs)
 			{
-				oct.FishOdds += oct.GraveGoods.Sum(x => x.FishOdds);
+				oct.FishOdds += oct.GraveGoods.Sum(x => x.GetRealOdds());
 			}
 		}
 	}

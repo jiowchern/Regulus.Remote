@@ -51,7 +51,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Calculation
 			foreach(var fishData in _Request.FishDatas)
 			{
 				var bet = _Request.WeaponData.GetTotalBet();
-				var winScore = fishData.FishOdds * bet * fishData.OddsValue;
+				var winScore = fishData.GetRealOdds() * bet;
 				new SaveDeathFishHistory(_Visitor, fishData, winScore).Run();
 				new SaveScoreHistory(_Visitor, winScore).Run();
 			}

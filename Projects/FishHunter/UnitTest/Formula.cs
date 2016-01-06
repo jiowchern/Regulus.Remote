@@ -62,7 +62,7 @@ namespace UnitTest
 				BulletId = 1
 			};
 
-			var request = new HitRequest(fishs.ToArray(), weapon);
+			var request = new HitRequest(fishs.ToArray(), weapon, true);
 
 			var hitResponses = formula.TotalRequest(request);
 			foreach(var respones in hitResponses)
@@ -98,7 +98,7 @@ namespace UnitTest
 				BulletId = 1
 			};
 
-			var request = new HitRequest(fishs.ToArray(), weapon);
+			var request = new HitRequest(fishs.ToArray(), weapon, true);
 
 			var hitResponses = formula.TotalRequest(request);
 		    foreach(var response in hitResponses)
@@ -135,7 +135,7 @@ namespace UnitTest
 				WeaponType =WEAPON_TYPE.INVALID
 			};
 
-			var hitRequest = new HitRequest(fishs.ToArray(), weapon);
+			var hitRequest = new HitRequest(fishs.ToArray(), weapon, true);
 
 			var hitResponses = formula.TotalRequest(hitRequest); // a3d70a
 
@@ -172,7 +172,7 @@ namespace UnitTest
 				BulletId = 1
 			};
 
-			var request = new HitRequest(fishs.ToArray(), weapon);
+			var request = new HitRequest(fishs.ToArray(), weapon, true);
 
             var hitResponses = formula.TotalRequest(request);
 

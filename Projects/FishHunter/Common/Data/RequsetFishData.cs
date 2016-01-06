@@ -1,5 +1,4 @@
-﻿
-using ProtoBuf;
+﻿using ProtoBuf;
 
 namespace VGame.Project.FishHunter.Common.Data
 {
@@ -47,15 +46,27 @@ namespace VGame.Project.FishHunter.Common.Data
 		public bool IsGift { get; set; }
 
 		/// <summary>
-		/// 判斷真正死亡
+		///     判斷真正死亡
 		/// </summary>
 		public bool IsDead { get; set; }
 
 		/// <summary>
-		/// 翻倍結果
+		///     翻倍結果
 		/// </summary>
-		public int OddsValue { get; set; }
+		public bool IsDoubled { get; set; }
 
+		/// <summary>
+		///     死亡率
+		/// </summary>
 		public long HitDieRate { get; set; }
+
+		/// <summary>
+		///     取得真正的倍數
+		/// </summary>
+		/// <returns></returns>
+		public int GetRealOdds()
+		{
+			return FishOdds * (IsDoubled ? 2 : 1);
+		}
 	}
 }
