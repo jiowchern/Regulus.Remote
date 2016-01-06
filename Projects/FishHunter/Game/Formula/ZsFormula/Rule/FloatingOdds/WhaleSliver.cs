@@ -1,68 +1,55 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
-
-using Regulus.Utility;
 
 using VGame.Project.FishHunter.Common.Data;
 
+using Random = Regulus.Utility.Random;
+
 namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.FloatingOdds
 {
-	/// <summary>
-	///     七彩鲸 的倍数
-	/// </summary>
-	public class WhaleColor : IFloatingCalculator
+	public class WhaleSliver : IFloatingCalculator
 	{
 		private readonly List<OddsData> _OddsDatas;
 
-		public WhaleColor()
+		public WhaleSliver()
 		{
 			_OddsDatas = new List<OddsData>
 			{
 				new OddsData
 				{
-					Odds = 300, 
+					Odds = 100, 
 					Rate = 0
 				}, 
 				new OddsData
 				{
-					Odds = 350, 
+					Odds = 150, 
 					Rate = 1
 				}, 
 				new OddsData
 				{
-					Odds = 400, 
+					Odds = 200, 
 					Rate = 2
 				}, 
 				new OddsData
 				{
-					Odds = 400, 
+					Odds = 250, 
 					Rate = 3
 				}, 
 				new OddsData
 				{
-					Odds = 500, 
+					Odds = 300, 
 					Rate = 4
-				}, 
-				new OddsData
-				{
-					Odds = 550, 
-					Rate = 5
-				}, 
-				new OddsData
-				{
-					Odds = 600, 
-					Rate = 6
 				}
 			};
 		}
 
 		void IFloatingCalculator.Calculate(RequsetFishData[] fish_data)
 		{
-			var whales = fish_data.Where(x => x.FishType == FISH_TYPE.WHALE_COLOR);
+			var whales = fish_data.Where(x => x.FishType == FISH_TYPE.WHALE_SLIVER);
 
 			foreach(var whale in whales)
 			{
-				var random = Random.Instance.NextInt(0, 7);
+				var random = Random.Instance.NextInt(0, 5);
 				whale.FishOdds = _OddsDatas.Find(x => x.Rate == random)
 											.Odds;
 			}

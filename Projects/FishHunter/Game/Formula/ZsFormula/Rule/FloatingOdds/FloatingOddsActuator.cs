@@ -22,8 +22,10 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.FloatingOdds
 			_OddsRules = new List<IFloatingCalculator>
 			{
 				new BigOctopus(), 
-				new King()
-			};
+				new King(),
+				new WhaleColor(),
+				new WhaleSliver()
+            };
 		}
 
 		bool IPipelineElement.IsComplete

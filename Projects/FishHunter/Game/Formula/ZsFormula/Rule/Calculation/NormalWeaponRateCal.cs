@@ -47,9 +47,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Calculation
 
 			dieRate /= 1000;
 
-			dieRate /= fish_data.FishOdds; // 鱼的倍数
-
-			dieRate /= fish_data.OddsValue; // 翻倍
+			dieRate /= fish_data.GetRealOdds(); // 翻倍後鱼的倍数
 
 			dieRate /= 1000; // 死亡率换算回实际百分比
 

@@ -2,14 +2,10 @@
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using NSubstitute;
-
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 
 using VGame.Project.FishHunter.Common.Data;
-using VGame.Project.FishHunter.Formula.ZsFormula.Rule;
-using VGame.Project.FishHunter.Formula.ZsFormula.Rule.FloatingOdds;
 
 namespace GameTest.ZsFormulaTest
 {
@@ -19,12 +15,7 @@ namespace GameTest.ZsFormulaTest
 	[Scope(Feature = "大章魚武器規則")]
 	public class 大章魚武器規則Steps
 	{
-		private readonly HitRequest _HitRequest;
-
-		public 大章魚武器規則Steps()
-		{
-			_HitRequest = new HitRequest();
-		}
+		private readonly HitRequest _HitRequest = new HitRequest();
 
 		[Given(@"觸發武器類型為")]
 		public void Given觸發武器類型為(Table table)
@@ -33,27 +24,10 @@ namespace GameTest.ZsFormulaTest
 		}
 
 		[Given(@"擊中魚清單為")]
-		public void Given擊中魚清單為()
+		public void Given擊中魚清單為(Table table)
 		{
-			_HitRequest.FishDatas = new[]
-			{
-				new RequsetFishData
-				{
-					FishId = 1,
-					FishOdds = 1,
-					FishStatus = FISH_STATUS.NORMAL,
-					FishType = FISH_TYPE.ANGEL_FISH,
-					GraveGoods = new RequsetFishData[0]
-				},
-				new RequsetFishData
-				{
-					FishId = 2,
-					FishOdds = 2,
-					FishStatus = FISH_STATUS.NORMAL,
-					FishType = FISH_TYPE.SPECIAL_THUNDER_BOMB,
-					GraveGoods = new RequsetFishData[0]
-				}
-			};
+			_HitRequest.FishDatas = table.CreateSet<RequsetFishData>()
+										.ToArray();
 		}
 
 		[When(@"過瀘武器無效對象")]

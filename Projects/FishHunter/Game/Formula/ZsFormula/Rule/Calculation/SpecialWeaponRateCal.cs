@@ -29,9 +29,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Calculation
 														.Power;
 			dieRate *= 0x0FFFFFFF;
 
-			dieRate /= _Request.FishDatas.Sum(x => x.FishOdds); // 总倍数
-
-			dieRate /= fish_data.OddsValue;
+			dieRate /= _Request.FishDatas.Sum(x => x.GetRealOdds()); // 总倍数
 
 			if(dieRate > 0x0FFFFFFF)
 			{
@@ -51,7 +49,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Calculation
 			fish_data.HitDieRate = 0x10000000; // > 100% 
 
 			// 必死不翻倍
-			fish_data.OddsValue = 1;
+			fish_data.IsDoubled = true;
 
 			return true;
 		}

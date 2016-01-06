@@ -27,7 +27,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.FloatingOdds
 					continue;
 				}
 
-				king.FishOdds += king.GraveGoods.Sum(x => x.FishOdds);
+				king.FishOdds += king.GraveGoods.Sum(x => x.GetRealOdds());
 			}
 		}
 	}

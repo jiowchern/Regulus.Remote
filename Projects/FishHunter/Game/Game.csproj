@@ -70,6 +70,7 @@
     <Compile Include="Formula\ZsFormula\Rule\FloatingOdds\IFloatingCalculator.cs" />
     <Compile Include="Formula\ZsFormula\Rule\FloatingOdds\OddsData.cs" />
     <Compile Include="Formula\ZsFormula\Rule\FloatingOdds\WhaleColor.cs" />
+    <Compile Include="Formula\ZsFormula\Rule\FloatingOdds\WhaleSliver.cs" />
     <Compile Include="Formula\ZsFormula\Rule\Weapon\IFilterable.cs" />
     <Compile Include="Formula\ZsFormula\Save\DeathMonitor.cs" />
     <Compile Include="Formula\ZsFormula\Save\LogHandle.cs" />

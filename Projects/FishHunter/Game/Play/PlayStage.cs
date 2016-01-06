@@ -103,7 +103,7 @@ namespace VGame.Project.FishHunter.Play
 					WeaponType = _WeaponType
 				};
 
-				var request = new HitRequest(fishs.ToArray(), weapon);
+				var request = new HitRequest(fishs.ToArray(), weapon, true);
 				_Requests.Add(fishid, request);
 				_FishStage.Hit(request);
 

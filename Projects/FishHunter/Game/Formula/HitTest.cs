@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 
-
 using Regulus.Game;
 using Regulus.Utility;
-
 
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
@@ -99,25 +97,25 @@ namespace VGame.Project.FishHunter.Formula
 
 				if(request.WeaponData.WeaponBet > MAX_WEPBET)
 				{
-					hitResponses.Add(HitTest._Miss(fishData, request.WeaponData));
+					hitResponses.Add(_Miss(fishData, request.WeaponData));
 					continue;
 				}
 
 				if(request.WeaponData.WeaponOdds > MAX_WEPODDS)
 				{
-					hitResponses.Add(HitTest._Miss(fishData, request.WeaponData));
+					hitResponses.Add(_Miss(fishData, request.WeaponData));
 					continue;
 				}
 
 				if(request.WeaponData.TotalHits == 0 || request.WeaponData.TotalHits > MAX_TOTALHITS)
 				{
-					hitResponses.Add(HitTest._Miss(fishData, request.WeaponData));
+					hitResponses.Add(_Miss(fishData, request.WeaponData));
 					continue;
 				}
 
 				if(fishData.FishOdds == 0 || fishData.FishOdds > MAX_FISHODDS)
 				{
-					hitResponses.Add(HitTest._Miss(fishData, request.WeaponData));
+					hitResponses.Add(_Miss(fishData, request.WeaponData));
 				}
 				else
 				{
@@ -128,7 +126,7 @@ namespace VGame.Project.FishHunter.Formula
 					gate /= fishData.FishOdds;
 					gate /= 1000;
 
-					if (gate > 0x0fffffff)
+					if(gate > 0x0fffffff)
 					{
 						gate = 0x10000000;
 					}
@@ -137,13 +135,13 @@ namespace VGame.Project.FishHunter.Formula
 
 					var value = rValue % 0x10000000;
 
-					if (value < gate)
+					if(value < gate)
 					{
 						hitResponses.Add(_Die(fishData, request.WeaponData));
 					}
 					else
 					{
-						hitResponses.Add(HitTest._Miss(fishData, request.WeaponData));
+						hitResponses.Add(_Miss(fishData, request.WeaponData));
 					}
 				}
 			}
@@ -153,6 +151,9 @@ namespace VGame.Project.FishHunter.Formula
 
 		private HitResponse _Die(RequsetFishData fish_data, RequestWeaponData weapon_data)
 		{
+			var i = _ScoreOddsTable.Dice(Random.Instance.NextInt(0, 1)) + 1;
+			var b = i != 1;
+
 			return new HitResponse
 			{
 				WepId = weapon_data.BulletId, 
@@ -162,13 +163,16 @@ namespace VGame.Project.FishHunter.Formula
 				{
 					(WEAPON_TYPE)_WeaponChancesTable.Dice(Random.Instance.NextFloat(0, 1))
 				}, 
-				WeaponBet = weapon_data.WeaponBet,
-				OddsResult = _ScoreOddsTable.Dice(Random.Instance.NextFloat(0, 1))
+				WeaponBet = weapon_data.WeaponBet, 
+				IsDoubled = b
 			};
 		}
 
-		private static HitResponse _Miss(RequsetFishData fish_data, RequestWeaponData weapon_data)
+		private HitResponse _Miss(RequsetFishData fish_data, RequestWeaponData weapon_data)
 		{
+			var i = _ScoreOddsTable.Dice(Random.Instance.NextInt(0, 1)) + 1;
+			var b = i != 1;
+
 			return new HitResponse
 			{
 				WepId = weapon_data.BulletId, 
@@ -177,9 +181,9 @@ namespace VGame.Project.FishHunter.Formula
 				FeedbackWeapons = new[]
 				{
 					WEAPON_TYPE.INVALID
-				},
-                WeaponBet = 0,
-				OddsResult = 0
+				}, 
+				WeaponBet = 0, 
+				IsDoubled = b
 			};
 		}
 	}

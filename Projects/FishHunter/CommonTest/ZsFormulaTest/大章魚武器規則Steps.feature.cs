@@ -93,11 +93,30 @@ this.ScenarioSetup(scenarioInfo);
                         "1"});
 #line 8
  testRunner.Given("觸發武器類型為", ((string)(null)), table1, "Given ");
+#line hidden
+            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
+                        "FishId",
+                        "FishOdds",
+                        "FishStatus",
+                        "FishType",
+                        "GraveGoods"});
+            table2.AddRow(new string[] {
+                        "1",
+                        "1",
+                        "NORMAL",
+                        "TROPICAL_FISH",
+                        ""});
+            table2.AddRow(new string[] {
+                        "2",
+                        "1",
+                        "NORMAL",
+                        "SPECIAL_THUNDER_BOMB",
+                        ""});
 #line 12
- testRunner.And("擊中魚清單為", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 14
+ testRunner.And("擊中魚清單為", ((string)(null)), table2, "And ");
+#line 17
  testRunner.When("過瀘武器無效對象", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 16
+#line 19
  testRunner.Then("擊殺的魚是", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();

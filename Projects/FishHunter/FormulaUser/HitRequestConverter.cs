@@ -28,7 +28,7 @@ namespace VGame.Project.FishHunter.Formula
 				new RequsetFishData()
 			};
 
-			var hitRequest = new HitRequest(fishDatas.ToArray(), weaponData);
+			var hitRequest = new HitRequest(fishDatas.ToArray(), weaponData, true);
 
 			_Gpi.Hit(hitRequest);
 		}

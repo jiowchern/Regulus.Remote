@@ -22,13 +22,13 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Weapon
 
 		private readonly HitRequest _HitRequest;
 
-		private readonly List<Data> _WeaponUseRules;
+		private readonly List<Data> _Weapons;
 
 		public SpecialWeaponSelector(HitRequest request)
 		{
 			_HitRequest = request;
 
-			_WeaponUseRules = new List<Data>
+			_Weapons = new List<Data>
 			{
 				new Data
 				{
@@ -59,10 +59,15 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Weapon
 		void IPipelineElement.Process()
 		{
 			// Provider.Weaon(WEAPON_TYPE).Process(_HitRequest.FishDatas);
-			HandselSelector.Select(_HitRequest.FishDatas);
-
-			_WeaponUseRules.FirstOrDefault(x => x.WeaponType == _HitRequest.WeaponData.WeaponType)
+			var result = _Weapons.FirstOrDefault(x => x.WeaponType == _HitRequest.WeaponData.WeaponType)
 					?.WeaponRule.Filter(_HitRequest.FishDatas);
+
+			if(result == null)
+			{
+				return;
+			}
+			_HitRequest.FishDatas = result;
+			HandselSelector.Select(_HitRequest);
 
 			// return _HitRequest.FishDatas;
 		}

@@ -1,7 +1,4 @@
-﻿
-
-using ProtoBuf;
-
+﻿using ProtoBuf;
 
 using Regulus.Utility;
 
@@ -40,19 +37,25 @@ namespace VGame.Project.FishHunter.Common.Data
 		public WEAPON_TYPE[] FeedbackWeapons { get; set; }
 
 		/// <summary>
-		/// 下注金額
+		///     下注金額
 		/// </summary>
 		[ProtoMember(5)]
 		public int WeaponBet { get; set; }
 
 		/// <summary>
-		///     1 = 沒有翻倍
+		///     false = 沒有翻倍
 		/// </summary>
 		[ProtoMember(6)]
-		public int OddsResult { get; set; }
+		public bool IsDoubled { get; set; }
 
+		/// <summary>
+		///     死亡率
+		/// </summary>
 		public long DieRate { get; set; }
 
+		/// <summary>
+		///     倍數
+		/// </summary>
 		public int FishOdds { get; set; }
 	}
 }

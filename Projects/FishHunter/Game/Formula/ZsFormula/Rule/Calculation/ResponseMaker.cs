@@ -69,17 +69,22 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Calculation
 
 		private void _Build(RequsetFishData fish_data, FISH_DETERMINATION status)
 		{
+			var tmp = _Visitor.GetAllTreasures();
+            if (tmp.Count == 0)
+			{
+				tmp.Add(WEAPON_TYPE.INVALID);
+			}
+
 			_HitResponses.Add(new HitResponse
 			{
 				WepId = _Request.WeaponData.BulletId, 
 				FishId = fish_data.FishId, 
 				FishOdds = fish_data.FishOdds, 
 				DieResult = status, 
-				FeedbackWeapons = _Visitor.GetAllTreasures()
-										.ToArray(), 
+				FeedbackWeapons = tmp.ToArray(), 
 				WeaponBet = _Request.WeaponData.WeaponBet, 
 				DieRate = fish_data.HitDieRate, 
-				OddsResult = fish_data.OddsValue
+				IsDoubled = fish_data.IsDoubled
 			});
 		}
 	}

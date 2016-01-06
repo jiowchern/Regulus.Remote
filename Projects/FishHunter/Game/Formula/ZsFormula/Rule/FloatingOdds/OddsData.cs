@@ -4,6 +4,6 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.FloatingOdds
 	{
 		public int Odds { get; set; }
 
-		public float Rate { get; set; }
+		public int Rate { get; set; }
 	}
 }
