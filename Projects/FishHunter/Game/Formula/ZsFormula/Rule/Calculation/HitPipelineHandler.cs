@@ -88,21 +88,30 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Calculation
 
 		public HitPipelineHandler AccumulationBuffer()
 		{
-			_PipelineElements.Add(new AccumulationBuffer(_DataVisitor, _Request));
+			if(_Request.WeaponData.WeaponType == WEAPON_TYPE.NORMAL)
+			{
+				_PipelineElements.Add(new AccumulationBuffer(_DataVisitor, _Request));
+			}
 
 			return this;
 		}
 
 		public HitPipelineHandler ApproachBaseOdds()
 		{
-			_PipelineElements.Add(new ApproachBaseOdds(_DataVisitor));
+			if(_Request.WeaponData.WeaponType == WEAPON_TYPE.NORMAL)
+			{
+				_PipelineElements.Add(new ApproachBaseOdds(_DataVisitor));
+			}
 
 			return this;
 		}
 
 		public HitPipelineHandler AdjustmentAverage()
 		{
-			_PipelineElements.Add(new AdjustmentAverage(_DataVisitor, _Request));
+			if(_Request.WeaponData.WeaponType == WEAPON_TYPE.NORMAL)
+			{
+				_PipelineElements.Add(new AdjustmentAverage(_DataVisitor, _Request));
+			}
 
 			return this;
 		}

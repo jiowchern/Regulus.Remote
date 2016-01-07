@@ -53,7 +53,7 @@ namespace VGame.Project.FishHunter.Common.Data
 		/// <summary>
 		///     翻倍結果
 		/// </summary>
-		public bool IsDoubled { get; set; }
+		public int Multiple { get; set; }
 
 		/// <summary>
 		///     死亡率
@@ -66,7 +66,7 @@ namespace VGame.Project.FishHunter.Common.Data
 		/// <returns></returns>
 		public int GetRealOdds()
 		{
-			return FishOdds * (IsDoubled ? 2 : 1);
+			return FishOdds * Multiple;
 		}
 	}
 }
