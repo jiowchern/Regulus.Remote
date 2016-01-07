@@ -2,7 +2,6 @@
 
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
-using VGame.Project.FishHunter.Formula.ZsFormula.Save;
 
 namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Calculation
 {
@@ -49,7 +48,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Calculation
 			fish_data.HitDieRate = 0x10000000; // > 100% 
 
 			// 必死不翻倍
-			fish_data.IsDoubled = true;
+			fish_data.Multiple = 1;
 
 			return true;
 		}

@@ -46,7 +46,7 @@ namespace VGame.Project.FishHunter.Common.Data
 		///     false = 沒有翻倍
 		/// </summary>
 		[ProtoMember(6)]
-		public bool IsDoubled { get; set; }
+		public int Multiple { get; set; }
 
 		/// <summary>
 		///     死亡率

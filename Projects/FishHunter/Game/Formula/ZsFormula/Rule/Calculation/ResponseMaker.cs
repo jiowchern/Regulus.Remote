@@ -84,7 +84,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Calculation
 				FeedbackWeapons = tmp.ToArray(), 
 				WeaponBet = _Request.WeaponData.WeaponBet, 
 				DieRate = fish_data.HitDieRate, 
-				IsDoubled = fish_data.IsDoubled
+				Multiple = fish_data.Multiple
 			});
 		}
 	}

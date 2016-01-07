@@ -38,54 +38,69 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Calculation
 		{
 			foreach(var fishData in _HitRequest.FishDatas)
 			{
-				if(_CheckIsFreeze(fishData))
+				if(_IsSpecialFish(fishData))
 				{
-					fishData.IsDoubled = true;
+					fishData.Multiple = 1;
 					continue;
 				}
 
-				if(!_CheckFishTypeToOddsRule(fishData))
+				if(_IsSmallFish(fishData))
 				{
-					fishData.IsDoubled = false;
+					fishData.Multiple = 1;
 					continue;
 				}
 
-				if(!_CheckStageBufferToOddsRule())
+				if(_IsFreeze(fishData))
 				{
-					fishData.IsDoubled = false;
+					fishData.Multiple = 2;
 					continue;
 				}
 
-				if(_CheckMultipleTableToOddsRule(fishData))
+				if(!_CheckExceptionsFishType(fishData))
 				{
-					fishData.IsDoubled = true;
+					fishData.Multiple = 1;
+					continue;
 				}
+
+				if(!_CheckStageRate())
+				{
+					fishData.Multiple = 1;
+					continue;
+				}
+
+				fishData.Multiple = _GetResult(fishData);
 			}
 		}
 
-		private bool _CheckIsFreeze(RequsetFishData fish_data)
+		/// <summary>
+		///     特殊魚不翻倍
+		/// </summary>
+		private static bool _IsSpecialFish(RequsetFishData fish_data)
 		{
-			if(fish_data.FishType >= FISH_TYPE.SPECIAL_SCREEN_BOMB && fish_data.FishType <= FISH_TYPE.SPECIAL_BIG_OCTOPUS_BOMB)
-			{
-				return false; // 特殊鱼 不翻倍
-			}
+			return fish_data.FishType >= FISH_TYPE.SPECIAL_SCREEN_BOMB && fish_data.FishType <= FISH_TYPE.SPECIAL_BIG_OCTOPUS_BOMB;
+		}
 
-			// 其它魚只要冰凍必翻2倍
+		/// <summary>
+		///     小倍數魚不翻倍
+		/// </summary>
+		private static bool _IsSmallFish(RequsetFishData fish_data)
+		{
+			return fish_data.FishOdds < 10;
+		}
+
+		/// <summary>
+		///     其它魚只要冰凍必翻2倍
+		/// </summary>
+		private static bool _IsFreeze(RequsetFishData fish_data)
+		{
 			return fish_data.FishStatus == FISH_STATUS.FREEZE;
 		}
 
-		private bool _CheckFishTypeToOddsRule(RequsetFishData fish_data)
+		/// <summary>
+		///     例外魚種
+		/// </summary>
+		private bool _CheckExceptionsFishType(RequsetFishData fish_data)
 		{
-			if(fish_data.FishType >= FISH_TYPE.SPECIAL_SCREEN_BOMB && fish_data.FishType <= FISH_TYPE.SPECIAL_BIG_OCTOPUS_BOMB)
-			{
-				return false; // 特殊鱼 不翻倍
-			}
-
-			if(fish_data.FishOdds < 10)
-			{
-				return false; // 小鱼 不翻倍 
-			}
-
 			if(fish_data.FishType == FISH_TYPE.BLUE_WHALE)
 			{
 				var randNumber = _Visitor.FindIRandom(RandomData.RULE.ODDS, 0)
@@ -119,7 +134,10 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Calculation
 			return true;
 		}
 
-		private bool _CheckStageBufferToOddsRule()
+		/// <summary>
+		///     比對漁場資料
+		/// </summary>
+		private bool _CheckStageRate()
 		{
 			var normal = _Visitor.Farm.FindDataRoot(_Visitor.FocusBlockName, FarmDataRoot.BufferNode.BUFFER_NAME.NORMAL);
 			var natrue = new NatureBufferChancesTable().Get()
@@ -166,19 +184,25 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Calculation
 			return true;
 		}
 
-		private bool _CheckMultipleTableToOddsRule(RequsetFishData fish_data)
+		/// <summary>
+		///     計算翻倍結果
+		/// </summary>
+		private int _GetResult(RequsetFishData fish_data)
 		{
 			var randNumber = _Visitor.FindIRandom(RandomData.RULE.ODDS, 4)
 									.NextInt(0, 1000);
 
 			var oddsValue = new OddsTable().CheckRule(randNumber);
 
-			return _CheckFishToOddsRule(fish_data, oddsValue);
+			return _IsExceptions(fish_data, oddsValue) ? 1 : oddsValue;
 		}
 
-		private bool _CheckFishToOddsRule(RequsetFishData fish_data, int odds)
+		/// <summary>
+		///     例外狀況
+		/// </summary>
+		private static bool _IsExceptions(RequsetFishData fish_data, int odds)
 		{
-			return (fish_data.FishOdds >= 50) || (odds != 10);
+			return fish_data.FishOdds < 50 && odds == 10;
 		}
 	}
 }

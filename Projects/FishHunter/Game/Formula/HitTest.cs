@@ -151,9 +151,6 @@ namespace VGame.Project.FishHunter.Formula
 
 		private HitResponse _Die(RequsetFishData fish_data, RequestWeaponData weapon_data)
 		{
-			var i = _ScoreOddsTable.Dice(Random.Instance.NextInt(0, 1)) + 1;
-			var b = i != 1;
-
 			return new HitResponse
 			{
 				WepId = weapon_data.BulletId, 
@@ -164,15 +161,12 @@ namespace VGame.Project.FishHunter.Formula
 					(WEAPON_TYPE)_WeaponChancesTable.Dice(Random.Instance.NextFloat(0, 1))
 				}, 
 				WeaponBet = weapon_data.WeaponBet, 
-				IsDoubled = b
+				Multiple = _ScoreOddsTable.Dice(Random.Instance.NextInt(0, 1)) + 1
 			};
 		}
 
 		private HitResponse _Miss(RequsetFishData fish_data, RequestWeaponData weapon_data)
 		{
-			var i = _ScoreOddsTable.Dice(Random.Instance.NextInt(0, 1)) + 1;
-			var b = i != 1;
-
 			return new HitResponse
 			{
 				WepId = weapon_data.BulletId, 
@@ -183,7 +177,7 @@ namespace VGame.Project.FishHunter.Formula
 					WEAPON_TYPE.INVALID
 				}, 
 				WeaponBet = 0, 
-				IsDoubled = b
+				Multiple = _ScoreOddsTable.Dice(Random.Instance.NextInt(0, 1)) + 1
 			};
 		}
 	}

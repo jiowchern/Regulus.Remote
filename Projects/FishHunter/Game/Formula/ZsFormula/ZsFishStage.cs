@@ -251,7 +251,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 						.Property("FishOdds", response.FishOdds)
 						.Property("DieResult", response.DieResult)
 						.Property("Bet", response.WeaponBet)
-						.Property("OddsResult", response.IsDoubled)
+						.Property("OddsResult", response.Multiple)
 						.Property("DieRate", response.DieRate)
 						.Property("DieRatePrecent", $"{response.DieRate / (float)0x10000000:p}")
 						.Property("Feedback", weapon)
