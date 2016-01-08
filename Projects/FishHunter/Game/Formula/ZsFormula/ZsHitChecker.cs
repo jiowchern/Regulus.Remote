@@ -28,9 +28,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula
 		{
 			var handler = new HitPipelineHandler(_DataVisitor, request);
 
-			return handler.FilterAllDied()
-						.GetAllAliving()
-						.SetFocusBlock()
+			return handler.SetFocusBlock()
 						.SetFishDieRateFromHitOrder()
 						.OddsCalculate()
 						.FloatingOddsActuate()

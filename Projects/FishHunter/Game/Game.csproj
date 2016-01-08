@@ -63,6 +63,7 @@
     <Compile Include="Formula\ZsFormula\Rule\Calculation\IPipelineElement.cs" />
     <Compile Include="Formula\ZsFormula\Rule\Calculation\NormalWeaponRateCal.cs" />
     <Compile Include="Formula\ZsFormula\Rule\Calculation\ResponseMaker.cs" />
+    <Compile Include="Formula\ZsFormula\Save\SaveTreasure.cs" />
     <Compile Include="Formula\ZsFormula\Rule\Calculation\SpecialWeaponRateCal.cs" />
     <Compile Include="Formula\ZsFormula\Rule\FloatingOdds\FloatingOddsActuator.cs" />
     <Compile Include="Formula\ZsFormula\Rule\Calculation\CertainTreasure.cs" />

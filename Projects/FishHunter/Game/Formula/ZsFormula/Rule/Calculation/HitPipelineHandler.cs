@@ -25,20 +25,6 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Calculation
 			_PipelineElements = new List<IPipelineElement>();
 		}
 
-		public HitPipelineHandler FilterAllDied()
-		{
-			Singleton<DeathMonitor>.Instance.FilterAllDead(_Request.FishDatas);
-
-			return this;
-		}
-
-		public HitPipelineHandler GetAllAliving()
-		{
-			_Request.FishDatas = Singleton<DeathMonitor>.Instance.GetAllAliving(_Request.FishDatas);
-
-			return this;
-		}
-
 		public HitPipelineHandler SetFocusBlock()
 		{
 			var block = CalculationBufferBlock.GetBlock(_Request, _DataVisitor.Farm.MaxBet);

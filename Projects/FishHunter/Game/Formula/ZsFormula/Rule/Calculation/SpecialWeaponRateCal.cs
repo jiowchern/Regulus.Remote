@@ -26,6 +26,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Calculation
 
 			long dieRate = new SpecialWeaponPowerTable().WeaponPowers.Find(x => x.WeaponType == _Request.WeaponData.WeaponType)
 														.Power;
+
 			dieRate *= 0x0FFFFFFF;
 
 			dieRate /= _Request.FishDatas.Sum(x => x.GetRealOdds()); // 总倍数

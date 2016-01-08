@@ -44,6 +44,12 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Calculation
 					continue;
 				}
 
+				if(_IsSpecialFish2(fishData))
+				{
+					fishData.Multiple = 1;
+					continue;
+				}
+
 				if(_IsSmallFish(fishData))
 				{
 					fishData.Multiple = 1;
@@ -70,6 +76,11 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Calculation
 
 				fishData.Multiple = _GetResult(fishData);
 			}
+		}
+
+		private static bool _IsSpecialFish2(RequsetFishData fish_data)
+		{
+			return fish_data.FishType == FISH_TYPE.SPECIAL_EAT_FISH || fish_data.FishType == FISH_TYPE.SPECIAL_EAT_FISH_CRAZY;
 		}
 
 		/// <summary>

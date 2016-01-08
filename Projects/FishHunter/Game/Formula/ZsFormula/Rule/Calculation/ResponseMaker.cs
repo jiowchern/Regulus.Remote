@@ -26,11 +26,6 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Calculation
 
 		public List<HitResponse> MakeAll()
 		{
-			foreach(var deadFish in Singleton<DeathMonitor>.Instance.DeadFishs)
-			{
-				_Build(deadFish, FISH_DETERMINATION.REPEAT_DEATH);
-			}
-
 			foreach(var fishData in _Request.FishDatas)
 			{
 				_Make(fishData);
@@ -62,15 +57,27 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Calculation
 		{
 			new CertainTreasure(_Visitor, fish_data).Run();
 
-			Singleton<DeathMonitor>.Instance.Record(fish_data);
-
 			_Build(fish_data, FISH_DETERMINATION.DEATH);
+
+			_Record(fish_data);
+		}
+
+		private void _Record(RequsetFishData fish_data)
+		{
+			var bet = _Request.WeaponData.GetTotalBet();
+			var winScore = fish_data.GetRealOdds() * bet;
+
+			new SaveDeathFishHistory(_Visitor, fish_data, winScore).Run();
+
+			new SaveScoreHistory(_Visitor, winScore).Run();
+
+			new SaveTreasure(_Visitor, fish_data).Run();
 		}
 
 		private void _Build(RequsetFishData fish_data, FISH_DETERMINATION status)
 		{
 			var tmp = _Visitor.GetAllTreasures();
-            if (tmp.Count == 0)
+			if(tmp.Count == 0)
 			{
 				tmp.Add(WEAPON_TYPE.INVALID);
 			}

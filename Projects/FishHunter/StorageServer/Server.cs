@@ -66,7 +66,7 @@ namespace VGame.Project.FishHunter.Storage
 		void IBootable.Launch()
 		{
 			_UnhandleCrash();
-			//Singleton<Log>.Instance.RecordEvent += _LogRecorder.Record;
+			//Singleton<Log>.Instance.RecordEvent += _LogRecorder.Run;
 
 			_Updater.Add(_Center);
 			_Database.Launch(_Name);
@@ -83,7 +83,7 @@ namespace VGame.Project.FishHunter.Storage
 			_Database.Shutdown();
 			_Updater.Shutdown();
 
-			//Singleton<Log>.Instance.RecordEvent -= _LogRecorder.Record;
+			//Singleton<Log>.Instance.RecordEvent -= _LogRecorder.Run;
 			//_LogRecorder.Save();
 		}
 
@@ -293,7 +293,7 @@ namespace VGame.Project.FishHunter.Storage
 
 		Value<FormulaPlayerRecord> IFormulaPlayerRecorder.Query(Guid account_id)
 		{
-			Server._Logger.Info().Message("Player Query Record Start.").Property("PlayerId", account_id).Write();
+			Server._Logger.Info().Message("Player Query Run Start.").Property("PlayerId", account_id).Write();
 
 			var val = new Value<FormulaPlayerRecord>();
 			var data = _LoadFormulaPlayerRecord(account_id);
@@ -309,21 +309,21 @@ namespace VGame.Project.FishHunter.Storage
 				_Database.Add(record, obj => obj.Id);
 				val.SetValue(record);
 
-				Server._Logger.Info().Message("Create New Player Record.").Property("PlayerId", account_id).Write();
+				Server._Logger.Info().Message("Create New Player Run.").Property("PlayerId", account_id).Write();
 			}
 			else
 			{
 				val.SetValue(data);
 			}
 
-			Server._Logger.Info().Message("Player Query Record Finish.").Property("PlayerId", account_id).Write();
+			Server._Logger.Info().Message("Player Query Run Finish.").Property("PlayerId", account_id).Write();
 
 			return val;
 		}
 
 		Value<bool> IFormulaPlayerRecorder.Save(FormulaPlayerRecord record)
 		{
-			Server._Logger.Info().Message("Save Player Record Start.").Property("PlayerId", record.Guid).Write();
+			Server._Logger.Info().Message("Save Player Run Start.").Property("PlayerId", record.Guid).Write();
 			var val = new Value<bool>();
 			var recordData = _LoadFormulaPlayerRecord(record);
 
@@ -337,7 +337,7 @@ namespace VGame.Project.FishHunter.Storage
 				val.SetValue(true);
 				_Database.Update(record, a => a.Id);
 
-				Server._Logger.Info().Message("Save Player Record Finish.").Property("PlayerId", record.Guid).Write();
+				Server._Logger.Info().Message("Save Player Run Finish.").Property("PlayerId", record.Guid).Write();
 			}
 
 			return val;
