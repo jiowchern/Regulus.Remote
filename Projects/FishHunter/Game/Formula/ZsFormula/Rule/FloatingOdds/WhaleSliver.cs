@@ -49,7 +49,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.FloatingOdds
 
 			foreach(var whale in whales)
 			{
-				var random = Random.Instance.NextInt(0, 5);
+				var random = Random.Instance.NextInt(0, 6);
 				whale.FishOdds = _OddsDatas.Find(x => x.Rate == random)
 											.Odds;
 			}

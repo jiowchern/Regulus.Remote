@@ -28,11 +28,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Calculation
 				dieRate += 200; // 提高20%
 			}
 
-			if(_Request.WeaponData.WeaponType == WEAPON_TYPE.FREE_POWER)
-			{
-				// 特武 免费炮
-				dieRate /= 2;
-			}
+			
 
 			if(dieRate < 0)
 			{

@@ -3,16 +3,13 @@ using System.IO;
 using System.Net;
 using System.Runtime.ExceptionServices;
 
-
 using Regulus.Framework;
 using Regulus.Remoting;
 using Regulus.Utility;
 
-
 using VGame.Project.FishHunter.Formula;
 using VGame.Project.FishHunter.Play;
 using VGame.Project.FishHunter.Storage;
-
 
 using Center = VGame.Project.FishHunter.Play.Center;
 using IUser = VGame.Project.FishHunter.Formula.IUser;
@@ -43,11 +40,14 @@ namespace VGame.Project.FishHunter
 
 		private ICore _Core
 		{
-			get { return _Center; }
+			get
+			{
+				return _Center;
+			}
 		}
 
 		public Complex()
-		{           
+		{
 			_LogRecorder = new LogFileRecorder("Play");
 
 			_StorageVerifyData = new Regulus.CustomType.Verify();
@@ -75,30 +75,26 @@ namespace VGame.Project.FishHunter
 		{
 			_Updater.Shutdown();
 			Singleton<Log>.Instance.RecordEvent -= _LogRecorder.Record;
-            _LogRecorder.Save();
-
-        }
+			_LogRecorder.Save();
+		}
 
 		void IBootable.Launch()
 		{
-		    AppDomain.CurrentDomain.FirstChanceException += _WriteError;
-            
+			AppDomain.CurrentDomain.FirstChanceException += _WriteError;
+
 			Singleton<Log>.Instance.RecordEvent += _LogRecorder.Record;
 			_Updater.Add(_Storage);
 			_Updater.Add(_Formula);
 			_ToConnectStorage(_StorageUser);
 		}
 
-	    
+		private void _WriteError(object sender, FirstChanceExceptionEventArgs e)
+		{
+			_LogRecorder.Record($"Exception:{e.Exception.Message}\r\nStackTrace:{e.Exception.StackTrace}");
+			_LogRecorder.Save();
+		}
 
-	    private void _WriteError(object sender, FirstChanceExceptionEventArgs e)
-	    {
-	        
-            _LogRecorder.Record($"Exception:{e.Exception.Message}\r\nStackTrace:{e.Exception.StackTrace}");
-            _LogRecorder.Save();
-        }
-
-	    private void _BuildParams()
+		private void _BuildParams()
 		{
 			var config = new Ini(_ReadConfig());
 
@@ -115,13 +111,12 @@ namespace VGame.Project.FishHunter
 
 		private void _BuildUser()
 		{
-
-            
 			if(_IsIpAddress(_FormulaVerifyData.IPAddress))
 			{
 				_Formula = new Client();
 				_Formula.Selector.AddFactoty("remoting", new RemotingUserFactory());
-				_FormulaUser = _Formula.Selector.CreateUserProvider("remoting").Spawn("1");
+				_FormulaUser = _Formula.Selector.CreateUserProvider("remoting")
+										.Spawn("1");
 			}
 			else
 			{
@@ -129,7 +124,8 @@ namespace VGame.Project.FishHunter
 				_Updater.Add(center);
 				_Formula = new Client();
 				_Formula.Selector.AddFactoty("remoting", new StandaloneUserFactory(center));
-				_FormulaUser = _Formula.Selector.CreateUserProvider("remoting").Spawn("1");
+				_FormulaUser = _Formula.Selector.CreateUserProvider("remoting")
+										.Spawn("1");
 			}
 
 			if(_IsIpAddress(_StorageVerifyData.IPAddress))
@@ -152,8 +148,6 @@ namespace VGame.Project.FishHunter
 			IPAddress ipaddr;
 			return IPAddress.TryParse(ip, out ipaddr);
 		}
-
-		
 
 		private void _ToConnectStorage(Storage.IUser user)
 		{
@@ -195,10 +189,7 @@ namespace VGame.Project.FishHunter
 
 		private void _ToConnectFormula()
 		{
-			var stage = new ConnectStage(
-				_FormulaUser.Remoting.ConnectProvider, 
-				_FormulaVerifyData.IPAddress, 
-				_FormulaVerifyData.Port);
+			var stage = new ConnectStage(_FormulaUser.Remoting.ConnectProvider, _FormulaVerifyData.IPAddress, _FormulaVerifyData.Port);
 
 			stage.OnSuccessEvent += _ToFormulaVerify;
 
@@ -209,10 +200,7 @@ namespace VGame.Project.FishHunter
 
 		private void _ToFormulaVerify()
 		{
-			var stage = new VerifyStage(
-				_FormulaUser.VerifyProvider, 
-				_FormulaVerifyData.Account, 
-				_FormulaVerifyData.Password);
+			var stage = new VerifyStage(_FormulaUser.VerifyProvider, _FormulaVerifyData.Account, _FormulaVerifyData.Password);
 
 			stage.OnSuccessEvent += _ToBuildClient;
 
@@ -231,12 +219,8 @@ namespace VGame.Project.FishHunter
 		}
 
 		private void _Play(BuildCenterStage.ExternalFeature features)
-		{            
-            _Center = new Center(
-				features.AccountFinder, 
-				features.FishStageQueryer, 
-				features.GameRecorder, 
-				features.TradeAccount);
+		{
+			_Center = new Center(features.AccountFinder, features.FishStageQueryer, features.GameRecorder, features.TradeAccount);
 
 			_Updater.Add(_Center);
 		}

@@ -43,19 +43,20 @@ namespace VGame.Project.FishHunter.Common.Data
 		public int WeaponBet { get; set; }
 
 		/// <summary>
-		///     false = 沒有翻倍
+		///     翻倍
 		/// </summary>
 		[ProtoMember(6)]
 		public int Multiple { get; set; }
 
 		/// <summary>
+		///     倍數
+		/// </summary>
+		[ProtoMember(7)]
+		public int FishOdds { get; set; }
+
+		/// <summary>
 		///     死亡率
 		/// </summary>
 		public long DieRate { get; set; }
-
-		/// <summary>
-		///     倍數
-		/// </summary>
-		public int FishOdds { get; set; }
 	}
 }

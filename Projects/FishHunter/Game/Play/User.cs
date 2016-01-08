@@ -1,21 +1,18 @@
 ﻿using System;
 
-
 using Regulus.Framework;
 using Regulus.Game;
 using Regulus.Remoting;
 using Regulus.Utility;
 
-
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Common.GPI;
-
 
 using StageLock = VGame.Project.FishHunter.Common.Data.StageLock;
 
 namespace VGame.Project.FishHunter.Play
 {
-	internal class User : Regulus.Game.IUser, IAccountStatus
+	internal class User : IUser, IAccountStatus
 	{
 		private event Action _KickEvent;
 
@@ -29,9 +26,9 @@ namespace VGame.Project.FishHunter.Play
 
 		private readonly IFishStageQueryer _FishStageQueryer;
 
-		private readonly StageMachine _Machine;
-
 		private readonly IGameRecorder _GameRecorder;
+
+		private readonly StageMachine _Machine;
 
 		private readonly StageTicketInspector _StageTicketInspector;
 
@@ -41,12 +38,7 @@ namespace VGame.Project.FishHunter.Play
 
 		private GamePlayerRecord _GamePlayerRecord;
 
-		public User(
-			ISoulBinder binder, 
-			IAccountFinder account_finder, 
-			IFishStageQueryer queryer, 
-			IGameRecorder game_record_handler, 
-			ITradeNotes trade_account)
+		public User(ISoulBinder binder, IAccountFinder account_finder, IFishStageQueryer queryer, IGameRecorder game_record_handler, ITradeNotes trade_account)
 		{
 			_Machine = new StageMachine();
 
@@ -70,23 +62,44 @@ namespace VGame.Project.FishHunter.Play
 
 		event Action IAccountStatus.KickEvent
 		{
-			add { _KickEvent += value; }
-			remove { _KickEvent -= value; }
+			add
+			{
+				_KickEvent += value;
+			}
+
+			remove
+			{
+				_KickEvent -= value;
+			}
 		}
 
-		event OnNewUser Regulus.Game.IUser.VerifySuccessEvent
+		event OnNewUser IUser.VerifySuccessEvent
 		{
-			add { _VerifySuccessEvent += value; }
-			remove { _VerifySuccessEvent -= value; }
+			add
+			{
+				_VerifySuccessEvent += value;
+			}
+
+			remove
+			{
+				_VerifySuccessEvent -= value;
+			}
 		}
 
-		event OnQuit Regulus.Game.IUser.QuitEvent
+		event OnQuit IUser.QuitEvent
 		{
-			add { _QuitEvent += value; }
-			remove { _QuitEvent -= value; }
+			add
+			{
+				_QuitEvent += value;
+			}
+
+			remove
+			{
+				_QuitEvent -= value;
+			}
 		}
 
-		void Regulus.Game.IUser.OnKick(Guid guid)
+		void IUser.OnKick(Guid guid)
 		{
 			if(_Account != null && _Account.Guid == guid)
 			{
@@ -162,95 +175,96 @@ namespace VGame.Project.FishHunter.Play
 
 		private void _ToQueryRecord()
 		{
-			_GameRecorder.Load(_Account.Guid).OnValue += obj =>
-			{
-				_GamePlayerRecord = obj;
-				_StageTicketInspector.Initial(
-					new[]
-					{
-						new Common.Data.Stage
+			_GameRecorder.Load(_Account.Guid)
+						.OnValue += obj =>
 						{
-							Id = 1, 
-							Pass = true
-						}, 
-						new Common.Data.Stage
-						{
-							Id = 2, 
-							Pass = false
-						}, 
-						new Common.Data.Stage
-						{
-							Id = 4, 
-							Pass = false
-						}, 
-						new Common.Data.Stage
-						{
-							Id = 5, 
-							Pass = false
-						}, 
-						new Common.Data.Stage
-						{
-							Id = 6, 
-							Pass = false
-						}, 
-						new Common.Data.Stage
-						{
-							Id = 7, 
-							Pass = false
-						}, 
-						new Common.Data.Stage
-						{
-							Id = 8, 
-							Pass = false
-						}, 
-						new Common.Data.Stage
-						{
-							Id = 9, 
-							Pass = false
-						}, 
-						new Common.Data.Stage
-						{
-							Id = 10, 
-							Pass = false
-						}, 
-						new Common.Data.Stage
-						{
-							Id = 11, 
-							Pass = false
-						}, 
-						new Common.Data.Stage
-						{
-							Id = 12, 
-							Pass = false
-						}, 
-						new Common.Data.Stage
-						{
-							Id = 13, 
-							Pass = false
-						}, 
-						new Common.Data.Stage
-						{
-							Id = 14, 
-							Pass = false
-						},
-						new Common.Data.Stage
-						{
-							Id = 111, 
-							Pass = true
-						}
-					});
-					
-				_ToLoadTradeNotes();
-			};
+							_GamePlayerRecord = obj;
+							_StageTicketInspector.Initial(new[]
+							{
+								new Common.Data.Stage
+								{
+									Id = 1, 
+									Pass = true
+								}, 
+								new Common.Data.Stage
+								{
+									Id = 2, 
+									Pass = false
+								}, 
+								new Common.Data.Stage
+								{
+									Id = 4, 
+									Pass = false
+								}, 
+								new Common.Data.Stage
+								{
+									Id = 5, 
+									Pass = false
+								}, 
+								new Common.Data.Stage
+								{
+									Id = 6, 
+									Pass = false
+								}, 
+								new Common.Data.Stage
+								{
+									Id = 7, 
+									Pass = false
+								}, 
+								new Common.Data.Stage
+								{
+									Id = 8, 
+									Pass = false
+								}, 
+								new Common.Data.Stage
+								{
+									Id = 9, 
+									Pass = false
+								}, 
+								new Common.Data.Stage
+								{
+									Id = 10, 
+									Pass = false
+								}, 
+								new Common.Data.Stage
+								{
+									Id = 11, 
+									Pass = false
+								}, 
+								new Common.Data.Stage
+								{
+									Id = 12, 
+									Pass = false
+								}, 
+								new Common.Data.Stage
+								{
+									Id = 13, 
+									Pass = false
+								}, 
+								new Common.Data.Stage
+								{
+									Id = 14, 
+									Pass = false
+								}, 
+								new Common.Data.Stage
+								{
+									Id = 111, 
+									Pass = true
+								}
+							});
+
+							_ToLoadTradeNotes();
+						};
 		}
 
 		private void _ToLoadTradeNotes()
 		{
-			_TradeAccount.GetTotalMoney(_Account.Guid).OnValue += money =>
-			{
-				_GamePlayerRecord.Money += money;
-				_ToSelectStage();
-			};
+			_TradeAccount.GetTotalMoney(_Account.Guid)
+						.OnValue += money =>
+						{
+							_GamePlayerRecord.Money += money;
+							_ToSelectStage();
+						};
 		}
 
 		private void _ToSelectStage()

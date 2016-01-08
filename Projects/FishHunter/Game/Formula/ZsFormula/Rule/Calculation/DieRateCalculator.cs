@@ -40,7 +40,8 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Calculation
 				// 有值代表是特殊武器
 				var specialWeaponPower = new SpecialWeaponPowerTable().WeaponPowers.Find(x => x.WeaponType == _Request.WeaponData.WeaponType);
 
-				if(specialWeaponPower != null)
+				if(specialWeaponPower != null 
+					&& _Request.WeaponData.WeaponType != WEAPON_TYPE.FREE_POWER)
 				{
 					new SpecialWeaponRateCal(_Visitor, _Request).Cal(fishData);
 				}
