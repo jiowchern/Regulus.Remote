@@ -59,8 +59,6 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Data
 				treasures.AddRange(data.Treasures);
 			}
 
-			
-
 			return treasures;
 		}
 	}

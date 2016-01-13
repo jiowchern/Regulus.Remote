@@ -14,57 +14,72 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Save
 
 		private readonly RequsetFishData _Fish;
 
-		private readonly int _WinScore;
+		private readonly RequestWeaponData _WeaponData;
 
-		public SaveDeathFishHistory(DataVisitor data_visitor, RequsetFishData fish, int win_score)
+		public SaveDeathFishHistory(DataVisitor data_visitor, RequsetFishData fish, RequestWeaponData weapon_data_data)
 		{
 			_Fish = fish;
-			_WinScore = win_score;
+			_WeaponData = weapon_data_data;
 			_DataVisitor = data_visitor;
 		}
 
 		public void Run()
 		{
-			_SavePlayerHit();
-			_SaveFarmHit();
+			_SavePlayerWeapon();
+			_SaveFarmWeapon();
 		}
 
-		private void _SavePlayerHit()
+		private void _SavePlayerWeapon()
 		{
-			var hitRecords = _DataVisitor.PlayerRecord
-										.FindFarmRecord(_DataVisitor.Farm.FarmId)
-										.FishHits.ToList();
+			var hitRecords = _DataVisitor.PlayerRecord.FindFarmRecord(_DataVisitor.Farm.FarmId);
 
-			var data = hitRecords.FirstOrDefault(x => x.FishType == _Fish.FishType);
-
-			if(data == null)
-			{
-				data = new FishHitRecord(_Fish.FishType);
-				hitRecords.Add(data);
-				_DataVisitor.PlayerRecord
-							.FindFarmRecord(_DataVisitor.Farm.FarmId)
-							.FishHits = hitRecords.ToArray();
-			}
-
-			data.KillCount++;
-			data.WinScore += _WinScore;
+			_Save(hitRecords);
 		}
 
-		private void _SaveFarmHit()
+		private void _SaveFarmWeapon()
 		{
-			var hitRecords = _DataVisitor.Farm.Record.FishHits.ToList();
+			var hitRecords = _DataVisitor.Farm.Record;
 
-			var data = hitRecords.FirstOrDefault(x => x.FishType == _Fish.FishType);
+			_Save(hitRecords);
+		}
 
-			if(data == null)
+		private void _Save(FarmRecord farm_record)
+		{
+			var list = farm_record.WeaponHitRecords.ToList();
+
+			var record = list.FirstOrDefault(x => x.WeaponType == _WeaponData.WeaponType);
+
+			if(record == null)
 			{
-				data = new FishHitRecord(_Fish.FishType);
-				hitRecords.Add(data);
-				_DataVisitor.Farm.Record.FishHits = hitRecords.ToArray();
+				record = new WeaponHitRecord(_WeaponData.WeaponType);
+
+				list.Add(record);
 			}
 
-			data.KillCount++;
-			data.WinScore += _WinScore;
+			_SetKills(record);
+
+			record.TotalOdds += _Fish.GetRealOdds();
+
+			record.WinScore += _Fish.GetRealOdds() * _WeaponData.GetTotalBet();
+
+			farm_record.WeaponHitRecords = list.ToArray();
+		}
+
+		private void _SetKills(WeaponHitRecord record)
+		{
+			var list = record.FishKills.ToList();
+
+			var dieFish = list.FirstOrDefault(x => x.FishType == _Fish.FishType);
+
+			if(dieFish == null)
+			{
+				dieFish = new FishKillRecord(_Fish.FishType);
+				list.Add(dieFish);
+			}
+
+			dieFish.KillCount++;
+
+			record.FishKills = list.ToArray();
 		}
 	}
 }

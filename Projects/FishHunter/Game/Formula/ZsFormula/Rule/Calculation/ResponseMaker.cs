@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-
-using Regulus.Utility;
 
 using VGame.Project.FishHunter.Common.Data;
 using VGame.Project.FishHunter.Formula.ZsFormula.Data;
@@ -67,7 +64,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Calculation
 			var bet = _Request.WeaponData.GetTotalBet();
 			var winScore = fish_data.GetRealOdds() * bet;
 
-			new SaveDeathFishHistory(_Visitor, fish_data, winScore).Run();
+			new SaveDeathFishHistory(_Visitor, fish_data, _Request.WeaponData).Run();
 
 			new SaveScoreHistory(_Visitor, winScore).Run();
 

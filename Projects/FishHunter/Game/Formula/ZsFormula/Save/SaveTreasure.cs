@@ -26,29 +26,21 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Save
 
 		private void _RecordTreasureForPlayer(RequsetFishData fish)
 		{
-			var fishHitRecords = _Visitor.PlayerRecord.FindFarmRecord(_Visitor.Farm.FarmId)
-										.FishHits;
+			var fishHitRecords = _Visitor.PlayerRecord.FindFarmRecord(_Visitor.Farm.FarmId);
 
-			_SaveTreasureHistory(fishHitRecords, fish);
+			_SaveTreasureHistory(fishHitRecords);
 		}
 
 		private void _RecordTreasureForFarm(RequsetFishData fish)
 		{
-			var fishHitRecords = _Visitor.Farm.Record.FishHits;
+			var fishHitRecords = _Visitor.Farm.Record;
 
-			_SaveTreasureHistory(fishHitRecords, fish);
+			_SaveTreasureHistory(fishHitRecords);
 		}
 
-		private void _SaveTreasureHistory(IEnumerable<FishHitRecord> fish_hit_records, RequsetFishData fish)
+		private void _SaveTreasureHistory(FarmRecord fish_hit_records)
 		{
-			var record = fish_hit_records.FirstOrDefault(x => x.FishType == fish.FishType);
-
-			if(record == null)
-			{
-				return;
-			}
-
-			var list = record.TreasureRecords.ToList();
+			var list = fish_hit_records.RandomTreasures.ToList();
 
 			foreach(var treasure in _Visitor.GetAllTreasures())
 			{
@@ -62,7 +54,7 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Save
 				d.Count++;
 			}
 
-			record.TreasureRecords = list.ToArray();
+			fish_hit_records.RandomTreasures = list.ToArray();
 		}
 	}
 }
