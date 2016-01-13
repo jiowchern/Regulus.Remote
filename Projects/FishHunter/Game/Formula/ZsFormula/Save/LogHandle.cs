@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 using NLog;
 using NLog.Fluent;
@@ -44,9 +45,9 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Save
 		/// </summary>
 		private void _PlayerLog()
 		{
-			var playerData = _Visitor.PlayerRecord.FindFarmRecord(_Visitor.Farm.FarmId);
+			var farmRecord = _Visitor.PlayerRecord.FindFarmRecord(_Visitor.Farm.FarmId);
 
-			if(playerData.FireCount % 500 != 0)
+			if(farmRecord.FireCount % 500 != 0)
 			{
 				return;
 			}
@@ -56,12 +57,66 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Save
 				.Message("PlayerRecord")
 				.Property("FarmId", _Visitor.Farm.FarmId)
 				.Property("PlayerId", _Visitor.PlayerRecord.Owner)
-				.Property("TotalSpending", playerData.TotalSpending)
-				.Property("WinScore", playerData.WinScore)
-				.Property("FireCount", playerData.FireCount)
-				.Property("AsnTimes", playerData.AsnTimes)
-				.Property("AsnWin", playerData.AsnWin)
-				.Property("WinFrequency", playerData.WinFrequency)
+				.Property("TotalSpending", farmRecord.TotalSpending)
+				.Property("WinScore", farmRecord.WinScore)
+				.Property("FireCount", farmRecord.FireCount)
+				.Property("AsnTimes", farmRecord.AsnTimes)
+				.Property("AsnWin", farmRecord.AsnWin)
+				.Property("WinFrequency", farmRecord.WinFrequency)
+
+					// 超級炮
+				.Property("SuperBombCount", farmRecord.RandomTreasures.FirstOrDefault(x => x.WeaponType == WEAPON_TYPE.SUPER_BOMB)
+													?.Count ?? 0)
+				.Property("SuperBombTotalOdds", farmRecord.WeaponHitRecords.FirstOrDefault(x => x.WeaponType == WEAPON_TYPE.SUPER_BOMB)
+														?.TotalOdds ?? 0)
+
+					// 電網
+				.Property("ElectricNetBombCount", farmRecord.RandomTreasures.FirstOrDefault(x => x.WeaponType == WEAPON_TYPE.ELECTRIC_NET)
+														?.Count ?? 0)
+				.Property("ElectricNetBombTotalOdds", farmRecord.WeaponHitRecords.FirstOrDefault(x => x.WeaponType == WEAPON_TYPE.ELECTRIC_NET)
+															?.TotalOdds ?? 0)
+
+					// 免費炮
+				.Property("FreePowerCount", farmRecord.RandomTreasures.FirstOrDefault(x => x.WeaponType == WEAPON_TYPE.FREE_POWER)
+													?.Count ?? 0)
+				.Property("FreePowerTotalOdds", farmRecord.WeaponHitRecords.FirstOrDefault(x => x.WeaponType == WEAPON_TYPE.FREE_POWER)
+														?.TotalOdds ?? 0)
+
+					// 全畫面
+				.Property("ScreenBombCount", farmRecord.RandomTreasures.FirstOrDefault(x => x.WeaponType == WEAPON_TYPE.SCREEN_BOMB)
+													?.Count ?? 0)
+				.Property("ScreenBombTotalOdds", farmRecord.WeaponHitRecords.FirstOrDefault(x => x.WeaponType == WEAPON_TYPE.SCREEN_BOMB)
+														?.TotalOdds ?? 0)
+
+					// 皮卡丘
+				.Property("ThunderBombCount", farmRecord.RandomTreasures.FirstOrDefault(x => x.WeaponType == WEAPON_TYPE.THUNDER_BOMB)
+													?.Count ?? 0)
+				.Property("ThunderBombTotalOdds", farmRecord.WeaponHitRecords.FirstOrDefault(x => x.WeaponType == WEAPON_TYPE.THUNDER_BOMB)
+														?.TotalOdds ?? 0)
+
+					// 火蛇
+				.Property("FireBombCount", farmRecord.RandomTreasures.FirstOrDefault(x => x.WeaponType == WEAPON_TYPE.FIRE_BOMB)
+													?.Count ?? 0)
+				.Property("FireBombTotalOdds", farmRecord.WeaponHitRecords.FirstOrDefault(x => x.WeaponType == WEAPON_TYPE.FIRE_BOMB)
+														?.TotalOdds ?? 0)
+
+					// 鐵球
+				.Property("DamageBombCount", farmRecord.RandomTreasures.FirstOrDefault(x => x.WeaponType == WEAPON_TYPE.DAMAGE_BALL)
+													?.Count ?? 0)
+				.Property("DamageBombTotalOdds", farmRecord.WeaponHitRecords.FirstOrDefault(x => x.WeaponType == WEAPON_TYPE.DAMAGE_BALL)
+														?.TotalOdds ?? 0)
+
+					// 小章魚
+				.Property("OctopusBombCount", farmRecord.RandomTreasures.FirstOrDefault(x => x.WeaponType == WEAPON_TYPE.OCTOPUS_BOMB)
+													?.Count ?? 0)
+				.Property("OctopusBombTotalOdds", farmRecord.WeaponHitRecords.FirstOrDefault(x => x.WeaponType == WEAPON_TYPE.OCTOPUS_BOMB)
+														?.TotalOdds ?? 0)
+
+					// 大章魚
+				.Property("BigOctopusBombCount", farmRecord.RandomTreasures.FirstOrDefault(x => x.WeaponType == WEAPON_TYPE.BIG_OCTOPUS_BOMB)
+														?.Count ?? 0)
+				.Property("BigOctopusBombTotalOdds", farmRecord.WeaponHitRecords.FirstOrDefault(x => x.WeaponType == WEAPON_TYPE.BIG_OCTOPUS_BOMB)
+															?.TotalOdds ?? 0)
 				.Write();
 		}
 
@@ -113,7 +168,5 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Save
 				}
 			}
 		}
-
-
 	}
 }

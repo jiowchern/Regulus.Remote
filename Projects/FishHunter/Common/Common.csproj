@@ -53,6 +53,7 @@
     <Compile Include="Data\BlockData.cs" />
     <Compile Include="Data\BufferValue.cs" />
     <Compile Include="Data\FishHitRecord.cs" />
+    <Compile Include="Data\FishKillRecord.cs" />
     <Compile Include="Data\FormulaPlayerRecord.cs" />
     <Compile Include="Data\RequestWeaponData.cs" />
     <Compile Include="Data\RequsetFishData.cs" />

@@ -38,44 +38,54 @@ namespace VGame.Project.FishHunter.Formula.ZsFormula.Rule.Calculation
 		{
 			foreach(var fishData in _HitRequest.FishDatas)
 			{
-				if(_IsSpecialFish(fishData))
-				{
-					fishData.Multiple = 1;
-					continue;
-				}
+				_StartSet(fishData);
 
-				if(_IsSpecialFish2(fishData))
+				foreach(var grave in fishData.GraveGoods)
 				{
-					fishData.Multiple = 1;
-					continue;
+					_StartSet(grave);
 				}
-
-				if(_IsSmallFish(fishData))
-				{
-					fishData.Multiple = 1;
-					continue;
-				}
-
-				if(_IsFreeze(fishData))
-				{
-					fishData.Multiple = 2;
-					continue;
-				}
-
-				if(!_CheckExceptionsFishType(fishData))
-				{
-					fishData.Multiple = 1;
-					continue;
-				}
-
-				if(!_CheckStageRate())
-				{
-					fishData.Multiple = 1;
-					continue;
-				}
-
-				fishData.Multiple = _GetResult(fishData);
 			}
+		}
+
+		private void _StartSet(RequsetFishData fish_data)
+		{
+			if(_IsSpecialFish(fish_data))
+			{
+				fish_data.Multiple = 1;
+				return;
+			}
+
+			if(_IsSpecialFish2(fish_data))
+			{
+				fish_data.Multiple = 1;
+				return;
+			}
+
+			if(_IsSmallFish(fish_data))
+			{
+				fish_data.Multiple = 1;
+				return;
+			}
+
+			if(_IsFreeze(fish_data))
+			{
+				fish_data.Multiple = 2;
+				return;
+			}
+
+			if(!_CheckExceptionsFishType(fish_data))
+			{
+				fish_data.Multiple = 1;
+				return;
+			}
+
+			if(!_CheckStageRate())
+			{
+				fish_data.Multiple = 1;
+				return;
+			}
+
+			fish_data.Multiple = _GetResult(fish_data);
 		}
 
 		private static bool _IsSpecialFish2(RequsetFishData fish_data)
