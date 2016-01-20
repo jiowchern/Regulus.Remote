@@ -31,6 +31,12 @@ namespace Regulus.Remoting.Ghost.Native
 
 		}
 
+	    private Agent(Regulus.Remoting.IGhostProvider provider)
+	    {
+            _Machine = new StageMachine();
+            _Core = new AgentCore(provider);
+        }
+
 		bool IUpdatable.Update()
 		{
 			lock(_Machine)
@@ -181,5 +187,14 @@ namespace Regulus.Remoting.Ghost.Native
 		{
 			return new Agent();
 		}
-	}
+
+        /// <summary>
+		///     建立代理器
+		/// </summary>
+		/// <returns></returns>
+		public static IAgent Create(Regulus.Remoting.IGhostProvider provider)
+        {
+            return new Agent(provider);
+        }
+    }
 }

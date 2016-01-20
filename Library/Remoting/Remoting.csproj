@@ -64,6 +64,7 @@
     <Compile Include="Core.cs" />
     <Compile Include="CoreThreadRequestHandler.cs" />
     <Compile Include="GameLoader.cs" />
+    <Compile Include="IGhostProvider.cs" />
     <Compile Include="NetworkMonitor.cs" />
     <Compile Include="PackageQueue.cs" />
     <Compile Include="PackageReader.cs" />

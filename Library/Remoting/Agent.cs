@@ -64,15 +64,15 @@ namespace Regulus.Remoting
 		/// </summary>
 		void Disconnect();
 
-        /// <summary>
-        /// 錯誤的方法呼叫
-        /// 如果呼叫的方法參數有誤則會回傳此訊息.
-        /// 事件參數:
-        ///     1.方法名稱
-        ///     2.錯誤訊息
-        /// 會發生此訊息通常是因為client與server版本不相容所致.
-        /// </summary>
-	    event Action<string , string> ErrorMethodEvent;
+		/// <summary>
+		/// 錯誤的方法呼叫
+		/// 如果呼叫的方法參數有誤則會回傳此訊息.
+		/// 事件參數:
+		///     1.方法名稱
+		///     2.錯誤訊息
+		/// 會發生此訊息通常是因為client與server版本不相容所致.
+		/// </summary>
+		event Action<string , string> ErrorMethodEvent;
 	}
 
 	public class AgentCore
@@ -95,10 +95,16 @@ namespace Regulus.Remoting
 
 		private IGhostRequest _Requester;
 
+		private IGhostProvider _GhostProvider;
+
 		public long Ping { get; private set; }
 
 		public bool Enable { get; private set; }
 
+		public AgentCore(IGhostProvider ghost_provider) : this()
+		{
+			_GhostProvider = ghost_provider;
+		}
 		public AgentCore()
 		{
 			_Providers = new Dictionary<string, IProvider>();
@@ -160,23 +166,23 @@ namespace Regulus.Remoting
 					var entity_id = new Guid(args[0]);
 					var eventName = TypeHelper.Deserialize<string>(args[1]);
 					var eventParams = (from p in args
-					                   where p.Key >= 2
-					                   select p.Value as object).ToArray();
+									   where p.Key >= 2
+									   select p.Value as object).ToArray();
 
 					_InvokeEvent(entity_id, eventName, eventParams);
 				}
 			}
-            else if(id == (int)ServerToClientOpCode.ErrorMethod)
-            {
-                if(args.Count == 3)
-                {
-                    var returnTarget = new Guid(args[0]);
-                    var method = TypeHelper.Deserialize<string>(args[1]);
-                    var message = TypeHelper.Deserialize<string>(args[2]);
-                    _ErrorReturnValue(returnTarget, method , message);
-                }
-            }
-            else if(id == (int)ServerToClientOpCode.ReturnValue)
+			else if(id == (int)ServerToClientOpCode.ErrorMethod)
+			{
+				if(args.Count == 3)
+				{
+					var returnTarget = new Guid(args[0]);
+					var method = TypeHelper.Deserialize<string>(args[1]);
+					var message = TypeHelper.Deserialize<string>(args[2]);
+					_ErrorReturnValue(returnTarget, method , message);
+				}
+			}
+			else if(id == (int)ServerToClientOpCode.ReturnValue)
 			{
 				if(args.Count == 2)
 				{
@@ -220,17 +226,17 @@ namespace Regulus.Remoting
 			}
 		}
 
-	    private void _ErrorReturnValue(Guid return_target, string method, string message)
-	    {
-	        _ReturnValueQueue.PopReturnValue(return_target);
+		private void _ErrorReturnValue(Guid return_target, string method, string message)
+		{
+			_ReturnValueQueue.PopReturnValue(return_target);
 
-	        if(ErrorMethodEvent != null)
-	        {
-	            ErrorMethodEvent(method , message);
-	        }
-	    }
+			if(ErrorMethodEvent != null)
+			{
+				ErrorMethodEvent(method , message);
+			}
+		}
 
-	    private void _SetReturnValue(Guid returnTarget, byte[] returnValue)
+		private void _SetReturnValue(Guid returnTarget, byte[] returnValue)
 		{
 			var value = _ReturnValueQueue.PopReturnValue(returnTarget);
 			if(value != null)
@@ -338,9 +344,9 @@ namespace Regulus.Remoting
 			lock(_Providers)
 			{
 				return (from provider in _Providers
-				        let r = (from g in provider.Value.Ghosts where ghost_id == g.GetID() select g).FirstOrDefault()
-				        where r != null
-				        select r).FirstOrDefault();
+						let r = (from g in provider.Value.Ghosts where ghost_id == g.GetID() select g).FirstOrDefault()
+						where r != null
+						select r).FirstOrDefault();
 			}
 		}
 
@@ -405,7 +411,12 @@ namespace Regulus.Remoting
 				return ghostType;
 			}
 
-			ghostType = AgentCore._BuildGhostType(ghostBaseType);
+			if (_GhostProvider != null)
+				ghostType = _GhostProvider.Find(ghostBaseType);
+
+			if(ghostType == null)
+				ghostType = AgentCore._BuildGhostType(ghostBaseType);
+
 			AgentCore._GhostTypes.Add(ghostBaseType, ghostType);
 			return ghostType;
 		}
@@ -417,7 +428,7 @@ namespace Regulus.Remoting
 				Type result;
 				if(AgentCore._Types.TryGetValue(type_name, out result) == false)
 				{
-					result = AgentCore._Find(type_name);
+					result = _Find(type_name);
 					AgentCore._Types.Add(type_name, result);
 				}
 
@@ -425,10 +436,13 @@ namespace Regulus.Remoting
 			}
 		}
 
-		private static Type _Find(string type_name)
+		private static  Type _Find(string type_name)
 		{
 			var type = Type.GetType(type_name);
-			if(type == null)
+            type = (from t in _GhostTypes.Values where t.Name == type_name select t).FirstOrDefault();
+            if (type != null)
+                return type;
+            if (type == null)
 			{
 				foreach(var a in AppDomain.CurrentDomain.GetAssemblies())
 				{
@@ -437,9 +451,8 @@ namespace Regulus.Remoting
 					{
 						return type;
 					}
-				}
-
-				Singleton<Log>.Instance.WriteInfo(string.Format("Fail Type {0}", type_name));
+				}                
+                Singleton<Log>.Instance.WriteInfo(string.Format("Fail Type {0}", type_name));
 				throw new Exception("找不到gpi " + type_name);
 			}
 
@@ -473,7 +486,7 @@ namespace Regulus.Remoting
 				{
 					var fieldValueDelegate = fieldValue as Delegate;
 					var parTypes = (from p in fieldValueDelegate.Method.GetParameters()
-					                select p.ParameterType).ToArray();
+									select p.ParameterType).ToArray();
 					var i = 0;
 					var pars = (from a in args select TypeHelper.DeserializeObject(parTypes[i++], a as byte[])).ToArray();
 					fieldValueDelegate.DynamicInvoke(pars);
@@ -490,7 +503,7 @@ namespace Regulus.Remoting
 			var asmName = new AssemblyName("RegulusRemotingGhost." + baseType + "Assembly");
 
 			// 從目前的domain裡即時產生一個組態                                    
-			var assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(asmName, AssemblyBuilderAccess.Run);
+			var assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(asmName, AssemblyBuilderAccess.Run);            
 
 			// 產生一個模組
 			var module = assembly.DefineDynamicModule("RegulusRemotingGhost." + baseType + "Module");
@@ -834,7 +847,7 @@ namespace Regulus.Remoting
 					// 使用TypeHelper類別裡的Serializer函式 屬性為Public Static..
 					var serializer =
 						typeof(TypeHelper).GetMethod("Serializer", BindingFlags.Public | BindingFlags.Static)
-						                  .MakeGenericMethod(types[paramIndex]);
+										  .MakeGenericMethod(types[paramIndex]);
 
 					// 指定呼叫函式的多載，因為沒有多載，所以填null
 					il.EmitCall(OpCodes.Call, serializer, null);
@@ -975,6 +988,6 @@ namespace Regulus.Remoting
 			cil.Emit(OpCodes.Call, yield);
 		}
 
-	    public event Action<string, string> ErrorMethodEvent;
+		public event Action<string, string> ErrorMethodEvent;
 	}
 }
