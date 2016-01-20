@@ -36,7 +36,13 @@ namespace Regulus.Remoting.Standalone
 			get { return _Agent.Ping; }
 		}
 
-		public Agent()
+	    public Agent(Regulus.Remoting.IGhostProvider provider)
+	    {
+            _GhostRequest = new GhostRequest();
+            _Agent = new AgentCore(provider);
+            _SoulProvider = new SoulProvider(this, this);
+        }
+        public Agent()
 		{
 			_GhostRequest = new GhostRequest();
 			_Agent = new AgentCore();

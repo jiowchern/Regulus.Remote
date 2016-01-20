@@ -202,8 +202,8 @@ namespace Regulus.Remoting
 			var soul = returnValue.GetObject();
 			var type = returnValue.GetObjectType();
 			var prevSoul = (from soulInfo in _Souls.UpdateSet()
-			                where object.ReferenceEquals(soulInfo.ObjectInstance, soul) && soulInfo.ObjectType == type
-			                select soulInfo).SingleOrDefault();
+							where object.ReferenceEquals(soulInfo.ObjectInstance, soul) && soulInfo.ObjectType == type
+							select soulInfo).SingleOrDefault();
 
 			if(prevSoul == null)
 			{
@@ -254,12 +254,12 @@ namespace Regulus.Remoting
 		private void _InvokeMethod(Guid entity_id, string method_name, Guid returnId, byte[][] args)
 		{
 			var soulInfo = (from soul in _Souls.UpdateSet()
-			                where soul.ID == entity_id
-			                select new
-			                {                                
-                                soul.MethodInfos, 
-				                soul.ObjectInstance
-			                }).FirstOrDefault();
+							where soul.ID == entity_id
+							select new
+							{                                
+								soul.MethodInfos, 
+								soul.ObjectInstance
+							}).FirstOrDefault();
 			if(soulInfo != null)
 			{
 				var methodInfo =
@@ -269,52 +269,52 @@ namespace Regulus.Remoting
 				{
 					var paramerInfos = methodInfo.GetParameters();
 
-				    try
-				    {
-				        var i = 0;
-				        var argObjects = from pi in paramerInfos
-				                         let arg = args[i++]
-				                         select TypeHelper.DeserializeObject(pi.ParameterType, arg);
+					try
+					{
+						var i = 0;
+						var argObjects = from pi in paramerInfos
+										 let arg = args[i++]
+										 select TypeHelper.DeserializeObject(pi.ParameterType, arg);
 
-				        var returnValue = methodInfo.Invoke(soulInfo.ObjectInstance, argObjects.ToArray());
-				        if(returnValue != null)
-				        {
-				            _ReturnValue(returnId, returnValue as IValue);
-				        }
-				    }
-				    catch(DeserializeException deserialize_exception)
-				    {
-				        var message  =  deserialize_exception.Base.ToString();                        
-				        _ErrorDeserialize(method_name, returnId , message);
-				    }
-				    catch(Exception e)
-				    {
-				        Log.Instance.WriteDebug(e.ToString());
-                        _ErrorDeserialize(method_name, returnId, e.Message);
-                    }
-                    
+						var returnValue = methodInfo.Invoke(soulInfo.ObjectInstance, argObjects.ToArray());
+						if(returnValue != null)
+						{
+							_ReturnValue(returnId, returnValue as IValue);
+						}
+					}
+					catch(DeserializeException deserialize_exception)
+					{
+						var message  =  deserialize_exception.Base.ToString();                        
+						_ErrorDeserialize(method_name, returnId , message);
+					}
+					catch(Exception e)
+					{
+						Log.Instance.WriteDebug(e.ToString());
+						_ErrorDeserialize(method_name, returnId, e.Message);
+					}
+					
 				}
 			}
 		}
 
-	    private void _ErrorDeserialize(string method_name, Guid return_id, string message)
-	    {
-            Log.Instance.WriteDebug(string.Format("error method! {0} :{1}.", method_name ,message));
+		private void _ErrorDeserialize(string method_name, Guid return_id, string message)
+		{
+			Log.Instance.WriteDebug(string.Format("error method! {0} :{1}.", method_name ,message));
 
-            var argmants = new Dictionary<byte, byte[]>();
-            argmants.Add(0, return_id.ToByteArray());            
-            argmants.Add(1, TypeHelper.Serializer(method_name));
-            argmants.Add(2, TypeHelper.Serializer(message));
-            _Queue.Push((byte)ServerToClientOpCode.ErrorMethod, argmants);
-        }
+			var argmants = new Dictionary<byte, byte[]>();
+			argmants.Add(0, return_id.ToByteArray());            
+			argmants.Add(1, TypeHelper.Serializer(method_name));
+			argmants.Add(2, TypeHelper.Serializer(message));
+			_Queue.Push((byte)ServerToClientOpCode.ErrorMethod, argmants);
+		}
 
-	    private void _Bind<TSoul>(TSoul soul, bool return_type, Guid return_id)
+		private void _Bind<TSoul>(TSoul soul, bool return_type, Guid return_id)
 		{
 			var type = typeof(TSoul);
 
 			var prevSoul = (from soulInfo in _Souls.UpdateSet()
-			                where object.ReferenceEquals(soulInfo.ObjectInstance, soul) && soulInfo.ObjectType == typeof(TSoul)
-			                select soulInfo).SingleOrDefault();
+							where object.ReferenceEquals(soulInfo.ObjectInstance, soul) && soulInfo.ObjectType == typeof(TSoul)
+							select soulInfo).SingleOrDefault();
 
 			if(prevSoul == null)
 			{
@@ -371,8 +371,8 @@ namespace Regulus.Remoting
 		private void _Unbind(object soul, Type type)
 		{
 			var soulInfo = (from soul_info in _Souls.UpdateSet()
-			                where object.ReferenceEquals(soul_info.ObjectInstance, soul) && soul_info.ObjectType == type
-			                select soul_info).SingleOrDefault();
+							where object.ReferenceEquals(soul_info.ObjectInstance, soul) && soul_info.ObjectType == type
+							select soul_info).SingleOrDefault();
 
 			// var soulInfo = _Souls.Find((soul_info) => { return Object.ReferenceEquals(soul_info.ObjectInstance, soul) && soul_info.ObjectType == typeof(TSoul); });
 			if(soulInfo != null)
