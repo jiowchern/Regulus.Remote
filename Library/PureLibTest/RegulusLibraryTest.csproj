@@ -74,6 +74,7 @@
     </Compile>
     <Compile Include="CSVSteps.cs" />
     <Compile Include="EnqueueHelper.cs" />
+    <Compile Include="Extension\TypeExtensionTests.cs" />
     <Compile Include="Log.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
