@@ -9,7 +9,7 @@ namespace Regulus.CustomType
 	[ProtoContract]
 	[Serializable]
     [XmlRoot("Vector2")]
-    public class Vector2
+    public struct Vector2
 	{
         [XmlAttribute("x")]
         [ProtoMember(1)]
@@ -24,9 +24,7 @@ namespace Regulus.CustomType
 			get { return (float)Math.Sqrt(X * X + Y * Y); }
 		}
 
-		public Vector2()
-		{
-		}
+		
 
 		public Vector2(float x, float y)
 		{
@@ -121,7 +119,7 @@ namespace Regulus.CustomType
 		}
 
 		public static bool operator ==(Vector2 a, Vector2 b)
-		{
+		{            
 			return a.X == b.X && a.Y == b.Y;
 		}
 
@@ -144,5 +142,18 @@ namespace Regulus.CustomType
 
 			return ToString();
 		}
-	}
+
+	    public static Vector2 AngleToVector(float angle)
+	    {
+            angle %= 360;
+            var radians = angle * 0.0174532924;
+            return new Vector2((float)Math.Cos(radians), (float)-Math.Sin(radians));
+        }
+
+	    public static float VectorToAngle(Vector2 vec)
+	    {
+	        return (float) -(Math.Atan2(vec.Y, vec.X) * 180 / Math.PI);
+	    }
+
+    }
 }
