@@ -23,7 +23,7 @@ namespace Regulus.BehaviourTree
         }
         
 
-        public Builder Action<T>(T instnace
+        public Builder Action<T>(Expression<Func<T>> instnace
             , Expression<Func<T, Func<float, TICKRESULT>>> tick
             , Expression<Func<T, Action>> start
             , Expression<Func<T, Action>> end)
@@ -119,10 +119,10 @@ namespace Regulus.BehaviourTree
             }
         }
 
-        public Builder Action(IAction action)
+        public Builder Action(Expression<Func<IAction>> action)
         {
             this.Action(
-                new ProxyAction(action)
+                () => new ProxyAction(action)
                 , c => c.Tick
                 , c => c.Start
                 , c => c.End
@@ -133,7 +133,7 @@ namespace Regulus.BehaviourTree
         {
 
             this.Action(
-                new TickAction(func)
+                ()=> new TickAction(func)
                 , c => c.Tick
                 , c => c.Start
                 , c => c.End
@@ -144,12 +144,15 @@ namespace Regulus.BehaviourTree
 
     public class ProxyAction
     {
-        private readonly IAction _Action;
+        private readonly Expression<Func<IAction>> _ActionProvider;
 
-        public ProxyAction(IAction action)
+        private IAction _Action;
+
+        public ProxyAction(Expression<Func<IAction>> action_provider)
         {
-            _Action = action;
+            _ActionProvider = action_provider;
 
+            _Action = _ActionProvider.Compile()();
         }
 
         public TICKRESULT Tick(float arg)
