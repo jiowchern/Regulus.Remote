@@ -10,31 +10,27 @@ namespace Regulus.BehaviourTree
 {
     class ActionNode<T> : ITicker , IDeltaTimeRequester
     {
-        private readonly T _Instnace;
+        private readonly Expression<Func<T>> _InstnaceProvider;
 
         private readonly Expression<Func<T, Func<float, TICKRESULT>>> _Tick;
 
         private readonly Expression<Func<T, Action>> _Start;
 
         private readonly Expression<Func<T, Action>> _End;
-
-        private Func<float, TICKRESULT> _Func;
-
         
         
         private float _Delta;
-
-        private TICKRESULT _Result;
+        
 
         private IEnumerator<TICKRESULT> _Iterator;
 
-        public ActionNode(T instnace 
+        public ActionNode(Expression<Func<T>> instance_provider
             , Expression< Func<T,Func<float , TICKRESULT> > > tick
             , Expression<Func<T, Action >> start
             , Expression<Func<T, Action>> end
              )
         {
-            _Instnace = instnace;
+            _InstnaceProvider = instance_provider;
             _Tick = tick;
             _Start = start;
             _End = end;
@@ -44,10 +40,10 @@ namespace Regulus.BehaviourTree
 
         IEnumerable<TICKRESULT> _Update()
         {
-
-            var start = _Start.Compile()(_Instnace);
-            var tick = _Tick.Compile()(_Instnace);
-            var end = _End.Compile()(_Instnace);
+            var instance = _InstnaceProvider.Compile()();
+            var start = _Start.Compile()(instance);
+            var tick = _Tick.Compile()(instance);
+            var end = _End.Compile()(instance);
             while (true)
             {
                 start();
