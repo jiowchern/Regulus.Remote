@@ -40,12 +40,14 @@ namespace Regulus.BehaviourTree
 
         IEnumerable<TICKRESULT> _Update()
         {
+
             var instance = _InstnaceProvider.Compile()();
             var start = _Start.Compile()(instance);
             var tick = _Tick.Compile()(instance);
             var end = _End.Compile()(instance);
             while (true)
             {
+
                 start();
 
                 TICKRESULT result ;

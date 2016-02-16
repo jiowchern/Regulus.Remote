@@ -44,25 +44,24 @@ namespace Regulus.BehaviourTree
             {
                 _Reload();
             }
-            while (_Queue.Count > 0)
+
+            var ticker = _Queue.Dequeue();
+            var result = ticker.Tick(delta);
+            if (result == TICKRESULT.SUCCESS)
             {
-                var ticker = _Queue.Dequeue();
-                var result = ticker.Tick(delta);
-                if (result == TICKRESULT.SUCCESS)
-                {
-                    _Queue.Clear();
-                    return TICKRESULT.SUCCESS;
-                }
-
-
-                if (result == TICKRESULT.RUNNING)
-                {
-                    _RunninTicker = ticker;
-                    return TICKRESULT.RUNNING;
-                }
+                _Queue.Clear();
+                return TICKRESULT.SUCCESS;
             }
 
-            return TICKRESULT.FAILURE;
+            if (result == TICKRESULT.RUNNING)
+            {
+                _RunninTicker = ticker;
+                return TICKRESULT.RUNNING;
+            }
+
+            if (_Queue.Count == 0)
+                return TICKRESULT.FAILURE;
+            return TICKRESULT.RUNNING;
         }
         private void _Reload()
         {
