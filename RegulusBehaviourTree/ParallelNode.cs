@@ -7,7 +7,7 @@ namespace Regulus.BehaviourTree
 {
     class ParallelNode : ITicker , IParent
     {
-        private List<ITicker> _Childs;        
+        private readonly List<ITicker> _Childs;        
 
         private readonly int _NumRequiredToFail;
 

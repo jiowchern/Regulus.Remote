@@ -39,6 +39,21 @@ namespace Regulus.BehaviourTree
 
         }
 
+        public Builder Sub(ITicker node)
+        {
+            if (node == null)
+            {
+                throw new ArgumentNullException(nameof(node));
+            }
+
+            if (_Stack.Count <= 0)
+            {
+                throw new ApplicationException("Can't splice an unnested sub-tree, there must be a parent-tree.");
+            }
+
+            _Stack.Peek().Add(node);
+            return this;
+        }
         public Builder Sequence()
         {
             var sequenceNode = new SequenceNode();
