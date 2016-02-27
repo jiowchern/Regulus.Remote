@@ -45,6 +45,7 @@
     <Compile Include="ActionNode.cs" />
     <Compile Include="Builder.cs" />
     <Compile Include="IDeltaTimeRequester.cs" />
+    <Compile Include="InvertNode.cs" />
     <Compile Include="IParent.cs" />
     <Compile Include="ITicker.cs" />
     <Compile Include="ParallelNode.cs" />
