@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Collection\DifferenceNoticer.cs" />
     <Compile Include="Collection\Iquadobject.cs" />
+    <Compile Include="Extension\Linq.cs" />
     <Compile Include="Collection\MultiKeyDictionary.cs" />
     <Compile Include="Collection\Quadtree.cs" />
     <Compile Include="Collection\Queue.cs" />
