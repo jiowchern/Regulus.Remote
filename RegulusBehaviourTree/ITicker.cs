@@ -2,6 +2,7 @@
 {
     public interface ITicker
     {
+        void Reset();
         TICKRESULT Tick(float delta);
     }
 }

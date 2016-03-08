@@ -20,6 +20,14 @@ namespace Regulus.BehaviourTree
             this._NumRequiredToSucceed = num_required_to_succeed;
         }
 
+        void ITicker.Reset()
+        {
+            foreach (var ticker in _Childs)
+            {
+                ticker.Reset();
+            }
+        }
+
         public TICKRESULT Tick(float delta)
         {
             var numChildrenSuceeded = 0;

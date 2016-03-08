@@ -10,19 +10,31 @@ namespace Regulus.BehaviourTree
 {
     class ActionNode<T> : ITicker , IDeltaTimeRequester
     {
-        private readonly Expression<Func<T>> _InstnaceProvider;
-
-        private readonly Expression<Func<T, Func<float, TICKRESULT>>> _Tick;
-
-        private readonly Expression<Func<T, Action>> _Start;
-
-        private readonly Expression<Func<T, Action>> _End;
-        
         
         private float _Delta;
         
 
         private IEnumerator<TICKRESULT> _Iterator;
+
+        private Action _Start;
+
+        private Func<float, TICKRESULT> _Tick;
+
+        private Action _End;
+
+        enum STATUS { NONE ,START , RUNNING , END}
+
+        private STATUS _Status;
+
+        private Expression<Func<T>> _InstanceProvider;
+
+        private Expression<Func<T, Func<float, TICKRESULT>>> _TickExpression;
+
+        private Expression<Func<T, Action>> _StartExpression;
+
+        private Expression<Func<T, Action>> _EndExpression;
+
+        private bool _LazyInitial;
 
         public ActionNode(Expression<Func<T>> instance_provider
             , Expression< Func<T,Func<float , TICKRESULT> > > tick
@@ -30,40 +42,67 @@ namespace Regulus.BehaviourTree
             , Expression<Func<T, Action>> end
              )
         {
-            _InstnaceProvider = instance_provider;
-            _Tick = tick;
-            _Start = start;
-            _End = end;
 
-            _Iterator = _Update().GetEnumerator();
+            _InstanceProvider = instance_provider;
+            _TickExpression = tick;
+            _StartExpression = start;
+            _EndExpression = end;
+
+            
+
+            _Reset();
         }
 
-        IEnumerable<TICKRESULT> _Update()
+        IEnumerable<TICKRESULT> _GetIterator()
         {
+            if (_LazyInitial == false)
+            {
+                var instance = _InstanceProvider.Compile()();
+                _Start = _StartExpression.Compile()(instance);
+                _Tick = _TickExpression.Compile()(instance);
+                _End = _EndExpression.Compile()(instance);
+                _LazyInitial = true;
 
-            var instance = _InstnaceProvider.Compile()();
-            var start = _Start.Compile()(instance);
-            var tick = _Tick.Compile()(instance);
-            var end = _End.Compile()(instance);
+            }
+            
             while (true)
             {
+                _Start();
+                _Status = STATUS.START;
+                TICKRESULT result;
 
-                start();
-
-                TICKRESULT result ;
                 do
                 {
-                    result = tick(_RequestDelta());
-                    if(result == TICKRESULT.RUNNING)
+                    result = _Tick(_RequestDelta());
+                    _Status = STATUS.RUNNING;
+                    if (result == TICKRESULT.RUNNING)
                         yield return result;
                 }
                 while (result == TICKRESULT.RUNNING);
 
-                end();
+                _End();
                 yield return result;
+                _Status = STATUS.END;
             }
+            
+            
         }
 
+        void ITicker.Reset()
+        {
+            if (_Status != STATUS.NONE || _Status != STATUS.END ) 
+            {
+                _End();
+            }
+
+            _Reset();
+        }
+
+        private void _Reset()
+        {
+            _Status = STATUS.NONE;
+            _Iterator = _GetIterator().GetEnumerator();            
+        }
 
         TICKRESULT ITicker.Tick(float delta)
         {

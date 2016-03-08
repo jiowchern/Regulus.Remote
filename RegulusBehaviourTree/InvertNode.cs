@@ -10,6 +10,11 @@ namespace Regulus.BehaviourTree
         {            
         }
 
+        void ITicker.Reset()
+        {
+            _Ticker.Reset();
+        }
+
         TICKRESULT ITicker.Tick(float delta)
         {
             var result = _Ticker.Tick(delta);

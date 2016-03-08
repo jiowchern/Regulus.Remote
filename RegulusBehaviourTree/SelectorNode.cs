@@ -18,6 +18,17 @@ namespace Regulus.BehaviourTree
             _Childs = new List<ITicker>();
             _Queue = new Queue<ITicker>();
         }
+
+        void ITicker.Reset()
+        {
+            if (_RunninTicker != null)
+            {
+                _RunninTicker.Reset();
+                _RunninTicker = null;
+            }
+            _Queue.Clear();
+        }
+
         public TICKRESULT Tick(float delta)
         {
             if (_RunninTicker != null)
@@ -65,6 +76,7 @@ namespace Regulus.BehaviourTree
         }
         private void _Reload()
         {
+            
             foreach (var ticker in _Childs)
             {
                 _Queue.Enqueue(ticker);

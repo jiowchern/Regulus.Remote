@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 namespace Regulus.Collection
 {
@@ -60,7 +62,6 @@ namespace Regulus.Collection
             if (JoinEvent != null)
                 JoinEvent(controllers);
         }
-
         
     }
 }
