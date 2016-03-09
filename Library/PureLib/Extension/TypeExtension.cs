@@ -14,33 +14,32 @@ namespace Regulus.Extension
             
             if (!points.Any())
                 throw new Exception("invalid points to rect.");
-
-            var rect = new Rect();
+            
             var first = points.First();
-            rect.Left = first.X;
-            rect.Top = first.Y;
-            rect.Right = first.X;
-            rect.Bottom = first.Y;
+            var left = first.X;
+            var top = first.Y;
+            var right = first.X;
+            var bottom = first.Y;
 
             foreach(var point in points.Skip(1))
             {
-                if(rect.Left > point.X)
-                    rect.Left = point.X;
+                if(left > point.X)
+                    left = point.X;
 
-                if(rect.Right < point.X)
+                if(right < point.X)
                 {
-                    rect.Right = point.X;
+                    right = point.X;
                 }
 
-                if(rect.Top > point.Y)
+                if(top > point.Y)
                 {
-                    rect.Top = point.Y;
+                    top = point.Y;
                 }
 
-                if(rect.Bottom < point.Y)
-                    rect.Bottom = point.Y;
+                if(bottom < point.Y)
+                    bottom = point.Y;
             }
-            return rect;
+            return new Rect(left , top , right-left , bottom - top);
         }
 
         public static IEnumerable<Vector2> FindHull(this IEnumerable<Vector2> points)
