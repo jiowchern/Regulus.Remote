@@ -93,8 +93,20 @@ namespace Regulus.Remoting.Soul.Native
 
 		void IBootable.Shutdown()
 		{
-			_Socket.Shutdown(SocketShutdown.Both);
-			_Socket.Close();
+			try
+			{
+				_Socket.Shutdown(SocketShutdown.Both);
+				_Socket.Close();
+			}
+			catch (System.Net.Sockets.SocketException se)
+			{
+				Regulus.Utility.Log.Instance.WriteInfo(string.Format("Socket shutdown socket exception.{0}" , se.Message));
+			}
+			catch (Exception e)
+			{
+				Regulus.Utility.Log.Instance.WriteInfo(string.Format("Socket shutdown exception.{0}", e.Message));
+			}
+			
 			_Reader.DoneEvent -= _RequestPush;
 			_Reader.Stop();
 			_Writer.CheckSourceEvent -= _ResponsePop;
@@ -200,9 +212,9 @@ namespace Regulus.Remoting.Soul.Native
 				}
 
 				var methodParams = (from p in package.Args
-				                    where p.Key >= 3
-				                    orderby p.Key
-				                    select p.Value).ToArray();
+									where p.Key >= 3
+									orderby p.Key
+									select p.Value).ToArray();
 
 				return _ToRequest(entityId, methodName, returnId, methodParams);
 			}
