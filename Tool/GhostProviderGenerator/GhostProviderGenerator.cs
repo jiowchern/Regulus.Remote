@@ -4,6 +4,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.CodeDom.Compiler;
+using System.Runtime.Remoting.Messaging;
+
 using Microsoft.CSharp;
 namespace Regulus.Tool
 {
@@ -12,7 +14,7 @@ namespace Regulus.Tool
         static string ghostIdName = "_GhostIdName";
         
             
-        public void Build(string path,string output_path,string provider_name, string[] namesapces)
+        public IEnumerable<string> Build(string path,string output_path,string provider_name, string[] namesapces)
         {
             byte[] sourceDll = System.IO.File.ReadAllBytes(path);
             Assembly assembly = Assembly.Load(sourceDll);
@@ -94,6 +96,8 @@ namespace Regulus.Tool
 
             };
             var result = provider.CompileAssemblyFromSource(options, codes.ToArray()  );
+
+            return codes;
         }
 
         private string _GetGhostType(Type type)
@@ -103,7 +107,7 @@ namespace Regulus.Tool
 
         private static bool _IsGPI(Type type)
         {
-            return type.GetInterfaces().Length == 0;
+            return true;
         }
 
         private string _BuildCode(Type type)
@@ -112,10 +116,13 @@ namespace Regulus.Tool
             
             var name = type.Name;
 
-            string methods = _BuildMethods(type);
-            string propertys = _BuildPropertys(type);
-            string events = _BuildEvents(type);
             
+            var types = type.GetInterfaces().Concat(
+                new[]
+                {
+                    type
+                });
+            string implementCode = _BuildCode(types);
             string codeHeader = 
 $@"   
     using System;  
@@ -155,14 +162,29 @@ $@"
             {{
                 Regulus.Remoting.AgentCore.UpdateProperty(name , ""C{name}"" , this , value);
             }}
-            {methods}
-            {propertys}
-            {events}
+            {implementCode}
+            
         }}
     }}
 ";            
 
             return codeHeader;
+        }
+
+        private string _BuildCode(IEnumerable<Type> types)
+        {
+            List<string> codes = new List<string>();
+            foreach (var type in types)
+            {
+                string methods = _BuildMethods(type);
+                string propertys = _BuildPropertys(type);
+                string events = _BuildEvents(type);
+
+                codes.Add(methods);
+                codes.Add(propertys);
+                codes.Add(events);
+            }
+            return string.Join("\n", codes);
         }
 
         private string _BuildEvents(Type type)

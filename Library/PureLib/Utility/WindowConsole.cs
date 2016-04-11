@@ -183,8 +183,7 @@ namespace Regulus.Utility
                 
                 AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
 			    {
-			        Regulus.Utility.CrashDump.Write();
-			        Environment.Exit(0);
+			        Regulus.Utility.CrashDump.Write();			        
 			    };
                 var run = true;			    
                 windowconsole.Command.Register("quit", () => { run = false; });
