@@ -10,5 +10,8 @@ namespace Regulus.Remoting
 			var instance = assembly.CreateInstance(class_name);            
             return instance as ICore;
 		}
-	}
+
+	    
+
+    }
 }

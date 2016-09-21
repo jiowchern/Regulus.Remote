@@ -1,5 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
 
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using NSubstitute;
 
@@ -9,10 +10,38 @@ using Regulus.Utility;
 
 namespace RegulusLibraryTest
 {
+    public interface IDummy
+    {
+        void Method1();
+        void Method2(int a , int b);
+
+        float Method3(int a, int b);
+    }
 	[TestClass]
 	public class CommandTest
 	{
-		[TestMethod]
+	    [TestMethod]
+	    public void TestCommandLambdaRegister()
+	    {
+	        var dummy = NSubstitute.Substitute.For<IDummy>();
+            
+            var command = new Command();
+
+            command.Register(dummy , (d) =>  d.Method1() );
+	        command.Run("method1", new string[]{});
+            dummy.Received().Method1();
+
+            command.Register<IDummy , int,int>(dummy, (d , a1 , a2) => d.Method2(a1,a2));
+            command.Run("method2", new [] { "1" , "2"});            
+            dummy.Received().Method2( 1 , 2);
+
+            command.Register<IDummy, int, int , float>(dummy, (d, a1, a2) => d.Method3(a1, a2) , (result) => {});
+            command.Run("method3", new[] { "3", "4" });
+            dummy.Received().Method3(3, 4);
+
+        }
+
+        [TestMethod]
 		public void TestCommandAnalysisWithParameters()
 		{
 			var analysis = new Command.Analysis("login [ account ,    password, result]");
