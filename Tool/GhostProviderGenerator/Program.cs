@@ -30,7 +30,7 @@ namespace Regulus.Tool
 
             if (dumpCode == "true")
             {
-                System.IO.File.WriteAllLines(outputPath+".cs" , codes);
+                System.IO.File.WriteAllLines(outputPath + ".cs" , codes);
             }
         }
     }
