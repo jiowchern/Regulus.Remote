@@ -1,13 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Regulus.Extension;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using System.Linq;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Regulus.CustomType;
-using Regulus.Extension;
+
 namespace Regulus.Extension.Tests
 {
     [TestClass()]

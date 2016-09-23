@@ -111,7 +111,7 @@ namespace Regulus.Utility
 			UnregisterEvent += s => { };
 		}
 
-        public void Register<TThis,TR>(TThis instance, Expression<Func<TThis,TR>> exp , Action<TR> return_value)
+        public void RegisterLambda<TThis,TR>(TThis instance, Expression<Func<TThis,TR>> exp , Action<TR> return_value)
         {
             Action<string[]> func = (args) =>
             {
@@ -126,7 +126,7 @@ namespace Regulus.Utility
         }
 
 
-        public void Register<TThis, T0 , TR>(TThis instance, Expression<Func<TThis, T0,TR>> exp, Action<TR> return_value)
+        public void RegisterLambda<TThis, T0 , TR>(TThis instance, Expression<Func<TThis, T0,TR>> exp, Action<TR> return_value)
         {
             Action<string[]> func = (args) =>
             {
@@ -143,7 +143,7 @@ namespace Regulus.Utility
             _Register(exp, func);
         }
 
-        public void Register<TThis, T0 , T1, TR>(TThis instance, Expression<Func<TThis, T0 , T1, TR>> exp, Action<TR> return_value)
+        public void RegisterLambda<TThis, T0 , T1, TR>(TThis instance, Expression<Func<TThis, T0 , T1, TR>> exp, Action<TR> return_value)
         {
             Action<string[]> func = (args) =>
             {
@@ -163,7 +163,7 @@ namespace Regulus.Utility
             _Register(exp, func);
         }
 
-        public void Register<TThis, T0, T1 , T2, TR>(TThis instance, Expression<Func<TThis, T0, T1 , T2, TR>> exp, Action<TR> return_value)
+        public void RegisterLambda<TThis, T0, T1 , T2, TR>(TThis instance, Expression<Func<TThis, T0, T1 , T2, TR>> exp, Action<TR> return_value)
         {
             Action<string[]> func = (args) =>
             {
@@ -186,7 +186,7 @@ namespace Regulus.Utility
             _Register(exp, func);
         }
 
-        public void Register<TThis, T0, T1, T2 , T3, TR>(TThis instance, Expression<Func<TThis, T0, T1, T2 , T3, TR>> exp, Action<TR> return_value)
+        public void RegisterLambda<TThis, T0, T1, T2 , T3, TR>(TThis instance, Expression<Func<TThis, T0, T1, T2 , T3, TR>> exp, Action<TR> return_value)
         {
             Action<string[]> func = (args) =>
             {
@@ -212,7 +212,7 @@ namespace Regulus.Utility
             _Register(exp, func);
         }
 
-        public void Register<TThis, T0, T1, T2 , T3, T4, TR>(TThis instance, Expression<Func<TThis, T0, T1, T2 , T3 , T4, TR>> exp, Action<TR> return_value)
+        public void RegisterLambda<TThis, T0, T1, T2 , T3, T4, TR>(TThis instance, Expression<Func<TThis, T0, T1, T2 , T3 , T4, TR>> exp, Action<TR> return_value)
         {
             Action<string[]> func = (args) =>
             {
@@ -242,7 +242,7 @@ namespace Regulus.Utility
         }
 
 
-        public void Register<TThis>(TThis instance, Expression<Action<TThis>> exp)
+        public void RegisterLambda<TThis>(TThis instance, Expression<Action<TThis>> exp)
 	    {
             Action<string[]> func = (args) =>
             {
@@ -257,7 +257,7 @@ namespace Regulus.Utility
             _Register(exp, func);
 	    }
 
-        public void Register<TThis,T0>(TThis instance, Expression<Action<TThis , T0>> exp)
+        public void RegisterLambda<TThis,T0>(TThis instance, Expression<Action<TThis , T0>> exp)
         {
             Action<string[]> func = (args) =>
             {
@@ -273,7 +273,7 @@ namespace Regulus.Utility
             _Register(exp, func);
         }
 
-        public void Register<TThis, T0 , T1 >(TThis instance, Expression<Action<TThis, T0,T1>> exp)
+        public void RegisterLambda<TThis, T0 , T1 >(TThis instance, Expression<Action<TThis, T0,T1>> exp)
         {
             Action<string[]> func = (args) =>
             {
@@ -292,7 +292,7 @@ namespace Regulus.Utility
             _Register(exp, func);
         }
 
-        public void Register<TThis, T0, T1 , T2>(TThis instance, Expression<Action<TThis, T0, T1, T2>> exp)
+        public void RegisterLambda<TThis, T0, T1 , T2>(TThis instance, Expression<Action<TThis, T0, T1, T2>> exp)
         {
             Action<string[]> func = (args) =>
             {
@@ -314,7 +314,7 @@ namespace Regulus.Utility
             _Register(exp, func);
         }
 
-        public void Register<TThis, T0, T1, T2 , T3>(TThis instance, Expression<Action<TThis, T0, T1, T2,T3>> exp)
+        public void RegisterLambda<TThis, T0, T1, T2 , T3>(TThis instance, Expression<Action<TThis, T0, T1, T2,T3>> exp)
         {
             Action<string[]> func = (args) =>
             {
@@ -339,7 +339,7 @@ namespace Regulus.Utility
             _Register(exp, func);
         }
 
-        public void Register<TThis, T0, T1, T2, T3 ,T4>(TThis instance, Expression<Action<TThis, T0, T1, T2, T3 , T4>> exp)
+        public void RegisterLambda<TThis, T0, T1, T2, T3 ,T4>(TThis instance, Expression<Action<TThis, T0, T1, T2, T3 , T4>> exp)
         {
             Action<string[]> func = (args) =>
             {
