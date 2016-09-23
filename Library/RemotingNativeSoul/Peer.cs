@@ -170,9 +170,15 @@ namespace Regulus.Remoting.Soul.Native
 
 		void IResponseQueue.Push(byte cmd, Dictionary<byte, byte[]> args)
 		{
+		    
 			lock(Peer._LockResponse)
 			{
-				Peer.TotalResponse++;
+                if (_Enable == false)
+                {
+                    Regulus.Utility.Log.Instance.WriteDebug("Peer is Close");
+                }
+
+                Peer.TotalResponse++;
 				_Responses.Enqueue(
 					new Package
 					{
