@@ -108,6 +108,7 @@ namespace Regulus.Remoting
 				                  let parameters = m.GetParameters()
 				                  where m.Name == "Register"
 				                        && genericParameters.Length == genericTypes.Length
+                                        
 				                        && parameters.Length == paramCount
 				                  select m).SingleOrDefault();
 
@@ -118,6 +119,8 @@ namespace Regulus.Remoting
 
 				return baseMethod;
 			}
+
+		   
 		}
 	}
 }

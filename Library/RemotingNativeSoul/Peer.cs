@@ -173,18 +173,22 @@ namespace Regulus.Remoting.Soul.Native
 		    
 			lock(Peer._LockResponse)
 			{
-                if (_Enable == false)
+			    if (_Enable)
+			    {
+                    Peer.TotalResponse++;
+                    _Responses.Enqueue(
+                        new Package
+                        {
+                            Code = cmd,
+                            Args = args
+                        });
+                }
+                else
                 {
-                    Regulus.Utility.Log.Instance.WriteDebug("Peer is Close");
+                    Regulus.Utility.Log.Instance.WriteDebug("Peer is Close");                    
                 }
 
-                Peer.TotalResponse++;
-				_Responses.Enqueue(
-					new Package
-					{
-						Code = cmd, 
-						Args = args
-					});
+                
 			}
 		}
 

@@ -27,15 +27,15 @@ namespace RegulusLibraryTest
             
             var command = new Command();
 
-            command.Register(dummy , (d) =>  d.Method1() );
+            command.RegisterLambda(dummy , (d) =>  d.Method1() );
 	        command.Run("method1", new string[]{});
             dummy.Received().Method1();
 
-            command.Register<IDummy , int,int>(dummy, (d , a1 , a2) => d.Method2(a1,a2));
+            command.RegisterLambda<IDummy , int,int>(dummy, (d , a1 , a2) => d.Method2(a1,a2));
             command.Run("method2", new [] { "1" , "2"});            
             dummy.Received().Method2( 1 , 2);
 
-            command.Register<IDummy, int, int , float>(dummy, (d, a1, a2) => d.Method3(a1, a2) , (result) => {});
+            command.RegisterLambda<IDummy, int, int , float>(dummy, (d, a1, a2) => d.Method3(a1, a2) , (result) => {});
             command.Run("method3", new[] { "3", "4" });
             dummy.Received().Method3(3, 4);
 
