@@ -81,7 +81,7 @@ namespace Regulus.Remoting.Soul.Native
                             var socket = _Sockets.Dequeue();
 
                             Singleton<Log>.Instance.WriteInfo(
-                                string.Format("socket accept Remot {0} Local {1} .", socket.RemoteEndPoint, socket.LocalEndPoint));
+                                string.Format("socket accept Remote {0} Local {1} .", socket.RemoteEndPoint, socket.LocalEndPoint));
                             var peer = new Peer(socket);
 
                             _Peers.Join(peer);

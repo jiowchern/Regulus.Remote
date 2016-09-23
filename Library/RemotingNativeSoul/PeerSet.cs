@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 
 using Regulus.Framework;
@@ -36,10 +37,14 @@ namespace Regulus.Remoting.Soul.Native
 		{
 			lock(_Peers)
 			{
-				if(_Peers.Remove(peer))
-				{
-					bootable.Shutdown();
-				}
+			    if (_Peers.Remove(peer))
+			    {
+			        bootable.Shutdown();
+			    }
+			    else
+			    {
+			        throw new Exception("no peer shutdown.");
+			    }
 			}
 		}
 
