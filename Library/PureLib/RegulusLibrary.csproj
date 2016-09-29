@@ -136,7 +136,8 @@
     <Compile Include="Utility\Random.cs" />
     <Compile Include="Utility\SerializableDictionary.cs" />
     <Compile Include="Utility\Singleton.cs" />
-    <Compile Include="Utility\Stage.cs" />
+    <Compile Include="Utility\IStage.cs" />
+    <Compile Include="Utility\SimpleStage.cs" />
     <Compile Include="Utility\StageMachine.cs" />
     <Compile Include="Utility\ThreadSpinWait.cs" />
     <Compile Include="Utility\Time.cs" />

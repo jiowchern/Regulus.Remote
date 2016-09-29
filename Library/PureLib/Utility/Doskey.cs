@@ -28,7 +28,13 @@ namespace Regulus.Utility
 			_Current = _Stack.Count;
 		}
 
-		public string TryGetPrev()
+	    public string GetPrev()
+	    {
+	        var str = TryGetPrev();
+	        return str == null ? "" : str;
+	    }
+
+        public string TryGetPrev()
 		{
 			if(_Stack.Count <= 0)
 			{
@@ -43,7 +49,13 @@ namespace Regulus.Utility
 			return null;
 		}
 
-		public string TryGetNext()
+        public string GetNext()
+        {
+            var str = TryGetNext();
+            return str == null ? "" : str;
+        }
+
+        public string TryGetNext()
 		{
 			if(_Stack.Count <= 0)
 			{
