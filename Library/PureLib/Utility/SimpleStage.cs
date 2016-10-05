@@ -13,7 +13,20 @@ namespace Regulus.Utility
         readonly Action _UpdateEvent;
         readonly Action _LeaveEvent;
 
-        public SimpleStage(Action enter , Action update , Action leave)
+        public SimpleStage(Action enter)
+        {
+            _EnterEvent = enter;
+            _UpdateEvent = () => { };
+            _LeaveEvent = () => { };
+        }
+
+        public SimpleStage(Action enter, Action leave)
+        {
+            _EnterEvent = enter;
+            _UpdateEvent = () => { };
+            _LeaveEvent = leave;
+        }
+        public SimpleStage(Action enter ,  Action leave , Action update)
         {
             _EnterEvent = enter;
             _UpdateEvent = update;

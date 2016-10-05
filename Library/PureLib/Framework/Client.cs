@@ -9,16 +9,14 @@ namespace Regulus.Framework
 
 		public event OnModeSelector ModeSelectorEvent;
 
-		private readonly Console _Console;
+		
 
 		private readonly StageMachine _Machine;
 
 		private readonly Console.IViewer _View;
 
-		private Command _Command
-		{
-			get { return _Console.Command; }
-		}
+	    private Command _Command;
+		
 
 		public Command Command
 		{
@@ -29,15 +27,16 @@ namespace Regulus.Framework
 
 		public GameModeSelector<TUser> Selector { get; private set; }
 
-		public Client(Console.IViewer view, Console.IInput input)
-		{
-			Enable = true;
-			_Machine = new StageMachine();
+	    public Client(Console.IViewer view , Command command)
+	    {
+            Enable = true;
+            _Machine = new StageMachine();
 
-			_View = view;
-			_Console = new Console(input, view);
-			Selector = new GameModeSelector<TUser>(_Command, _View);
-		}
+            _View = view;
+	        _Command = command;
+            Selector = new GameModeSelector<TUser>(_Command, _View);
+        }
+        
 
 		bool IUpdatable.Update()
 		{
