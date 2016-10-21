@@ -31,9 +31,9 @@ namespace Regulus.Remoting.Soul.Native
 		void IStage.Enter()
 		{
 			
-            _Command.RegisterLambda<StageStart, int ,string ,string>(this , (instance , port , path , assembly) => instance.Launch(port , path , assembly));
-		    _Command.RegisterLambda<StageStart, string>(this , (instance, ini_path ) => instance.LaunchIni(ini_path));
-            
+			_Command.RegisterLambda<StageStart, int ,string ,string>(this , (instance , port , path , assembly) => instance.Launch(port , path , assembly));
+			_Command.RegisterLambda<StageStart, string>(this , (instance, ini_path ) => instance.LaunchIni(ini_path));
+			
 
 			_View.WriteLine("======Ini file format description=====");
 			_View.WriteLine("Example.");
@@ -122,7 +122,7 @@ namespace Regulus.Remoting.Soul.Native
 				Log.Instance.WriteInfo($"Assembly Version : {asm.Version.ToString()}");
 				DoneEvent(instance as ICore, port, 0);
 			}
-			catch(SystemException ex)
+			catch(Exception ex)
 			{
 				_View.WriteLine(ex.ToString());
 			}
