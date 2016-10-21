@@ -7,20 +7,20 @@ using System.Text.RegularExpressions;
 
 namespace Regulus.Utility
 {
-    public delegate void Action<in T1, in T2, in T3, in T4, in T5>(T1 t1, T2 t2, T3 t3, T4 t4 , T5 t5);
+	public delegate void Action<in T1, in T2, in T3, in T4, in T5>(T1 t1, T2 t2, T3 t3, T4 t4 , T5 t5);
 
-    public delegate void Action<in T1, in T2, in T3, in T4, in T5 ,  in T6>(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6);
+	public delegate void Action<in T1, in T2, in T3, in T4, in T5 ,  in T6>(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6);
 
-    //public delegate void Func<in T1, in T2, in T3, in T4, in T5>(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5);
+	//public delegate void Func<in T1, in T2, in T3, in T4, in T5>(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5);
 
-    public delegate TResult Func<in T1, in T2, in T3, in T4, in T5, out TResult>(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5);
+	public delegate TResult Func<in T1, in T2, in T3, in T4, in T5, out TResult>(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5);
 
-    public delegate TResult Func<in T1, in T2, in T3, in T4, in T5, in T6, out TResult>(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6);
-
-
+	public delegate TResult Func<in T1, in T2, in T3, in T4, in T5, in T6, out TResult>(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6);
 
 
-    public class Command : ICommand
+
+
+	public class Command : ICommand
 	{
 		public delegate void OnRegister(string command, CommandParameter ret, CommandParameter[] args);
 
@@ -76,29 +76,29 @@ namespace Regulus.Utility
 					var command = match.Groups["command"];
 					Command = command.Value;
 					var args = match.Groups["args"];
-                    var ret = match.Groups["ret"];
-                    _SetParameters(_AnalyzeArgs(args.Value) , _AnalyzeReturn(ret.Value) );
+					var ret = match.Groups["ret"];
+					_SetParameters(_AnalyzeArgs(args.Value) , _AnalyzeReturn(ret.Value) );
 				}
 			}
 
-		    
+			
 
 
-		    private void _SetParameters(string[] parameters , string return_parameter)
+			private void _SetParameters(string[] parameters , string return_parameter)
 			{
 				Parameters = parameters;
-			    Return = return_parameter;
+				Return = return_parameter;
 
 			}
 
-		    public string Return { get; private set; }
+			public string Return { get; private set; }
 
-            private string _AnalyzeReturn(string value)
-            {
-                return value;
-            }
+			private string _AnalyzeReturn(string value)
+			{
+				return value;
+			}
 
-            private string[] _AnalyzeArgs(string message)
+			private string[] _AnalyzeArgs(string message)
 			{
 				var args = new List<string>();
 
@@ -125,271 +125,271 @@ namespace Regulus.Utility
 			UnregisterEvent += s => { };
 		}
 
-        public void RegisterLambda<TThis,TR>(TThis instance, Expression<Func<TThis,TR>> exp , Action<TR> return_value)
-        {
-            Action<string[]> func = (args) =>
-            {
-                if (args.Length != 0)
-                {
-                    throw new ArgumentException("命令參數數量為0");
-                }
+		public void RegisterLambda<TThis,TR>(TThis instance, Expression<Func<TThis,TR>> exp , Action<TR> return_value)
+		{
+			Action<string[]> func = (args) =>
+			{
+				if (args.Length != 0)
+				{
+					throw new ArgumentException("命令參數數量為0");
+				}
 
-                return_value(exp.Compile().Invoke(instance));
-            };
-            _Register(exp, func);
-        }
-
-
-        public void RegisterLambda<TThis, T0 , TR>(TThis instance, Expression<Func<TThis, T0,TR>> exp, Action<TR> return_value)
-        {
-            Action<string[]> func = (args) =>
-            {
-                if (args.Length != 1)
-                {
-                    throw new ArgumentException("命令參數數量為1");
-                }
-
-                object arg0;
-                Command._Cnv(args[0], out arg0, typeof(T0));
-
-                return_value(exp.Compile().Invoke(instance ,(T0)arg0 ));
-            };
-            _Register(exp, func);
-        }
-
-        public void RegisterLambda<TThis, T0 , T1, TR>(TThis instance, Expression<Func<TThis, T0 , T1, TR>> exp, Action<TR> return_value)
-        {
-            Action<string[]> func = (args) =>
-            {
-                if (args.Length != 2)
-                {
-                    throw new ArgumentException("命令參數數量為2");
-                }
-
-                object arg0;
-                Command._Cnv(args[0], out arg0, typeof(T0));
-
-                object arg1;
-                Command._Cnv(args[1], out arg1, typeof(T1));
-
-                return_value(exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1));
-            };
-            _Register(exp, func);
-        }
-
-        public void RegisterLambda<TThis, T0, T1 , T2, TR>(TThis instance, Expression<Func<TThis, T0, T1 , T2, TR>> exp, Action<TR> return_value)
-        {
-            Action<string[]> func = (args) =>
-            {
-                if (args.Length != 3)
-                {
-                    throw new ArgumentException("命令參數數量為3");
-                }
-
-                object arg0;
-                Command._Cnv(args[0], out arg0, typeof(T0));
-
-                object arg1;
-                Command._Cnv(args[1], out arg1, typeof(T1));
-
-                object arg2;
-                Command._Cnv(args[2], out arg2, typeof(T2));
-
-                return_value(exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1 , (T2)arg2));
-            };
-            _Register(exp, func);
-        }
-
-        public void RegisterLambda<TThis, T0, T1, T2 , T3, TR>(TThis instance, Expression<Func<TThis, T0, T1, T2 , T3, TR>> exp, Action<TR> return_value)
-        {
-            Action<string[]> func = (args) =>
-            {
-                if (args.Length != 4)
-                {
-                    throw new ArgumentException("命令參數數量為4");
-                }
-
-                object arg0;
-                Command._Cnv(args[0], out arg0, typeof(T0));
-
-                object arg1;
-                Command._Cnv(args[1], out arg1, typeof(T1));
-
-                object arg2;
-                Command._Cnv(args[2], out arg2, typeof(T2));
-
-                object arg3;
-                Command._Cnv(args[3], out arg3, typeof(T3));
-
-                return_value(exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1, (T2)arg2, (T3)arg3));
-            };
-            _Register(exp, func);
-        }
-
-        public void RegisterLambda<TThis, T0, T1, T2 , T3, T4, TR>(TThis instance, Expression<Func<TThis, T0, T1, T2 , T3 , T4, TR>> exp, Action<TR> return_value)
-        {
-            Action<string[]> func = (args) =>
-            {
-                if (args.Length != 5)
-                {
-                    throw new ArgumentException("命令參數數量為5");
-                }
-
-                object arg0;
-                Command._Cnv(args[0], out arg0, typeof(T0));
-
-                object arg1;
-                Command._Cnv(args[1], out arg1, typeof(T1));
-
-                object arg2;
-                Command._Cnv(args[2], out arg2, typeof(T2));
-
-                object arg3;
-                Command._Cnv(args[3], out arg3, typeof(T3));
-
-                object arg4;
-                Command._Cnv(args[4], out arg4, typeof(T4));
-
-                return_value(exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1, (T2)arg2, (T3)arg3 , (T4)arg4));
-            };
-            _Register(exp, func);
-        }
+				return_value(exp.Compile().Invoke(instance));
+			};
+			_Register(exp, func);
+		}
 
 
-        public void RegisterLambda<TThis>(TThis instance, Expression<Action<TThis>> exp)
-	    {
-            Action<string[]> func = (args) =>
-            {
-                if (args.Length != 0)
-                {
-                    throw new ArgumentException("命令參數數量為0");
-                }
+		public void RegisterLambda<TThis, T0 , TR>(TThis instance, Expression<Func<TThis, T0,TR>> exp, Action<TR> return_value)
+		{
+			Action<string[]> func = (args) =>
+			{
+				if (args.Length != 1)
+				{
+					throw new ArgumentException("命令參數數量為1");
+				}
+
+				object arg0;
+				Command._Cnv(args[0], out arg0, typeof(T0));
+
+				return_value(exp.Compile().Invoke(instance ,(T0)arg0 ));
+			};
+			_Register(exp, func);
+		}
+
+		public void RegisterLambda<TThis, T0 , T1, TR>(TThis instance, Expression<Func<TThis, T0 , T1, TR>> exp, Action<TR> return_value)
+		{
+			Action<string[]> func = (args) =>
+			{
+				if (args.Length != 2)
+				{
+					throw new ArgumentException("命令參數數量為2");
+				}
+
+				object arg0;
+				Command._Cnv(args[0], out arg0, typeof(T0));
+
+				object arg1;
+				Command._Cnv(args[1], out arg1, typeof(T1));
+
+				return_value(exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1));
+			};
+			_Register(exp, func);
+		}
+
+		public void RegisterLambda<TThis, T0, T1 , T2, TR>(TThis instance, Expression<Func<TThis, T0, T1 , T2, TR>> exp, Action<TR> return_value)
+		{
+			Action<string[]> func = (args) =>
+			{
+				if (args.Length != 3)
+				{
+					throw new ArgumentException("命令參數數量為3");
+				}
+
+				object arg0;
+				Command._Cnv(args[0], out arg0, typeof(T0));
+
+				object arg1;
+				Command._Cnv(args[1], out arg1, typeof(T1));
+
+				object arg2;
+				Command._Cnv(args[2], out arg2, typeof(T2));
+
+				return_value(exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1 , (T2)arg2));
+			};
+			_Register(exp, func);
+		}
+
+		public void RegisterLambda<TThis, T0, T1, T2 , T3, TR>(TThis instance, Expression<Func<TThis, T0, T1, T2 , T3, TR>> exp, Action<TR> return_value)
+		{
+			Action<string[]> func = (args) =>
+			{
+				if (args.Length != 4)
+				{
+					throw new ArgumentException("命令參數數量為4");
+				}
+
+				object arg0;
+				Command._Cnv(args[0], out arg0, typeof(T0));
+
+				object arg1;
+				Command._Cnv(args[1], out arg1, typeof(T1));
+
+				object arg2;
+				Command._Cnv(args[2], out arg2, typeof(T2));
+
+				object arg3;
+				Command._Cnv(args[3], out arg3, typeof(T3));
+
+				return_value(exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1, (T2)arg2, (T3)arg3));
+			};
+			_Register(exp, func);
+		}
+
+		public void RegisterLambda<TThis, T0, T1, T2 , T3, T4, TR>(TThis instance, Expression<Func<TThis, T0, T1, T2 , T3 , T4, TR>> exp, Action<TR> return_value)
+		{
+			Action<string[]> func = (args) =>
+			{
+				if (args.Length != 5)
+				{
+					throw new ArgumentException("命令參數數量為5");
+				}
+
+				object arg0;
+				Command._Cnv(args[0], out arg0, typeof(T0));
+
+				object arg1;
+				Command._Cnv(args[1], out arg1, typeof(T1));
+
+				object arg2;
+				Command._Cnv(args[2], out arg2, typeof(T2));
+
+				object arg3;
+				Command._Cnv(args[3], out arg3, typeof(T3));
+
+				object arg4;
+				Command._Cnv(args[4], out arg4, typeof(T4));
+
+				return_value(exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1, (T2)arg2, (T3)arg3 , (T4)arg4));
+			};
+			_Register(exp, func);
+		}
 
 
-                exp.Compile().Invoke(instance);
-            };
-            _Register(exp, func);
-	    }
+		public void RegisterLambda<TThis>(TThis instance, Expression<Action<TThis>> exp)
+		{
+			Action<string[]> func = (args) =>
+			{
+				if (args.Length != 0)
+				{
+					throw new ArgumentException("命令參數數量為0");
+				}
 
-        public void RegisterLambda<TThis,T0>(TThis instance, Expression<Action<TThis , T0>> exp)
-        {
-            Action<string[]> func = (args) =>
-            {
-                if (args.Length != 1)
-                {
-                    throw new ArgumentException("命令參數數量為1");
-                }
-                object arg0;
-                Command._Cnv(args[0], out arg0, typeof(T0));
-                
-                exp.Compile().Invoke(instance , (T0)arg0);
-            };
-            _Register(exp, func);
-        }
 
-        public void RegisterLambda<TThis, T0 , T1 >(TThis instance, Expression<Action<TThis, T0,T1>> exp)
-        {
-            Action<string[]> func = (args) =>
-            {
-                if (args.Length != 2)
-                {
-                    throw new ArgumentException("命令參數數量為2");
-                }
-                object arg0;
-                Command._Cnv(args[0], out arg0, typeof(T0));
+				exp.Compile().Invoke(instance);
+			};
+			_Register(exp, func);
+		}
 
-                object arg1;
-                Command._Cnv(args[1], out arg1, typeof(T1));
+		public void RegisterLambda<TThis,T0>(TThis instance, Expression<Action<TThis , T0>> exp)
+		{
+			Action<string[]> func = (args) =>
+			{
+				if (args.Length != 1)
+				{
+					throw new ArgumentException("命令參數數量為1");
+				}
+				object arg0;
+				Command._Cnv(args[0], out arg0, typeof(T0));
+				
+				exp.Compile().Invoke(instance , (T0)arg0);
+			};
+			_Register(exp, func);
+		}
 
-                exp.Compile().Invoke(instance, (T0)arg0 , (T1)arg1);
-            };
-            _Register(exp, func);
-        }
+		public void RegisterLambda<TThis, T0 , T1 >(TThis instance, Expression<Action<TThis, T0,T1>> exp)
+		{
+			Action<string[]> func = (args) =>
+			{
+				if (args.Length != 2)
+				{
+					throw new ArgumentException("命令參數數量為2");
+				}
+				object arg0;
+				Command._Cnv(args[0], out arg0, typeof(T0));
 
-        public void RegisterLambda<TThis, T0, T1 , T2>(TThis instance, Expression<Action<TThis, T0, T1, T2>> exp)
-        {
-            Action<string[]> func = (args) =>
-            {
-                if (args.Length != 3)
-                {
-                    throw new ArgumentException("命令參數數量為3");
-                }
-                object arg0;
-                Command._Cnv(args[0], out arg0, typeof(T0));
+				object arg1;
+				Command._Cnv(args[1], out arg1, typeof(T1));
 
-                object arg1;
-                Command._Cnv(args[1], out arg1, typeof(T1));
+				exp.Compile().Invoke(instance, (T0)arg0 , (T1)arg1);
+			};
+			_Register(exp, func);
+		}
 
-                object arg2;
-                Command._Cnv(args[2], out arg2, typeof(T2));
+		public void RegisterLambda<TThis, T0, T1 , T2>(TThis instance, Expression<Action<TThis, T0, T1, T2>> exp)
+		{
+			Action<string[]> func = (args) =>
+			{
+				if (args.Length != 3)
+				{
+					throw new ArgumentException("命令參數數量為3");
+				}
+				object arg0;
+				Command._Cnv(args[0], out arg0, typeof(T0));
 
-                exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1 , (T2)arg2);
-            };
-            _Register(exp, func);
-        }
+				object arg1;
+				Command._Cnv(args[1], out arg1, typeof(T1));
 
-        public void RegisterLambda<TThis, T0, T1, T2 , T3>(TThis instance, Expression<Action<TThis, T0, T1, T2,T3>> exp)
-        {
-            Action<string[]> func = (args) =>
-            {
-                if (args.Length != 4)
-                {
-                    throw new ArgumentException("命令參數數量為4");
-                }
-                object arg0;
-                Command._Cnv(args[0], out arg0, typeof(T0));
+				object arg2;
+				Command._Cnv(args[2], out arg2, typeof(T2));
 
-                object arg1;
-                Command._Cnv(args[1], out arg1, typeof(T1));
+				exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1 , (T2)arg2);
+			};
+			_Register(exp, func);
+		}
 
-                object arg2;
-                Command._Cnv(args[2], out arg2, typeof(T2));
+		public void RegisterLambda<TThis, T0, T1, T2 , T3>(TThis instance, Expression<Action<TThis, T0, T1, T2,T3>> exp)
+		{
+			Action<string[]> func = (args) =>
+			{
+				if (args.Length != 4)
+				{
+					throw new ArgumentException("命令參數數量為4");
+				}
+				object arg0;
+				Command._Cnv(args[0], out arg0, typeof(T0));
 
-                object arg3;
-                Command._Cnv(args[3], out arg3, typeof(T3));
+				object arg1;
+				Command._Cnv(args[1], out arg1, typeof(T1));
 
-                exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1, (T2)arg2, (T3)arg3);
-            };
-            _Register(exp, func);
-        }
+				object arg2;
+				Command._Cnv(args[2], out arg2, typeof(T2));
 
-        public void RegisterLambda<TThis, T0, T1, T2, T3 ,T4>(TThis instance, Expression<Action<TThis, T0, T1, T2, T3 , T4>> exp)
-        {
-            Action<string[]> func = (args) =>
-            {
-                if (args.Length != 5)
-                {
-                    throw new ArgumentException("命令參數數量為5");
-                }
-                object arg0;
-                Command._Cnv(args[0], out arg0, typeof(T0));
+				object arg3;
+				Command._Cnv(args[3], out arg3, typeof(T3));
 
-                object arg1;
-                Command._Cnv(args[1], out arg1, typeof(T1));
+				exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1, (T2)arg2, (T3)arg3);
+			};
+			_Register(exp, func);
+		}
 
-                object arg2;
-                Command._Cnv(args[2], out arg2, typeof(T2));
+		public void RegisterLambda<TThis, T0, T1, T2, T3 ,T4>(TThis instance, Expression<Action<TThis, T0, T1, T2, T3 , T4>> exp)
+		{
+			Action<string[]> func = (args) =>
+			{
+				if (args.Length != 5)
+				{
+					throw new ArgumentException("命令參數數量為5");
+				}
+				object arg0;
+				Command._Cnv(args[0], out arg0, typeof(T0));
 
-                object arg3;
-                Command._Cnv(args[3], out arg3, typeof(T3));
+				object arg1;
+				Command._Cnv(args[1], out arg1, typeof(T1));
 
-                object arg4;
-                Command._Cnv(args[4], out arg4, typeof(T4));
+				object arg2;
+				Command._Cnv(args[2], out arg2, typeof(T2));
 
-                exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1, (T2)arg2, (T3)arg3 , (T4)arg4);
-            };
-            _Register(exp, func);
-        }
+				object arg3;
+				Command._Cnv(args[3], out arg3, typeof(T3));
 
-        private void _Register(string command, Action<string[]> func, Type return_type, Type[] param_types)
-        {
-            var analysis = new Analysis(command);
-            _AddCommand(analysis.Command, func);
-            _SendRegister(analysis, return_type, param_types);
-        }
-        public void Register(string command, Action executer)
-	    {
-	        Action<string[]> func = args =>
+				object arg4;
+				Command._Cnv(args[4], out arg4, typeof(T4));
+
+				exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1, (T2)arg2, (T3)arg3 , (T4)arg4);
+			};
+			_Register(exp, func);
+		}
+
+		private void _Register(string command, Action<string[]> func, Type return_type, Type[] param_types)
+		{
+			var analysis = new Analysis(command);
+			_AddCommand(analysis.Command, func);
+			_SendRegister(analysis, return_type, param_types);
+		}
+		public void Register(string command, Action executer)
+		{
+			Action<string[]> func = args =>
 			{
 				if(args.Length != 0)
 				{
@@ -399,12 +399,12 @@ namespace Regulus.Utility
 				executer.Invoke();
 			};
 
-	        _Register(command, func , typeof(void) , new Type[0]);
-	    }
+			_Register(command, func , typeof(void) , new Type[0]);
+		}
 
-	    
+		
 
-	    public void Register<T1>(string command, Action<T1> executer)
+		public void Register<T1>(string command, Action<T1> executer)
 		{
 			Action<string[]> func = args =>
 			{
@@ -419,11 +419,11 @@ namespace Regulus.Utility
 			};
 
 
-            _Register(command, func, typeof(void), new[]
-                {
-                    typeof(T1)
-                });
-            
+			_Register(command, func, typeof(void), new[]
+				{
+					typeof(T1)
+				});
+			
 		}
 
 		public void Register<T1, T2>(string command, Action<T1, T2> executer)
@@ -442,11 +442,11 @@ namespace Regulus.Utility
 				executer.Invoke((T1)arg0, (T2)arg1);
 			};
 
-            _Register(command, func, typeof(void), new[]
-                {
-                    typeof(T1),
-                    typeof(T2)
-                });            
+			_Register(command, func, typeof(void), new[]
+				{
+					typeof(T1),
+					typeof(T2)
+				});            
 		}
 
 		public void Register<T1, T2, T3>(string command, Action<T1, T2, T3> executer)
@@ -468,12 +468,12 @@ namespace Regulus.Utility
 			};
 
 
-            _Register(command, func, typeof(void), new[]
-                {
-                    typeof(T1),
-                    typeof(T2),
-                    typeof(T3)
-                });            
+			_Register(command, func, typeof(void), new[]
+				{
+					typeof(T1),
+					typeof(T2),
+					typeof(T3)
+				});            
 		}
 
 		public void Register<T1, T2, T3, T4>(string command, Action<T1, T2, T3, T4> executer)
@@ -496,13 +496,13 @@ namespace Regulus.Utility
 				executer.Invoke((T1)arg0, (T2)arg1, (T3)arg2, (T4)arg3);
 			};
 
-            _Register(command, func, typeof(void), new[]
-                {
-                    typeof(T1),
-                    typeof(T2),
-                    typeof(T3),
-                    typeof(T4)
-                });            
+			_Register(command, func, typeof(void), new[]
+				{
+					typeof(T1),
+					typeof(T2),
+					typeof(T3),
+					typeof(T4)
+				});            
 		}
 
 		public void Register<TR>(string command, Func<TR> executer, Action<TR> value)
@@ -515,12 +515,12 @@ namespace Regulus.Utility
 				}
 
 				var ret = executer.Invoke();
-                value(ret);
-            };
+				value(ret);
+			};
 
-            _Register(command, func, typeof(TR), new Type[0]);
+			_Register(command, func, typeof(TR), new Type[0]);
 
-        }
+		}
 
 		public void Register<T1, TR>(string command, Func<T1, TR> executer, Action<TR> value)
 		{
@@ -534,15 +534,15 @@ namespace Regulus.Utility
 				object arg0;
 				Command._Cnv(args[0], out arg0, typeof(T1));
 				var ret = executer.Invoke((T1)arg0);
-                value(ret);
-            };
+				value(ret);
+			};
 
-            _Register(command, func, typeof(TR), new[]
-                {
-                    typeof(T1)
-                });
+			_Register(command, func, typeof(TR), new[]
+				{
+					typeof(T1)
+				});
 
-            
+			
 		}
 
 		public void Register<T1, T2, TR>(string command, Func<T1, T2, TR> executer, Action<TR> value)
@@ -560,16 +560,16 @@ namespace Regulus.Utility
 				Command._Cnv(args[1], out arg1, typeof(T2));
 
 				var ret = executer.Invoke((T1)arg0, (T2)arg1);
-                value(ret);
-            };
+				value(ret);
+			};
 
-            _Register(command, func, typeof(TR), new[]
-                {
-                    typeof(T1),
-                    typeof(T2)
-                });
+			_Register(command, func, typeof(TR), new[]
+				{
+					typeof(T1),
+					typeof(T2)
+				});
 
-            
+			
 		}
 
 		public void Register<T1, T2, T3, TR>(string command, Func<T1, T2, T3, TR> executer, Action<TR> value)
@@ -589,16 +589,16 @@ namespace Regulus.Utility
 				Command._Cnv(args[2], out arg2, typeof(T3));
 
 				var ret = executer.Invoke((T1)arg0, (T2)arg1, (T3)arg2);
-                value(ret);
-            };
+				value(ret);
+			};
 
-            _Register(command, func, typeof(TR), new[]
-                {
-                    typeof(T1),
-                    typeof(T2),
-                    typeof(T3)
-                });
-            
+			_Register(command, func, typeof(TR), new[]
+				{
+					typeof(T1),
+					typeof(T2),
+					typeof(T3)
+				});
+			
 		}
 
 		public void Register<T1, T2, T3, T4, TR>(string command, Func<T1, T2, T3, T4, TR> executer, Action<TR> value)
@@ -620,16 +620,16 @@ namespace Regulus.Utility
 				Command._Cnv(args[3], out arg3, typeof(T4));
 
 				var ret = executer.Invoke((T1)arg0, (T2)arg1, (T3)arg2, (T4)arg3);
-                value(ret);
-            };
+				value(ret);
+			};
 
-            _Register(command, func, typeof(TR), new[]
-                {
-                    typeof(T1),
-                    typeof(T2),
-                    typeof(T3),
-                    typeof(T4)
-                });
+			_Register(command, func, typeof(TR), new[]
+				{
+					typeof(T1),
+					typeof(T2),
+					typeof(T3),
+					typeof(T4)
+				});
 		}
 
 		public void Unregister(string command)
@@ -689,16 +689,16 @@ namespace Regulus.Utility
 
 				val = reault;
 			}
-            else if (source == typeof(bool))
-            {
-                var reault = false;
-                if (bool.TryParse(p, out reault))
-                {
-                }
+			else if (source == typeof(bool))
+			{
+				var reault = false;
+				if (bool.TryParse(p, out reault))
+				{
+				}
 
-                val = reault;
-            }
-        }
+				val = reault;
+			}
+		}
 
 		private void _EmptyRegisterEvent(string command, CommandParameter ret, CommandParameter[] args)
 		{
@@ -735,13 +735,13 @@ namespace Regulus.Utility
 
 		private void _SendRegister(Analysis analysis, Type ret, Type[] args)
 		{
-            var parameterTypes = args.ToArray();
-            var parameterDescs = analysis.Parameters.ToArray();
-            RegisterEvent(
-                analysis.Command,
-                new CommandParameter(ret,analysis.Return),
-                _BuildCommandParameters(parameterTypes, parameterDescs));
-        }
+			var parameterTypes = args.ToArray();
+			var parameterDescs = analysis.Parameters.ToArray();
+			RegisterEvent(
+				analysis.Command,
+				new CommandParameter(ret,analysis.Return),
+				_BuildCommandParameters(parameterTypes, parameterDescs));
+		}
 
 		private CommandParameter[] _BuildCommandParameters(Type[] parameterTypes, string[] parameterDescs)
 		{
@@ -760,22 +760,22 @@ namespace Regulus.Utility
 		}
 
 
-        private void _Register(LambdaExpression exp , Action<string[]> func)
-        {            
+		private void _Register(LambdaExpression exp , Action<string[]> func)
+		{            
 
-            if (exp.Body.NodeType != ExpressionType.Call)
-            {
-                throw new ArgumentException();
-            }
+			if (exp.Body.NodeType != ExpressionType.Call)
+			{
+				throw new ArgumentException();
+			}
 
-            var methodCall = exp.Body as MethodCallExpression;
-            var method = methodCall.Method;
-            
-            var argNames = (from par in exp.Parameters.Skip(1) select par.Name).ToArray();
-            var argTypes = (from par in exp.Parameters.Skip(1) select par.Type).ToArray();
+			var methodCall = exp.Body as MethodCallExpression;
+			var method = methodCall.Method;
+			
+			var argNames = (from par in exp.Parameters.Skip(1) select par.Name).ToArray();
+			var argTypes = (from par in exp.Parameters.Skip(1) select par.Type).ToArray();
 
-            string commandString = string.Format("{0} [{1}  ] [{2} ]", method.Name, string.Join(",", argNames.ToArray()), "return_" + method.ReturnType.Name);
-            _Register(commandString, func, method.ReturnType, argTypes.ToArray());
-        }
-    }
+			string commandString = string.Format("{0} [{1}  ] [{2} ]", method.Name, string.Join(",", argNames.ToArray()), "return_" + method.ReturnType.Name);
+			_Register(commandString, func, method.ReturnType, argTypes.ToArray());
+		}
+	}
 }
