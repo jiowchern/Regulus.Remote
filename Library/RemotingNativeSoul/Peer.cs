@@ -46,7 +46,30 @@ namespace Regulus.Remoting.Soul.Native
 
 		private readonly PackageWriter _Writer;
 
-		private volatile bool _Enable;
+
+		private volatile bool _EnableValue;
+		private bool _Enable
+		{
+			get
+			{
+				lock (_EnableLock)
+				{
+					return _EnableValue;
+				}
+			}
+
+			set
+			{
+				lock (_EnableLock)
+				{
+					_EnableValue = value;
+				}
+			}
+
+		}
+		
+
+		private object _EnableLock;
 
 		public static bool IsIdle
 		{
@@ -69,6 +92,8 @@ namespace Regulus.Remoting.Soul.Native
 
 		public Peer(Socket client)
 		{
+			_EnableLock = new object();
+
 			_Socket = client;
 			_SoulProvider = new SoulProvider(this, this);
 			_Responses = new PackageQueue();
@@ -170,25 +195,20 @@ namespace Regulus.Remoting.Soul.Native
 
 		void IResponseQueue.Push(byte cmd, Dictionary<byte, byte[]> args)
 		{
-		    
+			
 			lock(Peer._LockResponse)
 			{
-			    if (_Enable)
-			    {
-                    Peer.TotalResponse++;
-                    _Responses.Enqueue(
-                        new Package
-                        {
-                            Code = cmd,
-                            Args = args
-                        });
-                }
-                else
-                {
-                    Regulus.Utility.Log.Instance.WriteDebug("Peer is Close");                    
-                }
-
-                
+				
+				if (_Enable)
+				{
+					Peer.TotalResponse++;
+					_Responses.Enqueue(
+						new Package
+						{
+							Code = cmd,
+							Args = args
+						});
+				}                
 			}
 		}
 

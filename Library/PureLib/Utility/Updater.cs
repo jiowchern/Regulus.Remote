@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 using Regulus.Framework;
 
@@ -20,7 +21,9 @@ namespace Regulus.Utility
 
 	public class Launcher<T> where T : IBootable
 	{
-		private readonly Queue<T> _Adds = new Queue<T>();
+	    public event Action<T> AddEvent;
+        public event Action<T> RemoveEvent;
+        private readonly Queue<T> _Adds = new Queue<T>();
 
 		private readonly Queue<T> _Removes = new Queue<T>();
 
@@ -69,6 +72,8 @@ namespace Regulus.Utility
 				var fw = add_frameworks.Dequeue();
 				frameworks.Add(fw);
 				fw.Launch();
+                if(AddEvent != null)
+			        AddEvent(fw);
 			}
 		}
 
@@ -79,6 +84,9 @@ namespace Regulus.Utility
 				var fw = remove_framework.Dequeue();
 				frameworks.Remove(fw);
 				fw.Shutdown();
+
+			    if (RemoveEvent != null)
+			        RemoveEvent(fw);
 			}
 		}
 

@@ -68,7 +68,7 @@ namespace Regulus.Remoting
 
 				_Buffer = _CreateBuffer(pkgs);
                 _AutoPowerRegulator.Operate();
-
+                
                 _Socket.BeginSend(_Buffer, 0, _Buffer.Length, SocketFlags.None, _WriteCompletion, null);
                 /*_Socket.BeginSendTo(
 					_Buffer, 
@@ -81,7 +81,7 @@ namespace Regulus.Remoting
 			}
 			catch(SystemException e)
 			{
-			    var info = string.Format("PackageWriter Error Write {0}.", e);
+			    var info = string.Format("PackageWriter Error Write {0}.", _Socket.Connected);
                 Singleton<Log>.Instance.WriteInfo(info);
 				if(ErrorEvent != null)
 				{
