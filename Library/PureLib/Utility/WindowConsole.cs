@@ -87,7 +87,8 @@ namespace Regulus.Utility
 
 		private void _RecordView(string message)
 		{
-			Viewer.WriteLine(message);
+            var time = DateTime.Now.ToString("yyyy/MM/dd hh:mm:ss");
+            Viewer.WriteLine(string.Format("[{0}]:{1}", time, message));
 		}
 
 		#region unmanaged
