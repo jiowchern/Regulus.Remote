@@ -17,7 +17,7 @@ namespace Regulus.Tool.GPI
         Guid Id { get; }
         Regulus.Remoting.Value<bool> MethodReturn();
 
-        //event Action<float, string> OnCallEvent;
+        event Action<float, string> OnCallEvent;
     }
     
 }
@@ -39,7 +39,7 @@ namespace Regulus.Tool.Tests
 
             Dictionary<string, string> optionsDic = new Dictionary<string, string>
             {
-                {"CompilerVersion", "v3.5"}
+                {"CompilerVersion", "v4.0"}
             };
             var provider = new CSharpCodeProvider(optionsDic);
             var options = new CompilerParameters
@@ -47,8 +47,7 @@ namespace Regulus.Tool.Tests
                 GenerateInMemory = true
                 ,GenerateExecutable = false,
                 ReferencedAssemblies =
-                {
-                    "System.dll",
+                {                    
                     "System.Core.dll",                    
                     "RegulusLibrary.dll",
                     "RegulusRemoting.dll",

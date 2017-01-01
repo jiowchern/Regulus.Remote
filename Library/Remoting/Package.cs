@@ -7,7 +7,7 @@ using ProtoBuf;
 namespace Regulus.Remoting
 {
 
-    [ProtoContract]
+    /*[ProtoContract]
     public class Package
     {
         [ProtoMember(2)]
@@ -15,7 +15,7 @@ namespace Regulus.Remoting
 
         [ProtoMember(1)]
         public ClientToServerOpCode Code;
-    }
+    }*/
 
 
     [ProtoContract]	

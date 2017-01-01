@@ -22,14 +22,7 @@ namespace Regulus.Remoting.Ghost.Native
 			get { return _Core.Ping; }
 		}
 
-		private Agent()
-		{
-			_Machine = new StageMachine();
-			_Core = new AgentCore();
-
-		    
-
-		}
+		
 
 	    private Agent(Regulus.Remoting.IGhostProvider provider)
 	    {
@@ -179,14 +172,7 @@ namespace Regulus.Remoting.Ghost.Native
 			}
 		}
 
-		/// <summary>
-		///     建立代理器
-		/// </summary>
-		/// <returns></returns>
-		public static IAgent Create()
-		{
-			return new Agent();
-		}
+		
 
         /// <summary>
 		///     建立代理器

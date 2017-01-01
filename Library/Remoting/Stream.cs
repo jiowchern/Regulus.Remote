@@ -9,7 +9,12 @@ using Regulus.Utility;
 
 namespace Regulus.Remoting
 {
-	public enum SocketIOResult
+    class A
+    {
+        Action<int, int> a;
+    }
+    
+	/*public enum SocketIOResult
 	{
 		None, 
 
@@ -98,11 +103,11 @@ namespace Regulus.Remoting
 
 		private readonly StageMachine _Machine;
 
-		private readonly Package[] _Packages;
+		private readonly RequestPackage[] _Packages;
 
 		private readonly Socket _Socket;
 
-		public NetworkStreamWriteStage(Socket socket, Package[] packages)
+		public NetworkStreamWriteStage(Socket socket, RequestPackage[] packages)
 		{
 			_Socket = socket;
 			_Packages = packages;
@@ -143,7 +148,7 @@ namespace Regulus.Remoting
 			_Machine.Push(stage);
 		}
 
-		private byte[] _CreateBuffer(Package[] packages)
+		private byte[] _CreateBuffer(RequestPackage[] packages)
 		{
 			var buffers = from p in packages select TypeHelper.Serializer(p);
 
@@ -289,7 +294,7 @@ namespace Regulus.Remoting
 
 	public partial class NetworkStreamReadStage : IStage
 	{
-		public delegate void OnReadCompletion(Package package);
+		public delegate void OnReadCompletion(RequestPackage package);
 
 		public event Action ErrorEvent;
 
@@ -360,21 +365,21 @@ namespace Regulus.Remoting
 
 		private void _Done(byte[] body)
 		{
-			ReadCompletionEvent(TypeHelper.Deserialize<Package>(body));
+			ReadCompletionEvent(TypeHelper.Deserialize<RequestPackage>(body));
 			var size = body.Length + NetworkStreamReadStage._HeadSize;
 			Singleton<NetworkMonitor>.Instance.Read.Set(size);
 		}
-	}
+	}*/
 
-	public class WaitQueueStage : IStage
+	/*public class WaitQueueStage : IStage
 	{
-		public delegate void DoneCallback(Package[] packages);
+		public delegate void DoneCallback(RequestPackage[] packages);
 
 		public event DoneCallback DoneEvent;
 
-		private readonly PackageQueue _Packages;
+		private readonly Regulus.Collection.Queue<RequestPackage> _Packages;
 
-		public WaitQueueStage(PackageQueue packages)
+		public WaitQueueStage(Regulus.Collection.Queue<RequestPackage> packages)
 		{
 			_Packages = packages;
 		}
@@ -395,5 +400,5 @@ namespace Regulus.Remoting
 				DoneEvent(pkgs);
 			}
 		}
-	}
+	}*/
 }
