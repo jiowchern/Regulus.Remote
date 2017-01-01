@@ -34,17 +34,17 @@ namespace Regulus.Remoting.Soul.Native
 
 		private static readonly object _LockResponse = new object();
 
-		private readonly PackageReader _Reader;
+		private readonly PackageReader<RequestPackage> _Reader;
 
-		private readonly PackageQueue _Requests;
+		private readonly Regulus.Collection.Queue<RequestPackage> _Requests;
 
-		private readonly PackageQueue _Responses;
+		private readonly Regulus.Collection.Queue<ResponsePackage> _Responses;
 
 		private readonly Socket _Socket;
 
 		private readonly SoulProvider _SoulProvider;
 
-		private readonly PackageWriter _Writer;
+		private readonly PackageWriter<ResponsePackage> _Writer;
 
 
 		private volatile bool _EnableValue;
@@ -96,13 +96,13 @@ namespace Regulus.Remoting.Soul.Native
 
 			_Socket = client;
 			_SoulProvider = new SoulProvider(this, this);
-			_Responses = new PackageQueue();
-			_Requests = new PackageQueue();
+			_Responses = new Regulus.Collection.Queue<ResponsePackage>();
+			_Requests = new Regulus.Collection.Queue<RequestPackage>();
 
 			_Enable = true;
 
-			_Reader = new PackageReader();
-			_Writer = new PackageWriter();
+			_Reader = new PackageReader<RequestPackage>();
+			_Writer = new PackageWriter<ResponsePackage>();
 		}
 
 		void IBootable.Launch()
@@ -172,7 +172,7 @@ namespace Regulus.Remoting.Soul.Native
 			}
 
 			_SoulProvider.Update();
-			Package[] pkgs = null;
+			RequestPackage[] pkgs = null;
 			lock(Peer._LockRequest)
 			{
 				pkgs = _Requests.DequeueAll();
@@ -193,7 +193,7 @@ namespace Regulus.Remoting.Soul.Native
 			}
 		}
 
-		void IResponseQueue.Push(byte cmd, Dictionary<byte, byte[]> args)
+		void IResponseQueue.Push(ServerToClientOpCode cmd, byte[] data)
 		{
 			
 			lock(Peer._LockResponse)
@@ -203,16 +203,16 @@ namespace Regulus.Remoting.Soul.Native
 				{
 					Peer.TotalResponse++;
 					_Responses.Enqueue(
-						new Package
-						{
+						new ResponsePackage
+                        {
 							Code = cmd,
-							Args = args
-						});
+							Data = data
+                        });
 				}                
 			}
 		}
 
-		private void _RequestPush(Package package)
+		private void _RequestPush(RequestPackage package)
 		{
 			lock(Peer._LockRequest)
 			{
@@ -221,38 +221,43 @@ namespace Regulus.Remoting.Soul.Native
 			}
 		}
 
-		private Request _TryGetRequest(Package package)
+		private Request _TryGetRequest(RequestPackage package)
 		{
-			if(package.Code == (byte)ClientToServerOpCode.Ping)
+			if(package.Code == ClientToServerOpCode.Ping)
 			{
-				(this as IResponseQueue).Push((int)ServerToClientOpCode.Ping, new Dictionary<byte, byte[]>());
+				(this as IResponseQueue).Push(ServerToClientOpCode.Ping, new byte[0]);
 				return null;
 			}
 
-			if(package.Code == (byte)ClientToServerOpCode.CallMethod)
+			if(package.Code == ClientToServerOpCode.CallMethod)
 			{
-				var entityId = new Guid(package.Args[0]);
-				var methodName = Encoding.Default.GetString(package.Args[1]);
+				/*var EntityId = new Guid(package.Args[0]);
+				var MethodName = Encoding.Default.GetString(package.Args[1]);
 
 				byte[] par = null;
-				var returnId = Guid.Empty;
+				var ReturnId = Guid.Empty;
 				if(package.Args.TryGetValue(2, out par))
 				{
-					returnId = new Guid(par);
+					ReturnId = new Guid(par);
 				}
 
-				var methodParams = (from p in package.Args
+				var MethodParams = (from p in package.Args
 									where p.Key >= 3
 									orderby p.Key
-									select p.Value).ToArray();
+									select p.Value).ToArray();*/
 
-				return _ToRequest(entityId, methodName, returnId, methodParams);
+
+			    var data = package.Data.ToPackageData<PackageCallMethod>();                
+                return _ToRequest(data.EntityId, data.MethodName, data.ReturnId, data.MethodParams);
 			}
 
-			if(package.Code == (byte)ClientToServerOpCode.Release)
+			if(package.Code == ClientToServerOpCode.Release)
 			{
-				var entityId = new Guid(package.Args[0]);
-				_SoulProvider.Unbind(entityId);
+				//var EntityId = new Guid(package.Args[0]);
+
+
+                var data = package.Data.ToPackageData<PackageRelease>();
+                _SoulProvider.Unbind(data.EntityId);
 				return null;
 			}
 
@@ -283,7 +288,7 @@ namespace Regulus.Remoting.Soul.Native
 			}
 		}
 
-		private Package[] _ResponsePop()
+		private ResponsePackage[] _ResponsePop()
 		{
 			lock(Peer._LockResponse)
 			{

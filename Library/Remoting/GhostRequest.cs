@@ -4,6 +4,6 @@ namespace Regulus.Remoting
 {
 	public interface IGhostRequest
 	{
-		void Request(byte code, Dictionary<byte, byte[]> args);
+		void Request(ClientToServerOpCode code, byte[] args);
 	}
 }

@@ -8,9 +8,9 @@ using Regulus.Utility;
 
 namespace Regulus.Remoting
 {
-	public class PackageWriter
+	public class PackageWriter<TPackage>
 	{
-		public delegate Package[] CheckSourceCallback();
+		public delegate TPackage[] CheckSourceCallback();
 
 		public event CheckSourceCallback CheckSourceEvent
 		{
@@ -111,7 +111,7 @@ namespace Regulus.Remoting
 			}
 		}
 
-		private byte[] _CreateBuffer(Package[] packages)
+		private byte[] _CreateBuffer(TPackage[] packages)
 		{
 			var buffers = from p in packages select TypeHelper.Serializer(p);
 
@@ -120,7 +120,7 @@ namespace Regulus.Remoting
 			{
 				foreach(var buffer in buffers)
 				{
-					stream.Write(BitConverter.GetBytes(buffer.Length), 0, PackageWriter._HeadSize);
+					stream.Write(BitConverter.GetBytes(buffer.Length), 0, PackageWriter<TPackage>._HeadSize);
 					stream.Write(buffer, 0, buffer.Length);
 				}
 
@@ -136,9 +136,9 @@ namespace Regulus.Remoting
 			_CheckSourceEvent = _Empty;
 		}
 
-		private Package[] _Empty()
+		private TPackage[] _Empty()
 		{
-			return new Package[0];
+			return new TPackage[0];
 		}
 	}
 }

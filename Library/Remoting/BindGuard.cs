@@ -39,7 +39,7 @@ namespace Regulus.Remoting
 			{
 				if(names.Contains(method.Name))
 				{
-					_ThrowErrorMethod(method, "The method name can not be repeated.");
+					_ThrowErrorMethod(method, "The Method name can not be repeated.");
 				}
 				else
 				{
@@ -66,14 +66,14 @@ namespace Regulus.Remoting
 
 		private void _ThrowErrorMethod(MethodInfo method)
 		{
-			var message = string.Format("Invalid method [{0}].", method.Name);
+			var message = string.Format("Invalid Method [{0}].", method.Name);
 			var expction = new Exception(message);
 			throw expction;
 		}
 
 		private void _ThrowErrorMethod(MethodInfo method, string depiction)
 		{
-			var message = string.Format("Invalid method [{0}].{1}", method.Name, depiction);
+			var message = string.Format("Invalid Method [{0}].{1}", method.Name, depiction);
 			var expction = new Exception(message);
 			throw expction;
 		}

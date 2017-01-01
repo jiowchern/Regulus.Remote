@@ -39,13 +39,18 @@ namespace Regulus.Remoting
 
 			foreach(var id in ids)
 			{
-				var args = new Dictionary<byte, byte[]>();
-				args[0] = id.ToByteArray();
+				/*var args = new Dictionary<byte, byte[]>();
+				args[0] = id.ToByteArray();*/
+
 
 				_Exists.Remove(id);
+
+
 				if(_Requester != null)
 				{
-					_Requester.Request((int)ClientToServerOpCode.Release, args);
+                    var data = new PackageRelease();
+				    data.EntityId = id;
+                    _Requester.Request(ClientToServerOpCode.Release, data.ToBuffer());
 				}
 			}
 		}

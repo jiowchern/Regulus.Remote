@@ -10,11 +10,12 @@ namespace Regulus.Remoting
 
 	public delegate void OnByteDataCallback(byte[] bytes);
 
-	public delegate void OnPackageCallback(Package package);
+	
 
-	public class PackageReader
+	public class PackageReader<TPackage>
 	{
-		public event OnPackageCallback DoneEvent
+        public delegate void OnRequestPackageCallback(TPackage package);
+        public event OnRequestPackageCallback DoneEvent
 		{
 			add { _DoneEvent += value; }
 			remove { _DoneEvent -= value; }
@@ -22,16 +23,11 @@ namespace Regulus.Remoting
 
 		public event OnErrorCallback ErrorEvent;
 
-		private enum Status
-		{
-			Begin, 
-
-			End
-		}
+		
 
 		private const int _HeadSize = 4;
 
-		private OnPackageCallback _DoneEvent;
+		private OnRequestPackageCallback _DoneEvent;
 
 		private SocketReader _Reader;
 
@@ -53,7 +49,7 @@ namespace Regulus.Remoting
 			_Reader.DoneEvent += _ReadBody;
 			_Reader.ErrorEvent += ErrorEvent;
 
-			_Reader.Read(PackageReader._HeadSize);
+			_Reader.Read(PackageReader<TPackage>._HeadSize);
 		}
 
 		private void _ReadBody(byte[] bytes)
@@ -68,7 +64,7 @@ namespace Regulus.Remoting
 
 		private void _Package(byte[] bytes)
 		{
-			var pkg = TypeHelper.Deserialize<Package>(bytes);
+			var pkg = TypeHelper.Deserialize<TPackage>(bytes);
 
 			_DoneEvent.Invoke(pkg);
 

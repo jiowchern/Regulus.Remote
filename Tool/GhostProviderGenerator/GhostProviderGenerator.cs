@@ -1,4 +1,5 @@
 ﻿using System;
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -12,26 +13,55 @@ namespace Regulus.Tool
     public class GhostProviderGenerator
     {
         static string ghostIdName = "_GhostIdName";
+
         
-            
+
         public IEnumerable<string> Build(string path,string output_path,string provider_name, string[] namesapces)
         {
             byte[] sourceDll = System.IO.File.ReadAllBytes(path);
             Assembly assembly = Assembly.Load(sourceDll);
             var types = assembly.GetExportedTypes();
 
+            var codes = Build(provider_name, namesapces, types);
+
+            Dictionary<string, string> optionsDic = new Dictionary<string, string>
+            {
+                {"CompilerVersion", "v3.5"}
+            };
+            var provider = new CSharpCodeProvider(optionsDic);
+            var options = new CompilerParameters
+            {
+                
+                OutputAssembly = output_path,
+                GenerateExecutable = false,
+                ReferencedAssemblies =
+                {
+                    "System.Core.dll",
+                    "RegulusLibrary.dll",
+                    "RegulusRemoting.dll",
+                    "protobuf-net.dll",
+                    path,
+                }
+            };
+            var result = provider.CompileAssemblyFromSource(options, codes.ToArray());
+
+            return codes;
+        }
+
+        public IEnumerable<string> Build(string provider_name, string[] namesapces, Type[] types)
+        {
             var codes = new List<string>();
 
             List<string> addTypes = new List<string>();
             foreach (var type in types)
             {
-                if (namesapces.Any(n => n == type.Namespace) && type.IsInterface 
-                    && GhostProviderGenerator._IsGPI(type) )
+                if (namesapces.Any(n => n == type.Namespace) && type.IsInterface
+                    && GhostProviderGenerator._IsGPI(type))
                 {
                     string code = _BuildCode(type);
                     codes.Add(code);
                     addTypes.Add($"_Types.Add(typeof({_GetTypeName(type)}) , typeof({_GetGhostType(type)}) );");
-                }                
+                }
             }
             var addTypeCode = string.Join("\n", addTypes);
             var tokens = provider_name.Split(
@@ -39,9 +69,9 @@ namespace Regulus.Tool
                 {
                     '.'
                 });
-            var providerName = tokens.Last();            
-            
-            var providerNamespace = string.Join("." , tokens.Take(tokens.Count() - 1));
+            var providerName = tokens.Last();
+
+            var providerNamespace = string.Join(".", tokens.Take(tokens.Count() - 1));
             var providerNamespaceHead = "";
             var providerNamespaceTail = "";
             if (string.IsNullOrWhiteSpace(providerNamespace) == false)
@@ -49,18 +79,25 @@ namespace Regulus.Tool
                 providerNamespaceHead = $"namespace {providerNamespace}{{ ";
                 providerNamespaceTail = "}";
             }
-            var providerCode = $@"
+            var providerCode =
+                $@"
             using System;  
             using System.Collections.Generic;
             
-            {providerNamespaceHead}
-                public class {providerName} : Regulus.Remoting.IGhostProvider
+            {
+                    providerNamespaceHead}
+                public class {providerName
+                    } : Regulus.Remoting.IGhostProvider
                 {{
                     private Dictionary<Type, Type> _Types ;
-                    public {providerName}()
+                    public {
+                    providerName
+                    }()
                     {{
                         _Types = new Dictionary<Type, Type>();
-                        {addTypeCode}
+                        {
+                    addTypeCode
+                    }
                     }}
                     Type Regulus.Remoting.IGhostProvider.Find(Type ghost_base_type)
                     {{
@@ -71,31 +108,12 @@ namespace Regulus.Tool
                         return null;
                     }}
                 }}
-            {providerNamespaceTail}
+            {
+                    providerNamespaceTail}
             ";
 
             codes.Add(providerCode);
-            Dictionary<string, string> optionsDic = new Dictionary<string, string>
-            {
-                { "CompilerVersion", "v3.5" }
-            };
-            var provider = new CSharpCodeProvider(optionsDic);
-            var options = new CompilerParameters
-            {
-                OutputAssembly = output_path,
-                GenerateExecutable = false,
-                ReferencedAssemblies =
-                        {
-                            "System.Core.dll",
-                            "RegulusLibrary.dll" ,
-                            "RegulusRemoting.dll" ,
-                            "protobuf-net.dll" ,
-                            path,
-                        },
-
-
-            };
-            var result = provider.CompileAssemblyFromSource(options, codes.ToArray()  );
+            
 
             return codes;
         }
@@ -126,7 +144,9 @@ namespace Regulus.Tool
             string codeHeader = 
 $@"   
     using System;  
+    
     using System.Collections.Generic;
+    
     namespace {nameSpace}.Ghost 
     {{ 
         public class C{name} : {_GetTypeName(type)} , Regulus.Remoting.IGhost
@@ -143,7 +163,7 @@ $@"
                 _Queue = queue;
             }}
 
-            void Regulus.Remoting.IGhost.OnEvent(string name_event, object[] args)
+            void Regulus.Remoting.IGhost.OnEvent(string name_event, byte[][] args)
             {{
                 Regulus.Remoting.AgentCore.CallEvent(name_event , ""C{name}"" , this , args);
             }}
@@ -260,11 +280,10 @@ $@"
                 {
                     addReturn = $@"
     var returnValue = new {returnTypeCode}();
-    var returnId = _Queue.PushReturnValue(returnValue);
-    var returnIdBytes = Regulus.TypeHelper.GuidToByteArray(returnId);
-    dict.Add(2,returnIdBytes);
+    var returnId = _Queue.PushReturnValue(returnValue);    
+    data.ReturnId = returnId;
 ";
-                    returnValue = "return returnValue;";
+                    returnValue = "return ReturnValue;";
                 }
 
                 var addParams = _BuildAddParams(methodInfo);
@@ -272,16 +291,15 @@ $@"
                 var paramCode = string.Join(",", (from p in methodInfo.GetParameters() select $"{ _GetTypeName(p.ParameterType)} {p.Name}"));
                 var methodCode = $@"
                 {returnTypeCode} {type.Namespace}.{type.Name}.{methodInfo.Name}({paramCode})
-                {{
-                    var guidBytes = Regulus.TypeHelper.GuidToByteArray({ghostIdName});
-                    var methodNameBytes = Regulus.TypeHelper.StringToByteArray(""{methodInfo.Name}"");
-                    var dict = new Dictionary<byte, byte[]>();
-                    dict.Add(0,guidBytes);
-                    dict.Add(1,methodNameBytes);
+                {{                    
+
+                        
+                    var data = new Regulus.Remoting.PackageCallMethod();
+                    data.EntityId = {ghostIdName};
+                    data.MethodName =""{methodInfo.Name}"";
                     {addReturn}
                     {addParams}
-
-                    _Requester.Request((byte) Regulus.Remoting.ClientToServerOpCode.CallMethod , dict);
+                    _Requester.Request(Regulus.Remoting.ClientToServerOpCode.CallMethod , data.ToBuffer());
 
                     {returnValue}
                 }}
@@ -294,22 +312,23 @@ $@"
 
         private string _BuildAddParams(MethodInfo method_info)
         {
-            var parameters = method_info.GetParameters();
-            int index = 3;
+            var parameters = method_info.GetParameters();            
 
             List<string> addParams = new List<string>();
+
+            string addParamsHead = @"var paramList = new System.Collections.Generic.List<byte[]>();";
             foreach (var parameterInfo in parameters)
             {
                 var addparam = $@"
     var {parameterInfo.Name}Bytes = Regulus.TypeHelper.Serializer<{parameterInfo.ParameterType.Namespace}.{parameterInfo.ParameterType.Name}>({parameterInfo.Name});    
-    dict.Add({index.ToString()} , {parameterInfo.Name}Bytes);
+    paramList.Add({parameterInfo.Name}Bytes);
 ";
 
-                index++;
+                
                 addParams.Add(addparam);
             }
 
-            return string.Join(" \n",addParams);
+            return $"{addParamsHead}\n{string.Join(" \n", addParams)}\ndata.MethodParams = paramList.ToArray();";
         }
     }
 }

@@ -95,7 +95,7 @@ namespace Regulus.Remoting
 
 		private IGhostRequest _Requester;
 
-		private IGhostProvider _GhostProvider;
+		private readonly IGhostProvider _GhostProvider;
 
 		public long Ping { get; private set; }
 
@@ -134,96 +134,110 @@ namespace Regulus.Remoting
 			_EndPing();
 		}
 
-		public void OnResponse(byte id, Dictionary<byte, byte[]> args)
+		public void OnResponse(ServerToClientOpCode id, byte[] args)
 		{
 			_OnResponse(id, args);
 			_AutoRelease.Update();
 		}
 
-		protected void _OnResponse(byte id, Dictionary<byte, byte[]> args)
+		protected void _OnResponse(ServerToClientOpCode id, byte[] args)
 		{
-			if(id == (int)ServerToClientOpCode.Ping)
+			if(id == ServerToClientOpCode.Ping)
 			{
 				Ping = _PingTimeCounter.Ticks;
 				_StartPing();
 			}
-			else if(id == (int)ServerToClientOpCode.UpdateProperty)
+			else if(id == ServerToClientOpCode.UpdateProperty)
 			{
-				if(args.Count == 3)
-				{
-					var entity_id = new Guid(args[0]);
-					var eventName = TypeHelper.Deserialize<string>(args[1]);
-					var value = args[2];
-
-					Debug.WriteLine("UpdateProperty id:" + entity_id + " name:" + eventName + " value:" + value);
-					_UpdateProperty(entity_id, eventName, value);
-				}
-			}
-			else if(id == (int)ServerToClientOpCode.InvokeEvent)
+                var data = args.ToPackageData<PackageUpdateProperty>();
+                _UpdateProperty(data.EntityId, data.EventName, data.Args);
+            }
+			else if(id == ServerToClientOpCode.InvokeEvent)
 			{
-				if(args.Count >= 2)
+				/*if(args.Count >= 2)
 				{
-					var entity_id = new Guid(args[0]);
-					var eventName = TypeHelper.Deserialize<string>(args[1]);
-					var eventParams = (from p in args
+					var EntityId = new Guid(args[0]);
+					var EventName = TypeHelper.Deserialize<string>(args[1]);
+					var EventParams = (from p in args
 									   where p.Key >= 2
 									   select p.Value as object).ToArray();
 
-					_InvokeEvent(entity_id, eventName, eventParams);
-				}
-			}
-			else if(id == (int)ServerToClientOpCode.ErrorMethod)
-			{
-				if(args.Count == 3)
-				{
-					var returnTarget = new Guid(args[0]);
-					var method = TypeHelper.Deserialize<string>(args[1]);
-					var message = TypeHelper.Deserialize<string>(args[2]);
-					_ErrorReturnValue(returnTarget, method , message);
-				}
-			}
-			else if(id == (int)ServerToClientOpCode.ReturnValue)
-			{
-				if(args.Count == 2)
-				{
-					var returnTarget = new Guid(args[0]);
-					var returnValue = args[1];
 
-					_SetReturnValue(returnTarget, returnValue);
-				}
-			}
-			else if(id == (int)ServerToClientOpCode.LoadSoulCompile)
-			{
-				if(args.Count == 3)
-				{
-					var typeName = TypeHelper.Deserialize<string>(args[0]);
-					var entity_id = new Guid(args[1]);
-					var return_id = new Guid(args[2]);
+                    var data = args.ToPackageData<PackageInvokeEvent>();
+                    _InvokeEvent(data.EntityId, data.EventName, data.EventParams);
+				}*/
 
-					_LoadSoulCompile(typeName, entity_id, return_id);
-				}
-			}
-			else if(id == (int)ServerToClientOpCode.LoadSoul)
+                var data = args.ToPackageData<PackageInvokeEvent>();
+                _InvokeEvent(data.EntityId, data.EventName, data.EventParams);
+            }
+			else if(id == ServerToClientOpCode.ErrorMethod)
 			{
-				if(args.Count == 3)
+                /*if(args.Count == 3)
 				{
-					var typeName = TypeHelper.Deserialize<string>(args[0]);
-					var entity_id = new Guid(args[1]);
-					var returnType = TypeHelper.Deserialize<bool>(args[2]);
+					var ReturnTarget = new Guid(args[0]);
+					var Method = TypeHelper.Deserialize<string>(args[1]);
+					var Message = TypeHelper.Deserialize<string>(args[2]);
+					_ErrorReturnValue(ReturnTarget, Method , Message);
+				}*/
 
-					_LoadSoul(typeName, entity_id, returnType);
-				}
-			}
-			else if(id == (int)ServerToClientOpCode.UnloadSoul)
+                var data = args.ToPackageData<PackageErrorMethod>();
+
+                _ErrorReturnValue(data.ReturnTarget, data.Method, data.Message);
+            }
+			else if(id == ServerToClientOpCode.ReturnValue)
 			{
-				if(args.Count == 2)
+                /*if(args.Count == 2)
 				{
-					var typeName = TypeHelper.Deserialize<string>(args[0]);
-					var entity_id = new Guid(args[1]);
+					var ReturnTarget = new Guid(args[0]);
+					var ReturnValue = args[1];
 
-					_UnloadSoul(typeName, entity_id);
-				}
-			}
+					_SetReturnValue(ReturnTarget, ReturnValue);
+				}*/
+
+                var data = args.ToPackageData<PackageReturnValue>();
+                _SetReturnValue(data.ReturnTarget, data.ReturnValue);
+            }
+			else if(id == ServerToClientOpCode.LoadSoulCompile)
+			{
+				/*if(args.Count == 3)
+				{
+					var TypeName = TypeHelper.Deserialize<string>(args[0]);
+					var EntityId = new Guid(args[1]);
+					var ReturnId = new Guid(args[2]);
+
+					_LoadSoulCompile(TypeName, EntityId, ReturnId);
+				}*/
+
+                var data = args.ToPackageData<PackageLoadSoulCompile>();
+                _LoadSoulCompile(data.TypeName, data.EntityId, data.ReturnId);
+            }
+			else if(id == ServerToClientOpCode.LoadSoul)
+			{
+                /*if(args.Count == 3)
+				{
+					var TypeName = TypeHelper.Deserialize<string>(args[0]);
+					var EntityId = new Guid(args[1]);
+					var ReturnType = TypeHelper.Deserialize<bool>(args[2]);
+
+					_LoadSoul(TypeName, EntityId, ReturnType);
+				}*/
+
+                var data = args.ToPackageData<PackageLoadSoul>();
+                _LoadSoul(data.TypeName, data.EntityId, data.ReturnType);
+            }
+			else if(id == ServerToClientOpCode.UnloadSoul)
+			{
+                /*if(args.Count == 2)
+				{
+					var TypeName = TypeHelper.Deserialize<string>(args[0]);
+					var EntityId = new Guid(args[1]);
+
+					_UnloadSoul(TypeName, EntityId);
+				}*/
+
+                var data = args.ToPackageData<PackageUnloadSoul>();
+                _UnloadSoul(data.TypeName, data.EntityId);
+            }
 		}
 
 		private void _ErrorReturnValue(Guid return_target, string method, string message)
@@ -330,7 +344,7 @@ namespace Regulus.Remoting
 			}
 		}
 
-		private void _InvokeEvent(Guid ghost_id, string eventName, object[] eventParams)
+		private void _InvokeEvent(Guid ghost_id, string eventName, byte[][] eventParams)
 		{
 			var ghost = _FindGhost(ghost_id);
 			if(ghost != null)
@@ -370,7 +384,7 @@ namespace Regulus.Remoting
 				if(_PingTimer != null)
 				{
 					_PingTimeCounter = new TimeCounter();
-					_Requester.Request((int)ClientToServerOpCode.Ping, new Dictionary<byte, byte[]>());
+					_Requester.Request(ClientToServerOpCode.Ping, new byte[0]);
 				}
 			}
 
@@ -460,7 +474,7 @@ namespace Regulus.Remoting
 		}
 
 		// 被_BuildGhostType參考
-		public static void UpdateProperty(string property, string type_name, object instance, object value)
+		public static void UpdateProperty(string property, string type_name, object instance, byte[] value)
 		{
 			var type = AgentCore._GetType(type_name);
 			if(type != null)
@@ -468,13 +482,13 @@ namespace Regulus.Remoting
 				var field = type.GetField("_" + property, BindingFlags.Instance | BindingFlags.NonPublic);
 				if(field != null)
 				{
-					field.SetValue(instance, TypeHelper.DeserializeObject(field.FieldType, value as byte[]));
+					field.SetValue(instance, TypeHelper.DeserializeObject(field.FieldType, value  ));
 				}
 			}
 		}
 
 		// 被_BuildGhostType參考
-		public static void CallEvent(string method, string type_name, object obj, object[] args)
+		public static void CallEvent(string method, string type_name, object obj, byte[][] args)
 		{
 			var type = AgentCore._GetType(type_name);
 
@@ -488,7 +502,7 @@ namespace Regulus.Remoting
 					var parTypes = (from p in fieldValueDelegate.Method.GetParameters()
 									select p.ParameterType).ToArray();
 					var i = 0;
-					var pars = (from a in args select TypeHelper.DeserializeObject(parTypes[i++], a as byte[])).ToArray();
+					var pars = (from a in args select TypeHelper.DeserializeObject(parTypes[i++], a )).ToArray();
 					fieldValueDelegate.DynamicInvoke(pars);
 				}
 			}
@@ -572,7 +586,7 @@ namespace Regulus.Remoting
 
 			#endregion
 
-			#region build IGhostEventListener method
+			#region build IGhostEventListener Method
 
 			var methodGetIDInfo = typeof(IGhost).GetMethod("GetID");
 			if(methodGetIDInfo != null)
@@ -714,7 +728,7 @@ namespace Regulus.Remoting
 
 			#endregion
 
-			#region build method
+			#region build Method
 
 			var methods = baseType.GetMethods();
 
@@ -782,7 +796,7 @@ namespace Regulus.Remoting
 				il.Emit(OpCodes.Ldloc, varGuidByteArray);
 				il.Emit(OpCodes.Call, varDict.LocalType.GetMethod("Add"));
 
-				// add method name
+				// add Method name
 				il.Emit(OpCodes.Ldloc, varDict);
 				il.Emit(OpCodes.Ldc_I4, 1);
 				il.Emit(OpCodes.Ldloc, varMethodNameByteArray);

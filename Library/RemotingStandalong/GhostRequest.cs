@@ -16,36 +16,31 @@ namespace Regulus.Remoting.Standalone
 
 		public event Action<Guid> ReleaseEvent;
 
-		private class Request
-		{
-			public Dictionary<byte, byte[]> Argments;
+		
 
-			public byte Code;
-		}
-
-		private readonly Queue<Request> _Requests;
+		private readonly Queue<RequestPackage> _Requests;
 
 		public GhostRequest()
 		{
-			_Requests = new Queue<Request>();
+			_Requests = new Queue<RequestPackage>();
 		}
 
-		void IGhostRequest.Request(byte code, Dictionary<byte, byte[]> args)
+		void IGhostRequest.Request(ClientToServerOpCode code, byte[] args)
 		{
 			lock(_Requests)
 			{
 				_Requests.Enqueue(
-					new Request
+					new RequestPackage
 					{
 						Code = code, 
-						Argments = args
+						Data = args
 					});
 			}
 		}
 
 		public void Update()
 		{
-			var requests = new Queue<Request>();
+			var requests = new Queue<RequestPackage>();
 			lock(_Requests)
 			{
 				while(_Requests.Count > 0)
@@ -57,51 +52,52 @@ namespace Regulus.Remoting.Standalone
 			while(requests.Count > 0)
 			{
 				var request = requests.Dequeue();
-				_Apportion(request.Code, request.Argments);
+				_Apportion(request.Code, request.Data);
 			}
 		}
 
-		private void _Apportion(byte code, Dictionary<byte, byte[]> args)
+		private void _Apportion(ClientToServerOpCode code, byte[] args)
 		{
-			if((int)ClientToServerOpCode.Ping == code)
+			if(ClientToServerOpCode.Ping == code)
 			{
 				if(PingEvent != null)
 				{
 					PingEvent();
 				}
 			}
-			else if((int)ClientToServerOpCode.CallMethod == code)
+			else if(ClientToServerOpCode.CallMethod == code)
 			{
-				if(args.Count < 2)
-				{
-					return;
-				}
+				
 
-				var entityId = new Guid(args[0]);
+				/*var EntityId = new Guid(args[0]);
 
-				var methodName = Encoding.Default.GetString(args[1]);
+				var MethodName = Encoding.Default.GetString(args[1]);
 
 				byte[] par = null;
-				var returnId = Guid.Empty;
+				var ReturnId = Guid.Empty;
 				if(args.TryGetValue(2, out par))
 				{
-					returnId = new Guid(par);
+					ReturnId = new Guid(par);
 				}
 
-				var methodParams = (from p in args
+				var MethodParams = (from p in args
 				                    where p.Key >= 3
 				                    orderby p.Key
-				                    select p.Value).ToArray();
+				                    select p.Value).ToArray();*/
 
-				if(CallMethodEvent != null)
+
+			    var data = args.ToPackageData<PackageCallMethod>();
+                if (CallMethodEvent != null)
 				{
-					CallMethodEvent(entityId, methodName, returnId, methodParams);
+                    
+                    CallMethodEvent(data.EntityId, data.MethodName, data.ReturnId, data.MethodParams);
 				}
 			}
-			else if((int)ClientToServerOpCode.Release == code)
+			else if(ClientToServerOpCode.Release == code)
 			{
-				var entityId = new Guid(args[0]);
-				ReleaseEvent(entityId);
+                var data = args.ToPackageData<PackageRelease>();
+                //var EntityId = new Guid(args[0]);
+				ReleaseEvent(data.EntityId);
 			}
 		}
 	}

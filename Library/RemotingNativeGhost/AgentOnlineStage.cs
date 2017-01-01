@@ -21,13 +21,13 @@ namespace Regulus.Remoting.Ghost.Native
 
 			private readonly AgentCore _Core;
 
-			private readonly PackageReader _Reader;
+			private readonly PackageReader<ResponsePackage> _Reader;
 
-			private readonly PackageQueue _Receives;
+			private readonly Regulus.Collection.Queue<ResponsePackage> _Receives;
 
-			private readonly PackageQueue _Sends;
+			private readonly Regulus.Collection.Queue<RequestPackage> _Sends;
 
-			private readonly PackageWriter _Writer;
+			private readonly PackageWriter<RequestPackage> _Writer;
 
 			private volatile bool _Enable;
 
@@ -42,20 +42,20 @@ namespace Regulus.Remoting.Ghost.Native
 				_Core = core;
 
 				_Socket = socket;
-				_Reader = new PackageReader();
-				_Writer = new PackageWriter(OnlineStage.LowFps);
-				_Sends = new PackageQueue();
-				_Receives = new PackageQueue();
+				_Reader = new PackageReader<ResponsePackage>();
+				_Writer = new PackageWriter<RequestPackage>(OnlineStage.LowFps);
+				_Sends = new Collection.Queue<RequestPackage>();
+				_Receives = new Collection.Queue<ResponsePackage>();
 			}
 
-			void IGhostRequest.Request(byte code, Dictionary<byte, byte[]> args)
+			void IGhostRequest.Request(ClientToServerOpCode code, byte[] args)
 			{
 				lock(OnlineStage._LockRequest)
 				{
 					_Sends.Enqueue(
-						new Package
+						new RequestPackage()
 						{
-							Args = args, 
+							Data = args, 
 							Code = code
 						});
 					OnlineStage.RequestQueueCount++;
@@ -109,7 +109,7 @@ namespace Regulus.Remoting.Ghost.Native
 				}
 			}
 
-			private void _ReceivePackage(Package package)
+			private void _ReceivePackage(ResponsePackage package)
 			{
 				lock(OnlineStage._LockResponse)
 				{
@@ -127,7 +127,7 @@ namespace Regulus.Remoting.Ghost.Native
 
 					foreach(var pkg in pkgs)
 					{
-						core.OnResponse(pkg.Code, pkg.Args);
+						core.OnResponse(pkg.Code, pkg.Data);
 					}
 				}
 			}
@@ -146,7 +146,7 @@ namespace Regulus.Remoting.Ghost.Native
 				_Writer.Stop();
 			}
 
-			private Package[] _SendsPop()
+			private RequestPackage[] _SendsPop()
 			{
 				lock(OnlineStage._LockRequest)
 				{

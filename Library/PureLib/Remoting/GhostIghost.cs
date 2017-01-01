@@ -4,7 +4,7 @@ namespace Regulus.Remoting
 {
 	public interface IGhost
 	{
-		void OnEvent(string name_event, object[] args);
+		void OnEvent(string name_event, byte[][] args);
 
 		Guid GetID();
 
