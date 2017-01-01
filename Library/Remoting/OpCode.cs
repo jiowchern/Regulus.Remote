@@ -1,6 +1,6 @@
 ﻿namespace Regulus.Remoting
 {
-	public enum ClientToServerOpCode
+	public enum ClientToServerOpCode : byte
 	{
 		CallMethod = 1, 
 
@@ -9,7 +9,7 @@
 		Release
 	};
 
-	public enum ServerToClientOpCode
+	public enum ServerToClientOpCode : byte
 	{
 		InvokeEvent = 1, 
 

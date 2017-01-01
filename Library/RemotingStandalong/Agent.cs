@@ -130,9 +130,9 @@ namespace Regulus.Remoting.Standalone
 			_Update();
 		}
 
-		void IResponseQueue.Push(byte cmd, Dictionary<byte, byte[]> args)
+		void IResponseQueue.Push(ServerToClientOpCode cmd, byte[] data)
 		{
-			_Agent.OnResponse(cmd, args);
+			_Agent.OnResponse(cmd, data);
 		}
 
 		void ISoulBinder.Return<TSoul>(TSoul soul)
@@ -168,7 +168,7 @@ namespace Regulus.Remoting.Standalone
 
 		private void _OnRequestPing()
 		{
-			_Agent.OnResponse((byte)ServerToClientOpCode.Ping, null);
+			_Agent.OnResponse(ServerToClientOpCode.Ping, null);
 		}
 
 		private void _Update()

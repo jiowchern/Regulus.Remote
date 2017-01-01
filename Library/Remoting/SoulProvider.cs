@@ -65,7 +65,7 @@ namespace Regulus.Remoting
 			}
 		}
 
-		private readonly Queue<Dictionary<byte, byte[]>> _EventFilter = new Queue<Dictionary<byte, byte[]>>();
+		private readonly Queue<byte[]> _EventFilter = new Queue<byte[]>();
 
 		private readonly IRequestQueue _Peer;
 
@@ -141,30 +141,40 @@ namespace Regulus.Remoting
 		// System.Collections.Generic.List<Soul>	_Souls = new List<Soul>();
 		private void _UpdateProperty(Guid entity_id, string name, object val)
 		{
-			var argmants = new Dictionary<byte, byte[]>();
-			argmants.Add(0, entity_id.ToByteArray());
+			/*var argmants = new Dictionary<byte, byte[]>();
+			argmants.Add(0, EntityId.ToByteArray());
 			argmants.Add(1, TypeHelper.Serializer(name));
-			argmants.Add(2, TypeHelper.Serializer(val));
+			argmants.Add(2, TypeHelper.Serializer(val));*/
 
-			_Queue.Push((byte)ServerToClientOpCode.UpdateProperty, argmants);
+            var package = new PackageUpdateProperty();
+		    package.EntityId = entity_id;
+		    package.EventName = name;
+            package.Args = TypeHelper.Serializer(val);
+
+            _Queue.Push(ServerToClientOpCode.UpdateProperty, package.ToBuffer());
 		}
 
 		private void _InvokeEvent(Guid entity_id, string event_name, object[] args)
 		{
-			var argmants = new Dictionary<byte, byte[]>();
-			argmants.Add(0, entity_id.ToByteArray());
+			/*var argmants = new Dictionary<byte, byte[]>();
+			argmants.Add(0, EntityId.ToByteArray());
 			argmants.Add(1, TypeHelper.Serializer(event_name));
 			byte i = 2;
 			foreach(var arg in args)
 			{
 				argmants.Add(i, TypeHelper.Serializer(arg));
 				++i;
-			}
+			}*/
 
-			_InvokeEvent(argmants);
+
+            var package = new PackageInvokeEvent();
+		    package.EntityId = entity_id;
+		    package.EventName = event_name;            
+            package.EventParams = (from a in args select TypeHelper.Serializer(a)).ToArray();
+            _InvokeEvent(package.ToBuffer());
 		}
 
-		private void _InvokeEvent(Dictionary<byte, byte[]> argmants)
+		private void _InvokeEvent(byte[] argmants)
 		{
 			lock(_EventFilter)
 			{
@@ -217,38 +227,58 @@ namespace Regulus.Remoting
 
 		private void _ReturnDataValue(Guid returnId, IValue returnValue)
 		{
-			var argmants = new Dictionary<byte, byte[]>();
-			argmants.Add(0, returnId.ToByteArray());
-			var value = returnValue.GetObject();
-			argmants.Add(1, TypeHelper.Serializer(value));
-			_Queue.Push((byte)ServerToClientOpCode.ReturnValue, argmants);
+            /*var argmants = new Dictionary<byte, byte[]>();
+			argmants.Add(0, ReturnId.ToByteArray());
+			var value = ReturnValue.GetObject();
+			argmants.Add(1, TypeHelper.Serializer(value));*/
+
+            var value = returnValue.GetObject();
+            var package = new PackageReturnValue();
+		    package.ReturnTarget = returnId;
+		    package.ReturnValue = TypeHelper.Serializer(value);
+            _Queue.Push(ServerToClientOpCode.ReturnValue, package.ToBuffer());
 		}
 
 		private void _LoadSoulCompile(string type_name, Guid id, Guid return_id)
 		{
-			var argmants = new Dictionary<byte, byte[]>();
+			/*var argmants = new Dictionary<byte, byte[]>();
 			argmants.Add(0, TypeHelper.Serializer(type_name));
 			argmants.Add(1, id.ToByteArray());
-			argmants.Add(2, return_id.ToByteArray());
+			argmants.Add(2, ReturnId.ToByteArray());*/
 
-			_Queue.Push((byte)ServerToClientOpCode.LoadSoulCompile, argmants);
+            var package = new PackageLoadSoulCompile();
+		    package.EntityId = id;
+		    package.ReturnId = return_id;
+		    package.TypeName = type_name;
+
+            _Queue.Push(ServerToClientOpCode.LoadSoulCompile, package.ToBuffer());
 		}
 
 		private void _LoadSoul(string type_name, Guid id, bool return_type)
 		{
-			var argmants = new Dictionary<byte, byte[]>();
+			/*var argmants = new Dictionary<byte, byte[]>();
 			argmants.Add(0, TypeHelper.Serializer(type_name));
 			argmants.Add(1, id.ToByteArray());
-			argmants.Add(2, TypeHelper.Serializer(return_type));
-			_Queue.Push((byte)ServerToClientOpCode.LoadSoul, argmants);
+			argmants.Add(2, TypeHelper.Serializer(return_type));*/
+
+
+            var package = new PackageLoadSoul();
+		    package.TypeName = type_name;
+		    package.EntityId = id;
+		    package.ReturnType = return_type;
+            _Queue.Push(ServerToClientOpCode.LoadSoul, package.ToBuffer());
 		}
 
 		private void _UnloadSoul(string type_name, Guid id)
 		{
-			var argmants = new Dictionary<byte, byte[]>();
+			/*var argmants = new Dictionary<byte, byte[]>();
 			argmants.Add(0, TypeHelper.Serializer(type_name));
-			argmants.Add(1, id.ToByteArray());
-			_Queue.Push((byte)ServerToClientOpCode.UnloadSoul, argmants);
+			argmants.Add(1, id.ToByteArray());*/
+
+            var package = new PackageUnloadSoul();
+		    package.TypeName = type_name;
+		    package.EntityId = id;
+            _Queue.Push(ServerToClientOpCode.UnloadSoul, package.ToBuffer());
 		}
 
 		private void _InvokeMethod(Guid entity_id, string method_name, Guid returnId, byte[][] args)
@@ -299,13 +329,18 @@ namespace Regulus.Remoting
 
 		private void _ErrorDeserialize(string method_name, Guid return_id, string message)
 		{
-			Log.Instance.WriteDebug(string.Format("error method! {0} :{1}.", method_name ,message));
+			
 
-			var argmants = new Dictionary<byte, byte[]>();
-			argmants.Add(0, return_id.ToByteArray());            
+			/*var argmants = new Dictionary<byte, byte[]>();
+			argmants.Add(0, ReturnId.ToByteArray());            
 			argmants.Add(1, TypeHelper.Serializer(method_name));
-			argmants.Add(2, TypeHelper.Serializer(message));
-			_Queue.Push((byte)ServerToClientOpCode.ErrorMethod, argmants);
+			argmants.Add(2, TypeHelper.Serializer(Message));*/
+
+		    var package = new PackageErrorMethod();
+		    package.Message = message ;
+		    package.Method = method_name;
+		    package.ReturnTarget = return_id;
+            _Queue.Push(ServerToClientOpCode.ErrorMethod, package.ToBuffer());
 		}
 
 		private void _Bind<TSoul>(TSoul soul, bool return_type, Guid return_id)
@@ -449,7 +484,7 @@ namespace Regulus.Remoting
 			{
 				foreach(var filter in _EventFilter)
 				{
-					_Queue.Push((byte)ServerToClientOpCode.InvokeEvent, filter);
+					_Queue.Push(ServerToClientOpCode.InvokeEvent, filter);
 				}
 
 				_EventFilter.Clear();

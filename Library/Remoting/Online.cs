@@ -25,7 +25,7 @@ namespace Regulus.Remoting
 			_Agent = agent;
 		}
 
-		void IGhost.OnEvent(string name_event, object[] args)
+		void IGhost.OnEvent(string name_event, byte[][] args)
 		{
 			throw new NotImplementedException();
 		}

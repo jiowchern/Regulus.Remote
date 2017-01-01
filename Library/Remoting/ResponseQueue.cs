@@ -4,6 +4,6 @@ namespace Regulus.Remoting
 {
 	public interface IResponseQueue
 	{
-		void Push(byte cmd, Dictionary<byte, byte[]> args);
+		void Push(ServerToClientOpCode code, byte[] data);
 	}
 }

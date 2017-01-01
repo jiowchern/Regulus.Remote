@@ -57,7 +57,7 @@ namespace Regulus.Remoting
 	    {
 	        if(ErrorMessageEvent != null)
 	        {
-	            ErrorMessageEvent(string.Format("Error method call. mrthod[{0}] message[{1}]" , arg1 ,arg2));
+	            ErrorMessageEvent(string.Format("Error Method call. mrthod[{0}] Message[{1}]" , arg1 ,arg2));
 	        }
         }
 

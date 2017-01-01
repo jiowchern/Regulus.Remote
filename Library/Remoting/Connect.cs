@@ -30,7 +30,7 @@ namespace Regulus.Remoting
 			return val;
 		}
 
-		void IGhost.OnEvent(string name_event, object[] args)
+		void IGhost.OnEvent(string name_event, byte[][] args)
 		{
 			throw new NotImplementedException();
 		}
