@@ -42,12 +42,7 @@ namespace Regulus.Remoting.Standalone
             _Agent = new AgentCore(provider);
             _SoulProvider = new SoulProvider(this, this);
         }
-        public Agent()
-		{
-			_GhostRequest = new GhostRequest();
-			_Agent = new AgentCore();
-			_SoulProvider = new SoulProvider(this, this);
-		}
+        
 
 		INotifier<T> IAgent.QueryNotifier<T>()
 		{

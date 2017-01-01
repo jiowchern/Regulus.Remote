@@ -283,7 +283,7 @@ $@"
     var returnId = _Queue.PushReturnValue(returnValue);    
     data.ReturnId = returnId;
 ";
-                    returnValue = "return ReturnValue;";
+                    returnValue = "return returnValue;";
                 }
 
                 var addParams = _BuildAddParams(methodInfo);
