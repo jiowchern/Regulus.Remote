@@ -36,7 +36,7 @@ namespace Regulus.Remoting.Soul.Native
         {
             if(core == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(core));
             }
 
             _Core = core;

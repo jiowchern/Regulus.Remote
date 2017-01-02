@@ -5,7 +5,7 @@ using Regulus.Utility;
 
 namespace Regulus.Remoting.Ghost.Native
 {
-	internal class IOHandler : Singleton<IOHandler>
+	/*internal class IOHandler : Singleton<IOHandler>
 	{
 		private readonly PowerRegulator _PowerRegulator;
 
@@ -72,5 +72,5 @@ namespace Regulus.Remoting.Ghost.Native
 		{
 			_ThreadEnable = false;
 		}
-	}
+	}*/
 }
