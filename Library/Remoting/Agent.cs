@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
+
 using System.Timers;
 
 
@@ -503,12 +503,7 @@ namespace Regulus.Remoting
 		}
 
 		
-
-		private static void TestEmitYield(ILGenerator cil)
-		{
-			var yield = typeof(TypeHelper).GetMethod("Yield", BindingFlags.Public | BindingFlags.Static);
-			cil.Emit(OpCodes.Call, yield);
-		}
+		
 
 		public event Action<string, string> ErrorMethodEvent;
 	}

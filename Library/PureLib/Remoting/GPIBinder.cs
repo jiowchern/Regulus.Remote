@@ -181,60 +181,55 @@ namespace Regulus.Remoting
 			return sn + name;
 		}
 
-		public void Bind(string name, OnBuilder builder)
-		{
-			_Handlers.Add(new Data(name, builder));
-		}
+		
 
 		public void Bind(Expression<Action<T>> exp)
-		{
-			var name = _GetName(exp);
-			_InvokeDatas.Add(new CommandRegister<T>(name[0], name.Skip(1).ToArray(), _Command, exp));
+		{			
+			_InvokeDatas.Add(new CommandRegister<T>(_Command, exp));
 		}
 
 		public void Bind<T1>(Expression<Action<T, T1>> exp)
 		{
-			var name = _GetName(exp);
-			_InvokeDatas.Add(new CommandRegister<T, T1>(name[0], name.Skip(1).ToArray(), _Command, exp));
+			
+			_InvokeDatas.Add(new CommandRegister<T, T1>(_Command, exp));
 		}
 
 		public void Bind<T1, T2>(Expression<Action<T, T1, T2>> exp)
 		{
-			var name = _GetName(exp);
-			_InvokeDatas.Add(new CommandRegister<T, T1, T2>(name[0], name.Skip(1).ToArray(), _Command, exp));
+			
+			_InvokeDatas.Add(new CommandRegister<T, T1, T2>( _Command, exp));
 		}
 
 		public void Bind<T1, T2, T3>(Expression<Action<T, T1, T2, T3>> exp)
 		{
-			var name = _GetName(exp);
-			_InvokeDatas.Add(new CommandRegister<T, T1, T2, T3>(name[0], name.Skip(1).ToArray(), _Command, exp));
+			
+			_InvokeDatas.Add(new CommandRegister<T, T1, T2, T3>(_Command, exp));
 		}
 
 		public void Bind<T1, T2, T3, T4>(Expression<Callback<T, T1, T2, T3, T4>> exp)
 		{
-			var name = _GetName(exp);
-			_InvokeDatas.Add(new CommandRegister<T, T1, T2, T3, T4>(name[0], name.Skip(1).ToArray(), _Command, exp));
+			
+			_InvokeDatas.Add(new CommandRegister<T, T1, T2, T3, T4>(_Command, exp));
 		}
 
 		public void Bind<TR>(Expression<Func<T, TR>> exp, Action<TR> ret)
 		{
-			var name = _GetName(exp);
-			_InvokeDatas.Add(new CommandRegisterReturn<T, TR>(name[0], name.Skip(1).ToArray(), _Command, exp, ret));
+			
+			_InvokeDatas.Add(new CommandRegisterReturn<T, TR>(_Command, exp, ret));
 		}
 
 		public void Bind<T1, TR>(Expression<Func<T, T1, TR>> exp, Action<TR> ret)
 		{
-			var name = _GetName(exp);
-			_InvokeDatas.Add(new CommandRegisterReturn<T, T1, TR>(name[0], name.Skip(1).ToArray(), _Command, exp, ret));
+			
+			_InvokeDatas.Add(new CommandRegisterReturn<T, T1, TR>(_Command, exp, ret));
 		}
 
 		public void Bind<T1, T2, TR>(Expression<Func<T, T1, T2, TR>> exp, Action<TR> ret)
 		{
-			var name = _GetName(exp);
+			
 			_InvokeDatas.Add(
 				new CommandRegisterReturn<T, T1, T2, TR>(
-					name[0], 
-					name.Skip(1).ToArray(), 
+					
 					_Command, 
 					exp, 
 					ret));
@@ -242,11 +237,10 @@ namespace Regulus.Remoting
 
 		public void Bind<T1, T2, T3, TR>(Expression<Func<T, T1, T2, T3, TR>> exp, Action<TR> ret)
 		{
-			var name = _GetName(exp);
+			
 			_InvokeDatas.Add(
 				new CommandRegisterReturn<T, T1, T2, T3, TR>(
-					name[0], 
-					name.Skip(1).ToArray(), 
+					
 					_Command, 
 					exp, 
 					ret));
@@ -254,46 +248,15 @@ namespace Regulus.Remoting
 
 		public void Bind<T1, T2, T3, T4, TR>(Expression<Callback<T, T1, T2, T3, T4, TR>> exp, Action<TR> ret)
 		{
-			var name = _GetName(exp);
+			
 			_InvokeDatas.Add(
 				new CommandRegisterReturn<T, T1, T2, T3, T4, TR>(
-					name[0], 
-					name.Skip(1).ToArray(), 
+					
 					_Command, 
 					exp, 
 					ret));
 		}
 
-		private string[] _GetName(LambdaExpression exp)
-		{
-			string methodName;
-
-			if(exp.Body.NodeType != ExpressionType.Call)
-			{
-				throw new ArgumentException();
-			}
-
-			var methodCall = exp.Body as MethodCallExpression;
-			var method = methodCall.Method;
-			methodName = method.Name;
-
-			var argNames = from par in exp.Parameters.Skip(1) select par.Name;
-			if(method.ReturnType == null)
-			{
-				return new[]
-				{
-					methodName
-				}.Concat(argNames).ToArray();
-			}
-
-			return new[]
-			{
-				methodName
-			}.Concat(
-				new[]
-				{
-					"return"
-				}).Concat(argNames).ToArray();
-		}
+		
 	}
 }

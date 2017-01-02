@@ -156,7 +156,7 @@ namespace RegulusLibraryTest
 		public void TestCommandRegister0()
 		{
 			var command = new Command();
-			var cr = new CommandRegister<ICallTester>("Function1", new string[0], command, caller => caller.Function1());
+			var cr = new CommandRegister<ICallTester>(command, caller => caller.Function1());
 			var callTester = Substitute.For<ICallTester>();
 			cr.Register(callTester);
 			command.Run("Function1", new string[0]);
@@ -170,11 +170,7 @@ namespace RegulusLibraryTest
 			// data
 			var command = new Command();
 			var cr = new CommandRegister<ICallTester, int>(
-				"Function2", 
-				new[]
-				{
-					"arg1"
-				}, 
+				
 				command, 
 				(caller, arg1) => caller.Function2(arg1));
 			var callTester = Substitute.For<ICallTester>();
@@ -197,10 +193,7 @@ namespace RegulusLibraryTest
 		{
 			var command = new Command();
 			var cr = new CommandRegisterReturn<ICallTester, int>(
-				"Function3", 
-				new string[]
-				{
-				}, 
+				
 				command, 
 				caller => caller.Function3(), 
 				ret => { });
@@ -220,10 +213,7 @@ namespace RegulusLibraryTest
 		{
 			var command = new Command();
 			var cr = new CommandRegisterReturn<ICallTester, int, byte, float, int>(
-				"Function4", 
-				new string[]
-				{
-				}, 
+				
 				command, 
 				(caller, arg1, arg2, arg3) => caller.Function4(arg1, arg2, arg3), 
 				ret => { });
@@ -240,5 +230,28 @@ namespace RegulusLibraryTest
 			callTester.Received(1).Function4(Arg.Any<int>(), Arg.Any<byte>(), Arg.Any<float>());
 			cr.Unregister();
 		}
-	}
+
+
+        [TestMethod]
+        public void TestCommandRegister4()
+        {
+            var command = new Command();
+            int result = 0;
+            var cr = new CommandRegisterReturn<ICallTester,  int>(
+
+                command,
+                (caller) => caller.Function5,
+                ret => { result = ret; });
+            var callTester = Substitute.For<ICallTester>();
+            callTester.Function5.Returns(1);
+            cr.Register(callTester);
+            command.Run(
+                "Function5",
+                new string[0]);
+            
+            cr.Unregister();
+
+            Assert.AreEqual(1 , result);
+        }
+    }
 }
