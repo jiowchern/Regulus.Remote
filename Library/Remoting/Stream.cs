@@ -9,10 +9,6 @@ using Regulus.Utility;
 
 namespace Regulus.Remoting
 {
-    class A
-    {
-        Action<int, int> a;
-    }
     
 	/*public enum SocketIOResult
 	{

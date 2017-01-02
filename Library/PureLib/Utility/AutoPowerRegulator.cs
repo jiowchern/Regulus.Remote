@@ -2,8 +2,8 @@
 {
     public class AutoPowerRegulator
     {
-        private TimeCounter _Counter;
-        private PowerRegulator _PowerRegulator;
+        private readonly TimeCounter _Counter;
+        private readonly PowerRegulator _PowerRegulator;
 
         private long _PreviousTicks;
 
