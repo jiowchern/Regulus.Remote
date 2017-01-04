@@ -13,9 +13,9 @@ using ProtoBuf;
 
 namespace Regulus.CustomType
 {
+
     
-    
-    [ProtoContract]    
+    [ProtoContract][Serializable]
     public class Polygon : ICloneable , IXmlSerializable
     {
 		public struct CollisionResult

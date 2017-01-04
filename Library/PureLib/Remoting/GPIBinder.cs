@@ -183,7 +183,7 @@ namespace Regulus.Remoting
 
 		
 
-		public void Bind(Expression<Action<T>> exp)
+		public void Bind( Expression<Action<T>> exp)
 		{			
 			_InvokeDatas.Add(new CommandRegister<T>(_Command, exp));
 		}

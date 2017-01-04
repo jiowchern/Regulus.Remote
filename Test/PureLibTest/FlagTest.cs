@@ -17,7 +17,7 @@ namespace RegulusLibraryTest
 
 		_3
 	};
-
+    
 	[TestClass]
 	public class FlagTest
 	{

@@ -7,5 +7,7 @@
 		void Function2(int arg);
 
 		int Function3();
+
+        float Property1 { get; }
 	}
 }

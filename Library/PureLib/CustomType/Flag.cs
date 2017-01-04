@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 
@@ -6,7 +7,8 @@ using ProtoBuf;
 
 namespace Regulus.CustomType
 {
-	[ProtoContract]
+    
+	[ProtoContract][Serializable]
 	public class Flag<T> : IEnumerable<T>, ICollection<T>
 	{
 		[ProtoMember(1)]

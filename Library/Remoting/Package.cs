@@ -7,7 +7,7 @@ using ProtoBuf;
 namespace Regulus.Remoting
 {
 
-    /*[ProtoContract]
+    /*[ProtoContract][Serializable]
     public class Package
     {
         [ProtoMember(2)]
@@ -18,7 +18,7 @@ namespace Regulus.Remoting
     }*/
 
 
-    [ProtoContract]	
+    [ProtoContract][Serializable]	
 	public class RequestPackage
 	{
 		[ProtoMember(2)]
@@ -28,7 +28,7 @@ namespace Regulus.Remoting
 		public ClientToServerOpCode Code;
 	}
 
-    [ProtoContract]
+    [ProtoContract][Serializable]
     public class ResponsePackage
     {
         [ProtoMember(2)]
@@ -37,7 +37,7 @@ namespace Regulus.Remoting
         [ProtoMember(1)]
         public ServerToClientOpCode Code;
     }
-
+    [Serializable]
     public class TPackageData<TData> where TData : class
     {
         public byte[] ToBuffer()
@@ -57,7 +57,7 @@ namespace Regulus.Remoting
     }
 
 
-    [ProtoContract]
+    [ProtoContract][Serializable]
     public class PackageUpdateProperty : TPackageData<PackageUpdateProperty>
     {
         public PackageUpdateProperty()
@@ -74,7 +74,7 @@ namespace Regulus.Remoting
         public byte[] Args { get; set; }
     }
 
-    [ProtoContract]
+    [ProtoContract][Serializable]
     public class PackageInvokeEvent : TPackageData<PackageInvokeEvent>
     {
         public PackageInvokeEvent()
@@ -92,7 +92,7 @@ namespace Regulus.Remoting
         public byte[][] EventParams;
     }
 
-    [ProtoContract]
+    [ProtoContract][Serializable]
     public class PackageErrorMethod : TPackageData<PackageErrorMethod>
     {
         public PackageErrorMethod()
@@ -108,7 +108,7 @@ namespace Regulus.Remoting
         public string Message;
     }
 
-    [ProtoContract]
+    [ProtoContract][Serializable]
     public class PackageReturnValue : TPackageData<PackageReturnValue>
     {
         public PackageReturnValue()
@@ -121,7 +121,7 @@ namespace Regulus.Remoting
         public byte[] ReturnValue   ;
     }
 
-    [ProtoContract]
+    [ProtoContract][Serializable]
     public class PackageLoadSoulCompile : TPackageData<PackageLoadSoulCompile>
     {
         public PackageLoadSoulCompile ()
@@ -137,7 +137,7 @@ namespace Regulus.Remoting
 
     }
 
-    [ProtoContract]
+    [ProtoContract][Serializable]
     public class PackageLoadSoul : TPackageData<PackageLoadSoul>
     {
         public PackageLoadSoul()
@@ -151,7 +151,7 @@ namespace Regulus.Remoting
         [ProtoMember(3)]
         public bool ReturnType;
     }
-    [ProtoContract]
+    [ProtoContract][Serializable]
     public class PackageUnloadSoul : TPackageData<PackageUnloadSoul>
     {
         public PackageUnloadSoul()
@@ -165,7 +165,7 @@ namespace Regulus.Remoting
     }
 
 
-    [ProtoContract]
+    [ProtoContract][Serializable]
     public class PackageCallMethod : TPackageData<PackageCallMethod>
     {
 
@@ -188,7 +188,7 @@ namespace Regulus.Remoting
         public byte[][] MethodParams;
     }
 
-    [ProtoContract]
+    [ProtoContract][Serializable]
     public class PackageRelease : TPackageData<PackageRelease>
     {
         [ProtoMember(1)]

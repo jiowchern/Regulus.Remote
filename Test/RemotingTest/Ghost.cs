@@ -14,12 +14,12 @@ namespace RemotingTest
 			_Id = Guid.NewGuid();
 		}
 
-		void IGhost.OnEvent(string name_event, object[] args)
-		{
-			throw new NotImplementedException();
-		}
+	    void IGhost.OnEvent(string name_event, byte[][] args)
+	    {
+	        throw new NotImplementedException();
+	    }
 
-		Guid IGhost.GetID()
+	    Guid IGhost.GetID()
 		{
 			return _Id;
 		}

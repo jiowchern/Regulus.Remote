@@ -163,7 +163,7 @@ namespace Regulus.Remoting.Standalone
 
 		private void _OnRequestPing()
 		{
-			_Agent.OnResponse(ServerToClientOpCode.Ping, null);
+			_Agent.OnResponse(ServerToClientOpCode.Ping, new byte[0]);
 		}
 
 		private void _Update()

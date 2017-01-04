@@ -71,14 +71,14 @@ namespace Regulus.Remoting.Tests
             
         }
     }
-
+    [Serializable]
     [ProtoBuf.ProtoContract]
     public class TestPackageData : TPackageData<TestPackageData>
     {
         [ProtoBuf.ProtoMember(1)]
         public Guid Id;
     }
-
+    [Serializable]
     [ProtoBuf.ProtoContract]
     public class TestPackageBuffer : TPackageData<TestPackageBuffer>
     {

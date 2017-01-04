@@ -5,8 +5,8 @@ using ProtoBuf;
 
 namespace Regulus.CustomType
 {
-	[Serializable]
-	[ProtoContract]
+	
+	[ProtoContract][Serializable]
 	public struct Rect
 	{
 		[ProtoMember(1)]

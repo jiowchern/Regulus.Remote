@@ -15,6 +15,18 @@ namespace RegulusLibraryTest
     public class TypeTest
     {
         [TestMethod]
+        public void TestSerializerVector2()
+        {
+            var v = new Regulus.CustomType.Vector2(99, 22);
+
+            var array = Regulus.TypeHelper.Serializer(v);
+            var v2 = Regulus.TypeHelper.Deserialize<Regulus.CustomType.Vector2>(array);
+
+            Assert.AreEqual(99 , v2.X);
+            Assert.AreEqual(22, v2.Y);
+        }
+
+        [TestMethod]
         public void TestRectLeftToCenter()
         {
             Rect rect = new Rect(0,1,1,1);
