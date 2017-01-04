@@ -11,8 +11,8 @@ namespace Regulus.Utility
  *  
  * Oriented bounding box 
  */
-	[Serializable]
-	[ProtoContract]
+	
+	[ProtoContract][Serializable]
 	public class OBB
 	{
 		// unit vector of x axis

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 
 namespace Regulus
@@ -22,21 +23,35 @@ namespace Regulus
 
 		public static byte[] Serializer<T>(T o)
 		{
-			using(var stream = new MemoryStream())
+
+            BinaryFormatter bf = new BinaryFormatter();
+            using (var ms = new MemoryStream())
+            {
+                bf.Serialize(ms, o);
+                return ms.ToArray();
+            }
+
+            /*using (var stream = new MemoryStream())
 			{
 				ProtoBuf.Serializer.Serialize(stream, o);
 				return stream.ToArray();
-			}
+			}*/
 		}
 
 		public static object DeserializeObject(Type type, byte[] b)
 		{
 		    try
 		    {
-                using (var stream = new MemoryStream(b))
+                BinaryFormatter bf = new BinaryFormatter();
+                using (var ms = new MemoryStream(b))
+                {                    
+                    var obj = bf.Deserialize(ms);
+                    return obj;
+                }
+                /*using (var stream = new MemoryStream(b))
                 {
                     return ProtoBuf.Serializer.NonGeneric.Deserialize(type, stream);
-                }
+                }*/
             }
 		    catch(Exception e )
 		    {		        
@@ -47,10 +62,17 @@ namespace Regulus
 
 		public static T Deserialize<T>(byte[] b)
 		{
-			using(var stream = new MemoryStream(b))
+            BinaryFormatter bf = new BinaryFormatter();
+            using (var ms = new MemoryStream(b))
+            {
+                var obj = bf.Deserialize(ms);
+                return (T)obj;
+            }
+
+            /*using (var stream = new MemoryStream(b))
 			{
 				return ProtoBuf.Serializer.Deserialize<T>(stream);
-			}
+			}*/
 		}
 	}
 }

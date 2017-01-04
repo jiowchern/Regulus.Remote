@@ -6,8 +6,8 @@ using ProtoBuf;
 
 namespace Regulus.CustomType
 {
-	[ProtoContract]
-	[Serializable]
+	[ProtoContract][Serializable]
+	
     [XmlRoot("Vector2")]
     public struct Vector2
 	{

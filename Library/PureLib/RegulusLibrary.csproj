@@ -31,6 +31,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -110,6 +111,8 @@
     <Compile Include="Remoting\GPIBinderFactory.cs" />
     <Compile Include="Remoting\Value.cs" />
     <Compile Include="Remoting\ValueWaiter.cs" />
+    <Compile Include="Serialization\ISerializable.cs" />
+    <Compile Include="Serialization\Serializer.cs" />
     <Compile Include="Utility\Asyncexecuter.cs" />
     <Compile Include="Utility\AutoPowerRegulator.cs" />
     <Compile Include="Utility\Command.cs" />

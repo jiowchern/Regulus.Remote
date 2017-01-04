@@ -6,7 +6,7 @@ using ProtoBuf;
 
 namespace Regulus.CustomType
 {
-	[ProtoContract]
+	[ProtoContract][Serializable]
 	public struct Triangle : IEquatable<Triangle>, IRotatable
 	{
 		[ProtoMember(1)]

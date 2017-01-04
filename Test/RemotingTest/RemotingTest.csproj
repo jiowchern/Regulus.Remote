@@ -3,11 +3,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{1F93F34D-B41D-4D70-B49F-F8011D46F374}</ProjectGuid>
+    <ProjectGuid>{6C5AF73B-0D73-4A15-B762-BB2E889DE4AE}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RegulusLibraryTest</RootNamespace>
-    <AssemblyName>RegulusLibraryTest</AssemblyName>
+    <RootNamespace>RemotingTest</RootNamespace>
+    <AssemblyName>RemotingTest</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -35,19 +35,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="NSubstitute">
       <HintPath>..\..\packages\NSubstitute.1.8.1.0\lib\net45\NSubstitute.dll</HintPath>
     </Reference>
-    <Reference Include="protobuf-net, Version=2.0.0.668, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\protobuf-net.2.0.0.668\lib\net40\protobuf-net.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="RegulusRemotingNativeGhost.Fakes">
+      <HintPath>FakesAssemblies\RegulusRemotingNativeGhost.Fakes.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Xml" />
-    <Reference Include="TechTalk.SpecFlow, Version=1.9.0.77, Culture=neutral, PublicKeyToken=0778194805d6db41, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SpecFlow.1.9.0\lib\net35\TechTalk.SpecFlow.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -64,50 +59,49 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="AttribTest.cs" />
+    <Compile Include="AgentUpdater.cs" />
     <Compile Include="CallTester.cs" />
-    <Compile Include="CommandTest.cs" />
-    <Compile Include="CSV.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CSV.feature</DependentUpon>
-    </Compile>
-    <Compile Include="CSVSteps.cs" />
-    <Compile Include="CustomType\Vector2Tests.cs" />
-    <Compile Include="EnqueueHelper.cs" />
-    <Compile Include="Extension\TypeExtensionTests.cs" />
-    <Compile Include="Log.feature.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Log.feature</DependentUpon>
-    </Compile>
-    <Compile Include="LogSteps.cs" />
+    <Compile Include="CommandParser.cs" />
+    <Compile Include="EmptyInputView.cs" />
+    <Compile Include="Ghost.cs" />
+    <Compile Include="IBinderTest.cs" />
+    <Compile Include="ITestGPI.cs" />
+    <Compile Include="ITestReturn.cs" />
+    <Compile Include="IUnsupportedMethodIntefaceParam.cs" />
+    <Compile Include="IUser.cs" />
+    <Compile Include="Server.cs" />
+    <Compile Include="TestInterface.cs" />
+    <Compile Include="CommandCall.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="IniTest.cs" />
-    <Compile Include="AsyncExecuter.cs" />
-    <Compile Include="LogTest.cs" />
-    <Compile Include="FlagTest.cs" />
-    <Compile Include="DosKeyTest.cs" />
-    <Compile Include="TypeTest.cs" />
-    <Compile Include="RemotingValueResultTest.cs" />
-    <Compile Include="UnitTestDifferenceNoticer.cs" />
+    <Compile Include="EnumFlag.cs" />
+    <Compile Include="AutoReleaseTest.cs" />
+    <Compile Include="ControllerStageStartTest.cs" />
+    <Compile Include="UnitTestSoulProvider.cs" />
+    <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PureLib\RegulusLibrary.csproj">
+    <ProjectReference Include="..\..\Library\PureLib\RegulusLibrary.csproj">
       <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
       <Name>RegulusLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Library\RemotingNativeGhost\RemotingGhostNative.csproj">
+      <Project>{6cb4cde6-4405-40e6-8bdf-5a2e9185cc04}</Project>
+      <Name>RemotingGhostNative</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Library\RemotingNativeSoul\RemotingSoulNative.csproj">
+      <Project>{d4580866-2273-4e9b-be70-4fa2ab11434a}</Project>
+      <Name>RemotingSoulNative</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Library\RemotingStandalong\RemotingStandalone.csproj">
+      <Project>{485f551d-9155-4982-b653-f8d4eac2fca1}</Project>
+      <Name>RemotingStandalone</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Library\Remoting\Remoting.csproj">
+      <Project>{a4cfce46-bda8-4416-a1bb-77bd80514019}</Project>
+      <Name>Remoting</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-    <None Include="CSV.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>CSV.feature.cs</LastGenOutput>
-    </None>
-    <None Include="Log.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Log.feature.cs</LastGenOutput>
-    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Choose>

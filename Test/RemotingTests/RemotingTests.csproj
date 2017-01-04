@@ -3,12 +3,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BF4B912A-CE3A-4046-9590-3345D77D4CFE}</ProjectGuid>
+    <ProjectGuid>{A7588527-3B7D-42AF-BA3C-3B948E94DCB7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GhostProviderGeneratorTests</RootNamespace>
-    <AssemblyName>GhostProviderGeneratorTests</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <RootNamespace>RemotingTests</RootNamespace>
+    <AssemblyName>RemotingTests</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -16,7 +16,6 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -55,21 +54,18 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="GhostProviderGeneratorTests.cs" />
+    <Compile Include="AgentCoreTests.cs" />
+    <Compile Include="PackageReleaseTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Library\PureLib\RegulusLibrary.csproj">
+    <ProjectReference Include="..\..\Library\PureLib\RegulusLibrary.csproj">
       <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
       <Name>RegulusLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Library\Remoting\Remoting.csproj">
-      <Project>{a4cfce46-bda8-4416-a1bb-77bd80514019}</Project>
+    <ProjectReference Include="..\..\Library\Remoting\Remoting.csproj">
+      <Project>{A4CFCE46-BDA8-4416-A1BB-77BD80514019}</Project>
       <Name>Remoting</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Tool\GhostProviderGenerator\GhostProviderGenerator.csproj">
-      <Project>{57CE4156-39E1-40BB-9421-0BA4AD5149A6}</Project>
-      <Name>GhostProviderGenerator</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

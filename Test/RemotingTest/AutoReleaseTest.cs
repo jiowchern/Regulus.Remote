@@ -28,7 +28,7 @@ namespace RemotingTest
 			ghost = null;
 			GC.Collect();
 			ar.Update();
-			request.Received(1).Request(Arg.Any<byte>(), Arg.Any<Dictionary<byte, byte[]>>());
+			request.Received(1).Request(Arg.Any<ClientToServerOpCode>(), Arg.Any<byte[]>());
 		}
 	}
 }

@@ -155,14 +155,16 @@ namespace RegulusLibraryTest
 		[TestMethod]
 		public void TestCommandRegister0()
 		{
-			var command = new Command();
+            var callTester = Substitute.For<ICallTester>();
+
+            var command = new Command();
 			var cr = new CommandRegister<ICallTester>(command, caller => caller.Function1());
-			var callTester = Substitute.For<ICallTester>();
-			cr.Register(callTester);
-			command.Run("Function1", new string[0]);
-			callTester.Received(1).Function1();
-			cr.Unregister();
-		}
+            
+            cr.Register(callTester);
+            command.Run("Function1", new string[0]);
+            callTester.Received(1).Function1();
+            cr.Unregister();
+        }
 
 		[TestMethod]
 		public void TestCommandRegister1()
