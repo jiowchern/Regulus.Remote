@@ -172,6 +172,8 @@ namespace Regulus.Utility
 				object arg1;
 				Command._Cnv(args[1], out arg1, typeof(T1));
 
+
+
 				return_value(exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1));
 			};
 			_Register(exp, func);
@@ -396,7 +398,7 @@ namespace Regulus.Utility
 					throw new ArgumentException("命令參數數量為0");
 				}
 
-				executer.Invoke();
+			    executer.Method.Invoke(executer.Target, new object[0]);
 			};
 
 			_Register(command, func , typeof(void) , new Type[0]);
@@ -415,7 +417,8 @@ namespace Regulus.Utility
 
 				object arg0;
 				Command._Cnv(args[0], out arg0, typeof(T1));
-				executer.Invoke((T1)arg0);
+			    T1 val = (T1) arg0;                
+			    executer.Method.Invoke(executer.Target, new [] { arg0 } );
 			};
 
 
@@ -439,7 +442,10 @@ namespace Regulus.Utility
 				Command._Cnv(args[0], out arg0, typeof(T1));
 				object arg1;
 				Command._Cnv(args[1], out arg1, typeof(T2));
-				executer.Invoke((T1)arg0, (T2)arg1);
+
+
+                executer.Method.Invoke(executer.Target, new[] { arg0 , arg1});
+                
 			};
 
 			_Register(command, func, typeof(void), new[]
@@ -464,8 +470,8 @@ namespace Regulus.Utility
 				Command._Cnv(args[1], out arg1, typeof(T2));
 				object arg2;
 				Command._Cnv(args[2], out arg2, typeof(T3));
-				executer.Invoke((T1)arg0, (T2)arg1, (T3)arg2);
-			};
+                executer.Method.Invoke(executer.Target, new[] { arg0, arg1 ,arg2});
+            };
 
 
 			_Register(command, func, typeof(void), new[]
@@ -493,8 +499,8 @@ namespace Regulus.Utility
 				Command._Cnv(args[2], out arg2, typeof(T3));
 				object arg3;
 				Command._Cnv(args[3], out arg3, typeof(T4));
-				executer.Invoke((T1)arg0, (T2)arg1, (T3)arg2, (T4)arg3);
-			};
+                executer.Method.Invoke(executer.Target, new[] { arg0, arg1, arg2 ,arg3});
+            };
 
 			_Register(command, func, typeof(void), new[]
 				{
@@ -514,8 +520,8 @@ namespace Regulus.Utility
 					throw new ArgumentException("命令參數數量為0");
 				}
 
-				var ret = executer.Invoke();
-				value(ret);
+				var ret = executer.Method.Invoke(executer.Target , new object[0]);
+				value.Method.Invoke(value.Target, new object[] {ret});
 			};
 
 			_Register(command, func, typeof(TR), new Type[0]);
@@ -533,9 +539,11 @@ namespace Regulus.Utility
 
 				object arg0;
 				Command._Cnv(args[0], out arg0, typeof(T1));
-				var ret = executer.Invoke((T1)arg0);
-				value(ret);
-			};
+                var ret = executer.Method.Invoke(executer.Target, new object[] { arg0 });
+                value.Method.Invoke(value.Target, new object[] { ret });
+
+
+            };
 
 			_Register(command, func, typeof(TR), new[]
 				{
@@ -559,9 +567,9 @@ namespace Regulus.Utility
 				object arg1;
 				Command._Cnv(args[1], out arg1, typeof(T2));
 
-				var ret = executer.Invoke((T1)arg0, (T2)arg1);
-				value(ret);
-			};
+                var ret = executer.Method.Invoke(executer.Target, new object[] { arg0,arg1 });
+                value.Method.Invoke(value.Target, new object[] { ret });
+            };
 
 			_Register(command, func, typeof(TR), new[]
 				{
@@ -588,9 +596,9 @@ namespace Regulus.Utility
 				object arg2;
 				Command._Cnv(args[2], out arg2, typeof(T3));
 
-				var ret = executer.Invoke((T1)arg0, (T2)arg1, (T3)arg2);
-				value(ret);
-			};
+                var ret = executer.Method.Invoke(executer.Target, new[] { arg0, arg1,arg2 });
+                value.Method.Invoke(value, new[] { ret });
+            };
 
 			_Register(command, func, typeof(TR), new[]
 				{
@@ -619,9 +627,9 @@ namespace Regulus.Utility
 				object arg3;
 				Command._Cnv(args[3], out arg3, typeof(T4));
 
-				var ret = executer.Invoke((T1)arg0, (T2)arg1, (T3)arg2, (T4)arg3);
-				value(ret);
-			};
+                var ret = executer.Method.Invoke(executer.Target, new[] { arg0, arg1, arg2 , arg3 });
+                value.Method.Invoke(value, new[] { ret });
+            };
 
 			_Register(command, func, typeof(TR), new[]
 				{
@@ -640,14 +648,14 @@ namespace Regulus.Utility
 			}
 		}
 
-		private static void _Cnv(string p, out object val, Type source)
+		internal static void _Cnv(string str, out object val, Type source)
 		{
-			val = p;
+            val = Activator.CreateInstance(source);
 
-			if(source == typeof(int))
+            if (source == typeof(int))
 			{
 				var reault = int.MinValue;
-				if(int.TryParse(p, out reault))
+				if(int.TryParse(str, out reault))
 				{
 				}
 
@@ -656,7 +664,7 @@ namespace Regulus.Utility
 			else if(source == typeof(float))
 			{
 				var reault = float.MinValue;
-				if(float.TryParse(p, out reault))
+				if(float.TryParse(str, out reault))
 				{
 				}
 
@@ -665,7 +673,7 @@ namespace Regulus.Utility
 			else if(source == typeof(byte))
 			{
 				var reault = byte.MinValue;
-				if(byte.TryParse(p, out reault))
+				if(byte.TryParse(str, out reault))
 				{
 				}
 
@@ -674,7 +682,7 @@ namespace Regulus.Utility
 			else if(source == typeof(short))
 			{
 				var reault = short.MinValue;
-				if(short.TryParse(p, out reault))
+				if(short.TryParse(str, out reault))
 				{
 				}
 
@@ -683,7 +691,7 @@ namespace Regulus.Utility
 			else if(source == typeof(long))
 			{
 				var reault = long.MinValue;
-				if(long.TryParse(p, out reault))
+				if(long.TryParse(str, out reault))
 				{
 				}
 
@@ -692,13 +700,31 @@ namespace Regulus.Utility
 			else if (source == typeof(bool))
 			{
 				var reault = false;
-				if (bool.TryParse(p, out reault))
+				if (bool.TryParse(str, out reault))
 				{
 				}
 
 				val = reault;
 			}
-		}
+            else if (source == typeof(string))
+            {                
+                val = str;
+            }
+            else if (source.IsEnum)
+            {
+                
+                try
+                {
+                    val = Enum.Parse(source, str);
+                }
+                catch (Exception)
+                {
+                    
+                }             
+                
+            }
+
+        }
 
 		private void _EmptyRegisterEvent(string command, CommandParameter ret, CommandParameter[] args)
 		{

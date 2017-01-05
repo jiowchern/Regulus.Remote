@@ -11,6 +11,8 @@ namespace Regulus.Remoting
 	{
 		private class Soul
 		{
+
+
 			public class EventHandler
 			{
 				public Delegate DelegateObject;
