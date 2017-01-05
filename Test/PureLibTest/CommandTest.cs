@@ -10,6 +10,11 @@ using Regulus.Utility;
 
 namespace RegulusLibraryTest
 {
+
+    public enum TEST_ENUM1
+    {
+        A,B,C
+    };
     public interface IDummy
     {
         void Method1();
@@ -255,5 +260,27 @@ namespace RegulusLibraryTest
 
             Assert.AreEqual(1 , result);
         }
-    }
+
+	    [TestMethod]
+	    public void TestCommandCnvEnum()
+	    {
+	        object outVal;
+	        Command._Cnv("A" , out outVal , typeof(TEST_ENUM1));
+
+            Assert.AreEqual(TEST_ENUM1.A , outVal);
+
+	        Action<TEST_ENUM1> action = _CallEnum;
+
+            action.Invoke((TEST_ENUM1)outVal);
+
+
+        }
+
+	    private void _CallEnum(TEST_ENUM1 obj)
+	    {
+	        
+	    }
+	}
+
+
 }
