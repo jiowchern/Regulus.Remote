@@ -650,8 +650,8 @@ namespace Regulus.Utility
 
 		internal static void _Cnv(string str, out object val, Type source)
 		{
-            val = Activator.CreateInstance(source);
-
+            
+            val =null;
             if (source == typeof(int))
 			{
 				var reault = int.MinValue;
@@ -723,7 +723,10 @@ namespace Regulus.Utility
                 }             
                 
             }
-
+            else
+            {
+                val = Activator.CreateInstance(source);
+            }
         }
 
 		private void _EmptyRegisterEvent(string command, CommandParameter ret, CommandParameter[] args)
