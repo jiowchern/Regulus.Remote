@@ -103,6 +103,64 @@ namespace Regulus.Serialization.Tests
             Assert.AreEqual(TEST1.A, t2[1]);
         }
 
+        [TestMethod()]
+        public void SerializeTest7()
+        {
+            var serializer = new Serializer(new ITypeProvider[]
+            {
+                new StringTypeProvider(1) ,                
+            });
+            var buffer = serializer.Serialize("174");
+            var result = serializer.Deserialize<string>(buffer);
+            Assert.AreEqual("174", result);
+            
+        }
+
+        [TestMethod()]
+        public void SerializeTest8()
+        {
+            var serializer = new Serializer(new ITypeProvider[]
+            {
+                new StringTypeProvider(1) , new ClassArrayTypeProvider<string>(2), 
+            });
+            var buffer = serializer.Serialize(new[] { "174"  , "1474" } );
+            var result = serializer.Deserialize<string[]>(buffer);
+            Assert.AreEqual("174", result[0]);
+            Assert.AreEqual("1474", result[1]);
+        }
+
+        [TestMethod()]
+        public void SerializeTest9()
+        {
+            var serializer = new Serializer(new ITypeProvider[]
+            {
+                new StructTypeProvider<Guid>(1) , new StructArrayTypeProvider<Guid>(2),
+            });
+
+            var id1= Guid.NewGuid();
+            var id2 = Guid.NewGuid();
+            var buffer = serializer.Serialize(new[] { id1, id2 });
+            var result = serializer.Deserialize<Guid[]>(buffer);
+            Assert.AreEqual(id1, result[0]);
+            Assert.AreEqual(id2, result[1]);
+        }
+
+        [TestMethod()]
+        public void SerializeTest10()
+        {
+            var serializer = new Serializer(new ITypeProvider[]
+            {
+                new StructTypeProvider<Guid>(1) , 
+            });
+
+            var id1 = Guid.NewGuid();
+            
+            var buffer = serializer.Serialize(id1);
+            var result = serializer.Deserialize<Guid>(buffer);
+            Assert.AreEqual(id1, result);
+            
+        }
+
 
 
 
@@ -226,4 +284,7 @@ namespace Regulus.Serialization.Tests
             Assert.AreEqual(TEST1.B, val);
         }
     }
+
+    
 }
+
