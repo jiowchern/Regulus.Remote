@@ -53,6 +53,7 @@
     <Compile Include="InstanceInfo.cs" />
     <Compile Include="Serializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StringTypeProvider.cs" />
     <Compile Include="StructArrayTypeProvider.cs" />
     <Compile Include="StructTypeProvider.cs" />
     <Compile Include="TypeInfo.cs" />
