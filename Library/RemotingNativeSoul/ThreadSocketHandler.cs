@@ -12,6 +12,7 @@ namespace Regulus.Remoting.Soul.Native
     internal class ThreadSocketHandler
     {
         private readonly ThreadCoreHandler _CoreHandler;
+        private readonly IProtocol _Protocol;
 
         private readonly PeerSet _Peers;
 
@@ -43,9 +44,10 @@ namespace Regulus.Remoting.Soul.Native
             get { return _Peers.Count; }
         }
 
-        public ThreadSocketHandler(int port, ThreadCoreHandler core_handler)
+        public ThreadSocketHandler(int port, ThreadCoreHandler core_handler, IProtocol protocol)
         {
             _CoreHandler = core_handler;
+            _Protocol = protocol;
             _Port = port;
 
             _Sockets = new Queue<Socket>();
@@ -82,7 +84,7 @@ namespace Regulus.Remoting.Soul.Native
 
                             Singleton<Log>.Instance.WriteInfo(
                                 string.Format("socket accept Remote {0} Local {1} .", socket.RemoteEndPoint, socket.LocalEndPoint));
-                            var peer = new Peer(socket);
+                            var peer = new Peer(socket , _Protocol);
 
                             _Peers.Join(peer);
 

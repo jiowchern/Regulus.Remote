@@ -63,8 +63,11 @@
     <Compile Include="Connect.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="CoreThreadRequestHandler.cs" />
+    <Compile Include="EventProvider.cs" />
     <Compile Include="GameLoader.cs" />
-    <Compile Include="IGhostProvider.cs" />
+    <Compile Include="GPIProvider.cs" />
+    <Compile Include="IEventProxyCreator.cs" />
+    <Compile Include="IProtocol.cs" />
     <Compile Include="NetworkMonitor.cs" />
     <Compile Include="PackageReader.cs" />
     <Compile Include="PackageWriter.cs" />

@@ -21,12 +21,13 @@ namespace Regulus.Tool
 
             var sourcePath = ini.Read("Setting", "SourcePath");
             var sourceNamespace = ini.Read("Setting", "Namespace");
-            var providerName = ini.Read("Setting", "ProviderName");
+            var protocolName = ini.Read("Setting", "ProtocolName");
+            
             var outputPath = ini.Read("Setting", "OutputPath");
             var dumpCode = ini.Read("Setting", "DumpCode");
 
             GhostProviderGenerator ghostProviderGenerator  = new GhostProviderGenerator();
-            var codes = ghostProviderGenerator.Build(sourcePath, outputPath, providerName, new string[] { sourceNamespace });
+            var codes = ghostProviderGenerator.Build(sourcePath, outputPath, protocolName, new string[] { sourceNamespace });
 
             if (dumpCode == "true")
             {

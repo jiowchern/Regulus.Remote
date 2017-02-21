@@ -56,12 +56,12 @@ namespace Regulus.Remoting.Soul.Native
 
 		private readonly Console.IViewer _View;
 
-		public StageRun(ICore core, Command command, int port, Console.IViewer viewer)
+		public StageRun(ICore core,IProtocol protocol, Command command, int port, Console.IViewer viewer)
 		{
 			_View = viewer;
 			_Command = command;
 
-			_Server = new Server(core, port);
+			_Server = new Server(core, protocol,port );
 		    _Server.BreakEvent += _Break;
             _Launcher = new Launcher();
 			_Launcher.Push(_Server);

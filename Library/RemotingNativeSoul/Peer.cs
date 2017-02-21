@@ -90,12 +90,12 @@ namespace Regulus.Remoting.Soul.Native
 			get { return new CoreThreadRequestHandler(this); }
 		}
 
-		public Peer(Socket client)
+		public Peer(Socket client , IProtocol protocol)
 		{
 			_EnableLock = new object();
 
 			_Socket = client;
-			_SoulProvider = new SoulProvider(this, this);
+			_SoulProvider = new SoulProvider(this, this , protocol.GetEventProvider());
 			_Responses = new Regulus.Collection.Queue<ResponsePackage>();
 			_Requests = new Regulus.Collection.Queue<RequestPackage>();
 

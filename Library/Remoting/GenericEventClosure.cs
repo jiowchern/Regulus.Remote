@@ -1,8 +1,9 @@
 ﻿using System;
 
 namespace Regulus.Remoting
-{
-	internal class GenericEventClosure
+{    
+
+    public class GenericEventClosure
 	{
 		private readonly Guid EntityId;
 
@@ -33,7 +34,7 @@ namespace Regulus.Remoting
 		}
 	}
 
-	internal class GenericEventClosure<T1>
+    public class GenericEventClosure<T1>
 	{
 		private readonly Guid EntityId;
 
@@ -65,7 +66,7 @@ namespace Regulus.Remoting
 		}
 	}
 
-	internal class GenericEventClosure<T1, T2>
+    public class GenericEventClosure<T1, T2>
 	{
 		private readonly Guid EntityId;
 
@@ -98,7 +99,7 @@ namespace Regulus.Remoting
 		}
 	}
 
-	internal class GenericEventClosure<T1, T2, T3>
+    public class GenericEventClosure<T1, T2, T3>
 	{
 		private readonly Guid EntityId;
 
@@ -132,7 +133,7 @@ namespace Regulus.Remoting
 		}
 	}
 
-	internal class GenericEventClosure<T1, T2, T3, T4>
+    public class GenericEventClosure<T1, T2, T3, T4>
 	{
 		private readonly Guid EntityId;
 
@@ -167,7 +168,7 @@ namespace Regulus.Remoting
 		}
 	}
 
-	internal class GenericEventClosure<T1, T2, T3, T4, T5>
+    public class GenericEventClosure<T1, T2, T3, T4, T5>
 	{
 		private delegate void Action5(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5);
 

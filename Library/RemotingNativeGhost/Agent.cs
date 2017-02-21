@@ -24,7 +24,7 @@ namespace Regulus.Remoting.Ghost.Native
 
 		
 
-	    private Agent(Regulus.Remoting.IGhostProvider provider)
+	    private Agent(GPIProvider provider)
 	    {
             _Machine = new StageMachine();
             _Core = new AgentCore(provider);
@@ -178,7 +178,7 @@ namespace Regulus.Remoting.Ghost.Native
 		///     建立代理器
 		/// </summary>
 		/// <returns></returns>
-		public static IAgent Create(Regulus.Remoting.IGhostProvider provider)
+		public static IAgent Create(GPIProvider provider)
         {
             return new Agent(provider);
         }

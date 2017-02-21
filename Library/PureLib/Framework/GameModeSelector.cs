@@ -79,7 +79,7 @@ namespace Regulus.Framework
 				return null;
 			}
 
-			_View.WriteLine(string.Format("Create game console factory : {0}.", name));
+			_View.WriteLine(string.Format("CreateInstnace game console factory : {0}.", name));
 
 			_UserProvider = new UserProvider<TUser>(factory, _View, _Command);
 			if(_GameConsoleEvent != null)
