@@ -95,13 +95,13 @@ namespace Regulus.Remoting
 
 		private IGhostRequest _Requester;
 
-		private readonly IGhostProvider _GhostProvider;
+		private readonly GPIProvider _GhostProvider;
 
 		public long Ping { get; private set; }
 
 		public bool Enable { get; private set; }
 
-		public AgentCore(IGhostProvider ghost_provider) 
+		public AgentCore(GPIProvider ghost_provider) 
 		{
 			_GhostProvider = ghost_provider;
             _Providers = new Dictionary<string, IProvider>();
@@ -399,14 +399,14 @@ namespace Regulus.Remoting
 			}
 		}
 
-		private IGhost _BuildGhost(Type ghostBaseType, IGhostRequest peer, Guid id, bool return_type)
+		private IGhost _BuildGhost(Type ghost_base_type, IGhostRequest peer, Guid id, bool return_type)
 		{
 			if(peer == null)
 			{
 				throw new ArgumentNullException("peer is null");
 			}
 
-			var ghostType = _QueryGhostType(ghostBaseType);
+			var ghostType = _QueryGhostType(ghost_base_type);
 
 			var o = Activator.CreateInstance(ghostType, peer, id, _ReturnValueQueue, return_type);
 

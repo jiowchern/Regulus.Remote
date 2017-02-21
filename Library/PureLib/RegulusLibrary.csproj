@@ -111,8 +111,6 @@
     <Compile Include="Remoting\GPIBinderFactory.cs" />
     <Compile Include="Remoting\Value.cs" />
     <Compile Include="Remoting\ValueWaiter.cs" />
-    <Compile Include="Serialization\ISerializable.cs" />
-    <Compile Include="Serialization\Serializer.cs" />
     <Compile Include="Utility\Asyncexecuter.cs" />
     <Compile Include="Utility\AutoPowerRegulator.cs" />
     <Compile Include="Utility\Command.cs" />
@@ -152,6 +150,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Serialization\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

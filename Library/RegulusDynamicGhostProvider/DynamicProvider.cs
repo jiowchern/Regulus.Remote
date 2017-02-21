@@ -6,9 +6,9 @@ using System.Linq;
 
 namespace Regulus.Remoting.Ghost.Native
 {
-    public class DynamicProvider : IGhostProvider
+    public class DynamicProvider 
     {
-        Type IGhostProvider.Find(Type ghost_base_type)
+        Type Find(Type ghost_base_type)
         {
             // 反射機制
             var baseType = ghost_base_type;

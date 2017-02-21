@@ -37,7 +37,7 @@ namespace Regulus.Utility
 		private float rotation;
 
 		/**
-		 * Create default OBB
+		 * CreateInstnace default OBB
 		 * 
 		 * @param x Top left x
 		 * @param y Top left y

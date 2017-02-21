@@ -16,13 +16,13 @@ namespace Regulus.Tool
 
         
 
-        public IEnumerable<string> Build(string path,string output_path,string provider_name, string[] namesapces)
+        public IEnumerable<string> Build(string path,string output_path,string library_name, string[] namesapces)
         {
             byte[] sourceDll = System.IO.File.ReadAllBytes(path);
             Assembly assembly = Assembly.Load(sourceDll);
             var types = assembly.GetExportedTypes();
 
-            var codes = Build(provider_name, namesapces, types);
+            var codes = Build(library_name, namesapces, types);
 
             Dictionary<string, string> optionsDic = new Dictionary<string, string>
             {
@@ -48,28 +48,36 @@ namespace Regulus.Tool
             return codes;
         }
 
-        public IEnumerable<string> Build(string provider_name, string[] namesapces, Type[] types)
+        public IEnumerable<string> Build(string library_name, string[] namesapces, Type[] types)
         {
             var codes = new List<string>();
 
-            List<string> addTypes = new List<string>();
+            List<string> addGhostType = new List<string>();
+            List<string> addEventType = new List<string>();
+
             foreach (var type in types)
             {
-                if (namesapces.Any(n => n == type.Namespace) && type.IsInterface
-                    && GhostProviderGenerator._IsGPI(type))
+                if (namesapces.Any(n => n == type.Namespace) && type.IsInterface)
                 {
-                    string code = _BuildCode(type);
-                    codes.Add(code);
-                    addTypes.Add($"_Types.Add(typeof({_GetTypeName(type)}) , typeof({_GetGhostType(type)}) );");
+                    string ghostClassCode = _BuildGhostCode(type);
+                    addGhostType.Add($"types.Add(typeof({_GetTypeName(type)}) , typeof({_GetGhostType(type)}) );");
+                    codes.Add(ghostClassCode);
+                    
+
+                    var eventInfos = type.GetEvents();
+                    foreach (var eventInfo in eventInfos)
+                    {
+                        addEventType.Add($"eventClosures.Add(new {_GetEventType(type, eventInfo.Name)}() );");
+                        codes.Add(_BuildEventCode(type , eventInfo));
+                    }
+                    
                 }
             }
-            var addTypeCode = string.Join("\n", addTypes);
-            var tokens = provider_name.Split(
-                new[]
-                {
-                    '.'
-                });
-            var providerName = tokens.Last();
+            var addTypeCode = string.Join("\n", addGhostType);
+
+            var addEventCode = string.Join("\n", addEventType);
+            var tokens = library_name.Split(new[]{'.'});
+            var procotolName = tokens.Last();
 
             var providerNamespace = string.Join(".", tokens.Take(tokens.Count() - 1));
             var providerNamespaceHead = "";
@@ -84,32 +92,35 @@ namespace Regulus.Tool
             using System;  
             using System.Collections.Generic;
             
-            {
-                    providerNamespaceHead}
-                public class {providerName
-                    } : Regulus.Remoting.IGhostProvider
+            {providerNamespaceHead}
+                public class {procotolName} : Regulus.Remoting.IProtocol
                 {{
-                    private Dictionary<Type, Type> _Types ;
-                    public {
-                    providerName
-                    }()
+                    Regulus.Remoting.GPIProvider _GPIProvider;
+                    Regulus.Remoting.EventProvider _EventProvider;
+                    public {procotolName}()
                     {{
-                        _Types = new Dictionary<Type, Type>();
-                        {
-                    addTypeCode
-                    }
+                        var types = new Dictionary<Type, Type>();
+                        {addTypeCode}
+                        _GPIProvider = new Regulus.Remoting.GPIProvider(types);
+
+                        var eventClosures = new List<Regulus.Remoting.IEventProxyCreator>();
+                        {addEventCode}
+                        _EventProvider = new Regulus.Remoting.EventProvider(eventClosures);
                     }}
-                    Type Regulus.Remoting.IGhostProvider.Find(Type ghost_base_type)
+
+
+                    Regulus.Remoting.GPIProvider Regulus.Remoting.IProtocol.GetGPIProvider()
                     {{
-                        if(_Types.ContainsKey(ghost_base_type))                                   
-                        {{
-                            return _Types[ghost_base_type];
-                        }}
-                        return null;
+                        return _GPIProvider;
                     }}
+
+                    Regulus.Remoting.EventProvider Regulus.Remoting.IProtocol.GetEventProvider()
+                    {{
+                        return _EventProvider;
+                    }}
+                    
                 }}
-            {
-                    providerNamespaceTail}
+            {providerNamespaceTail}
             ";
 
             codes.Add(providerCode);
@@ -118,29 +129,86 @@ namespace Regulus.Tool
             return codes;
         }
 
+        
+        
+
         private string _GetGhostType(Type type)
         {
             return $"{type.Namespace}.Ghost.C{type.Name}";
         }
 
+        private string _GetEventType(Type type,string event_name)
+        {
+            
+            return $"{type.Namespace}.Event.{type.Name}.{event_name}";
+        }
+
+
         private static bool _IsGPI(Type type)
         {
             return true;
         }
+        private string  _BuildEventCode(Type type , EventInfo  info)
+        {
+            var nameSpace = type.Namespace;
+            var name = type.Name;
+            
+            var argTypes = info.EventHandlerType.GenericTypeArguments;
+            string eventName = info.Name;
+            return $@"
+    using System;  
+    using System.Collections.Generic;
+    
+    namespace {nameSpace}.Event.{name} 
+    {{ 
+        public class {eventName} : Regulus.Remoting.IEventProxyCreator
+        {{
 
-        private string _BuildCode(Type type)
+            Type _Type;
+            string _Name;
+            
+            public {eventName}()
+            {{
+                _Name = ""{eventName}"";
+                _Type = typeof({type.FullName});                   
+            
+            }}
+            Delegate Regulus.Remoting.IEventProxyCreator.Create(Guid soul_id, Action<Guid, string, object[]> invoke_Event)
+            {{                
+                var closure = new Regulus.Remoting.GenericEventClosure{_GetTypes(argTypes)}(soul_id , _Name , invoke_Event);                
+                return new Action{_GetTypes(argTypes)}(closure.Run);
+            }}
+        
+
+            Type Regulus.Remoting.IEventProxyCreator.GetType()
+            {{
+                return _Type;
+            }}            
+
+            string Regulus.Remoting.IEventProxyCreator.GetName()
+            {{
+                return _Name;
+            }}            
+        }}
+    }}
+                ";
+            
+            
+            
+
+        }
+        private string _BuildGhostCode(Type type)
         {
             var nameSpace = type.Namespace;
             
             var name = type.Name;
-
             
             var types = type.GetInterfaces().Concat(
                 new[]
                 {
                     type
                 });
-            string implementCode = _BuildCode(types);
+            string implementCode = _BuildGhostCode(types);
             string codeHeader = 
 $@"   
     using System;  
@@ -191,7 +259,7 @@ $@"
             return codeHeader;
         }
 
-        private string _BuildCode(IEnumerable<Type> types)
+        private string _BuildGhostCode(IEnumerable<Type> types)
         {
             List<string> codes = new List<string>();
             foreach (var type in types)
@@ -315,7 +383,7 @@ $@"
             var parameters = method_info.GetParameters();            
 
             List<string> addParams = new List<string>();
-
+            
             string addParamsHead = @"var paramList = new System.Collections.Generic.List<byte[]>();";
             foreach (var parameterInfo in parameters)
             {

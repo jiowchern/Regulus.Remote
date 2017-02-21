@@ -150,7 +150,7 @@ namespace Regulus.Utility
 				}
 
 				object arg0;
-				Command._Cnv(args[0], out arg0, typeof(T0));
+				Command.Conversion(args[0], out arg0, typeof(T0));
 
 				return_value(exp.Compile().Invoke(instance ,(T0)arg0 ));
 			};
@@ -167,10 +167,10 @@ namespace Regulus.Utility
 				}
 
 				object arg0;
-				Command._Cnv(args[0], out arg0, typeof(T0));
+				Command.Conversion(args[0], out arg0, typeof(T0));
 
 				object arg1;
-				Command._Cnv(args[1], out arg1, typeof(T1));
+				Command.Conversion(args[1], out arg1, typeof(T1));
 
 
 
@@ -189,13 +189,13 @@ namespace Regulus.Utility
 				}
 
 				object arg0;
-				Command._Cnv(args[0], out arg0, typeof(T0));
+				Command.Conversion(args[0], out arg0, typeof(T0));
 
 				object arg1;
-				Command._Cnv(args[1], out arg1, typeof(T1));
+				Command.Conversion(args[1], out arg1, typeof(T1));
 
 				object arg2;
-				Command._Cnv(args[2], out arg2, typeof(T2));
+				Command.Conversion(args[2], out arg2, typeof(T2));
 
 				return_value(exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1 , (T2)arg2));
 			};
@@ -212,16 +212,16 @@ namespace Regulus.Utility
 				}
 
 				object arg0;
-				Command._Cnv(args[0], out arg0, typeof(T0));
+				Command.Conversion(args[0], out arg0, typeof(T0));
 
 				object arg1;
-				Command._Cnv(args[1], out arg1, typeof(T1));
+				Command.Conversion(args[1], out arg1, typeof(T1));
 
 				object arg2;
-				Command._Cnv(args[2], out arg2, typeof(T2));
+				Command.Conversion(args[2], out arg2, typeof(T2));
 
 				object arg3;
-				Command._Cnv(args[3], out arg3, typeof(T3));
+				Command.Conversion(args[3], out arg3, typeof(T3));
 
 				return_value(exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1, (T2)arg2, (T3)arg3));
 			};
@@ -238,19 +238,19 @@ namespace Regulus.Utility
 				}
 
 				object arg0;
-				Command._Cnv(args[0], out arg0, typeof(T0));
+				Command.Conversion(args[0], out arg0, typeof(T0));
 
 				object arg1;
-				Command._Cnv(args[1], out arg1, typeof(T1));
+				Command.Conversion(args[1], out arg1, typeof(T1));
 
 				object arg2;
-				Command._Cnv(args[2], out arg2, typeof(T2));
+				Command.Conversion(args[2], out arg2, typeof(T2));
 
 				object arg3;
-				Command._Cnv(args[3], out arg3, typeof(T3));
+				Command.Conversion(args[3], out arg3, typeof(T3));
 
 				object arg4;
-				Command._Cnv(args[4], out arg4, typeof(T4));
+				Command.Conversion(args[4], out arg4, typeof(T4));
 
 				return_value(exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1, (T2)arg2, (T3)arg3 , (T4)arg4));
 			};
@@ -282,7 +282,7 @@ namespace Regulus.Utility
 					throw new ArgumentException("命令參數數量為1");
 				}
 				object arg0;
-				Command._Cnv(args[0], out arg0, typeof(T0));
+				Command.Conversion(args[0], out arg0, typeof(T0));
 				
 				exp.Compile().Invoke(instance , (T0)arg0);
 			};
@@ -298,10 +298,10 @@ namespace Regulus.Utility
 					throw new ArgumentException("命令參數數量為2");
 				}
 				object arg0;
-				Command._Cnv(args[0], out arg0, typeof(T0));
+				Command.Conversion(args[0], out arg0, typeof(T0));
 
 				object arg1;
-				Command._Cnv(args[1], out arg1, typeof(T1));
+				Command.Conversion(args[1], out arg1, typeof(T1));
 
 				exp.Compile().Invoke(instance, (T0)arg0 , (T1)arg1);
 			};
@@ -317,13 +317,13 @@ namespace Regulus.Utility
 					throw new ArgumentException("命令參數數量為3");
 				}
 				object arg0;
-				Command._Cnv(args[0], out arg0, typeof(T0));
+				Command.Conversion(args[0], out arg0, typeof(T0));
 
 				object arg1;
-				Command._Cnv(args[1], out arg1, typeof(T1));
+				Command.Conversion(args[1], out arg1, typeof(T1));
 
 				object arg2;
-				Command._Cnv(args[2], out arg2, typeof(T2));
+				Command.Conversion(args[2], out arg2, typeof(T2));
 
 				exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1 , (T2)arg2);
 			};
@@ -339,16 +339,16 @@ namespace Regulus.Utility
 					throw new ArgumentException("命令參數數量為4");
 				}
 				object arg0;
-				Command._Cnv(args[0], out arg0, typeof(T0));
+				Command.Conversion(args[0], out arg0, typeof(T0));
 
 				object arg1;
-				Command._Cnv(args[1], out arg1, typeof(T1));
+				Command.Conversion(args[1], out arg1, typeof(T1));
 
 				object arg2;
-				Command._Cnv(args[2], out arg2, typeof(T2));
+				Command.Conversion(args[2], out arg2, typeof(T2));
 
 				object arg3;
-				Command._Cnv(args[3], out arg3, typeof(T3));
+				Command.Conversion(args[3], out arg3, typeof(T3));
 
 				exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1, (T2)arg2, (T3)arg3);
 			};
@@ -364,19 +364,19 @@ namespace Regulus.Utility
 					throw new ArgumentException("命令參數數量為5");
 				}
 				object arg0;
-				Command._Cnv(args[0], out arg0, typeof(T0));
+				Command.Conversion(args[0], out arg0, typeof(T0));
 
 				object arg1;
-				Command._Cnv(args[1], out arg1, typeof(T1));
+				Command.Conversion(args[1], out arg1, typeof(T1));
 
 				object arg2;
-				Command._Cnv(args[2], out arg2, typeof(T2));
+				Command.Conversion(args[2], out arg2, typeof(T2));
 
 				object arg3;
-				Command._Cnv(args[3], out arg3, typeof(T3));
+				Command.Conversion(args[3], out arg3, typeof(T3));
 
 				object arg4;
-				Command._Cnv(args[4], out arg4, typeof(T4));
+				Command.Conversion(args[4], out arg4, typeof(T4));
 
 				exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1, (T2)arg2, (T3)arg3 , (T4)arg4);
 			};
@@ -416,7 +416,7 @@ namespace Regulus.Utility
 				}
 
 				object arg0;
-				Command._Cnv(args[0], out arg0, typeof(T1));
+				Command.Conversion(args[0], out arg0, typeof(T1));
 			    T1 val = (T1) arg0;                
 			    executer.Method.Invoke(executer.Target, new [] { arg0 } );
 			};
@@ -439,9 +439,9 @@ namespace Regulus.Utility
 				}
 
 				object arg0;
-				Command._Cnv(args[0], out arg0, typeof(T1));
+				Command.Conversion(args[0], out arg0, typeof(T1));
 				object arg1;
-				Command._Cnv(args[1], out arg1, typeof(T2));
+				Command.Conversion(args[1], out arg1, typeof(T2));
 
 
                 executer.Method.Invoke(executer.Target, new[] { arg0 , arg1});
@@ -465,11 +465,11 @@ namespace Regulus.Utility
 				}
 
 				object arg0;
-				Command._Cnv(args[0], out arg0, typeof(T1));
+				Command.Conversion(args[0], out arg0, typeof(T1));
 				object arg1;
-				Command._Cnv(args[1], out arg1, typeof(T2));
+				Command.Conversion(args[1], out arg1, typeof(T2));
 				object arg2;
-				Command._Cnv(args[2], out arg2, typeof(T3));
+				Command.Conversion(args[2], out arg2, typeof(T3));
                 executer.Method.Invoke(executer.Target, new[] { arg0, arg1 ,arg2});
             };
 
@@ -492,13 +492,13 @@ namespace Regulus.Utility
 				}
 
 				object arg0;
-				Command._Cnv(args[0], out arg0, typeof(T1));
+				Command.Conversion(args[0], out arg0, typeof(T1));
 				object arg1;
-				Command._Cnv(args[1], out arg1, typeof(T2));
+				Command.Conversion(args[1], out arg1, typeof(T2));
 				object arg2;
-				Command._Cnv(args[2], out arg2, typeof(T3));
+				Command.Conversion(args[2], out arg2, typeof(T3));
 				object arg3;
-				Command._Cnv(args[3], out arg3, typeof(T4));
+				Command.Conversion(args[3], out arg3, typeof(T4));
                 executer.Method.Invoke(executer.Target, new[] { arg0, arg1, arg2 ,arg3});
             };
 
@@ -538,7 +538,7 @@ namespace Regulus.Utility
 				}
 
 				object arg0;
-				Command._Cnv(args[0], out arg0, typeof(T1));
+				Command.Conversion(args[0], out arg0, typeof(T1));
                 var ret = executer.Method.Invoke(executer.Target, new object[] { arg0 });
                 value.Method.Invoke(value.Target, new object[] { ret });
 
@@ -563,9 +563,9 @@ namespace Regulus.Utility
 				}
 
 				object arg0;
-				Command._Cnv(args[0], out arg0, typeof(T1));
+				Command.Conversion(args[0], out arg0, typeof(T1));
 				object arg1;
-				Command._Cnv(args[1], out arg1, typeof(T2));
+				Command.Conversion(args[1], out arg1, typeof(T2));
 
                 var ret = executer.Method.Invoke(executer.Target, new object[] { arg0,arg1 });
                 value.Method.Invoke(value.Target, new object[] { ret });
@@ -590,11 +590,11 @@ namespace Regulus.Utility
 				}
 
 				object arg0;
-				Command._Cnv(args[0], out arg0, typeof(T1));
+				Command.Conversion(args[0], out arg0, typeof(T1));
 				object arg1;
-				Command._Cnv(args[1], out arg1, typeof(T2));
+				Command.Conversion(args[1], out arg1, typeof(T2));
 				object arg2;
-				Command._Cnv(args[2], out arg2, typeof(T3));
+				Command.Conversion(args[2], out arg2, typeof(T3));
 
                 var ret = executer.Method.Invoke(executer.Target, new[] { arg0, arg1,arg2 });
                 value.Method.Invoke(value, new[] { ret });
@@ -619,13 +619,13 @@ namespace Regulus.Utility
 				}
 
 				object arg0;
-				Command._Cnv(args[0], out arg0, typeof(T1));
+				Command.Conversion(args[0], out arg0, typeof(T1));
 				object arg1;
-				Command._Cnv(args[1], out arg1, typeof(T2));
+				Command.Conversion(args[1], out arg1, typeof(T2));
 				object arg2;
-				Command._Cnv(args[2], out arg2, typeof(T3));
+				Command.Conversion(args[2], out arg2, typeof(T3));
 				object arg3;
-				Command._Cnv(args[3], out arg3, typeof(T4));
+				Command.Conversion(args[3], out arg3, typeof(T4));
 
                 var ret = executer.Method.Invoke(executer.Target, new[] { arg0, arg1, arg2 , arg3 });
                 value.Method.Invoke(value, new[] { ret });
@@ -648,74 +648,83 @@ namespace Regulus.Utility
 			}
 		}
 
-		internal static void _Cnv(string str, out object val, Type source)
+		public static bool Conversion(string in_string, out object out_value, Type source)
 		{
             
-            val =null;
+            out_value =null;
             if (source == typeof(int))
 			{
 				var reault = int.MinValue;
-				if(int.TryParse(str, out reault))
+				if(int.TryParse(in_string, out reault))
 				{
 				}
 
-				val = reault;
+				out_value = reault;
+
+			    return true;
 			}
 			else if(source == typeof(float))
 			{
 				var reault = float.MinValue;
-				if(float.TryParse(str, out reault))
+				if(float.TryParse(in_string, out reault))
 				{
 				}
 
-				val = reault;
-			}
+				out_value = reault;
+                return true;
+            }
 			else if(source == typeof(byte))
 			{
 				var reault = byte.MinValue;
-				if(byte.TryParse(str, out reault))
+				if(byte.TryParse(in_string, out reault))
 				{
 				}
 
-				val = reault;
-			}
+				out_value = reault;
+                return true;
+            }
 			else if(source == typeof(short))
 			{
 				var reault = short.MinValue;
-				if(short.TryParse(str, out reault))
+				if(short.TryParse(in_string, out reault))
 				{
 				}
 
-				val = reault;
-			}
+				out_value = reault;
+                return true;
+            }
 			else if(source == typeof(long))
 			{
 				var reault = long.MinValue;
-				if(long.TryParse(str, out reault))
+				if(long.TryParse(in_string, out reault))
 				{
 				}
 
-				val = reault;
-			}
+				out_value = reault;
+                return true;
+            }
 			else if (source == typeof(bool))
 			{
 				var reault = false;
-				if (bool.TryParse(str, out reault))
+				if (bool.TryParse(in_string, out reault))
 				{
 				}
 
-				val = reault;
-			}
+				out_value = reault;
+                return true;
+            }
             else if (source == typeof(string))
             {                
-                val = str;
+                out_value = in_string;
+                return true;
             }
             else if (source.IsEnum)
             {
                 
                 try
                 {
-                    val = Enum.Parse(source, str);
+                    out_value = Enum.Parse(source, in_string);
+                    return true;
                 }
                 catch (Exception)
                 {
@@ -725,8 +734,11 @@ namespace Regulus.Utility
             }
             else
             {
-                val = Activator.CreateInstance(source);
+                out_value = Activator.CreateInstance(source);
+                return true;
             }
+
+            return false;
         }
 
 		private void _EmptyRegisterEvent(string command, CommandParameter ret, CommandParameter[] args)

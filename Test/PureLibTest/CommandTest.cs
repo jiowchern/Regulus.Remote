@@ -265,7 +265,7 @@ namespace RegulusLibraryTest
 	    public void TestCommandCnvEnum()
 	    {
 	        object outVal;
-	        Command._Cnv("A" , out outVal , typeof(TEST_ENUM1));
+	        Command.Conversion("A" , out outVal , typeof(TEST_ENUM1));
 
             Assert.AreEqual(TEST_ENUM1.A , outVal);
 

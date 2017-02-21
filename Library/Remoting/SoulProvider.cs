@@ -72,17 +72,20 @@ namespace Regulus.Remoting
 		private readonly IRequestQueue _Peer;
 
 		private readonly IResponseQueue _Queue;
+	    private readonly EventProvider _EventProvider;
 
-		private readonly Poller<Soul> _Souls = new Poller<Soul>();
+	    private readonly Poller<Soul> _Souls = new Poller<Soul>();
 
 		private readonly Dictionary<Guid, IValue> _WaitValues = new Dictionary<Guid, IValue>();
 
 		private DateTime _UpdatePropertyInterval;
 
-		public SoulProvider(IRequestQueue peer, IResponseQueue queue)
+		public SoulProvider(IRequestQueue peer, IResponseQueue queue , EventProvider event_provider)
 		{
+
 			_Queue = queue;
-			_Peer = peer;
+		    _EventProvider = event_provider;
+		    _Peer = peer;
 			_Peer.InvokeMethodEvent += _InvokeMethod;
 		}
 
@@ -140,7 +143,7 @@ namespace Regulus.Remoting
 			}
 		}
 
-		// System.Collections.Generic.List<Soul>	_Souls = new List<Soul>();
+		// System.Collections.CreateInstnace.List<Soul>	_Souls = new List<Soul>();
 		private void _UpdateProperty(Guid entity_id, string name, object val)
 		{
 			/*var argmants = new Dictionary<byte, byte[]>();
@@ -363,36 +366,48 @@ namespace Regulus.Remoting
 			}
 		}
 
-		private Soul _NewSoul(object soul, Type soulType)
+		private Soul _NewSoul(object soul, Type soul_type)
 		{
-			// var bindChecker = new BindGuard(soulType);
+			// var bindChecker = new BindGuard(soul_type);
 			var new_soul = new Soul
 			{
 				ID = Guid.NewGuid(), 
-				ObjectType = soulType, 
+				ObjectType = soul_type, 
 				ObjectInstance = soul, 
-				MethodInfos = soulType.GetMethods()
+				MethodInfos = soul_type.GetMethods()
 			};
 
 			// event				
-			var eventInfos = soulType.GetEvents();
+			var eventInfos = soul_type.GetEvents();
 			new_soul.EventHandlers = new List<Soul.EventHandler>();
 
 			foreach(var eventInfo in eventInfos)
-			{
-				var genericArguments = eventInfo.EventHandlerType.GetGenericArguments();
-				var handler = _BuildDelegate(genericArguments, new_soul.ID, eventInfo.Name);
+			{				
+                //var handler = _BuildDelegate(genericArguments, new_soul.ID, eventInfo.Name, _InvokeEvent);
 
-				var eh = new Soul.EventHandler();
-				eh.EventInfo = eventInfo;
-				eh.DelegateObject = handler;
-				new_soul.EventHandlers.Add(eh);
+			    try
+			    {
+                    var handler = _BuildDelegate2(soul_type, eventInfo.Name, new_soul.ID, _InvokeEvent);
 
-				eventInfo.AddEventHandler(soul, handler);
-			}
+                    var eh = new Soul.EventHandler();
+                    eh.EventInfo = eventInfo;
+                    eh.DelegateObject = handler;
+                    new_soul.EventHandlers.Add(eh);
+                    
+                    var addMethod = eventInfo.GetAddMethod();
+			        addMethod.Invoke(soul, new[] {handler});
+                    
+                }
+			    catch (Exception ex)
+			    {			  
+                    Regulus.Utility.Log.Instance.WriteDebug(ex.ToString());      
+			        throw ex;
+			    }
+                
+            }
 
 			// property 
-			var propertys = soulType.GetProperties(BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public);
+			var propertys = soul_type.GetProperties(BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public);
 			new_soul.PropertyHandlers = new Soul.PropertyHandler[propertys.Length];
 			for(var i = 0; i < propertys.Length; ++i)
 			{
@@ -405,13 +420,15 @@ namespace Regulus.Remoting
 			return new_soul;
 		}
 
-		private void _Unbind(object soul, Type type)
+	    
+
+	    private void _Unbind(object soul, Type type)
 		{
 			var soulInfo = (from soul_info in _Souls.UpdateSet()
 							where object.ReferenceEquals(soul_info.ObjectInstance, soul) && soul_info.ObjectType == type
 							select soul_info).SingleOrDefault();
 
-			// var soulInfo = _Souls.Find((soul_info) => { return Object.ReferenceEquals(soul_info.ObjectInstance, soul) && soul_info.ObjectType == typeof(TSoul); });
+			// var soulInfo = _Souls.CreateInstnace((soul_info) => { return Object.ReferenceEquals(soul_info.ObjectInstance, soul) && soul_info.ObjectType == typeof(TSoul); });
 			if(soulInfo != null)
 			{
 				foreach(var eventHandler in soulInfo.EventHandlers)
@@ -424,50 +441,62 @@ namespace Regulus.Remoting
 			}
 		}
 
-		private Delegate _BuildDelegate(Type[] generic_arguments, Guid entity_id, string event_name)
-		{
-			Type closureType = null;
 
-			Type delegateType = null;
-			MethodInfo run = null;
+
+		private static Delegate _BuildDelegate(Type[] generic_arguments, Guid entity_id, string event_name , Action<Guid, string, object[]> invoke_Event)
+		{
+			
 			Type[] closureTypes =
 			{
-				typeof(GenericEventClosure)
-				, 
-				typeof(GenericEventClosure<>)
-				, 
-				typeof(GenericEventClosure<,>)
-				, 
-				typeof(GenericEventClosure<,,>)
-				, 
-				typeof(GenericEventClosure<,,,>)
-				, 
+				typeof(GenericEventClosure), 
+				typeof(GenericEventClosure<>), 
+				typeof(GenericEventClosure<,>), 
+				typeof(GenericEventClosure<,,>), 
+				typeof(GenericEventClosure<,,,>), 
 				typeof(GenericEventClosure<,,,,>)
-			};
+            };
 
-			closureType = closureTypes[generic_arguments.Length];
+            var delegateType = GenericEventClosure.GetDelegateType();
+            var closureType = closureTypes[generic_arguments.Length];
 			if(generic_arguments.Length != 0)
 			{
 				closureType = closureType.MakeGenericType(generic_arguments);
 				var getDelegateTypeMethod = closureType.GetMethod("GetDelegateType", BindingFlags.Static | BindingFlags.Public);
 				delegateType = (Type)getDelegateTypeMethod.Invoke(null, null);
-			}
-			else
-			{
-				delegateType = GenericEventClosure.GetDelegateType();
-			}
+			}			
 
-			run = closureType.GetMethod("Run");
+			var run = closureType.GetMethod("Run");
 			var closureInstance = Activator.CreateInstance(
 				closureType, 
 				entity_id, 
-				event_name, 
-				new Action<Guid, string, object[]>(_InvokeEvent));
+				event_name,
+                invoke_Event);
 
 			return Delegate.CreateDelegate(delegateType, closureInstance, run);
 		}
 
-		public void Update()
+        private Delegate _BuildDelegate2(Type soul_type, string event_name, Guid entity_id, Action<Guid, string, object[]> invoke_Event)
+        {
+
+            var eventCreator = _EventProvider.Find(soul_type, event_name);
+            return eventCreator.Create(entity_id, invoke_Event);
+
+
+            /*var closureType = eventOwner.Find(event_name);
+            var getDelegateTypeMethod = closureType.GetMethod("GetDelegateType", BindingFlags.Static | BindingFlags.Public);
+            var delegateType = (Type)getDelegateTypeMethod.Invoke(null, null);
+
+            var run = closureType.GetMethod("Run");
+            var closureInstance = Activator.CreateInstance(
+                closureType,
+                entity_id,
+                event_name,
+                invoke_Event);
+
+            return Delegate.CreateDelegate(delegateType, closureInstance, run);*/
+        }
+
+        public void Update()
 		{
 			var souls = _Souls.UpdateSet();
 			var intervalSpan = DateTime.Now - _UpdatePropertyInterval;

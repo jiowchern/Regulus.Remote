@@ -100,6 +100,108 @@
             <param name="useArgument"></param>
             <returns></returns>
         </member>
+        <member name="T:NSubstitute.Callback">
+            <summary>
+            Perform this chain of callbacks and/or always callback when called.
+            </summary>
+        </member>
+        <member name="M:NSubstitute.Callback.First(System.Action{NSubstitute.Core.CallInfo})">
+            <summary>
+            Perform as first in chain of callback when called.
+            </summary>
+            <param name="doThis"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NSubstitute.Callback.Always(System.Action{NSubstitute.Core.CallInfo})">
+            <summary>
+            Perform this action always when callback is called.
+            </summary>
+            <param name="doThis"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NSubstitute.Callback.FirstThrow``1(System.Func{NSubstitute.Core.CallInfo,``0})">
+            <summary>
+            Throw exception returned by function as first callback in chain of callback when called.
+            </summary>
+            <param name="throwThis"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NSubstitute.Callback.FirstThrow``1(``0)">
+            <summary>
+            Throw this exception as first callback in chain of callback when called.
+            </summary>
+            <param name="exception"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NSubstitute.Callback.AlwaysThrow``1(System.Func{NSubstitute.Core.CallInfo,``0})">
+            <summary>
+            Throw exception returned by function always when callback is called.
+            </summary>
+            <typeparam name="TException">The type of the exception.</typeparam>
+            <param name="throwThis">The throw this.</param>
+            <returns></returns>
+        </member>
+        <member name="M:NSubstitute.Callback.AlwaysThrow``1(``0)">
+            <summary>
+            Throw this exception always when callback is called.
+            </summary>
+            <typeparam name="TException">The type of the exception.</typeparam>
+            <param name="exception">The exception.</param>
+            <returns></returns>
+        </member>
+        <member name="M:NSubstitute.Callbacks.EndCallbackChain.AndAlways(System.Action{NSubstitute.Core.CallInfo})">
+            <summary>
+            Perform the given action for every call.
+            </summary>
+            <param name="doThis">The action to perform for every call</param>
+            <returns></returns>
+        </member>
+        <member name="M:NSubstitute.Callbacks.ConfiguredCallback.Then(System.Action{NSubstitute.Core.CallInfo})">
+            <summary>
+            Perform this action once in chain of called callbacks.
+            </summary>
+            <param name="doThis"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NSubstitute.Callbacks.ConfiguredCallback.ThenKeepDoing(System.Action{NSubstitute.Core.CallInfo})">
+            <summary>
+            Keep doing this action after the other callbacks have run.
+            </summary>
+            <param name="doThis"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NSubstitute.Callbacks.ConfiguredCallback.ThenKeepThrowing``1(System.Func{NSubstitute.Core.CallInfo,``0})">
+            <summary>
+            Keep throwing this exception after the other callbacks have run.
+            </summary>
+            <typeparam name="TException"></typeparam>
+            <param name="throwThis"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NSubstitute.Callbacks.ConfiguredCallback.ThenKeepThrowing``1(``0)">
+            <summary>
+            Keep throwing this exception after the other callbacks have run.
+            </summary>
+            <typeparam name="TException"></typeparam>
+            <param name="throwThis"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NSubstitute.Callbacks.ConfiguredCallback.ThenThrow``1(System.Func{NSubstitute.Core.CallInfo,``0})">
+            <summary>
+            Throw exception returned by function once when called in a chain of callbacks.
+            </summary>
+            <typeparam name="TException">The type of the exception</typeparam>
+            <param name="throwThis">Produce the exception to throw for a CallInfo</param>
+            <returns></returns>
+        </member>
+        <member name="M:NSubstitute.Callbacks.ConfiguredCallback.ThenThrow``1(``0)">
+            <summary>
+            Throw this exception once when called in a chain of callbacks.
+            </summary>
+            <typeparam name="TException">The type of the exception</typeparam>
+            <param name="exception">The exception to throw</param>
+            <returns></returns>
+        </member>
         <member name="T:NSubstitute.Core.Arguments.IArgumentMatcher">
             <summary>
             Provides a specification for arguments for use with <see ctype="Arg.Matches (IArgumentMatcher)" />.
@@ -570,6 +672,12 @@
             Perform this action when called.
             </summary>
             <param name="callbackWithArguments"></param>
+        </member>
+        <member name="M:NSubstitute.Core.WhenCalled`1.Do(NSubstitute.Callback)">
+            <summary>
+            Perform this configured callcback when called.
+            </summary>
+            <param name="callback"></param>
         </member>
         <member name="M:NSubstitute.Core.WhenCalled`1.DoNotCallBase">
             <summary>

@@ -17,7 +17,8 @@ namespace RemotingTest
 	{
 		[TestMethod]
 		public void Test()
-		{
+		{            
+
 			var request = Substitute.For<IGhostRequest>();
 
 			var ghost = new Ghost();
