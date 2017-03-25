@@ -38,12 +38,11 @@ namespace Regulus.Remoting.Soul.Native
 			_View.WriteLine("Example.");
 			_View.WriteLine("[Launch]");
 			_View.WriteLine("port = 12345");
-			_View.WriteLine("game = game.dll");
-            _View.WriteLine("game_entry = Company.Project.Center");
-            _View.WriteLine("protocol = protocol.dll");
-            _View.WriteLine("protocol_entry = Company.Project.Protocol");
-
-            _View.WriteLine("======================================");
+			_View.WriteLine("project = project.dll");
+			_View.WriteLine("project_entry = YourNamespace.YourProjectClassName");
+			_View.WriteLine("protocol = protocol.dll");
+			_View.WriteLine("protocol_entry = YourNamespace.YourProtocolClassName");
+			_View.WriteLine("======================================");
 
 
 			if(_HasFirstCommand())
@@ -104,12 +103,12 @@ namespace Regulus.Remoting.Soul.Native
 			var ini = new Ini(File.ReadAllText(path));
 			var port_string = ini.Read("Launch", "port");
 			var port = int.Parse(port_string);
-			var dllpath = ini.Read("Launch", "game");
-            var gpipath = ini.Read("Launch", "protocol");
-            var className = ini.Read("Launch", "game_entry");
-            var libraryName = ini.Read("Launch", "protocol_entry");
+			var dllpath = ini.Read("Launch", "project");
+			var gpipath = ini.Read("Launch", "protocol");
+			var className = ini.Read("Launch", "project_entry");
+			var libraryName = ini.Read("Launch", "protocol_entry");
 
-            Launch(port, dllpath , gpipath, className, libraryName);
+			Launch(port, dllpath , gpipath, className, libraryName);
 		}
 
 		public void Launch(int port, string game_path, string gpi_path, string class_name , string library_name)
@@ -118,9 +117,9 @@ namespace Regulus.Remoting.Soul.Native
 
 			try
 			{
-			    var core = _LoadGame(game_path, class_name);
-                var library = _LoadLibrary(gpi_path, library_name);
-                
+				var core = _LoadGame(game_path, class_name);
+				var library = _LoadLibrary(gpi_path, library_name);
+				
 				DoneEvent(core, library, port, 0);
 			}
 			catch(Exception ex)
@@ -129,31 +128,31 @@ namespace Regulus.Remoting.Soul.Native
 			}
 		}
 
-	    private IProtocol _LoadLibrary(string gpi_path , string library_entry)
-	    {
-            var stream = File.ReadAllBytes(gpi_path);
-            var assembly = Assembly.Load(stream);
-            var instance = assembly.CreateInstance(library_entry);
-            var asm = assembly.GetName();
+		private IProtocol _LoadLibrary(string gpi_path , string library_entry)
+		{
+			var stream = File.ReadAllBytes(gpi_path);
+			var assembly = Assembly.Load(stream);
+			var instance = assembly.CreateInstance(library_entry);
+			var asm = assembly.GetName();
 
-            _View.WriteLine($"Protocol Version : {asm.Version}");
-            Log.Instance.WriteInfo($"Protocol Assembly Version : {asm.Version.ToString()}");
+			_View.WriteLine($"Protocol Version : {asm.Version}");
+			Log.Instance.WriteInfo($"Protocol Version : {asm.Version.ToString()}");
 
-            return instance as IProtocol;
-        }
+			return instance as IProtocol;
+		}
 
-	    private ICore _LoadGame(string game_path,string entry_name)
-	    {
-            var stream = File.ReadAllBytes(game_path);
-            var assembly = Assembly.Load(stream);
-            var instance = assembly.CreateInstance(entry_name);
-            var asm = assembly.GetName();
+		private ICore _LoadGame(string game_path,string entry_name)
+		{
+			var stream = File.ReadAllBytes(game_path);
+			var assembly = Assembly.Load(stream);
+			var instance = assembly.CreateInstance(entry_name);
+			var asm = assembly.GetName();
 
-            _View.WriteLine($"Game Version : {asm.Version}");
-            Log.Instance.WriteInfo($"Game Assembly Version : {asm.Version.ToString()}");
+			_View.WriteLine($"Project Version : {asm.Version}");
+			Log.Instance.WriteInfo($"Project Version : {asm.Version.ToString()}");
 
-	        return instance as ICore;
-	    }
+			return instance as ICore;
+		}
 	}
 }
 

@@ -1,3 +1,21 @@
+### 2.0.2 (February 2017)
+* Dropped Release Candidate tag now that Castle.Core 4.0.0 final has been
+released.
+* [UPDATE] Updated all builds to use Castle Core 4.0.0 release.
+* [NEW] Task-compatible ReturnsNull extension method added to ReturnsExtensions (#270). Thanks to Michael Wolfenden for implementing this.
+* [NEW] Support for delegates with out/ref parameters (#271, #273). Thanks to Oleg Sych for raising this, and to Alexandr Nikitin for this fix. (Implemented for NET40/45/Core, not for NET35 at present)
+
+### 2.0.1 RC (December 2016)
+* [NEW] Initial custom handler support (#259). Mainly for integration with libraries like AutoFixture, this allows some basic fallback logic to be injected into a substitute's call handling pipeline. Thanks to Alex Povar (@zvirja) for implementing this and incorporating review comments, and also to Marcio Rinaldi (@mrinaldi) for his initial work on this in #234. Also thanks to @alexandrnikitin for a related spike (#156), and his work with Alex and Marcio in refining this feature and reviewing and merging the final PR.
+* [UPDATE] Improved concurrency support, relating to how NSubstitute tracks the last call and queued call specifications (#264). Thanks a lot to Alex Povar (@Zvirja) for designing and implementing this improvement. Thanks to Alexandr Nikitin for reviewing this PR.
+
+### 2.0.0 RC (August 2016)
+* Build: 2.0.0.0
+* [NEW] Initial .NET Core support. Thanks to @alexandrnikitin for tonnes of work on this. Thanks also to Peter Jas (@jasonwilliams200OK) for both .NET Core code contributions and help with CI setup. And thanks to everyone who contributed to the conversation and testing in https://github.com/nsubstitute/NSubstitute/pull/197.
+* [NEW] Clear substitute configuration using `sub.ClearSubstitute(ClearOptions)`. This extension can be brought in to scope via `using NSubstitute.ClearExtensions;`. Thanks to @trullock for defining and implementing this change, and to @alexandrnikitin for review feedback. (#157, #235, #179)
+* [DOC] Improved CallInfo.ArgAt documentation, thanks to asbjornu. (#231)
+* [FIX] Fix an issue with Received.InOrder when an exception is thrown. Thanks to @m3zercat for finding and fixing this. (#237)
+
 ### 1.10.0 (March 2016)
 * [NEW] Callbacks builder for more control over When..Do callbacks. Thanks to bartoszgolek. (#202, #200)
 * [NEW] Auto-substitute for IQueryable<T>. Thanks to emragins. (#67)

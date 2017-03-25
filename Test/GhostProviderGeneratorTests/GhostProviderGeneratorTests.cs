@@ -33,7 +33,7 @@ namespace Regulus.Tool.Tests
         public void BuildTest()
         {
             var g = new GhostProviderGenerator();
-            var codes = g.BuildProvider(
+            var codes = g.Build(
                 "GPIProvider",
                 new[]
                 {
@@ -63,17 +63,6 @@ namespace Regulus.Tool.Tests
             Assert.IsTrue(result.Errors.Count == 0);
         }
 
-
-        interface IGPIEvent
-        {
-            event Action<int, float, string> Event;
-        }
-
-
-        
-
-
-        
 
         [TestMethod()]
         public void BuildGetEventHandler()
