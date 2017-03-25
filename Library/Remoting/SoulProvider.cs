@@ -424,7 +424,13 @@ namespace Regulus.Remoting
 			}
 		}
 
-		private Delegate _BuildDelegate(Type[] generic_arguments, Guid entity_id, string event_name)
+	    private Delegate _BuildDelegate2(Type type, Guid entity_id, string event_name)
+	    {
+	        IGhostProvider provider ;
+	        provider.FindEventDelegate(type , event_name);
+            return Delegate.CreateDelegate(delegateType, closureInstance, new Action<Guid, string, object[]>(_InvokeEvent) );
+        }
+        private Delegate _BuildDelegate(Type[] generic_arguments, Guid entity_id, string event_name)
 		{
 			Type closureType = null;
 
