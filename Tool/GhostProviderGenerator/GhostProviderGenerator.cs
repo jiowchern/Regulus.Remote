@@ -14,15 +14,19 @@ namespace Regulus.Tool
     {
         static string ghostIdName = "_GhostIdName";
 
-        
+        public class Output
+        {
+            public IEnumerable<string> Codes;
 
-        public IEnumerable<string> Build(string path,string output_path,string provider_name, string[] namesapces)
+            public CompilerResults Result;
+        }
+        public Output BuildProvider(string path,string output_path,string provider_name, string[] namesapces)
         {
             byte[] sourceDll = System.IO.File.ReadAllBytes(path);
             Assembly assembly = Assembly.Load(sourceDll);
             var types = assembly.GetExportedTypes();
 
-            var codes = Build(provider_name, namesapces, types);
+            var codes = BuildProvider(provider_name, namesapces, types);
 
             Dictionary<string, string> optionsDic = new Dictionary<string, string>
             {
@@ -45,10 +49,14 @@ namespace Regulus.Tool
             };
             var result = provider.CompileAssemblyFromSource(options, codes.ToArray());
 
-            return codes;
+            return new Output
+            {
+                Result = result,
+                Codes = codes
+            };
         }
 
-        public IEnumerable<string> Build(string provider_name, string[] namesapces, Type[] types)
+        public IEnumerable<string> BuildProvider(string provider_name, string[] namesapces, Type[] types)
         {
             var codes = new List<string>();
 
@@ -96,7 +104,7 @@ namespace Regulus.Tool
                     {{
                         _Types = new Dictionary<Type, Type>();
                         {
-                    addTypeCode
+                            addTypeCode
                     }
                     }}
                     Type Regulus.Remoting.IGhostProvider.Find(Type ghost_base_type)
@@ -239,8 +247,7 @@ $@"
             var propertyInfos = type.GetProperties();
             List<string> propertyCodes = new List<string>();
             foreach (var propertyInfo in propertyInfos)
-            {
-                var propertyType = propertyInfo.PropertyType;
+            {                
                 var propertyCode = $@"
                 {_GetTypeName(propertyInfo.PropertyType)} _{propertyInfo.Name};
                 {_GetTypeName(propertyInfo.PropertyType)} {_GetTypeName(type)}.{propertyInfo.Name} {{ get{{ return _{propertyInfo.Name};}} }}";

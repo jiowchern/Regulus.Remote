@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 using Microsoft.CSharp;
 
+using Regulus.Framework;
+using Regulus.Remoting;
+
 namespace Regulus.Tool.GPI
 {
     public interface GPIA
@@ -30,7 +33,7 @@ namespace Regulus.Tool.Tests
         public void BuildTest()
         {
             var g = new GhostProviderGenerator();
-            var codes = g.Build(
+            var codes = g.BuildProvider(
                 "GPIProvider",
                 new[]
                 {
@@ -59,5 +62,30 @@ namespace Regulus.Tool.Tests
 
             Assert.IsTrue(result.Errors.Count == 0);
         }
+
+
+        interface IGPIEvent
+        {
+            event Action<int, float, string> Event;
+        }
+
+
+        
+
+
+        
+
+        [TestMethod()]
+        public void BuildGetEventHandler()
+        {
+            bool onevent = false;
+            
+            Delegate function = new Action<int , float , string>((i,f,s) => { onevent = true; });
+            function.Method.Invoke(function.Target,new object[]{10,100f,"1000"}); 
+
+            Assert.AreEqual( true , onevent);
+        }
+
+        
     }
 }
