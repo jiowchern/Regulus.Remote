@@ -1,4 +1,4 @@
-﻿#region Test_Region
+﻿
 
 using System;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ using Regulus.Utility;
 
 using Timer = System.Timers.Timer;
 
-#endregion
+
 
 namespace Regulus.Remoting
 {
