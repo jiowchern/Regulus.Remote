@@ -398,7 +398,7 @@ namespace Regulus.Utility
 					throw new ArgumentException("命令參數數量為0");
 				}
 
-			    executer.Method.Invoke(executer.Target, new object[0]);
+				executer.Method.Invoke(executer.Target, new object[0]);
 			};
 
 			_Register(command, func , typeof(void) , new Type[0]);
@@ -417,8 +417,8 @@ namespace Regulus.Utility
 
 				object arg0;
 				Command.Conversion(args[0], out arg0, typeof(T1));
-			    T1 val = (T1) arg0;                
-			    executer.Method.Invoke(executer.Target, new [] { arg0 } );
+				T1 val = (T1) arg0;                
+				executer.Method.Invoke(executer.Target, new [] { arg0 } );
 			};
 
 
@@ -444,8 +444,8 @@ namespace Regulus.Utility
 				Command.Conversion(args[1], out arg1, typeof(T2));
 
 
-                executer.Method.Invoke(executer.Target, new[] { arg0 , arg1});
-                
+				executer.Method.Invoke(executer.Target, new[] { arg0 , arg1});
+				
 			};
 
 			_Register(command, func, typeof(void), new[]
@@ -470,8 +470,8 @@ namespace Regulus.Utility
 				Command.Conversion(args[1], out arg1, typeof(T2));
 				object arg2;
 				Command.Conversion(args[2], out arg2, typeof(T3));
-                executer.Method.Invoke(executer.Target, new[] { arg0, arg1 ,arg2});
-            };
+				executer.Method.Invoke(executer.Target, new[] { arg0, arg1 ,arg2});
+			};
 
 
 			_Register(command, func, typeof(void), new[]
@@ -499,8 +499,8 @@ namespace Regulus.Utility
 				Command.Conversion(args[2], out arg2, typeof(T3));
 				object arg3;
 				Command.Conversion(args[3], out arg3, typeof(T4));
-                executer.Method.Invoke(executer.Target, new[] { arg0, arg1, arg2 ,arg3});
-            };
+				executer.Method.Invoke(executer.Target, new[] { arg0, arg1, arg2 ,arg3});
+			};
 
 			_Register(command, func, typeof(void), new[]
 				{
@@ -539,11 +539,11 @@ namespace Regulus.Utility
 
 				object arg0;
 				Command.Conversion(args[0], out arg0, typeof(T1));
-                var ret = executer.Method.Invoke(executer.Target, new object[] { arg0 });
-                value.Method.Invoke(value.Target, new object[] { ret });
+				var ret = executer.Method.Invoke(executer.Target, new object[] { arg0 });
+				value.Method.Invoke(value.Target, new object[] { ret });
 
 
-            };
+			};
 
 			_Register(command, func, typeof(TR), new[]
 				{
@@ -567,9 +567,9 @@ namespace Regulus.Utility
 				object arg1;
 				Command.Conversion(args[1], out arg1, typeof(T2));
 
-                var ret = executer.Method.Invoke(executer.Target, new object[] { arg0,arg1 });
-                value.Method.Invoke(value.Target, new object[] { ret });
-            };
+				var ret = executer.Method.Invoke(executer.Target, new object[] { arg0,arg1 });
+				value.Method.Invoke(value.Target, new object[] { ret });
+			};
 
 			_Register(command, func, typeof(TR), new[]
 				{
@@ -596,9 +596,9 @@ namespace Regulus.Utility
 				object arg2;
 				Command.Conversion(args[2], out arg2, typeof(T3));
 
-                var ret = executer.Method.Invoke(executer.Target, new[] { arg0, arg1,arg2 });
-                value.Method.Invoke(value, new[] { ret });
-            };
+				var ret = executer.Method.Invoke(executer.Target, new[] { arg0, arg1,arg2 });
+				value.Method.Invoke(value, new[] { ret });
+			};
 
 			_Register(command, func, typeof(TR), new[]
 				{
@@ -627,9 +627,9 @@ namespace Regulus.Utility
 				object arg3;
 				Command.Conversion(args[3], out arg3, typeof(T4));
 
-                var ret = executer.Method.Invoke(executer.Target, new[] { arg0, arg1, arg2 , arg3 });
-                value.Method.Invoke(value, new[] { ret });
-            };
+				var ret = executer.Method.Invoke(executer.Target, new[] { arg0, arg1, arg2 , arg3 });
+				value.Method.Invoke(value, new[] { ret });
+			};
 
 			_Register(command, func, typeof(TR), new[]
 				{
@@ -650,9 +650,9 @@ namespace Regulus.Utility
 
 		public static bool Conversion(string in_string, out object out_value, Type source)
 		{
-            
-            out_value =null;
-            if (source == typeof(int))
+			
+			out_value =null;
+			if (source == typeof(int))
 			{
 				var reault = int.MinValue;
 				if(int.TryParse(in_string, out reault))
@@ -661,7 +661,7 @@ namespace Regulus.Utility
 
 				out_value = reault;
 
-			    return true;
+				return true;
 			}
 			else if(source == typeof(float))
 			{
@@ -671,8 +671,8 @@ namespace Regulus.Utility
 				}
 
 				out_value = reault;
-                return true;
-            }
+				return true;
+			}
 			else if(source == typeof(byte))
 			{
 				var reault = byte.MinValue;
@@ -681,8 +681,8 @@ namespace Regulus.Utility
 				}
 
 				out_value = reault;
-                return true;
-            }
+				return true;
+			}
 			else if(source == typeof(short))
 			{
 				var reault = short.MinValue;
@@ -691,8 +691,8 @@ namespace Regulus.Utility
 				}
 
 				out_value = reault;
-                return true;
-            }
+				return true;
+			}
 			else if(source == typeof(long))
 			{
 				var reault = long.MinValue;
@@ -701,8 +701,8 @@ namespace Regulus.Utility
 				}
 
 				out_value = reault;
-                return true;
-            }
+				return true;
+			}
 			else if (source == typeof(bool))
 			{
 				var reault = false;
@@ -711,35 +711,35 @@ namespace Regulus.Utility
 				}
 
 				out_value = reault;
-                return true;
-            }
-            else if (source == typeof(string))
-            {                
-                out_value = in_string;
-                return true;
-            }
-            else if (source.IsEnum)
-            {
-                
-                try
-                {
-                    out_value = Enum.Parse(source, in_string);
-                    return true;
-                }
-                catch (Exception)
-                {
-                    
-                }             
-                
-            }
-            else
-            {
-                out_value = Activator.CreateInstance(source);
-                return true;
-            }
+				return true;
+			}
+			else if (source == typeof(string))
+			{                
+				out_value = in_string;
+				return true;
+			}
+			else if (source.IsEnum)
+			{
+				
+				try
+				{
+					out_value = Enum.Parse(source, in_string);
+					return true;
+				}
+				catch (Exception)
+				{
+					
+				}             
+				
+			}
+			else
+			{
+				out_value = Activator.CreateInstance(source);
+				return true;
+			}
 
-            return false;
-        }
+			return false;
+		}
 
 		private void _EmptyRegisterEvent(string command, CommandParameter ret, CommandParameter[] args)
 		{
