@@ -3,17 +3,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.CodeDom.Compiler;
-using System.Runtime.Remoting.Messaging;
 
+using System.CodeDom.Compiler;
 using Microsoft.CSharp;
 namespace Regulus.Tool
 {
     public class GhostProviderGenerator
     {
         static string ghostIdName = "_GhostIdName";
-
         
 
         public IEnumerable<string> Build(string path,string output_path,string library_name, string[] namesapces)
