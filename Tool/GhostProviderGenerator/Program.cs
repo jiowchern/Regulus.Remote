@@ -26,7 +26,8 @@ namespace Regulus.Tool
             var outputPath = ini.Read("Setting", "OutputPath");
             var dumpCode = ini.Read("Setting", "DumpCode");
 
-            GhostProviderGenerator ghostProviderGenerator  = new GhostProviderGenerator();
+
+            Regulus.Protocol.AssemblyBuilder ghostProviderGenerator  = new Regulus.Protocol.AssemblyBuilder();
             var codes = ghostProviderGenerator.Build(sourcePath, outputPath, protocolName, new string[] { sourceNamespace });
 
             if (dumpCode == "true")
