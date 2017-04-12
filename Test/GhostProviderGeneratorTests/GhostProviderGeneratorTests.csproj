@@ -67,13 +67,17 @@
       <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
       <Name>RegulusLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Library\RegulusProtocol\RegulusProtocol.csproj">
+      <Project>{00e8aff8-e4d5-4327-86f1-d03379419431}</Project>
+      <Name>RegulusProtocol</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Library\Remoting\Remoting.csproj">
       <Project>{a4cfce46-bda8-4416-a1bb-77bd80514019}</Project>
       <Name>Remoting</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Tool\GhostProviderGenerator\GhostProviderGenerator.csproj">
+    <ProjectReference Include="..\..\Tool\GhostProviderGenerator\RegulusProtocolGenerator.csproj">
       <Project>{57CE4156-39E1-40BB-9421-0BA4AD5149A6}</Project>
-      <Name>GhostProviderGenerator</Name>
+      <Name>RegulusProtocolGenerator</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

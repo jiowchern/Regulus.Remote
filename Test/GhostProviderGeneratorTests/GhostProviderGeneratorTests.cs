@@ -32,7 +32,7 @@ namespace Regulus.Tool.Tests
         [TestMethod()]
         public void BuildTest()
         {
-            var g = new GhostProviderGenerator();
+            var g = new Regulus.Protocol.AssemblyBuilder();
             var codes = g.Build(
                 "GPIProvider",
                 new[]
