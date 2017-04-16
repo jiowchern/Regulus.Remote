@@ -9,7 +9,7 @@ using Regulus.Framework;
 
 namespace Regulus.Remoting.Soul.Native
 {
-	internal class Peer : IRequestQueue, IResponseQueue, IBootable
+	public class Peer : IRequestQueue, IResponseQueue, IBootable
 	{
 		public delegate void DisconnectCallback();
 

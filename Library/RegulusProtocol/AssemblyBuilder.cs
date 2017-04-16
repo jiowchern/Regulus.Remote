@@ -15,13 +15,13 @@ namespace Regulus.Protocol
 
         public IEnumerable<string> Build(string path,string output_path,string library_name, string[] namesapces)
         {
-            byte[] sourceDll = System.IO.File.ReadAllBytes(path);
-            Assembly assembly = Assembly.Load(sourceDll);
+            var sourceDll = System.IO.File.ReadAllBytes(path);
+            var assembly = Assembly.Load(sourceDll);
             var types = assembly.GetExportedTypes();
 
             var codes = Build(library_name, namesapces, types);
 
-            Dictionary<string, string> optionsDic = new Dictionary<string, string>
+            var optionsDic = new Dictionary<string, string>
             {
                 {"CompilerVersion", "v3.5"}
             };
@@ -45,12 +45,12 @@ namespace Regulus.Protocol
             return codes;
         }
 
-        public IEnumerable<string> Build(string library_name, string[] namesapces, Type[] types)
+        public IEnumerable<string> Build(string protocol_name, string[] namesapces, Type[] types)
         {
             var codes = new List<string>();
 
-            List<string> addGhostType = new List<string>();
-            List<string> addEventType = new List<string>();
+            var addGhostType = new List<string>();
+            var addEventType = new List<string>();
 
             foreach (var type in types)
             {
@@ -58,8 +58,7 @@ namespace Regulus.Protocol
                 {
                     string ghostClassCode = _BuildGhostCode(type);
                     addGhostType.Add($"types.Add(typeof({_GetTypeName(type)}) , typeof({_GetGhostType(type)}) );");
-                    codes.Add(ghostClassCode);
-                    
+                    codes.Add(ghostClassCode);                    
 
                     var eventInfos = type.GetEvents();
                     foreach (var eventInfo in eventInfos)
@@ -73,7 +72,7 @@ namespace Regulus.Protocol
             var addTypeCode = string.Join("\n", addGhostType);
 
             var addEventCode = string.Join("\n", addEventType);
-            var tokens = library_name.Split(new[]{'.'});
+            var tokens = protocol_name.Split(new[]{'.'});
             var procotolName = tokens.Last();
 
             var providerNamespace = string.Join(".", tokens.Take(tokens.Count() - 1));
@@ -140,11 +139,6 @@ namespace Regulus.Protocol
             return $"{type.Namespace}.Event.{type.Name}.{event_name}";
         }
 
-
-        private static bool _IsGPI(Type type)
-        {
-            return true;
-        }
         private string  _BuildEventCode(Type type , EventInfo  info)
         {
             var nameSpace = type.Namespace;
@@ -304,8 +298,7 @@ $@"
             var propertyInfos = type.GetProperties();
             List<string> propertyCodes = new List<string>();
             foreach (var propertyInfo in propertyInfos)
-            {
-                var propertyType = propertyInfo.PropertyType;
+            {                
                 var propertyCode = $@"
                 {_GetTypeName(propertyInfo.PropertyType)} _{propertyInfo.Name};
                 {_GetTypeName(propertyInfo.PropertyType)} {_GetTypeName(type)}.{propertyInfo.Name} {{ get{{ return _{propertyInfo.Name};}} }}";
@@ -394,6 +387,85 @@ $@"
             }
 
             return $"{addParamsHead}\n{string.Join(" \n", addParams)}\ndata.MethodParams = paramList.ToArray();";
+        }
+
+        public void BuildFile(Assembly assembly , string library_name , string[] name_spaces , string output_path)
+        {
+
+            Dictionary<string, string> optionsDic = new Dictionary<string, string>
+            {
+                {"CompilerVersion", "v3.5"}
+            };
+            var provider = new CSharpCodeProvider(optionsDic);
+            var options = new CompilerParameters
+            {
+
+                OutputAssembly = output_path,
+                GenerateExecutable = false,
+
+                ReferencedAssemblies =
+                {
+                    "System.Core.dll",
+                    "RegulusLibrary.dll",
+                    "RegulusRemoting.dll",
+                    "protobuf-net.dll",
+                    assembly.Location
+               }                
+
+            };
+
+
+            var types = assembly.GetExportedTypes();
+
+            var codes = Build(library_name, name_spaces, types);
+
+            var result = provider.CompileAssemblyFromSource(options, codes.ToArray());
+            if (result.Errors.Count > 0)
+            {                
+                throw new Exception("Gpi compile error");
+            }
+
+            
+        }
+
+
+        public Assembly Build(Assembly assembly, string library_name, string[] name_spaces)
+        {
+
+            Dictionary<string, string> optionsDic = new Dictionary<string, string>
+            {
+                {"CompilerVersion", "v3.5"}
+            };
+            var provider = new CSharpCodeProvider(optionsDic);
+            var options = new CompilerParameters
+            {
+
+                GenerateInMemory = true,
+                GenerateExecutable = false,
+
+                ReferencedAssemblies =
+                {
+                    "System.Core.dll",
+                    "RegulusLibrary.dll",
+                    "RegulusRemoting.dll",
+                    "protobuf-net.dll",
+                    assembly.Location
+               }
+
+            };
+
+
+            var types = assembly.GetExportedTypes();
+
+            var codes = Build(library_name, name_spaces, types);
+
+            var result = provider.CompileAssemblyFromSource(options, codes.ToArray());
+            if (result.Errors.Count > 0)
+            {
+                throw new Exception("Gpi compile error");
+            }
+
+            return result.CompiledAssembly;
         }
     }
 }
