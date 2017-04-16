@@ -14,12 +14,7 @@ namespace Server
 
 			foreach(var a in args)
 			{
-				command.AddRange(a.Split(
-										 new[]
-										 {
-											 ' '
-										 },
-										StringSplitOptions.RemoveEmptyEntries));
+				command.AddRange(a.Split(new[]{' '},StringSplitOptions.RemoveEmptyEntries));
 			}
 			var app = new Application(command.ToArray());
 

@@ -36,7 +36,7 @@ namespace Regulus.Remoting.Soul.Native
 			_Machine.Push(stage);
 		}
 
-		private void _ToRun(ICore core,IProtocol protocol, int port, float timeout)
+		private void _ToRun(ICore core,IProtocol protocol, int port)
 		{
 			var stage = new StageRun(core, protocol, Command, port, Viewer);
 			stage.ShutdownEvent += _ToStart;
