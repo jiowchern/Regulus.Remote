@@ -39,7 +39,8 @@ namespace Regulus.Remoting.Soul.Native
 			_View.WriteLine("Example.");
 			_View.WriteLine("[Launch]");
 			_View.WriteLine("port = 12345");
-			_View.WriteLine("project_path = path/project.dll");
+            _View.WriteLine("common_path = path/common.dll");            
+            _View.WriteLine("project_path = path/project.dll");
 			_View.WriteLine("project_entry = YourNamespace.YourProjectClassName"); 
 			_View.WriteLine("======================================");
 
@@ -85,9 +86,11 @@ namespace Regulus.Remoting.Soul.Native
 			    var port = int.Parse(port_string);
 			    var dllpath = ini.Read("Launch", "project_path");			
 			    var className = ini.Read("Launch", "project_entry");
-			
 
-			    Launch(port, dllpath , className);
+                var commonPath = ini.Read("Launch", "common_path");                
+
+
+                Launch(port, dllpath , className , commonPath );
             }
             catch (Exception ex)
             {
@@ -95,34 +98,36 @@ namespace Regulus.Remoting.Soul.Native
             }
         }
 
-		public void Launch(int port, string gpi_path, string entry_name)
+	    
+
+	    public void Launch(int port, string project_path, string project_entry_name, string common_path)
 		{
 
-            var stream = File.ReadAllBytes(gpi_path);
-            var assembly = Assembly.Load(stream);
-            var instance = assembly.CreateInstance(entry_name) as ICore;
-            var asm = assembly.GetName();
+            var instance = StageStart._CreateProject(project_path, project_entry_name);
 
-            _View.WriteLine($"Project Version : {asm.Version}");
-            Log.Instance.WriteInfo($"Project Version : {asm.Version}");
-                
-            var library = _LoadProtocol(assembly , entry_name);
+	        var library = _CreateProtocol(common_path, project_entry_name);
 				
 			DoneEvent(instance, library, port);			
 		}
 
-		private IProtocol _LoadProtocol(Assembly gpi , string entry_name)
-		{
+	    private static ICore _CreateProject(string project_path, string project_entry_name)
+	    {	        
+	        var assembly = Assembly.LoadFrom(project_path);
+	        var instance = assembly.CreateInstance(project_entry_name) as ICore;
+	        return instance;
+	    }
 
-            var nameSpaces = new HashSet<string>();
-		    foreach (var type in gpi.GetExportedTypes())
-		    {
-		        nameSpaces.Add(type.Namespace);
-		    }
+	    private IProtocol _CreateProtocol(string  common_path ,string entry_name)
+		{
+            var assembly = Assembly.LoadFrom(common_path);
+
+            var nameSpaces = new HashSet<string>(from type in assembly.GetExportedTypes() select type.Namespace);
+
             
+
             var protocolName = entry_name + "ProtocolProvider";
             var buidler = new Regulus.Protocol.AssemblyBuilder();
-		    var asm =  buidler.Build(gpi,protocolName, nameSpaces.ToArray());
+		    var asm =  buidler.Build(assembly, protocolName, nameSpaces.ToArray());
 		    return asm.CreateInstance(protocolName) as IProtocol;
 		}
 
