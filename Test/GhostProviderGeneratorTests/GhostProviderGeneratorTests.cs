@@ -32,15 +32,14 @@ namespace Regulus.Tool.Tests
         [TestMethod()]
         public void BuildTest()
         {
-            var g = new Regulus.Protocol.AssemblyBuilder();
-            var codes = g.Build(
-                "GPIProvider",
-                new[]
-                {
-                    "Regulus.Tool.GPI"
-                },new [] {typeof(Regulus.Tool.GPI.GPIA) });
+            var codes = new List<string>();
+            var g = new Regulus.Protocol.CodeBuilder();
+            g.ProviderEvent += (code) => codes.Add(code);
+            g.EventEvent += (type_name, event_name, code) => codes.Add(code);
+            g.GpiEvent += (type_name, code) => codes.Add(code);
+            g.Build("GPIProvider",new[]{"Regulus.Tool.GPI"},new [] {typeof(Regulus.Tool.GPI.GPIA) });
 
-            Dictionary<string, string> optionsDic = new Dictionary<string, string>
+            var optionsDic = new Dictionary<string, string>
             {
                 {"CompilerVersion", "v4.0"}
             };
