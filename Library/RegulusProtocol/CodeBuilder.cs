@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq;
+
 using System.Reflection;
 
 namespace Regulus.Protocol
@@ -12,7 +12,7 @@ namespace Regulus.Protocol
 
         
 
-        public event Action<string> ProviderEvent;
+        public event Action<string, string> ProviderEvent;
         public event Action<string , string> GpiEvent;
         public event Action<string , string,string> EventEvent;
         public void Build(string protocol_name, string[] namesapces, Type[] types)
@@ -44,7 +44,7 @@ namespace Regulus.Protocol
                         codeEvents.Add(eventCode);
 
                         if (EventEvent != null)
-                            EventEvent(typeName , eventInfo.Name , eventCode);
+                            EventEvent( typeName , eventInfo.Name , eventCode);
                     }
 
                 }
@@ -100,7 +100,7 @@ namespace Regulus.Protocol
             ";
 
             if (ProviderEvent != null)
-                ProviderEvent(providerCode);
+                ProviderEvent(protocol_name , providerCode);
         }
 
 
