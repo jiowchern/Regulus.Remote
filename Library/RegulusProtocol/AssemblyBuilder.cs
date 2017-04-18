@@ -18,7 +18,7 @@ namespace Regulus.Protocol
 
             var codes = new List<string>();
             var codeBuilder = new CodeBuilder();
-            codeBuilder.ProviderEvent += (code) =>codes.Add(code);
+            codeBuilder.ProviderEvent += (name , code) =>codes.Add(code);
             codeBuilder.EventEvent += (type_name, event_name, code) => codes.Add(code);
             codeBuilder.GpiEvent += (type_name, code) => codes.Add(code);
             codeBuilder.Build(library_name, namesapces, types);
@@ -78,7 +78,7 @@ namespace Regulus.Protocol
             var types = assembly.GetExportedTypes();
             var codes = new List<string>();
             var codeBuilder = new CodeBuilder();
-            codeBuilder.ProviderEvent += (code) => codes.Add(code);
+            codeBuilder.ProviderEvent += (name , code) => codes.Add(code);
             codeBuilder.EventEvent += (type_name, event_name, code) => codes.Add(code);
             codeBuilder.GpiEvent += (type_name, code) => codes.Add(code);
             codeBuilder.Build(library_name, name_spaces, types);
@@ -123,7 +123,7 @@ namespace Regulus.Protocol
 
             var codes = new List<string>();
             var codeBuilder = new CodeBuilder();
-            codeBuilder.ProviderEvent += (code) => codes.Add(code);
+            codeBuilder.ProviderEvent += (name , code) => codes.Add(code);
             codeBuilder.EventEvent += (type_name, event_name, code) => codes.Add(code);
             codeBuilder.GpiEvent += (type_name, code) => codes.Add(code);
             codeBuilder.Build(protocol_name, name_spaces, types);
