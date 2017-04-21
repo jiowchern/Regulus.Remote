@@ -8,7 +8,8 @@ using Regulus.Serialization.Expansion;
 
 namespace Regulus.Serialization
 {
-    public class StructTypeProvider<T> : ITypeProvider where T : struct
+    public class StructTypeProvider<T> : ITypeProvider 
+        where T : struct  
     {
         private readonly int _Id;
 
@@ -21,6 +22,8 @@ namespace Regulus.Serialization
         {
             get { return _Id; }
         }
+
+       
 
         Type ITypeProvider.InstanceType
         {
@@ -69,5 +72,7 @@ namespace Regulus.Serialization
         {
             return true;
         }
+
+       
     }
 }

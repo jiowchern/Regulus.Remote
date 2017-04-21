@@ -5,7 +5,7 @@ namespace Regulus.Serialization
 {
 
 
-    public interface ITypeProvider
+    public interface ITypeProvider 
     {
         int Id { get; }
         Type InstanceType { get; }
