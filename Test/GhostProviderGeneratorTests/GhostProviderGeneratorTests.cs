@@ -34,7 +34,7 @@ namespace Regulus.Tool.Tests
         {
             var codes = new List<string>();
             var g = new Regulus.Protocol.CodeBuilder();
-            g.ProviderEvent += (code) => codes.Add(code);
+            g.ProviderEvent += (name,code) => codes.Add(code);
             g.EventEvent += (type_name, event_name, code) => codes.Add(code);
             g.GpiEvent += (type_name, code) => codes.Add(code);
             g.Build("GPIProvider",new[]{"Regulus.Tool.GPI"},new [] {typeof(Regulus.Tool.GPI.GPIA) });
