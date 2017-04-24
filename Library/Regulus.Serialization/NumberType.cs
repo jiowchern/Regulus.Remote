@@ -3,13 +3,26 @@ using System.Diagnostics;
 
 namespace Regulus.Serialization
 {
-    public class NumberType<T> : ITypeDescriber
+
+
+    public class NumberType<T> : NumberType
+    {
+        public NumberType(int id) : base(id , typeof(T)) { }
+    }
+    public class NumberType : ITypeDescriber 
     {
         private int _Id     ;
 
-        public NumberType(int id)
+        private readonly Type _Type;
+
+        private object _Default;
+
+        public NumberType(int id , Type type)
         {
+
+            _Default = Activator.CreateInstance(type);
             _Id = id;
+            _Type = type;
         }
 
         int ITypeDescriber.Id
@@ -17,47 +30,23 @@ namespace Regulus.Serialization
             get { return _Id; }
         }
 
-        public Type Type { get { return typeof (T); } }
+        public Type Type { get { return _Type; } }
 
         int ITypeDescriber.GetByteCount(object instance)
         {
-
-            
-            
-            
-
             return Serializer.Varint.GetByteCount(Convert.ToUInt64(instance));
         }
-
+        public object Default { get { return _Default; } }
         int ITypeDescriber.ToBuffer(object instance, byte[] buffer, int begin)
-        {
-
+        {            
             return Serializer.Varint.NumberToBuffer(buffer, begin, Convert.ToUInt64(instance));
-
-            
         }
 
         int ITypeDescriber.ToObject(byte[] buffer, int begin, out object instance)
         {
-
-            instance = null;
-
             ulong value;            
             var readed = Serializer.Varint.BufferToNumber(buffer, begin, out value);
-
-            if(typeof(int) == typeof(T))
-                instance = (int)value;
-
-            if (typeof(uint) == typeof(T))
-                instance = (uint)value;
-
-            if (typeof(long) == typeof(T))
-                instance = (long)value;
-
-            if (typeof(ulong) == typeof(T))
-                instance = (ulong)value;
-            
-
+            instance = Convert.ChangeType(value , _Type);
             return readed;
         }
 
