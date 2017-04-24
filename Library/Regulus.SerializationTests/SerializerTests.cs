@@ -14,9 +14,9 @@ namespace Regulus.Serialization.Tests
     [TestClass()]
     public class SerializerTests
     {
-        
 
-        
+
+
 
 
         [TestMethod()]
@@ -35,7 +35,7 @@ namespace Regulus.Serialization.Tests
             Assert.AreEqual((ulong)2, e64_1);
             Assert.AreEqual((ulong)1, e64_2);
 
-            
+
         }
 
         [TestMethod()]
@@ -56,6 +56,7 @@ namespace Regulus.Serialization.Tests
 
 
         }
+
         [TestMethod()]
         public void ZigZagTest()
         {
@@ -71,7 +72,7 @@ namespace Regulus.Serialization.Tests
 
             var count = Serializer.Varint.GetByteCount(150);
             var buffer = new byte[count];
-            var index = Serializer.Varint.NumberToBuffer(buffer,0 ,150);
+            var index = Serializer.Varint.NumberToBuffer(buffer, 0, 150);
 
 
             Assert.AreEqual(0x96, buffer[0]);
@@ -85,7 +86,14 @@ namespace Regulus.Serialization.Tests
         public void VarintToNumberTest()
         {
             ulong number;
-            var index = Serializer.Varint.BufferToNumber(new byte[] {0x96 ,0x1} , 0 , out number);
+            var index = Serializer.Varint.BufferToNumber(
+                new byte[]
+                {
+                    0x96,
+                    0x1
+                },
+                0,
+                out number);
             Assert.AreEqual(150UL, number);
             Assert.AreEqual(2, index);
         }
@@ -99,16 +107,16 @@ namespace Regulus.Serialization.Tests
             Serializer.Varint.NumberToBuffer(buffer, 0, 12671L);
 
             ulong value;
-            Serializer.Varint.BufferToNumber(buffer , 0 , out value);
+            Serializer.Varint.BufferToNumber(buffer, 0, out value);
 
-            Assert.AreEqual(12671UL , value);
+            Assert.AreEqual(12671UL, value);
         }
 
         [TestMethod()]
         public void Test1()
         {
-            
-            var ser = new Serializer(new NumberType<ulong>(1));
+
+            var ser = new Serializer(new NumberType(1,typeof(ulong)));
 
             var buffer = ser.ObjectToBuffer(1UL);
 
@@ -121,20 +129,7 @@ namespace Regulus.Serialization.Tests
         [TestMethod()]
         public void Test2()
         {
-            var ser = new Serializer(new NumberType<int>(1) , new ClassType<TestClassB>(2));
-            var testb = new TestClassB();
-            testb.Data = 1234;
-            var buffer = ser.ObjectToBuffer(testb);
-            var value = ser.BufferToObject(buffer) as TestClassB;
-
-            Assert.AreEqual(testb.Data , value.Data);
-        }
-
-
-        [TestMethod()]
-        public void Test3()
-        {
-            var ser = new Serializer(new NumberType<int>(1), new ClassType<TestClassB>(2) , new ClassArrayType<TestClassB>(3));
+            var ser = new Serializer(new NumberType(1,typeof(int)), new ClassType(2, typeof(TestClassB)));
             var testb = new TestClassB();
             testb.Data = 1234;
             var buffer = ser.ObjectToBuffer(testb);
@@ -143,8 +138,160 @@ namespace Regulus.Serialization.Tests
             Assert.AreEqual(testb.Data, value.Data);
         }
 
+
+        [TestMethod()]
+        public void Test3()
+        {
+            var ser = new Serializer(
+                new NumberType(1,typeof(int)),
+                new ClassType(2, typeof(TestClassB)),
+                new ClassArrayType(3 , typeof(TestClassB[])));
+            var testbs = new[]
+            {
+                null,
+                new TestClassB()
+                {
+                    Data = 1
+                },
+                null,
+                new TestClassB()
+                {
+                    Data = 3
+                },
+                null,
+            };
+
+            var buffer = ser.ObjectToBuffer(testbs);
+            var value = ser.BufferToObject(buffer) as TestClassB[];
+
+            Assert.AreEqual(null, value[0]);
+            Assert.AreEqual(1, value[1].Data);
+            Assert.AreEqual(null, value[2]);
+            Assert.AreEqual(3, value[3].Data);
+            Assert.AreEqual(null, value[4]);
+        }
+
+
+        [TestMethod()]
+        public void NumberTest()
+        {
+            var ser = new Serializer(
+                new NumberType(1 , typeof(byte)),
+                new NumberType<short>(2),
+                new NumberType<int>(3),
+                new NumberType<long>(4),
+                new EnumType<TEST1>(5)
+                );
+            var byteBuffer = ser.ObjectToBuffer((byte)128);
+            var byteValue = (byte)ser.BufferToObject(byteBuffer);
+
+            var shortBuffer = ser.ObjectToBuffer((short)16387);
+            var shortValue = (short)ser.BufferToObject(shortBuffer);
+
+            var intBuffer = ser.ObjectToBuffer((int)65535);
+            var intValue = (int)ser.BufferToObject(intBuffer);
+
+            var longBuffer = ser.ObjectToBuffer((long)65535000);
+            var longValue = (long)ser.BufferToObject(longBuffer);
+
+            var enumBuffer = ser.ObjectToBuffer(TEST1.C);
+            var enumValue = (TEST1)ser.BufferToObject(enumBuffer);
+
+            Assert.AreEqual((byte)128, byteValue);
+            Assert.AreEqual((short)16387, shortValue);
+            Assert.AreEqual((int)65535, intValue);
+            Assert.AreEqual((long)65535000, longValue);
+            Assert.AreEqual(TEST1.C, enumValue);
+        }
+
+
+        [TestMethod()]
+        public void Test4()
+        {
+            var ser = new Serializer(new NumberType<int>(1), new ClassArrayType<int>(2));
+
+            var ints = new[]
+            {
+                4,
+                46,
+                6,
+                8,
+                8,
+                4,
+                32,
+                323,
+                78
+            };
+            var buffer = ser.ObjectToBuffer(ints);
+            var value = (int[])ser.BufferToObject(buffer);
+
+
+            Assert.AreEqual( 46 , value[1]);
+            Assert.AreEqual(323, value[7]);
+        }
+
+        [TestMethod()]
+        public void Test5()
+        {
+            var ser = new Serializer(new NumberType<float>(1), new ClassArrayType<float>(2));
+
+            var ints = new[]{
+                4f,46f,6f,8f,8f,4f,32f,323f,78f
+            };
+            var buffer = ser.ObjectToBuffer(ints);
+            var value = (float[])ser.BufferToObject(buffer);
+
+
+            Assert.AreEqual(46f, value[1]);
+            Assert.AreEqual(323f, value[7]);
+        }
+
+
+        [TestMethod()]
+        public void Test6()
+        {
+            var ser = new Serializer(new StructType<float>(1));
+            
+            var buffer = ser.ObjectToBuffer(123.43f);
+            var value = (float)ser.BufferToObject(buffer);
+
+            Assert.AreEqual(123.43f, value); 
+        }
+
+
+        [TestMethod()]
+        public void Test7()
+        {
+            var ser = new Serializer(new StructType<Guid>(1) , new ClassArrayType<Guid>(2));
+
+            var id = Guid.NewGuid();
+            var buffer = ser.ObjectToBuffer(id);
+            var value = (Guid)ser.BufferToObject(buffer);
+
+            Assert.AreEqual(id, value);
+        }
+
+
+        [TestMethod()]
+        public void Test8()
+        {
+            var ser = new Serializer(new ClassType(1 , typeof(TestClassC)), new ClassArrayType<TestClassC>(2));
+
+            var cs = new TestClassC[] {null , new TestClassC(), null};
+
+            
+            var buffer = ser.ObjectToBuffer(cs);
+            var value = ser.BufferToObject<TestClassC[]>(buffer);
+
+
+            Assert.AreEqual(cs[0], value[0]);
+            Assert.AreNotEqual(null, value[1]);
+            Assert.AreEqual(cs[2], value[2]);
+        }
     }
 
     
 }
+
+    
 

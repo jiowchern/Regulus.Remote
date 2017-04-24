@@ -1,22 +1,29 @@
 using System;
 using System.Linq;
-using System.IO;
+
 using System.Reflection;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization;
 
 namespace Regulus.Serialization
 {
-    public class ClassType<T> : ITypeDescriber
+    public class ClassType : ITypeDescriber 
     {
         private readonly int _Id;
-        private FieldInfo[] _Fields;
+
+        private readonly Type _Type;
+
+        private readonly FieldInfo[] _Fields;
         private ITypeDescriber[] _Describers;
 
-        public ClassType(int id)
-        {
-            _Id = id;
+        private object _Default;
 
-            _Fields = (from field in typeof(T).GetFields()
+        public ClassType(int id , Type type)
+        {
+            _Default = null;
+            _Id = id;
+            _Type = type;
+
+            _Fields = (from field in _Type.GetFields()
                          where field.IsStatic == false && field.IsPublic orderby field.Name
                          select field).ToArray();
         }
@@ -28,24 +35,36 @@ namespace Regulus.Serialization
 
         Type ITypeDescriber.Type
         {
-            get { return typeof(T); }
+            get { return _Type; }
         }
+        
+        public object Default { get { return _Default; } }
 
         int ITypeDescriber.GetByteCount(object instance)
         {
+
+            var validFields = _Fields.Select(
+                       (field, index) => new
+                       {
+                           field,
+                           index
+                       }).Where(validField => object.Equals(_GetDescriber(validField.field).Default, validField.field.GetValue(instance)) == false) .ToArray();
+
+
+            var validCount = Serializer.Varint.GetByteCount(validFields.Length);
             int count = 0;
-            for (int i = 0; i < _Fields.Length; i++)
+            for (int i = 0; i < validFields.Length; i++)
             {
                 
-                var field = _Fields[i];
-                var value = field.GetValue(instance);
-                var describer = _GetDescriber(field);
+                var validField = validFields[i];
+                var value = validField.field.GetValue(instance);
+                var describer = _GetDescriber(validField.field);
                 var byteCount = describer.GetByteCount(value);
 
-                var indexCount = Serializer.Varint.GetByteCount(1UL + (ulong)i);
+                var indexCount = Serializer.Varint.GetByteCount(validField.index);
                 count += byteCount + indexCount;
             }
-            return count;
+            return count + validCount;
         }
 
         private ITypeDescriber _GetDescriber(FieldInfo field)
@@ -55,38 +74,54 @@ namespace Regulus.Serialization
 
         int ITypeDescriber.ToBuffer(object instance, byte[] buffer, int begin)
         {
-
             int offset = begin;
-            for (int i = 0; i < _Fields.Length; i++)
+            var validFields = _Fields.Select(
+                       (field, index) => new
+                       {
+                           field,
+                           index
+                       }).Where(validField => object.Equals(_GetDescriber(validField.field).Default, validField.field.GetValue(instance))== false)
+                   .ToArray();
+
+            offset += Serializer.Varint.NumberToBuffer(buffer, offset, validFields.Length);
+
+
+            foreach (var validField in validFields)
             {
-                offset += Serializer.Varint.NumberToBuffer(buffer, offset, i + 1);
-                var field = _Fields[i];
+                var index = validField.index;
+                offset += Serializer.Varint.NumberToBuffer(buffer, offset, index);
+                var field = validField.field;
                 var value = field.GetValue(instance);
                 var describer = _GetDescriber(field);
                 offset += describer.ToBuffer(value, buffer, offset);
             }
+            
 
             return offset - begin;
         }
 
         int ITypeDescriber.ToObject(byte[] buffer, int begin , out object instance)
         {
-            instance = Activator.CreateInstance(typeof (T));
+            instance = Activator.CreateInstance(_Type);
 
             var offset = begin;
 
-            while (offset < buffer.Length)
+            ulong validLength;
+            offset += Serializer.Varint.BufferToNumber(buffer, offset, out validLength);
+
+            for (var i = 0ul; i < validLength; i++)
             {
                 ulong index;
                 offset += Serializer.Varint.BufferToNumber(buffer, offset, out index);
-                index--;
+
                 var filed = _Fields[index];
                 var describer = _GetDescriber(filed);
                 object valueInstance;
                 offset += describer.ToObject(buffer, offset, out valueInstance);
-                filed.SetValue(instance , valueInstance);
+                filed.SetValue(instance, valueInstance);
             }
-            return offset;
+
+            return offset - begin;
 
         }
 

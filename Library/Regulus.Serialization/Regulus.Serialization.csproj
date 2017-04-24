@@ -49,6 +49,7 @@
     <Compile Include="ClassType.cs" />
     <Compile Include="ClassTypeProvider.cs" />
     <Compile Include="EnumArrayTypeProvider.cs" />
+    <Compile Include="EnumType.cs" />
     <Compile Include="EnumTypeProvider.cs" />
     <Compile Include="Expansion.cs" />
     <Compile Include="ITypeDescriber.cs" />
@@ -58,7 +59,9 @@
     <Compile Include="Serializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringTypeProvider.cs" />
+    <Compile Include="StructArrayType.cs" />
     <Compile Include="StructArrayTypeProvider.cs" />
+    <Compile Include="StructType.cs" />
     <Compile Include="StructTypeProvider.cs" />
     <Compile Include="TypeInfo.cs" />
     <Compile Include="TypeInstance.cs" />

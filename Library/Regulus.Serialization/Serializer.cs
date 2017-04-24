@@ -108,17 +108,35 @@ namespace Regulus.Serialization
             }
         }
 
+
+        
         public byte[] ObjectToBuffer(object instance)
         {
             var type = instance.GetType();
+           
+            return ObjectToBuffer(instance , type);
+        }
+
+        public byte[] ObjectToBuffer<T>(T instance)
+        {
+            return ObjectToBuffer(instance, typeof(T));
+        }
+        public byte[] ObjectToBuffer(object instance , Type type)
+        {
             var describer = _GetDescriber(type);
             var id = describer.Id;
             var idCount = Varint.GetByteCount((ulong)id);
             var bufferCount = describer.GetByteCount(instance);
             var buffer = new byte[idCount + bufferCount];
             var readCount = Varint.NumberToBuffer(buffer, 0, id);
-            describer.ToBuffer(instance , buffer , readCount);
+            describer.ToBuffer(instance, buffer, readCount);
             return buffer;
+        }
+
+
+        public T BufferToObject<T>(byte[] buffer)
+        {
+            return (T)BufferToObject(buffer);
         }
         public object BufferToObject(byte[] buffer)
         {
