@@ -41,6 +41,12 @@
       <HintPath>..\..\packages\NSubstitute.2.0.2\lib\net45\NSubstitute.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="RegulusLibrary">
+      <HintPath>..\..\..\RegulusUnityKit\RegulusUnityKitLibrary\RegulusUnityKitLibrary\Library\RegulusLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="RegulusRemoting">
+      <HintPath>..\..\..\RegulusUnityKit\RegulusUnityKitLibrary\RegulusUnityKitLibrary\Library\RegulusRemoting.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <Choose>
@@ -56,6 +62,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="PackageReleaseTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SerializerTests.cs" />
     <Compile Include="TEST1.cs" />

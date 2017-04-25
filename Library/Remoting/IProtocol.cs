@@ -7,10 +7,6 @@ namespace Regulus.Remoting
         EventProvider GetEventProvider();
         GPIProvider GetGPIProvider();
 
-        ISerialize GetSerialize();
-    }
-
-    public interface ISerialize
-    {
+        ISerializer GetSerialize();
     }
 }

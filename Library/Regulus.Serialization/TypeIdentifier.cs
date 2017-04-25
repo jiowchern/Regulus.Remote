@@ -82,7 +82,7 @@ namespace Regulus.Serialization
 
         private bool _IsClass(Type type)
         {
-            return type.IsClass;
+            return type.IsClass && type.IsByRef == false && type.IsAbstract == false;
         }
 
         private bool _IsArray(Type type)

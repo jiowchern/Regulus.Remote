@@ -73,6 +73,7 @@ namespace Regulus.Protocol
                 {{
                     Regulus.Remoting.GPIProvider _GPIProvider;
                     Regulus.Remoting.EventProvider _EventProvider;
+                    
                     public {procotolName}()
                     {{
                         var types = new Dictionary<Type, Type>();
@@ -192,8 +193,11 @@ $@"
             Regulus.Remoting.IGhostRequest _Requester;
             Guid {CodeBuilder._GhostIdName};
             Regulus.Remoting.ReturnValueQueue _Queue;
-            public C{name}(Regulus.Remoting.IGhostRequest requester , Guid id,Regulus.Remoting.ReturnValueQueue queue, bool have_return )
+            readonly Regulus.Remoting.ISerializer _Serializer ;
+            public C{name}(Regulus.Remoting.IGhostRequest requester , Guid id,Regulus.Remoting.ReturnValueQueue queue, bool have_return , Regulus.Remoting.ISerializer serializer)
             {{
+                _Serializer = serializer;
+
                 _Requester = requester;
                 _HaveReturn = have_return ;
                 {CodeBuilder._GhostIdName} = id;
@@ -335,7 +339,7 @@ $@"
                     data.MethodName =""{methodInfo.Name}"";
                     {addReturn}
                     {addParams}
-                    _Requester.Request(Regulus.Remoting.ClientToServerOpCode.CallMethod , data.ToBuffer());
+                    _Requester.Request(Regulus.Remoting.ClientToServerOpCode.CallMethod , data.ToBuffer(_Serializer));
 
                     {returnValue}
                 }}
@@ -356,7 +360,7 @@ $@"
             foreach (var parameterInfo in parameters)
             {
                 var addparam = $@"
-    var {parameterInfo.Name}Bytes = Regulus.TypeHelper.Serializer<{parameterInfo.ParameterType.Namespace}.{parameterInfo.ParameterType.Name}>({parameterInfo.Name});    
+    var {parameterInfo.Name}Bytes = _Serializer.Serialize({parameterInfo.Name});  
     paramList.Add({parameterInfo.Name}Bytes);
 ";
 

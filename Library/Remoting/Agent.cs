@@ -96,16 +96,18 @@ namespace Regulus.Remoting
 		private IGhostRequest _Requester;
 
 		private readonly GPIProvider _GhostProvider;
+	    private readonly ISerializer _Serializer;
 
-		public long Ping { get; private set; }
+	    public long Ping { get; private set; }
 
 		public bool Enable { get; private set; }
 
-		public AgentCore(GPIProvider ghost_provider) 
+		public AgentCore(GPIProvider ghost_provider , ISerializer serializer) 
 		{
 			_GhostProvider = ghost_provider;
-            _Providers = new Dictionary<string, IProvider>();
-            _AutoRelease = new AutoRelease(_Requester);
+		    _Serializer = serializer;
+		    _Providers = new Dictionary<string, IProvider>();
+            _AutoRelease = new AutoRelease(_Requester , _Serializer);
         }		
 
 		public void Initial(IGhostRequest req)
@@ -145,7 +147,7 @@ namespace Regulus.Remoting
 			}
 			else if(id == ServerToClientOpCode.UpdateProperty)
 			{
-                var data = args.ToPackageData<PackageUpdateProperty>();
+                var data = args.ToPackageData<PackageUpdateProperty>(_Serializer);
                 _UpdateProperty(data.EntityId, data.EventName, data.Args);
             }
 			else if(id == ServerToClientOpCode.InvokeEvent)
@@ -163,7 +165,7 @@ namespace Regulus.Remoting
                     _InvokeEvent(data.EntityId, data.EventName, data.EventParams);
 				}*/
 
-                var data = args.ToPackageData<PackageInvokeEvent>();
+                var data = args.ToPackageData<PackageInvokeEvent>(_Serializer);
                 _InvokeEvent(data.EntityId, data.EventName, data.EventParams);
             }
 			else if(id == ServerToClientOpCode.ErrorMethod)
@@ -176,7 +178,7 @@ namespace Regulus.Remoting
 					_ErrorReturnValue(ReturnTarget, Method , Message);
 				}*/
 
-                var data = args.ToPackageData<PackageErrorMethod>();
+                var data = args.ToPackageData<PackageErrorMethod>(_Serializer);
 
                 _ErrorReturnValue(data.ReturnTarget, data.Method, data.Message);
             }
@@ -190,7 +192,7 @@ namespace Regulus.Remoting
 					_SetReturnValue(ReturnTarget, ReturnValue);
 				}*/
 
-                var data = args.ToPackageData<PackageReturnValue>();
+                var data = args.ToPackageData<PackageReturnValue>(_Serializer);
                 _SetReturnValue(data.ReturnTarget, data.ReturnValue);
             }
 			else if(id == ServerToClientOpCode.LoadSoulCompile)
@@ -204,7 +206,7 @@ namespace Regulus.Remoting
 					_LoadSoulCompile(TypeName, EntityId, ReturnId);
 				}*/
 
-                var data = args.ToPackageData<PackageLoadSoulCompile>();
+                var data = args.ToPackageData<PackageLoadSoulCompile>(_Serializer);
                 _LoadSoulCompile(data.TypeName, data.EntityId, data.ReturnId);
             }
 			else if(id == ServerToClientOpCode.LoadSoul)
@@ -218,7 +220,7 @@ namespace Regulus.Remoting
 					_LoadSoul(TypeName, EntityId, ReturnType);
 				}*/
 
-                var data = args.ToPackageData<PackageLoadSoul>();
+                var data = args.ToPackageData<PackageLoadSoul>(_Serializer);
                 _LoadSoul(data.TypeName, data.EntityId, data.ReturnType);
             }
 			else if(id == ServerToClientOpCode.UnloadSoul)
@@ -231,7 +233,7 @@ namespace Regulus.Remoting
 					_UnloadSoul(TypeName, EntityId);
 				}*/
 
-                var data = args.ToPackageData<PackageUnloadSoul>();
+                var data = args.ToPackageData<PackageUnloadSoul>(_Serializer);
                 _UnloadSoul(data.TypeName, data.EntityId);
             }
 		}
@@ -408,7 +410,7 @@ namespace Regulus.Remoting
 
 			var ghostType = _QueryGhostType(ghost_base_type);
 
-			var o = Activator.CreateInstance(ghostType, peer, id, _ReturnValueQueue, return_type);
+			var o = Activator.CreateInstance(ghostType, peer, id, _ReturnValueQueue, return_type , _Serializer);
 
 			return (IGhost)o;
 		}

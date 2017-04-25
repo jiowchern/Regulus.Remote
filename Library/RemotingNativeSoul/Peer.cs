@@ -70,8 +70,9 @@ namespace Regulus.Remoting.Soul.Native
 		
 
 		private object _EnableLock;
+	    private ISerializer _Serialize;
 
-		public static bool IsIdle
+	    public static bool IsIdle
 		{
 			get { return Peer.TotalRequest <= 0 && Peer.TotalResponse <= 0; }
 		}
@@ -92,10 +93,12 @@ namespace Regulus.Remoting.Soul.Native
 
 		public Peer(Socket client , IProtocol protocol)
 		{
-			_EnableLock = new object();
+		     _Serialize = protocol.GetSerialize();
+
+		    _EnableLock = new object();
 
 			_Socket = client;
-			_SoulProvider = new SoulProvider(this, this , protocol.GetEventProvider());
+			_SoulProvider = new SoulProvider(this, this , protocol);
 			_Responses = new Regulus.Collection.Queue<ResponsePackage>();
 			_Requests = new Regulus.Collection.Queue<RequestPackage>();
 
@@ -247,7 +250,7 @@ namespace Regulus.Remoting.Soul.Native
 									select p.Value).ToArray();*/
 
 
-			    var data = package.Data.ToPackageData<PackageCallMethod>();                
+			    var data = package.Data.ToPackageData<PackageCallMethod>(_Serialize);                
                 return _ToRequest(data.EntityId, data.MethodName, data.ReturnId, data.MethodParams);
 			}
 
@@ -256,7 +259,7 @@ namespace Regulus.Remoting.Soul.Native
 				//var EntityId = new Guid(package.Args[0]);
 
 
-                var data = package.Data.ToPackageData<PackageRelease>();
+                var data = package.Data.ToPackageData<PackageRelease>(_Serialize);
                 _SoulProvider.Unbind(data.EntityId);
 				return null;
 			}

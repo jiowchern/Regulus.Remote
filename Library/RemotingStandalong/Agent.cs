@@ -36,11 +36,11 @@ namespace Regulus.Remoting.Standalone
 			get { return _Agent.Ping; }
 		}
 
-	    public Agent(Regulus.Remoting.GPIProvider provider , EventProvider event_provider)
+	    public Agent(IProtocol protocol)
 	    {
-            _GhostRequest = new GhostRequest();
-            _Agent = new AgentCore(provider);
-            _SoulProvider = new SoulProvider(this, this, event_provider);
+            _GhostRequest = new GhostRequest(protocol.GetSerialize());
+            _Agent = new AgentCore(protocol.GetGPIProvider() , protocol.GetSerialize());
+            _SoulProvider = new SoulProvider(this, this, protocol);
         }
         
 
