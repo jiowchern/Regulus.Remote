@@ -8,11 +8,13 @@ namespace Regulus.Remoting
 		private readonly Dictionary<Guid, WeakReference> _Exists;
 
 		private readonly IGhostRequest _Requester;
+	    private readonly ISerializer _Serializer;
 
-		public AutoRelease(IGhostRequest _Requester)
+	    public AutoRelease(IGhostRequest _Requester , ISerializer serializer)
 		{
 			this._Requester = _Requester;
-			_Exists = new Dictionary<Guid, WeakReference>();
+	        _Serializer = serializer;
+	        _Exists = new Dictionary<Guid, WeakReference>();
 		}
 
 		public void Register(IGhost ghost)
@@ -50,7 +52,7 @@ namespace Regulus.Remoting
 				{
                     var data = new PackageRelease();
 				    data.EntityId = id;
-                    _Requester.Request(ClientToServerOpCode.Release, data.ToBuffer());
+                    _Requester.Request(ClientToServerOpCode.Release, data.ToBuffer(_Serializer));
 				}
 			}
 		}

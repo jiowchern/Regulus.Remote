@@ -9,7 +9,8 @@ namespace Regulus.Remoting.Ghost.Native
 {
 	public partial class Agent : IAgent
 	{
-		private event Action _BreakEvent;
+	    private readonly ISerializer _Serializer;
+	    private event Action _BreakEvent;
 
 		private event Action _ConnectEvent;
 
@@ -24,10 +25,11 @@ namespace Regulus.Remoting.Ghost.Native
 
 		
 
-	    private Agent(GPIProvider provider)
+	    private Agent(GPIProvider provider,ISerializer serializer)
 	    {
-            _Machine = new StageMachine();
-            _Core = new AgentCore(provider);
+	        _Serializer = serializer;
+	        _Machine = new StageMachine();
+            _Core = new AgentCore(provider, _Serializer);
         }
 
 		bool IUpdatable.Update()
@@ -178,9 +180,9 @@ namespace Regulus.Remoting.Ghost.Native
 		///     建立代理器
 		/// </summary>
 		/// <returns></returns>
-		public static IAgent Create(GPIProvider provider)
+		public static IAgent Create(GPIProvider provider , ISerializer serializer)
         {
-            return new Agent(provider);
+            return new Agent(provider , serializer);
         }
     }
 }

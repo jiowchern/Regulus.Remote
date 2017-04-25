@@ -33,6 +33,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="RegulusLibrary">
+      <HintPath>..\..\..\RegulusUnityKit\RegulusUnityKitLibrary\RegulusUnityKitLibrary\Library\RegulusLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,6 +47,7 @@
     <Compile Include="AssemblyBuilder.cs" />
     <Compile Include="CodeBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Serializer.cs" />
     <Compile Include="TypeDisintegrator.cs" />
   </ItemGroup>
   <ItemGroup>

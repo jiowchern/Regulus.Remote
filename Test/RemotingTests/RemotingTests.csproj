@@ -59,7 +59,6 @@
   </Choose>
   <ItemGroup>
     <Compile Include="AgentCoreTests.cs" />
-    <Compile Include="PackageReleaseTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

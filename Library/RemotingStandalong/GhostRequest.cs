@@ -10,7 +10,8 @@ namespace Regulus.Remoting.Standalone
 {
 	public class GhostRequest : IGhostRequest
 	{
-		public event Action<Guid, string, Guid, byte[][]> CallMethodEvent;
+	    private readonly ISerializer _Serializer;
+	    public event Action<Guid, string, Guid, byte[][]> CallMethodEvent;
 
 		public event Action PingEvent;
 
@@ -20,12 +21,13 @@ namespace Regulus.Remoting.Standalone
 
 		private readonly Queue<RequestPackage> _Requests;
 
-		public GhostRequest()
+		public GhostRequest(ISerializer serializer)
 		{
-			_Requests = new Queue<RequestPackage>();
+		    _Serializer = serializer;
+		    _Requests = new Queue<RequestPackage>();
 		}
 
-		void IGhostRequest.Request(ClientToServerOpCode code, byte[] args)
+	    void IGhostRequest.Request(ClientToServerOpCode code, byte[] args)
 		{
 			lock(_Requests)
 			{
@@ -86,7 +88,7 @@ namespace Regulus.Remoting.Standalone
 				                    select p.Value).ToArray();*/
 
 
-			    var data = args.ToPackageData<PackageCallMethod>();
+			    var data = args.ToPackageData<PackageCallMethod>(_Serializer);
                 if (CallMethodEvent != null)
 				{
                     
@@ -95,7 +97,7 @@ namespace Regulus.Remoting.Standalone
 			}
 			else if(ClientToServerOpCode.Release == code)
 			{
-                var data = args.ToPackageData<PackageRelease>();
+                var data = args.ToPackageData<PackageRelease>(_Serializer);
                 //var EntityId = new Guid(args[0]);
 				ReleaseEvent(data.EntityId);
 			}

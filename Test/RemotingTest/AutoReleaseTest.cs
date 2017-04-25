@@ -20,10 +20,11 @@ namespace RemotingTest
 		{            
 
 			var request = Substitute.For<IGhostRequest>();
+            var serializer = Substitute.For<ISerializer>();
 
-			var ghost = new Ghost();
+            var ghost = new Ghost();
 
-			var ar = new AutoRelease(request);
+			var ar = new AutoRelease(request, serializer);
 			ar.Register(ghost);
 			ar.Update();
 			ghost = null;

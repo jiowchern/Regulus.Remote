@@ -115,7 +115,7 @@ namespace Regulus.Remoting
 		{
 			var buffers = from p in packages select TypeHelper.Serializer(p);
 
-			// Regulus.Utility.Log.Instance.WriteDebug(string.Format("Serializer to Buffer size {0}", buffers.Sum( b => b.Length )));
+			// Regulus.Utility.Log.Instance.WriteDebug(string.Format("Serialize to Buffer size {0}", buffers.Sum( b => b.Length )));
 			using(var stream = new MemoryStream())
 			{
 				foreach(var buffer in buffers)

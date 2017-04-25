@@ -360,7 +360,7 @@ namespace Regulus.Remoting.Ghost.Native
 
                     // 使用TypeHelper類別裡的Serializer函式 屬性為Public Static..
                     var serializer =
-                        typeof(TypeHelper).GetMethod("Serializer", BindingFlags.Public | BindingFlags.Static)
+                        typeof(TypeHelper).GetMethod("Serialize", BindingFlags.Public | BindingFlags.Static)
                                           .MakeGenericMethod(types[paramIndex]);
 
                     // 指定呼叫函式的多載，因為沒有多載，所以填null

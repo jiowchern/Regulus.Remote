@@ -146,7 +146,7 @@ namespace Regulus.Remoting
 
 		private byte[] _CreateBuffer(RequestPackage[] packages)
 		{
-			var buffers = from p in packages select TypeHelper.Serializer(p);
+			var buffers = from p in packages select TypeHelper.Serialize(p);
 
 			using(var stream = new MemoryStream())
 			{
