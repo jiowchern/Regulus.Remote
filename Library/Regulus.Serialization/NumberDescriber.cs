@@ -5,11 +5,11 @@ namespace Regulus.Serialization
 {
 
 
-    public class NumberType<T> : NumberType
+    public class NumberDescriber<T> : NumberDescriber
     {
-        public NumberType(int id) : base(id , typeof(T)) { }
+        public NumberDescriber(int id) : base(id , typeof(T)) { }
     }
-    public class NumberType : ITypeDescriber 
+    public class NumberDescriber : ITypeDescriber 
     {
         private int _Id     ;
 
@@ -17,7 +17,7 @@ namespace Regulus.Serialization
 
         private object _Default;
 
-        public NumberType(int id , Type type)
+        public NumberDescriber(int id , Type type)
         {
 
             _Default = Activator.CreateInstance(type);

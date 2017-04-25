@@ -9,14 +9,14 @@ using System.Security.Cryptography.X509Certificates;
 namespace Regulus.Serialization
 {
 
-    public class ClassArrayType<T> : ClassArrayType
+    public class ArrayDescriber<T> : ArrayDescriber
     {
-        public ClassArrayType(int id) : base(id, typeof (T[]))
+        public ArrayDescriber(int id) : base(id, typeof (T[]))
         {
             
         }
     }
-    public class ClassArrayType : ITypeDescriber 
+    public class ArrayDescriber : ITypeDescriber 
     {
         private readonly int _Id;
 
@@ -29,7 +29,7 @@ namespace Regulus.Serialization
 
         private Type _ElementType;
 
-        public ClassArrayType(int id , Type type)
+        public ArrayDescriber(int id , Type type)
         {
             _Default = null;
 
