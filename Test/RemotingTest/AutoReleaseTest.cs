@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 
 using NSubstitute;
-
+using Regulus.Serialization;
 
 using Regulus.Remoting;
 

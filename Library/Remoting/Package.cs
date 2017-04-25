@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using Regulus.Serialization;
 
 using ProtoBuf;
 

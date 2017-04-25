@@ -41,12 +41,6 @@
       <HintPath>..\..\packages\NSubstitute.2.0.2\lib\net45\NSubstitute.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="RegulusLibrary">
-      <HintPath>..\..\..\RegulusUnityKit\RegulusUnityKitLibrary\RegulusUnityKitLibrary\Library\RegulusLibrary.dll</HintPath>
-    </Reference>
-    <Reference Include="RegulusRemoting">
-      <HintPath>..\..\..\RegulusUnityKit\RegulusUnityKitLibrary\RegulusUnityKitLibrary\Library\RegulusRemoting.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <Choose>
@@ -71,9 +65,17 @@
     <Compile Include="TestClassC.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PureLib\RegulusLibrary.csproj">
+      <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
+      <Name>RegulusLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Regulus.Serialization\Regulus.Serialization.csproj">
       <Project>{8308717D-EC47-44CD-A27D-95BE5A92A36D}</Project>
       <Name>Regulus.Serialization</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Remoting\Remoting.csproj">
+      <Project>{a4cfce46-bda8-4416-a1bb-77bd80514019}</Project>
+      <Name>Remoting</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
 
-
+using Regulus.Serialization;
 using Regulus.Framework;
 using Regulus.Utility;
 

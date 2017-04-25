@@ -11,6 +11,8 @@ using System.Timers;
 
 using Regulus.Utility;
 
+using Regulus.Serialization;
+
 
 using Timer = System.Timers.Timer;
 

@@ -1,4 +1,4 @@
-namespace Regulus.Remoting
+namespace Regulus.Serialization
 {
     public interface ISerializer
     {

@@ -35,10 +35,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="RegulusLibrary, Version=0.1.0.1, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\RegulusUnityKit\RegulusUnityKitLibrary\RegulusUnityKitLibrary\Library\RegulusLibrary.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <Choose>
@@ -58,6 +54,10 @@
     <Compile Include="TypeDisintegratorTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Library\PureLib\RegulusLibrary.csproj">
+      <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
+      <Name>RegulusLibrary</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Library\RegulusProtocol\RegulusProtocol.csproj">
       <Project>{00E8AFF8-E4D5-4327-86F1-D03379419431}</Project>
       <Name>RegulusProtocol</Name>

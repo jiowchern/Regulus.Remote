@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using Regulus.Remoting;
 
 namespace Regulus.Serialization
 {
-    public class Serializer
+    public class Serializer : ISerializer
     {
         private readonly ITypeDescriber[] _Describers;
 
@@ -154,7 +155,16 @@ namespace Regulus.Serialization
         {
             return _Describers.First(describer => describer.Type == type);
         }
-        
+
+        byte[] ISerializer.Serialize(object instance)
+        {
+            return ObjectToBuffer(instance);
+        }
+
+        object ISerializer.Deserialize(byte[] buffer)
+        {
+            return BufferToObject(buffer);
+        }
     }
 }
 
