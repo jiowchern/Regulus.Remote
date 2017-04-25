@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Regulus.Protocol
@@ -25,32 +25,40 @@ namespace Regulus.Protocol
             var addGhostType = new List<string>();
             var addEventType = new List<string>();
 
+            var serializerTypes = new HashSet<Type>();
+
+
             foreach (var type in types)
             {
-                if (namesapces.Any(n => n == type.Namespace) && type.IsInterface)
+                if (namesapces.Any(n => n == type.Namespace)  )
                 {
-                    string ghostClassCode = _BuildGhostCode(type);
-                    var typeName = _GetTypeName(type);
-                    addGhostType.Add($"types.Add(typeof({typeName}) , typeof({_GetGhostType(type)}) );");
-                    codeGpis.Add(ghostClassCode);
-                    if (GpiEvent != null)
-                        GpiEvent(typeName , ghostClassCode);
+                    serializerTypes.Add(type);
 
-                    var eventInfos = type.GetEvents();
-                    foreach (var eventInfo in eventInfos)
+
+                    if (type.IsInterface)
                     {
-                        addEventType.Add($"eventClosures.Add(new {_GetEventType(type, eventInfo.Name)}() );");
-                        var eventCode = _BuildEventCode(type, eventInfo);
-                        codeEvents.Add(eventCode);
+                        string ghostClassCode = _BuildGhostCode(type);
+                        var typeName = _GetTypeName(type);
+                        addGhostType.Add($"types.Add(typeof({typeName}) , typeof({_GetGhostType(type)}) );");
+                        codeGpis.Add(ghostClassCode);
+                        if (GpiEvent != null)
+                            GpiEvent(typeName, ghostClassCode);
 
-                        if (EventEvent != null)
-                            EventEvent( typeName , eventInfo.Name , eventCode);
+                        var eventInfos = type.GetEvents();
+                        foreach (var eventInfo in eventInfos)
+                        {
+                            addEventType.Add($"eventClosures.Add(new {_GetEventType(type, eventInfo.Name)}() );");
+                            var eventCode = _BuildEventCode(type, eventInfo);
+                            codeEvents.Add(eventCode);
+
+                            if (EventEvent != null)
+                                EventEvent(typeName, eventInfo.Name, eventCode);
+                        }
                     }
-
                 }
             }
             var addTypeCode = string.Join("\n", addGhostType.ToArray());
-
+            var addDescriberCode = string.Join(",", _GetSerializarType(serializerTypes) );
             var addEventCode = string.Join("\n", addEventType.ToArray());
             var tokens = protocol_name.Split(new[] { '.' });
             var procotolName = tokens.Last();
@@ -73,7 +81,7 @@ namespace Regulus.Protocol
                 {{
                     Regulus.Remoting.GPIProvider _GPIProvider;
                     Regulus.Remoting.EventProvider _EventProvider;
-                    
+                    Regulus.Serialization.ISerializer _Serializer;
                     public {procotolName}()
                     {{
                         var types = new Dictionary<Type, Type>();
@@ -83,6 +91,8 @@ namespace Regulus.Protocol
                         var eventClosures = new List<Regulus.Remoting.IEventProxyCreator>();
                         {addEventCode}
                         _EventProvider = new Regulus.Remoting.EventProvider(eventClosures);
+
+                        _Serializer = new Regulus.Serialization.Serializer(new Regulus.Serialization.DescriberBuilder({addDescriberCode}));
                     }}
 
 
@@ -95,6 +105,11 @@ namespace Regulus.Protocol
                     {{
                         return _EventProvider;
                     }}
+
+                    Regulus.Serialization.ISerializer Regulus.Remoting.IProtocol.GetSerialize()
+                    {{
+                        return _Serializer;
+                    }}
                     
                 }}
             {providerNamespaceTail}
@@ -104,8 +119,19 @@ namespace Regulus.Protocol
                 ProviderEvent(protocol_name , providerCode);
         }
 
+        private string[] _GetSerializarType(HashSet<Type> serializer_types)
+        {
+            var types = new HashSet<Type>();
+            foreach (var serializerType in serializer_types)
+            {
+                foreach (var type in new TypeDisintegrator(serializerType).Types)
+                {
+                    types.Add(type);
+                }
+            }
 
-
+            return (from type in types select "typeof(" + type.FullName + ")").ToArray();
+        }
 
         private string _GetGhostType(Type type)
         {
@@ -193,8 +219,8 @@ $@"
             Regulus.Remoting.IGhostRequest _Requester;
             Guid {CodeBuilder._GhostIdName};
             Regulus.Remoting.ReturnValueQueue _Queue;
-            readonly Regulus.Remoting.ISerializer _Serializer ;
-            public C{name}(Regulus.Remoting.IGhostRequest requester , Guid id,Regulus.Remoting.ReturnValueQueue queue, bool have_return , Regulus.Remoting.ISerializer serializer)
+            readonly Regulus.Serialization.ISerializer _Serializer ;
+            public C{name}(Regulus.Remoting.IGhostRequest requester , Guid id,Regulus.Remoting.ReturnValueQueue queue, bool have_return , Regulus.Serialization.ISerializer serializer)
             {{
                 _Serializer = serializer;
 

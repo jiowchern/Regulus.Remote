@@ -34,7 +34,7 @@ namespace Regulus.Serialization
             }
             else if (_IsArray(type))
             {
-                Type = TYPE.NUMBER;
+                Type = TYPE.ARRAY;
             }
             else if (_IsClass(type))
             {

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 using Regulus.Framework;
 using Regulus.Utility;
+using Regulus.Serialization;
 
 namespace Regulus.Remoting.Standalone
 {

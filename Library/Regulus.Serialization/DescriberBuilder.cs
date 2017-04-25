@@ -44,8 +44,8 @@ namespace Regulus.Serialization
                 {
                     describers.Add(new StructDescriber(++id, type));
                 }
-
-                throw new Exception("Can not describe the type. " + type.FullName);
+                else 
+                    throw new Exception("Can not describe the type. " + type.FullName);
             }
 
             return describers.ToArray();

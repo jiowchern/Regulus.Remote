@@ -68,7 +68,6 @@
     <Compile Include="GPIProvider.cs" />
     <Compile Include="IEventProxyCreator.cs" />
     <Compile Include="IProtocol.cs" />
-    <Compile Include="ISerializer.cs" />
     <Compile Include="NetworkMonitor.cs" />
     <Compile Include="PackageReader.cs" />
     <Compile Include="PackageWriter.cs" />

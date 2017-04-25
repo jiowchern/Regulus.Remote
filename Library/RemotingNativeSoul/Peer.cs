@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 
-
+using Regulus.Serialization;
 using Regulus.Framework;
 
 namespace Regulus.Remoting.Soul.Native

@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Regulus.Serialization;
+
 namespace Regulus.Remoting.Tests
 {
     [TestClass()]
@@ -18,11 +20,13 @@ namespace Regulus.Remoting.Tests
         {
             var id = Guid.NewGuid();
             var package1 = new TestPackageData();
+
+            var ser = new Regulus.Serialization.Serializer(new DescriberBuilder(typeof(Guid) , typeof(TestPackageData)));
             package1.Id = id;
 
-            var buffer = package1.ToBuffer();
+            var buffer = package1.ToBuffer(ser);
 
-            var package2 = buffer.ToPackageData<TestPackageData>();
+            var package2 = buffer.ToPackageData<TestPackageData>(ser);
 
             Assert.AreEqual(id , package2.Id);
         }
@@ -35,14 +39,14 @@ namespace Regulus.Remoting.Tests
             var p2 = "234";
             var p3 = Guid.NewGuid();
             var package1 = new TestPackageBuffer();
-            
-            
-            
+            var ser = new Regulus.Serialization.Serializer(new DescriberBuilder(typeof(int),typeof(string),typeof(char[]),typeof(byte) , typeof(byte[]), typeof(byte[][]), typeof(char), typeof(Guid), typeof(TestPackageBuffer)));
+
+
             package1.Datas = new [] { Regulus.TypeHelper.Serializer(p1), Regulus.TypeHelper.Serializer(p2), Regulus.TypeHelper.Serializer(p3) };
 
-            var buffer = package1.ToBuffer();
+            var buffer = package1.ToBuffer(ser);
 
-            var package2 = buffer.ToPackageData<TestPackageBuffer>();
+            var package2 = buffer.ToPackageData<TestPackageBuffer>(ser);
 
             
             Assert.AreEqual(p1, Regulus.TypeHelper.Deserialize<int>(package2.Datas[0]));
@@ -58,13 +62,13 @@ namespace Regulus.Remoting.Tests
             
             var package1 = new TestPackageBuffer();
 
-
+            var ser = new Regulus.Serialization.Serializer(new DescriberBuilder(typeof(int), typeof(string), typeof(char[]), typeof(byte), typeof(byte[]), typeof(byte[][]), typeof(char), typeof(Guid), typeof(TestPackageBuffer)));
 
             package1.Datas = new byte[0][] ;
 
-            var buffer = package1.ToBuffer();
+            var buffer = package1.ToBuffer(ser);
 
-            var package2 = buffer.ToPackageData<TestPackageBuffer>();
+            var package2 = buffer.ToPackageData<TestPackageBuffer>(ser);
 
 
             Assert.AreEqual(0, package2.Datas.Length);

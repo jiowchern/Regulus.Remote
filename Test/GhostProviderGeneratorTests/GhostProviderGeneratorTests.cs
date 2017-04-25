@@ -54,6 +54,7 @@ namespace Regulus.Tool.Tests
                     "RegulusLibrary.dll",
                     "RegulusRemoting.dll",
                     "protobuf-net.dll",
+                    "Regulus.Serialization.dll",
                     "GhostProviderGeneratorTests.dll"
                 }
             };

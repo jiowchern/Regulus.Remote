@@ -30,7 +30,7 @@ namespace Regulus.Protocol
             if (_IsArray(type))
             {
                 types.Add(type);
-                types.Add(type.GetElementType());
+                _Add(new [] {type.GetElementType()} , types);
             }
             else if (_IsType(id , type))
             {
@@ -42,8 +42,6 @@ namespace Regulus.Protocol
                 _Add(_GetMethods(type), types);
                 _Add(_GetFields(type), types);
             }
-
-            
 
             Types = types.ToArray();
         }
