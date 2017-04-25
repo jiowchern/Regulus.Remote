@@ -1,14 +1,30 @@
 using System;
+using System.CodeDom;
 
 namespace Regulus.Serialization
 {
-    public class EnumType<T> : ITypeDescriber 
+
+    public class EnumDescriber<T> : EnumDescriber
+    {
+        public EnumDescriber(int id) : base(id, typeof (T))
+        {
+            
+        }
+    }
+    public class EnumDescriber : ITypeDescriber 
     {
         private readonly int _Id;
 
-        public EnumType(int id)
+        private readonly Type _Type;
+
+        private readonly object _Default;
+
+        public EnumDescriber(int id , Type type)
         {
-            _Id = id;            
+            _Id = id;
+            _Type = type;
+
+            _Default = Activator.CreateInstance(type);
         }
 
         int ITypeDescriber.Id
@@ -18,12 +34,12 @@ namespace Regulus.Serialization
 
         Type ITypeDescriber.Type
         {
-            get { return typeof (T); }
+            get { return _Type; }
         }
 
         object ITypeDescriber.Default
         {
-            get { return default(T); }
+            get { return _Default; }
         }
 
         int ITypeDescriber.GetByteCount(object instance)
@@ -39,8 +55,9 @@ namespace Regulus.Serialization
         int ITypeDescriber.ToObject(byte[] buffer, int begin, out object instnace)
         {
             ulong value;
-            var readed = Serializer.Varint.BufferToNumber(buffer, begin, out value);
-            instnace = (T)Convert.ChangeType(value, typeof(int));
+            var readed = Serializer.Varint.BufferToNumber(buffer, begin, out value);            
+            var values = Enum.GetValues(_Type);
+            instnace = values.GetValue((int)value);
             return readed;
         }
 

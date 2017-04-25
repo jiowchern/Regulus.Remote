@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 
-using Regulus.Extension;
-using Regulus.Serialization.Expansion;
 
 namespace Regulus.Serialization
 {
@@ -26,6 +19,9 @@ namespace Regulus.Serialization
             }          
         }
 
+        public Serializer(DescriberBuilder describer_builder) : this(describer_builder.Describers)
+        {            
+        }
 
         public class ZigZag
         {
@@ -158,7 +154,6 @@ namespace Regulus.Serialization
         {
             return _Describers.First(describer => describer.Type == type);
         }
-
         
     }
 }

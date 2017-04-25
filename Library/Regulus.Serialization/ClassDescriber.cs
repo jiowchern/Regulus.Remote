@@ -6,7 +6,7 @@ using System.Runtime.Serialization;
 
 namespace Regulus.Serialization
 {
-    public class ClassType : ITypeDescriber 
+    public class ClassDescriber : ITypeDescriber 
     {
         private readonly int _Id;
 
@@ -15,9 +15,9 @@ namespace Regulus.Serialization
         private readonly FieldInfo[] _Fields;
         private ITypeDescriber[] _Describers;
 
-        private object _Default;
+        private readonly object _Default;
 
-        public ClassType(int id , Type type)
+        public ClassDescriber(int id , Type type)
         {
             _Default = null;
             _Id = id;
