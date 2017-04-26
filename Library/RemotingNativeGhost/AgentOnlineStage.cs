@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
 
-
+using Regulus.Serialization;
 using Regulus.Utility;
 
 namespace Regulus.Remoting.Ghost.Native
@@ -37,13 +37,13 @@ namespace Regulus.Remoting.Ghost.Native
 
 			public static int ResponseQueueCount { get; private set; }
 
-			public OnlineStage(Socket socket, AgentCore core)
+			public OnlineStage(Socket socket, AgentCore core , ISerializer serializer)
 			{
 				_Core = core;
 
 				_Socket = socket;
-				_Reader = new PackageReader<ResponsePackage>();
-				_Writer = new PackageWriter<RequestPackage>(OnlineStage.LowFps);
+				_Reader = new PackageReader<ResponsePackage>(serializer);
+				_Writer = new PackageWriter<RequestPackage>(OnlineStage.LowFps , serializer);
 				_Sends = new Collection.Queue<RequestPackage>();
 				_Receives = new Collection.Queue<ResponsePackage>();
 			}

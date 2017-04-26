@@ -2,21 +2,21 @@
 using System.Xml.Serialization;
 
 
-using ProtoBuf;
+
 
 namespace Regulus.CustomType
 {
-	[ProtoContract][Serializable]
+    [Serializable]
 	
     [XmlRoot("Vector2")]
     public struct Vector2
 	{
         [XmlAttribute("x")]
-        [ProtoMember(1)]
+    
 		public float X;
 
         [XmlAttribute("y")]
-        [ProtoMember(2)]
+    
 		public float Y;
 
 		public float Magnitude
@@ -24,9 +24,7 @@ namespace Regulus.CustomType
 			get { return (float)Math.Sqrt(X * X + Y * Y); }
 		}
 
-		
-
-		public Vector2(float x, float y)
+        public Vector2(float x, float y)
 		{
 			X = x;
 			Y = y;

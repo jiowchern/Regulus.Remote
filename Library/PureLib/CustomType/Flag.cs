@@ -3,15 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-using ProtoBuf;
+
 
 namespace Regulus.CustomType
 {
     
-	[ProtoContract][Serializable]
-	public class Flag<T> : IEnumerable<T>, ICollection<T>
+
+    // todo : 不能序列化 , 序列化陣列要改成IList檢查
+	public class Flag<T> : IEnumerable<T>, ICollection<T> 
 	{
-		[ProtoMember(1)]
+
 		private readonly HashSet<T> _Flags;
 
 		private ICollection<T> _Collection

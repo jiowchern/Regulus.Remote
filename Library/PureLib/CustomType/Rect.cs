@@ -1,18 +1,18 @@
 ﻿using System;
 
 
-using ProtoBuf;
+
 
 namespace Regulus.CustomType
 {
 	
-	[ProtoContract][Serializable]
+	[Serializable]
 	public struct Rect
 	{
-		[ProtoMember(1)]
+	
 		private Size _Size;
 
-		[ProtoMember(2)]
+	
 		public Point Location;
 
 		public float Width

@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-using ProtoBuf;
+
 
 namespace Regulus.Utility
 {
@@ -12,28 +12,28 @@ namespace Regulus.Utility
  * Oriented bounding box 
  */
 	
-	[ProtoContract][Serializable]
+	[Serializable]
 	public class OBB
 	{
 		// unit vector of x axis
-		[ProtoMember(4)]
+
 		private readonly float[] axisX;
 
 		// unit vector of y axis
-		[ProtoMember(5)]
+
 		private readonly float[] axisY;
 
-		[ProtoMember(1)]
+
 		private readonly float[] centerPoint;
 
-		[ProtoMember(3)]
+
 		private readonly float halfHeight;
 
-		[ProtoMember(2)]
+
 		private readonly float halfWidth;
 
 		// 0 -360
-		[ProtoMember(6)]
+
 		private float rotation;
 
 		/**

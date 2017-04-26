@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
 
-
+using Regulus.Serialization;
 using Regulus.Utility;
 
 namespace Regulus.Remoting
@@ -14,7 +14,9 @@ namespace Regulus.Remoting
 
 	public class PackageReader<TPackage>
 	{
-        public delegate void OnRequestPackageCallback(TPackage package);
+	    private readonly ISerializer _Serializer;
+
+	    public delegate void OnRequestPackageCallback(TPackage package);
         public event OnRequestPackageCallback DoneEvent
 		{
 			add { _DoneEvent += value; }
@@ -35,7 +37,12 @@ namespace Regulus.Remoting
 
 		private volatile bool _Stop;
 
-		public void Start(Socket socket)
+	    public PackageReader(ISerializer serializer)
+	    {
+	        _Serializer = serializer;
+	    }
+
+	    public void Start(Socket socket)
 		{
 			Singleton<Log>.Instance.WriteInfo("pakcage read start.");
 			_Stop = false;
@@ -64,7 +71,8 @@ namespace Regulus.Remoting
 
 		private void _Package(byte[] bytes)
 		{
-			var pkg = TypeHelper.Deserialize<TPackage>(bytes);
+            
+            var pkg = (TPackage)_Serializer.Deserialize(bytes);
 
 			_DoneEvent.Invoke(pkg);
 

@@ -2,20 +2,20 @@
 using System.Collections.Generic;
 
 
-using ProtoBuf;
+
 
 namespace Regulus.CustomType
 {
-	[ProtoContract][Serializable]
+    [Serializable]
 	public struct Triangle : IEquatable<Triangle>, IRotatable
 	{
-		[ProtoMember(1)]
+	
 		public Vector2 Point1;
 
-		[ProtoMember(2)]
+	
 		public Vector2 Point2;
 
-		[ProtoMember(3)]
+	
 		public Vector2 Point3;
 
 		bool IEquatable<Triangle>.Equals(Triangle other)

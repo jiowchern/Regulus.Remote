@@ -14,17 +14,7 @@ namespace RegulusLibraryTest
     [TestClass]
     public class TypeTest
     {
-        [TestMethod]
-        public void TestSerializerVector2()
-        {
-            var v = new Regulus.CustomType.Vector2(99, 22);
-
-            var array = Regulus.TypeHelper.Serializer(v);
-            var v2 = Regulus.TypeHelper.Deserialize<Regulus.CustomType.Vector2>(array);
-
-            Assert.AreEqual(99 , v2.X);
-            Assert.AreEqual(22, v2.Y);
-        }
+        
 
         [TestMethod]
         public void TestRectLeftToCenter()
@@ -120,16 +110,7 @@ namespace RegulusLibraryTest
             Assert.AreEqual(false, resultC.Intersect);
 
         }
-        [TestMethod]
-        public void TestProtobufEnum()
-        {
-            PROTOBUFENUM e = PROTOBUFENUM.AAA2;
-
-            var obj = Regulus.TypeHelper.Serializer<PROTOBUFENUM>(e);
-            var e2 = Regulus.TypeHelper.Deserialize<PROTOBUFENUM>(obj);
-
-            Assert.AreEqual(e2, PROTOBUFENUM.AAA2);
-        }        
+              
         enum PROTOBUFENUM
         {
             AAA1,
@@ -192,23 +173,7 @@ namespace RegulusLibraryTest
 
             Assert.IsTrue( Regulus.Utility.ValueHelper.DeepEqual(polygons2 , polygons1));
         }
-        [TestMethod]
-        public void TestPolygonSerializ()
-        {
-            var polygon1 = new Polygon();
-            polygon1.SetPoints(new[]{
-                    new Vector2(0,0),
-                    new Vector2(1,0),
-                    new Vector2(1,1),
-                    new Vector2(0,1)});
-
-            var buffer = Regulus.TypeHelper.Serializer(polygon1);
-            var polygon2 = Regulus.TypeHelper.Deserialize<Polygon>(buffer);
-
-
-            Assert.AreEqual(polygon2.Points[0] , polygon1.Points[0]);
-
-        }
+       
         [TestMethod]
         public void TestPolygonXMLSerializ()
         {

@@ -153,7 +153,7 @@ namespace Regulus.Remoting.Ghost.Native
 
 		private void _ToOnline(StageMachine machine, Socket socket)
 		{
-			var onlineStage = new OnlineStage(socket, _Core);
+			var onlineStage = new OnlineStage(socket, _Core , _Serializer);
 			onlineStage.DoneFromServerEvent += () =>
 			{
 				_ToTermination();

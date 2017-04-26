@@ -45,10 +45,6 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="protobuf-net, Version=2.0.0.668, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\protobuf-net.2.0.0.668\lib\net35\protobuf-net.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -59,7 +55,6 @@
   <ItemGroup>
     <Compile Include="Agent.cs" />
     <Compile Include="AutoRelease.cs" />
-    <Compile Include="BindGuard.cs" />
     <Compile Include="Connect.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="CoreThreadRequestHandler.cs" />
@@ -89,9 +84,6 @@
     <Compile Include="Time.cs" />
     <Compile Include="UserCommand.cs" />
     <Compile Include="UserController.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PureLib\RegulusLibrary.csproj">

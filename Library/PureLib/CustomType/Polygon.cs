@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
+
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using System.Xml.Linq;
-using System.Xml.XPath;
 
 
-using ProtoBuf;
+
+
 
 namespace Regulus.CustomType
 {
 
-    
-    [ProtoContract][Serializable]
+        
     public class Polygon : ICloneable , IXmlSerializable
     {
 		public struct CollisionResult
@@ -28,11 +26,11 @@ namespace Regulus.CustomType
 		}
         
         
-        [ProtoMember(2)]
+
 		private Vector2[] _Edges ;
         
         
-        [ProtoMember(1)]
+
 		private Vector2[] _Points ;
 
 	    public Polygon(Vector2[] points)
