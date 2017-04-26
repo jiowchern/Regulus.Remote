@@ -265,7 +265,7 @@ namespace Regulus.Remoting.Ghost.Native
 
                 il.Emit(OpCodes.Ldarg_0);
                 il.Emit(OpCodes.Ldfld, idField);
-                var guidToByteArrayMethod = typeof(TypeHelper).GetMethod(
+               /* var guidToByteArrayMethod = typeof(TypeHelper).GetMethod(
                     "GuidToByteArray",
                     BindingFlags.Public | BindingFlags.Static);
                 il.Emit(OpCodes.Call, guidToByteArrayMethod);
@@ -275,7 +275,7 @@ namespace Regulus.Remoting.Ghost.Native
                 var stringToByteArrayMethod = typeof(TypeHelper).GetMethod(
                     "StringToByteArray",
                     BindingFlags.Public | BindingFlags.Static);
-                il.Emit(OpCodes.Call, stringToByteArrayMethod);
+                il.Emit(OpCodes.Call, stringToByteArrayMethod);*/
                 il.Emit(OpCodes.Stloc, varMethodNameByteArray);
 
                 // 取出type物件
@@ -325,7 +325,7 @@ namespace Regulus.Remoting.Ghost.Native
                     il.Emit(OpCodes.Stloc, varRVQId);
 
                     il.Emit(OpCodes.Ldloc, varRVQId);
-                    il.Emit(OpCodes.Call, typeof(TypeHelper).GetMethod("GuidToByteArray", BindingFlags.Public | BindingFlags.Static));
+                    //il.Emit(OpCodes.Call, typeof(TypeHelper).GetMethod("GuidToByteArray", BindingFlags.Public | BindingFlags.Static));
                     var varRVQIdByteArray = il.DeclareLocal(typeof(byte[]));
                     il.Emit(OpCodes.Stloc, varRVQIdByteArray);
 
@@ -359,12 +359,12 @@ namespace Regulus.Remoting.Ghost.Native
                     // il.Emit(OpCodes.Box, types[paramIndex]);
 
                     // 使用TypeHelper類別裡的Serializer函式 屬性為Public Static..
-                    var serializer =
+                    /*var serializer =
                         typeof(TypeHelper).GetMethod("Serialize", BindingFlags.Public | BindingFlags.Static)
                                           .MakeGenericMethod(types[paramIndex]);
 
                     // 指定呼叫函式的多載，因為沒有多載，所以填null
-                    il.EmitCall(OpCodes.Call, serializer, null);
+                    il.EmitCall(OpCodes.Call, serializer, null);*/
 
                     // byte array 存到 varBuffer
                     il.Emit(OpCodes.Stloc, varBuffer);

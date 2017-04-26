@@ -1,4 +1,6 @@
 ﻿using System;
+using System.CodeDom;
+using System.Xml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Regulus.Serialization;
 using System.Collections.Generic;
@@ -367,6 +369,41 @@ namespace Regulus.Serialization.Tests
             Assert.AreEqual(str[1], value[1]);
         }
 
+
+        [TestMethod]
+        public void TestSerializerVector2()
+        {
+
+            var ser = new Serializer(new DescriberBuilder(typeof(Regulus.CustomType.Vector2) , typeof(float)));
+            var v = new Regulus.CustomType.Vector2(99, 22);
+
+            var array = ser.ObjectToBuffer(v);
+            var v2 = (Regulus.CustomType.Vector2)ser.BufferToObject(array);
+
+            Assert.AreEqual(99, v2.X);
+            Assert.AreEqual(22, v2.Y);
+        }
+
+
+        [TestMethod]
+        public void TestPolygonSerializ()
+        {
+            var ser = new Serializer(new DescriberBuilder(typeof(Regulus.CustomType.Vector2), typeof(float) , typeof(Regulus.CustomType.Polygon)));
+
+            var polygon1 = new Regulus.CustomType.Polygon();
+            polygon1.SetPoints(new[]{
+                    new Regulus.CustomType.Vector2(0,0),
+                    new Regulus.CustomType.Vector2(1,0),
+                    new Regulus.CustomType.Vector2(1,1),
+                    new Regulus.CustomType.Vector2(0,1)});
+
+            var buffer = ser.ObjectToBuffer(polygon1);
+            var polygon2 = (Regulus.CustomType.Polygon)ser.BufferToObject(buffer) ;
+
+
+            Assert.AreEqual(polygon2.Points[0], polygon1.Points[0]);
+
+        }
     }
 
     

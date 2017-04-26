@@ -246,7 +246,7 @@ $@"
 
             void Regulus.Remoting.IGhost.OnEvent(string name_event, byte[][] args)
             {{
-                Regulus.Remoting.AgentCore.CallEvent(name_event , ""C{name}"" , this , args);
+                Regulus.Remoting.AgentCore.CallEvent(name_event , ""C{name}"" , this , args, _Serializer);
             }}
 
             Guid Regulus.Remoting.IGhost.GetID()
@@ -261,7 +261,7 @@ $@"
 
             void Regulus.Remoting.IGhost.OnProperty(string name, byte[] value)
             {{
-                Regulus.Remoting.AgentCore.UpdateProperty(name , ""C{name}"" , this , value);
+                Regulus.Remoting.AgentCore.UpdateProperty(name , ""C{name}"" , this , value , _Serializer);
             }}
             {implementCode}
             

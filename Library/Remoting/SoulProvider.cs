@@ -159,7 +159,9 @@ namespace Regulus.Remoting
             var package = new PackageUpdateProperty();
 		    package.EntityId = entity_id;
 		    package.EventName = name;
-            package.Args = TypeHelper.Serializer(val);
+
+            
+            package.Args = _Serializer.Serialize(val);
 
             _Queue.Push(ServerToClientOpCode.UpdateProperty, package.ToBuffer(_Serializer));
 		}
@@ -180,7 +182,7 @@ namespace Regulus.Remoting
             var package = new PackageInvokeEvent();
 		    package.EntityId = entity_id;
 		    package.EventName = event_name;            
-            package.EventParams = (from a in args select TypeHelper.Serializer(a)).ToArray();
+            package.EventParams = (from a in args select _Serializer.Serialize(a)).ToArray();
             _InvokeEvent(package.ToBuffer(_Serializer));
 		}
 
@@ -245,7 +247,7 @@ namespace Regulus.Remoting
             var value = returnValue.GetObject();
             var package = new PackageReturnValue();
 		    package.ReturnTarget = returnId;
-		    package.ReturnValue = TypeHelper.Serializer(value);
+		    package.ReturnValue = _Serializer.Serialize(value);
             _Queue.Push(ServerToClientOpCode.ReturnValue, package.ToBuffer(_Serializer));
 		}
 
@@ -311,10 +313,8 @@ namespace Regulus.Remoting
 
 					try
 					{
-						var i = 0;
-						var argObjects = from pi in paramerInfos
-										 let arg = args[i++]
-										 select TypeHelper.DeserializeObject(pi.ParameterType, arg);
+                        
+                        var argObjects = args.Select(arg => _Serializer.Deserialize(arg));
 
 						var returnValue = methodInfo.Invoke(soulInfo.ObjectInstance, argObjects.ToArray());
 						if(returnValue != null)

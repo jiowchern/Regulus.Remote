@@ -7,7 +7,7 @@ namespace Regulus.Remoting
 	{
 		object GetObject();
 
-		void SetValue(byte[] val);
+		void SetValue(object val);
 
 		void QueryValue(Action<object> action);
 
@@ -125,7 +125,7 @@ namespace Regulus.Remoting
 			}
 		}
 
-		void IValue.SetValue(byte[] val)
+		void IValue.SetValue(object val)
 		{
 			if (_Empty == false)
 			{
@@ -133,7 +133,7 @@ namespace Regulus.Remoting
 			}
 			_Empty = false;
 
-			_Value = TypeHelper.Deserialize<T>(val);
+			_Value = (T)val;
 			if(_OnValue != null)
 			{
 				_OnValue(_Value);

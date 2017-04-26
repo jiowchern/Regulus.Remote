@@ -3,14 +3,16 @@ using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 
-
+using Regulus.Serialization;
 using Regulus.Utility;
 
 namespace Regulus.Remoting
 {
 	public class PackageWriter<TPackage>
 	{
-		public delegate TPackage[] CheckSourceCallback();
+	    private readonly ISerializer _Serializer;
+
+	    public delegate TPackage[] CheckSourceCallback();
 
 		public event CheckSourceCallback CheckSourceEvent
 		{
@@ -34,15 +36,17 @@ namespace Regulus.Remoting
 
 		private volatile bool _Stop;
 
-		/// <summary>
-		///     Initializes a new instance of the <see cref="PackageWriter" /> class.
-		/// </summary>
-		/// <param name="low_fps">
-		///     保證最低fps
-		/// </param>
-		public PackageWriter(int low_fps)
+	    /// <summary>
+	    ///     Initializes a new instance of the <see cref="PackageWriter" /> class.
+	    /// </summary>
+	    /// <param name="low_fps">
+	    ///     保證最低fps
+	    /// </param>
+	    /// <param name="serializer">序列化物件</param>
+	    public PackageWriter(int low_fps , ISerializer serializer)
 		{
-            _PowerRegulator = new PowerRegulator(low_fps);
+		    _Serializer = serializer;
+		    _PowerRegulator = new PowerRegulator(low_fps);
             _AutoPowerRegulator = new AutoPowerRegulator(_PowerRegulator);
         }
 
@@ -113,7 +117,7 @@ namespace Regulus.Remoting
 
 		private byte[] _CreateBuffer(TPackage[] packages)
 		{
-			var buffers = from p in packages select TypeHelper.Serializer(p);
+			var buffers = from p in packages select _Serializer.Serialize(p);
 
 			// Regulus.Utility.Log.Instance.WriteDebug(string.Format("Serialize to Buffer size {0}", buffers.Sum( b => b.Length )));
 			using(var stream = new MemoryStream())

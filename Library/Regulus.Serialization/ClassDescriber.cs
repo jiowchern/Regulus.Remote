@@ -102,7 +102,17 @@ namespace Regulus.Serialization
 
         int ITypeDescriber.ToObject(byte[] buffer, int begin , out object instance)
         {
-            instance = Activator.CreateInstance(_Type);
+
+            var constructor = _Type.GetConstructors().OrderBy( c => c.GetParameters().Length ).Select( c=>c).First();
+            var argTypes = constructor.GetParameters().Select( info => info.ParameterType).ToArray();
+            var objArgs = new object[argTypes.Length];
+
+            for (int i = 0; i < argTypes.Length; i++)
+            {
+                objArgs[i] = Activator.CreateInstance(argTypes[i]);
+            }
+            
+            instance = Activator.CreateInstance(_Type , objArgs);
 
             var offset = begin;
 

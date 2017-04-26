@@ -4,7 +4,7 @@ using System.Text;
 using System.Xml.Serialization;
 
 
-using ProtoBuf;
+
 
 namespace Regulus.Utility
 {
@@ -15,15 +15,7 @@ namespace Regulus.Utility
 			// System.IO.File.WriteAllBytes(path, _WriteProtobuf<T>(obj));
 			File.WriteAllText(path, Serialization._WriteXml(obj));
 		}
-
-		private static byte[] _WriteProtobuf<T>(T obj)
-		{
-			using(var stream = new MemoryStream())
-			{
-				Serializer.Serialize(stream, obj);
-				return stream.ToArray();
-			}
-		}
+	
 
 	    public static string WriteXml<T>(T obj)
 	    {

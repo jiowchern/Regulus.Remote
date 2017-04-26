@@ -39,7 +39,7 @@ namespace Regulus.Protocol
                     "RegulusLibrary.dll",
                     "RegulusRemoting.dll",
                     "Regulus.Serialization.dll",
-                    "protobuf-net.dll",
+                    
                     path,
                 }
             };
@@ -70,7 +70,7 @@ namespace Regulus.Protocol
                     "RegulusLibrary.dll",
                     "RegulusRemoting.dll",
                     "Regulus.Serialization.dll",
-                    "protobuf-net.dll",
+                    
                     assembly.Location
                }                
 
@@ -114,8 +114,7 @@ namespace Regulus.Protocol
                     "System.Core.dll",
                     "RegulusLibrary.dll",
                     "RegulusRemoting.dll",
-                    "Regulus.Serialization.dll",
-                    "protobuf-net.dll",
+                    "Regulus.Serialization.dll",                    
                     assembly.Location
                }
 

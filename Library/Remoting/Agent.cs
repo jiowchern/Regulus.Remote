@@ -255,7 +255,8 @@ namespace Regulus.Remoting
 			var value = _ReturnValueQueue.PopReturnValue(returnTarget);
 			if(value != null)
 			{
-				value.SetValue(returnValue);
+			    var returnInstance = _Serializer.Deserialize(returnValue);
+                value.SetValue(returnInstance);
 			}
 		}
 
@@ -472,7 +473,7 @@ namespace Regulus.Remoting
 		}
 
 		// 被_BuildGhostType參考
-		public static void UpdateProperty(string property, string type_name, object instance, byte[] value)
+		public static void UpdateProperty(string property, string type_name, object instance, byte[] value , ISerializer serializer)
 		{
 			var type = AgentCore._GetType(type_name);
 			if(type != null)
@@ -480,13 +481,13 @@ namespace Regulus.Remoting
 				var field = type.GetField("_" + property, BindingFlags.Instance | BindingFlags.NonPublic);
 				if(field != null)
 				{
-					field.SetValue(instance, TypeHelper.DeserializeObject(field.FieldType, value  ));
+                    field.SetValue(instance, serializer.Deserialize(value));
 				}
 			}
 		}
 
 		// 被_BuildGhostType參考
-		public static void CallEvent(string method, string type_name, object obj, byte[][] args)
+		public static void CallEvent(string method, string type_name, object obj, byte[][] args, ISerializer serializer)
 		{
 			var type = AgentCore._GetType(type_name);
 
@@ -497,10 +498,8 @@ namespace Regulus.Remoting
 				if(fieldValue is Delegate)
 				{
 					var fieldValueDelegate = fieldValue as Delegate;
-					var parTypes = (from p in fieldValueDelegate.Method.GetParameters()
-									select p.ParameterType).ToArray();
-					var i = 0;
-					var pars = (from a in args select TypeHelper.DeserializeObject(parTypes[i++], a )).ToArray();
+                    
+                    var pars = (from a in args select serializer.Deserialize( a )).ToArray();
 					fieldValueDelegate.DynamicInvoke(pars);
 				}
 			}

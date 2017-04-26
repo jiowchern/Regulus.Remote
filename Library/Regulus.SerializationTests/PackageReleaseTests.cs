@@ -42,16 +42,16 @@ namespace Regulus.Remoting.Tests
             var ser = new Regulus.Serialization.Serializer(new DescriberBuilder(typeof(int),typeof(string),typeof(char[]),typeof(byte) , typeof(byte[]), typeof(byte[][]), typeof(char), typeof(Guid), typeof(TestPackageBuffer)));
 
 
-            package1.Datas = new [] { Regulus.TypeHelper.Serializer(p1), Regulus.TypeHelper.Serializer(p2), Regulus.TypeHelper.Serializer(p3) };
+            package1.Datas = new [] { ser.ObjectToBuffer(p1), ser.ObjectToBuffer(p2), ser.ObjectToBuffer(p3) };
 
             var buffer = package1.ToBuffer(ser);
 
             var package2 = buffer.ToPackageData<TestPackageBuffer>(ser);
 
             
-            Assert.AreEqual(p1, Regulus.TypeHelper.Deserialize<int>(package2.Datas[0]));
-            Assert.AreEqual(p2, Regulus.TypeHelper.Deserialize<string>(package2.Datas[1]));
-            Assert.AreEqual(p3, Regulus.TypeHelper.Deserialize<Guid>(package2.Datas[2]));
+            Assert.AreEqual(p1, ser.BufferToObject(package2.Datas[0]));
+            Assert.AreEqual(p2, ser.BufferToObject(package2.Datas[1]));
+            Assert.AreEqual(p3, ser.BufferToObject(package2.Datas[2]));
         }
 
         [TestMethod()]

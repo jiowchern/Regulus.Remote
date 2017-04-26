@@ -2,39 +2,31 @@
 using System.Collections.Generic;
 using Regulus.Serialization;
 
-using ProtoBuf;
+
 
 namespace Regulus.Remoting
 {
 
-    /*[ProtoContract][Serializable]
-    public class Package
-    {
-        [ProtoMember(2)]
-        public byte[] Data;
-
-        [ProtoMember(1)]
-        public ClientToServerOpCode Code;
-    }*/
 
 
-    [ProtoContract][Serializable]	
+
+    [Serializable]	
 	public class RequestPackage
 	{
-		[ProtoMember(2)]
+	
 		public byte[] Data;
 
-		[ProtoMember(1)]
+
 		public ClientToServerOpCode Code;
 	}
 
-    [ProtoContract][Serializable]
+    [Serializable]
     public class ResponsePackage
     {
-        [ProtoMember(2)]
+    
         public byte[] Data;
 
-        [ProtoMember(1)]
+    
         public ServerToClientOpCode Code;
     }
     [Serializable]
@@ -57,7 +49,7 @@ namespace Regulus.Remoting
     }
 
 
-    [ProtoContract][Serializable]
+    [Serializable]
     public class PackageUpdateProperty : TPackageData<PackageUpdateProperty>
     {
         public PackageUpdateProperty()
@@ -66,15 +58,15 @@ namespace Regulus.Remoting
             Args = new byte[0];
         }
 
-        [ProtoMember(1)]
+    
         public Guid EntityId { get; set; }
-        [ProtoMember(2)]
+    
         public string EventName { get; set; }
-        [ProtoMember(3)]
+    
         public byte[] Args { get; set; }
     }
 
-    [ProtoContract][Serializable]
+    [Serializable]
     public class PackageInvokeEvent : TPackageData<PackageInvokeEvent>
     {
         public PackageInvokeEvent()
@@ -82,17 +74,17 @@ namespace Regulus.Remoting
             EventParams = new byte[0][];
             EventName = String.Empty;
         }
-        [ProtoMember(1)]
+    
         public Guid EntityId;
 
-        [ProtoMember(2)]
+    
         public string EventName;
 
-        [ProtoMember(3)]
+    
         public byte[][] EventParams;
     }
 
-    [ProtoContract][Serializable]
+    [Serializable]
     public class PackageErrorMethod : TPackageData<PackageErrorMethod>
     {
         public PackageErrorMethod()
@@ -100,72 +92,71 @@ namespace Regulus.Remoting
             Method= String.Empty;
             Message = String.Empty;
         }
-        [ProtoMember(1)]
+    
         public Guid ReturnTarget;
-        [ProtoMember(2)]
+    
         public string Method;
-        [ProtoMember(3)]
+    
         public string Message;
     }
 
-    [ProtoContract][Serializable]
+    [Serializable]
     public class PackageReturnValue : TPackageData<PackageReturnValue>
     {
         public PackageReturnValue()
         {
             ReturnValue = new byte[0];
         }
-        [ProtoMember(1)]
+    
         public Guid ReturnTarget    ;
-        [ProtoMember(2)]
+    
         public byte[] ReturnValue   ;
     }
 
-    [ProtoContract][Serializable]
+    [Serializable]
     public class PackageLoadSoulCompile : TPackageData<PackageLoadSoulCompile>
     {
         public PackageLoadSoulCompile ()
         {
             TypeName = String.Empty;
         }
-        [ProtoMember(1)]
+    
         public string TypeName;
-        [ProtoMember(2)]
+    
         public Guid EntityId;
-        [ProtoMember(3)]
+    
         public Guid ReturnId;
 
     }
-
-    [ProtoContract][Serializable]
+    [Serializable]
     public class PackageLoadSoul : TPackageData<PackageLoadSoul>
     {
         public PackageLoadSoul()
         {
             TypeName = String.Empty;
         }
-        [ProtoMember(1)]
+    
         public string TypeName;
-        [ProtoMember(2)]
+    
         public Guid EntityId;
-        [ProtoMember(3)]
+    
         public bool ReturnType;
     }
-    [ProtoContract][Serializable]
+    [Serializable]
     public class PackageUnloadSoul : TPackageData<PackageUnloadSoul>
     {
         public PackageUnloadSoul()
         {
             TypeName = String.Empty;
         }
-        [ProtoMember(1)]
+    
         public string TypeName;
-        [ProtoMember(2)]
+        
         public Guid EntityId;
     }
 
 
-    [ProtoContract][Serializable]
+    [Serializable]
     public class PackageCallMethod : TPackageData<PackageCallMethod>
     {
 
@@ -174,24 +165,24 @@ namespace Regulus.Remoting
             MethodName = String.Empty;
             MethodParams = new byte[0][];
         }
-        [ProtoMember(1)]
+    
 
         public Guid EntityId;
-        [ProtoMember(2)]
+    
 
         public string MethodName;
-        [ProtoMember(3)]
+    
 
         public Guid ReturnId;
-        [ProtoMember(4)]
+    
 
         public byte[][] MethodParams;
     }
 
-    [ProtoContract][Serializable]
+    [Serializable]
     public class PackageRelease : TPackageData<PackageRelease>
     {
-        [ProtoMember(1)]
+    
          public Guid EntityId;
     }
     
