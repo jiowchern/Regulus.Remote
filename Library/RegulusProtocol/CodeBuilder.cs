@@ -122,6 +122,20 @@ namespace Regulus.Protocol
         private string[] _GetSerializarType(HashSet<Type> serializer_types)
         {
             var types = new HashSet<Type>();
+
+
+            serializer_types.Add(typeof(Regulus.Remoting.RequestPackage));
+            serializer_types.Add(typeof(Regulus.Remoting.ResponsePackage));
+            serializer_types.Add(typeof(Regulus.Remoting.PackageUpdateProperty));
+            serializer_types.Add(typeof(Regulus.Remoting.PackageInvokeEvent));
+            serializer_types.Add(typeof(Regulus.Remoting.PackageErrorMethod));
+            serializer_types.Add(typeof(Regulus.Remoting.PackageReturnValue));
+            serializer_types.Add(typeof(Regulus.Remoting.PackageLoadSoulCompile));
+            serializer_types.Add(typeof(Regulus.Remoting.PackageLoadSoul));
+            serializer_types.Add(typeof(Regulus.Remoting.PackageUnloadSoul));
+            serializer_types.Add(typeof(Regulus.Remoting.PackageCallMethod));
+            serializer_types.Add(typeof(Regulus.Remoting.PackageRelease));
+
             foreach (var serializerType in serializer_types)
             {
                 foreach (var type in new TypeDisintegrator(serializerType).Types)
