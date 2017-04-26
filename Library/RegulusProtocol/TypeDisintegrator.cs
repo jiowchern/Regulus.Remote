@@ -22,12 +22,14 @@ namespace Regulus.Protocol
             if ( _IsBase(id.Type) )
             {
                 types.Add(type);
-                Types = types.ToArray();
-                return;
             }
-
-
-            if (_IsArray(type))
+            else if (_IsString(id.Type))
+            {
+                types.Add(typeof(char));
+                types.Add(typeof(char[]));
+                types.Add(typeof(string));
+            }
+            else if (_IsArray(type))
             {
                 types.Add(type);
                 _Add(new [] {type.GetElementType()} , types);
@@ -44,6 +46,11 @@ namespace Regulus.Protocol
             }
 
             Types = types.ToArray();
+        }
+
+        private bool _IsString(TypeIdentifier.TYPE type)
+        {
+            return type == TypeIdentifier.TYPE.STRING;
         }
 
         private bool _IsArray(Type type)
@@ -66,7 +73,7 @@ namespace Regulus.Protocol
 
         private bool _IsBase(TypeIdentifier.TYPE type)
         {
-            return type == TypeIdentifier.TYPE.STRING || type == TypeIdentifier.TYPE.ENUM ||
+            return type == TypeIdentifier.TYPE.ENUM ||
                    type == TypeIdentifier.TYPE.BITTABLE || type == TypeIdentifier.TYPE.NUMBER;
         }
 
