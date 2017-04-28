@@ -54,6 +54,45 @@ namespace Regulus.Remoting.Tests
             Assert.AreEqual(p3, ser.BufferToObject(package2.Datas[2]));
         }
 
+
+        [TestMethod()]
+        public void ToPackageTest()
+        {
+
+            var builder = new Regulus.Serialization.DescriberBuilder(
+                            typeof(System.Char),
+                            typeof(System.Char[]),
+                            typeof(System.String),
+                            typeof(System.Boolean),
+                            typeof(Regulus.Remoting.RequestPackage),
+                            typeof(System.Byte[]),
+                            typeof(System.Byte),
+                            typeof(Regulus.Remoting.ClientToServerOpCode),
+                            typeof(Regulus.Remoting.ResponsePackage),
+                            typeof(Regulus.Remoting.ServerToClientOpCode),
+                            typeof(Regulus.Remoting.PackageUpdateProperty),
+                            typeof(System.Guid),
+                            typeof(Regulus.Remoting.PackageInvokeEvent),
+                            typeof(System.Byte[][]),
+                            typeof(Regulus.Remoting.PackageErrorMethod),
+                            typeof(Regulus.Remoting.PackageReturnValue),
+                            typeof(Regulus.Remoting.PackageLoadSoulCompile),
+                            typeof(Regulus.Remoting.PackageLoadSoul),
+                            typeof(Regulus.Remoting.PackageUnloadSoul),
+                            typeof(Regulus.Remoting.PackageCallMethod),
+                            typeof(Regulus.Remoting.PackageRelease));
+            var ser = new Regulus.Serialization.Serializer(builder);
+            var response = new RequestPackage();
+            response.Code = ClientToServerOpCode.Ping;
+            response.Data = new byte[] {0,1,2,3,4,5};
+
+            var bufferResponse = ser.ObjectToBuffer(response);
+            var result = ser.BufferToObject(bufferResponse) as RequestPackage; 
+            Assert.AreEqual(ClientToServerOpCode.Ping , result.Code);
+            Assert.AreEqual(3, result.Data[3]);
+        }
+
+
         [TestMethod()]
         public void ToBufferTest3()
         {
@@ -94,4 +133,7 @@ namespace Regulus.Remoting.Tests
         
         public byte[][] Datas;
     }
+
+
+    
 }

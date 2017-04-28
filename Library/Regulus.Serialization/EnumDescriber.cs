@@ -44,20 +44,20 @@ namespace Regulus.Serialization
 
         int ITypeDescriber.GetByteCount(object instance)
         {
-            return Serializer.Varint.GetByteCount(Convert.ToUInt64((int)instance));
+            return Serializer.Varint.GetByteCount(Convert.ToUInt64(instance));
         }
 
         int ITypeDescriber.ToBuffer(object instance, byte[] buffer, int begin)
         {
-            return Serializer.Varint.NumberToBuffer(buffer, begin, Convert.ToUInt64((int)instance));
+            return Serializer.Varint.NumberToBuffer(buffer, begin, Convert.ToUInt64(instance));
         }
 
         int ITypeDescriber.ToObject(byte[] buffer, int begin, out object instnace)
         {
             ulong value;
-            var readed = Serializer.Varint.BufferToNumber(buffer, begin, out value);            
-            var values = Enum.GetValues(_Type);
-            instnace = values.GetValue((int)value);
+            var readed = Serializer.Varint.BufferToNumber(buffer, begin, out value);
+            
+            instnace = Enum.ToObject(_Type, value);
             return readed;
         }
 

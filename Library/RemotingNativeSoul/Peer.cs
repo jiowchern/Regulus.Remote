@@ -105,7 +105,7 @@ namespace Regulus.Remoting.Soul.Native
 			_Enable = true;
 
 			_Reader = new PackageReader<RequestPackage>(protocol.GetSerialize());
-			_Writer = new PackageWriter<ResponsePackage>();
+			_Writer = new PackageWriter<ResponsePackage>(protocol.GetSerialize());
 		}
 
 		void IBootable.Launch()

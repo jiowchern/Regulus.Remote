@@ -132,11 +132,7 @@ namespace Regulus.Remoting
 				var readSize = _Socket.EndReceive(ar);
 				_Offset += readSize;
                 NetworkMonitor.Instance.Read.Set(readSize);
-                if (readSize == 0)
-				{
-					ErrorEvent();
-				}
-				else if(_Offset == _Buffer.Length)
+                if(_Offset == _Buffer.Length)
 				{
 					DoneEvent(_Buffer);
 				}
