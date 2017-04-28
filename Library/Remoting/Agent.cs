@@ -154,87 +154,34 @@ namespace Regulus.Remoting
             }
 			else if(id == ServerToClientOpCode.InvokeEvent)
 			{
-				/*if(args.Count >= 2)
-				{
-					var EntityId = new Guid(args[0]);
-					var EventName = TypeHelper.Deserialize<string>(args[1]);
-					var EventParams = (from p in args
-									   where p.Key >= 2
-									   select p.Value as object).ToArray();
-
-
-                    var data = args.ToPackageData<PackageInvokeEvent>();
-                    _InvokeEvent(data.EntityId, data.EventName, data.EventParams);
-				}*/
-
                 var data = args.ToPackageData<PackageInvokeEvent>(_Serializer);
                 _InvokeEvent(data.EntityId, data.EventName, data.EventParams);
             }
 			else if(id == ServerToClientOpCode.ErrorMethod)
 			{
-                /*if(args.Count == 3)
-				{
-					var ReturnTarget = new Guid(args[0]);
-					var Method = TypeHelper.Deserialize<string>(args[1]);
-					var Message = TypeHelper.Deserialize<string>(args[2]);
-					_ErrorReturnValue(ReturnTarget, Method , Message);
-				}*/
-
                 var data = args.ToPackageData<PackageErrorMethod>(_Serializer);
 
                 _ErrorReturnValue(data.ReturnTarget, data.Method, data.Message);
             }
 			else if(id == ServerToClientOpCode.ReturnValue)
 			{
-                /*if(args.Count == 2)
-				{
-					var ReturnTarget = new Guid(args[0]);
-					var ReturnValue = args[1];
-
-					_SetReturnValue(ReturnTarget, ReturnValue);
-				}*/
 
                 var data = args.ToPackageData<PackageReturnValue>(_Serializer);
                 _SetReturnValue(data.ReturnTarget, data.ReturnValue);
             }
 			else if(id == ServerToClientOpCode.LoadSoulCompile)
 			{
-				/*if(args.Count == 3)
-				{
-					var TypeName = TypeHelper.Deserialize<string>(args[0]);
-					var EntityId = new Guid(args[1]);
-					var ReturnId = new Guid(args[2]);
-
-					_LoadSoulCompile(TypeName, EntityId, ReturnId);
-				}*/
 
                 var data = args.ToPackageData<PackageLoadSoulCompile>(_Serializer);
                 _LoadSoulCompile(data.TypeName, data.EntityId, data.ReturnId);
             }
 			else if(id == ServerToClientOpCode.LoadSoul)
 			{
-                /*if(args.Count == 3)
-				{
-					var TypeName = TypeHelper.Deserialize<string>(args[0]);
-					var EntityId = new Guid(args[1]);
-					var ReturnType = TypeHelper.Deserialize<bool>(args[2]);
-
-					_LoadSoul(TypeName, EntityId, ReturnType);
-				}*/
-
                 var data = args.ToPackageData<PackageLoadSoul>(_Serializer);
                 _LoadSoul(data.TypeName, data.EntityId, data.ReturnType);
             }
 			else if(id == ServerToClientOpCode.UnloadSoul)
 			{
-                /*if(args.Count == 2)
-				{
-					var TypeName = TypeHelper.Deserialize<string>(args[0]);
-					var EntityId = new Guid(args[1]);
-
-					_UnloadSoul(TypeName, EntityId);
-				}*/
-
                 var data = args.ToPackageData<PackageUnloadSoul>(_Serializer);
                 _UnloadSoul(data.TypeName, data.EntityId);
             }

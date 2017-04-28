@@ -73,24 +73,24 @@ namespace Regulus.Remoting
 
 		private readonly IResponseQueue _Queue;
 	 
-	    private readonly EventProvider _EventProvider;
+		private readonly EventProvider _EventProvider;
 
-	    private readonly Poller<Soul> _Souls = new Poller<Soul>();
+		private readonly Poller<Soul> _Souls = new Poller<Soul>();
 
 		private readonly Dictionary<Guid, IValue> _WaitValues = new Dictionary<Guid, IValue>();
 
 		private DateTime _UpdatePropertyInterval;
-	    private ISerializer _Serializer;
+		private ISerializer _Serializer;
 
-	    public SoulProvider(IRequestQueue peer, IResponseQueue queue , IProtocol protocol)
+		public SoulProvider(IRequestQueue peer, IResponseQueue queue , IProtocol protocol)
 		{
 
 			_Queue = queue;
-		    
-		    _EventProvider = protocol.GetEventProvider();
+			
+			_EventProvider = protocol.GetEventProvider();
 
-		    _Serializer =  protocol.GetSerialize();
-            _Peer = peer;
+			_Serializer =  protocol.GetSerialize();
+			_Peer = peer;
 			_Peer.InvokeMethodEvent += _InvokeMethod;
 		}
 
@@ -156,14 +156,14 @@ namespace Regulus.Remoting
 			argmants.Add(1, TypeHelper.Serialize(name));
 			argmants.Add(2, TypeHelper.Serialize(val));*/
 
-            var package = new PackageUpdateProperty();
-		    package.EntityId = entity_id;
-		    package.EventName = name;
+			var package = new PackageUpdateProperty();
+			package.EntityId = entity_id;
+			package.EventName = name;
 
-            
-            package.Args = _Serializer.Serialize(val);
+			
+			package.Args = _Serializer.Serialize(val);
 
-            _Queue.Push(ServerToClientOpCode.UpdateProperty, package.ToBuffer(_Serializer));
+			_Queue.Push(ServerToClientOpCode.UpdateProperty, package.ToBuffer(_Serializer));
 		}
 
 		private void _InvokeEvent(Guid entity_id, string event_name, object[] args)
@@ -179,11 +179,11 @@ namespace Regulus.Remoting
 			}*/
 
 
-            var package = new PackageInvokeEvent();
-		    package.EntityId = entity_id;
-		    package.EventName = event_name;            
-            package.EventParams = (from a in args select _Serializer.Serialize(a)).ToArray();
-            _InvokeEvent(package.ToBuffer(_Serializer));
+			var package = new PackageInvokeEvent();
+			package.EntityId = entity_id;
+			package.EventName = event_name;            
+			package.EventParams = (from a in args select _Serializer.Serialize(a)).ToArray();
+			_InvokeEvent(package.ToBuffer(_Serializer));
 		}
 
 		private void _InvokeEvent(byte[] argmants)
@@ -239,16 +239,16 @@ namespace Regulus.Remoting
 
 		private void _ReturnDataValue(Guid returnId, IValue returnValue)
 		{
-            /*var argmants = new Dictionary<byte, byte[]>();
+			/*var argmants = new Dictionary<byte, byte[]>();
 			argmants.Add(0, ReturnId.ToByteArray());
 			var value = ReturnValue.GetObject();
 			argmants.Add(1, TypeHelper.Serialize(value));*/
 
-            var value = returnValue.GetObject();
-            var package = new PackageReturnValue();
-		    package.ReturnTarget = returnId;
-		    package.ReturnValue = _Serializer.Serialize(value);
-            _Queue.Push(ServerToClientOpCode.ReturnValue, package.ToBuffer(_Serializer));
+			var value = returnValue.GetObject();
+			var package = new PackageReturnValue();
+			package.ReturnTarget = returnId;
+			package.ReturnValue = _Serializer.Serialize(value);
+			_Queue.Push(ServerToClientOpCode.ReturnValue, package.ToBuffer(_Serializer));
 		}
 
 		private void _LoadSoulCompile(string type_name, Guid id, Guid return_id)
@@ -258,12 +258,12 @@ namespace Regulus.Remoting
 			argmants.Add(1, id.ToByteArray());
 			argmants.Add(2, ReturnId.ToByteArray());*/
 
-            var package = new PackageLoadSoulCompile();
-		    package.EntityId = id;
-		    package.ReturnId = return_id;
-		    package.TypeName = type_name;
+			var package = new PackageLoadSoulCompile();
+			package.EntityId = id;
+			package.ReturnId = return_id;
+			package.TypeName = type_name;
 
-            _Queue.Push(ServerToClientOpCode.LoadSoulCompile, package.ToBuffer(_Serializer));
+			_Queue.Push(ServerToClientOpCode.LoadSoulCompile, package.ToBuffer(_Serializer));
 		}
 
 		private void _LoadSoul(string type_name, Guid id, bool return_type)
@@ -274,11 +274,11 @@ namespace Regulus.Remoting
 			argmants.Add(2, TypeHelper.Serialize(return_type));*/
 
 
-            var package = new PackageLoadSoul();
-		    package.TypeName = type_name;
-		    package.EntityId = id;
-		    package.ReturnType = return_type;
-            _Queue.Push(ServerToClientOpCode.LoadSoul, package.ToBuffer(_Serializer));
+			var package = new PackageLoadSoul();
+			package.TypeName = type_name;
+			package.EntityId = id;
+			package.ReturnType = return_type;
+			_Queue.Push(ServerToClientOpCode.LoadSoul, package.ToBuffer(_Serializer));
 		}
 
 		private void _UnloadSoul(string type_name, Guid id)
@@ -287,10 +287,10 @@ namespace Regulus.Remoting
 			argmants.Add(0, TypeHelper.Serialize(type_name));
 			argmants.Add(1, id.ToByteArray());*/
 
-            var package = new PackageUnloadSoul();
-		    package.TypeName = type_name;
-		    package.EntityId = id;
-            _Queue.Push(ServerToClientOpCode.UnloadSoul, package.ToBuffer(_Serializer));
+			var package = new PackageUnloadSoul();
+			package.TypeName = type_name;
+			package.EntityId = id;
+			_Queue.Push(ServerToClientOpCode.UnloadSoul, package.ToBuffer(_Serializer));
 		}
 
 		private void _InvokeMethod(Guid entity_id, string method_name, Guid returnId, byte[][] args)
@@ -313,8 +313,8 @@ namespace Regulus.Remoting
 
 					try
 					{
-                        
-                        var argObjects = args.Select(arg => _Serializer.Deserialize(arg));
+						
+						var argObjects = args.Select(arg => _Serializer.Deserialize(arg));
 
 						var returnValue = methodInfo.Invoke(soulInfo.ObjectInstance, argObjects.ToArray());
 						if(returnValue != null)
@@ -346,11 +346,11 @@ namespace Regulus.Remoting
 			argmants.Add(1, TypeHelper.Serialize(method_name));
 			argmants.Add(2, TypeHelper.Serialize(Message));*/
 
-		    var package = new PackageErrorMethod();
-		    package.Message = message ;
-		    package.Method = method_name;
-		    package.ReturnTarget = return_id;
-            _Queue.Push(ServerToClientOpCode.ErrorMethod, package.ToBuffer(_Serializer));
+			var package = new PackageErrorMethod();
+			package.Message = message ;
+			package.Method = method_name;
+			package.ReturnTarget = return_id;
+			_Queue.Push(ServerToClientOpCode.ErrorMethod, package.ToBuffer(_Serializer));
 		}
 
 		private void _Bind<TSoul>(TSoul soul, bool return_type, Guid return_id)
@@ -388,28 +388,28 @@ namespace Regulus.Remoting
 
 			foreach(var eventInfo in eventInfos)
 			{				
-                //var handler = _BuildDelegate(genericArguments, new_soul.ID, eventInfo.Name, _InvokeEvent);
+				//var handler = _BuildDelegate(genericArguments, new_soul.ID, eventInfo.Name, _InvokeEvent);
 
-			    try
-			    {
-                    var handler = _BuildDelegate2(soul_type, eventInfo.Name, new_soul.ID, _InvokeEvent);
+				try
+				{
+					var handler = _BuildDelegate2(soul_type, eventInfo.Name, new_soul.ID, _InvokeEvent);
 
-                    var eh = new Soul.EventHandler();
-                    eh.EventInfo = eventInfo;
-                    eh.DelegateObject = handler;
-                    new_soul.EventHandlers.Add(eh);
-                    
-                    var addMethod = eventInfo.GetAddMethod();
-			        addMethod.Invoke(soul, new[] {handler});
-                    
-                }
-			    catch (Exception ex)
-			    {			  
-                    Regulus.Utility.Log.Instance.WriteDebug(ex.ToString());      
-			        throw ex;
-			    }
-                
-            }
+					var eh = new Soul.EventHandler();
+					eh.EventInfo = eventInfo;
+					eh.DelegateObject = handler;
+					new_soul.EventHandlers.Add(eh);
+					
+					var addMethod = eventInfo.GetAddMethod();
+					addMethod.Invoke(soul, new[] {handler});
+					
+				}
+				catch (Exception ex)
+				{			  
+					Regulus.Utility.Log.Instance.WriteDebug(ex.ToString());      
+					throw ex;
+				}
+				
+			}
 
 			// property 
 			var propertys = soul_type.GetProperties(BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public);
@@ -425,9 +425,9 @@ namespace Regulus.Remoting
 			return new_soul;
 		}
 
-	    
+		
 
-	    private void _Unbind(object soul, Type type)
+		private void _Unbind(object soul, Type type)
 		{
 			var soulInfo = (from soul_info in _Souls.UpdateSet()
 							where object.ReferenceEquals(soul_info.ObjectInstance, soul) && soul_info.ObjectType == type
@@ -459,10 +459,10 @@ namespace Regulus.Remoting
 				typeof(GenericEventClosure<,,>), 
 				typeof(GenericEventClosure<,,,>), 
 				typeof(GenericEventClosure<,,,,>)
-            };
+			};
 
-            var delegateType = GenericEventClosure.GetDelegateType();
-            var closureType = closureTypes[generic_arguments.Length];
+			var delegateType = GenericEventClosure.GetDelegateType();
+			var closureType = closureTypes[generic_arguments.Length];
 			if(generic_arguments.Length != 0)
 			{
 				closureType = closureType.MakeGenericType(generic_arguments);
@@ -475,33 +475,33 @@ namespace Regulus.Remoting
 				closureType, 
 				entity_id, 
 				event_name,
-                invoke_Event);
+				invoke_Event);
 
 			return Delegate.CreateDelegate(delegateType, closureInstance, run);
 		}
 
-        private Delegate _BuildDelegate2(Type soul_type, string event_name, Guid entity_id, Action<Guid, string, object[]> invoke_Event)
-        {
+		private Delegate _BuildDelegate2(Type soul_type, string event_name, Guid entity_id, Action<Guid, string, object[]> invoke_Event)
+		{
 
-            var eventCreator = _EventProvider.Find(soul_type, event_name);
-            return eventCreator.Create(entity_id, invoke_Event);
+			var eventCreator = _EventProvider.Find(soul_type, event_name);
+			return eventCreator.Create(entity_id, invoke_Event);
 
 
-            /*var closureType = eventOwner.Find(event_name);
-            var getDelegateTypeMethod = closureType.GetMethod("GetDelegateType", BindingFlags.Static | BindingFlags.Public);
-            var delegateType = (Type)getDelegateTypeMethod.Invoke(null, null);
+			/*var closureType = eventOwner.Find(event_name);
+			var getDelegateTypeMethod = closureType.GetMethod("GetDelegateType", BindingFlags.Static | BindingFlags.Public);
+			var delegateType = (Type)getDelegateTypeMethod.Invoke(null, null);
 
-            var run = closureType.GetMethod("Run");
-            var closureInstance = Activator.CreateInstance(
-                closureType,
-                entity_id,
-                event_name,
-                invoke_Event);
+			var run = closureType.GetMethod("Run");
+			var closureInstance = Activator.CreateInstance(
+				closureType,
+				entity_id,
+				event_name,
+				invoke_Event);
 
-            return Delegate.CreateDelegate(delegateType, closureInstance, run);*/
-        }
+			return Delegate.CreateDelegate(delegateType, closureInstance, run);*/
+		}
 
-        public void Update()
+		public void Update()
 		{
 			var souls = _Souls.UpdateSet();
 			var intervalSpan = DateTime.Now - _UpdatePropertyInterval;

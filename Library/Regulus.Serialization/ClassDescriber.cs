@@ -13,6 +13,7 @@ namespace Regulus.Serialization
         private readonly Type _Type;
 
         private readonly FieldInfo[] _Fields;
+        
         private ITypeDescriber[] _Describers;
 
         private readonly object _Default;
@@ -26,7 +27,10 @@ namespace Regulus.Serialization
             _Fields = (from field in _Type.GetFields()
                          where field.IsStatic == false && field.IsPublic orderby field.Name
                          select field).ToArray();
+
+            
         }
+
 
         int ITypeDescriber.Id
         {
