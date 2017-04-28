@@ -50,9 +50,10 @@ namespace Regulus.Remoting
             _AutoPowerRegulator = new AutoPowerRegulator(_PowerRegulator);
         }
 
-		public PackageWriter()
+		public PackageWriter( ISerializer serializer)
 		{
-			_PowerRegulator = new PowerRegulator();
+            _Serializer = serializer;
+            _PowerRegulator = new PowerRegulator();
             _AutoPowerRegulator = new AutoPowerRegulator(_PowerRegulator);
         }
 
