@@ -56,7 +56,7 @@ namespace Regulus.Remoting.Tests
 
 
         [TestMethod()]
-        public void ToPackageTest()
+        public void ToPackageRequestTest()
         {
 
             var builder = new Regulus.Serialization.DescriberBuilder(
@@ -90,6 +90,87 @@ namespace Regulus.Remoting.Tests
             var result = ser.BufferToObject(bufferResponse) as RequestPackage; 
             Assert.AreEqual(ClientToServerOpCode.Ping , result.Code);
             Assert.AreEqual(3, result.Data[3]);
+        }
+
+
+        [TestMethod()]
+        public void ToPackageResponseTest()
+        {
+
+            var builder = new Regulus.Serialization.DescriberBuilder(
+                            typeof(System.Char),
+                            typeof(System.Char[]),
+                            typeof(System.String),
+                            typeof(System.Boolean),
+                            typeof(Regulus.Remoting.RequestPackage),
+                            typeof(System.Byte[]),
+                            typeof(System.Byte),
+                            typeof(Regulus.Remoting.ClientToServerOpCode),
+                            typeof(Regulus.Remoting.ResponsePackage),
+                            typeof(Regulus.Remoting.ServerToClientOpCode),
+                            typeof(Regulus.Remoting.PackageUpdateProperty),
+                            typeof(System.Guid),
+                            typeof(Regulus.Remoting.PackageInvokeEvent),
+                            typeof(System.Byte[][]),
+                            typeof(Regulus.Remoting.PackageErrorMethod),
+                            typeof(Regulus.Remoting.PackageReturnValue),
+                            typeof(Regulus.Remoting.PackageLoadSoulCompile),
+                            typeof(Regulus.Remoting.PackageLoadSoul),
+                            typeof(Regulus.Remoting.PackageUnloadSoul),
+                            typeof(Regulus.Remoting.PackageCallMethod),
+                            typeof(Regulus.Remoting.PackageRelease));
+            var ser = new Regulus.Serialization.Serializer(builder);
+            var response = new ResponsePackage();
+            response.Code = ServerToClientOpCode.UpdateProperty;
+            response.Data = new byte[] { 0, 1, 2, 3, 4, 5 };
+
+            var bufferResponse = ser.ObjectToBuffer(response);
+            var result = ser.BufferToObject(bufferResponse) as ResponsePackage;
+            Assert.AreEqual(ServerToClientOpCode.UpdateProperty, result.Code);
+            Assert.AreEqual(3, result.Data[3]);
+        }
+
+        [TestMethod()]
+        public void ToPackageUpdateTest()
+        {
+
+            var builder = new Regulus.Serialization.DescriberBuilder(
+                            typeof(System.Char),
+                            typeof(System.Char[]),
+                            typeof(System.String),
+                            typeof(System.Boolean),
+                            typeof(Regulus.Remoting.RequestPackage),
+                            typeof(System.Byte[]),
+                            typeof(System.Byte),
+                            typeof(Regulus.Remoting.ClientToServerOpCode),
+                            typeof(Regulus.Remoting.ResponsePackage),
+                            typeof(Regulus.Remoting.ServerToClientOpCode),
+                            typeof(Regulus.Remoting.PackageUpdateProperty),
+                            typeof(System.Guid),
+                            typeof(Regulus.Remoting.PackageInvokeEvent),
+                            typeof(System.Byte[][]),
+                            typeof(Regulus.Remoting.PackageErrorMethod),
+                            typeof(Regulus.Remoting.PackageReturnValue),
+                            typeof(Regulus.Remoting.PackageLoadSoulCompile),
+                            typeof(Regulus.Remoting.PackageLoadSoul),
+                            typeof(Regulus.Remoting.PackageUnloadSoul),
+                            typeof(Regulus.Remoting.PackageCallMethod),
+                            typeof(Regulus.Remoting.PackageRelease));
+            var ser = new Regulus.Serialization.Serializer(builder);
+            var update = new PackageUpdateProperty();
+            update.EventName = "Name";
+            update.EntityId = new Guid("3ecae85d-79e0-4cc9-a34f-60f31883d26c");
+            update.Args = ser.ObjectToBuffer("kdw");
+
+            var buf = ser.ObjectToBuffer(update);
+            var result = ser.BufferToObject(buf) as PackageUpdateProperty;
+
+            var name = ser.BufferToObject(result.Args) as string;
+
+            Assert.AreEqual(result.EntityId , update.EntityId);
+            Assert.AreEqual("kdw", name);
+
+
         }
 
 
