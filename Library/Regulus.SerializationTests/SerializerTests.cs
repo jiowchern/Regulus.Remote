@@ -26,11 +26,11 @@ namespace Regulus.Serialization.Tests
         [TestMethod()]
         public void EncodeZigZag()
         {
-            var e64_1 = Serializer.ZigZag.Encode((long)1);
-            var e64_2 = Serializer.ZigZag.Encode(-1L);
+            var e64_1 = ZigZag.Encode((long)1);
+            var e64_2 = ZigZag.Encode(-1L);
 
-            var e32_1 = Serializer.ZigZag.Encode(1);
-            var e32_2 = Serializer.ZigZag.Encode(-1);
+            var e32_1 = ZigZag.Encode(1);
+            var e32_2 = ZigZag.Encode(-1);
 
 
             Assert.AreEqual((uint)2, e32_1);
@@ -45,11 +45,11 @@ namespace Regulus.Serialization.Tests
         [TestMethod()]
         public void DecodeZigZag()
         {
-            var e64_1 = Serializer.ZigZag.Decode((ulong)2);
-            var e64_2 = Serializer.ZigZag.Decode((ulong)1);
+            var e64_1 = ZigZag.Decode((ulong)2);
+            var e64_2 = ZigZag.Decode((ulong)1);
 
-            var e32_1 = Serializer.ZigZag.Decode(2);
-            var e32_2 = Serializer.ZigZag.Decode(1);
+            var e32_1 = ZigZag.Decode(2);
+            var e32_2 = ZigZag.Decode(1);
 
 
             Assert.AreEqual(1, e32_1);
@@ -64,8 +64,8 @@ namespace Regulus.Serialization.Tests
         [TestMethod()]
         public void ZigZagTest()
         {
-            var value = Serializer.ZigZag.Encode(874534L);
-            var result = Serializer.ZigZag.Decode(value);
+            var value = ZigZag.Encode(874534L);
+            var result = ZigZag.Decode(value);
             Assert.AreEqual(874534L, result);
         }
 
@@ -74,9 +74,9 @@ namespace Regulus.Serialization.Tests
         public void VarintToBufferTest()
         {
 
-            var count = Serializer.Varint.GetByteCount(150);
+            var count = Varint.GetByteCount(150);
             var buffer = new byte[count];
-            var index = Serializer.Varint.NumberToBuffer(buffer, 0, 150);
+            var index = Varint.NumberToBuffer(buffer, 0, 150);
 
 
             Assert.AreEqual(0x96, buffer[0]);
@@ -90,7 +90,7 @@ namespace Regulus.Serialization.Tests
         public void VarintToNumberTest()
         {
             ulong number;
-            var index = Serializer.Varint.BufferToNumber(
+            var index = Varint.BufferToNumber(
                 new byte[]
                 {
                     0x96,
@@ -106,12 +106,12 @@ namespace Regulus.Serialization.Tests
         [TestMethod()]
         public void VarintTest()
         {
-            var count = Serializer.Varint.GetByteCount(12671L);
+            var count = Varint.GetByteCount(12671L);
             var buffer = new byte[count];
-            Serializer.Varint.NumberToBuffer(buffer, 0, 12671L);
+            Varint.NumberToBuffer(buffer, 0, 12671L);
 
             ulong value;
-            Serializer.Varint.BufferToNumber(buffer, 0, out value);
+            Varint.BufferToNumber(buffer, 0, out value);
 
             Assert.AreEqual(12671UL, value);
         }

@@ -108,6 +108,8 @@
     <Compile Include="Remoting\GPIBinderFactory.cs" />
     <Compile Include="Remoting\Value.cs" />
     <Compile Include="Remoting\ValueWaiter.cs" />
+    <Compile Include="Serialization\Varint.cs" />
+    <Compile Include="Serialization\ZigZag.cs" />
     <Compile Include="Utility\Asyncexecuter.cs" />
     <Compile Include="Utility\AutoPowerRegulator.cs" />
     <Compile Include="Utility\Command.cs" />

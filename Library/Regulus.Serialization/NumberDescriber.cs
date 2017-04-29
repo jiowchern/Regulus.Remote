@@ -34,18 +34,18 @@ namespace Regulus.Serialization
 
         int ITypeDescriber.GetByteCount(object instance)
         {
-            return Serializer.Varint.GetByteCount(Convert.ToUInt64(instance));
+            return Varint.GetByteCount(Convert.ToUInt64(instance));
         }
         public object Default { get { return _Default; } }
         int ITypeDescriber.ToBuffer(object instance, byte[] buffer, int begin)
         {            
-            return Serializer.Varint.NumberToBuffer(buffer, begin, Convert.ToUInt64(instance));
+            return Varint.NumberToBuffer(buffer, begin, Convert.ToUInt64(instance));
         }
 
         int ITypeDescriber.ToObject(byte[] buffer, int begin, out object instance)
         {
             ulong value;            
-            var readed = Serializer.Varint.BufferToNumber(buffer, begin, out value);
+            var readed = Varint.BufferToNumber(buffer, begin, out value);
             instance = Convert.ChangeType(value , _Type);
             return readed;
         }

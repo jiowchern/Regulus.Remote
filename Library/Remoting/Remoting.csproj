@@ -66,6 +66,8 @@
     <Compile Include="NetworkMonitor.cs" />
     <Compile Include="PackageReader.cs" />
     <Compile Include="PackageWriter.cs" />
+    <Compile Include="SocketBodyReader.cs" />
+    <Compile Include="SocketHeadReader.cs" />
     <Compile Include="User.cs" />
     <Compile Include="OfflineStage.cs" />
     <Compile Include="OnlineStage.cs" />

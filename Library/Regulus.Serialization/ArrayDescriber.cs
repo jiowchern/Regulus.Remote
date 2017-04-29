@@ -112,8 +112,8 @@ namespace Regulus.Serialization
             var set = _GetSet(instance);
 
 
-            var lenCount = Serializer.Varint.GetByteCount(set.TotalLength);
-            var validCount = Serializer.Varint.GetByteCount(set.ValidLength);
+            var lenCount = Varint.GetByteCount(set.TotalLength);
+            var validCount = Varint.GetByteCount(set.ValidLength);
 
             var describer = _GetDescriber(_ElementType);
             var instanceCount = 0;
@@ -121,7 +121,7 @@ namespace Regulus.Serialization
             {
                 var index = set.ValidObjects[i].Index;
                 var obj = set.ValidObjects[i].Object;
-                instanceCount += Serializer.Varint.GetByteCount(index);
+                instanceCount += Varint.GetByteCount(index);
                 instanceCount += describer.GetByteCount(obj);
             }
 
@@ -135,15 +135,15 @@ namespace Regulus.Serialization
 
             var set = _GetSet(instance);
             var offset = begin;
-            offset += Serializer.Varint.NumberToBuffer(buffer, offset, set.TotalLength);
-            offset += Serializer.Varint.NumberToBuffer(buffer, offset, set.ValidLength);
+            offset += Varint.NumberToBuffer(buffer, offset, set.TotalLength);
+            offset += Varint.NumberToBuffer(buffer, offset, set.ValidLength);
 
             var describer = _GetDescriber(_ElementType);
             for (int i = 0; i < set.ValidObjects.Length; i++)
             {
                 var index = set.ValidObjects[i].Index;
                 var obj = set.ValidObjects[i].Object;
-                offset += Serializer.Varint.NumberToBuffer(buffer, offset, index);
+                offset += Varint.NumberToBuffer(buffer, offset, index);
                 offset += describer.ToBuffer(obj, buffer, offset);
             }
             
@@ -155,19 +155,19 @@ namespace Regulus.Serialization
             
             var offset = begin;
             ulong count;
-            offset += Serializer.Varint.BufferToNumber(buffer, offset, out count);
+            offset += Varint.BufferToNumber(buffer, offset, out count);
             var array = Activator.CreateInstance(_Type , (int)count) as IList;
             instnace = array;
 
             ulong validCount;
-            offset += Serializer.Varint.BufferToNumber(buffer, offset, out validCount);
+            offset += Varint.BufferToNumber(buffer, offset, out validCount);
 
             var describer = _GetDescriber(_ElementType);
             for (var i = 0UL; i < validCount; i++)
             {
                 var index = 0LU;
 
-                offset += Serializer.Varint.BufferToNumber(buffer, offset, out index);
+                offset += Varint.BufferToNumber(buffer, offset, out index);
 
                 object value;
                 offset += describer.ToObject(buffer, offset, out value);

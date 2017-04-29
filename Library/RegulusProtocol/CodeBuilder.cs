@@ -361,7 +361,7 @@ $@"
                     addReturn = $@"
     var returnValue = new {returnTypeCode}();
     var returnId = _Queue.PushReturnValue(returnValue);    
-    data.ReturnId = returnId;
+    packageCallMethod.ReturnId = returnId;
 ";
                     returnValue = "return returnValue;";
                 }
@@ -374,12 +374,12 @@ $@"
                 {{                    
 
                         
-                    var data = new Regulus.Remoting.PackageCallMethod();
-                    data.EntityId = {CodeBuilder._GhostIdName};
-                    data.MethodName =""{methodInfo.Name}"";
+                    var packageCallMethod = new Regulus.Remoting.PackageCallMethod();
+                    packageCallMethod.EntityId = {CodeBuilder._GhostIdName};
+                    packageCallMethod.MethodName =""{methodInfo.Name}"";
                     {addReturn}
                     {addParams}
-                    _Requester.Request(Regulus.Remoting.ClientToServerOpCode.CallMethod , data.ToBuffer(_Serializer));
+                    _Requester.Request(Regulus.Remoting.ClientToServerOpCode.CallMethod , packageCallMethod.ToBuffer(_Serializer));
 
                     {returnValue}
                 }}
@@ -408,7 +408,7 @@ $@"
                 addParams.Add(addparam);
             }
 
-            return $"{addParamsHead}\n{string.Join(" \n", addParams.ToArray())}\ndata.MethodParams = paramList.ToArray();";
+            return $"{addParamsHead}\n{string.Join(" \n", addParams.ToArray())}\npackageCallMethod.MethodParams = paramList.ToArray();";
         }
     }
 }

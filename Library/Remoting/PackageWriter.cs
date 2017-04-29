@@ -22,7 +22,7 @@ namespace Regulus.Remoting
 
 		public event OnErrorCallback ErrorEvent;
 
-		private const int _HeadSize = 4;
+		
 
 		private readonly PowerRegulator _PowerRegulator;
 
@@ -125,7 +125,11 @@ namespace Regulus.Remoting
 			{
 				foreach(var buffer in buffers)
 				{
-					stream.Write(BitConverter.GetBytes(buffer.Length), 0, PackageWriter<TPackage>._HeadSize);
+				    var len = buffer.Length;
+				    var lenCount = Regulus.Serialization.Varint.GetByteCount(len);
+				    var lenBuffer = new byte[lenCount];
+				    Regulus.Serialization.Varint.NumberToBuffer(lenBuffer, 0, len);
+					stream.Write(lenBuffer, 0, lenBuffer.Length);
 					stream.Write(buffer, 0, buffer.Length);
 				}
 
