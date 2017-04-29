@@ -75,14 +75,7 @@ namespace Regulus.Remoting
                 _AutoPowerRegulator.Operate();
                 NetworkMonitor.Instance.Write.Set(_Buffer.Length);
                 _Socket.BeginSend(_Buffer, 0, _Buffer.Length, SocketFlags.None, _WriteCompletion, null);
-                /*_Socket.BeginSendTo(
-					_Buffer, 
-					0, 
-					_Buffer.Length, 
-					0, 
-					_Socket.RemoteEndPoint, 
-					_WriteCompletion, 
-					null);*/
+                
 			}
 			catch(SystemException e)
 			{
