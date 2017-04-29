@@ -44,8 +44,12 @@ namespace Regulus.Remoting
                 var readSize = _Socket.EndReceive(ar);                
                 NetworkMonitor.Instance.Read.Set(readSize);
 
-
-                if (_ReadData(readSize))
+                if (readSize == 0)
+                {
+                    if (_ErrorEvent != null)
+                        _ErrorEvent();
+                }
+                else if (_ReadData(readSize))
                 {
                     if (_DoneEvent != null)
                         _DoneEvent(_Buffer.ToArray());
