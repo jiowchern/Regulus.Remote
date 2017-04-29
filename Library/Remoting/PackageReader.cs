@@ -25,13 +25,10 @@ namespace Regulus.Remoting
 
 		public event OnErrorCallback ErrorEvent;
 
-		
-
-		private const int _HeadSize = 4;
 
 		private OnRequestPackageCallback _DoneEvent;
 
-		private SocketReader _Reader;
+		private ISocketReader _Reader;
 
 		private Socket _Socket;
 
@@ -52,21 +49,23 @@ namespace Regulus.Remoting
 
 		private void _ReadHead()
 		{
-			_Reader = new SocketReader(_Socket);
+			_Reader = new SocketHeadReader(_Socket);
 			_Reader.DoneEvent += _ReadBody;
 			_Reader.ErrorEvent += ErrorEvent;
-
-			_Reader.Read(PackageReader<TPackage>._HeadSize);
+			
 		}
 
 		private void _ReadBody(byte[] bytes)
 		{
-			var bodySize = BitConverter.ToInt32(bytes, 0);
-			_Reader = new SocketReader(_Socket);
+		    ulong len;
+		    Regulus.Serialization.Varint.BufferToNumber(bytes, 0, out len);
+            var bodySize = (int)len;
+
+            var reader = new SocketBodyReader(_Socket);
+            _Reader = reader;
 			_Reader.DoneEvent += _Package;
 			_Reader.ErrorEvent += ErrorEvent;
-
-			_Reader.Read(bodySize);
+            reader.Read(bodySize);
 		}
 
 		private void _Package(byte[] bytes)
@@ -88,75 +87,6 @@ namespace Regulus.Remoting
 			_Socket = null;
 
 			Singleton<Log>.Instance.WriteInfo("pakcage read stop.");
-		}
-	}
-
-	internal class SocketReader
-	{
-		public event OnByteDataCallback DoneEvent;
-
-		public event OnErrorCallback ErrorEvent;
-
-		private readonly Socket _Socket;
-
-		private byte[] _Buffer;
-
-		private int _Offset;
-
-		public SocketReader(Socket _Socket)
-		{
-			this._Socket = _Socket;
-		}
-
-		internal void Read(int size)
-		{
-			_Offset = 0;
-			_Buffer = new byte[size];
-			try
-			{
-				_Socket.BeginReceive(_Buffer, _Offset, _Buffer.Length - _Offset, 0, _Readed, null);
-			}
-			catch(SystemException e)
-			{
-				if(ErrorEvent != null)
-				{
-					ErrorEvent();
-				}
-			}
-		}
-
-		private void _Readed(IAsyncResult ar)
-		{
-			try
-			{
-				var readSize = _Socket.EndReceive(ar);
-				_Offset += readSize;
-                NetworkMonitor.Instance.Read.Set(readSize);
-                if(_Offset == _Buffer.Length)
-				{
-					DoneEvent(_Buffer);
-				}
-				else
-				{
-					_Socket.BeginReceive(
-						_Buffer, 
-						_Offset, 
-						_Buffer.Length - _Offset, 
-						SocketFlags.None, 
-						_Readed, 
-						null);
-				}
-			}
-			catch(SystemException e)
-			{
-				if(ErrorEvent != null)
-				{
-					ErrorEvent();
-				}
-			}
-			finally
-			{
-			}
 		}
 	}
 }

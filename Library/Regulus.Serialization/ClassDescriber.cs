@@ -55,7 +55,7 @@ namespace Regulus.Serialization
                        }).Where(validField => object.Equals(_GetDescriber(validField.field).Default, validField.field.GetValue(instance)) == false) .ToArray();
 
 
-            var validCount = Serializer.Varint.GetByteCount(validFields.Length);
+            var validCount = Varint.GetByteCount(validFields.Length);
             int count = 0;
             for (int i = 0; i < validFields.Length; i++)
             {
@@ -65,7 +65,7 @@ namespace Regulus.Serialization
                 var describer = _GetDescriber(validField.field);
                 var byteCount = describer.GetByteCount(value);
 
-                var indexCount = Serializer.Varint.GetByteCount(validField.index);
+                var indexCount = Varint.GetByteCount(validField.index);
                 count += byteCount + indexCount;
             }
             return count + validCount;
@@ -87,13 +87,13 @@ namespace Regulus.Serialization
                        }).Where(validField => object.Equals(_GetDescriber(validField.field).Default, validField.field.GetValue(instance))== false)
                    .ToArray();
 
-            offset += Serializer.Varint.NumberToBuffer(buffer, offset, validFields.Length);
+            offset += Varint.NumberToBuffer(buffer, offset, validFields.Length);
 
 
             foreach (var validField in validFields)
             {
                 var index = validField.index;
-                offset += Serializer.Varint.NumberToBuffer(buffer, offset, index);
+                offset += Varint.NumberToBuffer(buffer, offset, index);
                 var field = validField.field;
                 var value = field.GetValue(instance);
                 var describer = _GetDescriber(field);
@@ -121,12 +121,12 @@ namespace Regulus.Serialization
             var offset = begin;
 
             ulong validLength;
-            offset += Serializer.Varint.BufferToNumber(buffer, offset, out validLength);
+            offset += Varint.BufferToNumber(buffer, offset, out validLength);
 
             for (var i = 0ul; i < validLength; i++)
             {
                 ulong index;
-                offset += Serializer.Varint.BufferToNumber(buffer, offset, out index);
+                offset += Varint.BufferToNumber(buffer, offset, out index);
 
                 var filed = _Fields[index];
                 var describer = _GetDescriber(filed);
