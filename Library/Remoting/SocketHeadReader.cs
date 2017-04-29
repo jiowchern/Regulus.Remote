@@ -77,7 +77,7 @@ namespace Regulus.Remoting
                 var value = _ReadedByte[0];
                 _Buffer.Add(value);
 
-                if (value >= 0x80)
+                if (value < 0x80)
                 {
                     return true;
                 }
