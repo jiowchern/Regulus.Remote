@@ -15,7 +15,7 @@ namespace Regulus.Protocol
         public event Action<string, string> ProviderEvent;
         public event Action<string , string> GpiEvent;
         public event Action<string , string,string> EventEvent;
-        public void Build(string protocol_name, string[] namesapces, Type[] types)
+        public void Build(string protocol_name, Type[] types)
         {
 
             var codeGpis = new List<string>();
@@ -30,32 +30,31 @@ namespace Regulus.Protocol
 
             foreach (var type in types)
             {
-                if (namesapces.Any(n => n == type.Namespace)  )
+                
+                serializerTypes.Add(type);
+
+
+                if (type.IsInterface)
                 {
-                    serializerTypes.Add(type);
+                    string ghostClassCode = _BuildGhostCode(type);
+                    var typeName = _GetTypeName(type);
+                    addGhostType.Add($"types.Add(typeof({typeName}) , typeof({_GetGhostType(type)}) );");
+                    codeGpis.Add(ghostClassCode);
+                    if (GpiEvent != null)
+                        GpiEvent(typeName, ghostClassCode);
 
-
-                    if (type.IsInterface)
+                    var eventInfos = type.GetEvents();
+                    foreach (var eventInfo in eventInfos)
                     {
-                        string ghostClassCode = _BuildGhostCode(type);
-                        var typeName = _GetTypeName(type);
-                        addGhostType.Add($"types.Add(typeof({typeName}) , typeof({_GetGhostType(type)}) );");
-                        codeGpis.Add(ghostClassCode);
-                        if (GpiEvent != null)
-                            GpiEvent(typeName, ghostClassCode);
+                        addEventType.Add($"eventClosures.Add(new {_GetEventType(type, eventInfo.Name)}() );");
+                        var eventCode = _BuildEventCode(type, eventInfo);
+                        codeEvents.Add(eventCode);
 
-                        var eventInfos = type.GetEvents();
-                        foreach (var eventInfo in eventInfos)
-                        {
-                            addEventType.Add($"eventClosures.Add(new {_GetEventType(type, eventInfo.Name)}() );");
-                            var eventCode = _BuildEventCode(type, eventInfo);
-                            codeEvents.Add(eventCode);
-
-                            if (EventEvent != null)
-                                EventEvent(typeName, eventInfo.Name, eventCode);
-                        }
+                        if (EventEvent != null)
+                            EventEvent(typeName, eventInfo.Name, eventCode);
                     }
                 }
+                
             }
             var addTypeCode = string.Join("\n", addGhostType.ToArray());
             var addDescriberCode = string.Join(",", _GetSerializarType(serializerTypes) );
