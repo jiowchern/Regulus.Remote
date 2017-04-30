@@ -21,7 +21,7 @@ namespace Regulus.Protocol
             codeBuilder.ProviderEvent += (name , code) =>codes.Add(code);
             codeBuilder.EventEvent += (type_name, event_name, code) => codes.Add(code);
             codeBuilder.GpiEvent += (type_name, code) => codes.Add(code);
-            codeBuilder.Build(library_name, namesapces, types);
+            codeBuilder.Build(library_name,  types);
 
             var optionsDic = new Dictionary<string, string>
             {
@@ -83,7 +83,7 @@ namespace Regulus.Protocol
             codeBuilder.ProviderEvent += (name , code) => codes.Add(code);
             codeBuilder.EventEvent += (type_name, event_name, code) => codes.Add(code);
             codeBuilder.GpiEvent += (type_name, code) => codes.Add(code);
-            codeBuilder.Build(library_name, name_spaces, types);
+            codeBuilder.Build(library_name, types);
 
             var result = provider.CompileAssemblyFromSource(options, codes.ToArray());
             if (result.Errors.Count > 0)
@@ -128,7 +128,7 @@ namespace Regulus.Protocol
             codeBuilder.ProviderEvent += (name , code) => codes.Add(code);
             codeBuilder.EventEvent += (type_name, event_name, code) => codes.Add(code);
             codeBuilder.GpiEvent += (type_name, code) => codes.Add(code);
-            codeBuilder.Build(protocol_name, name_spaces, types);
+            codeBuilder.Build(protocol_name, types);
 
             var result = provider.CompileAssemblyFromSource(options, codes.ToArray());
             if (result.Errors.Count > 0)
