@@ -12,6 +12,10 @@ namespace Regulus.Remoting.Soul.Native
 
         private readonly ICore _Core;
 
+        private readonly IProtocol _Protocol;
+
+        private readonly ICommand _Command;
+
         private readonly Updater _RequesterHandlers;
 
         private readonly PowerRegulator _Spin;
@@ -32,7 +36,7 @@ namespace Regulus.Remoting.Soul.Native
             get { return _Spin.Power; }
         }
 
-        public ThreadCoreHandler(ICore core)
+        public ThreadCoreHandler(ICore core , IProtocol protocol , ICommand command)
         {
             if(core == null)
             {
@@ -40,6 +44,8 @@ namespace Regulus.Remoting.Soul.Native
             }
 
             _Core = core;
+            _Protocol = protocol;
+            _Command = command;
 
             _RequesterHandlers = new Updater();
             _Spin = new PowerRegulator();
@@ -51,7 +57,7 @@ namespace Regulus.Remoting.Soul.Native
         {
             Singleton<Log>.Instance.WriteInfo("server core launch");
             _Run = true;
-            _Core.Launch();
+            _Core.Launch(_Protocol , _Command);
 
             while(_Run)
             {

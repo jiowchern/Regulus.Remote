@@ -61,7 +61,7 @@ namespace Regulus.Remoting.Soul.Native
 			_View = viewer;
 			_Command = command;
 
-			_Server = new Server(core, protocol,port );
+			_Server = new Server(core, protocol,  command ,port);
 		    _Server.BreakEvent += _Break;
             _Launcher = new Launcher();
 			_Launcher.Push(_Server);
