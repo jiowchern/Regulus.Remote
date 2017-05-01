@@ -37,7 +37,9 @@ namespace Regulus.Tool.Tests
             g.ProviderEvent += (name,code) => codes.Add(code);
             g.EventEvent += (type_name, event_name, code) => codes.Add(code);
             g.GpiEvent += (type_name, code) => codes.Add(code);
-            g.Build("GPIProvider",new[]{"Regulus.Tool.GPI"},new [] {typeof(Regulus.Tool.GPI.GPIA) });
+            g.Build("GPIProvider",new [] {typeof(Regulus.Tool.GPI.GPIA) });
+
+            
 
             var optionsDic = new Dictionary<string, string>
             {

@@ -143,7 +143,7 @@ namespace Regulus.Protocol
                 }
             }
 
-            return (from type in types select "typeof(" + type.FullName + ")").ToArray();
+            return (from type in types select "typeof(" + _GetTypeName(type) + ")").ToArray();
         }
 
         private string _GetGhostType(Type type)

@@ -133,6 +133,8 @@ namespace Regulus.Protocol
             var result = provider.CompileAssemblyFromSource(options, codes.ToArray());
             if (result.Errors.Count > 0)
             {
+                System.IO.File.WriteAllLines("dump.cs", codes.ToArray());
+
                 throw new Exception("Prorocol compile error");
             }
 

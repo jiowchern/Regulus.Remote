@@ -8,23 +8,23 @@ namespace RemotingTest
 	{
 		private ISoulBinder _Binder;
 
-		void ICore.AssignBinder(ISoulBinder binder)
+		void IBinderProvider.AssignBinder(ISoulBinder binder)
 		{
 			binder.Return<ITestReturn>(this);
 			_Binder = binder;
 			_Binder.Bind<ITestGPI>(this);
 		}
 
-		bool IUpdatable.Update()
+		bool ICore.Update()
 		{
 			return true;
 		}
 
-		void IBootable.Launch()
+		void ICore.Launch(IProtocol protocol , ICommand command)
 		{
 		}
 
-		void IBootable.Shutdown()
+		void ICore.Shutdown()
 		{
 		}
 
