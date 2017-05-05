@@ -142,8 +142,14 @@ namespace Regulus.Protocol
                     types.Add(type);
                 }
             }
+            var typeCodes = (from type in types orderby type.FullName select "typeof(" + _GetTypeName(type) + ")").ToArray();
 
-            return (from type in types select "typeof(" + _GetTypeName(type) + ")").ToArray();
+            foreach (var typeCode in typeCodes)
+            {
+                Regulus.Utility.Log.Instance.WriteInfo(typeCode);
+            }
+            Regulus.Utility.Log.Instance.WriteInfo("Serializable object " + types.Count);
+            return typeCodes;
         }
 
         private string _GetGhostType(Type type)
