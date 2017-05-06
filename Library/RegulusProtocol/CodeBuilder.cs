@@ -137,8 +137,10 @@ namespace Regulus.Protocol
 
             foreach (var serializerType in serializer_types)
             {
+                var name = serializerType.FullName;
                 foreach (var type in new TypeDisintegrator(serializerType).Types)
                 {
+                    
                     types.Add(type);
                 }
             }

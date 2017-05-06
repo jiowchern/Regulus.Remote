@@ -36,7 +36,7 @@ namespace Regulus.Protocol
             }
             else if (_IsType(id , type))
             {
-                if(id.Type == TypeIdentifier.TYPE.CLASS)
+                if(id.Type == TypeIdentifier.TYPE.CLASS )
                     types.Add(type);
 
                 _Add(_GetEvents(type), types);
@@ -68,7 +68,7 @@ namespace Regulus.Protocol
 
         private bool _IsType(TypeIdentifier id, Type type)
         {
-            return type.IsInterface || id.Type == TypeIdentifier.TYPE.CLASS;
+            return type.IsInterface || id.Type == TypeIdentifier.TYPE.CLASS ;
         }
 
         private bool _IsBase(TypeIdentifier.TYPE type)
