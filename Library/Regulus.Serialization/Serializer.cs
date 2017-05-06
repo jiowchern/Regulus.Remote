@@ -8,16 +8,20 @@ namespace Regulus.Serialization
 {
     public class Serializer : ISerializer
     {
-        private readonly ITypeDescriber[] _Describers;
+        private readonly TypeSet _TypeSet;
 
         public Serializer(params ITypeDescriber[] describers)
         {
-            _Describers = describers;
 
-            foreach (var typeDescriber in _Describers)
+            var typeSet = new TypeSet(describers);
+            
+
+            foreach (var typeDescriber in describers)
             {
-                typeDescriber.SetMap(_Describers);
-            }          
+                typeDescriber.SetMap(typeSet);
+            }
+
+            _TypeSet = typeSet;
         }
 
         public Serializer(DescriberBuilder describer_builder) : this(describer_builder.Describers)
@@ -53,24 +57,26 @@ namespace Regulus.Serialization
             return (T)BufferToObject(buffer);
         }
         public object BufferToObject(byte[] buffer)
-        {
+        {            
             ulong id;
             var readIdCount = Varint.BufferToNumber(buffer, 0, out id);
             var describer = _GetDescriber((int)id);
             object instance;
-            describer.ToObject(buffer, readIdCount , out instance);
+            describer.ToObject(buffer, readIdCount, out instance);
 
             return instance;
         }
 
         private ITypeDescriber _GetDescriber(int id)
         {
-            return _Describers.First(describer => describer.Id == id);
+
+            
+            return _TypeSet.GetById(id);
         }
 
         private ITypeDescriber _GetDescriber(Type type)
         {
-            return _Describers.First(describer => describer.Type == type);
+            return _TypeSet.GetByType(type);
         }
 
         byte[] ISerializer.Serialize(object instance)

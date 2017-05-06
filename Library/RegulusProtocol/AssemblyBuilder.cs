@@ -95,7 +95,7 @@ namespace Regulus.Protocol
         }
 
 
-        public Assembly Build(Assembly assembly, string protocol_name, string[] name_spaces)
+        public Assembly Build(Assembly assembly, string protocol_name)
         {
 
             Dictionary<string, string> optionsDic = new Dictionary<string, string>

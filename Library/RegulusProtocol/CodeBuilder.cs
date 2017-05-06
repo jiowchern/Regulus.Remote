@@ -264,9 +264,9 @@ $@"
                 return _HaveReturn;
             }}
 
-            void Regulus.Remoting.IGhost.OnProperty(string name, byte[] value)
+            void Regulus.Remoting.IGhost.OnProperty(string name, object value)
             {{
-                Regulus.Remoting.AgentCore.UpdateProperty(name , ""C{name}"" , this , value , _Serializer);
+                Regulus.Remoting.AgentCore.UpdateProperty(name , ""C{name}"" , this , value );
             }}
             {implementCode}
             

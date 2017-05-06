@@ -121,13 +121,9 @@ namespace Regulus.Remoting.Soul.Native
 		{
             var assembly = Assembly.LoadFrom(common_path);
 
-            var nameSpaces = new HashSet<string>(from type in assembly.GetExportedTypes() select type.Namespace);
-
-            
-
             var protocolName = entry_name + "ProtocolProvider";
             var buidler = new Regulus.Protocol.AssemblyBuilder();
-		    var asm =  buidler.Build(assembly, protocolName, nameSpaces.ToArray());
+		    var asm =  buidler.Build(assembly, protocolName );
 		    return asm.CreateInstance(protocolName) as IProtocol;
 		}
 

@@ -53,7 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Agent.cs" />
+    <Compile Include="AgentCore.cs" />
     <Compile Include="AutoRelease.cs" />
     <Compile Include="Connect.cs" />
     <Compile Include="Core.cs" />
@@ -61,6 +61,7 @@
     <Compile Include="EventProvider.cs" />
     <Compile Include="GameLoader.cs" />
     <Compile Include="GPIProvider.cs" />
+    <Compile Include="IAgent.cs" />
     <Compile Include="IEventProxyCreator.cs" />
     <Compile Include="IProtocol.cs" />
     <Compile Include="NetworkMonitor.cs" />

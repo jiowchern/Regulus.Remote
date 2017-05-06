@@ -35,7 +35,7 @@ namespace Regulus.Remoting
 			return Id;
 		}
 
-		void IGhost.OnProperty(string name, byte[] value)
+		void IGhost.OnProperty(string name, object value)
 		{
 			throw new NotImplementedException();
 		}

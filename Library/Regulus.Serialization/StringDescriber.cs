@@ -61,9 +61,12 @@ namespace Regulus.Serialization
             return offset - begin;
         }
 
-        void ITypeDescriber.SetMap(ITypeDescriber[] describers)
+        void ITypeDescriber.SetMap(TypeSet type_set)
         {
-            _CharArrayDescriber = describers.First( d => d.Type == typeof(char[]));
+
+
+
+            _CharArrayDescriber = type_set.GetByType(typeof(char[])); 
         }
     }
 }

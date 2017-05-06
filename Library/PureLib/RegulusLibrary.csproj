@@ -102,7 +102,7 @@
     <Compile Include="Remoting\CommandParam.cs" />
     <Compile Include="Remoting\CommandParamBuilder.cs" />
     <Compile Include="Remoting\CommandRegister.cs" />
-    <Compile Include="Remoting\GhostIghost.cs" />
+    <Compile Include="Remoting\IGhost.cs" />
     <Compile Include="Remoting\GhostProvider.cs" />
     <Compile Include="Remoting\GPIBinder.cs" />
     <Compile Include="Remoting\GPIBinderFactory.cs" />

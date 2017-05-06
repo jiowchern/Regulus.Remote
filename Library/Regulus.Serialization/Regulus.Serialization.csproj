@@ -51,6 +51,7 @@
     <Compile Include="StringDescriber.cs" />
     <Compile Include="StructDescriber.cs" />
     <Compile Include="TypeIdentifier.cs" />
+    <Compile Include="TypeSet.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PureLib\RegulusLibrary.csproj">
