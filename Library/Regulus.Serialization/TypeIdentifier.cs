@@ -36,10 +36,7 @@ namespace Regulus.Serialization
             {
                 Type = TYPE.ARRAY;
             }
-            else if (_IsClass(type))
-            {
-                Type = TYPE.CLASS;
-            }
+            
             else if (_IsEnum(type))
             {
                 Type = TYPE.ENUM;
@@ -47,6 +44,10 @@ namespace Regulus.Serialization
             else if (_IsBittable(type))
             {
                 Type = TYPE.BITTABLE;
+            }
+            else if (_IsClass(type))
+            {
+                Type = TYPE.CLASS;
             }
         }
 
@@ -82,7 +83,7 @@ namespace Regulus.Serialization
 
         private bool _IsClass(Type type)
         {
-            return type.IsClass && type.IsByRef == false && type.IsAbstract == false;
+            return type.IsByRef == false && type.IsAbstract == false && type.IsInterface == false  ;
         }
 
         private bool _IsArray(Type type)
