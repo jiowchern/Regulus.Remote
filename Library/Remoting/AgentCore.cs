@@ -20,64 +20,7 @@ using Timer = System.Timers.Timer;
 
 namespace Regulus.Remoting
 {
-	/// <summary>
-	///     代理器
-	/// </summary>
-	public interface IAgent : IUpdatable
-	{
-		/// <summary>
-		///     與遠端發生斷線
-		///     呼叫Disconnect不會發生此事件
-		/// </summary>
-		event Action BreakEvent;
-
-		/// <summary>
-		///     連線成功事件
-		/// </summary>
-		event Action ConnectEvent;
-
-		/// <summary>
-		///     Ping
-		/// </summary>
-		long Ping { get; }
-
-		/// <summary>
-		///     是否為連線狀態
-		/// </summary>
-		bool Connected { get; }
-
-		/// <summary>
-		///     查詢介面物件通知者
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <returns></returns>
-		INotifier<T> QueryNotifier<T>();
-
-		/// <summary>
-		///     連線
-		/// </summary>
-		/// <param name="ipaddress"></param>
-		/// <param name="port"></param>
-		/// <returns>如果連線成功會發生OnValue傳回true</returns>
-		Value<bool> Connect(string ipaddress, int port);
-
-		/// <summary>
-		///     斷線
-		/// </summary>
-		void Disconnect();
-
-		/// <summary>
-		/// 錯誤的方法呼叫
-		/// 如果呼叫的方法參數有誤則會回傳此訊息.
-		/// 事件參數:
-		///     1.方法名稱
-		///     2.錯誤訊息
-		/// 會發生此訊息通常是因為client與server版本不相容所致.
-		/// </summary>
-		event Action<string , string> ErrorMethodEvent;
-	}
-
-	public class AgentCore
+    public class AgentCore
 	{
 		private static readonly Dictionary<Type, Type> _GhostTypes = new Dictionary<Type, Type>();
 
@@ -285,10 +228,12 @@ namespace Regulus.Remoting
 
 		private void _UpdateProperty(Guid entity_id, string name, byte[] value)
 		{
+            
 			var ghost = _FindGhost(entity_id);
 			if(ghost != null)
 			{
-				ghost.OnProperty(name, value);
+			    var instance = _Serializer.Deserialize(value);
+                ghost.OnProperty(name, instance);
 			}
 		}
 
@@ -420,7 +365,7 @@ namespace Regulus.Remoting
 		}
 
 		// 被_BuildGhostType參考
-		public static void UpdateProperty(string property, string type_name, object instance, byte[] value , ISerializer serializer)
+		public static void UpdateProperty(string property, string type_name, object instance, object value)
 		{
 			var type = AgentCore._GetType(type_name);
 			if(type != null)
@@ -428,7 +373,7 @@ namespace Regulus.Remoting
 				var field = type.GetField("_" + property, BindingFlags.Instance | BindingFlags.NonPublic);
 				if(field != null)
 				{
-                    field.SetValue(instance, serializer.Deserialize(value));
+                    field.SetValue(instance, value);
 				}
 			}
 		}

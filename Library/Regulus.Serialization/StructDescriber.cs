@@ -82,7 +82,7 @@ namespace Regulus.Serialization
             return size;
         }
 
-        void ITypeDescriber.SetMap(ITypeDescriber[] describer)
+        void ITypeDescriber.SetMap(TypeSet type_set)
         {
             
         }

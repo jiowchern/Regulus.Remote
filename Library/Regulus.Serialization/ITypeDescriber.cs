@@ -15,6 +15,6 @@ namespace Regulus.Serialization
 
 
 
-        void SetMap(ITypeDescriber[] describer);
+        void SetMap(TypeSet type_set);
     }
 }

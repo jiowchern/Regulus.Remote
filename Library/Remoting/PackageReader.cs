@@ -49,10 +49,11 @@ namespace Regulus.Remoting
 
 		private void _ReadHead()
 		{
-			_Reader = new SocketHeadReader(_Socket);
+		    var readHead = new SocketHeadReader(_Socket);
+            _Reader = readHead;
 			_Reader.DoneEvent += _ReadBody;
 			_Reader.ErrorEvent += ErrorEvent;
-			
+            readHead.Read();
 		}
 
 		private void _ReadBody(byte[] bytes)

@@ -8,7 +8,7 @@ namespace Regulus.Remoting
 
 		Guid GetID();
 
-		void OnProperty(string name, byte[] value);
+		void OnProperty(string name, object value);
 
 		bool IsReturnType();
 	}

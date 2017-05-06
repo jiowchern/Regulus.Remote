@@ -17,6 +17,8 @@ namespace Regulus.Serialization
 
         private object _Default;
 
+        
+
         public NumberDescriber(int id , Type type)
         {
 
@@ -50,9 +52,9 @@ namespace Regulus.Serialization
             return readed;
         }
 
-        public void SetMap(ITypeDescriber[] describer)
+        public void SetMap(TypeSet type_set)
         {
-            
+ 
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Sockets;
 
 namespace Regulus.Remoting
@@ -16,15 +17,19 @@ namespace Regulus.Remoting
             _ReadedByte = new byte[1];
             _Socket = socket;
             _Buffer = new List<byte>();
-            _Read();
+            
         }
 
+        public void Read()
+        {
+            _Read();
+        }
         private void _Read()
         {
 
             try
             {
-                _Socket.BeginReceive(_ReadedByte, 0, 1, 0, _Readed, null);
+                _Socket.BeginReceive(_ReadedByte, 0, 1, SocketFlags.None, _Readed, null);
             }
             catch (SystemException e)
             {
@@ -40,23 +45,30 @@ namespace Regulus.Remoting
         {
 
             try
+        
             {
-                var readSize = _Socket.EndReceive(ar);                
+                SocketError error;
+                var readSize = _Socket.EndReceive(ar , out error);                
                 NetworkMonitor.Instance.Read.Set(readSize);
 
-                if (readSize == 0)
+
+                if (error == SocketError.Success)
                 {
-                    if (_ErrorEvent != null)
-                        _ErrorEvent();
-                }
-                else if (_ReadData(readSize))
-                {
-                    if (_DoneEvent != null)
-                        _DoneEvent(_Buffer.ToArray());
+                    if (_ReadData(readSize))
+                    {
+                        if (_DoneEvent != null)
+                            _DoneEvent(_Buffer.ToArray());
+                    }
+                    else
+                    {
+                        _Read();
+                    }
                 }
                 else
                 {
-                    _Read();
+                    Regulus.Utility.Log.Instance.WriteDebug("read head error "  + error);                    
+                    if (_ErrorEvent != null)
+                        _ErrorEvent();
                 }
                 
 
@@ -83,6 +95,7 @@ namespace Regulus.Remoting
 
                 if (value < 0x80)
                 {
+                    _ReadedByte[0] = 0xff;
                     return true;
                 }
             }

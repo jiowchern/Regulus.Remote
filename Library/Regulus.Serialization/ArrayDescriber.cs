@@ -22,12 +22,13 @@ namespace Regulus.Serialization
 
         private readonly Type _Type;
 
-        private ITypeDescriber[] _Describers;
 
         private object _Default;
         private object _DefaultElement;
 
         private Type _ElementType;
+
+        private TypeSet _TypeSet;
 
         public ArrayDescriber(int id , Type type)
         {
@@ -179,14 +180,14 @@ namespace Regulus.Serialization
             return offset - begin;
         }
 
-        void ITypeDescriber.SetMap(ITypeDescriber[] describers)
+        void ITypeDescriber.SetMap(TypeSet type_set)
         {
-            _Describers = describers;
+            _TypeSet = type_set;
         }
 
         private ITypeDescriber _GetDescriber(Type type)
         {
-            return _Describers.First(d => d.Type == type);
+            return _TypeSet.GetByType(type);
         }
     }
 }
