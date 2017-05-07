@@ -417,7 +417,10 @@ namespace Regulus.Utility
 
 				object arg0;
 				Command.Conversion(args[0], out arg0, typeof(T1));
-				T1 val = (T1) arg0;                
+				T1 val = (T1) arg0;
+
+
+			    
 				executer.Method.Invoke(executer.Target, new [] { arg0 } );
 			};
 
