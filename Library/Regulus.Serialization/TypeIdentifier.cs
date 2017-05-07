@@ -58,9 +58,10 @@ namespace Regulus.Serialization
 
             try
             {
+                var size = Marshal.SizeOf(type);
                 var val = Activator.CreateInstance(type);
                 GCHandle.Alloc(val, GCHandleType.Pinned).Free();
-                return true;
+                return size != 0;
             }
             catch (Exception)
             {
