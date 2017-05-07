@@ -18,7 +18,7 @@ namespace Regulus.Protocol
         public event Action<string , string,string> EventEvent;
 
 
-        public void Build(string protocol_name, Assembly asm , string[] namespaces)
+        /*public void Build(string protocol_name, Assembly asm , string[] namespaces)
         {
             var types = new List<Type>();
             foreach (var exportedType in asm.GetExportedTypes())
@@ -29,7 +29,7 @@ namespace Regulus.Protocol
                 }
             }
             Build(protocol_name, types.ToArray());
-        }
+        }*/
         public void Build(string protocol_name, Type[] types)
         {
 

@@ -95,7 +95,7 @@ namespace Regulus.Protocol
             codeBuilder.ProviderEvent += (name , code) => codes.Add(code);
             codeBuilder.EventEvent += (type_name, event_name, code) => codes.Add(code);
             codeBuilder.GpiEvent += (type_name, code) => codes.Add(code);
-            codeBuilder.Build(protocol_name, assembly , namespaces);
+            codeBuilder.Build(protocol_name, assembly.GetExportedTypes());
             
             var result = provider.CompileAssemblyFromSource(options, codes.ToArray());
             if (result.Errors.Count > 0)
