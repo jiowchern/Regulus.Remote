@@ -36,6 +36,7 @@ namespace Regulus.Protocol
                 ReferencedAssemblies =
                 {
                     "System.Core.dll",
+                    "System.xml.dll",
                     "RegulusLibrary.dll",
                     "RegulusRemoting.dll",
                     "Regulus.Serialization.dll",
@@ -67,6 +68,7 @@ namespace Regulus.Protocol
                 ReferencedAssemblies =
                 {
                     "System.Core.dll",
+                    "System.xml.dll",
                     "RegulusLibrary.dll",
                     "RegulusRemoting.dll",
                     "Regulus.Serialization.dll",
@@ -112,6 +114,7 @@ namespace Regulus.Protocol
                 ReferencedAssemblies =
                 {
                     "System.Core.dll",
+                    "System.xml.dll",
                     "RegulusLibrary.dll",
                     "RegulusRemoting.dll",
                     "Regulus.Serialization.dll",                    
