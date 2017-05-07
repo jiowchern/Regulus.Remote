@@ -3,6 +3,8 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 namespace Regulus.Utility
@@ -398,15 +400,57 @@ namespace Regulus.Utility
 					throw new ArgumentException("命令參數數量為0");
 				}
 
-				executer.Method.Invoke(executer.Target, new object[0]);
+				
+
+			    _Invoke(executer.Method , executer.Target , new object[0]);
 			};
 
 			_Register(command, func , typeof(void) , new Type[0]);
 		}
 
-		
+	    private object _Invoke(MethodInfo method, object target, object[] objects)
+	    {
+	        if (method.IsStatic && method.IsDefined(typeof (ExtensionAttribute), false) && Command._Compatible(method.GetParameters()[0].ParameterType, target.GetType()))
+	        {
+	            return method.Invoke(
+	                null,
+	                new[]
+	                {
+	                    target
+	                }.Union(objects).ToArray());
+	        }
+	        else if(method.IsStatic == false )
+            {
+	            return method.Invoke(target, objects);
+	        }
 
-		public void Register<T1>(string command, Action<T1> executer)
+            throw new Exception("Wrong method");
+        }
+
+	    private static bool _Compatible(Type contain, Type target)
+	    {
+	        if (target == typeof (object))
+	            return false;
+
+            if (target == null)
+                return false;
+
+            var interfaces = target.GetInterfaces();
+	        
+            foreach (var @interface in interfaces)
+            {
+                if (_Compatible(contain, @interface))
+                    return true;
+            }
+
+            if (target != contain)
+	        {	            
+                return _Compatible(contain , target.BaseType);
+	        }
+	        return true;
+	    }
+
+	    public void Register<T1>(string command, Action<T1> executer)
 		{
 			Action<string[]> func = args =>
 			{
@@ -417,8 +461,9 @@ namespace Regulus.Utility
 
 				object arg0;
 				Command.Conversion(args[0], out arg0, typeof(T1));
-				T1 val = (T1) arg0;                
-				executer.Method.Invoke(executer.Target, new [] { arg0 } );
+				T1 val = (T1) arg0;
+
+			    _Invoke(executer.Method , executer.Target, new[] { arg0 });
 			};
 
 
@@ -443,10 +488,9 @@ namespace Regulus.Utility
 				object arg1;
 				Command.Conversion(args[1], out arg1, typeof(T2));
 
-
-				executer.Method.Invoke(executer.Target, new[] { arg0 , arg1});
 				
-			};
+                _Invoke(executer.Method, executer.Target, new[] { arg0 , arg1 });
+            };
 
 			_Register(command, func, typeof(void), new[]
 				{
@@ -469,9 +513,10 @@ namespace Regulus.Utility
 				object arg1;
 				Command.Conversion(args[1], out arg1, typeof(T2));
 				object arg2;
-				Command.Conversion(args[2], out arg2, typeof(T3));
-				executer.Method.Invoke(executer.Target, new[] { arg0, arg1 ,arg2});
-			};
+				Command.Conversion(args[2], out arg2, typeof(T3));				
+
+                _Invoke(executer.Method, executer.Target, new[] { arg0, arg1, arg2 });
+            };
 
 
 			_Register(command, func, typeof(void), new[]
@@ -498,9 +543,10 @@ namespace Regulus.Utility
 				object arg2;
 				Command.Conversion(args[2], out arg2, typeof(T3));
 				object arg3;
-				Command.Conversion(args[3], out arg3, typeof(T4));
-				executer.Method.Invoke(executer.Target, new[] { arg0, arg1, arg2 ,arg3});
-			};
+				Command.Conversion(args[3], out arg3, typeof(T4));				
+
+                _Invoke(executer.Method, executer.Target, new[] { arg0, arg1, arg2, arg3 });
+            };
 
 			_Register(command, func, typeof(void), new[]
 				{
@@ -519,9 +565,10 @@ namespace Regulus.Utility
 				{
 					throw new ArgumentException("命令參數數量為0");
 				}
+				
 
-				var ret = executer.Method.Invoke(executer.Target , new object[0]);
-				value.Method.Invoke(value.Target, new object[] {ret});
+                var ret = _Invoke(executer.Method, executer.Target, new object[0] );
+                value.Method.Invoke(value.Target, new object[] {ret});
 			};
 
 			_Register(command, func, typeof(TR), new Type[0]);
@@ -539,11 +586,12 @@ namespace Regulus.Utility
 
 				object arg0;
 				Command.Conversion(args[0], out arg0, typeof(T1));
-				var ret = executer.Method.Invoke(executer.Target, new object[] { arg0 });
-				value.Method.Invoke(value.Target, new object[] { ret });
+				
+                
 
-
-			};
+                var ret = _Invoke(executer.Method, executer.Target, new[] { arg0 });
+                value.Method.Invoke(value.Target, new object[] { ret });
+            };
 
 			_Register(command, func, typeof(TR), new[]
 				{
@@ -567,8 +615,10 @@ namespace Regulus.Utility
 				object arg1;
 				Command.Conversion(args[1], out arg1, typeof(T2));
 
-				var ret = executer.Method.Invoke(executer.Target, new object[] { arg0,arg1 });
-				value.Method.Invoke(value.Target, new object[] { ret });
+				
+
+                var ret = _Invoke(executer.Method, executer.Target, new object[] { arg0, arg1 });
+                value.Method.Invoke(value.Target, new object[] { ret });
 			};
 
 			_Register(command, func, typeof(TR), new[]
@@ -596,8 +646,9 @@ namespace Regulus.Utility
 				object arg2;
 				Command.Conversion(args[2], out arg2, typeof(T3));
 
-				var ret = executer.Method.Invoke(executer.Target, new[] { arg0, arg1,arg2 });
-				value.Method.Invoke(value, new[] { ret });
+                
+                var ret = _Invoke(executer.Method, executer.Target, new object[] { arg0, arg1, arg2 });
+                value.Method.Invoke(value, new[] { ret });
 			};
 
 			_Register(command, func, typeof(TR), new[]
@@ -626,9 +677,9 @@ namespace Regulus.Utility
 				Command.Conversion(args[2], out arg2, typeof(T3));
 				object arg3;
 				Command.Conversion(args[3], out arg3, typeof(T4));
-
-				var ret = executer.Method.Invoke(executer.Target, new[] { arg0, arg1, arg2 , arg3 });
-				value.Method.Invoke(value, new[] { ret });
+				
+                var ret = _Invoke(executer.Method, executer.Target, new object[] { arg0, arg1, arg2, arg3 });
+                value.Method.Invoke(value, new[] { ret });
 			};
 
 			_Register(command, func, typeof(TR), new[]
