@@ -56,20 +56,9 @@ namespace Regulus.Serialization
         private bool _IsBittable(Type type)
         {
 
-            try
-            {
-                var size = Marshal.SizeOf(type);
-                var val = Activator.CreateInstance(type);
-                GCHandle.Alloc(val, GCHandleType.Pinned).Free();
-                return size != 0;
-            }
-            catch (Exception)
-            {
+            return _BittableTypes.Any(t => t == type);
 
-
-            }
-
-            return false;
+            
         }
 
         private bool _IsString(Type type)
@@ -84,7 +73,7 @@ namespace Regulus.Serialization
 
         private bool _IsClass(Type type)
         {
-            return type.IsByRef == false && type.IsAbstract == false && type.IsInterface == false  ;
+            return type.IsByRef == false && type.IsAbstract == false && type.IsInterface == false && type.IsCOMObject == false && type.IsSpecialName == false && type.IsSubclassOf(typeof(Delegate)) == false;
         }
 
         private bool _IsArray(Type type)
@@ -102,6 +91,17 @@ namespace Regulus.Serialization
             typeof (bool),
             typeof (long),
             typeof (ulong),
+        };
+
+
+        private readonly Type[] _BittableTypes = new[]
+        {
+            typeof (float),
+            typeof (decimal),
+            typeof (double),
+            typeof (Guid),
+            typeof (char),
+            typeof (byte),
         };
 
 

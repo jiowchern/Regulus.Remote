@@ -39,7 +39,8 @@ namespace Regulus.Remoting.Soul.Native
 			_View.WriteLine("Example.");
 			_View.WriteLine("[Launch]");
 			_View.WriteLine("port = 12345");
-            _View.WriteLine("common_path = path/common.dll");            
+            _View.WriteLine("common_path = path/common.dll");
+            _View.WriteLine("common_namespace = YourNamespace.YourProjectCommon");
             _View.WriteLine("project_path = path/project.dll");
 			_View.WriteLine("project_entry = YourNamespace.YourProjectClassName"); 
 			_View.WriteLine("======================================");
@@ -87,10 +88,10 @@ namespace Regulus.Remoting.Soul.Native
 			    var dllpath = ini.Read("Launch", "project_path");			
 			    var className = ini.Read("Launch", "project_entry");
 
-                var commonPath = ini.Read("Launch", "common_path");                
+                var commonPath = ini.Read("Launch", "common_path");
+                var commonNamespace = ini.Read("Launch", "common_namespace");
 
-
-                Launch(port, dllpath , className , commonPath );
+                Launch(port, dllpath , className , commonPath , new [] { commonNamespace });
             }
             catch (Exception ex)
             {
@@ -100,12 +101,12 @@ namespace Regulus.Remoting.Soul.Native
 
 	    
 
-	    public void Launch(int port, string project_path, string project_entry_name, string common_path)
+	    public void Launch(int port, string project_path, string project_entry_name, string common_path , string[] namespaces)
 		{
 
             var instance = StageStart._CreateProject(project_path, project_entry_name);
 
-	        var library = _CreateProtocol(common_path, project_entry_name);
+	        var library = _CreateProtocol(common_path, project_entry_name , namespaces);
 				
 			DoneEvent(instance, library, port);			
 		}
@@ -117,13 +118,13 @@ namespace Regulus.Remoting.Soul.Native
 	        return instance;
 	    }
 
-	    private IProtocol _CreateProtocol(string  common_path ,string entry_name)
+	    private IProtocol _CreateProtocol(string common_path ,string entry_name , string[] namespaces)
 		{
             var assembly = Assembly.LoadFrom(common_path);
 
             var protocolName = entry_name + "ProtocolProvider";
             var buidler = new Regulus.Protocol.AssemblyBuilder();
-		    var asm =  buidler.Build(assembly, protocolName );
+		    var asm =  buidler.Build(assembly, protocolName , namespaces);
 		    return asm.CreateInstance(protocolName) as IProtocol;
 		}
 

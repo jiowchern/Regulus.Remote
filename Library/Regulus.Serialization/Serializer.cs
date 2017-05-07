@@ -41,14 +41,24 @@ namespace Regulus.Serialization
         }
         public byte[] ObjectToBuffer(object instance , Type type)
         {
-            var describer = _GetDescriber(type);
-            var id = describer.Id;
-            var idCount = Varint.GetByteCount((ulong)id);
-            var bufferCount = describer.GetByteCount(instance);
-            var buffer = new byte[idCount + bufferCount];
-            var readCount = Varint.NumberToBuffer(buffer, 0, id);
-            describer.ToBuffer(instance, buffer, readCount);
-            return buffer;
+
+            try
+            {
+                var describer = _GetDescriber(type);
+                var id = describer.Id;
+                var idCount = Varint.GetByteCount((ulong)id);
+                var bufferCount = describer.GetByteCount(instance);
+                var buffer = new byte[idCount + bufferCount];
+                var readCount = Varint.NumberToBuffer(buffer, 0, id);
+                describer.ToBuffer(instance, buffer, readCount);
+                return buffer;
+            }
+            catch (DescriberException ex)
+            {
+                
+                throw ex;
+            }
+            
         }
 
 
@@ -57,14 +67,24 @@ namespace Regulus.Serialization
             return (T)BufferToObject(buffer);
         }
         public object BufferToObject(byte[] buffer)
-        {            
-            ulong id;
-            var readIdCount = Varint.BufferToNumber(buffer, 0, out id);
-            var describer = _GetDescriber((int)id);
-            object instance;
-            describer.ToObject(buffer, readIdCount, out instance);
+        {
 
-            return instance;
+            try
+            {
+                ulong id;
+                var readIdCount = Varint.BufferToNumber(buffer, 0, out id);
+                var describer = _GetDescriber((int)id);
+                object instance;
+                describer.ToObject(buffer, readIdCount, out instance);
+
+                return instance;
+            }
+            catch (DescriberException ex)
+            {
+
+                throw ex;
+            }
+            
         }
 
         private ITypeDescriber _GetDescriber(int id)

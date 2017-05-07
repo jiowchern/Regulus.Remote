@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Reflection;
@@ -10,44 +11,7 @@ namespace Regulus.Protocol
     public class AssemblyBuilder
     {
 
-        public IEnumerable<string> Build(string path,string output_path,string library_name, string[] namesapces)
-        {
-            var sourceDll = System.IO.File.ReadAllBytes(path);
-            var assembly = Assembly.Load(sourceDll);
-            var types = assembly.GetExportedTypes();
-
-            var codes = new List<string>();
-            var codeBuilder = new CodeBuilder();
-            codeBuilder.ProviderEvent += (name , code) =>codes.Add(code);
-            codeBuilder.EventEvent += (type_name, event_name, code) => codes.Add(code);
-            codeBuilder.GpiEvent += (type_name, code) => codes.Add(code);
-            codeBuilder.Build(library_name,  types);
-
-            var optionsDic = new Dictionary<string, string>
-            {
-                {"CompilerVersion", "v3.5"}
-            };
-            var provider = new CSharpCodeProvider(optionsDic);
-            var options = new CompilerParameters
-            {
-                
-                OutputAssembly = output_path,
-                GenerateExecutable = false,
-                ReferencedAssemblies =
-                {
-                    "System.Core.dll",
-                    "System.xml.dll",
-                    "RegulusLibrary.dll",
-                    "RegulusRemoting.dll",
-                    "Regulus.Serialization.dll",
-                    
-                    path,
-                }
-            };
-            var result = provider.CompileAssemblyFromSource(options, codes.ToArray());
-
-            return codes.ToArray();
-        }
+        
 
         
 
@@ -97,7 +61,7 @@ namespace Regulus.Protocol
         }
 
 
-        public Assembly Build(Assembly assembly, string protocol_name)
+        public Assembly Build(Assembly assembly, string protocol_name , string[] namespaces)
         {
 
             Dictionary<string, string> optionsDic = new Dictionary<string, string>
@@ -120,19 +84,19 @@ namespace Regulus.Protocol
                     "Regulus.Serialization.dll",                    
                     assembly.Location
                }
-
+                , TempFiles = new TempFileCollection()
             };
 
-
-            var types = assembly.GetExportedTypes();
+            
+            
 
             var codes = new List<string>();
             var codeBuilder = new CodeBuilder();
             codeBuilder.ProviderEvent += (name , code) => codes.Add(code);
             codeBuilder.EventEvent += (type_name, event_name, code) => codes.Add(code);
             codeBuilder.GpiEvent += (type_name, code) => codes.Add(code);
-            codeBuilder.Build(protocol_name, types);
-
+            codeBuilder.Build(protocol_name, assembly , namespaces);
+            
             var result = provider.CompileAssemblyFromSource(options, codes.ToArray());
             if (result.Errors.Count > 0)
             {
@@ -143,5 +107,6 @@ namespace Regulus.Protocol
 
             return result.CompiledAssembly;
         }
+        
     }
 }

@@ -46,6 +46,7 @@
     <Compile Include="EnumDescriber.cs" />
     <Compile Include="ITypeDescriber.cs" />
     <Compile Include="NumberDescriber.cs" />
+    <Compile Include="DescriberException.cs" />
     <Compile Include="Serializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringDescriber.cs" />

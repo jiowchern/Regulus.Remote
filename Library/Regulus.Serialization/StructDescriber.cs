@@ -20,12 +20,23 @@ namespace Regulus.Serialization
 
         private readonly object _Default;
 
+        private int _Size;
+
         public StructDescriber(int id, Type type)
         {
             _Id = id;
             _Type = type;
 
             _Default = Activator.CreateInstance(type);
+            try
+            {
+                _Size = Marshal.SizeOf(_Type);
+            }
+            catch (Exception ex)
+            {                
+                throw new DescriberException(typeof(StructDescriber) , _Type , _Id , "Size" , ex);
+            }
+            
         }
 
         int ITypeDescriber.Id
@@ -45,23 +56,33 @@ namespace Regulus.Serialization
 
         int ITypeDescriber.GetByteCount(object instance)
         {
-            return Marshal.SizeOf(_Type);
+            return _Size;
         }
 
         int ITypeDescriber.ToBuffer(object instance, byte[] buffer, int begin)
         {
-         
+            return _ToBuffer(instance, buffer, begin);
+        }
+
+        private int _ToBuffer(object instance, byte[] buffer, int begin)
+        {
             int readCount;
             GCHandle pinStructure = GCHandle.Alloc(instance, GCHandleType.Pinned);
             try
             {
-                readCount = Marshal.SizeOf(_Type);
+                readCount = _Size;
                 Marshal.Copy(pinStructure.AddrOfPinnedObject(), buffer, begin, readCount);
+            }
+            catch (Exception ex)
+            {
+                throw new DescriberException(typeof(StructDescriber), _Type, _Id, "ToBuffer", ex);
             }
             finally
             {
                 if (pinStructure.IsAllocated)
+                {
                     pinStructure.Free();
+                }
             }
 
             return readCount;
@@ -69,17 +90,23 @@ namespace Regulus.Serialization
 
         int ITypeDescriber.ToObject(byte[] buffer, int begin, out object instnace)
         {
-            int size = Marshal.SizeOf(_Type);
-            
-            IntPtr ptr = Marshal.AllocHGlobal(size);
 
-            Marshal.Copy(buffer, begin, ptr, size);
+            try
+            {
+                int size = Marshal.SizeOf(_Type);
 
-            instnace = Marshal.PtrToStructure(ptr, _Type);
-            Marshal.FreeHGlobal(ptr);
+                IntPtr ptr = Marshal.AllocHGlobal(size);
 
+                Marshal.Copy(buffer, begin, ptr, size);
 
-            return size;
+                instnace = Marshal.PtrToStructure(ptr, _Type);
+                Marshal.FreeHGlobal(ptr);
+                return size;
+            }
+            catch (Exception ex)
+            {
+                throw new DescriberException(typeof (StructDescriber), _Type, _Id, "ToObject", ex);             
+            }            
         }
 
         void ITypeDescriber.SetMap(TypeSet type_set)

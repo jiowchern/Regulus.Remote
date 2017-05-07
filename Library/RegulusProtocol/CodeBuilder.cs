@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -15,6 +16,20 @@ namespace Regulus.Protocol
         public event Action<string, string> ProviderEvent;
         public event Action<string , string> GpiEvent;
         public event Action<string , string,string> EventEvent;
+
+
+        public void Build(string protocol_name, Assembly asm , string[] namespaces)
+        {
+            var types = new List<Type>();
+            foreach (var exportedType in asm.GetExportedTypes())
+            {
+                if (namespaces.Any(n => n == exportedType.Namespace))
+                {
+                    types.Add(exportedType);
+                }
+            }
+            Build(protocol_name, types.ToArray());
+        }
         public void Build(string protocol_name, Type[] types)
         {
 
