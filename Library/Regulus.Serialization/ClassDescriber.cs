@@ -46,7 +46,7 @@ namespace Regulus.Serialization
 
         int ITypeDescriber.GetByteCount(object instance)
         {
-
+            
             var validFields = _Fields.Select(
                        (field, index) => new
                        {
@@ -78,64 +78,91 @@ namespace Regulus.Serialization
 
         int ITypeDescriber.ToBuffer(object instance, byte[] buffer, int begin)
         {
-            int offset = begin;
-            var validFields = _Fields.Select(
-                       (field, index) => new
-                       {
-                           field,
-                           index
-                       }).Where(validField => object.Equals(_GetDescriber(validField.field).Default, validField.field.GetValue(instance))== false)
-                   .ToArray();
 
-            offset += Varint.NumberToBuffer(buffer, offset, validFields.Length);
-
-
-            foreach (var validField in validFields)
+            try
             {
-                var index = validField.index;
-                offset += Varint.NumberToBuffer(buffer, offset, index);
-                var field = validField.field;
-                var value = field.GetValue(instance);
-                var describer = _GetDescriber(field);
-                offset += describer.ToBuffer(value, buffer, offset);
+                int offset = begin;
+                var validFields = _Fields.Select(
+                           (field, index) => new
+                           {
+                               field,
+                               index
+                           }).Where(validField => object.Equals(_GetDescriber(validField.field).Default, validField.field.GetValue(instance)) == false)
+                       .ToArray();
+
+                offset += Varint.NumberToBuffer(buffer, offset, validFields.Length);
+
+
+                foreach (var validField in validFields)
+                {
+                    var index = validField.index;
+                    offset += Varint.NumberToBuffer(buffer, offset, index);
+                    var field = validField.field;
+                    var value = field.GetValue(instance);
+                    var describer = _GetDescriber(field);
+                    offset += describer.ToBuffer(value, buffer, offset);
+                }
+
+
+                return offset - begin;
+            }
+            catch (Exception ex)
+            {
+
+                throw new DescriberException(typeof(ClassDescriber), _Type, _Id, "ToBuffer", ex);
             }
             
-
-            return offset - begin;
         }
 
         int ITypeDescriber.ToObject(byte[] buffer, int begin , out object instance)
         {
-
-            var constructor = _Type.GetConstructors().OrderBy( c => c.GetParameters().Length ).Select( c=>c).First();
-            var argTypes = constructor.GetParameters().Select( info => info.ParameterType).ToArray();
-            var objArgs = new object[argTypes.Length];
-
-            for (int i = 0; i < argTypes.Length; i++)
+            try
             {
-                objArgs[i] = Activator.CreateInstance(argTypes[i]);
+                var constructor = _Type.GetConstructors().OrderBy(c => c.GetParameters().Length).Select(c => c).FirstOrDefault();
+                if (constructor != null)
+                {
+                    var argTypes = constructor.GetParameters().Select(info => info.ParameterType).ToArray();
+                    var objArgs = new object[argTypes.Length];
+
+                    for (int i = 0; i < argTypes.Length; i++)
+                    {
+                        objArgs[i] = Activator.CreateInstance(argTypes[i]);
+                    }
+                    instance = Activator.CreateInstance(_Type, objArgs);
+                }
+                else
+                {
+                    instance = Activator.CreateInstance(_Type);
+                }
+
+                
+
+                var offset = begin;
+
+                ulong validLength;
+                offset += Varint.BufferToNumber(buffer, offset, out validLength);
+
+                for (var i = 0ul; i < validLength; i++)
+                {
+                    ulong index;
+                    offset += Varint.BufferToNumber(buffer, offset, out index);
+
+                    var filed = _Fields[index];
+                    var describer = _GetDescriber(filed);
+                    object valueInstance;
+                    offset += describer.ToObject(buffer, offset, out valueInstance);
+                    filed.SetValue(instance, valueInstance);
+                }
+
+                return offset - begin;
+
+            }
+            catch (Exception ex)
+            {
+
+                throw new DescriberException(typeof(ClassDescriber), _Type, _Id, "ToObject", ex);
             }
             
-            instance = Activator.CreateInstance(_Type , objArgs);
-
-            var offset = begin;
-
-            ulong validLength;
-            offset += Varint.BufferToNumber(buffer, offset, out validLength);
-
-            for (var i = 0ul; i < validLength; i++)
-            {
-                ulong index;
-                offset += Varint.BufferToNumber(buffer, offset, out index);
-
-                var filed = _Fields[index];
-                var describer = _GetDescriber(filed);
-                object valueInstance;
-                offset += describer.ToObject(buffer, offset, out valueInstance);
-                filed.SetValue(instance, valueInstance);
-            }
-
-            return offset - begin;
 
         }
 

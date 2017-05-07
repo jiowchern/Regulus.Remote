@@ -23,26 +23,37 @@ namespace Regulus.Serialization
         private readonly Type _Type;
 
 
-        private object _Default;
-        private object _DefaultElement;
+        private readonly object _Default;
+        private readonly object _DefaultElement;
 
-        private Type _ElementType;
+        private readonly Type _ElementType;
 
         private TypeSet _TypeSet;
 
         public ArrayDescriber(int id , Type type)
         {
-            _Default = null;
 
-            _ElementType = type.GetElementType();
-            if(!_ElementType.IsClass)
-                _DefaultElement = Activator.CreateInstance(_ElementType);
-            else
-            {
-                _DefaultElement = null;
-            }
+            
+            _Default = null;
             _Id = id;
             _Type = type;
+            _ElementType = type.GetElementType();
+            try
+            {
+                if (!_ElementType.IsClass)
+                    _DefaultElement = Activator.CreateInstance(_ElementType);
+                else
+                {
+                    _DefaultElement = null;
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                
+                throw new DescriberException(typeof(ArrayDescriber), _Type, _Id, "_DefaultElement", ex);
+            }
+            
         }
 
         int ITypeDescriber.Id
@@ -126,14 +137,11 @@ namespace Regulus.Serialization
                 instanceCount += describer.GetByteCount(obj);
             }
 
-            
-
             return instanceCount + lenCount + validCount;
         }
 
         int ITypeDescriber.ToBuffer(object instance, byte[] buffer, int begin)
         {
-
             var set = _GetSet(instance);
             var offset = begin;
             offset += Varint.NumberToBuffer(buffer, offset, set.TotalLength);
