@@ -99,7 +99,7 @@ namespace Regulus.Serialization
             return _TypeSet.GetByType(type);
         }
 
-        byte[] ISerializer.Serialize(object instance)
+        byte[] ISerializer.Serialize(object instance )
         {
             return ObjectToBuffer(instance);
         }

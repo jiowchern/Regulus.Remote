@@ -142,50 +142,68 @@ namespace Regulus.Serialization
 
         int ITypeDescriber.ToBuffer(object instance, byte[] buffer, int begin)
         {
-            var set = _GetSet(instance);
-            var offset = begin;
-            offset += Varint.NumberToBuffer(buffer, offset, set.TotalLength);
-            offset += Varint.NumberToBuffer(buffer, offset, set.ValidLength);
 
-            var describer = _GetDescriber(_ElementType);
-            for (int i = 0; i < set.ValidObjects.Length; i++)
+            try
             {
-                var index = set.ValidObjects[i].Index;
-                var obj = set.ValidObjects[i].Object;
-                offset += Varint.NumberToBuffer(buffer, offset, index);
-                offset += describer.ToBuffer(obj, buffer, offset);
+                var set = _GetSet(instance);
+                var offset = begin;
+                offset += Varint.NumberToBuffer(buffer, offset, set.TotalLength);
+                offset += Varint.NumberToBuffer(buffer, offset, set.ValidLength);
+
+                var describer = _GetDescriber(_ElementType);
+                for (int i = 0; i < set.ValidObjects.Length; i++)
+                {
+                    var index = set.ValidObjects[i].Index;
+                    var obj = set.ValidObjects[i].Object;
+                    offset += Varint.NumberToBuffer(buffer, offset, index);
+                    offset += describer.ToBuffer(obj, buffer, offset);
+                }
+
+                return offset - begin;
+            }
+            catch (Exception ex)
+            {
+                
+                throw new DescriberException(typeof(ArrayDescriber) , _Type , _Id ,"ToBuffer" ,ex);
             }
             
-            return offset - begin;
         }
 
         int ITypeDescriber.ToObject(byte[] buffer, int begin, out object instnace)
         {
-            
-            var offset = begin;
-            ulong count;
-            offset += Varint.BufferToNumber(buffer, offset, out count);
-            var array = Activator.CreateInstance(_Type , (int)count) as IList;
-            instnace = array;
-
-            ulong validCount;
-            offset += Varint.BufferToNumber(buffer, offset, out validCount);
-
-            var describer = _GetDescriber(_ElementType);
-            for (var i = 0UL; i < validCount; i++)
+            try
             {
-                var index = 0LU;
+                var offset = begin;
+                ulong count;
+                offset += Varint.BufferToNumber(buffer, offset, out count);
+                var array = Activator.CreateInstance(_Type, (int)count) as IList;
+                instnace = array;
 
-                offset += Varint.BufferToNumber(buffer, offset, out index);
+                ulong validCount;
+                offset += Varint.BufferToNumber(buffer, offset, out validCount);
 
-                object value;
-                offset += describer.ToObject(buffer, offset, out value);
+                var describer = _GetDescriber(_ElementType);
+                for (var i = 0UL; i < validCount; i++)
+                {
+                    var index = 0LU;
 
-                
-                array[(int)index] = value ;
+                    offset += Varint.BufferToNumber(buffer, offset, out index);
+
+                    object value;
+                    offset += describer.ToObject(buffer, offset, out value);
+
+
+                    array[(int)index] = value;
+                }
+
+                return offset - begin;
             }
-
-            return offset - begin;
+            catch (Exception ex)
+            {
+                
+                throw new DescriberException(typeof(ArrayDescriber), _Type, _Id, "ToObject", ex); ;
+            }   
+            
         }
 
         void ITypeDescriber.SetMap(TypeSet type_set)
