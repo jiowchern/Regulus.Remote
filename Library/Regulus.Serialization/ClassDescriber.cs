@@ -46,29 +46,37 @@ namespace Regulus.Serialization
 
         int ITypeDescriber.GetByteCount(object instance)
         {
-            
-            var validFields = _Fields.Select(
+            try
+            {
+                var validFields = _Fields.Select(
                        (field, index) => new
                        {
                            field,
                            index
-                       }).Where(validField => object.Equals(_GetDescriber(validField.field).Default, validField.field.GetValue(instance)) == false) .ToArray();
+                       }).Where(validField => object.Equals(_GetDescriber(validField.field).Default, validField.field.GetValue(instance)) == false).ToArray();
 
 
-            var validCount = Varint.GetByteCount(validFields.Length);
-            int count = 0;
-            for (int i = 0; i < validFields.Length; i++)
-            {
-                
-                var validField = validFields[i];
-                var value = validField.field.GetValue(instance);
-                var describer = _GetDescriber(validField.field);
-                var byteCount = describer.GetByteCount(value);
+                var validCount = Varint.GetByteCount(validFields.Length);
+                int count = 0;
+                for (int i = 0; i < validFields.Length; i++)
+                {
 
-                var indexCount = Varint.GetByteCount(validField.index);
-                count += byteCount + indexCount;
+                    var validField = validFields[i];
+                    var value = validField.field.GetValue(instance);
+                    var describer = _GetDescriber(validField.field);
+                    var byteCount = describer.GetByteCount(value);
+
+                    var indexCount = Varint.GetByteCount(validField.index);
+                    count += byteCount + indexCount;
+                }
+                return count + validCount;
             }
-            return count + validCount;
+            catch (Exception ex)
+            {
+
+                throw new DescriberException(typeof(ClassDescriber), _Type, _Id, "GetByteCount", ex);
+            }
+            
         }
 
         private ITypeDescriber _GetDescriber(FieldInfo field)
