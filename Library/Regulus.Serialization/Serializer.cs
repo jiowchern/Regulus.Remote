@@ -28,22 +28,20 @@ namespace Regulus.Serialization
         {            
         }
 
-        public byte[] ObjectToBuffer(object instance)
-        {
-            var type = instance.GetType();
-           
-            return ObjectToBuffer(instance , type);
-        }
+        
 
-        public byte[] ObjectToBuffer<T>(T instance)
-        {
-            return ObjectToBuffer(instance, typeof(T));
-        }
-        public byte[] ObjectToBuffer(object instance , Type type)
+        
+        public byte[] ObjectToBuffer(object instance )
         {
 
             try
             {
+                if (instance == null)
+                {
+                    return _NullBuffer();
+                }
+
+                var type = instance.GetType();
                 var describer = _GetDescriber(type);
                 var id = describer.Id;
                 var idCount = Varint.GetByteCount((ulong)id);
@@ -61,11 +59,14 @@ namespace Regulus.Serialization
             
         }
 
-
-        public T BufferToObject<T>(byte[] buffer)
+        private byte[] _NullBuffer()
         {
-            return (T)BufferToObject(buffer);
+            var idCount = Varint.GetByteCount(0);
+            var buffer = new byte[idCount];
+            Varint.NumberToBuffer(buffer, 0, 0);
+            return buffer;
         }
+        
         public object BufferToObject(byte[] buffer)
         {
 
@@ -73,10 +74,12 @@ namespace Regulus.Serialization
             {
                 ulong id;
                 var readIdCount = Varint.BufferToNumber(buffer, 0, out id);
+                if (id == 0)
+                    return null;
+
                 var describer = _GetDescriber((int)id);
                 object instance;
                 describer.ToObject(buffer, readIdCount, out instance);
-
                 return instance;
             }
             catch (DescriberException ex)

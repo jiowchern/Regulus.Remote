@@ -299,12 +299,29 @@ namespace Regulus.Serialization.Tests
 
 
             var buffer = ser.ObjectToBuffer(cs);
-            var value = ser.BufferToObject<TestClassC[]>(buffer);
+            var value = ser.BufferToObject(buffer) as TestClassC[];
 
 
             Assert.AreEqual(cs[0], value[0]);
             Assert.AreNotEqual(null, value[1]);
             Assert.AreEqual(cs[2], value[2]);
+        }
+
+
+        [TestMethod()]
+        public void ClassNullTest()
+        {
+            var ser = new Serializer(new ClassDescriber(1, typeof(TestClassC)), new ArrayDescriber<TestClassC>(2));
+
+          
+
+
+            var buffer = ser.ObjectToBuffer(null );
+            var value = ser.BufferToObject(buffer) as TestClassC[];
+
+
+            Assert.AreEqual(null, value);
+            
         }
 
 
