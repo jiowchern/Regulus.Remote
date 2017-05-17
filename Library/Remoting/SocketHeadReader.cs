@@ -94,8 +94,7 @@ namespace Regulus.Remoting
                 _Buffer.Add(value);
 
                 if (value < 0x80)
-                {
-                    _ReadedByte[0] = 0xff;
+                {                    
                     return true;
                 }
             }

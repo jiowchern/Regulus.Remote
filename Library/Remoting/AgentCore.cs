@@ -305,12 +305,40 @@ namespace Regulus.Remoting
 
 			var ghostType = _QueryGhostType(ghost_base_type);
 
-			var o = Activator.CreateInstance(ghostType, peer, id, _ReturnValueQueue, return_type , _Serializer);
+		    var constructor = ghostType.GetConstructor(new[] {typeof (IGhostRequest), typeof (Guid),typeof(ReturnValueQueue), typeof (bool), typeof (ISerializer)});
+		    if (constructor == null)
+		    {
+		        List<string> constructorInfos = new List<string>();
 
-			return (IGhost)o;
+                foreach (var constructorInfo in ghostType.GetConstructors())
+		        {
+                    constructorInfos.Add("(" + constructorInfo.GetParameters()+ ")");
+
+                }
+                throw new Exception(string.Format("{0} Not found constructor.\n{1}" , ghostType.FullName , string.Join("\n" , constructorInfos.ToArray())));
+            }
+                
+
+		    var o = constructor.Invoke(new object[] { peer, id, _ReturnValueQueue, return_type, _Serializer });            
+            
+
+
+            return (IGhost)o;
 		}
 
-		private Type _QueryGhostType(Type ghostBaseType)
+        private string  _GetParamsString(ParameterInfo[] parameters)
+        {
+
+            List<string> types = new List<string>();
+            foreach (var parameterInfo in parameters)
+            {
+                types.Add(string.Format("{0} {1}" , parameterInfo.ParameterType , parameterInfo.Name));
+            }
+
+            return String.Join(",", types.ToArray());
+        }
+
+        private Type _QueryGhostType(Type ghostBaseType)
 		{
 			Type ghostType = null;
 			if(AgentCore._GhostTypes.TryGetValue(ghostBaseType, out ghostType))
@@ -389,11 +417,24 @@ namespace Regulus.Remoting
 				var fieldValue = eventInfos.GetValue(obj);
 				if(fieldValue is Delegate)
 				{
-					var fieldValueDelegate = fieldValue as Delegate;
-                    
+					var fieldValueDelegate = fieldValue as Delegate;                    
+
                     var pars = (from a in args select serializer.Deserialize( a )).ToArray();
-					fieldValueDelegate.DynamicInvoke(pars);
-				}
+				    try
+				    {
+                        fieldValueDelegate.DynamicInvoke(pars);
+				    }
+				    catch (TargetInvocationException tie)
+				    {                        
+                        Regulus.Utility.Log.Instance.WriteInfo(string.Format("Call event error in {0}:{1}. \n{2}", type.FullName, method , tie.InnerException.ToString()));
+                        throw tie;
+                    }
+				    catch (Exception e)
+				    {
+				        Regulus.Utility.Log.Instance.WriteInfo(string.Format("Call event error in {0}:{1}." , type.FullName , method));
+                        throw e;
+				    }
+                }
 			}
 		}
 
