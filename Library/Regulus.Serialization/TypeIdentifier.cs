@@ -14,7 +14,8 @@ namespace Regulus.Serialization
             ARRAY,
             CLASS,
             ENUM,
-            BITTABLE
+            BITTABLE,
+            BUFFER
         }
 
 
@@ -28,29 +29,36 @@ namespace Regulus.Serialization
             {
                 Type = TYPE.STRING;
             }
+            else if (_IsEnum(type))
+            {
+                Type = TYPE.ENUM;
+            }
             else if (_IsNumber(type))
             {
                 Type = TYPE.NUMBER;
             }
-            else if (_IsArray(type))
+            else if (_IsBuffer(type))
             {
-                Type = TYPE.ARRAY;
-            }
-            
-            else if (_IsEnum(type))
-            {
-                Type = TYPE.ENUM;
+                Type = TYPE.BUFFER;
             }
             else if (_IsBittable(type))
             {
                 Type = TYPE.BITTABLE;
             }
+            else if (_IsArray(type))
+            {
+                Type = TYPE.ARRAY;
+            }            
             else if (_IsClass(type))
             {
                 Type = TYPE.CLASS;
             }
         }
 
+        private bool _IsBuffer(Type type)
+        {
+            return _BufferTypes.Any(t => t == type);
+        }
 
 
         private bool _IsBittable(Type type)
@@ -94,6 +102,12 @@ namespace Regulus.Serialization
         };
 
 
+        private readonly Type[] _BufferTypes = new[]
+        {
+            typeof (char[]),
+            typeof (byte[]),
+        };
+
         private readonly Type[] _BittableTypes = new[]
         {
             typeof (float),
@@ -101,7 +115,7 @@ namespace Regulus.Serialization
             typeof (double),
             typeof (Guid),
             typeof (char),
-            typeof (byte),
+            typeof (byte),            
         };
 
 

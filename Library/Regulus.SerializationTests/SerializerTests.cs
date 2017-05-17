@@ -273,6 +273,57 @@ namespace Regulus.Serialization.Tests
 
 
         [TestMethod()]
+         public void ByteArrayStructTest()
+        {
+            var ser = new Serializer(new BufferDescriber<byte[]>(1));
+
+            var buffer = ser.ObjectToBuffer(new byte[] {1,2,3,4,5,6 });
+            var value = (byte[])ser.BufferToObject(buffer);
+
+            Assert.AreEqual(1, value[0]);
+            Assert.AreEqual(2, value[1]);
+            Assert.AreEqual(3, value[2]);
+            Assert.AreEqual(4, value[3]);
+
+        }
+
+        [TestMethod()]
+        public void CharArrayStructTest()
+        {
+            var ser = new Serializer(new BufferDescriber<char[]>(1));
+
+            var buffer = ser.ObjectToBuffer(new char[] { '1', '2', 'a' , 'b', 'c', 't' });
+            var value = (char[])ser.BufferToObject(buffer);
+
+            Assert.AreEqual('1', value[0]);
+            Assert.AreEqual('2', value[1]);
+            Assert.AreEqual('a', value[2]);
+            Assert.AreEqual('b', value[3]);
+            Assert.AreEqual('c', value[4]);
+            Assert.AreEqual('t', value[5]);
+
+        }
+
+        [TestMethod()]
+        public void StringCharArrayStructTest()
+        {
+            var ser = new Serializer(new BufferDescriber<char[]>(1));
+            var str = "asdfgh";
+            var buffer = ser.ObjectToBuffer(str.ToCharArray());
+            var value = (char[])ser.BufferToObject(buffer);
+
+            Assert.AreEqual('a', value[0]);
+            Assert.AreEqual('s', value[1]);
+            Assert.AreEqual('d', value[2]);
+            Assert.AreEqual('f', value[3]);
+
+        }
+
+
+
+
+
+        [TestMethod()]
         public void GuidTest()
         {
             var ser = new Serializer(new StructDescriber<Guid>(1), new ArrayDescriber<Guid>(2));

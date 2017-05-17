@@ -28,6 +28,10 @@ namespace Regulus.Serialization
                 {
                     describers.Add(new NumberDescriber(++id, type));
                 }
+                else if (identifier.Type == TypeIdentifier.TYPE.BUFFER)
+                {
+                    describers.Add(new BufferDescriber(++id, type));
+                }
                 else if (identifier.Type == TypeIdentifier.TYPE.ARRAY)
                 {
                     describers.Add(new ArrayDescriber(++id, type));

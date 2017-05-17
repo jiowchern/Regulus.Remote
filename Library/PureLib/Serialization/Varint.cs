@@ -30,8 +30,15 @@
             for (i = 0; i < 9 && value >= 0x80; i++, value >>= 7) { }
             return i + 1;
         }
-            
 
+        public static int BufferToNumber(byte[] buffer, int offset, out int value)
+        {
+            ulong val;
+            var count = BufferToNumber(buffer, offset, out val);
+            value = (int)val;
+
+            return count;
+        }
         public static int BufferToNumber(byte[] buffer, int offset, out ulong value)
         {
             value = 0;
