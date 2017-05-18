@@ -66,7 +66,7 @@ namespace Regulus.Remoting
                 }
                 else
                 {
-                    Regulus.Utility.Log.Instance.WriteDebug("read head error "  + error);                    
+                    Regulus.Utility.Log.Instance.WriteDebug(string.Format("read head error {0} size:{1}", error, readSize));
                     if (_ErrorEvent != null)
                         _ErrorEvent();
                 }

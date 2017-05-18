@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="ArrayDescriber.cs" />
     <Compile Include="BufferDescriber.cs" />
+    <Compile Include="ByteArrayDescriber.cs" />
     <Compile Include="ClassDescriber.cs" />
     <Compile Include="DescriberBuilder.cs" />
     <Compile Include="EnumDescriber.cs" />

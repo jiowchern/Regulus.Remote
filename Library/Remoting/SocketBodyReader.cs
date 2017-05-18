@@ -47,23 +47,37 @@ namespace Regulus.Remoting
         {
             try
             {
-                var readSize = _Socket.EndReceive(ar);
-                _Offset += readSize;
-                NetworkMonitor.Instance.Read.Set(readSize);
-                if(_Offset == _Buffer.Length)
+                SocketError error;
+                var readSize = _Socket.EndReceive(ar , out error );
+
+                if (error != SocketError.Success)
                 {
-                    DoneEvent(_Buffer);
+                    Regulus.Utility.Log.Instance.WriteDebug(string.Format("read body error {0} size:{1}",  error , readSize));
+                    if (ErrorEvent != null)
+                    {
+                        ErrorEvent();
+                    }
                 }
                 else
                 {
-                    _Socket.BeginReceive(
-                        _Buffer, 
-                        _Offset, 
-                        _Buffer.Length - _Offset, 
-                        SocketFlags.None, 
-                        _Readed, 
-                        null);
+                    _Offset += readSize;
+                    NetworkMonitor.Instance.Read.Set(readSize);
+                    if (_Offset == _Buffer.Length)
+                    {
+                        DoneEvent(_Buffer);
+                    }
+                    else
+                    {
+                        _Socket.BeginReceive(
+                            _Buffer,
+                            _Offset,
+                            _Buffer.Length - _Offset,
+                            SocketFlags.None,
+                            _Readed,
+                            null);
+                    }
                 }
+                
             }
             catch(SystemException e)
             {

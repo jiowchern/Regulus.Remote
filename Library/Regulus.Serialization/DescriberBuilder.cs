@@ -18,38 +18,9 @@ namespace Regulus.Serialization
             var describers = new List<ITypeDescriber>();
             foreach (var type in types)
             {
-                var identifier = new TypeIdentifier(type);
-
-                if (identifier.Type == TypeIdentifier.TYPE.STRING  )
-                {
-                    describers.Add(new StringDescriber(++id));
-                }
-                else if (identifier.Type == TypeIdentifier.TYPE.NUMBER)
-                {
-                    describers.Add(new NumberDescriber(++id, type));
-                }
-                else if (identifier.Type == TypeIdentifier.TYPE.BUFFER)
-                {
-                    describers.Add(new BufferDescriber(++id, type));
-                }
-                else if (identifier.Type == TypeIdentifier.TYPE.ARRAY)
-                {
-                    describers.Add(new ArrayDescriber(++id, type));
-                }
-                else if (identifier.Type == TypeIdentifier.TYPE.CLASS)
-                {
-                    describers.Add(new ClassDescriber(++id, type));
-                }
-                else if (identifier.Type == TypeIdentifier.TYPE.ENUM)
-                {
-                    describers.Add(new EnumDescriber(++id, type));
-                }
-                else if(identifier.Type == TypeIdentifier.TYPE.BITTABLE)
-                {
-                    describers.Add(new StructDescriber(++id, type));
-                }
-                else 
-                    throw new Exception("Can not describe the type. " + type.FullName);
+                var identifier = new TypeIdentifier(type , ++id);
+                describers.Add(identifier.Describer);
+               
             }
 
             return describers.ToArray();

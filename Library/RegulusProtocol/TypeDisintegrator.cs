@@ -17,13 +17,13 @@ namespace Regulus.Protocol
         {
             var types = new HashSet<Type>();
 
-            var id = new TypeIdentifier(type);
+            
 
-            if ( _IsBase(id.Type) )
+            if ( _IsAtom(type) )
             {
                 types.Add(type);
             }
-            else if (_IsString(id.Type))
+            else if (_IsString(type))
             {
                 types.Add(typeof(char));
                 types.Add(typeof(char[]));
@@ -34,9 +34,9 @@ namespace Regulus.Protocol
                 types.Add(type);
                 _Add(new [] {type.GetElementType()} , types);
             }
-            else if (_IsType(id , type))
+            else if (_IsType(type))
             {
-                if(id.Type == TypeIdentifier.TYPE.CLASS )
+                if(TypeIdentifier.IsClass(type))
                     types.Add(type);
 
                 _Add(_GetEvents(type), types);
@@ -48,9 +48,9 @@ namespace Regulus.Protocol
             Types = types.ToArray();
         }
 
-        private bool _IsString(TypeIdentifier.TYPE type)
+        private bool _IsString(Type type)
         {
-            return type == TypeIdentifier.TYPE.STRING;
+            return TypeIdentifier.IsString(type);
         }
 
         private bool _IsArray(Type type)
@@ -66,15 +66,14 @@ namespace Regulus.Protocol
             }
         }
 
-        private bool _IsType(TypeIdentifier id, Type type)
+        private bool _IsType(Type type)
         {
-            return type.IsInterface || id.Type == TypeIdentifier.TYPE.CLASS ;
+            return type.IsInterface || TypeIdentifier.IsClass(type);
         }
 
-        private bool _IsBase(TypeIdentifier.TYPE type)
+        private bool _IsAtom(Type type)
         {
-            return type == TypeIdentifier.TYPE.ENUM ||
-                   type == TypeIdentifier.TYPE.BITTABLE || type == TypeIdentifier.TYPE.NUMBER;
+            return TypeIdentifier.IsAtom(type);
         }
 
 
