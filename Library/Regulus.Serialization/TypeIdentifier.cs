@@ -1,67 +1,67 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Messaging;
 
 namespace Regulus.Serialization
 {
     public class TypeIdentifier
     {
-        public enum TYPE
+        public readonly ITypeDescriber Describer;
+        public TypeIdentifier(Type type , int id)
         {
-            UNKNOWN,
-            STRING,
-            NUMBER,
-            ARRAY,
-            CLASS,
-            ENUM,
-            BITTABLE,
-            BUFFER
-        }
-
-
-        public readonly TYPE Type;
-        public TypeIdentifier(Type type)
-        {
-
-            Type = TYPE.UNKNOWN;
             
-            if (_IsString(type))
+            if (_IsEnum(type))
             {
-                Type = TYPE.STRING;
-            }
-            else if (_IsEnum(type))
-            {
-                Type = TYPE.ENUM;
+                Describer = new EnumDescriber(id , type);
             }
             else if (_IsNumber(type))
             {
-                Type = TYPE.NUMBER;
+                Describer = new NumberDescriber(id , type);
+            }
+            else if (_IsByteArray(type))
+            {
+                Describer = new ByteArrayDescriber(id);
             }
             else if (_IsBuffer(type))
             {
-                Type = TYPE.BUFFER;
+                Describer = new BufferDescriber(id, type);
             }
             else if (_IsBittable(type))
             {
-                Type = TYPE.BITTABLE;
+                Describer = new StructDescriber(id, type);
+            }
+            else if (_IsString(type))
+            {
+                Describer = new StringDescriber(id);
             }
             else if (_IsArray(type))
             {
-                Type = TYPE.ARRAY;
+                Describer = new ArrayDescriber(id , type);
             }            
             else if (_IsClass(type))
             {
-                Type = TYPE.CLASS;
+                Describer = new ClassDescriber(id , type);
             }
+            else 
+                throw new Exception("Unrecognized type " + type.FullName );
+
         }
 
-        private bool _IsBuffer(Type type)
+        
+
+        private static bool _IsByteArray(Type type)
+        {
+            return type == typeof (byte[]);
+        }
+
+        private static bool _IsBuffer(Type type)
         {
             return _BufferTypes.Any(t => t == type);
         }
 
 
-        private bool _IsBittable(Type type)
+        private static bool _IsBittable(Type type)
         {
 
             return _BittableTypes.Any(t => t == type);
@@ -69,17 +69,22 @@ namespace Regulus.Serialization
             
         }
 
-        private bool _IsString(Type type)
+        private static bool _IsString(Type type)
         {
             return type == typeof(string);
         }
 
-        private bool _IsEnum(Type type)
+        private static bool _IsEnum(Type type)
         {
             return type.IsEnum;
         }
 
-        private bool _IsClass(Type type)
+        public static bool IsClass(Type type)
+        {
+            return _IsClass(type);
+        }
+
+        private static bool _IsClass(Type type)
         {
             return type.IsByRef == false && type.IsAbstract == false && type.IsInterface == false && type.IsCOMObject == false && type.IsSpecialName == false && type.IsSubclassOf(typeof(Delegate)) == false;
         }
@@ -89,27 +94,25 @@ namespace Regulus.Serialization
             return type.IsArray;
         }
 
-        private readonly Type[] _NumberTypes = new[]
+        private static readonly Type[] _NumberTypes = new[]
         {
             typeof (short),
             typeof (ushort),
             typeof (int),
-            typeof (uint),
-            typeof (char),
+            typeof (uint),            
             typeof (bool),
             typeof (long),
             typeof (ulong),
         };
 
 
-        private readonly Type[] _BufferTypes = new[]
-        {
-            typeof (char[]),
+        private static readonly Type[] _BufferTypes = new[]
+        {            
             typeof (byte[]),
         };
 
-        private readonly Type[] _BittableTypes = new[]
-        {
+        private static readonly Type[] _BittableTypes = new[]
+        {            
             typeof (float),
             typeof (decimal),
             typeof (double),
@@ -120,9 +123,20 @@ namespace Regulus.Serialization
 
 
 
-        private bool _IsNumber(Type type)
+        private static bool _IsNumber(Type type)
         {
             return _NumberTypes.Any(t => t == type);
+        }
+
+
+        public static bool IsAtom(Type type)
+        {
+            return _IsNumber(type) || _IsBittable(type) || _IsBuffer(type) || _IsByteArray(type) || _IsEnum(type);
+        }
+
+        public static bool IsString(Type type)
+        {
+            return _IsString(type);
         }
     }
 }
