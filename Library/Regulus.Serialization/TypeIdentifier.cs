@@ -108,7 +108,7 @@ namespace Regulus.Serialization
 
         private static readonly Type[] _BufferTypes = new[]
         {            
-            typeof (byte[]),
+            typeof (char[]),
         };
 
         private static readonly Type[] _BittableTypes = new[]

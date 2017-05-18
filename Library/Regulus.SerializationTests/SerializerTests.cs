@@ -377,7 +377,7 @@ namespace Regulus.Serialization.Tests
 
 
         [TestMethod()]
-        public void ByteArrayTest()
+        public void ByteArray1Test()
         {
             var bytes = new byte[]
             {
@@ -397,6 +397,38 @@ namespace Regulus.Serialization.Tests
             };
 
             var ser = new Serializer(new StructDescriber(1, typeof (byte)), new ArrayDescriber<byte>(2));
+
+            var buffer = ser.ObjectToBuffer(bytes);
+            var result = ser.BufferToObject(buffer) as byte[];
+
+            Assert.AreEqual(bytes[3], result[3]);
+            Assert.AreEqual(bytes[1], result[1]);
+            Assert.AreEqual(bytes[8], result[8]);
+            Assert.AreEqual(bytes[9], result[9]);
+        }
+
+
+        [TestMethod()]
+        public void ByteArray2Test()
+        {
+            var bytes = new byte[]
+            {
+                0x5,
+                97,
+                2,
+                92,
+                9,
+                113,
+                2,
+                4,
+                7,
+                6,
+                9,
+                255,
+                0
+            };
+
+            var ser = new Serializer(new ByteArrayDescriber(1));
 
             var buffer = ser.ObjectToBuffer(bytes);
             var result = ser.BufferToObject(buffer) as byte[];
