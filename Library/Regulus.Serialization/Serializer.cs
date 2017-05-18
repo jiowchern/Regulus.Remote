@@ -53,8 +53,15 @@ namespace Regulus.Serialization
             }
             catch (DescriberException ex)
             {
-                
-                throw ex;
+
+                if (instance != null)
+                {
+                    throw new SystemException(string.Format("ObjectToBuffer {0}", instance.GetType()), ex);                    
+                }                    
+                else
+                {
+                    throw new SystemException(string.Format("ObjectToBuffer null"), ex);
+                }
             }
             
         }
@@ -69,10 +76,10 @@ namespace Regulus.Serialization
         
         public object BufferToObject(byte[] buffer)
         {
-
+            ulong id = 0;
             try
             {
-                ulong id;
+                
                 var readIdCount = Varint.BufferToNumber(buffer, 0, out id);
                 if (id == 0)
                     return null;
@@ -84,8 +91,7 @@ namespace Regulus.Serialization
             }
             catch (DescriberException ex)
             {
-
-                throw ex;
+                throw new SystemException(string.Format("BufferToObject {0}", id), ex);
             }
             
         }
