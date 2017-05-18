@@ -91,7 +91,13 @@ namespace Regulus.Serialization
             }
             catch (DescriberException ex)
             {
-                throw new SystemException(string.Format("BufferToObject {0}", id), ex);
+                var describer = _GetDescriber((int)id);
+                if(describer != null)
+                    throw new SystemException(string.Format("BufferToObject {0}:{1}", id , describer.Type.FullName), ex);
+                else
+                {
+                    throw new SystemException(string.Format("BufferToObject {0}:unkown", id), ex);
+                }
             }
             
         }
@@ -119,5 +125,6 @@ namespace Regulus.Serialization
         }
     }
 }
+
 
 
