@@ -43,7 +43,7 @@ namespace Regulus.Remoting.Ghost.Native
 
 				_Socket = socket;
 				_Reader = new PackageReader<ResponsePackage>(serializer);
-				_Writer = new PackageWriter<RequestPackage>(OnlineStage.LowFps , serializer);
+				_Writer = new PackageWriter<RequestPackage>(serializer);
 				_Sends = new Collection.Queue<RequestPackage>();
 				_Receives = new Collection.Queue<ResponsePackage>();
 			}
@@ -130,19 +130,24 @@ namespace Regulus.Remoting.Ghost.Native
 						core.OnResponse(pkg.Code, pkg.Data);
 					}
 				}
+
+
+                _Writer.Push(_SendsPop());
+
+                
 			}
 
 			private void _WriterStart()
 			{
 				_Writer.ErrorEvent += _Disable;
-				_Writer.CheckSourceEvent += _SendsPop;
+				
 				_Writer.Start(_Socket);
 			}
 
 			private void _WriterStop()
 			{
 				_Writer.ErrorEvent -= _Disable;
-				_Writer.CheckSourceEvent -= _SendsPop;
+				
 				_Writer.Stop();
 			}
 

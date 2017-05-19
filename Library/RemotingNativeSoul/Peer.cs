@@ -115,7 +115,7 @@ namespace Regulus.Remoting.Soul.Native
 			_Reader.Start(_Socket);
 
 			_Writer.ErrorEvent += () => { _Enable = false; };
-			_Writer.CheckSourceEvent += _ResponsePop;
+			
 			_Writer.Start(_Socket);
 		}
 
@@ -137,7 +137,7 @@ namespace Regulus.Remoting.Soul.Native
 			
 			_Reader.DoneEvent -= _RequestPush;
 			_Reader.Stop();
-			_Writer.CheckSourceEvent -= _ResponsePop;
+			
 			_Writer.Stop();
 
 			lock(Peer._LockResponse)
@@ -194,6 +194,8 @@ namespace Regulus.Remoting.Soul.Native
 					}
 				}
 			}
+
+            _Writer.Push(_ResponsePop());
 		}
 
 		void IResponseQueue.Push(ServerToClientOpCode cmd, byte[] data)
