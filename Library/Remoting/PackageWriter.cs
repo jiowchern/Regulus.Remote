@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
@@ -11,14 +12,7 @@ namespace Regulus.Remoting
 	public class PackageWriter<TPackage>
 	{
 	    private readonly ISerializer _Serializer;
-
-	    public delegate TPackage[] CheckSourceCallback();
-
-		public event CheckSourceCallback CheckSourceEvent
-		{
-			add { _CheckSourceEvent += value; }
-			remove { _CheckSourceEvent -= value; }
-		}
+		
 
 		public event OnErrorCallback ErrorEvent;
 
@@ -30,11 +24,14 @@ namespace Regulus.Remoting
 
 		private byte[] _Buffer;
 
-		private CheckSourceCallback _CheckSourceEvent;
+
+
+	    private readonly System.Collections.Generic.List<TPackage> _Packages;
 
 		private Socket _Socket;
 
 		private volatile bool _Stop;
+	    private bool _Idle;
 
 	    /// <summary>
 	    ///     Initializes a new instance of the <see cref="PackageWriter" /> class.
@@ -43,35 +40,48 @@ namespace Regulus.Remoting
 	    ///     保證最低fps
 	    /// </param>
 	    /// <param name="serializer">序列化物件</param>
-	    public PackageWriter(int low_fps , ISerializer serializer)
-		{
-		    _Serializer = serializer;
-		    _PowerRegulator = new PowerRegulator(low_fps);
-            _AutoPowerRegulator = new AutoPowerRegulator(_PowerRegulator);
-        }
+	    
 
 		public PackageWriter( ISerializer serializer)
 		{
+            _Packages = new List<TPackage>();
             _Serializer = serializer;
             _PowerRegulator = new PowerRegulator();
             _AutoPowerRegulator = new AutoPowerRegulator(_PowerRegulator);
-        }
+	        _Idle = true;
+		}
 
 		public void Start(Socket socket)
 		{
 			_Stop = false;
 			_Socket = socket;
-
-			_Write();
+		
 		}
 
+	    public void Push(TPackage[] packages)
+	    {
+	        lock (_Packages)
+	        {
+                _Packages.AddRange(packages);                
+	        }
+	        _Write();
+
+
+	    }
 		private void _Write()
 		{
 			try
 			{
-				var pkgs = _CheckSourceEvent();
 
-				_Buffer = _CreateBuffer(pkgs);
+			    lock (_Packages)
+			    {
+                    _Buffer = _CreateBuffer(_Packages.ToArray());
+                    _Packages.Clear();
+                }
+			    if (_Buffer.Length <= 0)
+			    {
+			        return;
+			    }
                 _AutoPowerRegulator.Operate();
                 NetworkMonitor.Instance.Write.Set(_Buffer.Length);
                 _Socket.BeginSend(_Buffer, 0, _Buffer.Length, SocketFlags.None, _WriteCompletion, null);
@@ -134,13 +144,9 @@ namespace Regulus.Remoting
 		{
 			_Stop = true;
 
-			// _Socket = null;
-			_CheckSourceEvent = _Empty;
+			
+			
 		}
-
-		private TPackage[] _Empty()
-		{
-			return new TPackage[0];
-		}
+		
 	}
 }
