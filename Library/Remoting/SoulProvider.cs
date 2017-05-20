@@ -308,8 +308,7 @@ namespace Regulus.Remoting
 					(from m in soulInfo.MethodInfos where m.Name == method_name && m.GetParameters().Count() == args.Count() select m)
 						.FirstOrDefault();
 				if(methodInfo != null)
-				{
-					var paramerInfos = methodInfo.GetParameters();
+				{					
 
 					try
 					{

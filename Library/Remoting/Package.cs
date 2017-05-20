@@ -185,5 +185,13 @@ namespace Regulus.Remoting
 	
 		 public Guid EntityId;
 	}
-	
+
+
+    public class PackageProtocolSubmit : TPackageData<PackageProtocolSubmit>
+    {
+
+        public byte[] VerificationCode;
+        
+    }
+
 }

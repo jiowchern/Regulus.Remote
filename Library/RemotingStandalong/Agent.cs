@@ -40,7 +40,7 @@ namespace Regulus.Remoting.Standalone
 	    public Agent(IProtocol protocol)
 	    {
             _GhostRequest = new GhostRequest(protocol.GetSerialize());
-            _Agent = new AgentCore(protocol.GetGPIProvider() , protocol.GetSerialize());
+            _Agent = new AgentCore(protocol);
             _SoulProvider = new SoulProvider(this, this, protocol);
         }
         
@@ -73,6 +73,14 @@ namespace Regulus.Remoting.Standalone
 	    {
 	        add { this._ErrorMethodEvent += value; }
 	        remove { this._ErrorMethodEvent -= value; }
+	    }
+
+	    private event Action<byte[], byte[]> _ErrorVerifyEvent;
+
+	    event Action<byte[], byte[]> IAgent.ErrorVerifyEvent
+	    {
+	        add { this._ErrorVerifyEvent += value; }
+	        remove { this._ErrorVerifyEvent -= value; }
 	    }
 
 	    bool IUpdatable.Update()
@@ -158,7 +166,7 @@ namespace Regulus.Remoting.Standalone
 			_GhostRequest.ReleaseEvent += _SoulProvider.Unbind;
 
 		    _Agent.ErrorMethodEvent += _ErrorMethodEvent;
-
+		    _Agent.ErrorVerifyEvent += _ErrorVerifyEvent;
             _Agent.Initial(_GhostRequest);
 		}
 
@@ -175,6 +183,7 @@ namespace Regulus.Remoting.Standalone
 
 		public void Shutdown()
 		{
+		    _Agent.ErrorVerifyEvent -= _ErrorVerifyEvent;
             _Agent.ErrorMethodEvent -= _ErrorMethodEvent;
             _Connected = false;
 			if(_BreakEvent != null)
