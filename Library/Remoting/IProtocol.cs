@@ -8,5 +8,7 @@ namespace Regulus.Remoting
         GPIProvider GetGPIProvider();
 
         ISerializer GetSerialize();
+
+        byte[] VerificationCode { get; }
     }
 }

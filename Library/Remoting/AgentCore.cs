@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 
 using System.Linq;
+using System.Net.Configuration;
 using System.Reflection;
 
 using System.Timers;
@@ -43,14 +44,19 @@ namespace Regulus.Remoting
 		private readonly GPIProvider _GhostProvider;
 	    private readonly ISerializer _Serializer;
 
-	    public long Ping { get; private set; }
+        private IProtocol _Protocol;
+
+        public event Action<byte[], byte[]> ErrorVerifyEvent;
+
+        public long Ping { get; private set; }
 
 		public bool Enable { get; private set; }
 
-		public AgentCore(GPIProvider ghost_provider , ISerializer serializer) 
+		public AgentCore(IProtocol protocol)
 		{
-			_GhostProvider = ghost_provider;
-		    _Serializer = serializer;
+		    _Protocol = protocol;
+            _GhostProvider = _Protocol.GetGPIProvider();
+		    _Serializer = _Protocol.GetSerialize();
 		    _Providers = new Dictionary<string, IProvider>();
             _AutoRelease = new AutoRelease(_Requester , _Serializer);
         }		
@@ -128,9 +134,30 @@ namespace Regulus.Remoting
                 var data = args.ToPackageData<PackageUnloadSoul>(_Serializer);
                 _UnloadSoul(data.TypeName, data.EntityId);
             }
-		}
+            else if (id == ServerToClientOpCode.ProtocolSubmit)
+            {
+                var data = args.ToPackageData<PackageProtocolSubmit>(_Serializer);
 
-		private void _ErrorReturnValue(Guid return_target, string method, string message)
+                _ProtocolSubmit(data);
+            }
+
+        }
+
+        private void _ProtocolSubmit(PackageProtocolSubmit data)
+        {
+
+            if (_Comparison(_Protocol.VerificationCode, data.VerificationCode) == false)
+                ErrorVerifyEvent(_Protocol.VerificationCode , data.VerificationCode);
+
+
+        }
+
+        private bool _Comparison(byte[] code1, byte[] code2)
+        {
+            return new Regulus.Utility.Comparison<byte>(code1 , code2 , (arg1, arg2) => arg1 == arg2).Same;
+        }
+
+        private void _ErrorReturnValue(Guid return_target, string method, string message)
 		{
 			_ReturnValueQueue.PopReturnValue(return_target);
 

@@ -263,7 +263,7 @@ namespace Regulus.Serialization.Tests
         [TestMethod()]
         public void StructFloatTest()
         {
-            var ser = new Serializer(new StructDescriber<float>(1));
+            var ser = new Serializer(new BlittableDescriber<float>(1));
 
             var buffer = ser.ObjectToBuffer(123.43f);
             var value = (float)ser.BufferToObject(buffer);
@@ -326,7 +326,7 @@ namespace Regulus.Serialization.Tests
         [TestMethod()]
         public void GuidTest()
         {
-            var ser = new Serializer(new StructDescriber<Guid>(1), new ArrayDescriber<Guid>(2));
+            var ser = new Serializer(new BlittableDescriber<Guid>(1), new ArrayDescriber<Guid>(2));
 
             var id = Guid.NewGuid();
             var buffer = ser.ObjectToBuffer(id);
@@ -396,7 +396,7 @@ namespace Regulus.Serialization.Tests
                 0
             };
 
-            var ser = new Serializer(new StructDescriber(1, typeof (byte)), new ArrayDescriber<byte>(2));
+            var ser = new Serializer(new BlittableDescriber(1, typeof (byte)), new ArrayDescriber<byte>(2));
 
             var buffer = ser.ObjectToBuffer(bytes);
             var result = ser.BufferToObject(buffer) as byte[];

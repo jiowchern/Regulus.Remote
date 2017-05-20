@@ -29,7 +29,7 @@ namespace Regulus.Serialization
             }
             else if (_IsBittable(type))
             {
-                Describer = new StructDescriber(id, type);
+                Describer = new BlittableDescriber(id, type);
             }
             else if (_IsString(type))
             {

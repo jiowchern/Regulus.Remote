@@ -25,6 +25,8 @@
 
 		Ping,
 
-	    ErrorMethod
+	    ErrorMethod , 
+
+        ProtocolSubmit
 	}
 }

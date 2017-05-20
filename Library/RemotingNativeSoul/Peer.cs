@@ -42,7 +42,9 @@ namespace Regulus.Remoting.Soul.Native
 
 		private readonly Socket _Socket;
 
-		private readonly SoulProvider _SoulProvider;
+	    private readonly IProtocol _Protocol;
+
+	    private readonly SoulProvider _SoulProvider;
 
 		private readonly PackageWriter<ResponsePackage> _Writer;
 
@@ -93,12 +95,15 @@ namespace Regulus.Remoting.Soul.Native
 
 		public Peer(Socket client , IProtocol protocol)
 		{
-		     _Serialize = protocol.GetSerialize();
+
+		    
+            _Serialize = protocol.GetSerialize();
 
 		    _EnableLock = new object();
 
 			_Socket = client;
-			_SoulProvider = new SoulProvider(this, this , protocol);
+		    _Protocol = protocol;
+		    _SoulProvider = new SoulProvider(this, this , protocol);
 			_Responses = new Regulus.Collection.Queue<ResponsePackage>();
 			_Requests = new Regulus.Collection.Queue<RequestPackage>();
 
@@ -117,6 +122,10 @@ namespace Regulus.Remoting.Soul.Native
 			_Writer.ErrorEvent += () => { _Enable = false; };
 			
 			_Writer.Start(_Socket);
+
+
+		    _Push(ServerToClientOpCode.ProtocolSubmit, _Protocol.VerificationCode);
+
 		}
 
 		void IBootable.Shutdown()
@@ -195,29 +204,35 @@ namespace Regulus.Remoting.Soul.Native
 				}
 			}
 
-            _Writer.Push(_ResponsePop());
+		    var responses = _ResponsePop();
+
+            if(responses.Length > 0)
+                _Writer.Push(responses);
 		}
 
 		void IResponseQueue.Push(ServerToClientOpCode cmd, byte[] data)
 		{
-			
-			lock(Peer._LockResponse)
-			{
-				
-				if (_Enable)
-				{
-					Peer.TotalResponse++;
-					_Responses.Enqueue(
-						new ResponsePackage
-                        {
-							Code = cmd,
-							Data = data
-                        });
-				}                
-			}
+		    _Push(cmd, data);
 		}
 
-		private void _RequestPush(RequestPackage package)
+	    private void _Push(ServerToClientOpCode cmd, byte[] data)
+	    {
+	        lock (Peer._LockResponse)
+	        {
+	            if (_Enable)
+	            {
+	                Peer.TotalResponse++;
+	                _Responses.Enqueue(
+	                    new ResponsePackage
+	                    {
+	                        Code = cmd,
+	                        Data = data
+	                    });
+	            }
+	        }
+	    }
+
+	    private void _RequestPush(RequestPackage package)
 		{
 			lock(Peer._LockRequest)
 			{
@@ -230,7 +245,7 @@ namespace Regulus.Remoting.Soul.Native
 		{
 			if(package.Code == ClientToServerOpCode.Ping)
 			{
-				(this as IResponseQueue).Push(ServerToClientOpCode.Ping, new byte[0]);
+                _Push(ServerToClientOpCode.Ping, new byte[0]);
 				return null;
 			}
 

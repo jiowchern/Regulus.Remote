@@ -15,9 +15,7 @@ namespace Regulus.Remoting.Ghost.Native
 
 			private static readonly object _LockRequest = new object();
 
-			private static readonly object _LockResponse = new object();
-
-			public static readonly int LowFps = 30;
+			private static readonly object _LockResponse = new object();			
 
 			private readonly AgentCore _Core;
 
@@ -68,7 +66,7 @@ namespace Regulus.Remoting.Ghost.Native
 
 				Singleton<Log>.Instance.WriteInfo(
 					string.Format(
-						"Agent Socket Local {0} Remot {1}.", 
+						"Agent Socket Local {0} Remote {1}.", 
 						_Socket.LocalEndPoint, 
 						_Socket.RemoteEndPoint));
 				_Core.Initial(this);
@@ -132,7 +130,9 @@ namespace Regulus.Remoting.Ghost.Native
 				}
 
 
-                _Writer.Push(_SendsPop());
+			    var sends = _SendsPop();
+                if(sends.Length > 0)
+                    _Writer.Push(sends);
 
                 
 			}

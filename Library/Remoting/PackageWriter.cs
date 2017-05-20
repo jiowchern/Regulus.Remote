@@ -18,15 +18,13 @@ namespace Regulus.Remoting
 
 		
 
-		private readonly PowerRegulator _PowerRegulator;
 
-	    private readonly AutoPowerRegulator _AutoPowerRegulator;
 
 		private byte[] _Buffer;
 
 
 
-	    private readonly System.Collections.Generic.List<TPackage> _Packages;
+	    
 
 		private Socket _Socket;
 
@@ -36,18 +34,13 @@ namespace Regulus.Remoting
 	    /// <summary>
 	    ///     Initializes a new instance of the <see cref="PackageWriter" /> class.
 	    /// </summary>
-	    /// <param name="low_fps">
-	    ///     保證最低fps
-	    /// </param>
 	    /// <param name="serializer">序列化物件</param>
 	    
-
 		public PackageWriter( ISerializer serializer)
 		{
-            _Packages = new List<TPackage>();
+            
             _Serializer = serializer;
-            _PowerRegulator = new PowerRegulator();
-            _AutoPowerRegulator = new AutoPowerRegulator(_PowerRegulator);
+        
 	        _Idle = true;
 		}
 
@@ -60,30 +53,18 @@ namespace Regulus.Remoting
 
 	    public void Push(TPackage[] packages)
 	    {
-	        lock (_Packages)
-	        {
-                _Packages.AddRange(packages);                
-	        }
-	        _Write();
+	        
+	        _Write(packages);
 
 
 	    }
-		private void _Write()
+		private void _Write(TPackage[] packages)
 		{
 			try
 			{
 
-			    lock (_Packages)
-			    {
-                    _Buffer = _CreateBuffer(_Packages.ToArray());
-                    _Packages.Clear();
-                }
-			    if (_Buffer.Length <= 0)
-			    {
-			        return;
-			    }
-                _AutoPowerRegulator.Operate();
-                NetworkMonitor.Instance.Write.Set(_Buffer.Length);
+                _Buffer = _CreateBuffer(packages);
+                
                 _Socket.BeginSend(_Buffer, 0, _Buffer.Length, SocketFlags.None, _WriteCompletion, null);
                 
 			}
@@ -105,9 +86,8 @@ namespace Regulus.Remoting
 				if(_Stop == false)
 				{
 					var sendSize = _Socket.EndSendTo(ar);
-
-					_Write();
-				}
+                    NetworkMonitor.Instance.Write.Set(sendSize);
+                }
 			}
 			catch(SystemException e)
 			{

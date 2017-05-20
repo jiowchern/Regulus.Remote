@@ -5,14 +5,14 @@ using System.Runtime.InteropServices;
 
 namespace Regulus.Serialization
 {
-    public class StructDescriber<T> : StructDescriber
+    public class BlittableDescriber<T> : BlittableDescriber
     {
-        public StructDescriber(int id) : base(id, typeof (T))
+        public BlittableDescriber(int id) : base(id, typeof (T))
         {
             
         }
     }
-    public class StructDescriber : ITypeDescriber 
+    public class BlittableDescriber : ITypeDescriber 
     {
         private readonly int _Id;
 
@@ -22,7 +22,7 @@ namespace Regulus.Serialization
 
         private int _Size;
 
-        public StructDescriber(int id, Type type)
+        public BlittableDescriber(int id, Type type)
         {
             _Id = id;
             _Type = type;
@@ -34,7 +34,7 @@ namespace Regulus.Serialization
             }
             catch (Exception ex)
             {                
-                throw new DescriberException(typeof(StructDescriber) , _Type , _Id , "Size" , ex);
+                throw new DescriberException(typeof(BlittableDescriber) , _Type , _Id , "Size" , ex);
             }
             
         }
@@ -75,7 +75,7 @@ namespace Regulus.Serialization
             }
             catch (Exception ex)
             {
-                throw new DescriberException(typeof(StructDescriber), _Type, _Id, "ToBuffer", ex);
+                throw new DescriberException(typeof(BlittableDescriber), _Type, _Id, "ToBuffer", ex);
             }
             finally
             {
@@ -105,7 +105,7 @@ namespace Regulus.Serialization
             }
             catch (Exception ex)
             {
-                throw new DescriberException(typeof (StructDescriber), _Type, _Id, "ToObject", ex);             
+                throw new DescriberException(typeof (BlittableDescriber), _Type, _Id, "ToObject", ex);             
             }            
         }
 

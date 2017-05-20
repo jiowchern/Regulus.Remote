@@ -25,11 +25,11 @@ namespace Regulus.Remoting.Ghost.Native
 
 		
 
-	    private Agent(GPIProvider provider,ISerializer serializer)
+	    private Agent(IProtocol protocol)
 	    {
-	        _Serializer = serializer;
+	        _Serializer = protocol.GetSerialize();
 	        _Machine = new StageMachine();
-            _Core = new AgentCore(provider, _Serializer);
+            _Core = new AgentCore(protocol);
         }
 
 		bool IUpdatable.Update()
@@ -43,10 +43,12 @@ namespace Regulus.Remoting.Ghost.Native
 		{
 			Singleton<Log>.Instance.WriteInfo("Agent Launch.");
             _Core.ErrorMethodEvent += _ErrorMethodEvent;
-        }
+		    _Core.ErrorVerifyEvent += _ErrorVerifyEvent;
+		}
 
 		void IBootable.Shutdown()
 		{
+            _Core.ErrorVerifyEvent -= _ErrorVerifyEvent;
             _Core.ErrorMethodEvent -= _ErrorMethodEvent;
             if (_Core.Enable)
 			{
@@ -106,6 +108,14 @@ namespace Regulus.Remoting.Ghost.Native
 	    {
 	        add { this._ErrorMethodEvent += value; }
 	        remove { this._ErrorMethodEvent -= value; }
+	    }
+
+	    private event Action<byte[], byte[]> _ErrorVerifyEvent;
+
+	    event Action<byte[], byte[]> IAgent.ErrorVerifyEvent
+	    {
+	        add { this._ErrorVerifyEvent += value; }
+	        remove { this._ErrorVerifyEvent -= value; }
 	    }
 
 	    bool IAgent.Connected
@@ -180,9 +190,9 @@ namespace Regulus.Remoting.Ghost.Native
 		///     建立代理器
 		/// </summary>
 		/// <returns></returns>
-		public static IAgent Create(GPIProvider provider , ISerializer serializer)
+		public static IAgent Create(IProtocol protocol)
         {
-            return new Agent(provider , serializer);
+            return new Agent(protocol);
         }
     }
 }

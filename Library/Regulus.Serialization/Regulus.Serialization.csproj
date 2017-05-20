@@ -52,7 +52,7 @@
     <Compile Include="Serializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringDescriber.cs" />
-    <Compile Include="StructDescriber.cs" />
+    <Compile Include="BlittableDescriber.cs" />
     <Compile Include="TypeIdentifier.cs" />
     <Compile Include="TypeSet.cs" />
   </ItemGroup>
