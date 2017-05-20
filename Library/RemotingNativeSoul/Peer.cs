@@ -124,7 +124,9 @@ namespace Regulus.Remoting.Soul.Native
 			_Writer.Start(_Socket);
 
 
-		    _Push(ServerToClientOpCode.ProtocolSubmit, _Protocol.VerificationCode);
+            var pkg = new PackageProtocolSubmit();
+		    pkg.VerificationCode = _Protocol.VerificationCode;
+            _Push(ServerToClientOpCode.ProtocolSubmit, pkg.ToBuffer(_Serialize));
 
 		}
 
