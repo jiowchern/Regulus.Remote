@@ -4,6 +4,8 @@ using System.ComponentModel.Design.Serialization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Regulus.Protocol
 {
@@ -18,18 +20,7 @@ namespace Regulus.Protocol
         public event Action<string , string,string> EventEvent;
 
 
-        /*public void Build(string protocol_name, Assembly asm , string[] namespaces)
-        {
-            var types = new List<Type>();
-            foreach (var exportedType in asm.GetExportedTypes())
-            {
-                if (namespaces.Any(n => n == exportedType.Namespace))
-                {
-                    types.Add(exportedType);
-                }
-            }
-            Build(protocol_name, types.ToArray());
-        }*/
+        
         public void Build(string protocol_name, Type[] types)
         {
 
@@ -85,6 +76,17 @@ namespace Regulus.Protocol
                 providerNamespaceHead = $"namespace {providerNamespace}{{ ";
                 providerNamespaceTail = "}";
             }
+
+
+            var builder = new StringBuilder();
+            builder.Append(addTypeCode);
+            builder.Append(addEventCode);
+            builder.Append(addDescriberCode);
+
+            
+            
+            var verificationCode = _BuildVerificationCode(builder);
+
             var providerCode =
                 $@"
             using System;  
@@ -109,7 +111,7 @@ namespace Regulus.Protocol
                         _Serializer = new Regulus.Serialization.Serializer(new Regulus.Serialization.DescriberBuilder({addDescriberCode}));
                     }}
 
-
+                    byte[] Regulus.Remoting.IProtocol.VerificationCode {{ get {{ return new byte[]{{{verificationCode}}};}} }}
                     Regulus.Remoting.GPIProvider Regulus.Remoting.IProtocol.GetGPIProvider()
                     {{
                         return _GPIProvider;
@@ -133,11 +135,19 @@ namespace Regulus.Protocol
                 ProviderEvent(protocol_name , providerCode);
         }
 
+        private string _BuildVerificationCode(StringBuilder builder)
+        {
+            var md5 = MD5.Create();
+            var code = md5.ComputeHash(Encoding.Default.GetBytes(builder.ToString()));            
+            Regulus.Utility.Log.Instance.WriteInfo("Verification Code " + Convert.ToBase64String(code));
+            return string.Join(",", code.Select(val => val.ToString()).ToArray());
+        }
+
         private string[] _GetSerializarType(HashSet<Type> serializer_types)
         {
             var types = new HashSet<Type>();
-
-
+            
+            serializer_types.Add(typeof(Regulus.Remoting.PackageProtocolSubmit));
             serializer_types.Add(typeof(Regulus.Remoting.RequestPackage));
             serializer_types.Add(typeof(Regulus.Remoting.ResponsePackage));
             serializer_types.Add(typeof(Regulus.Remoting.PackageUpdateProperty));
@@ -152,18 +162,17 @@ namespace Regulus.Protocol
 
             foreach (var serializerType in serializer_types)
             {
-                var name = serializerType.FullName;
+                
                 foreach (var type in new TypeDisintegrator(serializerType).Types)
-                {
-                    
+                {                    
                     types.Add(type);
                 }
             }
             var typeCodes = (from type in types orderby type.FullName select "typeof(" + _GetTypeName(type) + ")").ToArray();
 
-            foreach (var typeCode in typeCodes)
+            foreach (var type in types)
             {
-                Regulus.Utility.Log.Instance.WriteInfo(typeCode);
+                Regulus.Utility.Log.Instance.WriteInfo(type.FullName);
             }
             Regulus.Utility.Log.Instance.WriteInfo("Serializable object " + types.Count);
             return typeCodes;
