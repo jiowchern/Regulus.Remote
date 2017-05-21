@@ -33,12 +33,16 @@ namespace Regulus.Protocol
 
             var serializerTypes = new HashSet<Type>();
 
+            var memberMapMethodBuilder = new List<string>();
+            var memberMapEventBuilder = new List<string>();
+            var memberMapPropertyBuilder = new List<string>();
 
+            var memberMapInterfaceBuilder = new List<string>();
             foreach (var type in types)
             {
                 
                 serializerTypes.Add(type);
-
+                
 
                 if (type.IsInterface)
                 {
@@ -58,10 +62,35 @@ namespace Regulus.Protocol
 
                         if (EventEvent != null)
                             EventEvent(typeName, eventInfo.Name, eventCode);
+
+                        
+                        memberMapEventBuilder.Add(String.Format("typeof({0}).GetEvent(\"{1}\")", type.FullName, eventInfo.Name));
                     }
+
+                    var methodInfos = type.GetMethods();
+                    foreach (var methodInfo in methodInfos)
+                    {                        
+                        memberMapMethodBuilder.Add(String.Format("typeof({0}).GetMethod(\"{1}\")" , type.FullName , methodInfo.Name));
+                    }
+
+
+                    var propertyInfos = type.GetProperties();
+
+                    foreach (var propertyInfo in propertyInfos)
+                    {
+                        memberMapPropertyBuilder.Add(String.Format("typeof({0}).GetProperty(\"{1}\")", type.FullName, propertyInfo.Name));
+                    }
+
+                    memberMapInterfaceBuilder.Add(String.Format("typeof({0})", type.FullName));
                 }
                 
+
             }
+            var addMemberMapinterfaceCode = string.Join(",", memberMapInterfaceBuilder.ToArray());
+            var addMemberMapPropertyCode = string.Join(",", memberMapPropertyBuilder.ToArray());
+            var addMemberMapEventCode = string.Join(",", memberMapEventBuilder.ToArray());
+            
+            var addMemberMapMethodCode = string.Join(",", memberMapMethodBuilder.ToArray());
             var addTypeCode = string.Join("\n", addGhostType.ToArray());
             var addDescriberCode = string.Join(",", _GetSerializarType(serializerTypes) );
             var addEventCode = string.Join("\n", addEventType.ToArray());
@@ -82,8 +111,6 @@ namespace Regulus.Protocol
             builder.Append(addTypeCode);
             builder.Append(addEventCode);
             builder.Append(addDescriberCode);
-
-            
             
             var verificationCode = _BuildVerificationCode(builder);
 
@@ -95,26 +122,30 @@ namespace Regulus.Protocol
             {providerNamespaceHead}
                 public class {procotolName} : Regulus.Remoting.IProtocol
                 {{
-                    Regulus.Remoting.GPIProvider _GPIProvider;
+                    Regulus.Remoting.InterfaceProvider _InterfaceProvider;
                     Regulus.Remoting.EventProvider _EventProvider;
+                    Regulus.Remoting.MemberMap _MemberMap;
                     Regulus.Serialization.ISerializer _Serializer;
                     public {procotolName}()
                     {{
                         var types = new Dictionary<Type, Type>();
                         {addTypeCode}
-                        _GPIProvider = new Regulus.Remoting.GPIProvider(types);
+                        _InterfaceProvider = new Regulus.Remoting.InterfaceProvider(types);
 
                         var eventClosures = new List<Regulus.Remoting.IEventProxyCreator>();
                         {addEventCode}
                         _EventProvider = new Regulus.Remoting.EventProvider(eventClosures);
 
                         _Serializer = new Regulus.Serialization.Serializer(new Regulus.Serialization.DescriberBuilder({addDescriberCode}));
+
+
+                        _MemberMap = new Regulus.Remoting.MemberMap(new[] {{{addMemberMapMethodCode}}} ,new[]{{ {addMemberMapEventCode} }}, new [] {{{addMemberMapPropertyCode} }}, new [] {{{addMemberMapinterfaceCode}}});
                     }}
 
                     byte[] Regulus.Remoting.IProtocol.VerificationCode {{ get {{ return new byte[]{{{verificationCode}}};}} }}
-                    Regulus.Remoting.GPIProvider Regulus.Remoting.IProtocol.GetGPIProvider()
+                    Regulus.Remoting.InterfaceProvider Regulus.Remoting.IProtocol.GetInterfaceProvider()
                     {{
-                        return _GPIProvider;
+                        return _InterfaceProvider;
                     }}
 
                     Regulus.Remoting.EventProvider Regulus.Remoting.IProtocol.GetEventProvider()
@@ -125,6 +156,11 @@ namespace Regulus.Protocol
                     Regulus.Serialization.ISerializer Regulus.Remoting.IProtocol.GetSerialize()
                     {{
                         return _Serializer;
+                    }}
+
+                    Regulus.Remoting.MemberMap Regulus.Remoting.IProtocol.GetMemberMap()
+                    {{
+                        return _MemberMap;
                     }}
                     
                 }}
@@ -214,9 +250,9 @@ namespace Regulus.Protocol
                 _Type = typeof({type.FullName});                   
             
             }}
-            Delegate Regulus.Remoting.IEventProxyCreator.Create(Guid soul_id, Action<Guid, string, object[]> invoke_Event)
+            Delegate Regulus.Remoting.IEventProxyCreator.Create(Guid soul_id,int event_id, Regulus.Remoting.InvokeEventCallabck invoke_Event)
             {{                
-                var closure = new Regulus.Remoting.GenericEventClosure{_GetTypes(argTypes)}(soul_id , _Name , invoke_Event);                
+                var closure = new Regulus.Remoting.GenericEventClosure{_GetTypes(argTypes)}(soul_id , event_id , invoke_Event);                
                 return new Action{_GetTypes(argTypes)}(closure.Run);
             }}
         
@@ -260,25 +296,18 @@ $@"
     {{ 
         public class C{name} : {_GetTypeName(type)} , Regulus.Remoting.IGhost
         {{
-            bool _HaveReturn ;
-            Regulus.Remoting.IGhostRequest _Requester;
-            Guid {CodeBuilder._GhostIdName};
-            Regulus.Remoting.ReturnValueQueue _Queue;
-            readonly Regulus.Serialization.ISerializer _Serializer ;
-            public C{name}(Regulus.Remoting.IGhostRequest requester , Guid id,Regulus.Remoting.ReturnValueQueue queue, bool have_return , Regulus.Serialization.ISerializer serializer)
+            readonly bool _HaveReturn ;
+            
+            readonly Guid {CodeBuilder._GhostIdName};
+            
+            
+            
+            public C{name}(Guid id, bool have_return )
             {{
-                _Serializer = serializer;
-
-                _Requester = requester;
                 _HaveReturn = have_return ;
-                {CodeBuilder._GhostIdName} = id;
-                _Queue = queue;
+                {CodeBuilder._GhostIdName} = id;            
             }}
-
-            void Regulus.Remoting.IGhost.OnEvent(string name_event, byte[][] args)
-            {{
-                Regulus.Remoting.AgentCore.CallEvent(name_event , ""C{name}"" , this , args, _Serializer);
-            }}
+            
 
             Guid Regulus.Remoting.IGhost.GetID()
             {{
@@ -289,11 +318,19 @@ $@"
             {{
                 return _HaveReturn;
             }}
-
-            void Regulus.Remoting.IGhost.OnProperty(string name, object value)
+            object Regulus.Remoting.IGhost.GetInstance()
             {{
-                Regulus.Remoting.AgentCore.UpdateProperty(name , ""C{name}"" , this , value );
+                return this;
             }}
+
+            private event Regulus.Remoting.CallMethodCallback _CallMethodEvent;
+
+            event Regulus.Remoting.CallMethodCallback Regulus.Remoting.IGhost.CallMethodEvent
+            {{
+                add {{ this._CallMethodEvent += value; }}
+                remove {{ this._CallMethodEvent -= value; }}
+            }}
+            
             {implementCode}
             
         }}
@@ -371,6 +408,7 @@ $@"
 
             List<string> methodCodes = new List<string>();
             var methods = type.GetMethods();
+            int id = 0;
             foreach (var methodInfo in methods)
             {
                 if (methodInfo.IsSpecialName)
@@ -386,34 +424,30 @@ $@"
                     returnTypeCode = $"Regulus.Remoting.Value<{_GetTypeName(returnType)}>";
                 }
                 var returnValue = "";
-                var addReturn = $"";
+                var addReturn = $"Regulus.Remoting.IValue returnValue = null;";
                 if (haveReturn)
                 {
                     addReturn = $@"
     var returnValue = new {returnTypeCode}();
-    var returnId = _Queue.PushReturnValue(returnValue);    
-    packageCallMethod.ReturnId = returnId;
+    
 ";
                     returnValue = "return returnValue;";
                 }
 
                 var addParams = _BuildAddParams(methodInfo);
-
-                var paramCode = string.Join(",", (from p in methodInfo.GetParameters() select $"{ _GetTypeName(p.ParameterType)} {p.Name}").ToArray());
+                int paramId = 0;
+                var paramCode = string.Join(",", (from p in methodInfo.GetParameters() select $"{ _GetTypeName(p.ParameterType)} {"_" + ++paramId}").ToArray());
                 var methodCode = $@"
                 {returnTypeCode} {type.Namespace}.{type.Name}.{methodInfo.Name}({paramCode})
                 {{                    
 
-                        
-                    var packageCallMethod = new Regulus.Remoting.PackageCallMethod();
-                    packageCallMethod.EntityId = {CodeBuilder._GhostIdName};
-                    packageCallMethod.MethodName =""{methodInfo.Name}"";
                     {addReturn}
-                    {addParams}
-                    _Requester.Request(Regulus.Remoting.ClientToServerOpCode.CallMethod , packageCallMethod.ToBuffer(_Serializer));
-
+                    var info = typeof({methodInfo.DeclaringType}).GetMethod(""{methodInfo.Name}"");
+                    _CallMethodEvent(info , new object[] {{{addParams}}} , returnValue);                    
                     {returnValue}
                 }}
+
+                
 ";
                 methodCodes.Add(methodCode);
             }
@@ -427,19 +461,11 @@ $@"
 
             List<string> addParams = new List<string>();
 
-            string addParamsHead = @"var paramList = new System.Collections.Generic.List<byte[]>();";
-            foreach (var parameterInfo in parameters)
+            for (int i = 0; i < parameters.Length; i++)
             {
-                var addparam = $@"
-    var {parameterInfo.Name}Bytes = _Serializer.Serialize({parameterInfo.Name});  
-    paramList.Add({parameterInfo.Name}Bytes);
-";
-
-
-                addParams.Add(addparam);
+                addParams.Add("_" + (i+1));
             }
-
-            return $"{addParamsHead}\n{string.Join(" \n", addParams.ToArray())}\npackageCallMethod.MethodParams = paramList.ToArray();";
+            return string.Join(" ,", addParams.ToArray());
         }
     }
 }

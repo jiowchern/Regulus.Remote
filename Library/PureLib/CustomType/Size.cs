@@ -1,11 +1,7 @@
 ﻿using System;
 
-
-
-
 namespace Regulus.CustomType
 {
-	
     [Serializable]
 	public struct Size
 	{

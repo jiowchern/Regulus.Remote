@@ -14,22 +14,27 @@ namespace RemotingTest
 			_Id = Guid.NewGuid();
 		}
 
-	    void IGhost.OnEvent(string name_event, byte[][] args)
-	    {
-	        throw new NotImplementedException();
-	    }
+	    
 
 	    Guid IGhost.GetID()
 		{
 			return _Id;
 		}
 
-		void IGhost.OnProperty(string name, object value)
-		{
-			throw new NotImplementedException();
-		}
+	    public object GetInstance()
+	    {
+	        return this;
+	    }
 
-		bool IGhost.IsReturnType()
+        private event CallMethodCallback _CallMethodEvent;
+
+        event CallMethodCallback IGhost.CallMethodEvent
+        {
+            add { this._CallMethodEvent += value; }
+            remove { this._CallMethodEvent -= value; }
+        }
+
+        bool IGhost.IsReturnType()
 		{
 			throw new NotImplementedException();
 		}

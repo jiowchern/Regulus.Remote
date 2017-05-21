@@ -158,7 +158,7 @@ namespace Regulus.Remoting.Tests
                             typeof(Regulus.Remoting.PackageRelease));
             var ser = new Regulus.Serialization.Serializer(builder);
             var update = new PackageUpdateProperty();
-            update.EventName = "Name";
+            update.Property = 1;
             update.EntityId = new Guid("3ecae85d-79e0-4cc9-a34f-60f31883d26c");
             update.Args = ser.ObjectToBuffer("kdw");
 

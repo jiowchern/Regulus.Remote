@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Collection\DifferenceNoticer.cs" />
     <Compile Include="Collection\Iquadobject.cs" />
+    <Compile Include="CustomType\BilateralMap.cs" />
     <Compile Include="Extension\Linq.cs" />
     <Compile Include="Collection\MultiKeyDictionary.cs" />
     <Compile Include="Collection\Quadtree.cs" />

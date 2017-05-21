@@ -23,15 +23,15 @@ namespace Regulus.Remoting
 {
     public class AgentCore
 	{
-		private static readonly Dictionary<Type, Type> _GhostTypes = new Dictionary<Type, Type>();
+		
 
-		private static readonly Dictionary<string, Type> _Types = new Dictionary<string, Type>();
+		
 
 		private readonly AutoRelease _AutoRelease;
 
-		private readonly Dictionary<string, IProvider> _Providers;
+		private readonly Dictionary<Type, IProvider> _Providers;
 
-		private readonly ReturnValueQueue _ReturnValueQueue = new ReturnValueQueue();
+        private readonly ReturnValueQueue _ReturnValueQueue;
 
 		private readonly object _Sync = new object();
 
@@ -41,7 +41,7 @@ namespace Regulus.Remoting
 
 		private IGhostRequest _Requester;
 
-		private readonly GPIProvider _GhostProvider;
+		private readonly InterfaceProvider _GhostProvider;
 	    private readonly ISerializer _Serializer;
 
         private IProtocol _Protocol;
@@ -54,10 +54,11 @@ namespace Regulus.Remoting
 
 		public AgentCore(IProtocol protocol)
 		{
-		    _Protocol = protocol;
-            _GhostProvider = _Protocol.GetGPIProvider();
+            _ReturnValueQueue = new ReturnValueQueue();
+            _Protocol = protocol;
+            _GhostProvider = _Protocol.GetInterfaceProvider();
 		    _Serializer = _Protocol.GetSerialize();
-		    _Providers = new Dictionary<string, IProvider>();
+		    _Providers = new Dictionary<Type, IProvider>();
             _AutoRelease = new AutoRelease(_Requester , _Serializer);
         }		
 
@@ -99,12 +100,12 @@ namespace Regulus.Remoting
 			else if(id == ServerToClientOpCode.UpdateProperty)
 			{
                 var data = args.ToPackageData<PackageUpdateProperty>(_Serializer);
-                _UpdateProperty(data.EntityId, data.EventName, data.Args);
+                _UpdateProperty(data.EntityId, data.Property, data.Args);
             }
 			else if(id == ServerToClientOpCode.InvokeEvent)
 			{
                 var data = args.ToPackageData<PackageInvokeEvent>(_Serializer);
-                _InvokeEvent(data.EntityId, data.EventName, data.EventParams);
+                _InvokeEvent(data.EntityId, data.Event, data.EventParams);
             }
 			else if(id == ServerToClientOpCode.ErrorMethod)
 			{
@@ -122,17 +123,17 @@ namespace Regulus.Remoting
 			{
 
                 var data = args.ToPackageData<PackageLoadSoulCompile>(_Serializer);
-                _LoadSoulCompile(data.TypeName, data.EntityId, data.ReturnId);
+                _LoadSoulCompile(data.TypeId, data.EntityId, data.ReturnId);
             }
 			else if(id == ServerToClientOpCode.LoadSoul)
 			{
                 var data = args.ToPackageData<PackageLoadSoul>(_Serializer);
-                _LoadSoul(data.TypeName, data.EntityId, data.ReturnType);
+                _LoadSoul(data.TypeId, data.EntityId, data.ReturnType);
             }
 			else if(id == ServerToClientOpCode.UnloadSoul)
 			{
                 var data = args.ToPackageData<PackageUnloadSoul>(_Serializer);
-                _UnloadSoul(data.TypeName, data.EntityId);
+                _UnloadSoul(data.TypeId, data.EntityId);
             }
             else if (id == ServerToClientOpCode.ProtocolSubmit)
             {
@@ -186,9 +187,13 @@ namespace Regulus.Remoting
 			}
 		}
 
-		private void _LoadSoulCompile(string type_name, Guid entity_id, Guid return_id)
+		private void _LoadSoulCompile(int type_id, Guid entity_id, Guid return_id)
 		{
-			var provider = _QueryProvider(type_name);
+		    var map = _Protocol.GetMemberMap();
+
+		    var type = map.GetInterface(type_id);
+
+            var provider = _QueryProvider(type);
 			if(provider != null)
 			{
 				var ghost = provider.Ready(entity_id);
@@ -196,11 +201,16 @@ namespace Regulus.Remoting
 			}
 		}
 
-		private void _LoadSoul(string type_name, Guid id, bool return_type)
+		private void _LoadSoul(int type_id, Guid id, bool return_type)
 		{
-			var provider = _QueryProvider(type_name);
-			var ghost = _BuildGhost(AgentCore._GetType(type_name), _Requester, id, return_type);
-			provider.Add(ghost);
+		    var map = _Protocol.GetMemberMap();		                
+            var type = map.GetInterface(type_id);
+            var provider = _QueryProvider(type);
+			var ghost = _BuildGhost(type, _Requester, id, return_type);
+
+		    ghost.CallMethodEvent += new GhostMethodHandler(ghost, _ReturnValueQueue , _Protocol , _Requester ).Run;
+
+            provider.Add(ghost);
 
 			if(ghost.IsReturnType())
 			{
@@ -213,29 +223,27 @@ namespace Regulus.Remoting
 			_AutoRelease.Register(ghost);
 		}
 
-		private void _UnloadSoul(string type_name, Guid id)
+		private void _UnloadSoul(int type_id, Guid id)
 		{
-			var provider = _QueryProvider(type_name);
+		    var map = _Protocol.GetMemberMap();
+		    var type = map.GetInterface(type_id);
+            var provider = _QueryProvider(type);
 			if(provider != null)
 			{
 				provider.Remove(id);
 			}
 		}
 
-		private IProvider _QueryProvider(string type_name)
+		private IProvider _QueryProvider(Type type)
 		{
 			IProvider provider = null;
 			lock(_Providers)
 			{
-				if(_Providers.TryGetValue(type_name, out provider) == false)
+				if(_Providers.TryGetValue(type, out provider) == false)
 				{
-					var type = AgentCore._GetType(type_name);
-					if(type != null)
-					{
-						provider = _BuildProvider(type);
-						_Providers.Add(type_name, provider);
-					}
-				}
+                    provider = _BuildProvider(type);
+                    _Providers.Add(type, provider);
+                }
 			}
 
 			return provider;
@@ -250,27 +258,66 @@ namespace Regulus.Remoting
 
 		public INotifier<T> QueryProvider<T>()
 		{
-			return _QueryProvider(typeof(T).FullName) as INotifier<T>;
+			return _QueryProvider(typeof(T)) as INotifier<T>;
 		}
 
-		private void _UpdateProperty(Guid entity_id, string name, byte[] value)
+		private void _UpdateProperty(Guid entity_id, int property, byte[] buffer)
 		{
             
 			var ghost = _FindGhost(entity_id);
 			if(ghost != null)
 			{
-			    var instance = _Serializer.Deserialize(value);
-                ghost.OnProperty(name, instance);
-			}
+			    var map = _Protocol.GetMemberMap();
+			    var info = map.GetProperty(property);
+                var value = _Serializer.Deserialize(buffer);
+			    var instance = ghost.GetInstance();
+			    var type = _GhostProvider.Find(info.DeclaringType);
+                var field = type.GetField("_" + info.Name, BindingFlags.Instance | BindingFlags.NonPublic);
+                if (field != null)
+                {
+                    field.SetValue(instance, value);
+                }
+
+            }
 		}
 
-		private void _InvokeEvent(Guid ghost_id, string eventName, byte[][] eventParams)
+		private void _InvokeEvent(Guid ghost_id, int event_id, byte[][] event_params)
 		{
 			var ghost = _FindGhost(ghost_id);
 			if(ghost != null)
 			{
-				ghost.OnEvent(eventName, eventParams);
-			}
+			    var map = _Protocol.GetMemberMap();
+			    var info = map.GetEvent(event_id);
+
+                
+                Type type = _GhostProvider.Find(info.DeclaringType);
+			    var instance = ghost.GetInstance();
+                if (type != null)
+                {
+                    var eventInfos = type.GetField("_" + info.Name, BindingFlags.Instance | BindingFlags.NonPublic);
+                    var fieldValue = eventInfos.GetValue(instance);
+                    if (fieldValue is Delegate)
+                    {
+                        var fieldValueDelegate = fieldValue as Delegate;
+
+                        var pars = (from a in event_params select _Serializer.Deserialize(a)).ToArray();
+                        try
+                        {
+                            fieldValueDelegate.DynamicInvoke(pars);
+                        }
+                        catch (TargetInvocationException tie)
+                        {
+                            Regulus.Utility.Log.Instance.WriteInfo(string.Format("Call event error in {0}:{1}. \n{2}", type.FullName, info.Name, tie.InnerException.ToString()));
+                            throw tie;
+                        }
+                        catch (Exception e)
+                        {
+                            Regulus.Utility.Log.Instance.WriteInfo(string.Format("Call event error in {0}:{1}.", type.FullName, info.Name));
+                            throw e;
+                        }
+                    }
+                }
+            }
 		}
 
 		private IGhost _FindGhost(Guid ghost_id)
@@ -332,7 +379,7 @@ namespace Regulus.Remoting
 
 			var ghostType = _QueryGhostType(ghost_base_type);
 
-		    var constructor = ghostType.GetConstructor(new[] {typeof (IGhostRequest), typeof (Guid),typeof(ReturnValueQueue), typeof (bool), typeof (ISerializer)});
+		    var constructor = ghostType.GetConstructor(new[] {typeof (Guid),typeof (bool)});
 		    if (constructor == null)
 		    {
 		        List<string> constructorInfos = new List<string>();
@@ -346,126 +393,22 @@ namespace Regulus.Remoting
             }
                 
 
-		    var o = constructor.Invoke(new object[] { peer, id, _ReturnValueQueue, return_type, _Serializer });            
-            
-
+		    var o = constructor.Invoke(new object[] { id, return_type});            
 
             return (IGhost)o;
 		}
 
-        private string  _GetParamsString(ParameterInfo[] parameters)
-        {
-
-            List<string> types = new List<string>();
-            foreach (var parameterInfo in parameters)
-            {
-                types.Add(string.Format("{0} {1}" , parameterInfo.ParameterType , parameterInfo.Name));
-            }
-
-            return String.Join(",", types.ToArray());
-        }
+       
 
         private Type _QueryGhostType(Type ghostBaseType)
-		{
-			Type ghostType = null;
-			if(AgentCore._GhostTypes.TryGetValue(ghostBaseType, out ghostType))
-			{
-				return ghostType;
-			}
-
-			if (_GhostProvider != null)
-				ghostType = _GhostProvider.Find(ghostBaseType);
-			
-
-			AgentCore._GhostTypes.Add(ghostBaseType, ghostType);
-			return ghostType;
-		}
-
-		private static Type _GetType(string type_name)
-		{
-			lock(AgentCore._Types)
-			{
-				Type result;
-				if(AgentCore._Types.TryGetValue(type_name, out result) == false)
-				{
-					result = _Find(type_name);
-					AgentCore._Types.Add(type_name, result);
-				}
-
-				return result;
-			}
-		}
-
-		private static  Type _Find(string type_name)
-		{
-			var type = Type.GetType(type_name);
-            type = (from t in _GhostTypes.Values where t.Name == type_name select t).FirstOrDefault();
-            if (type != null)
-                return type;
-            if (type == null)
-			{
-				foreach(var a in AppDomain.CurrentDomain.GetAssemblies())
-				{
-					type = a.GetType(type_name);
-					if(type != null)
-					{
-						return type;
-					}
-				}                
-                Singleton<Log>.Instance.WriteInfo(string.Format("Fail Type {0}", type_name));
-				throw new Exception("找不到gpi " + type_name);
-			}
-
-			return type;
-		}
-
-		// 被_BuildGhostType參考
-		public static void UpdateProperty(string property, string type_name, object instance, object value)
-		{
-			var type = AgentCore._GetType(type_name);
-			if(type != null)
-			{
-				var field = type.GetField("_" + property, BindingFlags.Instance | BindingFlags.NonPublic);
-				if(field != null)
-				{
-                    field.SetValue(instance, value);
-				}
-			}
-		}
-
-		// 被_BuildGhostType參考
-		public static void CallEvent(string method, string type_name, object obj, byte[][] args, ISerializer serializer)
-		{
-			var type = AgentCore._GetType(type_name);
-
-			if(type != null)
-			{
-				var eventInfos = type.GetField("_" + method, BindingFlags.Instance | BindingFlags.NonPublic);
-				var fieldValue = eventInfos.GetValue(obj);
-				if(fieldValue is Delegate)
-				{
-					var fieldValueDelegate = fieldValue as Delegate;                    
-
-                    var pars = (from a in args select serializer.Deserialize( a )).ToArray();
-				    try
-				    {
-                        fieldValueDelegate.DynamicInvoke(pars);
-				    }
-				    catch (TargetInvocationException tie)
-				    {                        
-                        Regulus.Utility.Log.Instance.WriteInfo(string.Format("Call event error in {0}:{1}. \n{2}", type.FullName, method , tie.InnerException.ToString()));
-                        throw tie;
-                    }
-				    catch (Exception e)
-				    {
-				        Regulus.Utility.Log.Instance.WriteInfo(string.Format("Call event error in {0}:{1}." , type.FullName , method));
-                        throw e;
-				    }
-                }
-			}
-		}
+		{			
+			return _GhostProvider.Find(ghostBaseType);
+        }
 
 		
+
+		
+
 		
 
 		public event Action<string, string> ErrorMethodEvent;

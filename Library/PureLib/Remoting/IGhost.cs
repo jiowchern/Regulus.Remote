@@ -1,15 +1,20 @@
 ﻿using System;
+using System.Reflection;
 
 namespace Regulus.Remoting
 {
-	public interface IGhost
+    public delegate void CallMethodCallback(MethodInfo info , object[] args ,IValue return_value);
+    
+    public interface IGhost
 	{
-		void OnEvent(string name_event, byte[][] args);
+		
 
 		Guid GetID();
 
-		void OnProperty(string name, object value);
+	    object GetInstance();
 
 		bool IsReturnType();
+
+        event CallMethodCallback CallMethodEvent;
 	}
 }
