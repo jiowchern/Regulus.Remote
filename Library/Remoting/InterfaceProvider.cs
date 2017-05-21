@@ -6,11 +6,11 @@ namespace Regulus.Remoting
     /// <summary>
     /// 
     /// </summary>
-    public class GPIProvider 
+    public class InterfaceProvider 
     {
         private readonly Dictionary<Type, Type> _Types;
 
-        public GPIProvider(Dictionary<Type, Type> types)
+        public InterfaceProvider(Dictionary<Type, Type> types)
         {
             _Types = types;
         }

@@ -25,27 +25,34 @@ namespace Regulus.Remoting
 			_Agent = agent;
 		}
 
-		void IGhost.OnEvent(string name_event, byte[][] args)
-		{
-			throw new NotImplementedException();
-		}
+		
 
 		Guid IGhost.GetID()
 		{
 			return Id;
 		}
 
-		void IGhost.OnProperty(string name, object value)
-		{
-			throw new NotImplementedException();
-		}
+	    object IGhost.GetInstance()
+	    {
+	        return this;
+	    }
+
+	    
 
 		bool IGhost.IsReturnType()
 		{
 			return false;
 		}
 
-		double IOnline.Ping
+	    private event CallMethodCallback _CallMethodEvent;
+
+	    event CallMethodCallback IGhost.CallMethodEvent
+	    {
+	        add { this._CallMethodEvent += value; }
+	        remove { this._CallMethodEvent -= value; }
+	    }
+
+	    double IOnline.Ping
 		{
 			get { return TimeSpan.FromTicks(_Agent.Ping).TotalSeconds; }
 		}

@@ -117,7 +117,7 @@ namespace Regulus.Remoting.Standalone
 			get { return _Connected; }
 		}
 
-		event Action<Guid, string, Guid, byte[][]> IRequestQueue.InvokeMethodEvent
+		event InvokeMethodCallback IRequestQueue.InvokeMethodEvent
 		{
 			add { _GhostRequest.CallMethodEvent += value; }
 			remove { _GhostRequest.CallMethodEvent -= value; }

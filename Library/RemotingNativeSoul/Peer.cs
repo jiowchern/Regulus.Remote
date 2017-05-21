@@ -15,7 +15,7 @@ namespace Regulus.Remoting.Soul.Native
 
 		private event Action _BreakEvent;
 
-		private event Action<Guid, string, Guid, byte[][]> _InvokeMethodEvent;
+		private event InvokeMethodCallback _InvokeMethodEvent;
 
 		public event DisconnectCallback DisconnectEvent;
 
@@ -23,7 +23,7 @@ namespace Regulus.Remoting.Soul.Native
 		{
 			public Guid EntityId { get; set; }
 
-			public string MethodName { get; set; }
+			public int MethodId { get; set; }
 
 			public Guid ReturnId { get; set; }
 
@@ -164,7 +164,7 @@ namespace Regulus.Remoting.Soul.Native
 			}
 		}
 
-		event Action<Guid, string, Guid, byte[][]> IRequestQueue.InvokeMethodEvent
+		event InvokeMethodCallback IRequestQueue.InvokeMethodEvent
 		{
 			add { _InvokeMethodEvent += value; }
 			remove { _InvokeMethodEvent -= value; }
@@ -201,7 +201,7 @@ namespace Regulus.Remoting.Soul.Native
 				{
 					if(_InvokeMethodEvent != null)
 					{
-						_InvokeMethodEvent(request.EntityId, request.MethodName, request.ReturnId, request.MethodParams);
+						_InvokeMethodEvent(request.EntityId, request.MethodId, request.ReturnId, request.MethodParams);
 					}
 				}
 			}
@@ -253,24 +253,11 @@ namespace Regulus.Remoting.Soul.Native
 
 			if(package.Code == ClientToServerOpCode.CallMethod)
 			{
-				/*var EntityId = new Guid(package.Args[0]);
-				var MethodName = Encoding.Default.GetString(package.Args[1]);
-
-				byte[] par = null;
-				var ReturnId = Guid.Empty;
-				if(package.Args.TryGetValue(2, out par))
-				{
-					ReturnId = new Guid(par);
-				}
-
-				var MethodParams = (from p in package.Args
-									where p.Key >= 3
-									orderby p.Key
-									select p.Value).ToArray();*/
+				
 
 
 			    var data = package.Data.ToPackageData<PackageCallMethod>(_Serialize);                
-                return _ToRequest(data.EntityId, data.MethodName, data.ReturnId, data.MethodParams);
+                return _ToRequest(data.EntityId, data.MethodId, data.ReturnId, data.MethodParams);
 			}
 
 			if(package.Code == ClientToServerOpCode.Release)
@@ -286,12 +273,12 @@ namespace Regulus.Remoting.Soul.Native
 			return null;
 		}
 
-		private Request _ToRequest(Guid entity_id, string method_name, Guid return_id, byte[][] method_params)
+		private Request _ToRequest(Guid entity_id, int method_id, Guid return_id, byte[][] method_params)
 		{
 			return new Request
 			{
 				EntityId = entity_id, 
-				MethodName = method_name, 
+				MethodId = method_id, 
 				MethodParams = method_params, 
 				ReturnId = return_id
 			};

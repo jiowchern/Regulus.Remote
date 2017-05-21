@@ -53,15 +53,14 @@ namespace Regulus.Remoting
 	public class PackageUpdateProperty : TPackageData<PackageUpdateProperty>
 	{
 		public PackageUpdateProperty()
-		{
-			EventName = String.Empty;
+		{			
 			Args = new byte[0];
 		}
 
 
 		public Guid EntityId;
 
-		public string EventName;
+		public int Property;
 
 		public byte[] Args;
 	}
@@ -72,13 +71,13 @@ namespace Regulus.Remoting
 		public PackageInvokeEvent()
 		{
 			EventParams = new byte[0][];
-			EventName = String.Empty;
+			
 		}
 	
 		public Guid EntityId;
 
 	
-		public string EventName;
+		public int Event;
 
 	
 		public byte[][] EventParams;
@@ -118,10 +117,10 @@ namespace Regulus.Remoting
 	{
 		public PackageLoadSoulCompile ()
 		{
-			TypeName = String.Empty;
+			
 		}
 	
-		public string TypeName;
+		public int TypeId;
 	
 		public Guid EntityId;
 	
@@ -133,10 +132,10 @@ namespace Regulus.Remoting
 	{
 		public PackageLoadSoul()
 		{
-			TypeName = String.Empty;
+			
 		}
 	
-		public string TypeName;
+		public int TypeId;
 	
 		public Guid EntityId;
 	
@@ -147,10 +146,10 @@ namespace Regulus.Remoting
 	{
 		public PackageUnloadSoul()
 		{
-			TypeName = String.Empty;
+			
 		}
 	
-		public string TypeName;
+		public int TypeId;
 		
 		public Guid EntityId;
 	}
@@ -162,7 +161,7 @@ namespace Regulus.Remoting
 
 		public PackageCallMethod()
 		{
-			MethodName = String.Empty;
+			
 			MethodParams = new byte[0][];
 		}
 	
@@ -170,7 +169,7 @@ namespace Regulus.Remoting
 		public Guid EntityId;
 	
 
-		public string MethodName;
+		public int MethodId;
 	
 
 		public Guid ReturnId;

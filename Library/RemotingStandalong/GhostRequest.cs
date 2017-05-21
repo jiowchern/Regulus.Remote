@@ -11,7 +11,7 @@ namespace Regulus.Remoting.Standalone
 	public class GhostRequest : IGhostRequest
 	{
 	    private readonly ISerializer _Serializer;
-	    public event Action<Guid, string, Guid, byte[][]> CallMethodEvent;
+	    public event InvokeMethodCallback CallMethodEvent;
 
 		public event Action PingEvent;
 
@@ -73,7 +73,7 @@ namespace Regulus.Remoting.Standalone
 
 				/*var EntityId = new Guid(args[0]);
 
-				var MethodName = Encoding.Default.GetString(args[1]);
+				var MethodId = Encoding.Default.GetString(args[1]);
 
 				byte[] par = null;
 				var ReturnId = Guid.Empty;
@@ -92,7 +92,7 @@ namespace Regulus.Remoting.Standalone
                 if (CallMethodEvent != null)
 				{
                     
-                    CallMethodEvent(data.EntityId, data.MethodName, data.ReturnId, data.MethodParams);
+                    CallMethodEvent(data.EntityId, data.MethodId, data.ReturnId, data.MethodParams);
 				}
 			}
 			else if(ClientToServerOpCode.Release == code)

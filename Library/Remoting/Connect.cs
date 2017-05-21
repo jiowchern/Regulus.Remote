@@ -29,23 +29,25 @@ namespace Regulus.Remoting
 			ConnectedEvent(ipaddr, port, val);
 			return val;
 		}
+        private event CallMethodCallback _CallMethodEvent;
 
-		void IGhost.OnEvent(string name_event, byte[][] args)
-		{
-			throw new NotImplementedException();
-		}
+        event CallMethodCallback IGhost.CallMethodEvent
+        {
+            add { this._CallMethodEvent += value; }
+            remove { this._CallMethodEvent -= value; }
+        }
 
-		Guid IGhost.GetID()
+        Guid IGhost.GetID()
 		{
 			return Id;
 		}
 
-		void IGhost.OnProperty(string name, object value)
-		{
-			throw new NotImplementedException();
-		}
+	    public object GetInstance()
+	    {
+	        return this;
+	    }
 
-		bool IGhost.IsReturnType()
+	    bool IGhost.IsReturnType()
 		{
 			return false;
 		}

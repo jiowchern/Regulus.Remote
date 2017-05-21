@@ -4,7 +4,7 @@ namespace Regulus.Remoting
 {
     public interface IEventProxyCreator
     {
-        Delegate Create(Guid soul_id, Action<Guid, string, object[]> invoke_Event);
+        Delegate Create(Guid soul_id,int event_id , InvokeEventCallabck invoke_Event);
         Type GetType(); 
         string GetName();
     }
