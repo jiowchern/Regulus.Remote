@@ -50,15 +50,7 @@ namespace Regulus.Remoting
                 SocketError error;
                 var readSize = _Socket.EndReceive(ar , out error );
 
-                if (error != SocketError.Success)
-                {
-                    Regulus.Utility.Log.Instance.WriteDebug(string.Format("read body error {0} size:{1}",  error , readSize));
-                    if (ErrorEvent != null)
-                    {
-                        ErrorEvent();
-                    }
-                }
-                else
+                if (error == SocketError.Success && readSize != 0)
                 {
                     _Offset += readSize;
                     NetworkMonitor.Instance.Read.Set(readSize);
@@ -76,6 +68,15 @@ namespace Regulus.Remoting
                             _Readed,
                             null);
                     }
+                }
+                else
+                {
+                    Regulus.Utility.Log.Instance.WriteDebug(string.Format("read body error {0} size:{1}", error, readSize));
+                    if (ErrorEvent != null)
+                    {
+                        ErrorEvent();
+                    }
+                    
                 }
                 
             }
