@@ -70,7 +70,8 @@ namespace Regulus.Protocol
                     var methodInfos = type.GetMethods();
                     foreach (var methodInfo in methodInfos)
                     {                        
-                        memberMapMethodBuilder.Add(String.Format("typeof({0}).GetMethod(\"{1}\")" , type.FullName , methodInfo.Name));
+                        if (methodInfo.IsPublic && methodInfo.IsSpecialName == false)
+                            memberMapMethodBuilder.Add(String.Format("typeof({0}).GetMethod(\"{1}\")" , type.FullName , methodInfo.Name));
                     }
 
 
@@ -78,7 +79,8 @@ namespace Regulus.Protocol
 
                     foreach (var propertyInfo in propertyInfos)
                     {
-                        memberMapPropertyBuilder.Add(String.Format("typeof({0}).GetProperty(\"{1}\")", type.FullName, propertyInfo.Name));
+                        
+                            memberMapPropertyBuilder.Add(String.Format("typeof({0}).GetProperty(\"{1}\")", type.FullName, propertyInfo.Name));
                     }
 
                     memberMapInterfaceBuilder.Add(String.Format("typeof({0})", type.FullName));

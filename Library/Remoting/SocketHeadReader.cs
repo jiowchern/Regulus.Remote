@@ -52,7 +52,7 @@ namespace Regulus.Remoting
                 NetworkMonitor.Instance.Read.Set(readSize);
 
 
-                if (error == SocketError.Success)
+                if (error == SocketError.Success && readSize != 0)
                 {
                     if (_ReadData(readSize))
                     {
