@@ -37,7 +37,8 @@ namespace Regulus.Remoting.Ghost.Native
 
 			public OnlineStage(Socket socket, AgentCore core , ISerializer serializer)
 			{
-				_Core = core;
+                
+                _Core = core;
 
 				_Socket = socket;
 				_Reader = new PackageReader<ResponsePackage>(serializer);
