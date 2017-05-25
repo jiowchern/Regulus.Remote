@@ -11,6 +11,7 @@ script:
   - xbuild /p:Configuration=Release Regulus.sln  
   - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./Test/RegulusBehaviourTree.Tests/bin/Release/RegulusBehaviourTree.Tests.dll
   - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./Test/PureLibTest/bin/Release/RegulusLibraryTest.dll
-  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./Regulus.SerializationTests/bin/Release/Regulus.SerializationTests.dll
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./Test/Regulus.SerializationTests/bin/Release/Regulus.SerializationTests.dll
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./Test/RegulusProtocolTests/bin/Release/RegulusProtocolTests.dll
   
 
