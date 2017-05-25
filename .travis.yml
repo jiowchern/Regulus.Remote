@@ -3,7 +3,7 @@ solution: Regulus.sln
 
 install:  
   - sudo apt-get install -y gtk-sharp2
-  - sudo: required language: dist: precise
+
   - nuget restore Regulus.sln
   - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 
