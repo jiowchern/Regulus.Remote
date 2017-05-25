@@ -1,7 +1,5 @@
 # Regulus
-
-Remote Sample (socket base connect library)
-https://sites.google.com/site/jiowchern/
+[![Build Status](https://travis-ci.org/jiowchern/Regulus.svg?branch=master)](https://travis-ci.org/jiowchern/Regulus)
 
 
 
