@@ -1,14 +1,14 @@
 ﻿using System;
 
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 
 
 using Regulus.Utility;
 
 namespace RemotingTest
 {
-	[TestClass]
+	
 	public class EnumFlag
 	{
 		[Flags]
@@ -23,7 +23,7 @@ namespace RemotingTest
 			F4 = 8
 		}
 
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestEnumFlagForeach()
 		{
 			var flags = TESTFLAG.F2 | TESTFLAG.F3;
@@ -34,8 +34,8 @@ namespace RemotingTest
 				result[i++] = flag;
 			}
 
-			Assert.AreEqual(TESTFLAG.F2, result[0]);
-			Assert.AreEqual(TESTFLAG.F3, result[1]);
+			NUnit.Framework.Assert.AreEqual(TESTFLAG.F2, result[0]);
+			NUnit.Framework.Assert.AreEqual(TESTFLAG.F3, result[1]);
 		}
 	}
 }

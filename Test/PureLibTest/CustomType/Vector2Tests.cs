@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿
 using Regulus.CustomType;
 using System;
 using System.Collections.Generic;
@@ -6,17 +6,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using NUnit.Framework;
+
 namespace Regulus.CustomType.Tests
 {
-    [TestClass()]
+
     public class Vector2Tests
     {
-        [TestMethod()]
+        [NUnit.Framework.Test()]
         public void VectorToAngleTest()
         {
             var vec = Vector2.AngleToVector(45.0f);
             var angle = Vector2.VectorToAngle(vec);
-            Assert.AreEqual(45.0f , angle);
+            NUnit.Framework.Assert.AreEqual(45.0f , angle);
         }
     }
 }

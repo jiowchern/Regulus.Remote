@@ -1,24 +1,24 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿
 
 
 using Regulus.Utility;
 
 namespace RegulusLibraryTest
 {
-	[TestClass]
+	
 	public class DosKeyTest
 	{
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestPrevInit()
 		{
 			var dosKey = new Doskey(10);
 
 			var record1 = dosKey.TryGetPrev();
 
-			Assert.AreEqual(null, record1);
+			NUnit.Framework.Assert.AreEqual(null, record1);
 		}
 
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestPrev()
 		{
 			var dosKey = new Doskey(10);
@@ -31,13 +31,13 @@ namespace RegulusLibraryTest
 			var record3 = dosKey.TryGetPrev();
 			var record4 = dosKey.TryGetPrev();
 
-			Assert.AreEqual("in3", record1);
-			Assert.AreEqual("in2", record2);
-			Assert.AreEqual("in1", record3);
-			Assert.AreEqual(null, record4);
+			NUnit.Framework.Assert.AreEqual("in3", record1);
+			NUnit.Framework.Assert.AreEqual("in2", record2);
+			NUnit.Framework.Assert.AreEqual("in1", record3);
+			NUnit.Framework.Assert.AreEqual(null, record4);
 		}
 
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestNext()
 		{
 			var dosKey = new Doskey(10);
@@ -55,17 +55,17 @@ namespace RegulusLibraryTest
 			var record7 = dosKey.TryGetNext();
 			var record8 = dosKey.TryGetNext();
 
-			Assert.AreEqual("in3", record1);
-			Assert.AreEqual("in2", record2);
-			Assert.AreEqual("in1", record3);
-			Assert.AreEqual(null, record4);
-			Assert.AreEqual("in2", record5);
-			Assert.AreEqual("in3", record6);
-			Assert.AreEqual(null, record7);
-			Assert.AreEqual(null, record8);
+			NUnit.Framework.Assert.AreEqual("in3", record1);
+			NUnit.Framework.Assert.AreEqual("in2", record2);
+			NUnit.Framework.Assert.AreEqual("in1", record3);
+			NUnit.Framework.Assert.AreEqual(null, record4);
+			NUnit.Framework.Assert.AreEqual("in2", record5);
+			NUnit.Framework.Assert.AreEqual("in3", record6);
+			NUnit.Framework.Assert.AreEqual(null, record7);
+			NUnit.Framework.Assert.AreEqual(null, record8);
 		}
 
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestNextPrev()
 		{
 			var dosKey = new Doskey(3);
@@ -86,17 +86,17 @@ namespace RegulusLibraryTest
 			var record7 = dosKey.TryGetPrev();
 			var record8 = dosKey.TryGetPrev();
 
-			Assert.AreEqual(null, record1);
-			Assert.AreEqual("in6", record2);
-			Assert.AreEqual(null, record3);
-			Assert.AreEqual("in5", record4);
-			Assert.AreEqual("in6", record5);
-			Assert.AreEqual("in5", record6);
-			Assert.AreEqual("in4", record7);
-			Assert.AreEqual(null, record8);
+			NUnit.Framework.Assert.AreEqual(null, record1);
+			NUnit.Framework.Assert.AreEqual("in6", record2);
+			NUnit.Framework.Assert.AreEqual(null, record3);
+			NUnit.Framework.Assert.AreEqual("in5", record4);
+			NUnit.Framework.Assert.AreEqual("in6", record5);
+			NUnit.Framework.Assert.AreEqual("in5", record6);
+			NUnit.Framework.Assert.AreEqual("in4", record7);
+			NUnit.Framework.Assert.AreEqual(null, record8);
 		}
 
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestPrevLimit()
 		{
 			var dosKey = new Doskey(2);
@@ -109,10 +109,10 @@ namespace RegulusLibraryTest
 			var record3 = dosKey.TryGetPrev();
 			var record4 = dosKey.TryGetPrev();
 
-			Assert.AreEqual("in3", record1);
-			Assert.AreEqual("in2", record2);
-			Assert.AreEqual(null, record3);
-			Assert.AreEqual(null, record4);
+			NUnit.Framework.Assert.AreEqual("in3", record1);
+			NUnit.Framework.Assert.AreEqual("in2", record2);
+			NUnit.Framework.Assert.AreEqual(null, record3);
+			NUnit.Framework.Assert.AreEqual(null, record4);
 		}
 	}
 }

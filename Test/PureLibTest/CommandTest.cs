@@ -1,6 +1,6 @@
 ﻿using System;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 
 using NSubstitute;
 
@@ -22,10 +22,10 @@ namespace RegulusLibraryTest
 
 		float Method3(int a, int b);
 	}
-	[TestClass]
+	
 	public class CommandTest
 	{
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestCommandRegisterEvent1()
 		{
 			var dummy = NSubstitute.Substitute.For<IDummy>();
@@ -33,15 +33,15 @@ namespace RegulusLibraryTest
 
 			command.RegisterEvent += (cmd, ret, args) =>
 			{
-				Assert.AreEqual("Method3" , cmd);
-				Assert.AreEqual(typeof(float), ret.Param);
-				Assert.AreEqual(typeof(int), args[0].Param);
-				Assert.AreEqual(typeof(int), args[1].Param);
+				NUnit.Framework.Assert.AreEqual("Method3" , cmd);
+				NUnit.Framework.Assert.AreEqual(typeof(float), ret.Param);
+				NUnit.Framework.Assert.AreEqual(typeof(int), args[0].Param);
+				NUnit.Framework.Assert.AreEqual(typeof(int), args[1].Param);
 			};
 			command.RegisterLambda<IDummy, int, int, float>(dummy, (d,i1,i2) => d.Method3(i1,i2), (result) => { });
 			command.Run("method3", new [] { "3" , "9"});
 		}
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestCommandRegisterEvent2()
 		{
 			var dummy = NSubstitute.Substitute.For<IDummy>();
@@ -49,55 +49,55 @@ namespace RegulusLibraryTest
 
 			command.RegisterEvent += (cmd, ret, args) =>
 			{
-				Assert.AreEqual("Method2", cmd);
-				Assert.AreEqual(typeof(void), ret.Param);
-				Assert.AreEqual(typeof(int), args[0].Param);
-				Assert.AreEqual(typeof(int), args[1].Param);
+				NUnit.Framework.Assert.AreEqual("Method2", cmd);
+				NUnit.Framework.Assert.AreEqual(typeof(void), ret.Param);
+				NUnit.Framework.Assert.AreEqual(typeof(int), args[0].Param);
+				NUnit.Framework.Assert.AreEqual(typeof(int), args[1].Param);
 
-				Assert.AreEqual("return_Void" ,ret.Description );
+				NUnit.Framework.Assert.AreEqual("return_Void" ,ret.Description );
 			};
 			command.RegisterLambda<IDummy, int, int>(dummy, (d, i1, i2) => d.Method2(i1, i2));
 			command.Run("method2", new[] { "3", "9" });
 		}
 
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestCommandRegisterEvent3()
 		{
 			var dummy = NSubstitute.Substitute.For<IDummy>();
 			var command = new Command();
 			command.RegisterEvent += (cmd, ret, args) =>
 			{
-				Assert.AreEqual("m", cmd);
-				Assert.AreEqual(typeof(void), ret.Param);
-				Assert.AreEqual(typeof(int), args[0].Param);
-				Assert.AreEqual(typeof(int), args[1].Param);
+				NUnit.Framework.Assert.AreEqual("m", cmd);
+				NUnit.Framework.Assert.AreEqual(typeof(void), ret.Param);
+				NUnit.Framework.Assert.AreEqual(typeof(int), args[0].Param);
+				NUnit.Framework.Assert.AreEqual(typeof(int), args[1].Param);
 
-				Assert.AreEqual("", ret.Description);
-				Assert.AreEqual("l1", args[0].Description);
-				Assert.AreEqual("l2", args[1].Description);
+				NUnit.Framework.Assert.AreEqual("", ret.Description);
+				NUnit.Framework.Assert.AreEqual("l1", args[0].Description);
+				NUnit.Framework.Assert.AreEqual("l2", args[1].Description);
 			};
 
 
 			command.Register<int,int>("m [l1 ,l2]" , (l1, l2) => { dummy.Method2(l1,l2);});
 		}
 
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestCommandRegisterEvent4()
 		{
 			var dummy = NSubstitute.Substitute.For<IDummy>();
 			var command = new Command();
 			command.RegisterEvent += (cmd, ret, args) =>
 			{
-				Assert.AreEqual("m", cmd);
-				Assert.AreEqual(typeof(float), ret.Param);
-				Assert.AreEqual(typeof(int), args[0].Param);
-				Assert.AreEqual(typeof(int), args[1].Param);
+				NUnit.Framework.Assert.AreEqual("m", cmd);
+				NUnit.Framework.Assert.AreEqual(typeof(float), ret.Param);
+				NUnit.Framework.Assert.AreEqual(typeof(int), args[0].Param);
+				NUnit.Framework.Assert.AreEqual(typeof(int), args[1].Param);
 
 
 
-				Assert.AreEqual("", ret.Description);
-				Assert.AreEqual("l1", args[0].Description);
-				Assert.AreEqual("l2", args[1].Description);
+				NUnit.Framework.Assert.AreEqual("", ret.Description);
+				NUnit.Framework.Assert.AreEqual("l1", args[0].Description);
+				NUnit.Framework.Assert.AreEqual("l2", args[1].Description);
 			};
 
 
@@ -105,7 +105,7 @@ namespace RegulusLibraryTest
 		}
 
 
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestCommandLambdaRegister()
 		{
 			var dummy = NSubstitute.Substitute.For<IDummy>();
@@ -126,38 +126,38 @@ namespace RegulusLibraryTest
 
 		}
 
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestCommandAnalysisWithParameters1()
 		{
 			var analysis = new Command.Analysis("login [ account ,    password, result]");
 
-			Assert.AreEqual("login", analysis.Command);
-			Assert.AreEqual("result", analysis.Parameters[2]);
-			Assert.AreEqual("account", analysis.Parameters[0]);
-			Assert.AreEqual("password", analysis.Parameters[1]);
+			NUnit.Framework.Assert.AreEqual("login", analysis.Command);
+			NUnit.Framework.Assert.AreEqual("result", analysis.Parameters[2]);
+			NUnit.Framework.Assert.AreEqual("account", analysis.Parameters[0]);
+			NUnit.Framework.Assert.AreEqual("password", analysis.Parameters[1]);
 		}
 
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestCommandAnalysisWithParameters2()
 		{
 			var analysis = new Command.Analysis("login [ account ,    password][ result ]");
 
-			Assert.AreEqual("login", analysis.Command);
-			Assert.AreEqual("result", analysis.Return);
-			Assert.AreEqual("account", analysis.Parameters[0]);
-			Assert.AreEqual("password", analysis.Parameters[1]);
+			NUnit.Framework.Assert.AreEqual("login", analysis.Command);
+			NUnit.Framework.Assert.AreEqual("result", analysis.Return);
+			NUnit.Framework.Assert.AreEqual("account", analysis.Parameters[0]);
+			NUnit.Framework.Assert.AreEqual("password", analysis.Parameters[1]);
 		}
 
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestCommandAnalysisNoParameters()
 		{
 			var analysis = new Command.Analysis("login");
 
-			Assert.AreEqual("login", analysis.Command);
-			Assert.AreEqual(0, analysis.Parameters.Length);
+			NUnit.Framework.Assert.AreEqual("login", analysis.Command);
+			NUnit.Framework.Assert.AreEqual(0, analysis.Parameters.Length);
 		}
 
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestCommandRegister0()
 		{
 			var callTester = Substitute.For<ICallTester>();
@@ -171,7 +171,7 @@ namespace RegulusLibraryTest
 			cr.Unregister();
 		}
 
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestCommandRegister1()
 		{
 			// data
@@ -195,7 +195,7 @@ namespace RegulusLibraryTest
 			cr.Unregister();
 		}
 
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestCommandRegister2()
 		{
 			var command = new Command();
@@ -215,15 +215,16 @@ namespace RegulusLibraryTest
 			cr.Unregister();
 		}
 
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestCommandRegister3()
 		{
 			var command = new Command();
-			var cr = new CommandRegisterReturn<ICallTester, int, byte, float, int>(
+            int result = 0;
+            var cr = new CommandRegisterReturn<ICallTester, int, byte, float, int>(
 				
 				command, 
 				(caller, arg1, arg2, arg3) => caller.Function4(arg1, arg2, arg3), 
-				ret => { });
+				ret => { result = ret; });
 			var callTester = Substitute.For<ICallTester>();
 			callTester.Function4(Arg.Any<int>(), Arg.Any<byte>(), Arg.Any<float>()).Returns(1);
 			cr.Register(callTester);
@@ -234,13 +235,14 @@ namespace RegulusLibraryTest
 					"1", 
 					"2", 
 					"3"
-				});
+				} );
 			callTester.Received(1).Function4(Arg.Any<int>(), Arg.Any<byte>(), Arg.Any<float>());
 			cr.Unregister();
-		}
+            NUnit.Framework.Assert.AreEqual(1, result);
+        }
 
 
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestCommandRegister4()
 		{
 			var command = new Command();
@@ -259,16 +261,16 @@ namespace RegulusLibraryTest
 			
 			cr.Unregister();
 
-			Assert.AreEqual(1 , result);
+			NUnit.Framework.Assert.AreEqual(1 , result);
 		}
 
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestCommandCnvEnum()
 		{
 			object outVal;
 			Command.Conversion("A" , out outVal , typeof(TEST_ENUM1));
 
-			Assert.AreEqual(TEST_ENUM1.A , outVal);
+			NUnit.Framework.Assert.AreEqual(TEST_ENUM1.A , outVal);
 
 			Action<TEST_ENUM1> action = _CallEnum;
 

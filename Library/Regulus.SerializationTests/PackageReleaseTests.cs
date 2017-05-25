@@ -1,5 +1,5 @@
 ﻿
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using Regulus.Remoting;
 
 using System;
@@ -12,10 +12,10 @@ using Regulus.Serialization;
 
 namespace Regulus.Remoting.Tests
 {
-    [TestClass()]
+    
     public class PackageReleaseTests
     {
-        [TestMethod()]
+        [NUnit.Framework.Test()]
         public void ToBufferTest1()
         {
             var id = Guid.NewGuid();
@@ -28,10 +28,10 @@ namespace Regulus.Remoting.Tests
 
             var package2 = buffer.ToPackageData<TestPackageData>(ser);
 
-            Assert.AreEqual(id , package2.Id);
+            NUnit.Framework.Assert.AreEqual(id , package2.Id);
         }
 
-        [TestMethod()]
+        [NUnit.Framework.Test()]
         public void ToBufferTest2()
         {
             
@@ -49,13 +49,13 @@ namespace Regulus.Remoting.Tests
             var package2 = buffer.ToPackageData<TestPackageBuffer>(ser);
 
             
-            Assert.AreEqual(p1, ser.BufferToObject(package2.Datas[0]));
-            Assert.AreEqual(p2, ser.BufferToObject(package2.Datas[1]));
-            Assert.AreEqual(p3, ser.BufferToObject(package2.Datas[2]));
+            NUnit.Framework.Assert.AreEqual(p1, ser.BufferToObject(package2.Datas[0]));
+            NUnit.Framework.Assert.AreEqual(p2, ser.BufferToObject(package2.Datas[1]));
+            NUnit.Framework.Assert.AreEqual(p3, ser.BufferToObject(package2.Datas[2]));
         }
 
 
-        [TestMethod()]
+        [NUnit.Framework.Test()]
         public void ToPackageRequestTest()
         {
 
@@ -88,12 +88,12 @@ namespace Regulus.Remoting.Tests
 
             var bufferResponse = ser.ObjectToBuffer(response);
             var result = ser.BufferToObject(bufferResponse) as RequestPackage; 
-            Assert.AreEqual(ClientToServerOpCode.Ping , result.Code);
-            Assert.AreEqual(3, result.Data[3]);
+            NUnit.Framework.Assert.AreEqual(ClientToServerOpCode.Ping , result.Code);
+            NUnit.Framework.Assert.AreEqual(3, result.Data[3]);
         }
 
 
-        [TestMethod()]
+        [NUnit.Framework.Test()]
         public void ToPackageResponseTest()
         {
 
@@ -126,11 +126,11 @@ namespace Regulus.Remoting.Tests
 
             var bufferResponse = ser.ObjectToBuffer(response);
             var result = ser.BufferToObject(bufferResponse) as ResponsePackage;
-            Assert.AreEqual(ServerToClientOpCode.UpdateProperty, result.Code);
-            Assert.AreEqual(3, result.Data[3]);
+            NUnit.Framework.Assert.AreEqual(ServerToClientOpCode.UpdateProperty, result.Code);
+            NUnit.Framework.Assert.AreEqual(3, result.Data[3]);
         }
 
-        [TestMethod()]
+        [NUnit.Framework.Test()]
         public void ToPackageUpdateTest()
         {
 
@@ -147,6 +147,7 @@ namespace Regulus.Remoting.Tests
                             typeof(Regulus.Remoting.ServerToClientOpCode),
                             typeof(Regulus.Remoting.PackageUpdateProperty),
                             typeof(System.Guid),
+                            typeof(System.Int32),
                             typeof(Regulus.Remoting.PackageInvokeEvent),
                             typeof(System.Byte[][]),
                             typeof(Regulus.Remoting.PackageErrorMethod),
@@ -167,14 +168,14 @@ namespace Regulus.Remoting.Tests
 
             var name = ser.BufferToObject(result.Args) as string;
 
-            Assert.AreEqual(result.EntityId , update.EntityId);
-            Assert.AreEqual("kdw", name);
+            NUnit.Framework.Assert.AreEqual(result.EntityId , update.EntityId);
+            NUnit.Framework.Assert.AreEqual("kdw", name);
 
 
         }
 
 
-        [TestMethod()]
+        [NUnit.Framework.Test()]
         public void ToBufferTest3()
         {
 
@@ -191,7 +192,7 @@ namespace Regulus.Remoting.Tests
             var package2 = buffer.ToPackageData<TestPackageBuffer>(ser);
 
 
-            Assert.AreEqual(0, package2.Datas.Length);
+            NUnit.Framework.Assert.AreEqual(0, package2.Datas.Length);
             
         }
     }

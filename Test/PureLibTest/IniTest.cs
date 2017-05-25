@@ -1,14 +1,14 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿
 
 
 using Regulus.Utility;
 
 namespace RegulusLibraryTest
 {
-	[TestClass]
+	
 	public class IniTest
 	{
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestIni()
 		{
 			var data = @"[WindowSettings]
@@ -25,16 +25,16 @@ Directory =
 			var ini = new Ini(data);
 
 			var name = ini.Read("WindowSettings", "Window Name");
-			Assert.AreEqual("Jabberwocky", name);
+			NUnit.Framework.Assert.AreEqual("Jabberwocky", name);
 
 			var max = ini.Read("WindowSettings", "Window Maximized");
-			Assert.AreEqual("false", max);
+			NUnit.Framework.Assert.AreEqual("false", max);
 
 			var dir = ini.Read("Logging", "Directory");
-			Assert.AreEqual(@"C:\Rosetta Stone\Logs", dir);
+			NUnit.Framework.Assert.AreEqual(@"C:\Rosetta Stone\Logs", dir);
 
 			var dir2 = ini.Read("Logging2", "Directory");
-			Assert.AreEqual(string.Empty, dir2);
+			NUnit.Framework.Assert.AreEqual(string.Empty, dir2);
 		}
 	}
 }

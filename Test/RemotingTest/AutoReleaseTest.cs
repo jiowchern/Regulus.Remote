@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 
 
 using NSubstitute;
@@ -12,10 +12,10 @@ using Regulus.Remoting;
 
 namespace RemotingTest
 {
-	[TestClass]
+	
 	public class AutoReleaseTest
 	{
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void Test()
 		{            
 

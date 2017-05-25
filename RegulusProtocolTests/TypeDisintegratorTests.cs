@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿
 using Regulus.Protocol;
 using System;
 using System.Collections.Generic;
@@ -9,37 +9,37 @@ using System.Threading.Tasks;
 
 namespace Regulus.Protocol.Tests
 {
-    [TestClass()]
+    
     public class TypeDisintegratorTests
     {
-        [TestMethod()]
+        [NUnit.Framework.Test()]
         public void TypeDisintegratorIntTest()
         {
             var typeDisintegrator = new TypeDisintegrator(typeof(int));
-            Assert.AreEqual(typeof(int) , typeDisintegrator.Types[0]);            
+            NUnit.Framework.Assert.AreEqual(typeof(int) , typeDisintegrator.Types[0]);            
         }
 
 
-        [TestMethod()]
+        [NUnit.Framework.Test()]
         public void TypeDisintegratorInterfaceTest()
         {
             var typeDisintegrator = new TypeDisintegrator(typeof(ITest ));
-            Assert.IsTrue(typeDisintegrator.Types.Any(t=> t == typeof(Guid)));
-            Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(string)));
-            Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(float)));
-            Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(byte)));
-            Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(int)));
-            Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(EventData1)));
-            Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(EventData2)));
+            NUnit.Framework.Assert.IsTrue(typeDisintegrator.Types.Any(t=> t == typeof(Guid)));
+            NUnit.Framework.Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(string)));
+            NUnit.Framework.Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(float)));
+            NUnit.Framework.Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(byte)));
+            NUnit.Framework.Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(int)));
+            NUnit.Framework.Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(EventData1)));
+            NUnit.Framework.Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(EventData2)));
         }
 
 
-        [TestMethod()]
+        [NUnit.Framework.Test()]
         public void TypeDisintegratorClassTest()
         {
             var typeDisintegrator = new TypeDisintegrator(typeof(EventData1));            
-            Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(EventData1)));
-            Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(EventData2)));
+            NUnit.Framework.Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(EventData1)));
+            NUnit.Framework.Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(EventData2)));
         }
     }
 

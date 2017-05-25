@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Remoting.Messaging;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 
 
 using NSubstitute;
@@ -13,10 +13,10 @@ using Regulus.Utility;
 
 namespace RemotingTest
 {
-	[TestClass]
+	
 	public class CommandCall
 	{
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestCommandCall()
 		{
 			var param = Substitute.For<CommandParam>();
@@ -36,10 +36,10 @@ namespace RemotingTest
 					" Hello World."
 				});
 
-			Assert.AreEqual(true, called);
+			NUnit.Framework.Assert.AreEqual(true, called);
 		}
 
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestCommandAdd()
 		{
 			var param = Substitute.For<CommandParam>();
@@ -64,10 +64,10 @@ namespace RemotingTest
 					"2"
 				});
 
-			Assert.AreEqual(3, value);
+			NUnit.Framework.Assert.AreEqual(3, value);
 		}
 
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestGPIBinder()
 		{
 			var command = new Command();
@@ -103,8 +103,8 @@ namespace RemotingTest
             tester.Received().Function1();
             tester.Received().Function2( Arg.Any<int>());
 
-            Assert.AreEqual(true , returnValue);
-            Assert.AreEqual(12345, returnProperty);
+            NUnit.Framework.Assert.AreEqual(true , returnValue);
+            NUnit.Framework.Assert.AreEqual(12345, returnProperty);
         }
 
 

@@ -600,7 +600,7 @@ namespace Regulus.Utility
 				Command.Conversion(args[2], out arg2, typeof(T3));
 
 				var ret = executer.Method.Invoke(executer.Target, new[] { arg0, arg1,arg2 });
-				value.Method.Invoke(value, new[] { ret });
+				value.Method.Invoke(value.Target, new[] { ret });
 			};
 
 			_Register(command, func, typeof(TR), new[]
@@ -631,7 +631,7 @@ namespace Regulus.Utility
 				Command.Conversion(args[3], out arg3, typeof(T4));
 
 				var ret = executer.Method.Invoke(executer.Target, new[] { arg0, arg1, arg2 , arg3 });
-				value.Method.Invoke(value, new[] { ret });
+				value.Method.Invoke(value.Target, new[] { ret });
 			};
 
 			_Register(command, func, typeof(TR), new[]

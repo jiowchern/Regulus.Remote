@@ -1,13 +1,13 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using Regulus.CustomType;
 
 namespace Regulus.Extension.Tests
 {
-    [TestClass()]
+    
     public class TypeExtensionTests
     {
-        [TestMethod()]
+        [NUnit.Framework.Test()]
         public void FindHullTest1()
         {
             Vector2[] points = new Vector2[]
@@ -28,7 +28,7 @@ namespace Regulus.Extension.Tests
             }
             
         }
-        [TestMethod()]
+        [NUnit.Framework.Test()]
         public void FindHullTest2()
         {
             Vector2[] points = new Vector2[]
