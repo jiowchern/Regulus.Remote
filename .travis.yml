@@ -1,6 +1,7 @@
 language: csharp
 solution: Regulus.sln
-
+notifications:      
+  email: false
 install:  
    # -sudo apt-get install mono-devel mono-gmcs nunit-console
 
