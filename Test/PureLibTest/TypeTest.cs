@@ -3,7 +3,7 @@ using System.IO;
 using System.Xml.Serialization;
 
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 
 using Regulus.CustomType;
 using Regulus.Extension;
@@ -11,35 +11,35 @@ using Regulus.Utility;
 
 namespace RegulusLibraryTest
 {
-    [TestClass]
+    
     public class TypeTest
     {
         
 
-        [TestMethod]
+        [NUnit.Framework.Test()]
         public void TestRectLeftToCenter()
         {
             Rect rect = new Rect(0,1,1,1);
             var result = rect.LeftToCenter();
-            Assert.AreEqual(-0.5f, result.X);
-            Assert.AreEqual(0.5f, result.Y);
+            NUnit.Framework.Assert.AreEqual(-0.5f, result.X);
+            NUnit.Framework.Assert.AreEqual(0.5f, result.Y);
 
-            Assert.AreEqual(1, result.Width);
-            Assert.AreEqual(1, result.Height);
+            NUnit.Framework.Assert.AreEqual(1, result.Width);
+            NUnit.Framework.Assert.AreEqual(1, result.Height);
         }
-         [TestMethod]
+         [NUnit.Framework.Test()]
         public void TestRectCenterToLeft()
         {
             Rect rect = new Rect(0, 1, 1, 1);
             var result = rect.CenterToLeft();
-            Assert.AreEqual(0.5f, result.X);
-            Assert.AreEqual(1.5f, result.Y);
+            NUnit.Framework.Assert.AreEqual(0.5f, result.X);
+            NUnit.Framework.Assert.AreEqual(1.5f, result.Y);
 
-            Assert.AreEqual(1, result.Width);
-            Assert.AreEqual(1, result.Height);
+            NUnit.Framework.Assert.AreEqual(1, result.Width);
+            NUnit.Framework.Assert.AreEqual(1, result.Height);
         }
 
-        [TestMethod]
+        [NUnit.Framework.Test()]
         public void TestVector2sToRect()
         {
             Vector2[] vector2s = {
@@ -52,14 +52,14 @@ namespace RegulusLibraryTest
             var rect = vector2s.ToRect();
 
 
-            Assert.AreEqual(0, rect.X);
-            Assert.AreEqual(0, rect.Y);
+            NUnit.Framework.Assert.AreEqual(0, rect.X);
+            NUnit.Framework.Assert.AreEqual(0, rect.Y);
 
-            Assert.AreEqual(2, rect.Width);
-            Assert.AreEqual(1, rect.Height);
+            NUnit.Framework.Assert.AreEqual(2, rect.Width);
+            NUnit.Framework.Assert.AreEqual(1, rect.Height);
         }
 
-        [TestMethod]
+        [NUnit.Framework.Test()]
         public void PolygonClone()
         {
             Polygon a = new Polygon();
@@ -71,12 +71,12 @@ namespace RegulusLibraryTest
             });
 
             var b = a.Clone();
-            Assert.AreEqual( 0 , b.Points[0].X );
-            Assert.AreEqual(2, b.Points[1].X);
-            Assert.AreEqual(1, b.Points[3].Y);
+            NUnit.Framework.Assert.AreEqual( 0 , b.Points[0].X );
+            NUnit.Framework.Assert.AreEqual(2, b.Points[1].X);
+            NUnit.Framework.Assert.AreEqual(1, b.Points[3].Y);
         }
 
-        [TestMethod]
+        [NUnit.Framework.Test()]
         public void TestPolygonCollision()
         {
             Polygon a = new Polygon();
@@ -105,9 +105,9 @@ namespace RegulusLibraryTest
             var resultC = Polygon.Collision(a, c, new Vector2());
 
 
-            Assert.AreEqual(true , resultA.Intersect );
-            Assert.AreEqual(true, resultB.Intersect);
-            Assert.AreEqual(false, resultC.Intersect);
+            NUnit.Framework.Assert.AreEqual(true , resultA.Intersect );
+            NUnit.Framework.Assert.AreEqual(true, resultB.Intersect);
+            NUnit.Framework.Assert.AreEqual(false, resultC.Intersect);
 
         }
               
@@ -124,7 +124,7 @@ namespace RegulusLibraryTest
             AAA9,
 
         }
-        [TestMethod]
+        [NUnit.Framework.Test()]
         public void TestEnumCount()
         {
             int count=0;
@@ -134,10 +134,10 @@ namespace RegulusLibraryTest
                 count++;
             }
 
-            Assert.AreEqual(9,count);
+            NUnit.Framework.Assert.AreEqual(9,count);
         }
 
-        [TestMethod]
+        [NUnit.Framework.Test()]
         public void TestPolygonsXMLSerializ()
         {
             var polygon1 = new Polygon();
@@ -171,10 +171,10 @@ namespace RegulusLibraryTest
                 polygons2 = (Polygon[])ser.Deserialize(stream);
             }
 
-            Assert.IsTrue( Regulus.Utility.ValueHelper.DeepEqual(polygons2 , polygons1));
+            NUnit.Framework.Assert.IsTrue( Regulus.Utility.ValueHelper.DeepEqual(polygons2 , polygons1));
         }
        
-        [TestMethod]
+        [NUnit.Framework.Test()]
         public void TestPolygonXMLSerializ()
         {
             var polygon1 = new Polygon();
@@ -198,7 +198,7 @@ namespace RegulusLibraryTest
             }
 
 
-            Assert.AreEqual(polygon2.Points[0], polygon1.Points[0]);
+            NUnit.Framework.Assert.AreEqual(polygon2.Points[0], polygon1.Points[0]);
         }
 
     }

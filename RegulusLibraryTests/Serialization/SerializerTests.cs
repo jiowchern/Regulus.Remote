@@ -1,4 +1,4 @@
-﻿/*using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿/*
 using Regulus.Serialization;
 using System;
 using System.Collections.Generic;
@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 using NSubstitute;
 namespace Regulus.Serialization.Tests
 {
-    [TestClass()]
+    
     public class SerializerTests
     {
-        [TestMethod()]
+        [NUnit.Framework.Test()]
         public void SerializeTest1()
         {
             var provider = NSubstitute.Substitute.For<ITypeProvider>();
@@ -22,10 +22,10 @@ namespace Regulus.Serialization.Tests
             
             var buffer = serializer.Serialize(0);
             var val = serializer.Deserialize<int>(buffer);
-            Assert.AreEqual(0 , val);
+            NUnit.Framework.Assert.AreEqual(0 , val);
         }
 
-        [TestMethod()]
+        [NUnit.Framework.Test()]
         public void DeserializeTest1()
         {
             var provider = new IntTypeProvider();
@@ -41,7 +41,7 @@ namespace Regulus.Serialization.Tests
 
             };
             var val = serializer.Deserialize<int>(buffer);
-            Assert.AreEqual(100 , val);
+            NUnit.Framework.Assert.AreEqual(100 , val);
         }
     }
 

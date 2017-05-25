@@ -1,17 +1,15 @@
 ﻿using System.Timers;
 
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+using NUnit.Framework;
 
 using Regulus.Remoting;
 
 namespace RegulusLibraryTest
 {
-	[TestClass]
+	
 	public class RemotingValueResultTest
 	{
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		[Timeout(5000)]
 		public void TestRemotingValueResult()
 		{

@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 
 
 using Regulus.Utility;
 
 namespace RegulusLibraryTest
 {
-	[TestClass]
+	
 	public class LogTest
 	{
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestWrite()
 		{
 			var messages = new List<string>();
@@ -39,11 +39,11 @@ namespace RegulusLibraryTest
 				}
 			}
 
-			Assert.AreEqual("[Info]123", messages[0]);
-			Assert.AreEqual("[Info]456", messages[1]);
-			Assert.AreEqual("[Info]789", messages[2]);
-			Assert.AreEqual("[Info]123", messages[3]);
-			Assert.AreEqual("[Info]1", messages[4]);
+			NUnit.Framework.Assert.AreEqual("[Info]123", messages[0]);
+			NUnit.Framework.Assert.AreEqual("[Info]456", messages[1]);
+			NUnit.Framework.Assert.AreEqual("[Info]789", messages[2]);
+			NUnit.Framework.Assert.AreEqual("[Info]123", messages[3]);
+			NUnit.Framework.Assert.AreEqual("[Info]1", messages[4]);
 		}
 	}
 }

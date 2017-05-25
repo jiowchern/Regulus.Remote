@@ -1,6 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿
 
 
+using Regulus.Game;
 using Regulus.Utility;
 
 
@@ -63,12 +64,12 @@ namespace RegulusLibraryTest
 
 			for(var i = 0; i < chars2.Length; ++i)
 			{
-				Assert.AreEqual(chars1[i], chars2[i]);
+				NUnit.Framework.Assert.AreEqual(chars1[i], chars2[i]);
 			}
 		}
 
 		[Then(@"輸出為""(.*)""")]
-		[Timeout(10000)]
+		[NUnit.Framework.Timeout(10000)]
 		public void 那麼輸出為(string p0)
 		{
 			while(_GetData == false)
@@ -76,7 +77,7 @@ namespace RegulusLibraryTest
 				;
 			}
 
-			Assert.AreEqual(p0, _OutMessage);
+			NUnit.Framework.Assert.AreEqual(p0, _OutMessage);
 		}
 	}
 }

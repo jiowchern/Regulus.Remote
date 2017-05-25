@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 
 
 using Regulus.Utility;
@@ -13,7 +13,7 @@ namespace RegulusLibraryTest
 	/// <summary>
 	///     AttribTest 的摘要描述
 	/// </summary>
-	[TestClass]
+	
 	public class AttribTest
 	{
 		public enum TEST
@@ -44,19 +44,18 @@ namespace RegulusLibraryTest
 			ALL = int.MaxValue
 		};
 
-		[TestMethod]
 		public void TestEnumDescription()
 		{
 			var t1 = TEST.ENUM1;
 			var desc1 = t1.GetEnumDescription();
-			Assert.AreEqual("ENUM1", desc1);
+			NUnit.Framework.Assert.AreEqual("ENUM1", desc1);
 
 			var t2 = TEST.ENUM2;
 			var desc2 = t2.GetEnumDescription();
-			Assert.AreEqual("ENUM2", desc2);
+			NUnit.Framework.Assert.AreEqual("ENUM2", desc2);
 		}
 
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestAllFlagEnumDescription()
 		{
 			var flags = TESTFLAG.ALL;
@@ -67,13 +66,13 @@ namespace RegulusLibraryTest
 				descs.Add(flag.GetEnumDescription());
 			}
 
-			Assert.AreEqual("ENUM1", descs[0]);
-			Assert.AreEqual("ENUM2", descs[1]);
-			Assert.AreEqual("ENUM3", descs[2]);
-			Assert.AreEqual("ALL", descs[3]);
+			NUnit.Framework.Assert.AreEqual("ENUM1", descs[0]);
+			NUnit.Framework.Assert.AreEqual("ENUM2", descs[1]);
+			NUnit.Framework.Assert.AreEqual("ENUM3", descs[2]);
+			NUnit.Framework.Assert.AreEqual("ALL", descs[3]);
 		}
 
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestFlagEnumDescription()
 		{
 			var flags = TESTFLAG.ENUM1 | TESTFLAG.ENUM3;
@@ -84,11 +83,11 @@ namespace RegulusLibraryTest
 				descs.Add(flag.GetEnumDescription());
 			}
 
-			Assert.AreEqual("ENUM1", descs[0]);
-			Assert.AreEqual("ENUM3", descs[1]);
+			NUnit.Framework.Assert.AreEqual("ENUM1", descs[0]);
+			NUnit.Framework.Assert.AreEqual("ENUM3", descs[1]);
 		}
 
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestForeachEnum1()
 		{
 			var flags = new List<TEST>();
@@ -97,12 +96,12 @@ namespace RegulusLibraryTest
 				flags.Add(f);
 			}
 
-			Assert.AreEqual(TEST.ENUM1, flags[0]);
-			Assert.AreEqual(TEST.ENUM2, flags[1]);
-			Assert.AreEqual(TEST.ENUM3, flags[2]);
+			NUnit.Framework.Assert.AreEqual(TEST.ENUM1, flags[0]);
+			NUnit.Framework.Assert.AreEqual(TEST.ENUM2, flags[1]);
+			NUnit.Framework.Assert.AreEqual(TEST.ENUM3, flags[2]);
 		}
 
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestEnumFlags()
 		{
 			var flags = new List<TESTFLAG>();
@@ -112,13 +111,13 @@ namespace RegulusLibraryTest
 				flags.Add(f);
 			}
 
-			Assert.AreEqual(TESTFLAG.ENUM1, flags[0]);
-			Assert.AreEqual(TESTFLAG.ENUM2, flags[1]);
-			Assert.AreEqual(TESTFLAG.ENUM3, flags[2]);
-			Assert.AreEqual(TESTFLAG.ALL, flags[3]);
+			NUnit.Framework.Assert.AreEqual(TESTFLAG.ENUM1, flags[0]);
+			NUnit.Framework.Assert.AreEqual(TESTFLAG.ENUM2, flags[1]);
+			NUnit.Framework.Assert.AreEqual(TESTFLAG.ENUM3, flags[2]);
+			NUnit.Framework.Assert.AreEqual(TESTFLAG.ALL, flags[3]);
 		}
 
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestCompareEnumFlags()
 		{
 			var flag = TESTFLAG.ENUM2 | TESTFLAG.ENUM3;
@@ -130,20 +129,20 @@ namespace RegulusLibraryTest
 				flags.Add(f);
 			}
 
-			Assert.AreEqual(false, flag.HasFlag(flags[0]));
-			Assert.AreEqual(true, flag.HasFlag(flags[1]));
-			Assert.AreEqual(true, flag.HasFlag(flags[2]));
-			Assert.AreEqual(true, flagAll.HasFlag(flags[3]));
+			NUnit.Framework.Assert.AreEqual(false, flag.HasFlag(flags[0]));
+			NUnit.Framework.Assert.AreEqual(true, flag.HasFlag(flags[1]));
+			NUnit.Framework.Assert.AreEqual(true, flag.HasFlag(flags[2]));
+			NUnit.Framework.Assert.AreEqual(true, flagAll.HasFlag(flags[3]));
 		}
 
-		[TestMethod]
+		[NUnit.Framework.Test()]
 		public void TestCompareEnumToBool()
 		{
 			var flag = TESTFLAG.ENUM2 | TESTFLAG.ENUM3;
 			var flags = flag.ToFlags().ToArray();
-			Assert.AreEqual(false, flags[0]);
-			Assert.AreEqual(true, flags[1]);
-			Assert.AreEqual(true, flags[2]);
+			NUnit.Framework.Assert.AreEqual(false, flags[0]);
+			NUnit.Framework.Assert.AreEqual(true, flags[1]);
+			NUnit.Framework.Assert.AreEqual(true, flags[2]);
 		}
 	}
 }

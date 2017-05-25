@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 
 
 using Regulus.Collection;
 
 namespace RegulusLibraryTest
 {
-    [TestClass]
+    
     public class UnitTestDifferenceNoticer
     {
-        [TestMethod]
+        [NUnit.Framework.Test()]
         public void DifferenceNoticerTestSet()
         {
             var joinResult = new List<int[]>();
@@ -40,12 +40,12 @@ namespace RegulusLibraryTest
 
             var vertifyJoin = joinResult.ToArray();
             var vertifyLeft = leftResult.ToArray();
-            Assert.IsTrue(Regulus.Utility.ValueHelper.DeepEqual(vertifyJoin[0] , new[] {1,2,3,4,5}));
-            Assert.IsTrue(Regulus.Utility.ValueHelper.DeepEqual(vertifyJoin[1], new[] { 6 }));
-            Assert.IsTrue(Regulus.Utility.ValueHelper.DeepEqual(vertifyLeft[1], new[] { 1 }));
+            NUnit.Framework.Assert.IsTrue(Regulus.Utility.ValueHelper.DeepEqual(vertifyJoin[0] , new[] {1,2,3,4,5}));
+            NUnit.Framework.Assert.IsTrue(Regulus.Utility.ValueHelper.DeepEqual(vertifyJoin[1], new[] { 6 }));
+            NUnit.Framework.Assert.IsTrue(Regulus.Utility.ValueHelper.DeepEqual(vertifyLeft[1], new[] { 1 }));
         }
 
-        [TestMethod]
+        [NUnit.Framework.Test()]
         public void DifferenceNoticerTestSetWithParam()
         {
             var joinResult = new List<int[]>();
@@ -72,9 +72,9 @@ namespace RegulusLibraryTest
 
             var vertifyJoin = joinResult.ToArray();
             var vertifyLeft = leftResult.ToArray();
-            Assert.IsTrue(Regulus.Utility.ValueHelper.DeepEqual(vertifyJoin[0], new[] { 1, 2, 3, 4, 5 }));
-            Assert.IsTrue(Regulus.Utility.ValueHelper.DeepEqual(vertifyJoin[1], new[] { 6 }));
-            Assert.IsTrue(Regulus.Utility.ValueHelper.DeepEqual(vertifyLeft[1], new[] { 1 }));
+            NUnit.Framework.Assert.IsTrue(Regulus.Utility.ValueHelper.DeepEqual(vertifyJoin[0], new[] { 1, 2, 3, 4, 5 }));
+            NUnit.Framework.Assert.IsTrue(Regulus.Utility.ValueHelper.DeepEqual(vertifyJoin[1], new[] { 6 }));
+            NUnit.Framework.Assert.IsTrue(Regulus.Utility.ValueHelper.DeepEqual(vertifyLeft[1], new[] { 1 }));
         }
     }
 

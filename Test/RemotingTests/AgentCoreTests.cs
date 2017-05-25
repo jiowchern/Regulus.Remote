@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿
 using Regulus.Remoting;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ namespace Regulus.Remoting.Tests
 
         //event Action<float, string> OnCallEvent;
     }
-    [TestClass()]
+    
     public class AgentCoreTests
     {
 
