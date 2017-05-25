@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{3ABC1972-9D34-43E4-A4AF-D5E461756636}"
 EndProject
@@ -48,9 +48,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegulusProtocolTests", "RegulusProtocolTests\RegulusProtocolTests.csproj", "{28A7F756-C50D-4E56-AD3C-8C8C27711115}"
 EndProject
 Global
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug_Unity|Any CPU = Debug_Unity|Any CPU
 		Debug_Unity|Mixed Platforms = Debug_Unity|Mixed Platforms
