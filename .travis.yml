@@ -2,6 +2,7 @@ language: csharp
 solution: Regulus.sln
 
 install:  
+  - sudo apt-get install -y gtk-sharp2
   - nuget restore Regulus.sln
   - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 
