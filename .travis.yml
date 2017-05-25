@@ -2,7 +2,7 @@ language: csharp
 solution: Regulus.sln
 
 install:  
-  - sudo apt-get install -y gtk-sharp2
+
 
   - nuget restore Regulus.sln
   - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
@@ -11,6 +11,3 @@ script:
   - xbuild /p:Configuration=Release Regulus.sln
   - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./Regulus/Library/Regulus.SerializationTests/bin/Release/Regulus.SerializationTests.dll
 
-matrix:
-  include:
-      - mono: latest
