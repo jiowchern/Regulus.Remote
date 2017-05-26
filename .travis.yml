@@ -19,7 +19,6 @@ script:
 
 before_deploy:
     - mkdir "./RegulusPack"
-
     - mkdir "./RegulusPack/Library"
     - mkdir "./RegulusPack/Library/BehaviourTree"
     - mkdir "./RegulusPack/Library/Server"
