@@ -1,7 +1,10 @@
 language: csharp
-solution: Regulus.sln
+
+solution: ./Regulus.sln
+
 notifications:      
-  email: false
+    email: false
+    
 install:  
   - nuget restore Regulus.sln
   - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
@@ -14,15 +17,16 @@ script:
   - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./Test/RegulusProtocolTests/bin/Release/RegulusProtocolTests.dll
   - build_pack.sh
 
-deploy:              # 部署
-  provider: releases # 部署到GitHub Release，除此之外，Travis CI还支持发布到fir.im、AWS、Google App Engine等
-  api_key:  "82a333e58c30c0a8de3724661f090196e5f01bc3"           # 填写GitHub的token （Settings -> Personal access tokens -> Generate new token）    
+deploy:              
+  
+    provider: releases 
+    api_key:  "82a333e58c30c0a8de3724661f090196e5f01bc3"           
     
     file: RegulusPack/*.*
     file_glob: true
-  skip_cleanup: true     # 设置为true以跳过清理,不然apk文件就会被清理
-  on:     # 发布时机           
-    tags: true       # tags设置为true表示只有在有tag的情况下才部署
+    skip_cleanup: true     
+    on:     
+        tags: true       
     
     
     
