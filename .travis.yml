@@ -46,8 +46,8 @@ deploy:
     provider: releases 
     api_key:  "82a333e58c30c0a8de3724661f090196e5f01bc3"           
     
-    file: RegulusPack/*.*
-    file_glob: true
+    file: RegulusPack/*
+    
     skip_cleanup: true     
     on:     
         tags: true       
