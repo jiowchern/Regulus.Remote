@@ -44,8 +44,8 @@ before_deploy:
 deploy:              
   
     provider: releases 
-    api_key:  "82a333e58c30c0a8de3724661f090196e5f01bc3"           
-    
+    api_key:  
+        secure: afef66117aa7a317862421e04e3370b1e1a663e0           
     file: RegulusPack/*
     
     skip_cleanup: true     
