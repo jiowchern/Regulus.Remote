@@ -44,9 +44,9 @@ before_deploy:
 deploy:              
   
     provider: releases 
-    user: $GITHUB_ACCOUNT
-    password: $GITHUB_PASSWORD    
-        
+    #user: $GITHUB_ACCOUNT
+    #password: $GITHUB_PASSWORD    
+    api_key : 3a04b56490006dce87cd4e208b1da6a3a650f709
     file: RegulusPack/*
     
     skip_cleanup: true     
