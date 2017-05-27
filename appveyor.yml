@@ -1,4 +1,7 @@
 version: 0.3.{build}
+configuration: Release
+before_build:
+- cmd: nuget restore
 build:
   verbosity: minimal
 deploy:
