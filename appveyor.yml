@@ -1,11 +1,12 @@
 version: 0.3.{build}
 configuration: Release
+nuget:
+  account_feed: true
+  project_feed: true
 before_build:
 - cmd: nuget restore
 build:
   publish_nuget: true
-  publish_nuget_symbols: true
-  include_nuget_references: true
   verbosity: minimal
 after_build:
 - ps: >-
@@ -33,6 +34,5 @@ deploy:
     secure: /AfJAx3kxJ0kcGiZVCl5U7v3f9Z0qIDDN5L+ckDjxzkULqDK0fhwWVgcqRNukVln
   draft: true
 - provider: NuGet
-  server: http://www.nuget.org/api/v2/
   api_key:
     secure: MpSZN9rbs/UO67xFMkdfsETL16yG2KY0h3S53s13iG8WOFPamFIXg44GpbM4T7qX
