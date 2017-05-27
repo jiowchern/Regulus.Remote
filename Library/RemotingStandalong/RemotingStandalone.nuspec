@@ -14,5 +14,6 @@
     <files>
         <file src="bin\release\RegulusRemotingStandalone.dll" target="lib\net35\RegulusRemotingStandalone.dll" />
         <file src="bin\release\RegulusRemotingStandalone.pdb" target="lib\net35\RegulusRemotingStandalone.pdb" />
+		
     </files>
 </package>
