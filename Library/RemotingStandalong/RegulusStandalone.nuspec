@@ -2,16 +2,17 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>RegulusStandalone</id>
-        <version>0.2.0</version>
+        <version>0.3.0</version>
         <authors>jc</authors>
+		<projectUrl>https://github.com/jiowchern/Regulus</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Analog connection fake library</description>
         <dependencies>
-            <dependency id="RegulusRemoting" version="0.2.0" />
+            <dependency id="RegulusRemoting" version="0.3.0" />
         </dependencies>
     </metadata>
     <files>
-        <file src="lib\net35\RegulusRemotingStandalone.dll" target="lib\net35\RegulusRemotingStandalone.dll" />
-        <file src="lib\net35\RegulusRemotingStandalone.pdb" target="lib\net35\RegulusRemotingStandalone.pdb" />
+        <file src="bin\release\RegulusRemotingStandalone.dll" target="lib\net35\RegulusRemotingStandalone.dll" />
+        <file src="bin\release\RegulusRemotingStandalone.pdb" target="lib\net35\RegulusRemotingStandalone.pdb" />
     </files>
 </package>

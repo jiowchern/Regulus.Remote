@@ -2,19 +2,19 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>RegulusRemoting</id>
-        <version>0.2.0</version>
+        <version>0.3.0</version>
         <authors>Regulus</authors>
-        <iconUrl>https://sites.google.com/site/jiowchern/</iconUrl>
+        <iconUrl>https://github.com/jiowchern/Regulus</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>remoting core</description>
         <language>zh-TW</language>
         <dependencies>
-            <dependency id="RegulusLibrary" version="0.2.0" />
+            <dependency id="RegulusLibrary" version="0.3.0" />
         </dependencies>
     </metadata>
     <files>
-        <file src="lib\net35\RegulusRemoting.dll" target="lib\net35\RegulusRemoting.dll" />
-        <file src="lib\net35\RegulusRemoting.pdb" target="lib\net35\RegulusRemoting.pdb" />
-        <file src="lib\net35\RegulusRemoting.xml" target="lib\net35\RegulusRemoting.xml" />
+        <file src="bin\release\RegulusRemoting.dll" target="lib\net35\RegulusRemoting.dll" />
+        <file src="lib\release\RegulusRemoting.pdb" target="lib\net35\RegulusRemoting.pdb" />
+        <file src="lib\release\RegulusRemoting.xml" target="lib\net35\RegulusRemoting.xml" />
     </files>
 </package>
