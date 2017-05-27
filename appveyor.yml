@@ -1,10 +1,24 @@
-
 version: 0.3.{build}
 configuration: Release
 before_build:
 - cmd: nuget restore
 build:
   verbosity: minimal
+after_build:
+- ps: >-
+    Get-ChildItem **\BehaviourTree.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+
+
+
+    Get-ChildItem **\Client.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+
+
+
+    Get-ChildItem **\Server.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+
+
+
+    Get-ChildItem **\Tool.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
 after_test:
 - cmd: build_package.cmd
 artifacts:
@@ -24,21 +38,4 @@ deploy:
 - provider: GitHub
   auth_token:
     secure: /AfJAx3kxJ0kcGiZVCl5U7v3f9Z0qIDDN5L+ckDjxzkULqDK0fhwWVgcqRNukVln
-  artifact: '**\*.zip'
   draft: true
-after_deploy:
-- ps: >-
-    Get-ChildItem BehaviourTree.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
-
-
-
-    Get-ChildItem Client.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
-
-
-
-    Get-ChildItem Server.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
-
-
-
-    Get-ChildItem Tool.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
- 
