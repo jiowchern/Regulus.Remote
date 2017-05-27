@@ -14,7 +14,7 @@
     </metadata>
     <files>
         <file src="bin\release\RegulusRemoting.dll" target="lib\net35\RegulusRemoting.dll" />
-        <file src="lib\release\RegulusRemoting.pdb" target="lib\net35\RegulusRemoting.pdb" />
-        <file src="lib\release\RegulusRemoting.xml" target="lib\net35\RegulusRemoting.xml" />
+        <file src="bin\release\RegulusRemoting.pdb" target="lib\net35\RegulusRemoting.pdb" />
+        <file src="bin\release\RegulusRemoting.xml" target="lib\net35\RegulusRemoting.xml" />
     </files>
 </package>
