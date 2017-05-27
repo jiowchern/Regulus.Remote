@@ -1,20 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
-        <id>RegulusRemotingServer</id>
+        <id>RegulusRemotingClient</id>
         <version>0.3.0</version>
         <authors>Regulus</authors>
         <projectUrl>https://github.com/jiowchern/Regulus</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>tcp/ip socket</description>
+        <description>base client</description>
         <language>zh-TW</language>
         <dependencies>
             <dependency id="RegulusRemoting" version="0.3.0" />
         </dependencies>
     </metadata>
     <files>
-        <file src="bin\release\RegulusRemotingSoulNative.dll" target="lib\net35\RegulusRemotingSoulNative.dll" />
-        <file src="bin\release\RegulusRemotingSoulNative.pdb" target="lib\net35\RegulusRemotingSoulNative.pdb" />
-        <file src="bin\release\RegulusRemotingSoulNative.xml" target="lib\net35\RegulusRemotingSoulNative.xml" />
+        <file src="bin\release\RegulusRemotingGhostNative.dll" target="lib\net35\RegulusRemotingGhostNative.dll" />
+        <file src="bin\release\RegulusRemotingGhostNative.pdb" target="lib\net35\RegulusRemotingGhostNative.pdb" />
+        <file src="bin\release\RegulusRemotingGhostNative.xml" target="lib\net35\RegulusRemotingGhostNative.xml" />
+		
     </files>
 </package>
