@@ -1,0 +1,8 @@
+version: 0.3.{build}
+build:
+  verbosity: minimal
+deploy:
+- provider: GitHub
+  auth_token:
+    secure: /AfJAx3kxJ0kcGiZVCl5U7v3f9Z0qIDDN5L+ckDjxzkULqDK0fhwWVgcqRNukVln
+  artifact: RegulusArtfact
