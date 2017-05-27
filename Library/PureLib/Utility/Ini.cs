@@ -23,7 +23,17 @@ namespace Regulus.Utility
 			return _Data[Section][Key];
 		}
 
-		private Dictionary<string, Dictionary<string, string>> _Build(string data)
+        public bool TryRead(string section, string key, out string value)
+        {
+            Dictionary<string, string> keys;
+            if (_Data.TryGetValue(section, out keys))
+                return keys.TryGetValue(key, out value);
+
+            value = null;
+            return false;
+        }
+
+	    private Dictionary<string, Dictionary<string, string>> _Build(string data)
 		{
 			var pattern = @"
 ^(?:\[)                  # Section Start
@@ -64,5 +74,7 @@ namespace Regulus.Utility
 
 			return inifile;
 		}
+
+	    
 	}
 }

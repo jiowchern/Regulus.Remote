@@ -88,10 +88,9 @@ namespace Regulus.Remoting.Soul.Native
 			    var dllpath = ini.Read("Launch", "project_path");			
 			    var className = ini.Read("Launch", "project_entry");
 
-                var commonPath = ini.Read("Launch", "common_path");
-                var commonNamespace = ini.Read("Launch", "common_namespace");
+                var commonPath = ini.Read("Launch", "common_path");                
 
-                Launch(port, dllpath , className , commonPath , new [] { commonNamespace });
+                Launch(port, dllpath , className , commonPath );
             }
             catch (Exception ex)
             {
@@ -101,12 +100,12 @@ namespace Regulus.Remoting.Soul.Native
 
 	    
 
-	    public void Launch(int port, string project_path, string project_entry_name, string common_path , string[] namespaces)
+	    public void Launch(int port, string project_path, string project_entry_name, string common_path )
 		{
 
             var instance = StageStart._CreateProject(project_path, project_entry_name);
 
-	        var library = _CreateProtocol(common_path, project_entry_name , namespaces);
+	        var library = _CreateProtocol(common_path, project_entry_name );
 				
 			DoneEvent(instance, library, port);			
 		}
@@ -118,13 +117,13 @@ namespace Regulus.Remoting.Soul.Native
 	        return instance;
 	    }
 
-	    private IProtocol _CreateProtocol(string common_path ,string entry_name , string[] namespaces)
+	    private IProtocol _CreateProtocol(string common_path ,string entry_name )
 		{
             var assembly = Assembly.LoadFrom(common_path);
 
             var protocolName = entry_name + "ProtocolProvider";
             var buidler = new Regulus.Protocol.AssemblyBuilder();
-		    var asm =  buidler.Build(assembly, protocolName , namespaces);
+		    var asm =  buidler.Build(assembly, protocolName );
 		    return asm.CreateInstance(protocolName) as IProtocol;
 		}
 

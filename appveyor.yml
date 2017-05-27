@@ -4,8 +4,20 @@ before_build:
 - cmd: nuget restore
 build:
   verbosity: minimal
+artifacts:
+- path: artifact\Library\Server
+  name: Server
+- path: artifact\Library\Client
+  name: Client
+- path: artifact\Library\BehaviourTree
+  name: BehaviourTree
+- path: artifact\Tool
+  name: Tool
+before_deploy:
+- cmd: build_package.cmd
 deploy:
 - provider: GitHub
   auth_token:
     secure: /AfJAx3kxJ0kcGiZVCl5U7v3f9Z0qIDDN5L+ckDjxzkULqDK0fhwWVgcqRNukVln
   artifact: RegulusArtfact
+  draft: true
