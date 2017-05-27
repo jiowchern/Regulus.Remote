@@ -1,29 +1,4 @@
-AppVeyor
-PROJECTS
-ENVIRONMENTS
-DOCS
-SUPPORT
- JC
-Regulus
 
-LATEST BUILD HISTORY DEPLOYMENTS SETTINGS
-General
-Environment
-Build
-Tests
-Artifacts
-Deployment
-NuGet
-Notifications
-Permissions
-Badges
-Export YAML
-Delete project
-Export project configuration to YAML
-
-Below is appveyor.yml for your current project configuration. To store versioned project configuration along with your sources download appveyor.yml and commit it to the root of your code repository.
-
-Download appveyor.yml
 version: 0.3.{build}
 configuration: Release
 before_build:
