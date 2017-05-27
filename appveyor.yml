@@ -11,15 +11,9 @@ after_build:
 - ps: >-
     Get-ChildItem **\BehaviourTree.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
 
-
-
     Get-ChildItem **\Client.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
 
-
-
     Get-ChildItem **\Server.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
-
-
 
     Get-ChildItem **\Tool.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
 after_test:
@@ -33,12 +27,6 @@ artifacts:
   name: BehaviourTree
 - path: artifact\Tool
   name: Tool
-- path: '**\RegulusLibrary.nupkg'
-  name: NupkgRegulusLibrary
-- path: '**\RegulusRemoting.nupkg'
-  name: NupkgRegulusRemoting
-- path: '**\RegulusRemotingServer.nupkg'
-  name: NupkgRegulusRemotingServer
 deploy:
 - provider: GitHub
   auth_token:
