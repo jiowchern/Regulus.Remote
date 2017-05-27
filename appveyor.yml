@@ -27,16 +27,18 @@ after_test:
 artifacts:
 - path: artifact\Library\Server
   name: Server
-  type: WebDeployPackage
 - path: artifact\Library\Client
   name: Client
-  type: WebDeployPackage
 - path: artifact\Library\BehaviourTree
   name: BehaviourTree
-  type: WebDeployPackage
 - path: artifact\Tool
   name: Tool
-  type: WebDeployPackage
+- path: '**\RegulusLibrary.nupkg'
+  name: NupkgRegulusLibrary
+- path: '**\RegulusRemoting.nupkg'
+  name: NupkgRegulusRemoting
+- path: '**\RegulusRemotingServer.nupkg'
+  name: NupkgRegulusRemotingServer
 deploy:
 - provider: GitHub
   auth_token:
