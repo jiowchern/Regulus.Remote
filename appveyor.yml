@@ -4,6 +4,8 @@ before_build:
 - cmd: nuget restore
 build:
   verbosity: minimal
+after_test:
+- cmd: build_package.cmd
 artifacts:
 - path: artifact\Library\Server
   name: Server
@@ -13,8 +15,6 @@ artifacts:
   name: BehaviourTree
 - path: artifact\Tool
   name: Tool
-before_deploy:
-- cmd: build_package.cmd
 deploy:
 - provider: GitHub
   auth_token:
