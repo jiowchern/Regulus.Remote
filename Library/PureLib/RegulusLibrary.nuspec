@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>RegulusLibrary</id>
+        <version>0.2.1</version>
+        <authors>Regulus</authors>
+        <projectUrl>https://github.com/jiowchern/Regulus</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>core lib</description>
+        <language>zh-TW</language>
+        <dependencies>
+            <dependency id="protobuf-net" version="2.0.0.668" />
+        </dependencies>
+        <frameworkAssemblies>
+            <frameworkAssembly assemblyName="System" targetFramework="" />
+            <frameworkAssembly assemblyName="System.Core" targetFramework="" />
+            <frameworkAssembly assemblyName="System.Data" targetFramework="" />
+            <frameworkAssembly assemblyName="System.Data.DataSetExtensions" targetFramework="" />
+            <frameworkAssembly assemblyName="System.Xml" targetFramework="" />
+            <frameworkAssembly assemblyName="System.Xml.Linq" targetFramework="" />
+        </frameworkAssemblies>
+    </metadata>
+    <files>
+        <file src="lib\net35\RegulusLibrary.dll" target="lib\net35\RegulusLibrary.dll" />
+        <file src="lib\net35\RegulusLibrary.pdb" target="lib\net35\RegulusLibrary.pdb" />
+        <file src="lib\net35\RegulusLibrary.xml" target="lib\net35\RegulusLibrary.xml" />
+    </files>
+</package>
