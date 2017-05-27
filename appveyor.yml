@@ -9,15 +9,19 @@ after_test:
 artifacts:
 - path: artifact\Library\Server
   name: Server
+  type: WebDeployPackage
 - path: artifact\Library\Client
   name: Client
+  type: WebDeployPackage
 - path: artifact\Library\BehaviourTree
   name: BehaviourTree
+  type: WebDeployPackage
 - path: artifact\Tool
   name: Tool
+  type: WebDeployPackage
 deploy:
 - provider: GitHub
   auth_token:
     secure: /AfJAx3kxJ0kcGiZVCl5U7v3f9Z0qIDDN5L+ckDjxzkULqDK0fhwWVgcqRNukVln
-  artifact: RegulusArtfact
+  artifact: artifact\**\*.zip
   draft: true
