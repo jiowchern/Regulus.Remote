@@ -25,3 +25,12 @@ deploy:
     secure: /AfJAx3kxJ0kcGiZVCl5U7v3f9Z0qIDDN5L+ckDjxzkULqDK0fhwWVgcqRNukVln
   artifact: '**\*.zip'
   draft: true
+after_deploy:
+- ps: >-
+    Push-AppveyorArtifact artifact\Library\BehaviourTree.zip
+
+    Push-AppveyorArtifact artifact\Library\Client.zip
+
+    Push-AppveyorArtifact artifact\Library\Server.zip
+
+    Push-AppveyorArtifact artifact\Tool.zip
