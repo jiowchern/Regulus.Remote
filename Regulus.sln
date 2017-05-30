@@ -37,8 +37,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemotingTest", "Test\Remoti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemotingTests", "Test\RemotingTests\RemotingTests.csproj", "{A7588527-3B7D-42AF-BA3C-3B948E94DCB7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegulusLibraryTests", "RegulusLibraryTests\RegulusLibraryTests.csproj", "{AC6351DF-C480-4795-9E67-62D3743530BE}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulus.Serialization", "Library\Regulus.Serialization\Regulus.Serialization.csproj", "{8308717D-EC47-44CD-A27D-95BE5A92A36D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegulusProtocol", "Library\RegulusProtocol\RegulusProtocol.csproj", "{00E8AFF8-E4D5-4327-86F1-D03379419431}"
@@ -316,24 +314,6 @@ Global
 		{A7588527-3B7D-42AF-BA3C-3B948E94DCB7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{A7588527-3B7D-42AF-BA3C-3B948E94DCB7}.Release|x86.ActiveCfg = Release|Any CPU
 		{A7588527-3B7D-42AF-BA3C-3B948E94DCB7}.Release|x86.Build.0 = Release|Any CPU
-		{AC6351DF-C480-4795-9E67-62D3743530BE}.Debug_Unity|Any CPU.ActiveCfg = Debug|Any CPU
-		{AC6351DF-C480-4795-9E67-62D3743530BE}.Debug_Unity|Any CPU.Build.0 = Debug|Any CPU
-		{AC6351DF-C480-4795-9E67-62D3743530BE}.Debug_Unity|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{AC6351DF-C480-4795-9E67-62D3743530BE}.Debug_Unity|Mixed Platforms.Build.0 = Debug|Any CPU
-		{AC6351DF-C480-4795-9E67-62D3743530BE}.Debug_Unity|x86.ActiveCfg = Debug|Any CPU
-		{AC6351DF-C480-4795-9E67-62D3743530BE}.Debug_Unity|x86.Build.0 = Debug|Any CPU
-		{AC6351DF-C480-4795-9E67-62D3743530BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AC6351DF-C480-4795-9E67-62D3743530BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AC6351DF-C480-4795-9E67-62D3743530BE}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{AC6351DF-C480-4795-9E67-62D3743530BE}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{AC6351DF-C480-4795-9E67-62D3743530BE}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{AC6351DF-C480-4795-9E67-62D3743530BE}.Debug|x86.Build.0 = Debug|Any CPU
-		{AC6351DF-C480-4795-9E67-62D3743530BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AC6351DF-C480-4795-9E67-62D3743530BE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AC6351DF-C480-4795-9E67-62D3743530BE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{AC6351DF-C480-4795-9E67-62D3743530BE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{AC6351DF-C480-4795-9E67-62D3743530BE}.Release|x86.ActiveCfg = Release|Any CPU
-		{AC6351DF-C480-4795-9E67-62D3743530BE}.Release|x86.Build.0 = Release|Any CPU
 		{8308717D-EC47-44CD-A27D-95BE5A92A36D}.Debug_Unity|Any CPU.ActiveCfg = Debug|Any CPU
 		{8308717D-EC47-44CD-A27D-95BE5A92A36D}.Debug_Unity|Any CPU.Build.0 = Debug|Any CPU
 		{8308717D-EC47-44CD-A27D-95BE5A92A36D}.Debug_Unity|Mixed Platforms.ActiveCfg = Debug|Any CPU
