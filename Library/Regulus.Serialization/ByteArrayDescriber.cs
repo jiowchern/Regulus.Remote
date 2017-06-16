@@ -4,7 +4,8 @@ namespace Regulus.Serialization
 {
     public class ByteArrayDescriber : ITypeDescriber
     {
-        private readonly int _Id;        
+        private readonly int _Id;
+        private ITypeDescriber _IntTypeDescriber;
 
         public ByteArrayDescriber(int id)
         {
@@ -31,7 +32,7 @@ namespace Regulus.Serialization
         {
             var array = instance as Array;
             var len = array.Length;
-            var lenByetCount = Varint.GetByteCount(len);
+            var lenByetCount = _IntTypeDescriber.GetByteCount(len);
             return len + lenByetCount;
         }
 
@@ -41,7 +42,9 @@ namespace Regulus.Serialization
             var len = array.Length;
 
             var offset = begin;
-            offset += Varint.NumberToBuffer(buffer, offset, len);
+
+            
+            offset += _IntTypeDescriber.ToBuffer(len, buffer, offset);
             for (int i = 0; i < len; i++)
             {
                 buffer[offset++] = array[i];
@@ -52,8 +55,10 @@ namespace Regulus.Serialization
         int ITypeDescriber.ToObject(byte[] buffer, int begin, out object instnace)
         {
             int offset = begin;
-            int len = 0;
-            offset += Varint.BufferToNumber(buffer, offset, out len);
+            object lenObject = null;            
+            offset += _IntTypeDescriber.ToObject(buffer, offset, out lenObject);
+
+            var len = (int)lenObject;
             var array = new byte[len];
             for (int i = 0; i < len; i++)
             {
@@ -65,7 +70,8 @@ namespace Regulus.Serialization
 
         void ITypeDescriber.SetMap(TypeSet type_set)
         {
-            
+            var type = type_set.GetByType(typeof(int));
+            _IntTypeDescriber = type;
         }
     }
 }
