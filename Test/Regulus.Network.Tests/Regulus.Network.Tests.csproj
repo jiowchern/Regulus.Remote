@@ -44,6 +44,9 @@
     <Reference Include="Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MSTest.TestFramework.1.1.11\lib\net45\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="NSubstitute, Version=2.0.3.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NSubstitute.2.0.3\lib\net45\NSubstitute.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
@@ -58,6 +61,10 @@
     <ProjectReference Include="..\..\Library\Regulus.Network\Regulus.Network.csproj">
       <Project>{a720964c-c3e0-4cb8-a81b-54a9cf7bc8dd}</Project>
       <Name>Regulus.Network</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Library\Regulus.Serialization\Regulus.Serialization.csproj">
+      <Project>{8308717d-ec47-44cd-a27d-95be5a92a36d}</Project>
+      <Name>Regulus.Serialization</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

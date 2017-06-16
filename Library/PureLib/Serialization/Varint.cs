@@ -61,5 +61,10 @@
             value = 0;
             return 0;
         }
+
+        public static int GetMaxInt32Length()
+        {
+            return GetByteCount(-1);
+        }
     }
 }

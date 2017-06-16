@@ -39,9 +39,30 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AckPackage.cs" />
+    <Compile Include="AckWaiter.cs" />
+    <Compile Include="ArrayCache.cs" />
+    <Compile Include="BufferDispenser.cs" />
+    <Compile Include="ConnectPackage.cs" />
+    <Compile Include="MessagePackage.cs" />
+    <Compile Include="ISerialProvider.cs" />
+    <Compile Include="PackageRectifier.cs" />
     <Compile Include="Peer.cs" />
+    <Compile Include="PingPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReceiveHandler.cs" />
     <Compile Include="Regulus.Network.RUDP.Host.cs" />
+    <Compile Include="SendHandler.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PureLib\RegulusLibrary.csproj">
+      <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
+      <Name>RegulusLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Regulus.Serialization\Regulus.Serialization.csproj">
+      <Project>{8308717d-ec47-44cd-a27d-95be5a92a36d}</Project>
+      <Name>Regulus.Serialization</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
