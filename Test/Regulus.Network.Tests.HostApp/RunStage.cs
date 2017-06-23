@@ -35,7 +35,7 @@ namespace Regulus.Network.Tests.HostApp
 		}
 
 
-		private void _JoinPeer(Peer peer)
+		private void _JoinPeer(IPeer peer)
 		{
 			
 			_Updater.Add(new PeerHandler(++_PeerId,_Command , _Viewer,peer));

@@ -416,7 +416,7 @@ namespace Regulus.Serialization.Tests
                 0
             };
 
-            var ser = new Serializer(new ByteArrayDescriber(1));
+            var ser = new Serializer(new ByteArrayDescriber(1), new NumberDescriber(2 , typeof(int)));
 
             var buffer = ser.ObjectToBuffer(bytes);
             var result = ser.BufferToObject(buffer) as byte[];

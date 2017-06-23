@@ -7,13 +7,14 @@ namespace Regulus.Network.Tests.HostApp
 {
 	internal class PeerHandler : IUpdatable
 	{
-		private Peer _Peer;
+		private IPeer _Peer;
 		readonly int _Id;
 		Command _Command;
 		private readonly string _CommandString;
-		private Utility.Console.IViewer _Viewer;
+		private readonly Utility.Console.IViewer _Viewer;
+	    private bool _Enable;
 
-		public PeerHandler(int id ,Command command , Utility.Console.IViewer viwer , Peer peer)
+	    public  PeerHandler(int id ,Command command , Utility.Console.IViewer viwer , IPeer peer)
 		{
 			_Viewer = viwer;
 			_Command = command;
@@ -24,12 +25,19 @@ namespace Regulus.Network.Tests.HostApp
 
 		void IBootable.Launch()
 		{
-			_Viewer.WriteLine(string.Format("Accept Peer {0} {1}", _Peer.Address ,_Id));
-			_Peer.ReceiveEvent += _Receive;
-			_Command.Register<string>(_CommandString, Send);
+			_Viewer.WriteLine(string.Format("Accept Transmitter {0} {1}", _Peer.EndPoint ,_Id));
+			_Peer.ReceivedEvent += _Receive;
+		    _Peer.TimeoutEvent += _Disable;
+		    _Enable = true;
+            _Command.Register<string>(_CommandString, Send);
 		}
 
-		public void Send(string message)
+	    private void _Disable()
+	    {
+	        _Enable = false;
+	    }
+
+	    public void Send(string message)
 		{
 			_Peer.Send(_ToBytes(message));
 		}
@@ -40,8 +48,8 @@ namespace Regulus.Network.Tests.HostApp
 
 		void IBootable.Shutdown()
 		{
-			_Viewer.WriteLine(string.Format("Leave Peer {0} {1}", _Peer.Address ,_Id));
-			_Peer.ReceiveEvent -= _Receive;
+			_Viewer.WriteLine(string.Format("Leave Transmitter {0} {1}", _Peer.EndPoint ,_Id));
+			_Peer.ReceivedEvent -= _Receive;
 			_Command.Unregister(_CommandString);
 		}
 
@@ -49,12 +57,12 @@ namespace Regulus.Network.Tests.HostApp
 		{
 			var message = System.Text.Encoding.Default.GetString(buffer);
 
-			_Viewer.WriteLine(String.Format("peer{0} : {1}" , _Id , message));
+			_Viewer.WriteLine(String.Format("transmitter{0} : {1}" , _Id , message));
 		}
 
 		bool IUpdatable.Update()
 		{
-			return _Peer.Activity;
-		}
+		    return _Enable ;
+        }
 	}
 }

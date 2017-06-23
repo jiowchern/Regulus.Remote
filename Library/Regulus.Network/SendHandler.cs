@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using Regulus.Serialization;
@@ -7,40 +8,67 @@ namespace Regulus.Network.RUDP
 {
     public class SendHandler
     {
-        
+        private readonly ISendable _Sendable;
         private readonly Serializer _Serializer;
 
-        private readonly BufferDispenser _Dispenser;
-        private readonly List<byte[]> _Packages;
-
-        public SendHandler(int package_size , Serializer serializer)
+        public SendHandler(ISendable sendable, Serializer serializer)
         {
-            _Dispenser = new BufferDispenser(package_size);
-            _Serializer = serializer;
-            _Packages = new List<byte[]>();
+            _Sendable = sendable;
+            _Serializer = serializer;        
         }
-
-        public void PushData(byte[] buffer)
-        {
-            var packages = _Dispenser.Packing(buffer, 0, 0);
-            var buffers = from package in packages select _Serializer.ObjectToBuffer(package);
-            _Packages.AddRange(buffers);
-        }
-
-        public void PushAck(uint package_serial_number)
-        {
-            var package = new AckPackage();
-            package.SerialNumber = package_serial_number;
-            _Packages.Add(_Serializer.ObjectToBuffer(package));
-        }
-
-        public void PopPackages(List<byte[]> packages)
-        {
-            packages.AddRange(_Packages);
-            _Packages.Clear();
-        }
-
-
         
+
+        public void PushAck(uint package_serial_number , EndPoint end_point)
+        {
+            var ackPackage = new AckPackage();
+            ackPackage.SerialNumber = package_serial_number;
+            var buffer = _Serializer.ObjectToBuffer(ackPackage);
+            var package = new SocketPackage();
+            package.EndPoint = end_point;
+            package.Buffer = buffer;
+
+            _Sendable.Transport(package);
+                           
+        }
+
+        public void PushMessage(ref MessagePackage message , EndPoint end_point)
+        {
+            var buffer = _Serializer.ObjectToBuffer(message);
+            var package = new SocketPackage();
+            package.EndPoint = end_point;
+            package.Buffer = buffer;
+            _Sendable.Transport(package);
+        }
+
+        public void PushListenAgree(EndPoint end_point)
+        {
+            
+            var buffer = _Serializer.ObjectToBuffer(new ListenAgreePackage());
+
+            var package = new SocketPackage();
+            package.EndPoint = end_point;
+            package.Buffer = buffer;
+            _Sendable.Transport(package);
+        }
+
+        public void PushConnectRequest(EndPoint end_point)
+        {
+            var buffer = _Serializer.ObjectToBuffer(new ConnectRequestPackage());
+
+            var package = new SocketPackage();
+            package.EndPoint = end_point;
+            package.Buffer = buffer;
+            _Sendable.Transport(package);
+        }
+
+        public void PushConnectedAck(EndPoint end_point)
+        {
+            var buffer = _Serializer.ObjectToBuffer(new ConnectedAckPackage());
+
+            var package = new SocketPackage();
+            package.EndPoint = end_point;
+            package.Buffer = buffer;
+            _Sendable.Transport(package);
+        }
     }
 }
