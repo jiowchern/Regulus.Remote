@@ -108,7 +108,7 @@ namespace Regulus.Utility
 		}
 	}
 
-	public class UpdaterToGenerics<T> : Launcher<IUpdatable<T>>
+	public class Updater<T> : Launcher<IUpdatable<T>>
 	{
 		public void Working(T arg)
 		{

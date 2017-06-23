@@ -4,26 +4,28 @@ namespace Regulus.Network.RUDP
     {
         
         
-        private readonly int _packageSize;
+        private readonly int _PackageSize;
 
         private uint _Serial;
 
         public BufferDispenser(int package_size)
         {
             
-            _packageSize = package_size;
+            _PackageSize = package_size;
         }
+
+        
 
         public MessagePackage[] Packing(byte[] buffer, uint ack , uint ack_bits)
         {            
-            var count = buffer.Length / _packageSize + 1;
+            var count = buffer.Length / _PackageSize + 1;
             var packages = new MessagePackage[count];
             var ackBits = ack_bits;
 
             var buffserSize = buffer.Length;
             for (int i = count - 1; i >= 0; i--)
             {
-                var begin = _packageSize * i;
+                var begin = _PackageSize * i;
                 var writeSize = buffserSize - begin;
                 var data = new byte[writeSize];
                 

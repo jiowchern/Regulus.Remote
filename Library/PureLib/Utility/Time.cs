@@ -165,13 +165,13 @@ namespace Regulus.Utility
 
 	public class Scheduler : Singleton<Scheduler>
 	{
-		private readonly UpdaterToGenerics<long> _Tasks;
+		private readonly Updater<long> _Tasks;
 
 		private readonly Time _Time;
 
 		public Scheduler()
 		{
-			_Tasks = new UpdaterToGenerics<long>();
+			_Tasks = new Updater<long>();
 			_Time = new Time();
 		}
 

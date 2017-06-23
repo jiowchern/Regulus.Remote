@@ -5,7 +5,7 @@ namespace Regulus.Network.Tests.HostApp
 {
 	internal class HostConsole : Regulus.Utility.WindowConsole
 	{
-		Regulus.Utility.StageMachine _Machine;
+	    readonly Regulus.Utility.StageMachine _Machine;
 		public HostConsole()
 		{
 			_Machine = new Utility.StageMachine();

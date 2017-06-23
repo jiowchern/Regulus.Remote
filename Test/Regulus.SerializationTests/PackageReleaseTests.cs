@@ -60,6 +60,7 @@ namespace Regulus.Remoting.Tests
         {
 
             var builder = new Regulus.Serialization.DescriberBuilder(
+                            typeof(System.Int32),
                             typeof(System.Char),
                             typeof(System.Char[]),
                             typeof(System.String),
@@ -98,6 +99,7 @@ namespace Regulus.Remoting.Tests
         {
 
             var builder = new Regulus.Serialization.DescriberBuilder(
+                            typeof(System.Int32),
                             typeof(System.Char),
                             typeof(System.Char[]),
                             typeof(System.String),

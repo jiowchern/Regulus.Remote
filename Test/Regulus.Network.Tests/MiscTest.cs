@@ -7,23 +7,25 @@ using Regulus.Network.RUDP;
 namespace Regulus.Network.Tests
 {
 	[TestClass]
-	public class UnitTest1
+	public class MiscTest
 	{
         [TestMethod]
 	    public void TestDataPackageSize()
 	    {	        
-            Assert.IsTrue(Peer.PackageSize - MessagePackage.GetHeadSize() > 0);	        
+            Assert.IsTrue(Transmitter.PackageSize - MessagePackage.GetHeadSize() > 0);	        
 	    }
 
 	    [TestMethod]
 	    public void TestEmptyDataPackageSerialize()
 	    {
-	        var serializer = Peer.CreateSerializer();
+	        var serializer = Transmitter.CreateSerializer();
 	        var package = new MessagePackage();
 	        package.Serial = 1;
-	        package.Data = new byte[0];
+	        package.Ack = 1;
+	        package.AckBits = 1;
+            package.Data = new byte[0];
             var buffer = serializer.ObjectToBuffer(package);
-	        Assert.AreEqual(MessagePackage.GetHeadSize(), buffer.Length);
+	        Assert.IsTrue( buffer.Length <= MessagePackage.GetHeadSize());
 
 
         }
@@ -58,7 +60,7 @@ namespace Regulus.Network.Tests
 	    }
 
 	    [TestMethod]
-	    public void TestPackageRectifier()
+	    public void TestPackageRectifierOutOfOrder()
 	    {
             var package1 = new MessagePackage();
 	        package1.Serial = 0;
@@ -91,6 +93,62 @@ namespace Regulus.Network.Tests
         }
 
 	    [TestMethod]
+	    public void TestPackageRectifierRepeat()
+	    {
+	        var package1 = new MessagePackage();
+	        package1.Serial = 0;
+	        package1.Data = new byte[] { 1 };
+
+	        var package2 = new MessagePackage();
+	        package2.Serial = 1;
+	        package2.Data = new byte[] { 5 };
+
+	        var package3 = new MessagePackage();
+	        package3.Serial = 2;
+	        package3.Data = new byte[] { 9 };
+
+	        var package4 = new MessagePackage();
+	        package4.Serial = 3;
+	        package4.Data = new byte[] { 10 };
+
+	        var package5 = new MessagePackage();
+	        package5.Serial = 4;
+	        package5.Data = new byte[] { 11 };
+
+
+            var receiver = new PackageRectifier();
+	        receiver.PushPackage(package3);
+	        var stream1 = receiver.PopStream();
+	        Assert.AreEqual(0, stream1.Length);
+
+	        receiver.PushPackage(package2);
+	        var stream2 = receiver.PopStream();
+	        Assert.AreEqual(0, stream2.Length);
+
+	        receiver.PushPackage(package1);
+	        var stream3 = receiver.PopStream();
+	        Assert.AreEqual(1, stream3[0]);
+	        Assert.AreEqual(5, stream3[1]);
+	        Assert.AreEqual(9, stream3[2]);
+
+
+	        receiver.PushPackage(package5);
+	        var stream4 = receiver.PopStream();
+	        Assert.AreEqual(0, stream4.Length);
+
+	        receiver.PushPackage(package2);
+	        var stream5 = receiver.PopStream();
+	        Assert.AreEqual(0, stream5.Length);
+
+            receiver.PushPackage(package4);
+	        var stream6 = receiver.PopStream();
+	        Assert.AreEqual(2, stream6.Length);
+	        Assert.AreEqual(10, stream6[0]);
+	        Assert.AreEqual(11, stream6[1]);
+
+        }
+
+        [TestMethod]
 	    public void TestAck()
 	    {
 	        var package1 = 1u;

@@ -18,9 +18,8 @@ namespace Regulus.Network.Tests.HostApp
 		
 
 		public void Bind(int port)
-		{
-			var host = new Regulus.Network.RUDP.Host(port);
-			CreatedEvent(host);
+		{			
+			CreatedEvent(Regulus.Network.RUDP.Host.CreateStandard(port));
 		}
 
 		void IStage.Enter()

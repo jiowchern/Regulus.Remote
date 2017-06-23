@@ -15,14 +15,31 @@ namespace Regulus.Network.RUDP
             _DataPackages = new Dictionary<uint, MessagePackage>();
             _Serial = 0;
         }
-        public void PushPackage(MessagePackage message_package)
+        public bool PushPackage(MessagePackage message_package)
         {
-            _DataPackages.Add(message_package.Serial , message_package);
-
-            if (_Serial == message_package.Serial)
+            var exist = _DataPackages.ContainsKey(message_package.Serial) ;
+            
+            if (exist == false && _SerialMoreRecent(message_package.Serial) )
             {
-                _Serial = _Rectify(_Serial);
+                _DataPackages.Add(message_package.Serial, message_package);
+
+                if (_Serial == message_package.Serial)
+                {
+                    _Serial = _Rectify(_Serial);
+                }
+
+                return true;
             }
+            return false;
+        }
+
+        private bool _SerialMoreRecent(uint serial)
+        {
+            return (serial >= _Serial) &&
+                   (serial - _Serial <= 0xFFFFFFFF / 2)
+                   ||
+                   (_Serial >= serial) &&
+                   (_Serial - serial > 0xFFFFFFFF / 2);
         }
 
         public byte[] PopStream()
