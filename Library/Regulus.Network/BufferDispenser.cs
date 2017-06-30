@@ -16,10 +16,10 @@ namespace Regulus.Network.RUDP
 
         
 
-        public MessagePackage[] Packing(byte[] buffer, uint ack , uint ack_bits)
+        public SegmentPackage[] Packing(byte[] buffer, uint ack , uint ack_bits)
         {            
             var count = buffer.Length / _PackageSize + 1;
-            var packages = new MessagePackage[count];
+            var packages = new SegmentPackage[count];
             var ackBits = ack_bits;
 
             var buffserSize = buffer.Length;
@@ -35,7 +35,7 @@ namespace Regulus.Network.RUDP
                 }
                 buffserSize -= writeSize;
 
-                var package = new MessagePackage();                
+                var package = new SegmentPackage();                
                 package.Serial = _Serial + (uint)i;
                 package.Ack = ack;
                 package.AckBits = ackBits;

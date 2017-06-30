@@ -37,7 +37,8 @@ namespace Regulus.Network.Tests
         public void Receive(SocketPackage package)
         {
             Assert.AreNotEqual(Endpoint, package.EndPoint);
-            _ReceivedEvent(package);
+            if(_ReceivedEvent != null)
+                _ReceivedEvent(package);
         }
         public event Action<SocketPackage> SendEvent;
         void ISendable.Transport(SocketPackage package)

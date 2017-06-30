@@ -40,11 +40,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AgentConnectStage.cs" />
-    <Compile Include="AgentTransmissionStage.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="IStream.cs" />
+    <Compile Include="Line.cs" />
     <Compile Include="Packages\ConnectedAckPackage.cs" />
-    <Compile Include="Packages\AckPackage.cs" />
-    <Compile Include="AckWaiter.cs" />
+    <Compile Include="Packages\DataPackage.cs" />
+    <Compile Include="CongestionRecorder.cs" />
     <Compile Include="Agent.cs" />
     <Compile Include="ArrayCache.cs" />
     <Compile Include="BufferDispenser.cs" />
@@ -54,16 +55,19 @@
     <Compile Include="ISendable.cs" />
     <Compile Include="Packages\ListenAgreePackage.cs" />
     <Compile Include="Listener.cs" />
-    <Compile Include="Packages\MessagePackage.cs" />
+    <Compile Include="Packages\SegmentPackage.cs" />
     <Compile Include="ISerialProvider.cs" />
     <Compile Include="PackageRectifier.cs" />
+    <Compile Include="Peer.cs" />
+    <Compile Include="PeerListener.cs" />
+    <Compile Include="PeerTransmitter.cs" />
+    <Compile Include="StreamProvider.cs" />
     <Compile Include="SocketRecevier.cs" />
     <Compile Include="SocketSender.cs" />
     <Compile Include="Timestamp.cs" />
-    <Compile Include="Transmitter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReceiveHandler.cs" />
-    <Compile Include="Regulus.Network.RUDP.Host.cs" />
+    <Compile Include="Host.cs" />
     <Compile Include="SendHandler.cs" />
     <Compile Include="SocketPackage.cs" />
   </ItemGroup>

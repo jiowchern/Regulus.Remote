@@ -14,8 +14,8 @@ namespace Regulus.Network.RUDP
         private readonly List<SocketPackage> _Packages;
         
 
-        public event Action<AckPackage, EndPoint> PopAckEvent;
-        public event Action<MessagePackage, EndPoint> PopMessageEvent;
+        public event Action<DataPackage, EndPoint> PopAckEvent;
+        public event Action<SegmentPackage, EndPoint> PopMessageEvent;
         public event Action<ConnectRequestPackage, EndPoint> PopConnectRequestEvent;
         public event Action<ConnectedAckPackage, EndPoint> PopConnectAckEvent;
         public event Action<ListenAgreePackage, EndPoint> PopListenAgreeEvent;
@@ -54,15 +54,15 @@ namespace Regulus.Network.RUDP
             try
             {
                 var package = _Serializer.BufferToObject(buffer);
-                if (package is AckPackage)
+                if (package is DataPackage)
                 {
-                    var ack = (AckPackage)package;
+                    var ack = (DataPackage)package;
 
                     PopAckEvent?.Invoke(ack, end_point);
                 }
-                else if (package is MessagePackage)
+                else if (package is SegmentPackage)
                 {
-                    var message = (MessagePackage)package;
+                    var message = (SegmentPackage)package;
                     
                     PopMessageEvent?.Invoke(message, end_point);
                 }

@@ -18,5 +18,6 @@ namespace Regulus.Network
         public static readonly long AgentConnectTimeout;
         public static readonly long HostListenTimeout;
         public static readonly long TransmitterTimeout;
+        public const int PackageSize = 548;
     }
 }
