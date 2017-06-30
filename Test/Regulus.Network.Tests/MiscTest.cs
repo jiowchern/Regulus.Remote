@@ -12,20 +12,20 @@ namespace Regulus.Network.Tests
         [TestMethod]
 	    public void TestDataPackageSize()
 	    {	        
-            Assert.IsTrue(Transmitter.PackageSize - MessagePackage.GetHeadSize() > 0);	        
+            Assert.IsTrue(Config.PackageSize - SegmentPackage.GetHeadSize() > 0);	        
 	    }
 
 	    [TestMethod]
 	    public void TestEmptyDataPackageSerialize()
 	    {
-	        var serializer = Transmitter.CreateSerializer();
-	        var package = new MessagePackage();
+	        var serializer = Line.CreateSerializer();
+	        var package = new SegmentPackage();
 	        package.Serial = 1;
 	        package.Ack = 1;
 	        package.AckBits = 1;
             package.Data = new byte[0];
             var buffer = serializer.ObjectToBuffer(package);
-	        Assert.IsTrue( buffer.Length <= MessagePackage.GetHeadSize());
+	        Assert.IsTrue( buffer.Length <= SegmentPackage.GetHeadSize());
 
 
         }
@@ -62,15 +62,15 @@ namespace Regulus.Network.Tests
 	    [TestMethod]
 	    public void TestPackageRectifierOutOfOrder()
 	    {
-            var package1 = new MessagePackage();
+            var package1 = new SegmentPackage();
 	        package1.Serial = 0;
             package1.Data = new byte[] {1};
 
-	        var package2 = new MessagePackage();
+	        var package2 = new SegmentPackage();
 	        package2.Serial = 1;
             package2.Data = new byte[] {5};
 
-	        var package3 = new MessagePackage();
+	        var package3 = new SegmentPackage();
 	        package3.Serial = 2;
             package3.Data = new byte[] {9};
 
@@ -95,23 +95,23 @@ namespace Regulus.Network.Tests
 	    [TestMethod]
 	    public void TestPackageRectifierRepeat()
 	    {
-	        var package1 = new MessagePackage();
+	        var package1 = new SegmentPackage();
 	        package1.Serial = 0;
 	        package1.Data = new byte[] { 1 };
 
-	        var package2 = new MessagePackage();
+	        var package2 = new SegmentPackage();
 	        package2.Serial = 1;
 	        package2.Data = new byte[] { 5 };
 
-	        var package3 = new MessagePackage();
+	        var package3 = new SegmentPackage();
 	        package3.Serial = 2;
 	        package3.Data = new byte[] { 9 };
 
-	        var package4 = new MessagePackage();
+	        var package4 = new SegmentPackage();
 	        package4.Serial = 3;
 	        package4.Data = new byte[] { 10 };
 
-	        var package5 = new MessagePackage();
+	        var package5 = new SegmentPackage();
 	        package5.Serial = 4;
 	        package5.Data = new byte[] { 11 };
 
@@ -151,21 +151,56 @@ namespace Regulus.Network.Tests
         [TestMethod]
 	    public void TestAck()
 	    {
-	        var package1 = 1u;
-	        var package2 = 2u;
-	        
-            var ackWaiter = new AckWaiter();
-	        ackWaiter.PushWait(package1, System.TimeSpan.FromSeconds(0.0).Ticks);
+	        var package1 = new SegmentPackage();
+	        package1.Serial = 1;
+            var package2 = new SegmentPackage();
+	        package2.Serial = 2;
+
+            var ackWaiter = new CongestionRecorder(3);
+	        ackWaiter.PushWait(package1, System.TimeSpan.FromSeconds(0.1).Ticks);
 	        ackWaiter.PushWait(package2, System.TimeSpan.FromSeconds(1.0).Ticks);
-            ackWaiter.EraseReply(package1);
+            ackWaiter.Reply(package1.Serial);
 
-            List<uint> packages = new List<uint>();
-            ackWaiter.PopTimeout(System.TimeSpan.FromSeconds(0.1).Ticks,ref packages);
+            
+	        var packages = ackWaiter.PopLost(System.TimeSpan.FromSeconds(1.0).Ticks);
 
-            Assert.AreEqual(2u , packages[0]);
+            Assert.AreEqual(2u , packages[0].Serial);
 
 
 	    }
+
+	    [TestMethod]
+	    public void TestAckBitOverflow()
+	    {
+	        var pkg = new SegmentPackage();
+            /*
+             * fa x
+             * fb 0
+             * fc 0
+             * fd 0
+             * fe 0
+             * ff 0
+             * 00 0
+             * 01 1 0x40
+             */
+	        pkg.Ack = 0xfffffffa; 
+	        pkg.SetAcks(0x1);
+
+            Assert.AreEqual(0x40u , pkg.AckBits);
+	    }
+
+	    [TestMethod]
+	    public void TestAckBit()
+	    {
+	        var pkg = new SegmentPackage();
+	        
+	        pkg.Ack = 1;
+	        pkg.SetAcks(3);
+
+	        Assert.AreEqual(0x2u, pkg.AckBits);
+	    }
+
+
     }
 
     public class TestMessage

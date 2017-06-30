@@ -20,8 +20,9 @@ namespace Regulus.Network.RUDP
 
         public void PushAck(uint package_serial_number , EndPoint end_point)
         {
-            var ackPackage = new AckPackage();
-            ackPackage.SerialNumber = package_serial_number;
+
+            var ackPackage = new DataPackage();
+            //ackPackage.SerialNumber = package_serial_number;
             var buffer = _Serializer.ObjectToBuffer(ackPackage);
             var package = new SocketPackage();
             package.EndPoint = end_point;
@@ -31,9 +32,9 @@ namespace Regulus.Network.RUDP
                            
         }
 
-        public void PushMessage(ref MessagePackage message , EndPoint end_point)
+        public void PushMessage(ref SegmentPackage segment , EndPoint end_point)
         {
-            var buffer = _Serializer.ObjectToBuffer(message);
+            var buffer = _Serializer.ObjectToBuffer(segment);
             var package = new SocketPackage();
             package.EndPoint = end_point;
             package.Buffer = buffer;

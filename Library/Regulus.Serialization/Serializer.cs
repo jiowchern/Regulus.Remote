@@ -123,6 +123,24 @@ namespace Regulus.Serialization
         {
             return BufferToObject(buffer);
         }
+
+        public bool TryBufferToObject<T>(byte[] buffer, out T pkg)
+        {
+
+            pkg = default(T);
+            try
+            {
+                var instance = BufferToObject(buffer);
+                pkg = (T) instance;
+                return true;
+            }
+            catch (Exception e)
+            {
+                Regulus.Utility.Log.Instance.WriteInfo(e.ToString());
+            }
+
+            return false;
+        }
     }
 }
 

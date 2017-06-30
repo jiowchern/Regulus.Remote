@@ -17,7 +17,7 @@ namespace Regulus.Network.RUDP
 
         public Agent(IRecevieable recevieable, ISendable sendable)
         {
-            var serializer = Transmitter.CreateSerializer();
+            var serializer = Line.CreateSerializer();
             _SendHandler = new SendHandler(sendable  , serializer);
             _ReceiveHandler = new ReceiveHandler(serializer);
             
@@ -64,12 +64,7 @@ namespace Regulus.Network.RUDP
 
         private void _ToTransmitter(EndPoint end_point)
         {
-            var stage = new AgentTransmissionStage(end_point, _SendHandler , _ReceiveHandler );
-            _Peer  = stage.Peer;
-            
-            stage.DisconnectEvent += _ToIdle;
-            stage.ReleaseEvent += () => { _Peer = null; };
-            _Machine.Push(stage);
+            throw new NotImplementedException();
         }
 
         void _ToIdle()
