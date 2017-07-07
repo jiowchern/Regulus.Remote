@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Regulus.Framework;
@@ -10,19 +11,14 @@ namespace Regulus.Network.Tests
     public class FakeSocket : IRecevieable, ISendable, IUpdatable<Timestamp>
     {
         public readonly IPEndPoint Endpoint;
-
+        private List<SocketPackage> _Packages;
         public FakeSocket(IPEndPoint endpoint)
         {
+            _Packages = new List<SocketPackage>();
             Endpoint = endpoint;
         }
 
-        private event Action<SocketPackage> _ReceivedEvent;
-
-        event Action<SocketPackage> IRecevieable.ReceivedEvent
-        {
-            add { this._ReceivedEvent += value; }
-            remove { this._ReceivedEvent -= value; }
-        }
+        
 
         void IBootable.Launch()
         {
@@ -37,8 +33,8 @@ namespace Regulus.Network.Tests
         public void Receive(SocketPackage package)
         {
             Assert.AreNotEqual(Endpoint, package.EndPoint);
-            if(_ReceivedEvent != null)
-                _ReceivedEvent(package);
+            _Packages.Add(package);
+
         }
         public event Action<SocketPackage> SendEvent;
         void ISendable.Transport(SocketPackage package)
@@ -50,6 +46,18 @@ namespace Regulus.Network.Tests
         bool IUpdatable<Timestamp>.Update(Timestamp arg)
         {
             return true;
+        }
+
+        public SocketPackage[] Received()
+        {
+            var pkgs = _Packages.ToArray();
+            _Packages.Clear();
+            return pkgs;
+        }
+
+        EndPoint[] IRecevieable.ErrorPoints()
+        {
+            return new EndPoint[0];
         }
     }
 }

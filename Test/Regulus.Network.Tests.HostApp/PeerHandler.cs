@@ -5,14 +5,14 @@ using Regulus.Utility;
 
 namespace Regulus.Network.Tests.HostApp
 {
-	internal class PeerHandler : IUpdatable
+	internal class PeerHandler : IUpdatable<Timestamp>
 	{
 		private IPeer _Peer;
 		readonly int _Id;
 		Command _Command;
 		private readonly string _CommandString;
 		private readonly Utility.Console.IViewer _Viewer;
-	    private bool _Enable;
+	  
 
 	    public  PeerHandler(int id ,Command command , Utility.Console.IViewer viwer , IPeer peer)
 		{
@@ -26,16 +26,12 @@ namespace Regulus.Network.Tests.HostApp
 		void IBootable.Launch()
 		{
 			_Viewer.WriteLine(string.Format("Accept Transmitter {0} {1}", _Peer.EndPoint ,_Id));
-			_Peer.ReceivedEvent += _Receive;
-		    _Peer.TimeoutEvent += _Disable;
-		    _Enable = true;
+			
+	
             _Command.Register<string>(_CommandString, Send);
 		}
 
-	    private void _Disable()
-	    {
-	        _Enable = false;
-	    }
+	   
 
 	    public void Send(string message)
 		{
@@ -49,20 +45,24 @@ namespace Regulus.Network.Tests.HostApp
 		void IBootable.Shutdown()
 		{
 			_Viewer.WriteLine(string.Format("Leave Transmitter {0} {1}", _Peer.EndPoint ,_Id));
-			_Peer.ReceivedEvent -= _Receive;
+			
 			_Command.Unregister(_CommandString);
 		}
 
 		void _Receive(byte[] buffer)
 		{
+            if(buffer.Length == 0)
+                return;
+		    ;
 			var message = System.Text.Encoding.Default.GetString(buffer);
 
 			_Viewer.WriteLine(String.Format("transmitter{0} : {1}" , _Id , message));
 		}
 
-		bool IUpdatable.Update()
+		bool IUpdatable<Timestamp>.Update(Timestamp time)
 		{
-		    return _Enable ;
+		    _Receive(_Peer.Receive());
+		    return true ;
         }
 	}
 }

@@ -6,7 +6,7 @@ using Regulus.Serialization;
 
 namespace Regulus.Network.RUDP
 {
-    public class Line : IStream
+    public class Line : ILine
     {
 
         public readonly EndPoint EndPoint;
@@ -46,21 +46,21 @@ namespace Regulus.Network.RUDP
 
         private void _ResetTimeout()
         {
-            _TimeoutTicks = Timestamp.OneSecondTicks * 30;
+            _TimeoutTicks = Config.TransmitterTimeout;
         }
 
-        void IStream.Write(byte[] buffer)
+        void ILine.Write(byte[] buffer)
         {
             var packages = _Dispenser.Packing(buffer, 0, 0);
             _SendPackages.AddRange(packages);
         }
 
-        byte[] IStream.Read()
+        void ILine.Read(Queue<byte[]> packages)
         {
-            return _Rectifier.PopStream();
+            _Rectifier.PopPackages(packages);
         }
 
-        EndPoint IStream.EndPoint
+        EndPoint ILine.EndPoint
         {
             get { return EndPoint; }
         }
@@ -134,7 +134,7 @@ namespace Regulus.Network.RUDP
                 typeof(SegmentPackage));
             var lastId = builder.Describers.Length;
             return new Regulus.Serialization.Serializer(builder.Describers.Union(new ITypeDescriber[] { new BlittableDescriber(++lastId, typeof(uint)), new BlittableDescriber(++lastId, typeof(int)) }).ToArray());
-        }
+        }        
     }
 
     

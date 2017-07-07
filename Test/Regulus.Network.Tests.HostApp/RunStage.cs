@@ -10,14 +10,14 @@ namespace Regulus.Network.Tests.HostApp
 		private Host _Host;		
 		private Utility.Console.IViewer _Viewer;
 		public event System.Action ExitEvent;
-
-		Regulus.Utility.Updater _Updater;
+	    private long _Ticks;
+	    readonly Regulus.Utility.Updater<Timestamp> _Updater;
 		int _PeerId;
 
 		public RunStage(Command command, Utility.Console.IViewer viewer, Host host)
 		{
 		
-			_Updater = new Updater();
+			_Updater = new Updater<Timestamp>();
 			this._Command = command;
 			this._Viewer = viewer;
 			this._Host = host;
@@ -25,9 +25,13 @@ namespace Regulus.Network.Tests.HostApp
 
 		void IStage.Enter()
 		{
-			_Command.RegisterLambda(this , instance=>instance.Exit() );
+		    _Ticks = System.DateTime.Now.Ticks;
+
+            _Command.RegisterLambda(this , instance=>instance.Exit() );
 			_Host.AcceptEvent += _JoinPeer;
-		}
+		    _Updater.Add(_Host);
+
+        }
 
 		public void Exit()
 		{
@@ -50,7 +54,11 @@ namespace Regulus.Network.Tests.HostApp
 
 		void IStage.Update()
 		{
-			_Updater.Working();
+		    var ticks = System.DateTime.Now.Ticks;
+		    var delta = ticks - _Ticks;
+		    _Ticks = ticks;
+
+            _Updater.Working(new Timestamp(ticks , delta));
 		}
 	}
 }

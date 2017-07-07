@@ -9,7 +9,7 @@ using Regulus.Utility;
 
 namespace Regulus.Network.Tests
 {
-    [TestClass]
+    [TestClass ]
     public class ConnectTest
     {
         [TestMethod ]
@@ -38,7 +38,7 @@ namespace Regulus.Network.Tests
 
             var host = new Regulus.Network.RUDP.Host(hostSocket, hostSocket);
             var agent = new Regulus.Network.RUDP.Agent(agentSocket, agentSocket);
-
+            var clientPeer = agent.Connect(hostEndpoint);
 
             var updater = new Updater<Timestamp>();
             updater.Add(hostSocket);
@@ -48,9 +48,7 @@ namespace Regulus.Network.Tests
             
             long ticks = 0;
 
-            bool result = false;
-            agent.ConnectResultEvent += r => result = r;
-            agent.Connect(hostEndpoint);
+            bool result = false;                        
 
             IPeer peer = null;
             host.AcceptEvent += p => peer = p;
@@ -58,21 +56,46 @@ namespace Regulus.Network.Tests
             updater.Working(new Timestamp(ticks++, 1));
             updater.Working(new Timestamp(ticks++, 1));
             updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+
 
 
             Assert.AreNotEqual(null , peer);
-            Assert.AreEqual(true, result);
+            Assert.AreEqual(PEER_STATUS.TRANSMISSION, clientPeer.Status);
 
 
             var sendBuffer = new byte[] {1, 2, 3, 4, 5};
-            var receivedBuffer = new byte[0];
+            clientPeer.Send(sendBuffer);
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            var receivedBuffer = peer.Receive();
 
-            peer.ReceivedEvent += pkg => receivedBuffer = pkg;
-            agent.Send(sendBuffer);
+
+            
 
             updater.Working(new Timestamp(ticks++, 1));
 
             Assert.AreEqual(sendBuffer.Length , receivedBuffer.Length);
+
+
+            agent.Disconnect(clientPeer.EndPoint);
+
+
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+
+
+            Assert.AreEqual(PEER_STATUS.CLOSE , peer.Status);
         }
 
        

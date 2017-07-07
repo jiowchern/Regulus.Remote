@@ -1,12 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 
 namespace Regulus.Network.RUDP
 {
-    public interface IStream
+    public interface ILine
     {
         void Write(byte[] buffer);
-        byte[] Read();
+        void Read(Queue<byte[]> packages);
         EndPoint EndPoint { get; }
     }
 }

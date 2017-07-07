@@ -141,5 +141,27 @@ namespace Regulus.Utility
             }
         }
 
+        public void Empty()
+        {
+            Push(new EmptyStage<TArg>());
+        }
+    }
+
+    internal class EmptyStage<TArg> : IStage<TArg>
+    {
+        void IStage<TArg>.Enter()
+        {
+            
+        }
+
+        void IStage<TArg>.Leave()
+        {
+            
+        }
+
+        void IStage<TArg>.Update(TArg obj)
+        {
+            
+        }
     }
 }

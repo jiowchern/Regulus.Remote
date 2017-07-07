@@ -39,9 +39,11 @@ namespace Regulus.Network.RUDP
             _Items = new Dictionary<uint, Item>();
         }
 
-        public void PushWait(SegmentPackage package, long end_ticks )
+        public int Count { get { return _Items.Count; } }
+
+        public void PushWait(SegmentPackage package, long timeout_ticks )
         {
-            var item = new Item(package , end_ticks);
+            var item = new Item(package , timeout_ticks);
             _Items.Add(item.Package.Serial , item);
         }
         
@@ -57,7 +59,7 @@ namespace Regulus.Network.RUDP
             var pkg = _Items.Values.FirstOrDefault(item => item.Package.Serial == package_id);
             if (pkg != null)
             {
-                foreach (var replyId in _Items.Values.Where(item => item.EndTicks <= pkg.EndTicks).Select(item => item.Package.Serial))
+                foreach (var replyId in _Items.Values.Where(item => item.EndTicks <= pkg.EndTicks).Select(item => item.Package.Serial).ToArray())
                 {
                     Reply(replyId);
                 }

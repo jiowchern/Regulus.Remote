@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom;
 using System.Net;
 using Regulus.Framework;
 using Regulus.Serialization;
@@ -8,29 +9,87 @@ namespace Regulus.Network.RUDP
 {
     internal class Peer : IUpdatable<Timestamp>, IPeer
     {
-        private readonly IStream _Stream;
+        private readonly ILine _Line;
 
-        private readonly Regulus.Utility.StageMachine<Timestamp> _Machine;        
+        private readonly Regulus.Utility.StageMachine<Timestamp> _Machine;
+        private Action<byte[]> _SendHandler;
+        private Func<byte[]> _ReceiveHandler;
+        private readonly EmptyArray<byte> _EmptyArray;
+        private PEER_STATUS _Status;
+        private Serializer _Serialier;
 
-        public Peer(IStream stream , PeerListener listener) : this()
+        private Peer(ILine line)
         {
-            _Stream = stream;
+            _Serialier = Peer.CreateSerialier();
+            _Line = line;
+            _Machine = new StageMachine<Timestamp>();
+            _SendHandler = _EmptySend;
+            _EmptyArray = new EmptyArray<byte>();
+            _ReceiveHandler = _EmptyReceive;
+        }
+        public Peer(ILine line , PeerListener listener) : this(line)
+        {
+            _Status = PEER_STATUS.CONNECTING;
             listener.DoneEvent += _ToTransmission;
             _Machine.Push(listener);
         }
 
-        private void _ToTransmission(IStream stream)
+        public Peer(ILine line, PeerConnecter connecter) : this(line)
         {
-            var stage = new PeerTransmitter(stream);
-            _Machine.Push(stage);
+            _Status = PEER_STATUS.CONNECTING;
+            connecter.DoneEvent += _ToTransmission;
+            _Machine.Push(connecter);
         }
 
-        private Peer()
+        private void _EmptySend(byte[] obj)
+        {
+            
+        }
+
+        private void _ToTransmission()
+        {
+            _Status = PEER_STATUS.TRANSMISSION;
+            _Machine.Push(new SimpleStage<Timestamp>(_StartTransmission , _EndTransmission , _UpdateTransmission ));
+        }
+
+        private void _UpdateTransmission(Timestamp obj)
+        {
+            
+        }
+
+        private void _EndTransmission()
         {            
-            _Machine = new StageMachine<Timestamp>();
+            _SendHandler = _EmptySend;
+            _ReceiveHandler = _EmptyReceive;            
         }
 
-        
+        private byte[] _EmptyReceive()
+        {
+            return _EmptyArray;
+        }
+
+        private void _StartTransmission()
+        {            
+            _SendHandler = _TransmissionSend;
+            _ReceiveHandler = _TransmissionReceive;
+        }
+
+        private byte[] _TransmissionReceive()
+        {
+            
+            // todo var buffers = _Line.Read();
+            return null;
+        }
+
+        private void _TransmissionSend(byte[] buffer)
+        {
+            var pkg = new PeerPackage();
+            pkg.Step = PEER_COMMAND.TRANSMISSION;
+            pkg.Buffer = buffer;
+            _Line.Write( _Serialier.ObjectToBuffer(pkg));
+        }
+
+
         bool IUpdatable<Timestamp>.Update(Timestamp arg)
         {
             _Machine.Update(arg);
@@ -45,41 +104,56 @@ namespace Regulus.Network.RUDP
         
 
         void IBootable.Shutdown()
-        {
-            _Machine.Termination();
+        {            
+            _Machine.Termination();            
         }
 
 
-        public static Serializer CreateSerialier()
-        {
-            var builder = new DescriberBuilder(typeof(byte), typeof(byte[]),
-                typeof(ListenAgreePackage) , 
-                typeof(ConnectRequestPackage) , 
-                typeof(ConnectedAckPackage) , 
-                typeof(DataPackage));            
-            return new Regulus.Serialization.Serializer(builder.Describers);
-        }
+        
 
         EndPoint IPeer.EndPoint
         {
-            get { return _Stream.EndPoint; }
+            get { return _Line.EndPoint; }
         }
 
         void IPeer.Send(byte[] buffer)
         {
-            throw new NotImplementedException();
+            _SendHandler(buffer);
         }
 
-        event Action<byte[]> IPeer.ReceivedEvent
+        byte[] IPeer.Receive()
         {
-            add { throw new NotImplementedException(); }
-            remove { throw new NotImplementedException(); }
+            return _ReceiveHandler();
         }
 
-        event Action IPeer.TimeoutEvent
+        PEER_STATUS IPeer.Status { get { return _Status; } }
+
+
+        public void Close()
         {
-            add { throw new NotImplementedException(); }
-            remove { throw new NotImplementedException(); }
+            _Status = PEER_STATUS.DISCONNECT;
+            var stage = new PeerDisconnecter(_Line);
+            stage.DoneEvent += _ToClose;
+            _Machine.Push(stage);
+        }
+
+        private void _ToClose()
+        {
+            _Status = PEER_STATUS.CLOSE;
+            _Machine.Empty();
+        }
+
+        public static Serializer CreateSerialier()
+        {
+            var builder = new DescriberBuilder(typeof(byte), typeof(byte[]), typeof(Int32),
+                typeof(PEER_COMMAND),
+                typeof(PeerPackage));            
+            return new Regulus.Serialization.Serializer(builder.Describers);
+        }
+
+        public void Release()
+        {
+            _ToClose();
         }
     }
 }
