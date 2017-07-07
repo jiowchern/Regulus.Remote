@@ -13,12 +13,12 @@ namespace Regulus.Network.RUDP
 {
 	public class Host : IUpdatable<Timestamp>
 	{
-	    private readonly StreamProvider _StreamProvider;
+	    private readonly WiringOperator _WiringOperator;
         public event System.Action<IPeer> AcceptEvent;
 
-	    private readonly Dictionary<IStream , Peer> _Peers;
+	    private readonly Dictionary<ILine , Peer> _Peers;
 	    private readonly Regulus.Utility.Updater<Timestamp> _Updater;
-	    private Serializer _Serializer;
+	    
 
 	    public static Host CreateStandard(int port)
 	    {
@@ -32,8 +32,8 @@ namespace Regulus.Network.RUDP
         {
             
             _Updater = new Updater<Timestamp>();
-            _Peers = new Dictionary<IStream, Peer>();
-            _StreamProvider = new StreamProvider(sendable, recevieable);
+            _Peers = new Dictionary<ILine, Peer>();
+            _WiringOperator = new WiringOperator(sendable, recevieable);
         }
 
 	    
@@ -47,37 +47,38 @@ namespace Regulus.Network.RUDP
 
 	    void IBootable.Launch()
 	    {
-	        _StreamProvider.JoinStreamEvent += _AddPeer;
-	        _StreamProvider.LeftStreamEvent += _RemovePeer;
+	        _WiringOperator.JoinStreamEvent += _CreatePeer;
+	        _WiringOperator.LeftStreamEvent += _DestroyPeer;
 
-            _Updater.Add(_StreamProvider);
+            _Updater.Add(_WiringOperator);
 
         }
 
 	    void IBootable.Shutdown()
 	    {
 	        _Updater.Shutdown();
-	        _StreamProvider.JoinStreamEvent -= _AddPeer;
-	        _StreamProvider.LeftStreamEvent -= _RemovePeer;
+	        _WiringOperator.JoinStreamEvent -= _CreatePeer;
+	        _WiringOperator.LeftStreamEvent -= _DestroyPeer;
         }
 
-	    private void _RemovePeer(IStream stream)
+	    private void _DestroyPeer(ILine line)
 	    {
 
-	        var peer = _Peers.FirstOrDefault(p => p.Key == stream);
+	        var peer = _Peers.FirstOrDefault(p => p.Key == line);
 	        
 
             if (peer.Key != null)
 	        {
-	            _Peers.Remove(peer.Key);
+	            peer.Value.Release();
+                _Peers.Remove(peer.Key);
 	            _Updater.Remove(peer.Value);
             }
         }
 
-	    private void _AddPeer(IStream stream)
+	    private void _CreatePeer(ILine line)
 	    {
-	        var peer = new Peer(stream , new PeerListener(stream));
-	        _Peers.Add(stream,peer);            
+	        var peer = new Peer(line , new PeerListener(line));
+	        _Peers.Add(line,peer);            
             _Updater.Add(peer);
 
 	        if (AcceptEvent != null)

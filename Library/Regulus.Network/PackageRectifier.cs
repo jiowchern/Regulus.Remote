@@ -7,7 +7,7 @@ namespace Regulus.Network.RUDP
     public class PackageRectifier
     {
         private readonly Dictionary<uint, SegmentPackage> _DataPackages;
-        private readonly List<byte> _Stream;
+        private readonly List<byte[]> _Packages;
         private uint _Serial;
         private uint _SerialBitFields;
 
@@ -16,7 +16,7 @@ namespace Regulus.Network.RUDP
 
         public PackageRectifier()
         {
-            _Stream = new List<byte>();
+            _Packages = new List<byte[]>();
             _DataPackages = new Dictionary<uint, SegmentPackage>();
             _Serial = 0;
         }
@@ -60,11 +60,13 @@ namespace Regulus.Network.RUDP
                    (_Serial - serial > 0xFFFFFFFF / 2);
         }
 
-        public byte[] PopStream()
+        public void PopPackages(Queue<byte[]> packages)
         {
-            var stream = _Stream.ToArray();
-            _Stream.Clear();            
-            return stream;
+            for (int i = 0; i < _Packages.Count; i++)
+            {
+                packages.Enqueue(_Packages[i]);
+            }
+            _Packages.Clear();
         }
 
         private uint _Rectify(uint serial)
@@ -74,7 +76,7 @@ namespace Regulus.Network.RUDP
             SegmentPackage package;
             while (_DataPackages.TryGetValue(index, out package))
             {
-                _Stream.AddRange(package.Data);
+                _Packages.Add(package.Data);
                 removePackages.Add(index);
                 index++;
             }

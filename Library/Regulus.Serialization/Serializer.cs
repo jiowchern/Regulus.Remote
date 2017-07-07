@@ -141,6 +141,24 @@ namespace Regulus.Serialization
 
             return false;
         }
+
+        public bool TryBufferToObject(byte[] buffer, out object pkg)
+        {
+
+            pkg = null;
+            try
+            {
+                var instance = BufferToObject(buffer);
+                pkg = instance;
+                return true;
+            }
+            catch (Exception e)
+            {
+                Regulus.Utility.Log.Instance.WriteInfo(e.ToString());
+            }
+
+            return false;
+        }
     }
 }
 

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Net;
 using Regulus.Framework;
 using Regulus.Utility;
@@ -7,93 +9,98 @@ namespace Regulus.Network.RUDP
 {
     public class Agent : IUpdatable<Timestamp>
     {
-        private readonly IRecevieable _Recevieable;
-
         
-        private readonly Regulus.Utility.StageMachine<Timestamp> _Machine;
-        private readonly SendHandler _SendHandler;
-        private readonly ReceiveHandler _ReceiveHandler;
-        private IPeer _Peer;
+        private readonly IRecevieable _Recevieable;
+        private readonly ISendable _Sendable;
+
+
+        private readonly Dictionary<EndPoint, Peer> _Peers;
+        private readonly Regulus.Utility.Updater<Timestamp> _Updater;
+        private readonly WiringOperator _WiringOperator;
 
         public Agent(IRecevieable recevieable, ISendable sendable)
         {
-            var serializer = Line.CreateSerializer();
-            _SendHandler = new SendHandler(sendable  , serializer);
-            _ReceiveHandler = new ReceiveHandler(serializer);
-            
-            _Recevieable = recevieable;        
-            _Machine = new StageMachine<Timestamp>();
-            
-        }
+            _Recevieable = recevieable;
+            _Sendable = sendable;
+            _Updater = new Updater<Timestamp>();                    
 
-        bool IUpdatable<Timestamp>.Update(Timestamp ticks)
-        {            
-            _Machine.Update(ticks);
+            _WiringOperator = new WiringOperator(_Sendable, _Recevieable);
+            
+
+            _Peers = new Dictionary<EndPoint, Peer>();
+        }       
+
+        bool IUpdatable<Timestamp>.Update(Timestamp timestamp)
+        {
+            _Updater.Working(timestamp);
             return true;
         }
 
         void IBootable.Launch()
         {
-            _Recevieable.ReceivedEvent += _ReceiveHandler.Push;
 
+            _WiringOperator.JoinStreamEvent += _CreatePeer;
+            _WiringOperator.LeftStreamEvent += _DestroyPeer;
+            _Updater.Add(_WiringOperator);
+            
             
         }
 
         void IBootable.Shutdown()
-        {
-            _Recevieable.ReceivedEvent -= _ReceiveHandler.Push;
-            _Machine.Termination();
+        {                       
+            _Updater.Shutdown();
+            _WiringOperator.JoinStreamEvent -= _CreatePeer;
+            _WiringOperator.LeftStreamEvent -= _DestroyPeer;
         }
 
-        public void Connect(EndPoint end_point)
+        private void _DestroyPeer(ILine obj)
         {
-            _ToConnect(end_point);
-        }
-
-        private void _ToConnect(EndPoint end_point)
-        {
-
-            var stage = new AgentConnectStage(end_point, _SendHandler , _ReceiveHandler );
-            stage.ConnectResultEvent += ConnectResultEvent;
-            stage.SuccessEvent += _ToTransmitter;
-            stage.FailedEvent += _ToIdle;
-            _Machine.Push(stage);
-        }
-
-        
-
-        private void _ToTransmitter(EndPoint end_point)
-        {
-            throw new NotImplementedException();
-        }
-
-        void _ToIdle()
-        {
-            _Peer = null;
-            _Machine.Termination();
-        }
-
-        public event Action<bool> ConnectResultEvent;
-
-        public void Send(byte[] send_buffer)
-        {
-            if(_Peer != null)
-                _Peer.Send(send_buffer);
-        }
-
-        public event Action<byte[]> ReceivedEvent
-        {
-            add
+            Peer peer;
+            if (_Peers.TryGetValue(obj.EndPoint, out peer))
             {
-                if (_Peer != null)
-                    _Peer.ReceivedEvent += value;
+                peer.Release();
+                _Updater.Remove(peer);
+                _Peers.Remove(obj.EndPoint);
             }
+            
+        }
 
-            remove
+        private void _CreatePeer(ILine obj)
+        {            
+        }
+
+        public void Disconnect(EndPoint end_point)
+        {
+            Peer peer;
+            if (_Peers.TryGetValue(end_point, out peer))
             {
-                if (_Peer != null)
-                    _Peer.ReceivedEvent -= value;
+                peer.Close();
             }
+        }
+        public IPeer Connect(EndPoint end_point)
+        {
+            IPeer peer = null;
+            System.Action<ILine> handler = stream =>
+            {
+                var p = new Peer(stream, new PeerConnecter(stream));
+                _Peers.Add(stream.EndPoint, p);
+                _Updater.Add(p);
+                peer = p;
+            };
+            _WiringOperator.JoinStreamEvent += handler;
+            _WiringOperator.Create(end_point);
+            _WiringOperator.JoinStreamEvent -= handler;
+
+            
+            return peer;
+        }
+
+
+        public static Agent CreateStandard()
+        {            
+            var socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Dgram, System.Net.Sockets.ProtocolType.Udp);
+            socket.Bind(new IPEndPoint(IPAddress.Any, 0));
+            return new Agent(new SocketRecevier(socket, Config.PackageSize), new SocketSender(socket));
         }
     }
 }

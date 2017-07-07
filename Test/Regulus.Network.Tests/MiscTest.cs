@@ -77,18 +77,22 @@ namespace Regulus.Network.Tests
 
             var receiver = new PackageRectifier();
 	        receiver.PushPackage(package3);
-	        var stream1 = receiver.PopStream();
-            Assert.AreEqual(0 , stream1.Length);
+	        Queue<byte[]> packages1 = new Queue<byte[]>();
+	        receiver.PopPackages(packages1);
+            Assert.AreEqual(0 , packages1.Count);
 
 	        receiver.PushPackage(package2);
-	        var stream2 = receiver.PopStream();
-            Assert.AreEqual(0, stream2.Length);
+
+	        Queue<byte[]> packages2 = new Queue<byte[]>();
+            receiver.PopPackages(packages2);
+            Assert.AreEqual(0, packages2.Count);
 
 	        receiver.PushPackage(package1);
-	        var stream3 = receiver.PopStream();
-            Assert.AreEqual(1, stream3[0]);
-	        Assert.AreEqual(5, stream3[1]);
-	        Assert.AreEqual(9, stream3[2]);
+	        Queue<byte[]> packages3 = new Queue<byte[]>();
+            receiver.PopPackages(packages3);
+            Assert.AreEqual(1, packages3.Dequeue()[0]);
+	        Assert.AreEqual(5, packages3.Dequeue()[0]);
+	        Assert.AreEqual(9, packages3.Dequeue()[0]);
 
         }
 
@@ -118,33 +122,44 @@ namespace Regulus.Network.Tests
 
             var receiver = new PackageRectifier();
 	        receiver.PushPackage(package3);
-	        var stream1 = receiver.PopStream();
-	        Assert.AreEqual(0, stream1.Length);
+            List<byte> stream = new List<byte>();
+	        Queue<byte[]> packages = new Queue<byte[]>();
+            receiver.PopPackages(packages);
+	        Assert.AreEqual(0, packages.Count);
 
 	        receiver.PushPackage(package2);
-	        var stream2 = receiver.PopStream();
-	        Assert.AreEqual(0, stream2.Length);
+	        receiver.PopPackages(packages);
+	        Assert.AreEqual(0, packages.Count);
 
 	        receiver.PushPackage(package1);
-	        var stream3 = receiver.PopStream();
-	        Assert.AreEqual(1, stream3[0]);
-	        Assert.AreEqual(5, stream3[1]);
-	        Assert.AreEqual(9, stream3[2]);
+	        receiver.PopPackages(packages);
+            stream.AddRange(packages.Dequeue());
+	        stream.AddRange(packages.Dequeue());
+	        stream.AddRange(packages.Dequeue());
+            Assert.AreEqual(1, stream[0]);
+	        Assert.AreEqual(5, stream[1]);
+	        Assert.AreEqual(9, stream[2]);
 
 
 	        receiver.PushPackage(package5);
-	        var stream4 = receiver.PopStream();
-	        Assert.AreEqual(0, stream4.Length);
+	        receiver.PopPackages(packages);
+	        Assert.AreEqual(0, packages.Count);
 
 	        receiver.PushPackage(package2);
-	        var stream5 = receiver.PopStream();
-	        Assert.AreEqual(0, stream5.Length);
+	        receiver.PopPackages(packages);
+	        Assert.AreEqual(0, packages.Count);
 
             receiver.PushPackage(package4);
-	        var stream6 = receiver.PopStream();
-	        Assert.AreEqual(2, stream6.Length);
-	        Assert.AreEqual(10, stream6[0]);
-	        Assert.AreEqual(11, stream6[1]);
+	        receiver.PopPackages(packages);
+	        stream.Clear();
+	        stream.AddRange(packages.Dequeue());
+	        stream.AddRange(packages.Dequeue());
+	        stream.AddRange(packages.Dequeue());
+	        stream.AddRange(packages.Dequeue());
+	        stream.AddRange(packages.Dequeue());
+            Assert.AreEqual(2, stream.Count);
+	        Assert.AreEqual(10, stream[0]);
+	        Assert.AreEqual(11, stream[1]);
 
         }
 

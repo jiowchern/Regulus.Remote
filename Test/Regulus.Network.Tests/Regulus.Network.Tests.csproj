@@ -54,6 +54,7 @@
     <Compile Include="ConnectTest.cs" />
     <Compile Include="FakeSocket.cs" />
     <Compile Include="MiscTest.cs" />
+    <Compile Include="PacketTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

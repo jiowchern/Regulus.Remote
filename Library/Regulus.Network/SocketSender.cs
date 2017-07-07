@@ -23,7 +23,7 @@ namespace Regulus.Network.RUDP
             }
             else
             {
-                _Transport();
+                _Transport(package);
             }
         }
 
@@ -35,9 +35,8 @@ namespace Regulus.Network.RUDP
             }
         }
 
-        private void _Transport()
-        {
-            var package = _Dequeue();
+        private void _Transport(SocketPackage package)
+        {            
             if (package != null)
             {
                 _Sending = true;
@@ -50,7 +49,9 @@ namespace Regulus.Network.RUDP
         {
             _Socket.EndSendTo(ar);
             _Sending = false;
-            _Transport();
+            var pkg = _Dequeue();
+            if(pkg != null)
+                _Transport(pkg);
         }
 
         private SocketPackage _Dequeue()

@@ -7,37 +7,37 @@ namespace Regulus.Network.RUDP
     internal class AgentConnectStage : IStage<Timestamp>
     {
         private readonly EndPoint _EndPoint;
-        private readonly SendHandler _SendHandler;
-        private readonly ReceiveHandler _ReceiveHandler;
+       
+        
         private long _TimeoutCount;
 
-        public AgentConnectStage(EndPoint end_point, SendHandler send_handler, ReceiveHandler receive_handler)
+        public AgentConnectStage(EndPoint end_point)
         {
             _EndPoint = end_point;
-            _SendHandler = send_handler;
-            _ReceiveHandler = receive_handler;        
+          
+            
         }
 
         void IStage<Timestamp>.Enter()
         {
-            _ReceiveHandler.PopListenAgreeEvent += _ListenAgreeHandler;
+            
             
 
-            _SendHandler.PushConnectRequest(_EndPoint);
+           
         }
 
         void IStage<Timestamp>.Leave()
         {
             
-            _ReceiveHandler.PopListenAgreeEvent -= _ListenAgreeHandler;
+            
         }
 
-        private void _ListenAgreeHandler(ListenAgreePackage arg1, EndPoint end_point)
+        private void _ListenAgreeHandler(PeerPackage arg1, EndPoint end_point)
         {
             if (end_point == _EndPoint)
             {
 
-                _SendHandler.PushConnectedAck(end_point);
+               
 
                 ConnectResultEvent?.Invoke(true);
                 SuccessEvent(end_point);
@@ -54,7 +54,7 @@ namespace Regulus.Network.RUDP
                 FailedEvent();
                 ConnectResultEvent?.Invoke(false);                
             }
-            _ReceiveHandler.Pop();
+            
         }
 
 

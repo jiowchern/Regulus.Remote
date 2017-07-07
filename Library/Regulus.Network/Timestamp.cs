@@ -1,6 +1,6 @@
 namespace Regulus.Network
 {
-    public class Timestamp
+    public struct Timestamp
     {
         public static readonly long OneSecondTicks = System.TimeSpan.FromSeconds(1).Ticks;        
         public readonly long Ticks;
