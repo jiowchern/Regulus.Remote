@@ -15,6 +15,7 @@ namespace Regulus.Network.RUDP
 
 
         private readonly Dictionary<EndPoint, Peer> _Peers;
+        private readonly List<Peer> _RemovePeers;
         private readonly Regulus.Utility.Updater<Timestamp> _Updater;
         private readonly WiringOperator _WiringOperator;
 
@@ -22,8 +23,8 @@ namespace Regulus.Network.RUDP
         {
             _Recevieable = recevieable;
             _Sendable = sendable;
-            _Updater = new Updater<Timestamp>();                    
-
+            _Updater = new Updater<Timestamp>();
+            _RemovePeers = new List<Peer>();
             _WiringOperator = new WiringOperator(_Sendable, _Recevieable);
             
 
@@ -32,12 +33,23 @@ namespace Regulus.Network.RUDP
 
         bool IUpdatable<Timestamp>.Update(Timestamp timestamp)
         {
+            var count = _RemovePeers.Count;
+            for (int i = 0; i < count; i++)
+            {
+                var peer = _RemovePeers[i];
+                _WiringOperator.Destroy(peer.EndPoint);                
+            }
+            _RemovePeers.Clear();
+
+
             _Updater.Working(timestamp);
             return true;
         }
 
         void IBootable.Launch()
         {
+
+
 
             _WiringOperator.JoinStreamEvent += _CreatePeer;
             _WiringOperator.LeftStreamEvent += _DestroyPeer;
@@ -58,7 +70,7 @@ namespace Regulus.Network.RUDP
             Peer peer;
             if (_Peers.TryGetValue(obj.EndPoint, out peer))
             {
-                peer.Release();
+                peer.Break();
                 _Updater.Remove(peer);
                 _Peers.Remove(obj.EndPoint);
             }
@@ -68,21 +80,14 @@ namespace Regulus.Network.RUDP
         private void _CreatePeer(ILine obj)
         {            
         }
-
-        public void Disconnect(EndPoint end_point)
-        {
-            Peer peer;
-            if (_Peers.TryGetValue(end_point, out peer))
-            {
-                peer.Close();
-            }
-        }
+        
         public IPeer Connect(EndPoint end_point)
         {
             IPeer peer = null;
             System.Action<ILine> handler = stream =>
             {
                 var p = new Peer(stream, new PeerConnecter(stream));
+                p.CloseEvent += () => { _Remove(p); };
                 _Peers.Add(stream.EndPoint, p);
                 _Updater.Add(p);
                 peer = p;
@@ -93,6 +98,13 @@ namespace Regulus.Network.RUDP
 
             
             return peer;
+        }
+
+        private void _Remove(Peer peer)
+        {
+            _RemovePeers.Add(peer);
+
+
         }
 
 

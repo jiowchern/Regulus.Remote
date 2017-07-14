@@ -9,49 +9,85 @@ namespace Regulus.Network.Tests
 	[TestClass]
 	public class MiscTest
 	{
-        [TestMethod]
+
+
+	[TestMethod]
+	public void TestObjectPool()
+	{
+            
+	    var pool = new ObjectPool<byte[] , ByteArrayShell>(new ByteArrayFactory() );
+	    ByteArrayShell data = pool.Spawn();
+
+            
+        Assert.AreEqual(10, data.Length);
+
+	    data[0] = 9;
+	    data[1] = 8;
+	    data[2] = 7;
+	    data[3] = 6;
+	    data[4] = 5;
+	    data[5] = 4;
+	    data[6] = 3;
+	    data[7] = 2;
+	    data[8] = 1;
+	    data[9] = 0;
+
+	    data = null;
+        System.GC.Collect();
+	    System.GC.WaitForFullGCComplete();
+
+
+	    ByteArrayShell data2 = pool.Spawn();
+	    Assert.AreEqual(9, data2[0]);
+
+    }
+
+    public class ByteArrayShell : Recycleable<byte[]>
+    {
+        
+        public byte this[int i]
+        {
+            get { return this._Object[i]; }
+            set { this._Object[i] = value; }
+        }
+
+        public int Length { get { return _Object.Length; } }
+
+
+            
+    }
+
+    [TestMethod]
 	    public void TestDataPackageSize()
 	    {	        
             Assert.IsTrue(Config.PackageSize - SegmentPackage.GetHeadSize() > 0);	        
 	    }
 
-	    [TestMethod]
-	    public void TestEmptyDataPackageSerialize()
-	    {
-	        var serializer = Line.CreateSerializer();
-	        var package = new SegmentPackage();
-	        package.Serial = 1;
-	        package.Ack = 1;
-	        package.AckBits = 1;
-            package.Data = new byte[0];
-            var buffer = serializer.ObjectToBuffer(package);
-	        Assert.IsTrue( buffer.Length <= SegmentPackage.GetHeadSize());
-
-
-        }
+	    	    
 
 	    
 
 	    [TestMethod]
 	    public void TestBufferDispenser()
 	    {
-	        var provider = NSubstitute.Substitute.For<ISerialProvider>();
-	        provider.AllocateSerial(NSubstitute.Arg.Any<int>()).Returns(new uint[] {1, 2, 3 , 4});
-            var message = new TestMessage(350);	        
+	        
+            var message = new TestMessage(155);	        
 
-            var dispenser = new BufferDispenser( 100);
-	        var packages = dispenser.Packing(message.Buffer ,0,0);
+            var dispenser = new BufferDispenser( 50);
+	        var packages = dispenser.Packing(message.Buffer ,PEER_OPERATION.TRANSMISSION);
 
 
-            Assert.AreEqual( 4 , packages.Length );
+            Assert.AreEqual( 5 , packages.Length );
 	        byte index = 0;
 	        for (uint i = 0; i < packages.Length; i++)
 	        {
 	            var package = packages[i];
-	            Assert.AreEqual(i, package.Serial);
+	            Assert.AreEqual(i, package.GetSeq());
                 
-                var data = package.Data;
-	            for (int j = 0; j < data.Length; j++)
+                var data = new List<byte>();
+	            package.ReadPayload(data);
+
+                for (int j = 0; j < data.Count; j++)
 	            {	                
 	                Assert.AreEqual(index, data[j]);
 	                index++;
@@ -62,161 +98,136 @@ namespace Regulus.Network.Tests
 	    [TestMethod]
 	    public void TestPackageRectifierOutOfOrder()
 	    {
-            var package1 = new SegmentPackage();
-	        package1.Serial = 0;
-            package1.Data = new byte[] {1};
+            var package1 = new SegmentPackage(Config.PackageSize);
+	        package1.SetSeq(0);            
+	        package1.WritePayload(new byte[] {1}, 0, 1);
 
-	        var package2 = new SegmentPackage();
-	        package2.Serial = 1;
-            package2.Data = new byte[] {5};
+            var package2 = new SegmentPackage(Config.PackageSize);
+	        package2.SetSeq(1);
+	        package2.WritePayload(new byte[] { 5 }, 0, 1);            
 
-	        var package3 = new SegmentPackage();
-	        package3.Serial = 2;
-            package3.Data = new byte[] {9};
+	        var package3 = new SegmentPackage(Config.PackageSize);
+	        package3.SetSeq(2);
+	        package3.WritePayload(new byte[] { 9 }, 0, 1);            
 
 
             var receiver = new PackageRectifier();
 	        receiver.PushPackage(package3);
-	        Queue<byte[]> packages1 = new Queue<byte[]>();
-	        receiver.PopPackages(packages1);
-            Assert.AreEqual(0 , packages1.Count);
+	        
+	        var stream1 = receiver.PopPackage();
+            Assert.AreEqual(null , stream1);
 
 	        receiver.PushPackage(package2);
 
-	        Queue<byte[]> packages2 = new Queue<byte[]>();
-            receiver.PopPackages(packages2);
-            Assert.AreEqual(0, packages2.Count);
+	        
+	        var stream2 = receiver.PopPackage();
+            Assert.AreEqual(null, stream2);
+
 
 	        receiver.PushPackage(package1);
-	        Queue<byte[]> packages3 = new Queue<byte[]>();
-            receiver.PopPackages(packages3);
-            Assert.AreEqual(1, packages3.Dequeue()[0]);
-	        Assert.AreEqual(5, packages3.Dequeue()[0]);
-	        Assert.AreEqual(9, packages3.Dequeue()[0]);
+            
+            Assert.AreEqual((byte)1, receiver.PopPackage().ReadPayload(0));
+	        Assert.AreEqual((byte)5, receiver.PopPackage().ReadPayload(0));
+	        Assert.AreEqual((byte)9, receiver.PopPackage().ReadPayload(0));
 
         }
 
 	    [TestMethod]
 	    public void TestPackageRectifierRepeat()
 	    {
-	        var package1 = new SegmentPackage();
-	        package1.Serial = 0;
-	        package1.Data = new byte[] { 1 };
+	        var package1 = new SegmentPackage(Config.PackageSize);
+	        package1.SetSeq(0);
+	        package1.WritePayload(new byte[] { 1 }, 0, 1);
 
-	        var package2 = new SegmentPackage();
-	        package2.Serial = 1;
-	        package2.Data = new byte[] { 5 };
+	        var package2 = new SegmentPackage(Config.PackageSize);
+	        package2.SetSeq(1);
+	        package2.WritePayload(new byte[] { 5 }, 0, 1);
 
-	        var package3 = new SegmentPackage();
-	        package3.Serial = 2;
-	        package3.Data = new byte[] { 9 };
+	        var package3 = new SegmentPackage(Config.PackageSize);
+	        package3.SetSeq(2);
+	        package3.WritePayload(new byte[] { 9 }, 0, 1);
 
-	        var package4 = new SegmentPackage();
-	        package4.Serial = 3;
-	        package4.Data = new byte[] { 10 };
+            var package4 = new SegmentPackage(Config.PackageSize);
+	        package4.SetSeq(3);
+	        package4.WritePayload(new byte[] { 10 }, 0, 1);
 
-	        var package5 = new SegmentPackage();
-	        package5.Serial = 4;
-	        package5.Data = new byte[] { 11 };
+	        var package5 = new SegmentPackage(Config.PackageSize);
+	        package5.SetSeq(4);
+	        package5.WritePayload(new byte[] { 11 }, 0, 1);
 
 
             var receiver = new PackageRectifier();
 	        receiver.PushPackage(package3);
-            List<byte> stream = new List<byte>();
-	        Queue<byte[]> packages = new Queue<byte[]>();
-            receiver.PopPackages(packages);
-	        Assert.AreEqual(0, packages.Count);
+            
+	        
+            var stream1 = receiver.PopPackage();
+	        Assert.AreEqual(null, stream1);
 
 	        receiver.PushPackage(package2);
-	        receiver.PopPackages(packages);
-	        Assert.AreEqual(0, packages.Count);
+	        var stream2 = receiver.PopPackage();
+	        Assert.AreEqual(null, stream2);
 
 	        receiver.PushPackage(package1);
-	        receiver.PopPackages(packages);
-            stream.AddRange(packages.Dequeue());
-	        stream.AddRange(packages.Dequeue());
-	        stream.AddRange(packages.Dequeue());
-            Assert.AreEqual(1, stream[0]);
-	        Assert.AreEqual(5, stream[1]);
-	        Assert.AreEqual(9, stream[2]);
+	        
+            
+            Assert.AreEqual((byte)1, receiver.PopPackage().ReadPayload(0));
+	        Assert.AreEqual((byte)5, receiver.PopPackage().ReadPayload(0));
+	        Assert.AreEqual((byte)9, receiver.PopPackage().ReadPayload(0));
 
 
-	        receiver.PushPackage(package5);
-	        receiver.PopPackages(packages);
-	        Assert.AreEqual(0, packages.Count);
+            receiver.PushPackage(package5);
+	        var stream4 = receiver.PopPackage();
+	        Assert.AreEqual(null, stream4);
 
 	        receiver.PushPackage(package2);
-	        receiver.PopPackages(packages);
-	        Assert.AreEqual(0, packages.Count);
+	        var stream5 = receiver.PopPackage();
+	        Assert.AreEqual(null, stream5);
 
             receiver.PushPackage(package4);
-	        receiver.PopPackages(packages);
-	        stream.Clear();
-	        stream.AddRange(packages.Dequeue());
-	        stream.AddRange(packages.Dequeue());
-	        stream.AddRange(packages.Dequeue());
-	        stream.AddRange(packages.Dequeue());
-	        stream.AddRange(packages.Dequeue());
-            Assert.AreEqual(2, stream.Count);
-	        Assert.AreEqual(10, stream[0]);
-	        Assert.AreEqual(11, stream[1]);
+	        	                    
+	        Assert.AreEqual((byte)10, receiver.PopPackage().ReadPayload(0));
+	        Assert.AreEqual((byte)11, receiver.PopPackage().ReadPayload(0));
 
         }
 
         [TestMethod]
 	    public void TestAck()
 	    {
-	        var package1 = new SegmentPackage();
-	        package1.Serial = 1;
-            var package2 = new SegmentPackage();
-	        package2.Serial = 2;
+	        var package1 = new SegmentPackage(Config.PackageSize);
+	        package1.SetSeq(1);
+            var package2 = new SegmentPackage(Config.PackageSize);
+	        package2.SetSeq(2);
 
             var ackWaiter = new CongestionRecorder(3);
 	        ackWaiter.PushWait(package1, System.TimeSpan.FromSeconds(0.1).Ticks);
 	        ackWaiter.PushWait(package2, System.TimeSpan.FromSeconds(1.0).Ticks);
-            ackWaiter.Reply(package1.Serial);
+            ackWaiter.Reply(package1.GetSeq());
 
             
 	        var packages = ackWaiter.PopLost(System.TimeSpan.FromSeconds(1.0).Ticks);
 
-            Assert.AreEqual(2u , packages[0].Serial);
+            Assert.AreEqual(2u , packages[0].GetSeq());
 
 
 	    }
 
-	    [TestMethod]
-	    public void TestAckBitOverflow()
-	    {
-	        var pkg = new SegmentPackage();
-            /*
-             * fa x
-             * fb 0
-             * fc 0
-             * fd 0
-             * fe 0
-             * ff 0
-             * 00 0
-             * 01 1 0x40
-             */
-	        pkg.Ack = 0xfffffffa; 
-	        pkg.SetAcks(0x1);
-
-            Assert.AreEqual(0x40u , pkg.AckBits);
-	    }
-
-	    [TestMethod]
-	    public void TestAckBit()
-	    {
-	        var pkg = new SegmentPackage();
-	        
-	        pkg.Ack = 1;
-	        pkg.SetAcks(3);
-
-	        Assert.AreEqual(0x2u, pkg.AckBits);
-	    }
+	    
+        
 
 
     }
+
+    public class ByteArrayFactory : IObjectFactory<byte[]>
+    {
+        byte[] IObjectFactory<byte[]>.Spawn()
+        {
+            return new byte[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+        }
+    }
+
+   
+
+   
 
     public class TestMessage
     {

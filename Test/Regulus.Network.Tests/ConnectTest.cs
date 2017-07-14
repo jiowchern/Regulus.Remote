@@ -25,14 +25,14 @@ namespace Regulus.Network.Tests
             {
                 var package = new SocketPackage();
                 package.EndPoint = hostEndpoint;
-                package.Buffer = pkg.Buffer;
+                package.Segment = pkg.Segment;
                 agentSocket.Receive(package);
             };
             agentSocket.SendEvent += (pkg) =>
             {
                 var package = new SocketPackage();
                 package.EndPoint = agentEndpoint;
-                package.Buffer = pkg.Buffer;
+                package.Segment = pkg.Segment;
                 hostSocket.Receive(package);
             };
 
@@ -59,6 +59,14 @@ namespace Regulus.Network.Tests
             updater.Working(new Timestamp(ticks++, 1));
             updater.Working(new Timestamp(ticks++, 1));
             updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
 
 
 
@@ -74,6 +82,8 @@ namespace Regulus.Network.Tests
             updater.Working(new Timestamp(ticks++, 1));
             updater.Working(new Timestamp(ticks++, 1));
             updater.Working(new Timestamp(ticks++, 1));
+
+
             var receivedBuffer = peer.Receive();
 
 
@@ -83,8 +93,8 @@ namespace Regulus.Network.Tests
 
             Assert.AreEqual(sendBuffer.Length , receivedBuffer.Length);
 
-
-            agent.Disconnect(clientPeer.EndPoint);
+            
+            clientPeer.Disconnect();
 
 
             updater.Working(new Timestamp(ticks++, 1));
@@ -96,6 +106,9 @@ namespace Regulus.Network.Tests
 
 
             Assert.AreEqual(PEER_STATUS.CLOSE , peer.Status);
+
+
+
         }
 
        

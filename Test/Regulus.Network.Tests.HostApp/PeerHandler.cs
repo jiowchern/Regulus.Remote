@@ -49,12 +49,13 @@ namespace Regulus.Network.Tests.HostApp
 			_Command.Unregister(_CommandString);
 		}
 
-		void _Receive(byte[] buffer)
+		void _Receive(SegmentStream stream)
 		{
-            if(buffer.Length == 0)
+            if(stream.Length == 0)
                 return;
-		    ;
-			var message = System.Text.Encoding.Default.GetString(buffer);
+		    var buffer = new byte[stream.Length];
+		    stream.Read(0, buffer, 0, stream.Length);
+            var message = System.Text.Encoding.Default.GetString(buffer);
 
 			_Viewer.WriteLine(String.Format("transmitter{0} : {1}" , _Id , message));
 		}
@@ -62,7 +63,7 @@ namespace Regulus.Network.Tests.HostApp
 		bool IUpdatable<Timestamp>.Update(Timestamp time)
 		{
 		    _Receive(_Peer.Receive());
-		    return true ;
+		    return _Peer.Status != PEER_STATUS.CLOSE;
         }
 	}
 }

@@ -17,9 +17,10 @@ namespace Regulus.Network.RUDP
         public event System.Action<IPeer> AcceptEvent;
 
 	    private readonly Dictionary<ILine , Peer> _Peers;
-	    private readonly Regulus.Utility.Updater<Timestamp> _Updater;
+	    private readonly List<Peer> _RemovePeers;
+        private readonly Regulus.Utility.Updater<Timestamp> _Updater;
 	    
-
+        public int PeerCount { get { return _Peers.Count; } }
 	    public static Host CreateStandard(int port)
 	    {
 	        var endPoint = new System.Net.IPEndPoint(System.Net.IPAddress.Any, port);
@@ -30,7 +31,7 @@ namespace Regulus.Network.RUDP
 
         public Host(IRecevieable recevieable , ISendable sendable)
         {
-            
+            _RemovePeers = new List<Peer>();
             _Updater = new Updater<Timestamp>();
             _Peers = new Dictionary<ILine, Peer>();
             _WiringOperator = new WiringOperator(sendable, recevieable);
@@ -42,8 +43,17 @@ namespace Regulus.Network.RUDP
 	    bool IUpdatable<Timestamp>.Update(Timestamp arg)
 	    {
 	        _Updater.Working(arg);
-	        return true;
+
+	        var count = _RemovePeers.Count;
+	        for (int index = 0; index < count; index++)
+	        {
+                _WiringOperator.Destroy(_RemovePeers[index].EndPoint);	            
+	        }
+	        _RemovePeers.Clear();
+            return true;
 	    }
+
+	    
 
 	    void IBootable.Launch()
 	    {
@@ -69,20 +79,29 @@ namespace Regulus.Network.RUDP
 
             if (peer.Key != null)
 	        {
-	            peer.Value.Release();
+	            peer.Value.Break();
                 _Peers.Remove(peer.Key);
 	            _Updater.Remove(peer.Value);
             }
         }
 
-	    private void _CreatePeer(ILine line)
+	    
+
+        private void _CreatePeer(ILine line)
 	    {
 	        var peer = new Peer(line , new PeerListener(line));
-	        _Peers.Add(line,peer);            
+	        peer.CloseEvent += ()=> { _Remove(peer); };
+
+            _Peers.Add(line,peer);            
             _Updater.Add(peer);
 
 	        if (AcceptEvent != null)
 	            AcceptEvent(peer);
 	    }
+
+	    private void _Remove(Peer peer)
+	    {
+	        _RemovePeers.Add(peer);
+        }
 	}
 }

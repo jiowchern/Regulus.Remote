@@ -10,19 +10,16 @@ namespace Regulus.Network.RUDP
         
         
         private readonly ILine _Line;
-        private readonly Serializer _Serializer;
+        
         public event Action DoneEvent;
         public PeerConnecter(ILine line)
-        {
-            _Serializer = Peer.CreateSerialier();        
+        {            
             _Line = line;
         }
 
         void IStage<Timestamp>.Enter()
-        {
-            var pkg = new PeerPackage();
-            pkg.Step = PEER_COMMAND.CLIENTTOSERVER_VISIT;
-            _Line.Write(_Serializer.ObjectToBuffer(pkg));
+        {                        
+            _Line.Write(PEER_OPERATION.CLIENTTOSERVER_HELLO1 , new byte[0]);
         }
 
         void IStage<Timestamp>.Leave()
@@ -32,18 +29,17 @@ namespace Regulus.Network.RUDP
 
         void IStage<Timestamp>.Update(Timestamp timestamp)
         {
-            /*
-             * todo 
-             var buffer = _Line.Read();
-            PeerPackage peer;
-            if (_Serializer.TryBufferToObject(buffer, out peer) && peer.Step == PEER_COMMAND.SERVERTOCLIENT_AGREE)
-            {
-                var pkg = new PeerPackage();
-                pkg.Step = PEER_COMMAND.CLIENTTOSERVER_ACK;
-                _Line.Write(_Serializer.ObjectToBuffer(pkg));
 
-                DoneEvent();
-            }*/
+            var pkg = _Line.Read();
+            if (pkg != null)
+            {
+                var operation = (PEER_OPERATION)pkg.GetOperation();
+                if (operation == PEER_OPERATION.SERVERTOCLIENT_HELLO1)
+                {
+                    _Line.Write(PEER_OPERATION.CLIENTTOSERVER_HELLO2, new byte[0]);
+                    DoneEvent();
+                }
+            }            
         }
     }
 }

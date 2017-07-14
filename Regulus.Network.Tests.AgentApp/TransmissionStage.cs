@@ -23,11 +23,18 @@ namespace Regulus.Network.Tests.AgentApp
         void IStage.Enter()
         {
             _Command.RegisterLambda<TransmissionStage , string>(this, (ins , message) => ins.Send(message) );
+            _Command.RegisterLambda(this, (ins) => ins.Disconnect());
+        }
+
+        private void Disconnect()
+        {
+            _Peer.Disconnect();
         }
 
         void IStage.Leave()
         {
             _Command.Unregister("Send");
+            _Command.Unregister("Disconnect");
         }
 
         void IStage.Update()
@@ -35,9 +42,11 @@ namespace Regulus.Network.Tests.AgentApp
             if (_Peer.Status == PEER_STATUS.CLOSE)
                 DisconnectEvent();
 
-            var buffer = _Peer.Receive();
-            if (buffer.Length > 0)
+            var stream = _Peer.Receive();
+            if (stream.Length > 0)
             {
+                var buffer = new byte[stream.Length];
+                stream.Read(0, buffer, 0, stream.Length);
                 string something = Encoding.Default.GetString(buffer);
                 _Viewer.WriteLine("receive message : " + something);
             }
