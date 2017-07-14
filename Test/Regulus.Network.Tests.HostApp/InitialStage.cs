@@ -25,9 +25,15 @@ namespace Regulus.Network.Tests.HostApp
 		void IStage.Enter()
 		{
 			_Command.RegisterLambda<InitialStage, int>(this, (obj, port) => obj.Bind(port));
-		}
+		    _Command.RegisterLambda<InitialStage>(this, (obj) => obj.Run());
+        }
 
-		void IStage.Leave()
+	    private void Run()
+	    {
+	        Bind(12345);
+	    }
+
+	    void IStage.Leave()
 		{
 			_Command.Unregister("Bind");
 		}

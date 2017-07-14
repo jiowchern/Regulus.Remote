@@ -19,6 +19,12 @@ namespace Regulus.Network.Tests.AgentApp
         void IStage.Enter()
         {
             _Command.RegisterLambda<InitialStage, string,int>(this, (obj, ip,port) => obj.Connect(ip,port));
+            _Command.RegisterLambda<InitialStage>(this, (obj) => obj.Run());
+        }
+
+        private void Run()
+        {
+            Connect("127.0.0.1",12345);
         }
 
         private void Connect(string ip,int port)
@@ -31,6 +37,7 @@ namespace Regulus.Network.Tests.AgentApp
         void IStage.Leave()
         {
             _Command.Unregister("Connect");
+            _Command.Unregister("Run");
         }
 
         void IStage.Update()

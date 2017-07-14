@@ -49,12 +49,16 @@ namespace Regulus.Network.RUDP
         {
             var endPoints = _Recevieable.ErrorPoints();
 
-            var removes = from line in _Lines where endPoints.Any(e => e == line.Key) select line.Value;
 
-            foreach (var line in removes.ToList())
+            for (int i = 0; i < endPoints.Length; i++)
             {
-                _Remove(line);
-            }
+                var endPoint = endPoints[i];
+                Line line;
+                if (_Lines.TryGetValue(endPoint, out line))
+                {
+                    _Remove(line);
+                }
+            }            
         }
 
 
@@ -66,11 +70,9 @@ namespace Regulus.Network.RUDP
             for (int i = 0; i < packages.Length; i++)
             {
                 var package = packages[i];
-                
-                var line = _Query(package.EndPoint);
-                
-
-                line.Input(package.Buffer);
+                var pkg = new SegmentPackage(package.Segment);
+                var line = _Query(package.EndPoint);                
+                line.Input(pkg);
             }
         }
 
@@ -116,7 +118,7 @@ namespace Regulus.Network.RUDP
         {
             var package = new SocketPackage();
             package.EndPoint = arg1;
-            package.Buffer = arg2;
+            package.Segment = arg2;
             _Sendable.Transport(package);
         }
 
@@ -162,9 +164,10 @@ namespace Regulus.Network.RUDP
 
         public void Destroy(EndPoint end_point)
         {
-            var line = _Lines.FirstOrDefault(l => l.Key == end_point);
-            
-            _Exits.Enqueue(line.Value);
+            Line line;
+            if(_Lines.TryGetValue(end_point, out line))
+                _Exits.Enqueue(line);
+
         }
     }
 }

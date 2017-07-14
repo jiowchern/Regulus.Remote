@@ -16,8 +16,10 @@ namespace Regulus.Network.RUDP
     {
         EndPoint EndPoint { get;  }
         void Send(byte[] buffer);
-        byte[] Receive();
+        SegmentStream Receive();
         PEER_STATUS Status { get; }
+
+        void Disconnect();
     }
 
 

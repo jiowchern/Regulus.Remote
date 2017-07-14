@@ -22,7 +22,7 @@ namespace Regulus.Network.RUDP
 
         private readonly CongestionRecorder _Waiter;
         
-        private readonly Serializer _Serializer;
+        
         private long _TimeoutTicks;
         
 
@@ -37,7 +37,7 @@ namespace Regulus.Network.RUDP
             _Waiter = new CongestionRecorder(3);
             
 
-            _Serializer = CreateSerializer();
+            
 
             _ResetTimeout();
 
@@ -49,15 +49,15 @@ namespace Regulus.Network.RUDP
             _TimeoutTicks = Config.TransmitterTimeout;
         }
 
-        void ILine.Write(byte[] buffer)
+        void ILine.Write(PEER_OPERATION op,byte[] buffer)
         {
-            var packages = _Dispenser.Packing(buffer, 0, 0);
+            var packages = _Dispenser.Packing(buffer, op);
             _SendPackages.AddRange(packages);
         }
 
-        void ILine.Read(Queue<byte[]> packages)
+        SegmentPackage ILine.Read()
         {
-            _Rectifier.PopPackages(packages);
+            return _Rectifier.PopPackage();
         }
 
         EndPoint ILine.EndPoint
@@ -65,14 +65,13 @@ namespace Regulus.Network.RUDP
             get { return EndPoint; }
         }
 
-
-        public void Input(byte[] package_buffer)
-        {            
-            var package = (SegmentPackage)_Serializer.BufferToObject(package_buffer) ;
+        int ILine.TobeSendCount { get { return _SendPackages.Count; } }
 
 
+        public void Input(SegmentPackage package)
+        {                        
             
-            _Waiter.ReplyUnder(package.Ack);
+            _Waiter.ReplyUnder(package.GetAck());
             
             foreach (var ack in package.GetAcks())
             {            
@@ -116,25 +115,16 @@ namespace Regulus.Network.RUDP
         {            
             foreach (var package in _SendPackages)
             {
-                package.Ack = _Rectifier.Serial;
-                package.AckBits = _Rectifier.SerialBitFields;
+                package.SetAck(_Rectifier.Serial);
+                package.SetAckFields(_Rectifier.SerialBitFields);
                 
                 _Waiter.PushWait(package, time.Ticks + Timestamp.OneSecondTicks);
 
-                OutputEvent(EndPoint , _Serializer.ObjectToBuffer(package));                
+                OutputEvent(EndPoint , package.GetBuffer());                
             }
             _SendPackages.Clear();
         }
-
-
-
-        public static Serializer CreateSerializer()
-        {
-            var builder = new DescriberBuilder(typeof(byte), typeof(byte[]),
-                typeof(SegmentPackage));
-            var lastId = builder.Describers.Length;
-            return new Regulus.Serialization.Serializer(builder.Describers.Union(new ITypeDescriber[] { new BlittableDescriber(++lastId, typeof(uint)), new BlittableDescriber(++lastId, typeof(int)) }).ToArray());
-        }        
+       
     }
 
     

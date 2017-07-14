@@ -32,11 +32,11 @@ namespace Regulus.Network.RUDP
                 Hungry++;
             }
         }
-        private readonly Dictionary<uint, Item> _Items;
+        private readonly Dictionary<ushort, Item> _Items;
         public CongestionRecorder(int hungry_limit)
         {
             _HungryLimit = hungry_limit;
-            _Items = new Dictionary<uint, Item>();
+            _Items = new Dictionary<ushort, Item>();
         }
 
         public int Count { get { return _Items.Count; } }
@@ -44,22 +44,22 @@ namespace Regulus.Network.RUDP
         public void PushWait(SegmentPackage package, long timeout_ticks )
         {
             var item = new Item(package , timeout_ticks);
-            _Items.Add(item.Package.Serial , item);
+            _Items.Add(item.Package.GetSeq(), item);
         }
         
 
-        public void Reply(uint package)
+        public void Reply(ushort package)
         {
             _Items.Remove(package);
         }
 
 
-        public void ReplyUnder(uint package_id)
+        public void ReplyUnder(ushort package_id)
         {
-            var pkg = _Items.Values.FirstOrDefault(item => item.Package.Serial == package_id);
+            var pkg = _Items.Values.FirstOrDefault(item => item.Package.GetSeq() == package_id);
             if (pkg != null)
             {
-                foreach (var replyId in _Items.Values.Where(item => item.EndTicks <= pkg.EndTicks).Select(item => item.Package.Serial).ToArray())
+                foreach (var replyId in _Items.Values.Where(item => item.EndTicks <= pkg.EndTicks).Select(item => item.Package.GetSeq()).ToArray())
                 {
                     Reply(replyId);
                 }
@@ -85,7 +85,7 @@ namespace Regulus.Network.RUDP
 
             foreach (var package in packages)
             {
-                _Items.Remove(package.Serial);
+                _Items.Remove(package.GetSeq());
             }
 
             return packages;

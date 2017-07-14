@@ -1,34 +1,37 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Regulus.Network.RUDP
 {
     public class PackageRectifier
     {
-        private readonly Dictionary<uint, SegmentPackage> _DataPackages;
-        private readonly List<byte[]> _Packages;
-        private uint _Serial;
+        private readonly Dictionary<ushort, SegmentPackage> _DataPackages;
+
+        private readonly Queue<SegmentPackage> _Packages;
+        private ushort _Serial;
         private uint _SerialBitFields;
 
-        public uint Serial { get { return _Serial; } }
+        public ushort Serial { get { return _Serial; } }
         public uint SerialBitFields { get { return _SerialBitFields; } }
 
         public PackageRectifier()
         {
-            _Packages = new List<byte[]>();
-            _DataPackages = new Dictionary<uint, SegmentPackage>();
+
+            _Packages = new Queue<SegmentPackage>();
+            _DataPackages = new Dictionary<ushort, SegmentPackage>();
             _Serial = 0;
         }
         public bool PushPackage(SegmentPackage segment_package)
         {
-            var exist = _DataPackages.ContainsKey(segment_package.Serial) ;
+            var exist = _DataPackages.ContainsKey(segment_package.GetSeq()) ;
             
-            if (exist == false && _SerialMoreRecent(segment_package.Serial) )
+            if (exist == false && _SerialMoreRecent(segment_package.GetSeq()) )
             {
-                _DataPackages.Add(segment_package.Serial, segment_package);
+                _DataPackages.Add(segment_package.GetSeq(), segment_package);
 
-                if (_Serial == segment_package.Serial)
+                if (_Serial == segment_package.GetSeq())
                 {
                     _Serial = _Rectify(_Serial);
                 }
@@ -38,7 +41,7 @@ namespace Regulus.Network.RUDP
                 for (uint i = 0; i < 32; i++)
                 {
                     SegmentPackage pkg;
-                    if (_DataPackages.TryGetValue(_Serial + i + 1, out pkg))
+                    if (_DataPackages.TryGetValue((ushort)(_Serial + i + 1), out pkg))
                     {
                         _SerialBitFields = _SerialBitFields | mask;
                     }
@@ -60,23 +63,21 @@ namespace Regulus.Network.RUDP
                    (_Serial - serial > 0xFFFFFFFF / 2);
         }
 
-        public void PopPackages(Queue<byte[]> packages)
+        public SegmentPackage PopPackage()
         {
-            for (int i = 0; i < _Packages.Count; i++)
-            {
-                packages.Enqueue(_Packages[i]);
-            }
-            _Packages.Clear();
+            if(_Packages.Count > 0)
+                return _Packages.Dequeue();
+            return null;
         }
 
-        private uint _Rectify(uint serial)
+        private ushort _Rectify(ushort serial)
         {
-            var removePackages = new List<uint>();
+            var removePackages = new List<ushort>();
             var index = serial;
             SegmentPackage package;
             while (_DataPackages.TryGetValue(index, out package))
             {
-                _Packages.Add(package.Data);
+                _Packages.Enqueue(package);                
                 removePackages.Add(index);
                 index++;
             }

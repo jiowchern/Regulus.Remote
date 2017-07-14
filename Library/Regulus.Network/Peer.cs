@@ -1,5 +1,6 @@
 using System;
 using System.CodeDom;
+using System.Collections.Generic;
 using System.Net;
 using Regulus.Framework;
 using Regulus.Serialization;
@@ -9,28 +10,32 @@ namespace Regulus.Network.RUDP
 {
     internal class Peer : IUpdatable<Timestamp>, IPeer
     {
+
+        public event Action CloseEvent;
         private readonly ILine _Line;
 
         private readonly Regulus.Utility.StageMachine<Timestamp> _Machine;
-        private Action<byte[]> _SendHandler;
-        private Func<byte[]> _ReceiveHandler;
-        private readonly EmptyArray<byte> _EmptyArray;
+        
+        private SegmentStream _Stream;
         private PEER_STATUS _Status;
-        private Serializer _Serialier;
+
+        
+        private readonly List<byte> _Sends;
+        private bool _RequireDisconnect;
 
         private Peer(ILine line)
         {
-            _Serialier = Peer.CreateSerialier();
+            _Sends = new List<byte>();
             _Line = line;
-            _Machine = new StageMachine<Timestamp>();
-            _SendHandler = _EmptySend;
-            _EmptyArray = new EmptyArray<byte>();
-            _ReceiveHandler = _EmptyReceive;
+            _Machine = new StageMachine<Timestamp>();        
+            _Stream = new SegmentStream(new SegmentPackage[0]);
+            
         }
         public Peer(ILine line , PeerListener listener) : this(line)
         {
             _Status = PEER_STATUS.CONNECTING;
             listener.DoneEvent += _ToTransmission;
+            listener.ErrorEvent += _ToClose;
             _Machine.Push(listener);
         }
 
@@ -41,10 +46,7 @@ namespace Regulus.Network.RUDP
             _Machine.Push(connecter);
         }
 
-        private void _EmptySend(byte[] obj)
-        {
-            
-        }
+        
 
         private void _ToTransmission()
         {
@@ -54,40 +56,47 @@ namespace Regulus.Network.RUDP
 
         private void _UpdateTransmission(Timestamp obj)
         {
-            
+            if (_Sends.Count > 0)
+            {
+                _Line.Write(PEER_OPERATION.TRANSMISSION, _Sends.ToArray());
+                _Sends.Clear();
+            }
+
+            if (_RequireDisconnect)
+            {            
+                _Line.Write(PEER_OPERATION.REQUEST_DISCONNECT, new byte[0]);
+                _Disconnect();
+            }
+             
+            var package = _Line.Read();
+            if(package == null)
+                return;
+            var operation = (PEER_OPERATION)package.GetOperation();
+            if (operation == PEER_OPERATION.TRANSMISSION)
+            {
+                _Stream.Add(package);
+            }
+            else if(operation == PEER_OPERATION.REQUEST_DISCONNECT)
+            {
+                _Disconnect();
+            }
         }
 
         private void _EndTransmission()
         {            
-            _SendHandler = _EmptySend;
-            _ReceiveHandler = _EmptyReceive;            
+            
         }
 
-        private byte[] _EmptyReceive()
-        {
-            return _EmptyArray;
-        }
+        
 
         private void _StartTransmission()
         {            
-            _SendHandler = _TransmissionSend;
-            _ReceiveHandler = _TransmissionReceive;
-        }
-
-        private byte[] _TransmissionReceive()
-        {
             
-            // todo var buffers = _Line.Read();
-            return null;
         }
 
-        private void _TransmissionSend(byte[] buffer)
-        {
-            var pkg = new PeerPackage();
-            pkg.Step = PEER_COMMAND.TRANSMISSION;
-            pkg.Buffer = buffer;
-            _Line.Write( _Serialier.ObjectToBuffer(pkg));
-        }
+      
+
+        
 
 
         bool IUpdatable<Timestamp>.Update(Timestamp arg)
@@ -108,9 +117,10 @@ namespace Regulus.Network.RUDP
             _Machine.Termination();            
         }
 
-
-        
-
+        public EndPoint EndPoint
+        {
+            get { return _Line.EndPoint; }
+        }
         EndPoint IPeer.EndPoint
         {
             get { return _Line.EndPoint; }
@@ -118,18 +128,25 @@ namespace Regulus.Network.RUDP
 
         void IPeer.Send(byte[] buffer)
         {
-            _SendHandler(buffer);
+            _Sends.AddRange(buffer);
         }
 
-        byte[] IPeer.Receive()
+        SegmentStream IPeer.Receive()
         {
-            return _ReceiveHandler();
+            var pop = _Stream;
+            _Stream = new SegmentStream();
+            return pop;
         }
 
         PEER_STATUS IPeer.Status { get { return _Status; } }
 
+        public void Disconnect()
+        {
+            _RequireDisconnect = true;
+        }
 
-        public void Close()
+
+        private void _Disconnect()
         {
             _Status = PEER_STATUS.DISCONNECT;
             var stage = new PeerDisconnecter(_Line);
@@ -139,21 +156,17 @@ namespace Regulus.Network.RUDP
 
         private void _ToClose()
         {
+            CloseEvent();
             _Status = PEER_STATUS.CLOSE;
             _Machine.Empty();
         }
 
-        public static Serializer CreateSerialier()
-        {
-            var builder = new DescriberBuilder(typeof(byte), typeof(byte[]), typeof(Int32),
-                typeof(PEER_COMMAND),
-                typeof(PeerPackage));            
-            return new Regulus.Serialization.Serializer(builder.Describers);
-        }
+        
 
-        public void Release()
+        public void Break()
         {
-            _ToClose();
+            if(_Status != PEER_STATUS.CLOSE)
+                _ToClose();
         }
     }
 }

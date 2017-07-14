@@ -40,7 +40,7 @@ namespace Regulus.Network.RUDP
             if (package != null)
             {
                 _Sending = true;
-                _Socket.BeginSendTo(package.Buffer, 0, package.Buffer.Length, SocketFlags.None, package.EndPoint, _Done,
+                _Socket.BeginSendTo(package.Segment, 0, package.Segment.Length, SocketFlags.None, package.EndPoint, _Done,
                     null);
             }
         }

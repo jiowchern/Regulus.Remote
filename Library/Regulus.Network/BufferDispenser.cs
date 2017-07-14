@@ -4,45 +4,39 @@ namespace Regulus.Network.RUDP
     {
         
         
-        private readonly int _PackageSize;
+        private readonly int _PayloadSize;
 
-        private uint _Serial;
+        private ushort _Serial;
+        private int _PackageSize;
 
         public BufferDispenser(int package_size)
         {
-            
+            _PayloadSize = package_size - SegmentPackage.GetHeadSize();
             _PackageSize = package_size;
+            
         }
 
         
 
-        public SegmentPackage[] Packing(byte[] buffer, uint ack , uint ack_bits)
+        public SegmentPackage[] Packing(byte[] buffer,PEER_OPERATION operation)
         {            
-            var count = buffer.Length / _PackageSize + 1;
+            var count = buffer.Length / _PayloadSize + 1  ;
             var packages = new SegmentPackage[count];
-            var ackBits = ack_bits;
+            
 
             var buffserSize = buffer.Length;
             for (int i = count - 1; i >= 0; i--)
-            {
-                var begin = _PackageSize * i;
+            {         
+                var package = new SegmentPackage(_PackageSize);
+                package.SetSeq((ushort)(_Serial + i));
+                package.SetOperation((byte)operation);
+                var begin = _PayloadSize * i;
                 var writeSize = buffserSize - begin;
-                var data = new byte[writeSize];
-                
-                for (int iDataIndex = 0; iDataIndex < writeSize; iDataIndex++)
-                {
-                    data[iDataIndex] = buffer[begin + iDataIndex];
-                }
+                package.WritePayload(buffer,begin, writeSize);
                 buffserSize -= writeSize;
-
-                var package = new SegmentPackage();                
-                package.Serial = _Serial + (uint)i;
-                package.Ack = ack;
-                package.AckBits = ackBits;
-                package.Data = data;
                 packages[i] = package;
             }
-            _Serial += (uint)count;
+            _Serial += (ushort)count;
             return packages;
         }
     }
