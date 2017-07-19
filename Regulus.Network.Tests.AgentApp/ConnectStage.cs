@@ -7,13 +7,13 @@ namespace Regulus.Network.Tests.AgentApp
     internal class ConnectStage : IStage
     {
         private readonly Command _Command;
-        private readonly IPeer _Peer;
+        private readonly ISocket _Peer;
 
         public event Action SuccessEvent;
 
         
 
-        public ConnectStage(IPeer peer, Command command)
+        public ConnectStage(ISocket peer, Command command)
         {
             _Peer = peer;
             _Command = command;        
@@ -31,7 +31,7 @@ namespace Regulus.Network.Tests.AgentApp
         void IStage.Update()
         {
             
-            if (_Peer.Status == PEER_STATUS.TRANSMISSION)
+            if (_Peer.Connected)
                 SuccessEvent();
         }
     }

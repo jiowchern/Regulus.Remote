@@ -26,7 +26,7 @@ namespace Regulus.Network.RUDP
 	        var endPoint = new System.Net.IPEndPoint(System.Net.IPAddress.Any, port);
 	        var socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Dgram, System.Net.Sockets.ProtocolType.Udp);
 	        socket.Bind(endPoint);
-            return new Host(new SocketRecevier(socket , Config.PackageSize ),new SocketSender(socket) );
+            return new Host(new SocketRecevier(socket ),new SocketSender(socket) );
 	    }
 
         public Host(IRecevieable recevieable , ISendable sendable)
@@ -88,15 +88,22 @@ namespace Regulus.Network.RUDP
 	    
 
         private void _CreatePeer(ILine line)
-	    {
-	        var peer = new Peer(line , new PeerListener(line));
-	        peer.CloseEvent += ()=> { _Remove(peer); };
+        {
+            var listener = new PeerListener(line);
+
+            var peer = new Peer(line, listener);
+            peer.CloseEvent += () => { _Remove(peer); };
+            listener.DoneEvent += () =>
+            {
+                if (AcceptEvent != null)
+                    AcceptEvent(peer);
+            };
+            
 
             _Peers.Add(line,peer);            
             _Updater.Add(peer);
 
-	        if (AcceptEvent != null)
-	            AcceptEvent(peer);
+	        
 	    }
 
 	    private void _Remove(Peer peer)

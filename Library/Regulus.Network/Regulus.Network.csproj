@@ -44,6 +44,10 @@
     <Compile Include="Config.cs" />
     <Compile Include="EmptyArray.cs" />
     <Compile Include="ILine.cs" />
+    <Compile Include="IRecevieable.cs" />
+    <Compile Include="ISocket.cs" />
+    <Compile Include="ISocketConnectable.cs" />
+    <Compile Include="ISocketLintenable.cs" />
     <Compile Include="Line.cs" />
     <Compile Include="ObjectPool.cs" />
     <Compile Include="Package\PEER_OPERATION.cs" />
@@ -52,23 +56,29 @@
     <Compile Include="ArrayCache.cs" />
     <Compile Include="BufferDispenser.cs" />
     <Compile Include="IPeer.cs" />
-    <Compile Include="IRecevieable.cs" />
     <Compile Include="ISendable.cs" />
-    <Compile Include="Package\SegmentPackage.cs" />
     <Compile Include="ISerialProvider.cs" />
     <Compile Include="PackageRectifier.cs" />
     <Compile Include="Peer.cs" />
     <Compile Include="PeerConnecter.cs" />
     <Compile Include="PeerDisconnecter.cs" />
     <Compile Include="PeerListener.cs" />
+    <Compile Include="Rudp\RudpConnecter.cs" />
+    <Compile Include="Rudp\RudpListener.cs" />
+    <Compile Include="Rudp\RudpSocket.cs" />
     <Compile Include="SegmentStream.cs" />
+    <Compile Include="SocketPackagePool.cs" />
+    <Compile Include="SOCKET_ERROR.cs" />
+    <Compile Include="Tcp\TcpConnecter.cs" />
+    <Compile Include="Tcp\TcpListener.cs" />
+    <Compile Include="Tcp\TcpSocket.cs" />
     <Compile Include="WiringOperator.cs" />
     <Compile Include="SocketRecevier.cs" />
     <Compile Include="SocketSender.cs" />
     <Compile Include="Timestamp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Host.cs" />
-    <Compile Include="Package\SocketPackage.cs" />
+    <Compile Include="Package\SocketMessage.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PureLib\RegulusLibrary.csproj">

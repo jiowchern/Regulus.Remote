@@ -6,9 +6,9 @@ namespace Regulus.Network.Tests.HostApp
 {
 	internal class InitialStage : Regulus.Utility.IStage
 	{
-		private Command _Command;
+		private readonly Command _Command;
 
-		public event Action<Regulus.Network.RUDP.Host> CreatedEvent;
+		public event Action<Regulus.Network.ISocketLintenable> CreatedEvent;
 
 		public InitialStage(Command command)
 		{
@@ -18,8 +18,10 @@ namespace Regulus.Network.Tests.HostApp
 		
 
 		public void Bind(int port)
-		{			
-			CreatedEvent(Regulus.Network.RUDP.Host.CreateStandard(port));
+		{
+		    Regulus.Network.ISocketLintenable listener = new RudpListener();
+		    listener.Bind(port);
+            CreatedEvent(listener);
 		}
 
 		void IStage.Enter()
@@ -36,7 +38,8 @@ namespace Regulus.Network.Tests.HostApp
 	    void IStage.Leave()
 		{
 			_Command.Unregister("Bind");
-		}
+		    _Command.Unregister("Run");
+        }
 
 		void IStage.Update()
 		{

@@ -7,9 +7,9 @@ namespace Regulus.Network.RUDP
 {
     public class PackageRectifier
     {
-        private readonly Dictionary<ushort, SegmentPackage> _DataPackages;
+        private readonly Dictionary<ushort, SocketMessage> _DataPackages;
 
-        private readonly Queue<SegmentPackage> _Packages;
+        private readonly Queue<SocketMessage> _Packages;
         private ushort _Serial;
         private uint _SerialBitFields;
 
@@ -19,19 +19,19 @@ namespace Regulus.Network.RUDP
         public PackageRectifier()
         {
 
-            _Packages = new Queue<SegmentPackage>();
-            _DataPackages = new Dictionary<ushort, SegmentPackage>();
+            _Packages = new Queue<SocketMessage>();
+            _DataPackages = new Dictionary<ushort, SocketMessage>();
             _Serial = 0;
         }
-        public bool PushPackage(SegmentPackage segment_package)
+        public bool PushPackage(SocketMessage segment_message)
         {
-            var exist = _DataPackages.ContainsKey(segment_package.GetSeq()) ;
+            var exist = _DataPackages.ContainsKey(segment_message.GetSeq()) ;
             
-            if (exist == false && _SerialMoreRecent(segment_package.GetSeq()) )
+            if (exist == false && _SerialMoreRecent(segment_message.GetSeq()) )
             {
-                _DataPackages.Add(segment_package.GetSeq(), segment_package);
+                _DataPackages.Add(segment_message.GetSeq(), segment_message);
 
-                if (_Serial == segment_package.GetSeq())
+                if (_Serial == segment_message.GetSeq())
                 {
                     _Serial = _Rectify(_Serial);
                 }
@@ -40,7 +40,7 @@ namespace Regulus.Network.RUDP
                 uint mask = 1;
                 for (uint i = 0; i < 32; i++)
                 {
-                    SegmentPackage pkg;
+                    SocketMessage pkg;
                     if (_DataPackages.TryGetValue((ushort)(_Serial + i + 1), out pkg))
                     {
                         _SerialBitFields = _SerialBitFields | mask;
@@ -63,7 +63,7 @@ namespace Regulus.Network.RUDP
                    (_Serial - serial > 0xFFFFFFFF / 2);
         }
 
-        public SegmentPackage PopPackage()
+        public SocketMessage PopPackage()
         {
             if(_Packages.Count > 0)
                 return _Packages.Dequeue();
@@ -74,10 +74,10 @@ namespace Regulus.Network.RUDP
         {
             var removePackages = new List<ushort>();
             var index = serial;
-            SegmentPackage package;
-            while (_DataPackages.TryGetValue(index, out package))
+            SocketMessage message;
+            while (_DataPackages.TryGetValue(index, out message))
             {
-                _Packages.Enqueue(package);                
+                _Packages.Enqueue(message);                
                 removePackages.Add(index);
                 index++;
             }

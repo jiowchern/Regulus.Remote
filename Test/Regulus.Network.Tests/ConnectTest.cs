@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -15,6 +16,7 @@ namespace Regulus.Network.Tests
         [TestMethod ]
         public void Test()
         {
+            ISocketPackageSpawner spawner = SocketPackagePool.Instance;
             var hostEndpoint = new IPEndPoint(IPAddress.Parse("0.0.0.1") , 0);
             var agentEndpoint = new IPEndPoint(IPAddress.Parse("0.0.0.2"), 0);
 
@@ -23,22 +25,23 @@ namespace Regulus.Network.Tests
 
             hostSocket.SendEvent += (pkg) =>
             {
-                var package = new SocketPackage();
-                package.EndPoint = hostEndpoint;
-                package.Segment = pkg.Segment;
+                var package = spawner.Spawn();
+                package.SetEndPoint(hostEndpoint);
+                Buffer.BlockCopy(pkg.Package ,0,package.Package,0, pkg.Package.Length);
                 agentSocket.Receive(package);
             };
             agentSocket.SendEvent += (pkg) =>
             {
-                var package = new SocketPackage();
-                package.EndPoint = agentEndpoint;
-                package.Segment = pkg.Segment;
+                var package = spawner.Spawn();
+
+                package.SetEndPoint(agentEndpoint);
+                Buffer.BlockCopy(pkg.Package, 0, package.Package, 0, pkg.Package.Length);
                 hostSocket.Receive(package);
             };
 
             var host = new Regulus.Network.RUDP.Host(hostSocket, hostSocket);
             var agent = new Regulus.Network.RUDP.Agent(agentSocket, agentSocket);
-            var clientPeer = agent.Connect(hostEndpoint);
+            var clientPeer = agent.Connect(hostEndpoint,(connect_result) =>{});
 
             var updater = new Updater<Timestamp>();
             updater.Add(hostSocket);
@@ -75,7 +78,7 @@ namespace Regulus.Network.Tests
 
 
             var sendBuffer = new byte[] {1, 2, 3, 4, 5};
-            clientPeer.Send(sendBuffer);
+            clientPeer.Send(sendBuffer,0, sendBuffer.Length , (send_count , error)=>{});
             updater.Working(new Timestamp(ticks++, 1));
             updater.Working(new Timestamp(ticks++, 1));
             updater.Working(new Timestamp(ticks++, 1));
@@ -83,15 +86,19 @@ namespace Regulus.Network.Tests
             updater.Working(new Timestamp(ticks++, 1));
             updater.Working(new Timestamp(ticks++, 1));
 
+            int readCount = 0;
+            var receivedBuffer = new byte[Config.PackageSize];
+            peer.Receive(receivedBuffer, 0, receivedBuffer.Length, (read_count, error) =>
+            {
+                readCount = read_count;
+            });
 
-            var receivedBuffer = peer.Receive();
 
 
-            
 
             updater.Working(new Timestamp(ticks++, 1));
 
-            Assert.AreEqual(sendBuffer.Length , receivedBuffer.Length);
+            Assert.AreEqual(sendBuffer.Length , readCount);
 
             
             clientPeer.Disconnect();

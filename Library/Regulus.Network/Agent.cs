@@ -81,12 +81,16 @@ namespace Regulus.Network.RUDP
         {            
         }
         
-        public IPeer Connect(EndPoint end_point)
+        public IPeer Connect(EndPoint end_point,System.Action<bool> result)
         {
             IPeer peer = null;
             System.Action<ILine> handler = stream =>
             {
-                var p = new Peer(stream, new PeerConnecter(stream));
+                var connecter = new PeerConnecter(stream);
+                connecter.TimeoutEvent += () => { result(false); };
+                connecter.DoneEvent += () => { result(true); };
+
+                var p = new Peer(stream, connecter);
                 p.CloseEvent += () => { _Remove(p); };
                 _Peers.Add(stream.EndPoint, p);
                 _Updater.Add(p);
@@ -112,7 +116,7 @@ namespace Regulus.Network.RUDP
         {            
             var socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Dgram, System.Net.Sockets.ProtocolType.Udp);
             socket.Bind(new IPEndPoint(IPAddress.Any, 0));
-            return new Agent(new SocketRecevier(socket, Config.PackageSize), new SocketSender(socket));
+            return new Agent(new SocketRecevier(socket), new SocketSender(socket));
         }
     }
 }

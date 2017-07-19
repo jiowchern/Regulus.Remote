@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
-
+using Regulus.Network;
 using Regulus.Serialization;
 using Regulus.Utility;
 
@@ -26,7 +26,7 @@ namespace Regulus.Remoting
 
 	    
 
-		private Socket _Socket;
+		private ISocket _Socket;
 
 		private volatile bool _Stop;
 	    private bool _Idle;
@@ -44,7 +44,7 @@ namespace Regulus.Remoting
 	        _Idle = true;
 		}
 
-		public void Start(Socket socket)
+		public void Start(ISocket socket)
 		{
 			_Stop = false;
 			_Socket = socket;
@@ -64,9 +64,11 @@ namespace Regulus.Remoting
 			{
 
                 _Buffer = _CreateBuffer(packages);
-                
-                _Socket.BeginSend(_Buffer, 0, _Buffer.Length, SocketFlags.None, _WriteCompletion, null);
-                
+                                
+
+			    _Socket.Send(_Buffer, 0, _Buffer.Length,  _WriteCompletion);
+
+
 			}
 			catch(SystemException e)
 			{
@@ -79,13 +81,13 @@ namespace Regulus.Remoting
 			}
 		}
 
-		private void _WriteCompletion(IAsyncResult ar)
+		private void _WriteCompletion(int send_count , SocketError error)
 		{
 			try
 			{
 				if(_Stop == false)
 				{
-					var sendSize = _Socket.EndSendTo(ar);
+					var sendSize = send_count;
                     NetworkMonitor.Instance.Write.Set(sendSize);
                 }
 			}

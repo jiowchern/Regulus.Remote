@@ -6,45 +6,55 @@ namespace Regulus.Network.RUDP
 {
     public class SegmentStream
     {
-        private readonly List<SegmentPackage> _Packages;
+        private readonly List<SocketMessage> _Packages;
+        private int _FirstPackageOffset;
         public int Length { get { return _Packages.Sum(p => p.GetPayloadLength()); } }
+        public int Count { get { return _Packages.Count; } }
 
         public SegmentStream() 
         {
-            _Packages = new List<SegmentPackage>();
+            _Packages = new List<SocketMessage>();
         }
-        public SegmentStream(SegmentPackage[] packages)
+        public SegmentStream(SocketMessage[] messages)
         {
-            _Packages = packages.ToList();
-            
+            _Packages = messages.ToList();
+            _FirstPackageOffset = 0;
         }        
 
        
-        public int Read(int source_index , byte[] buffer, int target_offset, int read_count)
+        public int Read(byte[] buffer, int target_offset, int read_count)
         {
-            
-            for (int i = 0; i < _Packages.Count; i++)
+            var count = read_count < buffer.Length ? read_count : buffer.Length;
+            int pkgIndex = 0;
+            int readed = 0;
+            int removeCount = 0;
+            while (pkgIndex < _Packages.Count && count > 0)
             {
-                var pkg = _Packages[i];
-                var payloadLength = pkg.GetPayloadLength();
-                var payloadCanReadCount = payloadLength - source_index;
-                if (payloadCanReadCount <= 0)
+                var pkg = _Packages[pkgIndex];
+                var payLoadLength = pkg.GetPayloadLength();
+                var copyLength = payLoadLength < count ? payLoadLength : count;
+
+
+                var copyCount = pkg.ReadPayload(_FirstPackageOffset, buffer, target_offset, copyLength);
+
+                if (copyCount + _FirstPackageOffset == payLoadLength)
                 {
-                    source_index -= payloadLength;
-                    continue;
+                    _FirstPackageOffset = 0;
+                    removeCount++;
                 }
-                    
-                
-                var sourceOffset = source_index;
-                var targetOffset = target_offset;
-                var readCount = payloadCanReadCount < read_count ? payloadCanReadCount : read_count;
-                var readed = pkg.ReadPayload(sourceOffset, buffer, targetOffset, readCount);
-                source_index = 0;
-                target_offset += readed;
-                read_count -= readed;
+                else
+                {
+                    _FirstPackageOffset += copyCount;
+                }
+                target_offset += copyCount;
+                count -= copyCount;
+                pkgIndex++;
+                readed += copyCount;
             }
 
-            return 0;
+            _Packages.RemoveRange(0, removeCount);
+
+            return readed;
         }
 
 
@@ -75,10 +85,12 @@ namespace Regulus.Network.RUDP
             return 0;
         }
 
-        public void Add(SegmentPackage package)
+        public void Add(SocketMessage message)
         {
-            _Packages.Add(package);
+            _Packages.Add(message);
             
         }
+
+        
     }
 }

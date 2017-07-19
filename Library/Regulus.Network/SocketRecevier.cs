@@ -9,78 +9,71 @@ namespace Regulus.Network.RUDP
     public class SocketRecevier : IRecevieable
     {
         private readonly Socket _Socket;
-        private readonly byte[] _Buffer;        
-        private readonly List<SocketPackage> _ReceivePackages;
+        
+        private readonly List<SocketMessage> _ReceivePackages;
 
-        private readonly HashSet<EndPoint> _Errors;
-        private readonly SocketPackage[] _Empty;
+        private readonly SocketMessage[] _Empty;
 
-        public SocketRecevier(Socket socket , int package_size)
+        private SocketMessage _Message;
+        private readonly ISocketPackageSpawner _Spawner;
+        private EndPoint _ReceiveEndPoint;
+        public SocketRecevier(Socket socket )
         {
-            _Empty = new SocketPackage[0];
+            _Empty = new SocketMessage[0];
             _Socket = socket;
-            _Buffer = new byte[package_size];            
-            _ReceivePackages = new List<SocketPackage>();
-            _Errors = new HashSet<EndPoint>();
+            
+            _ReceivePackages = new List<SocketMessage>();
+            _Spawner = SocketPackagePool.Instance;
+
+            _ReceiveEndPoint = new IPEndPoint(IPAddress.Any, 0);
             _Begin();
         }
 
         private void _Begin()
         {
-            EndPoint sourcEndPoint = new IPEndPoint(IPAddress.Any, 0);
+            _Message = _Spawner.Spawn();
+            
             try
             {
-                _Socket.BeginReceiveFrom(_Buffer, 0, _Buffer.Length, SocketFlags.None, ref sourcEndPoint, _End, null);
+                _Socket.BeginReceiveFrom(_Message.Package, 0, _Message.Package.Length, SocketFlags.None, ref _ReceiveEndPoint, _End, null);
             }
-            catch (Exception e)
+            catch (SocketException e)
             {
-                lock (_Errors)
+                SocketError error = SocketError.Success;
+                error = e.SocketErrorCode;
+                _Message.SetError(error);
+                _Message.SetEndPoint(_ReceiveEndPoint);
+                lock (_ReceivePackages)
                 {
-                    _Errors.Add(sourcEndPoint);
+                    _ReceivePackages.Add(_Message);
                 }
                 _Begin();
             }
-            
-            
         }
 
         private void _End(IAsyncResult ar)
         {
-            EndPoint sourcEndPoint = new IPEndPoint( IPAddress.Any, 0);
+            SocketError error = SocketError.Success;
             try
             {
-                _Socket.EndReceiveFrom(ar, ref sourcEndPoint);
-
-                var package = new SocketPackage();
-                package.EndPoint = sourcEndPoint;
-                package.Segment = _Buffer.ToArray();
-                lock (_ReceivePackages)
-                {
-                    _ReceivePackages.Add(package);
-                }
-
-
+                _Socket.EndReceiveFrom(ar, ref _ReceiveEndPoint);
             }
-            catch (Exception e)
+            catch (SocketException e)
             {
-                lock (_Errors)
-                {
-                    _Errors.Add(sourcEndPoint);
-                }
+                error = e.SocketErrorCode;
             }
-            finally
+            
+            _Message.SetError(error);
+            _Message.SetEndPoint(_ReceiveEndPoint);
+            lock (_ReceivePackages)
             {
-                _Begin();
+                _ReceivePackages.Add(_Message);
             }
-            
-
-            
-
-            
+            _Begin();
         }
 
 
-        SocketPackage[] IRecevieable.Received()
+        SocketMessage[] IRecevieable.Received()
         {
             var pkgs = _Empty;
             lock (_ReceivePackages)
@@ -92,17 +85,14 @@ namespace Regulus.Network.RUDP
             return pkgs;
         }
 
-        EndPoint[] IRecevieable.ErrorPoints()
-        {
-            EndPoint[] ret = new EndPoint[0];
-            lock (_Errors)
-            {
-                ret = _Errors.ToArray();
-                _Errors.Clear();
-                
-            }
+        
+    }
 
-            return ret;
+    public class SocketPackageFactory : IObjectFactory<SocketMessageInternal>
+    {
+        SocketMessageInternal IObjectFactory<SocketMessageInternal>.Spawn()
+        {
+            return new SocketMessageInternal(Config.PackageSize);
         }
     }
 }

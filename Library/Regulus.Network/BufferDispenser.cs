@@ -1,3 +1,5 @@
+using System.Net;
+
 namespace Regulus.Network.RUDP
 {
     public class BufferDispenser
@@ -7,27 +9,31 @@ namespace Regulus.Network.RUDP
         private readonly int _PayloadSize;
 
         private ushort _Serial;
-        private int _PackageSize;
+        private readonly EndPoint _EndPoint;
+        private readonly ISocketPackageSpawner _Spawner;
 
-        public BufferDispenser(int package_size)
+
+        public BufferDispenser(EndPoint end_point, ISocketPackageSpawner spawner)
         {
-            _PayloadSize = package_size - SegmentPackage.GetHeadSize();
-            _PackageSize = package_size;
-            
+            _EndPoint = end_point;
+            _Spawner = spawner;
+            _PayloadSize = SocketMessage.GetPayloadSize();
         }
 
         
 
-        public SegmentPackage[] Packing(byte[] buffer,PEER_OPERATION operation)
+        public SocketMessage[] Packing(byte[] buffer,PEER_OPERATION operation)
         {            
             var count = buffer.Length / _PayloadSize + 1  ;
-            var packages = new SegmentPackage[count];
+            var packages = new SocketMessage[count];
             
 
             var buffserSize = buffer.Length;
             for (int i = count - 1; i >= 0; i--)
-            {         
-                var package = new SegmentPackage(_PackageSize);
+            {
+
+                var package = _Spawner.Spawn();
+                package.SetEndPoint(_EndPoint);
                 package.SetSeq((ushort)(_Serial + i));
                 package.SetOperation((byte)operation);
                 var begin = _PayloadSize * i;

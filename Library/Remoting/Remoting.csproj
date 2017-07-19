@@ -97,6 +97,10 @@
       <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
       <Name>RegulusLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Regulus.Network\Regulus.Network.csproj">
+      <Project>{a720964c-c3e0-4cb8-a81b-54a9cf7bc8dd}</Project>
+      <Name>Regulus.Network</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
