@@ -31,7 +31,7 @@ namespace Regulus.Network.RUDP
         {            
             _HandleReceive();            
             _HandleTimeout(time);
-            _HandleErrorDisconnect();
+            
             _HandleDisconnect();
             return true;
         }
@@ -45,20 +45,14 @@ namespace Regulus.Network.RUDP
             }            
         }
 
-        private void _HandleErrorDisconnect()
+        private void _HandleErrorDisconnect(EndPoint end_point)
         {
-            var endPoints = _Recevieable.ErrorPoints();
-
-
-            for (int i = 0; i < endPoints.Length; i++)
+            
+            Line line;
+            if (_Lines.TryGetValue(end_point, out line))
             {
-                var endPoint = endPoints[i];
-                Line line;
-                if (_Lines.TryGetValue(endPoint, out line))
-                {
-                    _Remove(line);
-                }
-            }            
+                _Remove(line);
+            }
         }
 
 
@@ -70,9 +64,16 @@ namespace Regulus.Network.RUDP
             for (int i = 0; i < packages.Length; i++)
             {
                 var package = packages[i];
-                var pkg = new SegmentPackage(package.Segment);
-                var line = _Query(package.EndPoint);                
-                line.Input(pkg);
+                if (package.IsError())
+                {
+                    _HandleErrorDisconnect(package.EndPoint);
+                }
+                else
+                {
+                    var line = _Query(package.EndPoint);
+                    line.Input(package);
+                }
+                
             }
         }
 
@@ -114,12 +115,9 @@ namespace Regulus.Network.RUDP
             LeftStreamEvent(line);
         }
 
-        private void _AddOutputPackageHandler(EndPoint arg1, byte[] arg2)
-        {
-            var package = new SocketPackage();
-            package.EndPoint = arg1;
-            package.Segment = arg2;
-            _Sendable.Transport(package);
+        private void _AddOutputPackageHandler(SocketMessage message)
+        {            
+            _Sendable.Transport(message);
         }
 
         private Line _Query(EndPoint end_point)

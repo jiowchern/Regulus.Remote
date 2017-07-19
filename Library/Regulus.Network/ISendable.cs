@@ -2,6 +2,6 @@
 {
     public interface ISendable
     {
-        void Transport(SocketPackage package);
+        void Transport(SocketMessage message);
     }
 }

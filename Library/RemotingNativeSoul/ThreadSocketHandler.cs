@@ -1,10 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-
-
+using Regulus.Network;
 using Regulus.Utility;
 
 namespace Regulus.Remoting.Soul.Native
@@ -13,12 +11,13 @@ namespace Regulus.Remoting.Soul.Native
     {
         private readonly ThreadCoreHandler _CoreHandler;
         private readonly IProtocol _Protocol;
+        private readonly ISocketLintenable _Lintenable;
 
         private readonly PeerSet _Peers;
 
         private readonly int _Port;
 
-        private readonly Queue<Socket> _Sockets;
+        private readonly Queue<ISocket> _Sockets;
 
         // ParallelUpdate _Peers;
         private readonly PowerRegulator _Spin;
@@ -26,8 +25,7 @@ namespace Regulus.Remoting.Soul.Native
         private readonly AutoPowerRegulator _AutoPowerRegulator;
 
         private volatile bool _Run;
-
-        private Socket _Socket;
+        
 
         public int FPS
         {
@@ -50,12 +48,14 @@ namespace Regulus.Remoting.Soul.Native
             _Protocol = protocol;
             _Port = port;
 
-            _Sockets = new Queue<Socket>();
+            _Sockets = new Queue<ISocket>();
 
             _Peers = new PeerSet();
 
             _Spin = new PowerRegulator();
             _AutoPowerRegulator = new AutoPowerRegulator(_Spin);
+
+            _Lintenable = new Regulus.Network.TcpListener();
         }
 
         public void DoWork(object obj)
@@ -64,13 +64,8 @@ namespace Regulus.Remoting.Soul.Native
             var are = (AutoResetEvent)obj;
             _Run = true;
 
-            _Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            _Socket.NoDelay = true;
-
-            // _Socket.SetSocketOption(System.Net.Sockets.SocketOptionLevel.Socket, System.Net.Sockets.SocketOptionName.ReuseAddress, true);
-            _Socket.Bind(new IPEndPoint(IPAddress.Any, _Port));
-            _Socket.Listen(5);
-            _Socket.BeginAccept(_Accept, null);
+            _Lintenable.AcceptEvent += _Accept;
+            _Lintenable.Bind(_Port);
 
             while(_Run)
             {
@@ -98,58 +93,23 @@ namespace Regulus.Remoting.Soul.Native
 
             _Peers.Release();
 
-            if(_Socket.Connected)
-            {
-                _Socket.Shutdown(SocketShutdown.Both);
-            }
 
-            _Socket.Close();
+            _Lintenable.AcceptEvent -= _Accept;
+            _Lintenable.Close();
+
 
             are.Set();
             Singleton<Log>.Instance.WriteInfo("server socket shutdown");
         }
 
-        private void _Accept(IAsyncResult ar)
+        private void _Accept(ISocket socket)
         {
-            try
+            lock (_Sockets)
             {
-                var socket = _Socket.EndAccept(ar);
-                lock(_Sockets)
-                {
-                    _Sockets.Enqueue(socket);
-                }
-
-                _Socket.BeginAccept(_Accept, null);
-            }
-
-                // System.ArgumentNullException:
-                // asyncResult 為 null。
-                // System.ArgumentException:
-                // asyncResult 不是透過呼叫 System.Net.Sockets.Socket.BeginAccept(System.AsyncCallback,System.Object)
-                // 所建立。
-                // System.Net.Sockets.SocketException:
-                // 嘗試存取通訊端時發生錯誤。如需詳細資訊，請參閱備註章節。
-                // System.ObjectDisposedException:
-                // System.Net.Sockets.Socket 已經關閉。
-                // System.InvalidOperationException:
-                // 先前已呼叫 System.Net.Sockets.Socket.EndAccept(System.IAsyncResult) 方法。
-            catch(SocketException se)
-            {
-                Singleton<Log>.Instance.WriteInfo(se.ToString());
-            }
-            catch(ObjectDisposedException ode)
-            {
-                Singleton<Log>.Instance.WriteInfo(ode.ToString());
-            }
-            catch(InvalidOperationException ioe)
-            {
-                Singleton<Log>.Instance.WriteInfo(ioe.ToString());
-            }
-            catch(Exception e)
-            {
-                Singleton<Log>.Instance.WriteInfo(e.ToString());
+                _Sockets.Enqueue(socket);
             }
         }
+        
 
         public void Stop()
         {

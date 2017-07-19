@@ -27,19 +27,19 @@ namespace Regulus.Network.Tests.AgentApp
 
         private void _ToInitial()
         {            
-            var stage = new InitialStage(_Agent , Command);
+            var stage = new InitialStage(_Agent , Command,this.Viewer);
             stage.CreatedEvent += _ToConnecting;
             _Machine.Push(stage);            
         }
 
-        private void _ToConnecting(IPeer peer)
+        private void _ToConnecting(ISocket peer)
         {
             var stage = new ConnectStage(peer, Command);
             stage.SuccessEvent += ()=> { _ToTransmission(peer); };
             _Machine.Push(stage);            
         }
 
-        private void _ToTransmission(IPeer peer)
+        private void _ToTransmission(ISocket peer)
         {
             var stage = new TransmissionStage(peer, Command,Viewer);
             stage.DisconnectEvent += _ToInitial;

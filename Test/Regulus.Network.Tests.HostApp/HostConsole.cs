@@ -23,7 +23,7 @@ namespace Regulus.Network.Tests.HostApp
 			_Machine.Push(stage);
 		}
 
-		private void _ToRun(Host host)
+		private void _ToRun(Regulus.Network.ISocketLintenable host)
 		{
 			var stage = new RunStage(Command , Viewer,  host );
 			stage.ExitEvent += _ToInitial;

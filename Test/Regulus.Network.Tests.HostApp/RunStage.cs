@@ -7,14 +7,14 @@ namespace Regulus.Network.Tests.HostApp
 	internal class RunStage : Regulus.Utility.IStage
 	{
 		private Command _Command;
-		private Host _Host;		
+		private Regulus.Network.ISocketLintenable _Host;		
 		private Utility.Console.IViewer _Viewer;
 		public event System.Action ExitEvent;
 	    private long _Ticks;
 	    readonly Regulus.Utility.Updater<Timestamp> _Updater;
 		int _PeerId;
 
-		public RunStage(Command command, Utility.Console.IViewer viewer, Host host)
+		public RunStage(Command command, Utility.Console.IViewer viewer, Regulus.Network.ISocketLintenable host)
 		{
 		
 			_Updater = new Updater<Timestamp>();
@@ -29,7 +29,9 @@ namespace Regulus.Network.Tests.HostApp
 
             _Command.RegisterLambda(this , instance=>instance.Exit() );
 			_Host.AcceptEvent += _JoinPeer;
-		    _Updater.Add(_Host);
+		    
+
+            
 
         }
 
@@ -39,7 +41,7 @@ namespace Regulus.Network.Tests.HostApp
 		}
 
 
-		private void _JoinPeer(IPeer peer)
+		private void _JoinPeer(ISocket peer)
 		{
 			
 			_Updater.Add(new PeerHandler(++_PeerId,_Command , _Viewer,peer));

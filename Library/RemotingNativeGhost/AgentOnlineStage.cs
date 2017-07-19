@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
-
+using Regulus.Network;
 using Regulus.Serialization;
 using Regulus.Utility;
 
@@ -29,13 +29,13 @@ namespace Regulus.Remoting.Ghost.Native
 
 			private volatile bool _Enable;
 
-			private Socket _Socket;
+			private ISocket _Socket;
 
 			public static int RequestQueueCount { get; private set; }
 
 			public static int ResponseQueueCount { get; private set; }
 
-			public OnlineStage(Socket socket, AgentCore core , ISerializer serializer)
+			public OnlineStage(ISocket socket, AgentCore core , ISerializer serializer)
 			{
                 
                 _Core = core;
@@ -82,12 +82,7 @@ namespace Regulus.Remoting.Ghost.Native
 				_ReaderStop();
 
 				if(_Socket != null)
-				{
-					if(_Socket.Connected)
-					{
-						_Socket.Shutdown(SocketShutdown.Both);
-					}
-
+				{					
 					_Socket.Close();
 					_Socket = null;
 				}

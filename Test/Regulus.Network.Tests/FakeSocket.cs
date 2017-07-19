@@ -11,10 +11,10 @@ namespace Regulus.Network.Tests
     public class FakeSocket : IRecevieable, ISendable, IUpdatable<Timestamp>
     {
         public readonly IPEndPoint Endpoint;
-        private List<SocketPackage> _Packages;
+        private List<SocketMessage> _Packages;
         public FakeSocket(IPEndPoint endpoint)
         {
-            _Packages = new List<SocketPackage>();
+            _Packages = new List<SocketMessage>();
             Endpoint = endpoint;
         }
 
@@ -30,17 +30,17 @@ namespace Regulus.Network.Tests
             
         }
 
-        public void Receive(SocketPackage package)
+        public void Receive(SocketMessage message)
         {
-            Assert.AreNotEqual(Endpoint, package.EndPoint);
-            _Packages.Add(package);
+            Assert.AreNotEqual(Endpoint, message.EndPoint);
+            _Packages.Add(message);
 
         }
-        public event Action<SocketPackage> SendEvent;
-        void ISendable.Transport(SocketPackage package)
+        public event Action<SocketMessage> SendEvent;
+        void ISendable.Transport(SocketMessage message)
         {
-            Assert.AreNotEqual(Endpoint , package.EndPoint);            
-            SendEvent(package);
+            Assert.AreNotEqual(Endpoint , message.EndPoint);            
+            SendEvent(message);
         }
 
         bool IUpdatable<Timestamp>.Update(Timestamp arg)
@@ -48,16 +48,13 @@ namespace Regulus.Network.Tests
             return true;
         }
 
-        public SocketPackage[] Received()
+        public SocketMessage[] Received()
         {
             var pkgs = _Packages.ToArray();
             _Packages.Clear();
             return pkgs;
         }
 
-        EndPoint[] IRecevieable.ErrorPoints()
-        {
-            return new EndPoint[0];
-        }
+        
     }
 }

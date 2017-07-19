@@ -2,18 +2,24 @@
 using System.Net;
 using Regulus.Network.RUDP;
 using Regulus.Utility;
+using Console = Regulus.Utility.Console;
 
 namespace Regulus.Network.Tests.AgentApp
 {
     internal class InitialStage : IStage
     {
         private readonly Command _Command;
+        private readonly Console.IViewer _Viewer;
         private Agent _Agent;
-        public event Action<IPeer> CreatedEvent;
-        public InitialStage(Agent agent , Command command)
+        private ISocketConnectable _Peer;
+        public event Action<ISocket> CreatedEvent;
+        public InitialStage(Agent agent , Command command,Console.IViewer viewer)
         {
             _Agent = agent;
             _Command = command;
+            _Viewer = viewer;
+            _Peer = new RudpConnecter(agent);
+
         }
 
         void IStage.Enter()
@@ -29,9 +35,20 @@ namespace Regulus.Network.Tests.AgentApp
 
         private void Connect(string ip,int port)
         {
-            var endPoint = new IPEndPoint(IPAddress.Parse(ip), port);            
-            var peer = _Agent.Connect(endPoint);
-            CreatedEvent(peer);
+            var endPoint = new IPEndPoint(IPAddress.Parse(ip), port);
+            _Peer.Connect(endPoint,_ConnectResult );
+
+
+        }
+
+        private void _ConnectResult(bool result)
+        {
+            if(result)
+                CreatedEvent(_Peer);
+            else
+            {
+                _Viewer.WriteLine("connect timeout.");
+            }
         }
 
         void IStage.Leave()

@@ -234,7 +234,7 @@ namespace Regulus.Remoting
 				{
 					_Buffer = new byte[_Size];
 					_Result = SocketIOResult.None;
-					_Socket.BeginReceive(_Buffer, _Offset, _Buffer.Length - _Offset, 0, _Readed, null);
+					_Socket.Receive(_Buffer, _Offset, _Buffer.Length - _Offset, 0, _Readed, null);
 				}
 				catch
 				{
@@ -277,7 +277,7 @@ namespace Regulus.Remoting
 					else
 					{
 						_Result = SocketIOResult.None;
-						_Socket.BeginReceive(_Buffer, _Offset, _Buffer.Length - _Offset, 0, _Readed, null);
+						_Socket.Receive(_Buffer, _Offset, _Buffer.Length - _Offset, 0, _Readed, null);
 					}
 				}
 				catch

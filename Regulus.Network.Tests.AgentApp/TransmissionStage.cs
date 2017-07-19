@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Sockets;
 using System.Text;
 using Regulus.Network.RUDP;
 using Regulus.Utility;
@@ -8,27 +9,32 @@ namespace Regulus.Network.Tests.AgentApp
 {
     internal class TransmissionStage : IStage
     {
-        private readonly IPeer _Peer;
+        private readonly ISocket _Peer;
         private readonly Command _Command;
         private readonly Console.IViewer _Viewer;
         public event Action DisconnectEvent;
 
-        public TransmissionStage(IPeer peer, Command command , Console.IViewer viewer)
+        private readonly byte[] _Buffer;
+        public TransmissionStage(ISocket peer, Command command , Console.IViewer viewer)
         {
             _Peer = peer;
             _Command = command;
             _Viewer = viewer;
+            _Buffer = new byte[Config.PackageSize];
         }
 
         void IStage.Enter()
         {
             _Command.RegisterLambda<TransmissionStage , string>(this, (ins , message) => ins.Send(message) );
             _Command.RegisterLambda(this, (ins) => ins.Disconnect());
+
+
+            _Peer.Receive(_Buffer, 0, _Buffer.Length, _Readed);
         }
 
         private void Disconnect()
         {
-            _Peer.Disconnect();
+            _Peer.Close();
         }
 
         void IStage.Leave()
@@ -39,22 +45,36 @@ namespace Regulus.Network.Tests.AgentApp
 
         void IStage.Update()
         {
-            if (_Peer.Status == PEER_STATUS.CLOSE)
+            if (_Peer.Connected == false)
                 DisconnectEvent();
 
-            var stream = _Peer.Receive();
-            if (stream.Length > 0)
+            
+            
+            
+        }
+
+        private void _Readed(int readed_count, SocketError error)
+        {
+            string something = Encoding.Default.GetString(_Buffer,0,readed_count);
+            for (int i = 0; i < _Buffer.Length; i++)
             {
-                var buffer = new byte[stream.Length];
-                stream.Read(0, buffer, 0, stream.Length);
-                string something = Encoding.Default.GetString(buffer);
-                _Viewer.WriteLine("receive message : " + something);
+                _Buffer[i] = 0;
             }
+            _Viewer.WriteLine("receive message : " + something);
+
+            _Peer.Receive(_Buffer, 0, _Buffer.Length, _Readed);
+
         }
 
         public void Send(string message)
         {
-            _Peer.Send(Encoding.Default.GetBytes(message));
+            var buffer = Encoding.Default.GetBytes(message);
+            _Peer.Send(buffer , 0 , buffer.Length , _Writed);
+        }
+
+        private void _Writed(int arg1, SocketError arg2)
+        {
+            
         }
     }
 }

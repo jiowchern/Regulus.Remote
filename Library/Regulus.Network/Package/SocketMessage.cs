@@ -1,12 +1,26 @@
-using System;
+﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
+using System.Net;
+using System.Net.Sockets;
+using Regulus.Game.Data;
 
 namespace Regulus.Network.RUDP
 {
-    
-    public class SegmentPackage  
+    internal class SocketMessageInternal
+    {
+
+        public SocketMessageInternal(int package_size)
+        {
+            EndPoint = new IPEndPoint(IPAddress.Any, 0);
+            Package = new byte[package_size];
+        }
+        public EndPoint EndPoint;
+        public byte[] Package;
+        public SocketError Error;
+    }
+
+    public sealed class SocketMessage : IRecycleable<SocketMessageInternal>
     {
         public const int SEQ_INDEX = 0;
         public const int ACK_INDEX = SEQ_INDEX + 2;
@@ -16,30 +30,42 @@ namespace Regulus.Network.RUDP
         public const int PAYLOAD_INDEX = PAYLOADLENGTH_INDEX + 2;
         public const int HEADSIZE = PAYLOAD_INDEX + 2;
         public const int UDPPACKAGESIZE = ushort.MaxValue;
-        //public const int MaxPayloadSize = UDPPACKAGESIZE - HEADSIZE;
-        private readonly byte[] _Buffer;
 
-        public SegmentPackage(byte[] buffer) 
+        private SocketMessageInternal _Instance;
+
+        public SocketMessage()
         {
-            if (buffer.Length < PAYLOAD_INDEX)
-                throw new Exception("Size smaller than the head.");
-            _Buffer = buffer;
+            
         }
-        public SegmentPackage(int size)
+        public SocketMessage(int i)
         {
-            if(size < PAYLOAD_INDEX)
-                throw new Exception("Size smaller than the head.");
-            _Buffer = new byte[size];
+            _Instance = new SocketMessageInternal(i);
         }
+
+
+        private byte[] _Package { get { return _Instance.Package; } }
+
+        public EndPoint EndPoint { get { return _Instance.EndPoint; } }
+        public byte[] Package { get { return _Package; } }
+
+        public SocketError Error { get { return _Instance.Error; } }
+
+        void IRecycleable<SocketMessageInternal>.Reset(SocketMessageInternal instance)
+        {
+            
+            _Instance = instance;
+        }
+
+
         public bool CheckPayload()
         {
             var len = GetPayloadLength();
-            return len == _Buffer.Length - PAYLOAD_INDEX;
+            return len == _Package.Length - PAYLOAD_INDEX;
         }
 
         public int GetPayloadBufferSize()
         {
-            var size = _Buffer.Length - PAYLOAD_INDEX;
+            var size = _Package.Length - PAYLOAD_INDEX;
             if (size > 0)
             {
                 return size;
@@ -61,9 +87,9 @@ namespace Regulus.Network.RUDP
 
             for (int i = 0; i < count; i++)
             {
-                _Buffer[PAYLOAD_INDEX + i] = source[offset + i];
+                _Package[PAYLOAD_INDEX + i] = source[offset + i];
             }
-            
+
             _SetPayloadLength((ushort)count);
 
             return true;
@@ -82,17 +108,17 @@ namespace Regulus.Network.RUDP
 
         public bool ReadPayload(IList<byte> payload, int offset)
         {
-            
+
             var len = GetPayloadLength();
 
-            if (_Buffer.Length - PAYLOAD_INDEX < len)
+            if (_Package.Length - PAYLOAD_INDEX < len)
                 return false;
             if (payload.Count - offset < len)
                 return false;
 
             for (int i = 0; i < len; ++i)
-            {                
-                payload[offset + i] = _Buffer[PAYLOAD_INDEX + i];
+            {
+                payload[offset + i] = _Package[PAYLOAD_INDEX + i];
             }
             return true;
         }
@@ -102,13 +128,13 @@ namespace Regulus.Network.RUDP
             var len = GetPayloadLength();
             for (int i = 0; i < len; ++i)
             {
-                payload.Add(_Buffer[PAYLOAD_INDEX + i]);
+                payload.Add(_Package[PAYLOAD_INDEX + i]);
             }
         }
 
 
         public void SetOperation(byte value)
-        {                        
+        {
             _SetUint8(OP_INDEX, checked((byte)value));
         }
         public byte GetOperation()
@@ -143,7 +169,7 @@ namespace Regulus.Network.RUDP
 
         public void SetSeq(ushort sn)
         {
-            _SetUint16(SEQ_INDEX, checked ((ushort)sn));
+            _SetUint16(SEQ_INDEX, checked((ushort)sn));
         }
 
         public ushort GetSeq()
@@ -153,50 +179,50 @@ namespace Regulus.Network.RUDP
 
         private void _SetUint32(int begin, uint value)
         {
-            _Buffer[begin + 0] = (byte)(value >> 0);
-            _Buffer[begin + 1] = (byte)(value >> 8);
-            _Buffer[begin + 2] = (byte)(value >> 16);
-            _Buffer[begin + 3] = (byte)(value >> 24);
+            _Package[begin + 0] = (byte)(value >> 0);
+            _Package[begin + 1] = (byte)(value >> 8);
+            _Package[begin + 2] = (byte)(value >> 16);
+            _Package[begin + 3] = (byte)(value >> 24);
         }
 
         private uint _GetUint32(int begin)
         {
-            if (_Buffer.Length - begin > 4)
+            if (_Package.Length - begin > 4)
             {
-                return (uint)(_Buffer[0 + begin] << 0 | _Buffer[1 + begin] << 8 | _Buffer[2 + begin] << 16 | _Buffer[3 + begin] << 24);
+                return (uint)(_Package[0 + begin] << 0 | _Package[1 + begin] << 8 | _Package[2 + begin] << 16 | _Package[3 + begin] << 24);
             }
             throw new Exception("Illegal operation");
         }
 
         private void _SetUint16(int begin, ushort value)
         {
-            _Buffer[begin + 0] = (byte)(value >> 0);
-            _Buffer[begin + 1] = (byte)(value >> 8);
+            _Package[begin + 0] = (byte)(value >> 0);
+            _Package[begin + 1] = (byte)(value >> 8);
         }
 
         private ushort _GetUint16(int begin)
         {
-            if (_Buffer.Length - begin > 2)
+            if (_Package.Length - begin > 2)
             {
-                return (ushort)(_Buffer[begin + 0] << 0 | _Buffer[begin + 1] << 8);
+                return (ushort)(_Package[begin + 0] << 0 | _Package[begin + 1] << 8);
             }
             throw new Exception("Illegal operation");
         }
 
         private byte _GetUint8(int index)
         {
-            if (_Buffer.Length - index > 1)
+            if (_Package.Length - index > 1)
             {
-                return _Buffer[index];
+                return _Package[index];
             }
             throw new Exception("Illegal operation");
         }
 
         private void _SetUint8(int begin, byte value)
         {
-            if (_Buffer.Length - begin > 1)
+            if (_Package.Length - begin > 1)
             {
-                _Buffer[begin] = value;
+                _Package[begin] = value;
             }
         }
 
@@ -210,7 +236,7 @@ namespace Regulus.Network.RUDP
                 if ((mark & fields) != 0)
                 {
                     yield return (ushort)(ack + i + 1);
-                }                    
+                }
             }
         }
 
@@ -235,7 +261,7 @@ namespace Regulus.Network.RUDP
 
             for (int i = 0; i < count; i++)
             {
-                buffer[target_offset + i] = _Buffer[PAYLOAD_INDEX + i + source_offset];
+                buffer[target_offset + i] = _Package[PAYLOAD_INDEX + i + source_offset];
             }
 
             return count;
@@ -243,12 +269,35 @@ namespace Regulus.Network.RUDP
 
         public byte ReadPayload(int offset)
         {
-            return _Buffer[PAYLOAD_INDEX + offset];
+            return _Package[PAYLOAD_INDEX + offset];
         }
 
         public byte[] GetBuffer()
         {
-            return _Buffer;
+            return _Package;
+        }
+
+        public void SetError(SocketError error)
+        {
+            _Instance.Error = error;
+        }
+
+        public static int GetPayloadSize()
+        {
+            return Config.PackageSize - HEADSIZE;
+        }
+
+        public bool IsError()
+        {
+            return _Instance.Error != SocketError.Success;
+        }
+
+        public void SetEndPoint(EndPoint end_point)
+        {
+            _Instance.EndPoint = end_point;
         }
     }
+
+  
+
 }

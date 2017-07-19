@@ -5,7 +5,6 @@ namespace Regulus.Network.RUDP
 {
     public interface IRecevieable
     {        
-        SocketPackage[] Received();
-        EndPoint[] ErrorPoints();
+        SocketMessage[] Received();        
     }
 }

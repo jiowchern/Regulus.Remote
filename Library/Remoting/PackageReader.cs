@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
-
+using Regulus.Network;
 using Regulus.Serialization;
 using Regulus.Utility;
 
@@ -30,7 +30,7 @@ namespace Regulus.Remoting
 
 		private ISocketReader _Reader;
 
-		private Socket _Socket;
+		private ISocket _Socket;
 
 		private volatile bool _Stop;
 
@@ -39,7 +39,7 @@ namespace Regulus.Remoting
 	        _Serializer = serializer;
 	    }
 
-	    public void Start(Socket socket)
+	    public void Start(ISocket socket)
 		{
 			Singleton<Log>.Instance.WriteInfo("pakcage read start.");
 			_Stop = false;

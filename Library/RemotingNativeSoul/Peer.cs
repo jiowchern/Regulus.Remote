@@ -6,6 +6,7 @@ using System.Text;
 
 using Regulus.Serialization;
 using Regulus.Framework;
+using Regulus.Network;
 
 namespace Regulus.Remoting.Soul.Native
 {
@@ -40,7 +41,7 @@ namespace Regulus.Remoting.Soul.Native
 
 		private readonly Regulus.Collection.Queue<ResponsePackage> _Responses;
 
-		private readonly Socket _Socket;
+		private readonly ISocket _Socket;
 
 	    private readonly IProtocol _Protocol;
 
@@ -93,7 +94,7 @@ namespace Regulus.Remoting.Soul.Native
 			get { return new CoreThreadRequestHandler(this); }
 		}
 
-		public Peer(Socket client , IProtocol protocol)
+		public Peer(ISocket client , IProtocol protocol)
 		{
 
 		    
@@ -133,8 +134,7 @@ namespace Regulus.Remoting.Soul.Native
 		void IBootable.Shutdown()
 		{
 			try
-			{
-				_Socket.Shutdown(SocketShutdown.Both);
+			{				
 				_Socket.Close();
 			}
 			catch (System.Net.Sockets.SocketException se)

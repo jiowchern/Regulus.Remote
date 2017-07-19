@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Sockets;
+using Regulus.Network;
 
 namespace Regulus.Remoting
 {
     internal class SocketHeadReader : ISocketReader
     {
-        private readonly Socket _Socket;
+        private readonly ISocket _Socket;
 
         private readonly System.Collections.Generic.List<byte> _Buffer;
 
         private readonly byte[] _ReadedByte;
-        public SocketHeadReader(Socket socket)
+        public SocketHeadReader(ISocket socket)
         {
             _ReadedByte = new byte[1];
             _Socket = socket;
@@ -29,7 +30,7 @@ namespace Regulus.Remoting
 
             try
             {
-                _Socket.BeginReceive(_ReadedByte, 0, 1, SocketFlags.None, _Readed, null);
+                _Socket.Receive(_ReadedByte, 0, 1,  _Readed);
             }
             catch (SystemException e)
             {
@@ -41,14 +42,14 @@ namespace Regulus.Remoting
             
         }
 
-        private void _Readed(IAsyncResult ar)
+        private void _Readed(int read_size , SocketError error)
         {
 
             try
-        
+
             {
-                SocketError error;
-                var readSize = _Socket.EndReceive(ar , out error);                
+
+                var readSize = read_size;
                 NetworkMonitor.Instance.Read.Set(readSize);
 
 

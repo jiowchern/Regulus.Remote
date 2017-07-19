@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
+using Regulus.Network;
 
 namespace Regulus.Remoting
 {
@@ -15,13 +16,13 @@ namespace Regulus.Remoting
 
         public event OnErrorCallback ErrorEvent;
 
-        private readonly Socket _Socket;
+        private readonly ISocket _Socket;
 
         private byte[] _Buffer;
 
         private int _Offset;
 
-        public SocketBodyReader(Socket socket)
+        public SocketBodyReader(ISocket socket)
         {
             this._Socket = socket;
         }
@@ -32,7 +33,7 @@ namespace Regulus.Remoting
             _Buffer = new byte[size];
             try
             {
-                _Socket.BeginReceive(_Buffer, _Offset, _Buffer.Length - _Offset, 0, _Readed, null);
+                _Socket.Receive(_Buffer, _Offset, _Buffer.Length - _Offset,  _Readed);
             }
             catch(SystemException e)
             {
@@ -43,12 +44,12 @@ namespace Regulus.Remoting
             }
         }
 
-        private void _Readed(IAsyncResult ar)
+        private void _Readed(int read_count , SocketError error)
         {
             try
             {
-                SocketError error;
-                var readSize = _Socket.EndReceive(ar , out error );
+
+                var readSize = read_count;
 
                 if (error == SocketError.Success && readSize != 0)
                 {
@@ -60,13 +61,11 @@ namespace Regulus.Remoting
                     }
                     else
                     {
-                        _Socket.BeginReceive(
+                        _Socket.Receive(
                             _Buffer,
                             _Offset,
-                            _Buffer.Length - _Offset,
-                            SocketFlags.None,
-                            _Readed,
-                            null);
+                            _Buffer.Length - _Offset,                            
+                            _Readed);
                     }
                 }
                 else

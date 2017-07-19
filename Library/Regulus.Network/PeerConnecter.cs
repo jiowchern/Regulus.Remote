@@ -12,6 +12,8 @@ namespace Regulus.Network.RUDP
         private readonly ILine _Line;
         
         public event Action DoneEvent;
+        public event Action TimeoutEvent;
+        private long _TimeoutCount;
         public PeerConnecter(ILine line)
         {            
             _Line = line;
@@ -29,6 +31,12 @@ namespace Regulus.Network.RUDP
 
         void IStage<Timestamp>.Update(Timestamp timestamp)
         {
+            _TimeoutCount += timestamp.DeltaTicks;
+            if (_TimeoutCount > Config.AgentConnectTimeout)
+            {
+                TimeoutEvent();
+                return;
+            }
 
             var pkg = _Line.Read();
             if (pkg != null)
@@ -39,7 +47,8 @@ namespace Regulus.Network.RUDP
                     _Line.Write(PEER_OPERATION.CLIENTTOSERVER_HELLO2, new byte[0]);
                     DoneEvent();
                 }
-            }            
+            }
+            
         }
     }
 }

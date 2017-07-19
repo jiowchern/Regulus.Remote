@@ -5,20 +5,15 @@ using System.IO;
 namespace Regulus.Network.RUDP
 {
     
-    public class Recycleable<T> 
+    public interface IRecycleable<T> 
     {
-        
-        protected T _Object;
-
-        internal void Set(T @object)
-        {
-            _Object = @object;
-        }
+        void Reset(T instance);
     }
 
     
 
-    public sealed class ObjectPool<TObject,TShell> where TShell : Recycleable<TObject>, new()
+    public sealed class ObjectPool<TObject,TShell> 
+        where TShell : class ,IRecycleable<TObject> , new()
     {        
         private readonly IObjectProvider<TShell, TObject > _Provider;
         private readonly Queue<TObject> _Deads;
@@ -104,7 +99,7 @@ namespace Regulus.Network.RUDP
     }
 
     public class  ObjectProvider<TShell, TObject> : IObjectProvider<TShell, TObject> 
-        where TShell : Recycleable<TObject> , new () 
+        where TShell : IRecycleable<TObject> , new () 
 
     {
         private readonly IObjectFactory<TObject> _Factory;
@@ -118,13 +113,13 @@ namespace Regulus.Network.RUDP
         {
             shell = new TShell();
             fillings = _Factory.Spawn();
-            shell.Set(fillings);
+            shell.Reset(fillings);
         }
 
         TShell IObjectProvider<TShell, TObject>.Reset(TObject fillings)
         {
             var shell = new TShell();
-            shell.Set(fillings);
+            shell.Reset(fillings);
             return shell;
         }
     }

@@ -14,8 +14,8 @@ namespace Regulus.Network.Tests
         [TestMethod]
         public void Seq()
         {
-            
-            var buffer = new SegmentPackage(Config.PackageSize);
+            ISocketPackageSpawner spawner = SocketPackagePool.Instance;
+            var buffer = spawner.Spawn();
             buffer.SetSeq(0x1234);
             var seq = buffer.GetSeq();
             Assert.AreEqual((ushort)0x1234, seq);
@@ -24,7 +24,8 @@ namespace Regulus.Network.Tests
         [TestMethod]
         public void Ack()
         {
-            var buffer = new SegmentPackage(Config.PackageSize);
+            ISocketPackageSpawner spawner = SocketPackagePool.Instance;
+            var buffer = spawner.Spawn();
             buffer.SetAck(0x1234);
             var value = buffer.GetAck();
             Assert.AreEqual((ushort)0x1234, value);
@@ -33,7 +34,8 @@ namespace Regulus.Network.Tests
         [TestMethod]
         public void AckFields()
         {
-            var buffer = new SegmentPackage(Config.PackageSize);
+            ISocketPackageSpawner spawner = SocketPackagePool.Instance;
+            var buffer = spawner.Spawn();
             buffer.SetAckFields(0x12345678u);
             var value = buffer.GetAckFields();
             Assert.AreEqual((uint)0x12345678, value);
@@ -42,7 +44,8 @@ namespace Regulus.Network.Tests
         [TestMethod]
         public void Operation()
         {
-            var buffer = new SegmentPackage(Config.PackageSize);
+            ISocketPackageSpawner spawner = SocketPackagePool.Instance;
+            var buffer = spawner.Spawn();
             buffer.SetOperation(0x12);
             var value = buffer.GetOperation();
             Assert.AreEqual((byte)0x12, value);
@@ -53,7 +56,8 @@ namespace Regulus.Network.Tests
         [TestMethod]
         public void Payload()
         {
-            var buffer = new SegmentPackage(Config.PackageSize);
+            ISocketPackageSpawner spawner = SocketPackagePool.Instance;
+            var buffer = spawner.Spawn();
             var payloadSize = buffer.GetPayloadBufferSize();
             var payloadSource = new byte[payloadSize];
             var payloadReaded = new byte[payloadSize];

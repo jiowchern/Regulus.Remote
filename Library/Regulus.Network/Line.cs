@@ -11,13 +11,13 @@ namespace Regulus.Network.RUDP
 
         public readonly EndPoint EndPoint;
         
-        public event Action<EndPoint, byte[]> OutputEvent;
+        public event Action<SocketMessage> OutputEvent;
 
         private readonly BufferDispenser _Dispenser;
         private readonly PackageRectifier _Rectifier;
 
         
-        private readonly List<SegmentPackage> _SendPackages;
+        private readonly List<SocketMessage> _SendPackages;
         
 
         private readonly CongestionRecorder _Waiter;
@@ -29,10 +29,10 @@ namespace Regulus.Network.RUDP
         public Line(EndPoint end_point)
         {
             EndPoint = end_point;
-            _Dispenser = new BufferDispenser(Config.PackageSize);
+            _Dispenser = new BufferDispenser(EndPoint, SocketPackagePool.Instance);
             _Rectifier = new PackageRectifier();
             
-            _SendPackages = new List<SegmentPackage>();        
+            _SendPackages = new List<SocketMessage>();        
 
             _Waiter = new CongestionRecorder(3);
             
@@ -55,7 +55,7 @@ namespace Regulus.Network.RUDP
             _SendPackages.AddRange(packages);
         }
 
-        SegmentPackage ILine.Read()
+        SocketMessage ILine.Read()
         {
             return _Rectifier.PopPackage();
         }
@@ -68,12 +68,12 @@ namespace Regulus.Network.RUDP
         int ILine.TobeSendCount { get { return _SendPackages.Count; } }
 
 
-        public void Input(SegmentPackage package)
+        public void Input(SocketMessage message)
         {                        
             
-            _Waiter.ReplyUnder(package.GetAck());
+            _Waiter.ReplyUnder(message.GetAck());
             
-            foreach (var ack in package.GetAcks())
+            foreach (var ack in message.GetAcks())
             {            
                 _Waiter.Reply(ack);
             }
@@ -81,7 +81,7 @@ namespace Regulus.Network.RUDP
 
             _Waiter.Padding();
 
-            _Rectifier.PushPackage(package);            
+            _Rectifier.PushPackage(message);            
             
             _ResetTimeout();
         }
@@ -120,7 +120,7 @@ namespace Regulus.Network.RUDP
                 
                 _Waiter.PushWait(package, time.Ticks + Timestamp.OneSecondTicks);
 
-                OutputEvent(EndPoint , package.GetBuffer());                
+                OutputEvent(package);                
             }
             _SendPackages.Clear();
         }

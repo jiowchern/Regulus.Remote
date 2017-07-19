@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using Regulus.Network.RUDP;
@@ -16,51 +17,73 @@ namespace Regulus.Network.Tests
 	{
             
 	    var pool = new ObjectPool<byte[] , ByteArrayShell>(new ByteArrayFactory() );
-	    ByteArrayShell data = pool.Spawn();
+	    ByteArrayShell data1 = pool.Spawn();
 
             
-        Assert.AreEqual(10, data.Length);
+        Assert.AreEqual(10, data1.Length);
 
-	    data[0] = 9;
-	    data[1] = 8;
-	    data[2] = 7;
-	    data[3] = 6;
-	    data[4] = 5;
-	    data[5] = 4;
-	    data[6] = 3;
-	    data[7] = 2;
-	    data[8] = 1;
-	    data[9] = 0;
+	    _Set(data1);
 
-	    data = null;
+	    
+        _Set2(data1);
+	    data1 = null;
         System.GC.Collect();
 	    System.GC.WaitForFullGCComplete();
 
 
-	    ByteArrayShell data2 = pool.Spawn();
-	    Assert.AreEqual(9, data2[0]);
+        ByteArrayShell data2 = pool.Spawn();
+	    Assert.AreEqual(8, data2[0]);
+	    
 
-    }
+        ByteArrayShell data3 = pool.Spawn();
+	    Assert.AreEqual(0, data3[0]);
 
-    public class ByteArrayShell : Recycleable<byte[]>
-    {
-        
-        public byte this[int i]
-        {
-            get { return this._Object[i]; }
-            set { this._Object[i] = value; }
         }
 
-        public int Length { get { return _Object.Length; } }
+	    private static void _Set(ByteArrayShell data)
+	    {
+	        data[0] = 9;
+	        data[1] = 8;
+	        data[2] = 7;
+	        data[3] = 6;
+	        data[4] = 5;
+	        data[5] = 4;
+	        data[6] = 3;
+	        data[7] = 2;
+	        data[8] = 1;
+	        data[9] = 0;
+	        
+
+	    }
+
+	    private static void _Set2(ByteArrayShell data)
+	    {
+	        data[0] = 8;
+        }
+
+	    public class ByteArrayShell : IRecycleable<byte[]>
+    {
+        private byte[] _Instance;
+                
+        public byte this[int i]
+        {
+            get { return this._Instance[i]; }
+            set { this._Instance[i] = value; }
+        }
+
+        public int Length { get { return _Instance.Length; } }
 
 
-            
+        void IRecycleable<byte[]>.Reset(byte[] instance)
+        {
+            _Instance = instance;
+        }
     }
 
     [TestMethod]
 	    public void TestDataPackageSize()
 	    {	        
-            Assert.IsTrue(Config.PackageSize - SegmentPackage.GetHeadSize() > 0);	        
+            Assert.IsTrue(Config.PackageSize - SocketMessage.GetHeadSize() > 0);	        
 	    }
 
 	    	    
@@ -71,9 +94,10 @@ namespace Regulus.Network.Tests
 	    public void TestBufferDispenser()
 	    {
 	        
-            var message = new TestMessage(155);	        
+            var message = new TestMessage(SocketMessage.GetPayloadSize() *4+5);
 
-            var dispenser = new BufferDispenser( 50);
+	        
+            var dispenser = new BufferDispenser(new IPEndPoint(IPAddress.Any, 0), SocketPackagePool.Instance);
 	        var packages = dispenser.Packing(message.Buffer ,PEER_OPERATION.TRANSMISSION);
 
 
@@ -98,15 +122,15 @@ namespace Regulus.Network.Tests
 	    [TestMethod]
 	    public void TestPackageRectifierOutOfOrder()
 	    {
-            var package1 = new SegmentPackage(Config.PackageSize);
+            var package1 = new SocketMessage(Config.PackageSize);
 	        package1.SetSeq(0);            
 	        package1.WritePayload(new byte[] {1}, 0, 1);
 
-            var package2 = new SegmentPackage(Config.PackageSize);
+            var package2 = new SocketMessage(Config.PackageSize);
 	        package2.SetSeq(1);
 	        package2.WritePayload(new byte[] { 5 }, 0, 1);            
 
-	        var package3 = new SegmentPackage(Config.PackageSize);
+	        var package3 = new SocketMessage(Config.PackageSize);
 	        package3.SetSeq(2);
 	        package3.WritePayload(new byte[] { 9 }, 0, 1);            
 
@@ -135,23 +159,23 @@ namespace Regulus.Network.Tests
 	    [TestMethod]
 	    public void TestPackageRectifierRepeat()
 	    {
-	        var package1 = new SegmentPackage(Config.PackageSize);
+	        var package1 = new SocketMessage(Config.PackageSize);
 	        package1.SetSeq(0);
 	        package1.WritePayload(new byte[] { 1 }, 0, 1);
 
-	        var package2 = new SegmentPackage(Config.PackageSize);
+	        var package2 = new SocketMessage(Config.PackageSize);
 	        package2.SetSeq(1);
 	        package2.WritePayload(new byte[] { 5 }, 0, 1);
 
-	        var package3 = new SegmentPackage(Config.PackageSize);
+	        var package3 = new SocketMessage(Config.PackageSize);
 	        package3.SetSeq(2);
 	        package3.WritePayload(new byte[] { 9 }, 0, 1);
 
-            var package4 = new SegmentPackage(Config.PackageSize);
+            var package4 = new SocketMessage(Config.PackageSize);
 	        package4.SetSeq(3);
 	        package4.WritePayload(new byte[] { 10 }, 0, 1);
 
-	        var package5 = new SegmentPackage(Config.PackageSize);
+	        var package5 = new SocketMessage(Config.PackageSize);
 	        package5.SetSeq(4);
 	        package5.WritePayload(new byte[] { 11 }, 0, 1);
 
@@ -193,9 +217,9 @@ namespace Regulus.Network.Tests
         [TestMethod]
 	    public void TestAck()
 	    {
-	        var package1 = new SegmentPackage(Config.PackageSize);
+	        var package1 = new SocketMessage(Config.PackageSize);
 	        package1.SetSeq(1);
-            var package2 = new SegmentPackage(Config.PackageSize);
+            var package2 = new SocketMessage(Config.PackageSize);
 	        package2.SetSeq(2);
 
             var ackWaiter = new CongestionRecorder(3);
@@ -215,6 +239,14 @@ namespace Regulus.Network.Tests
         
 
 
+    }
+
+    public class TestSpawner : ISocketPackageSpawner
+    {
+        public SocketMessage Spawn()
+        {
+            return new SocketMessage(50);
+        }
     }
 
     public class ByteArrayFactory : IObjectFactory<byte[]>

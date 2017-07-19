@@ -24,7 +24,7 @@ namespace Regulus.Network.RUDP
         public void Free(T[] buffer)
         {
             if(buffer.Length != _Capacity)
-                throw new System.Exception("Segment length does not match.");
+                throw new System.Exception("Package length does not match.");
 
             _Stock.Enqueue(buffer);
         }

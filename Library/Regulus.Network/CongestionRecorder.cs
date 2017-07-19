@@ -11,12 +11,12 @@ namespace Regulus.Network.RUDP
 
         class Item
         {
-            public readonly SegmentPackage Package;
+            public readonly SocketMessage Message;
             public readonly long EndTicks;
             public int Hungry { get;private set; }
-            public Item(SegmentPackage package, long end_ticks)
+            public Item(SocketMessage message, long end_ticks)
             {
-                Package = package;
+                Message = message;
                 EndTicks = end_ticks;
             }
 
@@ -41,10 +41,10 @@ namespace Regulus.Network.RUDP
 
         public int Count { get { return _Items.Count; } }
 
-        public void PushWait(SegmentPackage package, long timeout_ticks )
+        public void PushWait(SocketMessage message, long timeout_ticks )
         {
-            var item = new Item(package , timeout_ticks);
-            _Items.Add(item.Package.GetSeq(), item);
+            var item = new Item(message , timeout_ticks);
+            _Items.Add(item.Message.GetSeq(), item);
         }
         
 
@@ -56,10 +56,10 @@ namespace Regulus.Network.RUDP
 
         public void ReplyUnder(ushort package_id)
         {
-            var pkg = _Items.Values.FirstOrDefault(item => item.Package.GetSeq() == package_id);
+            var pkg = _Items.Values.FirstOrDefault(item => item.Message.GetSeq() == package_id);
             if (pkg != null)
             {
-                foreach (var replyId in _Items.Values.Where(item => item.EndTicks <= pkg.EndTicks).Select(item => item.Package.GetSeq()).ToArray())
+                foreach (var replyId in _Items.Values.Where(item => item.EndTicks <= pkg.EndTicks).Select(item => item.Message.GetSeq()).ToArray())
                 {
                     Reply(replyId);
                 }
@@ -67,19 +67,19 @@ namespace Regulus.Network.RUDP
             }
         }
 
-        public List<SegmentPackage> PopLost(long ticks)
+        public List<SocketMessage> PopLost(long ticks)
         {
 
-            List<SegmentPackage> packages = new List<SegmentPackage>();
+            List<SocketMessage> packages = new List<SocketMessage>();
             foreach (var item in _Items.Values)
             {
                 if (item.IsTimeout(ticks)  )
                 {
-                    packages.Add(item.Package);
+                    packages.Add(item.Message);
                 }
                 else if (item.Hungry > _HungryLimit)
                 {
-                    packages.Add(item.Package);
+                    packages.Add(item.Message);
                 }
             }
 

@@ -2,6 +2,7 @@ using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Sockets;
 using Regulus.Framework;
 using Regulus.Serialization;
 using Regulus.Utility;
@@ -16,19 +17,27 @@ namespace Regulus.Network.RUDP
 
         private readonly Regulus.Utility.StageMachine<Timestamp> _Machine;
         
-        private SegmentStream _Stream;
+        private readonly SegmentStream _Stream;
         private PEER_STATUS _Status;
 
-        
+        class ReadRequest
+        {
+            public byte[] Buffer;
+            public int Offset;
+            public int Count;
+            public Action<int, SocketError> ReadDoneHandler;
+        }
         private readonly List<byte> _Sends;
+        private readonly Queue<ReadRequest> _ReadRequests;
         private bool _RequireDisconnect;
 
         private Peer(ILine line)
         {
+            _ReadRequests = new Queue<ReadRequest>();
             _Sends = new List<byte>();
             _Line = line;
             _Machine = new StageMachine<Timestamp>();        
-            _Stream = new SegmentStream(new SegmentPackage[0]);
+            _Stream = new SegmentStream(new SocketMessage[0]);
             
         }
         public Peer(ILine line , PeerListener listener) : this(line)
@@ -56,11 +65,34 @@ namespace Regulus.Network.RUDP
 
         private void _UpdateTransmission(Timestamp obj)
         {
-            if (_Sends.Count > 0)
+            lock (_Sends)
             {
-                _Line.Write(PEER_OPERATION.TRANSMISSION, _Sends.ToArray());
-                _Sends.Clear();
+                if (_Sends.Count > 0)
+                {
+                    _Line.Write(PEER_OPERATION.TRANSMISSION, _Sends.ToArray());
+                    _Sends.Clear();
+                }
             }
+            
+
+            while (_Stream.Count > 0 && _ReadRequests.Count > 0)
+            {
+                ReadRequest request = null;
+
+                lock (_ReadRequests)
+                {
+                    request = _ReadRequests.Dequeue();                    
+                }
+
+                var readCount = _Stream.Read(request.Buffer, request.Offset, request.Count);
+                if (readCount > 0)
+                {
+                    request.ReadDoneHandler(readCount, SocketError.Success);
+
+                }
+
+            }
+            
 
             if (_RequireDisconnect)
             {            
@@ -126,16 +158,34 @@ namespace Regulus.Network.RUDP
             get { return _Line.EndPoint; }
         }
 
-        void IPeer.Send(byte[] buffer)
+        void IPeer.Send(byte[] buffer, int offset, int count, Action<int, SocketError> write_completion)
         {
-            _Sends.AddRange(buffer);
+            int len = count < buffer.Length ? count : buffer.Length;
+
+            lock (_Sends)
+            {
+                for (int i = offset; i < len; i++)
+                {
+                    _Sends.Add(buffer[i]);
+                }
+            }
+            
+            write_completion(len , SocketError.Success);
         }
 
-        SegmentStream IPeer.Receive()
+        void IPeer.Receive(byte[] buffer, int offset, int count, Action<int, SocketError> read_completion)
         {
-            var pop = _Stream;
-            _Stream = new SegmentStream();
-            return pop;
+
+            var requests = new ReadRequest();
+            requests.Buffer = buffer;
+            requests.Count = count;
+            requests.Offset = offset;
+            requests.ReadDoneHandler = read_completion;
+            lock (_ReadRequests)
+            {
+                _ReadRequests.Enqueue(requests);
+            }
+            
         }
 
         PEER_STATUS IPeer.Status { get { return _Status; } }
