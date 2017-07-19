@@ -8,7 +8,7 @@ namespace Regulus.Network.RUDP
             _Pool = new ObjectPool<SocketMessageInternal, SocketMessage>(new SocketPackageFactory());
         }
 
-        SocketMessage ISocketPackageSpawner.Spawn()
+        public SocketMessage Spawn()
         {
             return _Pool.Spawn();
         }

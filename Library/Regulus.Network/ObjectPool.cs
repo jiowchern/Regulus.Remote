@@ -50,40 +50,47 @@ namespace Regulus.Network.RUDP
         }
         public TShell Spawn()
         {
-
-            while (_Alives1.Count > 0)
+            lock (this)
             {
-                var resource = _Alives1.Dequeue();
-                if (resource.Shell.IsAlive == false)
+                while (_Alives1.Count > 0)
                 {
-                    _Deads.Enqueue(resource.Fillings);
-                }                    
+                    var resource = _Alives1.Dequeue();
+                    if (resource.Shell.IsAlive == false)
+                    {
+                        _Deads.Enqueue(resource.Fillings);
+                    }
+                    else
+                    {
+                        _Alives2.Enqueue(resource);
+                    }
+                }
+
+                var alive = _Alives1;
+                _Alives1 = _Alives2;
+                _Alives2 = alive;
+
+                if (_Deads.Count > 0)
+                {
+                    var obj = _Deads.Dequeue();
+                    var shell = _Provider.Reset(obj);
+                    _Alives1.Enqueue(new Resource(shell, obj));
+                    return shell;
+                }
                 else
                 {
-                    _Alives2.Enqueue(resource);
+                    TShell shell;
+                    TObject fillings;
+                    _Provider.Supply(out shell, out fillings);
+                    _Alives1.Enqueue(new Resource(shell, fillings));
+                    return shell;
                 }
             }
+            
 
-            var alive = _Alives1;
-            _Alives1 = _Alives2;
-            _Alives2 = alive;
+            
 
 
-            if (_Deads.Count > 0)
-            {
-                var obj = _Deads.Dequeue();
-                var shell = _Provider.Reset(obj);
-                _Alives1.Enqueue(new Resource(shell , obj));
-                return shell;
-            }
-            else
-            {
-                TShell shell;
-                TObject fillings;
-                _Provider.Supply(out shell ,out fillings);
-                _Alives1.Enqueue(new Resource(shell, fillings));
-                return shell;
-            }
+            
         }
 
 
