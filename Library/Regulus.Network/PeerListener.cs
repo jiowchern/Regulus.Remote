@@ -27,6 +27,8 @@ namespace Regulus.Network.RUDP
         private void _ListenRequestUpdate(Timestamp time)
         {
             var package = _Line.Read();
+            if (package == null)
+                return;
             var operation =(PEER_OPERATION)package.GetOperation();
             if (operation == PEER_OPERATION.CLIENTTOSERVER_HELLO1)
             {

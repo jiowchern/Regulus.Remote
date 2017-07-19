@@ -55,7 +55,7 @@ namespace Regulus.Remoting.Soul.Native
             _Spin = new PowerRegulator();
             _AutoPowerRegulator = new AutoPowerRegulator(_Spin);
 
-            _Lintenable = new Regulus.Network.TcpListener();
+            _Lintenable = new Regulus.Network.RudpListener();
         }
 
         public void DoWork(object obj)

@@ -24,7 +24,8 @@ namespace Regulus.Network.RUDP
         
         
         private long _TimeoutTicks;
-        
+        private readonly byte[] _EmptyArray;
+
 
         public Line(EndPoint end_point)
         {
@@ -35,9 +36,10 @@ namespace Regulus.Network.RUDP
             _SendPackages = new List<SocketMessage>();        
 
             _Waiter = new CongestionRecorder(3);
-            
 
-            
+            _EmptyArray = new byte[0];
+
+
 
             _ResetTimeout();
 
@@ -51,7 +53,7 @@ namespace Regulus.Network.RUDP
 
         void ILine.Write(PEER_OPERATION op,byte[] buffer)
         {
-            var packages = _Dispenser.Packing(buffer, op);
+            var packages = _Dispenser.Packing(buffer, op, _Rectifier.Serial , _Rectifier.SerialBitFields);
             _SendPackages.AddRange(packages);
         }
 
@@ -69,21 +71,32 @@ namespace Regulus.Network.RUDP
 
 
         public void Input(SocketMessage message)
-        {                        
+        {
+            var ack = message.GetAck();
+
+            _ResetTimeout();
+
+            _Waiter.ReplyUnder(ack);
             
-            _Waiter.ReplyUnder(message.GetAck());
-            
-            foreach (var ack in message.GetAcks())
+            foreach (var ack_id in message.GetAcks())
             {            
-                _Waiter.Reply(ack);
+                _Waiter.Reply(ack_id);
             }
 
 
             _Waiter.Padding();
 
-            _Rectifier.PushPackage(message);            
+            _Rectifier.PushPackage(message);
+
+            _SendAck(_Rectifier.Serial , _Rectifier.SerialBitFields);
+
             
-            _ResetTimeout();
+        }
+
+        private void _SendAck(ushort ack,uint ack_bits)
+        {
+            var packages = _Dispenser.Packing(_EmptyArray,PEER_OPERATION.NONE, ack, ack_bits);
+            _SendPackages.AddRange(packages);
         }
 
         public bool IsTimeout(Timestamp time)
@@ -115,9 +128,6 @@ namespace Regulus.Network.RUDP
         {            
             foreach (var package in _SendPackages)
             {
-                package.SetAck(_Rectifier.Serial);
-                package.SetAckFields(_Rectifier.SerialBitFields);
-                
                 _Waiter.PushWait(package, time.Ticks + Timestamp.OneSecondTicks);
 
                 OutputEvent(package);                
