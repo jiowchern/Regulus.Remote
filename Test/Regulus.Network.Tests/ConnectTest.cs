@@ -14,7 +14,7 @@ namespace Regulus.Network.Tests
     public class ConnectTest
     {
         [TestMethod ]
-        public void Test()
+        public void TestFullFlow()
         {
             ISocketPackageSpawner spawner = SocketPackagePool.Instance;
             var hostEndpoint = new IPEndPoint(IPAddress.Parse("0.0.0.1") , 0);
@@ -27,15 +27,16 @@ namespace Regulus.Network.Tests
             {
                 var package = spawner.Spawn();
                 package.SetEndPoint(hostEndpoint);
-                Buffer.BlockCopy(pkg.Package ,0,package.Package,0, pkg.Package.Length);
+                Buffer.BlockCopy(pkg.Package, 0, package.Package, 0, pkg.Package.Length);
+                
                 agentSocket.Receive(package);
             };
             agentSocket.SendEvent += (pkg) =>
             {
                 var package = spawner.Spawn();
-
                 package.SetEndPoint(agentEndpoint);
                 Buffer.BlockCopy(pkg.Package, 0, package.Package, 0, pkg.Package.Length);
+                
                 hostSocket.Receive(package);
             };
 
@@ -50,8 +51,7 @@ namespace Regulus.Network.Tests
             updater.Add(agent);
             
             long ticks = 0;
-
-            bool result = false;                        
+            
 
             IPeer peer = null;
             host.AcceptEvent += p => peer = p;
@@ -70,6 +70,10 @@ namespace Regulus.Network.Tests
             updater.Working(new Timestamp(ticks++, 1));
             updater.Working(new Timestamp(ticks++, 1));
             updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+
+
 
 
 
@@ -79,12 +83,7 @@ namespace Regulus.Network.Tests
 
             var sendBuffer = new byte[] {1, 2, 3, 4, 5};
             clientPeer.Send(sendBuffer,0, sendBuffer.Length , (send_count , error)=>{});
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
+            
 
             int readCount = 0;
             var receivedBuffer = new byte[Config.PackageSize];
@@ -93,7 +92,24 @@ namespace Regulus.Network.Tests
                 readCount = read_count;
             });
 
-
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
+            updater.Working(new Timestamp(ticks++, 1));
 
 
             updater.Working(new Timestamp(ticks++, 1));

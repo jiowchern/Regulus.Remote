@@ -13,7 +13,7 @@ namespace Regulus.Network.RUDP
         private ushort _Serial;
         private uint _SerialBitFields;
 
-        public ushort Serial { get { return (ushort)(_Serial - 1); } }
+        public ushort Serial { get { return _Serial ; } }
         public uint SerialBitFields { get { return _SerialBitFields; } }
 
         public PackageRectifier()

@@ -11,7 +11,7 @@ namespace Regulus.Network.Tests
     public class FakeSocket : IRecevieable, ISendable, IUpdatable<Timestamp>
     {
         public readonly IPEndPoint Endpoint;
-        private List<SocketMessage> _Packages;
+        private readonly List<SocketMessage> _Packages;
         public FakeSocket(IPEndPoint endpoint)
         {
             _Packages = new List<SocketMessage>();

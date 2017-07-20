@@ -296,6 +296,16 @@ namespace Regulus.Network.RUDP
         {
             _Instance.EndPoint = end_point;
         }
+
+        public int GetPackageSize()
+        {            
+            return HEADSIZE + GetPayloadLength();
+        }
+
+        public void ClearPayload()
+        {
+            _SetPayloadLength(0);
+        }
     }
 
   

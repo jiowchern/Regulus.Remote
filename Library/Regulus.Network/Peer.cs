@@ -13,7 +13,7 @@ namespace Regulus.Network.RUDP
     {
 
         public event Action CloseEvent;
-        private readonly ILine _Line;
+        private readonly Line _Line;
 
         private readonly Regulus.Utility.StageMachine<Timestamp> _Machine;
         
@@ -31,7 +31,7 @@ namespace Regulus.Network.RUDP
         private readonly Queue<ReadRequest> _ReadRequests;
         private bool _RequireDisconnect;
 
-        private Peer(ILine line)
+        private Peer(Line line)
         {
             _ReadRequests = new Queue<ReadRequest>();
             _Sends = new List<byte>();
@@ -40,7 +40,7 @@ namespace Regulus.Network.RUDP
             _Stream = new SegmentStream(new SocketMessage[0]);
             
         }
-        public Peer(ILine line , PeerListener listener) : this(line)
+        public Peer(Line line , PeerListener listener) : this(line)
         {
             _Status = PEER_STATUS.CONNECTING;
             listener.DoneEvent += _ToTransmission;
@@ -48,7 +48,7 @@ namespace Regulus.Network.RUDP
             _Machine.Push(listener);
         }
 
-        public Peer(ILine line, PeerConnecter connecter) : this(line)
+        public Peer(Line line, PeerConnecter connecter) : this(line)
         {
             _Status = PEER_STATUS.CONNECTING;
             connecter.DoneEvent += _ToTransmission;
@@ -69,7 +69,7 @@ namespace Regulus.Network.RUDP
             {
                 if (_Sends.Count > 0)
                 {
-                    _Line.Write(PEER_OPERATION.TRANSMISSION, _Sends.ToArray());
+                    _Line.WriteTransmission(_Sends.ToArray());
                     _Sends.Clear();
                 }
             }
@@ -96,7 +96,7 @@ namespace Regulus.Network.RUDP
 
             if (_RequireDisconnect)
             {            
-                _Line.Write(PEER_OPERATION.REQUEST_DISCONNECT, new byte[0]);
+                _Line.WriteOperation(PEER_OPERATION.REQUEST_DISCONNECT);
                 _Disconnect();
             }
              

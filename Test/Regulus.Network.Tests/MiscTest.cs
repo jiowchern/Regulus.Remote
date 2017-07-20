@@ -91,18 +91,20 @@ namespace Regulus.Network.Tests
 	    
 
 	    [TestMethod]
-	    public void TestBufferDispenser()
+	    public void TestBufferDispenser1()
 	    {
-	        
-            var message = new TestMessage(SocketMessage.GetPayloadSize() *4+5);
+
+	        var count = SocketMessage.GetPayloadSize() * 4;
+            var message = new TestMessage(count);
 
 	        
             var dispenser = new BufferDispenser(new IPEndPoint(IPAddress.Any, 0), SocketPackagePool.Instance);
-	        var packages = dispenser.Packing(message.Buffer ,PEER_OPERATION.TRANSMISSION);
+	        var packages = dispenser.PackingTransmission(message.Buffer ,0,0);
 
 
-            Assert.AreEqual( 5 , packages.Length );
+            Assert.AreEqual( 4 , packages.Length );
 	        byte index = 0;
+	        int readcount = 0;
 	        for (uint i = 0; i < packages.Length; i++)
 	        {
 	            var package = packages[i];
@@ -115,11 +117,48 @@ namespace Regulus.Network.Tests
 	            {	                
 	                Assert.AreEqual(index, data[j]);
 	                index++;
-                }                
+	                readcount++;
+	            }                
 	        }
-	    }
+
+	        Assert.AreEqual(readcount, count);
+        }
 
 	    [TestMethod]
+	    public void TestBufferDispenser2()
+	    {
+	        var count = SocketMessage.GetPayloadSize() * 4+1;
+            var message = new TestMessage(count);
+
+
+	        var dispenser = new BufferDispenser(new IPEndPoint(IPAddress.Any, 0), SocketPackagePool.Instance);
+	        var packages = dispenser.PackingTransmission(message.Buffer, 0, 0);
+
+
+	        Assert.AreEqual(5, packages.Length);
+	        byte index = 0;
+	        int readcount = 0;
+	        for (uint i = 0; i < packages.Length; i++)
+	        {
+	            var package = packages[i];
+	            Assert.AreEqual(i, package.GetSeq());
+
+	            var data = new List<byte>();
+	            package.ReadPayload(data);
+
+	            for (int j = 0; j < data.Count; j++)
+	            {
+	                Assert.AreEqual(index, data[j]);
+	                index++;
+	                readcount++;
+
+	            }
+	        }
+
+	        Assert.AreEqual(readcount, count);
+        }
+
+        [TestMethod]
 	    public void TestPackageRectifierOutOfOrder()
 	    {
             var package1 = new SocketMessage(Config.PackageSize);

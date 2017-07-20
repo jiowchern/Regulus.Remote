@@ -16,7 +16,7 @@ namespace Regulus.Network.RUDP
 	    private readonly WiringOperator _WiringOperator;
         public event System.Action<IPeer> AcceptEvent;
 
-	    private readonly Dictionary<ILine , Peer> _Peers;
+	    private readonly Dictionary<Line , Peer> _Peers;
 	    private readonly List<Peer> _RemovePeers;
         private readonly Regulus.Utility.Updater<Timestamp> _Updater;
 	    
@@ -33,7 +33,7 @@ namespace Regulus.Network.RUDP
         {
             _RemovePeers = new List<Peer>();
             _Updater = new Updater<Timestamp>();
-            _Peers = new Dictionary<ILine, Peer>();
+            _Peers = new Dictionary<Line, Peer>();
             _WiringOperator = new WiringOperator(sendable, recevieable);
         }
 
@@ -71,7 +71,7 @@ namespace Regulus.Network.RUDP
 	        _WiringOperator.LeftStreamEvent -= _DestroyPeer;
         }
 
-	    private void _DestroyPeer(ILine line)
+	    private void _DestroyPeer(Line line)
 	    {
 
 	        var peer = _Peers.FirstOrDefault(p => p.Key == line);
@@ -87,7 +87,7 @@ namespace Regulus.Network.RUDP
 
 	    
 
-        private void _CreatePeer(ILine line)
+        private void _CreatePeer(Line line)
         {
             var listener = new PeerListener(line);
 
