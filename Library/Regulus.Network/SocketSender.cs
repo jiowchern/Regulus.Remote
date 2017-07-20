@@ -51,7 +51,7 @@ namespace Regulus.Network.RUDP
                 _Sending = message;
             }
             
-            _Socket.BeginSendTo(message.Package, 0, message.Package.Length, SocketFlags.None, message.EndPoint, _Done,
+            _Socket.BeginSendTo(message.Package, 0, message.GetPackageSize(), SocketFlags.None, message.EndPoint, _Done,
                 null);
         }
 

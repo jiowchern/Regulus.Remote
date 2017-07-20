@@ -24,8 +24,8 @@ namespace Regulus.Network.RUDP
             _Recevieable = recevieable;
         }
 
-        public event Action<ILine> JoinStreamEvent;
-        public event Action<ILine> LeftStreamEvent;        
+        public event Action<Line> JoinStreamEvent;
+        public event Action<Line> LeftStreamEvent;        
 
         bool IUpdatable<Timestamp>.Update(Timestamp time)
         {            
@@ -90,7 +90,7 @@ namespace Regulus.Network.RUDP
             var timeOutLines = new List<Line>();
             foreach (var line in lines)
             {
-                if (line.IsTimeout(time))
+                if (line.Tick(time))
                 {
                     timeOutLines.Add(line);
                 }                

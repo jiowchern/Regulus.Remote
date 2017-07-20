@@ -7,14 +7,15 @@ namespace Regulus.Network.RUDP
 {
     public class PeerListener : IStage<Timestamp>
     {
-        private readonly ILine _Line;
+        private readonly Line _Line;
         
         public event Action DoneEvent;
         public event Action ErrorEvent;
 
         private readonly Regulus.Utility.StageMachine<Timestamp> _Machine;
-        
-        public PeerListener(ILine line)
+        private long _Timeout;
+
+        public PeerListener(Line line)
         {
             _Line = line;            
             _Machine = new StageMachine<Timestamp>();
@@ -26,23 +27,38 @@ namespace Regulus.Network.RUDP
 
         private void _ListenRequestUpdate(Timestamp time)
         {
+
+            _Timeout += time.DeltaTicks;
+
+            if (_Timeout > Config.HostListenTimeout)
+            {
+                ErrorEvent();
+                return;
+            }
+
             var package = _Line.Read();
             if (package == null)
                 return;
             var operation =(PEER_OPERATION)package.GetOperation();
             if (operation == PEER_OPERATION.CLIENTTOSERVER_HELLO1)
             {
-                _Line.Write(PEER_OPERATION.SERVERTOCLIENT_HELLO1 , new Byte[0]);
+                _Line.WriteOperation(PEER_OPERATION.SERVERTOCLIENT_HELLO1 );
                 _Machine.Push(new SimpleStage<Timestamp>(_Empty, _Empty, _ListenAckUpdate));
             }
-            else
-            {
-                ErrorEvent();
-            }
+            
+
+            
         }
 
-        private void _ListenAckUpdate(Timestamp obj)
+        private void _ListenAckUpdate(Timestamp time)
         {
+            _Timeout += time.DeltaTicks;
+
+            if (_Timeout > Config.HostListenTimeout)
+            {
+                ErrorEvent();
+                return;
+            }
 
             var package = _Line.Read();
             if(package == null)
@@ -53,10 +69,7 @@ namespace Regulus.Network.RUDP
             {
                 DoneEvent();
             }
-            else
-            {
-                ErrorEvent();
-            }
+            
         }
 
         private void _Empty()

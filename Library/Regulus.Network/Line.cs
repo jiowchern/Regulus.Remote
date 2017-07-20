@@ -6,7 +6,7 @@ using Regulus.Serialization;
 
 namespace Regulus.Network.RUDP
 {
-    public class Line : ILine
+    public class Line 
     {
 
         public readonly EndPoint EndPoint;
@@ -51,62 +51,64 @@ namespace Regulus.Network.RUDP
             _TimeoutTicks = Config.TransmitterTimeout;
         }
 
-        void ILine.Write(PEER_OPERATION op,byte[] buffer)
+        public void WriteOperation(PEER_OPERATION operation)
         {
-            var packages = _Dispenser.Packing(buffer, op, _Rectifier.Serial , _Rectifier.SerialBitFields);
+            var package = _Dispenser.PackingOperation(operation , _Rectifier.Serial, _Rectifier.SerialBitFields);
+            _SendPackages.Add(package);
+        }
+        public void WriteTransmission(byte[] buffer)
+        {
+            var packages = _Dispenser.PackingTransmission(buffer, _Rectifier.Serial , _Rectifier.SerialBitFields);
             _SendPackages.AddRange(packages);
         }
 
-        SocketMessage ILine.Read()
+        public SocketMessage Read()
         {
             return _Rectifier.PopPackage();
         }
 
-        EndPoint ILine.EndPoint
-        {
-            get { return EndPoint; }
-        }
+        
 
-        int ILine.TobeSendCount { get { return _SendPackages.Count; } }
+        public int AcknowledgeCount { get { return _Waiter.Count; } }
+        public int WaitSendCount { get { return _SendPackages.Count; } }
 
 
         public void Input(SocketMessage message)
         {
             var ack = message.GetAck();
-
+            
             _ResetTimeout();
 
-            _Waiter.ReplyUnder(ack);
+            _Waiter.ReplyUnder((ushort)(ack -1));
             
             foreach (var ack_id in message.GetAcks())
             {            
-                _Waiter.Reply(ack_id);
+                _Waiter.Reply((ushort) (ack_id-1) );
             }
 
 
             _Waiter.Padding();
-
             _Rectifier.PushPackage(message);
 
-            _SendAck(_Rectifier.Serial , _Rectifier.SerialBitFields);
+            var oper = (PEER_OPERATION)message.GetOperation();
+            if (oper != PEER_OPERATION.ACKNOWLEDGE)
+                _SendAck(_Rectifier.Serial, _Rectifier.SerialBitFields);
 
-            
         }
 
         private void _SendAck(ushort ack,uint ack_bits)
         {
-            var packages = _Dispenser.Packing(_EmptyArray,PEER_OPERATION.NONE, ack, ack_bits);
-            _SendPackages.AddRange(packages);
+            var package = _Dispenser.PackingOperation(PEER_OPERATION.ACKNOWLEDGE, ack, ack_bits);
+            _SendPackages.Add(package);
         }
 
-        public bool IsTimeout(Timestamp time)
+        public bool Tick(Timestamp time)
         {
             _TimeoutTicks -= time.DeltaTicks;
             if (_TimeoutTicks < 0)
                 return true;
 
             _HandleResend(time);
-
             _HandleSend(time);
 
             
@@ -128,7 +130,8 @@ namespace Regulus.Network.RUDP
         {            
             foreach (var package in _SendPackages)
             {
-                _Waiter.PushWait(package, time.Ticks + Timestamp.OneSecondTicks);
+                if(package.GetOperation() != (byte)PEER_OPERATION.ACKNOWLEDGE)
+                    _Waiter.PushWait(package, time.Ticks + Timestamp.OneSecondTicks);
 
                 OutputEvent(package);                
             }

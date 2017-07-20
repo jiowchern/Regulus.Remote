@@ -9,19 +9,19 @@ namespace Regulus.Network.RUDP
     {
         
         
-        private readonly ILine _Line;
+        private readonly Line _Line;
         
         public event Action DoneEvent;
         public event Action TimeoutEvent;
         private long _TimeoutCount;
-        public PeerConnecter(ILine line)
+        public PeerConnecter(Line line)
         {            
             _Line = line;
         }
 
         void IStage<Timestamp>.Enter()
         {                        
-            _Line.Write(PEER_OPERATION.CLIENTTOSERVER_HELLO1 , new byte[0]);
+            _Line.WriteOperation(PEER_OPERATION.CLIENTTOSERVER_HELLO1 );
         }
 
         void IStage<Timestamp>.Leave()
@@ -44,7 +44,7 @@ namespace Regulus.Network.RUDP
                 var operation = (PEER_OPERATION)pkg.GetOperation();
                 if (operation == PEER_OPERATION.SERVERTOCLIENT_HELLO1)
                 {
-                    _Line.Write(PEER_OPERATION.CLIENTTOSERVER_HELLO2, new byte[0]);
+                    _Line.WriteOperation(PEER_OPERATION.CLIENTTOSERVER_HELLO2);
                     DoneEvent();
                 }
             }

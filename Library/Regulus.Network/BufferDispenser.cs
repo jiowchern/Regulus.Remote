@@ -23,9 +23,10 @@ namespace Regulus.Network.RUDP
 
         
 
-        public SocketMessage[] Packing(byte[] buffer,PEER_OPERATION operation,ushort ack ,uint ack_fields )
-        {            
-            var count = buffer.Length / _PayloadSize + 1  ;
+        public SocketMessage[] PackingTransmission(byte[] buffer,ushort ack ,uint ack_fields )
+        {
+            
+            var count = (buffer.Length + _PayloadSize - 1) / _PayloadSize   ;
             var packages = new SocketMessage[count];
             
 
@@ -35,7 +36,7 @@ namespace Regulus.Network.RUDP
                 var package = _Spawner.Spawn();
                 package.SetEndPoint(_EndPoint);
                 package.SetSeq((ushort)(_Serial + i));
-                package.SetOperation((byte)operation);
+                package.SetOperation((byte)PEER_OPERATION.TRANSMISSION);
                 package.SetAck(ack);
                 package.SetAckFields(ack_fields);
                 var begin = _PayloadSize * i;
@@ -48,6 +49,20 @@ namespace Regulus.Network.RUDP
             return packages;
         }
 
-        
+
+        public SocketMessage PackingOperation(PEER_OPERATION operation, ushort ack, uint ack_fields)
+        {
+            
+            var package = _Spawner.Spawn();
+            package.SetEndPoint(_EndPoint);
+            package.SetSeq(_Serial++);
+            package.SetOperation((byte)operation);
+            package.SetAck(ack);
+            package.SetAckFields(ack_fields);
+            package.ClearPayload();
+
+
+            return package;
+        }
     }
 }

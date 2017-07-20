@@ -65,7 +65,7 @@ namespace Regulus.Network.RUDP
             _WiringOperator.LeftStreamEvent -= _DestroyPeer;
         }
 
-        private void _DestroyPeer(ILine obj)
+        private void _DestroyPeer(Line obj)
         {
             Peer peer;
             if (_Peers.TryGetValue(obj.EndPoint, out peer))
@@ -77,14 +77,14 @@ namespace Regulus.Network.RUDP
             
         }
 
-        private void _CreatePeer(ILine obj)
+        private void _CreatePeer(Line obj)
         {            
         }
         
         public IPeer Connect(EndPoint end_point,System.Action<bool> result)
         {
             IPeer peer = null;
-            System.Action<ILine> handler = stream =>
+            System.Action<Line> handler = stream =>
             {
                 var connecter = new PeerConnecter(stream);
                 connecter.TimeoutEvent += () => { result(false); };

@@ -43,7 +43,6 @@
   <ItemGroup>
     <Compile Include="Config.cs" />
     <Compile Include="EmptyArray.cs" />
-    <Compile Include="ILine.cs" />
     <Compile Include="IRecevieable.cs" />
     <Compile Include="ISocket.cs" />
     <Compile Include="ISocketConnectable.cs" />
@@ -68,7 +67,6 @@
     <Compile Include="Rudp\RudpSocket.cs" />
     <Compile Include="SegmentStream.cs" />
     <Compile Include="SocketPackagePool.cs" />
-    <Compile Include="SOCKET_ERROR.cs" />
     <Compile Include="Tcp\TcpConnecter.cs" />
     <Compile Include="Tcp\TcpListener.cs" />
     <Compile Include="Tcp\TcpSocket.cs" />
