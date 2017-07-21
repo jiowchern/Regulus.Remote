@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Regulus.Network.RUDP;
+using Regulus.Utility;
 
 namespace Regulus.Network
 {
@@ -34,11 +35,14 @@ namespace Regulus.Network
 
             var now = System.DateTime.Now.Ticks;
             var last = now ;
+            var regulator = new Regulus.Utility.AutoPowerRegulator(new PowerRegulator());
             while (_Enable)
             {
                 now = System.DateTime.Now.Ticks;
                 updater.Working(new Timestamp(now , now-last));
                 last = now;
+
+                regulator.Operate();
             }
 
             updater.Shutdown();

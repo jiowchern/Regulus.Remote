@@ -99,19 +99,24 @@ namespace Regulus.Network.RUDP
                 _Line.WriteOperation(PEER_OPERATION.REQUEST_DISCONNECT);
                 _Disconnect();
             }
-             
-            var package = _Line.Read();
-            if(package == null)
-                return;
-            var operation = (PEER_OPERATION)package.GetOperation();
-            if (operation == PEER_OPERATION.TRANSMISSION)
+
+            SocketMessage message = null;
+            while ((message = _Line.Read()) != null)
             {
-                _Stream.Add(package);
+                var package = message;
+                
+                var operation = (PEER_OPERATION)package.GetOperation();
+                if (operation == PEER_OPERATION.TRANSMISSION)
+                {
+                    _Stream.Add(package);
+                }
+                else if (operation == PEER_OPERATION.REQUEST_DISCONNECT)
+                {
+                    _Disconnect();
+                }
             }
-            else if(operation == PEER_OPERATION.REQUEST_DISCONNECT)
-            {
-                _Disconnect();
-            }
+
+            
         }
 
         private void _EndTransmission()
