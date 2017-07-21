@@ -13,9 +13,11 @@ namespace Regulus.Network.RUDP
         {
             public readonly SocketMessage Message;
             public readonly long EndTicks;
+            public readonly long StartTicks;
             public int Hungry { get;private set; }
-            public Item(SocketMessage message, long end_ticks)
+            public Item(SocketMessage message,long start_ticks, long end_ticks)
             {
+                StartTicks = start_ticks;
                 Message = message;
                 EndTicks = end_ticks;
             }
@@ -33,41 +35,58 @@ namespace Regulus.Network.RUDP
             }
         }
         private readonly Dictionary<ushort, Item> _Items;
+
+        private readonly RetransmissionTimeOut _RTO;
         public CongestionRecorder(int hungry_limit)
         {
             _HungryLimit = hungry_limit;
             _Items = new Dictionary<ushort, Item>();
+            _RTO = new RetransmissionTimeOut();
         }
 
         public int Count { get { return _Items.Count; } }
+        
 
-        public void PushWait(SocketMessage message, long timeout_ticks )
+        public void PushWait(SocketMessage message, long time_ticks )
         {
-            var item = new Item(message , timeout_ticks);
+            var item = new Item(message , time_ticks , time_ticks + _RTO.Value);
             _Items.Add(item.Message.GetSeq(), item);
         }
         
 
-        public void Reply(ushort package)
+        public void Reply(ushort package,long time_ticks,long time_delta)
         {
+            Item item;
+            if (_Items.TryGetValue(package, out item))
+            {
+                _Reply(package, time_ticks, time_delta, item);
+            }
+
+            
+        }
+
+        private void _Reply(ushort package, long time_ticks, long time_delta, Item item)
+        {
+            _RTO.Update(time_ticks - item.StartTicks, time_delta);
             _Items.Remove(package);
         }
 
 
-        public void ReplyUnder(ushort package_id)
+        public void ReplyUnder(ushort package_id, long time_ticks, long time_delta)
         {
             var pkg = _Items.Values.FirstOrDefault(item => item.Message.GetSeq() == package_id);
             if (pkg != null)
             {
-                foreach (var replyId in _Items.Values.Where(item => item.EndTicks <= pkg.EndTicks).Select(item => item.Message.GetSeq()).ToArray())
-                {
-                    Reply(replyId);
+                foreach (var item in _Items.Values.Where(item => item.EndTicks <= pkg.EndTicks).Select(item => item).ToArray())
+                {                    
+                    _Reply(item.Message.GetSeq(), time_ticks, time_delta, item);
                 }
                 
             }
+            
         }
 
-        public List<SocketMessage> PopLost(long ticks)
+        public List<SocketMessage> PopLost(long ticks,long delta)
         {
 
             List<SocketMessage> packages = new List<SocketMessage>();
@@ -75,6 +94,7 @@ namespace Regulus.Network.RUDP
             {
                 if (item.IsTimeout(ticks)  )
                 {
+                    _RTO.Update(item.EndTicks, delta);
                     packages.Add(item.Message);
                 }
                 else if (item.Hungry > _HungryLimit)
