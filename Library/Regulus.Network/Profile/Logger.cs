@@ -92,7 +92,7 @@ namespace Regulus.Network.Profile
         {
 
             var logstring = string.Format(
-                "[RUDP] EndPoint:{0} SendBytes:{1} ReceiveBytes:{2} RTT:{3} RTO:{4} SendPackages:{5} SendLost:{6} ReceivePackages:{7},ReceiveInvalidPackages:{8}",
+                "[RUDP] EndPoint:{0} SendBytes:{1} ReceiveBytes:{2} RTT:{3} RTO:{4} SendPackages:{5} SendLost:{6} ReceivePackages:{7} ReceiveInvalidPackages:{8}",
                 line.EndPoint , line.SendBytes , line.ReceiveBytes , line.RTT , line.RTO , line.SendedPackages , line.SendLostPackages , line.ReceivePackages , line.ReceiveInvalidPackages);
 
             Regulus.Utility.Log.Instance.WriteInfo(logstring);
