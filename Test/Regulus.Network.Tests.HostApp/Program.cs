@@ -13,6 +13,6 @@ namespace Regulus.Network.Tests.HostApp
 		{
 			var console = new HostConsole();
 			console.Run();
-		}
+        }
 	}
 }

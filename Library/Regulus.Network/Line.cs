@@ -80,6 +80,14 @@ namespace Regulus.Network.RUDP
 
         public int AcknowledgeCount { get { return _Waiter.Count; } }
         public int WaitSendCount { get { return _SendPackages.Count; } }
+        public long SendBytes { get; private set; }
+        public long ReceiveBytes { get; private set; }
+        public long RTT { get { return _Waiter.RTT; } }
+        public long RTO { get { return _Waiter.RTO; } }
+        public long SendedPackages { get; private set; }
+        public long SendLostPackages { get; private set; }
+        public long ReceivePackages { get; private set; }
+        public long ReceiveInvalidPackages { get; private set; }
 
 
         public void Input(SocketMessage message)
@@ -121,6 +129,7 @@ namespace Regulus.Network.RUDP
             SocketMessage message = null;
             while ((message = _Dequeue())!=null)
             {
+
                 var ack = message.GetAck();
 
                 _ResetTimeout();
@@ -133,14 +142,19 @@ namespace Regulus.Network.RUDP
                     _Waiter.Reply((ushort)(ack_id - 1), time.Ticks, time.DeltaTicks);
                 }
 
-                
-
                 _Waiter.Padding();
-                _Rectifier.PushPackage(message);
+                if (_Rectifier.PushPackage(message) == false)
+                {
+                    ReceiveInvalidPackages++;
+                }
 
                 var oper = (PEER_OPERATION)message.GetOperation();
                 if (oper != PEER_OPERATION.ACKNOWLEDGE)
                     _SendAck(_Rectifier.Serial, _Rectifier.SerialBitFields);
+
+
+                ReceiveBytes += message.GetPackageSize();
+                ReceivePackages++;
             }
 
             
@@ -168,6 +182,8 @@ namespace Regulus.Network.RUDP
                     _SendPackages.Enqueue(rtos[i]);
                 }
             }
+
+            SendLostPackages += count;
         }
 
    
@@ -180,6 +196,8 @@ namespace Regulus.Network.RUDP
                     _Waiter.PushWait(message, time.Ticks);
 
                 OutputEvent(message);
+                SendBytes += message.GetPackageSize();
+                SendedPackages++;
             }
             
         }
@@ -195,38 +213,5 @@ namespace Regulus.Network.RUDP
         }
     }
 
-    internal class RetransmissionTimeOut
-    {
-        private long _RTTVAL;
-        private long _SRTT;
-        private long  _RTT;
-        public long Value { get; set; }
-
-        public RetransmissionTimeOut()
-        {
-            _RTTVAL = (long)(Timestamp.OneSecondTicks * 0.05);
-            _SRTT = (long)(Timestamp.OneSecondTicks * 0.1);
-            _RTT = (long)(Timestamp.OneSecondTicks * 0.1);
-
-            Update(_RTT, 0);
-        }
-
-        public void Update(long rtt,long delta)
-        {
-            _SRTT = (long)(0.875 * _RTT + 0.125 * rtt);
-            _RTT = rtt;
-            _RTTVAL = (long)(0.75 * _RTTVAL + 0.25 * _Abs(_SRTT - rtt));            
-            Value = _SRTT + _Max(delta, 4 * _RTTVAL);
-        }
-
-        private long _Abs(long val)
-        {
-            return val < 0 ? 0 - val : val;
-        }
-
-        private long _Max(long time_delta_ticks, long rttval)
-        {
-            return time_delta_ticks > rttval ? time_delta_ticks : rttval;
-        }
-    }
+    
 }

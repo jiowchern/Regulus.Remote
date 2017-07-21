@@ -6,6 +6,7 @@ using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Regulus.Framework;
+using Regulus.Network.Profile;
 using Regulus.Serialization;
 using Regulus.Utility;
 
@@ -19,6 +20,7 @@ namespace Regulus.Network.RUDP
 	    private readonly Dictionary<Line , Peer> _Peers;
 	    private readonly List<Peer> _RemovePeers;
         private readonly Regulus.Utility.Updater<Timestamp> _Updater;
+	    private Logger _Logger;
 	    
         public int PeerCount { get { return _Peers.Count; } }
 	    public static Host CreateStandard(int port)
@@ -35,6 +37,7 @@ namespace Regulus.Network.RUDP
             _Updater = new Updater<Timestamp>();
             _Peers = new Dictionary<Line, Peer>();
             _WiringOperator = new WiringOperator(sendable, recevieable);
+            _Logger = new Logger(1f);
         }
 
 	    
@@ -57,7 +60,9 @@ namespace Regulus.Network.RUDP
 
 	    void IBootable.Launch()
 	    {
-	        _WiringOperator.JoinStreamEvent += _CreatePeer;
+	        _Logger.Start();
+
+            _WiringOperator.JoinStreamEvent += _CreatePeer;
 	        _WiringOperator.LeftStreamEvent += _DestroyPeer;
 
             _Updater.Add(_WiringOperator);
@@ -69,12 +74,15 @@ namespace Regulus.Network.RUDP
 	        _Updater.Shutdown();
 	        _WiringOperator.JoinStreamEvent -= _CreatePeer;
 	        _WiringOperator.LeftStreamEvent -= _DestroyPeer;
+
+	        _Logger.End();
         }
 
 	    private void _DestroyPeer(Line line)
 	    {
+	        _Logger.Unregister(line);
 
-	        var peer = _Peers.FirstOrDefault(p => p.Key == line);
+               var peer = _Peers.FirstOrDefault(p => p.Key == line);
 	        
 
             if (peer.Key != null)
@@ -103,8 +111,9 @@ namespace Regulus.Network.RUDP
             _Peers.Add(line,peer);            
             _Updater.Add(peer);
 
-	        
-	    }
+            _Logger.Register(line);
+
+        }
 
 	    private void _Remove(Peer peer)
 	    {

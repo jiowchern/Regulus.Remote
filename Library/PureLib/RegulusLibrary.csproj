@@ -78,6 +78,7 @@
     <Compile Include="CustomType\Vector2.cs" />
     <Compile Include="CustomType\Verify.cs" />
     <Compile Include="DeserializeException.cs" />
+    <Compile Include="Extension\QueueThreadHelper.cs" />
     <Compile Include="Extension\TypeExtension.cs" />
     <Compile Include="Extension\Rect.cs" />
     <Compile Include="Extension\ShowMember.cs" />
