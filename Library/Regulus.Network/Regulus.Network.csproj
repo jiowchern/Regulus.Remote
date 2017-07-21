@@ -48,6 +48,7 @@
     <Compile Include="ISocketConnectable.cs" />
     <Compile Include="ISocketLintenable.cs" />
     <Compile Include="Line.cs" />
+    <Compile Include="Profile\Logger.cs" />
     <Compile Include="ObjectPool.cs" />
     <Compile Include="Package\PEER_OPERATION.cs" />
     <Compile Include="CongestionRecorder.cs" />
@@ -62,6 +63,7 @@
     <Compile Include="PeerConnecter.cs" />
     <Compile Include="PeerDisconnecter.cs" />
     <Compile Include="PeerListener.cs" />
+    <Compile Include="RetransmissionTimeOut.cs" />
     <Compile Include="Rudp\RudpConnecter.cs" />
     <Compile Include="Rudp\RudpListener.cs" />
     <Compile Include="Rudp\RudpSocket.cs" />

@@ -7,7 +7,7 @@ using Regulus.Utility;
 
 namespace Regulus.Extension
 {
-	public static class System_Data_DataTable
+    public static class System_Data_DataTable
 	{
 		public class DataTableType
 		{

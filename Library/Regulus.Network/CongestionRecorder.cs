@@ -45,7 +45,9 @@ namespace Regulus.Network.RUDP
         }
 
         public int Count { get { return _Items.Count; } }
-        
+        public long RTT { get { return _RTO.RTT; } }
+        public long RTO { get { return _RTO.Value; } }
+
 
         public void PushWait(SocketMessage message, long time_ticks )
         {
