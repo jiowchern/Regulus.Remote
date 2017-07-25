@@ -7,19 +7,20 @@ namespace Regulus.Network.Tests.AgentApp
     {
         readonly Regulus.Utility.StageMachine _Machine;
         private readonly Regulus.Utility.Updater<Timestamp> _Updater;
-        
-        private long _Ticks;
+        private Regulus.Network.ITime _Time;
         private Agent _Agent;
 
         public AgentConsole()
         {
-            _Agent = Regulus.Network.RUDP.Agent.CreateStandard();
+            _Time = new Time();
+            _Agent = Regulus.Network.RUDP.Agent.CreateStandard(_Time.OneSeconds);
             _Updater = new Updater<Timestamp>();
             _Machine = new StageMachine();
+            
         }
         protected override void _Launch()
         {
-            _Ticks = System.DateTime.Now.Ticks;
+            
 
             _Updater.Add(_Agent);
             _ToInitial();
@@ -49,12 +50,8 @@ namespace Regulus.Network.Tests.AgentApp
 
         protected override void _Update()
         {
-            var nowTicks = System.DateTime.Now.Ticks;
-            var delta = nowTicks - _Ticks;
-            _Ticks = nowTicks;
-
-            var time = new Timestamp(nowTicks , delta);            
-            _Updater.Working(time);
+            _Time.Sample();
+            _Updater.Working(new Timestamp(_Time.Now , _Time.Delta));
             _Machine.Update();
         }
 

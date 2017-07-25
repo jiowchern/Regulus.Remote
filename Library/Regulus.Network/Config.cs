@@ -11,9 +11,9 @@ namespace Regulus.Network
 
         static Config()
         {            
-            HostListenTimeout = Timestamp.OneSecondTicks * 30;
-            AgentConnectTimeout = Timestamp.OneSecondTicks * 30;
-            TransmitterTimeout = Timestamp.OneSecondTicks * 30;
+            HostListenTimeout = 30;
+            AgentConnectTimeout = 30;
+            TransmitterTimeout = 30;
         }
 
         public static readonly long AgentConnectTimeout;

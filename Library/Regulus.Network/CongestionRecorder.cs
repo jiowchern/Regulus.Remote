@@ -37,6 +37,8 @@ namespace Regulus.Network.RUDP
         private readonly Dictionary<ushort, Item> _Items;
 
         private readonly RetransmissionTimeOut _RTO;
+        
+
         public CongestionRecorder(int hungry_limit)
         {
             _HungryLimit = hungry_limit;
@@ -45,8 +47,10 @@ namespace Regulus.Network.RUDP
         }
 
         public int Count { get { return _Items.Count; } }
-        public long RTT { get { return _RTO.RTT; } }
+        public long SRTT { get { return _RTO.RTT; } }
         public long RTO { get { return _RTO.Value; } }
+
+        public long LastRTT { get; private set; }
 
 
         public void PushWait(SocketMessage message, long time_ticks )
@@ -69,7 +73,8 @@ namespace Regulus.Network.RUDP
 
         private void _Reply(ushort package, long time_ticks, long time_delta, Item item)
         {
-            _RTO.Update(time_ticks - item.StartTicks, time_delta);
+            LastRTT = time_ticks - item.StartTicks;
+            _RTO.Update(LastRTT, time_delta);
             _Items.Remove(package);
         }
 
@@ -96,7 +101,7 @@ namespace Regulus.Network.RUDP
             {
                 if (item.IsTimeout(ticks)  )
                 {
-                    _RTO.Update(item.EndTicks, delta);
+                    _RTO.Update(ticks - item.StartTicks, delta);
                     packages.Add(item.Message);
                 }
                 else if (item.Hungry > _HungryLimit)

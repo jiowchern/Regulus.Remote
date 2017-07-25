@@ -47,6 +47,7 @@
     <Compile Include="ISocket.cs" />
     <Compile Include="ISocketConnectable.cs" />
     <Compile Include="ISocketLintenable.cs" />
+    <Compile Include="ITime.cs" />
     <Compile Include="Line.cs" />
     <Compile Include="Profile\Logger.cs" />
     <Compile Include="ObjectPool.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Tcp\TcpConnecter.cs" />
     <Compile Include="Tcp\TcpListener.cs" />
     <Compile Include="Tcp\TcpSocket.cs" />
+    <Compile Include="Win32\Time.cs" />
     <Compile Include="WiringOperator.cs" />
     <Compile Include="SocketRecevier.cs" />
     <Compile Include="SocketSender.cs" />

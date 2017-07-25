@@ -27,7 +27,7 @@ namespace Regulus.Network.Tests.AgentApp
         {
             _Command.RegisterLambda<TransmissionStage , string>(this, (ins , message) => ins.Send(message) );
             _Command.RegisterLambda(this, (ins) => ins.Disconnect());
-
+            
 
             _Peer.Receive(_Buffer, 0, _Buffer.Length, _Readed);
         }
@@ -55,7 +55,7 @@ namespace Regulus.Network.Tests.AgentApp
 
         private void _Readed(int readed_count, SocketError error)
         {
-            string something = Encoding.Default.GetString(_Buffer,0,readed_count);
+            string something = Convert.ToBase64String(_Buffer,0,readed_count);
             for (int i = 0; i < _Buffer.Length; i++)
             {
                 _Buffer[i] = 0;

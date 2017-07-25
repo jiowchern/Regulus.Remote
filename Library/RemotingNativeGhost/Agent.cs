@@ -23,6 +23,8 @@ namespace Regulus.Remoting.Ghost.Native
 	    private long _Ticks;
 	    private long _Last;
 
+	    private Regulus.Network.ITime _Time;
+
 	    private long _Ping
 		{
 			get { return _Core.Ping; }
@@ -32,21 +34,22 @@ namespace Regulus.Remoting.Ghost.Native
 
 	    private Agent(IProtocol protocol)
 	    {
-	        _Serializer = protocol.GetSerialize();
+	        _Time = new Network.Time();
+            _Serializer = protocol.GetSerialize();
 	        _Machine = new StageMachine();
             _Core = new AgentCore(protocol);
-	        _RudpAgent = Regulus.Network.RUDP.Agent.CreateStandard();
+	        _RudpAgent = Regulus.Network.RUDP.Agent.CreateStandard(_Time.OneSeconds);
 	        _Updater = new Updater<Timestamp>();
-
+	        
         }
 
 		bool IUpdatable.Update()
 		{
 			lock(_Machine)
 				_Machine.Update();
-		    _Ticks = System.DateTime.Now.Ticks;
+		    
 
-            _Updater.Working(new Timestamp(_Ticks , _Ticks-_Last));
+            _Updater.Working(new Timestamp(_Time.Now , _Time.Delta));
 		    _Last = _Ticks;
 
             return true;

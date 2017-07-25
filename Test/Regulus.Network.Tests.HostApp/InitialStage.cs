@@ -19,7 +19,7 @@ namespace Regulus.Network.Tests.HostApp
 
 		public void Bind(int port)
 		{
-		    Regulus.Network.ISocketLintenable listener = new RudpListener();
+		    Regulus.Network.ISocketLintenable listener = new RudpListener(new Regulus.Network.Win32.Time());
 		    listener.Bind(port);
             CreatedEvent(listener);
 		}

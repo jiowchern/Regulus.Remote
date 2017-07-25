@@ -22,17 +22,16 @@ namespace Regulus.Network.RUDP
         public Agent(IRecevieable recevieable, ISendable sendable)
         {
             _Recevieable = recevieable;
-            _Sendable = sendable;
+            _Sendable = sendable;            
             _Updater = new Updater<Timestamp>();
             _RemovePeers = new List<Peer>();
-            _WiringOperator = new WiringOperator(_Sendable, _Recevieable);
-            
-
+            _WiringOperator = new WiringOperator(_Sendable, _Recevieable);            
             _Peers = new Dictionary<EndPoint, Peer>();
         }       
 
         bool IUpdatable<Timestamp>.Update(Timestamp timestamp)
         {
+            
             var count = _RemovePeers.Count;
             for (int i = 0; i < count; i++)
             {
@@ -112,11 +111,13 @@ namespace Regulus.Network.RUDP
         }
 
 
-        public static Agent CreateStandard()
-        {            
+        public static Agent CreateStandard(long one_seconds_ticks)
+        {
+            Timestamp.OneSecondTicks = one_seconds_ticks;
             var socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Dgram, System.Net.Sockets.ProtocolType.Udp);
             socket.Bind(new IPEndPoint(IPAddress.Any, 0));
             return new Agent(new SocketRecevier(socket), new SocketSender(socket));
         }
+        
     }
 }
