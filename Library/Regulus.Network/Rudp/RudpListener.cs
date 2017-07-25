@@ -4,15 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Regulus.Network.RUDP;
+using Regulus.Network.Win32;
 using Regulus.Utility;
 
 namespace Regulus.Network
 {
     public class RudpListener : ISocketLintenable
     {
+        private readonly ITime _Time;
         private Host _Host;
         private bool _Enable;
         private event Action<ISocket> _AcctpeEvent;
+
+        public RudpListener(ITime time)
+        {
+            _Time = time;
+            Timestamp.OneSecondTicks = _Time.OneSeconds;
+        }
+
         event Action<ISocket> ISocketLintenable.AcceptEvent
         {
             add { _AcctpeEvent += value; }
@@ -31,17 +40,12 @@ namespace Regulus.Network
         {
             var updater = new Regulus.Utility.Updater<Timestamp>();
             updater.Add(_Host);
-
-
-            var now = System.DateTime.Now.Ticks;
-            var last = now ;
+            
             var regulator = new Regulus.Utility.AutoPowerRegulator(new PowerRegulator());
             while (_Enable)
             {
-                now = System.DateTime.Now.Ticks;
-                updater.Working(new Timestamp(now , now-last));
-                last = now;
-
+                _Time.Sample();
+                updater.Working(new Timestamp(_Time.Now, _Time.Delta));
                 regulator.Operate();
             }
 

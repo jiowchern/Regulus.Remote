@@ -19,6 +19,7 @@ namespace Regulus.Network.RUDP
         private readonly Queue<SocketMessage> _ReceivePackages;
         private readonly CongestionRecorder _Waiter;
         private long _TimeoutTicks;
+        private long _PingTicks;
 
 
 
@@ -43,7 +44,7 @@ namespace Regulus.Network.RUDP
 
         private void _ResetTimeout()
         {
-            _TimeoutTicks = Config.TransmitterTimeout;
+            _TimeoutTicks = Timestamp.OneSecondTicks * Config.TransmitterTimeout;
         }
 
         public void WriteOperation(PEER_OPERATION operation)
@@ -82,12 +83,13 @@ namespace Regulus.Network.RUDP
         public int WaitSendCount { get { return _SendPackages.Count; } }
         public long SendBytes { get; private set; }
         public long ReceiveBytes { get; private set; }
-        public long RTT { get { return _Waiter.RTT; } }
+        public long SRTT { get { return _Waiter.SRTT; } }
         public long RTO { get { return _Waiter.RTO; } }
         public long SendedPackages { get; private set; }
         public long SendLostPackages { get; private set; }
         public long ReceivePackages { get; private set; }
         public long ReceiveInvalidPackages { get; private set; }
+        public long LastRTT { get { return _Waiter.LastRTT; }}
 
 
         public void Input(SocketMessage message)
@@ -101,6 +103,11 @@ namespace Regulus.Network.RUDP
 
         }
 
+        private void _SendPing(ushort ack, uint ack_bits)
+        {
+            _SendAck(ack , ack_bits);
+        }
+        
         private void _SendAck(ushort ack,uint ack_bits)
         {
             var package = _Dispenser.PackingOperation(PEER_OPERATION.ACKNOWLEDGE, ack, ack_bits);
@@ -115,13 +122,29 @@ namespace Regulus.Network.RUDP
             _TimeoutTicks -= time.DeltaTicks;
             if (_TimeoutTicks < 0)
                 return true;
+
+            
             _HandleReceive(time);
-            _HandleResend(time);            
+            _HandleResend(time);
+            _HandlePing(time);
             _HandleSend(time);
 
             
 
             return false;
+        }
+
+        private void _HandlePing(Timestamp time)
+        {
+            _PingTicks += time.DeltaTicks;
+            if (_PingTicks > Timestamp.OneSecondTicks)
+            {
+                _PingTicks = 0;
+                if (_SendPackages.Count == 0)
+                {
+                    _SendPing(_Rectifier.Serial, _Rectifier.SerialBitFields);
+                }
+            }
         }
 
         private void _HandleReceive(Timestamp time)

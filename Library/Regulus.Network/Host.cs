@@ -37,7 +37,7 @@ namespace Regulus.Network.RUDP
             _Updater = new Updater<Timestamp>();
             _Peers = new Dictionary<Line, Peer>();
             _WiringOperator = new WiringOperator(sendable, recevieable);
-            _Logger = new Logger(1f);
+            _Logger = new Logger(1f/10f);
         }
 
 	    

@@ -15,7 +15,8 @@ namespace Regulus.Extension
             T item = default(T);
             lock (queue)
             {
-                item = queue.Dequeue();
+                if(queue.Count > 0)
+                    item = queue.Dequeue();
             }
             return item;
         }
