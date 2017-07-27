@@ -1,6 +1,5 @@
 ﻿using System;
-
-
+using System.Diagnostics;
 using Regulus.Framework;
 
 namespace Regulus.Utility
@@ -32,75 +31,35 @@ namespace Regulus.Utility
 
 	public class TimeCounter
 	{
+	    private readonly Stopwatch _Stopwatch;
+
 		private long _Begin;
 
 		public long Ticks
 		{
-			get { return DateTime.Now.Ticks - _Begin; }
+			get { return _Stopwatch.ElapsedTicks - _Begin; }
 		}
 
 		public float Second
 		{
-			get { return (float)new TimeSpan(Ticks).TotalSeconds; }
+			get { return (float)(Ticks / (double)Stopwatch.Frequency); }
 		}
 
 		public TimeCounter()
 		{
-			Reset();
+		    _Stopwatch = new Stopwatch();
+		    _Stopwatch.Start();
+
+            Reset();
 		}
 
 		public void Reset()
 		{
-			_Begin = DateTime.Now.Ticks;
+			_Begin = _Stopwatch.ElapsedTicks;
 		}
 	}
 
-	public class Stopwatch
-	{
-		private TimeCounter _Current;
-
-		private long _Interval;
-
-		private bool _Pause;
-
-		private TimeCounter _Stop;
-
-		private long _StopTick;
-
-		public long Ticks
-		{
-			get
-			{
-				if(_Pause == false)
-				{
-					return _Current.Ticks - _Interval;
-				}
-
-				return _StopTick;
-			}
-		}
-
-		public void Reset()
-		{
-			_Current.Reset();
-			_Stop.Reset();
-			_Interval = 0;
-			_StopTick = 0;
-		}
-
-		public void Continue()
-		{
-			_Pause = false;
-			_Interval += _Stop.Ticks;
-		}
-
-		public void Stop()
-		{
-			_Pause = true;
-			_Stop.Reset();
-			_StopTick = _Current.Ticks;
-		}
-	}
+	
 
 	public class Timer
 	{
