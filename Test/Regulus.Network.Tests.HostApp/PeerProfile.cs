@@ -15,12 +15,12 @@ namespace Regulus.Network.Tests.HostApp
     public partial class PeerProfile : Form
     {
         private readonly string _Ip;
-        private Regex _Regex;
+        private readonly Regex _Regex;
         public PeerProfile(string ip)
         {
             _Ip = ip;
             _Regex = new Regex(
-                @"\[RUDP\]\sEndPoint:([\d]+.[\d]+.[\d]+.[\d]+:[\d]+)\sSendBytes:([\d]+)\sReceiveBytes:([\d]+)\sSRTT:([\d]+)\sRTO:([\d]+)\sSendPackages:([\d]+)\sSendLost:([\d]+)\sReceivePackages:([\d]+)\sReceiveInvalidPackages:([\d]+)\sLastRTT:([\d]+)");
+                @"\[RUDP\]\sRemoteEndPoint:([\d]+.[\d]+.[\d]+.[\d]+:[\d]+)\sSendBytes:([\d]+)\sReceiveBytes:([\d]+)\sSRTT:([\d]+)\sRTO:([\d]+)\sSendPackages:([\d]+)\sSendLost:([\d]+)\sReceivePackages:([\d]+)\sReceiveInvalidPackages:([\d]+)\sLastRTT:([\d]+)\sCost:([\d]+)\sLastRTO:([\d]+)");
             InitializeComponent();
         }
 
@@ -32,10 +32,13 @@ namespace Regulus.Network.Tests.HostApp
         private void _Record(string message)
         {
             var match = _Regex.Match(message);
-            if (match.Success)
+            if (match.Success )
             {
-               
-
+                var endPoint = match.Groups[1].ToString();
+                if (endPoint != _Ip)
+                {
+                    return;
+                }
                 var propertys = new string[]
                 {
                     match.Groups[1].ToString(),
@@ -48,12 +51,22 @@ namespace Regulus.Network.Tests.HostApp
                     match.Groups[8].ToString(),
                     match.Groups[9].ToString(),
                     match.Groups[10].ToString(),
+                    match.Groups[11].ToString(),
+                    match.Groups[12].ToString(),
                 };
                 
 
                 if (this.InvokeRequired)
-                {                    
-                    this.Invoke(new UpdateRttCallabck(_UpdateRtt), propertys, chart1);
+                {
+
+                    try
+                    {
+                        this.Invoke(new UpdateRttCallabck(_UpdateRtt), propertys, chart1);
+                    }
+                    catch (Exception e)
+                    {                        
+                    }
+                    
                 }
                 else
                 {
@@ -76,6 +89,8 @@ namespace Regulus.Network.Tests.HostApp
             var receivePackages = propertys[7];
             var receiveInvalids = propertys[8];
             var lastRttTicks = propertys[9];
+            var cost = propertys[10];
+            var lastRTOTicks = propertys[11];
 
             SendBytes.Text = sendBytes;
             ReceiveBytes.Text = receiveBytes;
@@ -87,21 +102,32 @@ namespace Regulus.Network.Tests.HostApp
             var srtt = double.Parse(srttTicks.ToString()) / Timestamp.OneSecondTicks;
             var rto = double.Parse(rtoTicks.ToString()) / Timestamp.OneSecondTicks;
             var lastRtt = double.Parse(lastRttTicks.ToString()) / Timestamp.OneSecondTicks;
+            var lastRto = double.Parse(lastRTOTicks.ToString()) / Timestamp.OneSecondTicks;
+
 
             SRTT.Text = srtt.ToString();
             RTO.Text = rto.ToString();
             LastRTT.Text = lastRtt.ToString();
 
-            var rttSerie = controll.Series[0];
+            var rttSerie = chart1.Series[0];
             rttSerie.Points.Add(srtt);
 
-            var rtoSerie = controll.Series[1];
+            var rtoSerie = chart1.Series[1];
             rtoSerie.Points.Add(rto);
 
-            var lastRttSerie = controll.Series[2];
+            var lastRttSerie = chart1.Series[2];
             lastRttSerie.Points.Add(lastRtt);
 
-            if(lastRttSerie.Points.Count > 100)
+            var lastRtoSerie = chart1.Series[3];
+            lastRtoSerie.Points.Add(lastRto);
+
+            var costSerie = chart2.Series[0];
+            costSerie.Points.Add(double.Parse(cost));
+
+            if (lastRtoSerie.Points.Count > 100)
+                lastRtoSerie.Points.RemoveAt(0);
+
+            if (lastRttSerie.Points.Count > 100)
                 lastRttSerie.Points.RemoveAt(0);
 
             if (rtoSerie.Points.Count > 100)
@@ -109,6 +135,9 @@ namespace Regulus.Network.Tests.HostApp
 
             if (rttSerie.Points.Count > 100)
                 rttSerie.Points.RemoveAt(0);
+
+            if (costSerie.Points.Count > 100)
+                costSerie.Points.RemoveAt(0);
 
             controll.ResetAutoValues();
         }
@@ -124,6 +153,96 @@ namespace Regulus.Network.Tests.HostApp
         }
 
         private void label17_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label18_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ReceiveInvalids_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label16_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ReceivePackages_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label14_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label12_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void SendPackages_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label10_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void RTO_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label8_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void SRTT_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ReceiveBytes_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void SendBytes_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void chart1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void chart2_Click(object sender, EventArgs e)
         {
 
         }

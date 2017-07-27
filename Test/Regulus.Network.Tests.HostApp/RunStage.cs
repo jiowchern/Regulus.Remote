@@ -10,14 +10,14 @@ namespace Regulus.Network.Tests.HostApp
 	internal class RunStage : Regulus.Utility.IStage
 	{
 		private Command _Command;
-		private Regulus.Network.ISocketLintenable _Host;		
+		private Regulus.Network.ISocketServer _Host;		
 		private Utility.Console.IViewer _Viewer;
 		public event System.Action ExitEvent;
 	    private long _Ticks;
 	    readonly Regulus.Utility.Updater<Timestamp> _Updater;
 		int _PeerId;	    
 
-        public RunStage(Command command, Utility.Console.IViewer viewer, Regulus.Network.ISocketLintenable host)
+        public RunStage(Command command, Utility.Console.IViewer viewer, Regulus.Network.ISocketServer host)
 		{		    
             _Updater = new Updater<Timestamp>();
 			this._Command = command;

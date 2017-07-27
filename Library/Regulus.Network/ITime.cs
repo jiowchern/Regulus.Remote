@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -18,12 +19,15 @@ namespace Regulus.Network
         readonly long _OneSeconds;
         private long _Delta;
         private long _Now;
-        
+        private readonly Stopwatch _Stopwatch;
 
         public Time()
         {
-            _OneSeconds = System.TimeSpan.FromSeconds(1).Ticks;
-            _Now = System.DateTime.Now.Ticks;
+            _Stopwatch = new Stopwatch();
+            _OneSeconds = Stopwatch.Frequency;
+            _Stopwatch.Start();
+
+            _Now = _Stopwatch.ElapsedTicks;
            
         }
         long ITime.OneSeconds
@@ -43,7 +47,7 @@ namespace Regulus.Network
 
         void ITime.Sample()
         {
-            var now = System.DateTime.Now.Ticks;
+            var now = _Stopwatch.ElapsedTicks;
             _Delta = now - _Now;
             _Now = now;
         }

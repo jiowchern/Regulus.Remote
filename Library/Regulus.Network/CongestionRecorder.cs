@@ -51,6 +51,7 @@ namespace Regulus.Network.RUDP
         public long RTO { get { return _RTO.Value; } }
 
         public long LastRTT { get; private set; }
+        public long LastRTO { get; private set; }
 
 
         public void PushWait(SocketMessage message, long time_ticks )
@@ -73,8 +74,12 @@ namespace Regulus.Network.RUDP
 
         private void _Reply(ushort package, long time_ticks, long time_delta, Item item)
         {
-            LastRTT = time_ticks - item.StartTicks;
-            _RTO.Update(LastRTT, time_delta);
+            var rtt = time_ticks - item.StartTicks;
+
+            if(LastRTT != rtt)
+                _RTO.Update(rtt, time_delta);
+
+            LastRTT = rtt;
             _Items.Remove(package);
         }
 
@@ -101,11 +106,18 @@ namespace Regulus.Network.RUDP
             {
                 if (item.IsTimeout(ticks)  )
                 {
-                    _RTO.Update(ticks - item.StartTicks, delta);
+                    var rto = ticks - item.StartTicks;
+                    if(rto != LastRTO)
+                        _RTO.Update(rto, delta);
+                    LastRTO = rto;
                     packages.Add(item.Message);
                 }
                 else if (item.Hungry > _HungryLimit)
                 {
+                    var rto = ticks - item.StartTicks;
+                    if (rto != LastRTO)
+                        _RTO.Update(rto, delta);
+                    LastRTO = rto;
                     packages.Add(item.Message);
                 }
             }
@@ -113,6 +125,7 @@ namespace Regulus.Network.RUDP
             foreach (var package in packages)
             {
                 _Items.Remove(package.GetSeq());
+                this.PushWait(package , ticks);                
             }
 
             return packages;

@@ -11,7 +11,7 @@ namespace Regulus.Remoting.Soul.Native
     {
         private readonly ThreadCoreHandler _CoreHandler;
         private readonly IProtocol _Protocol;
-        private readonly ISocketLintenable _Lintenable;
+        private readonly ISocketServer _Server;
 
         private readonly PeerSet _Peers;
 
@@ -55,7 +55,7 @@ namespace Regulus.Remoting.Soul.Native
             _Spin = new PowerRegulator();
             _AutoPowerRegulator = new AutoPowerRegulator(_Spin);
 
-            _Lintenable = new Regulus.Network.RudpListener(new Regulus.Network.Win32.Time());
+            _Server = new Regulus.Network.RudpServer();
         }
 
         public void DoWork(object obj)
@@ -64,8 +64,8 @@ namespace Regulus.Remoting.Soul.Native
             var are = (AutoResetEvent)obj;
             _Run = true;
 
-            _Lintenable.AcceptEvent += _Accept;
-            _Lintenable.Bind(_Port);
+            _Server.AcceptEvent += _Accept;
+            _Server.Bind(_Port);
 
             while(_Run)
             {
@@ -94,8 +94,8 @@ namespace Regulus.Remoting.Soul.Native
             _Peers.Release();
 
 
-            _Lintenable.AcceptEvent -= _Accept;
-            _Lintenable.Close();
+            _Server.AcceptEvent -= _Accept;
+            _Server.Close();
 
 
             are.Set();

@@ -8,7 +8,7 @@ namespace Regulus.Network.Tests.HostApp
 	{
 		private readonly Command _Command;
 
-		public event Action<Regulus.Network.ISocketLintenable> CreatedEvent;
+		public event Action<Regulus.Network.ISocketServer> CreatedEvent;
 
 		public InitialStage(Command command)
 		{
@@ -19,7 +19,7 @@ namespace Regulus.Network.Tests.HostApp
 
 		public void Bind(int port)
 		{
-		    Regulus.Network.ISocketLintenable listener = new RudpListener(new Regulus.Network.Win32.Time());
+		    Regulus.Network.ISocketServer listener = new RudpServer();
 		    listener.Bind(port);
             CreatedEvent(listener);
 		}

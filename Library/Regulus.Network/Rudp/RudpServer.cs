@@ -4,31 +4,30 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using Regulus.Network.RUDP;
-using Regulus.Network.Win32;
+
 using Regulus.Utility;
 
 namespace Regulus.Network
 {
-    public class RudpListener : ISocketLintenable
+    public class RudpServer : ISocketServer
     {
         private readonly ITime _Time;
         private Host _Host;
         private bool _Enable;
         private event Action<ISocket> _AcctpeEvent;
 
-        public RudpListener(ITime time)
+        public RudpServer()
         {
-            _Time = time;
-            Timestamp.OneSecondTicks = _Time.OneSeconds;
+            _Time = Timestamp.Time;            
         }
 
-        event Action<ISocket> ISocketLintenable.AcceptEvent
+        event Action<ISocket> ISocketServer.AcceptEvent
         {
             add { _AcctpeEvent += value; }
             remove { _AcctpeEvent -= value; }
         }
 
-        void ISocketLintenable.Bind(int port)
+        void ISocketServer.Bind(int port)
         {
             _Host = Host.CreateStandard(port);
             _Host.AcceptEvent += _Accept;
@@ -41,12 +40,12 @@ namespace Regulus.Network
             var updater = new Regulus.Utility.Updater<Timestamp>();
             updater.Add(_Host);
             
-            var regulator = new Regulus.Utility.AutoPowerRegulator(new PowerRegulator());
+            //var regulator = new Regulus.Utility.AutoPowerRegulator(new PowerRegulator());
             while (_Enable)
             {
                 _Time.Sample();
                 updater.Working(new Timestamp(_Time.Now, _Time.Delta));
-                regulator.Operate();
+                //regulator.Operate();
             }
 
             updater.Shutdown();
@@ -58,7 +57,7 @@ namespace Regulus.Network
             _AcctpeEvent(new RudpSocket(peer));
         }
 
-        void ISocketLintenable.Close()
+        void ISocketServer.Close()
         {
             _Host.AcceptEvent -= _Accept;
             _Enable = false;
