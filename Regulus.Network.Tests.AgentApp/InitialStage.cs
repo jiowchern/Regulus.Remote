@@ -10,15 +10,16 @@ namespace Regulus.Network.Tests.AgentApp
     {
         private readonly Command _Command;
         private readonly Console.IViewer _Viewer;
-        private Agent _Agent;
+        private ISocketClient _Agent;
         private ISocketConnectable _Peer;
         public event Action<ISocket> CreatedEvent;
-        public InitialStage(Agent agent , Command command,Console.IViewer viewer)
+        public InitialStage(ISocketClient agent , Command command,Console.IViewer viewer)
         {
             _Agent = agent;
             _Command = command;
             _Viewer = viewer;
-            _Peer = new RudpConnecter(agent);
+            
+            _Peer = _Agent.Spawn();
 
         }
 

@@ -1,4 +1,5 @@
-﻿using Regulus.Network.RUDP;
+﻿using Regulus.Network.Rudp;
+using Regulus.Network.RUDP;
 using Regulus.Utility;
 
 namespace Regulus.Network.Tests.AgentApp
@@ -6,23 +7,24 @@ namespace Regulus.Network.Tests.AgentApp
     internal class AgentConsole : Regulus.Utility.WindowConsole
     {
         readonly Regulus.Utility.StageMachine _Machine;
-        private readonly Regulus.Utility.Updater<Timestamp> _Updater;
-        private Regulus.Network.ITime _Time;
-        private Agent _Agent;
+
+        
+        private ISocketClient _Agent;
 
         public AgentConsole()
         {
-            _Time = new Time();
-            _Agent = Regulus.Network.RUDP.Agent.CreateStandard(_Time.OneSeconds);
-            _Updater = new Updater<Timestamp>();
+            
+            _Agent = new RudpClient();
+
             _Machine = new StageMachine();
             
         }
         protected override void _Launch()
         {
-            
 
-            _Updater.Add(_Agent);
+            _Agent.Launch();
+
+
             _ToInitial();
         }
 
@@ -50,14 +52,14 @@ namespace Regulus.Network.Tests.AgentApp
 
         protected override void _Update()
         {
-            _Time.Sample();
-            _Updater.Working(new Timestamp(_Time.Now , _Time.Delta));
+        
+        
             _Machine.Update();
         }
 
         protected override void _Shutdown()
         {
-            _Updater.Shutdown();
+            _Agent.Shutdown();
             _Machine.Termination();
         }
     }

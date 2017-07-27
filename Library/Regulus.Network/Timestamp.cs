@@ -1,11 +1,15 @@
+using Regulus.Utility;
+using Stopwatch = System.Diagnostics.Stopwatch;
+
 namespace Regulus.Network
 {
     public class Timestamp
     {        
         public readonly long Ticks;
         public readonly long DeltaTicks;
-        public static long _OneSeconds;
-        public static long OneSecondTicks { get { return _OneSeconds; } set { _OneSeconds = value; } }
+
+        public static readonly ITime Time = new Time();
+        public static readonly long OneSecondTicks = Stopwatch.Frequency;
 
         public Timestamp(long ticks, long delta_ticks)
         {            
@@ -13,6 +17,7 @@ namespace Regulus.Network
             DeltaTicks = delta_ticks;
         }
 
+        
         
     }
 }

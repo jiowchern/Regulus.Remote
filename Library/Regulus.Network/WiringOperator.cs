@@ -64,14 +64,14 @@ namespace Regulus.Network.RUDP
             for (int i = 0; i < packages.Length; i++)
             {
                 var package = packages[i];
-                if (package.IsError())
+                if (package.IsError() == false)
                 {
-                    _HandleErrorDisconnect(package.EndPoint);
+                    var line = _Query(package.RemoteEndPoint);
+                    line.Input(package);
                 }
                 else
                 {
-                    var line = _Query(package.EndPoint);
-                    line.Input(package);
+                    _HandleErrorDisconnect(package.RemoteEndPoint);                    
                 }
                 
             }
@@ -140,14 +140,20 @@ namespace Regulus.Network.RUDP
 
         void IBootable.Launch()
         {
-            
+            _Sendable.DoneEvent += _SendOut;
         }
 
         
 
         void IBootable.Shutdown()
         {
-            
+            _Sendable.DoneEvent -= _SendOut;
+        }
+
+        private void _SendOut(SocketMessage message)
+        {
+            var line = _Query(message.RemoteEndPoint);
+            line.MessageSendOut(message);
         }
 
         public void Create(EndPoint end_point)

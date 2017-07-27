@@ -32,15 +32,24 @@ namespace Regulus.Network.Tests
 
         public void Receive(SocketMessage message)
         {
-            Assert.AreNotEqual(Endpoint, message.EndPoint);
+            Assert.AreNotEqual(Endpoint, message.RemoteEndPoint);
             _Packages.Add(message);
 
         }
         public event Action<SocketMessage> SendEvent;
         void ISendable.Transport(SocketMessage message)
         {
-            Assert.AreNotEqual(Endpoint , message.EndPoint);            
+            Assert.AreNotEqual(Endpoint , message.RemoteEndPoint);
+            _DoneEvent(message);
             SendEvent(message);
+        }
+
+        private event Action<SocketMessage> _DoneEvent;
+
+        event Action<SocketMessage> ISendable.DoneEvent
+        {
+            add { this._DoneEvent += value; }
+            remove { this._DoneEvent -= value; }
         }
 
         bool IUpdatable<Timestamp>.Update(Timestamp arg)

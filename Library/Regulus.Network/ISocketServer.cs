@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Network
 {
-    public interface ISocketLintenable
+    public interface ISocketServer
     {
         event Action<ISocket> AcceptEvent;
         void Bind(int port);

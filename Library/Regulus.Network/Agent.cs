@@ -31,18 +31,29 @@ namespace Regulus.Network.RUDP
 
         bool IUpdatable<Timestamp>.Update(Timestamp timestamp)
         {
-            
-            var count = _RemovePeers.Count;
+            var removePeers = _GetRemovePeers();
+            var count = removePeers.Length;
             for (int i = 0; i < count; i++)
             {
-                var peer = _RemovePeers[i];
-                _WiringOperator.Destroy(peer.EndPoint);                
+                var peer = removePeers[i];
+                lock (_WiringOperator)
+                {
+                    _WiringOperator.Destroy(peer.EndPoint);
+                }                
             }
-            _RemovePeers.Clear();
-
 
             _Updater.Working(timestamp);
             return true;
+        }
+
+        private Peer[] _GetRemovePeers()
+        {
+            lock (_RemovePeers)
+            {
+                var cloned = _RemovePeers.ToArray();
+                _RemovePeers.Clear();
+                return cloned;
+            }
         }
 
         void IBootable.Launch()
@@ -71,7 +82,11 @@ namespace Regulus.Network.RUDP
             {
                 peer.Break();
                 _Updater.Remove(peer);
-                _Peers.Remove(obj.EndPoint);
+                lock (_Peers)
+                {
+                    _Peers.Remove(obj.EndPoint);
+                }
+                
             }
             
         }
@@ -91,29 +106,38 @@ namespace Regulus.Network.RUDP
 
                 var p = new Peer(stream, connecter);
                 p.CloseEvent += () => { _Remove(p); };
-                _Peers.Add(stream.EndPoint, p);
+
+                lock (_Peers)
+                {
+                    _Peers.Add(stream.EndPoint, p);
+                }
+                
                 _Updater.Add(p);
                 peer = p;
             };
-            _WiringOperator.JoinStreamEvent += handler;
-            _WiringOperator.Create(end_point);
-            _WiringOperator.JoinStreamEvent -= handler;
 
+            lock (_WiringOperator)
+            {
+                _WiringOperator.JoinStreamEvent += handler;
+                _WiringOperator.Create(end_point);
+                _WiringOperator.JoinStreamEvent -= handler;
+            }
             
             return peer;
         }
 
         private void _Remove(Peer peer)
         {
-            _RemovePeers.Add(peer);
-
+            lock (_RemovePeers)
+            {
+                _RemovePeers.Add(peer);
+            }
 
         }
 
 
-        public static Agent CreateStandard(long one_seconds_ticks)
-        {
-            Timestamp.OneSecondTicks = one_seconds_ticks;
+        public static Agent CreateStandard()
+        {            
             var socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Dgram, System.Net.Sockets.ProtocolType.Udp);
             socket.Bind(new IPEndPoint(IPAddress.Any, 0));
             return new Agent(new SocketRecevier(socket), new SocketSender(socket));

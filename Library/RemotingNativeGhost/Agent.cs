@@ -38,7 +38,7 @@ namespace Regulus.Remoting.Ghost.Native
             _Serializer = protocol.GetSerialize();
 	        _Machine = new StageMachine();
             _Core = new AgentCore(protocol);
-	        _RudpAgent = Regulus.Network.RUDP.Agent.CreateStandard(_Time.OneSeconds);
+	        _RudpAgent = Regulus.Network.RUDP.Agent.CreateStandard();
 	        _Updater = new Updater<Timestamp>();
 	        
         }

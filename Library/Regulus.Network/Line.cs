@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using Regulus.Extension;
 using Regulus.Serialization;
 
 namespace Regulus.Network.RUDP
@@ -15,11 +16,14 @@ namespace Regulus.Network.RUDP
 
         private readonly BufferDispenser _Dispenser;
         private readonly PackageRectifier _Rectifier;
-        private readonly Queue<SocketMessage> _SendPackages;
+
+        private readonly Queue<SocketMessage> _InputPackages;
+        private readonly Queue<SocketMessage> _SendPackages;        
         private readonly Queue<SocketMessage> _ReceivePackages;
         private readonly CongestionRecorder _Waiter;
         private long _TimeoutTicks;
         private long _PingTicks;
+
 
 
 
@@ -31,6 +35,8 @@ namespace Regulus.Network.RUDP
             
             _SendPackages = new Queue<SocketMessage>();
             _ReceivePackages = new Queue<SocketMessage>();
+            _InputPackages = new Queue<SocketMessage>();
+            
             _Waiter = new CongestionRecorder(3);
 
           
@@ -62,10 +68,9 @@ namespace Regulus.Network.RUDP
                 var packages = _Dispenser.PackingTransmission(buffer, _Rectifier.Serial, _Rectifier.SerialBitFields);
                 for (int i = 0; i < packages.Length; i++)
                 {
-                    lock (_SendPackages)
-                    {
-                        _SendPackages.Enqueue(packages[i]);
-                    }
+                    var message = packages[i];
+                    _InputPackages.SafeEnqueue(message);
+                    
                 }
                 
             
@@ -90,6 +95,8 @@ namespace Regulus.Network.RUDP
         public long ReceivePackages { get; private set; }
         public long ReceiveInvalidPackages { get; private set; }
         public long LastRTT { get { return _Waiter.LastRTT; }}
+        public long Cost { get { return _Waiter.Count; } }
+        public long LastRTO { get { return _Waiter.LastRTO; }}
 
 
         public void Input(SocketMessage message)
@@ -124,15 +131,30 @@ namespace Regulus.Network.RUDP
                 return true;
 
             
+            _HandleInput(time);
             _HandleReceive(time);
             _HandleResend(time);
             _HandlePing(time);
-            _HandleSend(time);
+            _HandleOutput(time);
 
             
 
             return false;
         }
+
+        private void _HandleInput(Timestamp time)
+        {
+            SocketMessage message = null;
+            while (_Waiter.Count < Config.Cost && (message = _InputPackages.SafeDequeue())!=null)
+            {
+                _Waiter.PushWait(message , time.Ticks);
+                lock (_SendPackages)
+                {
+                    _SendPackages.Enqueue(message);
+                }
+            }
+        }
+
 
         private void _HandlePing(Timestamp time)
         {
@@ -197,28 +219,29 @@ namespace Regulus.Network.RUDP
         private void _HandleResend(Timestamp time)
         {
             var rtos = _Waiter.PopLost(time.Ticks,time.DeltaTicks);
+
             var count = rtos.Count;
             for (int i = 0; i < count; i++)
             {
-                lock (_SendPackages)
-                {
-                    _SendPackages.Enqueue(rtos[i]);
-                }
+                _SendPackages.SafeEnqueue(rtos[i]);
+                
             }
 
             SendLostPackages += count;
         }
 
    
-        private void _HandleSend(Timestamp time)
+        private void _HandleOutput(Timestamp time)
         {
-            SocketMessage message = null;
-            while ((message = _PopSend()) != null)
-            {
-                if (message.GetOperation() != (byte)PEER_OPERATION.ACKNOWLEDGE)
-                    _Waiter.PushWait(message, time.Ticks);
+            
 
+
+            SocketMessage message = null;
+            while ((message = _PopSend()) != null  )
+            {                
+                
                 OutputEvent(message);
+
                 SendBytes += message.GetPackageSize();
                 SendedPackages++;
             }
@@ -229,10 +252,20 @@ namespace Regulus.Network.RUDP
         {
             lock (_SendPackages)
             {
-                if(_SendPackages.Count>0)
+                if (_SendPackages.Count > 0  )
+                {
+                    
                     return _SendPackages.Dequeue();
+                }
+                    
             }
             return null;
+        }
+
+        public void MessageSendOut(SocketMessage message)
+        {
+            
+            
         }
     }
 

@@ -12,10 +12,11 @@ namespace Regulus.Network.RUDP
 
         public SocketMessageInternal(int package_size)
         {
-            EndPoint = new IPEndPoint(IPAddress.Any, 0);
+            
+            RemoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
             Package = new byte[package_size];
         }
-        public EndPoint EndPoint;
+        public EndPoint RemoteEndPoint;        
         public byte[] Package;
         public SocketError Error;
     }
@@ -45,7 +46,8 @@ namespace Regulus.Network.RUDP
 
         private byte[] _Package { get { return _Instance.Package; } }
 
-        public EndPoint EndPoint { get { return _Instance.EndPoint; } }
+        public EndPoint RemoteEndPoint { get { return _Instance.RemoteEndPoint; } }
+        
         public byte[] Package { get { return _Package; } }
 
         public SocketError Error { get { return _Instance.Error; } }
@@ -294,7 +296,7 @@ namespace Regulus.Network.RUDP
 
         public void SetEndPoint(EndPoint end_point)
         {
-            _Instance.EndPoint = end_point;
+            _Instance.RemoteEndPoint = end_point;
         }
 
         public int GetPackageSize()

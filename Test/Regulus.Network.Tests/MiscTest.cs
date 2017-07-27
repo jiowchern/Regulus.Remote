@@ -262,10 +262,12 @@ namespace Regulus.Network.Tests
 	        package2.SetSeq(2);
 
             var ackWaiter = new CongestionRecorder(3);
-	        ackWaiter.PushWait(package1, System.TimeSpan.FromSeconds(0.1).Ticks);
-	        ackWaiter.PushWait(package2, System.TimeSpan.FromSeconds(1.0).Ticks);
-            ackWaiter.Reply(package1.GetSeq(), System.TimeSpan.FromSeconds(1.0).Ticks , 1);
-	        var packages = ackWaiter.PopLost(System.TimeSpan.FromSeconds(1.0).Ticks * 100, System.TimeSpan.FromSeconds(1.0).Ticks *100);
+
+            
+	        ackWaiter.PushWait(package1, (long)(Timestamp.OneSecondTicks*0.1));
+	        ackWaiter.PushWait(package2, Timestamp.OneSecondTicks);
+            ackWaiter.Reply(package1.GetSeq(), Timestamp.OneSecondTicks, 1);
+	        var packages = ackWaiter.PopLost(Timestamp.OneSecondTicks * 100, Timestamp.OneSecondTicks * 100);
 
             Assert.AreEqual(2u , packages[0].GetSeq());
 
