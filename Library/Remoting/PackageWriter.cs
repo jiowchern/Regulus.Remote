@@ -26,7 +26,7 @@ namespace Regulus.Remoting
 
 	    
 
-		private ISocket _Socket;
+		private IPeer _Peer;
 
 		private volatile bool _Stop;
 	    private bool _Idle;
@@ -44,10 +44,10 @@ namespace Regulus.Remoting
 	        _Idle = true;
 		}
 
-		public void Start(ISocket socket)
+		public void Start(IPeer peer)
 		{
 			_Stop = false;
-			_Socket = socket;
+			_Peer = peer;
 		
 		}
 
@@ -66,13 +66,13 @@ namespace Regulus.Remoting
                 _Buffer = _CreateBuffer(packages);
                                 
 
-			    _Socket.Send(_Buffer, 0, _Buffer.Length,  _WriteCompletion);
+			    _Peer.Send(_Buffer, 0, _Buffer.Length,  _WriteCompletion);
 
 
 			}
 			catch(SystemException e)
 			{
-			    var info = string.Format("PackageWriter Error Write {0}.", _Socket.Connected);
+			    var info = string.Format("PackageWriter Error Write {0}.", _Peer.Connected);
                 Singleton<Log>.Instance.WriteInfo(info);
 				if(ErrorEvent != null)
 				{

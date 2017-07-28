@@ -1,14 +1,16 @@
 ﻿using System;
+using System.Net;
 using System.Net.Sockets;
 using Regulus.Framework;
 using Regulus.Network.RUDP;
 using Regulus.Utility;
 
-namespace Regulus.Network.Tests.HostApp
+namespace Regulus.Network.Tests.TestTool
 {
-	internal class PeerHandler : IUpdatable<Timestamp>
+	internal class PeerHandler : IUpdatable
 	{
-		private ISocket _Peer;
+	    private static int _PeerId;
+		private IPeer _Peer;
 		readonly int _Id;
 		Command _Command;
 		private readonly string _CommandSendString;
@@ -20,25 +22,26 @@ namespace Regulus.Network.Tests.HostApp
 	    private int _PackageSize;
 	    private readonly string _CommandStartString;
 	    private readonly string _CommandStopString;
+        private IPEndPoint endpoint;
 
-	    public  PeerHandler(int id ,Command command , Utility.Console.IViewer viwer , ISocket peer)
+        public  PeerHandler(Command command , Utility.Console.IViewer viwer , IPeer peer)
 		{
 		    _Counter = new TimeCounter();
             _Machine = new StageMachine();
             _Viewer = viwer;
 			_Command = command;
-			_Id = id;
+			_Id = ++_PeerId;
 			_Peer = peer;
 			_CommandSendString = string.Format("send{0}", _Id);
 		    _CommandStartString = string.Format("start{0}", _Id);
 		    _CommandStopString = string.Format("stop{0}", _Id);
             _Buffer = new byte[Config.PackageSize];
 
-
-
         }
 
-		void IBootable.Launch()
+       
+
+        void IBootable.Launch()
 		{
 			_Viewer.WriteLine(string.Format("Accept Transmitter {0} {1}", _Peer.RemoteEndPoint ,_Id));
 		    
@@ -87,7 +90,7 @@ namespace Regulus.Network.Tests.HostApp
 
 		
 
-		bool IUpdatable<Timestamp>.Update(Timestamp time)
+		bool IUpdatable.Update()
 		{
 		    _Machine.Update();
 

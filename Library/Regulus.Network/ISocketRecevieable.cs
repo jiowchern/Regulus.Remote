@@ -3,7 +3,7 @@ using System.Net;
 
 namespace Regulus.Network.RUDP
 {
-    public interface IRecevieable
+    public interface ISocketRecevieable
     {        
         SocketMessage[] Received();        
     }

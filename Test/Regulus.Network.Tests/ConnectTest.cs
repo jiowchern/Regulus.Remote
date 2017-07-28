@@ -53,8 +53,8 @@ namespace Regulus.Network.Tests
             long ticks = 0;
             
 
-            IPeer peer = null;
-            host.AcceptEvent += p => peer = p;
+            IRudpPeer rudpPeer = null;
+            host.AcceptEvent += p => rudpPeer = p;
 
             updater.Working(new Timestamp(ticks++, 1));
             updater.Working(new Timestamp(ticks++, 1));
@@ -62,22 +62,8 @@ namespace Regulus.Network.Tests
             updater.Working(new Timestamp(ticks++, 1));
             updater.Working(new Timestamp(ticks++, 1));
             updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
 
-
-
-
-
-            Assert.AreNotEqual(null , peer);
+            Assert.AreNotEqual(null , rudpPeer);
             Assert.AreEqual(PEER_STATUS.TRANSMISSION, clientPeer.Status);
 
 
@@ -87,31 +73,13 @@ namespace Regulus.Network.Tests
 
             int readCount = 0;
             var receivedBuffer = new byte[Config.PackageSize];
-            peer.Receive(receivedBuffer, 0, receivedBuffer.Length, (read_count, error) =>
+            rudpPeer.Receive(receivedBuffer, 0, receivedBuffer.Length, (read_count, error) =>
             {
                 readCount = read_count;
             });
 
             updater.Working(new Timestamp(ticks++, 1));
             updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-
-
             updater.Working(new Timestamp(ticks++, 1));
 
             Assert.AreEqual(sendBuffer.Length , readCount);
@@ -123,12 +91,8 @@ namespace Regulus.Network.Tests
             updater.Working(new Timestamp(ticks++, 1));
             updater.Working(new Timestamp(ticks++, 1));
             updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
 
-
-            Assert.AreEqual(PEER_STATUS.CLOSE , peer.Status);
+            Assert.AreEqual(PEER_STATUS.CLOSE , rudpPeer.Status);
 
 
 

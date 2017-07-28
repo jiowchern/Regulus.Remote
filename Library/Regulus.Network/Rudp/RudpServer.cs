@@ -9,27 +9,30 @@ using Regulus.Utility;
 
 namespace Regulus.Network
 {
-    public class RudpServer : ISocketServer
+    public class RudpServer : IPeerServer
     {
+        private readonly ISocket _Socket;
         private readonly ITime _Time;
         private Host _Host;
         private bool _Enable;
-        private event Action<ISocket> _AcctpeEvent;
+        private event Action<IPeer> _AcctpeEvent;
 
-        public RudpServer()
+        public RudpServer(ISocket socket)
         {
-            _Time = Timestamp.Time;            
+            _Host = new Host(socket,socket);
+            _Socket = socket;
+            _Time = new Time();
         }
 
-        event Action<ISocket> ISocketServer.AcceptEvent
+        event Action<IPeer> IPeerServer.AcceptEvent
         {
             add { _AcctpeEvent += value; }
             remove { _AcctpeEvent -= value; }
         }
 
-        void ISocketServer.Bind(int port)
+        void IPeerServer.Bind(int port)
         {
-            _Host = Host.CreateStandard(port);
+            _Socket.Bind(port);
             _Host.AcceptEvent += _Accept;
             _Enable = true;
             ThreadPool.QueueUserWorkItem(_Run, null);
@@ -52,13 +55,14 @@ namespace Regulus.Network
 
         }
 
-        private void _Accept(IPeer peer)
+        private void _Accept(IRudpPeer rudpPeer)
         {
-            _AcctpeEvent(new RudpSocket(peer));
+            _AcctpeEvent(new RudpPeer(rudpPeer));
         }
 
-        void ISocketServer.Close()
+        void IPeerServer.Close()
         {
+            _Socket.Close();
             _Host.AcceptEvent -= _Accept;
             _Enable = false;
         }

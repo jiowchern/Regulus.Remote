@@ -5,15 +5,16 @@ using Regulus.Network.RUDP;
 
 namespace Regulus.Network
 {
-    public class RudpConnecter : IPeerConnectable
+    internal class RudpPeer : IPeer
     {
-        private readonly Agent _Agent;
-        private IRudpPeer _RudpPeer;
+        private readonly IRudpPeer _RudpPeer;
 
-        public RudpConnecter(Regulus.Network.RUDP.Agent agent)
+        public RudpPeer(IRudpPeer rudpPeer)
         {
-            _Agent = agent;
+            _RudpPeer = rudpPeer;
+            
         }
+
         EndPoint IPeer.RemoteEndPoint
         {
             get { return _RudpPeer.EndPoint; }
@@ -31,23 +32,16 @@ namespace Regulus.Network
 
         void IPeer.Receive(byte[] readed_byte, int offset, int count, Action<int, SocketError> readed)
         {
-            _RudpPeer.Receive(readed_byte , offset , count , readed);
+            _RudpPeer.Receive(readed_byte, offset, count, readed);
         }
-
-        void IPeer.Send(byte[] buffer, int offset_i, int buffer_length, Action<int, SocketError> write_completion)
+        void IPeer.Send(byte[] buffer, int offset, int length, Action<int, SocketError> write_completion)
         {
-            _RudpPeer.Send(buffer , offset_i , buffer_length , write_completion);
+            _RudpPeer.Send(buffer , offset , length , write_completion);
         }
 
         void IPeer.Close()
         {
             _RudpPeer.Disconnect();
-        }
-
-        void IPeerConnectable.Connect(EndPoint endpoint, Action<bool> result)
-        {
-            _RudpPeer = _Agent.Connect(endpoint,result);
-            
         }
     }
 }

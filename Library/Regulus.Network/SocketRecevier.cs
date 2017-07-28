@@ -6,7 +6,7 @@ using System.Net.Sockets;
 
 namespace Regulus.Network.RUDP
 {
-    public class SocketRecevier : IRecevieable
+    public class SocketRecevier 
     {
         private readonly Socket _Socket;
         
@@ -26,6 +26,11 @@ namespace Regulus.Network.RUDP
             _Spawner = SocketPackagePool.Instance;
 
             _ReceiveEndPoint = new IPEndPoint(IPAddress.Any, 0);
+            
+        }
+
+        public void Start()
+        {
             _Begin();
         }
 
@@ -62,6 +67,10 @@ namespace Regulus.Network.RUDP
             {
                 error = e.SocketErrorCode;
             }
+            catch (ObjectDisposedException ode)
+            {
+                return;
+            }
             
             _Message.SetError(error);
             _Message.SetEndPoint(_ReceiveEndPoint);
@@ -73,7 +82,7 @@ namespace Regulus.Network.RUDP
         }
 
 
-        SocketMessage[] IRecevieable.Received()
+        public SocketMessage[] Received()
         {
             var pkgs = _Empty;
             lock (_ReceivePackages)

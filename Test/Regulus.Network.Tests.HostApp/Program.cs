@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Regulus.Utility.WindowConsoleAppliction;
 
-namespace Regulus.Network.Tests.HostApp
+namespace Regulus.Network.Tests.TestTool
 {
 	class Program
 	{
@@ -15,7 +15,7 @@ namespace Regulus.Network.Tests.HostApp
 		    Application.EnableVisualStyles();
             
 
-			var console = new HostConsole();
+			var console = new ToolConsole();
 			console.Run();
         }
 	}

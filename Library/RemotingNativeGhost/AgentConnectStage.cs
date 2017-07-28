@@ -10,22 +10,22 @@ namespace Regulus.Remoting.Ghost.Native
 	{
 		private class ConnectStage : IStage
 		{
-			public event Action<bool, ISocket> ResultEvent;
+			public event Action<bool, IPeer> ResultEvent;
 
 			private readonly string _Ipaddress;
 
 			private readonly int _Port;
 
-			private readonly ISocketConnectable _Socket;
+			private readonly IPeerConnectable _Peer;
 
 			private IAsyncResult _AsyncResult;
 
 			private bool? _Result;
 
-			public ConnectStage(string ipaddress, int port , Regulus.Network.RUDP.Agent agent)
+			public ConnectStage(string ipaddress, int port , IPeerClient agent)
 			{
                 
-			    _Socket = new RudpConnecter(agent);
+			    _Peer = agent.Spawn();
 
 
                 if (ipaddress == null)
@@ -44,10 +44,10 @@ namespace Regulus.Remoting.Ghost.Native
 
 				try
 				{
-					// _Socket.SetSocketOption(System.Net.Sockets.SocketOptionLevel.Socket, System.Net.Sockets.SocketOptionName.ReuseAddress, true);
-					// _Socket.Bind(new System.Net.IPEndPoint(System.Net.IPAddress.Any, 42255));
+					// _Peer.SetSocketOption(System.Net.Sockets.SocketOptionLevel.Socket, System.Net.Sockets.SocketOptionName.ReuseAddress, true);
+					// _Peer.Bind(new System.Net.IPEndPoint(System.Net.IPAddress.Any, 42255));
 				    
-					_Socket.Connect(new IPEndPoint(IPAddress.Parse(_Ipaddress), _Port), _ConnectResult);
+					_Peer.Connect(new IPEndPoint(IPAddress.Parse(_Ipaddress), _Port), _ConnectResult);
 				}
 				catch(Exception e)
 				{
@@ -71,7 +71,7 @@ namespace Regulus.Remoting.Ghost.Native
 
 				if(_Result.HasValue && _Result.Value == false)
 				{
-					_Socket.Close();
+					_Peer.Close();
 				}
 
 				Singleton<Log>.Instance.WriteInfo("Agent connect leave.");
@@ -94,7 +94,7 @@ namespace Regulus.Remoting.Ghost.Native
 				{
 					var call = ResultEvent;
 					ResultEvent = null;
-					call(_Result.Value, _Socket);
+					call(_Result.Value, _Peer);
 				}
 			}
 		}

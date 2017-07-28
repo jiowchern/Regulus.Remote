@@ -15,29 +15,21 @@ namespace Regulus.Network.RUDP
 	public class Host : IUpdatable<Timestamp>
 	{
 	    private readonly WiringOperator _WiringOperator;
-        public event System.Action<IPeer> AcceptEvent;
+        public event System.Action<IRudpPeer> AcceptEvent;
 
 	    private readonly Dictionary<Line , Peer> _Peers;
 	    private readonly List<Peer> _RemovePeers;
         private readonly Regulus.Utility.Updater<Timestamp> _Updater;
-	    private Logger _Logger;
+	    
 	    
         public int PeerCount { get { return _Peers.Count; } }
-	    public static Host CreateStandard(int port)
-	    {
-	        var endPoint = new System.Net.IPEndPoint(System.Net.IPAddress.Any, port);
-	        var socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Dgram, System.Net.Sockets.ProtocolType.Udp);
-	        socket.Bind(endPoint);
-            return new Host(new SocketRecevier(socket ),new SocketSender(socket) );
-	    }
-
-        public Host(IRecevieable recevieable , ISendable sendable)
+	  
+        public Host(ISocketRecevieable socket_recevieable , ISocketSendable socket_sendable)
         {
             _RemovePeers = new List<Peer>();
             _Updater = new Updater<Timestamp>();
             _Peers = new Dictionary<Line, Peer>();
-            _WiringOperator = new WiringOperator(sendable, recevieable);
-            _Logger = new Logger(1f/10f);
+            _WiringOperator = new WiringOperator(socket_sendable, socket_recevieable);            
         }
 
 	    
@@ -60,7 +52,7 @@ namespace Regulus.Network.RUDP
 
 	    void IBootable.Launch()
 	    {
-	        _Logger.Start();
+	        
 
             _WiringOperator.JoinStreamEvent += _CreatePeer;
 	        _WiringOperator.LeftStreamEvent += _DestroyPeer;
@@ -74,13 +66,12 @@ namespace Regulus.Network.RUDP
 	        _Updater.Shutdown();
 	        _WiringOperator.JoinStreamEvent -= _CreatePeer;
 	        _WiringOperator.LeftStreamEvent -= _DestroyPeer;
-
-	        _Logger.End();
+	        
         }
 
 	    private void _DestroyPeer(Line line)
 	    {
-	        _Logger.Unregister(line);
+	        
 
                var peer = _Peers.FirstOrDefault(p => p.Key == line);
 	        
@@ -111,7 +102,6 @@ namespace Regulus.Network.RUDP
             _Peers.Add(line,peer);            
             _Updater.Add(peer);
 
-            _Logger.Register(line);
 
         }
 

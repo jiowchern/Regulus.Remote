@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using Regulus.Network;
+using Regulus.Network.RUDP;
 using Regulus.Utility;
 
 namespace Regulus.Remoting.Soul.Native
@@ -11,13 +12,13 @@ namespace Regulus.Remoting.Soul.Native
     {
         private readonly ThreadCoreHandler _CoreHandler;
         private readonly IProtocol _Protocol;
-        private readonly ISocketServer _Server;
+        private readonly IPeerServer _Server;
 
         private readonly PeerSet _Peers;
 
         private readonly int _Port;
 
-        private readonly Queue<ISocket> _Sockets;
+        private readonly Queue<IPeer> _Sockets;
 
         // ParallelUpdate _Peers;
         private readonly PowerRegulator _Spin;
@@ -48,19 +49,19 @@ namespace Regulus.Remoting.Soul.Native
             _Protocol = protocol;
             _Port = port;
 
-            _Sockets = new Queue<ISocket>();
+            _Sockets = new Queue<IPeer>();
 
             _Peers = new PeerSet();
 
             _Spin = new PowerRegulator();
             _AutoPowerRegulator = new AutoPowerRegulator(_Spin);
 
-            _Server = new Regulus.Network.RudpServer();
+            _Server = new Regulus.Network.RudpServer(new UdpSocket());
         }
 
         public void DoWork(object obj)
         {
-            Singleton<Log>.Instance.WriteInfo("server socket launch");
+            Singleton<Log>.Instance.WriteInfo("server peer launch");
             var are = (AutoResetEvent)obj;
             _Run = true;
 
@@ -78,7 +79,7 @@ namespace Regulus.Remoting.Soul.Native
                             var socket = _Sockets.Dequeue();
 
                             Singleton<Log>.Instance.WriteInfo(
-                                string.Format("socket accept Remote {0} Local {1} .", socket.RemoteEndPoint, socket.LocalEndPoint));
+                                string.Format("peer accept Remote {0} Local {1} .", socket.RemoteEndPoint, socket.LocalEndPoint));
                             var peer = new Peer(socket , _Protocol);
 
                             _Peers.Join(peer);
@@ -99,14 +100,14 @@ namespace Regulus.Remoting.Soul.Native
 
 
             are.Set();
-            Singleton<Log>.Instance.WriteInfo("server socket shutdown");
+            Singleton<Log>.Instance.WriteInfo("server peer shutdown");
         }
 
-        private void _Accept(ISocket socket)
+        private void _Accept(IPeer peer)
         {
             lock (_Sockets)
             {
-                _Sockets.Enqueue(socket);
+                _Sockets.Enqueue(peer);
             }
         }
         

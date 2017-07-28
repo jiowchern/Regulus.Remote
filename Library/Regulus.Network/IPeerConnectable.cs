@@ -3,7 +3,7 @@ using System.Net;
 
 namespace Regulus.Network
 {
-    public interface ISocketConnectable : ISocket
+    public interface IPeerConnectable : IPeer
     {
         void Connect(EndPoint endpoint, Action<bool> result);
     }

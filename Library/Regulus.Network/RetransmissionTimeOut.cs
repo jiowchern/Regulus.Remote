@@ -10,11 +10,8 @@ namespace Regulus.Network.RUDP
 
         public RetransmissionTimeOut()
         {
-            _RTTVAL = (long)(Timestamp.OneSecondTicks * 0.05);
-            _SRTT = (long)(Timestamp.OneSecondTicks * 0.1);
-            _RTT = (long)(Timestamp.OneSecondTicks * 0.1);
-
-            Update(_RTT, 0);
+            Reset();            
+            
         }
 
         public void Update(long rtt,long delta)
@@ -23,6 +20,15 @@ namespace Regulus.Network.RUDP
             _RTT = rtt;
             _RTTVAL = (long)(0.75 * _RTTVAL + 0.25 * _Abs(_SRTT - rtt));            
             Value = _SRTT + _Max(delta, 4 * _RTTVAL);
+        }
+
+        public void Reset()
+        {
+            _RTTVAL = (long)(Timestamp.OneSecondTicks);
+            _SRTT = (long)(Timestamp.OneSecondTicks);
+            _RTT = (long)(Timestamp.OneSecondTicks);
+
+            Update(_RTT , 0);
         }
 
         private long _Abs(long val)

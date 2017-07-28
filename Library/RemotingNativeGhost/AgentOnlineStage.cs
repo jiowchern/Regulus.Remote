@@ -29,18 +29,18 @@ namespace Regulus.Remoting.Ghost.Native
 
 			private volatile bool _Enable;
 
-			private ISocket _Socket;
+			private IPeer _Peer;
 
 			public static int RequestQueueCount { get; private set; }
 
 			public static int ResponseQueueCount { get; private set; }
 
-			public OnlineStage(ISocket socket, AgentCore core , ISerializer serializer)
+			public OnlineStage(IPeer peer, AgentCore core , ISerializer serializer)
 			{
                 
                 _Core = core;
 
-				_Socket = socket;
+				_Peer = peer;
 				_Reader = new PackageReader<ResponsePackage>(serializer);
 				_Writer = new PackageWriter<RequestPackage>(serializer);
 				_Sends = new Collection.Queue<RequestPackage>();
@@ -68,8 +68,8 @@ namespace Regulus.Remoting.Ghost.Native
 				Singleton<Log>.Instance.WriteInfo(
 					string.Format(
 						"Agent Socket Local {0} Remote {1}.", 
-						_Socket.LocalEndPoint, 
-						_Socket.RemoteEndPoint));
+						_Peer.LocalEndPoint, 
+						_Peer.RemoteEndPoint));
 				_Core.Initial(this);
 				_Enable = true;
 				_ReaderStart();
@@ -81,10 +81,10 @@ namespace Regulus.Remoting.Ghost.Native
 				_WriterStop();
 				_ReaderStop();
 
-				if(_Socket != null)
+				if(_Peer != null)
 				{					
-					_Socket.Close();
-					_Socket = null;
+					_Peer.Close();
+					_Peer = null;
 				}
 
 				_Core.Finial();
@@ -137,7 +137,7 @@ namespace Regulus.Remoting.Ghost.Native
 			{
 				_Writer.ErrorEvent += _Disable;
 				
-				_Writer.Start(_Socket);
+				_Writer.Start(_Peer);
 			}
 
 			private void _WriterStop()
@@ -162,7 +162,7 @@ namespace Regulus.Remoting.Ghost.Native
 				_Reader.DoneEvent += _ReceivePackage;
 
 				_Reader.ErrorEvent += _Disable;
-				_Reader.Start(_Socket);
+				_Reader.Start(_Peer);
 			}
 
 			private void _Disable()

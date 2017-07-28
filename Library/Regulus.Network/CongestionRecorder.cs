@@ -108,7 +108,7 @@ namespace Regulus.Network.RUDP
                 {
                     var rto = ticks - item.StartTicks;
                     if(rto != LastRTO)
-                        _RTO.Update(rto, delta);
+                        _RTO.Reset();
                     LastRTO = rto;
                     packages.Add(item.Message);
                 }

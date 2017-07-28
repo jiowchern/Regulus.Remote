@@ -16,15 +16,15 @@ namespace Regulus.Remoting
 
         public event OnErrorCallback ErrorEvent;
 
-        private readonly ISocket _Socket;
+        private readonly IPeer _Peer;
 
         private byte[] _Buffer;
 
         private int _Offset;
 
-        public SocketBodyReader(ISocket socket)
+        public SocketBodyReader(IPeer peer)
         {
-            this._Socket = socket;
+            this._Peer = peer;
         }
 
         internal void Read(int size)
@@ -33,7 +33,7 @@ namespace Regulus.Remoting
             _Buffer = new byte[size];
             try
             {
-                _Socket.Receive(_Buffer, _Offset, _Buffer.Length - _Offset,  _Readed);
+                _Peer.Receive(_Buffer, _Offset, _Buffer.Length - _Offset,  _Readed);
             }
             catch(SystemException e)
             {
@@ -61,7 +61,7 @@ namespace Regulus.Remoting
                     }
                     else
                     {
-                        _Socket.Receive(
+                        _Peer.Receive(
                             _Buffer,
                             _Offset,
                             _Buffer.Length - _Offset,                            

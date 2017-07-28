@@ -8,7 +8,7 @@ using Regulus.Utility;
 
 namespace Regulus.Network.Tests
 {
-    public class FakeSocket : IRecevieable, ISendable, IUpdatable<Timestamp>
+    public class FakeSocket : ISocketRecevieable, ISocketSendable, IUpdatable<Timestamp>
     {
         public readonly IPEndPoint Endpoint;
         private readonly List<SocketMessage> _Packages;
@@ -37,7 +37,7 @@ namespace Regulus.Network.Tests
 
         }
         public event Action<SocketMessage> SendEvent;
-        void ISendable.Transport(SocketMessage message)
+        void ISocketSendable.Transport(SocketMessage message)
         {
             Assert.AreNotEqual(Endpoint , message.RemoteEndPoint);
             _DoneEvent(message);
@@ -46,7 +46,7 @@ namespace Regulus.Network.Tests
 
         private event Action<SocketMessage> _DoneEvent;
 
-        event Action<SocketMessage> ISendable.DoneEvent
+        event Action<SocketMessage> ISocketSendable.DoneEvent
         {
             add { this._DoneEvent += value; }
             remove { this._DoneEvent -= value; }

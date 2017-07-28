@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
-namespace Regulus.Network.Tests.HostApp
+namespace Regulus.Network.Tests.TestTool
 {
     public partial class PeerProfile : Form
     {
@@ -121,8 +121,7 @@ namespace Regulus.Network.Tests.HostApp
             var lastRtoSerie = chart1.Series[3];
             lastRtoSerie.Points.Add(lastRto);
 
-            var costSerie = chart2.Series[0];
-            costSerie.Points.Add(double.Parse(cost));
+            
 
             if (lastRtoSerie.Points.Count > 100)
                 lastRtoSerie.Points.RemoveAt(0);
@@ -135,9 +134,7 @@ namespace Regulus.Network.Tests.HostApp
 
             if (rttSerie.Points.Count > 100)
                 rttSerie.Points.RemoveAt(0);
-
-            if (costSerie.Points.Count > 100)
-                costSerie.Points.RemoveAt(0);
+            
 
             controll.ResetAutoValues();
         }

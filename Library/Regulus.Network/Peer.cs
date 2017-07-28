@@ -9,7 +9,7 @@ using Regulus.Utility;
 
 namespace Regulus.Network.RUDP
 {
-    internal class Peer : IUpdatable<Timestamp>, IPeer
+    internal class Peer : IUpdatable<Timestamp>, IRudpPeer
     {
 
         public event Action CloseEvent;
@@ -158,12 +158,12 @@ namespace Regulus.Network.RUDP
         {
             get { return _Line.EndPoint; }
         }
-        EndPoint IPeer.EndPoint
+        EndPoint IRudpPeer.EndPoint
         {
             get { return _Line.EndPoint; }
         }
 
-        void IPeer.Send(byte[] buffer, int offset, int count, Action<int, SocketError> write_completion)
+        void IRudpPeer.Send(byte[] buffer, int offset, int count, Action<int, SocketError> write_completion)
         {
             int len = count < buffer.Length ? count : buffer.Length;
 
@@ -178,7 +178,7 @@ namespace Regulus.Network.RUDP
             write_completion(len , SocketError.Success);
         }
 
-        void IPeer.Receive(byte[] buffer, int offset, int count, Action<int, SocketError> read_completion)
+        void IRudpPeer.Receive(byte[] buffer, int offset, int count, Action<int, SocketError> read_completion)
         {
 
             var requests = new ReadRequest();
@@ -193,7 +193,7 @@ namespace Regulus.Network.RUDP
             
         }
 
-        PEER_STATUS IPeer.Status { get { return _Status; } }
+        PEER_STATUS IRudpPeer.Status { get { return _Status; } }
 
         public void Disconnect()
         {

@@ -4,6 +4,8 @@ using System.Net.Sockets;
 using Regulus.Serialization;
 using Regulus.Framework;
 using Regulus.Network;
+using Regulus.Network.Rudp;
+using Regulus.Network.RUDP;
 using Regulus.Utility;
 
 namespace Regulus.Remoting.Ghost.Native
@@ -18,7 +20,7 @@ namespace Regulus.Remoting.Ghost.Native
 		private readonly AgentCore _Core;
 
 		private readonly StageMachine _Machine;
-	    private Regulus.Network.RUDP.Agent _RudpAgent;
+	    private RudpClient _RudpAgent;
 	    private Regulus.Utility.Updater<Timestamp> _Updater;
 	    private long _Ticks;
 	    private long _Last;
@@ -38,7 +40,7 @@ namespace Regulus.Remoting.Ghost.Native
             _Serializer = protocol.GetSerialize();
 	        _Machine = new StageMachine();
             _Core = new AgentCore(protocol);
-	        _RudpAgent = Regulus.Network.RUDP.Agent.CreateStandard();
+	        _RudpAgent = new RudpClient(new UdpSocket());
 	        _Updater = new Updater<Timestamp>();
 	        
         }
@@ -59,7 +61,7 @@ namespace Regulus.Remoting.Ghost.Native
 		{
 		    _Ticks = System.DateTime.Now.Ticks;
 		    _Last = _Ticks;
-            _Updater.Add(_RudpAgent);
+            
 
             Singleton<Log>.Instance.WriteInfo("Agent Launch.");
             _Core.ErrorMethodEvent += _ErrorMethodEvent;
@@ -165,7 +167,7 @@ namespace Regulus.Remoting.Ghost.Native
 			}
 		}
 
-		private void _ConnectResult(bool success, ISocket socket)
+		private void _ConnectResult(bool success, IPeer peer)
 		{
 			if(success)
 			{
@@ -174,7 +176,7 @@ namespace Regulus.Remoting.Ghost.Native
 					_ConnectEvent();
 				}
 
-				_ToOnline(_Machine, socket);
+				_ToOnline(_Machine, peer);
 			}
 			else
 			{
@@ -182,9 +184,9 @@ namespace Regulus.Remoting.Ghost.Native
 			}
 		}
 
-		private void _ToOnline(StageMachine machine, ISocket socket)
+		private void _ToOnline(StageMachine machine, IPeer peer)
 		{
-			var onlineStage = new OnlineStage(socket, _Core , _Serializer);
+			var onlineStage = new OnlineStage(peer, _Core , _Serializer);
 			onlineStage.DoneFromServerEvent += () =>
 			{
 				_ToTermination();
