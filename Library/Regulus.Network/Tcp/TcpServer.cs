@@ -5,18 +5,18 @@ using Regulus.Utility;
 
 namespace Regulus.Network
 {
-    public class TcpServer : ISocketServer
+    public class TcpServer : IPeerServer
     {
         private Socket _Socket;
-        private event Action<ISocket> _AcctpeEvent;
+        private event Action<IPeer> _AcctpeEvent;
 
-        event Action<ISocket> ISocketServer.AcceptEvent
+        event Action<IPeer> IPeerServer.AcceptEvent
         {
             add { _AcctpeEvent += value; }
             remove { _AcctpeEvent -= value; }
         }
 
-        void ISocketServer.Bind(int port)
+        void IPeerServer.Bind(int port)
         {
             _Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             _Socket.NoDelay = true;
@@ -34,7 +34,7 @@ namespace Regulus.Network
                 var socket = _Socket.EndAccept(ar);
                 lock(_AcctpeEvent)
                 {
-                    _AcctpeEvent(new TcpSocket(socket));
+                    _AcctpeEvent(new TcpPeer(socket));
                 }
 
                 _Socket.BeginAccept(_Accept, null);
@@ -59,7 +59,7 @@ namespace Regulus.Network
             }
         }
 
-        void ISocketServer.Close()
+        void IPeerServer.Close()
         {
             if (_Socket.Connected)
             {

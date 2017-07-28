@@ -10,8 +10,8 @@ namespace Regulus.Network.RUDP
     public class Agent : IUpdatable<Timestamp>
     {
         
-        private readonly IRecevieable _Recevieable;
-        private readonly ISendable _Sendable;
+        private readonly ISocketRecevieable _SocketRecevieable;
+        private readonly ISocketSendable _SocketSendable;
 
 
         private readonly Dictionary<EndPoint, Peer> _Peers;
@@ -19,13 +19,13 @@ namespace Regulus.Network.RUDP
         private readonly Regulus.Utility.Updater<Timestamp> _Updater;
         private readonly WiringOperator _WiringOperator;
 
-        public Agent(IRecevieable recevieable, ISendable sendable)
+        public Agent(ISocketRecevieable socket_recevieable, ISocketSendable socket_sendable)
         {
-            _Recevieable = recevieable;
-            _Sendable = sendable;            
+            _SocketRecevieable = socket_recevieable;
+            _SocketSendable = socket_sendable;            
             _Updater = new Updater<Timestamp>();
             _RemovePeers = new List<Peer>();
-            _WiringOperator = new WiringOperator(_Sendable, _Recevieable);            
+            _WiringOperator = new WiringOperator(_SocketSendable, _SocketRecevieable);            
             _Peers = new Dictionary<EndPoint, Peer>();
         }       
 
@@ -95,9 +95,9 @@ namespace Regulus.Network.RUDP
         {            
         }
         
-        public IPeer Connect(EndPoint end_point,System.Action<bool> result)
+        public IRudpPeer Connect(EndPoint end_point,System.Action<bool> result)
         {
-            IPeer peer = null;
+            IRudpPeer rudpPeer = null;
             System.Action<Line> handler = stream =>
             {
                 var connecter = new PeerConnecter(stream);
@@ -113,7 +113,7 @@ namespace Regulus.Network.RUDP
                 }
                 
                 _Updater.Add(p);
-                peer = p;
+                rudpPeer = p;
             };
 
             lock (_WiringOperator)
@@ -123,7 +123,7 @@ namespace Regulus.Network.RUDP
                 _WiringOperator.JoinStreamEvent -= handler;
             }
             
-            return peer;
+            return rudpPeer;
         }
 
         private void _Remove(Peer peer)
@@ -136,12 +136,7 @@ namespace Regulus.Network.RUDP
         }
 
 
-        public static Agent CreateStandard()
-        {            
-            var socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Dgram, System.Net.Sockets.ProtocolType.Udp);
-            socket.Bind(new IPEndPoint(IPAddress.Any, 0));
-            return new Agent(new SocketRecevier(socket), new SocketSender(socket));
-        }
+        
         
     }
 }

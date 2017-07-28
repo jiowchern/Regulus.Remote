@@ -4,7 +4,7 @@ using System.Net.Sockets;
 
 namespace Regulus.Network.RUDP
 {
-    class SocketSender : ISendable
+    class SocketSender 
     {
         private readonly Socket _Socket;
         
@@ -12,9 +12,7 @@ namespace Regulus.Network.RUDP
         
         public SocketSender(Socket socket)
         {
-            _Socket = socket;
-
-        
+            _Socket = socket;        
         }
         
         public void Transport(SocketMessage message)
@@ -24,7 +22,7 @@ namespace Regulus.Network.RUDP
 
         private event Action<SocketMessage> _DoneEvent;
 
-        event Action<SocketMessage> ISendable.DoneEvent
+        public event Action<SocketMessage> DoneEvent
         {
             add { this._DoneEvent += value; }
             remove { this._DoneEvent -= value; }

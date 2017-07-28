@@ -8,7 +8,7 @@ namespace Regulus.Network
         public readonly long Ticks;
         public readonly long DeltaTicks;
 
-        public static readonly ITime Time = new Time();
+        //public static readonly ITime Time = new Time();
         public static readonly long OneSecondTicks = Stopwatch.Frequency;
 
         public Timestamp(long ticks, long delta_ticks)

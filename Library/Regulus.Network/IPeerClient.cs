@@ -1,10 +1,10 @@
 ﻿namespace Regulus.Network
 {
-    public interface ISocketClient
+    public interface IPeerClient
     {
         void Launch();
         void Shutdown();
 
-        ISocketConnectable Spawn();
+        IPeerConnectable Spawn();
     }
 }

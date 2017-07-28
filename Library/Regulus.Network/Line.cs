@@ -174,13 +174,11 @@ namespace Regulus.Network.RUDP
             SocketMessage message = null;
             while ((message = _Dequeue())!=null)
             {
+                _ResetTimeout();
 
                 var ack = message.GetAck();
 
-                _ResetTimeout();
-
                 _Waiter.ReplyUnder((ushort) (ack - 1),time.Ticks , time.DeltaTicks);
-                
 
                 foreach (var ack_id in message.GetAcks())
                 {
@@ -188,6 +186,7 @@ namespace Regulus.Network.RUDP
                 }
 
                 _Waiter.Padding();
+
                 if (_Rectifier.PushPackage(message) == false)
                 {
                     ReceiveInvalidPackages++;
@@ -195,7 +194,11 @@ namespace Regulus.Network.RUDP
 
                 var oper = (PEER_OPERATION)message.GetOperation();
                 if (oper != PEER_OPERATION.ACKNOWLEDGE)
+                {
+                    
                     _SendAck(_Rectifier.Serial, _Rectifier.SerialBitFields);
+                }
+                    
 
 
                 ReceiveBytes += message.GetPackageSize();

@@ -8,15 +8,15 @@ namespace Regulus.Remoting
 {
     internal class SocketHeadReader : ISocketReader
     {
-        private readonly ISocket _Socket;
+        private readonly IPeer _Peer;
 
         private readonly System.Collections.Generic.List<byte> _Buffer;
 
         private readonly byte[] _ReadedByte;
-        public SocketHeadReader(ISocket socket)
+        public SocketHeadReader(IPeer peer)
         {
             _ReadedByte = new byte[1];
-            _Socket = socket;
+            _Peer = peer;
             _Buffer = new List<byte>();
             
         }
@@ -30,7 +30,7 @@ namespace Regulus.Remoting
 
             try
             {
-                _Socket.Receive(_ReadedByte, 0, 1,  _Readed);
+                _Peer.Receive(_ReadedByte, 0, 1,  _Readed);
             }
             catch (SystemException e)
             {

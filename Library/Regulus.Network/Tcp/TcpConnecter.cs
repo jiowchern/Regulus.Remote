@@ -5,7 +5,7 @@ using Regulus.Utility;
 
 namespace Regulus.Network
 {
-    public class TcpConnecter : TcpSocket , ISocketConnectable
+    public class TcpConnecter : TcpPeer , IPeerConnectable
     {
         private Action<bool> _ResultHandler;
         public TcpConnecter() : base(new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
@@ -13,7 +13,7 @@ namespace Regulus.Network
             _Socket.NoDelay = true;
         }
 
-        void ISocketConnectable.Connect(EndPoint endpoint, Action<bool> result)
+        void IPeerConnectable.Connect(EndPoint endpoint, Action<bool> result)
         {
             _ResultHandler = result;
             _Socket.BeginConnect(endpoint, _Result, null);

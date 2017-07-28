@@ -1,27 +1,16 @@
 ﻿using System;
-using System.Diagnostics.Eventing.Reader;
 using System.Net;
 using System.Net.Sockets;
 
-namespace Regulus.Network.RUDP
+namespace Regulus.Network
 {
-
-    public enum PEER_STATUS
-    {
-        CLOSE,
-        CONNECTING,
-        TRANSMISSION,
-        DISCONNECT
-    }
     public interface IPeer
     {
-        EndPoint EndPoint { get;  }
-        void Receive(byte[] buffer, int offset, int count, Action<int, SocketError> read_completion);
-        void Send(byte[] buffer, int offset, int count, Action<int, SocketError> write_completion);
-        PEER_STATUS Status { get; }
-
-        void Disconnect();
+        EndPoint RemoteEndPoint { get;  }
+        EndPoint LocalEndPoint { get;  }
+        bool Connected { get;  }
+        void Receive(byte[] readed_byte, int offset, int count,  Action<int ,SocketError> readed);
+        void Send(byte[] buffer, int offset_i, int buffer_length, Action<int,SocketError> write_completion);
+        void Close();
     }
-
-
 }

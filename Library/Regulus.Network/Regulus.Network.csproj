@@ -43,11 +43,12 @@
   <ItemGroup>
     <Compile Include="Config.cs" />
     <Compile Include="EmptyArray.cs" />
-    <Compile Include="IRecevieable.cs" />
     <Compile Include="ISocket.cs" />
-    <Compile Include="ISocketClient.cs" />
-    <Compile Include="ISocketConnectable.cs" />
-    <Compile Include="ISocketServer.cs" />
+    <Compile Include="ISocketRecevieable.cs" />
+    <Compile Include="IPeer.cs" />
+    <Compile Include="IPeerClient.cs" />
+    <Compile Include="IPeerConnectable.cs" />
+    <Compile Include="IPeerServer.cs" />
     <Compile Include="ITime.cs" />
     <Compile Include="Line.cs" />
     <Compile Include="Profile\Logger.cs" />
@@ -57,8 +58,8 @@
     <Compile Include="Agent.cs" />
     <Compile Include="ArrayCache.cs" />
     <Compile Include="BufferDispenser.cs" />
-    <Compile Include="IPeer.cs" />
-    <Compile Include="ISendable.cs" />
+    <Compile Include="IRudpPeer.cs" />
+    <Compile Include="ISocketSendable.cs" />
     <Compile Include="ISerialProvider.cs" />
     <Compile Include="PackageRectifier.cs" />
     <Compile Include="Peer.cs" />
@@ -69,12 +70,13 @@
     <Compile Include="Rudp\RudpClient.cs" />
     <Compile Include="Rudp\RudpConnecter.cs" />
     <Compile Include="Rudp\RudpServer.cs" />
-    <Compile Include="Rudp\RudpSocket.cs" />
+    <Compile Include="Rudp\RudpPeer.cs" />
     <Compile Include="SegmentStream.cs" />
     <Compile Include="SocketPackagePool.cs" />
     <Compile Include="Tcp\TcpConnecter.cs" />
     <Compile Include="Tcp\TcpServer.cs" />
-    <Compile Include="Tcp\TcpSocket.cs" />
+    <Compile Include="Tcp\TcpPeer.cs" />
+    <Compile Include="Rudp\UdpSocket.cs" />
     <Compile Include="WiringOperator.cs" />
     <Compile Include="SocketRecevier.cs" />
     <Compile Include="SocketSender.cs" />

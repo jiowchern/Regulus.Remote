@@ -4,24 +4,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using Regulus.Framework;
+using Regulus.Network.Profile;
 using Regulus.Utility;
 
 namespace Regulus.Network.RUDP
 {
     public class WiringOperator : IUpdatable<Timestamp>
     {
-        private readonly ISendable _Sendable;
-        private readonly IRecevieable _Recevieable;
+        private readonly ISocketSendable _SocketSendable;
+        private readonly ISocketRecevieable _SocketRecevieable;
 
         private readonly Dictionary<EndPoint , Line> _Lines;
         private readonly Queue<Line> _Exits;
-
-        public WiringOperator(ISendable sendable , IRecevieable recevieable)
+        private readonly Logger _Logger;
+        public WiringOperator(ISocketSendable socket_sendable , ISocketRecevieable socket_recevieable)
         {
+            _Logger = new Logger(1f / 10f);
             _Lines = new Dictionary<EndPoint, Line>();
             _Exits = new Queue<Line>();
-            _Sendable = sendable;
-            _Recevieable = recevieable;
+            _SocketSendable = socket_sendable;
+            _SocketRecevieable = socket_recevieable;
         }
 
         public event Action<Line> JoinStreamEvent;
@@ -41,6 +43,7 @@ namespace Regulus.Network.RUDP
             if (_Exits.Count > 0)
             {
                 var line = _Exits.Dequeue();
+                
                 _Remove(line);                
             }            
         }
@@ -58,7 +61,7 @@ namespace Regulus.Network.RUDP
 
         private void _HandleReceive()
         {
-            var packages = _Recevieable.Received();
+            var packages = _SocketRecevieable.Received();
             
 
             for (int i = 0; i < packages.Length; i++)
@@ -79,6 +82,7 @@ namespace Regulus.Network.RUDP
 
         private void _JoinLine(Line line)
         {
+            _Logger.Register(line);
             line.OutputEvent += _AddOutputPackageHandler;            
             JoinStreamEvent(line);
         }
@@ -111,13 +115,14 @@ namespace Regulus.Network.RUDP
 
         private void _LeftLine(Line line)
         {
+            _Logger.Unregister(line);
             line.OutputEvent -= _AddOutputPackageHandler;            
             LeftStreamEvent(line);
         }
 
         private void _AddOutputPackageHandler(SocketMessage message)
         {            
-            _Sendable.Transport(message);
+            _SocketSendable.Transport(message);
         }
 
         private Line _Query(EndPoint end_point)
@@ -126,7 +131,7 @@ namespace Regulus.Network.RUDP
             if(_Lines.TryGetValue(end_point, out line) == false)
             {
                 // new line
-                line = new Line(end_point);
+                line = new Line(end_point);                
                 _Add(line);
             }
             return line;
@@ -140,14 +145,18 @@ namespace Regulus.Network.RUDP
 
         void IBootable.Launch()
         {
-            _Sendable.DoneEvent += _SendOut;
+            _Logger.Start();
+
+
+            _SocketSendable.DoneEvent += _SendOut;
         }
 
         
 
         void IBootable.Shutdown()
         {
-            _Sendable.DoneEvent -= _SendOut;
+            _SocketSendable.DoneEvent -= _SendOut;
+            _Logger.End();
         }
 
         private void _SendOut(SocketMessage message)
@@ -161,6 +170,7 @@ namespace Regulus.Network.RUDP
             if (_Lines.ContainsKey(end_point))
                 throw new Exception("Already existing lines.");
             var line = new Line(end_point);
+            
             _Add(line);            
 
             

@@ -71,7 +71,7 @@ namespace Regulus.Network.RUDP.Tests
             var line2 = new Line(new IPEndPoint(1, 0));
             line2.OutputEvent += msg => { messages2.Add(msg); };
 
-            var payload = new byte[] {1, 2, 3, 4, 5};
+            var payload = _CreateBuffer(1);
             line1.WriteTransmission(payload);
             
             line1.Tick(new Timestamp(1, 1));
@@ -83,6 +83,8 @@ namespace Regulus.Network.RUDP.Tests
 
             line1.Input(messageAck);
             line1.Tick(new Timestamp(3, 1));
+
+            
 
             Assert.AreEqual(0, line1.AcknowledgeCount);
             Assert.AreEqual(0, line2.AcknowledgeCount);

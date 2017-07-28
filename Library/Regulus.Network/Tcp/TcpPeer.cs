@@ -5,46 +5,46 @@ using Regulus.Utility;
 
 namespace Regulus.Network
 {
-    public class TcpSocket : ISocket
+    public class TcpPeer : IPeer
     {
         protected readonly Socket _Socket;
         private Action<int, SocketError> _ReadedHandler;
         private Action<int, SocketError> _SendDoneHandler;
 
 
-        public TcpSocket(Socket socket)
+        public TcpPeer(Socket socket)
         {
             _Socket = socket;            
         }
 
-        EndPoint ISocket.RemoteEndPoint
+        EndPoint IPeer.RemoteEndPoint
         {
             get { return _Socket.RemoteEndPoint; }
         }
 
-        EndPoint ISocket.LocalEndPoint
+        EndPoint IPeer.LocalEndPoint
         {
             get { return _Socket.LocalEndPoint; }
         }
 
-        bool ISocket.Connected
+        bool IPeer.Connected
         {
             get { return _Socket.Connected; }
         }
 
-        void ISocket.Receive(byte[] readed_byte, int offset, int count, Action<int, SocketError> readed)
+        void IPeer.Receive(byte[] readed_byte, int offset, int count, Action<int, SocketError> readed)
         {
             _ReadedHandler = readed;
             _Socket.BeginReceive(readed_byte, offset, count, SocketFlags.None, _Readed, null);
         }
 
-        void ISocket.Send(byte[] buffer, int offset_i, int buffer_length, Action<int, SocketError> write_completion)
+        void IPeer.Send(byte[] buffer, int offset_i, int buffer_length, Action<int, SocketError> write_completion)
         {
             _SendDoneHandler = write_completion;
             _Socket.BeginSend(buffer, offset_i, buffer_length,SocketFlags.None, _SendDone, null);
         }
 
-        void ISocket.Close()
+        void IPeer.Close()
         {
             if (_Socket.Connected)
             {

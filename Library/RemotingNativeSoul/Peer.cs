@@ -41,7 +41,7 @@ namespace Regulus.Remoting.Soul.Native
 
 		private readonly Regulus.Collection.Queue<ResponsePackage> _Responses;
 
-		private readonly ISocket _Socket;
+		private readonly IPeer _Peer;
 
 	    private readonly IProtocol _Protocol;
 
@@ -94,7 +94,7 @@ namespace Regulus.Remoting.Soul.Native
 			get { return new CoreThreadRequestHandler(this); }
 		}
 
-		public Peer(ISocket client , IProtocol protocol)
+		public Peer(IPeer client , IProtocol protocol)
 		{
 
 		    
@@ -102,7 +102,7 @@ namespace Regulus.Remoting.Soul.Native
 
 		    _EnableLock = new object();
 
-			_Socket = client;
+			_Peer = client;
 		    _Protocol = protocol;
 		    _SoulProvider = new SoulProvider(this, this , protocol);
 			_Responses = new Regulus.Collection.Queue<ResponsePackage>();
@@ -118,11 +118,11 @@ namespace Regulus.Remoting.Soul.Native
 		{
 			_Reader.DoneEvent += _RequestPush;
 			_Reader.ErrorEvent += () => { _Enable = false; };
-			_Reader.Start(_Socket);
+			_Reader.Start(_Peer);
 
 			_Writer.ErrorEvent += () => { _Enable = false; };
 			
-			_Writer.Start(_Socket);
+			_Writer.Start(_Peer);
 
 
             var pkg = new PackageProtocolSubmit();
@@ -135,11 +135,11 @@ namespace Regulus.Remoting.Soul.Native
 		{
 			try
 			{				
-				_Socket.Close();
+				_Peer.Close();
 			}
 			catch (System.Net.Sockets.SocketException se)
 			{
-				Regulus.Utility.Log.Instance.WriteInfo(string.Format("Socket shutdown socket exception.{0}" , se.Message));
+				Regulus.Utility.Log.Instance.WriteInfo(string.Format("Socket shutdown peer exception.{0}" , se.Message));
 			}
 			catch (Exception e)
 			{
@@ -286,7 +286,7 @@ namespace Regulus.Remoting.Soul.Native
 
 		private bool _Connected()
 		{
-			return _Enable && _Socket.Connected;
+			return _Enable && _Peer.Connected;
 		}
 
 		internal void Disconnect()

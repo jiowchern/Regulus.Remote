@@ -2,7 +2,7 @@
 
 namespace Regulus.Network.RUDP
 {
-    public interface ISendable
+    public interface ISocketSendable
     {
         void Transport(SocketMessage message);
 

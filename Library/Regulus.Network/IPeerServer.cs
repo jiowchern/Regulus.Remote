@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Regulus.Network
 {
-    public interface ISocketServer
+    public interface IPeerServer
     {
-        event Action<ISocket> AcceptEvent;
+        event Action<IPeer> AcceptEvent;
         void Bind(int port);
         void Close();
     }
