@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Regulus.Network.RUDP
 {
@@ -25,13 +26,14 @@ namespace Regulus.Network.RUDP
         }
         public bool PushPackage(SocketMessage segment_message)
         {
-            var exist = _DataPackages.ContainsKey(segment_message.GetSeq()) ;
+            var seq = segment_message.GetSeq();
+            var exist = _DataPackages.ContainsKey(seq) ;
             
-            if (exist == false && _SerialMoreRecent(segment_message.GetSeq()) )
+            if (exist == false && _SerialMoreRecent(seq) )
             {
-                _DataPackages.Add(segment_message.GetSeq(), segment_message);
+                _DataPackages.Add(seq, segment_message);
 
-                if (_Serial == segment_message.GetSeq())
+                if (_Serial == seq)
                 {
                     _Serial = _Rectify(_Serial);
                 }
@@ -41,7 +43,7 @@ namespace Regulus.Network.RUDP
                 for (uint i = 0; i < 32; i++)
                 {
                     SocketMessage pkg;
-                    if (_DataPackages.TryGetValue((ushort)(_Serial + i + 1), out pkg))
+                    if (_DataPackages.TryGetValue((ushort)(_Serial + i ), out pkg))
                     {
                         _SerialBitFields = _SerialBitFields | mask;
                     }
@@ -54,20 +56,24 @@ namespace Regulus.Network.RUDP
             return false;
         }
 
-        private bool _SerialMoreRecent(uint serial)
+        private bool _SerialMoreRecent(ushort serial)
         {
             return (serial >= _Serial) &&
-                   (serial - _Serial <= 0xFFFFFFFF / 2)
+                   (serial - _Serial <= 0xFFFF / 2)
                    ||
                    (_Serial >= serial) &&
-                   (_Serial - serial > 0xFFFFFFFF / 2);
+                   (_Serial - serial > 0xFFFF / 2);
         }
 
         public SocketMessage PopPackage()
         {
-            if(_Packages.Count > 0)
-                return _Packages.Dequeue();
-            return null;
+            lock (_Packages)
+            {
+                if (_Packages.Count > 0)
+                    return _Packages.Dequeue();
+                return null;
+            }
+
         }
 
         private ushort _Rectify(ushort serial)
@@ -77,7 +83,11 @@ namespace Regulus.Network.RUDP
             SocketMessage message;
             while (_DataPackages.TryGetValue(index, out message))
             {
-                _Packages.Enqueue(message);                
+                lock (_Packages)
+                {
+                    _Packages.Enqueue(message);
+                }
+                
                 removePackages.Add(index);
                 index++;
             }

@@ -254,7 +254,7 @@ namespace Regulus.Network.Tests
         }
 
         [TestMethod]
-	    public void TestAck()
+	    public void TestAck1()
 	    {
 	        var package1 = new SocketMessage(Config.PackageSize);
 	        package1.SetSeq(1);
@@ -274,8 +274,43 @@ namespace Regulus.Network.Tests
 
 	    }
 
-	    
-        
+	    [TestMethod]
+	    public void TestAck2()
+	    {
+	        var package1 = new SocketMessage(Config.PackageSize);
+	        package1.SetSeq(0);
+	        var package2 = new SocketMessage(Config.PackageSize);
+	        package2.SetSeq(1);
+	        var package3 = new SocketMessage(Config.PackageSize);
+	        package3.SetSeq(2);
+
+            var ackWaiter = new CongestionRecorder(3);
+	        var rectifier = new PackageRectifier();
+
+	        ackWaiter.PushWait(package1 , 1);
+	        ackWaiter.PushWait(package2 , 2);
+	        ackWaiter.PushWait(package3, 3);
+
+	        rectifier.PushPackage(package3);
+            rectifier.PushPackage(package1);
+	        
+
+            ackWaiter.ReplyBefore((ushort)(rectifier.Serial - 1) ,1,1);
+	        ackWaiter.ReplyAfter((ushort)(rectifier.Serial - 1) , rectifier.SerialBitFields,1,1);
+
+	        Assert.AreEqual(1 ,ackWaiter.Count);
+
+	        var outs = ackWaiter.PopLost(Timestamp.OneSecondTicks * 60, Timestamp.OneSecondTicks * 60 );
+
+	        Assert.AreEqual(1, outs[0].GetSeq());
+            
+
+
+
+        }
+
+
+
 
 
     }

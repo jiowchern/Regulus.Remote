@@ -5,7 +5,7 @@ namespace Regulus.Network.RUDP
         private readonly ObjectPool<SocketMessageInternal, SocketMessage> _Pool;
         public SocketPackagePool()
         {
-            _Pool = new ObjectPool<SocketMessageInternal, SocketMessage>(new SocketPackageFactory());
+            _Pool = new ObjectPool<SocketMessageInternal, SocketMessage>(new SocketMessageFactory());
         }
 
         public SocketMessage Spawn()

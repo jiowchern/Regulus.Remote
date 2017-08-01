@@ -84,20 +84,20 @@ namespace Regulus.Network.RUDP
 
         public SocketMessage[] Received()
         {
-            var pkgs = _Empty;
+            
             lock (_ReceivePackages)
             {
-                pkgs = _ReceivePackages.ToArray();
+                var pkgs = _ReceivePackages.ToArray();                
                 _ReceivePackages.Clear();
+                return pkgs;
             }
-
-            return pkgs;
+            
         }
 
         
     }
 
-    public class SocketPackageFactory : IObjectFactory<SocketMessageInternal>
+    public class SocketMessageFactory : IObjectFactory<SocketMessageInternal>
     {
         SocketMessageInternal IObjectFactory<SocketMessageInternal>.Spawn()
         {

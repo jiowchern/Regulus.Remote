@@ -53,7 +53,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulus.Network", "Library\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulus.Network.Tests", "Test\Regulus.Network.Tests\Regulus.Network.Tests.csproj", "{EF1E4708-06FD-4F41-BDFD-3083E1DA09F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulus.Network.Tests.TestTool", "Test\Regulus.Network.Tests.HostApp\Regulus.Network.Tests.TestTool.csproj", "{481472C6-2353-4825-923D-5A793495D11A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulus.Network.Tests.TestTool", "Test\Regulus.Network.Tests.TestTool\Regulus.Network.Tests.TestTool.csproj", "{481472C6-2353-4825-923D-5A793495D11A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -171,7 +171,7 @@ namespace Regulus.Network.RUDP
 
         public void SetSeq(ushort sn)
         {
-            _SetUint16(SEQ_INDEX, checked((ushort)sn));
+            _SetUint16(SEQ_INDEX, (ushort)sn);
         }
 
         public ushort GetSeq()
