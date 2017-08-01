@@ -20,20 +20,25 @@ namespace Regulus.Network.RUDP
         private readonly SegmentStream _Stream;
         private PEER_STATUS _Status;
 
-        class ReadRequest
+        class Reader
         {
             public byte[] Buffer;
             public int Offset;
             public int Count;
-            public Action<int, SocketError> ReadDoneHandler;
+            public Action<int, SocketError> DoneHandler;
         }
         private readonly List<byte> _Sends;
-        private readonly Queue<ReadRequest> _ReadRequests;
+        
+        private readonly Reader _Reader;
+        public Action<int, SocketError> _WriteDoneHandler;
+
         private bool _RequireDisconnect;
+
+        
 
         private Peer(Line line)
         {
-            _ReadRequests = new Queue<ReadRequest>();
+            _Reader = new Reader();
             _Sends = new List<byte>();
             _Line = line;
             _Machine = new StageMachine<Timestamp>();        
@@ -70,27 +75,23 @@ namespace Regulus.Network.RUDP
                 if (_Sends.Count > 0)
                 {
                     _Line.WriteTransmission(_Sends.ToArray());
+                    _WriteDoneHandler(_Sends.Count, SocketError.Success);
                     _Sends.Clear();
                 }
+
+                
             }
             
 
-            while (_Stream.Count > 0 && _ReadRequests.Count > 0)
+            while (_Stream.Count > 0 )
             {
-                ReadRequest request = null;
+                var handler = _Reader;
 
-                lock (_ReadRequests)
-                {
-                    request = _ReadRequests.Dequeue();                    
-                }
-
-                var readCount = _Stream.Read(request.Buffer, request.Offset, request.Count);
+                var readCount = _Stream.Read(handler.Buffer, handler.Offset, handler.Count);
                 if (readCount > 0)
                 {
-                    request.ReadDoneHandler(readCount, SocketError.Success);
-
+                    handler.DoneHandler(readCount, SocketError.Success);                    
                 }
-
             }
             
 
@@ -173,22 +174,21 @@ namespace Regulus.Network.RUDP
                 {
                     _Sends.Add(buffer[i]);
                 }
-            }
+                _WriteDoneHandler = write_completion;
+            }            
             
-            write_completion(len , SocketError.Success);
         }
 
         void IRudpPeer.Receive(byte[] buffer, int offset, int count, Action<int, SocketError> read_completion)
         {
-
-            var requests = new ReadRequest();
-            requests.Buffer = buffer;
-            requests.Count = count;
-            requests.Offset = offset;
-            requests.ReadDoneHandler = read_completion;
-            lock (_ReadRequests)
+            
+            
+            lock (_Reader)
             {
-                _ReadRequests.Enqueue(requests);
+                _Reader.Buffer = buffer;
+                _Reader.Count = count;
+                _Reader.Offset = offset;
+                _Reader.DoneHandler = read_completion;
             }
             
         }

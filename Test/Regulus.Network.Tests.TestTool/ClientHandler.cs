@@ -9,7 +9,7 @@ namespace Regulus.Network.Tests.TestTool
     internal class ClientHandler : IUpdatable
     {
         private readonly int _Id;
-        private int _PeerId;
+        
         private readonly IPeerClient _Client;
         private readonly Command _Command;
         private readonly Console.IViewer _Viewer;

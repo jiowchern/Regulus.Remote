@@ -84,7 +84,7 @@ namespace Regulus.Network.RUDP
         }
 
 
-        public void ReplyUnder(ushort package_id, long time_ticks, long time_delta)
+        public void ReplyBefore(ushort package_id, long time_ticks, long time_delta)
         {
             var pkg = _Items.Values.FirstOrDefault(item => item.Message.GetSeq() == package_id);
             if (pkg != null)
@@ -108,7 +108,7 @@ namespace Regulus.Network.RUDP
                 {
                     var rto = ticks - item.StartTicks;
                     if(rto != LastRTO)
-                        _RTO.Reset();
+                        _RTO.Update(rto, delta);
                     LastRTO = rto;
                     packages.Add(item.Message);
                 }
@@ -136,6 +136,24 @@ namespace Regulus.Network.RUDP
             foreach (var itemsValue in _Items.Values)
             {
                 itemsValue.Padding();
+            }
+        }
+
+        public void ReplyAfter(ushort ack, uint fields, long time_ticks, long time_delta)
+        {
+            ushort mark = 1;
+            for (ushort i = 0; i < 32; i++)
+            {
+                if ((mark & fields) != 0)
+                {
+                    var id = (ushort) (ack + i + 1);
+                    Item item;
+                    if (_Items.TryGetValue(id, out item))
+                    {
+                        _Reply( id, time_ticks, time_delta , item);
+                    }
+                }
+                mark <<= 1;
             }
         }
     }

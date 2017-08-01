@@ -1,3 +1,4 @@
+using System;
 using System.CodeDom;
 using System.Net;
 
@@ -49,10 +50,21 @@ namespace Regulus.Network.RUDP
             return packages;
         }
 
-
+        public SocketMessage PackingAck(ushort ack, uint ack_fields)
+        {
+            var package = _Spawner.Spawn();
+            package.SetEndPoint(_EndPoint);            
+            package.SetOperation((byte)PEER_OPERATION.ACKNOWLEDGE);
+            package.SetAck(ack);
+            package.SetAckFields(ack_fields);
+            package.ClearPayload();
+            return package;
+        }
         public SocketMessage PackingOperation(PEER_OPERATION operation, ushort ack, uint ack_fields)
         {
-            
+            if(operation == PEER_OPERATION.ACKNOWLEDGE)
+                throw new Exception("Ack type use PackingAck.");
+
             var package = _Spawner.Spawn();
             package.SetEndPoint(_EndPoint);
             package.SetSeq(_Serial++);
