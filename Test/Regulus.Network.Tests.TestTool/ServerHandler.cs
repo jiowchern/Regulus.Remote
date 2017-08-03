@@ -31,6 +31,8 @@ namespace Regulus.Network.Tests.TestTool
             _Server.AcceptEvent += _AcceptPeer;
             _Command.Register<int>("Bind" + _Id, Bind);
             _Command.Register("Close" + _Id, Close );
+
+            
         }
 
         void IBootable.Shutdown()
@@ -40,6 +42,7 @@ namespace Regulus.Network.Tests.TestTool
             _Updater.Shutdown();
             _Command.Unregister("Bind" + _Id);
             _Command.Unregister("Close" + _Id);
+            
         }
 
         private void _AcceptPeer(IPeer obj)
@@ -63,5 +66,7 @@ namespace Regulus.Network.Tests.TestTool
             _Server.Close();
             _Enable = false;
         }
+
+        
     }
 }

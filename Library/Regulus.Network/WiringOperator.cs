@@ -3,6 +3,7 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using Regulus.Extension;
 using Regulus.Framework;
 using Regulus.Network.Profile;
 using Regulus.Utility;
@@ -16,6 +17,7 @@ namespace Regulus.Network.RUDP
 
         private readonly Dictionary<EndPoint , Line> _Lines;
         private readonly Queue<Line> _Exits;
+        private Queue<SocketMessage> _Messages;
         private readonly Logger _Logger;
         public WiringOperator(ISocketSendable socket_sendable , ISocketRecevieable socket_recevieable)
         {
@@ -24,6 +26,7 @@ namespace Regulus.Network.RUDP
             _Exits = new Queue<Line>();
             _SocketSendable = socket_sendable;
             _SocketRecevieable = socket_recevieable;
+            _Messages = new Queue<SocketMessage>();
         }
 
         public event Action<Line> JoinStreamEvent;
@@ -31,11 +34,29 @@ namespace Regulus.Network.RUDP
 
         bool IUpdatable<Timestamp>.Update(Timestamp time)
         {            
-            _HandleReceive();            
+            _HandleReceive();
+            _HandleSend();
             _HandleTimeout(time);
             
             _HandleDisconnect();
             return true;
+        }
+
+        private void _HandleSend()
+        {
+            SocketMessage message = null;
+            while ((message = _Messages.SafeDequeue()) != null)
+            {
+                if (message.IsError() == false)
+                {
+                    var line = _Query(message.RemoteEndPoint);
+                    line.MessageSendResult(message);
+                }
+                else
+                {
+                    _HandleErrorDisconnect(message.RemoteEndPoint);
+                }
+            }
         }
 
         private void _HandleDisconnect()
@@ -58,7 +79,12 @@ namespace Regulus.Network.RUDP
             }
         }
 
+        private void _SendOut(SocketMessage message)
+        {
+            _Messages.SafeEnqueue(message);
 
+            
+        }
         private void _HandleReceive()
         {
             var packages = _SocketRecevieable.Received();
@@ -106,7 +132,7 @@ namespace Regulus.Network.RUDP
 
 
         }
-
+        
         private void _Remove(Line time_out_line)
         {
             _LeftLine(time_out_line);
@@ -159,11 +185,7 @@ namespace Regulus.Network.RUDP
             _Logger.End();
         }
 
-        private void _SendOut(SocketMessage message)
-        {
-            var line = _Query(message.RemoteEndPoint);
-            line.MessageSendOut(message);
-        }
+        
 
         public void Create(EndPoint end_point)
         {

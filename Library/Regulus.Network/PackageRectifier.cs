@@ -16,6 +16,7 @@ namespace Regulus.Network.RUDP
 
         public ushort Serial { get { return _Serial ; } }
         public uint SerialBitFields { get { return _SerialBitFields; } }
+        public int Count { get { return _DataPackages.Count; } }
 
         public PackageRectifier()
         {

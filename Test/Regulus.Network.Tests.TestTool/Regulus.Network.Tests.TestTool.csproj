@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientHandler.cs" />
+    <Compile Include="FakeSocket.cs" />
     <Compile Include="ReceiveContinuousNumberStage.cs" />
     <Compile Include="ReceiveStringStage.cs" />
     <Compile Include="SendContinuousNumberStage.cs" />

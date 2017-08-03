@@ -37,19 +37,37 @@ namespace Regulus.Network
 
         long ITime.Now
         {
-            get { return _Now; }
+            get
+            {
+                lock (_Stopwatch)
+                {
+                    return _Now;
+                }
+                
+            }
         }
 
         long ITime.Delta
         {
-            get { return _Delta; }
+            get
+            {
+                lock (_Stopwatch)
+                {
+                    return _Delta;
+                }
+                
+            }
         }
 
         void ITime.Sample()
         {
-            var now = _Stopwatch.ElapsedTicks;
-            _Delta = now - _Now;
-            _Now = now;
+            lock (_Stopwatch)
+            {
+                var now = _Stopwatch.ElapsedTicks;
+                _Delta = now - _Now;
+                _Now = now;
+            }
+            
         }
     }
 }

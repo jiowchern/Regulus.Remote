@@ -34,7 +34,7 @@ namespace Regulus.Network.Tests.TestTool
                     throw new SystemException("number receive error!");
                 }
             }           
-            _Viewer.WriteLine(string.Format("receive count {0}" , count));
+            //_Viewer.WriteLine(string.Format("receive count {0}" , count));
         }
 
         void IStage.Leave()

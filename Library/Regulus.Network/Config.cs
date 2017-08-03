@@ -11,9 +11,9 @@ namespace Regulus.Network
 
         static Config()
         {            
-            HostListenTimeout = 30;
-            AgentConnectTimeout = 30;
-            TransmitterTimeout = 30;
+            HostListenTimeout = 300;
+            AgentConnectTimeout = 300;
+            TransmitterTimeout = 300;
         }
 
         public static readonly long AgentConnectTimeout;
@@ -22,7 +22,7 @@ namespace Regulus.Network
         public const int IPv4HeadSize = 20;
         public const int UdpHeadSize = 8;
         public const int MTU = 576;
-        public const int Cost = 32;
+        public const int Cost = 10;
         //public const int MTU = 1500;
         public const int PackageSize = MTU - IPv4HeadSize - UdpHeadSize; 
     }
