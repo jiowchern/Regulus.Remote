@@ -22,7 +22,8 @@ namespace Regulus.Network.RUDP
             _PayloadSize = SocketMessage.GetPayloadSize();
         }
 
-        
+        public int Serial { get { return _Serial; }}
+
 
         public SocketMessage[] PackingTransmission(byte[] buffer,ushort ack ,uint ack_fields )
         {

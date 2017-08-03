@@ -81,17 +81,22 @@ namespace Regulus.Network.RUDP
 
         public int AcknowledgeCount { get { return _Waiter.Count; } }
         public int WaitSendCount { get { return _SendPackages.Count; } }
-        public long SendBytes { get; private set; }
-        public long ReceiveBytes { get; private set; }
+        public int SendBytes { get; private set; }
+        public int ReceiveBytes { get; private set; }
         public long SRTT { get { return _Waiter.SRTT; } }
         public long RTO { get { return _Waiter.RTO; } }
-        public long SendedPackages { get; private set; }
-        public long SendLostPackages { get; private set; }
-        public long ReceivePackages { get; private set; }
-        public long ReceiveInvalidPackages { get; private set; }
+        public int SendedPackages { get; private set; }
+        public int SendLostPackages { get; private set; }
+        public int ReceivePackages { get; private set; }
+        public int ReceiveInvalidPackages { get; private set; }
         public long LastRTT { get { return _Waiter.LastRTT; }}
-        public long Cost { get { return _Waiter.Count; } }
+        public int SendBlock { get { return _Waiter.Count; } }
         public long LastRTO { get { return _Waiter.LastRTO; }}
+        public int ReceiveBlock { get { return _Rectifier.Count; } }
+
+        public int ReceiveNumber { get { return _Rectifier.Serial; } }
+
+        public int SendNumber { get { return _Dispenser.Serial; } }
 
 
         public void Input(SocketMessage message)
@@ -125,10 +130,10 @@ namespace Regulus.Network.RUDP
             if (_TimeoutTicks < 0)
                 return true;
 
-            
+            _HandleResend(time);
             _HandleInput(time);
             _HandleReceive(time);
-            _HandleResend(time);
+            
             _HandlePing(time);
             _HandleOutput(time);
             return false;
@@ -174,8 +179,8 @@ namespace Regulus.Network.RUDP
                 var oper = (PEER_OPERATION)message.GetOperation();
 
                 // ack 
-                _Waiter.Reply((ushort)(ack - 1), time.Ticks, time.DeltaTicks);
-                //_Waiter.ReplyBefore((ushort)(ack - 1), time.Ticks , time.DeltaTicks);
+                //_Waiter.Reply((ushort)(ack - 1), time.Ticks, time.DeltaTicks);
+                _Waiter.ReplyBefore((ushort)(ack - 1), time.Ticks , time.DeltaTicks);
                 _Waiter.ReplyAfter((ushort)(ack - 1), ackFields , time.Ticks, time.DeltaTicks);
                 _Waiter.Padding();
 
@@ -257,7 +262,7 @@ namespace Regulus.Network.RUDP
             return null;
         }
 
-        public void MessageSendOut(SocketMessage message)
+        public void MessageSendResult(SocketMessage message)
         {
             
             

@@ -2,6 +2,13 @@ namespace Regulus.Extension
 {
     public static class QueueThreadHelper
     {
+        public static int SafeCount<T>(this System.Collections.Generic.Queue<T> queue)
+        {
+            lock (queue)
+            {
+                return queue.Count;
+            }
+        }
         public static  void SafeEnqueue<T>(this System.Collections.Generic.Queue<T> queue , T item)
         {
             lock (queue)

@@ -20,7 +20,7 @@ namespace Regulus.Network.Tests.TestTool
         {
             _Ip = ip;
             _Regex = new Regex(
-                @"\[RUDP\]\sRemoteEndPoint:([\d]+.[\d]+.[\d]+.[\d]+:[\d]+)\sSendBytes:([\d]+)\sReceiveBytes:([\d]+)\sSRTT:([\d]+)\sRTO:([\d]+)\sSendPackages:([\d]+)\sSendLost:([\d]+)\sReceivePackages:([\d]+)\sReceiveInvalidPackages:([\d]+)\sLastRTT:([\d]+)\sCost:([\d]+)\sLastRTO:([\d]+)");
+                @"\[RUDP\]\sRemoteEndPoint:([\d]+.[\d]+.[\d]+.[\d]+:[\d]+)\sSendBytes:([\d]+)\sReceiveBytes:([\d]+)\sSRTT:([\d]+)\sRTO:([\d]+)\sSendPackages:([\d]+)\sSendLost:([\d]+)\sReceivePackages:([\d]+)\sReceiveInvalidPackages:([\d]+)\sLastRTT:([\d]+)\sSendBlock:([\d]+)\sLastRTO:([\d]+)\sReceiveBlock:([\d]+)\sReceiveNumber:([\d]+)\sSendNumber:([\d]+)");
             InitializeComponent();
         }
 
@@ -53,6 +53,9 @@ namespace Regulus.Network.Tests.TestTool
                     match.Groups[10].ToString(),
                     match.Groups[11].ToString(),
                     match.Groups[12].ToString(),
+                    match.Groups[13].ToString(),
+                    match.Groups[14].ToString(),
+                    match.Groups[15].ToString(),
                 };
                 
 
@@ -89,8 +92,11 @@ namespace Regulus.Network.Tests.TestTool
             var receivePackages = propertys[7];
             var receiveInvalids = propertys[8];
             var lastRttTicks = propertys[9];
-            var cost = propertys[10];
+            var sendBlock = propertys[10];
             var lastRTOTicks = propertys[11];
+            var receiveBlock = propertys[12];
+            var receiveNumber = propertys[13];
+            var sendNumber = propertys[14];
 
             SendBytes.Text = sendBytes;
             ReceiveBytes.Text = receiveBytes;
@@ -98,6 +104,10 @@ namespace Regulus.Network.Tests.TestTool
             SendLosts.Text = sendLosts;
             ReceivePackages.Text = receivePackages;
             ReceiveInvalids.Text = receiveInvalids;
+            ReceiveBlock.Text = receiveBlock;
+            SendBlock.Text = sendBlock;
+            ReceiveNumber.Text = receiveNumber;
+            SendNumber.Text = sendNumber;
 
             var srtt = double.Parse(srttTicks.ToString()) / Timestamp.OneSecondTicks;
             var rto = double.Parse(rtoTicks.ToString()) / Timestamp.OneSecondTicks;

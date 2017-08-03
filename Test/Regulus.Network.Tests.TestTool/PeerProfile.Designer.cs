@@ -55,6 +55,16 @@ namespace Regulus.Network.Tests.TestTool
             this.label16 = new System.Windows.Forms.Label();
             this.LastRTT = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
+            this.LastRTO = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.ReceiveBlock = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.SendBlock = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.ReceiveNumber = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.SendNumber = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -271,7 +281,7 @@ namespace Regulus.Network.Tests.TestTool
             // 
             this.LastRTT.AutoSize = true;
             this.LastRTT.Font = new System.Drawing.Font("新細明體", 14F);
-            this.LastRTT.Location = new System.Drawing.Point(535, 698);
+            this.LastRTT.Location = new System.Drawing.Point(566, 698);
             this.LastRTT.Name = "LastRTT";
             this.LastRTT.Size = new System.Drawing.Size(99, 19);
             this.LastRTT.TabIndex = 18;
@@ -289,11 +299,121 @@ namespace Regulus.Network.Tests.TestTool
             this.label18.Text = "Last RTT";
             this.label18.Click += new System.EventHandler(this.label18_Click);
             // 
+            // LastRTO
+            // 
+            this.LastRTO.AutoSize = true;
+            this.LastRTO.Font = new System.Drawing.Font("新細明體", 14F);
+            this.LastRTO.Location = new System.Drawing.Point(566, 717);
+            this.LastRTO.Name = "LastRTO";
+            this.LastRTO.Size = new System.Drawing.Size(99, 19);
+            this.LastRTO.TabIndex = 20;
+            this.LastRTO.Text = "1234567890";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("新細明體", 14F);
+            this.label3.Location = new System.Drawing.Point(450, 717);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(81, 19);
+            this.label3.TabIndex = 19;
+            this.label3.Text = "Last RTO";
+            // 
+            // ReceiveBlock
+            // 
+            this.ReceiveBlock.AutoSize = true;
+            this.ReceiveBlock.Font = new System.Drawing.Font("新細明體", 14F);
+            this.ReceiveBlock.Location = new System.Drawing.Point(566, 736);
+            this.ReceiveBlock.Name = "ReceiveBlock";
+            this.ReceiveBlock.Size = new System.Drawing.Size(99, 19);
+            this.ReceiveBlock.TabIndex = 22;
+            this.ReceiveBlock.Text = "1234567890";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("新細明體", 14F);
+            this.label5.Location = new System.Drawing.Point(450, 736);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(110, 19);
+            this.label5.TabIndex = 21;
+            this.label5.Text = "ReceiveBlock";
+            // 
+            // SendBlock
+            // 
+            this.SendBlock.AutoSize = true;
+            this.SendBlock.Font = new System.Drawing.Font("新細明體", 14F);
+            this.SendBlock.Location = new System.Drawing.Point(566, 755);
+            this.SendBlock.Name = "SendBlock";
+            this.SendBlock.Size = new System.Drawing.Size(99, 19);
+            this.SendBlock.TabIndex = 24;
+            this.SendBlock.Text = "1234567890";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("新細明體", 14F);
+            this.label9.Location = new System.Drawing.Point(450, 755);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(88, 19);
+            this.label9.TabIndex = 23;
+            this.label9.Text = "SendBlock";
+            // 
+            // ReceiveNumber
+            // 
+            this.ReceiveNumber.AutoSize = true;
+            this.ReceiveNumber.Font = new System.Drawing.Font("新細明體", 14F);
+            this.ReceiveNumber.Location = new System.Drawing.Point(821, 698);
+            this.ReceiveNumber.Name = "ReceiveNumber";
+            this.ReceiveNumber.Size = new System.Drawing.Size(99, 19);
+            this.ReceiveNumber.TabIndex = 26;
+            this.ReceiveNumber.Text = "1234567890";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("新細明體", 14F);
+            this.label7.Location = new System.Drawing.Point(689, 698);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(126, 19);
+            this.label7.TabIndex = 25;
+            this.label7.Text = "ReceiveNumber";
+            // 
+            // SendNumber
+            // 
+            this.SendNumber.AutoSize = true;
+            this.SendNumber.Font = new System.Drawing.Font("新細明體", 14F);
+            this.SendNumber.Location = new System.Drawing.Point(821, 717);
+            this.SendNumber.Name = "SendNumber";
+            this.SendNumber.Size = new System.Drawing.Size(99, 19);
+            this.SendNumber.TabIndex = 28;
+            this.SendNumber.Text = "1234567890";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("新細明體", 14F);
+            this.label13.Location = new System.Drawing.Point(689, 717);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(104, 19);
+            this.label13.TabIndex = 27;
+            this.label13.Text = "SendNumber";
+            // 
             // PeerProfile
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1113, 774);
+            this.Controls.Add(this.SendNumber);
+            this.Controls.Add(this.label13);
+            this.Controls.Add(this.ReceiveNumber);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.SendBlock);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.ReceiveBlock);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.LastRTO);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.LastRTT);
             this.Controls.Add(this.label18);
             this.Controls.Add(this.ReceiveInvalids);
@@ -344,5 +464,15 @@ namespace Regulus.Network.Tests.TestTool
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label LastRTT;
         private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Label LastRTO;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label ReceiveBlock;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label SendBlock;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label ReceiveNumber;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label SendNumber;
+        private System.Windows.Forms.Label label13;
     }
 }

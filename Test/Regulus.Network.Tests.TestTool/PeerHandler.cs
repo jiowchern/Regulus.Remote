@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
+using System.Windows.Forms;
 using Regulus.Framework;
 using Regulus.Network.RUDP;
 using Regulus.Utility;
@@ -21,8 +23,9 @@ namespace Regulus.Network.Tests.TestTool
 	    private readonly string _CommandSendMessage;
         private readonly string _CommandReceiveContinousNumber;
         private readonly string _CommandReceiveString;
+	    private string _CommandView;
 
-        public  PeerHandler(Command command , Utility.Console.IViewer viwer , IPeer peer)
+	    public  PeerHandler(Command command , Utility.Console.IViewer viwer , IPeer peer)
 		{		    
             _SendMachine = new StageMachine();
 		    _ReceiveMachine = new StageMachine();
@@ -33,7 +36,8 @@ namespace Regulus.Network.Tests.TestTool
 			_CommandSendString = string.Format("ss{0}", _Id);
 		    _CommandSendContinousNumber = string.Format("scn{0}", _Id);
 		    _CommandReceiveString = string.Format("rs{0}", _Id);
-		    _CommandReceiveContinousNumber = string.Format("rcn{0}", _Id);            
+		    _CommandReceiveContinousNumber = string.Format("rcn{0}", _Id);
+		    _CommandView = string.Format("view{0}", _Id);
         }
 
        
@@ -46,15 +50,26 @@ namespace Regulus.Network.Tests.TestTool
             _Command.Register<int,int>(_CommandSendContinousNumber, ToSendContinousNumber);
 		    _Command.Register(_CommandReceiveString, ToRecevieString);
 		    _Command.Register(_CommandReceiveContinousNumber, ToReceoveContinuousNumber);
+		    _Command.Register(_CommandView, View);
 
-		    ToSendString();
+            ToSendString();
             ToRecevieString();
 		}
-	    
 
-	    		
+	    private void View()
+	    {
+            
+	        ThreadPool.QueueUserWorkItem(_RunProfile, _Peer.RemoteEndPoint.ToString());
+        }
 
-		void IBootable.Shutdown()
+	    private void _RunProfile(object state)
+	    {
+	        var profile = new PeerProfile((string)state);
+	        Application.Run(profile);
+        }
+
+
+	    void IBootable.Shutdown()
 		{
 			_Viewer.WriteLine(string.Format("Leave Transmitter {0} {1}", _Peer.RemoteEndPoint,_Id));
 			
@@ -62,6 +77,7 @@ namespace Regulus.Network.Tests.TestTool
 		    _Command.Unregister(_CommandSendContinousNumber);
 		    _Command.Unregister(_CommandReceiveString);
 		    _Command.Unregister(_CommandReceiveContinousNumber);
+		    _Command.Unregister(_CommandView);
             _SendMachine.Termination();
 		    _ReceiveMachine.Termination();
         }
