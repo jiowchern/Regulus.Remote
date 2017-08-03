@@ -64,7 +64,7 @@ namespace Regulus.Network.RUDP
         }
         public void WriteTransmission(byte[] buffer)
         {            
-                var packages = _Dispenser.PackingTransmission(buffer, _Rectifier.Serial, _Rectifier.SerialBitFields);
+                var packages = _Dispenser.PackingTransmission(buffer, (ushort)(_Rectifier.Serial-1), _Rectifier.SerialBitFields);
                 for (int i = 0; i < packages.Length; i++)
                 {
                     var message = packages[i];
@@ -110,9 +110,9 @@ namespace Regulus.Network.RUDP
 
         }
 
-        private void _SendPing(ushort ack, uint ack_bits)
-        {
-            _SendAck(ack , ack_bits);
+        private void _SendPing()
+        {            
+            _SendAck((ushort)(_Rectifier.Serial-1), _Rectifier.SerialBitFields);
         }
         
         private void _SendAck(ushort ack,uint ack_bits)
@@ -161,7 +161,7 @@ namespace Regulus.Network.RUDP
                 _PingTicks = 0;
                 if (_SendPackages.Count == 0)
                 {
-                    _SendPing(_Rectifier.Serial, _Rectifier.SerialBitFields);
+                    _SendPing();
                 }
             }
         }
@@ -179,10 +179,13 @@ namespace Regulus.Network.RUDP
                 var oper = (PEER_OPERATION)message.GetOperation();
 
                 // ack 
-                //_Waiter.Reply((ushort)(ack - 1), time.Ticks, time.DeltaTicks);
-                _Waiter.ReplyBefore((ushort)(ack - 1), time.Ticks , time.DeltaTicks);
-                _Waiter.ReplyAfter((ushort)(ack - 1), ackFields , time.Ticks, time.DeltaTicks);
-                _Waiter.Padding();
+                if (_Waiter.Reply(ack, time.Ticks, time.DeltaTicks) == false)
+                {
+                    
+                }
+                //_Waiter.ReplyBefore((ushort)(ack - 1), time.Ticks , time.DeltaTicks);
+                //_Waiter.ReplyAfter((ushort)(ack - 1), ackFields , time.Ticks, time.DeltaTicks);
+                //_Waiter.Padding();
 
                 
                 
@@ -193,8 +196,9 @@ namespace Regulus.Network.RUDP
                     {
                         ReceiveInvalidPackages++;
                     }
-                    _SendAck(_Rectifier.Serial, _Rectifier.SerialBitFields);
+                    _SendAck(seq, _Rectifier.SerialBitFields);
                 }
+                
                     
 
                 ReceiveBytes += message.GetPackageSize();

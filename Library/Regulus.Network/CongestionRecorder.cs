@@ -61,24 +61,22 @@ namespace Regulus.Network.RUDP
         }
         
 
-        public void Reply(ushort package,long time_ticks,long time_delta)
+        public bool Reply(ushort package,long time_ticks,long time_delta)
         {
             Item item;
             if (_Items.TryGetValue(package, out item))
             {
                 _Reply(package, time_ticks, time_delta, item);
+                return true;
             }
 
-            
+            return false;
         }
 
         private void _Reply(ushort package, long time_ticks, long time_delta, Item item)
         {
             var rtt = time_ticks - item.StartTicks;
-
-            if(LastRTT != rtt)
-                _RTO.Update(rtt, time_delta);
-
+            _RTO.Update(rtt, time_delta);
             LastRTT = rtt;
             _Items.Remove(package);
         }
@@ -106,17 +104,18 @@ namespace Regulus.Network.RUDP
             {
                 if (item.IsTimeout(ticks)  )
                 {
-                    var rto = ticks - item.StartTicks;
-                    if(rto != LastRTO)
-                        _RTO.Update(rto, delta);
+                    var rto = ticks - item.StartTicks;                    
+                    _RTO.Update(rto, delta);
+                    LastRTT = rto;
                     LastRTO = rto;
                     packages.Add(item.Message);
                 }
                 else if (item.Hungry > _HungryLimit)
                 {
                     var rto = ticks - item.StartTicks;
-                    if (rto != LastRTO)
-                        _RTO.Update(rto, delta);
+                    
+                    _RTO.Update(rto, delta);
+                    LastRTT = rto;
                     LastRTO = rto;
                     packages.Add(item.Message);
                 }
