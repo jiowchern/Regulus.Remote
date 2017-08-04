@@ -85,13 +85,22 @@ namespace Regulus.Network.RUDP
 
             while (_Stream.Count > 0 )
             {
-                var handler = _Reader;
-
-                var readCount = _Stream.Read(handler.Buffer, handler.Offset, handler.Count);
-                if (readCount > 0)
+                lock (_Reader)
                 {
-                    handler.DoneHandler(readCount, SocketError.Success);                    
+
+                    var handler = _Reader;
+                    if (handler.Buffer != null)
+                    {
+                        var readCount = _Stream.Read(handler.Buffer, handler.Offset, handler.Count);
+                        if (readCount > 0)
+                        {
+                            handler.DoneHandler(readCount, SocketError.Success);
+                        }
+                    }
+
+                    
                 }
+                
             }
             
 
