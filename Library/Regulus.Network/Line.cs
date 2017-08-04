@@ -142,7 +142,7 @@ namespace Regulus.Network.RUDP
         private void _HandleInput(Timestamp time)
         {
             SocketMessage message = null;
-            while (_Waiter.Count < Config.Cost && (message = _InputPackages.SafeDequeue())!=null)
+            while (_Waiter.IsFull() == false && (message = _InputPackages.SafeDequeue())!=null)
             {
                 _Waiter.PushWait(message , time.Ticks);
                 lock (_SendPackages)
@@ -181,7 +181,7 @@ namespace Regulus.Network.RUDP
                 // ack 
                 if (_Waiter.Reply(ack, time.Ticks, time.DeltaTicks) == false)
                 {
-                    
+                        
                 }
                 //_Waiter.ReplyBefore((ushort)(ack - 1), time.Ticks , time.DeltaTicks);
                 //_Waiter.ReplyAfter((ushort)(ack - 1), ackFields , time.Ticks, time.DeltaTicks);

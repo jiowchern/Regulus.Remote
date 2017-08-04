@@ -8,7 +8,7 @@ namespace Regulus.Network.RUDP
     public class CongestionRecorder
     {
         private readonly int _HungryLimit;
-
+        private int _Count;
         class Item
         {
             public readonly SocketMessage Message;
@@ -75,6 +75,7 @@ namespace Regulus.Network.RUDP
 
         private void _Reply(ushort package, long time_ticks, long time_delta, Item item)
         {
+            _Count++;
             var rtt = time_ticks - item.StartTicks;
             _RTO.Update(rtt, time_delta);
             LastRTT = rtt;
@@ -98,10 +99,11 @@ namespace Regulus.Network.RUDP
 
         public List<SocketMessage> PopLost(long ticks,long delta)
         {
-
+            var count = _Count;
             List<SocketMessage> packages = new List<SocketMessage>();
             foreach (var item in _Items.Values)
             {
+                
                 if (item.IsTimeout(ticks)  )
                 {
                     var rto = ticks - item.StartTicks;                    
@@ -109,6 +111,8 @@ namespace Regulus.Network.RUDP
                     LastRTT = rto;
                     LastRTO = rto;
                     packages.Add(item.Message);
+
+                    
                 }
                 else if (item.Hungry > _HungryLimit)
                 {
@@ -119,7 +123,13 @@ namespace Regulus.Network.RUDP
                     LastRTO = rto;
                     packages.Add(item.Message);
                 }
+                if (count-- == 0)
+                    break;
             }
+
+
+            if(packages.Count > 0 )
+                _Count /= 2;
 
             foreach (var package in packages)
             {
@@ -154,6 +164,11 @@ namespace Regulus.Network.RUDP
                 }
                 mark <<= 1;
             }
+        }
+
+        public bool IsFull()
+        {
+            return _Items.Count > _Count;
         }
     }
 }
