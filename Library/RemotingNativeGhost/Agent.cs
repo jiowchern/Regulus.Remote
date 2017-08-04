@@ -20,10 +20,9 @@ namespace Regulus.Remoting.Ghost.Native
 		private readonly AgentCore _Core;
 
 		private readonly StageMachine _Machine;
-	    private RudpClient _RudpAgent;
-	    private Regulus.Utility.Updater<Timestamp> _Updater;
-	    private long _Ticks;
-	    private long _Last;
+	    private IPeerClient _RudpAgent;
+	    
+
 
 	    private Regulus.Network.ITime _Time;
 
@@ -41,7 +40,7 @@ namespace Regulus.Remoting.Ghost.Native
 	        _Machine = new StageMachine();
             _Core = new AgentCore(protocol);
 	        _RudpAgent = new RudpClient(new UdpSocket());
-	        _Updater = new Updater<Timestamp>();
+	        
 	        
         }
 
@@ -51,25 +50,27 @@ namespace Regulus.Remoting.Ghost.Native
 				_Machine.Update();
 		    
 
-            _Updater.Working(new Timestamp(_Time.Now , _Time.Delta));
-		    _Last = _Ticks;
+            
+		    
 
             return true;
 		}
 
 		void IBootable.Launch()
 		{
-		    _Ticks = System.DateTime.Now.Ticks;
-		    _Last = _Ticks;
             
 
             Singleton<Log>.Instance.WriteInfo("Agent Launch.");
             _Core.ErrorMethodEvent += _ErrorMethodEvent;
 		    _Core.ErrorVerifyEvent += _ErrorVerifyEvent;
-		}
+
+		    _RudpAgent.Launch();
+
+        }
 
 		void IBootable.Shutdown()
 		{
+		    _RudpAgent.Shutdown();
             _Core.ErrorVerifyEvent -= _ErrorVerifyEvent;
             _Core.ErrorMethodEvent -= _ErrorMethodEvent;
             if (_Core.Enable)
@@ -88,7 +89,7 @@ namespace Regulus.Remoting.Ghost.Native
 			{
 				_Machine.Termination();
 			}
-		    _Updater.Shutdown();
+
 
             Singleton<Log>.Instance.WriteInfo("Agent Shutdown.");
 		}
