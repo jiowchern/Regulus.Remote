@@ -72,7 +72,7 @@ namespace Regulus.Network.Tests
             
 
             int readCount = 0;
-            var receivedBuffer = new byte[Config.PackageSize];
+            var receivedBuffer = new byte[Config.Default.PackageSize];
             rudpPeer.Receive(receivedBuffer, 0, receivedBuffer.Length, (read_count, error) =>
             {
                 readCount = read_count;

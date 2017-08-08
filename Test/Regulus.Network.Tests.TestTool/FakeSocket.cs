@@ -73,7 +73,7 @@ namespace Regulus.Network.Tests.TestTool
             var jitter = _Random.NextDouble() * _SendTimeJitter - _SendTimeJitter / 2f;
             var timeUp = _SendTime + jitter;            
             record.TimeUp = (long)(timeUp * Timestamp.OneSecondTicks);
-            record.Message = new SocketMessage(Config.PackageSize);
+            record.Message = new SocketMessage(Config.Default.PackageSize);
             for (int i = 0; i < message.Package.Length; i++)
             {
                 record.Message.Package[i] = message.Package[i];

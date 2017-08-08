@@ -83,7 +83,7 @@ namespace Regulus.Network.Tests
     [TestMethod]
 	    public void TestDataPackageSize()
 	    {	        
-            Assert.IsTrue(Config.PackageSize - SocketMessage.GetHeadSize() > 0);	        
+            Assert.IsTrue(Config.Default.PackageSize - SocketMessage.GetHeadSize() > 0);	        
 	    }
 
 	    	    
@@ -161,15 +161,15 @@ namespace Regulus.Network.Tests
         [TestMethod]
 	    public void TestPackageRectifierOutOfOrder()
 	    {
-            var package1 = new SocketMessage(Config.PackageSize);
+            var package1 = new SocketMessage(Config.Default.PackageSize);
 	        package1.SetSeq(0);            
 	        package1.WritePayload(new byte[] {1}, 0, 1);
 
-            var package2 = new SocketMessage(Config.PackageSize);
+            var package2 = new SocketMessage(Config.Default.PackageSize);
 	        package2.SetSeq(1);
 	        package2.WritePayload(new byte[] { 5 }, 0, 1);            
 
-	        var package3 = new SocketMessage(Config.PackageSize);
+	        var package3 = new SocketMessage(Config.Default.PackageSize);
 	        package3.SetSeq(2);
 	        package3.WritePayload(new byte[] { 9 }, 0, 1);            
 
@@ -198,23 +198,23 @@ namespace Regulus.Network.Tests
 	    [TestMethod]
 	    public void TestPackageRectifierRepeat()
 	    {
-	        var package1 = new SocketMessage(Config.PackageSize);
+	        var package1 = new SocketMessage(Config.Default.PackageSize);
 	        package1.SetSeq(0);
 	        package1.WritePayload(new byte[] { 1 }, 0, 1);
 
-	        var package2 = new SocketMessage(Config.PackageSize);
+	        var package2 = new SocketMessage(Config.Default.PackageSize);
 	        package2.SetSeq(1);
 	        package2.WritePayload(new byte[] { 5 }, 0, 1);
 
-	        var package3 = new SocketMessage(Config.PackageSize);
+	        var package3 = new SocketMessage(Config.Default.PackageSize);
 	        package3.SetSeq(2);
 	        package3.WritePayload(new byte[] { 9 }, 0, 1);
 
-            var package4 = new SocketMessage(Config.PackageSize);
+            var package4 = new SocketMessage(Config.Default.PackageSize);
 	        package4.SetSeq(3);
 	        package4.WritePayload(new byte[] { 10 }, 0, 1);
 
-	        var package5 = new SocketMessage(Config.PackageSize);
+	        var package5 = new SocketMessage(Config.Default.PackageSize);
 	        package5.SetSeq(4);
 	        package5.WritePayload(new byte[] { 11 }, 0, 1);
 
@@ -256,9 +256,9 @@ namespace Regulus.Network.Tests
         [TestMethod]
 	    public void TestAck1()
 	    {
-	        var package1 = new SocketMessage(Config.PackageSize);
+	        var package1 = new SocketMessage(Config.Default.PackageSize);
 	        package1.SetSeq(1);
-            var package2 = new SocketMessage(Config.PackageSize);
+            var package2 = new SocketMessage(Config.Default.PackageSize);
 	        package2.SetSeq(2);
 
             var ackWaiter = new CongestionRecorder(3);
@@ -277,11 +277,11 @@ namespace Regulus.Network.Tests
 	    [TestMethod]
 	    public void TestAck2()
 	    {
-	        var package1 = new SocketMessage(Config.PackageSize);
+	        var package1 = new SocketMessage(Config.Default.PackageSize);
 	        package1.SetSeq(0);
-	        var package2 = new SocketMessage(Config.PackageSize);
+	        var package2 = new SocketMessage(Config.Default.PackageSize);
 	        package2.SetSeq(1);
-	        var package3 = new SocketMessage(Config.PackageSize);
+	        var package3 = new SocketMessage(Config.Default.PackageSize);
 	        package3.SetSeq(2);
 
             var ackWaiter = new CongestionRecorder(3);

@@ -99,7 +99,7 @@ namespace Regulus.Network.RUDP.Tests
             line.WriteTransmission(_CreateBuffer(1));
             line.Tick(new Timestamp(0, 0));
 
-            var message = new SocketMessage(Config.PackageSize);
+            var message = new SocketMessage(Config.Default.PackageSize);
             message.SetSeq(0);
             message.SetOperation((byte)PEER_OPERATION.ACKNOWLEDGE);
             message.SetAck(1);

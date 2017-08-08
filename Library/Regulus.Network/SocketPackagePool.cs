@@ -1,3 +1,5 @@
+using System.Data;
+
 namespace Regulus.Network.RUDP
 {
     public class SocketPackagePool : Utility.Singleton<SocketPackagePool> , ISocketPackageSpawner
@@ -5,7 +7,12 @@ namespace Regulus.Network.RUDP
         private readonly ObjectPool<SocketMessageInternal, SocketMessage> _Pool;
         public SocketPackagePool()
         {
-            _Pool = new ObjectPool<SocketMessageInternal, SocketMessage>(new SocketMessageFactory());
+            _Pool = new ObjectPool<SocketMessageInternal, SocketMessage>(new SocketMessageFactory(Config.Default.PackageSize));
+        }
+
+        public SocketPackagePool(int package_size)
+        {
+            _Pool = new ObjectPool<SocketMessageInternal, SocketMessage>(new SocketMessageFactory(package_size));
         }
 
         public SocketMessage Spawn()
