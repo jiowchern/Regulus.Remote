@@ -99,9 +99,15 @@ namespace Regulus.Network.RUDP
 
     public class SocketMessageFactory : IObjectFactory<SocketMessageInternal>
     {
+        private readonly int _PackageSize;
+
+        public SocketMessageFactory(int package_size)
+        {
+            _PackageSize = package_size;
+        }
         SocketMessageInternal IObjectFactory<SocketMessageInternal>.Spawn()
         {
-            return new SocketMessageInternal(Config.PackageSize);
+            return new SocketMessageInternal(_PackageSize);
         }
     }
 }

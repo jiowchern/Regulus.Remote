@@ -286,7 +286,8 @@ namespace Regulus.Network.RUDP
 
         public static int GetPayloadSize()
         {
-            return Config.PackageSize - HEADSIZE;
+            
+            return Config.Default.PackageSize - HEADSIZE;
         }
 
         public bool IsError()

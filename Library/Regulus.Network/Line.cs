@@ -50,7 +50,7 @@ namespace Regulus.Network.RUDP
 
         private void _ResetTimeout()
         {
-            _TimeoutTicks = Timestamp.OneSecondTicks * Config.TransmitterTimeout;
+            _TimeoutTicks = (long)(Timestamp.OneSecondTicks * Config.Timeout);
         }
 
         public void WriteOperation(PEER_OPERATION operation)

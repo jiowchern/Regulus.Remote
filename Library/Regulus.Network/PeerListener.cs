@@ -30,7 +30,7 @@ namespace Regulus.Network.RUDP
 
             _Timeout += time.DeltaTicks;
 
-            if (_Timeout > Timestamp.OneSecondTicks *Config.HostListenTimeout)
+            if (_Timeout > Timestamp.OneSecondTicks *Config.Timeout)
             {
                 ErrorEvent();
                 return;
@@ -54,7 +54,7 @@ namespace Regulus.Network.RUDP
         {
             _Timeout += time.DeltaTicks;
 
-            if (_Timeout > Timestamp.OneSecondTicks * Config.HostListenTimeout)
+            if (_Timeout > Timestamp.OneSecondTicks * Config.Timeout)
             {
                 ErrorEvent();
                 return;

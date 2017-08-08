@@ -6,24 +6,22 @@ using Regulus.Network.RUDP;
 
 namespace Regulus.Network
 {
-    public static class Config
+    public class Config
     {
 
-        static Config()
-        {            
-            HostListenTimeout = 300;
-            AgentConnectTimeout = 300;
-            TransmitterTimeout = 300;
+        public Config(int mtu)
+        {
+            MTU = mtu;
+            PackageSize = MTU - IPv4HeadSize - UdpHeadSize;
         }
-
-        public static readonly long AgentConnectTimeout;
-        public static readonly long HostListenTimeout;
-        public static readonly long TransmitterTimeout;
+        
+        public static readonly float Timeout = 30;
         public const int IPv4HeadSize = 20;
         public const int UdpHeadSize = 8;
-        public const int MTU = 576;
-        public const int Cost = 10;
-        //public const int MTU = 1500;
-        public const int PackageSize = MTU - IPv4HeadSize - UdpHeadSize; 
+        public readonly int MTU ;
+        public readonly int PackageSize ; 
+
+
+        public static readonly Config Default = new Config(1500);
     }
 }

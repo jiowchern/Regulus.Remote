@@ -32,7 +32,7 @@ namespace Regulus.Network.RUDP
         void IStage<Timestamp>.Update(Timestamp timestamp)
         {
             _TimeoutCount += timestamp.DeltaTicks;
-            if (_TimeoutCount > Timestamp.OneSecondTicks * Config.AgentConnectTimeout)
+            if (_TimeoutCount > Timestamp.OneSecondTicks * Config.Timeout)
             {
                 TimeoutEvent();
                 return;

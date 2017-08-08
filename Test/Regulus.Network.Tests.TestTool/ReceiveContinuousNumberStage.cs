@@ -17,7 +17,7 @@ namespace Regulus.Network.Tests.TestTool
             _Id = id;
             _Peer = peer;
             _Viewer = viewer;
-            _Buffer = new byte[Config.PackageSize];
+            _Buffer = new byte[Config.Default.PackageSize];
         }
 
         void IStage.Enter()
