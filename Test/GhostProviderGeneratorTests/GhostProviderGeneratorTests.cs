@@ -4,6 +4,7 @@ using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -55,15 +56,27 @@ namespace Regulus.Tool.Tests
                 ReferencedAssemblies =
                 {                    
                     "System.Core.dll",                    
-                    "RegulusLibrary.dll",
-                    "RegulusRemoting.dll",                    
-                    "Regulus.Serialization.dll",
-                    "GhostProviderGeneratorTests.dll"
+                    _GetAssemblyPath("RegulusLibrary.dll"),
+
+                    _GetAssemblyPath("RegulusRemoting.dll"),
+                    _GetAssemblyPath("Regulus.Serialization.dll"),
+                    _GetAssemblyPath("GhostProviderGeneratorTests.dll")
                 }
             };
             var result = provider.CompileAssemblyFromSource(options, codes.ToArray());
 
             NUnit.Framework.Assert.IsTrue(result.Errors.Count == 0);
+        }
+
+        private string _GetAssemblyPath(string file_name)
+        {
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                if (System.IO.Path.GetFileName(assembly.Location) == file_name)
+                    return assembly.Location;
+            }
+
+            throw new Exception("not found dll");
         }
 
 
