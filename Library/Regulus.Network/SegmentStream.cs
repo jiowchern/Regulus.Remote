@@ -11,10 +11,7 @@ namespace Regulus.Network.RUDP
         public int Length { get { return _Packages.Sum(p => p.GetPayloadLength()); } }
         public int Count { get { return _Packages.Count; } }
 
-        public SegmentStream() 
-        {
-            _Packages = new List<SocketMessage>();
-        }
+        
         public SegmentStream(SocketMessage[] messages)
         {
             _Packages = messages.ToList();

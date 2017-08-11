@@ -106,7 +106,7 @@ namespace Regulus.Network.RUDP.Tests
             message.SetAckFields(0);
             line.Input(message);
             line.Tick(new Timestamp(1, 1));
-            Assert.AreEqual(0, line.AcknowledgeCount);
+            Assert.AreEqual(1, line.AcknowledgeCount);
         }
 
         
