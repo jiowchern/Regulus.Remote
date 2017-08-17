@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿
 using Regulus.Network.RUDP;
 using System;
 using System.Collections.Generic;
@@ -6,20 +6,21 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using NUnit.Framework;
 
 namespace Regulus.Network.RUDP.Tests
 {
-    [TestClass()]
+    
     public class LineTests
     {
-        [TestMethod()]
+        [Test]
         public void LineTest()
         {
             var line = new Line(new IPEndPoint(0,0));            
             Assert.AreEqual(0, line.AcknowledgeCount);
         }
 
-        [TestMethod()]
+        [Test]
         public void WriteTest()
         {
             SocketMessage message = null;
@@ -44,7 +45,7 @@ namespace Regulus.Network.RUDP.Tests
         }
 
 
-        [TestMethod()]
+        [Test]
         public void WriteResendTest()
         {
             List<SocketMessage> messages = new List<SocketMessage>();
@@ -60,7 +61,7 @@ namespace Regulus.Network.RUDP.Tests
             Assert.AreEqual(2, messages.Count);
         }
 
-        [TestMethod()]
+        [Test]
         public void ReadWriteTest()
         {
             List<SocketMessage> messages1 = new List<SocketMessage>();
@@ -90,7 +91,7 @@ namespace Regulus.Network.RUDP.Tests
             Assert.AreEqual(0, line2.AcknowledgeCount);
         }
 
-        [TestMethod()]
+        [Test]
         public void InputTest()
         {
             List<SocketMessage> messages = new List<SocketMessage>();

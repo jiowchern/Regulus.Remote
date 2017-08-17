@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using NSubstitute;
+using NUnit.Framework;
 using Regulus.Network.RUDP;
 
 namespace Regulus.Network.Tests
 {
-	[TestClass]
-	public class MiscTest
+
+    public class MiscTest
 	{
 
 
-	[TestMethod]
-	public void TestObjectPool()
+	    [Test]
+        public void TestObjectPool()
 	{
             
 	    var pool = new ObjectPool<byte[] , ByteArrayShell>(new ByteArrayFactory() );
@@ -80,18 +81,18 @@ namespace Regulus.Network.Tests
         }
     }
 
-    [TestMethod]
-	    public void TestDataPackageSize()
+	    [Test]
+        public void TestDataPackageSize()
 	    {	        
             Assert.IsTrue(Config.Default.PackageSize - SocketMessage.GetHeadSize() > 0);	        
 	    }
 
-	    	    
 
-	    
 
-	    [TestMethod]
-	    public void TestBufferDispenser1()
+
+
+        [Test]
+        public void TestBufferDispenser1()
 	    {
 
 	        var count = SocketMessage.GetPayloadSize() * 4;
@@ -124,8 +125,8 @@ namespace Regulus.Network.Tests
 	        Assert.AreEqual(readcount, count);
         }
 
-	    [TestMethod]
-	    public void TestBufferDispenser2()
+	    [Test]
+        public void TestBufferDispenser2()
 	    {
 	        var count = SocketMessage.GetPayloadSize() * 4+1;
             var message = new TestMessage(count);
@@ -158,8 +159,8 @@ namespace Regulus.Network.Tests
 	        Assert.AreEqual(readcount, count);
         }
 
-        [TestMethod]
-	    public void TestPackageRectifierOutOfOrder()
+	    [Test]
+        public void TestPackageRectifierOutOfOrder()
 	    {
             var package1 = new SocketMessage(Config.Default.PackageSize);
 	        package1.SetSeq(0);            
@@ -195,8 +196,8 @@ namespace Regulus.Network.Tests
 
         }
 
-	    [TestMethod]
-	    public void TestPackageRectifierRepeat()
+	    [Test]
+        public void TestPackageRectifierRepeat()
 	    {
 	        var package1 = new SocketMessage(Config.Default.PackageSize);
 	        package1.SetSeq(0);
@@ -253,8 +254,8 @@ namespace Regulus.Network.Tests
 
         }
 
-        [TestMethod]
-	    public void TestAck1()
+	    [Test]
+        public void TestAck1()
 	    {
 	        var package1 = new SocketMessage(Config.Default.PackageSize);
 	        package1.SetSeq(1);
@@ -274,8 +275,8 @@ namespace Regulus.Network.Tests
 
 	    }
 
-	    [TestMethod]
-	    public void TestAck2()
+	    [Test]
+        public void TestAck2()
 	    {
 	        var package1 = new SocketMessage(Config.Default.PackageSize);
 	        package1.SetSeq(0);

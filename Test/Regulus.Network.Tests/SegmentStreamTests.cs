@@ -1,17 +1,18 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿
 using Regulus.Network.RUDP;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NUnit.Framework;
 
 namespace Regulus.Network.RUDP.Tests
 {
-    [TestClass()]
+    
     public class SegmentStreamTests
     {
-        [TestMethod()]
+        [Test]
         public void FullReadTest()
         {
             var pkg1 = new SocketMessage(SocketMessage.HEADSIZE + 5);
@@ -44,7 +45,7 @@ namespace Regulus.Network.RUDP.Tests
 
         }
 
-        [TestMethod()]
+        [Test]
         public void BatchesReadTest()
         {
             var pkg1 = new SocketMessage(SocketMessage.HEADSIZE + 5);

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Regulus.Framework;
 using Regulus.Network.RUDP;
 using Regulus.Utility;

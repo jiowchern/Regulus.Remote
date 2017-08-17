@@ -4,16 +4,16 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Regulus.Network.RUDP;
 using Regulus.Utility;
 
 namespace Regulus.Network.Tests
 {
-    [TestClass ]
+    
     public class ConnectTest
     {
-        [TestMethod ]
+        [Test]
         public void TestFullFlow()
         {
             ISocketPackageSpawner spawner = SocketPackagePool.Instance;

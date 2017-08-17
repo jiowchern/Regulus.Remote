@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Regulus.Network.RUDP;
 
 namespace Regulus.Network.Tests
 {
-    [TestClass]
+    
     public class PacketTest
     {
-        [TestMethod]
+        [Test]
         public void Seq()
         {
             ISocketPackageSpawner spawner = SocketPackagePool.Instance;
@@ -21,7 +21,7 @@ namespace Regulus.Network.Tests
             Assert.AreEqual((ushort)0x1234, seq);
         }
 
-        [TestMethod]
+        
         public void Ack()
         {
             ISocketPackageSpawner spawner = SocketPackagePool.Instance;
@@ -31,7 +31,7 @@ namespace Regulus.Network.Tests
             Assert.AreEqual((ushort)0x1234, value);
         }
 
-        [TestMethod]
+        
         public void AckFields()
         {
             ISocketPackageSpawner spawner = SocketPackagePool.Instance;
@@ -41,7 +41,7 @@ namespace Regulus.Network.Tests
             Assert.AreEqual((uint)0x12345678, value);
         }
 
-        [TestMethod]
+        
         public void Operation()
         {
             ISocketPackageSpawner spawner = SocketPackagePool.Instance;
@@ -53,7 +53,7 @@ namespace Regulus.Network.Tests
         
 
 
-        [TestMethod]
+        
         public void Payload()
         {
             ISocketPackageSpawner spawner = SocketPackagePool.Instance;
