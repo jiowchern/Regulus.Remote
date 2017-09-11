@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>RegulusRemoting</id>
-        <version>0.3.0</version>
+        <version>0.3.1</version>
         <authors>Regulus</authors>
         <iconUrl>https://github.com/jiowchern/Regulus</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -16,5 +16,8 @@
         <file src="bin\release\RegulusRemoting.dll" target="lib\net35\RegulusRemoting.dll" />
         <file src="bin\release\RegulusRemoting.pdb" target="lib\net35\RegulusRemoting.pdb" />
         <file src="bin\release\RegulusRemoting.xml" target="lib\net35\RegulusRemoting.xml" />
+        <file src="bin\release\Regulus.Network.dll" target="lib\net35\Regulus.Network.dll" />
+        <file src="bin\release\Regulus.Network.pdb" target="lib\net35\Regulus.Network.pdb" />
+        
     </files>
 </package>
