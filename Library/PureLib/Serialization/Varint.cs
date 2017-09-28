@@ -1,7 +1,10 @@
-﻿namespace Regulus.Serialization
+﻿using System.Collections.Generic;
+
+namespace Regulus.Serialization
 {
     public class Varint
     {
+       
 
         public static int NumberToBuffer(byte[] buffer, int offset, int value)
         {
@@ -45,17 +48,18 @@
             int s = 0;
             for (var i = 0; i < buffer.Length - offset; i++)
             {
-                if (buffer[offset + i] < 0x80)
+                ulong bufferValue = buffer[offset + i];
+                if (bufferValue < 0x80)
                 {
-                    if (i > 9 || i == 9 && buffer[offset + i] > 1)
+                    if (i > 9 || i == 9 && bufferValue > 1)
                     {
                         value = 0;
                         return -(i + 1); // overflow
                     }
-                    value |= (ulong)(buffer[offset + i] << s);
+                    value |= bufferValue << s;
                     return i + 1;
                 }
-                value |= (ulong)(buffer[offset + i] & 0x7f) << s;
+                value |= (bufferValue & 0x7f) << s;
                 s += 7;
             }
             value = 0;

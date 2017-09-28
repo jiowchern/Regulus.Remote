@@ -1,4 +1,5 @@
 ﻿using System;
+using NUnit.Framework;
 
 
 namespace Regulus.Serialization.Tests
@@ -7,6 +8,27 @@ namespace Regulus.Serialization.Tests
     public class SerializerTests
     {
 
+        [NUnit.Framework.Test()]
+        public void NegativeIntNumberTest()
+        {
+
+            var ser = new Serializer(new NumberDescriber<int>(1), new NumberDescriber<uint>(2));
+            var buf = ser.ObjectToBuffer((int) -1);
+            var val = (int) ser.BufferToObject(buf);
+
+            Assert.AreEqual(-1 , val);
+        }
+
+        [NUnit.Framework.Test()]
+        public void NegativeLongNumberTest()
+        {
+
+            var ser = new Serializer(new NumberDescriber<long>(1), new NumberDescriber<uint>(2));
+            var buf = ser.ObjectToBuffer((long)-1);
+            var val = (long)ser.BufferToObject(buf);
+
+            Assert.AreEqual(-1, val);
+        }
 
 
 
@@ -225,7 +247,7 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void NumberFloatTest()
         {
-            var ser = new Serializer(new NumberDescriber<float>(1), new ArrayDescriber<float>(2));
+            var ser = new Serializer(new BlittableDescriber(1 , typeof(float)), new ArrayDescriber<float>(2));
 
             var ints = new[]
             {
