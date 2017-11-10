@@ -272,7 +272,7 @@ namespace Regulus.Remoting
                 var value = _Serializer.Deserialize(buffer);
 			    var instance = ghost.GetInstance();
 			    var type = _GhostProvider.Find(info.DeclaringType);
-                var field = type.GetField("_" + info.Name, BindingFlags.Instance | BindingFlags.NonPublic);
+                var field = type.GetField("_" + info.Name, BindingFlags.Instance | BindingFlags.Public);
                 if (field != null)
                 {
                     field.SetValue(instance, value);
@@ -294,7 +294,7 @@ namespace Regulus.Remoting
 			    var instance = ghost.GetInstance();
                 if (type != null)
                 {
-                    var eventInfos = type.GetField("_" + info.Name, BindingFlags.Instance | BindingFlags.NonPublic);
+                    var eventInfos = type.GetField("_" + info.Name, BindingFlags.Instance | BindingFlags.Public);
                     var fieldValue = eventInfos.GetValue(instance);
                     if (fieldValue is Delegate)
                     {

@@ -365,7 +365,7 @@ $@"
             foreach (var eventinfo in eventinfos)
             {
                 var code = $@"
-                System.Action{_GetTypes(eventinfo.EventHandlerType.GetGenericArguments())} _{eventinfo.Name};
+                public System.Action{_GetTypes(eventinfo.EventHandlerType.GetGenericArguments())} _{eventinfo.Name};
                 event System.Action{_GetTypes(eventinfo.EventHandlerType.GetGenericArguments())} {_GetTypeName(type)}.{eventinfo.Name}
                 {{
                     add {{ _{eventinfo.Name} += value;}}
@@ -392,7 +392,7 @@ $@"
             foreach (var propertyInfo in propertyInfos)
             {
                 var propertyCode = $@"
-                {_GetTypeName(propertyInfo.PropertyType)} _{propertyInfo.Name};
+                public {_GetTypeName(propertyInfo.PropertyType)} _{propertyInfo.Name};
                 {_GetTypeName(propertyInfo.PropertyType)} {_GetTypeName(type)}.{propertyInfo.Name} {{ get{{ return _{propertyInfo.Name};}} }}";
                 propertyCodes.Add(propertyCode);
             }
