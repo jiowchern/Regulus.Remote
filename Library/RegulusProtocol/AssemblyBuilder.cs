@@ -49,10 +49,16 @@ namespace Regulus.Protocol
 
         private Assembly _Build(Assembly assembly, string protocol_name, CompilerParameters options)
         {
-            options.ReferencedAssemblies.Add("RegulusLibrary.dll");
-            options.ReferencedAssemblies.Add("RegulusRemoting.dll");
-            options.ReferencedAssemblies.Add("Regulus.Serialization.dll");
+            
             var locations = _GetReferencedAssemblies(assembly).ToArray();
+
+            if(locations.All( l=> "RegulusLibrary.dll" != System.IO.Path.GetFileName(l) ))
+                options.ReferencedAssemblies.Add("RegulusLibrary.dll");
+            if (locations.All(l => "RegulusRemoting.dll" != System.IO.Path.GetFileName(l)))
+                options.ReferencedAssemblies.Add("RegulusRemoting.dll");
+            if (locations.All(l => "Regulus.Serialization.dll" != System.IO.Path.GetFileName(l)))
+                options.ReferencedAssemblies.Add("Regulus.Serialization.dll");
+
             options.ReferencedAssemblies.AddRange(locations);
 
             var optionsDic = new Dictionary<string, string> {{"CompilerVersion", "v4.0"}};
@@ -118,6 +124,21 @@ namespace Regulus.Protocol
             {
                 yield return error.ToString();
             }
+        }
+
+        public void BuildCode(Assembly source_asm, string protocol_name, string output_full_path)
+        {
+            var codeBuilder = new CodeBuilder();
+
+            codeBuilder.ProviderEvent += (name, code) => _WriteFile(string.Format("{0}.cs" , name) , code , output_full_path) ;
+            codeBuilder.EventEvent += (type_name, event_name, code) => _WriteFile(string.Format("{0}.{1}.cs", type_name ,  event_name), code, output_full_path);
+            codeBuilder.GpiEvent += (type_name, code) => _WriteFile(string.Format("{0}.cs", type_name), code, output_full_path);
+            codeBuilder.Build(protocol_name, source_asm.GetExportedTypes());
+        }
+
+        private void _WriteFile(string file, string code, string output_dir)
+        {            
+            System.IO.File.WriteAllText(System.IO.Path.Combine(output_dir, file) , code);
         }
     }
 }
