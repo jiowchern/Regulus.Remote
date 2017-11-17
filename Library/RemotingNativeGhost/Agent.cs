@@ -24,7 +24,7 @@ namespace Regulus.Remoting.Ghost.Native
 	    
 
 
-	    private Regulus.Network.ITime _Time;
+	    
 
 	    private long _Ping
 		{
@@ -35,7 +35,7 @@ namespace Regulus.Remoting.Ghost.Native
 
 	    private Agent(IProtocol protocol)
 	    {
-	        _Time = new Network.Time();
+	    
             _Serializer = protocol.GetSerialize();
 	        _Machine = new StageMachine();
             _Core = new AgentCore(protocol);

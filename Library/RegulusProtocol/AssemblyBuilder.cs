@@ -2,6 +2,7 @@
 using System.Linq;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Reflection;
 
 using Microsoft.CSharp;
@@ -11,7 +12,19 @@ namespace Regulus.Protocol
     public class AssemblyBuilder
     {
 
+        private static string[] _GetReferencedAssemblies(Assembly asm)
+        {
+            var assemblyNames = asm
+                .GetReferencedAssemblies()
+                .Select(Assembly.Load)
+                .Where( a=> a.Location.Contains("mscorlib") == false)
+                .Select(a => a.Location)
+                .ToList();
 
+            assemblyNames.Add(asm.Location);
+
+            return assemblyNames.ToArray();
+        }
         public void Build(Assembly assembly, string protocol_name , string out_path)
         {
             var codes = AssemblyBuilder._BuildCode(assembly, protocol_name);
@@ -20,6 +33,9 @@ namespace Regulus.Protocol
             {
                 {"CompilerVersion", "v3.5"}
             };
+
+            
+
             var provider = new CSharpCodeProvider(optionsDic);
             var options = new CompilerParameters
             {
@@ -27,20 +43,13 @@ namespace Regulus.Protocol
                 GenerateInMemory = false,
                 GenerateExecutable = false,
                 OutputAssembly = out_path,
-
-                ReferencedAssemblies =
-                {
-                    "System.Core.dll",
-                    "System.xml.dll",
-                    "RegulusLibrary.dll",
-                    "RegulusRemoting.dll",
-                    "Regulus.Serialization.dll",
-                    assembly.Location
-               }
-                ,
                 TempFiles = new TempFileCollection()
-            };
 
+            };
+            options.ReferencedAssemblies.Add("RegulusLibrary.dll");
+            options.ReferencedAssemblies.Add("RegulusRemoting.dll");
+            options.ReferencedAssemblies.Add("Regulus.Serialization.dll");
+            options.ReferencedAssemblies.AddRange(_GetReferencedAssemblies(assembly));
 
             var result = provider.CompileAssemblyFromSource(options, codes.ToArray());
             if (result.Errors.Count > 0)
@@ -71,21 +80,14 @@ namespace Regulus.Protocol
             {
 
                 GenerateInMemory = true,
-                GenerateExecutable = false,
-
-                ReferencedAssemblies =
-                {
-                    "System.Core.dll",
-                    "System.xml.dll",
-                    "RegulusLibrary.dll",
-                    "RegulusRemoting.dll",
-                    "Regulus.Serialization.dll",                    
-                    assembly.Location
-               }
-                , TempFiles = new TempFileCollection()
+                GenerateExecutable = false, TempFiles = new TempFileCollection()
             };
+            options.ReferencedAssemblies.Add("RegulusLibrary.dll");
+            options.ReferencedAssemblies.Add("RegulusRemoting.dll");
+            options.ReferencedAssemblies.Add("Regulus.Serialization.dll");
+            options.ReferencedAssemblies.AddRange(_GetReferencedAssemblies(assembly));
 
-            
+
             var result = provider.CompileAssemblyFromSource(options, codes.ToArray());
             if (result.Errors.Count > 0)
             {
