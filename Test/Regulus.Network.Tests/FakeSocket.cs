@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Net;
 using NUnit.Framework;
 using Regulus.Framework;
+using Regulus.Network.Package;
 using Regulus.Network.RUDP;
 using Regulus.Utility;
 
 namespace Regulus.Network.Tests
 {
-    public class FakeSocket : ISocketRecevieable, ISocketSendable, IUpdatable<Timestamp>
+    public class FakeSocket : ISocket,  IUpdatable<Timestamp>
     {
         public readonly IPEndPoint Endpoint;
         private readonly List<SocketMessage> _Packages;
@@ -40,17 +41,13 @@ namespace Regulus.Network.Tests
         void ISocketSendable.Transport(SocketMessage message)
         {
             Assert.AreNotEqual(Endpoint , message.RemoteEndPoint);
-            _DoneEvent(message);
+            
             SendEvent(message);
         }
 
         private event Action<SocketMessage> _DoneEvent;
 
-        event Action<SocketMessage> ISocketSendable.DoneEvent
-        {
-            add { this._DoneEvent += value; }
-            remove { this._DoneEvent -= value; }
-        }
+        
 
         bool IUpdatable<Timestamp>.Update(Timestamp arg)
         {
@@ -64,6 +61,15 @@ namespace Regulus.Network.Tests
             return pkgs;
         }
 
-        
+
+        void ISocket.Close()
+        {
+            throw new NotImplementedException();
+        }
+
+        void ISocket.Bind(int Port)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,12 +1,12 @@
-namespace Regulus.Network.RUDP
+namespace Regulus.Network
 {
     internal class RetransmissionTimeOut
     {
-        private long _RTTVAL;
-        private long _SRTT;
-        private long  _RTT;
+        private long m_Rttval;
+        private long m_Srtt;
+        private long  m_Rtt;
         public long Value { get; set; }
-        public long RTT { get { return _SRTT; } }
+        public long Rtt => m_Srtt;
 
         public RetransmissionTimeOut()
         {
@@ -14,31 +14,31 @@ namespace Regulus.Network.RUDP
             
         }
 
-        public void Update(long rtt,long delta)
+        public void Update(long Rtt,long Delta)
         {
-            _SRTT = (long)(0.875 * _RTT + 0.125 * rtt);
-            _RTT = rtt;
-            _RTTVAL = (long)(0.75 * _RTTVAL + 0.25 * _Abs(_SRTT - rtt));            
-            Value = _SRTT + _Max(delta, 4 * _RTTVAL);
+            m_Srtt = (long)(0.875 * m_Rtt + 0.125 * Rtt);
+            m_Rtt = Rtt;
+            m_Rttval = (long)(0.75 * m_Rttval + 0.25 * Abs(m_Srtt - Rtt));            
+            Value = m_Srtt + Max(Delta, 4 * m_Rttval);
         }
 
         public void Reset()
         {
-            _RTTVAL = (long)(Timestamp.OneSecondTicks);
-            _SRTT = (long)(Timestamp.OneSecondTicks);
-            _RTT = (long)(Timestamp.OneSecondTicks);
+            m_Rttval = (long)Timestamp.OneSecondTicks;
+            m_Srtt = (long)Timestamp.OneSecondTicks;
+            m_Rtt = (long)Timestamp.OneSecondTicks;
 
-            Update(_RTT , 0);
+            Update(m_Rtt , Delta: 0);
         }
 
-        private long _Abs(long val)
+        private long Abs(long Val)
         {
-            return val < 0 ? 0 - val : val;
+            return Val < 0 ? 0 - Val : Val;
         }
 
-        private long _Max(long time_delta_ticks, long rttval)
+        private long Max(long TimeDeltaTicks, long Rttval)
         {
-            return time_delta_ticks > rttval ? time_delta_ticks : rttval;
+            return TimeDeltaTicks > Rttval ? TimeDeltaTicks : Rttval;
         }
     }
 }

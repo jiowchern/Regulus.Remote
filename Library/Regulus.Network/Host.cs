@@ -1,50 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Runtime.CompilerServices;
-using System.Text;
 using Regulus.Framework;
-using Regulus.Network.Profile;
-using Regulus.Serialization;
 using Regulus.Utility;
 
-namespace Regulus.Network.RUDP
+namespace Regulus.Network
 {
 	public class Host : IUpdatable<Timestamp>
 	{
-	    private readonly WiringOperator _WiringOperator;
-        public event System.Action<IRudpPeer> AcceptEvent;
+	    private readonly WiringOperator m_WiringOperator;
+        public event System.Action<Socket> AcceptEvent;
 
-	    private readonly Dictionary<Line , Peer> _Peers;
-	    private readonly List<Peer> _RemovePeers;
-        private readonly Regulus.Utility.Updater<Timestamp> _Updater;
+	    private readonly Dictionary<Line , Socket> m_Peers;
+	    private readonly List<Socket> m_RemovePeers;
+        private readonly Updater<Timestamp> m_Updater;
 	    
 	    
-        public int PeerCount { get { return _Peers.Count; } }
-	  
-        public Host(ISocketRecevieable socket_recevieable , ISocketSendable socket_sendable)
+        public int PeerCount => m_Peers.Count;
+
+	    public Host(ISocketRecevieable SocketRecevieable , ISocketSendable SocketSendable)
         {
-            _RemovePeers = new List<Peer>();
-            _Updater = new Updater<Timestamp>();
-            _Peers = new Dictionary<Line, Peer>();
-            _WiringOperator = new WiringOperator(socket_sendable, socket_recevieable);            
+            m_RemovePeers = new List<Socket>();
+            m_Updater = new Updater<Timestamp>();
+            m_Peers = new Dictionary<Line, Socket>();
+            m_WiringOperator = new WiringOperator(SocketSendable, SocketRecevieable ,true);            
         }
 
 	    
 
 
-	    bool IUpdatable<Timestamp>.Update(Timestamp arg)
+	    bool IUpdatable<Timestamp>.Update(Timestamp Arg)
 	    {
-	        _Updater.Working(arg);
+	        m_Updater.Working(Arg);
 
-	        var count = _RemovePeers.Count;
-	        for (int index = 0; index < count; index++)
-	        {
-                _WiringOperator.Destroy(_RemovePeers[index].EndPoint);	            
-	        }
-	        _RemovePeers.Clear();
+	        var count = m_RemovePeers.Count;
+	        for (var index = 0; index < count; index++)
+	            m_WiringOperator.Destroy(m_RemovePeers[index].EndPoint);
+	        m_RemovePeers.Clear();
             return true;
 	    }
 
@@ -54,44 +45,44 @@ namespace Regulus.Network.RUDP
 	    {
 	        
 
-            _WiringOperator.JoinStreamEvent += _CreatePeer;
-	        _WiringOperator.LeftStreamEvent += _DestroyPeer;
+            m_WiringOperator.JoinStreamEvent += CreatePeer;
+	        m_WiringOperator.LeftStreamEvent += DestroyPeer;
 
-            _Updater.Add(_WiringOperator);
+            m_Updater.Add(m_WiringOperator);
 
         }
 
 	    void IBootable.Shutdown()
 	    {
-	        _Updater.Shutdown();
-	        _WiringOperator.JoinStreamEvent -= _CreatePeer;
-	        _WiringOperator.LeftStreamEvent -= _DestroyPeer;
+	        m_Updater.Shutdown();
+	        m_WiringOperator.JoinStreamEvent -= CreatePeer;
+	        m_WiringOperator.LeftStreamEvent -= DestroyPeer;
 	        
         }
 
-	    private void _DestroyPeer(Line line)
+	    private void DestroyPeer(Line Line)
 	    {
 	        
 
-               var peer = _Peers.FirstOrDefault(p => p.Key == line);
+               var peer = m_Peers.FirstOrDefault(P => P.Key == Line);
 	        
 
             if (peer.Key != null)
 	        {
 	            peer.Value.Break();
-                _Peers.Remove(peer.Key);
-	            _Updater.Remove(peer.Value);
+                m_Peers.Remove(peer.Key);
+	            m_Updater.Remove(peer.Value);
             }
         }
 
 	    
 
-        private void _CreatePeer(Line line)
+        private void CreatePeer(Line Line)
         {
-            var listener = new PeerListener(line);
+            var listener = new PeerListener(Line);
 
-            var peer = new Peer(line, listener);
-            peer.CloseEvent += () => { _Remove(peer); };
+            var peer = new Socket(Line, listener);
+            peer.CloseEvent += () => { Remove(peer); };
             listener.DoneEvent += () =>
             {
                 if (AcceptEvent != null)
@@ -99,15 +90,15 @@ namespace Regulus.Network.RUDP
             };
             
 
-            _Peers.Add(line,peer);            
-            _Updater.Add(peer);
+            m_Peers.Add(Line,peer);            
+            m_Updater.Add(peer);
 
 
         }
 
-	    private void _Remove(Peer peer)
+	    private void Remove(Socket rudp_socket)
 	    {
-	        _RemovePeers.Add(peer);
+	        m_RemovePeers.Add(rudp_socket);
         }
 	}
 }

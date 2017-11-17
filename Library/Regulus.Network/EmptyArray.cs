@@ -1,11 +1,11 @@
-namespace Regulus.Network.RUDP
+namespace Regulus.Network
 {
     public class EmptyArray<T>
     {
-        private readonly static T[] _Empty = new T[0];
-        public static implicit operator T[] (EmptyArray<T> ea)
+        private static readonly T[] Empty = new T[0];
+        public static implicit operator T[] (EmptyArray<T> Ea)
         {
-            return _Empty;
+            return Empty;
         }
     }
 }

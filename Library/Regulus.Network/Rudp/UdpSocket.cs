@@ -1,50 +1,50 @@
-using System;
 using System.Net;
 using System.Net.Sockets;
+using Regulus.Network.Package;
 
-namespace Regulus.Network.RUDP
+namespace Regulus.Network.Rudp
 {
     public class UdpSocket : ISocket
     {
-        private readonly Socket _Socket;
-        private readonly SocketSender _Sender;
-        private readonly SocketRecevier _Receiver;
+        private readonly System.Net.Sockets.Socket m_Socket;
+        private readonly SocketSender m_Sender;
+        private readonly SocketRecevier m_Receiver;
         
 
         public UdpSocket()
         {
-            var socket = new System.Net.Sockets.Socket(System.Net.Sockets.AddressFamily.InterNetwork, System.Net.Sockets.SocketType.Dgram, System.Net.Sockets.ProtocolType.Udp);
-
-            _Socket = socket;
-            _Sender = new SocketSender(_Socket);
-            _Receiver = new SocketRecevier(_Socket);
+            var socket = new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            
+            m_Socket = socket;
+            
+            m_Sender = new SocketSender(m_Socket);
+            m_Receiver = new SocketRecevier(m_Socket , SocketMessageFactory.Instance );
             
         }
         SocketMessage[] ISocketRecevieable.Received()
         {
-            return _Receiver.Received();
+            return m_Receiver.Received();
         }
 
-        void ISocketSendable.Transport(SocketMessage message)
+        void ISocketSendable.Transport(SocketMessage Message)
         {
-            _Sender.Transport(message);
+
+            m_Sender.Transport(Message);            
         }
 
-        event Action<SocketMessage> ISocketSendable.DoneEvent
-        {
-            add { _Sender.DoneEvent += value; }
-            remove { _Sender.DoneEvent -= value; }
-        }
+        
+
 
         void ISocket.Close()
         {
-            _Socket.Close();
+            m_Sender.Stop();
+            m_Socket.Close();
         }
 
-        void ISocket.Bind(int port)
+        void ISocket.Bind(int Port)
         {
-            _Socket.Bind(new IPEndPoint(IPAddress.Any, port));
-            _Receiver.Start();
+            m_Socket.Bind(new IPEndPoint(IPAddress.Any, Port));
+            m_Receiver.Start();
         }
     }
 }

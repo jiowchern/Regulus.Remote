@@ -1,27 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Regulus.Network.RUDP;
-
-namespace Regulus.Network
+﻿namespace Regulus.Network
 {
     public class Config
     {
 
-        public Config(int mtu)
+        public Config(int Mtu)
         {
-            MTU = mtu;
-            PackageSize = MTU - IPv4HeadSize - UdpHeadSize;
+            this.Mtu = Mtu;
+            PackageSize = this.Mtu - Pv4HeadSize - UdpHeadSize;
         }
         
-        public static readonly float Timeout = 30;
-        public const int IPv4HeadSize = 20;
+        public static readonly float Timeout = 300;
+        public const int Pv4HeadSize = 20;
         public const int UdpHeadSize = 8;
-        public readonly int MTU ;
+        public readonly int Mtu ;
         public readonly int PackageSize ; 
 
 
-        public static readonly Config Default = new Config(1500);
+        public static readonly Config Default = new Config(Mtu: 1500);
     }
 }

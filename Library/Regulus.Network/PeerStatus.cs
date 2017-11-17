@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 
-namespace Regulus.Network
+namespace Wasp.Networking
 {
 
     public enum PeerStatus
@@ -12,7 +12,7 @@ namespace Regulus.Network
         Transmission,
         Disconnect
     }
-    
+   
 
 
 }

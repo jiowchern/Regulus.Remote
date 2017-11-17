@@ -8,7 +8,7 @@ using Regulus.Utility.WindowConsoleStand;
 
 namespace Regulus.Utility
 {
-	public abstract class WindowConsole : IUpdatable
+    public abstract class WindowConsole : IUpdatable
 	{
 		public delegate void QuitCallback();
 
@@ -203,3 +203,6 @@ namespace Regulus.Utility
 		}
 	}
 }
+
+
+

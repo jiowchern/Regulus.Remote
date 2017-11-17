@@ -3,28 +3,28 @@ using System.Net;
 using System.Net.Sockets;
 using Regulus.Utility;
 
-namespace Regulus.Network
+namespace Regulus.Network.Tcp
 {
-    public class TcpConnecter : TcpPeer , IPeerConnectable
+    public class Connecter : Peer , IConnectable
     {
-        private Action<bool> _ResultHandler;
-        public TcpConnecter() : base(new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
+        private Action<bool> m_ResultHandler;
+        public Connecter() : base(new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
         {            
-            _Socket.NoDelay = true;
+            GetSocket().NoDelay = true;
         }
 
-        void IPeerConnectable.Connect(EndPoint endpoint, Action<bool> result)
+        void IConnectable.Connect(EndPoint Endpoint, Action<bool> Result)
         {
-            _ResultHandler = result;
-            _Socket.BeginConnect(endpoint, _Result, null);
+            m_ResultHandler = Result;
+            GetSocket().BeginConnect(Endpoint, this.Result, state: null);
         }
 
-        private void _Result(IAsyncResult ar)
+        private void Result(IAsyncResult Ar)
         {
             var result = false;
             try
             {
-                _Socket.EndConnect(ar);
+                GetSocket().EndConnect(Ar);
                 result = true;
             }
             catch (SocketException ex)
@@ -37,9 +37,11 @@ namespace Regulus.Network
             }
             finally
             {
-                _ResultHandler(result);
+                m_ResultHandler(result);
                 Singleton<Log>.Instance.WriteInfo(string.Format("connect result {0}.", result));
             }
         }
+
+        
     }
 }

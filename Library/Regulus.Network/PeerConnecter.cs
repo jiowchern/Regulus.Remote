@@ -1,27 +1,26 @@
 using System;
-using System.Net;
-using Regulus.Serialization;
+using Regulus.Network.Package;
 using Regulus.Utility;
 
-namespace Regulus.Network.RUDP
+namespace Regulus.Network
 {
     public class PeerConnecter : IStage<Timestamp>
     {
         
         
-        private readonly Line _Line;
+        private readonly Line m_Line;
         
         public event Action DoneEvent;
         public event Action TimeoutEvent;
-        private long _TimeoutCount;
-        public PeerConnecter(Line line)
+        private long m_TimeoutCount;
+        public PeerConnecter(Line Line)
         {            
-            _Line = line;
+            m_Line = Line;
         }
 
         void IStage<Timestamp>.Enter()
         {                        
-            _Line.WriteOperation(PEER_OPERATION.CLIENTTOSERVER_HELLO1 );
+            m_Line.WriteOperation(PeerOperation.ClienttoserverHello1 );
         }
 
         void IStage<Timestamp>.Leave()
@@ -29,22 +28,22 @@ namespace Regulus.Network.RUDP
             
         }
 
-        void IStage<Timestamp>.Update(Timestamp timestamp)
+        void IStage<Timestamp>.Update(Timestamp Timestamp)
         {
-            _TimeoutCount += timestamp.DeltaTicks;
-            if (_TimeoutCount > Timestamp.OneSecondTicks * Config.Timeout)
+            m_TimeoutCount += Timestamp.DeltaTicks;
+            if (m_TimeoutCount > Timestamp.OneSecondTicks * Config.Timeout)
             {
                 TimeoutEvent();
                 return;
             }
 
-            var pkg = _Line.Read();
+            var pkg = m_Line.Read();
             if (pkg != null)
             {
-                var operation = (PEER_OPERATION)pkg.GetOperation();
-                if (operation == PEER_OPERATION.SERVERTOCLIENT_HELLO1)
+                var operation = (PeerOperation)pkg.GetOperation();
+                if (operation == PeerOperation.ServertoclientHello1)
                 {
-                    _Line.WriteOperation(PEER_OPERATION.CLIENTTOSERVER_HELLO2);
+                    m_Line.WriteOperation(PeerOperation.ClienttoserverHello2);
                     DoneEvent();
                 }
             }

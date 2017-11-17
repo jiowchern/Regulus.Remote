@@ -1,18 +1,17 @@
 using System;
-using Regulus.Serialization;
 using Regulus.Utility;
 
-namespace Regulus.Network.RUDP
+namespace Regulus.Network
 {
     internal class PeerDisconnecter : IStage<Timestamp>
     {
-        private readonly Line _Line;        
+        private readonly Line m_Line;        
         public event Action DoneEvent; 
 
-        public PeerDisconnecter(Line line)
+        public PeerDisconnecter(Line Line)
         {
             
-            _Line = line;
+            m_Line = Line;
         }
 
         void IStage<Timestamp>.Enter()
@@ -25,9 +24,9 @@ namespace Regulus.Network.RUDP
             
         }
 
-        void IStage<Timestamp>.Update(Timestamp obj)
+        void IStage<Timestamp>.Update(Timestamp Obj)
         {
-            if(_Line.WaitSendCount == 0)
+            if(m_Line.WaitSendCount == 0)
                 DoneEvent();
         }
     }

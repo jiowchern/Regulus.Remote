@@ -1,32 +1,30 @@
 ﻿using System.Collections.Generic;
 
-namespace Regulus.Network.RUDP
+namespace Regulus.Network
 {
     internal class ArrayCache<T> 
     {
-        private readonly int _Capacity;
-        private readonly Queue<T[]> _Stock;
-        public ArrayCache(int element_capacity)
+        private readonly int m_Capacity;
+        private readonly Queue<T[]> m_Stock;
+        public ArrayCache(int ElementCapacity)
         {
-            _Stock = new Queue<T[]>();
-            _Capacity = element_capacity;
+            m_Stock = new Queue<T[]>();
+            m_Capacity = ElementCapacity;
         }
 
         public T[] Alloc()
         {
-            if (_Stock.Count > 0)
-            {
-                return _Stock.Dequeue();
-            }
-            return new T[_Capacity];
+            if (m_Stock.Count > 0)
+                return m_Stock.Dequeue();
+            return new T[m_Capacity];
         }
 
-        public void Free(T[] buffer)
+        public void Free(T[] Buffer)
         {
-            if(buffer.Length != _Capacity)
+            if(Buffer.Length != m_Capacity)
                 throw new System.Exception("Package length does not match.");
 
-            _Stock.Enqueue(buffer);
+            m_Stock.Enqueue(Buffer);
         }
     }
 }

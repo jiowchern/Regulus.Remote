@@ -1,4 +1,3 @@
-using Regulus.Utility;
 using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Regulus.Network

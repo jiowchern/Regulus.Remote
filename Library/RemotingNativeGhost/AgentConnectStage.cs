@@ -16,13 +16,13 @@ namespace Regulus.Remoting.Ghost.Native
 
 			private readonly int _Port;
 
-			private readonly IPeerConnectable _Peer;
+			private readonly IConnectable _Peer;
 
 			private IAsyncResult _AsyncResult;
 
 			private bool? _Result;
 
-			public ConnectStage(string ipaddress, int port , IPeerClient agent)
+			public ConnectStage(string ipaddress, int port , IClient agent)
 			{
                 
 			    _Peer = agent.Spawn();

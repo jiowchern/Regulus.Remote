@@ -16,7 +16,7 @@ namespace Regulus.Network.Tests
         [Test]
         public void TestFullFlow()
         {
-            ISocketPackageSpawner spawner = SocketPackagePool.Instance;
+            var spawner = SocketMessageFactory.Instance;
             var hostEndpoint = new IPEndPoint(IPAddress.Parse("0.0.0.1") , 0);
             var agentEndpoint = new IPEndPoint(IPAddress.Parse("0.0.0.2"), 0);
 
@@ -40,8 +40,8 @@ namespace Regulus.Network.Tests
                 hostSocket.Receive(package);
             };
 
-            var host = new Regulus.Network.RUDP.Host(hostSocket, hostSocket);
-            var agent = new Regulus.Network.RUDP.Agent(agentSocket, agentSocket);
+            var host = new Regulus.Network.Host(hostSocket , hostSocket);
+            var agent = new Regulus.Network.Agent(agentSocket,agentSocket);
             var clientPeer = agent.Connect(hostEndpoint,(connect_result) =>{});
 
             var updater = new Updater<Timestamp>();
@@ -51,10 +51,10 @@ namespace Regulus.Network.Tests
             updater.Add(agent);
             
             long ticks = 0;
-            
 
-            IRudpPeer rudpPeer = null;
-            host.AcceptEvent += p => rudpPeer = p;
+
+            Socket rudpSocket = null;
+            host.AcceptEvent += p => rudpSocket = p;
 
             updater.Working(new Timestamp(ticks++, 1));
             updater.Working(new Timestamp(ticks++, 1));
@@ -63,8 +63,8 @@ namespace Regulus.Network.Tests
             updater.Working(new Timestamp(ticks++, 1));
             updater.Working(new Timestamp(ticks++, 1));
 
-            Assert.AreNotEqual(null , rudpPeer);
-            Assert.AreEqual(PEER_STATUS.TRANSMISSION, clientPeer.Status);
+            Assert.AreNotEqual(null , rudpSocket);
+            Assert.AreEqual(PeerStatus.Transmission, clientPeer.Status);
 
 
             var sendBuffer = new byte[] {1, 2, 3, 4, 5};
@@ -73,7 +73,7 @@ namespace Regulus.Network.Tests
 
             int readCount = 0;
             var receivedBuffer = new byte[Config.Default.PackageSize];
-            rudpPeer.Receive(receivedBuffer, 0, receivedBuffer.Length, (read_count, error) =>
+            rudpSocket.Receive(receivedBuffer, 0, receivedBuffer.Length, (read_count, error) =>
             {
                 readCount = read_count;
             });
@@ -92,7 +92,7 @@ namespace Regulus.Network.Tests
             updater.Working(new Timestamp(ticks++, 1));
             updater.Working(new Timestamp(ticks++, 1));
 
-            Assert.AreEqual(PEER_STATUS.CLOSE , rudpPeer.Status);
+            Assert.AreEqual(PeerStatus.Close, rudpSocket.Status);
 
 
 

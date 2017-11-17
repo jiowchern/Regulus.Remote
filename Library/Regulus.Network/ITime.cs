@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
+﻿using System.Diagnostics;
 
 namespace Regulus.Network
 {
@@ -16,32 +12,29 @@ namespace Regulus.Network
 
     public class Time : ITime
     {
-        readonly long _OneSeconds;
-        private long _Delta;
-        private long _Now;
-        private readonly Stopwatch _Stopwatch;
+        private readonly long m_OneSeconds;
+        private long m_Delta;
+        private long m_Now;
+        private readonly Stopwatch m_Stopwatch;
 
         public Time()
         {
-            _Stopwatch = new Stopwatch();
-            _OneSeconds = Stopwatch.Frequency;
-            _Stopwatch.Start();
+            m_Stopwatch = new Stopwatch();
+            m_OneSeconds = Stopwatch.Frequency;
+            m_Stopwatch.Start();
 
-            _Now = _Stopwatch.ElapsedTicks;
+            m_Now = m_Stopwatch.ElapsedTicks;
            
         }
-        long ITime.OneSeconds
-        {
-            get { return _OneSeconds; }
-        }
+        long ITime.OneSeconds => m_OneSeconds;
 
         long ITime.Now
         {
             get
             {
-                lock (_Stopwatch)
+                lock (m_Stopwatch)
                 {
-                    return _Now;
+                    return m_Now;
                 }
                 
             }
@@ -51,9 +44,9 @@ namespace Regulus.Network
         {
             get
             {
-                lock (_Stopwatch)
+                lock (m_Stopwatch)
                 {
-                    return _Delta;
+                    return m_Delta;
                 }
                 
             }
@@ -61,11 +54,11 @@ namespace Regulus.Network
 
         void ITime.Sample()
         {
-            lock (_Stopwatch)
+            lock (m_Stopwatch)
             {
-                var now = _Stopwatch.ElapsedTicks;
-                _Delta = now - _Now;
-                _Now = now;
+                var now = m_Stopwatch.ElapsedTicks;
+                m_Delta = now - m_Now;
+                m_Now = now;
             }
             
         }

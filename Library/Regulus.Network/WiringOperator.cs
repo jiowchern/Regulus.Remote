@@ -1,208 +1,187 @@
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using Regulus.Extension;
 using Regulus.Framework;
+using Regulus.Network.Package;
 using Regulus.Network.Profile;
 using Regulus.Utility;
 
-namespace Regulus.Network.RUDP
+namespace Regulus.Network
 {
     public class WiringOperator : IUpdatable<Timestamp>
     {
-        private readonly ISocketSendable _SocketSendable;
-        private readonly ISocketRecevieable _SocketRecevieable;
+        private readonly ISocketSendable m_SocketSendable;
+        private readonly ISocketRecevieable m_SocketRecevieable;
+        private readonly bool _Listener;
 
-        private readonly Dictionary<EndPoint , Line> _Lines;
-        private readonly Queue<Line> _Exits;
-        private Queue<SocketMessage> _Messages;
-        private readonly Logger _Logger;
-        public WiringOperator(ISocketSendable socket_sendable , ISocketRecevieable socket_recevieable)
+
+        private readonly Dictionary<EndPoint , Line> m_Lines;
+        private readonly System.Collections.Generic.Queue<Line> m_Exits;
+        
+        private readonly Logger m_Logger;
+        public WiringOperator(ISocketSendable SocketSendable , ISocketRecevieable SocketRecevieable, bool listener)
         {
-            _Logger = new Logger(1f / 10f);
-            _Lines = new Dictionary<EndPoint, Line>();
-            _Exits = new Queue<Line>();
-            _SocketSendable = socket_sendable;
-            _SocketRecevieable = socket_recevieable;
-            _Messages = new Queue<SocketMessage>();
+            m_Logger = new Logger(100);
+            m_Lines = new Dictionary<EndPoint, Line>();
+            m_Exits = new System.Collections.Generic.Queue<Line>();
+            m_SocketSendable = SocketSendable;
+            m_SocketRecevieable = SocketRecevieable;
+            _Listener = listener;
+
+            
+
+            
         }
 
         public event Action<Line> JoinStreamEvent;
         public event Action<Line> LeftStreamEvent;        
 
-        bool IUpdatable<Timestamp>.Update(Timestamp time)
+        bool IUpdatable<Timestamp>.Update(Timestamp Time)
         {            
-            _HandleReceive();
-            _HandleSend();
-            _HandleTimeout(time);
+            HandleReceive();
+           
+            HandleTimeout(Time);
             
-            _HandleDisconnect();
+            HandleDisconnect();
             return true;
         }
 
-        private void _HandleSend()
-        {
-            SocketMessage message = null;
-            while ((message = _Messages.SafeDequeue()) != null)
-            {
-                if (message.IsError() == false)
-                {
-                    var line = _Query(message.RemoteEndPoint);
-                    line.MessageSendResult(message);
-                }
-                else
-                {
-                    _HandleErrorDisconnect(message.RemoteEndPoint);
-                }
-            }
-        }
+       
 
-        private void _HandleDisconnect()
+        private void HandleDisconnect()
         {
-            if (_Exits.Count > 0)
+            if (m_Exits.Count > 0)
             {
-                var line = _Exits.Dequeue();
+                var line = m_Exits.Dequeue();
                 
-                _Remove(line);                
+                Remove(line);                
             }            
         }
 
-        private void _HandleErrorDisconnect(EndPoint end_point)
+        private void HandleErrorDisconnect(EndPoint EndPoint)
         {
             
             Line line;
-            if (_Lines.TryGetValue(end_point, out line))
-            {
-                _Remove(line);
-            }
+            if (m_Lines.TryGetValue(EndPoint, out line))
+                Remove(line);
         }
 
-        private void _SendOut(SocketMessage message)
+        private void SendOut(SocketMessage Message)
         {
-            _Messages.SafeEnqueue(message);
+            m_SocketSendable.Transport(Message);
 
-            
+
+
         }
-        private void _HandleReceive()
+        private void HandleReceive()
         {
-            var packages = _SocketRecevieable.Received();
+            var packages = m_SocketRecevieable.Received();
             
 
-            for (int i = 0; i < packages.Length; i++)
+            for (var i = 0; i < packages.Length; i++)
             {
                 var package = packages[i];
                 if (package.IsError() == false)
                 {
-                    var line = _Query(package.RemoteEndPoint);
-                    line.Input(package);
+                    var line = Find(package.RemoteEndPoint);
+                    if(line != null)
+                        line.Input(package);
                 }
                 else
                 {
-                    _HandleErrorDisconnect(package.RemoteEndPoint);                    
+                    HandleErrorDisconnect(package.RemoteEndPoint);                    
                 }
                 
             }
         }
 
-        private void _JoinLine(Line line)
+        private void JoinLine(Line Line)
         {
-            _Logger.Register(line);
-            line.OutputEvent += _AddOutputPackageHandler;            
-            JoinStreamEvent(line);
+            m_Logger.Register(Line);
+            Line.OutputEvent += SendOut;            
+            JoinStreamEvent(Line);
         }
 
-        private void _HandleTimeout(Timestamp time)
+        private void HandleTimeout(Timestamp Time)
         {
-            var lines = _Lines.Values;
+            var lines = m_Lines.Values.ToArray();
 
             var timeOutLines = new List<Line>();
             foreach (var line in lines)
-            {
-                if (line.Tick(time))
-                {
+                if (line.Tick(Time))
                     timeOutLines.Add(line);
-                }                
-            }
             foreach (var timeOutLine in timeOutLines)
-            {
-                _Remove(timeOutLine);
-            }
-
-
+                Remove(timeOutLine);
         }
         
-        private void _Remove(Line time_out_line)
+        private void Remove(Line TimeOutLine)
         {
-            _LeftLine(time_out_line);
-            _Lines.Remove(time_out_line.EndPoint);
+            LeftLine(TimeOutLine);
+            m_Lines.Remove(TimeOutLine.EndPoint);
         }
 
-        private void _LeftLine(Line line)
+        private void LeftLine(Line Line)
         {
-            _Logger.Unregister(line);
-            line.OutputEvent -= _AddOutputPackageHandler;            
-            LeftStreamEvent(line);
+            m_Logger.Unregister(Line);
+            Line.OutputEvent -= SendOut;            
+            LeftStreamEvent(Line);
         }
 
-        private void _AddOutputPackageHandler(SocketMessage message)
-        {            
-            _SocketSendable.Transport(message);
-        }
+        
 
-        private Line _Query(EndPoint end_point)
+        private Line Find(EndPoint EndPoint)
         {
             Line line ;            
-            if(_Lines.TryGetValue(end_point, out line) == false)
+            if(m_Lines.TryGetValue(EndPoint, out line) == false && _Listener)
             {
                 // new line
-                line = new Line(end_point);                
-                _Add(line);
+                line = new Line(EndPoint);                
+                Add(line);
             }
             return line;
         }
 
-        private void _Add(Line line)
+        private void Add(Line Line)
         {
-            _JoinLine(line);
-            _Lines.Add(line.EndPoint, line);
+            JoinLine(Line);
+            m_Lines.Add(Line.EndPoint, Line);
         }
 
         void IBootable.Launch()
         {
-            _Logger.Start();
+            m_Logger.Start();
 
 
-            _SocketSendable.DoneEvent += _SendOut;
+            
         }
 
         
 
         void IBootable.Shutdown()
         {
-            _SocketSendable.DoneEvent -= _SendOut;
-            _Logger.End();
+            
+            m_Logger.End();
         }
 
         
 
-        public void Create(EndPoint end_point)
+        public void Create(EndPoint EndPoint)
         {
-            if (_Lines.ContainsKey(end_point))
+            if (m_Lines.ContainsKey(EndPoint))
                 throw new Exception("Already existing lines.");
-            var line = new Line(end_point);
+            var line = new Line(EndPoint);
             
-            _Add(line);            
+            Add(line);            
 
             
         }
 
-        public void Destroy(EndPoint end_point)
+        public void Destroy(EndPoint EndPoint)
         {
             Line line;
-            if(_Lines.TryGetValue(end_point, out line))
-                _Exits.Enqueue(line);
+            if(m_Lines.TryGetValue(EndPoint, out line))
+                m_Exits.Enqueue(line);
 
         }
     }

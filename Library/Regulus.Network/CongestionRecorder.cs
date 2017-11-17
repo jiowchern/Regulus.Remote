@@ -1,15 +1,15 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.NetworkInformation;
+using Regulus.Network.Package;
 
-namespace Regulus.Network.RUDP
+namespace Regulus.Network
 {
     public class CongestionRecorder
     {
-        private readonly int _HungryLimit;
-        private int _Capacity;
-        class Item
+        private readonly int m_HungryLimit;
+        private int m_Capacity;
+
+        private class Item
         {
             public readonly SocketMessage Message;
             public readonly long EndTicks;
@@ -24,9 +24,9 @@ namespace Regulus.Network.RUDP
 
             
 
-            public bool IsTimeout(long ticks)
+            public bool IsTimeout(long Ticks)
             {
-                return EndTicks <= ticks;
+                return EndTicks <= Ticks;
             }
 
             public void Padding()
@@ -34,93 +34,87 @@ namespace Regulus.Network.RUDP
                 Hungry++;
             }
         }
-        private readonly Dictionary<ushort, Item> _Items;
+        private readonly Dictionary<ushort, Item> m_Items;
 
-        private readonly RetransmissionTimeOut _RTO;
+        private readonly RetransmissionTimeOut m_Rto;
         
 
-        public CongestionRecorder(int hungry_limit)
+        public CongestionRecorder(int HungryLimit)
         {
-            _HungryLimit = hungry_limit;
-            _Items = new Dictionary<ushort, Item>();
-            _RTO = new RetransmissionTimeOut();
+            m_HungryLimit = HungryLimit;
+            m_Items = new Dictionary<ushort, Item>();
+            m_Rto = new RetransmissionTimeOut();
         }
 
-        public int Count { get { return _Items.Count; } }
-        public long SRTT { get { return _RTO.RTT; } }
-        public long RTO { get { return _RTO.Value; } }
+        public int Count => m_Items.Count;
+        public long Srtt => m_Rto.Rtt;
+        public long Rto => m_Rto.Value;
 
-        public long LastRTT { get; private set; }
-        public long LastRTO { get; private set; }
+        public long LastRtt { get; private set; }
+        public long LastRto { get; private set; }
 
 
-        public void PushWait(SocketMessage message, long time_ticks )
+        public void PushWait(SocketMessage Message, long TimeTicks )
         {
-            var item = new Item(message , time_ticks , time_ticks + _RTO.Value);
-            _Items.Add(item.Message.GetSeq(), item);
+            var item = new Item(Message , TimeTicks , TimeTicks + m_Rto.Value);
+            m_Items.Add(item.Message.GetSeq(), item);
         }
         
 
-        public bool Reply(ushort package,long time_ticks,long time_delta)
+        public bool Reply(ushort Package,long TimeTicks,long TimeDelta)
         {
             Item item;
-            if (_Items.TryGetValue(package, out item))
+            if (m_Items.TryGetValue(Package, out item))
             {
-                _Reply(package, time_ticks, time_delta, item);
+                _Reply(Package, TimeTicks, TimeDelta, item);
                 return true;
             }
 
             return false;
         }
 
-        private void _Reply(ushort package, long time_ticks, long time_delta, Item item)
+        private void _Reply(ushort Package, long TimeTicks, long TimeDelta, Item Item)
         {
-            _Capacity++;
-            var rtt = time_ticks - item.StartTicks;
-            _RTO.Update(rtt, time_delta);
-            LastRTT = rtt;
-            _Items.Remove(package);
+            m_Capacity++;
+            var rtt = TimeTicks - Item.StartTicks;
+            m_Rto.Update(rtt, TimeDelta);
+            LastRtt = rtt;
+            m_Items.Remove(Package);
         }
 
 
-        public void ReplyBefore(ushort package_id, long time_ticks, long time_delta)
+        public void ReplyBefore(ushort PackageId, long TimeTicks, long TimeDelta)
         {
-            var pkg = _Items.Values.FirstOrDefault(item => item.Message.GetSeq() == package_id);
+            var pkg = m_Items.Values.FirstOrDefault(Item => Item.Message.GetSeq() == PackageId);
             if (pkg != null)
-            {
-                foreach (var item in _Items.Values.Where(item => item.EndTicks <= pkg.EndTicks).Select(item => item).ToArray())
-                {                    
-                    _Reply(item.Message.GetSeq(), time_ticks, time_delta, item);
-                }
-                
-            }
-            
+                foreach (var item in m_Items.Values.Where(Item => Item.EndTicks <= pkg.EndTicks).Select(Item => Item).ToArray())
+                    _Reply(item.Message.GetSeq(), TimeTicks, TimeDelta, item);
         }
 
-        public List<SocketMessage> PopLost(long ticks,long delta)
+        public List<SocketMessage> PopLost(long Ticks,long Delta)
         {
-            var count = _Capacity;
-            List<SocketMessage> packages = new List<SocketMessage>();
-            foreach (var item in _Items.Values)
+            var count = m_Capacity;
+            var packages = new List<SocketMessage>();
+            foreach (var item in m_Items.Values)
             {
                 
-                if (item.IsTimeout(ticks)  )
+                if (item.IsTimeout(Ticks)  )
                 {
-                    var rto = ticks - item.StartTicks;                    
-                    _RTO.Update(rto, delta);
-                    LastRTT = rto;
-                    LastRTO = rto;
+                    var rto = Ticks - item.StartTicks;                    
+                    m_Rto.Update(rto, Delta);
+                    LastRtt = rto;
+                    LastRto = rto;
                     packages.Add(item.Message);
 
                     
                 }
-                else if (item.Hungry > _HungryLimit)
+                else if (item.Hungry > m_HungryLimit)
                 {
-                    var rto = ticks - item.StartTicks;
+                    var rto = Ticks - item.StartTicks;
                     
-                    _RTO.Update(rto, delta);
-                    LastRTT = rto;
-                    LastRTO = rto;
+                    m_Rto.Update(rto, Delta);
+                    LastRtt = rto;
+                    LastRto = rto;
                     packages.Add(item.Message);
                 }
                 if (count-- == 0)
@@ -129,12 +123,12 @@ namespace Regulus.Network.RUDP
 
 
             if(packages.Count > 0 )
-                _Capacity /= 2;
+                m_Capacity /= 2;
 
             foreach (var package in packages)
             {
-                _Items.Remove(package.GetSeq());
-                this.PushWait(package , ticks);                
+                m_Items.Remove(package.GetSeq());
+                PushWait(package , Ticks);                
             }
 
             return packages;
@@ -142,25 +136,21 @@ namespace Regulus.Network.RUDP
 
         public void Padding()
         {
-            foreach (var itemsValue in _Items.Values)
-            {
+            foreach (var itemsValue in m_Items.Values)
                 itemsValue.Padding();
-            }
         }
 
-        public void ReplyAfter(ushort ack, uint fields, long time_ticks, long time_delta)
+        public void ReplyAfter(ushort Ack, uint Fields, long TimeTicks, long TimeDelta)
         {
             ushort mark = 1;
             for (ushort i = 0; i < 32; i++)
             {
-                if ((mark & fields) != 0)
+                if ((mark & Fields) != 0)
                 {
-                    var id = (ushort) (ack + i + 1);
+                    var id = (ushort) (Ack + i + 1);
                     Item item;
-                    if (_Items.TryGetValue(id, out item))
-                    {
-                        _Reply( id, time_ticks, time_delta , item);
-                    }
+                    if (m_Items.TryGetValue(id, out item))
+                        _Reply( id, TimeTicks, TimeDelta , item);
                 }
                 mark <<= 1;
             }
@@ -168,7 +158,7 @@ namespace Regulus.Network.RUDP
 
         public bool IsFull()
         {
-            return _Items.Count > _Capacity;
+            return m_Items.Count > m_Capacity;
         }
     }
 }

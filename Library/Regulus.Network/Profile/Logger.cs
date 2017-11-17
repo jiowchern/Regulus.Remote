@@ -1,107 +1,92 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading;
-using Regulus.Extension;
-using Regulus.Network.RUDP;
 using Regulus.Utility;
+using QueueThreadHelper = Regulus.Extension.QueueThreadHelper;
 
 namespace Regulus.Network.Profile
 {
-    class Logger
+    internal class Logger
     {
-        private readonly float _Sample;
+        private readonly int m_Sample;
 
-        class Command
+        private class Command
         {
             public bool Add;
             public Line Line;
         }
 
-        private readonly Queue<Command> _Commands;
+        private readonly System.Collections.Generic.Queue<Command> m_Commands;
         
 
-        private readonly List<Line> _Lines;
+        private readonly List<Line> m_Lines;
 
-        private volatile bool _Enable;
+        private volatile bool m_Enable;
 
         
-        public Logger(float sample)
+        public Logger(int Sample)
         {
-            _Sample = sample;
+            m_Sample = Sample;
 
-            _Commands = new Queue<Command>();
+            m_Commands = new System.Collections.Generic.Queue<Command>();
 
-            _Lines = new List<Line>();
+            m_Lines = new List<Line>();
         }
-        public void Register(Line line)
+        public void Register(Line Line)
         {
             var command = new Command();
             command.Add = true;
-            command.Line = line;
-            _Commands.SafeEnqueue(command);
+            command.Line = Line;
+            QueueThreadHelper.SafeEnqueue(m_Commands, command);
         }
 
-        public void Unregister(Line line)
+        public void Unregister(Line Line)
         {
             var command = new Command();
             command.Add = false;
-            command.Line = line;
-            _Commands.SafeEnqueue(command);
+            command.Line = Line;
+            QueueThreadHelper.SafeEnqueue(m_Commands, command);
         }
 
         public void Start()
         {
-            _Enable = true;
-            ThreadPool.QueueUserWorkItem(_Collect);
+            m_Enable = true;
+            ThreadPool.QueueUserWorkItem(Collect);
         }
 
-        private void _Collect(object state)
+        private void Collect(object State)
         {
-            Regulus.Utility.TimeCounter timeCounter = new TimeCounter();
-            Regulus.Utility.AutoPowerRegulator regulator = new AutoPowerRegulator(new PowerRegulator());
+            
+            
 
-            while (_Enable)
+            while (m_Enable)
             {
                 Command command = null;
-                while ((command = _Commands.SafeDequeue()) != null)
-                {
+                while ((command = QueueThreadHelper.SafeDequeue(m_Commands)) != null)
                     if (command.Add)
-                    {
-                        _Lines.Add(command.Line);
-                    }
+                        m_Lines.Add(command.Line);
                     else
-                        _Lines.Remove(command.Line);
-                }
-                if (timeCounter.Second > _Sample)
-                {
-                    
-                    foreach (var line in _Lines)
-                    {
-                        _WriteLog(line);
-                    }
-                    timeCounter.Reset();
-                }
-                regulator.Operate();
+                        m_Lines.Remove(command.Line);
+                foreach (var line in m_Lines)
+                    WriteLog(line);
+                System.Threading.Thread.Sleep(m_Sample);                
             }
             
         }
 
-        private void _WriteLog(Line line)
+        private void WriteLog(Line Line)
         {
 
             var logstring = string.Format(
                 "[RUDP] RemoteEndPoint:{0} SendBytes:{1} ReceiveBytes:{2} SRTT:{3} RTO:{4} SendPackages:{5} SendLost:{6} ReceivePackages:{7} ReceiveInvalidPackages:{8} LastRTT:{9} SendBlock:{10} LastRTO:{11} ReceiveBlock:{12} ReceiveNumber:{13} SendNumber:{14}",
-                line.EndPoint , line.SendBytes , line.ReceiveBytes , line.SRTT , line.RTO , line.SendedPackages , line.SendLostPackages , line.ReceivePackages , line.ReceiveInvalidPackages , line.LastRTT , line.SendBlock,line.LastRTO , line.ReceiveBlock,line.ReceiveNumber , line.SendNumber);
+                Line.EndPoint , Line.SendBytes , Line.ReceiveBytes , Line.Srtt , Line.Rto , Line.SendedPackages , Line.SendLostPackages , Line.ReceivePackages , Line.ReceiveInvalidPackages , Line.LastRtt , Line.SendBlock,Line.LastRto , Line.ReceiveBlock,Line.ReceiveNumber , Line.SendNumber);
 
-            Regulus.Utility.Log.Instance.WriteInfo(logstring);
+            Log.Instance.WriteInfo(logstring);
         }
 
 
         public void End()
         {
-            _Enable = false;
+            m_Enable = false;
         }
     }
 }

@@ -1,8 +1,8 @@
-namespace Regulus.Network.RUDP
+namespace Regulus.Network
 {
     public interface ISocket : ISocketRecevieable , ISocketSendable
     {
         void Close();
-        void Bind(int port);
+        void Bind(int Port);
     }
 }

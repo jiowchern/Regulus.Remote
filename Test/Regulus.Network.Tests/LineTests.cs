@@ -7,6 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using Regulus.Network.Package;
 
 namespace Regulus.Network.RUDP.Tests
 {
@@ -102,7 +103,7 @@ namespace Regulus.Network.RUDP.Tests
 
             var message = new SocketMessage(Config.Default.PackageSize);
             message.SetSeq(0);
-            message.SetOperation((byte)PEER_OPERATION.ACKNOWLEDGE);
+            message.SetOperation((byte)PeerOperation.Acknowledge);
             message.SetAck(1);
             message.SetAckFields(0);
             line.Input(message);

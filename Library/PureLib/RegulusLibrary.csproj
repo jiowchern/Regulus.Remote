@@ -136,6 +136,7 @@
     <Compile Include="Utility\Obb.cs" />
     <Compile Include="Utility\Poller.cs" />
     <Compile Include="Utility\PowerRegulator.cs" />
+    <Compile Include="Utility\QueueThreadHelper.cs" />
     <Compile Include="Utility\Random.cs" />
     <Compile Include="Utility\SerializableDictionary.cs" />
     <Compile Include="Utility\Singleton.cs" />

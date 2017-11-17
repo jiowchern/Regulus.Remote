@@ -1,8 +1,8 @@
-namespace Regulus.Network.RUDP
+namespace Regulus.Network
 {
     public interface ISerialProvider
     {
-        uint[] AllocateSerial(int count);
+        uint[] AllocateSerial(int Count);
         uint Ack { get;  }
         uint AckBits { get;  }
     }

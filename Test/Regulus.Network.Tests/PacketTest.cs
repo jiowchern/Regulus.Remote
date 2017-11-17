@@ -14,7 +14,7 @@ namespace Regulus.Network.Tests
         [Test]
         public void Seq()
         {
-            ISocketPackageSpawner spawner = SocketPackagePool.Instance;
+            var spawner = SocketMessageFactory.Instance;
             var buffer = spawner.Spawn();
             buffer.SetSeq(0x1234);
             var seq = buffer.GetSeq();
@@ -24,7 +24,7 @@ namespace Regulus.Network.Tests
         
         public void Ack()
         {
-            ISocketPackageSpawner spawner = SocketPackagePool.Instance;
+            var spawner = SocketMessageFactory.Instance;
             var buffer = spawner.Spawn();
             buffer.SetAck(0x1234);
             var value = buffer.GetAck();
@@ -34,7 +34,7 @@ namespace Regulus.Network.Tests
         
         public void AckFields()
         {
-            ISocketPackageSpawner spawner = SocketPackagePool.Instance;
+            var spawner = SocketMessageFactory.Instance;
             var buffer = spawner.Spawn();
             buffer.SetAckFields(0x12345678u);
             var value = buffer.GetAckFields();
@@ -44,7 +44,7 @@ namespace Regulus.Network.Tests
         
         public void Operation()
         {
-            ISocketPackageSpawner spawner = SocketPackagePool.Instance;
+            var spawner = SocketMessageFactory.Instance;
             var buffer = spawner.Spawn();
             buffer.SetOperation(0x12);
             var value = buffer.GetOperation();
@@ -56,7 +56,7 @@ namespace Regulus.Network.Tests
         
         public void Payload()
         {
-            ISocketPackageSpawner spawner = SocketPackagePool.Instance;
+            var spawner = SocketMessageFactory.Instance;
             var buffer = spawner.Spawn();
             var payloadSize = buffer.GetPayloadBufferSize();
             var payloadSource = new byte[payloadSize];

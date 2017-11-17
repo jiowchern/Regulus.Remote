@@ -1,82 +1,95 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
-using Regulus.Extension;
+using System.Threading;
+using Regulus.Network.Package;
 
-namespace Regulus.Network.RUDP
+namespace Regulus.Network
 {
-    class SocketSender 
+    internal class SocketSender 
     {
-        private readonly Socket _Socket;
+        private readonly System.Net.Sockets.Socket m_Socket;
+        
 
+        
         private readonly Queue<SocketMessage> _Messages;
+        private volatile bool _Enable;
+        private ManualResetEvent _Mre;
         
-        public SocketSender(Socket socket)
+
+        public SocketSender(System.Net.Sockets.Socket Socket)
         {
+            
             _Messages = new Queue<SocketMessage>();
-            _Socket = socket;        
+            m_Socket = Socket;
+            _Enable = true;
+
+            System.Threading.ThreadPool.QueueUserWorkItem(_Run);
+            
+            _Mre = new ManualResetEvent(false);
         }
-        
-        public void Transport(SocketMessage message)
+
+        private void _Run(object state)
         {
-            lock (_Messages)
+            ManualResetEvent mre = new ManualResetEvent(true);
+            
+            while (_Enable)
             {
-                _Messages.Enqueue(message);
-                if (_Messages.Count == 1)
+                _Mre.WaitOne();
+            
+                SocketMessage message;
+                lock (_Messages)
                 {
-                    _Transport(_Messages.Dequeue());
+                    if (_Messages.Count > 0)
+                    {
+                        message = _Messages.Dequeue();
+                    }
+                    else
+                    {
+                        _Mre.Reset();
+                        continue;
+                    }
+                    
                 }
+
+                var size = message.GetPackageSize();
+                
+                mre.Reset();
+                m_Socket.BeginSendTo(message.Package, 0, size , SocketFlags.None, message.RemoteEndPoint, _Done , mre);
+                mre.WaitOne();
+                /*var 
+                  size = message.GetPackageSize();
+                var count = 0;
+                while (count < size)
+                {
+                    count += m_Socket.SendTo(message.Package, count, size - count, SocketFlags.None, message.RemoteEndPoint);
+                }*/
+
             }
             
-            
-        }
-
-        private event Action<SocketMessage> _DoneEvent;
-
-        public event Action<SocketMessage> DoneEvent
-        {
-            add { this._DoneEvent += value; }
-            remove { this._DoneEvent -= value; }
-        }
-
-
-
-
-
-        private void _Transport(SocketMessage message)
-        {
-            
-            _Socket.BeginSendTo(message.Package, 0, message.GetPackageSize(), SocketFlags.None, message.RemoteEndPoint, _Done,
-                message);
         }
 
         private void _Done(IAsyncResult ar)
         {
-            SocketError error = SocketError.Success;
-            try
-            {
-                _Socket.EndSendTo(ar);
-            }
-            catch (System.Net.Sockets.SocketException e)
-            {
-                error = e.SocketErrorCode;
-            }
-            finally
-            {
-                var message = ar.AsyncState as SocketMessage;                
-                message.SetError(error);
-                _DoneEvent(message);
+            var mre = (ManualResetEvent) ar.AsyncState;
+            mre.Set();
+        }
 
 
-                lock (_Messages)
-                {
-                    if(_Messages.Count >0)
-                        _Transport(_Messages.Dequeue());
-                }
+        public void Transport(SocketMessage Message)
+        {
+            lock (_Messages)
+            {
+                _Messages.Enqueue(Message);
+                _Mre.Set();
             }
             
+        }
 
-            
-        }        
+
+        public void Stop()
+        {
+            _Enable = false;
+        }
     }
 }

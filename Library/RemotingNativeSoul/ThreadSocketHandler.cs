@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using Regulus.Network;
-using Regulus.Network.RUDP;
+using Regulus.Network.Rudp;
 using Regulus.Utility;
 
 namespace Regulus.Remoting.Soul.Native
@@ -12,7 +12,7 @@ namespace Regulus.Remoting.Soul.Native
     {
         private readonly ThreadCoreHandler _CoreHandler;
         private readonly IProtocol _Protocol;
-        private readonly IPeerServer _Server;
+        private readonly IServer _Server;
 
         private readonly PeerSet _Peers;
 
@@ -56,7 +56,7 @@ namespace Regulus.Remoting.Soul.Native
             _Spin = new PowerRegulator();
             _AutoPowerRegulator = new AutoPowerRegulator(_Spin);
 
-            _Server = new Regulus.Network.RudpServer(new UdpSocket());
+            _Server = new Regulus.Network.Rudp.Server(new UdpSocket());
         }
 
         public void DoWork(object obj)

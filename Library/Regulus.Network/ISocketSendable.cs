@@ -1,11 +1,10 @@
-﻿using System;
+﻿using Regulus.Network.Package;
 
-namespace Regulus.Network.RUDP
+namespace Regulus.Network
 {
     public interface ISocketSendable
     {
-        void Transport(SocketMessage message);
-
-        event Action<SocketMessage> DoneEvent;
+        void Transport(SocketMessage Message);
+        
     }
 }

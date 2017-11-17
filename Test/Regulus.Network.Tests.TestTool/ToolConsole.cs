@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Windows.Forms;
 using Regulus.Network.Rudp;
-using Regulus.Network.RUDP;
+
 using Regulus.Utility;
 
 namespace Regulus.Network.Tests.TestTool
@@ -63,14 +63,17 @@ namespace Regulus.Network.Tests.TestTool
 
 	    public void CreateServer()
 	    {
-            var server = new RudpServer(new UdpSocket());
-	        _Updater.Add(new ServerHandler(++_Id , server, Command , Viewer));
+            var server = new Server(new UdpSocket());	        
+
+            _Updater.Add(new ServerHandler(++_Id , server, Command , Viewer));
 	    }
 
 	    public void CreateClient()
 	    {
-            var client = new RudpClient(new UdpSocket());
-	        _Updater.Add(new ClientHandler(++_Id, client, Command, Viewer));
+            var client = new Client(new UdpSocket());
+	        client.Launch();
+
+            _Updater.Add(new ClientHandler(++_Id, client, Command, Viewer));
         }
 	    private void Fake()
 	    {
@@ -80,8 +83,8 @@ namespace Regulus.Network.Tests.TestTool
 	        clientSocket.SendEvent += serverSocket.Receive;
 	        serverSocket.SendEvent += clientSocket.Receive;
 
-            var server = new RudpServer(clientSocket);
-	        var client = new RudpClient(serverSocket);
+            var server = new Server(clientSocket);
+	        var client = new Client(serverSocket);
 
 	        _Updater.Add(clientSocket);
 	        _Updater.Add(serverSocket);

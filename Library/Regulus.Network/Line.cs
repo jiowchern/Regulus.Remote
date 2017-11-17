@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using Regulus.Extension;
-using Regulus.Serialization;
+using Regulus.Network.Package;
+using QueueThreadHelper = Regulus.Utility.QueueThreadHelper;
 
-namespace Regulus.Network.RUDP
+namespace Regulus.Network
 {
     public class Line 
     {
@@ -14,172 +13,160 @@ namespace Regulus.Network.RUDP
         
         public event Action<SocketMessage> OutputEvent;
 
-        private readonly BufferDispenser _Dispenser;
-        private readonly PackageRectifier _Rectifier;
+        private readonly BufferDispenser m_Dispenser;
+        private readonly PackageRectifier m_Rectifier;
 
-        private readonly Queue<SocketMessage> _InputPackages;
-        private readonly Queue<SocketMessage> _SendPackages;        
-        private readonly Queue<SocketMessage> _ReceivePackages;
-        private readonly CongestionRecorder _Waiter;
-        private long _TimeoutTicks;
-        private long _PingTicks;
-
-
-
-
+        private readonly Queue<SocketMessage> m_InputPackages;
+        private readonly Queue<SocketMessage> m_SendPackages;        
+        private readonly Queue<SocketMessage> m_ReceivePackages;
+        private readonly CongestionRecorder m_Waiter;
+        private long m_TimeoutTicks;
+        private long m_PingTicks;
         public Line(EndPoint end_point)
         {
             EndPoint = end_point;
-            _Dispenser = new BufferDispenser(EndPoint, SocketPackagePool.Instance);
-            _Rectifier = new PackageRectifier();
+            m_Dispenser = new BufferDispenser(EndPoint, SocketMessageFactory.Instance);
+            m_Rectifier = new PackageRectifier();
             
-            _SendPackages = new Queue<SocketMessage>();
-            _ReceivePackages = new Queue<SocketMessage>();
-            _InputPackages = new Queue<SocketMessage>();
+            m_SendPackages = new Queue<SocketMessage>();
+            m_ReceivePackages = new Queue<SocketMessage>();
+            m_InputPackages = new Queue<SocketMessage>();
             
-            _Waiter = new CongestionRecorder(3);
+            m_Waiter = new CongestionRecorder(HungryLimit: 3);
 
-          
-
-
-
-            _ResetTimeout();
-
-            
+            ResetTimeout();
         }
 
-        private void _ResetTimeout()
+        private void ResetTimeout()
         {
-            _TimeoutTicks = (long)(Timestamp.OneSecondTicks * Config.Timeout);
+            m_TimeoutTicks = (long)(Timestamp.OneSecondTicks * Config.Timeout);
         }
 
-        public void WriteOperation(PEER_OPERATION operation)
+        public void WriteOperation(PeerOperation Operation)
         {
-            var package = _Dispenser.PackingOperation(operation , _Rectifier.Serial, _Rectifier.SerialBitFields);
-            lock (_SendPackages)
+            var package = m_Dispenser.PackingOperation(Operation , m_Rectifier.Serial, m_Rectifier.SerialBitFields);
+            lock (m_SendPackages)
             {
-                _SendPackages.Enqueue(package);
+                m_SendPackages.Enqueue(package);
             }
             
         }
-        public void WriteTransmission(byte[] buffer)
+        public void WriteTransmission(byte[] Buffer)
         {            
-                var packages = _Dispenser.PackingTransmission(buffer, (ushort)(_Rectifier.Serial-1), _Rectifier.SerialBitFields);
-                for (int i = 0; i < packages.Length; i++)
+                var packages = m_Dispenser.PackingTransmission(Buffer, (ushort)(m_Rectifier.Serial-1), m_Rectifier.SerialBitFields);
+                for (var i = 0; i < packages.Length; i++)
                 {
                     var message = packages[i];
-                    _InputPackages.SafeEnqueue(message);                    
+                    QueueThreadHelper.SafeEnqueue(m_InputPackages, message);                    
                 }
         }
 
         public SocketMessage Read()
         {
-            return _Rectifier.PopPackage();
+            return m_Rectifier.PopPackage();
         }
 
         
 
-        public int AcknowledgeCount { get { return _Waiter.Count; } }
-        public int WaitSendCount { get { return _SendPackages.Count; } }
+        public int AcknowledgeCount => m_Waiter.Count;
+        public int WaitSendCount => m_SendPackages.Count;
         public int SendBytes { get; private set; }
         public int ReceiveBytes { get; private set; }
-        public long SRTT { get { return _Waiter.SRTT; } }
-        public long RTO { get { return _Waiter.RTO; } }
+        public long Srtt => m_Waiter.Srtt;
+        public long Rto => m_Waiter.Rto;
         public int SendedPackages { get; private set; }
         public int SendLostPackages { get; private set; }
         public int ReceivePackages { get; private set; }
         public int ReceiveInvalidPackages { get; private set; }
-        public long LastRTT { get { return _Waiter.LastRTT; }}
-        public int SendBlock { get { return _Waiter.Count; } }
-        public long LastRTO { get { return _Waiter.LastRTO; }}
-        public int ReceiveBlock { get { return _Rectifier.Count; } }
+        public long LastRtt => m_Waiter.LastRtt;
+        public int SendBlock => m_Waiter.Count;
+        public long LastRto => m_Waiter.LastRto;
+        public int ReceiveBlock => m_Rectifier.Count;
 
-        public int ReceiveNumber { get { return _Rectifier.Serial; } }
+        public int ReceiveNumber => m_Rectifier.Serial;
 
-        public int SendNumber { get { return _Dispenser.Serial; } }
+        public int SendNumber => m_Dispenser.Serial;
 
 
-        public void Input(SocketMessage message)
+        public void Input(SocketMessage Message)
         {
-            lock (_ReceivePackages)
+            lock (m_ReceivePackages)
             {
-                _ReceivePackages.Enqueue(message);
+                m_ReceivePackages.Enqueue(Message);
             }
             
             
 
         }
 
-        private void _SendPing()
+        private void SendPing()
         {            
-            _SendAck((ushort)(_Rectifier.Serial-1), _Rectifier.SerialBitFields);
+            SendAck((ushort)(m_Rectifier.Serial-1), m_Rectifier.SerialBitFields);
         }
         
-        private void _SendAck(ushort ack,uint ack_bits)
+        private void SendAck(ushort Ack,uint AckBits)
         {
-            var package = _Dispenser.PackingAck(ack, ack_bits);
-            lock (_SendPackages)
+            var package = m_Dispenser.PackingAck(Ack, AckBits);
+            lock (m_SendPackages)
             {
-                _SendPackages.Enqueue(package);
+                m_SendPackages.Enqueue(package);
             }            
         }
 
-        public bool Tick(Timestamp time)
+        public bool Tick(Timestamp Time)
         {
-            _TimeoutTicks -= time.DeltaTicks;
-            if (_TimeoutTicks < 0)
+            m_TimeoutTicks -= Time.DeltaTicks;
+            if (m_TimeoutTicks < 0)
                 return true;
 
-            _HandleResend(time);
-            _HandleInput(time);
-            _HandleReceive(time);
+            HandleResend(Time);
+            HandleInput(Time);
+            HandleReceive(Time);
             
-            _HandlePing(time);
-            _HandleOutput(time);
+            HandlePing(Time);
+            HandleOutput(Time);
             return false;
         }
 
-        private void _HandleInput(Timestamp time)
+        private void HandleInput(Timestamp Time)
         {
             SocketMessage message = null;
-            while (_Waiter.IsFull() == false && (message = _InputPackages.SafeDequeue())!=null)
+            while (m_Waiter.IsFull() == false && (message = QueueThreadHelper.SafeDequeue(m_InputPackages))!=null)
             {
-                _Waiter.PushWait(message , time.Ticks);
-                lock (_SendPackages)
+                m_Waiter.PushWait(message , Time.Ticks);
+                lock (m_SendPackages)
                 {
-                    _SendPackages.Enqueue(message);
+                    m_SendPackages.Enqueue(message);
                 }
             }
         }
 
 
-        private void _HandlePing(Timestamp time)
+        private void HandlePing(Timestamp Time)
         {
-            _PingTicks += time.DeltaTicks;
-            if (_PingTicks > Timestamp.OneSecondTicks)
+            m_PingTicks += Time.DeltaTicks;
+            if (m_PingTicks > Timestamp.OneSecondTicks)
             {
-                _PingTicks = 0;
-                if (_SendPackages.Count == 0)
-                {
-                    _SendPing();
-                }
+                m_PingTicks = 0;
+                if (m_SendPackages.Count == 0)
+                    SendPing();
             }
         }
 
-        private void _HandleReceive(Timestamp time)
+        private void HandleReceive(Timestamp Time)
         {
             SocketMessage message = null;
-            while ((message = _Dequeue())!=null)
+            while ((message = Dequeue())!=null)
             {
-                _ResetTimeout();
+                ResetTimeout();
 
                 var seq = message.GetSeq();
                 var ack = message.GetAck();
                 var ackFields = message.GetAckFields();                
-                var oper = (PEER_OPERATION)message.GetOperation();
+                var oper = (PeerOperation)message.GetOperation();
 
                 // ack 
-                if (_Waiter.Reply(ack, time.Ticks, time.DeltaTicks) == false)
+                if (m_Waiter.Reply(ack, Time.Ticks, Time.DeltaTicks) == false)
                 {
                         
                 }
@@ -190,13 +177,11 @@ namespace Regulus.Network.RUDP
                 
                 
 
-                if (oper != PEER_OPERATION.ACKNOWLEDGE)
+                if (oper != PeerOperation.Acknowledge)
                 {
-                    if (_Rectifier.PushPackage(message) == false)
-                    {
+                    if (m_Rectifier.PushPackage(message) == false)
                         ReceiveInvalidPackages++;
-                    }
-                    _SendAck(seq, _Rectifier.SerialBitFields);
+                    SendAck(seq, m_Rectifier.SerialBitFields);
                 }
                 
                     
@@ -208,40 +193,37 @@ namespace Regulus.Network.RUDP
             
         }
 
-        private SocketMessage _Dequeue()
+        private SocketMessage Dequeue()
         {
-            lock (_ReceivePackages)
+            lock (m_ReceivePackages)
             {
-                if (_ReceivePackages.Count > 0)
-                    return _ReceivePackages.Dequeue();
+                if (m_ReceivePackages.Count > 0)
+                    return m_ReceivePackages.Dequeue();
                 return null;
             }
 
             
         }
 
-        private void _HandleResend(Timestamp time)
+        private void HandleResend(Timestamp Time)
         {
-            var rtos = _Waiter.PopLost(time.Ticks,time.DeltaTicks);
+            var rtos = m_Waiter.PopLost(Time.Ticks,Time.DeltaTicks);
 
             var count = rtos.Count;
-            for (int i = 0; i < count; i++)
-            {
-                _SendPackages.SafeEnqueue(rtos[i]);
-                
-            }
+            for (var i = 0; i < count; i++)
+                QueueThreadHelper.SafeEnqueue(m_SendPackages, rtos[i]);
 
             SendLostPackages += count;
         }
 
    
-        private void _HandleOutput(Timestamp time)
+        private void HandleOutput(Timestamp Time)
         {
             
 
 
             SocketMessage message = null;
-            while ((message = _PopSend()) != null  )
+            while ((message = PopSend()) != null  )
             {                
                 
                 OutputEvent(message);
@@ -252,21 +234,17 @@ namespace Regulus.Network.RUDP
             
         }
 
-        private SocketMessage _PopSend()
+        private SocketMessage PopSend()
         {
-            lock (_SendPackages)
+            lock (m_SendPackages)
             {
-                if (_SendPackages.Count > 0  )
-                {
-                    
-                    return _SendPackages.Dequeue();
-                }
-                    
+                if (m_SendPackages.Count > 0  )
+                    return m_SendPackages.Dequeue();
             }
             return null;
         }
 
-        public void MessageSendResult(SocketMessage message)
+        public void MessageSendResult(SocketMessage Message)
         {
             
             

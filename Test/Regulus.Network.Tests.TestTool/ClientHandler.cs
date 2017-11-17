@@ -10,13 +10,13 @@ namespace Regulus.Network.Tests.TestTool
     {
         private readonly int _Id;
         
-        private readonly IPeerClient _Client;
+        private readonly IClient _Client;
         private readonly Command _Command;
         private readonly Console.IViewer _Viewer;
 
         private readonly Regulus.Utility.Updater _Updater;
 
-        public ClientHandler(int id, IPeerClient client, Command command, Console.IViewer viewer)
+        public ClientHandler(int id, IClient client, Command command, Console.IViewer viewer)
         {
             _Id = id;
             _Client = client;
@@ -27,7 +27,7 @@ namespace Regulus.Network.Tests.TestTool
 
         void IBootable.Launch()
         {
-            _Client.Launch();
+            
 
             _Command.Register<string,int>("Connect" + _Id , _Connect);
         }
@@ -36,7 +36,7 @@ namespace Regulus.Network.Tests.TestTool
         {
             _Updater.Shutdown();
             _Command.Unregister("Connect" + _Id);
-            _Client.Shutdown();
+         
         }
 
         bool IUpdatable.Update()

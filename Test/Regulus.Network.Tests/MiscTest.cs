@@ -4,6 +4,7 @@ using System.Net;
 
 using NSubstitute;
 using NUnit.Framework;
+using Regulus.Network.Package;
 using Regulus.Network.RUDP;
 
 namespace Regulus.Network.Tests
@@ -17,7 +18,7 @@ namespace Regulus.Network.Tests
         public void TestObjectPool()
 	{
             
-	    var pool = new ObjectPool<byte[] , ByteArrayShell>(new ByteArrayFactory() );
+	    var pool = new ObjectFactory<byte[] , ByteArrayShell>(new ByteArrayFactory() );
 	    ByteArrayShell data1 = pool.Spawn();
 
             
@@ -99,7 +100,7 @@ namespace Regulus.Network.Tests
             var message = new TestMessage(count);
 
 	        
-            var dispenser = new BufferDispenser(new IPEndPoint(IPAddress.Any, 0), SocketPackagePool.Instance);
+            var dispenser = new BufferDispenser(new IPEndPoint(IPAddress.Any, 0), SocketMessageFactory.Instance);
 	        var packages = dispenser.PackingTransmission(message.Buffer ,0,0);
 
 
@@ -132,7 +133,7 @@ namespace Regulus.Network.Tests
             var message = new TestMessage(count);
 
 
-	        var dispenser = new BufferDispenser(new IPEndPoint(IPAddress.Any, 0), SocketPackagePool.Instance);
+	        var dispenser = new BufferDispenser(new IPEndPoint(IPAddress.Any, 0), SocketMessageFactory.Instance);
 	        var packages = dispenser.PackingTransmission(message.Buffer, 0, 0);
 
 
@@ -316,17 +317,17 @@ namespace Regulus.Network.Tests
 
     }
 
-    public class TestSpawner : ISocketPackageSpawner
+    public class TestSpawner : IObjectProvider<SocketMessage>
     {
-        public SocketMessage Spawn()
+        SocketMessage IObjectProvider<SocketMessage>.Spawn()
         {
             return new SocketMessage(50);
         }
     }
 
-    public class ByteArrayFactory : IObjectFactory<byte[]>
+    public class ByteArrayFactory : IObjectProvider<byte[]>
     {
-        byte[] IObjectFactory<byte[]>.Spawn()
+        byte[] IObjectProvider<byte[]>.Spawn()
         {
             return new byte[] {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
         }

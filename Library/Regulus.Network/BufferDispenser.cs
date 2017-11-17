@@ -1,77 +1,77 @@
 using System;
-using System.CodeDom;
 using System.Net;
+using Regulus.Network.Package;
 
-namespace Regulus.Network.RUDP
+namespace Regulus.Network
 {
     public class BufferDispenser
     {
         
         
-        private readonly int _PayloadSize;
+        private readonly int m_PayloadSize;
 
-        private ushort _Serial;
-        private readonly EndPoint _EndPoint;
-        private readonly ISocketPackageSpawner _Spawner;
+        private ushort m_Serial;
+        private readonly EndPoint m_EndPoint;
+        private readonly SocketMessageFactory m_Spawner;
 
 
-        public BufferDispenser(EndPoint end_point, ISocketPackageSpawner spawner)
+        public BufferDispenser(EndPoint EndPoint, SocketMessageFactory Spawner)
         {
-            _EndPoint = end_point;
-            _Spawner = spawner;
-            _PayloadSize = SocketMessage.GetPayloadSize();
+            m_EndPoint = EndPoint;
+            m_Spawner = Spawner;
+            m_PayloadSize = SocketMessage.GetPayloadSize();
         }
 
-        public int Serial { get { return _Serial; }}
+        public int Serial => m_Serial;
 
 
-        public SocketMessage[] PackingTransmission(byte[] buffer,ushort ack ,uint ack_fields )
+        public SocketMessage[] PackingTransmission(byte[] Buffer,ushort Ack ,uint AckFields )
         {
             
-            var count = (buffer.Length + _PayloadSize - 1) / _PayloadSize   ;
+            var count = (Buffer.Length + m_PayloadSize - 1) / m_PayloadSize   ;
             var packages = new SocketMessage[count];
             
 
-            var buffserSize = buffer.Length;
-            for (int i = count - 1; i >= 0; i--)
+            var buffserSize = Buffer.Length;
+            for (var i = count - 1; i >= 0; i--)
             {
-                var package = _Spawner.Spawn();
-                package.SetEndPoint(_EndPoint);
-                package.SetSeq((ushort)(_Serial + i));
-                package.SetOperation((byte)PEER_OPERATION.TRANSMISSION);
-                package.SetAck(ack);
-                package.SetAckFields(ack_fields);
-                var begin = _PayloadSize * i;
+                var package = m_Spawner.Spawn();
+                package.SetEndPoint(m_EndPoint);
+                package.SetSeq((ushort)(m_Serial + i));
+                package.SetOperation((byte)PeerOperation.Transmission);
+                package.SetAck(Ack);
+                package.SetAckFields(AckFields);
+                var begin = m_PayloadSize * i;
                 var writeSize = buffserSize - begin;
-                package.WritePayload(buffer,begin, writeSize);
+                package.WritePayload(Buffer,begin, writeSize);
                 buffserSize -= writeSize;
                 packages[i] = package;
             }
-            _Serial += (ushort)count;
+            m_Serial += (ushort)count;
             return packages;
         }
 
-        public SocketMessage PackingAck(ushort ack, uint ack_fields)
+        public SocketMessage PackingAck(ushort Ack, uint AckFields)
         {
-            var package = _Spawner.Spawn();
-            package.SetEndPoint(_EndPoint);            
-            package.SetOperation((byte)PEER_OPERATION.ACKNOWLEDGE);
-            package.SetAck(ack);
-            package.SetAckFields(ack_fields);
+            var package = m_Spawner.Spawn();
+            package.SetEndPoint(m_EndPoint);            
+            package.SetOperation((byte)PeerOperation.Acknowledge);
+            package.SetAck(Ack);
+            package.SetAckFields(AckFields);
             package.ClearPayload();
             return package;
         }
-        public SocketMessage PackingOperation(PEER_OPERATION operation, ushort ack, uint ack_fields)
+        public SocketMessage PackingOperation(PeerOperation Operation, ushort Ack, uint AckFields)
         {
-            if(operation == PEER_OPERATION.ACKNOWLEDGE)
+            if(Operation == PeerOperation.Acknowledge)
                 throw new Exception("Ack type use PackingAck.");
 
-            var package = _Spawner.Spawn();
-            package.SetEndPoint(_EndPoint);
-            package.SetSeq(_Serial++);
-            package.SetOperation((byte)operation);
-            package.SetAck(ack);
-            package.SetAckFields(ack_fields);
+            var package = m_Spawner.Spawn();
+            package.SetEndPoint(m_EndPoint);
+            package.SetSeq(m_Serial++);
+            package.SetOperation((byte)Operation);
+            package.SetAck(Ack);
+            package.SetAckFields(AckFields);
             package.ClearPayload();
 
 

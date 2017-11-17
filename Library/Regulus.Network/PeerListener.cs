@@ -1,90 +1,86 @@
 using System;
-using System.Collections.Generic;
-using Regulus.Serialization;
+using Regulus.Network.Package;
 using Regulus.Utility;
 
-namespace Regulus.Network.RUDP
+namespace Regulus.Network
 {
     public class PeerListener : IStage<Timestamp>
     {
-        private readonly Line _Line;
+        private readonly Line m_Line;
         
         public event Action DoneEvent;
         public event Action ErrorEvent;
 
-        private readonly Regulus.Utility.StageMachine<Timestamp> _Machine;
-        private long _Timeout;
+        private readonly StageMachine<Timestamp> m_Machine;
+        private long m_Timeout;
 
-        public PeerListener(Line line)
+        public PeerListener(Line Line)
         {
-            _Line = line;            
-            _Machine = new StageMachine<Timestamp>();
+            m_Line = Line;            
+            m_Machine = new StageMachine<Timestamp>();
         }
         void IStage<Timestamp>.Enter()
         {
-            _Machine.Push(new SimpleStage<Timestamp>(_Empty , _Empty ,  _ListenRequestUpdate));
+            m_Machine.Push(new SimpleStage<Timestamp>(Empty , Empty ,  ListenRequestUpdate));
         }
 
-        private void _ListenRequestUpdate(Timestamp time)
+        private void ListenRequestUpdate(Timestamp Time)
         {
 
-            _Timeout += time.DeltaTicks;
+            m_Timeout += Time.DeltaTicks;
 
-            if (_Timeout > Timestamp.OneSecondTicks *Config.Timeout)
+            if (m_Timeout > Timestamp.OneSecondTicks *Config.Timeout)
             {
                 ErrorEvent();
                 return;
             }
 
-            var package = _Line.Read();
+            var package = m_Line.Read();
             if (package == null)
                 return;
-            var operation =(PEER_OPERATION)package.GetOperation();
-            if (operation == PEER_OPERATION.CLIENTTOSERVER_HELLO1)
+            var operation =(PeerOperation)package.GetOperation();
+            if (operation == PeerOperation.ClienttoserverHello1)
             {
-                _Line.WriteOperation(PEER_OPERATION.SERVERTOCLIENT_HELLO1 );
-                _Machine.Push(new SimpleStage<Timestamp>(_Empty, _Empty, _ListenAckUpdate));
+                m_Line.WriteOperation(PeerOperation.ServertoclientHello1 );
+                m_Machine.Push(new SimpleStage<Timestamp>(Empty, Empty, ListenAckUpdate));
             }
             
 
             
         }
 
-        private void _ListenAckUpdate(Timestamp time)
+        private void ListenAckUpdate(Timestamp Time)
         {
-            _Timeout += time.DeltaTicks;
+            m_Timeout += Time.DeltaTicks;
 
-            if (_Timeout > Timestamp.OneSecondTicks * Config.Timeout)
+            if (m_Timeout > Timestamp.OneSecondTicks * Config.Timeout)
             {
                 ErrorEvent();
                 return;
             }
 
-            var package = _Line.Read();
+            var package = m_Line.Read();
             if(package == null)
                 return;
 
-            var operation = (PEER_OPERATION)package.GetOperation();
-            if (operation == PEER_OPERATION.CLIENTTOSERVER_HELLO2)
-            {
+            var operation = (PeerOperation)package.GetOperation();
+            if (operation == PeerOperation.ClienttoserverHello2)
                 DoneEvent();
-            }
-            
         }
 
-        private void _Empty()
+        private void Empty()
         {
             
         }
 
         void IStage<Timestamp>.Leave()
         {
-            _Machine.Termination();
+            m_Machine.Termination();
         }
 
-        void IStage<Timestamp>.Update(Timestamp obj)
+        void IStage<Timestamp>.Update(Timestamp Obj)
         {
-            _Machine.Update(obj);
+            m_Machine.Update(Obj);
 
             
         }

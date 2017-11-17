@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using Regulus.Framework;
-using Regulus.Network.RUDP;
+using Regulus.Network.Package;
 using Regulus.Utility;
 using Console = Regulus.Utility.Console;
 
@@ -79,7 +79,7 @@ namespace Regulus.Network.Tests.TestTool
                 record.Message.Package[i] = message.Package[i];
             }
             record.Message.SetEndPoint(_IpEndPoint);
-            _DoneEvent(message);
+            
             lock (_SendRecords)
             {
                 _SendRecords.Add(record);
@@ -88,12 +88,7 @@ namespace Regulus.Network.Tests.TestTool
 
         }
 
-        event Action<SocketMessage> _DoneEvent;
-        event Action<SocketMessage> ISocketSendable.DoneEvent
-        {
-            add { _DoneEvent += value; }
-            remove { _DoneEvent -= value; }
-        }
+        
 
         void ISocket.Close()
         {

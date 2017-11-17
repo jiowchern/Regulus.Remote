@@ -5,7 +5,7 @@ using Regulus.Serialization;
 using Regulus.Framework;
 using Regulus.Network;
 using Regulus.Network.Rudp;
-using Regulus.Network.RUDP;
+
 using Regulus.Utility;
 
 namespace Regulus.Remoting.Ghost.Native
@@ -20,7 +20,7 @@ namespace Regulus.Remoting.Ghost.Native
 		private readonly AgentCore _Core;
 
 		private readonly StageMachine _Machine;
-	    private IPeerClient _RudpAgent;
+	    private readonly IClient _RudpAgent;
 	    
 
 
@@ -33,13 +33,13 @@ namespace Regulus.Remoting.Ghost.Native
 
 		
 
-	    private Agent(IProtocol protocol)
+	    private Agent(IProtocol protocol,Regulus.Network.IClient client)
 	    {
 	    
             _Serializer = protocol.GetSerialize();
 	        _Machine = new StageMachine();
             _Core = new AgentCore(protocol);
-	        _RudpAgent = new RudpClient(new UdpSocket());
+	        _RudpAgent = client;
 	        
 	        
         }
@@ -64,13 +64,13 @@ namespace Regulus.Remoting.Ghost.Native
             _Core.ErrorMethodEvent += _ErrorMethodEvent;
 		    _Core.ErrorVerifyEvent += _ErrorVerifyEvent;
 
-		    _RudpAgent.Launch();
+		    
 
         }
 
 		void IBootable.Shutdown()
 		{
-		    _RudpAgent.Shutdown();
+		    
             _Core.ErrorVerifyEvent -= _ErrorVerifyEvent;
             _Core.ErrorMethodEvent -= _ErrorMethodEvent;
             if (_Core.Enable)
@@ -214,9 +214,9 @@ namespace Regulus.Remoting.Ghost.Native
 		///     建立代理器
 		/// </summary>
 		/// <returns></returns>
-		public static IAgent Create(IProtocol protocol)
+		public static IAgent Create(IProtocol protocol,Regulus.Network.IClient client)
         {
-            return new Agent(protocol);
+            return new Agent(protocol , client);
         }
     }
 }

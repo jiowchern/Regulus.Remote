@@ -1,7 +1,6 @@
-using System;
-using System.Net;
+using Regulus.Network.Package;
 
-namespace Regulus.Network.RUDP
+namespace Regulus.Network
 {
     public interface ISocketRecevieable
     {        

@@ -1,20 +1,18 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using Regulus.Game.Data;
 
-namespace Regulus.Network.RUDP
+namespace Regulus.Network.Package
 {
     internal class SocketMessageInternal
     {
 
-        public SocketMessageInternal(int package_size)
+        public SocketMessageInternal(int PackageSize)
         {
             
-            RemoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
-            Package = new byte[package_size];
+            RemoteEndPoint = new IPEndPoint(IPAddress.Any, port: 0);
+            Package = new byte[PackageSize];
         }
         public EndPoint RemoteEndPoint;        
         public byte[] Package;
@@ -23,209 +21,193 @@ namespace Regulus.Network.RUDP
 
     public sealed class SocketMessage : IRecycleable<SocketMessageInternal>
     {
-        public const int SEQ_INDEX = 0;
-        public const int ACK_INDEX = SEQ_INDEX + 2;
-        public const int ACKBITS_INDEX = ACK_INDEX + 2;
-        public const int OP_INDEX = ACKBITS_INDEX + 4;
-        public const int PAYLOADLENGTH_INDEX = OP_INDEX + 1;
-        public const int PAYLOAD_INDEX = PAYLOADLENGTH_INDEX + 2;
-        public const int HEADSIZE = PAYLOAD_INDEX + 2;
-        public const int UDPPACKAGESIZE = ushort.MaxValue;
+        public const int SeqIndex = 0;
+        public const int AckIndex = SeqIndex + 2;
+        public const int AckbitsIndex = AckIndex + 2;
+        public const int OpIndex = AckbitsIndex + 4;
+        public const int PayloadlengthIndex = OpIndex + 1;
+        public const int PayloadIndex = PayloadlengthIndex + 2;
+        public const int Headsize = PayloadIndex + 2;
+        public const int Udppackagesize = ushort.MaxValue;
 
-        private SocketMessageInternal _Instance;
+        private SocketMessageInternal m_Instance;
 
         public SocketMessage()
         {
             
         }
-        public SocketMessage(int i)
+        public SocketMessage(int I)
         {
-            _Instance = new SocketMessageInternal(i);
+            m_Instance = new SocketMessageInternal(I);
         }
 
 
-        private byte[] _Package { get { return _Instance.Package; } }
+        private byte[] _Package => m_Instance.Package;
 
-        public EndPoint RemoteEndPoint { get { return _Instance.RemoteEndPoint; } }
-        
-        public byte[] Package { get { return _Package; } }
+        public EndPoint RemoteEndPoint => m_Instance.RemoteEndPoint;
 
-        public SocketError Error { get { return _Instance.Error; } }
+        public byte[] Package => _Package;
 
-        void IRecycleable<SocketMessageInternal>.Reset(SocketMessageInternal instance)
+        public SocketError Error => m_Instance.Error;
+
+        void IRecycleable<SocketMessageInternal>.Reset(SocketMessageInternal Instance)
         {
             
-            _Instance = instance;
+            m_Instance = Instance;
         }
 
 
         public bool CheckPayload()
         {
             var len = GetPayloadLength();
-            return len == _Package.Length - PAYLOAD_INDEX;
+            return len == _Package.Length - PayloadIndex;
         }
 
         public int GetPayloadBufferSize()
         {
-            var size = _Package.Length - PAYLOAD_INDEX;
+            var size = _Package.Length - PayloadIndex;
             if (size > 0)
-            {
                 return size;
-            }
             return 0;
         }
 
-        public bool WritePayload(IList<byte> source, int offset, int count)
+        public bool WritePayload(IList<byte> Source, int Offset, int Count)
         {
             var bufferSize = GetPayloadBufferSize();
 
-            if (count > ushort.MaxValue)
+            if (Count > ushort.MaxValue)
                 return false;
-            if (bufferSize < count)
+            if (bufferSize < Count)
                 return false;
-            if (source.Count - offset < count)
+            if (Source.Count - Offset < Count)
                 return false;
 
 
-            for (int i = 0; i < count; i++)
-            {
-                _Package[PAYLOAD_INDEX + i] = source[offset + i];
-            }
+            for (var i = 0; i < Count; i++)
+                _Package[PayloadIndex + i] = Source[Offset + i];
 
-            _SetPayloadLength((ushort)count);
+            SetPayloadLength((ushort)Count);
 
             return true;
         }
 
 
-        private void _SetPayloadLength(ushort value)
+        private void SetPayloadLength(ushort Value)
         {
-            _SetUint16(PAYLOADLENGTH_INDEX, value);
+            SetUint16(PayloadlengthIndex, Value);
         }
 
         public ushort GetPayloadLength()
         {
-            return _GetUint16(PAYLOADLENGTH_INDEX);
+            return GetUint16(PayloadlengthIndex);
         }
 
-        public bool ReadPayload(IList<byte> payload, int offset)
+        public bool ReadPayload(IList<byte> Payload, int Offset)
         {
 
             var len = GetPayloadLength();
 
-            if (_Package.Length - PAYLOAD_INDEX < len)
+            if (_Package.Length - PayloadIndex < len)
                 return false;
-            if (payload.Count - offset < len)
+            if (Payload.Count - Offset < len)
                 return false;
 
-            for (int i = 0; i < len; ++i)
-            {
-                payload[offset + i] = _Package[PAYLOAD_INDEX + i];
-            }
+            for (var i = 0; i < len; ++i)
+                Payload[Offset + i] = _Package[PayloadIndex + i];
             return true;
         }
 
-        public void ReadPayload(IList<byte> payload)
+        public void ReadPayload(IList<byte> Payload)
         {
             var len = GetPayloadLength();
-            for (int i = 0; i < len; ++i)
-            {
-                payload.Add(_Package[PAYLOAD_INDEX + i]);
-            }
+            for (var i = 0; i < len; ++i)
+                Payload.Add(_Package[PayloadIndex + i]);
         }
 
 
-        public void SetOperation(byte value)
+        public void SetOperation(byte Value)
         {
-            _SetUint8(OP_INDEX, checked((byte)value));
+            SetUint8(OpIndex, checked((byte)Value));
         }
         public byte GetOperation()
         {
-            return _GetUint8(OP_INDEX);
+            return GetUint8(OpIndex);
         }
 
 
 
 
-        public void SetAckFields(uint value)
+        public void SetAckFields(uint Value)
         {
-            _SetUint32(ACKBITS_INDEX, value);
+            SetUint32(AckbitsIndex, Value);
         }
 
         public uint GetAckFields()
         {
-            return _GetUint32(ACKBITS_INDEX);
+            return GetUint32(AckbitsIndex);
         }
 
 
         public ushort GetAck()
         {
-            return _GetUint16(ACK_INDEX);
+            return GetUint16(AckIndex);
         }
 
-        public void SetAck(ushort value)
+        public void SetAck(ushort Value)
         {
-            _SetUint16(ACK_INDEX, value);
+            SetUint16(AckIndex, Value);
         }
 
 
-        public void SetSeq(ushort sn)
+        public void SetSeq(ushort Sn)
         {
-            _SetUint16(SEQ_INDEX, (ushort)sn);
+            SetUint16(SeqIndex, (ushort)Sn);
         }
 
         public ushort GetSeq()
         {
-            return _GetUint16(SEQ_INDEX);
+            return GetUint16(SeqIndex);
         }
 
-        private void _SetUint32(int begin, uint value)
+        private void SetUint32(int Begin, uint Value)
         {
-            _Package[begin + 0] = (byte)(value >> 0);
-            _Package[begin + 1] = (byte)(value >> 8);
-            _Package[begin + 2] = (byte)(value >> 16);
-            _Package[begin + 3] = (byte)(value >> 24);
+            _Package[Begin + 0] = (byte)(Value >> 0);
+            _Package[Begin + 1] = (byte)(Value >> 8);
+            _Package[Begin + 2] = (byte)(Value >> 16);
+            _Package[Begin + 3] = (byte)(Value >> 24);
         }
 
-        private uint _GetUint32(int begin)
+        private uint GetUint32(int Begin)
         {
-            if (_Package.Length - begin > 4)
-            {
-                return (uint)(_Package[0 + begin] << 0 | _Package[1 + begin] << 8 | _Package[2 + begin] << 16 | _Package[3 + begin] << 24);
-            }
+            if (_Package.Length - Begin > 4)
+                return (uint)((_Package[0 + Begin] << 0) | (_Package[1 + Begin] << 8) | (_Package[2 + Begin] << 16) | (_Package[3 + Begin] << 24));
             throw new Exception("Illegal operation");
         }
 
-        private void _SetUint16(int begin, ushort value)
+        private void SetUint16(int Begin, ushort Value)
         {
-            _Package[begin + 0] = (byte)(value >> 0);
-            _Package[begin + 1] = (byte)(value >> 8);
+            _Package[Begin + 0] = (byte)(Value >> 0);
+            _Package[Begin + 1] = (byte)(Value >> 8);
         }
 
-        private ushort _GetUint16(int begin)
+        private ushort GetUint16(int Begin)
         {
-            if (_Package.Length - begin > 2)
-            {
-                return (ushort)(_Package[begin + 0] << 0 | _Package[begin + 1] << 8);
-            }
+            if (_Package.Length - Begin > 2)
+                return (ushort)((_Package[Begin + 0] << 0) | (_Package[Begin + 1] << 8));
             throw new Exception("Illegal operation");
         }
 
-        private byte _GetUint8(int index)
+        private byte GetUint8(int Index)
         {
-            if (_Package.Length - index > 1)
-            {
-                return _Package[index];
-            }
+            if (_Package.Length - Index > 1)
+                return _Package[Index];
             throw new Exception("Illegal operation");
         }
 
-        private void _SetUint8(int begin, byte value)
+        private void SetUint8(int Begin, byte Value)
         {
-            if (_Package.Length - begin > 1)
-            {
-                _Package[begin] = value;
-            }
+            if (_Package.Length - Begin > 1)
+                _Package[Begin] = Value;
         }
 
         public IEnumerable<ushort> GetAcks()
@@ -234,44 +216,38 @@ namespace Regulus.Network.RUDP
             var fields = GetAckFields();
             ushort mark = 1;
             for (ushort i = 0; i < 32; i++)
-            {
                 if ((mark & fields) != 0)
-                {
                     yield return (ushort)(ack + i + 1);
-                }
-            }
         }
 
         public static int GetHeadSize()
         {
-            return HEADSIZE;
+            return Headsize;
         }
 
-        public int ReadPayload(int source_offset, byte[] buffer, int target_offset, int read_count)
+        public int ReadPayload(int SourceOffset, byte[] Buffer, int TargetOffset, int ReadCount)
         {
             var payloadLength = GetPayloadLength();
-            if (payloadLength < source_offset)
+            if (payloadLength < SourceOffset)
                 return 0;
-            if (buffer.Length < target_offset + read_count)
+            if (Buffer.Length < TargetOffset + ReadCount)
                 return 0;
 
 
-            int count = read_count;
-            var payloadReadCount = payloadLength - source_offset;
-            if (payloadReadCount < read_count)
+            var count = ReadCount;
+            var payloadReadCount = payloadLength - SourceOffset;
+            if (payloadReadCount < ReadCount)
                 count = payloadReadCount;
 
-            for (int i = 0; i < count; i++)
-            {
-                buffer[target_offset + i] = _Package[PAYLOAD_INDEX + i + source_offset];
-            }
+            for (var i = 0; i < count; i++)
+                Buffer[TargetOffset + i] = _Package[PayloadIndex + i + SourceOffset];
 
             return count;
         }
 
-        public byte ReadPayload(int offset)
+        public byte ReadPayload(int Offset)
         {
-            return _Package[PAYLOAD_INDEX + offset];
+            return _Package[PayloadIndex + Offset];
         }
 
         public byte[] GetBuffer()
@@ -281,33 +257,33 @@ namespace Regulus.Network.RUDP
 
         public void SetError(SocketError error)
         {
-            _Instance.Error = error;
+            m_Instance.Error = error;
         }
 
         public static int GetPayloadSize()
         {
             
-            return Config.Default.PackageSize - HEADSIZE;
+            return Config.Default.PackageSize - Headsize;
         }
 
         public bool IsError()
         {
-            return _Instance.Error != SocketError.Success;
+            return m_Instance.Error != SocketError.Success;
         }
 
-        public void SetEndPoint(EndPoint end_point)
+        public void SetEndPoint(EndPoint EndPoint)
         {
-            _Instance.RemoteEndPoint = end_point;
+            m_Instance.RemoteEndPoint = EndPoint;
         }
 
         public int GetPackageSize()
         {            
-            return HEADSIZE + GetPayloadLength();
+            return Headsize + GetPayloadLength();
         }
 
         public void ClearPayload()
         {
-            _SetPayloadLength(0);
+            SetPayloadLength(Value: 0);
         }
     }
 

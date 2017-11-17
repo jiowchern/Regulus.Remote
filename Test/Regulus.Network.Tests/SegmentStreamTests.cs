@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using Regulus.Network.Package;
 
 namespace Regulus.Network.RUDP.Tests
 {
@@ -15,9 +16,10 @@ namespace Regulus.Network.RUDP.Tests
         [Test]
         public void FullReadTest()
         {
-            var pkg1 = new SocketMessage(SocketMessage.HEADSIZE + 5);
-            var pkg2 = new SocketMessage(SocketMessage.HEADSIZE + 4);
-            var pkg3 = new SocketMessage(SocketMessage.HEADSIZE + 2);
+            
+            var pkg1 = new SocketMessage(Regulus.Network.Config.Default.PackageSize + 5);
+            var pkg2 = new SocketMessage(Regulus.Network.Config.Default.PackageSize + 4);
+            var pkg3 = new SocketMessage(Regulus.Network.Config.Default.PackageSize + 2);
 
             pkg1.WritePayload(new byte[] { 0, 1, 2, 3, 4}, 0, 5);
             pkg2.WritePayload(new byte[] { 5,6,7,8 }, 0, 4);
@@ -48,9 +50,9 @@ namespace Regulus.Network.RUDP.Tests
         [Test]
         public void BatchesReadTest()
         {
-            var pkg1 = new SocketMessage(SocketMessage.HEADSIZE + 5);
-            var pkg2 = new SocketMessage(SocketMessage.HEADSIZE + 4);
-            var pkg3 = new SocketMessage(SocketMessage.HEADSIZE + 2);
+            var pkg1 = new SocketMessage(Regulus.Network.Config.Default.PackageSize + 5);
+            var pkg2 = new SocketMessage(Regulus.Network.Config.Default.PackageSize + 4);
+            var pkg3 = new SocketMessage(Regulus.Network.Config.Default.PackageSize + 2);
 
             pkg1.WritePayload(new byte[] { 0, 1, 2, 3, 4 }, 0, 5);
             pkg2.WritePayload(new byte[] { 5, 6, 7, 8 }, 0, 4);

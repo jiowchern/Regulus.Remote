@@ -1,57 +1,55 @@
 ﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Net;
 using Regulus.Framework;
 using Regulus.Utility;
 
-namespace Regulus.Network.RUDP
+namespace Regulus.Network
 {
     public class Agent : IUpdatable<Timestamp>
     {
         
-        private readonly ISocketRecevieable _SocketRecevieable;
-        private readonly ISocketSendable _SocketSendable;
+        private readonly ISocketRecevieable m_SocketRecevieable;
+        private readonly ISocketSendable m_SocketSendable;
 
 
-        private readonly Dictionary<EndPoint, Peer> _Peers;
-        private readonly List<Peer> _RemovePeers;
-        private readonly Regulus.Utility.Updater<Timestamp> _Updater;
-        private readonly WiringOperator _WiringOperator;
+        private readonly Dictionary<EndPoint, Socket> m_Peers;
+        private readonly List<Socket> m_RemovePeers;
+        private readonly Updater<Timestamp> m_Updater;
+        private readonly WiringOperator m_WiringOperator;
 
-        public Agent(ISocketRecevieable socket_recevieable, ISocketSendable socket_sendable)
+        public Agent(ISocketRecevieable SocketRecevieable, ISocketSendable SocketSendable)
         {
-            _SocketRecevieable = socket_recevieable;
-            _SocketSendable = socket_sendable;            
-            _Updater = new Updater<Timestamp>();
-            _RemovePeers = new List<Peer>();
-            _WiringOperator = new WiringOperator(_SocketSendable, _SocketRecevieable);            
-            _Peers = new Dictionary<EndPoint, Peer>();
+            m_SocketRecevieable = SocketRecevieable;
+            m_SocketSendable = SocketSendable;            
+            m_Updater = new Updater<Timestamp>();
+            m_RemovePeers = new List<Socket>();
+            m_WiringOperator = new WiringOperator(m_SocketSendable, m_SocketRecevieable,false );            
+            m_Peers = new Dictionary<EndPoint, Socket>();
         }       
 
-        bool IUpdatable<Timestamp>.Update(Timestamp timestamp)
+        bool IUpdatable<Timestamp>.Update(Timestamp Timestamp)
         {
-            var removePeers = _GetRemovePeers();
+            var removePeers = GetRemovePeers();
             var count = removePeers.Length;
-            for (int i = 0; i < count; i++)
+            for (var i = 0; i < count; i++)
             {
                 var peer = removePeers[i];
-                lock (_WiringOperator)
+                lock (m_WiringOperator)
                 {
-                    _WiringOperator.Destroy(peer.EndPoint);
+                    m_WiringOperator.Destroy(peer.EndPoint);
                 }                
             }
 
-            _Updater.Working(timestamp);
+            m_Updater.Working(Timestamp);
             return true;
         }
 
-        private Peer[] _GetRemovePeers()
+        private Socket[] GetRemovePeers()
         {
-            lock (_RemovePeers)
+            lock (m_RemovePeers)
             {
-                var cloned = _RemovePeers.ToArray();
-                _RemovePeers.Clear();
+                var cloned = m_RemovePeers.ToArray();
+                m_RemovePeers.Clear();
                 return cloned;
             }
         }
@@ -61,76 +59,76 @@ namespace Regulus.Network.RUDP
 
 
 
-            _WiringOperator.JoinStreamEvent += _CreatePeer;
-            _WiringOperator.LeftStreamEvent += _DestroyPeer;
-            _Updater.Add(_WiringOperator);
+            m_WiringOperator.JoinStreamEvent += CreatePeer;
+            m_WiringOperator.LeftStreamEvent += DestroyPeer;
+            m_Updater.Add(m_WiringOperator);
             
             
         }
 
         void IBootable.Shutdown()
         {                       
-            _Updater.Shutdown();
-            _WiringOperator.JoinStreamEvent -= _CreatePeer;
-            _WiringOperator.LeftStreamEvent -= _DestroyPeer;
+            m_Updater.Shutdown();
+            m_WiringOperator.JoinStreamEvent -= CreatePeer;
+            m_WiringOperator.LeftStreamEvent -= DestroyPeer;
         }
 
-        private void _DestroyPeer(Line obj)
+        private void DestroyPeer(Line Obj)
         {
-            Peer peer;
-            if (_Peers.TryGetValue(obj.EndPoint, out peer))
+            Socket rudpSocket;
+            if (m_Peers.TryGetValue(Obj.EndPoint, out rudpSocket))
             {
-                peer.Break();
-                _Updater.Remove(peer);
-                lock (_Peers)
+                rudpSocket.Break();
+                m_Updater.Remove(rudpSocket);
+                lock (m_Peers)
                 {
-                    _Peers.Remove(obj.EndPoint);
+                    m_Peers.Remove(Obj.EndPoint);
                 }
                 
             }
             
         }
 
-        private void _CreatePeer(Line obj)
+        private void CreatePeer(Line Obj)
         {            
         }
         
-        public IRudpPeer Connect(EndPoint end_point,System.Action<bool> result)
+        public Socket Connect(EndPoint EndPoint,System.Action<bool> Result)
         {
-            IRudpPeer rudpPeer = null;
-            System.Action<Line> handler = stream =>
+            Socket rudpSocket = null;
+            System.Action<Line> handler = Stream =>
             {
-                var connecter = new PeerConnecter(stream);
-                connecter.TimeoutEvent += () => { result(false); };
-                connecter.DoneEvent += () => { result(true); };
+                var connecter = new PeerConnecter(Stream);
+                connecter.TimeoutEvent += () => { Result(obj: false); };
+                connecter.DoneEvent += () => { Result(obj: true); };
 
-                var p = new Peer(stream, connecter);
-                p.CloseEvent += () => { _Remove(p); };
+                var p = new Socket(Stream, connecter);
+                p.CloseEvent += () => { Remove(p); };
 
-                lock (_Peers)
+                lock (m_Peers)
                 {
-                    _Peers.Add(stream.EndPoint, p);
+                    m_Peers.Add(Stream.EndPoint, p);
                 }
                 
-                _Updater.Add(p);
-                rudpPeer = p;
+                m_Updater.Add(p);
+                rudpSocket = p;
             };
 
-            lock (_WiringOperator)
+            lock (m_WiringOperator)
             {
-                _WiringOperator.JoinStreamEvent += handler;
-                _WiringOperator.Create(end_point);
-                _WiringOperator.JoinStreamEvent -= handler;
+                m_WiringOperator.JoinStreamEvent += handler;
+                m_WiringOperator.Create(EndPoint);
+                m_WiringOperator.JoinStreamEvent -= handler;
             }
             
-            return rudpPeer;
+            return rudpSocket;
         }
 
-        private void _Remove(Peer peer)
+        private void Remove(Socket rudp_socket)
         {
-            lock (_RemovePeers)
+            lock (m_RemovePeers)
             {
-                _RemovePeers.Add(peer);
+                m_RemovePeers.Add(rudp_socket);
             }
 
         }
