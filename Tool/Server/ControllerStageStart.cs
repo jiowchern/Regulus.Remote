@@ -123,7 +123,7 @@ namespace Regulus.Remoting.Soul.Native
 
             var protocolName = entry_name + "ProtocolProvider";
             var buidler = new Regulus.Protocol.AssemblyBuilder();
-		    var asm =  buidler.Build(assembly, protocolName );
+		    var asm =  buidler.BuildMemory(assembly, protocolName );
 		    return asm.CreateInstance(protocolName) as IProtocol;
 		}
 
