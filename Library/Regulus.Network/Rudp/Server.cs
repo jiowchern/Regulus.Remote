@@ -21,8 +21,8 @@ namespace Regulus.Network.Rudp
 
         event Action<IPeer> IServer.AcceptEvent
         {
-            add => AcceptEvent += value;
-            remove => AcceptEvent -= value;
+            add { AcceptEvent += value; } 
+            remove { AcceptEvent -= value; }
         }
 
         void IServer.Bind(int Port)

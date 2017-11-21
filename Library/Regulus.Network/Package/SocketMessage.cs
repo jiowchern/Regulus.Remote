@@ -42,13 +42,13 @@ namespace Regulus.Network.Package
         }
 
 
-        private byte[] _Package => m_Instance.Package;
+        private byte[] _Package { get { return m_Instance.Package; } }
 
-        public EndPoint RemoteEndPoint => m_Instance.RemoteEndPoint;
+        public EndPoint RemoteEndPoint { get { return m_Instance.RemoteEndPoint; } }
 
-        public byte[] Package => _Package;
+        public byte[] Package {get { return _Package; } }
 
-        public SocketError Error => m_Instance.Error;
+        public SocketError Error { get { return m_Instance.Error; } }
 
         void IRecycleable<SocketMessageInternal>.Reset(SocketMessageInternal Instance)
         {

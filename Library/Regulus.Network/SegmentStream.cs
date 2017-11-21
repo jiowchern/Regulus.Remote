@@ -9,7 +9,7 @@ namespace Regulus.Network
         private readonly List<SocketMessage> m_Packages;
         private int m_FirstPackageOffset;
         public int Length { get { return m_Packages.Sum(P => P.GetPayloadLength()); } }
-        public int Count => m_Packages.Count;
+        public int Count { get { return m_Packages.Count; } }
 
 
         public SegmentStream(SocketMessage[] Messages)
@@ -55,7 +55,7 @@ namespace Regulus.Network
         }
 
 
-        public byte this[int I] => Get(I);
+        public byte this[int I] {get { return Get(I); } }
 
         private byte Get(int Offset)
         {

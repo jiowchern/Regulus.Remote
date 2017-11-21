@@ -46,9 +46,11 @@ namespace Regulus.Network
             m_Rto = new RetransmissionTimeOut();
         }
 
-        public int Count => m_Items.Count;
-        public long Srtt => m_Rto.Rtt;
-        public long Rto => m_Rto.Value;
+        public int Count { get{ return m_Items.Count; } }
+        public long Srtt {
+            get { return m_Rto.Rtt; }
+        } 
+        public long Rto { get { return m_Rto.Value; } }
 
         public long LastRtt { get; private set; }
         public long LastRto { get; private set; }

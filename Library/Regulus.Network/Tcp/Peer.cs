@@ -16,11 +16,11 @@ namespace Regulus.Network.Tcp
             m_Socket = Socket;            
         }
 
-        EndPoint IPeer.RemoteEndPoint => m_Socket.RemoteEndPoint;
+        EndPoint IPeer.RemoteEndPoint { get { return m_Socket.RemoteEndPoint; } }
 
-        EndPoint IPeer.LocalEndPoint => m_Socket.LocalEndPoint;
+        EndPoint IPeer.LocalEndPoint {get { return m_Socket.LocalEndPoint; } }
 
-        bool IPeer.Connected => m_Socket.Connected;
+        bool IPeer.Connected { get { return m_Socket.Connected; } }
 
         void IPeer.Receive(byte[] ReadedByte, int Offset, int Count, Action<int, SocketError> Readed)
         {

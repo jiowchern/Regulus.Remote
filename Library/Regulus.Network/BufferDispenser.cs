@@ -22,7 +22,7 @@ namespace Regulus.Network
             m_PayloadSize = SocketMessage.GetPayloadSize();
         }
 
-        public int Serial => m_Serial;
+        public int Serial {get { return m_Serial; } } 
 
 
         public SocketMessage[] PackingTransmission(byte[] Buffer,ushort Ack ,uint AckFields )

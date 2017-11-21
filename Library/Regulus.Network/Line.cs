@@ -68,25 +68,24 @@ namespace Regulus.Network
 
         
 
-        public int AcknowledgeCount => m_Waiter.Count;
-        public int WaitSendCount => m_SendPackages.Count;
+        public int AcknowledgeCount {get { return m_Waiter.Count; } }
+        public int WaitSendCount {get { return m_SendPackages.Count; } } 
         public int SendBytes { get; private set; }
         public int ReceiveBytes { get; private set; }
-        public long Srtt => m_Waiter.Srtt;
-        public long Rto => m_Waiter.Rto;
+        public long Srtt {get { return m_Waiter.Srtt; } } 
+        public long Rto {get { return m_Waiter.Rto; } }
         public int SendedPackages { get; private set; }
         public int SendLostPackages { get; private set; }
         public int ReceivePackages { get; private set; }
         public int ReceiveInvalidPackages { get; private set; }
-        public long LastRtt => m_Waiter.LastRtt;
-        public int SendBlock => m_Waiter.Count;
-        public long LastRto => m_Waiter.LastRto;
-        public int ReceiveBlock => m_Rectifier.Count;
+        public long LastRtt {get { return m_Waiter.LastRtt; }} 
+        public int SendBlock { get { return m_Waiter.Count; } } 
+        public long LastRto { get { return m_Waiter.LastRto; } } 
+        public int ReceiveBlock { get { return m_Rectifier.Count; } } 
 
-        public int ReceiveNumber => m_Rectifier.Serial;
+        public int ReceiveNumber { get { return m_Rectifier.Serial; } }
 
-        public int SendNumber => m_Dispenser.Serial;
-
+        public int SendNumber { get { return m_Dispenser.Serial; } } 
 
         public void Input(SocketMessage Message)
         {

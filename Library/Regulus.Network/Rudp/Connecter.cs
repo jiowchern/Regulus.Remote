@@ -13,11 +13,11 @@ namespace Regulus.Network.Rudp
         {
             m_Agent = Agent;
         }
-        EndPoint IPeer.RemoteEndPoint => _RudpSocket.EndPoint;
+        EndPoint IPeer.RemoteEndPoint {get { return _RudpSocket.EndPoint; } }
 
-        EndPoint IPeer.LocalEndPoint => _RudpSocket.EndPoint;
+        EndPoint IPeer.LocalEndPoint {get { return _RudpSocket.EndPoint; } }
 
-        bool IPeer.Connected => _RudpSocket.Status == PeerStatus.Transmission;
+        bool IPeer.Connected {get{return _RudpSocket.Status == PeerStatus.Transmission; } }
 
         void IPeer.Receive(byte[] ReadedByte, int Offset, int Count, Action<int, SocketError> Readed)
         {

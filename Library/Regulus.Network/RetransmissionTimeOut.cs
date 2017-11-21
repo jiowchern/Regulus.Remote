@@ -6,7 +6,7 @@ namespace Regulus.Network
         private long m_Srtt;
         private long  m_Rtt;
         public long Value { get; set; }
-        public long Rtt => m_Srtt;
+        public long Rtt {get { return m_Srtt; } }
 
         public RetransmissionTimeOut()
         {

@@ -15,7 +15,7 @@ namespace Regulus.Network
         private readonly Updater<Timestamp> m_Updater;
 	    
 	    
-        public int PeerCount => m_Peers.Count;
+        public int PeerCount { get { return m_Peers.Count; } }
 
 	    public Host(ISocketRecevieable SocketRecevieable , ISocketSendable SocketSendable)
         {
