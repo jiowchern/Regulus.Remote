@@ -43,7 +43,7 @@ namespace Regulus.Remoting.Soul.Native
             get { return _Peers.Count; }
         }
 
-        public ThreadSocketHandler(int port, ThreadCoreHandler core_handler, IProtocol protocol)
+        public ThreadSocketHandler(int port, ThreadCoreHandler core_handler, IProtocol protocol , IServer server)
         {
             _CoreHandler = core_handler;
             _Protocol = protocol;
@@ -56,7 +56,7 @@ namespace Regulus.Remoting.Soul.Native
             _Spin = new PowerRegulator();
             _AutoPowerRegulator = new AutoPowerRegulator(_Spin);
 
-            _Server = new Regulus.Network.Rudp.Server(new UdpSocket());
+            _Server = server;
         }
 
         public void DoWork(object obj)

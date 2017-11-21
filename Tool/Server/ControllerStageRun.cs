@@ -1,6 +1,5 @@
 ﻿using System;
-
-
+using Regulus.Network;
 using Regulus.Utility;
 
 
@@ -56,12 +55,12 @@ namespace Regulus.Remoting.Soul.Native
 
 		private readonly Console.IViewer _View;
 
-		public StageRun(ICore core,IProtocol protocol, Command command, int port, Console.IViewer viewer)
+		public StageRun(ICore core,IProtocol protocol, Command command, int port, Console.IViewer viewer , IServer server)
 		{
 			_View = viewer;
 			_Command = command;
 
-			_Server = new Server(core, protocol,  command ,port);
+			_Server = new Server(core, protocol,  command ,port , server);
 		    _Server.BreakEvent += _Break;
             _Launcher = new Launcher();
 			_Launcher.Push(_Server);
