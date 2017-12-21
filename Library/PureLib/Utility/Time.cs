@@ -33,30 +33,31 @@ namespace Regulus.Utility
 	{
 	    private readonly Stopwatch _Stopwatch;
 
-		private long _Begin;
+		
 
 		public long Ticks
 		{
-			get { return _Stopwatch.ElapsedTicks - _Begin; }
+			get { return _Stopwatch.ElapsedTicks ; }
 		}
 
 		public float Second
 		{
-			get { return (float)(Ticks / (double)Stopwatch.Frequency); }
+			get { return (_Stopwatch.ElapsedTicks / (float)Stopwatch.Frequency); }
 		}
 
 		public TimeCounter()
 		{
 		    _Stopwatch = new Stopwatch();
-		    _Stopwatch.Start();
+		    
 
             Reset();
 		}
 
 		public void Reset()
 		{
-			_Begin = _Stopwatch.ElapsedTicks;
-		}
+            _Stopwatch.Reset();
+		    _Stopwatch.Start();
+        }
 	}
 
 	

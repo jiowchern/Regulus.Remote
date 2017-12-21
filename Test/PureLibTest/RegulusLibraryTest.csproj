@@ -67,6 +67,7 @@
     <Compile Include="CustomType\Vector2Tests.cs" />
     <Compile Include="EnqueueHelper.cs" />
     <Compile Include="Extension\TypeExtensionTests.cs" />
+    <Compile Include="Game\EntityTests.cs" />
     <Compile Include="LogSteps.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IniTest.cs" />

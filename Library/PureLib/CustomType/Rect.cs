@@ -1,6 +1,5 @@
 ﻿using System;
-
-
+using System.Linq;
 
 
 namespace Regulus.CustomType
@@ -65,14 +64,18 @@ namespace Regulus.CustomType
 
 		public Rect(Point rootOrigin, Size rootSize)
 		{
-			// TODO: Complete member initialization
+			
 			Location = rootOrigin;
 			_Size = rootSize;
 		}
 
-		public Rect(float x, float y, float w, float h)
+	    public Point Center
+	    {
+	        get { return new Point(Location.X + _Size.Width /2 , Location.Y + _Size.Height / 2);}
+	    }
+        public Rect(float x, float y, float w, float h)
 		{
-			// TODO: Complete member initialization
+			
 			Location.X = x;
 			Location.Y = y;
 			_Size.Width = w;
@@ -94,5 +97,17 @@ namespace Regulus.CustomType
 			       (rect.Top <= Bottom) &&
 			       (rect.Bottom >= Top);
 		}
+
+	    
+
+        public static Rect Merge(params Rect[] bounds)
+        {
+            
+            var left  = (from b in bounds select b.Left).Min();
+	        var right = (from b in bounds select b.Right).Max();
+	        var top    = (from b in bounds select b.Top).Min();
+	        var bottom = (from b in bounds select b.Bottom).Max();
+            return new Rect(left, top, right - left, bottom - top);
+        }
 	}
 }

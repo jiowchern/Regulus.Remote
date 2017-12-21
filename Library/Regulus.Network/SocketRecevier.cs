@@ -12,14 +12,14 @@ namespace Regulus.Network
         
         private readonly List<SocketMessage> m_ReceivePackages;
 
-        private readonly SocketMessage[] m_Empty;
+        
 
         private SocketMessage m_Message;
         private readonly SocketMessageFactory m_Spawner;
         private EndPoint m_ReceiveEndPoint;
         public SocketRecevier(System.Net.Sockets.Socket Socket, SocketMessageFactory factory )
         {
-            m_Empty = new SocketMessage[0];
+            
             m_Socket = Socket;
             
             m_ReceivePackages = new List<SocketMessage>();

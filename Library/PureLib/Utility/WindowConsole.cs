@@ -43,7 +43,7 @@ namespace Regulus.Utility
 		{
 			WindowConsole.SetConsoleCtrlHandler(ConsoleCtrlCheck, true);
 
-			_HideLog();
+			_ShowLog();
 
 			_Updater.Add(_Input);
 

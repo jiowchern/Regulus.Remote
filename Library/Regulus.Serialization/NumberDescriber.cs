@@ -108,6 +108,10 @@ namespace Regulus.Serialization
             {
                 instance = (char)value;
             }
+            else if (Type == typeof(bool))
+            {
+                instance = value != 0;
+            }
             else
             {
                 instance = value;

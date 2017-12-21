@@ -11,23 +11,25 @@ using Regulus.Utility;
 namespace Regulus.Remoting
 {
 	internal abstract class CommandRegister
-	{		
-
+	{
+        
 		private readonly Command _Command;
 
 	    private readonly string _Name;
+        private readonly string _Args;
 
 
         protected CommandRegister(Command command , LambdaExpression exp)
         {
             
             _Command = command;
-		    _Name = _BuildName(exp);
+		    _Build(exp,ref _Name ,ref _Args);
 		}
 
-		public void Register(object instance)
-		{		    
-            _RegisterAction(_Command , _Name, instance);			
+		public void Register(int sn ,object instance)
+		{
+            var command = _BuildName(_Name, sn, _Args);
+            _RegisterAction(_Command , command, instance);			
 		}
 
 		
@@ -35,13 +37,18 @@ namespace Regulus.Remoting
 		protected abstract void _RegisterAction(Command command,string command_name, object instance);
 		
 
-		public void Unregister()
+		public void Unregister(int sn)
 		{
-			_Command.Unregister(new Command.Analysis(_Name).Command);
+            var command = _BuildName(_Name, sn, _Args);
+            _Command.Unregister(new Command.Analysis(command).Command);
 		}
 
+        private string _BuildName(string name, int sn, string args)
+        {
+            return string.Format("{0}{1} [{2}]" , sn , name , args);
+        }
 
-        private string _BuildName(LambdaExpression exp)
+        private void _Build(LambdaExpression exp,ref string command_name ,ref string command_args)
         {
 
 
@@ -52,21 +59,26 @@ namespace Regulus.Remoting
                 var method = methodCall.Method;
                 string methodName = method.Name;
 
+                
                 var argNames = from par in exp.Parameters.Skip(1) select par.Name;
 
-                return string.Format("{0} [{1}]" , methodName , string.Join("," , argNames.ToArray()));
+                command_name = methodName;
+                command_args = string.Join(",", argNames.ToArray());
+                return;
             }
             if (exp.Body.NodeType == ExpressionType.MemberAccess)
             {
                 MemberExpression outerMember = (MemberExpression)exp.Body;
                 PropertyInfo outerProp = (PropertyInfo)outerMember.Member;
-
-                return outerProp.Name;
+                command_name = outerProp.Name;
+                command_args = string.Empty;
+                return;
             }
             throw new ArgumentException();
             
 
         }
+        
     }
 
 	internal class CommandRegister<T> : CommandRegister

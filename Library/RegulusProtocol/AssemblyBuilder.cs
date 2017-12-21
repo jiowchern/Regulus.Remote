@@ -104,6 +104,10 @@ namespace Regulus.Protocol
             return result.CompiledAssembly;
         }
 
+        public static List<string> BuildCode(Assembly assembly, string protocol_name)
+        {
+            return _BuildCode(assembly , protocol_name);
+        }
         private static List<string> _BuildCode(Assembly assembly, string protocol_name)
         {
             var codes = new List<string>();

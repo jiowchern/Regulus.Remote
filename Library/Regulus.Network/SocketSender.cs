@@ -23,10 +23,10 @@ namespace Regulus.Network
             _Messages = new Queue<SocketMessage>();
             m_Socket = Socket;
             _Enable = true;
-
+            _Mre = new ManualResetEvent(false);
             System.Threading.ThreadPool.QueueUserWorkItem(_Run);
             
-            _Mre = new ManualResetEvent(false);
+            
         }
 
         private void _Run(object state)

@@ -13,9 +13,9 @@ namespace Regulus.Network.Tcp
             GetSocket().NoDelay = true;
         }
 
-        void IConnectable.Connect(EndPoint Endpoint, Action<bool> Result)
+        void IConnectable.Connect(EndPoint Endpoint, Action<bool> result)
         {
-            m_ResultHandler = Result;
+            m_ResultHandler = result;
             GetSocket().BeginConnect(Endpoint, this.Result, state: null);
         }
 
@@ -38,6 +38,7 @@ namespace Regulus.Network.Tcp
             finally
             {
                 m_ResultHandler(result);
+                m_ResultHandler = null;
                 Singleton<Log>.Instance.WriteInfo(string.Format("connect result {0}.", result));
             }
         }

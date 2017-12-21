@@ -34,7 +34,7 @@ namespace Regulus.Utility
 			get { return _Ts.Count; }
 		}
 
-		private T[] _Objects
+	    protected T[] _Objects
 		{
 			get { return _Ts.ToArray(); }
 		}
@@ -108,7 +108,9 @@ namespace Regulus.Utility
 		}
 	}
 
-	public class Updater<T> : Launcher<IUpdatable<T>>
+    
+
+    public class Updater<T> : Launcher<IUpdatable<T>>
 	{
 		public void Working(T arg)
 		{
@@ -135,4 +137,6 @@ namespace Regulus.Utility
 			}
 		}
 	}
+
+    
 }

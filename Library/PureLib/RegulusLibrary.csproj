@@ -33,6 +33,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -95,7 +96,10 @@
     <Compile Include="Framework\StageSelectMode.cs" />
     <Compile Include="Framework\UserProvider.cs" />
     <Compile Include="Game\ChancesTable.cs" />
+    <Compile Include="Game\ComponmentSet.cs" />
+    <Compile Include="Game\IComponment.cs" />
     <Compile Include="Game\DataPrototypeFactory.cs" />
+    <Compile Include="Game\Entity.cs" />
     <Compile Include="Game\Framework.cs" />
     <Compile Include="Game\Hall.cs" />
     <Compile Include="Game\RangeChancesTable.cs" />

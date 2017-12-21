@@ -141,7 +141,7 @@ namespace Regulus.Protocol
                         _Serializer = new Regulus.Serialization.Serializer(new Regulus.Serialization.DescriberBuilder({addDescriberCode}));
 
 
-                        _MemberMap = new Regulus.Remoting.MemberMap(new[] {{{addMemberMapMethodCode}}} ,new[]{{ {addMemberMapEventCode} }}, new [] {{{addMemberMapPropertyCode} }}, new [] {{{addMemberMapinterfaceCode}}});
+                        _MemberMap = new Regulus.Remoting.MemberMap(new System.Reflection.MethodInfo[] {{{addMemberMapMethodCode}}} ,new System.Reflection.EventInfo[]{{ {addMemberMapEventCode} }}, new System.Reflection.PropertyInfo[] {{{addMemberMapPropertyCode} }}, new System.Type[] {{{addMemberMapinterfaceCode}}});
                     }}
 
                     byte[] Regulus.Remoting.IProtocol.VerificationCode {{ get {{ return new byte[]{{{verificationCode}}};}} }}
