@@ -5,24 +5,27 @@ namespace Regulus.Game
 {
     internal class ComponmentSet
     {
+        private readonly List<IComponment> _Componments;
         private readonly List<IComponment> _ComponmentUpdates;
         private readonly Queue<IComponment> _ComponmentAdds;
         private readonly Queue<IComponment> _ComponmentRemoves;
 
         public ComponmentSet()
         {
+            _Componments = new List<IComponment>();
             _ComponmentUpdates = new List<IComponment>();
             _ComponmentAdds = new Queue<IComponment>();
             _ComponmentRemoves = new Queue<IComponment>();
         }
         public void Add<T>(T componment) where T : IComponment
         {
+            _Componments.Add(componment);
             _ComponmentAdds.Enqueue(componment);
         }
             
         public IEnumerable<T> Get<T>() where T : IComponment
         {
-            foreach (var componment in _ComponmentUpdates.ToArray())
+            foreach (var componment in _Componments.ToArray())
             {
                 yield return (T)componment ;
             }
@@ -30,15 +33,16 @@ namespace Regulus.Game
 
         public void Remove<T>(T componment) where T : IComponment
         {
+            _Componments.Remove(componment);
             _ComponmentRemoves.Enqueue(componment);
         }
 
-        public void Update(Entity entity)
+        public void Update()
         {
             while (_ComponmentAdds.Count > 0)
             {
                 var componment = _ComponmentAdds.Dequeue();
-                componment.Start(entity);
+                componment.Start();
                 _ComponmentUpdates.Add(componment);
             }
 

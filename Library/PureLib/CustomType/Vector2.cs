@@ -153,5 +153,10 @@ namespace Regulus.CustomType
 	        return (float) -(Math.Atan2(vec.Y, vec.X) * 180 / Math.PI);
 	    }
 
-    }
+	    public void Set(float x, float y)
+	    {
+	        X = x;
+	        Y = y;
+	    }
+	}
 }

@@ -50,18 +50,28 @@ namespace Regulus.Game
    
     public class Entity : IUpdatable
     {
+        private readonly Dictionary<Type, List<IComponment>> _Componments;
 
-        delegate void CommandDelegate();
+        enum COMMAND
+        {
+            ADD,REMOVE
+        }
+        struct Command
+        {
+            public COMMAND Cmd;
+            public IComponment Com;
+        }
 
-        private readonly Queue<CommandDelegate> _Commands;
-        private readonly Dictionary<System.Type, ComponmentSet> _ComponmentSets;
+        private readonly Queue<Command> _Commands;
+        private List<IComponment> _Updates;
+
         private bool _Enable;
 
         public Entity()
         {
-            
-            _Commands = new Queue<CommandDelegate>();
-            _ComponmentSets = new Dictionary<Type, ComponmentSet>();
+            _Updates = new List<IComponment>();
+            _Commands  = new Queue<Command>();
+            _Componments = new Dictionary<Type, List<IComponment>>();
         }
 
         public void Destroy()
@@ -72,50 +82,58 @@ namespace Regulus.Game
         {
             while (_Commands.Count > 0)
             {
-                _Commands.Dequeue().Invoke();
+                var cmd = _Commands.Dequeue();
+                if (cmd.Cmd == COMMAND.ADD)
+                {
+                    _Updates.Add(cmd.Com);
+                    cmd.Com.Start();
+                }                    
+                else
+                {
+                    
+                    _Updates.Remove(cmd.Com);
+                    cmd.Com.End();
+                }
             }
 
-            foreach (var componmentSetsValue in _ComponmentSets.Values)
+            foreach (var componment in _Updates)
             {
-                componmentSetsValue.Update(this);
+                componment.Update();
             }
+            
             return _Enable ;
         }
 
+        
         public void Add<T>(T componment) where T : IComponment
         {
-            _Commands.Enqueue(() =>
-                {
-                    var type = typeof(T);
-                    ComponmentSet set;
-                    if (_ComponmentSets.TryGetValue(type, out set))
-                    {
-                        set.Add<T>(componment);
-                    }
-                    else
-                    {
-                        var newSet = new ComponmentSet();
-                        _ComponmentSets.Add(type, newSet);
-                        newSet.Add(componment);
-                    }
+            var type = typeof(T);
+            List<IComponment> set;
+            if (_Componments.TryGetValue(type, out set))
+            {
+                set.Add(componment);
+            }
+            else
+            {
+                var newSet = new List<IComponment>();
+                _Componments.Add(type , newSet);
+                newSet.Add(componment);
+            }
 
-                });
-            
 
+            _Commands.Enqueue(new Command(){ Cmd = COMMAND.ADD , Com = componment});
         }
 
         public void Remove<T>(T componment) where T : IComponment
         {
-            _Commands.Enqueue(() =>
+            var type = typeof(T);
+            List<IComponment> set;
+            if (_Componments.TryGetValue(type, out set))
             {
-                var type = typeof(T);
-                ComponmentSet set;
-                if (_ComponmentSets.TryGetValue(type, out set))
-                {
-                    set.Remove<T>(componment);
-                }
-            });
-            
+                set.Remove(componment);
+            }
+
+            _Commands.Enqueue(new Command() { Cmd = COMMAND.REMOVE, Com = componment });
         }
 
         
@@ -123,14 +141,14 @@ namespace Regulus.Game
         public IEnumerable<T> Get<T>() where T : IComponment
         {
             var type = typeof(T);
-            ComponmentSet set;
-            if (_ComponmentSets.TryGetValue(type, out set))
+            List<IComponment> componments;
+            if (_Componments.TryGetValue(type, out componments))
             {
-                return set.Get<T>();
-            }
-
-            
-            return new T[0];
+                foreach (var componment in componments)
+                {
+                    yield return (T)componment;
+                }
+            }            
         }
 
         void IBootable.Launch()
@@ -140,17 +158,12 @@ namespace Regulus.Game
 
         void IBootable.Shutdown()
         {
-            while (_Commands.Count > 0)
+
+            foreach (var componment in _Updates)
             {
-                _Commands.Dequeue().Invoke();
+                componment.End();
             }
 
-            foreach (var componmentSetsValue in _ComponmentSets.Values)
-            {
-                componmentSetsValue.Clear();
-            }
-
-            _ComponmentSets.Clear();
         }
     }
     
