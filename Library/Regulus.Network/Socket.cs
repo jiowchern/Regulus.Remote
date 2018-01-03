@@ -157,7 +157,7 @@ namespace Regulus.Network
 
 
 
-        public EndPoint EndPoint => m_Line.EndPoint;
+        public EndPoint EndPoint {get{return m_Line.EndPoint; } } 
 
         public void Send(byte[] Buffer, int Offset, int Count, Action<int, SocketError> WriteCompletion)
         {
@@ -188,7 +188,7 @@ namespace Regulus.Network
 
         }
 
-        public PeerStatus Status => m_Status;
+        public PeerStatus Status {get { return m_Status; } }
 
         public void Disconnect()
         {

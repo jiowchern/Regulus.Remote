@@ -12,8 +12,8 @@ namespace Regulus.Network.Tcp
 
         event Action<IPeer> IServer.AcceptEvent
         {
-            add => Acctpe += value;
-            remove => Acctpe -= value;
+            add { Acctpe += value; }
+            remove { Acctpe -= value; } 
         }
 
         void IServer.Bind(int Port)

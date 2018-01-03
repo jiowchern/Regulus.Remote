@@ -8,7 +8,7 @@ using Microsoft.CSharp;
 
 namespace Regulus.Remoting.Unity
 {
-    public class AssemblyOutputer
+    /*public class AssemblyOutputer
     {        
 
         private readonly Assembly _CommonAsm;
@@ -112,9 +112,7 @@ namespace Regulus.Remoting.Unity
                 for (int i = 0; i < result.Errors.Count; i++)
                 {
                     ErrorMessageEvent(result.Errors[i].ErrorText);
-                    /*var error = result.Errors[i];
-                    if(error.IsWarning == false)
-                        ErrorMessageEvent(result.Errors[i].ErrorText);*/
+                    
                 }
                 
         }
@@ -156,5 +154,5 @@ namespace Regulus.Remoting.Unity
         {
             return  string.Format("{0}\\{1}.cs" , output_path , name);
         }
-    }
+    }*/
 }

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-
-
+using Regulus.Network;
+using Regulus.Network.Rudp;
 using Regulus.Utility;
 
 
@@ -14,15 +14,16 @@ namespace Regulus.Remoting.Soul.Native
 {
 	internal class StageStart : IStage
 	{
-		public event Action<ICore,IProtocol, int> DoneEvent;
+		public event Action<ICore,IProtocol, int,IServer> DoneEvent;
 
 		private readonly Command _Command;
 
 		private readonly Console.IViewer _View;
 
 		private readonly string[] _FirstCommand;
+	    
 
-		public StageStart(Command command, Console.IViewer view ,string[] first_command)
+	    public StageStart(Command command, Console.IViewer view ,string[] first_command)
 		{
 			_View = view;
 			_FirstCommand = first_command;
@@ -42,8 +43,9 @@ namespace Regulus.Remoting.Soul.Native
             _View.WriteLine("common_path = path/common.dll");
             _View.WriteLine("common_namespace = YourNamespace.YourProjectCommon");
             _View.WriteLine("project_path = path/project.dll");
-			_View.WriteLine("project_entry = YourNamespace.YourProjectClassName"); 
-			_View.WriteLine("======================================");
+			_View.WriteLine("project_entry = YourNamespace.YourProjectClassName");
+		    _View.WriteLine("rudp = true");
+            _View.WriteLine("======================================");
 
 
 			if(_HasFirstCommand())
@@ -87,10 +89,10 @@ namespace Regulus.Remoting.Soul.Native
 			    var port = int.Parse(port_string);
 			    var dllpath = ini.Read("Launch", "project_path");			
 			    var className = ini.Read("Launch", "project_entry");
+                var commonPath = ini.Read("Launch", "common_path");
+                var rudp = ini.Read("Launch", "rudp");
 
-                var commonPath = ini.Read("Launch", "common_path");                
-
-                Launch(port, dllpath , className , commonPath );
+                Launch(port, dllpath , className , commonPath , rudp == "true");
             }
             catch (Exception ex)
             {
@@ -100,15 +102,25 @@ namespace Regulus.Remoting.Soul.Native
 
 	    
 
-	    public void Launch(int port, string project_path, string project_entry_name, string common_path )
+	    public void Launch(int port, string project_path, string project_entry_name, string common_path,bool rudp )
 		{
 
             var instance = StageStart._CreateProject(project_path, project_entry_name);
 
 	        var library = _CreateProtocol(common_path, project_entry_name );
-				
-			DoneEvent(instance, library, port);			
+
+		    IServer server = _CreateServer(rudp);
+
+            DoneEvent(instance, library, port, server);			
 		}
+
+	    private IServer _CreateServer(bool rudp)
+	    {
+	        if(rudp)
+                return new Regulus.Network.Rudp.Server(new UdpSocket());
+
+            return new Regulus.Network.Tcp.Server();
+	    }
 
 	    private static ICore _CreateProject(string project_path, string project_entry_name)
 	    {	        
@@ -123,7 +135,7 @@ namespace Regulus.Remoting.Soul.Native
 
             var protocolName = entry_name + "ProtocolProvider";
             var buidler = new Regulus.Protocol.AssemblyBuilder();
-		    var asm =  buidler.Build(assembly, protocolName );
+		    var asm =  buidler.BuildMemory(assembly, protocolName );
 		    return asm.CreateInstance(protocolName) as IProtocol;
 		}
 

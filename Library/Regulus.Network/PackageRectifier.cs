@@ -11,9 +11,9 @@ namespace Regulus.Network
         private ushort m_Serial;
         private uint m_SerialBitFields;
 
-        public ushort Serial => m_Serial;
-        public uint SerialBitFields => m_SerialBitFields;
-        public int Count => m_DataPackages.Count;
+        public ushort Serial {get { return m_Serial; } }
+        public uint SerialBitFields {get{ return m_SerialBitFields; } }
+        public int Count { get { return m_DataPackages.Count; } }
 
         public PackageRectifier()
         {

@@ -26,7 +26,7 @@ namespace Regulus.Network
             m_Now = m_Stopwatch.ElapsedTicks;
            
         }
-        long ITime.OneSeconds => m_OneSeconds;
+        long ITime.OneSeconds {get { return m_OneSeconds; } } 
 
         long ITime.Now
         {

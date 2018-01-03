@@ -63,7 +63,7 @@ output_dir = path/dir
             var regulusRemotingGhost = _GetRegulusRemotingGhost();
             var regulusSerialization = _GetRegulusSerialization();
 
-            var assemblyOutputer = new AssemblyOutputer(commonAsm,  commonNamespace);
+            /*var assemblyOutputer = new AssemblyOutputer(commonAsm,  commonNamespace);
             assemblyOutputer.ErrorMessageEvent += Console.WriteLine;
 
             string outputPath;
@@ -77,7 +77,7 @@ output_dir = path/dir
             if (_TryGetIniString(ini, "Build", "output_dir", out outputDir))
             {
                 assemblyOutputer.OutputDir(outputDir);
-            }
+            }*/
 
 
 

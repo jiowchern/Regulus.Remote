@@ -1,4 +1,5 @@
-﻿using Regulus.Utility;
+﻿using Regulus.Network;
+using Regulus.Utility;
 
 namespace Regulus.Remoting.Soul.Native
 {
@@ -36,9 +37,9 @@ namespace Regulus.Remoting.Soul.Native
 			_Machine.Push(stage);
 		}
 
-		private void _ToRun(ICore core,IProtocol protocol, int port)
+		private void _ToRun(ICore core,IProtocol protocol, int port,IServer server)
 		{
-			var stage = new StageRun(core, protocol, Command, port, Viewer);
+			var stage = new StageRun(core, protocol, Command, port, Viewer , server);
 			stage.ShutdownEvent += _ToStart;
 			_Machine.Push(stage);
 		}

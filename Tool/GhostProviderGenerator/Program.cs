@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
+
 
 using Regulus.Utility;
 
@@ -45,7 +45,8 @@ namespace Regulus.Tool
                 var sourcePath = String.Empty;
 
                 if (_TryRead(ini , "Build", "SourcePath", out sourcePath ) == false)
-                {                    
+                {
+                    Program._ShowBuildIni();
                     return;
                 }
 
@@ -54,27 +55,41 @@ namespace Regulus.Tool
 
                 if (_TryRead(ini, "Build", "ProtocolName", out protocolName) == false)
                 {
+                    Program._ShowBuildIni();
                     return;
                 }
 
 
                 var outputPath = String.Empty;
-
-                if (_TryRead(ini, "Build", "OutputPath", out outputPath) == false)
+                var outputCode = String.Empty;
+                if (_TryRead(ini, "Build", "OutputPath", out outputPath) )
                 {
-                    return;
+                    var sourceFullPath = System.IO.Path.GetFullPath(sourcePath);
+                    var outputFullPath = System.IO.Path.GetFullPath(outputPath);
+
+                    Console.WriteLine($"Source {sourceFullPath}");
+                    Console.WriteLine($"Output {outputFullPath}");
+                    var sourceAsm = Assembly.LoadFile(sourceFullPath);
+                    var assemblyBuilder = new Regulus.Protocol.AssemblyBuilder();
+                    assemblyBuilder.BuildFile(sourceAsm, protocolName, outputFullPath);
+                    Console.WriteLine("Build success.");
+
+                    
                 }
+                if (_TryRead(ini, "Build", "OutputCode", out outputCode) )
+                {
+                    var sourceFullPath = System.IO.Path.GetFullPath(sourcePath);
+                    var outputFullPath = System.IO.Path.GetFullPath(outputCode);
 
-
-                var sourceFullPath = System.IO.Path.GetFullPath(sourcePath);            
-                var outputFullPath = System.IO.Path.GetFullPath(outputPath);
-
-                Console.WriteLine($"Source {sourceFullPath}" );
-                Console.WriteLine($"Output {outputFullPath}" );
-                var sourceAsm = Assembly.LoadFile(sourceFullPath);
-                var assemblyBuilder = new Regulus.Protocol.AssemblyBuilder();
-                assemblyBuilder.Build(sourceAsm, protocolName, outputFullPath);
-                Console.WriteLine("Build success.");
+                    Console.WriteLine($"Source {sourceFullPath}");
+                    Console.WriteLine($"Output {outputFullPath}");
+                    var sourceAsm = Assembly.LoadFile(sourceFullPath);
+                    var assemblyBuilder = new Regulus.Protocol.AssemblyBuilder();
+                    assemblyBuilder.BuildCode(sourceAsm, protocolName, outputFullPath);
+                    Console.WriteLine("Build success.");
+                    
+                }
+                
             }
             catch (Exception e)
             {
@@ -88,7 +103,7 @@ namespace Regulus.Tool
         {
             if (ini.TryRead(section, key, out value) == false)
             {
-                Program._ShowBuildIni();
+                
                 return false;
                 
             }
@@ -103,6 +118,7 @@ namespace Regulus.Tool
 SourcePath = YourProjectPath/YourAssemblyCommon.dll
 ProtocolName = YourProjectnamesapce.ProtocolClassName
 OutputPath = YourProjectPath/YourAssemblyOutput.dll
+OutputCode = YourProjectPath/CodeDir
 ";
             Console.WriteLine("ex.");
             Console.WriteLine(iniSample);
