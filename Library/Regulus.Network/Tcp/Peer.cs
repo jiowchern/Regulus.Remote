@@ -19,11 +19,14 @@ namespace Regulus.Network.Tcp
             _Socket = socket;            
         }
 
-        EndPoint IPeer.RemoteEndPoint => _Socket.RemoteEndPoint;
+        EndPoint IPeer.RemoteEndPoint {get { return _Socket.RemoteEndPoint; } }
 
-        EndPoint IPeer.LocalEndPoint => _Socket.LocalEndPoint;
+        EndPoint IPeer.LocalEndPoint { get { return _Socket.LocalEndPoint; } }
 
-        bool IPeer.Connected => _Socket.Connected && _Enable;
+        bool IPeer.Connected
+        {
+            get { return _Socket.Connected && _Enable; }
+        }
 
         void IPeer.Receive(byte[] readed_byte, int offset, int count, Action<int, SocketError> Readed)
         {

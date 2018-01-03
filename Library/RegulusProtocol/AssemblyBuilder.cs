@@ -103,11 +103,7 @@ namespace Regulus.Protocol
 
             return result.CompiledAssembly;
         }
-
-        public static List<string> BuildCode(Assembly assembly, string protocol_name)
-        {
-            return _BuildCode(assembly , protocol_name);
-        }
+        
         private static List<string> _BuildCode(Assembly assembly, string protocol_name)
         {
             var codes = new List<string>();
@@ -117,6 +113,17 @@ namespace Regulus.Protocol
             codeBuilder.GpiEvent += (type_name, code) => codes.Add(code);
             codeBuilder.Build(protocol_name, assembly.GetExportedTypes());
             return codes;
+        }
+
+        public static void BuildCode(Assembly assembly, string protocol_name,string output)
+        {
+            var codes = new List<string>();
+            var codeBuilder = new CodeBuilder();
+            codeBuilder.ProviderEvent += (name, code) => codes.Add(code);
+            codeBuilder.EventEvent += (type_name, event_name, code) => codes.Add(code);
+            codeBuilder.GpiEvent += (type_name, code) => codes.Add(code);
+            codeBuilder.Build(protocol_name, assembly.GetExportedTypes());
+            
         }
     }
 }

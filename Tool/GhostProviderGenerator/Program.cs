@@ -71,7 +71,7 @@ namespace Regulus.Tool
                     Console.WriteLine($"Output {outputFullPath}");
                     var sourceAsm = Assembly.LoadFile(sourceFullPath);
                     var assemblyBuilder = new Regulus.Protocol.AssemblyBuilder();
-                    assemblyBuilder.BuildFile(sourceAsm, protocolName, outputFullPath);
+                    assemblyBuilder.Build(sourceAsm, protocolName, outputFullPath);                    
                     Console.WriteLine("Build success.");
 
                     
@@ -84,8 +84,9 @@ namespace Regulus.Tool
                     Console.WriteLine($"Source {sourceFullPath}");
                     Console.WriteLine($"Output {outputFullPath}");
                     var sourceAsm = Assembly.LoadFile(sourceFullPath);
-                    var assemblyBuilder = new Regulus.Protocol.AssemblyBuilder();
-                    assemblyBuilder.BuildCode(sourceAsm, protocolName, outputFullPath);
+                    var assemblyBuilder = new Regulus.Protocol.AssemblyBuilder();                    
+                    //assemblyBuilder.BuildCode(sourceAsm, protocolName, outputFullPath);
+                    throw new NotImplementedException();
                     Console.WriteLine("Build success.");
                     
                 }
