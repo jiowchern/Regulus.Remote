@@ -13,9 +13,9 @@ namespace Regulus.Game.Tests
     {
         public Entity Entity;
        
-        void IComponment.Start(Entity entity)
+        void IComponment.Start()
         {
-            Entity = entity;
+            
         }
 
         void IComponment.End()
@@ -28,17 +28,5 @@ namespace Regulus.Game.Tests
             
         }
     }
-    [TestFixture()]
-    public class EntityTests
-    {
-        [Test()]
-        public void AddTest()
-        {
-            var entity = new Regulus.Game.Entity();
-            entity.Add(new TestComponment());
-            entity.Update();
-            var test = entity.Get<TestComponment>().First();
-            Assert.AreEqual( entity, test.Entity);
-        }
-    }
+    
 }

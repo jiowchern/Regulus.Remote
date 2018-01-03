@@ -6,12 +6,6 @@ using System.Text;
 
 namespace Regulus.BehaviourTree
 {
-    public interface IAction : ITicker
-    {
-        void Start();
-        void End();
-    }
-
     public class Builder
     {
         private ITicker _Root;
@@ -21,8 +15,12 @@ namespace Regulus.BehaviourTree
         {
             _Stack = new Stack<IParent>();
         }
-        
 
+        public Builder Action(IEnumerable<TICKRESULT> provider)
+        {
+            this.Action(new ActionHelper.Coroutine(provider));
+            return this;
+        }
         public Builder Action<T>(Expression<Func<T>> instnace
             , Expression<Func<T, Func<float, TICKRESULT>>> tick
             , Expression<Func<T, Action>> start
@@ -148,6 +146,16 @@ namespace Regulus.BehaviourTree
             }
         }
 
+        public Builder Action(IAction action)
+        {
+            this.Action(
+                () => action
+                , c => c.Tick
+                , c => c.Start
+                , c => c.End
+            );
+            return this;
+        }
         public Builder Action(Expression<Func<IAction>> action)
         {
             this.Action(
@@ -168,35 +176,6 @@ namespace Regulus.BehaviourTree
                 , c => c.End
                 );
             return this;
-        }
-    }
-
-    public class ProxyAction
-    {
-        private readonly Expression<Func<IAction>> _ActionProvider;
-
-        private IAction _Action;
-
-        public ProxyAction(Expression<Func<IAction>> action_provider)
-        {
-            _ActionProvider = action_provider;
-
-            _Action = _ActionProvider.Compile()();
-        }
-
-        public TICKRESULT Tick(float arg)
-        {
-            return _Action.Tick(arg);
-        }
-
-        public void Start()
-        {
-            _Action.Start();
-        }
-
-        public void End()
-        {
-            _Action.End();
         }
     }
 }

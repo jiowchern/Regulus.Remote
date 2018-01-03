@@ -43,7 +43,7 @@ namespace Regulus.Utility
 		{
 			WindowConsole.SetConsoleCtrlHandler(ConsoleCtrlCheck, true);
 
-			_ShowLog();
+			ShowLog();
 
 			_Updater.Add(_Input);
 
@@ -71,18 +71,18 @@ namespace Regulus.Utility
 
 		protected abstract void _Shutdown();
 
-		private void _HideLog()
+		public void HideLog()
 		{
 			Singleton<Log>.Instance.RecordEvent -= _RecordView;
 			_Console.Command.Unregister("HideLog");
-			_Console.Command.Register("ShowLog", _ShowLog);
+			_Console.Command.Register("ShowLog", ShowLog);
 		}
 
-		private void _ShowLog()
+		public void ShowLog()
 		{
 			Singleton<Log>.Instance.RecordEvent += _RecordView;
 			_Console.Command.Unregister("ShowLog");
-			_Console.Command.Register("HideLog", _HideLog);
+			_Console.Command.Register("HideLog", HideLog);
 		}
 
 		private void _RecordView(string message)

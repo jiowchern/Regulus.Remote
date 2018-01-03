@@ -90,10 +90,10 @@ namespace RemotingTest
 
             notifier.InvokeSupply();
 
-            command.Run("Function1", new string[0]);
-            command.Run("Function2", new string[] {"10"});
-            command.Run("Function3", new string[0] );
-            command.Run("Property1", new string[0]);
+            command.Run("0Function1", new string[0]);
+            command.Run("0Function2", new string[] {"10"});
+            command.Run("0Function3", new string[0] );
+            command.Run("0Property1", new string[0]);
 
 
 
