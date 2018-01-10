@@ -20,10 +20,13 @@ namespace Regulus.BehaviourTree.ActionHelper
 
         TICKRESULT ITicker.Tick(float delta)
         {            
-            var result = _Action.Current;
-            if(_Action.MoveNext() == false)
-                return TICKRESULT.FAILURE;
-            return result;
+            
+            if (_Action.MoveNext())
+            {
+                var result = _Action.Current;
+                return result;
+            }
+            return TICKRESULT.FAILURE;            
         }
 
         void IAction.Start()
