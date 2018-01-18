@@ -51,6 +51,7 @@
     <Compile Include="ProxyAction.cs" />
     <Compile Include="SelectorNode.cs" />
     <Compile Include="SequenceNode.cs" />
+    <Compile Include="SuccessNode.cs" />
     <Compile Include="TICKRESULT.cs" />
     <Compile Include="Wait.cs" />
   </ItemGroup>

@@ -66,6 +66,19 @@ namespace Regulus.BehaviourTree
             return this;
         }
 
+        public Builder Success()
+        {
+            var node = new SuccessNode();
+
+            if (_Stack.Count > 0)
+            {
+                _Stack.Peek().Add(node);
+            }
+
+            _Stack.Push(node);
+            return this;
+        }
+
         public Builder Sequence()
         {
             var sequenceNode = new SequenceNode();
