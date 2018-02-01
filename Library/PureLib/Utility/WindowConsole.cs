@@ -181,11 +181,8 @@ namespace Regulus.Utility
 			public static void Run(this WindowConsole windowconsole)
 			{
 
-                
-                AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
-			    {
-			        Regulus.Utility.CrashDump.Write();			        
-			    };
+
+			    AppDomain.CurrentDomain.UnhandledException += _Dump;
                 var run = true;			    
                 windowconsole.Command.Register("quit", () => { run = false; });
 				windowconsole.QuitEvent += () => { run = false; };
@@ -199,7 +196,11 @@ namespace Regulus.Utility
 				windowconsole.Command.Unregister("quit");
 			}
 
-		    
+		    private static void _Dump(object sender, UnhandledExceptionEventArgs e)
+		    {
+                System.IO.File.WriteAllText(string.Format("UnhandledException_{0}.log", DateTime.Now.ToString("yyyyMMdd-HHmmss")) , e.ExceptionObject.ToString());
+                Regulus.Utility.CrashDump.Write();
+            }
 		}
 	}
 }

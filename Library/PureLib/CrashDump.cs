@@ -53,9 +53,14 @@ namespace Regulus.Utility
 
             //var options = MINIDUMP_TYPE.MiniDumpWithThreadInfo;
 
-            var options = 
-                MINIDUMP_TYPE.MiniDumpWithProcessThreadData
-                | MINIDUMP_TYPE.MiniDumpWithFullMemory ;
+            var options =
+                MINIDUMP_TYPE.MiniDumpNormal
+                | MINIDUMP_TYPE.MiniDumpWithHandleData
+                | MINIDUMP_TYPE.MiniDumpWithUnloadedModules
+                | MINIDUMP_TYPE.MiniDumpWithIndirectlyReferencedMemory
+                | MINIDUMP_TYPE.MiniDumpScanMemory
+                | MINIDUMP_TYPE.MiniDumpWithProcessThreadData
+                | MINIDUMP_TYPE.MiniDumpWithThreadInfo;
 
             return Write(options);
         }

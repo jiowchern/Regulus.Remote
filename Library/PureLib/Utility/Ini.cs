@@ -34,46 +34,54 @@ namespace Regulus.Utility
         }
 
 	    private Dictionary<string, Dictionary<string, string>> _Build(string data)
-		{
-			var pattern = @"
-^(?:\[)                  # Section Start
-    (?<Section>[^\]]*)   # Actual Section text into Section Group
- (?:\])                  # Section End then EOL/EOB
-     (?:[\r\n]{0,2}|\Z)  # Match but don't capture the CRLF or EOB
+	    {
+	        var dic = new Dictionary<string, Dictionary<string, string>>();
 
- (?<KVPs>                # Begin working on the Key Value Pairs
-   (?!\[)                # Stop if a [ is found
-   (?<Key>[^=]*?)        # Any text before the =, matched few as possible
-      (?:=)              # Anchor the = now but don't capture it
-   (?<Value>[^=\[]*)     # Get everything that is not an =
-   (?=^[^=]*?=|\Z|\[)    # Look Ahead, Capture but don't consume
- )+                      # Multiple values
-";
 
-			var inifile
-				= (from Match m in Regex.Matches(data, pattern, RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline)
-				   select new
-				   {
-					   Section = m.Groups["Section"].Value, 
-					   kvps = (from cpKey in m.Groups["Key"].Captures.Cast<Capture>().Select(
-						   (a, i) => new
-						   {
-							   a.Value, 
-							   i
-						   })
-					           join cpValue in m.Groups["Value"].Captures.Cast<Capture>().Select(
-						           (b, i) => new
-						           {
-							           b.Value, 
-							           i
-						           }) on cpKey.i equals cpValue.i
-					           select new KeyValuePair<string, string>(cpKey.Value, cpValue.Value)).ToDictionary(
-						           kvp => kvp.Key.Trim(), 
-						           kvp => kvp.Value.Trim())
-				   }).ToDictionary(itm => itm.Section, itm => itm.kvps);
+            foreach (var sectionMatch in _GetSectionMatches(data))
+		    {
+		        var section = sectionMatch.Groups[1].Value;
+		        var records = sectionMatch.Groups[2].Value;
+		        var recordMatches = _GetRecordMatches(records);
+		        foreach (var recordMatch in recordMatches)
+		        {
+		            var key = recordMatch.Groups[1].Value;
+		            var value = recordMatch.Groups[2].Value;
 
-			return inifile;
-		}
+		            if (!dic.ContainsKey(section))
+		            {
+		                dic.Add(section, new Dictionary<string, string>());
+                    }		            
+
+		            dic[section].Add(key, value);
+                }
+		    }
+            
+	        return dic;
+	    }
+
+	    
+
+        private IEnumerable<Match> _GetRecordMatches(string records)
+	    {
+            var commitRegex = new Regex(@"^\s*([\w\s]+?)\s*=\s*([^=]+?)\s*$", RegexOptions.Compiled| RegexOptions.Multiline);
+             
+	        foreach (Match match in commitRegex.Matches(records))
+	        {
+	            yield return match;
+	        }
+	    }
+
+	    
+
+	    IEnumerable<Match> _GetSectionMatches(string data)
+	    {
+	        var sectionRegex = new Regex(@"^\[\s*(.+?)\s*\]\s+([^[]+)", RegexOptions.Compiled | RegexOptions.Multiline);
+	        foreach (Match match in sectionRegex.Matches(data))
+	        {
+	            yield return match;
+	        }
+        }
 
 	    
 	}
