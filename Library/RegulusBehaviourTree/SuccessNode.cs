@@ -1,10 +1,16 @@
 using System;
+using System.Collections.Generic;
 
 namespace Regulus.BehaviourTree
 {
     public class SuccessNode : IParent
     {
         private ITicker _Ticker;
+
+        void ITicker.GetInfomation(ref List<Infomation> nodes)
+        {
+            _Ticker.GetInfomation(ref nodes);
+        }
 
         void ITicker.Reset()
         {

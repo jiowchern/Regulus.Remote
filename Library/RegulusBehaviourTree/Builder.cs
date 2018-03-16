@@ -10,32 +10,13 @@ namespace Regulus.BehaviourTree
     {
         private ITicker _Root;
 
-        private Stack<IParent> _Stack;
+        private readonly Stack<IParent> _Stack;
         public Builder()
         {
             _Stack = new Stack<IParent>();
         }
 
-        public Builder Action(IEnumerable<TICKRESULT> provider)
-        {
-            this.Action(new ActionHelper.Coroutine(provider));
-            return this;
-        }
-        public Builder Action<T>(Expression<Func<T>> instnace
-            , Expression<Func<T, Func<float, TICKRESULT>>> tick
-            , Expression<Func<T, Action>> start
-            , Expression<Func<T, Action>> end)
-        {
-            
-            if (_Stack.Count <= 0)
-            {
-                throw new Exception("Can't create an unnested ActionNode, it must be a leaf node.");
-            }
-            var a = new ActionNode<T>(instnace, tick, start, end);
-            _Stack.Peek().Add(a);
-            return this;
-
-        }
+        
 
         public Builder Sub(ITicker node)
         {
@@ -133,62 +114,52 @@ namespace Regulus.BehaviourTree
             return this;
         }
 
-        class TickAction
+
+        public Builder Action(ITicker ticker)
         {
-            private readonly Func<float, TICKRESULT> _Func;
-
-            public TickAction(Func<float, TICKRESULT> func)
-            {
-                _Func = func;
-            }
-
-            public TICKRESULT Tick(float arg)
-            {
-                var result = _Func(arg);
-                return result;
-            }
-
-            public void Start()
-            {
-
-            }
-
-            public void End()
-            {
-
-            }
+            return _Add(ticker);
         }
 
-        public Builder Action(IAction action)
+        public Builder Wait(float seconds)
         {
-            this.Action(
-                () => action
-                , c => c.Tick
-                , c => c.Start
-                , c => c.End
-            );
-            return this;
+            return Action(
+                () =>new ActionHelper.Wait(seconds)
+                ,(w) => w.Tick
+                ,(w) => w.Start
+                ,(w) => w.End);
         }
-        public Builder Action(Expression<Func<IAction>> action)
-        {
-            this.Action(
-                () => new ProxyAction(action)
-                , c => c.Tick
-                , c => c.Start
-                , c => c.End
-                );
-            return this;
-        }
+
+
+
         public Builder Action(Func<float, TICKRESULT> func)
-        {
+        {            
+            return _Add(new ActionHelper.ProxyTicker(func));
+        }
 
-            this.Action(
-                ()=> new TickAction(func)
-                , c => c.Tick
-                , c => c.Start
-                , c => c.End
-                );
+        
+        public Builder Action(Expression<Func<IEnumerable<TICKRESULT>>> provider)
+        {
+            return _Add(new ActionHelper.Coroutine(provider));            
+        }
+        public Builder Action<T>(Expression<Func<T>> instnace
+            , Expression<Func<T, Func<float, TICKRESULT>>> tick
+            , Expression<Func<T, Action>> start
+            , Expression<Func<T, Action>> end)
+        {
+            var a = new ActionNode<T>(instnace, tick, start, end);
+            return _Add(a);
+        }
+
+        private Builder _Add(ITicker ticker)
+        {
+            if (_Stack.Count <= 0)
+            {
+                throw new Exception("Can't create an unnested ActionNode, it must be a leaf node.");
+            }
+            _Stack.Peek().Add(ticker);
             return this;
+
         }
     }
+    
 }

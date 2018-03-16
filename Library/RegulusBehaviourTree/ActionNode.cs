@@ -26,29 +26,28 @@ namespace Regulus.BehaviourTree
 
         private STATUS _Status;
 
-        private Expression<Func<T>> _InstanceProvider;
+        private readonly Expression<Func<T>> _InstanceProvider;
 
-        private Expression<Func<T, Func<float, TICKRESULT>>> _TickExpression;
+        private readonly Expression<Func<T, Func<float, TICKRESULT>>> _TickExpression;
 
-        private Expression<Func<T, Action>> _StartExpression;
+        private readonly Expression<Func<T, Action>> _StartExpression;
 
-        private Expression<Func<T, Action>> _EndExpression;
+        private readonly Expression<Func<T, Action>> _EndExpression;
 
         private bool _LazyInitial;
 
+        public string _Tag;
         public ActionNode(Expression<Func<T>> instance_provider
-            , Expression< Func<T,Func<float , TICKRESULT> > > tick
+            , Expression<Func<T,Func<float , TICKRESULT>>> tick
             , Expression<Func<T, Action >> start
             , Expression<Func<T, Action>> end
              )
         {
-
+            _Tag = "";
             _InstanceProvider = instance_provider;
             _TickExpression = tick;
             _StartExpression = start;
             _EndExpression = end;
-
-            
 
             _Reset();
         }
@@ -57,12 +56,13 @@ namespace Regulus.BehaviourTree
         {
             if (_LazyInitial == false)
             {
+                _LazyInitial = true;
                 var instance = _InstanceProvider.Compile()();
                 _Start = _StartExpression.Compile()(instance);
                 _Tick = _TickExpression.Compile()(instance);
                 _End = _EndExpression.Compile()(instance);
-                _LazyInitial = true;
 
+                _Tag = _Tick.Method.Name;
             }
             
             while (true)
@@ -86,6 +86,12 @@ namespace Regulus.BehaviourTree
             }
             
             
+        }
+
+
+        void ITicker.GetInfomation(ref List<Infomation> nodes)
+        {
+            nodes.Add(new Infomation(){ Tag = _Tag });
         }
 
         void ITicker.Reset()

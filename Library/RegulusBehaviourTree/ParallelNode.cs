@@ -20,6 +20,15 @@ namespace Regulus.BehaviourTree
             this._NumRequiredToSucceed = num_required_to_succeed;
         }
 
+
+        void ITicker.GetInfomation(ref List<Infomation> nodes)
+        {
+            foreach (var ticker in _Childs)
+            {
+                ticker.GetInfomation(ref nodes);
+            }
+        }
+
         void ITicker.Reset()
         {
             foreach (var ticker in _Childs)

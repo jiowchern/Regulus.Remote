@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Regulus.BehaviourTree
 {
@@ -8,6 +9,13 @@ namespace Regulus.BehaviourTree
 
         public InvertNode()
         {            
+
+        }
+
+
+        void ITicker.GetInfomation(ref  List<Infomation> nodes)
+        {
+            _Ticker.GetInfomation(ref nodes);
         }
 
         void ITicker.Reset()

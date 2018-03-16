@@ -41,14 +41,14 @@
   <ItemGroup>
     <Compile Include="ActionNode.cs" />
     <Compile Include="Builder.cs" />
-    <Compile Include="IAction.cs" />
+    <Compile Include="Coroutine.cs" />
     <Compile Include="IDeltaTimeRequester.cs" />
     <Compile Include="InvertNode.cs" />
     <Compile Include="IParent.cs" />
     <Compile Include="ITicker.cs" />
     <Compile Include="ParallelNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ProxyAction.cs" />
+    <Compile Include="ProxyTicker.cs" />
     <Compile Include="SelectorNode.cs" />
     <Compile Include="SequenceNode.cs" />
     <Compile Include="SuccessNode.cs" />

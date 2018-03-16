@@ -7,16 +7,23 @@ namespace Regulus.BehaviourTree
 {
     class SelectorNode : ITicker , IParent
     {
-        private List<ITicker> _Childs;
+        private readonly List<ITicker> _Childs;
         private readonly Queue<ITicker> _Queue;
 
 
         private ITicker _RunninTicker;
+        private ITicker _CurrentTicker;
 
         public SelectorNode()
         {
             _Childs = new List<ITicker>();
             _Queue = new Queue<ITicker>();
+        }
+
+        void  ITicker.GetInfomation(ref List<Infomation> nodes)
+        {
+            if(_CurrentTicker != null)
+                _CurrentTicker.GetInfomation(ref nodes);            
         }
 
         void ITicker.Reset()
@@ -56,8 +63,8 @@ namespace Regulus.BehaviourTree
                 _Reload();
             }
 
-            var ticker = _Queue.Dequeue();
-            var result = ticker.Tick(delta);
+            _CurrentTicker = _Queue.Dequeue();
+            var result = _CurrentTicker.Tick(delta);
             if (result == TICKRESULT.SUCCESS)
             {
                 _Queue.Clear();
@@ -66,7 +73,7 @@ namespace Regulus.BehaviourTree
 
             if (result == TICKRESULT.RUNNING)
             {
-                _RunninTicker = ticker;
+                _RunninTicker = _CurrentTicker;
                 return TICKRESULT.RUNNING;
             }
 
