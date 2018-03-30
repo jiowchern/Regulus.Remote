@@ -7,48 +7,10 @@ using Regulus.Framework;
 using Regulus.Utility;
 
 namespace Regulus.Game
-{
-    public class EntityUpdater : Launcher<IUpdatable>
-    {
-        internal IEnumerable<IUpdatable> Entities
-        {
-            get { return base._Objects; }
-        }
-
-        public void Update()
-        {
-            foreach (var updatable in _GetObjectSet())
-            {
-                if(updatable.Update() == false)
-                    Remove(updatable);
-            }
-        }
-    }
-    public class EntitySet
-    {
-        private readonly EntityUpdater _Entitys;
-
-        public IEnumerable<Entity> Entities { get { return from e in _Entitys.Entities select e as Entity; } }
-        public EntitySet()
-        {
-            _Entitys = new EntityUpdater();
-        }
-        public Entity Create()
-        {
-            var entity = new Entity();
-            _Entitys.Add(entity);
-            return entity;
-        }
-
-
-        public void Update()
-        {
-            _Entitys.Update();
-        }
-    }
+{    
 
    
-    public class Entity : IUpdatable
+    public class Entity 
     {
         private readonly Dictionary<Type, List<IComponment>> _Componments;
 
@@ -63,9 +25,8 @@ namespace Regulus.Game
         }
 
         private readonly Queue<Command> _Commands;
-        private List<IComponment> _Updates;
-
-        private bool _Enable;
+        private readonly List<IComponment> _Updates;
+        
 
         public Entity()
         {
@@ -76,9 +37,13 @@ namespace Regulus.Game
 
         public void Destroy()
         {
-            _Enable = false;
+            foreach (var componment in _Updates)
+            {
+                componment.End();
+            }
+            _Updates.Clear();
         }
-        bool IUpdatable.Update()
+        public void Update()
         {
             while (_Commands.Count > 0)
             {
@@ -87,10 +52,9 @@ namespace Regulus.Game
                 {
                     _Updates.Add(cmd.Com);
                     cmd.Com.Start();
-                }                    
+                }
                 else
                 {
-                    
                     _Updates.Remove(cmd.Com);
                     cmd.Com.End();
                 }
@@ -100,13 +64,14 @@ namespace Regulus.Game
             {
                 componment.Update();
             }
-            
-            return _Enable ;
+                        
         }
 
         
         public void Add<T>(T componment) where T : IComponment
         {
+
+            
             var type = typeof(T);
             List<IComponment> set;
             if (_Componments.TryGetValue(type, out set))
@@ -116,16 +81,19 @@ namespace Regulus.Game
             else
             {
                 var newSet = new List<IComponment>();
-                _Componments.Add(type , newSet);
+                _Componments.Add(type, newSet);
                 newSet.Add(componment);
             }
 
 
-            _Commands.Enqueue(new Command(){ Cmd = COMMAND.ADD , Com = componment});
+            _Commands.Enqueue(new Command() { Cmd = COMMAND.ADD, Com = componment });
+            
+                    
         }
 
         public void Remove<T>(T componment) where T : IComponment
         {
+            
             var type = typeof(T);
             List<IComponment> set;
             if (_Componments.TryGetValue(type, out set))
@@ -134,12 +102,15 @@ namespace Regulus.Game
             }
 
             _Commands.Enqueue(new Command() { Cmd = COMMAND.REMOVE, Com = componment });
+            
+            
         }
 
         
 
         public IEnumerable<T> Get<T>() where T : IComponment
         {
+            
             var type = typeof(T);
             List<IComponment> componments;
             if (_Componments.TryGetValue(type, out componments))
@@ -148,23 +119,11 @@ namespace Regulus.Game
                 {
                     yield return (T)componment;
                 }
-            }            
-        }
-
-        void IBootable.Launch()
-        {
-            _Enable = true;
-        }
-
-        void IBootable.Shutdown()
-        {
-
-            foreach (var componment in _Updates)
-            {
-                componment.End();
             }
-
+            
         }
+
+        
     }
     
 }

@@ -37,10 +37,11 @@ namespace Regulus.Network
         private void Begin()
         {
             m_Message = m_Spawner.Spawn();
-            
+
             try
             {
-                m_Socket.BeginReceiveFrom(m_Message.Package, offset: 0, size: m_Message.Package.Length, socketFlags: SocketFlags.None, remoteEP: ref m_ReceiveEndPoint, callback: End, state: null);
+                m_Socket.BeginReceiveFrom(m_Message.Package, offset: 0, size: m_Message.Package.Length,
+                    socketFlags: SocketFlags.None, remoteEP: ref m_ReceiveEndPoint, callback: End, state: null);
             }
             catch (SocketException e)
             {
@@ -53,6 +54,10 @@ namespace Regulus.Network
                     m_ReceivePackages.Add(m_Message);
                 }
                 Begin();
+            }
+            catch (Exception e)
+            {
+
             }
         }
 

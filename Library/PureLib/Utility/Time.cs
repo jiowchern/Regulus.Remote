@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using Regulus.Framework;
 
 namespace Regulus.Utility
@@ -29,40 +28,8 @@ namespace Regulus.Utility
 		}
 	}
 
-	public class TimeCounter
-	{
-	    private readonly Stopwatch _Stopwatch;
 
-		
-
-		public long Ticks
-		{
-			get { return _Stopwatch.ElapsedTicks ; }
-		}
-
-		public float Second
-		{
-			get { return (_Stopwatch.ElapsedTicks / (float)Stopwatch.Frequency); }
-		}
-
-		public TimeCounter()
-		{
-		    _Stopwatch = new Stopwatch();
-		    
-
-            Reset();
-		}
-
-		public void Reset()
-		{
-            _Stopwatch.Reset();
-		    _Stopwatch.Start();
-        }
-	}
-
-	
-
-	public class Timer
+    public class Timer
 	{
 		private readonly long _Interval;
 

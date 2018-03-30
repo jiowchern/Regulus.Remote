@@ -149,6 +149,8 @@
     <Compile Include="Utility\StageMachine.cs" />
     <Compile Include="Utility\ThreadSpinWait.cs" />
     <Compile Include="Utility\Time.cs" />
+    <Compile Include="Utility\TimeCounter.cs" />
+    <Compile Include="Utility\TimeCounterInternal.cs" />
     <Compile Include="Utility\Updater.cs" />
     <Compile Include="Utility\ValueHelper.cs" />
     <Compile Include="Utility\WindowConsole.cs" />

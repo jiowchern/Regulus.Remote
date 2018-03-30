@@ -45,7 +45,8 @@ namespace Regulus.Remoting.Soul.Native
 			    }
 			    else
 			    {
-			        throw new Exception("no peer shutdown.");
+                    if(_Peers.Count > 0)
+			            throw new Exception("no peer shutdown.");
 			    }
 			}
 		}

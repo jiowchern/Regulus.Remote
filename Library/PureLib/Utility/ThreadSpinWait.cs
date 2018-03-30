@@ -2,8 +2,10 @@
 using System.Runtime.InteropServices;
 using System.Threading;
 
+
 namespace Regulus.Utility
 {
+
 	public class SpinWait
 	{
 		private const int YIELD_THRESHOLD = 10;

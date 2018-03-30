@@ -55,7 +55,15 @@ namespace Regulus.Network
                 var size = message.GetPackageSize();
                 
                 mre.Reset();
-                m_Socket.BeginSendTo(message.Package, 0, size , SocketFlags.None, message.RemoteEndPoint, _Done , mre);
+                try
+                {
+                    m_Socket.BeginSendTo(message.Package, 0, size, SocketFlags.None, message.RemoteEndPoint, _Done, mre);
+                }
+                catch (Exception e)
+                {
+                    
+                }
+                
                 mre.WaitOne();
                 /*var 
                   size = message.GetPackageSize();
