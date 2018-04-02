@@ -46,10 +46,30 @@ namespace Regulus.Protocol
                 TempFiles = new TempFileCollection()
 
             };
-            options.ReferencedAssemblies.Add("RegulusLibrary.dll");
-            options.ReferencedAssemblies.Add("RegulusRemoting.dll");
-            options.ReferencedAssemblies.Add("Regulus.Serialization.dll");
-            options.ReferencedAssemblies.AddRange(_GetReferencedAssemblies(assembly));
+
+            var locations = new HashSet<string>();
+            foreach (var referencedAssembly in _GetReferencedAssemblies(Assembly.LoadFile("RegulusLibrary.dll")))
+            {
+                locations.Add(referencedAssembly);
+            }
+
+            foreach (var referencedAssembly in _GetReferencedAssemblies(Assembly.LoadFile("RegulusRemoting.dll")))
+            {
+                locations.Add(referencedAssembly);
+            }
+
+            foreach (var referencedAssembly in _GetReferencedAssemblies(Assembly.LoadFile("Regulus.Serialization.dll")))
+            {
+                locations.Add(referencedAssembly);
+            }
+
+            foreach (var referencedAssembly in _GetReferencedAssemblies(assembly))
+            {
+                locations.Add(referencedAssembly);
+            }
+
+
+            options.ReferencedAssemblies.AddRange(locations.ToArray());
 
             var result = provider.CompileAssemblyFromSource(options, codes.ToArray());
             if (result.Errors.Count > 0)
@@ -82,10 +102,31 @@ namespace Regulus.Protocol
                 GenerateInMemory = true,
                 GenerateExecutable = false, TempFiles = new TempFileCollection()
             };
-            options.ReferencedAssemblies.Add("RegulusLibrary.dll");
-            options.ReferencedAssemblies.Add("RegulusRemoting.dll");
-            options.ReferencedAssemblies.Add("Regulus.Serialization.dll");
-            options.ReferencedAssemblies.AddRange(_GetReferencedAssemblies(assembly));
+
+            
+            var locations = new HashSet<string>();
+            foreach (var referencedAssembly in _GetReferencedAssemblies(Assembly.LoadFile(System.IO.Path.GetFullPath(System.IO.Path.GetFullPath("RegulusLibrary.dll")))))
+            {
+                locations.Add(referencedAssembly);
+            }
+
+            foreach (var referencedAssembly in _GetReferencedAssemblies(Assembly.LoadFile(System.IO.Path.GetFullPath(System.IO.Path.GetFullPath("RegulusRemoting.dll")))))
+            {
+                locations.Add(referencedAssembly);
+            }
+
+            foreach (var referencedAssembly in _GetReferencedAssemblies(Assembly.LoadFile(System.IO.Path.GetFullPath(System.IO.Path.GetFullPath("Regulus.Serialization.dll")))))
+            {
+                locations.Add(referencedAssembly);
+            }
+
+            foreach (var referencedAssembly in _GetReferencedAssemblies(assembly))
+            {
+                locations.Add(referencedAssembly);
+            }
+
+
+            options.ReferencedAssemblies.AddRange(locations.ToArray());
 
 
             var result = provider.CompileAssemblyFromSource(options, codes.ToArray());
