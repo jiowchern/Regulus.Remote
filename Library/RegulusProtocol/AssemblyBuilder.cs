@@ -31,7 +31,7 @@ namespace Regulus.Protocol
 
             Dictionary<string, string> optionsDic = new Dictionary<string, string>
             {
-                {"CompilerVersion", "v3.5"}
+                {"CompilerVersion", "v4.0"}
             };
 
             
@@ -73,7 +73,7 @@ namespace Regulus.Protocol
 
             Dictionary<string, string> optionsDic = new Dictionary<string, string>
             {
-                {"CompilerVersion", "v3.5"}
+                {"CompilerVersion", "v4.0"}
             };
             var provider = new CSharpCodeProvider(optionsDic);
             var options = new CompilerParameters
