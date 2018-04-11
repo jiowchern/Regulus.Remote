@@ -34,5 +34,10 @@
         {
             _Last = _TimeCounterInternal.Ticks;            
         }
+
+        public static double GetSeconds(long ticks)
+        {
+            return ticks / (double)_TimeCounterInternal.Frequency;
+        }
     }
 }

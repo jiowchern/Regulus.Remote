@@ -150,7 +150,6 @@
     <Compile Include="Utility\IStage.cs" />
     <Compile Include="Utility\SimpleStage.cs" />
     <Compile Include="Utility\StageMachine.cs" />
-    <Compile Include="Utility\ThreadSpinWait.cs" />
     <Compile Include="Utility\Time.cs" />
     <Compile Include="Utility\TimeCounter.cs" />
     <Compile Include="Utility\TimeCounterInternal.cs" />

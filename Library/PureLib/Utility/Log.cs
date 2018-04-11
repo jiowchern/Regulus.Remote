@@ -41,9 +41,9 @@ namespace Regulus.Utility
 			_Write(string.Format("[Debug]{0}\r\n{1}", message, Environment.StackTrace));
 		}
 
-	    public void WaitDone()
+	    public void Shutdown()
 	    {
-            _Executer.WaitDone();
+            _Executer.Shutdown();
         }
 	}
 }

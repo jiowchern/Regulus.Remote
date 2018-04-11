@@ -148,6 +148,8 @@ namespace Regulus.Utility
 
 			return true;
 		}
+
+	    
 	}
 
 	namespace WindowConsoleStand
@@ -196,12 +198,13 @@ namespace Regulus.Utility
 				windowconsole.Command.Unregister("quit");
 			}
 
-		    private static void _Dump(object sender, UnhandledExceptionEventArgs e)
+		    internal  static void _Dump(object sender, UnhandledExceptionEventArgs e)
 		    {
-                System.IO.File.WriteAllText(string.Format("UnhandledException_{0}.log", DateTime.Now.ToString("yyyyMMdd-HHmmss")) , e.ExceptionObject.ToString());
-                Regulus.Utility.CrashDump.Write();
-            }
-		}
+		        System.IO.File.WriteAllText(string.Format("UnhandledException_{0}.log", DateTime.Now.ToString("yyyyMMdd-HHmmss")), e.ExceptionObject.ToString());
+		        Regulus.Utility.CrashDump.Write();
+		        Singleton<Log>.Instance.Shutdown();
+		    }
+        }
 	}
 }
 

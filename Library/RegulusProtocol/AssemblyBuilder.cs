@@ -48,17 +48,17 @@ namespace Regulus.Protocol
             };
 
             var locations = new HashSet<string>();
-            foreach (var referencedAssembly in _GetReferencedAssemblies(Assembly.LoadFile("RegulusLibrary.dll")))
+            foreach (var referencedAssembly in _GetReferencedAssemblies(Assembly.LoadFile(System.IO.Path.GetFullPath("RegulusLibrary.dll"))))
             {
                 locations.Add(referencedAssembly);
             }
 
-            foreach (var referencedAssembly in _GetReferencedAssemblies(Assembly.LoadFile("RegulusRemoting.dll")))
+            foreach (var referencedAssembly in _GetReferencedAssemblies(Assembly.LoadFile(System.IO.Path.GetFullPath("RegulusRemoting.dll"))))
             {
                 locations.Add(referencedAssembly);
             }
 
-            foreach (var referencedAssembly in _GetReferencedAssemblies(Assembly.LoadFile("Regulus.Serialization.dll")))
+            foreach (var referencedAssembly in _GetReferencedAssemblies(Assembly.LoadFile(System.IO.Path.GetFullPath("Regulus.Serialization.dll"))))
             {
                 locations.Add(referencedAssembly);
             }

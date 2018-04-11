@@ -1,31 +1,44 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Threading;
 
 namespace Regulus.Utility
 {
     public class TimeCounterInternal
     {
+        private Stopwatch _Stopwatch;
+        private SpinLock _Lock;
         public TimeCounterInternal()
         {
+            _Stopwatch = Stopwatch.StartNew();
             
-            ThreadPool.QueueUserWorkItem(_Run);
-
+            _Lock = new SpinLock();
+            _Ticks = _Stopwatch.ElapsedTicks;
         }
 
-        private void _Run(object state)
+        
+
+        private long _Ticks;
+
+        public long Ticks
         {
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            var wait = new Regulus.Utility.SpinWait();
-            while (true)
+            get
             {
-                _Ticks = stopwatch.ElapsedTicks;
-                wait.SpinOnce();
+                bool lockTaken = false;
+                try
+                {                    
+                    _Lock.Enter(ref lockTaken);
+                    _Ticks = _Stopwatch.ElapsedTicks;
+                }
+                finally 
+                {
+                    if(lockTaken)
+                        _Lock.Exit(false);
+                }
+                return _Ticks;
             }
         }
 
-        private long _Ticks;
-        public long Ticks { get { return _Ticks; } }
         public long Frequency { get { return Stopwatch.Frequency; } }
     }
 }

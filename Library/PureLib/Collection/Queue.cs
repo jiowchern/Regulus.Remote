@@ -1,12 +1,17 @@
-﻿namespace Regulus.Collection
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+
+namespace Regulus.Collection
 {
 	public class Queue<T>
 	{
 		private readonly System.Collections.Generic.Queue<T> _Set;
-
-		public Queue()
+	    private SpinLock _Lock;
+        public Queue()
 		{
-			_Set = new System.Collections.Generic.Queue<T>();
+		    _Lock = new SpinLock();
+            _Set = new System.Collections.Generic.Queue<T>();
 		}
 
 		public Queue(params T[] objs)
@@ -16,35 +21,70 @@
 
 		public void Enqueue(T package)
 		{
-			lock(_Set)
-			{
-				_Set.Enqueue(package);
-			}
+		    bool gotLock = false;
+            try
+		    {		        
+		        _Lock.Enter(ref gotLock);
+		        _Set.Enqueue(package);
+            }
+		    finally 
+		    {
+		        if(gotLock)
+		            _Lock.Exit();
+
+            }
+
+            
 		}
 
 		public bool TryDequeue(out T obj)
 		{
-			lock(_Set)
-			{
-				if(_Set.Count > 0)
-				{
-					obj = _Set.Dequeue();
-					return true;
-				}
-			}
+		    obj = default(T);
+            bool result = false;
+		    bool gotLock = false;
+		    try
+		    {
+		        _Lock.Enter(ref gotLock);
+		        if (_Set.Count > 0)
+		        {
+		            obj = _Set.Dequeue();
+		            result = true;
+		        }
+            }
+		    finally
+		    {
+		        if (gotLock)
+		            _Lock.Exit();
 
-			obj = default(T);
-			return false;
+		    }
+          
+
+			
+			return result;
 		}
 
 		public T[] DequeueAll()
 		{
-			lock(_Set)
-			{
-				var all = _Set.ToArray();
-				_Set.Clear();
-				return all;
-			}
+		    bool gotLock = false;
+
+		    T[] all;
+		   
+		    try
+		    {
+		        _Lock.Enter(ref gotLock);
+		        all = _Set.ToArray();
+		        _Set.Clear();
+            }
+		    finally 
+		    {
+		        if (gotLock)
+		            _Lock.Exit();
+
+            }
+		    return all;
+
+
+            
 		}
 	}
 }
