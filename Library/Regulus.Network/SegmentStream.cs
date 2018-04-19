@@ -8,7 +8,7 @@ namespace Regulus.Network
     {
         private readonly List<SocketMessage> m_Packages;
         private int m_FirstPackageOffset;
-        public int Length { get { return m_Packages.Sum(P => P.GetPayloadLength()); } }
+        public int Length { get { return m_Packages.Sum(p => p.GetPayloadLength()); } }
         public int Count { get { return m_Packages.Count; } }
 
 
@@ -19,9 +19,9 @@ namespace Regulus.Network
         }        
 
        
-        public int Read(byte[] Buffer, int TargetOffset, int ReadCount)
+        public int Read(byte[] buffer, int offset, int buffer_count)
         {
-            var count = ReadCount < Buffer.Length ? ReadCount : Buffer.Length;
+            var count = buffer_count < buffer.Length ? buffer_count : buffer.Length;
             var pkgIndex = 0;
             var readed = 0;
             var removeCount = 0;
@@ -32,7 +32,7 @@ namespace Regulus.Network
                 var copyLength = payLoadLength < count ? payLoadLength : count;
 
 
-                var copyCount = pkg.ReadPayload(m_FirstPackageOffset, Buffer, TargetOffset, copyLength);
+                var copyCount = pkg.ReadPayload(m_FirstPackageOffset, buffer, offset, copyLength);
 
                 if (copyCount + m_FirstPackageOffset == payLoadLength)
                 {
@@ -43,7 +43,7 @@ namespace Regulus.Network
                 {
                     m_FirstPackageOffset += copyCount;
                 }
-                TargetOffset += copyCount;
+                offset += copyCount;
                 count -= copyCount;
                 pkgIndex++;
                 readed += copyCount;
@@ -55,22 +55,22 @@ namespace Regulus.Network
         }
 
 
-        public byte this[int I] {get { return Get(I); } }
+        public byte this[int i] {get { return Get(i); } }
 
-        private byte Get(int Offset)
+        private byte Get(int offset)
         {
             
             for (var i = 0; i < Length; i++)
             {
                 var package = m_Packages[i];
                 var len = package.GetPayloadLength();
-                if (Offset < len)
+                if (offset < len)
                 {
                     var readed = new byte[1];
-                    package.ReadPayload(readed, Offset);
+                    package.ReadPayload(readed, offset);
                     return readed[0];
                 }            
-                Offset -= len;
+                offset -= len;
             }
 
             return 0;

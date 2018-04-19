@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
-
+using System.Threading;
 using Regulus.Framework;
 
 namespace Regulus.Utility
@@ -21,91 +22,118 @@ namespace Regulus.Utility
 
 	public class Launcher<T> where T : IBootable
 	{
-	    public event Action<T> AddEvent;
+	    enum TYPE
+	    {
+	        ADD,REMOVE
+	    }
+	    struct Operation
+	    {
+	        public TYPE Type;
+	        public T Item;
+	    }
+
+        public event Action<T> AddEvent;
         public event Action<T> RemoveEvent;
-        private readonly Queue<T> _Adds = new Queue<T>();
+        
 
-		private readonly Queue<T> _Removes = new Queue<T>();
+		private readonly System.Collections.Concurrent.ConcurrentQueue<Operation> _Operations ;
 
-		private readonly List<T> _Ts = new List<T>();
+		private readonly System.Collections.Generic.List<T> _Items ;
 
-		public int Count
+
+        public Launcher()
+	    {
+	        _Operations = new ConcurrentQueue<Operation>();
+            
+	        _Items = new List<T>();
+        }
+        public int Count
 		{
-			get { return _Ts.Count; }
+			get { return _Items.Count; }
 		}
 
 	    protected T[] _Objects
 		{
-			get { return _Ts.ToArray(); }
+
+	        get
+	        {
+	            T[] items;
+	            lock (_Items)
+	            {
+	                items = _Items.ToArray();
+                }
+
+	            return items;
+
+
+	        }
 		}
 
 		protected IEnumerable<T> _GetObjectSet()
 		{
-			lock(_Ts)
-			{
-				lock(_Removes)
-					_Remove(_Removes, _Ts);
+		    Operation operation;
+		    while (_Operations.TryDequeue(out operation))
+		    {
 
-				lock(_Adds)
-					_Add(_Adds, _Ts);
+		        if (operation.Type == TYPE.ADD)
+		        {
+		            lock (_Items)
+		            {
+		                _Items.Add(operation.Item);
+                    }
+		            operation.Item.Launch();
 
-				return _Objects;
-			}
-		}
+                    if (AddEvent!= null)
+		                AddEvent(operation.Item);
+                }		            
+		        else
+		        {
+		            lock (_Items)
+                        _Items.Remove(operation.Item);
+		            operation.Item.Shutdown();
+                    if (RemoveEvent != null)
+                        RemoveEvent(operation.Item);
+                }
+		    }
 
-		public void Add(T framework)
+		    return _Objects;
+        }
+
+		public void Add(T item)
 		{
-			lock(_Adds)
-				_Adds.Enqueue(framework);
+		    _Operations.Enqueue( new Operation() { Type = TYPE.ADD , Item = item });
+
+            
 		}
 
-		public void Remove(T framework)
+		public void Remove(T item)
 		{
-			lock(_Removes)
-				_Removes.Enqueue(framework);
-		}
+		    _Operations.Enqueue(new Operation() { Type = TYPE.REMOVE, Item = item });
+        }
 
-		private void _Add(Queue<T> add_frameworks, List<T> frameworks)
-		{
-			while(add_frameworks.Count > 0)
-			{
-				var fw = add_frameworks.Dequeue();
-				frameworks.Add(fw);
-				fw.Launch();
-                if(AddEvent != null)
-			        AddEvent(fw);
-			}
-		}
-
-		private void _Remove(Queue<T> remove_framework, List<T> frameworks)
-		{
-			while(remove_framework.Count > 0)
-			{
-				var fw = remove_framework.Dequeue();
-				frameworks.Remove(fw);
-				fw.Shutdown();
-
-			    if (RemoveEvent != null)
-			        RemoveEvent(fw);
-			}
-		}
+		
 
 		public void Shutdown()
 		{
-			lock(_Ts)
-			{
-				_Shutdown(_Ts);
-				_Ts.Clear();
-			}
-		}
+		    lock (_Items)
+		    {
+		        foreach (var t in _Items)
+		        {
+		            t.Shutdown();
+		        }
+		        _Items.Clear();
+            }
 
-		private void _Shutdown(List<T> frameworks)
-		{
-			foreach(var framework in frameworks)
-			{
-				framework.Shutdown();
-			}
-		}
+		    Operation operation;
+		    while (_Operations.TryDequeue(out operation))
+		    {
+		        
+		    }
+		    
+
+        }
+
+		
 	}
 
     

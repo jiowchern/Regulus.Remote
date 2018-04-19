@@ -85,7 +85,7 @@ namespace Regulus.BehaviourTree
         {
             
             foreach (var ticker in _Childs)
-            {
+            {                
                 _Queue.Enqueue(ticker);
             }
         }

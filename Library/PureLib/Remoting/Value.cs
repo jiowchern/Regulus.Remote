@@ -169,7 +169,13 @@ namespace Regulus.Remoting
 			return new Value<T>(value);
 		}
 
-		public bool HasValue()
+	    public T GetValue()
+	    {
+	        return _Value;
+
+	    }
+
+	    public bool HasValue()
 		{
 			return _Empty == false;
 		}

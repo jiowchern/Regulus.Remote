@@ -68,12 +68,12 @@ namespace Regulus.Network.Tests
 
 
             var sendBuffer = new byte[] {1, 2, 3, 4, 5};
-            clientPeer.Send(sendBuffer,0, sendBuffer.Length , (send_count , error)=>{});
+            clientPeer.Send(sendBuffer,0, sendBuffer.Length );
             
 
             int readCount = 0;
             var receivedBuffer = new byte[Config.Default.PackageSize];
-            rudpSocket.Receive(receivedBuffer, 0, receivedBuffer.Length, (read_count, error) =>
+            rudpSocket.Receive(receivedBuffer, 0, receivedBuffer.Length , (read_count) =>
             {
                 readCount = read_count;
             });

@@ -16,7 +16,7 @@ namespace Regulus.Network.Tests.TestTool
         public ToolConsole()
 		{
 		    _Updater = new Updater();
-
+		    Regulus.Network.Profile.Logger.Enable = true;
 		}
 
 		protected override void _Launch()

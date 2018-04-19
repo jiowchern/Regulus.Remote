@@ -66,7 +66,9 @@ namespace Regulus.Remoting
                 _Buffer = _CreateBuffer(packages);
                                 
 
-			    _Peer.Send(_Buffer, 0, _Buffer.Length,  _WriteCompletion);
+			    var task = _Peer.Send(_Buffer, 0, _Buffer.Length);
+			    task.DoneEvent += _WriteCompletion;
+
 
 
 			}
@@ -81,7 +83,7 @@ namespace Regulus.Remoting
 			}
 		}
 
-		private void _WriteCompletion(int send_count , SocketError error)
+		private void _WriteCompletion(int send_count )
 		{
 			try
 			{

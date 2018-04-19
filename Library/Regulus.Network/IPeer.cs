@@ -9,8 +9,8 @@ namespace Regulus.Network
         EndPoint RemoteEndPoint { get;  }
         EndPoint LocalEndPoint { get;  }
         bool Connected { get;  }
-        void Receive(byte[] readed_byte, int offset, int count,  Action<int ,SocketError> readed);
-        void Send(byte[] buffer, int offset, int buffer_length, Action<int,SocketError> write_completion);
+        void Receive(byte[] buffer, int offset, int count , Action<int> done);
+        Task Send(byte[] buffer, int offset, int count);
         void Close();
     }
-}
+}   

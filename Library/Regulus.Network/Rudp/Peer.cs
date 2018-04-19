@@ -8,9 +8,9 @@ namespace Regulus.Network.Rudp
     {
         private readonly Regulus.Network.Socket _RudpSocket;
 
-        public Peer(Regulus.Network.Socket rudpSocket)
+        public Peer(Regulus.Network.Socket rudp_socket)
         {
-            _RudpSocket = rudpSocket;
+            _RudpSocket = rudp_socket;
             
         }
 
@@ -20,13 +20,13 @@ namespace Regulus.Network.Rudp
 
         bool IPeer.Connected { get { return _RudpSocket.Status == PeerStatus.Transmission; } }
 
-        void IPeer.Receive(byte[] ReadedByte, int Offset, int Count, Action<int, SocketError> Readed)
+        void IPeer.Receive(byte[] buffer, int offset, int count,Action<int> done)
         {
-            _RudpSocket.Receive(ReadedByte, Offset, Count, Readed);
+            _RudpSocket.Receive(buffer, offset, count, done);
         }
-        void IPeer.Send(byte[] Buffer, int Offset, int Length, Action<int, SocketError> WriteCompletion)
+        Task IPeer.Send(byte[] buffer, int offset, int length)
         {
-            _RudpSocket.Send(Buffer , Offset , Length , WriteCompletion);
+            return _RudpSocket.Send(buffer , offset , length );
         }
 
         void IPeer.Close()

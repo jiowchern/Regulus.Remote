@@ -7,7 +7,7 @@ namespace Regulus.Network
     {
         private readonly Dictionary<ushort, SocketMessage> m_DataPackages;
 
-        private readonly Queue<SocketMessage> m_Packages;
+        private readonly System.Collections.Concurrent.ConcurrentQueue<SocketMessage> m_Packages;
         private ushort m_Serial;
         private uint m_SerialBitFields;
 
@@ -18,7 +18,7 @@ namespace Regulus.Network
         public PackageRectifier()
         {
 
-            m_Packages = new Queue<SocketMessage>();
+            m_Packages = new System.Collections.Concurrent.ConcurrentQueue<SocketMessage>();
             m_DataPackages = new Dictionary<ushort, SocketMessage>();
             m_Serial = 0;
         }
@@ -61,13 +61,10 @@ namespace Regulus.Network
 
         public SocketMessage PopPackage()
         {
-            lock (m_Packages)
-            {
-                if (m_Packages.Count > 0)
-                    return m_Packages.Dequeue();
-                return null;
-            }
-
+            SocketMessage message;
+            if (m_Packages.TryDequeue(out message))
+                return message;
+            return null;
         }
 
         private ushort Rectify(ushort serial)
@@ -77,11 +74,8 @@ namespace Regulus.Network
             SocketMessage message;
             while (m_DataPackages.TryGetValue(index, out message))
             {
-                lock (m_Packages)
-                {
-                    m_Packages.Enqueue(message);
-                }
-                
+                m_Packages.Enqueue(message);
+
                 removePackages.Add(index);
                 index++;
             }

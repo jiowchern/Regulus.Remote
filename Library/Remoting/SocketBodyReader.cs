@@ -33,7 +33,8 @@ namespace Regulus.Remoting
             _Buffer = new byte[size];
             try
             {
-                _Peer.Receive(_Buffer, _Offset, _Buffer.Length - _Offset,  _Readed);
+                _Peer.Receive(_Buffer, _Offset, _Buffer.Length - _Offset, _Readed);
+                
             }
             catch(SystemException e)
             {
@@ -44,50 +45,35 @@ namespace Regulus.Remoting
             }
         }
 
-        private void _Readed(int read_count , SocketError error)
+        private void _Readed(int read_count  )
         {
-            try
+            var readSize = read_count;
+
+            if (readSize != 0)
             {
-
-                var readSize = read_count;
-
-                if (error == SocketError.Success && readSize != 0)
+                _Offset += readSize;
+                NetworkMonitor.Instance.Read.Set(readSize);
+                if (_Offset == _Buffer.Length)
                 {
-                    _Offset += readSize;
-                    NetworkMonitor.Instance.Read.Set(readSize);
-                    if (_Offset == _Buffer.Length)
-                    {
-                        DoneEvent(_Buffer);
-                    }
-                    else
-                    {
-                        _Peer.Receive(
-                            _Buffer,
-                            _Offset,
-                            _Buffer.Length - _Offset,                            
-                            _Readed);
-                    }
+                    DoneEvent(_Buffer);
                 }
                 else
                 {
-                    Regulus.Utility.Log.Instance.WriteDebug(string.Format("read body error {0} size:{1}", error, readSize));
-                    if (ErrorEvent != null)
-                    {
-                        ErrorEvent();
-                    }
+                    _Peer.Receive(
+                        _Buffer,
+                        _Offset,
+                        _Buffer.Length - _Offset, _Readed);
                     
                 }
-                
             }
-            catch(SystemException e)
+            else
             {
-                if(ErrorEvent != null)
+                Regulus.Utility.Log.Instance.WriteDebug(string.Format("read body error size:{0}", readSize));
+                if (ErrorEvent != null)
                 {
                     ErrorEvent();
                 }
-            }
-            finally
-            {
+
             }
         }
     }

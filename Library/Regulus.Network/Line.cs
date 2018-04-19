@@ -16,9 +16,9 @@ namespace Regulus.Network
         private readonly BufferDispenser m_Dispenser;
         private readonly PackageRectifier m_Rectifier;
 
-        private readonly Queue<SocketMessage> m_InputPackages;
-        private readonly Queue<SocketMessage> m_SendPackages;        
-        private readonly Queue<SocketMessage> m_ReceivePackages;
+        private readonly System.Collections.Concurrent.ConcurrentQueue<SocketMessage> m_InputPackages;
+        private readonly System.Collections.Concurrent.ConcurrentQueue<SocketMessage> m_SendPackages;        
+        private readonly System.Collections.Concurrent.ConcurrentQueue<SocketMessage> m_ReceivePackages;
         private readonly CongestionRecorder m_Waiter;
         private long m_TimeoutTicks;
         private long m_PingTicks;
@@ -28,9 +28,9 @@ namespace Regulus.Network
             m_Dispenser = new BufferDispenser(EndPoint, SocketMessageFactory.Instance);
             m_Rectifier = new PackageRectifier();
             
-            m_SendPackages = new Queue<SocketMessage>();
-            m_ReceivePackages = new Queue<SocketMessage>();
-            m_InputPackages = new Queue<SocketMessage>();
+            m_SendPackages = new System.Collections.Concurrent.ConcurrentQueue<SocketMessage>();
+            m_ReceivePackages = new System.Collections.Concurrent.ConcurrentQueue<SocketMessage>();
+            m_InputPackages = new System.Collections.Concurrent.ConcurrentQueue<SocketMessage>();
             
             m_Waiter = new CongestionRecorder(HungryLimit: 3);
 
@@ -45,11 +45,8 @@ namespace Regulus.Network
         public void WriteOperation(PeerOperation Operation)
         {
             var package = m_Dispenser.PackingOperation(Operation , m_Rectifier.Serial, m_Rectifier.SerialBitFields);
-            lock (m_SendPackages)
-            {
-                m_SendPackages.Enqueue(package);
-            }
-            
+            m_SendPackages.Enqueue(package);
+
         }
         public void WriteTransmission(byte[] Buffer)
         {            
@@ -57,7 +54,7 @@ namespace Regulus.Network
                 for (var i = 0; i < packages.Length; i++)
                 {
                     var message = packages[i];
-                    QueueThreadHelper.SafeEnqueue(m_InputPackages, message);                    
+                    m_InputPackages.Enqueue(message);                    
                 }
         }
 
@@ -89,12 +86,9 @@ namespace Regulus.Network
 
         public void Input(SocketMessage Message)
         {
-            lock (m_ReceivePackages)
-            {
-                m_ReceivePackages.Enqueue(Message);
-            }
-            
-            
+            m_ReceivePackages.Enqueue(Message);
+
+
 
         }
 
@@ -106,10 +100,7 @@ namespace Regulus.Network
         private void SendAck(ushort Ack,uint AckBits)
         {
             var package = m_Dispenser.PackingAck(Ack, AckBits);
-            lock (m_SendPackages)
-            {
-                m_SendPackages.Enqueue(package);
-            }            
+            m_SendPackages.Enqueue(package);
         }
 
         public bool Tick(Timestamp Time)
@@ -130,13 +121,10 @@ namespace Regulus.Network
         private void HandleInput(Timestamp Time)
         {
             SocketMessage message = null;
-            while (m_Waiter.IsFull() == false && (message = QueueThreadHelper.SafeDequeue(m_InputPackages))!=null)
+            while (m_Waiter.IsFull() == false && m_InputPackages.TryDequeue(out message))
             {
                 m_Waiter.PushWait(message , Time.Ticks);
-                lock (m_SendPackages)
-                {
-                    m_SendPackages.Enqueue(message);
-                }
+                m_SendPackages.Enqueue(message);
             }
         }
 
@@ -147,7 +135,7 @@ namespace Regulus.Network
             if (m_PingTicks > Timestamp.OneSecondTicks)
             {
                 m_PingTicks = 0;
-                if (m_SendPackages.Count == 0)
+                if (m_SendPackages.IsEmpty)
                     SendPing();
             }
         }
@@ -194,12 +182,11 @@ namespace Regulus.Network
 
         private SocketMessage Dequeue()
         {
-            lock (m_ReceivePackages)
-            {
-                if (m_ReceivePackages.Count > 0)
-                    return m_ReceivePackages.Dequeue();
-                return null;
-            }
+            SocketMessage message;
+            if (m_ReceivePackages.TryDequeue(out message))
+                return message;
+            return null;
+            
 
             
         }
@@ -210,7 +197,8 @@ namespace Regulus.Network
 
             var count = rtos.Count;
             for (var i = 0; i < count; i++)
-                QueueThreadHelper.SafeEnqueue(m_SendPackages, rtos[i]);
+                m_SendPackages.Enqueue(rtos[i]);
+                
 
             SendLostPackages += count;
         }
@@ -235,11 +223,9 @@ namespace Regulus.Network
 
         private SocketMessage PopSend()
         {
-            lock (m_SendPackages)
-            {
-                if (m_SendPackages.Count > 0  )
-                    return m_SendPackages.Dequeue();
-            }
+            SocketMessage message;
+            if (m_SendPackages.TryDequeue(out message))
+                return message;
             return null;
         }
 

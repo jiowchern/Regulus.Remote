@@ -22,10 +22,10 @@ namespace Regulus.Network.Tests.TestTool
 
         void IStage.Enter()
         {
-            _Peer.Receive(_Buffer, 0, _Buffer.Length, _Readed);
+            _Peer.Receive(_Buffer, 0, _Buffer.Length , _Readed);
         }
 
-        private void _Readed(int count, SocketError error)
+        private void _Readed(int count)
         {
             for (int i = 0; i < count; i++)
             {
@@ -34,7 +34,7 @@ namespace Regulus.Network.Tests.TestTool
                     throw new SystemException("number receive error!");
                 }
             }           
-            //_Viewer.WriteLine(string.Format("receive count {0}" , count));
+            _Viewer.WriteLine(string.Format("receive count {0}" , count));
         }
 
         void IStage.Leave()

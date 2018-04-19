@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Net;
 using System.Net.Sockets;
 using Regulus.Framework;
@@ -19,16 +21,12 @@ namespace Regulus.Network
         private readonly SegmentStream m_Stream;
         private PeerStatus m_Status;
 
-        private class Reader
-        {
-            public byte[] Buffer;
-            public int Offset;
-            public int Count;
-            public Action<int, SocketError> DoneHandler;
-        }
-        private readonly List<byte> m_Sends;
+        Task _ReadTask;
+        private readonly System.Collections.Concurrent.ConcurrentQueue<Task> _SendTasks;
+        private readonly System.Collections.Generic.List<byte> _SendBytes;
 
-        private readonly Reader m_Reader;
+
+
         public Action<int, SocketError> WriteDoneHandler;
 
         private bool m_RequireDisconnect;
@@ -37,8 +35,10 @@ namespace Regulus.Network
 
         private Socket(Line Line)
         {
-            m_Reader = new Reader();
-            m_Sends = new List<byte>();
+            _SendBytes = new List<byte>();
+            _SendTasks = new ConcurrentQueue<Task>();
+            _ReadTask = new Task();
+            
             m_Line = Line;
             m_Machine = new StageMachine<Timestamp>();
             m_Stream = new SegmentStream(new SocketMessage[0]);
@@ -69,33 +69,40 @@ namespace Regulus.Network
 
         private void UpdateTransmission(Timestamp Obj)
         {
-            lock (m_Sends)
+            while (_SendTasks.Count > 0)
             {
-                if (m_Sends.Count > 0)
+                Task task = null;
+                if (_SendTasks.TryDequeue(out task))
                 {
-                    m_Line.WriteTransmission(m_Sends.ToArray());
-                    WriteDoneHandler(m_Sends.Count, SocketError.Success);
-                    m_Sends.Clear();
+                    for (int i = task.Offset; i < task.Count; i++)
+                    {
+                        _SendBytes.Add(task.Buffer[i]);
+                    }
+                    task.Done(task.Count);
                 }
-
-
             }
 
-
-            while (m_Stream.Count > 0)
-                lock (m_Reader)
+            if (_SendBytes.Count > 0)
+            {
+                m_Line.WriteTransmission(_SendBytes.ToArray());
+                _SendBytes.Clear();
+            }
+                
+            while (m_Stream.Count > 0 )
+            {
+                
+                lock (_ReadTask)
                 {
-
-                    var handler = m_Reader;
+                    var handler = _ReadTask;
                     if (handler.Buffer != null)
                     {
                         var readCount = m_Stream.Read(handler.Buffer, handler.Offset, handler.Count);
                         if (readCount > 0)
-                            handler.DoneHandler(readCount, SocketError.Success);
+                            handler.Done(readCount);
                     }
-
-
                 }
+            }
+                
 
 
             if (m_RequireDisconnect)
@@ -159,33 +166,27 @@ namespace Regulus.Network
 
         public EndPoint EndPoint {get{return m_Line.EndPoint; } } 
 
-        public void Send(byte[] Buffer, int Offset, int Count, Action<int, SocketError> WriteCompletion)
+        public Task Send(byte[] buffer, int offset, int count)
         {
-            var len = Count < Buffer.Length ? Count : Buffer.Length;
-
-            lock (m_Sends)
-            {
-                for (var i = Offset; i < len; i++)
-                    m_Sends.Add(Buffer[i]);
-                WriteDoneHandler = WriteCompletion;
-            }
+            var task = new Task() {Buffer = buffer , Offset =  offset , Count = count };
+            _SendTasks.Enqueue(task);
+            return task;
 
         }
 
 
 
-        public void Receive(byte[] Buffer, int Offset, int Count, Action<int, SocketError> ReadCompletion)
+        public void Receive(byte[] buffer, int offset, int count, Action<int> done)
         {
-
-
-            lock (m_Reader)
+            
+            lock (_ReadTask)
             {
-                m_Reader.Buffer = Buffer;
-                m_Reader.Count = Count;
-                m_Reader.Offset = Offset;
-                m_Reader.DoneHandler = ReadCompletion;
+                _ReadTask.Buffer = buffer;
+                _ReadTask.Offset = offset;
+                _ReadTask.Count = count;
+                _ReadTask._DoneEvent = done;
             }
-
+            
         }
 
         public PeerStatus Status {get { return m_Status; } }

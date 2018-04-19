@@ -39,7 +39,7 @@ namespace Regulus.Network.Tests.TestTool
                 _Counter.Reset();
 
                 var size = _Random.Next(_PackageSize);
-                _Peer.Send(_CreateData(size), 0, size, _SendResult);
+                _Peer.Send(_CreateData(size), 0, size );
             }
         }
 
@@ -53,9 +53,6 @@ namespace Regulus.Network.Tests.TestTool
 
             return buffer;
         }
-        private void _SendResult(int arg1, SocketError arg2)
-        {
-            
-        }
+        
     }
 }

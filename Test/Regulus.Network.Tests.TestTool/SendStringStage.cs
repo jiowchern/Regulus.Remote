@@ -35,10 +35,10 @@ namespace Regulus.Network.Tests.TestTool
         public void Send(string message)
         {
             var buffer = _ToBytes(message);
-            _Peer.Send(buffer, 0, buffer.Length, (send_count, error) =>
+            _Peer.Send(buffer, 0, buffer.Length ).DoneEvent += (send_count ) =>
             {
-                _Viewer.WriteLine(string.Format("send bytes {0} ,{1} " , send_count , error));
-            });
+                _Viewer.WriteLine(string.Format("send bytes {0} ", send_count ));
+            };
         }
         public byte[] _ToBytes(string message)
         {

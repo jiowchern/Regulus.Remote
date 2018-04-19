@@ -30,7 +30,7 @@ namespace Regulus.Remoting
 
             try
             {
-                _Peer.Receive(_ReadedByte, 0, 1,  _Readed);
+                _Peer.Receive(_ReadedByte, 0, 1 , _Readed);
             }
             catch (SystemException e)
             {
@@ -42,47 +42,26 @@ namespace Regulus.Remoting
             
         }
 
-        private void _Readed(int read_size , SocketError error)
+        private void _Readed(int read_size )
         {
 
-            try
-
+            if (read_size != 0)
             {
-
-                var readSize = read_size;
-                NetworkMonitor.Instance.Read.Set(readSize);
-
-
-                if (error == SocketError.Success && readSize != 0)
+                if (_ReadData(read_size))
                 {
-                    if (_ReadData(readSize))
-                    {
-                        if (_DoneEvent != null)
-                            _DoneEvent(_Buffer.ToArray());
-                    }
-                    else
-                    {
-                        _Read();
-                    }
+                    if (_DoneEvent != null)
+                        _DoneEvent(_Buffer.ToArray());
                 }
                 else
                 {
-                    Regulus.Utility.Log.Instance.WriteDebug(string.Format("read head error {0} size:{1}", error, readSize));
-                    if (_ErrorEvent != null)
-                        _ErrorEvent();
+                    _Read();
                 }
-                
-
             }
-            catch (SystemException e)
+            else
             {
+                Regulus.Utility.Log.Instance.WriteDebug(string.Format("read head error size:{0}", read_size));
                 if (_ErrorEvent != null)
-                {
                     _ErrorEvent();
-                }
-            }
-            finally
-            {
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq.Expressions;
 
 namespace Regulus.Utility
 {
@@ -26,20 +27,25 @@ namespace Regulus.Utility
 		{
 		}
 
-		private void _Write(string message)
-		{
-			_Executer.Push(new LogWritter(message, _AsyncRecord).Write);
-		}
 
-		public void WriteInfo(string message)
-		{
-			_Write(string.Format("[Info]{0}", message));
-		}
+	    public void WriteInfo(Expression<Func<string>> message)
+	    {
+	        _Executer.Push(new LogWritter(LogWritter.TYPE.INFO, message, _AsyncRecord).Write);
+        }
 
-		public void WriteDebug(string message)
+        public void WriteInfo(string message)
 		{
-			_Write(string.Format("[Debug]{0}\r\n{1}", message, Environment.StackTrace));
-		}
+		    _Executer.Push(new LogWritter(LogWritter.TYPE.INFO, ()=>message, _AsyncRecord).Write);
+        }
+
+	    public void WriteDebug(Expression<Func<string>> message)
+	    {
+	        _Executer.Push(new LogWritter(LogWritter.TYPE.DEBUG, message, _AsyncRecord).Write);
+	    }
+        public void WriteDebug(string message)
+		{
+		    _Executer.Push(new LogWritter(LogWritter.TYPE.DEBUG, ()=>message, _AsyncRecord).Write);
+        }
 
 	    public void Shutdown()
 	    {

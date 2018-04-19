@@ -21,7 +21,7 @@ namespace Regulus.Network.Tests.TestTool
 
         void IStage.Enter()
         {
-            _Peer.Receive(_Buffer, 0, _Buffer.Length, _Readed);
+            _Peer.Receive(_Buffer, 0, _Buffer.Length , _Readed);
         }
 
         void IStage.Leave()
@@ -32,7 +32,7 @@ namespace Regulus.Network.Tests.TestTool
         {            
         }
 
-        private void _Readed(int read_count, SocketError error)
+        private void _Readed(int read_count)
         {
             
             var message = System.Text.Encoding.Default.GetString(_Buffer, 0, read_count);

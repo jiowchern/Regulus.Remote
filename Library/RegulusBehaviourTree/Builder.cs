@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using Regulus.BehaviourTree.Yield;
 
 namespace Regulus.BehaviourTree
 {
@@ -141,6 +142,13 @@ namespace Regulus.BehaviourTree
         {
             return _Add(new ActionHelper.Coroutine(provider));            
         }
+
+
+        public Builder Action(Expression<Func<IEnumerable<IInstructable>>> provider)
+        {
+            return _Add(new Yield.Coroutine(provider));
+        }
+
         public Builder Action<T>(Expression<Func<T>> instnace
             , Expression<Func<T, Func<float, TICKRESULT>>> tick
             , Expression<Func<T, Action>> start

@@ -8,10 +8,9 @@ namespace Regulus.Network.Tcp
     public class Peer : IPeer
     {
         private readonly System.Net.Sockets.Socket _Socket;
-        private Action<int, SocketError> _ReadedHandler;
-        private Action<int, SocketError> _SendDoneHandler;
+        
 
-        private int _Length;
+
         private bool _Enable;
         public Peer(System.Net.Sockets.Socket socket)
         {
@@ -28,34 +27,36 @@ namespace Regulus.Network.Tcp
             get { return _Socket.Connected && _Enable; }
         }
 
-        void IPeer.Receive(byte[] readed_byte, int offset, int count, Action<int, SocketError> Readed)
+        void IPeer.Receive(byte[] readed_byte, int offset, int count ,Action<int> done)
         {
             
-            _ReadedHandler = Readed;
+            
 
             try
             {
-                _Socket.BeginReceive(readed_byte, offset, count, SocketFlags.None, this.Readed, state: null);
+                
+                _Socket.BeginReceive(readed_byte, offset, count, SocketFlags.None, this.Readed, state: done);
             }
             catch (Exception e)
             {
                 _Enable = false;
             }
+
+            
         }
 
-        void IPeer.Send(byte[] buffer, int offset_i, int buffer_length, Action<int, SocketError> write_completion)
+        Task IPeer.Send(byte[] buffer, int offset_i, int buffer_length)
         {
-            _Length = buffer_length;
-            _SendDoneHandler = write_completion;
+            var task = new Task() { Buffer = buffer, Offset = offset_i, Count = buffer_length };
             try
             {
-                _Socket.BeginSend(buffer, offset_i, buffer_length, SocketFlags.None, SendDone, state: null);
+                _Socket.BeginSend(buffer, offset_i, buffer_length, SocketFlags.None, SendDone, state: task);
             }
             catch (Exception e)
             {
                 _Enable = false;
             }
-            
+            return task;
         }
 
         void IPeer.Close()
@@ -67,8 +68,7 @@ namespace Regulus.Network.Tcp
 
         private void SendDone(IAsyncResult ar)
         {
-            var handler = _SendDoneHandler;
-            _SendDoneHandler = null;
+            
 
             if (!_Socket.Connected)
                 return ;
@@ -77,9 +77,8 @@ namespace Regulus.Network.Tcp
             {
                 SocketError error;
                 var sendCount = _Socket.EndSend(ar, out error);
-
-                if (handler != null)
-                    handler(sendCount, error);
+                var task = (Task) ar.AsyncState;
+                task.Done(sendCount);
             }
             catch (Exception e)
             {
@@ -90,19 +89,17 @@ namespace Regulus.Network.Tcp
 
         private void Readed(IAsyncResult ar)
         {
-            var handler = _ReadedHandler;
-            _ReadedHandler = null;
+            
 
             if (!_Socket.Connected)
                 return;
-            
 
+            var task = (Action<int>)ar.AsyncState;
             try
             {
                 SocketError error;
                 var readCount = _Socket.EndReceive(ar, out error);
-
-                handler(readCount, error);
+                task(readCount);                
             }
             catch (Exception e)
             {

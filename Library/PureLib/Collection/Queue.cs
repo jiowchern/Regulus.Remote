@@ -16,7 +16,8 @@ namespace Regulus.Collection
 
 		public Queue(params T[] objs)
 		{
-			_Set = new System.Collections.Generic.Queue<T>(objs);
+		    _Lock = new SpinLock();
+            _Set = new System.Collections.Generic.Queue<T>(objs);
 		}
 
 		public void Enqueue(T package)
