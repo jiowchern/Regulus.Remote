@@ -3,6 +3,7 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Policy;
+using System.Threading;
 using Regulus.Framework;
 using Regulus.Utility;
 
@@ -12,7 +13,7 @@ namespace Regulus.Game
    
     public class Entity 
     {
-        private readonly Dictionary<Type, List<IComponment>> _Componments;
+        
 
         enum COMMAND
         {
@@ -24,12 +25,15 @@ namespace Regulus.Game
             public IComponment Com;
         }
 
+        private readonly Dictionary<Type, List<IComponment>> _Componments;
         private readonly Queue<Command> _Commands;
         private readonly List<IComponment> _Updates;
         
 
+
         public Entity()
         {
+            
             _Updates = new List<IComponment>();
             _Commands  = new Queue<Command>();
             _Componments = new Dictionary<Type, List<IComponment>>();
@@ -37,12 +41,16 @@ namespace Regulus.Game
 
         public void Destroy()
         {
+        
             foreach (var componment in _Updates)
             {
                 componment.End();
             }
             _Updates.Clear();
         }
+
+        
+
         public void Update()
         {
             while (_Commands.Count > 0)

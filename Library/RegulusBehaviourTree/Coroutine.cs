@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Regulus.Utility;
 
 namespace Regulus.BehaviourTree.Yield
 {
@@ -37,6 +38,22 @@ namespace Regulus.BehaviourTree.Yield
         }
     }
 
+    public class WaitSeconds : IInstructable
+    {
+        private readonly float _Seconds;
+        private Regulus.Utility.TimeCounter _TimeCounter;
+        public WaitSeconds(float seconds)
+        {
+            _TimeCounter = new TimeCounter();
+            _Seconds = seconds;
+        }
+        INSTRUCTION IInstructable.Result()
+        {
+            if(_TimeCounter.Second > _Seconds)
+                return INSTRUCTION.NEXT;
+            return INSTRUCTION.WAIT;
+        }
+    }
     public class Wait : IInstructable
     {
         
@@ -75,6 +92,8 @@ namespace Regulus.BehaviourTree.Yield
                 throw new NotSupportedException(string.Format("The expression is a {0} , must a {1}", expression.Body.NodeType, ExpressionType.Call));
 
             var tag = methodCallExpression.Method.Name;
+
+            
             _Infomation = new Infomation();
             _Infomation.Tag = tag;
             _Provider = expression.Compile()();

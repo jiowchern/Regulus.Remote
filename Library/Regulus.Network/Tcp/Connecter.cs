@@ -10,7 +10,7 @@ namespace Regulus.Network.Tcp
         private Action<bool> m_ResultHandler;
         public Connecter() : base(new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
         {            
-            GetSocket().NoDelay = true;
+            //GetSocket().NoDelay = true;
         }
 
         void IConnectable.Connect(EndPoint Endpoint, Action<bool> result)

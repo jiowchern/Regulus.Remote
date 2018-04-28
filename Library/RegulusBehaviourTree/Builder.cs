@@ -87,9 +87,9 @@ namespace Regulus.BehaviourTree
             return this;
         }
 
-        public Builder Parallel( int num_required_to_fail, int num_required_to_succeed)
+        public Builder Parallel( bool same_is_success)
         {
-            var parallelNode = new ParallelNode( num_required_to_fail, num_required_to_succeed);
+            var parallelNode = new ParallelNode(same_is_success);
 
             if (_Stack.Count > 0)
             {

@@ -5,19 +5,57 @@ using System.Text;
 
 namespace Regulus.BehaviourTree
 {
-    class ParallelNode : ITicker , IParent
+    class ParallelNode : IParent
     {
-        private readonly List<ITicker> _Childs;        
+        private readonly bool _SameIsSuccess;
 
-        private readonly int _NumRequiredToFail;
-
-        private readonly int _NumRequiredToSucceed;
-
-        public ParallelNode(int num_required_to_fail, int num_required_to_succeed)
+        class Item
         {
-            _Childs = new List<ITicker>();
-            this._NumRequiredToFail = num_required_to_fail;
-            this._NumRequiredToSucceed = num_required_to_succeed;
+            private readonly ITicker _Child;
+            private TICKRESULT _Result;
+            public Item(ITicker child)
+            {
+                _Child = child;
+                _Result = TICKRESULT.RUNNING;
+            }
+
+            public TICKRESULT Result => _Result;
+
+            public void Tick(float delta)
+            {
+                if (_Result == TICKRESULT.RUNNING)
+                {
+                    var result = _Child.Tick(delta);
+                    _Result = result;
+                }                
+            }
+
+            public void GetInfomation(ref List<Infomation> nodes)
+            {
+                _Child.GetInfomation(ref nodes);
+            }
+
+            public void Reset()
+            {
+                _Child.Reset();
+                _Result = TICKRESULT.RUNNING;
+                
+            }
+
+            public void Clear()
+            {
+                _Child.Reset();
+                _Result = TICKRESULT.RUNNING;
+            }
+        }
+        private readonly List<Item> _Childs;        
+
+        
+
+        public ParallelNode(bool same_is_success)
+        {
+            _SameIsSuccess = same_is_success;
+            _Childs = new List<Item>();
         }
 
 
@@ -39,35 +77,36 @@ namespace Regulus.BehaviourTree
 
         public TICKRESULT Tick(float delta)
         {
-            var numChildrenSuceeded = 0;
-            var numChildrenFailed = 0;
 
             foreach (var child in _Childs)
             {
-                var childStatus = child.Tick(delta);
-                switch (childStatus)
-                {
-                    case TICKRESULT.SUCCESS: ++numChildrenSuceeded; break;
-                    case TICKRESULT.FAILURE: ++numChildrenFailed; break;
-                }
+                child.Tick(delta);
+            }
+            var numChildrenSuceeded = _Childs.Count(c => c.Result == TICKRESULT.SUCCESS);
+            var numChildrenFailed = _Childs.Count(c => c.Result == TICKRESULT.FAILURE);
+
+            if( numChildrenSuceeded + numChildrenFailed != _Childs.Count)
+                return TICKRESULT.RUNNING;
+
+            foreach (var child in _Childs)
+            {
+                child.Clear();
             }
 
-            if (_NumRequiredToSucceed > 0 && numChildrenSuceeded >= _NumRequiredToSucceed)
-            {
+            if (numChildrenSuceeded > numChildrenFailed)
                 return TICKRESULT.SUCCESS;
-            }
 
-            if (_NumRequiredToFail > 0 && numChildrenFailed >= _NumRequiredToFail)
-            {
+            if (numChildrenSuceeded < numChildrenFailed)
                 return TICKRESULT.FAILURE;
-            }
 
-            return TICKRESULT.RUNNING;
+            if(_SameIsSuccess)
+                return TICKRESULT.SUCCESS;
+            return TICKRESULT.FAILURE;
         }
 
         public void Add(ITicker child)
         {
-            _Childs.Add(child);
+            _Childs.Add(new Item(child));
         }
     }
 }

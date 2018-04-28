@@ -25,11 +25,9 @@ namespace Regulus.Utility
         }
 
         private void _Run()
-        {
-            var regulator =  new Regulus.Utility.AutoPowerRegulator(new PowerRegulator());
+        {            
             while (_Enable)
-            {
-                regulator.Operate();
+            {                
                 Action action;
                 if (_Tasks.TryDequeue(out action))
                 {
