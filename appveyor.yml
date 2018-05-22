@@ -1,4 +1,8 @@
 version: 0.4.{build}
+branches:
+  only:
+  - master
+image: Visual Studio 2017
 configuration: Release
 nuget:
   account_feed: true
@@ -28,6 +32,8 @@ artifacts:
   name: BehaviourTree
 - path: artifact\Tool
   name: Tool
+- path: artifact\Library\Serialization
+  name: Serialization
 deploy:
 - provider: GitHub
   auth_token:

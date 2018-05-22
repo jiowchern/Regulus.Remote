@@ -6,7 +6,7 @@
         <authors>jc</authors>
         <projectUrl>https://github.com/jiowchern/Regulus</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description></description>
+        <description>Protobuf-like static serialization library.</description>
         <language>zh-TW</language>
       <dependencies>
         <dependency id="RegulusLibrary" version="0.4.0" />
