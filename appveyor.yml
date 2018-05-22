@@ -1,4 +1,4 @@
-version: 0.3.{build}
+version: 0.4.{build}
 configuration: Release
 nuget:
   account_feed: true
