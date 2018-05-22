@@ -7,12 +7,12 @@ namespace Regulus.Serialization
 {
     public class DescriberBuilder
     {
-        public readonly ITypeDescriber[] Describers;
+        public readonly ITypeDescriberProvider Describers;
         public DescriberBuilder(params Type[] types)
         {
             Describers = _BuildDescribers(types);
         }
-        ITypeDescriber[] _BuildDescribers(params Type[] types)
+        ITypeDescriberProvider _BuildDescribers(params Type[] types)
         {
             int id = 0;
             var describers = new List<ITypeDescriber>();
@@ -23,7 +23,7 @@ namespace Regulus.Serialization
                
             }
 
-            return describers.ToArray();
+            return new DescriberProvider(describers.ToArray()) ;
         }
       
     }

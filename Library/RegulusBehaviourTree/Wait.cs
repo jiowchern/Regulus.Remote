@@ -19,7 +19,11 @@ namespace Regulus.BehaviourTree.ActionHelper
         {
             _Counter += delta;
             if (_Counter > _Timeup)
+            {
+                _Counter = 0;
                 return TICKRESULT.SUCCESS;
+            }
+                
         
             return TICKRESULT.RUNNING;
         }

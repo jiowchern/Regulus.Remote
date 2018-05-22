@@ -16,7 +16,7 @@ namespace Regulus.Serialization
                 
         private readonly object _Default;
 
-        private TypeSet _TypeSet;
+        private ITypeDescriberFinder _TypeSet;
 
         public ClassDescriber(int id , Type type)
         {
@@ -174,7 +174,7 @@ namespace Regulus.Serialization
 
         }
 
-        void ITypeDescriber.SetMap(TypeSet type_set)
+        void ITypeDescriber.SetMap(ITypeDescriberFinder type_set)
         {
             _TypeSet = type_set;
         }

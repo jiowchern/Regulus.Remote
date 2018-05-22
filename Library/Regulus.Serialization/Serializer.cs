@@ -8,20 +8,15 @@ namespace Regulus.Serialization
 {
     public class Serializer : ISerializer
     {
-        private readonly TypeSet _TypeSet;
+        private readonly ITypeDescriberProvider _Provider;
 
-        public Serializer(params ITypeDescriber[] describers)
+        public Serializer(ITypeDescriberProvider provider)
         {
 
-            var typeSet = new TypeSet(describers);
+            _Provider = provider;
+
             
-
-            foreach (var typeDescriber in describers)
-            {
-                typeDescriber.SetMap(typeSet);
-            }
-
-            _TypeSet = typeSet;
+            
         }
 
         public Serializer(DescriberBuilder describer_builder) : this(describer_builder.Describers)
@@ -42,7 +37,7 @@ namespace Regulus.Serialization
                 }
 
                 var type = instance.GetType();
-                var describer = _GetDescriber(type);
+                var describer = _Provider.GetByType(type) ;
                 var id = describer.Id;
                 var idCount = Varint.GetByteCount((ulong)id);
                 var bufferCount = describer.GetByteCount(instance);
@@ -84,15 +79,15 @@ namespace Regulus.Serialization
                 if (id == 0)
                     return null;
 
-                var describer = _GetDescriber((int)id);
+                var describer = _Provider.GetById((int)id) ;
                 object instance;
                 describer.ToObject(buffer, readIdCount, out instance);
                 return instance;
             }
             catch (DescriberException ex)
             {
-                var describer = _GetDescriber((int)id);
-                if(describer != null)
+                var describer = _Provider.GetById((int)id);
+                if (describer != null)
                     throw new SystemException(string.Format("BufferToObject {0}:{1}", id , describer.Type.FullName), ex);
                 else
                 {
@@ -102,17 +97,7 @@ namespace Regulus.Serialization
             
         }
 
-        private ITypeDescriber _GetDescriber(int id)
-        {
-
-            
-            return _TypeSet.GetById(id);
-        }
-
-        private ITypeDescriber _GetDescriber(Type type)
-        {
-            return _TypeSet.GetByType(type);
-        }
+        
 
         byte[] ISerializer.Serialize(object instance )
         {
@@ -160,6 +145,8 @@ namespace Regulus.Serialization
             return false;
         }
     }
+
+    
 }
 
 

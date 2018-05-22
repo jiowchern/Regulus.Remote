@@ -57,8 +57,11 @@
     <Compile Include="ByteArrayDescriber.cs" />
     <Compile Include="ClassDescriber.cs" />
     <Compile Include="DescriberBuilder.cs" />
+    <Compile Include="DescriberProvider.cs" />
     <Compile Include="EnumDescriber.cs" />
     <Compile Include="ITypeDescriber.cs" />
+    <Compile Include="ITypeDescriberFinder.cs" />
+    <Compile Include="ITypeDescriberProvider.cs" />
     <Compile Include="NumberDescriber.cs" />
     <Compile Include="DescriberException.cs" />
     <Compile Include="Serializer.cs" />
@@ -66,13 +69,15 @@
     <Compile Include="StringDescriber.cs" />
     <Compile Include="BlittableDescriber.cs" />
     <Compile Include="TypeIdentifier.cs" />
-    <Compile Include="TypeSet.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PureLib\RegulusLibrary.csproj">
       <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
       <Name>RegulusLibrary</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Dynamic\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

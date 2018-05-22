@@ -1,51 +1,72 @@
-﻿using System;
+﻿using Regulus.Serialization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-
-using Regulus.Serialization;
 
 namespace Regulus.Protocol
 {
     public class TypeDisintegrator
     {
-        
+        class Trigger
+        {
+            private bool _Enable;
+
+            public bool Set
+            {                
+                set
+                {
+                    if (_Enable == false && value == true)
+                        _Enable = true;
+                }
+            }
+
+            public bool Enable { get { return _Enable; } }
+        }
         public readonly Type[] Types;
         
 
         public TypeDisintegrator(Type type)
         {
             var types = new HashSet<Type>();
+            _Analyze(type , types);
 
-            
+            Types = types.ToArray();
+        }
 
-            if ( _IsAtom(type) )
-            {
-                types.Add(type);
+        private void _Analyze(Type type, HashSet<Type> types)
+        {
+
+            Trigger trigger = new Trigger();
+            if (_IsAtom(type))
+            {                
+                trigger.Set = _Add(new[] { type }, types);
             }
             else if (_IsString(type))
             {
-                types.Add(typeof(char));
-                types.Add(typeof(char[]));
-                types.Add(typeof(string));
+                trigger.Set = _Add(new[] { typeof(char), typeof(char[]) , typeof(string) }, types);
             }
             else if (_IsArray(type))
-            {
-                types.Add(type);
-                _Add(new [] {type.GetElementType()} , types);
+            {                
+                trigger.Set = _Add(new[] { type , type.GetElementType()}, types);
             }
             else if (_IsType(type))
             {
-                if(TypeIdentifier.IsClass(type))
-                    types.Add(type);
+                if (TypeIdentifier.IsClass(type))
+                    trigger.Set = types.Add(type);
 
-                _Add(_GetEvents(type), types);
-                _Add(_GetPropertys(type), types);
-                _Add(_GetMethods(type), types);
-                _Add(_GetFields(type), types);
+                trigger.Set = _Add(_GetEvents(type), types);
+                trigger.Set = _Add(_GetPropertys(type), types);
+                trigger.Set = _Add(_GetMethods(type), types);
+                trigger.Set = _Add(_GetFields(type), types);
             }
 
-            Types = types.ToArray();
+            if (trigger.Enable)
+            {
+                foreach (var type1 in types.ToArray())
+                {
+                    _Analyze(type1 , types);
+                }
+            }
         }
 
         private bool _IsString(Type type)
@@ -58,12 +79,16 @@ namespace Regulus.Protocol
             return type.IsArray && type != typeof (object[]);
         }
 
-        private static void _Add(IEnumerable<Type> types1, HashSet<Type> types)
+        private static bool _Add(IEnumerable<Type> types1, HashSet<Type> types)
         {
-            foreach (var eType in types1.SelectMany(t => new TypeDisintegrator(types, t).Types))
+            Trigger trigger = new Trigger();
+            foreach (var eType in types1)
             {
-                types.Add(eType);
+                if(_Valid(eType))
+                    trigger.Set = types.Add(eType);
             }
+
+            return trigger.Enable;
         }
 
         private bool _IsType(Type type)
@@ -77,14 +102,7 @@ namespace Regulus.Protocol
         }
 
 
-        protected TypeDisintegrator(HashSet<Type> types,Type type)
-        {
-            Types = new Type[0];
-            if (types.Contains(type) == false && _Valid(type))
-            {
-                Types = new TypeDisintegrator(type).Types;
-            }            
-        }
+        
 
         private static bool _Valid(Type type)
         {
@@ -103,8 +121,7 @@ namespace Regulus.Protocol
         private IEnumerable<Type> _GetEvents(Type type)
         {
             foreach (var eventInfo in type.GetEvents())
-            {
-                var method = eventInfo.GetRaiseMethod();
+            {                
                 var handleType = eventInfo.EventHandlerType;
                 if (handleType.IsGenericType)
                 {
@@ -139,7 +156,7 @@ namespace Regulus.Protocol
                 var retType = methodInfo.ReturnType;
 
                 
-                if (retType.IsGenericType  && retType.GetGenericTypeDefinition() == typeof (Regulus.Remoting.Value<>))
+                if (retType.IsGenericType )
                 {
                     types.AddRange(retType.GetGenericArguments());
                 }

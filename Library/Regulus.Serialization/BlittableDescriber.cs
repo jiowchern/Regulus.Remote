@@ -109,7 +109,7 @@ namespace Regulus.Serialization
             }            
         }
 
-        void ITypeDescriber.SetMap(TypeSet type_set)
+        void ITypeDescriber.SetMap(ITypeDescriberFinder type_set)
         {
             
         }

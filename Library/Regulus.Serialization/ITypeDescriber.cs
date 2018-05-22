@@ -13,8 +13,6 @@ namespace Regulus.Serialization
         int ToBuffer(object instance, byte[] buffer, int begin);
         int ToObject(byte[] buffer, int begin, out object instnace );
 
-
-
-        void SetMap(TypeSet type_set);
+        void SetMap(ITypeDescriberFinder type_set);
     }
 }

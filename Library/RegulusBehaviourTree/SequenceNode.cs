@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.BehaviourTree
 {
-    class SequenceNode  : ITicker , IParent
+    class SequenceNode  : IParent
     {
         private List<ITicker> _Childs;
         private readonly Queue<ITicker> _Queue;
@@ -13,17 +13,29 @@ namespace Regulus.BehaviourTree
 
         private ITicker _RunninTicker;
         private ITicker _CurrentTicker;
-
+        private readonly Guid _Id;
+        private readonly string _Tag;
         public SequenceNode()
         {
+            _Tag = "Sequence";
+            _Id = Guid.NewGuid();
             _Childs = new List<ITicker>();
             _Queue = new Queue<ITicker>();
         }
 
-        void ITicker.GetInfomation(ref List<Infomation> nodes)
+        public Guid Id { get { return _Id; } }
+        string ITicker.Tag { get { return _Tag; } }
+
+        ITicker[] ITicker.GetChilds()
         {
-            if(_CurrentTicker != null)
-                _CurrentTicker.GetInfomation(ref nodes);
+            return _Childs.ToArray();
+        }
+
+        void ITicker.GetPath(ref List<Guid> nodes)
+        {
+            nodes.Add(_Id);
+            if (_CurrentTicker != null)
+                _CurrentTicker.GetPath(ref nodes);
         }
 
         void ITicker.Reset()

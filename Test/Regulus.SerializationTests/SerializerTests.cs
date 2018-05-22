@@ -11,8 +11,8 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void NegativeIntNumberTest()
         {
-
-            var ser = new Serializer(new NumberDescriber<int>(1), new NumberDescriber<uint>(2));
+            var provider = new DescriberProvider(new NumberDescriber<int>(1), new NumberDescriber<uint>(2));
+            var ser = new Serializer(provider);
             var buf = ser.ObjectToBuffer((int) -1);
             var val = (int) ser.BufferToObject(buf);
 
@@ -22,8 +22,8 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void NegativeLongNumberTest()
         {
-
-            var ser = new Serializer(new NumberDescriber<long>(1), new NumberDescriber<uint>(2));
+            var provider = new DescriberProvider(new NumberDescriber<long>(1), new NumberDescriber<uint>(2));
+            var ser = new Serializer(provider);
             var buf = ser.ObjectToBuffer((long)-1);
             var val = (long)ser.BufferToObject(buf);
 
@@ -129,8 +129,8 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void UlongTest()
         {
-
-            var ser = new Serializer(new NumberDescriber(1, typeof (ulong)));
+            var provider = new DescriberProvider(new NumberDescriber(1, typeof(ulong)));
+            var ser = new Serializer(provider);
 
             var buffer = ser.ObjectToBuffer(1UL);
 
@@ -143,7 +143,8 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void ClassTest()
         {
-            var ser = new Serializer(new NumberDescriber(1, typeof (int)), new ClassDescriber(2, typeof (TestClassB)));
+            var provider = new DescriberProvider(new NumberDescriber(1, typeof(int)), new ClassDescriber(2, typeof(TestClassB)));
+            var ser = new Serializer(provider);
             var testb = new TestClassB();
             testb.Data = 1234;
             var buffer = ser.ObjectToBuffer(testb);
@@ -156,10 +157,10 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void ClassArrayTest()
         {
-            var ser = new Serializer(
-                new NumberDescriber(1, typeof (int)),
-                new ClassDescriber(2, typeof (TestClassB)),
-                new ArrayDescriber(3, typeof (TestClassB[])));
+            var provider = new DescriberProvider(new NumberDescriber(1, typeof(int)),
+                new ClassDescriber(2, typeof(TestClassB)),
+                new ArrayDescriber(3, typeof(TestClassB[])));
+            var ser = new Serializer(provider);
             var testbs = new[]
             {
                 null,
@@ -189,13 +190,13 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void NumberTest()
         {
-            var ser = new Serializer(
-                new NumberDescriber(1, typeof (byte)),
+            var provider = new DescriberProvider(new NumberDescriber(1, typeof(byte)),
                 new NumberDescriber<short>(2),
                 new NumberDescriber<int>(3),
                 new NumberDescriber<long>(4),
-                new EnumDescriber<TEST1>(5)
-                );
+                new EnumDescriber<TEST1>(5));
+            var ser = new Serializer(provider);
+                
             var byteBuffer = ser.ObjectToBuffer((byte)128);
             var byteValue = (byte)ser.BufferToObject(byteBuffer);
 
@@ -222,7 +223,8 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void IntArrayTest4()
         {
-            var ser = new Serializer(new NumberDescriber<int>(1), new ArrayDescriber<int>(2));
+            var provider = new DescriberProvider(new NumberDescriber<int>(1), new ArrayDescriber<int>(2));
+            var ser = new Serializer(provider);
 
             var ints = new[]
             {
@@ -247,7 +249,9 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void NumberFloatTest()
         {
-            var ser = new Serializer(new BlittableDescriber(1 , typeof(float)), new ArrayDescriber<float>(2));
+            var provider = new DescriberProvider(new BlittableDescriber(1, typeof(float)),
+                new ArrayDescriber<float>(2));
+            var ser = new Serializer(provider);
 
             var ints = new[]
             {
@@ -273,7 +277,8 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void StructFloatTest()
         {
-            var ser = new Serializer(new BlittableDescriber<float>(1));
+            var provider = new DescriberProvider(new BlittableDescriber<float>(1));
+            var ser = new Serializer(provider);
 
             var buffer = ser.ObjectToBuffer(123.43f);
             var value = (float)ser.BufferToObject(buffer);
@@ -285,7 +290,8 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
          public void ByteArrayStructTest()
         {
-            var ser = new Serializer(new BufferDescriber<byte[]>(1));
+            var provider = new DescriberProvider(new BufferDescriber<byte[]>(1));
+            var ser = new Serializer(provider);
 
             var buffer = ser.ObjectToBuffer(new byte[] {1,2,3,4,5,6 });
             var value = (byte[])ser.BufferToObject(buffer);
@@ -300,7 +306,8 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void CharArrayStructTest()
         {
-            var ser = new Serializer(new BufferDescriber<char[]>(1));
+            var provider = new DescriberProvider(new BufferDescriber<char[]>(1));
+            var ser = new Serializer(provider);
 
             var buffer = ser.ObjectToBuffer(new char[] { '1', '2', 'a' , 'b', 'c', 't' });
             var value = (char[])ser.BufferToObject(buffer);
@@ -317,7 +324,8 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void StringCharArrayStructTest()
         {
-            var ser = new Serializer(new BufferDescriber<char[]>(1));
+            var provider = new DescriberProvider(new BufferDescriber<char[]>(1));
+            var ser = new Serializer(provider);
             var str = "asdfgh";
             var buffer = ser.ObjectToBuffer(str.ToCharArray());
             var value = (char[])ser.BufferToObject(buffer);
@@ -336,7 +344,8 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void GuidTest()
         {
-            var ser = new Serializer(new BlittableDescriber<Guid>(1), new ArrayDescriber<Guid>(2));
+            var provider = new DescriberProvider(new BlittableDescriber<Guid>(1), new ArrayDescriber<Guid>(2));
+            var ser = new Serializer(provider);
 
             var id = Guid.NewGuid();
             var buffer = ser.ObjectToBuffer(id);
@@ -349,7 +358,8 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void ClassArrayHaveNullTest()
         {
-            var ser = new Serializer(new ClassDescriber(1, typeof (TestClassC)), new ArrayDescriber<TestClassC>(2));
+            var provider = new DescriberProvider(new ClassDescriber(1, typeof(TestClassC)), new ArrayDescriber<TestClassC>(2));
+            var ser = new Serializer(provider);
 
             var cs = new TestClassC[]
             {
@@ -372,7 +382,8 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void ClassNullTest()
         {
-            var ser = new Serializer(new ClassDescriber(1, typeof(TestClassC)), new ArrayDescriber<TestClassC>(2));
+            var provider = new DescriberProvider(new ClassDescriber(1, typeof(TestClassC)), new ArrayDescriber<TestClassC>(2));
+            var ser = new Serializer(provider);
 
           
 
@@ -405,8 +416,8 @@ namespace Regulus.Serialization.Tests
                 255,
                 0
             };
-
-            var ser = new Serializer(new BlittableDescriber(1, typeof (byte)), new ArrayDescriber<byte>(2));
+            var provider = new DescriberProvider(new BlittableDescriber(1, typeof(byte)), new ArrayDescriber<byte>(2));
+            var ser = new Serializer(provider);
 
             var buffer = ser.ObjectToBuffer(bytes);
             var result = ser.BufferToObject(buffer) as byte[];
@@ -437,8 +448,8 @@ namespace Regulus.Serialization.Tests
                 255,
                 0
             };
-
-            var ser = new Serializer(new ByteArrayDescriber(1), new NumberDescriber(2 , typeof(int)));
+            var provider = new DescriberProvider(new ByteArrayDescriber(1), new NumberDescriber(2, typeof(int)));
+            var ser = new Serializer(provider);
 
             var buffer = ser.ObjectToBuffer(bytes);
             var result = ser.BufferToObject(buffer) as byte[];
@@ -452,8 +463,8 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void StringTest()
         {
-
-            var ser = new Serializer(new StringDescriber(1) , new NumberDescriber(2 , typeof(char)) , new ArrayDescriber(3 , typeof(char[])) );
+            var provider = new DescriberProvider(new StringDescriber(1), new NumberDescriber(2, typeof(char)), new ArrayDescriber(3, typeof(char[])));
+            var ser = new Serializer(provider);
             
 
             var str = "fliwjfo3f3fnmsdlgmnlgrkmbr'nhmlredhgnedra'lngh";
@@ -467,8 +478,8 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void CharArrayTest()
         {
-
-            var ser = new Serializer(new NumberDescriber(2, typeof(char)), new ArrayDescriber(3, typeof(char[])));
+            var provider = new DescriberProvider(new NumberDescriber(2, typeof(char)), new ArrayDescriber(3, typeof(char[])));
+            var ser = new Serializer(provider);
 
 
             var str = new char[] {'d' ,'a'};
@@ -495,7 +506,23 @@ namespace Regulus.Serialization.Tests
         }
 
 
-       
+        [NUnit.Framework.Test()]
+        public void TestSerializer1()
+        {
+            var types = new[] {typeof(int), typeof(int[]), typeof(float), typeof(string), typeof(char), typeof(char[])};
+
+            var ser = new Serializer(new DescriberBuilder(types));
+
+            var intZeroBuffer = ser.ObjectToBuffer("123");
+
+            var intZero = ser.BufferToObject(intZeroBuffer);
+
+
+            Assert.AreEqual("123" , intZero);
+        }
+
+
+
     }
 
     

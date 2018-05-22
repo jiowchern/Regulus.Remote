@@ -68,7 +68,7 @@ namespace Regulus.Serialization
             return offset - begin; 
         }
 
-        void ITypeDescriber.SetMap(TypeSet type_set)
+        void ITypeDescriber.SetMap(ITypeDescriberFinder type_set)
         {
             var type = type_set.GetByType(typeof(int));
             _IntTypeDescriber = type;

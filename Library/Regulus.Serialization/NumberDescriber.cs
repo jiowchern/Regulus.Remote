@@ -126,7 +126,8 @@ namespace Regulus.Serialization
         {
             return (T)o;
         }
-        public void SetMap(TypeSet type_set)
+
+        void ITypeDescriber.SetMap(ITypeDescriberFinder type_set)
         {
  
         }

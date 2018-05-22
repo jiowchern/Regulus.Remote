@@ -79,30 +79,40 @@ namespace Regulus.BehaviourTree.Yield
 
     public class Coroutine : ITicker    
     {
-        private readonly Infomation _Infomation;
+        
         private readonly IEnumerable<IInstructable> _Provider;
         private IInstructable _Current;
         private IEnumerator<IInstructable> _Action;
-        
+        private readonly Guid _Id;
+        private readonly string _Tag;
+
 
         public Coroutine(Expression<Func<IEnumerable<IInstructable>>> expression)
         {
+            _Id = Guid.NewGuid();
             var methodCallExpression = expression.Body as MethodCallExpression;
             if (methodCallExpression == null)
                 throw new NotSupportedException(string.Format("The expression is a {0} , must a {1}", expression.Body.NodeType, ExpressionType.Call));
 
-            var tag = methodCallExpression.Method.Name;
+            _Tag = methodCallExpression.Method.Name;
 
             
-            _Infomation = new Infomation();
-            _Infomation.Tag = tag;
+            
             _Provider = expression.Compile()();
 
             _Reset();
         }
-        void ITicker.GetInfomation(ref List<Infomation> nodes)
+
+        Guid ITicker.Id { get { return _Id; } }
+        string ITicker.Tag { get { return _Tag; } }
+        ITicker[] ITicker.GetChilds()
         {
-            nodes.Add(_Infomation);
+            return new ITicker[0];
+        }
+
+        void ITicker.GetPath(ref List<Guid> nodes)
+        {
+            nodes.Add(_Id);
         }
 
 
@@ -161,26 +171,35 @@ namespace Regulus.BehaviourTree.ActionHelper
         private readonly IEnumerable<TICKRESULT> _Provider;
         private IEnumerator<TICKRESULT> _Action;
         
-        private Infomation _Infomation;
+        
+        private readonly Guid _Id;
+        private readonly string _Tag;
+
         public Coroutine(Expression<Func<IEnumerable<TICKRESULT>>>  expression)
         {
-
+            _Id = Guid.NewGuid();
             var methodCallExpression = expression.Body as MethodCallExpression;
             if(methodCallExpression == null)
                 throw new NotSupportedException(string.Format("The expression is a {0} , must a {1}" , expression.Body.NodeType  , ExpressionType.Call));
 
-            var tag = methodCallExpression.Method.Name;
-            _Infomation = new Infomation() ;
-            _Infomation.Tag = tag;
+            _Tag = methodCallExpression.Method.Name;
+            
             _Provider = expression.Compile()();
             _Action = _Provider.GetEnumerator();
         }
 
 
-        void ITicker.GetInfomation(ref List<Infomation> nodes)
-        {
-            nodes.Add(_Infomation);
+        Guid ITicker.Id { get { return _Id; } }
+        string ITicker.Tag { get { return _Tag; } }
 
+        ITicker[] ITicker.GetChilds()
+        {
+            return new ITicker[0];
+        }
+
+        void ITicker.GetPath(ref List<Guid> nodes)
+        {
+            nodes.Add(_Id);
         }
 
         void ITicker.Reset()

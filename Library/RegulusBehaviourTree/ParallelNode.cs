@@ -30,10 +30,7 @@ namespace Regulus.BehaviourTree
                 }                
             }
 
-            public void GetInfomation(ref List<Infomation> nodes)
-            {
-                _Child.GetInfomation(ref nodes);
-            }
+            
 
             public void Reset()
             {
@@ -48,24 +45,25 @@ namespace Regulus.BehaviourTree
                 _Result = TICKRESULT.RUNNING;
             }
         }
-        private readonly List<Item> _Childs;        
+        private readonly List<Item> _Childs;
+        private readonly List<ITicker> _Tickers;
+        private readonly Guid _Id;
+        private readonly string _Tag;
 
-        
 
         public ParallelNode(bool same_is_success)
         {
+            _Id = Guid.NewGuid();
+            _Tag = "Parallel";
             _SameIsSuccess = same_is_success;
             _Childs = new List<Item>();
+            _Tickers = new List<ITicker>();
         }
 
 
-        void ITicker.GetInfomation(ref List<Infomation> nodes)
-        {
-            foreach (var ticker in _Childs)
-            {
-                ticker.GetInfomation(ref nodes);
-            }
-        }
+        Guid ITicker.Id { get { return _Id; } }
+        string ITicker.Tag { get { return _Tag; } }
+
 
         void ITicker.Reset()
         {
@@ -75,7 +73,22 @@ namespace Regulus.BehaviourTree
             }
         }
 
-        public TICKRESULT Tick(float delta)
+        ITicker[] ITicker.GetChilds()
+        {
+
+            return _Tickers.ToArray();
+        }
+
+        void ITicker.GetPath(ref List<Guid> nodes)
+        {
+            nodes.Add(_Id);
+            foreach (var child in _Tickers)
+            {
+                child.GetPath(ref nodes);
+            }            
+        }
+
+        TICKRESULT ITicker.Tick(float delta)
         {
 
             foreach (var child in _Childs)
@@ -104,9 +117,10 @@ namespace Regulus.BehaviourTree
             return TICKRESULT.FAILURE;
         }
 
-        public void Add(ITicker child)
+        void IParent.Add(ITicker child)
         {
             _Childs.Add(new Item(child));
+            _Tickers.Add(child);
         }
     }
 }

@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace Regulus.BehaviourTree.Tests
 {
-    public class GetNodesTest
+    public class GetChildsTest
     {
         class Test
         {
@@ -28,7 +28,7 @@ namespace Regulus.BehaviourTree.Tests
             }
         }
         [NUnit.Framework.Test()]
-        public void GetNode1()
+        public void GetChilds1()
         {
             var test = new Test();
             var builder = new Regulus.BehaviourTree.Builder();
@@ -40,26 +40,16 @@ namespace Regulus.BehaviourTree.Tests
 
                 .End().Build();
 
+            var childs = ticker.GetChilds();
 
-            List<Infomation> nodes = new List<Infomation>();
-            ticker.GetInfomation(ref nodes);
-            Assert.AreEqual(0 , nodes.Count);
+            Assert.AreEqual("Sequence" , ticker.Tag);
 
-            ticker.Tick(0);
-            nodes.Clear();
-            ticker.GetInfomation(ref nodes);
-            Assert.AreEqual("Call1", nodes[0].Tag);
+            Assert.AreEqual("Call1", childs[0].Tag);
 
+            Assert.AreEqual("Call2", childs[1].Tag);
 
-            ticker.Tick(0);
-            nodes.Clear();
-            ticker.GetInfomation(ref nodes);
-            Assert.AreEqual("Call2", nodes[0].Tag);
+            Assert.AreEqual("Call1", childs[2].Tag);
 
-            ticker.Tick(0);
-            nodes.Clear();
-            ticker.GetInfomation(ref nodes);
-            Assert.AreEqual("Call1", nodes[0].Tag);
 
         }
 

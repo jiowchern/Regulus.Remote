@@ -6,16 +6,30 @@ namespace Regulus.BehaviourTree
     internal class InvertNode  : IParent
     {
         private ITicker _Ticker;
+        private readonly Guid _Id;
+        private string _Tag;
 
         public InvertNode()
-        {            
+        {
+            _Id = Guid.NewGuid();
 
+            _Tag = "Invert";
         }
 
 
-        void ITicker.GetInfomation(ref  List<Infomation> nodes)
+        public Guid Id { get { return _Id; } }
+
+        string ITicker.Tag { get { return _Tag; } }
+
+        ITicker[] ITicker.GetChilds()
         {
-            _Ticker.GetInfomation(ref nodes);
+            return new [] { _Ticker };
+        }
+
+        void ITicker.GetPath(ref List<Guid> nodes)
+        {
+            nodes.Add(_Id);
+            _Ticker.GetPath(ref nodes);
         }
 
         void ITicker.Reset()

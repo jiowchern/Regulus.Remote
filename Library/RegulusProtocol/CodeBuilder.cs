@@ -199,8 +199,7 @@ namespace Regulus.Protocol
             serializer_types.Add(typeof(Regulus.Remoting.PackageRelease));
 
             foreach (var serializerType in serializer_types)
-            {
-                
+            {                
                 foreach (var type in new TypeDisintegrator(serializerType).Types)
                 {                    
                     types.Add(type);
