@@ -5,6 +5,7 @@ md artifact\Library\Client
 md artifact\Library\Client\Remote
 md artifact\Library\Client\Standalone
 md artifact\Library\BehaviourTree
+md artifact\Library\Serialization
 
 md artifact\Tool
 md artifact\Tool\Server
@@ -12,6 +13,7 @@ md artifact\Tool\ProtocolBuilder
 
 copy Library\RemotingNativeSoul\bin\Release\*.* artifact\Library\Server
 copy Library\RegulusBehaviourTree\bin\Release\*.* artifact\Library\BehaviourTree
+copy Library\Regulus.Serialization\bin\Release\*.* artifact\Library\Serialization
 copy Library\RemotingNativeGhost\bin\Release\*.* artifact\Library\Client\Remote
 copy Library\RemotingStandalong\bin\Release\*.* artifact\Library\Client\Standalone
 
