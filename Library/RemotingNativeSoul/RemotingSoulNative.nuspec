@@ -2,20 +2,20 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>RegulusRemotingServer</id>
-        <version>0.3.2</version>
+        <version>0.4.0</version>
         <authors>Regulus</authors>
         <projectUrl>https://github.com/jiowchern/Regulus</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>tcp/ip socket</description>
         <language>zh-TW</language>
         <dependencies>
-            <dependency id="RegulusRemoting" version="0.3.0" />
+            <dependency id="RegulusRemoting" version="0.4.0" />
         </dependencies>
     </metadata>
     <files>
-        <file src="bin\release\RegulusRemotingSoulNative.dll" target="lib\net35\RegulusRemotingSoulNative.dll" />
-        <file src="bin\release\RegulusRemotingSoulNative.pdb" target="lib\net35\RegulusRemotingSoulNative.pdb" />
-        <file src="bin\release\RegulusRemotingSoulNative.xml" target="lib\net35\RegulusRemotingSoulNative.xml" />
+        <file src="bin\release\RegulusRemotingSoulNative.dll" target="lib\net40\RegulusRemotingSoulNative.dll" />
+        <file src="bin\release\RegulusRemotingSoulNative.pdb" target="lib\net40\RegulusRemotingSoulNative.pdb" />
+        <file src="bin\release\RegulusRemotingSoulNative.xml" target="lib\net40\RegulusRemotingSoulNative.xml" />
 		
     </files>
 </package>

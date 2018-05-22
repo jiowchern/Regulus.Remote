@@ -2,22 +2,22 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>RegulusRemoting</id>
-        <version>0.3.2</version>
+        <version>0.4.0</version>
         <authors>Regulus</authors>
         <iconUrl>https://github.com/jiowchern/Regulus</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>remoting core</description>
         <language>zh-TW</language>
         <dependencies>
-            <dependency id="RegulusLibrary" version="0.3.0" />
+            <dependency id="RegulusLibrary" version="0.4.0" />
         </dependencies>
     </metadata>
     <files>
-        <file src="bin\release\RegulusRemoting.dll" target="lib\net35\RegulusRemoting.dll" />
-        <file src="bin\release\RegulusRemoting.pdb" target="lib\net35\RegulusRemoting.pdb" />
-        <file src="bin\release\RegulusRemoting.xml" target="lib\net35\RegulusRemoting.xml" />
-        <file src="bin\release\Regulus.Network.dll" target="lib\net35\Regulus.Network.dll" />
-        <file src="bin\release\Regulus.Network.pdb" target="lib\net35\Regulus.Network.pdb" />
+        <file src="bin\release\RegulusRemoting.dll" target="lib\net40\RegulusRemoting.dll" />
+        <file src="bin\release\RegulusRemoting.pdb" target="lib\net40\RegulusRemoting.pdb" />
+        <file src="bin\release\RegulusRemoting.xml" target="lib\net40\RegulusRemoting.xml" />
+        <file src="bin\release\Regulus.Network.dll" target="lib\net40\Regulus.Network.dll" />
+        <file src="bin\release\Regulus.Network.pdb" target="lib\net40\Regulus.Network.pdb" />
         
     </files>
 </package>
