@@ -2,9 +2,8 @@ using System;
 
 namespace Regulus.Serialization
 {
-    public interface ITypeDescriberFinder
+    public interface ITypeDescriberFinder<in TKey>
     {
-        ITypeDescriber GetById(int id);
-        ITypeDescriber GetByType(Type type);
+        ITypeDescriber Get(TKey id);        
     }
 }

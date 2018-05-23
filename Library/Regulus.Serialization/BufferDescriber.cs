@@ -80,7 +80,7 @@ namespace Regulus.Serialization
             return Activator.CreateInstance(_Type, new object[] { len } ) as Array;
         }
 
-        void ITypeDescriber.SetMap(ITypeDescriberFinder type_set)
+        void ITypeDescriber.SetMap(ITypeDescriberFinder<Type> type_set)
         {
             
         }

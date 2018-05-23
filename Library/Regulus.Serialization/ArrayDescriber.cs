@@ -28,7 +28,7 @@ namespace Regulus.Serialization
 
         private readonly Type _ElementType;
 
-        private ITypeDescriberFinder _TypeSet;
+        private ITypeDescriberFinder<Type> _TypeSet;
 
         public ArrayDescriber(int id , Type type)
         {
@@ -206,13 +206,13 @@ namespace Regulus.Serialization
             
         }
 
-        void ITypeDescriber.SetMap(ITypeDescriberFinder type_set)
+        void ITypeDescriber.SetMap(ITypeDescriberFinder<Type> type_set)
         {
             _TypeSet = type_set;
         }
 
         private ITypeDescriber _GetDescriber(Type type){
-            return _TypeSet.GetByType(type);
+            return _TypeSet.Get(type);
         }
     }
 }

@@ -16,7 +16,7 @@ namespace Regulus.Serialization
                 
         private readonly object _Default;
 
-        private ITypeDescriberFinder _TypeSet;
+        private ITypeDescriberFinder<Type> _TypeSet;
 
         public ClassDescriber(int id , Type type)
         {
@@ -81,7 +81,7 @@ namespace Regulus.Serialization
 
         private ITypeDescriber _GetDescriber(FieldInfo field)
         {
-            return _TypeSet.GetByType(field.FieldType);
+            return _TypeSet.Get(field.FieldType);
         }
 
         int ITypeDescriber.ToBuffer(object instance, byte[] buffer, int begin)
@@ -174,7 +174,7 @@ namespace Regulus.Serialization
 
         }
 
-        void ITypeDescriber.SetMap(ITypeDescriberFinder type_set)
+        void ITypeDescriber.SetMap(ITypeDescriberFinder<Type> type_set)
         {
             _TypeSet = type_set;
         }

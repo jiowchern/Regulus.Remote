@@ -58,6 +58,9 @@
     <Compile Include="ClassDescriber.cs" />
     <Compile Include="DescriberBuilder.cs" />
     <Compile Include="DescriberProvider.cs" />
+    <Compile Include="Dynamic\ITypeFinder.cs" />
+    <Compile Include="Dynamic\Serializer.cs" />
+    <Compile Include="Dynamic\DescriberFinder.cs" />
     <Compile Include="EnumDescriber.cs" />
     <Compile Include="ITypeDescriber.cs" />
     <Compile Include="ITypeDescriberFinder.cs" />
