@@ -7,14 +7,14 @@ namespace Regulus.Serialization
 {
     public class BlittableDescriber<T> : BlittableDescriber
     {
-        public BlittableDescriber(int id) : base(id, typeof (T))
+        public BlittableDescriber() : base(typeof (T))
         {
             
         }
     }
     public class BlittableDescriber : ITypeDescriber 
     {
-        private readonly int _Id;
+        
 
         private readonly Type _Type;
 
@@ -22,9 +22,9 @@ namespace Regulus.Serialization
 
         private int _Size;
 
-        public BlittableDescriber(int id, Type type)
+        public BlittableDescriber(Type type)
         {
-            _Id = id;
+        
             _Type = type;
 
             _Default = Activator.CreateInstance(type);
@@ -34,15 +34,12 @@ namespace Regulus.Serialization
             }
             catch (Exception ex)
             {                
-                throw new DescriberException(typeof(BlittableDescriber) , _Type , _Id , "Size" , ex);
+                throw new DescriberException(typeof(BlittableDescriber) , _Type , "Size" , ex);
             }
             
         }
 
-        int ITypeDescriber.Id
-        {
-            get { return _Id; }
-        }
+        
 
         Type ITypeDescriber.Type
         {
@@ -75,7 +72,7 @@ namespace Regulus.Serialization
             }
             catch (Exception ex)
             {
-                throw new DescriberException(typeof(BlittableDescriber), _Type, _Id, "ToBuffer", ex);
+                throw new DescriberException(typeof(BlittableDescriber), _Type, "ToBuffer", ex);
             }
             finally
             {
@@ -105,11 +102,11 @@ namespace Regulus.Serialization
             }
             catch (Exception ex)
             {
-                throw new DescriberException(typeof (BlittableDescriber), _Type, _Id, "ToObject", ex);             
+                throw new DescriberException(typeof (BlittableDescriber), _Type, "ToObject", ex);             
             }            
         }
 
-        void ITypeDescriber.SetMap(ITypeDescriberFinder<Type> type_set)
+        void ITypeDescriber.SetFinder(IDescribersFinder type_set)
         {
             
         }

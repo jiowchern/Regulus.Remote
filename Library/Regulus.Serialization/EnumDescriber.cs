@@ -6,31 +6,28 @@ namespace Regulus.Serialization
 
     public class EnumDescriber<T> : EnumDescriber
     {
-        public EnumDescriber(int id) : base(id, typeof (T))
+        public EnumDescriber() : base(typeof (T))
         {
             
         }
     }
     public class EnumDescriber : ITypeDescriber 
     {
-        private readonly int _Id;
+        
 
         private readonly Type _Type;
 
         private readonly object _Default;
 
-        public EnumDescriber(int id , Type type)
+        public EnumDescriber(Type type)
         {
-            _Id = id;
+        
             _Type = type;
 
             _Default = Activator.CreateInstance(type);
         }
 
-        int ITypeDescriber.Id
-        {
-            get { return _Id; }
-        }
+        
 
         Type ITypeDescriber.Type
         {
@@ -61,7 +58,7 @@ namespace Regulus.Serialization
             return readed;
         }
 
-        void ITypeDescriber.SetMap(ITypeDescriberFinder<Type> type_set)
+        void ITypeDescriber.SetFinder(IDescribersFinder type_set)
         {
             
         }

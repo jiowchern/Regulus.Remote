@@ -11,14 +11,13 @@ namespace Regulus.Serialization
 
     public class ArrayDescriber<T> : ArrayDescriber
     {
-        public ArrayDescriber(int id) : base(id, typeof (T[]))
+        public ArrayDescriber() : base(typeof (T[]))
         {
             
         }
     }
     public class ArrayDescriber : ITypeDescriber 
-    {
-        private readonly int _Id;
+    {        
 
         private readonly Type _Type;
 
@@ -28,14 +27,13 @@ namespace Regulus.Serialization
 
         private readonly Type _ElementType;
 
-        private ITypeDescriberFinder<Type> _TypeSet;
+        private IDescribersFinder _TypeSet;
 
-        public ArrayDescriber(int id , Type type)
+        public ArrayDescriber(Type type)
         {
 
             
-            _Default = null;
-            _Id = id;
+            _Default = null;            
             _Type = type;
             _ElementType = type.GetElementType();
             try
@@ -51,15 +49,12 @@ namespace Regulus.Serialization
             catch (Exception ex)
             {
                 
-                throw new DescriberException(typeof(ArrayDescriber), _Type, _Id, "_DefaultElement", ex);
+                throw new DescriberException(typeof(ArrayDescriber), _Type, "_DefaultElement", ex);
             }
             
         }
 
-        int ITypeDescriber.Id
-        {
-            get { return _Id; }
-        }
+        
 
         Type ITypeDescriber.Type
         {
@@ -164,7 +159,7 @@ namespace Regulus.Serialization
             catch (Exception ex)
             {
                 
-                throw new DescriberException(typeof(ArrayDescriber) , _Type , _Id ,"ToBuffer" ,ex);
+                throw new DescriberException(typeof(ArrayDescriber) , _Type , "ToBuffer" ,ex);
             }
             
         }
@@ -201,12 +196,12 @@ namespace Regulus.Serialization
             catch (Exception ex)
             {
                 
-                throw new DescriberException(typeof(ArrayDescriber), _Type, _Id, "ToObject", ex); ;
+                throw new DescriberException(typeof(ArrayDescriber), _Type,  "ToObject", ex); ;
             }   
             
         }
 
-        void ITypeDescriber.SetMap(ITypeDescriberFinder<Type> type_set)
+        void ITypeDescriber.SetFinder(IDescribersFinder type_set)
         {
             _TypeSet = type_set;
         }

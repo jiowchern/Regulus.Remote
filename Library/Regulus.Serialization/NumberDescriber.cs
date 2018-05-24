@@ -11,31 +11,28 @@ namespace Regulus.Serialization
 
     public class NumberDescriber<T> : NumberDescriber
     {
-        public NumberDescriber(int id) : base(id , typeof(T)) { }
+        public NumberDescriber() : base(typeof(T)) { }
     }
     public class NumberDescriber : ITypeDescriber 
     {
-        private readonly int _Id     ;
+        
         private readonly Type _Type;
         private readonly object _Default;
         private readonly int _Size;
 
 
-        public NumberDescriber(int id , Type type)
+        public NumberDescriber(Type type)
         {
 
             _Default = Activator.CreateInstance(type);
 
             _Size = Marshal.SizeOf(type);
             
-            _Id = id;
+            
             _Type = type;
         }
 
-        int ITypeDescriber.Id
-        {
-            get { return _Id; }
-        }
+        
 
         public Type Type { get { return _Type; } }
 
@@ -127,7 +124,7 @@ namespace Regulus.Serialization
             return (T)o;
         }
 
-        void ITypeDescriber.SetMap(ITypeDescriberFinder<Type> type_set)
+        void ITypeDescriber.SetFinder(IDescribersFinder type_set)
         {
  
         }

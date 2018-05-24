@@ -4,7 +4,7 @@ namespace Regulus.Serialization
 {
     public interface ITypeDescriber   
     {
-        int Id { get;  }
+        
         Type Type { get;  }
 
         object Default { get; }
@@ -13,6 +13,6 @@ namespace Regulus.Serialization
         int ToBuffer(object instance, byte[] buffer, int begin);
         int ToObject(byte[] buffer, int begin, out object instnace );
 
-        void SetMap(ITypeDescriberFinder<Type> type_set);
+        void SetFinder(IDescribersFinder type_set);
     }
 }

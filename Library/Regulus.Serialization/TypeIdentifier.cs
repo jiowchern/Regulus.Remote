@@ -8,40 +8,40 @@ namespace Regulus.Serialization
     public class TypeIdentifier
     {
         public readonly ITypeDescriber Describer;
-        public TypeIdentifier(Type type , int id)
+        public TypeIdentifier(Type type )
         {
             
             if (_IsEnum(type))
             {
-                Describer = new EnumDescriber(id , type);
+                Describer = new EnumDescriber(type);
             }
             else if (_IsNumber(type))
             {
-                Describer = new NumberDescriber(id , type);
+                Describer = new NumberDescriber(type);
             }
             else if (_IsByteArray(type))
             {
-                Describer = new ByteArrayDescriber(id);
+                Describer = new ByteArrayDescriber();
             }
             else if (_IsBuffer(type))
             {
-                Describer = new BufferDescriber(id, type);
+                Describer = new BufferDescriber(type);
             }
             else if (_IsBittable(type))
             {
-                Describer = new BlittableDescriber(id, type);
+                Describer = new BlittableDescriber(type);
             }
             else if (_IsString(type))
             {
-                Describer = new StringDescriber(id);
+                Describer = new StringDescriber();
             }
             else if (_IsArray(type))
             {
-                Describer = new ArrayDescriber(id , type);
+                Describer = new ArrayDescriber(type);
             }            
             else if (_IsClass(type))
             {
-                Describer = new ClassDescriber(id , type);
+                Describer = new ClassDescriber(type);
             }
             else 
                 throw new Exception("Unrecognized type " + type.FullName );

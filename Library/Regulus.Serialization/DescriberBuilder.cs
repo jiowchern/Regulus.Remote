@@ -7,18 +7,18 @@ namespace Regulus.Serialization
 {
     public class DescriberBuilder
     {
-        public readonly ITypeDescriberProvider<int> Describers;
+        public readonly DescriberProvider Describers;
         public DescriberBuilder(params Type[] types)
         {
             Describers = _BuildDescribers(types);
         }
-        ITypeDescriberProvider<int> _BuildDescribers(params Type[] types)
+        DescriberProvider _BuildDescribers(params Type[] types)
         {
-            int id = 0;
+            
             var describers = new List<ITypeDescriber>();
             foreach (var type in types)
             {
-                var identifier = new TypeIdentifier(type , ++id);
+                var identifier = new TypeIdentifier(type );
                 describers.Add(identifier.Describer);
                
             }

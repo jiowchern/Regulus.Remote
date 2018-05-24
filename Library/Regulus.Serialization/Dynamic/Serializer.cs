@@ -8,7 +8,7 @@ namespace Regulus.Serialization.Dynamic
 {
     public class Serializer
     {
-        private readonly ITypeDescriberFinder<string> _KeyFinder;
+        private readonly DescribersFinder _KeyFinder;
 
         public Serializer() : this(new StandardFinder())
         {
@@ -16,7 +16,7 @@ namespace Regulus.Serialization.Dynamic
         }
         public Serializer(ITypeFinder finder)
         {
-            _KeyFinder = new DescriberFinder(finder);            
+            _KeyFinder = new DescribersFinder(finder);            
         }
 
         

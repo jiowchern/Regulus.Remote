@@ -8,9 +8,9 @@ namespace Regulus.Serialization
 {
     public class Serializer : ISerializer
     {
-        private readonly ITypeDescriberProvider<int> _Provider;
+        private readonly DescriberProvider _Provider;
 
-        public Serializer(ITypeDescriberProvider<int> provider)
+        public Serializer(DescriberProvider provider)
         {
 
             _Provider = provider;
@@ -37,8 +37,8 @@ namespace Regulus.Serialization
                 }
 
                 var type = instance.GetType();
-                var describer = _Provider.GetTypeFinder().Get(type) ;
-                var id = describer.Id;
+                var describer = _Provider._TypeDescribers.Get(type) ;
+                var id = _Provider._KeyDescribers.Get(type);
                 var idCount = Varint.GetByteCount((ulong)id);
                 var bufferCount = describer.GetByteCount(instance);
                 var buffer = new byte[idCount + bufferCount];
@@ -79,14 +79,14 @@ namespace Regulus.Serialization
                 if (id == 0)
                     return null;
 
-                var describer = _Provider.GetKeyFinder().Get((int)id) ;
+                var describer = _Provider._KeyDescribers.Get((int)id) ;
                 object instance;
                 describer.ToObject(buffer, readIdCount, out instance);
                 return instance;
             }
             catch (DescriberException ex)
             {
-                var describer = _Provider.GetKeyFinder().Get((int)id);
+                var describer = _Provider._KeyDescribers.Get((int)id);
                 if (describer != null)
                     throw new SystemException(string.Format("BufferToObject {0}:{1}", id , describer.Type.FullName), ex);
                 else

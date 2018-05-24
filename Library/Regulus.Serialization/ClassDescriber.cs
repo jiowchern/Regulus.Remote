@@ -8,7 +8,7 @@ namespace Regulus.Serialization
 {
     public class ClassDescriber : ITypeDescriber 
     {
-        private readonly int _Id;
+        
 
         private readonly Type _Type;
 
@@ -16,12 +16,11 @@ namespace Regulus.Serialization
                 
         private readonly object _Default;
 
-        private ITypeDescriberFinder<Type> _TypeSet;
+        private IDescribersFinder _TypeSet;
 
-        public ClassDescriber(int id , Type type)
+        public ClassDescriber(Type type)
         {
-            _Default = null;
-            _Id = id;
+            _Default = null;            
             _Type = type;
 
             _Fields = (from field in _Type.GetFields()
@@ -32,10 +31,7 @@ namespace Regulus.Serialization
         }
 
 
-        int ITypeDescriber.Id
-        {
-            get { return _Id; }
-        }
+        
 
         Type ITypeDescriber.Type
         {
@@ -74,7 +70,7 @@ namespace Regulus.Serialization
             catch (Exception ex)
             {
 
-                throw new DescriberException(typeof(ClassDescriber), _Type, _Id, "GetByteCount", ex);
+                throw new DescriberException(typeof(ClassDescriber), _Type, "GetByteCount", ex);
             }
             
         }
@@ -117,7 +113,7 @@ namespace Regulus.Serialization
             catch (Exception ex)
             {
 
-                throw new DescriberException(typeof(ClassDescriber), _Type, _Id, "ToBuffer", ex);
+                throw new DescriberException(typeof(ClassDescriber), _Type, "ToBuffer", ex);
             }
             
         }
@@ -168,13 +164,13 @@ namespace Regulus.Serialization
             catch (Exception ex)
             {
 
-                throw new DescriberException(typeof(ClassDescriber), _Type, _Id, "ToObject", ex);
+                throw new DescriberException(typeof(ClassDescriber), _Type, "ToObject", ex);
             }
             
 
         }
 
-        void ITypeDescriber.SetMap(ITypeDescriberFinder<Type> type_set)
+        void ITypeDescriber.SetFinder(IDescribersFinder type_set)
         {
             _TypeSet = type_set;
         }

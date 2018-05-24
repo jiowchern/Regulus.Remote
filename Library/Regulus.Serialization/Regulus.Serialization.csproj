@@ -60,17 +60,18 @@
     <Compile Include="DescriberProvider.cs" />
     <Compile Include="Dynamic\ITypeFinder.cs" />
     <Compile Include="Dynamic\Serializer.cs" />
-    <Compile Include="Dynamic\DescriberFinder.cs" />
+    <Compile Include="Dynamic\DescribersFinder.cs" />
     <Compile Include="EnumDescriber.cs" />
+    <Compile Include="IDescribersFinder.cs" />
+    <Compile Include="IntDescribers.cs" />
     <Compile Include="ITypeDescriber.cs" />
-    <Compile Include="ITypeDescriberFinder.cs" />
-    <Compile Include="ITypeDescriberProvider.cs" />
     <Compile Include="NumberDescriber.cs" />
     <Compile Include="DescriberException.cs" />
     <Compile Include="Serializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringDescriber.cs" />
     <Compile Include="BlittableDescriber.cs" />
+    <Compile Include="DescribersFinder.cs" />
     <Compile Include="TypeIdentifier.cs" />
   </ItemGroup>
   <ItemGroup>
