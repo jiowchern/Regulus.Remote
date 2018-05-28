@@ -1,7 +1,7 @@
 version: 0.4.{build}
 branches:
   only:
-  - deploy
+  - master
 image: Visual Studio 2017
 configuration: Release
 nuget:

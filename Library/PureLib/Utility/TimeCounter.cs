@@ -2,8 +2,6 @@
 {
     public class TimeCounter
     {
-	    
-
         private readonly static TimeCounterInternal _TimeCounterInternal = new TimeCounterInternal();
         private long _Last;
         public long Ticks
@@ -16,6 +14,10 @@
             return _TimeCounterInternal.Ticks - _Last;
         }
 
+        public static long SecondTicks
+        {
+            get { return _TimeCounterInternal.Frequency; }
+    }
         public float Second
         {
             get { return (_GetTicks() / (float)_TimeCounterInternal.Frequency); }
