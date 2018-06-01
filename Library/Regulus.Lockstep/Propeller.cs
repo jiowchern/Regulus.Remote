@@ -1,34 +1,49 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Regulus.Lockstep
 {
-    public class Propeller
+    public class Propeller<TStep>
     {
+        
         private readonly long _Interval;
         private long _Ticks;
-        private int _Count;
+        
+        private readonly int _IntervalPerKeyFrame;
+        private  int _FrameCount;
 
-        public Propeller(long interval)
+        private readonly Queue<TStep> _Steps;
+        public Propeller(long interval , int interval_per_key_frame)
         {
+            _Steps = new Queue<TStep>();
             _Interval = interval;
+        
+            _IntervalPerKeyFrame = interval_per_key_frame;
         }
 
-        public void Heartbeat()
+        public void Push(TStep step)
         {
-            _Count++;
-        }
-        public bool Propel(long delta)
-        {
-            _Ticks += delta;
-            if (_Ticks >= _Interval && _Count > 0)
+            _Steps.Enqueue(step);
+            _FrameCount += _IntervalPerKeyFrame;
+
+            if (_Steps.Count > 1)
             {
-                --_Count;
+                _Ticks += _Interval * _IntervalPerKeyFrame;
+            }
+        }
+        public bool Advance(long delta ,out TStep step)
+        {
+            step = default(TStep);
+            if (_FrameCount == 0)
+                return false;
+            _Ticks += delta;
+            if (_Ticks >= _Interval )
+            {
                 _Ticks -= _Interval;
-
+                _FrameCount--;
+                if (_FrameCount % _IntervalPerKeyFrame == 0)
+                {                    
+                    step = _Steps.Dequeue();                    
+                }
                 return true;
             }
 

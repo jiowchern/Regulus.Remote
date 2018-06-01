@@ -35,7 +35,8 @@ namespace Regulus.Serialization
                 {
                     return _NullBuffer();
                 }
-
+             
+                
                 var type = instance.GetType();
                 var describer = _Provider._TypeDescribers.Get(type) ;
                 var id = _Provider._KeyDescribers.Get(type);

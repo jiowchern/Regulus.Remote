@@ -25,9 +25,11 @@ namespace Regulus.Utility
         }
 
         private void _Run()
-        {            
+        {
+            
             while (_Enable)
-            {                
+            {
+            
                 Action action;
                 if (_Tasks.TryDequeue(out action))
                 {

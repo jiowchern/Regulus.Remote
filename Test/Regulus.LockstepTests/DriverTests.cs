@@ -5,69 +5,50 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NSubstitute;
 
 namespace Regulus.Lockstep.Tests
 {
     [TestFixture()]
     public class DriverTests
     {
-        [Test()]
-        public void DriveTest()
-        {
-            var driver = new Regulus.Lockstep.Driver<int>(1000,3);
-            driver.Push(1);
-            int command;
-            bool frame;
-            driver.Drive(1000, out frame , out command  );
-
-            Assert.AreEqual(true ,frame);
-            Assert.AreEqual(0, command);
-        }
+        
 
         [Test()]
-        public void DriveKeyFrameTest1()
+        public void DriverTest()
         {
-            var driver = new Regulus.Lockstep.Driver<int>(1000, 3);
-            driver.Push(1);
-            int command;
-            bool frame;
-            driver.Drive(1000, out frame, out command);
-            Assert.AreEqual(true, frame);
-            Assert.AreEqual(0, command);
+            var provider = NSubstitute.Substitute.For<ICommandProvidable<int>>();
+            provider.Current.Returns(1);
+            var driver = new Driver<int>(1000);
+            var player = driver.Regist(provider);
+            driver.Advance(1000);
+            var step = player.PopSteps().First();
+            Assert.AreEqual(1 , step.Records[0].Command);
 
-            driver.Drive(1000, out frame, out command);
-            Assert.AreEqual(true, frame);
-            Assert.AreEqual(0, command);
 
-            driver.Drive(1000, out frame, out command);
-            Assert.AreEqual(true, frame);
-            Assert.AreEqual(1, command);
+            Assert.IsTrue(driver.Unregist(player));
         }
+
 
         [Test()]
-        public void DriveKeyFrameTest2()
+        public void DriverRecoverTest()
         {
-            var driver = new Regulus.Lockstep.Driver<int>(1000, 3);
-            driver.Push(1);
-            int command;
-            bool frame;
-            driver.Drive(999, out frame, out command);
-            Assert.AreEqual(false, frame);
-            Assert.AreEqual(0, command);
+            var provider1 = NSubstitute.Substitute.For<ICommandProvidable<int>>();
+            var provider2 = NSubstitute.Substitute.For<ICommandProvidable<int>>();
+            provider1.Current.Returns(1);
+            provider2.Current.Returns(2);
+            var driver = new Driver<int>(1000);
+            var player1 = driver.Regist(provider1);
+            driver.Advance(1000);
 
-            driver.Drive(1001, out frame, out command);
-            Assert.AreEqual(true, frame);
-            Assert.AreEqual(0, command);
+            var player2 = driver.Regist(provider2);
+            var steps = player2.PopSteps().ToArray();
+            Assert.AreEqual(1, steps[0].Records[0].Command);
 
-            driver.Drive(0, out frame, out command);
-            Assert.AreEqual(true, frame);
-            Assert.AreEqual(0, command);
-
-            driver.Drive(0, out frame, out command);
-            Assert.AreEqual(false, frame);
-            Assert.AreEqual(0, command);
-
-
+            Assert.IsTrue(driver.Unregist(player1));
+            Assert.IsTrue(driver.Unregist(player2));
         }
+
+
     }
 }
