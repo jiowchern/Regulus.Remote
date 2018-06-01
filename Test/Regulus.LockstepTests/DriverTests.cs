@@ -12,7 +12,20 @@ namespace Regulus.Lockstep.Tests
     [TestFixture()]
     public class DriverTests
     {
-        
+        [Test()]
+        public void DriverEmptyTest()
+        {
+            var provider = NSubstitute.Substitute.For<ICommandProvidable<int>>();
+            provider.Current.Returns(1);
+            var driver = new Driver<int>(1000);
+            var player = driver.Regist(provider);
+            driver.Advance(0);
+            var stepCount = player.PopSteps().Count();
+            Assert.AreEqual(0, stepCount);
+
+
+            Assert.IsTrue(driver.Unregist(player));
+        }
 
         [Test()]
         public void DriverTest()
@@ -37,9 +50,9 @@ namespace Regulus.Lockstep.Tests
             var provider2 = NSubstitute.Substitute.For<ICommandProvidable<int>>();
             provider1.Current.Returns(1);
             provider2.Current.Returns(2);
-            var driver = new Driver<int>(1000);
+            var driver = new Driver<int>(1);
             var player1 = driver.Regist(provider1);
-            driver.Advance(1000);
+            driver.Advance(1);
 
             var player2 = driver.Regist(provider2);
             var steps = player2.PopSteps().ToArray();

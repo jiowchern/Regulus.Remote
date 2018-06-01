@@ -8,8 +8,10 @@ namespace Regulus.Lockstep
     public class Driver<TCommand>
     {
         private readonly long _Interval;
-        private List<Player<TCommand>> _Players;
+        private readonly List<Player<TCommand>> _Players;
         private readonly History<Record> _History;
+        private long _Ticks;
+
         public Driver(long interval)
         {
             _Interval = interval;
@@ -32,11 +34,18 @@ namespace Regulus.Lockstep
 
         public void Advance(long delta)
         {
-            var step = _History.Write(from p in _Players select new Record() {Id = p.Id, Command = p.Providable.Current});
-            foreach (var player in _Players)
+
+            _Ticks += delta;
+            if (_Ticks >= _Interval)
             {
-                player.Push(step);
+                _Ticks -= _Interval;
+                var step = _History.Write(from p in _Players select new Record() { Id = p.Id, Command = p.Providable.Current });
+                foreach (var player in _Players)
+                {
+                    player.Push(step);
+                }
             }
+            
         }
 
         public bool Unregist(IPlayer<TCommand> player)

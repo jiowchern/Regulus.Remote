@@ -146,5 +146,21 @@ namespace Regulus.Lockstep.Tests
 
 
         }
+
+        [Test()]
+        public void PropellerAdvanceInsufficienTest()
+        {
+            var propeller = new Propeller<int>(1000, 3);
+            propeller.Push(1);
+
+            int step;
+            
+            
+            Assert.AreEqual(false, propeller.Advance(999, out step));
+
+
+
+        }
     }
 }
+
