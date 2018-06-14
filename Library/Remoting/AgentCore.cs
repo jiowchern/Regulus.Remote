@@ -206,7 +206,7 @@ namespace Regulus.Remoting
 		    var map = _Protocol.GetMemberMap();		                
             var type = map.GetInterface(type_id);
             var provider = _QueryProvider(type);
-			var ghost = _BuildGhost(type, _Requester, id, return_type);
+			var ghost = _BuildGhost(type, id, return_type);
 
 		    ghost.CallMethodEvent += new GhostMethodHandler(ghost, _ReturnValueQueue , _Protocol , _Requester ).Run;
 
@@ -370,12 +370,9 @@ namespace Regulus.Remoting
 			}
 		}
 
-		private IGhost _BuildGhost(Type ghost_base_type, IGhostRequest peer, Guid id, bool return_type)
+		private IGhost _BuildGhost(Type ghost_base_type,  Guid id, bool return_type)
 		{
-			if(peer == null)
-			{
-				throw new ArgumentNullException("peer is null");
-			}
+			
 
 			var ghostType = _QueryGhostType(ghost_base_type);
 

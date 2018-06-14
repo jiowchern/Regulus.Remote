@@ -8,11 +8,11 @@ namespace Regulus.Lockstep
     {
         public readonly ICommandProvidable<T> Providable;
         private Queue<Step<Driver<T>.Record>> _Steps;
-        public readonly Guid Id;
+        public readonly int Id;
 
-        public Player(ICommandProvidable<T> providable, IEnumerable<Step<Driver<T>.Record>> records)
+        public Player(int id,ICommandProvidable<T> providable, IEnumerable<Step<Driver<T>.Record>> records)
         {
-            Id = Guid.NewGuid();
+            Id = id;
             Providable = providable;
             _Steps = new Queue<Step<Driver<T>.Record>>(records);
 
@@ -23,7 +23,7 @@ namespace Regulus.Lockstep
 
         
 
-        Guid IPlayer<T>.Id
+        int IPlayer<T>.Id
         {
             get { return Id; }
         }

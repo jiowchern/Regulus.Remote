@@ -15,7 +15,7 @@ namespace Regulus.Lockstep.Tests
         [Test()]
         public void PropellerAdvance1Test()
         {
-            var propeller = new Propeller<int>(1000 , 3);
+            var propeller = new Propeller<int>(1000 , 3,1);
 
             propeller.Push(1);
 
@@ -42,7 +42,7 @@ namespace Regulus.Lockstep.Tests
         [Test()]
         public void PropellerAdvance2Test()
         {
-            var propeller = new Propeller<int>(1000, 3);
+            var propeller = new Propeller<int>(1000, 3,1);
 
             propeller.Push(1);
 
@@ -89,7 +89,7 @@ namespace Regulus.Lockstep.Tests
         [Test()]
         public void PropellerAdvanceSeek1Test()
         {
-            var propeller = new Propeller<int>(100, 3);
+            var propeller = new Propeller<int>(100, 3,1);
             propeller.Push(1);
             propeller.Push(2);
 
@@ -120,7 +120,7 @@ namespace Regulus.Lockstep.Tests
         [Test()]
         public void PropellerAdvanceEmpty1Test()
         {
-            var propeller = new Propeller<int>(1000, 3);
+            var propeller = new Propeller<int>(1000, 3,1);
             int step;
             if (propeller.Advance(1000, out step))
             {
@@ -134,7 +134,7 @@ namespace Regulus.Lockstep.Tests
         [Test()]
         public void PropellerAdvanceEmpty2Test()
         {
-            var propeller = new Propeller<int>(1000, 3);
+            var propeller = new Propeller<int>(1000, 3,1);
             propeller.Push(1);
 
             int step;
@@ -142,15 +142,12 @@ namespace Regulus.Lockstep.Tests
             propeller.Advance(1000, out step);
             propeller.Advance(1000, out step);
             Assert.AreEqual(false, propeller.Advance(1000, out step)); 
-
-
-
         }
 
         [Test()]
         public void PropellerAdvanceInsufficienTest()
         {
-            var propeller = new Propeller<int>(1000, 3);
+            var propeller = new Propeller<int>(1000, 3,1);
             propeller.Push(1);
 
             int step;
@@ -159,6 +156,37 @@ namespace Regulus.Lockstep.Tests
             Assert.AreEqual(false, propeller.Advance(999, out step));
 
 
+
+        }
+
+
+        [Test()]
+        public void PropellerChase()
+        {
+
+            var propeller = new Propeller<string>(1, 3, 3);
+
+            propeller.Push("command");
+            propeller.Push("command");
+            propeller.Push("command");
+            propeller.Push("command");
+
+            string step;
+            Assert.AreEqual(true, propeller.Advance(0, out step));
+            Assert.AreEqual(true, propeller.Advance(0, out step));
+            Assert.AreEqual(true, propeller.Advance(0, out step));
+
+            Assert.AreEqual(true, propeller.Advance(0, out step));
+            Assert.AreEqual(true, propeller.Advance(0, out step));
+            Assert.AreEqual(true, propeller.Advance(0, out step));
+
+            Assert.AreEqual(true, propeller.Advance(0, out step));
+            Assert.AreEqual(true, propeller.Advance(0, out step));
+            Assert.AreEqual(true, propeller.Advance(0, out step));
+
+            Assert.AreEqual(false, propeller.Advance(0, out step));
+            Assert.AreEqual(false, propeller.Advance(0, out step));
+            Assert.AreEqual(false, propeller.Advance(0, out step));
 
         }
     }

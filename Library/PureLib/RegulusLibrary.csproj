@@ -145,6 +145,7 @@
     <Compile Include="Utility\DummyInput.cs" />
     <Compile Include="Utility\DummyView.cs" />
     <Compile Include="Utility\EnumDescription.cs" />
+    <Compile Include="Utility\Invoker.cs" />
     <Compile Include="Utility\ICommand.cs" />
     <Compile Include="Utility\Ini.cs" />
     <Compile Include="Utility\Io.cs" />
@@ -152,6 +153,7 @@
     <Compile Include="Utility\Log.cs" />
     <Compile Include="Utility\LogFileRecorder.cs" />
     <Compile Include="Utility\LogWritter.cs" />
+    <Compile Include="Utility\Notifier.cs" />
     <Compile Include="Utility\Obb.cs" />
     <Compile Include="Utility\Poller.cs" />
     <Compile Include="Utility\PowerRegulator.cs" />

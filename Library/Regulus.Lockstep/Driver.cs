@@ -20,14 +20,14 @@ namespace Regulus.Lockstep
         }
         public IPlayer<TCommand> Regist(ICommandProvidable<TCommand> provider)
         {
-            var player = new Player<TCommand>(provider , _History.GetEnumerable());
+            var player = new Player<TCommand>(_Players.Count + 1 ,  provider , _History.GetEnumerable());
             _Players.Add(player);
             return player;
         }
 
         public class Record
         {   
-            public Guid Id;
+            public int Id;
             public TCommand Command;
 
         }

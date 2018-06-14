@@ -80,6 +80,7 @@
     <Compile Include="TypeTest.cs" />
     <Compile Include="RemotingValueResultTest.cs" />
     <Compile Include="UnitTestDifferenceNoticer.cs" />
+    <Compile Include="Utility\EventTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Library\PureLib\RegulusLibrary.csproj">

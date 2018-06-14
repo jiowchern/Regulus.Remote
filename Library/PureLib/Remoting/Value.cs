@@ -40,11 +40,12 @@ namespace Regulus.Remoting
 		}
 	}
 
-	/// <summary>
-	///     接收或傳送遠端來的資料
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public sealed class Value<T> : IValue
+    
+    /// <summary>
+    ///     接收或傳送遠端來的資料
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public sealed class Value<T> : IValue
 	{
 		private event Action<T> _OnValue;
 
@@ -214,5 +215,7 @@ namespace Regulus.Remoting
 			val = default(T);
 			return false;
 		}
+
+	    
 	}
 }

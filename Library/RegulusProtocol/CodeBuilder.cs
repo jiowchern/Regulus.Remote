@@ -223,7 +223,7 @@ namespace Regulus.Protocol
         private string _GetEventType(Type type, string event_name)
         {
 
-            return $"{type.Namespace}.Event.{type.Name}.{event_name}";
+            return $"{type.Namespace}.Invoker.{type.Name}.{event_name}";
         }
 
         private string _BuildEventCode(Type type, EventInfo info)
@@ -237,7 +237,7 @@ namespace Regulus.Protocol
     using System;  
     using System.Collections.Generic;
     
-    namespace {nameSpace}.Event.{name} 
+    namespace {nameSpace}.Invoker.{name} 
     {{ 
         public class {eventName} : Regulus.Remoting.IEventProxyCreator
         {{
