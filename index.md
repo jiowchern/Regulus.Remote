@@ -1,37 +1,47 @@
-## Welcome to GitHub Pages
+## Regulus Library
+### 目錄
+- Remote Method Invocation Server / Client Framework
+- [序列化](##序列化)
+- 可靠性UDP
+- 行為樹
 
-You can use the [editor on GitHub](https://github.com/jiowchern/Regulus/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+### 序列化
+#### [位置](https://github.com/jiowchern/Regulus/tree/master/Library/Regulus.Serialization)
+#### [測試](https://github.com/jiowchern/Regulus/tree/master/Test/Regulus.SerializationTests)
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+#### 使用說明1
+```C#
+[NUnit.Framework.Test()]
+public void TestSerializer1()
+{
+    // 填入序列化的類型
+    var types = new[] {typeof(int), typeof(int[]), typeof(float), typeof(string), typeof(char), typeof(char[])};
+    var ser = new Serializer(new DescriberBuilder(types));
 
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+    var intZeroBuffer = ser.ObjectToBuffer("123");
+    var intZero = ser.BufferToObject(intZeroBuffer);
+    
+    Assert.AreEqual("123" , intZero);
+}
 ```
+這個方法需要填入要序列化的類型，雖然有使用上不便的情形但是卻能達到最高壓縮效率。
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+#### 使用說明2
+```C#
+[NUnit.Framework.Test()]
+public void TestSerializerStringArray()
+{
+    var ser = new Regulus.Serialization.Dynamic.Serializer();
 
-### Jekyll Themes
+    var buf = ser.ObjectToBuffer(new[] { "1", "2", "3", "4", "5" });
+    var val = (string[])ser.BufferToObject(buf);
+    Assert.AreEqual("1", val[0]);
+    Assert.AreEqual("2", val[1]);
+    Assert.AreEqual("3", val[2]);
+    Assert.AreEqual("4", val[3]);
+    Assert.AreEqual("5", val[4]);
+}
+```
+省略掉使用者自行填入序列化類型，但是相對序列化出來的資料比第一個方法大。
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/jiowchern/Regulus/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
 
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
