@@ -9,6 +9,9 @@
 * 行為樹組件
 * 可靠性UDP組件
 * 序列化組件
+* 幀同步組件
+
+[說明主頁](http://jiowchern.github.io/Regulus/)
 
 
 ## 功能
