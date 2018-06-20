@@ -10,7 +10,7 @@
 #### [測試](https://github.com/jiowchern/Regulus/tree/master/Test/Regulus.SerializationTests)
 
 #### 使用說明1
-```C#
+```csharp
 [NUnit.Framework.Test()]
 public void TestSerializer1()
 {
@@ -27,7 +27,7 @@ public void TestSerializer1()
 這個方法需要填入要序列化的類型，雖然有使用上不便的情形但是卻能達到最高壓縮效率。
 
 #### 使用說明2
-```C#
+```csharp
 [NUnit.Framework.Test()]
 public void TestSerializerStringArray()
 {
