@@ -8,7 +8,7 @@ using Microsoft.CSharp;
 
 namespace Regulus.Remoting.Unity
 {
-    /*public class AssemblyOutputer
+    public class AssemblyOutputer
     {        
 
         private readonly Assembly _CommonAsm;
@@ -20,8 +20,6 @@ namespace Regulus.Remoting.Unity
         private string _AgentNamespace;
 
         private readonly string _ProtocolName;
-
-        public event Action<string> ErrorMessageEvent;
 
         public AssemblyOutputer(Assembly common_asm, string agent_name)
         {
@@ -49,73 +47,7 @@ namespace Regulus.Remoting.Unity
             }
         }
 
-        public void OutputDll(string output_path , 
-            Assembly unity_engine , 
-            Assembly regulus_library , 
-            Assembly regulus_remoting , 
-            Assembly regulus_protocol , 
-            Assembly regulus_remoting_unity ,
-            Assembly regulus_remoting_ghost,
-            Assembly regulus_serialization
-            )
-        {
-
-            var codes = new List<string>();
-
-            var protocolBuilder = new Regulus.Protocol.CodeBuilder();
-            protocolBuilder.ProviderEvent += (name,code) => codes.Add(code);
-            protocolBuilder.GpiEvent += (name, code) => codes.Add(code);
-            protocolBuilder.EventEvent += (type_name, event_name, code) => codes.Add(code);
-            protocolBuilder.Build(_ProtocolName, _Types);
-
-            var unityProtocolBuilder = new Regulus.Remoting.Unity.CodeBuilder(_Types, _AgentName , _ProtocolName);
-            
-            unityProtocolBuilder.AgentEvent += (name , code) =>  codes.Add(code);
-            unityProtocolBuilder.TypeEvent += (name, ads, b) =>
-            {
-                codes.Add(ads);
-                codes.Add(b);
-            };            
-            unityProtocolBuilder.Build();
-
-
-            var optionsDic = new Dictionary<string, string>
-            {
-                {"CompilerVersion", "v3.5"}
-            };
-            var provider = new CSharpCodeProvider(optionsDic);
-
-            var options = new CompilerParameters
-            {
-
-                OutputAssembly = output_path,
-                GenerateExecutable = false,
-                ReferencedAssemblies =
-                {
-                    "System.Core.dll",
-                    "System.xml.dll",
-                    regulus_library.Location,
-                    regulus_remoting.Location,
-                    regulus_protocol.Location,
-                    regulus_remoting_unity.Location,
-                    regulus_serialization.Location,
-                    regulus_remoting_ghost.Location,
-                    unity_engine.Location,
-
-                    _CommonAsm.Location
-                }, IncludeDebugInformation = true
-            };
-            var result = provider.CompileAssemblyFromSource(options, codes.ToArray());
-
-
-            if(ErrorMessageEvent != null)
-                for (int i = 0; i < result.Errors.Count; i++)
-                {
-                    ErrorMessageEvent(result.Errors[i].ErrorText);
-                    
-                }
-                
-        }
+        
 
         public void OutputDir(string output_path)
         {
@@ -154,5 +86,5 @@ namespace Regulus.Remoting.Unity
         {
             return  string.Format("{0}\\{1}.cs" , output_path , name);
         }
-    }*/
+    }
 }

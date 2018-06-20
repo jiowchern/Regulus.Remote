@@ -6,7 +6,12 @@ using System.Reflection;
 
 namespace Regulus.Remoting.Unity
 {
-    /*public class CodeBuilder  
+
+    public class ProtocolGenerator
+    {
+
+    }
+    public class CodeBuilder  
     {
         private readonly Type[] _Types;
 
@@ -527,5 +532,5 @@ namespace {0}.Adsorption
             var className = new string(type_name.Skip(1).ToArray());
             return className;
         }
-    }*/
+    }
 }
