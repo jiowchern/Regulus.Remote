@@ -3,6 +3,7 @@
 #### [測試](https://github.com/jiowchern/Regulus/tree/master/Test/Regulus.SerializationTests)
 
 #### 使用說明1
+這個方法需要填入要序列化的類型，雖然有使用上不便的情形但是卻能達到最高壓縮效率。
 ```csharp
 [NUnit.Framework.Test()]
 public void TestSerializer1()
@@ -17,9 +18,10 @@ public void TestSerializer1()
     Assert.AreEqual("123" , intZero);
 }
 ```
-這個方法需要填入要序列化的類型，雖然有使用上不便的情形但是卻能達到最高壓縮效率。
+
 
 #### 使用說明2
+省略掉使用者自行填入序列化類型，但是相對序列化出來的資料比第一個方法大。
 ```csharp
 [NUnit.Framework.Test()]
 public void TestSerializerStringArray()
@@ -35,4 +37,3 @@ public void TestSerializerStringArray()
     Assert.AreEqual("5", val[4]);
 }
 ```
-省略掉使用者自行填入序列化類型，但是相對序列化出來的資料比第一個方法大。
