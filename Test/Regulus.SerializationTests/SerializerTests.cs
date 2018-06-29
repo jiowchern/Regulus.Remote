@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace Regulus.Serialization.Tests
 {
-    
+
     public class SerializerTests
     {
 
@@ -16,7 +16,7 @@ namespace Regulus.Serialization.Tests
             var buf = ser.ObjectToBuffer((int) -1);
             var val = (int) ser.BufferToObject(buf);
 
-            Assert.AreEqual(-1 , val);
+            Assert.AreEqual(-1, val);
         }
 
         [NUnit.Framework.Test()]
@@ -24,8 +24,8 @@ namespace Regulus.Serialization.Tests
         {
             var provider = new DescriberProvider(new NumberDescriber<long>(), new NumberDescriber<uint>());
             var ser = new Serializer(provider);
-            var buf = ser.ObjectToBuffer((long)-1);
-            var val = (long)ser.BufferToObject(buf);
+            var buf = ser.ObjectToBuffer((long) -1);
+            var val = (long) ser.BufferToObject(buf);
 
             Assert.AreEqual(-1, val);
         }
@@ -36,18 +36,18 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void EncodeZigZag()
         {
-            var e64_1 = ZigZag.Encode((long)1);
+            var e64_1 = ZigZag.Encode((long) 1);
             var e64_2 = ZigZag.Encode(-1L);
 
             var e32_1 = ZigZag.Encode(1);
             var e32_2 = ZigZag.Encode(-1);
 
 
-            NUnit.Framework.Assert.AreEqual((uint)2, e32_1);
-            NUnit.Framework.Assert.AreEqual((uint)1, e32_2);
+            NUnit.Framework.Assert.AreEqual((uint) 2, e32_1);
+            NUnit.Framework.Assert.AreEqual((uint) 1, e32_2);
 
-            NUnit.Framework.Assert.AreEqual((ulong)2, e64_1);
-            NUnit.Framework.Assert.AreEqual((ulong)1, e64_2);
+            NUnit.Framework.Assert.AreEqual((ulong) 2, e64_1);
+            NUnit.Framework.Assert.AreEqual((ulong) 1, e64_2);
 
 
         }
@@ -55,8 +55,8 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void DecodeZigZag()
         {
-            var e64_1 = ZigZag.Decode((ulong)2);
-            var e64_2 = ZigZag.Decode((ulong)1);
+            var e64_1 = ZigZag.Decode((ulong) 2);
+            var e64_2 = ZigZag.Decode((ulong) 1);
 
             var e32_1 = ZigZag.Decode(2);
             var e32_2 = ZigZag.Decode(1);
@@ -143,7 +143,8 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void ClassTest()
         {
-            var provider = new DescriberProvider(new NumberDescriber(typeof(int)), new ClassDescriber(typeof(TestClassB)));
+            var provider = new DescriberProvider(new NumberDescriber(typeof(int)),
+                new ClassDescriber(typeof(TestClassB)));
             var ser = new Serializer(provider);
             var testb = new TestClassB();
             testb.Data = 1234;
@@ -196,26 +197,26 @@ namespace Regulus.Serialization.Tests
                 new NumberDescriber<long>(),
                 new EnumDescriber<TEST1>());
             var ser = new Serializer(provider);
-                
-            var byteBuffer = ser.ObjectToBuffer((byte)128);
-            var byteValue = (byte)ser.BufferToObject(byteBuffer);
 
-            var shortBuffer = ser.ObjectToBuffer((short)16387);
-            var shortValue = (short)ser.BufferToObject(shortBuffer);
+            var byteBuffer = ser.ObjectToBuffer((byte) 128);
+            var byteValue = (byte) ser.BufferToObject(byteBuffer);
 
-            var intBuffer = ser.ObjectToBuffer((int)65535);
-            var intValue = (int)ser.BufferToObject(intBuffer);
+            var shortBuffer = ser.ObjectToBuffer((short) 16387);
+            var shortValue = (short) ser.BufferToObject(shortBuffer);
 
-            var longBuffer = ser.ObjectToBuffer((long)65535000);
-            var longValue = (long)ser.BufferToObject(longBuffer);
+            var intBuffer = ser.ObjectToBuffer((int) 65535);
+            var intValue = (int) ser.BufferToObject(intBuffer);
+
+            var longBuffer = ser.ObjectToBuffer((long) 65535000);
+            var longValue = (long) ser.BufferToObject(longBuffer);
 
             var enumBuffer = ser.ObjectToBuffer(TEST1.C);
-            var enumValue = (TEST1)ser.BufferToObject(enumBuffer);
+            var enumValue = (TEST1) ser.BufferToObject(enumBuffer);
 
-            NUnit.Framework.Assert.AreEqual((byte)128, byteValue);
-            NUnit.Framework.Assert.AreEqual((short)16387, shortValue);
-            NUnit.Framework.Assert.AreEqual((int)65535, intValue);
-            NUnit.Framework.Assert.AreEqual((long)65535000, longValue);
+            NUnit.Framework.Assert.AreEqual((byte) 128, byteValue);
+            NUnit.Framework.Assert.AreEqual((short) 16387, shortValue);
+            NUnit.Framework.Assert.AreEqual((int) 65535, intValue);
+            NUnit.Framework.Assert.AreEqual((long) 65535000, longValue);
             NUnit.Framework.Assert.AreEqual(TEST1.C, enumValue);
         }
 
@@ -239,7 +240,7 @@ namespace Regulus.Serialization.Tests
                 78
             };
             var buffer = ser.ObjectToBuffer(ints);
-            var value = (int[])ser.BufferToObject(buffer);
+            var value = (int[]) ser.BufferToObject(buffer);
 
 
             NUnit.Framework.Assert.AreEqual(46, value[1]);
@@ -249,7 +250,7 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void NumberFloatTest()
         {
-            var provider = new DescriberProvider(new BlittableDescriber( typeof(float)),
+            var provider = new DescriberProvider(new BlittableDescriber(typeof(float)),
                 new ArrayDescriber<float>());
             var ser = new Serializer(provider);
 
@@ -266,7 +267,7 @@ namespace Regulus.Serialization.Tests
                 78f
             };
             var buffer = ser.ObjectToBuffer(ints);
-            var value = (float[])ser.BufferToObject(buffer);
+            var value = (float[]) ser.BufferToObject(buffer);
 
 
             NUnit.Framework.Assert.AreEqual(46f, value[1]);
@@ -281,20 +282,20 @@ namespace Regulus.Serialization.Tests
             var ser = new Serializer(provider);
 
             var buffer = ser.ObjectToBuffer(123.43f);
-            var value = (float)ser.BufferToObject(buffer);
+            var value = (float) ser.BufferToObject(buffer);
 
             NUnit.Framework.Assert.AreEqual(123.43f, value);
         }
 
 
         [NUnit.Framework.Test()]
-         public void ByteArrayStructTest()
+        public void ByteArrayStructTest()
         {
             var provider = new DescriberProvider(new BufferDescriber<byte[]>());
             var ser = new Serializer(provider);
 
-            var buffer = ser.ObjectToBuffer(new byte[] {1,2,3,4,5,6 });
-            var value = (byte[])ser.BufferToObject(buffer);
+            var buffer = ser.ObjectToBuffer(new byte[] {1, 2, 3, 4, 5, 6});
+            var value = (byte[]) ser.BufferToObject(buffer);
 
             NUnit.Framework.Assert.AreEqual(1, value[0]);
             NUnit.Framework.Assert.AreEqual(2, value[1]);
@@ -309,8 +310,8 @@ namespace Regulus.Serialization.Tests
             var provider = new DescriberProvider(new BufferDescriber<char[]>());
             var ser = new Serializer(provider);
 
-            var buffer = ser.ObjectToBuffer(new char[] { '1', '2', 'a' , 'b', 'c', 't' });
-            var value = (char[])ser.BufferToObject(buffer);
+            var buffer = ser.ObjectToBuffer(new char[] {'1', '2', 'a', 'b', 'c', 't'});
+            var value = (char[]) ser.BufferToObject(buffer);
 
             NUnit.Framework.Assert.AreEqual('1', value[0]);
             NUnit.Framework.Assert.AreEqual('2', value[1]);
@@ -328,7 +329,7 @@ namespace Regulus.Serialization.Tests
             var ser = new Serializer(provider);
             var str = "asdfgh";
             var buffer = ser.ObjectToBuffer(str.ToCharArray());
-            var value = (char[])ser.BufferToObject(buffer);
+            var value = (char[]) ser.BufferToObject(buffer);
 
             NUnit.Framework.Assert.AreEqual('a', value[0]);
             NUnit.Framework.Assert.AreEqual('s', value[1]);
@@ -349,7 +350,7 @@ namespace Regulus.Serialization.Tests
 
             var id = Guid.NewGuid();
             var buffer = ser.ObjectToBuffer(id);
-            var value = (Guid)ser.BufferToObject(buffer);
+            var value = (Guid) ser.BufferToObject(buffer);
 
             NUnit.Framework.Assert.AreEqual(id, value);
         }
@@ -358,7 +359,8 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void ClassArrayHaveNullTest()
         {
-            var provider = new DescriberProvider(new ClassDescriber(typeof(TestClassC)), new ArrayDescriber<TestClassC>());
+            var provider = new DescriberProvider(new ClassDescriber(typeof(TestClassC)),
+                new ArrayDescriber<TestClassC>());
             var ser = new Serializer(provider);
 
             var cs = new TestClassC[]
@@ -382,18 +384,19 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void ClassNullTest()
         {
-            var provider = new DescriberProvider(new ClassDescriber( typeof(TestClassC)), new ArrayDescriber<TestClassC>());
+            var provider = new DescriberProvider(new ClassDescriber(typeof(TestClassC)),
+                new ArrayDescriber<TestClassC>());
             var ser = new Serializer(provider);
 
-          
 
 
-            var buffer = ser.ObjectToBuffer(null );
+
+            var buffer = ser.ObjectToBuffer(null);
             var value = ser.BufferToObject(buffer) as TestClassC[];
 
 
             NUnit.Framework.Assert.AreEqual(null, value);
-            
+
         }
 
 
@@ -463,26 +466,27 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void StringTest()
         {
-            var provider = new DescriberProvider(new StringDescriber(), new NumberDescriber( typeof(char)), new ArrayDescriber( typeof(char[])));
+            var provider = new DescriberProvider(new StringDescriber(), new NumberDescriber(typeof(char)),
+                new ArrayDescriber(typeof(char[])));
             var ser = new Serializer(provider);
-            
+
 
             var str = "fliwjfo3f3fnmsdlgmnlgrkmbr'nhmlredhgnedra'lngh";
             var buffer = ser.ObjectToBuffer(str);
             var value = ser.BufferToObject(buffer) as string;
 
-            NUnit.Framework.Assert.AreEqual(str ,value );
+            NUnit.Framework.Assert.AreEqual(str, value);
         }
 
 
         [NUnit.Framework.Test()]
         public void CharArrayTest()
         {
-            var provider = new DescriberProvider(new NumberDescriber( typeof(char)), new ArrayDescriber(typeof(char[])));
+            var provider = new DescriberProvider(new NumberDescriber(typeof(char)), new ArrayDescriber(typeof(char[])));
             var ser = new Serializer(provider);
 
 
-            var str = new char[] {'d' ,'a'};
+            var str = new char[] {'d', 'a'};
             var buffer = ser.ObjectToBuffer(str);
             var value = ser.BufferToObject(buffer) as char[];
 
@@ -495,11 +499,11 @@ namespace Regulus.Serialization.Tests
         public void TestSerializerVector2()
         {
 
-            var ser = new Serializer(new DescriberBuilder(typeof(Regulus.CustomType.Vector2) , typeof(float)));
+            var ser = new Serializer(new DescriberBuilder(typeof(Regulus.CustomType.Vector2), typeof(float)));
             var v = new Regulus.CustomType.Vector2(99, 22);
 
             var array = ser.ObjectToBuffer(v);
-            var v2 = (Regulus.CustomType.Vector2)ser.BufferToObject(array);
+            var v2 = (Regulus.CustomType.Vector2) ser.BufferToObject(array);
 
             NUnit.Framework.Assert.AreEqual(99, v2.X);
             NUnit.Framework.Assert.AreEqual(22, v2.Y);
@@ -518,14 +522,12 @@ namespace Regulus.Serialization.Tests
             var intZero = ser.BufferToObject(intZeroBuffer);
 
 
-            Assert.AreEqual("123" , intZero);
+            Assert.AreEqual("123", intZero);
         }
 
-
-
+        
     }
 
-    
 }
 
     
