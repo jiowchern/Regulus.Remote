@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Regulus.Serialization.Dynamic;
 
 namespace Regulus.Serialization
 {
@@ -11,6 +12,17 @@ namespace Regulus.Serialization
         public DescriberBuilder(params Type[] types)
         {
             Describers = _BuildDescribers(types);
+        }
+
+        public DescriberBuilder(ITypeFinder type_finder)
+        {
+            Describers = _BuildDescribers(type_finder);
+        }
+
+        DescriberProvider _BuildDescribers(ITypeFinder type_finder)
+        {
+            var describersFinder = new Dynamic.DescribersFinder(type_finder);
+            return new DescriberProvider(new StringKeyDescriber(type_finder , describersFinder), describersFinder);
         }
         DescriberProvider _BuildDescribers(params Type[] types)
         {
@@ -22,8 +34,8 @@ namespace Regulus.Serialization
                 describers.Add(identifier.Describer);
                
             }
-
-            return new DescriberProvider(describers.ToArray()) ;
+            var set = describers.ToArray();
+            return new DescriberProvider(new IntKeyDescriber(set),new DescribersFinder(set) ) ;
         }
       
     }

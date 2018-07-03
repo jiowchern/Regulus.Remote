@@ -6,6 +6,8 @@ using Regulus.Remoting;
 
 namespace Regulus.Serialization
 {
+    
+
     public class Serializer : ISerializer
     {
         private readonly DescriberProvider _Provider;
@@ -18,13 +20,6 @@ namespace Regulus.Serialization
             
             
         }
-
-        public Serializer(DescriberBuilder describer_builder) : this(describer_builder.Describers)
-        {            
-        }
-
-        
-
         
         public byte[] ObjectToBuffer(object instance )
         {
@@ -38,12 +33,12 @@ namespace Regulus.Serialization
              
                 
                 var type = instance.GetType();
-                var describer = _Provider._TypeDescribers.Get(type) ;
-                var id = _Provider._KeyDescribers.Get(type);
-                var idCount = Varint.GetByteCount((ulong)id);
+                var describer = _Provider.TypeDescriberFinders.Get(type) ;
+
+                var idCount = _Provider.KeyDescriber.GetByteCount(type);
                 var bufferCount = describer.GetByteCount(instance);
                 var buffer = new byte[idCount + bufferCount];
-                var readCount = Varint.NumberToBuffer(buffer, 0, id);
+                var readCount = _Provider.KeyDescriber.ToBuffer(type, buffer,0);
                 describer.ToBuffer(instance, buffer, readCount);
                 return buffer;
             }
@@ -72,22 +67,22 @@ namespace Regulus.Serialization
         
         public object BufferToObject(byte[] buffer)
         {
-            ulong id = 0;
+            Type id = null;
             try
             {
                 
-                var readIdCount = Varint.BufferToNumber(buffer, 0, out id);
-                if (id == 0)
+                var readIdCount = _Provider.KeyDescriber.ToObject(buffer, 0, out id);
+                if (id == null)
                     return null;
 
-                var describer = _Provider._KeyDescribers.Get((int)id) ;
+                var describer = _Provider.TypeDescriberFinders.Get(id) ;
                 object instance;
                 describer.ToObject(buffer, readIdCount, out instance);
                 return instance;
             }
             catch (DescriberException ex)
             {
-                var describer = _Provider._KeyDescribers.Get((int)id);
+                var describer = _Provider.TypeDescriberFinders.Get(id);
                 if (describer != null)
                     throw new SystemException(string.Format("BufferToObject {0}:{1}", id , describer.Type.FullName), ex);
                 else

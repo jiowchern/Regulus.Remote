@@ -10,11 +10,17 @@ namespace Regulus.Serialization
         {
             _Describers = new Dictionary<Type, ITypeDescriber>();
             foreach (var typeDescriber in describers)
-            {
-                
+            {                
                 _Describers.Add(typeDescriber.Type ,typeDescriber);
+                
             }
-            
+
+            foreach (var typeDescriber in describers)
+            {
+                typeDescriber.SetFinder(this);
+            }
+
+
         }
 
         ITypeDescriber IDescribersFinder.Get(Type id)
