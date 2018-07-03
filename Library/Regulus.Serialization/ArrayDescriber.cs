@@ -9,13 +9,7 @@ using System.Security.Cryptography.X509Certificates;
 namespace Regulus.Serialization
 {
 
-    public class ArrayDescriber<T> : ArrayDescriber
-    {
-        public ArrayDescriber() : base(typeof (T[]))
-        {
-            
-        }
-    }
+    
     public class ArrayDescriber : ITypeDescriber 
     {        
 
@@ -27,12 +21,12 @@ namespace Regulus.Serialization
 
         private readonly Type _ElementType;
 
-        private IDescribersFinder _TypeSet;
+        private readonly IDescribersFinder _TypeSet;
 
-        public ArrayDescriber(Type type)
+        public ArrayDescriber(Type type, IDescribersFinder finder)
         {
 
-            
+            _TypeSet = finder;
             _Default = null;            
             _Type = type;
             _ElementType = type.GetElementType();
@@ -201,10 +195,7 @@ namespace Regulus.Serialization
             
         }
 
-        void ITypeDescriber.SetFinder(IDescribersFinder type_set)
-        {
-            _TypeSet = type_set;
-        }
+        
 
         private ITypeDescriber _GetDescriber(Type type){
             return _TypeSet.Get(type);

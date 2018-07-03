@@ -5,10 +5,11 @@ namespace Regulus.Serialization
     public class ByteArrayDescriber : ITypeDescriber
     {
         
-        private ITypeDescriber _IntTypeDescriber;
+        private readonly ITypeDescriber _IntTypeDescriber;
 
-        public ByteArrayDescriber()
+        public ByteArrayDescriber(ITypeDescriber byte_describer)
         {
+            _IntTypeDescriber = byte_describer;
         }
 
         
@@ -62,10 +63,6 @@ namespace Regulus.Serialization
             return offset - begin; 
         }
 
-        void ITypeDescriber.SetFinder(IDescribersFinder type_set)
-        {
-            var type = type_set.Get(typeof(int));
-            _IntTypeDescriber = type;
-        }
+        
     }
 }

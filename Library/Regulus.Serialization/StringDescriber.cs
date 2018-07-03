@@ -10,9 +10,9 @@ namespace Regulus.Serialization
 
         private ITypeDescriber _CharArrayDescriber;
 
-        public StringDescriber()
+        public StringDescriber(ITypeDescriber chars_describer)
         {
-            
+            _CharArrayDescriber = chars_describer;
 
         }
 
@@ -56,13 +56,6 @@ namespace Regulus.Serialization
 
             return offset - begin;
         }
-
-        void ITypeDescriber.SetFinder(IDescribersFinder type_set)
-        {
-
-
-
-            _CharArrayDescriber = type_set.Get(typeof(char[])); 
-        }
+        
     }
 }

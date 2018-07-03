@@ -7,7 +7,7 @@ namespace Regulus.Serialization
     {
         private readonly ITypeFinder _TypeFinder;
         
-        private ITypeDescriber _TypeDescriber;
+        private readonly ITypeDescriber _TypeDescriber;
 
 
         public StringKeyDescriber(ITypeFinder type_finder, IDescribersFinder describers_finder)

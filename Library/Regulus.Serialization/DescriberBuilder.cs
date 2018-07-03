@@ -21,21 +21,14 @@ namespace Regulus.Serialization
 
         DescriberProvider _BuildDescribers(ITypeFinder type_finder)
         {
-            var describersFinder = new Dynamic.DescribersFinder(type_finder);
+            var describersFinder = new Dynamic.DescribersFinder();
             return new DescriberProvider(new StringKeyDescriber(type_finder , describersFinder), describersFinder);
         }
         DescriberProvider _BuildDescribers(params Type[] types)
         {
-            
-            var describers = new List<ITypeDescriber>();
-            foreach (var type in types)
-            {
-                var identifier = new TypeIdentifier(type );
-                describers.Add(identifier.Describer);
-               
-            }
-            var set = describers.ToArray();
-            return new DescriberProvider(new IntKeyDescriber(set),new DescribersFinder(set) ) ;
+
+            var finder = new DescribersFinder(types);
+            return new DescriberProvider(finder.KeyDescriber, finder) ;
         }
       
     }
