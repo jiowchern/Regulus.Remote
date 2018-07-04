@@ -34,7 +34,7 @@ Directory =
 			NUnit.Framework.Assert.AreEqual(@"C:\Rosetta Stone\Logs", dir);
 
 			var dir2 = ini.Read("Logging2", "Directory");
-			NUnit.Framework.Assert.AreEqual(string.Empty, dir2);
+			NUnit.Framework.Assert.IsTrue(string.IsNullOrWhiteSpace(dir2));
 		}
 	}
 }

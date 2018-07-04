@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>RegulusSerialization</id>
+        <version>0.4.2</version>
+        <authors>jc</authors>
+        <projectUrl>https://github.com/jiowchern/Regulus</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Protobuf-like static serialization library.</description>
+        <language>zh-TW</language>
+      <dependencies>
+        <dependency id="RegulusLibrary" version="0.4.0" />
+      </dependencies>
+    </metadata>
+    <files>
+        <file src="bin\release\Regulus.Serialization.dll" target="lib\net40\Regulus.Serialization.dll" />
+        <file src="bin\release\Regulus.Serialization.pdb" target="lib\net40\Regulus.Serialization.pdb" />        
+    </files>
+</package>

@@ -21,7 +21,7 @@ namespace Regulus.Remoting.Tests
             var id = Guid.NewGuid();
             var package1 = new TestPackageData();
 
-            var ser = new Regulus.Serialization.Serializer(new DescriberBuilder(typeof(Guid) , typeof(TestPackageData)));
+            var ser = new Regulus.Serialization.Serializer(new DescriberBuilder(typeof(Guid) , typeof(TestPackageData)).Describers);
             package1.Id = id;
 
             var buffer = package1.ToBuffer(ser);
@@ -39,7 +39,7 @@ namespace Regulus.Remoting.Tests
             var p2 = "234";
             var p3 = Guid.NewGuid();
             var package1 = new TestPackageBuffer();
-            var ser = new Regulus.Serialization.Serializer(new DescriberBuilder(typeof(int),typeof(string),typeof(char[]),typeof(byte) , typeof(byte[]), typeof(byte[][]), typeof(char), typeof(Guid), typeof(TestPackageBuffer)));
+            var ser = new Regulus.Serialization.Serializer(new DescriberBuilder(typeof(int),typeof(string),typeof(char[]),typeof(byte) , typeof(byte[]), typeof(byte[][]), typeof(char), typeof(Guid), typeof(TestPackageBuffer)).Describers);
 
 
             package1.Datas = new [] { ser.ObjectToBuffer(p1), ser.ObjectToBuffer(p2), ser.ObjectToBuffer(p3) };
@@ -60,6 +60,7 @@ namespace Regulus.Remoting.Tests
         {
 
             var builder = new Regulus.Serialization.DescriberBuilder(
+                            typeof(System.Int32),
                             typeof(System.Char),
                             typeof(System.Char[]),
                             typeof(System.String),
@@ -81,7 +82,7 @@ namespace Regulus.Remoting.Tests
                             typeof(Regulus.Remoting.PackageUnloadSoul),
                             typeof(Regulus.Remoting.PackageCallMethod),
                             typeof(Regulus.Remoting.PackageRelease));
-            var ser = new Regulus.Serialization.Serializer(builder);
+            var ser = new Regulus.Serialization.Serializer(builder.Describers);
             var response = new RequestPackage();
             response.Code = ClientToServerOpCode.Ping;
             response.Data = new byte[] {0,1,2,3,4,5};
@@ -98,6 +99,7 @@ namespace Regulus.Remoting.Tests
         {
 
             var builder = new Regulus.Serialization.DescriberBuilder(
+                            typeof(System.Int32),
                             typeof(System.Char),
                             typeof(System.Char[]),
                             typeof(System.String),
@@ -119,7 +121,7 @@ namespace Regulus.Remoting.Tests
                             typeof(Regulus.Remoting.PackageUnloadSoul),
                             typeof(Regulus.Remoting.PackageCallMethod),
                             typeof(Regulus.Remoting.PackageRelease));
-            var ser = new Regulus.Serialization.Serializer(builder);
+            var ser = new Regulus.Serialization.Serializer(builder.Describers);
             var response = new ResponsePackage();
             response.Code = ServerToClientOpCode.UpdateProperty;
             response.Data = new byte[] { 0, 1, 2, 3, 4, 5 };
@@ -157,7 +159,7 @@ namespace Regulus.Remoting.Tests
                             typeof(Regulus.Remoting.PackageUnloadSoul),
                             typeof(Regulus.Remoting.PackageCallMethod),
                             typeof(Regulus.Remoting.PackageRelease));
-            var ser = new Regulus.Serialization.Serializer(builder);
+            var ser = new Regulus.Serialization.Serializer(builder.Describers);
             var update = new PackageUpdateProperty();
             update.Property = 1;
             update.EntityId = new Guid("3ecae85d-79e0-4cc9-a34f-60f31883d26c");
@@ -183,7 +185,7 @@ namespace Regulus.Remoting.Tests
             
             var package1 = new TestPackageBuffer();
 
-            var ser = new Regulus.Serialization.Serializer(new DescriberBuilder(typeof(int), typeof(string), typeof(char[]), typeof(byte), typeof(byte[]), typeof(byte[][]), typeof(char), typeof(Guid), typeof(TestPackageBuffer)));
+            var ser = new Regulus.Serialization.Serializer(new DescriberBuilder(typeof(int), typeof(string), typeof(char[]), typeof(byte), typeof(byte[]), typeof(byte[][]), typeof(char), typeof(Guid), typeof(TestPackageBuffer)).Describers);
 
             package1.Datas = new byte[0][] ;
 

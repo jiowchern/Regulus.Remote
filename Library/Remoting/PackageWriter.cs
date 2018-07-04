@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
-
+using Regulus.Network;
 using Regulus.Serialization;
 using Regulus.Utility;
 
@@ -26,7 +26,7 @@ namespace Regulus.Remoting
 
 	    
 
-		private Socket _Socket;
+		private IPeer _Peer;
 
 		private volatile bool _Stop;
 	    private bool _Idle;
@@ -44,10 +44,10 @@ namespace Regulus.Remoting
 	        _Idle = true;
 		}
 
-		public void Start(Socket socket)
+		public void Start(IPeer peer)
 		{
 			_Stop = false;
-			_Socket = socket;
+			_Peer = peer;
 		
 		}
 
@@ -64,13 +64,17 @@ namespace Regulus.Remoting
 			{
 
                 _Buffer = _CreateBuffer(packages);
-                
-                _Socket.BeginSend(_Buffer, 0, _Buffer.Length, SocketFlags.None, _WriteCompletion, null);
-                
+                                
+
+			    var task = _Peer.Send(_Buffer, 0, _Buffer.Length);
+			    task.DoneEvent += _WriteCompletion;
+
+
+
 			}
 			catch(SystemException e)
 			{
-			    var info = string.Format("PackageWriter Error Write {0}.", _Socket.Connected);
+			    var info = string.Format("PackageWriter Error Write {0}.", _Peer.Connected);
                 Singleton<Log>.Instance.WriteInfo(info);
 				if(ErrorEvent != null)
 				{
@@ -79,13 +83,13 @@ namespace Regulus.Remoting
 			}
 		}
 
-		private void _WriteCompletion(IAsyncResult ar)
+		private void _WriteCompletion(int send_count )
 		{
 			try
 			{
 				if(_Stop == false)
 				{
-					var sendSize = _Socket.EndSendTo(ar);
+					var sendSize = send_count;
                     NetworkMonitor.Instance.Write.Set(sendSize);
                 }
 			}

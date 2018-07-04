@@ -6,6 +6,11 @@ using System.Reflection;
 
 namespace Regulus.Remoting.Unity
 {
+
+    public class ProtocolGenerator
+    {
+
+    }
     public class CodeBuilder  
     {
         private readonly Type[] _Types;

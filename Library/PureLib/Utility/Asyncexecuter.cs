@@ -6,68 +6,73 @@ using Regulus.Collection;
 
 namespace Regulus.Utility
 {
-	public class AsyncExecuter
+
+    
+
+    public class AsyncExecuter
 	{
-		private readonly Queue<Action> _Tasks;
+		private readonly System.Collections.Concurrent.ConcurrentQueue<Action> _Tasks;
+	    private readonly System.Threading.Tasks.Task _Task;
+	    private volatile bool _Enable;
+	    private readonly ManualResetEvent _ResetEvent;
+	    public AsyncExecuter()
+	    {
+	        _ResetEvent = new ManualResetEvent(true);
+            _Enable = true;
+            _Tasks = new System.Collections.Concurrent.ConcurrentQueue<Action>();
+		    _Task = System.Threading.Tasks.Task.Run((Action) _Run);
 
-		private volatile int _Count;
+        }
 
-		public AsyncExecuter(params Action[] callbacks)
-		{
-			_Tasks = new Queue<Action>();
+        private void _Run()
+        {
+            
+            while (_Enable)
+            {
+            
+                Action action;
+                if (_Tasks.TryDequeue(out action))
+                {
+                    action();
+                }
+                else
+                {
+                    _ResetEvent.Reset();
+                    _ResetEvent.WaitOne();
+                }
+            }
 
-			foreach(var task in callbacks)
-			{
-				Push(task);
-			}
-		}
 
-		public void WaitDone()
-		{
-			while(IsDone() == false)
-			{
-				;
-			}
-		}
+            _ExecuteAll();
+        }
 
-		internal bool IsDone()
-		{
-			lock(this)
-				return _Count == 0;
-		}
+	    private void _ExecuteAll()
+	    {
+	        Action action;
+	        while (_Tasks.TryDequeue(out action))
+	        {
+	            action();
+	        }
+	    }
+
+	    public void Shutdown()
+        {
+            _Enable = false;
+            _ResetEvent.Set();
+            _Task.GetAwaiter().GetResult();            
+        }
+
+		
 
 		public void Push(Action callback)
-		{
-			var execute = false;
-			lock(this)
-			{
-				execute = _Count == 0;
-				_Count++;
-				_Tasks.Enqueue(callback);
-			}
+		{            
+		    _Tasks.Enqueue(callback);
+            _ResetEvent.Set();
+        }
 
-			if(execute)
-			{
-				_Execute();
-			}
-		}
 
-		private void _Execute()
-		{
-			Action task;
-			if(_Tasks.TryDequeue(out task))
-			{
-				ThreadPool.QueueUserWorkItem(_Run, task);
-			}
-		}
+		
 
-		private void _Run(object state)
-		{
-			var task = (Action)state;
-			task();
-			lock(this)
-				_Count--;
-			_Execute();
-		}
+		
 	}
 }

@@ -3,41 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using Regulus.BehaviourTree.Yield;
 
 namespace Regulus.BehaviourTree
 {
-    public interface IAction : ITicker
-    {
-        void Start();
-        void End();
-    }
-
     public class Builder
     {
         private ITicker _Root;
 
-        private Stack<IParent> _Stack;
+        private readonly Stack<IParent> _Stack;
         public Builder()
         {
             _Stack = new Stack<IParent>();
         }
+
         
-
-        public Builder Action<T>(Expression<Func<T>> instnace
-            , Expression<Func<T, Func<float, TICKRESULT>>> tick
-            , Expression<Func<T, Action>> start
-            , Expression<Func<T, Action>> end)
-        {
-            
-            if (_Stack.Count <= 0)
-            {
-                throw new Exception("Can't create an unnested ActionNode, it must be a leaf node.");
-            }
-            var a = new ActionNode<T>(instnace, tick, start, end);
-            _Stack.Peek().Add(a);
-            return this;
-
-        }
 
         public Builder Sub(ITicker node)
         {
@@ -58,6 +38,19 @@ namespace Regulus.BehaviourTree
         public Builder Not()
         {
             var node = new InvertNode();
+
+            if (_Stack.Count > 0)
+            {
+                _Stack.Peek().Add(node);
+            }
+
+            _Stack.Push(node);
+            return this;
+        }
+
+        public Builder Success()
+        {
+            var node = new SuccessNode();
 
             if (_Stack.Count > 0)
             {
@@ -94,9 +87,9 @@ namespace Regulus.BehaviourTree
             return this;
         }
 
-        public Builder Parallel( int num_required_to_fail, int num_required_to_succeed)
+        public Builder Parallel( bool same_is_success)
         {
-            var parallelNode = new ParallelNode( num_required_to_fail, num_required_to_succeed);
+            var parallelNode = new ParallelNode(same_is_success);
 
             if (_Stack.Count > 0)
             {
@@ -122,81 +115,59 @@ namespace Regulus.BehaviourTree
             return this;
         }
 
-        class TickAction
+
+        public Builder Action(ITicker ticker)
         {
-            private readonly Func<float, TICKRESULT> _Func;
-
-            public TickAction(Func<float, TICKRESULT> func)
-            {
-                _Func = func;
-            }
-
-            public TICKRESULT Tick(float arg)
-            {
-                var result = _Func(arg);
-                return result;
-            }
-
-            public void Start()
-            {
-
-            }
-
-            public void End()
-            {
-
-            }
+            return _Add(ticker);
         }
 
-        public Builder Action(Expression<Func<IAction>> action)
+        public Builder Wait(float seconds)
         {
-            this.Action(
-                () => new ProxyAction(action)
-                , c => c.Tick
-                , c => c.Start
-                , c => c.End
-                );
-            return this;
+            return Action(
+                () =>new ActionHelper.Wait(seconds)
+                ,(w) => w.Tick
+                ,(w) => w.Start
+                ,(w) => w.End);
         }
+
+
+
         public Builder Action(Func<float, TICKRESULT> func)
-        {
+        {            
+            return _Add(new ActionHelper.ProxyTicker(func));
+        }
 
-            this.Action(
-                ()=> new TickAction(func)
-                , c => c.Tick
-                , c => c.Start
-                , c => c.End
-                );
+        
+        public Builder Action(Expression<Func<IEnumerable<TICKRESULT>>> provider)
+        {
+            return _Add(new ActionHelper.Coroutine(provider));            
+        }
+
+
+        public Builder Action(Expression<Func<IEnumerable<IInstructable>>> provider)
+        {
+            return _Add(new Yield.Coroutine(provider));
+        }
+
+        public Builder Action<T>(Expression<Func<T>> instnace
+            , Expression<Func<T, Func<float, TICKRESULT>>> tick
+            , Expression<Func<T, Action>> start
+            , Expression<Func<T, Action>> end)
+        {
+            var a = new ActionNode<T>(instnace, tick, start, end);
+            return _Add(a);
+        }
+
+        private Builder _Add(ITicker ticker)
+        {
+            if (_Stack.Count <= 0)
+            {
+                throw new Exception("Can't create an unnested ActionNode, it must be a leaf node.");
+            }
+            _Stack.Peek().Add(ticker);
             return this;
+
         }
     }
-
-    public class ProxyAction
-    {
-        private readonly Expression<Func<IAction>> _ActionProvider;
-
-        private IAction _Action;
-
-        public ProxyAction(Expression<Func<IAction>> action_provider)
-        {
-            _ActionProvider = action_provider;
-
-            _Action = _ActionProvider.Compile()();
-        }
-
-        public TICKRESULT Tick(float arg)
-        {
-            return _Action.Tick(arg);
-        }
-
-        public void Start()
-        {
-            _Action.Start();
-        }
-
-        public void End()
-        {
-            _Action.End();
-        }
-    }
+    
 }

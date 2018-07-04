@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A720964C-C3E0-4CB8-A81B-54A9CF7BC8DD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Regulus.Network</RootNamespace>
+    <AssemblyName>Regulus.Network</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <LangVersion>4</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Release\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Config.cs" />
+    <Compile Include="EmptyArray.cs" />
+    <Compile Include="IObjectPool.cs" />
+    <Compile Include="IObjectProvider.cs" />
+    <Compile Include="IRecycleable.cs" />
+    <Compile Include="ISocket.cs" />
+    <Compile Include="ISocketRecevieable.cs" />
+    <Compile Include="IPeer.cs" />
+    <Compile Include="IClient.cs" />
+    <Compile Include="IConnectable.cs" />
+    <Compile Include="IServer.cs" />
+    <Compile Include="ITime.cs" />
+    <Compile Include="Line.cs" />
+    <Compile Include="ObjectFactory.cs" />
+    <Compile Include="Profile\Logger.cs" />
+    <Compile Include="ObjectPool.cs" />
+    <Compile Include="Package\PeerOperation.cs" />
+    <Compile Include="CongestionRecorder.cs" />
+    <Compile Include="Agent.cs" />
+    <Compile Include="ArrayCache.cs" />
+    <Compile Include="BufferDispenser.cs" />
+    <Compile Include="IRudpPeer.cs" />
+    <Compile Include="ISocketSendable.cs" />
+    <Compile Include="ISerialProvider.cs" />
+    <Compile Include="PackageRectifier.cs" />
+    <Compile Include="Socket.cs" />
+    <Compile Include="PeerConnecter.cs" />
+    <Compile Include="PeerDisconnecter.cs" />
+    <Compile Include="PeerListener.cs" />
+    <Compile Include="RetransmissionTimeOut.cs" />
+    <Compile Include="Rudp\Peer.cs" />
+    <Compile Include="Rudp\Client.cs" />
+    <Compile Include="Rudp\Connecter.cs" />
+    <Compile Include="Rudp\Server.cs" />
+    <Compile Include="SegmentStream.cs" />
+    <Compile Include="SocketMessageFactory.cs" />
+    <Compile Include="SocketMessageProvider.cs" />
+    <Compile Include="Task.cs" />
+    <Compile Include="Tcp\Connecter.cs" />
+    <Compile Include="Tcp\Server.cs" />
+    <Compile Include="Tcp\Peer.cs" />
+    <Compile Include="Rudp\UdpSocket.cs" />
+    <Compile Include="Tcp\Client.cs" />
+    <Compile Include="WiringOperator.cs" />
+    <Compile Include="SocketRecevier.cs" />
+    <Compile Include="SocketSender.cs" />
+    <Compile Include="Timestamp.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Host.cs" />
+    <Compile Include="Package\SocketMessage.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PureLib\RegulusLibrary.csproj">
+      <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
+      <Name>RegulusLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

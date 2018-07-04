@@ -2,20 +2,21 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Sockets;
+using Regulus.Network;
 
 namespace Regulus.Remoting
 {
     internal class SocketHeadReader : ISocketReader
     {
-        private readonly Socket _Socket;
+        private readonly IPeer _Peer;
 
         private readonly System.Collections.Generic.List<byte> _Buffer;
 
         private readonly byte[] _ReadedByte;
-        public SocketHeadReader(Socket socket)
+        public SocketHeadReader(IPeer peer)
         {
             _ReadedByte = new byte[1];
-            _Socket = socket;
+            _Peer = peer;
             _Buffer = new List<byte>();
             
         }
@@ -29,7 +30,7 @@ namespace Regulus.Remoting
 
             try
             {
-                _Socket.BeginReceive(_ReadedByte, 0, 1, SocketFlags.None, _Readed, null);
+                _Peer.Receive(_ReadedByte, 0, 1 , _Readed);
             }
             catch (SystemException e)
             {
@@ -41,47 +42,26 @@ namespace Regulus.Remoting
             
         }
 
-        private void _Readed(IAsyncResult ar)
+        private void _Readed(int read_size )
         {
 
-            try
-        
+            if (read_size != 0)
             {
-                SocketError error;
-                var readSize = _Socket.EndReceive(ar , out error);                
-                NetworkMonitor.Instance.Read.Set(readSize);
-
-
-                if (error == SocketError.Success && readSize != 0)
+                if (_ReadData(read_size))
                 {
-                    if (_ReadData(readSize))
-                    {
-                        if (_DoneEvent != null)
-                            _DoneEvent(_Buffer.ToArray());
-                    }
-                    else
-                    {
-                        _Read();
-                    }
+                    if (_DoneEvent != null)
+                        _DoneEvent(_Buffer.ToArray());
                 }
                 else
                 {
-                    Regulus.Utility.Log.Instance.WriteDebug(string.Format("read head error {0} size:{1}", error, readSize));
-                    if (_ErrorEvent != null)
-                        _ErrorEvent();
+                    _Read();
                 }
-                
-
             }
-            catch (SystemException e)
+            else
             {
+                Regulus.Utility.Log.Instance.WriteDebug(string.Format("read head error size:{0}", read_size));
                 if (_ErrorEvent != null)
-                {
                     _ErrorEvent();
-                }
-            }
-            finally
-            {
             }
         }
 

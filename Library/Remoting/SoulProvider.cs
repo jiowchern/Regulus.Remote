@@ -93,7 +93,7 @@ namespace Regulus.Remoting
 		private readonly Dictionary<Guid, IValue> _WaitValues = new Dictionary<Guid, IValue>();
 
 		private DateTime _UpdatePropertyInterval;
-		private ISerializer _Serializer;
+		private readonly ISerializer _Serializer;
 
 		public SoulProvider(IRequestQueue peer, IResponseQueue queue , IProtocol protocol)
 		{
@@ -352,7 +352,7 @@ namespace Regulus.Remoting
 
 		private void _Bind<TSoul>(TSoul soul, bool return_type, Guid return_id)
 		{
-			var type = typeof(TSoul);
+			
 
 			var prevSoul = (from soulInfo in _Souls.UpdateSet()
 							where object.ReferenceEquals(soulInfo.ObjectInstance, soul) && soulInfo.ObjectType == typeof(TSoul)
@@ -360,11 +360,11 @@ namespace Regulus.Remoting
 
 			if(prevSoul == null)
 			{
-				var new_soul = _NewSoul(soul, typeof(TSoul));
+				var newSoul = _NewSoul(soul, typeof(TSoul));
 
-				_LoadSoul(new_soul.InterfaceId, new_soul.ID, return_type);
-				new_soul.ProcessDiffentValues(_UpdateProperty);
-				_LoadSoulCompile(new_soul.InterfaceId, new_soul.ID, return_id);
+				_LoadSoul(newSoul.InterfaceId, newSoul.ID, return_type);
+				newSoul.ProcessDiffentValues(_UpdateProperty);
+				_LoadSoulCompile(newSoul.InterfaceId, newSoul.ID, return_id);
 			}
 		}
 

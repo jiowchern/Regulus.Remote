@@ -5,7 +5,7 @@ namespace Regulus.Serialization
 {
     public class BufferDescriber<T> : BufferDescriber
     {
-        public BufferDescriber(int id) : base(id , typeof(T))
+        public BufferDescriber() : base(typeof(T))
         {
             
         }
@@ -13,20 +13,17 @@ namespace Regulus.Serialization
     public class BufferDescriber : ITypeDescriber
     {
         private readonly Type _Type;
-        private readonly int _Id;
+        
 
-        public BufferDescriber(int id , Type type)
+        public BufferDescriber(Type type)
         {
             if(type.IsArray == false)
                 throw new ArgumentException("type is not array " + type.FullName);
             _Type = type;
-            _Id = id;
+        
         }
 
-        int ITypeDescriber.Id
-        {
-            get { return _Id; }
-        }
+        
 
         Type ITypeDescriber.Type
         {
@@ -80,9 +77,6 @@ namespace Regulus.Serialization
             return Activator.CreateInstance(_Type, new object[] { len } ) as Array;
         }
 
-        void ITypeDescriber.SetMap(TypeSet type_set)
-        {
-            
-        }
+        
     }
 }

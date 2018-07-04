@@ -165,10 +165,10 @@ namespace RegulusLibraryTest
 			var command = new Command();
 			var cr = new CommandRegister<ICallTester>(command, caller => caller.Function1());
 			
-			cr.Register(callTester);
-			command.Run("Function1", new string[0]);
+			cr.Register(0,callTester);
+			command.Run("0Function1", new string[0]);
 			callTester.Received(1).Function1();
-			cr.Unregister();
+			cr.Unregister(0);
 		}
 
 		[NUnit.Framework.Test()]
@@ -183,16 +183,16 @@ namespace RegulusLibraryTest
 			var callTester = Substitute.For<ICallTester>();
 
 			// test
-			cr.Register(callTester);
+			cr.Register(0,callTester);
 			command.Run(
-				"Function2", 
+				"0Function2", 
 				new[]
 				{
 					"1"
 				});
 
 			// verify
-			cr.Unregister();
+			cr.Unregister(0);
 		}
 
 		[NUnit.Framework.Test()]
@@ -205,14 +205,14 @@ namespace RegulusLibraryTest
 				caller => caller.Function3(), 
 				ret => { });
 			var callTester = Substitute.For<ICallTester>();
-			cr.Register(callTester);
+			cr.Register(0,callTester);
 			command.Run(
-				"Function3", 
+				"0Function3", 
 				new string[]
 				{
 				});
 			callTester.Received(1).Function3();
-			cr.Unregister();
+			cr.Unregister(0);
 		}
 
 		[NUnit.Framework.Test()]
@@ -227,9 +227,9 @@ namespace RegulusLibraryTest
 				ret => { result = ret; });
 			var callTester = Substitute.For<ICallTester>();
 			callTester.Function4(Arg.Any<int>(), Arg.Any<byte>(), Arg.Any<float>()).Returns(1);
-			cr.Register(callTester);
+			cr.Register(0,callTester);
 			command.Run(
-				"Function4", 
+				"0Function4", 
 				new[]
 				{
 					"1", 
@@ -237,7 +237,7 @@ namespace RegulusLibraryTest
 					"3"
 				} );
 			callTester.Received(1).Function4(Arg.Any<int>(), Arg.Any<byte>(), Arg.Any<float>());
-			cr.Unregister();
+			cr.Unregister(0);
             NUnit.Framework.Assert.AreEqual(1, result);
         }
 
@@ -254,12 +254,12 @@ namespace RegulusLibraryTest
 				ret => { result = ret; });
 			var callTester = Substitute.For<ICallTester>();
 			callTester.Function5.Returns(1);
-			cr.Register(callTester);
+			cr.Register(0,callTester);
 			command.Run(
-				"Function5",
+				"0Function5",
 				new string[0]);
 			
-			cr.Unregister();
+			cr.Unregister(0);
 
 			NUnit.Framework.Assert.AreEqual(1 , result);
 		}

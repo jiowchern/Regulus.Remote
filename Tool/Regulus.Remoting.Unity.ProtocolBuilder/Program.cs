@@ -63,7 +63,7 @@ output_dir = path/dir
             var regulusRemotingGhost = _GetRegulusRemotingGhost();
             var regulusSerialization = _GetRegulusSerialization();
 
-            var assemblyOutputer = new AssemblyOutputer(commonAsm,  commonNamespace);
+            /*var assemblyOutputer = new AssemblyOutputer(commonAsm,  commonNamespace);
             assemblyOutputer.ErrorMessageEvent += Console.WriteLine;
 
             string outputPath;
@@ -77,33 +77,18 @@ output_dir = path/dir
             if (_TryGetIniString(ini, "Build", "output_dir", out outputDir))
             {
                 assemblyOutputer.OutputDir(outputDir);
-            }
+            }*/
 
 
 
 
-            Regulus.Utility.Log.Instance.WaitDone();
+            Regulus.Utility.Log.Instance.Shutdown();
 
             Console.WriteLine("done");
 
         }
 
-        private static bool _TryGetIniString(Regulus.Utility.Ini ini, string section , string key,out string text)
-        {
-            text = string.Empty;
-            bool success = false;
-            try
-            {
-                text = ini.Read(section, key);
-                success = true;
-            }
-            catch (Exception)
-            {
-                
-            }
-
-            return success;
-        }
+       
 
         private static void _WriteLog(string message)
         {

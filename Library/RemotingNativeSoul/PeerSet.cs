@@ -27,11 +27,13 @@ namespace Regulus.Remoting.Soul.Native
 
 		internal void _Join(Peer peer, IBootable bootable)
 		{
-			lock(_Peers)
-				_Peers.Add(peer);
-			peer.DisconnectEvent += () => { _Leave(peer, peer); };
-			bootable.Launch();
-		}
+		    lock (_Peers)
+		    {
+		        _Peers.Add(peer);
+		        peer.DisconnectEvent += () => { _Leave(peer, peer); };		        
+            }
+		    bootable.Launch();
+        }
 
 		internal void _Leave(Peer peer, IBootable bootable)
 		{
@@ -43,7 +45,8 @@ namespace Regulus.Remoting.Soul.Native
 			    }
 			    else
 			    {
-			        throw new Exception("no peer shutdown.");
+                    if(_Peers.Count > 0)
+			            throw new Exception("no peer shutdown.");
 			    }
 			}
 		}

@@ -8,7 +8,7 @@ namespace Regulus.Serialization
 {
     public class ClassDescriber : ITypeDescriber 
     {
-        private readonly int _Id;
+        
 
         private readonly Type _Type;
 
@@ -16,14 +16,13 @@ namespace Regulus.Serialization
                 
         private readonly object _Default;
 
-        private TypeSet _TypeSet;
+        private readonly IDescribersFinder _TypeSet;
 
-        public ClassDescriber(int id , Type type)
+        public ClassDescriber(Type type , IDescribersFinder finder)
         {
-            _Default = null;
-            _Id = id;
+            _Default = null;            
             _Type = type;
-
+            _TypeSet = finder;
             _Fields = (from field in _Type.GetFields()
                          where field.IsStatic == false && field.IsPublic orderby field.Name
                          select field).ToArray();
@@ -32,10 +31,7 @@ namespace Regulus.Serialization
         }
 
 
-        int ITypeDescriber.Id
-        {
-            get { return _Id; }
-        }
+        
 
         Type ITypeDescriber.Type
         {
@@ -74,14 +70,14 @@ namespace Regulus.Serialization
             catch (Exception ex)
             {
 
-                throw new DescriberException(typeof(ClassDescriber), _Type, _Id, "GetByteCount", ex);
+                throw new DescriberException(typeof(ClassDescriber), _Type, "GetByteCount", ex);
             }
             
         }
 
         private ITypeDescriber _GetDescriber(FieldInfo field)
         {
-            return _TypeSet.GetByType(field.FieldType);
+            return _TypeSet.Get(field.FieldType);
         }
 
         int ITypeDescriber.ToBuffer(object instance, byte[] buffer, int begin)
@@ -117,7 +113,7 @@ namespace Regulus.Serialization
             catch (Exception ex)
             {
 
-                throw new DescriberException(typeof(ClassDescriber), _Type, _Id, "ToBuffer", ex);
+                throw new DescriberException(typeof(ClassDescriber), _Type, "ToBuffer", ex);
             }
             
         }
@@ -168,15 +164,12 @@ namespace Regulus.Serialization
             catch (Exception ex)
             {
 
-                throw new DescriberException(typeof(ClassDescriber), _Type, _Id, "ToObject", ex);
+                throw new DescriberException(typeof(ClassDescriber), _Type, "ToObject", ex);
             }
             
 
         }
 
-        void ITypeDescriber.SetMap(TypeSet type_set)
-        {
-            _TypeSet = type_set;
-        }
+        
     }
 }

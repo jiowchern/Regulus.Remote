@@ -8,7 +8,7 @@ using Regulus.Utility.WindowConsoleStand;
 
 namespace Regulus.Utility
 {
-	public abstract class WindowConsole : IUpdatable
+    public abstract class WindowConsole : IUpdatable
 	{
 		public delegate void QuitCallback();
 
@@ -43,7 +43,7 @@ namespace Regulus.Utility
 		{
 			WindowConsole.SetConsoleCtrlHandler(ConsoleCtrlCheck, true);
 
-			_HideLog();
+			ShowLog();
 
 			_Updater.Add(_Input);
 
@@ -71,24 +71,24 @@ namespace Regulus.Utility
 
 		protected abstract void _Shutdown();
 
-		private void _HideLog()
+		public void HideLog()
 		{
 			Singleton<Log>.Instance.RecordEvent -= _RecordView;
 			_Console.Command.Unregister("HideLog");
-			_Console.Command.Register("ShowLog", _ShowLog);
+			_Console.Command.Register("ShowLog", ShowLog);
 		}
 
-		private void _ShowLog()
+		public void ShowLog()
 		{
 			Singleton<Log>.Instance.RecordEvent += _RecordView;
 			_Console.Command.Unregister("ShowLog");
-			_Console.Command.Register("HideLog", _HideLog);
+			_Console.Command.Register("HideLog", HideLog);
 		}
 
 		private void _RecordView(string message)
 		{
-            var time = DateTime.Now.ToString("yyyy/MM/dd hh:mm:ss");
-            Viewer.WriteLine(string.Format("[{0}]:{1}", time, message));
+            
+            Viewer.WriteLine(message);
 		}
 
 		#region unmanaged
@@ -148,6 +148,8 @@ namespace Regulus.Utility
 
 			return true;
 		}
+
+	    
 	}
 
 	namespace WindowConsoleStand
@@ -181,11 +183,8 @@ namespace Regulus.Utility
 			public static void Run(this WindowConsole windowconsole)
 			{
 
-                
-                AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
-			    {
-			        Regulus.Utility.CrashDump.Write();			        
-			    };
+
+			    AppDomain.CurrentDomain.UnhandledException += _Dump;
                 var run = true;			    
                 windowconsole.Command.Register("quit", () => { run = false; });
 				windowconsole.QuitEvent += () => { run = false; };
@@ -199,7 +198,15 @@ namespace Regulus.Utility
 				windowconsole.Command.Unregister("quit");
 			}
 
-		    
-		}
+		    internal  static void _Dump(object sender, UnhandledExceptionEventArgs e)
+		    {
+		        System.IO.File.WriteAllText(string.Format("UnhandledException_{0}.log", DateTime.Now.ToString("yyyyMMdd-HHmmss")), e.ExceptionObject.ToString());
+		        Regulus.Utility.CrashDump.Write();
+		        Singleton<Log>.Instance.Shutdown();
+		    }
+        }
 	}
 }
+
+
+

@@ -41,6 +41,18 @@ namespace Regulus.Protocol.Tests
             NUnit.Framework.Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(EventData1)));
             NUnit.Framework.Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(EventData2)));
         }
+
+
+        [NUnit.Framework.Test()]
+        [NUnit.Framework.Timeout(1000)]
+        public void TypeDisintegratorNestTest()
+        {
+            var typeDisintegrator = new TypeDisintegrator(typeof(Data1));
+            NUnit.Framework.Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(Data1)));
+            NUnit.Framework.Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(Data2)));
+            NUnit.Framework.Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(Data1[])));
+            NUnit.Framework.Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(Data2[])));
+        }
     }
 
     public interface ITest
@@ -61,6 +73,16 @@ namespace Regulus.Protocol.Tests
     {
         public EventData2 Data1;
         public int Data2;
+    }
+
+    public class Data1
+    {
+        public Data2[] Data2s;
+    }
+
+    public class Data2
+    {
+        public Data1[] Data1s;
     }
 }
 

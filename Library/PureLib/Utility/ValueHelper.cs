@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+
 namespace Regulus.Utility
 {
-	public class ValueHelper
+    public class ValueHelper
 	{
 		public IEnumerator<T> GetEnumItems<T>() where T : class
 		{

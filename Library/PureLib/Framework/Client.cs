@@ -85,13 +85,5 @@ namespace Regulus.Framework
 		}
 	}
 
-	namespace Extension
-	{
-		public static class ClientExtension
-		{
-			public static void Run(this IUpdatable updatable)
-			{
-			}
-		}
-	}
+	
 }

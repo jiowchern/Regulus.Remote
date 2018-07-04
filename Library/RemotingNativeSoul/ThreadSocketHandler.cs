@@ -1,10 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-
-
+using Regulus.Network;
+using Regulus.Network.Rudp;
 using Regulus.Utility;
 
 namespace Regulus.Remoting.Soul.Native
@@ -13,12 +12,13 @@ namespace Regulus.Remoting.Soul.Native
     {
         private readonly ThreadCoreHandler _CoreHandler;
         private readonly IProtocol _Protocol;
+        private readonly IServer _Server;
 
         private readonly PeerSet _Peers;
 
         private readonly int _Port;
 
-        private readonly Queue<Socket> _Sockets;
+        private readonly Queue<IPeer> _Sockets;
 
         // ParallelUpdate _Peers;
         private readonly PowerRegulator _Spin;
@@ -26,8 +26,7 @@ namespace Regulus.Remoting.Soul.Native
         private readonly AutoPowerRegulator _AutoPowerRegulator;
 
         private volatile bool _Run;
-
-        private Socket _Socket;
+        
 
         public int FPS
         {
@@ -44,33 +43,30 @@ namespace Regulus.Remoting.Soul.Native
             get { return _Peers.Count; }
         }
 
-        public ThreadSocketHandler(int port, ThreadCoreHandler core_handler, IProtocol protocol)
+        public ThreadSocketHandler(int port, ThreadCoreHandler core_handler, IProtocol protocol , IServer server)
         {
             _CoreHandler = core_handler;
             _Protocol = protocol;
             _Port = port;
 
-            _Sockets = new Queue<Socket>();
+            _Sockets = new Queue<IPeer>();
 
             _Peers = new PeerSet();
 
             _Spin = new PowerRegulator();
             _AutoPowerRegulator = new AutoPowerRegulator(_Spin);
+
+            _Server = server;
         }
 
         public void DoWork(object obj)
         {
-            Singleton<Log>.Instance.WriteInfo("server socket launch");
+            Singleton<Log>.Instance.WriteInfo("server peer launch");
             var are = (AutoResetEvent)obj;
             _Run = true;
 
-            _Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            _Socket.NoDelay = true;
-
-            // _Socket.SetSocketOption(System.Net.Sockets.SocketOptionLevel.Socket, System.Net.Sockets.SocketOptionName.ReuseAddress, true);
-            _Socket.Bind(new IPEndPoint(IPAddress.Any, _Port));
-            _Socket.Listen(5);
-            _Socket.BeginAccept(_Accept, null);
+            _Server.AcceptEvent += _Accept;
+            _Server.Bind(_Port);
 
             while(_Run)
             {
@@ -83,7 +79,7 @@ namespace Regulus.Remoting.Soul.Native
                             var socket = _Sockets.Dequeue();
 
                             Singleton<Log>.Instance.WriteInfo(
-                                string.Format("socket accept Remote {0} Local {1} .", socket.RemoteEndPoint, socket.LocalEndPoint));
+                                string.Format("peer accept Remote {0} Local {1} .", socket.RemoteEndPoint, socket.LocalEndPoint));
                             var peer = new Peer(socket , _Protocol);
 
                             _Peers.Join(peer);
@@ -98,58 +94,23 @@ namespace Regulus.Remoting.Soul.Native
 
             _Peers.Release();
 
-            if(_Socket.Connected)
-            {
-                _Socket.Shutdown(SocketShutdown.Both);
-            }
 
-            _Socket.Close();
+            _Server.AcceptEvent -= _Accept;
+            _Server.Close();
+
 
             are.Set();
-            Singleton<Log>.Instance.WriteInfo("server socket shutdown");
+            Singleton<Log>.Instance.WriteInfo("server peer shutdown");
         }
 
-        private void _Accept(IAsyncResult ar)
+        private void _Accept(IPeer peer)
         {
-            try
+            lock (_Sockets)
             {
-                var socket = _Socket.EndAccept(ar);
-                lock(_Sockets)
-                {
-                    _Sockets.Enqueue(socket);
-                }
-
-                _Socket.BeginAccept(_Accept, null);
-            }
-
-                // System.ArgumentNullException:
-                // asyncResult 為 null。
-                // System.ArgumentException:
-                // asyncResult 不是透過呼叫 System.Net.Sockets.Socket.BeginAccept(System.AsyncCallback,System.Object)
-                // 所建立。
-                // System.Net.Sockets.SocketException:
-                // 嘗試存取通訊端時發生錯誤。如需詳細資訊，請參閱備註章節。
-                // System.ObjectDisposedException:
-                // System.Net.Sockets.Socket 已經關閉。
-                // System.InvalidOperationException:
-                // 先前已呼叫 System.Net.Sockets.Socket.EndAccept(System.IAsyncResult) 方法。
-            catch(SocketException se)
-            {
-                Singleton<Log>.Instance.WriteInfo(se.ToString());
-            }
-            catch(ObjectDisposedException ode)
-            {
-                Singleton<Log>.Instance.WriteInfo(ode.ToString());
-            }
-            catch(InvalidOperationException ioe)
-            {
-                Singleton<Log>.Instance.WriteInfo(ioe.ToString());
-            }
-            catch(Exception e)
-            {
-                Singleton<Log>.Instance.WriteInfo(e.ToString());
+                _Sockets.Enqueue(peer);
             }
         }
+        
 
         public void Stop()
         {

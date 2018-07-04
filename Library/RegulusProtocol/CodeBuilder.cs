@@ -138,10 +138,10 @@ namespace Regulus.Protocol
                         {addEventCode}
                         _EventProvider = new Regulus.Remoting.EventProvider(eventClosures);
 
-                        _Serializer = new Regulus.Serialization.Serializer(new Regulus.Serialization.DescriberBuilder({addDescriberCode}));
+                        _Serializer = new Regulus.Serialization.Serializer(new Regulus.Serialization.DescriberBuilder({addDescriberCode}).Describers);
 
 
-                        _MemberMap = new Regulus.Remoting.MemberMap(new[] {{{addMemberMapMethodCode}}} ,new[]{{ {addMemberMapEventCode} }}, new [] {{{addMemberMapPropertyCode} }}, new [] {{{addMemberMapinterfaceCode}}});
+                        _MemberMap = new Regulus.Remoting.MemberMap(new System.Reflection.MethodInfo[] {{{addMemberMapMethodCode}}} ,new System.Reflection.EventInfo[]{{ {addMemberMapEventCode} }}, new System.Reflection.PropertyInfo[] {{{addMemberMapPropertyCode} }}, new System.Type[] {{{addMemberMapinterfaceCode}}});
                     }}
 
                     byte[] Regulus.Remoting.IProtocol.VerificationCode {{ get {{ return new byte[]{{{verificationCode}}};}} }}
@@ -199,8 +199,7 @@ namespace Regulus.Protocol
             serializer_types.Add(typeof(Regulus.Remoting.PackageRelease));
 
             foreach (var serializerType in serializer_types)
-            {
-                
+            {                
                 foreach (var type in new TypeDisintegrator(serializerType).Types)
                 {                    
                     types.Add(type);
@@ -224,7 +223,7 @@ namespace Regulus.Protocol
         private string _GetEventType(Type type, string event_name)
         {
 
-            return $"{type.Namespace}.Event.{type.Name}.{event_name}";
+            return $"{type.Namespace}.Invoker.{type.Name}.{event_name}";
         }
 
         private string _BuildEventCode(Type type, EventInfo info)
@@ -238,7 +237,7 @@ namespace Regulus.Protocol
     using System;  
     using System.Collections.Generic;
     
-    namespace {nameSpace}.Event.{name} 
+    namespace {nameSpace}.Invoker.{name} 
     {{ 
         public class {eventName} : Regulus.Remoting.IEventProxyCreator
         {{

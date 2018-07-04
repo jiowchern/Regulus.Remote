@@ -130,7 +130,7 @@ namespace Regulus.Remoting
 
 			foreach(var id in _InvokeDatas)
 			{
-				id.Register(obj);
+				id.Register(sn , obj);
 			}
 		}
 
@@ -138,7 +138,7 @@ namespace Regulus.Remoting
 		{
 			foreach(var id in _InvokeDatas)
 			{
-				id.Unregister();
+				id.Unregister(sn);
 			}
 
 			foreach(var handler in _Handlers)

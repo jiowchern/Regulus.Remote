@@ -6,21 +6,17 @@ namespace Regulus.Serialization
 {
     public class StringDescriber : ITypeDescriber
     {
-        private readonly int _Id;
+        
 
-        private ITypeDescriber _CharArrayDescriber;
+        private readonly ITypeDescriber _CharArrayDescriber;
 
-        public StringDescriber(int id)
+        public StringDescriber(ITypeDescriber chars_describer)
         {
-            _Id = id;
+            _CharArrayDescriber = chars_describer;
 
         }
 
-        int ITypeDescriber.Id
-        {
-            get { return _Id; }
-        }
-
+        
         Type ITypeDescriber.Type
         {
             get { return typeof (string); }
@@ -60,13 +56,6 @@ namespace Regulus.Serialization
 
             return offset - begin;
         }
-
-        void ITypeDescriber.SetMap(TypeSet type_set)
-        {
-
-
-
-            _CharArrayDescriber = type_set.GetByType(typeof(char[])); 
-        }
+        
     }
 }

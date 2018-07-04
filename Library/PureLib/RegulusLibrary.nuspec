@@ -2,8 +2,8 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>RegulusLibrary</id>
-        <version>0.3.0</version>
-        <authors>Regulus</authors>
+        <version>0.4.0</version>
+        <authors>jc</authors>
         <projectUrl>https://github.com/jiowchern/Regulus</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>core lib</description>
@@ -21,8 +21,8 @@
         </frameworkAssemblies>
     </metadata>
     <files>
-        <file src="bin\release\RegulusLibrary.dll" target="lib\net35\RegulusLibrary.dll" />
-        <file src="bin\release\RegulusLibrary.pdb" target="lib\net35\RegulusLibrary.pdb" />
-        <file src="bin\release\RegulusLibrary.xml" target="lib\net35\RegulusLibrary.xml" />
+        <file src="bin\release\RegulusLibrary.dll" target="lib\net40\RegulusLibrary.dll" />
+        <file src="bin\release\RegulusLibrary.pdb" target="lib\net40\RegulusLibrary.pdb" />
+        <file src="bin\release\RegulusLibrary.xml" target="lib\net40\RegulusLibrary.xml" />
     </files>
 </package>

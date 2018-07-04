@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Net;
 using System.Net.Sockets;
-
-
+using Regulus.Network;
 using Regulus.Utility;
 
 namespace Regulus.Remoting.Ghost.Native
@@ -10,23 +10,25 @@ namespace Regulus.Remoting.Ghost.Native
 	{
 		private class ConnectStage : IStage
 		{
-			public event Action<bool, Socket> ResultEvent;
+			public event Action<bool, IPeer> ResultEvent;
 
 			private readonly string _Ipaddress;
 
 			private readonly int _Port;
 
-			private readonly Socket _Socket;
+			private readonly IConnectable _Peer;
 
 			private IAsyncResult _AsyncResult;
 
 			private bool? _Result;
 
-			public ConnectStage(string ipaddress, int port)
+			public ConnectStage(string ipaddress, int port , IClient agent)
 			{
-				_Socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-				_Socket.NoDelay = true;
-				if(ipaddress == null)
+                
+			    _Peer = agent.Spawn();
+
+
+                if (ipaddress == null)
 				{
 					throw new ArgumentNullException();
 				}
@@ -42,9 +44,10 @@ namespace Regulus.Remoting.Ghost.Native
 
 				try
 				{
-					// _Socket.SetSocketOption(System.Net.Sockets.SocketOptionLevel.Socket, System.Net.Sockets.SocketOptionName.ReuseAddress, true);
-					// _Socket.Bind(new System.Net.IPEndPoint(System.Net.IPAddress.Any, 42255));
-					_AsyncResult = _Socket.BeginConnect(_Ipaddress, _Port, _ConnectResult, null);
+					// _Peer.SetSocketOption(System.Net.Sockets.SocketOptionLevel.Socket, System.Net.Sockets.SocketOptionName.ReuseAddress, true);
+					// _Peer.Bind(new System.Net.IPEndPoint(System.Net.IPAddress.Any, 42255));
+				    
+					_Peer.Connect(new IPEndPoint(IPAddress.Parse(_Ipaddress), _Port), _ConnectResult);
 				}
 				catch(Exception e)
 				{
@@ -68,7 +71,7 @@ namespace Regulus.Remoting.Ghost.Native
 
 				if(_Result.HasValue && _Result.Value == false)
 				{
-					_Socket.Close();
+					_Peer.Close();
 				}
 
 				Singleton<Log>.Instance.WriteInfo("Agent connect leave.");
@@ -79,28 +82,11 @@ namespace Regulus.Remoting.Ghost.Native
 				_InvokeResultEvent();
 			}
 
-			private void _ConnectResult(IAsyncResult ar)
+			private void _ConnectResult(bool result)
 			{
-				var result = false;
-				try
-				{
-					_Socket.EndConnect(ar);
-					result = true;
-				}
-				catch(SocketException ex)
-				{
-					Singleton<Log>.Instance.WriteInfo(ex.ToString());
-				}
-				catch(ObjectDisposedException ode)
-				{
-					Singleton<Log>.Instance.WriteInfo(ode.ToString());
-				}
-				finally
-				{
-					_Result = result;
-					Singleton<Log>.Instance.WriteInfo(string.Format("connect result {0}.", _Result));
-				}
-			}
+			    _Result = result;
+			    Singleton<Log>.Instance.WriteInfo(string.Format("connect result {0}.", _Result));
+            }
 
 			private void _InvokeResultEvent()
 			{
@@ -108,7 +94,7 @@ namespace Regulus.Remoting.Ghost.Native
 				{
 					var call = ResultEvent;
 					ResultEvent = null;
-					call(_Result.Value, _Socket);
+					call(_Result.Value, _Peer);
 				}
 			}
 		}

@@ -8,7 +8,15 @@ namespace Regulus.Utility
 
 		private static readonly Type _Sync = typeof(T);
 
-		public static T Instance
+	    public static System.Func<T> InstanceCreateHandler = _New;
+
+	    private static T _New()
+	    {
+	        return new T();
+	    }
+
+
+	    public static T Instance
 		{
 			get
 			{
@@ -16,7 +24,7 @@ namespace Regulus.Utility
 				{
 					if(Singleton<T>._Instance == null)
 					{
-						Singleton<T>._Instance = new T();
+						Singleton<T>._Instance = InstanceCreateHandler();
 					}
 
 					return Singleton<T>._Instance;

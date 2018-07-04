@@ -1,4 +1,6 @@
-﻿namespace Regulus.Utility
+﻿using System.Threading;
+
+namespace Regulus.Utility
 {
 	public class PowerRegulator
 	{
@@ -8,7 +10,7 @@
 
 		private readonly float _Sample;
 
-		private readonly SpinWait _SpinWait;
+		private SpinWait _SpinWait;
 
 		private readonly TimeCounter _TimeCount;
 
@@ -47,7 +49,9 @@
 
 			if(_Busy <= busy && _FPS.Value > _LowPower)
 			{
-				_SpinWait.SpinOnce();
+			    
+
+                _SpinWait.SpinOnce();
 				_SpinCount++;
 			}
 			else

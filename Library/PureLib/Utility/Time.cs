@@ -1,6 +1,4 @@
 ﻿using System;
-
-
 using Regulus.Framework;
 
 namespace Regulus.Utility
@@ -30,79 +28,8 @@ namespace Regulus.Utility
 		}
 	}
 
-	public class TimeCounter
-	{
-		private long _Begin;
 
-		public long Ticks
-		{
-			get { return DateTime.Now.Ticks - _Begin; }
-		}
-
-		public float Second
-		{
-			get { return (float)new TimeSpan(Ticks).TotalSeconds; }
-		}
-
-		public TimeCounter()
-		{
-			Reset();
-		}
-
-		public void Reset()
-		{
-			_Begin = DateTime.Now.Ticks;
-		}
-	}
-
-	public class Stopwatch
-	{
-		private TimeCounter _Current;
-
-		private long _Interval;
-
-		private bool _Pause;
-
-		private TimeCounter _Stop;
-
-		private long _StopTick;
-
-		public long Ticks
-		{
-			get
-			{
-				if(_Pause == false)
-				{
-					return _Current.Ticks - _Interval;
-				}
-
-				return _StopTick;
-			}
-		}
-
-		public void Reset()
-		{
-			_Current.Reset();
-			_Stop.Reset();
-			_Interval = 0;
-			_StopTick = 0;
-		}
-
-		public void Continue()
-		{
-			_Pause = false;
-			_Interval += _Stop.Ticks;
-		}
-
-		public void Stop()
-		{
-			_Pause = true;
-			_Stop.Reset();
-			_StopTick = _Current.Ticks;
-		}
-	}
-
-	public class Timer
+    public class Timer
 	{
 		private readonly long _Interval;
 
@@ -165,13 +92,13 @@ namespace Regulus.Utility
 
 	public class Scheduler : Singleton<Scheduler>
 	{
-		private readonly UpdaterToGenerics<long> _Tasks;
+		private readonly Updater<long> _Tasks;
 
 		private readonly Time _Time;
 
 		public Scheduler()
 		{
-			_Tasks = new UpdaterToGenerics<long>();
+			_Tasks = new Updater<long>();
 			_Time = new Time();
 		}
 

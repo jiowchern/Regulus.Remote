@@ -117,10 +117,10 @@ namespace Regulus.Remoting.Soul.Native
 		/// <param name="port">
 		///     監聽的埠
 		/// </param>
-		public Server(ICore core,IProtocol protocol , ICommand command, int port)
+		public Server(ICore core,IProtocol protocol , ICommand command, int port , Regulus.Network.IServer server)
 		{
 			_ThreadCoreHandler = new ThreadCoreHandler(core , protocol , command);
-			_ThreadSocketHandler = new ThreadSocketHandler(port, _ThreadCoreHandler , protocol);
+			_ThreadSocketHandler = new ThreadSocketHandler(port, _ThreadCoreHandler , protocol , server);
 
 			_WaitSocket = new AutoResetEvent(false);
 		}

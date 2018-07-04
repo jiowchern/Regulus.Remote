@@ -6,30 +6,20 @@ using Regulus.Remoting;
 
 namespace Regulus.Serialization
 {
+    
+
     public class Serializer : ISerializer
     {
-        private readonly TypeSet _TypeSet;
+        private readonly DescriberProvider _Provider;
 
-        public Serializer(params ITypeDescriber[] describers)
+        public Serializer(DescriberProvider provider)
         {
 
-            var typeSet = new TypeSet(describers);
+            _Provider = provider;
             
-
-            foreach (var typeDescriber in describers)
-            {
-                typeDescriber.SetMap(typeSet);
-            }
-
-            _TypeSet = typeSet;
+            
+            
         }
-
-        public Serializer(DescriberBuilder describer_builder) : this(describer_builder.Describers)
-        {            
-        }
-
-        
-
         
         public byte[] ObjectToBuffer(object instance )
         {
@@ -40,14 +30,15 @@ namespace Regulus.Serialization
                 {
                     return _NullBuffer();
                 }
-
+             
+                
                 var type = instance.GetType();
-                var describer = _GetDescriber(type);
-                var id = describer.Id;
-                var idCount = Varint.GetByteCount((ulong)id);
+                var describer = _Provider.TypeDescriberFinders.Get(type) ;
+
+                var idCount = _Provider.KeyDescriber.GetByteCount(type);
                 var bufferCount = describer.GetByteCount(instance);
                 var buffer = new byte[idCount + bufferCount];
-                var readCount = Varint.NumberToBuffer(buffer, 0, id);
+                var readCount = _Provider.KeyDescriber.ToBuffer(type, buffer,0);
                 describer.ToBuffer(instance, buffer, readCount);
                 return buffer;
             }
@@ -76,23 +67,23 @@ namespace Regulus.Serialization
         
         public object BufferToObject(byte[] buffer)
         {
-            ulong id = 0;
+            Type id = null;
             try
             {
                 
-                var readIdCount = Varint.BufferToNumber(buffer, 0, out id);
-                if (id == 0)
+                var readIdCount = _Provider.KeyDescriber.ToObject(buffer, 0, out id);
+                if (id == null)
                     return null;
 
-                var describer = _GetDescriber((int)id);
+                var describer = _Provider.TypeDescriberFinders.Get(id) ;
                 object instance;
                 describer.ToObject(buffer, readIdCount, out instance);
                 return instance;
             }
             catch (DescriberException ex)
             {
-                var describer = _GetDescriber((int)id);
-                if(describer != null)
+                var describer = _Provider.TypeDescriberFinders.Get(id);
+                if (describer != null)
                     throw new SystemException(string.Format("BufferToObject {0}:{1}", id , describer.Type.FullName), ex);
                 else
                 {
@@ -102,17 +93,7 @@ namespace Regulus.Serialization
             
         }
 
-        private ITypeDescriber _GetDescriber(int id)
-        {
-
-            
-            return _TypeSet.GetById(id);
-        }
-
-        private ITypeDescriber _GetDescriber(Type type)
-        {
-            return _TypeSet.GetByType(type);
-        }
+        
 
         byte[] ISerializer.Serialize(object instance )
         {
@@ -123,7 +104,45 @@ namespace Regulus.Serialization
         {
             return BufferToObject(buffer);
         }
+
+        public bool TryBufferToObject<T>(byte[] buffer, out T pkg)
+        {
+
+            pkg = default(T);
+            try
+            {
+                var instance = BufferToObject(buffer);
+                pkg = (T) instance;
+                return true;
+            }
+            catch (Exception e)
+            {
+                Regulus.Utility.Log.Instance.WriteInfo(e.ToString());
+            }
+
+            return false;
+        }
+
+        public bool TryBufferToObject(byte[] buffer, out object pkg)
+        {
+
+            pkg = null;
+            try
+            {
+                var instance = BufferToObject(buffer);
+                pkg = instance;
+                return true;
+            }
+            catch (Exception e)
+            {
+                Regulus.Utility.Log.Instance.WriteInfo(e.ToString());
+            }
+
+            return false;
+        }
     }
+
+    
 }
 
 

@@ -3,6 +3,9 @@ using System.Net.Sockets;
 
 using Regulus.Serialization;
 using Regulus.Framework;
+using Regulus.Network;
+using Regulus.Network.Rudp;
+
 using Regulus.Utility;
 
 namespace Regulus.Remoting.Ghost.Native
@@ -17,37 +20,57 @@ namespace Regulus.Remoting.Ghost.Native
 		private readonly AgentCore _Core;
 
 		private readonly StageMachine _Machine;
+	    private readonly IClient _RudpAgent;
+	    
 
-		private long _Ping
+
+	    
+
+	    private long _Ping
 		{
 			get { return _Core.Ping; }
 		}
 
 		
 
-	    private Agent(IProtocol protocol)
+	    private Agent(IProtocol protocol,Regulus.Network.IClient client)
 	    {
-	        _Serializer = protocol.GetSerialize();
+	    
+            _Serializer = protocol.GetSerialize();
 	        _Machine = new StageMachine();
             _Core = new AgentCore(protocol);
+	        _RudpAgent = client;
+	        
+	        
         }
 
 		bool IUpdatable.Update()
 		{
 			lock(_Machine)
 				_Machine.Update();
-			return true;
+		    
+
+            
+		    
+
+            return true;
 		}
 
 		void IBootable.Launch()
 		{
-			Singleton<Log>.Instance.WriteInfo("Agent Launch.");
+            
+
+            Singleton<Log>.Instance.WriteInfo("Agent Launch.");
             _Core.ErrorMethodEvent += _ErrorMethodEvent;
 		    _Core.ErrorVerifyEvent += _ErrorVerifyEvent;
-		}
+
+		    
+
+        }
 
 		void IBootable.Shutdown()
 		{
+		    
             _Core.ErrorVerifyEvent -= _ErrorVerifyEvent;
             _Core.ErrorMethodEvent -= _ErrorMethodEvent;
             if (_Core.Enable)
@@ -67,7 +90,8 @@ namespace Regulus.Remoting.Ghost.Native
 				_Machine.Termination();
 			}
 
-			Singleton<Log>.Instance.WriteInfo("Agent Shutdown.");
+
+            Singleton<Log>.Instance.WriteInfo("Agent Shutdown.");
 		}
 
 		INotifier<T> IAgent.QueryNotifier<T>()
@@ -133,7 +157,7 @@ namespace Regulus.Remoting.Ghost.Native
 			lock(_Machine)
 			{
 				var connectValue = new Value<bool>();
-				var stage = new ConnectStage(ipaddress, port);
+				var stage = new ConnectStage(ipaddress, port, _RudpAgent);
 				stage.ResultEvent += (result, socket) =>
 				{
 					_ConnectResult(result, socket);
@@ -144,7 +168,7 @@ namespace Regulus.Remoting.Ghost.Native
 			}
 		}
 
-		private void _ConnectResult(bool success, Socket socket)
+		private void _ConnectResult(bool success, IPeer peer)
 		{
 			if(success)
 			{
@@ -153,7 +177,7 @@ namespace Regulus.Remoting.Ghost.Native
 					_ConnectEvent();
 				}
 
-				_ToOnline(_Machine, socket);
+				_ToOnline(_Machine, peer);
 			}
 			else
 			{
@@ -161,9 +185,9 @@ namespace Regulus.Remoting.Ghost.Native
 			}
 		}
 
-		private void _ToOnline(StageMachine machine, Socket socket)
+		private void _ToOnline(StageMachine machine, IPeer peer)
 		{
-			var onlineStage = new OnlineStage(socket, _Core , _Serializer);
+			var onlineStage = new OnlineStage(peer, _Core , _Serializer);
 			onlineStage.DoneFromServerEvent += () =>
 			{
 				_ToTermination();
@@ -190,9 +214,9 @@ namespace Regulus.Remoting.Ghost.Native
 		///     建立代理器
 		/// </summary>
 		/// <returns></returns>
-		public static IAgent Create(IProtocol protocol)
+		public static IAgent Create(IProtocol protocol,Regulus.Network.IClient client)
         {
-            return new Agent(protocol);
+            return new Agent(protocol , client);
         }
     }
 }

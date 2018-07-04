@@ -59,7 +59,13 @@ namespace Regulus.CustomType
 			return X * vector.X + Y * vector.Y;
 		}
 
-		public float DistanceTo(Vector2 vector)
+	    public float DistanceToNoSqrt(Vector2 vector)
+	    {
+	        return (float)(Math.Pow(vector.X - X, 2) + Math.Pow(vector.Y - Y, 2));
+
+	    }
+
+        public float DistanceTo(Vector2 vector)
 		{
 			return (float)Math.Sqrt(Math.Pow(vector.X - X, 2) + Math.Pow(vector.Y - Y, 2));
 		}
@@ -153,5 +159,10 @@ namespace Regulus.CustomType
 	        return (float) -(Math.Atan2(vec.Y, vec.X) * 180 / Math.PI);
 	    }
 
-    }
+	    public void Set(float x, float y)
+	    {
+	        X = x;
+	        Y = y;
+	    }
+	}
 }
