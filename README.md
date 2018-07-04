@@ -27,7 +27,9 @@
 [![Github Releases (by Asset)](https://img.shields.io/github/downloads/jiowchern/regulus/latest/Tool.zip.svg)](https://github.com/jiowchern/Regulus/releases/latest)
 +  **行為樹**-程式庫   
 [![Github Releases (by Asset)](https://img.shields.io/github/downloads/jiowchern/regulus/latest/BehaviourTree.zip.svg)](https://github.com/jiowchern/Regulus/releases/latest)
-## 範例  
++  **序列化**-程式庫   
+[![Github Releases (by Asset)](https://img.shields.io/github/downloads/jiowchern/regulus/latest/Serialization.zip.svg)](https://github.com/jiowchern/Regulus/releases/latest)[![Nuget](https://img.shields.io/nuget/v/RegulusStandalone.svg?style=plastic)](https://www.nuget.org/packages/RegulusSerialization)
+## 範例  (舊版)
 + [Sample Game Server](https://github.com/jiowchern/ItIsNotAGame1-Backend) 
 + [Sample Game Client (Unity)](https://github.com/jiowchern/ItIsNotAGame-FrontEnd)  
 + [Sample (Unity)](https://github.com/jiowchern/UnityRemotingSample)  
