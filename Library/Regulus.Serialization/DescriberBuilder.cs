@@ -21,8 +21,8 @@ namespace Regulus.Serialization
 
         DescriberProvider _BuildDescribers(ITypeFinder type_finder)
         {
-            var describersFinder = new Dynamic.DescribersFinder();
-            return new DescriberProvider(new StringKeyDescriber(type_finder , describersFinder), describersFinder);
+            var describersFinder = new Dynamic.DescribersFinder(type_finder);
+            return new DescriberProvider(describersFinder);
         }
         DescriberProvider _BuildDescribers(params Type[] types)
         {

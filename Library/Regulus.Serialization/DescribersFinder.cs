@@ -26,7 +26,12 @@ namespace Regulus.Serialization
 
             KeyDescriber = new IntKeyDescriber(_Describers.Values.ToArray());
         }
-        
+
+
+        IKeyDescriber IDescribersFinder.Get()
+        {
+            return KeyDescriber;
+        }
 
         ITypeDescriber IDescribersFinder.Get(Type id)
         {

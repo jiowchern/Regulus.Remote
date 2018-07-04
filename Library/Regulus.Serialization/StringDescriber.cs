@@ -8,7 +8,7 @@ namespace Regulus.Serialization
     {
         
 
-        private ITypeDescriber _CharArrayDescriber;
+        private readonly ITypeDescriber _CharArrayDescriber;
 
         public StringDescriber(ITypeDescriber chars_describer)
         {

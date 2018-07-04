@@ -56,8 +56,10 @@
     <Compile Include="BufferDescriber.cs" />
     <Compile Include="ByteArrayDescriber.cs" />
     <Compile Include="ClassDescriber.cs" />
+    <Compile Include="ContainerDescriber.cs" />
     <Compile Include="DescriberBuilder.cs" />
     <Compile Include="DescriberProvider.cs" />
+    <Compile Include="Dynamic\CustomFinder.cs" />
     <Compile Include="Dynamic\ITypeFinder.cs" />
     <Compile Include="Dynamic\Serializer.cs" />
     <Compile Include="Dynamic\DescribersFinder.cs" />

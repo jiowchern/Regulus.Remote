@@ -8,13 +8,21 @@ namespace Regulus.Serialization.Dynamic
     {
         
         private readonly Dictionary<Type, ITypeDescriber> _TypeDescribers;
+        private readonly StringKeyDescriber _KeyDescriber;
 
-        
-        public DescribersFinder()
-        {            
+
+        public DescribersFinder(ITypeFinder type_finder)
+        {
+            
             _TypeDescribers = new Dictionary<Type, ITypeDescriber>();
+            _KeyDescriber = new StringKeyDescriber(type_finder, this);
         }
 
+
+        IKeyDescriber IDescribersFinder.Get()
+        {
+            return _KeyDescriber;
+        }
 
         ITypeDescriber IDescribersFinder.Get(Type id)
         {

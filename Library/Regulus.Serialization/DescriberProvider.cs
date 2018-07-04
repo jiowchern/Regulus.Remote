@@ -12,7 +12,7 @@ namespace Regulus.Serialization
             TypeDescriberFinders = type_finder;            
         }
 
-        public DescriberProvider(DescribersFinder finder) : this(finder.KeyDescriber , finder)
+        public DescriberProvider(IDescribersFinder finder) : this(finder.Get() , finder)
         {
             
         }

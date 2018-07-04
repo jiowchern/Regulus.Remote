@@ -94,7 +94,7 @@ namespace Regulus.Serialization
 
         private bool _IsArray(Type type)
         {
-            return type.IsArray;
+            return type.GetInterfaces().Any( i => i == typeof(System.Collections.IList))    ;
         }
 
         private static readonly Type[] _NumberTypes = new[]
