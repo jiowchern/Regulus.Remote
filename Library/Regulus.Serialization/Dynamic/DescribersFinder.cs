@@ -1,47 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Regulus.Serialization.Dynamic
 {
     public class DescribersFinder  :IDescribersFinder
     {
-        private readonly ITypeFinder _Finder;
-        private readonly Dictionary<string, ITypeDescriber> _StringDescribers;
+        
         private readonly Dictionary<Type, ITypeDescriber> _TypeDescribers;
+        private readonly StringKeyDescriber _KeyDescriber;
 
-        
-        public DescribersFinder(ITypeFinder finder)
+
+        public DescribersFinder(ITypeFinder type_finder)
         {
-            _Finder = finder;
-            _StringDescribers = new Dictionary<string, ITypeDescriber>();
+            
             _TypeDescribers = new Dictionary<Type, ITypeDescriber>();
+            _KeyDescriber = new StringKeyDescriber(type_finder, this);
         }
 
-        
 
-        public ITypeDescriber Get(string id)
+        IKeyDescriber IDescribersFinder.Get()
         {
-            ITypeDescriber des;
-            if (!_StringDescribers.TryGetValue(id, out des))
-            {
-                var type = _Finder.Find(id);
-                if (type == null)
-                    return null;
-                des = new TypeIdentifier(type).Describer;
-                des.SetFinder(this);
-                _StringDescribers.Add(type.FullName , des);
-            }
-            return des;
+            return _KeyDescriber;
         }
 
-        public ITypeDescriber Get(Type id)
+        ITypeDescriber IDescribersFinder.Get(Type id)
         {
             ITypeDescriber des;
             if (!_TypeDescribers.TryGetValue(id, out des))
             {
-                des = new TypeIdentifier(id).Describer;
-                des.SetFinder(this);
-                _TypeDescribers.Add(id , des);
+                var dess = new TypeIdentifier(id , this).Describers;
+                foreach (var typeDescriber in dess)
+                {
+                    if(!_TypeDescribers.ContainsKey(id))
+                        _TypeDescribers.Add(id, typeDescriber);
+                }
+                return dess.First();
             }
             return des;
         }

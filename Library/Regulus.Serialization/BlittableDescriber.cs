@@ -105,10 +105,6 @@ namespace Regulus.Serialization
                 throw new DescriberException(typeof (BlittableDescriber), _Type, "ToObject", ex);             
             }            
         }
-
-        void ITypeDescriber.SetFinder(IDescribersFinder type_set)
-        {
-            
-        }
+        
     }
 }

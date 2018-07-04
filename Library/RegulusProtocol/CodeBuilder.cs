@@ -138,7 +138,7 @@ namespace Regulus.Protocol
                         {addEventCode}
                         _EventProvider = new Regulus.Remoting.EventProvider(eventClosures);
 
-                        _Serializer = new Regulus.Serialization.Serializer(new Regulus.Serialization.DescriberBuilder({addDescriberCode}));
+                        _Serializer = new Regulus.Serialization.Serializer(new Regulus.Serialization.DescriberBuilder({addDescriberCode}).Describers);
 
 
                         _MemberMap = new Regulus.Remoting.MemberMap(new System.Reflection.MethodInfo[] {{{addMemberMapMethodCode}}} ,new System.Reflection.EventInfo[]{{ {addMemberMapEventCode} }}, new System.Reflection.PropertyInfo[] {{{addMemberMapPropertyCode} }}, new System.Type[] {{{addMemberMapinterfaceCode}}});

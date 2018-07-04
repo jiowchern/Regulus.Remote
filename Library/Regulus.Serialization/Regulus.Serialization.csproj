@@ -56,14 +56,18 @@
     <Compile Include="BufferDescriber.cs" />
     <Compile Include="ByteArrayDescriber.cs" />
     <Compile Include="ClassDescriber.cs" />
+    <Compile Include="ContainerDescriber.cs" />
     <Compile Include="DescriberBuilder.cs" />
     <Compile Include="DescriberProvider.cs" />
+    <Compile Include="Dynamic\CustomFinder.cs" />
     <Compile Include="Dynamic\ITypeFinder.cs" />
     <Compile Include="Dynamic\Serializer.cs" />
     <Compile Include="Dynamic\DescribersFinder.cs" />
+    <Compile Include="Dynamic\StandardFinder.cs" />
     <Compile Include="EnumDescriber.cs" />
     <Compile Include="IDescribersFinder.cs" />
-    <Compile Include="IntDescribers.cs" />
+    <Compile Include="IKeyDescriber.cs" />
+    <Compile Include="IntKeyDescriber.cs" />
     <Compile Include="ITypeDescriber.cs" />
     <Compile Include="NumberDescriber.cs" />
     <Compile Include="DescriberException.cs" />
@@ -72,6 +76,7 @@
     <Compile Include="StringDescriber.cs" />
     <Compile Include="BlittableDescriber.cs" />
     <Compile Include="DescribersFinder.cs" />
+    <Compile Include="StringKeyDescriber.cs" />
     <Compile Include="TypeIdentifier.cs" />
   </ItemGroup>
   <ItemGroup>

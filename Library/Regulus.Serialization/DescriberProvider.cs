@@ -3,20 +3,18 @@
 namespace Regulus.Serialization
 {
     public class DescriberProvider
-    {
-        
-
-        public readonly IntDescribers _KeyDescribers;
-        public readonly IDescribersFinder _TypeDescribers;
-
-        public DescriberProvider(params ITypeDescriber[] describers)
-        {            
-            _KeyDescribers = new IntDescribers(describers);
-            _TypeDescribers = new DescribersFinder(describers);
-
-            foreach (var typeDescriber in describers)
-                typeDescriber.SetFinder(_TypeDescribers);
+    {       
+        public readonly IKeyDescriber KeyDescriber;
+        public readonly IDescribersFinder TypeDescriberFinders;
+        public DescriberProvider(IKeyDescriber key_describer, IDescribersFinder type_finder)
+        {
+            KeyDescriber = key_describer;
+            TypeDescriberFinders = type_finder;            
         }
 
+        public DescriberProvider(IDescribersFinder finder) : this(finder.Get() , finder)
+        {
+            
+        }
     }
 }

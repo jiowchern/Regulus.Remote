@@ -16,13 +16,13 @@ namespace Regulus.Serialization
                 
         private readonly object _Default;
 
-        private IDescribersFinder _TypeSet;
+        private readonly IDescribersFinder _TypeSet;
 
-        public ClassDescriber(Type type)
+        public ClassDescriber(Type type , IDescribersFinder finder)
         {
             _Default = null;            
             _Type = type;
-
+            _TypeSet = finder;
             _Fields = (from field in _Type.GetFields()
                          where field.IsStatic == false && field.IsPublic orderby field.Name
                          select field).ToArray();
@@ -170,9 +170,6 @@ namespace Regulus.Serialization
 
         }
 
-        void ITypeDescriber.SetFinder(IDescribersFinder type_set)
-        {
-            _TypeSet = type_set;
-        }
+        
     }
 }

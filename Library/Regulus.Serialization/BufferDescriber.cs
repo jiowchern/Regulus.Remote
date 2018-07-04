@@ -77,9 +77,6 @@ namespace Regulus.Serialization
             return Activator.CreateInstance(_Type, new object[] { len } ) as Array;
         }
 
-        void ITypeDescriber.SetFinder(IDescribersFinder type_set)
-        {
-            
-        }
+        
     }
 }

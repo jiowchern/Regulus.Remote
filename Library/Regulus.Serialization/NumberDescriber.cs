@@ -124,9 +124,6 @@ namespace Regulus.Serialization
             return (T)o;
         }
 
-        void ITypeDescriber.SetFinder(IDescribersFinder type_set)
-        {
- 
-        }
+       
     }
 }

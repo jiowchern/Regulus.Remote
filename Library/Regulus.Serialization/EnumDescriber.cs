@@ -58,9 +58,6 @@ namespace Regulus.Serialization
             return readed;
         }
 
-        void ITypeDescriber.SetFinder(IDescribersFinder type_set)
-        {
-            
-        }
+        
     }
 }

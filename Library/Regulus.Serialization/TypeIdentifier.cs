@@ -4,48 +4,51 @@ using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Messaging;
 
 namespace Regulus.Serialization
-{
+{    
     public class TypeIdentifier
     {
-        public readonly ITypeDescriber Describer;
-        public TypeIdentifier(Type type )
+        
+        public readonly System.Collections.Generic.IEnumerable<ITypeDescriber>  Describers;
+        public TypeIdentifier(Type type, IDescribersFinder finder)
         {
             
+
             if (_IsEnum(type))
             {
-                Describer = new EnumDescriber(type);
+                Describers = new [] { new EnumDescriber(type) };
             }
             else if (_IsNumber(type))
             {
-                Describer = new NumberDescriber(type);
+                Describers = new[] { new NumberDescriber(type)};
             }
             else if (_IsByteArray(type))
             {
-                Describer = new ByteArrayDescriber();
+                var byteDescriber = new NumberDescriber(typeof(int));
+                Describers = new ITypeDescriber[] { new ByteArrayDescriber(byteDescriber) , byteDescriber };
             }
             else if (_IsBuffer(type))
             {
-                Describer = new BufferDescriber(type);
+                Describers = new ITypeDescriber[] { new BufferDescriber(type)};
             }
             else if (_IsBittable(type))
             {
-                Describer = new BlittableDescriber(type);
+                Describers = new ITypeDescriber[] { new BlittableDescriber(type)};
             }
             else if (_IsString(type))
             {
-                Describer = new StringDescriber();
+                var chars = new BufferDescriber(typeof(char[]) );
+                Describers = new ITypeDescriber[] { new StringDescriber(chars) , chars   };
             }
             else if (_IsArray(type))
             {
-                Describer = new ArrayDescriber(type);
+                Describers = new ITypeDescriber[] { new ArrayDescriber(type, finder)};
             }            
             else if (_IsClass(type))
             {
-                Describer = new ClassDescriber(type);
+                Describers = new ITypeDescriber[] { new ClassDescriber(type, finder) } ;
             }
             else 
                 throw new Exception("Unrecognized type " + type.FullName );
-
         }
 
         
@@ -91,7 +94,7 @@ namespace Regulus.Serialization
 
         private bool _IsArray(Type type)
         {
-            return type.IsArray;
+            return type.GetInterfaces().Any( i => i == typeof(System.Collections.IList))    ;
         }
 
         private static readonly Type[] _NumberTypes = new[]
