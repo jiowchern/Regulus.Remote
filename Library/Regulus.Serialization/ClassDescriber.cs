@@ -26,12 +26,7 @@ namespace Regulus.Serialization
             _Fields = (from field in _Type.GetFields()
                          where field.IsStatic == false && field.IsPublic orderby field.Name
                          select field).ToArray();
-
-            
         }
-
-
-        
 
         Type ITypeDescriber.Type
         {
@@ -59,17 +54,18 @@ namespace Regulus.Serialization
 
                     var validField = validFields[i];
                     var value = validField.field.GetValue(instance);
-                    var describer = _GetDescriber(validField.field);
+                    var valueType = value.GetType();
+                    var valueTypeCount = _TypeSet.Get().GetByteCount(valueType);
+                    var describer = _TypeSet.Get(valueType);
                     var byteCount = describer.GetByteCount(value);
 
                     var indexCount = Varint.GetByteCount(validField.index);
-                    count += byteCount + indexCount;
+                    count += byteCount + indexCount + valueTypeCount;
                 }
                 return count + validCount;
             }
             catch (Exception ex)
             {
-
                 throw new DescriberException(typeof(ClassDescriber), _Type, "GetByteCount", ex);
             }
             
@@ -103,7 +99,9 @@ namespace Regulus.Serialization
                     offset += Varint.NumberToBuffer(buffer, offset, index);
                     var field = validField.field;
                     var value = field.GetValue(instance);
-                    var describer = _GetDescriber(field);
+                    var valueType = value.GetType();
+                    offset += _TypeSet.Get().ToBuffer(valueType, buffer, offset);
+                    var describer = _TypeSet.Get(valueType);
                     offset += describer.ToBuffer(value, buffer, offset);
                 }
 
@@ -150,9 +148,10 @@ namespace Regulus.Serialization
                 {
                     ulong index;
                     offset += Varint.BufferToNumber(buffer, offset, out index);
-
+                    Type valueType;
+                    offset += _TypeSet.Get().ToObject(buffer, offset, out valueType);
                     var filed = _Fields[index];
-                    var describer = _GetDescriber(filed);
+                    var describer = _TypeSet.Get(valueType);
                     object valueInstance;
                     offset += describer.ToObject(buffer, offset, out valueInstance);
                     filed.SetValue(instance, valueInstance);
