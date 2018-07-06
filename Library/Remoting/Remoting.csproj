@@ -88,6 +88,7 @@
     <Compile Include="PackageWriter.cs" />
     <Compile Include="SocketBodyReader.cs" />
     <Compile Include="SocketHeadReader.cs" />
+    <Compile Include="TypeMethodCatcher.cs" />
     <Compile Include="User.cs" />
     <Compile Include="OfflineStage.cs" />
     <Compile Include="OnlineStage.cs" />

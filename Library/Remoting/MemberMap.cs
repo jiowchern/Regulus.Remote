@@ -6,7 +6,11 @@ using Regulus.CustomType;
 
 namespace Regulus.Remoting
 {
+    namespace AOT   
+    {
+    }
 
+    
     
 
     public class MemberMap : IEqualityComparer<Type> , IEqualityComparer<PropertyInfo>, IEqualityComparer<EventInfo>  , IEqualityComparer<MethodInfo> , IEqualityComparer<int> 

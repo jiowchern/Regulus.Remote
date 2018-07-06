@@ -69,9 +69,12 @@ namespace Regulus.Protocol
 
                     var methodInfos = type.GetMethods();
                     foreach (var methodInfo in methodInfos)
-                    {                        
+                    {
                         if (methodInfo.IsPublic && methodInfo.IsSpecialName == false)
-                            memberMapMethodBuilder.Add(String.Format("typeof({0}).GetMethod(\"{1}\")" , type.FullName , methodInfo.Name));
+                        {
+                            //String.Format("typeof({0}).GetMethod(\"{1}\")", type.FullName, methodInfo.Name)
+                            memberMapMethodBuilder.Add(_BuildGetTypeMethodInfo(methodInfo));
+                        }                            
                     }
 
 
@@ -171,6 +174,21 @@ namespace Regulus.Protocol
 
             if (ProviderEvent != null)
                 ProviderEvent(protocol_name , providerCode);
+        }
+
+        internal string _BuildGetTypeMethodInfo(MethodInfo method_info)
+        {
+            
+            var methodCode = method_info.Name;
+            var argTypes = method_info.GetParameters().Select(p => p.ParameterType);
+            var argTypesCode = _GetTypes(new []{ method_info.DeclaringType }.Concat(argTypes).ToArray() );
+            var argInstanceCode = method_info.GetParameters().Length > 0 ? "ins," : "ins";
+            
+            var paramCode = _BuildAddParams(method_info);
+            
+            var code =
+                $"new Regulus.Remoting.AOT.TypeMethodCatcher((System.Linq.Expressions.Expression<System.Action{argTypesCode}>)(({argInstanceCode}{paramCode}) => ins.{methodCode}({paramCode}))).Method";
+            return code;
         }
 
         private string _BuildVerificationCode(StringBuilder builder)
@@ -466,7 +484,7 @@ $@"
             {
                 addParams.Add("_" + (i+1));
             }
-            return string.Join(" ,", addParams.ToArray());
+            return string.Join(",", addParams.ToArray());
         }
     }
 }
