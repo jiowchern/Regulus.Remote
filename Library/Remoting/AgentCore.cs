@@ -251,9 +251,8 @@ namespace Regulus.Remoting
 
 		private IProvider _BuildProvider(Type type)
 		{
-			var providerTemplateType = typeof(TProvider<>);
-			var providerType = providerTemplateType.MakeGenericType(type);
-			return Activator.CreateInstance(providerType) as IProvider;
+		    var map = _Protocol.GetMemberMap();
+		    return map.CreateProvider(type);
 		}
 
 		public INotifier<T> QueryProvider<T>()

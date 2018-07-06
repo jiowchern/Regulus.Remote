@@ -86,7 +86,7 @@ namespace Regulus.Protocol
                             memberMapPropertyBuilder.Add(String.Format("typeof({0}).GetProperty(\"{1}\")", type.FullName, propertyInfo.Name));
                     }
 
-                    memberMapInterfaceBuilder.Add(String.Format("typeof({0})", type.FullName));
+                    memberMapInterfaceBuilder.Add(String.Format("new System.Tuple<System.Type, System.Func<Regulus.Remoting.IProvider>>(typeof({0}),()=>new Regulus.Remoting.TProvider<{0}>())", type.FullName));
                 }
                 
 
@@ -144,7 +144,7 @@ namespace Regulus.Protocol
                         _Serializer = new Regulus.Serialization.Serializer(new Regulus.Serialization.DescriberBuilder({addDescriberCode}).Describers);
 
 
-                        _MemberMap = new Regulus.Remoting.MemberMap(new System.Reflection.MethodInfo[] {{{addMemberMapMethodCode}}} ,new System.Reflection.EventInfo[]{{ {addMemberMapEventCode} }}, new System.Reflection.PropertyInfo[] {{{addMemberMapPropertyCode} }}, new System.Type[] {{{addMemberMapinterfaceCode}}});
+                        _MemberMap = new Regulus.Remoting.MemberMap(new System.Reflection.MethodInfo[] {{{addMemberMapMethodCode}}} ,new System.Reflection.EventInfo[]{{ {addMemberMapEventCode} }}, new System.Reflection.PropertyInfo[] {{{addMemberMapPropertyCode} }}, new System.Tuple<System.Type, System.Func<Regulus.Remoting.IProvider>>[] {{{addMemberMapinterfaceCode}}});
                     }}
 
                     byte[] Regulus.Remoting.IProtocol.VerificationCode {{ get {{ return new byte[]{{{verificationCode}}};}} }}

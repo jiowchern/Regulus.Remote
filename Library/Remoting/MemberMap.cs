@@ -20,10 +20,12 @@ namespace Regulus.Remoting
         private readonly BilateralMap<int, EventInfo> _Events;
         private readonly BilateralMap<int, PropertyInfo> _Propertys;
         private readonly BilateralMap<int, Type> _Interfaces;
+        private readonly Dictionary<Type , Func<IProvider>> _Providers;
 
 
-        public MemberMap(IEnumerable<MethodInfo> methods , IEnumerable<EventInfo> events , IEnumerable<PropertyInfo> propertys , IEnumerable<Type>  interfaces)
+        public MemberMap(IEnumerable<MethodInfo> methods , IEnumerable<EventInfo> events , IEnumerable<PropertyInfo> propertys , IEnumerable<System.Tuple<System.Type, System.Func<Regulus.Remoting.IProvider>>>  interfaces )
         {
+            _Providers = new Dictionary<Type, Func<IProvider>>();
             _Methods = new BilateralMap<int, MethodInfo>(this , this);
             _Events = new BilateralMap<int, EventInfo>(this, this);
             _Propertys = new BilateralMap<int, PropertyInfo>(this ,this);
@@ -50,10 +52,21 @@ namespace Regulus.Remoting
             id = 0;
             foreach (var @interface in interfaces)
             {
-                _Interfaces.Add(++id, @interface);
+                _Interfaces.Add(++id, @interface.Item1);
+                _Providers.Add(@interface.Item1 ,@interface.Item2);
             }
         }
 
+        public IProvider CreateProvider(Type type)
+        {
+            Func<IProvider> provider;
+            if (_Providers.TryGetValue(type, out provider))
+            {
+                return provider();
+            }
+            throw new SystemException($"no provider in type {type}");
+            
+        }
         public MethodInfo GetMethod(int id)
         {
             MethodInfo method;
