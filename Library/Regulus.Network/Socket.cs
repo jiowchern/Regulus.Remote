@@ -18,30 +18,30 @@ namespace Regulus.Network
 
         private readonly StageMachine<Timestamp> m_Machine;
 
-        private readonly SegmentStream m_Stream;
+        
         private PeerStatus m_Status;
 
         Task _ReadTask;
         private readonly System.Collections.Concurrent.ConcurrentQueue<Task> _SendTasks;
-        private readonly System.Collections.Generic.List<byte> _SendBytes;
+        
 
 
 
         public Action<int, SocketError> WriteDoneHandler;
 
-        private bool m_RequireDisconnect;
+        
 
 
 
         private Socket(Line Line)
         {
-            _SendBytes = new List<byte>();
+            
             _SendTasks = new ConcurrentQueue<Task>();
             _ReadTask = new Task();
             
             m_Line = Line;
             m_Machine = new StageMachine<Timestamp>();
-            m_Stream = new SegmentStream(new SocketMessage[0]);
+            
 
         }
         public Socket(Line Line, PeerListener Listener) : this(Line)
@@ -64,81 +64,12 @@ namespace Regulus.Network
         private void ToTransmission()
         {
             m_Status = PeerStatus.Transmission;
-            m_Machine.Push(new SimpleStage<Timestamp>(StartTransmission, EndTransmission, UpdateTransmission));
+            var stage = new PeerTransmission(_SendTasks, m_Line, _ReadTask);
+            stage.DisconnectEvent += _Disconnect;
+            m_Machine.Push(stage);            
         }
 
-        private void UpdateTransmission(Timestamp Obj)
-        {
-            while (_SendTasks.Count > 0)
-            {
-                Task task = null;
-                if (_SendTasks.TryDequeue(out task))
-                {
-                    for (int i = task.Offset; i < task.Count; i++)
-                    {
-                        _SendBytes.Add(task.Buffer[i]);
-                    }
-                    task.Done(task.Count);
-                }
-            }
-
-            if (_SendBytes.Count > 0)
-            {
-                m_Line.WriteTransmission(_SendBytes.ToArray());
-                _SendBytes.Clear();
-            }
-                
-            while (m_Stream.Count > 0 )
-            {
-                
-                lock (_ReadTask)
-                {
-                    var handler = _ReadTask;
-                    if (handler.Buffer != null)
-                    {
-                        var readCount = m_Stream.Read(handler.Buffer, handler.Offset, handler.Count);
-                        if (readCount > 0)
-                            handler.Done(readCount);
-                    }
-                }
-            }
-                
-
-
-            if (m_RequireDisconnect)
-            {
-                m_Line.WriteOperation(PeerOperation.RequestDisconnect);
-                _Disconnect();
-            }
-
-            SocketMessage message = null;
-            while ((message = m_Line.Read()) != null)
-            {
-                var package = message;
-
-                var operation = (PeerOperation)package.GetOperation();
-                if (operation == PeerOperation.Transmission)
-                    m_Stream.Add(package);
-                else if (operation == PeerOperation.RequestDisconnect)
-                    _Disconnect();
-            }
-
-
-        }
-
-        private void EndTransmission()
-        {
-
-        }
-
-
-
-        private void StartTransmission()
-        {
-
-        }
-
-
+       
 
 
 
@@ -193,7 +124,7 @@ namespace Regulus.Network
 
         public void Disconnect()
         {
-            m_RequireDisconnect = true;
+            _Disconnect();
         }
 
 

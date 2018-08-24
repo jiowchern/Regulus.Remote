@@ -64,6 +64,7 @@
     <Compile Include="ITime.cs" />
     <Compile Include="Line.cs" />
     <Compile Include="ObjectFactory.cs" />
+    <Compile Include="PeerTransmission.cs" />
     <Compile Include="Profile\Logger.cs" />
     <Compile Include="ObjectPool.cs" />
     <Compile Include="Package\PeerOperation.cs" />

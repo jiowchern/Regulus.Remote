@@ -95,7 +95,7 @@ namespace Regulus.Remoting.Soul.Native
 		/// <summary>
 		///     等待讀取的封包
 		/// </summary>
-		public int WaitingForReadPackages
+		public long WaitingForReadPackages
 		{
 			get { return Peer.TotalRequest; }
 		}
@@ -103,7 +103,7 @@ namespace Regulus.Remoting.Soul.Native
 		/// <summary>
 		///     等待寫入的封包
 		/// </summary>
-		public int WaitingToWrittenPackages
+		public long WaitingToWrittenPackages
 		{
 			get { return Peer.TotalResponse; }
 		}

@@ -20,6 +20,9 @@ namespace Regulus.Remoting.Soul.Native
 
 		public event DisconnectCallback DisconnectEvent;
 
+
+
+	   
 		private class Request
 		{
 			public Guid EntityId { get; set; }
@@ -29,17 +32,15 @@ namespace Regulus.Remoting.Soul.Native
 			public Guid ReturnId { get; set; }
 
 			public byte[][] MethodParams { get; set; }
-		}
-
-		private static readonly object _LockRequest = new object();
-
-		private static readonly object _LockResponse = new object();
+		}		
 
 		private readonly PackageReader<RequestPackage> _Reader;
 
-		private readonly Regulus.Collection.Queue<RequestPackage> _Requests;
 
-		private readonly Regulus.Collection.Queue<ResponsePackage> _Responses;
+        
+		private readonly System.Collections.Concurrent.ConcurrentQueue<RequestPackage> _Requests;
+
+		private readonly System.Collections.Concurrent.ConcurrentQueue<ResponsePackage> _Responses;
 
 		private readonly IPeer _Peer;
 
@@ -80,9 +81,11 @@ namespace Regulus.Remoting.Soul.Native
 			get { return Peer.TotalRequest <= 0 && Peer.TotalResponse <= 0; }
 		}
 
-		public static int TotalRequest { get; private set; }
+	    private static long _TotalRequest;
+        public static long TotalRequest { get { return _TotalRequest; } }
 
-		public static int TotalResponse { get; private set; }
+	    private static long _TotalResponse;
+        public static long TotalResponse { get { return _TotalResponse; } }
 
 		public ISoulBinder Binder
 		{
@@ -105,8 +108,8 @@ namespace Regulus.Remoting.Soul.Native
 			_Peer = client;
 		    _Protocol = protocol;
 		    _SoulProvider = new SoulProvider(this, this , protocol);
-			_Responses = new Regulus.Collection.Queue<ResponsePackage>();
-			_Requests = new Regulus.Collection.Queue<RequestPackage>();
+			_Responses = new System.Collections.Concurrent.ConcurrentQueue<ResponsePackage>();
+			_Requests = new System.Collections.Concurrent.ConcurrentQueue<RequestPackage>();
 
 			_Enable = true;
 
@@ -151,18 +154,9 @@ namespace Regulus.Remoting.Soul.Native
 			
 			_Writer.Stop();
 
-			lock(Peer._LockResponse)
-			{
-				var pkgs = _Responses.DequeueAll();
-				Peer.TotalResponse -= pkgs.Length;
-			}
-
-			lock(Peer._LockRequest)
-			{
-				var pkgs = _Requests.DequeueAll();
-				Peer.TotalRequest -= pkgs.Length;
-			}
-		}
+            System.Threading.Interlocked.Add(ref _TotalResponse, -_Responses.Count);            
+		    System.Threading.Interlocked.Add(ref _TotalRequest, -_Requests.Count);
+        }
 
 		event InvokeMethodCallback IRequestQueue.InvokeMethodEvent
 		{
@@ -186,16 +180,12 @@ namespace Regulus.Remoting.Soul.Native
 			}
 
 			_SoulProvider.Update();
-			RequestPackage[] pkgs = null;
-			lock(Peer._LockRequest)
-			{
-				pkgs = _Requests.DequeueAll();
-				Peer.TotalRequest -= pkgs.Length;
-			}
 
-			foreach(var pkg in pkgs)
-			{
-				var request = _TryGetRequest(pkg);
+		    RequestPackage pkg;
+            while (_Requests.TryDequeue(out pkg))
+            {
+                System.Threading.Interlocked.Decrement(ref _TotalRequest);
+                var request = _TryGetRequest(pkg);
 
 				if(request != null)
 				{
@@ -219,29 +209,25 @@ namespace Regulus.Remoting.Soul.Native
 
 	    private void _Push(ServerToClientOpCode cmd, byte[] data)
 	    {
-	        lock (Peer._LockResponse)
+	        if (_Enable)
 	        {
-	            if (_Enable)
-	            {
-	                Peer.TotalResponse++;
-	                _Responses.Enqueue(
-	                    new ResponsePackage
-	                    {
-	                        Code = cmd,
-	                        Data = data
-	                    });
-	            }
+	            System.Threading.Interlocked.Increment(ref _TotalResponse);
+
+	            _Responses.Enqueue(
+	                new ResponsePackage
+	                {
+	                    Code = cmd,
+	                    Data = data
+	                });
 	        }
-	    }
+        }
 
 	    private void _RequestPush(RequestPackage package)
 		{
-			lock(Peer._LockRequest)
-			{
-				_Requests.Enqueue(package);
-				Peer.TotalRequest++;
-			}
-		}
+		    System.Threading.Interlocked.Increment(ref _TotalRequest);
+
+		    _Requests.Enqueue(package);
+        }
 
 		private Request _TryGetRequest(RequestPackage package)
 		{
@@ -299,12 +285,15 @@ namespace Regulus.Remoting.Soul.Native
 
 		private ResponsePackage[] _ResponsePop()
 		{
-			lock(Peer._LockResponse)
-			{
-				var pkgs = _Responses.DequeueAll();
-				Peer.TotalResponse -= pkgs.Length;
-				return pkgs;
-			}
-		}
+		    List<ResponsePackage> pkgs = new List<ResponsePackage>();
+		    ResponsePackage pkg;
+		    while (_Responses.TryDequeue(out pkg))
+		    {
+		        pkgs.Add(pkg);
+		        System.Threading.Interlocked.Decrement(ref _TotalResponse);
+		    }
+
+		    return pkgs.ToArray();
+        }
 	}
 }
