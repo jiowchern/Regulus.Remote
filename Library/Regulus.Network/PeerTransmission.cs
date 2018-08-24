@@ -91,7 +91,7 @@ namespace Regulus.Network
             }
 
             _Timeout += timestamp.DeltaTicks;
-            if (_Timeout > Config.Timeout)
+            if (_Timeout > Config.Timeout * Timestamp.OneSecondTicks)
             {
                 DisconnectEvent();
             }
