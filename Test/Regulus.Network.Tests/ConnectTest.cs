@@ -86,8 +86,10 @@ namespace Regulus.Network.Tests
 
             
             clientPeer.Disconnect();
+            
 
 
+            updater.Working(new Timestamp(ticks++, 1));
             updater.Working(new Timestamp(ticks++, 1));
             updater.Working(new Timestamp(ticks++, 1));
             updater.Working(new Timestamp(ticks++, 1));

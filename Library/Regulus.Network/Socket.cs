@@ -130,10 +130,14 @@ namespace Regulus.Network
 
         private void _Disconnect()
         {
-            m_Status = PeerStatus.Disconnect;
-            var stage = new PeerDisconnecter(m_Line);
-            stage.DoneEvent += ToClose;
-            m_Machine.Push(stage);
+            if(m_Status != PeerStatus.Close)
+            {
+                m_Status = PeerStatus.Disconnect;
+                var stage = new PeerDisconnecter(m_Line);
+                stage.DoneEvent += ToClose;
+                m_Machine.Push(stage);
+            }
+            
         }
 
         private void ToClose()
