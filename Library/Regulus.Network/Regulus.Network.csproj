@@ -103,9 +103,9 @@
     <Compile Include="Package\SocketMessage.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PureLib\RegulusLibrary.csproj">
+    <ProjectReference Include="..\PureLib\Regulus.Library.csproj">
       <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
-      <Name>RegulusLibrary</Name>
+      <Name>Regulus.Library</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using NSubstitute;
 using Regulus.Serialization;
 
-using Regulus.Remoting;
+using Regulus.Remote;
 
 namespace RemotingTest
 {

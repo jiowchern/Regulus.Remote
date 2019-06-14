@@ -2,7 +2,7 @@
 using System.Net.Sockets;
 using Regulus.Network;
 
-namespace Regulus.Remoting
+namespace Regulus.Remote
 {
 
     internal interface ISocketReader

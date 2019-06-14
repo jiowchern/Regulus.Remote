@@ -3,7 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Regulus.Remoting
+namespace Regulus.Remote
 {
     public class EventProvider
     {

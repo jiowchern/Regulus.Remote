@@ -1,11 +1,11 @@
-﻿using Regulus.Remoting;
+﻿using Regulus.Remote;
 using Regulus.Utility;
 
 namespace RemotingTest
 {
 	public interface IUser : IUpdatable
 	{
-		Regulus.Remoting.User Remoting { get; }
+		Regulus.Remote.User Remoting { get; }
 
 		INotifier<ITestReturn> TestReturnProvider { get; }
 	}

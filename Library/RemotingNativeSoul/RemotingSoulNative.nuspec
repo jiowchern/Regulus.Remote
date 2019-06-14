@@ -13,9 +13,9 @@
         </dependencies>
     </metadata>
     <files>
-        <file src="bin\release\RegulusRemotingSoulNative.dll" target="lib\net40\RegulusRemotingSoulNative.dll" />
-        <file src="bin\release\RegulusRemotingSoulNative.pdb" target="lib\net40\RegulusRemotingSoulNative.pdb" />
-        <file src="bin\release\RegulusRemotingSoulNative.xml" target="lib\net40\RegulusRemotingSoulNative.xml" />
+        <file src="bin\release\Regulus.Remote.Soul.dll" target="lib\net40\Regulus.Remote.Soul.dll" />
+        <file src="bin\release\Regulus.Remote.Soul.pdb" target="lib\net40\Regulus.Remote.Soul.pdb" />
+        <file src="bin\release\Regulus.Remote.Soul.xml" target="lib\net40\Regulus.Remote.Soul.xml" />
 		
     </files>
 </package>

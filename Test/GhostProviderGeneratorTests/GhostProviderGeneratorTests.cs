@@ -13,7 +13,7 @@ using Microsoft.CSharp;
 using NUnit.Framework;
 
 using Regulus.Framework;
-using Regulus.Remoting;
+using Regulus.Remote;
 
 namespace Regulus.Tool.GPI
 {
@@ -21,7 +21,7 @@ namespace Regulus.Tool.GPI
     {
         void Method();
         Guid Id { get; }
-        Regulus.Remoting.Value<bool> MethodReturn();
+        Regulus.Remote.Value<bool> MethodReturn();
 
         event Action<float, string> OnCallEvent;
     }
@@ -36,7 +36,7 @@ namespace Regulus.Tool.Tests
         public void BuildTest()
         {
             var codes = new List<string>();
-            var g = new Regulus.Protocol.CodeBuilder();
+            var g = new Regulus.Remote.Protocol.CodeBuilder();
             g.ProviderEvent += (name,code) => codes.Add(code);
             g.EventEvent += (type_name, event_name, code) => codes.Add(code);
             g.GpiEvent += (type_name, code) => codes.Add(code);
@@ -56,9 +56,9 @@ namespace Regulus.Tool.Tests
                 ReferencedAssemblies =
                 {                    
                     "System.Core.dll",                    
-                    _GetAssemblyPath("RegulusLibrary.dll"),
+                    _GetAssemblyPath("Regulus.Library.dll"),
 
-                    _GetAssemblyPath("RegulusRemoting.dll"),
+                    _GetAssemblyPath("Regulus.Remote.dll"),
                     _GetAssemblyPath("Regulus.Serialization.dll"),
                     _GetAssemblyPath("GhostProviderGeneratorTests.dll")
                 }

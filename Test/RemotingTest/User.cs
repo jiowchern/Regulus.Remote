@@ -1,5 +1,5 @@
 ﻿using Regulus.Framework;
-using Regulus.Remoting;
+using Regulus.Remote;
 using Regulus.Utility;
 
 namespace RemotingTest
@@ -10,13 +10,13 @@ namespace RemotingTest
 
 		private readonly Updater _Updater;
 
-		private readonly Regulus.Remoting.User _User;
+		private readonly Regulus.Remote.User _User;
 
 		public User(IAgent agent)
 		{
 			_Agent = agent;
 			_Updater = new Updater();
-			_User = new Regulus.Remoting.User(_Agent);
+			_User = new Regulus.Remote.User(_Agent);
 		}
 
 		bool IUpdatable.Update()
@@ -35,7 +35,7 @@ namespace RemotingTest
 			_Updater.Shutdown();
 		}
 
-		Regulus.Remoting.User IUser.Remoting
+		Regulus.Remote.User IUser.Remoting
 		{
 			get { return _User; }
 		}

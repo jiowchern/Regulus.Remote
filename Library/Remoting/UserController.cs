@@ -2,7 +2,7 @@
 using Regulus.Game;
 using Regulus.Utility;
 
-namespace Regulus.Remoting
+namespace Regulus.Remote
 {
 	public class UserController<TUser> : Framework<TUser>.IController
 		where TUser : IUpdatable

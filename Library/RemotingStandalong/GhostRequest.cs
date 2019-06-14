@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Regulus.Serialization;
-namespace Regulus.Remoting.Standalone
+namespace Regulus.Remote.Standalone
 
 {
 	public class GhostRequest : IGhostRequest

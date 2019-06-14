@@ -5,7 +5,7 @@ using System.Threading;
 using Regulus.Framework;
 using Regulus.Utility;
 
-namespace Regulus.Remoting.Soul.Native
+namespace Regulus.Remote.Soul
 {
 	/// <summary>
 	///     伺服器端

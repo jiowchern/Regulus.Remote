@@ -1,16 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{DD716E44-FC04-42A5-85EF-ED27536A0EDA}</ProjectGuid>
+    <ProjectGuid>{CFA6CB4D-6EBE-49FD-B6BA-6C945BB127D4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Regulus.Remoting.ConsoleRunner</RootNamespace>
-    <AssemblyName>Regulus.Remoting.ConsoleRunner</AssemblyName>
+    <RootNamespace>Regulus.Remote.Unity</RootNamespace>
+    <AssemblyName>Regulus.Remote.Unity</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -20,6 +22,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <LangVersion>6</LangVersion>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -28,44 +32,52 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Application.cs" />
+    <Compile Include="Adsorber.cs" />
+    <Compile Include="AdsorberAttribute.cs" />
+    <Compile Include="AssemblyOutputer.cs" />
+    <Compile Include="Assigner.cs" />
+    <Compile Include="CodeBuilder.cs" />
+    <Compile Include="Distributor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StageRun.cs" />
-    <Compile Include="StageStart.cs" />
+    <Compile Include="TAssigner.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PureLib\RegulusLibrary.csproj">
+    <ProjectReference Include="..\PureLib\Regulus.Library.csproj">
       <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
-      <Name>RegulusLibrary</Name>
+      <Name>Regulus.Library</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Regulus.Network\Regulus.Network.csproj">
-      <Project>{a720964c-c3e0-4cb8-a81b-54a9cf7bc8dd}</Project>
-      <Name>Regulus.Network</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\RegulusProtocol\RegulusProtocol.csproj">
+    <ProjectReference Include="..\RegulusProtocol\Regulus.Remote.Protocol.csproj">
       <Project>{00e8aff8-e4d5-4327-86f1-d03379419431}</Project>
-      <Name>RegulusProtocol</Name>
+      <Name>Regulus.Remote.Protocol</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RemotingNativeSoul\RemotingSoulNative.csproj">
-      <Project>{d4580866-2273-4e9b-be70-4fa2ab11434a}</Project>
-      <Name>RemotingSoulNative</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Remoting\Remoting.csproj">
+    <ProjectReference Include="..\Remoting\Regulus.Remote.csproj">
       <Project>{a4cfce46-bda8-4416-a1bb-77bd80514019}</Project>
-      <Name>Remoting</Name>
+      <Name>Regulus.Remote</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
 </Project>

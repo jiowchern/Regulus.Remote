@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace Regulus.Remoting
+namespace Regulus.Remote
 {
     public delegate void CallMethodCallback(MethodInfo info , object[] args ,IValue return_value);
     

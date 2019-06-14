@@ -5,10 +5,10 @@ using System.Linq.Expressions;
 
 
 using Regulus.Framework;
-using Regulus.Remoting.Extension;
+using Regulus.Remote.Extension;
 using Regulus.Utility;
 
-namespace Regulus.Remoting
+namespace Regulus.Remote
 {
 	public interface IGPIBinder : IBootable
 	{

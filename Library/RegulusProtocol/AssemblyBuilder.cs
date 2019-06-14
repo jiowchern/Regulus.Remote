@@ -7,7 +7,7 @@ using System.Reflection;
 
 using Microsoft.CSharp;
 
-namespace Regulus.Protocol
+namespace Regulus.Remote.Protocol
 {
     public class AssemblyBuilder
     {

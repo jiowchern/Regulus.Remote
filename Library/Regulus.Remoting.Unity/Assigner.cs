@@ -1,4 +1,4 @@
-﻿namespace Regulus.Remoting.Unity
+﻿namespace Regulus.Remote.Unity
 {
     public abstract class Assigner
     {

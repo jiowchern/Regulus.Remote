@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 using Regulus.Utility;
 
-namespace Regulus.Remoting.Soul.Native
+namespace Regulus.Remote.Soul
 {
     internal class ThreadCoreHandler
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-using Regulus.Remoting;
+using Regulus.Remote;
 
 namespace RemotingTest
 {

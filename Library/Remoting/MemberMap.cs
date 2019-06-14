@@ -4,7 +4,7 @@ using System.Reflection;
 
 using Regulus.CustomType;
 
-namespace Regulus.Remoting
+namespace Regulus.Remote
 {
     namespace AOT   
     {
@@ -23,7 +23,7 @@ namespace Regulus.Remoting
         private readonly Dictionary<Type , Func<IProvider>> _Providers;
 
 
-        public MemberMap(IEnumerable<MethodInfo> methods , IEnumerable<EventInfo> events , IEnumerable<PropertyInfo> propertys , IEnumerable<System.Tuple<System.Type, System.Func<Regulus.Remoting.IProvider>>>  interfaces )
+        public MemberMap(IEnumerable<MethodInfo> methods , IEnumerable<EventInfo> events , IEnumerable<PropertyInfo> propertys , IEnumerable<System.Tuple<System.Type, System.Func<Regulus.Remote.IProvider>>>  interfaces )
         {
             _Providers = new Dictionary<Type, Func<IProvider>>();
             _Methods = new BilateralMap<int, MethodInfo>(this , this);

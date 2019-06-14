@@ -61,13 +61,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Library\PureLib\RegulusLibrary.csproj">
+    <ProjectReference Include="..\..\Library\PureLib\Regulus.Library.csproj">
       <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
-      <Name>RegulusLibrary</Name>
+      <Name>Regulus.Library</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Library\Remoting\Remoting.csproj">
+    <ProjectReference Include="..\..\Library\Remoting\Regulus.Remote.csproj">
       <Project>{A4CFCE46-BDA8-4416-A1BB-77BD80514019}</Project>
-      <Name>Remoting</Name>
+      <Name>Regulus.Remote</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

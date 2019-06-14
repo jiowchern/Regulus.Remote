@@ -4,7 +4,7 @@ using Regulus.Network;
 using Regulus.Serialization;
 using Regulus.Utility;
 
-namespace Regulus.Remoting
+namespace Regulus.Remote
 {
 	public delegate void OnErrorCallback();
 

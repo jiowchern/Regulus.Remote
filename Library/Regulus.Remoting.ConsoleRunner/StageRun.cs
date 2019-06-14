@@ -1,10 +1,10 @@
 ﻿using System;
 using Regulus.Network;
-using Regulus.Remoting.Soul.Native;
+using Regulus.Remote.Soul;
 using Regulus.Utility;
-using Console = Regulus.Utility.Console;
 
-namespace Regulus.Remoting.ConsoleRunner
+
+namespace Regulus.Remote.Soul.Console
 {
     internal class ParallelUpdate : Launcher<IUpdatable>
     {
@@ -52,9 +52,9 @@ namespace Regulus.Remoting.ConsoleRunner
 
         private readonly Server _Server;
 
-        private readonly Console.IViewer _View;
+        private readonly Regulus.Utility.Console.IViewer _View;
 
-        public StageRun(ICore core, IProtocol protocol, Command command, int port, Console.IViewer viewer, IServer server)
+        public StageRun(ICore core, IProtocol protocol, Command command, int port, Regulus.Utility.Console.IViewer viewer, IServer server)
         {
             _View = viewer;
             _Command = command;

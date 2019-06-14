@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Regulus.Protocol
+namespace Regulus.Remote.Protocol
 {
     public class TypeDisintegrator
     {

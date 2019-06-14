@@ -1,4 +1,4 @@
-﻿using Regulus.Remoting;
+﻿using Regulus.Remote;
 using Regulus.Utility;
 
 namespace Regulus.Framework

@@ -1,7 +1,7 @@
-version: 0.4.{build}
+version: 0.5.{build}
 branches:
   only:
-  - master
+  - release
 image: Visual Studio 2017
 configuration: Release
 nuget:
@@ -39,10 +39,6 @@ deploy:
   auth_token:
     secure: /AfJAx3kxJ0kcGiZVCl5U7v3f9Z0qIDDN5L+ckDjxzkULqDK0fhwWVgcqRNukVln
   draft: true
-  on:
-    branch: master
 - provider: NuGet
   api_key:
     secure: MpSZN9rbs/UO67xFMkdfsETL16yG2KY0h3S53s13iG8WOFPamFIXg44GpbM4T7qX
-  on:
-    branch: master

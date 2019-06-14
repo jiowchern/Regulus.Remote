@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Regulus.Remoting
+namespace Regulus.Remote
 {
     /// <summary>
     /// 

@@ -8,8 +8,8 @@
     <ProjectGuid>{2F28AA04-316D-4C20-BF46-987D4A59691D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Regulus</RootNamespace>
-    <AssemblyName>RegulusLibrary</AssemblyName>
+    <RootNamespace>Regulus.Library</RootNamespace>
+    <AssemblyName>Regulus.Library</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>
@@ -43,7 +43,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\RegulusLibrary.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\Regulus.Library.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug_Unity|AnyCPU'">

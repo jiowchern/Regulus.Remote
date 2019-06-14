@@ -1,18 +1,18 @@
 ﻿
-using Regulus.Remoting;
+using Regulus.Remote;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Regulus.Remoting.Tests
+namespace Regulus.Remote.Tests
 {
     public interface IGpi
     {
         void Method();
         //Guid Id { get; }
-        //Regulus.Remoting.Value<bool> MethodReturn();
+        //Regulus.Remote.Value<bool> MethodReturn();
 
         //event Action<float, string> OnCallEvent;
     }

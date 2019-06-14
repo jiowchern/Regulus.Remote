@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using Regulus.Remoting.Soul.Native;
+using Regulus.Remote.Soul.Console;
 using Regulus.Utility.WindowConsoleAppliction;
 
-namespace Server
+namespace Regulus.Application.Server
 {
 	internal class Program
 	{
@@ -16,7 +16,7 @@ namespace Server
 			{
 				command.AddRange(a.Split(new[]{' '},StringSplitOptions.RemoveEmptyEntries));
 			}
-			var app = new Application(command.ToArray());
+			var app = new Regulus.Remote.Soul.Console.Application(command.ToArray());
 
 			app.Run();
 		}

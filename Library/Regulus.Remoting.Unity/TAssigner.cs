@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace Regulus.Remoting.Unity
+namespace Regulus.Remote.Unity
 {
-    public class Assigner<T> : Regulus.Remoting.Unity.Assigner
+    public class Assigner<T> : Regulus.Remote.Unity.Assigner
     {
         private readonly INotifier<T> _Notifier;
 

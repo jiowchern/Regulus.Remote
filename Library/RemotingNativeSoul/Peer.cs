@@ -8,7 +8,7 @@ using Regulus.Serialization;
 using Regulus.Framework;
 using Regulus.Network;
 
-namespace Regulus.Remoting.Soul.Native
+namespace Regulus.Remote.Soul
 {
 	public class Peer : IRequestQueue, IResponseQueue, IBootable
 	{

@@ -50,9 +50,9 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Library\RegulusBehaviourTree\RegulusBehaviourTree.csproj">
+    <ProjectReference Include="..\..\Library\RegulusBehaviourTree\Regulus.BehaviourTree.csproj">
       <Project>{9EBEBDBA-5815-45CE-A523-1C47A47D95A6}</Project>
-      <Name>RegulusBehaviourTree</Name>
+      <Name>Regulus.BehaviourTree</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

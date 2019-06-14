@@ -9,7 +9,7 @@ using Regulus.Utility;
 
 using Console = System.Console;
 
-namespace Regulus.Tool
+namespace Regulus.Remote.Protocol.Generator
 {
     
     class Program
@@ -70,7 +70,7 @@ namespace Regulus.Tool
                     Console.WriteLine($"Source {sourceFullPath}");
                     Console.WriteLine($"Output {outputFullPath}");
                     var sourceAsm = Assembly.LoadFile(sourceFullPath);
-                    var assemblyBuilder = new Regulus.Protocol.AssemblyBuilder();
+                    var assemblyBuilder = new Regulus.Remote.Protocol.AssemblyBuilder();
                     assemblyBuilder.Build(sourceAsm, protocolName, outputFullPath);                    
                     Console.WriteLine("Build success.");
 
@@ -84,7 +84,7 @@ namespace Regulus.Tool
                     Console.WriteLine($"Source {sourceFullPath}");
                     Console.WriteLine($"Output {outputFullPath}");
                     var sourceAsm = Assembly.LoadFile(sourceFullPath);
-                    var assemblyBuilder = new Regulus.Protocol.AssemblyBuilder();                    
+                    var assemblyBuilder = new Regulus.Remote.Protocol.AssemblyBuilder();                    
                     //assemblyBuilder.BuildCode(sourceAsm, protocolName, outputFullPath);
                     throw new NotImplementedException();
                     Console.WriteLine("Build success.");

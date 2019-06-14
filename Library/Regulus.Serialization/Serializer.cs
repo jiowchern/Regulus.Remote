@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Regulus.Remoting;
+using Regulus.Remote;
 
 namespace Regulus.Serialization
 {

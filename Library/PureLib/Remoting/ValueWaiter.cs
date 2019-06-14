@@ -3,7 +3,7 @@
 
 using Regulus.Utility;
 
-namespace Regulus.Remoting
+namespace Regulus.Remote
 {
 	internal class ValueWaiter<T>
 	{

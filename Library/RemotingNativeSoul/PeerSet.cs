@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 using Regulus.Framework;
 
-namespace Regulus.Remoting.Soul.Native
+namespace Regulus.Remote.Soul
 {
 	public class PeerSet
 	{

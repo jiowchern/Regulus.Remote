@@ -1,5 +1,5 @@
 ﻿using Regulus.Framework;
-using Regulus.Remoting;
+using Regulus.Remote;
 using Regulus.Utility;
 
 namespace RemotingTest

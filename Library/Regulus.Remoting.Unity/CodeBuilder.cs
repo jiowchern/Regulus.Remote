@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Regulus.Remoting.Unity
+namespace Regulus.Remote.Unity
 {
 
     public class ProtocolGenerator
@@ -76,21 +76,21 @@ using UnityEngine;
 {0}
     public abstract class {3} : MonoBehaviour
     {{
-        private Regulus.Remoting.Unity.Distributor _Distributor ;
-        public Regulus.Remoting.Unity.Distributor Distributor {{ get{{ return _Distributor ; }} }}
+        private Regulus.Remote.Unity.Distributor _Distributor ;
+        public Regulus.Remote.Unity.Distributor Distributor {{ get{{ return _Distributor ; }} }}
         private readonly Regulus.Utility.Updater _Updater;
 
-        private Regulus.Remoting.IAgent _Agent;
+        private Regulus.Remote.IAgent _Agent;
         public string Name;
         public {3}()
         {{            
             _Updater = new Updater();
         }}
-        public abstract Regulus.Remoting.IAgent _GetAgent();
+        public abstract Regulus.Remote.IAgent _GetAgent();
         void Start()   
         {{
             _Agent = _GetAgent();
-            _Distributor  = new Regulus.Remoting.Unity.Distributor(_Agent);
+            _Distributor  = new Regulus.Remote.Unity.Distributor(_Agent);
             _Updater.Add(_Agent);
         }}
         // Use this for initialization
@@ -139,7 +139,7 @@ using UnityEngine.Events;
     public class {2}Broadcaster : UnityEngine.MonoBehaviour 
     {{
         public string Agent;        
-        Regulus.Remoting.INotifier<{0}.{1}> _Notifier;
+        Regulus.Remote.INotifier<{0}.{1}> _Notifier;
 
         private readonly Regulus.Utility.StageMachine _Machine;
 
@@ -240,7 +240,7 @@ namespace {0}.Adsorption
 {{
     using System.Linq;
         
-    public class {7}Adsorber : UnityEngine.MonoBehaviour , Regulus.Remoting.Unity.Adsorber<{1}>
+    public class {7}Adsorber : UnityEngine.MonoBehaviour , Regulus.Remote.Unity.Adsorber<{1}>
     {{
         private readonly Regulus.Utility.StageMachine _Machine;        
         
@@ -366,7 +366,7 @@ namespace {0}.Adsorption
 
                 var returnType = methodInfo.ReturnType;
 
-                if (returnType.IsGenericType && returnType.GetGenericTypeDefinition() == typeof(Regulus.Remoting.Value<>))
+                if (returnType.IsGenericType && returnType.GetGenericTypeDefinition() == typeof(Regulus.Remote.Value<>))
                 {
                     codes.Add(_GenerateMethodReturnEvent(methodInfo));
                 }
@@ -468,7 +468,7 @@ namespace {0}.Adsorption
                 }
                 var returnType = methodInfo.ReturnType;
 
-                if (returnType.IsGenericType && returnType.GetGenericTypeDefinition() == typeof(Regulus.Remoting.Value<>))
+                if (returnType.IsGenericType && returnType.GetGenericTypeDefinition() == typeof(Regulus.Remote.Value<>))
                 {
                     methodCodes.Add(_GenerateMethodHaveReturn(type, methodInfo));
                 }

@@ -4,7 +4,7 @@
 using Regulus.Framework;
 using Regulus.Utility;
 
-namespace Regulus.Remoting
+namespace Regulus.Remote
 {
 	public class User : IUpdatable
 	{

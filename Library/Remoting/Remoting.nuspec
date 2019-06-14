@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
-        <id>RegulusRemoting</id>
-        <version>0.4.1</version>
+        <id>RegulusRemotng</id>
+        <version>0.4.2</version>
         <authors>jc</authors>
         <iconUrl>https://github.com/jiowchern/Regulus</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -13,9 +13,9 @@
         </dependencies>
     </metadata>
     <files>
-        <file src="bin\release\RegulusRemoting.dll" target="lib\net40\RegulusRemoting.dll" />
-        <file src="bin\release\RegulusRemoting.pdb" target="lib\net40\RegulusRemoting.pdb" />
-        <file src="bin\release\RegulusRemoting.xml" target="lib\net40\RegulusRemoting.xml" />
+        <file src="bin\release\Regulus.Remote.dll" target="lib\net40\Regulus.Remote.dll" />
+        <file src="bin\release\Regulus.Remote.pdb" target="lib\net40\Regulus.Remote.pdb" />
+        <file src="bin\release\Regulus.Remote.xml" target="lib\net40\Regulus.Remote.xml" />
         <file src="bin\release\Regulus.Network.dll" target="lib\net40\Regulus.Network.dll" />
         <file src="bin\release\Regulus.Network.pdb" target="lib\net40\Regulus.Network.pdb" />
         

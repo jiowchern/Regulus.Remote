@@ -7,8 +7,8 @@ using System.Runtime.Remoting.Messaging;
 using NSubstitute;
 
 using Regulus.Framework;
-using Regulus.Remoting;
-using Regulus.Remoting.Extension;
+using Regulus.Remote;
+using Regulus.Remote.Extension;
 using Regulus.Utility;
 
 namespace RemotingTest

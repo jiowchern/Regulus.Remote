@@ -2,8 +2,8 @@
 
 using NSubstitute;
 
-using Regulus.Remoting;
-using Regulus.Remoting.Standalone;
+using Regulus.Remote;
+using Regulus.Remote.Standalone;
 using Regulus.Utility;
 using Regulus.Extension;
 

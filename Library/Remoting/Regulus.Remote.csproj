@@ -8,8 +8,8 @@
     <ProjectGuid>{A4CFCE46-BDA8-4416-A1BB-77BD80514019}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Regulus.Remoting</RootNamespace>
-    <AssemblyName>RegulusRemoting</AssemblyName>
+    <RootNamespace>Regulus.Remote</RootNamespace>
+    <AssemblyName>Regulus.Remote</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <UpdateAssemblyVersion>False</UpdateAssemblyVersion>
@@ -36,7 +36,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\RegulusRemoting.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\Regulus.Remote.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug_Unity|AnyCPU'">
@@ -109,9 +109,9 @@
     <Compile Include="UserController.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PureLib\RegulusLibrary.csproj">
+    <ProjectReference Include="..\PureLib\Regulus.Library.csproj">
       <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
-      <Name>RegulusLibrary</Name>
+      <Name>Regulus.Library</Name>
     </ProjectReference>
     <ProjectReference Include="..\Regulus.Network\Regulus.Network.csproj">
       <Project>{a720964c-c3e0-4cb8-a81b-54a9cf7bc8dd}</Project>

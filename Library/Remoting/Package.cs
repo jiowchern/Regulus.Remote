@@ -4,7 +4,7 @@ using Regulus.Serialization;
 
 
 
-namespace Regulus.Remoting
+namespace Regulus.Remote
 {
 
 

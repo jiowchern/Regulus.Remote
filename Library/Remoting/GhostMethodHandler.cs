@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 
-namespace Regulus.Remoting
+namespace Regulus.Remote
 {
     internal class GhostMethodHandler
     {
@@ -14,7 +14,7 @@ namespace Regulus.Remoting
 
         private readonly IGhostRequest _Requester;
 
-        public GhostMethodHandler(IGhost ghost, ReturnValueQueue return_value_queue, IProtocol protocol, Regulus.Remoting.IGhostRequest requester)
+        public GhostMethodHandler(IGhost ghost, ReturnValueQueue return_value_queue, IProtocol protocol, Regulus.Remote.IGhostRequest requester)
         {
             _Ghost = ghost;
             _ReturnValueQueue = return_value_queue;

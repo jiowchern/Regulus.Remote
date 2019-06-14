@@ -1,6 +1,6 @@
 using System;
 
-namespace Regulus.Remoting
+namespace Regulus.Remote
 {
     public interface IEventProxyCreator
     {

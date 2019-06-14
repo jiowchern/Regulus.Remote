@@ -3,7 +3,7 @@
 using System.Reflection;
 
 
-namespace Regulus.Remoting.Unity
+namespace Regulus.Remote.Unity
 {
     
     

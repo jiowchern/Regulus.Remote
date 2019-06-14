@@ -1,6 +1,6 @@
 ﻿using Regulus.Utility;
 
-namespace Regulus.Remoting
+namespace Regulus.Remote
 {
 	/// <summary>
 	///     遠端物件提供的核心，欲提供給客戶端的物件主要進入點。

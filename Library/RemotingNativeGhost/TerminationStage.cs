@@ -1,6 +1,6 @@
 ﻿using Regulus.Utility;
 
-namespace Regulus.Remoting.Ghost.Native
+namespace Regulus.Remote.Ghost
 {
 	public partial class Agent
 	{

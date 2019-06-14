@@ -7,7 +7,7 @@ using Regulus.Network.Rudp;
 using Regulus.Utility;
 using Console = Regulus.Utility.Console;
 
-namespace Regulus.Remoting.ConsoleRunner
+namespace Regulus.Remote.Soul.Console
 {
     internal class StageStart : IStage
     {
@@ -15,12 +15,12 @@ namespace Regulus.Remoting.ConsoleRunner
 
         private readonly Command _Command;
 
-        private readonly Console.IViewer _View;
+        private readonly Regulus.Utility.Console.IViewer _View;
 
         private readonly string[] _FirstCommand;
 
 
-        public StageStart(Command command, Console.IViewer view, string[] first_command)
+        public StageStart(Command command, Regulus.Utility.Console.IViewer view, string[] first_command)
         {
             _View = view;
             _FirstCommand = first_command;
@@ -131,7 +131,7 @@ namespace Regulus.Remoting.ConsoleRunner
             var assembly = Assembly.LoadFrom(common_path);
 
             var protocolName = entry_name + "ProtocolProvider";
-            var buidler = new Regulus.Protocol.AssemblyBuilder();
+            var buidler = new Regulus.Remote.Protocol.AssemblyBuilder();
             var asm = buidler.Build(assembly, protocolName);
             return asm.CreateInstance(protocolName) as IProtocol;
         }

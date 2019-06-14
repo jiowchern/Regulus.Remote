@@ -1,7 +1,7 @@
 ﻿using Regulus.Network;
 using Regulus.Utility;
 
-namespace Regulus.Remoting.ConsoleRunner
+namespace Regulus.Remote.Soul.Console
 {
     public class Application : WindowConsole
     {

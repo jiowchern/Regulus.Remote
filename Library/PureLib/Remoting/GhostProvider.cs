@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Regulus.Remoting
+namespace Regulus.Remote
 {
 	/// <summary>
 	///     介面物件通知器

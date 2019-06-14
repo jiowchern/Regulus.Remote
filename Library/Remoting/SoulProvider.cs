@@ -6,7 +6,7 @@ using System.Reflection;
 using Regulus.Serialization;
 using Regulus.Utility;
 
-namespace Regulus.Remoting
+namespace Regulus.Remote
 {
 	public class SoulProvider : IDisposable, ISoulBinder
 	{

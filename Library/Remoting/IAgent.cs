@@ -2,7 +2,7 @@ using System;
 
 using Regulus.Utility;
 
-namespace Regulus.Remoting
+namespace Regulus.Remote
 {
     /// <summary>
     ///     ¥N²z¾¹

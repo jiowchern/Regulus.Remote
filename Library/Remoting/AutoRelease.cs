@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Regulus.Serialization;
-namespace Regulus.Remoting
+namespace Regulus.Remote
 {
 	public class AutoRelease
 	{

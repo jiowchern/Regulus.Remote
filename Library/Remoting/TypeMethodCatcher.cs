@@ -2,7 +2,7 @@ using System;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Regulus.Remoting.AOT
+namespace Regulus.Remote.AOT
 {
     
     public class TypeMethodCatcher

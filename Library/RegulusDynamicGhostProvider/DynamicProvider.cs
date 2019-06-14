@@ -4,7 +4,7 @@ using System.Reflection.Emit;
 using System;
 using System.Linq;
 
-namespace Regulus.Remoting.Ghost.Native
+namespace Regulus.Remote.Ghost
 {
     public class DynamicProvider 
     {

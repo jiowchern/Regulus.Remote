@@ -5,10 +5,10 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-using Regulus.Remoting.Extension;
+using Regulus.Remote.Extension;
 using Regulus.Utility;
 
-namespace Regulus.Remoting
+namespace Regulus.Remote
 {
 	internal abstract class CommandRegister
 	{

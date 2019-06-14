@@ -1,18 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{00E8AFF8-E4D5-4327-86F1-D03379419431}</ProjectGuid>
+    <ProjectGuid>{6CB4CDE6-4405-40E6-8BDF-5A2E9185CC04}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Regulus.Protocol</RootNamespace>
-    <AssemblyName>Regulus.Protocol</AssemblyName>
+    <RootNamespace>Regulus.Remote.Ghost</RootNamespace>
+    <AssemblyName>Regulus.Remote.Ghost</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
+    <UpdateAssemblyVersion>False</UpdateAssemblyVersion>
+    <UpdateAssemblyFileVersion>True</UpdateAssemblyFileVersion>
+    <UpdateAssemblyInfoVersion>False</UpdateAssemblyInfoVersion>
+    <AssemblyFileVersionSettings>None.None.Increment.IncrementOnDemandWithReset</AssemblyFileVersionSettings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,6 +35,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\Regulus.Remote.Ghost.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
@@ -50,24 +55,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyBuilder.cs" />
-    <Compile Include="CodeBuilder.cs" />
+    <Compile Include="Agent.cs" />
+    <Compile Include="AgentConnectStage.cs" />
+    <Compile Include="AgentOnlineStage.cs" />
+    <Compile Include="IOHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TypeDisintegrator.cs" />
+    <Compile Include="TerminationStage.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PureLib\RegulusLibrary.csproj">
+    <ProjectReference Include="..\PureLib\Regulus.Library.csproj">
       <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
-      <Name>RegulusLibrary</Name>
+      <Name>Regulus.Library</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Regulus.Serialization\Regulus.Serialization.csproj">
-      <Project>{8308717d-ec47-44cd-a27d-95be5a92a36d}</Project>
-      <Name>Regulus.Serialization</Name>
+    <ProjectReference Include="..\Regulus.Network\Regulus.Network.csproj">
+      <Project>{a720964c-c3e0-4cb8-a81b-54a9cf7bc8dd}</Project>
+      <Name>Regulus.Network</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Remoting\Remoting.csproj">
+    <ProjectReference Include="..\Remoting\Regulus.Remote.csproj">
       <Project>{a4cfce46-bda8-4416-a1bb-77bd80514019}</Project>
-      <Name>Remoting</Name>
+      <Name>Regulus.Remote</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="RemotingGhostNative.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

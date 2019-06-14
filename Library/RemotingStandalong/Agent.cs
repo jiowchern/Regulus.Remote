@@ -7,7 +7,7 @@ using Regulus.Framework;
 using Regulus.Utility;
 using Regulus.Serialization;
 
-namespace Regulus.Remoting.Standalone
+namespace Regulus.Remote.Standalone
 {
 	public class Agent : IRequestQueue, IResponseQueue, ISoulBinder, IAgent
 	{

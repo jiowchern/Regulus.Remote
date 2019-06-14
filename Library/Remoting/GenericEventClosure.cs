@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Regulus.Remoting
+namespace Regulus.Remote
 {
     public delegate void InvokeEventCallabck(Guid entity_id , int event_id , object[] args);
     public class GenericEventClosure

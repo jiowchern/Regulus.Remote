@@ -1,24 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D4580866-2273-4E9B-BE70-4FA2AB11434A}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{57CE4156-39E1-40BB-9421-0BA4AD5149A6}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Regulus.Remoting.Soul.Native</RootNamespace>
-    <AssemblyName>RegulusRemotingSoulNative</AssemblyName>
+    <RootNamespace>Regulus.Remote.Protocol.Generator</RootNamespace>
+    <AssemblyName>Regulus.Remote.Protocol.Generator</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
-    <UpdateAssemblyVersion>False</UpdateAssemblyVersion>
-    <UpdateAssemblyFileVersion>True</UpdateAssemblyFileVersion>
-    <UpdateAssemblyInfoVersion>False</UpdateAssemblyInfoVersion>
-    <AssemblyFileVersionSettings>None.None.Increment.IncrementOnDemandWithReset</AssemblyFileVersionSettings>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -29,6 +26,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -36,7 +34,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>bin\Release\RegulusRemotingSoulNative.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <PlatformTarget>x64</PlatformTarget>
@@ -55,29 +52,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Peer.cs" />
-    <Compile Include="PeerSet.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Server.cs" />
-    <Compile Include="ThreadCoreHandler.cs" />
-    <Compile Include="ThreadSocketHandler.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PureLib\RegulusLibrary.csproj">
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Library\PureLib\Regulus.Library.csproj">
       <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
-      <Name>RegulusLibrary</Name>
+      <Name>Regulus.Library</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Regulus.Network\Regulus.Network.csproj">
-      <Project>{a720964c-c3e0-4cb8-a81b-54a9cf7bc8dd}</Project>
-      <Name>Regulus.Network</Name>
+    <ProjectReference Include="..\..\Library\RegulusProtocol\Regulus.Remote.Protocol.csproj">
+      <Project>{00e8aff8-e4d5-4327-86f1-d03379419431}</Project>
+      <Name>Regulus.Remote.Protocol</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Remoting\Remoting.csproj">
+    <ProjectReference Include="..\..\Library\Remoting\Regulus.Remote.csproj">
       <Project>{a4cfce46-bda8-4416-a1bb-77bd80514019}</Project>
-      <Name>Remoting</Name>
+      <Name>Regulus.Remote</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="RemotingSoulNative.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

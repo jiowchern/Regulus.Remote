@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Regulus.Protocol
+namespace Regulus.Remote.Protocol
 {
     public class CodeBuilder
     {
@@ -86,7 +86,7 @@ namespace Regulus.Protocol
                             memberMapPropertyBuilder.Add(String.Format("typeof({0}).GetProperty(\"{1}\")", type.FullName, propertyInfo.Name));
                     }
 
-                    memberMapInterfaceBuilder.Add(String.Format("new System.Tuple<System.Type, System.Func<Regulus.Remoting.IProvider>>(typeof({0}),()=>new Regulus.Remoting.TProvider<{0}>())", type.FullName));
+                    memberMapInterfaceBuilder.Add(String.Format("new System.Tuple<System.Type, System.Func<Regulus.Remote.IProvider>>(typeof({0}),()=>new Regulus.Remote.TProvider<{0}>())", type.FullName));
                 }
                 
 
@@ -125,45 +125,45 @@ namespace Regulus.Protocol
             using System.Collections.Generic;
             
             {providerNamespaceHead}
-                public class {procotolName} : Regulus.Remoting.IProtocol
+                public class {procotolName} : Regulus.Remote.IProtocol
                 {{
-                    Regulus.Remoting.InterfaceProvider _InterfaceProvider;
-                    Regulus.Remoting.EventProvider _EventProvider;
-                    Regulus.Remoting.MemberMap _MemberMap;
+                    Regulus.Remote.InterfaceProvider _InterfaceProvider;
+                    Regulus.Remote.EventProvider _EventProvider;
+                    Regulus.Remote.MemberMap _MemberMap;
                     Regulus.Serialization.ISerializer _Serializer;
                     public {procotolName}()
                     {{
                         var types = new Dictionary<Type, Type>();
                         {addTypeCode}
-                        _InterfaceProvider = new Regulus.Remoting.InterfaceProvider(types);
+                        _InterfaceProvider = new Regulus.Remote.InterfaceProvider(types);
 
-                        var eventClosures = new List<Regulus.Remoting.IEventProxyCreator>();
+                        var eventClosures = new List<Regulus.Remote.IEventProxyCreator>();
                         {addEventCode}
-                        _EventProvider = new Regulus.Remoting.EventProvider(eventClosures);
+                        _EventProvider = new Regulus.Remote.EventProvider(eventClosures);
 
                         _Serializer = new Regulus.Serialization.Serializer(new Regulus.Serialization.DescriberBuilder({addDescriberCode}).Describers);
 
 
-                        _MemberMap = new Regulus.Remoting.MemberMap(new System.Reflection.MethodInfo[] {{{addMemberMapMethodCode}}} ,new System.Reflection.EventInfo[]{{ {addMemberMapEventCode} }}, new System.Reflection.PropertyInfo[] {{{addMemberMapPropertyCode} }}, new System.Tuple<System.Type, System.Func<Regulus.Remoting.IProvider>>[] {{{addMemberMapinterfaceCode}}});
+                        _MemberMap = new Regulus.Remote.MemberMap(new System.Reflection.MethodInfo[] {{{addMemberMapMethodCode}}} ,new System.Reflection.EventInfo[]{{ {addMemberMapEventCode} }}, new System.Reflection.PropertyInfo[] {{{addMemberMapPropertyCode} }}, new System.Tuple<System.Type, System.Func<Regulus.Remote.IProvider>>[] {{{addMemberMapinterfaceCode}}});
                     }}
 
-                    byte[] Regulus.Remoting.IProtocol.VerificationCode {{ get {{ return new byte[]{{{verificationCode}}};}} }}
-                    Regulus.Remoting.InterfaceProvider Regulus.Remoting.IProtocol.GetInterfaceProvider()
+                    byte[] Regulus.Remote.IProtocol.VerificationCode {{ get {{ return new byte[]{{{verificationCode}}};}} }}
+                    Regulus.Remote.InterfaceProvider Regulus.Remote.IProtocol.GetInterfaceProvider()
                     {{
                         return _InterfaceProvider;
                     }}
 
-                    Regulus.Remoting.EventProvider Regulus.Remoting.IProtocol.GetEventProvider()
+                    Regulus.Remote.EventProvider Regulus.Remote.IProtocol.GetEventProvider()
                     {{
                         return _EventProvider;
                     }}
 
-                    Regulus.Serialization.ISerializer Regulus.Remoting.IProtocol.GetSerialize()
+                    Regulus.Serialization.ISerializer Regulus.Remote.IProtocol.GetSerialize()
                     {{
                         return _Serializer;
                     }}
 
-                    Regulus.Remoting.MemberMap Regulus.Remoting.IProtocol.GetMemberMap()
+                    Regulus.Remote.MemberMap Regulus.Remote.IProtocol.GetMemberMap()
                     {{
                         return _MemberMap;
                     }}
@@ -187,7 +187,7 @@ namespace Regulus.Protocol
             var paramCode = _BuildAddParams(method_info);
             
             var code =
-                $"new Regulus.Remoting.AOT.TypeMethodCatcher((System.Linq.Expressions.Expression<System.Action{argTypesCode}>)(({argInstanceCode}{paramCode}) => ins.{methodCode}({paramCode}))).Method";
+                $"new Regulus.Remote.AOT.TypeMethodCatcher((System.Linq.Expressions.Expression<System.Action{argTypesCode}>)(({argInstanceCode}{paramCode}) => ins.{methodCode}({paramCode}))).Method";
             return code;
         }
 
@@ -203,18 +203,18 @@ namespace Regulus.Protocol
         {
             var types = new HashSet<Type>();
             
-            serializer_types.Add(typeof(Regulus.Remoting.PackageProtocolSubmit));
-            serializer_types.Add(typeof(Regulus.Remoting.RequestPackage));
-            serializer_types.Add(typeof(Regulus.Remoting.ResponsePackage));
-            serializer_types.Add(typeof(Regulus.Remoting.PackageUpdateProperty));
-            serializer_types.Add(typeof(Regulus.Remoting.PackageInvokeEvent));
-            serializer_types.Add(typeof(Regulus.Remoting.PackageErrorMethod));
-            serializer_types.Add(typeof(Regulus.Remoting.PackageReturnValue));
-            serializer_types.Add(typeof(Regulus.Remoting.PackageLoadSoulCompile));
-            serializer_types.Add(typeof(Regulus.Remoting.PackageLoadSoul));
-            serializer_types.Add(typeof(Regulus.Remoting.PackageUnloadSoul));
-            serializer_types.Add(typeof(Regulus.Remoting.PackageCallMethod));
-            serializer_types.Add(typeof(Regulus.Remoting.PackageRelease));
+            serializer_types.Add(typeof(Regulus.Remote.PackageProtocolSubmit));
+            serializer_types.Add(typeof(Regulus.Remote.RequestPackage));
+            serializer_types.Add(typeof(Regulus.Remote.ResponsePackage));
+            serializer_types.Add(typeof(Regulus.Remote.PackageUpdateProperty));
+            serializer_types.Add(typeof(Regulus.Remote.PackageInvokeEvent));
+            serializer_types.Add(typeof(Regulus.Remote.PackageErrorMethod));
+            serializer_types.Add(typeof(Regulus.Remote.PackageReturnValue));
+            serializer_types.Add(typeof(Regulus.Remote.PackageLoadSoulCompile));
+            serializer_types.Add(typeof(Regulus.Remote.PackageLoadSoul));
+            serializer_types.Add(typeof(Regulus.Remote.PackageUnloadSoul));
+            serializer_types.Add(typeof(Regulus.Remote.PackageCallMethod));
+            serializer_types.Add(typeof(Regulus.Remote.PackageRelease));
 
             foreach (var serializerType in serializer_types)
             {                
@@ -257,7 +257,7 @@ namespace Regulus.Protocol
     
     namespace {nameSpace}.Invoker.{name} 
     {{ 
-        public class {eventName} : Regulus.Remoting.IEventProxyCreator
+        public class {eventName} : Regulus.Remote.IEventProxyCreator
         {{
 
             Type _Type;
@@ -269,19 +269,19 @@ namespace Regulus.Protocol
                 _Type = typeof({type.FullName});                   
             
             }}
-            Delegate Regulus.Remoting.IEventProxyCreator.Create(Guid soul_id,int event_id, Regulus.Remoting.InvokeEventCallabck invoke_Event)
+            Delegate Regulus.Remote.IEventProxyCreator.Create(Guid soul_id,int event_id, Regulus.Remote.InvokeEventCallabck invoke_Event)
             {{                
-                var closure = new Regulus.Remoting.GenericEventClosure{_GetTypes(argTypes)}(soul_id , event_id , invoke_Event);                
+                var closure = new Regulus.Remote.GenericEventClosure{_GetTypes(argTypes)}(soul_id , event_id , invoke_Event);                
                 return new Action{_GetTypes(argTypes)}(closure.Run);
             }}
         
 
-            Type Regulus.Remoting.IEventProxyCreator.GetType()
+            Type Regulus.Remote.IEventProxyCreator.GetType()
             {{
                 return _Type;
             }}            
 
-            string Regulus.Remoting.IEventProxyCreator.GetName()
+            string Regulus.Remote.IEventProxyCreator.GetName()
             {{
                 return _Name;
             }}            
@@ -313,7 +313,7 @@ $@"
     
     namespace {nameSpace}.Ghost 
     {{ 
-        public class C{name} : {_GetTypeName(type)} , Regulus.Remoting.IGhost
+        public class C{name} : {_GetTypeName(type)} , Regulus.Remote.IGhost
         {{
             readonly bool _HaveReturn ;
             
@@ -328,23 +328,23 @@ $@"
             }}
             
 
-            Guid Regulus.Remoting.IGhost.GetID()
+            Guid Regulus.Remote.IGhost.GetID()
             {{
                 return {CodeBuilder._GhostIdName};
             }}
 
-            bool Regulus.Remoting.IGhost.IsReturnType()
+            bool Regulus.Remote.IGhost.IsReturnType()
             {{
                 return _HaveReturn;
             }}
-            object Regulus.Remoting.IGhost.GetInstance()
+            object Regulus.Remote.IGhost.GetInstance()
             {{
                 return this;
             }}
 
-            private event Regulus.Remoting.CallMethodCallback _CallMethodEvent;
+            private event Regulus.Remote.CallMethodCallback _CallMethodEvent;
 
-            event Regulus.Remoting.CallMethodCallback Regulus.Remoting.IGhost.CallMethodEvent
+            event Regulus.Remote.CallMethodCallback Regulus.Remote.IGhost.CallMethodEvent
             {{
                 add {{ this._CallMethodEvent += value; }}
                 remove {{ this._CallMethodEvent -= value; }}
@@ -440,10 +440,10 @@ $@"
                 {
                     var returnType = methodInfo.ReturnType.GetGenericArguments()[0];
 
-                    returnTypeCode = $"Regulus.Remoting.Value<{_GetTypeName(returnType)}>";
+                    returnTypeCode = $"Regulus.Remote.Value<{_GetTypeName(returnType)}>";
                 }
                 var returnValue = "";
-                var addReturn = $"Regulus.Remoting.IValue returnValue = null;";
+                var addReturn = $"Regulus.Remote.IValue returnValue = null;";
                 if (haveReturn)
                 {
                     addReturn = $@"

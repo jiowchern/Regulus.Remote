@@ -6,7 +6,7 @@ using System.Reflection;
 
 using Microsoft.CSharp;
 
-namespace Regulus.Remoting.Unity
+namespace Regulus.Remote.Unity
 {
     public class AssemblyOutputer
     {        
@@ -59,13 +59,13 @@ namespace Regulus.Remoting.Unity
             System.IO.Directory.CreateDirectory(proxy);
             System.IO.Directory.CreateDirectory(adsorber);
             System.IO.Directory.CreateDirectory(broadcaster);
-            var protocolBuilder = new Regulus.Protocol.CodeBuilder();
+            var protocolBuilder = new Regulus.Remote.Protocol.CodeBuilder();
             protocolBuilder.ProviderEvent += (name , code) => _WriteFile(_GetFile(proxy, name) , code);
             protocolBuilder.GpiEvent += (name, code) => _WriteFile(_GetFile(proxy, name), code);
             protocolBuilder.EventEvent += (type_name, event_name, code) => _WriteFile(_GetFile(proxy, type_name + event_name), code);
             protocolBuilder.Build(_ProtocolName, _Types);
 
-            var unityProtocolBuilder = new Regulus.Remoting.Unity.CodeBuilder(_Types, _AgentName , _ProtocolName);
+            var unityProtocolBuilder = new Regulus.Remote.Unity.CodeBuilder(_Types, _AgentName , _ProtocolName);
 
             unityProtocolBuilder.AgentEvent += (name,code) => _WriteFile(_GetFile(output_path, name), code);
             unityProtocolBuilder.TypeEvent += (name, ads, b) =>

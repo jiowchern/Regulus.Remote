@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Regulus.Remoting
+namespace Regulus.Remote
 {
 	/// <summary>
 	///     伺服器端對外綁定物件

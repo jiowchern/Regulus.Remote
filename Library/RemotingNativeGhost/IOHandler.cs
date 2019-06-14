@@ -3,7 +3,7 @@
 
 using Regulus.Utility;
 
-namespace Regulus.Remoting.Ghost.Native
+namespace Regulus.Remote.Ghost
 {
 	/*internal class IOHandler : Singleton<IOHandler>
 	{

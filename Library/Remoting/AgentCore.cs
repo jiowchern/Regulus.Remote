@@ -19,7 +19,7 @@ using Timer = System.Timers.Timer;
 
 
 
-namespace Regulus.Remoting
+namespace Regulus.Remote
 {
     public class AgentCore
 	{

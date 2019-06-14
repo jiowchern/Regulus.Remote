@@ -6,7 +6,7 @@ using Regulus.Network;
 using Regulus.Network.Rudp;
 using Regulus.Utility;
 
-namespace Regulus.Remoting.Soul.Native
+namespace Regulus.Remote.Soul
 {
     internal class ThreadSocketHandler
     {

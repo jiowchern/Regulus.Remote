@@ -1,5 +1,5 @@
 ﻿
-using Regulus.Protocol;
+using Regulus.Remote.Protocol;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Regulus.Protocol.Tests
+namespace Regulus.Remote.Protocol.Tests
 {
     
     public class TypeDisintegratorTests
@@ -60,7 +60,7 @@ namespace Regulus.Protocol.Tests
         Guid Id { get; }
         event Action<float> Event1;
         event Action<EventData1> Event2;
-        Regulus.Remoting.Value<byte> Method1(int arg1, string arg2);
+        Regulus.Remote.Value<byte> Method1(int arg1, string arg2);
         void Method2(int arg1, EventData1 arg2);
 
     }

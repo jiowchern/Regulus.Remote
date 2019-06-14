@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Regulus.Remoting
+namespace Regulus.Remote
 {
 	public class Loader
 	{

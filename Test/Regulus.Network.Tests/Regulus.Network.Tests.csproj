@@ -59,9 +59,9 @@
     <Compile Include="SegmentStreamTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Library\PureLib\RegulusLibrary.csproj">
+    <ProjectReference Include="..\..\Library\PureLib\Regulus.Library.csproj">
       <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
-      <Name>RegulusLibrary</Name>
+      <Name>Regulus.Library</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Library\Regulus.Network\Regulus.Network.csproj">
       <Project>{a720964c-c3e0-4cb8-a81b-54a9cf7bc8dd}</Project>

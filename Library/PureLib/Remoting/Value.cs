@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace Regulus.Remoting
+namespace Regulus.Remote
 {
 	public interface IValue
 	{

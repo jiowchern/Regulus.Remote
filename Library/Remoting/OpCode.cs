@@ -1,4 +1,4 @@
-﻿namespace Regulus.Remoting
+﻿namespace Regulus.Remote
 {
 	public enum ClientToServerOpCode : byte
 	{

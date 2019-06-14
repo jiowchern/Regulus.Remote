@@ -5,7 +5,7 @@
 using NSubstitute;
 
 
-using Regulus.Remoting;
+using Regulus.Remote;
 using Regulus.Utility;
 
 namespace RegulusLibraryTest

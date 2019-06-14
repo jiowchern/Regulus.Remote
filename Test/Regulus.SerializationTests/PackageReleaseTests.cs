@@ -1,6 +1,6 @@
 ﻿
 
-using Regulus.Remoting;
+using Regulus.Remote;
 
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 using Regulus.Serialization;
 
-namespace Regulus.Remoting.Tests
+namespace Regulus.Remote.Tests
 {
     
     public class PackageReleaseTests
@@ -65,23 +65,23 @@ namespace Regulus.Remoting.Tests
                             typeof(System.Char[]),
                             typeof(System.String),
                             typeof(System.Boolean),
-                            typeof(Regulus.Remoting.RequestPackage),
+                            typeof(Regulus.Remote.RequestPackage),
                             typeof(System.Byte[]),
                             typeof(System.Byte),
-                            typeof(Regulus.Remoting.ClientToServerOpCode),
-                            typeof(Regulus.Remoting.ResponsePackage),
-                            typeof(Regulus.Remoting.ServerToClientOpCode),
-                            typeof(Regulus.Remoting.PackageUpdateProperty),
+                            typeof(Regulus.Remote.ClientToServerOpCode),
+                            typeof(Regulus.Remote.ResponsePackage),
+                            typeof(Regulus.Remote.ServerToClientOpCode),
+                            typeof(Regulus.Remote.PackageUpdateProperty),
                             typeof(System.Guid),
-                            typeof(Regulus.Remoting.PackageInvokeEvent),
+                            typeof(Regulus.Remote.PackageInvokeEvent),
                             typeof(System.Byte[][]),
-                            typeof(Regulus.Remoting.PackageErrorMethod),
-                            typeof(Regulus.Remoting.PackageReturnValue),
-                            typeof(Regulus.Remoting.PackageLoadSoulCompile),
-                            typeof(Regulus.Remoting.PackageLoadSoul),
-                            typeof(Regulus.Remoting.PackageUnloadSoul),
-                            typeof(Regulus.Remoting.PackageCallMethod),
-                            typeof(Regulus.Remoting.PackageRelease));
+                            typeof(Regulus.Remote.PackageErrorMethod),
+                            typeof(Regulus.Remote.PackageReturnValue),
+                            typeof(Regulus.Remote.PackageLoadSoulCompile),
+                            typeof(Regulus.Remote.PackageLoadSoul),
+                            typeof(Regulus.Remote.PackageUnloadSoul),
+                            typeof(Regulus.Remote.PackageCallMethod),
+                            typeof(Regulus.Remote.PackageRelease));
             var ser = new Regulus.Serialization.Serializer(builder.Describers);
             var response = new RequestPackage();
             response.Code = ClientToServerOpCode.Ping;
@@ -104,23 +104,23 @@ namespace Regulus.Remoting.Tests
                             typeof(System.Char[]),
                             typeof(System.String),
                             typeof(System.Boolean),
-                            typeof(Regulus.Remoting.RequestPackage),
+                            typeof(Regulus.Remote.RequestPackage),
                             typeof(System.Byte[]),
                             typeof(System.Byte),
-                            typeof(Regulus.Remoting.ClientToServerOpCode),
-                            typeof(Regulus.Remoting.ResponsePackage),
-                            typeof(Regulus.Remoting.ServerToClientOpCode),
-                            typeof(Regulus.Remoting.PackageUpdateProperty),
+                            typeof(Regulus.Remote.ClientToServerOpCode),
+                            typeof(Regulus.Remote.ResponsePackage),
+                            typeof(Regulus.Remote.ServerToClientOpCode),
+                            typeof(Regulus.Remote.PackageUpdateProperty),
                             typeof(System.Guid),
-                            typeof(Regulus.Remoting.PackageInvokeEvent),
+                            typeof(Regulus.Remote.PackageInvokeEvent),
                             typeof(System.Byte[][]),
-                            typeof(Regulus.Remoting.PackageErrorMethod),
-                            typeof(Regulus.Remoting.PackageReturnValue),
-                            typeof(Regulus.Remoting.PackageLoadSoulCompile),
-                            typeof(Regulus.Remoting.PackageLoadSoul),
-                            typeof(Regulus.Remoting.PackageUnloadSoul),
-                            typeof(Regulus.Remoting.PackageCallMethod),
-                            typeof(Regulus.Remoting.PackageRelease));
+                            typeof(Regulus.Remote.PackageErrorMethod),
+                            typeof(Regulus.Remote.PackageReturnValue),
+                            typeof(Regulus.Remote.PackageLoadSoulCompile),
+                            typeof(Regulus.Remote.PackageLoadSoul),
+                            typeof(Regulus.Remote.PackageUnloadSoul),
+                            typeof(Regulus.Remote.PackageCallMethod),
+                            typeof(Regulus.Remote.PackageRelease));
             var ser = new Regulus.Serialization.Serializer(builder.Describers);
             var response = new ResponsePackage();
             response.Code = ServerToClientOpCode.UpdateProperty;
@@ -141,24 +141,24 @@ namespace Regulus.Remoting.Tests
                             typeof(System.Char[]),
                             typeof(System.String),
                             typeof(System.Boolean),
-                            typeof(Regulus.Remoting.RequestPackage),
+                            typeof(Regulus.Remote.RequestPackage),
                             typeof(System.Byte[]),
                             typeof(System.Byte),
-                            typeof(Regulus.Remoting.ClientToServerOpCode),
-                            typeof(Regulus.Remoting.ResponsePackage),
-                            typeof(Regulus.Remoting.ServerToClientOpCode),
-                            typeof(Regulus.Remoting.PackageUpdateProperty),
+                            typeof(Regulus.Remote.ClientToServerOpCode),
+                            typeof(Regulus.Remote.ResponsePackage),
+                            typeof(Regulus.Remote.ServerToClientOpCode),
+                            typeof(Regulus.Remote.PackageUpdateProperty),
                             typeof(System.Guid),
                             typeof(System.Int32),
-                            typeof(Regulus.Remoting.PackageInvokeEvent),
+                            typeof(Regulus.Remote.PackageInvokeEvent),
                             typeof(System.Byte[][]),
-                            typeof(Regulus.Remoting.PackageErrorMethod),
-                            typeof(Regulus.Remoting.PackageReturnValue),
-                            typeof(Regulus.Remoting.PackageLoadSoulCompile),
-                            typeof(Regulus.Remoting.PackageLoadSoul),
-                            typeof(Regulus.Remoting.PackageUnloadSoul),
-                            typeof(Regulus.Remoting.PackageCallMethod),
-                            typeof(Regulus.Remoting.PackageRelease));
+                            typeof(Regulus.Remote.PackageErrorMethod),
+                            typeof(Regulus.Remote.PackageReturnValue),
+                            typeof(Regulus.Remote.PackageLoadSoulCompile),
+                            typeof(Regulus.Remote.PackageLoadSoul),
+                            typeof(Regulus.Remote.PackageUnloadSoul),
+                            typeof(Regulus.Remote.PackageCallMethod),
+                            typeof(Regulus.Remote.PackageRelease));
             var ser = new Regulus.Serialization.Serializer(builder.Describers);
             var update = new PackageUpdateProperty();
             update.Property = 1;

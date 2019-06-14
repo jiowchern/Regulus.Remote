@@ -7,7 +7,7 @@ using System.Net.Sockets;
 
 using Regulus.Utility;
 
-namespace Regulus.Remoting
+namespace Regulus.Remote
 {
     
 	/*public enum SocketIOResult

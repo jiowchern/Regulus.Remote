@@ -4,14 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{485F551D-9155-4982-B653-F8D4EAC2FCA1}</ProjectGuid>
+    <ProjectGuid>{D4580866-2273-4E9B-BE70-4FA2AB11434A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Regulus.Remoting.Standalone</RootNamespace>
-    <AssemblyName>RegulusRemotingStandalone</AssemblyName>
+    <RootNamespace>Regulus.Remote.Soul</RootNamespace>
+    <AssemblyName>Regulus.Remote.Soul</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <UpdateAssemblyVersion>False</UpdateAssemblyVersion>
     <UpdateAssemblyFileVersion>True</UpdateAssemblyFileVersion>
     <UpdateAssemblyInfoVersion>False</UpdateAssemblyInfoVersion>
@@ -35,6 +36,15 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>bin\Release\Regulus.Remote.Soul.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -45,22 +55,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GhostRequest.cs" />
+    <Compile Include="Peer.cs" />
+    <Compile Include="PeerSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Agent.cs" />
+    <Compile Include="Server.cs" />
+    <Compile Include="ThreadCoreHandler.cs" />
+    <Compile Include="ThreadSocketHandler.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PureLib\RegulusLibrary.csproj">
+    <ProjectReference Include="..\PureLib\Regulus.Library.csproj">
       <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
-      <Name>RegulusLibrary</Name>
+      <Name>Regulus.Library</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Remoting\Remoting.csproj">
+    <ProjectReference Include="..\Regulus.Network\Regulus.Network.csproj">
+      <Project>{a720964c-c3e0-4cb8-a81b-54a9cf7bc8dd}</Project>
+      <Name>Regulus.Network</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Remoting\Regulus.Remote.csproj">
       <Project>{a4cfce46-bda8-4416-a1bb-77bd80514019}</Project>
-      <Name>Remoting</Name>
+      <Name>Regulus.Remote</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="RemotingStandalone.nuspec" />
+    <None Include="RemotingSoulNative.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -4,7 +4,7 @@ using System.Linq;
 
 
 using Regulus.Framework;
-using Regulus.Remoting;
+using Regulus.Remote;
 using Regulus.Utility;
 
 

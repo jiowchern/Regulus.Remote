@@ -2,7 +2,7 @@
 
 using NUnit.Framework;
 
-using Regulus.Remoting;
+using Regulus.Remote;
 
 namespace RegulusLibraryTest
 {

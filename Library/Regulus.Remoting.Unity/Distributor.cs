@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 
 
-namespace Regulus.Remoting.Unity
+namespace Regulus.Remote.Unity
 {
     public class Distributor 
     {
