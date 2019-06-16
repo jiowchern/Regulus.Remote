@@ -21,19 +21,13 @@ namespace Regulus.Remote.Ghost
 
 		private readonly StageMachine _Machine;
 	    private readonly IClient _RudpAgent;
-	    
-
-
-	    
 
 	    private long _Ping
 		{
 			get { return _Core.Ping; }
 		}
 
-		
-
-	    private Agent(IProtocol protocol,Regulus.Network.IClient client)
+	    public Agent(IProtocol protocol,Regulus.Network.IClient client)
 	    {
 	    
             _Serializer = protocol.GetSerialize();
@@ -48,11 +42,6 @@ namespace Regulus.Remote.Ghost
 		{
 			lock(_Machine)
 				_Machine.Update();
-		    
-
-            
-		    
-
             return true;
 		}
 
@@ -210,13 +199,6 @@ namespace Regulus.Remote.Ghost
 
 		
 
-        /// <summary>
-		///     建立代理器
-		/// </summary>
-		/// <returns></returns>
-		public static IAgent Create(IProtocol protocol,Regulus.Network.IClient client)
-        {
-            return new Agent(protocol , client);
-        }
+        
     }
 }

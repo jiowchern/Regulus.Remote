@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Regulus.Remote.Protocol.Unity.Generator
+namespace Regulus.Application.Protocol.Unity
 {
     class Program
     {
@@ -102,7 +102,7 @@ output_dir = path/dir
 
         private static Assembly _GetRegulusRemotingGhost()
         {
-            return _GetAssembly("RegulusRemotingGhostNative.dll");
+            return _GetAssembly("Regulus.Remote.Ghost.dll");
         }
 
         private static Assembly _GetRegulusProtocolUnity()
@@ -117,12 +117,12 @@ output_dir = path/dir
 
         private static Assembly _GetRegulusLibrary()
         {
-            return _GetAssembly("reguluslibrary.dll");
+            return _GetAssembly("regulus.library.dll");
         }
 
         private static Assembly _GetRegulusRemoting()
         {
-            return _GetAssembly("regulusremoting.dll");
+            return _GetAssembly("regulus.remote.dll");
         }
 
         private static Assembly _GetAssembly(string filename)

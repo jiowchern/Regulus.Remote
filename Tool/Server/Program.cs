@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-
-using Regulus.Remote.Soul.Console;
 using Regulus.Utility.WindowConsoleAppliction;
 
 namespace Regulus.Application.Server

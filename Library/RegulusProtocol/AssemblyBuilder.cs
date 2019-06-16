@@ -12,6 +12,21 @@ namespace Regulus.Remote.Protocol
     public class AssemblyBuilder
     {
 
+        public static Remote.IProtocol CreateProtocol(System.Reflection.Assembly common_assembly)
+        {
+            string protocolName = _CreateProtoclName();
+            var buidler = new Regulus.Remote.Protocol.AssemblyBuilder();
+            var asm = buidler.Build(common_assembly, protocolName);
+            return asm.CreateInstance(protocolName) as IProtocol;
+        }
+
+        private static string _CreateProtoclName()
+        {
+            var guidNumberString = Guid.NewGuid().ToString("N");
+            var name = $"Regulus.Protocl.Temp.C{guidNumberString}";
+            return name;
+        }
+
         private static string[] _GetReferencedAssemblies(Assembly asm)
         {
             var assemblyNames = asm
@@ -46,14 +61,14 @@ namespace Regulus.Remote.Protocol
                 TempFiles = new TempFileCollection()
 
             };
-
+            
             var locations = new HashSet<string>();
-            foreach (var referencedAssembly in _GetReferencedAssemblies(Assembly.LoadFile(System.IO.Path.GetFullPath("RegulusLibrary.dll"))))
+            foreach (var referencedAssembly in _GetReferencedAssemblies(Assembly.LoadFile(System.IO.Path.GetFullPath("Regulus.Library.dll"))))
             {
                 locations.Add(referencedAssembly);
             }
 
-            foreach (var referencedAssembly in _GetReferencedAssemblies(Assembly.LoadFile(System.IO.Path.GetFullPath("RegulusRemoting.dll"))))
+            foreach (var referencedAssembly in _GetReferencedAssemblies(Assembly.LoadFile(System.IO.Path.GetFullPath("Regulus.Remote.dll"))))
             {
                 locations.Add(referencedAssembly);
             }
@@ -102,15 +117,17 @@ namespace Regulus.Remote.Protocol
                 GenerateInMemory = true,
                 GenerateExecutable = false, TempFiles = new TempFileCollection()
             };
+            /*AppDomain.CurrentDomain
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            var regulusLibrary = _Find*/
 
-            
             var locations = new HashSet<string>();
-            foreach (var referencedAssembly in _GetReferencedAssemblies(Assembly.LoadFile(System.IO.Path.GetFullPath(System.IO.Path.GetFullPath("RegulusLibrary.dll")))))
+            foreach (var referencedAssembly in _GetReferencedAssemblies(Assembly.LoadFile(System.IO.Path.GetFullPath(System.IO.Path.GetFullPath("Regulus.Library.dll")))))
             {
                 locations.Add(referencedAssembly);
             }
 
-            foreach (var referencedAssembly in _GetReferencedAssemblies(Assembly.LoadFile(System.IO.Path.GetFullPath(System.IO.Path.GetFullPath("RegulusRemoting.dll")))))
+            foreach (var referencedAssembly in _GetReferencedAssemblies(Assembly.LoadFile(System.IO.Path.GetFullPath(System.IO.Path.GetFullPath("Regulus.Remote.dll")))))
             {
                 locations.Add(referencedAssembly);
             }

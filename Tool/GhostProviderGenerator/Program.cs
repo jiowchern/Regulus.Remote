@@ -9,9 +9,9 @@ using Regulus.Utility;
 
 using Console = System.Console;
 
-namespace Regulus.Remote.Protocol.Generator
-{
-    
+namespace Regulus.Application.Protocol { 
+
+
     class Program
     {
 
@@ -28,7 +28,7 @@ namespace Regulus.Remote.Protocol.Generator
             if (args.Length == 0)
             {
                 Console.WriteLine("Need to build parameters.");
-                Console.WriteLine("ex . RegulusProotoclBuilder.exe build.ini");
+                Console.WriteLine("ex . Regulus.Application.Protocol.Generator.exe build.ini");
                 return;
             }
             var path = args[0];
