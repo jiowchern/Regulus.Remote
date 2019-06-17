@@ -16,5 +16,12 @@ namespace Regulus.Framework.Client.JIT.Tests
 
             Regulus.Framework.Client.JIT.AgentProivder.CreateRudp(typeof(Test).Assembly);
         }
+
+        [NUnit.Framework.Test()]
+        public void CreateTcpTest()
+        {
+
+            Regulus.Framework.Client.JIT.AgentProivder.CreateTcp(typeof(Test).Assembly);
+        }
     }
 }
