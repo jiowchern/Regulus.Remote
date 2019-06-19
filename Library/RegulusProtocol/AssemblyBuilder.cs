@@ -10,16 +10,65 @@ using Microsoft.CSharp;
 namespace Regulus.Remote.Protocol
 {
     public class AssemblyBuilder
-    {
-
-        public static Remote.IProtocol CreateProtocol(System.Reflection.Assembly common_assembly)
+    {        
+        readonly CSharpCodeProvider _Provider;
+        readonly string[] _Codes;
+        readonly string[] _Refs;
+        public AssemblyBuilder(Assembly common, Assembly regulus_library, Assembly regulus_remote, Assembly regulus_serialization)
         {
-            string protocolName = _CreateProtoclName();
-            var buidler = new Regulus.Remote.Protocol.AssemblyBuilder();
-            var asm = buidler.Build(common_assembly, protocolName);
-            return asm.CreateInstance(protocolName) as IProtocol;
+            
+            var refs = new[] { common , regulus_library , regulus_remote , regulus_serialization };
+            var locations = new HashSet<string>();
+            foreach (var refAsm in refs)
+            {
+                foreach (var referencedAssembly in _GetReferencedAssemblies(refAsm))
+                {
+                    locations.Add(referencedAssembly);
+                }
+            }
+            _Refs = locations.ToArray();
+
+            Dictionary<string, string> optionsDic = new Dictionary<string, string>
+            {
+                {"CompilerVersion", "v4.0"}
+            };
+
+            _Provider = new CSharpCodeProvider(optionsDic);
+
+
+            _Codes = _BuildCode(common, _CreateProtoclName()).ToArray();
+
+            
         }
 
+        public Assembly Create()
+        {
+            var options = new CompilerParameters
+            {
+                GenerateInMemory = true,
+                GenerateExecutable = false,
+                TempFiles = new TempFileCollection()
+            };
+
+            options.ReferencedAssemblies.AddRange(_Refs);
+            var result = _Provider.CompileAssemblyFromSource(options, _Codes);
+            
+            if (result.Errors.Count > 0)
+            {
+                foreach (var error in result.Errors)
+                {
+                    Regulus.Utility.Log.Instance.WriteInfo(error.ToString());
+                }
+
+                System.IO.File.WriteAllLines("dump.cs", _Codes.ToArray());
+
+                throw new Exception("Prorocol compile error");
+            }
+
+            return result.CompiledAssembly;
+        }
+
+        
         private static string _CreateProtoclName()
         {
             var guidNumberString = Guid.NewGuid().ToString("N");
@@ -40,7 +89,7 @@ namespace Regulus.Remote.Protocol
 
             return assemblyNames.ToArray();
         }
-        public void Build(Assembly assembly, string protocol_name , string out_path)
+        public void _Build(Assembly assembly, string protocol_name , string out_path)
         {
             var codes = AssemblyBuilder._BuildCode(assembly, protocol_name);
 
@@ -102,7 +151,7 @@ namespace Regulus.Remote.Protocol
                 throw new Exception("Prorocol compile error");
             }
         }
-        public Assembly Build(Assembly assembly, string protocol_name )
+        public Assembly _Build(Assembly assembly, string protocol_name )
         {
 
 
@@ -179,16 +228,6 @@ namespace Regulus.Remote.Protocol
             codeBuilder.Build(protocol_name, assembly.GetExportedTypes());
             return codes;
         }
-
-        public static void BuildCode(Assembly assembly, string protocol_name,string output)
-        {
-            var codes = new List<string>();
-            var codeBuilder = new CodeBuilder();
-            codeBuilder.ProviderEvent += (name, code) => codes.Add(code);
-            codeBuilder.EventEvent += (type_name, event_name, code) => codes.Add(code);
-            codeBuilder.GpiEvent += (type_name, code) => codes.Add(code);
-            codeBuilder.Build(protocol_name, assembly.GetExportedTypes());
-            
-        }
+        
     }
 }

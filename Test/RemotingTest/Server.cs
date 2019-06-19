@@ -15,10 +15,7 @@ namespace RemotingTest
 			_Binder.Bind<ITestGPI>(this);
 		}
 
-		bool ICore.Update()
-		{
-			return true;
-		}
+		
 
 		void ICore.Launch(IProtocol protocol , ICommand command)
 		{

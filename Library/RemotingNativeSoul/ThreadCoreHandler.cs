@@ -73,7 +73,7 @@ namespace Regulus.Remote.Soul
                     }
                 }
 
-                _Run = _Core.Update();
+                
                 _RequesterHandlers.Working();
                 _AutoPowerRegulator.Operate();
             }

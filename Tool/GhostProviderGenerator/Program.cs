@@ -70,8 +70,12 @@ namespace Regulus.Application.Protocol {
                     Console.WriteLine($"Source {sourceFullPath}");
                     Console.WriteLine($"Output {outputFullPath}");
                     var sourceAsm = Assembly.LoadFile(sourceFullPath);
-                    var assemblyBuilder = new Regulus.Remote.Protocol.AssemblyBuilder();
-                    assemblyBuilder.Build(sourceAsm, protocolName, outputFullPath);                    
+                    var libraryAsm = Assembly.LoadFile("Regulus.Library.dll");
+                    var remoteAsm = Assembly.LoadFile("Regulus.Remote.dll");
+                    var serizlizationAsm = Assembly.LoadFile("Regulus.Serialization.dll");
+                    var assemblyBuilder = new Regulus.Remote.Protocol.AssemblyBuilder(sourceAsm , libraryAsm, remoteAsm, serizlizationAsm);
+                    _SaveToFile(assemblyBuilder.Create() , outputPath);
+
                     Console.WriteLine("Build success.");
 
                     
@@ -84,7 +88,7 @@ namespace Regulus.Application.Protocol {
                     Console.WriteLine($"Source {sourceFullPath}");
                     Console.WriteLine($"Output {outputFullPath}");
                     var sourceAsm = Assembly.LoadFile(sourceFullPath);
-                    var assemblyBuilder = new Regulus.Remote.Protocol.AssemblyBuilder();                    
+                    //var assemblyBuilder = new Regulus.Remote.Protocol.AssemblyBuilder();                    
                     //assemblyBuilder.BuildCode(sourceAsm, protocolName, outputFullPath);
                     throw new NotImplementedException();
                     Console.WriteLine("Build success.");
@@ -98,6 +102,23 @@ namespace Regulus.Application.Protocol {
                 Console.WriteLine("Build failure.");                
             }
             
+        }
+
+        private static void _SaveToFile(Assembly assembly, string outputPath)
+        {
+            byte[] dllAsArray;
+            using (System.IO.MemoryStream stream = new System.IO.MemoryStream())
+            {
+
+                System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+
+                formatter.Serialize(stream, assembly);
+
+                dllAsArray = stream.ToArray();
+
+            }
+
+            System.IO.File.WriteAllBytes(outputPath , dllAsArray);
         }
 
         private static bool _TryRead(Ini ini, string section, string key, out string value)

@@ -11,8 +11,7 @@ namespace Regulus.Remote
         void Launch(IProtocol protocol , ICommand command);
 
 
-	    bool Update();
-        
+	    
 
 
 	    void Shutdown();

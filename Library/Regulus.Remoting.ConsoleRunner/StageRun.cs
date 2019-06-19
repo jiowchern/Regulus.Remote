@@ -74,7 +74,7 @@ namespace Regulus.Remote.Soul.Console
         {
             _Launcher.Launch();
             _Command.Register(
-                "FPS",
+                "Status",
                 () =>
                 {
                     _View.WriteLine("PeerFPS:" + _Server.PeerFPS);
