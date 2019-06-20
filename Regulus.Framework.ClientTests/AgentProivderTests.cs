@@ -42,21 +42,20 @@ namespace Regulus.Framework.Client.JIT.Tests
         public void CreateProtocol()
         {            
             var type = typeof(TestProtocol);
-            var protocol = Regulus.Framework.Client.AgentProivder.CreateProtocol(type.Assembly);
+            
+            var protocol = Regulus.Remote.Protocol.ProtocolProvider.Create(type.Assembly);
             NUnit.Framework.Assert.AreNotEqual(protocol , null);
         }
 
         [NUnit.Framework.Test()]
         public void CreateRudpTest()
         {
-            
             Regulus.Framework.Client.JIT.AgentProivder.CreateRudp(typeof(Test).Assembly);            
         }
 
         [NUnit.Framework.Test()]
         public void CreateTcpTest()
-        {
-
+        {            
             Regulus.Framework.Client.JIT.AgentProivder.CreateTcp(typeof(Test).Assembly);
         }
     }

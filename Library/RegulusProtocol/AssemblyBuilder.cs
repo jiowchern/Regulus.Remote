@@ -14,6 +14,33 @@ namespace Regulus.Remote.Protocol
         readonly CSharpCodeProvider _Provider;
         readonly string[] _Codes;
         readonly string[] _Refs;
+
+        public AssemblyBuilder(Assembly common)  
+        {
+            var asmRefs = new RemoteAssemblys();
+
+            var refs = new[] { common, asmRefs.Library, asmRefs.Remote, asmRefs.Serialization };
+            var locations = new HashSet<string>();
+            foreach (var refAsm in refs)
+            {
+                foreach (var referencedAssembly in _GetReferencedAssemblies(refAsm))
+                {
+                    locations.Add(referencedAssembly);
+                }
+            }
+            _Refs = locations.ToArray();
+
+            Dictionary<string, string> optionsDic = new Dictionary<string, string>
+            {
+                {"CompilerVersion", "v4.0"}
+            };
+
+            _Provider = new CSharpCodeProvider(optionsDic);
+
+
+            _Codes = _BuildCode(common, _CreateProtoclName()).ToArray();
+
+        }
         public AssemblyBuilder(Assembly common, Assembly regulus_library, Assembly regulus_remote, Assembly regulus_serialization)
         {
             

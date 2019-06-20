@@ -129,11 +129,11 @@ namespace Regulus.Remote.Soul.Console
         private IProtocol _CreateProtocol(string common_path, string entry_name)
         {
             var assembly = Assembly.LoadFrom(common_path);
-
-            var protocolName = entry_name + "ProtocolProvider";
-            var buidler = new Regulus.Remote.Protocol.AssemblyBuilder();
-            var asm = buidler.Build(assembly, protocolName);
-            return asm.CreateInstance(protocolName) as IProtocol;
+            
+            var buidler = new Regulus.Remote.Protocol.AssemblyBuilder(assembly );
+            var asm = buidler.Create();
+            
+            return Regulus.Remote.Protocol.ProtocolProvider.Create(asm) ;
         }
 
 

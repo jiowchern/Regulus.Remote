@@ -53,6 +53,8 @@
     <Compile Include="AssemblyBuilder.cs" />
     <Compile Include="CodeBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProtocolProvider.cs" />
+    <Compile Include="RemoteAssemblys.cs" />
     <Compile Include="TypeDisintegrator.cs" />
   </ItemGroup>
   <ItemGroup>
