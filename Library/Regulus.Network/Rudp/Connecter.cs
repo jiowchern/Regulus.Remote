@@ -4,12 +4,13 @@ using System.Net.Sockets;
 
 namespace Regulus.Network.Rudp
 {
-    public class Connecter : IConnectable
+    
+    public class Connector : IConnectable
     {
         private readonly Agent m_Agent;
         private Regulus.Network.Socket _RudpSocket;
 
-        public Connecter(Agent Agent)
+        public Connector(Agent Agent)
         {
             m_Agent = Agent;
         }

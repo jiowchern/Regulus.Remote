@@ -50,7 +50,7 @@ namespace Regulus.Remote.Standalone
 			return QueryProvider<T>();
 		}
 
-		Value<bool> IAgent.Connect(string account, int password)
+		Value<bool> IAgent.Connect(System.Net.IPEndPoint ip)
 		{
 			ConnectedEvent();
 			_Connected = true;

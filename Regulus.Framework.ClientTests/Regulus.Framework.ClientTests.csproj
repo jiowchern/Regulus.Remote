@@ -81,9 +81,9 @@
       <Project>{a4cfce46-bda8-4416-a1bb-77bd80514019}</Project>
       <Name>Regulus.Remote</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Regulus.Framework.Client\Regulus.Framework.Client.csproj">
+    <ProjectReference Include="..\Regulus.Framework.Client\Regulus.Remote.Client.csproj">
       <Project>{ADB9A3EA-6DFC-4FCA-9E30-D8A561B7A9AC}</Project>
-      <Name>Regulus.Framework.Client</Name>
+      <Name>Regulus.Remote.Client</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

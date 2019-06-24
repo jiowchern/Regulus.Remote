@@ -3,11 +3,11 @@ using Regulus.Network;
 
 namespace Regulus.Network.Tcp
 {
-    public class Client : IClient
+    public class ConnectProvider : IConnectProviderable
     {
         
 
-        IConnectable IClient.Spawn()
+        IConnectable IConnectProviderable.Spawn()
         {
             return new Connecter();
         }

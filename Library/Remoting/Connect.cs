@@ -4,12 +4,12 @@ namespace Regulus.Remote
 {
 	public interface IConnect
 	{
-		Value<bool> Connect(string ipaddr, int port);
+		Value<bool> Connect(System.Net.IPEndPoint ip);
 	}
 
 	public class Connect : IGhost, IConnect
 	{
-		public event Action<string, int, Value<bool>> ConnectedEvent;
+		public event Action<System.Net.IPEndPoint, Value<bool>> ConnectedEvent;
 
 		public Guid Id { get; private set; }
 
@@ -18,7 +18,7 @@ namespace Regulus.Remote
 			Id = Guid.NewGuid();
 		}
 
-		Value<bool> IConnect.Connect(string ipaddr, int port)
+		Value<bool> IConnect.Connect(System.Net.IPEndPoint  ip)
 		{
 			if(ConnectedEvent == null)
 			{
@@ -26,7 +26,7 @@ namespace Regulus.Remote
 			}
 
 			var val = new Value<bool>();
-			ConnectedEvent(ipaddr, port, val);
+			ConnectedEvent(ip, val);
 			return val;
 		}
         private event CallMethodCallback _CallMethodEvent;

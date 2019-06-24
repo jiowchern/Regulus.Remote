@@ -63,14 +63,14 @@ namespace Regulus.Network.Tests.TestTool
 
 	    public void CreateServer()
 	    {
-            var server = new Server(new UdpSocket());	        
+            var server = new Listener(new UdpSocket());	        
 
             _Updater.Add(new ServerHandler(++_Id , server, Command , Viewer));
 	    }
 
 	    public void CreateClient()
 	    {
-            var client = new Client(new UdpSocket());
+            var client = new ConnectProvider(new UdpSocket());
 	        client.Launch();
 
             _Updater.Add(new ClientHandler(++_Id, client, Command, Viewer));
@@ -83,8 +83,8 @@ namespace Regulus.Network.Tests.TestTool
 	        clientSocket.SendEvent += serverSocket.Receive;
 	        serverSocket.SendEvent += clientSocket.Receive;
 
-            var server = new Server(clientSocket);
-	        var client = new Client(serverSocket);
+            var server = new Listener(clientSocket);
+	        var client = new ConnectProvider(serverSocket);
 
 	        _Updater.Add(clientSocket);
 	        _Updater.Add(serverSocket);

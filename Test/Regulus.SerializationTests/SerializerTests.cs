@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.CodeDom;
 using NUnit.Framework;
 using Regulus.Game;
@@ -6,10 +7,29 @@ using Regulus.Game;
 
 namespace Regulus.Serialization.Tests
 {
-
+    public delegate void TestDelegate();
     public class SerializerTests
     {
+        
 
+        [NUnit.Framework.Test()]
+        public void TypeIdentifier1Test()
+        {
+            
+
+            var ti = new TypeIdentifier(typeof(TestDelegate) , null);
+            
+            Assert.AreEqual(0, ti.Describers.Count());
+        }
+        [NUnit.Framework.Test()]
+        public void TypeIdentifier2Test()
+        {
+            var type = Type.GetType("System.Void*");            
+            var ti = new TypeIdentifier(type, null);
+
+            Assert.AreEqual(0, ti.Describers.Count());
+
+        }
         [NUnit.Framework.Test()]
         public void NegativeIntNumberTest()
         {            

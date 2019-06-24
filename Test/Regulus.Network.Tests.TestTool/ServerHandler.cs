@@ -8,14 +8,14 @@ namespace Regulus.Network.Tests.TestTool
     internal class ServerHandler : IUpdatable
     {
         private readonly int _Id;
-        private readonly IServer _Server;
+        private readonly IListenable _Server;
         private readonly Command _Command;
         private readonly Console.IViewer _Viewer;
 
         private readonly Regulus.Utility.Updater _Updater;
         private bool _Enable;
 
-        public ServerHandler(int id,IServer server, Command command, Console.IViewer viewer)
+        public ServerHandler(int id,IListenable server, Command command, Console.IViewer viewer)
         {
             
             _Id = id;

@@ -93,7 +93,7 @@ namespace Regulus.Remote.Protocol
 
         private bool _IsType(Type type)
         {
-            return type.IsInterface || TypeIdentifier.IsClass(type);
+            return (type.IsInterface || TypeIdentifier.IsClass(type)) ;
         }
 
         private bool _IsAtom(Type type)
@@ -106,7 +106,7 @@ namespace Regulus.Remote.Protocol
 
         private static bool _Valid(Type type)
         {
-            return type.IsByRef == false && type.IsInterface == false && type.IsGenericType == false && type.IsAbstract == false && type != typeof(object);
+            return type.IsVisible == true &&  type.IsPointer == false && type.IsByRef == false && type.IsInterface == false && type.IsGenericType == false && type.IsAbstract == false && type != typeof(object);
         }
 
         private IEnumerable<Type> _GetPropertys(Type type)

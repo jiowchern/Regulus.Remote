@@ -4,9 +4,13 @@ using Regulus.Utility;
 
 namespace Regulus.Remote
 {
+
+
     /// <summary>
     ///     代理器
     /// </summary>
+    /// 
+
     public interface IAgent : IUpdatable
     {
         /// <summary>
@@ -39,11 +43,9 @@ namespace Regulus.Remote
 
         /// <summary>
         ///     連線
-        /// </summary>
-        /// <param name="ipaddress"></param>
-        /// <param name="port"></param>
+        /// </summary>        
         /// <returns>如果連線成功會發生OnValue傳回true</returns>
-        Value<bool> Connect(string ipaddress, int port);
+        Value<bool> Connect(System.Net.IPEndPoint ip);
 
         /// <summary>
         ///     斷線

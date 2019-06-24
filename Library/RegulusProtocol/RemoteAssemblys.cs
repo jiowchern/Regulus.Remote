@@ -3,13 +3,13 @@ using System.Reflection;
 
 namespace Regulus.Remote.Protocol
 {
-    class RemoteAssemblys
+    class BaseRemoteAssemblys
     {
         public readonly Assembly Remote;
         public readonly Assembly Library;
         public readonly Assembly Serialization;
 
-        public RemoteAssemblys()
+        public BaseRemoteAssemblys()
         {
             var domain = System.AppDomain.CurrentDomain;
             var assemblys = domain.GetAssemblies();

@@ -12,8 +12,15 @@ namespace Regulus.Serialization
         public TypeIdentifier(Type type, IDescribersFinder finder)
         {
             
-
-            if (_IsEnum(type))
+            if (_IsPoint(type))
+            {
+                Describers = new ITypeDescriber[0];
+            }
+            else if (_IsDelegate(type))
+            {
+                Describers = new ITypeDescriber[0];
+            }
+            else if (_IsEnum(type))
             {
                 Describers = new [] { new EnumDescriber(type) };
             }
@@ -46,12 +53,20 @@ namespace Regulus.Serialization
             else if (_IsClass(type))
             {
                 Describers = new ITypeDescriber[] { new ClassDescriber(type, finder) } ;
-            }
+            }            
             else 
                 throw new Exception("Unrecognized type " + type.FullName );
         }
 
-        
+        private bool _IsPoint(Type type)
+        {
+            return type.IsPointer;
+        }
+
+        private bool _IsDelegate(Type type)
+        {
+            return type.IsSubclassOf(typeof(Delegate));
+        }
 
         private static bool _IsByteArray(Type type)
         {
@@ -89,7 +104,8 @@ namespace Regulus.Serialization
 
         private static bool _IsClass(Type type)
         {
-            return type.IsByRef == false && type.IsAbstract == false && type.IsInterface == false && type.IsCOMObject == false && type.IsSpecialName == false && type.IsSubclassOf(typeof(Delegate)) == false;
+            
+            return type.IsByRef == false && type.IsAbstract == false && type.IsInterface == false && type.IsCOMObject == false && type.IsSpecialName == false && type.IsSubclassOf(typeof(Delegate)) == false && type.IsPointer == false;
         }
 
         private bool _IsArray(Type type)

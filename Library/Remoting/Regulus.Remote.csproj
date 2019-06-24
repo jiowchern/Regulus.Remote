@@ -73,11 +73,12 @@
     <Compile Include="AgentCore.cs" />
     <Compile Include="AutoRelease.cs" />
     <Compile Include="Connect.cs" />
-    <Compile Include="Core.cs" />
+    <Compile Include="IBinderProvider.cs" />
     <Compile Include="CoreThreadRequestHandler.cs" />
     <Compile Include="EventProvider.cs" />
     <Compile Include="GameLoader.cs" />
     <Compile Include="GhostMethodHandler.cs" />
+    <Compile Include="IEntry.cs" />
     <Compile Include="InterfaceProvider.cs" />
     <Compile Include="IAgent.cs" />
     <Compile Include="IEventProxyCreator.cs" />

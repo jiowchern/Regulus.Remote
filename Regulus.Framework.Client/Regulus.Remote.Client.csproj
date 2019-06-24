@@ -7,8 +7,8 @@
     <ProjectGuid>{ADB9A3EA-6DFC-4FCA-9E30-D8A561B7A9AC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Regulus.Framework.Client</RootNamespace>
-    <AssemblyName>Regulus.Framework.Client</AssemblyName>
+    <RootNamespace>Regulus.Remote.Client</RootNamespace>
+    <AssemblyName>Regulus.Remote.Client</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

@@ -70,9 +70,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulus.Remote.Soul.Console
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shelve", "Shelve", "{85B7D196-FF2C-43AF-8026-7166F61C42FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulus.Framework.Client", "Regulus.Framework.Client\Regulus.Framework.Client.csproj", "{ADB9A3EA-6DFC-4FCA-9E30-D8A561B7A9AC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulus.Remote.Client", "Regulus.Framework.Client\Regulus.Remote.Client.csproj", "{ADB9A3EA-6DFC-4FCA-9E30-D8A561B7A9AC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulus.Framework.ClientTests", "Regulus.Framework.ClientTests\Regulus.Framework.ClientTests.csproj", "{AF27309F-E8BD-44A5-9EF1-7980D0C71E9E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulus.Remote.Server", "Regulus.Remote.Server\Regulus.Remote.Server.csproj", "{1A5565D8-F0D7-4520-B501-CC2F84D73D0D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -420,6 +422,18 @@ Global
 		{AF27309F-E8BD-44A5-9EF1-7980D0C71E9E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{AF27309F-E8BD-44A5-9EF1-7980D0C71E9E}.Release|x86.ActiveCfg = Release|Any CPU
 		{AF27309F-E8BD-44A5-9EF1-7980D0C71E9E}.Release|x86.Build.0 = Release|Any CPU
+		{1A5565D8-F0D7-4520-B501-CC2F84D73D0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A5565D8-F0D7-4520-B501-CC2F84D73D0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A5565D8-F0D7-4520-B501-CC2F84D73D0D}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{1A5565D8-F0D7-4520-B501-CC2F84D73D0D}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{1A5565D8-F0D7-4520-B501-CC2F84D73D0D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1A5565D8-F0D7-4520-B501-CC2F84D73D0D}.Debug|x86.Build.0 = Debug|Any CPU
+		{1A5565D8-F0D7-4520-B501-CC2F84D73D0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A5565D8-F0D7-4520-B501-CC2F84D73D0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A5565D8-F0D7-4520-B501-CC2F84D73D0D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{1A5565D8-F0D7-4520-B501-CC2F84D73D0D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{1A5565D8-F0D7-4520-B501-CC2F84D73D0D}.Release|x86.ActiveCfg = Release|Any CPU
+		{1A5565D8-F0D7-4520-B501-CC2F84D73D0D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -453,6 +467,7 @@ Global
 		{DD716E44-FC04-42A5-85EF-ED27536A0EDA} = {3ABC1972-9D34-43E4-A4AF-D5E461756636}
 		{ADB9A3EA-6DFC-4FCA-9E30-D8A561B7A9AC} = {11914E66-F911-4D8A-9521-E96485F9A0AB}
 		{AF27309F-E8BD-44A5-9EF1-7980D0C71E9E} = {5620CB5B-B184-4F34-B030-D26DFEAE3DDF}
+		{1A5565D8-F0D7-4520-B501-CC2F84D73D0D} = {11914E66-F911-4D8A-9521-E96485F9A0AB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7DF3C9C8-7262-4BDC-AE56-A985F3138ECE}

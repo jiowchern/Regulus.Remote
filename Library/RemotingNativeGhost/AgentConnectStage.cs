@@ -12,9 +12,7 @@ namespace Regulus.Remote.Ghost
 		{
 			public event Action<bool, IPeer> ResultEvent;
 
-			private readonly string _Ipaddress;
-
-			private readonly int _Port;
+			private readonly IPEndPoint _Ip;			
 
 			private readonly IConnectable _Peer;
 
@@ -22,20 +20,15 @@ namespace Regulus.Remote.Ghost
 
 			private bool? _Result;
 
-			public ConnectStage(string ipaddress, int port , IClient agent)
+			public ConnectStage(IPEndPoint ip, IConnectProviderable agent)
 			{
                 
 			    _Peer = agent.Spawn();
 
 
-                if (ipaddress == null)
-				{
-					throw new ArgumentNullException();
-				}
+                _Ip = ip;
 
-				_Ipaddress = ipaddress;
-				_Port = port;
-			}
+            }
 
 			void IStage.Enter()
 			{
@@ -44,10 +37,11 @@ namespace Regulus.Remote.Ghost
 
 				try
 				{
-					// _Peer.SetSocketOption(System.Net.Sockets.SocketOptionLevel.Socket, System.Net.Sockets.SocketOptionName.ReuseAddress, true);
-					// _Peer.Bind(new System.Net.IPEndPoint(System.Net.IPAddress.Any, 42255));
-				    
-					_Peer.Connect(new IPEndPoint(IPAddress.Parse(_Ipaddress), _Port), _ConnectResult);
+                    // _Peer.SetSocketOption(System.Net.Sockets.SocketOptionLevel.Socket, System.Net.Sockets.SocketOptionName.ReuseAddress, true);
+                    // _Peer.Bind(new System.Net.IPEndPoint(System.Net.IPAddress.Any, 42255));
+                    
+
+                    _Peer.Connect(_Ip, _ConnectResult);
 				}
 				catch(Exception e)
 				{

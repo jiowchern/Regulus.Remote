@@ -73,7 +73,7 @@ namespace Regulus.Application.Protocol {
                     var libraryAsm = Assembly.LoadFile("Regulus.Library.dll");
                     var remoteAsm = Assembly.LoadFile("Regulus.Remote.dll");
                     var serizlizationAsm = Assembly.LoadFile("Regulus.Serialization.dll");
-                    var assemblyBuilder = new Regulus.Remote.Protocol.AssemblyBuilder(sourceAsm , libraryAsm, remoteAsm, serizlizationAsm);
+                    var assemblyBuilder = new Regulus.Remote.Protocol.AssemblyBuilder(sourceAsm.GetExportedTypes());
                     _SaveToFile(assemblyBuilder.Create() , outputPath);
 
                     Console.WriteLine("Build success.");

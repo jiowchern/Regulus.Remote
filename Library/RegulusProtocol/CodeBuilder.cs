@@ -44,7 +44,7 @@ namespace Regulus.Remote.Protocol
                 serializerTypes.Add(type);
                 
 
-                if (type.IsInterface)
+                if (_ValidRemoteInterface(type))
                 {
                     string ghostClassCode = _BuildGhostCode(type);
                     var typeName = _GetTypeName(type);
@@ -174,6 +174,12 @@ namespace Regulus.Remote.Protocol
 
             if (ProviderEvent != null)
                 ProviderEvent(protocol_name , providerCode);
+        }
+
+        private bool _ValidRemoteInterface(Type type)
+        {
+            
+            return type.IsInterface;
         }
 
         internal string _BuildGetTypeMethodInfo(MethodInfo method_info)

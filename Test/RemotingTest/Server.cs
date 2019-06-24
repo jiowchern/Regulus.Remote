@@ -4,7 +4,7 @@ using Regulus.Utility;
 
 namespace RemotingTest
 {
-	internal class Server : ICore, ITestReturn, ITestGPI
+	internal class Server : IEntry, ITestReturn, ITestGPI
 	{
 		private ISoulBinder _Binder;
 
@@ -17,11 +17,11 @@ namespace RemotingTest
 
 		
 
-		void ICore.Launch(IProtocol protocol , ICommand command)
+		void IBootable.Launch()
 		{
 		}
 
-		void ICore.Shutdown()
+		void IBootable.Shutdown()
 		{
 		}
 

@@ -39,9 +39,9 @@ namespace Regulus.Remote
 			}
 		}
 
-		private void _Connect_ConnectedEvent(string account, int password, Value<bool> result)
+		private void _Connect_ConnectedEvent(System.Net.IPEndPoint ip, Value<bool> result)
 		{
-			var connectResult = _Agent.Connect(account, password);
+			var connectResult = _Agent.Connect(ip);
 			connectResult.OnValue += success => { result.SetValue(success); };
 		}
 

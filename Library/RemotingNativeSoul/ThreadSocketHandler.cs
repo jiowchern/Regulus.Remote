@@ -12,7 +12,7 @@ namespace Regulus.Remote.Soul
     {
         private readonly ThreadCoreHandler _CoreHandler;
         private readonly IProtocol _Protocol;
-        private readonly IServer _Server;
+        private readonly IListenable _Server;
 
         private readonly PeerSet _Peers;
 
@@ -43,7 +43,7 @@ namespace Regulus.Remote.Soul
             get { return _Peers.Count; }
         }
 
-        public ThreadSocketHandler(int port, ThreadCoreHandler core_handler, IProtocol protocol , IServer server)
+        public ThreadSocketHandler(int port, ThreadCoreHandler core_handler, IProtocol protocol , IListenable server)
         {
             _CoreHandler = core_handler;
             _Protocol = protocol;

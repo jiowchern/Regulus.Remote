@@ -3,14 +3,15 @@ using Regulus.Utility;
 
 namespace Regulus.Network.Rudp
 {
-    public class Client :  IClient 
+
+    public class ConnectProvider :  IConnectProviderable 
     {
         private readonly ISocket m_Socket;
         private readonly ITime m_Time;
         private readonly Agent m_Agent;
         private volatile bool m_Enable;
         
-        public Client(ISocket socket)
+        public ConnectProvider(ISocket socket)
         {        
             m_Socket = socket;
             m_Time = new Time();
@@ -47,9 +48,9 @@ namespace Regulus.Network.Rudp
             m_Enable = false;
         }
 
-        IConnectable IClient.Spawn()
+        IConnectable IConnectProviderable.Spawn()
         {
-            return new Connecter(m_Agent);
+            return new Connector(m_Agent);
         }
     }
 }

@@ -58,9 +58,9 @@
     <Compile Include="ISocket.cs" />
     <Compile Include="ISocketRecevieable.cs" />
     <Compile Include="IPeer.cs" />
-    <Compile Include="IClient.cs" />
+    <Compile Include="IConnectProviderable.cs" />
     <Compile Include="IConnectable.cs" />
-    <Compile Include="IServer.cs" />
+    <Compile Include="IListenable.cs" />
     <Compile Include="ITime.cs" />
     <Compile Include="Line.cs" />
     <Compile Include="ObjectFactory.cs" />

@@ -37,7 +37,7 @@ namespace Regulus.Remote.Soul.Console
             _Machine.Push(stage);
         }
 
-        private void _ToRun(ICore core, IProtocol protocol, int port, IServer server)
+        private void _ToRun(IEntry core, IProtocol protocol, int port, IListenable server)
         {
             var stage = new StageRun(core, protocol, Command, port, Viewer, server);
             stage.ShutdownEvent += _ToStart;

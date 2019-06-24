@@ -50,13 +50,13 @@ namespace Regulus.Framework.Client.JIT.Tests
         [NUnit.Framework.Test()]
         public void CreateRudpTest()
         {
-            Regulus.Framework.Client.JIT.AgentProivder.CreateRudp(typeof(Test).Assembly);            
+            Regulus.Remote.Client.JIT.AgentProivder.CreateRudp(typeof(Test));            
         }
 
         [NUnit.Framework.Test()]
         public void CreateTcpTest()
         {            
-            Regulus.Framework.Client.JIT.AgentProivder.CreateTcp(typeof(Test).Assembly);
+            Regulus.Remote.Client.JIT.AgentProivder.CreateTcp(typeof(Test));
         }
     }
 }

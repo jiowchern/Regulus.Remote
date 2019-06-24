@@ -10,7 +10,7 @@ namespace Regulus.Remote.Soul
 	/// <summary>
 	///     伺服器端
 	/// </summary>
-	public class Server : IBootable
+	public class Service : IBootable
 	{
 		private readonly ThreadCoreHandler _ThreadCoreHandler;
 
@@ -111,15 +111,12 @@ namespace Regulus.Remote.Soul
 		/// <summary>
 		///     Initializes a new instance of the <see cref="Server" /> class.
 		/// </summary>
-		/// <param name="core">
+		/// <param name="entry">
 		///     進入點物件
-		/// </param>
-		/// <param name="port">
-		///     監聽的埠
-		/// </param>
-		public Server(ICore core,IProtocol protocol , ICommand command, int port , Regulus.Network.IServer server)
+		/// </param>		
+		public Service(IEntry entry,int port , IProtocol protocol, Regulus.Network.IListenable server)
 		{
-			_ThreadCoreHandler = new ThreadCoreHandler(core , protocol , command);
+			_ThreadCoreHandler = new ThreadCoreHandler(entry );
 			_ThreadSocketHandler = new ThreadSocketHandler(port, _ThreadCoreHandler , protocol , server);
 
 			_WaitSocket = new AutoResetEvent(false);

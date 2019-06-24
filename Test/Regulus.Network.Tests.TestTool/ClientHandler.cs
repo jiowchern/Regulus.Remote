@@ -10,13 +10,13 @@ namespace Regulus.Network.Tests.TestTool
     {
         private readonly int _Id;
         
-        private readonly IClient _Client;
+        private readonly IConnectProviderable _Client;
         private readonly Command _Command;
         private readonly Console.IViewer _Viewer;
 
         private readonly Regulus.Utility.Updater _Updater;
 
-        public ClientHandler(int id, IClient client, Command command, Console.IViewer viewer)
+        public ClientHandler(int id, IConnectProviderable client, Command command, Console.IViewer viewer)
         {
             _Id = id;
             _Client = client;

@@ -50,16 +50,16 @@ namespace Regulus.Remote.Soul.Console
 
         private readonly Launcher _Launcher;
 
-        private readonly Server _Server;
+        private readonly Service _Server;
 
         private readonly Regulus.Utility.Console.IViewer _View;
 
-        public StageRun(ICore core, IProtocol protocol, Command command, int port, Regulus.Utility.Console.IViewer viewer, IServer server)
+        public StageRun(IEntry core, IProtocol protocol, Command command, int port, Regulus.Utility.Console.IViewer viewer, IListenable server)
         {
             _View = viewer;
             _Command = command;
 
-            _Server = new Server(core, protocol, command, port, server);
+            _Server = new Service(core, port, protocol, server);
             _Server.BreakEvent += _Break;
             _Launcher = new Launcher();
             _Launcher.Push(_Server);

@@ -4,7 +4,7 @@ using Regulus.Utility;
 
 namespace Regulus.Network.Rudp
 {
-    public class Server : IServer
+    public class Listener : IListenable
     {
         private readonly ISocket m_Socket;
         private readonly ITime m_Time;
@@ -12,20 +12,20 @@ namespace Regulus.Network.Rudp
         private volatile bool m_Enable;
         private event Action<IPeer> AcceptEvent;
 
-        public Server(ISocket Socket)
+        public Listener(ISocket Socket)
         {
             m_Host = new Host(Socket,Socket);
             m_Socket = Socket;
             m_Time = new Time();
         }
 
-        event Action<IPeer> IServer.AcceptEvent
+        event Action<IPeer> IListenable.AcceptEvent
         {
             add { AcceptEvent += value; } 
             remove { AcceptEvent -= value; }
         }
 
-        void IServer.Bind(int Port)
+        void IListenable.Bind(int Port)
         {
             m_Socket.Bind(Port);
             m_Host.AcceptEvent += Accept;
@@ -55,7 +55,7 @@ namespace Regulus.Network.Rudp
             AcceptEvent(new Peer(rudp_socket));
         }
 
-        void IServer.Close()
+        void IListenable.Close()
         {
             m_Socket.Close();
             m_Host.AcceptEvent -= Accept;

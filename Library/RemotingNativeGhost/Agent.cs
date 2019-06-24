@@ -20,20 +20,20 @@ namespace Regulus.Remote.Ghost
 		private readonly AgentCore _Core;
 
 		private readonly StageMachine _Machine;
-	    private readonly IClient _RudpAgent;
+	    private readonly IConnectProviderable connectproivder;
 
 	    private long _Ping
 		{
 			get { return _Core.Ping; }
 		}
 
-	    public Agent(IProtocol protocol,Regulus.Network.IClient client)
+	    public Agent(IProtocol protocol,Regulus.Network.IConnectProviderable client)
 	    {
 	    
             _Serializer = protocol.GetSerialize();
 	        _Machine = new StageMachine();
             _Core = new AgentCore(protocol);
-	        _RudpAgent = client;
+	        connectproivder = client;
 	        
 	        
         }
@@ -88,9 +88,9 @@ namespace Regulus.Remote.Ghost
 			return _Core.QueryProvider<T>();
 		}
 
-		Value<bool> IAgent.Connect(string account, int password)
+		Value<bool> IAgent.Connect(System.Net.IPEndPoint ip)
 		{
-			return _Connect(account, password);
+			return _Connect(ip);
 		}
 
 		event Action IAgent.ConnectEvent
@@ -136,17 +136,17 @@ namespace Regulus.Remote.Ghost
 			get { return _Core.Enable; }
 		}
 
-		private Value<bool> _Connect(string ipaddress, int port)
+		private Value<bool> _Connect(System.Net.IPEndPoint ip)
 		{
-			return _ToConnect(ipaddress, port);
+			return _ToConnect(ip);
 		}
 
-		private Value<bool> _ToConnect(string ipaddress, int port)
+		private Value<bool> _ToConnect(System.Net.IPEndPoint ip)
 		{
 			lock(_Machine)
 			{
 				var connectValue = new Value<bool>();
-				var stage = new ConnectStage(ipaddress, port, _RudpAgent);
+				var stage = new ConnectStage(ip, connectproivder);
 				stage.ResultEvent += (result, socket) =>
 				{
 					_ConnectResult(result, socket);

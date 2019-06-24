@@ -1,6 +1,6 @@
 ﻿namespace Regulus.Network
 {
-    public interface IClient
+    public interface IConnectProviderable
     {        
         IConnectable Spawn();
     }

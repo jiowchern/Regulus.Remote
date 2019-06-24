@@ -2,7 +2,7 @@
 
 namespace Regulus.Network
 {
-    public interface IServer
+    public interface IListenable
     {
         event Action<IPeer> AcceptEvent;
         void Bind(int Port);

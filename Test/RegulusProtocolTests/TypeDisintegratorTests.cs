@@ -7,9 +7,16 @@ using System.Linq;
 
 namespace Regulus.Remote.Protocol.Tests
 {
-    
     public class TypeDisintegratorTests
     {
+        [NUnit.Framework.Test()]
+        public void TypeDisintegratorPointerTest()
+        {
+            var type = Type.GetType("System.Void*");
+            var typeDisintegrator = new TypeDisintegrator(type);
+            NUnit.Framework.Assert.AreEqual(0, typeDisintegrator.Types.Length);
+        }
+
         [NUnit.Framework.Test()]
         public void TypeDisintegratorIntTest()
         {

@@ -5,18 +5,18 @@ using Regulus.Utility;
 
 namespace Regulus.Network.Tcp
 {
-    public class Server : IServer
+    public class Listener : IListenable
     {
         private System.Net.Sockets.Socket m_Socket;
         private event Action<IPeer> Acctpe;
 
-        event Action<IPeer> IServer.AcceptEvent
+        event Action<IPeer> IListenable.AcceptEvent
         {
             add { Acctpe += value; }
             remove { Acctpe -= value; } 
         }
 
-        void IServer.Bind(int Port)
+        void IListenable.Bind(int Port)
         {
             m_Socket = new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             m_Socket.NoDelay = true;
@@ -59,7 +59,7 @@ namespace Regulus.Network.Tcp
             }
         }
 
-        void IServer.Close()
+        void IListenable.Close()
         {
             if (m_Socket.Connected)
                 m_Socket.Shutdown(SocketShutdown.Both);

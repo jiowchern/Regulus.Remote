@@ -10,11 +10,7 @@ namespace Regulus.Remote.Soul
     {
         private readonly Queue<ISoulBinder> _Binders;
 
-        private readonly ICore _Core;
-
-        private readonly IProtocol _Protocol;
-
-        private readonly ICommand _Command;
+        private readonly IEntry _Core;
 
         private readonly Updater _RequesterHandlers;
 
@@ -36,16 +32,14 @@ namespace Regulus.Remote.Soul
             get { return _Spin.Power; }
         }
 
-        public ThreadCoreHandler(ICore core , IProtocol protocol , ICommand command)
+        public ThreadCoreHandler(IEntry core)
         {
             if(core == null)
             {
                 throw new ArgumentNullException(nameof(core));
             }
 
-            _Core = core;
-            _Protocol = protocol;
-            _Command = command;
+            _Core = core;            
 
             _RequesterHandlers = new Updater();
             _Spin = new PowerRegulator();
@@ -57,7 +51,7 @@ namespace Regulus.Remote.Soul
         {
             Singleton<Log>.Instance.WriteInfo("server core launch");
             _Run = true;
-            _Core.Launch(_Protocol , _Command);
+            _Core.Launch();
 
             while(_Run)
             {

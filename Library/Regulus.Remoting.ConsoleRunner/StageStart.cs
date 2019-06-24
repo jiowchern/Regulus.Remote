@@ -11,7 +11,7 @@ namespace Regulus.Remote.Soul.Console
 {
     internal class StageStart : IStage
     {
-        public event Action<ICore, IProtocol, int, IServer> DoneEvent;
+        public event Action<IEntry, IProtocol, int, IListenable> DoneEvent;
 
         private readonly Command _Command;
 
@@ -104,33 +104,33 @@ namespace Regulus.Remote.Soul.Console
 
             var instance = _CreateProject(project_path, project_entry_name);
 
-            var library = _CreateProtocol(common_path, project_entry_name);
+            var library = _CreateProtocol(common_path);
 
-            IServer server = _CreateServer(rudp);
+            IListenable server = _CreateServer(rudp);
 
             DoneEvent(instance, library, port, server);
         }
 
-        private IServer _CreateServer(bool rudp)
+        private IListenable _CreateServer(bool rudp)
         {
             if (rudp)
-                return new Regulus.Network.Rudp.Server(new UdpSocket());
+                return new Regulus.Network.Rudp.Listener(new UdpSocket());
 
-            return new Regulus.Network.Tcp.Server();
+            return new Regulus.Network.Tcp.Listener();
         }
 
-        private static ICore _CreateProject(string project_path, string project_entry_name)
+        private static IEntry _CreateProject(string project_path, string project_entry_name)
         {
             var assembly = Assembly.LoadFrom(project_path);
-            var instance = assembly.CreateInstance(project_entry_name) as ICore;
+            var instance = assembly.CreateInstance(project_entry_name) as IEntry;
             return instance;
         }
 
-        private IProtocol _CreateProtocol(string common_path, string entry_name)
+        private IProtocol _CreateProtocol(string common_path)
         {
             var assembly = Assembly.LoadFrom(common_path);
             
-            var buidler = new Regulus.Remote.Protocol.AssemblyBuilder(assembly );
+            var buidler = new Regulus.Remote.Protocol.AssemblyBuilder(assembly.GetExportedTypes() );
             var asm = buidler.Create();
             
             return Regulus.Remote.Protocol.ProtocolProvider.Create(asm) ;
