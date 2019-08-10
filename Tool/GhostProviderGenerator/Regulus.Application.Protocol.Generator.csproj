@@ -63,6 +63,10 @@
       <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
       <Name>Regulus.Library</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Library\Regulus.Serialization\Regulus.Serialization.csproj">
+      <Project>{8308717d-ec47-44cd-a27d-95be5a92a36d}</Project>
+      <Name>Regulus.Serialization</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Library\RegulusProtocol\Regulus.Remote.Protocol.csproj">
       <Project>{00e8aff8-e4d5-4327-86f1-d03379419431}</Project>
       <Name>Regulus.Remote.Protocol</Name>
