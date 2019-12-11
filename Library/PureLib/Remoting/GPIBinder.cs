@@ -235,20 +235,7 @@ namespace Regulus.Remote
 					ret));
 		}
 
-        public void BindStatic<T1, T2, TR>(Expression<Func<T, T1, T2, TR>> exp, Action<TR> ret)
-        {
-
-            _InvokeDatas.Add(
-                new CommandRegisterStaticReturn<T, T1, T2, TR>(
-
-                    _Command,
-                    exp,
-                    ret));
-        }
-
-        
-
-        public void Bind<T1, T2, T3, TR>(Expression<Func<T, T1, T2, T3, TR>> exp, Action<TR> ret)
+		public void Bind<T1, T2, T3, TR>(Expression<Func<T, T1, T2, T3, TR>> exp, Action<TR> ret)
 		{
 			
 			_InvokeDatas.Add(
