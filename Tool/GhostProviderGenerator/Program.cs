@@ -25,75 +25,42 @@ namespace Regulus.Application.Protocol {
             };
 
             Regulus.Utility.Log.Instance.RecordEvent += _WriteLog;
-            if (args.Length == 0)
+            if (args.Length < 2)
             {
                 Console.WriteLine("Need to build parameters.");
-                Console.WriteLine("ex . Regulus.Application.Protocol.Generator.exe build.ini");
+                Console.WriteLine("ex . Regulus.Application.Protocol.Generator.exe path/in-common.dll path/out-protocol.dll");
                 return;
             }
-            var path = args[0];
-            if (System.IO.File.Exists(path) == false)
-            {
-                Console.WriteLine($"Non-existent path {path}.");
-                return;
-            }
+            var inPath = args[0];
+            var outPath = args[1];
+
 
             try
             {
-                var ini = new Regulus.Utility.Ini(System.IO.File.ReadAllText(path));
-
-                var sourcePath = String.Empty;
-
-                if (_TryRead(ini , "Build", "SourcePath", out sourcePath ) == false)
+                
+                
+                if (!System.IO.File.Exists(inPath))
                 {
-                    Program._ShowBuildIni();
-                    return;
+                    throw new Exception($"can not found {inPath}");
                 }
 
 
-                var protocolName = String.Empty;
-
-                if (_TryRead(ini, "Build", "ProtocolName", out protocolName) == false)
-                {
-                    Program._ShowBuildIni();
-                    return;
-                }
 
 
-                var outputPath = String.Empty;
-                var outputCode = String.Empty;
-                if (_TryRead(ini, "Build", "OutputPath", out outputPath) )
-                {
-                    var sourceFullPath = System.IO.Path.GetFullPath(sourcePath);
-                    var outputFullPath = System.IO.Path.GetFullPath(outputPath);
+                var sourceFullPath = System.IO.Path.GetFullPath(inPath);
+                var outputFullPath = System.IO.Path.GetFullPath(outPath);
 
-                    Console.WriteLine($"Source {sourceFullPath}");
-                    Console.WriteLine($"Output {outputFullPath}");
-                    var sourceAsm = Assembly.LoadFile(sourceFullPath);
-                    var libraryAsm = Assembly.LoadFile("Regulus.Library.dll");
-                    var remoteAsm = Assembly.LoadFile("Regulus.Remote.dll");
-                    var serizlizationAsm = Assembly.LoadFile("Regulus.Serialization.dll");
-                    var assemblyBuilder = new Regulus.Remote.Protocol.AssemblyBuilder(sourceAsm.GetExportedTypes());
-                    _SaveToFile(assemblyBuilder.Create() , outputPath);
+                Console.WriteLine($"Source {sourceFullPath}");
+                Console.WriteLine($"Output {outputFullPath}");
+                var sourceAsm = Assembly.LoadFile(sourceFullPath);
+                var libraryAsm = Assembly.LoadFile(System.IO.Path.GetFullPath("Regulus.Library.dll"));
+                var remoteAsm = Assembly.LoadFile(System.IO.Path.GetFullPath("Regulus.Remote.dll"));
+                var serizlizationAsm = Assembly.LoadFile(System.IO.Path.GetFullPath("Regulus.Serialization.dll"));
+                var assemblyBuilder = new Regulus.Remote.Protocol.AssemblyBuilder(sourceAsm.GetExportedTypes());
+                assemblyBuilder.CreateFile(outputFullPath);
 
-                    Console.WriteLine("Build success.");
+                Console.WriteLine("Build success.");
 
-                    
-                }
-                if (_TryRead(ini, "Build", "OutputCode", out outputCode) )
-                {
-                    var sourceFullPath = System.IO.Path.GetFullPath(sourcePath);
-                    var outputFullPath = System.IO.Path.GetFullPath(outputCode);
-
-                    Console.WriteLine($"Source {sourceFullPath}");
-                    Console.WriteLine($"Output {outputFullPath}");
-                    var sourceAsm = Assembly.LoadFile(sourceFullPath);
-                    //var assemblyBuilder = new Regulus.Remote.Protocol.AssemblyBuilder();                    
-                    //assemblyBuilder.BuildCode(sourceAsm, protocolName, outputFullPath);
-                    throw new NotImplementedException();
-                    Console.WriteLine("Build success.");
-                    
-                }
                 
             }
             catch (Exception e)
@@ -106,12 +73,14 @@ namespace Regulus.Application.Protocol {
 
         private static void _SaveToFile(Assembly assembly, string outputPath)
         {
+
+            
             byte[] dllAsArray;
             using (System.IO.MemoryStream stream = new System.IO.MemoryStream())
             {
 
                 System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-
+                
                 formatter.Serialize(stream, assembly);
 
                 dllAsArray = stream.ToArray();
@@ -138,9 +107,7 @@ namespace Regulus.Application.Protocol {
             var iniSample = @"
 [Build]
 SourcePath = YourProjectPath/YourAssemblyCommon.dll
-ProtocolName = YourProjectnamesapce.ProtocolClassName
 OutputPath = YourProjectPath/YourAssemblyOutput.dll
-OutputCode = YourProjectPath/CodeDir
 ";
             Console.WriteLine("ex.");
             Console.WriteLine(iniSample);

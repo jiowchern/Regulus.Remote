@@ -41,58 +41,14 @@ namespace Regulus.Remote.Protocol
             _Provider = new CSharpCodeProvider(optionsDic);
             _Codes = _BuildCode(types, _CreateProtoclName()).ToArray();
         }
-        /*public AssemblyBuilder(Assembly common)  
-        {
-
-            var baseRefs = new BaseRemoteAssemblys();
-            var refs = new[] { common, baseRefs.Library, baseRefs.Remote, baseRefs.Serialization };
-            var locations = new HashSet<string>();
-            foreach (var refAsm in refs)
-            {
-                foreach (var referencedAssembly in _GetReferencedAssemblies(refAsm))
-                {
-                    locations.Add(referencedAssembly);
-                }
-            }
-            _Refs = locations.ToArray();
-
-            Dictionary<string, string> optionsDic = new Dictionary<string, string>
-            {
-                {"CompilerVersion", "v4.0"}
-            };
-
-            _Provider = new CSharpCodeProvider(optionsDic);
-            _Codes = _BuildCode(common.GetExportedTypes(), _CreateProtoclName()).ToArray();
-        }*/
-        /*public AssemblyBuilder(Assembly common, Assembly regulus_library, Assembly regulus_remote, Assembly regulus_serialization)
-        {
-            
-            var refs = new[] { common , regulus_library , regulus_remote , regulus_serialization };
-            var locations = new HashSet<string>();
-            foreach (var refAsm in refs)
-            {
-                foreach (var referencedAssembly in _GetReferencedAssemblies(refAsm))
-                {
-                    locations.Add(referencedAssembly);
-                }
-            }
-            _Refs = locations.ToArray();
-
-            Dictionary<string, string> optionsDic = new Dictionary<string, string>
-            {
-                {"CompilerVersion", "v4.0"}
-            };
-
-            _Provider = new CSharpCodeProvider(optionsDic);
-            _Codes = _BuildCode(common.GetExportedTypes(), _CreateProtoclName()).ToArray();
-        }*/
+        
 
         public Assembly Create()
         {
             var options = new CompilerParameters
             {
                 GenerateInMemory = true,
-                GenerateExecutable = false,
+                GenerateExecutable = false,                
                 TempFiles = new TempFileCollection()
             };
 
@@ -114,7 +70,35 @@ namespace Regulus.Remote.Protocol
             return result.CompiledAssembly;
         }
 
-        
+        public void CreateFile(string path)
+        {
+            var options = new CompilerParameters
+            {
+                OutputAssembly = path,
+                GenerateInMemory = false,
+                GenerateExecutable = false,
+                TempFiles = new TempFileCollection()
+            };
+
+            options.ReferencedAssemblies.AddRange(_Refs);
+            var result = _Provider.CompileAssemblyFromSource(options, _Codes);
+
+            if (result.Errors.Count > 0)
+            {
+                foreach (var error in result.Errors)
+                {
+                    Regulus.Utility.Log.Instance.WriteInfo(error.ToString());
+                }
+
+                System.IO.File.WriteAllLines("dump.cs", _Codes.ToArray());
+
+                throw new Exception("Protocol compile error.");
+            }
+
+            
+        }
+
+
         private static string _CreateProtoclName()
         {
             var guidNumberString = Guid.NewGuid().ToString("N");
