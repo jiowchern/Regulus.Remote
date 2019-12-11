@@ -359,9 +359,9 @@ namespace Regulus.Remote
             if (expression.Body.NodeType == ExpressionType.Call)
             {
                 var methodCall = expression.Body as MethodCallExpression;
-                var function =  expression.Compile();
-                                
-                return new Func<T1,T2, TR>( (t1,t2)=> function.Invoke((T)instance ,t1,t2));
+                var method = methodCall.Method;
+                var functiohn = Delegate.CreateDelegate(typeof(Func<T1, T2, TR>), instance, method);
+                return (Func<T1, T2, TR>)functiohn;
             }
             throw new NotSupportedException(expression.Body.NodeType.ToString());
         }
@@ -440,4 +440,42 @@ namespace Regulus.Remote
             throw new NotSupportedException(expression.Body.NodeType.ToString());
         }
     }
+
+
+    internal class CommandRegisterStaticReturn<T, T1, T2, TR> : CommandRegister
+    {
+        private readonly Expression<Func<T, T1, T2, TR>> _Expression;
+
+        private readonly Action<TR> _ReturnCallback;
+
+        public CommandRegisterStaticReturn(
+
+            Command command,
+            Expression<Func<T, T1, T2, TR>> exp,
+            Action<TR> return_callback)
+            : base(command, exp)
+        {
+            _ReturnCallback = return_callback;
+            _Expression = exp;
+        }
+
+        protected override void _RegisterAction(Command command, string command_name, object instance)
+        {
+            Func<T1, T2, TR> function = _Build(_Expression, instance);
+            command.Register(command_name, function, _ReturnCallback);
+        }
+
+        private Func<T1, T2, TR> _Build(Expression<Func<T, T1, T2, TR>> expression, object instance)
+        {
+            if (expression.Body.NodeType == ExpressionType.Call)
+            {
+                var methodCall = expression.Body as MethodCallExpression;
+                var method = methodCall.Method;
+                
+                return new Func<T1, T2, TR>((t1, t2) => { return (TR)method.Invoke(null, new object[] { instance, t1, t2 }); });
+            }
+            throw new NotSupportedException(expression.Body.NodeType.ToString());
+        }
+    }
+
 }
