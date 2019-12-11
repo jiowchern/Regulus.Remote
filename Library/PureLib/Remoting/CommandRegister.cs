@@ -110,7 +110,6 @@ namespace Regulus.Remote
                 var methodCall = expression.Body as MethodCallExpression;
                 var method = methodCall.Method;               
                 var functiohn = Delegate.CreateDelegate(typeof (Action), instance, method);
-                
                 return (Action)functiohn;
             }            
             throw new NotSupportedException(expression.Body.NodeType.ToString());
@@ -359,9 +358,9 @@ namespace Regulus.Remote
             if (expression.Body.NodeType == ExpressionType.Call)
             {
                 var methodCall = expression.Body as MethodCallExpression;
-                var function =  expression.Compile();
-                                
-                return new Func<T1,T2, TR>( (t1,t2)=> function.Invoke((T)instance ,t1,t2));
+                var method = methodCall.Method;
+                var functiohn = Delegate.CreateDelegate(typeof(Func<T1, T2,TR>), instance, method);
+                return (Func<T1,T2, TR>)functiohn;
             }
             throw new NotSupportedException(expression.Body.NodeType.ToString());
         }

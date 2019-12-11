@@ -49,7 +49,6 @@ namespace Regulus.Remote
 		void IBootable.Launch()
 		{
 		    _Agent.ErrorMethodEvent += _ErrorMethod;
-            
             _Updater.Add(_Agent);
 			_ToOffline();
 		}

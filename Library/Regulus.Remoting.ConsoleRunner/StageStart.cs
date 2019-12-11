@@ -102,8 +102,6 @@ namespace Regulus.Remote.Soul.Console
         public void Launch(int port, string project_path, string project_entry_name, string common_path, bool rudp)
         {
 
-
-
             var instance = _CreateProject(project_path, project_entry_name);
 
             var library = _CreateProtocol(common_path);
@@ -130,9 +128,6 @@ namespace Regulus.Remote.Soul.Console
 
         private IProtocol _CreateProtocol(string common_path)
         {
-
-
-
             var assembly = Assembly.LoadFrom(common_path);
             
             var buidler = new Regulus.Remote.Protocol.AssemblyBuilder(assembly.GetExportedTypes() );
