@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{6CB4CDE6-4405-40E6-8BDF-5A2E9185CC04}</ProjectGuid>
+    <ProjectGuid>{BDC297CD-C6AD-460D-8AEA-E2EF3C1D191A}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Regulus.Remote.Ghost</RootNamespace>

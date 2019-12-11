@@ -79,12 +79,6 @@
     <Compile Include="StringKeyDescriber.cs" />
     <Compile Include="TypeIdentifier.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\PureLib\Regulus.Library.csproj">
-      <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
-      <Name>Regulus.Library</Name>
-    </ProjectReference>
-  </ItemGroup>
   <ItemGroup />
   <ItemGroup>
     <None Include="Regulus.Serialization.nuspec" />

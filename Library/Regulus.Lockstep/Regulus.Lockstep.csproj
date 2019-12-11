@@ -50,11 +50,5 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Step.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\PureLib\Regulus.Library.csproj">
-      <Project>{2f28aa04-316d-4c20-bf46-987d4a59691d}</Project>
-      <Name>Regulus.Library</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

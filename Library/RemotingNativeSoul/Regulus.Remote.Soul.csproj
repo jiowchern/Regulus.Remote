@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D4580866-2273-4E9B-BE70-4FA2AB11434A}</ProjectGuid>
+    <ProjectGuid>{E50453E6-00CC-40C1-8862-820AF1A13644}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Regulus.Remote.Soul</RootNamespace>

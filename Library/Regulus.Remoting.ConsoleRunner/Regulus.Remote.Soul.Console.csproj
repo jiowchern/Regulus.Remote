@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{DD716E44-FC04-42A5-85EF-ED27536A0EDA}</ProjectGuid>
+    <ProjectGuid>{72F4D974-D2D3-42A7-8F3E-0B20AAF42724}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Regulus.Remote.Soul.Console</RootNamespace>
@@ -57,14 +57,6 @@
     <ProjectReference Include="..\RegulusProtocol\Regulus.Remote.Protocol.csproj">
       <Project>{00e8aff8-e4d5-4327-86f1-d03379419431}</Project>
       <Name>Regulus.Remote.Protocol</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\RemotingNativeSoul\Regulus.Remote.Soul.csproj">
-      <Project>{d4580866-2273-4e9b-be70-4fa2ab11434a}</Project>
-      <Name>Regulus.Remote.Soul</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Remoting\Regulus.Remote.csproj">
-      <Project>{a4cfce46-bda8-4416-a1bb-77bd80514019}</Project>
-      <Name>Regulus.Remote</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

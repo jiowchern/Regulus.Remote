@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{00E8AFF8-E4D5-4327-86F1-D03379419431}</ProjectGuid>
+    <ProjectGuid>{59AF0A45-0AE9-44C0-9641-CD130E8B6400}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Regulus.Remote.Protocol</RootNamespace>
@@ -65,10 +65,6 @@
     <ProjectReference Include="..\Regulus.Serialization\Regulus.Serialization.csproj">
       <Project>{8308717d-ec47-44cd-a27d-95be5a92a36d}</Project>
       <Name>Regulus.Serialization</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Remoting\Regulus.Remote.csproj">
-      <Project>{a4cfce46-bda8-4416-a1bb-77bd80514019}</Project>
-      <Name>Regulus.Remote</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

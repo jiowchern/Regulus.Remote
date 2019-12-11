@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{2F28AA04-316D-4C20-BF46-987D4A59691D}</ProjectGuid>
+    <ProjectGuid>{B69BE423-585C-42A3-9DF2-AF650B9F9C3D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Regulus.Library</RootNamespace>
