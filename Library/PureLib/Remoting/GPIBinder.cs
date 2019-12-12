@@ -200,7 +200,15 @@ namespace Regulus.Remote
 			_InvokeDatas.Add(new CommandRegister<T, T1, T2>( _Command, exp));
 		}
 
-		public void Bind<T1, T2, T3>(Expression<Action<T, T1, T2, T3>> exp)
+        public void BindStatic<T1, T2>(Expression<Action<T, T1, T2>> exp)
+        {
+
+            _InvokeDatas.Add(new CommandRegisterStatic<T, T1, T2>(_Command, exp));
+        }
+
+
+
+        public void Bind<T1, T2, T3>(Expression<Action<T, T1, T2, T3>> exp)
 		{
 			
 			_InvokeDatas.Add(new CommandRegister<T, T1, T2, T3>(_Command, exp));

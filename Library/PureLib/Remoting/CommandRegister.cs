@@ -440,6 +440,38 @@ namespace Regulus.Remote
         }
     }
 
+    internal class CommandRegisterStatic<T, T1, T2> : CommandRegister
+    {
+        private readonly Expression<Action<T, T1, T2>> _Expression;
+
+        public CommandRegisterStatic(
+            Command command,
+            Expression<Action<T, T1, T2>> exp)
+            : base(command, exp)
+        {
+            _Expression = exp;
+        }
+        protected override void _RegisterAction(Command command, string command_name, object instance)
+        {
+            Action<T1, T2> function = _Build(_Expression, instance);
+            command.Register(command_name, function);
+        }
+
+        private Action<T1, T2> _Build(Expression<Action<T, T1, T2>> expression, object instance)
+        {
+            if (expression.Body.NodeType == ExpressionType.Call)
+            {
+
+                var methodCall = expression.Body as MethodCallExpression;
+                var method = methodCall.Method;
+
+                return new Action<T1, T2>((t1, t2) => { method.Invoke(null, new object[] { instance, t1, t2 }); });
+            }
+            throw new NotSupportedException(expression.Body.NodeType.ToString());
+        }
+
+
+    }
 
     internal class CommandRegisterStaticReturn<T, T1, T2, TR> : CommandRegister
     {
