@@ -11,11 +11,20 @@ namespace Regulus.Serialization.Dynamic
             if (retType != null)
                 return retType;
 
-
-            return (from asm in AppDomain.CurrentDomain.GetAssemblies()
-                let type = (from t in asm.GetTypes() where t.FullName == type_name select t).FirstOrDefault()
-                where type != null
-                select type).FirstOrDefault();
+            var assembles = AppDomain.CurrentDomain.GetAssemblies();
+            foreach(var asm in assembles)
+            {
+                if (asm.IsDynamic)
+                {
+                    continue;
+                }
+                var type = (from t in asm.GetExportedTypes() where t.FullName == type_name select t).FirstOrDefault();
+                if (type == null)
+                    continue;
+                return type;
+            }
+            return null;
+            
         }
     }
 }

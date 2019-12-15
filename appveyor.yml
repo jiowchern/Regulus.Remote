@@ -1,0 +1,44 @@
+version: 0.5.{build}
+branches:
+  only:
+  - release
+image: Visual Studio 2017
+configuration: Release
+nuget:
+  account_feed: true
+  project_feed: true
+before_build:
+- cmd: nuget restore
+build:
+  publish_nuget: true
+  verbosity: minimal
+after_build:
+- ps: >-
+    Get-ChildItem **\BehaviourTree.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+
+    Get-ChildItem **\Client.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+
+    Get-ChildItem **\Server.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+
+    Get-ChildItem **\Tool.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+after_test:
+- cmd: build_package.cmd
+artifacts:
+- path: artifact\Library\Server
+  name: Server
+- path: artifact\Library\Client
+  name: Client
+- path: artifact\Library\BehaviourTree
+  name: BehaviourTree
+- path: artifact\Tool
+  name: Tool
+- path: artifact\Library\Serialization
+  name: Serialization
+deploy:
+- provider: GitHub
+  auth_token:
+    secure: /AfJAx3kxJ0kcGiZVCl5U7v3f9Z0qIDDN5L+ckDjxzkULqDK0fhwWVgcqRNukVln
+  draft: true
+- provider: NuGet
+  api_key:
+    secure: MpSZN9rbs/UO67xFMkdfsETL16yG2KY0h3S53s13iG8WOFPamFIXg44GpbM4T7qX

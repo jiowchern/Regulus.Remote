@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
@@ -14,13 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Regulus.Remote.Client\Regulus.Remote.Client.csproj" />
-    <ProjectReference Include="..\Regulus.Remote.Ghost\Regulus.Remote.Ghost.csproj" />
-    <ProjectReference Include="..\Regulus.Remote.Protocol\Regulus.Remote.Protocol.csproj" />
-    <ProjectReference Include="..\Regulus.Remote.Server\Regulus.Remote.Server.csproj" />
-    <ProjectReference Include="..\Regulus.Remote.Soul\Regulus.Remote.Soul.csproj" />
-    <ProjectReference Include="..\Regulus.Remote.Standalone\Regulus.Remote.Standalone.csproj" />
     <ProjectReference Include="..\Regulus.Remote\Regulus.Remote.csproj" />
+    <ProjectReference Include="..\Regulus.Serialization\Regulus.Serialization.csproj" />
     <ProjectReference Include="..\Regulus.Utility\Regulus.Utility.csproj" />
   </ItemGroup>
 
