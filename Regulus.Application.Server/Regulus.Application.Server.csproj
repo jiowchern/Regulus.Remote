@@ -1,15 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Regulus.Network\Regulus.Network.csproj" />
     <ProjectReference Include="..\Regulus.Remote.Protocol\Regulus.Remote.Protocol.csproj" />
+    <ProjectReference Include="..\Regulus.Remote.Soul.Console\Regulus.Remote.Soul.Console.csproj" />
     <ProjectReference Include="..\Regulus.Remote.Soul\Regulus.Remote.Soul.csproj" />
     <ProjectReference Include="..\Regulus.Remote\Regulus.Remote.csproj" />
-    <ProjectReference Include="..\Regulus.Serialization\Regulus.Serialization.csproj" />
     <ProjectReference Include="..\Regulus.Utility\Regulus.Utility.csproj" />
   </ItemGroup>
 

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Regulus.Remote\Regulus.Remote.csproj" />
+    <ProjectReference Include="..\Regulus.Utility\Regulus.Utility.csproj" />
+  </ItemGroup>
+
+</Project>

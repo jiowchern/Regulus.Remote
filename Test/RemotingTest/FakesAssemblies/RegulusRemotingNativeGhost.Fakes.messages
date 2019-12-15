@@ -1,7 +1,0 @@
-D:\Projects\Regulus\Library\RemotingTest\Fakes\RegulusRemotingNativeGhost.fakes : warning : 無法產生 Regulus.Remoting.Ghost.Native.Agent 的 stub: 類型沒有家族可見的建構函式。
-D:\Projects\Regulus\Library\RemotingTest\Fakes\RegulusRemotingNativeGhost.fakes : warning : 無法產生 Regulus.Remoting.Ghost.Native.IOHandler 的 stub: 類型對 exported or assembly(RegulusRemotingNativeGhost.Fakes) 是不可見的。
-D:\Projects\Regulus\Library\RemotingTest\Fakes\RegulusRemotingNativeGhost.fakes : warning : 無法產生 Regulus.Remoting.Ghost.Native.Agent+<>c__DisplayClass1 的填充碼: 因為內部限制，所以不支援類型。
-D:\Projects\Regulus\Library\RemotingTest\Fakes\RegulusRemotingNativeGhost.fakes : warning : 無法產生 Regulus.Remoting.Ghost.Native.Agent+ConnectStage 的填充碼: 類型對 exported or assembly(RegulusRemotingNativeGhost.Fakes) 是不可見的。
-D:\Projects\Regulus\Library\RemotingTest\Fakes\RegulusRemotingNativeGhost.fakes : warning : 無法產生 Regulus.Remoting.Ghost.Native.Agent+OnlineStage 的填充碼: 類型對 exported or assembly(RegulusRemotingNativeGhost.Fakes) 是不可見的。
-D:\Projects\Regulus\Library\RemotingTest\Fakes\RegulusRemotingNativeGhost.fakes : warning : 無法產生 Regulus.Remoting.Ghost.Native.Agent+TerminationStage 的填充碼: 類型對 exported or assembly(RegulusRemotingNativeGhost.Fakes) 是不可見的。
-D:\Projects\Regulus\Library\RemotingTest\Fakes\RegulusRemotingNativeGhost.fakes : warning : 無法產生 Regulus.Remoting.Ghost.Native.IOHandler 的填充碼: 類型對 exported or assembly(RegulusRemotingNativeGhost.Fakes) 是不可見的。
