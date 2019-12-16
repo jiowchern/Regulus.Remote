@@ -19,11 +19,11 @@ namespace Regulus.Application.Protocol
 
         static void Main(string[] args)
         {
-            AppDomain.CurrentDomain.UnhandledException += (sender, a) =>
+            /*AppDomain.CurrentDomain.UnhandledException += (sender, a) =>
             {
                 Regulus.Utility.CrashDump.Write();
                 Environment.Exit(0);
-            };
+            };*/
 
             Regulus.Utility.Log.Instance.RecordEvent += _WriteLog;
             if (args.Length < 2)

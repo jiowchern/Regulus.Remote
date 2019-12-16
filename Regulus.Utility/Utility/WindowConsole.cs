@@ -201,7 +201,7 @@ namespace Regulus.Utility
 		    internal  static void _Dump(object sender, UnhandledExceptionEventArgs e)
 		    {
 		        System.IO.File.WriteAllText(string.Format("UnhandledException_{0}.log", DateTime.Now.ToString("yyyyMMdd-HHmmss")), e.ExceptionObject.ToString());
-		        Regulus.Utility.CrashDump.Write();
+		        //Regulus.Utility.CrashDump.Write();
 		        Singleton<Log>.Instance.Shutdown();
 		    }
         }

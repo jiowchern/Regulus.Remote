@@ -24,7 +24,9 @@ namespace Regulus.Remote.Protocol
             refAsms.Add(baseRefs.Library);
             refAsms.Add(baseRefs.Remote);
             refAsms.Add(baseRefs.Serialization);
+            refAsms.Add(baseRefs.Collections);
             refAsms.Add(baseRefs.BaseObject);
+            refAsms.Add(baseRefs.Linq);
             var locations = new HashSet<string>();
             foreach (var refAsm in refAsms)
             {
@@ -51,6 +53,7 @@ namespace Regulus.Remote.Protocol
             if (emitResult.Success)
             {
                 stream.Seek(0, System.IO.SeekOrigin.Begin);
+                
                 return System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromStream(stream);
             }
 

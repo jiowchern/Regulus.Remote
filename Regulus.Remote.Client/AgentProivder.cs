@@ -24,7 +24,7 @@ namespace Regulus.Remote.Client
         }
     }
 }
-namespace Regulus.Remote.Client.JIT
+/*namespace Regulus.Remote.Client.JIT
 {
     public static class AgentProivder
     {
@@ -54,4 +54,4 @@ namespace Regulus.Remote.Client.JIT
         }
 
     }
-}
+}*/

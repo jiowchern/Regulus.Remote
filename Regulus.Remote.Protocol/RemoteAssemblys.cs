@@ -7,17 +7,26 @@ namespace Regulus.Remote.Protocol
     {
         public readonly Assembly Remote;
         public readonly Assembly Library;
+
+        public readonly Assembly Collections;
+
         public readonly Assembly Serialization;
         public readonly Assembly BaseObject;
+
+        public readonly Assembly Linq;
 
         public BaseRemoteAssemblys()
         {
             var domain = System.AppDomain.CurrentDomain;
-            var assemblys = domain.GetAssemblies();
+            
 
             Serialization = _Query("Regulus.Serialization");
             Remote = _Query("Regulus.Remote");
             Library = _Query("Regulus.Utility");
+            Collections = _Query("System.Collections");
+            Linq = _Query("System.Linq.Expressions");
+            
+
             BaseObject = typeof(object).Assembly;
         }
 
