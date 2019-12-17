@@ -19,23 +19,10 @@ namespace Regulus.Remote.Protocol
 
         public AssemblyBuilder(params Type[] types)
         {
-            var refAsms = types.Select( type => type.Assembly ).ToList();
-            var baseRefs = new BaseRemoteAssemblys();
-            refAsms.Add(baseRefs.Library);
-            refAsms.Add(baseRefs.Remote);
-            refAsms.Add(baseRefs.Serialization);
-            refAsms.Add(baseRefs.Collections);
-            refAsms.Add(baseRefs.BaseObject);
-            refAsms.Add(baseRefs.Linq);
-            var locations = new HashSet<string>();
-            foreach (var refAsm in refAsms)
-            {
-                foreach (var referencedAssembly in _GetReferencedAssemblies(refAsm))
-                {
-                    locations.Add(referencedAssembly);
-                }
-            }
-            _Refs = locations.Select( location => MetadataReference.CreateFromFile(location)) .ToArray();
+            var baseRefs = new BaseRemoteAssemblys(types);
+            
+            
+            _Refs = baseRefs.Assemblys.Select( assembly => MetadataReference.CreateFromFile(assembly.Location)) .ToArray();
             
 
             _Codes = _BuildCode(types, _CreateProtoclName()).ToArray();
@@ -91,7 +78,7 @@ namespace Regulus.Remote.Protocol
         private static string _CreateProtoclName()
         {
             var guidNumberString = Guid.NewGuid().ToString("N");
-            var name = $"Regulus.Protocl.Temp.C{guidNumberString}";
+            var name = $"Regulus.Protocol.Temp.C{guidNumberString}";
             return name;
         }
 
@@ -99,7 +86,7 @@ namespace Regulus.Remote.Protocol
         {
             var assemblyNames = asm
                 .GetReferencedAssemblies()
-                .Select(Assembly.Load)                
+                .Select(Assembly.Load)
                 .Select(a => a.Location)
                 .ToList();
 

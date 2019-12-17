@@ -54,9 +54,7 @@ namespace Regulus.Application.Protocol
                 Console.WriteLine($"Source {sourceFullPath}");
                 Console.WriteLine($"Output {outputFullPath}");
                 var sourceAsm = Assembly.LoadFile(sourceFullPath);
-                var libraryAsm = Assembly.LoadFile(System.IO.Path.GetFullPath("Regulus.Library.dll"));
-                var remoteAsm = Assembly.LoadFile(System.IO.Path.GetFullPath("Regulus.Remote.dll"));
-                var serizlizationAsm = Assembly.LoadFile(System.IO.Path.GetFullPath("Regulus.Serialization.dll"));
+                
                 var assemblyBuilder = new Regulus.Remote.Protocol.AssemblyBuilder(sourceAsm.GetExportedTypes());
                 assemblyBuilder.CreateFile(outputFullPath);
 

@@ -33,10 +33,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Remote.Server", "Re
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Remote.Client", "Regulus.Remote.Client\Regulus.Remote.Client.csproj", "{9A6BF61D-D9CE-489C-A559-91A5F7ACCF06}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Application.Protocol.Generator", "Regulus.Application.Protocol.Generator\Regulus.Application.Protocol.Generator.csproj", "{92FD3A24-C34B-452C-9141-BC2CFB54CF39}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Application.Server", "Regulus.Application.Server\Regulus.Application.Server.csproj", "{4C100589-AFBF-4663-BE97-A3E0084B5DDD}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{F37C2CFD-4962-4E1B-96EB-E5E8928D217B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Network.Tests.TestTool", "Regulus.Network.Tests.TestTool\Regulus.Network.Tests.TestTool.csproj", "{03548E30-A147-41FA-B5A2-322B7381E9FD}"
@@ -49,13 +45,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Network.Test", "Reg
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Application.Protocol.Generator.Test", "Regulus.Application.Protocol.Generator.Test\Regulus.Application.Protocol.Generator.Test.csproj", "{3EDB8D08-5C0D-497D-B6AF-97CF14F60C20}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulus.LockstepTest", "Regulus.LockstepTest\Regulus.LockstepTest.csproj", "{88D0B32F-4E73-40B7-BA2E-9A612446DE46}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.LockstepTest", "Regulus.LockstepTest\Regulus.LockstepTest.csproj", "{88D0B32F-4E73-40B7-BA2E-9A612446DE46}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulus.BehaviourTree.Test", "Regulus.BehaviourTree.Test\Regulus.BehaviourTree.Test.csproj", "{7289739F-985D-40B2-A717-49CC357668C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.BehaviourTree.Test", "Regulus.BehaviourTree.Test\Regulus.BehaviourTree.Test.csproj", "{7289739F-985D-40B2-A717-49CC357668C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulus.Serialization.Test", "Regulus.Serialization.Test\Regulus.Serialization.Test.csproj", "{8CC352B8-889E-4AD9-9AC3-7696D5B3A4B0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Serialization.Test", "Regulus.Serialization.Test\Regulus.Serialization.Test.csproj", "{8CC352B8-889E-4AD9-9AC3-7696D5B3A4B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulus.Remote.Protocol.Test", "Regulus.Remote.Protocol.Test\Regulus.Remote.Protocol.Test.csproj", "{7F67B153-FEBE-4768-B614-0B3CF6C44037}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Remote.Protocol.Test", "Regulus.Remote.Protocol.Test\Regulus.Remote.Protocol.Test.csproj", "{7F67B153-FEBE-4768-B614-0B3CF6C44037}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{845C59A2-925C-4D68-BAF9-E3545A354CF2}"
 	ProjectSection(SolutionItems) = preProject
@@ -63,6 +59,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		build_package.cmd = build_package.cmd
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Application.Server", "Regulus.Application.Server\Regulus.Application.Server.csproj", "{B3F3226B-C40E-4F47-BFFB-D8EFFB6AE631}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Application.Protocol.Generator", "Regulus.Application.Protocol.Generator\Regulus.Application.Protocol.Generator.csproj", "{3D1F8251-A22F-4883-ABE8-2481A31B5153}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -122,14 +122,6 @@ Global
 		{9A6BF61D-D9CE-489C-A559-91A5F7ACCF06}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A6BF61D-D9CE-489C-A559-91A5F7ACCF06}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A6BF61D-D9CE-489C-A559-91A5F7ACCF06}.Release|Any CPU.Build.0 = Release|Any CPU
-		{92FD3A24-C34B-452C-9141-BC2CFB54CF39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{92FD3A24-C34B-452C-9141-BC2CFB54CF39}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{92FD3A24-C34B-452C-9141-BC2CFB54CF39}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{92FD3A24-C34B-452C-9141-BC2CFB54CF39}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4C100589-AFBF-4663-BE97-A3E0084B5DDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4C100589-AFBF-4663-BE97-A3E0084B5DDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4C100589-AFBF-4663-BE97-A3E0084B5DDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4C100589-AFBF-4663-BE97-A3E0084B5DDD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{03548E30-A147-41FA-B5A2-322B7381E9FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{03548E30-A147-41FA-B5A2-322B7381E9FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{03548E30-A147-41FA-B5A2-322B7381E9FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -166,6 +158,14 @@ Global
 		{7F67B153-FEBE-4768-B614-0B3CF6C44037}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F67B153-FEBE-4768-B614-0B3CF6C44037}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F67B153-FEBE-4768-B614-0B3CF6C44037}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3F3226B-C40E-4F47-BFFB-D8EFFB6AE631}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3F3226B-C40E-4F47-BFFB-D8EFFB6AE631}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3F3226B-C40E-4F47-BFFB-D8EFFB6AE631}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3F3226B-C40E-4F47-BFFB-D8EFFB6AE631}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D1F8251-A22F-4883-ABE8-2481A31B5153}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D1F8251-A22F-4883-ABE8-2481A31B5153}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D1F8251-A22F-4883-ABE8-2481A31B5153}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D1F8251-A22F-4883-ABE8-2481A31B5153}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -184,8 +184,6 @@ Global
 		{FA2F1312-38FA-4DF9-B830-0D17DEF40510} = {BF82B497-EC2D-4F8B-AF59-02AEC21A6B15}
 		{FDAF2841-A051-4B3D-A207-198A582826EB} = {A088BA49-DE34-4F59-AF19-C82A94D7F834}
 		{9A6BF61D-D9CE-489C-A559-91A5F7ACCF06} = {A088BA49-DE34-4F59-AF19-C82A94D7F834}
-		{92FD3A24-C34B-452C-9141-BC2CFB54CF39} = {A088BA49-DE34-4F59-AF19-C82A94D7F834}
-		{4C100589-AFBF-4663-BE97-A3E0084B5DDD} = {A088BA49-DE34-4F59-AF19-C82A94D7F834}
 		{03548E30-A147-41FA-B5A2-322B7381E9FD} = {F37C2CFD-4962-4E1B-96EB-E5E8928D217B}
 		{02E0B695-9ECC-4510-8A63-97E2A438BF04} = {F37C2CFD-4962-4E1B-96EB-E5E8928D217B}
 		{2DCF30B4-DC21-463D-A2B8-8EEA97A0328C} = {F37C2CFD-4962-4E1B-96EB-E5E8928D217B}
@@ -195,6 +193,8 @@ Global
 		{7289739F-985D-40B2-A717-49CC357668C7} = {F37C2CFD-4962-4E1B-96EB-E5E8928D217B}
 		{8CC352B8-889E-4AD9-9AC3-7696D5B3A4B0} = {F37C2CFD-4962-4E1B-96EB-E5E8928D217B}
 		{7F67B153-FEBE-4768-B614-0B3CF6C44037} = {F37C2CFD-4962-4E1B-96EB-E5E8928D217B}
+		{B3F3226B-C40E-4F47-BFFB-D8EFFB6AE631} = {A088BA49-DE34-4F59-AF19-C82A94D7F834}
+		{3D1F8251-A22F-4883-ABE8-2481A31B5153} = {A088BA49-DE34-4F59-AF19-C82A94D7F834}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5F361C65-F7E7-4579-84BF-3D8DB0C9DABA}

@@ -17,5 +17,5 @@ copy Library\Regulus.Serialization\bin\Release\netstandard2.0\*.* artifact\Libra
 copy Library\Regulus.Remote.Ghost\bin\Release\netstandard2.0\*.* artifact\Library\Client\Remote
 copy Library\Regulus.Remote.Standalone\bin\Release\netstandard2.0\*.* artifact\Library\Client\Standalone
 
-copy Tool\Regulus.Application.Server\bin\Release\netstandard2.0\*.* artifact\Tool\Server
-copy Tool\Regulus.Application.Protocol.Generator\bin\Release\netstandard2.0\*.* artifact\Tool\ProtocolBuilder
+copy Tool\Regulus.Application.Server\bin\Release\netcoreapp2.0\*.* artifact\Tool\Server
+copy Tool\Regulus.Application.Protocol.Generator\bin\Release\netcoreapp2.0\*.* artifact\Tool\ProtocolBuilder
