@@ -1,9 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netcoreapp2.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Regulus.Network\Regulus.Network.csproj" />
     <ProjectReference Include="..\Regulus.Utility\Regulus.Utility.csproj" />

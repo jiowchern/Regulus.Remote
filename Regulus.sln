@@ -64,6 +64,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Application.Server"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Application.Protocol.Generator", "Regulus.Application.Protocol.Generator\Regulus.Application.Protocol.Generator.csproj", "{3D1F8251-A22F-4883-ABE8-2481A31B5153}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulus.Application.Protocol.TextWriter", "Regulus.Application.Protocol.TextWriter\Regulus.Application.Protocol.TextWriter.csproj", "{9A923AB3-F793-4E55-B520-2EC38191EBC5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -166,6 +168,10 @@ Global
 		{3D1F8251-A22F-4883-ABE8-2481A31B5153}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D1F8251-A22F-4883-ABE8-2481A31B5153}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D1F8251-A22F-4883-ABE8-2481A31B5153}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A923AB3-F793-4E55-B520-2EC38191EBC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A923AB3-F793-4E55-B520-2EC38191EBC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A923AB3-F793-4E55-B520-2EC38191EBC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A923AB3-F793-4E55-B520-2EC38191EBC5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -195,6 +201,7 @@ Global
 		{7F67B153-FEBE-4768-B614-0B3CF6C44037} = {F37C2CFD-4962-4E1B-96EB-E5E8928D217B}
 		{B3F3226B-C40E-4F47-BFFB-D8EFFB6AE631} = {A088BA49-DE34-4F59-AF19-C82A94D7F834}
 		{3D1F8251-A22F-4883-ABE8-2481A31B5153} = {A088BA49-DE34-4F59-AF19-C82A94D7F834}
+		{9A923AB3-F793-4E55-B520-2EC38191EBC5} = {A088BA49-DE34-4F59-AF19-C82A94D7F834}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5F361C65-F7E7-4579-84BF-3D8DB0C9DABA}

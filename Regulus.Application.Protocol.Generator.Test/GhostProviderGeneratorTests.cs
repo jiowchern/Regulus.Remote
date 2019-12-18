@@ -35,12 +35,8 @@ namespace Regulus.Tool.Tests
         [NUnit.Framework.Test()]
         public void BuildTest()
         {
-            
-
-
-            var builder = new Regulus.Remote.Protocol.AssemblyBuilder(new[] { typeof(Regulus.Tool.GPI.GPIA) });
-            builder.Create();
-            
+            var builder = new Regulus.Remote.Protocol.AssemblyBuilder(Remote.Protocol.Essential.CreateFromDomain(typeof(Regulus.Tool.GPI.GPIA).Assembly));
+            builder.Create();            
             Assert.Pass();
         }
 

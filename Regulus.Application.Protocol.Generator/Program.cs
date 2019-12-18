@@ -19,44 +19,32 @@ namespace Regulus.Application.Protocol
 
         static void Main(string[] args)
         {
-            /*AppDomain.CurrentDomain.UnhandledException += (sender, a) =>
-            {
-                Regulus.Utility.CrashDump.Write();
-                Environment.Exit(0);
-            };*/
 
             Regulus.Utility.Log.Instance.RecordEvent += _WriteLog;
-            if (args.Length < 2)
+            if (args.Length < 5)
             {
                 Console.WriteLine("Need to build parameters.");
-                Console.WriteLine("ex . Regulus.Application.Protocol.Generator.exe path/in-common.dll path/out-protocol.dll");
+                Console.WriteLine("ex. Regulus.Application.Protocol.Generator path/in-common.dll  path/in-RegulusUtility.dll path/in-RegulusRemote.dll path/in-Regulus.Serialization.dll  path/in-netstandard.dll path/in-System.Runtime.dll path/in-System.Linq.Expressions.dll path/in-System.Collections.dll  path/out-protocol.dll");
                 return;
             }
-            var inPath = args[0];
-            var outPath = args[1];
+            var inPaths = args.Skip(0).Take(args.Length  - 1).Select( a=> System.IO.Path.GetFullPath(a) ).ToArray(); 
+            var outPath = System.IO.Path.GetFullPath(args[args.Length-1]);
 
 
             try
             {
 
-
-                if (!System.IO.File.Exists(inPath))
+                foreach(var inPath in inPaths)
                 {
-                    throw new Exception($"can not found {inPath}");
+                    Console.WriteLine($"Input {inPath}");
                 }
 
 
-
-
-                var sourceFullPath = System.IO.Path.GetFullPath(inPath);
-                var outputFullPath = System.IO.Path.GetFullPath(outPath);
-
-                Console.WriteLine($"Source {sourceFullPath}");
-                Console.WriteLine($"Output {outputFullPath}");
-                var sourceAsm = Assembly.LoadFile(sourceFullPath);
+                Console.WriteLine($"Output {outPath}");
+                var inputAssemblys = inPaths.Select(in_path => Assembly.LoadFile(in_path)) ;
                 
-                var assemblyBuilder = new Regulus.Remote.Protocol.AssemblyBuilder(sourceAsm.GetExportedTypes());
-                assemblyBuilder.CreateFile(outputFullPath);
+                var assemblyBuilder = new Regulus.Remote.Protocol.AssemblyBuilder(Remote.Protocol.Essential.Create(inputAssemblys.ToArray()));
+                assemblyBuilder.CreateFile(outPath);
 
                 Console.WriteLine("Build success.");
 
@@ -69,56 +57,6 @@ namespace Regulus.Application.Protocol
             }
 
         }
-
-        private static void _SaveToFile(Assembly assembly, string outputPath)
-        {
-
-
-            byte[] dllAsArray;
-            using (System.IO.MemoryStream stream = new System.IO.MemoryStream())
-            {
-
-                System.Runtime.Serialization.Formatters.Binary.BinaryFormatter formatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-
-                formatter.Serialize(stream, assembly);
-
-                dllAsArray = stream.ToArray();
-
-            }
-
-            System.IO.File.WriteAllBytes(outputPath, dllAsArray);
-        }
-
-        private static bool _TryRead(Ini ini, string section, string key, out string value)
-        {
-            if (ini.TryRead(section, key, out value) == false)
-            {
-
-                return false;
-
-            }
-            return true;
-        }
-
-        private static void _ShowBuildIni()
-        {
-            Console.WriteLine("Wrong Ini format.");
-            var iniSample = @"
-[Build]
-SourcePath = YourProjectPath/YourAssemblyCommon.dll
-OutputPath = YourProjectPath/YourAssemblyOutput.dll
-";
-            Console.WriteLine("ex.");
-            Console.WriteLine(iniSample);
-
-            Console.WriteLine("Do you create sample.ini file? (Y/N)");
-            var ans = Console.ReadLine();
-            if (ans == "Y" || ans == "y")
-            {
-                System.IO.File.WriteAllText("sample.ini", iniSample);
-            }
-        }
-
         private static void _WriteLog(string message)
         {
             Console.WriteLine(message);

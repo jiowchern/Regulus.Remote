@@ -130,7 +130,7 @@ namespace Regulus.Remote.Soul.Console
         {
             var assembly = Assembly.LoadFrom(common_path);
             
-            var buidler = new Regulus.Remote.Protocol.AssemblyBuilder(assembly.GetExportedTypes() );
+            var buidler = new Regulus.Remote.Protocol.AssemblyBuilder(Regulus.Remote.Protocol.Essential.CreateFromDomain(assembly) );
             var asm = buidler.Create();
             
             return Regulus.Remote.Protocol.ProtocolProvider.Create(asm) ;

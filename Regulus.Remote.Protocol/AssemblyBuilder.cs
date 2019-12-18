@@ -17,12 +17,16 @@ namespace Regulus.Remote.Protocol
         readonly MetadataReference[] _Refs;
 
 
-        public AssemblyBuilder(params Type[] types)
+        public AssemblyBuilder(Essential essential)
         {
-            var baseRefs = new BaseRemoteAssemblys(types);
-            
-            
-            _Refs = baseRefs.Assemblys.Select( assembly => MetadataReference.CreateFromFile(assembly.Location)) .ToArray();
+            var types = essential.Common.GetExportedTypes();
+            var baseRefs = new RefAssemblyFinder(types);
+
+            var assmebyes = new HashSet<Assembly>(essential.Assemblys.Union(baseRefs.Assemblys));
+
+            var refs = new List<MetadataReference>(assmebyes.Select(assembly => MetadataReference.CreateFromFile(assembly.Location)));
+            //refs.Add(MetadataReference.CreateFromFile(@"D:\Develop\Tennis1\backend\assets\protocol-refs\System.Private.CoreLib.dll"));
+            _Refs = refs.ToArray();
             
 
             _Codes = _BuildCode(types, _CreateProtoclName()).ToArray();
@@ -32,16 +36,18 @@ namespace Regulus.Remote.Protocol
         public Assembly Create()
         {
             var tree = _Codes.Select(code => CSharpSyntaxTree.ParseText(code));
-            var compilation = CSharpCompilation.Create(_CreateProtoclName(), tree, _Refs , new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+            var options = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary).WithPlatform(Platform.AnyCpu).WithOptimizationLevel(OptimizationLevel.Release);                        
+            var compilation = CSharpCompilation.Create(_CreateProtoclName(), tree, _Refs , options);
             
             var stream = new System.IO.MemoryStream();
             var emitResult = compilation.Emit(stream);
 
             if (emitResult.Success)
             {
-                stream.Seek(0, System.IO.SeekOrigin.Begin);
                 
-                return System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromStream(stream);
+                stream.Seek(0, System.IO.SeekOrigin.Begin);
+
+                return Assembly.Load(stream.ToArray());                
             }
 
             foreach (var diagnostic in emitResult.Diagnostics)
@@ -57,7 +63,8 @@ namespace Regulus.Remote.Protocol
         public void CreateFile(string path)
         {
             var tree = _Codes.Select(code => CSharpSyntaxTree.ParseText(code));
-            var compilation = CSharpCompilation.Create(_CreateProtoclName(), tree, _Refs, new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+            var options = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary).WithPlatform(Platform.AnyCpu).WithOptimizationLevel(OptimizationLevel.Release);
+            var compilation = CSharpCompilation.Create(_CreateProtoclName(), tree, _Refs, options);
             var emitResult = compilation.Emit(path);
 
             if (emitResult.Success)
@@ -70,7 +77,11 @@ namespace Regulus.Remote.Protocol
                 Regulus.Utility.Log.Instance.WriteInfo(diagnostic.GetMessage());
             }
             throw new Exception("Protocol compile error.");
+        }
 
+
+        public void CreateText(string path)
+        {
 
         }
 

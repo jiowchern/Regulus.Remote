@@ -1,5 +1,5 @@
 ﻿
-
+using System.Linq;
 using Regulus.Remote;
 using Regulus.Serialization;
 
@@ -45,6 +45,14 @@ namespace Regulus.Framework.Client.JIT.Tests
             
             var protocol = Regulus.Remote.Protocol.ProtocolProvider.Create(type.Assembly);
             NUnit.Framework.Assert.AreNotEqual(protocol , null);
+        }
+
+        [NUnit.Framework.Test()]
+        public void FindProtocols()
+        {            
+
+            var protocols = Regulus.Remote.Protocol.ProtocolProvider.GetProtocols().ToArray();
+            NUnit.Framework.Assert.AreEqual(typeof(TestProtocol) , protocols[0]);
         }
 
         /* todo 解除註解
