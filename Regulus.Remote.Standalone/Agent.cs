@@ -9,7 +9,7 @@ using Regulus.Serialization;
 
 namespace Regulus.Remote.Standalone
 {
-	public class Agent : IRequestQueue, IResponseQueue, ISoulBinder, IAgent
+	public class Agent : IRequestQueue, IResponseQueue, IBinder, IAgent
 	{
 		public delegate void ConnectedCallback();
 
@@ -27,7 +27,7 @@ namespace Regulus.Remote.Standalone
 
 		private bool _Connected;
 
-		private ISoulBinder _Binder
+		private IBinder _Binder
 		{
 			get { return _SoulProvider; }
 		}
@@ -139,22 +139,22 @@ namespace Regulus.Remote.Standalone
 			_Agent.OnResponse(cmd, data);
 		}
 
-		void ISoulBinder.Return<TSoul>(TSoul soul)
+		void IBinder.Return<TSoul>(TSoul soul)
 		{
 			_Binder.Return(soul);
 		}
 
-		void ISoulBinder.Bind<TSoul>(TSoul soul)
+		void IBinder.Bind<TSoul>(TSoul soul)
 		{
 			_Bind(soul);
 		}
 
-		void ISoulBinder.Unbind<TSoul>(TSoul soul)
+		void IBinder.Unbind<TSoul>(TSoul soul)
 		{
 			_Unbind(soul);
 		}
 
-		event Action ISoulBinder.BreakEvent
+		event Action IBinder.BreakEvent
 		{
 			add { _BreakEvent += value; }
 			remove { _BreakEvent -= value; }

@@ -8,7 +8,7 @@ using Regulus.Utility;
 
 namespace Regulus.Remote
 {
-	public class SoulProvider : IDisposable, ISoulBinder
+	public class SoulProvider : IDisposable, IBinder
 	{
 		private class Soul
 		{
@@ -113,7 +113,7 @@ namespace Regulus.Remote
 			_Peer.InvokeMethodEvent -= _InvokeMethod;
 		}
 
-		void ISoulBinder.Return<TSoul>(TSoul soul)
+		void IBinder.Return<TSoul>(TSoul soul)
 		{
 			if(soul == null)
 			{
@@ -123,7 +123,7 @@ namespace Regulus.Remote
 			_Bind(soul, true, Guid.Empty);
 		}
 
-		void ISoulBinder.Bind<TSoul>(TSoul soul)
+		void IBinder.Bind<TSoul>(TSoul soul)
 		{
 			if(soul == null)
 			{
@@ -133,7 +133,7 @@ namespace Regulus.Remote
 			_Bind(soul, false, Guid.Empty);
 		}
 
-		void ISoulBinder.Unbind<TSoul>(TSoul soul)
+		void IBinder.Unbind<TSoul>(TSoul soul)
 		{
 			if(soul == null)
 			{
@@ -143,7 +143,7 @@ namespace Regulus.Remote
 			_Unbind(soul, typeof(TSoul));
 		}
 
-		event Action ISoulBinder.BreakEvent
+		event Action IBinder.BreakEvent
 		{
 			add
 			{

@@ -6,9 +6,9 @@ namespace RemotingTest
 {
 	internal class Server : IEntry, ITestReturn, ITestGPI
 	{
-		private ISoulBinder _Binder;
+		private IBinder _Binder;
 
-		void IBinderProvider.AssignBinder(ISoulBinder binder)
+		void IBinderProvider.AssignBinder(IBinder binder)
 		{
 			binder.Return<ITestReturn>(this);
 			_Binder = binder;

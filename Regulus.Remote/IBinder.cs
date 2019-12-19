@@ -5,7 +5,7 @@ namespace Regulus.Remote
 	/// <summary>
 	///     伺服器端對外綁定物件
 	/// </summary>
-	public interface ISoulBinder
+	public interface IBinder
 	{
 		/// <summary>
 		///     如果發生與客戶端斷線則會發生此事件

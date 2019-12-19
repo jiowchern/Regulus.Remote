@@ -87,7 +87,7 @@ namespace Regulus.Remote.Soul
 	    private static long _TotalResponse;
         public static long TotalResponse { get { return _TotalResponse; } }
 
-		public ISoulBinder Binder
+		public IBinder Binder
 		{
 			get { return _SoulProvider; }
 		}

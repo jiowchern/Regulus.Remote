@@ -8,7 +8,7 @@ namespace Regulus.Remote.Soul
 {
     internal class ThreadCoreHandler
     {
-        private readonly Queue<ISoulBinder> _Binders;
+        private readonly Queue<IBinder> _Binders;
 
         private readonly IEntry _Core;
 
@@ -44,7 +44,7 @@ namespace Regulus.Remote.Soul
             _RequesterHandlers = new Updater();
             _Spin = new PowerRegulator();
             _AutoPowerRegulator = new AutoPowerRegulator(_Spin);
-            _Binders = new Queue<ISoulBinder>();
+            _Binders = new Queue<IBinder>();
         }
 
         public void DoWork(object obj)
@@ -82,7 +82,7 @@ namespace Regulus.Remote.Soul
             _Run = false;
         }
 
-        internal void Push(ISoulBinder soulBinder, IUpdatable handler)
+        internal void Push(IBinder soulBinder, IUpdatable handler)
         {
             _RequesterHandlers.Add(handler);
 
