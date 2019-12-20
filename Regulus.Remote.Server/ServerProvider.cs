@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Regulus.Remote.Server
 {
-    public static class ServerProvider
+    public static class ServiceProvider
     {
         public static Regulus.Remote.Soul.Service CreateTcp(int port,IEntry entry,Regulus.Remote.Protocol.Essential essential)
         {

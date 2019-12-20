@@ -25,7 +25,7 @@ namespace Regulus.Remote.Protocol
             var assmebyes = new HashSet<Assembly>(essential.Assemblys.Union(baseRefs.Assemblys));
 
             var refs = new List<MetadataReference>(assmebyes.Select(assembly => MetadataReference.CreateFromFile(assembly.Location)));
-            //refs.Add(MetadataReference.CreateFromFile(@"D:\Develop\Tennis1\backend\assets\protocol-refs\System.Private.CoreLib.dll"));
+            
             _Refs = refs.ToArray();
             
 
@@ -80,10 +80,7 @@ namespace Regulus.Remote.Protocol
         }
 
 
-        public void CreateText(string path)
-        {
-
-        }
+       
 
 
         private static string _CreateProtoclName()
@@ -93,18 +90,7 @@ namespace Regulus.Remote.Protocol
             return name;
         }
 
-        private static string[] _GetReferencedAssemblies(Assembly asm)
-        {
-            var assemblyNames = asm
-                .GetReferencedAssemblies()
-                .Select(Assembly.Load)
-                .Select(a => a.Location)
-                .ToList();
-
-            assemblyNames.Add(asm.Location);
-
-            return assemblyNames.ToArray();
-        }
+      
         
 
         
