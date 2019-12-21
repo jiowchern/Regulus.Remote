@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp2.1</TargetFrameworks>
+    <IsPackable>false</IsPackable>
+
+    <ApplicationIcon />
+
+
+    <StartupObject />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
+    <PackageReference Include="NUnit" Version="3.9.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Regulus.Remote.Protocol\Regulus.Remote.Protocol.csproj" />
+    <ProjectReference Include="..\Regulus.Remote\Regulus.Remote.csproj" />
+    <ProjectReference Include="..\Regulus.Serialization\Regulus.Serialization.csproj" />
+    <ProjectReference Include="..\Regulus.Utility\Regulus.Utility.csproj" />
+  </ItemGroup>
+
+</Project>
