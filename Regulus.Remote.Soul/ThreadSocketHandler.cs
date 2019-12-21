@@ -18,7 +18,7 @@ namespace Regulus.Remote.Soul
 
         private readonly int _Port;
 
-        private readonly Queue<IPeer> _Sockets;
+        private readonly System.Collections.Concurrent.ConcurrentQueue<IPeer> _Sockets;
 
         // ParallelUpdate _Peers;
         private readonly PowerRegulator _Spin;
@@ -49,7 +49,7 @@ namespace Regulus.Remote.Soul
             _Protocol = protocol;
             _Port = port;
 
-            _Sockets = new Queue<IPeer>();
+            _Sockets = new System.Collections.Concurrent.ConcurrentQueue<IPeer>();
 
             _Peers = new PeerSet();
 
@@ -70,24 +70,18 @@ namespace Regulus.Remote.Soul
 
             while(_Run)
             {
-                if(_Sockets.Count > 0)
+                IPeer socket;
+                if(_Sockets.TryDequeue(out socket))
                 {
-                    lock(_Sockets)
-                    {
-                        while(_Sockets.Count > 0)
-                        {
-                            var socket = _Sockets.Dequeue();
-
-                            Singleton<Log>.Instance.WriteInfo(
+                    Singleton<Log>.Instance.WriteInfo(
                                 string.Format("peer accept Remote {0} Local {1} .", socket.RemoteEndPoint, socket.LocalEndPoint));
-                            var peer = new Peer(socket , _Protocol);
+                    var peer = new Peer(socket, _Protocol);
 
-                            _Peers.Join(peer);
+                    _Peers.Join(peer);
 
-                            _CoreHandler.Push(peer.Binder, peer.Handler);
-                        }
-                    }
+                    _CoreHandler.Push(peer.Binder, peer.Handler);
                 }
+                
 
                 _AutoPowerRegulator.Operate();
             }

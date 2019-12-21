@@ -8,7 +8,7 @@ namespace Regulus.Remote.Soul
 {
     internal class ThreadCoreHandler
     {
-        private readonly Queue<IBinder> _Binders;
+        private readonly System.Collections.Concurrent.ConcurrentQueue<IBinder> _Binders;
 
         private readonly IEntry _Core;
 
@@ -44,7 +44,8 @@ namespace Regulus.Remote.Soul
             _RequesterHandlers = new Updater();
             _Spin = new PowerRegulator();
             _AutoPowerRegulator = new AutoPowerRegulator(_Spin);
-            _Binders = new Queue<IBinder>();
+            
+            _Binders = new System.Collections.Concurrent.ConcurrentQueue<IBinder>();
         }
 
         public void DoWork(object obj)
@@ -55,17 +56,13 @@ namespace Regulus.Remote.Soul
 
             while(_Run)
             {
-                if(_Binders.Count > 0)
+
+                IBinder binder;
+                if (_Binders.TryDequeue(out binder))
                 {
-                    lock(_Binders)
-                    {
-                        while(_Binders.Count > 0)
-                        {
-                            var provider = _Binders.Dequeue();
-                            _Core.AssignBinder(provider);
-                        }
-                    }
+                    _Core.AssignBinder(binder);
                 }
+                
 
                 
                 _RequesterHandlers.Working();
@@ -86,10 +83,7 @@ namespace Regulus.Remote.Soul
         {
             _RequesterHandlers.Add(handler);
 
-            lock(_Binders)
-            {
-                _Binders.Enqueue(soulBinder);
-            }
+            _Binders.Enqueue(soulBinder);
         }
     }
 }

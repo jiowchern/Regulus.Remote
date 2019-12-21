@@ -144,7 +144,8 @@ namespace Regulus.Remote.Soul
 
 	    private void _Shutdown()
 	    {
-	        BreakEvent();            
+            if (BreakEvent != null)
+	            BreakEvent();            
 	    }
 
 	    /// <summary>

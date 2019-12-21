@@ -59,9 +59,9 @@ namespace Regulus.Utility
 
 		protected string[] _HandlerInput()
 		{
-            
 
-            if (System.Console.In.Peek() > 0)
+            
+            if (System.Console.KeyAvailable)
 			{
 				return _HandlerInput(_InputData);
 			}
