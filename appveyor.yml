@@ -1,8 +1,8 @@
-version: 0.5.{build}
+version: 0.6.{build}
 branches:
   only:
   - release
-image: Visual Studio 2017
+image: Visual Studio 2019
 configuration: Release
 nuget:
   account_feed: true
