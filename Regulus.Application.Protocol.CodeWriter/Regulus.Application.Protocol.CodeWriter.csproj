@@ -2,11 +2,13 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp2.1</TargetFrameworks>  </PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <Version>0.1.0</Version>
+    <PackageProjectUrl>https://github.com/jiowchern/Regulus</PackageProjectUrl>
+  </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Regulus.Remote.Protocol\Regulus.Remote.Protocol.csproj" />
-    <ProjectReference Include="..\Regulus.Remote\Regulus.Remote.csproj" />
     <ProjectReference Include="..\Regulus.Utility\Regulus.Utility.csproj" />
   </ItemGroup>
 

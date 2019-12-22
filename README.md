@@ -12,7 +12,7 @@
 * .Net Standard 2.0
 * 主從式架構
 
-### 關係
+### 架構
 <!-- 
 @startuml
 package "Project" {
