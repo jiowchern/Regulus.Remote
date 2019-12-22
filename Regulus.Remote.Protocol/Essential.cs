@@ -25,7 +25,7 @@ namespace Regulus.Remote.Protocol
 
         public static Essential CreateFromDomain(Assembly common)
         {
-            var e = new Essential(common , _Find("Regulus.Utility"), _Find("Regulus.Remote"), _Find("Regulus.Serialization"), _Find("netstandard"),  typeof(object).Assembly , typeof(System.Linq.Expressions.LambdaExpression).Assembly , _Find("System.Collections"));
+            var e = new Essential(common , _Find("Regulus.Utility"), _Find("Regulus.Remote"), _Find("Regulus.Serialization"), _Find("netstandard"), _Find("System.Runtime"),  typeof(object).Assembly , typeof(System.Linq.Expressions.LambdaExpression).Assembly , _Find("System.Collections"));
             return e;                      
         }
 
