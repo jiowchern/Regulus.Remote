@@ -12,13 +12,13 @@ md artifact\Tool\Server
 md artifact\Tool\ProtocolBuilder
 
 
-copy Regulus.BehaviourTree\bin\Release\netstandard2.0\*.* artifact\Library\BehaviourTree
-copy Regulus.Remote.Soul\bin\Release\netstandard2.0\*.* artifact\Library\Server
-copy Regulus.Remote.Ghost\bin\Release\netstandard2.0\*.* artifact\Library\Client\Remote
-copy Regulus.Remote.Standalone\bin\Release\netstandard2.0\*.* artifact\Library\Client\Standalone
-copy Regulus.Serialization\bin\Release\netstandard2.0\*.* artifact\Library\Serialization
+dotnet publish .\Regulus.BehaviourTree -o .\artifact\Library\BehaviourTree -f netstandard2.0
+dotnet publish .\Regulus.Remote.Soul -o .\artifact\Library\Server -f netstandard2.0
+dotnet publish .\Regulus.Remote.Ghost -o .\artifact\Library\Client\Remote -f netstandard2.0
+dotnet publish .\Regulus.Remote.Standalone -o .\artifact\Library\Client\Standalone -f netstandard2.0
+dotnet publish .\Regulus.Serialization -o \.artifact\Library\Serialization -f netstandard2.0
 
 
-copy Regulus.Application.Server\bin\Release\netcoreapp2.1\*.* artifact\Tool\Server
-copy Regulus.Application.Protocol.CodeBuilder\bin\Release\netcoreapp2.1\*.* artifact\Tool\ProtocolBuilder
-copy Regulus.Application.Protocol.CodeWriter\bin\Release\netcoreapp2.1\*.* artifact\Tool\ProtocolBuilder
+dotnet publish .\Regulus.Application.Server -o .\artifact\Tool\Server  -f netcoreapp2.1
+dotnet publish .\Regulus.Application.Protocol.CodeBuilder -o .\artifact\Tool\ProtocolBuilder  -f netcoreapp2.1
+dotnet publish .\Regulus.Application.Protocol.CodeWriter -o .\artifact\Tool\ProtocolBuilder  -f netcoreapp2.1
