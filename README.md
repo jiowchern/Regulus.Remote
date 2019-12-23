@@ -1,8 +1,5 @@
 # Regulus Library
 [![Build status](https://ci.appveyor.com/api/projects/status/2wtsf61u87qg62cc?svg=true)](https://ci.appveyor.com/project/jiowchern/regulus)[![GitHub release](https://img.shields.io/github/release/jiowchern/regulus.svg?style=flat-square)](https://github.com/jiowchern/Regulus/releases)[![Gitter](https://badges.gitter.im/JoinChat.svg)](https://gitter.im/Regulus-Library)   
-
-
-
 > The following instructions are written in native language, please mail me if you need English version.
 
 
@@ -51,10 +48,16 @@ end note
 ![PlantUML model](http://www.plantuml.com/plantuml/svg/VP3FIWCn4CRlUOgXNlJG89uz5BoAI8kduY5sqrBDPYND2aKy-AUuAYA85AsUUh88hNeeIiMdQJRjMvXkNDR5fQVCp3VVRpvIQ4WYfEyoj4ygUwH68RSfl5rQaJauHCAyXDUOcQvvhklnHOUnfHoG1jZ-xqQ9YWCg8j6MAJkhKouZqPO87Q7aPf7MVEOtOBs-8uXefc_7AYvIrvCKMm0sKI9UfZh7RiDbssDr5gwSgMp3QZwVX_9lXygPv-Cjsvaj-rrcZ77sD24YRZZ0Q5K2W5TDrc6BrsKJmg0TtWzKQpWUjVNZX-f_GcK14DwWiYG9TuXmLl0owCwPldrLtLD4kGCpvdzoVDAquTErkdhGBmFZcnvVXi7xzEHcyZMOuuxJf-oJu5prks4mDBNgT_Htpm1LwqtVFUkBtdWqJ805K_ak-m40)  
 P.S1 虛線為內部繼承關係，實線為外部引用。  
 P.S2 此圖為主要引用物件，在建立專案時需要依需求自行引入參考。
+### 版本
+[Regulus.Remote](https://www.nuget.org/packages/Regulus.Remote/) ![Regulus.Remote](https://img.shields.io/nuget/v/Regulus.Remote?style=plastic)  
+[Regulus.Remote.Client](https://www.nuget.org/packages/Regulus.Remote.Client/) ![Regulus.Remote.Client](https://img.shields.io/nuget/v/Regulus.Remote.Client?style=plastic)  
+[Regulus.Remote.Server](https://www.nuget.org/packages/Regulus.Remote.Server/) ![Regulus.Remote.Server](https://img.shields.io/nuget/v/Regulus.Remote.Client?style=plastic)  
+
 ### 建立
 1. 建立公用邏輯專案。  
-  > dotnet new classlib -n Common 
-
+```powershell
+	dotnet new classlib -n Common 
+```
 2. 實作服務端業務邏輯      
    ```csharp
     namespace Server
