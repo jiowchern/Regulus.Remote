@@ -8,7 +8,7 @@ using Microsoft.CSharp;
 
 namespace Regulus.Remote.Unity
 {
-    public class AssemblyOutputer
+    public class CodeOutputer
     {        
 
         private readonly Assembly _CommonAsm;
@@ -21,7 +21,7 @@ namespace Regulus.Remote.Unity
 
         private readonly string _ProtocolName;
 
-        public AssemblyOutputer(Assembly common_asm, string agent_name)
+        public CodeOutputer(Assembly common_asm, string agent_name)
         {
             _CommonAsm = common_asm;
             
@@ -49,7 +49,7 @@ namespace Regulus.Remote.Unity
 
         
 
-        public void OutputDir(string output_path)
+        public void Output(string output_path)
         {
 
             System.IO.Directory.Delete(output_path , true);

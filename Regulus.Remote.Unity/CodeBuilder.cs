@@ -93,11 +93,12 @@ using UnityEngine;
             _Distributor  = new Regulus.Remote.Unity.Distributor(_Agent);
             _Updater.Add(_Agent);
         }}
-        // Use this for initialization
         public void Connect(string ip,int port)
-        {{
-            _Agent.Connect(ip, port).OnValue += _ConnectResult;
+        {{            
+            _Agent.Connect(new System.Net.IPEndPoint(System.Net.IPAddress.Parse(ip), port)).OnValue += _ConnectResult;
         }}
+        
+        
 
         private void _ConnectResult(bool obj)
         {{
@@ -110,7 +111,6 @@ using UnityEngine;
         }}
 
        
-        // Update is called once per frame
         void Update()
         {{
             _Updater.Working();
