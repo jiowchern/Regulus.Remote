@@ -20,7 +20,7 @@ namespace Regulus.Remote.Ghost
 		private readonly AgentCore _Core;
 
 		private readonly StageMachine _Machine;
-	    private readonly IConnectProviderable connectproivder;
+	    private readonly IConnectProviderable _ConnectProivder;
 
 	    private long _Ping
 		{
@@ -33,7 +33,7 @@ namespace Regulus.Remote.Ghost
             _Serializer = protocol.GetSerialize();
 	        _Machine = new StageMachine();
             _Core = new AgentCore(protocol);
-	        connectproivder = client;
+	        _ConnectProivder = client;
 	        
 	        
         }
@@ -53,14 +53,17 @@ namespace Regulus.Remote.Ghost
             _Core.ErrorMethodEvent += _ErrorMethodEvent;
 		    _Core.ErrorVerifyEvent += _ErrorVerifyEvent;
 
-		    
+			_ConnectProivder.Launch();
 
-        }
+
+		}
 
 		void IBootable.Shutdown()
 		{
-		    
-            _Core.ErrorVerifyEvent -= _ErrorVerifyEvent;
+			_ConnectProivder.Shutdown();
+
+
+			_Core.ErrorVerifyEvent -= _ErrorVerifyEvent;
             _Core.ErrorMethodEvent -= _ErrorMethodEvent;
             if (_Core.Enable)
 			{
@@ -146,7 +149,7 @@ namespace Regulus.Remote.Ghost
 			lock(_Machine)
 			{
 				var connectValue = new Value<bool>();
-				var stage = new ConnectStage(ip, connectproivder);
+				var stage = new ConnectStage(ip, _ConnectProivder);
 				stage.ResultEvent += (result, socket) =>
 				{
 					_ConnectResult(result, socket);
