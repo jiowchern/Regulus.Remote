@@ -17,7 +17,7 @@ namespace Regulus.Remote.Standalone
 
 		private event Action _ConnectEvent;
 
-		public event ConnectedCallback ConnectedEvent;
+		//public event ConnectedCallback ConnectedEvent;
 
 		private readonly AgentCore _Agent;
 
@@ -52,7 +52,7 @@ namespace Regulus.Remote.Standalone
 
 		Value<bool> IAgent.Connect(System.Net.IPEndPoint ip)
 		{
-			ConnectedEvent();
+			_ConnectEvent();
 			_Connected = true;
 			return true;
 		}
