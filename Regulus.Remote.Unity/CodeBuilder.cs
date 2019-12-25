@@ -87,7 +87,7 @@ using UnityEngine;
             _Updater = new Updater();
         }}
         public abstract Regulus.Remote.IAgent _GetAgent();
-        void Start()   
+        public void Start()   
         {{
             _Agent = _GetAgent();
             _Distributor  = new Regulus.Remote.Unity.Distributor(_Agent);
@@ -105,13 +105,13 @@ using UnityEngine;
             ConnectEvent.Invoke(obj);
         }}
 
-        void OnDestroy()
+        public void OnDestroy()
         {{
             _Updater.Shutdown();
         }}
 
        
-        void Update()
+        public void Update()
         {{
             _Updater.Working();
         }}
@@ -148,7 +148,7 @@ using UnityEngine.Events;
             _Machine = new StageMachine();
         }} 
 
-        void Start()
+        public void Start()
         {{
             _ToScan();
         }}
@@ -196,12 +196,12 @@ using UnityEngine.Events;
         }}
 
         // Update is called once per frame
-        void Update()
+        public void Update()
         {{
             _Machine.Update();
         }}
 
-        void OnDestroy()
+        public void OnDestroy()
         {{
             if (_Notifier != null)
             {{
@@ -261,7 +261,7 @@ namespace {0}.Adsorption
             _Machine = new Regulus.Utility.StageMachine();
         }}
 
-        void Start()
+        public void Start()
         {{
             _Machine.Push(new Regulus.Utility.SimpleStage(_ScanEnter, _ScanLeave, _ScanUpdate));
         }}
@@ -297,12 +297,12 @@ namespace {0}.Adsorption
 
         }}
 
-        void Update()
+        public void Update()
         {{
             _Machine.Update();
         }}
 
-        void OnDestroy()
+        public void OnDestroy()
         {{
             _Machine.Termination();
         }}
@@ -313,6 +313,9 @@ namespace {0}.Adsorption
         }}
         public void Supply({0}.{1} gpi)
         {{
+            if(_{7} != null)
+                return;
+
             _{7} = gpi;
             {5}
             EnableEvent.Invoke(true);
@@ -321,6 +324,9 @@ namespace {0}.Adsorption
 
         public void Unsupply({0}.{1} gpi)
         {{
+            if(_{7} != gpi)
+                return;
+
             EnableEvent.Invoke(false);
             {6}
             _{7} = null;
