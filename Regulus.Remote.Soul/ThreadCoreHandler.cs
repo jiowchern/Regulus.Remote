@@ -19,6 +19,7 @@ namespace Regulus.Remote.Soul
         private readonly AutoPowerRegulator _AutoPowerRegulator;
 
         private volatile bool _Run;
+        private readonly System.Threading.Tasks.Task _Task;
 
         public event Action ShutdownEvent;
 
@@ -46,9 +47,11 @@ namespace Regulus.Remote.Soul
             _AutoPowerRegulator = new AutoPowerRegulator(_Spin);
             
             _Binders = new System.Collections.Concurrent.ConcurrentQueue<IBinder>();
+
+            _Task = new System.Threading.Tasks.Task(this.DoWork);
         }
 
-        public void DoWork(object obj)
+        public void DoWork()
         {
             Singleton<Log>.Instance.WriteInfo("server core launch");
             _Run = true;
@@ -77,6 +80,7 @@ namespace Regulus.Remote.Soul
         public void Stop()
         {
             _Run = false;
+            _Task.Wait();
         }
 
         internal void Push(IBinder soulBinder, IUpdatable handler)
@@ -84,6 +88,11 @@ namespace Regulus.Remote.Soul
             _RequesterHandlers.Add(handler);
 
             _Binders.Enqueue(soulBinder);
+        }
+
+        internal void Start()
+        {
+            _Task.Start();
         }
     }
 }

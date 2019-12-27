@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -26,6 +27,8 @@ namespace Regulus.Remote.Soul
         private readonly AutoPowerRegulator _AutoPowerRegulator;
 
         private volatile bool _Run;
+
+        readonly System.Threading.Tasks.Task _Task;
         
 
         public int FPS
@@ -57,12 +60,13 @@ namespace Regulus.Remote.Soul
             _AutoPowerRegulator = new AutoPowerRegulator(_Spin);
 
             _Server = server;
+
+            _Task = new System.Threading.Tasks.Task(this.DoWork);
         }
 
-        public void DoWork(object obj)
+        public void DoWork()
         {
             Singleton<Log>.Instance.WriteInfo("server peer launch");
-            var are = (AutoResetEvent)obj;
             _Run = true;
 
             _Server.AcceptEvent += _Accept;
@@ -93,7 +97,6 @@ namespace Regulus.Remote.Soul
             _Server.Close();
 
 
-            are.Set();
             Singleton<Log>.Instance.WriteInfo("server peer shutdown");
         }
 
@@ -104,11 +107,16 @@ namespace Regulus.Remote.Soul
                 _Sockets.Enqueue(peer);
             }
         }
-        
+
+        internal void Start()
+        {
+            _Task.Start();
+        }
 
         public void Stop()
         {
             _Run = false;
+            _Task.Wait();
         }
     }
 }

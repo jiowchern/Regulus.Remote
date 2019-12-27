@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 using Regulus.Collection;
 
 namespace RegulusLibraryTest
 {
-	
-	public class AsyncExecuter
+
+    public class AsyncExecuter
 	{
 	   
 		[Test]
