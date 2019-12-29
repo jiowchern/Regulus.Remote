@@ -135,7 +135,11 @@ namespace Regulus.Utility
 
 
 			    AppDomain.CurrentDomain.UnhandledException += _Dump;
-                var run = true;			    
+                var run = true;
+                AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
+                {
+                    run = false;
+                };
                 windowconsole.Command.Register("quit", () => { run = false; });
 				windowconsole.QuitEvent += () => { run = false; };
 				windowconsole.Launch();
