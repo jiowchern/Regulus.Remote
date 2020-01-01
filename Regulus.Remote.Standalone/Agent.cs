@@ -17,13 +17,13 @@ namespace Regulus.Remote.Standalone
 
 		private event Action _ConnectEvent;
 
-		//public event ConnectedCallback ConnectedEvent;
-
 		private readonly AgentCore _Agent;
 
 		private readonly GhostRequest _GhostRequest;
 
 		private readonly SoulProvider _SoulProvider;
+
+        readonly System.Collections.Concurrent.ConcurrentQueue<System.Tuple<ServerToClientOpCode, byte[]>> _ResponseCodes;
 
 		private bool _Connected;
 
@@ -42,6 +42,7 @@ namespace Regulus.Remote.Standalone
             _GhostRequest = new GhostRequest(protocol.GetSerialize());
             _Agent = new AgentCore(protocol);
             _SoulProvider = new SoulProvider(this, this, protocol);
+            _ResponseCodes = new System.Collections.Concurrent.ConcurrentQueue<Tuple<ServerToClientOpCode, byte[]>>();
         }
         
 
@@ -136,8 +137,9 @@ namespace Regulus.Remote.Standalone
 
 		void IResponseQueue.Push(ServerToClientOpCode cmd, byte[] data)
 		{
-			_Agent.OnResponse(cmd, data);
-		}
+            _ResponseCodes.Enqueue(new Tuple<ServerToClientOpCode, byte[]>(cmd,data));
+
+	    }
 
 		void IBinder.Return<TSoul>(TSoul soul)
 		{
@@ -177,7 +179,14 @@ namespace Regulus.Remote.Standalone
 
 		private void _Update()
 		{
-			_SoulProvider.Update();
+            Tuple<ServerToClientOpCode, byte[]> code;
+            if(_ResponseCodes.TryDequeue(out code ))
+            {
+                _Agent.OnResponse(code.Item1, code.Item2);
+
+            }
+
+            _SoulProvider.Update();
 			_GhostRequest.Update();
 		}
 

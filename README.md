@@ -1,5 +1,11 @@
 # Regulus Library
-[![Build status](https://ci.appveyor.com/api/projects/status/2wtsf61u87qg62cc?svg=true)](https://ci.appveyor.com/project/jiowchern/regulus)[![GitHub release](https://img.shields.io/github/release/jiowchern/regulus.svg?style=flat-square)](https://github.com/jiowchern/Regulus/releases)![pre-release](https://img.shields.io/github/v/release/jiowchern/Regulus?include_prereleases)  [![Gitter](https://badges.gitter.im/JoinChat.svg)](https://gitter.im/Regulus-Library)![commit last date](https://img.shields.io/github/last-commit/jiowchern/regulus)
+[![Maintainability](https://api.codeclimate.com/v1/badges/78946edf1189eb49dfbd/maintainability)](https://codeclimate.com/github/jiowchern/Regulus/maintainability)
+[![Build status](https://ci.appveyor.com/api/projects/status/2wtsf61u87qg62cc?svg=true)](https://ci.appveyor.com/project/jiowchern/regulus)
+[![GitHub release](https://img.shields.io/github/release/jiowchern/regulus.svg?style=flat-square)](https://github.com/jiowchern/Regulus/releases)![pre-release](https://img.shields.io/github/v/release/jiowchern/Regulus?include_prereleases)
+![commit last date](https://img.shields.io/github/last-commit/jiowchern/regulus)
+![Discord](https://img.shields.io/discord/101557008930451456)  
+<!-- [![Gitter](https://badges.gitter.im/JoinChat.svg)](https://gitter.im/Regulus-Library) -->
+
 
 > The following instructions are written in native language, please mail me if you need English version.
 
