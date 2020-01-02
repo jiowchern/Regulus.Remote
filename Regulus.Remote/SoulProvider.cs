@@ -174,7 +174,9 @@ namespace Regulus.Remote
 		}
 
 		private void _ReturnDataValue(Guid returnId, IValue returnValue)
-		{		
+		{
+			
+
 			var value = returnValue.GetObject();
 			var package = new PackageReturnValue();
 			package.ReturnTarget = returnId;
@@ -256,6 +258,10 @@ namespace Regulus.Remote
 
 		private void _ErrorDeserialize(string method_name, Guid return_id, string message)
 		{
+			
+
+		
+
 			var package = new PackageErrorMethod();
 			package.Message = message ;
 			package.Method = method_name;
