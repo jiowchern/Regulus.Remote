@@ -180,9 +180,10 @@ namespace Regulus.Remote.Standalone
 		private void _Update()
 		{
             Tuple<ServerToClientOpCode, byte[]> code;
-            while(_ResponseCodes.TryDequeue(out code ))
-            {                
+            if(_ResponseCodes.TryDequeue(out code ))
+            {
                 _Agent.OnResponse(code.Item1, code.Item2);
+
             }
 
             _SoulProvider.Update();

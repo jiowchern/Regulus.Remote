@@ -8,8 +8,75 @@ using Regulus.Utility;
 
 namespace Regulus.Remote
 {
-    public partial class SoulProvider : IDisposable, IBinder
+	public class SoulProvider : IDisposable, IBinder
 	{
+		private class Soul
+		{
+
+
+			public class EventHandler
+			{
+				public Delegate DelegateObject;
+
+				public EventInfo EventInfo;
+			}
+
+			public class PropertyHandler
+			{
+				public readonly PropertyInfo PropertyInfo;
+
+				public object Value;
+
+			    public readonly int Id;
+
+			    public PropertyHandler(PropertyInfo info, int id)
+			    {
+			        PropertyInfo = info;
+			        Id = id;
+			    }
+
+                internal bool UpdateProperty(object val)
+				{
+					if(!ValueHelper.DeepEqual(Value, val))
+					{
+						Value = ValueHelper.DeepCopy(val);
+						return true;
+					}
+
+					return false;
+				}
+			}
+
+			public Guid ID { get; set; }
+
+			public object ObjectInstance { get; set; }
+
+			public Type ObjectType { get; set; }
+
+			public MethodInfo[] MethodInfos { get; set; }
+
+			public List<EventHandler> EventHandlers { get; set; }
+
+			public PropertyHandler[] PropertyHandlers { get; set; }
+
+		    public int InterfaceId { get; set; }
+
+		    internal void ProcessDiffentValues(Action<Guid, int, object> update_property)
+			{
+				foreach(var handler in PropertyHandlers)
+				{
+					var val = handler.PropertyInfo.GetValue(ObjectInstance, null);
+
+					if(handler.UpdateProperty(val))
+					{
+						if(update_property != null)
+						{
+							update_property(ID, handler.Id, val);
+						}
+					}
+				}
+			}
+		}
 
 		private readonly Queue<byte[]> _EventFilter = new Queue<byte[]>();
 
@@ -174,7 +241,12 @@ namespace Regulus.Remote
 		}
 
 		private void _ReturnDataValue(Guid returnId, IValue returnValue)
-		{		
+		{
+			/*var argmants = new Dictionary<byte, byte[]>();
+			argmants.Add(0, ReturnId.ToByteArray());
+			var value = ReturnValue.GetObject();
+			argmants.Add(1, TypeHelper.Serialize(value));*/
+
 			var value = returnValue.GetObject();
 			var package = new PackageReturnValue();
 			package.ReturnTarget = returnId;
@@ -183,7 +255,12 @@ namespace Regulus.Remote
 		}
 
 		private void _LoadSoulCompile(int type_id, Guid id, Guid return_id)
-		{			
+		{
+			/*var argmants = new Dictionary<byte, byte[]>();
+			argmants.Add(0, TypeHelper.Serialize(type_id));
+			argmants.Add(1, id.ToByteArray());
+			argmants.Add(2, ReturnId.ToByteArray());*/
+
 			var package = new PackageLoadSoulCompile();
 			package.EntityId = id;
 			package.ReturnId = return_id;
@@ -193,7 +270,13 @@ namespace Regulus.Remote
 		}
 
 		private void _LoadSoul(int type_id, Guid id, bool return_type)
-		{			
+		{
+			/*var argmants = new Dictionary<byte, byte[]>();
+			argmants.Add(0, TypeHelper.Serialize(type_id));
+			argmants.Add(1, id.ToByteArray());
+			argmants.Add(2, TypeHelper.Serialize(return_type));*/
+
+
 			var package = new PackageLoadSoul();
 			package.TypeId = type_id;
 			package.EntityId = id;
@@ -256,6 +339,10 @@ namespace Regulus.Remote
 
 		private void _ErrorDeserialize(string method_name, Guid return_id, string message)
 		{
+			
+
+		
+
 			var package = new PackageErrorMethod();
 			package.Message = message ;
 			package.Method = method_name;
