@@ -3,11 +3,10 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text.RegularExpressions;
 
 namespace Regulus.Utility
 {
-	public delegate void Action<in T1, in T2, in T3, in T4, in T5>(T1 t1, T2 t2, T3 t3, T4 t4 , T5 t5);
+    public delegate void Action<in T1, in T2, in T3, in T4, in T5>(T1 t1, T2 t2, T3 t3, T4 t4 , T5 t5);
 
 	public delegate void Action<in T1, in T2, in T3, in T4, in T5 ,  in T6>(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6);
 
@@ -20,7 +19,7 @@ namespace Regulus.Utility
 
 
 
-	public class Command : ICommand
+	public partial class Command : ICommand
 	{
 		public delegate void OnRegister(string command, CommandParameter ret, CommandParameter[] args);
 
@@ -35,85 +34,6 @@ namespace Regulus.Utility
 			public Action<string[]> Handler;
 
 			public string Name;
-		}
-
-		public class CommandParameter
-		{
-			public Type Param { get; private set; }
-
-			public string Description { get; private set; }
-
-			public CommandParameter(Type p, string description)
-			{
-				Param = p;
-				Description = description;
-			}
-
-			public static implicit operator CommandParameter(Type type)
-			{
-				return new CommandParameter(type, string.Empty);
-			}
-		}
-
-		public class Analysis
-		{
-			public string Command { get; private set; }
-
-			public string[] Parameters { get; private set; }
-
-			public Analysis(string message)
-			{
-				_Analyze(message);
-			}
-
-			private void _Analyze(string message)
-			{
-				var expansion = @"^\s*(?<command>\w+)\s*\[\s*(?<args>.+?)\]\s*\[\s*(?<ret>.+?)\s*\]|^\s*(?<command>\w+)\s*\[\s*(?<args>.+?)\]|^\s*(?<command>\w+)\s*";
-				var regex = new Regex(expansion);
-				var match = regex.Match(message);
-				if(match.Success)
-				{
-					var command = match.Groups["command"];
-					Command = command.Value;
-					var args = match.Groups["args"];
-					var ret = match.Groups["ret"];
-					_SetParameters(_AnalyzeArgs(args.Value) , _AnalyzeReturn(ret.Value) );
-				}
-			}
-
-			
-
-
-			private void _SetParameters(string[] parameters , string return_parameter)
-			{
-				Parameters = parameters;
-				Return = return_parameter;
-
-			}
-
-			public string Return { get; private set; }
-
-			private string _AnalyzeReturn(string value)
-			{
-				return value;
-			}
-
-			private string[] _AnalyzeArgs(string message)
-			{
-				var args = new List<string>();
-
-				// \s*(\w+)\s*,?
-				// ^\s*(?<command>\w+)\s*\[\s*(?<args>.+)\]|^\s*(?<command>\w+)\s*
-				const string expansion = @"\s*(?<Arg>\w+)\s*,?";
-				var regex = new Regex(expansion);
-				var matchs = regex.Matches(message);
-				foreach(Match match in  matchs)
-				{
-					args.Add(match.Groups["Arg"].Value);
-				}
-
-				return args.ToArray();
-			}
 		}
 
 		private readonly List<Infomation> _Commands;
