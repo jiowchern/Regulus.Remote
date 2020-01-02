@@ -1,0 +1,10 @@
+language: csharp
+solution: Regulus.sln
+mono: none
+language: csharp
+dotnet: 3.0.0
+
+script:
+ - dotnet restore
+ - dotnet build
+ - dotnet test
