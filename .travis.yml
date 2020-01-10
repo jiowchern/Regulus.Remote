@@ -11,6 +11,6 @@ script:
  - minicover instrument
  - minicover reset
  - dotnet test --no-build
- - minicover uninstrument
- - minicover htmlreport --threshold 90
- - minicover report --threshold 90
+ - dotnet minicover uninstrument
+ - dotnet minicover htmlreport --threshold 90
+ - dotnet minicover report --threshold 90
