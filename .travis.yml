@@ -2,9 +2,13 @@ language: csharp
 solution: Regulus.sln
 mono: none
 language: csharp
-dotnet: 3.0.0
-
+dotnet: 2.1.502
+install:
+ - nuget restore Regulus.sln
+ - nuget install NUnit.Console -Version 3.9.0 -OutputDirectory testrunner
 script:
  - dotnet restore
  - dotnet build
  - dotnet test
+ - msbuild /p:Configuration=Release Regulus.sln
+
