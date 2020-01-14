@@ -4,35 +4,16 @@ branches:
   - master
 image: Visual Studio 2019
 configuration: Release
-dotnet_csproj:
-  patch: true
-  file: '**\*.csproj'
-  version: 0.1.{version}
-  version_prefix: 0.1.{version}
-  package_version: 0.1.{version}
-  assembly_version: 0.1.{version}
-  file_version: 0.1.{version}
-  informational_version: 0.1.{version}
 nuget:
   account_feed: true
   project_feed: true
-before_build:
+build_script:
 - pwsh: >-
     dotnet restore
 
     dotnet tool install --global coveralls.net
-build:
-  publish_nuget: true
-  verbosity: minimal
-after_build:
-- ps: >-
-    Get-ChildItem **\BehaviourTree.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
 
-    Get-ChildItem **\Client.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
-
-    Get-ChildItem **\Server.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
-
-    Get-ChildItem **\Tool.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+    dotnet build
 test_script:
 - pwsh: >-
     dotnet test  /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
