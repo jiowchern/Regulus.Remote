@@ -4,15 +4,6 @@ branches:
   - master
 image: Visual Studio 2019
 configuration: Release
-dotnet_csproj:
-  patch: true
-  file: '**\*.csproj'
-  version: '{version}'
-  version_prefix: '{version}'
-  package_version: '{version}'
-  assembly_version: '{version}'
-  file_version: '{version}'
-  informational_version: '{version}'
 nuget:
   account_feed: true
   project_feed: true
@@ -34,7 +25,7 @@ after_build:
 
     Get-ChildItem **\Tool.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
 test_script:
-- pwsh: >-
+- ps: >-
     dotnet test  /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
 
 
@@ -57,4 +48,4 @@ deploy:
   draft: true
 - provider: NuGet
   api_key:
-    secure: MpSZN9rbs/UO67xFMkdfsETL16yG2KY0h3S53s13iG8WOFPamFIXg44Gpb
+    secure: MpSZN9rbs/UO67xFMkdfsETL16yG2KY0h3S53s13iG8WOFPamFIXg44GpbM4T7qX
