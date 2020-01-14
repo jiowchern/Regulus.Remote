@@ -1,7 +1,7 @@
 version: 0.6.{build}
 branches:
   only:
-  - release
+  - master
 image: Visual Studio 2019
 configuration: Release
 dotnet_csproj:
