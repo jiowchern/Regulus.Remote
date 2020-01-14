@@ -25,8 +25,10 @@ after_build:
 
     Get-ChildItem **\Tool.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
 test_script:
-- ps: >-
+- pwsh: >-
     dotnet test  /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+
+
     csmacnz.coveralls --useRelativePaths --multiple -i "opencover=Regulus.Utility.Test\coverage.opencover.xml;opencvoer=Regulus.Remote.Test\coverage.opencover.xml" --repoToken 4aL4sSKKvWbGicuk2DRR7QvSJnC4e3Hsq
 artifacts:
 - path: artifact\Library\Server
