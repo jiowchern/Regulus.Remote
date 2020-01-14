@@ -4,11 +4,23 @@ branches:
   - release
 image: Visual Studio 2019
 configuration: Release
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj'
+  version: '{version}'
+  version_prefix: '{version}'
+  package_version: '{version}'
+  assembly_version: '{version}'
+  file_version: '{version}'
+  informational_version: '{version}'
 nuget:
   account_feed: true
   project_feed: true
 before_build:
-- cmd: nuget restore
+- pwsh: >-
+    dotnet restore
+
+    dotnet tool install --global coveralls.net
 build:
   publish_nuget: true
   verbosity: minimal
@@ -21,8 +33,12 @@ after_build:
     Get-ChildItem **\Server.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
 
     Get-ChildItem **\Tool.zip | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
-after_test:
-- cmd: build_package.cmd
+test_script:
+- pwsh: >-
+    dotnet test  /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+
+
+    .\csmacnz.Coveralls.exe --useRelativePaths --multiple -i "opencover=Regulus.Utility.Test\coverage.opencover.xml;opencvoer=Regulus.Remote.Test\coverage.opencover.xml" --repoToken 4aL4sSKKvWbGicuk2DRR7QvSJnC4e3Hsq
 artifacts:
 - path: artifact\Library\Server
   name: Server
@@ -41,4 +57,4 @@ deploy:
   draft: true
 - provider: NuGet
   api_key:
-    secure: MpSZN9rbs/UO67xFMkdfsETL16yG2KY0h3S53s13iG8WOFPamFIXg44GpbM4T7qX
+    secure: MpSZN9rbs/UO67xFMkdfsETL16yG2KY0h3S53s13iG8WOFPamFIXg44Gpb
