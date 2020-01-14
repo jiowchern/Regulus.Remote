@@ -11,7 +11,7 @@ before_build:
 - pwsh: >-
     dotnet restore
 
-    dotnet tool install coveralls.net --version 1.0.0 --tool-path tools
+    dotnet tool install --global coveralls.net
 build:
   publish_nuget: true
   verbosity: minimal
@@ -29,7 +29,7 @@ test_script:
     dotnet test  /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
 
 
-    ./tools/csmacnz.Coveralls --multiple -i "opencover=Regulus.Utility.Test\coverage.opencover.xml;opencvoer=Regulus.Remote.Test\coverage.opencover.xml" --repoToken 4aL4sSKKvWbGicuk2DRR7QvSJnC4e3Hsq
+    csmacnz.coveralls --multiple -i "opencover=Regulus.Utility.Test\coverage.opencover.xml;opencvoer=Regulus.Remote.Test\coverage.opencover.xml" --repoToken 4aL4sSKKvWbGicuk2DRR7QvSJnC4e3Hsq
 artifacts:
 - path: artifact\Library\Server
   name: Server
