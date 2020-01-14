@@ -4,6 +4,15 @@ branches:
   - master
 image: Visual Studio 2019
 configuration: Release
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj'
+  version: 0.1.{version}
+  version_prefix: 0.1.{version}
+  package_version: 0.1.{version}
+  assembly_version: 0.1.{version}
+  file_version: 0.1.{version}
+  informational_version: 0.1.{version}
 nuget:
   account_feed: true
   project_feed: true
