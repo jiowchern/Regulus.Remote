@@ -27,9 +27,7 @@ after_build:
 test_script:
 - ps: >-
     dotnet test  /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-
-
-    csmacnz.coveralls --multiple -i "opencover=Regulus.Utility.Test\coverage.opencover.xml;opencvoer=Regulus.Remote.Test\coverage.opencover.xml" --repoToken 4aL4sSKKvWbGicuk2DRR7QvSJnC4e3Hsq
+    csmacnz.coveralls --useRelativePaths --multiple -i "opencover=Regulus.Utility.Test\coverage.opencover.xml;opencvoer=Regulus.Remote.Test\coverage.opencover.xml" --repoToken 4aL4sSKKvWbGicuk2DRR7QvSJnC4e3Hsq
 artifacts:
 - path: artifact\Library\Server
   name: Server
