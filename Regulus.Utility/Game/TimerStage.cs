@@ -5,7 +5,7 @@ using Regulus.Utility;
 
 namespace Regulus.Game
 {
-    public class TimerStage : IStage
+    public class TimerStage : IStatus
     {
         private readonly float _Second;
 
@@ -20,16 +20,16 @@ namespace Regulus.Game
             _Second = second;
         }
 
-        void IStage.Enter()
+        void IStatus.Enter()
         {
             _Counter.Reset();
         }
 
-        void IStage.Leave()
+        void IStatus.Leave()
         {            
         }
 
-        void IStage.Update()
+        void IStatus.Update()
         {
             if(_Counter.Second > _Second)
                 DoneEvent();

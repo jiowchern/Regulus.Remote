@@ -5,7 +5,7 @@ namespace Regulus.Remote.Soul.Console
 {
     public class Application : WindowConsole
     {
-        private StageMachine _Machine;
+        private StatusMachine _Machine;
 
         private readonly string[] _Args;
 
@@ -16,7 +16,7 @@ namespace Regulus.Remote.Soul.Console
 
         protected override void _Launch()
         {
-            _Machine = new StageMachine();
+            _Machine = new StatusMachine();
             _ToStart();
         }
 

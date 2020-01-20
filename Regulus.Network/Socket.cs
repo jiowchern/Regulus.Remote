@@ -16,7 +16,7 @@ namespace Regulus.Network
         public event Action CloseEvent;
         private readonly Line m_Line;
 
-        private readonly StageMachine<Timestamp> m_Machine;
+        private readonly StatusMachine<Timestamp> m_Machine;
 
         
         private PeerStatus m_Status;
@@ -40,7 +40,7 @@ namespace Regulus.Network
             _ReadTask = new Task();
             
             m_Line = Line;
-            m_Machine = new StageMachine<Timestamp>();
+            m_Machine = new StatusMachine<Timestamp>();
             
 
         }

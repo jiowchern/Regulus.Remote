@@ -97,7 +97,7 @@ namespace Regulus.Remote
 
 		private const int _HeadSize = 4;
 
-		private readonly StageMachine _Machine;
+		private readonly StatusMachine _Machine;
 
 		private readonly RequestPackage[] _Packages;
 
@@ -107,7 +107,7 @@ namespace Regulus.Remote
 		{
 			_Socket = socket;
 			_Packages = packages;
-			_Machine = new StageMachine();
+			_Machine = new StatusMachine();
 		}
 
 		void IStage.Enter()
@@ -298,14 +298,14 @@ namespace Regulus.Remote
 
 		private const int _HeadSize = 4;
 
-		private readonly StageMachine _Machine;
+		private readonly StatusMachine _Machine;
 
 		private readonly Socket _Socket;
 
 		public NetworkStreamReadStage(Socket socket)
 		{
 			_Socket = socket;
-			_Machine = new StageMachine();
+			_Machine = new StatusMachine();
 		}
 
 		void IStage.Enter()

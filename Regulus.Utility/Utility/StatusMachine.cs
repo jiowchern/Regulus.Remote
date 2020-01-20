@@ -2,48 +2,48 @@
 
 namespace Regulus.Utility
 {
-	public class EmptyStage : IStage
+	public class EmptyStage : IStatus
 	{
-		void IStage.Enter()
+		void IStatus.Enter()
 		{
 		}
 
-		void IStage.Leave()
+		void IStatus.Leave()
 		{
 		}
 
-		void IStage.Update()
+		void IStatus.Update()
 		{
 		}
 	}
 
-	public class StageMachine
+	public class StatusMachine
 	{
-		private readonly Queue<IStage> _StandBys;
+		private readonly Queue<IStatus> _StandBys;
 
-		public IStage Current { get; private set; }
+		public IStatus Current { get; private set; }
 
-		public StageMachine()
+		public StatusMachine()
 		{
-			_StandBys = new Queue<IStage>();
+			_StandBys = new Queue<IStatus>();
 		}
 
-		public void Push(IStage new_stage)
+		public void Push(IStatus new_stage)
 		{
 			_StandBys.Enqueue(new_stage);
 		}
 
 		public bool Update()
 		{
-			_SetCurrentStage();
-			_UpdateCurrentStage();
+			_SetCurrent();
+			_UpdateCurrent();
 
 			return Current != null;
 		}
 
-		private void _SetCurrentStage()
+		private void _SetCurrent()
 		{
-			IStage stage;
+			IStatus stage;
 			if(_StandBys.TryDequeue(out stage))
 			{
 				if(Current != null)
@@ -56,7 +56,7 @@ namespace Regulus.Utility
 			}
 		}
 
-		private void _UpdateCurrentStage()
+		private void _UpdateCurrent()
 		{
 			if(Current != null)
 			{
@@ -82,18 +82,18 @@ namespace Regulus.Utility
 
 
 
-    public class StageMachine<TArg> 
+    public class StatusMachine<TArg> 
     {
-        private readonly Queue<IStage<TArg>> _StandBys;
+        private readonly Queue<IStatus<TArg>> _StandBys;
 
-        public IStage<TArg> Current { get; private set; }
+        public IStatus<TArg> Current { get; private set; }
 
-        public StageMachine()
+        public StatusMachine()
         {
-            _StandBys = new Queue<IStage<TArg>>();
+            _StandBys = new Queue<IStatus<TArg>>();
         }
 
-        public void Push(IStage<TArg> new_stage)
+        public void Push(IStatus<TArg> new_stage)
         {
             _StandBys.Enqueue(new_stage);
         }
@@ -101,15 +101,15 @@ namespace Regulus.Utility
         public bool Update(TArg args)
         {
             
-            _SetCurrentStage();
-            _UpdateCurrentStage(args);
+            _SetCurrent();
+            _UpdateCurrent(args);
 
             return Current != null;
         }
 
-        private void _SetCurrentStage()
+        private void _SetCurrent()
         {
-            IStage<TArg> stage;
+            IStatus<TArg> stage;
             if (_StandBys.TryDequeue(out stage))
             {
                 if (Current != null)
@@ -122,7 +122,7 @@ namespace Regulus.Utility
             }
         }
 
-        private void _UpdateCurrentStage(TArg arg)  
+        private void _UpdateCurrent(TArg arg)  
         {
             if (Current != null)
             {
@@ -137,7 +137,7 @@ namespace Regulus.Utility
             if (Current != null)
             {
                 Current.Leave();
-                Current = default(IStage<TArg>);
+                Current = default(IStatus<TArg>);
             }
         }
 
@@ -147,19 +147,19 @@ namespace Regulus.Utility
         }
     }
 
-    internal class EmptyStage<TArg> : IStage<TArg>
+    internal class EmptyStage<TArg> : IStatus<TArg>
     {
-        void IStage<TArg>.Enter()
+        void IStatus<TArg>.Enter()
         {
             
         }
 
-        void IStage<TArg>.Leave()
+        void IStatus<TArg>.Leave()
         {
             
         }
 
-        void IStage<TArg>.Update(TArg obj)
+        void IStatus<TArg>.Update(TArg obj)
         {
             
         }

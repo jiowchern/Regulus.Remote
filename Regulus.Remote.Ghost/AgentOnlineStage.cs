@@ -9,7 +9,7 @@ namespace Regulus.Remote.Ghost
 {
 	public partial class Agent
 	{
-		private class OnlineStage : IStage, IGhostRequest
+		private class OnlineStage : IStatus, IGhostRequest
 		{
 			public event Action DoneFromServerEvent;
 
@@ -61,7 +61,7 @@ namespace Regulus.Remote.Ghost
 				}
 			}
 
-			void IStage.Enter()
+			void IStatus.Enter()
 			{
 				Singleton<Log>.Instance.WriteInfo("Agent online enter.");
 
@@ -76,7 +76,7 @@ namespace Regulus.Remote.Ghost
 				_WriterStart();
 			}
 
-			void IStage.Leave()
+			void IStatus.Leave()
 			{
 				_WriterStop();
 				_ReaderStop();
@@ -91,7 +91,7 @@ namespace Regulus.Remote.Ghost
 				Singleton<Log>.Instance.WriteInfo("Agent online leave.");
 			}
 
-			void IStage.Update()
+			void IStatus.Update()
 			{
 				if(_Enable == false)
 				{

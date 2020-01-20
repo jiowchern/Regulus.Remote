@@ -12,7 +12,7 @@ namespace Regulus.Remote
 
 		private readonly TProvider<IConnect> _ConnectProvider;
 
-		private readonly StageMachine _Machine;
+		private readonly StatusMachine _Machine;
 
 		private readonly TProvider<IOnline> _OnlineProvider;
 
@@ -35,7 +35,7 @@ namespace Regulus.Remote
 			_Agent = agent;
 			_ConnectProvider = new TProvider<IConnect>();
 			_OnlineProvider = new TProvider<IOnline>();
-			_Machine = new StageMachine();
+			_Machine = new StatusMachine();
 			_Updater = new Updater();
 		}
 

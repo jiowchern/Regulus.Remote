@@ -5,7 +5,7 @@ using Regulus.Utility;
 
 namespace Regulus.Framework
 {
-	internal class SelectMode<TUser> : IStage
+	internal class SelectMode<TUser> : IStatus
 		where TUser : class, IUpdatable
 	{
 		public delegate void OnDone<TUser>(UserProvider<TUser> console) where TUser : class, IUpdatable;
@@ -24,7 +24,7 @@ namespace Regulus.Framework
 			_Selector = mode_selector;
 		}
 
-		void IStage.Enter()
+		void IStatus.Enter()
 		{
 			_Selector.GameConsoleEvent += _ObtainConsole;
 			_Command.Register<string>("CreateMode", _CreateGameConsole);
@@ -32,13 +32,13 @@ namespace Regulus.Framework
 			InitialedEvent();
 		}
 
-		void IStage.Leave()
+		void IStatus.Leave()
 		{
 			_Command.Unregister("CreateMode");
 			_Selector.GameConsoleEvent -= _ObtainConsole;
 		}
 
-		void IStage.Update()
+		void IStatus.Update()
 		{
 		}
 

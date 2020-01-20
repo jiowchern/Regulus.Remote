@@ -1,6 +1,6 @@
 ﻿namespace Regulus.Utility
 {
-	public interface IStage
+	public interface IStatus
 	{
 		void Enter();
 
@@ -11,7 +11,7 @@
 
 	
 
-	public interface IStage<T> 
+	public interface IStatus<T> 
     {
         void Enter();
 

@@ -8,7 +8,7 @@ namespace Regulus.Remote.Ghost
 {
 	public partial class Agent
 	{
-		private class ConnectStage : IStage
+		private class ConnectStage : IStatus
 		{
 			public event Action<bool, IPeer> ResultEvent;
 
@@ -30,7 +30,7 @@ namespace Regulus.Remote.Ghost
 
             }
 
-			void IStage.Enter()
+			void IStatus.Enter()
 			{
 				Singleton<Log>.Instance.WriteInfo("connect stage enter.");
 				Singleton<Log>.Instance.WriteInfo("Agent connect start .");
@@ -54,7 +54,7 @@ namespace Regulus.Remote.Ghost
 				}
 			}
 
-			void IStage.Leave()
+			void IStatus.Leave()
 			{
 				if(_Result.HasValue == false && ResultEvent != null)
 				{
@@ -71,7 +71,7 @@ namespace Regulus.Remote.Ghost
 				Singleton<Log>.Instance.WriteInfo("Agent connect leave.");
 			}
 
-			void IStage.Update()
+			void IStatus.Update()
 			{
 				_InvokeResultEvent();
 			}

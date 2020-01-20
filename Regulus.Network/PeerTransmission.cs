@@ -6,7 +6,7 @@ using Regulus.Utility;
 
 namespace Regulus.Network
 {
-    internal class PeerTransmission : IStage<Timestamp>
+    internal class PeerTransmission : IStatus<Timestamp>
     {
         private readonly ConcurrentQueue<Task> _SendTasks;
         private readonly Line _Line;
@@ -24,17 +24,17 @@ namespace Regulus.Network
             _Stream = new SegmentStream(new SocketMessage[0]);
         }
 
-        void IStage<Timestamp>.Enter()
+        void IStatus<Timestamp>.Enter()
         {
             
         }
 
-        void IStage<Timestamp>.Leave()
+        void IStatus<Timestamp>.Leave()
         {
             _Line.WriteOperation(PeerOperation.RequestDisconnect);
         }
 
-        void IStage<Timestamp>.Update(Timestamp timestamp)
+        void IStatus<Timestamp>.Update(Timestamp timestamp)
         {
 
 

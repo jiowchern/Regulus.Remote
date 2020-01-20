@@ -5,7 +5,7 @@ using Regulus.Utility;
 
 namespace Regulus.Remote
 {
-	internal class OnlineStage : IStage
+	internal class OnlineStage : IStatus
 	{
 		private event Action _BreakEvent;
 
@@ -28,19 +28,19 @@ namespace Regulus.Remote
 			_Online = new Online(agent);
 		}
 
-		void IStage.Enter()
+		void IStatus.Enter()
 		{
 			_Agent.BreakEvent += _BreakEvent;
 			_Bind(_OnlineProvider);
 		}
 
-		void IStage.Leave()
+		void IStatus.Leave()
 		{
 			_Unbind(_OnlineProvider);
 			_Agent.BreakEvent -= _BreakEvent;
 		}
 
-		void IStage.Update()
+		void IStatus.Update()
 		{
 			if(_Agent.Connected == false)
 			{

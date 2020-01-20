@@ -4,7 +4,7 @@ namespace Regulus.Remote.Ghost
 {
 	public partial class Agent
 	{
-		private class TerminationStage : IStage
+		private class TerminationStage : IStatus
 		{
 			private Agent agent;
 
@@ -14,15 +14,15 @@ namespace Regulus.Remote.Ghost
 				this.agent = agent;
 			}
 
-			void IStage.Enter()
+			void IStatus.Enter()
 			{
 			}
 
-			void IStage.Leave()
+			void IStatus.Leave()
 			{
 			}
 
-			void IStage.Update()
+			void IStatus.Update()
 			{
 			}
 		}

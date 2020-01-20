@@ -141,11 +141,11 @@ using UnityEngine.Events;
         public string Agent;        
         Regulus.Remote.INotifier<{0}.{1}> _Notifier;
 
-        private readonly Regulus.Utility.StageMachine _Machine;
+        private readonly Regulus.Utility.StatusMachine _Machine;
 
         public {2}Broadcaster()
         {{
-            _Machine = new StageMachine();
+            _Machine = new StatusMachine();
         }} 
 
         public void Start()
@@ -242,7 +242,7 @@ namespace {0}.Adsorption
         
     public class {7}Adsorber : UnityEngine.MonoBehaviour , Regulus.Remote.Unity.Adsorber<{1}>
     {{
-        private readonly Regulus.Utility.StageMachine _Machine;        
+        private readonly Regulus.Utility.StatusMachine _Machine;        
         
         public string Agent;
 
@@ -258,7 +258,7 @@ namespace {0}.Adsorption
        
         public {7}Adsorber()
         {{
-            _Machine = new Regulus.Utility.StageMachine();
+            _Machine = new Regulus.Utility.StatusMachine();
         }}
 
         public void Start()

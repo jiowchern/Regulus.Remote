@@ -16,7 +16,8 @@ namespace Regulus.Utility.Tests
             base.Invoke();
         }
     }
-    [TestFixture()]
+
+        [TestFixture()]
     public class EventTests
     {
 

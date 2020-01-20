@@ -42,7 +42,7 @@ namespace Regulus.Remote.Soul.Console
         }
     }
 
-    internal class StageRun : IStage
+    internal class StageRun : IStatus
     {
         public event Action ShutdownEvent;
 
@@ -70,7 +70,7 @@ namespace Regulus.Remote.Soul.Console
             ShutdownEvent();
         }
 
-        void IStage.Enter()
+        void IStatus.Enter()
         {
             _Launcher.Launch();
             _Command.Register(
@@ -102,7 +102,7 @@ namespace Regulus.Remote.Soul.Console
             _Command.Register("Shutdown", _ShutdownEvent);
         }
 
-        void IStage.Leave()
+        void IStatus.Leave()
         {
             _Launcher.Shutdown();
 
@@ -110,7 +110,7 @@ namespace Regulus.Remote.Soul.Console
             _Command.Unregister("FPS");
         }
 
-        void IStage.Update()
+        void IStatus.Update()
         {
         }
 

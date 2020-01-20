@@ -11,7 +11,7 @@ namespace Regulus.Framework
 
 		
 
-		private readonly StageMachine _Machine;
+		private readonly StatusMachine _Machine;
 
 		private readonly Console.IViewer _View;
 
@@ -30,7 +30,7 @@ namespace Regulus.Framework
 	    public Client(Console.IViewer view , Command command)
 	    {
             Enable = true;
-            _Machine = new StageMachine();
+            _Machine = new StatusMachine();
 
             _View = view;
 	        _Command = command;

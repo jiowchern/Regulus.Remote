@@ -9,7 +9,7 @@ using Console = Regulus.Utility.Console;
 
 namespace Regulus.Remote.Soul.Console
 {
-    internal class StageStart : IStage
+    internal class StageStart : IStatus
     {
         public event Action<IEntry, IProtocol, int, IListenable> DoneEvent;
 
@@ -27,7 +27,7 @@ namespace Regulus.Remote.Soul.Console
             _Command = command;
         }
 
-        void IStage.Enter()
+        void IStatus.Enter()
         {
 
             _Command.RegisterLambda<StageStart, string>(this, (instance, ini_path) => instance.LaunchIni(ini_path));
@@ -67,13 +67,13 @@ namespace Regulus.Remote.Soul.Console
         }
 
 
-        void IStage.Leave()
+        void IStatus.Leave()
         {
             _Command.Unregister("Launch");
             _Command.Unregister("LaunchIni");
         }
 
-        void IStage.Update()
+        void IStatus.Update()
         {
         }
 

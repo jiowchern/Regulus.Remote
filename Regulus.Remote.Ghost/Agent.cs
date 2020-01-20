@@ -19,7 +19,7 @@ namespace Regulus.Remote.Ghost
 
 		private readonly AgentCore _Core;
 
-		private readonly StageMachine _Machine;
+		private readonly StatusMachine _Machine;
 	    private readonly IConnectProviderable _ConnectProivder;
 
 	    private long _Ping
@@ -31,7 +31,7 @@ namespace Regulus.Remote.Ghost
 	    {
 	    
             _Serializer = protocol.GetSerialize();
-	        _Machine = new StageMachine();
+	        _Machine = new StatusMachine();
             _Core = new AgentCore(protocol);
 	        _ConnectProivder = client;
 	        
@@ -177,7 +177,7 @@ namespace Regulus.Remote.Ghost
 			}
 		}
 
-		private void _ToOnline(StageMachine machine, IPeer peer)
+		private void _ToOnline(StatusMachine machine, IPeer peer)
 		{
 			var onlineStage = new OnlineStage(peer, _Core , _Serializer);
 			onlineStage.DoneFromServerEvent += () =>

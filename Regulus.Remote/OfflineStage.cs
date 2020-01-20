@@ -2,7 +2,7 @@
 
 namespace Regulus.Remote
 {
-	internal class OfflineStage : IStage
+	internal class OfflineStage : IStatus
 	{
 		public delegate void OnDone();
 
@@ -21,17 +21,17 @@ namespace Regulus.Remote
 			_Connect = new Connect();
 		}
 
-		void IStage.Enter()
+		void IStatus.Enter()
 		{
 			_Bind(_ConnectProvider);
 		}
 
-		void IStage.Leave()
+		void IStatus.Leave()
 		{
 			_Unbind(_ConnectProvider);
 		}
 
-		void IStage.Update()
+		void IStatus.Update()
 		{
 			if(_Agent.Connected)
 			{
