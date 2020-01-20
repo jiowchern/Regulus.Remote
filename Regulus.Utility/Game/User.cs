@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 
 
 using Regulus.Utility;
@@ -20,3 +20,4 @@ namespace Regulus.Game
 		void OnKick(Guid id);
 	}
 }
+*/

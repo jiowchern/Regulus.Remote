@@ -3,6 +3,8 @@ using NSubstitute;
 
 namespace Regulus.Utility.Tests
 {
+
+
     [TestFixture()]
     public class StatusMachineTests
     {
