@@ -7,6 +7,8 @@ configuration: Release
 nuget:
   account_feed: true
   project_feed: true
+before_build:
+- cmd: nuget restore
 build:
   publish_nuget: true
   publish_core_console: true
