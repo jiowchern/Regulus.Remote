@@ -22,6 +22,9 @@ test_script:
 
 
     ./tools/csmacnz.Coveralls.exe --useRelativePaths --multiple -i "opencover=Regulus.Utility.Test\coverage.opencover.xml;opencvoer=Regulus.Remote.Test\coverage.opencover.xml;opencvoer=Regulus.Serialization.Test\coverage.opencover.xml;opencvoer=Regulus.Remote.Protocol.Test\coverage.opencover.xml;opencvoer=Regulus.Remote.Client.JIT.Test\coverage.opencover.xml;opencvoer=Regulus.Network.Test\coverage.opencover.xml;opencvoer=Regulus.LockstepTest\coverage.opencover.xml;opencvoer=Regulus.LockstepTest\coverage.opencover.xml;opencvoer=Regulus.BehaviourTree.Test\coverage.opencover.xml;opencvoer=Regulus.Application.Protocol.Generator.Test\coverage.opencover.xml" --repoToken 4aL4sSKKvWbGicuk2DRR7QvSJnC4e3Hsq
+
+
+    ./build_package.cmd
 artifacts:
 - path: artifact\Library\Server
   name: Server
