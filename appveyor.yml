@@ -21,7 +21,7 @@ test_script:
     dotnet tool install coveralls.net --version 1.0.0 --tool-path tools
 
 
-    ./tools/csmacnz.Coveralls.exe --useRelativePaths --multiple -i "opencover=Regulus.Utility.Test\coverage.opencover.xml;opencover=Regulus.Remote.Test\coverage.opencover.xml;opencover=Regulus.Serialization.Test\coverage.opencover.xml;opencover=Regulus.Remote.Protocol.Test\coverage.opencover.xml;opencover=Regulus.Remote.Client.JIT.Test\coverage.opencover.xml;opencover=Regulus.Network.Test\coverage.opencover.xml;opencover=Regulus.LockstepTest\coverage.opencover.xml;opencover=Regulus.BehaviourTree.Test\coverage.opencover.xml;opencover=Regulus.Application.Protocol.Generator.Test\coverage.opencover.xml" --repoToken 4aL4sSKKvWbGicuk2DRR7QvSJnC4e3Hsq
+    ./tools/csmacnz.Coveralls.exe --useRelativePaths --multiple -i "opencover=Regulus.Utility.Test\coverage.opencover.xml;opencvoer=Regulus.Remote.Test\coverage.opencover.xml;opencvoer=Regulus.Serialization.Test\coverage.opencover.xml;opencvoer=Regulus.Remote.Protocol.Test\coverage.opencover.xml;opencvoer=Regulus.Remote.Client.JIT.Test\coverage.opencover.xml;opencvoer=Regulus.Network.Test\coverage.opencover.xml;opencvoer=Regulus.LockstepTest\coverage.opencover.xml;opencvoer=Regulus.LockstepTest\coverage.opencover.xml;opencvoer=Regulus.BehaviourTree.Test\coverage.opencover.xml;opencvoer=Regulus.Application.Protocol.Generator.Test\coverage.opencover.xml" --repoToken 4aL4sSKKvWbGicuk2DRR7QvSJnC4e3Hsq
 artifacts:
 - path: artifact\Library\Server
   name: Server
@@ -33,11 +33,16 @@ artifacts:
   name: Tool
 - path: artifact\Library\Serialization
   name: Serialization
+before_deploy:
+- cmd: build_package.cmd
 deploy:
 - provider: GitHub
   auth_token:
     secure: /AfJAx3kxJ0kcGiZVCl5U7v3f9Z0qIDDN5L+ckDjxzkULqDK0fhwWVgcqRNukVln
   draft: true
+  prerelease: true
 - provider: NuGet
   api_key:
     secure: MpSZN9rbs/UO67xFMkdfsETL16yG2KY0h3S53s13iG8WOFPamFIXg44GpbM4T7qX
+  on:
+    branch: master
