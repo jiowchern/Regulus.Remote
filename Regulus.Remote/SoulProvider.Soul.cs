@@ -6,7 +6,7 @@ namespace Regulus.Remote
 {
     public partial class SoulProvider
     {
-        private partial class Soul
+        public partial class Soul
 		{
 
 			public Guid ID { get; set; }
@@ -27,14 +27,12 @@ namespace Regulus.Remote
 			{
 				foreach(var handler in PropertyHandlers)
 				{
-					var val = handler.PropertyInfo.GetValue(ObjectInstance, null);
 
-					if(handler.UpdateProperty(val))
+
+					object val;
+					if (handler.TryUpdate(ObjectInstance,out val))
 					{
-						if(update_property != null)
-						{
-							update_property(ID, handler.Id, val);
-						}
+						update_property(ID, handler.Id, val);
 					}
 				}
 			}

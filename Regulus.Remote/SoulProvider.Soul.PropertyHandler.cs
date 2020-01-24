@@ -5,31 +5,38 @@ namespace Regulus.Remote
 {
     public partial class SoulProvider
     {
-        private partial class Soul
+        public partial class Soul
 		{
             public class PropertyHandler
 			{
-				public readonly PropertyInfo PropertyInfo;
+				private readonly PropertyInfo _PropertyInfo;
 
-				public object Value;
+				private object _Value;
 
 			    public readonly int Id;
 
 			    public PropertyHandler(PropertyInfo info, int id)
 			    {
-			        PropertyInfo = info;
+			        _PropertyInfo = info;
 			        Id = id;
 			    }
 
-                internal bool UpdateProperty(object val)
+                private bool _UpdateProperty(object val)
 				{
-					if(!ValueHelper.DeepEqual(Value, val))
+					if(!ValueHelper.DeepEqual(_Value, val))
 					{
-						Value = ValueHelper.DeepCopy(val);
+						_Value = ValueHelper.DeepCopy(val);
 						return true;
 					}
 
 					return false;
+				}
+
+				public bool TryUpdate(object instance , out object value)
+				{
+					value = _PropertyInfo.GetValue(instance, null);
+					return _UpdateProperty(value);
+					
 				}
 			}
 		}

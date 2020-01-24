@@ -5,7 +5,7 @@ namespace Regulus.Remote
 {
     public partial class SoulProvider
     {
-        private partial class Soul
+        public partial class Soul
 		{
             public class EventHandler
 			{

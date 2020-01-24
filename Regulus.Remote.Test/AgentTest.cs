@@ -16,7 +16,6 @@ namespace Regulus.Remote.Tests
 
         //event Action<float, string> OnCallEvent;
     }
-    
     public class AgentTest
     {
         [NUnit.Framework.Test()]
@@ -29,13 +28,13 @@ namespace Regulus.Remote.Tests
             {
                 has = true;
             };
-            
+
             agent.Connect(new System.Net.IPEndPoint(0, 0));
 
             NUnit.Framework.Assert.True(has);
-
-
         }
+
+
 
     }
 }
