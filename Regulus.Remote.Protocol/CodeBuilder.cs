@@ -200,7 +200,7 @@ namespace Regulus.Remote.Protocol
         private string _BuildVerificationCode(StringBuilder builder)
         {
             var md5 = MD5.Create();
-            var code = md5.ComputeHash(Encoding.Default.GetBytes(builder.ToString()));            
+            var code = md5.ComputeHash(Encoding.ASCII.GetBytes(builder.ToString()));            
             Regulus.Utility.Log.Instance.WriteInfo("Verification Code " + Convert.ToBase64String(code));
             return string.Join(",", code.Select(val => val.ToString()).ToArray());
         }
