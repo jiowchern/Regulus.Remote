@@ -30,11 +30,12 @@ namespace Regulus.Remote.Soul.Console
         void IStatus.Enter()
         {
 
-            _Command.RegisterLambda<StageStart, string>(this, (instance, ini_path) => instance.LaunchIni(ini_path));
+            _Command.RegisterLambda<StageStart, string>(this, (instance, ini_path) => instance.LaunchIniCommon(ini_path));
+            _Command.RegisterLambda<StageStart,int ,  string, string, string>(this, (instance, port , protocol_path , project_path , project_entry ) => instance.LaunchProtocol(port, protocol_path, project_path, project_entry));
 
 
             _View.WriteLine("======Ini file format description=====");
-            _View.WriteLine("Example.");
+            _View.WriteLine("LaunchIniCommon Example.");
             _View.WriteLine("[Launch]");
             _View.WriteLine("port = 12345");
             _View.WriteLine("common_path = path/common.dll");
@@ -50,6 +51,22 @@ namespace Regulus.Remote.Soul.Console
                 _RunFirstCommand();
             }
 
+        }
+
+        public void LaunchProtocol(int port , string protocol_path , string project_path , string project_entry)
+        {
+            var instance = _CreateProject(project_path, project_entry);
+            
+            IListenable server = _CreateServer(false);
+
+            DoneEvent(instance, _LoadProtocol(protocol_path) , port, server);
+        }
+
+        private IProtocol _LoadProtocol(string protocol_path)
+        {
+            var assembly = Assembly.LoadFrom(protocol_path);
+
+            return Regulus.Remote.Protocol.ProtocolProvider.Create(assembly);
         }
 
         private void _RunFirstCommand()
@@ -69,15 +86,15 @@ namespace Regulus.Remote.Soul.Console
 
         void IStatus.Leave()
         {
-            _Command.Unregister("Launch");
-            _Command.Unregister("LaunchIni");
+            _Command.Unregister(nameof(this.LaunchProtocol));
+            _Command.Unregister(nameof(this.LaunchIniCommon));
         }
 
         void IStatus.Update()
         {
         }
 
-        private void LaunchIni(string path)
+        private void LaunchIniCommon(string path)
         {
             try
             {
@@ -132,6 +149,7 @@ namespace Regulus.Remote.Soul.Console
             
             var buidler = new Regulus.Remote.Protocol.AssemblyBuilder(Regulus.Remote.Protocol.Essential.CreateFromDomain(assembly) );
             var asm = buidler.Create();
+
             
             return Regulus.Remote.Protocol.ProtocolProvider.Create(asm) ;
         }
