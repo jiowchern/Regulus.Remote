@@ -50,7 +50,7 @@ namespace Regulus.Remote
         /// <summary>
         ///     斷線
         /// </summary>
-        void Disconnect();
+        void Disconnect();        
 
         /// <summary>
         /// 錯誤的方法呼叫

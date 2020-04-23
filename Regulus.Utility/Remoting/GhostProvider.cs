@@ -4,54 +4,9 @@ using System.Linq;
 
 namespace Regulus.Remote
 {
-	/// <summary>
-	///     介面物件通知器
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public interface INotifier<T>
-	{
-		/// <summary>
-		///     伺服器端如果有物件傳入則會發生此事件
-		///     此事件傳回的物件如果沒有備參考到則會發生Unsupply
-		/// </summary>
-		event Action<T> Return;
-
-		/// <summary>
-		///     伺服器端如果有物件傳入則會發生此事件
-		/// </summary>
-		event Action<T> Supply;
-
-		/// <summary>
-		///     伺服器端如果有物件關閉則會發生此事件
-		/// </summary>
-		event Action<T> Unsupply;
-
-		/// <summary>
-		///     在系統裡的介面物件數量
-		/// </summary>
-		T[] Ghosts { get; }
-
-		/// <summary>
-		///     在系統裡的介面物件數量(弱參考型別)
-		/// </summary>
-		T[] Returns { get; }
-	}
-
-	public interface IProvider
-	{
-		IGhost[] Ghosts { get; }
-
-		void Add(IGhost entiry);
-
-		void Remove(Guid id);
-
-		IGhost Ready(Guid id);
-
-		void ClearGhosts();
-	}
 
 	public class TProvider<T> : INotifier<T>, IProvider
-		where T : class
+		
 	{
 		private event Action<T> _Return;
 
@@ -123,7 +78,7 @@ namespace Regulus.Remote
 
 		void IProvider.Add(IGhost entity)
 		{
-			_Waits.Add(entity as T);
+			_Waits.Add((T)entity );
 		}
 
 		void IProvider.Remove(Guid id)
@@ -141,7 +96,7 @@ namespace Regulus.Remote
 		{
 			get
 			{
-				var all = _Entitys.Concat(_Waits).Concat(from r in _Returns where r.IsAlive select r.Target as T);
+				var all = _Entitys.Concat(_Waits).Concat(from r in _Returns where r.IsAlive select (T)r.Target  );
 				return (from entity in all select (IGhost)entity).ToArray();
 			}
 		}
@@ -224,7 +179,7 @@ namespace Regulus.Remote
 
 		private T[] _RemoveNoRefenceReturns()
 		{
-			var alives = (from w in _Returns where w.IsAlive select w.Target as T).ToArray();
+			var alives = (from w in _Returns where w.IsAlive select (T)w.Target  ).ToArray();
 			_Returns.RemoveAll(w => w.IsAlive == false);
 			return alives;
 		}

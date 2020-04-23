@@ -193,7 +193,7 @@ namespace Regulus.Remote.Protocol
             var paramCode = _BuildAddParams(method_info);
             
             var code =
-                $"new Regulus.Remote.AOT.TypeMethodCatcher((System.Linq.Expressions.Expression<System.Action{argTypesCode}>)(({argInstanceCode}{paramCode}) => ins.{methodCode}({paramCode}))).Method";
+                $"new Regulus.Utility.Reflection.TypeMethodCatcher((System.Linq.Expressions.Expression<System.Action{argTypesCode}>)(({argInstanceCode}{paramCode}) => ins.{methodCode}({paramCode}))).Method";
             return code;
         }
 
