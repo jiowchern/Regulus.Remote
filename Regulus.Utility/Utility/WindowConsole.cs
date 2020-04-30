@@ -16,7 +16,7 @@ namespace Regulus.Utility
 
 		private readonly Console _Console;
 
-		private readonly ConsoleInput _Input;
+		private readonly Console.IInput _Input;
 
 		private readonly Updater _Updater;
 
@@ -34,7 +34,20 @@ namespace Regulus.Utility
 		{            
             _AutoPowerRegulator = new AutoPowerRegulator(new PowerRegulator());
             Viewer = new ConsoleViewer();
-			_Input = new ConsoleInput(Viewer);
+			var consoleInput = new ConsoleInput(Viewer);
+			_Input = consoleInput;
+			_Console = new Console(_Input, Viewer);
+			_Updater = new Updater();
+
+
+			_Updater.Add(consoleInput);
+		}
+
+		protected WindowConsole(Console.IViewer viewer , Console.IInput input)
+		{
+			_AutoPowerRegulator = new AutoPowerRegulator(new PowerRegulator());
+			Viewer = viewer;
+			_Input = input;
 			_Console = new Console(_Input, Viewer);
 			_Updater = new Updater();
 		}
@@ -44,7 +57,7 @@ namespace Regulus.Utility
 
             ShowLog();
 
-			_Updater.Add(_Input);
+			
 
 			_Launch();
 		}

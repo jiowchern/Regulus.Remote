@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace Regulus.Utility
@@ -22,7 +23,7 @@ namespace Regulus.Utility
 
 			private void _Analyze(string message)
 			{
-				var expansion = @"^\s*(?<command>\w+)\s*\[\s*(?<args>.+?)\]\s*\[\s*(?<ret>.+?)\s*\]|^\s*(?<command>\w+)\s*\[\s*(?<args>.+?)\]|^\s*(?<command>\w+)\s*";
+				var expansion = @"^\s*(?<command>\w+-?\d*\.?\w*)\s*\[\s*(?<args>.+?)\]\s*\[\s*(?<ret>.+?)\s*\]|^\s*(?<command>\w+-?\d*\.?\w*)\s*\[\s*(?<args>.+?)\]|^\s*(?<command>\w+-?\d*\.?\w*)\s*";
 				var regex = new Regex(expansion);
 				var match = regex.Match(message);
 				if(match.Success)
@@ -69,5 +70,7 @@ namespace Regulus.Utility
 				return args.ToArray();
 			}
 		}
-	}
+
+     
+    }
 }

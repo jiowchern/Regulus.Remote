@@ -31,9 +31,17 @@ namespace Regulus.Utility
 
 		private class Infomation
 		{
-			public Action<string[]> Handler;
+			public readonly Action<string[]> Handler;
 
-			public string Name;
+			public readonly string Name;
+			internal readonly Guid Id;
+
+			public Infomation(string name , Action<string[]> handler)
+			{
+				Name = name;
+				Handler = handler;
+				Id = System.Guid.NewGuid();
+			}
 		}
 
 		private readonly List<Infomation> _Commands;
@@ -302,12 +310,16 @@ namespace Regulus.Utility
 			};
 			_Register(exp, func);
 		}
-
-		private void _Register(string command, Action<string[]> func, Type return_type, Type[] param_types)
+		public System.Guid Register(string command, Action<string[]> func, Type return_type, Type[] param_types)
+		{
+			return _Register(command, func, return_type , param_types);
+		}
+		private System.Guid _Register(string command, Action<string[]> func, Type return_type, Type[] param_types)
 		{
 			var analysis = new Analysis(command);
-			_AddCommand(analysis.Command, func);
+			var id = _AddCommand(analysis.Command, func);
 			_SendRegister(analysis, return_type, param_types);
+			return id;
 		}
 		public void Register(string command, Action executer)
 		{
@@ -565,9 +577,19 @@ namespace Regulus.Utility
 
 		public void Unregister(string command)
 		{
-			if(_Commands.RemoveAll(cmd => cmd.Name == command) > 0)
+			var analysis = new Analysis(command);
+			if (_Commands.RemoveAll(cmd => cmd.Name == analysis.Command) > 0)
 			{
 				UnregisterEvent(command);
+			}
+		}
+
+		public void Unregister(System.Guid id)
+		{
+			var cmd = _Commands.FirstOrDefault( info => info.Id == id);
+			if (cmd != null && _Commands.RemoveAll(info  => info.Id == id) > 0)
+			{
+				UnregisterEvent(cmd.Name);
 			}
 		}
 
@@ -669,14 +691,12 @@ namespace Regulus.Utility
 			// throw new NotImplementedException();
 		}
 
-		private void _AddCommand(string command, Action<string[]> func)
+		private System.Guid _AddCommand(string command, Action<string[]> func)
 		{
-			_Commands.Add(
-				new Infomation
-				{
-					Name = command, 
-					Handler = func
-				});
+			var info = new Infomation(command, func);
+			_Commands.Add(info);
+
+			return info.Id;
 		}
 
 		public int Run(string command, string[] args)

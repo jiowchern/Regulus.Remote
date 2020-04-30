@@ -2,6 +2,7 @@
 
 namespace Regulus.Remote.Client
 {
+    
     public static class AgentProivder
     {        
 

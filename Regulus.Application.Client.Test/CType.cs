@@ -38,5 +38,16 @@ namespace Regulus.Application.Client.Test
         {
             return false;
         }
+
+        public bool TestMethod1Invoked;
+        void IType.TestMethod1(int a1, float a2, string a3)
+        {
+            TestMethod1Invoked = true;
+        }
+
+        int IType.TestMethod2()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

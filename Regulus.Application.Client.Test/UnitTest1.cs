@@ -14,12 +14,13 @@ namespace Regulus.Application.Client.Test
         [Test]
         public void InterfaceProviderTyepsTest()
         {
-            var types = new System.Collections.Generic.Dictionary<System.Type, System.Type>() ;
-            types.Add(typeof(IType) , typeof(CType));
+            var types = new System.Collections.Generic.Dictionary<System.Type, System.Type>();
+            types.Add(typeof(IType), typeof(CType));
             var ip = new InterfaceProvider(types);
+
             var type = ip.Types.First();
 
-            Assert.AreEqual(type , typeof(IType));
+            Assert.AreEqual(type, typeof(IType));
 
 
         }
@@ -36,16 +37,17 @@ namespace Regulus.Application.Client.Test
             var cType = new CType(System.Guid.NewGuid());
 
             object outSupplyInstance = null;
-            
+
             using (var rectifier = new Remote.Client.AgentEventRectifier(ip.Types, agent))
             {
-                
-                rectifier.SupplyEvent += (type, instance) => {
+
+                rectifier.SupplyEvent += (type, instance) =>
+                {
                     outSupplyInstance = instance;
                 };
 
                 agent.Add(typeof(IType), cType);
-                
+
             }
             Assert.AreEqual(outSupplyInstance, cType);
 
@@ -57,7 +59,7 @@ namespace Regulus.Application.Client.Test
             var types = new System.Collections.Generic.Dictionary<System.Type, System.Type>();
             types.Add(typeof(IType), typeof(CType));
             var ip = new InterfaceProvider(types);
-            
+
 
             TestAgent agent = new TestAgent();
             var cType = new CType(System.Guid.NewGuid());
@@ -67,13 +69,14 @@ namespace Regulus.Application.Client.Test
             using (var rectifier = new Remote.Client.AgentEventRectifier(ip.Types, agent))
             {
                 rectifier.SupplyEvent += (type, instance) => { };
-                rectifier.UnsupplyEvent += (type, instance) => {
+                rectifier.UnsupplyEvent += (type, instance) =>
+                {
                     outInstance = instance;
                     outType = type;
                 };
 
                 agent.Add(typeof(IType), cType);
-                
+
                 agent.Remove(typeof(IType), cType);
 
             }
@@ -82,27 +85,51 @@ namespace Regulus.Application.Client.Test
 
         }
         [Test]
-        public void CommandAgentEventRectifierUnsupplyTest()
+        public void MethodStringInvokerTest1()
         {
-            
+            var test = new CType(System.Guid.NewGuid());
+            var method = typeof(IType).GetMethod(nameof(IType.TestMethod1));
+            var invoker = new Remote.Client.MethodStringInvoker(test, method);
+            invoker.Invoke("1", "2", "3");
 
-            var types = new System.Collections.Generic.Dictionary<System.Type, System.Type>();
-            types.Add(typeof(IType), typeof(CType));
-            var ip = new InterfaceProvider(types);
-
-
-            TestAgent agent = new TestAgent();
-            var cType = new CType(System.Guid.NewGuid());
-
-            
-            using (var rectifier = new Remote.Client.AgentEventRectifier(ip.Types, agent))
-            {
-                var command = new Regulus.Utility.Command();
-
-                var agentCommandRegist = new Remote.Client.AgentCommandBinder(command, rectifier );
-            }
+            Assert.AreEqual(true, test.TestMethod1Invoked);
 
 
         }
+
+        [Test]
+        public void AgentCommandTest1()
+        {
+            var test = new CType(System.Guid.NewGuid());
+            var method = typeof(IType).GetMethod(nameof(IType.TestMethod1));
+            var invoker = new Remote.Client.MethodStringInvoker(test, method);
+            var agentCommand = new Regulus.Remote.Client.AgentCommand(new Remote.Client.AgentCommandVersionProvider(), typeof(IType), invoker);
+            Assert.AreEqual("IType-0.TestMethod1[a1,a2,a3]", agentCommand.Name);
+
+        }
+        [Test]
+        public void AgentCommandRegisterTest1()
+        {
+
+            var command = new Utility.Command();
+            int regCount = 0;
+            command.RegisterEvent += (cmd, ret, args) => {
+                regCount++;
+            };
+            int unregCount = 0;
+            command.UnregisterEvent += (cmd) => {
+                unregCount++;
+            };
+            var agentCommandRegister = new Remote.Client.AgentCommandRegister(command);
+
+            var test = new CType(System.Guid.NewGuid());
+
+            agentCommandRegister.Regist(typeof(IType), test);
+            agentCommandRegister.Unregist(test);
+
+            Assert.AreEqual(2 , regCount);
+            Assert.AreEqual(2, unregCount);
+        }
+        
     }
 }

@@ -148,6 +148,18 @@ namespace RegulusLibraryTest
 			NUnit.Framework.Assert.AreEqual("password", analysis.Parameters[1]);
 		}
 
+
+		[NUnit.Framework.Test()]
+		public void TestCommandAnalysisWithParameters3()
+		{
+			var analysis = new Command.Analysis("login-0.AAA [ account ,    password, result]");
+
+			NUnit.Framework.Assert.AreEqual("login-0.AAA", analysis.Command);
+			NUnit.Framework.Assert.AreEqual("result", analysis.Parameters[2]);
+			NUnit.Framework.Assert.AreEqual("account", analysis.Parameters[0]);
+			NUnit.Framework.Assert.AreEqual("password", analysis.Parameters[1]);
+		}
+
 		[NUnit.Framework.Test()]
 		public void TestCommandAnalysisNoParameters()
 		{
