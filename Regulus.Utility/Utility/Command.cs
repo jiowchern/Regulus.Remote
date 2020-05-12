@@ -3,6 +3,8 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net;
+using System.Text.RegularExpressions;
 
 namespace Regulus.Utility
 {
@@ -657,6 +659,17 @@ namespace Regulus.Utility
 
 				out_value = reault;
 				return true;
+			}
+			else if (source == typeof(IPEndPoint))
+			{
+				var m = Regex.Match(in_string, @"(\d+\.\d+\.\d+\.\d+):(\d+)");
+				if(m.Success)
+				{
+					var address = m.Groups[1].Value;
+					var port = m.Groups[2].Value;
+					out_value = new IPEndPoint(IPAddress.Parse(address), int.Parse(port));
+				}
+				
 			}
 			else if (source == typeof(string))
 			{                

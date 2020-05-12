@@ -17,7 +17,7 @@ namespace Regulus.Remote.Client
         public Console(IEnumerable<Type> watch_types , IAgentProvider agent_provider, Regulus.Utility.Console.IViewer view, Regulus.Utility.Console.IInput input) : base(view , input)
         {
             _Entries = new System.Collections.Generic.Dictionary<string, IEntry>();
-            _WatchTypes = watch_types.ToArray();
+            _WatchTypes = watch_types.Union( new Type[] { typeof(IConnect) , typeof(IOnline)} ).ToArray();
             _AgentProvider = agent_provider;
             _Users = new List<User>();
             _Updater = new Utility.Updater();
@@ -27,13 +27,17 @@ namespace Regulus.Remote.Client
         public User CreateUser()
         {            
             var agent = _AgentProvider.Spawn();
-            var user = new User(agent , new AgentEventRectifier(_WatchTypes, agent));
+            var rectifier = new AgentEventRectifier(_WatchTypes, agent);
+            var user = new User(agent , rectifier);
             _Users.Add(user);
             _Updater.Add(user.Agent);
             foreach(var g in user.Ghosts)
             {
                 _Register.Regist(g.Item1,g.Item2);
             }
+            rectifier.SupplyEvent += _Register.Regist;
+            rectifier.UnsupplyEvent += (type , obj) => { _Register.Unregist(obj); };
+
             return user;
         }
         public void DestroyUser(string id)
@@ -51,7 +55,7 @@ namespace Regulus.Remote.Client
         }
         protected override void _Launch()
         {
-            
+            CreateUser();
         }
 
         protected override void _Shutdown()

@@ -34,13 +34,15 @@ namespace Regulus.Application.Client
         private static void _Run(Assembly assembly)
         {
             var view = new Regulus.Utility.ConsoleViewer();
-            
+            var input = new Regulus.Utility.ConsoleInput(view);
+            input.Launch();
             IProtocol protocol = Regulus.Remote.Protocol.ProtocolProvider.Create(assembly);
             var agentProvider = new Regulus.Remote.Client.AgentProvider(protocol, Regulus.Remote.Client.AgentProvider.CreateTcp);
-            var console = new Regulus.Remote.Client.Console(protocol.GetInterfaceProvider().Types, agentProvider, view, new Regulus.Utility.ConsoleInput(view));
+            var console = new Regulus.Remote.Client.Console(protocol.GetInterfaceProvider().Types, agentProvider, view, input);
+            console.Run(()=> { input.Update(); });
 
-            console.Run();
-            
+            input.Shutdown();
+
         }
     }
 }

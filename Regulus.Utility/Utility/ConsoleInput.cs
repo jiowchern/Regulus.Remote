@@ -45,7 +45,7 @@ namespace Regulus.Utility
 
 		void IBootable.Launch()
 		{
-            _KeyReader.Start();
+			Launch();
 
 
         }
@@ -54,10 +54,14 @@ namespace Regulus.Utility
 
         void IBootable.Shutdown()
 		{
-            _KeyReader.Stop();
 
-        }
+			Shutdown();
 
+		}
+		public void Shutdown()
+		{
+			_KeyReader.Stop();
+		}
 		public void Update()
 		{
 			var cmd = _HandlerInput();
@@ -80,6 +84,11 @@ namespace Regulus.Utility
 
 
             return null;
+		}
+
+		public void Launch()
+		{
+			_KeyReader.Start();
 		}
 
 		private string[] _HandlerInput(ConsoleKeyInfo key_info , Stack<char> chars)

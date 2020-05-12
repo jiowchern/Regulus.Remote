@@ -143,11 +143,16 @@ namespace Regulus.Utility
 	{
 		public static class ApplictionExtension
 		{
-			public static void Run(this WindowConsole windowconsole)
+			private static void _Empty()
 			{
+				
+			}
+			public static void Run(this WindowConsole windowconsole, System.Action update_handler = null)
+			{
+				if (update_handler == null)
+					update_handler = _Empty;
 
-
-			    AppDomain.CurrentDomain.UnhandledException += _Dump;
+					AppDomain.CurrentDomain.UnhandledException += _Dump;
                 var run = true;
                 AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
                 {
@@ -159,6 +164,7 @@ namespace Regulus.Utility
 				while(run)
 				{
 					windowconsole.Update();
+					update_handler();
 				}
 
 				windowconsole.Shutdown();

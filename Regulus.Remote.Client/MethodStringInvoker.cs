@@ -4,11 +4,39 @@ using System.Reflection;
 
 namespace Regulus.Remote.Client
 {
+    public class TypeConverter
+    {
+        public readonly Type Target;
+        public readonly System.Func<object, object> Converter;
+        public TypeConverter(Type target, Func<object, object> converter)
+        {
+            Target = target;
+            Converter = converter;
+        }
+    }
+    public class TypeConverterSet
+    {
+        private readonly TypeConverter[] converters;
+
+        public TypeConverterSet(params TypeConverter[] converters )
+        {
+            this.converters = converters;
+        }
+        internal bool Convert(string inArg, out object val, Type parameterType)
+        {
+            var converter = converters.FirstOrDefault((c)=>c.Target == parameterType);
+            if (converter != null)
+                val = converter.Converter(inArg);
+            val = null;
+            return converter != null;
+        }
+    }
     public class MethodStringInvoker
     {
+        private static TypeConverterSet _TypeConverterSet = new TypeConverterSet();
         public readonly object Target;
         public readonly MethodInfo Method;
-
+        
         public MethodStringInvoker(object instance, MethodInfo method)
         {
             this.Target = instance;
@@ -29,12 +57,34 @@ namespace Regulus.Remote.Client
                 var argInfo  = argInfos[i];
                 var inArg = in_args[i];
                 object val;
-                if (!Regulus.Utility.Command.Conversion(inArg, out val, argInfo.ParameterType))
+                
+                try
+                {
+                    _Conversion(inArg, out val, argInfo.ParameterType);
+                    argInstances.Add(val);
+                }
+                catch(SystemException se)
+                {
                     throw new Exception($"Type mismatch , arg is {inArg}");
-
-                argInstances.Add(val);
+                }
+                
+                
             }
             return Method.Invoke(Target, argInstances.ToArray());
         }
+
+        private static void _Conversion(string inArg, out object val, Type parameterType)
+        {
+            if (_TypeConverterSet.Convert(inArg, out val, parameterType))
+                return;
+
+            Regulus.Utility.Command.Conversion(inArg, out val, parameterType);                
+        }
+        public void SetConverterSet(TypeConverterSet set)
+        {
+            _TypeConverterSet = set;
+        }
+        
+        
     }
 }

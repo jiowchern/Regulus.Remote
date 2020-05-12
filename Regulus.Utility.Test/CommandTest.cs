@@ -1,7 +1,5 @@
 ﻿using System;
-
-
-
+using System.Net;
 using NSubstitute;
 
 
@@ -275,7 +273,15 @@ namespace RegulusLibraryTest
 
 			NUnit.Framework.Assert.AreEqual(1 , result);
 		}
-
+		[NUnit.Framework.Test()]
+		public void TestCommandIpEndPointEnum()
+		{
+			object outVal;
+			Command.Conversion("127.0.0.1:12345", out outVal, typeof(System.Net.IPEndPoint));
+			var ip = outVal as System.Net.IPEndPoint;
+			NUnit.Framework.Assert.AreEqual(ip.Address, IPAddress.Parse("127.0.0.1"));
+			NUnit.Framework.Assert.AreEqual(ip.Port, 12345);
+		}
 		[NUnit.Framework.Test()]
 		public void TestCommandCnvEnum()
 		{
