@@ -104,7 +104,7 @@ namespace Regulus.Application.Client.Test
             var method = typeof(IType).GetMethod(nameof(IType.TestMethod1));
             var invoker = new Remote.Client.MethodStringInvoker(test, method);
             var agentCommand = new Regulus.Remote.Client.AgentCommand(new Remote.Client.AgentCommandVersionProvider(), typeof(IType), invoker);
-            Assert.AreEqual("IType-0.TestMethod1[a1,a2,a3]", agentCommand.Name);
+            Assert.AreEqual("IType-0.TestMethod1 [a1,a2,a3]", agentCommand.Name);
 
         }
         [Test]

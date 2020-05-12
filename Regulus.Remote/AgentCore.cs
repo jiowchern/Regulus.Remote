@@ -16,8 +16,6 @@ using Regulus.Serialization;
 
 using Timer = System.Timers.Timer;
 
-
-
 namespace Regulus.Remote
 {
     public class AgentCore
@@ -43,7 +41,14 @@ namespace Regulus.Remote
 		private readonly InterfaceProvider _GhostProvider;
 	    private readonly ISerializer _Serializer;
 
-        private IProtocol _Protocol;
+		public void AddProvider(Type type, IProvider provider)
+		{
+			_Providers.Add(type , provider);
+		}
+
+		
+
+		private IProtocol _Protocol;
 
         public event Action<byte[], byte[]> ErrorVerifyEvent;
 

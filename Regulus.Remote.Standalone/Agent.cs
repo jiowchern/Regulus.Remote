@@ -23,7 +23,12 @@ namespace Regulus.Remote.Standalone
 
 		private readonly SoulProvider _SoulProvider;
 
-        readonly System.Collections.Concurrent.ConcurrentQueue<System.Tuple<ServerToClientOpCode, byte[]>> _ResponseCodes;
+		private readonly TProvider<IConnect> _ConnectProvider;
+		private readonly TProvider<IOnline> _OnlineProvider;
+		private readonly Regulus.Utility.StatusMachine _Machine;
+
+
+		readonly System.Collections.Concurrent.ConcurrentQueue<System.Tuple<ServerToClientOpCode, byte[]>> _ResponseCodes;
 
 		private bool _Connected;
 
@@ -39,11 +44,20 @@ namespace Regulus.Remote.Standalone
 
 	    public Agent(IProtocol protocol)
 	    {
-            _GhostRequest = new GhostRequest(protocol.GetSerialize());
+			_Machine = new StatusMachine();
+			_GhostRequest = new GhostRequest(protocol.GetSerialize());
             _Agent = new AgentCore(protocol);
             _SoulProvider = new SoulProvider(this, this, protocol);
             _ResponseCodes = new System.Collections.Concurrent.ConcurrentQueue<Tuple<ServerToClientOpCode, byte[]>>();
-        }
+
+			_ConnectProvider = new TProvider<IConnect>();
+			_OnlineProvider = new TProvider<IOnline>();
+
+			_Agent.AddProvider(typeof(IConnect), _ConnectProvider);
+			_Agent.AddProvider(typeof(IOnline), _OnlineProvider);
+			_ConnectEvent += () => { };
+			_BreakEvent += () => { };
+		}
         
 
 		INotifier<T> IAgent.QueryNotifier<T>()
@@ -51,22 +65,14 @@ namespace Regulus.Remote.Standalone
 			return QueryProvider<T>();
 		}
 
-		Value<bool> IAgent.Connect(System.Net.IPEndPoint ip)
-		{
-			_ConnectEvent();
-			_Connected = true;
-			return true;
-		}
+		
 
 		long IAgent.Ping
 		{
 			get { return _Agent.Ping; }
 		}
 
-		void IAgent.Disconnect()
-		{
-			Shutdown();
-		}
+		
 
 	    private event Action<string, string> _ErrorMethodEvent;
 
@@ -86,8 +92,8 @@ namespace Regulus.Remote.Standalone
 
 	    bool IUpdatable.Update()
 		{
-			_Update();
-
+			_Machine.Update();
+			_Update();			
 			return true;
 		}
 
@@ -98,6 +104,7 @@ namespace Regulus.Remote.Standalone
 
 		void IBootable.Shutdown()
 		{
+			_Machine.Termination();
 			Shutdown();
 		}
 
@@ -164,12 +171,35 @@ namespace Regulus.Remote.Standalone
 
 		public void Launch()
 		{
+			
+
 			_GhostRequest.PingEvent += _OnRequestPing;
 			_GhostRequest.ReleaseEvent += _SoulProvider.Unbind;
 
 		    _Agent.ErrorMethodEvent += _ErrorMethodEvent;
 		    _Agent.ErrorVerifyEvent += _ErrorVerifyEvent;
             _Agent.Initial(_GhostRequest);
+
+			_ToOffline();
+		}
+		private void _ToOffline()
+		{
+			var status = new OfflineStatus(_ConnectProvider);
+			status.DoneEvent += ()=> {
+				_ConnectEvent();
+				_ToOnline();
+			};
+			_Machine.Push(status);
+		}
+
+		private void _ToOnline()
+		{
+			var status = new OnlineStatus(_OnlineProvider , new OnlineGhost(_Agent)) ;
+			status.Ghost.DisconnectEvent +=()=> {
+				_BreakEvent();
+				_ToOffline();
+			} ;			
+			_Machine.Push(status);
 		}
 
 		private void _OnRequestPing()

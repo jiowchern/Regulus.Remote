@@ -29,10 +29,17 @@ namespace Regulus.Remote.Tests
                 has = true;
             };
 
-            agent.Connect(new System.Net.IPEndPoint(0, 0));
-
+            agent.QueryNotifier<IConnect>().Supply += (connecter) => {
+                connecter.Connect(new System.Net.IPEndPoint(0, 0));
+            };
+            agent.Launch();
+            agent.Update();
+            agent.Shutdown();
             NUnit.Framework.Assert.True(has);
         }
+
+
+        
 
 
 

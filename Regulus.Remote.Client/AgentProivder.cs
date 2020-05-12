@@ -1,9 +1,11 @@
-﻿using System.Linq;
+﻿using Regulus.Utility;
+using System;
+using System.Linq;
 
 namespace Regulus.Remote.Client
 {
     
-    public static class AgentProivder
+    public  class AgentProvider : IAgentProvider
     {        
 
         public static Regulus.Remote.IAgent CreateRudp(System.Reflection.Assembly protocol_assembly)
@@ -31,5 +33,21 @@ namespace Regulus.Remote.Client
             var agent = new Regulus.Remote.Ghost.Agent(protocol, client);
             return agent;
         }
+
+        private readonly IProtocol protocol;
+        private readonly Func<IProtocol, IAgent> func;
+
+        public AgentProvider(IProtocol protocol, System.Func<IProtocol, IAgent> func)
+        {
+            this.protocol = protocol;
+            this.func = func;
+        }
+        IAgent IAgentProvider.Spawn()
+        {
+            return func(protocol);
+        }
     }
+
+
+    
 }

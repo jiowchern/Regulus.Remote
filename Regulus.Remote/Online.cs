@@ -9,18 +9,18 @@ namespace Regulus.Remote
 		void Disconnect();
 	}
 
-	public class Online : IOnline, IGhost
+	public class OnlineGhost : IOnline, IGhost
 	{
-		private readonly IAgent _Agent;
+		private readonly AgentCore _Agent;
 
 		public Guid Id { get; private set; }
 
-		public Online()
+		public OnlineGhost()
 		{
 			Id = Guid.NewGuid();
 		}
 
-		public Online(IAgent agent) : this()
+		public OnlineGhost(AgentCore agent) : this()
 		{
 			_Agent = agent;
 		}
@@ -56,10 +56,10 @@ namespace Regulus.Remote
 		{
 			get { return TimeSpan.FromTicks(_Agent.Ping).TotalSeconds; }
 		}
-
+		public event System.Action DisconnectEvent;
 		void IOnline.Disconnect()
 		{
-			_Agent.Disconnect();
+			DisconnectEvent();
 		}
 	}
 }

@@ -82,15 +82,9 @@ namespace Regulus.Application.Client.Test
             }
         }
 
-        Value<bool> IAgent.Connect(IPEndPoint ip)
-        {
-            throw new NotImplementedException();
-        }
+        
 
-        void IAgent.Disconnect()
-        {
-            throw new NotImplementedException();
-        }
+        
 
         void IBootable.Launch()
         {
