@@ -12,8 +12,9 @@ namespace Regulus.Remote.Ghost
 		private class ConnectStage : IStatus
 		{
 			public event Action<IPeer> DoneEvent;
-			
-			
+			public event Action FailEvent;
+
+
 			private readonly IProvider _ConnectProvider;
 			private readonly IConnectable _Peer;
 			
@@ -58,8 +59,16 @@ namespace Regulus.Remote.Ghost
 
 					_Peer.Connect(ip, (connect_result) => {
 						result.SetValue(connect_result);
-						Singleton<Log>.Instance.WriteInfo("agent connect success.");
-						DoneEvent(_Peer);						
+						if(connect_result)
+						{
+							Singleton<Log>.Instance.WriteInfo("agent connect success.");
+							DoneEvent(_Peer);
+						}
+						else
+						{
+							FailEvent();
+						}
+						
 					} );
 					
 				}

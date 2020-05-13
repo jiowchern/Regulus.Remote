@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Regulus.Remote.Client
+namespace Regulus.Remote.Client.JIT
 {
 
     // jit

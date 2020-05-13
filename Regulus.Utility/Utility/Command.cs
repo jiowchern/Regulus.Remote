@@ -582,7 +582,7 @@ namespace Regulus.Utility
 			var analysis = new Analysis(command);
 			if (_Commands.RemoveAll(cmd => cmd.Name == analysis.Command) > 0)
 			{
-				UnregisterEvent(command);
+				UnregisterEvent(analysis.Command);
 			}
 		}
 
@@ -662,13 +662,26 @@ namespace Regulus.Utility
 			}
 			else if (source == typeof(IPEndPoint))
 			{
-				var m = Regex.Match(in_string, @"(\d+\.\d+\.\d+\.\d+):(\d+)");
-				if(m.Success)
+				try
 				{
-					var address = m.Groups[1].Value;
-					var port = m.Groups[2].Value;
-					out_value = new IPEndPoint(IPAddress.Parse(address), int.Parse(port));
+					var m = Regex.Match(in_string, @"(\d+\.\d+\.\d+\.\d+):(\d+)");
+					if (m.Success)
+					{
+						var address = m.Groups[1].Value;
+						var port = m.Groups[2].Value;
+						out_value = new IPEndPoint(IPAddress.Parse(address), int.Parse(port));
+					}
+					else
+					{
+						out_value = new IPEndPoint(0, 0);
+					}
+					
 				}
+				catch(SystemException se)
+				{
+					out_value = new IPEndPoint(0, 0);
+				}
+				
 				
 			}
 			else if (source == typeof(string))

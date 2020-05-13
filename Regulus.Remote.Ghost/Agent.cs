@@ -157,6 +157,10 @@ namespace Regulus.Remote.Ghost
 			{
 				_ConnectResult(socket);
 			};
+			stage.FailEvent += () =>
+			{
+				_ToConnectStatus();
+			};
 			_Machine.Push(stage);
 		}
 
