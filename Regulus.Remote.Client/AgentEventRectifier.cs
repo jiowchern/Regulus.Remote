@@ -33,8 +33,7 @@ namespace Regulus.Remote.Client
 
                 var notifySupply = notifyTypeT.GetEvent(nameof(INotifier<object>.Supply));
                 var notifyUnsupply = notifyTypeT.GetEvent(nameof(INotifier<object>.Unsupply));
-
-                var actionType = typeof(System.Action<>).MakeGenericType(type);
+                
 
                 var delegateSupply = new Action<object>((a) => this._Supply(a));                    ;
                 var delegateUnsupply = new Action<object>((a) => this._Unsupply(a));
