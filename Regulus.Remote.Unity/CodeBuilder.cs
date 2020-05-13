@@ -93,10 +93,7 @@ using UnityEngine;
             _Distributor  = new Regulus.Remote.Unity.Distributor(_Agent);
             _Updater.Add(_Agent);
         }}
-        public void Connect(string ip,int port)
-        {{            
-            _Agent.Connect(new System.Net.IPEndPoint(System.Net.IPAddress.Parse(ip), port)).OnValue += _ConnectResult;
-        }}
+        
         
         
 

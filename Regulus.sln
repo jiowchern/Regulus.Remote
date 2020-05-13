@@ -68,9 +68,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Application.Protoco
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Remote.Unity", "Regulus.Remote.Unity\Regulus.Remote.Unity.csproj", "{20A8A732-D77C-4BA3-BDE5-1B1FA8B89DB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulus.Application.Client", "Regulus.Application.Client\Regulus.Application.Client.csproj", "{0D34DB44-F379-484A-B43E-678F2E714830}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Application.Client", "Regulus.Application.Client\Regulus.Application.Client.csproj", "{0D34DB44-F379-484A-B43E-678F2E714830}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulus.Application.Client.Test", "Regulus.Application.Client.Test\Regulus.Application.Client.Test.csproj", "{9AC9D5ED-2B49-4C25-B851-518D0B8F024A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Application.Client.Test", "Regulus.Application.Client.Test\Regulus.Application.Client.Test.csproj", "{9AC9D5ED-2B49-4C25-B851-518D0B8F024A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulus.Application.Protocol.UnityCodeWriter", "Regulus.Application.Protocol.UnityCodeWriter\Regulus.Application.Protocol.UnityCodeWriter.csproj", "{013DD064-9E4A-4FCD-82B1-BA0344CC4D14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -190,6 +192,10 @@ Global
 		{9AC9D5ED-2B49-4C25-B851-518D0B8F024A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AC9D5ED-2B49-4C25-B851-518D0B8F024A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AC9D5ED-2B49-4C25-B851-518D0B8F024A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{013DD064-9E4A-4FCD-82B1-BA0344CC4D14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{013DD064-9E4A-4FCD-82B1-BA0344CC4D14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{013DD064-9E4A-4FCD-82B1-BA0344CC4D14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{013DD064-9E4A-4FCD-82B1-BA0344CC4D14}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -223,6 +229,7 @@ Global
 		{20A8A732-D77C-4BA3-BDE5-1B1FA8B89DB4} = {BF82B497-EC2D-4F8B-AF59-02AEC21A6B15}
 		{0D34DB44-F379-484A-B43E-678F2E714830} = {A088BA49-DE34-4F59-AF19-C82A94D7F834}
 		{9AC9D5ED-2B49-4C25-B851-518D0B8F024A} = {F37C2CFD-4962-4E1B-96EB-E5E8928D217B}
+		{013DD064-9E4A-4FCD-82B1-BA0344CC4D14} = {A088BA49-DE34-4F59-AF19-C82A94D7F834}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5F361C65-F7E7-4579-84BF-3D8DB0C9DABA}

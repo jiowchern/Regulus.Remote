@@ -35,6 +35,7 @@ namespace Regulus.Application.Client
             input.Launch();
             entry.Launch();
             var console = new Regulus.Remote.Client.Console(protocol.GetInterfaceProvider().Types, agentProvider, view, input);
+            console.CreateUser();
             console.Run(() => { input.Update();                
             });
             entry.Shutdown();
@@ -59,6 +60,8 @@ namespace Regulus.Application.Client
             var input = new Regulus.Utility.ConsoleInput(view);
             input.Launch();
             var console = new Regulus.Remote.Client.Console(protocol.GetInterfaceProvider().Types, agentProvider, view, input);
+            console.CreateUser();
+
             console.Run(() => { input.Update(); });
             input.Shutdown();
         }

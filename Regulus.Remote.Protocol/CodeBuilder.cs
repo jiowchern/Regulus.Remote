@@ -32,7 +32,7 @@ namespace Regulus.Remote.Protocol
             var addEventType = new List<string>();
 
             var serializerTypes = new HashSet<Type>();
-
+            
             var memberMapMethodBuilder = new List<string>();
             var memberMapEventBuilder = new List<string>();
             var memberMapPropertyBuilder = new List<string>();

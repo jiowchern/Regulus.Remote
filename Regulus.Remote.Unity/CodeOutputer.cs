@@ -52,7 +52,8 @@ namespace Regulus.Remote.Unity
         public void Output(string output_path)
         {
 
-            System.IO.Directory.Delete(output_path , true);
+            if(System.IO.Directory.Exists(output_path))
+                System.IO.Directory.Delete(output_path , true);
             var proxy = output_path + "/Proxy";
             var adsorber = output_path + "/Adsorber";
             var broadcaster = output_path + "/Broadcaster";

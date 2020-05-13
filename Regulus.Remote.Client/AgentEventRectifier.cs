@@ -34,15 +34,26 @@ namespace Regulus.Remote.Client
                 var notifySupply = notifyTypeT.GetEvent(nameof(INotifier<object>.Supply));
                 var notifyUnsupply = notifyTypeT.GetEvent(nameof(INotifier<object>.Unsupply));
                 
+                var catcherSupply = new Regulus.Utility.Reflection.TypeMethodCatcher((System.Linq.Expressions.Expression<Action<AgentEventRectifier>>)(ins => ins._Supply<object>(null)));                
+                var supplyGenericMethod = catcherSupply.Method.GetGenericMethodDefinition();
+                var supplyMethod = supplyGenericMethod.MakeGenericMethod(type);
 
-                var delegateSupply = new Action<object>((a) => this._Supply(a));                    ;
-                var delegateUnsupply = new Action<object>((a) => this._Unsupply(a));
+                var catcherUnsupply = new Regulus.Utility.Reflection.TypeMethodCatcher((System.Linq.Expressions.Expression<Action<AgentEventRectifier>>)(ins => ins._Unsupply<object>(null)));
+                var unsupplyGenericMethod = catcherUnsupply.Method.GetGenericMethodDefinition();
+                var unsupplyMethod = unsupplyGenericMethod.MakeGenericMethod(type);
 
+                var actionT1 = typeof(System.Action<>);
+                var actionT = actionT1.MakeGenericType(type);
+
+
+
+                var delegateSupply = Delegate.CreateDelegate(actionT, this, supplyMethod);
+                var delegateUnsupply = Delegate.CreateDelegate(actionT, this, unsupplyMethod);
                 notifySupply.AddEventHandler(notifyInstance, delegateSupply);
                 notifyUnsupply.AddEventHandler(notifyInstance, delegateUnsupply);
                 _RemoveHandlers.Add(() => {
                     notifySupply.RemoveEventHandler(notifyInstance , delegateSupply);
-                    notifySupply.RemoveEventHandler(notifyInstance, delegateUnsupply);
+                    notifyUnsupply.RemoveEventHandler(notifyInstance, delegateUnsupply);
                 });
             }
 

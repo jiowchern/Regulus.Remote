@@ -55,7 +55,7 @@ namespace Regulus.Remote.Client
         }
         protected override void _Launch()
         {
-            CreateUser();
+            
         }
 
         protected override void _Shutdown()
