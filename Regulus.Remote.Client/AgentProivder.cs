@@ -31,8 +31,12 @@ namespace Regulus.Remote.Client
         public static IAgent CreateStandalone(IProtocol arg,Remote.IEntry entry)
         {
             var agent = new Regulus.Remote.Standalone.Agent(arg);
-            var binder = agent as IBinder;
-            entry.AssignBinder(binder);
+            (agent as IAgent).ConnectEvent += () => {
+
+                var binder = agent as IBinder;
+                entry.AssignBinder(binder);
+            }; 
+            
             return agent;
         }
 

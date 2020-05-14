@@ -2,7 +2,6 @@
 
 namespace Regulus.Remote.Unity
 {
-
     public interface Adsorber<T> 
     {
         

@@ -6,7 +6,7 @@ namespace Regulus.Remote.Client
 {
     public class Console : Regulus.Utility.WindowConsole
     {
-        readonly System.Collections.Generic.Dictionary<string, Regulus.Remote.IEntry> _Entries;
+        
         private readonly Type[] _WatchTypes;
         private readonly IAgentProvider _AgentProvider;
         readonly Regulus.Utility.Updater _Updater;
@@ -16,7 +16,7 @@ namespace Regulus.Remote.Client
 
         public Console(IEnumerable<Type> watch_types , IAgentProvider agent_provider, Regulus.Utility.Console.IViewer view, Regulus.Utility.Console.IInput input) : base(view , input)
         {
-            _Entries = new System.Collections.Generic.Dictionary<string, IEntry>();
+        
             _WatchTypes = watch_types.Union( new Type[] { typeof(IConnect) , typeof(IOnline)} ).ToArray();
             _AgentProvider = agent_provider;
             _Users = new List<User>();

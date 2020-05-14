@@ -7,10 +7,7 @@ using System.Reflection;
 namespace Regulus.Remote.Unity
 {
 
-    public class ProtocolGenerator
-    {
-
-    }
+    
     public class CodeBuilder  
     {
         private readonly Type[] _Types;
@@ -32,7 +29,8 @@ namespace Regulus.Remote.Unity
         public CodeBuilder(Type[] types, string agent_name , string provider_name)
         {
             
-            _Types = (from type in types where  type.IsInterface == true select type).ToArray();
+            _Types = (from type in types where  type.IsInterface == true select type).Union(new Type[] { typeof(Regulus.Remote.IConnect) , typeof(Regulus.Remote.IOnline) } )
+                .ToArray();
             _ProviderName = provider_name;
 
             var tokens = agent_name.Split(new[] { '.' });
@@ -74,13 +72,13 @@ using UnityEngine;
 
 
 {0}
-    public abstract class {3} : MonoBehaviour
+    public abstract class {3} : MonoBehaviour , Regulus.Remote.Unity.IAdsorptionAgent
     {{
         private Regulus.Remote.Unity.Distributor _Distributor ;
         public Regulus.Remote.Unity.Distributor Distributor {{ get{{ return _Distributor ; }} }}
         private readonly Regulus.Utility.Updater _Updater;
 
-        private Regulus.Remote.IAgent _Agent;
+        
         public string Name;
         public {3}()
         {{            
@@ -89,12 +87,13 @@ using UnityEngine;
         public abstract Regulus.Remote.IAgent _GetAgent();
         public void Start()   
         {{
-            _Agent = _GetAgent();
-            _Distributor  = new Regulus.Remote.Unity.Distributor(_Agent);
-            _Updater.Add(_Agent);
+            
+            _Distributor  = new Regulus.Remote.Unity.Distributor(_GetAgent());
+            
         }}
         
-        
+        string Regulus.Remote.Unity.IAdsorptionAgent.Name {{ get{{  return Name; }}}}
+        Regulus.Remote.Unity.Distributor Regulus.Remote.Unity.IAdsorptionAgent.Distributor {{ get{{  return _Distributor; }}}}
         
 
         private void _ConnectResult(bool obj)

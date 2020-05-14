@@ -36,6 +36,8 @@ namespace Regulus.Remote.Client
 
         private void _PrintReturn(object val)
         {
+            if (val == null)
+                return;
             var type = val.GetType();
             
             if(type.GetGenericTypeDefinition() != typeof(Regulus.Remote.Value<>))

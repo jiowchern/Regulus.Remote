@@ -19,7 +19,7 @@ namespace Regulus.Remote.Ghost
 			private readonly IConnectable _Peer;
 			
 			private readonly ConnectGhost _Connect;
-			
+			System.Action _DoReturn;
 
 			public ConnectStage(IProvider provider,  IConnectable connecter)
 			{                
@@ -27,6 +27,7 @@ namespace Regulus.Remote.Ghost
 
 				_ConnectProvider = provider;
 				_Connect = new ConnectGhost();
+				_DoReturn = () => { };
 			}
 
 			void IStatus.Enter()
@@ -58,7 +59,11 @@ namespace Regulus.Remote.Ghost
 
 
 					_Peer.Connect(ip, (connect_result) => {
-						result.SetValue(connect_result);
+
+						_DoReturn = () => {
+							result.SetValue(connect_result);
+						};
+						
 						if(connect_result)
 						{
 							Singleton<Log>.Instance.WriteInfo("agent connect success.");
@@ -86,6 +91,7 @@ namespace Regulus.Remote.Ghost
 
 				
 				Singleton<Log>.Instance.WriteInfo("Agent connect status leave.");
+				_DoReturn();
 			}
 
 			void IStatus.Update()
