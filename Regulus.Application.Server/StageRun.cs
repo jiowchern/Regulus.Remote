@@ -6,41 +6,7 @@ using Regulus.Utility;
 
 namespace Regulus.Remote.Soul.Console
 {
-    internal class ParallelUpdate : Launcher<IUpdatable>
-    {
-        public void Update()
-        {
-            /*var exceptions = new System.Collections.Concurrent.ConcurrentQueue<Exception>();
-
-			Parallel.ForEach(base._GetObjectSet(), (updater) => 
-			{
-				try
-				{
-					_Update(updater);
-				}
-				catch (Exception e) { exceptions.Enqueue(e); }
-			});
-
-			if (exceptions.Count > 0) 
-				throw new AggregateException(exceptions);*/
-            foreach (var up in _GetObjectSet())
-            {
-                _Update(up);
-            }
-        }
-
-        private void _Update(IUpdatable updater)
-        {
-            var result = false;
-
-            result = updater.Update();
-
-            if (result == false)
-            {
-                Remove(updater);
-            }
-        }
-    }
+    
 
     internal class StageRun : IStatus
     {

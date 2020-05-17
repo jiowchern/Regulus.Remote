@@ -32,14 +32,14 @@ namespace Regulus.Remote.Protocol
         {
             Regulus.Utility.Log.Instance.WriteInfo($"{outPath}\\{type_name}.cs");
 
-            System.IO.File.WriteAllText($"{outPath}\\{type_name}.cs", code);
+            System.IO.File.WriteAllText($"{outPath}\\{type_name}.cs", code, Encoding.ASCII);
         }
 
         private static void _WriteEvent(string type_name, string event_name, string code, string outPath)
         {
             Regulus.Utility.Log.Instance.WriteInfo($"{outPath}\\{type_name}_{event_name}.cs");
 
-            System.IO.File.WriteAllText($"{outPath}\\{type_name}_{event_name}.cs", code);
+            System.IO.File.WriteAllText($"{outPath}\\{type_name}_{event_name}.cs", code, Encoding.ASCII);
         }
 
         private static void _WriteProvider(string name, string code, string outPath)
@@ -47,7 +47,7 @@ namespace Regulus.Remote.Protocol
             Regulus.Utility.Log.Instance.WriteInfo($"Name:{name}.cs");
 
             Regulus.Utility.Log.Instance.WriteInfo($"{outPath}\\{name}.cs");
-            System.IO.File.WriteAllText($"{outPath}\\{name}.cs", code);
+            System.IO.File.WriteAllText($"{outPath}\\{name}.cs", code, Encoding.ASCII);
         }
     }
 }

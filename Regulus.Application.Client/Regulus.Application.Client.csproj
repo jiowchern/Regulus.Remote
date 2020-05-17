@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Regulus.Remote.Client.JIT\Regulus.Remote.Client.JIT.csproj" />
     <ProjectReference Include="..\Regulus.Remote.Client\Regulus.Remote.Client.csproj" />
     <ProjectReference Include="..\Regulus.Remote\Regulus.Remote.csproj" />
     <ProjectReference Include="..\Regulus.Utility\Regulus.Utility.csproj" />

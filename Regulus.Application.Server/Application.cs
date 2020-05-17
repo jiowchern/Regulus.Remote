@@ -1,23 +1,27 @@
 ﻿using Regulus.Network;
 using Regulus.Utility;
+using System;
+using System.Globalization;
 
 namespace Regulus.Remote.Soul.Console
 {
     public class Application : WindowConsole
     {
-        private StatusMachine _Machine;
+        private readonly  StatusMachine _Machine;
 
-        private readonly string[] _Args;
 
-        public Application(string[] args)
+        public Application(IEntry core, IProtocol protocol, int port, IListenable server)
         {
-            _Args = args;
+            
+            _Machine = new StatusMachine();
+
+            _ToRun(core , protocol , port , server);
         }
 
         protected override void _Launch()
         {
-            _Machine = new StatusMachine();
-            _ToStart();
+            
+            
         }
 
         protected override void _Update()
@@ -30,18 +34,18 @@ namespace Regulus.Remote.Soul.Console
             _Machine.Termination();
         }
 
-        private void _ToStart()
-        {
-            var stage = new StageStart(Command, Viewer, _Args);
-            stage.DoneEvent += _ToRun;
-            _Machine.Push(stage);
-        }
+        
 
         private void _ToRun(IEntry core, IProtocol protocol, int port, IListenable server)
         {
             var stage = new StageRun(core, protocol, Command, port, Viewer, server);
-            stage.ShutdownEvent += _ToStart;
+            stage.ShutdownEvent += _ToEnd;
             _Machine.Push(stage);
+        }
+
+        private void _ToEnd()
+        {
+            Command.Run("quit" , new string[0]);
         }
     }
 }

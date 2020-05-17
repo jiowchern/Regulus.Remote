@@ -7,18 +7,19 @@ namespace Regulus.Application.Protocol.TextWriter
     {
         
 
-        static void Main(string[] args)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="common"></param>
+        /// <param name="output"></param>
+        static void Main(System.IO.FileInfo common, System.IO.DirectoryInfo output)
         {
             Regulus.Utility.Log.Instance.RecordEvent += _WriteLog;
-            if (args.Length < 3)
-            {
-                Console.WriteLine("Need to build parameters.");
-                Console.WriteLine("ex. Regulus.Application.Protocol.CodeWriter ProtocolName path/in-common.dll /out-path");
-                return;
-            }
-            var protocolName = args[0];
-            var inPath = System.IO.Path.GetFullPath(args[1]);
-            var outPath = System.IO.Path.GetFullPath(args[2]);
+
+            var protocolName = $"C{System.Guid.NewGuid().ToString("N")}";
+            Regulus.Utility.Log.Instance.WriteInfo($"Protocol name is {protocolName}.");
+            var inPath = common.FullName;
+            var outPath = output.FullName;
             Console.WriteLine($"Input {inPath}");
             Console.WriteLine($"Output {outPath}");
 

@@ -1,8 +1,7 @@
-version: 0.6.{build}
+version: 0.1.6.{build}
 branches:
   only:
-  - master
-  - release
+  - master  
 image: Visual Studio 2019
 configuration: Release
 nuget:
@@ -25,7 +24,7 @@ test_script:
     dotnet tool install coveralls.net --version 1.0.0 --tool-path tools
 
 
-    ./tools/csmacnz.Coveralls.exe --useRelativePaths --multiple -i "opencover=Regulus.Utility.Test\coverage.opencover.xml;opencover=Regulus.Remote.Test\coverage.opencover.xml;opencover=Regulus.Serialization.Test\coverage.opencover.xml;opencover=Regulus.Remote.Protocol.Test\coverage.opencover.xml;opencover=Regulus.Remote.Client.JIT.Test\coverage.opencover.xml;opencover=Regulus.Network.Test\coverage.opencover.xml;opencover=Regulus.LockstepTest\coverage.opencover.xml;opencover=Regulus.LockstepTest\coverage.opencover.xml;opencover=Regulus.BehaviourTree.Test\coverage.opencover.xml;opencover=Regulus.Application.Protocol.Generator.Test\coverage.opencover.xml" --repoToken 4aL4sSKKvWbGicuk2DRR7QvSJnC4e3Hsq
+    ./tools/csmacnz.Coveralls.exe --useRelativePaths --multiple -i "opencover=Regulus.Utility.Test\coverage.opencover.xml;opencover=Regulus.Remote.Test\coverage.opencover.xml;opencover=Regulus.Serialization.Test\coverage.opencover.xml;opencover=Regulus.Remote.Protocol.Test\coverage.opencover.xml;opencover=Regulus.Network.Test\coverage.opencover.xml;opencover=Regulus.LockstepTest\coverage.opencover.xml;opencover=Regulus.LockstepTest\coverage.opencover.xml;opencover=Regulus.BehaviourTree.Test\coverage.opencover.xml;opencover=Regulus.Application.Protocol.Generator.Test\coverage.opencover.xml" --repoToken 4aL4sSKKvWbGicuk2DRR7QvSJnC4e3Hsq
 artifacts:
 - path: artifact\Library\Server
   name: Server
@@ -51,4 +50,4 @@ deploy:
   api_key:
     secure: MpSZN9rbs/UO67xFMkdfsETL16yG2KY0h3S53s13iG8WOFPamFIXg44GpbM4T7qX
   on:
-    branch: master
+    branch: release

@@ -20,5 +20,4 @@ dotnet publish .\Regulus.Serialization -o \.artifact\Library\Serialization -f ne
 
 
 dotnet publish .\Regulus.Application.Server -o .\artifact\Tool\Server  -f netcoreapp2.1
-dotnet publish .\Regulus.Application.Protocol.CodeBuilder -o .\artifact\Tool\ProtocolBuilder  -f netcoreapp2.1
 dotnet publish .\Regulus.Application.Protocol.CodeWriter -o .\artifact\Tool\ProtocolBuilder  -f netcoreapp2.1

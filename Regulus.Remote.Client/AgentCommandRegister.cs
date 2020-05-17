@@ -25,7 +25,12 @@ namespace Regulus.Remote.Client
         {
             
             foreach (var method in type.GetMethods())
-            {                
+            {
+                
+                if(method.IsSpecialName)
+                    continue;
+                Regulus.Utility.Log.Instance.WriteInfo($"method name = {method.Name} ");
+
                 var invoker = new MethodStringInvoker(instance, method);
                 var ac = new AgentCommand(_VersionProvider, type , invoker);
                 _Invokers.Add(ac);            
