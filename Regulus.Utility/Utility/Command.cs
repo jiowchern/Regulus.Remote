@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace Regulus.Utility
 {
-    public delegate void Action<in T1, in T2, in T3, in T4, in T5>(T1 t1, T2 t2, T3 t3, T4 t4 , T5 t5);
+	public delegate void Action<in T1, in T2, in T3, in T4, in T5>(T1 t1, T2 t2, T3 t3, T4 t4 , T5 t5);
 
 	public delegate void Action<in T1, in T2, in T3, in T4, in T5 ,  in T6>(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6);
 
@@ -17,10 +17,6 @@ namespace Regulus.Utility
 	public delegate TResult Func<in T1, in T2, in T3, in T4, in T5, out TResult>(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5);
 
 	public delegate TResult Func<in T1, in T2, in T3, in T4, in T5, in T6, out TResult>(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6);
-
-
-
-
 	public partial class Command : ICommand
 	{
 		public delegate void OnRegister(string command, CommandParameter ret, CommandParameter[] args);
@@ -31,21 +27,6 @@ namespace Regulus.Utility
 
 		public event OnUnregister UnregisterEvent;
 
-		private class Infomation
-		{
-			public readonly Action<string[]> Handler;
-
-			public readonly string Name;
-			internal readonly Guid Id;
-
-			public Infomation(string name , Action<string[]> handler)
-			{
-				Name = name;
-				Handler = handler;
-				Id = System.Guid.NewGuid();
-			}
-		}
-
 		private readonly List<Infomation> _Commands;
 
 		public Command()
@@ -55,263 +36,7 @@ namespace Regulus.Utility
 			UnregisterEvent += s => { };
 		}
 
-		public void RegisterLambda<TThis,TR>(TThis instance, Expression<Func<TThis,TR>> exp , Action<TR> return_value)
-		{
-			Action<string[]> func = (args) =>
-			{
-				if (args.Length != 0)
-				{
-					throw new ArgumentException("命令參數數量為0");
-				}
-
-				return_value(exp.Compile().Invoke(instance));
-			};
-			_Register(exp, func);
-		}
-
-
-		public void RegisterLambda<TThis, T0 , TR>(TThis instance, Expression<Func<TThis, T0,TR>> exp, Action<TR> return_value)
-		{
-			Action<string[]> func = (args) =>
-			{
-				if (args.Length != 1)
-				{
-					throw new ArgumentException("命令參數數量為1");
-				}
-
-				object arg0;
-				Command.Conversion(args[0], out arg0, typeof(T0));
-
-				return_value(exp.Compile().Invoke(instance ,(T0)arg0 ));
-			};
-			_Register(exp, func);
-		}
-
-		public void RegisterLambda<TThis, T0 , T1, TR>(TThis instance, Expression<Func<TThis, T0 , T1, TR>> exp, Action<TR> return_value)
-		{
-			Action<string[]> func = (args) =>
-			{
-				if (args.Length != 2)
-				{
-					throw new ArgumentException("命令參數數量為2");
-				}
-
-				object arg0;
-				Command.Conversion(args[0], out arg0, typeof(T0));
-
-				object arg1;
-				Command.Conversion(args[1], out arg1, typeof(T1));
-
-
-
-				return_value(exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1));
-			};
-			_Register(exp, func);
-		}
-
-		public void RegisterLambda<TThis, T0, T1 , T2, TR>(TThis instance, Expression<Func<TThis, T0, T1 , T2, TR>> exp, Action<TR> return_value)
-		{
-			Action<string[]> func = (args) =>
-			{
-				if (args.Length != 3)
-				{
-					throw new ArgumentException("命令參數數量為3");
-				}
-
-				object arg0;
-				Command.Conversion(args[0], out arg0, typeof(T0));
-
-				object arg1;
-				Command.Conversion(args[1], out arg1, typeof(T1));
-
-				object arg2;
-				Command.Conversion(args[2], out arg2, typeof(T2));
-
-				return_value(exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1 , (T2)arg2));
-			};
-			_Register(exp, func);
-		}
-
-		public void RegisterLambda<TThis, T0, T1, T2 , T3, TR>(TThis instance, Expression<Func<TThis, T0, T1, T2 , T3, TR>> exp, Action<TR> return_value)
-		{
-			Action<string[]> func = (args) =>
-			{
-				if (args.Length != 4)
-				{
-					throw new ArgumentException("命令參數數量為4");
-				}
-
-				object arg0;
-				Command.Conversion(args[0], out arg0, typeof(T0));
-
-				object arg1;
-				Command.Conversion(args[1], out arg1, typeof(T1));
-
-				object arg2;
-				Command.Conversion(args[2], out arg2, typeof(T2));
-
-				object arg3;
-				Command.Conversion(args[3], out arg3, typeof(T3));
-
-				return_value(exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1, (T2)arg2, (T3)arg3));
-			};
-			_Register(exp, func);
-		}
-
-		public void RegisterLambda<TThis, T0, T1, T2 , T3, T4, TR>(TThis instance, Expression<Func<TThis, T0, T1, T2 , T3 , T4, TR>> exp, Action<TR> return_value)
-		{
-			Action<string[]> func = (args) =>
-			{
-				if (args.Length != 5)
-				{
-					throw new ArgumentException("命令參數數量為5");
-				}
-
-				object arg0;
-				Command.Conversion(args[0], out arg0, typeof(T0));
-
-				object arg1;
-				Command.Conversion(args[1], out arg1, typeof(T1));
-
-				object arg2;
-				Command.Conversion(args[2], out arg2, typeof(T2));
-
-				object arg3;
-				Command.Conversion(args[3], out arg3, typeof(T3));
-
-				object arg4;
-				Command.Conversion(args[4], out arg4, typeof(T4));
-
-				return_value(exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1, (T2)arg2, (T3)arg3 , (T4)arg4));
-			};
-			_Register(exp, func);
-		}
-
-
-		public void RegisterLambda<TThis>(TThis instance, Expression<Action<TThis>> exp)
-		{
-			Action<string[]> func = (args) =>
-			{
-				if (args.Length != 0)
-				{
-					throw new ArgumentException("命令參數數量為0");
-				}
-
-
-				exp.Compile().Invoke(instance);
-			};
-			_Register(exp, func);
-		}
-
-		public void RegisterLambda<TThis,T0>(TThis instance, Expression<Action<TThis , T0>> exp)
-		{
-			Action<string[]> func = (args) =>
-			{
-				if (args.Length != 1)
-				{
-					throw new ArgumentException("命令參數數量為1");
-				}
-				object arg0;
-				Command.Conversion(args[0], out arg0, typeof(T0));
-				
-				exp.Compile().Invoke(instance , (T0)arg0);
-			};
-			_Register(exp, func);
-		}
-
-		public void RegisterLambda<TThis, T0 , T1 >(TThis instance, Expression<Action<TThis, T0,T1>> exp)
-		{
-			Action<string[]> func = (args) =>
-			{
-				if (args.Length != 2)
-				{
-					throw new ArgumentException("命令參數數量為2");
-				}
-				object arg0;
-				Command.Conversion(args[0], out arg0, typeof(T0));
-
-				object arg1;
-				Command.Conversion(args[1], out arg1, typeof(T1));
-
-				exp.Compile().Invoke(instance, (T0)arg0 , (T1)arg1);
-			};
-			_Register(exp, func);
-		}
-
-		public void RegisterLambda<TThis, T0, T1 , T2>(TThis instance, Expression<Action<TThis, T0, T1, T2>> exp)
-		{
-			Action<string[]> func = (args) =>
-			{
-				if (args.Length != 3)
-				{
-					throw new ArgumentException("命令參數數量為3");
-				}
-				object arg0;
-				Command.Conversion(args[0], out arg0, typeof(T0));
-
-				object arg1;
-				Command.Conversion(args[1], out arg1, typeof(T1));
-
-				object arg2;
-				Command.Conversion(args[2], out arg2, typeof(T2));
-
-				exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1 , (T2)arg2);
-			};
-			_Register(exp, func);
-		}
-
-		public void RegisterLambda<TThis, T0, T1, T2 , T3>(TThis instance, Expression<Action<TThis, T0, T1, T2,T3>> exp)
-		{
-			Action<string[]> func = (args) =>
-			{
-				if (args.Length != 4)
-				{
-					throw new ArgumentException("命令參數數量為4");
-				}
-				object arg0;
-				Command.Conversion(args[0], out arg0, typeof(T0));
-
-				object arg1;
-				Command.Conversion(args[1], out arg1, typeof(T1));
-
-				object arg2;
-				Command.Conversion(args[2], out arg2, typeof(T2));
-
-				object arg3;
-				Command.Conversion(args[3], out arg3, typeof(T3));
-
-				exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1, (T2)arg2, (T3)arg3);
-			};
-			_Register(exp, func);
-		}
-
-		public void RegisterLambda<TThis, T0, T1, T2, T3 ,T4>(TThis instance, Expression<Action<TThis, T0, T1, T2, T3 , T4>> exp)
-		{
-			Action<string[]> func = (args) =>
-			{
-				if (args.Length != 5)
-				{
-					throw new ArgumentException("命令參數數量為5");
-				}
-				object arg0;
-				Command.Conversion(args[0], out arg0, typeof(T0));
-
-				object arg1;
-				Command.Conversion(args[1], out arg1, typeof(T1));
-
-				object arg2;
-				Command.Conversion(args[2], out arg2, typeof(T2));
-
-				object arg3;
-				Command.Conversion(args[3], out arg3, typeof(T3));
-
-				object arg4;
-				Command.Conversion(args[4], out arg4, typeof(T4));
-
-				exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1, (T2)arg2, (T3)arg3 , (T4)arg4);
-			};
-			_Register(exp, func);
-		}
+		
 		public System.Guid Register(string command, Action<string[]> func, Type return_type, Type[] param_types)
 		{
 			return _Register(command, func, return_type , param_types);
@@ -769,7 +494,10 @@ namespace Regulus.Utility
 			return cps;
 		}
 
-
+		public void Register(LambdaExpression exp, Action<string[]> func)
+		{
+			_Register(exp,func);
+		}
 		private void _Register(LambdaExpression exp , Action<string[]> func)
 		{            
 
