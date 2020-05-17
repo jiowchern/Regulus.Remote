@@ -7,22 +7,42 @@ namespace Regulus.Remote.Client
 
     public class AgentCommandVersionProvider
     {
-        private readonly System.Collections.Generic.Dictionary<System.Type, int> _Counts ;
+        class TypeMethod
+        {
+            public readonly Type Type;
+            public readonly MethodInfo Method;
+            int _Count;
+
+            public TypeMethod(Type type, MethodInfo method_info)
+            {
+                Type = type;
+                Method = method_info;
+            }
+            public int Increase()
+            {
+                return _Count++;
+            }
+        }
+        private readonly System.Collections.Generic.List<TypeMethod> _Counts ;
         public AgentCommandVersionProvider()
         {
-            _Counts = new System.Collections.Generic.Dictionary<Type, int>();
+            _Counts = new System.Collections.Generic.List<TypeMethod>();
         }
 
-        private int _Version(Type type)
+        private int _Version(Type type, MethodInfo method_info)
         {
-            if (!_Counts.ContainsKey(type))
-                _Counts.Add(type, 0);
-            return _Counts[type]++;
+            var typeMethod = _Counts.FirstOrDefault((tm) => tm.Type == type && tm.Method == method_info);
+            if(typeMethod == null)
+            {
+                typeMethod = new TypeMethod(type, method_info);
+                _Counts.Add(typeMethod);
+            }
+            return typeMethod.Increase();
         }
 
-        public int GetVersion(Type type)
+        public int GetVersion(Type type,MethodInfo method_info)
         {
-            return _Version(type);
+            return _Version(type, method_info);
         }
     }
     internal class AgentCommand
@@ -35,7 +55,7 @@ namespace Regulus.Remote.Client
         public AgentCommand(AgentCommandVersionProvider provider,System.Type type , MethodStringInvoker invoker)
         {
             Target = invoker.Target;
-            Name = $"{type.Name}-{ provider.GetVersion(type)   }.{invoker.Method.Name} [{_BuildParams(invoker.Method)}]";
+            Name = $"{type.Name}-{ provider.GetVersion(type, invoker.Method)   }.{invoker.Method.Name} [{_BuildParams(invoker.Method)}]";
         }
 
         private string _BuildParams(MethodInfo method)
