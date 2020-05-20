@@ -100,7 +100,7 @@ namespace Regulus.Remote.Protocol
             var addDescriberCode = string.Join(",", _GetSerializarType(serializerTypes) );
             var addEventCode = string.Join("\n", addEventType.ToArray());
             var tokens = protocol_name.Split(new[] { '.' });
-            var procotolName = tokens.Last();
+            //var procotolName = tokens.Last();
 
             var providerNamespace = string.Join(".", tokens.Take(tokens.Count() - 1).ToArray());
             var providerNamespaceHead = "";
@@ -116,9 +116,10 @@ namespace Regulus.Remote.Protocol
             builder.Append(addTypeCode);
             builder.Append(addEventCode);
             builder.Append(addDescriberCode);
-            
-            var verificationCode = _BuildVerificationCode(builder);
 
+            var md5 = _BuildMd5(builder);
+            var verificationCode = _BuildVerificationCode(md5);
+            var procotolName = _BuildProtocolName(md5);
             var providerCode =
                 $@"
             using System;  
@@ -197,10 +198,17 @@ namespace Regulus.Remote.Protocol
             return code;
         }
 
-        private string _BuildVerificationCode(StringBuilder builder)
+        private byte[] _BuildMd5(StringBuilder builder)
         {
             var md5 = MD5.Create();
-            var code = md5.ComputeHash(Encoding.ASCII.GetBytes(builder.ToString()));            
+            return md5.ComputeHash(Encoding.ASCII.GetBytes(builder.ToString()));
+        }
+        private string _BuildProtocolName(byte[] code)
+        {
+            return $"C{BitConverter.ToString(code).Replace("-", "")}";
+        }
+        private string _BuildVerificationCode(byte[] code)
+        {            
             Regulus.Utility.Log.Instance.WriteInfo("Verification Code " + Convert.ToBase64String(code));
             return string.Join(",", code.Select(val => val.ToString()).ToArray());
         }
