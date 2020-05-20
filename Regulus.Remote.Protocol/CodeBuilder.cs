@@ -21,7 +21,7 @@ namespace Regulus.Remote.Protocol
 
 
         
-        public void Build(string protocol_name, Type[] types)
+        public void Build(Type[] types)
         {
 
             var codeGpis = new List<string>();
@@ -99,17 +99,17 @@ namespace Regulus.Remote.Protocol
             var addTypeCode = string.Join("\n", addGhostType.ToArray());
             var addDescriberCode = string.Join(",", _GetSerializarType(serializerTypes) );
             var addEventCode = string.Join("\n", addEventType.ToArray());
-            var tokens = protocol_name.Split(new[] { '.' });
+            //var tokens = protocol_name.Split(new[] { '.' });
             //var procotolName = tokens.Last();
 
-            var providerNamespace = string.Join(".", tokens.Take(tokens.Count() - 1).ToArray());
+           // var providerNamespace = string.Join(".", tokens.Take(tokens.Count() - 1).ToArray());
             var providerNamespaceHead = "";
             var providerNamespaceTail = "";
-            if (string.IsNullOrEmpty(providerNamespace) == false)
+            /*if (string.IsNullOrEmpty(providerNamespace) == false)
             {
                 providerNamespaceHead = $"namespace {providerNamespace}{{ ";
                 providerNamespaceTail = "}";
-            }
+            }*/
 
 
             var builder = new StringBuilder();
@@ -174,7 +174,7 @@ namespace Regulus.Remote.Protocol
             ";
 
             if (ProviderEvent != null)
-                ProviderEvent(protocol_name , providerCode);
+                ProviderEvent(procotolName , providerCode);
         }
 
         private bool _ValidRemoteInterface(Type type)
