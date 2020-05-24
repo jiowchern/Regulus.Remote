@@ -35,7 +35,7 @@ namespace Regulus.Network.Tcp
             try
             {
                 
-                _Socket.BeginReceive(readed_byte, offset, count, SocketFlags.None, this.Readed, state: done);
+                _Socket.BeginReceive(readed_byte, offset, count, SocketFlags.None, this._Readed, state: done);
             }
             catch (Exception e)
             {
@@ -87,7 +87,7 @@ namespace Regulus.Network.Tcp
             
         }
 
-        private void Readed(IAsyncResult ar)
+        private void _Readed(IAsyncResult ar)
         {
             
 

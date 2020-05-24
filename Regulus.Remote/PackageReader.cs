@@ -84,8 +84,7 @@ namespace Regulus.Remote
 
 		public void Stop()
 		{
-			_Stop = true;
-			_Peer = null;
+			_Stop = true;			
 
 			Singleton<Log>.Instance.WriteInfo("pakcage read stop.");
 		}

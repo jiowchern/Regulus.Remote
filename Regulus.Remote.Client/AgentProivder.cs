@@ -47,6 +47,13 @@ namespace Regulus.Remote.Client
             return agent;
         }
 
+        public static Regulus.Remote.IAgent CreateWeb(IProtocol protocol)
+        {
+            var client = new Regulus.Network.Web.ConnectProvider();
+            var agent = new Regulus.Remote.Ghost.Agent(protocol, client);
+            return agent;
+        }
+
         private readonly IProtocol protocol;
         private readonly Func<IProtocol, IAgent> func;
 

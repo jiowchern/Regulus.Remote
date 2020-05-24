@@ -14,12 +14,14 @@ namespace Regulus.Application.Client
         /// 
         /// </summary>
         /// <param name="protocol">A protocol path , build from Regulus.Remote.Protocol </param>
+        /// <param name="mode">A protocol path , build from Regulus.Remote.Protocol </param>
         /// <param name="entry">A entry path , your game entry dll </param>
-        static void Main(System.IO.FileInfo protocol , System.IO.FileInfo entry = null)
+        static void Main(System.IO.FileInfo protocol , SOCKETMODE mode = SOCKETMODE.TCP = SOCKETMODE.TCP, System.IO.FileInfo entry = null)
         {
 
-            var cmdHandler = new CommandLineHandler(protocol,entry);
+            var cmdHandler = new CommandLineHandler(protocol,entry, mode);
             cmdHandler.RunTcpEvent += _RunTcp;
+            cmdHandler.RunWebEvent += _RunWeb;
             cmdHandler.RunStandaloneEvent += _RunStandalone;
             cmdHandler.Process();
         }
@@ -55,6 +57,21 @@ namespace Regulus.Application.Client
         {
             IProtocol protocol = _LoadProtocol(protocol_path);
             var agentProvider = new Regulus.Remote.Client.AgentProvider(protocol, Regulus.Remote.Client.AgentProvider.CreateTcp);
+
+            var view = new Regulus.Utility.ConsoleViewer();
+            var input = new Regulus.Utility.ConsoleInput(view);
+            input.Launch();
+            var console = new Regulus.Remote.Client.Console(protocol.GetInterfaceProvider().Types, agentProvider, view, input);
+            console.CreateUser();
+
+            console.Run(() => { input.Update(); });
+            input.Shutdown();
+        }
+
+        static void _RunWeb(FileInfo protocol_path)
+        {
+            IProtocol protocol = _LoadProtocol(protocol_path);
+            var agentProvider = new Regulus.Remote.Client.AgentProvider(protocol, Regulus.Remote.Client.AgentProvider.CreateWeb);
 
             var view = new Regulus.Utility.ConsoleViewer();
             var input = new Regulus.Utility.ConsoleInput(view);
