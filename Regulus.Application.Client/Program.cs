@@ -16,7 +16,7 @@ namespace Regulus.Application.Client
         /// <param name="protocol">A protocol path , build from Regulus.Remote.Protocol </param>
         /// <param name="mode">A protocol path , build from Regulus.Remote.Protocol </param>
         /// <param name="entry">A entry path , your game entry dll </param>
-        static void Main(System.IO.FileInfo protocol , SOCKETMODE mode = SOCKETMODE.TCP = SOCKETMODE.TCP, System.IO.FileInfo entry = null)
+        static void Main(System.IO.FileInfo protocol , SOCKETMODE mode = SOCKETMODE.TCP , System.IO.FileInfo entry = null)
         {
 
             var cmdHandler = new CommandLineHandler(protocol,entry, mode);

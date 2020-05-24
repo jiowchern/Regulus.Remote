@@ -40,17 +40,7 @@ namespace Regulus.Remote
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         INotifier<T> QueryNotifier<T>();
-
-        /// <summary>
-        ///     連線
-        /// </summary>        
-        /// <returns>如果連線成功會發生OnValue傳回true</returns>
-        //Value<bool> Connect(System.Net.IPEndPoint ip);
-
-        /// <summary>
-        ///     斷線
-        /// </summary>
-        ///void Disconnect();        
+        
 
         /// <summary>
         /// 錯誤的方法呼叫
