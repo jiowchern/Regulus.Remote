@@ -28,7 +28,7 @@ namespace Regulus.Remote.Client
             return CreateTcp(protocol);
         }
 
-        public static IAgent CreateStandalone(IProtocol arg,Remote.IEntry entry)
+        public static IAgent CreateStandalone(IProtocol arg,Remote.IBinderProvider entry)
         {
             var agent = new Regulus.Remote.Standalone.Agent(arg);
             (agent as IAgent).ConnectEvent += () => {
