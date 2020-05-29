@@ -27,6 +27,7 @@
 
 	    ErrorMethod , 
 
-        ProtocolSubmit
+        ProtocolSubmit,
+		SetProperty,
 	}
 }

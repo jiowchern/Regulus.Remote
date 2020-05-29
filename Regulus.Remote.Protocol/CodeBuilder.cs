@@ -229,6 +229,7 @@ namespace Regulus.Remote.Protocol
             serializer_types.Add(typeof(Regulus.Remote.PackageUnloadSoul));
             serializer_types.Add(typeof(Regulus.Remote.PackageCallMethod));
             serializer_types.Add(typeof(Regulus.Remote.PackageRelease));
+            serializer_types.Add(typeof(Regulus.Remote.PackageSetProperty));
 
             foreach (var serializerType in serializer_types)
             {                
@@ -423,17 +424,34 @@ $@"
             foreach (var propertyInfo in propertyInfos)
             {
                 var propertyCode = $@"
-                public {_GetTypeName(propertyInfo.PropertyType)} _{propertyInfo.Name};
+                public {_GetTypeName(propertyInfo.PropertyType)} _{propertyInfo.Name}= new {_GetTypeName(propertyInfo.PropertyType)}();
                 {_GetTypeName(propertyInfo.PropertyType)} {_GetTypeName(type)}.{propertyInfo.Name} {{ get{{ return _{propertyInfo.Name};}} }}";
                 propertyCodes.Add(propertyCode);
             }
             return string.Join("\n", propertyCodes.ToArray());
         }
 
-        private string _GetTypeName(Type type)
+        private string _GetTypeName(Type t)
         {
 
-            return type.FullName.Replace("+", ".");
+            if (!t.IsGenericType)
+                return $"{t.Namespace}.{t.Name.ToString()}";
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append(t.Name.Substring(0, t.Name.LastIndexOf("`")));
+            sb.Append(t.GetGenericArguments().Aggregate("<",
+
+                delegate (string aggregate, Type type)
+                {
+                    return aggregate + (aggregate == "<" ? "" : ",") + _GetTypeName(type);
+                }
+                ));
+            sb.Append(">");
+
+
+            return $"{t.Namespace}.{sb.ToString()}";
+
+            
         }
 
         private string _BuildMethods(Type type)

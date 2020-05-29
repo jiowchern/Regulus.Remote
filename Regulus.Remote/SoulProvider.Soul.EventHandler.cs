@@ -7,12 +7,18 @@ namespace Regulus.Remote
     {
         public partial class Soul
 		{
-            public class EventHandler
+			internal Action<Type, object> LoadPropertyHandler;
+
+			public class EventHandler
 			{
 				public Delegate DelegateObject;
 
 				public EventInfo EventInfo;
 			}
+
+
+			
+			
 		}
 	}
 }

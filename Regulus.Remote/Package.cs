@@ -48,7 +48,17 @@ namespace Regulus.Remote
 		}
 	}
 
+	public class PackageSetProperty : TPackageData<PackageSetProperty>
 
+	{
+		public PackageSetProperty()
+		{
+			Value = new byte[0];
+		}
+		public Guid EntityId;
+		public int Property;
+		public byte[] Value;
+	}
 	[Serializable]
 	public class PackageUpdateProperty : TPackageData<PackageUpdateProperty>
 	{
@@ -192,5 +202,7 @@ namespace Regulus.Remote
         public byte[] VerificationCode;
         
     }
+
+	
 
 }
