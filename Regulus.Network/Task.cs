@@ -4,9 +4,9 @@ namespace Regulus.Network
 {
     public class Task
     {
-        internal byte[] Buffer;
-        internal int Offset;
-        internal int Count;
+        public byte[] Buffer;
+        public int Offset;
+        public int Count;
 
         private int _DoneCount;
         private bool _Done;

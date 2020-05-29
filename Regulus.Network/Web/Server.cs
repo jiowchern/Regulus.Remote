@@ -42,6 +42,7 @@ namespace Regulus.Network.Web
 
         private void _Listen(Task<HttpListenerContext> task)
         {
+            _ = _HttpListener.GetContextAsync().ContinueWith(_Listen, _CancelGetContext.Token);
             if (task.IsCanceled)
                 return;
             if (task.IsCompleted)
@@ -52,7 +53,7 @@ namespace Regulus.Network.Web
                     _Accept(context);
                 }
             }            
-            _ = _HttpListener.GetContextAsync().ContinueWith(_Listen, _CancelGetContext.Token );
+            
         }
 
         private async void _Accept(HttpListenerContext context)

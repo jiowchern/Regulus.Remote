@@ -28,8 +28,8 @@ namespace Regulus.Network.Web
         void IPeer.Close()
         {
             System.Threading.CancellationToken cancellationToken = default;
-            _Socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "close from server", cancellationToken).Wait();
-            _Socket.Dispose();
+            _Socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "close from server", cancellationToken);
+            //_Socket.Dispose();
         }
 
         void IPeer.Receive(byte[] buffer, int offset, int count, Action<int> done)
@@ -37,7 +37,8 @@ namespace Regulus.Network.Web
             System.Threading.CancellationToken cancellationToken = default;
             var segment = new ArraySegment<byte>(buffer , offset , count);
             _Socket.ReceiveAsync(segment, cancellationToken).ContinueWith((t)=> {
-                done(segment.Count - segment.Offset);
+                var r= t.Result;
+                done(r.Count);
             });
         }
 
@@ -47,8 +48,9 @@ namespace Regulus.Network.Web
             var result = new Task() { Buffer = a.Array, Offset = a.Offset, Count = a.Count };
             System.Threading.CancellationToken cancellationToken = default;
             
-            _Socket.SendAsync(a , WebSocketMessageType.Binary, false, cancellationToken).ContinueWith(t=> {
-                result.Done(a.Count - a.Offset);
+            _Socket.SendAsync(a , WebSocketMessageType.Binary, true, cancellationToken).ContinueWith(t=> {
+                
+                result.Done(a.Count-a.Offset   );
             });
 
             return result;
