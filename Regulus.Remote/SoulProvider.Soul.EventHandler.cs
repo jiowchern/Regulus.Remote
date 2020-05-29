@@ -8,6 +8,7 @@ namespace Regulus.Remote
         public partial class Soul
 		{
 			internal Action<Type, object> LoadPropertyHandler;
+			public readonly System.Collections.Generic.List<PropertyUpdater> PropertyUpdaters;
 
 			public class EventHandler
 			{

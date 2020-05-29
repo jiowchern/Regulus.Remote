@@ -4,6 +4,6 @@ namespace Regulus.Remote
 {
     public interface IDirtyable
     {
-        event Action<Type, object> DirtyEvent;
+        event Action<object> DirtyEvent;
     }
 }

@@ -380,13 +380,11 @@ namespace Regulus.Remote
 				if (property.PropertyType.GetInterfaces().Any( t=>t == typeof(IDirtyable)))
 				{
 					var propertyValue = property.GetValue(soul);
-					var dirtyable = propertyValue as IDirtyable;
-					var accessable = propertyValue as IAccessable;
-					System.Action<Type, object> loadProperty = (t, o) => {
-						_LoadProperty(new_soul.ID, id, o);
-					};					
-					dirtyable.DirtyEvent += loadProperty;
-					new_soul.LoadPropertyHandler = loadProperty;					
+					var dirtyable = propertyValue as IDirtyable;		
+					
+					
+					var pu = new PropertyUpdater(dirtyable, id);					
+					new_soul.PropertyUpdaters.Add(pu) ;					
 				}
 			}
 
@@ -410,21 +408,13 @@ namespace Regulus.Remote
 				{
 					eventHandler.EventInfo.RemoveEventHandler(soulInfo.ObjectInstance, eventHandler.DelegateObject);
 				}
-				
-				var propertys = soulInfo.ObjectType.GetProperties(BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public);
 
-				foreach(var p in propertys)
+				foreach (var pu in soulInfo.PropertyUpdaters)
 				{
-					if (p.PropertyType.GetInterfaces().Any(t => t == typeof(IDirtyable)))
-					{
-						var propertyValue = p.GetValue(soul);
-						var dirtyable = propertyValue as IDirtyable;
-						dirtyable.DirtyEvent -= soulInfo.LoadPropertyHandler;
-					}
-						
+					pu.Release();
 				}
-				
 
+				soulInfo.PropertyUpdaters.Clear();
 
 
 				_UnloadSoul(soulInfo.InterfaceId, soulInfo.ID);
@@ -450,10 +440,10 @@ namespace Regulus.Remote
 
 		public void Update()
 		{
-			//var souls = _Souls.UpdateSet();
-			//var intervalSpan = DateTime.Now - _UpdatePropertyInterval;
-			//var intervalSeconds = intervalSpan.TotalSeconds;
-			/*if(intervalSeconds > 0.5)
+			var souls = _Souls.UpdateSet();
+			/*var intervalSpan = DateTime.Now - _UpdatePropertyInterval;
+			var intervalSeconds = intervalSpan.TotalSeconds;
+			if(intervalSeconds > 0.5)
 			{
 				foreach(var soul in souls)
 				{
@@ -463,7 +453,18 @@ namespace Regulus.Remote
 				_UpdatePropertyInterval = DateTime.Now;
 			}*/
 
-			lock(_EventFilter)
+			foreach (var soul in souls)
+			{
+				foreach(var pu in soul.PropertyUpdaters)
+				{
+					if(pu.Update())
+					{
+						_LoadProperty(soul.ID , pu.PropertyId , pu.Value);
+					}
+				}
+			}
+
+			lock (_EventFilter)
 			{
 				foreach(var filter in _EventFilter)
 				{

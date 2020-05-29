@@ -22,7 +22,10 @@ namespace Regulus.Remote
 
 		    public int InterfaceId { get; set; }
 
-		    
+		    public Soul()
+			{
+				PropertyUpdaters = new List<PropertyUpdater>();
+			}
 		}
 	}
 }

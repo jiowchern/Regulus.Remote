@@ -7,18 +7,18 @@ namespace Regulus.Remote
 		T _Value;
 		public Property()
 		{
-			DirtyEvent += (t,o) => { };
+			DirtyEvent += (o) => { };
 		}
 		public T Value { get {
 				return _Value;
 			} 
 			set {
 				_Value = value;
-				DirtyEvent(typeof(T),_Value);
+				DirtyEvent(_Value);
 			} }
 
-		public event Action<Type, object> DirtyEvent;
-		event Action<Type, object> IDirtyable.DirtyEvent
+		public event Action<object> DirtyEvent;
+		event Action< object> IDirtyable.DirtyEvent
 		{
 			add
 			{
