@@ -4,7 +4,12 @@ namespace Regulus.Remote
 {
     public class Property<T> : IDirtyable , IAccessable
 	{
-		T _Value;
+		T _Value;		
+		public Property(T val) : this()
+		{
+			_Value = val;
+			
+		}
 		public Property()
 		{
 			DirtyEvent += (o) => { };
@@ -12,10 +17,18 @@ namespace Regulus.Remote
 		public T Value { get {
 				return _Value;
 			} 
-			set {
-				_Value = value;
-				DirtyEvent(_Value);
-			} }
+			set
+			{
+				_SetValue(value);
+
+			}
+		}
+
+		private void _SetValue(T value)
+		{
+			_Value = value;
+			DirtyEvent(_Value);
+		}
 
 		public event Action<object> DirtyEvent;
 		event Action< object> IDirtyable.DirtyEvent
@@ -38,15 +51,9 @@ namespace Regulus.Remote
 
 		void IAccessable.Set(object value)
 		{
-			_Value = (T)value;
+			_Value = (T)value;			
 		}
-
-		public static implicit operator Property<T>(T point)
-		{
-			var p = new Property<T>();
-			p.Value = point;
-			return p;
-		}
+		
 
 		public static implicit operator T(Property<T> p)
 		{			

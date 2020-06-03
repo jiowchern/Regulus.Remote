@@ -10,6 +10,10 @@ namespace Regulus.Utility
 	{
 		public static object StringConvert(Type type , string value)
 		{
+			if(type.IsEnum)
+			{
+				return Enum.Parse(type, value);
+			}
 			return System.Convert.ChangeType(value, type);
 		}
 			
