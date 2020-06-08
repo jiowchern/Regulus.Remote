@@ -2,7 +2,7 @@
 
 namespace Regulus.Remote
 {
-    public class Property<T> : IDirtyable , IAccessable
+    public class Property<T> : IDirtyable , IAccessable //, IEquatable<Property<T>>
 	{
 		T _Value;		
 		public Property(T val) : this()
@@ -53,7 +53,29 @@ namespace Regulus.Remote
 		{
 			_Value = (T)value;			
 		}
-		
+
+       /* bool IEquatable<Property<T>>.Equals(Property<T> other)
+        {
+            return _EqualElement(other);
+        }*/
+
+        private bool _EqualElement(Property<T> other)
+        {
+            var equipable = other.Value as IEquatable<T>;
+            if (equipable != null)
+                return equipable.Equals(_Value);
+            return false;
+        }
+
+        public static bool operator ==(Property<T> obj1, Property<T> obj2)
+		{
+			return obj1._EqualElement(obj2);
+		}
+
+		public static bool operator !=(Property<T> obj1, Property<T> obj2)
+		{
+			return !obj1._EqualElement(obj2);
+		}
 
 		public static implicit operator T(Property<T> p)
 		{			
