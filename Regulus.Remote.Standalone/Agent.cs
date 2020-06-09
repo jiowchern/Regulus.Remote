@@ -175,8 +175,10 @@ namespace Regulus.Remote.Standalone
 
 			_GhostRequest.PingEvent += _OnRequestPing;
 			_GhostRequest.ReleaseEvent += _SoulProvider.Unbind;
+			_GhostRequest.SetPropertyDoneEvent += _SoulProvider.SetPropertyDone;
 
-		    _Agent.ErrorMethodEvent += _ErrorMethodEvent;
+
+			_Agent.ErrorMethodEvent += _ErrorMethodEvent;
 		    _Agent.ErrorVerifyEvent += _ErrorVerifyEvent;
             _Agent.Initial(_GhostRequest);
 
@@ -232,7 +234,7 @@ namespace Regulus.Remote.Standalone
 
 			_BreakEvent = null;
 			_Agent.Finial();
-
+			_GhostRequest.SetPropertyDoneEvent -= _SoulProvider.SetPropertyDone;
 			_GhostRequest.PingEvent -= _OnRequestPing;
 			_GhostRequest.ReleaseEvent -= _SoulProvider.Unbind;
 		}

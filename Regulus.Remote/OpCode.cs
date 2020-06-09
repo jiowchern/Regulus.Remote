@@ -6,7 +6,9 @@
 
 		Ping, 
 
-		Release
+		Release ,
+
+		UpdateProperty
 	};
 
 	public enum ServerToClientOpCode : byte

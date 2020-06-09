@@ -11,6 +11,7 @@ namespace Regulus.Remote
 
 
         bool _Dirty;
+        bool _Close;
         object _Object;
         public object Value => _Object;
 
@@ -31,9 +32,12 @@ namespace Regulus.Remote
 
         public bool Update()
         {
+            if (_Close)
+                return false;
             if(_Dirty)
             {
                 _Dirty = false;
+                _Close = true;
                 return true;
             }
             return false;
@@ -41,6 +45,11 @@ namespace Regulus.Remote
         public void Release()
         {
             _Dirtyable.DirtyEvent -= _SetDirty;
+        }
+
+        internal void Reset()
+        {
+            _Close = false;
         }
     }
 }

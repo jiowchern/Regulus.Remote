@@ -236,8 +236,7 @@ namespace Regulus.Remote.Soul
                 _Push(ServerToClientOpCode.Ping, new byte[0]);
 				return null;
 			}
-
-			if(package.Code == ClientToServerOpCode.CallMethod)
+			else if (package.Code == ClientToServerOpCode.CallMethod)
 			{
 				
 
@@ -245,8 +244,7 @@ namespace Regulus.Remote.Soul
 			    var data = package.Data.ToPackageData<PackageCallMethod>(_Serialize);                
                 return _ToRequest(data.EntityId, data.MethodId, data.ReturnId, data.MethodParams);
 			}
-
-			if(package.Code == ClientToServerOpCode.Release)
+			else if(package.Code == ClientToServerOpCode.Release)
 			{
 				//var EntityId = new Guid(package.Args[0]);
 
@@ -254,6 +252,11 @@ namespace Regulus.Remote.Soul
                 var data = package.Data.ToPackageData<PackageRelease>(_Serialize);
                 _SoulProvider.Unbind(data.EntityId);
 				return null;
+			}
+			else if (package.Code == ClientToServerOpCode.UpdateProperty)
+            {
+				var data = package.Data.ToPackageData<PackageSetPropertyDone>(_Serialize);
+				_SoulProvider.SetPropertyDone(data.EntityId , data.Property);
 			}
 
 			return null;

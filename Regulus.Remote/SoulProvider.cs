@@ -251,7 +251,21 @@ namespace Regulus.Remote
 			_Queue.Push(ServerToClientOpCode.UnloadSoul, package.ToBuffer(_Serializer));
 		}
 
-		private void _InvokeMethod(Guid entity_id, int method_id, Guid returnId, byte[][] args)
+        public void SetPropertyDone(Guid entityId, int property)
+        {
+			var souls = from soul in _Souls.UpdateSet() where soul.ID == entityId select soul;
+			var s = souls.FirstOrDefault();
+			if(s!= null)
+            {
+				var updaters  = from updater in s.PropertyUpdaters where updater.PropertyId == property select updater;
+				var u = updaters.FirstOrDefault();
+				if (u != null)
+					u.Reset();
+			}
+				
+		}
+
+        private void _InvokeMethod(Guid entity_id, int method_id, Guid returnId, byte[][] args)
 		{
 			var soulInfo = (from soul in _Souls.UpdateSet()
 							where soul.ID == entity_id

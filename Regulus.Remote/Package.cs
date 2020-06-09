@@ -76,6 +76,16 @@ namespace Regulus.Remote
 	}
 
 	[Serializable]
+	public class PackageSetPropertyDone : TPackageData<PackageSetPropertyDone>
+	{
+		public PackageSetPropertyDone()
+		{			
+		}
+		public Guid EntityId;
+		public int Property;		
+	}
+
+	[Serializable]
 	public class PackageInvokeEvent : TPackageData<PackageInvokeEvent>
 	{
 		public PackageInvokeEvent()

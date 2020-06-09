@@ -291,7 +291,15 @@ namespace Regulus.Remote
 				var filedValue = field.GetValue(instance);
 				var updateable =  filedValue as IAccessable;
 				updateable.Set(value);
+
+
+				var pkg = new PackageSetPropertyDone();
+				pkg.EntityId = entity_id;
+				pkg.Property = property;
+				_Requester.Request(ClientToServerOpCode.UpdateProperty, pkg.ToBuffer(_Serializer));
 			}
+
+			
 		}
 		private void _UpdateProperty(Guid entity_id, int property, byte[] buffer)
 		{
