@@ -231,6 +231,8 @@ namespace Regulus.Remote.Soul
 
 		private Request _TryGetRequest(RequestPackage package)
 		{
+			
+
 			if(package.Code == ClientToServerOpCode.Ping)
 			{
                 _Push(ServerToClientOpCode.Ping, new byte[0]);

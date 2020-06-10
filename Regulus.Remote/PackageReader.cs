@@ -73,7 +73,11 @@ namespace Regulus.Remote
 		{
             
             var pkg = (TPackage)_Serializer.Deserialize(bytes);
-
+			if(pkg == null)
+            {
+				ErrorEvent();
+				return;
+			}
 			_DoneEvent.Invoke(pkg);
 
 			if(_Stop == false)
