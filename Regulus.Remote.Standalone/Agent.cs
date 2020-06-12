@@ -60,7 +60,7 @@ namespace Regulus.Remote.Standalone
 		}
         
 
-		INotifier<T> IAgent.QueryNotifier<T>()
+		INotifier<T> INotifierQueryable.QueryNotifier<T>()
 		{
 			return QueryProvider<T>();
 		}

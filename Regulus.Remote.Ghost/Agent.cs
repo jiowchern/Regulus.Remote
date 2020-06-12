@@ -91,7 +91,7 @@ namespace Regulus.Remote.Ghost
             Singleton<Log>.Instance.WriteInfo("Agent Shutdown.");
 		}
 
-		INotifier<T> IAgent.QueryNotifier<T>()
+		INotifier<T> INotifierQueryable.QueryNotifier<T>()
 		{
 			return _Core.QueryProvider<T>();
 		}

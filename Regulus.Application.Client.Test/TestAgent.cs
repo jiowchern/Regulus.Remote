@@ -99,7 +99,7 @@ namespace Regulus.Application.Client.Test
             provider.Remove(cType.Id);
         }
 
-        INotifier<T> IAgent.QueryNotifier<T>() 
+        INotifier<T> INotifierQueryable.QueryNotifier<T>() 
         {
 
             return _Providers[typeof(T)] as INotifier<T>;

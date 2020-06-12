@@ -17,8 +17,8 @@ namespace Regulus.Remote.Client
             _RemoveHandlers = new List<System.Action>();
 
 
-            var agentType = typeof(IAgent);
-            var agentQueryNotifier = agentType.GetMethod(nameof(IAgent.QueryNotifier));
+            var agentType = typeof(INotifierQueryable);
+            var agentQueryNotifier = agentType.GetMethod(nameof(INotifierQueryable.QueryNotifier));
             
             foreach (var type in _Types)
             {
