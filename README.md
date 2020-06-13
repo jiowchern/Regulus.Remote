@@ -102,7 +102,7 @@ namespace Client
 
 ### Sample
 Description|Tcp|Rudp|Console Client|Unity|Standalone
--|:-|:-|:-|:-|:-|:-
+-|:-|:-|:-|:-|:-
 [ChatRoom](https://github.com/jiowchern/Regulus.Samples/tree/master/Chat1)|✔|❌|✔|✔|❌
 
 
