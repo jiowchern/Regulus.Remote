@@ -1,93 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 
 using Regulus.CustomType;
 
 namespace Regulus.Collection
 {
-	public class QuadTree<T> where T : class, IQuadObject
+    public partial class QuadTree<T> where T : class, IQuadObject
 	{
-		public class QuadNode
-		{
-			private static int _id;
-
-			private readonly QuadNode[] _nodes = new QuadNode[4];
-
-			public readonly int ID = QuadNode._id++;
-
-			internal List<T> QuadObjects = new List<T>();
-
-			public ReadOnlyCollection<QuadNode> Nodes { get; set; }
-
-			public ReadOnlyCollection<T> Objects { get; set; }
-
-			public QuadNode Parent { get; internal set; }
-
-			public QuadNode this[Direction direction]
-			{
-				get
-				{
-					switch(direction)
-					{
-						case Direction.NW:
-							return _nodes[0];
-						case Direction.NE:
-							return _nodes[1];
-						case Direction.SW:
-							return _nodes[2];
-						case Direction.SE:
-							return _nodes[3];
-						default:
-							return null;
-					}
-				}
-
-				set
-				{
-					switch(direction)
-					{
-						case Direction.NW:
-							_nodes[0] = value;
-							break;
-						case Direction.NE:
-							_nodes[1] = value;
-							break;
-						case Direction.SW:
-							_nodes[2] = value;
-							break;
-						case Direction.SE:
-							_nodes[3] = value;
-							break;
-					}
-
-					if(value != null)
-					{
-						value.Parent = this;
-					}
-				}
-			}
-
-			public Rect Bounds { get; internal set; }
-
-			public QuadNode(Rect bounds)
-			{
-				Bounds = bounds;
-				Nodes = new ReadOnlyCollection<QuadNode>(_nodes);
-				Objects = new ReadOnlyCollection<T>(QuadObjects);
-			}
-
-			public QuadNode(float x, float y, float width, float height)
-				: this(new Rect(x, y, width, height))
-			{
-			}
-
-			public bool HasChildNodes()
-			{
-				return _nodes[0] != null;
-			}
-		}
 
 		private readonly int maxObjectsPerLeaf;
 
@@ -227,24 +147,24 @@ namespace Regulus.Collection
 				var isNorth = Root.Bounds.Y < newChildBounds.Y;
 				var isWest = Root.Bounds.X < newChildBounds.X;
 
-				Direction rootDirection;
+				QuadtreeDirection rootDirection;
 				if(isNorth)
 				{
 					rootDirection = isWest
-						                ? Direction.NW
-						                : Direction.NE;
+						                ? QuadtreeDirection.NW
+						                : QuadtreeDirection.NE;
 				}
 				else
 				{
 					rootDirection = isWest
-						                ? Direction.SW
-						                : Direction.SE;
+						                ? QuadtreeDirection.SW
+						                : QuadtreeDirection.SE;
 				}
 
-				var newX = (rootDirection == Direction.NW || rootDirection == Direction.SW)
+				var newX = (rootDirection == QuadtreeDirection.NW || rootDirection == QuadtreeDirection.SW)
 					           ? Root.Bounds.X
 					           : Root.Bounds.X - Root.Bounds.Width;
-				var newY = (rootDirection == Direction.NW || rootDirection == Direction.NE)
+				var newY = (rootDirection == QuadtreeDirection.NW || rootDirection == QuadtreeDirection.NE)
 					           ? Root.Bounds.Y
 					           : Root.Bounds.Y - Root.Bounds.Height;
 				var newRootBounds = new Rect(newX, newY, Root.Bounds.Width * 2, Root.Bounds.Height * 2);
@@ -370,22 +290,22 @@ namespace Regulus.Collection
 			{
 				if(minLeafSize.Width <= node.Bounds.Width / 2 && minLeafSize.Height <= node.Bounds.Height / 2)
 				{
-					node[Direction.NW] = new QuadNode(
+					node[QuadtreeDirection.NW] = new QuadNode(
 						node.Bounds.X, 
 						node.Bounds.Y, 
 						node.Bounds.Width / 2, 
 						node.Bounds.Height / 2);
-					node[Direction.NE] = new QuadNode(
+					node[QuadtreeDirection.NE] = new QuadNode(
 						node.Bounds.X + node.Bounds.Width / 2, 
 						node.Bounds.Y, 
 						node.Bounds.Width / 2, 
 						node.Bounds.Height / 2);
-					node[Direction.SW] = new QuadNode(
+					node[QuadtreeDirection.SW] = new QuadNode(
 						node.Bounds.X, 
 						node.Bounds.Y + node.Bounds.Height / 2, 
 						node.Bounds.Width / 2, 
 						node.Bounds.Height / 2);
-					node[Direction.SE] = new QuadNode(
+					node[QuadtreeDirection.SE] = new QuadNode(
 						node.Bounds.X + node.Bounds.Width / 2, 
 						node.Bounds.Y + node.Bounds.Height / 2, 
 						node.Bounds.Width / 2, 
@@ -435,28 +355,28 @@ namespace Regulus.Collection
 						}
 					}
 
-					if(node[Direction.NW] != null)
+					if(node[QuadtreeDirection.NW] != null)
 					{
-						node[Direction.NW].Parent = null;
-						node[Direction.NW] = null;
+						node[QuadtreeDirection.NW].Parent = null;
+						node[QuadtreeDirection.NW] = null;
 					}
 
-					if(node[Direction.NE] != null)
+					if(node[QuadtreeDirection.NE] != null)
 					{
-						node[Direction.NE].Parent = null;
-						node[Direction.NE] = null;
+						node[QuadtreeDirection.NE].Parent = null;
+						node[QuadtreeDirection.NE] = null;
 					}
 
-					if(node[Direction.SW] != null)
+					if(node[QuadtreeDirection.SW] != null)
 					{
-						node[Direction.SW].Parent = null;
-						node[Direction.SW] = null;
+						node[QuadtreeDirection.SW].Parent = null;
+						node[QuadtreeDirection.SW] = null;
 					}
 
-					if(node[Direction.SE] != null)
+					if(node[QuadtreeDirection.SE] != null)
 					{
-						node[Direction.SE].Parent = null;
-						node[Direction.SE] = null;
+						node[QuadtreeDirection.SE].Parent = null;
+						node[QuadtreeDirection.SE] = null;
 					}
 
 					if(node.Parent != null)
@@ -611,16 +531,5 @@ namespace Regulus.Collection
 				}
 			}
 		}
-	}
-
-	public enum Direction
-	{
-		NW = 0, 
-
-		NE = 1, 
-
-		SW = 2, 
-
-		SE = 3
 	}
 }

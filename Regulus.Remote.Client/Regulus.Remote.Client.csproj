@@ -17,8 +17,4 @@
     <ProjectReference Include="..\Regulus.Utility\Regulus.Utility.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Status\" />
-  </ItemGroup>
-
 </Project>

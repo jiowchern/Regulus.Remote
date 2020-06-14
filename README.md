@@ -12,12 +12,13 @@
 This is server-client connection framework, available for Unity development.
 
 ### Feature
-* .Net Standard 2.0.
+* Support .Net Standard 2.0.
 * Serialization.
 * Remote method invocation.
+* Property Synchronize.
 * Unity il2cpp.
 * Simulate a stand-alone environment.
-* Customize the stream transport.
+* Customizable packet transmission.
 
 ### Architecture
 <!-- 
@@ -55,7 +56,7 @@ end note
 -->
 ![PlantUML model](http://www.plantuml.com/plantuml/svg/VL6xJiGm4Epz5QFGG14BKLCSeaK8tOdgHE7Ocs3m8t8Sf0ZnxpWsKJZTeyhEpcCdoMQ88iJH6jOB-IawGlKI_0V9ME6RXVGKhZDf--YjzUvQ6NDJGGme-BzYH-6BGYRBU60tcbpCP1aP-s7hpIrrena7FEacY30TtbvOlYNh8_4Im5ELd7UIlM0lvSxP2pkNsvzatd1VrpNsV-X8LSulgeAIgdokjERyt7P9P2xbm50R0VXsbUFLwJZ11_ZuJW7Isrv4tHY2l69ufhYBmYaHr1s_HLz-8sVa5ER8u-3bOe9bh0Uj29smIUOxBI-Pb-wp-m4o8oXgjIE5PaAgY26d8fNAKEONMJCtQHgj-GK0)  
 
-### Remote method invocation.
+### Remote Method Invocation.
 Defining a common interface.
 ```csharp
 // Common
@@ -97,8 +98,60 @@ namespace Client
 }
 ```
 
-
-
+### Property Synchronize
+Define a property.
+```csharp
+// Common
+namespace Common
+{
+	public interface ISampleInterface
+	{				
+		Regulus.Remote.Property<int> Property {get;}
+	}
+}	
+```
+Implement property
+```csharp
+namespace Server
+{
+	public class Sample : ISampleInterface
+	{				
+		readonly Regulus.Remote.Property<int> _Property;_
+		public Sample()
+		{
+			_Property = new Regulus.Remote.Property<int>();
+		}
+		Regulus.Remote.Property<int> ISampleInterface.Property => _Property;
+	}
+}	
+```
+Set property value
+```csharp
+namespace Server
+{
+	public class Sample : ISampleInterface
+	{						
+		public void ChangeProperty()
+		{
+			_Property.Value = 1;
+		}
+	}
+}	
+```
+If invoke "ChangeProperty" you can get Property value is 1
+```csharp
+// Client
+namespace Client
+{		
+	public void Update(ISampleInterface sample)
+	{
+		if(sample.Property == 1)
+		{
+			// Console.WriteLine($"Property value is 1");
+		}
+	}
+}
+```
 
 ### Sample
 Description|Tcp|Rudp|Console Client|Unity|Standalone

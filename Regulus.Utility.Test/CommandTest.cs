@@ -282,6 +282,16 @@ namespace RegulusLibraryTest
 			NUnit.Framework.Assert.AreEqual(ip.Address, IPAddress.Parse("127.0.0.1"));
 			NUnit.Framework.Assert.AreEqual(ip.Port, 12345);
 		}
+
+		[NUnit.Framework.Test()]
+		public void TestCommandGuid()
+		{
+			var id = Guid.NewGuid();
+			object outVal;
+			Command.Conversion(id.ToString(), out outVal, typeof(Guid));
+			var id2 = (Guid)outVal  ;
+			NUnit.Framework.Assert.AreEqual(id.ToString(), id2.ToString());			
+		}
 		[NUnit.Framework.Test()]
 		public void TestCommandCnvEnum()
 		{

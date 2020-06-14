@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
@@ -319,122 +320,55 @@ namespace Regulus.Utility
 				UnregisterEvent(cmd.Name);
 			}
 		}
-
-		public static bool Conversion(string in_string, out object out_value, Type source)
+		
+		public static void Conversion(string in_string, out object out_value, Type source)
 		{
+			out_value = null;
+
+			try
+            {
+				var converter = TypeDescriptor.GetConverter(source);
+				out_value = converter.ConvertFromString(in_string);
+			}
+            catch (Exception)
+            {
+
+                
+            }
+			finally
+            {
+				if(out_value == null)
+                {
+					if (source == typeof(IPEndPoint))
+					{
+						try
+						{
+							var m = Regex.Match(in_string, @"(\d+\.\d+\.\d+\.\d+):(\d+)");
+							if (m.Success)
+							{
+								var address = m.Groups[1].Value;
+								var port = m.Groups[2].Value;
+								out_value = new IPEndPoint(IPAddress.Parse(address), int.Parse(port));
+							}
+							else
+							{
+								out_value = new IPEndPoint(0, 0);
+							}
+
+						}
+						catch (SystemException se)
+						{
+							out_value = new IPEndPoint(0, 0);
+						}
+
+
+					}					
+				}
+
+			}
 			
-			out_value =null;
-			if (source == typeof(int))
-			{
-				var reault = int.MinValue;
-				if(int.TryParse(in_string, out reault))
-				{
-				}
-
-				out_value = reault;
-
-				return true;
-			}
-			else if(source == typeof(float))
-			{
-				var reault = float.MinValue;
-				if(float.TryParse(in_string, out reault))
-				{
-				}
-
-				out_value = reault;
-				return true;
-			}
-			else if(source == typeof(byte))
-			{
-				var reault = byte.MinValue;
-				if(byte.TryParse(in_string, out reault))
-				{
-				}
-
-				out_value = reault;
-				return true;
-			}
-			else if(source == typeof(short))
-			{
-				var reault = short.MinValue;
-				if(short.TryParse(in_string, out reault))
-				{
-				}
-
-				out_value = reault;
-				return true;
-			}
-			else if(source == typeof(long))
-			{
-				var reault = long.MinValue;
-				if(long.TryParse(in_string, out reault))
-				{
-				}
-
-				out_value = reault;
-				return true;
-			}
-			else if (source == typeof(bool))
-			{
-				var reault = false;
-				if (bool.TryParse(in_string, out reault))
-				{
-				}
-
-				out_value = reault;
-				return true;
-			}
-			else if (source == typeof(IPEndPoint))
-			{
-				try
-				{
-					var m = Regex.Match(in_string, @"(\d+\.\d+\.\d+\.\d+):(\d+)");
-					if (m.Success)
-					{
-						var address = m.Groups[1].Value;
-						var port = m.Groups[2].Value;
-						out_value = new IPEndPoint(IPAddress.Parse(address), int.Parse(port));
-					}
-					else
-					{
-						out_value = new IPEndPoint(0, 0);
-					}
-					
-				}
-				catch(SystemException se)
-				{
-					out_value = new IPEndPoint(0, 0);
-				}
-				
-				
-			}
-			else if (source == typeof(string))
-			{                
-				out_value = in_string;
-				return true;
-			}
-			else if (source.IsEnum)
-			{
-				
-				try
-				{
-					out_value = Enum.Parse(source, in_string);
-					return true;
-				}
-				catch (Exception)
-				{
-					
-				}             
-				
-			}
-			else
-			{
-				out_value = Activator.CreateInstance(source);
-				return true;
-			}
-
-			return false;
+			
+		
 		}
 
 		private void _EmptyRegisterEvent(string command, CommandParameter ret, CommandParameter[] args)
