@@ -64,7 +64,7 @@ namespace Common
 {
 	public interface IChatable 
 	{				
-		void Send(string name , string message);
+		void Send(string message);
 	}
 }	
 ```
