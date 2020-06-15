@@ -12,11 +12,11 @@
 This is server-client connection framework, available for Unity development.
 
 ### Feature
+* Simple server-client framework.
 * Support .Net Standard 2.0.
 * Serialization.
 * Remote method invocation.
-* Property Synchronize.
-* Unity il2cpp.
+* Support Unity il2cpp.
 * Simulate a stand-alone environment.
 * Customizable packet transmission.
 
@@ -62,22 +62,22 @@ Defining a common interface.
 // Common
 namespace Common
 {
-	public interface IChatable 
+	public interface IAdder 
 	{				
-		void Send(string message);
+		Regulus.Remote.Value<int> Add(int num1,int num2);
 	}
 }	
 ```
-Implementation a method .
+Implementation a method.
 ```csharp
 // Server
 namespace Server
 {
-	public class Chatter : IChatable
+	public class Adder : IAdder
 	{
-		void IChatable.Send(string message)
+		Regulus.Remote.Value<int> IAdder.Add(int num1,int num2)
 		{
-			//TODO: 
+			return num1+num2;
 		}
 	}
 }
@@ -90,12 +90,27 @@ namespace Client
 	public void AMethod(Regulus.Remote.IAgent agent)
 	{
 		// receive
-		agent.QueryNotifier<IChatable>().Supply += (chatter) =>{
+		agent.QueryNotifier<IAdder>().Supply += (chatter) =>{
 			// invoke
-			chatter.Send("hello!");				
+			var val = chatter.Add(1,2);			
+			// return value
+			val.OnValue += (num)=> System.Console.WriteLine;
 		};		
 	}
 }
+```
+### Remote Event 
+Define events like this.  
+The client can receive events from the server.
+```csharp
+// Common
+namespace Common
+{
+	public interface ISampleInterface
+	{				
+		event System.Action<string> BroadcastEvent;
+	}
+}	
 ```
 
 ### Property Synchronize
@@ -110,7 +125,7 @@ namespace Common
 	}
 }	
 ```
-Implement property
+Implement property.
 ```csharp
 namespace Server
 {
@@ -125,7 +140,7 @@ namespace Server
 	}
 }	
 ```
-Set property value
+Set property value.
 ```csharp
 namespace Server
 {
@@ -138,7 +153,7 @@ namespace Server
 	}
 }	
 ```
-If invoke "ChangeProperty" you can get Property value is 1
+If invoke "ChangeProperty" you can get Property value is 1.
 ```csharp
 // Client
 namespace Client
@@ -156,6 +171,6 @@ namespace Client
 ### Sample
 Description|Tcp|Rudp|Console Client|Unity|Standalone
 -|:-|:-|:-|:-|:-
-[ChatRoom](https://github.com/jiowchern/Regulus.Samples/tree/master/Chat1)|✔|❌|✔|✔|❌
+[ChatRoom](https://github.com/jiowchern/Regulus.Samples/tree/master/Chat1)|✔|❌|✔|✔|✔
 
 
