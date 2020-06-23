@@ -20,11 +20,12 @@ namespace Regulus.Network.Rudp
 
         bool IPeer.Connected { get { return _RudpSocket.Status == PeerStatus.Transmission; } }
 
-        void IPeer.Receive(byte[] buffer, int offset, int count,Action<int> done)
+        System.Threading.Tasks.Task<int> IPeer.Receive(byte[] buffer, int offset, int count)
         {
-            _RudpSocket.Receive(buffer, offset, count, done);
+            return _RudpSocket.Receive(buffer, offset, count);
+            
         }
-        Task IPeer.Send(byte[] buffer, int offset, int length)
+        SendTask IPeer.Send(byte[] buffer, int offset, int length)
         {
             return _RudpSocket.Send(buffer , offset , length );
         }

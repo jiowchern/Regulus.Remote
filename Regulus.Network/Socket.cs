@@ -14,19 +14,16 @@ namespace Regulus.Network
     {
 
         public event Action CloseEvent;
-        private readonly Line m_Line;
+        private readonly Line _Line;
 
         private readonly StatusMachine<Timestamp> m_Machine;
 
         
-        private PeerStatus m_Status;
+        private PeerStatus _Status;
 
-        Task _ReadTask;
-        private readonly System.Collections.Concurrent.ConcurrentQueue<Task> _SendTasks;
         
-
-
-
+        private readonly System.Collections.Concurrent.ConcurrentQueue<SendTask> _SendTasks;
+        private readonly SegmentStream _Stream;
         public Action<int, SocketError> WriteDoneHandler;
 
         
@@ -35,18 +32,18 @@ namespace Regulus.Network
 
         private Socket(Line Line)
         {
+            _Stream = new SegmentStream(new SocketMessage[0]);
+            _SendTasks = new ConcurrentQueue<SendTask>();
+        
             
-            _SendTasks = new ConcurrentQueue<Task>();
-            _ReadTask = new Task();
-            
-            m_Line = Line;
+            _Line = Line;
             m_Machine = new StatusMachine<Timestamp>();
             
 
         }
         public Socket(Line Line, PeerListener Listener) : this(Line)
         {
-            m_Status = PeerStatus.Connecting;
+            _Status = PeerStatus.Connecting;
             Listener.DoneEvent += ToTransmission;
             Listener.ErrorEvent += ToClose;
             m_Machine.Push(Listener);
@@ -54,7 +51,7 @@ namespace Regulus.Network
 
         public Socket(Line Line, PeerConnecter Connecter) : this(Line)
         {
-            m_Status = PeerStatus.Connecting;
+            _Status = PeerStatus.Connecting;
             Connecter.DoneEvent += ToTransmission;
             m_Machine.Push(Connecter);
         }
@@ -63,8 +60,8 @@ namespace Regulus.Network
 
         private void ToTransmission()
         {
-            m_Status = PeerStatus.Transmission;
-            var stage = new PeerTransmission(_SendTasks, m_Line, _ReadTask);
+            _Status = PeerStatus.Transmission;
+            var stage = new PeerTransmission(_SendTasks, _Line, _Stream);
             stage.DisconnectEvent += _Disconnect;
             m_Machine.Push(stage);            
         }
@@ -95,11 +92,11 @@ namespace Regulus.Network
 
 
 
-        public EndPoint EndPoint {get{return m_Line.EndPoint; } } 
+        public EndPoint EndPoint {get{return _Line.EndPoint; } } 
 
-        public Task Send(byte[] buffer, int offset, int count)
+        public SendTask Send(byte[] buffer, int offset, int count)
         {
-            var task = new Task() {Buffer = buffer , Offset =  offset , Count = count };
+            var task = new SendTask() {Buffer = buffer , Offset =  offset , Count = count };
             _SendTasks.Enqueue(task);
             return task;
 
@@ -107,20 +104,25 @@ namespace Regulus.Network
 
 
 
-        public void Receive(byte[] buffer, int offset, int count, Action<int> done)
+        public System.Threading.Tasks.Task<int> Receive(byte[] buffer, int offset, int count)
         {
-            
-            lock (_ReadTask)
-            {
-                _ReadTask.Buffer = buffer;
-                _ReadTask.Offset = offset;
-                _ReadTask.Count = count;
-                _ReadTask._DoneEvent = done;
-            }
-            
+
+            return System.Threading.Tasks.Task<int>.Run(() => {
+
+                var readCount = _Stream.Read(buffer, offset, count);
+                var r = new Regulus.Utility.AutoPowerRegulator(new PowerRegulator());
+                while(readCount == 0)
+                {
+                    r.Operate();
+                    readCount = _Stream.Read(buffer, offset, count);
+                }
+                return readCount;
+            });
+
+
         }
 
-        public PeerStatus Status {get { return m_Status; } }
+        public PeerStatus Status {get { return _Status; } }
 
         public void Disconnect()
         {
@@ -130,10 +132,10 @@ namespace Regulus.Network
 
         private void _Disconnect()
         {
-            if(m_Status != PeerStatus.Close)
+            if(_Status != PeerStatus.Close)
             {
-                m_Status = PeerStatus.Disconnect;
-                var stage = new PeerDisconnecter(m_Line);
+                _Status = PeerStatus.Disconnect;
+                var stage = new PeerDisconnecter(_Line);
                 stage.DoneEvent += ToClose;
                 m_Machine.Push(stage);
             }
@@ -143,7 +145,7 @@ namespace Regulus.Network
         private void ToClose()
         {
             CloseEvent();
-            m_Status = PeerStatus.Close;
+            _Status = PeerStatus.Close;
             m_Machine.Empty();
         }
 
@@ -151,7 +153,7 @@ namespace Regulus.Network
 
         public void Break()
         {
-            if (m_Status != PeerStatus.Close)
+            if (_Status != PeerStatus.Close)
                 ToClose();
         }
     }

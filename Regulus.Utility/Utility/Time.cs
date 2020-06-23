@@ -69,57 +69,9 @@ namespace Regulus.Utility
 		}
 	}
 
-	public class Task : Timer, IUpdatable<long>
-	{
-		public Task(TimeSpan interval, Action<long> time_up)
-			: base(interval, time_up)
-		{
-		}
+	
 
-		bool IUpdatable<long>.Update(long arg)
-		{
-			return _Update(arg) == false;
-		}
-
-		void IBootable.Launch()
-		{
-		}
-
-		void IBootable.Shutdown()
-		{
-		}
-	}
-
-	public class Scheduler : Singleton<Scheduler>
-	{
-		private readonly Updater<long> _Tasks;
-
-		private readonly Time _Time;
-
-		public Scheduler()
-		{
-			_Tasks = new Updater<long>();
-			_Time = new Time();
-		}
-
-		public Task Add(TimeSpan interval, Action<long> time_up)
-		{
-			var task = new Task(interval, time_up);
-			_Tasks.Add(task);
-			return task;
-		}
-
-		public void Remove(Task task)
-		{
-			_Tasks.Remove(task);
-		}
-
-		public void Update()
-		{
-			_Time.Update();
-			_Tasks.Working(_Time.Delta);
-		}
-	}
+	
 
 	public class Time
 	{

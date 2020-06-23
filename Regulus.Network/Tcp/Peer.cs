@@ -27,27 +27,27 @@ namespace Regulus.Network.Tcp
             get { return _Socket.Connected && _Enable; }
         }
 
-        void IPeer.Receive(byte[] readed_byte, int offset, int count ,Action<int> done)
+        System.Threading.Tasks.Task<int> IPeer.Receive(byte[] readed_byte, int offset, int count )
         {
-            
-            
-
-            try
+            var task = new System.Threading.Tasks.Task<int>(() =>
             {
-                
-                _Socket.BeginReceive(readed_byte, offset, count, SocketFlags.None, this._Readed, state: done);
-            }
-            catch (Exception e)
-            {
+                SocketError error;
+                var readCount = _Socket.Receive(readed_byte, offset, count, SocketFlags.None, out error);
+                if(readCount == 0 && error == SocketError.Success)
+                    return readCount;
                 _Enable = false;
-            }
+                return 0;
+            });
+            task.Start();
+            return task;
 
+         
             
         }
 
-        Task IPeer.Send(byte[] buffer, int offset_i, int buffer_length)
+        SendTask IPeer.Send(byte[] buffer, int offset_i, int buffer_length)
         {
-            var task = new Task() { Buffer = buffer, Offset = offset_i, Count = buffer_length };
+            var task = new SendTask() { Buffer = buffer, Offset = offset_i, Count = buffer_length };
             try
             {
                 _Socket.BeginSend(buffer, offset_i, buffer_length, SocketFlags.None, SendDone, state: task);
@@ -77,7 +77,7 @@ namespace Regulus.Network.Tcp
             {
                 SocketError error;
                 var sendCount = _Socket.EndSend(ar, out error);
-                var task = (Task) ar.AsyncState;
+                var task = (SendTask) ar.AsyncState;
                 task.Done(sendCount);
             }
             catch (Exception e)
@@ -87,27 +87,7 @@ namespace Regulus.Network.Tcp
             
         }
 
-        private void _Readed(IAsyncResult ar)
-        {
-            
-
-            if (!_Socket.Connected)
-                return;
-
-            var task = (Action<int>)ar.AsyncState;
-            try
-            {
-                SocketError error;
-                var readCount = _Socket.EndReceive(ar, out error);
-                task(readCount);                
-            }
-            catch (Exception e)
-            {
-                _Enable = false;
-            }
-            
-            
-        }
+       
 
         protected System.Net.Sockets.Socket GetSocket()
         {

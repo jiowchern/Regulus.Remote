@@ -2,7 +2,7 @@ using System;
 
 namespace Regulus.Network
 {
-    public class Task
+    public class SendTask
     {
         public byte[] Buffer;
         public int Offset;
@@ -11,7 +11,7 @@ namespace Regulus.Network
         private int _DoneCount;
         private bool _Done;
 
-        public Task()
+        public SendTask()
         {
             this.Buffer = new byte[0];
             _Done = false;

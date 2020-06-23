@@ -32,20 +32,20 @@ namespace Regulus.Network.Web
             //_Socket.Dispose();
         }
 
-        void IPeer.Receive(byte[] buffer, int offset, int count, Action<int> done)
+        System.Threading.Tasks.Task<int> IPeer.Receive(byte[] buffer, int offset, int count)
         {
             System.Threading.CancellationToken cancellationToken = default;
             var segment = new ArraySegment<byte>(buffer , offset , count);
-            _Socket.ReceiveAsync(segment, cancellationToken).ContinueWith((t)=> {
+            return _Socket.ReceiveAsync(segment, cancellationToken).ContinueWith<int>((t)=> {
                 var r= t.Result;
-                done(r.Count);
+               return r.Count;
             });
         }
 
-        Task IPeer.Send(byte[] buffer, int offset, int count)
+        SendTask IPeer.Send(byte[] buffer, int offset, int count)
         {
             var a = new ArraySegment<byte>(buffer, offset, count);
-            var result = new Task() { Buffer = a.Array, Offset = a.Offset, Count = a.Count };
+            var result = new SendTask() { Buffer = a.Array, Offset = a.Offset, Count = a.Count };
             System.Threading.CancellationToken cancellationToken = default;
             
             _Socket.SendAsync(a , WebSocketMessageType.Binary, true, cancellationToken).ContinueWith(t=> {

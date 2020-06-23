@@ -25,13 +25,18 @@ namespace Regulus.Remote.Tests
             throw new NotImplementedException();
         }
 
-        void IPeer.Receive(byte[] buffer, int offset, int count, Action<int> done)
+        System.Threading.Tasks.Task<int> IPeer.Receive(byte[] buffer, int offset, int count )
         {
-            buffer[offset] = _Buffer.Dequeue();
-            done(1);
+            return System.Threading.Tasks.Task.Run(() =>
+            {
+                buffer[offset] = _Buffer.Dequeue();
+                return 1;
+            });
+            
+            
         }
 
-        Task IPeer.Send(byte[] buffer, int offset, int count)
+        SendTask IPeer.Send(byte[] buffer, int offset, int count)
         {
             throw new NotImplementedException();
         }

@@ -8,20 +8,19 @@ namespace Regulus.Network
 {
     internal class PeerTransmission : IStatus<Timestamp>
     {
-        private readonly ConcurrentQueue<Task> _SendTasks;
-        private readonly Line _Line;
-        private readonly Task _ReadTask;
+        private readonly ConcurrentQueue<SendTask> _SendTasks;
+        private readonly Line _Line;        
         private readonly List<byte> _SendBytes;
         private readonly SegmentStream _Stream;
         public event Action DisconnectEvent ;
         private long _Timeout;
-        public PeerTransmission(ConcurrentQueue<Task> send_tasks, Line line, Task read_task)
+        public PeerTransmission(ConcurrentQueue<SendTask> send_tasks, Line line , SegmentStream stream)
         {
             _SendTasks = send_tasks;
             _Line = line;
-            _ReadTask = read_task;
+            
             _SendBytes = new List<byte>();
-            _Stream = new SegmentStream(new SocketMessage[0]);
+            _Stream = stream;
         }
 
         void IStatus<Timestamp>.Enter()
@@ -41,7 +40,7 @@ namespace Regulus.Network
 
             while (_SendTasks.Count > 0)
             {
-                Task task = null;
+                SendTask task = null;
                 if (_SendTasks.TryDequeue(out task))
                 {
                     for (int i = task.Offset; i < task.Count; i++)
@@ -57,25 +56,6 @@ namespace Regulus.Network
                 _Line.WriteTransmission(_SendBytes.ToArray());
                 _SendBytes.Clear();
             }
-
-            while (_Stream.Count > 0)
-            {
-
-                lock (_ReadTask)
-                {
-                    var handler = _ReadTask;
-                    if (handler.Buffer != null)
-                    {
-                        var readCount = _Stream.Read(handler.Buffer, handler.Offset, handler.Count);
-                        if (readCount > 0)
-                            handler.Done(readCount);
-                    }
-                }
-            }
-
-
-
-            
 
             SocketMessage message ;
             while ((message = _Line.Read()) != null)
