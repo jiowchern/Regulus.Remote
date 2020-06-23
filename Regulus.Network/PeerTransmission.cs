@@ -8,15 +8,15 @@ namespace Regulus.Network
 {
     internal class PeerTransmission : IStatus<Timestamp>
     {
-        private readonly ConcurrentQueue<SendTask> _SendTasks;
+     
         private readonly Line _Line;        
         private readonly List<byte> _SendBytes;
         private readonly SegmentStream _Stream;
         public event Action DisconnectEvent ;
         private long _Timeout;
-        public PeerTransmission(ConcurrentQueue<SendTask> send_tasks, Line line , SegmentStream stream)
+        public PeerTransmission(Line line , SegmentStream stream)
         {
-            _SendTasks = send_tasks;
+            
             _Line = line;
             
             _SendBytes = new List<byte>();
@@ -37,25 +37,6 @@ namespace Regulus.Network
         {
 
 
-
-            while (_SendTasks.Count > 0)
-            {
-                SendTask task = null;
-                if (_SendTasks.TryDequeue(out task))
-                {
-                    for (int i = task.Offset; i < task.Count; i++)
-                    {
-                        _SendBytes.Add(task.Buffer[i]);
-                    }
-                    task.Done(task.Count);
-                }
-            }
-
-            if (_SendBytes.Count > 0)
-            {
-                _Line.WriteTransmission(_SendBytes.ToArray());
-                _SendBytes.Clear();
-            }
 
             SocketMessage message ;
             while ((message = _Line.Read()) != null)

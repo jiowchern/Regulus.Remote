@@ -42,18 +42,17 @@ namespace Regulus.Network.Web
             });
         }
 
-        SendTask IPeer.Send(byte[] buffer, int offset, int count)
+        System.Threading.Tasks.Task<int> IPeer.Send(byte[] buffer, int offset, int count)
         {
             var a = new ArraySegment<byte>(buffer, offset, count);
-            var result = new SendTask() { Buffer = a.Array, Offset = a.Offset, Count = a.Count };
+            
             System.Threading.CancellationToken cancellationToken = default;
             
-            _Socket.SendAsync(a , WebSocketMessageType.Binary, true, cancellationToken).ContinueWith(t=> {
-                
-                result.Done(a.Count-a.Offset   );
+            return _Socket.SendAsync(a , WebSocketMessageType.Binary, true, cancellationToken).ContinueWith<int>((t)=> {
+                return count- offset;
             });
 
-            return result;
+            
         }
     }
 }

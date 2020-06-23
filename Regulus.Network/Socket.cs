@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using Regulus.Framework;
@@ -16,13 +17,12 @@ namespace Regulus.Network
         public event Action CloseEvent;
         private readonly Line _Line;
 
-        private readonly StatusMachine<Timestamp> m_Machine;
+        private readonly StatusMachine<Timestamp> _Machine;
 
         
         private PeerStatus _Status;
 
         
-        private readonly System.Collections.Concurrent.ConcurrentQueue<SendTask> _SendTasks;
         private readonly SegmentStream _Stream;
         public Action<int, SocketError> WriteDoneHandler;
 
@@ -30,30 +30,30 @@ namespace Regulus.Network
 
 
 
-        private Socket(Line Line)
+        private Socket(Line line)
         {
             _Stream = new SegmentStream(new SocketMessage[0]);
-            _SendTasks = new ConcurrentQueue<SendTask>();
+            
         
             
-            _Line = Line;
-            m_Machine = new StatusMachine<Timestamp>();
+            _Line = line;
+            _Machine = new StatusMachine<Timestamp>();
             
 
         }
-        public Socket(Line Line, PeerListener Listener) : this(Line)
+        public Socket(Line line, PeerListener listener) : this(line)
         {
             _Status = PeerStatus.Connecting;
-            Listener.DoneEvent += ToTransmission;
-            Listener.ErrorEvent += ToClose;
-            m_Machine.Push(Listener);
+            listener.DoneEvent += ToTransmission;
+            listener.ErrorEvent += ToClose;
+            _Machine.Push(listener);
         }
 
-        public Socket(Line Line, PeerConnecter Connecter) : this(Line)
+        public Socket(Line line, PeerConnecter connecter) : this(line)
         {
             _Status = PeerStatus.Connecting;
-            Connecter.DoneEvent += ToTransmission;
-            m_Machine.Push(Connecter);
+            connecter.DoneEvent += ToTransmission;
+            _Machine.Push(connecter);
         }
 
 
@@ -61,9 +61,9 @@ namespace Regulus.Network
         private void ToTransmission()
         {
             _Status = PeerStatus.Transmission;
-            var stage = new PeerTransmission(_SendTasks, _Line, _Stream);
+            var stage = new PeerTransmission(_Line, _Stream);
             stage.DisconnectEvent += _Disconnect;
-            m_Machine.Push(stage);            
+            _Machine.Push(stage);            
         }
 
        
@@ -73,7 +73,7 @@ namespace Regulus.Network
 
         bool IUpdatable<Timestamp>.Update(Timestamp Arg)
         {
-            m_Machine.Update(Arg);
+            _Machine.Update(Arg);
             return true;
         }
 
@@ -86,7 +86,7 @@ namespace Regulus.Network
 
         void IBootable.Shutdown()
         {
-            m_Machine.Termination();
+            _Machine.Termination();
         }
 
 
@@ -94,11 +94,14 @@ namespace Regulus.Network
 
         public EndPoint EndPoint {get{return _Line.EndPoint; } } 
 
-        public SendTask Send(byte[] buffer, int offset, int count)
+        public System.Threading.Tasks.Task<int> Send(byte[] buffer, int offset, int count)
         {
-            var task = new SendTask() {Buffer = buffer , Offset =  offset , Count = count };
-            _SendTasks.Enqueue(task);
-            return task;
+                        
+            return System.Threading.Tasks.Task<int>.Run(()=> {
+
+                _Line.WriteTransmission(buffer.Skip(offset).ToArray());
+                return count;
+            });
 
         }
 
@@ -137,7 +140,7 @@ namespace Regulus.Network
                 _Status = PeerStatus.Disconnect;
                 var stage = new PeerDisconnecter(_Line);
                 stage.DoneEvent += ToClose;
-                m_Machine.Push(stage);
+                _Machine.Push(stage);
             }
             
         }
@@ -146,7 +149,7 @@ namespace Regulus.Network
         {
             CloseEvent();
             _Status = PeerStatus.Close;
-            m_Machine.Empty();
+            _Machine.Empty();
         }
 
 

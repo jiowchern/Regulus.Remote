@@ -80,16 +80,19 @@ namespace Regulus.Network.Tests
             
 
 
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
+            
 
-            task.ContinueWith(t =>
+            var waitTask= task.ContinueWith(t =>
             {
                 readCount = t.Result;
-            }).Wait(5000);
-            Assert.AreEqual(sendBuffer.Length , readCount);
+            });
 
+            while(readCount==0)
+            {
+                updater.Working(new Timestamp(ticks++, 1));
+            }
+            
+            Assert.AreEqual(sendBuffer.Length , readCount);
             
             clientPeer.Disconnect();
             

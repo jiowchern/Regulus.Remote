@@ -25,7 +25,7 @@ namespace Regulus.Network.Rudp
             return _RudpSocket.Receive(buffer, offset, count);
             
         }
-        SendTask IPeer.Send(byte[] buffer, int offset, int length)
+        System.Threading.Tasks.Task<int> IPeer.Send(byte[] buffer, int offset, int length)
         {
             return _RudpSocket.Send(buffer , offset , length );
         }

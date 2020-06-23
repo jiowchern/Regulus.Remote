@@ -30,7 +30,7 @@ namespace Regulus.Remote.Tests
             
         }
 
-        SendTask IPeer.Send(byte[] buffer, int offset, int count)
+        Task<int> IPeer.Send(byte[] buffer, int offset, int count)
         {
             throw new NotImplementedException();
         }
