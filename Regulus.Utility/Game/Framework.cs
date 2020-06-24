@@ -32,7 +32,7 @@ namespace Regulus.Game
 
 		private bool _Runable;
 
-		private StageMachine _StageMachine;
+		private StatusMachine _StageMachine;
 
 		protected Console.IViewer _Viewer;
 
@@ -97,9 +97,9 @@ namespace Regulus.Game
 
 		protected abstract ControllerProvider[] _ControllerProvider();
 
-		private StageMachine _CreateStage()
+		private StatusMachine _CreateStage()
 		{
-			var stageMachine = new StageMachine();
+			var stageMachine = new StatusMachine();
 			var sss = new StageSelectSystem(_Viewer, _ControllerProvider(), Command);
 			sss.SelectSystemEvent += SelectSystemEvent;
 			sss.SelectedEvent += _OnSelectedSystem;
@@ -154,7 +154,7 @@ namespace Regulus.Game
 
 		public event OnSelectSystem SelectSystemEvent;
 
-		private class StageSelectSystem : IStage, ISystemSelector
+		private class StageSelectSystem : IStatus, ISystemSelector
 		{
 			public event Func<ControllerProvider, IUserRequester> SelectedEvent;
 
@@ -208,7 +208,7 @@ namespace Regulus.Game
 				return null;
 			}
 
-			void IStage.Enter()
+			void IStatus.Enter()
 			{
 				_Viewer.WriteLine("選擇系統");
 
@@ -230,7 +230,7 @@ namespace Regulus.Game
 				SelectSystemEvent(new SystemSelector(this));
 			}
 
-			void IStage.Leave()
+			void IStatus.Leave()
 			{
 				foreach(var provider in _SystemProviders)
 				{
@@ -238,7 +238,7 @@ namespace Regulus.Game
 				}
 			}
 
-			void IStage.Update()
+			void IStatus.Update()
 			{
 			}
 		}
@@ -281,7 +281,7 @@ namespace Regulus.Game
 			}
 		}
 
-		private class StageSystemReady : IStage, IUserRequester
+		private class StageSystemReady : IStatus, IUserRequester
 		{
 			public event OnUserRequester UserRequesterEvent;
 
@@ -325,7 +325,7 @@ namespace Regulus.Game
 				_UnspawnController(name);
 			}
 
-			void IStage.Enter()
+			void IStatus.Enter()
 			{
 				_Command.Register<string, TUser>("SpawnController", _SpawnController, user => { });
 				_Command.Register<string>("SelectController", _SelectController);
@@ -334,7 +334,7 @@ namespace Regulus.Game
 				UserRequesterEvent(new UserRequester(this));
 			}
 
-			void IStage.Leave()
+			void IStatus.Leave()
 			{
 				_Command.Unregister("SelectController");
 				_Command.Unregister("UnsawnController");
@@ -342,7 +342,7 @@ namespace Regulus.Game
 				_Loops.Shutdown();
 			}
 
-			void IStage.Update()
+			void IStatus.Update()
 			{
 				_Loops.Working();
 			}

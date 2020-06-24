@@ -1,8 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks>
-    <Version>1.0.0</Version>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>0.1.7.0</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageProjectUrl>https://github.com/jiowchern/Regulus</PackageProjectUrl>
+    <Authors>Regulus.Utility</Authors>
+    <Company>Regulus.Utility</Company>
+    <Product>Regulus.Utility</Product>
   </PropertyGroup>
 
 </Project>

@@ -1,13 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0</TargetFrameworks> 
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>0.1.7.0</Version>
+    <PackageProjectUrl>https://github.com/jiowchern/Regulus</PackageProjectUrl> 
   
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Regulus.Network\Regulus.Network.csproj" />
     <ProjectReference Include="..\Regulus.Remote.Ghost\Regulus.Remote.Ghost.csproj" />
+    <ProjectReference Include="..\Regulus.Remote.Standalone\Regulus.Remote.Standalone.csproj" />
     <ProjectReference Include="..\Regulus.Remote\Regulus.Remote.csproj" />
     <ProjectReference Include="..\Regulus.Serialization\Regulus.Serialization.csproj" />
     <ProjectReference Include="..\Regulus.Utility\Regulus.Utility.csproj" />

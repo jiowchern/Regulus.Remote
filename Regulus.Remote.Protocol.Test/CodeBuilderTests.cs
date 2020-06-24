@@ -22,7 +22,7 @@ namespace Regulus.Remote.Protocol.Tests
         public void _BuildGetTypeMethodInfoTestMethod1()
         {            
             var builder = new Regulus.Remote.Protocol.CodeBuilder();
-            var source = "new Regulus.Remote.AOT.TypeMethodCatcher((System.Linq.Expressions.Expression<System.Action<Regulus.Remote.Protocol.Tests.IInterface>>)((ins) => ins.Method1())).Method";
+            var source = "new Regulus.Utility.Reflection.TypeMethodCatcher((System.Linq.Expressions.Expression<System.Action<Regulus.Remote.Protocol.Tests.IInterface>>)((ins) => ins.Method1())).Method";
             var code = builder._BuildGetTypeMethodInfo(
                 typeof(IInterface).GetMethod(nameof(IInterface.Method1)));
             Assert.AreEqual(source , code);
@@ -32,7 +32,7 @@ namespace Regulus.Remote.Protocol.Tests
         public void _BuildGetTypeMethodInfoTestMethod2()
         {
             var builder = new Regulus.Remote.Protocol.CodeBuilder();
-            var source = "new Regulus.Remote.AOT.TypeMethodCatcher((System.Linq.Expressions.Expression<System.Action<Regulus.Remote.Protocol.Tests.IInterface,System.Int32,System.Int32>>)((ins,_1,_2) => ins.Method2(_1,_2))).Method";
+            var source = "new Regulus.Utility.Reflection.TypeMethodCatcher((System.Linq.Expressions.Expression<System.Action<Regulus.Remote.Protocol.Tests.IInterface,System.Int32,System.Int32>>)((ins,_1,_2) => ins.Method2(_1,_2))).Method";
             var code = builder._BuildGetTypeMethodInfo(
                 typeof(IInterface).GetMethod(nameof(IInterface.Method2)));
             Assert.AreEqual(source, code);
@@ -42,7 +42,7 @@ namespace Regulus.Remote.Protocol.Tests
         public void _BuildGetTypeMethodInfoTestMethod3()
         {
             var builder = new Regulus.Remote.Protocol.CodeBuilder();
-            var source = "new Regulus.Remote.AOT.TypeMethodCatcher((System.Linq.Expressions.Expression<System.Action<Regulus.Remote.Protocol.Tests.IInterface,System.Int32,System.Int32>>)((ins,_1,_2) => ins.Method3(_1,_2))).Method";
+            var source = "new Regulus.Utility.Reflection.TypeMethodCatcher((System.Linq.Expressions.Expression<System.Action<Regulus.Remote.Protocol.Tests.IInterface,System.Int32,System.Int32>>)((ins,_1,_2) => ins.Method3(_1,_2))).Method";
             var code = builder._BuildGetTypeMethodInfo(
                 typeof(IInterface).GetMethod(nameof(IInterface.Method3)));
             Assert.AreEqual(source, code);

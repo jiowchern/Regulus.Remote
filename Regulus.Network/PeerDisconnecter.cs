@@ -3,7 +3,7 @@ using Regulus.Utility;
 
 namespace Regulus.Network
 {
-    internal class PeerDisconnecter : IStage<Timestamp>
+    internal class PeerDisconnecter : IStatus<Timestamp>
     {
         private readonly Line m_Line;        
         public event Action DoneEvent; 
@@ -14,17 +14,17 @@ namespace Regulus.Network
             m_Line = Line;
         }
 
-        void IStage<Timestamp>.Enter()
+        void IStatus<Timestamp>.Enter()
         {
             
         }
 
-        void IStage<Timestamp>.Leave()
+        void IStatus<Timestamp>.Leave()
         {
             
         }
 
-        void IStage<Timestamp>.Update(Timestamp Obj)
+        void IStatus<Timestamp>.Update(Timestamp Obj)
         {
             if(m_Line.WaitSendCount == 0)
                 DoneEvent();

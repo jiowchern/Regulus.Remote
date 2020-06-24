@@ -6,7 +6,9 @@
 
 		Ping, 
 
-		Release
+		Release ,
+
+		UpdateProperty
 	};
 
 	public enum ServerToClientOpCode : byte
@@ -27,6 +29,7 @@
 
 	    ErrorMethod , 
 
-        ProtocolSubmit
+        ProtocolSubmit,
+		SetProperty,
 	}
 }

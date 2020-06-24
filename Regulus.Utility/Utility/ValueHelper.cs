@@ -8,6 +8,13 @@ namespace Regulus.Utility
 {
     public class ValueHelper
 	{
+		public static object StringConvert(Type type , string value)
+		{
+            object outValue;
+            Regulus.Utility.Command.Conversion(value, out outValue, type);			
+			return outValue;
+		}
+			
 		public IEnumerator<T> GetEnumItems<T>() where T : class
 		{
 			foreach(var item in Enum.GetValues(typeof(T)))

@@ -16,7 +16,6 @@ namespace Regulus.Remote.Soul
 
 		private readonly ThreadSocketHandler _ThreadSocketHandler;
 
-		private readonly WaitHandle _WaitSocket;
 
 	    public event Action BreakEvent;
 
@@ -119,7 +118,7 @@ namespace Regulus.Remote.Soul
 			_ThreadCoreHandler = new ThreadCoreHandler(entry );
 			_ThreadSocketHandler = new ThreadSocketHandler(port, _ThreadCoreHandler , protocol , server);
 
-			_WaitSocket = new AutoResetEvent(false);
+			
 		}
 
 		void IBootable.Launch()
@@ -138,9 +137,10 @@ namespace Regulus.Remote.Soul
 		public void Launch()
 		{
 		    _ThreadCoreHandler.ShutdownEvent += _Shutdown;
-            ThreadPool.QueueUserWorkItem(_ThreadCoreHandler.DoWork);
-			ThreadPool.QueueUserWorkItem(_ThreadSocketHandler.DoWork, _WaitSocket);
-		}
+            _ThreadSocketHandler.Start();
+            _ThreadCoreHandler.Start();
+
+        }
 
 	    private void _Shutdown()
 	    {
@@ -155,12 +155,7 @@ namespace Regulus.Remote.Soul
 		{
 			_ThreadCoreHandler.Stop();
 			_ThreadSocketHandler.Stop();
-
-			WaitHandle.WaitAll(
-				new[]
-				{
-					_WaitSocket
-				});
+			
 		}
 	}
 }

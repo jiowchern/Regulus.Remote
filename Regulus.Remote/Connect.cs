@@ -7,13 +7,13 @@ namespace Regulus.Remote
 		Value<bool> Connect(System.Net.IPEndPoint ip);
 	}
 
-	public class Connect : IGhost, IConnect
+	public class ConnectGhost : IGhost, IConnect
 	{
 		public event Action<System.Net.IPEndPoint, Value<bool>> ConnectedEvent;
 
 		public Guid Id { get; private set; }
 
-		public Connect()
+		public ConnectGhost()
 		{
 			Id = Guid.NewGuid();
 		}

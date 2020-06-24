@@ -19,13 +19,17 @@ namespace Regulus.Utility
 
 		private readonly Console.IViewer _Viewer;
 
-		public ConsoleInput(Console.IViewer viewer)
+        readonly  ConsoleKeyReader _KeyReader;
+
+        public ConsoleInput(Console.IViewer viewer)
 		{
 			_Viewer = viewer;
 			_Doskey = new Doskey(10);
 
 			_Prompt = ">>";
-		}
+            _KeyReader = new ConsoleKeyReader();
+
+        }
 
 		event Console.OnOutput Console.IInput.OutputEvent
 		{
@@ -41,12 +45,23 @@ namespace Regulus.Utility
 
 		void IBootable.Launch()
 		{
-		}
+			Launch();
 
-		void IBootable.Shutdown()
+
+        }
+
+
+
+        void IBootable.Shutdown()
 		{
-		}
 
+			Shutdown();
+
+		}
+		public void Shutdown()
+		{
+			_KeyReader.Stop();
+		}
 		public void Update()
 		{
 			var cmd = _HandlerInput();
@@ -60,18 +75,26 @@ namespace Regulus.Utility
 		protected string[] _HandlerInput()
 		{
 
-            
-            if (System.Console.KeyAvailable)
-			{
-				return _HandlerInput(_InputData);
-			}
+            ConsoleKeyInfo info;
+            if (_KeyReader.Infos.TryDequeue( out info ))
+            {
+                return _HandlerInput(info, _InputData);
+            }
 
-			return null;
+
+
+            return null;
 		}
 
-		private string[] _HandlerInput(Stack<char> chars)
+		public void Launch()
 		{
-			var keyInfo = System.Console.ReadKey(true);
+			_KeyReader.Start();
+		}
+
+		private string[] _HandlerInput(ConsoleKeyInfo key_info , Stack<char> chars)
+		{
+            
+			var keyInfo = key_info;
 
 			// Ignore if Alt or Ctrl is pressed.
 			if((keyInfo.Modifiers & ConsoleModifiers.Alt) == ConsoleModifiers.Alt)

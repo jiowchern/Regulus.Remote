@@ -16,8 +16,9 @@ namespace Regulus.Remote.Standalone
 		public event Action PingEvent;
 
 		public event Action<Guid> ReleaseEvent;
+		public event Action<Guid,int> SetPropertyDoneEvent;
 
-		
+
 
 		private readonly Queue<RequestPackage> _Requests;
 
@@ -94,6 +95,11 @@ namespace Regulus.Remote.Standalone
                     
                     CallMethodEvent(data.EntityId, data.MethodId, data.ReturnId, data.MethodParams);
 				}
+			}
+			else if (ClientToServerOpCode.UpdateProperty == code)
+            {
+				var data = args.ToPackageData<PackageSetPropertyDone>(_Serializer);
+				SetPropertyDoneEvent(data.EntityId,data.Property);
 			}
 			else if(ClientToServerOpCode.Release == code)
 			{

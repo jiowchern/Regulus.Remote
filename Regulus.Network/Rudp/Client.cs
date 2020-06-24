@@ -10,15 +10,17 @@ namespace Regulus.Network.Rudp
         private readonly ITime m_Time;
         private readonly Agent m_Agent;
         private volatile bool m_Enable;
+        readonly System.Threading.Tasks.Task _Procresser;
         
         public ConnectProvider(ISocket socket)
         {        
             m_Socket = socket;
             m_Time = new Time();
-            m_Agent = new Agent(m_Socket, m_Socket);            
+            m_Agent = new Agent(m_Socket, m_Socket);
+            _Procresser = new System.Threading.Tasks.Task(Run);
         }
 
-        private void Run(object State)
+        private void Run()
         {
             
             var wait = new AutoPowerRegulator(new PowerRegulator(30));
@@ -40,12 +42,16 @@ namespace Regulus.Network.Rudp
         {
             m_Socket.Bind(Port: 0);
             m_Enable = true;
-            ThreadPool.QueueUserWorkItem(Run, state: null);
+
+            _Procresser.Start();
+
+
         }
 
         public void Shutdown()
         {
             m_Enable = false;
+            _Procresser.Wait();
         }
 
         IConnectable IConnectProviderable.Spawn()

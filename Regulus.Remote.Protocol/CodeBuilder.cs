@@ -21,7 +21,7 @@ namespace Regulus.Remote.Protocol
 
 
         
-        public void Build(string protocol_name, Type[] types)
+        public void Build(Type[] types)
         {
 
             var codeGpis = new List<string>();
@@ -32,7 +32,7 @@ namespace Regulus.Remote.Protocol
             var addEventType = new List<string>();
 
             var serializerTypes = new HashSet<Type>();
-
+            
             var memberMapMethodBuilder = new List<string>();
             var memberMapEventBuilder = new List<string>();
             var memberMapPropertyBuilder = new List<string>();
@@ -99,26 +99,27 @@ namespace Regulus.Remote.Protocol
             var addTypeCode = string.Join("\n", addGhostType.ToArray());
             var addDescriberCode = string.Join(",", _GetSerializarType(serializerTypes) );
             var addEventCode = string.Join("\n", addEventType.ToArray());
-            var tokens = protocol_name.Split(new[] { '.' });
-            var procotolName = tokens.Last();
+            //var tokens = protocol_name.Split(new[] { '.' });
+            //var procotolName = tokens.Last();
 
-            var providerNamespace = string.Join(".", tokens.Take(tokens.Count() - 1).ToArray());
+           // var providerNamespace = string.Join(".", tokens.Take(tokens.Count() - 1).ToArray());
             var providerNamespaceHead = "";
             var providerNamespaceTail = "";
-            if (string.IsNullOrEmpty(providerNamespace) == false)
+            /*if (string.IsNullOrEmpty(providerNamespace) == false)
             {
                 providerNamespaceHead = $"namespace {providerNamespace}{{ ";
                 providerNamespaceTail = "}";
-            }
+            }*/
 
 
             var builder = new StringBuilder();
             builder.Append(addTypeCode);
             builder.Append(addEventCode);
             builder.Append(addDescriberCode);
-            
-            var verificationCode = _BuildVerificationCode(builder);
 
+            var md5 = _BuildMd5(builder);
+            var verificationCode = _BuildVerificationCode(md5);
+            var procotolName = _BuildProtocolName(md5);
             var providerCode =
                 $@"
             using System;  
@@ -173,7 +174,7 @@ namespace Regulus.Remote.Protocol
             ";
 
             if (ProviderEvent != null)
-                ProviderEvent(protocol_name , providerCode);
+                ProviderEvent(procotolName , providerCode);
         }
 
         private bool _ValidRemoteInterface(Type type)
@@ -193,14 +194,21 @@ namespace Regulus.Remote.Protocol
             var paramCode = _BuildAddParams(method_info);
             
             var code =
-                $"new Regulus.Remote.AOT.TypeMethodCatcher((System.Linq.Expressions.Expression<System.Action{argTypesCode}>)(({argInstanceCode}{paramCode}) => ins.{methodCode}({paramCode}))).Method";
+                $"new Regulus.Utility.Reflection.TypeMethodCatcher((System.Linq.Expressions.Expression<System.Action{argTypesCode}>)(({argInstanceCode}{paramCode}) => ins.{methodCode}({paramCode}))).Method";
             return code;
         }
 
-        private string _BuildVerificationCode(StringBuilder builder)
+        private byte[] _BuildMd5(StringBuilder builder)
         {
             var md5 = MD5.Create();
-            var code = md5.ComputeHash(Encoding.Default.GetBytes(builder.ToString()));            
+            return md5.ComputeHash(Encoding.ASCII.GetBytes(builder.ToString()));
+        }
+        private string _BuildProtocolName(byte[] code)
+        {
+            return $"C{BitConverter.ToString(code).Replace("-", "")}";
+        }
+        private string _BuildVerificationCode(byte[] code)
+        {            
             Regulus.Utility.Log.Instance.WriteInfo("Verification Code " + Convert.ToBase64String(code));
             return string.Join(",", code.Select(val => val.ToString()).ToArray());
         }
@@ -221,6 +229,8 @@ namespace Regulus.Remote.Protocol
             serializer_types.Add(typeof(Regulus.Remote.PackageUnloadSoul));
             serializer_types.Add(typeof(Regulus.Remote.PackageCallMethod));
             serializer_types.Add(typeof(Regulus.Remote.PackageRelease));
+            serializer_types.Add(typeof(Regulus.Remote.PackageSetProperty));
+            serializer_types.Add(typeof(Regulus.Remote.PackageSetPropertyDone));
 
             foreach (var serializerType in serializer_types)
             {                
@@ -415,17 +425,34 @@ $@"
             foreach (var propertyInfo in propertyInfos)
             {
                 var propertyCode = $@"
-                public {_GetTypeName(propertyInfo.PropertyType)} _{propertyInfo.Name};
+                public {_GetTypeName(propertyInfo.PropertyType)} _{propertyInfo.Name}= new {_GetTypeName(propertyInfo.PropertyType)}();
                 {_GetTypeName(propertyInfo.PropertyType)} {_GetTypeName(type)}.{propertyInfo.Name} {{ get{{ return _{propertyInfo.Name};}} }}";
                 propertyCodes.Add(propertyCode);
             }
             return string.Join("\n", propertyCodes.ToArray());
         }
 
-        private string _GetTypeName(Type type)
+        private string _GetTypeName(Type t)
         {
 
-            return type.FullName.Replace("+", ".");
+            if (!t.IsGenericType)
+                return $"{t.Namespace}.{t.Name.ToString()}";
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append(t.Name.Substring(0, t.Name.LastIndexOf("`")));
+            sb.Append(t.GetGenericArguments().Aggregate("<",
+
+                delegate (string aggregate, Type type)
+                {
+                    return aggregate + (aggregate == "<" ? "" : ",") + _GetTypeName(type);
+                }
+                ));
+            sb.Append(">");
+
+
+            return $"{t.Namespace}.{sb.ToString()}";
+
+            
         }
 
         private string _BuildMethods(Type type)

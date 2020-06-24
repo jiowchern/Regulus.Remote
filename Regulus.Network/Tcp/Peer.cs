@@ -27,36 +27,51 @@ namespace Regulus.Network.Tcp
             get { return _Socket.Connected && _Enable; }
         }
 
-        void IPeer.Receive(byte[] readed_byte, int offset, int count ,Action<int> done)
+        System.Threading.Tasks.Task<int> IPeer.Receive(byte[] readed_byte, int offset, int count )
         {
-            
-            
 
-            try
-            {
-                
-                _Socket.BeginReceive(readed_byte, offset, count, SocketFlags.None, this.Readed, state: done);
-            }
-            catch (Exception e)
-            {
-                _Enable = false;
-            }
-
-            
+            return System.Threading.Tasks.Task<int>.Factory.FromAsync(
+                (handler, obj) => _Socket.BeginReceive(readed_byte, offset, count, SocketFlags.None, handler, obj), _EndReceive, null);
+          
+        }
+        private int _EndReceive(IAsyncResult arg)
+        {
+            SocketError error;
+            var size = _Socket.EndReceive(arg , out error);
+            if(error == SocketError.Success)
+                return size;
+            _Enable = false;
+            return size;
         }
 
-        Task IPeer.Send(byte[] buffer, int offset_i, int buffer_length)
+       
+         
+            
+        
+
+        System.Threading.Tasks.Task<int> IPeer.Send(byte[] buffer, int offset, int buffer_length)
         {
-            var task = new Task() { Buffer = buffer, Offset = offset_i, Count = buffer_length };
-            try
-            {
-                _Socket.BeginSend(buffer, offset_i, buffer_length, SocketFlags.None, SendDone, state: task);
-            }
-            catch (Exception e)
+            return System.Threading.Tasks.Task<int>.Factory.FromAsync(
+                (handler, obj) => _Socket.BeginSend(buffer, offset, buffer_length, SocketFlags.None, handler, obj), _EndSend, null);
+
+        }
+
+        private int _EndSend(IAsyncResult arg)
+        {
+            SocketError error;
+            var sendCount = _Socket.EndSend(arg , out error);
+            if (error != SocketError.Success)
             {
                 _Enable = false;
+                return sendCount;
             }
-            return task;
+
+            if (!_Socket.Connected)
+            {
+                _Enable = false;
+                return sendCount;
+            }
+            return sendCount;
         }
 
         void IPeer.Close()
@@ -64,50 +79,7 @@ namespace Regulus.Network.Tcp
             if (_Socket.Connected)
                 _Socket.Shutdown(SocketShutdown.Both);
             _Socket.Close();
-        }
-
-        private void SendDone(IAsyncResult ar)
-        {
-            
-
-            if (!_Socket.Connected)
-                return ;
-            
-            try
-            {
-                SocketError error;
-                var sendCount = _Socket.EndSend(ar, out error);
-                var task = (Task) ar.AsyncState;
-                task.Done(sendCount);
-            }
-            catch (Exception e)
-            {
-                _Enable = false;
-            }
-            
-        }
-
-        private void Readed(IAsyncResult ar)
-        {
-            
-
-            if (!_Socket.Connected)
-                return;
-
-            var task = (Action<int>)ar.AsyncState;
-            try
-            {
-                SocketError error;
-                var readCount = _Socket.EndReceive(ar, out error);
-                task(readCount);                
-            }
-            catch (Exception e)
-            {
-                _Enable = false;
-            }
-            
-            
-        }
+        }       
 
         protected System.Net.Sockets.Socket GetSocket()
         {

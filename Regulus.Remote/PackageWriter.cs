@@ -67,7 +67,8 @@ namespace Regulus.Remote
                                 
 
 			    var task = _Peer.Send(_Buffer, 0, _Buffer.Length);
-			    task.DoneEvent += _WriteCompletion;
+				task.ContinueWith(t=>_WriteCompletion(t.Result));
+				
 
 
 
@@ -85,21 +86,10 @@ namespace Regulus.Remote
 
 		private void _WriteCompletion(int send_count )
 		{
-			try
+			if (_Stop == false)
 			{
-				if(_Stop == false)
-				{
-					var sendSize = send_count;
-                    NetworkMonitor.Instance.Write.Set(sendSize);
-                }
-			}
-			catch(SystemException e)
-			{
-				Singleton<Log>.Instance.WriteInfo(string.Format("PackageWriter Error WriteCompletion {0}.", e));
-				if(ErrorEvent != null)
-				{
-					ErrorEvent();
-				}
+				var sendSize = send_count;
+				NetworkMonitor.Instance.Write.Set(sendSize);
 			}
 		}
 

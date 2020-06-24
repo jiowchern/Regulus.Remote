@@ -19,29 +19,31 @@ namespace Regulus.Remote.Ghost
 
 		private readonly AgentCore _Core;
 
-		private readonly StageMachine _Machine;
-	    private readonly IConnectProviderable connectproivder;
+		private readonly StatusMachine _Machine;
+	    private readonly IConnectProviderable _ConnecterSpawner;
+		private readonly TProvider<IConnect> _ConnectProvider;
+		private readonly TProvider<IOnline> _OnlineProvider;
 
-	    private long _Ping
+		private long _Ping
 		{
 			get { return _Core.Ping; }
 		}
 
-	    public Agent(IProtocol protocol,Regulus.Network.IConnectProviderable client)
-	    {
-	    
+	    public Agent(IProtocol protocol,Regulus.Network.IConnectProviderable connecter_spawner)
+	    {	    
             _Serializer = protocol.GetSerialize();
-	        _Machine = new StageMachine();
+	        _Machine = new StatusMachine();
             _Core = new AgentCore(protocol);
-	        connectproivder = client;
-	        
-	        
-        }
+	        _ConnecterSpawner = connecter_spawner;
+			_ConnectProvider = new TProvider<IConnect>();
+			_OnlineProvider = new TProvider<IOnline>();
+			_Core.AddProvider(typeof(IConnect), _ConnectProvider);
+			_Core.AddProvider(typeof(IOnline), _OnlineProvider);
+		}
 
 		bool IUpdatable.Update()
-		{
-			lock(_Machine)
-				_Machine.Update();
+		{			
+			_Machine.Update();
             return true;
 		}
 
@@ -53,14 +55,20 @@ namespace Regulus.Remote.Ghost
             _Core.ErrorMethodEvent += _ErrorMethodEvent;
 		    _Core.ErrorVerifyEvent += _ErrorVerifyEvent;
 
-		    
+			_ConnecterSpawner.Launch();
+			
 
-        }
+
+			_ToConnectStatus();
+
+		}
 
 		void IBootable.Shutdown()
 		{
-		    
-            _Core.ErrorVerifyEvent -= _ErrorVerifyEvent;
+			_ConnecterSpawner.Shutdown();
+
+
+			_Core.ErrorVerifyEvent -= _ErrorVerifyEvent;
             _Core.ErrorMethodEvent -= _ErrorMethodEvent;
             if (_Core.Enable)
 			{
@@ -83,15 +91,15 @@ namespace Regulus.Remote.Ghost
             Singleton<Log>.Instance.WriteInfo("Agent Shutdown.");
 		}
 
-		INotifier<T> IAgent.QueryNotifier<T>()
+		INotifier<T> INotifierQueryable.QueryNotifier<T>()
 		{
 			return _Core.QueryProvider<T>();
 		}
 
-		Value<bool> IAgent.Connect(System.Net.IPEndPoint ip)
+		/*Value<bool> IAgent.Connect(System.Net.IPEndPoint ip)
 		{
 			return _Connect(ip);
-		}
+		}*/
 
 		event Action IAgent.ConnectEvent
 		{
@@ -110,10 +118,10 @@ namespace Regulus.Remote.Ghost
 			remove { _BreakEvent -= value; }
 		}
 
-		void IAgent.Disconnect()
+		/*void IAgent.Disconnect()
 		{
 			_ToTermination();
-		}
+		}*/
 
 	    private event Action<string, string> _ErrorMethodEvent;
 
@@ -136,57 +144,50 @@ namespace Regulus.Remote.Ghost
 			get { return _Core.Enable; }
 		}
 
-		private Value<bool> _Connect(System.Net.IPEndPoint ip)
+		/*private Value<bool> _Connect(System.Net.IPEndPoint ip)
 		{
 			return _ToConnect(ip);
+		}*/
+		
+		private void _ToConnectStatus()
+		{
+			
+			var stage = new ConnectStage(_ConnectProvider, _ConnecterSpawner.Spawn());
+			stage.DoneEvent += (socket) =>
+			{
+				_ConnectResult(socket);
+			};
+			stage.FailEvent += () =>
+			{
+				_ToConnectStatus();
+			};
+			_Machine.Push(stage);
 		}
 
-		private Value<bool> _ToConnect(System.Net.IPEndPoint ip)
+		private void _ConnectResult(IPeer peer)
 		{
-			lock(_Machine)
+			if (_ConnectEvent != null)
 			{
-				var connectValue = new Value<bool>();
-				var stage = new ConnectStage(ip, connectproivder);
-				stage.ResultEvent += (result, socket) =>
-				{
-					_ConnectResult(result, socket);
-					connectValue.SetValue(result);
-				};
-				_Machine.Push(stage);
-				return connectValue;
+				_ConnectEvent();
 			}
+
+			_ToOnlineStatus(peer);
 		}
 
-		private void _ConnectResult(bool success, IPeer peer)
+		private void _ToOnlineStatus(IPeer peer)
 		{
-			if(success)
-			{
-				if(_ConnectEvent != null)
-				{
-					_ConnectEvent();
-				}
-
-				_ToOnline(_Machine, peer);
-			}
-			else
-			{
-				_ToTermination();
-			}
-		}
-
-		private void _ToOnline(StageMachine machine, IPeer peer)
-		{
-			var onlineStage = new OnlineStage(peer, _Core , _Serializer);
+			var onlineStage = new OnlineStage(peer, _Core  , _Serializer , _OnlineProvider  );
 			onlineStage.DoneFromServerEvent += () =>
 			{
-				_ToTermination();
-				if(_BreakEvent != null)
+				if (_BreakEvent != null)
 				{
 					_BreakEvent();
 				}
+				_ToConnectStatus();
+				
 			};
 
-			machine.Push(onlineStage);
+			_Machine.Push(onlineStage);
 		}
 
 		private void _ToTermination()

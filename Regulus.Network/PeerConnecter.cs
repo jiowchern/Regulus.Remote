@@ -4,7 +4,7 @@ using Regulus.Utility;
 
 namespace Regulus.Network
 {
-    public class PeerConnecter : IStage<Timestamp>
+    public class PeerConnecter : IStatus<Timestamp>
     {
         
         
@@ -18,17 +18,17 @@ namespace Regulus.Network
             m_Line = Line;
         }
 
-        void IStage<Timestamp>.Enter()
+        void IStatus<Timestamp>.Enter()
         {                        
             m_Line.WriteOperation(PeerOperation.ClienttoserverHello1 );
         }
 
-        void IStage<Timestamp>.Leave()
+        void IStatus<Timestamp>.Leave()
         {
             
         }
 
-        void IStage<Timestamp>.Update(Timestamp Timestamp)
+        void IStatus<Timestamp>.Update(Timestamp Timestamp)
         {
             m_TimeoutCount += Timestamp.DeltaTicks;
             if (m_TimeoutCount > Timestamp.OneSecondTicks * Config.Timeout)

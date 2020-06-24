@@ -5,13 +5,12 @@ using Regulus.Utility;
 namespace Regulus.Remote
 {
 
-
     /// <summary>
     ///     代理器
     /// </summary>
     /// 
 
-    public interface IAgent : IUpdatable
+    public interface IAgent : IUpdatable , INotifierQueryable
     {
         /// <summary>
         ///     與遠端發生斷線
@@ -34,23 +33,8 @@ namespace Regulus.Remote
         /// </summary>
         bool Connected { get; }
 
-        /// <summary>
-        ///     查詢介面物件通知者
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        INotifier<T> QueryNotifier<T>();
 
-        /// <summary>
-        ///     連線
-        /// </summary>        
-        /// <returns>如果連線成功會發生OnValue傳回true</returns>
-        Value<bool> Connect(System.Net.IPEndPoint ip);
-
-        /// <summary>
-        ///     斷線
-        /// </summary>
-        void Disconnect();
+        
 
         /// <summary>
         /// 錯誤的方法呼叫

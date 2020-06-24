@@ -14,6 +14,7 @@ namespace Regulus.Network.Tests
     public class ConnectTest
     {
         [Test]
+        [MaxTime(5000)]
         public void TestFullFlow()
         {
             var spawner = SocketMessageFactory.Instance;
@@ -73,17 +74,25 @@ namespace Regulus.Network.Tests
 
             int readCount = 0;
             var receivedBuffer = new byte[Config.Default.PackageSize];
-            rudpSocket.Receive(receivedBuffer, 0, receivedBuffer.Length , (read_count) =>
+            var task = rudpSocket.Receive(receivedBuffer, 0, receivedBuffer.Length );            
+            
+
+            
+
+
+            
+
+            var waitTask= task.ContinueWith(t =>
             {
-                readCount = read_count;
+                readCount = t.Result;
             });
 
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-
+            while(readCount==0)
+            {
+                updater.Working(new Timestamp(ticks++, 1));
+            }
+            
             Assert.AreEqual(sendBuffer.Length , readCount);
-
             
             clientPeer.Disconnect();
             

@@ -73,7 +73,11 @@ namespace Regulus.Remote
 		{
             
             var pkg = (TPackage)_Serializer.Deserialize(bytes);
-
+			if(pkg == null)
+            {
+				ErrorEvent();
+				return;
+			}
 			_DoneEvent.Invoke(pkg);
 
 			if(_Stop == false)
@@ -84,8 +88,7 @@ namespace Regulus.Remote
 
 		public void Stop()
 		{
-			_Stop = true;
-			_Peer = null;
+			_Stop = true;			
 
 			Singleton<Log>.Instance.WriteInfo("pakcage read stop.");
 		}

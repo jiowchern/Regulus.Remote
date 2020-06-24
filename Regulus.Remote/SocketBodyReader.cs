@@ -33,8 +33,10 @@ namespace Regulus.Remote
             _Buffer = new byte[size];
             try
             {
-                _Peer.Receive(_Buffer, _Offset, _Buffer.Length - _Offset, _Readed);
-                
+                var task = _Peer.Receive(_Buffer, _Offset, _Buffer.Length - _Offset);
+                task.ContinueWith(t=>_Readed(t.Result));
+
+
             }
             catch(SystemException e)
             {
@@ -59,11 +61,12 @@ namespace Regulus.Remote
                 }
                 else
                 {
-                    _Peer.Receive(
+                    var task = _Peer.Receive(
                         _Buffer,
                         _Offset,
-                        _Buffer.Length - _Offset, _Readed);
-                    
+                        _Buffer.Length - _Offset);
+                    task.ContinueWith(t => _Readed(t.Result));
+
                 }
             }
             else

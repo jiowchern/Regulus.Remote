@@ -2,95 +2,105 @@
 using System.Net;
 using System.Net.Sockets;
 using Regulus.Network;
+using Regulus.Network.Rudp;
 using Regulus.Utility;
 
 namespace Regulus.Remote.Ghost
 {
 	public partial class Agent
 	{
-		private class ConnectStage : IStage
+		private class ConnectStage : IStatus
 		{
-			public event Action<bool, IPeer> ResultEvent;
+			public event Action<IPeer> DoneEvent;
+			public event Action FailEvent;
 
-			private readonly IPEndPoint _Ip;			
 
+			private readonly IProvider _ConnectProvider;
 			private readonly IConnectable _Peer;
+			
+			private readonly ConnectGhost _Connect;
+			System.Action _DoReturn;
 
-			private IAsyncResult _AsyncResult;
+			public ConnectStage(IProvider provider,  IConnectable connecter)
+			{                
+			    _Peer = connecter;                
 
-			private bool? _Result;
+				_ConnectProvider = provider;
+				_Connect = new ConnectGhost();
+				_DoReturn = () => { };
+			}
 
-			public ConnectStage(IPEndPoint ip, IConnectProviderable agent)
+			void IStatus.Enter()
 			{
-                
-			    _Peer = agent.Spawn();
+				_Connect.ConnectedEvent += _StartConnect;
+				_Bind(_ConnectProvider);
 
+				Singleton<Log>.Instance.WriteInfo("Agent connect status start .");
+			}
 
-                _Ip = ip;
-
-            }
-
-			void IStage.Enter()
+			private void _Bind(IProvider provider)
 			{
-				Singleton<Log>.Instance.WriteInfo("connect stage enter.");
-				Singleton<Log>.Instance.WriteInfo("Agent connect start .");
+				provider.Add(_Connect);
+				provider.Ready(_Connect.Id);
+			}
+
+			private void _Unbind(IProvider provider)
+			{
+				provider.Remove(_Connect.Id);
+			}
+
+			private void _StartConnect(IPEndPoint ip, Value<bool> result)
+			{
+				Singleton<Log>.Instance.WriteInfo("connect start...");
+				
 
 				try
 				{
-                    // _Peer.SetSocketOption(System.Net.Sockets.SocketOptionLevel.Socket, System.Net.Sockets.SocketOptionName.ReuseAddress, true);
-                    // _Peer.Bind(new System.Net.IPEndPoint(System.Net.IPAddress.Any, 42255));
-                    
 
-                    _Peer.Connect(_Ip, _ConnectResult);
+
+					_Peer.Connect(ip, (connect_result) => {
+
+						_DoReturn = () => {
+							result.SetValue(connect_result);
+						};
+						
+						if(connect_result)
+						{
+							Singleton<Log>.Instance.WriteInfo("agent connect success.");
+							DoneEvent(_Peer);
+						}
+						else
+						{
+							FailEvent();
+						}
+						
+					} );
+					
 				}
-				catch(Exception e)
+				catch (Exception e)
 				{
 					Singleton<Log>.Instance.WriteInfo(string.Format("begin connect fail {0}.", e));
-					ResultEvent(false, null);
+					
 				}
-				finally
-				{
-					Singleton<Log>.Instance.WriteInfo("agent connect started .");
-				}
+				
 			}
 
-			void IStage.Leave()
+			void IStatus.Leave()
 			{
-				if(_Result.HasValue == false && ResultEvent != null)
-				{
-					var call = ResultEvent;
-					ResultEvent = null;
-					call(false, null);
-				}
+				_Unbind(_ConnectProvider);
 
-				if(_Result.HasValue && _Result.Value == false)
-				{
-					_Peer.Close();
-				}
-
-				Singleton<Log>.Instance.WriteInfo("Agent connect leave.");
+				
+				Singleton<Log>.Instance.WriteInfo("Agent connect status leave.");
+				_DoReturn();
 			}
 
-			void IStage.Update()
+			void IStatus.Update()
 			{
-				_InvokeResultEvent();
 			}
 
-			private void _ConnectResult(bool result)
-			{
-			    _Result = result;
-			    Singleton<Log>.Instance.WriteInfo(string.Format("connect result {0}.", _Result));
-            }
+			
 
-			private void _InvokeResultEvent()
-			{
-				if(_Result.HasValue && ResultEvent != null)
-				{
-					var call = ResultEvent;
-					ResultEvent = null;
-					call(_Result.Value, _Peer);
-				}
-			}
+			
 		}
 	}
 }

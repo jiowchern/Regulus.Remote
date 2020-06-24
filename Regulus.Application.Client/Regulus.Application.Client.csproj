@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Version>0.1.7.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Regulus.Remote.Client\Regulus.Remote.Client.csproj" />
+    <ProjectReference Include="..\Regulus.Remote\Regulus.Remote.csproj" />
+    <ProjectReference Include="..\Regulus.Utility\Regulus.Utility.csproj" />
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20253.1" />
+    <PackageReference Include="System.CommandLine.Rendering" Version="0.3.0-alpha.20253.1" />
+    <PackageReference Include="System.CommandLine.DragonFruit" Version="0.3.0-alpha.20253.1" />
+  </ItemGroup>
+
+</Project>

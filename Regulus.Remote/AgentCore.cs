@@ -16,11 +16,12 @@ using Regulus.Serialization;
 
 using Timer = System.Timers.Timer;
 
-
-
 namespace Regulus.Remote
 {
-    public class AgentCore
+}
+namespace Regulus.Remote
+{
+	public class AgentCore
 	{
 		
 
@@ -40,10 +41,17 @@ namespace Regulus.Remote
 
 		private IGhostRequest _Requester;
 
-		private readonly InterfaceProvider _GhostProvider;
+		private readonly InterfaceProvider _InterfaceProvider;
 	    private readonly ISerializer _Serializer;
 
-        private IProtocol _Protocol;
+		public void AddProvider(Type type, IProvider provider)
+		{
+			_Providers.Add(type , provider);
+		}
+
+		
+
+		private IProtocol _Protocol;
 
         public event Action<byte[], byte[]> ErrorVerifyEvent;
 
@@ -55,7 +63,7 @@ namespace Regulus.Remote
 		{
             _ReturnValueQueue = new ReturnValueQueue();
             _Protocol = protocol;
-            _GhostProvider = _Protocol.GetInterfaceProvider();
+            _InterfaceProvider = _Protocol.GetInterfaceProvider();
 		    _Serializer = _Protocol.GetSerialize();
 		    _Providers = new Dictionary<Type, IProvider>();
             _AutoRelease = new AutoRelease(_Requester , _Serializer);
@@ -95,6 +103,11 @@ namespace Regulus.Remote
 			{
 				Ping = _PingTimeCounter.Ticks;
 				_StartPing();
+			}
+			else if (id == ServerToClientOpCode.SetProperty)
+			{
+				var data = args.ToPackageData<PackageSetProperty>(_Serializer);
+				_UpdateSetProperty(data.EntityId, data.Property, data.Value);
 			}
 			else if(id == ServerToClientOpCode.UpdateProperty)
 			{
@@ -259,6 +272,35 @@ namespace Regulus.Remote
 			return _QueryProvider(typeof(T)) as INotifier<T>;
 		}
 
+		private void _UpdateSetProperty(Guid entity_id, int property, byte[] buffer)
+		{
+			var ghost = _FindGhost(entity_id);
+			if (ghost == null)
+				return;
+
+			var map = _Protocol.GetMemberMap();
+			var info = map.GetProperty(property);
+			
+			var value = _Serializer.Deserialize(buffer);
+			var instance = ghost.GetInstance();
+			var type = _InterfaceProvider.Find(info.DeclaringType);
+			var field = type.GetField("_" + info.Name, BindingFlags.Instance | BindingFlags.Public);
+			if (field != null)
+			{
+				
+				var filedValue = field.GetValue(instance);
+				var updateable =  filedValue as IAccessable;
+				updateable.Set(value);
+
+
+				var pkg = new PackageSetPropertyDone();
+				pkg.EntityId = entity_id;
+				pkg.Property = property;
+				_Requester.Request(ClientToServerOpCode.UpdateProperty, pkg.ToBuffer(_Serializer));
+			}
+
+			
+		}
 		private void _UpdateProperty(Guid entity_id, int property, byte[] buffer)
 		{
             
@@ -269,7 +311,7 @@ namespace Regulus.Remote
 			    var info = map.GetProperty(property);
                 var value = _Serializer.Deserialize(buffer);
 			    var instance = ghost.GetInstance();
-			    var type = _GhostProvider.Find(info.DeclaringType);
+			    var type = _InterfaceProvider.Find(info.DeclaringType);
                 var field = type.GetField("_" + info.Name, BindingFlags.Instance | BindingFlags.Public);
                 if (field != null)
                 {
@@ -288,7 +330,7 @@ namespace Regulus.Remote
 			    var info = map.GetEvent(event_id);
 
                 
-                Type type = _GhostProvider.Find(info.DeclaringType);
+                Type type = _InterfaceProvider.Find(info.DeclaringType);
 			    var instance = ghost.GetInstance();
                 if (type != null)
                 {
@@ -397,7 +439,7 @@ namespace Regulus.Remote
 
         private Type _QueryGhostType(Type ghostBaseType)
 		{			
-			return _GhostProvider.Find(ghostBaseType);
+			return _InterfaceProvider.Find(ghostBaseType);
         }
 
 		

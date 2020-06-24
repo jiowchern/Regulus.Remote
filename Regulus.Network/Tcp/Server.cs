@@ -7,7 +7,7 @@ namespace Regulus.Network.Tcp
 {
     public class Listener : IListenable
     {
-        private System.Net.Sockets.Socket m_Socket;
+        private readonly System.Net.Sockets.Socket _Socket;
         private event Action<IPeer> Acctpe;
 
         event Action<IPeer> IListenable.AcceptEvent
@@ -15,29 +15,32 @@ namespace Regulus.Network.Tcp
             add { Acctpe += value; }
             remove { Acctpe -= value; } 
         }
-
+        public Listener()
+        {
+            _Socket = new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            _Socket.NoDelay = true;
+        }
         void IListenable.Bind(int Port)
         {
-            m_Socket = new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            m_Socket.NoDelay = true;
+            
 
             
-            m_Socket.Bind(new IPEndPoint(IPAddress.Any, Port));
-            m_Socket.Listen(backlog: 5);
-            m_Socket.BeginAccept(Accept, state: null);
+            _Socket.Bind(new IPEndPoint(IPAddress.Any, Port));
+            _Socket.Listen(backlog: 5);
+            _Socket.BeginAccept(Accept, state: null);
         }
 
         private void Accept(IAsyncResult Ar)
         {
             try
             {
-                var socket = m_Socket.EndAccept(Ar);
+                var socket = _Socket.EndAccept(Ar);
                 lock(Acctpe)
                 {
                     Acctpe(new Peer(socket));
                 }
 
-                m_Socket.BeginAccept(Accept, state: null);
+                _Socket.BeginAccept(Accept, state: null);
             }
 
                 
@@ -61,10 +64,10 @@ namespace Regulus.Network.Tcp
 
         void IListenable.Close()
         {
-            if (m_Socket.Connected)
-                m_Socket.Shutdown(SocketShutdown.Both);
+            if (_Socket.Connected)
+                _Socket.Shutdown(SocketShutdown.Both);
 
-            m_Socket.Close();
+            _Socket.Close();
         }
     }
 }

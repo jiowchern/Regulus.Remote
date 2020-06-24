@@ -14,6 +14,10 @@ namespace Regulus.Remote
         {
             _Types = types;
         }
+        public IEnumerable<Type> Types { get
+            {
+                return _Types.Keys;
+            } }
         public Type Find(Type ghost_base_type)
         {
             if (_Types.ContainsKey(ghost_base_type))

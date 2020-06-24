@@ -4,22 +4,22 @@ using Regulus.Utility;
 
 namespace Regulus.Network
 {
-    public class PeerListener : IStage<Timestamp>
+    public class PeerListener : IStatus<Timestamp>
     {
         private readonly Line m_Line;
         
         public event Action DoneEvent;
         public event Action ErrorEvent;
 
-        private readonly StageMachine<Timestamp> m_Machine;
+        private readonly StatusMachine<Timestamp> m_Machine;
         private long m_Timeout;
 
         public PeerListener(Line Line)
         {
             m_Line = Line;            
-            m_Machine = new StageMachine<Timestamp>();
+            m_Machine = new StatusMachine<Timestamp>();
         }
-        void IStage<Timestamp>.Enter()
+        void IStatus<Timestamp>.Enter()
         {
             m_Machine.Push(new SimpleStage<Timestamp>(Empty , Empty ,  ListenRequestUpdate));
         }
@@ -73,12 +73,12 @@ namespace Regulus.Network
             
         }
 
-        void IStage<Timestamp>.Leave()
+        void IStatus<Timestamp>.Leave()
         {
             m_Machine.Termination();
         }
 
-        void IStage<Timestamp>.Update(Timestamp Obj)
+        void IStatus<Timestamp>.Update(Timestamp Obj)
         {
             m_Machine.Update(Obj);
 

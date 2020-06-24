@@ -9,7 +9,7 @@ namespace Regulus.Remote.Ghost
 {
 	public partial class Agent
 	{
-		private class OnlineStage : IStage, IGhostRequest
+		private class OnlineStage : IStatus, IGhostRequest
 		{
 			public event Action DoneFromServerEvent;
 
@@ -18,7 +18,7 @@ namespace Regulus.Remote.Ghost
 			private static readonly object _LockResponse = new object();			
 
 			private readonly AgentCore _Core;
-
+			private readonly IProvider _OnlineProvider;
 			private readonly PackageReader<ResponsePackage> _Reader;
 
 			private readonly Regulus.Collection.Queue<ResponsePackage> _Receives;
@@ -26,6 +26,7 @@ namespace Regulus.Remote.Ghost
 			private readonly Regulus.Collection.Queue<RequestPackage> _Sends;
 
 			private readonly PackageWriter<RequestPackage> _Writer;
+			private readonly OnlineGhost _Online;
 
 			private volatile bool _Enable;
 
@@ -35,16 +36,17 @@ namespace Regulus.Remote.Ghost
 
 			public static int ResponseQueueCount { get; private set; }
 
-			public OnlineStage(IPeer peer, AgentCore core , ISerializer serializer)
+			public OnlineStage(IPeer peer, AgentCore core , ISerializer serializer , IProvider online_provider)
 			{
                 
                 _Core = core;
-
+				_OnlineProvider = online_provider;
 				_Peer = peer;
 				_Reader = new PackageReader<ResponsePackage>(serializer);
 				_Writer = new PackageWriter<RequestPackage>(serializer);
 				_Sends = new Collection.Queue<RequestPackage>();
 				_Receives = new Collection.Queue<ResponsePackage>();
+				_Online = new OnlineGhost(_Core);
 			}
 
 			void IGhostRequest.Request(ClientToServerOpCode code, byte[] args)
@@ -61,7 +63,7 @@ namespace Regulus.Remote.Ghost
 				}
 			}
 
-			void IStage.Enter()
+			void IStatus.Enter()
 			{
 				Singleton<Log>.Instance.WriteInfo("Agent online enter.");
 
@@ -70,14 +72,24 @@ namespace Regulus.Remote.Ghost
 						"Agent Socket Local {0} Remote {1}.", 
 						_Peer.LocalEndPoint, 
 						_Peer.RemoteEndPoint));
+				
+
+
 				_Core.Initial(this);
 				_Enable = true;
 				_ReaderStart();
 				_WriterStart();
+
+				_Online.DisconnectEvent += _Disable;
+				_OnlineProvider.Add(_Online);
+				_OnlineProvider.Ready(_Online.Id);
+				
 			}
 
-			void IStage.Leave()
+			void IStatus.Leave()
 			{
+				_OnlineProvider.Remove(_Online.Id);
+
 				_WriterStop();
 				_ReaderStop();
 
@@ -91,7 +103,7 @@ namespace Regulus.Remote.Ghost
 				Singleton<Log>.Instance.WriteInfo("Agent online leave.");
 			}
 
-			void IStage.Update()
+			void IStatus.Update()
 			{
 				if(_Enable == false)
 				{

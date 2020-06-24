@@ -16,7 +16,7 @@ namespace Regulus.Utility
 
 		private readonly Console _Console;
 
-		private readonly ConsoleInput _Input;
+		private readonly Console.IInput _Input;
 
 		private readonly Updater _Updater;
 
@@ -34,23 +34,40 @@ namespace Regulus.Utility
 		{            
             _AutoPowerRegulator = new AutoPowerRegulator(new PowerRegulator());
             Viewer = new ConsoleViewer();
-			_Input = new ConsoleInput(Viewer);
+			var consoleInput = new ConsoleInput(Viewer);
+			_Input = consoleInput;
+			_Console = new Console(_Input, Viewer);
+			_Updater = new Updater();
+
+
+			_Updater.Add(consoleInput);
+		}
+
+		protected WindowConsole(Console.IViewer viewer , Console.IInput input)
+		{
+			_AutoPowerRegulator = new AutoPowerRegulator(new PowerRegulator());
+			Viewer = viewer;
+			_Input = input;
 			_Console = new Console(_Input, Viewer);
 			_Updater = new Updater();
 		}
 
 		void IBootable.Launch()
 		{
-			WindowConsole.SetConsoleCtrlHandler(ConsoleCtrlCheck, true);
 
-			ShowLog();
+            ShowLog();
 
-			_Updater.Add(_Input);
+			
 
 			_Launch();
 		}
 
-		void IBootable.Shutdown()
+        private void _Quit(object sender, EventArgs e)
+        {
+            QuitEvent();
+        }
+
+        void IBootable.Shutdown()
 		{
 			_Shutdown();
 			_Updater.Shutdown();
@@ -91,63 +108,9 @@ namespace Regulus.Utility
             Viewer.WriteLine(message);
 		}
 
-		#region unmanaged
+		
 
-		// Declare the SetConsoleCtrlHandler function
-		// as external and receiving a delegate.
-		[DllImport("Kernel32")]
-		public static extern bool SetConsoleCtrlHandler(HandlerRoutine Handler, bool Add);
-
-		// A delegate type to be used as the handler routine
-		// for SetConsoleCtrlHandler.
-		public delegate bool HandlerRoutine(CtrlTypes CtrlType);
-
-		// An enumerated type for the control messages
-		// sent to the handler routine.
-		public enum CtrlTypes
-		{
-			CTRL_C_EVENT = 0, 
-
-			CTRL_BREAK_EVENT, 
-
-			CTRL_CLOSE_EVENT, 
-
-			CTRL_LOGOFF_EVENT = 5, 
-
-			CTRL_SHUTDOWN_EVENT
-		}
-
-		#endregion
-
-		private bool ConsoleCtrlCheck(CtrlTypes ctrlType)
-		{
-			// Put your own handler here
-			switch(ctrlType)
-			{
-				case CtrlTypes.CTRL_C_EVENT:
-					QuitEvent();
-
-					break;
-
-				case CtrlTypes.CTRL_BREAK_EVENT:
-					QuitEvent();
-
-					break;
-
-				case CtrlTypes.CTRL_CLOSE_EVENT:
-					QuitEvent();
-
-					break;
-
-				case CtrlTypes.CTRL_LOGOFF_EVENT:
-				case CtrlTypes.CTRL_SHUTDOWN_EVENT:
-					QuitEvent();
-
-					break;
-			}
-
-			return true;
-		}
+		
 
 	    
 	}
@@ -180,18 +143,28 @@ namespace Regulus.Utility
 	{
 		public static class ApplictionExtension
 		{
-			public static void Run(this WindowConsole windowconsole)
+			private static void _Empty()
 			{
+				
+			}
+			public static void Run(this WindowConsole windowconsole, System.Action update_handler = null)
+			{
+				if (update_handler == null)
+					update_handler = _Empty;
 
-
-			    AppDomain.CurrentDomain.UnhandledException += _Dump;
-                var run = true;			    
+					AppDomain.CurrentDomain.UnhandledException += _Dump;
+                var run = true;
+                AppDomain.CurrentDomain.ProcessExit += (sender, e) =>
+                {
+                    run = false;
+                };
                 windowconsole.Command.Register("quit", () => { run = false; });
 				windowconsole.QuitEvent += () => { run = false; };
 				windowconsole.Launch();
 				while(run)
 				{
 					windowconsole.Update();
+					update_handler();
 				}
 
 				windowconsole.Shutdown();

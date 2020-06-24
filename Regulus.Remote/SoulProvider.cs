@@ -8,75 +8,8 @@ using Regulus.Utility;
 
 namespace Regulus.Remote
 {
-	public class SoulProvider : IDisposable, IBinder
+    public partial class SoulProvider : IDisposable, IBinder
 	{
-		private class Soul
-		{
-
-
-			public class EventHandler
-			{
-				public Delegate DelegateObject;
-
-				public EventInfo EventInfo;
-			}
-
-			public class PropertyHandler
-			{
-				public readonly PropertyInfo PropertyInfo;
-
-				public object Value;
-
-			    public readonly int Id;
-
-			    public PropertyHandler(PropertyInfo info, int id)
-			    {
-			        PropertyInfo = info;
-			        Id = id;
-			    }
-
-                internal bool UpdateProperty(object val)
-				{
-					if(!ValueHelper.DeepEqual(Value, val))
-					{
-						Value = ValueHelper.DeepCopy(val);
-						return true;
-					}
-
-					return false;
-				}
-			}
-
-			public Guid ID { get; set; }
-
-			public object ObjectInstance { get; set; }
-
-			public Type ObjectType { get; set; }
-
-			public MethodInfo[] MethodInfos { get; set; }
-
-			public List<EventHandler> EventHandlers { get; set; }
-
-			public PropertyHandler[] PropertyHandlers { get; set; }
-
-		    public int InterfaceId { get; set; }
-
-		    internal void ProcessDiffentValues(Action<Guid, int, object> update_property)
-			{
-				foreach(var handler in PropertyHandlers)
-				{
-					var val = handler.PropertyInfo.GetValue(ObjectInstance, null);
-
-					if(handler.UpdateProperty(val))
-					{
-						if(update_property != null)
-						{
-							update_property(ID, handler.Id, val);
-						}
-					}
-				}
-			}
-		}
 
 		private readonly Queue<byte[]> _EventFilter = new Queue<byte[]>();
 
@@ -162,7 +95,7 @@ namespace Regulus.Remote
 			}
 		}
 		
-		private void _UpdateProperty(Guid entity_id, int property, object val)
+		private void UpdateNormalProperty(Guid entity_id, int property, object val)
 		{
 			
             
@@ -235,8 +168,30 @@ namespace Regulus.Remote
 				var new_soul = _NewSoul(soul, type);
 
 				_LoadSoul(new_soul.InterfaceId, new_soul.ID, true);
-				new_soul.ProcessDiffentValues(_UpdateProperty);
+
+				_LoadProperty(new_soul);
+
 				_LoadSoulCompile(new_soul.InterfaceId, new_soul.ID, return_id);
+			}
+		}
+
+		private void _LoadProperty(Soul new_soul)
+		{
+			
+			var propertys = new_soul.ObjectType.GetProperties(BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public);
+			var map = _Protocol.GetMemberMap();
+			for (var i = 0; i < propertys.Length; ++i)
+			{
+				var property = propertys[i];
+				var id = map.GetProperty(property);
+
+				if (property.PropertyType.GetInterfaces().Any(t => t == typeof(IDirtyable)))
+				{
+					var propertyValue = property.GetValue(new_soul.ObjectInstance);
+					
+					var accessable = propertyValue as IAccessable;					
+					_LoadProperty(new_soul.ID , id , accessable.Get());
+				}
 			}
 		}
 
@@ -268,20 +223,23 @@ namespace Regulus.Remote
 
 			_Queue.Push(ServerToClientOpCode.LoadSoulCompile, package.ToBuffer(_Serializer));
 		}
-
+		private void _LoadProperty(Guid id, int property,object val)
+		{
+			var package = new PackageSetProperty();
+			package.EntityId = id;
+			package.Property = property;
+			package.Value = _Serializer.Serialize(val);
+			_Queue.Push(ServerToClientOpCode.SetProperty, package.ToBuffer(_Serializer));
+		}
 		private void _LoadSoul(int type_id, Guid id, bool return_type)
 		{
-			/*var argmants = new Dictionary<byte, byte[]>();
-			argmants.Add(0, TypeHelper.Serialize(type_id));
-			argmants.Add(1, id.ToByteArray());
-			argmants.Add(2, TypeHelper.Serialize(return_type));*/
-
-
 			var package = new PackageLoadSoul();
 			package.TypeId = type_id;
 			package.EntityId = id;
 			package.ReturnType = return_type;
 			_Queue.Push(ServerToClientOpCode.LoadSoul, package.ToBuffer(_Serializer));
+
+			
 		}
 
 		private void _UnloadSoul(int type_id, Guid id)
@@ -293,7 +251,21 @@ namespace Regulus.Remote
 			_Queue.Push(ServerToClientOpCode.UnloadSoul, package.ToBuffer(_Serializer));
 		}
 
-		private void _InvokeMethod(Guid entity_id, int method_id, Guid returnId, byte[][] args)
+        public void SetPropertyDone(Guid entityId, int property)
+        {
+			var souls = from soul in _Souls.UpdateSet() where soul.ID == entityId select soul;
+			var s = souls.FirstOrDefault();
+			if(s!= null)
+            {
+				var updaters  = from updater in s.PropertyUpdaters where updater.PropertyId == property select updater;
+				var u = updaters.FirstOrDefault();
+				if (u != null)
+					u.Reset();
+			}
+				
+		}
+
+        private void _InvokeMethod(Guid entity_id, int method_id, Guid returnId, byte[][] args)
 		{
 			var soulInfo = (from soul in _Souls.UpdateSet()
 							where soul.ID == entity_id
@@ -363,7 +335,7 @@ namespace Regulus.Remote
 				var newSoul = _NewSoul(soul, typeof(TSoul));
 
 				_LoadSoul(newSoul.InterfaceId, newSoul.ID, return_type);
-				newSoul.ProcessDiffentValues(_UpdateProperty);
+				_LoadProperty(newSoul);
 				_LoadSoulCompile(newSoul.InterfaceId, newSoul.ID, return_id);
 			}
 		}
@@ -413,12 +385,21 @@ namespace Regulus.Remote
 
 			// property 
 			var propertys = soul_type.GetProperties(BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public);
-			new_soul.PropertyHandlers = new Soul.PropertyHandler[propertys.Length];
+			
 			for(var i = 0; i < propertys.Length; ++i)
 			{
 			    var property = propertys[i];			    
-			    var id = map.GetProperty(property);
-                new_soul.PropertyHandlers[i] = new Soul.PropertyHandler(property, id);				
+			    var id = map.GetProperty(property);            
+				
+				if (property.PropertyType.GetInterfaces().Any( t=>t == typeof(IDirtyable)))
+				{
+					var propertyValue = property.GetValue(soul);
+					var dirtyable = propertyValue as IDirtyable;		
+					
+					
+					var pu = new PropertyUpdater(dirtyable, id);					
+					new_soul.PropertyUpdaters.Add(pu) ;					
+				}
 			}
 
 			_Souls.Add(new_soul);
@@ -441,6 +422,14 @@ namespace Regulus.Remote
 				{
 					eventHandler.EventInfo.RemoveEventHandler(soulInfo.ObjectInstance, eventHandler.DelegateObject);
 				}
+
+				foreach (var pu in soulInfo.PropertyUpdaters)
+				{
+					pu.Release();
+				}
+
+				soulInfo.PropertyUpdaters.Clear();
+
 
 				_UnloadSoul(soulInfo.InterfaceId, soulInfo.ID);
 				_Souls.Remove(s => { return s == soulInfo; });
@@ -466,19 +455,30 @@ namespace Regulus.Remote
 		public void Update()
 		{
 			var souls = _Souls.UpdateSet();
-			var intervalSpan = DateTime.Now - _UpdatePropertyInterval;
+			/*var intervalSpan = DateTime.Now - _UpdatePropertyInterval;
 			var intervalSeconds = intervalSpan.TotalSeconds;
 			if(intervalSeconds > 0.5)
 			{
 				foreach(var soul in souls)
 				{
-					soul.ProcessDiffentValues(_UpdateProperty);
+					soul.ProcessDiffentValues(UpdateNormalProperty);
 				}
 
 				_UpdatePropertyInterval = DateTime.Now;
+			}*/
+
+			foreach (var soul in souls)
+			{
+				foreach(var pu in soul.PropertyUpdaters)
+				{
+					if(pu.Update())
+					{
+						_LoadProperty(soul.ID , pu.PropertyId , pu.Value);
+					}
+				}
 			}
 
-			lock(_EventFilter)
+			lock (_EventFilter)
 			{
 				foreach(var filter in _EventFilter)
 				{

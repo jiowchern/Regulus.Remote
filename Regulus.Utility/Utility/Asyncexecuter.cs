@@ -2,10 +2,23 @@
 using System.Threading;
 
 
-using Regulus.Collection;
+namespace Regulus.Extension
+{
+    public static class EmptyDelegate
+    {
+        public static void NewEmpty<T>(this System.Action<T> this_action)
+        {
+            this_action += _Empty;
+        }
 
+        private static void _Empty<T>(T obj)
+        {
+        }
+    }
+}
 namespace Regulus.Utility
 {
+    
 
     
 

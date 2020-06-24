@@ -28,18 +28,8 @@ namespace Regulus.Remote
         private void _Read()
         {
 
-            try
-            {
-                _Peer.Receive(_ReadedByte, 0, 1 , _Readed);
-            }
-            catch (SystemException e)
-            {
-                if (_ErrorEvent != null)
-                {
-                    _ErrorEvent();
-                }
-            }
-            
+            var task = _Peer.Receive(_ReadedByte, 0, 1);
+            var retTask = task.ContinueWith(t => _Readed(t.Result));            
         }
 
         private void _Readed(int read_size )

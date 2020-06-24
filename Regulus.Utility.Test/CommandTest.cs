@@ -1,7 +1,5 @@
 ﻿using System;
-
-
-
+using System.Net;
 using NSubstitute;
 
 
@@ -148,6 +146,18 @@ namespace RegulusLibraryTest
 			NUnit.Framework.Assert.AreEqual("password", analysis.Parameters[1]);
 		}
 
+
+		[NUnit.Framework.Test()]
+		public void TestCommandAnalysisWithParameters3()
+		{
+			var analysis = new Command.Analysis("login-0.AAA [ account ,    password, result]");
+
+			NUnit.Framework.Assert.AreEqual("login-0.AAA", analysis.Command);
+			NUnit.Framework.Assert.AreEqual("result", analysis.Parameters[2]);
+			NUnit.Framework.Assert.AreEqual("account", analysis.Parameters[0]);
+			NUnit.Framework.Assert.AreEqual("password", analysis.Parameters[1]);
+		}
+
 		[NUnit.Framework.Test()]
 		public void TestCommandAnalysisNoParameters()
 		{
@@ -263,7 +273,25 @@ namespace RegulusLibraryTest
 
 			NUnit.Framework.Assert.AreEqual(1 , result);
 		}
+		[NUnit.Framework.Test()]
+		public void TestCommandIpEndPointEnum()
+		{
+			object outVal;
+			Command.Conversion("127.0.0.1:12345", out outVal, typeof(System.Net.IPEndPoint));
+			var ip = outVal as System.Net.IPEndPoint;
+			NUnit.Framework.Assert.AreEqual(ip.Address, IPAddress.Parse("127.0.0.1"));
+			NUnit.Framework.Assert.AreEqual(ip.Port, 12345);
+		}
 
+		[NUnit.Framework.Test()]
+		public void TestCommandGuid()
+		{
+			var id = Guid.NewGuid();
+			object outVal;
+			Command.Conversion(id.ToString(), out outVal, typeof(Guid));
+			var id2 = (Guid)outVal  ;
+			NUnit.Framework.Assert.AreEqual(id.ToString(), id2.ToString());			
+		}
 		[NUnit.Framework.Test()]
 		public void TestCommandCnvEnum()
 		{

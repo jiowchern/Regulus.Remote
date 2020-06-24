@@ -2,7 +2,7 @@
 
 namespace Regulus.Framework
 {
-	internal class OnBoard<TUser> : IStage
+	internal class OnBoard<TUser> : IStatus
 		where TUser : class, IUpdatable
 	{
 		public delegate void OnDone();
@@ -22,7 +22,7 @@ namespace Regulus.Framework
 			_Command = command;
 		}
 
-		void IStage.Enter()
+		void IStatus.Enter()
 		{
 			_Updater.Add(_UserProvider);
 			_Command.Register<string>("SpawnUser[UserName]", _Spawn);
@@ -30,7 +30,7 @@ namespace Regulus.Framework
 			_Command.Register<string>("SelectUser[UserName]", _Select);
 		}
 
-		void IStage.Leave()
+		void IStatus.Leave()
 		{
 			_Command.Unregister("SelectUser");
 			_Command.Unregister("SpawnUser");
@@ -38,7 +38,7 @@ namespace Regulus.Framework
 			_Updater.Shutdown();
 		}
 
-		void IStage.Update()
+		void IStatus.Update()
 		{
 			_Updater.Working();
 		}

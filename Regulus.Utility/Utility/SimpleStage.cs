@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Regulus.Utility
 {
-    public class SimpleStage<T> : IStage<T>
+    public class SimpleStage<T> : IStatus<T>
     {
         readonly Action _EnterEvent;
 
@@ -32,17 +32,17 @@ namespace Regulus.Utility
             _UpdateEvent = update;
             _LeaveEvent = leave;
         }
-        void IStage<T>.Enter()
+        void IStatus<T>.Enter()
         {
             _EnterEvent();
         }
 
-        void IStage<T>.Leave()
+        void IStatus<T>.Leave()
         {
             _LeaveEvent();
         }
 
-        void IStage<T>.Update(T arg)
+        void IStatus<T>.Update(T arg)
         {
             _UpdateEvent(arg);
         }
@@ -50,7 +50,7 @@ namespace Regulus.Utility
 
 
 
-    public class SimpleStage : IStage
+    public class SimpleStage : IStatus
     {
         readonly Action _EnterEvent;
 
@@ -77,17 +77,17 @@ namespace Regulus.Utility
             _UpdateEvent = update;
             _LeaveEvent = leave;
         }
-        void IStage.Enter()
+        void IStatus.Enter()
         {
             _EnterEvent();
         }
 
-        void IStage.Leave()
+        void IStatus.Leave()
         {
             _LeaveEvent();
         }
 
-        void IStage.Update()
+        void IStatus.Update()
         {
             _UpdateEvent();
         }

@@ -1,0 +1,16 @@
+language: csharp
+solution: Regulus.sln
+mono: none
+language: csharp
+dotnet: 2.1.502
+
+script:
+ - dotnet restore
+ - dotnet build 
+ - dotnet tool install --global minicover
+ - minicover instrument
+ - minicover reset
+ - dotnet test --no-build
+ - dotnet minicover uninstrument
+ - dotnet minicover htmlreport --threshold 90
+ - dotnet minicover report --threshold 90
