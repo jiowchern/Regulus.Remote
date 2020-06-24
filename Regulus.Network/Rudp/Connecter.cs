@@ -7,12 +7,12 @@ namespace Regulus.Network.Rudp
     
     public class Connector : IConnectable
     {
-        private readonly Agent m_Agent;
+        private readonly Agent _Agent;
         private Regulus.Network.Socket _RudpSocket;
 
         public Connector(Agent Agent)
         {
-            m_Agent = Agent;
+            _Agent = Agent;
         }
         EndPoint IPeer.RemoteEndPoint {get { return _RudpSocket.EndPoint; } }
 
@@ -35,9 +35,20 @@ namespace Regulus.Network.Rudp
             _RudpSocket.Disconnect();
         }
 
-        void IConnectable.Connect(EndPoint Endpoint, Action<bool> Result)
+        System.Threading.Tasks.Task<bool> IConnectable.Connect(EndPoint Endpoint)
         {
-            _RudpSocket = m_Agent.Connect(Endpoint, Result);
+            bool? result = null ;
+            _RudpSocket = _Agent.Connect(Endpoint, r=> result = r);
+            return System.Threading.Tasks.Task<bool>.Run(() => {
+
+                var r = new Regulus.Utility.AutoPowerRegulator(new Utility.PowerRegulator());
+                while(!result.HasValue)
+                {
+                    r.Operate();
+                }
+                return result.Value;
+            });
+            
 
         }
     }

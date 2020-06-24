@@ -8,7 +8,6 @@ using Regulus.Network.RUDP;
 
 namespace Regulus.Network.Tests
 {
-    
     public class PacketTest
     {
         [Test]

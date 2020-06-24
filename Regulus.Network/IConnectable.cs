@@ -5,6 +5,6 @@ namespace Regulus.Network
 {
     public interface IConnectable : IPeer
     {
-        void Connect(EndPoint Endpoint, Action<bool> Result);
+        System.Threading.Tasks.Task<bool> Connect(EndPoint Endpoint);
     }
 }

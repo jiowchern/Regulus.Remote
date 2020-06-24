@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.WebSockets;
+using System.Threading.Tasks;
 
 namespace Regulus.Network.Web
 {
@@ -13,22 +14,25 @@ namespace Regulus.Network.Web
             _Socket = socket;
         }
 
-        void IConnectable.Connect(EndPoint endpoint, Action<bool> Result)
+        System.Threading.Tasks.Task<bool> IConnectable.Connect(EndPoint endpoint)
         {
             var ip = endpoint as IPEndPoint;
-            var t = _Socket.ConnectAsync(new Uri($"ws://{ip.Address.ToString()}:{ip.Port}") , new System.Threading.CancellationToken());
-            t.Wait();
-            if(_Socket.State == WebSocketState.Open)
-            {
-                Result(true);
-            }
-            else
-            {
-                Result(false);
-            }
+            var connectTask = _Socket.ConnectAsync(new Uri($"ws://{ip.Address.ToString()}:{ip.Port}") , new System.Threading.CancellationToken());
+            return connectTask.ContinueWith<bool>(_ConnectResult);
+            
 
         }
 
-
+        private bool _ConnectResult(Task arg)
+        {
+            if (_Socket.State == WebSocketState.Open)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

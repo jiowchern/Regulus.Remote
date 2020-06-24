@@ -57,14 +57,16 @@ namespace Regulus.Remote.Ghost
 				try
 				{
 
+					var connectTask = _Peer.Connect(ip);
+					connectTask.ContinueWith((connect_result) =>
+					{
 
-					_Peer.Connect(ip, (connect_result) => {
-
-						_DoReturn = () => {
-							result.SetValue(connect_result);
+						_DoReturn = () =>
+						{
+							result.SetValue(connect_result.Result);
 						};
-						
-						if(connect_result)
+
+						if (connect_result.Result)
 						{
 							Singleton<Log>.Instance.WriteInfo("agent connect success.");
 							DoneEvent(_Peer);
@@ -73,9 +75,11 @@ namespace Regulus.Remote.Ghost
 						{
 							FailEvent();
 						}
-						
-					} );
-					
+
+					});
+
+
+
 				}
 				catch (Exception e)
 				{

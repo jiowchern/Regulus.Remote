@@ -7,19 +7,20 @@ namespace Regulus.Network.Tcp
 {
     public class Connecter : Peer , IConnectable
     {
-        private Action<bool> m_ResultHandler;
+        
         public Connecter() : base(new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
         {            
-            //GetSocket().NoDelay = true;
+            
         }
 
-        void IConnectable.Connect(EndPoint Endpoint, Action<bool> result)
+        System.Threading.Tasks.Task<bool> IConnectable.Connect(EndPoint endpoint)
         {
-            m_ResultHandler = result;
-            GetSocket().BeginConnect(Endpoint, this.Result, state: null);
+            var socket = GetSocket();
+            return System.Threading.Tasks.Task<bool>.Factory.FromAsync(
+                (handler, obj) => socket.BeginConnect(endpoint, handler, null), _Result, null);        
         }
 
-        private void Result(IAsyncResult Ar)
+        private bool _Result(IAsyncResult Ar)
         {
             var result = false;
             try
@@ -37,10 +38,11 @@ namespace Regulus.Network.Tcp
             }
             finally
             {
-                m_ResultHandler(result);
-                m_ResultHandler = null;
+                
                 Singleton<Log>.Instance.WriteInfo(string.Format("connect result {0}.", result));
+                
             }
+            return result;
         }
 
         
