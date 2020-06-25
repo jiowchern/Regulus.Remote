@@ -169,7 +169,7 @@ namespace Client
 ```
 ### Sample
 Name|Description|Tcp|Rudp|Console|Unity
-|-|-|-|-|-|
+|-|-|-|-|-|-|
 [Hello World](https://github.com/jiowchern/Regulus.Samples/tree/master/Helloworld)|Simple message response.|✔|❌|✔|❌
 [Chat](https://github.com/jiowchern/Regulus.Samples/tree/master/Chat1)|Chat message broadcast.|✔|❌|✔|✔
 
