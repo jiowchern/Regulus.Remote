@@ -4,7 +4,7 @@ using Regulus.Network;
 
 namespace Regulus.Network.Tcp
 {
-    public class ConnectProvider : IConnectProviderable
+    public class ConnectProvider : IConnectProvidable
     {
         void IBootable.Launch()
         {
@@ -16,7 +16,7 @@ namespace Regulus.Network.Tcp
             
         }
 
-        IConnectable IConnectProviderable.Spawn()
+        IConnectable IConnectProvidable.Spawn()
         {
             return new Connecter();
         }

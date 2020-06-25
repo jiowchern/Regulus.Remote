@@ -2,7 +2,7 @@
 
 namespace Regulus.Network.Web
 {
-    public class ConnectProvider : IConnectProviderable
+    public class ConnectProvider : IConnectProvidable
     {
         void IBootable.Launch()
         {
@@ -14,7 +14,7 @@ namespace Regulus.Network.Web
             
         }
 
-        IConnectable IConnectProviderable.Spawn()
+        IConnectable IConnectProvidable.Spawn()
         {
             return new Connecter(new System.Net.WebSockets.ClientWebSocket());
         }

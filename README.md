@@ -4,22 +4,22 @@
 [![Coverage Status](https://coveralls.io/repos/github/jiowchern/Regulus/badge.svg?branch=)](https://coveralls.io/github/jiowchern/Regulus?branch=)
 ![commit last date](https://img.shields.io/github/last-commit/jiowchern/regulus)
 [![Discord](https://img.shields.io/discord/101557008930451456)](https://discord.gg/uDF8NTp)
+![Latest Version](https://img.shields.io/github/v/tag/jiowchern/Regulus)
 <!-- [![GitHub release](https://img.shields.io/github/release/jiowchern/regulus.svg?style=flat-square)](https://github.com/jiowchern/Regulus/releases)![pre-release](https://img.shields.io/github/v/release/jiowchern/Regulus?include_prereleases) -->
 <!-- [![Gitter](https://badges.gitter.im/JoinChat.svg)](https://gitter.im/Regulus-Library) -->
 
 
 ### What is this doing?
 This is server-client connection framework, available for Unity development.
-
 ### Feature
 * Simple server-client framework.
 * Support .Net Standard 2.0.
 * Serialization.
 * Remote method invocation.
 * Support Unity il2cpp.
-* Simulate a stand-alone environment.
 * Customizable packet transmission.
-
+### Latest Version
+Download the latest tag 0.1.7.1
 ### Architecture
 <!-- 
 @startuml
@@ -167,10 +167,11 @@ namespace Client
 	}
 }
 ```
-
 ### Sample
-Description|Tcp|Rudp|Console Client|Unity|Standalone
--|:-|:-|:-|:-|:-
-[ChatRoom](https://github.com/jiowchern/Regulus.Samples/tree/master/Chat1)|✔|❌|✔|✔|✔
+Name|Description|Tcp|Rudp|Console|Unity
+|-|-|-|-|-|
+[Hello World](https://github.com/jiowchern/Regulus.Samples/tree/master/Helloworld)|Simple message response.|✔|❌|✔|❌
+[Chat](https://github.com/jiowchern/Regulus.Samples/tree/master/Chat1)|Chat message broadcast.|✔|❌|✔|✔
+
 
 

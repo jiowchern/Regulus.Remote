@@ -55,7 +55,7 @@ namespace Regulus.Utility
 			{
 				if(args.Length != 0)
 				{
-					throw new ArgumentException("命令參數數量為0");
+					throw new ArgumentException("The number of command arguments is 0");
 				}
 
 				executer.Method.Invoke(executer.Target, new object[0]);
@@ -72,7 +72,7 @@ namespace Regulus.Utility
 			{
 				if(args.Length != 1)
 				{
-					throw new ArgumentException("命令參數數量為1");
+					throw new ArgumentException("The number of command arguments is 1");
 				}
 
 				object arg0;
@@ -98,7 +98,7 @@ namespace Regulus.Utility
 			{
 				if(args.Length != 2)
 				{
-					throw new ArgumentException("命令參數數量為2");
+					throw new ArgumentException("The number of command arguments is 2");
 				}
 
 				object arg0;
@@ -124,7 +124,7 @@ namespace Regulus.Utility
 			{
 				if(args.Length != 3)
 				{
-					throw new ArgumentException("命令參數數量為3");
+					throw new ArgumentException("The number of command arguments is 3");
 				}
 
 				object arg0;
@@ -151,7 +151,7 @@ namespace Regulus.Utility
 			{
 				if(args.Length != 4)
 				{
-					throw new ArgumentException("命令參數數量為4");
+					throw new ArgumentException("The number of command arguments is 4");
 				}
 
 				object arg0;
@@ -180,7 +180,7 @@ namespace Regulus.Utility
 			{
 				if(args.Length != 0)
 				{
-					throw new ArgumentException("命令參數數量為0");
+					throw new ArgumentException("The number of command arguments is 0");
 				}
 
 				var ret = executer.Method.Invoke(executer.Target , new object[0]);
@@ -197,7 +197,7 @@ namespace Regulus.Utility
 			{
 				if(args.Length != 1)
 				{
-					throw new ArgumentException("命令參數數量為1");
+					throw new ArgumentException("The number of command arguments is 1");
 				}
 
 				object arg0;
@@ -222,7 +222,7 @@ namespace Regulus.Utility
 			{
 				if(args.Length != 2)
 				{
-					throw new ArgumentException("命令參數數量為2");
+					throw new ArgumentException("The number of command arguments is 2");
 				}
 
 				object arg0;
@@ -249,7 +249,7 @@ namespace Regulus.Utility
 			{
 				if(args.Length != 3)
 				{
-					throw new ArgumentException("命令參數數量為3");
+					throw new ArgumentException("The number of command arguments is 3");
 				}
 
 				object arg0;
@@ -278,7 +278,7 @@ namespace Regulus.Utility
 			{
 				if(args.Length != 4)
 				{
-					throw new ArgumentException("命令參數數量為4");
+					throw new ArgumentException("The number of command arguments is 4");
 				}
 
 				object arg0;
@@ -330,42 +330,36 @@ namespace Regulus.Utility
 				var converter = TypeDescriptor.GetConverter(source);
 				out_value = converter.ConvertFromString(in_string);
 			}
-            catch (Exception)
+            catch (Exception ex) 
             {
-
-                
-            }
-			finally
-            {
-				if(out_value == null)
-                {
-					if (source == typeof(IPEndPoint))
+				if (source == typeof(IPEndPoint))
+				{
+					try
 					{
-						try
+						var m = Regex.Match(in_string, @"(\d+\.\d+\.\d+\.\d+):(\d+)");
+						if (m.Success)
 						{
-							var m = Regex.Match(in_string, @"(\d+\.\d+\.\d+\.\d+):(\d+)");
-							if (m.Success)
-							{
-								var address = m.Groups[1].Value;
-								var port = m.Groups[2].Value;
-								out_value = new IPEndPoint(IPAddress.Parse(address), int.Parse(port));
-							}
-							else
-							{
-								out_value = new IPEndPoint(0, 0);
-							}
-
+							var address = m.Groups[1].Value;
+							var port = m.Groups[2].Value;
+							out_value = new IPEndPoint(IPAddress.Parse(address), int.Parse(port));
 						}
-						catch (SystemException se)
+						else
 						{
 							out_value = new IPEndPoint(0, 0);
 						}
 
+					}
+					catch (SystemException se)
+					{
+						out_value = new IPEndPoint(0, 0);
+					}
 
-					}					
+
 				}
+				else
+					throw ex;
 
-			}
+			}			
 			
 			
 		

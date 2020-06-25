@@ -1,6 +1,6 @@
 ﻿namespace Regulus.Network
 {
-    public interface IConnectProviderable : Framework.IBootable
+    public interface IConnectProvidable : Framework.IBootable
     {        
         IConnectable Spawn();
     }

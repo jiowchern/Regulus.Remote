@@ -4,7 +4,7 @@ using Regulus.Utility;
 namespace Regulus.Network.Rudp
 {
 
-    public class ConnectProvider :  IConnectProviderable 
+    public class ConnectProvider :  IConnectProvidable 
     {
         private readonly ISocket m_Socket;
         private readonly ITime m_Time;
@@ -54,7 +54,7 @@ namespace Regulus.Network.Rudp
             _Procresser.Wait();
         }
 
-        IConnectable IConnectProviderable.Spawn()
+        IConnectable IConnectProvidable.Spawn()
         {
             return new Connector(m_Agent);
         }

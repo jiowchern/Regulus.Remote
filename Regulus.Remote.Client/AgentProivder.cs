@@ -6,7 +6,8 @@ namespace Regulus.Remote.Client
 {
     
     public  class AgentProvider : IAgentProvider
-    {        
+    {
+        
 
         public static Regulus.Remote.IAgent CreateRudp(System.Reflection.Assembly protocol_assembly)
         {
@@ -21,6 +22,14 @@ namespace Regulus.Remote.Client
             var agent = new Regulus.Remote.Ghost.Agent(protocol, client);
             return agent;
         }
+
+        public static Regulus.Remote.IAgent Create(IProtocol protocol, Regulus.Network.IConnectProvidable connect_providable)
+        {            
+            var agent = new Regulus.Remote.Ghost.Agent(protocol, connect_providable);
+            return agent;
+        }
+
+
 
         public static Regulus.Remote.IAgent CreateTcp(System.Reflection.Assembly protocol_assembly)
         {

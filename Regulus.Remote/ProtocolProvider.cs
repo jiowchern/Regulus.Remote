@@ -17,5 +17,7 @@ namespace Regulus.Remote.Protocol
         {
             return System.AppDomain.CurrentDomain.GetAssemblies().Where( a=>a.IsDynamic == false).SelectMany(assembly => assembly.GetExportedTypes().Where(type => typeof(Regulus.Remote.IProtocol).IsAssignableFrom(type) && typeof(Regulus.Remote.IProtocol)!= type).Select( t=> t ) );
         }
+
+        
     }
 }

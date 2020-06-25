@@ -20,7 +20,7 @@ namespace Regulus.Remote.Ghost
 		private readonly AgentCore _Core;
 
 		private readonly StatusMachine _Machine;
-	    private readonly IConnectProviderable _ConnecterSpawner;
+	    private readonly IConnectProvidable _ConnecterSpawner;
 		private readonly TProvider<IConnect> _ConnectProvider;
 		private readonly TProvider<IOnline> _OnlineProvider;
 
@@ -29,7 +29,7 @@ namespace Regulus.Remote.Ghost
 			get { return _Core.Ping; }
 		}
 
-	    public Agent(IProtocol protocol,Regulus.Network.IConnectProviderable connecter_spawner)
+	    public Agent(IProtocol protocol,Regulus.Network.IConnectProvidable connecter_spawner)
 	    {	    
             _Serializer = protocol.GetSerialize();
 	        _Machine = new StatusMachine();
