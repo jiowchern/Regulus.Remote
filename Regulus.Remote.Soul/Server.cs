@@ -12,12 +12,10 @@ namespace Regulus.Remote.Soul
 	/// </summary>
 	public class Service : IBootable
 	{
-		private readonly ThreadCoreHandler _ThreadCoreHandler;
+
 
 		private readonly ThreadSocketHandler _ThreadSocketHandler;
-
-
-	    public event Action BreakEvent;
+		readonly IEntry _Entry;
 
 	    /// <summary>
 		///     網路核心每秒執行次數
@@ -27,13 +25,7 @@ namespace Regulus.Remote.Soul
 			get { return _ThreadSocketHandler.FPS; }
 		}
 
-		/// <summary>
-		///     邏輯核心每秒執行次數
-		/// </summary>
-		public int CoreFPS
-		{
-			get { return _ThreadCoreHandler.FPS; }
-		}
+		
 
 		/// <summary>
 		///     網路核心使用率
@@ -43,13 +35,7 @@ namespace Regulus.Remote.Soul
 			get { return _ThreadSocketHandler.Power; }
 		}
 
-		/// <summary>
-		///     邏輯核心使用率
-		/// </summary>
-		public float CoreUsage
-		{
-			get { return _ThreadCoreHandler.Power; }
-		}
+		
 
 		/// <summary>
 		///     客戶端連線數
@@ -115,20 +101,22 @@ namespace Regulus.Remote.Soul
 		/// </param>		
 		public Service(IEntry entry,int port , IProtocol protocol, Regulus.Network.IListenable server)
 		{
-			_ThreadCoreHandler = new ThreadCoreHandler(entry );
-			_ThreadSocketHandler = new ThreadSocketHandler(port, _ThreadCoreHandler , protocol , server);
-
+			_Entry = entry;
 			
+			_ThreadSocketHandler = new ThreadSocketHandler(port,  protocol , server);
+
 		}
 
 		void IBootable.Launch()
 		{
+			_Entry.Launch();
 			Launch();
 		}
 
 		void IBootable.Shutdown()
 		{
 			Shutdown();
+			_Entry.Shutdown();
 		}
 
 		/// <summary>
@@ -136,26 +124,28 @@ namespace Regulus.Remote.Soul
 		/// </summary>
 		public void Launch()
 		{
-		    _ThreadCoreHandler.ShutdownEvent += _Shutdown;
-            _ThreadSocketHandler.Start();
-            _ThreadCoreHandler.Start();
+			_ThreadSocketHandler.BinderEvent += _Bind;
+			_ThreadSocketHandler.Start();
+            
 
         }
 
-	    private void _Shutdown()
-	    {
-            if (BreakEvent != null)
-	            BreakEvent();            
-	    }
+	   
 
 	    /// <summary>
 		///     關閉系統
 		/// </summary>
 		public void Shutdown()
 		{
-			_ThreadCoreHandler.Stop();
-			_ThreadSocketHandler.Stop();
 			
+			_ThreadSocketHandler.Stop();
+			_ThreadSocketHandler.BinderEvent -= _Bind;
+
 		}
-	}
+
+        private void _Bind(IBinder binder)
+        {
+			_Entry.AssignBinder(binder);
+        }
+    }
 }

@@ -17,11 +17,6 @@ namespace Regulus.Remote.Soul
 		private event Action _BreakEvent;
 
 		private event InvokeMethodCallback _InvokeMethodEvent;
-
-		public event DisconnectCallback DisconnectEvent;
-
-
-
 	   
 		private class Request
 		{
@@ -36,7 +31,6 @@ namespace Regulus.Remote.Soul
 
 		private readonly PackageReader<RequestPackage> _Reader;
 
-
         
 		private readonly System.Collections.Concurrent.ConcurrentQueue<RequestPackage> _Requests;
 
@@ -50,6 +44,7 @@ namespace Regulus.Remote.Soul
 
 		private readonly PackageWriter<ResponsePackage> _Writer;
 
+		readonly ThreadUpdater _Updater;
 
 		private volatile bool _EnableValue;
 		private bool _Enable
@@ -71,9 +66,10 @@ namespace Regulus.Remote.Soul
 			}
 
 		}
-		
 
-		private object _EnableLock;
+        
+
+        private object _EnableLock;
 	    private ISerializer _Serialize;
 
 	    public static bool IsIdle
@@ -92,16 +88,13 @@ namespace Regulus.Remote.Soul
 			get { return _SoulProvider; }
 		}
 
-		public CoreThreadRequestHandler Handler
-		{
-			get { return new CoreThreadRequestHandler(this); }
-		}
+		
 
 		public Peer(IPeer client , IProtocol protocol)
 		{
 
-		    
-            _Serialize = protocol.GetSerialize();
+			_Updater = new ThreadUpdater(_Update);
+			_Serialize = protocol.GetSerialize();
 
 		    _EnableLock = new object();
 
@@ -115,10 +108,14 @@ namespace Regulus.Remote.Soul
 
 			_Reader = new PackageReader<RequestPackage>(protocol.GetSerialize());
 			_Writer = new PackageWriter<ResponsePackage>(protocol.GetSerialize());
+
+			
+			
 		}
 
 		void IBootable.Launch()
 		{
+			_Updater.Start();
 			_Reader.DoneEvent += _RequestPush;
 			_Reader.ErrorEvent += () => { _Enable = false; };
 			_Reader.Start(_Peer);
@@ -136,6 +133,7 @@ namespace Regulus.Remote.Soul
 
 		void IBootable.Shutdown()
 		{
+			
 			try
 			{				
 				_Peer.Close();
@@ -156,7 +154,10 @@ namespace Regulus.Remote.Soul
 
             System.Threading.Interlocked.Add(ref _TotalResponse, -_Responses.Count);            
 		    System.Threading.Interlocked.Add(ref _TotalRequest, -_Requests.Count);
-        }
+
+			_Updater.Stop();
+
+		}
 
 		event InvokeMethodCallback IRequestQueue.InvokeMethodEvent
 		{
@@ -170,12 +171,12 @@ namespace Regulus.Remote.Soul
 			remove { _BreakEvent -= value; }
 		}
 
-		void IRequestQueue.Update()
+		void _Update()
 		{
 			if(_Connected() == false)
 			{
-				Disconnect();
-				DisconnectEvent();
+				SendBreakEvent();
+		
 				return;
 			}
 
@@ -280,7 +281,12 @@ namespace Regulus.Remote.Soul
 			return _Enable && _Peer.Connected;
 		}
 
-		internal void Disconnect()
+		public bool Connecting()
+		{
+			return _Connected();
+		}
+
+		internal void SendBreakEvent()
 		{
 			if(_BreakEvent != null)
 			{

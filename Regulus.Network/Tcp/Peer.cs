@@ -29,14 +29,26 @@ namespace Regulus.Network.Tcp
 
         System.Threading.Tasks.Task<int> IPeer.Receive(byte[] readed_byte, int offset, int count )
         {
-
+            if (!_Socket.Connected)
+            {
+                _Enable = false;
+                return System.Threading.Tasks.Task<int>.FromResult(0);
+            }
+                
             return System.Threading.Tasks.Task<int>.Factory.FromAsync(
                 (handler, obj) => _Socket.BeginReceive(readed_byte, offset, count, SocketFlags.None, handler, obj), _EndReceive, null);
           
         }
         private int _EndReceive(IAsyncResult arg)
         {
+            if (!_Socket.Connected)
+            {
+                _Enable = false;
+                return 0;
+            }
             SocketError error;
+           
+                
             var size = _Socket.EndReceive(arg , out error);
             if(error == SocketError.Success)
                 return size;
@@ -58,6 +70,12 @@ namespace Regulus.Network.Tcp
 
         private int _EndSend(IAsyncResult arg)
         {
+            if (!_Socket.Connected)
+            {
+                _Enable = false;
+                return 0;
+            }
+
             SocketError error;
             var sendCount = _Socket.EndSend(arg , out error);
             if (error != SocketError.Success)
@@ -66,11 +84,7 @@ namespace Regulus.Network.Tcp
                 return sendCount;
             }
 
-            if (!_Socket.Connected)
-            {
-                _Enable = false;
-                return sendCount;
-            }
+            
             return sendCount;
         }
 

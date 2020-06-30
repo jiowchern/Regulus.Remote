@@ -10,6 +10,6 @@ namespace Regulus.Remote
 
 		event InvokeMethodCallback InvokeMethodEvent;
 
-		void Update();
+		
 	}
 }

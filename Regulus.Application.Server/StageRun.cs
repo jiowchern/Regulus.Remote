@@ -25,8 +25,7 @@ namespace Regulus.Remote.Soul.Console
             _View = viewer;
             _Command = command;
 
-            _Server = new Service(core, port, protocol, server);
-            _Server.BreakEvent += _Break;
+            _Server = new Service(core, port, protocol, server);            
             _Launcher = new Launcher();
             _Launcher.Push(_Server);
         }
@@ -43,12 +42,9 @@ namespace Regulus.Remote.Soul.Console
                 "Status",
                 () =>
                 {
-                    _View.WriteLine("PeerFPS:" + _Server.PeerFPS);
-                    _View.WriteLine("PeerCount:" + _Server.PeerCount);
-                    _View.WriteLine("CoreFPS:" + _Server.CoreFPS);
-
-                    _View.WriteLine(string.Format("PeerUsage:{0:0.00%}", _Server.PeerUsage));
-                    _View.WriteLine(string.Format("CoreUsage:{0:0.00%}", _Server.CoreUsage));
+                    _View.WriteLine("FPS:" + _Server.PeerFPS);
+                    _View.WriteLine("Count:" + _Server.PeerCount);
+                    _View.WriteLine(string.Format("Usage:{0:0.00%}", _Server.PeerUsage));
 
                     _View.WriteLine(
                         "\nTotalReadBytes:"

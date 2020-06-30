@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
-
+using System.Threading.Tasks;
 using Regulus.Framework;
 
 namespace Regulus.Remote.Soul
@@ -27,41 +26,53 @@ namespace Regulus.Remote.Soul
 
 		internal void _Join(Peer peer, IBootable bootable)
 		{
-		    lock (_Peers)
-		    {
-		        _Peers.Add(peer);
-		        peer.DisconnectEvent += () => { _Leave(peer, peer); };		        
-            }
-		    bootable.Launch();
+		    
+		    
+		    _Peers.Add(peer);		            
+            
+			bootable.Launch();
         }
 
 		internal void _Leave(Peer peer, IBootable bootable)
 		{
-			lock(_Peers)
+			if (_Peers.Remove(peer))
 			{
-			    if (_Peers.Remove(peer))
-			    {
-			        bootable.Shutdown();
-			    }
-			    else
-			    {
-                    if(_Peers.Count > 0)
-			            throw new Exception("no peer shutdown.");
-			    }
+				bootable.Shutdown();
+			}
+			else
+			{
+				if (_Peers.Count > 0)
+					throw new Exception("no peer shutdown.");
 			}
 		}
 
 		internal void Release()
 		{
-			lock(_Peers)
+			foreach (IBootable peer in _Peers)
 			{
-				foreach(IBootable peer in _Peers)
-				{
-					peer.Shutdown();
-				}
+				peer.Shutdown();
+			}
 
-				_Peers.Clear();
+			_Peers.Clear();
+		}
+		public void RemoveInvalidPeers()
+        {
+			var removes = new System.Collections.Generic.List<Peer>();
+			foreach(var peer in _Peers)
+            {
+				if (!peer.Connecting())
+				{
+					removes.Add(peer);
+				}
+			}			
+
+			foreach(var r in removes)
+            {
+				_Leave(r, r);
 			}
 		}
-	}
+
+        
+    }
 }
+ 

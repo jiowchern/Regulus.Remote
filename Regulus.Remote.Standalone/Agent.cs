@@ -137,10 +137,7 @@ namespace Regulus.Remote.Standalone
 			remove { _BreakEvent -= value; }
 		}
 
-		void IRequestQueue.Update()
-		{
-			_Update();
-		}
+		
 
 		void IResponseQueue.Push(ServerToClientOpCode cmd, byte[] data)
 		{
