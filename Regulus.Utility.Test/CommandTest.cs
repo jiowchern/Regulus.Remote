@@ -277,7 +277,7 @@ namespace RegulusLibraryTest
 		public void TestCommandIpEndPointEnum()
 		{
 			object outVal;
-			Command.Conversion("127.0.0.1:12345", out outVal, typeof(System.Net.IPEndPoint));
+			Command.TryConversion("127.0.0.1:12345", out outVal, typeof(System.Net.IPEndPoint));
 			var ip = outVal as System.Net.IPEndPoint;
 			NUnit.Framework.Assert.AreEqual(ip.Address, IPAddress.Parse("127.0.0.1"));
 			NUnit.Framework.Assert.AreEqual(ip.Port, 12345);
@@ -288,7 +288,7 @@ namespace RegulusLibraryTest
 		{
 			var id = Guid.NewGuid();
 			object outVal;
-			Command.Conversion(id.ToString(), out outVal, typeof(Guid));
+			Command.TryConversion(id.ToString(), out outVal, typeof(Guid));
 			var id2 = (Guid)outVal  ;
 			NUnit.Framework.Assert.AreEqual(id.ToString(), id2.ToString());			
 		}
@@ -296,7 +296,7 @@ namespace RegulusLibraryTest
 		public void TestCommandCnvEnum()
 		{
 			object outVal;
-			Command.Conversion("A" , out outVal , typeof(TEST_ENUM1));
+			Command.TryConversion("A" , out outVal , typeof(TEST_ENUM1));
 
 			NUnit.Framework.Assert.AreEqual(TEST_ENUM1.A , outVal);
 
