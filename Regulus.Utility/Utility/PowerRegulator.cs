@@ -28,11 +28,11 @@ namespace Regulus.Utility
 
         private float _GetSample()
         {
-			var power = _WorkCount / (double)(_WorkCount + _SpinCount);
+			var count = _WorkCount + _SpinCount;
+			if (count == 0)
+				return 0;
 
-			_WorkCount = 0;
-			_SpinCount = 1;
-
+			var power = _WorkCount / (double)count;
 			return (float)power;
 		}
 
@@ -45,7 +45,7 @@ namespace Regulus.Utility
 		{
 
 			_SpinWait = new SpinWait();
-			_SpinCount = 1;
+			_SpinCount = 0;
 			_WorkCount = 0;
 			_Busy = 0;
 

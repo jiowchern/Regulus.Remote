@@ -68,7 +68,7 @@ namespace Regulus.Remote.Soul
 
         void _DoWork()
         {
-            Singleton<Log>.Instance.WriteInfo("server launch");
+            Singleton<Log>.Instance.WriteInfo("server launch.");
             _Run = true;
 
             _Server.AcceptEvent += _Accept;
@@ -87,7 +87,7 @@ namespace Regulus.Remote.Soul
                     
                     BinderEvent(peer.Binder);
                 }
-                _Peers.RemoveInvalidPeers();
+                _Peers.RemoveInvalidPeers(); 
 
                 _AutoPowerRegulator.Operate();
             }
@@ -99,7 +99,7 @@ namespace Regulus.Remote.Soul
             _Server.Close();
 
 
-            Singleton<Log>.Instance.WriteInfo("server shutdown");
+            Singleton<Log>.Instance.WriteInfo("server shutdown.");
         }
 
         private void _Accept(IPeer peer)
