@@ -78,7 +78,7 @@ namespace Regulus.Remote.Client
             if (_TypeConverterSet.Convert(inArg, out val, parameterType))
                 return;
 
-            Regulus.Utility.Command.Conversion(inArg, out val, parameterType);                
+            Regulus.Utility.Command.TryConversion(inArg, out val, parameterType);                
         }
         public void SetConverterSet(TypeConverterSet set)
         {

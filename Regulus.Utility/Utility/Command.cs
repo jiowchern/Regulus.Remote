@@ -76,7 +76,7 @@ namespace Regulus.Utility
 				}
 
 				object arg0;
-				Command.Conversion(args[0], out arg0, typeof(T1));
+				Command.TryConversion(args[0], out arg0, typeof(T1));
 				T1 val = (T1) arg0;
 
 
@@ -102,9 +102,9 @@ namespace Regulus.Utility
 				}
 
 				object arg0;
-				Command.Conversion(args[0], out arg0, typeof(T1));
+				Command.TryConversion(args[0], out arg0, typeof(T1));
 				object arg1;
-				Command.Conversion(args[1], out arg1, typeof(T2));
+				Command.TryConversion(args[1], out arg1, typeof(T2));
 
 
 				executer.Method.Invoke(executer.Target, new[] { arg0 , arg1});
@@ -128,11 +128,11 @@ namespace Regulus.Utility
 				}
 
 				object arg0;
-				Command.Conversion(args[0], out arg0, typeof(T1));
+				Command.TryConversion(args[0], out arg0, typeof(T1));
 				object arg1;
-				Command.Conversion(args[1], out arg1, typeof(T2));
+				Command.TryConversion(args[1], out arg1, typeof(T2));
 				object arg2;
-				Command.Conversion(args[2], out arg2, typeof(T3));
+				Command.TryConversion(args[2], out arg2, typeof(T3));
 				executer.Method.Invoke(executer.Target, new[] { arg0, arg1 ,arg2});
 			};
 
@@ -155,13 +155,13 @@ namespace Regulus.Utility
 				}
 
 				object arg0;
-				Command.Conversion(args[0], out arg0, typeof(T1));
+				Command.TryConversion(args[0], out arg0, typeof(T1));
 				object arg1;
-				Command.Conversion(args[1], out arg1, typeof(T2));
+				Command.TryConversion(args[1], out arg1, typeof(T2));
 				object arg2;
-				Command.Conversion(args[2], out arg2, typeof(T3));
+				Command.TryConversion(args[2], out arg2, typeof(T3));
 				object arg3;
-				Command.Conversion(args[3], out arg3, typeof(T4));
+				Command.TryConversion(args[3], out arg3, typeof(T4));
 				executer.Method.Invoke(executer.Target, new[] { arg0, arg1, arg2 ,arg3});
 			};
 
@@ -201,7 +201,7 @@ namespace Regulus.Utility
 				}
 
 				object arg0;
-				Command.Conversion(args[0], out arg0, typeof(T1));
+				Command.TryConversion(args[0], out arg0, typeof(T1));
 				var ret = executer.Method.Invoke(executer.Target, new object[] { arg0 });
 				value.Method.Invoke(value.Target, new object[] { ret });
 
@@ -226,9 +226,9 @@ namespace Regulus.Utility
 				}
 
 				object arg0;
-				Command.Conversion(args[0], out arg0, typeof(T1));
+				Command.TryConversion(args[0], out arg0, typeof(T1));
 				object arg1;
-				Command.Conversion(args[1], out arg1, typeof(T2));
+				Command.TryConversion(args[1], out arg1, typeof(T2));
 
 				var ret = executer.Method.Invoke(executer.Target, new object[] { arg0,arg1 });
 				value.Method.Invoke(value.Target, new object[] { ret });
@@ -253,11 +253,11 @@ namespace Regulus.Utility
 				}
 
 				object arg0;
-				Command.Conversion(args[0], out arg0, typeof(T1));
+				Command.TryConversion(args[0], out arg0, typeof(T1));
 				object arg1;
-				Command.Conversion(args[1], out arg1, typeof(T2));
+				Command.TryConversion(args[1], out arg1, typeof(T2));
 				object arg2;
-				Command.Conversion(args[2], out arg2, typeof(T3));
+				Command.TryConversion(args[2], out arg2, typeof(T3));
 
 				var ret = executer.Method.Invoke(executer.Target, new[] { arg0, arg1,arg2 });
 				value.Method.Invoke(value.Target, new[] { ret });
@@ -282,13 +282,13 @@ namespace Regulus.Utility
 				}
 
 				object arg0;
-				Command.Conversion(args[0], out arg0, typeof(T1));
+				Command.TryConversion(args[0], out arg0, typeof(T1));
 				object arg1;
-				Command.Conversion(args[1], out arg1, typeof(T2));
+				Command.TryConversion(args[1], out arg1, typeof(T2));
 				object arg2;
-				Command.Conversion(args[2], out arg2, typeof(T3));
+				Command.TryConversion(args[2], out arg2, typeof(T3));
 				object arg3;
-				Command.Conversion(args[3], out arg3, typeof(T4));
+				Command.TryConversion(args[3], out arg3, typeof(T4));
 
 				var ret = executer.Method.Invoke(executer.Target, new[] { arg0, arg1, arg2 , arg3 });
 				value.Method.Invoke(value.Target, new[] { ret });
@@ -320,15 +320,23 @@ namespace Regulus.Utility
 				UnregisterEvent(cmd.Name);
 			}
 		}
-		
-		public static void Conversion(string in_string, out object out_value, Type source)
+		static object _GetDefault(Type type)
 		{
-			out_value = null;
+			if (type.IsValueType)
+			{
+				return Activator.CreateInstance(type);
+			}
+			return null;
+		}
+		public static bool TryConversion(string in_string, out object out_value, Type source)
+		{
+			out_value = _GetDefault(source); 
 
 			try
             {
 				var converter = TypeDescriptor.GetConverter(source);
 				out_value = converter.ConvertFromString(in_string);
+				return true;
 			}
             catch (Exception ex) 
             {
@@ -357,12 +365,16 @@ namespace Regulus.Utility
 
 				}
 				else
-					throw ex;
+                {
 
-			}			
-			
-			
-		
+					Regulus.Utility.Log.Instance.WriteInfo($"Type conversion failed. Type:{source} Value:[{in_string}]");
+				}
+					
+
+			}
+
+			return false;
+
 		}
 
 		private void _EmptyRegisterEvent(string command, CommandParameter ret, CommandParameter[] args)

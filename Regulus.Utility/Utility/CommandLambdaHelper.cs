@@ -30,7 +30,7 @@ namespace Regulus.Utility
 				}
 
 				object arg0;
-				Command.Conversion(args[0], out arg0, typeof(T0));
+				Command.TryConversion(args[0], out arg0, typeof(T0));
 
 				return_value(exp.Compile().Invoke(instance ,(T0)arg0 ));
 			};
@@ -47,10 +47,10 @@ namespace Regulus.Utility
 				}
 
 				object arg0;
-				Command.Conversion(args[0], out arg0, typeof(T0));
+				Command.TryConversion(args[0], out arg0, typeof(T0));
 
 				object arg1;
-				Command.Conversion(args[1], out arg1, typeof(T1));
+				Command.TryConversion(args[1], out arg1, typeof(T1));
 
 
 
@@ -69,13 +69,13 @@ namespace Regulus.Utility
 				}
 
 				object arg0;
-				Command.Conversion(args[0], out arg0, typeof(T0));
+				Command.TryConversion(args[0], out arg0, typeof(T0));
 
 				object arg1;
-				Command.Conversion(args[1], out arg1, typeof(T1));
+				Command.TryConversion(args[1], out arg1, typeof(T1));
 
 				object arg2;
-				Command.Conversion(args[2], out arg2, typeof(T2));
+				Command.TryConversion(args[2], out arg2, typeof(T2));
 
 				return_value(exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1 , (T2)arg2));
 			};
@@ -92,16 +92,16 @@ namespace Regulus.Utility
 				}
 
 				object arg0;
-				Command.Conversion(args[0], out arg0, typeof(T0));
+				Command.TryConversion(args[0], out arg0, typeof(T0));
 
 				object arg1;
-				Command.Conversion(args[1], out arg1, typeof(T1));
+				Command.TryConversion(args[1], out arg1, typeof(T1));
 
 				object arg2;
-				Command.Conversion(args[2], out arg2, typeof(T2));
+				Command.TryConversion(args[2], out arg2, typeof(T2));
 
 				object arg3;
-				Command.Conversion(args[3], out arg3, typeof(T3));
+				Command.TryConversion(args[3], out arg3, typeof(T3));
 
 				return_value(exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1, (T2)arg2, (T3)arg3));
 			};
@@ -118,19 +118,19 @@ namespace Regulus.Utility
 				}
 
 				object arg0;
-				Command.Conversion(args[0], out arg0, typeof(T0));
+				Command.TryConversion(args[0], out arg0, typeof(T0));
 
 				object arg1;
-				Command.Conversion(args[1], out arg1, typeof(T1));
+				Command.TryConversion(args[1], out arg1, typeof(T1));
 
 				object arg2;
-				Command.Conversion(args[2], out arg2, typeof(T2));
+				Command.TryConversion(args[2], out arg2, typeof(T2));
 
 				object arg3;
-				Command.Conversion(args[3], out arg3, typeof(T3));
+				Command.TryConversion(args[3], out arg3, typeof(T3));
 
 				object arg4;
-				Command.Conversion(args[4], out arg4, typeof(T4));
+				Command.TryConversion(args[4], out arg4, typeof(T4));
 
 				return_value(exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1, (T2)arg2, (T3)arg3 , (T4)arg4));
 			};
@@ -162,7 +162,7 @@ namespace Regulus.Utility
 					throw new ArgumentException("命令參數數量為1");
 				}
 				object arg0;
-				Command.Conversion(args[0], out arg0, typeof(T0));
+				Command.TryConversion(args[0], out arg0, typeof(T0));
 				
 				exp.Compile().Invoke(instance , (T0)arg0);
 			};
@@ -178,10 +178,10 @@ namespace Regulus.Utility
 					throw new ArgumentException("命令參數數量為2");
 				}
 				object arg0;
-				Command.Conversion(args[0], out arg0, typeof(T0));
+				Command.TryConversion(args[0], out arg0, typeof(T0));
 
 				object arg1;
-				Command.Conversion(args[1], out arg1, typeof(T1));
+				Command.TryConversion(args[1], out arg1, typeof(T1));
 
 				exp.Compile().Invoke(instance, (T0)arg0 , (T1)arg1);
 			};
@@ -197,13 +197,13 @@ namespace Regulus.Utility
 					throw new ArgumentException("命令參數數量為3");
 				}
 				object arg0;
-				Command.Conversion(args[0], out arg0, typeof(T0));
+				Command.TryConversion(args[0], out arg0, typeof(T0));
 
 				object arg1;
-				Command.Conversion(args[1], out arg1, typeof(T1));
+				Command.TryConversion(args[1], out arg1, typeof(T1));
 
 				object arg2;
-				Command.Conversion(args[2], out arg2, typeof(T2));
+				Command.TryConversion(args[2], out arg2, typeof(T2));
 
 				exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1 , (T2)arg2);
 			};
@@ -219,16 +219,16 @@ namespace Regulus.Utility
 					throw new ArgumentException("命令參數數量為4");
 				}
 				object arg0;
-				Command.Conversion(args[0], out arg0, typeof(T0));
+				Command.TryConversion(args[0], out arg0, typeof(T0));
 
 				object arg1;
-				Command.Conversion(args[1], out arg1, typeof(T1));
+				Command.TryConversion(args[1], out arg1, typeof(T1));
 
 				object arg2;
-				Command.Conversion(args[2], out arg2, typeof(T2));
+				Command.TryConversion(args[2], out arg2, typeof(T2));
 
 				object arg3;
-				Command.Conversion(args[3], out arg3, typeof(T3));
+				Command.TryConversion(args[3], out arg3, typeof(T3));
 
 				exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1, (T2)arg2, (T3)arg3);
 			};
@@ -244,19 +244,19 @@ namespace Regulus.Utility
 					throw new ArgumentException("命令參數數量為5");
 				}
 				object arg0;
-				Command.Conversion(args[0], out arg0, typeof(T0));
+				Command.TryConversion(args[0], out arg0, typeof(T0));
 
 				object arg1;
-				Command.Conversion(args[1], out arg1, typeof(T1));
+				Command.TryConversion(args[1], out arg1, typeof(T1));
 
 				object arg2;
-				Command.Conversion(args[2], out arg2, typeof(T2));
+				Command.TryConversion(args[2], out arg2, typeof(T2));
 
 				object arg3;
-				Command.Conversion(args[3], out arg3, typeof(T3));
+				Command.TryConversion(args[3], out arg3, typeof(T3));
 
 				object arg4;
-				Command.Conversion(args[4], out arg4, typeof(T4));
+				Command.TryConversion(args[4], out arg4, typeof(T4));
 
 				exp.Compile().Invoke(instance, (T0)arg0, (T1)arg1, (T2)arg2, (T3)arg3 , (T4)arg4);
 			};

@@ -11,7 +11,7 @@ namespace Regulus.Utility
 		public static object StringConvert(Type type , string value)
 		{
             object outValue;
-            Regulus.Utility.Command.Conversion(value, out outValue, type);			
+            Regulus.Utility.Command.TryConversion(value, out outValue, type);		
 			return outValue;
 		}
 			
