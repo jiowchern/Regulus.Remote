@@ -90,9 +90,9 @@ namespace Client
 	public void AMethod(Regulus.Remote.IAgent agent)
 	{
 		// receive
-		agent.QueryNotifier<IAdder>().Supply += (chatter) =>{
+		agent.QueryNotifier<IAdder>().Supply += (adder) =>{
 			// invoke
-			var val = chatter.Add(1,2);			
+			var val = adder.Add(1,2);			
 			// return value
 			val.OnValue += (num)=> System.Console.WriteLine;
 		};		
