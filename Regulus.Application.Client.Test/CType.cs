@@ -5,9 +5,9 @@ namespace Regulus.Application.Client.Test
 {
     public class CType : IType, IGhost
     {
-        public readonly Guid Id;
+        public readonly long Id;
 
-        public CType(Guid id)
+        public CType(long id)
         {
             this.Id = id;
         }
@@ -24,7 +24,7 @@ namespace Regulus.Application.Client.Test
             }
         }
 
-        Guid IGhost.GetID()
+        long IGhost.GetID()
         {
             return Id;
         }

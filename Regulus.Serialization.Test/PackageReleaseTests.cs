@@ -137,6 +137,7 @@ namespace Regulus.Remote.Tests
         {
 
             var builder = new Regulus.Serialization.DescriberBuilder(
+                            typeof(long),
                             typeof(System.Char),
                             typeof(System.Char[]),
                             typeof(System.String),
@@ -148,7 +149,7 @@ namespace Regulus.Remote.Tests
                             typeof(Regulus.Remote.ResponsePackage),
                             typeof(Regulus.Remote.ServerToClientOpCode),
                             typeof(Regulus.Remote.PackageUpdateProperty),
-                            typeof(System.Guid),
+                            //typeof(System.Guid),
                             typeof(System.Int32),
                             typeof(Regulus.Remote.PackageInvokeEvent),
                             typeof(System.Byte[][]),
@@ -162,7 +163,7 @@ namespace Regulus.Remote.Tests
             var ser = new Regulus.Serialization.Serializer(builder.Describers);
             var update = new PackageUpdateProperty();
             update.Property = 1;
-            update.EntityId = new Guid("3ecae85d-79e0-4cc9-a34f-60f31883d26c");
+            update.EntityId = 1;// new Guid("3ecae85d-79e0-4cc9-a34f-60f31883d26c");
             update.Args = ser.ObjectToBuffer("kdw");
 
             var buf = ser.ObjectToBuffer(update);

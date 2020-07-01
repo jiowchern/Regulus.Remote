@@ -170,7 +170,7 @@ namespace Regulus.Remote
             return new Regulus.Utility.Comparison<byte>(code1 , code2 , (arg1, arg2) => arg1 == arg2).Same;
         }
 
-        private void _ErrorReturnValue(Guid return_target, string method, string message)
+        private void _ErrorReturnValue(long return_target, string method, string message)
 		{
 			_ReturnValueQueue.PopReturnValue(return_target);
 
@@ -180,7 +180,7 @@ namespace Regulus.Remote
 			}
 		}
 
-		private void _SetReturnValue(Guid returnTarget, byte[] returnValue)
+		private void _SetReturnValue(long returnTarget, byte[] returnValue)
 		{
 			var value = _ReturnValueQueue.PopReturnValue(returnTarget);
 			if(value != null)
@@ -190,7 +190,7 @@ namespace Regulus.Remote
 			}
 		}
 
-		private void _SetReturnValue(Guid return_id, IGhost ghost)
+		private void _SetReturnValue(long return_id, IGhost ghost)
 		{
 			var value = _ReturnValueQueue.PopReturnValue(return_id);
 			if(value != null)
@@ -199,7 +199,7 @@ namespace Regulus.Remote
 			}
 		}
 
-		private void _LoadSoulCompile(int type_id, Guid entity_id, Guid return_id)
+		private void _LoadSoulCompile(int type_id, long entity_id, long return_id)
 		{
 		    var map = _Protocol.GetMemberMap();
 
@@ -213,7 +213,7 @@ namespace Regulus.Remote
 			}
 		}
 
-		private void _LoadSoul(int type_id, Guid id, bool return_type)
+		private void _LoadSoul(int type_id, long id, bool return_type)
 		{
 		    var map = _Protocol.GetMemberMap();		                
             var type = map.GetInterface(type_id);
@@ -235,7 +235,7 @@ namespace Regulus.Remote
 			_AutoRelease.Register(ghost);
 		}
 
-		private void _UnloadSoul(int type_id, Guid id)
+		private void _UnloadSoul(int type_id, long id)
 		{
 		    var map = _Protocol.GetMemberMap();
 		    var type = map.GetInterface(type_id);
@@ -272,7 +272,7 @@ namespace Regulus.Remote
 			return _QueryProvider(typeof(T)) as INotifier<T>;
 		}
 
-		private void _UpdateSetProperty(Guid entity_id, int property, byte[] buffer)
+		private void _UpdateSetProperty(long entity_id, int property, byte[] buffer)
 		{
 			var ghost = _FindGhost(entity_id);
 			if (ghost == null)
@@ -301,7 +301,7 @@ namespace Regulus.Remote
 
 			
 		}
-		private void _UpdateProperty(Guid entity_id, int property, byte[] buffer)
+		private void _UpdateProperty(long entity_id, int property, byte[] buffer)
 		{
             
 			var ghost = _FindGhost(entity_id);
@@ -321,7 +321,7 @@ namespace Regulus.Remote
             }
 		}
 
-		private void _InvokeEvent(Guid ghost_id, int event_id, byte[][] event_params)
+		private void _InvokeEvent(long ghost_id, int event_id, byte[][] event_params)
 		{
 			var ghost = _FindGhost(ghost_id);
 			if(ghost != null)
@@ -360,7 +360,7 @@ namespace Regulus.Remote
             }
 		}
 
-		private IGhost _FindGhost(Guid ghost_id)
+		private IGhost _FindGhost(long ghost_id)
 		{
 			lock(_Providers)
 			{
@@ -410,13 +410,13 @@ namespace Regulus.Remote
 			}
 		}
 
-		private IGhost _BuildGhost(Type ghost_base_type,  Guid id, bool return_type)
+		private IGhost _BuildGhost(Type ghost_base_type, long id, bool return_type)
 		{
 			
 
 			var ghostType = _QueryGhostType(ghost_base_type);
 
-		    var constructor = ghostType.GetConstructor(new[] {typeof (Guid),typeof (bool)});
+		    var constructor = ghostType.GetConstructor(new[] {typeof (long),typeof (bool)});
 		    if (constructor == null)
 		    {
 		        List<string> constructorInfos = new List<string>();

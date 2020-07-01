@@ -15,8 +15,8 @@ namespace Regulus.Remote.Standalone
 
 		public event Action PingEvent;
 
-		public event Action<Guid> ReleaseEvent;
-		public event Action<Guid,int> SetPropertyDoneEvent;
+		public event Action<long> ReleaseEvent;
+		public event Action<long, int> SetPropertyDoneEvent;
 
 
 

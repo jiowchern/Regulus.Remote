@@ -34,7 +34,7 @@ namespace Regulus.Application.Client.Test
             var ip = new InterfaceProvider(types);
 
             TestAgent agent = new TestAgent();
-            var cType = new CType(System.Guid.NewGuid());
+            var cType = new CType(1);
 
             object outSupplyInstance = null;
 
@@ -62,7 +62,7 @@ namespace Regulus.Application.Client.Test
 
 
             TestAgent agent = new TestAgent();
-            var cType = new CType(System.Guid.NewGuid());
+            var cType = new CType(1);
 
             object outInstance = null;
             System.Type outType = null;
@@ -87,7 +87,7 @@ namespace Regulus.Application.Client.Test
         [Test]
         public void MethodStringInvokerTest1()
         {
-            var test = new CType(System.Guid.NewGuid());
+            var test = new CType(1);
             var method = typeof(IType).GetMethod(nameof(IType.TestMethod1));
             var invoker = new Remote.Client.MethodStringInvoker(test, method);
             invoker.Invoke("1", "2", "3");
@@ -100,7 +100,7 @@ namespace Regulus.Application.Client.Test
         [Test]
         public void AgentCommandTest1()
         {
-            var test = new CType(System.Guid.NewGuid());
+            var test = new CType(1);
             var method = typeof(IType).GetMethod(nameof(IType.TestMethod1));
             var invoker = new Remote.Client.MethodStringInvoker(test, method);
             var agentCommand = new Regulus.Remote.Client.AgentCommand(new Remote.Client.AgentCommandVersionProvider(), typeof(IType), invoker);
@@ -122,7 +122,7 @@ namespace Regulus.Application.Client.Test
             };
             var agentCommandRegister = new Remote.Client.AgentCommandRegister(command);
 
-            var test = new CType(System.Guid.NewGuid());
+            var test = new CType(1);
 
             agentCommandRegister.Regist(typeof(IType), test);
             agentCommandRegister.Unregist(test);

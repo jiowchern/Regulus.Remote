@@ -5,7 +5,7 @@ namespace Regulus.Remote
 {
 	public class AutoRelease
 	{
-		private readonly Dictionary<Guid, WeakReference<IGhost>> _Exists;
+		private readonly Dictionary<long, WeakReference<IGhost>> _Exists;
 
 		private readonly IGhostRequest _Requester;
 	    private readonly ISerializer _Serializer;
@@ -14,7 +14,7 @@ namespace Regulus.Remote
 		{
 			this._Requester = _Requester;
 	        _Serializer = serializer;
-	        _Exists = new Dictionary<Guid, WeakReference<IGhost>>();
+	        _Exists = new Dictionary<long, WeakReference<IGhost>>();
 		}
 
 
@@ -31,7 +31,7 @@ namespace Regulus.Remote
 
         public void Update()
 		{
-			var ids = new List<Guid>();
+			var ids = new List<long>();
 
 			foreach(var e in _Exists)
 			{

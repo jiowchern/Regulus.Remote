@@ -2,16 +2,16 @@
 
 namespace Regulus.Remote
 {
-    public delegate void InvokeEventCallabck(Guid entity_id , int event_id , object[] args);
+    public delegate void InvokeEventCallabck(long entity_id , int event_id , object[] args);
     public class GenericEventClosure
 	{
-		private readonly Guid EntityId;
+		private readonly long EntityId;
 
 		private readonly int EventId;
 
 		private readonly InvokeEventCallabck InvokeEvent;
 
-		public GenericEventClosure(Guid entity_id, int event_id, InvokeEventCallabck invokeevent)
+		public GenericEventClosure(long entity_id, int event_id, InvokeEventCallabck invokeevent)
 		{
 			EntityId = entity_id;
 			EventId = event_id;
@@ -36,13 +36,13 @@ namespace Regulus.Remote
 
     public class GenericEventClosure<T1>
 	{
-		private readonly Guid EntityId;
+		private readonly long EntityId;
 
 		private readonly int EventId;
 
 		private readonly InvokeEventCallabck InvokeEvent;
 
-		public GenericEventClosure(Guid entity_id, int event_id, InvokeEventCallabck invokeevent)
+		public GenericEventClosure(long entity_id, int event_id, InvokeEventCallabck invokeevent)
         {
 			EntityId = entity_id;
 			EventId = event_id;
@@ -68,13 +68,13 @@ namespace Regulus.Remote
 
     public class GenericEventClosure<T1, T2>
 	{
-		private readonly Guid EntityId;
+		private readonly long EntityId;
 
 		private readonly int _EventId;
 
 		private readonly InvokeEventCallabck InvokeEvent;
 
-        public GenericEventClosure(Guid entity_id, int event_id, InvokeEventCallabck invokeevent)
+        public GenericEventClosure(long entity_id, int event_id, InvokeEventCallabck invokeevent)
         {
 			EntityId = entity_id;
 			_EventId = event_id;
@@ -101,13 +101,13 @@ namespace Regulus.Remote
 
     public class GenericEventClosure<T1, T2, T3>
 	{
-		private readonly Guid EntityId;
+		private readonly long EntityId;
 
 		private readonly int EventId;
 
 		private readonly InvokeEventCallabck InvokeEvent;
 
-        public GenericEventClosure(Guid entity_id, int event_id, InvokeEventCallabck invokeevent)
+        public GenericEventClosure(long entity_id, int event_id, InvokeEventCallabck invokeevent)
         {
 			EntityId = entity_id;
 			EventId = event_id;
@@ -135,13 +135,13 @@ namespace Regulus.Remote
 
     public class GenericEventClosure<T1, T2, T3, T4>
 	{
-		private readonly Guid EntityId;
+		private readonly long EntityId;
 
 		private readonly int EventId;
 
 		private readonly InvokeEventCallabck InvokeEvent;
 
-		public GenericEventClosure(Guid entity_id, int event_id, InvokeEventCallabck invokeevent)
+		public GenericEventClosure(long entity_id, int event_id, InvokeEventCallabck invokeevent)
 		{
 			EntityId = entity_id;
 			EventId = event_id;
@@ -172,13 +172,13 @@ namespace Regulus.Remote
 	{
 		private delegate void Action5(T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5);
 
-		private readonly Guid EntityId;
+		private readonly long EntityId;
 
 		private readonly int EventId;
 
 		private readonly InvokeEventCallabck InvokeEvent;
 
-        public GenericEventClosure(Guid entity_id, int event_id, InvokeEventCallabck invokeevent)
+        public GenericEventClosure(long entity_id, int event_id, InvokeEventCallabck invokeevent)
         {
 			EntityId = entity_id;
 			EventId = event_id;

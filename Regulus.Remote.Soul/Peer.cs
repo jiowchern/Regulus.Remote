@@ -20,11 +20,11 @@ namespace Regulus.Remote.Soul
 	   
 		private class Request
 		{
-			public Guid EntityId { get; set; }
+			public long EntityId { get; set; }
 
 			public int MethodId { get; set; }
 
-			public Guid ReturnId { get; set; }
+			public long ReturnId { get; set; }
 
 			public byte[][] MethodParams { get; set; }
 		}		
@@ -265,7 +265,7 @@ namespace Regulus.Remote.Soul
 			return null;
 		}
 
-		private Request _ToRequest(Guid entity_id, int method_id, Guid return_id, byte[][] method_params)
+		private Request _ToRequest(long entity_id, int method_id, long return_id, byte[][] method_params)
 		{
 			return new Request
 			{

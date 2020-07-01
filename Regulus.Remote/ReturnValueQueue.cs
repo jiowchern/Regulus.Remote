@@ -5,26 +5,34 @@ namespace Regulus.Remote
 {
 	public class ReturnValueQueue
 	{
-		private readonly Dictionary<Guid, IValue> _ReturnValues = new Dictionary<Guid, IValue>();
+        private readonly IdLandlord _IdLandlord;
+        private readonly Dictionary<long, IValue> _ReturnValues ;
 
-		internal IValue PopReturnValue(Guid returnTarget)
+		public ReturnValueQueue()
+        {
+			_IdLandlord = new IdLandlord();
+			_ReturnValues = new Dictionary<long, IValue>();
+		}
+
+		internal IValue PopReturnValue(long returnTarget)
 		{
 			return _PopReturnValue(returnTarget);
 		}
 
-		public Guid PushReturnValue(IValue value)
+		public long PushReturnValue(IValue value)
 		{
-			var id = Guid.NewGuid();
+			var id = _IdLandlord.Rent();
 			_ReturnValues.Add(id, value);
 			return id;
 		}
 
-		private IValue _PopReturnValue(Guid returnTarget)
+		private IValue _PopReturnValue(long return_target)
 		{
 			IValue val = null;
-			if(_ReturnValues.TryGetValue(returnTarget, out val))
+			if(_ReturnValues.TryGetValue(return_target, out val))
 			{
-				_ReturnValues.Remove(returnTarget);
+				_ReturnValues.Remove(return_target);
+				_IdLandlord.Return(return_target);
 			}
 
 			return val;

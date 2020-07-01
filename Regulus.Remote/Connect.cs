@@ -6,16 +6,16 @@ namespace Regulus.Remote
 	{
 		Value<bool> Connect(System.Net.IPEndPoint ip);
 	}
-
+	
 	public class ConnectGhost : IGhost, IConnect
 	{
 		public event Action<System.Net.IPEndPoint, Value<bool>> ConnectedEvent;
 
-		public Guid Id { get; private set; }
+		public long Id { get; private set; }
 
 		public ConnectGhost()
-		{
-			Id = Guid.NewGuid();
+		{			
+			Id = LongProvider.ConnectId;
 		}
 
 		Value<bool> IConnect.Connect(System.Net.IPEndPoint  ip)
@@ -37,7 +37,7 @@ namespace Regulus.Remote
             remove { this._CallMethodEvent -= value; }
         }
 
-        Guid IGhost.GetID()
+		long IGhost.GetID()
 		{
 			return Id;
 		}

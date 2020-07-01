@@ -13,11 +13,11 @@ namespace Regulus.Remote
 	{
 		private readonly AgentCore _Agent;
 
-		public Guid Id { get; private set; }
+		public long Id { get; private set; }
 
 		public OnlineGhost()
 		{
-			Id = Guid.NewGuid();
+			Id = LongProvider.OnlineId;
 		}
 
 		public OnlineGhost(AgentCore agent) : this()
@@ -25,9 +25,9 @@ namespace Regulus.Remote
 			_Agent = agent;
 		}
 
-		
 
-		Guid IGhost.GetID()
+
+		long IGhost.GetID()
 		{
 			return Id;
 		}

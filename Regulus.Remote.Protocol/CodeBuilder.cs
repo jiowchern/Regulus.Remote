@@ -285,7 +285,7 @@ namespace Regulus.Remote.Protocol
                 _Type = typeof({type.FullName});                   
             
             }}
-            Delegate Regulus.Remote.IEventProxyCreator.Create(Guid soul_id,int event_id, Regulus.Remote.InvokeEventCallabck invoke_Event)
+            Delegate Regulus.Remote.IEventProxyCreator.Create(long soul_id,int event_id, Regulus.Remote.InvokeEventCallabck invoke_Event)
             {{                
                 var closure = new Regulus.Remote.GenericEventClosure{_GetTypes(argTypes)}(soul_id , event_id , invoke_Event);                
                 return new Action{_GetTypes(argTypes)}(closure.Run);
@@ -333,18 +333,18 @@ $@"
         {{
             readonly bool _HaveReturn ;
             
-            readonly Guid {CodeBuilder._GhostIdName};
+            readonly long {CodeBuilder._GhostIdName};
             
             
             
-            public C{name}(Guid id, bool have_return )
+            public C{name}(long id, bool have_return )
             {{
                 _HaveReturn = have_return ;
                 {CodeBuilder._GhostIdName} = id;            
             }}
             
 
-            Guid Regulus.Remote.IGhost.GetID()
+            long Regulus.Remote.IGhost.GetID()
             {{
                 return {CodeBuilder._GhostIdName};
             }}

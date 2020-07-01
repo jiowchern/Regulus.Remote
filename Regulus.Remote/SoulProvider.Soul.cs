@@ -9,7 +9,7 @@ namespace Regulus.Remote
         public partial class Soul
 		{
 
-			public Guid ID { get; set; }
+			public long ID { get; set; }
 
 			public object ObjectInstance { get; set; }
 

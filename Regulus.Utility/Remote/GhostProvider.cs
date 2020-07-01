@@ -64,7 +64,7 @@ namespace Regulus.Remote
 			get { return _RemoveNoRefenceReturns(); }
 		}
 
-		IGhost IProvider.Ready(Guid id)
+		IGhost IProvider.Ready(long id)
 		{
 			var entity = (from e in _Waits where (e as IGhost).GetID() == id select e).FirstOrDefault();
 			_Waits.Remove(entity);
@@ -81,7 +81,7 @@ namespace Regulus.Remote
 			_Waits.Add((T)entity );
 		}
 
-		void IProvider.Remove(Guid id)
+		void IProvider.Remove(long id)
 		{
 			_RemoveNoRefenceReturns();
 
@@ -141,7 +141,7 @@ namespace Regulus.Remote
 			return ghost;
 		}
 
-		private void _RemoveReturns(Guid id)
+		private void _RemoveReturns(long id)
 		{
 			var entity = (from weakRef in _Returns
 			              let e = weakRef.Target as IGhost
@@ -154,7 +154,7 @@ namespace Regulus.Remote
 			}
 		}
 
-		private void _RemoveWaits(Guid id)
+		private void _RemoveWaits(long id)
 		{
 			var waitentity = (from e in _Waits where (e as IGhost).GetID() == id select e).FirstOrDefault();
 			if(waitentity != null)
@@ -163,7 +163,7 @@ namespace Regulus.Remote
 			}
 		}
 
-		private void _RemoveEntitys(Guid id)
+		private void _RemoveEntitys(long id)
 		{
 			lock(_Entitys)
 			{

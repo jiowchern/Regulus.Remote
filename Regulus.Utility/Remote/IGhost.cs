@@ -7,9 +7,9 @@ namespace Regulus.Remote
     
     public interface IGhost
 	{
-		
 
-		Guid GetID();
+
+		long GetID();
 
 	    object GetInstance();
 

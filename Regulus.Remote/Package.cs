@@ -8,9 +8,7 @@ namespace Regulus.Remote
 {
 
 
-
-
-	[Serializable]	
+    [Serializable]	
 	public class RequestPackage
 	{
 	
@@ -55,7 +53,7 @@ namespace Regulus.Remote
 		{
 			Value = new byte[0];
 		}
-		public Guid EntityId;
+		public long EntityId;
 		public int Property;
 		public byte[] Value;
 	}
@@ -68,7 +66,7 @@ namespace Regulus.Remote
 		}
 
 
-		public Guid EntityId;
+		public long EntityId;
 
 		public int Property;
 
@@ -81,7 +79,7 @@ namespace Regulus.Remote
 		public PackageSetPropertyDone()
 		{			
 		}
-		public Guid EntityId;
+		public long EntityId;
 		public int Property;		
 	}
 
@@ -94,7 +92,7 @@ namespace Regulus.Remote
 			
 		}
 	
-		public Guid EntityId;
+		public long EntityId;
 
 	
 		public int Event;
@@ -112,7 +110,7 @@ namespace Regulus.Remote
 			Message = String.Empty;
 		}
 	
-		public Guid ReturnTarget;
+		public long ReturnTarget;
 	
 		public string Method;
 	
@@ -127,7 +125,7 @@ namespace Regulus.Remote
 			ReturnValue = new byte[0];
 		}
 	
-		public Guid ReturnTarget    ;
+		public long ReturnTarget    ;
 	
 		public byte[] ReturnValue   ;
 	}
@@ -142,9 +140,9 @@ namespace Regulus.Remote
 	
 		public int TypeId;
 	
-		public Guid EntityId;
+		public long EntityId;
 	
-		public Guid ReturnId;
+		public long ReturnId;
 
 	}
 	[Serializable]
@@ -157,7 +155,7 @@ namespace Regulus.Remote
 	
 		public int TypeId;
 	
-		public Guid EntityId;
+		public long EntityId;
 	
 		public bool ReturnType;
 	}
@@ -171,7 +169,7 @@ namespace Regulus.Remote
 	
 		public int TypeId;
 		
-		public Guid EntityId;
+		public long EntityId;
 	}
 
 
@@ -186,13 +184,13 @@ namespace Regulus.Remote
 		}
 	
 
-		public Guid EntityId;
+		public long EntityId;
 	
 
 		public int MethodId;
 	
 
-		public Guid ReturnId;
+		public long ReturnId;
 	
 
 		public byte[][] MethodParams;
@@ -202,7 +200,7 @@ namespace Regulus.Remote
 	public class PackageRelease : TPackageData<PackageRelease>
 	{
 	
-		 public Guid EntityId;
+		 public long EntityId;
 	}
 
 

@@ -7,16 +7,16 @@ namespace RemotingTest
 {
 	internal class Ghost : IGhost
 	{
-		private readonly Guid _Id;
+		private readonly long _Id;
 
 		public Ghost()
 		{
-			_Id = Guid.NewGuid();
+			_Id = 1;
 		}
 
 	    
 
-	    Guid IGhost.GetID()
+	    long IGhost.GetID()
 		{
 			return _Id;
 		}

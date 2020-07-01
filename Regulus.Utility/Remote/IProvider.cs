@@ -8,9 +8,9 @@ namespace Regulus.Remote
 
 		void Add(IGhost entiry);
 
-		void Remove(Guid id);
+		void Remove(long id);
 
-		IGhost Ready(Guid id);
+		IGhost Ready(long id);
 
 		void ClearGhosts();
 	}

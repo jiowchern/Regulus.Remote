@@ -597,7 +597,24 @@ namespace Regulus.Serialization.Tests
             Assert.AreEqual("123", intZero);
         }
 
-        
+        [NUnit.Framework.Test()]
+        public void TestSerializerResponsePackage()
+        {
+            var types = new[] { typeof(Regulus.Remote.ResponsePackage) , typeof(Remote.ServerToClientOpCode) , typeof(byte), typeof(byte[]) };
+
+            var ser = new Serializer(new DescriberBuilder(types).Describers);
+            var pkg = new Regulus.Remote.ResponsePackage();
+            pkg.Code = Remote.ServerToClientOpCode.SetProperty;
+            pkg.Data = new byte[1] { 255 };
+            var buffer = ser.ObjectToBuffer(pkg);
+
+            var dPkg = ser.BufferToObject(buffer) as Remote.ResponsePackage;
+
+
+            Assert.AreEqual(Remote.ServerToClientOpCode.SetProperty, dPkg.Code);
+        }
+
+
     }
 
 }

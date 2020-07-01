@@ -10,7 +10,7 @@ namespace Regulus.Remote
 {
     public partial class SoulProvider : IDisposable, IBinder
 	{
-
+		private readonly IdLandlord _IdLandlord;
 		private readonly Queue<byte[]> _EventFilter = new Queue<byte[]>();
 
 		private readonly IRequestQueue _Peer;
@@ -23,14 +23,13 @@ namespace Regulus.Remote
 
 		private readonly Poller<Soul> _Souls = new Poller<Soul>();
 
-		private readonly Dictionary<Guid, IValue> _WaitValues = new Dictionary<Guid, IValue>();
+		private readonly Dictionary<long, IValue> _WaitValues = new Dictionary<long, IValue>();
 
-		private DateTime _UpdatePropertyInterval;
 		private readonly ISerializer _Serializer;
 
 		public SoulProvider(IRequestQueue peer, IResponseQueue queue , IProtocol protocol)
 		{
-
+			_IdLandlord = new IdLandlord();
 			_Queue = queue;
 		    _Protocol = protocol;
 
@@ -53,7 +52,7 @@ namespace Regulus.Remote
 				throw new ArgumentNullException("soul");
 			}
 
-			_Bind(soul, true, Guid.Empty);
+			_Bind(soul, true,0);
 		}
 
 		void IBinder.Bind<TSoul>(TSoul soul)
@@ -63,7 +62,7 @@ namespace Regulus.Remote
 				throw new ArgumentNullException("soul");
 			}
 
-			_Bind(soul, false, Guid.Empty);
+			_Bind(soul, false, 0);
 		}
 
 		void IBinder.Unbind<TSoul>(TSoul soul)
@@ -95,7 +94,7 @@ namespace Regulus.Remote
 			}
 		}
 		
-		private void UpdateNormalProperty(Guid entity_id, int property, object val)
+		private void UpdateNormalProperty(long entity_id, int property, object val)
 		{
 			
             
@@ -110,7 +109,7 @@ namespace Regulus.Remote
 			_Queue.Push(ServerToClientOpCode.UpdateProperty, package.ToBuffer(_Serializer));
 		}
 
-		private void _InvokeEvent(Guid entity_id, int event_id, object[] args)
+		private void _InvokeEvent(long entity_id, int event_id, object[] args)
 		{
 
 		    
@@ -130,7 +129,7 @@ namespace Regulus.Remote
 			}
 		}
 
-		private void _ReturnValue(Guid returnId, IValue returnValue)
+		private void _ReturnValue(long returnId, IValue returnValue)
 		{
 			IValue outValue = null;
 			if(_WaitValues.TryGetValue(returnId, out outValue))
@@ -151,11 +150,11 @@ namespace Regulus.Remote
 						_ReturnSoulValue(returnId, returnValue);
 					}
 
-					_WaitValues.Remove(returnId);
+					_WaitValues.Remove(returnId);					
 				});
 		}
 
-		private void _ReturnSoulValue(Guid return_id, IValue returnValue)
+		private void _ReturnSoulValue(long return_id, IValue returnValue)
 		{
 			var soul = returnValue.GetObject();
 			var type = returnValue.GetObjectType();
@@ -195,13 +194,8 @@ namespace Regulus.Remote
 			}
 		}
 
-		private void _ReturnDataValue(Guid returnId, IValue returnValue)
+		private void _ReturnDataValue(long returnId, IValue returnValue)
 		{
-			/*var argmants = new Dictionary<byte, byte[]>();
-			argmants.Add(0, ReturnId.ToByteArray());
-			var value = ReturnValue.GetObject();
-			argmants.Add(1, TypeHelper.Serialize(value));*/
-
 			var value = returnValue.GetObject();
 			var package = new PackageReturnValue();
 			package.ReturnTarget = returnId;
@@ -209,13 +203,8 @@ namespace Regulus.Remote
 			_Queue.Push(ServerToClientOpCode.ReturnValue, package.ToBuffer(_Serializer));
 		}
 
-		private void _LoadSoulCompile(int type_id, Guid id, Guid return_id)
+		private void _LoadSoulCompile(int type_id, long id, long return_id)
 		{
-			/*var argmants = new Dictionary<byte, byte[]>();
-			argmants.Add(0, TypeHelper.Serialize(type_id));
-			argmants.Add(1, id.ToByteArray());
-			argmants.Add(2, ReturnId.ToByteArray());*/
-
 			var package = new PackageLoadSoulCompile();
 			package.EntityId = id;
 			package.ReturnId = return_id;
@@ -223,7 +212,7 @@ namespace Regulus.Remote
 
 			_Queue.Push(ServerToClientOpCode.LoadSoulCompile, package.ToBuffer(_Serializer));
 		}
-		private void _LoadProperty(Guid id, int property,object val)
+		private void _LoadProperty(long id, int property,object val)
 		{
 			var package = new PackageSetProperty();
 			package.EntityId = id;
@@ -231,7 +220,7 @@ namespace Regulus.Remote
 			package.Value = _Serializer.Serialize(val);
 			_Queue.Push(ServerToClientOpCode.SetProperty, package.ToBuffer(_Serializer));
 		}
-		private void _LoadSoul(int type_id, Guid id, bool return_type)
+		private void _LoadSoul(int type_id, long id, bool return_type)
 		{
 			var package = new PackageLoadSoul();
 			package.TypeId = type_id;
@@ -242,7 +231,7 @@ namespace Regulus.Remote
 			
 		}
 
-		private void _UnloadSoul(int type_id, Guid id)
+		private void _UnloadSoul(int type_id, long id)
 		{			
 
 			var package = new PackageUnloadSoul();
@@ -251,7 +240,7 @@ namespace Regulus.Remote
 			_Queue.Push(ServerToClientOpCode.UnloadSoul, package.ToBuffer(_Serializer));
 		}
 
-        public void SetPropertyDone(Guid entityId, int property)
+        public void SetPropertyDone(long entityId, int property)
         {
 			var souls = from soul in _Souls.UpdateSet() where soul.ID == entityId select soul;
 			var s = souls.FirstOrDefault();
@@ -265,7 +254,7 @@ namespace Regulus.Remote
 				
 		}
 
-        private void _InvokeMethod(Guid entity_id, int method_id, Guid returnId, byte[][] args)
+        private void _InvokeMethod(long entity_id, int method_id, long returnId, byte[][] args)
 		{
 			var soulInfo = (from soul in _Souls.UpdateSet()
 							where soul.ID == entity_id
@@ -309,7 +298,7 @@ namespace Regulus.Remote
 			}
 		}
 
-		private void _ErrorDeserialize(string method_name, Guid return_id, string message)
+		private void _ErrorDeserialize(string method_name, long return_id, string message)
 		{
 			
 
@@ -322,7 +311,7 @@ namespace Regulus.Remote
 			_Queue.Push(ServerToClientOpCode.ErrorMethod, package.ToBuffer(_Serializer));
 		}
 
-		private void _Bind<TSoul>(TSoul soul, bool return_type, Guid return_id)
+		private void _Bind<TSoul>(TSoul soul, bool return_type, long return_id)
 		{
 			
 
@@ -347,7 +336,7 @@ namespace Regulus.Remote
 		    var interfaceId = map.GetInterface(soul_type);
             var new_soul = new Soul
 			{
-				ID = Guid.NewGuid(), 
+				ID = _IdLandlord.Rent(), 
                 InterfaceId = interfaceId,
                 ObjectType = soul_type, 
 				ObjectInstance = soul, 
@@ -415,7 +404,6 @@ namespace Regulus.Remote
 							where object.ReferenceEquals(soul_info.ObjectInstance, soul) && soul_info.ObjectType == type
 							select soul_info).SingleOrDefault();
 
-			// var soulInfo = _Souls.CreateInstnace((soul_info) => { return Object.ReferenceEquals(soul_info.ObjectInstance, soul) && soul_info.ObjectType == typeof(TSoul); });
 			if(soulInfo != null)
 			{
 				foreach(var eventHandler in soulInfo.EventHandlers)
@@ -433,6 +421,7 @@ namespace Regulus.Remote
 
 				_UnloadSoul(soulInfo.InterfaceId, soulInfo.ID);
 				_Souls.Remove(s => { return s == soulInfo; });
+				_IdLandlord.Return(soulInfo.ID);
 			}
 		}
 
@@ -440,7 +429,7 @@ namespace Regulus.Remote
 
 		
 
-		private Delegate _BuildDelegate(EventInfo info, Guid entity_id, InvokeEventCallabck invoke_Event)
+		private Delegate _BuildDelegate(EventInfo info, long entity_id, InvokeEventCallabck invoke_Event)
 		{
 
 			var eventCreator = _EventProvider.Find(info);
@@ -455,17 +444,7 @@ namespace Regulus.Remote
 		public void Update()
 		{
 			var souls = _Souls.UpdateSet();
-			/*var intervalSpan = DateTime.Now - _UpdatePropertyInterval;
-			var intervalSeconds = intervalSpan.TotalSeconds;
-			if(intervalSeconds > 0.5)
-			{
-				foreach(var soul in souls)
-				{
-					soul.ProcessDiffentValues(UpdateNormalProperty);
-				}
-
-				_UpdatePropertyInterval = DateTime.Now;
-			}*/
+			
 
 			foreach (var soul in souls)
 			{
@@ -489,7 +468,7 @@ namespace Regulus.Remote
 			}
 		}
 
-		public void Unbind(Guid entityId)
+		public void Unbind(long entityId)
 		{
 			var soul = (from s in _Souls.UpdateSet() where s.ID == entityId select s).FirstOrDefault();
 			if(soul != null)
