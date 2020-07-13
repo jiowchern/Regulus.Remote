@@ -109,11 +109,7 @@ namespace Regulus.Remote
 				var data = args.ToPackageData<PackageSetProperty>(_Serializer);
 				_UpdateSetProperty(data.EntityId, data.Property, data.Value);
 			}
-			else if(id == ServerToClientOpCode.UpdateProperty)
-			{
-                var data = args.ToPackageData<PackageUpdateProperty>(_Serializer);
-                _UpdateProperty(data.EntityId, data.Property, data.Args);
-            }
+			
 			else if(id == ServerToClientOpCode.InvokeEvent)
 			{
                 var data = args.ToPackageData<PackageInvokeEvent>(_Serializer);

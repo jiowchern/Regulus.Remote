@@ -57,21 +57,7 @@ namespace Regulus.Remote
 		public int Property;
 		public byte[] Value;
 	}
-	[Serializable]
-	public class PackageUpdateProperty : TPackageData<PackageUpdateProperty>
-	{
-		public PackageUpdateProperty()
-		{			
-			Args = new byte[0];
-		}
-
-
-		public long EntityId;
-
-		public int Property;
-
-		public byte[] Args;
-	}
+	
 
 	[Serializable]
 	public class PackageSetPropertyDone : TPackageData<PackageSetPropertyDone>

@@ -20,8 +20,7 @@
 		UnloadSoul, 
 
 		ReturnValue, 
-
-		UpdateProperty, 
+		
 
 		LoadSoulCompile, 
 

@@ -6,25 +6,41 @@ namespace Regulus.Remote
 {
     public partial class SoulProvider
     {
-        public partial class Soul
+        public  class Soul
 		{
 
-			public long ID { get; set; }
+			public readonly long Id;
 
-			public object ObjectInstance { get; set; }
+			public readonly object ObjectInstance;
 
-			public Type ObjectType { get; set; }
+			public readonly Type ObjectType;
 
-			public MethodInfo[] MethodInfos { get; set; }
+			public readonly MethodInfo[] MethodInfos;
 
-			public List<EventHandler> EventHandlers { get; set; }
+			public readonly List<EventHandler> EventHandlers;
+
+			public readonly List<PropertyUpdater> PropertyUpdaters;
+			public readonly int InterfaceId;
+
+		    public Soul(long id,int interface_id,Type object_type,object object_instance , MethodInfo[] methodInfos)
+			{
+				MethodInfos = methodInfos;
+				ObjectInstance = object_instance;
+				ObjectType = object_type;
+				InterfaceId = interface_id;
+				Id = id;
+				PropertyUpdaters = new List<PropertyUpdater>();
+				EventHandlers = new List<EventHandler>();
+			}
+
+			
 			
 
-		    public int InterfaceId { get; set; }
-
-		    public Soul()
+			public class EventHandler
 			{
-				PropertyUpdaters = new List<PropertyUpdater>();
+				public Delegate DelegateObject;
+
+				public EventInfo EventInfo;
 			}
 		}
 	}
