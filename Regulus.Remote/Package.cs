@@ -200,17 +200,17 @@ namespace Regulus.Remote
 
 	public class PackageAddEvent : TPackageData<PackageAddEvent>
     {
-		public int Entity;
+		public long Entity;
 		public int Event;
-		public int Handler;
+		public long Handler;
 
 	}
 
 	public class PackageRemoveEvent : TPackageData<PackageRemoveEvent>
     {
-		public int Entity;
+		public long Entity;
 		public int Event;
-		public int Handler;
+		public long Handler;
 	}
 
 }

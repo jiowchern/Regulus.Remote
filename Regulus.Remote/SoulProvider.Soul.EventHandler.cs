@@ -15,10 +15,10 @@ namespace Regulus.Remote
 
 				readonly object _Instance;
 
-				public readonly int HandlerId;
+				public readonly long HandlerId;
                 
 
-                public EventHandler(object instance,Delegate delegate_object , EventInfo event_info ,int handler_id)
+                public EventHandler(object instance,Delegate delegate_object , EventInfo event_info ,long handler_id)
                 {
 					HandlerId = handler_id;
 					_Instance = instance;

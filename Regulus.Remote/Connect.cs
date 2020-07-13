@@ -4,7 +4,7 @@ namespace Regulus.Remote
 {
 	public interface IConnect
 	{
-		Value<bool> Connect(System.Net.IPEndPoint ip);
+        Value<bool> Connect(System.Net.IPEndPoint ip);
 	}
 	
 	public class ConnectGhost : IGhost, IConnect
@@ -18,7 +18,7 @@ namespace Regulus.Remote
 			Id = LongProvider.ConnectId;
 		}
 
-		Value<bool> IConnect.Connect(System.Net.IPEndPoint  ip)
+        Value<bool> IConnect.Connect(System.Net.IPEndPoint  ip)
 		{
 			if(ConnectedEvent == null)
 			{
@@ -37,7 +37,33 @@ namespace Regulus.Remote
             remove { this._CallMethodEvent -= value; }
         }
 
-		long IGhost.GetID()
+        event EventNotifyCallback IGhost.AddEventEvent
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event EventNotifyCallback IGhost.RemoveEventEvent
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        long IGhost.GetID()
 		{
 			return Id;
 		}

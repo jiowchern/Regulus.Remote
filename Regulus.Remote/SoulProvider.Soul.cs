@@ -83,7 +83,7 @@ namespace Regulus.Remote
 				_EventHandlers.Add(handler);
             }
 
-            internal void RemoveEvent(EventInfo eventInfo, int handler_id)
+            internal void RemoveEvent(EventInfo eventInfo, long handler_id)
             {
 				var eventHandler = _EventHandlers.FirstOrDefault(eh => eh.HandlerId == handler_id && eh.EventInfo == eventInfo);
 				_EventHandlers.Remove(eventHandler);

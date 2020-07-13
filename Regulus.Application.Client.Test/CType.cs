@@ -24,6 +24,32 @@ namespace Regulus.Application.Client.Test
             }
         }
 
+        event EventNotifyCallback IGhost.AddEventEvent
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event EventNotifyCallback IGhost.RemoveEventEvent
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         long IGhost.GetID()
         {
             return Id;

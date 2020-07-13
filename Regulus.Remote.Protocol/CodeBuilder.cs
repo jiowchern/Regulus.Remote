@@ -286,9 +286,9 @@ namespace Regulus.Remote.Protocol
                 _Type = typeof({type.FullName});                   
             
             }}
-            Delegate Regulus.Remote.IEventProxyCreator.Create(long soul_id,int event_id, Regulus.Remote.InvokeEventCallabck invoke_Event)
+            Delegate Regulus.Remote.IEventProxyCreator.Create(long soul_id,int event_id,long handler_id, Regulus.Remote.InvokeEventCallabck invoke_Event)
             {{                
-                var closure = new Regulus.Remote.GenericEventClosure{_GetTypes(argTypes)}(soul_id , event_id , invoke_Event);                
+                var closure = new Regulus.Remote.GenericEventClosure{_GetTypes(argTypes)}(soul_id , event_id ,handler_id, invoke_Event);                
                 return new Action{_GetTypes(argTypes)}(closure.Run);
             }}
         
@@ -366,6 +366,22 @@ $@"
                 add {{ this._CallMethodEvent += value; }}
                 remove {{ this._CallMethodEvent -= value; }}
             }}
+
+            private event Regulus.Remote.EventNotifyCallback _AddEventEvent;
+
+            event Regulus.Remote.EventNotifyCallback Regulus.Remote.IGhost.AddEventEvent
+            {{
+                add {{ this._AddEventEvent += value; }}
+                remove {{ this._AddEventEvent -= value; }}
+            }}
+
+            private event Regulus.Remote.EventNotifyCallback _RemoveEventEvent;
+
+            event Regulus.Remote.EventNotifyCallback Regulus.Remote.IGhost.RemoveEventEvent
+            {{
+                add {{ this._RemoveEventEvent += value; }}
+                remove {{ this._RemoveEventEvent -= value; }}
+            }}
             
             {implementCode}
             
@@ -398,12 +414,27 @@ $@"
             var codes = new List<string>();
             foreach (var eventinfo in eventinfos)
             {
-                var code = $@"
+                /*var code = $@"
                 public System.Action{_GetTypes(eventinfo.EventHandlerType.GetGenericArguments())} _{eventinfo.Name};
                 event System.Action{_GetTypes(eventinfo.EventHandlerType.GetGenericArguments())} {_GetTypeName(type)}.{eventinfo.Name}
                 {{
                     add {{ _{eventinfo.Name} += value;}}
                     remove {{ _{eventinfo.Name} -= value;}}
+                }}
+                ";*/
+                
+                var code = $@"
+                public Regulus.Remote.GhostEventHandler _{eventinfo.Name} = new Regulus.Remote.GhostEventHandler();
+                event System.Action{_GetTypes(eventinfo.EventHandlerType.GetGenericArguments())} {_GetTypeName(type)}.{eventinfo.Name}
+                {{
+                    add {{ 
+                            var id = _{eventinfo.Name}.Add(value);
+                            _AddEventEvent(typeof({_GetTypeName(type)}).GetEvent(""{eventinfo.Name}""),id);
+                        }}
+                    remove {{ 
+                                var id = _{eventinfo.Name}.Remove(value);
+                                _RemoveEventEvent(typeof({_GetTypeName(type)}).GetEvent(""{eventinfo.Name}""),id);
+                            }}
                 }}
                 ";
                 codes.Add(code);

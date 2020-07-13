@@ -6,7 +6,7 @@ namespace Regulus.Remote
     {
 
         // todo 
-        Delegate Create(long soul_id,int event_id , InvokeEventCallabck invoke_Event);
+        Delegate Create(long soul_id,int event_id,long handler_id , InvokeEventCallabck invoke_Event);
         Type GetType(); 
         string GetName();
     }

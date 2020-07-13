@@ -12,21 +12,24 @@ namespace Regulus.Remote
         }
         readonly IdLandlord _IdLandlord;
         readonly List<Invoker> _Runners;
+
         public GhostEventHandler()
         {
             _IdLandlord = new IdLandlord();
             _Runners = new List<Invoker>();
         }
-        internal void Add(Delegate value)
+        public long Add(Delegate value)
         {
             var id = _IdLandlord.Rent();
             _Runners.Add(new Invoker() { Id = id, Runner = value });
+            return id;
         }
 
-        internal void Remove(Delegate value)
+        public long Remove(Delegate value)
         {
             var invoker = _Runners.Find(i => i.Runner == value);
             _Runners.Remove(invoker);
+            return invoker.Id;
         }
 
         public void Invoke(long handler_id , params object[] args)

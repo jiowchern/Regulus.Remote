@@ -10,7 +10,7 @@ namespace Regulus.Remote
 	}
 
 	public class OnlineGhost : IOnline, IGhost
-	{
+    {
 		private readonly AgentCore _Agent;
 
 		public long Id { get; private set; }
@@ -52,7 +52,33 @@ namespace Regulus.Remote
 	        remove { this._CallMethodEvent -= value; }
 	    }
 
-	    double IOnline.Ping
+        event EventNotifyCallback IGhost.AddEventEvent
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event EventNotifyCallback IGhost.RemoveEventEvent
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        double IOnline.Ping
 		{
 			get { return TimeSpan.FromTicks(_Agent.Ping).TotalSeconds; }
 		}

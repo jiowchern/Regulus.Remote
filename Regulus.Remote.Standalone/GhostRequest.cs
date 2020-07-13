@@ -17,8 +17,8 @@ namespace Regulus.Remote.Standalone
 
 		public event Action<long> ReleaseEvent;
 		public event Action<long, int> SetPropertyDoneEvent;
-		public event Action<int,int,int> AddEventEvent;
-		public event Action<int, int, int> RemoveEventEvent;
+		public event Action<long,int,long> AddEventEvent;
+		public event Action<long, int, long> RemoveEventEvent;
 
 
 

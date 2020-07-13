@@ -113,7 +113,7 @@ namespace Regulus.Remote
 			else if(id == ServerToClientOpCode.InvokeEvent)
 			{
                 var data = args.ToPackageData<PackageInvokeEvent>(_Serializer);
-                _InvokeEvent(data.EntityId, data.Event, data.EventParams);
+                _InvokeEvent(data.EntityId, data.Event,data.HandlerId, data.EventParams);
             }
 			else if(id == ServerToClientOpCode.ErrorMethod)
 			{
@@ -217,8 +217,11 @@ namespace Regulus.Remote
 			var ghost = _BuildGhost(type, id, return_type);
 
 		    ghost.CallMethodEvent += new GhostMethodHandler(ghost, _ReturnValueQueue , _Protocol , _Requester ).Run;
+			ghost.AddEventEvent += new GhostEventMoveHandler(ghost,  _Protocol, _Requester).Add;
+			ghost.RemoveEventEvent += new GhostEventMoveHandler(ghost, _Protocol, _Requester).Remove;
 
-            provider.Add(ghost);
+
+			provider.Add(ghost);
 
 			if(ghost.IsReturnType())
 			{
@@ -299,7 +302,7 @@ namespace Regulus.Remote
 		}
 		
 
-		private void _InvokeEvent(long ghost_id, int event_id, byte[][] event_params)
+		private void _InvokeEvent(long ghost_id, int event_id,long handler_id, byte[][] event_params)
 		{
 			var ghost = _FindGhost(ghost_id);
 			if(ghost != null)
@@ -314,14 +317,14 @@ namespace Regulus.Remote
                 {
                     var eventInfos = type.GetField("_" + info.Name, BindingFlags.Instance | BindingFlags.Public);
                     var fieldValue = eventInfos.GetValue(instance);
-                    if (fieldValue is Delegate)
+                    if (fieldValue is GhostEventHandler)
                     {
-                        var fieldValueDelegate = fieldValue as Delegate;
+                        var fieldValueDelegate = fieldValue as GhostEventHandler;
 
                         var pars = (from a in event_params select _Serializer.Deserialize(a)).ToArray();
                         try
                         {
-                            fieldValueDelegate.DynamicInvoke(pars);
+                            fieldValueDelegate.Invoke(handler_id,pars);
                         }
                         catch (TargetInvocationException tie)
                         {

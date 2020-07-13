@@ -284,7 +284,7 @@ namespace Regulus.Remote
 				}
 			}
 		}
-		public void RemoveEvent(int entity_id, int event_id, int handler_id)
+		public void RemoveEvent(long entity_id, int event_id, long handler_id)
 		{
 			var soul = (from s in _Souls.UpdateSet() where s.Id == entity_id select s).FirstOrDefault();
 			if (soul == null)
@@ -300,7 +300,7 @@ namespace Regulus.Remote
 			soul.RemoveEvent(eventInfo, handler_id);
 		}
 
-		public void AddEvent(int entity_id, int event_id, int handler_id)
+		public void AddEvent(long entity_id, int event_id, long handler_id)
         {
 			var soul = (from s in _Souls.UpdateSet() where s.Id == entity_id select s).FirstOrDefault();
 			if (soul == null)
@@ -312,7 +312,7 @@ namespace Regulus.Remote
 			if (eventInfo.DeclaringType != soul.ObjectType)
 				return;
 
-			var del = _BuildDelegate(eventInfo, soul.Id, _InvokeEvent);
+			var del = _BuildDelegate(eventInfo, soul.Id, handler_id, _InvokeEvent);
 
 			var handler = new SoulProvider.Soul.EventHandler(soul.ObjectInstance, del, eventInfo , handler_id);
 			soul.AddEvent(handler);
@@ -426,13 +426,13 @@ namespace Regulus.Remote
 
 		
 
-		private Delegate _BuildDelegate(EventInfo info, long entity_id, InvokeEventCallabck invoke_Event)
+		private Delegate _BuildDelegate(EventInfo info, long entity_id,long handler_id, InvokeEventCallabck invoke_Event)
 		{
 
 			var eventCreator = _EventProvider.Find(info);
 		    var map = _Protocol.GetMemberMap();
 		    var id = map.GetEvent(info);
-            return eventCreator.Create(entity_id , id, invoke_Event);
+            return eventCreator.Create(entity_id , id, handler_id, invoke_Event);
 
 
 			
