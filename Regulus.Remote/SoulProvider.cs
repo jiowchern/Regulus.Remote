@@ -93,17 +93,18 @@ namespace Regulus.Remote
 				}
 			}
 		}
-		
-		
 
-		private void _InvokeEvent(long entity_id, int event_id, object[] args)
+
+
+		private void _InvokeEvent(long entity_id, int event_id,long handler_id, object[] args)
 		{
 
 		    
             
             var package = new PackageInvokeEvent();
 			package.EntityId = entity_id;
-			package.Event = event_id;            
+			package.Event = event_id;
+			package.HandlerId = handler_id;
 			package.EventParams = (from a in args select _Serializer.Serialize(a)).ToArray();
 			_InvokeEvent(package.ToBuffer(_Serializer));
 		}
@@ -181,7 +182,9 @@ namespace Regulus.Remote
 			}
 		}
 
-		private void _ReturnDataValue(long returnId, IValue returnValue)
+        
+
+        private void _ReturnDataValue(long returnId, IValue returnValue)
 		{
 			var value = returnValue.GetObject();
 			var package = new PackageReturnValue();
@@ -233,10 +236,7 @@ namespace Regulus.Remote
 			var s = souls.FirstOrDefault();
 			if(s!= null)
             {
-				var updaters  = from updater in s.PropertyUpdaters where updater.PropertyId == property select updater;
-				var u = updaters.FirstOrDefault();
-				if (u != null)
-					u.Reset();
+				s.PropertyUpdateReset(property);				
 			}
 				
 		}
@@ -284,8 +284,42 @@ namespace Regulus.Remote
 				}
 			}
 		}
+		public void RemoveEvent(int entity_id, int event_id, int handler_id)
+		{
+			var soul = (from s in _Souls.UpdateSet() where s.Id == entity_id select s).FirstOrDefault();
+			if (soul == null)
+				return;
 
-		private void _ErrorDeserialize(string method_name, long return_id, string message)
+			var eventInfo = _Protocol.GetMemberMap().GetEvent(event_id);
+			if (eventInfo == null)
+				return;
+
+			if (eventInfo.DeclaringType != soul.ObjectType)
+				return;
+
+			soul.RemoveEvent(eventInfo, handler_id);
+		}
+
+		public void AddEvent(int entity_id, int event_id, int handler_id)
+        {
+			var soul = (from s in _Souls.UpdateSet() where s.Id == entity_id select s).FirstOrDefault();
+			if (soul == null)
+				return;
+
+			var eventInfo = _Protocol.GetMemberMap().GetEvent(event_id);
+			if (eventInfo == null)
+				return;
+			if (eventInfo.DeclaringType != soul.ObjectType)
+				return;
+
+			var del = _BuildDelegate(eventInfo, soul.Id, _InvokeEvent);
+
+			var handler = new SoulProvider.Soul.EventHandler(soul.ObjectInstance, del, eventInfo , handler_id);
+			soul.AddEvent(handler);
+
+		}
+
+        private void _ErrorDeserialize(string method_name, long return_id, string message)
 		{
 			
 
@@ -321,10 +355,10 @@ namespace Regulus.Remote
 
 		    var map = _Protocol.GetMemberMap();
 		    var interfaceId = map.GetInterface(soul_type);
-            var newSoul = new Soul(_IdLandlord.Rent(), interfaceId, soul_type, soul, soul_type.GetMethods());
+            var newSoul = new Soul(_IdLandlord.Rent(), interfaceId, soul_type, soul);
 
 			// event				
-			var eventInfos = soul_type.GetEvents();			
+			/*var eventInfos = soul_type.GetEvents();			
 
 			foreach(var eventInfo in eventInfos)
 			{				
@@ -333,13 +367,8 @@ namespace Regulus.Remote
 				{
 					var handler = _BuildDelegate(eventInfo, newSoul.Id, _InvokeEvent);
 
-					var eh = new Soul.EventHandler();
-					eh.EventInfo = eventInfo;
-					eh.DelegateObject = handler;
+					var eh = new Soul.EventHandler(soul , handler, eventInfo);					
 					newSoul.EventHandlers.Add(eh);
-					
-					var addMethod = eventInfo.GetAddMethod();
-					addMethod.Invoke(soul, new[] {handler});
 					
 				}
 				catch (Exception ex)
@@ -348,7 +377,7 @@ namespace Regulus.Remote
 					throw ex;
 				}
 				
-			}
+			}*/
 
 			// property 
 			var propertys = soul_type.GetProperties(BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public);
@@ -362,10 +391,9 @@ namespace Regulus.Remote
 				{
 					var propertyValue = property.GetValue(soul);
 					var dirtyable = propertyValue as IDirtyable;		
-					
-					
-					var pu = new PropertyUpdater(dirtyable, id);					
-					newSoul.PropertyUpdaters.Add(pu) ;					
+
+					var pu = new PropertyUpdater(dirtyable, id); 
+					newSoul.AddPropertyUpdater(pu); 					
 				}
 			}
 
@@ -383,19 +411,10 @@ namespace Regulus.Remote
 							select soul_info).SingleOrDefault();
 
 			if(soulInfo != null)
-			{
-				foreach(var eventHandler in soulInfo.EventHandlers)
-				{
-					eventHandler.EventInfo.RemoveEventHandler(soulInfo.ObjectInstance, eventHandler.DelegateObject);
-				}
+			{				
+				soulInfo.Release();
 
-				foreach (var pu in soulInfo.PropertyUpdaters)
-				{
-					pu.Release();
-				}
-
-				soulInfo.PropertyUpdaters.Clear();
-
+				
 
 				_UnloadSoul(soulInfo.InterfaceId, soulInfo.Id);
 				_Souls.Remove(s => { return s == soulInfo; });
@@ -426,12 +445,9 @@ namespace Regulus.Remote
 
 			foreach (var soul in souls)
 			{
-				foreach(var pu in soul.PropertyUpdaters)
+				foreach(var pu in soul.PropertyUpdate())
 				{
-					if(pu.Update())
-					{
-						_LoadProperty(soul.Id , pu.PropertyId , pu.Value);
-					}
+					_LoadProperty(soul.Id, pu.Item1, pu.Item2);					
 				}
 			}
 

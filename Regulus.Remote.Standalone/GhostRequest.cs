@@ -17,6 +17,9 @@ namespace Regulus.Remote.Standalone
 
 		public event Action<long> ReleaseEvent;
 		public event Action<long, int> SetPropertyDoneEvent;
+		public event Action<int,int,int> AddEventEvent;
+		public event Action<int, int, int> RemoveEventEvent;
+
 
 
 
@@ -70,25 +73,6 @@ namespace Regulus.Remote.Standalone
 			}
 			else if(ClientToServerOpCode.CallMethod == code)
 			{
-				
-
-				/*var EntityId = new Guid(args[0]);
-
-				var MethodId = Encoding.Default.GetString(args[1]);
-
-				byte[] par = null;
-				var ReturnId = Guid.Empty;
-				if(args.TryGetValue(2, out par))
-				{
-					ReturnId = new Guid(par);
-				}
-
-				var MethodParams = (from p in args
-				                    where p.Key >= 3
-				                    orderby p.Key
-				                    select p.Value).ToArray();*/
-
-
 			    var data = args.ToPackageData<PackageCallMethod>(_Serializer);
                 if (CallMethodEvent != null)
 				{
@@ -103,9 +87,18 @@ namespace Regulus.Remote.Standalone
 			}
 			else if(ClientToServerOpCode.Release == code)
 			{
-                var data = args.ToPackageData<PackageRelease>(_Serializer);
-                //var EntityId = new Guid(args[0]);
+                var data = args.ToPackageData<PackageRelease>(_Serializer);                
 				ReleaseEvent(data.EntityId);
+			}
+			else if (ClientToServerOpCode.AddEvent == code)
+            {
+				var data = args.ToPackageData<PackageAddEvent>(_Serializer);
+				AddEventEvent(data.Entity, data.Event, data.Handler);
+			}
+			else if (ClientToServerOpCode.RemoveEvent == code)
+			{
+				var data = args.ToPackageData<PackageRemoveEvent>(_Serializer);
+				RemoveEventEvent(data.Entity, data.Event, data.Handler);
 			}
 		}
 	}

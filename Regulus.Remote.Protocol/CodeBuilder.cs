@@ -230,6 +230,8 @@ namespace Regulus.Remote.Protocol
             serializer_types.Add(typeof(Regulus.Remote.PackageRelease));
             serializer_types.Add(typeof(Regulus.Remote.PackageSetProperty));
             serializer_types.Add(typeof(Regulus.Remote.PackageSetPropertyDone));
+            serializer_types.Add(typeof(Regulus.Remote.PackageAddEvent));
+            serializer_types.Add(typeof(Regulus.Remote.PackageRemoveEvent));
 
             foreach (var serializerType in serializer_types)
             {                

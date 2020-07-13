@@ -261,6 +261,16 @@ namespace Regulus.Remote.Soul
 				var data = package.Data.ToPackageData<PackageSetPropertyDone>(_Serialize);
 				_SoulProvider.SetPropertyDone(data.EntityId , data.Property);
 			}
+			else if (package.Code == ClientToServerOpCode.AddEvent)
+			{
+				var data = package.Data.ToPackageData<PackageAddEvent>(_Serialize);
+				_SoulProvider.AddEvent(data.Entity, data.Event, data.Handler);
+			}
+			else if (package.Code == ClientToServerOpCode.RemoveEvent)
+			{
+				var data = package.Data.ToPackageData<PackageRemoveEvent>(_Serialize);
+				_SoulProvider.RemoveEvent(data.Entity, data.Event, data.Handler);
+			}
 
 			return null;
 		}

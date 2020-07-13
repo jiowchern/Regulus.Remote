@@ -82,8 +82,9 @@ namespace Regulus.Remote
 
 	
 		public int Event;
+		public long HandlerId;
 
-	
+
 		public byte[][] EventParams;
 	}
 
@@ -197,6 +198,19 @@ namespace Regulus.Remote
         
     }
 
-	
+	public class PackageAddEvent : TPackageData<PackageAddEvent>
+    {
+		public int Entity;
+		public int Event;
+		public int Handler;
+
+	}
+
+	public class PackageRemoveEvent : TPackageData<PackageRemoveEvent>
+    {
+		public int Entity;
+		public int Event;
+		public int Handler;
+	}
 
 }

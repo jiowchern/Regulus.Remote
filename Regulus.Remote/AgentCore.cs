@@ -21,7 +21,7 @@ namespace Regulus.Remote
 }
 namespace Regulus.Remote
 {
-	public class AgentCore
+    public class AgentCore
 	{
 		
 
@@ -297,25 +297,7 @@ namespace Regulus.Remote
 
 			
 		}
-		private void _UpdateProperty(long entity_id, int property, byte[] buffer)
-		{
-            
-			var ghost = _FindGhost(entity_id);
-			if(ghost != null)
-			{
-			    var map = _Protocol.GetMemberMap();
-			    var info = map.GetProperty(property);
-                var value = _Serializer.Deserialize(buffer);
-			    var instance = ghost.GetInstance();
-			    var type = _InterfaceProvider.Find(info.DeclaringType);
-                var field = type.GetField("_" + info.Name, BindingFlags.Instance | BindingFlags.Public);
-                if (field != null)
-                {
-                    field.SetValue(instance, value);
-                }
-
-            }
-		}
+		
 
 		private void _InvokeEvent(long ghost_id, int event_id, byte[][] event_params)
 		{

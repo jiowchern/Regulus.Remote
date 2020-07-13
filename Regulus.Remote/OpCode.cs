@@ -8,7 +8,9 @@
 
 		Release ,
 
-		UpdateProperty
+		UpdateProperty,
+		AddEvent,
+		RemoveEvent,
 	};
 
 	public enum ServerToClientOpCode : byte
