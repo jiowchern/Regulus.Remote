@@ -4,7 +4,8 @@
 [![Coverage Status](https://coveralls.io/repos/github/jiowchern/Regulus/badge.svg?branch=)](https://coveralls.io/github/jiowchern/Regulus?branch=)
 ![commit last date](https://img.shields.io/github/last-commit/jiowchern/regulus)
 [![Discord](https://img.shields.io/discord/101557008930451456)](https://discord.gg/uDF8NTp)
-![Latest Version](https://img.shields.io/github/v/tag/jiowchern/Regulus)
+![Latest Version](https://img.shields.io/github/v/tag/jiowchern/Regulus)  
+[![HitCount](http://hits.dwyl.com/jiowchern/Regulus.svg)](http://hits.dwyl.com/jiowchern/Regulus)
 <!-- [![GitHub release](https://img.shields.io/github/release/jiowchern/regulus.svg?style=flat-square)](https://github.com/jiowchern/Regulus/releases)![pre-release](https://img.shields.io/github/v/release/jiowchern/Regulus?include_prereleases) -->
 <!-- [![Gitter](https://badges.gitter.im/JoinChat.svg)](https://gitter.im/Regulus-Library) -->
 
@@ -90,9 +91,9 @@ namespace Client
 	public void AMethod(Regulus.Remote.IAgent agent)
 	{
 		// receive
-		agent.QueryNotifier<IAdder>().Supply += (chatter) =>{
+		agent.QueryNotifier<IAdder>().Supply += (adder) =>{
 			// invoke
-			var val = chatter.Add(1,2);			
+			var val = adder.Add(1,2);			
 			// return value
 			val.OnValue += (num)=> System.Console.WriteLine;
 		};		
