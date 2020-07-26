@@ -24,7 +24,7 @@ namespace Regulus.Utility
             
         }
 
-        internal void Clean()
+        public void Clean()
         {
             Push(this);
         }
