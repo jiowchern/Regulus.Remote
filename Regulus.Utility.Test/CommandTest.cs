@@ -9,7 +9,7 @@ using Regulus.Utility;
 namespace RegulusLibraryTest
 {
 
-	public enum TEST_ENUM1
+    public enum TEST_ENUM1
 	{
 		A,B,C
 	};
@@ -20,7 +20,6 @@ namespace RegulusLibraryTest
 
 		float Method3(int a, int b);
 	}
-	
 	public class CommandTest
 	{
 		[NUnit.Framework.Test()]
