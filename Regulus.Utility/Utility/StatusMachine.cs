@@ -2,7 +2,7 @@
 
 namespace Regulus.Utility
 {
-	public class EmptyStage : IStatus
+    public class EmptyStage : IStatus
 	{
 		void IStatus.Enter()
 		{
@@ -16,7 +16,6 @@ namespace Regulus.Utility
 		{
 		}
 	}
-
 	public class StatusMachine
 	{
 		private readonly Queue<IStatus> _StandBys;
