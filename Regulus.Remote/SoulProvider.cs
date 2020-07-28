@@ -179,6 +179,7 @@ namespace Regulus.Remote
 					var accessable = propertyValue as IAccessable;					
 					_LoadProperty(new_soul.Id , id , accessable.Get());
 				}
+				
 			}
 		}
 
@@ -319,7 +320,25 @@ namespace Regulus.Remote
 
 		}
 
-        private void _ErrorDeserialize(string method_name, long return_id, string message)
+		public void AddNotifier(long entity_id, int property_id, long handler_id)
+		{
+			var soul = (from s in _Souls.UpdateSet() where s.Id == entity_id select s).FirstOrDefault();
+			if (soul == null)
+				return;
+
+			var propertyInfo = _Protocol.GetMemberMap().GetProperty(property_id);
+			if (propertyInfo == null)
+				return;
+			var binder = NotifierBinder.Create(soul.ObjectInstance, propertyInfo);
+			if (binder == null)
+				return;
+			/*binder.SupplyEvent += (gpi) => _NotifierBindSoul(gpi, entity_id , property_id , handler_id);
+			binder.UnsupplyEvent += (gpi) => _NotifierUnbindSoul(gpi, entity_id, property_id, handler_id);
+			soul.AttachNotifier(binder);*/
+
+		}
+
+		private void _ErrorDeserialize(string method_name, long return_id, string message)
 		{
 			
 
@@ -357,27 +376,7 @@ namespace Regulus.Remote
 		    var interfaceId = map.GetInterface(soul_type);
             var newSoul = new Soul(_IdLandlord.Rent(), interfaceId, soul_type, soul);
 
-			// event				
-			/*var eventInfos = soul_type.GetEvents();			
-
-			foreach(var eventInfo in eventInfos)
-			{				
-
-				try
-				{
-					var handler = _BuildDelegate(eventInfo, newSoul.Id, _InvokeEvent);
-
-					var eh = new Soul.EventHandler(soul , handler, eventInfo);					
-					newSoul.EventHandlers.Add(eh);
-					
-				}
-				catch (Exception ex)
-				{			  
-					Regulus.Utility.Log.Instance.WriteDebug(ex.ToString());      
-					throw ex;
-				}
-				
-			}*/
+			
 
 			// property 
 			var propertys = soul_type.GetProperties(BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public);
@@ -394,7 +393,8 @@ namespace Regulus.Remote
 
 					var pu = new PropertyUpdater(dirtyable, id); 
 					newSoul.AddPropertyUpdater(pu); 					
-				}
+
+				}				
 			}
 
 			_Souls.Add(newSoul);

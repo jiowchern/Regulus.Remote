@@ -6,7 +6,7 @@ namespace Regulus.Remote
     ///     介面物件通知器
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface INotifier<T>
+    public interface INotifier<T> 
 	{
 		/// <summary>
 		///     伺服器端如果有物件傳入則會發生此事件

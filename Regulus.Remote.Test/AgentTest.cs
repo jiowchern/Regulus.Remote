@@ -16,6 +16,10 @@ namespace Regulus.Remote.Tests
 
         //event Action<float, string> OnCallEvent;
     }
+    namespace NotifierProperty
+    {
+    }
+    
     public class AgentTest
     {
         [NUnit.Framework.Test()]

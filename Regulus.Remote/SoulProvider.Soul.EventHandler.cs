@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace Regulus.Remote
@@ -35,6 +37,21 @@ namespace Regulus.Remote
                 {
 					EventInfo.RemoveEventHandler(_Instance, _DelegateInstance);
 					
+                }
+            }
+
+
+            readonly List<NotifierBinder> _NotifierBinders;
+            internal void AttachNotifier(NotifierBinder binder)
+            {
+                _NotifierBinders.Add(binder);
+            }
+
+            internal void DetachNotifier(NotifierBinder binder)
+            {
+                if(_NotifierBinders.Remove(binder) )
+                {
+                    binder.Dispose();
                 }
             }
         }

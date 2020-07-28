@@ -22,7 +22,7 @@ namespace Regulus.Remote
 
 			readonly List<PropertyUpdater> _PropertyUpdaters;
 
-			public readonly IReadOnlyCollection<EventHandler> Events;
+			
 			public readonly IReadOnlyCollection<PropertyUpdater> Propertys;
 			public readonly int InterfaceId;
 
@@ -36,10 +36,13 @@ namespace Regulus.Remote
 				_PropertyUpdaters = new List<PropertyUpdater>();
 				Propertys = _PropertyUpdaters;
 				_EventHandlers = new List<EventHandler>();
-				Events = _EventHandlers;
+				
+				_NotifierBinders = new List<NotifierBinder>();
+				
 			}
+            
 
-			internal void Release()
+            internal void Release()
 			{
 				foreach (var eventHandler in _EventHandlers)
 				{
