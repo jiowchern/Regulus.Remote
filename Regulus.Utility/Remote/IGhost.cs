@@ -23,6 +23,7 @@ namespace Regulus.Remote
 		event EventNotifyCallback AddEventEvent;
 		event EventNotifyCallback RemoveEventEvent;
 		event PropertyNotifierCallback AddSupplyNoitfierEvent;
+
 		event PropertyNotifierCallback RemoveSupplyNoitfierEvent;
 		event PropertyNotifierCallback AddUnsupplyNoitfierEvent;
 		event PropertyNotifierCallback RemoveUnsupplyNoitfierEvent;

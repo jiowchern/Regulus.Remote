@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Regulus.Remote
 {
-    internal class GhostNotifier<T> : INotifier<T>
+    public class GhostNotifier<T> : INotifier<T>
     {
         private readonly Action<PassageCallback> _AddSupplyHandler;
         private readonly Action<PassageCallback> _RemoveSupplyHandler;
