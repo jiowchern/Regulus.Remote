@@ -36,8 +36,8 @@ namespace Regulus.Remote
 				_PropertyUpdaters = new List<PropertyUpdater>();
 				Propertys = _PropertyUpdaters;
 				_EventHandlers = new List<EventHandler>();
-				
-				_NotifierBinders = new List<NotifierBinder>();
+				_UnsupplyBinder = new Dictionary<long, NotifierEventBinder>();
+				_SupplyBinder = new Dictionary<long, NotifierEventBinder>();
 				
 			}
             

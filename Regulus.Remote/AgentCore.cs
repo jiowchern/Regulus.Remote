@@ -18,15 +18,8 @@ using Timer = System.Timers.Timer;
 
 namespace Regulus.Remote
 {
-}
-namespace Regulus.Remote
-{
     public class AgentCore
 	{
-		
-
-		
-
 		private readonly AutoRelease _AutoRelease;
 
 		private readonly Dictionary<Type, IProvider> _Providers;
@@ -43,6 +36,7 @@ namespace Regulus.Remote
 
 		private readonly InterfaceProvider _InterfaceProvider;
 	    private readonly ISerializer _Serializer;
+		readonly SoulNotifier _NotifierPassage;
 
 		public void AddProvider(Type type, IProvider provider)
 		{
@@ -61,7 +55,8 @@ namespace Regulus.Remote
 
 		public AgentCore(IProtocol protocol)
 		{
-            _ReturnValueQueue = new ReturnValueQueue();
+			_NotifierPassage = new SoulNotifier();
+			_ReturnValueQueue = new ReturnValueQueue();
             _Protocol = protocol;
             _InterfaceProvider = _Protocol.GetInterfaceProvider();
 		    _Serializer = _Protocol.GetSerialize();
@@ -131,7 +126,7 @@ namespace Regulus.Remote
 			{
 
                 var data = args.ToPackageData<PackageLoadSoulCompile>(_Serializer);
-                _LoadSoulCompile(data.TypeId, data.EntityId, data.ReturnId);
+                _LoadSoulCompile(data.TypeId, data.EntityId, data.ReturnId,data.PassageId);
             }
 			else if(id == ServerToClientOpCode.LoadSoul)
 			{
@@ -141,7 +136,7 @@ namespace Regulus.Remote
 			else if(id == ServerToClientOpCode.UnloadSoul)
 			{
                 var data = args.ToPackageData<PackageUnloadSoul>(_Serializer);
-                _UnloadSoul(data.TypeId, data.EntityId);
+                _UnloadSoul(data.TypeId, data.EntityId, data.PassageId);
             }
             else if (id == ServerToClientOpCode.ProtocolSubmit)
             {
@@ -195,7 +190,7 @@ namespace Regulus.Remote
 			}
 		}
 
-		private void _LoadSoulCompile(int type_id, long entity_id, long return_id)
+		private void _LoadSoulCompile(int type_id, long entity_id, long return_id,long passage_id)
 		{
 		    var map = _Protocol.GetMemberMap();
 
@@ -204,12 +199,15 @@ namespace Regulus.Remote
             var provider = _QueryProvider(type);
 			if(provider != null)
 			{
-				var ghost = provider.Ready(entity_id);
-				_SetReturnValue(return_id, ghost);
+				var ghost = provider.Ready(entity_id);				
+				_NotifierPassage.Supply(ghost, passage_id);
+				_SetReturnValue(return_id, ghost);				
 			}
 		}
 
-		private void _LoadSoul(int type_id, long id, bool return_type)
+        
+
+        private void _LoadSoul(int type_id, long id, bool return_type)
 		{
 		    var map = _Protocol.GetMemberMap();		                
             var type = map.GetInterface(type_id);
@@ -219,6 +217,11 @@ namespace Regulus.Remote
 		    ghost.CallMethodEvent += new GhostMethodHandler(ghost, _ReturnValueQueue , _Protocol , _Requester ).Run;
 			ghost.AddEventEvent += new GhostEventMoveHandler(ghost,  _Protocol, _Requester).Add;
 			ghost.RemoveEventEvent += new GhostEventMoveHandler(ghost, _Protocol, _Requester).Remove;
+			ghost.AddSupplyNoitfierEvent += new GhostNotifierHandler(ghost, _Protocol, _Requester,_NotifierPassage).AddSupply;
+			ghost.RemoveSupplyNoitfierEvent += new GhostNotifierHandler(ghost, _Protocol, _Requester, _NotifierPassage).RemoveSupply;
+			ghost.AddUnsupplyNoitfierEvent += new GhostNotifierHandler(ghost, _Protocol, _Requester, _NotifierPassage).AddUnsupply;
+			ghost.RemoveUnsupplyNoitfierEvent += new GhostNotifierHandler(ghost, _Protocol, _Requester, _NotifierPassage).RemoveUnsupply;
+
 
 
 			provider.Add(ghost);
@@ -234,20 +237,26 @@ namespace Regulus.Remote
 			_AutoRelease.Register(ghost);
 		}
 
-		private void _UnloadSoul(int type_id, long id)
+		private void _UnloadSoul(int type_id, long id,long passage_id)
 		{
 		    var map = _Protocol.GetMemberMap();
 		    var type = map.GetInterface(type_id);
             var provider = _QueryProvider(type);
-			if(provider != null)
+			if(provider == null)
 			{
-				provider.Remove(id);
+				return;
 			}
+
+			var ghost = provider.Ghosts.FirstOrDefault(g => g.GetID() == id);
+			if (ghost == null)
+				return;			
+			_NotifierPassage.Unsupply(ghost, passage_id);
+			provider.Remove(id);			
 		}
 
 		private IProvider _QueryProvider(Type type)
 		{
-			IProvider provider = null;
+            IProvider provider = null;
 			lock(_Providers)
 			{
 				if(_Providers.TryGetValue(type, out provider) == false)

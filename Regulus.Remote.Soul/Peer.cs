@@ -271,6 +271,26 @@ namespace Regulus.Remote.Soul
 				var data = package.Data.ToPackageData<PackageRemoveEvent>(_Serialize);
 				_SoulProvider.RemoveEvent(data.Entity, data.Event, data.Handler);
 			}
+			else if (ClientToServerOpCode.AddNotifierSupply == package.Code)
+			{
+				var data = package.Data.ToPackageData<PackageNotifierEvent>(_Serialize);
+				_SoulProvider.AddNotifierSupply(data.Entity, data.Property, data.Passage);				
+			}
+			else if (ClientToServerOpCode.RemoveNotifierSupply == package.Code)
+			{
+				var data = package.Data.ToPackageData<PackageNotifierEvent>(_Serialize);
+				_SoulProvider.RemoveNotifierSupply(data.Entity, data.Property, data.Passage);				
+			}
+			else if (ClientToServerOpCode.AddNotifierUnsupply == package.Code)
+			{
+				var data = package.Data.ToPackageData<PackageNotifierEvent>(_Serialize);
+				_SoulProvider.AddNotifierUnsupply(data.Entity, data.Property, data.Passage);				
+			}
+			else if (ClientToServerOpCode.RemoveNotifierUnsupply == package.Code)
+			{
+				var data = package.Data.ToPackageData<PackageNotifierEvent>(_Serialize);
+				_SoulProvider.RemoveNotifierUnsupply(data.Entity, data.Property, data.Passage);				
+			}
 
 			return null;
 		}

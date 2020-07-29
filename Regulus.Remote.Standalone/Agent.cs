@@ -176,6 +176,11 @@ namespace Regulus.Remote.Standalone
 			_GhostRequest.AddEventEvent += _SoulProvider.AddEvent;
 			_GhostRequest.RemoveEventEvent += _SoulProvider.RemoveEvent;
 
+			_GhostRequest.AddNotifierSupplyEvent += _SoulProvider.AddNotifierSupply;
+			_GhostRequest.RemoveNotifierSupplyEvent += _SoulProvider.RemoveNotifierSupply;
+			_GhostRequest.AddNotifierUnsupplyEvent += _SoulProvider.AddNotifierUnsupply;
+			_GhostRequest.RemoveNotifierUnsupplyEvent += _SoulProvider.RemoveNotifierUnsupply;
+
 
 			_Agent.ErrorMethodEvent += _ErrorMethodEvent;
 		    _Agent.ErrorVerifyEvent += _ErrorVerifyEvent;

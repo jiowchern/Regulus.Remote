@@ -11,6 +11,10 @@
 		UpdateProperty,
 		AddEvent,
 		RemoveEvent,
+		AddNotifierSupply,
+		RemoveNotifierSupply,
+		AddNotifierUnsupply,
+		RemoveNotifierUnsupply,
 	};
 
 	public enum ServerToClientOpCode : byte

@@ -130,6 +130,7 @@ namespace Regulus.Remote
 		public long EntityId;
 	
 		public long ReturnId;
+		public long PassageId;
 
 	}
 	[Serializable]
@@ -157,6 +158,9 @@ namespace Regulus.Remote
 		public int TypeId;
 		
 		public long EntityId;
+
+		public long PassageId;
+				
 	}
 
 
@@ -212,5 +216,11 @@ namespace Regulus.Remote
 		public int Event;
 		public long Handler;
 	}
+	public class PackageNotifierEvent : TPackageData<PackageNotifierEvent>
+    {
+		public long Entity;
+		public int Property;
+		public long Passage;
 
+	}
 }

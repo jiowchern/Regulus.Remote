@@ -41,16 +41,39 @@ namespace Regulus.Remote
             }
 
 
-            readonly List<NotifierBinder> _NotifierBinders;
-            internal void AttachNotifier(NotifierBinder binder)
+            readonly Dictionary<long,NotifierEventBinder> _SupplyBinder;
+            readonly Dictionary<long, NotifierEventBinder> _UnsupplyBinder;
+            internal void AttachSupply(long id,NotifierEventBinder binder)
+            {                
+                _Attach(_SupplyBinder , id,binder);
+            }
+            internal void DetachSupply(long id)
             {
-                _NotifierBinders.Add(binder);
+                _Detach(_SupplyBinder, id);
             }
 
-            internal void DetachNotifier(NotifierBinder binder)
+            internal void AttachUnsupply(long id, NotifierEventBinder binder)
             {
-                if(_NotifierBinders.Remove(binder) )
+                _Attach(_UnsupplyBinder, id, binder);
+            }
+            internal void DetachUnsupply(long id)
+            {
+                _Detach(_UnsupplyBinder, id);
+            }
+
+            private void _Attach(Dictionary<long, NotifierEventBinder> binders, long id, NotifierEventBinder binder)
+            {
+                binders.Add(id, binder);
+            }
+
+            
+
+            private void _Detach(Dictionary<long, NotifierEventBinder> binders, long id)
+            {
+                NotifierEventBinder binder;
+                if (binders.TryGetValue(id, out binder))
                 {
+                    binders.Remove(id);
                     binder.Dispose();
                 }
             }

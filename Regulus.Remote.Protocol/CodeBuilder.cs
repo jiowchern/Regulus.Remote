@@ -382,7 +382,62 @@ $@"
                 add {{ this._RemoveEventEvent += value; }}
                 remove {{ this._RemoveEventEvent -= value; }}
             }}
-            
+            event NotifierCallback _AddSupplyNoitfierEvent;
+            event NotifierCallback IGhost.AddSupplyNoitfierEvent
+            {{
+
+                add
+                {{
+                    _AddSupplyNoitfierEvent += value;
+                }}
+
+                remove
+                {{
+                    _AddSupplyNoitfierEvent -= value;
+                }}
+            }}
+
+            event NotifierCallback _RemoveSupplyNoitfierEvent;
+            event NotifierCallback IGhost.RemoveSupplyNoitfierEvent
+            {{
+                add
+                {{
+                    _RemoveSupplyNoitfierEvent += value;
+                }}
+
+                remove
+                {{
+                    _RemoveSupplyNoitfierEvent -= value;
+                }}
+            }}
+
+            event NotifierCallback _AddUnsupplyNoitfierEvent;
+            event NotifierCallback IGhost.AddUnsupplyNoitfierEvent
+            {{
+                add
+                {{
+                    _AddUnsupplyNoitfierEvent += value;
+                }}
+
+                remove
+                {{
+                    _AddUnsupplyNoitfierEvent -= value;
+                }}
+            }}
+
+            event NotifierCallback _RemoveUnsupplyNoitfierEvent;
+            event NotifierCallback IGhost.RemoveUnsupplyNoitfierEvent
+            {{
+                add
+                {{
+                    _RemoveUnsupplyNoitfierEvent += value;
+                }}
+
+                remove
+                {{
+                    _RemoveUnsupplyNoitfierEvent -= value;
+                }}
+            }}
             {implementCode}
             
         }}
@@ -414,15 +469,6 @@ $@"
             var codes = new List<string>();
             foreach (var eventinfo in eventinfos)
             {
-                /*var code = $@"
-                public System.Action{_GetTypes(eventinfo.EventHandlerType.GetGenericArguments())} _{eventinfo.Name};
-                event System.Action{_GetTypes(eventinfo.EventHandlerType.GetGenericArguments())} {_GetTypeName(type)}.{eventinfo.Name}
-                {{
-                    add {{ _{eventinfo.Name} += value;}}
-                    remove {{ _{eventinfo.Name} -= value;}}
-                }}
-                ";*/
-                
                 var code = $@"
                 public Regulus.Remote.GhostEventHandler _{eventinfo.Name} = new Regulus.Remote.GhostEventHandler();
                 event System.Action{_GetTypes(eventinfo.EventHandlerType.GetGenericArguments())} {_GetTypeName(type)}.{eventinfo.Name}
@@ -454,14 +500,33 @@ $@"
         {
             var propertyInfos = type.GetProperties();
             List<string> propertyCodes = new List<string>();
+            _BuildRemoteProperty(type, propertyInfos, propertyCodes);
+            _BuildNotifierProperty(type, propertyInfos, propertyCodes);
+            return string.Join("\n", propertyCodes.ToArray());
+        }
+
+        private void _BuildNotifierProperty(Type type, PropertyInfo[] propertyInfos, List<string> propertyCodes)
+        {
             foreach (var propertyInfo in propertyInfos)
             {
+                if (propertyInfo.PropertyType.GetGenericTypeDefinition() != typeof(INotifier<>))
+                    continue;
+
+
+            }
+        }
+
+        private void _BuildRemoteProperty(Type type, PropertyInfo[] propertyInfos, List<string> propertyCodes)
+        {
+            foreach (var propertyInfo in propertyInfos)
+            {
+                if (!propertyInfo.PropertyType.GetInterfaces().Any(t => t == typeof(IDirtyable)))
+                    continue;
                 var propertyCode = $@"
                 public {_GetTypeName(propertyInfo.PropertyType)} _{propertyInfo.Name}= new {_GetTypeName(propertyInfo.PropertyType)}();
                 {_GetTypeName(propertyInfo.PropertyType)} {_GetTypeName(type)}.{propertyInfo.Name} {{ get{{ return _{propertyInfo.Name};}} }}";
                 propertyCodes.Add(propertyCode);
             }
-            return string.Join("\n", propertyCodes.ToArray());
         }
 
         private string _GetTypeName(Type t)

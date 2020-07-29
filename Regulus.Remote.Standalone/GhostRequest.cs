@@ -20,6 +20,13 @@ namespace Regulus.Remote.Standalone
 		public event Action<long,int,long> AddEventEvent;
 		public event Action<long, int, long> RemoveEventEvent;
 
+		public event Action<long, int, long> AddNotifierSupplyEvent;
+		public event Action<long, int, long> RemoveNotifierSupplyEvent;
+		public event Action<long, int, long> AddNotifierUnsupplyEvent;
+		public event Action<long, int, long> RemoveNotifierUnsupplyEvent;
+
+
+
 
 
 
@@ -100,6 +107,29 @@ namespace Regulus.Remote.Standalone
 				var data = args.ToPackageData<PackageRemoveEvent>(_Serializer);
 				RemoveEventEvent(data.Entity, data.Event, data.Handler);
 			}
+			else if (ClientToServerOpCode.AddNotifierSupply == code)
+            {
+				var data = args.ToPackageData<PackageNotifierEvent>(_Serializer);
+				AddNotifierSupplyEvent(data.Entity , data.Property , data.Passage);
+			}
+			else if (ClientToServerOpCode.RemoveNotifierSupply == code)
+			{
+				var data = args.ToPackageData<PackageNotifierEvent>(_Serializer);
+				RemoveNotifierSupplyEvent(data.Entity, data.Property, data.Passage);
+			}
+			else if (ClientToServerOpCode.AddNotifierUnsupply == code)
+			{
+				var data = args.ToPackageData<PackageNotifierEvent>(_Serializer);
+				AddNotifierUnsupplyEvent(data.Entity, data.Property, data.Passage);
+			}
+			else if (ClientToServerOpCode.RemoveNotifierUnsupply == code)
+			{
+				var data = args.ToPackageData<PackageNotifierEvent>(_Serializer);
+				RemoveNotifierUnsupplyEvent(data.Entity, data.Property, data.Passage);
+			}
+
+
+
 		}
 	}
 }

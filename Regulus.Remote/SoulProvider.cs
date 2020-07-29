@@ -72,7 +72,7 @@ namespace Regulus.Remote
 				throw new ArgumentNullException("soul");
 			}
 
-			_Unbind(soul, typeof(TSoul));
+			_Unbind(soul, typeof(TSoul),0);
 		}
 
 		event Action IBinder.BreakEvent
@@ -158,7 +158,7 @@ namespace Regulus.Remote
 
 				_LoadProperty(new_soul);
 
-				_LoadSoulCompile(new_soul.InterfaceId, new_soul.Id, return_id);
+				_LoadSoulCompile(new_soul.InterfaceId, new_soul.Id, return_id,0);
 			}
 		}
 
@@ -194,12 +194,15 @@ namespace Regulus.Remote
 			_Queue.Push(ServerToClientOpCode.ReturnValue, package.ToBuffer(_Serializer));
 		}
 
-		private void _LoadSoulCompile(int type_id, long id, long return_id)
+        
+
+        private void _LoadSoulCompile(int type_id, long id, long return_id,long notifier_id)
 		{
 			var package = new PackageLoadSoulCompile();
 			package.EntityId = id;
 			package.ReturnId = return_id;
 			package.TypeId = type_id;
+			package.PassageId = notifier_id;
 
 			_Queue.Push(ServerToClientOpCode.LoadSoulCompile, package.ToBuffer(_Serializer));
 		}
@@ -222,12 +225,13 @@ namespace Regulus.Remote
 			
 		}
 
-		private void _UnloadSoul(int type_id, long id)
+		private void _UnloadSoul(int type_id, long id,long passage)
 		{			
 
 			var package = new PackageUnloadSoul();
 			package.TypeId = type_id;
 			package.EntityId = id;
+			package.PassageId = passage;
 			_Queue.Push(ServerToClientOpCode.UnloadSoul, package.ToBuffer(_Serializer));
 		}
 
@@ -319,8 +323,21 @@ namespace Regulus.Remote
 			soul.AddEvent(handler);
 
 		}
-
-		public void AddNotifier(long entity_id, int property_id, long handler_id)
+		public void RemoveNotifierUnsupply(long entity_id, int property, long notifier_id)
+		{
+			var soul = (from s in _Souls.UpdateSet() where s.Id == entity_id select s).FirstOrDefault();
+			if (soul == null)
+				return;
+			soul.DetachUnsupply(notifier_id);
+		}
+		public void RemoveNotifierSupply(long entity_id, int property,long notifier_id)
+        {
+			var soul = (from s in _Souls.UpdateSet() where s.Id == entity_id select s).FirstOrDefault();
+			if (soul == null)
+				return;
+			soul.DetachSupply(notifier_id);
+		}
+		public void AddNotifierSupply(long entity_id, int property_id, long notifier_id)
 		{
 			var soul = (from s in _Souls.UpdateSet() where s.Id == entity_id select s).FirstOrDefault();
 			if (soul == null)
@@ -329,21 +346,50 @@ namespace Regulus.Remote
 			var propertyInfo = _Protocol.GetMemberMap().GetProperty(property_id);
 			if (propertyInfo == null)
 				return;
-			var binder = NotifierBinder.Create(soul.ObjectInstance, propertyInfo);
+
+			var binder = NotifierEventBinder.Create(soul.ObjectInstance, propertyInfo, nameof(INotifier<object>.Supply));
 			if (binder == null)
 				return;
-			/*binder.SupplyEvent += (gpi) => _NotifierBindSoul(gpi, entity_id , property_id , handler_id);
-			binder.UnsupplyEvent += (gpi) => _NotifierUnbindSoul(gpi, entity_id, property_id, handler_id);
-			soul.AttachNotifier(binder);*/
 
+			var gpiType = propertyInfo.PropertyType.GetGenericArguments().Single();
+			binder.InvokeEvent += (gpi) => _BindSupply(gpi, gpiType, notifier_id);			
+			soul.AttachSupply(notifier_id,binder);
+			
 		}
 
-		private void _ErrorDeserialize(string method_name, long return_id, string message)
+		public void AddNotifierUnsupply(long entity_id, int property_id, long notifier_id)
 		{
-			
+			var soul = (from s in _Souls.UpdateSet() where s.Id == entity_id select s).FirstOrDefault();
+			if (soul == null)
+				return;
 
-		
+			var propertyInfo = _Protocol.GetMemberMap().GetProperty(property_id);
+			if (propertyInfo == null)
+				return;
 
+			var binder = NotifierEventBinder.Create(soul.ObjectInstance, propertyInfo, nameof(INotifier<object>.Unsupply));
+			if (binder == null)
+				return;
+
+			var gpiType = propertyInfo.PropertyType.GetGenericArguments().Single();
+			binder.InvokeEvent += (gpi) => _UnbindSupply(gpi, gpiType, notifier_id);
+			soul.AttachUnsupply(notifier_id, binder);
+		}
+
+		private void _UnbindSupply(object gpi, Type gpiType, long notifier_id)
+        {
+			_Unbind(gpi , gpiType, notifier_id);
+        }
+
+        private void _BindSupply(object gpi, Type gpiType, long notifier_id)
+        {
+			_Bind(gpi, gpiType, false, 0, notifier_id);
+        }
+
+        
+
+        private void _ErrorDeserialize(string method_name, long return_id, string message)
+		{
 			var package = new PackageErrorMethod();
 			package.Message = message ;
 			package.Method = method_name;
@@ -352,24 +398,27 @@ namespace Regulus.Remote
 		}
 
 		private void _Bind<TSoul>(TSoul soul, bool return_type, long return_id)
-		{
-			
+        {
+            _Bind(soul,typeof(TSoul), return_type, return_id,0);
+        }
 
-			var prevSoul = (from soulInfo in _Souls.UpdateSet()
-							where object.ReferenceEquals(soulInfo.ObjectInstance, soul) && soulInfo.ObjectType == typeof(TSoul)
+        private void _Bind(object soul,Type soul_type, bool return_type, long return_id,long notifier_id)
+        {
+            var prevSoul = (from soulInfo in _Souls.UpdateSet()
+                            where object.ReferenceEquals(soulInfo.ObjectInstance, soul) && soulInfo.ObjectType == soul_type
 							select soulInfo).SingleOrDefault();
 
-			if(prevSoul == null)
-			{
-				var newSoul = _NewSoul(soul, typeof(TSoul));
+            if (prevSoul == null)
+            {
+                var newSoul = _NewSoul(soul, soul_type);
 
-				_LoadSoul(newSoul.InterfaceId, newSoul.Id, return_type);
-				_LoadProperty(newSoul);
-				_LoadSoulCompile(newSoul.InterfaceId, newSoul.Id, return_id);
-			}
-		}
+                _LoadSoul(newSoul.InterfaceId, newSoul.Id, return_type);
+                _LoadProperty(newSoul);
+                _LoadSoulCompile(newSoul.InterfaceId, newSoul.Id, return_id, notifier_id);
+            }
+        }
 
-		private Soul _NewSoul(object soul, Type soul_type)
+        private Soul _NewSoul(object soul, Type soul_type)
 		{
 
 		    var map = _Protocol.GetMemberMap();
@@ -404,7 +453,7 @@ namespace Regulus.Remote
 
 		
 
-		private void _Unbind(object soul, Type type)
+		private void _Unbind(object soul, Type type,long passage)
 		{
 			var soulInfo = (from soul_info in _Souls.UpdateSet()
 							where object.ReferenceEquals(soul_info.ObjectInstance, soul) && soul_info.ObjectType == type
@@ -414,9 +463,7 @@ namespace Regulus.Remote
 			{				
 				soulInfo.Release();
 
-				
-
-				_UnloadSoul(soulInfo.InterfaceId, soulInfo.Id);
+				_UnloadSoul(soulInfo.InterfaceId, soulInfo.Id, passage);
 				_Souls.Remove(s => { return s == soulInfo; });
 				_IdLandlord.Return(soulInfo.Id);
 			}
@@ -467,7 +514,7 @@ namespace Regulus.Remote
 			var soul = (from s in _Souls.UpdateSet() where s.Id == entityId select s).FirstOrDefault();
 			if(soul != null)
 			{
-				_Unbind(soul.ObjectInstance, soul.ObjectType);
+				_Unbind(soul.ObjectInstance, soul.ObjectType,0);
 			}
 		}
 	}

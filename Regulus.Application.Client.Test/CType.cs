@@ -50,6 +50,58 @@ namespace Regulus.Application.Client.Test
             }
         }
 
+        event PropertyNotifierCallback IGhost.AddSupplyNoitfierEvent
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event PropertyNotifierCallback IGhost.RemoveSupplyNoitfierEvent
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event PropertyNotifierCallback IGhost.AddUnsupplyNoitfierEvent
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        event PropertyNotifierCallback IGhost.RemoveUnsupplyNoitfierEvent
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         long IGhost.GetID()
         {
             return Id;

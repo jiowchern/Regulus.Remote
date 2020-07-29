@@ -78,6 +78,58 @@ namespace Regulus.Remote
             }
         }
 
+        event PropertyNotifierCallback IGhost.AddSupplyNoitfierEvent
+        {
+            add
+            {
+        
+            }
+
+            remove
+            {
+        
+            }
+        }
+
+        event PropertyNotifierCallback IGhost.RemoveSupplyNoitfierEvent
+        {
+            add
+            {
+                
+            }
+
+            remove
+            {
+                
+            }
+        }
+
+        event PropertyNotifierCallback IGhost.AddUnsupplyNoitfierEvent
+        {
+            add
+            {
+                
+            }
+
+            remove
+            {
+                
+            }
+        }
+
+        event PropertyNotifierCallback IGhost.RemoveUnsupplyNoitfierEvent
+        {
+            add
+            {
+                
+            }
+
+            remove
+            {
+                
+            }
+        }
+
         double IOnline.Ping
 		{
 			get { return TimeSpan.FromTicks(_Agent.Ping).TotalSeconds; }
