@@ -64,6 +64,7 @@ namespace Regulus.Remote
             private void _Attach(Dictionary<long, NotifierEventBinder> binders, long id, NotifierEventBinder binder)
             {
                 binders.Add(id, binder);
+                binder.Setup();
             }
 
             

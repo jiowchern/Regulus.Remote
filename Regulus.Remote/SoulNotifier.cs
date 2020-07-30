@@ -42,7 +42,7 @@ namespace Regulus.Remote
             var passage = _UnsupplyPassages.FirstOrDefault(p => p.Handler == handler);
             if (passage == null)
                 return 0;
-            _SupplyPassages.Remove(passage);
+            _UnsupplyPassages.Remove(passage);
             return passage.Id;
         }
 
@@ -76,7 +76,7 @@ namespace Regulus.Remote
         internal void Supply(IGhost ghost, long notifier_id)
         {
             var passage = _FindSupply(notifier_id);
-            if(passage == null)
+            if(passage != null)
                 passage(ghost);
         }
 
@@ -96,7 +96,7 @@ namespace Regulus.Remote
         internal void Unsupply(IGhost ghost, long notifier_id)
         {
             var passage = _FindUnsupply(notifier_id);
-            if (passage == null)
+            if (passage != null)
                 passage(ghost);
         }
 

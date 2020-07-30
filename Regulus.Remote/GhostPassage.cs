@@ -1,14 +1,21 @@
-﻿namespace Regulus.Remote
+﻿using System;
+
+namespace Regulus.Remote
 {
-    class SoulPassage
+    public class GhostPassage<T>
     {
-        public readonly long Id;
-        
-        public readonly PassageCallback Handler;
-        public SoulPassage(long id , PassageCallback callback)
+        public readonly Action<T> Owner;
+        public event System.Action<T> ThroughEvent;
+        public GhostPassage(Action<T> owner)
         {
-            Id = id;        
-            Handler = callback;
+            this.Owner = owner;
+        }
+
+        public void Through(object gpi)
+        {
+            var tgpi = (T)gpi;
+            ThroughEvent(tgpi);
+            Owner(tgpi);
         }
     }
 }

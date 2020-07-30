@@ -10,7 +10,8 @@ namespace Regulus.Remote
         private readonly Action<PassageCallback> _AddUnsupplyHandler;
         private readonly Action<PassageCallback> _RemoveUnsupplyHandler;
         readonly List<T> _Gpis;
-
+        readonly List<GhostPassage<T>> _SupplyPassages;
+        readonly List<GhostPassage<T>> _UnsupplyPassages;
         public GhostNotifier(Action<PassageCallback> add_supply_handler, Action<PassageCallback> remove_supply_handler,
             Action<PassageCallback> add_unsupply_handler, Action<PassageCallback> remove_unsupply_handler
             )
@@ -20,6 +21,9 @@ namespace Regulus.Remote
             _RemoveSupplyHandler = remove_supply_handler;
             _AddUnsupplyHandler = add_unsupply_handler;
             _RemoveUnsupplyHandler = remove_unsupply_handler;
+
+            _SupplyPassages = new List<GhostPassage<T>>();
+            _UnsupplyPassages = new List<GhostPassage<T>>();
         }
 
         T[] INotifier<T>.Ghosts => _Gpis.ToArray();
@@ -43,62 +47,58 @@ namespace Regulus.Remote
         {
             add
             {
-                _AddSupply(_Add(value));
+                foreach (var gpi in _Gpis)
+                {
+                    value(gpi);
+                }
+                _AddSupplyHandler.Invoke(_Add(value));
             }
 
             remove
             {
-                _RemoveSupply((gpi) => value((T)gpi));
+                var passage = _SupplyPassages.Find(p => p.Owner == value);
+                if (passage != null)
+                    _RemoveSupplyHandler.Invoke(passage.Through);
             }
         }
 
-        private Action<T> _Add(Action<T> value)
+        private PassageCallback _Add(Action<T> value)
         {
-            return (gpi) => {
-                _Gpis.Add(gpi);
-                value(gpi);
-            };
+            var passage = new GhostPassage<T>(value);
+            passage.ThroughEvent += _Gpis.Add;
+            _SupplyPassages.Add(passage);
+            return passage.Through;
+            
         }
 
-        private Action<T> _Remove(Action<T> value)
+        private PassageCallback _Remove(Action<T> value)
         {
-            return (gpi) => {
-                _Gpis.Remove(gpi);
-                value(gpi);
-            };
+
+            var passage = new GhostPassage<T>(value);
+            passage.ThroughEvent += (gpi) => _Gpis.Remove(gpi);
+            _UnsupplyPassages.Add(passage);
+            return passage.Through;
         }
 
-        private void _AddSupply(Action<T> value)
-        {
-            _AddSupplyHandler.Invoke((gpi)=> value((T)gpi));
-        }
-        private void _RemoveSupply(Action<T> value)
-        {
-            _RemoveSupplyHandler.Invoke((gpi) => value((T)gpi));
-        }
+      
 
         event Action<T> INotifier<T>.Unsupply
         {
             add
             {
-                _AddUnsupply(_Remove(value));
+                _AddUnsupplyHandler.Invoke(_Remove(value));
             }
 
             remove
             {
-                _RemoveUnsupply((gpi)=>value((T)gpi));
+                var passage = _UnsupplyPassages.Find(p => p.Owner == value);
+                if(passage != null)
+                    _RemoveUnsupplyHandler.Invoke(passage.Through);
             }
         }
 
-        private void _RemoveUnsupply(Action<object> value)
-        {
-            _RemoveUnsupplyHandler.Invoke((gpi) => value((T)gpi));
+        
 
-        }
-
-        private void _AddUnsupply(Action<T> value)
-        {
-            _AddUnsupplyHandler.Invoke((gpi) => value((T)gpi));
-        }
+        
     }
 }

@@ -220,11 +220,11 @@ namespace Regulus.Remote.Tests
                 var soulA = new SoulA();
                 var soul = new Regulus.Remote.SoulProvider.Soul(1, 1, typeof(IGpiA), soulA);
                 var gpiBsProperty = typeof(IGpiA).GetProperties().FirstOrDefault(p => p.Name == nameof(IGpiA.GpiBs));                
-                var supplyBinder = NotifierEventBinder.Create(soulA, gpiBsProperty ,"Supply" );
-                supplyBinder.InvokeEvent += (instance) => supplyB = instance as IGpiB;
+                var supplyBinder = NotifierEventBinder.Create(soulA, gpiBsProperty ,"Supply" , (instance) => supplyB = instance as IGpiB);
+                
 
-                var unsupplyBinder = NotifierEventBinder.Create(soulA, gpiBsProperty, "Unsupply");
-                unsupplyBinder.InvokeEvent += (instance) => unsupplyB = instance as IGpiB;
+                var unsupplyBinder = NotifierEventBinder.Create(soulA, gpiBsProperty, "Unsupply", (instance) => unsupplyB = instance as IGpiB);
+                
 
                 soul.AttachSupply(1,supplyBinder);
                 soul.AttachUnsupply(1, unsupplyBinder);
@@ -239,6 +239,37 @@ namespace Regulus.Remote.Tests
                 NUnit.Framework.Assert.AreEqual(soulA.SoulB, unsupplyB);
             }
 
+            [NUnit.Framework.Test]
+            public void GhostNotifierTest()
+            {
+                PassageCallback p1 = null;
+                PassageCallback p2 = null;
+                PassageCallback p3 = null;
+                PassageCallback p4 = null;
+                Action<PassageCallback> addSupply = p=>  p1 = p ;
+                Action<PassageCallback> removeSupply = p => p2 = p;
+                Action<PassageCallback> addUnsupply = p => p3 = p;
+                Action<PassageCallback> removeUnsupply = p => p4 = p;
+                var notifier = new Regulus.Remote.GhostNotifier<IGpiA>(addSupply, removeSupply, addUnsupply, removeUnsupply);
+                var gpiNotifier = notifier as INotifier<IGpiA>;
+                Action<IGpiA> empty = (gpi) =>{ };
+                gpiNotifier.Supply += empty;
+                gpiNotifier.Supply -= empty;
+                gpiNotifier.Unsupply += empty;
+                gpiNotifier.Unsupply -= empty;
+
+                var c1 = p1.GetHashCode();
+                var c2 = p2.GetHashCode();
+
+                NUnit.Framework.Assert.AreNotEqual(null, p1);
+                NUnit.Framework.Assert.AreNotEqual(null, p2);
+                NUnit.Framework.Assert.AreNotEqual(null, p3);
+                NUnit.Framework.Assert.AreNotEqual(null, p4);
+
+                NUnit.Framework.Assert.AreNotSame(c1,c2);
+                NUnit.Framework.Assert.AreNotSame(p3, p4);
+            }
+            
             [NUnit.Framework.Test]
             public void GhostTest()
             {

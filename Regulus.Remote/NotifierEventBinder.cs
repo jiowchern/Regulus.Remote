@@ -5,14 +5,13 @@ namespace Regulus.Remote
 {
     class NotifierEventBinder
     {
-		public System.Action<object> InvokeEvent;
-		
+        private readonly EventInfo _Info;
+        readonly object _Instance;
+        private readonly Delegate _Delegate;
         
-        readonly Delegate _SupplyHandler;
-        
-        readonly System.Action _Dispose;
-        
-        public static NotifierEventBinder Create(object instance, PropertyInfo property,string event_name)
+        private readonly Action<object> _Invoker;
+
+        public static NotifierEventBinder Create(object instance, PropertyInfo property,string event_name ,Action<object> invoker)
         {
             var notifierType = property.PropertyType;
 
@@ -24,34 +23,42 @@ namespace Regulus.Remote
                 return null;
 
             var notifier = property.GetValue(instance);
-            return new NotifierEventBinder(notifier , notifierType.GetEvent(event_name));
+            return new NotifierEventBinder(notifier , notifierType.GetEvent(event_name), invoker);
         }
-        public NotifierEventBinder(object notifier, EventInfo info)
+        public NotifierEventBinder(object notifier, EventInfo info, Action<object> invoker)
         {
+            _Info = info;
+            _Instance = notifier;
+            _Invoker = invoker;
+            var type = info.DeclaringType.GetGenericArguments()[0];
 
-            var supplyEventInfo = info;            
-            _SupplyHandler = new System.Action<object>(_Supply);            
-            supplyEventInfo.AddEventHandler(notifier, _SupplyHandler);
+            var catcherSupply = new Regulus.Utility.Reflection.TypeMethodCatcher((System.Linq.Expressions.Expression<Action<NotifierEventBinder>>)(ins => ins._Supply<object>(null)));
+            var supplyGenericMethod = catcherSupply.Method.GetGenericMethodDefinition();
+            var supplyMethod = supplyGenericMethod.MakeGenericMethod(type);
 
-            
-
-            _Dispose = () => {
-                
-                supplyEventInfo.RemoveEventHandler(notifier, _SupplyHandler);
-            
-            };
+            var actionT1 = typeof(System.Action<>);
+            var actionT = actionT1.MakeGenericType(type);
+            var delegateSupply = Delegate.CreateDelegate(actionT, this, supplyMethod);
+            _Delegate = delegateSupply;
+        
         }
 
-        void _Supply(object gpi)
+        void _Supply<T>(T gpi)
         {
-            InvokeEvent(gpi);
+            _Invoker(gpi);
         }
 
         
 
         internal void Dispose()
         {
-            _Dispose();
+            _Info.RemoveEventHandler(_Instance, _Delegate);
+        }
+
+        internal void Setup()
+        {
+
+            _Info.AddEventHandler(_Instance, _Delegate);
         }
     }
 }

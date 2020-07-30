@@ -347,12 +347,10 @@ namespace Regulus.Remote
 			if (propertyInfo == null)
 				return;
 
-			var binder = NotifierEventBinder.Create(soul.ObjectInstance, propertyInfo, nameof(INotifier<object>.Supply));
+			var gpiType = propertyInfo.PropertyType.GetGenericArguments().Single();
+			var binder = NotifierEventBinder.Create(soul.ObjectInstance, propertyInfo, nameof(INotifier<object>.Supply), (gpi) => _BindSupply(gpi, gpiType, notifier_id));
 			if (binder == null)
 				return;
-
-			var gpiType = propertyInfo.PropertyType.GetGenericArguments().Single();
-			binder.InvokeEvent += (gpi) => _BindSupply(gpi, gpiType, notifier_id);			
 			soul.AttachSupply(notifier_id,binder);
 			
 		}
@@ -366,13 +364,11 @@ namespace Regulus.Remote
 			var propertyInfo = _Protocol.GetMemberMap().GetProperty(property_id);
 			if (propertyInfo == null)
 				return;
-
-			var binder = NotifierEventBinder.Create(soul.ObjectInstance, propertyInfo, nameof(INotifier<object>.Unsupply));
+			var gpiType = propertyInfo.PropertyType.GetGenericArguments().Single();
+			var binder = NotifierEventBinder.Create(soul.ObjectInstance, propertyInfo, nameof(INotifier<object>.Unsupply), (gpi) => _UnbindSupply(gpi, gpiType, notifier_id));
 			if (binder == null)
 				return;
-
-			var gpiType = propertyInfo.PropertyType.GetGenericArguments().Single();
-			binder.InvokeEvent += (gpi) => _UnbindSupply(gpi, gpiType, notifier_id);
+			
 			soul.AttachUnsupply(notifier_id, binder);
 		}
 
