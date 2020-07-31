@@ -53,7 +53,7 @@ namespace Regulus.Remote
 			}
 		}
 
-		event Action<T> INotifier<T>.Return
+		/*event Action<T> INotifier<T>.Return
 		{
 			add { _Return += value; }
 			remove { _Return -= value; }
@@ -62,7 +62,7 @@ namespace Regulus.Remote
 		T[] INotifier<T>.Returns
 		{
 			get { return _RemoveNoRefenceReturns(); }
-		}
+		}*/
 
 		IGhost IProvider.Ready(long id)
 		{

@@ -151,25 +151,14 @@ namespace Regulus.Remote.Tests
 
             IGpiB[] INotifier<IGpiB>.Ghosts => new[] { SoulB };
 
-            IGpiB[] INotifier<IGpiB>.Returns => throw new NotImplementedException();
+            
 
             public SoulA()
             {
                 this.SoulB = new SoulB();
             }
 
-            event Action<IGpiB> INotifier<IGpiB>.Return
-            {
-                add
-                {
-                    throw new NotImplementedException();
-                }
-
-                remove
-                {
-                    throw new NotImplementedException();
-                }
-            }
+            
 
             event Action<IGpiB> _Supply;
             event Action<IGpiB> INotifier<IGpiB>.Supply

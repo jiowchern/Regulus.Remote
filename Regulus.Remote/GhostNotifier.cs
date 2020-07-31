@@ -28,9 +28,9 @@ namespace Regulus.Remote
 
         T[] INotifier<T>.Ghosts => _Gpis.ToArray();
 
-        T[] INotifier<T>.Returns => new T[0];
+        //T[] INotifier<T>.Returns => new T[0];
 
-        event Action<T> INotifier<T>.Return
+        /*event Action<T> INotifier<T>.Return
         {
             add
             {
@@ -41,7 +41,7 @@ namespace Regulus.Remote
             {
              
             }
-        }
+        }*/
 
         event Action<T> INotifier<T>.Supply
         {

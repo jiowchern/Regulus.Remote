@@ -122,11 +122,7 @@ namespace RemotingTest
 	        {
 	            _Supply(_Tester);
 	        }
-	        event Action<IBinderTest> INotifier<IBinderTest>.Return
-	        {
-	            add { }
-	            remove {  }
-	        }
+	        
 
 	        event Action<IBinderTest> INotifier<IBinderTest>.Supply
 	        {
@@ -151,15 +147,7 @@ namespace RemotingTest
 	            }
 	        }
 
-	        IBinderTest[] INotifier<IBinderTest>.Returns
-	        {
-	            get {
-                    return new[]
-                   {
-                        _Tester
-                    };
-                }
-	        }
+	        
 	    }
     }
 }

@@ -7,12 +7,7 @@ namespace Regulus.Remote
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public interface INotifier<T> 
-	{
-		/// <summary>
-		///     伺服器端如果有物件傳入則會發生此事件
-		///     此事件傳回的物件如果沒有備參考到則會發生Unsupply
-		/// </summary>
-		event Action<T> Return;
+	{		
 
 		/// <summary>
 		///     伺服器端如果有物件傳入則會發生此事件
@@ -29,9 +24,6 @@ namespace Regulus.Remote
 		/// </summary>
 		T[] Ghosts { get; }
 
-		/// <summary>
-		///     在系統裡的介面物件數量(弱參考型別)
-		/// </summary>
-		T[] Returns { get; }
+		
 	}
 }

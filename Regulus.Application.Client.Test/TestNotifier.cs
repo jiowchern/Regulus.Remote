@@ -7,20 +7,7 @@ namespace Regulus.Application.Client.Test
     {
         T[] INotifier<T>.Ghosts => throw new NotImplementedException();
 
-        T[] INotifier<T>.Returns => throw new NotImplementedException();
-
-        event Action<T> INotifier<T>.Return
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
+       
 
         event Action<T> _Supply;
         event Action<T> INotifier<T>.Supply
