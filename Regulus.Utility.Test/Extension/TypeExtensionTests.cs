@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-using Regulus.CustomType;
+using Regulus.Utility;
 
 namespace Regulus.Extension.Tests
 {

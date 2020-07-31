@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
 
-using Regulus.CustomType;
+using Regulus.Utility;
 
 namespace Regulus.Extension
 {

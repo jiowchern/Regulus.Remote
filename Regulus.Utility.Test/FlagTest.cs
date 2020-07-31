@@ -5,7 +5,7 @@
 
 
 using Regulus;
-using Regulus.CustomType;
+using Regulus.Utility;
 
 namespace RegulusLibraryTest
 {

@@ -340,8 +340,7 @@ $@"
             
             
             public C{name}(long id, bool have_return )
-            {{
-                // notifier propertys
+            {{                
                 {_BuildPropertyConstructor(type)}
                 _HaveReturn = have_return ;
                 {CodeBuilder._GhostIdName} = id; 

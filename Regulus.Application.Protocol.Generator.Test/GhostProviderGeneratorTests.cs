@@ -12,7 +12,7 @@ using Microsoft.CSharp;
 
 using NUnit.Framework;
 
-using Regulus.Framework;
+using Regulus.Utiliey;
 using Regulus.Remote;
 
 namespace Regulus.Tool.GPI

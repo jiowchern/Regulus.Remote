@@ -5,7 +5,7 @@
 
 using NSubstitute;
 
-using Regulus.Framework;
+using Regulus.Utiliey;
 using Regulus.Remote;
 using Regulus.Remote.Extension;
 using Regulus.Utility;

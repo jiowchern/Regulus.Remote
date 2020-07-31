@@ -3,7 +3,7 @@
 
 
 
-namespace Regulus.CustomType
+namespace Regulus.Utility
 {
 
 

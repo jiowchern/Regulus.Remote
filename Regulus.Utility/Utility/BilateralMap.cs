@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Regulus.CustomType
+namespace Regulus.Utility
 {
     public class BilateralMap<TItem1, TItem2>
     {

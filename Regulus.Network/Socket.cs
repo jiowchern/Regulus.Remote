@@ -5,7 +5,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using Regulus.Framework;
+using Regulus.Utiliey;
 using Regulus.Network.Package;
 using Regulus.Utility;
 

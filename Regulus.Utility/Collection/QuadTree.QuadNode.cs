@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 
 
-using Regulus.CustomType;
+using Regulus.Utility;
 
 namespace Regulus.Collection
 {

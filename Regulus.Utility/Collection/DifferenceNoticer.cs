@@ -9,7 +9,7 @@ namespace Regulus.Collection
         public delegate void MoveCallback(IEnumerable<T> instances);
 
         public event MoveCallback JoinEvent;
-        public event MoveCallback LeftEvent;
+        public event MoveCallback LeaveEvent;
         private readonly List<T> _Controllers;
 
         private IEqualityComparer<T> _EqualityComparer;
@@ -53,8 +53,8 @@ namespace Regulus.Collection
 
         private void _BroadcastLeft(IEnumerable<T> controllers)
         {
-            if(LeftEvent != null)
-                LeftEvent(controllers);
+            if(LeaveEvent != null)
+                LeaveEvent(controllers);
         }
 
         private void _BroadcastJoin(IEnumerable<T> controllers)

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 
 
-namespace Regulus.CustomType
+namespace Regulus.Utility
 {
     [Serializable]
 	public struct Triangle : IEquatable<Triangle>, IRotatable

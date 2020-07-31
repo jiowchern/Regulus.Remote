@@ -5,7 +5,7 @@ using System.Xml.Serialization;
 
 
 
-using Regulus.CustomType;
+using Regulus.Utility;
 using Regulus.Extension;
 using Regulus.Utility;
 

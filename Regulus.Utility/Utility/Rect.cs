@@ -2,7 +2,7 @@
 using System.Linq;
 
 
-namespace Regulus.CustomType
+namespace Regulus.Utility
 {
 	
 	[Serializable]

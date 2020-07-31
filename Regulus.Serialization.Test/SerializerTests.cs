@@ -2,7 +2,7 @@
 using System.Linq;
 using System.CodeDom;
 using NUnit.Framework;
-using Regulus.Game;
+
 
 
 namespace Regulus.Serialization.Tests
@@ -571,11 +571,11 @@ namespace Regulus.Serialization.Tests
         public void TestSerializerVector2()
         {            
 
-            var ser = new Serializer(new DescriberBuilder(typeof(Regulus.CustomType.Vector2), typeof(float)).Describers);
-            var v = new Regulus.CustomType.Vector2(99, 22);
+            var ser = new Serializer(new DescriberBuilder(typeof(Regulus.Utility.Vector2), typeof(float)).Describers);
+            var v = new Regulus.Utility.Vector2(99, 22);
 
             var array = ser.ObjectToBuffer(v);
-            var v2 = (Regulus.CustomType.Vector2) ser.BufferToObject(array);
+            var v2 = (Regulus.Utility.Vector2) ser.BufferToObject(array);
 
             NUnit.Framework.Assert.AreEqual(99, v2.X);
             NUnit.Framework.Assert.AreEqual(22, v2.Y);

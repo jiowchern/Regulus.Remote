@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Regulus.CustomType
+namespace Regulus.Utility
 {
     [Serializable]
 	public struct Size

@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-using Regulus.CustomType;
+using Regulus.Utility;
 
 namespace Regulus.Collection
 {

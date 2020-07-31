@@ -1,6 +1,6 @@
-﻿namespace Regulus.Framework
+﻿namespace Regulus.Utiliey
 {
-	public interface IBootable<T>
+    public interface IBootable<T>
 	{
 		void Launch();
 

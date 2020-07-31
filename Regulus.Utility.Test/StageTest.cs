@@ -7,8 +7,8 @@
 		public void MachineTest()
 		{
 			
-			var stage1 = NSubstitute.Substitute.For<Regulus.Framework.IBootable>();
-			var stage2 = NSubstitute.Substitute.For<Regulus.Framework.IBootable>();
+			var stage1 = NSubstitute.Substitute.For<Regulus.Utiliey.IBootable>();
+			var stage2 = NSubstitute.Substitute.For<Regulus.Utiliey.IBootable>();
 			var machine = new Regulus.Utility.StageMachine();
 
 			machine.Push(stage1);

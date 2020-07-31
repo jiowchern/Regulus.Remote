@@ -1,5 +1,5 @@
 ﻿
-using Regulus.CustomType;
+using Regulus.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 using NUnit.Framework;
 
-namespace Regulus.CustomType.Tests
+namespace Regulus.Utility.Tests
 {
 
     public class Vector2Tests

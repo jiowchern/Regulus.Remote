@@ -33,7 +33,7 @@ namespace RegulusLibraryTest
             };
             var differenceNoticer = new DifferenceNoticer<int>();
             differenceNoticer.JoinEvent += instances => { joinResult.Add(instances.ToArray()); };
-            differenceNoticer.LeftEvent += instances => { leftResult.Add(instances.ToArray()); };
+            differenceNoticer.LeaveEvent += instances => { leftResult.Add(instances.ToArray()); };
 
             differenceNoticer.Set(before); // j0 1 , 2 ,3 ,4 ,5 : l0
             differenceNoticer.Set(after); // j1 6 : l1 1
@@ -65,7 +65,7 @@ namespace RegulusLibraryTest
             };
             var differenceNoticer = new DifferenceNoticer<int>( new IntComparer() );
             differenceNoticer.JoinEvent += instances => { joinResult.Add(instances.ToArray()); };
-            differenceNoticer.LeftEvent += instances => { leftResult.Add(instances.ToArray()); };
+            differenceNoticer.LeaveEvent += instances => { leftResult.Add(instances.ToArray()); };
 
             differenceNoticer.Set(before); // j0 1 , 2 ,3 ,4 ,5 : l0
             differenceNoticer.Set(after); // j1 6 : l1 1

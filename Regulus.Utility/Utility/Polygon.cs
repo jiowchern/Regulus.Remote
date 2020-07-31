@@ -10,7 +10,7 @@ using System.Xml.Serialization;
 
 
 
-namespace Regulus.CustomType
+namespace Regulus.Utility
 {
 
         

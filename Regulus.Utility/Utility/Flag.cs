@@ -5,11 +5,10 @@ using System.Collections.Generic;
 
 
 
-namespace Regulus.CustomType
+namespace Regulus.Utility
 {
     
-
-    // todo : 不能序列化 , 序列化陣列要改成IList檢查
+    
 	public class Flag<T> : IEnumerable<T>, ICollection<T> 
 	{
 
