@@ -60,4 +60,4 @@ Calling ```Foo.Add``` will pass ```IBar``` to the client, whereas calling ```Foo
 ---
 #### Restrictions
 1. Notifier supports only interfaces.
-2. When "Foo" is to be released, it is recommended that "IBar" be cancelled by calling "Unsupply".
+2. When ```Foo``` is to be released, it is recommended that ```IBar``` be cancelled by calling ```Unsupply```.
