@@ -64,6 +64,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Application.Client"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Application.Client.Test", "Regulus.Application.Client.Test\Regulus.Application.Client.Test.csproj", "{9AC9D5ED-2B49-4C25-B851-518D0B8F024A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Document", "Document", "{011E01DE-6672-4E26-B406-8868A5B5391A}"
+	ProjectSection(SolutionItems) = preProject
+		document\communications-event.md = document\communications-event.md
+		Document\communications-method.md = Document\communications-method.md
+		document\communications-notifier.md = document\communications-notifier.md
+		document\communications-property.md = document\communications-property.md
+		document\setup-common.md = document\setup-common.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -195,6 +204,7 @@ Global
 		{5CDAF153-41F9-4E52-B291-F7239D31CB54} = {A088BA49-DE34-4F59-AF19-C82A94D7F834}
 		{0D34DB44-F379-484A-B43E-678F2E714830} = {A088BA49-DE34-4F59-AF19-C82A94D7F834}
 		{9AC9D5ED-2B49-4C25-B851-518D0B8F024A} = {F37C2CFD-4962-4E1B-96EB-E5E8928D217B}
+		{011E01DE-6672-4E26-B406-8868A5B5391A} = {845C59A2-925C-4D68-BAF9-E3545A354CF2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5F361C65-F7E7-4579-84BF-3D8DB0C9DABA}
