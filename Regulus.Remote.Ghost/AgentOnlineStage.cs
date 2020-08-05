@@ -17,7 +17,7 @@ namespace Regulus.Remote.Ghost
 
 			private static readonly object _LockResponse = new object();			
 
-			private readonly AgentCore _Core;
+			private readonly GhostProvider _Core;
 			private readonly IProvider _OnlineProvider;
 			private readonly PackageReader<ResponsePackage> _Reader;
 
@@ -36,7 +36,7 @@ namespace Regulus.Remote.Ghost
 
 			public static int ResponseQueueCount { get; private set; }
 
-			public OnlineStage(IPeer peer, AgentCore core , ISerializer serializer , IProvider online_provider)
+			public OnlineStage(IPeer peer, GhostProvider core , ISerializer serializer , IProvider online_provider)
 			{
                 
                 _Core = core;
@@ -124,7 +124,7 @@ namespace Regulus.Remote.Ghost
 				}
 			}
 
-			private void _Process(AgentCore core)
+			private void _Process(GhostProvider core)
 			{
 				lock(OnlineStage._LockResponse)
 				{

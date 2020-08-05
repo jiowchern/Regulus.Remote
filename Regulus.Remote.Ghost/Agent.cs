@@ -17,7 +17,7 @@ namespace Regulus.Remote.Ghost
 
 		private event Action _ConnectEvent;
 
-		private readonly AgentCore _Core;
+		private readonly GhostProvider _Core;
 
 		private readonly StatusMachine _Machine;
 	    private readonly IConnectProvidable _ConnecterSpawner;
@@ -33,7 +33,7 @@ namespace Regulus.Remote.Ghost
 	    {	    
             _Serializer = protocol.GetSerialize();
 	        _Machine = new StatusMachine();
-            _Core = new AgentCore(protocol);
+            _Core = new GhostProvider(protocol);
 	        _ConnecterSpawner = connecter_spawner;
 			_ConnectProvider = new TProvider<IConnect>();
 			_OnlineProvider = new TProvider<IOnline>();

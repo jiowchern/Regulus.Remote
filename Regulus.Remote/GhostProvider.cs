@@ -18,7 +18,7 @@ using Timer = System.Timers.Timer;
 
 namespace Regulus.Remote
 {
-    public class AgentCore
+    public class GhostProvider
 	{
 		private readonly AutoRelease _AutoRelease;
 
@@ -53,7 +53,7 @@ namespace Regulus.Remote
 
 		public bool Enable { get; private set; }
 
-		public AgentCore(IProtocol protocol)
+		public GhostProvider(IProtocol protocol)
 		{
 			_NotifierPassage = new SoulNotifier();
 			_ReturnValueQueue = new ReturnValueQueue();

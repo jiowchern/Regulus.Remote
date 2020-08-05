@@ -11,7 +11,7 @@ namespace Regulus.Remote
 
 	public class OnlineGhost : IOnline, IGhost
     {
-		private readonly AgentCore _Agent;
+		private readonly GhostProvider _Agent;
 
 		public long Id { get; private set; }
 
@@ -20,7 +20,7 @@ namespace Regulus.Remote
 			Id = LongProvider.OnlineId;
 		}
 
-		public OnlineGhost(AgentCore agent) : this()
+		public OnlineGhost(GhostProvider agent) : this()
 		{
 			_Agent = agent;
 		}

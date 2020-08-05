@@ -17,7 +17,7 @@ namespace Regulus.Remote.Standalone
 
 		private event Action _ConnectEvent;
 
-		private readonly AgentCore _Agent;
+		private readonly GhostProvider _Agent;
 
 		private readonly GhostRequest _GhostRequest;
 
@@ -46,7 +46,7 @@ namespace Regulus.Remote.Standalone
 	    {
 			_Machine = new StatusMachine();
 			_GhostRequest = new GhostRequest(protocol.GetSerialize());
-            _Agent = new AgentCore(protocol);
+            _Agent = new GhostProvider(protocol);
             _SoulProvider = new SoulProvider(this, this, protocol);
             _ResponseCodes = new System.Collections.Concurrent.ConcurrentQueue<Tuple<ServerToClientOpCode, byte[]>>();
 
