@@ -1,4 +1,4 @@
-﻿using Regulus.Utiliey;
+﻿using Regulus.Utility;
 using Regulus.Utility;
 using System;
 

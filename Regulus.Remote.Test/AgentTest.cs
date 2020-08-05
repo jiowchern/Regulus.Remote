@@ -11,13 +11,6 @@ namespace Regulus.Remote.Tests
     public interface IGpi
     {
         void Method();
-        //Guid Id { get; }
-        //Regulus.Remote.Value<bool> MethodReturn();
-
-        //event Action<float, string> OnCallEvent;
-    }
-    namespace NotifierProperty
-    {
     }
     
     public class AgentTest
@@ -25,7 +18,9 @@ namespace Regulus.Remote.Tests
         [NUnit.Framework.Test()]
         public void StandaloneConnectEventTest()
         {
-            var protocol = NSubstitute.Substitute.For<IProtocol>();
+            // todo
+            throw new NotImplementedException();
+            /*var protocol = NSubstitute.Substitute.For<IProtocol>();
             bool has = false;
             var agent = new Regulus.Remote.Standalone.Agent(protocol) as IAgent;
             agent.ConnectEvent += () =>
@@ -39,13 +34,7 @@ namespace Regulus.Remote.Tests
             agent.Launch();
             agent.Update();
             agent.Shutdown();
-            NUnit.Framework.Assert.True(has);
+            NUnit.Framework.Assert.True(has);*/
         }
-
-
-        
-
-
-
     }
 }

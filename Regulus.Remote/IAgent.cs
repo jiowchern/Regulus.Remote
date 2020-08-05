@@ -12,16 +12,7 @@ namespace Regulus.Remote
 
     public interface IAgent : IUpdatable , INotifierQueryable
     {
-        /// <summary>
-        ///     與遠端發生斷線
-        ///     呼叫Disconnect不會發生此事件
-        /// </summary>
-        event Action BreakEvent;
-
-        /// <summary>
-        ///     連線成功事件
-        /// </summary>
-        event Action ConnectEvent;
+        
 
         /// <summary>
         ///     Ping

@@ -3,12 +3,12 @@ using System;
 
 using System.Collections.Generic;
 
-using Regulus.Utiliey;
 using Regulus.Utility;
+
 using Regulus.Serialization;
 
 namespace Regulus.Remote.Standalone
-{
+{	
 	public class Agent : IRequestQueue, IResponseQueue, IBinder, IAgent
 	{
 		public delegate void ConnectedCallback();
@@ -44,7 +44,9 @@ namespace Regulus.Remote.Standalone
 
 	    public Agent(IProtocol protocol)
 	    {
-			_Machine = new StatusMachine();
+			// todo
+			throw new NotImplementedException();
+			/*_Machine = new StatusMachine();
 			_GhostRequest = new GhostRequest(protocol.GetSerialize());
             _Agent = new GhostProvider(protocol);
             _SoulProvider = new SoulProvider(this, this, protocol);
@@ -56,7 +58,7 @@ namespace Regulus.Remote.Standalone
 			_Agent.AddProvider(typeof(IConnect), _ConnectProvider);
 			_Agent.AddProvider(typeof(IOnline), _OnlineProvider);
 			_ConnectEvent += () => { };
-			_BreakEvent += () => { };
+			_BreakEvent += () => { };*/
 		}
         
 
@@ -108,18 +110,7 @@ namespace Regulus.Remote.Standalone
 			Shutdown();
 		}
 
-		event Action IAgent.ConnectEvent
-		{
-			add { _ConnectEvent += value; }
-			remove { _ConnectEvent -= value; }
-		}
-
-		event Action IAgent.BreakEvent
-		{
-			add { _BreakEvent += value; }
-			remove { _BreakEvent -= value; }
-		}
-
+		
 		bool IAgent.Connected
 		{
 			get { return _Connected; }
@@ -184,7 +175,7 @@ namespace Regulus.Remote.Standalone
 
 			_Agent.ErrorMethodEvent += _ErrorMethodEvent;
 		    _Agent.ErrorVerifyEvent += _ErrorVerifyEvent;
-            _Agent.Initial(_GhostRequest);
+            
 
 			_ToOffline();
 		}
@@ -236,8 +227,7 @@ namespace Regulus.Remote.Standalone
 				_BreakEvent();
 			}
 
-			_BreakEvent = null;
-			_Agent.Finial();
+			_BreakEvent = null;			
 			_GhostRequest.SetPropertyDoneEvent -= _SoulProvider.SetPropertyDone;
 			_GhostRequest.PingEvent -= _OnRequestPing;
 			_GhostRequest.ReleaseEvent -= _SoulProvider.Unbind;

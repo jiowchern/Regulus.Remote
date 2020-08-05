@@ -1,5 +1,5 @@
 ﻿using System;
-using Regulus.Utiliey;
+using Regulus.Utility;
 
 namespace Regulus.Utility
 {

@@ -2,7 +2,7 @@ using System;
 
 using System.Runtime.InteropServices;
 
-using Regulus.Utiliey;
+using Regulus.Utility;
 using Regulus.Utility.WindowConsoleStand;
 
 

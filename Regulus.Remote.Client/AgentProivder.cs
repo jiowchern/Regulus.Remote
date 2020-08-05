@@ -18,15 +18,19 @@ namespace Regulus.Remote.Client
 
         public static Regulus.Remote.IAgent CreateRudp(IProtocol protocol)
         {
-            var client = new Regulus.Network.Rudp.ConnectProvider(new Regulus.Network.Rudp.UdpSocket());
+            // todo
+            throw new NotImplementedException();
+            /*var client = new Regulus.Network.Rudp.ConnectProvider(new Regulus.Network.Rudp.UdpSocket());
             var agent = new Regulus.Remote.Ghost.Agent(protocol, client);
-            return agent;
+            return agent;*/
         }
 
         public static Regulus.Remote.IAgent Create(IProtocol protocol, Regulus.Network.IConnectProvidable connect_providable)
-        {            
-            var agent = new Regulus.Remote.Ghost.Agent(protocol, connect_providable);
-            return agent;
+        {
+            // todo
+            throw new NotImplementedException();
+            /*var agent = new Regulus.Remote.Ghost.Agent(protocol, connect_providable);
+            return agent;*/
         }
 
 
@@ -39,28 +43,34 @@ namespace Regulus.Remote.Client
 
         public static IAgent CreateStandalone(IProtocol arg,Remote.IBinderProvider entry)
         {
-            var agent = new Regulus.Remote.Standalone.Agent(arg);
+            // todo
+            throw new NotImplementedException();
+            /*var agent = new Regulus.Remote.Standalone.Agent(arg);
             (agent as IAgent).ConnectEvent += () => {
 
                 var binder = agent as IBinder;
                 entry.AssignBinder(binder);
             }; 
             
-            return agent;
+            return agent;*/
         }
 
         public static Regulus.Remote.IAgent CreateTcp(IProtocol protocol)
         {
-            var client = new Regulus.Network.Tcp.ConnectProvider();
+            // todo
+            throw new NotImplementedException();
+            /*var client = new Regulus.Network.Tcp.ConnectProvider();
             var agent = new Regulus.Remote.Ghost.Agent(protocol, client);
-            return agent;
+            return agent;*/
         }
 
         public static Regulus.Remote.IAgent CreateWeb(IProtocol protocol)
         {
-            var client = new Regulus.Network.Web.ConnectProvider();
+            // todo
+            throw new NotImplementedException();
+            /*var client = new Regulus.Network.Web.ConnectProvider();
             var agent = new Regulus.Remote.Ghost.Agent(protocol, client);
-            return agent;
+            return agent;*/
         }
 
         private readonly IProtocol protocol;

@@ -9,16 +9,16 @@ namespace Regulus.Remote.Ghost
 {
 	public partial class Agent
 	{
-		private class OnlineStage : IStatus, IGhostRequest
-		{
+
+		private class GhostSerializer : IUpdatable, IGhostRequest
+        {
 			public event Action DoneFromServerEvent;
 
 			private static readonly object _LockRequest = new object();
 
 			private static readonly object _LockResponse = new object();			
-
-			private readonly GhostProvider _Core;
-			private readonly IProvider _OnlineProvider;
+			
+			
 			private readonly PackageReader<ResponsePackage> _Reader;
 
 			private readonly Regulus.Collection.Queue<ResponsePackage> _Receives;
@@ -26,32 +26,47 @@ namespace Regulus.Remote.Ghost
 			private readonly Regulus.Collection.Queue<RequestPackage> _Sends;
 
 			private readonly PackageWriter<RequestPackage> _Writer;
-			private readonly OnlineGhost _Online;
-
+			
 			private volatile bool _Enable;
 
-			private IPeer _Peer;
+			private readonly IPeer _Peer;
 
 			public static int RequestQueueCount { get; private set; }
 
 			public static int ResponseQueueCount { get; private set; }
 
-			public OnlineStage(IPeer peer, GhostProvider core , ISerializer serializer , IProvider online_provider)
+			public GhostSerializer(IPeer peer, ISerializer serializer )
 			{
                 
-                _Core = core;
-				_OnlineProvider = online_provider;
+                
+				
 				_Peer = peer;
 				_Reader = new PackageReader<ResponsePackage>(serializer);
 				_Writer = new PackageWriter<RequestPackage>(serializer);
 				_Sends = new Collection.Queue<RequestPackage>();
 				_Receives = new Collection.Queue<ResponsePackage>();
-				_Online = new OnlineGhost(_Core);
+				
 			}
 
-			void IGhostRequest.Request(ClientToServerOpCode code, byte[] args)
+			event Action<ServerToClientOpCode, byte[]> _ResponseEvent;
+
+			event Action<ServerToClientOpCode, byte[]> IGhostRequest.ResponseEvent
+            {
+                add
+                {
+					_ResponseEvent += value;
+
+				}
+
+                remove
+                {
+					_ResponseEvent -= value;
+				}
+            }
+
+            void IGhostRequest.Request(ClientToServerOpCode code, byte[] args)
 			{
-				lock(OnlineStage._LockRequest)
+				lock(GhostSerializer._LockRequest)
 				{
 					_Sends.Enqueue(
 						new RequestPackage()
@@ -59,11 +74,11 @@ namespace Regulus.Remote.Ghost
 							Data = args, 
 							Code = code
 						});
-					OnlineStage.RequestQueueCount++;
+					GhostSerializer.RequestQueueCount++;
 				}
 			}
 
-			void IStatus.Enter()
+			void IBootable.Launch()
 			{
 				Singleton<Log>.Instance.WriteInfo("Agent online enter.");
 
@@ -75,35 +90,28 @@ namespace Regulus.Remote.Ghost
 				
 
 
-				_Core.Initial(this);
+				
 				_Enable = true;
 				_ReaderStart();
 				_WriterStart();
 
-				_Online.DisconnectEvent += _Disable;
-				_OnlineProvider.Add(_Online);
-				_OnlineProvider.Ready(_Online.Id);
+				
 				
 			}
 
-			void IStatus.Leave()
+			void IBootable.Shutdown()
 			{
-				_OnlineProvider.Remove(_Online.Id);
+				
 
 				_WriterStop();
 				_ReaderStop();
 
-				if(_Peer != null)
-				{					
-					_Peer.Close();
-					_Peer = null;
-				}
-
-				_Core.Finial();
+				_Peer.Close();
+				
 				Singleton<Log>.Instance.WriteInfo("Agent online leave.");
 			}
 
-			void IStatus.Update()
+			void _Update()
 			{
 				if(_Enable == false)
 				{
@@ -111,29 +119,29 @@ namespace Regulus.Remote.Ghost
 				}
 				else
 				{
-					_Process(_Core);
+					_Process();
 				}
 			}
 
 			private void _ReceivePackage(ResponsePackage package)
 			{
-				lock(OnlineStage._LockResponse)
+				lock(GhostSerializer._LockResponse)
 				{
 					_Receives.Enqueue(package);
-					OnlineStage.ResponseQueueCount++;
+					GhostSerializer.ResponseQueueCount++;
 				}
 			}
 
-			private void _Process(GhostProvider core)
+			private void _Process()
 			{
-				lock(OnlineStage._LockResponse)
+				lock(GhostSerializer._LockResponse)
 				{
 					var pkgs = _Receives.DequeueAll();
-					OnlineStage.ResponseQueueCount -= pkgs.Length;
+					GhostSerializer.ResponseQueueCount -= pkgs.Length;
 
 					foreach(var pkg in pkgs)
 					{
-						core.OnResponse(pkg.Code, pkg.Data);
+						_ResponseEvent(pkg.Code , pkg.Data);						
 					}
 				}
 
@@ -161,10 +169,10 @@ namespace Regulus.Remote.Ghost
 
 			private RequestPackage[] _SendsPop()
 			{
-				lock(OnlineStage._LockRequest)
+				lock(GhostSerializer._LockRequest)
 				{
 					var pkg = _Sends.DequeueAll();
-					OnlineStage.RequestQueueCount -= pkg.Length;
+					GhostSerializer.RequestQueueCount -= pkg.Length;
 					return pkg;
 				}
 			}
@@ -188,14 +196,20 @@ namespace Regulus.Remote.Ghost
 				_Reader.ErrorEvent -= _Disable;
 				_Reader.Stop();
 			}
-		}
+
+            bool IUpdatable.Update()
+            {
+				_Update();
+				return _Enable;
+            }
+        }
 
 		/// <summary>
 		///     請求的封包
 		/// </summary>
 		public static int RequestPackages
 		{
-			get { return OnlineStage.RequestQueueCount; }
+			get { return GhostSerializer.RequestQueueCount; }
 		}
 
 		/// <summary>
@@ -203,7 +217,7 @@ namespace Regulus.Remote.Ghost
 		/// </summary>
 		public static int ResponsePackages
 		{
-			get { return OnlineStage.ResponseQueueCount; }
+			get { return GhostSerializer.ResponseQueueCount; }
 		}
 	}
 }

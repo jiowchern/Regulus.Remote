@@ -2,7 +2,7 @@
 using System.Threading;
 
 
-using Regulus.Utiliey;
+using Regulus.Utility;
 using Regulus.Utility;
 
 namespace Regulus.Remote.Soul

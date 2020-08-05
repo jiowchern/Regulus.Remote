@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Net;
-using Regulus.Utiliey;
+using Regulus.Utility;
 using Regulus.Utility;
 
 namespace Regulus.Network

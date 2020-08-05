@@ -73,6 +73,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Document", "Document", "{01
 		document\setup-common.md = document\setup-common.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulus.Remote.Standalone.Test", "Regulus.Remote.Standalone.Test\Regulus.Remote.Standalone.Test.csproj", "{82BAA92B-B238-4F83-B836-9D81C335393F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -175,6 +177,10 @@ Global
 		{9AC9D5ED-2B49-4C25-B851-518D0B8F024A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9AC9D5ED-2B49-4C25-B851-518D0B8F024A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9AC9D5ED-2B49-4C25-B851-518D0B8F024A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82BAA92B-B238-4F83-B836-9D81C335393F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82BAA92B-B238-4F83-B836-9D81C335393F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82BAA92B-B238-4F83-B836-9D81C335393F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82BAA92B-B238-4F83-B836-9D81C335393F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -205,6 +211,7 @@ Global
 		{0D34DB44-F379-484A-B43E-678F2E714830} = {A088BA49-DE34-4F59-AF19-C82A94D7F834}
 		{9AC9D5ED-2B49-4C25-B851-518D0B8F024A} = {F37C2CFD-4962-4E1B-96EB-E5E8928D217B}
 		{011E01DE-6672-4E26-B406-8868A5B5391A} = {845C59A2-925C-4D68-BAF9-E3545A354CF2}
+		{82BAA92B-B238-4F83-B836-9D81C335393F} = {F37C2CFD-4962-4E1B-96EB-E5E8928D217B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5F361C65-F7E7-4579-84BF-3D8DB0C9DABA}

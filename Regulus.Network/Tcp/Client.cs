@@ -1,5 +1,5 @@
 using System;
-using Regulus.Utiliey;
+using Regulus.Utility;
 using Regulus.Network;
 
 namespace Regulus.Network.Tcp

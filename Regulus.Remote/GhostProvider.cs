@@ -18,7 +18,7 @@ using Timer = System.Timers.Timer;
 
 namespace Regulus.Remote
 {
-    public class GhostProvider
+    public class GhostProvider 
 	{
 		private readonly AutoRelease _AutoRelease;
 
@@ -42,9 +42,6 @@ namespace Regulus.Remote
 		{
 			_Providers.Add(type , provider);
 		}
-
-		
-
 		private IProtocol _Protocol;
 
         public event Action<byte[], byte[]> ErrorVerifyEvent;
@@ -53,8 +50,10 @@ namespace Regulus.Remote
 
 		public bool Enable { get; private set; }
 
-		public GhostProvider(IProtocol protocol)
+		public GhostProvider(IProtocol protocol, IGhostRequest req)
 		{
+			_Requester = req;
+			_Requester.ResponseEvent += OnResponse;
 			_NotifierPassage = new SoulNotifier();
 			_ReturnValueQueue = new ReturnValueQueue();
             _Protocol = protocol;
@@ -62,22 +61,17 @@ namespace Regulus.Remote
 		    _Serializer = _Protocol.GetSerialize();
 		    _Providers = new Dictionary<Type, IProvider>();
             _AutoRelease = new AutoRelease(_Requester , _Serializer);
-        }		
-
-		public void Initial(IGhostRequest req)
-		{
-			_Requester = req;
 			_StartPing();
-
 			Enable = true;
 		}
 
-		public void Finial()
-		{
+        public void Dispose()
+        {
+			_Requester.ResponseEvent -= OnResponse;
 			Enable = false;
-			lock(_Providers)
+			lock (_Providers)
 			{
-				foreach(var providerPair in _Providers)
+				foreach (var providerPair in _Providers)
 				{
 					providerPair.Value.ClearGhosts();
 				}
@@ -85,6 +79,8 @@ namespace Regulus.Remote
 
 			_EndPing();
 		}
+
+        
 
 		public void OnResponse(ServerToClientOpCode id, byte[] args)
 		{
@@ -431,12 +427,6 @@ namespace Regulus.Remote
 		{			
 			return _InterfaceProvider.Find(ghostBaseType);
         }
-
-		
-
-		
-
-		
 
 		public event Action<string, string> ErrorMethodEvent;
 	}

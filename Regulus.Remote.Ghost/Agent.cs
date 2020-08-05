@@ -1,127 +1,135 @@
 ﻿using System;
-using System.Net.Sockets;
-
-using Regulus.Serialization;
-using Regulus.Utiliey;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
+using System.Threading.Tasks;
 using Regulus.Network;
-using Regulus.Network.Rudp;
-
 using Regulus.Utility;
+namespace Regulus.Remote.Standalone
+{
 
+    public class CommunicationDevice : Network.IPeer
+    {
+		readonly System.Collections.Concurrent.ConcurrentQueue<MemoryStream> _Sends;
+		readonly System.Collections.Concurrent.ConcurrentQueue<MemoryStream> _Receives;
+		public CommunicationDevice()
+        {
+			
+			_Sends = new System.Collections.Concurrent.ConcurrentQueue<MemoryStream>();
+			_Receives = new System.Collections.Concurrent.ConcurrentQueue<MemoryStream>();
+
+		}
+
+        public void Push(byte[] buffer)
+        {
+			_Receives.Enqueue(new MemoryStream(buffer,0, buffer.Length));
+		}
+
+        EndPoint IPeer.RemoteEndPoint => throw new NotImplementedException();
+
+        EndPoint IPeer.LocalEndPoint => throw new NotImplementedException();
+
+        bool IPeer.Connected => throw new NotImplementedException();
+
+        void IPeer.Close()
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<int> IPeer.Receive(byte[] buffer, int offset, int count)
+        {
+			MemoryStream stream;			
+			if (_Receives.TryPeek(out stream))
+			{
+				var streamCount = stream.Length - stream.Position;
+				var readCount = count;
+				if (streamCount <= readCount)
+					_Receives.TryDequeue(out stream);
+				return stream.ReadAsync(buffer, offset, count);
+			}
+			return System.Threading.Tasks.Task<int>.FromResult(0);
+		}
+
+        public Task<MemoryStream> Pop()
+        {
+			return Task<MemoryStream>.Run(()=>{
+                MemoryStream stream;
+                while (!_Sends.TryDequeue(out stream))
+                {
+
+                }
+				return stream;
+			});
+
+		}
+
+        Task<int> IPeer.Send(byte[] buffer, int offset, int count)
+        {
+			return Task<int>.Run(() =>
+			{
+				var stream = new MemoryStream(buffer, offset, count);
+				_Sends.Enqueue(stream);
+				return (int)stream.Length;
+			});			
+		}
+    }
+}
 namespace Regulus.Remote.Ghost
 {
 	public partial class Agent : IAgent
 	{
-	    private readonly ISerializer _Serializer;
-	    private event Action _BreakEvent;
-
-		private event Action _ConnectEvent;
-
-		private readonly GhostProvider _Core;
-
-		private readonly StatusMachine _Machine;
-	    private readonly IConnectProvidable _ConnecterSpawner;
-		private readonly TProvider<IConnect> _ConnectProvider;
-		private readonly TProvider<IOnline> _OnlineProvider;
+        private readonly IUpdatable _GhostSerializer;
+        private readonly GhostProvider _GhostProvider;
 
 		private long _Ping
 		{
-			get { return _Core.Ping; }
+			get { return _GhostProvider.Ping; }
 		}
 
-	    public Agent(IProtocol protocol,Regulus.Network.IConnectProvidable connecter_spawner)
+	    public Agent(IProtocol protocol,Regulus.Network.IPeer peer)
 	    {	    
-            _Serializer = protocol.GetSerialize();
-	        _Machine = new StatusMachine();
-            _Core = new GhostProvider(protocol);
-	        _ConnecterSpawner = connecter_spawner;
-			_ConnectProvider = new TProvider<IConnect>();
-			_OnlineProvider = new TProvider<IOnline>();
-			_Core.AddProvider(typeof(IConnect), _ConnectProvider);
-			_Core.AddProvider(typeof(IOnline), _OnlineProvider);
+            var serializer = protocol.GetSerialize();
+
+			var ghostSerializer = new GhostSerializer(peer , serializer);
+
+			_GhostProvider = new GhostProvider(protocol, ghostSerializer);
+
+			_GhostSerializer = ghostSerializer;
 		}
 
 		bool IUpdatable.Update()
-		{			
-			_Machine.Update();
-            return true;
+		{
+			return _GhostSerializer.Update();
 		}
 
 		void IBootable.Launch()
 		{
-            
-
             Singleton<Log>.Instance.WriteInfo("Agent Launch.");
-            _Core.ErrorMethodEvent += _ErrorMethodEvent;
-		    _Core.ErrorVerifyEvent += _ErrorVerifyEvent;
+            _GhostProvider.ErrorMethodEvent += _ErrorMethodEvent;
+		    _GhostProvider.ErrorVerifyEvent += _ErrorVerifyEvent;
 
-			_ConnecterSpawner.Launch();
-			
-
-
-			_ToConnectStatus();
-
+			_GhostSerializer.Launch();
 		}
 
 		void IBootable.Shutdown()
 		{
-			_ConnecterSpawner.Shutdown();
-
-
-			_Core.ErrorVerifyEvent -= _ErrorVerifyEvent;
-            _Core.ErrorMethodEvent -= _ErrorMethodEvent;
-            if (_Core.Enable)
-			{
-				_ToTermination();
-
-				while(_Core.Enable)
-				{
-					lock(_Machine)
-					{
-						_Machine.Update();
-					}
-				}
-			}
-			else
-			{
-				_Machine.Termination();
-			}
-
+			_GhostProvider.Dispose();
+			_GhostSerializer.Shutdown();
+			_GhostProvider.ErrorVerifyEvent -= _ErrorVerifyEvent;
+            _GhostProvider.ErrorMethodEvent -= _ErrorMethodEvent;
 
             Singleton<Log>.Instance.WriteInfo("Agent Shutdown.");
 		}
 
 		INotifier<T> INotifierQueryable.QueryNotifier<T>()
 		{
-			return _Core.QueryProvider<T>();
-		}
-
-		/*Value<bool> IAgent.Connect(System.Net.IPEndPoint ip)
-		{
-			return _Connect(ip);
-		}*/
-
-		event Action IAgent.ConnectEvent
-		{
-			add { _ConnectEvent += value; }
-			remove { _ConnectEvent -= value; }
+			return _GhostProvider.QueryProvider<T>();
 		}
 
 		long IAgent.Ping
 		{
 			get { return _Ping; }
 		}
-
-		event Action IAgent.BreakEvent
-		{
-			add { _BreakEvent += value; }
-			remove { _BreakEvent -= value; }
-		}
-
-		/*void IAgent.Disconnect()
-		{
-			_ToTermination();
-		}*/
 
 	    private event Action<string, string> _ErrorMethodEvent;
 
@@ -141,65 +149,7 @@ namespace Regulus.Remote.Ghost
 
 	    bool IAgent.Connected
 		{
-			get { return _Core.Enable; }
+			get { return _GhostProvider.Enable; }
 		}
-
-		/*private Value<bool> _Connect(System.Net.IPEndPoint ip)
-		{
-			return _ToConnect(ip);
-		}*/
-		
-		private void _ToConnectStatus()
-		{
-			
-			var stage = new ConnectStage(_ConnectProvider, _ConnecterSpawner.Spawn());
-			stage.DoneEvent += (socket) =>
-			{
-				_ConnectResult(socket);
-			};
-			stage.FailEvent += () =>
-			{
-				_ToConnectStatus();
-			};
-			_Machine.Push(stage);
-		}
-
-		private void _ConnectResult(IPeer peer)
-		{
-			if (_ConnectEvent != null)
-			{
-				_ConnectEvent();
-			}
-
-			_ToOnlineStatus(peer);
-		}
-
-		private void _ToOnlineStatus(IPeer peer)
-		{
-			var onlineStage = new OnlineStage(peer, _Core  , _Serializer , _OnlineProvider  );
-			onlineStage.DoneFromServerEvent += () =>
-			{
-				if (_BreakEvent != null)
-				{
-					_BreakEvent();
-				}
-				_ToConnectStatus();
-				
-			};
-
-			_Machine.Push(onlineStage);
-		}
-
-		private void _ToTermination()
-		{
-			lock(_Machine)
-			{
-				_Machine.Push(new TerminationStage(this));
-			}
-		}
-
-		
-
-        
     }
 }

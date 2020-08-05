@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
-using Regulus.Utiliey;
+using Regulus.Utility;
 
 namespace Regulus.Utility
 {

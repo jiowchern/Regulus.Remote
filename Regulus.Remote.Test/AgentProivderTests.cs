@@ -3,7 +3,7 @@ using System.Linq;
 using Regulus.Remote;
 using Regulus.Serialization;
 
-namespace Regulus.Utiliey.Client.JIT.Tests
+namespace Regulus.Utility.Client.JIT.Tests
 {
     
     public class Test

@@ -1,4 +1,4 @@
-﻿using Regulus.Utiliey;
+﻿
 using Regulus.Remote;
 using Regulus.Utility;
 using System;
@@ -22,31 +22,9 @@ namespace Regulus.Application.Client.Test
 
         }
 
-        event Action IAgent.BreakEvent
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
+      
 
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        event Action IAgent.ConnectEvent
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
+        
 
         event Action<string, string> IAgent.ErrorMethodEvent
         {

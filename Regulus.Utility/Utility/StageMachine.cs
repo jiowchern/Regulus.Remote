@@ -1,18 +1,18 @@
-﻿using Regulus.Utiliey;
+﻿using Regulus.Utility;
 using System;
 
 namespace Regulus.Utility
 {
-    public class StageMachine : Utiliey.IBootable
+    public class StageMachine : Utility.IBootable
     {
-        Utiliey.IBootable _Current;
+        Utility.IBootable _Current;
 
         public StageMachine()
         {
             _Current = this;
         }
 
-        public void Push(Regulus.Utiliey.IBootable bootable)
+        public void Push(Regulus.Utility.IBootable bootable)
         {
             _Current.Shutdown();
             bootable.Launch();

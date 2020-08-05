@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 
 using Regulus.Serialization;
-using Regulus.Utiliey;
+using Regulus.Utility;
 using Regulus.Network;
 
 namespace Regulus.Remote.Soul

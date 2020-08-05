@@ -1,4 +1,4 @@
-﻿namespace Regulus.Utiliey
+﻿namespace Regulus.Utility
 {
     public interface IBootable<T>
 	{

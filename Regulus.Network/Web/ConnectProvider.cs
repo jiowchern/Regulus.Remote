@@ -1,4 +1,4 @@
-﻿using Regulus.Utiliey;
+﻿using Regulus.Utility;
 
 namespace Regulus.Network.Web
 {

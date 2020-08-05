@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Regulus.Utiliey;
+using Regulus.Utility;
 
 namespace Regulus.Remote.Soul
 {

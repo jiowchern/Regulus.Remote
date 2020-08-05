@@ -9,7 +9,7 @@ namespace Regulus.Remote.Standalone
 
 {
 	public class GhostRequest : IGhostRequest
-	{
+    {
 	    private readonly ISerializer _Serializer;
 	    public event InvokeMethodCallback CallMethodEvent;
 
@@ -38,13 +38,26 @@ namespace Regulus.Remote.Standalone
 		    _Requests = new Queue<RequestPackage>();
 		}
 
-	    void IGhostRequest.Request(ClientToServerOpCode code, byte[] args)
+        event Action<ServerToClientOpCode, byte[]> IGhostRequest.ResponseEvent
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        void IGhostRequest.Request(ClientToServerOpCode code, byte[] args)
 		{
 			lock(_Requests)
 			{
 				_Requests.Enqueue(
 					new RequestPackage
-					{
+                    {
 						Code = code, 
 						Data = args
 					});

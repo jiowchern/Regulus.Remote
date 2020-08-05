@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using Regulus.Utiliey;
+using Regulus.Utility;
 using Regulus.Network.Package;
 using Regulus.Network.Profile;
 using Regulus.Utility;
