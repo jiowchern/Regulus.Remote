@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace Regulus.Network.Tcp
 {
-    public class Peer : IPeer
+    public class Peer : IStreamable
     {
         private readonly System.Net.Sockets.Socket _Socket;
         
@@ -20,12 +20,9 @@ namespace Regulus.Network.Tcp
 
         
 
-        bool IPeer.Connected
-        {
-            get { return _Socket.Connected && _Enable; }
-        }
+        
 
-        System.Threading.Tasks.Task<int> IPeer.Receive(byte[] readed_byte, int offset, int count )
+        System.Threading.Tasks.Task<int> IStreamable.Receive(byte[] readed_byte, int offset, int count )
         {
             if (!_Socket.Connected)
             {
@@ -59,7 +56,7 @@ namespace Regulus.Network.Tcp
             
         
 
-        System.Threading.Tasks.Task<int> IPeer.Send(byte[] buffer, int offset, int buffer_length)
+        System.Threading.Tasks.Task<int> IStreamable.Send(byte[] buffer, int offset, int buffer_length)
         {
             return System.Threading.Tasks.Task<int>.Factory.FromAsync(
                 (handler, obj) => _Socket.BeginSend(buffer, offset, buffer_length, SocketFlags.None, handler, obj), _EndSend, null);
@@ -86,12 +83,7 @@ namespace Regulus.Network.Tcp
             return sendCount;
         }
 
-        void IPeer.Close()
-        {
-            if (_Socket.Connected)
-                _Socket.Shutdown(SocketShutdown.Both);
-            _Socket.Close();
-        }       
+        
 
         protected System.Net.Sockets.Socket GetSocket()
         {

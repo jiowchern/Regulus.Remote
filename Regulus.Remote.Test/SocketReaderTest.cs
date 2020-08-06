@@ -5,17 +5,12 @@ using System.Threading.Tasks;
 
 namespace Regulus.Remote.Tests
 {
-    public class SocketReaderTestPeer : IPeer
+    public class SocketReaderTestPeer : IStreamable
     {
 
-        bool IPeer.Connected => throw new NotImplementedException();
+        
 
-        void IPeer.Close()
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<int> IPeer.Receive(byte[] buffer, int offset, int count)
+        Task<int> IStreamable.Receive(byte[] buffer, int offset, int count)
         {
             return System.Threading.Tasks.Task<int>.Run(() => {
                 for (byte i = 0; i < 10; ++i)
@@ -27,7 +22,7 @@ namespace Regulus.Remote.Tests
             
         }
 
-        Task<int> IPeer.Send(byte[] buffer, int offset, int count)
+        Task<int> IStreamable.Send(byte[] buffer, int offset, int count)
         {
             throw new NotImplementedException();
         }

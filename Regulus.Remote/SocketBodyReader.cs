@@ -16,13 +16,13 @@ namespace Regulus.Remote
 
         public event OnErrorCallback ErrorEvent;
 
-        private readonly IPeer _Peer;
+        private readonly IStreamable _Peer;
 
         private byte[] _Buffer;
 
         private int _Offset;
 
-        public SocketBodyReader(IPeer peer)
+        public SocketBodyReader(IStreamable peer)
         {
             this._Peer = peer;
         }

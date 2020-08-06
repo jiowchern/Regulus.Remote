@@ -18,7 +18,7 @@ namespace Regulus.Remote
 
 		private byte[] _Buffer;
 
-		private IPeer _Peer;
+		private IStreamable _Peer;
 
 		private volatile bool _Stop;
 	    
@@ -34,7 +34,7 @@ namespace Regulus.Remote
 		}
         
 
-        public void Start(IPeer peer)
+        public void Start(IStreamable peer)
 		{
 			_Stop = false;
 			_Peer = peer;
@@ -65,8 +65,8 @@ namespace Regulus.Remote
 			}
 			catch(SystemException e)
 			{
-			    var info = string.Format("PackageWriter Error Write {0}.", _Peer.Connected);
-                Singleton<Log>.Instance.WriteInfo(info);
+			    /*todo : var info = string.Format("PackageWriter Error Write {0}.", _Peer.Connected);
+                Singleton<Log>.Instance.WriteInfo(info);*/
 				if(ErrorEvent != null)
 				{
 					ErrorEvent();

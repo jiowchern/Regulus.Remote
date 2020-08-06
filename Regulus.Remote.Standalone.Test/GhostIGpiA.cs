@@ -1,10 +1,12 @@
 ﻿namespace Regulus.Remote.Standalone.Test
 {
-    internal class CIGpiA : IGpiA, IGhost
+    internal class GhostIGpiA : IGpiA, IGhost
     {
-        public CIGpiA(long id , bool ret_type)
-        {
+        private readonly long _Id;
 
+        public GhostIGpiA(long id , bool ret_type)
+        {
+            this._Id = id;
         }
         event CallMethodCallback IGhost.CallMethodEvent
         {
@@ -99,7 +101,7 @@
 
         long IGhost.GetID()
         {
-            return 1;
+            return _Id;
         }
 
         object IGhost.GetInstance()

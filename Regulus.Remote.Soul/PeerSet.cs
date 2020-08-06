@@ -7,7 +7,7 @@ namespace Regulus.Remote.Soul
 {
 	public class PeerSet
 	{
-		private readonly List<Peer> _Peers;
+		private readonly List<User> _Peers;
 
 		public int Count
 		{
@@ -16,15 +16,15 @@ namespace Regulus.Remote.Soul
 
 		public PeerSet()
 		{
-			_Peers = new List<Peer>();
+			_Peers = new List<User>();
 		}
 
-		internal void Join(Peer peer)
+		internal void Join(User peer)
 		{
-			_Join(peer, peer);
+			//todo : _Join(peer, peer);
 		}
 
-		internal void _Join(Peer peer, IBootable bootable)
+		internal void _Join(User peer, IBootable bootable)
 		{
 		    
 		    
@@ -33,7 +33,7 @@ namespace Regulus.Remote.Soul
 			bootable.Launch();
         }
 
-		internal void _Leave(Peer peer, IBootable bootable)
+		internal void _Leave(User peer, IBootable bootable)
 		{
 			if (_Peers.Remove(peer))
 			{
@@ -57,18 +57,18 @@ namespace Regulus.Remote.Soul
 		}
 		public void RemoveInvalidPeers()
         {
-			var removes = new System.Collections.Generic.List<Peer>();
+			var removes = new System.Collections.Generic.List<User>();
 			foreach(var peer in _Peers)
             {
-				if (!peer.Connecting())
+				/*todo :if (!peer.Connecting())
 				{
 					removes.Add(peer);
-				}
+				}*/
 			}			
 
 			foreach(var r in removes)
             {
-				_Leave(r, r);
+				//todo : _Leave(r, r);
 			}
 		}
 

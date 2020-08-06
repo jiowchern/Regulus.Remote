@@ -11,7 +11,7 @@ namespace Regulus.Remote.Ghost
 	{
 		private class ConnectStage : IStatus
 		{
-			public event Action<IPeer> DoneEvent;
+			public event Action<IStreamable> DoneEvent;
 			public event Action FailEvent;
 
 

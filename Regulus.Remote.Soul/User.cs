@@ -7,10 +7,11 @@ using System.Text;
 using Regulus.Serialization;
 using Regulus.Utility;
 using Regulus.Network;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace Regulus.Remote.Soul
 {
-	public class Peer : IRequestQueue, IResponseQueue, IBootable
+	public class User : IRequestQueue, IResponseQueue
 	{
 		public delegate void DisconnectCallback();
 
@@ -36,7 +37,7 @@ namespace Regulus.Remote.Soul
 
 		private readonly System.Collections.Concurrent.ConcurrentQueue<ResponsePackage> _Responses;
 
-		private readonly IPeer _Peer;
+		private readonly IStreamable _Peer;
 
 	    private readonly IProtocol _Protocol;
 
@@ -74,13 +75,15 @@ namespace Regulus.Remote.Soul
 
 	    public static bool IsIdle
 		{
-			get { return Peer.TotalRequest <= 0 && Peer.TotalResponse <= 0; }
+			get { return User.TotalRequest <= 0 && User.TotalResponse <= 0; }
 		}
 
 	    private static long _TotalRequest;
         public static long TotalRequest { get { return _TotalRequest; } }
 
 	    private static long _TotalResponse;
+        internal readonly IStreamable Stream;
+
         public static long TotalResponse { get { return _TotalResponse; } }
 
 		public IBinder Binder
@@ -90,9 +93,9 @@ namespace Regulus.Remote.Soul
 
 		
 
-		public Peer(IPeer client , IProtocol protocol)
+		public User(IStreamable client , IProtocol protocol)
 		{
-
+			Stream = client;
 			_Updater = new ThreadUpdater(_Update);
 			_Serialize = protocol.GetSerialize();
 
@@ -113,7 +116,7 @@ namespace Regulus.Remote.Soul
 			
 		}
 
-		void IBootable.Launch()
+		public void Launch()
 		{
 			_Updater.Start();
 			_Reader.DoneEvent += _RequestPush;
@@ -131,12 +134,12 @@ namespace Regulus.Remote.Soul
 
 		}
 
-		void IBootable.Shutdown()
+		public void Shutdown()
 		{
 			
-			try
+			/* todo : try
 			{				
-				_Peer.Close();
+				
 			}
 			catch (System.Net.Sockets.SocketException se)
 			{
@@ -145,7 +148,7 @@ namespace Regulus.Remote.Soul
 			catch (Exception e)
 			{
 				Regulus.Utility.Log.Instance.WriteInfo(string.Format("Socket shutdown exception.{0}", e.Message));
-			}
+			}*/
 			
 			_Reader.DoneEvent -= _RequestPush;
 			_Reader.Stop();
@@ -173,7 +176,7 @@ namespace Regulus.Remote.Soul
 
 		void _Update()
 		{
-			if(_Connected() == false)
+			if(_Enable == false)
 			{
 				SendBreakEvent();
 		
@@ -305,16 +308,9 @@ namespace Regulus.Remote.Soul
 				ReturnId = return_id
 			};
 		}
+		
 
-		private bool _Connected()
-		{
-			return _Enable && _Peer.Connected;
-		}
-
-		public bool Connecting()
-		{
-			return _Connected();
-		}
+		
 
 		internal void SendBreakEvent()
 		{

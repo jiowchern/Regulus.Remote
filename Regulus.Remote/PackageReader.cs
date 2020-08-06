@@ -30,7 +30,7 @@ namespace Regulus.Remote
 
 		private ISocketReader _Reader;
 
-		private IPeer _Peer;
+		private IStreamable _Peer;
 
 		private volatile bool _Stop;
 
@@ -39,7 +39,7 @@ namespace Regulus.Remote
 	        _Serializer = serializer;
 	    }
 
-	    public void Start(IPeer peer)
+	    public void Start(IStreamable peer)
 		{
 			Singleton<Log>.Instance.WriteInfo("pakcage read start.");
 			_Stop = false;

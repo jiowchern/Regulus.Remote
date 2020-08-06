@@ -71,7 +71,7 @@ namespace Regulus.Remote.Ghost
 				}
 			}
 
-			public void Start(IPeer peer)
+			public void Start(IStreamable peer)
 			{
 				Singleton<Log>.Instance.WriteInfo("Agent online enter.");
 
@@ -135,7 +135,7 @@ namespace Regulus.Remote.Ghost
                 
 			}
 
-			private void _WriterStart(IPeer peer)
+			private void _WriterStart(IStreamable peer)
 			{
 				_Writer.ErrorEvent += _Disable;
 				
@@ -159,7 +159,7 @@ namespace Regulus.Remote.Ghost
 				}
 			}
 
-			private void _ReaderStart(IPeer peer)
+			private void _ReaderStart(IStreamable peer)
 			{
 				_Reader.DoneEvent += _ReceivePackage;
 

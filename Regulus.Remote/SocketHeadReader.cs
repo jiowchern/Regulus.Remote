@@ -8,12 +8,12 @@ namespace Regulus.Remote
 {
     internal class SocketHeadReader : ISocketReader
     {
-        private readonly IPeer _Peer;
+        private readonly IStreamable _Peer;
 
         private readonly System.Collections.Generic.List<byte> _Buffer;
 
         private readonly byte[] _ReadedByte;
-        public SocketHeadReader(IPeer peer)
+        public SocketHeadReader(IStreamable peer)
         {
             _ReadedByte = new byte[1];
             _Peer = peer;

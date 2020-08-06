@@ -5,7 +5,7 @@ using System.Net;
 
 namespace Regulus.Remote.Tests
 {
-    internal class SocketHeadReaderTestPeer : Network.IPeer
+    internal class SocketHeadReaderTestPeer : Network.IStreamable
     {
         private readonly Queue<byte> _Buffer;
 
@@ -16,14 +16,9 @@ namespace Regulus.Remote.Tests
 
         
 
-        bool IPeer.Connected => throw new NotImplementedException();
 
-        void IPeer.Close()
-        {
-            throw new NotImplementedException();
-        }
 
-        System.Threading.Tasks.Task<int> IPeer.Receive(byte[] buffer, int offset, int count )
+        System.Threading.Tasks.Task<int> IStreamable.Receive(byte[] buffer, int offset, int count )
         {
             return System.Threading.Tasks.Task.Run(() =>
             {
@@ -34,7 +29,7 @@ namespace Regulus.Remote.Tests
             
         }
 
-        System.Threading.Tasks.Task<int> IPeer.Send(byte[] buffer, int offset, int count)
+        System.Threading.Tasks.Task<int> IStreamable.Send(byte[] buffer, int offset, int count)
         {
             throw new NotImplementedException();
         }

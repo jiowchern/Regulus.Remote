@@ -10,7 +10,7 @@ namespace Regulus.Network.Rudp
         private readonly ITime m_Time;
         private Host m_Host;
         private volatile bool m_Enable;
-        private event Action<IPeer> AcceptEvent;
+        private event Action<IStreamable> AcceptEvent;
 
         public Listener(ISocket Socket)
         {
@@ -19,7 +19,7 @@ namespace Regulus.Network.Rudp
             m_Time = new Time();
         }
 
-        event Action<IPeer> IListenable.AcceptEvent
+        event Action<IStreamable> IListenable.AcceptEvent
         {
             add { AcceptEvent += value; } 
             remove { AcceptEvent -= value; }

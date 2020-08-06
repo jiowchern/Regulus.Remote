@@ -1,16 +1,10 @@
-﻿using System;
-using System.Threading;
+﻿
 
-
-using Regulus.Utility;
 using Regulus.Utility;
 
 namespace Regulus.Remote.Soul
 {
-	/// <summary>
-	///     伺服器端
-	/// </summary>
-	public class Service : IBootable
+    public class _Service : IBootable
 	{
 
 
@@ -82,7 +76,7 @@ namespace Regulus.Remote.Soul
 		/// </summary>
 		public long WaitingForReadPackages
 		{
-			get { return Peer.TotalRequest; }
+			get { return User.TotalRequest; }
 		}
 
 		/// <summary>
@@ -90,7 +84,7 @@ namespace Regulus.Remote.Soul
 		/// </summary>
 		public long WaitingToWrittenPackages
 		{
-			get { return Peer.TotalResponse; }
+			get { return User.TotalResponse; }
 		}
 
 		/// <summary>
@@ -99,7 +93,7 @@ namespace Regulus.Remote.Soul
 		/// <param name="entry">
 		///     進入點物件
 		/// </param>		
-		public Service(IEntry entry,int port , IProtocol protocol, Regulus.Network.IListenable server)
+		public _Service(IEntry entry,int port , IProtocol protocol, Regulus.Network.IListenable server)
 		{
 			_Entry = entry;
 			

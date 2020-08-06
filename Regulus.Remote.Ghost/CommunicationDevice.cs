@@ -6,39 +6,12 @@ using Regulus.Utility;
 namespace Regulus.Remote.Standalone
 {
 
-    public class ReversePeer : Network.IPeer
-    {
-        private readonly CommunicationDevice peer;
 
-        public ReversePeer(CommunicationDevice peer)
-        {
-            this.peer = peer;
-        }
-		bool IPeer.Connected => throw new NotImplementedException();
-
-        void IPeer.Close()
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<int> IPeer.Receive(byte[] buffer, int offset, int count)
-        {
-			return peer.Pop(buffer , offset, count);
-
-		}
-
-        Task<int> IPeer.Send(byte[] buffer, int offset, int count)
-        {
-			return peer.Push(buffer, offset, count);
-		}
-    }
-
-
-    public class CommunicationDevice : Network.IPeer
+    public class PeerStream : Network.IStreamable
     {
 		readonly System.Collections.Concurrent.ConcurrentQueue<MemoryStream> _Sends;
 		readonly System.Collections.Concurrent.ConcurrentQueue<MemoryStream> _Receives;
-		public CommunicationDevice()
+		public PeerStream()
         {
 			
 			_Sends = new System.Collections.Concurrent.ConcurrentQueue<MemoryStream>();
@@ -53,14 +26,9 @@ namespace Regulus.Remote.Standalone
 		}
 
 
-        bool IPeer.Connected => throw new NotImplementedException();
+        
 
-        void IPeer.Close()
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<int> IPeer.Receive(byte[] buffer, int offset, int count)
+        Task<int> IStreamable.Receive(byte[] buffer, int offset, int count)
         {
 			MemoryStream stream;			
 			if (_Receives.TryPeek(out stream))
@@ -91,7 +59,7 @@ namespace Regulus.Remote.Standalone
 
 		}
 
-        Task<int> IPeer.Send(byte[] buffer, int offset, int count)
+        Task<int> IStreamable.Send(byte[] buffer, int offset, int count)
         {
 			return Task<int>.Run(() =>
 			{

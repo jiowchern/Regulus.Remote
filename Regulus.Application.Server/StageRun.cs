@@ -16,7 +16,7 @@ namespace Regulus.Remote.Soul.Console
 
         private readonly Launcher _Launcher;
 
-        private readonly Service _Server;
+        private readonly _Service _Server;
 
         private readonly Regulus.Utility.Console.IViewer _View;
 
@@ -25,7 +25,7 @@ namespace Regulus.Remote.Soul.Console
             _View = viewer;
             _Command = command;
 
-            _Server = new Service(core, port, protocol, server);            
+            _Server = new _Service(core, port, protocol, server);            
             _Launcher = new Launcher();
             _Launcher.Push(_Server);
         }
@@ -58,8 +58,8 @@ namespace Regulus.Remote.Soul.Console
                     _View.WriteLine(
                         "SecondWriteBytes:"
                         + string.Format("{0:N0}", Singleton<NetworkMonitor>.Instance.Write.SecondBytes));
-                    _View.WriteLine("\nRequest Queue:" + Peer.TotalRequest);
-                    _View.WriteLine("Response Queue:" + Peer.TotalResponse);
+                    _View.WriteLine("\nRequest Queue:" + User.TotalRequest);
+                    _View.WriteLine("Response Queue:" + User.TotalResponse);
                 });
             _Command.Register("Shutdown", _ShutdownEvent);
         }

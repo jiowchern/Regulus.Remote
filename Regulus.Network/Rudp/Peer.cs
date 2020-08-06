@@ -4,7 +4,7 @@ using System.Net.Sockets;
 
 namespace Regulus.Network.Rudp
 {
-    internal class Peer : IPeer
+    internal class Peer : IStreamable
     {
         private readonly Regulus.Network.Socket _RudpSocket;
 
@@ -16,21 +16,18 @@ namespace Regulus.Network.Rudp
 
         
 
-        bool IPeer.Connected { get { return _RudpSocket.Status == PeerStatus.Transmission; } }
+        
 
-        System.Threading.Tasks.Task<int> IPeer.Receive(byte[] buffer, int offset, int count)
+        System.Threading.Tasks.Task<int> IStreamable.Receive(byte[] buffer, int offset, int count)
         {
             return _RudpSocket.Receive(buffer, offset, count);
             
         }
-        System.Threading.Tasks.Task<int> IPeer.Send(byte[] buffer, int offset, int length)
+        System.Threading.Tasks.Task<int> IStreamable.Send(byte[] buffer, int offset, int length)
         {
             return _RudpSocket.Send(buffer , offset , length );
         }
 
-        void IPeer.Close()
-        {
-            _RudpSocket.Disconnect();
-        }
+        
     }
 }

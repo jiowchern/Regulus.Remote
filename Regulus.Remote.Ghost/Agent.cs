@@ -35,7 +35,7 @@ namespace Regulus.Remote.Ghost
 			_GhostSerializer.Update();
 		}
 
-		void IAgent.Start(IPeer peer)
+		void IAgent.Start(IStreamable peer)
 		{
             Singleton<Log>.Instance.WriteInfo("Agent Launch.");
             _GhostProvider.ErrorMethodEvent += _ErrorMethodEvent;

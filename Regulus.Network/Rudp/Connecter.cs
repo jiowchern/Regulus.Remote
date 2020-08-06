@@ -16,23 +16,19 @@ namespace Regulus.Network.Rudp
         }
         
 
-        bool IPeer.Connected {get{return _RudpSocket.Status == PeerStatus.Transmission; } }
+        
 
-        System.Threading.Tasks.Task<int> IPeer.Receive(byte[] ReadedByte, int Offset, int Count)
+        System.Threading.Tasks.Task<int> IStreamable.Receive(byte[] ReadedByte, int Offset, int Count)
         {
             return _RudpSocket.Receive(ReadedByte, Offset, Count);
         }
 
-        System.Threading.Tasks.Task<int> IPeer.Send(byte[] Buffer, int OffsetI, int BufferLength)
+        System.Threading.Tasks.Task<int> IStreamable.Send(byte[] Buffer, int OffsetI, int BufferLength)
         {
             return _RudpSocket.Send(Buffer, OffsetI, BufferLength);
         }
 
-        void IPeer.Close()
-        {
-            _RudpSocket.Disconnect();
-        }
-
+ 
         System.Threading.Tasks.Task<bool> IConnectable.Connect(EndPoint Endpoint)
         {
             bool? result = null ;

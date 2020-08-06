@@ -4,7 +4,7 @@ using System.Net.WebSockets;
 
 namespace Regulus.Network.Web
 {
-    public class Peer : IPeer
+    public class Peer : IStreamable
     {
         private readonly WebSocket _Socket;
         private readonly IPEndPoint localEndPoint;
@@ -21,16 +21,11 @@ namespace Regulus.Network.Web
 
         
 
-        bool IPeer.Connected => _Socket.State == WebSocketState.Open;
+        
 
-        void IPeer.Close()
-        {
-            System.Threading.CancellationToken cancellationToken = default;
-            _Socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "close from server", cancellationToken);
-            //_Socket.Dispose();
-        }
+        
 
-        System.Threading.Tasks.Task<int> IPeer.Receive(byte[] buffer, int offset, int count)
+        System.Threading.Tasks.Task<int> IStreamable.Receive(byte[] buffer, int offset, int count)
         {
             System.Threading.CancellationToken cancellationToken = default;
             var segment = new ArraySegment<byte>(buffer , offset , count);
@@ -40,7 +35,7 @@ namespace Regulus.Network.Web
             });
         }
 
-        System.Threading.Tasks.Task<int> IPeer.Send(byte[] buffer, int offset, int count)
+        System.Threading.Tasks.Task<int> IStreamable.Send(byte[] buffer, int offset, int count)
         {
             var a = new ArraySegment<byte>(buffer, offset, count);
             

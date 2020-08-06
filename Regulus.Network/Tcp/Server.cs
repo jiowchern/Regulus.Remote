@@ -8,9 +8,9 @@ namespace Regulus.Network.Tcp
     public class Listener : IListenable
     {
         private readonly System.Net.Sockets.Socket _Socket;
-        private event Action<IPeer> Acctpe;
+        private event Action<IStreamable> Acctpe;
 
-        event Action<IPeer> IListenable.AcceptEvent
+        event Action<IStreamable> IListenable.AcceptEvent
         {
             add { Acctpe += value; }
             remove { Acctpe -= value; } 
