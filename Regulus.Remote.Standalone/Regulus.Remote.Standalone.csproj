@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Regulus.Remote\Regulus.Remote.csproj" />
-    <ProjectReference Include="..\Regulus.Utility\Regulus.Utility.csproj" />
+    <ProjectReference Include="..\Regulus.Remote.Ghost\Regulus.Remote.Ghost.csproj" />
+    <ProjectReference Include="..\Regulus.Remote.Soul\Regulus.Remote.Soul.csproj" />
   </ItemGroup>
 
 </Project>

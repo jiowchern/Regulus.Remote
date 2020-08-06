@@ -1,252 +1,68 @@
 ﻿
-using System;
 
+
+using Regulus.Network;
+using Regulus.Remote.Ghost;
+using System;
 using System.Collections.Generic;
 
-using Regulus.Utility;
-
-using Regulus.Serialization;
-
 namespace Regulus.Remote.Standalone
-{	
-	// todo
-	/*public class Agent : IRequestQueue, IResponseQueue, IBinder, IAgent
-	{
-		public delegate void ConnectedCallback();
-
-		private event Action _BreakEvent;
-
-		private event Action _ConnectEvent;
-
-		private readonly GhostProvider _Agent;
-
-		private readonly GhostRequest _GhostRequest;
-
-		private readonly SoulProvider _SoulProvider;
-
-		private readonly TProvider<IConnect> _ConnectProvider;
-		private readonly TProvider<IOnline> _OnlineProvider;
-		private readonly Regulus.Utility.StatusMachine _Machine;
-
-
-		readonly System.Collections.Concurrent.ConcurrentQueue<System.Tuple<ServerToClientOpCode, byte[]>> _ResponseCodes;
-
-		private bool _Connected;
-
-		private IBinder _Binder
-		{
-			get { return _SoulProvider; }
-		}
-
-		public long Ping
-		{
-			get { return _Agent.Ping; }
-		}
-
-	    public Agent(IProtocol protocol)
-	    {
-			// todo
-			throw new NotImplementedException();
-			_Machine = new StatusMachine();
-			_GhostRequest = new GhostRequest(protocol.GetSerialize());
-            _Agent = new GhostProvider(protocol);
-            _SoulProvider = new SoulProvider(this, this, protocol);
-            _ResponseCodes = new System.Collections.Concurrent.ConcurrentQueue<Tuple<ServerToClientOpCode, byte[]>>();
-
-			_ConnectProvider = new TProvider<IConnect>();
-			_OnlineProvider = new TProvider<IOnline>();
-
-			_Agent.AddProvider(typeof(IConnect), _ConnectProvider);
-			_Agent.AddProvider(typeof(IOnline), _OnlineProvider);
-			_ConnectEvent += () => { };
-			_BreakEvent += () => { };
-		}
+{
+    public class Service : IDisposable
+    {
         
+        private readonly IProtocol _Protocol;
+        readonly Regulus.Remote.Soul.Service _Service;
+        readonly List<Regulus.Remote.Ghost.IAgent> _Agents;
+        readonly Dictionary<IAgent , IStreamable> _Streams;
+        readonly IDisposable _ServiceDisposable;
+        public Service(IBinderProvider entry, IProtocol protocol)
+        {        
+            this._Protocol = protocol;
+            _Service = new Regulus.Remote.Soul.Service(entry, protocol);
+            _Agents = new List<Ghost.IAgent>();
+            _Streams = new Dictionary<IAgent, IStreamable>();
+            _ServiceDisposable = _Service;
+        }
 
-		INotifier<T> INotifierQueryable.QueryNotifier<T>()
-		{
-			return QueryProvider<T>();
-		}
+        public INotifierQueryable CreateNotifierQueryer()
+        {
+            var agent = new Ghost.Agent(_Protocol) as IAgent;
+            var stream = new PeerStream();
+            agent.Start(new ReversePeer(stream));
+            _Service.Join(stream);
+            _Streams.Add(agent , stream);
+            _Agents.Add(agent);
+            return agent;
+        }
 
-		
-
-		long IAgent.Ping
-		{
-			get { return _Agent.Ping; }
-		}
-
-		
-
-	    private event Action<string, string> _ErrorMethodEvent;
-
-	    event Action<string, string> IAgent.ErrorMethodEvent
-	    {
-	        add { this._ErrorMethodEvent += value; }
-	        remove { this._ErrorMethodEvent -= value; }
-	    }
-
-	    private event Action<byte[], byte[]> _ErrorVerifyEvent;
-
-	    event Action<byte[], byte[]> IAgent.ErrorVerifyEvent
-	    {
-	        add { this._ErrorVerifyEvent += value; }
-	        remove { this._ErrorVerifyEvent -= value; }
-	    }
-
-	    bool IUpdatable.Update()
-		{
-			_Machine.Update();
-			_Update();			
-			return true;
-		}
-
-		void IBootable.Launch()
-		{
-			Launch();
-		}
-
-		void IBootable.Shutdown()
-		{
-			_Machine.Termination();
-			Shutdown();
-		}
-
-		
-		bool IAgent.Connected
-		{
-			get { return _Connected; }
-		}
-
-		event InvokeMethodCallback IRequestQueue.InvokeMethodEvent
-		{
-			add { _GhostRequest.CallMethodEvent += value; }
-			remove { _GhostRequest.CallMethodEvent -= value; }
-		}
-
-		event Action IRequestQueue.BreakEvent
-		{
-			add { _BreakEvent += value; }
-			remove { _BreakEvent -= value; }
-		}
-
-		
-
-		void IResponseQueue.Push(ServerToClientOpCode cmd, byte[] data)
-		{
-            _ResponseCodes.Enqueue(new Tuple<ServerToClientOpCode, byte[]>(cmd,data));
-
-	    }
-
-		void IBinder.Return<TSoul>(TSoul soul)
-		{
-			_Binder.Return(soul);
-		}
-
-		void IBinder.Bind<TSoul>(TSoul soul)
-		{
-			_Bind(soul);
-		}
-
-		void IBinder.Unbind<TSoul>(TSoul soul)
-		{
-			_Unbind(soul);
-		}
-
-		event Action IBinder.BreakEvent
-		{
-			add { _BreakEvent += value; }
-			remove { _BreakEvent -= value; }
-		}
-
-		public void Launch()
-		{
-			
-
-			_GhostRequest.PingEvent += _OnRequestPing;
-			_GhostRequest.ReleaseEvent += _SoulProvider.Unbind;
-			_GhostRequest.SetPropertyDoneEvent += _SoulProvider.SetPropertyDone;
-			_GhostRequest.AddEventEvent += _SoulProvider.AddEvent;
-			_GhostRequest.RemoveEventEvent += _SoulProvider.RemoveEvent;
-
-			_GhostRequest.AddNotifierSupplyEvent += _SoulProvider.AddNotifierSupply;
-			_GhostRequest.RemoveNotifierSupplyEvent += _SoulProvider.RemoveNotifierSupply;
-			_GhostRequest.AddNotifierUnsupplyEvent += _SoulProvider.AddNotifierUnsupply;
-			_GhostRequest.RemoveNotifierUnsupplyEvent += _SoulProvider.RemoveNotifierUnsupply;
-
-
-			_Agent.ErrorMethodEvent += _ErrorMethodEvent;
-		    _Agent.ErrorVerifyEvent += _ErrorVerifyEvent;
-            
-
-			_ToOffline();
-		}
-		private void _ToOffline()
-		{
-			var status = new OfflineStatus(_ConnectProvider);
-			status.DoneEvent += ()=> {
-				_ConnectEvent();
-				_ToOnline();
-			};
-			_Machine.Push(status);
-		}
-
-		private void _ToOnline()
-		{
-			var status = new OnlineStatus(_OnlineProvider , new OnlineGhost(_Agent)) ;
-			status.Ghost.DisconnectEvent +=()=> {
-				_BreakEvent();
-				_ToOffline();
-			} ;			
-			_Machine.Push(status);
-		}
-
-		private void _OnRequestPing()
-		{
-			_Agent.OnResponse(ServerToClientOpCode.Ping, new byte[0]);
-		}
-
-		private void _Update()
-		{
-            Tuple<ServerToClientOpCode, byte[]> code;
-            if(_ResponseCodes.TryDequeue(out code ))
+        public void DestroyNotifierQueryer(INotifierQueryable queryable)
+        {
+            IAgent remove = null;
+            foreach (var agent in _Agents)
             {
-                _Agent.OnResponse(code.Item1, code.Item2);
+                if (agent != queryable)
+                    continue;
 
+                _Service.Leave(_Streams[agent]);
+                agent.Stop();
+                remove = agent;
             }
 
-            _SoulProvider.Update();
-			_GhostRequest.Update();
-		}
+            _Agents.Remove(remove);
+        }
 
-		public void Shutdown()
-		{
-		    _Agent.ErrorVerifyEvent -= _ErrorVerifyEvent;
-            _Agent.ErrorMethodEvent -= _ErrorMethodEvent;
-            _Connected = false;
-			if(_BreakEvent != null)
-			{
-				_BreakEvent();
-			}
+        public void Update()
+        {
+            foreach (var agent in _Agents)
+            {
+                agent.Update();
+            }
+        }
 
-			_BreakEvent = null;			
-			_GhostRequest.SetPropertyDoneEvent -= _SoulProvider.SetPropertyDone;
-			_GhostRequest.PingEvent -= _OnRequestPing;
-			_GhostRequest.ReleaseEvent -= _SoulProvider.Unbind;
-		}
-
-		public INotifier<T> QueryProvider<T>()
-		{
-			return _Agent.QueryProvider<T>();
-		}
-
-		private void _Bind<TSoul>(TSoul soul)
-		{
-			_Binder.Bind(soul);
-		}
-
-		private void _Unbind<TSoul>(TSoul soul)
-		{
-			_Binder.Unbind(soul);
-		}
-	}*/
+        void IDisposable.Dispose()
+        {
+            _ServiceDisposable.Dispose();
+        }
+    }
 }

@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using Regulus.Network;
+using Regulus.Remote.Ghost;
 using System;
 
 namespace Regulus.Remote.Standalone.Test
@@ -13,7 +14,6 @@ namespace Regulus.Remote.Standalone.Test
             var serverPeerStream = new Regulus.Remote.Standalone.PeerStream();
             IStreamable serverStream = serverPeerStream;
             IStreamable clientStream = new ReversePeer(serverPeerStream);
-
 
             IBinderProvider entry = NSubstitute.Substitute.For<IBinderProvider>();
             IGpiA gpia = new SoulGpiA();
