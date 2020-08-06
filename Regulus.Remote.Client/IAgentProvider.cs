@@ -2,6 +2,6 @@
 {
     public interface IAgentProvider
     {
-        IAgent Spawn();
+        Ghost.IAgent Spawn();
     }
 }

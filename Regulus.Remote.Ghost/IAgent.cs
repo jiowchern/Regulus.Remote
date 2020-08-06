@@ -1,8 +1,8 @@
 using System;
-
+using Regulus.Network;
 using Regulus.Utility;
 
-namespace Regulus.Remote
+namespace Regulus.Remote.Ghost
 {
 
     /// <summary>
@@ -10,7 +10,7 @@ namespace Regulus.Remote
     /// </summary>
     /// 
 
-    public interface IAgent : IUpdatable , INotifierQueryable
+    public interface IAgent : INotifierQueryable
     {
         
 
@@ -19,13 +19,6 @@ namespace Regulus.Remote
         /// </summary>
         long Ping { get; }
 
-        /// <summary>
-        ///     是否為連線狀態
-        /// </summary>
-        bool Connected { get; }
-
-
-        
 
         /// <summary>
         /// 錯誤的方法呼叫
@@ -47,5 +40,11 @@ namespace Regulus.Remote
         /// 會發生此訊息通常是因為client與server版本不相容所致.
         /// </summary>
         event Action<byte[], byte[]> ErrorVerifyEvent;
+
+
+        void Start(IPeer peer);
+        void Stop();
+
+        void Update();
     }
 }

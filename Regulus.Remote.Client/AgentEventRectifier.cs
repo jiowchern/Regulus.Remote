@@ -11,7 +11,7 @@ namespace Regulus.Remote.Client
         readonly System.Collections.Generic.List<System.Action> _RemoveHandlers;
         private readonly Type[] _Types;
 
-        public AgentEventRectifier(IEnumerable<Type> types,IAgent agent_instance)
+        public AgentEventRectifier(IEnumerable<Type> types, INotifierQueryable agent_instance)
         {
             this._Types = types.ToArray();
             _RemoveHandlers = new List<System.Action>();

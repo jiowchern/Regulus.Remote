@@ -16,35 +16,25 @@ namespace Regulus.Remote
 
 		public event OnErrorCallback ErrorEvent;
 
-		
-
-
-
 		private byte[] _Buffer;
-
-
-
-	    
 
 		private IPeer _Peer;
 
 		private volatile bool _Stop;
-	    private bool _Idle;
+	    
 
-	    /// <summary>
-	    ///     Initializes a new instance of the <see cref="PackageWriter" /> class.
-	    /// </summary>
-	    /// <param name="serializer">序列化物件</param>
+	    
 	    
 		public PackageWriter( ISerializer serializer)
 		{
             
             _Serializer = serializer;
         
-	        _Idle = true;
+	    
 		}
+        
 
-		public void Start(IPeer peer)
+        public void Start(IPeer peer)
 		{
 			_Stop = false;
 			_Peer = peer;

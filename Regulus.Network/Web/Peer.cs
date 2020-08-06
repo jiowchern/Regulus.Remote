@@ -19,9 +19,7 @@ namespace Regulus.Network.Web
             this.remoteEndPoint = remoteEndPoint;
         }
 
-        EndPoint IPeer.RemoteEndPoint => remoteEndPoint;
-
-        EndPoint IPeer.LocalEndPoint => localEndPoint;
+        
 
         bool IPeer.Connected => _Socket.State == WebSocketState.Open;
 

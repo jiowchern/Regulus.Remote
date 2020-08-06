@@ -10,9 +10,9 @@ namespace Regulus.Remote.Ghost
 	public partial class Agent
 	{
 
-		private class GhostSerializer : IUpdatable, IGhostRequest
+		private class GhostSerializer :  IGhostRequest
         {
-			public event Action DoneFromServerEvent;
+			
 
 			private static readonly object _LockRequest = new object();
 
@@ -27,20 +27,13 @@ namespace Regulus.Remote.Ghost
 
 			private readonly PackageWriter<RequestPackage> _Writer;
 			
-			private volatile bool _Enable;
-
-			private readonly IPeer _Peer;
 
 			public static int RequestQueueCount { get; private set; }
 
 			public static int ResponseQueueCount { get; private set; }
 
-			public GhostSerializer(IPeer peer, ISerializer serializer )
+			public GhostSerializer(ISerializer serializer )
 			{
-                
-                
-				
-				_Peer = peer;
 				_Reader = new PackageReader<ResponsePackage>(serializer);
 				_Writer = new PackageWriter<RequestPackage>(serializer);
 				_Sends = new Collection.Queue<RequestPackage>();
@@ -78,49 +71,38 @@ namespace Regulus.Remote.Ghost
 				}
 			}
 
-			void IBootable.Launch()
+			public void Start(IPeer peer)
 			{
 				Singleton<Log>.Instance.WriteInfo("Agent online enter.");
 
-				Singleton<Log>.Instance.WriteInfo(
+				/*todo : Singleton<Log>.Instance.WriteInfo(
 					string.Format(
 						"Agent Socket Local {0} Remote {1}.", 
 						_Peer.LocalEndPoint, 
-						_Peer.RemoteEndPoint));
-				
+						_Peer.RemoteEndPoint));*/
 
-
-				
-				_Enable = true;
-				_ReaderStart();
-				_WriterStart();
+				_ReaderStart(peer);
+				_WriterStart(peer);
 
 				
 				
 			}
 
-			void IBootable.Shutdown()
+			public void Stop()
 			{
 				
 
 				_WriterStop();
 				_ReaderStop();
 
-				_Peer.Close();
+				
 				
 				Singleton<Log>.Instance.WriteInfo("Agent online leave.");
 			}
 
 			void _Update()
 			{
-				if(_Enable == false)
-				{
-					DoneFromServerEvent();
-				}
-				else
-				{
-					_Process();
-				}
+				_Process();
 			}
 
 			private void _ReceivePackage(ResponsePackage package)
@@ -153,11 +135,11 @@ namespace Regulus.Remote.Ghost
                 
 			}
 
-			private void _WriterStart()
+			private void _WriterStart(IPeer peer)
 			{
 				_Writer.ErrorEvent += _Disable;
 				
-				_Writer.Start(_Peer);
+				_Writer.Start(peer);
 			}
 
 			private void _WriterStop()
@@ -177,17 +159,17 @@ namespace Regulus.Remote.Ghost
 				}
 			}
 
-			private void _ReaderStart()
+			private void _ReaderStart(IPeer peer)
 			{
 				_Reader.DoneEvent += _ReceivePackage;
 
 				_Reader.ErrorEvent += _Disable;
-				_Reader.Start(_Peer);
+				_Reader.Start(peer);
 			}
 
 			private void _Disable()
 			{
-				_Enable = false;
+				
 			}
 
 			private void _ReaderStop()
@@ -197,10 +179,9 @@ namespace Regulus.Remote.Ghost
 				_Reader.Stop();
 			}
 
-            bool IUpdatable.Update()
+            public void Update()
             {
-				_Update();
-				return _Enable;
+				_Update();				
             }
         }
 

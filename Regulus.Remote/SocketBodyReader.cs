@@ -51,32 +51,19 @@ namespace Regulus.Remote
         {
             var readSize = read_count;
 
-            if (readSize != 0)
+            _Offset += readSize;
+            NetworkMonitor.Instance.Read.Set(readSize);
+            if (_Offset == _Buffer.Length)
             {
-                _Offset += readSize;
-                NetworkMonitor.Instance.Read.Set(readSize);
-                if (_Offset == _Buffer.Length)
-                {
-                    DoneEvent(_Buffer);
-                }
-                else
-                {
-                    var task = _Peer.Receive(
-                        _Buffer,
-                        _Offset,
-                        _Buffer.Length - _Offset);
-                    task.ContinueWith(t => _Readed(t.Result));
-
-                }
+                DoneEvent(_Buffer);
             }
             else
             {
-                Regulus.Utility.Log.Instance.WriteDebug(string.Format("read body error size:{0}", readSize));
-                if (ErrorEvent != null)
-                {
-                    ErrorEvent();
-                }
-
+                var task = _Peer.Receive(
+                    _Buffer,
+                    _Offset,
+                    _Buffer.Length - _Offset);
+                task.ContinueWith(t => _Readed(t.Result));
             }
         }
     }

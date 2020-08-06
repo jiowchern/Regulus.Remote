@@ -61,11 +61,15 @@ namespace Regulus.Remote
 		    _Serializer = _Protocol.GetSerialize();
 		    _Providers = new Dictionary<Type, IProvider>();
             _AutoRelease = new AutoRelease(_Requester , _Serializer);
+			
+			
+		}
+		public void Start()
+        {
 			_StartPing();
 			Enable = true;
 		}
-
-        public void Dispose()
+        public void Stop()
         {
 			_Requester.ResponseEvent -= OnResponse;
 			Enable = false;

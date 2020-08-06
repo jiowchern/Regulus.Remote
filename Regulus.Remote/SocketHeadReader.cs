@@ -29,29 +29,20 @@ namespace Regulus.Remote
         {
 
             var task = _Peer.Receive(_ReadedByte, 0, 1);
-            var retTask = task.ContinueWith(t => _Readed(t.Result));            
+            task.ContinueWith(t => _Readed(t.Result));            
         }
 
         private void _Readed(int read_size )
         {
 
-            if (read_size != 0)
+            if (_ReadData(read_size))
             {
-                if (_ReadData(read_size))
-                {
-                    if (_DoneEvent != null)
-                        _DoneEvent(_Buffer.ToArray());
-                }
-                else
-                {
-                    _Read();
-                }
+                if (_DoneEvent != null)
+                    _DoneEvent(_Buffer.ToArray());
             }
             else
             {
-                Regulus.Utility.Log.Instance.WriteDebug(string.Format("read head error size:{0}", read_size));
-                if (_ErrorEvent != null)
-                    _ErrorEvent();
+                _Read();
             }
         }
 

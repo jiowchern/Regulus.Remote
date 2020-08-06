@@ -18,9 +18,7 @@ namespace Regulus.Network.Tcp
             _Socket = socket;            
         }
 
-        EndPoint IPeer.RemoteEndPoint {get { return _Socket.RemoteEndPoint; } }
-
-        EndPoint IPeer.LocalEndPoint { get { return _Socket.LocalEndPoint; } }
+        
 
         bool IPeer.Connected
         {

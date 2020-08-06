@@ -30,7 +30,7 @@ namespace Regulus.Remote.Client
             var rectifier = new AgentEventRectifier(_WatchTypes, agent);
             var user = new User(agent , rectifier);
             _Users.Add(user);
-            _Updater.Add(user.Agent);
+            // todo _Updater.Add(user.Agent);
             foreach(var g in user.Ghosts)
             {
                 _Register.Regist(g.Item1,g.Item2);
@@ -50,7 +50,7 @@ namespace Regulus.Remote.Client
                 _Register.Unregist(g.Item2);
             }
             _Users.RemoveAll(u => u.Id == id);
-            _Updater.Remove(user.Agent);
+            // todo _Updater.Remove(user.Agent);
             user.Dispose();
         }
         protected override void _Launch()

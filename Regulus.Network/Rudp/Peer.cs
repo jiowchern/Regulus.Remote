@@ -14,9 +14,7 @@ namespace Regulus.Network.Rudp
             
         }
 
-        EndPoint IPeer.RemoteEndPoint { get { return _RudpSocket.EndPoint; } }
-
-        EndPoint IPeer.LocalEndPoint {get { return _RudpSocket.EndPoint; } }
+        
 
         bool IPeer.Connected { get { return _RudpSocket.Status == PeerStatus.Transmission; } }
 

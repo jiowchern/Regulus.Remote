@@ -7,9 +7,6 @@ namespace Regulus.Remote.Tests
 {
     public class SocketReaderTestPeer : IPeer
     {
-        EndPoint IPeer.RemoteEndPoint => throw new NotImplementedException();
-
-        EndPoint IPeer.LocalEndPoint => throw new NotImplementedException();
 
         bool IPeer.Connected => throw new NotImplementedException();
 

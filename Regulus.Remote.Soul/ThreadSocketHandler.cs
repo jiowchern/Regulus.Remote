@@ -79,8 +79,8 @@ namespace Regulus.Remote.Soul
                 IPeer socket;
                 if(_Sockets.TryDequeue(out socket))
                 {
-                    Singleton<Log>.Instance.WriteInfo(
-                                string.Format("accept Remote {0} Local {1} .", socket.RemoteEndPoint, socket.LocalEndPoint));
+                    /*todo : Singleton<Log>.Instance.WriteInfo(
+                                string.Format("accept Remote {0} Local {1} .", socket.RemoteEndPoint, socket.LocalEndPoint));*/
                     var peer = new Peer(socket, _Protocol);
 
                     _Peers.Join(peer);

@@ -14,9 +14,7 @@ namespace Regulus.Remote.Tests
             _Buffer = new System.Collections.Generic.Queue<byte>(new byte[] { 0x85 , 0x05 });
         }
 
-        EndPoint IPeer.RemoteEndPoint => throw new NotImplementedException();
-
-        EndPoint IPeer.LocalEndPoint => throw new NotImplementedException();
+        
 
         bool IPeer.Connected => throw new NotImplementedException();
 

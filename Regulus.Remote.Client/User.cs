@@ -5,13 +5,13 @@ namespace Regulus.Remote.Client
 {
     public class User
     {
-        public readonly IAgent Agent;
+        public readonly Ghost.IAgent Agent;
         public readonly string Id;
         
 
         readonly List<Tuple<Type, object>> _Ghosts;
         public IEnumerable<Tuple<Type, object>> Ghosts => _Ghosts;
-        public User(IAgent agent , AgentEventRectifier rectifier)
+        public User(Ghost.IAgent agent , AgentEventRectifier rectifier)
         {
             Id = System.Guid.NewGuid().ToString();
             _Ghosts = new List<Tuple<Type, object>>();

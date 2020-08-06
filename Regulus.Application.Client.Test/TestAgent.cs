@@ -6,13 +6,11 @@ using System.Net;
 
 namespace Regulus.Application.Client.Test
 {
-    internal class TestAgent : IAgent
+    internal class TestAgent : INotifierQueryable
     {
 
         readonly System.Collections.Generic.Dictionary<Type, IProvider> _Providers;
-        long IAgent.Ping => throw new NotImplementedException();
-
-        bool IAgent.Connected => throw new NotImplementedException();
+        
 
         public TestAgent()
         {
@@ -26,18 +24,7 @@ namespace Regulus.Application.Client.Test
 
         
 
-        event Action<string, string> IAgent.ErrorMethodEvent
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
+        
 
         internal void Add(Type base_type , CType cType)
         {
@@ -47,27 +34,12 @@ namespace Regulus.Application.Client.Test
             provider.Ready(cType.Id);
         }
 
-        event Action<byte[], byte[]> IAgent.ErrorVerifyEvent
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
-
+        
         
 
         
 
-        void IBootable.Launch()
-        {
-            throw new NotImplementedException();
-        }
+
 
         internal void Remove(Type base_type, CType cType)
         {
@@ -83,14 +55,6 @@ namespace Regulus.Application.Client.Test
             return _Providers[typeof(T)] as INotifier<T>;
         }
 
-        void IBootable.Shutdown()
-        {
-            throw new NotImplementedException();
-        }
-
-        bool IUpdatable.Update()
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

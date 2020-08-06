@@ -9,7 +9,8 @@ using Regulus.Serialization;
 
 namespace Regulus.Remote.Standalone
 {	
-	public class Agent : IRequestQueue, IResponseQueue, IBinder, IAgent
+	// todo
+	/*public class Agent : IRequestQueue, IResponseQueue, IBinder, IAgent
 	{
 		public delegate void ConnectedCallback();
 
@@ -46,7 +47,7 @@ namespace Regulus.Remote.Standalone
 	    {
 			// todo
 			throw new NotImplementedException();
-			/*_Machine = new StatusMachine();
+			_Machine = new StatusMachine();
 			_GhostRequest = new GhostRequest(protocol.GetSerialize());
             _Agent = new GhostProvider(protocol);
             _SoulProvider = new SoulProvider(this, this, protocol);
@@ -58,7 +59,7 @@ namespace Regulus.Remote.Standalone
 			_Agent.AddProvider(typeof(IConnect), _ConnectProvider);
 			_Agent.AddProvider(typeof(IOnline), _OnlineProvider);
 			_ConnectEvent += () => { };
-			_BreakEvent += () => { };*/
+			_BreakEvent += () => { };
 		}
         
 
@@ -247,5 +248,5 @@ namespace Regulus.Remote.Standalone
 		{
 			_Binder.Unbind(soul);
 		}
-	}
+	}*/
 }
