@@ -1,32 +1,32 @@
+using Regulus.Network.Package;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using Regulus.Network.Package;
 
 namespace Regulus.Network
 {
-    public class SocketRecevier 
+    public class SocketRecevier
     {
         private readonly System.Net.Sockets.Socket m_Socket;
-        
+
         private readonly List<SocketMessage> m_ReceivePackages;
 
-        
+
 
         private SocketMessage m_Message;
         private readonly SocketMessageFactory m_Spawner;
         private EndPoint m_ReceiveEndPoint;
-        public SocketRecevier(System.Net.Sockets.Socket Socket, SocketMessageFactory factory )
+        public SocketRecevier(System.Net.Sockets.Socket Socket, SocketMessageFactory factory)
         {
-            
+
             m_Socket = Socket;
-            
+
             m_ReceivePackages = new List<SocketMessage>();
             m_Spawner = factory;
 
             m_ReceiveEndPoint = new IPEndPoint(IPAddress.Any, port: 0);
-            
+
         }
 
         public void Start()
@@ -45,7 +45,7 @@ namespace Regulus.Network
             }
             catch (SocketException e)
             {
-                var error = SocketError.Success;
+                SocketError error = SocketError.Success;
                 error = e.SocketErrorCode;
                 m_Message.SetError(error);
                 m_Message.SetEndPoint(m_ReceiveEndPoint);
@@ -63,7 +63,7 @@ namespace Regulus.Network
 
         private void End(IAsyncResult Ar)
         {
-            var error = SocketError.Success;
+            SocketError error = SocketError.Success;
             try
             {
                 m_Socket.EndReceiveFrom(Ar, ref m_ReceiveEndPoint);
@@ -76,7 +76,7 @@ namespace Regulus.Network
             {
                 return;
             }
-            
+
             m_Message.SetError(error);
             m_Message.SetEndPoint(m_ReceiveEndPoint);
             lock (m_ReceivePackages)
@@ -89,16 +89,16 @@ namespace Regulus.Network
 
         public SocketMessage[] Received()
         {
-            
+
             lock (m_ReceivePackages)
             {
-                var pkgs = m_ReceivePackages.ToArray();                
+                SocketMessage[] pkgs = m_ReceivePackages.ToArray();
                 m_ReceivePackages.Clear();
                 return pkgs;
             }
-            
+
         }
 
-        
+
     }
 }

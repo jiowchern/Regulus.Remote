@@ -3,7 +3,7 @@ namespace Regulus.Remote.Server
 {
     public static class ServiceProvider
     {
-        public static Soul._Service CreateTcp(IEntry entry ,int port, IProtocol protocol)
+        public static Soul._Service CreateTcp(IEntry entry, int port, IProtocol protocol)
         {
             return new Soul._Service(entry, port, protocol, new Regulus.Network.Tcp.Listener());
         }

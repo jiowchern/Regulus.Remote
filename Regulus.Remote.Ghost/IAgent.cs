@@ -1,6 +1,5 @@
-using System;
 using Regulus.Network;
-using Regulus.Utility;
+using System;
 
 namespace Regulus.Remote.Ghost
 {
@@ -12,7 +11,7 @@ namespace Regulus.Remote.Ghost
 
     public interface IAgent : INotifierQueryable
     {
-        
+
 
         /// <summary>
         ///     Ping
@@ -28,7 +27,7 @@ namespace Regulus.Remote.Ghost
         ///     2.錯誤訊息
         /// 會發生此訊息通常是因為client與server版本不相容所致.
         /// </summary>
-        event Action<string , string> ErrorMethodEvent;
+        event Action<string, string> ErrorMethodEvent;
 
 
         /// <summary>

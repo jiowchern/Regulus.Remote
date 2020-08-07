@@ -6,12 +6,12 @@ namespace Regulus.Network.Web
     {
         void IBootable.Launch()
         {
-            
+
         }
 
         void IBootable.Shutdown()
         {
-            
+
         }
 
         IConnectable IConnectProvidable.Spawn()

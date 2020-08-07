@@ -1,11 +1,6 @@
-﻿using System.Threading;
-
-
-using Regulus.Utility;
-
-namespace Regulus.Remote.Ghost
+﻿namespace Regulus.Remote.Ghost
 {
-	/*internal class IOHandler : Singleton<IOHandler>
+    /*internal class IOHandler : Singleton<IOHandler>
 	{
 		private readonly PowerRegulator _PowerRegulator;
 

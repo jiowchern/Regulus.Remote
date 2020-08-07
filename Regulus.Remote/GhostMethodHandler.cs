@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Reflection;
 
@@ -24,11 +23,11 @@ namespace Regulus.Remote
 
         public void Run(MethodInfo info, object[] args, IValue return_value)
         {
-            var map = _Protocol.GetMemberMap();
-            var serialize = _Protocol.GetSerialize();
-            var method = map.GetMethod(info);
-            
-            var package = new PackageCallMethod();
+            MemberMap map = _Protocol.GetMemberMap();
+            Serialization.ISerializer serialize = _Protocol.GetSerialize();
+            int method = map.GetMethod(info);
+
+            PackageCallMethod package = new PackageCallMethod();
             package.EntityId = _Ghost.GetID();
             package.MethodId = method;
             package.MethodParams = args.Select(arg => serialize.Serialize(arg)).ToArray();

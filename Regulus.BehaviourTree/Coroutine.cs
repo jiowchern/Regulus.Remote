@@ -1,7 +1,7 @@
+using Regulus.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Regulus.Utility;
 
 namespace Regulus.BehaviourTree.Yield
 {
@@ -15,10 +15,10 @@ namespace Regulus.BehaviourTree.Yield
 
     public interface IInstructable
     {
-         INSTRUCTION Result();
+        INSTRUCTION Result();
     }
-    
-    
+
+
     public class Success : IInstructable
     {
         INSTRUCTION IInstructable.Result()
@@ -28,7 +28,7 @@ namespace Regulus.BehaviourTree.Yield
     }
 
 
-    
+
 
     public class Failure : IInstructable
     {
@@ -41,7 +41,7 @@ namespace Regulus.BehaviourTree.Yield
     public class WaitSeconds : IInstructable
     {
         private readonly float _Seconds;
-        private Regulus.Utility.TimeCounter _TimeCounter;
+        private readonly Regulus.Utility.TimeCounter _TimeCounter;
         public WaitSeconds(float seconds)
         {
             _TimeCounter = new TimeCounter();
@@ -49,14 +49,14 @@ namespace Regulus.BehaviourTree.Yield
         }
         INSTRUCTION IInstructable.Result()
         {
-            if(_TimeCounter.Second > _Seconds)
+            if (_TimeCounter.Second > _Seconds)
                 return INSTRUCTION.NEXT;
             return INSTRUCTION.WAIT;
         }
     }
     public class Wait : IInstructable
     {
-        
+
         INSTRUCTION IInstructable.Result()
         {
             return INSTRUCTION.NEXT;
@@ -73,13 +73,13 @@ namespace Regulus.BehaviourTree.Yield
         }
         INSTRUCTION IInstructable.Result()
         {
-            return _Condition()? INSTRUCTION.NEXT : INSTRUCTION.WAIT;
+            return _Condition() ? INSTRUCTION.NEXT : INSTRUCTION.WAIT;
         }
     }
 
-    public class Coroutine : ITicker    
+    public class Coroutine : ITicker
     {
-        
+
         private readonly IEnumerable<IInstructable> _Provider;
         private IInstructable _Current;
         private IEnumerator<IInstructable> _Action;
@@ -90,14 +90,14 @@ namespace Regulus.BehaviourTree.Yield
         public Coroutine(Expression<Func<IEnumerable<IInstructable>>> expression)
         {
             _Id = Guid.NewGuid();
-            var methodCallExpression = expression.Body as MethodCallExpression;
+            MethodCallExpression methodCallExpression = expression.Body as MethodCallExpression;
             if (methodCallExpression == null)
                 throw new NotSupportedException(string.Format("The expression is a {0} , must a {1}", expression.Body.NodeType, ExpressionType.Call));
 
             _Tag = methodCallExpression.Method.Name;
 
-            
-            
+
+
             _Provider = expression.Compile()();
 
             _Reset();
@@ -124,18 +124,18 @@ namespace Regulus.BehaviourTree.Yield
         void ITicker.Reset()
         {
             _Reset();
-            
+
         }
 
         TICKRESULT ITicker.Tick(float delta)
         {
             if (_Current != null)
             {
-                var result = _Current.Result();
+                INSTRUCTION result = _Current.Result();
                 if (result == INSTRUCTION.DONE_BY_FAILURE || result == INSTRUCTION.DONE_BY_SUCCESS)
                 {
                     _Reset();
-                    return result == INSTRUCTION.DONE_BY_SUCCESS ? TICKRESULT.SUCCESS :  TICKRESULT.FAILURE;
+                    return result == INSTRUCTION.DONE_BY_SUCCESS ? TICKRESULT.SUCCESS : TICKRESULT.FAILURE;
                 }
                 if (result == INSTRUCTION.NEXT)
                 {
@@ -148,11 +148,11 @@ namespace Regulus.BehaviourTree.Yield
                 }
             }
             _Current = _Next();
-            if(_Current != null)
+            if (_Current != null)
                 return TICKRESULT.RUNNING;
 
             _Reset();
-            return TICKRESULT.SUCCESS;           
+            return TICKRESULT.SUCCESS;
         }
 
         private IInstructable _Next()
@@ -170,20 +170,20 @@ namespace Regulus.BehaviourTree.ActionHelper
     {
         private readonly IEnumerable<TICKRESULT> _Provider;
         private IEnumerator<TICKRESULT> _Action;
-        
-        
+
+
         private readonly Guid _Id;
         private readonly string _Tag;
 
-        public Coroutine(Expression<Func<IEnumerable<TICKRESULT>>>  expression)
+        public Coroutine(Expression<Func<IEnumerable<TICKRESULT>>> expression)
         {
             _Id = Guid.NewGuid();
-            var methodCallExpression = expression.Body as MethodCallExpression;
-            if(methodCallExpression == null)
-                throw new NotSupportedException(string.Format("The expression is a {0} , must a {1}" , expression.Body.NodeType  , ExpressionType.Call));
+            MethodCallExpression methodCallExpression = expression.Body as MethodCallExpression;
+            if (methodCallExpression == null)
+                throw new NotSupportedException(string.Format("The expression is a {0} , must a {1}", expression.Body.NodeType, ExpressionType.Call));
 
             _Tag = methodCallExpression.Method.Name;
-            
+
             _Provider = expression.Compile()();
             _Action = _Provider.GetEnumerator();
         }
@@ -208,20 +208,20 @@ namespace Regulus.BehaviourTree.ActionHelper
         }
 
         TICKRESULT ITicker.Tick(float delta)
-        {            
-            
+        {
+
             if (_Action.MoveNext())
             {
-                var result = _Action.Current;
+                TICKRESULT result = _Action.Current;
                 if (result != TICKRESULT.RUNNING)
                 {
                     _Action = _Provider.GetEnumerator();
                 }
                 return result;
             }
-            return TICKRESULT.RUNNING;            
+            return TICKRESULT.RUNNING;
         }
 
-        
+
     }
 }

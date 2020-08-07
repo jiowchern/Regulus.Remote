@@ -1,28 +1,28 @@
 ﻿namespace RegulusLibraryTest
 {
-	using NSubstitute;
+    using NSubstitute;
     public class StageTest
-	{
-		[NUnit.Framework.Test]
-		public void MachineTest()
-		{
-			
-			var stage1 = NSubstitute.Substitute.For<Regulus.Utility.IBootable>();
-			var stage2 = NSubstitute.Substitute.For<Regulus.Utility.IBootable>();
-			var machine = new Regulus.Utility.StageMachine();
+    {
+        [NUnit.Framework.Test]
+        public void MachineTest()
+        {
 
-			machine.Push(stage1);
-			machine.Push(stage2);
+            Regulus.Utility.IBootable stage1 = NSubstitute.Substitute.For<Regulus.Utility.IBootable>();
+            Regulus.Utility.IBootable stage2 = NSubstitute.Substitute.For<Regulus.Utility.IBootable>();
+            Regulus.Utility.StageMachine machine = new Regulus.Utility.StageMachine();
 
-			machine.Clean();
+            machine.Push(stage1);
+            machine.Push(stage2);
 
-			stage1.Received().Launch();
-			stage1.Received().Shutdown();
-			stage2.Received().Launch();
-			stage2.Received().Shutdown();
+            machine.Clean();
 
-		}
-	}
+            stage1.Received().Launch();
+            stage1.Received().Shutdown();
+            stage2.Received().Launch();
+            stage2.Received().Shutdown();
+
+        }
+    }
 
 
 }

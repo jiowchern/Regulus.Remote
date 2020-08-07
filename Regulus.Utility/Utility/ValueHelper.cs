@@ -7,182 +7,182 @@ using System.Reflection;
 namespace Regulus.Utility
 {
     public class ValueHelper
-	{
-		public static object StringConvert(Type type , string value)
-		{
+    {
+        public static object StringConvert(Type type, string value)
+        {
             object outValue;
-            Regulus.Utility.Command.TryConversion(value, out outValue, type);		
-			return outValue;
-		}
-			
-		public IEnumerator<T> GetEnumItems<T>() where T : class
-		{
-			foreach(var item in Enum.GetValues(typeof(T)))
-			{
-				yield return item as T;
-			}
-		}
+            Regulus.Utility.Command.TryConversion(value, out outValue, type);
+            return outValue;
+        }
 
-		public static T DeepCopy<T>(T obj)
-		{
-			if(obj == null)
-			{
-				throw new ArgumentNullException("Object cannot be null");
-			}
+        public IEnumerator<T> GetEnumItems<T>() where T : class
+        {
+            foreach (object item in Enum.GetValues(typeof(T)))
+            {
+                yield return item as T;
+            }
+        }
 
-			return (T)ValueHelper._CopyProcess(obj);
-		}
+        public static T DeepCopy<T>(T obj)
+        {
+            if (obj == null)
+            {
+                throw new ArgumentNullException("Object cannot be null");
+            }
 
-		public static object DeepCopy(object obj)
-		{
-			if(obj == null)
-			{
-				throw new ArgumentNullException("Object cannot be null");
-			}
+            return (T)ValueHelper._CopyProcess(obj);
+        }
 
-			return ValueHelper._CopyProcess(obj);
-		}
+        public static object DeepCopy(object obj)
+        {
+            if (obj == null)
+            {
+                throw new ArgumentNullException("Object cannot be null");
+            }
 
-		private static object _CopyProcess(object obj)
-		{
-			if(obj == null)
-			{
-				return null;
-			}
+            return ValueHelper._CopyProcess(obj);
+        }
 
-			var type = obj.GetType();
-			if(type.IsValueType || type == typeof(string))
-			{
-				return obj;
-			}
+        private static object _CopyProcess(object obj)
+        {
+            if (obj == null)
+            {
+                return null;
+            }
 
-			if(type.IsArray)
-			{
-				var elementType  = type.GetElementType();
-				
-				var array = obj as Array;
-				var copied = Array.CreateInstance(elementType, array.Length);
-				for(var i = 0; i < array.Length; i++)
-				{
-					copied.SetValue(ValueHelper._CopyProcess(array.GetValue(i)), i);
-				}
+            Type type = obj.GetType();
+            if (type.IsValueType || type == typeof(string))
+            {
+                return obj;
+            }
 
-				return Convert.ChangeType(copied, obj.GetType());
-			}
+            if (type.IsArray)
+            {
+                Type elementType = type.GetElementType();
 
-			if(type.IsClass)
-			{
-				var toret = Activator.CreateInstance(obj.GetType());
-				var fields = type.GetFields(
-					BindingFlags.Public |
-					BindingFlags.NonPublic | BindingFlags.Instance);
-				foreach(var field in fields)
-				{
-					var fieldValue = field.GetValue(obj);
-					if(fieldValue == null)
-					{
-						continue;
-					}
+                Array array = obj as Array;
+                Array copied = Array.CreateInstance(elementType, array.Length);
+                for (int i = 0; i < array.Length; i++)
+                {
+                    copied.SetValue(ValueHelper._CopyProcess(array.GetValue(i)), i);
+                }
 
-					field.SetValue(toret, ValueHelper._CopyProcess(fieldValue));
-				}
+                return Convert.ChangeType(copied, obj.GetType());
+            }
 
-				return toret;
-			}
+            if (type.IsClass)
+            {
+                object toret = Activator.CreateInstance(obj.GetType());
+                FieldInfo[] fields = type.GetFields(
+                    BindingFlags.Public |
+                    BindingFlags.NonPublic | BindingFlags.Instance);
+                foreach (FieldInfo field in fields)
+                {
+                    object fieldValue = field.GetValue(obj);
+                    if (fieldValue == null)
+                    {
+                        continue;
+                    }
 
-			throw new ArgumentException("Unknown type");
-		}
+                    field.SetValue(toret, ValueHelper._CopyProcess(fieldValue));
+                }
 
-		public static bool DeepEqual(object obj1, object obj2)
-		{
-			return ValueHelper._EqualProcess(obj1, obj2);
-		}
+                return toret;
+            }
 
-		private static bool _EqualProcess(object obj, object obj1)
-		{
-			if(obj == null && obj1 == null)
-			{
-				return true;
-			}
+            throw new ArgumentException("Unknown type");
+        }
 
-			if(obj != null && obj1 == null)
-			{
-				return false;
-			}
+        public static bool DeepEqual(object obj1, object obj2)
+        {
+            return ValueHelper._EqualProcess(obj1, obj2);
+        }
 
-			if(obj == null && obj1 != null)
-			{
-				return false;
-			}
+        private static bool _EqualProcess(object obj, object obj1)
+        {
+            if (obj == null && obj1 == null)
+            {
+                return true;
+            }
 
-			if(obj1.GetType() != obj.GetType())
-			{
-				return false;
-			}
+            if (obj != null && obj1 == null)
+            {
+                return false;
+            }
 
-			var type = obj.GetType();
-			if(type.IsValueType || type == typeof(string))
-			{
-				return obj.Equals(obj1);
-			}
+            if (obj == null && obj1 != null)
+            {
+                return false;
+            }
 
-			if(type.IsArray)
-			{
-				var elementType = Type.GetType(
-					type.FullName.Replace("[]", string.Empty));
-				var array = obj as Array;
+            if (obj1.GetType() != obj.GetType())
+            {
+                return false;
+            }
 
-				// Array copied = Array.CreateInstance(elementType, array.Length);
-				var copied = obj1 as Array;
-			    if(copied.Length != array.Length)
-			        return false;
+            Type type = obj.GetType();
+            if (type.IsValueType || type == typeof(string))
+            {
+                return obj.Equals(obj1);
+            }
 
-				for(var i = 0; i < array.Length; i++)
-				{
-					if(ValueHelper._EqualProcess(array.GetValue(i), copied.GetValue(i)) == false)
-					{
-						return false;
-					}
-				}
+            if (type.IsArray)
+            {
+                Type elementType = Type.GetType(
+                    type.FullName.Replace("[]", string.Empty));
+                Array array = obj as Array;
 
-				return true;
-			}
+                // Array copied = Array.CreateInstance(elementType, array.Length);
+                Array copied = obj1 as Array;
+                if (copied.Length != array.Length)
+                    return false;
 
-			if(type.IsClass)
-			{
-				var fields = type.GetFields(
-					BindingFlags.Public |
-					BindingFlags.NonPublic | BindingFlags.Instance);
-				foreach(var field in fields)
-				{
-					var fieldValue = field.GetValue(obj);
-					if(ValueHelper._EqualProcess(field.GetValue(obj), field.GetValue(obj1)) == false)
-					{
-						return false;
-					}
-				}
+                for (int i = 0; i < array.Length; i++)
+                {
+                    if (ValueHelper._EqualProcess(array.GetValue(i), copied.GetValue(i)) == false)
+                    {
+                        return false;
+                    }
+                }
 
-				return true;
-			}
+                return true;
+            }
 
-			throw new ArgumentException("無法比較的類型.");
-		}
+            if (type.IsClass)
+            {
+                FieldInfo[] fields = type.GetFields(
+                    BindingFlags.Public |
+                    BindingFlags.NonPublic | BindingFlags.Instance);
+                foreach (FieldInfo field in fields)
+                {
+                    object fieldValue = field.GetValue(obj);
+                    if (ValueHelper._EqualProcess(field.GetValue(obj), field.GetValue(obj1)) == false)
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            throw new ArgumentException("無法比較的類型.");
+        }
 
 
 
-        
 
-	    
 
-	}
+
+
+    }
 
     public class Comparison<T>
     {
         public readonly bool Same;
         public Comparison(IEnumerable<T> array1, IEnumerable<T> array2, Func<T, T, bool> comparison)
         {
-            var queue1 = new Queue<T>(array1);
-            var queue2 = new Queue<T>(array2); 
+            Queue<T> queue1 = new Queue<T>(array1);
+            Queue<T> queue2 = new Queue<T>(array2);
 
 
             while (queue1.Any() && queue2.Any())
@@ -198,8 +198,8 @@ namespace Regulus.Utility
             Same = queue1.Count() == queue2.Count();
         }
 
-        
+
     }
 
-    
+
 }

@@ -13,7 +13,7 @@ namespace Regulus.Remote
 
         public void Through(object gpi)
         {
-            var tgpi = (T)gpi;
+            T tgpi = (T)gpi;
             ThroughEvent(tgpi);
             Owner(tgpi);
         }

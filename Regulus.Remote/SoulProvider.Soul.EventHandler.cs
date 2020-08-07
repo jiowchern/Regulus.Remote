@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
 namespace Regulus.Remote
@@ -8,44 +7,44 @@ namespace Regulus.Remote
     public partial class SoulProvider
     {
         public partial class Soul
-		{
+        {
             public class EventHandler
-			{
-				readonly Delegate _DelegateInstance;
+            {
+                readonly Delegate _DelegateInstance;
 
-				public readonly EventInfo EventInfo;
+                public readonly EventInfo EventInfo;
 
-				readonly object _Instance;
+                readonly object _Instance;
 
-				public readonly long HandlerId;
-                
+                public readonly long HandlerId;
 
-                public EventHandler(object instance,Delegate delegate_object , EventInfo event_info ,long handler_id)
+
+                public EventHandler(object instance, Delegate delegate_object, EventInfo event_info, long handler_id)
                 {
-					HandlerId = handler_id;
-					_Instance = instance;
-					_DelegateInstance = delegate_object;
-					EventInfo = event_info;
+                    HandlerId = handler_id;
+                    _Instance = instance;
+                    _DelegateInstance = delegate_object;
+                    EventInfo = event_info;
 
-					var addMethod = event_info.GetAddMethod();
-					addMethod.Invoke(instance, new[] { _DelegateInstance });
-				}
+                    MethodInfo addMethod = event_info.GetAddMethod();
+                    addMethod.Invoke(instance, new[] { _DelegateInstance });
+                }
 
-				
+
 
                 internal void Release()
                 {
-					EventInfo.RemoveEventHandler(_Instance, _DelegateInstance);
-					
+                    EventInfo.RemoveEventHandler(_Instance, _DelegateInstance);
+
                 }
             }
 
 
-            readonly Dictionary<long,NotifierEventBinder> _SupplyBinder;
+            readonly Dictionary<long, NotifierEventBinder> _SupplyBinder;
             readonly Dictionary<long, NotifierEventBinder> _UnsupplyBinder;
-            internal void AttachSupply(long id,NotifierEventBinder binder)
-            {                
-                _Attach(_SupplyBinder , id,binder);
+            internal void AttachSupply(long id, NotifierEventBinder binder)
+            {
+                _Attach(_SupplyBinder, id, binder);
             }
             internal void DetachSupply(long id)
             {
@@ -67,7 +66,7 @@ namespace Regulus.Remote
                 binder.Setup();
             }
 
-            
+
 
             private void _Detach(Dictionary<long, NotifierEventBinder> binders, long id)
             {
@@ -79,5 +78,5 @@ namespace Regulus.Remote
                 }
             }
         }
-	}
+    }
 }

@@ -1,9 +1,7 @@
 using NSubstitute;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
 using Regulus.Network;
 using Regulus.Serialization;
-using System.Linq;
 
 namespace Regulus.Remote.Standalone.Test
 {
@@ -11,7 +9,7 @@ namespace Regulus.Remote.Standalone.Test
     {
         public static byte[] ServerToClient<T>(this Regulus.Serialization.ISerializer serializer, ServerToClientOpCode opcode, T instance)
         {
-            var pkg = new Regulus.Remote.ResponsePackage() { Code = opcode, Data = serializer.Serialize(instance) };
+            ResponsePackage pkg = new Regulus.Remote.ResponsePackage() { Code = opcode, Data = serializer.Serialize(instance) };
             return serializer.Serialize(pkg);
         }
 
@@ -20,7 +18,7 @@ namespace Regulus.Remote.Standalone.Test
             ResponsePackage pkg = new ResponsePackage();
             pkg.Code = opcode;
             pkg.Data = serializer.Serialize(instance);
-            writer.Push(new[] { pkg });            
+            writer.Push(new[] { pkg });
         }
     }
 
@@ -29,13 +27,13 @@ namespace Regulus.Remote.Standalone.Test
         public static IProtocol CreateProtocol(ISerializer serializer)
         {
             IProtocol protocol = NSubstitute.Substitute.For<IProtocol>();
-            var types = new System.Collections.Generic.Dictionary<System.Type, System.Type>();
+            System.Collections.Generic.Dictionary<System.Type, System.Type> types = new System.Collections.Generic.Dictionary<System.Type, System.Type>();
             types.Add(typeof(IGpiA), typeof(GhostIGpiA));
             InterfaceProvider interfaceProvider = new InterfaceProvider(types);
             protocol.GetInterfaceProvider().Returns(interfaceProvider);
             protocol.GetSerialize().Returns(serializer);
             System.Func<IProvider> gpiaProviderProvider = () => new TProvider<IGpiA>();
-            var typeProviderProvider = new System.Tuple<System.Type, System.Func<IProvider>>[] { new System.Tuple<System.Type, System.Func<IProvider>>(typeof(IGpiA), gpiaProviderProvider) };
+            System.Tuple<System.Type, System.Func<IProvider>>[] typeProviderProvider = new System.Tuple<System.Type, System.Func<IProvider>>[] { new System.Tuple<System.Type, System.Func<IProvider>>(typeof(IGpiA), gpiaProviderProvider) };
             protocol.GetMemberMap().Returns(new MemberMap(new System.Reflection.MethodInfo[0], new System.Reflection.EventInfo[0], new System.Reflection.PropertyInfo[0], typeProviderProvider));
             return protocol;
         }
@@ -46,50 +44,50 @@ namespace Regulus.Remote.Standalone.Test
         [Test]
         public void CommunicationDevicePushTest()
         {
-            var sendBuf = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-            var recvBuf = new byte[10] ;
+            byte[] sendBuf = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            byte[] recvBuf = new byte[10];
 
-            var cd = new Regulus.Remote.Standalone.PeerStream();
-            var peer = cd as IStreamable;
-            cd.Push(sendBuf,0, sendBuf.Length);
-            var receiveResult1 = peer.Receive(recvBuf, 0, 4);
-            var receiveResult2 = peer.Receive(recvBuf, 4, 6);
+            Stream cd = new Regulus.Remote.Standalone.Stream();
+            IStreamable peer = cd as IStreamable;
+            cd.Push(sendBuf, 0, sendBuf.Length);
+            System.Threading.Tasks.Task<int> receiveResult1 = peer.Receive(recvBuf, 0, 4);
+            System.Threading.Tasks.Task<int> receiveResult2 = peer.Receive(recvBuf, 4, 6);
 
-            var receiveCount1 = receiveResult1.GetAwaiter().GetResult();            
-            var receiveCount2 = receiveResult2.GetAwaiter().GetResult();
+            int receiveCount1 = receiveResult1.GetAwaiter().GetResult();
+            int receiveCount2 = receiveResult2.GetAwaiter().GetResult();
 
-            Assert.AreEqual(4 , receiveCount1);
+            Assert.AreEqual(4, receiveCount1);
             Assert.AreEqual(6, receiveCount2);
         }
 
         [Test]
         public void CommunicationDevicePopTest()
         {
-            var sendBuf = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-            var recvBuf = new byte[10] ;
+            byte[] sendBuf = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+            byte[] recvBuf = new byte[10];
 
-            var cd = new Regulus.Remote.Standalone.PeerStream();
-            var peer = cd as IStreamable;
-            
-            var result1 = peer.Send(sendBuf, 0, 4);
-            var sendResult1 = result1.GetAwaiter().GetResult();
+            Stream cd = new Regulus.Remote.Standalone.Stream();
+            IStreamable peer = cd as IStreamable;
 
-            var result2 = peer.Send(sendBuf, 4, 6);
-            var sendResult2 = result2.GetAwaiter().GetResult();
+            System.Threading.Tasks.Task<int> result1 = peer.Send(sendBuf, 0, 4);
+            int sendResult1 = result1.GetAwaiter().GetResult();
 
-
-            var streamTask1 = cd.Pop(recvBuf,0,3);
-            var stream1 = streamTask1.GetAwaiter().GetResult();
-
-            var streamTask2 = cd.Pop(recvBuf, stream1, recvBuf.Length - stream1);
-            var stream2 = streamTask2.GetAwaiter().GetResult();
-
-            var streamTask3 = cd.Pop(recvBuf, stream1+stream2, recvBuf.Length - (stream1 + stream2));
-            var stream3 = streamTask3.GetAwaiter().GetResult();
+            System.Threading.Tasks.Task<int> result2 = peer.Send(sendBuf, 4, 6);
+            int sendResult2 = result2.GetAwaiter().GetResult();
 
 
+            System.Threading.Tasks.Task<int> streamTask1 = cd.Pop(recvBuf, 0, 3);
+            int stream1 = streamTask1.GetAwaiter().GetResult();
 
-            Assert.AreEqual(10, stream3 + stream2+ stream1);
+            System.Threading.Tasks.Task<int> streamTask2 = cd.Pop(recvBuf, stream1, recvBuf.Length - stream1);
+            int stream2 = streamTask2.GetAwaiter().GetResult();
+
+            System.Threading.Tasks.Task<int> streamTask3 = cd.Pop(recvBuf, stream1 + stream2, recvBuf.Length - (stream1 + stream2));
+            int stream3 = streamTask3.GetAwaiter().GetResult();
+
+
+
+            Assert.AreEqual(10, stream3 + stream2 + stream1);
             Assert.AreEqual((byte)0, recvBuf[0]);
             Assert.AreEqual((byte)1, recvBuf[1]);
             Assert.AreEqual((byte)2, recvBuf[2]);
@@ -106,16 +104,16 @@ namespace Regulus.Remote.Standalone.Test
         public void CommunicationDeviceSerializerTest()
         {
             Regulus.Serialization.ISerializer serializer = new Regulus.Serialization.Dynamic.Serializer();
-            var cd = new Regulus.Remote.Standalone.PeerStream();
+            Stream cd = new Regulus.Remote.Standalone.Stream();
             IStreamable peer = cd;
-            var buf = serializer.ServerToClient(ServerToClientOpCode.LoadSoul, new Regulus.Remote.PackageLoadSoul() { EntityId = 1, ReturnType = false, TypeId = 1 });
-            cd.Push(buf,0,buf.Length);
+            byte[] buf = serializer.ServerToClient(ServerToClientOpCode.LoadSoul, new Regulus.Remote.PackageLoadSoul() { EntityId = 1, ReturnType = false, TypeId = 1 });
+            cd.Push(buf, 0, buf.Length);
 
-            var recvBuf = new byte[buf.Length];
+            byte[] recvBuf = new byte[buf.Length];
             peer.Receive(recvBuf, 0, recvBuf.Length);
-            var responsePkg = serializer.Deserialize(recvBuf) as ResponsePackage;
-            var lordsoulPkg = serializer.Deserialize(responsePkg.Data) as PackageLoadSoul;
-            Assert.AreEqual(ServerToClientOpCode.LoadSoul , responsePkg.Code);
+            ResponsePackage responsePkg = serializer.Deserialize(recvBuf) as ResponsePackage;
+            PackageLoadSoul lordsoulPkg = serializer.Deserialize(responsePkg.Data) as PackageLoadSoul;
+            Assert.AreEqual(ServerToClientOpCode.LoadSoul, responsePkg.Code);
             Assert.AreEqual(1, lordsoulPkg.EntityId);
             Assert.AreEqual(false, lordsoulPkg.ReturnType);
             Assert.AreEqual(1, lordsoulPkg.TypeId);
@@ -125,19 +123,19 @@ namespace Regulus.Remote.Standalone.Test
         public void CommunicationDeviceSerializerBatchTest()
         {
             Regulus.Serialization.ISerializer serializer = new Regulus.Serialization.Dynamic.Serializer();
-            var cd = new Regulus.Remote.Standalone.PeerStream();
+            Stream cd = new Regulus.Remote.Standalone.Stream();
             IStreamable peer = cd;
 
-            var buf = serializer.ServerToClient(ServerToClientOpCode.LoadSoul, new Regulus.Remote.PackageLoadSoul() { EntityId = 1, ReturnType = false, TypeId = 1 });
+            byte[] buf = serializer.ServerToClient(ServerToClientOpCode.LoadSoul, new Regulus.Remote.PackageLoadSoul() { EntityId = 1, ReturnType = false, TypeId = 1 });
 
-            cd.Push(buf,0,1);
-            cd.Push(buf,1,buf.Length - 1);
+            cd.Push(buf, 0, 1);
+            cd.Push(buf, 1, buf.Length - 1);
 
-            var recvBuf = new byte[buf.Length];
+            byte[] recvBuf = new byte[buf.Length];
             peer.Receive(recvBuf, 0, recvBuf.Length).GetAwaiter().GetResult();
-            peer.Receive(recvBuf, 1, recvBuf.Length-1).GetAwaiter().GetResult();
-            var responsePkg = serializer.Deserialize(recvBuf) as ResponsePackage;
-            var lordsoulPkg = serializer.Deserialize(responsePkg.Data) as PackageLoadSoul;
+            peer.Receive(recvBuf, 1, recvBuf.Length - 1).GetAwaiter().GetResult();
+            ResponsePackage responsePkg = serializer.Deserialize(recvBuf) as ResponsePackage;
+            PackageLoadSoul lordsoulPkg = serializer.Deserialize(responsePkg.Data) as PackageLoadSoul;
             Assert.AreEqual(ServerToClientOpCode.LoadSoul, responsePkg.Code);
             Assert.AreEqual(1, lordsoulPkg.EntityId);
             Assert.AreEqual(false, lordsoulPkg.ReturnType);
@@ -151,13 +149,13 @@ namespace Regulus.Remote.Standalone.Test
             Regulus.Serialization.ISerializer serializer = new Regulus.Serialization.Dynamic.Serializer();
             IProtocol protocol = ProtocolHelper.CreateProtocol(serializer);
 
-            var cdClient = new Regulus.Remote.Standalone.PeerStream();
+            Stream cdClient = new Regulus.Remote.Standalone.Stream();
 
             Network.IStreamable peerClient = cdClient;
-            var writer = new PackageWriter<ResponsePackage>(serializer);
-            writer.Start(new ReversePeer(cdClient));
+            PackageWriter<ResponsePackage> writer = new PackageWriter<ResponsePackage>(serializer);
+            writer.Start(new ReverseStream(cdClient));
 
-            var agent = new Regulus.Remote.Ghost.Agent(protocol) as Ghost.IAgent;
+            Ghost.IAgent agent = new Regulus.Remote.Ghost.Agent(protocol) as Ghost.IAgent;
             agent.QueryNotifier<IGpiA>().Supply += gpi => retGpiA = gpi;
             agent.Start(peerClient);
 
@@ -172,6 +170,6 @@ namespace Regulus.Remote.Standalone.Test
             Assert.AreNotEqual(null, retGpiA);
         }
 
-        
+
     }
 }

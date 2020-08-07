@@ -1,14 +1,13 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace Regulus.Remote
 {
     internal class GhostNotifierHandler
     {
-        private IGhost _Ghost;
-        private IProtocol _Protocol;
-        private IGhostRequest _Requester;
-        private SoulNotifier _NotifierPassage;
+        private readonly IGhost _Ghost;
+        private readonly IProtocol _Protocol;
+        private readonly IGhostRequest _Requester;
+        private readonly SoulNotifier _NotifierPassage;
 
         public GhostNotifierHandler(IGhost ghost, IProtocol protocol, IGhostRequest requester, SoulNotifier notifierPassage)
         {
@@ -20,9 +19,9 @@ namespace Regulus.Remote
 
         internal void AddSupply(PropertyInfo info, PassageCallback passage)
         {
-            var passageId = _NotifierPassage.RegisterSupply(passage);
+            long passageId = _NotifierPassage.RegisterSupply(passage);
 
-            var package = new PackageNotifierEvent();
+            PackageNotifierEvent package = new PackageNotifierEvent();
             package.Entity = _Ghost.GetID();
             package.Property = _Protocol.GetMemberMap().GetProperty(info);
             package.Passage = passageId;
@@ -31,9 +30,9 @@ namespace Regulus.Remote
 
         internal void RemoveSupply(PropertyInfo info, PassageCallback passage)
         {
-            var passageId = _NotifierPassage.UnregisterSupply(passage);
+            long passageId = _NotifierPassage.UnregisterSupply(passage);
 
-            var package = new PackageNotifierEvent();
+            PackageNotifierEvent package = new PackageNotifierEvent();
             package.Entity = _Ghost.GetID();
             package.Property = _Protocol.GetMemberMap().GetProperty(info);
             package.Passage = passageId;
@@ -42,9 +41,9 @@ namespace Regulus.Remote
 
         internal void AddUnsupply(PropertyInfo info, PassageCallback passage)
         {
-            var passageId = _NotifierPassage.RegisterUnsupply(passage);
+            long passageId = _NotifierPassage.RegisterUnsupply(passage);
 
-            var package = new PackageNotifierEvent();
+            PackageNotifierEvent package = new PackageNotifierEvent();
             package.Entity = _Ghost.GetID();
             package.Property = _Protocol.GetMemberMap().GetProperty(info);
             package.Passage = passageId;
@@ -53,9 +52,9 @@ namespace Regulus.Remote
 
         internal void RemoveUnsupply(PropertyInfo info, PassageCallback passage)
         {
-            var passageId = _NotifierPassage.UnregisterUnsupply(passage);
+            long passageId = _NotifierPassage.UnregisterUnsupply(passage);
 
-            var package = new PackageNotifierEvent();
+            PackageNotifierEvent package = new PackageNotifierEvent();
             package.Entity = _Ghost.GetID();
             package.Property = _Protocol.GetMemberMap().GetProperty(info);
             package.Passage = passageId;

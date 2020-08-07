@@ -10,17 +10,17 @@ namespace Regulus.Serialization
         public readonly IKeyDescriber KeyDescriber;
         public DescribersFinder(params Type[] types)
         {
-            var describers = new List<ITypeDescriber>();
-            foreach (var type in types)
+            List<ITypeDescriber> describers = new List<ITypeDescriber>();
+            foreach (Type type in types)
             {
-                var identifier = new TypeIdentifier(type  , this);
+                TypeIdentifier identifier = new TypeIdentifier(type, this);
                 describers.AddRange(identifier.Describers);
-            }            
+            }
 
             _Describers = new Dictionary<Type, ITypeDescriber>();
-            foreach (var typeDescriber in describers)
+            foreach (ITypeDescriber typeDescriber in describers)
             {
-                if(!_Describers.ContainsKey(typeDescriber.Type))
+                if (!_Describers.ContainsKey(typeDescriber.Type))
                     _Describers.Add(typeDescriber.Type, typeDescriber);
             }
 

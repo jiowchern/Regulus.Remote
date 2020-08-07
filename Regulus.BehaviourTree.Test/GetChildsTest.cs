@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using NUnit.Framework;
+using System.Collections.Generic;
 
 namespace Regulus.BehaviourTree.Tests
 {
@@ -19,7 +19,7 @@ namespace Regulus.BehaviourTree.Tests
 
             public void Start()
             {
-                
+
             }
 
             public void End()
@@ -30,19 +30,19 @@ namespace Regulus.BehaviourTree.Tests
         [NUnit.Framework.Test()]
         public void GetChilds1()
         {
-            var test = new Test();
-            var builder = new Regulus.BehaviourTree.Builder();
-            var ticker = builder
-                .Sequence()                    
-                    .Action(test.Call1)                    
+            Test test = new Test();
+            Builder builder = new Regulus.BehaviourTree.Builder();
+            ITicker ticker = builder
+                .Sequence()
+                    .Action(test.Call1)
                     .Action(() => test.Call2())
-                    .Action(() => test , (i) => i.Call1 ,(i) => i.Start , (i) => i.End )
+                    .Action(() => test, (i) => i.Call1, (i) => i.Start, (i) => i.End)
 
                 .End().Build();
 
-            var childs = ticker.GetChilds();
+            ITicker[] childs = ticker.GetChilds();
 
-            Assert.AreEqual("Sequence" , ticker.Tag);
+            Assert.AreEqual("Sequence", ticker.Tag);
 
             Assert.AreEqual("Call1", childs[0].Tag);
 

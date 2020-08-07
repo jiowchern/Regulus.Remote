@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Regulus.BehaviourTree
 {
@@ -25,18 +24,18 @@ namespace Regulus.BehaviourTree
             {
                 if (_Result == TICKRESULT.RUNNING)
                 {
-                    var result = _Child.Tick(delta);
+                    TICKRESULT result = _Child.Tick(delta);
                     _Result = result;
-                }                
+                }
             }
 
-            
+
 
             public void Reset()
             {
                 _Child.Reset();
                 _Result = TICKRESULT.RUNNING;
-                
+
             }
 
             public void Clear()
@@ -67,7 +66,7 @@ namespace Regulus.BehaviourTree
 
         void ITicker.Reset()
         {
-            foreach (var ticker in _Childs)
+            foreach (Item ticker in _Childs)
             {
                 ticker.Reset();
             }
@@ -82,26 +81,26 @@ namespace Regulus.BehaviourTree
         void ITicker.GetPath(ref List<Guid> nodes)
         {
             nodes.Add(_Id);
-            foreach (var child in _Tickers)
+            foreach (ITicker child in _Tickers)
             {
                 child.GetPath(ref nodes);
-            }            
+            }
         }
 
         TICKRESULT ITicker.Tick(float delta)
         {
 
-            foreach (var child in _Childs)
+            foreach (Item child in _Childs)
             {
                 child.Tick(delta);
             }
-            var numChildrenSuceeded = _Childs.Count(c => c.Result == TICKRESULT.SUCCESS);
-            var numChildrenFailed = _Childs.Count(c => c.Result == TICKRESULT.FAILURE);
+            int numChildrenSuceeded = _Childs.Count(c => c.Result == TICKRESULT.SUCCESS);
+            int numChildrenFailed = _Childs.Count(c => c.Result == TICKRESULT.FAILURE);
 
-            if( numChildrenSuceeded + numChildrenFailed != _Childs.Count)
+            if (numChildrenSuceeded + numChildrenFailed != _Childs.Count)
                 return TICKRESULT.RUNNING;
 
-            foreach (var child in _Childs)
+            foreach (Item child in _Childs)
             {
                 child.Clear();
             }
@@ -112,7 +111,7 @@ namespace Regulus.BehaviourTree
             if (numChildrenSuceeded < numChildrenFailed)
                 return TICKRESULT.FAILURE;
 
-            if(_SameIsSuccess)
+            if (_SameIsSuccess)
                 return TICKRESULT.SUCCESS;
             return TICKRESULT.FAILURE;
         }

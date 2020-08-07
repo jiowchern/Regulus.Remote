@@ -1,6 +1,6 @@
 ﻿namespace Regulus.BehaviourTree
 {
-    public interface IDeltaTimeRequester    
+    public interface IDeltaTimeRequester
     {
         float Request();
     }

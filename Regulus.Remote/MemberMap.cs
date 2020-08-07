@@ -1,59 +1,58 @@
+using Regulus.Utility;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-using Regulus.Utility;
-
 namespace Regulus.Remote
 {
-    namespace AOT   
+    namespace AOT
     {
     }
 
-    
-    
 
-    public class MemberMap : IEqualityComparer<Type> , IEqualityComparer<PropertyInfo>, IEqualityComparer<EventInfo>  , IEqualityComparer<MethodInfo> , IEqualityComparer<int> 
+
+
+    public class MemberMap : IEqualityComparer<Type>, IEqualityComparer<PropertyInfo>, IEqualityComparer<EventInfo>, IEqualityComparer<MethodInfo>, IEqualityComparer<int>
     {
 
         private readonly BilateralMap<int, MethodInfo> _Methods;
         private readonly BilateralMap<int, EventInfo> _Events;
         private readonly BilateralMap<int, PropertyInfo> _Propertys;
         private readonly BilateralMap<int, Type> _Interfaces;
-        private readonly Dictionary<Type , Func<IProvider>> _Providers;
+        private readonly Dictionary<Type, Func<IProvider>> _Providers;
 
 
-        public MemberMap(IEnumerable<MethodInfo> methods , IEnumerable<EventInfo> events , IEnumerable<PropertyInfo> propertys , IEnumerable<System.Tuple<System.Type, System.Func<Regulus.Remote.IProvider>>>  interfaces )
+        public MemberMap(IEnumerable<MethodInfo> methods, IEnumerable<EventInfo> events, IEnumerable<PropertyInfo> propertys, IEnumerable<System.Tuple<System.Type, System.Func<Regulus.Remote.IProvider>>> interfaces)
         {
             _Providers = new Dictionary<Type, Func<IProvider>>();
-            _Methods = new BilateralMap<int, MethodInfo>(this , this);
+            _Methods = new BilateralMap<int, MethodInfo>(this, this);
             _Events = new BilateralMap<int, EventInfo>(this, this);
-            _Propertys = new BilateralMap<int, PropertyInfo>(this ,this);
-            _Interfaces = new BilateralMap<int, Type>(this , this);
+            _Propertys = new BilateralMap<int, PropertyInfo>(this, this);
+            _Interfaces = new BilateralMap<int, Type>(this, this);
 
             int id = 0;
-            foreach (var method in methods)
-            {                
-                _Methods.Add(++id , method);
-            }
-
-            id = 0;
-            foreach (var eventInfo in events)
+            foreach (MethodInfo method in methods)
             {
-                _Events.Add(++id , eventInfo);
+                _Methods.Add(++id, method);
             }
 
             id = 0;
-            foreach (var propertyInfo in propertys)
+            foreach (EventInfo eventInfo in events)
+            {
+                _Events.Add(++id, eventInfo);
+            }
+
+            id = 0;
+            foreach (PropertyInfo propertyInfo in propertys)
             {
                 _Propertys.Add(++id, propertyInfo);
             }
 
             id = 0;
-            foreach (var @interface in interfaces)
+            foreach (Tuple<Type, Func<IProvider>> @interface in interfaces)
             {
                 _Interfaces.Add(++id, @interface.Item1);
-                _Providers.Add(@interface.Item1 ,@interface.Item2);
+                _Providers.Add(@interface.Item1, @interface.Item2);
             }
         }
 
@@ -65,7 +64,7 @@ namespace Regulus.Remote
                 return provider();
             }
             throw new SystemException($"no provider in type {type}");
-            
+
         }
         public MethodInfo GetMethod(int id)
         {
@@ -90,7 +89,7 @@ namespace Regulus.Remote
 
         public int GetEvent(EventInfo info)
         {
-            
+
             int id;
             _Events.TryGetItem1(info, out id);
             return id;
@@ -145,7 +144,7 @@ namespace Regulus.Remote
 
         bool IEqualityComparer<EventInfo>.Equals(EventInfo x, EventInfo y)
         {
-            return _GetEvent(x.DeclaringType , x.Name) == _GetEvent(y.DeclaringType, y.Name);
+            return _GetEvent(x.DeclaringType, x.Name) == _GetEvent(y.DeclaringType, y.Name);
         }
 
         int IEqualityComparer<EventInfo>.GetHashCode(EventInfo obj)

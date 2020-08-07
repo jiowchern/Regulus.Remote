@@ -8,25 +8,25 @@ namespace Regulus.Serialization
         public readonly Type Describer;
 
         public readonly Type Instance;
-        
+
 
         public readonly Exception Next;
 
-        
 
-        public DescriberException(Type describer, Type instance,  string message) : base(message)
+
+        public DescriberException(Type describer, Type instance, string message) : base(message)
         {
             Describer = describer;
             Instance = instance;
-            
+
         }
 
-        public DescriberException(Type describer, Type instance, string message , Exception next) : base(message)
+        public DescriberException(Type describer, Type instance, string message, Exception next) : base(message)
         {
             Describer = describer;
-            Instance = instance;            
+            Instance = instance;
             Next = next;
         }
     }
-    
+
 }

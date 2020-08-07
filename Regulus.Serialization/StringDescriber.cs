@@ -1,12 +1,10 @@
 using System;
-using System.ComponentModel;
-using System.Linq;
 
 namespace Regulus.Serialization
 {
     public class StringDescriber : ITypeDescriber
     {
-        
+
 
         private readonly ITypeDescriber _CharArrayDescriber;
 
@@ -16,10 +14,10 @@ namespace Regulus.Serialization
 
         }
 
-        
+
         Type ITypeDescriber.Type
         {
-            get { return typeof (string); }
+            get { return typeof(string); }
         }
 
         object ITypeDescriber.Default
@@ -29,19 +27,19 @@ namespace Regulus.Serialization
 
         int ITypeDescriber.GetByteCount(object instance)
         {
-            var str = instance as string;
-            var chars = str.ToCharArray();
+            string str = instance as string;
+            char[] chars = str.ToCharArray();
 
-            var charCount = _CharArrayDescriber.GetByteCount(chars);
+            int charCount = _CharArrayDescriber.GetByteCount(chars);
 
             return charCount;
         }
 
         int ITypeDescriber.ToBuffer(object instance, byte[] buffer, int begin)
         {
-            var str = instance as string;
-            var chars = str.ToCharArray();
-            int offset = begin;            
+            string str = instance as string;
+            char[] chars = str.ToCharArray();
+            int offset = begin;
             offset += _CharArrayDescriber.ToBuffer(chars, buffer, offset);
             return offset - begin;
         }
@@ -56,6 +54,6 @@ namespace Regulus.Serialization
 
             return offset - begin;
         }
-        
+
     }
 }

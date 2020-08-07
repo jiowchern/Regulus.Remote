@@ -16,7 +16,7 @@
 
         public void Operate()
         {
-            var ticks = _Counter.Ticks;
+            long ticks = _Counter.Ticks;
             _PowerRegulator.Operate(ticks - _PreviousTicks);
             _PreviousTicks = ticks;
         }

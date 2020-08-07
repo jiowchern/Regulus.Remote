@@ -17,79 +17,80 @@ namespace Regulus.Remote.Client
             _RemoveHandlers = new List<System.Action>();
 
 
-            var agentType = typeof(INotifierQueryable);
-            var agentQueryNotifier = agentType.GetMethod(nameof(INotifierQueryable.QueryNotifier));
-            
-            foreach (var type in _Types)
+            Type agentType = typeof(INotifierQueryable);
+            System.Reflection.MethodInfo agentQueryNotifier = agentType.GetMethod(nameof(INotifierQueryable.QueryNotifier));
+
+            foreach (Type type in _Types)
             {
 
-                var agentQueryNotifierT = agentQueryNotifier.MakeGenericMethod(type);
-                
-
-                var notifyInstance = agentQueryNotifierT.Invoke(agent_instance, new object[0]);
-
-                var notifyTypeT = typeof(INotifier<>).MakeGenericType(type);
-                
-
-                var notifySupply = notifyTypeT.GetEvent(nameof(INotifier<object>.Supply));
-                var notifyUnsupply = notifyTypeT.GetEvent(nameof(INotifier<object>.Unsupply));
-                
-                var catcherSupply = new Regulus.Utility.Reflection.TypeMethodCatcher((System.Linq.Expressions.Expression<Action<AgentEventRectifier>>)(ins => ins._Supply<object>(null)));                
-                var supplyGenericMethod = catcherSupply.Method.GetGenericMethodDefinition();
-                var supplyMethod = supplyGenericMethod.MakeGenericMethod(type);
-
-                var catcherUnsupply = new Regulus.Utility.Reflection.TypeMethodCatcher((System.Linq.Expressions.Expression<Action<AgentEventRectifier>>)(ins => ins._Unsupply<object>(null)));
-                var unsupplyGenericMethod = catcherUnsupply.Method.GetGenericMethodDefinition();
-                var unsupplyMethod = unsupplyGenericMethod.MakeGenericMethod(type);
-
-                var actionT1 = typeof(System.Action<>);
-                var actionT = actionT1.MakeGenericType(type);
+                System.Reflection.MethodInfo agentQueryNotifierT = agentQueryNotifier.MakeGenericMethod(type);
 
 
+                object notifyInstance = agentQueryNotifierT.Invoke(agent_instance, new object[0]);
 
-                var delegateSupply = Delegate.CreateDelegate(actionT, this, supplyMethod);
-                var delegateUnsupply = Delegate.CreateDelegate(actionT, this, unsupplyMethod);
+                Type notifyTypeT = typeof(INotifier<>).MakeGenericType(type);
+
+
+                System.Reflection.EventInfo notifySupply = notifyTypeT.GetEvent(nameof(INotifier<object>.Supply));
+                System.Reflection.EventInfo notifyUnsupply = notifyTypeT.GetEvent(nameof(INotifier<object>.Unsupply));
+
+                Utility.Reflection.TypeMethodCatcher catcherSupply = new Regulus.Utility.Reflection.TypeMethodCatcher((System.Linq.Expressions.Expression<Action<AgentEventRectifier>>)(ins => ins._Supply<object>(null)));
+                System.Reflection.MethodInfo supplyGenericMethod = catcherSupply.Method.GetGenericMethodDefinition();
+                System.Reflection.MethodInfo supplyMethod = supplyGenericMethod.MakeGenericMethod(type);
+
+                Utility.Reflection.TypeMethodCatcher catcherUnsupply = new Regulus.Utility.Reflection.TypeMethodCatcher((System.Linq.Expressions.Expression<Action<AgentEventRectifier>>)(ins => ins._Unsupply<object>(null)));
+                System.Reflection.MethodInfo unsupplyGenericMethod = catcherUnsupply.Method.GetGenericMethodDefinition();
+                System.Reflection.MethodInfo unsupplyMethod = unsupplyGenericMethod.MakeGenericMethod(type);
+
+                Type actionT1 = typeof(System.Action<>);
+                Type actionT = actionT1.MakeGenericType(type);
+
+
+
+                Delegate delegateSupply = Delegate.CreateDelegate(actionT, this, supplyMethod);
+                Delegate delegateUnsupply = Delegate.CreateDelegate(actionT, this, unsupplyMethod);
                 notifySupply.AddEventHandler(notifyInstance, delegateSupply);
                 notifyUnsupply.AddEventHandler(notifyInstance, delegateUnsupply);
-                _RemoveHandlers.Add(() => {
-                    notifySupply.RemoveEventHandler(notifyInstance , delegateSupply);
+                _RemoveHandlers.Add(() =>
+                {
+                    notifySupply.RemoveEventHandler(notifyInstance, delegateSupply);
                     notifyUnsupply.RemoveEventHandler(notifyInstance, delegateUnsupply);
                 });
             }
 
-            
+
         }
 
-        
+
         private void _Supply<T>(T instance)
         {
-            var type = instance.GetType();
-            var parents = type.GetInterfaces();
-            foreach(var p in parents)
+            Type type = instance.GetType();
+            Type[] parents = type.GetInterfaces();
+            foreach (Type p in parents)
             {
-                if(_Types.Any( t => t== p))
+                if (_Types.Any(t => t == p))
                     SupplyEvent(p, instance);
             }
-            
+
         }
 
         private void _Unsupply<T>(T instance)
         {
 
-            var type = instance.GetType();
-            var parents = type.GetInterfaces();
-            foreach (var p in parents)
+            Type type = instance.GetType();
+            Type[] parents = type.GetInterfaces();
+            foreach (Type p in parents)
             {
                 if (_Types.Any(t => t == p))
                     UnsupplyEvent(p, instance);
             }
 
-            
+
         }
 
         void IDisposable.Dispose()
         {
-            foreach (var removeHandler in _RemoveHandlers)
+            foreach (Action removeHandler in _RemoveHandlers)
                 removeHandler();
         }
 

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design.Serialization;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
@@ -13,98 +11,98 @@ namespace Regulus.Remote.Protocol
     {
         static readonly string _GhostIdName = "_GhostIdName";
 
-        
+
 
         public event Action<string, string> ProviderEvent;
-        public event Action<string , string> GpiEvent;
-        public event Action<string , string,string> EventEvent;
+        public event Action<string, string> GpiEvent;
+        public event Action<string, string, string> EventEvent;
 
 
-        
+
         public void Build(Type[] types)
         {
 
-            var codeGpis = new List<string>();
-            var codeEvents = new List<string>();
+            List<string> codeGpis = new List<string>();
+            List<string> codeEvents = new List<string>();
 
 
-            var addGhostType = new List<string>();
-            var addEventType = new List<string>();
+            List<string> addGhostType = new List<string>();
+            List<string> addEventType = new List<string>();
 
-            var serializerTypes = new HashSet<Type>();
-            
-            var memberMapMethodBuilder = new List<string>();
-            var memberMapEventBuilder = new List<string>();
-            var memberMapPropertyBuilder = new List<string>();
+            HashSet<Type> serializerTypes = new HashSet<Type>();
 
-            var memberMapInterfaceBuilder = new List<string>();
-            foreach (var type in types)
+            List<string> memberMapMethodBuilder = new List<string>();
+            List<string> memberMapEventBuilder = new List<string>();
+            List<string> memberMapPropertyBuilder = new List<string>();
+
+            List<string> memberMapInterfaceBuilder = new List<string>();
+            foreach (Type type in types)
             {
-                
+
                 serializerTypes.Add(type);
-                
+
 
                 if (_ValidRemoteInterface(type))
                 {
                     string ghostClassCode = _BuildGhostCode(type);
-                    var typeName = _GetTypeName(type);
+                    string typeName = _GetTypeName(type);
                     addGhostType.Add($"types.Add(typeof({typeName}) , typeof({_GetGhostType(type)}) );");
                     codeGpis.Add(ghostClassCode);
                     if (GpiEvent != null)
                         GpiEvent(typeName, ghostClassCode);
 
-                    var eventInfos = type.GetEvents();
-                    foreach (var eventInfo in eventInfos)
+                    EventInfo[] eventInfos = type.GetEvents();
+                    foreach (EventInfo eventInfo in eventInfos)
                     {
                         addEventType.Add($"eventClosures.Add(new {_GetEventType(type, eventInfo.Name)}() );");
-                        var eventCode = _BuildEventCode(type, eventInfo);
+                        string eventCode = _BuildEventCode(type, eventInfo);
                         codeEvents.Add(eventCode);
 
                         if (EventEvent != null)
                             EventEvent(typeName, eventInfo.Name, eventCode);
 
-                        
+
                         memberMapEventBuilder.Add(String.Format("typeof({0}).GetEvent(\"{1}\")", type.FullName, eventInfo.Name));
                     }
 
-                    var methodInfos = type.GetMethods();
-                    foreach (var methodInfo in methodInfos)
+                    MethodInfo[] methodInfos = type.GetMethods();
+                    foreach (MethodInfo methodInfo in methodInfos)
                     {
                         if (methodInfo.IsPublic && methodInfo.IsSpecialName == false)
                         {
                             //String.Format("typeof({0}).GetMethod(\"{1}\")", type.FullName, methodInfo.Name)
                             memberMapMethodBuilder.Add(_BuildGetTypeMethodInfo(methodInfo));
-                        }                            
+                        }
                     }
 
 
-                    var propertyInfos = type.GetProperties();
+                    PropertyInfo[] propertyInfos = type.GetProperties();
 
-                    foreach (var propertyInfo in propertyInfos)
+                    foreach (PropertyInfo propertyInfo in propertyInfos)
                     {
-                        
-                            memberMapPropertyBuilder.Add(String.Format("typeof({0}).GetProperty(\"{1}\")", type.FullName, propertyInfo.Name));
+
+                        memberMapPropertyBuilder.Add(String.Format("typeof({0}).GetProperty(\"{1}\")", type.FullName, propertyInfo.Name));
                     }
 
                     memberMapInterfaceBuilder.Add(String.Format("new System.Tuple<System.Type, System.Func<Regulus.Remote.IProvider>>(typeof({0}),()=>new Regulus.Remote.TProvider<{0}>())", type.FullName));
                 }
-                
+
 
             }
-            var addMemberMapinterfaceCode = string.Join(",", memberMapInterfaceBuilder.ToArray());
-            var addMemberMapPropertyCode = string.Join(",", memberMapPropertyBuilder.ToArray());
-            var addMemberMapEventCode = string.Join(",", memberMapEventBuilder.ToArray());
-            
-            var addMemberMapMethodCode = string.Join(",", memberMapMethodBuilder.ToArray());
-            var addTypeCode = string.Join("\n", addGhostType.ToArray());
-            var addDescriberCode = string.Join(",", _GetSerializarType(serializerTypes) );
-            var addEventCode = string.Join("\n", addEventType.ToArray());
+            string addMemberMapinterfaceCode = string.Join(",", memberMapInterfaceBuilder.ToArray());
+            string addMemberMapPropertyCode = string.Join(",", memberMapPropertyBuilder.ToArray());
+            string addMemberMapEventCode = string.Join(",", memberMapEventBuilder.ToArray());
+
+            string addMemberMapMethodCode = string.Join(",", memberMapMethodBuilder.ToArray());
+            string addTypeCode = string.Join("\n", addGhostType.ToArray());
+            string addDescriberCode = string.Join(",", _GetSerializarType(serializerTypes));
+            string addEventCode = string.Join("\n", addEventType.ToArray());
             //var tokens = protocol_name.Split(new[] { '.' });
             //var procotolName = tokens.Last();
 
-           // var providerNamespace = string.Join(".", tokens.Take(tokens.Count() - 1).ToArray());
-            var providerNamespaceHead = "";
-            var providerNamespaceTail = "";
+            // var providerNamespace = string.Join(".", tokens.Take(tokens.Count() - 1).ToArray());
+            string providerNamespaceHead = "";
+            string providerNamespaceTail = "";
             /*if (string.IsNullOrEmpty(providerNamespace) == false)
             {
                 providerNamespaceHead = $"namespace {providerNamespace}{{ ";
@@ -112,15 +110,15 @@ namespace Regulus.Remote.Protocol
             }*/
 
 
-            var builder = new StringBuilder();
+            StringBuilder builder = new StringBuilder();
             builder.Append(addTypeCode);
             builder.Append(addEventCode);
             builder.Append(addDescriberCode);
 
-            var md5 = _BuildMd5(builder);
-            var verificationCode = _BuildVerificationCode(md5);
-            var procotolName = _BuildProtocolName(md5);
-            var providerCode =
+            byte[] md5 = _BuildMd5(builder);
+            string verificationCode = _BuildVerificationCode(md5);
+            string procotolName = _BuildProtocolName(md5);
+            string providerCode =
                 $@"
             using System;  
             using System.Collections.Generic;
@@ -174,33 +172,33 @@ namespace Regulus.Remote.Protocol
             ";
 
             if (ProviderEvent != null)
-                ProviderEvent(procotolName , providerCode);
+                ProviderEvent(procotolName, providerCode);
         }
 
         private bool _ValidRemoteInterface(Type type)
         {
-            
+
             return type.IsInterface;
         }
 
         internal string _BuildGetTypeMethodInfo(MethodInfo method_info)
         {
-            
-            var methodCode = method_info.Name;
-            var argTypes = method_info.GetParameters().Select(p => p.ParameterType);
-            var argTypesCode = _GetTypes(new []{ method_info.DeclaringType }.Concat(argTypes).ToArray() );
-            var argInstanceCode = method_info.GetParameters().Length > 0 ? "ins," : "ins";
-            
-            var paramCode = _BuildAddParams(method_info);
-            
-            var code =
+
+            string methodCode = method_info.Name;
+            IEnumerable<Type> argTypes = method_info.GetParameters().Select(p => p.ParameterType);
+            string argTypesCode = _GetTypes(new[] { method_info.DeclaringType }.Concat(argTypes).ToArray());
+            string argInstanceCode = method_info.GetParameters().Length > 0 ? "ins," : "ins";
+
+            string paramCode = _BuildAddParams(method_info);
+
+            string code =
                 $"new Regulus.Utility.Reflection.TypeMethodCatcher((System.Linq.Expressions.Expression<System.Action{argTypesCode}>)(({argInstanceCode}{paramCode}) => ins.{methodCode}({paramCode}))).Method";
             return code;
         }
 
         private byte[] _BuildMd5(StringBuilder builder)
         {
-            var md5 = MD5.Create();
+            MD5 md5 = MD5.Create();
             return md5.ComputeHash(Encoding.ASCII.GetBytes(builder.ToString()));
         }
         private string _BuildProtocolName(byte[] code)
@@ -208,15 +206,15 @@ namespace Regulus.Remote.Protocol
             return $"C{BitConverter.ToString(code).Replace("-", "")}";
         }
         private string _BuildVerificationCode(byte[] code)
-        {            
+        {
             Regulus.Utility.Log.Instance.WriteInfo("Verification Code " + Convert.ToBase64String(code));
             return string.Join(",", code.Select(val => val.ToString()).ToArray());
         }
 
         private string[] _GetSerializarType(HashSet<Type> serializer_types)
         {
-            var types = new HashSet<Type>();
-            
+            HashSet<Type> types = new HashSet<Type>();
+
             serializer_types.Add(typeof(Regulus.Remote.PackageProtocolSubmit));
             serializer_types.Add(typeof(Regulus.Remote.RequestPackage));
             serializer_types.Add(typeof(Regulus.Remote.ResponsePackage));
@@ -234,16 +232,16 @@ namespace Regulus.Remote.Protocol
             serializer_types.Add(typeof(Regulus.Remote.PackageRemoveEvent));
             serializer_types.Add(typeof(Regulus.Remote.PackageNotifierEvent));
 
-            foreach (var serializerType in serializer_types)
-            {                
-                foreach (var type in new TypeDisintegrator(serializerType).Types)
-                {                    
+            foreach (Type serializerType in serializer_types)
+            {
+                foreach (Type type in new TypeDisintegrator(serializerType).Types)
+                {
                     types.Add(type);
                 }
             }
-            var typeCodes = (from type in types orderby type.FullName select "typeof(" + _GetTypeName(type) + ")").ToArray();
+            string[] typeCodes = (from type in types orderby type.FullName select "typeof(" + _GetTypeName(type) + ")").ToArray();
 
-            foreach (var type in types)
+            foreach (Type type in types)
             {
                 Regulus.Utility.Log.Instance.WriteInfo(type.FullName);
             }
@@ -264,10 +262,10 @@ namespace Regulus.Remote.Protocol
 
         private string _BuildEventCode(Type type, EventInfo info)
         {
-            var nameSpace = type.Namespace;
-            var name = type.Name;
+            string nameSpace = type.Namespace;
+            string name = type.Name;
 
-            var argTypes = info.EventHandlerType.GetGenericArguments();
+            Type[] argTypes = info.EventHandlerType.GetGenericArguments();
             string eventName = info.Name;
             return $@"
     using System;  
@@ -313,11 +311,11 @@ namespace Regulus.Remote.Protocol
         }
         private string _BuildGhostCode(Type type)
         {
-            var nameSpace = type.Namespace;
+            string nameSpace = type.Namespace;
 
-            var name = type.Name;
+            string name = type.Name;
 
-            var types = type.GetInterfaces().Concat(
+            IEnumerable<Type> types = type.GetInterfaces().Concat(
                 new[]
                 {
                     type
@@ -458,18 +456,18 @@ $@"
         private string _BuildNotifierPropertyConstructor(Type type)
         {
 
-            var codes = new List<string>();
-            foreach (var info in type.GetProperties())
+            List<string> codes = new List<string>();
+            foreach (PropertyInfo info in type.GetProperties())
             {
                 codes.Add($"//{info.Name}");
                 if (!_IsNotifierProperty(info))
                     continue;
-                var fieldName = $"_{info.Name}";
-                var getProperty = $"typeof({type.Name}).GetProperty(\"{info.Name}\")";
-                var gpiTypeName = _GetTypeName(info.PropertyType.GetGenericArguments()[0]);
-                var line = $"{fieldName} = new Regulus.Remote.GhostNotifier<{gpiTypeName}>((p) => _AddSupplyNoitfierEvent({getProperty}, p), (p) => _RemoveSupplyNoitfierEvent({getProperty},p), (p) => _AddUnsupplyNoitfierEvent({getProperty}, p), (p) => _RemoveUnsupplyNoitfierEvent({getProperty},p));";
+                string fieldName = $"_{info.Name}";
+                string getProperty = $"typeof({type.Name}).GetProperty(\"{info.Name}\")";
+                string gpiTypeName = _GetTypeName(info.PropertyType.GetGenericArguments()[0]);
+                string line = $"{fieldName} = new Regulus.Remote.GhostNotifier<{gpiTypeName}>((p) => _AddSupplyNoitfierEvent({getProperty}, p), (p) => _RemoveSupplyNoitfierEvent({getProperty},p), (p) => _AddUnsupplyNoitfierEvent({getProperty}, p), (p) => _RemoveUnsupplyNoitfierEvent({getProperty},p));";
                 codes.Add(line);
-                
+
             }
             return string.Join("\n", codes);
         }
@@ -477,7 +475,7 @@ $@"
         private string _BuildGhostCode(IEnumerable<Type> types)
         {
             List<string> codes = new List<string>();
-            foreach (var type in types)
+            foreach (Type type in types)
             {
                 string methods = _BuildMethods(type);
                 string propertys = _BuildPropertys(type);
@@ -492,11 +490,11 @@ $@"
 
         private string _BuildEvents(Type type)
         {
-            var eventinfos = type.GetEvents();
-            var codes = new List<string>();
-            foreach (var eventinfo in eventinfos)
+            EventInfo[] eventinfos = type.GetEvents();
+            List<string> codes = new List<string>();
+            foreach (EventInfo eventinfo in eventinfos)
             {
-                var code = $@"
+                string code = $@"
                 public Regulus.Remote.GhostEventHandler _{eventinfo.Name} = new Regulus.Remote.GhostEventHandler();
                 event System.Action{_GetTypes(eventinfo.EventHandlerType.GetGenericArguments())} {_GetTypeName(type)}.{eventinfo.Name}
                 {{
@@ -517,7 +515,7 @@ $@"
 
         private string _GetTypes(Type[] generic_type_arguments)
         {
-            var code = from t in generic_type_arguments select $"{_GetTypeName(t)}";
+            IEnumerable<string> code = from t in generic_type_arguments select $"{_GetTypeName(t)}";
             if (code.Any())
                 return "<" + string.Join(",", code.ToArray()) + ">";
             return "";
@@ -525,7 +523,7 @@ $@"
 
         private string _BuildPropertys(Type type)
         {
-            var propertyInfos = type.GetProperties();
+            PropertyInfo[] propertyInfos = type.GetProperties();
             List<string> propertyCodes = new List<string>();
             _BuildRemoteProperty(type, propertyInfos, propertyCodes);
             _BuildNotifierProperty(type, propertyInfos, propertyCodes);
@@ -534,13 +532,13 @@ $@"
 
         private void _BuildNotifierProperty(Type type, PropertyInfo[] propertyInfos, List<string> propertyCodes)
         {
-            foreach (var propertyInfo in propertyInfos)
+            foreach (PropertyInfo propertyInfo in propertyInfos)
             {
                 if (!_IsNotifierProperty(propertyInfo))
                     continue;
-                var gpiType = propertyInfo.PropertyType.GetGenericArguments().Single();
-                var gpiTypeName = _GetTypeName(gpiType);
-                var code = $@"
+                Type gpiType = propertyInfo.PropertyType.GetGenericArguments().Single();
+                string gpiTypeName = _GetTypeName(gpiType);
+                string code = $@"
             readonly Regulus.Remote.GhostNotifier<{gpiTypeName}> _{propertyInfo.Name};
             Regulus.Remote.INotifier<{gpiTypeName}> {_GetTypeName(type)}.{propertyInfo.Name} {{ get{{ return _{propertyInfo.Name};}} }}";
 
@@ -556,11 +554,11 @@ $@"
 
         private void _BuildRemoteProperty(Type type, PropertyInfo[] propertyInfos, List<string> propertyCodes)
         {
-            foreach (var propertyInfo in propertyInfos)
+            foreach (PropertyInfo propertyInfo in propertyInfos)
             {
                 if (!propertyInfo.PropertyType.GetInterfaces().Any(t => t == typeof(IDirtyable)))
                     continue;
-                var propertyCode = $@"
+                string propertyCode = $@"
                 public {_GetTypeName(propertyInfo.PropertyType)} _{propertyInfo.Name}= new {_GetTypeName(propertyInfo.PropertyType)}();
                 {_GetTypeName(propertyInfo.PropertyType)} {_GetTypeName(type)}.{propertyInfo.Name} {{ get{{ return _{propertyInfo.Name};}} }}";
                 propertyCodes.Add(propertyCode);
@@ -587,31 +585,31 @@ $@"
 
             return $"{t.Namespace}.{sb.ToString()}";
 
-            
+
         }
 
         private string _BuildMethods(Type type)
         {
 
             List<string> methodCodes = new List<string>();
-            var methods = type.GetMethods();
+            MethodInfo[] methods = type.GetMethods();
             int id = 0;
-            foreach (var methodInfo in methods)
+            foreach (MethodInfo methodInfo in methods)
             {
                 if (methodInfo.IsSpecialName)
                 {
                     continue;
                 }
                 bool haveReturn = methodInfo.ReturnType != typeof(void);
-                var returnTypeCode = "void";
+                string returnTypeCode = "void";
                 if (haveReturn)
                 {
-                    var returnType = methodInfo.ReturnType.GetGenericArguments()[0];
+                    Type returnType = methodInfo.ReturnType.GetGenericArguments()[0];
 
                     returnTypeCode = $"Regulus.Remote.Value<{_GetTypeName(returnType)}>";
                 }
-                var returnValue = "";
-                var addReturn = $"Regulus.Remote.IValue returnValue = null;";
+                string returnValue = "";
+                string addReturn = $"Regulus.Remote.IValue returnValue = null;";
                 if (haveReturn)
                 {
                     addReturn = $@"
@@ -621,10 +619,10 @@ $@"
                     returnValue = "return returnValue;";
                 }
 
-                var addParams = _BuildAddParams(methodInfo);
+                string addParams = _BuildAddParams(methodInfo);
                 int paramId = 0;
-                var paramCode = string.Join(",", (from p in methodInfo.GetParameters() select $"{ _GetTypeName(p.ParameterType)} {"_" + ++paramId}").ToArray());
-                var methodCode = $@"
+                string paramCode = string.Join(",", (from p in methodInfo.GetParameters() select $"{ _GetTypeName(p.ParameterType)} {"_" + ++paramId}").ToArray());
+                string methodCode = $@"
                 {returnTypeCode} {type.Namespace}.{type.Name}.{methodInfo.Name}({paramCode})
                 {{                    
 
@@ -644,13 +642,13 @@ $@"
 
         private string _BuildAddParams(MethodInfo method_info)
         {
-            var parameters = method_info.GetParameters();
+            ParameterInfo[] parameters = method_info.GetParameters();
 
             List<string> addParams = new List<string>();
 
             for (int i = 0; i < parameters.Length; i++)
             {
-                addParams.Add("_" + (i+1));
+                addParams.Add("_" + (i + 1));
             }
             return string.Join(",", addParams.ToArray());
         }

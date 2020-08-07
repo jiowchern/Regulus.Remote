@@ -5,13 +5,14 @@ namespace RegulusLibraryTest
     public class KeyReaderTest
     {
 
-       
+
         [Test]
         public void TestSignle()
         {
-            var message = "";
-            var reader = new Regulus.Utility.KeyReader('\r');
-            reader.DoneEvent += (chars) => {
+            string message = "";
+            Regulus.Utility.KeyReader reader = new Regulus.Utility.KeyReader('\r');
+            reader.DoneEvent += (chars) =>
+            {
                 message = new string(chars);
             };
             reader.Push('a');
@@ -24,14 +25,15 @@ namespace RegulusLibraryTest
         [Test]
         public void TestMuti()
         {
-            var message = "";
-            var reader = new Regulus.Utility.KeyReader('\r');
-            reader.DoneEvent += (chars) => {
+            string message = "";
+            Regulus.Utility.KeyReader reader = new Regulus.Utility.KeyReader('\r');
+            reader.DoneEvent += (chars) =>
+            {
                 message = new string(chars);
             };
-            reader.Push(new char[] { 'a','b','\r' });
+            reader.Push(new char[] { 'a', 'b', '\r' });
 
-            
+
 
             Assert.AreEqual("ab", message);
         }

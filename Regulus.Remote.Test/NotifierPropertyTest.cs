@@ -1,5 +1,4 @@
-﻿using NSubstitute;
-using System;
+﻿using System;
 using System.Linq;
 using System.Reflection;
 
@@ -20,19 +19,19 @@ namespace Regulus.Remote.Tests
         {
             INotifier<IGpiB> GpiBs { get; }
         }
-        
-        public class GhostA : IGpiA , IGhost
+
+        public class GhostA : IGpiA, IGhost
         {
 
 
 
-            readonly GhostNotifier<IGpiB> _GpiBs ;
+            readonly GhostNotifier<IGpiB> _GpiBs;
             INotifier<IGpiB> IGpiA.GpiBs => _GpiBs;
 
             public GhostA()
             {
-                var IGptA_GpiBs_Property = typeof(IGpiA).GetProperty(nameof(IGpiA.GpiBs));
-                _GpiBs = new GhostNotifier<IGpiB>((p) => _AddSupplyNoitfierEvent(IGptA_GpiBs_Property, p), (p) => _AddSupplyNoitfierEvent(IGptA_GpiBs_Property,p), (p) => _AddSupplyNoitfierEvent(IGptA_GpiBs_Property, p), (p) => _AddSupplyNoitfierEvent(IGptA_GpiBs_Property,p));
+                PropertyInfo IGptA_GpiBs_Property = typeof(IGpiA).GetProperty(nameof(IGpiA.GpiBs));
+                _GpiBs = new GhostNotifier<IGpiB>((p) => _AddSupplyNoitfierEvent(IGptA_GpiBs_Property, p), (p) => _AddSupplyNoitfierEvent(IGptA_GpiBs_Property, p), (p) => _AddSupplyNoitfierEvent(IGptA_GpiBs_Property, p), (p) => _AddSupplyNoitfierEvent(IGptA_GpiBs_Property, p));
             }
 
             event CallMethodCallback IGhost.CallMethodEvent
@@ -143,7 +142,7 @@ namespace Regulus.Remote.Tests
                 throw new NotImplementedException();
             }
         }
-        public class SoulA : IGpiA , INotifier<IGpiB>
+        public class SoulA : IGpiA, INotifier<IGpiB>
         {
             internal readonly SoulB SoulB;
 
@@ -151,14 +150,14 @@ namespace Regulus.Remote.Tests
 
             IGpiB[] INotifier<IGpiB>.Ghosts => new[] { SoulB };
 
-            
+
 
             public SoulA()
             {
                 this.SoulB = new SoulB();
             }
 
-            
+
 
             event Action<IGpiB> _Supply;
             event Action<IGpiB> INotifier<IGpiB>.Supply
@@ -198,7 +197,7 @@ namespace Regulus.Remote.Tests
                 _Unsupply(SoulB);
             }
         }
-        
+
         public class NotifierPropertyTest
         {
             [NUnit.Framework.Test]
@@ -206,16 +205,16 @@ namespace Regulus.Remote.Tests
             {
                 IGpiB supplyB = null;
                 IGpiB unsupplyB = null;
-                var soulA = new SoulA();
-                var soul = new Regulus.Remote.SoulProvider.Soul(1, 1, typeof(IGpiA), soulA);
-                var gpiBsProperty = typeof(IGpiA).GetProperties().FirstOrDefault(p => p.Name == nameof(IGpiA.GpiBs));                
-                var supplyBinder = NotifierEventBinder.Create(soulA, gpiBsProperty ,"Supply" , (instance) => supplyB = instance as IGpiB);
-                
+                SoulA soulA = new SoulA();
+                SoulProvider.Soul soul = new Regulus.Remote.SoulProvider.Soul(1, 1, typeof(IGpiA), soulA);
+                PropertyInfo gpiBsProperty = typeof(IGpiA).GetProperties().FirstOrDefault(p => p.Name == nameof(IGpiA.GpiBs));
+                NotifierEventBinder supplyBinder = NotifierEventBinder.Create(soulA, gpiBsProperty, "Supply", (instance) => supplyB = instance as IGpiB);
 
-                var unsupplyBinder = NotifierEventBinder.Create(soulA, gpiBsProperty, "Unsupply", (instance) => unsupplyB = instance as IGpiB);
-                
 
-                soul.AttachSupply(1,supplyBinder);
+                NotifierEventBinder unsupplyBinder = NotifierEventBinder.Create(soulA, gpiBsProperty, "Unsupply", (instance) => unsupplyB = instance as IGpiB);
+
+
+                soul.AttachSupply(1, supplyBinder);
                 soul.AttachUnsupply(1, unsupplyBinder);
 
                 soulA.Add();
@@ -224,7 +223,7 @@ namespace Regulus.Remote.Tests
                 soul.DetachSupply(1);
                 soul.DetachUnsupply(1);
 
-                NUnit.Framework.Assert.AreEqual(soulA.SoulB , supplyB);
+                NUnit.Framework.Assert.AreEqual(soulA.SoulB, supplyB);
                 NUnit.Framework.Assert.AreEqual(soulA.SoulB, unsupplyB);
             }
 
@@ -235,34 +234,34 @@ namespace Regulus.Remote.Tests
                 PassageCallback p2 = null;
                 PassageCallback p3 = null;
                 PassageCallback p4 = null;
-                Action<PassageCallback> addSupply = p=>  p1 = p ;
+                Action<PassageCallback> addSupply = p => p1 = p;
                 Action<PassageCallback> removeSupply = p => p2 = p;
                 Action<PassageCallback> addUnsupply = p => p3 = p;
                 Action<PassageCallback> removeUnsupply = p => p4 = p;
-                var notifier = new Regulus.Remote.GhostNotifier<IGpiA>(addSupply, removeSupply, addUnsupply, removeUnsupply);
-                var gpiNotifier = notifier as INotifier<IGpiA>;
-                Action<IGpiA> empty = (gpi) =>{ };
+                GhostNotifier<IGpiA> notifier = new Regulus.Remote.GhostNotifier<IGpiA>(addSupply, removeSupply, addUnsupply, removeUnsupply);
+                INotifier<IGpiA> gpiNotifier = notifier as INotifier<IGpiA>;
+                Action<IGpiA> empty = (gpi) => { };
                 gpiNotifier.Supply += empty;
                 gpiNotifier.Supply -= empty;
                 gpiNotifier.Unsupply += empty;
                 gpiNotifier.Unsupply -= empty;
 
-                var c1 = p1.GetHashCode();
-                var c2 = p2.GetHashCode();
+                int c1 = p1.GetHashCode();
+                int c2 = p2.GetHashCode();
 
                 NUnit.Framework.Assert.AreNotEqual(null, p1);
                 NUnit.Framework.Assert.AreNotEqual(null, p2);
                 NUnit.Framework.Assert.AreNotEqual(null, p3);
                 NUnit.Framework.Assert.AreNotEqual(null, p4);
 
-                NUnit.Framework.Assert.AreNotSame(c1,c2);
+                NUnit.Framework.Assert.AreNotSame(c1, c2);
                 NUnit.Framework.Assert.AreNotSame(p3, p4);
             }
-            
+
             [NUnit.Framework.Test]
             public void GhostTest()
             {
-                var ghostA = new GhostA();
+                GhostA ghostA = new GhostA();
                 IGpiA gpiA = ghostA;
                 IGhost ghost = ghostA;
                 PropertyInfo addSupplyProperty = null;
@@ -272,16 +271,17 @@ namespace Regulus.Remote.Tests
                     addSupplyProperty = property;
                     addSupplyPassage = passage;
                 };
-                IGpiB gPi = null; 
-                gpiA.GpiBs.Supply += (gpi) => {
+                IGpiB gPi = null;
+                gpiA.GpiBs.Supply += (gpi) =>
+                {
                     gPi = gpi;
                 };
 
-                var soulB = new SoulB();
+                SoulB soulB = new SoulB();
                 addSupplyPassage(soulB);
 
 
-                NUnit.Framework.Assert.AreEqual(soulB , gPi);
+                NUnit.Framework.Assert.AreEqual(soulB, gPi);
             }
         }
     }

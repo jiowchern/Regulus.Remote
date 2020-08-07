@@ -1,8 +1,4 @@
-﻿using System;
-using System.Net;
-using System.Net.Sockets;
-
-namespace Wasp.Networking
+﻿namespace Wasp.Networking
 {
 
     public enum PeerStatus
@@ -12,7 +8,7 @@ namespace Wasp.Networking
         Transmission,
         Disconnect
     }
-   
+
 
 
 }

@@ -2,13 +2,13 @@
 {
     public class TestClassA
     {
-        public TestClassB B;        
+        public TestClassB B;
     }
 
 
     public class TestClassD
     {
-        
+
         public TEST1 T1;
         public TEST1 T2;
         public TestClassB B;

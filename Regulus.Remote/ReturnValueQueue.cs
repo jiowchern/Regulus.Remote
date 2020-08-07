@@ -1,41 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Regulus.Remote
 {
-	public class ReturnValueQueue
-	{
+    public class ReturnValueQueue
+    {
         private readonly IdLandlord _IdLandlord;
-        private readonly Dictionary<long, IValue> _ReturnValues ;
+        private readonly Dictionary<long, IValue> _ReturnValues;
 
-		public ReturnValueQueue()
+        public ReturnValueQueue()
         {
-			_IdLandlord = new IdLandlord();
-			_ReturnValues = new Dictionary<long, IValue>();
-		}
+            _IdLandlord = new IdLandlord();
+            _ReturnValues = new Dictionary<long, IValue>();
+        }
 
-		internal IValue PopReturnValue(long returnTarget)
-		{
-			return _PopReturnValue(returnTarget);
-		}
+        internal IValue PopReturnValue(long returnTarget)
+        {
+            return _PopReturnValue(returnTarget);
+        }
 
-		public long PushReturnValue(IValue value)
-		{
-			var id = _IdLandlord.Rent();
-			_ReturnValues.Add(id, value);
-			return id;
-		}
+        public long PushReturnValue(IValue value)
+        {
+            long id = _IdLandlord.Rent();
+            _ReturnValues.Add(id, value);
+            return id;
+        }
 
-		private IValue _PopReturnValue(long return_target)
-		{
-			IValue val = null;
-			if(_ReturnValues.TryGetValue(return_target, out val))
-			{
-				_ReturnValues.Remove(return_target);
-				_IdLandlord.Return(return_target);
-			}
+        private IValue _PopReturnValue(long return_target)
+        {
+            IValue val = null;
+            if (_ReturnValues.TryGetValue(return_target, out val))
+            {
+                _ReturnValues.Remove(return_target);
+                _IdLandlord.Return(return_target);
+            }
 
-			return val;
-		}
-	}
+            return val;
+        }
+    }
 }

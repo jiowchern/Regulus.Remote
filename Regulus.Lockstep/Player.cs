@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Regulus.Lockstep
 {
@@ -7,21 +6,21 @@ namespace Regulus.Lockstep
 
     {
         public readonly ICommandProvidable<T> Providable;
-        private Queue<Step<Driver<T>.Record>> _Steps;
+        private readonly Queue<Step<Driver<T>.Record>> _Steps;
         public readonly int Id;
 
-        public Player(int id,ICommandProvidable<T> providable, IEnumerable<Step<Driver<T>.Record>> records)
+        public Player(int id, ICommandProvidable<T> providable, IEnumerable<Step<Driver<T>.Record>> records)
         {
             Id = id;
             Providable = providable;
             _Steps = new Queue<Step<Driver<T>.Record>>(records);
 
-        
+
         }
 
-        
 
-        
+
+
 
         int IPlayer<T>.Id
         {

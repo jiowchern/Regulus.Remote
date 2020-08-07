@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Regulus.Utility;
+using System.Collections.Generic;
 using System.Threading;
-using Regulus.Utility;
 using QueueThreadHelper = Regulus.Extension.QueueThreadHelper;
 
 namespace Regulus.Network.Profile
@@ -17,13 +17,13 @@ namespace Regulus.Network.Profile
         }
 
         private readonly System.Collections.Generic.Queue<Command> m_Commands;
-        
+
 
         private readonly List<Line> m_Lines;
 
         private volatile bool m_Enable;
 
-        
+
         public Logger(int Sample)
         {
             m_Sample = Sample;
@@ -34,7 +34,7 @@ namespace Regulus.Network.Profile
         }
         public void Register(Line Line)
         {
-            var command = new Command();
+            Command command = new Command();
             command.Add = true;
             command.Line = Line;
             QueueThreadHelper.SafeEnqueue(m_Commands, command);
@@ -42,7 +42,7 @@ namespace Regulus.Network.Profile
 
         public void Unregister(Line Line)
         {
-            var command = new Command();
+            Command command = new Command();
             command.Add = false;
             command.Line = Line;
             QueueThreadHelper.SafeEnqueue(m_Commands, command);
@@ -56,8 +56,8 @@ namespace Regulus.Network.Profile
 
         private void Collect(object State)
         {
-            
-            
+
+
 
             while (m_Enable)
             {
@@ -69,22 +69,22 @@ namespace Regulus.Network.Profile
                         m_Lines.Remove(command.Line);
                 if (Enable)
                 {
-                    foreach (var line in m_Lines)
+                    foreach (Line line in m_Lines)
                         WriteLog(line);
                 }
-                    
-                
-                System.Threading.Thread.Sleep(m_Sample);                
+
+
+                System.Threading.Thread.Sleep(m_Sample);
             }
-            
+
         }
 
         private void WriteLog(Line Line)
         {
-            
-            var logstring = string.Format(
+
+            string logstring = string.Format(
                 "[RUDP] RemoteEndPoint:{0} SendBytes:{1} ReceiveBytes:{2} SRTT:{3} RTO:{4} SendPackages:{5} SendLost:{6} ReceivePackages:{7} ReceiveInvalidPackages:{8} LastRTT:{9} SendBlock:{10} LastRTO:{11} ReceiveBlock:{12} ReceiveNumber:{13} SendNumber:{14}",
-                Line.EndPoint , Line.SendBytes , Line.ReceiveBytes , Line.Srtt , Line.Rto , Line.SendedPackages , Line.SendLostPackages , Line.ReceivePackages , Line.ReceiveInvalidPackages , Line.LastRtt , Line.SendBlock,Line.LastRto , Line.ReceiveBlock,Line.ReceiveNumber , Line.SendNumber);
+                Line.EndPoint, Line.SendBytes, Line.ReceiveBytes, Line.Srtt, Line.Rto, Line.SendedPackages, Line.SendLostPackages, Line.ReceivePackages, Line.ReceiveInvalidPackages, Line.LastRtt, Line.SendBlock, Line.LastRto, Line.ReceiveBlock, Line.ReceiveNumber, Line.SendNumber);
 
             Log.Instance.WriteInfo(logstring);
         }

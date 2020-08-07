@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Regulus.Utility
 {
     internal class ConsoleKeyReader
     {
-        private System.Threading.Tasks.Task _Task;
+        private readonly System.Threading.Tasks.Task _Task;
         private volatile bool _Enable;
 
         public readonly System.Collections.Concurrent.ConcurrentQueue<ConsoleKeyInfo> Infos;
@@ -18,9 +16,9 @@ namespace Regulus.Utility
 
         private void _Handle()
         {
-            while(_Enable)
+            while (_Enable)
             {
-                var info = System.Console.ReadKey(true);
+                ConsoleKeyInfo info = System.Console.ReadKey(true);
                 Infos.Enqueue(info);
             }
         }
@@ -29,15 +27,15 @@ namespace Regulus.Utility
         {
             _Enable = true;
             _Task.Start();
-            
+
         }
 
-        
+
 
         internal void Stop()
         {
             _Enable = false;
-            
+
         }
     }
 }

@@ -1,17 +1,15 @@
-﻿using System;
-
-namespace Regulus.Remote
+﻿namespace Regulus.Remote
 {
     public interface IProvider
-	{
-		IGhost[] Ghosts { get; }
+    {
+        IGhost[] Ghosts { get; }
 
-		void Add(IGhost entiry);
+        void Add(IGhost entiry);
 
-		void Remove(long id);
+        void Remove(long id);
 
-		IGhost Ready(long id);
+        IGhost Ready(long id);
 
-		void ClearGhosts();
-	}
+        void ClearGhosts();
+    }
 }

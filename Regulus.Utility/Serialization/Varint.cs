@@ -1,14 +1,12 @@
-﻿using System.Collections.Generic;
-
-namespace Regulus.Serialization
+﻿namespace Regulus.Serialization
 {
     public class Varint
     {
-       
+
 
         public static int NumberToBuffer(byte[] buffer, int offset, int value)
         {
-            return Varint.NumberToBuffer(buffer , offset , (ulong)value);
+            return Varint.NumberToBuffer(buffer, offset, (ulong)value);
         }
         public static int NumberToBuffer(byte[] buffer, int offset, ulong value)
         {
@@ -24,7 +22,7 @@ namespace Regulus.Serialization
         }
 
         public static int GetByteCount(int value)
-        { 
+        {
             return Varint.GetByteCount((ulong)value);
         }
         public static int GetByteCount(ulong value)
@@ -37,7 +35,7 @@ namespace Regulus.Serialization
         public static int BufferToNumber(byte[] buffer, int offset, out int value)
         {
             ulong val;
-            var count = BufferToNumber(buffer, offset, out val);
+            int count = BufferToNumber(buffer, offset, out val);
             value = (int)val;
 
             return count;
@@ -46,7 +44,7 @@ namespace Regulus.Serialization
         {
             value = 0;
             int s = 0;
-            for (var i = 0; i < buffer.Length - offset; i++)
+            for (int i = 0; i < buffer.Length - offset; i++)
             {
                 ulong bufferValue = buffer[offset + i];
                 if (bufferValue < 0x80)

@@ -9,22 +9,22 @@ namespace Regulus.Remote.Standalone.Test
     {
         [Test]
         [Timeout(10000)]
-        public void ServiceNewTest()
+        public void ServiceTest()
         {
-            var serverPeerStream = new Regulus.Remote.Standalone.PeerStream();
+            Stream serverPeerStream = new Regulus.Remote.Standalone.Stream();
             IStreamable serverStream = serverPeerStream;
-            IStreamable clientStream = new ReversePeer(serverPeerStream);
+            IStreamable clientStream = new ReverseStream(serverPeerStream);
 
             IBinderProvider entry = NSubstitute.Substitute.For<IBinderProvider>();
             IGpiA gpia = new SoulGpiA();
-            entry.AssignBinder(NSubstitute.Arg.Do<IBinder>( binder=> binder.Bind<IGpiA>(gpia) ));
+            entry.AssignBinder(NSubstitute.Arg.Do<IBinder>(binder => binder.Bind<IGpiA>(gpia)));
 
             Serialization.ISerializer serializer = new Regulus.Serialization.Dynamic.Serializer();
             IProtocol protocol = ProtocolHelper.CreateProtocol(serializer);
-            var service = new Regulus.Remote.Soul.Service(entry, protocol);
-            var agent = new Regulus.Remote.Ghost.Agent(protocol) as Ghost.IAgent;
+            Soul.Service service = new Regulus.Remote.Soul.Service(entry, protocol);
+            IAgent agent = new Regulus.Remote.Ghost.Agent(protocol) as Ghost.IAgent;
             IGpiA ghostGpia = null;
-            
+
 
             service.Join(serverStream);
             agent.Start(clientStream);

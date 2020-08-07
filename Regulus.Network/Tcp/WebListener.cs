@@ -35,10 +35,10 @@ namespace Regulus.Network.Tcp
         {
             try
             {
-                
+
                 lock (_AcceptEvent)
                 {
-                
+
                 }
 
                 _Socket.BeginAccept(_Accept, state: null);
@@ -65,7 +65,7 @@ namespace Regulus.Network.Tcp
 
         private async void _Handshaker(System.Net.Sockets.Socket socket)
         {
-            
+
         }
 
         void IListenable.Close()

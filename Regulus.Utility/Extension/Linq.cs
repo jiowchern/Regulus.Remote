@@ -9,15 +9,15 @@ namespace Regulus.Extension
     {
         public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> set)
         {
-            return set.OrderBy( (d) => Regulus.Utility.Random.Instance.NextDouble());
+            return set.OrderBy((d) => Regulus.Utility.Random.Instance.NextDouble());
         }
 
-        public static int Index<T>(this IEnumerable<T> set , Func<T,bool> condition)
+        public static int Index<T>(this IEnumerable<T> set, Func<T, bool> condition)
         {
-            var instance = condition;
+            Func<T, bool> instance = condition;
             int index = 0;
-            foreach (var item in set)
-            {                
+            foreach (T item in set)
+            {
                 if (instance(item))
                 {
                     return index;

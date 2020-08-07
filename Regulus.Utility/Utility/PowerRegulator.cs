@@ -1,74 +1,73 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 
 namespace Regulus.Utility
 {
-	public class PowerRegulator
-	{
-		private readonly FPSCounter _FPS;
+    public class PowerRegulator
+    {
+        private readonly FPSCounter _FPS;
 
-		private readonly int _LowPower;
-		
-
-		private SpinWait _SpinWait;
+        private readonly int _LowPower;
 
 
-		private long _Busy;
+        private SpinWait _SpinWait;
 
-		private long _SpinCount;
 
-		private long _WorkCount;
+        private long _Busy;
 
-		public int FPS
-		{
-			get { return _FPS.Value; }
-		}
+        private long _SpinCount;
 
-		public float Power => _GetSample();
+        private long _WorkCount;
+
+        public int FPS
+        {
+            get { return _FPS.Value; }
+        }
+
+        public float Power => _GetSample();
 
         private float _GetSample()
         {
-			var count = _WorkCount + _SpinCount;
-			if (count == 0)
-				return 0;
+            long count = _WorkCount + _SpinCount;
+            if (count == 0)
+                return 0;
 
-			var power = _WorkCount / (double)count;
-			return (float)power;
-		}
+            double power = _WorkCount / (double)count;
+            return (float)power;
+        }
 
         public PowerRegulator(int low_power) : this()
-		{
-			_LowPower = low_power;
-		}
+        {
+            _LowPower = low_power;
+        }
 
-		public PowerRegulator()
-		{
+        public PowerRegulator()
+        {
 
-			_SpinWait = new SpinWait();
-			_SpinCount = 0;
-			_WorkCount = 0;
-			_Busy = 0;
+            _SpinWait = new SpinWait();
+            _SpinCount = 0;
+            _WorkCount = 0;
+            _Busy = 0;
 
-			_FPS = new FPSCounter();
-		}
+            _FPS = new FPSCounter();
+        }
 
-		public void Operate(long busy)
-		{
-			_FPS.Update();
+        public void Operate(long busy)
+        {
+            _FPS.Update();
 
-			if(_Busy <= busy && _FPS.Value > _LowPower)
-			{
-			    
+            if (_Busy <= busy && _FPS.Value > _LowPower)
+            {
+
 
                 _SpinWait.SpinOnce();
-				_SpinCount++;
-			}
-			else
-			{
-				_SpinWait.Reset();
-				_WorkCount++;
-			}
-			_Busy = busy;
-		}
-	}
+                _SpinCount++;
+            }
+            else
+            {
+                _SpinWait.Reset();
+                _WorkCount++;
+            }
+            _Busy = busy;
+        }
+    }
 }

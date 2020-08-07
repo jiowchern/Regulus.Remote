@@ -12,7 +12,7 @@ namespace Regulus.Remote.Protocol
             private bool _Enable;
 
             public bool Set
-            {                
+            {
                 set
                 {
                     if (_Enable == false && value == true)
@@ -23,12 +23,12 @@ namespace Regulus.Remote.Protocol
             public bool Enable { get { return _Enable; } }
         }
         public readonly Type[] Types;
-        
+
 
         public TypeDisintegrator(Type type)
         {
-            var types = new HashSet<Type>();
-            _Analyze(type , types);
+            HashSet<Type> types = new HashSet<Type>();
+            _Analyze(type, types);
 
             Types = types.ToArray();
         }
@@ -38,16 +38,16 @@ namespace Regulus.Remote.Protocol
 
             Trigger trigger = new Trigger();
             if (_IsAtom(type))
-            {                
+            {
                 trigger.Set = _Add(new[] { type }, types);
             }
             else if (_IsString(type))
             {
-                trigger.Set = _Add(new[] { typeof(char), typeof(char[]) , typeof(string) }, types);
+                trigger.Set = _Add(new[] { typeof(char), typeof(char[]), typeof(string) }, types);
             }
             else if (_IsArray(type))
-            {                
-                trigger.Set = _Add(new[] { type , type.GetElementType()}, types);
+            {
+                trigger.Set = _Add(new[] { type, type.GetElementType() }, types);
             }
             else if (_IsType(type))
             {
@@ -62,9 +62,9 @@ namespace Regulus.Remote.Protocol
 
             if (trigger.Enable)
             {
-                foreach (var type1 in types.ToArray())
+                foreach (Type type1 in types.ToArray())
                 {
-                    _Analyze(type1 , types);
+                    _Analyze(type1, types);
                 }
             }
         }
@@ -76,15 +76,15 @@ namespace Regulus.Remote.Protocol
 
         private bool _IsArray(Type type)
         {
-            return type.IsArray && type != typeof (object[]);
+            return type.IsArray && type != typeof(object[]);
         }
 
         private static bool _Add(IEnumerable<Type> types1, HashSet<Type> types)
         {
             Trigger trigger = new Trigger();
-            foreach (var eType in types1)
+            foreach (Type eType in types1)
             {
-                if(_Valid(eType))
+                if (_Valid(eType))
                     trigger.Set = types.Add(eType);
             }
 
@@ -93,7 +93,7 @@ namespace Regulus.Remote.Protocol
 
         private bool _IsType(Type type)
         {
-            return (type.IsInterface || TypeIdentifier.IsClass(type)) ;
+            return (type.IsInterface || TypeIdentifier.IsClass(type));
         }
 
         private bool _IsAtom(Type type)
@@ -102,16 +102,16 @@ namespace Regulus.Remote.Protocol
         }
 
 
-        
+
 
         private static bool _Valid(Type type)
         {
-            return type.IsVisible == true &&  type.IsPointer == false && type.IsByRef == false && type.IsInterface == false && type.IsGenericType == false && type.IsAbstract == false && type != typeof(object);
+            return type.IsVisible == true && type.IsPointer == false && type.IsByRef == false && type.IsInterface == false && type.IsGenericType == false && type.IsAbstract == false && type != typeof(object);
         }
 
         private IEnumerable<Type> _GetPropertys(Type type)
         {
-            foreach (var propertyInfo in type.GetProperties())
+            foreach (System.Reflection.PropertyInfo propertyInfo in type.GetProperties())
             {
                 yield return propertyInfo.PropertyType;
             }
@@ -120,20 +120,20 @@ namespace Regulus.Remote.Protocol
 
         private IEnumerable<Type> _GetEvents(Type type)
         {
-            foreach (var eventInfo in type.GetEvents())
-            {                
-                var handleType = eventInfo.EventHandlerType;
+            foreach (System.Reflection.EventInfo eventInfo in type.GetEvents())
+            {
+                Type handleType = eventInfo.EventHandlerType;
                 if (handleType.IsGenericType)
                 {
-                    var args = handleType.GetGenericArguments();
-                    foreach (var type1 in args)
+                    Type[] args = handleType.GetGenericArguments();
+                    foreach (Type type1 in args)
                     {
                         yield return type1;
                     }
                 }
                 else
                 {
-                    foreach (var parameterInfo in handleType.GetMethod("Invoke").GetParameters())
+                    foreach (System.Reflection.ParameterInfo parameterInfo in handleType.GetMethod("Invoke").GetParameters())
                     {
                         yield return parameterInfo.ParameterType;
                     }
@@ -144,19 +144,19 @@ namespace Regulus.Remote.Protocol
         private IEnumerable<Type> _GetMethods(Type type)
         {
             List<Type> types = new List<Type>();
-            foreach (var methodInfo in type.GetMethods())
+            foreach (System.Reflection.MethodInfo methodInfo in type.GetMethods())
             {
-                if (methodInfo.IsGenericMethod )
+                if (methodInfo.IsGenericMethod)
                 {
                     continue;
                 }
-                
+
                 types.AddRange(methodInfo.GetParameters().Select(m => m.ParameterType));
 
-                var retType = methodInfo.ReturnType;
+                Type retType = methodInfo.ReturnType;
 
-                
-                if (retType.IsGenericType )
+
+                if (retType.IsGenericType)
                 {
                     types.AddRange(retType.GetGenericArguments());
                 }
@@ -167,14 +167,14 @@ namespace Regulus.Remote.Protocol
 
         private IEnumerable<Type> _GetFields(Type type)
         {
-            foreach (var fieldInfo in type.GetFields())
+            foreach (System.Reflection.FieldInfo fieldInfo in type.GetFields())
             {
                 if (fieldInfo.IsPublic && fieldInfo.IsSpecialName == false)
                 {
                     yield return fieldInfo.FieldType;
                 }
             }
-            
+
         }
     }
 }

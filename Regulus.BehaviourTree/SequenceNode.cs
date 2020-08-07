@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Regulus.BehaviourTree
 {
-    class SequenceNode  : IParent
+    class SequenceNode : IParent
     {
-        private List<ITicker> _Childs;
+        private readonly List<ITicker> _Childs;
         private readonly Queue<ITicker> _Queue;
 
 
@@ -52,8 +50,8 @@ namespace Regulus.BehaviourTree
         {
             if (_RunninTicker != null)
             {
-                var resultRunner = _RunninTicker.Tick(delta);
-                
+                TICKRESULT resultRunner = _RunninTicker.Tick(delta);
+
                 if (resultRunner == TICKRESULT.RUNNING)
                     return TICKRESULT.RUNNING;
 
@@ -65,7 +63,7 @@ namespace Regulus.BehaviourTree
                 }
 
                 if (_Queue.Count == 0)
-                {                    
+                {
                     return TICKRESULT.SUCCESS;
                 }
 
@@ -77,7 +75,7 @@ namespace Regulus.BehaviourTree
             }
 
             _CurrentTicker = _Queue.Dequeue();
-            var result = _CurrentTicker.Tick(delta);
+            TICKRESULT result = _CurrentTicker.Tick(delta);
             if (result == TICKRESULT.FAILURE)
             {
                 _Queue.Clear();
@@ -93,16 +91,16 @@ namespace Regulus.BehaviourTree
 
             if (_Queue.Count == 0)
                 return TICKRESULT.SUCCESS;
-            
+
             return TICKRESULT.RUNNING;
         }
 
         private void _Reload()
         {
-            
-            foreach (var ticker in _Childs)
+
+            foreach (ITicker ticker in _Childs)
             {
-                
+
                 _Queue.Enqueue(ticker);
             }
         }

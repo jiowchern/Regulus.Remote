@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace Regulus.BehaviourTree
 {
-    internal class InvertNode  : IParent
+    internal class InvertNode : IParent
     {
         private ITicker _Ticker;
         private readonly Guid _Id;
-        private string _Tag;
+        private readonly string _Tag;
 
         public InvertNode()
         {
@@ -23,7 +23,7 @@ namespace Regulus.BehaviourTree
 
         ITicker[] ITicker.GetChilds()
         {
-            return new [] { _Ticker };
+            return new[] { _Ticker };
         }
 
         void ITicker.GetPath(ref List<Guid> nodes)
@@ -39,17 +39,17 @@ namespace Regulus.BehaviourTree
 
         TICKRESULT ITicker.Tick(float delta)
         {
-            var result = _Ticker.Tick(delta);
-            if(result == TICKRESULT.FAILURE)
+            TICKRESULT result = _Ticker.Tick(delta);
+            if (result == TICKRESULT.FAILURE)
                 return TICKRESULT.SUCCESS;
-            else if(result == TICKRESULT.SUCCESS)
+            else if (result == TICKRESULT.SUCCESS)
                 return TICKRESULT.FAILURE;
             return result;
         }
 
         void IParent.Add(ITicker ticker)
         {
-            if(_Ticker != null)
+            if (_Ticker != null)
                 throw new Exception("Inverse nodes only support a single node.");
             _Ticker = ticker;
         }

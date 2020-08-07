@@ -1,11 +1,11 @@
 ﻿
-using System.Linq;
 using Regulus.Remote;
 using Regulus.Serialization;
+using System.Linq;
 
 namespace Regulus.Utility.Client.JIT.Tests
 {
-    
+
     public class Test
     {
 
@@ -40,19 +40,19 @@ namespace Regulus.Utility.Client.JIT.Tests
     {
         [NUnit.Framework.Test()]
         public void CreateProtocol()
-        {            
-            var type = typeof(TestProtocol);
-            
-            var protocol = Regulus.Remote.Protocol.ProtocolProvider.Create(type.Assembly);
-            NUnit.Framework.Assert.AreNotEqual(protocol , null);
+        {
+            System.Type type = typeof(TestProtocol);
+
+            IProtocol protocol = Regulus.Remote.Protocol.ProtocolProvider.Create(type.Assembly);
+            NUnit.Framework.Assert.AreNotEqual(protocol, null);
         }
 
         [NUnit.Framework.Test()]
         public void FindProtocols()
-        {            
+        {
 
-            var protocols = Regulus.Remote.Protocol.ProtocolProvider.GetProtocols().ToArray();
-            NUnit.Framework.Assert.AreEqual(typeof(TestProtocol) , protocols[0]);
+            System.Type[] protocols = Regulus.Remote.Protocol.ProtocolProvider.GetProtocols().ToArray();
+            NUnit.Framework.Assert.AreEqual(typeof(TestProtocol), protocols[0]);
         }
 
         /* todo 解除註解

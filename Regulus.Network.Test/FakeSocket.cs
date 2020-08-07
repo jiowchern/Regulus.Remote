@@ -1,15 +1,13 @@
+using NUnit.Framework;
+using Regulus.Network.Package;
+using Regulus.Utility;
 using System;
 using System.Collections.Generic;
 using System.Net;
-using NUnit.Framework;
-using Regulus.Utility;
-using Regulus.Network.Package;
-using Regulus.Network.RUDP;
-using Regulus.Utility;
 
 namespace Regulus.Network.Tests
 {
-    public class FakeSocket : ISocket,  IUpdatable<Timestamp>
+    public class FakeSocket : ISocket, IUpdatable<Timestamp>
     {
         public readonly IPEndPoint Endpoint;
         private readonly List<SocketMessage> _Packages;
@@ -19,16 +17,16 @@ namespace Regulus.Network.Tests
             Endpoint = endpoint;
         }
 
-        
+
 
         void IBootable.Launch()
         {
-            
+
         }
 
         void IBootable.Shutdown()
         {
-            
+
         }
 
         public void Receive(SocketMessage message)
@@ -40,14 +38,14 @@ namespace Regulus.Network.Tests
         public event Action<SocketMessage> SendEvent;
         void ISocketSendable.Transport(SocketMessage message)
         {
-            Assert.AreNotEqual(Endpoint , message.RemoteEndPoint);
-            
+            Assert.AreNotEqual(Endpoint, message.RemoteEndPoint);
+
             SendEvent(message);
         }
 
         private event Action<SocketMessage> _DoneEvent;
 
-        
+
 
         bool IUpdatable<Timestamp>.Update(Timestamp arg)
         {
@@ -56,7 +54,7 @@ namespace Regulus.Network.Tests
 
         public SocketMessage[] Received()
         {
-            var pkgs = _Packages.ToArray();
+            SocketMessage[] pkgs = _Packages.ToArray();
             _Packages.Clear();
             return pkgs;
         }

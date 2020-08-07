@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 
 namespace Regulus.Remote.Soul
 {
@@ -17,19 +16,19 @@ namespace Regulus.Remote.Soul
             this._Entry = entry;
             this._Protocol = protocol;
         }
-		public void Join(Network.IStreamable stream)
+        public void Join(Network.IStreamable stream)
         {
-            var user = new User(stream, _Protocol);
-            user.Launch();            
+            User user = new User(stream, _Protocol);
+            user.Launch();
             _Entry.AssignBinder(user.Binder);
             _Users.Add(user);
         }
 
-		public void Leave(Network.IStreamable stream)
+        public void Leave(Network.IStreamable stream)
         {
-            var user = _Users.FirstOrDefault(u => u.Stream == stream);
-            if(user != null)
-            {                
+            User user = _Users.FirstOrDefault(u => u.Stream == stream);
+            if (user != null)
+            {
                 _Users.Remove(user);
                 user.Shutdown();
             }
@@ -37,7 +36,7 @@ namespace Regulus.Remote.Soul
 
         void IDisposable.Dispose()
         {
-            foreach (var user in _Users)
+            foreach (User user in _Users)
             {
                 user.Shutdown();
             }

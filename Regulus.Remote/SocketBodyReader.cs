@@ -1,6 +1,5 @@
-﻿using System;
-using System.Net.Sockets;
-using Regulus.Network;
+﻿using Regulus.Network;
+using System;
 
 namespace Regulus.Remote
 {
@@ -33,23 +32,23 @@ namespace Regulus.Remote
             _Buffer = new byte[size];
             try
             {
-                var task = _Peer.Receive(_Buffer, _Offset, _Buffer.Length - _Offset);
-                task.ContinueWith(t=>_Readed(t.Result));
+                System.Threading.Tasks.Task<int> task = _Peer.Receive(_Buffer, _Offset, _Buffer.Length - _Offset);
+                task.ContinueWith(t => _Readed(t.Result));
 
 
             }
-            catch(SystemException e)
+            catch (SystemException e)
             {
-                if(ErrorEvent != null)
+                if (ErrorEvent != null)
                 {
                     ErrorEvent();
                 }
             }
         }
 
-        private void _Readed(int read_count  )
+        private void _Readed(int read_count)
         {
-            var readSize = read_count;
+            int readSize = read_count;
 
             _Offset += readSize;
             NetworkMonitor.Instance.Read.Set(readSize);
@@ -59,7 +58,7 @@ namespace Regulus.Remote
             }
             else
             {
-                var task = _Peer.Receive(
+                System.Threading.Tasks.Task<int> task = _Peer.Receive(
                     _Buffer,
                     _Offset,
                     _Buffer.Length - _Offset);

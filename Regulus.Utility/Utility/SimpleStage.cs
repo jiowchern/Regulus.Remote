@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Regulus.Utility
 {
@@ -26,7 +23,7 @@ namespace Regulus.Utility
             _UpdateEvent = (arg) => { };
             _LeaveEvent = leave;
         }
-        public SimpleStage(Action enter ,  Action leave , Action<T> update)
+        public SimpleStage(Action enter, Action leave, Action<T> update)
         {
             _EnterEvent = enter;
             _UpdateEvent = update;

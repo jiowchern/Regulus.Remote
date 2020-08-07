@@ -1,119 +1,116 @@
-﻿using System.Threading;
-
-
-using Regulus.Utility;
-using Regulus.Utility;
+﻿using Regulus.Utility;
+using System.Threading;
 
 namespace Regulus.Remote
 {
-	public class PackageRecorder : IUpdatable
-	{
-		public delegate void ChangeCallback();
+    public class PackageRecorder : IUpdatable
+    {
+        public delegate void ChangeCallback();
 
-		public event ChangeCallback ChangeEvent;
+        public event ChangeCallback ChangeEvent;
 
-		private readonly TimeCounter _Counter;
+        private readonly TimeCounter _Counter;
 
-		public long _SecondBytes;
+        public long _SecondBytes;
 
-		public long TotalBytes { get; private set; }
+        public long TotalBytes { get; private set; }
 
-		public long SecondBytes { get; private set; }
+        public long SecondBytes { get; private set; }
 
-		public PackageRecorder()
-		{
-			_Counter = new TimeCounter();
-		}
+        public PackageRecorder()
+        {
+            _Counter = new TimeCounter();
+        }
 
-		bool IUpdatable.Update()
-		{
-			lock(_Counter)
-			{
-				if(_Counter.Second > 1)
-				{
-					SecondBytes = _SecondBytes;
-					_SecondBytes = 0;
-					_Counter.Reset();
-				}
-			}
+        bool IUpdatable.Update()
+        {
+            lock (_Counter)
+            {
+                if (_Counter.Second > 1)
+                {
+                    SecondBytes = _SecondBytes;
+                    _SecondBytes = 0;
+                    _Counter.Reset();
+                }
+            }
 
-			return true;
-		}
+            return true;
+        }
 
-		void IBootable.Launch()
-		{
-			lock(_Counter)
-				_Counter.Reset();
-		}
+        void IBootable.Launch()
+        {
+            lock (_Counter)
+                _Counter.Reset();
+        }
 
-		void IBootable.Shutdown()
-		{
-			lock(_Counter)
-				SecondBytes = 0;
-		}
+        void IBootable.Shutdown()
+        {
+            lock (_Counter)
+                SecondBytes = 0;
+        }
 
-		internal void Set(int size)
-		{
-			lock(_Counter)
-			{
-				TotalBytes += size;
-				_SecondBytes += size;
-				ChangeEvent();
-			}
-		}
-	}
+        internal void Set(int size)
+        {
+            lock (_Counter)
+            {
+                TotalBytes += size;
+                _SecondBytes += size;
+                ChangeEvent();
+            }
+        }
+    }
 
-	public class NetworkMonitor : Singleton<NetworkMonitor>
-	{
-		private volatile bool _Reset;
+    public class NetworkMonitor : Singleton<NetworkMonitor>
+    {
+        private volatile bool _Reset;
 
-		private volatile bool _ThreadEnable;
+        private volatile bool _ThreadEnable;
 
-		public PackageRecorder Read { get; private set; }
+        public PackageRecorder Read { get; private set; }
 
-		public PackageRecorder Write { get; private set; }
+        public PackageRecorder Write { get; private set; }
 
-		public NetworkMonitor()
-		{
-			Read = new PackageRecorder();
-			Read.ChangeEvent += _ResetTime;
-			Write = new PackageRecorder();
-			Write.ChangeEvent += _ResetTime;
-		}
+        public NetworkMonitor()
+        {
+            Read = new PackageRecorder();
+            Read.ChangeEvent += _ResetTime;
+            Write = new PackageRecorder();
+            Write.ChangeEvent += _ResetTime;
+        }
 
-		private void _ResetTime()
-		{
-			if(_ThreadEnable == false)
-			{
-				_ThreadEnable = true;
-				ThreadPool.QueueUserWorkItem(_Update);
-			}
+        private void _ResetTime()
+        {
+            if (_ThreadEnable == false)
+            {
+                _ThreadEnable = true;
+                ThreadPool.QueueUserWorkItem(_Update);
+            }
 
-			_Reset = true;
-		}
+            _Reset = true;
+        }
 
-		private void _Update(object state)
-		{
-			var updater = new Updater();
-			updater.Add(Read);
-			updater.Add(Write);
+        private void _Update(object state)
+        {
+            Updater updater = new Updater();
+            updater.Add(Read);
+            updater.Add(Write);
 
-			var counter = new TimeCounter();
-			do
-			{
-				updater.Working();
+            TimeCounter counter = new TimeCounter();
+            do
+            {
+                updater.Working();
 
-				if(_Reset)
-				{
-					counter.Reset();
-					_Reset = false;
-				}
+                if (_Reset)
+                {
+                    counter.Reset();
+                    _Reset = false;
+                }
 
-				Thread.Sleep(1000);
-			}
-			while(counter.Second <= 30);
-			updater.Shutdown();
-			_ThreadEnable = false;
-		}
-	}
+                Thread.Sleep(1000);
+            }
+            while (counter.Second <= 30);
+            updater.Shutdown();
+            _ThreadEnable = false;
+        }
+    }
 }

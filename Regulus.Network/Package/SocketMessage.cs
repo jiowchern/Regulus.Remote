@@ -10,16 +10,16 @@ namespace Regulus.Network.Package
 
         public SocketMessageInternal(int PackageSize)
         {
-            
+
             RemoteEndPoint = new IPEndPoint(IPAddress.Any, port: 0);
             Package = new byte[PackageSize];
         }
-        public EndPoint RemoteEndPoint;        
+        public EndPoint RemoteEndPoint;
         public byte[] Package;
         public SocketError Error;
     }
 
-    public sealed class SocketMessage 
+    public sealed class SocketMessage
     {
         public const int SeqIndex = 0;
         public const int AckIndex = SeqIndex + 2;
@@ -32,7 +32,7 @@ namespace Regulus.Network.Package
 
         private readonly SocketMessageInternal m_Instance;
 
-        
+
         public SocketMessage(int I)
         {
             m_Instance = new SocketMessageInternal(I);
@@ -43,22 +43,22 @@ namespace Regulus.Network.Package
 
         public EndPoint RemoteEndPoint { get { return m_Instance.RemoteEndPoint; } }
 
-        public byte[] Package {get { return _Package; } }
+        public byte[] Package { get { return _Package; } }
 
         public SocketError Error { get { return m_Instance.Error; } }
 
-        
+
 
 
         public bool CheckPayload()
         {
-            var len = GetPayloadLength();
+            ushort len = GetPayloadLength();
             return len == _Package.Length - PayloadIndex;
         }
 
         public int GetPayloadBufferSize()
         {
-            var size = _Package.Length - PayloadIndex;
+            int size = _Package.Length - PayloadIndex;
             if (size > 0)
                 return size;
             return 0;
@@ -66,7 +66,7 @@ namespace Regulus.Network.Package
 
         public bool WritePayload(IList<byte> Source, int Offset, int Count)
         {
-            var bufferSize = GetPayloadBufferSize();
+            int bufferSize = GetPayloadBufferSize();
 
             if (Count > ushort.MaxValue)
                 return false;
@@ -76,7 +76,7 @@ namespace Regulus.Network.Package
                 return false;
 
 
-            for (var i = 0; i < Count; i++)
+            for (int i = 0; i < Count; i++)
                 _Package[PayloadIndex + i] = Source[Offset + i];
 
             SetPayloadLength((ushort)Count);
@@ -98,22 +98,22 @@ namespace Regulus.Network.Package
         public bool ReadPayload(IList<byte> Payload, int Offset)
         {
 
-            var len = GetPayloadLength();
+            ushort len = GetPayloadLength();
 
             if (_Package.Length - PayloadIndex < len)
                 return false;
             if (Payload.Count - Offset < len)
                 return false;
 
-            for (var i = 0; i < len; ++i)
+            for (int i = 0; i < len; ++i)
                 Payload[Offset + i] = _Package[PayloadIndex + i];
             return true;
         }
 
         public void ReadPayload(IList<byte> Payload)
         {
-            var len = GetPayloadLength();
-            for (var i = 0; i < len; ++i)
+            ushort len = GetPayloadLength();
+            for (int i = 0; i < len; ++i)
                 Payload.Add(_Package[PayloadIndex + i]);
         }
 
@@ -205,8 +205,8 @@ namespace Regulus.Network.Package
 
         public IEnumerable<ushort> GetAcks()
         {
-            var ack = GetAck();
-            var fields = GetAckFields();
+            ushort ack = GetAck();
+            uint fields = GetAckFields();
             ushort mark = 1;
             for (ushort i = 0; i < 32; i++)
                 if ((mark & fields) != 0)
@@ -220,19 +220,19 @@ namespace Regulus.Network.Package
 
         public int ReadPayload(int SourceOffset, byte[] Buffer, int TargetOffset, int ReadCount)
         {
-            var payloadLength = GetPayloadLength();
+            ushort payloadLength = GetPayloadLength();
             if (payloadLength < SourceOffset)
                 return 0;
             if (Buffer.Length < TargetOffset + ReadCount)
                 return 0;
 
 
-            var count = ReadCount;
-            var payloadReadCount = payloadLength - SourceOffset;
+            int count = ReadCount;
+            int payloadReadCount = payloadLength - SourceOffset;
             if (payloadReadCount < ReadCount)
                 count = payloadReadCount;
 
-            for (var i = 0; i < count; i++)
+            for (int i = 0; i < count; i++)
                 Buffer[TargetOffset + i] = _Package[PayloadIndex + i + SourceOffset];
 
             return count;
@@ -255,7 +255,7 @@ namespace Regulus.Network.Package
 
         public static int GetPayloadSize()
         {
-            
+
             return Config.Default.PackageSize - Headsize;
         }
 
@@ -270,7 +270,7 @@ namespace Regulus.Network.Package
         }
 
         public int GetPackageSize()
-        {            
+        {
             return Headsize + GetPayloadLength();
         }
 
@@ -280,6 +280,6 @@ namespace Regulus.Network.Package
         }
     }
 
-  
+
 
 }

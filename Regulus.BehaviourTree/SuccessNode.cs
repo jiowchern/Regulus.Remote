@@ -19,7 +19,7 @@ namespace Regulus.BehaviourTree
         string ITicker.Tag { get { return _Tag; } }
         ITicker[] ITicker.GetChilds()
         {
-            return new ITicker[]{ _Ticker };
+            return new ITicker[] { _Ticker };
         }
 
         void ITicker.GetPath(ref List<Guid> nodes)

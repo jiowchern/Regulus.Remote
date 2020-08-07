@@ -1,30 +1,28 @@
-﻿using System;
-
-
-using Regulus.Remote;
+﻿using Regulus.Remote;
+using System;
 
 namespace RemotingTest
 {
-	internal class Ghost : IGhost
-	{
-		private readonly long _Id;
+    internal class Ghost : IGhost
+    {
+        private readonly long _Id;
 
-		public Ghost()
-		{
-			_Id = 1;
-		}
+        public Ghost()
+        {
+            _Id = 1;
+        }
 
-	    
 
-	    long IGhost.GetID()
-		{
-			return _Id;
-		}
 
-	    public object GetInstance()
-	    {
-	        return this;
-	    }
+        long IGhost.GetID()
+        {
+            return _Id;
+        }
+
+        public object GetInstance()
+        {
+            return this;
+        }
 
         private event CallMethodCallback _CallMethodEvent;
 
@@ -113,8 +111,8 @@ namespace RemotingTest
         }
 
         bool IGhost.IsReturnType()
-		{
-			throw new NotImplementedException();
-		}
-	}
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

@@ -3,52 +3,52 @@ using System.Linq;
 
 namespace Regulus.Utility
 {
-	public class ChancesTable<TTarget>
-	{
-		public class Item
-		{
-			public TTarget Target { get; set; }
+    public class ChancesTable<TTarget>
+    {
+        public class Item
+        {
+            public TTarget Target { get; set; }
 
-			public int Scale { get; set; }
+            public int Scale { get; set; }
 
-			public Item()
-			{
-			}
+            public Item()
+            {
+            }
 
-			public Item(TTarget target, int scale)
-			{
-				Target = target;
-				Scale = scale;
-			}
-		}
+            public Item(TTarget target, int scale)
+            {
+                Target = target;
+                Scale = scale;
+            }
+        }
 
-		protected Item[] _Datas;
+        protected Item[] _Datas;
 
-		public ChancesTable(System.Collections.Generic.IEnumerable<Item> items)
-		{
-			
-			_Datas = items.ToArray();
-			if (_Datas.Length == 0)
-				throw new ArgumentException("Item need to be greater than 0.");
-		}		
+        public ChancesTable(System.Collections.Generic.IEnumerable<Item> items)
+        {
 
-		public  TTarget Get(int chances)
-		{
-			var minGate = 0;
-			foreach(var data in _Datas)
-			{
-				var gate = minGate + data.Scale + 1;
+            _Datas = items.ToArray();
+            if (_Datas.Length == 0)
+                throw new ArgumentException("Item need to be greater than 0.");
+        }
 
-				if(minGate <= chances && chances < gate )
-				{
-					return data.Target;
-				}
+        public TTarget Get(int chances)
+        {
+            int minGate = 0;
+            foreach (Item data in _Datas)
+            {
+                int gate = minGate + data.Scale + 1;
 
-				minGate += data.Scale;
-			}
+                if (minGate <= chances && chances < gate)
+                {
+                    return data.Target;
+                }
 
-			throw new InvalidOperationException($"Value must be between 1 and 0");
-			
-		}
-	}
+                minGate += data.Scale;
+            }
+
+            throw new InvalidOperationException($"Value must be between 1 and 0");
+
+        }
+    }
 }

@@ -24,12 +24,12 @@ namespace Regulus.Utility
         protected void Invoke()
         {
             _Have = true;
-            if(_Subscribe != null)
+            if (_Subscribe != null)
                 _Subscribe();
         }
     }
 
-    public class Notifier<T> 
+    public class Notifier<T>
     {
         private bool _Have;
         private T _Info;
@@ -59,5 +59,5 @@ namespace Regulus.Utility
     }
 
 
-    
+
 }

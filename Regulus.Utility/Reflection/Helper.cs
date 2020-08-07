@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 
 namespace Regulus.Utility.Reflection
 {
@@ -15,7 +13,7 @@ namespace Regulus.Utility.Reflection
         {
             if (expression.NodeType != ExpressionType.Lambda)
                 throw new SystemException("must a lambda");
-            var callExpression = expression.Body as MethodCallExpression;
+            MethodCallExpression callExpression = expression.Body as MethodCallExpression;
 
             if (callExpression == null)
                 throw new SystemException("must a call");
@@ -25,5 +23,5 @@ namespace Regulus.Utility.Reflection
 
     }
 
-    
+
 }

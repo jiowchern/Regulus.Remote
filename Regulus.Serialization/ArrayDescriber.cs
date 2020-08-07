@@ -1,15 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Regulus.Serialization
 {
-    public class ArrayDescriber : ITypeDescriber 
-    {        
+    public class ArrayDescriber : ITypeDescriber
+    {
 
         private readonly Type _Type;
 
@@ -22,9 +18,9 @@ namespace Regulus.Serialization
         {
 
             _TypeSet = finder;
-            _Default = null;            
+            _Default = null;
             _Type = type;
-            var elementType = type.GetElementType();
+            Type elementType = type.GetElementType();
             try
             {
                 if (!elementType.IsClass)
@@ -33,17 +29,17 @@ namespace Regulus.Serialization
                 {
                     _DefaultElement = null;
                 }
-                
+
             }
             catch (Exception ex)
             {
-                
+
                 throw new DescriberException(typeof(ArrayDescriber), _Type, "_DefaultElement", ex);
             }
-            
+
         }
 
-        
+
 
         Type ITypeDescriber.Type
         {
@@ -70,29 +66,29 @@ namespace Regulus.Serialization
 
         private ValidObjectSet _GetSet(object instance)
         {
-            var array = instance as IList;
+            IList array = instance as IList;
 
             int validLength = 0;
             for (int i = 0; i < array.Count; i++)
             {
-                var obj = array[i];                
+                object obj = array[i];
                 if (object.Equals(obj, _DefaultElement) == false)
                 {
                     validLength++;
                 }
             }
-            
 
-            
-            var validObjects = new List<ValidObject>();
+
+
+            List<ValidObject> validObjects = new List<ValidObject>();
             for (int i = 0; i < array.Count; i++)
             {
-                var obj = array[i];
-                var index = i;
+                object obj = array[i];
+                int index = i;
                 if (object.Equals(obj, _DefaultElement) == false)
                 {
 
-                    validObjects.Add( new ValidObject() { Index = index , Object =  obj});                    
+                    validObjects.Add(new ValidObject() { Index = index, Object = obj });
                 }
             }
 
@@ -105,21 +101,21 @@ namespace Regulus.Serialization
         }
         int ITypeDescriber.GetByteCount(object instance)
         {
-            var set = _GetSet(instance);
+            ValidObjectSet set = _GetSet(instance);
 
 
-            var lenCount = Varint.GetByteCount(set.TotalLength);
-            var validCount = Varint.GetByteCount(set.ValidLength);
+            int lenCount = Varint.GetByteCount(set.TotalLength);
+            int validCount = Varint.GetByteCount(set.ValidLength);
 
-            
-            var instanceCount = 0;
+
+            int instanceCount = 0;
             for (int i = 0; i < set.ValidObjects.Length; i++)
             {
-                var index = set.ValidObjects[i].Index;
-                var obj = set.ValidObjects[i].Object;
-                
-                var describer = _TypeSet.Get(obj.GetType());
-                
+                int index = set.ValidObjects[i].Index;
+                object obj = set.ValidObjects[i].Object;
+
+                ITypeDescriber describer = _TypeSet.Get(obj.GetType());
+
                 instanceCount += Varint.GetByteCount(index);
                 instanceCount += _TypeSet.Get().GetByteCount(obj.GetType());
                 instanceCount += describer.GetByteCount(obj);
@@ -133,19 +129,19 @@ namespace Regulus.Serialization
 
             try
             {
-                var set = _GetSet(instance);
-                var offset = begin;
+                ValidObjectSet set = _GetSet(instance);
+                int offset = begin;
                 offset += Varint.NumberToBuffer(buffer, offset, set.TotalLength);
                 offset += Varint.NumberToBuffer(buffer, offset, set.ValidLength);
 
-                
+
                 for (int i = 0; i < set.ValidObjects.Length; i++)
                 {
-                    var index = set.ValidObjects[i].Index;
-                    var obj = set.ValidObjects[i].Object;
+                    int index = set.ValidObjects[i].Index;
+                    object obj = set.ValidObjects[i].Object;
                     offset += Varint.NumberToBuffer(buffer, offset, index);
-                    var objType = obj.GetType();
-                    var describer = _TypeSet.Get(objType);
+                    Type objType = obj.GetType();
+                    ITypeDescriber describer = _TypeSet.Get(objType);
                     offset += _TypeSet.Get().ToBuffer(objType, buffer, offset);
                     offset += describer.ToBuffer(obj, buffer, offset);
                 }
@@ -154,35 +150,35 @@ namespace Regulus.Serialization
             }
             catch (Exception ex)
             {
-                
-                throw new DescriberException(typeof(ArrayDescriber) , _Type , "ToBuffer" ,ex);
+
+                throw new DescriberException(typeof(ArrayDescriber), _Type, "ToBuffer", ex);
             }
-            
+
         }
 
         int ITypeDescriber.ToObject(byte[] buffer, int begin, out object instnace)
         {
             try
             {
-                var offset = begin;
+                int offset = begin;
                 ulong count;
                 offset += Varint.BufferToNumber(buffer, offset, out count);
-                var array = Activator.CreateInstance(_Type, (int)count) as IList;
+                IList array = Activator.CreateInstance(_Type, (int)count) as IList;
                 instnace = array;
 
                 ulong validCount;
                 offset += Varint.BufferToNumber(buffer, offset, out validCount);
 
-                
-                for (var i = 0UL; i < validCount; i++)
+
+                for (ulong i = 0UL; i < validCount; i++)
                 {
-                    var index = 0LU;
+                    ulong index = 0LU;
 
                     offset += Varint.BufferToNumber(buffer, offset, out index);
 
                     Type objType;
                     offset += _TypeSet.Get().ToObject(buffer, offset, out objType);
-                    var describer = _TypeSet.Get(objType);
+                    ITypeDescriber describer = _TypeSet.Get(objType);
                     object value;
                     offset += describer.ToObject(buffer, offset, out value);
 
@@ -194,14 +190,14 @@ namespace Regulus.Serialization
             }
             catch (Exception ex)
             {
-                
-                throw new DescriberException(typeof(ArrayDescriber), _Type,  "ToObject", ex); ;
-            }   
-            
+
+                throw new DescriberException(typeof(ArrayDescriber), _Type, "ToObject", ex); ;
+            }
+
         }
 
-        
 
-        
+
+
     }
 }

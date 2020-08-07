@@ -27,13 +27,13 @@ namespace Regulus.Remote
         }
 
         T[] INotifier<T>.Ghosts => _Gpis.ToArray();
-       
+
 
         event Action<T> INotifier<T>.Supply
         {
             add
             {
-                foreach (var gpi in _Gpis)
+                foreach (T gpi in _Gpis)
                 {
                     value(gpi);
                 }
@@ -42,7 +42,7 @@ namespace Regulus.Remote
 
             remove
             {
-                var passage = _SupplyPassages.Find(p => p.Owner == value);
+                GhostPassage<T> passage = _SupplyPassages.Find(p => p.Owner == value);
                 if (passage != null)
                     _RemoveSupplyHandler.Invoke(passage.Through);
             }
@@ -50,23 +50,23 @@ namespace Regulus.Remote
 
         private PassageCallback _Add(Action<T> value)
         {
-            var passage = new GhostPassage<T>(value);
+            GhostPassage<T> passage = new GhostPassage<T>(value);
             passage.ThroughEvent += _Gpis.Add;
             _SupplyPassages.Add(passage);
             return passage.Through;
-            
+
         }
 
         private PassageCallback _Remove(Action<T> value)
         {
 
-            var passage = new GhostPassage<T>(value);
+            GhostPassage<T> passage = new GhostPassage<T>(value);
             passage.ThroughEvent += (gpi) => _Gpis.Remove(gpi);
             _UnsupplyPassages.Add(passage);
             return passage.Through;
         }
 
-      
+
 
         event Action<T> INotifier<T>.Unsupply
         {
@@ -77,14 +77,14 @@ namespace Regulus.Remote
 
             remove
             {
-                var passage = _UnsupplyPassages.Find(p => p.Owner == value);
-                if(passage != null)
+                GhostPassage<T> passage = _UnsupplyPassages.Find(p => p.Owner == value);
+                if (passage != null)
                     _RemoveUnsupplyHandler.Invoke(passage.Through);
             }
         }
 
-        
 
-        
+
+
     }
 }

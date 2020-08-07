@@ -1,9 +1,7 @@
-﻿using System;
+﻿using Regulus.Utility;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-
-
-using Regulus.Utility;
 
 namespace Regulus.Extension
 {
@@ -11,35 +9,35 @@ namespace Regulus.Extension
     {
         public static Rect ToRect(this IEnumerable<Vector2> points)
         {
-            
+
             if (!points.Any())
                 throw new Exception("invalid points to rect.");
-            
-            var first = points.First();
-            var left = first.X;
-            var top = first.Y;
-            var right = first.X;
-            var bottom = first.Y;
 
-            foreach(var point in points.Skip(1))
+            Vector2 first = points.First();
+            float left = first.X;
+            float top = first.Y;
+            float right = first.X;
+            float bottom = first.Y;
+
+            foreach (Vector2 point in points.Skip(1))
             {
-                if(left > point.X)
+                if (left > point.X)
                     left = point.X;
 
-                if(right < point.X)
+                if (right < point.X)
                 {
                     right = point.X;
                 }
 
-                if(top > point.Y)
+                if (top > point.Y)
                 {
                     top = point.Y;
                 }
 
-                if(bottom < point.Y)
+                if (bottom < point.Y)
                     bottom = point.Y;
             }
-            return new Rect(left , top , right-left , bottom - top);
+            return new Rect(left, top, right - left, bottom - top);
         }
 
         public static IEnumerable<Vector2> FindHull(this IEnumerable<Vector2> points)

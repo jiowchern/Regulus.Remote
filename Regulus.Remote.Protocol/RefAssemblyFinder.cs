@@ -10,21 +10,21 @@ namespace Regulus.Remote.Protocol
 
         public RefAssemblyFinder(System.Collections.Generic.IEnumerable<System.Type> types)
         {
-            var assmeblys = new System.Collections.Generic.HashSet<Assembly>();
-            foreach(var t1 in types)
+            System.Collections.Generic.HashSet<Assembly> assmeblys = new System.Collections.Generic.HashSet<Assembly>();
+            foreach (System.Type t1 in types)
             {
                 _Add(assmeblys, t1.Assembly);
-                
-                foreach (var t2 in new Regulus.Remote.Protocol.TypeDisintegrator(t1).Types)
+
+                foreach (System.Type t2 in new Regulus.Remote.Protocol.TypeDisintegrator(t1).Types)
                 {
-                    var assembly = t2.Assembly;
-                    
-                   
+                    Assembly assembly = t2.Assembly;
+
+
                     _Add(assmeblys, assembly);
                 }
             }
 
-          
+
 
             Assemblys = assmeblys.ToArray();
         }
@@ -35,16 +35,16 @@ namespace Regulus.Remote.Protocol
                 return;
 
             //if (assembly.GetName().Name == "System.Private.CoreLib")
-             //   return;
+            //   return;
 
             if (assmeblys.Add(assembly))
             {
                 Regulus.Utility.Log.Instance.WriteInfo($"Ref Assembly {assembly.Location} .");
             }
 
-            foreach(var a in assembly.GetReferencedAssemblies())
+            foreach (AssemblyName a in assembly.GetReferencedAssemblies())
             {
-                
+
                 if (assmeblys.Add(Assembly.Load(a)))
                 {
                     Regulus.Utility.Log.Instance.WriteInfo($"Ref Assembly {assembly.Location}.");
@@ -52,9 +52,9 @@ namespace Regulus.Remote.Protocol
             }
         }
 
-     
 
-       
-        
+
+
+
     }
 }

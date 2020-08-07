@@ -7,24 +7,24 @@ namespace Regulus.Serialization.Dynamic
     {
         Type ITypeFinder.Find(string type_name)
         {
-            var retType   = Type.GetType(type_name);
+            Type retType = Type.GetType(type_name);
             if (retType != null)
                 return retType;
 
-            var assembles = AppDomain.CurrentDomain.GetAssemblies();
-            foreach(var asm in assembles)
+            System.Reflection.Assembly[] assembles = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (System.Reflection.Assembly asm in assembles)
             {
                 if (asm.IsDynamic)
                 {
                     continue;
                 }
-                var type = (from t in asm.GetExportedTypes() where t.FullName == type_name select t).FirstOrDefault();
+                Type type = (from t in asm.GetExportedTypes() where t.FullName == type_name select t).FirstOrDefault();
                 if (type == null)
                     continue;
                 return type;
             }
             return null;
-            
+
         }
     }
 }

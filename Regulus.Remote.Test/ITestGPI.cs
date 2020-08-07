@@ -2,8 +2,8 @@
 
 namespace RemotingTest
 {
-	public interface ITestGPI
-	{
-		Value<int> Add(int a, int b);
-	}
+    public interface ITestGPI
+    {
+        Value<int> Add(int a, int b);
+    }
 }

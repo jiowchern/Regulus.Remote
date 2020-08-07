@@ -7,24 +7,24 @@ namespace Regulus.Serialization
 {
     public class BlittableDescriber<T> : BlittableDescriber
     {
-        public BlittableDescriber() : base(typeof (T))
+        public BlittableDescriber() : base(typeof(T))
         {
-            
+
         }
     }
-    public class BlittableDescriber : ITypeDescriber 
+    public class BlittableDescriber : ITypeDescriber
     {
-        
+
 
         private readonly Type _Type;
 
         private readonly object _Default;
 
-        private int _Size;
+        private readonly int _Size;
 
         public BlittableDescriber(Type type)
         {
-        
+
             _Type = type;
 
             _Default = Activator.CreateInstance(type);
@@ -33,13 +33,13 @@ namespace Regulus.Serialization
                 _Size = Marshal.SizeOf(_Type);
             }
             catch (Exception ex)
-            {                
-                throw new DescriberException(typeof(BlittableDescriber) , _Type , "Size" , ex);
+            {
+                throw new DescriberException(typeof(BlittableDescriber), _Type, "Size", ex);
             }
-            
+
         }
 
-        
+
 
         Type ITypeDescriber.Type
         {
@@ -102,9 +102,9 @@ namespace Regulus.Serialization
             }
             catch (Exception ex)
             {
-                throw new DescriberException(typeof (BlittableDescriber), _Type, "ToObject", ex);             
-            }            
+                throw new DescriberException(typeof(BlittableDescriber), _Type, "ToObject", ex);
+            }
         }
-        
+
     }
 }

@@ -8,7 +8,7 @@ namespace Regulus.Remote
         class Invoker
         {
             public long Id;
-            public Delegate Runner                ;
+            public Delegate Runner;
         }
         readonly IdLandlord _IdLandlord;
         readonly List<Invoker> _Runners;
@@ -20,21 +20,21 @@ namespace Regulus.Remote
         }
         public long Add(Delegate value)
         {
-            var id = _IdLandlord.Rent();
+            long id = _IdLandlord.Rent();
             _Runners.Add(new Invoker() { Id = id, Runner = value });
             return id;
         }
 
         public long Remove(Delegate value)
         {
-            var invoker = _Runners.Find(i => i.Runner == value);
+            Invoker invoker = _Runners.Find(i => i.Runner == value);
             _Runners.Remove(invoker);
             return invoker.Id;
         }
 
-        public void Invoke(long handler_id , params object[] args)
+        public void Invoke(long handler_id, params object[] args)
         {
-            var invoker = _Runners.Find(i => i.Id == handler_id);
+            Invoker invoker = _Runners.Find(i => i.Id == handler_id);
             if (invoker != null)
                 invoker.Runner.DynamicInvoke(args);
 

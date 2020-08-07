@@ -3,11 +3,11 @@
     class SoulPassage
     {
         public readonly long Id;
-        
+
         public readonly PassageCallback Handler;
-        public SoulPassage(long id , PassageCallback callback)
+        public SoulPassage(long id, PassageCallback callback)
         {
-            Id = id;        
+            Id = id;
             Handler = callback;
         }
     }

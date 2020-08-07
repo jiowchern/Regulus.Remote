@@ -1,60 +1,54 @@
-﻿using System.Linq;
-
-
-
-
-
-using Regulus;
-using Regulus.Utility;
+﻿using Regulus.Utility;
+using System.Linq;
 
 namespace RegulusLibraryTest
 {
-	internal enum TESTENUM
-	{
-		_1, 
+    internal enum TESTENUM
+    {
+        _1,
 
-		_2, 
+        _2,
 
-		_3
-	};
-    
-	
-	public class FlagTest
-	{
-		[NUnit.Framework.Test()]
-		public void TestToArray()
-		{
-			var flags = new Flag<TESTENUM>();            
-			flags[TESTENUM._1] = true;
-			flags[TESTENUM._2] = false;
-			flags[TESTENUM._3] = true;
+        _3
+    };
 
-			var array = flags.ToArray();
 
-			NUnit.Framework.Assert.AreNotEqual(TESTENUM._2, array[0]);
-			NUnit.Framework.Assert.AreNotEqual(TESTENUM._2, array[1]);
-		}
+    public class FlagTest
+    {
+        [NUnit.Framework.Test()]
+        public void TestToArray()
+        {
+            Flag<TESTENUM> flags = new Flag<TESTENUM>();
+            flags[TESTENUM._1] = true;
+            flags[TESTENUM._2] = false;
+            flags[TESTENUM._3] = true;
 
-		[NUnit.Framework.Test()]
-		public void TestCustomFlag1()
-		{
-			var flags = new Flag<TESTENUM>();
-			flags[TESTENUM._1] = false;
-			flags[TESTENUM._2] = true;
-			flags[TESTENUM._3] = false;
+            TESTENUM[] array = flags.ToArray();
 
-			NUnit.Framework.Assert.AreEqual(true, flags[TESTENUM._2]);
-			NUnit.Framework.Assert.AreEqual(false, flags[TESTENUM._3]);
-		}
+            NUnit.Framework.Assert.AreNotEqual(TESTENUM._2, array[0]);
+            NUnit.Framework.Assert.AreNotEqual(TESTENUM._2, array[1]);
+        }
 
-		[NUnit.Framework.Test()]
-		public void TestCustomFlag2()
-		{
-			var flags = new Flag<TESTENUM>(TESTENUM._1, TESTENUM._3);
+        [NUnit.Framework.Test()]
+        public void TestCustomFlag1()
+        {
+            Flag<TESTENUM> flags = new Flag<TESTENUM>();
+            flags[TESTENUM._1] = false;
+            flags[TESTENUM._2] = true;
+            flags[TESTENUM._3] = false;
 
-			NUnit.Framework.Assert.AreEqual(false, flags[TESTENUM._2]);
-			NUnit.Framework.Assert.AreEqual(true, flags[TESTENUM._3]);
-		}
+            NUnit.Framework.Assert.AreEqual(true, flags[TESTENUM._2]);
+            NUnit.Framework.Assert.AreEqual(false, flags[TESTENUM._3]);
+        }
+
+        [NUnit.Framework.Test()]
+        public void TestCustomFlag2()
+        {
+            Flag<TESTENUM> flags = new Flag<TESTENUM>(TESTENUM._1, TESTENUM._3);
+
+            NUnit.Framework.Assert.AreEqual(false, flags[TESTENUM._2]);
+            NUnit.Framework.Assert.AreEqual(true, flags[TESTENUM._3]);
+        }
 
 
         // todo : 不能序列化 , 序列化陣列要改成IList檢查
@@ -71,16 +65,16 @@ namespace RegulusLibraryTest
 			NUnit.Framework.Assert.AreEqual(true, flags2[TESTENUM._3]);
 		}*/
 
-		[NUnit.Framework.Test()]
-		public void TestCustomFlagConvert()
-		{
-			var flags = new Flag<TESTENUM>(TESTENUM._1, TESTENUM._3);
-			var objs = (from e in flags select (object)e).ToArray();
+        [NUnit.Framework.Test()]
+        public void TestCustomFlagConvert()
+        {
+            Flag<TESTENUM> flags = new Flag<TESTENUM>(TESTENUM._1, TESTENUM._3);
+            object[] objs = (from e in flags select (object)e).ToArray();
 
-			Flag<TESTENUM> flag2 = objs;
+            Flag<TESTENUM> flag2 = objs;
 
-			NUnit.Framework.Assert.AreEqual(false, flag2[TESTENUM._2]);
-			NUnit.Framework.Assert.AreEqual(true, flag2[TESTENUM._3]);
-		}
-	}
+            NUnit.Framework.Assert.AreEqual(false, flag2[TESTENUM._2]);
+            NUnit.Framework.Assert.AreEqual(true, flag2[TESTENUM._3]);
+        }
+    }
 }

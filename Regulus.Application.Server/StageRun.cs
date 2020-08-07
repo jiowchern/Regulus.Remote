@@ -1,12 +1,11 @@
-﻿using System;
-using Regulus.Network;
-using Regulus.Remote.Soul;
+﻿using Regulus.Network;
 using Regulus.Utility;
+using System;
 
 
 namespace Regulus.Remote.Soul.Console
 {
-    
+
 
     internal class StageRun : IStatus
     {
@@ -25,7 +24,7 @@ namespace Regulus.Remote.Soul.Console
             _View = viewer;
             _Command = command;
 
-            _Server = new _Service(core, port, protocol, server);            
+            _Server = new _Service(core, port, protocol, server);
             _Launcher = new Launcher();
             _Launcher.Push(_Server);
         }

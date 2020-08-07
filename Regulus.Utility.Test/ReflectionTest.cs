@@ -1,7 +1,5 @@
 ﻿using Regulus.Utility.Reflection;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Regulus.Utility.Test
 {
@@ -16,7 +14,7 @@ namespace Regulus.Utility.Test
         [NUnit.Framework.Test()]
         public void GetMethod()
         {
-            var catcher = new TypeMethodCatcher((System.Linq.Expressions.Expression<Action<Test>>)(ins => ins.Method1()));
+            TypeMethodCatcher catcher = new TypeMethodCatcher((System.Linq.Expressions.Expression<Action<Test>>)(ins => ins.Method1()));
             NUnit.Framework.Assert.AreEqual("Method1", catcher.Method.Name);
         }
     }

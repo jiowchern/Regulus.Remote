@@ -24,9 +24,9 @@ namespace Regulus.Network
             m_Stopwatch.Start();
 
             m_Now = m_Stopwatch.ElapsedTicks;
-           
+
         }
-        long ITime.OneSeconds {get { return m_OneSeconds; } } 
+        long ITime.OneSeconds { get { return m_OneSeconds; } }
 
         long ITime.Now
         {
@@ -36,7 +36,7 @@ namespace Regulus.Network
                 {
                     return m_Now;
                 }
-                
+
             }
         }
 
@@ -48,7 +48,7 @@ namespace Regulus.Network
                 {
                     return m_Delta;
                 }
-                
+
             }
         }
 
@@ -56,11 +56,11 @@ namespace Regulus.Network
         {
             lock (m_Stopwatch)
             {
-                var now = m_Stopwatch.ElapsedTicks;
+                long now = m_Stopwatch.ElapsedTicks;
                 m_Delta = now - m_Now;
                 m_Now = now;
             }
-            
+
         }
     }
 }

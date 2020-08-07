@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using Regulus.Serialization.Dynamic;
+﻿using Regulus.Serialization.Dynamic;
+using System;
 
 namespace Regulus.Serialization
 {
@@ -21,15 +18,15 @@ namespace Regulus.Serialization
 
         DescriberProvider _BuildDescribers(ITypeFinder type_finder)
         {
-            var describersFinder = new Dynamic.DescribersFinder(type_finder);
+            Dynamic.DescribersFinder describersFinder = new Dynamic.DescribersFinder(type_finder);
             return new DescriberProvider(describersFinder);
         }
         DescriberProvider _BuildDescribers(params Type[] types)
         {
 
-            var finder = new DescribersFinder(types);
-            return new DescriberProvider(finder.KeyDescriber, finder) ;
+            DescribersFinder finder = new DescribersFinder(types);
+            return new DescriberProvider(finder.KeyDescriber, finder);
         }
-      
+
     }
 }

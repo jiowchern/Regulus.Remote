@@ -1,13 +1,12 @@
 ﻿using Regulus.Utility;
-using System;
 using System.Net;
 
 namespace Regulus.Remote.Standalone
 {
     internal class OfflineStatus : IStatus
     {
-        private IProvider _ConnectProvider;
-        private ConnectGhost _Ghost;
+        private readonly IProvider _ConnectProvider;
+        private readonly ConnectGhost _Ghost;
 
         public event System.Action DoneEvent;
         public OfflineStatus(IProvider connectProvider)

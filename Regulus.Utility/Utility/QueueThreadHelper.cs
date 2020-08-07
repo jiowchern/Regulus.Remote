@@ -19,7 +19,7 @@ namespace Regulus.Utility
 
         public static T SafeDequeue<T>(this System.Collections.Generic.Queue<T> Queue)
         {
-            var item = default(T);
+            T item = default(T);
             lock (Queue)
             {
                 if (Queue.Count > 0)

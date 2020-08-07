@@ -2,15 +2,15 @@
 
 namespace Regulus.Remote
 {
-	
-	public interface IBinder
-	{
-		event Action BreakEvent;
-	
-		void Return<TSoul>(TSoul soul);
 
-		void Bind<TSoul>(TSoul soul);
+    public interface IBinder
+    {
+        event Action BreakEvent;
 
-		void Unbind<TSoul>(TSoul soul);
-	}
+        void Return<TSoul>(TSoul soul);
+
+        void Bind<TSoul>(TSoul soul);
+
+        void Unbind<TSoul>(TSoul soul);
+    }
 }

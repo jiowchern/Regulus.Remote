@@ -1,8 +1,5 @@
-﻿using System;
+﻿using Regulus.Network;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Net.Sockets;
-using Regulus.Network;
 
 namespace Regulus.Remote
 {
@@ -18,7 +15,7 @@ namespace Regulus.Remote
             _ReadedByte = new byte[1];
             _Peer = peer;
             _Buffer = new List<byte>();
-            
+
         }
 
         public void Read()
@@ -28,11 +25,11 @@ namespace Regulus.Remote
         private void _Read()
         {
 
-            var task = _Peer.Receive(_ReadedByte, 0, 1);
-            task.ContinueWith(t => _Readed(t.Result));            
+            System.Threading.Tasks.Task<int> task = _Peer.Receive(_ReadedByte, 0, 1);
+            task.ContinueWith(t => _Readed(t.Result));
         }
 
-        private void _Readed(int read_size )
+        private void _Readed(int read_size)
         {
 
             if (_ReadData(read_size))
@@ -48,14 +45,14 @@ namespace Regulus.Remote
 
         private bool _ReadData(int readSize)
         {
-            
+
             if (readSize != 0)
             {
-                var value = _ReadedByte[0];
+                byte value = _ReadedByte[0];
                 _Buffer.Add(value);
 
                 if (value < 0x80)
-                {                    
+                {
                     return true;
                 }
             }

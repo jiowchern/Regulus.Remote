@@ -1,13 +1,9 @@
+using Regulus.Network.Package;
+using Regulus.Utility;
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using Regulus.Utility;
-using Regulus.Network.Package;
-using Regulus.Utility;
 
 namespace Regulus.Network
 {
@@ -19,26 +15,26 @@ namespace Regulus.Network
 
         private readonly StatusMachine<Timestamp> _Machine;
 
-        
+
         private PeerStatus _Status;
 
-        
+
         private readonly SegmentStream _Stream;
         public Action<int, SocketError> WriteDoneHandler;
 
-        
+
 
 
 
         private Socket(Line line)
         {
             _Stream = new SegmentStream(new SocketMessage[0]);
-            
-        
-            
+
+
+
             _Line = line;
             _Machine = new StatusMachine<Timestamp>();
-            
+
 
         }
         public Socket(Line line, PeerListener listener) : this(line)
@@ -61,12 +57,12 @@ namespace Regulus.Network
         private void ToTransmission()
         {
             _Status = PeerStatus.Transmission;
-            var stage = new PeerTransmission(_Line, _Stream);
+            PeerTransmission stage = new PeerTransmission(_Line, _Stream);
             stage.DisconnectEvent += _Disconnect;
-            _Machine.Push(stage);            
+            _Machine.Push(stage);
         }
 
-       
+
 
 
 
@@ -92,12 +88,13 @@ namespace Regulus.Network
 
 
 
-        public EndPoint EndPoint {get{return _Line.EndPoint; } } 
+        public EndPoint EndPoint { get { return _Line.EndPoint; } }
 
         public System.Threading.Tasks.Task<int> Send(byte[] buffer, int offset, int count)
         {
-                        
-            return System.Threading.Tasks.Task<int>.Run(()=> {
+
+            return System.Threading.Tasks.Task<int>.Run(() =>
+            {
 
                 _Line.WriteTransmission(buffer.Skip(offset).ToArray());
                 return count;
@@ -110,11 +107,12 @@ namespace Regulus.Network
         public System.Threading.Tasks.Task<int> Receive(byte[] buffer, int offset, int count)
         {
 
-            return System.Threading.Tasks.Task<int>.Run(() => {
+            return System.Threading.Tasks.Task<int>.Run(() =>
+            {
 
-                var readCount = _Stream.Read(buffer, offset, count);
-                var r = new Regulus.Utility.AutoPowerRegulator(new PowerRegulator());
-                while(readCount == 0)
+                int readCount = _Stream.Read(buffer, offset, count);
+                AutoPowerRegulator r = new Regulus.Utility.AutoPowerRegulator(new PowerRegulator());
+                while (readCount == 0)
                 {
                     r.Operate();
                     readCount = _Stream.Read(buffer, offset, count);
@@ -125,7 +123,7 @@ namespace Regulus.Network
 
         }
 
-        public PeerStatus Status {get { return _Status; } }
+        public PeerStatus Status { get { return _Status; } }
 
         public void Disconnect()
         {
@@ -135,14 +133,14 @@ namespace Regulus.Network
 
         private void _Disconnect()
         {
-            if(_Status != PeerStatus.Close)
+            if (_Status != PeerStatus.Close)
             {
                 _Status = PeerStatus.Disconnect;
-                var stage = new PeerDisconnecter(_Line);
+                PeerDisconnecter stage = new PeerDisconnecter(_Line);
                 stage.DoneEvent += ToClose;
                 _Machine.Push(stage);
             }
-            
+
         }
 
         private void ToClose()

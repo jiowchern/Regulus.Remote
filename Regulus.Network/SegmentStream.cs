@@ -1,6 +1,6 @@
+using Regulus.Network.Package;
 using System.Collections.Generic;
 using System.Linq;
-using Regulus.Network.Package;
 
 namespace Regulus.Network
 {
@@ -16,25 +16,25 @@ namespace Regulus.Network
         {
             _Packages = messages.ToList();
             m_FirstPackageOffset = 0;
-        }        
+        }
 
-       
+
         public int Read(byte[] buffer, int offset, int buffer_count)
         {
-            lock(_Packages)
+            lock (_Packages)
             {
-                var count = buffer_count < buffer.Length ? buffer_count : buffer.Length;
-                var pkgIndex = 0;
-                var readed = 0;
-                var removeCount = 0;
+                int count = buffer_count < buffer.Length ? buffer_count : buffer.Length;
+                int pkgIndex = 0;
+                int readed = 0;
+                int removeCount = 0;
                 while (pkgIndex < _Packages.Count && count > 0)
                 {
-                    var pkg = _Packages[pkgIndex];
-                    var payLoadLength = pkg.GetPayloadLength();
-                    var copyLength = payLoadLength < count ? payLoadLength : count;
+                    SocketMessage pkg = _Packages[pkgIndex];
+                    ushort payLoadLength = pkg.GetPayloadLength();
+                    int copyLength = payLoadLength < count ? payLoadLength : count;
 
 
-                    var copyCount = pkg.ReadPayload(m_FirstPackageOffset, buffer, offset, copyLength);
+                    int copyCount = pkg.ReadPayload(m_FirstPackageOffset, buffer, offset, copyLength);
 
                     if (copyCount + m_FirstPackageOffset == payLoadLength)
                     {
@@ -55,23 +55,23 @@ namespace Regulus.Network
 
                 return readed;
             }
-            
+
         }
 
 
-        public byte this[int i] {get { return Get(i); } }
+        public byte this[int i] { get { return Get(i); } }
 
         private byte Get(int offset)
         {
-            lock(_Packages)
+            lock (_Packages)
             {
-                for (var i = 0; i < Length; i++)
+                for (int i = 0; i < Length; i++)
                 {
-                    var package = _Packages[i];
-                    var len = package.GetPayloadLength();
+                    SocketMessage package = _Packages[i];
+                    ushort len = package.GetPayloadLength();
                     if (offset < len)
                     {
-                        var readed = new byte[1];
+                        byte[] readed = new byte[1];
                         package.ReadPayload(readed, offset);
                         return readed[0];
                     }
@@ -80,16 +80,16 @@ namespace Regulus.Network
 
                 return 0;
             }
-            
+
         }
 
         public void Add(SocketMessage Message)
         {
-            lock(_Packages)
+            lock (_Packages)
                 _Packages.Add(Message);
-            
+
         }
 
-        
+
     }
 }

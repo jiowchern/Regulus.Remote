@@ -3,18 +3,18 @@
 namespace Regulus.Utility
 {
     [Serializable]
-	public struct Size
-	{
+    public struct Size
+    {
 
-		public float Height;
+        public float Height;
 
 
-		public float Width;
+        public float Width;
 
-		public Size(float width, float height)
-		{
-			Width = width;
-			Height = height;
-		}
-	}
+        public Size(float width, float height)
+        {
+            Width = width;
+            Height = height;
+        }
+    }
 }

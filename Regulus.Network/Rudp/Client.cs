@@ -1,19 +1,18 @@
-﻿using System.Threading;
-using Regulus.Utility;
+﻿using Regulus.Utility;
 
 namespace Regulus.Network.Rudp
 {
 
-    public class ConnectProvider :  IConnectProvidable 
+    public class ConnectProvider : IConnectProvidable
     {
         private readonly ISocket m_Socket;
         private readonly ITime m_Time;
         private readonly Agent m_Agent;
         private volatile bool m_Enable;
         readonly System.Threading.Tasks.Task _Procresser;
-        
+
         public ConnectProvider(ISocket socket)
-        {        
+        {
             m_Socket = socket;
             m_Time = new Time();
             m_Agent = new Agent(m_Socket, m_Socket);
@@ -22,16 +21,16 @@ namespace Regulus.Network.Rudp
 
         private void Run()
         {
-            
-            var wait = new AutoPowerRegulator(new PowerRegulator(30));
-            
-            var updater = new Updater<Timestamp>();
+
+            AutoPowerRegulator wait = new AutoPowerRegulator(new PowerRegulator(30));
+
+            Updater<Timestamp> updater = new Updater<Timestamp>();
             updater.Add(m_Agent);
             while (m_Enable)
             {
-        
+
                 m_Time.Sample();
-                updater.Working(new Timestamp(m_Time.Now , m_Time.Delta));
+                updater.Working(new Timestamp(m_Time.Now, m_Time.Delta));
                 wait.Operate();
             }
             updater.Shutdown();

@@ -5,21 +5,21 @@ using System.Threading.Tasks;
 
 namespace Regulus.Network.Web
 {
-    public class Connecter :  Peer , IConnectable
+    public class Connecter : Peer, IConnectable
     {
         readonly ClientWebSocket _Socket;
 
-        public Connecter(ClientWebSocket socket) : base(socket , new IPEndPoint(IPAddress.Any,0), new IPEndPoint(IPAddress.Any, 0))
+        public Connecter(ClientWebSocket socket) : base(socket, new IPEndPoint(IPAddress.Any, 0), new IPEndPoint(IPAddress.Any, 0))
         {
             _Socket = socket;
         }
 
         System.Threading.Tasks.Task<bool> IConnectable.Connect(EndPoint endpoint)
         {
-            var ip = endpoint as IPEndPoint;
-            var connectTask = _Socket.ConnectAsync(new Uri($"ws://{ip.Address.ToString()}:{ip.Port}") , new System.Threading.CancellationToken());
+            IPEndPoint ip = endpoint as IPEndPoint;
+            Task connectTask = _Socket.ConnectAsync(new Uri($"ws://{ip.Address.ToString()}:{ip.Port}"), new System.Threading.CancellationToken());
             return connectTask.ContinueWith<bool>(_ConnectResult);
-            
+
 
         }
 

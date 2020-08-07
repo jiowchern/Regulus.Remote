@@ -14,7 +14,7 @@ namespace Regulus.Lockstep
 
         public Step<TRecord> Write(IEnumerable<TRecord> records)
         {
-            var step = new Step<TRecord> {Records = records.ToArray()};
+            Step<TRecord> step = new Step<TRecord> { Records = records.ToArray() };
             _Steps.Enqueue(step);
 
             return step;
@@ -22,10 +22,10 @@ namespace Regulus.Lockstep
 
         public IEnumerable<Step<TRecord>> GetEnumerable()
         {
-            foreach (var step in _Steps)
+            foreach (Step<TRecord> step in _Steps)
             {
                 yield return step;
             }
-        }        
+        }
     }
 }

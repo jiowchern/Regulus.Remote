@@ -1,19 +1,17 @@
-using System;
-
 namespace Regulus.BehaviourTree.ActionHelper
 {
-    public class Wait 
+    public class Wait
     {
         private readonly float _Timeup;
         private float _Counter;
-        
+
 
         public Wait(float timeup)
         {
             _Timeup = timeup;
-        
-        }        
-        
+
+        }
+
 
         public TICKRESULT Tick(float delta)
         {
@@ -23,8 +21,8 @@ namespace Regulus.BehaviourTree.ActionHelper
                 _Counter = 0;
                 return TICKRESULT.SUCCESS;
             }
-                
-        
+
+
             return TICKRESULT.RUNNING;
         }
 

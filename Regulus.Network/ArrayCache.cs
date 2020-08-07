@@ -2,7 +2,7 @@
 
 namespace Regulus.Network
 {
-    internal class ArrayCache<T> 
+    internal class ArrayCache<T>
     {
         private readonly int m_Capacity;
         private readonly Queue<T[]> m_Stock;
@@ -21,7 +21,7 @@ namespace Regulus.Network
 
         public void Free(T[] Buffer)
         {
-            if(Buffer.Length != m_Capacity)
+            if (Buffer.Length != m_Capacity)
                 throw new System.Exception("Package length does not match.");
 
             m_Stock.Enqueue(Buffer);

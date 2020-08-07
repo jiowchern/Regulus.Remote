@@ -4,21 +4,21 @@ namespace Regulus.Network
     {
         private long m_Rttval;
         private long m_Srtt;
-        private long  m_Rtt;
+        private long m_Rtt;
         public long Value { get; set; }
-        public long Rtt {get { return m_Srtt; } }
+        public long Rtt { get { return m_Srtt; } }
 
         public RetransmissionTimeOut()
         {
-            Reset();            
-            
+            Reset();
+
         }
 
-        public void Update(long Rtt,long Delta)
+        public void Update(long Rtt, long Delta)
         {
             m_Srtt = (long)(0.875 * m_Rtt + 0.125 * Rtt);
             m_Rtt = Rtt;
-            m_Rttval = (long)(0.75 * m_Rttval + 0.25 * Abs(m_Srtt - Rtt));            
+            m_Rttval = (long)(0.75 * m_Rttval + 0.25 * Abs(m_Srtt - Rtt));
             Value = m_Srtt + Max(Delta, 4 * m_Rttval);
         }
 
@@ -28,7 +28,7 @@ namespace Regulus.Network
             m_Srtt = (long)Timestamp.OneSecondTicks;
             m_Rtt = (long)Timestamp.OneSecondTicks;
 
-            Update(m_Rtt , Delta: 0);
+            Update(m_Rtt, Delta: 0);
         }
 
         private long Abs(long Val)

@@ -1,19 +1,5 @@
-﻿
-using Regulus.Tool;
+﻿using NUnit.Framework;
 using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-
-using Microsoft.CSharp;
-
-using NUnit.Framework;
-
-using Regulus.Utility;
-using Regulus.Remote;
 
 namespace Regulus.Tool.GPI
 {
@@ -25,29 +11,29 @@ namespace Regulus.Tool.GPI
 
         event Action<float, string> OnCallEvent;
     }
-    
+
 }
 namespace Regulus.Tool.Tests
 {
     [TestFixture]
     public class GhostProviderGeneratorTests
     {
-        
 
-        
+
+
 
 
         [NUnit.Framework.Test()]
         public void BuildGetEventHandler()
         {
             bool onevent = false;
-            
-            Delegate function = new Action<int , float , string>((i,f,s) => { onevent = true; });
-            function.Method.Invoke(function.Target,new object[]{10,100f,"1000"}); 
 
-            NUnit.Framework.Assert.AreEqual( true , onevent);
+            Delegate function = new Action<int, float, string>((i, f, s) => { onevent = true; });
+            function.Method.Invoke(function.Target, new object[] { 10, 100f, "1000" });
+
+            NUnit.Framework.Assert.AreEqual(true, onevent);
         }
 
-        
+
     }
 }

@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using Regulus.Network.Package;
+using System.Collections.Generic;
 
 namespace Regulus.Network
 {
@@ -11,8 +11,8 @@ namespace Regulus.Network
         private ushort m_Serial;
         private uint m_SerialBitFields;
 
-        public ushort Serial {get { return m_Serial; } }
-        public uint SerialBitFields {get{ return m_SerialBitFields; } }
+        public ushort Serial { get { return m_Serial; } }
+        public uint SerialBitFields { get { return m_SerialBitFields; } }
         public int Count { get { return m_DataPackages.Count; } }
 
         public PackageRectifier()
@@ -24,10 +24,10 @@ namespace Regulus.Network
         }
         public bool PushPackage(SocketMessage SegmentMessage)
         {
-            var seq = SegmentMessage.GetSeq();
-            var exist = m_DataPackages.ContainsKey(seq) ;
-            
-            if (exist == false && SerialMoreRecent(seq) )
+            ushort seq = SegmentMessage.GetSeq();
+            bool exist = m_DataPackages.ContainsKey(seq);
+
+            if (exist == false && SerialMoreRecent(seq))
             {
                 m_DataPackages.Add(seq, SegmentMessage);
 
@@ -39,7 +39,7 @@ namespace Regulus.Network
                 for (uint i = 0; i < 32; i++)
                 {
                     SocketMessage pkg;
-                    if (m_DataPackages.TryGetValue((ushort)(m_Serial + i ), out pkg))
+                    if (m_DataPackages.TryGetValue((ushort)(m_Serial + i), out pkg))
                         m_SerialBitFields = m_SerialBitFields | mask;
 
                     mask <<= 1;
@@ -69,8 +69,8 @@ namespace Regulus.Network
 
         private ushort Rectify(ushort serial)
         {
-            var removePackages = new List<ushort>();
-            var index = serial;
+            List<ushort> removePackages = new List<ushort>();
+            ushort index = serial;
             SocketMessage message;
             while (m_DataPackages.TryGetValue(index, out message))
             {
@@ -79,7 +79,7 @@ namespace Regulus.Network
                 removePackages.Add(index);
                 index++;
             }
-            foreach (var removePackage in removePackages)
+            foreach (ushort removePackage in removePackages)
                 m_DataPackages.Remove(removePackage);
 
             return index;

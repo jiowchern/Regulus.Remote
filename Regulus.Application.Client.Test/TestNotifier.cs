@@ -7,7 +7,7 @@ namespace Regulus.Application.Client.Test
     {
         T[] INotifier<T>.Ghosts => throw new NotImplementedException();
 
-       
+
 
         event Action<T> _Supply;
         event Action<T> INotifier<T>.Supply

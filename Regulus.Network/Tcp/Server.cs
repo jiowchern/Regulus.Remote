@@ -1,7 +1,7 @@
+using Regulus.Utility;
 using System;
 using System.Net;
 using System.Net.Sockets;
-using Regulus.Utility;
 
 namespace Regulus.Network.Tcp
 {
@@ -13,7 +13,7 @@ namespace Regulus.Network.Tcp
         event Action<IStreamable> IListenable.AcceptEvent
         {
             add { Acctpe += value; }
-            remove { Acctpe -= value; } 
+            remove { Acctpe -= value; }
         }
         public Listener()
         {
@@ -22,9 +22,9 @@ namespace Regulus.Network.Tcp
         }
         void IListenable.Bind(int Port)
         {
-            
 
-            
+
+
             _Socket.Bind(new IPEndPoint(IPAddress.Any, Port));
             _Socket.Listen(backlog: 5);
             _Socket.BeginAccept(Accept, state: null);
@@ -34,8 +34,8 @@ namespace Regulus.Network.Tcp
         {
             try
             {
-                var socket = _Socket.EndAccept(Ar);
-                lock(Acctpe)
+                System.Net.Sockets.Socket socket = _Socket.EndAccept(Ar);
+                lock (Acctpe)
                 {
                     Acctpe(new Peer(socket));
                 }
@@ -43,20 +43,20 @@ namespace Regulus.Network.Tcp
                 _Socket.BeginAccept(Accept, state: null);
             }
 
-                
-            catch(SocketException se)
+
+            catch (SocketException se)
             {
                 Singleton<Log>.Instance.WriteInfo(se.ToString());
             }
-            catch(ObjectDisposedException ode)
+            catch (ObjectDisposedException ode)
             {
                 Singleton<Log>.Instance.WriteInfo(ode.ToString());
             }
-            catch(InvalidOperationException ioe)
+            catch (InvalidOperationException ioe)
             {
                 Singleton<Log>.Instance.WriteInfo(ioe.ToString());
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Singleton<Log>.Instance.WriteInfo(e.ToString());
             }

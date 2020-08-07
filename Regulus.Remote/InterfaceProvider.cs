@@ -6,7 +6,7 @@ namespace Regulus.Remote
     /// <summary>
     /// 
     /// </summary>
-    public class InterfaceProvider 
+    public class InterfaceProvider
     {
         private readonly Dictionary<Type, Type> _Types;
 
@@ -14,15 +14,18 @@ namespace Regulus.Remote
         {
             _Types = types;
         }
-        public IEnumerable<Type> Types { get
+        public IEnumerable<Type> Types
+        {
+            get
             {
                 return _Types.Keys;
-            } }
+            }
+        }
         public Type Find(Type ghost_base_type)
         {
             if (_Types.ContainsKey(ghost_base_type))
-            {                
-                return _Types[ghost_base_type];              
+            {
+                return _Types[ghost_base_type];
             }
             return null;
         }

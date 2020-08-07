@@ -1,7 +1,4 @@
-﻿using Regulus.Utility;
-using System;
-
-namespace Regulus.Utility
+﻿namespace Regulus.Utility
 {
     public class StageMachine : Utility.IBootable
     {
@@ -21,7 +18,7 @@ namespace Regulus.Utility
 
         void IBootable.Launch()
         {
-            
+
         }
 
         public void Clean()
@@ -31,7 +28,7 @@ namespace Regulus.Utility
 
         void IBootable.Shutdown()
         {
-            
+
         }
     }
 }

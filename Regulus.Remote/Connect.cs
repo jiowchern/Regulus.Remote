@@ -2,33 +2,33 @@
 
 namespace Regulus.Remote
 {
-	public interface IConnect
-	{
+    public interface IConnect
+    {
         Value<bool> Connect(System.Net.IPEndPoint ip);
-	}
-	
-	public class ConnectGhost : IGhost, IConnect
-	{
-		public event Action<System.Net.IPEndPoint, Value<bool>> ConnectedEvent;
+    }
 
-		public long Id { get; private set; }
+    public class ConnectGhost : IGhost, IConnect
+    {
+        public event Action<System.Net.IPEndPoint, Value<bool>> ConnectedEvent;
 
-		public ConnectGhost()
-		{			
-			Id = LongProvider.ConnectId;
-		}
+        public long Id { get; private set; }
 
-        Value<bool> IConnect.Connect(System.Net.IPEndPoint  ip)
-		{
-			if(ConnectedEvent == null)
-			{
-				throw new SystemException("Invalid Connect, to regain from the provider.");
-			}
+        public ConnectGhost()
+        {
+            Id = LongProvider.ConnectId;
+        }
 
-			var val = new Value<bool>();
-			ConnectedEvent(ip, val);
-			return val;
-		}
+        Value<bool> IConnect.Connect(System.Net.IPEndPoint ip)
+        {
+            if (ConnectedEvent == null)
+            {
+                throw new SystemException("Invalid Connect, to regain from the provider.");
+            }
+
+            Value<bool> val = new Value<bool>();
+            ConnectedEvent(ip, val);
+            return val;
+        }
         private event CallMethodCallback _CallMethodEvent;
 
         event CallMethodCallback IGhost.CallMethodEvent
@@ -67,12 +67,12 @@ namespace Regulus.Remote
         {
             add
             {
-                
+
             }
 
             remove
             {
-                
+
             }
         }
 
@@ -80,12 +80,12 @@ namespace Regulus.Remote
         {
             add
             {
-                
+
             }
 
             remove
             {
-             
+
             }
         }
 
@@ -93,12 +93,12 @@ namespace Regulus.Remote
         {
             add
             {
-             
+
             }
 
             remove
             {
-                
+
             }
         }
 
@@ -106,28 +106,28 @@ namespace Regulus.Remote
         {
             add
             {
-                
+
             }
 
             remove
             {
-                
+
             }
         }
 
         long IGhost.GetID()
-		{
-			return Id;
-		}
+        {
+            return Id;
+        }
 
-	    public object GetInstance()
-	    {
-	        return this;
-	    }
+        public object GetInstance()
+        {
+            return this;
+        }
 
-	    bool IGhost.IsReturnType()
-		{
-			return false;
-		}
-	}
+        bool IGhost.IsReturnType()
+        {
+            return false;
+        }
+    }
 }

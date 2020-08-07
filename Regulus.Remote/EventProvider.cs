@@ -1,6 +1,5 @@
-using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace Regulus.Remote
@@ -13,20 +12,20 @@ namespace Regulus.Remote
         {
             _ProxyCreators = closures.ToArray();
         }
-        
+
 
         private IEventProxyCreator _Find(EventInfo info)
         {
             return (from closure in _ProxyCreators
                     where closure.GetType() == info.DeclaringType && closure.GetName() == info.Name
-                    select closure).FirstOrDefault();            
+                    select closure).FirstOrDefault();
         }
 
 
         public IEventProxyCreator Find(EventInfo info)
-        {            
-            return  _Find(info);
-            
+        {
+            return _Find(info);
+
         }
     }
 }

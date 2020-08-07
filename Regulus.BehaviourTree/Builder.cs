@@ -1,9 +1,7 @@
-﻿using System;
+﻿using Regulus.BehaviourTree.Yield;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using Regulus.BehaviourTree.Yield;
 
 namespace Regulus.BehaviourTree
 {
@@ -17,7 +15,7 @@ namespace Regulus.BehaviourTree
             _Stack = new Stack<IParent>();
         }
 
-        
+
 
         public Builder Sub(ITicker node)
         {
@@ -37,7 +35,7 @@ namespace Regulus.BehaviourTree
 
         public Builder Not()
         {
-            var node = new InvertNode();
+            InvertNode node = new InvertNode();
 
             if (_Stack.Count > 0)
             {
@@ -50,7 +48,7 @@ namespace Regulus.BehaviourTree
 
         public Builder Success()
         {
-            var node = new SuccessNode();
+            SuccessNode node = new SuccessNode();
 
             if (_Stack.Count > 0)
             {
@@ -63,7 +61,7 @@ namespace Regulus.BehaviourTree
 
         public Builder Sequence()
         {
-            var sequenceNode = new SequenceNode();
+            SequenceNode sequenceNode = new SequenceNode();
 
             if (_Stack.Count > 0)
             {
@@ -76,7 +74,7 @@ namespace Regulus.BehaviourTree
 
         public Builder Selector()
         {
-            var selectorNode = new SelectorNode();
+            SelectorNode selectorNode = new SelectorNode();
 
             if (_Stack.Count > 0)
             {
@@ -87,9 +85,9 @@ namespace Regulus.BehaviourTree
             return this;
         }
 
-        public Builder Parallel( bool same_is_success)
+        public Builder Parallel(bool same_is_success)
         {
-            var parallelNode = new ParallelNode(same_is_success);
+            ParallelNode parallelNode = new ParallelNode(same_is_success);
 
             if (_Stack.Count > 0)
             {
@@ -124,23 +122,23 @@ namespace Regulus.BehaviourTree
         public Builder Wait(float seconds)
         {
             return Action(
-                () =>new ActionHelper.Wait(seconds)
-                ,(w) => w.Tick
-                ,(w) => w.Start
-                ,(w) => w.End);
+                () => new ActionHelper.Wait(seconds)
+                , (w) => w.Tick
+                , (w) => w.Start
+                , (w) => w.End);
         }
 
 
 
         public Builder Action(Func<float, TICKRESULT> func)
-        {            
+        {
             return _Add(new ActionHelper.ProxyTicker(func));
         }
 
-        
+
         public Builder Action(Expression<Func<IEnumerable<TICKRESULT>>> provider)
         {
-            return _Add(new ActionHelper.Coroutine(provider));            
+            return _Add(new ActionHelper.Coroutine(provider));
         }
 
 
@@ -154,7 +152,7 @@ namespace Regulus.BehaviourTree
             , Expression<Func<T, Action>> start
             , Expression<Func<T, Action>> end)
         {
-            var a = new ActionNode<T>(instnace, tick, start, end);
+            ActionNode<T> a = new ActionNode<T>(instnace, tick, start, end);
             return _Add(a);
         }
 
@@ -169,5 +167,5 @@ namespace Regulus.BehaviourTree
 
         }
     }
-    
+
 }

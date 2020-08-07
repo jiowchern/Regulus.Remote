@@ -1,6 +1,6 @@
+using Regulus.Network.Package;
 using System.Net;
 using System.Net.Sockets;
-using Regulus.Network.Package;
 
 namespace Regulus.Network.Rudp
 {
@@ -9,17 +9,17 @@ namespace Regulus.Network.Rudp
         private readonly System.Net.Sockets.Socket m_Socket;
         private readonly SocketSender m_Sender;
         private readonly SocketRecevier m_Receiver;
-        
+
 
         public UdpSocket()
         {
-            var socket = new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            
+            System.Net.Sockets.Socket socket = new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+
             m_Socket = socket;
-            
+
             m_Sender = new SocketSender(m_Socket);
-            m_Receiver = new SocketRecevier(m_Socket , SocketMessageFactory.Instance );
-            
+            m_Receiver = new SocketRecevier(m_Socket, SocketMessageFactory.Instance);
+
         }
         SocketMessage[] ISocketRecevieable.Received()
         {
@@ -29,10 +29,10 @@ namespace Regulus.Network.Rudp
         void ISocketSendable.Transport(SocketMessage Message)
         {
 
-            m_Sender.Transport(Message);            
+            m_Sender.Transport(Message);
         }
 
-        
+
 
 
         void ISocket.Close()

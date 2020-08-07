@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Regulus.Lockstep
@@ -20,13 +18,13 @@ namespace Regulus.Lockstep
         }
         public IPlayer<TCommand> Regist(ICommandProvidable<TCommand> provider)
         {
-            var player = new Player<TCommand>(_Players.Count + 1 ,  provider , _History.GetEnumerable());
+            Player<TCommand> player = new Player<TCommand>(_Players.Count + 1, provider, _History.GetEnumerable());
             _Players.Add(player);
             return player;
         }
 
         public class Record
-        {   
+        {
             public int Id;
             public TCommand Command;
 
@@ -39,18 +37,18 @@ namespace Regulus.Lockstep
             if (_Ticks >= _Interval)
             {
                 _Ticks -= _Interval;
-                var step = _History.Write(from p in _Players select new Record() { Id = p.Id, Command = p.Providable.Current });
-                foreach (var player in _Players)
+                Step<Record> step = _History.Write(from p in _Players select new Record() { Id = p.Id, Command = p.Providable.Current });
+                foreach (Player<TCommand> player in _Players)
                 {
                     player.Push(step);
                 }
             }
-            
+
         }
 
         public bool Unregist(IPlayer<TCommand> player)
         {
-            return _Players.RemoveAll( p => p.Id ==  player.Id) > 0;
+            return _Players.RemoveAll(p => p.Id == player.Id) > 0;
         }
     }
 }

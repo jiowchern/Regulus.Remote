@@ -1,13 +1,10 @@
-﻿using System;
-using System.Reflection;
-
-namespace Regulus.Remote
+﻿namespace Regulus.Remote
 {
     public class PropertyUpdater
     {
         private readonly IDirtyable _Dirtyable;
         public readonly int PropertyId;
-        
+
 
 
         bool _Dirty;
@@ -18,7 +15,7 @@ namespace Regulus.Remote
         public PropertyUpdater(IDirtyable dirtyable, int id)
         {
             this._Dirtyable = dirtyable;
-            this.PropertyId = id;            
+            this.PropertyId = id;
 
             _Dirtyable.DirtyEvent += _SetDirty;
         }
@@ -34,7 +31,7 @@ namespace Regulus.Remote
         {
             if (_Close)
                 return false;
-            if(_Dirty)
+            if (_Dirty)
             {
                 _Dirty = false;
                 _Close = true;

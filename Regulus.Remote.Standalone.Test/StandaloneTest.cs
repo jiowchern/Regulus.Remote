@@ -6,7 +6,7 @@ namespace Regulus.Remote.Standalone.Test
     {
         [Test]
         [Timeout(10000)]
-        public void StandaloneNewTest()
+        public void Test()
         {
             IBinderProvider entry = NSubstitute.Substitute.For<IBinderProvider>();
             IGpiA gpia = new SoulGpiA();
@@ -15,16 +15,16 @@ namespace Regulus.Remote.Standalone.Test
             Serialization.ISerializer serializer = new Regulus.Serialization.Dynamic.Serializer();
             IProtocol protocol = ProtocolHelper.CreateProtocol(serializer);
 
-            var service = new Regulus.Remote.Standalone.Service(entry , protocol) ;
+            Service service = new Regulus.Remote.Standalone.Service(entry, protocol);
             INotifierQueryable queryable = service.CreateNotifierQueryer();
             IGpiA retGpiA = null;
             queryable.QueryNotifier<IGpiA>().Supply += gpi => retGpiA = gpi;
-            while(retGpiA == null)
+            while (retGpiA == null)
                 service.Update();
             service.DestroyNotifierQueryer(queryable);
             System.IDisposable disposable = service;
             disposable.Dispose();
-            Assert.AreNotEqual(null , retGpiA);
+            Assert.AreNotEqual(null, retGpiA);
         }
     }
 }

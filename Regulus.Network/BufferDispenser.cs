@@ -1,13 +1,13 @@
+using Regulus.Network.Package;
 using System;
 using System.Net;
-using Regulus.Network.Package;
 
 namespace Regulus.Network
 {
     public class BufferDispenser
     {
-        
-        
+
+
         private readonly int _PayloadSize;
 
         private ushort _Serial;
@@ -22,28 +22,28 @@ namespace Regulus.Network
             _PayloadSize = SocketMessage.GetPayloadSize();
         }
 
-        public int Serial {get { return _Serial; } } 
+        public int Serial { get { return _Serial; } }
 
 
-        public SocketMessage[] PackingTransmission(byte[] bufgfer,ushort ack ,uint ack_fields )
+        public SocketMessage[] PackingTransmission(byte[] bufgfer, ushort ack, uint ack_fields)
         {
-            
-            var count = (bufgfer.Length + _PayloadSize - 1) / _PayloadSize   ;
-            var packages = new SocketMessage[count];
-            
 
-            var buffserSize = bufgfer.Length;
-            for (var i = count - 1; i >= 0; i--)
+            int count = (bufgfer.Length + _PayloadSize - 1) / _PayloadSize;
+            SocketMessage[] packages = new SocketMessage[count];
+
+
+            int buffserSize = bufgfer.Length;
+            for (int i = count - 1; i >= 0; i--)
             {
-                var package = _Spawner.Spawn();
+                SocketMessage package = _Spawner.Spawn();
                 package.SetEndPoint(_EndPoint);
                 package.SetSeq((ushort)(_Serial + i));
                 package.SetOperation((byte)PeerOperation.Transmission);
                 package.SetAck(ack);
                 package.SetAckFields(ack_fields);
-                var begin = _PayloadSize * i;
-                var writeSize = buffserSize - begin;
-                package.WritePayload(bufgfer,begin, writeSize);
+                int begin = _PayloadSize * i;
+                int writeSize = buffserSize - begin;
+                package.WritePayload(bufgfer, begin, writeSize);
                 buffserSize -= writeSize;
                 packages[i] = package;
             }
@@ -53,8 +53,8 @@ namespace Regulus.Network
 
         public SocketMessage PackingAck(ushort ack, uint ack_fields)
         {
-            var package = _Spawner.Spawn();
-            package.SetEndPoint(_EndPoint);            
+            SocketMessage package = _Spawner.Spawn();
+            package.SetEndPoint(_EndPoint);
             package.SetOperation((byte)PeerOperation.Acknowledge);
             package.SetAck(ack);
             package.SetAckFields(ack_fields);
@@ -63,10 +63,10 @@ namespace Regulus.Network
         }
         public SocketMessage PackingOperation(PeerOperation operation, ushort ack, uint ack_fields)
         {
-            if(operation == PeerOperation.Acknowledge)
+            if (operation == PeerOperation.Acknowledge)
                 throw new Exception("Ack type use PackingAck.");
 
-            var package = _Spawner.Spawn();
+            SocketMessage package = _Spawner.Spawn();
             package.SetEndPoint(_EndPoint);
             package.SetSeq(_Serial++);
             package.SetOperation((byte)operation);

@@ -1,40 +1,40 @@
 ﻿namespace Regulus.Remote
 {
-	public enum ClientToServerOpCode : byte
-	{
-		CallMethod = 1, 
+    public enum ClientToServerOpCode : byte
+    {
+        CallMethod = 1,
 
-		Ping, 
+        Ping,
 
-		Release ,
+        Release,
 
-		UpdateProperty,
-		AddEvent,
-		RemoveEvent,
-		AddNotifierSupply,
-		RemoveNotifierSupply,
-		AddNotifierUnsupply,
-		RemoveNotifierUnsupply,
-	};
+        UpdateProperty,
+        AddEvent,
+        RemoveEvent,
+        AddNotifierSupply,
+        RemoveNotifierSupply,
+        AddNotifierUnsupply,
+        RemoveNotifierUnsupply,
+    };
 
-	public enum ServerToClientOpCode : byte
-	{
-		InvokeEvent = 1, 
+    public enum ServerToClientOpCode : byte
+    {
+        InvokeEvent = 1,
 
-		LoadSoul, 
+        LoadSoul,
 
-		UnloadSoul, 
+        UnloadSoul,
 
-		ReturnValue, 
-		
+        ReturnValue,
 
-		LoadSoulCompile, 
 
-		Ping,
+        LoadSoulCompile,
 
-	    ErrorMethod , 
+        Ping,
+
+        ErrorMethod,
 
         ProtocolSubmit,
-		SetProperty,
-	}
+        SetProperty,
+    }
 }

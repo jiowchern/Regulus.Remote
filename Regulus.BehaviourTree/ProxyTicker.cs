@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 
 namespace Regulus.BehaviourTree.ActionHelper
 {
     public class ProxyTicker : ITicker
     {
-        
+
         private readonly Func<float, TICKRESULT> _Func;
         private readonly Guid _Id;
         private readonly string _Tag;
@@ -28,12 +27,12 @@ namespace Regulus.BehaviourTree.ActionHelper
 
         void ITicker.GetPath(ref List<Guid> nodes)
         {
-            nodes.Add(_Id);            
+            nodes.Add(_Id);
         }
 
         void ITicker.Reset()
         {
-            
+
         }
 
         TICKRESULT ITicker.Tick(float delta)

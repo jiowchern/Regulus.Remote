@@ -4,13 +4,13 @@ namespace Regulus.Remote.Standalone
 {
     internal class OnlineStatus : IStatus
     {
-        private readonly IProvider _Provider;        
+        private readonly IProvider _Provider;
         public readonly OnlineGhost Ghost;
         public OnlineStatus(IProvider provider, OnlineGhost ghost)
         {
             this._Provider = provider;
-            
-            Ghost = ghost;            
+
+            Ghost = ghost;
         }
 
         void IStatus.Enter()
@@ -26,7 +26,7 @@ namespace Regulus.Remote.Standalone
 
         void IStatus.Update()
         {
-         
+
         }
     }
 }

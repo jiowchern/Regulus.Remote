@@ -1,35 +1,34 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace Regulus.Remote
 {
-    public delegate void CallMethodCallback(MethodInfo info , object[] args ,IValue return_value);
-	public delegate void EventNotifyCallback(EventInfo info , long handler_id);
+    public delegate void CallMethodCallback(MethodInfo info, object[] args, IValue return_value);
+    public delegate void EventNotifyCallback(EventInfo info, long handler_id);
 
-	public delegate void PassageCallback(object gpi);
-	public delegate void PropertyNotifierCallback(PropertyInfo info,PassageCallback passage);
+    public delegate void PassageCallback(object gpi);
+    public delegate void PropertyNotifierCallback(PropertyInfo info, PassageCallback passage);
 
-	public interface IGhost
-	{
+    public interface IGhost
+    {
 
 
-		long GetID();
+        long GetID();
 
-	    object GetInstance();
+        object GetInstance();
 
-		bool IsReturnType();
+        bool IsReturnType();
 
         event CallMethodCallback CallMethodEvent;
-		event EventNotifyCallback AddEventEvent;
-		event EventNotifyCallback RemoveEventEvent;
-		event PropertyNotifierCallback AddSupplyNoitfierEvent;
+        event EventNotifyCallback AddEventEvent;
+        event EventNotifyCallback RemoveEventEvent;
+        event PropertyNotifierCallback AddSupplyNoitfierEvent;
 
-		event PropertyNotifierCallback RemoveSupplyNoitfierEvent;
-		event PropertyNotifierCallback AddUnsupplyNoitfierEvent;
-		event PropertyNotifierCallback RemoveUnsupplyNoitfierEvent;
+        event PropertyNotifierCallback RemoveSupplyNoitfierEvent;
+        event PropertyNotifierCallback AddUnsupplyNoitfierEvent;
+        event PropertyNotifierCallback RemoveUnsupplyNoitfierEvent;
 
 
-	}
+    }
 
-    
+
 }

@@ -1,6 +1,6 @@
+using Regulus.Network.Package;
 using System.Collections.Generic;
 using System.Linq;
-using Regulus.Network.Package;
 
 namespace Regulus.Network
 {
@@ -14,15 +14,15 @@ namespace Regulus.Network
             public readonly SocketMessage Message;
             public readonly long EndTicks;
             public readonly long StartTicks;
-            public int Hungry { get;private set; }
-            public Item(SocketMessage message,long start_ticks, long end_ticks)
+            public int Hungry { get; private set; }
+            public Item(SocketMessage message, long start_ticks, long end_ticks)
             {
                 StartTicks = start_ticks;
                 Message = message;
                 EndTicks = end_ticks;
             }
 
-            
+
 
             public bool IsTimeout(long Ticks)
             {
@@ -37,7 +37,7 @@ namespace Regulus.Network
         private readonly Dictionary<ushort, Item> m_Items;
 
         private readonly RetransmissionTimeOut m_Rto;
-        
+
 
         public CongestionRecorder(int HungryLimit)
         {
@@ -46,24 +46,25 @@ namespace Regulus.Network
             m_Rto = new RetransmissionTimeOut();
         }
 
-        public int Count { get{ return m_Items.Count; } }
-        public long Srtt {
+        public int Count { get { return m_Items.Count; } }
+        public long Srtt
+        {
             get { return m_Rto.Rtt; }
-        } 
+        }
         public long Rto { get { return m_Rto.Value; } }
 
         public long LastRtt { get; private set; }
         public long LastRto { get; private set; }
 
 
-        public void PushWait(SocketMessage Message, long TimeTicks )
+        public void PushWait(SocketMessage Message, long TimeTicks)
         {
-            var item = new Item(Message , TimeTicks , TimeTicks + m_Rto.Value);
+            Item item = new Item(Message, TimeTicks, TimeTicks + m_Rto.Value);
             m_Items.Add(item.Message.GetSeq(), item);
         }
-        
 
-        public bool Reply(ushort Package,long TimeTicks,long TimeDelta)
+
+        public bool Reply(ushort Package, long TimeTicks, long TimeDelta)
         {
             Item item;
             if (m_Items.TryGetValue(Package, out item))
@@ -78,7 +79,7 @@ namespace Regulus.Network
         private void _Reply(ushort Package, long TimeTicks, long TimeDelta, Item Item)
         {
             m_Capacity++;
-            var rtt = TimeTicks - Item.StartTicks;
+            long rtt = TimeTicks - Item.StartTicks;
             m_Rto.Update(rtt, TimeDelta);
             LastRtt = rtt;
             m_Items.Remove(Package);
@@ -87,33 +88,33 @@ namespace Regulus.Network
 
         public void ReplyBefore(ushort PackageId, long TimeTicks, long TimeDelta)
         {
-            var pkg = m_Items.Values.FirstOrDefault(Item => Item.Message.GetSeq() == PackageId);
+            Item pkg = m_Items.Values.FirstOrDefault(Item => Item.Message.GetSeq() == PackageId);
             if (pkg != null)
-                foreach (var item in m_Items.Values.Where(Item => Item.EndTicks <= pkg.EndTicks).Select(Item => Item).ToArray())
+                foreach (Item item in m_Items.Values.Where(Item => Item.EndTicks <= pkg.EndTicks).Select(Item => Item).ToArray())
                     _Reply(item.Message.GetSeq(), TimeTicks, TimeDelta, item);
         }
 
-        public List<SocketMessage> PopLost(long Ticks,long Delta)
+        public List<SocketMessage> PopLost(long Ticks, long Delta)
         {
-            var count = m_Capacity;
-            var packages = new List<SocketMessage>();
-            foreach (var item in m_Items.Values)
+            int count = m_Capacity;
+            List<SocketMessage> packages = new List<SocketMessage>();
+            foreach (Item item in m_Items.Values)
             {
-                
-                if (item.IsTimeout(Ticks)  )
+
+                if (item.IsTimeout(Ticks))
                 {
-                    var rto = Ticks - item.StartTicks;                    
+                    long rto = Ticks - item.StartTicks;
                     m_Rto.Update(rto, Delta);
                     LastRtt = rto;
                     LastRto = rto;
                     packages.Add(item.Message);
 
-                    
+
                 }
                 else if (item.Hungry > m_HungryLimit)
                 {
-                    var rto = Ticks - item.StartTicks;
-                    
+                    long rto = Ticks - item.StartTicks;
+
                     m_Rto.Update(rto, Delta);
                     LastRtt = rto;
                     LastRto = rto;
@@ -124,13 +125,13 @@ namespace Regulus.Network
             }
 
 
-            if(packages.Count > 0 )
+            if (packages.Count > 0)
                 m_Capacity /= 2;
 
-            foreach (var package in packages)
+            foreach (SocketMessage package in packages)
             {
                 m_Items.Remove(package.GetSeq());
-                PushWait(package , Ticks);                
+                PushWait(package, Ticks);
             }
 
             return packages;
@@ -138,7 +139,7 @@ namespace Regulus.Network
 
         public void Padding()
         {
-            foreach (var itemsValue in m_Items.Values)
+            foreach (Item itemsValue in m_Items.Values)
                 itemsValue.Padding();
         }
 
@@ -149,10 +150,10 @@ namespace Regulus.Network
             {
                 if ((mark & Fields) != 0)
                 {
-                    var id = (ushort) (Ack + i + 1);
+                    ushort id = (ushort)(Ack + i + 1);
                     Item item;
                     if (m_Items.TryGetValue(id, out item))
-                        _Reply( id, TimeTicks, TimeDelta , item);
+                        _Reply(id, TimeTicks, TimeDelta, item);
                 }
                 mark <<= 1;
             }

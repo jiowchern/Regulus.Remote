@@ -1,31 +1,30 @@
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using Regulus.Network.Package;
 using Regulus.Utility;
+using System;
+using System.Collections.Generic;
 
 namespace Regulus.Network
 {
     internal class PeerTransmission : IStatus<Timestamp>
     {
-     
-        private readonly Line _Line;        
+
+        private readonly Line _Line;
         private readonly List<byte> _SendBytes;
         private readonly SegmentStream _Stream;
-        public event Action DisconnectEvent ;
+        public event Action DisconnectEvent;
         private long _Timeout;
-        public PeerTransmission(Line line , SegmentStream stream)
+        public PeerTransmission(Line line, SegmentStream stream)
         {
-            
+
             _Line = line;
-            
+
             _SendBytes = new List<byte>();
             _Stream = stream;
         }
 
         void IStatus<Timestamp>.Enter()
         {
-            
+
         }
 
         void IStatus<Timestamp>.Leave()
@@ -38,13 +37,13 @@ namespace Regulus.Network
 
 
 
-            SocketMessage message ;
+            SocketMessage message;
             while ((message = _Line.Read()) != null)
             {
                 _Timeout = 0;
-                var package = message;
+                SocketMessage package = message;
 
-                var operation = (PeerOperation)package.GetOperation();
+                PeerOperation operation = (PeerOperation)package.GetOperation();
                 if (operation == PeerOperation.Transmission)
                     _Stream.Add(package);
                 else if (operation == PeerOperation.RequestDisconnect)

@@ -1,37 +1,31 @@
-﻿using System;
+﻿using Regulus.Extension;
+using Regulus.Utility;
 using System.IO;
 using System.Xml.Serialization;
 
-
-
-
-using Regulus.Utility;
-using Regulus.Extension;
-using Regulus.Utility;
-
 namespace RegulusLibraryTest
 {
-    
+
     public class TypeTest
     {
-        
+
 
         [NUnit.Framework.Test()]
         public void TestRectLeftToCenter()
         {
-            Rect rect = new Rect(0,1,1,1);
-            var result = rect.LeftToCenter();
+            Rect rect = new Rect(0, 1, 1, 1);
+            Rect result = rect.LeftToCenter();
             NUnit.Framework.Assert.AreEqual(-0.5f, result.X);
             NUnit.Framework.Assert.AreEqual(0.5f, result.Y);
 
             NUnit.Framework.Assert.AreEqual(1, result.Width);
             NUnit.Framework.Assert.AreEqual(1, result.Height);
         }
-         [NUnit.Framework.Test()]
+        [NUnit.Framework.Test()]
         public void TestRectCenterToLeft()
         {
             Rect rect = new Rect(0, 1, 1, 1);
-            var result = rect.CenterToLeft();
+            Rect result = rect.CenterToLeft();
             NUnit.Framework.Assert.AreEqual(0.5f, result.X);
             NUnit.Framework.Assert.AreEqual(1.5f, result.Y);
 
@@ -43,13 +37,13 @@ namespace RegulusLibraryTest
         public void TestVector2sToRect()
         {
             Vector2[] vector2s = {
-                new Vector2(0,0), 
-                new Vector2(2,0), 
-                new Vector2(2,1), 
-                new Vector2(0,1),                 
+                new Vector2(0,0),
+                new Vector2(2,0),
+                new Vector2(2,1),
+                new Vector2(0,1),
             };
 
-            var rect = vector2s.ToRect();
+            Rect rect = vector2s.ToRect();
 
 
             NUnit.Framework.Assert.AreEqual(0, rect.X);
@@ -63,15 +57,15 @@ namespace RegulusLibraryTest
         public void PolygonClone()
         {
             Polygon a = new Polygon();
-            a.SetPoints( new[]{
-                new Vector2(0, 0), 
-                new Vector2(2, 0), 
-                new Vector2(2, 1), 
-                new Vector2(0, 1),                 
+            a.SetPoints(new[]{
+                new Vector2(0, 0),
+                new Vector2(2, 0),
+                new Vector2(2, 1),
+                new Vector2(0, 1),
             });
 
-            var b = a.Clone();
-            NUnit.Framework.Assert.AreEqual( 0 , b.Points[0].X );
+            Polygon b = a.Clone();
+            NUnit.Framework.Assert.AreEqual(0, b.Points[0].X);
             NUnit.Framework.Assert.AreEqual(2, b.Points[1].X);
             NUnit.Framework.Assert.AreEqual(1, b.Points[3].Y);
         }
@@ -90,27 +84,27 @@ namespace RegulusLibraryTest
                 new Vector2(1, 0),
                 new Vector2(1, 1),
                 new Vector2(0, 1)
-            });            
+            });
 
-            b.SetPoints(a.Points);            
-            b.Offset(0.9f,0);
-            
+            b.SetPoints(a.Points);
+            b.Offset(0.9f, 0);
+
 
             c.SetPoints(b.Points);
-            c.Offset(0.9f, 0);            
+            c.Offset(0.9f, 0);
 
 
-            var resultA = Polygon.Collision(a, b, new Vector2());
-            var resultB = Polygon.Collision(b, c, new Vector2());
-            var resultC = Polygon.Collision(a, c, new Vector2());
+            Polygon.CollisionResult resultA = Polygon.Collision(a, b, new Vector2());
+            Polygon.CollisionResult resultB = Polygon.Collision(b, c, new Vector2());
+            Polygon.CollisionResult resultC = Polygon.Collision(a, c, new Vector2());
 
 
-            NUnit.Framework.Assert.AreEqual(true , resultA.Intersect );
+            NUnit.Framework.Assert.AreEqual(true, resultA.Intersect);
             NUnit.Framework.Assert.AreEqual(true, resultB.Intersect);
             NUnit.Framework.Assert.AreEqual(false, resultC.Intersect);
 
         }
-              
+
         enum PROTOBUFENUM
         {
             AAA1,
@@ -127,74 +121,74 @@ namespace RegulusLibraryTest
         [NUnit.Framework.Test()]
         public void TestEnumCount()
         {
-            int count=0;
-            
-            foreach (var e in EnumHelper.GetEnums<PROTOBUFENUM>())
+            int count = 0;
+
+            foreach (PROTOBUFENUM e in EnumHelper.GetEnums<PROTOBUFENUM>())
             {
                 count++;
             }
 
-            NUnit.Framework.Assert.AreEqual(9,count);
+            NUnit.Framework.Assert.AreEqual(9, count);
         }
 
         [NUnit.Framework.Test()]
         public void TestPolygonsXMLSerializ()
         {
-            var polygon1 = new Polygon();
+            Polygon polygon1 = new Polygon();
             polygon1.SetPoints(new[]{
                     new Vector2(0,0),
                     new Vector2(1,0),
                     new Vector2(1,1),
                     new Vector2(0,1)});
-            var polygon2 = new Polygon();
+            Polygon polygon2 = new Polygon();
             polygon2.SetPoints(new[]{
                     new Vector2(2,0),
                     new Vector2(1,0),
                     new Vector2(1,1),
                     new Vector2(0,1)});
-            var polygons1 = new Polygon[]
+            Polygon[] polygons1 = new Polygon[]
             {
                 polygon1,
                 polygon2
-            };            
-            var xml = "";
-            using (var stream = new StringWriter())
+            };
+            string xml = "";
+            using (StringWriter stream = new StringWriter())
             {
-                var x = new XmlSerializer(typeof(Polygon[]));
+                XmlSerializer x = new XmlSerializer(typeof(Polygon[]));
                 x.Serialize(stream, polygons1);
                 xml = stream.ToString();
             }
             Polygon[] polygons2;
-            using (var stream = new StringReader(xml))
+            using (StringReader stream = new StringReader(xml))
             {
-                var ser = new XmlSerializer(typeof(Polygon[]));
+                XmlSerializer ser = new XmlSerializer(typeof(Polygon[]));
                 polygons2 = (Polygon[])ser.Deserialize(stream);
             }
 
-            NUnit.Framework.Assert.IsTrue( Regulus.Utility.ValueHelper.DeepEqual(polygons2 , polygons1));
+            NUnit.Framework.Assert.IsTrue(Regulus.Utility.ValueHelper.DeepEqual(polygons2, polygons1));
         }
-       
+
         [NUnit.Framework.Test()]
         public void TestPolygonXMLSerializ()
         {
-            var polygon1 = new Polygon();
+            Polygon polygon1 = new Polygon();
             polygon1.SetPoints(new[]{
                     new Vector2(0,0),
                     new Vector2(1,0),
                     new Vector2(1,1),
                     new Vector2(0,1)});
-            var xml = "";
-            using (var stream = new StringWriter())
+            string xml = "";
+            using (StringWriter stream = new StringWriter())
             {
-                var x = new XmlSerializer(typeof(Polygon));
+                XmlSerializer x = new XmlSerializer(typeof(Polygon));
                 x.Serialize(stream, polygon1);
-                xml= stream.ToString();
+                xml = stream.ToString();
             }
             Polygon polygon2;
-            using (var stream = new StringReader(xml))
+            using (StringReader stream = new StringReader(xml))
             {
-                var ser = new XmlSerializer(typeof(Polygon));
-                polygon2=(Polygon)ser.Deserialize(stream);
+                XmlSerializer ser = new XmlSerializer(typeof(Polygon));
+                polygon2 = (Polygon)ser.Deserialize(stream);
             }
 
 

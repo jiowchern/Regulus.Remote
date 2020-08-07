@@ -1,41 +1,39 @@
-﻿using System;
+﻿using Regulus.Utility;
+using System;
 using System.Linq.Expressions;
 using System.Reflection;
-
-using Regulus.Remote.Extension;
-using Regulus.Utility;
 
 namespace Regulus.Remote
 {
     internal class CommandRegisterReturn<T, TR> : CommandRegister
-	{
-		private readonly Expression<Func<T, TR>> _Expression;
+    {
+        private readonly Expression<Func<T, TR>> _Expression;
 
-		private readonly Action<TR> _ReturnCallback;
+        private readonly Action<TR> _ReturnCallback;
 
-		public CommandRegisterReturn(
-			
-			Command command, 
-			Expression<Func<T, TR>> exp, 
-			Action<TR> return_callback)
-			: base(command , exp)
-		{
-			_ReturnCallback = return_callback;
-			_Expression = exp;
-		}
+        public CommandRegisterReturn(
+
+            Command command,
+            Expression<Func<T, TR>> exp,
+            Action<TR> return_callback)
+            : base(command, exp)
+        {
+            _ReturnCallback = return_callback;
+            _Expression = exp;
+        }
         protected override void _RegisterAction(Command command, string command_name, object instance)
         {
             Func<TR> function = _Build(_Expression, instance);
-            command.Register(command_name, function , _ReturnCallback);
+            command.Register(command_name, function, _ReturnCallback);
         }
 
         private Func<TR> _Build(Expression<Func<T, TR>> expression, object instance)
         {
             if (expression.Body.NodeType == ExpressionType.Call)
             {
-                var methodCall = expression.Body as MethodCallExpression;
-                var method = methodCall.Method;
-                var functiohn = Delegate.CreateDelegate(typeof(Func<TR>), instance, method);
+                MethodCallExpression methodCall = expression.Body as MethodCallExpression;
+                MethodInfo method = methodCall.Method;
+                Delegate functiohn = Delegate.CreateDelegate(typeof(Func<TR>), instance, method);
                 return (Func<TR>)functiohn;
             }
             if (expression.Body.NodeType == ExpressionType.MemberAccess)
@@ -43,7 +41,7 @@ namespace Regulus.Remote
                 MemberExpression outerMember = (MemberExpression)expression.Body;
                 PropertyInfo outerProp = (PropertyInfo)outerMember.Member;
 
-                return new Func<TR>( ()=> (TR)outerProp.GetValue(instance , new object[0]) ); 
+                return new Func<TR>(() => (TR)outerProp.GetValue(instance, new object[0]));
             }
             throw new NotSupportedException(expression.Body.NodeType.ToString());
         }
@@ -76,9 +74,9 @@ namespace Regulus.Remote
         {
             if (expression.Body.NodeType == ExpressionType.Call)
             {
-                var methodCall = expression.Body as MethodCallExpression;
-                var method = methodCall.Method;
-                var functiohn = Delegate.CreateDelegate(typeof(Func<T1, TR>), instance, method);
+                MethodCallExpression methodCall = expression.Body as MethodCallExpression;
+                MethodInfo method = methodCall.Method;
+                Delegate functiohn = Delegate.CreateDelegate(typeof(Func<T1, TR>), instance, method);
                 return (Func<T1, TR>)functiohn;
             }
             throw new NotSupportedException(expression.Body.NodeType.ToString());
@@ -113,9 +111,9 @@ namespace Regulus.Remote
         {
             if (expression.Body.NodeType == ExpressionType.Call)
             {
-                var methodCall = expression.Body as MethodCallExpression;
-                var method = methodCall.Method;
-                var functiohn = Delegate.CreateDelegate(typeof(Func<T1, T2, TR>), instance, method);
+                MethodCallExpression methodCall = expression.Body as MethodCallExpression;
+                MethodInfo method = methodCall.Method;
+                Delegate functiohn = Delegate.CreateDelegate(typeof(Func<T1, T2, TR>), instance, method);
                 return (Func<T1, T2, TR>)functiohn;
             }
             throw new NotSupportedException(expression.Body.NodeType.ToString());
@@ -149,9 +147,9 @@ namespace Regulus.Remote
         {
             if (expression.Body.NodeType == ExpressionType.Call)
             {
-                var methodCall = expression.Body as MethodCallExpression;
-                var method = methodCall.Method;
-                var functiohn = Delegate.CreateDelegate(typeof(Func<T1, T2, T3, TR>), instance, method);
+                MethodCallExpression methodCall = expression.Body as MethodCallExpression;
+                MethodInfo method = methodCall.Method;
+                Delegate functiohn = Delegate.CreateDelegate(typeof(Func<T1, T2, T3, TR>), instance, method);
                 return (Func<T1, T2, T3, TR>)functiohn;
             }
             throw new NotSupportedException(expression.Body.NodeType.ToString());
@@ -187,9 +185,9 @@ namespace Regulus.Remote
         {
             if (expression.Body.NodeType == ExpressionType.Call)
             {
-                var methodCall = expression.Body as MethodCallExpression;
-                var method = methodCall.Method;
-                var functiohn = Delegate.CreateDelegate(typeof(Func<T1, T2, T3, T4, TR>), instance, method);
+                MethodCallExpression methodCall = expression.Body as MethodCallExpression;
+                MethodInfo method = methodCall.Method;
+                Delegate functiohn = Delegate.CreateDelegate(typeof(Func<T1, T2, T3, T4, TR>), instance, method);
                 return (Func<T1, T2, T3, T4, TR>)functiohn;
             }
             throw new NotSupportedException(expression.Body.NodeType.ToString());
@@ -223,8 +221,8 @@ namespace Regulus.Remote
         {
             if (expression.Body.NodeType == ExpressionType.Call)
             {
-                var methodCall = expression.Body as MethodCallExpression;
-                var method = methodCall.Method;
+                MethodCallExpression methodCall = expression.Body as MethodCallExpression;
+                MethodInfo method = methodCall.Method;
 
                 return new Func<T1, T2, TR>((t1, t2) => { return (TR)method.Invoke(null, new object[] { instance, t1, t2 }); });
             }

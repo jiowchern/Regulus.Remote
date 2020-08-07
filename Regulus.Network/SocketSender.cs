@@ -1,42 +1,42 @@
+using Regulus.Network.Package;
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
-using Regulus.Network.Package;
 
 namespace Regulus.Network
 {
-    internal class SocketSender 
+    internal class SocketSender
     {
         private readonly System.Net.Sockets.Socket m_Socket;
-        
 
-        
+
+
         private readonly Queue<SocketMessage> _Messages;
         private volatile bool _Enable;
-        private ManualResetEvent _Mre;
-        
+        private readonly ManualResetEvent _Mre;
+
 
         public SocketSender(System.Net.Sockets.Socket Socket)
         {
-            
+
             _Messages = new Queue<SocketMessage>();
             m_Socket = Socket;
             _Enable = true;
             _Mre = new ManualResetEvent(false);
             System.Threading.ThreadPool.QueueUserWorkItem(_Run);
-            
-            
+
+
         }
 
         private void _Run(object state)
         {
             ManualResetEvent mre = new ManualResetEvent(true);
-            
+
             while (_Enable)
             {
                 _Mre.WaitOne();
-            
+
                 SocketMessage message;
                 lock (_Messages)
                 {
@@ -49,11 +49,11 @@ namespace Regulus.Network
                         _Mre.Reset();
                         continue;
                     }
-                    
+
                 }
 
-                var size = message.GetPackageSize();
-                
+                int size = message.GetPackageSize();
+
                 mre.Reset();
                 try
                 {
@@ -61,9 +61,9 @@ namespace Regulus.Network
                 }
                 catch (Exception e)
                 {
-                    
+
                 }
-                
+
                 mre.WaitOne();
                 /*var 
                   size = message.GetPackageSize();
@@ -74,12 +74,12 @@ namespace Regulus.Network
                 }*/
 
             }
-            
+
         }
 
         private void _Done(IAsyncResult ar)
         {
-            var mre = (ManualResetEvent) ar.AsyncState;
+            ManualResetEvent mre = (ManualResetEvent)ar.AsyncState;
             mre.Set();
         }
 
@@ -91,7 +91,7 @@ namespace Regulus.Network
                 _Messages.Enqueue(Message);
                 _Mre.Set();
             }
-            
+
         }
 
 

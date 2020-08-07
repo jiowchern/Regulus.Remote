@@ -2,6 +2,6 @@
 {
     public enum SOCKETMODE
     {
-        TCP = 1,WEB
+        TCP = 1, WEB
     }
 }

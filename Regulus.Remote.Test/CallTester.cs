@@ -1,6 +1,6 @@
 ﻿namespace RemotingTest
 {
-	internal class CallTester
-	{
-	}
+    internal class CallTester
+    {
+    }
 }

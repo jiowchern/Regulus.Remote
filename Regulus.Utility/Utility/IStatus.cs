@@ -1,22 +1,22 @@
 ﻿namespace Regulus.Utility
 {
-	public interface IStatus
-	{
-		void Enter();
+    public interface IStatus
+    {
+        void Enter();
 
-		void Leave();
+        void Leave();
 
-		void Update();
-	}
+        void Update();
+    }
 
-	
 
-	public interface IStatus<T> 
+
+    public interface IStatus<T>
     {
         void Enter();
 
         void Leave();
 
         void Update(T obj);
-	}
+    }
 }

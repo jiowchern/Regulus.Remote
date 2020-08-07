@@ -1,27 +1,25 @@
-﻿using System;
-
-namespace Regulus.Remote
+﻿namespace Regulus.Remote
 {
     internal class GhostEventMoveHandler
     {
-        private IGhost _Ghost;
-        
-        private IProtocol _Protocol;
-        private IGhostRequest _Requester;
+        private readonly IGhost _Ghost;
+
+        private readonly IProtocol _Protocol;
+        private readonly IGhostRequest _Requester;
 
         public GhostEventMoveHandler(IGhost ghost, IProtocol protocol, IGhostRequest requester)
         {
-            this._Ghost = ghost;            
+            this._Ghost = ghost;
             _Protocol = protocol;
             _Requester = requester;
         }
 
-        internal void Add(System.Reflection.EventInfo info,long handler)
+        internal void Add(System.Reflection.EventInfo info, long handler)
         {
-            var map = _Protocol.GetMemberMap();
-            var serialize = _Protocol.GetSerialize();
+            MemberMap map = _Protocol.GetMemberMap();
+            Serialization.ISerializer serialize = _Protocol.GetSerialize();
 
-            var package = new PackageAddEvent();
+            PackageAddEvent package = new PackageAddEvent();
             package.Entity = _Ghost.GetID();
             package.Event = map.GetEvent(info);
             package.Handler = handler;
@@ -31,10 +29,10 @@ namespace Regulus.Remote
 
         internal void Remove(System.Reflection.EventInfo info, long handler)
         {
-            var map = _Protocol.GetMemberMap();
-            var serialize = _Protocol.GetSerialize();
+            MemberMap map = _Protocol.GetMemberMap();
+            Serialization.ISerializer serialize = _Protocol.GetSerialize();
 
-            var package = new PackageRemoveEvent();
+            PackageRemoveEvent package = new PackageRemoveEvent();
             package.Entity = _Ghost.GetID();
             package.Event = map.GetEvent(info);
             package.Handler = handler;

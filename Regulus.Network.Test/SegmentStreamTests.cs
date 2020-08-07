@@ -1,35 +1,28 @@
-﻿
-using Regulus.Network.RUDP;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Regulus.Network.Package;
 
 namespace Regulus.Network.RUDP.Tests
 {
-    
+
     public class SegmentStreamTests
     {
         [Test]
         public void FullReadTest()
         {
-            
-            var pkg1 = new SocketMessage(Regulus.Network.Config.Default.PackageSize + 5);
-            var pkg2 = new SocketMessage(Regulus.Network.Config.Default.PackageSize + 4);
-            var pkg3 = new SocketMessage(Regulus.Network.Config.Default.PackageSize + 2);
 
-            pkg1.WritePayload(new byte[] { 0, 1, 2, 3, 4}, 0, 5);
-            pkg2.WritePayload(new byte[] { 5,6,7,8 }, 0, 4);
-            pkg3.WritePayload(new byte[] { 9,10 }, 0, 2);
+            SocketMessage pkg1 = new SocketMessage(Regulus.Network.Config.Default.PackageSize + 5);
+            SocketMessage pkg2 = new SocketMessage(Regulus.Network.Config.Default.PackageSize + 4);
+            SocketMessage pkg3 = new SocketMessage(Regulus.Network.Config.Default.PackageSize + 2);
 
-            var stream = new SegmentStream(new []{ pkg1  , pkg2 , pkg3});
-            var readBuffer = new byte[15] {255,255, 255, 255 , 255, 255 , 255, 255, 255, 255, 255, 255, 255, 255, 255 };
+            pkg1.WritePayload(new byte[] { 0, 1, 2, 3, 4 }, 0, 5);
+            pkg2.WritePayload(new byte[] { 5, 6, 7, 8 }, 0, 4);
+            pkg3.WritePayload(new byte[] { 9, 10 }, 0, 2);
+
+            SegmentStream stream = new SegmentStream(new[] { pkg1, pkg2, pkg3 });
+            byte[] readBuffer = new byte[15] { 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255 };
             stream.Read(readBuffer, 2, 13);
 
-            Assert.AreEqual(255,readBuffer[0] );
+            Assert.AreEqual(255, readBuffer[0]);
             Assert.AreEqual(255, readBuffer[1]);
             Assert.AreEqual(0, readBuffer[2]);
             Assert.AreEqual(1, readBuffer[3]);
@@ -43,23 +36,23 @@ namespace Regulus.Network.RUDP.Tests
             Assert.AreEqual(9, readBuffer[11]);
             Assert.AreEqual(10, readBuffer[12]);
             Assert.AreEqual(255, readBuffer[13]);
-            Assert.AreEqual(255, readBuffer[14]);            
+            Assert.AreEqual(255, readBuffer[14]);
 
         }
 
         [Test]
         public void BatchesReadTest()
         {
-            var pkg1 = new SocketMessage(Regulus.Network.Config.Default.PackageSize + 5);
-            var pkg2 = new SocketMessage(Regulus.Network.Config.Default.PackageSize + 4);
-            var pkg3 = new SocketMessage(Regulus.Network.Config.Default.PackageSize + 2);
+            SocketMessage pkg1 = new SocketMessage(Regulus.Network.Config.Default.PackageSize + 5);
+            SocketMessage pkg2 = new SocketMessage(Regulus.Network.Config.Default.PackageSize + 4);
+            SocketMessage pkg3 = new SocketMessage(Regulus.Network.Config.Default.PackageSize + 2);
 
             pkg1.WritePayload(new byte[] { 0, 1, 2, 3, 4 }, 0, 5);
             pkg2.WritePayload(new byte[] { 5, 6, 7, 8 }, 0, 4);
             pkg3.WritePayload(new byte[] { 9, 10 }, 0, 2);
 
-            var stream = new SegmentStream(new[] { pkg1, pkg2, pkg3 });
-            var readBuffer = new byte[8] { 255, 255, 255, 255, 255, 255, 255, 255 };
+            SegmentStream stream = new SegmentStream(new[] { pkg1, pkg2, pkg3 });
+            byte[] readBuffer = new byte[8] { 255, 255, 255, 255, 255, 255, 255, 255 };
             stream.Read(readBuffer, 2, 6);
 
             Assert.AreEqual(255, readBuffer[0]);
@@ -87,7 +80,7 @@ namespace Regulus.Network.RUDP.Tests
 
         }
 
-        
+
     }
 
 

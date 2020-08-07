@@ -1,6 +1,4 @@
-﻿using System;
-using System.CommandLine;
-using System.CommandLine.Invocation;
+﻿using System.CommandLine;
 using System.IO;
 
 namespace Regulus.Application.Client
@@ -14,14 +12,14 @@ namespace Regulus.Application.Client
         public event System.Action<FileInfo> RunTcpEvent;
         public event System.Action<FileInfo> RunWebEvent;
         public event System.Action<FileInfo, FileInfo> RunStandaloneEvent;
-        
-        
-        public CommandLineHandler(FileInfo protocol, FileInfo standalone,SOCKETMODE mode)
+
+
+        public CommandLineHandler(FileInfo protocol, FileInfo standalone, SOCKETMODE mode)
         {
             this._Protocol = protocol;
             _Standalone = standalone;
             this.mode = mode;
-            new Option("--protocol").AddAlias("-p");            
+            new Option("--protocol").AddAlias("-p");
             new Option("--entry").AddAlias("-e");
 
         }
@@ -33,7 +31,7 @@ namespace Regulus.Application.Client
                     RunTcpEvent(_Protocol);
                 else
                     RunWebEvent(_Protocol);
-            
+
             else
                 RunStandaloneEvent(_Protocol, _Standalone);
         }

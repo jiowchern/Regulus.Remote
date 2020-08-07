@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace Regulus.Remote
+﻿namespace Regulus.Remote
 {
-	public interface IResponseQueue
-	{
-		void Push(ServerToClientOpCode code, byte[] data);
-	}
+    public interface IResponseQueue
+    {
+        void Push(ServerToClientOpCode code, byte[] data);
+    }
 }

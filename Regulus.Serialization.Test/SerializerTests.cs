@@ -1,7 +1,6 @@
-﻿using System;
+﻿using NUnit.Framework;
+using System;
 using System.Linq;
-using System.CodeDom;
-using NUnit.Framework;
 
 
 
@@ -10,46 +9,46 @@ namespace Regulus.Serialization.Tests
     public delegate void TestDelegate();
     public class SerializerTests
     {
-        
+
 
         [NUnit.Framework.Test()]
         public void TypeIdentifier1Test()
         {
-            
 
-            var ti = new TypeIdentifier(typeof(TestDelegate) , null);
-            
+
+            TypeIdentifier ti = new TypeIdentifier(typeof(TestDelegate), null);
+
             Assert.AreEqual(0, ti.Describers.Count());
         }
         [NUnit.Framework.Test()]
         public void TypeIdentifier2Test()
         {
-            var type = Type.GetType("System.Void*");            
-            var ti = new TypeIdentifier(type, null);
+            Type type = Type.GetType("System.Void*");
+            TypeIdentifier ti = new TypeIdentifier(type, null);
 
             Assert.AreEqual(0, ti.Describers.Count());
 
         }
         [NUnit.Framework.Test()]
         public void NegativeIntNumberTest()
-        {            
-            var finder = new DescribersFinder(typeof(int) , typeof(uint));
-            var provider = new DescriberProvider(finder.KeyDescriber, finder);
-            var ser = new Serializer(provider);
-            var buf = ser.ObjectToBuffer((int) -1);
-            var val = (int) ser.BufferToObject(buf);
+        {
+            DescribersFinder finder = new DescribersFinder(typeof(int), typeof(uint));
+            DescriberProvider provider = new DescriberProvider(finder.KeyDescriber, finder);
+            Serializer ser = new Serializer(provider);
+            byte[] buf = ser.ObjectToBuffer((int)-1);
+            int val = (int)ser.BufferToObject(buf);
 
             Assert.AreEqual(-1, val);
         }
 
         [NUnit.Framework.Test()]
         public void NegativeLongNumberTest()
-        {            
-            var finder = new DescribersFinder(typeof(long) , typeof(uint));
-            var provider = new DescriberProvider(finder.KeyDescriber , finder);
-            var ser = new Serializer(provider);
-            var buf = ser.ObjectToBuffer((long) -1);
-            var val = (long) ser.BufferToObject(buf);
+        {
+            DescribersFinder finder = new DescribersFinder(typeof(long), typeof(uint));
+            DescriberProvider provider = new DescriberProvider(finder.KeyDescriber, finder);
+            Serializer ser = new Serializer(provider);
+            byte[] buf = ser.ObjectToBuffer((long)-1);
+            long val = (long)ser.BufferToObject(buf);
 
             Assert.AreEqual(-1, val);
         }
@@ -60,18 +59,18 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void EncodeZigZag()
         {
-            var e64_1 = ZigZag.Encode((long) 1);
-            var e64_2 = ZigZag.Encode(-1L);
+            ulong e64_1 = ZigZag.Encode((long)1);
+            ulong e64_2 = ZigZag.Encode(-1L);
 
-            var e32_1 = ZigZag.Encode(1);
-            var e32_2 = ZigZag.Encode(-1);
+            uint e32_1 = ZigZag.Encode(1);
+            uint e32_2 = ZigZag.Encode(-1);
 
 
-            NUnit.Framework.Assert.AreEqual((uint) 2, e32_1);
-            NUnit.Framework.Assert.AreEqual((uint) 1, e32_2);
+            NUnit.Framework.Assert.AreEqual((uint)2, e32_1);
+            NUnit.Framework.Assert.AreEqual((uint)1, e32_2);
 
-            NUnit.Framework.Assert.AreEqual((ulong) 2, e64_1);
-            NUnit.Framework.Assert.AreEqual((ulong) 1, e64_2);
+            NUnit.Framework.Assert.AreEqual((ulong)2, e64_1);
+            NUnit.Framework.Assert.AreEqual((ulong)1, e64_2);
 
 
         }
@@ -79,11 +78,11 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void DecodeZigZag()
         {
-            var e64_1 = ZigZag.Decode((ulong) 2);
-            var e64_2 = ZigZag.Decode((ulong) 1);
+            long e64_1 = ZigZag.Decode((ulong)2);
+            long e64_2 = ZigZag.Decode((ulong)1);
 
-            var e32_1 = ZigZag.Decode(2);
-            var e32_2 = ZigZag.Decode(1);
+            int e32_1 = ZigZag.Decode(2);
+            int e32_2 = ZigZag.Decode(1);
 
 
             NUnit.Framework.Assert.AreEqual(1, e32_1);
@@ -98,8 +97,8 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void ZigZagTest()
         {
-            var value = ZigZag.Encode(874534L);
-            var result = ZigZag.Decode(value);
+            ulong value = ZigZag.Encode(874534L);
+            long result = ZigZag.Decode(value);
             NUnit.Framework.Assert.AreEqual(874534L, result);
         }
 
@@ -108,9 +107,9 @@ namespace Regulus.Serialization.Tests
         public void VarintToBufferTest()
         {
 
-            var count = Varint.GetByteCount(150);
-            var buffer = new byte[count];
-            var index = Varint.NumberToBuffer(buffer, 0, 150);
+            int count = Varint.GetByteCount(150);
+            byte[] buffer = new byte[count];
+            int index = Varint.NumberToBuffer(buffer, 0, 150);
 
 
             NUnit.Framework.Assert.AreEqual(0x96, buffer[0]);
@@ -124,7 +123,7 @@ namespace Regulus.Serialization.Tests
         public void VarintToNumberTest()
         {
             ulong number;
-            var index = Varint.BufferToNumber(
+            int index = Varint.BufferToNumber(
                 new byte[]
                 {
                     0x96,
@@ -140,8 +139,8 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void VarintTest()
         {
-            var count = Varint.GetByteCount(12671L);
-            var buffer = new byte[count];
+            int count = Varint.GetByteCount(12671L);
+            byte[] buffer = new byte[count];
             Varint.NumberToBuffer(buffer, 0, 12671L);
 
             ulong value;
@@ -154,17 +153,17 @@ namespace Regulus.Serialization.Tests
         public void UlongTest()
         {
 
-            
-            var finder = new DescribersFinder(typeof(ulong));
-            var provider = new DescriberProvider(finder.KeyDescriber , finder);
+
+            DescribersFinder finder = new DescribersFinder(typeof(ulong));
+            DescriberProvider provider = new DescriberProvider(finder.KeyDescriber, finder);
 
 
-            
-            var ser = new Serializer(provider);
 
-            var buffer = ser.ObjectToBuffer(1UL);
+            Serializer ser = new Serializer(provider);
 
-            var value = ser.BufferToObject(buffer);
+            byte[] buffer = ser.ObjectToBuffer(1UL);
+
+            object value = ser.BufferToObject(buffer);
 
             NUnit.Framework.Assert.AreEqual(1UL, value);
         }
@@ -172,15 +171,15 @@ namespace Regulus.Serialization.Tests
 
         [NUnit.Framework.Test()]
         public void ClassTest()
-        {            
-            var finder = new DescribersFinder(typeof(int) , typeof(TestClassB));
-            var provider = new DescriberProvider(finder.KeyDescriber , finder);
-            
-            var ser = new Serializer(provider);
-            var testb = new TestClassB();
+        {
+            DescribersFinder finder = new DescribersFinder(typeof(int), typeof(TestClassB));
+            DescriberProvider provider = new DescriberProvider(finder.KeyDescriber, finder);
+
+            Serializer ser = new Serializer(provider);
+            TestClassB testb = new TestClassB();
             testb.Data = 1234;
-            var buffer = ser.ObjectToBuffer(testb);
-            var value = ser.BufferToObject(buffer) as TestClassB;
+            byte[] buffer = ser.ObjectToBuffer(testb);
+            TestClassB value = ser.BufferToObject(buffer) as TestClassB;
 
             NUnit.Framework.Assert.AreEqual(testb.Data, value.Data);
         }
@@ -189,13 +188,13 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void ClassArrayTest()
         {
-            
-            var finder = new DescribersFinder(typeof(int), typeof(TestClassB), typeof(TestClassB[]));
-            var provider = new DescriberProvider(finder.KeyDescriber, finder);
 
-            
-            var ser = new Serializer(provider);
-            var testbs = new[]
+            DescribersFinder finder = new DescribersFinder(typeof(int), typeof(TestClassB), typeof(TestClassB[]));
+            DescriberProvider provider = new DescriberProvider(finder.KeyDescriber, finder);
+
+
+            Serializer ser = new Serializer(provider);
+            TestClassB[] testbs = new[]
             {
                 null,
                 new TestClassB()
@@ -210,8 +209,8 @@ namespace Regulus.Serialization.Tests
                 null,
             };
 
-            var buffer = ser.ObjectToBuffer(testbs);
-            var value = ser.BufferToObject(buffer) as TestClassB[];
+            byte[] buffer = ser.ObjectToBuffer(testbs);
+            TestClassB[] value = ser.BufferToObject(buffer) as TestClassB[];
 
             NUnit.Framework.Assert.AreEqual(null, value[0]);
             NUnit.Framework.Assert.AreEqual(1, value[1].Data);
@@ -225,31 +224,31 @@ namespace Regulus.Serialization.Tests
         public void NumberTest()
         {
 
-            var finder = new DescribersFinder(typeof(byte) , typeof(short) , typeof(int) , typeof(long) , typeof(TEST1));
-            var provider = new DescriberProvider(finder.KeyDescriber , finder);
+            DescribersFinder finder = new DescribersFinder(typeof(byte), typeof(short), typeof(int), typeof(long), typeof(TEST1));
+            DescriberProvider provider = new DescriberProvider(finder.KeyDescriber, finder);
 
 
-            var ser = new Serializer(provider);
+            Serializer ser = new Serializer(provider);
 
-            var byteBuffer = ser.ObjectToBuffer((byte) 128);
-            var byteValue = (byte) ser.BufferToObject(byteBuffer);
+            byte[] byteBuffer = ser.ObjectToBuffer((byte)128);
+            byte byteValue = (byte)ser.BufferToObject(byteBuffer);
 
-            var shortBuffer = ser.ObjectToBuffer((short) 16387);
-            var shortValue = (short) ser.BufferToObject(shortBuffer);
+            byte[] shortBuffer = ser.ObjectToBuffer((short)16387);
+            short shortValue = (short)ser.BufferToObject(shortBuffer);
 
-            var intBuffer = ser.ObjectToBuffer((int) 65535);
-            var intValue = (int) ser.BufferToObject(intBuffer);
+            byte[] intBuffer = ser.ObjectToBuffer((int)65535);
+            int intValue = (int)ser.BufferToObject(intBuffer);
 
-            var longBuffer = ser.ObjectToBuffer((long) 65535000);
-            var longValue = (long) ser.BufferToObject(longBuffer);
+            byte[] longBuffer = ser.ObjectToBuffer((long)65535000);
+            long longValue = (long)ser.BufferToObject(longBuffer);
 
-            var enumBuffer = ser.ObjectToBuffer(TEST1.C);
-            var enumValue = (TEST1) ser.BufferToObject(enumBuffer);
+            byte[] enumBuffer = ser.ObjectToBuffer(TEST1.C);
+            TEST1 enumValue = (TEST1)ser.BufferToObject(enumBuffer);
 
-            NUnit.Framework.Assert.AreEqual((byte) 128, byteValue);
-            NUnit.Framework.Assert.AreEqual((short) 16387, shortValue);
-            NUnit.Framework.Assert.AreEqual((int) 65535, intValue);
-            NUnit.Framework.Assert.AreEqual((long) 65535000, longValue);
+            NUnit.Framework.Assert.AreEqual((byte)128, byteValue);
+            NUnit.Framework.Assert.AreEqual((short)16387, shortValue);
+            NUnit.Framework.Assert.AreEqual((int)65535, intValue);
+            NUnit.Framework.Assert.AreEqual((long)65535000, longValue);
             NUnit.Framework.Assert.AreEqual(TEST1.C, enumValue);
         }
 
@@ -257,14 +256,14 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void IntArrayTest4()
         {
-            
-            var finder = new DescribersFinder(typeof(int) , typeof(int[]));
-            var provider = new DescriberProvider(finder.KeyDescriber , finder);
 
-            
-            var ser = new Serializer(provider);
+            DescribersFinder finder = new DescribersFinder(typeof(int), typeof(int[]));
+            DescriberProvider provider = new DescriberProvider(finder.KeyDescriber, finder);
 
-            var ints = new[]
+
+            Serializer ser = new Serializer(provider);
+
+            int[] ints = new[]
             {
                 4,
                 46,
@@ -276,8 +275,8 @@ namespace Regulus.Serialization.Tests
                 323,
                 78
             };
-            var buffer = ser.ObjectToBuffer(ints);
-            var value = (int[]) ser.BufferToObject(buffer);
+            byte[] buffer = ser.ObjectToBuffer(ints);
+            int[] value = (int[])ser.BufferToObject(buffer);
 
 
             NUnit.Framework.Assert.AreEqual(46, value[1]);
@@ -287,14 +286,14 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void NumberFloatTest()
         {
-            
-            var finder = new DescribersFinder(typeof(float) , typeof(float[]));
-            var provider = new DescriberProvider(finder);
+
+            DescribersFinder finder = new DescribersFinder(typeof(float), typeof(float[]));
+            DescriberProvider provider = new DescriberProvider(finder);
 
 
-            var ser = new Serializer(provider);
+            Serializer ser = new Serializer(provider);
 
-            var ints = new[]
+            float[] ints = new[]
             {
                 4f,
                 46f,
@@ -306,8 +305,8 @@ namespace Regulus.Serialization.Tests
                 323f,
                 78f
             };
-            var buffer = ser.ObjectToBuffer(ints);
-            var value = (float[]) ser.BufferToObject(buffer);
+            byte[] buffer = ser.ObjectToBuffer(ints);
+            float[] value = (float[])ser.BufferToObject(buffer);
 
 
             NUnit.Framework.Assert.AreEqual(46f, value[1]);
@@ -317,14 +316,14 @@ namespace Regulus.Serialization.Tests
 
         [NUnit.Framework.Test()]
         public void StructFloatTest()
-        {            
-            var finder = new DescribersFinder(typeof(float));
-            var provider = new DescriberProvider(finder);
-            
-            var ser = new Serializer(provider);
+        {
+            DescribersFinder finder = new DescribersFinder(typeof(float));
+            DescriberProvider provider = new DescriberProvider(finder);
 
-            var buffer = ser.ObjectToBuffer(123.43f);
-            var value = (float) ser.BufferToObject(buffer);
+            Serializer ser = new Serializer(provider);
+
+            byte[] buffer = ser.ObjectToBuffer(123.43f);
+            float value = (float)ser.BufferToObject(buffer);
 
             NUnit.Framework.Assert.AreEqual(123.43f, value);
         }
@@ -332,15 +331,15 @@ namespace Regulus.Serialization.Tests
 
         [NUnit.Framework.Test()]
         public void ByteArrayStructTest()
-        {            
-            var finder = new DescribersFinder(typeof(byte[]));
-            var provider = new DescriberProvider(finder);
+        {
+            DescribersFinder finder = new DescribersFinder(typeof(byte[]));
+            DescriberProvider provider = new DescriberProvider(finder);
 
-            
-            var ser = new Serializer(provider);
 
-            var buffer = ser.ObjectToBuffer(new byte[] {1, 2, 3, 4, 5, 6});
-            var value = (byte[]) ser.BufferToObject(buffer);
+            Serializer ser = new Serializer(provider);
+
+            byte[] buffer = ser.ObjectToBuffer(new byte[] { 1, 2, 3, 4, 5, 6 });
+            byte[] value = (byte[])ser.BufferToObject(buffer);
 
             NUnit.Framework.Assert.AreEqual(1, value[0]);
             NUnit.Framework.Assert.AreEqual(2, value[1]);
@@ -351,14 +350,14 @@ namespace Regulus.Serialization.Tests
 
         [NUnit.Framework.Test()]
         public void CharArrayStructTest()
-        {            
-            var finder = new DescribersFinder(typeof(char[]));
-            var provider = new DescriberProvider(finder);
-            
-            var ser = new Serializer(provider);
+        {
+            DescribersFinder finder = new DescribersFinder(typeof(char[]));
+            DescriberProvider provider = new DescriberProvider(finder);
 
-            var buffer = ser.ObjectToBuffer(new char[] {'1', '2', 'a', 'b', 'c', 't'});
-            var value = (char[]) ser.BufferToObject(buffer);
+            Serializer ser = new Serializer(provider);
+
+            byte[] buffer = ser.ObjectToBuffer(new char[] { '1', '2', 'a', 'b', 'c', 't' });
+            char[] value = (char[])ser.BufferToObject(buffer);
 
             NUnit.Framework.Assert.AreEqual('1', value[0]);
             NUnit.Framework.Assert.AreEqual('2', value[1]);
@@ -372,14 +371,14 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void StringCharArrayStructTest()
         {
-            
-            var finder = new DescribersFinder(typeof(char[]));
-            var provider = new DescriberProvider(finder);
-            
-            var ser = new Serializer(provider);
-            var str = "asdfgh";
-            var buffer = ser.ObjectToBuffer(str.ToCharArray());
-            var value = (char[]) ser.BufferToObject(buffer);
+
+            DescribersFinder finder = new DescribersFinder(typeof(char[]));
+            DescriberProvider provider = new DescriberProvider(finder);
+
+            Serializer ser = new Serializer(provider);
+            string str = "asdfgh";
+            byte[] buffer = ser.ObjectToBuffer(str.ToCharArray());
+            char[] value = (char[])ser.BufferToObject(buffer);
 
             NUnit.Framework.Assert.AreEqual('a', value[0]);
             NUnit.Framework.Assert.AreEqual('s', value[1]);
@@ -394,15 +393,15 @@ namespace Regulus.Serialization.Tests
 
         [NUnit.Framework.Test()]
         public void GuidTest()
-        {            
-            var finder = new DescribersFinder(typeof(Guid) ,typeof(Guid[]));
-            var provider = new DescriberProvider(finder);
-            
-            var ser = new Serializer(provider);
+        {
+            DescribersFinder finder = new DescribersFinder(typeof(Guid), typeof(Guid[]));
+            DescriberProvider provider = new DescriberProvider(finder);
 
-            var id = Guid.NewGuid();
-            var buffer = ser.ObjectToBuffer(id);
-            var value = (Guid) ser.BufferToObject(buffer);
+            Serializer ser = new Serializer(provider);
+
+            Guid id = Guid.NewGuid();
+            byte[] buffer = ser.ObjectToBuffer(id);
+            Guid value = (Guid)ser.BufferToObject(buffer);
 
             NUnit.Framework.Assert.AreEqual(id, value);
         }
@@ -411,15 +410,15 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void ClassArrayHaveNullTest()
         {
-            
-            var finder = new DescribersFinder(typeof(TestClassC) , typeof(TestClassC[]));
-            var provider = new DescriberProvider(finder);
+
+            DescribersFinder finder = new DescribersFinder(typeof(TestClassC), typeof(TestClassC[]));
+            DescriberProvider provider = new DescriberProvider(finder);
 
 
 
-            var ser = new Serializer(provider);
+            Serializer ser = new Serializer(provider);
 
-            var cs = new TestClassC[]
+            TestClassC[] cs = new TestClassC[]
             {
                 null,
                 new TestClassC(),
@@ -427,8 +426,8 @@ namespace Regulus.Serialization.Tests
             };
 
 
-            var buffer = ser.ObjectToBuffer(cs);
-            var value = ser.BufferToObject(buffer) as TestClassC[];
+            byte[] buffer = ser.ObjectToBuffer(cs);
+            TestClassC[] value = ser.BufferToObject(buffer) as TestClassC[];
 
 
             NUnit.Framework.Assert.AreEqual(cs[0], value[0]);
@@ -440,13 +439,13 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void ClassNullTest()
         {
-            var finder = new DescribersFinder(typeof(TestClassC) , typeof(TestClassC[]));
-            var provider = new DescriberProvider(finder);
+            DescribersFinder finder = new DescribersFinder(typeof(TestClassC), typeof(TestClassC[]));
+            DescriberProvider provider = new DescriberProvider(finder);
 
-            var ser = new Serializer(provider);
+            Serializer ser = new Serializer(provider);
 
-            var buffer = ser.ObjectToBuffer(null);
-            var value = ser.BufferToObject(buffer) as TestClassC[];
+            byte[] buffer = ser.ObjectToBuffer(null);
+            TestClassC[] value = ser.BufferToObject(buffer) as TestClassC[];
 
 
             NUnit.Framework.Assert.AreEqual(null, value);
@@ -457,12 +456,12 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void ByteArray1Test()
         {
-            
-            var finder = new DescribersFinder(typeof(byte) , typeof(byte[]));
-            var provider = new DescriberProvider(finder);
+
+            DescribersFinder finder = new DescribersFinder(typeof(byte), typeof(byte[]));
+            DescriberProvider provider = new DescriberProvider(finder);
 
 
-            var bytes = new byte[]
+            byte[] bytes = new byte[]
             {
                 0x5,
                 97,
@@ -478,11 +477,11 @@ namespace Regulus.Serialization.Tests
                 255,
                 0
             };
-            
-            var ser = new Serializer(provider);
 
-            var buffer = ser.ObjectToBuffer(bytes);
-            var result = ser.BufferToObject(buffer) as byte[];
+            Serializer ser = new Serializer(provider);
+
+            byte[] buffer = ser.ObjectToBuffer(bytes);
+            byte[] result = ser.BufferToObject(buffer) as byte[];
 
             NUnit.Framework.Assert.AreEqual(bytes[3], result[3]);
             NUnit.Framework.Assert.AreEqual(bytes[1], result[1]);
@@ -494,7 +493,7 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void ByteArray2Test()
         {
-            var bytes = new byte[]
+            byte[] bytes = new byte[]
             {
                 0x5,
                 97,
@@ -510,16 +509,16 @@ namespace Regulus.Serialization.Tests
                 255,
                 0
             };
-            
-            var finder = new DescribersFinder(typeof(byte[]) , typeof(int));
-            var provider = new DescriberProvider(finder);
+
+            DescribersFinder finder = new DescribersFinder(typeof(byte[]), typeof(int));
+            DescriberProvider provider = new DescriberProvider(finder);
 
 
-            
-            var ser = new Serializer(provider);
 
-            var buffer = ser.ObjectToBuffer(bytes);
-            var result = ser.BufferToObject(buffer) as byte[];
+            Serializer ser = new Serializer(provider);
+
+            byte[] buffer = ser.ObjectToBuffer(bytes);
+            byte[] result = ser.BufferToObject(buffer) as byte[];
 
             NUnit.Framework.Assert.AreEqual(bytes[3], result[3]);
             NUnit.Framework.Assert.AreEqual(bytes[1], result[1]);
@@ -530,18 +529,18 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void StringTest()
         {
-            
-            var finder = new DescribersFinder(typeof(string) , typeof(char) , typeof(char[]));
-            var provider = new DescriberProvider(finder);
+
+            DescribersFinder finder = new DescribersFinder(typeof(string), typeof(char), typeof(char[]));
+            DescriberProvider provider = new DescriberProvider(finder);
 
 
-            
-            var ser = new Serializer(provider);
+
+            Serializer ser = new Serializer(provider);
 
 
-            var str = "fliwjfo3f3fnmsdlgmnlgrkmbr'nhmlredhgnedra'lngh";
-            var buffer = ser.ObjectToBuffer(str);
-            var value = ser.BufferToObject(buffer) as string;
+            string str = "fliwjfo3f3fnmsdlgmnlgrkmbr'nhmlredhgnedra'lngh";
+            byte[] buffer = ser.ObjectToBuffer(str);
+            string value = ser.BufferToObject(buffer) as string;
 
             NUnit.Framework.Assert.AreEqual(str, value);
         }
@@ -550,17 +549,17 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void CharArrayTest()
         {
-            
-            var finder = new DescribersFinder(typeof(char) , typeof(char[]) );
-            var provider = new DescriberProvider(finder);
 
-            
-            var ser = new Serializer(provider);
+            DescribersFinder finder = new DescribersFinder(typeof(char), typeof(char[]));
+            DescriberProvider provider = new DescriberProvider(finder);
 
 
-            var str = new char[] {'d', 'a'};
-            var buffer = ser.ObjectToBuffer(str);
-            var value = ser.BufferToObject(buffer) as char[];
+            Serializer ser = new Serializer(provider);
+
+
+            char[] str = new char[] { 'd', 'a' };
+            byte[] buffer = ser.ObjectToBuffer(str);
+            char[] value = ser.BufferToObject(buffer) as char[];
 
             NUnit.Framework.Assert.AreEqual(str[0], value[0]);
             NUnit.Framework.Assert.AreEqual(str[1], value[1]);
@@ -569,13 +568,13 @@ namespace Regulus.Serialization.Tests
 
         [NUnit.Framework.Test()]
         public void TestSerializerVector2()
-        {            
+        {
 
-            var ser = new Serializer(new DescriberBuilder(typeof(Regulus.Utility.Vector2), typeof(float)).Describers);
-            var v = new Regulus.Utility.Vector2(99, 22);
+            Serializer ser = new Serializer(new DescriberBuilder(typeof(Regulus.Utility.Vector2), typeof(float)).Describers);
+            Utility.Vector2 v = new Regulus.Utility.Vector2(99, 22);
 
-            var array = ser.ObjectToBuffer(v);
-            var v2 = (Regulus.Utility.Vector2) ser.BufferToObject(array);
+            byte[] array = ser.ObjectToBuffer(v);
+            Utility.Vector2 v2 = (Regulus.Utility.Vector2)ser.BufferToObject(array);
 
             NUnit.Framework.Assert.AreEqual(99, v2.X);
             NUnit.Framework.Assert.AreEqual(22, v2.Y);
@@ -585,13 +584,13 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void TestSerializer1()
         {
-            var types = new[] {typeof(int), typeof(int[]), typeof(float), typeof(string), typeof(char), typeof(char[])};
+            Type[] types = new[] { typeof(int), typeof(int[]), typeof(float), typeof(string), typeof(char), typeof(char[]) };
 
-            var ser = new Serializer(new DescriberBuilder(types).Describers);
+            Serializer ser = new Serializer(new DescriberBuilder(types).Describers);
 
-            var intZeroBuffer = ser.ObjectToBuffer("123");
+            byte[] intZeroBuffer = ser.ObjectToBuffer("123");
 
-            var intZero = ser.BufferToObject(intZeroBuffer);
+            object intZero = ser.BufferToObject(intZeroBuffer);
 
 
             Assert.AreEqual("123", intZero);
@@ -600,15 +599,15 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test()]
         public void TestSerializerResponsePackage()
         {
-            var types = new[] { typeof(Regulus.Remote.ResponsePackage) , typeof(Remote.ServerToClientOpCode) , typeof(byte), typeof(byte[]) };
+            Type[] types = new[] { typeof(Regulus.Remote.ResponsePackage), typeof(Remote.ServerToClientOpCode), typeof(byte), typeof(byte[]) };
 
-            var ser = new Serializer(new DescriberBuilder(types).Describers);
-            var pkg = new Regulus.Remote.ResponsePackage();
+            Serializer ser = new Serializer(new DescriberBuilder(types).Describers);
+            Remote.ResponsePackage pkg = new Regulus.Remote.ResponsePackage();
             pkg.Code = Remote.ServerToClientOpCode.SetProperty;
             pkg.Data = new byte[1] { 255 };
-            var buffer = ser.ObjectToBuffer(pkg);
+            byte[] buffer = ser.ObjectToBuffer(pkg);
 
-            var dPkg = ser.BufferToObject(buffer) as Remote.ResponsePackage;
+            Remote.ResponsePackage dPkg = ser.BufferToObject(buffer) as Remote.ResponsePackage;
 
 
             Assert.AreEqual(Remote.ServerToClientOpCode.SetProperty, dPkg.Code);
@@ -619,5 +618,5 @@ namespace Regulus.Serialization.Tests
 
 }
 
-    
+
 

@@ -1,19 +1,18 @@
 using System;
-using System.CodeDom;
 
 namespace Regulus.Serialization
 {
 
     public class EnumDescriber<T> : EnumDescriber
     {
-        public EnumDescriber() : base(typeof (T))
+        public EnumDescriber() : base(typeof(T))
         {
-            
+
         }
     }
-    public class EnumDescriber : ITypeDescriber 
+    public class EnumDescriber : ITypeDescriber
     {
-        
+
 
         private readonly Type _Type;
 
@@ -21,13 +20,13 @@ namespace Regulus.Serialization
 
         public EnumDescriber(Type type)
         {
-        
+
             _Type = type;
 
             _Default = Activator.CreateInstance(type);
         }
 
-        
+
 
         Type ITypeDescriber.Type
         {
@@ -52,12 +51,12 @@ namespace Regulus.Serialization
         int ITypeDescriber.ToObject(byte[] buffer, int begin, out object instnace)
         {
             ulong value;
-            var readed = Varint.BufferToNumber(buffer, begin, out value);
-            
+            int readed = Varint.BufferToNumber(buffer, begin, out value);
+
             instnace = Enum.ToObject(_Type, value);
             return readed;
         }
 
-        
+
     }
 }

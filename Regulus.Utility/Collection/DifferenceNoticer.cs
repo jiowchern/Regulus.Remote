@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Collections.Generic;
 using System.Linq;
 namespace Regulus.Collection
 {
-    public class DifferenceNoticer<T> 
+    public class DifferenceNoticer<T>
     {
         public delegate void MoveCallback(IEnumerable<T> instances);
 
@@ -12,9 +10,9 @@ namespace Regulus.Collection
         public event MoveCallback LeaveEvent;
         private readonly List<T> _Controllers;
 
-        private IEqualityComparer<T> _EqualityComparer;
+        private readonly IEqualityComparer<T> _EqualityComparer;
 
-        private System.Action<IEnumerable<T> , IEnumerable<T> > _Broadcast;
+        private readonly System.Action<IEnumerable<T>, IEnumerable<T>> _Broadcast;
 
         public DifferenceNoticer()
         {
@@ -22,13 +20,13 @@ namespace Regulus.Collection
             _Broadcast = _DefaultBroadcast;
         }
 
-        private void _DefaultBroadcast(IEnumerable<T> targets , IEnumerable<T> current)
+        private void _DefaultBroadcast(IEnumerable<T> targets, IEnumerable<T> current)
         {
             _BroadcastJoin(targets.Except(current));
             _BroadcastLeft(current.Except(targets));
         }
 
-        public DifferenceNoticer(IEqualityComparer<T> equality_comparer) :this()
+        public DifferenceNoticer(IEqualityComparer<T> equality_comparer) : this()
         {
             _EqualityComparer = equality_comparer;
 
@@ -37,15 +35,15 @@ namespace Regulus.Collection
 
         private void _EqualityBroadcast(IEnumerable<T> targets, IEnumerable<T> current)
         {
-            _BroadcastJoin(targets.Except(current , _EqualityComparer));
-            _BroadcastLeft(current.Except(targets , _EqualityComparer));
+            _BroadcastJoin(targets.Except(current, _EqualityComparer));
+            _BroadcastLeft(current.Except(targets, _EqualityComparer));
         }
 
         public void Set(IEnumerable<T> targets)
         {
-            var current = _Controllers;
+            List<T> current = _Controllers;
 
-            _Broadcast(targets , current);            
+            _Broadcast(targets, current);
 
             _Controllers.Clear();
             _Controllers.AddRange(targets);
@@ -53,7 +51,7 @@ namespace Regulus.Collection
 
         private void _BroadcastLeft(IEnumerable<T> controllers)
         {
-            if(LeaveEvent != null)
+            if (LeaveEvent != null)
                 LeaveEvent(controllers);
         }
 
@@ -62,6 +60,6 @@ namespace Regulus.Collection
             if (JoinEvent != null)
                 JoinEvent(controllers);
         }
-        
+
     }
 }

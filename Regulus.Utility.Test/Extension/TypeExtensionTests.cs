@@ -1,10 +1,9 @@
-﻿using System.Linq;
-
-using Regulus.Utility;
+﻿using Regulus.Utility;
+using System.Linq;
 
 namespace Regulus.Extension.Tests
 {
-    
+
     public class TypeExtensionTests
     {
         [NUnit.Framework.Test()]
@@ -26,7 +25,7 @@ namespace Regulus.Extension.Tests
             {
                 points.FindHull().ToArray();
             }
-            
+
         }
         [NUnit.Framework.Test()]
         public void FindHullTest2()

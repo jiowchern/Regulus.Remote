@@ -2,55 +2,55 @@
 
 namespace Regulus.Remote
 {
-	public interface IOnline
-	{
-		double Ping { get; }
-
-		void Disconnect();
-	}
-
-	public class OnlineGhost : IOnline, IGhost
+    public interface IOnline
     {
-		private readonly GhostProvider _Agent;
+        double Ping { get; }
 
-		public long Id { get; private set; }
+        void Disconnect();
+    }
 
-		public OnlineGhost()
-		{
-			Id = LongProvider.OnlineId;
-		}
+    public class OnlineGhost : IOnline, IGhost
+    {
+        private readonly GhostProvider _Agent;
 
-		public OnlineGhost(GhostProvider agent) : this()
-		{
-			_Agent = agent;
-		}
+        public long Id { get; private set; }
+
+        public OnlineGhost()
+        {
+            Id = LongProvider.OnlineId;
+        }
+
+        public OnlineGhost(GhostProvider agent) : this()
+        {
+            _Agent = agent;
+        }
 
 
 
-		long IGhost.GetID()
-		{
-			return Id;
-		}
+        long IGhost.GetID()
+        {
+            return Id;
+        }
 
-	    object IGhost.GetInstance()
-	    {
-	        return this;
-	    }
+        object IGhost.GetInstance()
+        {
+            return this;
+        }
 
-	    
 
-		bool IGhost.IsReturnType()
-		{
-			return false;
-		}
 
-	    private event CallMethodCallback _CallMethodEvent;
+        bool IGhost.IsReturnType()
+        {
+            return false;
+        }
 
-	    event CallMethodCallback IGhost.CallMethodEvent
-	    {
-	        add { this._CallMethodEvent += value; }
-	        remove { this._CallMethodEvent -= value; }
-	    }
+        private event CallMethodCallback _CallMethodEvent;
+
+        event CallMethodCallback IGhost.CallMethodEvent
+        {
+            add { this._CallMethodEvent += value; }
+            remove { this._CallMethodEvent -= value; }
+        }
 
         event EventNotifyCallback IGhost.AddEventEvent
         {
@@ -82,12 +82,12 @@ namespace Regulus.Remote
         {
             add
             {
-        
+
             }
 
             remove
             {
-        
+
             }
         }
 
@@ -95,12 +95,12 @@ namespace Regulus.Remote
         {
             add
             {
-                
+
             }
 
             remove
             {
-                
+
             }
         }
 
@@ -108,12 +108,12 @@ namespace Regulus.Remote
         {
             add
             {
-                
+
             }
 
             remove
             {
-                
+
             }
         }
 
@@ -121,23 +121,23 @@ namespace Regulus.Remote
         {
             add
             {
-                
+
             }
 
             remove
             {
-                
+
             }
         }
 
         double IOnline.Ping
-		{
-			get { return TimeSpan.FromTicks(_Agent.Ping).TotalSeconds; }
-		}
-		public event System.Action DisconnectEvent;
-		void IOnline.Disconnect()
-		{
-			DisconnectEvent();
-		}
-	}
+        {
+            get { return TimeSpan.FromTicks(_Agent.Ping).TotalSeconds; }
+        }
+        public event System.Action DisconnectEvent;
+        void IOnline.Disconnect()
+        {
+            DisconnectEvent();
+        }
+    }
 }

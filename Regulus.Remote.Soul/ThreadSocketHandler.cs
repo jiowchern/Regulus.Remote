@@ -1,17 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Sockets;
-using System.Threading;
 using Regulus.Network;
-using Regulus.Network.Rudp;
 using Regulus.Utility;
 
 namespace Regulus.Remote.Soul
 {
     internal class ThreadSocketHandler
     {
-        
+
         private readonly IProtocol _Protocol;
         private readonly IListenable _Server;
 
@@ -21,7 +15,7 @@ namespace Regulus.Remote.Soul
 
         private readonly System.Collections.Concurrent.ConcurrentQueue<IStreamable> _Sockets;
 
-        
+
         private readonly PowerRegulator _Spin;
 
         private readonly AutoPowerRegulator _AutoPowerRegulator;
@@ -31,7 +25,7 @@ namespace Regulus.Remote.Soul
         readonly System.Threading.Tasks.Task _Task;
 
         public event System.Action<IBinder> BinderEvent;
-        
+
 
         public int FPS
         {
@@ -48,9 +42,9 @@ namespace Regulus.Remote.Soul
             get { return _Peers.Count; }
         }
 
-        public ThreadSocketHandler(int port, IProtocol protocol , IListenable server)
+        public ThreadSocketHandler(int port, IProtocol protocol, IListenable server)
         {
-            
+
             _Protocol = protocol;
             _Port = port;
 
@@ -74,20 +68,20 @@ namespace Regulus.Remote.Soul
             _Server.AcceptEvent += _Accept;
             _Server.Bind(_Port);
 
-            while(_Run)
+            while (_Run)
             {
                 IStreamable socket;
-                if(_Sockets.TryDequeue(out socket))
+                if (_Sockets.TryDequeue(out socket))
                 {
                     /*todo : Singleton<Log>.Instance.WriteInfo(
                                 string.Format("accept Remote {0} Local {1} .", socket.RemoteEndPoint, socket.LocalEndPoint));*/
-                    var peer = new User(socket, _Protocol);
+                    User peer = new User(socket, _Protocol);
 
                     _Peers.Join(peer);
-                    
+
                     BinderEvent(peer.Binder);
                 }
-                _Peers.RemoveInvalidPeers(); 
+                _Peers.RemoveInvalidPeers();
 
                 _AutoPowerRegulator.Operate();
             }

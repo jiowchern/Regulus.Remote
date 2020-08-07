@@ -10,42 +10,44 @@ namespace Regulus.Network.Web
         private readonly IPEndPoint localEndPoint;
         private readonly IPEndPoint remoteEndPoint;
 
-        
 
-        public Peer(WebSocket socket, IPEndPoint localEndPoint, IPEndPoint remoteEndPoint) 
+
+        public Peer(WebSocket socket, IPEndPoint localEndPoint, IPEndPoint remoteEndPoint)
         {
             _Socket = socket;
             this.localEndPoint = localEndPoint;
             this.remoteEndPoint = remoteEndPoint;
         }
 
-        
 
-        
 
-        
+
+
+
 
         System.Threading.Tasks.Task<int> IStreamable.Receive(byte[] buffer, int offset, int count)
         {
             System.Threading.CancellationToken cancellationToken = default;
-            var segment = new ArraySegment<byte>(buffer , offset , count);
-            return _Socket.ReceiveAsync(segment, cancellationToken).ContinueWith<int>((t)=> {
-                var r= t.Result;
-               return r.Count;
+            ArraySegment<byte> segment = new ArraySegment<byte>(buffer, offset, count);
+            return _Socket.ReceiveAsync(segment, cancellationToken).ContinueWith<int>((t) =>
+            {
+                WebSocketReceiveResult r = t.Result;
+                return r.Count;
             });
         }
 
         System.Threading.Tasks.Task<int> IStreamable.Send(byte[] buffer, int offset, int count)
         {
-            var a = new ArraySegment<byte>(buffer, offset, count);
-            
+            ArraySegment<byte> a = new ArraySegment<byte>(buffer, offset, count);
+
             System.Threading.CancellationToken cancellationToken = default;
-            
-            return _Socket.SendAsync(a , WebSocketMessageType.Binary, true, cancellationToken).ContinueWith<int>((t)=> {
-                return count- offset;
+
+            return _Socket.SendAsync(a, WebSocketMessageType.Binary, true, cancellationToken).ContinueWith<int>((t) =>
+            {
+                return count - offset;
             });
 
-            
+
         }
     }
 }

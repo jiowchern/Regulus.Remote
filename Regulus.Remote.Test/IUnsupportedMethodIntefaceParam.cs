@@ -1,7 +1,7 @@
 ﻿namespace RemotingTest
 {
-	public interface IUnsupportedMethodIntefaceParam
-	{
-		void Function(IUnsupportedMethodIntefaceParam method);
-	}
+    public interface IUnsupportedMethodIntefaceParam
+    {
+        void Function(IUnsupportedMethodIntefaceParam method);
+    }
 }

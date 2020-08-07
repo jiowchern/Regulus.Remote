@@ -1,12 +1,6 @@
 ﻿using NUnit.Framework;
-using Regulus.Serialization.Dynamic;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NSubstitute.Extensions;
 using Regulus.Serialization.Tests;
+using System;
 
 namespace Regulus.Serialization.Dynamic.Tests
 {
@@ -17,10 +11,10 @@ namespace Regulus.Serialization.Dynamic.Tests
         public void TestSerializerInt()
         {
 
-            var ser = new Regulus.Serialization.Dynamic.Serializer();
+            Serializer ser = new Regulus.Serialization.Dynamic.Serializer();
 
-            var buf = ser.ObjectToBuffer(12345);
-            var val = (int) ser.BufferToObject(buf);
+            byte[] buf = ser.ObjectToBuffer(12345);
+            int val = (int)ser.BufferToObject(buf);
             Assert.AreEqual(12345, val);
         }
 
@@ -28,10 +22,10 @@ namespace Regulus.Serialization.Dynamic.Tests
         public void TestSerializerString()
         {
 
-            var ser = new Regulus.Serialization.Dynamic.Serializer();
+            Serializer ser = new Regulus.Serialization.Dynamic.Serializer();
 
-            var buf = ser.ObjectToBuffer("12345");
-            var val = (string) ser.BufferToObject(buf);
+            byte[] buf = ser.ObjectToBuffer("12345");
+            string val = (string)ser.BufferToObject(buf);
             Assert.AreEqual("12345", val);
         }
 
@@ -40,10 +34,10 @@ namespace Regulus.Serialization.Dynamic.Tests
         public void TestSerializerNull()
         {
 
-            var ser = new Regulus.Serialization.Dynamic.Serializer();
+            Serializer ser = new Regulus.Serialization.Dynamic.Serializer();
 
-            var buf = ser.ObjectToBuffer(null);
-            var val = ser.BufferToObject(buf);
+            byte[] buf = ser.ObjectToBuffer(null);
+            object val = ser.BufferToObject(buf);
             Assert.AreEqual(null, val);
         }
 
@@ -52,10 +46,10 @@ namespace Regulus.Serialization.Dynamic.Tests
         public void TestSerializerArray()
         {
 
-            var ser = new Regulus.Serialization.Dynamic.Serializer();
+            Serializer ser = new Regulus.Serialization.Dynamic.Serializer();
 
-            var buf = ser.ObjectToBuffer(new[] {1, 2, 3, 4, 5});
-            var val = (int[]) ser.BufferToObject(buf);
+            byte[] buf = ser.ObjectToBuffer(new[] { 1, 2, 3, 4, 5 });
+            int[] val = (int[])ser.BufferToObject(buf);
             Assert.AreEqual(1, val[0]);
             Assert.AreEqual(2, val[1]);
             Assert.AreEqual(3, val[2]);
@@ -70,10 +64,10 @@ namespace Regulus.Serialization.Dynamic.Tests
         public void TestSerializerStringArray()
         {
 
-            var ser = new Regulus.Serialization.Dynamic.Serializer();
+            Serializer ser = new Regulus.Serialization.Dynamic.Serializer();
 
-            var buf = ser.ObjectToBuffer(new[] {"1", "2", "3", "4", "5"});
-            var val = (string[]) ser.BufferToObject(buf);
+            byte[] buf = ser.ObjectToBuffer(new[] { "1", "2", "3", "4", "5" });
+            string[] val = (string[])ser.BufferToObject(buf);
             Assert.AreEqual("1", val[0]);
             Assert.AreEqual("2", val[1]);
             Assert.AreEqual("3", val[2]);
@@ -87,20 +81,20 @@ namespace Regulus.Serialization.Dynamic.Tests
         [NUnit.Framework.Test()]
         public void TestInherit()
         {
-            var ser = new Regulus.Serialization.Dynamic.Serializer();
+            Serializer ser = new Regulus.Serialization.Dynamic.Serializer();
 
 
-            var test = new TestGrandson();
+            TestGrandson test = new TestGrandson();
             test.Data = 100;
-            var testChild = test as TestChild;
+            TestChild testChild = test as TestChild;
             testChild.Data = 1;
-            var testParent = test as TestParent;
+            TestParent testParent = test as TestParent;
             testParent.Data = 33;
 
-            var buf = ser.ObjectToBuffer(test);
-            var val = (TestGrandson) ser.BufferToObject(buf);
-            var valParent = val as TestParent;
-            var child = val as TestChild;
+            byte[] buf = ser.ObjectToBuffer(test);
+            TestGrandson val = (TestGrandson)ser.BufferToObject(buf);
+            TestParent valParent = val as TestParent;
+            TestChild child = val as TestChild;
 
 
             Assert.AreEqual(100, val.Data);
@@ -131,17 +125,17 @@ namespace Regulus.Serialization.Dynamic.Tests
 
 
 
-            var test = new TestGrandson();
+            TestGrandson test = new TestGrandson();
             test.Data = 100;
-            var testChild = test as TestChild;
+            TestChild testChild = test as TestChild;
             testChild.Data = 1;
-            var testParent = test as TestParent;
+            TestParent testParent = test as TestParent;
             testParent.Data = 33;
 
-            var serializer =
+            Serializer serializer =
                 new Regulus.Serialization.Dynamic.Serializer(new CustomFinder((name) => Type.GetType(name)));
-            var buf = serializer.ObjectToBuffer(new TestParent[] {test, testChild, testParent});
-            var val = (TestParent[]) serializer.BufferToObject(buf);
+            byte[] buf = serializer.ObjectToBuffer(new TestParent[] { test, testChild, testParent });
+            TestParent[] val = (TestParent[])serializer.BufferToObject(buf);
 
             Assert.AreEqual(100, (val[0] as TestGrandson).Data);
             Assert.AreEqual(1, (val[1] as TestChild).Data);
@@ -152,18 +146,18 @@ namespace Regulus.Serialization.Dynamic.Tests
         [NUnit.Framework.Test()]
         public void TestClassPolytype1()
         {
-            var g = new TestGrandson();
+            TestGrandson g = new TestGrandson();
             g.Data = 100;
-            var test = new TestPoly();
+            TestPoly test = new TestPoly();
             test.Parent = g;
 
-            
 
-            var serializer =
+
+            Serializer serializer =
                 new Regulus.Serialization.Dynamic.Serializer(new CustomFinder((name) => Type.GetType(name)));
-            var buf = serializer.ObjectToBuffer(test);
-            var val = (TestPoly)serializer.BufferToObject(buf);
-            var valChild = val.Parent as TestGrandson;
+            byte[] buf = serializer.ObjectToBuffer(test);
+            TestPoly val = (TestPoly)serializer.BufferToObject(buf);
+            TestGrandson valChild = val.Parent as TestGrandson;
             Assert.AreEqual(100, valChild.Data);
         }
     }

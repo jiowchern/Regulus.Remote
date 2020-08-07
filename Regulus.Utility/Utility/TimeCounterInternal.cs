@@ -1,22 +1,21 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Threading;
 
 namespace Regulus.Utility
 {
     public class TimeCounterInternal
     {
-        private Stopwatch _Stopwatch;
+        private readonly Stopwatch _Stopwatch;
         private SpinLock _Lock;
         public TimeCounterInternal()
         {
             _Stopwatch = Stopwatch.StartNew();
-            
+
             _Lock = new SpinLock();
             _Ticks = _Stopwatch.ElapsedTicks;
         }
 
-        
+
 
         private long _Ticks;
 
@@ -26,13 +25,13 @@ namespace Regulus.Utility
             {
                 bool lockTaken = false;
                 try
-                {                    
+                {
                     _Lock.Enter(ref lockTaken);
                     _Ticks = _Stopwatch.ElapsedTicks;
                 }
-                finally 
+                finally
                 {
-                    if(lockTaken)
+                    if (lockTaken)
                         _Lock.Exit(false);
                 }
                 return _Ticks;

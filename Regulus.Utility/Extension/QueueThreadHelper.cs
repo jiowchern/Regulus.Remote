@@ -9,7 +9,7 @@ namespace Regulus.Extension
                 return queue.Count;
             }
         }
-        public static  void SafeEnqueue<T>(this System.Collections.Generic.Queue<T> queue , T item)
+        public static void SafeEnqueue<T>(this System.Collections.Generic.Queue<T> queue, T item)
         {
             lock (queue)
             {
@@ -22,7 +22,7 @@ namespace Regulus.Extension
             T item = default(T);
             lock (queue)
             {
-                if(queue.Count > 0)
+                if (queue.Count > 0)
                     item = queue.Dequeue();
             }
             return item;

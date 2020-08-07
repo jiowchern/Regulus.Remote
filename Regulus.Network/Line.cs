@@ -1,23 +1,22 @@
+using Regulus.Network.Package;
 using System;
 using System.Collections.Generic;
 using System.Net;
-using Regulus.Network.Package;
-using QueueThreadHelper = Regulus.Utility.QueueThreadHelper;
 
 namespace Regulus.Network
 {
-    public class Line 
+    public class Line
     {
 
         public readonly EndPoint EndPoint;
-        
+
         public event Action<SocketMessage> OutputEvent;
 
         private readonly BufferDispenser _Dispenser;
         private readonly PackageRectifier _Rectifier;
 
         private readonly System.Collections.Concurrent.ConcurrentQueue<SocketMessage> _InputPackages;
-        private readonly System.Collections.Concurrent.ConcurrentQueue<SocketMessage> _SendPackages;        
+        private readonly System.Collections.Concurrent.ConcurrentQueue<SocketMessage> _SendPackages;
         private readonly System.Collections.Concurrent.ConcurrentQueue<SocketMessage> _ReceivePackages;
         private readonly CongestionRecorder _Waiter;
         private long _TimeoutTicks;
@@ -27,11 +26,11 @@ namespace Regulus.Network
             EndPoint = end_point;
             _Dispenser = new BufferDispenser(EndPoint, SocketMessageFactory.Instance);
             _Rectifier = new PackageRectifier();
-            
+
             _SendPackages = new System.Collections.Concurrent.ConcurrentQueue<SocketMessage>();
             _ReceivePackages = new System.Collections.Concurrent.ConcurrentQueue<SocketMessage>();
             _InputPackages = new System.Collections.Concurrent.ConcurrentQueue<SocketMessage>();
-            
+
             _Waiter = new CongestionRecorder(HungryLimit: 3);
 
             ResetTimeout();
@@ -44,18 +43,18 @@ namespace Regulus.Network
 
         public void WriteOperation(PeerOperation Operation)
         {
-            var package = _Dispenser.PackingOperation(Operation , _Rectifier.Serial, _Rectifier.SerialBitFields);
+            SocketMessage package = _Dispenser.PackingOperation(Operation, _Rectifier.Serial, _Rectifier.SerialBitFields);
             _SendPackages.Enqueue(package);
 
         }
         public void WriteTransmission(byte[] buffer)
-        {            
-                var packages = _Dispenser.PackingTransmission(buffer, (ushort)(_Rectifier.Serial-1), _Rectifier.SerialBitFields);
-                for (var i = 0; i < packages.Length; i++)
-                {
-                    var message = packages[i];
-                    _InputPackages.Enqueue(message);                    
-                }
+        {
+            SocketMessage[] packages = _Dispenser.PackingTransmission(buffer, (ushort)(_Rectifier.Serial - 1), _Rectifier.SerialBitFields);
+            for (int i = 0; i < packages.Length; i++)
+            {
+                SocketMessage message = packages[i];
+                _InputPackages.Enqueue(message);
+            }
         }
 
         public SocketMessage Read()
@@ -63,26 +62,26 @@ namespace Regulus.Network
             return _Rectifier.PopPackage();
         }
 
-        
 
-        public int AcknowledgeCount {get { return _Waiter.Count; } }
-        public int WaitSendCount {get { return _SendPackages.Count; } } 
+
+        public int AcknowledgeCount { get { return _Waiter.Count; } }
+        public int WaitSendCount { get { return _SendPackages.Count; } }
         public int SendBytes { get; private set; }
         public int ReceiveBytes { get; private set; }
-        public long Srtt {get { return _Waiter.Srtt; } } 
-        public long Rto {get { return _Waiter.Rto; } }
+        public long Srtt { get { return _Waiter.Srtt; } }
+        public long Rto { get { return _Waiter.Rto; } }
         public int SendedPackages { get; private set; }
         public int SendLostPackages { get; private set; }
         public int ReceivePackages { get; private set; }
         public int ReceiveInvalidPackages { get; private set; }
-        public long LastRtt {get { return _Waiter.LastRtt; }} 
-        public int SendBlock { get { return _Waiter.Count; } } 
-        public long LastRto { get { return _Waiter.LastRto; } } 
-        public int ReceiveBlock { get { return _Rectifier.Count; } } 
+        public long LastRtt { get { return _Waiter.LastRtt; } }
+        public int SendBlock { get { return _Waiter.Count; } }
+        public long LastRto { get { return _Waiter.LastRto; } }
+        public int ReceiveBlock { get { return _Rectifier.Count; } }
 
         public int ReceiveNumber { get { return _Rectifier.Serial; } }
 
-        public int SendNumber { get { return _Dispenser.Serial; } } 
+        public int SendNumber { get { return _Dispenser.Serial; } }
 
         public void Input(SocketMessage Message)
         {
@@ -93,13 +92,13 @@ namespace Regulus.Network
         }
 
         private void SendPing()
-        {            
-            SendAck((ushort)(_Rectifier.Serial-1), _Rectifier.SerialBitFields);
-        }
-        
-        private void SendAck(ushort Ack,uint AckBits)
         {
-            var package = _Dispenser.PackingAck(Ack, AckBits);
+            SendAck((ushort)(_Rectifier.Serial - 1), _Rectifier.SerialBitFields);
+        }
+
+        private void SendAck(ushort Ack, uint AckBits)
+        {
+            SocketMessage package = _Dispenser.PackingAck(Ack, AckBits);
             _SendPackages.Enqueue(package);
         }
 
@@ -112,7 +111,7 @@ namespace Regulus.Network
             HandleResend(Time);
             HandleInput(Time);
             HandleReceive(Time);
-            
+
             HandlePing(Time);
             HandleOutput(Time);
             return false;
@@ -123,7 +122,7 @@ namespace Regulus.Network
             SocketMessage message = null;
             while (_Waiter.IsFull() == false && _InputPackages.TryDequeue(out message))
             {
-                _Waiter.PushWait(message , Time.Ticks);
+                _Waiter.PushWait(message, Time.Ticks);
                 _SendPackages.Enqueue(message);
             }
         }
@@ -143,26 +142,26 @@ namespace Regulus.Network
         private void HandleReceive(Timestamp Time)
         {
             SocketMessage message = null;
-            while ((message = Dequeue())!=null)
+            while ((message = Dequeue()) != null)
             {
                 ResetTimeout();
 
-                var seq = message.GetSeq();
-                var ack = message.GetAck();
-                var ackFields = message.GetAckFields();                
-                var oper = (PeerOperation)message.GetOperation();
+                ushort seq = message.GetSeq();
+                ushort ack = message.GetAck();
+                uint ackFields = message.GetAckFields();
+                PeerOperation oper = (PeerOperation)message.GetOperation();
 
                 // ack 
                 if (_Waiter.Reply(ack, Time.Ticks, Time.DeltaTicks) == false)
                 {
-                        
+
                 }
                 //_Waiter.ReplyBefore((ushort)(ack - 1), time.Ticks , time.DeltaTicks);
                 //_Waiter.ReplyAfter((ushort)(ack - 1), ackFields , time.Ticks, time.DeltaTicks);
                 //_Waiter.Padding();
 
-                
-                
+
+
 
                 if (oper != PeerOperation.Acknowledge)
                 {
@@ -170,14 +169,14 @@ namespace Regulus.Network
                         ReceiveInvalidPackages++;
                     SendAck(seq, _Rectifier.SerialBitFields);
                 }
-                
-                    
+
+
 
                 ReceiveBytes += message.GetPackageSize();
                 ReceivePackages++;
             }
 
-            
+
         }
 
         private SocketMessage Dequeue()
@@ -186,39 +185,39 @@ namespace Regulus.Network
             if (_ReceivePackages.TryDequeue(out message))
                 return message;
             return null;
-            
 
-            
+
+
         }
 
         private void HandleResend(Timestamp Time)
         {
-            var rtos = _Waiter.PopLost(Time.Ticks,Time.DeltaTicks);
+            List<SocketMessage> rtos = _Waiter.PopLost(Time.Ticks, Time.DeltaTicks);
 
-            var count = rtos.Count;
-            for (var i = 0; i < count; i++)
+            int count = rtos.Count;
+            for (int i = 0; i < count; i++)
                 _SendPackages.Enqueue(rtos[i]);
-                
+
 
             SendLostPackages += count;
         }
 
-   
+
         private void HandleOutput(Timestamp Time)
         {
-            
+
 
 
             SocketMessage message = null;
-            while ((message = PopSend()) != null  )
-            {                
-                
+            while ((message = PopSend()) != null)
+            {
+
                 OutputEvent(message);
 
                 SendBytes += message.GetPackageSize();
                 SendedPackages++;
             }
-            
+
         }
 
         private SocketMessage PopSend()
@@ -231,10 +230,10 @@ namespace Regulus.Network
 
         public void MessageSendResult(SocketMessage Message)
         {
-            
-            
+
+
         }
     }
 
-    
+
 }

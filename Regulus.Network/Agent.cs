@@ -1,13 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using Regulus.Utility;
+using System.Collections.Generic;
 using System.Net;
-using Regulus.Utility;
-using Regulus.Utility;
 
 namespace Regulus.Network
 {
     public class Agent : IUpdatable<Timestamp>
     {
-        
+
         private readonly ISocketRecevieable m_SocketRecevieable;
         private readonly ISocketSendable m_SocketSendable;
 
@@ -20,24 +19,24 @@ namespace Regulus.Network
         public Agent(ISocketRecevieable SocketRecevieable, ISocketSendable SocketSendable)
         {
             m_SocketRecevieable = SocketRecevieable;
-            m_SocketSendable = SocketSendable;            
+            m_SocketSendable = SocketSendable;
             m_Updater = new Updater<Timestamp>();
             m_RemovePeers = new List<Socket>();
-            m_WiringOperator = new WiringOperator(m_SocketSendable, m_SocketRecevieable,false );            
+            m_WiringOperator = new WiringOperator(m_SocketSendable, m_SocketRecevieable, false);
             m_Peers = new Dictionary<EndPoint, Socket>();
-        }       
+        }
 
         bool IUpdatable<Timestamp>.Update(Timestamp Timestamp)
         {
-            var removePeers = GetRemovePeers();
-            var count = removePeers.Length;
-            for (var i = 0; i < count; i++)
+            Socket[] removePeers = GetRemovePeers();
+            int count = removePeers.Length;
+            for (int i = 0; i < count; i++)
             {
-                var peer = removePeers[i];
+                Socket peer = removePeers[i];
                 lock (m_WiringOperator)
                 {
                     m_WiringOperator.Destroy(peer.EndPoint);
-                }                
+                }
             }
 
             m_Updater.Working(Timestamp);
@@ -48,7 +47,7 @@ namespace Regulus.Network
         {
             lock (m_RemovePeers)
             {
-                var cloned = m_RemovePeers.ToArray();
+                Socket[] cloned = m_RemovePeers.ToArray();
                 m_RemovePeers.Clear();
                 return cloned;
             }
@@ -62,12 +61,12 @@ namespace Regulus.Network
             m_WiringOperator.JoinStreamEvent += CreatePeer;
             m_WiringOperator.LeftStreamEvent += DestroyPeer;
             m_Updater.Add(m_WiringOperator);
-            
-            
+
+
         }
 
         void IBootable.Shutdown()
-        {                       
+        {
             m_Updater.Shutdown();
             m_WiringOperator.JoinStreamEvent -= CreatePeer;
             m_WiringOperator.LeftStreamEvent -= DestroyPeer;
@@ -84,32 +83,32 @@ namespace Regulus.Network
                 {
                     m_Peers.Remove(Obj.EndPoint);
                 }
-                
+
             }
-            
+
         }
 
         private void CreatePeer(Line Obj)
-        {            
+        {
         }
-        
-        public Socket Connect(EndPoint EndPoint,System.Action<bool> Result)
+
+        public Socket Connect(EndPoint EndPoint, System.Action<bool> Result)
         {
             Socket rudpSocket = null;
             System.Action<Line> handler = Stream =>
             {
-                var connecter = new PeerConnecter(Stream);
+                PeerConnecter connecter = new PeerConnecter(Stream);
                 connecter.TimeoutEvent += () => { Result(obj: false); };
                 connecter.DoneEvent += () => { Result(obj: true); };
 
-                var p = new Socket(Stream, connecter);
+                Socket p = new Socket(Stream, connecter);
                 p.CloseEvent += () => { Remove(p); };
 
                 lock (m_Peers)
                 {
                     m_Peers.Add(Stream.EndPoint, p);
                 }
-                
+
                 m_Updater.Add(p);
                 rudpSocket = p;
             };
@@ -120,7 +119,7 @@ namespace Regulus.Network
                 m_WiringOperator.Create(EndPoint);
                 m_WiringOperator.JoinStreamEvent -= handler;
             }
-            
+
             return rudpSocket;
         }
 
@@ -134,7 +133,7 @@ namespace Regulus.Network
         }
 
 
-        
-        
+
+
     }
 }

@@ -7,7 +7,7 @@
 
 
     public class TestParent
-    {        
+    {
         public int Data;
     }
 
@@ -18,7 +18,7 @@
 
     public class TestGrandson : TestChild
     {
-        public int Data;        
+        public int Data;
     }
 
     public class TestPoly

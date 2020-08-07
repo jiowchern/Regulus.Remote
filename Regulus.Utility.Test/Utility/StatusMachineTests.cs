@@ -1,5 +1,5 @@
-﻿using NUnit.Framework;
-using NSubstitute;
+﻿using NSubstitute;
+using NUnit.Framework;
 
 namespace Regulus.Utility.Tests
 {
@@ -12,8 +12,8 @@ namespace Regulus.Utility.Tests
         public void PushOne()
         {
 
-            var status = NSubstitute.Substitute.For<IStatus>();
-            var machine = new Regulus.Utility.StatusMachine();
+            IStatus status = NSubstitute.Substitute.For<IStatus>();
+            StatusMachine machine = new Regulus.Utility.StatusMachine();
             machine.Push(status);
             machine.Update();
             machine.Termination();
@@ -28,9 +28,9 @@ namespace Regulus.Utility.Tests
         public void Change()
         {
 
-            var status1 = NSubstitute.Substitute.For<IStatus>();
-            var status2 = NSubstitute.Substitute.For<IStatus>();
-            var machine = new Regulus.Utility.StatusMachine();
+            IStatus status1 = NSubstitute.Substitute.For<IStatus>();
+            IStatus status2 = NSubstitute.Substitute.For<IStatus>();
+            StatusMachine machine = new Regulus.Utility.StatusMachine();
             machine.Push(status1);
             machine.Update();
             machine.Push(status2);

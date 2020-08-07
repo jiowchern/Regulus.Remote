@@ -1,6 +1,4 @@
-using System;
 using Regulus.Utility;
-using Regulus.Network;
 
 namespace Regulus.Network.Tcp
 {
@@ -8,12 +6,12 @@ namespace Regulus.Network.Tcp
     {
         void IBootable.Launch()
         {
-            
+
         }
 
         void IBootable.Shutdown()
         {
-            
+
         }
 
         IConnectable IConnectProvidable.Spawn()

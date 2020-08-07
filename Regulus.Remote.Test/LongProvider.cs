@@ -1,4 +1,4 @@
 ﻿namespace Regulus.Remote.Tests
 {
-    
+
 }

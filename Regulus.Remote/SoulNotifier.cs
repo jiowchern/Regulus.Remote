@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
 
 namespace Regulus.Remote
 {
@@ -19,27 +17,27 @@ namespace Regulus.Remote
             _UnsupplyPassages = new List<SoulPassage>();
             _UnsupplyIdLandlord = new IdLandlord();
         }
-        
+
 
         private long _UnregisterSupply(PassageCallback handler)
         {
-            var passage = _SupplyPassages.FirstOrDefault(p => p.Handler == handler);
+            SoulPassage passage = _SupplyPassages.FirstOrDefault(p => p.Handler == handler);
             if (passage == null)
                 return 0;
             _SupplyPassages.Remove(passage);
             return passage.Id;
         }
-        
+
         private long _RegisterSupply(PassageCallback passage)
         {
-            var id = _SupplyIdLandlord.Rent();
+            long id = _SupplyIdLandlord.Rent();
             _SupplyPassages.Add(new SoulPassage(id, passage));
             return id;
         }
 
         private long _UnregisterUnsupply(PassageCallback handler)
         {
-            var passage = _UnsupplyPassages.FirstOrDefault(p => p.Handler == handler);
+            SoulPassage passage = _UnsupplyPassages.FirstOrDefault(p => p.Handler == handler);
             if (passage == null)
                 return 0;
             _UnsupplyPassages.Remove(passage);
@@ -48,8 +46,8 @@ namespace Regulus.Remote
 
         private long _RegisterUnsupply(PassageCallback passage)
         {
-            var id = _UnsupplyIdLandlord.Rent();
-            _UnsupplyPassages.Add(new SoulPassage(id , passage));
+            long id = _UnsupplyIdLandlord.Rent();
+            _UnsupplyPassages.Add(new SoulPassage(id, passage));
             return id;
         }
 
@@ -75,31 +73,31 @@ namespace Regulus.Remote
 
         internal void Supply(IGhost ghost, long notifier_id)
         {
-            var passage = _FindSupply(notifier_id);
-            if(passage != null)
+            PassageCallback passage = _FindSupply(notifier_id);
+            if (passage != null)
                 passage(ghost);
         }
 
         private PassageCallback _FindSupply(long notifier_id)
         {
-            var passage = _SupplyPassages.FirstOrDefault(p=>p.Id == notifier_id);
+            SoulPassage passage = _SupplyPassages.FirstOrDefault(p => p.Id == notifier_id);
             return passage?.Handler;
         }
 
         private PassageCallback _FindUnsupply(long notifier_id)
         {
-            var passage = _UnsupplyPassages.FirstOrDefault(p => p.Id == notifier_id);
+            SoulPassage passage = _UnsupplyPassages.FirstOrDefault(p => p.Id == notifier_id);
             return passage?.Handler;
         }
-        
+
 
         internal void Unsupply(IGhost ghost, long notifier_id)
         {
-            var passage = _FindUnsupply(notifier_id);
+            PassageCallback passage = _FindUnsupply(notifier_id);
             if (passage != null)
                 passage(ghost);
         }
 
-        
+
     }
 }

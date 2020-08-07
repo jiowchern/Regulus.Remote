@@ -8,9 +8,9 @@ namespace Regulus
 
         public DeserializeException(Exception exception)
         {
-            _Exception = exception;            
+            _Exception = exception;
         }
 
-        public Exception Base { get { return _Exception;  } }
+        public Exception Base { get { return _Exception; } }
     }
 }

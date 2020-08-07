@@ -4,7 +4,7 @@
     {
         private readonly long _Id;
 
-        public GhostIGpiA(long id , bool ret_type)
+        public GhostIGpiA(long id, bool ret_type)
         {
             this._Id = id;
         }
@@ -12,12 +12,12 @@
         {
             add
             {
-                
+
             }
 
             remove
             {
-                
+
             }
         }
 
@@ -25,12 +25,12 @@
         {
             add
             {
-                
+
             }
 
             remove
             {
-                
+
             }
         }
 
@@ -38,12 +38,12 @@
         {
             add
             {
-                
+
             }
 
             remove
             {
-                
+
             }
         }
 
@@ -51,12 +51,12 @@
         {
             add
             {
-                
+
             }
 
             remove
             {
-                
+
             }
         }
 
@@ -64,12 +64,12 @@
         {
             add
             {
-                
+
             }
 
             remove
             {
-                
+
             }
         }
 
@@ -77,12 +77,12 @@
         {
             add
             {
-                
+
             }
 
             remove
             {
-                
+
             }
         }
 
@@ -90,12 +90,12 @@
         {
             add
             {
-                
+
             }
 
             remove
             {
-                
+
             }
         }
 

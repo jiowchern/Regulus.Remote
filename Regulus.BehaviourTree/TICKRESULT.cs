@@ -3,7 +3,7 @@
 namespace Regulus.BehaviourTree
 {
     public enum TICKRESULT
-    {    
+    {
         SUCCESS,
 
         FAILURE,
@@ -20,9 +20,9 @@ namespace Regulus.Extension
     {
         public static TICKRESULT Not(this TICKRESULT result)
         {
-            if(result == TICKRESULT.FAILURE)
+            if (result == TICKRESULT.FAILURE)
                 return TICKRESULT.SUCCESS;
-            else if(result == TICKRESULT.SUCCESS)
+            else if (result == TICKRESULT.SUCCESS)
             {
                 return TICKRESULT.FAILURE;
             }

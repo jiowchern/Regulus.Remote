@@ -1,19 +1,19 @@
 ﻿namespace Regulus.Utility
 {
     public interface IBootable<T>
-	{
-		void Launch();
+    {
+        void Launch();
 
-		void Shutdown();
-	}
+        void Shutdown();
+    }
 
-	/// <summary>
-	///     啟動器
-	/// </summary>
-	public interface IBootable
-	{
-		void Launch();
+    /// <summary>
+    ///     啟動器
+    /// </summary>
+    public interface IBootable
+    {
+        void Launch();
 
-		void Shutdown();
-	}
+        void Shutdown();
+    }
 }

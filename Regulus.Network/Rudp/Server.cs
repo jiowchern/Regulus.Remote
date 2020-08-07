@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Regulus.Utility;
+using System;
 using System.Threading;
-using Regulus.Utility;
 
 namespace Regulus.Network.Rudp
 {
@@ -8,20 +8,20 @@ namespace Regulus.Network.Rudp
     {
         private readonly ISocket m_Socket;
         private readonly ITime m_Time;
-        private Host m_Host;
+        private readonly Host m_Host;
         private volatile bool m_Enable;
         private event Action<IStreamable> AcceptEvent;
 
         public Listener(ISocket Socket)
         {
-            m_Host = new Host(Socket,Socket);
+            m_Host = new Host(Socket, Socket);
             m_Socket = Socket;
             m_Time = new Time();
         }
 
         event Action<IStreamable> IListenable.AcceptEvent
         {
-            add { AcceptEvent += value; } 
+            add { AcceptEvent += value; }
             remove { AcceptEvent -= value; }
         }
 
@@ -35,10 +35,10 @@ namespace Regulus.Network.Rudp
 
         private void Run(object State)
         {
-            var updater = new Updater<Timestamp>();
+            Updater<Timestamp> updater = new Updater<Timestamp>();
             updater.Add(m_Host);
 
-            var wait = new AutoPowerRegulator(new PowerRegulator());
+            AutoPowerRegulator wait = new AutoPowerRegulator(new PowerRegulator());
             while (m_Enable)
             {
                 m_Time.Sample();

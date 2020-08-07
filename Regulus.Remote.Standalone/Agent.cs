@@ -10,14 +10,14 @@ namespace Regulus.Remote.Standalone
 {
     public class Service : IDisposable
     {
-        
+
         private readonly IProtocol _Protocol;
         readonly Regulus.Remote.Soul.Service _Service;
         readonly List<Regulus.Remote.Ghost.IAgent> _Agents;
-        readonly Dictionary<IAgent , IStreamable> _Streams;
+        readonly Dictionary<IAgent, IStreamable> _Streams;
         readonly IDisposable _ServiceDisposable;
         public Service(IBinderProvider entry, IProtocol protocol)
-        {        
+        {
             this._Protocol = protocol;
             _Service = new Regulus.Remote.Soul.Service(entry, protocol);
             _Agents = new List<Ghost.IAgent>();
@@ -27,11 +27,11 @@ namespace Regulus.Remote.Standalone
 
         public INotifierQueryable CreateNotifierQueryer()
         {
-            var agent = new Ghost.Agent(_Protocol) as IAgent;
-            var stream = new PeerStream();
-            agent.Start(new ReversePeer(stream));
+            IAgent agent = new Ghost.Agent(_Protocol) as IAgent;
+            Stream stream = new Stream();
+            agent.Start(new ReverseStream(stream));
             _Service.Join(stream);
-            _Streams.Add(agent , stream);
+            _Streams.Add(agent, stream);
             _Agents.Add(agent);
             return agent;
         }
@@ -39,7 +39,7 @@ namespace Regulus.Remote.Standalone
         public void DestroyNotifierQueryer(INotifierQueryable queryable)
         {
             IAgent remove = null;
-            foreach (var agent in _Agents)
+            foreach (IAgent agent in _Agents)
             {
                 if (agent != queryable)
                     continue;
@@ -54,7 +54,7 @@ namespace Regulus.Remote.Standalone
 
         public void Update()
         {
-            foreach (var agent in _Agents)
+            foreach (IAgent agent in _Agents)
             {
                 agent.Update();
             }

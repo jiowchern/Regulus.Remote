@@ -1,28 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-
-
-
-
-
-using NSubstitute;
-using Regulus.Serialization;
-
+﻿using NSubstitute;
 using Regulus.Remote;
+using Regulus.Serialization;
+using System;
 
 namespace RemotingTest
 {
-	
-	public class AutoReleaseTest
-	{
+
+    public class AutoReleaseTest
+    {
         [NUnit.Framework.Test()]
-		public void Test()
+        public void Test()
         {
 
-            var request = Substitute.For<IGhostRequest>();
-            var serializer = Substitute.For<ISerializer>();
+            IGhostRequest request = Substitute.For<IGhostRequest>();
+            ISerializer serializer = Substitute.For<ISerializer>();
 
-            var ar = new AutoRelease(request, serializer);
+            AutoRelease ar = new AutoRelease(request, serializer);
             _Register(ar);
             ar.Update();
 
@@ -36,7 +29,7 @@ namespace RemotingTest
 
         private static AutoRelease _Register(AutoRelease ar)
         {
-            var ghost = new Ghost();
+            Ghost ghost = new Ghost();
             ar.Register(ghost);
             return ar;
         }
