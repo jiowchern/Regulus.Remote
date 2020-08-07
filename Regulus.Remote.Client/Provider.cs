@@ -1,4 +1,6 @@
-﻿namespace Regulus.Remote.Client
+﻿using System;
+
+namespace Regulus.Remote.Client
 {
     public class Provider
     {
@@ -10,6 +12,11 @@
         public static Ghost.IAgent CreateAgent(IProtocol protocol)
         {
             return new Ghost.Agent(protocol);
+        }
+
+        public static Standalone.IService CreateService(IProtocol protocol, IEntry entry)
+        {
+            return new Standalone.Service(entry , protocol);
         }
     }
 }

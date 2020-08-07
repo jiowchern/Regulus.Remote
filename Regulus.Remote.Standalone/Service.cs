@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace Regulus.Remote.Standalone
 {
-    public class Service : IDisposable
+    public class Service : IService
     {
 
         private readonly IProtocol _Protocol;
