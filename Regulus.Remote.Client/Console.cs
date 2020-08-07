@@ -17,7 +17,7 @@ namespace Regulus.Remote.Client
         public Console(IEnumerable<Type> watch_types, IAgentProvider agent_provider, Regulus.Utility.Console.IViewer view, Regulus.Utility.Console.IInput input) : base(view, input)
         {
 
-            _WatchTypes = watch_types.Union(new Type[] { typeof(IConnect), typeof(IOnline) }).ToArray();
+            _WatchTypes = watch_types.Union(new Type[0] ).ToArray();
             _AgentProvider = agent_provider;
             _Users = new List<User>();
             _Updater = new Utility.Updater();

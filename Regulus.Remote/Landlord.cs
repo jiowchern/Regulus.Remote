@@ -4,19 +4,19 @@ namespace Regulus.Remote
 {
     internal class LongProvider : ILandlordProviable<long>
     {
-        internal static readonly long OnlineId = 1;
-        internal static readonly long ConnectId = 2;
+        
+        
         long _Current;
         public LongProvider()
         {
-            _Current = 3;
+            _Current = 0;
         }
 
 
 
         long ILandlordProviable<long>.Spawn()
         {
-            return _Current++;
+            return ++_Current;
         }
     }
     public class Landlord<T>

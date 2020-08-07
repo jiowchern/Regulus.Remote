@@ -44,7 +44,7 @@ namespace RemotingTest
             {
                 invokeEnable = true;
             };
-            ghostEventHandler.Invoke(3);
+            ghostEventHandler.Invoke(1);
 
 
             Assert.AreEqual(true, invokeEnable);
