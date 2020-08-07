@@ -15,16 +15,6 @@ namespace RemotingTest
             _Binder.Bind<ITestGPI>(this);
         }
 
-
-
-        void IBootable.Launch()
-        {
-        }
-
-        void IBootable.Shutdown()
-        {
-        }
-
         Value<int> ITestGPI.Add(int a, int b)
         {
             return a + b;

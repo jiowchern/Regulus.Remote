@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Regulus.Remote.Soul
 {
-    public class Service : IDisposable
+    public class Service : IService
     {
         private readonly IBinderProvider _Entry;
         private readonly IProtocol _Protocol;

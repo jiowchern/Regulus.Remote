@@ -2,6 +2,7 @@ using Regulus.Utility;
 using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace Regulus.Network.Tcp
 {
@@ -17,14 +18,49 @@ namespace Regulus.Network.Tcp
         {
             System.Net.Sockets.Socket socket = GetSocket();
             return System.Threading.Tasks.Task<bool>.Factory.FromAsync(
-                (handler, obj) => socket.BeginConnect(endpoint, handler, null), _Result, null);
+                (handler, obj) => socket.BeginConnect(endpoint, handler, null), _ResultConnect, null);
         }
 
-        private bool _Result(IAsyncResult Ar)
+        Task IConnectable.Disconnect()
+        {
+            System.Net.Sockets.Socket socket = GetSocket();
+            return System.Threading.Tasks.Task<bool>.Factory.FromAsync(
+                (handler, obj) => socket.BeginDisconnect(false, handler, null), _ResultDisconnect, null);
+            
+        }
+
+        private bool _ResultDisconnect(IAsyncResult arg)
         {
             bool result = false;
             try
             {
+
+                GetSocket().EndDisconnect(arg);
+                result = true;
+            }
+            catch (SocketException ex)
+            {
+                Singleton<Log>.Instance.WriteInfo(ex.ToString());
+            }
+            catch (ObjectDisposedException ode)
+            {
+                Singleton<Log>.Instance.WriteInfo(ode.ToString());
+            }
+            finally
+            {
+
+                Singleton<Log>.Instance.WriteInfo(string.Format("disconnect result {0}.", result));
+
+            }
+            return result;
+        }
+
+        private bool _ResultConnect(IAsyncResult Ar)
+        {
+            bool result = false;
+            try
+            {
+                
                 GetSocket().EndConnect(Ar);
                 result = true;
             }

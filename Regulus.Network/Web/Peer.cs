@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Net;
+using System.Net.Sockets;
 using System.Net.WebSockets;
 
 namespace Regulus.Network.Web
 {
-    public class Peer : IStreamable
+    public class Peer : IPeer
     {
         private readonly WebSocket _Socket;
         private readonly IPEndPoint localEndPoint;
@@ -19,11 +20,18 @@ namespace Regulus.Network.Web
             this.remoteEndPoint = remoteEndPoint;
         }
 
+        event Action<SocketError> IPeer.SocketErrorEvent
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
 
-
-
-
-
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
 
         System.Threading.Tasks.Task<int> IStreamable.Receive(byte[] buffer, int offset, int count)
         {

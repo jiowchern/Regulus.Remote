@@ -8,7 +8,7 @@ namespace Regulus.Network.Tcp
     public class WebListener : IListenable
     {
         private readonly System.Net.Sockets.Socket _Socket;
-        private event Action<IStreamable> _AcceptEvent;
+        private event Action<IPeer> _AcceptEvent;
 
         public WebListener()
         {
@@ -17,7 +17,7 @@ namespace Regulus.Network.Tcp
         }
 
 
-        event Action<IStreamable> IListenable.AcceptEvent
+        event Action<IPeer> IListenable.AcceptEvent
         {
             add { _AcceptEvent += value; }
             remove { _AcceptEvent -= value; }

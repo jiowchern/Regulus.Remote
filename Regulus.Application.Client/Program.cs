@@ -33,15 +33,13 @@ namespace Regulus.Application.Client
 
             ConsoleViewer view = new Regulus.Utility.ConsoleViewer();
             ConsoleInput input = new Regulus.Utility.ConsoleInput(view);
-            input.Launch();
-            entry.Launch();
+            input.Launch();            
             Remote.Client.Console console = new Regulus.Remote.Client.Console(protocol.GetInterfaceProvider().Types, agentProvider, view, input);
             console.CreateUser();
             console.Run(() =>
             {
                 input.Update();
-            });
-            entry.Shutdown();
+            });            
             input.Shutdown();
 
         }

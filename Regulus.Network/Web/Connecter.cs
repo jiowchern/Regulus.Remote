@@ -23,6 +23,11 @@ namespace Regulus.Network.Web
 
         }
 
+        Task IConnectable.Disconnect()
+        {
+            throw new NotImplementedException();
+        }
+
         private bool _ConnectResult(Task arg)
         {
             if (_Socket.State == WebSocketState.Open)

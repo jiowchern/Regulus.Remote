@@ -101,7 +101,7 @@ namespace Regulus.Remote.Soul
             _Responses = new System.Collections.Concurrent.ConcurrentQueue<ResponsePackage>();
             _Requests = new System.Collections.Concurrent.ConcurrentQueue<RequestPackage>();
 
-            _Enable = true;
+            
 
             _Reader = new PackageReader<RequestPackage>(protocol.GetSerialize());
             _Writer = new PackageWriter<ResponsePackage>(protocol.GetSerialize());
@@ -112,6 +112,7 @@ namespace Regulus.Remote.Soul
 
         public void Launch()
         {
+            _Enable = true;
             _Updater.Start();
             _Reader.DoneEvent += _RequestPush;
             _Reader.ErrorEvent += () => { _Enable = false; };
@@ -121,11 +122,12 @@ namespace Regulus.Remote.Soul
 
             _Writer.Start(_Peer);
 
+            
 
             PackageProtocolSubmit pkg = new PackageProtocolSubmit();
             pkg.VerificationCode = _Protocol.VerificationCode;
             _Push(ServerToClientOpCode.ProtocolSubmit, pkg.ToBuffer(_Serialize));
-
+            
         }
 
         public void Shutdown()
@@ -152,8 +154,10 @@ namespace Regulus.Remote.Soul
             System.Threading.Interlocked.Add(ref _TotalResponse, -_Responses.Count);
             System.Threading.Interlocked.Add(ref _TotalRequest, -_Requests.Count);
 
+
             _Updater.Stop();
 
+            SendBreakEvent();
         }
 
         event InvokeMethodCallback IRequestQueue.InvokeMethodEvent
@@ -169,13 +173,7 @@ namespace Regulus.Remote.Soul
         }
 
         void _Update()
-        {
-            if (_Enable == false)
-            {
-                SendBreakEvent();
-
-                return;
-            }
+        {            
 
             _SoulProvider.Update();
 

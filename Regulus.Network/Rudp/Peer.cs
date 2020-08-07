@@ -1,6 +1,9 @@
+using System;
+using System.Net.Sockets;
+
 namespace Regulus.Network.Rudp
 {
-    internal class Peer : IStreamable
+    internal class Peer : IPeer
     {
         private readonly Regulus.Network.Socket _RudpSocket;
 
@@ -10,9 +13,18 @@ namespace Regulus.Network.Rudp
 
         }
 
+        event Action<SocketError> IPeer.SocketErrorEvent
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
 
-
-
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
 
         System.Threading.Tasks.Task<int> IStreamable.Receive(byte[] buffer, int offset, int count)
         {

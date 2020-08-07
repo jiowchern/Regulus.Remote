@@ -1,13 +1,29 @@
 ﻿using Regulus.Network;
 using Regulus.Utility;
 using System;
-namespace Regulus.Remote.Standalone
-{
-}
+
+
+
 namespace Regulus.Remote.Ghost
 {
-    public partial class Agent : IAgent
+    public class Agent : IAgent
     {
+        
+        /// <summary>
+        ///     請求的封包
+        /// </summary>
+        public static int RequestPackages
+        {
+            get { return GhostSerializer.RequestQueueCount; }
+        }
+
+        /// <summary>
+        ///     回應的封包
+        /// </summary>
+        public static int ResponsePackages
+        {
+            get { return GhostSerializer.ResponseQueueCount; }
+        }
 
         private readonly GhostProvider _GhostProvider;
         private readonly GhostSerializer _GhostSerializer;
@@ -28,7 +44,7 @@ namespace Regulus.Remote.Ghost
             _GhostSerializer = ghostSerializer;
         }
 
-        public void Update()
+        void IAgent.Update()
         {
             _GhostSerializer.Update();
         }

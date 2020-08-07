@@ -17,8 +17,8 @@ namespace Regulus.Network.Web
 
 
         }
-        event Action<IStreamable> _AcceptEvent;
-        event Action<IStreamable> IListenable.AcceptEvent
+        event Action<IPeer> _AcceptEvent;
+        event Action<IPeer> IListenable.AcceptEvent
         {
             add
             {

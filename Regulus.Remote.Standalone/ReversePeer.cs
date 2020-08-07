@@ -4,23 +4,23 @@ namespace Regulus.Remote.Standalone
 {
     public class ReverseStream : Network.IStreamable
     {
-        private readonly Stream peer;
+        private readonly Stream _Peer;
 
         public ReverseStream(Stream peer)
         {
-            this.peer = peer;
+            this._Peer = peer;
         }
 
 
         Task<int> IStreamable.Receive(byte[] buffer, int offset, int count)
         {
-            return peer.Pop(buffer, offset, count);
+            return _Peer.Pop(buffer, offset, count);
 
         }
 
         Task<int> IStreamable.Send(byte[] buffer, int offset, int count)
         {
-            return peer.Push(buffer, offset, count);
+            return _Peer.Push(buffer, offset, count);
         }
     }
 }

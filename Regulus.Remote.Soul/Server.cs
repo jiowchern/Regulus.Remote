@@ -103,14 +103,14 @@ namespace Regulus.Remote.Soul
 
         void IBootable.Launch()
         {
-            _Entry.Launch();
+            //_Entry.Launch();
             Launch();
         }
 
         void IBootable.Shutdown()
         {
             Shutdown();
-            _Entry.Shutdown();
+            //_Entry.Shutdown();
         }
 
         /// <summary>

@@ -8,12 +8,12 @@ namespace Regulus.Network.Tcp
     public class Listener : IListenable
     {
         private readonly System.Net.Sockets.Socket _Socket;
-        private event Action<IStreamable> Acctpe;
+        private event Action<IPeer> _AcceptEvent;
 
-        event Action<IStreamable> IListenable.AcceptEvent
+        event Action<IPeer> IListenable.AcceptEvent
         {
-            add { Acctpe += value; }
-            remove { Acctpe -= value; }
+            add { _AcceptEvent += value; }
+            remove { _AcceptEvent -= value; }
         }
         public Listener()
         {
@@ -22,9 +22,6 @@ namespace Regulus.Network.Tcp
         }
         void IListenable.Bind(int Port)
         {
-
-
-
             _Socket.Bind(new IPEndPoint(IPAddress.Any, Port));
             _Socket.Listen(backlog: 5);
             _Socket.BeginAccept(Accept, state: null);
@@ -35,15 +32,9 @@ namespace Regulus.Network.Tcp
             try
             {
                 System.Net.Sockets.Socket socket = _Socket.EndAccept(Ar);
-                lock (Acctpe)
-                {
-                    Acctpe(new Peer(socket));
-                }
-
+                _AcceptEvent(new Peer(socket));
                 _Socket.BeginAccept(Accept, state: null);
             }
-
-
             catch (SocketException se)
             {
                 Singleton<Log>.Instance.WriteInfo(se.ToString());

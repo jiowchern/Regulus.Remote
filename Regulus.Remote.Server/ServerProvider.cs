@@ -1,21 +1,16 @@
 ﻿
 namespace Regulus.Remote.Server
 {
-    public static class ServiceProvider
+    public static class Provider
     {
-        public static Soul._Service CreateTcp(IEntry entry, int port, IProtocol protocol)
+        public static Soul.IService CreateService(IEntry entry,  IProtocol protocol)
         {
-            return new Soul._Service(entry, port, protocol, new Regulus.Network.Tcp.Listener());
+            return new Soul.Service(entry, protocol);
         }
 
-        public static Soul._Service CreateRudp(IEntry entry, int port, IProtocol protocol)
+        public static TcpSocket CreateTcp(Soul.IService service)
         {
-            return new Soul._Service(entry, port, protocol, new Regulus.Network.Rudp.Listener(new Regulus.Network.Rudp.UdpSocket()));
-        }
-
-        public static Soul._Service Create(IEntry entry, int port, IProtocol protocol, Regulus.Network.IListenable listenable)
-        {
-            return new Soul._Service(entry, port, protocol, listenable);
+            return new TcpSocket(service);
         }
     }
 }

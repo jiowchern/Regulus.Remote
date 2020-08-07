@@ -4,7 +4,7 @@ namespace Regulus.Network
 {
     public interface IListenable
     {
-        event Action<IStreamable> AcceptEvent;
+        event Action<IPeer> AcceptEvent;
         void Bind(int port);
         void Close();
     }

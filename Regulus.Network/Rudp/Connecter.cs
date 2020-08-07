@@ -1,4 +1,5 @@
 using System.Net;
+using System.Threading.Tasks;
 
 namespace Regulus.Network.Rudp
 {
@@ -43,6 +44,11 @@ namespace Regulus.Network.Rudp
             });
 
 
+        }
+
+        Task IConnectable.Disconnect()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
