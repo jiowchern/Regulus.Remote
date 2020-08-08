@@ -61,7 +61,8 @@ namespace Regulus.Remote
 
             internal IEnumerable<Tuple<int, object>> PropertyUpdate()
             {
-                foreach (PropertyUpdater pu in _PropertyUpdaters)
+                var propertys = _PropertyUpdaters.ToArray();
+                foreach (PropertyUpdater pu in propertys)
                 {
                     if (pu.Update())
                         yield return new Tuple<int, object>(pu.PropertyId, pu.Value);

@@ -35,6 +35,7 @@ namespace Regulus.Remote
         public PackageReader(ISerializer serializer)
         {
             _Serializer = serializer;
+            _DoneEvent += (pkg) => { };
         }
 
         public void Start(IStreamable peer)

@@ -34,6 +34,11 @@ namespace Regulus.Remote.Ghost
             _Sends = new Collection.Queue<RequestPackage>();
             _Receives = new Collection.Queue<ResponsePackage>();
 
+            _ResponseEvent += _Empty;
+        }
+
+        private void _Empty(ServerToClientOpCode arg1, byte[] arg2)
+        {
         }
 
         event Action<ServerToClientOpCode, byte[]> _ResponseEvent;
