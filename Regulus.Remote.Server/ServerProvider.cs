@@ -8,9 +8,9 @@ namespace Regulus.Remote.Server
             return new Soul.Service(entry, protocol);
         }
 
-        public static TcpSocket CreateTcp(Soul.IService service)
+        public static Tcp.Listener CreateTcp(Soul.IService service)
         {
-            return new TcpSocket(service);
+            return new Tcp.Listener(service);
         }
     }
 }

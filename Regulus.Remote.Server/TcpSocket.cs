@@ -2,14 +2,14 @@
 using Regulus.Remote.Soul;
 using System;
 
-namespace Regulus.Remote.Server
+namespace Regulus.Remote.Server.Tcp
 {
-    public class TcpSocket
+    public class Listener
     {
         private readonly IService _Service;
         readonly Regulus.Network.Tcp.Listener _Listener;
         readonly Regulus.Network.IListenable _Listenable;
-        public TcpSocket(IService service)
+        public Listener(IService service)
         {
             this._Service = service;
             
