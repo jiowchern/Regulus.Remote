@@ -14,9 +14,6 @@ namespace Regulus.Remote.Client
             return new Ghost.Agent(protocol);
         }
 
-        public static Standalone.IService CreateService(IProtocol protocol, IEntry entry)
-        {
-            return new Standalone.Service(entry , protocol);
-        }
+        
     }
 }
