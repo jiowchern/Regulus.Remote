@@ -20,39 +20,45 @@ This is server-client connection framework, available for Unity development.
 Download the latest ![Latest Version](https://img.shields.io/github/v/tag/jiowchern/Regulus) .
 ## Architecture
 <!-- 
-@startuml
-package "Project" {
-rectangle "Common(dll)" as Common
-rectangle "Server" as Server
-rectangle "Client" as Client
+@startuml 
+!include <c4/C4_Component.puml> 
+LAYOUT_WITH_LEGEND()
 
+title System Landscape diagram for Regulus Library
+
+System_Boundary(Regulus,"Regulus Library") {
+    Container_Boundary(Remote,"Remote"){
+        Component(RegulusClient,"Regulus.Remote.Client","Connect","Receive Ghost from the server.")
+        Component(RegulusServer,"Regulus.Remote.Server","Listen","Create Regulus.Remote.IBinder for each socket.")
+    }
+    Container_Boundary(RegulusProtocol,"Protocol"){
+        Component(RegulusCodeWriter,"Regulus.Application.Protocol.CodeWriter","Generate Tool","Refer to Common to generate Protocol code.")
+    }
+    
 }
 
-package "Regulus Library" {
-rectangle "Regulus.Remote.Client.dll" as Regulus.Remote.Client
-rectangle "Regulus.Remote.Server.dll" as Regulus.Remote.Server
+System_Boundary(Projects,"Projects") {
+    Component(Client,"Client","Application")
+    Component(Server,"Server","Application")
+    Component(Common,"Common","Library","Define the interface between the server and the client.")
+    Component(Protocol,"Protocol","A blank libaray project","Holds the generated protocol code.")
 }
 
-[Regulus.Remote.Server] <--- [Server]
-[Regulus.Remote.Client] <--- [Client]
-[Common] <.. [Client]
-[Common] <.. [Server]
+Rel_U(Server,RegulusServer,"bind","server object")
+Rel_U(RegulusClient,Client,"notice","server object's ghost")
+Rel_U(RegulusCodeWriter,Common,"read","parse define interfaces")
+Rel_U(RegulusCodeWriter,Protocol,"write","build ghost code")
+Rel_U(Protocol,Common,"ref","implementation")
+Rel_U(Server,Common,"ref","implementation")
+Rel_U(Client,Common,"ref","using")
 
-note left   of [Client]
- Unity or other compatible c#
- NetStandard2.0 project.
-end note
-
-note left   of [Server]
-   Server-side game logic.
-end note
-
-note left   of [Common] 
-   A common defined by the server and the client.
-end note
+Lay_D(Common,Protocol)
+Lay_D(Common,Server)
+Lay_D(Common,Client)
 @enduml
+
 -->
-![PlantUML model](http://www.plantuml.com/plantuml/svg/VL6xJiGm4Epz5QFGG14BKLCSeaK8tOdgHE7Ocs3m8t8Sf0ZnxpWsKJZTeyhEpcCdoMQ88iJH6jOB-IawGlKI_0V9ME6RXVGKhZDf--YjzUvQ6NDJGGme-BzYH-6BGYRBU60tcbpCP1aP-s7hpIrrena7FEacY30TtbvOlYNh8_4Im5ELd7UIlM0lvSxP2pkNsvzatd1VrpNsV-X8LSulgeAIgdokjERyt7P9P2xbm50R0VXsbUFLwJZ11_ZuJW7Isrv4tHY2l69ufhYBmYaHr1s_HLz-8sVa5ER8u-3bOe9bh0Uj29smIUOxBI-Pb-wp-m4o8oXgjIE5PaAgY26d8fNAKEONMJCtQHgj-GK0)  
+![PlantUML model](https://plantuml-server.kkeisuke.app/svg/ZLJ1Rjim3BtxApXVLWE1T-bn6DecHLh0s8QqHR6J8SjqebMM34bk4Gpzzr5MvCJ96imNo_JZu-CZxIlhc75zAo7v91INVOtmbLz-cL-MSzrsMg5oUKVllq5INF_wyVHOFjy_tfN5xVBs--8YIn8dd4Hus5g7BHHCrPQp3g4MR6rO2uqsiC9rBtiBXQWCCzia2UZoHlUgfi353Z1BZv1f1dyIe6kkbMD2eJdCQRL3d-BlQHQ00RmJ7dddKj3Jo9w7b3o4qrbAx0gvFwsGetX5M6wqTT0OtOBR85WqhsZoDFkuniC0EQaHmiHS26fP-M86cKCumjtV25MZ6Un2nZTWDNz15qk-V-p2GFFJQAUvbhCqdiuRecjyDi8T2hxkEYauSqAhF9BaUo0fNoALzjeVDV7xp8OKE-tvMwtyQHqXaG4uCKoxIDvF5u3Wlsa2Tj0_d0v67yN7COvpEv2ygx07ntcC0pW73WtuHV3tOLfX_sRf0XjoVDW2eSY7Xd642jqReZhO3Q357nxv82u_AV6F2P4cg2HJBo15nGpRGXUQfpTtMjPs88oMrlxjr5CoSeMoV8hD7grYHIj5L3k1kXgeirtAzDE8rYhj1CVZfCyMrlw3E4dUhr5qa9RRr-oOiVGF2DwDljap17j_tdo0EAfUo3eK7ZeUaqVelcX3UD5s4bjg8yvuuir_OQCR4snlXLeJ92dOjbp4NOaYicauL3iA1jeikK9Lqw_qBm00.svg)  
 
 ## Communication   
 Instead of client communicating with server in packets, server send object to client through interface.  
