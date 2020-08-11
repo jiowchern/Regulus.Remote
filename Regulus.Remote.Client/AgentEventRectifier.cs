@@ -5,7 +5,7 @@ using System.Linq;
 namespace Regulus.Remote.Client
 {
 
-    // jit
+    
     public class AgentEventRectifier : IDisposable
     {
         readonly System.Collections.Generic.List<System.Action> _RemoveHandlers;

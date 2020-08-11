@@ -2,7 +2,7 @@
 {
     public class Provider
     {
-        public static Standalone.IService CreateService(IProtocol protocol, IEntry entry)
+        public static Standalone.IService CreateService(IProtocol protocol, IBinderProvider entry)
         {
             return new Standalone.Service(entry, protocol);
         }

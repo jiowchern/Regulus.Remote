@@ -63,8 +63,7 @@ namespace Regulus.Remote
             }
             catch (SystemException e)
             {
-                /*todo : var info = string.Format("PackageWriter Error Write {0}.", _Peer.Connected);
-                Singleton<Log>.Instance.WriteInfo(info);*/
+                
                 if (ErrorEvent != null)
                 {
                     ErrorEvent();

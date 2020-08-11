@@ -7,28 +7,26 @@ namespace Regulus.Remote.Client
     public class Console : Regulus.Utility.WindowConsole
     {
 
-        private readonly Type[] _WatchTypes;
-        private readonly IAgentProvider _AgentProvider;
+        private readonly Type[] _WatchTypes;        
         readonly Regulus.Utility.Updater _Updater;
         readonly List<User> _Users;
 
         readonly Regulus.Remote.Client.AgentCommandRegister _Register;
-
-        public Console(IEnumerable<Type> watch_types, IAgentProvider agent_provider, Regulus.Utility.Console.IViewer view, Regulus.Utility.Console.IInput input) : base(view, input)
+        
+        public Console(IEnumerable<Type> watch_types, Regulus.Utility.Console.IViewer view, Regulus.Utility.Console.IInput input) : base(view, input)
         {
 
             _WatchTypes = watch_types.Union(new Type[0] ).ToArray();
-            _AgentProvider = agent_provider;
+            
             _Users = new List<User>();
             _Updater = new Utility.Updater();
             _Register = new AgentCommandRegister(Command);
         }
 
-        public User CreateUser()
+        public User CreateUser(INotifierQueryable notifier)
         {
-            Ghost.IAgent agent = _AgentProvider.Spawn();
-            AgentEventRectifier rectifier = new AgentEventRectifier(_WatchTypes, agent);
-            User user = new User(agent, rectifier);
+            AgentEventRectifier rectifier = new AgentEventRectifier(_WatchTypes, notifier);
+            User user = new User(rectifier);
             _Users.Add(user);
             // todo _Updater.Add(user.Agent);
             foreach (Tuple<Type, object> g in user.Ghosts)
@@ -49,8 +47,7 @@ namespace Regulus.Remote.Client
             {
                 _Register.Unregist(g.Item2);
             }
-            _Users.RemoveAll(u => u.Id == id);
-            // todo _Updater.Remove(user.Agent);
+            _Users.RemoveAll(u => u.Id == id);            
             user.Dispose();
         }
         protected override void _Launch()

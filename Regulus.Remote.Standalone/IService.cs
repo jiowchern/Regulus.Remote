@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Regulus.Remote.Ghost;
+using System;
 
 namespace Regulus.Remote.Standalone
 {
     public interface IService : IDisposable
     {
-        INotifierQueryable CreateNotifierQueryer();
-        void DestroyNotifierQueryer(INotifierQueryable queryable);
-
-        void Update();
+        void Join(IAgent agent);
+        void Leave(IAgent agent);
+        
     }
 }

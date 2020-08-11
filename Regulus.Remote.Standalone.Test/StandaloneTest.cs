@@ -15,13 +15,16 @@ namespace Regulus.Remote.Standalone.Test
             Serialization.ISerializer serializer = new Regulus.Serialization.Dynamic.Serializer();
             IProtocol protocol = ProtocolHelper.CreateProtocol(serializer);
 
-            Service service = new Regulus.Remote.Standalone.Service(entry, protocol);
-            INotifierQueryable queryable = service.CreateNotifierQueryer();
+            
+            IService service = Regulus.Remote.Standalone.Provider.CreateService(protocol, entry);
+
+            Ghost.IAgent agent = new Regulus.Remote.Ghost.Agent(protocol);
+            service.Join(agent);
             IGpiA retGpiA = null;
-            queryable.QueryNotifier<IGpiA>().Supply += gpi => retGpiA = gpi;
+            agent.QueryNotifier<IGpiA>().Supply += gpi => retGpiA = gpi;
             while (retGpiA == null)
-                service.Update();
-            service.DestroyNotifierQueryer(queryable);
+                agent.Update();
+            service.Leave(agent);
             System.IDisposable disposable = service;
             disposable.Dispose();
             Assert.AreNotEqual(null, retGpiA);

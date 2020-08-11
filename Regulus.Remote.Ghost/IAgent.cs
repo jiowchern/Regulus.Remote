@@ -3,12 +3,6 @@ using System;
 
 namespace Regulus.Remote.Ghost
 {
-
-    /// <summary>
-    ///     ¥N²z¾¹
-    /// </summary>
-    /// 
-
     public interface IAgent : INotifierQueryable
     {
 
