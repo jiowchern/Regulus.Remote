@@ -9,7 +9,7 @@ namespace Regulus.Network.Web
     {
         readonly ClientWebSocket _Socket;
 
-        public Connecter(ClientWebSocket socket) : base(socket, new IPEndPoint(IPAddress.Any, 0), new IPEndPoint(IPAddress.Any, 0))
+        public Connecter(ClientWebSocket socket) : base(socket)
         {
             _Socket = socket;
         }

@@ -1,14 +1,9 @@
 ﻿using Regulus.Network;
+using Regulus.Utility;
 using System;
 
 namespace Regulus.Remote
 {
-
-    internal interface ISocketReader
-    {
-        event OnByteDataCallback DoneEvent;
-        event OnErrorCallback ErrorEvent;
-    }
     internal class SocketBodyReader : ISocketReader
     {
         public event OnByteDataCallback DoneEvent;
@@ -21,13 +16,18 @@ namespace Regulus.Remote
 
         private int _Offset;
 
+        bool _Enable;
+
         public SocketBodyReader(IStreamable peer)
         {
+            _Enable = true;
             this._Peer = peer;
         }
 
+        
+
         internal void Read(int size)
-        {
+        {            
             _Offset = 0;
             _Buffer = new byte[size];
             try
@@ -56,7 +56,7 @@ namespace Regulus.Remote
             {
                 DoneEvent(_Buffer);
             }
-            else
+            else if(_Enable)                
             {
                 System.Threading.Tasks.Task<int> task = _Peer.Receive(
                     _Buffer,
@@ -64,6 +64,18 @@ namespace Regulus.Remote
                     _Buffer.Length - _Offset);
                 task.ContinueWith(t => _Readed(t.Result));
             }
+        }
+
+        
+
+        void IBootable.Launch()
+        {
+            
+        }
+
+        void IBootable.Shutdown()
+        {
+            _Enable = false;
         }
     }
 }

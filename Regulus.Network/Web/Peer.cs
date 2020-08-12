@@ -5,33 +5,17 @@ using System.Net.WebSockets;
 
 namespace Regulus.Network.Web
 {
-    public class Peer : IPeer
+    public class Peer : IStreamable
     {
         private readonly WebSocket _Socket;
-        private readonly IPEndPoint localEndPoint;
-        private readonly IPEndPoint remoteEndPoint;
+        
 
 
 
-        public Peer(WebSocket socket, IPEndPoint localEndPoint, IPEndPoint remoteEndPoint)
+        public Peer(WebSocket socket)
         {
-            _Socket = socket;
-            this.localEndPoint = localEndPoint;
-            this.remoteEndPoint = remoteEndPoint;
-        }
-
-        event Action<SocketError> IPeer.SocketErrorEvent
-        {
-            add
-            {
-                throw new NotImplementedException();
-            }
-
-            remove
-            {
-                throw new NotImplementedException();
-            }
-        }
+            _Socket = socket;            
+        }        
 
         System.Threading.Tasks.Task<int> IStreamable.Receive(byte[] buffer, int offset, int count)
         {
@@ -39,8 +23,18 @@ namespace Regulus.Network.Web
             ArraySegment<byte> segment = new ArraySegment<byte>(buffer, offset, count);
             return _Socket.ReceiveAsync(segment, cancellationToken).ContinueWith<int>((t) =>
             {
-                WebSocketReceiveResult r = t.Result;
-                return r.Count;
+                try
+                {
+                    WebSocketReceiveResult r = t.Result;
+                    return r.Count;
+                }
+                catch (Exception e)
+                {
+                    Regulus.Utility.Log.Instance.WriteInfo(_Socket.CloseStatus.ToString());
+                    
+                    
+                }
+                return 0;
             });
         }
 
@@ -56,6 +50,11 @@ namespace Regulus.Network.Web
             });
 
 
+        }
+
+        public bool IsValid()
+        {
+            return _Socket.State == WebSocketState.Open;
         }
     }
 }

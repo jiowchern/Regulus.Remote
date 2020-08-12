@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Regulus.Network.Web
 {
-    public class Listener : IListenable
+    public class Listener 
     {
         readonly System.Net.HttpListener _HttpListener;
         private readonly System.Threading.CancellationTokenSource _CancelGetContext;
@@ -17,8 +17,8 @@ namespace Regulus.Network.Web
 
 
         }
-        event Action<IPeer> _AcceptEvent;
-        event Action<IPeer> IListenable.AcceptEvent
+        event Action<Peer> _AcceptEvent;
+        public event Action<Peer> AcceptEvent
         {
             add
             {
@@ -31,7 +31,7 @@ namespace Regulus.Network.Web
             }
         }
 
-        void IListenable.Bind(int port)
+        public void Bind(int port)
         {
             _HttpListener.Prefixes.Add($"http://127.0.0.1:{port}/");
             _HttpListener.Start();
@@ -67,10 +67,10 @@ namespace Regulus.Network.Web
                 }
             }
 
-            _AcceptEvent(new Peer(webSocket, context.Request.LocalEndPoint, context.Request.RemoteEndPoint));
+            _AcceptEvent(new Peer(webSocket));
         }
 
-        void IListenable.Close()
+        public void Close()
         {
             _CancelGetContext.Cancel();
             _HttpListener.Close();

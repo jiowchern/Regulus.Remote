@@ -26,7 +26,7 @@ namespace Regulus.Remote
 
         private OnRequestPackageCallback _DoneEvent;
 
-        private ISocketReader _Reader;
+        readonly Regulus.Utility.StageMachine _Machine;        
 
         private IStreamable _Peer;
 
@@ -34,6 +34,7 @@ namespace Regulus.Remote
 
         public PackageReader(ISerializer serializer)
         {
+            _Machine = new StageMachine();
             _Serializer = serializer;
             _DoneEvent += (pkg) => { };
         }
@@ -48,11 +49,13 @@ namespace Regulus.Remote
 
         private void _ReadHead()
         {
-            SocketHeadReader readHead = new SocketHeadReader(_Peer);
-            _Reader = readHead;
-            _Reader.DoneEvent += _ReadBody;
-            _Reader.ErrorEvent += ErrorEvent;
+            var readHead = new SocketHeadReader(_Peer);
             readHead.Read();
+            ISocketReader reader = readHead;
+            reader.DoneEvent += _ReadBody;
+            reader.ErrorEvent += ErrorEvent;            
+            _Machine.Push(readHead);
+
         }
 
         private void _ReadBody(byte[] bytes)
@@ -61,11 +64,12 @@ namespace Regulus.Remote
             Regulus.Serialization.Varint.BufferToNumber(bytes, 0, out len);
             int bodySize = (int)len;
 
-            SocketBodyReader reader = new SocketBodyReader(_Peer);
-            _Reader = reader;
-            _Reader.DoneEvent += _Package;
-            _Reader.ErrorEvent += ErrorEvent;
-            reader.Read(bodySize);
+            var bodyReader = new SocketBodyReader(_Peer);
+            bodyReader.Read(bodySize);
+            ISocketReader reader = bodyReader;
+            reader.DoneEvent += _Package;
+            reader.ErrorEvent += ErrorEvent;            
+            _Machine.Push(bodyReader);
         }
 
         private void _Package(byte[] bytes)
@@ -87,6 +91,7 @@ namespace Regulus.Remote
 
         public void Stop()
         {
+            _Machine.Clean();
             _Stop = true;
 
             Singleton<Log>.Instance.WriteInfo("pakcage read stop.");
