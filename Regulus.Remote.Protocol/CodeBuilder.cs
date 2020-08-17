@@ -19,9 +19,10 @@ namespace Regulus.Remote.Protocol
 
 
 
-        public void Build(Type[] types)
+        public void Build(System.Reflection.Assembly assembly)
         {
-
+            var baseName = assembly.FullName;
+            Type[] types = assembly.GetExportedTypes();
             List<string> codeGpis = new List<string>();
             List<string> codeEvents = new List<string>();
 
@@ -70,7 +71,6 @@ namespace Regulus.Remote.Protocol
                     {
                         if (methodInfo.IsPublic && methodInfo.IsSpecialName == false)
                         {
-                            //String.Format("typeof({0}).GetMethod(\"{1}\")", type.FullName, methodInfo.Name)
                             memberMapMethodBuilder.Add(_BuildGetTypeMethodInfo(methodInfo));
                         }
                     }
@@ -97,17 +97,9 @@ namespace Regulus.Remote.Protocol
             string addTypeCode = string.Join("\n", addGhostType.ToArray());
             string addDescriberCode = string.Join(",", _GetSerializarType(serializerTypes));
             string addEventCode = string.Join("\n", addEventType.ToArray());
-            //var tokens = protocol_name.Split(new[] { '.' });
-            //var procotolName = tokens.Last();
-
-            // var providerNamespace = string.Join(".", tokens.Take(tokens.Count() - 1).ToArray());
+            
             string providerNamespaceHead = "";
-            string providerNamespaceTail = "";
-            /*if (string.IsNullOrEmpty(providerNamespace) == false)
-            {
-                providerNamespaceHead = $"namespace {providerNamespace}{{ ";
-                providerNamespaceTail = "}";
-            }*/
+            string providerNamespaceTail = "";            
 
 
             StringBuilder builder = new StringBuilder();
@@ -126,26 +118,24 @@ namespace Regulus.Remote.Protocol
             {providerNamespaceHead}
                 public class {procotolName} : Regulus.Remote.IProtocol
                 {{
-                    Regulus.Remote.InterfaceProvider _InterfaceProvider;
-                    Regulus.Remote.EventProvider _EventProvider;
-                    Regulus.Remote.MemberMap _MemberMap;
-                    Regulus.Serialization.ISerializer _Serializer;
+                    readonly Regulus.Remote.InterfaceProvider _InterfaceProvider;
+                    readonly Regulus.Remote.EventProvider _EventProvider;
+                    readonly Regulus.Remote.MemberMap _MemberMap;
+                    readonly Regulus.Serialization.ISerializer _Serializer;
+                    readonly System.Reflection.Assembly _Base;
                     public {procotolName}()
                     {{
+                        _Base = System.Reflection.Assembly.Load(""{baseName}"");
                         var types = new Dictionary<Type, Type>();
                         {addTypeCode}
                         _InterfaceProvider = new Regulus.Remote.InterfaceProvider(types);
-
                         var eventClosures = new List<Regulus.Remote.IEventProxyCreator>();
                         {addEventCode}
                         _EventProvider = new Regulus.Remote.EventProvider(eventClosures);
-
                         _Serializer = new Regulus.Serialization.Serializer(new Regulus.Serialization.DescriberBuilder({addDescriberCode}).Describers);
-
-
                         _MemberMap = new Regulus.Remote.MemberMap(new System.Reflection.MethodInfo[] {{{addMemberMapMethodCode}}} ,new System.Reflection.EventInfo[]{{ {addMemberMapEventCode} }}, new System.Reflection.PropertyInfo[] {{{addMemberMapPropertyCode} }}, new System.Tuple<System.Type, System.Func<Regulus.Remote.IProvider>>[] {{{addMemberMapinterfaceCode}}});
                     }}
-
+                    System.Reflection.Assembly Regulus.Remote.IProtocol.Base => _Base;
                     byte[] Regulus.Remote.IProtocol.VerificationCode {{ get {{ return new byte[]{{{verificationCode}}};}} }}
                     Regulus.Remote.InterfaceProvider Regulus.Remote.IProtocol.GetInterfaceProvider()
                     {{

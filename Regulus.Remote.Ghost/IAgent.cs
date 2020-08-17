@@ -35,7 +35,7 @@ namespace Regulus.Remote.Ghost
         event Action<byte[], byte[]> ErrorVerifyEvent;
 
 
-        void Start(IStreamable peer);
+        void Start(IStreamable stream);
         void Stop();
 
         void Update();

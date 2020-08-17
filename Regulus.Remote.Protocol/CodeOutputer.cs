@@ -22,7 +22,7 @@ namespace Regulus.Remote.Protocol
             builder.ProviderEvent += (name, code) => _WriteProvider(name, code, outPath);
             builder.EventEvent += (type_name, event_name, code) => _WriteEvent(type_name, event_name, code, outPath);
             builder.GpiEvent += (type_name, code) => _WriteType(type_name, code, outPath);
-            builder.Build(inputAssembly.GetExportedTypes());
+            builder.Build(inputAssembly);
         }
 
         private static void _WriteType(string type_name, string code, string outPath)

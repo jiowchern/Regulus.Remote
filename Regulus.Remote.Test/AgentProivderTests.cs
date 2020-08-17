@@ -2,6 +2,7 @@
 using Regulus.Remote;
 using Regulus.Serialization;
 using System.Linq;
+using System.Reflection;
 
 namespace Regulus.Utility.Client.JIT.Tests
 {
@@ -14,6 +15,8 @@ namespace Regulus.Utility.Client.JIT.Tests
     public class TestProtocol : Regulus.Remote.IProtocol
     {
         byte[] IProtocol.VerificationCode => throw new System.NotImplementedException();
+
+        Assembly IProtocol.Base => throw new System.NotImplementedException();
 
         EventProvider IProtocol.GetEventProvider()
         {

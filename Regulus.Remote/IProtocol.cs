@@ -4,6 +4,7 @@ namespace Regulus.Remote
 {
     public interface IProtocol
     {
+        System.Reflection.Assembly Base { get; }
         EventProvider GetEventProvider();
         InterfaceProvider GetInterfaceProvider();
 

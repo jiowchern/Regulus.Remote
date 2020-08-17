@@ -9,56 +9,31 @@
 <!-- [![Gitter](https://badges.gitter.im/JoinChat.svg)](https://gitter.im/Regulus-Library) -->
 
 
-## What is this doing?
+## Introduce
 This is server-client connection framework, available for Unity development.
+
 ## Feature
 * Support .Net Standard 2.0
 * Remote method invocation
 * Support Unity il2cpp
-* Customizable data stream
 ## Latest Version
 Download the latest ![Latest Version](https://img.shields.io/github/v/tag/jiowchern/Regulus) .
 ## Architecture
 <!-- 
 @startuml 
-!include <c4/C4_Component.puml> 
+!include <c4/C4_Context.puml> 
+LAYOUT_LEFT_RIGHT
 LAYOUT_WITH_LEGEND()
 
-title System Landscape diagram for Regulus Library
+System(Regulus,"Regulus Library")
+Person(Server,"Server","Implement a interface IFoo.")
+Person(Client,"Client","Communicate with the server through this interface IFoo.")
 
-System_Boundary(Regulus,"Regulus Library") {
-    Container_Boundary(Remote,"Remote"){
-        Component(RegulusClient,"Regulus.Remote.Client","Connect","Receive Ghost from the server.")
-        Component(RegulusServer,"Regulus.Remote.Server","Listen","Create Regulus.Remote.IBinder for each socket.")
-    }
-    Container_Boundary(RegulusProtocol,"Protocol"){
-        Component(RegulusCodeWriter,"Regulus.Application.Protocol.CodeWriter","Generate Tool","Refer to Common to generate Protocol code.")
-    }
-    
-}
-
-System_Boundary(Projects,"Projects") {
-    Component(Client,"Client","Application")
-    Component(Server,"Server","Application")
-    Component(Common,"Common","Library","Define the interface between the server and the client.")
-    Component(Protocol,"Protocol","A blank libaray project","Holds the generated protocol code.")
-}
-
-Rel_U(Server,RegulusServer,"bind","server object")
-Rel_U(RegulusClient,Client,"notice","server object's ghost")
-Rel_U(RegulusCodeWriter,Common,"read","parse define interfaces")
-Rel_U(RegulusCodeWriter,Protocol,"write","build ghost code")
-Rel_U(Protocol,Common,"ref","implementation")
-Rel_U(Server,Common,"ref","implementation")
-Rel_U(Client,Common,"ref","using")
-
-Lay_D(Common,Protocol)
-Lay_D(Common,Server)
-Lay_D(Common,Client)
+Rel(Regulus,Client,"notice")
+Rel(Server,Regulus,"bind")
 @enduml
-
 -->
-![PlantUML model](https://plantuml-server.kkeisuke.app/svg/ZLJ1Rjim3BtxApXVLWE1T-bn6DecHLh0s8QqHR6J8SjqebMM34bk4Gpzzr5MvCJ96imNo_JZu-CZxIlhc75zAo7v91INVOtmbLz-cL-MSzrsMg5oUKVllq5INF_wyVHOFjy_tfN5xVBs--8YIn8dd4Hus5g7BHHCrPQp3g4MR6rO2uqsiC9rBtiBXQWCCzia2UZoHlUgfi353Z1BZv1f1dyIe6kkbMD2eJdCQRL3d-BlQHQ00RmJ7dddKj3Jo9w7b3o4qrbAx0gvFwsGetX5M6wqTT0OtOBR85WqhsZoDFkuniC0EQaHmiHS26fP-M86cKCumjtV25MZ6Un2nZTWDNz15qk-V-p2GFFJQAUvbhCqdiuRecjyDi8T2hxkEYauSqAhF9BaUo0fNoALzjeVDV7xp8OKE-tvMwtyQHqXaG4uCKoxIDvF5u3Wlsa2Tj0_d0v67yN7COvpEv2ygx07ntcC0pW73WtuHV3tOLfX_sRf0XjoVDW2eSY7Xd642jqReZhO3Q357nxv82u_AV6F2P4cg2HJBo15nGpRGXUQfpTtMjPs88oMrlxjr5CoSeMoV8hD7grYHIj5L3k1kXgeirtAzDE8rYhj1CVZfCyMrlw3E4dUhr5qa9RRr-oOiVGF2DwDljap17j_tdo0EAfUo3eK7ZeUaqVelcX3UD5s4bjg8yvuuir_OQCR4snlXLeJ92dOjbp4NOaYicauL3iA1jeikK9Lqw_qBm00.svg)  
+![s](https://plantuml-server.kkeisuke.app/svg/RL3BJWCn3BpxAqnEMsbLBZqYLBJqiT8Aq7OHuhHAiwQDb4ULE43_dlJ9fITRCvxnsDF8Cd2o1k5EEsNIGFYW9lVLfA-yO_hbyIwpZmW0pTFdwtlNDxDvrxVrOjbTa8-wMsPuCNjvBaO0gtraiaLBcsHIBCMvmKQlWmnxCO8t2j6xOaNXcq8fJbMKehOxGvOSeqITjuSlgGZhkVVZVrLbT9uenQbcLUMjJKuhoOG_chV8My9uzCnjy6bpW7IyOGdGahaclJWxprfHfW_aEUJrchLsmr49Kt93_iqV.svg)
 
 ## Communication   
 Instead of client communicating with server in packets, server send object to client through interface.  
@@ -151,14 +126,11 @@ The current communication capabilities of the interface are as follows...
 > ```short, ushort, int, uint, bool, logn, ulong, float, decimal, double, System.Guid, char, byte, enum, string``` and array of the types.
           
 
-## Set up
+## Getting Start
 This is a server-client framework, so it requires at least four projects: **Common**, **Protocol**, **Server** and **Client**.
-#### Prepare
-Download the library.
-```powershell
-Sample>git submodule add https://github.com/jiowchern/Regulus.git Regulus
-```
-#### Protocol
+
+
+#### Common And Protocol 
 Create a protocol component to handle the communication requirements between client and server.  
 
 **Create Common Project.**
@@ -221,20 +193,11 @@ namespace Server
 		void IBinderProvider.AssignBinder(IBinder binder)
 		{
 			// IBinder is what you get when your client completes the connection.
-		}
-		void IBootable.Launch()
-		{
-			Console.WriteLine("Server launch.");
-		}
-
-		void IBootable.Shutdown()
-		{
-			Console.WriteLine("Server shutdown.");
-		}
+		}		
 	}
 }
 ```
-Set up the server.  
+Create service.
 ```csharp
 namespace Server
 {
@@ -245,12 +208,13 @@ namespace Server
 		var protocol = Regulus.Remote.Protocol.ProtocolProvider.Create(protocolAsm);
 		// your server entry.
 		var entry = new Entry();
-		int port = 1130;
+		
 		// Create service.
-		var service = Regulus.Remote.Server.ServiceProvider.CreateTcp(entry, port, protocol);
-		service.Launch();
-		// You need to call Shutdown to release the resource when service ends.
-		service.Shutdown();
+		var service = Regulus.Remote.Server.Provider.CreateService(entry, protocol);
+		
+		entry.Run();
+	
+		service.Dispose();
 	}
 }
 ```
@@ -268,59 +232,90 @@ Add references to **Client.csproj**.
 ```
 Create a ```Regulus.Remote.IAgent``` to handle the connection and receive objects from the server.
 ```csharp
-var agent = Regulus.Remote.Client.AgentProvider.CreateTcp(protocolAsm);
+var agent = Regulus.Remote.Client.Provider.CreateAgent(protocol);
+// The agent uses single-thread continuations to process server requests and responses, so it needs to keep calling this method to stay operational. 
+agent.Update(); 
 ```
-<!-- Three methods that ```Regulus.Remote.IAgent``` must invoke.  
-1.```Regulus.Remote.IAgent.Launch()``` and 2.```Regulus.Remote.IAgent.Shutdown()``` , Initialization and release of agents.  
-3.```Regulus.Remote.IAgent.Update()``` , The agent uses single-thread continuations to process server requests and responses, so it needs to keep calling this method to stay operational.  -->
+
 Receive objects from the server side.
 ```csharp
 var notifier = agent.QueryNotifier<Common.IFoo>();
 notifier.Supply += _AddFoo; // The Supply is the Bind for the corresponding server.
 notifier.Unsupply += _RemoveFoo;// The Unsupply is the Unbind for the corresponding server.
 ```
-Connect also get Regulus.Remote.IConnect using notifier.
+
+## Connection
+By default, Tcp connectivity is provided.  
+**Listener**  
 ```csharp
-var notifier = agent.QueryNotifier<Regulus.Remote.IConnect>();
-notifier.Supply += (c)=>c.Connect( ipaddress , port );
+var listener = Regulus.Remote.Server.CreateTcp(service);
+listener.Bind(port);
+listener.Close()
 ```
-
-
-
-
-
-
-
-	
-
-
-
-## Extension
-#### Customizable data stream
-If you need to customize the communication mode of the data stream, you can use the following method to expand.  
-**Server**
+**Connecter**
 ```csharp
-class CustomListener : Regulus.Network.IListenable
+var connecter = Regulus.Remote.Client.CreateTcp(agent);
+var online = connecter.Connect(ipaddress);
+if(online != null)
+	// connect success.
+else
+	// connect failed.
+```
+## Extension
+If you want to customize. Simply provide ```IService``` and ```IAgent``` a **data stream**.  
+Implement ```Regulus.Network.IStreamable```.  
+```csharp
+namespace Regulus.Network
 {
-	// todo : Implement methods.
+    
+    public interface IStreamable
+    {
+        /// <summary>
+        ///     Receive data streams.
+        /// </summary>
+        /// <param name="buffer">Stream instance.</param>
+        /// <param name="offset">Start receiving position.</param>
+        /// <param name="count">Count of byte received.</param>
+        /// <returns>Actual count of byte received.</returns>
+        System.Threading.Tasks.Task<int> Receive(byte[] buffer, int offset, int count);
+        /// <summary>
+        ///     Send data streams.
+        /// </summary>
+        /// <param name="buffer">Stream instance.</param>
+        /// <param name="offset">Start send position.</param>
+        /// <param name="count">Count of byte send.</param>
+        /// <returns>Actual count of byte send.</returns>
+        System.Threading.Tasks.Task<int> Send(byte[] buffer, int offset, int count);
+    }
 }
 ```
+**Server**
 ```csharp
-var customListener = new CustomListener();
-Regulus.Remote.Server.ServiceProvider.Create(entry , port , protocol , customListener );
+class Server
+{
+	Regulus.Remote.Soul.IService _Service;
+	// When listening on a connection.
+	void Acctpt(Regulus.Network.IStreamable stream)
+	{
+		_Service.Join(stream);
+	}
+}
 ```
 **Client**
 ```csharp
-class CustomConnectProvider : Regulus.Network.IConnectProvidable
+class Client
 {
-	// todo : Implement methods.
+	void Start()
+	{
+		// custom connecter
+		var connecter = CreateFromCustom();
+		var agent = Regulus.Remote.Client.provider.CreateAgent(protocol);
+		agent.Start(connecter);
+		// begin your connect.
+		connecter.Connect("127.0.0.1:21861");
+	}
 }
 ```
-```csharp
-var customConnectProvider = new CustomConnectProvider();
-Regulus.Remote.Client.AgentProvider.Create(protocol , customConnectProvider );
-```
-
 ## Sample 
 **[Regulus.Samples](https://github.com/jiowchern/Regulus.Samples)** ,This repository shows applications such as chat rooms.  
 
