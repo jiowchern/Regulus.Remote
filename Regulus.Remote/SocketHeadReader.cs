@@ -35,13 +35,13 @@ namespace Regulus.Remote
 
         private void _Readed(int read_size)
         {
-
+            if (!_Enable)
+                return;
             if (_ReadData(read_size))
             {
-                if (_DoneEvent != null)
-                    _DoneEvent(_Buffer.ToArray());
+                _DoneEvent(_Buffer.ToArray());
             }
-            else if (_Enable)
+            else 
             {
                 _Read();
             }
@@ -70,7 +70,13 @@ namespace Regulus.Remote
 
         void IBootable.Shutdown()
         {
+            _DoneEvent = _Empty;
             _Enable = false;
+        }
+
+        private void _Empty(byte[] bytes)
+        {
+            
         }
 
         private OnByteDataCallback _DoneEvent;

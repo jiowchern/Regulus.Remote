@@ -16,7 +16,7 @@ namespace Regulus.Remote
 
         private int _Offset;
 
-        bool _Enable;
+        volatile bool _Enable;
 
         public SocketBodyReader(IStreamable peer)
         {
@@ -32,7 +32,7 @@ namespace Regulus.Remote
             _Buffer = new byte[size];
             try
             {
-                System.Threading.Tasks.Task<int> task = _Peer.Receive(_Buffer, _Offset, _Buffer.Length - _Offset);
+                System.Threading.Tasks.Task<int> task = _Peer.Receive(_Buffer, _Offset, _Buffer.Length - _Offset);                
                 task.ContinueWith(t => _Readed(t.Result));
 
 
@@ -48,15 +48,18 @@ namespace Regulus.Remote
 
         private void _Readed(int read_count)
         {
+            if (!_Enable)
+                return;
             int readSize = read_count;
 
             _Offset += readSize;
             NetworkMonitor.Instance.Read.Set(readSize);
             if (_Offset == _Buffer.Length)
-            {
+            {            
+                
                 DoneEvent(_Buffer);
             }
-            else if(_Enable)                
+            else                 
             {
                 System.Threading.Tasks.Task<int> task = _Peer.Receive(
                     _Buffer,
@@ -75,7 +78,13 @@ namespace Regulus.Remote
 
         void IBootable.Shutdown()
         {
+            DoneEvent = _Empty;
             _Enable = false;
+        }
+
+        private void _Empty(byte[] bytes)
+        {
+            
         }
     }
 }

@@ -36,7 +36,7 @@ namespace Regulus.Remote
         {
             _Machine = new StageMachine();
             _Serializer = serializer;
-            _DoneEvent += (pkg) => { };
+            //_DoneEvent += (pkg) => { };
         }
 
         public void Start(IStreamable peer)
@@ -50,10 +50,11 @@ namespace Regulus.Remote
         private void _ReadHead()
         {
             var readHead = new SocketHeadReader(_Peer);
-            readHead.Read();
+            
             ISocketReader reader = readHead;
             reader.DoneEvent += _ReadBody;
-            reader.ErrorEvent += ErrorEvent;            
+            reader.ErrorEvent += ErrorEvent;
+            readHead.Read();
             _Machine.Push(readHead);
 
         }
@@ -65,10 +66,11 @@ namespace Regulus.Remote
             int bodySize = (int)len;
 
             var bodyReader = new SocketBodyReader(_Peer);
-            bodyReader.Read(bodySize);
             ISocketReader reader = bodyReader;
             reader.DoneEvent += _Package;
-            reader.ErrorEvent += ErrorEvent;            
+            reader.ErrorEvent += ErrorEvent;
+            bodyReader.Read(bodySize);
+            
             _Machine.Push(bodyReader);
         }
 
