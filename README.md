@@ -1,5 +1,6 @@
 # Regulus Library
 [![Maintainability](https://api.codeclimate.com/v1/badges/78946edf1189eb49dfbd/maintainability)](https://codeclimate.com/github/jiowchern/Regulus/maintainability)
+[![Actions Status](https://github.com/jiowchern/Regulus/workflows/Build/badge.svg)](https://github.com/jiowchern/Regulus/actions)
 [![Build status](https://ci.appveyor.com/api/projects/status/2wtsf61u87qg62cc?svg=true)](https://ci.appveyor.com/project/jiowchern/regulus)
 [![Coverage Status](https://coveralls.io/repos/github/jiowchern/Regulus/badge.svg?branch=)](https://coveralls.io/github/jiowchern/Regulus?branch=)
 ![commit last date](https://img.shields.io/github/last-commit/jiowchern/regulus)
