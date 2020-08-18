@@ -6,7 +6,10 @@ namespace Regulus.Remote.Ghost
     public interface IAgent : INotifierQueryable
     {
 
-
+        /// <summary>
+        ///     Active
+        /// </summary>
+        bool Active { get; }
         /// <summary>
         ///     Ping
         /// </summary>
@@ -24,15 +27,7 @@ namespace Regulus.Remote.Ghost
         event Action<string, string> ErrorMethodEvent;
 
 
-        /// <summary>
-        /// 驗證錯誤
-        /// 代表與伺服器端的驗證碼不符
-        /// 事件參數:
-        ///     1.伺服器驗證碼
-        ///     2.本地驗證碼
-        /// 會發生此訊息通常是因為client與server版本不相容所致.
-        /// </summary>
-        event Action<byte[], byte[]> ErrorVerifyEvent;
+       
 
 
         void Start(IStreamable stream);

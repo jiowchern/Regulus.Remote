@@ -26,18 +26,23 @@ namespace Regulus.Serialization.Dynamic
 
         ITypeDescriber IDescribersFinder.Get(Type id)
         {
-            ITypeDescriber des;
-            if (!_TypeDescribers.TryGetValue(id, out des))
+            lock(_TypeDescribers)
             {
-                IEnumerable<ITypeDescriber> dess = new TypeIdentifier(id, this).Describers;
-                foreach (ITypeDescriber typeDescriber in dess)
+                ITypeDescriber des;
+                if (!_TypeDescribers.TryGetValue(id, out des))
                 {
-                    if (!_TypeDescribers.ContainsKey(id))
-                        _TypeDescribers.Add(id, typeDescriber);
+                    IEnumerable<ITypeDescriber> dess = new TypeIdentifier(id, this).Describers;
+                    foreach (ITypeDescriber typeDescriber in dess)
+                    {
+                        if (!_TypeDescribers.ContainsKey(id))
+                            _TypeDescribers.Add(id, typeDescriber);
+                    }
+                    return dess.First();
                 }
-                return dess.First();
+                return des;
             }
-            return des;
+
+            
         }
     }
 }

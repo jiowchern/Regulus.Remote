@@ -8,22 +8,6 @@ namespace Regulus.Remote.Ghost
 {
     public class Agent : IAgent
     {
-        
-        /// <summary>
-        ///     請求的封包
-        /// </summary>
-        public static int RequestPackages
-        {
-            get { return GhostSerializer.RequestQueueCount; }
-        }
-
-        /// <summary>
-        ///     回應的封包
-        /// </summary>
-        public static int ResponsePackages
-        {
-            get { return GhostSerializer.ResponseQueueCount; }
-        }
 
         private readonly GhostProvider _GhostProvider;
         private readonly GhostSerializer _GhostSerializer;
@@ -53,16 +37,17 @@ namespace Regulus.Remote.Ghost
         {
             Singleton<Log>.Instance.WriteInfo("Agent Launch.");
             _GhostProvider.ErrorMethodEvent += _ErrorMethodEvent;
-            _GhostProvider.ErrorVerifyEvent += _ErrorVerifyEvent;
-            _GhostSerializer.Start(peer);
+            
             _GhostProvider.Start();
+            _GhostSerializer.Start(peer);
+            
         }
 
         void IAgent.Stop()
         {
-            _GhostProvider.Stop();
             _GhostSerializer.Stop();
-            _GhostProvider.ErrorVerifyEvent -= _ErrorVerifyEvent;
+            _GhostProvider.Stop();            
+            
             _GhostProvider.ErrorMethodEvent -= _ErrorMethodEvent;
 
             Singleton<Log>.Instance.WriteInfo("Agent Shutdown.");
@@ -78,6 +63,8 @@ namespace Regulus.Remote.Ghost
             get { return _Ping; }
         }
 
+        bool IAgent.Active => _GhostProvider.Active;
+
         private event Action<string, string> _ErrorMethodEvent;
 
         event Action<string, string> IAgent.ErrorMethodEvent
@@ -86,13 +73,7 @@ namespace Regulus.Remote.Ghost
             remove { this._ErrorMethodEvent -= value; }
         }
 
-        private event Action<byte[], byte[]> _ErrorVerifyEvent;
-
-        event Action<byte[], byte[]> IAgent.ErrorVerifyEvent
-        {
-            add { this._ErrorVerifyEvent += value; }
-            remove { this._ErrorVerifyEvent -= value; }
-        }
+        
 
 
     }

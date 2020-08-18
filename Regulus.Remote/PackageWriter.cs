@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace Regulus.Remote
 {
@@ -11,7 +12,7 @@ namespace Regulus.Remote
     {
         private readonly ISerializer _Serializer;
 
-
+        
         public event OnErrorCallback ErrorEvent;
 
         private byte[] _Buffer;
@@ -20,65 +21,56 @@ namespace Regulus.Remote
 
         private volatile bool _Stop;
 
-
-
+        
+        readonly System.Threading.Tasks.Task _Task;
+        System.Collections.Concurrent.ConcurrentQueue<TPackage[]> _SendPkgs;
 
         public PackageWriter(ISerializer serializer)
         {
 
             _Serializer = serializer;
+        
+            _Task = new System.Threading.Tasks.Task(_Run,System.Threading.Tasks.TaskCreationOptions.LongRunning);
+            _SendPkgs = new System.Collections.Concurrent.ConcurrentQueue<TPackage[]>();
 
 
         }
 
+        private void _Run()
+        {
+            var apr = new Regulus.Utility.AutoPowerRegulator(new Utility.PowerRegulator());
+            while(!_Stop)
+            {
+                apr.Operate();
+                TPackage[] pkgs;
+                while (_SendPkgs.TryDequeue(out pkgs))
+                {
+                    var buffer = _CreateBuffer(pkgs);
+
+                    var resultTask = _Peer.Send(buffer, 0, buffer.Length);
+                    
+                    var sendSize = resultTask.GetAwaiter().GetResult();
+                    NetworkMonitor.Instance.Write.Set(sendSize);
+                }
+                
+               
+            }
+        }
 
         public void Start(IStreamable peer)
         {
             _Stop = false;
             _Peer = peer;
 
+            _Task.Start();
         }
 
         public void Push(TPackage[] packages)
         {
 
-            _Write(packages);
-
-
+            _SendPkgs.Enqueue(packages);
         }
-        private void _Write(TPackage[] packages)
-        {
-            try
-            {
-
-                _Buffer = _CreateBuffer(packages);
-
-
-                System.Threading.Tasks.Task<int> task = _Peer.Send(_Buffer, 0, _Buffer.Length);
-                task.ContinueWith(t => _WriteCompletion(t.Result));
-
-
-
-
-            }
-            catch (SystemException e)
-            {
-                
-                if (ErrorEvent != null)
-                {
-                    ErrorEvent();
-                }
-            }
-        }
-
-        private void _WriteCompletion(int send_count)
-        {
-            if (_Stop == false)
-            {
-                int sendSize = send_count;
-                NetworkMonitor.Instance.Write.Set(sendSize);
-            }
-        }
+        
 
         private byte[] _CreateBuffer(TPackage[] packages)
         {
@@ -104,9 +96,7 @@ namespace Regulus.Remote
         public void Stop()
         {
             _Stop = true;
-
-
-
+            _Task.Wait();
         }
 
     }

@@ -2,37 +2,28 @@
 using Regulus.Serialization;
 using Regulus.Utility;
 using System;
+using System.Collections.Generic;
 
 namespace Regulus.Remote.Ghost
 {
     class GhostSerializer : IGhostRequest
     {
-
-
-        private static readonly object _LockRequest = new object();
-
-        private static readonly object _LockResponse = new object();
-
-
         private readonly PackageReader<ResponsePackage> _Reader;
 
-        private readonly Regulus.Collection.Queue<ResponsePackage> _Receives;
+        private readonly System.Collections.Concurrent.ConcurrentQueue<ResponsePackage> _Receives;
 
-        private readonly Regulus.Collection.Queue<RequestPackage> _Sends;
+        private readonly System.Collections.Concurrent.ConcurrentQueue<RequestPackage> _Sends;
 
         private readonly PackageWriter<RequestPackage> _Writer;
 
 
-        public static int RequestQueueCount { get; private set; }
-
-        public static int ResponseQueueCount { get; private set; }
-
+        
         public GhostSerializer(ISerializer serializer)
         {
             _Reader = new PackageReader<ResponsePackage>(serializer);
             _Writer = new PackageWriter<RequestPackage>(serializer);
-            _Sends = new Collection.Queue<RequestPackage>();
-            _Receives = new Collection.Queue<ResponsePackage>();
+            _Sends = new System.Collections.Concurrent.ConcurrentQueue<RequestPackage>();
+            _Receives = new System.Collections.Concurrent.ConcurrentQueue<ResponsePackage>();
 
             _ResponseEvent += _Empty;
         }
@@ -59,44 +50,25 @@ namespace Regulus.Remote.Ghost
 
         void IGhostRequest.Request(ClientToServerOpCode code, byte[] args)
         {
-            lock (GhostSerializer._LockRequest)
-            {
-                _Sends.Enqueue(
+            _Sends.Enqueue(
                     new RequestPackage()
                     {
                         Data = args,
                         Code = code
-                    });
-                GhostSerializer.RequestQueueCount++;
-            }
+                    });            
         }
 
         public void Start(IStreamable peer)
         {
             Singleton<Log>.Instance.WriteInfo("Agent online enter.");
-
-            /*todo : Singleton<Log>.Instance.WriteInfo(
-                string.Format(
-                    "Agent Socket Local {0} Remote {1}.", 
-                    _Peer.LocalEndPoint, 
-                    _Peer.RemoteEndPoint));*/
-
             _ReaderStart(peer);
             _WriterStart(peer);
-
-
-
         }
 
         public void Stop()
         {
-
-
             _WriterStop();
             _ReaderStop();
-
-
-
             Singleton<Log>.Instance.WriteInfo("Agent online leave.");
         }
 
@@ -107,26 +79,20 @@ namespace Regulus.Remote.Ghost
 
         private void _ReceivePackage(ResponsePackage package)
         {
-            lock (GhostSerializer._LockResponse)
-            {
-                _Receives.Enqueue(package);
-                GhostSerializer.ResponseQueueCount++;
-            }
+            _Receives.Enqueue(package);
+            
         }
 
         private void _Process()
         {
-            lock (GhostSerializer._LockResponse)
+            ResponsePackage receivePkg;
+            while(_Receives.TryDequeue(out receivePkg))
             {
-                ResponsePackage[] pkgs = _Receives.DequeueAll();
-                GhostSerializer.ResponseQueueCount -= pkgs.Length;
-
-                foreach (ResponsePackage pkg in pkgs)
-                {
-                    _ResponseEvent(pkg.Code, pkg.Data);
-                }
+            
+                _ResponseEvent(receivePkg.Code, receivePkg.Data);
             }
 
+            
 
             RequestPackage[] sends = _SendsPop();
             if (sends.Length > 0)
@@ -150,13 +116,16 @@ namespace Regulus.Remote.Ghost
         }
 
         private RequestPackage[] _SendsPop()
-        {
-            lock (GhostSerializer._LockRequest)
+        {           
+
+            List<RequestPackage> pkgs = new List<RequestPackage>();
+            RequestPackage pkg;
+            while(_Sends.TryDequeue(out pkg))
             {
-                RequestPackage[] pkg = _Sends.DequeueAll();
-                GhostSerializer.RequestQueueCount -= pkg.Length;
-                return pkg;
+                pkgs.Add(pkg);
+                
             }
+            return pkgs.ToArray();
         }
 
         private void _ReaderStart(IStreamable peer)

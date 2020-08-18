@@ -1,6 +1,7 @@
 ﻿using Regulus.Network;
 using Regulus.Serialization;
 using Regulus.Utility;
+using System;
 
 namespace Regulus.Remote
 {
@@ -36,7 +37,16 @@ namespace Regulus.Remote
         {
             _Machine = new StageMachine();
             _Serializer = serializer;
-            //_DoneEvent += (pkg) => { };
+            _DoneEvent += _Empty;
+            ErrorEvent += _Empty;
+        }
+        private void _Empty(TPackage  arg)
+        {
+
+        }
+        private void _Empty()
+        {
+            
         }
 
         public void Start(IStreamable peer)

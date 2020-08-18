@@ -133,19 +133,6 @@ namespace Regulus.Remote.Soul
         public void Shutdown()
         {
 
-            /* todo : try
-			{				
-				
-			}
-			catch (System.Net.Sockets.SocketException se)
-			{
-				Regulus.Utility.Log.Instance.WriteInfo(string.Format("Socket shutdown peer exception.{0}" , se.Message));
-			}
-			catch (Exception e)
-			{
-				Regulus.Utility.Log.Instance.WriteInfo(string.Format("Socket shutdown exception.{0}", e.Message));
-			}*/
-
             _Reader.DoneEvent -= _RequestPush;
             _Reader.Stop();
 

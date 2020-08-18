@@ -30,14 +30,15 @@ namespace Regulus.Remote
         private readonly InterfaceProvider _InterfaceProvider;
         private readonly ISerializer _Serializer;
         readonly SoulNotifier _NotifierPassage;
-
+        int loadCompleteCount;
         public void AddProvider(Type type, IProvider provider)
         {
             _Providers.Add(type, provider);
         }
         private readonly IProtocol _Protocol;
 
-        public event Action<byte[], byte[]> ErrorVerifyEvent;
+        bool _Active;
+        public bool Active => _Active;
 
         public long Ping { get; private set; }
 
@@ -45,6 +46,7 @@ namespace Regulus.Remote
 
         public GhostProvider(IProtocol protocol, IGhostRequest req)
         {
+            _Active = false;
             _Requester = req;
             _Requester.ResponseEvent += OnResponse;
             _NotifierPassage = new SoulNotifier();
@@ -117,14 +119,17 @@ namespace Regulus.Remote
             }
             else if (id == ServerToClientOpCode.LoadSoulCompile)
             {
-
+                
                 PackageLoadSoulCompile data = args.ToPackageData<PackageLoadSoulCompile>(_Serializer);
                 _LoadSoulCompile(data.TypeId, data.EntityId, data.ReturnId, data.PassageId);
+                
             }
             else if (id == ServerToClientOpCode.LoadSoul)
             {
+                
                 PackageLoadSoul data = args.ToPackageData<PackageLoadSoul>(_Serializer);
                 _LoadSoul(data.TypeId, data.EntityId, data.ReturnType);
+                
             }
             else if (id == ServerToClientOpCode.UnloadSoul)
             {
@@ -142,10 +147,7 @@ namespace Regulus.Remote
 
         private void _ProtocolSubmit(PackageProtocolSubmit data)
         {
-
-            if (_Comparison(_Protocol.VerificationCode, data.VerificationCode) == false)
-                ErrorVerifyEvent(_Protocol.VerificationCode, data.VerificationCode);
-
+            _Active = _Comparison(_Protocol.VerificationCode, data.VerificationCode);
 
         }
 
@@ -185,16 +187,26 @@ namespace Regulus.Remote
 
         private void _LoadSoulCompile(int type_id, long entity_id, long return_id, long passage_id)
         {
+            
             MemberMap map = _Protocol.GetMemberMap();
-
+            
             Type type = map.GetInterface(type_id);
-
+            
             IProvider provider = _QueryProvider(type);
+            
             if (provider != null)
             {
+                
                 IGhost ghost = provider.Ready(entity_id);
+                
                 _NotifierPassage.Supply(ghost, passage_id);
+                
                 _SetReturnValue(return_id, ghost);
+                
+            }
+            else
+            {
+
             }
         }
 
