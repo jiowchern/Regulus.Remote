@@ -103,14 +103,12 @@ namespace Regulus.Remote.Ghost
 
         private void _WriterStart(IStreamable peer)
         {
-            _Writer.ErrorEvent += _Disable;
-
             _Writer.Start(peer);
         }
 
         private void _WriterStop()
         {
-            _Writer.ErrorEvent -= _Disable;
+            
 
             _Writer.Stop();
         }
@@ -132,19 +130,16 @@ namespace Regulus.Remote.Ghost
         {
             _Reader.DoneEvent += _ReceivePackage;
 
-            _Reader.ErrorEvent += _Disable;
+            
             _Reader.Start(peer);
         }
 
-        private void _Disable()
-        {
-
-        }
+     
 
         private void _ReaderStop()
         {
             _Reader.DoneEvent -= _ReceivePackage;
-            _Reader.ErrorEvent -= _Disable;
+            
             _Reader.Stop();
         }
 

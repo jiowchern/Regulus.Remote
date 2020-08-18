@@ -72,8 +72,7 @@ namespace Regulus.Remote
             {
                 return _Add(entity, entity as IGhost);
             }
-
-            return null;
+            throw new Exception($"No loaded ghost was found. {typeof(T)}.{id}");            
         }
 
         void IProvider.Add(IGhost entity)

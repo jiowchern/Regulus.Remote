@@ -2,6 +2,7 @@
 using Regulus.Utility;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Regulus.Remote
 {
@@ -12,10 +13,10 @@ namespace Regulus.Remote
         private readonly System.Collections.Generic.List<byte> _Buffer;
 
         private readonly byte[] _ReadedByte;
-        bool _Enable;
+        
         public SocketHeadReader(IStreamable peer)
         {
-            _Enable = true;
+        
             _ReadedByte = new byte[1];
             _Peer = peer;
             _Buffer = new List<byte>();
@@ -30,13 +31,17 @@ namespace Regulus.Remote
         {
 
             System.Threading.Tasks.Task<int> task = _Peer.Receive(_ReadedByte, 0, 1);
-            task.ContinueWith(t => _Readed(t.Result));
+            task.ContinueWith(t => _Readed(t));
+        }
+
+        private void _Readed(Task<int> t)
+        {
+            _Readed(t.Result);
         }
 
         private void _Readed(int read_size)
         {
-            if (!_Enable)
-                return;
+        
             if (_ReadData(read_size))
             {
                 _DoneEvent(_Buffer.ToArray());
@@ -69,15 +74,11 @@ namespace Regulus.Remote
         }
 
         void IBootable.Shutdown()
-        {
-            _DoneEvent = _Empty;
-            _Enable = false;
+        {        
+        
         }
 
-        private void _Empty(byte[] bytes)
-        {
-            
-        }
+        
 
         private OnByteDataCallback _DoneEvent;
         event OnByteDataCallback ISocketReader.DoneEvent

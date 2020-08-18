@@ -12,15 +12,10 @@ namespace Regulus.Remote
     {
         private readonly ISerializer _Serializer;
 
-        
-        public event OnErrorCallback ErrorEvent;
-
-        private byte[] _Buffer;
 
         private IStreamable _Peer;
 
         private volatile bool _Stop;
-
         
         readonly System.Threading.Tasks.Task _Task;
         System.Collections.Concurrent.ConcurrentQueue<TPackage[]> _SendPkgs;
@@ -48,7 +43,7 @@ namespace Regulus.Remote
                     var buffer = _CreateBuffer(pkgs);
 
                     var resultTask = _Peer.Send(buffer, 0, buffer.Length);
-                    
+
                     var sendSize = resultTask.GetAwaiter().GetResult();
                     NetworkMonitor.Instance.Write.Set(sendSize);
                 }

@@ -64,8 +64,9 @@ namespace Regulus.Remote
             ISocketReader reader = readHead;
             reader.DoneEvent += _ReadBody;
             reader.ErrorEvent += ErrorEvent;
-            readHead.Read();
             _Machine.Push(readHead);
+            readHead.Read();
+            
 
         }
 
@@ -79,9 +80,8 @@ namespace Regulus.Remote
             ISocketReader reader = bodyReader;
             reader.DoneEvent += _Package;
             reader.ErrorEvent += ErrorEvent;
-            bodyReader.Read(bodySize);
-            
             _Machine.Push(bodyReader);
+            bodyReader.Read(bodySize);
         }
 
         private void _Package(byte[] bytes)

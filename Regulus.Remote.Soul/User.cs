@@ -100,9 +100,6 @@ namespace Regulus.Remote.Soul
             _SoulProvider = new SoulProvider(this, this, protocol);
             _Responses = new System.Collections.Concurrent.ConcurrentQueue<ResponsePackage>();
             _Requests = new System.Collections.Concurrent.ConcurrentQueue<RequestPackage>();
-
-            
-
             _Reader = new PackageReader<RequestPackage>(protocol.GetSerialize());
             _Writer = new PackageWriter<ResponsePackage>(protocol.GetSerialize());
 
@@ -117,8 +114,6 @@ namespace Regulus.Remote.Soul
             _Reader.DoneEvent += _RequestPush;
             _Reader.ErrorEvent += () => { _Enable = false; };
             _Reader.Start(_Peer);
-
-            _Writer.ErrorEvent += () => { _Enable = false; };
 
             _Writer.Start(_Peer);
 
@@ -223,17 +218,11 @@ namespace Regulus.Remote.Soul
             }
             else if (package.Code == ClientToServerOpCode.CallMethod)
             {
-
-
-
                 PackageCallMethod data = package.Data.ToPackageData<PackageCallMethod>(_Serialize);
                 return _ToRequest(data.EntityId, data.MethodId, data.ReturnId, data.MethodParams);
             }
             else if (package.Code == ClientToServerOpCode.Release)
             {
-                //var EntityId = new Guid(package.Args[0]);
-
-
                 PackageRelease data = package.Data.ToPackageData<PackageRelease>(_Serialize);
                 _SoulProvider.Unbind(data.EntityId);
                 return null;

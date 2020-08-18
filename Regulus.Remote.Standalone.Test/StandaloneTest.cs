@@ -1,49 +1,64 @@
 ﻿using NUnit.Framework;
+using NUnit.Framework.Constraints;
 
 namespace Regulus.Remote.Standalone.Test
 {
     public class StandaloneTest
     {
 
-        /*[Test]
-        [Timeout(6000000)]
-        public void DebugTestLoop()
-        {
-            
-            for (int i = 0; i < 1000; i++)
-            {
-                Test();
-            }
-        }*/
-            [Test]
-        [Timeout(10000)]
+        
+        [Test]        
         public void Test()
         {
             IBinderProvider entry = NSubstitute.Substitute.For<IBinderProvider>();
             IGpiA gpia = new SoulGpiA();
             bool bind = false;
-            entry.AssignBinder(NSubstitute.Arg.Do<IBinder>(binder => {
+            entry.AssignBinder(NSubstitute.Arg.Do<IBinder>(binder =>
+            {
                 bind = true;
-                binder.Bind<IGpiA>(gpia);                
+                binder.Bind<IGpiA>(gpia);
             }));
 
             Serialization.ISerializer serializer = new Regulus.Serialization.Dynamic.Serializer();
             IProtocol protocol = ProtocolHelper.CreateProtocol(serializer);
+            
+            _TestService(entry,ref bind, protocol);
 
+        }
+
+        private static void _TestService(IBinderProvider entry,ref bool bind, IProtocol protocol)
+        {
+            bind = false;
             var service = Regulus.Remote.Standalone.Provider.CreateService(protocol, entry);
             Ghost.IAgent agent = new Regulus.Remote.Ghost.Agent(protocol);
             service.Join(agent);
             IGpiA retGpiA = null;
-            agent.QueryNotifier<IGpiA>().Supply += gpi => retGpiA = gpi;
+            bool ret = false;
+            agent.QueryNotifier<IGpiA>().Supply += gpi => {
+                ret = true;
+                retGpiA = gpi; 
+            };
+            var timer = new Regulus.Utility.TimeCounter();
+            var apr = new Regulus.Utility.AutoPowerRegulator(new Utility.PowerRegulator());
             while (retGpiA == null)
+            {
+                apr.Operate();
                 agent.Update();
+                if (timer.Second > 10)
+                {
+
+                    throw new System.Exception($"debug agent:{agent.Active} bind:{bind} ");
+                }
+
+            }
+
             service.Leave(agent);
             service.Dispose();
 
             Assert.AreNotEqual(null, retGpiA);
             Assert.AreEqual(true, bind);
+            Assert.AreEqual(true, ret);
 
         }
-
     }
 }

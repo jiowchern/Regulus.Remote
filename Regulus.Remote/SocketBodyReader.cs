@@ -16,11 +16,10 @@ namespace Regulus.Remote
 
         private int _Offset;
 
-        volatile bool _Enable;
 
         public SocketBodyReader(IStreamable peer)
         {
-            _Enable = true;
+
             this._Peer = peer;
         }
 
@@ -47,9 +46,7 @@ namespace Regulus.Remote
         }
 
         private void _Readed(int read_count)
-        {
-            if (!_Enable)
-                return;
+        {            
             int readSize = read_count;
 
             _Offset += readSize;
@@ -78,13 +75,8 @@ namespace Regulus.Remote
 
         void IBootable.Shutdown()
         {
-            DoneEvent = _Empty;
-            _Enable = false;
         }
 
-        private void _Empty(byte[] bytes)
-        {
-            
-        }
+       
     }
 }

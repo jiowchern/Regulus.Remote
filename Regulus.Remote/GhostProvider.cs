@@ -1,5 +1,6 @@
 ﻿
 
+using Regulus.Extension;
 using Regulus.Serialization;
 using Regulus.Utility;
 using System;
@@ -44,8 +45,11 @@ namespace Regulus.Remote
 
         public bool Enable { get; private set; }
 
+        
+
         public GhostProvider(IProtocol protocol, IGhostRequest req)
         {
+            
             _Active = false;
             _Requester = req;
             _Requester.ResponseEvent += OnResponse;
@@ -91,6 +95,7 @@ namespace Regulus.Remote
         {
             if (id == ServerToClientOpCode.Ping)
             {
+                debugMessage.Add($"ping");
                 Ping = _PingTimeCounter.Ticks;
                 _StartPing();
             }
@@ -121,6 +126,7 @@ namespace Regulus.Remote
             {
                 
                 PackageLoadSoulCompile data = args.ToPackageData<PackageLoadSoulCompile>(_Serializer);
+            
                 _LoadSoulCompile(data.TypeId, data.EntityId, data.ReturnId, data.PassageId);
                 
             }
@@ -128,18 +134,20 @@ namespace Regulus.Remote
             {
                 
                 PackageLoadSoul data = args.ToPackageData<PackageLoadSoul>(_Serializer);
+            
                 _LoadSoul(data.TypeId, data.EntityId, data.ReturnType);
                 
             }
             else if (id == ServerToClientOpCode.UnloadSoul)
             {
                 PackageUnloadSoul data = args.ToPackageData<PackageUnloadSoul>(_Serializer);
+                
                 _UnloadSoul(data.TypeId, data.EntityId, data.PassageId);
             }
             else if (id == ServerToClientOpCode.ProtocolSubmit)
             {
                 PackageProtocolSubmit data = args.ToPackageData<PackageProtocolSubmit>(_Serializer);
-
+            
                 _ProtocolSubmit(data);
             }
 
