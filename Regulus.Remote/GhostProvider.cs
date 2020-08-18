@@ -94,8 +94,7 @@ namespace Regulus.Remote
         protected void _OnResponse(ServerToClientOpCode id, byte[] args)
         {
             if (id == ServerToClientOpCode.Ping)
-            {
-                debugMessage.Add($"ping");
+            {                
                 Ping = _PingTimeCounter.Ticks;
                 _StartPing();
             }
