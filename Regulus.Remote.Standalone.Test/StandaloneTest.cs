@@ -7,7 +7,7 @@ namespace Regulus.Remote.Standalone.Test
     {
 
         
-        [Test]        
+              
         public void Test()
         {
             IBinderProvider entry = NSubstitute.Substitute.For<IBinderProvider>();
