@@ -142,7 +142,6 @@ namespace Regulus.Remote.Standalone.Test
             Assert.AreEqual(1, lordsoulPkg.TypeId);
         }
         [Test]
-        [Timeout(10000)]
         public void AgentSupplyGpiTest()
         {
             IGpiA retGpiA = null;
