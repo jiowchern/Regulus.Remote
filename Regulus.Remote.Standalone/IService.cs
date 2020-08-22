@@ -5,7 +5,7 @@ namespace Regulus.Remote.Standalone
 {
     public interface IService : IDisposable
     {
-        void Join(IAgent agent);
+        void Join(IAgent agent,object state=null);
         void Leave(IAgent agent);
         
     }

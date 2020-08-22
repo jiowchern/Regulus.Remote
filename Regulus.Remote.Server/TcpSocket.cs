@@ -1,4 +1,5 @@
 ﻿using Regulus.Network;
+using Regulus.Network.Tcp;
 using Regulus.Remote.Soul;
 using System;
 
@@ -8,31 +9,31 @@ namespace Regulus.Remote.Server.Tcp
     {
         private readonly IService _Service;
         readonly Regulus.Network.Tcp.Listener _Listener;
-        readonly Regulus.Network.IListenable _Listenable;
+        
         public Listener(IService service)
         {
             this._Service = service;
             
             _Listener = new Network.Tcp.Listener();
-            _Listenable = _Listener;
-            _Listenable.AcceptEvent += _Join;
+
+            _Listener.AcceptEvent += _Join;
 
         }
         public void Bind(int port)
         {
-            _Listenable.Bind(port);
+            _Listener.Bind(port);
         }
 
         public void Close() {
-            _Listenable.Close();
+            _Listener.Close();
         }
 
-        private void _Join(IPeer peer)
+        private void _Join(Peer peer)
         {
             peer.SocketErrorEvent += (e) => {
                 _Service.Leave(peer);
             };
-            _Service.Join(peer);
+            _Service.Join(peer, peer.Socket);
         }
     }
 }

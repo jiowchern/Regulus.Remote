@@ -17,7 +17,7 @@ namespace Regulus.Remote.Soul
             this._Entry = entry;
             this._Protocol = protocol;
         }
-        public void Join(Network.IStreamable stream)
+        void IService.Join(Network.IStreamable stream,object state)
         {
             User user = new User(stream, _Protocol);
             lock(_Users)
@@ -25,10 +25,10 @@ namespace Regulus.Remote.Soul
                 _Users.Add(user);                
             }
             user.Launch();
-            _Entry.AssignBinder(user.Binder);
+            _Entry.AssignBinder(user.Binder, state);
         }
 
-        public void Leave(Network.IStreamable stream)
+        void IService.Leave(Network.IStreamable stream)
         {
             User user = null;
             lock(_Users)

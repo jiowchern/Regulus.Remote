@@ -16,11 +16,11 @@ namespace Regulus.Remote.Standalone.Test
 
             IBinderProvider entry = NSubstitute.Substitute.For<IBinderProvider>();
             IGpiA gpia = new SoulGpiA();
-            entry.AssignBinder(NSubstitute.Arg.Do<IBinder>(binder => binder.Bind<IGpiA>(gpia)));
+            entry.AssignBinder(NSubstitute.Arg.Do<IBinder>(binder => binder.Bind<IGpiA>(gpia)),null);
 
             Serialization.ISerializer serializer = new Regulus.Serialization.Dynamic.Serializer();
             IProtocol protocol = ProtocolHelper.CreateProtocol(serializer);
-            Soul.Service service = new Regulus.Remote.Soul.Service(entry, protocol);
+            Soul.IService service = new Regulus.Remote.Soul.Service(entry, protocol);
             IAgent agent = new Regulus.Remote.Ghost.Agent(protocol) as Ghost.IAgent;
             IGpiA ghostGpia = null;
 

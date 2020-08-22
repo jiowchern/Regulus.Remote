@@ -17,7 +17,7 @@ namespace Regulus.Remote.Standalone.Test
             {
                 bind = true;
                 binder.Bind<IGpiA>(gpia);
-            }));
+            }), null);
 
             Serialization.ISerializer serializer = new Regulus.Serialization.Dynamic.Serializer();
             IProtocol protocol = ProtocolHelper.CreateProtocol(serializer);
@@ -31,7 +31,7 @@ namespace Regulus.Remote.Standalone.Test
             bind = false;
             var service = Regulus.Remote.Standalone.Provider.CreateService(protocol, entry);
             Ghost.IAgent agent = new Regulus.Remote.Ghost.Agent(protocol);
-            service.Join(agent);
+            service.Join(agent, null);
             IGpiA retGpiA = null;
             bool ret = false;
             agent.QueryNotifier<IGpiA>().Supply += gpi => {

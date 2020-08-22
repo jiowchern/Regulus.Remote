@@ -5,12 +5,12 @@ using System.Net.Sockets;
 
 namespace Regulus.Network.Tcp
 {
-    public class Listener : IListenable
+    public class Listener 
     {
         private readonly System.Net.Sockets.Socket _Socket;
-        private event Action<IPeer> _AcceptEvent;
+        private event Action<Peer> _AcceptEvent;
 
-        event Action<IPeer> IListenable.AcceptEvent
+        public event Action<Peer> AcceptEvent
         {
             add { _AcceptEvent += value; }
             remove { _AcceptEvent -= value; }
@@ -20,20 +20,20 @@ namespace Regulus.Network.Tcp
             _Socket = new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             _Socket.NoDelay = true;
         }
-        void IListenable.Bind(int Port)
+        public void Bind(int Port)
         {
             _Socket.Bind(new IPEndPoint(IPAddress.Any, Port));
             _Socket.Listen(backlog: 5);
-            _Socket.BeginAccept(Accept, state: null);
+            _Socket.BeginAccept(_Accept, state: null);
         }
 
-        private void Accept(IAsyncResult Ar)
+        private void _Accept(IAsyncResult Ar)
         {
             try
             {
                 System.Net.Sockets.Socket socket = _Socket.EndAccept(Ar);
                 _AcceptEvent(new Peer(socket));
-                _Socket.BeginAccept(Accept, state: null);
+                _Socket.BeginAccept(_Accept, state: null);
             }
             catch (SocketException se)
             {
@@ -53,7 +53,7 @@ namespace Regulus.Network.Tcp
             }
         }
 
-        void IListenable.Close()
+        public void Close()
         {
             if (_Socket.Connected)
                 _Socket.Shutdown(SocketShutdown.Both);

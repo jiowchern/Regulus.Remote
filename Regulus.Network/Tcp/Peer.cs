@@ -5,18 +5,20 @@ using System.Net.Sockets;
 namespace Regulus.Network.Tcp
 {
     
-    public class Peer : IPeer
+    public class Peer : IStreamable
     {
-        private readonly System.Net.Sockets.Socket _Socket;
+        public readonly System.Net.Sockets.Socket Socket;
+
         
+
         public Peer(System.Net.Sockets.Socket socket)
         {
             _SocketErrorEvent += (e)=>{ };
-            _Socket = socket;
+            Socket = socket;
         }
 
         event Action<SocketError> _SocketErrorEvent;
-        event Action<SocketError> IPeer.SocketErrorEvent
+        public event Action<SocketError> SocketErrorEvent
         {
             add
             {
@@ -31,7 +33,7 @@ namespace Regulus.Network.Tcp
 
         System.Threading.Tasks.Task<int> IStreamable.Receive(byte[] readed_byte, int offset, int count)
         {
-            if (!_Socket.Connected)
+            if (!Socket.Connected)
             {
                 _SocketErrorEvent( SocketError.SocketError);
                 return System.Threading.Tasks.Task<int>.FromResult(0);
@@ -46,7 +48,7 @@ namespace Regulus.Network.Tcp
         {
 
             SocketError error;
-            var ar = _Socket.BeginReceive(readed_byte, offset, count, SocketFlags.None, out error, handler, obj);
+            var ar = Socket.BeginReceive(readed_byte, offset, count, SocketFlags.None, out error, handler, obj);
 
             var safeList = new[] { SocketError.Success, SocketError.IOPending };
             if (!safeList.Any(s=>s==error))
@@ -60,11 +62,11 @@ namespace Regulus.Network.Tcp
             
 
             SocketError error;
-            int size = _Socket.EndReceive(arg, out error);
+            int size = Socket.EndReceive(arg, out error);
             if(size == 0)
                 _SocketErrorEvent(error);
 
-            if (!_Socket.Connected)
+            if (!Socket.Connected)
             {
                 _SocketErrorEvent(error);
                 return size;
@@ -78,7 +80,7 @@ namespace Regulus.Network.Tcp
         }
         System.Threading.Tasks.Task<int> IStreamable.Send(byte[] buffer, int offset, int buffer_length)
         {
-            if (!_Socket.Connected)
+            if (!Socket.Connected)
             {
                 _SocketErrorEvent(SocketError.SocketError);
                 return System.Threading.Tasks.Task<int>.FromResult(0);
@@ -90,7 +92,7 @@ namespace Regulus.Network.Tcp
         private IAsyncResult _Send(byte[] buffer, int offset, int buffer_length, AsyncCallback handler, object obj)
         {
             SocketError error;
-            var ar = _Socket.BeginSend(buffer, offset, buffer_length, SocketFlags.None,out error, handler, obj);
+            var ar = Socket.BeginSend(buffer, offset, buffer_length, SocketFlags.None,out error, handler, obj);
             var safeList = new[] { SocketError.Success, SocketError.IOPending };
             if (!safeList.Any(s => s == error))
                 _SocketErrorEvent(error);
@@ -100,8 +102,8 @@ namespace Regulus.Network.Tcp
         private int _EndSend(IAsyncResult arg)
         {
             SocketError error;
-            int sendCount = _Socket.EndSend(arg, out error);
-            if (!_Socket.Connected)
+            int sendCount = Socket.EndSend(arg, out error);
+            if (!Socket.Connected)
             {
                 _SocketErrorEvent(error);
                 return sendCount;
@@ -118,7 +120,7 @@ namespace Regulus.Network.Tcp
         }
         protected System.Net.Sockets.Socket GetSocket()
         {
-            return _Socket;
+            return Socket;
         }
     }
 

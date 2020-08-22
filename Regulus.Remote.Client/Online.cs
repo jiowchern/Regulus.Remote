@@ -1,4 +1,5 @@
-﻿using Regulus.Remote.Ghost;
+﻿using Regulus.Network.Tcp;
+using Regulus.Remote.Ghost;
 using System;
 using System.Net.Sockets;
 
@@ -8,7 +9,7 @@ namespace Regulus.Remote.Client.Tcp
     {
         
         readonly Network.IConnectable connectable;
-        readonly Network.IPeer peer;
+        readonly Peer peer;
         private IAgent agent;
 
         public Online(Network.Tcp.Connecter connecter, IAgent agent)

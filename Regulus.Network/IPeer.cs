@@ -4,6 +4,6 @@ namespace Regulus.Network
 {
     public interface IPeer : IStreamable
     {
-        event System.Action<SocketError> SocketErrorEvent;
+        event System.Action<SocketError> SocketErrorEvent;                
     }
 }

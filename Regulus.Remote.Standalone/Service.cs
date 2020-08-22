@@ -12,7 +12,7 @@ namespace Regulus.Remote.Standalone
     {
 
         
-        readonly Regulus.Remote.Soul.Service _Service;
+        readonly Regulus.Remote.Soul.IService _Service;
         readonly List<Regulus.Remote.Ghost.IAgent> _Agents;
         readonly Dictionary<IAgent, IStreamable> _Streams;
         readonly IDisposable _ServiceDisposable;
@@ -24,12 +24,12 @@ namespace Regulus.Remote.Standalone
             _ServiceDisposable = _Service;
         }
 
-        public void Join(IAgent agent)
+        public void Join(IAgent agent,object state)
         {
             
             Stream stream = new Stream();
             agent.Start(new ReverseStream(stream));
-            _Service.Join(stream);
+            _Service.Join(stream, state);
             _Streams.Add(agent, stream);
             _Agents.Add(agent);            
         }
