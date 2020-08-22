@@ -1,4 +1,4 @@
-# Regulus Library
+# Regulus Remote
 [![Maintainability](https://api.codeclimate.com/v1/badges/78946edf1189eb49dfbd/maintainability)](https://codeclimate.com/github/jiowchern/Regulus/maintainability)
 [![Actions Status](https://github.com/jiowchern/Regulus/workflows/Build/badge.svg)](https://github.com/jiowchern/Regulus/actions)
 [![Build status](https://ci.appveyor.com/api/projects/status/2wtsf61u87qg62cc?svg=true)](https://ci.appveyor.com/project/jiowchern/regulus)
@@ -26,7 +26,7 @@ Download the latest ![Latest Version](https://img.shields.io/github/v/tag/jiowch
 LAYOUT_LEFT_RIGHT
 LAYOUT_WITH_LEGEND()
 
-System(Regulus,"Regulus Library")
+System(Regulus,"Regulus Remote")
 Person(Server,"Server","Implement a interface IFoo.")
 Person(Client,"Client","Communicate with the server through this interface IFoo.")
 
@@ -34,7 +34,7 @@ Rel(Regulus,Client,"notice")
 Rel(Server,Regulus,"bind")
 @enduml
 -->
-![s](https://plantuml-server.kkeisuke.app/svg/RL3BJWCn3BpxAqnEMsbLBZqYLBJqiT8Aq7OHuhHAiwQDb4ULE43_dlJ9fITRCvxnsDF8Cd2o1k5EEsNIGFYW9lVLfA-yO_hbyIwpZmW0pTFdwtlNDxDvrxVrOjbTa8-wMsPuCNjvBaO0gtraiaLBcsHIBCMvmKQlWmnxCO8t2j6xOaNXcq8fJbMKehOxGvOSeqITjuSlgGZhkVVZVrLbT9uenQbcLUMjJKuhoOG_chV8My9uzCnjy6bpW7IyOGdGahaclJWxprfHfW_aEUJrchLsmr49Kt93_iqV.svg)
+![Architecture](https://plantuml-server.kkeisuke.app/svg/RL3BJWCn3BpdAqnEMsbLBZrMg6ZfOwLLGTj5YDCgpPhMKXvLuW3zUrBwuCB9enbxFFOiiWgSh05nHqwRD21CzUI-clILTupVF3vazG54y_Z-_DhrpNpHzMszN7LNvgtkLfbUpjTFnKY8pJ4osgB5NJ8fbl82eA5jKE4eH-85G_Iks63un53ASvMbhEt1e4N7e83oxl2XD4Azy7xyDrKPoXsbFDSyLNbhaoEj6E6BU0-yHuY_dXa6dtOdYk8_bg95SmjwDNQUIMDMJ-8bu-sOBRaXIpDqG_xA3m00.svg)
 
 ## Communication   
 Instead of client communicating with server in packets, server send object to client through interface.  
