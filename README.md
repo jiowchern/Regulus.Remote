@@ -34,7 +34,7 @@ Rel(Regulus,Client,"notice")
 Rel(Server,Regulus,"bind")
 @enduml
 -->
-![Architecture](https://plantuml-server.kkeisuke.app/svg/RL3BJWCn3BpdAqnEMsbLBZrMg6ZfOwLLGTj5YDCgpPhMKXvLuW3zUrBwuCB9enbxFFOiiWgSh05nHqwRD21CzUI-clILTupVF3vazG54y_Z-_DhrpNpHzMszN7LNvgtkLfbUpjTFnKY8pJ4osgB5NJ8fbl82eA5jKE4eH-85G_Iks63un53ASvMbhEt1e4N7e83oxl2XD4Azy7xyDrKPoXsbFDSyLNbhaoEj6E6BU0-yHuY_dXa6dtOdYk8_bg95SmjwDNQUIMDMJ-8bu-sOBRaXIpDqG_xA3m00.svg)
+![Architecture](https://plantuml-server.kkeisuke.app/svg/RL3BQiCm4BphAxOwEM2SIuwbk3XsOWXfSLnAJyQLjub03oEj-lZxo7drajCECxkpivjxwXq5hO0zI2DK610UnM9UBBh26i9VoiQeFW7RF7-ylBNTfgpQhgbNw_RAlDVjEjAhShjCPepj_ZoXJXhS1nLyoYy06jIMaC_OApflJR93zuqkvUVAKrxhKQ56Gz23ZAlTLoyGwihQx7-gK39sfFnSurHXjGv6YfuGVYGTW0u8_kGPeRDXFr7Itx5a3QfRpgkniIJ557CIBnbljtnACqGfHpF4fnm1.svg)
 
 ## Communication   
 Instead of client communicating with server in packets, server send object to client through interface.  
