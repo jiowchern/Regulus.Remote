@@ -72,7 +72,7 @@ namespace Server
 ```
 **C. Use binder to send Greeter to the client.**  
 ```csharp
-namesapce Server
+namespace Server
 {
 	public class Entry	
 	{
