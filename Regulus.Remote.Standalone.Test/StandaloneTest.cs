@@ -17,7 +17,7 @@ namespace Regulus.Remote.Standalone.Test
             {
                 bind = true;
                 binder.Bind<IGpiA>(gpia);
-            }), null);
+            }), NSubstitute.Arg.Any<object>());
 
             Serialization.ISerializer serializer = new Regulus.Serialization.Dynamic.Serializer();
             IProtocol protocol = ProtocolHelper.CreateProtocol(serializer);
