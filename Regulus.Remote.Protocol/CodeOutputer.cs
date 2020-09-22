@@ -27,24 +27,27 @@ namespace Regulus.Remote.Protocol
 
         private static void _WriteType(string type_name, string code, string outPath)
         {
-            Regulus.Utility.Log.Instance.WriteInfo($"{outPath}\\{type_name}.cs");
+            var path = System.IO.Path.Combine(outPath, $"{type_name}.cs");
+            Regulus.Utility.Log.Instance.WriteInfo(path);
 
-            System.IO.File.WriteAllText($"{outPath}\\{type_name}.cs", code, Encoding.ASCII);
+            System.IO.File.WriteAllText(path, code, Encoding.ASCII);
         }
 
         private static void _WriteEvent(string type_name, string event_name, string code, string outPath)
         {
-            Regulus.Utility.Log.Instance.WriteInfo($"{outPath}\\{type_name}_{event_name}.cs");
+            var path = System.IO.Path.Combine(outPath, $"{type_name}_{event_name}.cs");
+            Regulus.Utility.Log.Instance.WriteInfo(path);
 
-            System.IO.File.WriteAllText($"{outPath}\\{type_name}_{event_name}.cs", code, Encoding.ASCII);
+            System.IO.File.WriteAllText(path, code, Encoding.ASCII);
         }
 
         private static void _WriteProvider(string name, string code, string outPath)
         {
-            Regulus.Utility.Log.Instance.WriteInfo($"Name:{name}.cs");
+            var path = System.IO.Path.Combine(outPath, $"{name}.cs"); 
+            Regulus.Utility.Log.Instance.WriteInfo(path);
 
-            Regulus.Utility.Log.Instance.WriteInfo($"{outPath}\\{name}.cs");
-            System.IO.File.WriteAllText($"{outPath}\\{name}.cs", code, Encoding.ASCII);
+            
+            System.IO.File.WriteAllText(path, code, Encoding.ASCII);
         }
     }
 }
