@@ -3,9 +3,10 @@
 [![Actions Status](https://github.com/jiowchern/Regulus/workflows/Build/badge.svg)](https://github.com/jiowchern/Regulus/actions)
 [![Build status](https://ci.appveyor.com/api/projects/status/2wtsf61u87qg62cc?svg=true)](https://ci.appveyor.com/project/jiowchern/regulus)
 [![Coverage Status](https://coveralls.io/repos/github/jiowchern/Regulus/badge.svg?branch=)](https://coveralls.io/github/jiowchern/Regulus?branch=)
-![commit last date](https://img.shields.io/github/last-commit/jiowchern/regulus)
-[![Discord](https://img.shields.io/discord/101557008930451456)](https://discord.gg/uDF8NTp)
-[![HitCount](http://hits.dwyl.com/jiowchern/Regulus.svg)](http://hits.dwyl.com/jiowchern/Regulus)
+![commit last date](https://img.shields.io/github/last-commit/jiowchern/regulus)  
+[![HitCount](http://hits.dwyl.com/jiowchern/Regulus.svg)](http://hits.dwyl.com/jiowchern/Regulus) 
+[![Discord](https://img.shields.io/discord/101557008930451456.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/uDF8NTp)
+
 <!-- [![GitHub release](https://img.shields.io/github/release/jiowchern/regulus.svg?style=flat-square)](https://github.com/jiowchern/Regulus/releases)![pre-release](https://img.shields.io/github/v/release/jiowchern/Regulus?include_prereleases) -->
 <!-- [![Gitter](https://badges.gitter.im/JoinChat.svg)](https://gitter.im/Regulus-Library) -->
 
@@ -129,9 +130,11 @@ The current communication capabilities of the interface are as follows...
 
 ## Getting Start
 This is a server-client framework, so it requires at least four projects: **Common**, **Protocol**, **Server** and **Client**.
+### Dependency
+* Visual Studio 2019.
+* .NET Core Sdk 2.0 or above.
 
-
-#### Common And Protocol 
+### Common And Protocol 
 Create a protocol component to handle the communication requirements between client and server.  
 
 **Create Common Project.**
