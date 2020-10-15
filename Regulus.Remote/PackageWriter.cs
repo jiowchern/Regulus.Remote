@@ -17,7 +17,7 @@ namespace Regulus.Remote
 
         private volatile bool _Stop;
         
-        readonly System.Threading.Tasks.Task _Task;
+        System.Threading.Tasks.Task _Task;
         System.Collections.Concurrent.ConcurrentQueue<TPackage[]> _SendPkgs;
 
         public PackageWriter(ISerializer serializer)
@@ -25,7 +25,7 @@ namespace Regulus.Remote
 
             _Serializer = serializer;
         
-            _Task = new System.Threading.Tasks.Task(_Run,System.Threading.Tasks.TaskCreationOptions.LongRunning);
+            
             _SendPkgs = new System.Collections.Concurrent.ConcurrentQueue<TPackage[]>();
 
 
@@ -56,7 +56,7 @@ namespace Regulus.Remote
         {
             _Stop = false;
             _Peer = peer;
-
+            _Task = new System.Threading.Tasks.Task(_Run, System.Threading.Tasks.TaskCreationOptions.LongRunning);
             _Task.Start();
         }
 
@@ -92,6 +92,7 @@ namespace Regulus.Remote
         {
             _Stop = true;
             _Task.Wait();
+            _Task.Dispose();
         }
 
     }
