@@ -69,6 +69,12 @@ namespace Regulus.Remote.Ghost
         {
             _WriterStop();
             _ReaderStop();
+            RequestPackage val;
+            ResponsePackage val2;
+            while (_Sends.TryDequeue(out val) ||　_Receives.TryDequeue(out val2))
+            {
+
+            }
             Singleton<Log>.Instance.WriteInfo("Agent online leave.");
         }
 
