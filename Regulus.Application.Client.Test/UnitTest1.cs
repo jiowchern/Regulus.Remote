@@ -89,7 +89,7 @@ namespace Regulus.Application.Client.Test
         {
             CType test = new CType(1);
             System.Reflection.MethodInfo method = typeof(IType).GetMethod(nameof(IType.TestMethod1));
-            Remote.Client.MethodStringInvoker invoker = new Remote.Client.MethodStringInvoker(test, method);
+            Remote.Client.MethodStringInvoker invoker = new Remote.Client.MethodStringInvoker(test, method, new Remote.Client.TypeConverterSet());
             invoker.Invoke("1", "2", "3");
 
             Assert.AreEqual(true, test.TestMethod1Invoked);
@@ -102,7 +102,7 @@ namespace Regulus.Application.Client.Test
         {
             CType test = new CType(1);
             System.Reflection.MethodInfo method = typeof(IType).GetMethod(nameof(IType.TestMethod1));
-            Remote.Client.MethodStringInvoker invoker = new Remote.Client.MethodStringInvoker(test, method);
+            Remote.Client.MethodStringInvoker invoker = new Remote.Client.MethodStringInvoker(test, method, new Remote.Client.TypeConverterSet());
             Remote.Client.AgentCommand agentCommand = new Regulus.Remote.Client.AgentCommand(new Remote.Client.AgentCommandVersionProvider(), typeof(IType), invoker);
             Assert.AreEqual("IType-0.TestMethod1 [a1,a2,a3]", agentCommand.Name);
 
@@ -122,7 +122,7 @@ namespace Regulus.Application.Client.Test
             {
                 unregCount++;
             };
-            Remote.Client.AgentCommandRegister agentCommandRegister = new Remote.Client.AgentCommandRegister(command);
+            Remote.Client.AgentCommandRegister agentCommandRegister = new Remote.Client.AgentCommandRegister(command, new Remote.Client.TypeConverterSet());
 
             CType test = new CType(1);
 

@@ -10,13 +10,15 @@ namespace Regulus.Remote.Client
         readonly System.Collections.Generic.List<AgentCommand> _Invokers;
 
         private readonly Command _Command;
+        private readonly TypeConverterSet _TypeConverterSet;
         private readonly AgentCommandVersionProvider _VersionProvider;
 
-        public AgentCommandRegister(Command command)
+        public AgentCommandRegister(Command command, TypeConverterSet set)
         {
             _VersionProvider = new AgentCommandVersionProvider();
             _Invokers = new System.Collections.Generic.List<AgentCommand>();
             this._Command = command;
+            this._TypeConverterSet = set;
         }
 
 
@@ -30,7 +32,7 @@ namespace Regulus.Remote.Client
                     continue;
                 Regulus.Utility.Log.Instance.WriteInfo($"method name = {method.Name} ");
 
-                MethodStringInvoker invoker = new MethodStringInvoker(instance, method);
+                MethodStringInvoker invoker = new MethodStringInvoker(instance, method, _TypeConverterSet);
                 AgentCommand ac = new AgentCommand(_VersionProvider, type, invoker);
                 _Invokers.Add(ac);
                 _Command.Register(ac.Name, (args) => _PrintReturn(invoker.Invoke(args)), method.ReturnParameter.ParameterType, method.GetParameters().Select((p) => p.ParameterType).ToArray());

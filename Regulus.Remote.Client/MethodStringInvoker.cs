@@ -7,8 +7,8 @@ namespace Regulus.Remote.Client
     public class TypeConverter
     {
         public readonly Type Target;
-        public readonly System.Func<object, object> Converter;
-        public TypeConverter(Type target, Func<object, object> converter)
+        public readonly System.Func<string, object> Converter;
+        public TypeConverter(Type target, Func<string, object> converter)
         {
             Target = target;
             Converter = converter;
@@ -33,13 +33,14 @@ namespace Regulus.Remote.Client
     }
     public class MethodStringInvoker
     {
-        private static TypeConverterSet _TypeConverterSet = new TypeConverterSet();
+         private readonly TypeConverterSet _TypeConverterSet ;
         public readonly object Target;
         public readonly MethodInfo Method;
 
-        public MethodStringInvoker(object instance, MethodInfo method)
+        public MethodStringInvoker(object instance, MethodInfo method, TypeConverterSet set)
         {
             this.Target = instance;
+            _TypeConverterSet = set;
             this.Method = method;
         }
 
@@ -73,17 +74,14 @@ namespace Regulus.Remote.Client
             return Method.Invoke(Target, argInstances.ToArray());
         }
 
-        private static void _Conversion(string inArg, out object val, Type parameterType)
+        private void _Conversion(string inArg, out object val, Type parameterType)
         {
             if (_TypeConverterSet.Convert(inArg, out val, parameterType))
                 return;
 
             Regulus.Utility.Command.TryConversion(inArg, out val, parameterType);
         }
-        public void SetConverterSet(TypeConverterSet set)
-        {
-            _TypeConverterSet = set;
-        }
+        
 
 
     }

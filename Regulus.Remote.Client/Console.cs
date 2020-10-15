@@ -13,14 +13,14 @@ namespace Regulus.Remote.Client
 
         readonly Regulus.Remote.Client.AgentCommandRegister _Register;
         
-        public Console(IEnumerable<Type> watch_types, Regulus.Utility.Console.IViewer view, Regulus.Utility.Console.IInput input) : base(view, input)
+        public Console(IEnumerable<Type> watch_types, Regulus.Utility.Console.IViewer view, Regulus.Utility.Console.IInput input, TypeConverterSet set) : base(view, input)
         {
 
             _WatchTypes = watch_types.Union(new Type[0] ).ToArray();
             
             _Users = new List<User>();
             _Updater = new Utility.Updater();
-            _Register = new AgentCommandRegister(Command);
+            _Register = new AgentCommandRegister(Command, set);
         }
 
         public User CreateUser(INotifierQueryable notifier)
