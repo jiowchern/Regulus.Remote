@@ -3,18 +3,19 @@ using System.Linq.Expressions;
 
 namespace Regulus.Utility
 {
+    /*
     public static class CommandLambdaHelper
     {
         public static void RegisterLambda<TThis, TR>(this Command this_obj, TThis instance, Expression<Func<TThis, TR>> exp, Action<TR> return_value)
         {
-            Action<string[]> func = (args) =>
+            Func<string[], object> func = (args) =>
             {
                 if (args.Length != 0)
                 {
                     throw new ArgumentException("命令參數數量為0");
                 }
 
-                return_value(exp.Compile().Invoke(instance));
+                return return_value(exp.Compile().Invoke(instance));
             };
             this_obj.Register(exp, func);
         }
@@ -262,5 +263,5 @@ namespace Regulus.Utility
             };
             this_obj.Register(exp, func);
         }
-    }
+    }*/
 }

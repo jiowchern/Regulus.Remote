@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Net;
 using System.Text.RegularExpressions;
 
+
 namespace Regulus.Utility
 {
     public delegate void Action<in T1, in T2, in T3, in T4, in T5>(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5);
@@ -37,11 +38,11 @@ namespace Regulus.Utility
         }
 
 
-        public System.Guid Register(string command, Action<string[]> func, Type return_type, Type[] param_types)
+        public System.Guid Register(string command, Func<string[],object> func, Type return_type, Type[] param_types)
         {
             return _Register(command, func, return_type, param_types);
         }
-        private System.Guid _Register(string command, Action<string[]> func, Type return_type, Type[] param_types)
+        private System.Guid _Register(string command, Func<string[],object> func, Type return_type, Type[] param_types)
         {
             Analysis analysis = new Analysis(command);
             Guid id = _AddCommand(analysis.Command, func);
@@ -50,14 +51,14 @@ namespace Regulus.Utility
         }
         public void Register(string command, Action executer)
         {
-            Action<string[]> func = args =>
+            Func<string[],object> func = args =>
             {
                 if (args.Length != 0)
                 {
                     throw new ArgumentException("The number of command arguments is 0");
                 }
 
-                executer.Method.Invoke(executer.Target, new object[0]);
+                return executer.Method.Invoke(executer.Target, new object[0]);
             };
 
             _Register(command, func, typeof(void), new Type[0]);
@@ -67,7 +68,7 @@ namespace Regulus.Utility
 
         public void Register<T1>(string command, Action<T1> executer)
         {
-            Action<string[]> func = args =>
+            Func<string[],object> func = args =>
             {
                 if (args.Length != 1)
                 {
@@ -80,7 +81,7 @@ namespace Regulus.Utility
 
 
 
-                executer.Method.Invoke(executer.Target, new[] { arg0 });
+                return executer.Method.Invoke(executer.Target, new[] { arg0 });
             };
 
 
@@ -93,7 +94,7 @@ namespace Regulus.Utility
 
         public void Register<T1, T2>(string command, Action<T1, T2> executer)
         {
-            Action<string[]> func = args =>
+            Func<string[], object> func = args =>
             {
                 if (args.Length != 2)
                 {
@@ -106,7 +107,7 @@ namespace Regulus.Utility
                 Command.TryConversion(args[1], out arg1, typeof(T2));
 
 
-                executer.Method.Invoke(executer.Target, new[] { arg0, arg1 });
+                return executer.Method.Invoke(executer.Target, new[] { arg0, arg1 });
 
             };
 
@@ -119,7 +120,7 @@ namespace Regulus.Utility
 
         public void Register<T1, T2, T3>(string command, Action<T1, T2, T3> executer)
         {
-            Action<string[]> func = args =>
+            Func<string[], object> func = args =>
             {
                 if (args.Length != 3)
                 {
@@ -132,7 +133,7 @@ namespace Regulus.Utility
                 Command.TryConversion(args[1], out arg1, typeof(T2));
                 object arg2;
                 Command.TryConversion(args[2], out arg2, typeof(T3));
-                executer.Method.Invoke(executer.Target, new[] { arg0, arg1, arg2 });
+                return executer.Method.Invoke(executer.Target, new[] { arg0, arg1, arg2 });
             };
 
 
@@ -146,7 +147,7 @@ namespace Regulus.Utility
 
         public void Register<T1, T2, T3, T4>(string command, Action<T1, T2, T3, T4> executer)
         {
-            Action<string[]> func = args =>
+            Func<string[], object> func = args =>
             {
                 if (args.Length != 4)
                 {
@@ -161,7 +162,7 @@ namespace Regulus.Utility
                 Command.TryConversion(args[2], out arg2, typeof(T3));
                 object arg3;
                 Command.TryConversion(args[3], out arg3, typeof(T4));
-                executer.Method.Invoke(executer.Target, new[] { arg0, arg1, arg2, arg3 });
+                return executer.Method.Invoke(executer.Target, new[] { arg0, arg1, arg2, arg3 });
             };
 
             _Register(command, func, typeof(void), new[]
@@ -173,9 +174,13 @@ namespace Regulus.Utility
                 });
         }
 
+        
+
+        
+
         public void Register<TR>(string command, Func<TR> executer, Action<TR> value)
         {
-            Action<string[]> func = args =>
+            Func<string[], object> func = args =>
             {
                 if (args.Length != 0)
                 {
@@ -184,15 +189,17 @@ namespace Regulus.Utility
 
                 object ret = executer.Method.Invoke(executer.Target, new object[0]);
                 value.Method.Invoke(value.Target, new object[] { ret });
+                return ret;
             };
 
             _Register(command, func, typeof(TR), new Type[0]);
 
         }
 
+        
         public void Register<T1, TR>(string command, Func<T1, TR> executer, Action<TR> value)
         {
-            Action<string[]> func = args =>
+            Func<string[], object> func = args =>
             {
                 if (args.Length != 1)
                 {
@@ -203,8 +210,7 @@ namespace Regulus.Utility
                 Command.TryConversion(args[0], out arg0, typeof(T1));
                 object ret = executer.Method.Invoke(executer.Target, new object[] { arg0 });
                 value.Method.Invoke(value.Target, new object[] { ret });
-
-
+                return ret;
             };
 
             _Register(command, func, typeof(TR), new[]
@@ -215,9 +221,11 @@ namespace Regulus.Utility
 
         }
 
+        
+
         public void Register<T1, T2, TR>(string command, Func<T1, T2, TR> executer, Action<TR> value)
         {
-            Action<string[]> func = args =>
+            Func<string[], object> func = args =>
             {
                 if (args.Length != 2)
                 {
@@ -231,6 +239,7 @@ namespace Regulus.Utility
 
                 object ret = executer.Method.Invoke(executer.Target, new object[] { arg0, arg1 });
                 value.Method.Invoke(value.Target, new object[] { ret });
+                return ret;
             };
 
             _Register(command, func, typeof(TR), new[]
@@ -242,9 +251,10 @@ namespace Regulus.Utility
 
         }
 
+        
         public void Register<T1, T2, T3, TR>(string command, Func<T1, T2, T3, TR> executer, Action<TR> value)
         {
-            Action<string[]> func = args =>
+            Func<string[], object> func = args =>
             {
                 if (args.Length != 3)
                 {
@@ -260,6 +270,7 @@ namespace Regulus.Utility
 
                 object ret = executer.Method.Invoke(executer.Target, new[] { arg0, arg1, arg2 });
                 value.Method.Invoke(value.Target, new[] { ret });
+                return ret;
             };
 
             _Register(command, func, typeof(TR), new[]
@@ -271,9 +282,10 @@ namespace Regulus.Utility
 
         }
 
+        
         public void Register<T1, T2, T3, T4, TR>(string command, Func<T1, T2, T3, T4, TR> executer, Action<TR> value)
         {
-            Action<string[]> func = args =>
+            Func<string[], object> func = args =>
             {
                 if (args.Length != 4)
                 {
@@ -291,6 +303,7 @@ namespace Regulus.Utility
 
                 object ret = executer.Method.Invoke(executer.Target, new[] { arg0, arg1, arg2, arg3 });
                 value.Method.Invoke(value.Target, new[] { ret });
+                return ret;
             };
 
             _Register(command, func, typeof(TR), new[]
@@ -381,7 +394,7 @@ namespace Regulus.Utility
             // throw new NotImplementedException();
         }
 
-        private System.Guid _AddCommand(string command, Action<string[]> func)
+        private System.Guid _AddCommand(string command, Func<string[],object> func)
         {
             Infomation info = new Infomation(command, func);
             _Commands.Add(info);
@@ -389,7 +402,7 @@ namespace Regulus.Utility
             return info.Id;
         }
 
-        public int Run(string command, string[] args)
+        public object[] Run(string command, string[] args)
         {
             IEnumerable<Infomation> commandInfomations = from ci in _Commands where ci.Name.ToLower() == command.ToLower() select ci;
             List<Infomation> infos = new List<Infomation>();
@@ -398,13 +411,12 @@ namespace Regulus.Utility
             {
                 infos.Add(commandInfomation);
             }
-
+            var returns = new List<object>();
             foreach (Infomation info in infos)
             {
-                info.Handler(args);
+                returns.Add(info.Handler(args));
             }
-
-            return infos.Count();
+            return returns.ToArray();
         }
 
         private void _SendRegister(Analysis analysis, Type ret, Type[] args)
@@ -433,11 +445,11 @@ namespace Regulus.Utility
             return cps;
         }
 
-        public void Register(LambdaExpression exp, Action<string[]> func)
+        public void Register(LambdaExpression exp, Func<string[], object> func)
         {
             _Register(exp, func);
         }
-        private void _Register(LambdaExpression exp, Action<string[]> func)
+        private void _Register(LambdaExpression exp, Func<string[], object> func)
         {
 
             if (exp.Body.NodeType != ExpressionType.Call)

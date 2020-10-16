@@ -76,17 +76,7 @@ namespace Regulus.Remote
                 }
             }
 
-            private MethodInfo _GetReturn(CommandParam param)
-            {
-                MethodInfo[] methods = typeof(CommandParam).GetMethods();
-                MethodInfo baseMethod = (from m in methods
-                                         let parameters = m.GetParameters()
-                                         where m.Name == "Return"
-                                         select m).SingleOrDefault();
-
-                return baseMethod.MakeGenericMethod(param.ReturnType);
-            }
-
+            
             private MethodInfo GetRegister(Type[] arg_types, Type return_type)
             {
                 Type[] genericTypes = return_type != null
@@ -106,9 +96,9 @@ namespace Regulus.Remote
                                          let parameters = m.GetParameters()
                                          where m.Name == "Register"
                                                && genericParameters.Length == genericTypes.Length
-
                                                && parameters.Length == paramCount
-                                         select m).SingleOrDefault();
+            
+                                         select m).Single();
 
                 if (genericTypes.Length > 0)
                 {
@@ -118,7 +108,7 @@ namespace Regulus.Remote
                 return baseMethod;
             }
 
-
+            
         }
     }
 }

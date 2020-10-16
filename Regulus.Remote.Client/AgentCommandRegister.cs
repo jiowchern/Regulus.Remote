@@ -35,31 +35,12 @@ namespace Regulus.Remote.Client
                 MethodStringInvoker invoker = new MethodStringInvoker(instance, method, _TypeConverterSet);
                 AgentCommand ac = new AgentCommand(_VersionProvider, type, invoker);
                 _Invokers.Add(ac);
-                _Command.Register(ac.Name, (args) => _PrintReturn(invoker.Invoke(args)), method.ReturnParameter.ParameterType, method.GetParameters().Select((p) => p.ParameterType).ToArray());
+                _Command.Register(ac.Name, (args) => invoker.Invoke(args), method.ReturnParameter.ParameterType, method.GetParameters().Select((p) => p.ParameterType).ToArray());
             }
 
         }
 
-        private void _PrintReturn(object val)
-        {
-            if (val == null)
-                return;
-            Type type = val.GetType();
-
-            if (type.GetGenericTypeDefinition() != typeof(Regulus.Remote.Value<>))
-            {
-                return;
-            }
-            IValue value = val as IValue;
-
-            value.QueryValue(_PrintValue);
-
-        }
-
-        private void _PrintValue(object obj)
-        {
-            Regulus.Utility.Log.Instance.WriteInfo($"return :{obj}");
-        }
+        
 
         public void Unregist(object instance)
         {

@@ -10,12 +10,12 @@ namespace Regulus.Utility
     {
         private class Infomation
         {
-            public readonly Action<string[]> Handler;
+            public readonly Func<string[],object> Handler;
 
             public readonly string Name;
             internal readonly Guid Id;
 
-            public Infomation(string name, Action<string[]> handler)
+            public Infomation(string name, Func<string[],object> handler)
             {
                 Name = name;
                 Handler = handler;

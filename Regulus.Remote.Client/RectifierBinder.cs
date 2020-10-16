@@ -3,17 +3,17 @@ using System.Collections.Generic;
 
 namespace Regulus.Remote.Client
 {
-    public class User
+    public class RectifierBinder
     {
          
-        public readonly string Id;
+        public readonly System.Guid Id;
 
 
         readonly List<Tuple<Type, object>> _Ghosts;
         public IEnumerable<Tuple<Type, object>> Ghosts => _Ghosts;
-        public User(AgentEventRectifier rectifier)
+        public RectifierBinder(AgentEventRectifier rectifier)
         {
-            Id = System.Guid.NewGuid().ToString();
+            Id = System.Guid.NewGuid();
             _Ghosts = new List<Tuple<Type, object>>();            
 
             rectifier.SupplyEvent += _Add;

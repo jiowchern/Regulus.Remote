@@ -122,15 +122,11 @@ namespace Regulus.Utility
 
                 try
                 {
-                    int runCount = Command.Run(cmd, cmdArgs.ToArray());
-                    if (runCount != 0)
+                    foreach (var ret in Command.Run(cmd, cmdArgs.ToArray()))
                     {
-                        _Viewer.WriteLine("Done.");
+                        _Viewer.WriteLine($"return {ret}");
                     }
-                    else
-                    {
-                        _Viewer.WriteLine(string.Format("Invalid command. {0}", cmd));
-                    }
+                    _Viewer.WriteLine($"done.");
                 }
                 catch (ArgumentException argument_exception)
                 {
