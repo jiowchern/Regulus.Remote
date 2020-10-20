@@ -31,7 +31,6 @@ namespace Regulus.Remote
         private readonly InterfaceProvider _InterfaceProvider;
         private readonly ISerializer _Serializer;
         readonly SoulNotifier _NotifierPassage;
-        int loadCompleteCount;
         public void AddProvider(Type type, IProvider provider)
         {
             _Providers.Add(type, provider);
@@ -43,7 +42,7 @@ namespace Regulus.Remote
 
         public long Ping { get; private set; }
 
-        public bool Enable { get; private set; }
+        
 
         
 
@@ -66,12 +65,12 @@ namespace Regulus.Remote
         public void Start()
         {
             _StartPing();
-            Enable = true;
+            
         }
         public void Stop()
         {
             _Requester.ResponseEvent -= OnResponse;
-            Enable = false;
+            
             lock (_Providers)
             {
                 foreach (KeyValuePair<Type, IProvider> providerPair in _Providers)
