@@ -22,7 +22,8 @@ namespace Regulus.Remote.Client
 
             foreach (Type type in _Types)
             {
-
+                if (!type.IsInterface)
+                    continue;
                 System.Reflection.MethodInfo agentQueryNotifierT = agentQueryNotifier.MakeGenericMethod(type);
 
 
