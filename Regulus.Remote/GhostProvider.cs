@@ -51,7 +51,7 @@ namespace Regulus.Remote
             
             _Active = false;
             _Requester = req;
-            _Requester.ResponseEvent += OnResponse;
+            
             _NotifierPassage = new SoulNotifier();
             _ReturnValueQueue = new ReturnValueQueue();
             _Protocol = protocol;
@@ -64,6 +64,7 @@ namespace Regulus.Remote
         }
         public void Start()
         {
+            _Requester.ResponseEvent += OnResponse;
             _StartPing();
             
         }
