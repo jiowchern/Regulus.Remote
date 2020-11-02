@@ -467,13 +467,27 @@ $@"
             List<string> codes = new List<string>();
             foreach (Type type in types)
             {
-                string methods = _BuildMethods(type);
-                string propertys = _BuildPropertys(type);
-                string events = _BuildEvents(type);
+                try
+                {
+                    string methods = _BuildMethods(type);
+                    string propertys = _BuildPropertys(type);
+                    string events = _BuildEvents(type);
 
-                codes.Add(methods);
-                codes.Add(propertys);
-                codes.Add(events);
+                    codes.Add(methods);
+                    codes.Add(propertys);
+                    codes.Add(events);
+                }
+                catch(TypePropertyNotifierException tpne)
+                {
+                    throw new Exception(tpne.ToString());
+                }
+                catch (Exception ex)
+                {
+
+                    throw ex;
+                }
+                            
+                
             }
             return string.Join("\n", codes.ToArray());
         }
@@ -539,7 +553,17 @@ $@"
 
         private static bool _IsNotifierProperty(PropertyInfo propertyInfo)
         {
-            return propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof(INotifier<>);
+            try
+            {
+                if(propertyInfo.PropertyType.IsGenericType)
+                    return propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof(INotifier<>);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw new TypePropertyNotifierException(propertyInfo , ex);
+            }
+            
         }
 
         private void _BuildRemoteProperty(Type type, PropertyInfo[] propertyInfos, List<string> propertyCodes)
