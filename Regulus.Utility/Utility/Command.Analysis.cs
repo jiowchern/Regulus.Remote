@@ -22,16 +22,24 @@ namespace Regulus.Utility
 
             private void _Analyze(string message)
             {
-                string expansion = @"^\s*(?<command>\w+-?\d*\.?\w*)\s*\[\s*(?<args>.+?)\]\s*\[\s*(?<ret>.+?)\s*\]|^\s*(?<command>\w+-?\d*\.?\w*)\s*\[\s*(?<args>.+?)\]|^\s*(?<command>\w+-?\d*\.?\w*)\s*";
+                // aaaaa-12345.dwdwdqwdwqd [dwdq,dwqdwq,dwq,www] [ret]
+                //string expansion = @"^\s*(?<command>\w+-?\d*\.?\w*)\s*\[\s*(?<args>.+?)\]\s*\[\s*(?<ret>.+?)\s*\]|^\s*(?<command>\w+-?\d*\.?\w*)\s*\[\s*(?<args>.+?)\]";
+                string expansion = @"(?<command>[\w\.-]+)\s+\[(?<args>[\w,\s]*)\]\s*\[\s*(?<ret>\w*)\s*\]|(?<command>[\w\.-]+)\s+\[(?<args>[\w,\s]*)\]";
                 Regex regex = new Regex(expansion);
                 Match match = regex.Match(message);
                 if (match.Success)
                 {
                     Group command = match.Groups["command"];
-                    Command = command.Value;
+                    
                     Group args = match.Groups["args"];
                     Group ret = match.Groups["ret"];
+                    Command = command.Value;
                     _SetParameters(_AnalyzeArgs(args.Value), _AnalyzeReturn(ret.Value));
+                }
+                else
+                {
+                    Command = message;
+                    _SetParameters(new string[0], string.Empty);
                 }
             }
 

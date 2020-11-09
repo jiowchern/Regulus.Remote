@@ -311,6 +311,17 @@ namespace RegulusLibraryTest
 
         }
         [NUnit.Framework.Test()]
+        public void UnanalyzableCommand()
+        {
+            var handler = new UnanalyzableCommandHandler();
+            
+            Command command = new Command();
+            command.Register("Unanalyzable.Command.TestRun.Run", handler.Run );
+            command.Run("Unanalyzable.Command.TestRun.Run" , new string[0]);
+            NUnit.Framework.Assert.AreEqual(true , handler.Called );
+
+        }
+        [NUnit.Framework.Test()]
         public void CommandReturnTest()
         {
             Command command = new Command();
