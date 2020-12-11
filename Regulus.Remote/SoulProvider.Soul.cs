@@ -85,12 +85,22 @@ namespace Regulus.Remote
             internal void AddEvent(EventHandler handler)
             {
                 _EventHandlers.Add(handler);
+                Regulus.Utility.Log.Instance.WriteDebug($"AddEvent {handler.HandlerId}");
             }
 
             internal void RemoveEvent(EventInfo eventInfo, long handler_id)
             {
+                Regulus.Utility.Log.Instance.WriteDebug($"RemoveEvent {handler_id}");
                 EventHandler eventHandler = _EventHandlers.FirstOrDefault(eh => eh.HandlerId == handler_id && eh.EventInfo == eventInfo);
+                if (eventHandler == null)
+                {
+
+                    
+                    return;
+                }
+                    
                 _EventHandlers.Remove(eventHandler);
+                
                 eventHandler.Release();
             }
         }
