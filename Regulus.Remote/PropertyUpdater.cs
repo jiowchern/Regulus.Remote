@@ -5,8 +5,6 @@
         private readonly IDirtyable _Dirtyable;
         public readonly int PropertyId;
 
-
-
         bool _Dirty;
         bool _Close;
         object _Object;

@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace Regulus.Remote
 {
-    public partial class SoulProvider : IDisposable, IBinder
+    public class SoulProvider : IDisposable, IBinder
     {
         private readonly IdLandlord _IdLandlord;
         private readonly Queue<byte[]> _EventFilter = new Queue<byte[]>();
@@ -20,7 +20,7 @@ namespace Regulus.Remote
 
         private readonly EventProvider _EventProvider;
 
-        private readonly Poller<Soul> _Souls = new Poller<Soul>();
+        private readonly Poller<SoulProxy> _Souls = new Poller<SoulProxy>();
 
         private readonly Dictionary<long, IValue> _WaitValues = new Dictionary<long, IValue>();
 
@@ -145,13 +145,13 @@ namespace Regulus.Remote
         {
             object soul = returnValue.GetObject();
             Type type = returnValue.GetObjectType();
-            Soul prevSoul = (from soulInfo in _Souls.UpdateSet()
+            SoulProxy prevSoul = (from soulInfo in _Souls.UpdateSet()
                              where object.ReferenceEquals(soulInfo.ObjectInstance, soul) && soulInfo.ObjectType == type
                              select soulInfo).SingleOrDefault();
 
             if (prevSoul == null)
             {
-                Soul new_soul = _NewSoul(soul, type);
+                SoulProxy new_soul = _NewSoul(soul, type);
 
                 _LoadSoul(new_soul.InterfaceId, new_soul.Id, true);
 
@@ -161,7 +161,7 @@ namespace Regulus.Remote
             }
         }
 
-        private void _LoadProperty(Soul new_soul)
+        private void _LoadProperty(SoulProxy new_soul)
         {
 
             PropertyInfo[] propertys = new_soul.ObjectType.GetProperties(BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public);
@@ -236,8 +236,8 @@ namespace Regulus.Remote
 
         public void SetPropertyDone(long entityId, int property)
         {
-            IEnumerable<Soul> souls = from soul in _Souls.UpdateSet() where soul.Id == entityId select soul;
-            Soul s = souls.FirstOrDefault();
+            IEnumerable<SoulProxy> souls = from soul in _Souls.UpdateSet() where soul.Id == entityId select soul;
+            SoulProxy s = souls.FirstOrDefault();
             if (s != null)
             {
                 s.PropertyUpdateReset(property);
@@ -290,7 +290,7 @@ namespace Regulus.Remote
         }
         public void RemoveEvent(long entity_id, int event_id, long handler_id)
         {
-            Soul soul = (from s in _Souls.UpdateSet() where s.Id == entity_id select s).FirstOrDefault();
+            SoulProxy soul = (from s in _Souls.UpdateSet() where s.Id == entity_id select s).FirstOrDefault();
             if (soul == null)
                 return;
 
@@ -306,7 +306,7 @@ namespace Regulus.Remote
 
         public void AddEvent(long entity_id, int event_id, long handler_id)
         {
-            Soul soul = (from s in _Souls.UpdateSet() where s.Id == entity_id select s).FirstOrDefault();
+            SoulProxy soul = (from s in _Souls.UpdateSet() where s.Id == entity_id select s).FirstOrDefault();
             if (soul == null)
                 return;
 
@@ -318,27 +318,27 @@ namespace Regulus.Remote
 
             Delegate del = _BuildDelegate(eventInfo, soul.Id, handler_id, _InvokeEvent);
 
-            Soul.EventHandler handler = new SoulProvider.Soul.EventHandler(soul.ObjectInstance, del, eventInfo, handler_id);
+            var handler = new SoulProxyEventHandler(soul.ObjectInstance, del, eventInfo, handler_id);
             soul.AddEvent(handler);
 
         }
         public void RemoveNotifierUnsupply(long entity_id, int property, long notifier_id)
         {
-            Soul soul = (from s in _Souls.UpdateSet() where s.Id == entity_id select s).FirstOrDefault();
+            SoulProxy soul = (from s in _Souls.UpdateSet() where s.Id == entity_id select s).FirstOrDefault();
             if (soul == null)
                 return;
             soul.DetachUnsupply(notifier_id);
         }
         public void RemoveNotifierSupply(long entity_id, int property, long notifier_id)
         {
-            Soul soul = (from s in _Souls.UpdateSet() where s.Id == entity_id select s).FirstOrDefault();
+            SoulProxy soul = (from s in _Souls.UpdateSet() where s.Id == entity_id select s).FirstOrDefault();
             if (soul == null)
                 return;
             soul.DetachSupply(notifier_id);
         }
         public void AddNotifierSupply(long entity_id, int property_id, long notifier_id)
         {
-            Soul soul = (from s in _Souls.UpdateSet() where s.Id == entity_id select s).FirstOrDefault();
+            SoulProxy soul = (from s in _Souls.UpdateSet() where s.Id == entity_id select s).FirstOrDefault();
             if (soul == null)
                 return;
 
@@ -356,7 +356,7 @@ namespace Regulus.Remote
 
         public void AddNotifierUnsupply(long entity_id, int property_id, long notifier_id)
         {
-            Soul soul = (from s in _Souls.UpdateSet() where s.Id == entity_id select s).FirstOrDefault();
+            SoulProxy soul = (from s in _Souls.UpdateSet() where s.Id == entity_id select s).FirstOrDefault();
             if (soul == null)
                 return;
 
@@ -399,13 +399,13 @@ namespace Regulus.Remote
 
         private void _Bind(object soul, Type soul_type, bool return_type, long return_id, long notifier_id)
         {
-            Soul prevSoul = (from soulInfo in _Souls.UpdateSet()
+            SoulProxy prevSoul = (from soulInfo in _Souls.UpdateSet()
                              where object.ReferenceEquals(soulInfo.ObjectInstance, soul) && soulInfo.ObjectType == soul_type
                              select soulInfo).SingleOrDefault();
 
             if (prevSoul == null)
             {
-                Soul newSoul = _NewSoul(soul, soul_type);
+                SoulProxy newSoul = _NewSoul(soul, soul_type);
 
                 _LoadSoul(newSoul.InterfaceId, newSoul.Id, return_type);
                 _LoadProperty(newSoul);
@@ -413,12 +413,12 @@ namespace Regulus.Remote
             }
         }
 
-        private Soul _NewSoul(object soul, Type soul_type)
+        private SoulProxy _NewSoul(object soul, Type soul_type)
         {
 
             MemberMap map = _Protocol.GetMemberMap();
             int interfaceId = map.GetInterface(soul_type);
-            Soul newSoul = new Soul(_IdLandlord.Rent(), interfaceId, soul_type, soul);
+            SoulProxy newSoul = new SoulProxy(_IdLandlord.Rent(), interfaceId, soul_type, soul);
 
 
 
@@ -450,7 +450,7 @@ namespace Regulus.Remote
 
         private void _Unbind(object soul, Type type, long passage)
         {
-            Soul soulInfo = (from soul_info in _Souls.UpdateSet()
+            SoulProxy soulInfo = (from soul_info in _Souls.UpdateSet()
                              where object.ReferenceEquals(soul_info.ObjectInstance, soul) && soul_info.ObjectType == type
                              select soul_info).SingleOrDefault();
 
@@ -482,10 +482,10 @@ namespace Regulus.Remote
 
         public void Update()
         {
-            Soul[] souls = _Souls.UpdateSet();
+            SoulProxy[] souls = _Souls.UpdateSet();
 
 
-            foreach (Soul soul in souls)
+            foreach (SoulProxy soul in souls)
             {
                 foreach (Tuple<int, object> pu in soul.PropertyUpdate())
                 {
@@ -506,7 +506,7 @@ namespace Regulus.Remote
 
         public void Unbind(long entityId)
         {
-            Soul soul = (from s in _Souls.UpdateSet() where s.Id == entityId select s).FirstOrDefault();
+            SoulProxy soul = (from s in _Souls.UpdateSet() where s.Id == entityId select s).FirstOrDefault();
             if (soul != null)
             {
                 _Unbind(soul.ObjectInstance, soul.ObjectType, 0);
