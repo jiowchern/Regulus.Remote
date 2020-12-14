@@ -22,7 +22,7 @@ namespace Regulus.Remote
         readonly List<PropertyUpdater> _PropertyUpdaters;
 
 
-        public readonly IReadOnlyCollection<PropertyUpdater> Propertys;
+        
         public readonly int InterfaceId;
 
         public SoulProxy(long id, int interface_id, Type object_type, object object_instance)
@@ -32,8 +32,7 @@ namespace Regulus.Remote
             ObjectType = object_type;
             InterfaceId = interface_id;
             Id = id;
-            _PropertyUpdaters = new List<PropertyUpdater>();
-            Propertys = _PropertyUpdaters;
+            _PropertyUpdaters = new List<PropertyUpdater>();        
             _EventHandlers = new List<SoulProxyEventHandler>();
             _UnsupplyBinder = new Dictionary<long, NotifierEventBinder>();
             _SupplyBinder = new Dictionary<long, NotifierEventBinder>();
@@ -43,58 +42,79 @@ namespace Regulus.Remote
 
         internal void Release()
         {
-            foreach (SoulProxyEventHandler eventHandler in _EventHandlers)
+            lock(_EventHandlers)
             {
-                eventHandler.Release();
+                foreach (SoulProxyEventHandler eventHandler in _EventHandlers)
+                {
+                    eventHandler.Release();
 
+                }
+                _EventHandlers.Clear();
             }
-            _EventHandlers.Clear();
+            
 
-
-            foreach (PropertyUpdater pu in _PropertyUpdaters)
+            lock(_PropertyUpdaters)
             {
-                pu.Release();
+                foreach (PropertyUpdater pu in _PropertyUpdaters)
+                {
+                    pu.Release();
+                }
+                _PropertyUpdaters.Clear();
             }
-            _PropertyUpdaters.Clear();
+            
         }
 
         internal IEnumerable<Tuple<int, object>> PropertyUpdate()
         {
-            var propertys = _PropertyUpdaters.ToArray();
-            foreach (PropertyUpdater pu in propertys)
+            lock(_PropertyUpdaters)
             {
-                if (pu.Update())
-                    yield return new Tuple<int, object>(pu.PropertyId, pu.Value);
+                var propertys = _PropertyUpdaters.ToArray();
+                foreach (PropertyUpdater pu in propertys)
+                {
+                    if (pu.Update())
+                        yield return new Tuple<int, object>(pu.PropertyId, pu.Value);
+                }
             }
+            
         }
 
         internal void PropertyUpdateReset(int property)
         {
-            PropertyUpdater propertyUpdater = _PropertyUpdaters.FirstOrDefault(pu => pu.PropertyId == property);
-            if (propertyUpdater != null)
-                propertyUpdater.Reset();
+            lock(_PropertyUpdaters)
+            {
+                PropertyUpdater propertyUpdater = _PropertyUpdaters.FirstOrDefault(pu => pu.PropertyId == property);
+                if (propertyUpdater != null)
+                    propertyUpdater.Reset();
+            }
+            
 
         }
 
         internal void AddPropertyUpdater(PropertyUpdater pu)
         {
-            _PropertyUpdaters.Add(pu);
+            lock(_PropertyUpdaters)
+                _PropertyUpdaters.Add(pu);
         }
 
         internal void AddEvent(SoulProxyEventHandler handler)
         {
-            _EventHandlers.Add(handler);
+            lock(_EventHandlers)
+                _EventHandlers.Add(handler);
             Regulus.Utility.Log.Instance.WriteDebug($"AddEvent {handler.HandlerId}");
         }
 
         internal void RemoveEvent(EventInfo eventInfo, long handler_id)
         {
             Regulus.Utility.Log.Instance.WriteDebug($"RemoveEvent {handler_id}");
-            SoulProxyEventHandler eventHandler = _EventHandlers.FirstOrDefault(eh => eh.HandlerId == handler_id && eh.EventInfo == eventInfo);
+            lock(_EventHandlers)
+            {
+                SoulProxyEventHandler eventHandler = _EventHandlers.FirstOrDefault(eh => eh.HandlerId == handler_id && eh.EventInfo == eventInfo);
 
-            _EventHandlers.Remove(eventHandler);
+                _EventHandlers.Remove(eventHandler);
 
-            eventHandler.Release();
+                eventHandler.Release();
+            }
+            
         }
 
         
