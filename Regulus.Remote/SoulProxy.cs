@@ -100,12 +100,12 @@ namespace Regulus.Remote
         {
             lock(_EventHandlers)
                 _EventHandlers.Add(handler);
-            Regulus.Utility.Log.Instance.WriteDebug($"AddEvent {handler.HandlerId}");
+            
         }
 
         internal void RemoveEvent(EventInfo eventInfo, long handler_id)
         {
-            Regulus.Utility.Log.Instance.WriteDebug($"RemoveEvent {handler_id}");
+            
             lock(_EventHandlers)
             {
                 SoulProxyEventHandler eventHandler = _EventHandlers.FirstOrDefault(eh => eh.HandlerId == handler_id && eh.EventInfo == eventInfo);
