@@ -206,7 +206,7 @@ namespace Regulus.Remote.Tests
                 IGpiB supplyB = null;
                 IGpiB unsupplyB = null;
                 SoulA soulA = new SoulA();
-                var soul = new SoulProxy(1, 1, typeof(IGpiA), soulA);
+                var soul = new SoulProxy(1, 1, typeof(IGpiA), soulA, new PropertyUpdater[0]);
                 PropertyInfo gpiBsProperty = typeof(IGpiA).GetProperties().FirstOrDefault(p => p.Name == nameof(IGpiA.GpiBs));
                 NotifierEventBinder supplyBinder = NotifierEventBinder.Create(soulA, gpiBsProperty, "Supply", (instance) => supplyB = instance as IGpiB);
 

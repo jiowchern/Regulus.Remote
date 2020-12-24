@@ -18,13 +18,15 @@ namespace Regulus.Utility
     }
     public class StatusMachine
     {
-        private readonly Queue<IStatus> _StandBys;
+        readonly System.Collections.Concurrent.ConcurrentQueue<IStatus> _StandBys;
+
+        
 
         public IStatus Current { get; private set; }
 
         public StatusMachine()
         {
-            _StandBys = new Queue<IStatus>();
+            _StandBys = new System.Collections.Concurrent.ConcurrentQueue<IStatus>();
         }
 
         public void Push(IStatus new_stage)
@@ -65,7 +67,8 @@ namespace Regulus.Utility
 
         public void Termination()
         {
-            _StandBys.DequeueAll();
+
+                        
             if (Current != null)
             {
                 Current.Leave();

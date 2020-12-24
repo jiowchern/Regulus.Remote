@@ -178,6 +178,8 @@ namespace Regulus.Remote.Soul
 
             if (responses.Length > 0)
                 _Writer.Push(responses);
+
+            _Writer.Update();
         }
 
         void IResponseQueue.Push(ServerToClientOpCode cmd, byte[] data)

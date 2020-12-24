@@ -1,6 +1,11 @@
 ﻿namespace Regulus.Remote
 {
-    public class PropertyUpdater
+    public interface IPropertyIdValue
+    {
+        int Id { get; }
+        object Instance { get; }
+    }
+    public class PropertyUpdater : IPropertyIdValue
     {
         private readonly IDirtyable _Dirtyable;
         public readonly int PropertyId;
@@ -9,6 +14,10 @@
         bool _Close;
         object _Object;
         public object Value => _Object;
+
+        int IPropertyIdValue.Id => PropertyId;
+
+        object IPropertyIdValue.Instance => _Object;
 
         public PropertyUpdater(IDirtyable dirtyable, int id)
         {

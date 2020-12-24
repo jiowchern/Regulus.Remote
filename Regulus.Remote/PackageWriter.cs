@@ -17,47 +17,43 @@ namespace Regulus.Remote
 
         private volatile bool _Stop;
         
-        System.Threading.Tasks.Task _Task;
+        
         System.Collections.Concurrent.ConcurrentQueue<TPackage[]> _SendPkgs;
 
         public PackageWriter(ISerializer serializer)
         {
 
             _Serializer = serializer;
-        
-            
             _SendPkgs = new System.Collections.Concurrent.ConcurrentQueue<TPackage[]>();
-
-
         }
 
-        private void _Run()
-        {
-            var apr = new Regulus.Utility.AutoPowerRegulator(new Utility.PowerRegulator());
-            while(!_Stop)
-            {
-                apr.Operate();
-                TPackage[] pkgs;
-                while (_SendPkgs.TryDequeue(out pkgs))
-                {
-                    var buffer = _CreateBuffer(pkgs);
-
-                    var resultTask = _Peer.Send(buffer, 0, buffer.Length);
-
-                    var sendSize = resultTask.GetAwaiter().GetResult();
-                    NetworkMonitor.Instance.Write.Set(sendSize);
-                }
-                
-               
-            }
-        }
+       
 
         public void Start(IStreamable peer)
         {
             _Stop = false;
             _Peer = peer;
-            _Task = new System.Threading.Tasks.Task(_Run, System.Threading.Tasks.TaskCreationOptions.LongRunning);
-            _Task.Start();
+            
+
+        }
+
+        public  void Update()
+        {
+            
+            TPackage[] pkgs;
+            if(_SendPkgs.TryDequeue(out pkgs))
+            {
+                var buffer = _CreateBuffer(pkgs);
+
+                var resultTask = _Peer.Send(buffer, 0, buffer.Length);
+                resultTask.ContinueWith(_WriteEnd);
+            }
+            
+        }
+
+        private void _WriteEnd(System.Threading.Tasks.Task<int> task)
+        {
+            NetworkMonitor.Instance.Write.Set(task.Result);
         }
 
         public void Push(TPackage[] packages)
@@ -90,9 +86,7 @@ namespace Regulus.Remote
 
         public void Stop()
         {
-            _Stop = true;
-            _Task.Wait();
-            _Task.Dispose();
+            _Stop = true;            
         }
 
     }

@@ -12,7 +12,7 @@ namespace Regulus.Remote
         {
             _Updater = updater;
 
-            _Task = new System.Threading.Tasks.Task(_Update);
+            _Task = new System.Threading.Tasks.Task(_Update , System.Threading.Tasks.TaskCreationOptions.LongRunning);
         }
 
         void _Update()

@@ -7,8 +7,10 @@ namespace Regulus.Remote.Standalone
 
     public class Stream : Network.IStreamable
     {
-        volatile System.Collections.Concurrent.ConcurrentQueue<MemoryStream> _Sends;
-        volatile System.Collections.Concurrent.ConcurrentQueue<MemoryStream> _Receives;
+        readonly System.Collections.Concurrent.ConcurrentQueue<MemoryStream> _Sends;
+        readonly System.Collections.Concurrent.ConcurrentQueue<MemoryStream> _Receives;
+        int _DebugSendCount;
+        int _DebugReceiveCount;
         public Stream()
         {
 
@@ -20,8 +22,11 @@ namespace Regulus.Remote.Standalone
         public Task<int> Push(byte[] buffer, int offset, int count)
         {
             var stream = new MemoryStream(buffer, offset, count);
+            
             _Receives.Enqueue(stream);
-            return Task<int>.FromResult((int)stream.Length);
+
+            System.Threading.Interlocked.Increment(ref _DebugReceiveCount);
+            return System.Threading.Tasks.Task<int>.Factory.StartNew(()=> (int)stream.Length);
         }
 
 
@@ -30,32 +35,77 @@ namespace Regulus.Remote.Standalone
         Task<int> IStreamable.Receive(byte[] buffer, int offset, int count)
         {
             
-            return _Read(buffer, offset, count,_Receives );
+            return _Read(buffer, offset, count);
         }
 
-        private Task<int> _Read(byte[] buffer, int offset, int count , System.Collections.Concurrent.ConcurrentQueue<MemoryStream> read_queue)
+        private Task<int> _Read(byte[] buffer, int offset, int count )
         {
-            MemoryStream stream1;
-            MemoryStream stream2;
-            if (read_queue.TryPeek(out stream1))
-            {
-                                
-                var readSize = stream1.Read(buffer, offset, count);
-                if (stream1.Length == stream1.Position)
+            System.Func<int> reader = () => {
+                MemoryStream stream1;
+                MemoryStream stream2;
+                var are = new Regulus.Utility.AutoPowerRegulator(new Utility.PowerRegulator());
+                int readSize = 0;
+                while(readSize == 0)
                 {
-                    read_queue.TryDequeue(out stream2);
-                    if (stream1 != stream2)
-                        throw new System.Exception("stream1 != stream2");
+                    
+                    if (_Receives.TryPeek(out stream1))
+                    {
+                        readSize += stream1.Read(buffer, offset, count);
+                        if (stream1.Length == stream1.Position)
+                        {
+                            
+                            _Receives.TryDequeue(out stream2);
+                            System.Threading.Interlocked.Decrement(ref _DebugReceiveCount);
+                            if (stream1 != stream2)
+                                throw new System.Exception("stream1 != stream2");
+                        }
+                        return readSize;
+                    }
+                    are.Operate();
+                }
+                
+                return readSize;
+            };
+            
+            
+            return System.Threading.Tasks.Task<int>.Factory.StartNew(reader);
+        }
+
+        private Task<int> _Write(byte[] buffer, int offset, int count)
+        {
+            System.Func<int> reader = () => {
+                MemoryStream stream1;
+                MemoryStream stream2;
+                var are = new Regulus.Utility.AutoPowerRegulator(new Utility.PowerRegulator());
+                int readSize = 0;
+                while (readSize == 0)
+                {
+
+                    if (_Sends.TryPeek(out stream1))
+                    {
+                        readSize += stream1.Read(buffer, offset, count);
+                        if (stream1.Length == stream1.Position)
+                        {
+                            _Sends.TryDequeue(out stream2);
+                            System.Threading.Interlocked.Decrement(ref _DebugSendCount);
+                            if (stream1 != stream2)
+                                throw new System.Exception("stream1 != stream2");
+                        }
+                        return readSize;
+                    }
+                    are.Operate();
                 }
 
-                return System.Threading.Tasks.Task<int>.FromResult(readSize);
-            }
-            return System.Threading.Tasks.Task<int>.FromResult(0);
+                return readSize;
+            };
+
+
+            return System.Threading.Tasks.Task<int>.Factory.StartNew(reader);
         }
 
         public Task<int> Pop(byte[] buffer, int offset, int count)
         {
-            return _Read(buffer, offset, count, _Sends);
+            return _Write(buffer, offset, count);
 
 
         }
@@ -64,7 +114,8 @@ namespace Regulus.Remote.Standalone
         {
             MemoryStream stream = new MemoryStream(buffer, offset, count);
             _Sends.Enqueue(stream);
-            return Task<int>.FromResult((int)stream.Length);
+            System.Threading.Interlocked.Increment(ref _DebugSendCount);
+            return System.Threading.Tasks.Task<int>.Factory.StartNew(() => (int)stream.Length);
         }
     }
 }

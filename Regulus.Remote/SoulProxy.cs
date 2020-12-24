@@ -20,19 +20,22 @@ namespace Regulus.Remote
         readonly List<SoulProxyEventHandler> _EventHandlers;
 
         readonly List<PropertyUpdater> _PropertyUpdaters;
+        readonly System.Collections.Concurrent.ConcurrentQueue<int> _PropertyResets;
 
+        readonly System.Collections.Concurrent.ConcurrentQueue<IPropertyIdValue> _PropertyChangeds;
 
-        
         public readonly int InterfaceId;
 
-        public SoulProxy(long id, int interface_id, Type object_type, object object_instance)
+        public SoulProxy(long id, int interface_id, Type object_type, object object_instance,IEnumerable<PropertyUpdater> property_updaters)
         {
             MethodInfos = object_type.GetMethods();
             ObjectInstance = object_instance;
             ObjectType = object_type;
             InterfaceId = interface_id;
             Id = id;
-            _PropertyUpdaters = new List<PropertyUpdater>();        
+            _PropertyUpdaters = new List<PropertyUpdater>(property_updaters);
+            _PropertyResets = new System.Collections.Concurrent.ConcurrentQueue<int>();
+            _PropertyChangeds = new System.Collections.Concurrent.ConcurrentQueue<IPropertyIdValue>();
             _EventHandlers = new List<SoulProxyEventHandler>();
             _UnsupplyBinder = new Dictionary<long, NotifierEventBinder>();
             _SupplyBinder = new Dictionary<long, NotifierEventBinder>();
@@ -51,50 +54,52 @@ namespace Regulus.Remote
                 }
                 _EventHandlers.Clear();
             }
-            
 
-            lock(_PropertyUpdaters)
+
+            foreach (PropertyUpdater pu in _PropertyUpdaters)
             {
-                foreach (PropertyUpdater pu in _PropertyUpdaters)
-                {
-                    pu.Release();
-                }
-                _PropertyUpdaters.Clear();
+                pu.Release();
             }
-            
+            _PropertyUpdaters.Clear();
+
         }
 
-        internal IEnumerable<Tuple<int, object>> PropertyUpdate()
+        internal bool TryGetPropertyChange(out IPropertyIdValue property_id_value)
         {
-            lock(_PropertyUpdaters)
+            return _PropertyChangeds.TryDequeue(out property_id_value);
+        }
+        internal void PropertyUpdate()
+        {
+            int resetId;
+            while (_PropertyResets.TryDequeue(out resetId))
             {
-                var propertys = _PropertyUpdaters.ToArray();
-                foreach (PropertyUpdater pu in propertys)
-                {
-                    if (pu.Update())
-                        yield return new Tuple<int, object>(pu.PropertyId, pu.Value);
-                }
+                PropertyUpdater propertyUpdater = _PropertyUpdaters.FirstOrDefault(pu => pu.PropertyId == resetId);
+                if (propertyUpdater != null)
+                    propertyUpdater.Reset();
             }
-            
+
+
+
+            foreach (PropertyUpdater pu in _PropertyUpdaters)
+            {
+                if (pu.Update())
+                {
+                    _PropertyChangeds.Enqueue(pu);
+                }
+                    
+            }
+
         }
 
         internal void PropertyUpdateReset(int property)
         {
-            lock(_PropertyUpdaters)
-            {
-                PropertyUpdater propertyUpdater = _PropertyUpdaters.FirstOrDefault(pu => pu.PropertyId == property);
-                if (propertyUpdater != null)
-                    propertyUpdater.Reset();
-            }
+            _PropertyResets.Enqueue(property);
+            
             
 
         }
 
-        internal void AddPropertyUpdater(PropertyUpdater pu)
-        {
-            lock(_PropertyUpdaters)
-                _PropertyUpdaters.Add(pu);
-        }
+        
 
         internal void AddEvent(SoulProxyEventHandler handler)
         {

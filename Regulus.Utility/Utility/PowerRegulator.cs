@@ -60,6 +60,7 @@ namespace Regulus.Utility
 
 
                 _SpinWait.SpinOnce();
+                
                 _SpinCount++;
             }
             else

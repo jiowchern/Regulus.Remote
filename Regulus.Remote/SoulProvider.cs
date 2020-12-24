@@ -418,10 +418,16 @@ namespace Regulus.Remote
 
             MemberMap map = _Protocol.GetMemberMap();
             int interfaceId = map.GetInterface(soul_type);
-            SoulProxy newSoul = new SoulProxy(_IdLandlord.Rent(), interfaceId, soul_type, soul);
+            SoulProxy newSoul = new SoulProxy(_IdLandlord.Rent(), interfaceId, soul_type, soul, _BuildProperty(soul, soul_type, map ));
+            
 
+            _Souls.Add(newSoul);
 
+            return newSoul;
+        }
 
+        private static IEnumerable<PropertyUpdater> _BuildProperty(object soul, Type soul_type, MemberMap map)
+        {
             // property 
             PropertyInfo[] propertys = soul_type.GetProperties(BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public);
 
@@ -435,18 +441,12 @@ namespace Regulus.Remote
                     object propertyValue = property.GetValue(soul);
                     IDirtyable dirtyable = propertyValue as IDirtyable;
 
-                    PropertyUpdater pu = new PropertyUpdater(dirtyable, id);
-                    newSoul.AddPropertyUpdater(pu);
+                    yield return new PropertyUpdater(dirtyable, id);
+                    
 
                 }
             }
-
-            _Souls.Add(newSoul);
-
-            return newSoul;
         }
-
-
 
         private void _Unbind(object soul, Type type, long passage)
         {
@@ -487,9 +487,12 @@ namespace Regulus.Remote
 
             foreach (SoulProxy soul in souls)
             {
-                foreach (Tuple<int, object> pu in soul.PropertyUpdate())
+                soul.PropertyUpdate();
+                
+                IPropertyIdValue change;
+                while (soul.TryGetPropertyChange(out change))
                 {
-                    _LoadProperty(soul.Id, pu.Item1, pu.Item2);
+                    _LoadProperty(soul.Id, change.Id, change.Instance);
                 }
             }
 

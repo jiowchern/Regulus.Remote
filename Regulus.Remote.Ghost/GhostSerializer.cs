@@ -104,7 +104,7 @@ namespace Regulus.Remote.Ghost
             if (sends.Length > 0)
                 _Writer.Push(sends);
 
-
+            _Writer.Update();
         }
 
         private void _WriterStart(IStreamable peer)

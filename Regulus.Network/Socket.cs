@@ -110,8 +110,8 @@ namespace Regulus.Network
             return System.Threading.Tasks.Task<int>.Run(() =>
             {
 
-                int readCount = _Stream.Read(buffer, offset, count);
-                AutoPowerRegulator r = new Regulus.Utility.AutoPowerRegulator(new PowerRegulator());
+                int readCount = 0;
+                var r = new Regulus.Utility.AutoPowerRegulator(new PowerRegulator());
                 while (readCount == 0)
                 {
                     r.Operate();
