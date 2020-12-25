@@ -34,7 +34,7 @@ namespace Regulus.Utility
             _Enable = true;
             _Tasks = new System.Collections.Concurrent.ConcurrentQueue<Action>();
             _Task = new System.Threading.Tasks.Task(_Run , TaskCreationOptions.LongRunning);
-
+            _Task.Start();
         }
 
         private void _Run()
@@ -72,7 +72,7 @@ namespace Regulus.Utility
         {
             _Enable = false;
             _ResetEvent.Set();
-            _Task.GetAwaiter().GetResult();
+            _Task.Wait();
         }
 
 

@@ -107,10 +107,10 @@ namespace Regulus.Remote.Standalone.Test
             Stream cd = new Regulus.Remote.Standalone.Stream();
             IStreamable peer = cd;
             byte[] buf = serializer.ServerToClient(ServerToClientOpCode.LoadSoul, new Regulus.Remote.PackageLoadSoul() { EntityId = 1, ReturnType = false, TypeId = 1 });
-            cd.Push(buf, 0, buf.Length);
+            cd.Push(buf, 0, buf.Length).Wait();
 
             byte[] recvBuf = new byte[buf.Length];
-            peer.Receive(recvBuf, 0, recvBuf.Length);
+            peer.Receive(recvBuf, 0, recvBuf.Length).Wait();
             ResponsePackage responsePkg = serializer.Deserialize(recvBuf) as ResponsePackage;
             PackageLoadSoul lordsoulPkg = serializer.Deserialize(responsePkg.Data) as PackageLoadSoul;
             Assert.AreEqual(ServerToClientOpCode.LoadSoul, responsePkg.Code);
@@ -142,6 +142,7 @@ namespace Regulus.Remote.Standalone.Test
             Assert.AreEqual(1, lordsoulPkg.TypeId);
         }
         [Test]
+        [NUnit.Framework.MaxTime(10000)]
         public void AgentSupplyGpiTest()
         {
             IGpiA retGpiA = null;
@@ -163,6 +164,7 @@ namespace Regulus.Remote.Standalone.Test
             while (retGpiA == null)
             {
                 agent.Update();
+                writer.Update();
             }
             agent.Stop();
             writer.Stop();
