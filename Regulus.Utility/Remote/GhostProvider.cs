@@ -4,7 +4,6 @@ using System.Linq;
 
 namespace Regulus.Remote
 {
-
     public class TProvider<T> : INotifier<T>, IProvider
 
     {

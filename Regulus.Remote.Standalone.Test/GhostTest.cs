@@ -27,7 +27,7 @@ namespace Regulus.Remote.Standalone.Test
         public static IProtocol CreateProtocol(ISerializer serializer)
         {
             IProtocol protocol = NSubstitute.Substitute.For<IProtocol>();
-            System.Collections.Generic.Dictionary<System.Type, System.Type> types = new System.Collections.Generic.Dictionary<System.Type, System.Type>();
+            var types = new System.Collections.Generic.Dictionary<System.Type, System.Type>();
             types.Add(typeof(IGpiA), typeof(GhostIGpiA));
             InterfaceProvider interfaceProvider = new InterfaceProvider(types);
             protocol.GetInterfaceProvider().Returns(interfaceProvider);
