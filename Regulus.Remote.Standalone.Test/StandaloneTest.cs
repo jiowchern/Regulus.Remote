@@ -8,7 +8,7 @@ namespace Regulus.Remote.Standalone.Test
     {
         void IBinderProvider.AssignBinder(IBinder binder, object state)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
     }
 
@@ -38,6 +38,7 @@ namespace Regulus.Remote.Standalone.Test
         [Test]
         public void TestTwoEventsReceived()
         {
+            // todo
             var entry = new TestTwoEventsReceivedEntry();
             Serialization.ISerializer serializer = new Regulus.Serialization.Dynamic.Serializer();
             IProtocol protocol = ProtocolHelper.CreateProtocol(serializer);

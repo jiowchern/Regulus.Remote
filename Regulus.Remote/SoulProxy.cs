@@ -26,6 +26,11 @@ namespace Regulus.Remote
 
         public readonly int InterfaceId;
 
+        volatile bool _UpdateTaskEnable;
+        readonly System.Threading.Tasks.Task _UpdateTask;
+
+
+
         public SoulProxy(long id, int interface_id, Type object_type, object object_instance,IEnumerable<PropertyUpdater> property_updaters)
         {
             MethodInfos = object_type.GetMethods();
@@ -39,13 +44,16 @@ namespace Regulus.Remote
             _EventHandlers = new List<SoulProxyEventHandler>();
             _UnsupplyBinder = new Dictionary<long, NotifierEventBinder>();
             _SupplyBinder = new Dictionary<long, NotifierEventBinder>();
-
+            _UpdateTaskEnable = true;
+            _UpdateTask = System.Threading.Tasks.Task.Factory.StartNew(_PropertyUpdate , System.Threading.Tasks.TaskCreationOptions.LongRunning);
         }
 
 
         internal void Release()
         {
-            lock(_EventHandlers)
+            _UpdateTaskEnable = false;
+            _UpdateTask.Wait();
+            lock (_EventHandlers)
             {
                 foreach (SoulProxyEventHandler eventHandler in _EventHandlers)
                 {
@@ -68,26 +76,35 @@ namespace Regulus.Remote
         {
             return _PropertyChangeds.TryDequeue(out property_id_value);
         }
-        internal void PropertyUpdate()
+        private void _PropertyUpdate()
         {
-            int resetId;
-            while (_PropertyResets.TryDequeue(out resetId))
+
+
+            var apr = new Regulus.Utility.AutoPowerRegulator(new Utility.PowerRegulator());
+            while(_UpdateTaskEnable)
             {
-                PropertyUpdater propertyUpdater = _PropertyUpdaters.FirstOrDefault(pu => pu.PropertyId == resetId);
-                if (propertyUpdater != null)
-                    propertyUpdater.Reset();
-            }
-
-
-
-            foreach (PropertyUpdater pu in _PropertyUpdaters)
-            {
-                if (pu.Update())
+                int resetId;
+                while (_PropertyResets.TryDequeue(out resetId))
                 {
-                    _PropertyChangeds.Enqueue(pu);
+                    PropertyUpdater propertyUpdater = _PropertyUpdaters.FirstOrDefault(pu => pu.PropertyId == resetId);
+                    if (propertyUpdater != null)
+                        propertyUpdater.Reset();
                 }
-                    
+
+
+
+                foreach (PropertyUpdater pu in _PropertyUpdaters)
+                {
+                    if (pu.Update())
+                    {
+                        _PropertyChangeds.Enqueue(pu);
+                    }
+
+                }
+
+                apr.Operate();
             }
+            
 
         }
 

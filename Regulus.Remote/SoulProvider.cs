@@ -487,8 +487,6 @@ namespace Regulus.Remote
 
             foreach (SoulProxy soul in souls)
             {
-                soul.PropertyUpdate();
-                
                 IPropertyIdValue change;
                 while (soul.TryGetPropertyChange(out change))
                 {
