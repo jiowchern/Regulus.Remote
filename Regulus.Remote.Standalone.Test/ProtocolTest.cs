@@ -57,6 +57,7 @@ namespace Regulus.Remote.Standalone.Test
             NUnit.Framework.Assert.AreEqual(3, number3.Value.Value);
         }
         [Test]
+        [MaxTime(5000)]
         public void Sample2NotifierSupplyTest()
         {
             var env = new SampleTestEnv();
@@ -90,6 +91,7 @@ namespace Regulus.Remote.Standalone.Test
 
 
         [Test]
+        [MaxTime(5000)]
         public void SampleEventTest()
         {
             var env = new SampleTestEnv();
@@ -108,6 +110,7 @@ namespace Regulus.Remote.Standalone.Test
         }
 
         [Test]
+        [MaxTime(5000)]
         public void Sample2EventTest()
         {
             var env = new SampleTestEnv();
@@ -140,6 +143,7 @@ namespace Regulus.Remote.Standalone.Test
         
 
         [Test]
+        [MaxTime(5000)]
         public void SampleAddTest()
         {
             var env = new SampleTestEnv();

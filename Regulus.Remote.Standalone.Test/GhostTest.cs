@@ -42,6 +42,7 @@ namespace Regulus.Remote.Standalone.Test
     {
 
         [Test]
+        [MaxTime(5000)]
         public void CommunicationDevicePushTest()
         {
             byte[] sendBuf = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -61,6 +62,7 @@ namespace Regulus.Remote.Standalone.Test
         }
 
         [Test]
+        [MaxTime(5000)]
         public void CommunicationDevicePopTest()
         {
             byte[] sendBuf = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -101,6 +103,7 @@ namespace Regulus.Remote.Standalone.Test
 
         }
         [Test]
+        [MaxTime(5000)]
         public void CommunicationDeviceSerializerTest()
         {
             Regulus.Serialization.ISerializer serializer = new Regulus.Serialization.Dynamic.Serializer();
@@ -120,6 +123,7 @@ namespace Regulus.Remote.Standalone.Test
         }
 
         [Test]
+        [MaxTime(5000)]
         public void CommunicationDeviceSerializerBatchTest()
         {
             Regulus.Serialization.ISerializer serializer = new Regulus.Serialization.Dynamic.Serializer();

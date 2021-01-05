@@ -10,6 +10,7 @@ namespace Regulus.Remote.Standalone.Test
 
         
         [Test]
+        [MaxTime(5000)]
         public void Test()
         {
 
