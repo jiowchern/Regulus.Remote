@@ -126,9 +126,22 @@ namespace Regulus.Remote
                 
                 PackageLoadSoulCompile data = args.ToPackageData<PackageLoadSoulCompile>(_Serializer);
             
-                _LoadSoulCompile(data.TypeId, data.EntityId, data.ReturnId, data.PassageId);
+                _LoadSoulCompile(data.TypeId, data.EntityId, data.ReturnId);
                 
             }
+            else if (id == ServerToClientOpCode.NotifierSupply)
+            {                
+                PackageNotifier data = args.ToPackageData<PackageNotifier>(_Serializer);
+                _NotifierSupply(data);             
+            }
+            else if (id == ServerToClientOpCode.NotifierUnsupply)
+            {                
+                PackageNotifier data = args.ToPackageData<PackageNotifier>(_Serializer);
+
+                _NotifierUnsupply(data);
+                
+            }
+
             else if (id == ServerToClientOpCode.LoadSoul)
             {
                 
@@ -141,7 +154,7 @@ namespace Regulus.Remote
             {
                 PackageUnloadSoul data = args.ToPackageData<PackageUnloadSoul>(_Serializer);
                 
-                _UnloadSoul(data.TypeId, data.EntityId, data.PassageId);
+                _UnloadSoul(data.TypeId, data.EntityId);
             }
             else if (id == ServerToClientOpCode.ProtocolSubmit)
             {
@@ -150,6 +163,24 @@ namespace Regulus.Remote
                 _ProtocolSubmit(data);
             }
 
+        }
+
+        private void _NotifierSupply(PackageNotifier data)
+        {
+            MemberMap map = _Protocol.GetMemberMap();
+            Type type = map.GetInterface(data.TypeId);
+            IProvider provider = _QueryProvider(type);
+            var ghost = provider.Ghosts.Single(g => g.GetID() == data.EntityId);
+            _NotifierPassage.Supply(ghost , data.PassageId);
+        }
+
+        private void _NotifierUnsupply(PackageNotifier data)
+        {
+            MemberMap map = _Protocol.GetMemberMap();
+            Type type = map.GetInterface(data.TypeId);
+            IProvider provider = _QueryProvider(type);
+            var ghost = provider.Ghosts.Single(g => g.GetID() == data.EntityId);
+            _NotifierPassage.Unsupply(ghost, data.PassageId);
         }
 
         private void _ProtocolSubmit(PackageProtocolSubmit data)
@@ -192,7 +223,7 @@ namespace Regulus.Remote
             }
         }
 
-        private void _LoadSoulCompile(int type_id, long entity_id, long return_id, long passage_id)
+        private void _LoadSoulCompile(int type_id, long entity_id, long return_id)
         {
             
             MemberMap map = _Protocol.GetMemberMap();
@@ -200,21 +231,9 @@ namespace Regulus.Remote
             Type type = map.GetInterface(type_id);
             
             IProvider provider = _QueryProvider(type);
-            
-            if (provider != null)
-            {
-                
-                IGhost ghost = provider.Ready(entity_id);
-                
-                _NotifierPassage.Supply(ghost, passage_id);
-                
-                _SetReturnValue(return_id, ghost);
-                
-            }
-            else
-            {
 
-            }
+            IGhost ghost = provider.Ready(entity_id);
+            _SetReturnValue(return_id, ghost);
         }
 
 
@@ -249,7 +268,7 @@ namespace Regulus.Remote
             _AutoRelease.Register(ghost);
         }
 
-        private void _UnloadSoul(int type_id, long id, long passage_id)
+        private void _UnloadSoul(int type_id, long id)
         {
             MemberMap map = _Protocol.GetMemberMap();
             Type type = map.GetInterface(type_id);
@@ -261,8 +280,7 @@ namespace Regulus.Remote
 
             IGhost ghost = provider.Ghosts.FirstOrDefault(g => g.GetID() == id);
             if (ghost == null)
-                return;
-            _NotifierPassage.Unsupply(ghost, passage_id);
+                return;            
             provider.Remove(id);
         }
 

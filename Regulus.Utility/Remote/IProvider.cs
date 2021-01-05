@@ -2,7 +2,8 @@
 {
     public interface IProvider
     {
-        IGhost[] Ghosts { get; }
+
+        System.Collections.Generic.IReadOnlyCollection<IGhost> Ghosts { get; }
 
         void Add(IGhost entiry);
 

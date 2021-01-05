@@ -33,10 +33,7 @@ namespace Regulus.Remote
         {
             add
             {
-                foreach (T gpi in _Gpis)
-                {
-                    value(gpi);
-                }
+                
                 _AddSupplyHandler.Invoke(_Add(value));
             }
 

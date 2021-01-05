@@ -21,7 +21,7 @@ namespace Regulus.Remote
         {
             long passageId = _NotifierPassage.RegisterSupply(passage);
 
-            PackageNotifierEvent package = new PackageNotifierEvent();
+            PackageNotifierEventHook package = new PackageNotifierEventHook();
             package.Entity = _Ghost.GetID();
             package.Property = _Protocol.GetMemberMap().GetProperty(info);
             package.Passage = passageId;
@@ -32,7 +32,7 @@ namespace Regulus.Remote
         {
             long passageId = _NotifierPassage.UnregisterSupply(passage);
 
-            PackageNotifierEvent package = new PackageNotifierEvent();
+            PackageNotifierEventHook package = new PackageNotifierEventHook();
             package.Entity = _Ghost.GetID();
             package.Property = _Protocol.GetMemberMap().GetProperty(info);
             package.Passage = passageId;
@@ -43,7 +43,7 @@ namespace Regulus.Remote
         {
             long passageId = _NotifierPassage.RegisterUnsupply(passage);
 
-            PackageNotifierEvent package = new PackageNotifierEvent();
+            PackageNotifierEventHook package = new PackageNotifierEventHook();
             package.Entity = _Ghost.GetID();
             package.Property = _Protocol.GetMemberMap().GetProperty(info);
             package.Passage = passageId;
@@ -54,7 +54,7 @@ namespace Regulus.Remote
         {
             long passageId = _NotifierPassage.UnregisterUnsupply(passage);
 
-            PackageNotifierEvent package = new PackageNotifierEvent();
+            PackageNotifierEventHook package = new PackageNotifierEventHook();
             package.Entity = _Ghost.GetID();
             package.Property = _Protocol.GetMemberMap().GetProperty(info);
             package.Passage = passageId;

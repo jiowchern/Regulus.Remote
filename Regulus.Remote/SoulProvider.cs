@@ -71,7 +71,7 @@ namespace Regulus.Remote
                 throw new ArgumentNullException("soul");
             }
 
-            _Unbind(soul, typeof(TSoul), 0);
+            _Unbind(soul, typeof(TSoul));
         }
 
         event Action IBinder.BreakEvent
@@ -157,7 +157,7 @@ namespace Regulus.Remote
 
                 _LoadProperty(new_soul);
 
-                _LoadSoulCompile(new_soul.InterfaceId, new_soul.Id, return_id, 0);
+                _LoadSoulCompile(new_soul.InterfaceId, new_soul.Id, return_id);
             }
         }
 
@@ -195,14 +195,12 @@ namespace Regulus.Remote
 
 
 
-        private void _LoadSoulCompile(int type_id, long id, long return_id, long notifier_id)
+        private void _LoadSoulCompile(int type_id, long id, long return_id)
         {
             PackageLoadSoulCompile package = new PackageLoadSoulCompile();
             package.EntityId = id;
             package.ReturnId = return_id;
             package.TypeId = type_id;
-            package.PassageId = notifier_id;
-
             _Queue.Push(ServerToClientOpCode.LoadSoulCompile, package.ToBuffer(_Serializer));
         }
         private void _LoadProperty(long id, int property, object val)
@@ -224,13 +222,13 @@ namespace Regulus.Remote
 
         }
 
-        private void _UnloadSoul(int type_id, long id, long passage)
+        private void _UnloadSoul(int type_id, long id)
         {
 
             PackageUnloadSoul package = new PackageUnloadSoul();
             package.TypeId = type_id;
             package.EntityId = id;
-            package.PassageId = passage;
+            
             _Queue.Push(ServerToClientOpCode.UnloadSoul, package.ToBuffer(_Serializer));
         }
 
@@ -373,15 +371,39 @@ namespace Regulus.Remote
 
         private void _UnbindSupply(object gpi, Type gpiType, long notifier_id)
         {
-            _Unbind(gpi, gpiType, notifier_id);
+            SoulProxy soul = (from soul_info in _Souls.UpdateSet()
+                                  where object.ReferenceEquals(soul_info.ObjectInstance, gpi) && soul_info.ObjectType == gpiType
+                              select soul_info).SingleOrDefault();
+            _NotifierUnsupply(soul, notifier_id);
+            _Unbind(gpi, gpiType);            
         }
 
-        private void _BindSupply(object gpi, Type gpiType, long notifier_id)
+        private void _NotifierUnsupply(SoulProxy soul, long notifier_id)
         {
-            _Bind(gpi, gpiType, false, 0, notifier_id);
+            PackageNotifier package = new PackageNotifier();
+            package.PassageId = notifier_id;
+            package.EntityId = soul.Id;
+            package.TypeId = soul.InterfaceId;
+
+            _Queue.Push(ServerToClientOpCode.NotifierUnsupply, package.ToBuffer(_Serializer));
         }
 
+        private void _BindSupply(object gpi, Type gpiType,long notifier_id)
+        {
+            
+            var soul = _Bind(gpi, gpiType, false, 0);
+            _NotifierSupply(soul , notifier_id);
+        }
 
+        private void _NotifierSupply(SoulProxy soul, long notifier_id)
+        {
+            PackageNotifier package = new PackageNotifier();
+            package.PassageId = notifier_id;
+            package.EntityId = soul.Id;
+            package.TypeId = soul.InterfaceId;
+
+            _Queue.Push(ServerToClientOpCode.NotifierSupply, package.ToBuffer(_Serializer));
+        }
 
         private void _ErrorDeserialize(string method_name, long return_id, string message)
         {
@@ -394,10 +416,10 @@ namespace Regulus.Remote
 
         private void _Bind<TSoul>(TSoul soul, bool return_type, long return_id)
         {
-            _Bind(soul, typeof(TSoul), return_type, return_id, 0);
+            _Bind(soul, typeof(TSoul), return_type, return_id);
         }
 
-        private void _Bind(object soul, Type soul_type, bool return_type, long return_id, long notifier_id)
+        private SoulProxy _Bind(object soul, Type soul_type, bool return_type, long return_id)
         {
             SoulProxy prevSoul = (from soulInfo in _Souls.UpdateSet()
                              where object.ReferenceEquals(soulInfo.ObjectInstance, soul) && soulInfo.ObjectType == soul_type
@@ -406,11 +428,14 @@ namespace Regulus.Remote
             if (prevSoul == null)
             {
                 SoulProxy newSoul = _NewSoul(soul, soul_type);
-
+                prevSoul = newSoul;
                 _LoadSoul(newSoul.InterfaceId, newSoul.Id, return_type);
                 _LoadProperty(newSoul);
-                _LoadSoulCompile(newSoul.InterfaceId, newSoul.Id, return_id, notifier_id);
+                _LoadSoulCompile(newSoul.InterfaceId, newSoul.Id, return_id);
+                
             }
+
+            return prevSoul;
         }
 
         private SoulProxy _NewSoul(object soul, Type soul_type)
@@ -448,7 +473,7 @@ namespace Regulus.Remote
             }
         }
 
-        private void _Unbind(object soul, Type type, long passage)
+        private SoulProxy _Unbind(object soul, Type type)
         {
             SoulProxy soulInfo = (from soul_info in _Souls.UpdateSet()
                              where object.ReferenceEquals(soul_info.ObjectInstance, soul) && soul_info.ObjectType == type
@@ -458,10 +483,12 @@ namespace Regulus.Remote
             {
                 soulInfo.Release();
 
-                _UnloadSoul(soulInfo.InterfaceId, soulInfo.Id, passage);
+                _UnloadSoul(soulInfo.InterfaceId, soulInfo.Id);
                 _Souls.Remove(s => { return s == soulInfo; });
                 _IdLandlord.Return(soulInfo.Id);
             }
+
+            return soulInfo;
         }
 
 
@@ -510,7 +537,7 @@ namespace Regulus.Remote
             SoulProxy soul = (from s in _Souls.UpdateSet() where s.Id == entityId select s).FirstOrDefault();
             if (soul != null)
             {
-                _Unbind(soul.ObjectInstance, soul.ObjectType, 0);
+                _Unbind(soul.ObjectInstance, soul.ObjectType);
             }
         }
     }

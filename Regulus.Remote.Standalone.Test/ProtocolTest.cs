@@ -9,7 +9,7 @@ namespace Regulus.Remote.Standalone.Test
 {
     public class ProtocolTest
     {
-        /*[Test]
+        [Test]
         public void Sample2NotifierTest()
         {
             var env = new SampleTestEnv();
@@ -37,7 +37,7 @@ namespace Regulus.Remote.Standalone.Test
             NUnit.Framework.Assert.AreEqual(1, testResult.numbers1[0].Value.Value);
             NUnit.Framework.Assert.AreEqual(1, testResult.numbers2[0].Value.Value);
             NUnit.Framework.Assert.AreEqual(2, testResult.numbers2[1].Value.Value);
-        }*/
+        }
         
         
 

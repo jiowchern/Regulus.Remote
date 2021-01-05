@@ -27,14 +27,17 @@
 
         ReturnValue,
 
-
         LoadSoulCompile,
 
         Ping,
 
         ErrorMethod,
-
         ProtocolSubmit,
         SetProperty,
+
+        NotifierSupply,
+        
+        NotifierUnsupply,
+        
     }
 }

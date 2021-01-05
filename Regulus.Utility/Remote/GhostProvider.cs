@@ -90,7 +90,7 @@ namespace Regulus.Remote
             _RemoveReturns(id);
         }
 
-        IGhost[] IProvider.Ghosts
+        IReadOnlyCollection<IGhost> IProvider.Ghosts
         {
             get
             {

@@ -115,22 +115,18 @@ namespace Regulus.Remote
 
         public byte[] ReturnValue;
     }
+    
 
-    [Serializable]
+        [Serializable]
     public class PackageLoadSoulCompile : TPackageData<PackageLoadSoulCompile>
     {
         public PackageLoadSoulCompile()
         {
 
         }
-
         public int TypeId;
-
         public long EntityId;
-
-        public long ReturnId;
-        public long PassageId;
-
+        public long ReturnId;        
     }
     [Serializable]
     public class PackageLoadSoul : TPackageData<PackageLoadSoul>
@@ -157,8 +153,6 @@ namespace Regulus.Remote
         public int TypeId;
 
         public long EntityId;
-
-        public long PassageId;
 
     }
 
@@ -215,11 +209,21 @@ namespace Regulus.Remote
         public int Event;
         public long Handler;
     }
-    public class PackageNotifierEvent : TPackageData<PackageNotifierEvent>
+    public class PackageNotifierEventHook : TPackageData<PackageNotifierEventHook>
     {
         public long Entity;
         public int Property;
         public long Passage;
 
     }
+
+    [Serializable]
+    public class PackageNotifier : TPackageData<PackageNotifier>
+    {
+        public int TypeId;
+        public long EntityId;
+        public long PassageId;
+    }
+
+
 }
