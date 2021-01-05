@@ -10,7 +10,54 @@ namespace Regulus.Remote.Standalone.Test
     public class ProtocolTest
     {
         [Test]
-        public void Sample2NotifierTest()
+        [MaxTime(5000)]
+        public void Sample2NotifierUnsupplyTest()
+        {
+            var env = new SampleTestEnv();
+
+
+            var n1 = new Number(1);
+            var n2 = new Number(2);
+            var n3 = new Number(3);
+            env.Sample.Numbers.Items.Add(n1);
+            env.Sample.Numbers.Items.Add(n2);
+            env.Sample.Numbers.Items.Add(n3);
+            var queryer = env.Queryable;
+            var readyObs = from s in queryer.QueryNotifier<ISample>().SupplyEvent()
+                           from supplyNumbers in s.Numbers.SupplyEvent().Buffer(3)                      
+                           select s ;
+            var sample = readyObs.FirstAsync().Wait();
+
+            var numbers = new System.Collections.Concurrent.ConcurrentQueue<INumber>();
+            sample.Numbers.Unsupply += numbers.Enqueue;
+
+            System.Threading.Thread.Sleep(1);
+
+
+            env.Sample.Numbers.Items.Remove(n2);
+            env.Sample.Numbers.Items.Remove(n1);
+            env.Sample.Numbers.Items.Remove(n3);
+
+            while (numbers.Count < 3)
+            {
+                System.Threading.Thread.Sleep(1);
+            }
+
+
+            env.Dispose();
+
+            INumber number1;
+            numbers.TryDequeue(out number1);
+            INumber number2;
+            numbers.TryDequeue(out number2);
+            INumber number3;
+            numbers.TryDequeue(out number3);
+            NUnit.Framework.Assert.AreEqual(2 , number1.Value.Value);
+            NUnit.Framework.Assert.AreEqual(1, number2.Value.Value);
+            NUnit.Framework.Assert.AreEqual(3, number3.Value.Value);
+        }
+        [Test]
+        public void Sample2NotifierSupplyTest()
         {
             var env = new SampleTestEnv();
             var queryer = env.Queryable;
