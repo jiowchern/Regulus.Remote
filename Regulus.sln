@@ -44,6 +44,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{845C59A2-925C-4D68-BAF9-E3545A354CF2}"
 	ProjectSection(SolutionItems) = preProject
 		appveyor.yml = appveyor.yml
+		build-testprotocol.cmd = build-testprotocol.cmd
 		.github\workflows\build.yml = .github\workflows\build.yml
 		build_package.cmd = build_package.cmd
 		README.md = README.md
@@ -63,6 +64,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Document", "Document", "{01
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Remote.Standalone.Test", "Regulus.Remote.Standalone.Test\Regulus.Remote.Standalone.Test.csproj", "{82BAA92B-B238-4F83-B836-9D81C335393F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Projects.TestProtocol.Common", "Regulus.Projects.TestProtocol.Common\Regulus.Projects.TestProtocol.Common.csproj", "{FBA5C01D-B12F-4C15-9A1F-2178761DC268}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Projects.TestProtocol.Protocol", "Regulus.Projects.TestProtocol.Protocol\Regulus.Projects.TestProtocol.Protocol.csproj", "{C212EC33-8497-470B-AE2B-C993FDF34129}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulus.Remote.Reactive", "Regulus.Remote.Reactive\Regulus.Remote.Reactive.csproj", "{03FFAAFA-F74E-4D4D-83D2-492B38DC20BB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -146,6 +153,18 @@ Global
 		{82BAA92B-B238-4F83-B836-9D81C335393F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{82BAA92B-B238-4F83-B836-9D81C335393F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{82BAA92B-B238-4F83-B836-9D81C335393F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBA5C01D-B12F-4C15-9A1F-2178761DC268}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBA5C01D-B12F-4C15-9A1F-2178761DC268}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBA5C01D-B12F-4C15-9A1F-2178761DC268}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBA5C01D-B12F-4C15-9A1F-2178761DC268}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C212EC33-8497-470B-AE2B-C993FDF34129}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C212EC33-8497-470B-AE2B-C993FDF34129}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C212EC33-8497-470B-AE2B-C993FDF34129}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C212EC33-8497-470B-AE2B-C993FDF34129}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03FFAAFA-F74E-4D4D-83D2-492B38DC20BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03FFAAFA-F74E-4D4D-83D2-492B38DC20BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03FFAAFA-F74E-4D4D-83D2-492B38DC20BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03FFAAFA-F74E-4D4D-83D2-492B38DC20BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -171,6 +190,9 @@ Global
 		{9AC9D5ED-2B49-4C25-B851-518D0B8F024A} = {F37C2CFD-4962-4E1B-96EB-E5E8928D217B}
 		{011E01DE-6672-4E26-B406-8868A5B5391A} = {845C59A2-925C-4D68-BAF9-E3545A354CF2}
 		{82BAA92B-B238-4F83-B836-9D81C335393F} = {F37C2CFD-4962-4E1B-96EB-E5E8928D217B}
+		{FBA5C01D-B12F-4C15-9A1F-2178761DC268} = {F37C2CFD-4962-4E1B-96EB-E5E8928D217B}
+		{C212EC33-8497-470B-AE2B-C993FDF34129} = {F37C2CFD-4962-4E1B-96EB-E5E8928D217B}
+		{03FFAAFA-F74E-4D4D-83D2-492B38DC20BB} = {BF82B497-EC2D-4F8B-AF59-02AEC21A6B15}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5F361C65-F7E7-4579-84BF-3D8DB0C9DABA}

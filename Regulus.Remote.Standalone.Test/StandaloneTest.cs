@@ -3,15 +3,6 @@ using NUnit.Framework.Constraints;
 
 namespace Regulus.Remote.Standalone.Test
 {
-
-    public class TestTwoEventsReceivedEntry : IBinderProvider
-    {
-        void IBinderProvider.AssignBinder(IBinder binder, object state)
-        {
-            //throw new System.NotImplementedException();
-        }
-    }
-
     public class StandaloneTest
     {
 
@@ -35,27 +26,7 @@ namespace Regulus.Remote.Standalone.Test
 
         }
 
-        [Test]
-        public void TestTwoEventsReceived()
-        {
-            // todo
-            var entry = new TestTwoEventsReceivedEntry();
-            Serialization.ISerializer serializer = new Regulus.Serialization.Dynamic.Serializer();
-            IProtocol protocol = ProtocolHelper.CreateProtocol(serializer);
-            IService service = new Regulus.Remote.Standalone.Service( entry , protocol);
-            Ghost.IAgent agent = new Regulus.Remote.Ghost.Agent(protocol);
-            service.Join(agent);
-            
-            /*while (!entry.IsDone())
-            {
-                agent.Update();
-            }*/
-            
-            service.Leave(agent);
-            service.Dispose();
-
-        //    NUnit.Framework.Assert.AreEqual();
-        }
+        
 
         private static void _TestService(IBinderProvider entry,ref bool bind, IProtocol protocol)
         {

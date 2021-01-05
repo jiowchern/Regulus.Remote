@@ -1,0 +1,1 @@
+dotnet run --project .\Regulus.Application.Protocol.CodeWriter\Regulus.Application.Protocol.CodeWriter.csproj -- --common .\Regulus.Projects.TestProtocol.Common\bin\Debug\netstandard2.0\Regulus.Projects.TestProtocol.Common.dll --output .\Regulus.Projects.TestProtocol.Protocol
