@@ -1,5 +1,6 @@
 ﻿using Regulus.Remote;
 using System;
+using System.Linq;
 
 namespace Regulus.Projects.TestProtocol.Common
 {
@@ -36,6 +37,10 @@ namespace Regulus.Projects.TestProtocol.Common
             return num1 + num2;
         }
 
-        
+        Value<bool> ISample.RemoveNumber(int val)
+        {
+            var number = Numbers.Items.First(n => n.Value == val);
+            return Numbers.Items.Remove(number);
+        }
     }
 }

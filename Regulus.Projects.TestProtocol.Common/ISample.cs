@@ -12,6 +12,7 @@ namespace Regulus.Projects.TestProtocol.Common
         event System.Action<int> IntsEvent;
 
         INotifier<INumber> Numbers { get; }
-        
+
+        Regulus.Remote.Value<bool> RemoveNumber(int val);
     }
 }

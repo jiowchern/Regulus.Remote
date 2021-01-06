@@ -31,18 +31,15 @@ namespace Regulus.Remote.Standalone.Test
             var numbers = new System.Collections.Concurrent.ConcurrentQueue<INumber>();
             sample.Numbers.Unsupply += numbers.Enqueue;
 
-            System.Threading.Thread.Sleep(1);
 
+            var removeObs = from r1 in sample.RemoveNumber(2).RemoteValue()
+                            from r2 in sample.RemoveNumber(1).RemoteValue()
+                            from r3 in sample.RemoveNumber(3).RemoteValue()
+                            select new { r1, r2, r3 };
 
-            env.Sample.Numbers.Items.Remove(n2);
-            env.Sample.Numbers.Items.Remove(n1);
-            env.Sample.Numbers.Items.Remove(n3);
+            var removeNumbers = removeObs.FirstAsync().Wait();
 
-            while (numbers.Count < 3)
-            {
-                System.Threading.Thread.Sleep(1);
-            }
-
+            
 
             env.Dispose();
 

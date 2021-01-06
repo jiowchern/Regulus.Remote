@@ -130,6 +130,21 @@ _Numbers = new Regulus.Remote.GhostNotifier<Regulus.Projects.TestProtocol.Common
                 }
 
                 
+ 
+
+                Regulus.Remote.Value<System.Boolean> Regulus.Projects.TestProtocol.Common.ISample.RemoveNumber(System.Int32 _1)
+                {                    
+
+                    
+    var returnValue = new Regulus.Remote.Value<System.Boolean>();
+    
+
+                    var info = typeof(Regulus.Projects.TestProtocol.Common.ISample).GetMethod("RemoveNumber");
+                    _CallMethodEvent(info , new object[] {_1} , returnValue);                    
+                    return returnValue;
+                }
+
+                
 
 
             readonly Regulus.Remote.GhostNotifier<Regulus.Projects.TestProtocol.Common.INumber> _Numbers;

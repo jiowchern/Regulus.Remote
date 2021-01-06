@@ -7,26 +7,34 @@ namespace Regulus.Remote.Standalone
 
     public class Stream : Network.IStreamable
     {
-        readonly System.Collections.Concurrent.ConcurrentQueue<MemoryStream> _Sends;
-        readonly System.Collections.Concurrent.ConcurrentQueue<MemoryStream> _Receives;
-        int _DebugSendCount;
-        int _DebugReceiveCount;
+        readonly new System.Collections.Generic.Queue<byte> _Sends;
+        
+        readonly System.Collections.Generic.Queue<byte> _Receives;
+        
+
         public Stream()
         {
 
-            _Sends = new System.Collections.Concurrent.ConcurrentQueue<MemoryStream>();
-            _Receives = new System.Collections.Concurrent.ConcurrentQueue<MemoryStream>();
+            _Sends = new System.Collections.Generic.Queue<byte>();
+            _Receives = new System.Collections.Generic.Queue<byte>();
 
         }
 
         public Task<int> Push(byte[] buffer, int offset, int count)
         {
-            var stream = new MemoryStream(buffer, offset, count);
+            lock(_Receives)
+            {
+                for (int i = offset; i < buffer.Length ; i++)
+                {
+                    int readCount = i - offset;
+                    if (readCount >= count)
+                        return System.Threading.Tasks.Task<int>.Factory.StartNew(() => readCount);
+                    _Receives.Enqueue(buffer[i]);
+                }
+                return System.Threading.Tasks.Task<int>.Factory.StartNew(() => buffer.Length - offset);
+            }
             
-            _Receives.Enqueue(stream);
-
-            System.Threading.Interlocked.Increment(ref _DebugReceiveCount);
-            return System.Threading.Tasks.Task<int>.Factory.StartNew(()=> (int)stream.Length);
+            
         }
 
 
@@ -38,69 +46,44 @@ namespace Regulus.Remote.Standalone
             return _Read(buffer, offset, count);
         }
 
-        private Task<int> _Read(byte[] buffer, int offset, int count )
+        private Task<int> _Read(byte[] buffer, int offset, int count)
         {
-            System.Func<int> reader = () => {
-                MemoryStream stream1;
-                MemoryStream stream2;
-                var are = new Regulus.Utility.AutoPowerRegulator(new Utility.PowerRegulator());
-                int readSize = 0;
-                while(readSize == 0)
+            lock (_Receives)
+            {
+                for (int i = offset; i < buffer.Length; i++)
                 {
-                    
-                    if (_Receives.TryPeek(out stream1))
+                    int readCount = i - offset;
+                    if(readCount >= count)
+                        return System.Threading.Tasks.Task<int>.Factory.StartNew(() => readCount);
+                    if (_Receives.Count == 0)
                     {
-                        readSize += stream1.Read(buffer, offset, count);
-                        if (stream1.Length == stream1.Position)
-                        {
-                            
-                            _Receives.TryDequeue(out stream2);
-                            System.Threading.Interlocked.Decrement(ref _DebugReceiveCount);
-                            if (stream1 != stream2)
-                                throw new System.Exception("stream1 != stream2");
-                        }
-                        return readSize;
+                        return System.Threading.Tasks.Task<int>.Factory.StartNew(() => readCount);
                     }
-                    are.Operate();
+                    buffer[i] = _Receives.Dequeue();
                 }
-                
-                return readSize;
-            };
-            
-            
-            return System.Threading.Tasks.Task<int>.Factory.StartNew(reader);
+            }
+
+            return System.Threading.Tasks.Task<int>.Factory.StartNew(() => buffer.Length - offset);
         }
 
         private Task<int> _Write(byte[] buffer, int offset, int count)
         {
-            System.Func<int> reader = () => {
-                MemoryStream stream1;
-                MemoryStream stream2;
-                var are = new Regulus.Utility.AutoPowerRegulator(new Utility.PowerRegulator());
-                int readSize = 0;
-                while (readSize == 0)
+            lock (_Sends)
+            {
+                for (int i = offset; i < buffer.Length; i++)
                 {
-
-                    if (_Sends.TryPeek(out stream1))
+                    int readCount = i - offset;
+                    if (readCount >= count)
+                        return System.Threading.Tasks.Task<int>.Factory.StartNew(() => readCount);
+                    if (_Sends.Count == 0)
                     {
-                        readSize += stream1.Read(buffer, offset, count);
-                        if (stream1.Length == stream1.Position)
-                        {
-                            _Sends.TryDequeue(out stream2);
-                            System.Threading.Interlocked.Decrement(ref _DebugSendCount);
-                            if (stream1 != stream2)
-                                throw new System.Exception("stream1 != stream2");
-                        }
-                        return readSize;
+                        return System.Threading.Tasks.Task<int>.Factory.StartNew(() => readCount);
                     }
-                    are.Operate();
+                    buffer[i] = _Sends.Dequeue();
                 }
+            }
 
-                return readSize;
-            };
-
-
-            return System.Threading.Tasks.Task<int>.Factory.StartNew(reader);
+            return System.Threading.Tasks.Task<int>.Factory.StartNew(() => buffer.Length - offset);
         }
 
         public Task<int> Pop(byte[] buffer, int offset, int count)
@@ -112,10 +95,17 @@ namespace Regulus.Remote.Standalone
 
         Task<int> IStreamable.Send(byte[] buffer, int offset, int count)
         {
-            MemoryStream stream = new MemoryStream(buffer, offset, count);
-            _Sends.Enqueue(stream);
-            System.Threading.Interlocked.Increment(ref _DebugSendCount);
-            return System.Threading.Tasks.Task<int>.Factory.StartNew(() => (int)stream.Length);
+            lock (_Sends)
+            {
+                for (int i = offset; i < buffer.Length; i++)
+                {
+                    int readCount = i - offset;
+                    if (readCount >= count)
+                        return System.Threading.Tasks.Task<int>.Factory.StartNew(() => readCount);
+                    _Sends.Enqueue(buffer[i]);
+                }
+                return System.Threading.Tasks.Task<int>.Factory.StartNew(() => buffer.Length - offset);
+            }
         }
     }
 }
