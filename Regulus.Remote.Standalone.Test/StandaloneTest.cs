@@ -18,7 +18,7 @@ namespace Regulus.Remote.Standalone.Test
 
             var obs = from sample in env.Queryable.QueryNotifier<Projects.TestProtocol.Common.ISample>().SupplyEvent()
                         select sample;
-            var s = obs.FirstAsync().Wait();
+            var s = obs.First();
 
             env.Dispose();
 

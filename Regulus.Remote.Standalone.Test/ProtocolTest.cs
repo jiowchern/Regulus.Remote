@@ -26,7 +26,7 @@ namespace Regulus.Remote.Standalone.Test
             var readyObs = from s in queryer.QueryNotifier<ISample>().SupplyEvent()
                            from supplyNumbers in s.Numbers.SupplyEvent().Buffer(3)                      
                            select s ;
-            var sample = readyObs.FirstAsync().Wait();
+            var sample = readyObs.First();
 
             var numbers = new System.Collections.Concurrent.ConcurrentQueue<INumber>();
             sample.Numbers.Unsupply += numbers.Enqueue;
@@ -37,7 +37,7 @@ namespace Regulus.Remote.Standalone.Test
                             from r3 in sample.RemoveNumber(3).RemoteValue()
                             select new { r1, r2, r3 };
 
-            var removeNumbers = removeObs.FirstAsync().Wait();
+            var removeNumbers = removeObs.First();
 
             
 
@@ -74,7 +74,7 @@ namespace Regulus.Remote.Standalone.Test
                       from numbers2 in sample.Numbers.SupplyEvent().Buffer(2).FirstAsync()
                       select new { numbers1, numbers2 };
 
-            var testResult = obs.FirstAsync().Wait();
+            var testResult = obs.First();
 
 
             env.Dispose();
@@ -99,7 +99,7 @@ namespace Regulus.Remote.Standalone.Test
                          from numberCount in System.Reactive.Linq.Observable.FromEvent<int>(h=> sample.IntsEvent += h , h => sample.IntsEvent -= h)
                          select numberCount;
             env.Sample.Ints.Items.Add(1);
-            var testResult = obs.Buffer(1).FirstAsync().Wait();
+            var testResult = obs.Buffer(1).First();
 
             env.Dispose();
             
@@ -126,7 +126,7 @@ namespace Regulus.Remote.Standalone.Test
                        from int2s in System.Reactive.Linq.Observable.FromEvent<int>(h => sample.IntsEvent += h, h => sample.IntsEvent -= h).Buffer(2).FirstAsync()
                        select new { int1s,int2s };
             
-            var testResult = obs.FirstAsync().Wait();
+            var testResult = obs.First();
 
             
 
@@ -149,7 +149,7 @@ namespace Regulus.Remote.Standalone.Test
                          from result in sample.Add(1, 2).RemoteValue()
                          select result;
 
-            int testResult = addObs.FirstAsync().Wait();
+            int testResult = addObs.First();
 
             env.Dispose();
             NUnit.Framework.Assert.AreEqual(3, testResult);
