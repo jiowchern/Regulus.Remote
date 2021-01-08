@@ -148,11 +148,14 @@ namespace Regulus.Remote.Standalone.Test
             var addObs = from sample in queryer.QueryNotifier<ISample>().SupplyEvent()
                          from result in sample.Add(1, 2).RemoteValue()
                          select result;
+            int? verifyResult = new  int?();
+            addObs.Do((r) => { }, _Throw).Subscribe( r => verifyResult = r);
+            while(!verifyResult.HasValue)
+            {
 
-            int testResult = addObs.Do((r) => { }, _Throw).FirstAsync().Wait();
-
+            }
             env.Dispose();
-            NUnit.Framework.Assert.AreEqual(3, testResult);
+            NUnit.Framework.Assert.AreEqual(3, verifyResult.Value);
         }
 
         private void _Throw(Exception e)
