@@ -135,9 +135,9 @@ namespace Regulus.Remote.Standalone.Test
             NUnit.Framework.Assert.AreEqual(1, testResult.int1s[0]);
             NUnit.Framework.Assert.AreEqual(1, testResult.int2s[0]);
             NUnit.Framework.Assert.AreEqual(2, testResult.int2s[1]);
-        }
+        }*/
 
-        
+
 
         [Test]
         [MaxTime(5000)]
@@ -149,10 +149,10 @@ namespace Regulus.Remote.Standalone.Test
                          from result in sample.Add(1, 2).RemoteValue()
                          select result;
 
-            int testResult = addObs.First();
+            int testResult = addObs.FirstAsync().Wait();
 
             env.Dispose();
             NUnit.Framework.Assert.AreEqual(3, testResult);
-        }*/
+        }
     }
 }
