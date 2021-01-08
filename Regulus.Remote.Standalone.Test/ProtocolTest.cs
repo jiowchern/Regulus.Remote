@@ -135,7 +135,7 @@ namespace Regulus.Remote.Standalone.Test
             NUnit.Framework.Assert.AreEqual(1, testResult.int1s[0]);
             NUnit.Framework.Assert.AreEqual(1, testResult.int2s[0]);
             NUnit.Framework.Assert.AreEqual(2, testResult.int2s[1]);
-        }*/
+        }
 
 
 
@@ -153,6 +153,6 @@ namespace Regulus.Remote.Standalone.Test
 
             env.Dispose();
             NUnit.Framework.Assert.AreEqual(3, testResult);
-        }
+        }*/
     }
 }
