@@ -9,7 +9,7 @@ namespace Regulus.Remote.Standalone.Test
 {
     public class ProtocolTest
     {
-        [Test]
+        /*[Test]
         [MaxTime(5000)]
         public void Sample2NotifierUnsupplyTest()
         {
@@ -153,6 +153,6 @@ namespace Regulus.Remote.Standalone.Test
 
             env.Dispose();
             NUnit.Framework.Assert.AreEqual(3, testResult);
-        }
+        }*/
     }
 }

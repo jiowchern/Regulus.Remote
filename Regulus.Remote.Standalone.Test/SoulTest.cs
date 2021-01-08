@@ -7,7 +7,7 @@ namespace Regulus.Remote.Standalone.Test
 {
     public class SoulTest
     {
-        [Test]
+        /*[Test]
         [MaxTime(5000)]
         public void ServiceTest()
         {
@@ -40,6 +40,6 @@ namespace Regulus.Remote.Standalone.Test
 
             IDisposable disposable = service;
             disposable.Dispose();
-        }
+        }*/
     }
 }
