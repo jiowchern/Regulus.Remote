@@ -23,13 +23,13 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --configuration Release --no-restore
-    - name: Test
-      run: |
-        dotnet test Regulus.sln --configuration Release /p:CollectCoverage=true  /p:CoverletOutput=../CoverageResults/ /p:MergeWith="../CoverageResults/coverage.json" /p:CoverletOutputFormat="lcov" -m:1
-        move CoverageResults/coverage.info .
+    #- name: Test
+    #  run: |
+    #    dotnet test Regulus.sln --configuration Release /p:CollectCoverage=true  /p:CoverletOutput=../CoverageResults/ /p:MergeWith="../CoverageResults/coverage.json" /p:CoverletOutputFormat="lcov" -m:1
+    #    move CoverageResults/coverage.info .
     
-    - name: Coveralls GitHub Action
-      uses: coverallsapp/github-action@v1.1.1
-      with:         
-        github-token: '${{ secrets.GITHUB_TOKEN }}'
-        path-to-lcov: coverage.info
+    #- name: Coveralls GitHub Action
+    #  uses: coverallsapp/github-action@v1.1.1
+    #  with:         
+    #    github-token: '${{ secrets.GITHUB_TOKEN }}'
+    #    path-to-lcov: coverage.info
