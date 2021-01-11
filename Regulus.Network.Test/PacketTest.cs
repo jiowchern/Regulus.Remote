@@ -1,17 +1,17 @@
-﻿using NUnit.Framework;
+﻿using Xunit;
 
 namespace Regulus.Network.Tests
 {
     public class PacketTest
     {
-        [Test]
+        [Xunit.Fact]
         public void Seq()
         {
             SocketMessageFactory spawner = SocketMessageFactory.Instance;
             Package.SocketMessage buffer = spawner.Spawn();
             buffer.SetSeq(0x1234);
             ushort seq = buffer.GetSeq();
-            Assert.AreEqual((ushort)0x1234, seq);
+            Assert.Equal((ushort)0x1234, seq);
         }
 
 
@@ -21,7 +21,7 @@ namespace Regulus.Network.Tests
             Package.SocketMessage buffer = spawner.Spawn();
             buffer.SetAck(0x1234);
             ushort value = buffer.GetAck();
-            Assert.AreEqual((ushort)0x1234, value);
+            Assert.Equal((ushort)0x1234, value);
         }
 
 
@@ -31,7 +31,7 @@ namespace Regulus.Network.Tests
             Package.SocketMessage buffer = spawner.Spawn();
             buffer.SetAckFields(0x12345678u);
             uint value = buffer.GetAckFields();
-            Assert.AreEqual((uint)0x12345678, value);
+            Assert.Equal((uint)0x12345678, value);
         }
 
 
@@ -41,7 +41,7 @@ namespace Regulus.Network.Tests
             Package.SocketMessage buffer = spawner.Spawn();
             buffer.SetOperation(0x12);
             byte value = buffer.GetOperation();
-            Assert.AreEqual((byte)0x12, value);
+            Assert.Equal((byte)0x12, value);
         }
 
 
@@ -59,16 +59,16 @@ namespace Regulus.Network.Tests
             buffer.WritePayload(payloadSource, 0, payloadSource.Length);
 
             bool ok = buffer.CheckPayload();
-            Assert.IsTrue(ok);
+            Assert.True(ok);
             ushort payloadLength = buffer.GetPayloadLength();
-            Assert.AreEqual((ushort)payloadSize, payloadLength);
+            Assert.Equal((ushort)payloadSize, payloadLength);
 
 
             bool result = buffer.ReadPayload(payloadReaded, 0);
-            Assert.IsTrue(result);
+            Assert.True(result);
             for (int i = 0; i < payloadLength; ++i)
             {
-                Assert.AreEqual((byte)i, payloadReaded[i]);
+                Assert.Equal((byte)i, payloadReaded[i]);
             }
         }
 

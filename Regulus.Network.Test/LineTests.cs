@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+﻿using Xunit;
 using Regulus.Network.Package;
 using System.Collections.Generic;
 using System.Net;
@@ -8,14 +8,14 @@ namespace Regulus.Network.RUDP.Tests
 
     public class LineTests
     {
-        [Test]
+        [Xunit.Fact]
         public void LineTest()
         {
             Line line = new Line(new IPEndPoint(0, 0));
-            Assert.AreEqual(0, line.AcknowledgeCount);
+            Assert.Equal(0, line.AcknowledgeCount);
         }
 
-        [Test]
+        [Xunit.Fact]
         public void WriteTest()
         {
             SocketMessage message = null;
@@ -23,8 +23,8 @@ namespace Regulus.Network.RUDP.Tests
             line.OutputEvent += msg => { message = msg; };
             line.WriteTransmission(_CreateBuffer(1));
             line.Tick(new Timestamp(0, 0));
-            Assert.AreEqual(1, line.AcknowledgeCount);
-            Assert.AreEqual(0, message.GetSeq());
+            Assert.Equal(1, line.AcknowledgeCount);
+            Assert.Equal(0, message.GetSeq());
 
         }
 
@@ -40,7 +40,7 @@ namespace Regulus.Network.RUDP.Tests
         }
 
 
-        [Test]
+        [Xunit.Fact]
         public void WriteResendTest()
         {
             List<SocketMessage> messages = new List<SocketMessage>();
@@ -48,15 +48,15 @@ namespace Regulus.Network.RUDP.Tests
             line.OutputEvent += msg => { messages.Add(msg); };
             line.WriteTransmission(_CreateBuffer(1));
             line.Tick(new Timestamp(0, 0));
-            Assert.AreEqual(1, line.AcknowledgeCount);
-            Assert.AreEqual(0, messages[0].GetSeq());
+            Assert.Equal(1, line.AcknowledgeCount);
+            Assert.Equal(0, messages[0].GetSeq());
             line.Tick(new Timestamp(Timestamp.OneSecondTicks * 3, Timestamp.OneSecondTicks * 3));
 
-            Assert.AreEqual(1, line.AcknowledgeCount);
-            Assert.AreEqual(2, messages.Count);
+            Assert.Equal(1, line.AcknowledgeCount);
+            Assert.Equal(2, messages.Count);
         }
 
-        [Test]
+        [Xunit.Fact]
         public void ReadWriteTest()
         {
             List<SocketMessage> messages1 = new List<SocketMessage>();
@@ -82,11 +82,11 @@ namespace Regulus.Network.RUDP.Tests
 
 
 
-            Assert.AreEqual(0, line1.AcknowledgeCount);
-            Assert.AreEqual(0, line2.AcknowledgeCount);
+            Assert.Equal(0, line1.AcknowledgeCount);
+            Assert.Equal(0, line2.AcknowledgeCount);
         }
 
-        [Test]
+        [Xunit.Fact]
         public void InputTest()
         {
             List<SocketMessage> messages = new List<SocketMessage>();
@@ -102,7 +102,7 @@ namespace Regulus.Network.RUDP.Tests
             message.SetAckFields(0);
             line.Input(message);
             line.Tick(new Timestamp(1, 1));
-            Assert.AreEqual(1, line.AcknowledgeCount);
+            Assert.Equal(1, line.AcknowledgeCount);
         }
 
 

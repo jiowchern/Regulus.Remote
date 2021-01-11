@@ -1,5 +1,5 @@
 ﻿using NSubstitute;
-using NUnit.Framework;
+using Xunit;
 using Regulus.Remote;
 using System;
 
@@ -33,7 +33,7 @@ namespace RemotingTest
                 }
             }
         }
-        [NUnit.Framework.Test()]
+        [Xunit.Fact]
         public void GhostEventInvokeTest()
         {
             GhostEventHandler ghostEventHandler = new Regulus.Remote.GhostEventHandler();
@@ -47,10 +47,10 @@ namespace RemotingTest
             ghostEventHandler.Invoke(1);
 
 
-            Assert.AreEqual(true, invokeEnable);
+            Assert.Equal(true, invokeEnable);
 
         }
-        [NUnit.Framework.Test()]
+        [Xunit.Fact]
         public void SoulEventInvokeTest()
         {
             TestType obj = NSubstitute.Substitute.For<TestType>();
@@ -67,7 +67,7 @@ namespace RemotingTest
 
             obj.TestEvent += Raise.Event<Action>();
 
-            Assert.AreEqual("1-1-1", eventCatcher);
+            Assert.Equal("1-1-1", eventCatcher);
 
             soul.RemoveEvent(info, 1);
         }

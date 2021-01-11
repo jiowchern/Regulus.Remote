@@ -15,7 +15,7 @@ namespace RegulusLibraryTest
 
     public class FlagTest
     {
-        [NUnit.Framework.Test()]
+        [Xunit.Fact]
         public void TestToArray()
         {
             Flag<TESTENUM> flags = new Flag<TESTENUM>();
@@ -25,11 +25,11 @@ namespace RegulusLibraryTest
 
             TESTENUM[] array = flags.ToArray();
 
-            NUnit.Framework.Assert.AreNotEqual(TESTENUM._2, array[0]);
-            NUnit.Framework.Assert.AreNotEqual(TESTENUM._2, array[1]);
+            Xunit.Assert.NotEqual(TESTENUM._2, array[0]);
+            Xunit.Assert.NotEqual(TESTENUM._2, array[1]);
         }
 
-        [NUnit.Framework.Test()]
+        [Xunit.Fact]
         public void TestCustomFlag1()
         {
             Flag<TESTENUM> flags = new Flag<TESTENUM>();
@@ -37,17 +37,17 @@ namespace RegulusLibraryTest
             flags[TESTENUM._2] = true;
             flags[TESTENUM._3] = false;
 
-            NUnit.Framework.Assert.AreEqual(true, flags[TESTENUM._2]);
-            NUnit.Framework.Assert.AreEqual(false, flags[TESTENUM._3]);
+            Xunit.Assert.Equal(true, flags[TESTENUM._2]);
+            Xunit.Assert.Equal(false, flags[TESTENUM._3]);
         }
 
-        [NUnit.Framework.Test()]
+        [Xunit.Fact]
         public void TestCustomFlag2()
         {
             Flag<TESTENUM> flags = new Flag<TESTENUM>(TESTENUM._1, TESTENUM._3);
 
-            NUnit.Framework.Assert.AreEqual(false, flags[TESTENUM._2]);
-            NUnit.Framework.Assert.AreEqual(true, flags[TESTENUM._3]);
+            Xunit.Assert.Equal(false, flags[TESTENUM._2]);
+            Xunit.Assert.Equal(true, flags[TESTENUM._3]);
         }
 
 
@@ -61,11 +61,11 @@ namespace RegulusLibraryTest
 			var buffer = TypeHelper.Serializer(flags);
 			var flags2 = TypeHelper.Deserialize<Flag<TESTENUM>>(buffer);
 
-			NUnit.Framework.Assert.AreEqual(false, flags2[TESTENUM._2]);
-			NUnit.Framework.Assert.AreEqual(true, flags2[TESTENUM._3]);
+			Xunit.Assert.Equal(false, flags2[TESTENUM._2]);
+			Xunit.Assert.Equal(true, flags2[TESTENUM._3]);
 		}*/
 
-        [NUnit.Framework.Test()]
+        [Xunit.Fact]
         public void TestCustomFlagConvert()
         {
             Flag<TESTENUM> flags = new Flag<TESTENUM>(TESTENUM._1, TESTENUM._3);
@@ -73,8 +73,8 @@ namespace RegulusLibraryTest
 
             Flag<TESTENUM> flag2 = objs;
 
-            NUnit.Framework.Assert.AreEqual(false, flag2[TESTENUM._2]);
-            NUnit.Framework.Assert.AreEqual(true, flag2[TESTENUM._3]);
+            Xunit.Assert.Equal(false, flag2[TESTENUM._2]);
+            Xunit.Assert.Equal(true, flag2[TESTENUM._3]);
         }
     }
 }

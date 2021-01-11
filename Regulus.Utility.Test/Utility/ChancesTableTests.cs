@@ -1,14 +1,14 @@
-﻿using NUnit.Framework;
+﻿using Xunit;
 using System.Collections.Generic;
 
 namespace Regulus.Utility.Tests
 {
-    [TestFixture()]
+    
     public class ChancesTableTests
     {
 
 
-        [Test()]
+        [Fact()]
         public void Valid()
         {
             IEnumerable<ChancesTable<int>.Item> items = new ChancesTable<int>.Item[] { new ChancesTable<int>.Item { Target = 1, Scale = 0 }, new ChancesTable<int>.Item { Target = 2, Scale = 1 }, new ChancesTable<int>.Item { Target = 3, Scale = 1 } };
@@ -17,9 +17,9 @@ namespace Regulus.Utility.Tests
             int val2 = table.Get(1);
             int val3 = table.Get(2);
 
-            Assert.AreEqual(1, val1);
-            Assert.AreEqual(2, val2);
-            Assert.AreEqual(3, val3);
+            Assert.Equal(1, val1);
+            Assert.Equal(2, val2);
+            Assert.Equal(3, val3);
         }
     }
 }

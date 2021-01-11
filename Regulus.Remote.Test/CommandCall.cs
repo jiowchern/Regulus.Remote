@@ -9,7 +9,7 @@ namespace RemotingTest
 
     public class CommandCall
     {
-        [NUnit.Framework.Test()]
+        [Xunit.Fact]
         public void TestCommandCall()
         {
             CommandParam param = Substitute.For<CommandParam>();
@@ -29,10 +29,10 @@ namespace RemotingTest
                     " Hello World."
                 });
 
-            NUnit.Framework.Assert.AreEqual(true, called);
+            Xunit.Assert.Equal(true, called);
         }
 
-        [NUnit.Framework.Test()]
+        [Xunit.Fact]
         public void TestCommandAdd()
         {
             CommandParam param = Substitute.For<CommandParam>();
@@ -57,10 +57,10 @@ namespace RemotingTest
                     "2"
                 });
 
-            NUnit.Framework.Assert.AreEqual(3, value);
+            Xunit.Assert.Equal(3, value);
         }
 
-        [NUnit.Framework.Test()]
+        [Xunit.Fact]
         public void TestGPIBinder()
         {
             Command command = new Command();
@@ -96,8 +96,8 @@ namespace RemotingTest
             tester.Received().Function1();
             tester.Received().Function2(Arg.Any<int>());
 
-            NUnit.Framework.Assert.AreEqual(true, returnValue);
-            NUnit.Framework.Assert.AreEqual(12345, returnProperty);
+            Xunit.Assert.Equal(true, returnValue);
+            Xunit.Assert.Equal(12345, returnProperty);
         }
 
 

@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+﻿using Xunit;
 using Regulus.Network.Package;
 using System.Collections.Generic;
 using System.Net;
@@ -16,17 +16,17 @@ namespace Regulus.Network.Tests
 
 
 
-        [Test]
+        [Xunit.Fact]
         public void TestDataPackageSize()
         {
-            Assert.IsTrue(Config.Default.PackageSize - SocketMessage.GetHeadSize() > 0);
+            Assert.True(Config.Default.PackageSize - SocketMessage.GetHeadSize() > 0);
         }
 
 
 
 
 
-        [Test]
+        [Xunit.Fact]
         public void TestBufferDispenser1()
         {
 
@@ -38,29 +38,29 @@ namespace Regulus.Network.Tests
             SocketMessage[] packages = dispenser.PackingTransmission(message.Buffer, 0, 0);
 
 
-            Assert.AreEqual(4, packages.Length);
+            Assert.Equal(4, packages.Length);
             byte index = 0;
             int readcount = 0;
             for (uint i = 0; i < packages.Length; i++)
             {
                 SocketMessage package = packages[i];
-                Assert.AreEqual(i, package.GetSeq());
+                Assert.Equal(i, package.GetSeq());
 
                 List<byte> data = new List<byte>();
                 package.ReadPayload(data);
 
                 for (int j = 0; j < data.Count; j++)
                 {
-                    Assert.AreEqual(index, data[j]);
+                    Assert.Equal(index, data[j]);
                     index++;
                     readcount++;
                 }
             }
 
-            Assert.AreEqual(readcount, count);
+            Assert.Equal(readcount, count);
         }
 
-        [Test]
+        [Xunit.Fact]
         public void TestBufferDispenser2()
         {
             int count = SocketMessage.GetPayloadSize() * 4 + 1;
@@ -71,30 +71,30 @@ namespace Regulus.Network.Tests
             SocketMessage[] packages = dispenser.PackingTransmission(message.Buffer, 0, 0);
 
 
-            Assert.AreEqual(5, packages.Length);
+            Assert.Equal(5, packages.Length);
             byte index = 0;
             int readcount = 0;
             for (uint i = 0; i < packages.Length; i++)
             {
                 SocketMessage package = packages[i];
-                Assert.AreEqual(i, package.GetSeq());
+                Assert.Equal(i, package.GetSeq());
 
                 List<byte> data = new List<byte>();
                 package.ReadPayload(data);
 
                 for (int j = 0; j < data.Count; j++)
                 {
-                    Assert.AreEqual(index, data[j]);
+                    Assert.Equal(index, data[j]);
                     index++;
                     readcount++;
 
                 }
             }
 
-            Assert.AreEqual(readcount, count);
+            Assert.Equal(readcount, count);
         }
 
-        [Test]
+        [Xunit.Fact]
         public void TestPackageRectifierOutOfOrder()
         {
             SocketMessage package1 = new SocketMessage(Config.Default.PackageSize);
@@ -114,24 +114,24 @@ namespace Regulus.Network.Tests
             receiver.PushPackage(package3);
 
             SocketMessage stream1 = receiver.PopPackage();
-            Assert.AreEqual(null, stream1);
+            Assert.Equal(null, stream1);
 
             receiver.PushPackage(package2);
 
 
             SocketMessage stream2 = receiver.PopPackage();
-            Assert.AreEqual(null, stream2);
+            Assert.Equal(null, stream2);
 
 
             receiver.PushPackage(package1);
 
-            Assert.AreEqual((byte)1, receiver.PopPackage().ReadPayload(0));
-            Assert.AreEqual((byte)5, receiver.PopPackage().ReadPayload(0));
-            Assert.AreEqual((byte)9, receiver.PopPackage().ReadPayload(0));
+            Assert.Equal((byte)1, receiver.PopPackage().ReadPayload(0));
+            Assert.Equal((byte)5, receiver.PopPackage().ReadPayload(0));
+            Assert.Equal((byte)9, receiver.PopPackage().ReadPayload(0));
 
         }
 
-        [Test]
+        [Xunit.Fact]
         public void TestPackageRectifierRepeat()
         {
             SocketMessage package1 = new SocketMessage(Config.Default.PackageSize);
@@ -160,36 +160,36 @@ namespace Regulus.Network.Tests
 
 
             SocketMessage stream1 = receiver.PopPackage();
-            Assert.AreEqual(null, stream1);
+            Assert.Equal(null, stream1);
 
             receiver.PushPackage(package2);
             SocketMessage stream2 = receiver.PopPackage();
-            Assert.AreEqual(null, stream2);
+            Assert.Equal(null, stream2);
 
             receiver.PushPackage(package1);
 
 
-            Assert.AreEqual((byte)1, receiver.PopPackage().ReadPayload(0));
-            Assert.AreEqual((byte)5, receiver.PopPackage().ReadPayload(0));
-            Assert.AreEqual((byte)9, receiver.PopPackage().ReadPayload(0));
+            Assert.Equal((byte)1, receiver.PopPackage().ReadPayload(0));
+            Assert.Equal((byte)5, receiver.PopPackage().ReadPayload(0));
+            Assert.Equal((byte)9, receiver.PopPackage().ReadPayload(0));
 
 
             receiver.PushPackage(package5);
             SocketMessage stream4 = receiver.PopPackage();
-            Assert.AreEqual(null, stream4);
+            Assert.Equal(null, stream4);
 
             receiver.PushPackage(package2);
             SocketMessage stream5 = receiver.PopPackage();
-            Assert.AreEqual(null, stream5);
+            Assert.Equal(null, stream5);
 
             receiver.PushPackage(package4);
 
-            Assert.AreEqual((byte)10, receiver.PopPackage().ReadPayload(0));
-            Assert.AreEqual((byte)11, receiver.PopPackage().ReadPayload(0));
+            Assert.Equal((byte)10, receiver.PopPackage().ReadPayload(0));
+            Assert.Equal((byte)11, receiver.PopPackage().ReadPayload(0));
 
         }
 
-        [Test]
+        [Xunit.Fact]
         public void TestAck1()
         {
             SocketMessage package1 = new SocketMessage(Config.Default.PackageSize);
@@ -205,12 +205,12 @@ namespace Regulus.Network.Tests
             ackWaiter.Reply(package1.GetSeq(), Timestamp.OneSecondTicks, 1);
             List<SocketMessage> packages = ackWaiter.PopLost(Timestamp.OneSecondTicks * 100, Timestamp.OneSecondTicks * 100);
 
-            Assert.AreEqual(2u, packages[0].GetSeq());
+            Assert.Equal(2u, packages[0].GetSeq());
 
 
         }
 
-        [Test]
+        [Xunit.Fact]
         public void TestAck2()
         {
             SocketMessage package1 = new SocketMessage(Config.Default.PackageSize);
@@ -234,11 +234,11 @@ namespace Regulus.Network.Tests
             ackWaiter.ReplyBefore((ushort)(rectifier.Serial - 1), 1, 1);
             ackWaiter.ReplyAfter((ushort)(rectifier.Serial - 1), rectifier.SerialBitFields, 1, 1);
 
-            Assert.AreEqual(1, ackWaiter.Count);
+            Assert.Equal(1, ackWaiter.Count);
 
             List<SocketMessage> outs = ackWaiter.PopLost(Timestamp.OneSecondTicks * 60, Timestamp.OneSecondTicks * 60);
 
-            Assert.AreEqual(1, outs[0].GetSeq());
+            Assert.Equal(1, outs[0].GetSeq());
 
 
 

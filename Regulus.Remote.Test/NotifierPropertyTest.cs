@@ -200,7 +200,7 @@ namespace Regulus.Remote.Tests
 
         public class NotifierPropertyTest
         {
-            [NUnit.Framework.Test]
+            [Xunit.Fact]
             public void SoulTest()
             {
                 IGpiB supplyB = null;
@@ -223,11 +223,11 @@ namespace Regulus.Remote.Tests
                 soul.DetachSupply(1);
                 soul.DetachUnsupply(1);
 
-                NUnit.Framework.Assert.AreEqual(soulA.SoulB, supplyB);
-                NUnit.Framework.Assert.AreEqual(soulA.SoulB, unsupplyB);
+                Xunit.Assert.Equal(soulA.SoulB, supplyB);
+                Xunit.Assert.Equal(soulA.SoulB, unsupplyB);
             }
 
-            [NUnit.Framework.Test]
+            [Xunit.Fact]
             public void GhostNotifierTest()
             {
                 PassageCallback p1 = null;
@@ -248,17 +248,15 @@ namespace Regulus.Remote.Tests
 
                 int c1 = p1.GetHashCode();
                 int c2 = p2.GetHashCode();
+                int c3 = p3.GetHashCode();
+                int c4 = p4.GetHashCode();
 
-                NUnit.Framework.Assert.AreNotEqual(null, p1);
-                NUnit.Framework.Assert.AreNotEqual(null, p2);
-                NUnit.Framework.Assert.AreNotEqual(null, p3);
-                NUnit.Framework.Assert.AreNotEqual(null, p4);
-
-                NUnit.Framework.Assert.AreNotSame(c1, c2);
-                NUnit.Framework.Assert.AreNotSame(p3, p4);
+                Xunit.Assert.Equal(c3, c4);
+                Xunit.Assert.Equal(c1, c2);
+                
             }
 
-            [NUnit.Framework.Test]
+            [Xunit.Fact]
             public void GhostTest()
             {
                 GhostA ghostA = new GhostA();
@@ -281,7 +279,7 @@ namespace Regulus.Remote.Tests
                 addSupplyPassage(soulB);
 
 
-                NUnit.Framework.Assert.AreEqual(soulB, gPi);
+                Xunit.Assert.Equal(soulB, gPi);
             }
         }
     }

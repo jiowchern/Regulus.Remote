@@ -30,8 +30,8 @@ namespace Regulus.Remote.Tests
 
     public class SocketReaderTest
     {
-        [NUnit.Framework.Test()]
-        [NUnit.Framework.MaxTime(5000)]
+        [Xunit.Fact(Timeout =5000)]
+        
         public void ScoketRead10ByteTest()
         {
 
@@ -48,12 +48,12 @@ namespace Regulus.Remote.Tests
             reader.Read(10).Wait();
 
             
-            NUnit.Framework.Assert.AreEqual(1, readBytes[1]);
-            NUnit.Framework.Assert.AreEqual(5, readBytes[5]);
-            NUnit.Framework.Assert.AreEqual(9, readBytes[9]);
+            Xunit.Assert.Equal(1, readBytes[1]);
+            Xunit.Assert.Equal(5, readBytes[5]);
+            Xunit.Assert.Equal(9, readBytes[9]);
         }
-        [NUnit.Framework.Test()]
-        [NUnit.Framework.MaxTime(5000)]
+        [Xunit.Fact(Timeout =5000)]
+        
         public void ReadHeadTest()
         {
             SocketHeadReaderTestPeer peer = new SocketHeadReaderTestPeer();
@@ -70,8 +70,8 @@ namespace Regulus.Remote.Tests
             {
 
             }
-            NUnit.Framework.Assert.AreEqual(0x85, buffer[0]);
-            NUnit.Framework.Assert.AreEqual(0x05, buffer[1]);
+            Xunit.Assert.Equal(0x85, buffer[0]);
+            Xunit.Assert.Equal(0x05, buffer[1]);
 
         }
     }

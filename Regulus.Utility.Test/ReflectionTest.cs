@@ -9,13 +9,13 @@ namespace Regulus.Utility.Test
         public void Method1()
         { }
     }
-    class ReflectionTest
+    public class ReflectionTest
     {
-        [NUnit.Framework.Test()]
+        [Xunit.Fact]
         public void GetMethod()
         {
             TypeMethodCatcher catcher = new TypeMethodCatcher((System.Linq.Expressions.Expression<Action<Test>>)(ins => ins.Method1()));
-            NUnit.Framework.Assert.AreEqual("Method1", catcher.Method.Name);
+            Xunit.Assert.Equal("Method1", catcher.Method.Name);
         }
     }
 }

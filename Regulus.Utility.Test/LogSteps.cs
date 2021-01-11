@@ -64,12 +64,12 @@ namespace RegulusLibraryTest
 
             for (int i = 0; i < chars2.Length; ++i)
             {
-                NUnit.Framework.Assert.AreEqual(chars1[i], chars2[i]);
+                Xunit.Assert.Equal(chars1[i], chars2[i]);
             }
         }
 
         [Then(@"輸出為""(.*)""")]
-        [NUnit.Framework.MaxTime(5000)]
+        
 
         public void 那麼輸出為(string p0)
         {
@@ -78,7 +78,7 @@ namespace RegulusLibraryTest
                 ;
             }
 
-            NUnit.Framework.Assert.AreEqual(p0, _OutMessage);
+            Xunit.Assert.Equal(p0, _OutMessage);
         }
     }
 }

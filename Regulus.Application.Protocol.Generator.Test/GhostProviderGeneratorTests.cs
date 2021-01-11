@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+﻿
 using System;
 
 namespace Regulus.Tool.GPI
@@ -15,7 +15,7 @@ namespace Regulus.Tool.GPI
 }
 namespace Regulus.Tool.Tests
 {
-    [TestFixture]
+    
     public class GhostProviderGeneratorTests
     {
 
@@ -23,7 +23,7 @@ namespace Regulus.Tool.Tests
 
 
 
-        [NUnit.Framework.Test()]
+        [Xunit.Fact]
         public void BuildGetEventHandler()
         {
             bool onevent = false;
@@ -31,7 +31,7 @@ namespace Regulus.Tool.Tests
             Delegate function = new Action<int, float, string>((i, f, s) => { onevent = true; });
             function.Method.Invoke(function.Target, new object[] { 10, 100f, "1000" });
 
-            NUnit.Framework.Assert.AreEqual(true, onevent);
+            Xunit.Assert.True(onevent);            
         }
 
 

@@ -1,5 +1,5 @@
-﻿using NUnit.Framework;
-using NUnit.Framework.Constraints;
+﻿using Xunit;
+
 using Regulus.Remote.Reactive;
 using System.Reactive.Linq;
 
@@ -9,8 +9,8 @@ namespace Regulus.Remote.Standalone.Test
     {
 
         
-        [Test]
-        [MaxTime(5000)]
+        [Fact(Timeout =5000)]
+        
         public void Test()
         {
             
@@ -23,7 +23,7 @@ namespace Regulus.Remote.Standalone.Test
             env.Dispose();
 
 
-            NUnit.Framework.Assert.Pass();
+            Xunit.Assert.True(true);
             
 
         }

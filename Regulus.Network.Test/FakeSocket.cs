@@ -1,4 +1,4 @@
-using NUnit.Framework;
+using Xunit;
 using Regulus.Network.Package;
 using Regulus.Utility;
 using System;
@@ -31,14 +31,14 @@ namespace Regulus.Network.Tests
 
         public void Receive(SocketMessage message)
         {
-            Assert.AreNotEqual(Endpoint, message.RemoteEndPoint);
+            Assert.NotEqual(Endpoint, message.RemoteEndPoint);
             _Packages.Add(message);
 
         }
         public event Action<SocketMessage> SendEvent;
         void ISocketSendable.Transport(SocketMessage message)
         {
-            Assert.AreNotEqual(Endpoint, message.RemoteEndPoint);
+            Assert.NotEqual(Endpoint, message.RemoteEndPoint);
 
             SendEvent(message);
         }

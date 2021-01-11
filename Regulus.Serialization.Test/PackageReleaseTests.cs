@@ -7,7 +7,7 @@ namespace Regulus.Remote.Tests
 
     public class PackageReleaseTests
     {
-        [NUnit.Framework.Test()]
+        [Xunit.Fact]
         public void ToBufferTest1()
         {
             Guid id = Guid.NewGuid();
@@ -20,10 +20,10 @@ namespace Regulus.Remote.Tests
 
             TestPackageData package2 = buffer.ToPackageData<TestPackageData>(ser);
 
-            NUnit.Framework.Assert.AreEqual(id, package2.Id);
+            Xunit.Assert.Equal(id, package2.Id);
         }
 
-        [NUnit.Framework.Test()]
+        [Xunit.Fact]
         public void ToBufferTest2()
         {
 
@@ -41,13 +41,13 @@ namespace Regulus.Remote.Tests
             TestPackageBuffer package2 = buffer.ToPackageData<TestPackageBuffer>(ser);
 
 
-            NUnit.Framework.Assert.AreEqual(p1, ser.BufferToObject(package2.Datas[0]));
-            NUnit.Framework.Assert.AreEqual(p2, ser.BufferToObject(package2.Datas[1]));
-            NUnit.Framework.Assert.AreEqual(p3, ser.BufferToObject(package2.Datas[2]));
+            Xunit.Assert.Equal(p1, ser.BufferToObject(package2.Datas[0]));
+            Xunit.Assert.Equal(p2, ser.BufferToObject(package2.Datas[1]));
+            Xunit.Assert.Equal(p3, ser.BufferToObject(package2.Datas[2]));
         }
 
 
-        [NUnit.Framework.Test()]
+        [Xunit.Fact]
         public void ToPackageRequestTest()
         {
 
@@ -80,8 +80,8 @@ namespace Regulus.Remote.Tests
 
             byte[] bufferResponse = ser.ObjectToBuffer(response);
             RequestPackage result = ser.BufferToObject(bufferResponse) as RequestPackage;
-            NUnit.Framework.Assert.AreEqual(ClientToServerOpCode.Ping, result.Code);
-            NUnit.Framework.Assert.AreEqual(3, result.Data[3]);
+            Xunit.Assert.Equal(ClientToServerOpCode.Ping, result.Code);
+            Xunit.Assert.Equal(3, result.Data[3]);
         }
 
 
@@ -89,7 +89,7 @@ namespace Regulus.Remote.Tests
 
 
 
-        [NUnit.Framework.Test()]
+        [Xunit.Fact]
         public void ToBufferTest3()
         {
 
@@ -106,7 +106,7 @@ namespace Regulus.Remote.Tests
             TestPackageBuffer package2 = buffer.ToPackageData<TestPackageBuffer>(ser);
 
 
-            NUnit.Framework.Assert.AreEqual(0, package2.Datas.Length);
+            Xunit.Assert.Equal(0, package2.Datas.Length);
 
         }
     }

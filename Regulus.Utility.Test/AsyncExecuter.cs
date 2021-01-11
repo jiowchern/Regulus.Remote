@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+﻿using Xunit;
 
 using Regulus.Collection;
 
@@ -8,7 +8,7 @@ namespace RegulusLibraryTest
     public class AsyncExecuter
     {
 
-        [Test]
+        [Xunit.Fact]
         public void TestAsyncExecuter()
         {
 
@@ -32,16 +32,16 @@ namespace RegulusLibraryTest
             threadQueue.Shutdown();
 
             int[] values = ints.DequeueAll();
-            NUnit.Framework.Assert.AreEqual(0, values[0]);
-            NUnit.Framework.Assert.AreEqual(1, values[1]);
-            NUnit.Framework.Assert.AreEqual(2, values[2]);
-            NUnit.Framework.Assert.AreEqual(3, values[3]);
-            NUnit.Framework.Assert.AreEqual(4, values[4]);
-            NUnit.Framework.Assert.AreEqual(5, values[5]);
-            NUnit.Framework.Assert.AreEqual(6, values[6]);
-            NUnit.Framework.Assert.AreEqual(7, values[7]);
-            NUnit.Framework.Assert.AreEqual(8, values[8]);
-            NUnit.Framework.Assert.AreEqual(9, values[9]);
+            Xunit.Assert.Equal(0, values[0]);
+            Xunit.Assert.Equal(1, values[1]);
+            Xunit.Assert.Equal(2, values[2]);
+            Xunit.Assert.Equal(3, values[3]);
+            Xunit.Assert.Equal(4, values[4]);
+            Xunit.Assert.Equal(5, values[5]);
+            Xunit.Assert.Equal(6, values[6]);
+            Xunit.Assert.Equal(7, values[7]);
+            Xunit.Assert.Equal(8, values[8]);
+            Xunit.Assert.Equal(9, values[9]);
 
         }
     }

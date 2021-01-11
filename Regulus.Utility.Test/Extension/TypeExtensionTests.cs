@@ -6,7 +6,7 @@ namespace Regulus.Extension.Tests
 
     public class TypeExtensionTests
     {
-        [NUnit.Framework.Test()]
+        [Xunit.Fact]
         public void FindHullTest1()
         {
             Vector2[] points = new Vector2[]
@@ -27,7 +27,7 @@ namespace Regulus.Extension.Tests
             }
 
         }
-        [NUnit.Framework.Test()]
+        [Xunit.Fact]
         public void FindHullTest2()
         {
             Vector2[] points = new Vector2[]

@@ -2,7 +2,7 @@
 {
     public class WebsocketTest
     {
-        [NUnit.Framework.Test]
+        [Xunit.Fact]
         public void ShakeHandsTest()
         {
 

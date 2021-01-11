@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+﻿using Xunit;
 using Regulus.Projects.TestProtocol.Common;
 using Regulus.Remote.Reactive;
 using System;
@@ -9,8 +9,8 @@ namespace Regulus.Remote.Standalone.Test
 {
     public class ProtocolTest
     {
-        //[Test]
-        //[MaxTime(10000)]
+        [Xunit.Fact(Timeout =10000)]
+        
         public async System.Threading.Tasks.Task AllInOne()
         {
             await Sample2NotifierUnsupplyTest();
@@ -58,9 +58,9 @@ namespace Regulus.Remote.Standalone.Test
             numbers.TryDequeue(out number2);
             INumber number3;
             numbers.TryDequeue(out number3);
-            NUnit.Framework.Assert.AreEqual(2 , number1.Value.Value);
-            NUnit.Framework.Assert.AreEqual(1, number2.Value.Value);
-            NUnit.Framework.Assert.AreEqual(3, number3.Value.Value);
+            Xunit.Assert.Equal(2 , number1.Value.Value);
+            Xunit.Assert.Equal(1, number2.Value.Value);
+            Xunit.Assert.Equal(3, number3.Value.Value);
         }
       
         public async System.Threading.Tasks.Task Sample2NotifierSupplyTest()
@@ -88,9 +88,9 @@ namespace Regulus.Remote.Standalone.Test
 
             env.Dispose();
 
-            NUnit.Framework.Assert.AreEqual(1, testResult.numbers1[0].Value.Value);
-            NUnit.Framework.Assert.AreEqual(1, testResult.numbers2[0].Value.Value);
-            NUnit.Framework.Assert.AreEqual(2, testResult.numbers2[1].Value.Value);
+            Xunit.Assert.Equal(1, testResult.numbers1[0].Value.Value);
+            Xunit.Assert.Equal(1, testResult.numbers2[0].Value.Value);
+            Xunit.Assert.Equal(2, testResult.numbers2[1].Value.Value);
         }
         
         
@@ -110,7 +110,7 @@ namespace Regulus.Remote.Standalone.Test
 
             env.Dispose();
             
-            NUnit.Framework.Assert.AreEqual(1, testResult[0]);            
+            Xunit.Assert.Equal(1, testResult[0]);            
         }
 
         
@@ -138,9 +138,9 @@ namespace Regulus.Remote.Standalone.Test
 
             env.Dispose();
 
-            NUnit.Framework.Assert.AreEqual(1, testResult.int1s[0]);
-            NUnit.Framework.Assert.AreEqual(1, testResult.int2s[0]);
-            NUnit.Framework.Assert.AreEqual(2, testResult.int2s[1]);
+            Xunit.Assert.Equal(1, testResult.int1s[0]);
+            Xunit.Assert.Equal(1, testResult.int2s[0]);
+            Xunit.Assert.Equal(2, testResult.int2s[1]);
         }
 
 
@@ -157,7 +157,7 @@ namespace Regulus.Remote.Standalone.Test
             int verifyResult = await addObs.Do((r) => { }, _Throw).FirstAsync();
             
             env.Dispose();
-            NUnit.Framework.Assert.AreEqual(3, verifyResult);
+            Xunit.Assert.Equal(3, verifyResult);
         }
 
         private void _Throw(Exception e)

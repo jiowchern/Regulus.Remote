@@ -18,7 +18,7 @@ namespace RemotingTest
             F4 = 8
         }
 
-        [NUnit.Framework.Test()]
+        [Xunit.Fact]
         public void TestEnumFlagForeach()
         {
             TESTFLAG flags = TESTFLAG.F2 | TESTFLAG.F3;
@@ -29,8 +29,8 @@ namespace RemotingTest
                 result[i++] = flag;
             }
 
-            NUnit.Framework.Assert.AreEqual(TESTFLAG.F2, result[0]);
-            NUnit.Framework.Assert.AreEqual(TESTFLAG.F3, result[1]);
+            Xunit.Assert.Equal(TESTFLAG.F2, result[0]);
+            Xunit.Assert.Equal(TESTFLAG.F3, result[1]);
         }
     }
 }

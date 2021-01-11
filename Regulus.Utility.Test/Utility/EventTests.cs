@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+﻿using Xunit;
 
 namespace Regulus.Utility.Tests
 {
@@ -11,12 +11,12 @@ namespace Regulus.Utility.Tests
         }
     }
 
-    [TestFixture()]
+    
     public class EventTests
     {
 
 
-        [Test()]
+        [Xunit.Fact]
         public void InvokeTest1()
         {
             TestInvoker testEvent = new TestInvoker();
@@ -25,10 +25,10 @@ namespace Regulus.Utility.Tests
             notifier.Subscribe += () => ok = true;
             testEvent.Invoke();
 
-            Assert.AreEqual(true, ok);
+            Assert.True(ok);
         }
 
-        [Test()]
+        [Xunit.Fact]
         public void InvokeTest2()
         {
             TestInvoker testEvent = new TestInvoker();
@@ -38,7 +38,7 @@ namespace Regulus.Utility.Tests
             notifier.Subscribe += () => ok = true;
 
 
-            Assert.AreEqual(true, ok);
+            Assert.True(ok);
         }
     }
 }

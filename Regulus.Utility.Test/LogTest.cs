@@ -7,7 +7,7 @@ namespace RegulusLibraryTest
 
     public class LogTest
     {
-        [NUnit.Framework.Test()]
+        [Xunit.Fact]
         public void TestWrite()
         {
             List<string> messages = new List<string>();
@@ -42,11 +42,11 @@ namespace RegulusLibraryTest
             string r5 = Regex.Match(messages[4], @"\[\d+/\d+/\d+_\d+:\d+:\d+\]\[Info\](\d+)").Groups[1].Value;
 
 
-            NUnit.Framework.Assert.AreEqual("123", r1);
-            NUnit.Framework.Assert.AreEqual("456", r2);
-            NUnit.Framework.Assert.AreEqual("789", r3);
-            NUnit.Framework.Assert.AreEqual("123", r4);
-            NUnit.Framework.Assert.AreEqual("1", r5);
+            Xunit.Assert.Equal("123", r1);
+            Xunit.Assert.Equal("456", r2);
+            Xunit.Assert.Equal("789", r3);
+            Xunit.Assert.Equal("123", r4);
+            Xunit.Assert.Equal("1", r5);
 
         }
     }

@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+﻿using Xunit;
 using Regulus.Network;
 using Regulus.Remote.Ghost;
 using System;
@@ -7,7 +7,7 @@ namespace Regulus.Remote.Standalone.Test
 {
     public class SoulTest
     {
-        ///[Test]
+        ///[Xunit.Fact]
         //[MaxTime(5000)]
         public void ServiceTest()
         {

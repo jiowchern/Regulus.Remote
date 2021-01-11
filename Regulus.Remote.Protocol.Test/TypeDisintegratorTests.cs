@@ -1,59 +1,60 @@
 ﻿using System;
 using System.Linq;
+using Xunit;
 
 
 namespace Regulus.Remote.Protocol.Tests
 {
     public class TypeDisintegratorTests
     {
-        [NUnit.Framework.Test()]
+        [Xunit.Fact]
         public void TypeDisintegratorPointerTest()
         {
             Type type = Type.GetType("System.Void*");
             TypeDisintegrator typeDisintegrator = new TypeDisintegrator(type);
-            NUnit.Framework.Assert.AreEqual(0, typeDisintegrator.Types.Length);
+            
+            Xunit.Assert.Empty(typeDisintegrator.Types);
         }
 
-        [NUnit.Framework.Test()]
+        [Xunit.Fact]
         public void TypeDisintegratorIntTest()
         {
             TypeDisintegrator typeDisintegrator = new TypeDisintegrator(typeof(int));
-            NUnit.Framework.Assert.AreEqual(typeof(int), typeDisintegrator.Types[0]);
+            Xunit.Assert.Equal(typeof(int), typeDisintegrator.Types[0]);
         }
 
 
-        [NUnit.Framework.Test()]
+        [Xunit.Fact]
         public void TypeDisintegratorInterfaceTest()
         {
             TypeDisintegrator typeDisintegrator = new TypeDisintegrator(typeof(ITest));
-            NUnit.Framework.Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(Guid)));
-            NUnit.Framework.Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(string)));
-            NUnit.Framework.Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(float)));
-            NUnit.Framework.Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(byte)));
-            NUnit.Framework.Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(int)));
-            NUnit.Framework.Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(EventData1)));
-            NUnit.Framework.Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(EventData2)));
+            Xunit.Assert.Contains(typeDisintegrator.Types, t => t == typeof(Guid));
+            Xunit.Assert.Contains(typeDisintegrator.Types, t => t == typeof(string));
+            Xunit.Assert.Contains(typeDisintegrator.Types, t => t == typeof(float));
+            Xunit.Assert.Contains(typeDisintegrator.Types, t => t == typeof(byte));
+            Xunit.Assert.Contains(typeDisintegrator.Types, t => t == typeof(int));
+            Xunit.Assert.Contains(typeDisintegrator.Types, t => t == typeof(EventData1));
+            Xunit.Assert.Contains(typeDisintegrator.Types, t => t == typeof(EventData2));
         }
 
 
-        [NUnit.Framework.Test()]
+        [Xunit.Fact]
         public void TypeDisintegratorClassTest()
         {
             TypeDisintegrator typeDisintegrator = new TypeDisintegrator(typeof(EventData1));
-            NUnit.Framework.Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(EventData1)));
-            NUnit.Framework.Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(EventData2)));
+            Xunit.Assert.Contains(typeDisintegrator.Types, t => t == typeof(EventData1));
+            Xunit.Assert.Contains(typeDisintegrator.Types, t => t == typeof(EventData2));
         }
 
 
-        [NUnit.Framework.Test()]
-        [NUnit.Framework.MaxTime(1000)]
+        [Fact(Timeout =1000)]        
         public void TypeDisintegratorNestTest()
         {
             TypeDisintegrator typeDisintegrator = new TypeDisintegrator(typeof(Data1));
-            NUnit.Framework.Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(Data1)));
-            NUnit.Framework.Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(Data2)));
-            NUnit.Framework.Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(Data1[])));
-            NUnit.Framework.Assert.IsTrue(typeDisintegrator.Types.Any(t => t == typeof(Data2[])));
+            Xunit.Assert.Contains(typeDisintegrator.Types, t => t == typeof(Data1));
+            Xunit.Assert.Contains(typeDisintegrator.Types, t => t == typeof(Data2));
+            Xunit.Assert.Contains(typeDisintegrator.Types, t => t == typeof(Data1[]));
+            Xunit.Assert.Contains(typeDisintegrator.Types, t => t == typeof(Data2[]));
         }
     }
 

@@ -7,7 +7,7 @@ namespace Regulus.Remote.Standalone
 
     public class Stream : Network.IStreamable
     {
-        readonly new System.Collections.Generic.Queue<byte> _Sends;
+        readonly System.Collections.Generic.Queue<byte> _Sends;
         
         readonly System.Collections.Generic.Queue<byte> _Receives;
         

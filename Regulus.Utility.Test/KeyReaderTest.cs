@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+﻿using Xunit;
 
 namespace RegulusLibraryTest
 {
@@ -6,7 +6,7 @@ namespace RegulusLibraryTest
     {
 
 
-        [Test]
+        [Xunit.Fact]
         public void TestSignle()
         {
             string message = "";
@@ -19,10 +19,10 @@ namespace RegulusLibraryTest
             reader.Push('b');
             reader.Push('\r');
 
-            Assert.AreEqual("ab", message);
+            Assert.Equal("ab", message);
         }
 
-        [Test]
+        [Xunit.Fact]
         public void TestMuti()
         {
             string message = "";
@@ -35,7 +35,7 @@ namespace RegulusLibraryTest
 
 
 
-            Assert.AreEqual("ab", message);
+            Assert.Equal("ab", message);
         }
 
     }
