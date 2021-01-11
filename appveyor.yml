@@ -54,4 +54,4 @@ deploy:
   api_key:
     secure: MpSZN9rbs/UO67xFMkdfsETL16yG2KY0h3S53s13iG8WOFPamFIXg44GpbM4T7qX
   on:
-    branch: master
+    branch: release
