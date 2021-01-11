@@ -8,7 +8,7 @@ using System.Reactive.Linq;
 namespace Regulus.Remote.Standalone.Test
 {
     public class ProtocolTest
-    {/*
+    {
         [Test]
         [MaxTime(5000)]
         public async System.Threading.Tasks.Task Sample2NotifierUnsupplyTest()
@@ -155,7 +155,7 @@ namespace Regulus.Remote.Standalone.Test
             env.Dispose();
             NUnit.Framework.Assert.AreEqual(3, verifyResult);
         }
-        */
+
         private void _Throw(Exception e)
         {
             throw e;

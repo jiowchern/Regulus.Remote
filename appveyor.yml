@@ -19,8 +19,8 @@ after_build:
 test_script:
 - ps: >-
     echo starttest
-
-    dotnet test Regulus.sln --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+    
+    dotnet test -l trx Regulus.sln --configuration Debug /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
 
     echo installcoveralls
 
