@@ -17,15 +17,25 @@ build:
 after_build:
 - cmd: build_package.cmd
 test_script:
-- pwsh: >-
+- ps: >-
+    echo starttest
+
     dotnet test Regulus.sln --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+
+    echo installcoveralls
+
     dotnet tool install coveralls.net --version 2.0.0 --tool-path tools
+
+    echo sendcoveralls
+
     ./tools/csmacnz.Coveralls.exe --useRelativePaths --multiple -i "opencover=Regulus.Utility.Test\coverage.opencover.xml;opencover=Regulus.Remote.Test\coverage.opencover.xml;opencover=Regulus.Serialization.Test\coverage.opencover.xml;opencover=Regulus.Remote.Protocol.Test\coverage.opencover.xml;opencover=Regulus.Network.Test\coverage.opencover.xml;opencover=Regulus.Application.Protocol.Generator.Test\coverage.opencover.xml;opencover=Regulus.Remote.Standalone.Test\coverage.opencover.xml;opencover=Regulus.Application.Client.Test\coverage.opencover.xml" --repoToken 4aL4sSKKvWbGicuk2DRR7QvSJnC4e3Hsq
 artifacts:
 - path: artifact\Library\Server
   name: Server
 - path: artifact\Library\Client
   name: Client
+- path: artifact\Library\BehaviourTree
+  name: BehaviourTree
 - path: artifact\Tool
   name: Tool
 - path: artifact\Library\Serialization
@@ -44,4 +54,4 @@ deploy:
   api_key:
     secure: MpSZN9rbs/UO67xFMkdfsETL16yG2KY0h3S53s13iG8WOFPamFIXg44GpbM4T7qX
   on:
-    branch: release
+    branch: master
