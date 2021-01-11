@@ -74,6 +74,7 @@ namespace Regulus.Remote.Standalone.Test
                       from numbers2 in sample.Numbers.SupplyEvent().Buffer(2).FirstAsync()
                       select new { numbers1, numbers2 };
 
+            
             var testResult =  await obs.FirstAsync();
 
 
