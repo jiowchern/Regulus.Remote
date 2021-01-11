@@ -1,7 +1,8 @@
-version: 0.1.7.{build}
+version: 0.6.{build}
 branches:
   only:
-  - master  
+  - master
+  - release
 image: Visual Studio 2019
 configuration: Release
 nuget:
@@ -17,16 +18,14 @@ after_build:
 - cmd: build_package.cmd
 test_script:
 - pwsh: >-
-     dotnet test Regulus.sln --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-     dotnet tool install coveralls.net --version 2.0.0 --tool-path tools
+    dotnet test Regulus.sln --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+    dotnet tool install coveralls.net --version 2.0.0 --tool-path tools
     ./tools/csmacnz.Coveralls.exe --useRelativePaths --multiple -i "opencover=Regulus.Utility.Test\coverage.opencover.xml;opencover=Regulus.Remote.Test\coverage.opencover.xml;opencover=Regulus.Serialization.Test\coverage.opencover.xml;opencover=Regulus.Remote.Protocol.Test\coverage.opencover.xml;opencover=Regulus.Network.Test\coverage.opencover.xml;opencover=Regulus.Application.Protocol.Generator.Test\coverage.opencover.xml;opencover=Regulus.Remote.Standalone.Test\coverage.opencover.xml;opencover=Regulus.Application.Client.Test\coverage.opencover.xml" --repoToken 4aL4sSKKvWbGicuk2DRR7QvSJnC4e3Hsq
 artifacts:
 - path: artifact\Library\Server
   name: Server
 - path: artifact\Library\Client
   name: Client
-- path: artifact\Library\BehaviourTree
-  name: BehaviourTree
 - path: artifact\Tool
   name: Tool
 - path: artifact\Library\Serialization
