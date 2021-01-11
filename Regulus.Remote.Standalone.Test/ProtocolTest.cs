@@ -9,7 +9,7 @@ namespace Regulus.Remote.Standalone.Test
 {
     public class ProtocolTest
     {
-        [Xunit.Fact(Timeout =10000)]
+        
         
         public async System.Threading.Tasks.Task AllInOne()
         {
@@ -19,7 +19,7 @@ namespace Regulus.Remote.Standalone.Test
             await Sample2EventTest();
             await SampleAddTest();
         }
-        
+        [Xunit.Fact(Timeout = 10000)]
         public async System.Threading.Tasks.Task Sample2NotifierUnsupplyTest()
         {
             var env = new SampleTestEnv();
@@ -62,7 +62,7 @@ namespace Regulus.Remote.Standalone.Test
             Xunit.Assert.Equal(1, number2.Value.Value);
             Xunit.Assert.Equal(3, number3.Value.Value);
         }
-      
+        [Xunit.Fact(Timeout = 10000)]
         public async System.Threading.Tasks.Task Sample2NotifierSupplyTest()
         {
             var env = new SampleTestEnv();
@@ -92,10 +92,10 @@ namespace Regulus.Remote.Standalone.Test
             Xunit.Assert.Equal(1, testResult.numbers2[0].Value.Value);
             Xunit.Assert.Equal(2, testResult.numbers2[1].Value.Value);
         }
-        
-        
 
 
+
+        [Xunit.Fact(Timeout = 10000)]
         public async System.Threading.Tasks.Task SampleEventTest()
         {
             var env = new SampleTestEnv();
@@ -106,14 +106,14 @@ namespace Regulus.Remote.Standalone.Test
                          from numberCount in System.Reactive.Linq.Observable.FromEvent<int>(h=> sample.IntsEvent += h , h => sample.IntsEvent -= h)
                          select numberCount;
             env.Sample.Ints.Items.Add(1);
-            var testResult = await obs.Buffer(1).FirstAsync();
+            var testResult = await obs.Do((v)=> { },_Throw).FirstAsync();
 
             env.Dispose();
             
-            Xunit.Assert.Equal(1, testResult[0]);            
+            Xunit.Assert.Equal(1, testResult);            
         }
 
-        
+        [Xunit.Fact(Timeout = 10000)]
         public async System.Threading.Tasks.Task Sample2EventTest()
         {
             var env = new SampleTestEnv();
@@ -145,7 +145,7 @@ namespace Regulus.Remote.Standalone.Test
 
 
 
-        
+        [Xunit.Fact(Timeout = 10000)]
         public async System.Threading.Tasks.Task SampleAddTest()
         {
             var env = new SampleTestEnv();
