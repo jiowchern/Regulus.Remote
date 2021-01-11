@@ -9,8 +9,8 @@ namespace Regulus.Remote.Standalone.Test
 {
     public class ProtocolTest
     {
-        [Test]
-        [MaxTime(10000)]
+        //[Test]
+        //[MaxTime(10000)]
         public async System.Threading.Tasks.Task AllInOne()
         {
             await Sample2NotifierUnsupplyTest();

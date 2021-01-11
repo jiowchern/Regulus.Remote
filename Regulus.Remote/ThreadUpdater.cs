@@ -24,10 +24,6 @@ namespace Regulus.Remote
             }
 
         }
-
-
-
-
         public void Start()
         {
 

@@ -7,8 +7,8 @@ namespace Regulus.Remote.Standalone.Test
 {
     public class SoulTest
     {
-        [Test]
-        [MaxTime(5000)]
+        ///[Test]
+        //[MaxTime(5000)]
         public void ServiceTest()
         {
             Stream serverPeerStream = new Regulus.Remote.Standalone.Stream();

@@ -53,8 +53,8 @@ namespace Regulus.Utility
 
         public void Operate(long busy)
         {
-            //_SpinWait.SpinOnce();
-            /*_FPS.Update();
+            _SpinWait.SpinOnce();
+            _FPS.Update();
 
             if (_Busy <= busy && _FPS.Value > _LowPower)
             {
@@ -69,7 +69,7 @@ namespace Regulus.Utility
                 _SpinWait.Reset();
                 _WorkCount++;
             }
-            _Busy = busy;*/
+            _Busy = busy;
         }
     }
 }
