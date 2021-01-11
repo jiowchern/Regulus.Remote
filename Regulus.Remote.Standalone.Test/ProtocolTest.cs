@@ -10,7 +10,16 @@ namespace Regulus.Remote.Standalone.Test
     public class ProtocolTest
     {
         [Test]
-        [MaxTime(5000)]
+        [MaxTime(10000)]
+        public async System.Threading.Tasks.Task AllInOne()
+        {
+            await Sample2NotifierUnsupplyTest();
+            await Sample2NotifierSupplyTest();
+            await SampleEventTest();
+            await Sample2EventTest();
+            await SampleAddTest();
+        }
+        
         public async System.Threading.Tasks.Task Sample2NotifierUnsupplyTest()
         {
             var env = new SampleTestEnv();
@@ -53,8 +62,7 @@ namespace Regulus.Remote.Standalone.Test
             NUnit.Framework.Assert.AreEqual(1, number2.Value.Value);
             NUnit.Framework.Assert.AreEqual(3, number3.Value.Value);
         }
-        [Test]
-        [MaxTime(5000)]
+      
         public async System.Threading.Tasks.Task Sample2NotifierSupplyTest()
         {
             var env = new SampleTestEnv();
@@ -88,8 +96,6 @@ namespace Regulus.Remote.Standalone.Test
         
 
 
-        [Test]
-        [MaxTime(5000)]
         public async System.Threading.Tasks.Task SampleEventTest()
         {
             var env = new SampleTestEnv();
@@ -107,8 +113,7 @@ namespace Regulus.Remote.Standalone.Test
             NUnit.Framework.Assert.AreEqual(1, testResult[0]);            
         }
 
-        [Test]
-        [MaxTime(5000)]
+        
         public async System.Threading.Tasks.Task Sample2EventTest()
         {
             var env = new SampleTestEnv();
@@ -140,8 +145,7 @@ namespace Regulus.Remote.Standalone.Test
 
 
 
-        [Test]
-        [MaxTime(5000)]
+        
         public async System.Threading.Tasks.Task SampleAddTest()
         {
             var env = new SampleTestEnv();
