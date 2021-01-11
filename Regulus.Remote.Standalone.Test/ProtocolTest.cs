@@ -11,7 +11,7 @@ namespace Regulus.Remote.Standalone.Test
     {
         [Test]
         [MaxTime(5000)]
-        public void Sample2NotifierUnsupplyTest()
+        public async System.Threading.Tasks.Task Sample2NotifierUnsupplyTest()
         {
             var env = new SampleTestEnv();
 
@@ -26,7 +26,7 @@ namespace Regulus.Remote.Standalone.Test
             var readyObs = from s in queryer.QueryNotifier<ISample>().SupplyEvent()
                            from supplyNumbers in s.Numbers.SupplyEvent().Buffer(3)                      
                            select s ;
-            var sample = readyObs.First();
+            var sample = await readyObs.FirstAsync();
 
             var numbers = new System.Collections.Concurrent.ConcurrentQueue<INumber>();
             sample.Numbers.Unsupply += numbers.Enqueue;
@@ -37,7 +37,7 @@ namespace Regulus.Remote.Standalone.Test
                             from r3 in sample.RemoveNumber(3).RemoteValue()
                             select new { r1, r2, r3 };
 
-            var removeNumbers = removeObs.First();
+            var removeNumbers = await removeObs.FirstAsync();
 
             
 
@@ -55,7 +55,7 @@ namespace Regulus.Remote.Standalone.Test
         }
         [Test]
         [MaxTime(5000)]
-        public void Sample2NotifierSupplyTest()
+        public async System.Threading.Tasks.Task Sample2NotifierSupplyTest()
         {
             var env = new SampleTestEnv();
             var queryer = env.Queryable;
@@ -74,7 +74,7 @@ namespace Regulus.Remote.Standalone.Test
                       from numbers2 in sample.Numbers.SupplyEvent().Buffer(2).FirstAsync()
                       select new { numbers1, numbers2 };
 
-            var testResult = obs.First();
+            var testResult =  await obs.FirstAsync();
 
 
             env.Dispose();
@@ -89,7 +89,7 @@ namespace Regulus.Remote.Standalone.Test
 
         [Test]
         [MaxTime(5000)]
-        public void SampleEventTest()
+        public async System.Threading.Tasks.Task SampleEventTest()
         {
             var env = new SampleTestEnv();
             var queryer = env.Queryable;
@@ -99,7 +99,7 @@ namespace Regulus.Remote.Standalone.Test
                          from numberCount in System.Reactive.Linq.Observable.FromEvent<int>(h=> sample.IntsEvent += h , h => sample.IntsEvent -= h)
                          select numberCount;
             env.Sample.Ints.Items.Add(1);
-            var testResult = obs.Buffer(1).First();
+            var testResult = await obs.Buffer(1).FirstAsync();
 
             env.Dispose();
             
@@ -108,7 +108,7 @@ namespace Regulus.Remote.Standalone.Test
 
         [Test]
         [MaxTime(5000)]
-        public void Sample2EventTest()
+        public async System.Threading.Tasks.Task Sample2EventTest()
         {
             var env = new SampleTestEnv();
             var queryer = env.Queryable;
@@ -126,7 +126,7 @@ namespace Regulus.Remote.Standalone.Test
                        from int2s in System.Reactive.Linq.Observable.FromEvent<int>(h => sample.IntsEvent += h, h => sample.IntsEvent -= h).Buffer(2).FirstAsync()
                        select new { int1s,int2s };
             
-            var testResult = obs.First();
+            var testResult = await obs.FirstAsync();
 
             
 
@@ -141,21 +141,18 @@ namespace Regulus.Remote.Standalone.Test
 
         [Test]
         [MaxTime(5000)]
-        public void SampleAddTest()
+        public async System.Threading.Tasks.Task SampleAddTest()
         {
             var env = new SampleTestEnv();
             var queryer = env.Queryable;
             var addObs = from sample in queryer.QueryNotifier<ISample>().SupplyEvent()
                          from result in sample.Add(1, 2).RemoteValue()
                          select result;
-            int? verifyResult = new  int?();
-            addObs.Do((r) => { }, _Throw).Subscribe( r => verifyResult = r);
-            while(!verifyResult.HasValue)
-            {
-
-            }
+            
+            int verifyResult = await addObs.Do((r) => { }, _Throw).FirstAsync();
+            
             env.Dispose();
-            NUnit.Framework.Assert.AreEqual(3, verifyResult.Value);
+            NUnit.Framework.Assert.AreEqual(3, verifyResult);
         }
 
         private void _Throw(Exception e)
