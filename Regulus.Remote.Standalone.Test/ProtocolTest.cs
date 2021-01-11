@@ -19,7 +19,7 @@ namespace Regulus.Remote.Standalone.Test
             await Sample2EventTest();
             await SampleAddTest();
         }
-        [Xunit.Fact(Timeout = 10000)]
+        [Xunit.Fact(Timeout = 10000 )]
         public async System.Threading.Tasks.Task Sample2NotifierUnsupplyTest()
         {
             var env = new SampleTestEnv();
