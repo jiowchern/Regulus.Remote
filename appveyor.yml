@@ -1,7 +1,7 @@
 version: 0.1.7.{build}
 branches:
   only:
-  - master
+  #- master
   - release
 image: Visual Studio 2019
 configuration: Release
