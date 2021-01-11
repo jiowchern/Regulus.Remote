@@ -24,8 +24,7 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Test
-      run: |
-        dotnet test 
+      run: |        
         dotnet test --no-build /p:CollectCoverage=true  /p:CoverletOutput=../CoverageResults/ /p:MergeWith="../CoverageResults/coverage.json" /p:CoverletOutputFormat="lcov" -m:1        
         move CoverageResults/coverage.info .
     
