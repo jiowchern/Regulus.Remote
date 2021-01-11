@@ -23,18 +23,16 @@ namespace Regulus.Remote
             this._Peer = peer;
         }
 
-        
 
-        internal void Read(int size)
+
+        internal System.Threading.Tasks.Task Read(int size)
         {            
             _Offset = 0;
             _Buffer = new byte[size];
             try
             {
                 System.Threading.Tasks.Task<int> task = _Peer.Receive(_Buffer, _Offset, _Buffer.Length - _Offset);                
-                task.ContinueWith(t => _Readed(t.Result));
-
-
+                return task.ContinueWith(t => _Readed(t.Result));
             }
             catch (SystemException e)
             {
@@ -43,6 +41,8 @@ namespace Regulus.Remote
                     ErrorEvent();
                 }
             }
+
+            return System.Threading.Tasks.Task.Factory.StartNew(() => { });
         }
 
         private void _Readed(int read_count)

@@ -40,18 +40,14 @@ namespace Regulus.Remote.Tests
 
             SocketBodyReader reader = new Regulus.Remote.SocketBodyReader(peer);
             byte[] readBytes = new byte[10];
-            bool readed = false;
+            
             reader.DoneEvent += (data) =>
-            {
-                readed = true;
+            {            
                 readBytes = data;
             };
-            reader.Read(10);
+            reader.Read(10).Wait();
 
-            while (!readed)
-            {
-
-            }
+            
             NUnit.Framework.Assert.AreEqual(1, readBytes[1]);
             NUnit.Framework.Assert.AreEqual(5, readBytes[5]);
             NUnit.Framework.Assert.AreEqual(9, readBytes[9]);
