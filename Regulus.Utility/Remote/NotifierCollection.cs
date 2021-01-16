@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Regulus.Remote
 {
-    public class NotifierCollection<T> : INotifier<T>, ICollection<T>
+    public class NotifierCollection<T> : INotifier<T>, ICollection<T> , System.Collections.Generic.IReadOnlyCollection<T>
     {
         readonly System.Collections.Generic.List<T> _Items;
         T[] INotifier<T>.Ghosts => _Items.ToArray();
@@ -13,7 +13,10 @@ namespace Regulus.Remote
 
         bool ICollection<T>.IsReadOnly => Items.IsReadOnly;
 
+        int IReadOnlyCollection<T>.Count => _Items.Count;
+
         public readonly ICollection<T> Items;
+        public readonly IReadOnlyCollection<T> ReadOnlyItems;
         public readonly INotifier<T> Notifier;
         public NotifierCollection() : this(new System.Collections.Generic.List<T>())
         {
@@ -22,6 +25,7 @@ namespace Regulus.Remote
         {
             _Items = new System.Collections.Generic.List<T>(items);
             Items = this;
+            ReadOnlyItems = this;
             Notifier = this;
 
             _UnsupplyEvent += _Empty;
