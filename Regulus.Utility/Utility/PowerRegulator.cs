@@ -55,15 +55,14 @@ namespace Regulus.Utility
         {            
             _FPS.Update();
 
-            if (_Busy <= busy && _FPS.Value > _LowPower)
+            if (_Busy <= busy && _FPS.Value >= _LowPower)
             {
-                System.Threading.Thread.Sleep(1000/30);
-                //_SpinWait.SpinOnce();                
+                System.Threading.Thread.Sleep(1);
                 _SpinCount++;
             }
             else
             {
-                System.Threading.Thread.Sleep(0);
+                //System.Threading.Thread.Sleep(0);
                 //_SpinWait.Reset();
                 _WorkCount++;
             }
