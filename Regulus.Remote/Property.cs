@@ -34,7 +34,7 @@ namespace Regulus.Remote
         }
 
         public event Action<object> DirtyEvent;
-        event Action<object> IDirtyable.DirtyEvent
+        event Action<object> IDirtyable.ChangeEvent
         {
             add
             {

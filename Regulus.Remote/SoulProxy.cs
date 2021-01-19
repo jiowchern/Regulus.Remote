@@ -20,14 +20,13 @@ namespace Regulus.Remote
         readonly List<SoulProxyEventHandler> _EventHandlers;
 
         readonly List<PropertyUpdater> _PropertyUpdaters;
-        readonly System.Collections.Concurrent.ConcurrentQueue<int> _PropertyResets;
+        
 
         readonly System.Collections.Concurrent.ConcurrentQueue<IPropertyIdValue> _PropertyChangeds;
 
         public readonly int InterfaceId;
 
-        volatile bool _UpdateTaskEnable;
-        readonly System.Threading.Tasks.Task _UpdateTask;
+        
 
 
 
@@ -39,20 +38,35 @@ namespace Regulus.Remote
             InterfaceId = interface_id;
             Id = id;
             _PropertyUpdaters = new List<PropertyUpdater>(property_updaters);
-            _PropertyResets = new System.Collections.Concurrent.ConcurrentQueue<int>();
+            
             _PropertyChangeds = new System.Collections.Concurrent.ConcurrentQueue<IPropertyIdValue>();
             _EventHandlers = new List<SoulProxyEventHandler>();
             _UnsupplyBinder = new Dictionary<long, NotifierEventBinder>();
             _SupplyBinder = new Dictionary<long, NotifierEventBinder>();
-            _UpdateTaskEnable = true;
-            _UpdateTask = System.Threading.Tasks.Task.Factory.StartNew(_PropertyUpdate , System.Threading.Tasks.TaskCreationOptions.LongRunning);
+            
+            
+
+
+            _Regist(_PropertyUpdaters);
         }
 
+        private void _Regist(List<PropertyUpdater> property_updaters)
+        {
+            foreach (var updater in property_updaters)
+            {
+                updater.ChnageEvent += _UpdatePropertyChange(updater);
+            }
+        }
+
+        private Action<object> _UpdatePropertyChange(PropertyUpdater updater)
+        {
+            return (o) => _PropertyChangeds.Enqueue(updater);
+        }
 
         internal void Release()
         {
-            _UpdateTaskEnable = false;
-            _UpdateTask.Wait();
+            _Unregist(_PropertyUpdaters);            
+            
             lock (_EventHandlers)
             {
                 foreach (SoulProxyEventHandler eventHandler in _EventHandlers)
@@ -72,47 +86,31 @@ namespace Regulus.Remote
 
         }
 
+        private void _Unregist(List<PropertyUpdater> property_updaters)
+        {
+            foreach (var updater in property_updaters)
+            {
+                updater.ChnageEvent += _UpdatePropertyChange(updater);
+            }
+        }
+
         internal bool TryGetPropertyChange(out IPropertyIdValue property_id_value)
         {
             return _PropertyChangeds.TryDequeue(out property_id_value);
         }
-        private void _PropertyUpdate()
-        {
-
-
-            var apr = new Regulus.Utility.AutoPowerRegulator(new Utility.PowerRegulator());
-            while(_UpdateTaskEnable)
-            {
-                int resetId;
-                while (_PropertyResets.TryDequeue(out resetId))
-                {
-                    PropertyUpdater propertyUpdater = _PropertyUpdaters.FirstOrDefault(pu => pu.PropertyId == resetId);
-                    if (propertyUpdater != null)
-                        propertyUpdater.Reset();
-                }
-
-
-
-                foreach (PropertyUpdater pu in _PropertyUpdaters)
-                {
-                    if (pu.Update())
-                    {
-                        _PropertyChangeds.Enqueue(pu);
-                    }
-
-                }
-
-                apr.Operate();
-            }
-            
-
-        }
+        
 
         internal void PropertyUpdateReset(int property)
         {
-            _PropertyResets.Enqueue(property);
             
-            
+
+            foreach (var updater in _PropertyUpdaters)
+            {
+                if(updater.PropertyId == property)
+                {
+                    updater.Reset();
+                }
+            }
 
         }
 
