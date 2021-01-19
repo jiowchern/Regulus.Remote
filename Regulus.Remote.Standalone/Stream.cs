@@ -20,6 +20,17 @@ namespace Regulus.Remote.Standalone
 
         }
 
+        System.Threading.Tasks.Task<int> _RunTask(int num)
+        {
+            var t = new Task<int>(() => {
+                if (num == 0)
+                    System.Threading.Thread.Sleep(1000/30);
+                return num;
+            } );
+            t.RunSynchronously();
+            return t;
+        }
+
         public Task<int> Push(byte[] buffer, int offset, int count)
         {
             lock(_Receives)
@@ -28,10 +39,10 @@ namespace Regulus.Remote.Standalone
                 {
                     int readCount = i - offset;
                     if (readCount >= count)
-                        return System.Threading.Tasks.Task<int>.Factory.StartNew(() => readCount);
+                        return _RunTask(readCount);
                     _Receives.Enqueue(buffer[i]);
                 }
-                return System.Threading.Tasks.Task<int>.Factory.StartNew(() => buffer.Length - offset);
+                return _RunTask(buffer.Length - offset);
             }
             
             
@@ -54,16 +65,16 @@ namespace Regulus.Remote.Standalone
                 {
                     int readCount = i - offset;
                     if(readCount >= count)
-                        return System.Threading.Tasks.Task<int>.Factory.StartNew(() => readCount);
+                        return _RunTask(readCount);
                     if (_Receives.Count == 0)
                     {
-                        return System.Threading.Tasks.Task<int>.Factory.StartNew(() => readCount);
+                        return _RunTask(readCount);
                     }
                     buffer[i] = _Receives.Dequeue();
                 }
             }
 
-            return System.Threading.Tasks.Task<int>.Factory.StartNew(() => buffer.Length - offset);
+            return _RunTask(buffer.Length - offset);
         }
 
         private Task<int> _Write(byte[] buffer, int offset, int count)
@@ -74,16 +85,16 @@ namespace Regulus.Remote.Standalone
                 {
                     int readCount = i - offset;
                     if (readCount >= count)
-                        return System.Threading.Tasks.Task<int>.Factory.StartNew(() => readCount);
+                        return _RunTask(readCount);
                     if (_Sends.Count == 0)
                     {
-                        return System.Threading.Tasks.Task<int>.Factory.StartNew(() => readCount);
+                        return _RunTask(readCount);
                     }
                     buffer[i] = _Sends.Dequeue();
                 }
             }
 
-            return System.Threading.Tasks.Task<int>.Factory.StartNew(() => buffer.Length - offset);
+            return _RunTask(buffer.Length - offset);
         }
 
         public Task<int> Pop(byte[] buffer, int offset, int count)
@@ -101,10 +112,11 @@ namespace Regulus.Remote.Standalone
                 {
                     int readCount = i - offset;
                     if (readCount >= count)
-                        return System.Threading.Tasks.Task<int>.Factory.StartNew(() => readCount);
+                        return _RunTask(readCount);
                     _Sends.Enqueue(buffer[i]);
                 }
-                return System.Threading.Tasks.Task<int>.Factory.StartNew(() => buffer.Length - offset);
+                
+                return _RunTask(buffer.Length - offset);
             }
         }
     }

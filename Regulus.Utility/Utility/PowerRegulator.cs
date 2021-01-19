@@ -52,21 +52,19 @@ namespace Regulus.Utility
         }
 
         public void Operate(long busy)
-        {
-            _SpinWait.SpinOnce();
+        {            
             _FPS.Update();
 
             if (_Busy <= busy && _FPS.Value > _LowPower)
             {
-
-
-                _SpinWait.SpinOnce();
-                
+                System.Threading.Thread.Sleep(1000/30);
+                //_SpinWait.SpinOnce();                
                 _SpinCount++;
             }
             else
             {
-                _SpinWait.Reset();
+                System.Threading.Thread.Sleep(0);
+                //_SpinWait.Reset();
                 _WorkCount++;
             }
             _Busy = busy;
