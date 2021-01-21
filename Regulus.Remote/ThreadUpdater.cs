@@ -1,5 +1,6 @@
 ﻿using Regulus.Utility;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Regulus.Remote
 {
@@ -7,17 +8,19 @@ namespace Regulus.Remote
     {
         private readonly System.Action _Updater;
         
-        private CancellationTokenSource _Cancel;         
+        private CancellationTokenSource _Cancel;
+        private Task _Task;        
+
         public ThreadUpdater(System.Action updater)
         {
             _Updater = updater;            
         }
 
-        void _Update()
+        void _Update(CancellationToken token)
         {
             AutoPowerRegulator regulator = new AutoPowerRegulator(new PowerRegulator());
 
-            while (!_Cancel.Token.IsCancellationRequested)
+            while (!token.IsCancellationRequested)
             {
                 _Updater();
                 regulator.Operate();
@@ -28,7 +31,8 @@ namespace Regulus.Remote
         {
 
             _Cancel = new CancellationTokenSource();
-            System.Threading.Tasks.Task.Factory.StartNew(_Update, _Cancel.Token);//_Task.Start();
+            
+            _Task = System.Threading.Tasks.Task.Factory.StartNew(()=>_Update(_Cancel.Token), _Cancel.Token);
 
         }
 
@@ -36,6 +40,8 @@ namespace Regulus.Remote
         {
             _Cancel.Cancel();            
             _Cancel.Dispose();
+
+            _Task.Wait();
         }
     }
 }
