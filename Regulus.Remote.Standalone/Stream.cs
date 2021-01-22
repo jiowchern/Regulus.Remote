@@ -25,20 +25,6 @@ namespace Regulus.Remote.Standalone
 
         }
 
-        System.Threading.Tasks.Task<int> _RunTask(int num)
-        {
-            var t = new Task<int>(() => {
-                if (num == 0)
-                {
-                    System.Threading.Thread.Sleep(1000 / 30);
-                }
-        
-                return num;
-            } );
-            t.RunSynchronously();
-            return t;
-        }
-
         public Task<int> Push(byte[] buffer, int offset, int count)
         {            
 
@@ -93,9 +79,10 @@ namespace Regulus.Remote.Standalone
                         }
                         buffer[i] = _Receives.Dequeue();
                     }
+                    return buffer.Length - offset;
                 }
 
-                return buffer.Length - offset;
+                
             });
         }
 
@@ -120,9 +107,10 @@ namespace Regulus.Remote.Standalone
                         }
                         buffer[i] = _Sends.Dequeue();
                     }
+                    return buffer.Length - offset;
                 }
 
-                return buffer.Length - offset;
+                
             });
         }
 

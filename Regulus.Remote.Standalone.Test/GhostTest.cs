@@ -115,7 +115,7 @@ namespace Regulus.Remote.Standalone.Test
             PackageLoadSoul lordsoulPkg = serializer.Deserialize(responsePkg.Data) as PackageLoadSoul;
             Assert.Equal(ServerToClientOpCode.LoadSoul, responsePkg.Code);
             Assert.Equal(1, lordsoulPkg.EntityId);
-            Assert.Equal(false, lordsoulPkg.ReturnType);
+            Assert.False(lordsoulPkg.ReturnType);
             Assert.Equal(1, lordsoulPkg.TypeId);
         }
 
