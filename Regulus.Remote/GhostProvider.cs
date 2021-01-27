@@ -233,7 +233,8 @@ namespace Regulus.Remote
             IProvider provider = _QueryProvider(type);
 
             IGhost ghost = provider.Ready(entity_id);
-            _SetReturnValue(return_id, ghost);
+            if(ghost != null)
+                _SetReturnValue(return_id, ghost);
         }
 
 
