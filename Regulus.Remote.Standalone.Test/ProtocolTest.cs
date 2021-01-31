@@ -9,8 +9,9 @@ namespace Regulus.Remote.Standalone.Test
 {
     public class ProtocolTest
     {
-        
-        
+
+
+        [Xunit.Fact(Timeout = 10000 )]
         public async System.Threading.Tasks.Task AllInOne()
         {
             await Sample2NotifierUnsupplyTest();
