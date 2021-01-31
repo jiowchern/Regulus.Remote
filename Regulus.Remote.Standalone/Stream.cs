@@ -18,8 +18,8 @@ namespace Regulus.Remote.Standalone
 
         public Stream()
         {
-            _ReadyReceive = new System.Threading.ManualResetEvent(false);
-            _ReadySend = new System.Threading.ManualResetEvent(false);
+            _ReadyReceive = new System.Threading.ManualResetEvent(true);
+            _ReadySend = new System.Threading.ManualResetEvent(true);
             _Sends = new System.Collections.Generic.Queue<byte>();
             _Receives = new System.Collections.Generic.Queue<byte>();
 
