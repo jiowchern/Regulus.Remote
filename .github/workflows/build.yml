@@ -26,7 +26,7 @@ jobs:
     - name: Test
       run: |        
         dotnet test /p:CollectCoverage=true  /p:CoverletOutput=../CoverageResults/ /p:MergeWith="../CoverageResults/coverage.json" /p:CoverletOutputFormat="lcov" -m:1        
-        move CoverageResults/coverage.info .
+        cp CoverageResults/coverage.info .
     
     - name: Coveralls GitHub Action
       uses: coverallsapp/github-action@master
