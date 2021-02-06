@@ -1,7 +1,6 @@
 version: 0.1.7.{build}
 branches:
   only:
-  #- master
   - release
 image: Visual Studio 2019
 configuration: Release
@@ -16,40 +15,11 @@ build:
   verbosity: minimal
 after_build:
 - cmd: build_package.cmd
-test_script:
-- ps: >-
-    echo starttest
-    
-    dotnet test Regulus.sln --configuration Release 
-
-#    echo installcoveralls
-
-#    dotnet tool install --global coverlet.console
-
-#    echo sendcoveralls
-
-#    ./tools/csmacnz.Coveralls.exe --useRelativePaths --multiple -i "opencover=Regulus.Utility.Test\coverage.opencover.xml;opencover=Regulus.Remote.Test\coverage.opencover.xml;opencover=Regulus.Serialization.Test\coverage.opencover.xml;opencover=Regulus.Remote.Protocol.Test\coverage.opencover.xml;opencover=Regulus.Network.Test\coverage.opencover.xml;opencover=Regulus.Application.Protocol.Generator.Test\coverage.opencover.xml;opencover=Regulus.Remote.Standalone.Test\coverage.opencover.xml;opencover=Regulus.Application.Client.Test\coverage.opencover.xml" --repoToken 4aL4sSKKvWbGicuk2DRR7QvSJnC4e3Hsq
-artifacts:
-- path: artifact\Library\Server
-  name: Server
-- path: artifact\Library\Client
-  name: Client
-- path: artifact\Tool
-  name: Tool
-- path: artifact\Library\Serialization
-  name: Serialization
 before_deploy:
-- cmd: build_package.cmd
+- cmd: ''
 deploy:
-#- provider: GitHub
-#  auth_token:
-#    secure: /AfJAx3kxJ0kcGiZVCl5U7v3f9Z0qIDDN5L+ckDjxzkULqDK0fhwWVgcqRNukVln
-#  draft: true
-#  prerelease: true
-#  on:
-#    branch: release
 - provider: NuGet
   api_key:
-    secure: wx+iUGxTlapRe+3AHr04cEXw/IgH44p0iMOAtDq34wWai1chF0/8znXdw610WCYW
+    secure: M0Z+oXx6GiMe4j9VljY+OGVAAwjpZ4Ri5EohgoqTa+X24xXCAu59jQZcJBNhf6cr
   on:
     branch: release
