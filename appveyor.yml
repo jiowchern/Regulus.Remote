@@ -41,13 +41,13 @@ artifacts:
 before_deploy:
 - cmd: build_package.cmd
 deploy:
-- provider: GitHub
-  auth_token:
-    secure: /AfJAx3kxJ0kcGiZVCl5U7v3f9Z0qIDDN5L+ckDjxzkULqDK0fhwWVgcqRNukVln
-  draft: true
-  prerelease: true
-  on:
-    branch: release
+#- provider: GitHub
+#  auth_token:
+#    secure: /AfJAx3kxJ0kcGiZVCl5U7v3f9Z0qIDDN5L+ckDjxzkULqDK0fhwWVgcqRNukVln
+#  draft: true
+#  prerelease: true
+#  on:
+#    branch: release
 - provider: NuGet
   api_key:
     secure: oy2ova7m6sfay6sogx2afadp4lfys6uu7h7boru6vyytwq
