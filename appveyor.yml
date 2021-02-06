@@ -16,11 +16,11 @@ build:
   verbosity: minimal
 after_build:
 - cmd: build_package.cmd
-#test_script:
-#- ps: >-
-#    echo starttest
+test_script:
+- ps: >-
+    echo starttest
     
-#    dotnet test Regulus.sln --configuration Release /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+    dotnet test Regulus.sln --configuration Release 
 
 #    echo installcoveralls
 
@@ -34,8 +34,6 @@ artifacts:
   name: Server
 - path: artifact\Library\Client
   name: Client
-- path: artifact\Library\BehaviourTree
-  name: BehaviourTree
 - path: artifact\Tool
   name: Tool
 - path: artifact\Library\Serialization
