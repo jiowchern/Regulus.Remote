@@ -19,7 +19,7 @@ namespace Regulus.Remote
         void _Update(CancellationToken token)
         {
             AutoPowerRegulator regulator = new AutoPowerRegulator(new PowerRegulator());
-
+            System.Threading.Thread.Sleep(1000);
             while (!token.IsCancellationRequested)
             {
                 _Updater();
