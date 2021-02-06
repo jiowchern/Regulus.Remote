@@ -40,15 +40,15 @@ namespace Regulus.Remote.Standalone.Test
     }
     public class GhostTest
     {
-        [Fact()]    
+        /*[Fact()]    
         public void CommunicationDevicePushTestMutli()
         {
-            System.Threading.Tasks.Parallel.For(1, 100, (idx,state) =>
+            System.Threading.Tasks.Parallel.For(1, 1000, (idx,state) =>
             {
                 CommunicationDevicePushTest();
             });  
 
-        }
+        }*/
         [Fact(Timeout = 5000)]
         public async System.Threading.Tasks.Task CommunicationDevicePushTest()
         {
