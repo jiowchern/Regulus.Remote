@@ -9,16 +9,16 @@ on:
 jobs:
   build:
 
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
       with:
         submodules: 'true'
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v1.7.2
       with:
-        dotnet-version: '5'
+        dotnet-version: '5.0.x'
     - name: Install dependencies
       run: dotnet restore
     - name: Build
