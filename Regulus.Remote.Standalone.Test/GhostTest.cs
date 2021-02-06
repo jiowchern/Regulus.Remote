@@ -40,16 +40,24 @@ namespace Regulus.Remote.Standalone.Test
     }
     public class GhostTest
     {
+        [Fact()]    
+        public void CommunicationDevicePushTestMutli()
+        {
+            System.Threading.Tasks.Parallel.For(1, 100, (idx,state) =>
+            {
+                CommunicationDevicePushTest();
+            });  
 
-        [Fact(Timeout = 5000)]        
-        public void CommunicationDevicePushTest()
+        }
+        [Fact(Timeout = 5000)]
+        public async System.Threading.Tasks.Task CommunicationDevicePushTest()
         {
             byte[] sendBuf = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             byte[] recvBuf = new byte[10];
 
             Stream cd = new Regulus.Remote.Standalone.Stream();
             IStreamable peer = cd as IStreamable;
-            cd.Push(sendBuf, 0, sendBuf.Length);
+            await cd.Push(sendBuf, 0, sendBuf.Length);
             System.Threading.Tasks.Task<int> receiveResult1 = peer.Receive(recvBuf, 0, 4);
             System.Threading.Tasks.Task<int> receiveResult2 = peer.Receive(recvBuf, 4, 6);
 
