@@ -37,5 +37,5 @@ jobs:
     - name: publish nuget package
       uses: myci-actions/publish-nuget@2
       with:
-        filename: '**/*.nupkg'
+        filename: '*.nupkg'
         api-key: 'oy2ova7m6sfay6sogx2afadp4lfys6uu7h7boru6vyytwq'
