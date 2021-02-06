@@ -47,7 +47,7 @@ namespace Regulus.Remote.Standalone.Test
                             from r3 in sample.RemoveNumber(3).RemoteValue()
                             select new { r1, r2, r3 };
 
-            var removeNumbers = await removeObs.FirstAsync();
+            var removeNumbers = removeObs.FirstOrDefault();
 
             
 
