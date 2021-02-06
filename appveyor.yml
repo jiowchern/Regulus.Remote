@@ -50,6 +50,6 @@ deploy:
 #    branch: release
 - provider: NuGet
   api_key:
-    secure: oy2ova7m6sfay6sogx2afadp4lfys6uu7h7boru6vyytwq
+    secure: wx+iUGxTlapRe+3AHr04cEXw/IgH44p0iMOAtDq34wWai1chF0/8znXdw610WCYW
   on:
     branch: release
