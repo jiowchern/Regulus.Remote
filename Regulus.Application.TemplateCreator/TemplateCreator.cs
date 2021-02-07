@@ -108,12 +108,14 @@ namespace Regulus.Application
 
             // 
 
-            var regulusApplicationProtocolCodeWriterProj = System.IO.Path.Combine(_LibraryDir.FullName, "Regulus.Application.Protocol.CodeWriter");
+            var regulusApplicationProtocolCodeWriterProj = System.IO.Path.GetRelativePath(slnPath, System.IO.Path.Combine(_LibraryDir.FullName, "Regulus.Application.Protocol.CodeWriter"));
+
+            var relProtocolPath = System.IO.Path.GetRelativePath(slnPath, protocolPath);
             string t = @$"
 <Project>
     <Target Condition=""'$(ProjectName)' == '{commonNamespace}' And '$(SolutionDir)' != '*Undefined*'"" Name=""CreateProtocol"" AfterTargets=""Build"">
-            <Exec Command = ""del {protocolPath}\*.cs /q"" />     
-             <Exec Command = ""dotnet run --project {regulusApplicationProtocolCodeWriterProj}  --common $(TargetPath) --output {protocolPath}"" />      
+            <Exec Command = ""del $(SolutionDir){relProtocolPath}\*.cs /q"" />     
+             <Exec Command = ""dotnet run --project $(SolutionDir){regulusApplicationProtocolCodeWriterProj}  --common $(TargetPath) --output $(SolutionDir){relProtocolPath}"" />      
           </Target>
       </Project>
       ";
