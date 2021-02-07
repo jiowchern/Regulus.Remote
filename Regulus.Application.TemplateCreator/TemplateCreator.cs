@@ -106,7 +106,18 @@ namespace Regulus.Application
             if (refResult.Any(r => r != 0))
                 return false;
 
+            // 
 
+            var regulusApplicationProtocolCodeWriterProj = System.IO.Path.Combine(_LibraryDir.FullName, "Regulus.Application.Protocol.CodeWriter");
+            string t = @$"
+<Project>
+    <Target Condition=""'$(ProjectName)' == '{commonNamespace}' And '$(SolutionDir)' != '*Undefined*'"" Name=""CreateProtocol"" AfterTargets=""Build"">
+            <Exec Command = ""del {protocolPath}\*.cs /q"" />     
+             <Exec Command = ""dotnet run --project {regulusApplicationProtocolCodeWriterProj}  --common $(TargetPath) --output {protocolPath}"" />      
+          </Target>
+      </Project>
+      ";
+            System.IO.File.WriteAllText(System.IO.Path.Combine(slnPath, "Directory.Build.targets"), t);
             return true;
 
         }
