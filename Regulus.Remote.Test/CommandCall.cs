@@ -130,16 +130,7 @@ namespace RemotingTest
                 remove { }
             }
 
-            IBinderTest[] INotifier<IBinderTest>.Ghosts
-            {
-                get
-                {
-                    return new[]
-                    {
-                        _Tester
-                    };
-                }
-            }
+            
 
 
         }

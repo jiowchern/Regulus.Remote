@@ -6,6 +6,7 @@ using System.Reflection;
 namespace Regulus.Remote
 {
   
+  
     public class SoulProxy
     {
 
@@ -18,38 +19,106 @@ namespace Regulus.Remote
         public readonly MethodInfo[] MethodInfos;
 
         readonly List<SoulProxyEventHandler> _EventHandlers;
-
         readonly List<PropertyUpdater> _PropertyUpdaters;
-        
+        readonly List<NotifierUpdater> _TypeObjectNotifiables;
+        readonly System.Action _Dispose;
 
+
+        public event System.Action<int, TypeObject> SupplySoulEvent;
+        public event System.Action<int, TypeObject> UnsupplySoulEvent;
         readonly System.Collections.Concurrent.ConcurrentQueue<IPropertyIdValue> _PropertyChangeds;
 
         public readonly int InterfaceId;
 
-        
-
-
-
-        public SoulProxy(long id, int interface_id, Type object_type, object object_instance,IEnumerable<PropertyUpdater> property_updaters)
+        public SoulProxy(long id, int interface_id, Type object_type, object object_instance, System.Collections.Generic.IReadOnlyDictionary<PropertyInfo, int> property_ids)
         {
             MethodInfos = object_type.GetMethods();
             ObjectInstance = object_instance;
             ObjectType = object_type;
             InterfaceId = interface_id;
             Id = id;
-            _PropertyUpdaters = new List<PropertyUpdater>(property_updaters);
             
             _PropertyChangeds = new System.Collections.Concurrent.ConcurrentQueue<IPropertyIdValue>();
-            _EventHandlers = new List<SoulProxyEventHandler>();
-            _UnsupplyBinder = new Dictionary<long, NotifierEventBinder>();
-            _SupplyBinder = new Dictionary<long, NotifierEventBinder>();
             
-            
+            _EventHandlers = new List<SoulProxyEventHandler>();            
+            _TypeObjectNotifiables = new List<NotifierUpdater>(_BuildNotifier(object_instance, object_type, property_ids));
+            _PropertyUpdaters = new List<PropertyUpdater>(_BuildProperty(object_instance ,object_type , property_ids));
 
 
             _Regist(_PropertyUpdaters);
+            _Regist(_TypeObjectNotifiables);
+
+
+
+            _Dispose = () => {
+
+                _Unregist(_PropertyUpdaters);
+                _Unregist(_TypeObjectNotifiables);
+
+                lock (_EventHandlers)
+                {
+                    foreach (SoulProxyEventHandler eventHandler in _EventHandlers)
+                    {
+                        eventHandler.Release();
+
+                    }
+                    _EventHandlers.Clear();
+                }
+
+                foreach (PropertyUpdater pu in _PropertyUpdaters)
+                {
+                    pu.Release();
+                }
+                _PropertyUpdaters.Clear();
+
+                foreach (System.IDisposable item in _TypeObjectNotifiables)
+                {
+                    item.Dispose();
+                }
+                _TypeObjectNotifiables.Clear();
+            };
         }
 
+        
+
+        private IEnumerable<Tuple<int, PropertyInfo>> _GetPropertys(Type soul_type , System.Collections.Generic.IReadOnlyDictionary<PropertyInfo, int> property_ids)
+        {
+            return from p in soul_type.GetProperties(BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public)
+                    select new Tuple<int, PropertyInfo>(property_ids[p] , p);            
+        }
+
+        private IEnumerable<NotifierUpdater> _BuildNotifier(object soul, Type soul_type, System.Collections.Generic.IReadOnlyDictionary<PropertyInfo, int> propertyIds)
+        {
+            return from p in _GetPropertys(soul_type, propertyIds)
+                   let property = p.Item2
+                   let id = p.Item1
+                   where property.PropertyType.GetInterfaces().Any(t => t == typeof(ITypeObjectNotifiable))       
+                   let propertyValue = property.GetValue(soul)
+                   select new NotifierUpdater(id, propertyValue as ITypeObjectNotifiable);
+        }
+        private IEnumerable<PropertyUpdater> _BuildProperty(object soul, Type soul_type, System.Collections.Generic.IReadOnlyDictionary<PropertyInfo, int> propertyIds)
+        {            
+            foreach (var item in _GetPropertys(soul_type,propertyIds))
+            {
+                PropertyInfo property = item.Item2;
+                var id = item.Item1;
+                if (property.PropertyType.GetInterfaces().Any(t => t == typeof(IDirtyable)))
+                {
+                    object propertyValue = property.GetValue(soul);
+                    IDirtyable dirtyable = propertyValue as IDirtyable;
+                    yield return new PropertyUpdater(dirtyable, id);
+                }
+            }
+            
+        }
+        private void _Regist(List<NotifierUpdater> updaters)
+        {
+            foreach (var updater  in updaters)
+            {
+                updater.SupplyEvent += SupplySoulEvent;
+                updater.UnsupplyEvent += UnsupplySoulEvent;
+            }
+        }
         private void _Regist(List<PropertyUpdater> property_updaters)
         {
             foreach (var updater in property_updaters)
@@ -64,26 +133,9 @@ namespace Regulus.Remote
         }
 
         internal void Release()
-        {
-            _Unregist(_PropertyUpdaters);            
-            
-            lock (_EventHandlers)
-            {
-                foreach (SoulProxyEventHandler eventHandler in _EventHandlers)
-                {
-                    eventHandler.Release();
+        {            
 
-                }
-                _EventHandlers.Clear();
-            }
-
-
-            foreach (PropertyUpdater pu in _PropertyUpdaters)
-            {
-                pu.Release();
-            }
-            _PropertyUpdaters.Clear();
-
+            _Dispose();
         }
 
         private void _Unregist(List<PropertyUpdater> property_updaters)
@@ -91,6 +143,15 @@ namespace Regulus.Remote
             foreach (var updater in property_updaters)
             {
                 updater.ChnageEvent += _UpdatePropertyChange(updater);
+            }
+        }
+
+        private void _Unregist(List<NotifierUpdater> updaters)
+        {
+            foreach (var updater in updaters)
+            {
+                updater.SupplyEvent -= SupplySoulEvent;
+                updater.UnsupplyEvent -= UnsupplySoulEvent;
             }
         }
 
@@ -136,47 +197,7 @@ namespace Regulus.Remote
             }
             
         }
-
         
-
-
-        readonly Dictionary<long, NotifierEventBinder> _SupplyBinder;
-        readonly Dictionary<long, NotifierEventBinder> _UnsupplyBinder;
-        internal void AttachSupply(long id, NotifierEventBinder binder)
-        {
-            _Attach(_SupplyBinder, id, binder);
-        }
-        internal void DetachSupply(long id)
-        {
-            _Detach(_SupplyBinder, id);
-        }
-
-        internal void AttachUnsupply(long id, NotifierEventBinder binder)
-        {
-            _Attach(_UnsupplyBinder, id, binder);
-        }
-        internal void DetachUnsupply(long id)
-        {
-            _Detach(_UnsupplyBinder, id);
-        }
-
-        private void _Attach(Dictionary<long, NotifierEventBinder> binders, long id, NotifierEventBinder binder)
-        {
-            binders.Add(id, binder);
-            binder.Setup();
-        }
-
-
-
-        private void _Detach(Dictionary<long, NotifierEventBinder> binders, long id)
-        {
-            NotifierEventBinder binder;
-            if (binders.TryGetValue(id, out binder))
-            {
-                binders.Remove(id);
-                binder.Dispose();
-            }
-        }
     }
 }
 

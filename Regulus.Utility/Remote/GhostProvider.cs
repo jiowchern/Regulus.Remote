@@ -43,14 +43,7 @@ namespace Regulus.Remote
             remove { _Unsupply -= value; }
         }
 
-        T[] INotifier<T>.Ghosts
-        {
-            get
-            {
-                lock (_Entitys)
-                    return _Entitys.ToArray();
-            }
-        }
+        
 
         /*event Action<T> INotifier<T>.Return
 		{

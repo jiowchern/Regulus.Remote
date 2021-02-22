@@ -7,7 +7,7 @@ namespace Regulus.Remote
     public class NotifierCollection<T> : INotifier<T>, ICollection<T> , System.Collections.Generic.IReadOnlyCollection<T>
     {
         readonly System.Collections.Generic.List<T> _Items;
-        T[] INotifier<T>.Ghosts => _Items.ToArray();
+        
 
         int ICollection<T>.Count => _Items.Count;
 

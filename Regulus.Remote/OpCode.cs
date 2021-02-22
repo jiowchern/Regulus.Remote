@@ -10,11 +10,7 @@
 
         UpdateProperty,
         AddEvent,
-        RemoveEvent,
-        AddNotifierSupply,
-        RemoveNotifierSupply,
-        AddNotifierUnsupply,
-        RemoveNotifierUnsupply,
+        RemoveEvent,        
     };
 
     public enum ServerToClientOpCode : byte
@@ -34,10 +30,7 @@
         ErrorMethod,
         ProtocolSubmit,
         SetProperty,
-
-        NotifierSupply,
         
-        NotifierUnsupply,
         
     }
 }

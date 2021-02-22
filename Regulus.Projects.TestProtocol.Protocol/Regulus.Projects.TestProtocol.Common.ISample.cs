@@ -14,9 +14,7 @@
             
             
             public CISample(long id, bool have_return )
-            {                
-                //Numbers
-_Numbers = new Regulus.Remote.GhostNotifier<Regulus.Projects.TestProtocol.Common.INumber>((p) => _AddSupplyNoitfierEvent(typeof(ISample).GetProperty("Numbers"), p), (p) => _RemoveSupplyNoitfierEvent(typeof(ISample).GetProperty("Numbers"),p), (p) => _AddUnsupplyNoitfierEvent(typeof(ISample).GetProperty("Numbers"), p), (p) => _RemoveUnsupplyNoitfierEvent(typeof(ISample).GetProperty("Numbers"),p));
+            {                                
                 _HaveReturn = have_return ;
                 _GhostIdName = id; 
                 
@@ -60,62 +58,7 @@ _Numbers = new Regulus.Remote.GhostNotifier<Regulus.Projects.TestProtocol.Common
                 add { this._RemoveEventEvent += value; }
                 remove { this._RemoveEventEvent -= value; }
             }
-            event Regulus.Remote.PropertyNotifierCallback _AddSupplyNoitfierEvent;
-            event Regulus.Remote.PropertyNotifierCallback Regulus.Remote.IGhost.AddSupplyNoitfierEvent
-            {
-
-                add
-                {
-                    _AddSupplyNoitfierEvent += value;
-                }
-
-                remove
-                {
-                    _AddSupplyNoitfierEvent -= value;
-                }
-            }
-
-            event Regulus.Remote.PropertyNotifierCallback _RemoveSupplyNoitfierEvent;
-            event Regulus.Remote.PropertyNotifierCallback Regulus.Remote.IGhost.RemoveSupplyNoitfierEvent
-            {
-                add
-                {
-                    _RemoveSupplyNoitfierEvent += value;
-                }
-
-                remove
-                {
-                    _RemoveSupplyNoitfierEvent -= value;
-                }
-            }
-
-            event Regulus.Remote.PropertyNotifierCallback _AddUnsupplyNoitfierEvent;
-            event Regulus.Remote.PropertyNotifierCallback Regulus.Remote.IGhost.AddUnsupplyNoitfierEvent
-            {
-                add
-                {
-                    _AddUnsupplyNoitfierEvent += value;
-                }
-
-                remove
-                {
-                    _AddUnsupplyNoitfierEvent -= value;
-                }
-            }
-
-            event Regulus.Remote.PropertyNotifierCallback _RemoveUnsupplyNoitfierEvent;
-            event Regulus.Remote.PropertyNotifierCallback Regulus.Remote.IGhost.RemoveUnsupplyNoitfierEvent
-            {
-                add
-                {
-                    _RemoveUnsupplyNoitfierEvent += value;
-                }
-
-                remove
-                {
-                    _RemoveUnsupplyNoitfierEvent -= value;
-                }
-            }
+            
             
                 Regulus.Remote.Value<System.Int32> Regulus.Projects.TestProtocol.Common.ISample.Add(System.Int32 _1,System.Int32 _2)
                 {                    
@@ -147,8 +90,8 @@ _Numbers = new Regulus.Remote.GhostNotifier<Regulus.Projects.TestProtocol.Common
                 
 
 
-            readonly Regulus.Remote.GhostNotifier<Regulus.Projects.TestProtocol.Common.INumber> _Numbers;
-            Regulus.Remote.INotifier<Regulus.Projects.TestProtocol.Common.INumber> Regulus.Projects.TestProtocol.Common.ISample.Numbers { get{ return _Numbers;} }
+                public Regulus.Remote.Property<System.Int32> _LastValue= new Regulus.Remote.Property<System.Int32>();
+                Regulus.Remote.Property<System.Int32> Regulus.Projects.TestProtocol.Common.ISample.LastValue { get{ return _LastValue;} }
 
                 public Regulus.Remote.GhostEventHandler _IntsEvent = new Regulus.Remote.GhostEventHandler();
                 event System.Action<System.Int32> Regulus.Projects.TestProtocol.Common.ISample.IntsEvent

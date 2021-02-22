@@ -128,20 +128,7 @@ namespace Regulus.Remote
             
                 _LoadSoulCompile(data.TypeId, data.EntityId, data.ReturnId);
                 
-            }
-            else if (id == ServerToClientOpCode.NotifierSupply)
-            {                
-                PackageNotifier data = args.ToPackageData<PackageNotifier>(_Serializer);
-                _NotifierSupply(data);             
-            }
-            else if (id == ServerToClientOpCode.NotifierUnsupply)
-            {                
-                PackageNotifier data = args.ToPackageData<PackageNotifier>(_Serializer);
-
-                _NotifierUnsupply(data);
-                
-            }
-
+            }            
             else if (id == ServerToClientOpCode.LoadSoul)
             {
                 
@@ -248,11 +235,7 @@ namespace Regulus.Remote
 
             ghost.CallMethodEvent += new GhostMethodHandler(ghost, _ReturnValueQueue, _Protocol, _Requester).Run;
             ghost.AddEventEvent += new GhostEventMoveHandler(ghost, _Protocol, _Requester).Add;
-            ghost.RemoveEventEvent += new GhostEventMoveHandler(ghost, _Protocol, _Requester).Remove;
-            ghost.AddSupplyNoitfierEvent += new GhostNotifierHandler(ghost, _Protocol, _Requester, _NotifierPassage).AddSupply;
-            ghost.RemoveSupplyNoitfierEvent += new GhostNotifierHandler(ghost, _Protocol, _Requester, _NotifierPassage).RemoveSupply;
-            ghost.AddUnsupplyNoitfierEvent += new GhostNotifierHandler(ghost, _Protocol, _Requester, _NotifierPassage).AddUnsupply;
-            ghost.RemoveUnsupplyNoitfierEvent += new GhostNotifierHandler(ghost, _Protocol, _Requester, _NotifierPassage).RemoveUnsupply;
+            ghost.RemoveEventEvent += new GhostEventMoveHandler(ghost, _Protocol, _Requester).Remove;            
 
 
 

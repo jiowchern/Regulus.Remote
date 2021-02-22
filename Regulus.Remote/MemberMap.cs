@@ -5,13 +5,7 @@ using System.Reflection;
 
 namespace Regulus.Remote
 {
-    namespace AOT
-    {
-    }
-
-
-
-
+    
     public class MemberMap : IEqualityComparer<Type>, IEqualityComparer<PropertyInfo>, IEqualityComparer<EventInfo>, IEqualityComparer<MethodInfo>, IEqualityComparer<int>
     {
 
@@ -20,6 +14,8 @@ namespace Regulus.Remote
         private readonly BilateralMap<int, PropertyInfo> _Propertys;
         private readonly BilateralMap<int, Type> _Interfaces;
         private readonly Dictionary<Type, Func<IProvider>> _Providers;
+        
+        public readonly IReadOnlyBilateralMap<int, PropertyInfo> Propertys;
 
 
         public MemberMap(IEnumerable<MethodInfo> methods, IEnumerable<EventInfo> events, IEnumerable<PropertyInfo> propertys, IEnumerable<System.Tuple<System.Type, System.Func<Regulus.Remote.IProvider>>> interfaces)
@@ -30,6 +26,7 @@ namespace Regulus.Remote
             _Propertys = new BilateralMap<int, PropertyInfo>(this, this);
             _Interfaces = new BilateralMap<int, Type>(this, this);
 
+            
             int id = 0;
             foreach (MethodInfo method in methods)
             {
@@ -54,6 +51,9 @@ namespace Regulus.Remote
                 _Interfaces.Add(++id, @interface.Item1);
                 _Providers.Add(@interface.Item1, @interface.Item2);
             }
+
+
+            Propertys = _Propertys;
         }
 
         public IProvider CreateProvider(Type type)

@@ -9,16 +9,19 @@ namespace Regulus.Projects.TestProtocol.Common
 
         public readonly NotifierCollection<INumber> Numbers;
         public readonly NotifierCollection<int> Ints;
+
+        Property<int> _LastValue;
         public Sample()
         {            
             Numbers = new NotifierCollection<INumber>();
             Ints = new NotifierCollection<int>();
+            _LastValue = new Property<int>();
         }
+
+        Property<int> ISample.LastValue => _LastValue;
+
         
 
-        INotifier<INumber> ISample.Numbers => Numbers;
-
-        
         event Action<int> ISample.IntsEvent
         {
             add
@@ -34,7 +37,8 @@ namespace Regulus.Projects.TestProtocol.Common
 
         Value<int> ISample.Add(int num1, int num2)
         {
-            return num1 + num2;
+            _LastValue.Value = num1 + num2;
+            return _LastValue.Value;
         }
 
         Value<bool> ISample.RemoveNumber(int val)

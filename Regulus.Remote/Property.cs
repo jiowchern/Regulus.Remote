@@ -2,6 +2,7 @@
 
 namespace Regulus.Remote
 {
+
     public class Property<T> : IDirtyable, IAccessable //, IEquatable<Property<T>>
     {
         T _Value;
