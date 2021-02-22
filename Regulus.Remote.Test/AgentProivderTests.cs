@@ -58,17 +58,6 @@ namespace Regulus.Utility.Client.JIT.Tests
             Xunit.Assert.Equal(typeof(TestProtocol), protocols[0]);
         }
 
-        /* todo 解除註解
-         * [Xunit.Fact]
-        public void CreateRudpTest()
-        {
-            Regulus.Remote.Client.JIT.AgentProivder.CreateRudp(typeof(Test));            
-        }
-
-        [Xunit.Fact]
-        public void CreateTcpTest()
-        {            
-            Regulus.Remote.Client.JIT.AgentProivder.CreateTcp(typeof(Test));
-        }*/
+      
     }
 }

@@ -18,7 +18,7 @@ namespace Regulus.Remote
         event System.Action<TypeObject> SupplyEvent;
         event System.Action<TypeObject> UnsupplyEvent;
     }
-    interface IObjectAccessible 
+    public interface IObjectAccessible 
     {
         void Add(object instance);
         void Remove(object instance);
@@ -58,12 +58,24 @@ namespace Regulus.Remote
     {
         readonly NotifierCollection<T> _Collection;
         public readonly INotifier<T> Base;
-        public Notifier()
+
+        public Notifier(NotifierCollection<T> collection)
         {
-            _Collection = new NotifierCollection<T>();
+            _Collection = collection;
             _Collection.Notifier.Supply += _OnSupply;
             _Collection.Notifier.Unsupply += _OnUnsupply;
             Base = _Collection;
+            _UnsupplyEvent += _Empty;
+            _SupplyEvent += _Empty;
+        }
+
+        private void _Empty(TypeObject obj)
+        {
+            
+        }
+
+        public Notifier() : this(new NotifierCollection<T>())
+        {            
         }
 
         private void _OnUnsupply(T obj)

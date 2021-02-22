@@ -220,8 +220,7 @@ namespace Regulus.Remote.Protocol
             serializer_types.Add(typeof(Regulus.Remote.PackageSetPropertyDone));
             serializer_types.Add(typeof(Regulus.Remote.PackageAddEvent));
             serializer_types.Add(typeof(Regulus.Remote.PackageRemoveEvent));
-            serializer_types.Add(typeof(Regulus.Remote.PackageNotifierEventHook));
-            serializer_types.Add(typeof(Regulus.Remote.PackageNotifier));
+            serializer_types.Add(typeof(Regulus.Remote.PackagePropertySoul));            
 
             foreach (Type serializerType in serializer_types)
             {
@@ -461,31 +460,29 @@ $@"
 
        
 
-        private static bool _IsNotifierProperty(PropertyInfo propertyInfo)
-        {
-            try
-            {
-                if(propertyInfo.PropertyType.IsGenericType)
-                    return propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof(INotifier<>);
-                return false;
-            }
-            catch (Exception ex)
-            {
-                throw new TypePropertyNotifierException(propertyInfo , ex);
-            }
-            
-        }
+       
 
         private void _BuildRemoteProperty(Type type, PropertyInfo[] propertyInfos, List<string> propertyCodes)
         {
             foreach (PropertyInfo propertyInfo in propertyInfos)
             {
-                if (!propertyInfo.PropertyType.GetInterfaces().Any(t => t == typeof(IDirtyable)))
-                    continue;
-                string propertyCode = $@"
-                public {_GetTypeName(propertyInfo.PropertyType)} _{propertyInfo.Name}= new {_GetTypeName(propertyInfo.PropertyType)}();
-                {_GetTypeName(propertyInfo.PropertyType)} {_GetTypeName(type)}.{propertyInfo.Name} {{ get{{ return _{propertyInfo.Name};}} }}";
-                propertyCodes.Add(propertyCode);
+                if (propertyInfo.PropertyType.GetInterfaces().Any(t => t == typeof(IDirtyable)))
+                {
+                    string propertyCode = $@"
+                    public {_GetTypeName(propertyInfo.PropertyType)} _{propertyInfo.Name}= new {_GetTypeName(propertyInfo.PropertyType)}();
+                    {_GetTypeName(propertyInfo.PropertyType)} {_GetTypeName(type)}.{propertyInfo.Name} {{ get{{ return _{propertyInfo.Name};}} }}";
+                    propertyCodes.Add(propertyCode);
+                }
+                else if (propertyInfo.PropertyType.GetInterfaces().Any(t => t == typeof(IObjectAccessible)))
+                {
+                    string propertyCode = $@"
+                    public {_GetTypeName(propertyInfo.PropertyType)} _{propertyInfo.Name}= new {_GetTypeName(propertyInfo.PropertyType)}();
+                    {_GetTypeName(propertyInfo.PropertyType)} {_GetTypeName(type)}.{propertyInfo.Name} {{ get{{ return _{propertyInfo.Name};}} }}";
+                    propertyCodes.Add(propertyCode);
+                }
+
+
+
             }
         }
 

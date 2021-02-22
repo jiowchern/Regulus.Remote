@@ -61,8 +61,8 @@
             
             
 
-                public Regulus.Remote.Property<System.Int32> _Value= new Regulus.Remote.Property<System.Int32>();
-                Regulus.Remote.Property<System.Int32> Regulus.Projects.TestProtocol.Common.INumber.Value { get{ return _Value;} }
+                    public Regulus.Remote.Property<System.Int32> _Value= new Regulus.Remote.Property<System.Int32>();
+                    Regulus.Remote.Property<System.Int32> Regulus.Projects.TestProtocol.Common.INumber.Value { get{ return _Value;} }
 
             
         }

@@ -90,8 +90,11 @@
                 
 
 
-                public Regulus.Remote.Property<System.Int32> _LastValue= new Regulus.Remote.Property<System.Int32>();
-                Regulus.Remote.Property<System.Int32> Regulus.Projects.TestProtocol.Common.ISample.LastValue { get{ return _LastValue;} }
+                    public Regulus.Remote.Property<System.Int32> _LastValue= new Regulus.Remote.Property<System.Int32>();
+                    Regulus.Remote.Property<System.Int32> Regulus.Projects.TestProtocol.Common.ISample.LastValue { get{ return _LastValue;} }
+
+                    public Regulus.Remote.Notifier<Regulus.Projects.TestProtocol.Common.INumber> _Numbers= new Regulus.Remote.Notifier<Regulus.Projects.TestProtocol.Common.INumber>();
+                    Regulus.Remote.Notifier<Regulus.Projects.TestProtocol.Common.INumber> Regulus.Projects.TestProtocol.Common.ISample.Numbers { get{ return _Numbers;} }
 
                 public Regulus.Remote.GhostEventHandler _IntsEvent = new Regulus.Remote.GhostEventHandler();
                 event System.Action<System.Int32> Regulus.Projects.TestProtocol.Common.ISample.IntsEvent

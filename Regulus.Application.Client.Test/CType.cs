@@ -77,5 +77,7 @@ namespace Regulus.Application.Client.Test
         {
             throw new NotImplementedException();
         }
+
+        
     }
 }

@@ -2,6 +2,7 @@
 using Regulus.Projects.TestProtocol.Common;
 using Regulus.Remote.Reactive;
 using System;
+using System.Linq;
 using System.Collections;
 using System.Reactive.Linq;
 
@@ -9,19 +10,29 @@ namespace Regulus.Remote.Standalone.Test
 {
     public class ProtocolTest
     {
-        //TODO 
-        /*[
-        //[Xunit.Fact(Timeout = 10000 )]
+
+        
+        //[Xunit.Theory()]
+        //[Xunit.InlineData(100)]
+        public void AllInOneCount(int count)
+        {
+            var tasks = from _ in System.Linq.Enumerable.Range(0, count)
+                        select AllInOne();
+
+            System.Threading.Tasks.Task.WhenAll(tasks);
+
+
+        }
+        //[Xunit.Fact()]
         public async System.Threading.Tasks.Task AllInOne()
         {
-            
             await Sample2NotifierUnsupplyTest();
             await Sample2NotifierSupplyTest();
             await SampleEventTest();
             await Sample2EventTest();
             await SampleAddTest();
         }
-        Xunit.Fact(Timeout = 10000 )]
+        [Xunit.Fact(Timeout = 10000 )]
         public async System.Threading.Tasks.Task Sample2NotifierUnsupplyTest()
         {
             var env = new SampleTestEnv();
@@ -37,7 +48,7 @@ namespace Regulus.Remote.Standalone.Test
             var readyObs = from s in queryer.QueryNotifier<ISample>().SupplyEvent()
                            from supplyNumbers in s.Numbers.SupplyEvent().Buffer(3)                      
                            select s ;
-            var sample = readyObs.FirstOrDefault();
+            var sample = await readyObs.FirstAsync();
 
             var numbers = new System.Collections.Concurrent.ConcurrentQueue<INumber>();
             sample.Numbers.Base.Unsupply += numbers.Enqueue;
@@ -48,7 +59,7 @@ namespace Regulus.Remote.Standalone.Test
                             from r3 in sample.RemoveNumber(3).RemoteValue()
                             select new { r1, r2, r3 };
 
-            var removeNumbers = removeObs.FirstOrDefault();
+            var removeNumbers = await removeObs.FirstAsync();
 
             
 
@@ -69,30 +80,35 @@ namespace Regulus.Remote.Standalone.Test
         {
             var env = new SampleTestEnv();
             var queryer = env.Queryable;
-            var obs = from sample in queryer.QueryNotifier<ISample>().SupplyEvent()
+            var obs1 = from sample in queryer.QueryNotifier<ISample>().SupplyEvent()
                       from add1 in System.Reactive.Linq.Observable.Defer<int>(() =>
                       {
                           env.Sample.Numbers.Items.Add(new Number(1));
                           return System.Reactive.Linq.Observable.Return(env.Sample.Numbers.Items.Count);
                       })
-                      from numbers1 in sample.Numbers.SupplyEvent().Buffer(1)
-                      from add2 in System.Reactive.Linq.Observable.Defer<int>(() =>
-                      {
-                          env.Sample.Numbers.Items.Add(new Number(2));
-                          return System.Reactive.Linq.Observable.Return(env.Sample.Numbers.Items.Count);
-                      })
-                      from numbers2 in sample.Numbers.SupplyEvent().Buffer(2)
-                      select new { numbers1, numbers2 };
+                      from numbers1 in sample.Numbers.SupplyEvent().Buffer(1)                      
+                      select numbers1;
+           
 
-            
-            var testResult =  obs.FirstOrDefault();
+            var testResult1 = await obs1.FirstAsync();
 
+            var obs2 =
+                from sample in queryer.QueryNotifier<ISample>().SupplyEvent()
+                from add2 in System.Reactive.Linq.Observable.Defer<int>(() =>
+                {
+                    env.Sample.Numbers.Items.Add(new Number(2));
+                    return System.Reactive.Linq.Observable.Return(env.Sample.Numbers.Items.Count);
+                })
+                from numbers2 in sample.Numbers.SupplyEvent().Buffer(2)
+                select numbers2;
+
+            var testResult2 = await obs2.FirstAsync();
 
             env.Dispose();
             
-            Xunit.Assert.Equal(1, testResult.numbers1[0].Value.Value);
-            Xunit.Assert.Equal(1, testResult.numbers2[0].Value.Value);
-            Xunit.Assert.Equal(2, testResult.numbers2[1].Value.Value);
+            Xunit.Assert.Equal(1, testResult1[0].Value.Value);
+            Xunit.Assert.Equal(1, testResult2[0].Value.Value);
+            Xunit.Assert.Equal(2, testResult2[1].Value.Value);
         }
 
 
@@ -108,7 +124,7 @@ namespace Regulus.Remote.Standalone.Test
                          from numberCount in System.Reactive.Linq.Observable.FromEvent<int>(h=> sample.IntsEvent += h , h => sample.IntsEvent -= h)
                          select numberCount;
             env.Sample.Ints.Items.Add(1);
-            var testResult = obs.Do((v)=> { },_Throw).FirstOrDefault();
+            var testResult = await obs.Do((v)=> { },_Throw).FirstAsync();
 
             env.Dispose();
             
@@ -134,7 +150,7 @@ namespace Regulus.Remote.Standalone.Test
                        from int2s in System.Reactive.Linq.Observable.FromEvent<int>(h => sample.IntsEvent += h, h => sample.IntsEvent -= h).Buffer(2)
                        select new { int1s,int2s };
             
-            var testResult = obs.FirstOrDefault();
+            var testResult = await obs.FirstAsync();
 
             
 
@@ -156,7 +172,7 @@ namespace Regulus.Remote.Standalone.Test
                          from result in sample.Add(1, 2).RemoteValue()
                          select result;
             
-            int verifyResult = addObs.Do((r) => { }, _Throw).FirstOrDefault();
+            int verifyResult = await addObs.Do((r) => { }, _Throw).FirstAsync();
             
             env.Dispose();
             Xunit.Assert.Equal(3, verifyResult);
@@ -165,6 +181,6 @@ namespace Regulus.Remote.Standalone.Test
         private void _Throw(Exception e)
         {
             throw e;
-        }*/
+        }
     }
 }

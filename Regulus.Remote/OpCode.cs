@@ -30,7 +30,8 @@
         ErrorMethod,
         ProtocolSubmit,
         SetProperty,
-        
-        
+        AddPropertySoul,
+        RemovePropertySoul,
+
     }
 }

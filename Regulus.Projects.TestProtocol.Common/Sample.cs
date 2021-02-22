@@ -10,17 +10,20 @@ namespace Regulus.Projects.TestProtocol.Common
         public readonly NotifierCollection<INumber> Numbers;
         public readonly NotifierCollection<int> Ints;
 
-        Property<int> _LastValue;
+        readonly Notifier<INumber> _NumberNotifier;
+
+        readonly Property<int> _LastValue;
         public Sample()
         {            
             Numbers = new NotifierCollection<INumber>();
+            _NumberNotifier = new Notifier<INumber>(Numbers);
             Ints = new NotifierCollection<int>();
             _LastValue = new Property<int>();
         }
 
         Property<int> ISample.LastValue => _LastValue;
 
-        
+        Notifier<INumber> ISample.Numbers => _NumberNotifier;
 
         event Action<int> ISample.IntsEvent
         {

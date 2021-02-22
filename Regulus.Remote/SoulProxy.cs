@@ -23,9 +23,9 @@ namespace Regulus.Remote
         readonly List<NotifierUpdater> _TypeObjectNotifiables;
         readonly System.Action _Dispose;
 
-
-        public event System.Action<int, TypeObject> SupplySoulEvent;
-        public event System.Action<int, TypeObject> UnsupplySoulEvent;
+        public delegate void OnPrpertySoul(long soul_id, int property_id, TypeObject type_object);
+        public event OnPrpertySoul SupplySoulEvent;
+        public event OnPrpertySoul UnsupplySoulEvent;
         readonly System.Collections.Concurrent.ConcurrentQueue<IPropertyIdValue> _PropertyChangeds;
 
         public readonly int InterfaceId;
@@ -115,8 +115,8 @@ namespace Regulus.Remote
         {
             foreach (var updater  in updaters)
             {
-                updater.SupplyEvent += SupplySoulEvent;
-                updater.UnsupplyEvent += UnsupplySoulEvent;
+                updater.SupplyEvent += _SupplySoul;
+                updater.UnsupplyEvent += _UnsupplySoul;
             }
         }
         private void _Regist(List<PropertyUpdater> property_updaters)
@@ -150,9 +150,19 @@ namespace Regulus.Remote
         {
             foreach (var updater in updaters)
             {
-                updater.SupplyEvent -= SupplySoulEvent;
-                updater.UnsupplyEvent -= UnsupplySoulEvent;
+                updater.SupplyEvent -= _SupplySoul;
+                updater.UnsupplyEvent -= _UnsupplySoul;
             }
+        }
+
+        private void _UnsupplySoul(int property_id, TypeObject type_object)
+        {
+            UnsupplySoulEvent(Id, property_id, type_object);
+        }
+
+        private void _SupplySoul(int property_id, TypeObject type_object)
+        {
+            SupplySoulEvent(Id , property_id, type_object);
         }
 
         internal bool TryGetPropertyChange(out IPropertyIdValue property_id_value)

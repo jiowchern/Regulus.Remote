@@ -64,5 +64,12 @@ namespace RemotingTest
         {
             throw new NotImplementedException();
         }
+
+        object IGhost.GetInstance()
+        {
+            throw new NotImplementedException();
+        }
+
+        
     }
 }
