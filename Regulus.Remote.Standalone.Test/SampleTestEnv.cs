@@ -29,6 +29,7 @@ namespace Regulus.Remote.Standalone.Test
 
         public void Dispose()
         {
+            Sample.Dispose();
             _AgentUpdater.Stop();
             _Service.Leave(_Agent);
             _Service.Dispose();

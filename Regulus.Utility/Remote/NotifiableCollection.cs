@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Regulus.Remote
 {
-    public class NotifierCollection<T> : INotifier<T>, ICollection<T> , System.Collections.Generic.IReadOnlyCollection<T>
+    public class NotifiableCollection<T> : INotifier<T>, ICollection<T> , System.Collections.Generic.IReadOnlyCollection<T>
     {
         readonly System.Collections.Generic.List<T> _Items;
         
@@ -18,10 +18,10 @@ namespace Regulus.Remote
         public readonly ICollection<T> Items;
         public readonly IReadOnlyCollection<T> ReadOnlyItems;
         public readonly INotifier<T> Notifier;
-        public NotifierCollection() : this(new System.Collections.Generic.List<T>())
+        public NotifiableCollection() : this(new System.Collections.Generic.List<T>())
         {
         }
-        public NotifierCollection(IEnumerable<T> items)
+        public NotifiableCollection(IEnumerable<T> items)
         {
             _Items = new System.Collections.Generic.List<T>(items);
             Items = this;
