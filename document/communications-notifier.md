@@ -11,7 +11,7 @@ public interface IFoo
 ```
 The server implements the property.  
 ```csharp
-namesapce Server
+namespace Server
 {
     public interface IBar
     {
@@ -46,9 +46,27 @@ namesapce Server
 
         public void Dispose()
         {
+            _Bars.Items.Clear();
             _BarNotifier.Dispose();
         }            
     }    
+}
+```
+In the client.
+```csharp
+namespace Client
+{
+    class Program
+    {
+        void _OnFoo(IFoo foo)
+        {
+            foo.BarNotifier.Base.Supply += _OnBar;
+        }
+        void _OnBar(IBar bar)   
+        {
+            
+        }
+    }
 }
 ```
 
@@ -56,3 +74,4 @@ namesapce Server
 ---
 #### Restrictions
 1. Notifier supports only interfaces.
+2. No duplicate instances may be added.

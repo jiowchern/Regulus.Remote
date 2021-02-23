@@ -40,6 +40,7 @@ namespace Regulus.Projects.TestProtocol.Common
 
         public void Dispose()
         {
+            Numbers.Items.Clear();
             _NumberNotifier.Dispose();
         }
 

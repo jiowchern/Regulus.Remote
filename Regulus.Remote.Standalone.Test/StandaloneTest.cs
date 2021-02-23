@@ -14,7 +14,7 @@ namespace Regulus.Remote.Standalone.Test
         public void Test()
         {
             
-            var env = new SampleTestEnv();
+            var env = new TestEnv<SampleEntry>(new SampleEntry());
 
             var obs = from sample in env.Queryable.QueryNotifier<Projects.TestProtocol.Common.ISample>().SupplyEvent()
                         select sample;
