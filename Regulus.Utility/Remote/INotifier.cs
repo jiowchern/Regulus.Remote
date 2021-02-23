@@ -21,7 +21,6 @@ namespace Regulus.Remote
 
         /// <summary>
         ///     An existing objects in a notifier.
-        /// </summary>
-        T[] Ghosts { get; }
+        /// </summary>        
     }
 }

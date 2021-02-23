@@ -22,20 +22,20 @@ This is server-client connection framework, available for Unity development.
 Download the latest ![Latest Version](https://img.shields.io/github/v/tag/jiowchern/Regulus) .
 ## Architecture
 <!-- 
-@startuml 
+@startuml
 !include <c4/C4_Context.puml> 
-LAYOUT_LEFT_RIGHT
-LAYOUT_WITH_LEGEND()
+
+LAYOUT_LEFT_RIGHT()
 
 System(Regulus,"Regulus Remote")
-Person(Server,"Server","Implement a interface IFoo.")
-Person(Client,"Client","Communicate with the server through this interface IFoo.")
+System(Server,"Server","Implement a interface IFoo.")
+System(Client,"Client","Communicate with the server through this interface IFoo.")
 
 Rel(Regulus,Client,"notice")
 Rel(Server,Regulus,"bind")
 @enduml
 -->
-![Architecture](https://plantuml-server.kkeisuke.app/svg/RL3BQiCm4BphAxOwEM2SIuwbk3XsOWXfSLnAJyQLjub03oEj-lZxo7drajCECxkpivjxwXq5hO0zI2DK610UnM9UBBh26i9VoiQeFW7RF7-ylBNTfgpQhgbNw_RAlDVjEjAhShjCPepj_ZoXJXhS1nLyoYy06jIMaC_OApflJR93zuqkvUVAKrxhKQ56Gz23ZAlTLoyGwihQx7-gK39sfFnSurHXjGv6YfuGVYGTW0u8_kGPeRDXFr7Itx5a3QfRpgkniIJ557CIBnbljtnACqGfHpF4fnm1.svg)
+![Architecture](http://www.plantuml.com/plantuml/svg/RO_DQiCm48JlUegjJWcOz99ZAIccQGs1WkCUUZAkF4q4qYf8g_wyVUNcfvUSPjZP7RvT9HcYPE_KZMNZyWYwCylRUjdNWGNViZYKy9wKsZoylRns_UPntVLjy_JSpUPARN-ImCzQxBBBgT8dGory4EZvUM6B-8bOwQFgIZV-uE31GWDP5iIFmO2QTGYB_wlQMR1K-gYwcE1zPci60NrPsPFiGUclizWOycuQsNIbKhLm5yvpCGUnPiASmXFZvPTtosE9Lk0nU_SB)
 
 ## Communication   
 Instead of client communicating with server in packets, server send object to client through interface.  
@@ -320,6 +320,11 @@ class Client
 	}
 }
 ```
+## Future Features
+* Standalone serialization system.
+* Add remote container.
+* Integrate rx.
+
 ## Sample 
 **[Regulus.Samples](https://github.com/jiowchern/Regulus.Samples)** ,This repository shows applications such as chat rooms.  
 

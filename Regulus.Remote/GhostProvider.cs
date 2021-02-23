@@ -29,12 +29,8 @@ namespace Regulus.Remote
         private readonly IGhostRequest _Requester;
 
         private readonly InterfaceProvider _InterfaceProvider;
-        private readonly ISerializer _Serializer;
-        readonly SoulNotifier _NotifierPassage;
-        public void AddProvider(Type type, IProvider provider)
-        {
-            _Providers.Add(type, provider);
-        }
+        private readonly ISerializer _Serializer;        
+       
         private readonly IProtocol _Protocol;
 
         bool _Active;
@@ -52,7 +48,7 @@ namespace Regulus.Remote
             _Active = false;
             _Requester = req;
             
-            _NotifierPassage = new SoulNotifier();
+            
             _ReturnValueQueue = new ReturnValueQueue();
             _Protocol = protocol;
             _InterfaceProvider = _Protocol.GetInterfaceProvider();
@@ -82,8 +78,6 @@ namespace Regulus.Remote
 
             _EndPing();
         }
-
-
 
         public void OnResponse(ServerToClientOpCode id, byte[] args)
         {
@@ -128,20 +122,7 @@ namespace Regulus.Remote
             
                 _LoadSoulCompile(data.TypeId, data.EntityId, data.ReturnId);
                 
-            }
-            else if (id == ServerToClientOpCode.NotifierSupply)
-            {                
-                PackageNotifier data = args.ToPackageData<PackageNotifier>(_Serializer);
-                _NotifierSupply(data);             
-            }
-            else if (id == ServerToClientOpCode.NotifierUnsupply)
-            {                
-                PackageNotifier data = args.ToPackageData<PackageNotifier>(_Serializer);
-
-                _NotifierUnsupply(data);
-                
-            }
-
+            }            
             else if (id == ServerToClientOpCode.LoadSoul)
             {
                 
@@ -154,7 +135,19 @@ namespace Regulus.Remote
             {
                 PackageUnloadSoul data = args.ToPackageData<PackageUnloadSoul>(_Serializer);
                 
-                _UnloadSoul(data.TypeId, data.EntityId);
+                _UnloadSoul(data.EntityId);
+            }
+            else if (id == ServerToClientOpCode.AddPropertySoul)
+            {
+                PackagePropertySoul data = args.ToPackageData<PackagePropertySoul>(_Serializer);
+
+                _AddPropertySoul(data);
+            }
+            else if (id == ServerToClientOpCode.RemovePropertySoul)
+            {
+                PackagePropertySoul data = args.ToPackageData<PackagePropertySoul>(_Serializer);
+
+                _RemovePropertySoul(data);
             }
             else if (id == ServerToClientOpCode.ProtocolSubmit)
             {
@@ -165,23 +158,7 @@ namespace Regulus.Remote
 
         }
 
-        private void _NotifierSupply(PackageNotifier data)
-        {
-            MemberMap map = _Protocol.GetMemberMap();
-            Type type = map.GetInterface(data.TypeId);
-            IProvider provider = _QueryProvider(type);
-            var ghost = provider.Ghosts.Single(g => g.GetID() == data.EntityId);
-            _NotifierPassage.Supply(ghost , data.PassageId);
-        }
-
-        private void _NotifierUnsupply(PackageNotifier data)
-        {
-            MemberMap map = _Protocol.GetMemberMap();
-            Type type = map.GetInterface(data.TypeId);
-            IProvider provider = _QueryProvider(type);
-            var ghost = provider.Ghosts.Single(g => g.GetID() == data.EntityId);
-            _NotifierPassage.Unsupply(ghost, data.PassageId);
-        }
+        
 
         private void _ProtocolSubmit(PackageProtocolSubmit data)
         {
@@ -214,7 +191,7 @@ namespace Regulus.Remote
             }
         }
 
-        private void _SetReturnValue(long return_id, IGhost ghost)
+        private void _ReturnValue(long return_id, IGhost ghost)
         {
             IValue value = _ReturnValueQueue.PopReturnValue(return_id);
             if (value != null)
@@ -223,7 +200,7 @@ namespace Regulus.Remote
             }
         }
 
-        private void _LoadSoulCompile(int type_id, long entity_id, long return_id)
+        private void _LoadSoulCompile(int type_id, long entity_id, long return_id )
         {
             
             MemberMap map = _Protocol.GetMemberMap();
@@ -233,11 +210,11 @@ namespace Regulus.Remote
             IProvider provider = _QueryProvider(type);
 
             IGhost ghost = provider.Ready(entity_id);
-            if(ghost != null)
-                _SetReturnValue(return_id, ghost);
+            if (return_id != 0)
+                _ReturnValue(return_id, ghost);
         }
 
-
+        
 
         private void _LoadSoul(int type_id, long id, bool return_type)
         {
@@ -248,11 +225,7 @@ namespace Regulus.Remote
 
             ghost.CallMethodEvent += new GhostMethodHandler(ghost, _ReturnValueQueue, _Protocol, _Requester).Run;
             ghost.AddEventEvent += new GhostEventMoveHandler(ghost, _Protocol, _Requester).Add;
-            ghost.RemoveEventEvent += new GhostEventMoveHandler(ghost, _Protocol, _Requester).Remove;
-            ghost.AddSupplyNoitfierEvent += new GhostNotifierHandler(ghost, _Protocol, _Requester, _NotifierPassage).AddSupply;
-            ghost.RemoveSupplyNoitfierEvent += new GhostNotifierHandler(ghost, _Protocol, _Requester, _NotifierPassage).RemoveSupply;
-            ghost.AddUnsupplyNoitfierEvent += new GhostNotifierHandler(ghost, _Protocol, _Requester, _NotifierPassage).AddUnsupply;
-            ghost.RemoveUnsupplyNoitfierEvent += new GhostNotifierHandler(ghost, _Protocol, _Requester, _NotifierPassage).RemoveUnsupply;
+            ghost.RemoveEventEvent += new GhostEventMoveHandler(ghost, _Protocol, _Requester).Remove;            
 
 
 
@@ -269,20 +242,15 @@ namespace Regulus.Remote
             _AutoRelease.Register(ghost);
         }
 
-        private void _UnloadSoul(int type_id, long id)
+        private void _UnloadSoul(long id)
         {
-            MemberMap map = _Protocol.GetMemberMap();
-            Type type = map.GetInterface(type_id);
-            IProvider provider = _QueryProvider(type);
-            if (provider == null)
-            {
-                return;
+
+            foreach (var provider in _Providers.Values)
+            {                
+                provider.Remove(id);
             }
 
-            IGhost ghost = provider.Ghosts.FirstOrDefault(g => g.GetID() == id);
-            if (ghost == null)
-                return;            
-            provider.Remove(id);
+            
         }
 
         private IProvider _QueryProvider(Type type)
@@ -310,6 +278,31 @@ namespace Regulus.Remote
         {
             return _QueryProvider(typeof(T)) as INotifier<T>;
         }
+        private void _RemovePropertySoul(PackagePropertySoul data)
+        {
+            var owner = _FindGhost(data.OwnerId);
+            var ghost = _FindGhost(data.EntiryId);
+            var accessible = _GetAccesser(data, owner);
+            accessible.Remove(ghost.GetInstance());
+        }
+
+        private void _AddPropertySoul(PackagePropertySoul data)
+        {
+            var owner = _FindGhost(data.OwnerId);
+            var ghost = _FindGhost(data.EntiryId);
+            var accessible = _GetAccesser(data, owner);            
+            accessible.Add(ghost.GetInstance());
+        }
+
+        private IObjectAccessible _GetAccesser(PackagePropertySoul data, IGhost owner)
+        {
+            MemberMap map = _Protocol.GetMemberMap();
+            PropertyInfo info = map.GetProperty(data.PropertyId);
+            var type = _InterfaceProvider.Find(info.DeclaringType);
+            FieldInfo field = type.GetField("_" + info.Name, BindingFlags.Instance | BindingFlags.Public);
+            object filedValue = field.GetValue(owner.GetInstance());
+            return filedValue as IObjectAccessible;
+        }
 
         private void _UpdateSetProperty(long entity_id, int property, byte[] buffer)
         {
@@ -326,19 +319,15 @@ namespace Regulus.Remote
             FieldInfo field = type.GetField("_" + info.Name, BindingFlags.Instance | BindingFlags.Public);
             if (field != null)
             {
-
                 object filedValue = field.GetValue(instance);
                 IAccessable updateable = filedValue as IAccessable;
                 updateable.Set(value);
-
 
                 PackageSetPropertyDone pkg = new PackageSetPropertyDone();
                 pkg.EntityId = entity_id;
                 pkg.Property = property;
                 _Requester.Request(ClientToServerOpCode.UpdateProperty, pkg.ToBuffer(_Serializer));
             }
-
-
         }
 
 

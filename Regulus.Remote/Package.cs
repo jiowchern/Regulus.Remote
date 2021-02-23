@@ -10,7 +10,10 @@ namespace Regulus.Remote
     [Serializable]
     public class RequestPackage
     {
+        public RequestPackage()
+        {
 
+        }
         public byte[] Data;
 
 
@@ -20,7 +23,10 @@ namespace Regulus.Remote
     [Serializable]
     public class ResponsePackage
     {
+        public ResponsePackage()
+        {
 
+        }
         public byte[] Data;
 
 
@@ -115,9 +121,19 @@ namespace Regulus.Remote
 
         public byte[] ReturnValue;
     }
-    
 
-        [Serializable]
+    
+    public class PackagePropertySoul : TPackageData<PackagePropertySoul>
+    {
+        public PackagePropertySoul()
+        {
+
+        }
+        public long OwnerId;
+        public long EntiryId;
+        public int PropertyId;
+    }
+    [Serializable]
     public class PackageLoadSoulCompile : TPackageData<PackageLoadSoulCompile>
     {
         public PackageLoadSoulCompile()
@@ -150,9 +166,7 @@ namespace Regulus.Remote
 
         }
 
-        public int TypeId;
-
-        public long EntityId;
+        public long EntityId;        
 
     }
 
@@ -183,20 +197,31 @@ namespace Regulus.Remote
     [Serializable]
     public class PackageRelease : TPackageData<PackageRelease>
     {
+        public PackageRelease()
+        {
 
+        }
         public long EntityId;
     }
 
 
     public class PackageProtocolSubmit : TPackageData<PackageProtocolSubmit>
     {
+        public PackageProtocolSubmit()
+        {
 
+        }
         public byte[] VerificationCode;
 
     }
 
     public class PackageAddEvent : TPackageData<PackageAddEvent>
     {
+
+        public PackageAddEvent()
+        {
+
+        }
         public long Entity;
         public int Event;
         public long Handler;
@@ -205,25 +230,16 @@ namespace Regulus.Remote
 
     public class PackageRemoveEvent : TPackageData<PackageRemoveEvent>
     {
+        public PackageRemoveEvent()
+        {
+
+        }
         public long Entity;
         public int Event;
         public long Handler;
     }
-    public class PackageNotifierEventHook : TPackageData<PackageNotifierEventHook>
-    {
-        public long Entity;
-        public int Property;
-        public long Passage;
-
-    }
-
-    [Serializable]
-    public class PackageNotifier : TPackageData<PackageNotifier>
-    {
-        public int TypeId;
-        public long EntityId;
-        public long PassageId;
-    }
+    
+    
 
 
 }

@@ -200,7 +200,7 @@ namespace Regulus.Remote
             PackageLoadSoulCompile package = new PackageLoadSoulCompile();
             package.EntityId = id;
             package.ReturnId = return_id;
-            package.TypeId = type_id;
+            package.TypeId = type_id;            
             _Queue.Push(ServerToClientOpCode.LoadSoulCompile, package.ToBuffer(_Serializer));
         }
         private void _LoadProperty(long id, int property, object val)
@@ -225,8 +225,7 @@ namespace Regulus.Remote
         private void _UnloadSoul(int type_id, long id)
         {
 
-            PackageUnloadSoul package = new PackageUnloadSoul();
-            package.TypeId = type_id;
+            PackageUnloadSoul package = new PackageUnloadSoul();            
             package.EntityId = id;
             
             _Queue.Push(ServerToClientOpCode.UnloadSoul, package.ToBuffer(_Serializer));
@@ -320,90 +319,6 @@ namespace Regulus.Remote
             soul.AddEvent(handler);
 
         }
-        public void RemoveNotifierUnsupply(long entity_id, int property, long notifier_id)
-        {
-            SoulProxy soul = (from s in _Souls.UpdateSet() where s.Id == entity_id select s).FirstOrDefault();
-            if (soul == null)
-                return;
-            soul.DetachUnsupply(notifier_id);
-        }
-        public void RemoveNotifierSupply(long entity_id, int property, long notifier_id)
-        {
-            SoulProxy soul = (from s in _Souls.UpdateSet() where s.Id == entity_id select s).FirstOrDefault();
-            if (soul == null)
-                return;
-            soul.DetachSupply(notifier_id);
-        }
-        public void AddNotifierSupply(long entity_id, int property_id, long notifier_id)
-        {
-            SoulProxy soul = (from s in _Souls.UpdateSet() where s.Id == entity_id select s).FirstOrDefault();
-            if (soul == null)
-                return;
-
-            PropertyInfo propertyInfo = _Protocol.GetMemberMap().GetProperty(property_id);
-            if (propertyInfo == null)
-                return;
-
-            Type gpiType = propertyInfo.PropertyType.GetGenericArguments().Single();
-            NotifierEventBinder binder = NotifierEventBinder.Create(soul.ObjectInstance, propertyInfo, nameof(INotifier<object>.Supply), (gpi) => _BindSupply(gpi, gpiType, notifier_id));
-            if (binder == null)
-                return;
-            soul.AttachSupply(notifier_id, binder);
-
-        }
-
-        public void AddNotifierUnsupply(long entity_id, int property_id, long notifier_id)
-        {
-            SoulProxy soul = (from s in _Souls.UpdateSet() where s.Id == entity_id select s).FirstOrDefault();
-            if (soul == null)
-                return;
-
-            PropertyInfo propertyInfo = _Protocol.GetMemberMap().GetProperty(property_id);
-            if (propertyInfo == null)
-                return;
-            Type gpiType = propertyInfo.PropertyType.GetGenericArguments().Single();
-            NotifierEventBinder binder = NotifierEventBinder.Create(soul.ObjectInstance, propertyInfo, nameof(INotifier<object>.Unsupply), (gpi) => _UnbindSupply(gpi, gpiType, notifier_id));
-            if (binder == null)
-                return;
-
-            soul.AttachUnsupply(notifier_id, binder);
-        }
-
-        private void _UnbindSupply(object gpi, Type gpiType, long notifier_id)
-        {
-            SoulProxy soul = (from soul_info in _Souls.UpdateSet()
-                                  where object.ReferenceEquals(soul_info.ObjectInstance, gpi) && soul_info.ObjectType == gpiType
-                              select soul_info).SingleOrDefault();
-            _NotifierUnsupply(soul, notifier_id);
-            _Unbind(gpi, gpiType);            
-        }
-
-        private void _NotifierUnsupply(SoulProxy soul, long notifier_id)
-        {
-            PackageNotifier package = new PackageNotifier();
-            package.PassageId = notifier_id;
-            package.EntityId = soul.Id;
-            package.TypeId = soul.InterfaceId;
-
-            _Queue.Push(ServerToClientOpCode.NotifierUnsupply, package.ToBuffer(_Serializer));
-        }
-
-        private void _BindSupply(object gpi, Type gpiType,long notifier_id)
-        {
-            
-            var soul = _Bind(gpi, gpiType, false, 0);
-            _NotifierSupply(soul , notifier_id);
-        }
-
-        private void _NotifierSupply(SoulProxy soul, long notifier_id)
-        {
-            PackageNotifier package = new PackageNotifier();
-            package.PassageId = notifier_id;
-            package.EntityId = soul.Id;
-            package.TypeId = soul.InterfaceId;
-
-            _Queue.Push(ServerToClientOpCode.NotifierSupply, package.ToBuffer(_Serializer));
-        }
 
         private void _ErrorDeserialize(string method_name, long return_id, string message)
         {
@@ -418,6 +333,17 @@ namespace Regulus.Remote
         {
             _Bind(soul, typeof(TSoul), return_type, return_id);
         }
+        private SoulProxy _NewSoul(object soul, Type soul_type)
+        {
+
+            MemberMap map = _Protocol.GetMemberMap();
+            int interfaceId = map.GetInterface(soul_type);
+            SoulProxy newSoul = new SoulProxy(_IdLandlord.Rent(), interfaceId, soul_type, soul, map.Propertys.Item1s);
+
+            _Souls.Add(newSoul);
+
+            return newSoul;
+        }
 
         private SoulProxy _Bind(object soul, Type soul_type, bool return_type, long return_id)
         {
@@ -428,49 +354,16 @@ namespace Regulus.Remote
             if (prevSoul == null)
             {
                 SoulProxy newSoul = _NewSoul(soul, soul_type);
+                newSoul.SupplySoulEvent += _PropertyBind;
+                newSoul.UnsupplySoulEvent += _PropertyUnbind;
                 prevSoul = newSoul;
                 _LoadSoul(newSoul.InterfaceId, newSoul.Id, return_type);
                 _LoadProperty(newSoul);
-                _LoadSoulCompile(newSoul.InterfaceId, newSoul.Id, return_id);
+                _LoadSoulCompile(newSoul.InterfaceId, newSoul.Id, return_id );
                 
             }
 
             return prevSoul;
-        }
-
-        private SoulProxy _NewSoul(object soul, Type soul_type)
-        {
-
-            MemberMap map = _Protocol.GetMemberMap();
-            int interfaceId = map.GetInterface(soul_type);
-            SoulProxy newSoul = new SoulProxy(_IdLandlord.Rent(), interfaceId, soul_type, soul, _BuildProperty(soul, soul_type, map ));
-            
-
-            _Souls.Add(newSoul);
-
-            return newSoul;
-        }
-
-        private static IEnumerable<PropertyUpdater> _BuildProperty(object soul, Type soul_type, MemberMap map)
-        {
-            // property 
-            PropertyInfo[] propertys = soul_type.GetProperties(BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public);
-
-            for (int i = 0; i < propertys.Length; ++i)
-            {
-                PropertyInfo property = propertys[i];
-                int id = map.GetProperty(property);
-
-                if (property.PropertyType.GetInterfaces().Any(t => t == typeof(IDirtyable)))
-                {
-                    object propertyValue = property.GetValue(soul);
-                    IDirtyable dirtyable = propertyValue as IDirtyable;
-
-                    yield return new PropertyUpdater(dirtyable, id);
-                    
-
-                }
-            }
         }
 
         private SoulProxy _Unbind(object soul, Type type)
@@ -481,6 +374,9 @@ namespace Regulus.Remote
 
             if (soulInfo != null)
             {
+                soulInfo.SupplySoulEvent -= _PropertyBind;
+                soulInfo.UnsupplySoulEvent -= _PropertyUnbind;
+
                 soulInfo.Release();
 
                 _UnloadSoul(soulInfo.InterfaceId, soulInfo.Id);
@@ -491,9 +387,36 @@ namespace Regulus.Remote
             return soulInfo;
         }
 
+        private void _PropertyUnbind(long soul_id, int property_id, TypeObject type_object)
+        {
 
 
+            var soulIds = from soul in _Souls.UpdateSet()
+                            where soul.ObjectInstance == type_object.Instance && soul.ObjectType == type_object.Type
+                            select soul.Id;
 
+            PackagePropertySoul package = new PackagePropertySoul();
+            package.OwnerId = soul_id;
+            package.PropertyId = property_id;
+            package.EntiryId = soulIds.Single();
+            _Queue.Push(ServerToClientOpCode.RemovePropertySoul, package.ToBuffer(_Serializer));
+
+            _Unbind(type_object.Instance , type_object.Type);
+
+            
+        }
+
+        private void _PropertyBind(long soul_id , int property_id, TypeObject type_object)
+        {            
+            var soul = _Bind(type_object.Instance, type_object.Type, false, 0);
+
+            PackagePropertySoul package = new PackagePropertySoul();
+            package.OwnerId = soul_id;
+            package.PropertyId = property_id;
+            package.EntiryId = soul.Id;
+            _Queue.Push(ServerToClientOpCode.AddPropertySoul, package.ToBuffer(_Serializer));
+
+        }
 
         private Delegate _BuildDelegate(EventInfo info, long entity_id, long handler_id, InvokeEventCallabck invoke_Event)
         {

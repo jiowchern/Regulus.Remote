@@ -5,7 +5,7 @@
     
     namespace Regulus.Projects.TestProtocol.Common.Ghost 
     { 
-        public class CINumber : Regulus.Projects.TestProtocol.Common.INumber , Regulus.Remote.IGhost
+        public class CINext : Regulus.Projects.TestProtocol.Common.INext , Regulus.Remote.IGhost
         {
             readonly bool _HaveReturn ;
             
@@ -13,7 +13,7 @@
             
             
             
-            public CINumber(long id, bool have_return )
+            public CINext(long id, bool have_return )
             {                                
                 _HaveReturn = have_return ;
                 _GhostIdName = id; 
@@ -60,9 +60,21 @@
             }
             
             
+                Regulus.Remote.Value<System.Boolean> Regulus.Projects.TestProtocol.Common.INext.Next()
+                {                    
 
-                    public Regulus.Remote.Property<System.Int32> _Value= new Regulus.Remote.Property<System.Int32>();
-                    Regulus.Remote.Property<System.Int32> Regulus.Projects.TestProtocol.Common.INumber.Value { get{ return _Value;} }
+                    
+    var returnValue = new Regulus.Remote.Value<System.Boolean>();
+    
+
+                    var info = typeof(Regulus.Projects.TestProtocol.Common.INext).GetMethod("Next");
+                    _CallMethodEvent(info , new object[] {} , returnValue);                    
+                    return returnValue;
+                }
+
+                
+
+
 
             
         }

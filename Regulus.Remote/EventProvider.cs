@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
+namespace Regulus.Remote.Sample
+{
+}
 namespace Regulus.Remote
 {
     public class EventProvider

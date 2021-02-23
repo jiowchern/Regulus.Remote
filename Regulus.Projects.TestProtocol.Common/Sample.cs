@@ -4,21 +4,27 @@ using System.Linq;
 
 namespace Regulus.Projects.TestProtocol.Common
 {
-    public class Sample : ISample
+    public class Sample : ISample , System.IDisposable
     {
 
-        public readonly NotifierCollection<INumber> Numbers;
-        public readonly NotifierCollection<int> Ints;
+        public readonly NotifiableCollection<INumber> Numbers;
+        public readonly NotifiableCollection<int> Ints;
+
+        readonly Notifier<INumber> _NumberNotifier;
+
+        readonly Property<int> _LastValue;
         public Sample()
         {            
-            Numbers = new NotifierCollection<INumber>();
-            Ints = new NotifierCollection<int>();
+            Numbers = new NotifiableCollection<INumber>();
+            _NumberNotifier = new Notifier<INumber>(Numbers);
+            Ints = new NotifiableCollection<int>();
+            _LastValue = new Property<int>();
         }
-        
 
-        INotifier<INumber> ISample.Numbers => Numbers;
+        Property<int> ISample.LastValue => _LastValue;
 
-        
+        Notifier<INumber> ISample.Numbers => _NumberNotifier;
+
         event Action<int> ISample.IntsEvent
         {
             add
@@ -32,9 +38,21 @@ namespace Regulus.Projects.TestProtocol.Common
             }
         }
 
+        public void Dispose()
+        {
+            Numbers.Items.Clear();
+            _NumberNotifier.Dispose();
+        }
+
         Value<int> ISample.Add(int num1, int num2)
         {
-            return num1 + num2;
+            _LastValue.Value = num1 + num2;
+            return _LastValue.Value;
+        }
+
+        void IDisposable.Dispose()
+        {
+            Dispose();
         }
 
         Value<bool> ISample.RemoveNumber(int val)

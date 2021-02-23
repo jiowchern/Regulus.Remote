@@ -5,7 +5,7 @@ namespace Regulus.Application.Client.Test
 {
     internal class TestNotifier<T> : INotifier<T>
     {
-        T[] INotifier<T>.Ghosts => throw new NotImplementedException();
+        
 
 
 

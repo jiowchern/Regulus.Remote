@@ -220,8 +220,7 @@ namespace Regulus.Remote.Protocol
             serializer_types.Add(typeof(Regulus.Remote.PackageSetPropertyDone));
             serializer_types.Add(typeof(Regulus.Remote.PackageAddEvent));
             serializer_types.Add(typeof(Regulus.Remote.PackageRemoveEvent));
-            serializer_types.Add(typeof(Regulus.Remote.PackageNotifierEventHook));
-            serializer_types.Add(typeof(Regulus.Remote.PackageNotifier));
+            serializer_types.Add(typeof(Regulus.Remote.PackagePropertySoul));            
 
             foreach (Type serializerType in serializer_types)
             {
@@ -329,8 +328,7 @@ $@"
             
             
             public C{name}(long id, bool have_return )
-            {{                
-                {_BuildPropertyConstructor(type)}
+            {{                                
                 _HaveReturn = have_return ;
                 {CodeBuilder._GhostIdName} = id; 
                 
@@ -374,62 +372,7 @@ $@"
                 add {{ this._RemoveEventEvent += value; }}
                 remove {{ this._RemoveEventEvent -= value; }}
             }}
-            event Regulus.Remote.PropertyNotifierCallback _AddSupplyNoitfierEvent;
-            event Regulus.Remote.PropertyNotifierCallback Regulus.Remote.IGhost.AddSupplyNoitfierEvent
-            {{
-
-                add
-                {{
-                    _AddSupplyNoitfierEvent += value;
-                }}
-
-                remove
-                {{
-                    _AddSupplyNoitfierEvent -= value;
-                }}
-            }}
-
-            event Regulus.Remote.PropertyNotifierCallback _RemoveSupplyNoitfierEvent;
-            event Regulus.Remote.PropertyNotifierCallback Regulus.Remote.IGhost.RemoveSupplyNoitfierEvent
-            {{
-                add
-                {{
-                    _RemoveSupplyNoitfierEvent += value;
-                }}
-
-                remove
-                {{
-                    _RemoveSupplyNoitfierEvent -= value;
-                }}
-            }}
-
-            event Regulus.Remote.PropertyNotifierCallback _AddUnsupplyNoitfierEvent;
-            event Regulus.Remote.PropertyNotifierCallback Regulus.Remote.IGhost.AddUnsupplyNoitfierEvent
-            {{
-                add
-                {{
-                    _AddUnsupplyNoitfierEvent += value;
-                }}
-
-                remove
-                {{
-                    _AddUnsupplyNoitfierEvent -= value;
-                }}
-            }}
-
-            event Regulus.Remote.PropertyNotifierCallback _RemoveUnsupplyNoitfierEvent;
-            event Regulus.Remote.PropertyNotifierCallback Regulus.Remote.IGhost.RemoveUnsupplyNoitfierEvent
-            {{
-                add
-                {{
-                    _RemoveUnsupplyNoitfierEvent += value;
-                }}
-
-                remove
-                {{
-                    _RemoveUnsupplyNoitfierEvent -= value;
-                }}
-            }}
+            
             {implementCode}
             
         }}
@@ -439,29 +382,9 @@ $@"
             return codeHeader;
         }
 
-        private string _BuildPropertyConstructor(Type type)
-        {
-            return _BuildNotifierPropertyConstructor(type);
-        }
+       
 
-        private string _BuildNotifierPropertyConstructor(Type type)
-        {
-
-            List<string> codes = new List<string>();
-            foreach (PropertyInfo info in type.GetProperties())
-            {
-                codes.Add($"//{info.Name}");
-                if (!_IsNotifierProperty(info))
-                    continue;
-                string fieldName = $"_{info.Name}";
-                string getProperty = $"typeof({type.Name}).GetProperty(\"{info.Name}\")";
-                string gpiTypeName = _GetTypeName(info.PropertyType.GetGenericArguments()[0]);
-                string line = $"{fieldName} = new Regulus.Remote.GhostNotifier<{gpiTypeName}>((p) => _AddSupplyNoitfierEvent({getProperty}, p), (p) => _RemoveSupplyNoitfierEvent({getProperty},p), (p) => _AddUnsupplyNoitfierEvent({getProperty}, p), (p) => _RemoveUnsupplyNoitfierEvent({getProperty},p));";
-                codes.Add(line);
-
-            }
-            return string.Join("\n", codes);
-        }
+        
 
         private string _BuildGhostCode(IEnumerable<Type> types)
         {
@@ -531,52 +454,35 @@ $@"
             PropertyInfo[] propertyInfos = type.GetProperties();
             List<string> propertyCodes = new List<string>();
             _BuildRemoteProperty(type, propertyInfos, propertyCodes);
-            _BuildNotifierProperty(type, propertyInfos, propertyCodes);
+          
             return string.Join("\n", propertyCodes.ToArray());
         }
 
-        private void _BuildNotifierProperty(Type type, PropertyInfo[] propertyInfos, List<string> propertyCodes)
-        {
-            foreach (PropertyInfo propertyInfo in propertyInfos)
-            {
-                if (!_IsNotifierProperty(propertyInfo))
-                    continue;
-                Type gpiType = propertyInfo.PropertyType.GetGenericArguments().Single();
-                string gpiTypeName = _GetTypeName(gpiType);
-                string code = $@"
-            readonly Regulus.Remote.GhostNotifier<{gpiTypeName}> _{propertyInfo.Name};
-            Regulus.Remote.INotifier<{gpiTypeName}> {_GetTypeName(type)}.{propertyInfo.Name} {{ get{{ return _{propertyInfo.Name};}} }}";
+       
 
-                propertyCodes.Add(code);
-
-            }
-        }
-
-        private static bool _IsNotifierProperty(PropertyInfo propertyInfo)
-        {
-            try
-            {
-                if(propertyInfo.PropertyType.IsGenericType)
-                    return propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof(INotifier<>);
-                return false;
-            }
-            catch (Exception ex)
-            {
-                throw new TypePropertyNotifierException(propertyInfo , ex);
-            }
-            
-        }
+       
 
         private void _BuildRemoteProperty(Type type, PropertyInfo[] propertyInfos, List<string> propertyCodes)
         {
             foreach (PropertyInfo propertyInfo in propertyInfos)
             {
-                if (!propertyInfo.PropertyType.GetInterfaces().Any(t => t == typeof(IDirtyable)))
-                    continue;
-                string propertyCode = $@"
-                public {_GetTypeName(propertyInfo.PropertyType)} _{propertyInfo.Name}= new {_GetTypeName(propertyInfo.PropertyType)}();
-                {_GetTypeName(propertyInfo.PropertyType)} {_GetTypeName(type)}.{propertyInfo.Name} {{ get{{ return _{propertyInfo.Name};}} }}";
-                propertyCodes.Add(propertyCode);
+                if (propertyInfo.PropertyType.GetInterfaces().Any(t => t == typeof(IDirtyable)))
+                {
+                    string propertyCode = $@"
+                    public {_GetTypeName(propertyInfo.PropertyType)} _{propertyInfo.Name}= new {_GetTypeName(propertyInfo.PropertyType)}();
+                    {_GetTypeName(propertyInfo.PropertyType)} {_GetTypeName(type)}.{propertyInfo.Name} {{ get{{ return _{propertyInfo.Name};}} }}";
+                    propertyCodes.Add(propertyCode);
+                }
+                else if (propertyInfo.PropertyType.GetInterfaces().Any(t => t == typeof(IObjectAccessible)))
+                {
+                    string propertyCode = $@"
+                    public {_GetTypeName(propertyInfo.PropertyType)} _{propertyInfo.Name}= new {_GetTypeName(propertyInfo.PropertyType)}();
+                    {_GetTypeName(propertyInfo.PropertyType)} {_GetTypeName(type)}.{propertyInfo.Name} {{ get{{ return _{propertyInfo.Name};}} }}";
+                    propertyCodes.Add(propertyCode);
+                }
+
+
+
             }
         }
 

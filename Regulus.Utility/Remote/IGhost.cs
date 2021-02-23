@@ -10,8 +10,6 @@ namespace Regulus.Remote
 
     public interface IGhost
     {
-
-
         long GetID();
 
         object GetInstance();
@@ -21,13 +19,6 @@ namespace Regulus.Remote
         event CallMethodCallback CallMethodEvent;
         event EventNotifyCallback AddEventEvent;
         event EventNotifyCallback RemoveEventEvent;
-        event PropertyNotifierCallback AddSupplyNoitfierEvent;
-
-        event PropertyNotifierCallback RemoveSupplyNoitfierEvent;
-        event PropertyNotifierCallback AddUnsupplyNoitfierEvent;
-        event PropertyNotifierCallback RemoveUnsupplyNoitfierEvent;
-
-
     }
 
 

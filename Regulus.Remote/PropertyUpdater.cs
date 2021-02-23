@@ -2,11 +2,6 @@
 
 namespace Regulus.Remote
 {
-    public interface IPropertyIdValue
-    {
-        int Id { get; }
-        object Instance { get; }
-    }
     public class PropertyUpdater : IPropertyIdValue
     {
         private readonly IDirtyable _Dirtyable;
@@ -30,10 +25,10 @@ namespace Regulus.Remote
             _Dirtyable.ChangeEvent += _SetDirty;
         }
 
-        private void _SetDirty(object arg2)
+        private void _SetDirty(object instance)
         {
             _Dirty = true;
-            _Object = arg2;
+            _Object = instance;
 
             if(_Update())
             {

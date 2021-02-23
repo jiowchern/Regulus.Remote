@@ -43,26 +43,6 @@ namespace Regulus.Remote
             remove { _Unsupply -= value; }
         }
 
-        T[] INotifier<T>.Ghosts
-        {
-            get
-            {
-                lock (_Entitys)
-                    return _Entitys.ToArray();
-            }
-        }
-
-        /*event Action<T> INotifier<T>.Return
-		{
-			add { _Return += value; }
-			remove { _Return -= value; }
-		}
-
-		T[] INotifier<T>.Returns
-		{
-			get { return _RemoveNoRefenceReturns(); }
-		}*/
-
         IGhost IProvider.Ready(long id)
         {
             T entity = (from e in _Waits where (e as IGhost).GetID() == id select e).FirstOrDefault();

@@ -42,11 +42,18 @@ namespace Regulus.Remote.Reactive
             return new OnceRemoteReturnValueEvent<TValue>(ret);
         }
 
+        public static IObservable<T> SupplyEvent<T>(this Notifier<T> notifier)
+        {
+            return SupplyEvent(notifier.Base);
+        }
         public static IObservable<T> SupplyEvent<T>(this INotifier<T> notifier)
         {
             return Observable.FromEvent<Action<T>, T>(h => notifier.Supply += h, h => notifier.Supply -= h);            
         }
-
+        public static IObservable<T> UnsupplyEvent<T>(this Notifier<T> notifier)
+        {
+            return UnsupplyEvent(notifier.Base);
+        }
         public static IObservable<T> UnsupplyEvent<T>(this INotifier<T> notifier)
         {
             return Observable.FromEvent<Action<T>, T>(h => notifier.Unsupply += h, h => notifier.Unsupply -= h);

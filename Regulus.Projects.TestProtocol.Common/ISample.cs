@@ -4,15 +4,14 @@ namespace Regulus.Projects.TestProtocol.Common
 {
     public interface ISample
     {
-        
 
+        Regulus.Remote.Property<int> LastValue { get; }
         Regulus.Remote.Value<int> Add(int num1,int num2);
 
         
         event System.Action<int> IntsEvent;
-
-        INotifier<INumber> Numbers { get; }
-
+        
+        Regulus.Remote.Notifier<INumber> Numbers { get; }
         Regulus.Remote.Value<bool> RemoveNumber(int val);
     }
 }
