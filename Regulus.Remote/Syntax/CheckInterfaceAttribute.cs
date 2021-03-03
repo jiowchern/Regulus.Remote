@@ -4,7 +4,9 @@ using System.Text;
 
 namespace Regulus.Remote.Syntax
 {
-    public class InterfaceAttribute : System.Attribute
+
+    [AttributeUsage( AttributeTargets.Interface)]
+    public class CheckInterfaceAttribute : System.Attribute
     {
     }
 }
