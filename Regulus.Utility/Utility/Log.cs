@@ -3,8 +3,9 @@ using System.Linq.Expressions;
 
 namespace Regulus.Utility
 {
-    public sealed class Log : Singleton<Log>
+    public sealed class Log  
     {
+        public readonly static Log Instance = Singleton<Log>.Instance;
         public delegate void RecordCallback(string message);
 
         public event RecordCallback RecordEvent

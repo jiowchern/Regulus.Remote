@@ -2,34 +2,12 @@
 
 namespace Regulus.Utility
 {
-    public class Singleton<T> where T : new()
+    public sealed class Singleton<T> where T : new()
     {
-        private static T _Instance;
-
-        private static readonly Type _Sync = typeof(T);
-
-        public static System.Func<T> InstanceCreateHandler = _New;
-
-        private static T _New()
+        private static readonly Lazy<T> _Instance = new Lazy<T>(() => new T());
+        public static T Instance { get { return _Instance.Value; } }
+        private Singleton()
         {
-            return new T();
-        }
-
-
-        public static T Instance
-        {
-            get
-            {
-                lock (Singleton<T>._Sync)
-                {
-                    if (Singleton<T>._Instance == null)
-                    {
-                        Singleton<T>._Instance = InstanceCreateHandler();
-                    }
-
-                    return Singleton<T>._Instance;
-                }
-            }
         }
     }
 }

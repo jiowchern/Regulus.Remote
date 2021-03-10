@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Regulus.Utility
 {
-    public class Random : Singleton<Random>
+    public class Random 
     {
         private readonly IRandom _R;
 

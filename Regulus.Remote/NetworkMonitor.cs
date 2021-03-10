@@ -60,11 +60,13 @@ namespace Regulus.Remote
         }
     }
 
-    public class NetworkMonitor : Singleton<NetworkMonitor>
+    public class NetworkMonitor  
     {
         private volatile bool _Reset;
 
         private volatile bool _ThreadEnable;
+
+        public readonly static NetworkMonitor Instance = Singleton<NetworkMonitor>.Instance;
 
         public PackageRecorder Read { get; private set; }
 

@@ -4,8 +4,9 @@ using Regulus.Network.Package;
 
 namespace Regulus.Network
 {
-    public class SocketMessageFactory : Utility.Singleton<SocketMessageFactory>
+    public class SocketMessageFactory  
     {
+        public static readonly SocketMessageFactory Instance = Utility.Singleton<SocketMessageFactory>.Instance;
         readonly int _PackageSize;
         public SocketMessageFactory()
         {
