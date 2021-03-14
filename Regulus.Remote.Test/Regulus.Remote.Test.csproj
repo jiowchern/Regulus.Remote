@@ -27,7 +27,6 @@
     <ProjectReference Include="..\Regulus.Remote.Soul\Regulus.Remote.Soul.csproj" />
     <ProjectReference Include="..\Regulus.Remote.Standalone\Regulus.Remote.Standalone.csproj" />
     <ProjectReference Include="..\Regulus.Remote\Regulus.Remote.csproj" />
-    <ProjectReference Include="..\Regulus.Utility\Regulus.Utility.csproj" />
   </ItemGroup>
 
 </Project>

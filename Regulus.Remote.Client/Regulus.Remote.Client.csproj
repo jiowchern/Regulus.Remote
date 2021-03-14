@@ -13,7 +13,6 @@
     <ProjectReference Include="..\Regulus.Remote.Ghost\Regulus.Remote.Ghost.csproj" />
     <ProjectReference Include="..\Regulus.Remote\Regulus.Remote.csproj" />
     <ProjectReference Include="..\Regulus.Serialization\Regulus.Serialization.csproj" />
-    <ProjectReference Include="..\Regulus.Utility\Regulus.Utility.csproj" />
   </ItemGroup>
 
 </Project>

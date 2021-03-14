@@ -22,7 +22,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Regulus.Remote.Protocol\Regulus.Remote.Protocol.csproj" />
-    <ProjectReference Include="..\Regulus.Utility\Regulus.Utility.csproj" />
   </ItemGroup>
 
 </Project>
