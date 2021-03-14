@@ -1,10 +1,9 @@
 # Regulus Remote
-[![Maintainability](https://api.codeclimate.com/v1/badges/78946edf1189eb49dfbd/maintainability)](https://codeclimate.com/github/jiowchern/Regulus/maintainability)
-[![Actions Status](https://github.com/jiowchern/Regulus/workflows/Build/badge.svg)](https://github.com/jiowchern/Regulus/actions)
-[![Build status](https://ci.appveyor.com/api/projects/status/2wtsf61u87qg62cc?svg=true)](https://ci.appveyor.com/project/jiowchern/regulus)
-[![Coverage Status](https://coveralls.io/repos/github/jiowchern/Regulus/badge.svg?branch=)](https://coveralls.io/github/jiowchern/Regulus?branch=)
-![commit last date](https://img.shields.io/github/last-commit/jiowchern/regulus)  
-[![HitCount](http://hits.dwyl.com/jiowchern/Regulus.svg)](http://hits.dwyl.com/jiowchern/Regulus) 
+[![Maintainability](https://api.codeclimate.com/v1/badges/99cb5e1dc12cafbfe451/maintainability)](https://codeclimate.com/github/jiowchern/Regulus.Remote/maintainability)
+[![Actions Status](https://github.com/jiowchern/Regulus.Remote/workflows/Build/badge.svg)](https://github.com/jiowchern/Regulus.Remote/actions)
+[![Build status](https://ci.appveyor.com/api/projects/status/vu0t2mp45vgfka06/branch/release?svg=true)](https://ci.appveyor.com/project/jiowchern/regulus-remote/branch/release)
+[![Coverage Status](https://coveralls.io/repos/github/jiowchern/Regulus.Remote/badge.svg?branch=master)](https://coveralls.io/github/jiowchern/Regulus.Remote?branch=master)
+![commit last date](https://img.shields.io/github/last-commit/jiowchern/Regulus.Remote)  
 [![Discord](https://img.shields.io/discord/101557008930451456.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/uDF8NTp)
 
 <!-- [![GitHub release](https://img.shields.io/github/release/jiowchern/regulus.svg?style=flat-square)](https://github.com/jiowchern/Regulus/releases)![pre-release](https://img.shields.io/github/v/release/jiowchern/Regulus?include_prereleases) -->
@@ -332,3 +331,4 @@ class Client
 
 
 
+[![HitCount](http://hits.dwyl.com/jiowchern/Regulus.svg)](http://hits.dwyl.com/jiowchern/Regulus.Remote) 
