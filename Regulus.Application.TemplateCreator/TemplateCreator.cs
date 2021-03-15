@@ -73,7 +73,7 @@ namespace Regulus.Application
             var regulusRemoteSoulProj = System.IO.Path.Combine(_LibraryDir.FullName, "Regulus.Remote.Soul/Regulus.Remote.Soul.csproj");
             var regulusRemoteGhostProj = System.IO.Path.Combine(_LibraryDir.FullName, "Regulus.Remote.Ghost/Regulus.Remote.Ghost.csproj");
             var regulusSerializationProj = System.IO.Path.Combine(_LibraryDir.FullName, "Regulus.Serialization/Regulus.Serialization.csproj");
-            var regulusUtilityProj = System.IO.Path.Combine(_LibraryDir.FullName, "Regulus.Utility/Regulus.Utility.csproj");
+            var regulusUtilityProj = System.IO.Path.Combine(_LibraryDir.FullName, "RegulusUtility/Regulus.Utility/Regulus.Utility.csproj");
             var addProjectToSlnResult = await System.Threading.Tasks.Task.WhenAll(
                 _RunDotnet($"sln {slnFilePath} add -s Regulus.Library {regulusRemoteServerProj}"),
                 _RunDotnet($"sln {slnFilePath} add -s Regulus.Library {regulusRemoteClientProj}"),
