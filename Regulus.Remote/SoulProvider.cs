@@ -10,7 +10,7 @@ namespace Regulus.Remote
     public class SoulProvider : IDisposable, IBinder
     {
         private readonly IdLandlord _IdLandlord;
-        private readonly Queue<byte[]> _EventFilter = new Queue<byte[]>();
+        private readonly Queue<byte[]> _EventFilter ;
 
         private readonly IRequestQueue _Peer;
 
@@ -20,14 +20,18 @@ namespace Regulus.Remote
 
         private readonly EventProvider _EventProvider;
 
-        private readonly Poller<SoulProxy> _Souls = new Poller<SoulProxy>();
+        private readonly Poller<SoulProxy> _Souls ;
 
-        private readonly Dictionary<long, IValue> _WaitValues = new Dictionary<long, IValue>();
+        private readonly Dictionary<long, IValue> _WaitValues ;
 
         private readonly ISerializer _Serializer;
 
         public SoulProvider(IRequestQueue peer, IResponseQueue queue, IProtocol protocol)
         {
+            
+            _WaitValues = new Dictionary<long, IValue>();
+            _Souls = new Poller<SoulProxy>();
+            _EventFilter = new Queue<byte[]>();
             _IdLandlord = new IdLandlord();
             _Queue = queue;
             _Protocol = protocol;
