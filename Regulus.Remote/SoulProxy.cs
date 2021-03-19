@@ -6,8 +6,11 @@ using System.Reflection;
 namespace Regulus.Remote
 {
   
-  
-    public class SoulProxy
+    public interface IProxy
+    {
+        long Id { get; }
+    }
+    public class SoulProxy : IProxy
     {
 
         public readonly long Id;
@@ -23,12 +26,14 @@ namespace Regulus.Remote
         readonly List<NotifierUpdater> _TypeObjectNotifiables;
         readonly System.Action _Dispose;
 
-        public delegate void OnPrpertySoul(long soul_id, int property_id, TypeObject type_object);
-        public event OnPrpertySoul SupplySoulEvent;
-        public event OnPrpertySoul UnsupplySoulEvent;
+        public delegate void OnPropertySoul(long soul_id, int property_id, TypeObject type_object);
+        public event OnPropertySoul SupplySoulEvent;        
+        public event OnPropertySoul UnsupplySoulEvent;
         readonly System.Collections.Concurrent.ConcurrentQueue<IPropertyIdValue> _PropertyChangeds;
 
         public readonly int InterfaceId;
+
+        long IProxy.Id => Id;
 
         public SoulProxy(long id, int interface_id, Type object_type, object object_instance, System.Collections.Generic.IReadOnlyDictionary<PropertyInfo, int> property_ids)
         {

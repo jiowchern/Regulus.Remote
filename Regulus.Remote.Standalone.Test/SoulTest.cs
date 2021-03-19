@@ -7,7 +7,7 @@ namespace Regulus.Remote.Standalone.Test
 {
     public class SoulTest
     {
-        //[Xunit.Fact]        
+        [Xunit.Fact]        
         public void ServiceTest()
         {
             Stream serverPeerStream = new Regulus.Remote.Standalone.Stream();

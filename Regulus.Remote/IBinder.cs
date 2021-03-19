@@ -7,10 +7,10 @@ namespace Regulus.Remote
     {
         event Action BreakEvent;
 
-        void Return<TSoul>(TSoul soul);
+        IProxy Return<TSoul>(TSoul soul);
 
-        void Bind<TSoul>(TSoul soul);
+        IProxy Bind<TSoul>(TSoul soul);
 
-        void Unbind<TSoul>(TSoul soul);
+        void Unbind(IProxy soul);
     }
 }

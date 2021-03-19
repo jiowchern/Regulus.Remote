@@ -7,6 +7,8 @@ using System.Reflection;
 
 namespace Regulus.Remote
 {
+    
+    
     public class SoulProvider : IDisposable, IBinder
     {
         private readonly IdLandlord _IdLandlord;
@@ -20,17 +22,17 @@ namespace Regulus.Remote
 
         private readonly EventProvider _EventProvider;
 
-        private readonly Poller<SoulProxy> _Souls ;
+        private readonly System.Collections.Concurrent.ConcurrentDictionary<long,SoulProxy> _Souls ;
 
         private readonly Dictionary<long, IValue> _WaitValues ;
 
         private readonly ISerializer _Serializer;
-
+        
         public SoulProvider(IRequestQueue peer, IResponseQueue queue, IProtocol protocol)
         {
             
             _WaitValues = new Dictionary<long, IValue>();
-            _Souls = new Poller<SoulProxy>();
+            _Souls = new System.Collections.Concurrent.ConcurrentDictionary<long, SoulProxy>();
             _EventFilter = new Queue<byte[]>();
             _IdLandlord = new IdLandlord();
             _Queue = queue;
@@ -48,34 +50,34 @@ namespace Regulus.Remote
             _Peer.InvokeMethodEvent -= _InvokeMethod;
         }
 
-        void IBinder.Return<TSoul>(TSoul soul)
+        IProxy IBinder.Return<TSoul>(TSoul soul)
         {
             if (soul == null)
             {
                 throw new ArgumentNullException("soul");
             }
 
-            _Bind(soul, true, 0);
+            return _Bind(soul, true, 0);
         }
 
-        void IBinder.Bind<TSoul>(TSoul soul)
+        IProxy IBinder.Bind<TSoul>(TSoul soul)
         {
             if (soul == null)
             {
                 throw new ArgumentNullException("soul");
             }
 
-            _Bind(soul, false, 0);
+            return _Bind(soul, false, 0);
         }
 
-        void IBinder.Unbind<TSoul>(TSoul soul)
+        void IBinder.Unbind(IProxy soul)
         {
             if (soul == null)
             {
                 throw new ArgumentNullException("soul");
             }
 
-            _Unbind(soul, typeof(TSoul));
+            _Unbind(soul.Id);
         }
 
         event Action IBinder.BreakEvent
@@ -147,22 +149,16 @@ namespace Regulus.Remote
 
         private void _ReturnSoulValue(long return_id, IValue returnValue)
         {
-            object soul = returnValue.GetObject();
-            Type type = returnValue.GetObjectType();
-            SoulProxy prevSoul = (from soulInfo in _Souls.UpdateSet()
-                             where object.ReferenceEquals(soulInfo.ObjectInstance, soul) && soulInfo.ObjectType == type
-                             select soulInfo).SingleOrDefault();
+            var soul = returnValue.GetObject() ;
+            Type type = returnValue.GetObjectType();            
 
-            if (prevSoul == null)
-            {
-                SoulProxy new_soul = _NewSoul(soul, type);
+            SoulProxy new_soul = _NewSoul(soul, type);
 
-                _LoadSoul(new_soul.InterfaceId, new_soul.Id, true);
+            _LoadSoul(new_soul.InterfaceId, new_soul.Id, true);
 
-                _LoadProperty(new_soul);
+            _LoadProperty(new_soul);
 
-                _LoadSoulCompile(new_soul.InterfaceId, new_soul.Id, return_id);
-            }
+            _LoadSoulCompile(new_soul.InterfaceId, new_soul.Id, return_id);
         }
 
         private void _LoadProperty(SoulProxy new_soul)
@@ -237,63 +233,69 @@ namespace Regulus.Remote
 
         public void SetPropertyDone(long entityId, int property)
         {
-            IEnumerable<SoulProxy> souls = from soul in _Souls.UpdateSet() where soul.Id == entityId select soul;
-            SoulProxy s = souls.FirstOrDefault();
-            if (s != null)
-            {
-                s.PropertyUpdateReset(property);
-            }
+            
 
+            SoulProxy soul;
+            if (!_Souls.TryGetValue(entityId, out soul))
+                return;
+            soul.PropertyUpdateReset(property);
         }
 
         private void _InvokeMethod(long entity_id, int method_id, long returnId, byte[][] args)
         {
-            var soulInfo = (from soul in _Souls.UpdateSet()
-                            where soul.Id == entity_id
-                            select new
-                            {
-                                soul.MethodInfos,
-                                soul.ObjectInstance
-                            }).FirstOrDefault();
-            if (soulInfo != null)
+          
+            SoulProxy soul;
+            if (!_Souls.TryGetValue(entity_id, out soul))
+                return;
+
+            var soulInfo = new
             {
-                MethodInfo info = _Protocol.GetMemberMap().GetMethod(method_id);
-                MethodInfo methodInfo =
-                    (from m in soulInfo.MethodInfos where m == info && m.GetParameters().Count() == args.Count() select m)
-                        .FirstOrDefault();
-                if (methodInfo != null)
+                soul.MethodInfos,
+                soul.ObjectInstance
+            };
+
+            MethodInfo info = _Protocol.GetMemberMap().GetMethod(method_id);
+            MethodInfo methodInfo =
+                (from m in soulInfo.MethodInfos where m == info && m.GetParameters().Count() == args.Count() select m)
+                    .FirstOrDefault();
+            if (methodInfo != null)
+            {
+
+                try
                 {
 
-                    try
-                    {
+                    IEnumerable<object> argObjects = args.Select(arg => _Serializer.Deserialize(arg));
 
-                        IEnumerable<object> argObjects = args.Select(arg => _Serializer.Deserialize(arg));
-
-                        object returnValue = methodInfo.Invoke(soulInfo.ObjectInstance, argObjects.ToArray());
-                        if (returnValue != null)
-                        {
-                            _ReturnValue(returnId, returnValue as IValue);
-                        }
-                    }
-                    catch (DeserializeException deserialize_exception)
+                    object returnValue = methodInfo.Invoke(soulInfo.ObjectInstance, argObjects.ToArray());
+                    if (returnValue != null)
                     {
-                        string message = deserialize_exception.Base.ToString();
-                        _ErrorDeserialize(method_id.ToString(), returnId, message);
+                        _ReturnValue(returnId, returnValue as IValue);
                     }
-                    catch (Exception e)
-                    {
-                        Log.Instance.WriteDebug(e.ToString());
-                        _ErrorDeserialize(method_id.ToString(), returnId, e.Message);
-                    }
-
                 }
+                catch (DeserializeException deserialize_exception)
+                {
+                    string message = deserialize_exception.Base.ToString();
+                    _ErrorDeserialize(method_id.ToString(), returnId, message);
+                }
+                catch (Exception e)
+                {
+                    Log.Instance.WriteDebug(e.ToString());
+                    _ErrorDeserialize(method_id.ToString(), returnId, e.Message);
+                }
+
             }
         }
         public void RemoveEvent(long entity_id, int event_id, long handler_id)
         {
-            SoulProxy soul = (from s in _Souls.UpdateSet() where s.Id == entity_id select s).FirstOrDefault();
-            if (soul == null)
+
+
+
+            SoulProxy soul;
+            
+            if (!_Souls.TryGetValue(entity_id, out soul))
                 return;
+
+
 
             EventInfo eventInfo = _Protocol.GetMemberMap().GetEvent(event_id);
             if (eventInfo == null)
@@ -307,8 +309,10 @@ namespace Regulus.Remote
 
         public void AddEvent(long entity_id, int event_id, long handler_id)
         {
-            SoulProxy soul = (from s in _Souls.UpdateSet() where s.Id == entity_id select s).FirstOrDefault();
-            if (soul == null)
+
+
+            SoulProxy soul;
+            if (!_Souls.TryGetValue(entity_id, out soul))
                 return;
 
             EventInfo eventInfo = _Protocol.GetMemberMap().GetEvent(event_id);
@@ -333,9 +337,9 @@ namespace Regulus.Remote
             _Queue.Push(ServerToClientOpCode.ErrorMethod, package.ToBuffer(_Serializer));
         }
 
-        private void _Bind<TSoul>(TSoul soul, bool return_type, long return_id)
+        private IProxy _Bind<TSoul>(TSoul soul, bool return_type, long return_id)
         {
-            _Bind(soul, typeof(TSoul), return_type, return_id);
+            return _Bind(soul, typeof(TSoul), return_type, return_id);
         }
         private SoulProxy _NewSoul(object soul, Type soul_type)
         {
@@ -344,68 +348,59 @@ namespace Regulus.Remote
             int interfaceId = map.GetInterface(soul_type);
             SoulProxy newSoul = new SoulProxy(_IdLandlord.Rent(), interfaceId, soul_type, soul, map.Propertys.Item1s);
 
-            _Souls.Add(newSoul);
+            _Souls.TryAdd(newSoul.Id, newSoul);
 
             return newSoul;
         }
 
         private SoulProxy _Bind(object soul, Type soul_type, bool return_type, long return_id)
         {
-            SoulProxy prevSoul = (from soulInfo in _Souls.UpdateSet()
-                             where object.ReferenceEquals(soulInfo.ObjectInstance, soul) && soulInfo.ObjectType == soul_type
-                             select soulInfo).SingleOrDefault();
+            SoulProxy newSoul = _NewSoul(soul, soul_type);
+            newSoul.SupplySoulEvent += _PropertyBind;
+            newSoul.UnsupplySoulEvent += _PropertyUnbind;            
+            _LoadSoul(newSoul.InterfaceId, newSoul.Id, return_type);
+            _LoadProperty(newSoul);
+            _LoadSoulCompile(newSoul.InterfaceId, newSoul.Id, return_id);
 
-            if (prevSoul == null)
-            {
-                SoulProxy newSoul = _NewSoul(soul, soul_type);
-                newSoul.SupplySoulEvent += _PropertyBind;
-                newSoul.UnsupplySoulEvent += _PropertyUnbind;
-                prevSoul = newSoul;
-                _LoadSoul(newSoul.InterfaceId, newSoul.Id, return_type);
-                _LoadProperty(newSoul);
-                _LoadSoulCompile(newSoul.InterfaceId, newSoul.Id, return_id );
-                
-            }
-
-            return prevSoul;
+            return newSoul;
         }
 
-        private SoulProxy _Unbind(object soul, Type type)
+        private void _Unbind(long id)
         {
-            SoulProxy soulInfo = (from soul_info in _Souls.UpdateSet()
-                             where object.ReferenceEquals(soul_info.ObjectInstance, soul) && soul_info.ObjectType == type
-                             select soul_info).SingleOrDefault();
+            /*SoulProxy soulInfo = (from soul_info in _Souls.GetConsumingEnumerable()
+                                  where object.ReferenceEquals(soul_info.ObjectInstance, soul) && soul_info.ObjectType == type
+                             select soul_info).SingleOrDefault();*/
 
-            if (soulInfo != null)
-            {
-                soulInfo.SupplySoulEvent -= _PropertyBind;
-                soulInfo.UnsupplySoulEvent -= _PropertyUnbind;
+            SoulProxy soulInfo;
+            if (!_Souls.TryRemove(id, out soulInfo))
+                throw new Exception($"can't find the soul {id} to delete.");
+            
+            soulInfo.SupplySoulEvent -= _PropertyBind;
+            soulInfo.UnsupplySoulEvent -= _PropertyUnbind;
 
-                soulInfo.Release();
+            soulInfo.Release();
+            _UnloadSoul(soulInfo.InterfaceId, soulInfo.Id);            
+            _IdLandlord.Return(soulInfo.Id);
 
-                _UnloadSoul(soulInfo.InterfaceId, soulInfo.Id);
-                _Souls.Remove(s => { return s == soulInfo; });
-                _IdLandlord.Return(soulInfo.Id);
-            }
-
-            return soulInfo;
+            
         }
 
         private void _PropertyUnbind(long soul_id, int property_id, TypeObject type_object)
         {
+            var ids = from v in _Souls.ToArray().Select(kv => kv.Value)
+                        where v.ObjectInstance == type_object.Instance && v.ObjectType == type_object.Type
+                        select v.Id;
 
-
-            var soulIds = from soul in _Souls.UpdateSet()
-                            where soul.ObjectInstance == type_object.Instance && soul.ObjectType == type_object.Type
-                            select soul.Id;
-
+            var propertyId = ids.FirstOrDefault();
+            if (propertyId == 0)
+                return;
             PackagePropertySoul package = new PackagePropertySoul();
             package.OwnerId = soul_id;
             package.PropertyId = property_id;
-            package.EntiryId = soulIds.Single();
+            package.EntiryId = propertyId;
             _Queue.Push(ServerToClientOpCode.RemovePropertySoul, package.ToBuffer(_Serializer));
 
-            _Unbind(type_object.Instance , type_object.Type);
+            _Unbind(propertyId);
 
             
         }
@@ -436,7 +431,7 @@ namespace Regulus.Remote
 
         public void Update()
         {
-            SoulProxy[] souls = _Souls.UpdateSet();
+            SoulProxy[] souls = _Souls.ToArray().Select(kv=>kv.Value).ToArray();
 
 
             foreach (SoulProxy soul in souls)
@@ -461,11 +456,8 @@ namespace Regulus.Remote
 
         public void Unbind(long entityId)
         {
-            SoulProxy soul = (from s in _Souls.UpdateSet() where s.Id == entityId select s).FirstOrDefault();
-            if (soul != null)
-            {
-                _Unbind(soul.ObjectInstance, soul.ObjectType);
-            }
+            _Unbind(entityId);
+            
         }
     }
 }

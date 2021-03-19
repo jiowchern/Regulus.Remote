@@ -9,6 +9,9 @@ namespace Regulus.Remote.Standalone.Test
     {
         readonly Regulus.Projects.TestProtocol.Common.Sample _Sample;
         private readonly IBinder _Binder;
+        private IProxy _SampleProxy;
+        private IProxy _INextProxy;
+
         public event System.Action DoneEvent;
         public StatusEntryUserAddItemsStage(IBinder binder)
         {
@@ -18,8 +21,8 @@ namespace Regulus.Remote.Standalone.Test
         void IBootable.Launch()
         {
 
-            _Binder.Bind<ISample>(_Sample);
-            _Binder.Bind<INext>(this);
+            _SampleProxy = _Binder.Bind<ISample>(_Sample);
+            _INextProxy = _Binder.Bind<INext>(this);
             _Sample.Numbers.Items.Add(new Number(1));
             _Sample.Numbers.Items.Add(new Number(2));
             _Sample.Numbers.Items.Add(new Number(3));
@@ -33,9 +36,9 @@ namespace Regulus.Remote.Standalone.Test
 
         void IBootable.Shutdown()
         {
-            _Binder.Unbind<INext>(this);
+            _Binder.Unbind(_INextProxy);
             _Sample.Numbers.Items.Clear();            
-            _Binder.Unbind<ISample>(_Sample);
+            _Binder.Unbind(_SampleProxy);
         }
     }
 
