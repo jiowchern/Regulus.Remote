@@ -41,7 +41,7 @@ namespace Regulus.Remote.Standalone.Test
     }
     public class GhostTest
     {
-        [Fact()]    
+        //[Fact()]    
         public void  CommunicationDevicePushTestMutli()
         {
             var tasks = from _ in System.Linq.Enumerable.Range(0, 10000000)

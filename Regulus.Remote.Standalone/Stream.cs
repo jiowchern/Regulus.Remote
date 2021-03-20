@@ -31,19 +31,22 @@ namespace Regulus.Remote.Standalone
             return System.Threading.Tasks.Task<int>.Factory.StartNew(() => {
                 lock (_Receives)
                 {
+                    int readCount = 0;
                     for (int i = offset; i < buffer.Length; i++)
                     {
-                        int readCount = i - offset;
-                        if (readCount >= count)
+                        int index = i - offset;
+                        if (index >= count)
                         {
-                            _ReadyReceive.Set();
+                            if (readCount > 0)
+                                _ReadyReceive.Set();
                             return readCount;
                         }
-                            
+                        readCount++;
                         _Receives.Enqueue(buffer[i]);
                     }
-                    _ReadyReceive.Set();
-                    return buffer.Length - offset;
+                    if (readCount > 0)
+                        _ReadyReceive.Set();
+                    return readCount;
                 }
             } );
         }
@@ -67,19 +70,21 @@ namespace Regulus.Remote.Standalone
                 _ReadyReceive.WaitOne();
                 lock (_Receives)
                 {
+                    int readCount = 0;
                     for (int i = offset; i < buffer.Length; i++)
                     {
-                        int readCount = i - offset;
-                        if (readCount >= count)
+                        int index = i - offset;
+                        if (index >= count)
                             return readCount;
                         if (_Receives.Count == 0)
                         {
                             _ReadyReceive.Reset();
                             return readCount;
                         }
+                        readCount++;
                         buffer[i] = _Receives.Dequeue();
                     }
-                    return buffer.Length - offset;
+                    return readCount;
                 }
 
                 
@@ -95,19 +100,21 @@ namespace Regulus.Remote.Standalone
                 _ReadySend.WaitOne();
                 lock (_Sends)
                 {
+                    int readCount = 0;
                     for (int i = offset; i < buffer.Length; i++)
                     {
-                        int readCount = i - offset;
-                        if (readCount >= count)
+                        int index = i - offset;
+                        if (index >= count)
                             return readCount;
                         if (_Sends.Count == 0)
                         {
                             _ReadySend.Reset();
                             return readCount;
                         }
+                        readCount++;
                         buffer[i] = _Sends.Dequeue();
                     }
-                    return buffer.Length - offset;
+                    return readCount;
                 }
 
                 
@@ -121,6 +128,7 @@ namespace Regulus.Remote.Standalone
 
         }
 
+        
         Task<int> IStreamable.Send(byte[] buffer, int offset, int count)
         {
             
@@ -128,19 +136,23 @@ namespace Regulus.Remote.Standalone
             return System.Threading.Tasks.Task<int>.Factory.StartNew(()=> {
                 lock (_Sends)
                 {
+                    int readCount = 0;
+                    
                     for (int i = offset; i < buffer.Length; i++)
                     {
-                        int readCount = i - offset;
-                        if (readCount >= count)
+                        int index = i - offset;
+                        if (index >= count)
                         {
-                            _ReadySend.Set();
+                            if(readCount > 0)
+                                _ReadySend.Set();
                             return readCount;
                         }
-                            
+                        readCount++;
                         _Sends.Enqueue(buffer[i]);
                     }
-                    _ReadySend.Set();
-                    return buffer.Length - offset;
+                    if (readCount > 0)
+                        _ReadySend.Set();
+                    return readCount;
                 }
             });
         }
