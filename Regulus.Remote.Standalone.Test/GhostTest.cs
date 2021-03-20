@@ -1,5 +1,6 @@
 using NSubstitute;
 using Xunit;
+using System.Linq;
 using Regulus.Network;
 using Regulus.Serialization;
 
@@ -40,16 +41,19 @@ namespace Regulus.Remote.Standalone.Test
     }
     public class GhostTest
     {
-        /*[Fact()]    
-        public void CommunicationDevicePushTestMutli()
+        [Fact()]    
+        public void  CommunicationDevicePushTestMutli()
         {
-            System.Threading.Tasks.Parallel.For(1, 1000, (idx,state) =>
-            {
-                CommunicationDevicePushTest();
-            });  
+            var tasks = from _ in System.Linq.Enumerable.Range(0, 10000000)
+                        select CommunicationDevicePushTest();
 
-        }*/
-        [Fact(Timeout = 5000)]
+            System.Threading.Tasks.Task.WhenAll(tasks);
+
+
+            
+
+        }
+        [Fact(/*Timeout = 5000*/)]
         public async System.Threading.Tasks.Task CommunicationDevicePushTest()
         {
             byte[] sendBuf = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -59,13 +63,16 @@ namespace Regulus.Remote.Standalone.Test
             IStreamable peer = cd as IStreamable;
             await cd.Push(sendBuf, 0, sendBuf.Length);
             System.Threading.Tasks.Task<int> receiveResult1 = peer.Receive(recvBuf, 0, 4);
-            System.Threading.Tasks.Task<int> receiveResult2 = peer.Receive(recvBuf, 4, 6);
+            System.Threading.Tasks.Task<int> receiveResult2 = peer.Receive(recvBuf, 4, 5);
+            System.Threading.Tasks.Task<int> receiveResult3 = peer.Receive(recvBuf, 9, 2);
 
             int receiveCount1 = receiveResult1.GetAwaiter().GetResult();
             int receiveCount2 = receiveResult2.GetAwaiter().GetResult();
+            int receiveCount3 = receiveResult3.GetAwaiter().GetResult();
 
             Assert.Equal(4, receiveCount1);
-            Assert.Equal(6, receiveCount2);
+            Assert.Equal(5, receiveCount2);
+            Assert.Equal(1, receiveCount3);
         }
 
         [Fact(Timeout =5000)]        
