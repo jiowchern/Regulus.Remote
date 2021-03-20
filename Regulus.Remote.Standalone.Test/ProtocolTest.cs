@@ -32,7 +32,7 @@ namespace Regulus.Remote.Standalone.Test
             await Sample2EventTest();
             await SampleAddTest();
         }
-        [Xunit.Fact(Timeout = 10000 )]
+        [Xunit.Fact()]
         public async System.Threading.Tasks.Task Sample2NotifierUnsupplyTest()
         {
             var env = new TestEnv<SampleEntry>(new SampleEntry());
@@ -76,7 +76,7 @@ namespace Regulus.Remote.Standalone.Test
             Xunit.Assert.Equal(1, number2.Value.Value);
             Xunit.Assert.Equal(3, number3.Value.Value);
         }
-        [Xunit.Fact(Timeout = 10000)]
+        [Xunit.Fact()]
         public async System.Threading.Tasks.Task Sample2NotifierSupplyTest()
         {
             var env = new TestEnv<SampleEntry>(new SampleEntry());
@@ -114,7 +114,7 @@ namespace Regulus.Remote.Standalone.Test
 
 
 
-        [Xunit.Fact(Timeout = 10000)]
+        [Xunit.Fact()]
         public async System.Threading.Tasks.Task SampleEventTest()
         {
             var env = new TestEnv<SampleEntry>(new SampleEntry());
@@ -132,7 +132,7 @@ namespace Regulus.Remote.Standalone.Test
             Xunit.Assert.Equal(1, testResult);            
         }
 
-        [Xunit.Fact(Timeout = 10000)]
+        [Xunit.Fact()]
         public async System.Threading.Tasks.Task Sample2EventTest()
         {
             var env = new TestEnv<SampleEntry>(new SampleEntry());
@@ -164,7 +164,7 @@ namespace Regulus.Remote.Standalone.Test
 
 
 
-        [Xunit.Fact(Timeout = 10000)]
+        [Xunit.Fact()]
         public async System.Threading.Tasks.Task SampleAddTest()
         {
             var env = new TestEnv<SampleEntry>(new SampleEntry());
