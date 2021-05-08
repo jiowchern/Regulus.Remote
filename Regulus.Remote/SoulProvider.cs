@@ -50,7 +50,7 @@ namespace Regulus.Remote
             _Peer.InvokeMethodEvent -= _InvokeMethod;
         }
 
-        IProxy IBinder.Return<TSoul>(TSoul soul)
+        ISoul IBinder.Return<TSoul>(TSoul soul)
         {
             if (soul == null)
             {
@@ -60,7 +60,7 @@ namespace Regulus.Remote
             return _Bind(soul, true, 0);
         }
 
-        IProxy IBinder.Bind<TSoul>(TSoul soul)
+        ISoul IBinder.Bind<TSoul>(TSoul soul)
         {
             if (soul == null)
             {
@@ -70,7 +70,7 @@ namespace Regulus.Remote
             return _Bind(soul, false, 0);
         }
 
-        void IBinder.Unbind(IProxy soul)
+        void IBinder.Unbind(ISoul soul)
         {
             if (soul == null)
             {
@@ -337,7 +337,7 @@ namespace Regulus.Remote
             _Queue.Push(ServerToClientOpCode.ErrorMethod, package.ToBuffer(_Serializer));
         }
 
-        private IProxy _Bind<TSoul>(TSoul soul, bool return_type, long return_id)
+        private ISoul _Bind<TSoul>(TSoul soul, bool return_type, long return_id)
         {
             return _Bind(soul, typeof(TSoul), return_type, return_id);
         }
@@ -385,27 +385,20 @@ namespace Regulus.Remote
             
         }
 
-        private void _PropertyUnbind(long soul_id, int property_id, TypeObject type_object)
+        private void _PropertyUnbind(long soul_id, int property_id, long property_soul_id)
         {
-            var ids = from v in _Souls.ToArray().Select(kv => kv.Value)
-                        where v.ObjectInstance == type_object.Instance && v.ObjectType == type_object.Type
-                        select v.Id;
-
-            var propertyId = ids.FirstOrDefault();
-            if (propertyId == 0)
-                return;
+            
             PackagePropertySoul package = new PackagePropertySoul();
             package.OwnerId = soul_id;
             package.PropertyId = property_id;
-            package.EntiryId = propertyId;
+            package.EntiryId = property_soul_id;
             _Queue.Push(ServerToClientOpCode.RemovePropertySoul, package.ToBuffer(_Serializer));
 
-            _Unbind(propertyId);
-
+            _Unbind(property_soul_id);
             
         }
 
-        private void _PropertyBind(long soul_id , int property_id, TypeObject type_object)
+        private ISoul _PropertyBind(long soul_id , int property_id, TypeObject type_object)
         {            
             var soul = _Bind(type_object.Instance, type_object.Type, false, 0);
 
@@ -414,7 +407,7 @@ namespace Regulus.Remote
             package.PropertyId = property_id;
             package.EntiryId = soul.Id;
             _Queue.Push(ServerToClientOpCode.AddPropertySoul, package.ToBuffer(_Serializer));
-
+            return soul;
         }
 
         private Delegate _BuildDelegate(EventInfo info, long entity_id, long handler_id, InvokeEventCallabck invoke_Event)

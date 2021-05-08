@@ -10,8 +10,7 @@ nuget:
 before_build:
 - cmd: nuget restore
 build:
-  publish_nuget: true
-  publish_core_console: true
+  publish_nuget: true  
   verbosity: minimal
 after_build:
 - cmd: build_package.cmd

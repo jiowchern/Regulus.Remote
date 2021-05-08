@@ -5,12 +5,7 @@ using System.Reflection;
 
 namespace Regulus.Remote
 {
-  
-    public interface IProxy
-    {
-        long Id { get; }
-    }
-    public class SoulProxy : IProxy
+    public class SoulProxy : ISoul
     {
 
         public readonly long Id;
@@ -26,14 +21,16 @@ namespace Regulus.Remote
         readonly List<NotifierUpdater> _TypeObjectNotifiables;
         readonly System.Action _Dispose;
 
-        public delegate void OnPropertySoul(long soul_id, int property_id, TypeObject type_object);
-        public event OnPropertySoul SupplySoulEvent;        
-        public event OnPropertySoul UnsupplySoulEvent;
+        public delegate ISoul OnSupplyPropertySoul(long soul_id, int property_id, TypeObject type_object);
+        public delegate void OnUnsupplyPropertySoul(long soul_id, int property_id, long property_soul_id);
+        public event OnSupplyPropertySoul SupplySoulEvent;        
+        public event OnUnsupplyPropertySoul UnsupplySoulEvent;
         readonly System.Collections.Concurrent.ConcurrentQueue<IPropertyIdValue> _PropertyChangeds;
 
         public readonly int InterfaceId;
 
-        long IProxy.Id => Id;
+        long ISoul.Id => Id;
+        object ISoul.Instance => ObjectInstance;
 
         public SoulProxy(long id, int interface_id, Type object_type, object object_instance, System.Collections.Generic.IReadOnlyDictionary<PropertyInfo, int> property_ids)
         {
@@ -159,15 +156,15 @@ namespace Regulus.Remote
                 updater.UnsupplyEvent -= _UnsupplySoul;
             }
         }
-
-        private void _UnsupplySoul(int property_id, TypeObject type_object)
+        
+        private void _UnsupplySoul(int property_id, long soul_id)
         {
-            UnsupplySoulEvent(Id, property_id, type_object);
+            UnsupplySoulEvent(Id, property_id, soul_id);
         }
 
-        private void _SupplySoul(int property_id, TypeObject type_object)
+        private ISoul _SupplySoul(int property_id, TypeObject type_object)
         {
-            SupplySoulEvent(Id , property_id, type_object);
+            return SupplySoulEvent(Id , property_id, type_object);
         }
 
         internal bool TryGetPropertyChange(out IPropertyIdValue property_id_value)
@@ -212,7 +209,11 @@ namespace Regulus.Remote
             }
             
         }
-        
+
+        bool ISoul.IsTypeObject(TypeObject obj)
+        {
+            return this.ObjectInstance == obj.Instance && this.ObjectType == obj.Type;
+        }
     }
 }
 

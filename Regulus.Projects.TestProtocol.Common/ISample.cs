@@ -2,6 +2,7 @@
 
 namespace Regulus.Projects.TestProtocol.Common
 {
+    
     public interface ISample
     {
 

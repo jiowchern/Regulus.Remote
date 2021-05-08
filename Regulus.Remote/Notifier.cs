@@ -6,7 +6,7 @@ namespace Regulus.Remote
     {
         
         public readonly INotifier<T> Base;
-        public readonly System.Collections.Generic.ICollection<T> _Collection;
+        readonly System.Collections.Generic.ICollection<T> _Collection;
 
         public Notifier(INotifier<T> notifier , System.Collections.Generic.ICollection<T>  collection)
         {

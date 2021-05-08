@@ -9,8 +9,8 @@ namespace Regulus.Remote.Standalone.Test
     {
         readonly Regulus.Projects.TestProtocol.Common.Sample _Sample;
         private readonly IBinder _Binder;
-        private IProxy _SampleProxy;
-        private IProxy _INextProxy;
+        private ISoul _SampleProxy;
+        private ISoul _INextProxy;
 
         public event System.Action DoneEvent;
         public StatusEntryUserAddItemsStage(IBinder binder)
@@ -83,7 +83,22 @@ namespace Regulus.Remote.Standalone.Test
         }
     }
 
-    
+    public class Entry<T> : IBinderProvider, System.IDisposable 
+    {
+        readonly T _Entry;
+        public Entry(T entry)
+        {
+            _Entry = entry;
+        }
+        void IBinderProvider.AssignBinder(IBinder binder, object state)
+        {
+            binder.Bind(_Entry);
+        }
+
+        void IDisposable.Dispose()
+        {            
+        }
+    }
     public class SampleEntry : IBinderProvider , System.IDisposable
     {
         public readonly Regulus.Projects.TestProtocol.Common.Sample Sample;
