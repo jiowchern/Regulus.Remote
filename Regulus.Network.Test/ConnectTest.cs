@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace Regulus.Network.Tests
 {
-
     public class ConnectTest
     {
         [Xunit.Fact(Timeout =5000)]

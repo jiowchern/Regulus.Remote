@@ -31,9 +31,9 @@ namespace Regulus.Network.Web
             }
         }
 
-        public void Bind(int port)
+        public void Bind(string address)
         {
-            _HttpListener.Prefixes.Add($"http://127.0.0.1:{port}/");
+            _HttpListener.Prefixes.Add(address);
             _HttpListener.Start();
             _ = _HttpListener.GetContextAsync().ContinueWith(_Listen, _CancelGetContext.Token);
         }
@@ -43,31 +43,36 @@ namespace Regulus.Network.Web
             _ = _HttpListener.GetContextAsync().ContinueWith(_Listen, _CancelGetContext.Token);
             if (task.IsCanceled)
                 return;
-            if (task.IsCompleted)
+            if (!task.IsCompleted)
             {
-                HttpListenerContext context = task.Result;
-                if (context.Request.IsWebSocketRequest)
-                {
-                    _Accept(context);
-                }
+                return;   
             }
 
+            HttpListenerContext context = task.Result;
+            if (context.Request.IsWebSocketRequest)
+            {
+                _Accept(context);
+            }
         }
 
         private async void _Accept(HttpListenerContext context)
         {
+            
             System.Net.WebSockets.HttpListenerWebSocketContext webSocketContext = await context.AcceptWebSocketAsync(null);
-            System.Net.WebSockets.WebSocket webSocket = webSocketContext.WebSocket;
-            TimeCounter timeCounter = new TimeCounter();
-            while (webSocket.State != System.Net.WebSockets.WebSocketState.Open)
-            {
-                if (timeCounter.Ticks > 60)
-                {
-                    return;
-                }
-            }
 
-            _AcceptEvent(new Peer(webSocket));
+            var webSocket = webSocketContext.WebSocket;
+
+
+            var status = await Task<System.Net.WebSockets.WebSocketState>.Factory.StartNew(() =>
+            {
+                while (webSocket.State == System.Net.WebSockets.WebSocketState.Connecting)
+                {                    
+                    System.Threading.Thread.Sleep(1);
+                }
+                return webSocket.State;
+            });
+            if(status == System.Net.WebSockets.WebSocketState.Open)
+                _AcceptEvent(new Peer(webSocket));
         }
 
         public void Close()

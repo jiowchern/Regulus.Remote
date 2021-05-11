@@ -1,38 +1,37 @@
-﻿using Regulus.Network;
-using Regulus.Network.Tcp;
+﻿using Regulus.Network.Web;
 using Regulus.Remote.Soul;
-
-namespace Regulus.Remote.Server.Tcp
+namespace Regulus.Remote.Server.WebSocket
 {
     public class Listener
     {
         private readonly IService _Service;
-        readonly Regulus.Network.Tcp.Listener _Listener;
-        
+        readonly Regulus.Network.Web.Listener _Listener;
+
         public Listener(IService service)
         {
             this._Service = service;
-            
-            _Listener = new Network.Tcp.Listener();
+
+            _Listener = new Network.Web.Listener();
 
             _Listener.AcceptEvent += _Join;
 
         }
-        public void Bind(int port)
+        public void Bind(string  address)
         {
-            _Listener.Bind(port);
+            _Listener.Bind(address);
         }
 
-        public void Close() {
+        public void Close()
+        {
             _Listener.Close();
         }
 
         private void _Join(Peer peer)
         {
-            peer.SocketErrorEvent += (e) => {
+            peer.ErrorEvent += (status) => {
                 _Service.Leave(peer);
             };
-            _Service.Join(peer, peer.Socket);
+            _Service.Join(peer, null);
         }
     }
 }

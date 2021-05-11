@@ -3,7 +3,7 @@
 namespace Regulus.Network.Rudp
 {
 
-    public class ConnectProvider : IConnectProvidable
+    /*public class ConnectProvider : IConnectProvidable
     {
         private readonly ISocket m_Socket;
         private readonly ITime m_Time;
@@ -57,5 +57,5 @@ namespace Regulus.Network.Rudp
         {
             return new Connector(m_Agent);
         }
-    }
+    }*/
 }

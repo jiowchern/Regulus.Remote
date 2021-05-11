@@ -5,7 +5,7 @@ using System.Net.Sockets;
 namespace Regulus.Network.Tcp
 {
     
-    public class Peer : IStreamable
+    public class Peer : IStreamable , IDisposable
     {
         public readonly System.Net.Sockets.Socket Socket;
 
@@ -121,6 +121,10 @@ namespace Regulus.Network.Tcp
         protected System.Net.Sockets.Socket GetSocket()
         {
             return Socket;
+        }
+
+        void IDisposable.Dispose()
+        {
         }
     }
 

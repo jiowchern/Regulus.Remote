@@ -76,7 +76,7 @@ namespace Regulus.Remote.Standalone.Test
         }
 
         [Fact(Timeout =5000)]        
-        public void CommunicationDevicePopTest()
+        public async void CommunicationDevicePopTest()
         {
             byte[] sendBuf = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             byte[] recvBuf = new byte[10];
@@ -85,20 +85,20 @@ namespace Regulus.Remote.Standalone.Test
             IStreamable peer = cd as IStreamable;
 
             System.Threading.Tasks.Task<int> result1 = peer.Send(sendBuf, 0, 4);
-            int sendResult1 = result1.GetAwaiter().GetResult();
+            int sendResult1 = await result1;
 
             System.Threading.Tasks.Task<int> result2 = peer.Send(sendBuf, 4, 6);
-            int sendResult2 = result2.GetAwaiter().GetResult();
+            int sendResult2 = await result2;
 
 
             System.Threading.Tasks.Task<int> streamTask1 = cd.Pop(recvBuf, 0, 3);
-            int stream1 = streamTask1.GetAwaiter().GetResult();
+            int stream1 = await streamTask1;
 
             System.Threading.Tasks.Task<int> streamTask2 = cd.Pop(recvBuf, stream1, recvBuf.Length - stream1);
-            int stream2 = streamTask2.GetAwaiter().GetResult();
+            int stream2 = await streamTask2;
 
             System.Threading.Tasks.Task<int> streamTask3 = cd.Pop(recvBuf, stream1 + stream2, recvBuf.Length - (stream1 + stream2));
-            int stream3 = streamTask3.GetAwaiter().GetResult();
+            int stream3 = await streamTask3;
 
 
 
@@ -116,16 +116,16 @@ namespace Regulus.Remote.Standalone.Test
 
         }
         [Fact(Timeout =5000)]        
-        public void CommunicationDeviceSerializerTest()
+        public async void CommunicationDeviceSerializerTest()
         {
             Regulus.Serialization.ISerializer serializer = new Regulus.Serialization.Dynamic.Serializer();
             Stream cd = new Regulus.Remote.Standalone.Stream();
             IStreamable peer = cd;
             byte[] buf = serializer.ServerToClient(ServerToClientOpCode.LoadSoul, new Regulus.Remote.PackageLoadSoul() { EntityId = 1, ReturnType = false, TypeId = 1 });
-            cd.Push(buf, 0, buf.Length).Wait();
+            await cd.Push(buf, 0, buf.Length);
 
             byte[] recvBuf = new byte[buf.Length];
-            peer.Receive(recvBuf, 0, recvBuf.Length).Wait();
+            await peer.Receive(recvBuf, 0, recvBuf.Length);
             ResponsePackage responsePkg = serializer.Deserialize(recvBuf) as ResponsePackage;
             PackageLoadSoul lordsoulPkg = serializer.Deserialize(responsePkg.Data) as PackageLoadSoul;
             Assert.Equal(ServerToClientOpCode.LoadSoul, responsePkg.Code);
@@ -136,7 +136,7 @@ namespace Regulus.Remote.Standalone.Test
 
         [Fact(Timeout  = 5000)]
         
-        public void CommunicationDeviceSerializerBatchTest()
+        public  async void CommunicationDeviceSerializerBatchTest()
         {
             Regulus.Serialization.ISerializer serializer = new Regulus.Serialization.Dynamic.Serializer();
             Stream cd = new Regulus.Remote.Standalone.Stream();
@@ -144,12 +144,12 @@ namespace Regulus.Remote.Standalone.Test
 
             byte[] buf = serializer.ServerToClient(ServerToClientOpCode.LoadSoul, new Regulus.Remote.PackageLoadSoul() { EntityId = 1, ReturnType = false, TypeId = 1 });
 
-            cd.Push(buf, 0, 1);
-            cd.Push(buf, 1, buf.Length - 1);
+            await cd.Push(buf, 0, 1);
+            await cd.Push(buf, 1, buf.Length - 1);
 
             byte[] recvBuf = new byte[buf.Length];
-            peer.Receive(recvBuf, 0, recvBuf.Length).GetAwaiter().GetResult();
-            peer.Receive(recvBuf, 1, recvBuf.Length - 1).GetAwaiter().GetResult();
+            await peer.Receive(recvBuf, 0, recvBuf.Length);
+            await peer.Receive(recvBuf, 1, recvBuf.Length - 1);
             ResponsePackage responsePkg = serializer.Deserialize(recvBuf) as ResponsePackage;
             PackageLoadSoul lordsoulPkg = serializer.Deserialize(responsePkg.Data) as PackageLoadSoul;
             Assert.Equal(ServerToClientOpCode.LoadSoul, responsePkg.Code);
