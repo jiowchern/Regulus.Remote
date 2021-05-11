@@ -12,5 +12,10 @@ namespace Regulus.Remote.Server
         {
             return new Tcp.Listener(service);
         }
+
+        public static Regulus.Remote.Server.WebSocket.Listener CreateWebSocket(Soul.IService service)
+        {
+            return new Regulus.Remote.Server.WebSocket.Listener(service);
+        }
     }
 }
