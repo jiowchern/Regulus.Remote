@@ -23,6 +23,16 @@ namespace Regulus.Network.Tests
         }
 
 
+        [Xunit.Fact]
+        public async void DirectWaitableValueTest()
+        {
+            IWaitableValue<int> dir = new NoWaitValue<int>(1)  ;
+            var val = await dir;
+
+            Assert.Equal(1 , val);
+        }
+
+
 
 
 

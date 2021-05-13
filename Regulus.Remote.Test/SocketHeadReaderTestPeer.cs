@@ -17,18 +17,18 @@ namespace Regulus.Remote.Tests
 
 
 
-        System.Threading.Tasks.Task<int> IStreamable.Receive(byte[] buffer, int offset, int count)
+        IWaitableValue<int> IStreamable.Receive(byte[] buffer, int offset, int count)
         {
             return System.Threading.Tasks.Task.Run(() =>
             {
                 buffer[offset] = _Buffer.Dequeue();
                 return 1;
-            });
+            }).ToWaitableValue();
 
 
         }
 
-        System.Threading.Tasks.Task<int> IStreamable.Send(byte[] buffer, int offset, int count)
+        IWaitableValue<int> IStreamable.Send(byte[] buffer, int offset, int count)
         {
             throw new NotImplementedException();
         }

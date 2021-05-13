@@ -31,16 +31,16 @@ namespace Regulus.Network.Tcp
             }
         }
 
-        System.Threading.Tasks.Task<int> IStreamable.Receive(byte[] readed_byte, int offset, int count)
+        IWaitableValue<int> IStreamable.Receive(byte[] readed_byte, int offset, int count)
         {
             if (!Socket.Connected)
             {
                 _SocketErrorEvent( SocketError.SocketError);
-                return System.Threading.Tasks.Task<int>.FromResult(0);
+                return System.Threading.Tasks.Task<int>.FromResult(0).ToWaitableValue();
             }
                 
             return System.Threading.Tasks.Task<int>.Factory.FromAsync(
-                (handler, obj) => _Receive(readed_byte, offset, count, handler, obj), _EndReceive, null);
+                (handler, obj) => _Receive(readed_byte, offset, count, handler, obj), _EndReceive, null).ToWaitableValue();
 
         }
 
@@ -78,15 +78,15 @@ namespace Regulus.Network.Tcp
             _SocketErrorEvent(error);
             return size;
         }
-        System.Threading.Tasks.Task<int> IStreamable.Send(byte[] buffer, int offset, int buffer_length)
+        IWaitableValue<int> IStreamable.Send(byte[] buffer, int offset, int buffer_length)
         {
             if (!Socket.Connected)
             {
                 _SocketErrorEvent(SocketError.SocketError);
-                return System.Threading.Tasks.Task<int>.FromResult(0);
+                return System.Threading.Tasks.Task<int>.FromResult(0).ToWaitableValue();
             }
             return System.Threading.Tasks.Task<int>.Factory.FromAsync(
-                (handler, obj) => _Send(buffer, offset, buffer_length, handler, obj), _EndSend, null);
+                (handler, obj) => _Send(buffer, offset, buffer_length, handler, obj), _EndSend, null).ToWaitableValue();
         }
 
         private IAsyncResult _Send(byte[] buffer, int offset, int buffer_length, AsyncCallback handler, object obj)

@@ -17,12 +17,12 @@ namespace Regulus.Network.Rudp
 
 
 
-        System.Threading.Tasks.Task<int> IStreamable.Receive(byte[] ReadedByte, int Offset, int Count)
+        IWaitableValue<int> IStreamable.Receive(byte[] ReadedByte, int Offset, int Count)
         {
             return _RudpSocket.Receive(ReadedByte, Offset, Count);
         }
 
-        System.Threading.Tasks.Task<int> IStreamable.Send(byte[] Buffer, int OffsetI, int BufferLength)
+        IWaitableValue<int> IStreamable.Send(byte[] Buffer, int OffsetI, int BufferLength)
         {
             return _RudpSocket.Send(Buffer, OffsetI, BufferLength);
         }

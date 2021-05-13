@@ -90,7 +90,7 @@ namespace Regulus.Network
 
         public EndPoint EndPoint { get { return _Line.EndPoint; } }
 
-        public System.Threading.Tasks.Task<int> Send(byte[] buffer, int offset, int count)
+        public IWaitableValue<int> Send(byte[] buffer, int offset, int count)
         {
 
             return System.Threading.Tasks.Task<int>.Run(() =>
@@ -98,16 +98,15 @@ namespace Regulus.Network
 
                 _Line.WriteTransmission(buffer.Skip(offset).ToArray());
                 return count;
-            });
+            }).ToWaitableValue();
 
         }
 
 
 
-        public System.Threading.Tasks.Task<int> Receive(byte[] buffer, int offset, int count)
+        public IWaitableValue<int> Receive(byte[] buffer, int offset, int count)
         {
-
-            return System.Threading.Tasks.Task<int>.Run(() =>
+            var task = System.Threading.Tasks.Task<int>.Run(() =>
             {
 
                 int readCount = 0;
@@ -119,6 +118,7 @@ namespace Regulus.Network
                 }
                 return readCount;
             });
+            return task.ToWaitableValue();
 
 
         }

@@ -26,12 +26,12 @@ namespace Regulus.Network.Rudp
             }
         }
 
-        System.Threading.Tasks.Task<int> IStreamable.Receive(byte[] buffer, int offset, int count)
+        IWaitableValue<int> IStreamable.Receive(byte[] buffer, int offset, int count)
         {
             return _RudpSocket.Receive(buffer, offset, count);
 
         }
-        System.Threading.Tasks.Task<int> IStreamable.Send(byte[] buffer, int offset, int length)
+        IWaitableValue<int> IStreamable.Send(byte[] buffer, int offset, int length)
         {
             return _RudpSocket.Send(buffer, offset, length);
         }

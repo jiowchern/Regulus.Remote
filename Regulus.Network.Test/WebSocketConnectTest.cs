@@ -26,7 +26,7 @@ namespace Regulus.Network.Tests
             var serverReceiveTask = server.Receive(serverReceiveBuffer, 0, 5);
             IStreamable client = connecter;
             var clientSendCount = await client.Send(new byte[] {1,2,3,4,5}, 0 , 5);
-
+            
             var serverReceiveCount = await serverReceiveTask;
 
             Xunit.Assert.Equal(5, serverReceiveCount);

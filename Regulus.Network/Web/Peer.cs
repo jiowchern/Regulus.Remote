@@ -32,7 +32,7 @@ namespace Regulus.Network.Web
             _CancelSource.Cancel();            
         }
 
-        System.Threading.Tasks.Task<int> IStreamable.Receive(byte[] buffer, int offset, int count)
+        IWaitableValue<int> IStreamable.Receive(byte[] buffer, int offset, int count)
         {
             
             ArraySegment<byte> segment = new ArraySegment<byte>(buffer, offset, count);
@@ -51,16 +51,16 @@ namespace Regulus.Network.Web
 
                 }
                 return 0;
-            });
+            }).ToWaitableValue();
         }
 
-        System.Threading.Tasks.Task<int> IStreamable.Send(byte[] buffer, int offset, int count)
+        IWaitableValue<int> IStreamable.Send(byte[] buffer, int offset, int count)
         {
             var arraySegment = new ArraySegment<byte>(buffer, offset, count);
             return _Socket.SendAsync(arraySegment, WebSocketMessageType.Binary, true, _CancelSource.Token).ContinueWith((t) =>
             {
                 return count;
-            });
+            }).ToWaitableValue();
 
 
         }

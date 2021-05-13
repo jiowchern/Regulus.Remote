@@ -69,18 +69,13 @@ namespace Regulus.Network.Tests
 
             int readCount = 0;
             byte[] receivedBuffer = new byte[Config.Default.PackageSize];
-            Task<int> task = rudpSocket.Receive(receivedBuffer, 0, receivedBuffer.Length);
-
-
-
-
-
-
-
-            Task waitTask = task.ContinueWith(t =>
+            var task = rudpSocket.Receive(receivedBuffer, 0, receivedBuffer.Length);
+            task.ValueEvent += t =>
             {
-                readCount = t.Result;
-            });
+                readCount = t;
+            };
+
+            
 
             while (readCount == 0)
             {

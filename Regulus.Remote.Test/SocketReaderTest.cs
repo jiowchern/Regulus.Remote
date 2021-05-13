@@ -9,7 +9,7 @@ namespace Regulus.Remote.Tests
 
 
 
-        Task<int> IStreamable.Receive(byte[] buffer, int offset, int count)
+        IWaitableValue<int> IStreamable.Receive(byte[] buffer, int offset, int count)
         {
             return System.Threading.Tasks.Task<int>.Run(() =>
             {
@@ -18,11 +18,11 @@ namespace Regulus.Remote.Tests
                     buffer[offset + i] = i;
                 }
                 return 10;
-            });
+            }).ToWaitableValue();
 
         }
 
-        Task<int> IStreamable.Send(byte[] buffer, int offset, int count)
+        IWaitableValue<int> IStreamable.Send(byte[] buffer, int offset, int count)
         {
             throw new NotImplementedException();
         }
@@ -32,22 +32,22 @@ namespace Regulus.Remote.Tests
     {
         [Xunit.Fact(Timeout =5000)]
         
-        public void ScoketRead10ByteTest()
+        public async void ScoketRead10ByteTest()
         {
 
             SocketReaderTestPeer peer = new SocketReaderTestPeer();
 
 
             SocketBodyReader reader = new Regulus.Remote.SocketBodyReader(peer);
-            byte[] readBytes = new byte[10];
             
+            var readBytes = new System.Collections.Generic.List<byte>();
             reader.DoneEvent += (data) =>
-            {            
-                readBytes = data;
+            {
+                readBytes.AddRange(data);
             };
-            reader.Read(10).Wait();
-
+            reader.Read(10);
             
+            while (readBytes.Count < 10) ;
             Xunit.Assert.Equal(1, readBytes[1]);
             Xunit.Assert.Equal(5, readBytes[5]);
             Xunit.Assert.Equal(9, readBytes[9]);

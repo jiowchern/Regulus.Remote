@@ -30,14 +30,11 @@ namespace Regulus.Remote
         private void _Read()
         {
 
-            System.Threading.Tasks.Task<int> task = _Peer.Receive(_ReadedByte, 0, 1);
-            task.ContinueWith(t => _Readed(t));
+            var task = _Peer.Receive(_ReadedByte, 0, 1);
+            task.ValueEvent += _Readed;            
         }
 
-        private void _Readed(Task<int> t)
-        {
-            _Readed(t.Result);
-        }
+        
 
         private void _Readed(int read_size)
         {

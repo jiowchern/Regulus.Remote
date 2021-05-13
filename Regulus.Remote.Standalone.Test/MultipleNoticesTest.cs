@@ -67,8 +67,8 @@ namespace Regulus.Remote.Standalone.Test
             env.Dispose();
 
         }
-            [Xunit.Fact()]
-        
+
+        [Xunit.Fact()]        
         public async System.Threading.Tasks.Task TestSupplyAndUnsupply()
         {
             var multipleNotices = new MultipleNotices();

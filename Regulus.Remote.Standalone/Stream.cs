@@ -54,10 +54,10 @@ namespace Regulus.Remote.Standalone
 
 
 
-        Task<int> IStreamable.Receive(byte[] buffer, int offset, int count)
+        IWaitableValue<int> IStreamable.Receive(byte[] buffer, int offset, int count)
         {
             
-            return _Read(buffer, offset, count);
+            return _Read(buffer, offset, count).ToWaitableValue();
         }
 
         private Task<int> _Read(byte[] buffer, int offset, int count)
@@ -128,8 +128,8 @@ namespace Regulus.Remote.Standalone
 
         }
 
-        
-        Task<int> IStreamable.Send(byte[] buffer, int offset, int count)
+
+        IWaitableValue<int> IStreamable.Send(byte[] buffer, int offset, int count)
         {
             
 
@@ -154,7 +154,7 @@ namespace Regulus.Remote.Standalone
                         _ReadySend.Set();
                     return readCount;
                 }
-            });
+            }).ToWaitableValue();
         }
     }
 }

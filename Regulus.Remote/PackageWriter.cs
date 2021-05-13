@@ -46,14 +46,14 @@ namespace Regulus.Remote
                 var buffer = _CreateBuffer(pkgs);
 
                 var resultTask = _Peer.Send(buffer, 0, buffer.Length);
-                resultTask.ContinueWith(_WriteEnd);
+                resultTask.ValueEvent +=_WriteEnd;
             }
             
         }
 
-        private void _WriteEnd(System.Threading.Tasks.Task<int> task)
+        private void _WriteEnd(int send_count)
         {
-            NetworkMonitor.Instance.Write.Set(task.Result);
+            NetworkMonitor.Instance.Write.Set(send_count);
         }
 
         public void Push(TPackage[] packages)
