@@ -9,46 +9,36 @@ namespace Regulus.Remote.Standalone
     public class Stream : Network.IStreamable
     {
         
-        readonly System.Collections.Generic.Queue<byte> _Sends;
+        readonly System.Collections.Concurrent.ConcurrentQueue<byte> _Sends;
         
-        readonly System.Collections.Generic.Queue<byte> _Receives;
+        readonly System.Collections.Concurrent.ConcurrentQueue<byte> _Receives;
 
-        readonly System.Threading.ManualResetEvent _ReadyReceive;
-        readonly System.Threading.ManualResetEvent _ReadySend;
+        
 
         public Stream()
         {
-            _ReadyReceive = new System.Threading.ManualResetEvent(true);
-            _ReadySend = new System.Threading.ManualResetEvent(true);
-            _Sends = new System.Collections.Generic.Queue<byte>();
-            _Receives = new System.Collections.Generic.Queue<byte>();
+        
+            _Sends = new System.Collections.Concurrent.ConcurrentQueue<byte>();
+            _Receives = new System.Collections.Concurrent.ConcurrentQueue<byte>();
 
         }
 
-        public Task<int> Push(byte[] buffer, int offset, int count)
-        {            
-
-            return System.Threading.Tasks.Task<int>.Factory.StartNew(() => {
-                lock (_Receives)
-                {
-                    int readCount = 0;
-                    for (int i = offset; i < buffer.Length; i++)
-                    {
-                        int index = i - offset;
-                        if (index >= count)
-                        {
-                            if (readCount > 0)
-                                _ReadyReceive.Set();
-                            return readCount;
-                        }
-                        readCount++;
-                        _Receives.Enqueue(buffer[i]);
-                    }
-                    if (readCount > 0)
-                        _ReadyReceive.Set();
-                    return readCount;
+        public IWaitableValue<int> Push(byte[] buffer, int offset, int count)
+        {
+            int readCount = 0;            
+            
+            for (int i = offset; i < buffer.Length; i++)
+            {
+                int index = i - offset;
+                if (index >= count)
+                {                    
+                    return new Regulus.Network.NoWaitValue<int>(readCount);
                 }
-            } );
+                readCount++;
+                _Receives.Enqueue(buffer[i]);
+            }
+            return new Regulus.Network.NoWaitValue<int>(readCount);
+            
         }
 
 
@@ -57,71 +47,39 @@ namespace Regulus.Remote.Standalone
         IWaitableValue<int> IStreamable.Receive(byte[] buffer, int offset, int count)
         {
             
-            return _Read(buffer, offset, count).ToWaitableValue();
+            return _Read(buffer, offset, count);
         }
 
-        private Task<int> _Read(byte[] buffer, int offset, int count)
+        private IWaitableValue<int> _Read(byte[] buffer, int offset, int count)
         {
 
-            
-            
-
-            return System.Threading.Tasks.Task<int>.Factory.StartNew(()=> {
-                _ReadyReceive.WaitOne();
-                lock (_Receives)
-                {
-                    int readCount = 0;
-                    for (int i = offset; i < buffer.Length; i++)
-                    {
-                        int index = i - offset;
-                        if (index >= count)
-                            return readCount;
-                        if (_Receives.Count == 0)
-                        {
-                            _ReadyReceive.Reset();
-                            return readCount;
-                        }
-                        readCount++;
-                        buffer[i] = _Receives.Dequeue();
-                    }
-                    return readCount;
-                }
-
-                
-            });
+            return _Dequeue(_Receives , buffer , offset , count);
         }
 
-        private Task<int> _Write(byte[] buffer, int offset, int count)
+        private IWaitableValue<int> _Dequeue(System.Collections.Concurrent.ConcurrentQueue<byte> quque,byte[] buffer, int offset, int count)
         {
+            int readCount = 0;
+            byte b;
+            while (quque.TryDequeue(out b))
+            {
+                int index = offset + readCount++;
+                buffer[index] = b;
+
+                if (readCount == count)
+                    return new Regulus.Network.NoWaitValue<int>(readCount);
+            }
+            return new Regulus.Network.NoWaitValue<int>(readCount);
+        }
+
+        private IWaitableValue<int> _Write(byte[] buffer, int offset, int count)
+        {
+            return _Dequeue(_Sends , buffer , offset , count);
             
 
 
-            return System.Threading.Tasks.Task<int>.Factory.StartNew(()=> {
-                _ReadySend.WaitOne();
-                lock (_Sends)
-                {
-                    int readCount = 0;
-                    for (int i = offset; i < buffer.Length; i++)
-                    {
-                        int index = i - offset;
-                        if (index >= count)
-                            return readCount;
-                        if (_Sends.Count == 0)
-                        {
-                            _ReadySend.Reset();
-                            return readCount;
-                        }
-                        readCount++;
-                        buffer[i] = _Sends.Dequeue();
-                    }
-                    return readCount;
-                }
-
-                
-            });
         }
 
-        public Task<int> Pop(byte[] buffer, int offset, int count)
+        public IWaitableValue<int> Pop(byte[] buffer, int offset, int count)
         {
             return _Write(buffer, offset, count);
 
@@ -131,30 +89,22 @@ namespace Regulus.Remote.Standalone
 
         IWaitableValue<int> IStreamable.Send(byte[] buffer, int offset, int count)
         {
-            
+            int readCount = 0;
 
-            return System.Threading.Tasks.Task<int>.Factory.StartNew(()=> {
-                lock (_Sends)
+            for (int i = offset; i < buffer.Length; i++)
+            {
+                int index = i - offset;
+                if (index >= count)
                 {
-                    int readCount = 0;
                     
-                    for (int i = offset; i < buffer.Length; i++)
-                    {
-                        int index = i - offset;
-                        if (index >= count)
-                        {
-                            if(readCount > 0)
-                                _ReadySend.Set();
-                            return readCount;
-                        }
-                        readCount++;
-                        _Sends.Enqueue(buffer[i]);
-                    }
-                    if (readCount > 0)
-                        _ReadySend.Set();
-                    return readCount;
+                    return new Regulus.Network.NoWaitValue<int>(readCount);
                 }
-            }).ToWaitableValue();
+                readCount++;
+                _Sends.Enqueue(buffer[i]);
+            }
+
+            return new Regulus.Network.NoWaitValue<int>(readCount);
+
         }
     }
 }

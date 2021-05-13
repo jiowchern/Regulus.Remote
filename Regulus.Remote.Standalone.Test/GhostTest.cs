@@ -62,13 +62,11 @@ namespace Regulus.Remote.Standalone.Test
             Stream cd = new Regulus.Remote.Standalone.Stream();
             IStreamable peer = cd as IStreamable;
             await cd.Push(sendBuf, 0, sendBuf.Length);
-            var receiveResult1 = peer.Receive(recvBuf, 0, 4);
-            var receiveResult2 = peer.Receive(recvBuf, 4, 5);
-            var receiveResult3 = peer.Receive(recvBuf, 9, 2);
+            
 
-            int receiveCount1 = receiveResult1.GetAwaiter().GetResult();
-            int receiveCount2 = receiveResult2.GetAwaiter().GetResult();
-            int receiveCount3 = receiveResult3.GetAwaiter().GetResult();
+            int receiveCount1 =await peer.Receive(recvBuf, 0, 4);
+            int receiveCount2 = await peer.Receive(recvBuf, 4, 5);
+            int receiveCount3 = await peer.Receive(recvBuf, 9, 2);
 
             Assert.Equal(4, receiveCount1);
             Assert.Equal(5, receiveCount2);
@@ -91,13 +89,13 @@ namespace Regulus.Remote.Standalone.Test
             int sendResult2 = await result2;
 
 
-            System.Threading.Tasks.Task<int> streamTask1 = cd.Pop(recvBuf, 0, 3);
+            var streamTask1 = cd.Pop(recvBuf, 0, 3);
             int stream1 = await streamTask1;
 
-            System.Threading.Tasks.Task<int> streamTask2 = cd.Pop(recvBuf, stream1, recvBuf.Length - stream1);
+            var streamTask2 = cd.Pop(recvBuf, stream1, recvBuf.Length - stream1);
             int stream2 = await streamTask2;
 
-            System.Threading.Tasks.Task<int> streamTask3 = cd.Pop(recvBuf, stream1 + stream2, recvBuf.Length - (stream1 + stream2));
+            var streamTask3 = cd.Pop(recvBuf, stream1 + stream2, recvBuf.Length - (stream1 + stream2));
             int stream3 = await streamTask3;
 
 

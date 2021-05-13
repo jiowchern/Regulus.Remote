@@ -46,8 +46,13 @@ namespace Regulus.Remote.Tests
                 readBytes.AddRange(data);
             };
             reader.Read(10);
-            
-            while (readBytes.Count < 10) ;
+            Regulus.Utility.IStatus status = reader;
+            status.Enter();
+            while (readBytes.Count < 10)
+            {
+                status.Update();
+            }
+            status.Leave();
             Xunit.Assert.Equal(1, readBytes[1]);
             Xunit.Assert.Equal(5, readBytes[5]);
             Xunit.Assert.Equal(9, readBytes[9]);
@@ -60,16 +65,19 @@ namespace Regulus.Remote.Tests
 
             SocketHeadReader reader = new Regulus.Remote.SocketHeadReader(peer);
             ISocketReader readEvent = reader as ISocketReader;
-            System.Collections.Generic.List<byte> buffer = new System.Collections.Generic.List<byte>();
+            var buffer = new System.Collections.Generic.List<byte>();
             readEvent.DoneEvent += (read_buffer) =>
             {
                 buffer.AddRange(read_buffer);
             };
+
             reader.Read();
+            readEvent.Enter();            
             while (buffer.Count != 2)
             {
-
+                readEvent.Update();
             }
+            readEvent.Leave();
             Xunit.Assert.Equal(0x85, buffer[0]);
             Xunit.Assert.Equal(0x05, buffer[1]);
 

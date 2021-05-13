@@ -1,10 +1,10 @@
 ﻿using Regulus.Network;
 using Regulus.Serialization;
-using System;
+
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
+
 
 namespace Regulus.Remote
 {
@@ -15,7 +15,7 @@ namespace Regulus.Remote
 
         private IStreamable _Peer;
 
-        private volatile bool _Stop;
+        
         
         
         System.Collections.Concurrent.ConcurrentQueue<TPackage[]> _SendPkgs;
@@ -31,7 +31,7 @@ namespace Regulus.Remote
 
         public void Start(IStreamable peer)
         {
-            _Stop = false;
+            
             _Peer = peer;
             
 
@@ -86,7 +86,7 @@ namespace Regulus.Remote
 
         public void Stop()
         {
-            _Stop = true;            
+                 
         }
 
     }

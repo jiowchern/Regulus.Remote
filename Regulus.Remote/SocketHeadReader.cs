@@ -13,6 +13,8 @@ namespace Regulus.Remote
         private readonly System.Collections.Generic.List<byte> _Buffer;
 
         private readonly byte[] _ReadedByte;
+        int _ReadSize;
+        System.Action _Update;
         
         public SocketHeadReader(IStreamable peer)
         {
@@ -20,7 +22,7 @@ namespace Regulus.Remote
             _ReadedByte = new byte[1];
             _Peer = peer;
             _Buffer = new List<byte>();
-
+            _Update = () => { };
         }
 
         public void Read()
@@ -29,53 +31,61 @@ namespace Regulus.Remote
         }
         private void _Read()
         {
-
-            var task = _Peer.Receive(_ReadedByte, 0, 1);
-            task.ValueEvent += _Readed;            
+            _ReadSize = 0;
+            _Update = () => { };
+            _Peer.Receive(_ReadedByte, 0, 1).ValueEvent += _ReadDone;            
         }
 
-        
-
-        private void _Readed(int read_size)
+        private void _ReadDone(int read_size)
         {
-        
-            if (_ReadData(read_size))
-            {
-                _DoneEvent(_Buffer.ToArray());
-            }
-            else 
-            {
-                _Read();
-            }
+            _ReadSize += read_size;
+            _Update = _Check;
         }
 
-        private bool _ReadData(int readSize)
+        private bool _ReadData()
         {
+            if (_ReadSize == 0)
+                return false;
+            
+            byte value = _ReadedByte[0];
+            _Buffer.Add(value);
 
-            if (readSize != 0)
+            if (value < 0x80)
             {
-                byte value = _ReadedByte[0];
-                _Buffer.Add(value);
-
-                if (value < 0x80)
-                {
-                    return true;
-                }
+                return true;
             }
             return false;
         }
 
-        void IBootable.Launch()
+        
+
+        void IStatus.Enter()
         {
             
         }
 
-        void IBootable.Shutdown()
-        {        
-        
+        void IStatus.Leave()
+        {
+            
         }
 
-        
+        void IStatus.Update()
+        {
+            _Update();
+            
+        }
+
+        private void _Check()
+        {
+            if (_ReadData())
+            {
+                _DoneEvent(_Buffer.ToArray());
+            }
+            else
+            {
+                _Read();
+            }
+        }
 
         private OnByteDataCallback _DoneEvent;
         event OnByteDataCallback ISocketReader.DoneEvent

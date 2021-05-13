@@ -91,6 +91,8 @@ namespace Regulus.Remote.Ghost
 
         private void _Process()
         {
+            _Reader.Update();
+            _Writer.Update();
             ResponsePackage receivePkg;
             while(_Receives.TryDequeue(out receivePkg))
             {

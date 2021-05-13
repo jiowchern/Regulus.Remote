@@ -90,7 +90,7 @@ namespace Regulus.Remote.Soul
         public User(IStreamable client, IProtocol protocol)
         {
             Stream = client;
-            _Updater = new ThreadUpdater(_Update);
+            
             _Serialize = protocol.GetSerialize();
 
             _EnableLock = new object();
@@ -103,7 +103,7 @@ namespace Regulus.Remote.Soul
             _Reader = new PackageReader<RequestPackage>(protocol.GetSerialize());
             _Writer = new PackageWriter<ResponsePackage>(protocol.GetSerialize());
 
-
+            _Updater = new ThreadUpdater(_Update);
 
         }
 
@@ -180,6 +180,7 @@ namespace Regulus.Remote.Soul
                 _Writer.Push(responses);
 
             _Writer.Update();
+            _Reader.Update();
         }
 
         void IResponseQueue.Push(ServerToClientOpCode cmd, byte[] data)

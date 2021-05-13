@@ -23,6 +23,7 @@ namespace Regulus.Remote.Tests
             {
                 buffer[offset] = _Buffer.Dequeue();
                 return 1;
+
             }).ToWaitableValue();
 
 

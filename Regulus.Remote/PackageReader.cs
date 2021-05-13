@@ -8,9 +8,6 @@ namespace Regulus.Remote
     public delegate void OnErrorCallback();
 
     public delegate void OnByteDataCallback(byte[] bytes);
-
-
-
     public class PackageReader<TPackage>
     {
         private readonly ISerializer _Serializer;
@@ -27,7 +24,7 @@ namespace Regulus.Remote
 
         private OnRequestPackageCallback _DoneEvent;
 
-        readonly Regulus.Utility.StageMachine _Machine;        
+        readonly Regulus.Utility.StatusMachine _Machine;        
 
         private IStreamable _Peer;
 
@@ -35,10 +32,11 @@ namespace Regulus.Remote
 
         public PackageReader(ISerializer serializer)
         {
-            _Machine = new StageMachine();
+            _Machine = new StatusMachine();
             _Serializer = serializer;
             _DoneEvent += _Empty;
             ErrorEvent += _Empty;
+            
         }
         private void _Empty(TPackage  arg)
         {
@@ -100,10 +98,13 @@ namespace Regulus.Remote
                 _ReadHead();
             }
         }
-
+        public void Update()
+        {
+            _Machine.Update();
+        }
         public void Stop()
         {
-            _Machine.Clean();
+            _Machine.Termination();
             _Stop = true;
 
             Singleton<Log>.Instance.WriteInfo("pakcage read stop.");

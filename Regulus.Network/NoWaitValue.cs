@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace Regulus.Network
 {
-    internal class NoWaitValue<T> : IWaitableValue<T> , IAwaitable<T>
+    public class NoWaitValue<T> : IWaitableValue<T> , IAwaitable<T>
     {
         private readonly Regulus.Remote.Value<T> _Value;
 
