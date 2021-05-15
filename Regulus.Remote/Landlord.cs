@@ -22,19 +22,21 @@ namespace Regulus.Remote
     public class Landlord<T>
     {
 
-        readonly Queue<T> _Enrollments;
+        readonly System.Collections.Concurrent.ConcurrentQueue<T> _Enrollments;
         readonly ILandlordProviable<T> _Provider;
         public Landlord(ILandlordProviable<T> provider)
         {
             _Provider = provider;
-            _Enrollments = new Queue<T>();
+            _Enrollments = new System.Collections.Concurrent.ConcurrentQueue<T>();
         }
 
         public T Rent()
         {
-
-            if (_Enrollments.Count > 0)
-                return _Enrollments.Dequeue();
+            T id;
+            if(_Enrollments.TryDequeue(out id))
+            {
+                return id;
+            }            
 
             return _Provider.Spawn();
 

@@ -347,7 +347,7 @@ namespace Regulus.Remote
             MemberMap map = _Protocol.GetMemberMap();
             int interfaceId = map.GetInterface(soul_type);
             SoulProxy newSoul = new SoulProxy(_IdLandlord.Rent(), interfaceId, soul_type, soul, map.Propertys.Item1s);
-
+            Regulus.Utility.Log.Instance.WriteInfo($"soul add {newSoul.Id}:{soul_type.Name}.");
             _Souls.TryAdd(newSoul.Id, newSoul);
 
             return newSoul;
@@ -372,6 +372,7 @@ namespace Regulus.Remote
                              select soul_info).SingleOrDefault();*/
 
             SoulProxy soulInfo;
+            Regulus.Utility.Log.Instance.WriteInfo($"soul remove {id}.");
             if (!_Souls.TryRemove(id, out soulInfo))
                 throw new Exception($"can't find the soul {id} to delete.");
             
