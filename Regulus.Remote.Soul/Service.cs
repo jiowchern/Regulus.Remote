@@ -10,13 +10,26 @@ namespace Regulus.Remote.Soul
         private readonly IProtocol _Protocol;
 
         readonly System.Collections.Generic.List<User> _Users;
+        readonly Regulus.Utility.Updater _Updater;
+
+        readonly ThreadUpdater _ThreadUpdater;
 
         public Service(IBinderProvider entry, IProtocol protocol)
         {
+            
             _Users = new System.Collections.Generic.List<User>();
             this._Entry = entry;
             this._Protocol = protocol;
+            _Updater = new Utility.Updater();
+            _ThreadUpdater = new ThreadUpdater(_Update);
+            _ThreadUpdater.Start();
         }
+
+        private void _Update()
+        {
+            _Updater.Working();
+        }
+
         void IService.Join(Network.IStreamable stream,object state)
         {
             User user = new User(stream, _Protocol);
@@ -24,7 +37,8 @@ namespace Regulus.Remote.Soul
             {
                 _Users.Add(user);                
             }
-            user.Launch();
+            
+            _Updater.Add(user);
             _Entry.AssignBinder(user.Binder, state);
         }
 
@@ -37,22 +51,18 @@ namespace Regulus.Remote.Soul
             }
             if(user != null)
             {
-                user.Shutdown();
+                _Updater.Remove(user);                
                 lock (_Users)
                     _Users.Remove(user);
             }
-                
-            
         }
 
         void IDisposable.Dispose()
-        {            
-            lock(_Users)
-            {
-                foreach (var user in _Users)
-                {
-                    user.Shutdown();
-                }
+        {
+            _ThreadUpdater.Stop();
+            _Updater.Shutdown();
+            lock (_Users)
+            {                
                 _Users.Clear();
             }            
         }

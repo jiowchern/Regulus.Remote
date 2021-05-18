@@ -176,8 +176,7 @@ namespace Regulus.Remote.Standalone.Test
             writer.ServerToClient(serializer, ServerToClientOpCode.LoadSoulCompile, new Regulus.Remote.PackageLoadSoulCompile() { EntityId = 1, TypeId = 1, ReturnId = 0});
             while (retGpiA == null)
             {
-                agent.Update();
-                writer.Update();
+                agent.Update();                
             }
             agent.Stop();
             writer.Stop();

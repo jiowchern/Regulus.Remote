@@ -16,50 +16,32 @@ namespace Regulus.Remote
         private IStreamable _Peer;
 
         
-        
-        
-        System.Collections.Concurrent.ConcurrentQueue<TPackage[]> _SendPkgs;
 
         public PackageWriter(ISerializer serializer)
         {
 
             _Serializer = serializer;
-            _SendPkgs = new System.Collections.Concurrent.ConcurrentQueue<TPackage[]>();
+        
         }
-
-       
-
         public void Start(IStreamable peer)
-        {
-            
+        {            
             _Peer = peer;
-            
-
         }
 
-        public  void Update()
-        {
-            
-            TPackage[] pkgs;
-            if(_SendPkgs.TryDequeue(out pkgs))
-            {
-                var buffer = _CreateBuffer(pkgs);
-
-                var resultTask = _Peer.Send(buffer, 0, buffer.Length);
-                resultTask.ValueEvent +=_WriteEnd;
-            }
-            
-        }
+        
 
         private void _WriteEnd(int send_count)
         {
             NetworkMonitor.Instance.Write.Set(send_count);
         }
 
-        public void Push(TPackage[] packages)
-        {
+        public async void Push(System.Collections.Generic.IEnumerable<TPackage>   packages)
+        {            
 
-            _SendPkgs.Enqueue(packages);
+            var buffer = _CreateBuffer(packages.ToArray());
+
+            var sendCount = await _Peer.Send(buffer, 0, buffer.Length);
+            _WriteEnd(sendCount);
         }
         
 

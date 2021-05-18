@@ -91,8 +91,7 @@ namespace Regulus.Remote.Ghost
 
         private void _Process()
         {
-            _Reader.Update();
-            _Writer.Update();
+            _Reader.Update();            
             ResponsePackage receivePkg;
             while(_Receives.TryDequeue(out receivePkg))
             {
@@ -106,7 +105,7 @@ namespace Regulus.Remote.Ghost
             if (sends.Length > 0)
                 _Writer.Push(sends);
 
-            _Writer.Update();
+            
         }
 
         private void _WriterStart(IStreamable peer)
