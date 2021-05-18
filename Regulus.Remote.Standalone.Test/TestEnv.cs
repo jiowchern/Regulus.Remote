@@ -1,5 +1,6 @@
 ﻿using Regulus.Projects.TestProtocol.Common;
 using Regulus.Projects.TestProtocol.Common.Ghost;
+using System;
 
 namespace Regulus.Remote.Standalone.Test
 {
@@ -18,15 +19,19 @@ namespace Regulus.Remote.Standalone.Test
             IProtocol protocol = Regulus.Remote.Protocol.ProtocolProvider.Create(typeof(CISample).Assembly);
             _Service = new Regulus.Remote.Standalone.Service(entry, protocol);
             _Agent = new Regulus.Remote.Ghost.Agent(protocol);
-
-            _AgentUpdater = new ThreadUpdater(_Agent.Update);
-
             _Service.Join(_Agent);
-            _AgentUpdater.Start();
+            
 
             Queryable = _Agent;
+
+            _AgentUpdater = new ThreadUpdater(_Update);
+            _AgentUpdater.Start();
         }
 
+        private void _Update()
+        {
+            _Agent.Update();
+        }
 
         public void Dispose()
         {

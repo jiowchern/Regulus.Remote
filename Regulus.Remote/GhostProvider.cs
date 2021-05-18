@@ -244,11 +244,14 @@ namespace Regulus.Remote
 
         private void _UnloadSoul(long id)
         {
-
-            foreach (var provider in _Providers.Values)
-            {                
-                provider.Remove(id);
+            lock(_Providers)
+            {
+                foreach (var provider in _Providers.Values)
+                {
+                    provider.Remove(id);
+                }
             }
+            
 
             
         }

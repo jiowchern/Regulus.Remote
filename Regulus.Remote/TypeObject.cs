@@ -2,7 +2,7 @@
 
 namespace Regulus.Remote
 {
-    public struct TypeObject
+    public class TypeObject
     {
         public readonly Type Type;
         public readonly object Instance;

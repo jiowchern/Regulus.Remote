@@ -13,6 +13,11 @@ namespace Regulus.Projects.TestProtocol.Common
         readonly Notifier<INumber> _NumberNotifier;
 
         readonly Property<int> _LastValue;
+
+        public int AddCount;
+        public int EventAddCount;
+        public int EventRemoveCount;
+        public int RemoveCount;
         public Sample()
         {            
             Numbers = new NotifiableCollection<INumber>();
@@ -29,11 +34,13 @@ namespace Regulus.Projects.TestProtocol.Common
         {
             add
             {
+                EventAddCount++;
                 Ints.Notifier.Supply += value;
             }
 
             remove
             {
+                EventRemoveCount++;
                 Ints.Notifier.Supply -= value;
             }
         }
@@ -46,6 +53,7 @@ namespace Regulus.Projects.TestProtocol.Common
 
         Value<int> ISample.Add(int num1, int num2)
         {
+            AddCount++;
             _LastValue.Value = num1 + num2;
             return _LastValue.Value;
         }
@@ -57,6 +65,7 @@ namespace Regulus.Projects.TestProtocol.Common
 
         Value<bool> ISample.RemoveNumber(int val)
         {
+            RemoveCount++;
             var number = Numbers.Items.First(n => n.Value == val);
             return Numbers.Items.Remove(number);
         }

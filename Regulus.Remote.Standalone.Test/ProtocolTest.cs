@@ -12,7 +12,7 @@ namespace Regulus.Remote.Standalone.Test
     {
 
         
-        /*[Xunit.Theory()]
+        [Xunit.Theory()]
         [Xunit.InlineData(1)]
         public void AllInOneCount(int count)
         {
@@ -22,7 +22,7 @@ namespace Regulus.Remote.Standalone.Test
             System.Threading.Tasks.Task.WhenAll(tasks);
 
 
-        }*/
+        }
         //[Xunit.Fact()]
         public async System.Threading.Tasks.Task AllInOne()
         {
@@ -36,7 +36,6 @@ namespace Regulus.Remote.Standalone.Test
         public async System.Threading.Tasks.Task Sample2NotifierUnsupplyTest()
         {
             var env = new TestEnv<SampleEntry>(new SampleEntry());
-
 
             var n1 = new Number(1);
             var n2 = new Number(2);
@@ -176,6 +175,7 @@ namespace Regulus.Remote.Standalone.Test
             int verifyResult = await addObs.Do((r) => { }, _Throw).FirstAsync();
             
             env.Dispose();
+            
             Xunit.Assert.Equal(3, verifyResult);
         }
 

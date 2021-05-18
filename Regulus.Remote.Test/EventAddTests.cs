@@ -54,7 +54,7 @@ namespace RemotingTest
         public void SoulEventInvokeTest()
         {
             TestType obj = NSubstitute.Substitute.For<TestType>();
-            var soul = new SoulProxy(0, 0, typeof(TestType), obj,null );
+            var soul = new SoulProxy(0, 0, typeof(TestType), obj);
 
             string eventCatcher = "";
             InvokeEventCallabck callback = (entiry_id, event_id, handler_id, args) =>

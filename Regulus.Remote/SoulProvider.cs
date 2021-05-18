@@ -29,8 +29,7 @@ namespace Regulus.Remote
         private readonly ISerializer _Serializer;
         
         public SoulProvider(IRequestQueue peer, IResponseQueue queue, IProtocol protocol)
-        {
-            
+        {            
             _WaitValues = new Dictionary<long, IValue>();
             _Souls = new System.Collections.Concurrent.ConcurrentDictionary<long, SoulProxy>();
             _EventFilter = new Queue<byte[]>();
@@ -61,22 +60,12 @@ namespace Regulus.Remote
         }
 
         ISoul IBinder.Bind<TSoul>(TSoul soul)
-        {
-            if (soul == null)
-            {
-                throw new ArgumentNullException("soul");
-            }
-
+        {            
             return _Bind(soul, false, 0);
         }
 
         void IBinder.Unbind(ISoul soul)
-        {
-            if (soul == null)
-            {
-                throw new ArgumentNullException("soul");
-            }
-
+        {            
             _Unbind(soul.Id);
         }
 
@@ -103,9 +92,6 @@ namespace Regulus.Remote
 
         private void _InvokeEvent(long entity_id, int event_id, long handler_id, object[] args)
         {
-
-
-
             PackageInvokeEvent package = new PackageInvokeEvent();
             package.EntityId = entity_id;
             package.Event = event_id;
@@ -149,16 +135,11 @@ namespace Regulus.Remote
 
         private void _ReturnSoulValue(long return_id, IValue returnValue)
         {
+            
             var soul = returnValue.GetObject() ;
-            Type type = returnValue.GetObjectType();            
+            Type type = returnValue.GetObjectType();
 
-            SoulProxy new_soul = _NewSoul(soul, type);
-
-            _LoadSoul(new_soul.InterfaceId, new_soul.Id, true);
-
-            _LoadProperty(new_soul);
-
-            _LoadSoulCompile(new_soul.InterfaceId, new_soul.Id, return_id);
+            _Bind(soul, type, true, return_id);            
         }
 
         private void _LoadProperty(SoulProxy new_soul)
@@ -287,15 +268,10 @@ namespace Regulus.Remote
         }
         public void RemoveEvent(long entity_id, int event_id, long handler_id)
         {
-
-
-
             SoulProxy soul;
             
             if (!_Souls.TryGetValue(entity_id, out soul))
                 return;
-
-
 
             EventInfo eventInfo = _Protocol.GetMemberMap().GetEvent(event_id);
             if (eventInfo == null)
@@ -344,9 +320,11 @@ namespace Regulus.Remote
         private SoulProxy _NewSoul(object soul, Type soul_type)
         {
 
-            MemberMap map = _Protocol.GetMemberMap();
-            int interfaceId = map.GetInterface(soul_type);
-            SoulProxy newSoul = new SoulProxy(_IdLandlord.Rent(), interfaceId, soul_type, soul, map.Propertys.Item1s);
+            
+            int interfaceId = _Protocol.GetMemberMap().GetInterface(soul_type);
+            SoulProxy newSoul = new SoulProxy(_IdLandlord.Rent(), interfaceId, soul_type, soul );
+            newSoul.SupplySoulEvent += _PropertyBind;
+            newSoul.UnsupplySoulEvent += _PropertyUnbind;            
             Regulus.Utility.Log.Instance.WriteInfo($"soul add {newSoul.Id}:{soul_type.Name}.");
             _Souls.TryAdd(newSoul.Id, newSoul);
 
@@ -355,22 +333,16 @@ namespace Regulus.Remote
 
         private SoulProxy _Bind(object soul, Type soul_type, bool return_type, long return_id)
         {
-            SoulProxy newSoul = _NewSoul(soul, soul_type);
-            newSoul.SupplySoulEvent += _PropertyBind;
-            newSoul.UnsupplySoulEvent += _PropertyUnbind;            
+            var newSoul = _NewSoul(soul, soul_type);            
             _LoadSoul(newSoul.InterfaceId, newSoul.Id, return_type);
             _LoadProperty(newSoul);
-            _LoadSoulCompile(newSoul.InterfaceId, newSoul.Id, return_id);
-
+            _LoadSoulCompile(newSoul.InterfaceId, newSoul.Id, return_id);            
+            newSoul.Initial(_Protocol.GetMemberMap().Propertys.Item1s);
             return newSoul;
         }
 
         private void _Unbind(long id)
-        {
-            /*SoulProxy soulInfo = (from soul_info in _Souls.GetConsumingEnumerable()
-                                  where object.ReferenceEquals(soul_info.ObjectInstance, soul) && soul_info.ObjectType == type
-                             select soul_info).SingleOrDefault();*/
-
+        {            
             SoulProxy soulInfo;
             Regulus.Utility.Log.Instance.WriteInfo($"soul remove {id}.");
             if (!_Souls.TryRemove(id, out soulInfo))
@@ -382,7 +354,6 @@ namespace Regulus.Remote
             soulInfo.Release();
             _UnloadSoul(soulInfo.InterfaceId, soulInfo.Id);            
             _IdLandlord.Return(soulInfo.Id);
-
             
         }
 
@@ -398,7 +369,7 @@ namespace Regulus.Remote
             _Unbind(property_soul_id);
             
         }
-
+        
         private ISoul _PropertyBind(long soul_id , int property_id, TypeObject type_object)
         {            
             var soul = _Bind(type_object.Instance, type_object.Type, false, 0);
@@ -406,8 +377,9 @@ namespace Regulus.Remote
             PackagePropertySoul package = new PackagePropertySoul();
             package.OwnerId = soul_id;
             package.PropertyId = property_id;
-            package.EntiryId = soul.Id;
+            package.EntiryId = soul.Id;            
             _Queue.Push(ServerToClientOpCode.AddPropertySoul, package.ToBuffer(_Serializer));
+        
             return soul;
         }
 

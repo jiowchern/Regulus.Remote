@@ -32,7 +32,7 @@ namespace Regulus.Remote
         long ISoul.Id => Id;
         object ISoul.Instance => ObjectInstance;
 
-        public SoulProxy(long id, int interface_id, Type object_type, object object_instance, System.Collections.Generic.IReadOnlyDictionary<PropertyInfo, int> property_ids)
+        public SoulProxy(long id, int interface_id, Type object_type, object object_instance )
         {
             MethodInfos = object_type.GetMethods();
             ObjectInstance = object_instance;
@@ -43,14 +43,8 @@ namespace Regulus.Remote
             _PropertyChangeds = new System.Collections.Concurrent.ConcurrentQueue<IPropertyIdValue>();
             
             _EventHandlers = new List<SoulProxyEventHandler>();            
-            _TypeObjectNotifiables = new List<NotifierUpdater>(_BuildNotifier(object_instance, object_type, property_ids));
-            _PropertyUpdaters = new List<PropertyUpdater>(_BuildProperty(object_instance ,object_type , property_ids));
-
-
-            _Regist(_PropertyUpdaters);
-            _Regist(_TypeObjectNotifiables);
-
-
+            _TypeObjectNotifiables = new List<NotifierUpdater>();
+            _PropertyUpdaters = new List<PropertyUpdater>();
 
             _Dispose = () => {
 
@@ -80,7 +74,14 @@ namespace Regulus.Remote
                 _TypeObjectNotifiables.Clear();
             };
         }
+        public void Initial(IReadOnlyDictionary<PropertyInfo, int> property_ids)
+        {
+            _PropertyUpdaters.AddRange(_BuildProperty(ObjectInstance, ObjectType, property_ids));
+            _Regist(_PropertyUpdaters);
 
+            _TypeObjectNotifiables.AddRange(_BuildNotifier(ObjectInstance, ObjectType, property_ids));
+            _Regist(_TypeObjectNotifiables);
+        }
         
 
         private IEnumerable<Tuple<int, PropertyInfo>> _GetPropertys(Type soul_type , System.Collections.Generic.IReadOnlyDictionary<PropertyInfo, int> property_ids)

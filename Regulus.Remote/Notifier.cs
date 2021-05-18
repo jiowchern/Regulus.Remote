@@ -7,9 +7,11 @@ namespace Regulus.Remote
         
         public readonly INotifier<T> Base;
         readonly System.Collections.Generic.ICollection<T> _Collection;
+        readonly System.Collections.Generic.List<object> _Instances;
 
         public Notifier(INotifier<T> notifier , System.Collections.Generic.ICollection<T>  collection)
         {
+            _Instances = new System.Collections.Generic.List<object>();
             _UnsupplyEvent += _Empty;
             _SupplyEvent += _Empty;
 
@@ -29,12 +31,16 @@ namespace Regulus.Remote
 
         private void _OnUnsupply(T obj)
         {
-            _UnsupplyEvent(new TypeObject(typeof(T), obj));
+            _Instances.Remove(obj);
+            var to = new TypeObject(typeof(T), obj);
+            _UnsupplyEvent(to);
         }
 
         private void _OnSupply(T obj)
         {
-            _SupplyEvent(new TypeObject(typeof(T) , obj));
+            _Instances.Add(obj);
+            var to = new TypeObject(typeof(T), obj);            
+            _SupplyEvent(to);
         }
 
         event Action<TypeObject> _SupplyEvent;
@@ -42,6 +48,11 @@ namespace Regulus.Remote
         {
             add
             {
+                foreach (var instance in _Instances)
+                {
+                    var to = new TypeObject(typeof(T), instance);
+                    value(to);
+                }
                 _SupplyEvent += value;
             }
 

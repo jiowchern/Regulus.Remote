@@ -21,6 +21,7 @@ namespace Regulus.Remote.Soul
             this._Entry = entry;
             this._Protocol = protocol;
             _Updater = new Utility.Updater();
+            _Updater.AddEvent+=user=> _Entry.AssignBinder(((User)user).Binder, null);
             _ThreadUpdater = new ThreadUpdater(_Update);
             _ThreadUpdater.Start();
         }
@@ -39,7 +40,7 @@ namespace Regulus.Remote.Soul
             }
             
             _Updater.Add(user);
-            _Entry.AssignBinder(user.Binder, state);
+            
         }
 
         void IService.Leave(Network.IStreamable stream)

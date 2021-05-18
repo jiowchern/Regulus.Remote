@@ -14,7 +14,7 @@ namespace Regulus.Remote.Soul
 
         private event InvokeMethodCallback _InvokeMethodEvent;
 
-        private class Request
+        private class MethodRequest
         {
             public long EntityId { get; set; }
 
@@ -25,7 +25,7 @@ namespace Regulus.Remote.Soul
             public byte[][] MethodParams { get; set; }
         }
 
-        private readonly PackageReader<RequestPackage> _Reader;
+        
 
 
         private readonly System.Collections.Concurrent.ConcurrentQueue<RequestPackage> _Requests;
@@ -38,7 +38,11 @@ namespace Regulus.Remote.Soul
 
         private readonly SoulProvider _SoulProvider;
 
+        private readonly PackageReader<RequestPackage> _Reader;
+
         private readonly PackageWriter<ResponsePackage> _Writer;
+
+        private readonly System.Collections.Concurrent.ConcurrentQueue<RequestPackage> _ExternalRequests;
 
         readonly ThreadUpdater _Updater;
 
@@ -89,7 +93,7 @@ namespace Regulus.Remote.Soul
 
 
         public User(IStreamable client, IProtocol protocol)
-        {
+        {            
             Stream = client;
             
             _Serialize = protocol.GetSerialize();
@@ -98,37 +102,42 @@ namespace Regulus.Remote.Soul
 
             _Peer = client;
             _Protocol = protocol;
-            _SoulProvider = new SoulProvider(this, this, protocol);
+            
+            
+
             _Responses = new System.Collections.Concurrent.ConcurrentQueue<ResponsePackage>();
             _Requests = new System.Collections.Concurrent.ConcurrentQueue<RequestPackage>();
             _Reader = new PackageReader<RequestPackage>(protocol.GetSerialize());
             _Writer = new PackageWriter<ResponsePackage>(protocol.GetSerialize());
+            
+            _ExternalRequests = new System.Collections.Concurrent.ConcurrentQueue<RequestPackage>();
+
+            _SoulProvider = new SoulProvider(this, this, protocol);
 
             _Updater = new ThreadUpdater(_AsyncUpdate);
-
         }
 
         void _Launch()
         {
             _Enable = true;
-            _Updater.Start();
+            
             _Reader.DoneEvent += _RequestPush;
             _Reader.ErrorEvent += () => { _Enable = false; };
             _Reader.Start(_Peer);
 
             _Writer.Start(_Peer);
 
-            
-
             PackageProtocolSubmit pkg = new PackageProtocolSubmit();
             pkg.VerificationCode = _Protocol.VerificationCode;
             _Push(ServerToClientOpCode.ProtocolSubmit, pkg.ToBuffer(_Serialize));
-            
+
+            _Updater.Start();
         }
+
 
         void _Shutdown()
         {
-
+            _Updater.Stop();
             _Reader.DoneEvent -= _RequestPush;
             _Reader.Stop();
 
@@ -137,10 +146,8 @@ namespace Regulus.Remote.Soul
             System.Threading.Interlocked.Add(ref _TotalResponse, -_Responses.Count);
             System.Threading.Interlocked.Add(ref _TotalRequest, -_Requests.Count);
 
-
-            _Updater.Stop();
-
             _SendBreakEvent();
+            _Enable = false;
         }
 
         event InvokeMethodCallback IRequestQueue.InvokeMethodEvent
@@ -163,6 +170,8 @@ namespace Regulus.Remote.Soul
             _Writer.Push(_ResponsePop());
             
             _Reader.Update();
+
+            _ExecuteRequests();
         }
         
         private void _ExecuteRequests()
@@ -171,7 +180,7 @@ namespace Regulus.Remote.Soul
             while (_Requests.TryDequeue(out pkg))
             {
                 System.Threading.Interlocked.Decrement(ref _TotalRequest);
-                _ExecuteRequest(pkg);
+                _InternalRequest(pkg);
             }
         }
 
@@ -202,33 +211,13 @@ namespace Regulus.Remote.Soul
             _Requests.Enqueue(package);
         }
 
-        private void _ExecuteRequest(RequestPackage package)
+        private void _ExternalRequest(RequestPackage package)
         {
-
-            if (package.Code == ClientToServerOpCode.Ping)
-            {
-                _Push(ServerToClientOpCode.Ping, new byte[0]);            
-            }
-            else if (package.Code == ClientToServerOpCode.CallMethod)
+            if (package.Code == ClientToServerOpCode.CallMethod)
             {
                 PackageCallMethod data = package.Data.ToPackageData<PackageCallMethod>(_Serialize);
                 var request = _ToRequest(data.EntityId, data.MethodId, data.ReturnId, data.MethodParams);
-                if (_InvokeMethodEvent != null)
-                {
-                    _InvokeMethodEvent(request.EntityId, request.MethodId, request.ReturnId, request.MethodParams);
-                }
-                
-            }
-            else if (package.Code == ClientToServerOpCode.Release)
-            {
-                PackageRelease data = package.Data.ToPackageData<PackageRelease>(_Serialize);
-                _SoulProvider.Unbind(data.EntityId);
-                
-            }
-            else if (package.Code == ClientToServerOpCode.UpdateProperty)
-            {
-                PackageSetPropertyDone data = package.Data.ToPackageData<PackageSetPropertyDone>(_Serialize);
-                _SoulProvider.SetPropertyDone(data.EntityId, data.Property);
+                _InvokeMethodEvent(request.EntityId, request.MethodId, request.ReturnId, request.MethodParams);
             }
             else if (package.Code == ClientToServerOpCode.AddEvent)
             {
@@ -240,11 +229,39 @@ namespace Regulus.Remote.Soul
                 PackageRemoveEvent data = package.Data.ToPackageData<PackageRemoveEvent>(_Serialize);
                 _SoulProvider.RemoveEvent(data.Entity, data.Event, data.Handler);
             }
+            else
+            {
+                throw new SystemException();
+            }
+        }
+        private void _InternalRequest(RequestPackage package)
+        {
+
+            if (package.Code == ClientToServerOpCode.Ping)
+            {
+                _Push(ServerToClientOpCode.Ping, new byte[0]);            
+            }            
+            else if (package.Code == ClientToServerOpCode.Release)
+            {
+                PackageRelease data = package.Data.ToPackageData<PackageRelease>(_Serialize);
+                _SoulProvider.Unbind(data.EntityId);
+                
+            }
+            else if (package.Code == ClientToServerOpCode.UpdateProperty)
+            {
+                PackageSetPropertyDone data = package.Data.ToPackageData<PackageSetPropertyDone>(_Serialize);
+                _SoulProvider.SetPropertyDone(data.EntityId, data.Property);
+            }
+            else
+            {
+                _ExternalRequests.Enqueue(package);
+            }
+            
         }
 
-        private Request _ToRequest(long entity_id, int method_id, long return_id, byte[][] method_params)
+        private MethodRequest _ToRequest(long entity_id, int method_id, long return_id, byte[][] method_params)
         {
-            return new Request
+            return new MethodRequest
             {
                 EntityId = entity_id,
                 MethodId = method_id,
@@ -252,9 +269,6 @@ namespace Regulus.Remote.Soul
                 ReturnId = return_id
             };
         }
-
-
-
 
         void _SendBreakEvent()
         {
@@ -265,21 +279,23 @@ namespace Regulus.Remote.Soul
         }
 
         private IEnumerable<ResponsePackage>  _ResponsePop()
-        {
-            
+        {            
             ResponsePackage pkg;
             while (_Responses.TryDequeue(out pkg))
             {
                 System.Threading.Interlocked.Decrement(ref _TotalResponse);
                 yield return pkg;
             }
-
-            
         }
 
         bool IUpdatable.Update()
         {
-            _ExecuteRequests();
+            RequestPackage pkg;
+            while (_ExternalRequests.TryDequeue(out pkg))
+            {
+                _ExternalRequest(pkg);
+            }
+            
             return _Enable;
         }
 
