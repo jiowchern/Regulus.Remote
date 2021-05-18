@@ -60,13 +60,17 @@ namespace Regulus.Remote
         }
 
         ISoul IBinder.Bind<TSoul>(TSoul soul)
-        {            
+        {
+            
+
             return _Bind(soul, false, 0);
         }
 
         void IBinder.Unbind(ISoul soul)
-        {            
-            _Unbind(soul.Id);
+        {
+
+            
+            _Unbind(soul);
         }
 
         event Action IBinder.BreakEvent
@@ -333,7 +337,9 @@ namespace Regulus.Remote
 
         private SoulProxy _Bind(object soul, Type soul_type, bool return_type, long return_id)
         {
-            var newSoul = _NewSoul(soul, soul_type);            
+            SoulProxy newSoul = _NewSoul(soul, soul_type);
+            Regulus.Utility.Log.Instance.WriteInfoNoDelay($"bind i:{soul.GetHashCode()} t:{soul_type} id:{newSoul.Id}");
+            
             _LoadSoul(newSoul.InterfaceId, newSoul.Id, return_type);
             _LoadProperty(newSoul);
             _LoadSoulCompile(newSoul.InterfaceId, newSoul.Id, return_id);            
@@ -341,12 +347,13 @@ namespace Regulus.Remote
             return newSoul;
         }
 
-        private void _Unbind(long id)
-        {            
+        private void _Unbind(ISoul soul)
+        {
+            
             SoulProxy soulInfo;
-            Regulus.Utility.Log.Instance.WriteInfo($"soul remove {id}.");
-            if (!_Souls.TryRemove(id, out soulInfo))
-                throw new Exception($"can't find the soul {id} to delete.");
+            Regulus.Utility.Log.Instance.WriteInfoNoDelay($"unbind i:{soul.Instance.GetHashCode()} t:{soul.Instance.GetType()} id:{soul.Id}.");
+            if (!_Souls.TryRemove(soul.Id, out soulInfo))
+                throw new Exception($"can't find the soul {soul.Id} to delete.");
             
             soulInfo.SupplySoulEvent -= _PropertyBind;
             soulInfo.UnsupplySoulEvent -= _PropertyUnbind;
@@ -366,7 +373,9 @@ namespace Regulus.Remote
             package.EntiryId = property_soul_id;
             _Queue.Push(ServerToClientOpCode.RemovePropertySoul, package.ToBuffer(_Serializer));
 
-            _Unbind(property_soul_id);
+            SoulProxy soul;
+            _Souls.TryGetValue(property_soul_id , out soul);
+            _Unbind(soul);
             
         }
         
@@ -422,7 +431,9 @@ namespace Regulus.Remote
 
         public void Unbind(long entityId)
         {
-            _Unbind(entityId);
+            SoulProxy soul;
+            _Souls.TryGetValue(entityId, out soul);
+            _Unbind(soul);
             
         }
     }

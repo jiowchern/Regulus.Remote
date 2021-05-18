@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Regulus.Remote.Ghost;
+using System;
 
 namespace Regulus.Remote.Client
 {
@@ -14,6 +15,9 @@ namespace Regulus.Remote.Client
             return new Ghost.Agent(protocol);
         }
 
-        
+        public static object CreateWebSocket(IAgent agent)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

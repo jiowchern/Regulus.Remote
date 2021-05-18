@@ -37,8 +37,16 @@ namespace Regulus.Remote
             add{ _UnsupplyEvent += value; }
             remove { _UnsupplyEvent -= value; }
         }
+    
+
+        System.Collections.Generic.List<string> _Footprint;
+        
         public NotifierUpdater(int id , ITypeObjectNotifiable notifiable)
         {
+            _Footprint = new System.Collections.Generic.List<string>();
+            
+
+            _Souls = new System.Collections.Generic.List<ISoul>();
             this._Id = id;
             this._Notifiable = notifiable;
             _Souls = new System.Collections.Generic.List<ISoul>();
@@ -59,6 +67,12 @@ namespace Regulus.Remote
                 _Instances.Remove(obj);
 
 
+            lock(_Footprint)
+            {
+                
+                _Footprint.Add($"d, {obj.Instance.GetHashCode()} {System.Threading.Thread.CurrentThread.ManagedThreadId}");
+            }
+            
             var souls = from s in _Souls
                         where s.IsTypeObject(obj)
                         select s;
@@ -71,6 +85,8 @@ namespace Regulus.Remote
 
         private void _Supply(TypeObject obj)
         {
+        lock (_Footprint)
+                _Footprint.Add($"a, {obj.Instance.GetHashCode()} {System.Threading.Thread.CurrentThread.ManagedThreadId}");
             lock(_Instances)
                 _Instances.Add(obj);
             if (_SupplyEvent == null)

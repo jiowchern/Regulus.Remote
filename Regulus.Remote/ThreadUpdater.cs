@@ -32,16 +32,15 @@ namespace Regulus.Remote
 
             _Cancel = new CancellationTokenSource();
             
-            _Task = System.Threading.Tasks.Task.Factory.StartNew(()=>_Update(_Cancel.Token), _Cancel.Token);
+            _Task = System.Threading.Tasks.Task.Factory.StartNew(()=>_Update(_Cancel.Token));
 
         }
 
         public void Stop()
         {
             _Cancel.Cancel();            
-            _Cancel.Dispose();
-
             _Task.Wait();
+            _Cancel.Dispose();
         }
     }
 }

@@ -4,33 +4,6 @@ using System.Reflection;
 
 namespace Regulus.Remote.Client
 {
-    public class TypeConverter
-    {
-        public readonly Type Target;
-        public readonly System.Func<string, object> Converter;
-        public TypeConverter(Type target, Func<string, object> converter)
-        {
-            Target = target;
-            Converter = converter;
-        }
-    }
-    public class TypeConverterSet
-    {
-        private readonly TypeConverter[] converters;
-
-        public TypeConverterSet(params TypeConverter[] converters)
-        {
-            this.converters = converters;
-        }
-        internal bool Convert(string inArg, out object val, Type parameterType)
-        {
-            TypeConverter converter = converters.FirstOrDefault((c) => c.Target == parameterType);
-            if (converter != null)
-                val = converter.Converter(inArg);
-            val = null;
-            return converter != null;
-        }
-    }
     public class MethodStringInvoker
     {
          private readonly TypeConverterSet _TypeConverterSet ;
