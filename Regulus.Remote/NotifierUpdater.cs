@@ -4,96 +4,66 @@ using System.Linq;
 
 namespace Regulus.Remote
 {
-    class NotifierUpdater   : System.IDisposable
+    class NotifierUpdater   
     {
-        readonly System.Collections.Generic.List<ISoul>_Souls;
-        readonly System.Collections.Generic.List<TypeObject> _Instances;
-        private readonly int _Id;
-        private readonly ITypeObjectNotifiable _Notifiable;
-
-        public delegate ISoul OnSupply(int protocol_id, TypeObject obj);
-        public delegate void OnUnsupply(int protocol_id, long soul_id);
-        event OnSupply _SupplyEvent;
-        public event OnSupply SupplyEvent {
-            add
-            {
-                foreach (var instance in _Instances)
-                {
-                    var soul = value(_Id, instance);
-                    lock(_Souls)
-                        _Souls.Add(soul);
-                }
-                _SupplyEvent += value;
-            }
-            remove
-            {
-                _SupplyEvent -= value;
-            }
-        }
-        event OnUnsupply _UnsupplyEvent;
-        public event OnUnsupply UnsupplyEvent
-        {
-            
-            add{ _UnsupplyEvent += value; }
-            remove { _UnsupplyEvent -= value; }
-        }
-    
-
-        System.Collections.Generic.List<string> _Footprint;
         
+        readonly int _Id;
+        readonly ITypeObjectNotifiable _Notifiable;
+        readonly System.Collections.Generic.List<ISoul> _Souls;
+        public event System.Func<int, TypeObject,ISoul> SupplyEvent;
+        public event System.Action<int, long> UnsupplyEvent;
         public NotifierUpdater(int id , ITypeObjectNotifiable notifiable)
-        {
-            _Footprint = new System.Collections.Generic.List<string>();
-            
-
-            _Souls = new System.Collections.Generic.List<ISoul>();
+        {            
             this._Id = id;
             this._Notifiable = notifiable;
             _Souls = new System.Collections.Generic.List<ISoul>();
-            _Instances = new System.Collections.Generic.List<TypeObject>();
-            _Notifiable.SupplyEvent += _Supply;
-            _Notifiable.UnsupplyEvent += _Unsupply;            
         }
         
-        void IDisposable.Dispose()
+    
+        internal void Initial()
         {
-            _Notifiable.SupplyEvent -= _Supply;
-            _Notifiable.UnsupplyEvent -= _Unsupply;
+            _Notifiable.SupplyEvent += _Create;
+            _Notifiable.UnsupplyEvent += _Destroy;
         }
 
-        private void _Unsupply(TypeObject obj)
+        internal void Finial()
         {
-            lock(_Instances)
-                _Instances.Remove(obj);
+            _Notifiable.SupplyEvent -= _Create;
+            _Notifiable.UnsupplyEvent -= _Destroy;
 
-
-            lock(_Footprint)
+            ISoul[] souls;
+            lock(_Souls)
             {
-                
-                _Footprint.Add($"d, {obj.Instance.GetHashCode()} {System.Threading.Thread.CurrentThread.ManagedThreadId}");
+                souls = _Souls.ToArray();
+                _Souls.Clear();
             }
             
-            var souls = from s in _Souls
-                        where s.IsTypeObject(obj)
-                        select s;
-            var soul = souls.First();
-            lock(_Souls)
-                _Souls.Remove(soul);
 
-            _UnsupplyEvent(_Id, soul.Id);
+            foreach (var soul in souls)
+            {
+                UnsupplyEvent(_Id, soul.Id);
+            }
+
         }
 
-        private void _Supply(TypeObject obj)
+        private void _Destroy(TypeObject obj)
         {
-        lock (_Footprint)
-                _Footprint.Add($"a, {obj.Instance.GetHashCode()} {System.Threading.Thread.CurrentThread.ManagedThreadId}");
-            lock(_Instances)
-                _Instances.Add(obj);
-            if (_SupplyEvent == null)
-                return;
-            var soul = _SupplyEvent(_Id, obj);
+            ISoul soul;
             lock(_Souls)
-                _Souls.Add(soul);
+            {
+                soul = (from s in _Souls where s.IsTypeObject(obj) select s).First();
+                _Souls.Remove(soul);
+            }            
+            UnsupplyEvent(_Id , soul.Id);
         }
+
+        private void _Create(TypeObject obj)
+        {
+            var soul = SupplyEvent(_Id,obj);
+            lock(_Souls)
+                _Souls.Add( soul);
+        }
+
+        
     }
 }

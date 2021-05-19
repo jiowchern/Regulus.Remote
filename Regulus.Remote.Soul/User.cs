@@ -125,6 +125,7 @@ namespace Regulus.Remote.Soul
             _Reader.ErrorEvent += () => { _Enable = false; };
             _Reader.Start(_Peer);
 
+            _Writer.ErrorEvent += () => { _Enable = false; };
             _Writer.Start(_Peer);
 
             PackageProtocolSubmit pkg = new PackageProtocolSubmit();

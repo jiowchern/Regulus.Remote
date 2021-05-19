@@ -32,11 +32,13 @@ namespace Regulus.Remote
 
         public T Rent()
         {
+            
+             
             T id;
             if(_Enrollments.TryDequeue(out id))
             {
                 return id;
-            }            
+            }   
 
             return _Provider.Spawn();
 

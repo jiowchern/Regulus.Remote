@@ -1,20 +1,18 @@
 ﻿using System;
+using System.Linq;
 
 namespace Regulus.Remote
 {
-    public class Notifier<T> : IObjectAccessible , ITypeObjectNotifiable ,System.IDisposable        
+    public class Notifier<T> : IObjectAccessible , ITypeObjectNotifiable ,System.IDisposable      where T : class   
     {
         
         public readonly INotifier<T> Base;
         readonly System.Collections.Generic.ICollection<T> _Collection;
-        readonly System.Collections.Generic.List<object> _Instances;
+        readonly Regulus.Remote.NotifiableCollection<TypeObject> _TypeObjects;
 
         public Notifier(INotifier<T> notifier , System.Collections.Generic.ICollection<T>  collection)
         {
-            _Instances = new System.Collections.Generic.List<object>();
-            _UnsupplyEvent += _Empty;
-            _SupplyEvent += _Empty;
-
+            _TypeObjects = new NotifiableCollection<TypeObject>();
             _Collection = collection;
             Base = notifier;
             Base.Supply += _OnSupply;
@@ -31,34 +29,37 @@ namespace Regulus.Remote
 
         private void _OnUnsupply(T obj)
         {
-            _Instances.Remove(obj);
-            var to = new TypeObject(typeof(T), obj);
-            _UnsupplyEvent(to);
+            
+            
+            lock(_TypeObjects)
+            {
+                var items = from item in _TypeObjects.Items where item.Instance == obj && item.Type == typeof(T) select item;
+                var i = items.First();
+                _TypeObjects.Items.Remove(i);
+            }
+            
         }
 
         private void _OnSupply(T obj)
         {
-            _Instances.Add(obj);
-            var to = new TypeObject(typeof(T), obj);            
-            _SupplyEvent(to);
+            
+            var to = new TypeObject(typeof(T), obj);
+            lock(_TypeObjects)
+                _TypeObjects.Items.Add(to);            
         }
 
-        event Action<TypeObject> _SupplyEvent;
+        
         event Action<TypeObject> ITypeObjectNotifiable.SupplyEvent
         {
             add
             {
-                foreach (var instance in _Instances)
-                {
-                    var to = new TypeObject(typeof(T), instance);
-                    value(to);
-                }
-                _SupplyEvent += value;
+
+                _TypeObjects.Notifier.Supply += value;
             }
 
             remove
             {
-                _SupplyEvent -= value;
+                _TypeObjects.Notifier.Supply -= value;
             }
         }
 
@@ -68,17 +69,17 @@ namespace Regulus.Remote
             Base.Unsupply -= _OnUnsupply;
         }
 
-        event Action<TypeObject> _UnsupplyEvent;
+        
         event Action<TypeObject> ITypeObjectNotifiable.UnsupplyEvent
         {
             add
             {
-                _UnsupplyEvent += value;
+                _TypeObjects.Notifier.Unsupply += value;
             }
 
             remove
             {
-                _UnsupplyEvent -= value;
+                _TypeObjects.Notifier.Unsupply -= value;
             }
         }
 
@@ -91,10 +92,7 @@ namespace Regulus.Remote
         {
             _Collection.Remove((T)instance);
         }
-        private void _Empty(TypeObject obj)
-        {
-
-        }
+        
 
         void IDisposable.Dispose()
         {

@@ -15,7 +15,7 @@ namespace Regulus.Remote
 
         private IStreamable _Peer;
 
-        
+        public System.Action ErrorEvent;
 
         public PackageWriter(ISerializer serializer)
         {
@@ -36,12 +36,30 @@ namespace Regulus.Remote
         }
 
         public async void Push(System.Collections.Generic.IEnumerable<TPackage>   packages)
-        {            
-
+        {
+            
             var buffer = _CreateBuffer(packages.ToArray());
+            if (buffer.Length == 0)
+                return;
 
-            var sendCount = await _Peer.Send(buffer, 0, buffer.Length);
+            IWaitableValue<int> wv = null;
+            try
+            {
+                wv = _Peer.Send(buffer, 0, buffer.Length);
+            }
+            catch (System.Exception ex)
+            {
+                Regulus.Utility.Log.Instance.WriteInfo(ex.ToString()) ;
+                ErrorEvent();
+            }
+
+            if(wv == null)
+            {
+                return;
+            }
+            var sendCount = await wv;
             _WriteEnd(sendCount);
+
         }
         
 

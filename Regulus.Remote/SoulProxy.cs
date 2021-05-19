@@ -67,10 +67,7 @@ namespace Regulus.Remote
                 }
                 _PropertyUpdaters.Clear();
 
-                foreach (System.IDisposable item in _TypeObjectNotifiables)
-                {
-                    item.Dispose();
-                }
+                
                 _TypeObjectNotifiables.Clear();
             };
         }
@@ -120,6 +117,7 @@ namespace Regulus.Remote
             {
                 updater.SupplyEvent += _SupplySoul;
                 updater.UnsupplyEvent += _UnsupplySoul;
+                updater.Initial();
             }
         }
         private void _Regist(List<PropertyUpdater> property_updaters)
@@ -153,6 +151,7 @@ namespace Regulus.Remote
         {
             foreach (var updater in updaters)
             {
+                updater.Finial();
                 updater.SupplyEvent -= _SupplySoul;
                 updater.UnsupplyEvent -= _UnsupplySoul;
             }

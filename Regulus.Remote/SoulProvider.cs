@@ -326,7 +326,7 @@ namespace Regulus.Remote
 
             
             int interfaceId = _Protocol.GetMemberMap().GetInterface(soul_type);
-            SoulProxy newSoul = new SoulProxy(_IdLandlord.Rent(), interfaceId, soul_type, soul );
+            var newSoul = new SoulProxy(_IdLandlord.Rent(), interfaceId, soul_type, soul );
             newSoul.SupplySoulEvent += _PropertyBind;
             newSoul.UnsupplySoulEvent += _PropertyUnbind;            
             Regulus.Utility.Log.Instance.WriteInfo($"soul add {newSoul.Id}:{soul_type.Name}.");
@@ -338,12 +338,13 @@ namespace Regulus.Remote
         private SoulProxy _Bind(object soul, Type soul_type, bool return_type, long return_id)
         {
             SoulProxy newSoul = _NewSoul(soul, soul_type);
-            Regulus.Utility.Log.Instance.WriteInfoNoDelay($"bind i:{soul.GetHashCode()} t:{soul_type} id:{newSoul.Id}");
+            
             
             _LoadSoul(newSoul.InterfaceId, newSoul.Id, return_type);
             _LoadProperty(newSoul);
             _LoadSoulCompile(newSoul.InterfaceId, newSoul.Id, return_id);            
             newSoul.Initial(_Protocol.GetMemberMap().Propertys.Item1s);
+            Regulus.Utility.Log.Instance.WriteInfoNoDelay($"bind i:{soul.GetHashCode()} t:{soul_type} id:{newSoul.Id}");
             return newSoul;
         }
 
@@ -354,11 +355,12 @@ namespace Regulus.Remote
             Regulus.Utility.Log.Instance.WriteInfoNoDelay($"unbind i:{soul.Instance.GetHashCode()} t:{soul.Instance.GetType()} id:{soul.Id}.");
             if (!_Souls.TryRemove(soul.Id, out soulInfo))
                 throw new Exception($"can't find the soul {soul.Id} to delete.");
-            
+            soulInfo.Release();
+
             soulInfo.SupplySoulEvent -= _PropertyBind;
             soulInfo.UnsupplySoulEvent -= _PropertyUnbind;
 
-            soulInfo.Release();
+            
             _UnloadSoul(soulInfo.InterfaceId, soulInfo.Id);            
             _IdLandlord.Return(soulInfo.Id);
             
