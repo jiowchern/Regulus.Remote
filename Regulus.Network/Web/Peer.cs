@@ -9,24 +9,17 @@ namespace Regulus.Network.Web
     {
         private readonly WebSocket _Socket;
         readonly System.Threading.CancellationTokenSource _CancelSource;
-        readonly Regulus.Remote.Value<WebSocketState> _Error;        
+        
         public Peer(WebSocket socket)
         {
             _Socket = socket;
 
             _CancelSource = new System.Threading.CancellationTokenSource();
-            _Error = new Remote.Value<WebSocketState>();
+        
 
             
         }
-        public event System.Action<WebSocketState> ErrorEvent {
-            add {
-                _Error.OnValue += value;
-            }
-            remove {
-                _Error.OnValue -= value;
-            }
-        }
+        public event System.Action<WebSocketState> ErrorEvent;
         void IDisposable.Dispose()
         {
             _CancelSource.Cancel();            
@@ -46,7 +39,8 @@ namespace Regulus.Network.Web
                 catch (Exception e)
                 {
                     Regulus.Utility.Log.Instance.WriteInfo(_Socket.CloseStatus.ToString());
-                    _Error.SetValue(_Socket.State);
+
+                    ErrorEvent(_Socket.State);                    
 
 
                 }
