@@ -5,7 +5,8 @@ branches:
 image: Visual Studio 2019
 configuration: Release
 install:
-  - ps: git submodule update --init --recursive
+  - ps: cd %APPVEYOR_BUILD_FOLDER% 
+        git submodule update --init --recursive
 nuget:
   account_feed: true
   project_feed: true
