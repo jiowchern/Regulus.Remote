@@ -90,10 +90,11 @@ namespace Regulus.Remote.Soul
             get { return _SoulProvider; }
         }
 
+        public readonly object State;
 
-
-        public User(IStreamable client, IProtocol protocol)
-        {            
+        public User(IStreamable client, IProtocol protocol , object state)
+        {
+            State = state;
             Stream = client;
             
             _Serialize = protocol.GetSerialize();
