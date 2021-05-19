@@ -142,13 +142,13 @@ namespace Regulus.Remote.Standalone.Test
                        from add1 in System.Reactive.Linq.Observable.Defer<int>(() => { env.Entry.Sample.Ints.Items.Add(1); 
                                                                                     return System.Reactive.Linq.Observable.Return(env.Entry.Sample.Ints.Items.Count);
                                                                                 })
-                       from int1s in System.Reactive.Linq.Observable.FromEvent<int>(h => sample.IntsEvent += h, h => sample.IntsEvent -= h).Buffer(1)
+                       from int1s in System.Reactive.Linq.Observable.FromEvent<int>(h => sample.IntsEvent += h, h => sample.IntsEvent -= h).Buffer(1).FirstAsync()
                        from add2 in System.Reactive.Linq.Observable.Defer<int>(() => {
                            env.Entry.Sample.Ints.Items.Add(2);
                            return System.Reactive.Linq.Observable.Return(env.Entry.Sample.Ints.Items.Count);
                        })
                        from int2s in System.Reactive.Linq.Observable.FromEvent<int>(h => sample.IntsEvent += h, h => sample.IntsEvent -= h).Buffer(2)
-                       select new { int1s,int2s };
+                      select new { int1s,int2s };
             
             var testResult = await obs.FirstAsync();
 

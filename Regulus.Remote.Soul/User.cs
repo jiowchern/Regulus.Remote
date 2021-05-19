@@ -139,11 +139,19 @@ namespace Regulus.Remote.Soul
 
         void _Shutdown()
         {
-            _Updater.Stop();
+            
+            
             _Reader.DoneEvent -= _RequestPush;
             _Reader.Stop();
 
             _Writer.Stop();
+
+            _Updater.Stop();
+            RequestPackage req;
+            while (_ExternalRequests.TryDequeue(out req))
+            {
+
+            }
 
             System.Threading.Interlocked.Add(ref _TotalResponse, -_Responses.Count);
             System.Threading.Interlocked.Add(ref _TotalRequest, -_Requests.Count);
@@ -308,6 +316,7 @@ namespace Regulus.Remote.Soul
 
         void IBootable.Shutdown()
         {
+            
             _Shutdown();
         }
     }

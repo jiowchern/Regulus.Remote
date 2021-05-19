@@ -9,19 +9,26 @@ namespace Regulus.Network.Tests
         public async System.Threading.Tasks.Task Test()
         {
             
-            var listener = new Regulus.Network.Web.Listener();
-            System.Collections.Generic.List<Web.Peer> peers = new System.Collections.Generic.List<Web.Peer>(); ;
-            listener.AcceptEvent += peers.Add;
-            listener.Bind("http://127.0.0.1:12345/");
+            var listener = new Regulus.Network.Web.Listener();            
             
+            listener.Bind("http://127.0.0.1:12345/");
+            var peers = new System.Collections.Concurrent.ConcurrentQueue<Web.Peer>();
 
+            listener.AcceptEvent += peers.Enqueue;            
 
             var connecter = new Regulus.Network.Web.Connecter(new System.Net.WebSockets.ClientWebSocket());
             var connectResult = await connecter.ConnectAsync("ws://127.0.0.1:12345/");
-
+            
             Xunit.Assert.True(connectResult);
 
-            IStreamable server = peers.Single() ;
+            var ar = new Regulus.Utility.AutoPowerRegulator(new Utility.PowerRegulator());
+
+            Web.Peer peer;
+            while (!peers.TryDequeue(out peer))
+            {
+                ar.Operate();
+            }
+            IStreamable server = peer;
             var serverReceiveBuffer = new byte[5];
             var serverReceiveTask = server.Receive(serverReceiveBuffer, 0, 5);
             IStreamable client = connecter;
