@@ -33,29 +33,29 @@ namespace Regulus.Network.Tcp
 
         IWaitableValue<int> IStreamable.Receive(byte[] readed_byte, int offset, int count)
         {
-            if (!Socket.Connected)
+            /*if (!Socket.Connected)
             {
                 _SocketErrorEvent( SocketError.SocketError);
-                return System.Threading.Tasks.Task<int>.FromResult(0).ToWaitableValue();
-            }
-                
-            return System.Threading.Tasks.Task<int>.Factory.FromAsync(
-                (handler, obj) => _Receive(readed_byte, offset, count, handler, obj), _EndReceive, null).ToWaitableValue();
-
-        }
-
-        private IAsyncResult _Receive(byte[] readed_byte, int offset, int count, AsyncCallback handler, object obj)
-        {
+                return (0).ToWaitableValue();
+            }*/
 
             SocketError error;
-            var ar = Socket.BeginReceive(readed_byte, offset, count, SocketFlags.None, out error, handler, obj);
+            var ar = Socket.BeginReceive(readed_byte, offset, count, SocketFlags.None, out error, _EndReceiveEmpty, null);
 
             var safeList = new[] { SocketError.Success, SocketError.IOPending };
-            if (!safeList.Any(s=>s==error))
+            if (!safeList.Any(s => s == error))
                 _SocketErrorEvent(error);
-            return ar;
-        }
 
+            if (ar == null)
+                return (0).ToWaitableValue();
+
+            return System.Threading.Tasks.Task<int>.Factory.FromAsync(ar, _EndReceive).ToWaitableValue();            
+        }
+        
+        private void _EndReceiveEmpty(IAsyncResult arg)
+        {
+
+        }
         private int _EndReceive(IAsyncResult arg)
         {
             
@@ -80,13 +80,23 @@ namespace Regulus.Network.Tcp
         }
         IWaitableValue<int> IStreamable.Send(byte[] buffer, int offset, int buffer_length)
         {
-            if (!Socket.Connected)
+            /*if (!Socket.Connected)
             {
                 _SocketErrorEvent(SocketError.SocketError);
-                return System.Threading.Tasks.Task<int>.FromResult(0).ToWaitableValue();
-            }
-            return System.Threading.Tasks.Task<int>.Factory.FromAsync(
-                (handler, obj) => _Send(buffer, offset, buffer_length, handler, obj), _EndSend, null).ToWaitableValue();
+                return (0).ToWaitableValue();
+            }*/
+
+            SocketError error;
+            var ar = Socket.BeginSend(buffer, offset, buffer_length, SocketFlags.None, out error, _EndReceiveEmpty, null);
+
+            var safeList = new[] { SocketError.Success, SocketError.IOPending };
+            if (!safeList.Any(s => s == error))
+                _SocketErrorEvent(error);
+
+            if (ar == null)
+                return (0).ToWaitableValue();
+
+            return System.Threading.Tasks.Task<int>.Factory.FromAsync(ar, _EndSend).ToWaitableValue();
         }
 
         private IAsyncResult _Send(byte[] buffer, int offset, int buffer_length, AsyncCallback handler, object obj)

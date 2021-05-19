@@ -344,7 +344,7 @@ namespace Regulus.Remote
             _LoadProperty(newSoul);
             _LoadSoulCompile(newSoul.InterfaceId, newSoul.Id, return_id);            
             newSoul.Initial(_Protocol.GetMemberMap().Propertys.Item1s);
-            Regulus.Utility.Log.Instance.WriteInfoNoDelay($"bind i:{soul.GetHashCode()} t:{soul_type} id:{newSoul.Id}");
+            //Regulus.Utility.Log.Instance.WriteInfoNoDelay($"bind i:{soul.GetHashCode()} t:{soul_type} id:{newSoul.Id}");
             return newSoul;
         }
 
@@ -352,7 +352,7 @@ namespace Regulus.Remote
         {
             
             SoulProxy soulInfo;
-            Regulus.Utility.Log.Instance.WriteInfoNoDelay($"unbind i:{soul.Instance.GetHashCode()} t:{soul.Instance.GetType()} id:{soul.Id}.");
+            //Regulus.Utility.Log.Instance.WriteInfoImmediate($"unbind i:{soul.Instance.GetHashCode()} t:{soul.Instance.GetType()} id:{soul.Id}.");
             if (!_Souls.TryRemove(soul.Id, out soulInfo))
                 throw new Exception($"can't find the soul {soul.Id} to delete.");
             soulInfo.Release();
