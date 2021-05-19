@@ -22,6 +22,6 @@ before_deploy:
 deploy:
 - provider: NuGet
   api_key:
-    secure: EunKamGcsJ3kXIvrtT60bbQrXQtO8dhZV29AuDpKLls=
+    secure: GivxuwLrFPcrC94JsMSF0xVOgt6nsP0xY6x2Rnjmfepr7z90JvNrLhrvR8gl1Rts
   on:
     branch: release
