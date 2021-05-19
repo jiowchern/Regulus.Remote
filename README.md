@@ -14,9 +14,11 @@
 This is server-client connection framework, available for Unity development.
 
 ## Feature
-* Support .Net Standard 2.0
 * Remote method invocation
-* Support Unity il2cpp
+* .Net Standard 2.0 base
+* Compatible with Unity il2cpp
+* Compatible with Unity WebGL
+* Customizable connection
 ## Latest Version
 Download the latest ![Latest Version](https://img.shields.io/github/v/tag/jiowchern/Regulus) .
 ## Architecture
@@ -78,16 +80,17 @@ namespace Server
 	{
 		readonly Greeter _Greeter;
 		readonly Regulus.Remote.IBinder _Binder;
+		readonly Regulus.Remote.ISoul _GreeterSoul;
 		public Entry(Regulus.Remote.IBinder binder)
 		{
 			_Greeter = new Greeter();
 			_Binder = binder;
-			binder.Bind<IBinder>(_Greeter);
+			_GreeterSoul = binder.Bind<IBinder>(_Greeter);
 		}
 		public void Dispose()
 		{
 			// you can call Unbind to notify the client to cancel the greeter.  
-			_Binder.Unbind<IBinder>(_Greeter);
+			_Binder.Unbind(_GreeterSoul);
 		}
 	}
 }
@@ -280,7 +283,7 @@ namespace Regulus.Network
         /// <param name="offset">Start receiving position.</param>
         /// <param name="count">Count of byte received.</param>
         /// <returns>Actual count of byte received.</returns>
-        System.Threading.Tasks.Task<int> Receive(byte[] buffer, int offset, int count);
+        IWaitableValue<int> Receive(byte[] buffer, int offset, int count);
         /// <summary>
         ///     Send data streams.
         /// </summary>
@@ -288,7 +291,7 @@ namespace Regulus.Network
         /// <param name="offset">Start send position.</param>
         /// <param name="count">Count of byte send.</param>
         /// <returns>Actual count of byte send.</returns>
-        System.Threading.Tasks.Task<int> Send(byte[] buffer, int offset, int count);
+        IWaitableValue<int> Send(byte[] buffer, int offset, int count);
     }
 }
 ```
@@ -331,4 +334,3 @@ class Client
 
 
 
-[![HitCount](http://hits.dwyl.com/jiowchern/Regulus.svg)](http://hits.dwyl.com/jiowchern/Regulus.Remote) 
