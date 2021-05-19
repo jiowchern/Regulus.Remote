@@ -1,9 +1,11 @@
-version: 0.1.7.{build}
+version: 0.1.9.{build}
 branches:
   only:
   - release
 image: Visual Studio 2019
 configuration: Release
+install:
+  - ps: git submodule update --init --recursive
 nuget:
   account_feed: true
   project_feed: true
@@ -19,6 +21,6 @@ before_deploy:
 deploy:
 - provider: NuGet
   api_key:
-    secure: 66AXHbO2EXK+rpl0o47Zu5WidSQMG9r+qFkjhXS141rWijacWEjv45OfBupTkpDY
+    secure: EunKamGcsJ3kXIvrtT60bbQrXQtO8dhZV29AuDpKLls=
   on:
     branch: release
