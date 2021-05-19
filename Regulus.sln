@@ -43,6 +43,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		build-testprotocol.cmd = build-testprotocol.cmd
 		.github\workflows\build.yml = .github\workflows\build.yml
 		build_package.cmd = build_package.cmd
+		.github\workflows\nuget.yml = .github\workflows\nuget.yml
 		README.md = README.md
 	EndProjectSection
 EndProject

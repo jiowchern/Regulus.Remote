@@ -174,8 +174,10 @@ namespace Regulus.Remote.Standalone.Test
 
             writer.ServerToClient(serializer, ServerToClientOpCode.LoadSoul, new Regulus.Remote.PackageLoadSoul() { EntityId = 1, ReturnType = false, TypeId = 1 });
             writer.ServerToClient(serializer, ServerToClientOpCode.LoadSoulCompile, new Regulus.Remote.PackageLoadSoulCompile() { EntityId = 1, TypeId = 1, ReturnId = 0});
+            var ar = new Regulus.Utility.AutoPowerRegulator(new Utility.PowerRegulator());
             while (retGpiA == null)
             {
+                ar.Operate();
                 agent.Update();                
             }
             agent.Stop();

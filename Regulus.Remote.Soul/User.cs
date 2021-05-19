@@ -233,7 +233,7 @@ namespace Regulus.Remote.Soul
             }
             else
             {
-                throw new SystemException();
+                Regulus.Utility.Log.Instance.WriteInfo($"invalid request code {package.Code}.");
             }
         }
         private void _InternalRequest(RequestPackage package)

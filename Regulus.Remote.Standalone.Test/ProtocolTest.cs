@@ -201,8 +201,11 @@ namespace Regulus.Remote.Standalone.Test
                             from _ in next.Next().RemoteValue()
                             select _;
             await nextObs.FirstAsync();
-
-            while (values.Count == 0) ;
+            var ar = new Regulus.Utility.AutoPowerRegulator(new Utility.PowerRegulator());
+            while (values.Count == 0)
+            {
+                ar.Operate();
+            }
 
             env.Dispose();
             Xunit.Assert.Equal(supplyNumValues.Count , values.Count);

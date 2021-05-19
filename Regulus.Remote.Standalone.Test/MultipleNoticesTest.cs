@@ -56,9 +56,12 @@ namespace Regulus.Remote.Standalone.Test
             multipleNotices.Numbers1.Items.Remove(n1);
             multipleNotices.Numbers2.Items.Remove(n1);
             multipleNotices.Numbers1.Items.Remove(n1);
-            
 
-            while (removeNums.Count < 3) ;
+            var ar = new Regulus.Utility.AutoPowerRegulator(new Utility.PowerRegulator());
+            while (removeNums.Count < 3)
+            {
+                ar.Operate();
+                    }
             Xunit.Assert.Equal(1, removeNums[0]);
             Xunit.Assert.Equal(1, removeNums[1]);
             Xunit.Assert.Equal(1, removeNums[2]);
@@ -124,7 +127,11 @@ namespace Regulus.Remote.Standalone.Test
             multipleNotices.Numbers1.Items.Remove(n2);
             multipleNotices.Numbers2.Items.Remove(n2);
 
-            while (removeNum1s.Count < 2) ;
+            var ar = new Regulus.Utility.AutoPowerRegulator(new Utility.PowerRegulator());
+            while (removeNum1s.Count < 2)
+            {
+                ar.Operate();
+            }
             Xunit.Assert.Equal(2, removeNum1s[0]);
             Xunit.Assert.Equal(2, removeNum1s[1]);            
 

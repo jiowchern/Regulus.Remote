@@ -11,7 +11,7 @@ install:
 nuget:  
   project_feed: true
 before_build:
-- cmd: "cd %APPVEYOR_BUILD_FOLDER% \nnuget restore\ngit submodule update --init --recursive"
+- cmd: "cd %APPVEYOR_BUILD_FOLDER% \nnuget restore\ng£¾it submodule update --init --recursive"
 build:
   publish_nuget: true  
   verbosity: minimal
