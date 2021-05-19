@@ -5,13 +5,13 @@ branches:
 image: Visual Studio 2019
 configuration: Release
 install:
-  - ps: cd %APPVEYOR_BUILD_FOLDER% 
-        git submodule update --init --recursive
-nuget:
-  account_feed: true
+  - cmd: >-
+        cd %APPVEYOR_BUILD_FOLDER% 
+        && git submodule update --init --recursive
+nuget:  
   project_feed: true
 before_build:
-- cmd: nuget restore
+- cmd: "cd %APPVEYOR_BUILD_FOLDER% \nnuget restore\ngit submodule update --init --recursive"
 build:
   publish_nuget: true  
   verbosity: minimal
