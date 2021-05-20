@@ -19,6 +19,8 @@ This is server-client connection framework, available for Unity development.
 * Compatible with Unity il2cpp
 * Compatible with Unity WebGL
 * Customizable connection
+* Stand-alone mode  
+
 ## Latest Version
 Download the latest ![Latest Version](https://img.shields.io/github/v/tag/jiowchern/Regulus) .
 ## Architecture
@@ -106,10 +108,11 @@ namespace Client
 			agent.QueryNotifier<Common.IGreeter>().Supply += _AddGreeter;
 			agent.QueryNotifier<Common.IGreeter>().Unsupply += _RemoveGreeter;
 		}
-		void _AddGreeter(Common.IGreeter greeter)
-		{
+		async void  _AddGreeter(Common.IGreeter greeter)
+		{						
 			// todo: Having received the greeter from the server, 			 
 			//       begin to implement the following code.
+			var reply = await greeter.SayHello(new HelloRequest() {Name = "my"});
 		}
 		void _RemoveGreeter(Common.IGreeter greeter)
 		{
