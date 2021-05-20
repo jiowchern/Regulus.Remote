@@ -5,16 +5,9 @@ using System.Net;
 
 namespace Regulus.Network.Tests
 {
-
+    using Regulus.Remote;
     public class MiscTest
     {
-
-
-
-
-
-
-
 
         [Xunit.Fact]
         public void TestDataPackageSize()

@@ -3,11 +3,12 @@
 
 using System;
 using System.Runtime.CompilerServices;
-using System.Threading;
+
 using System.Threading.Tasks;
 
 namespace Regulus.Network
 {
+    using Regulus.Remote;
     class TaskWaitableValue<T> : IWaitableValue<T> , IAwaitable<T>
     {
         readonly Regulus.Remote.Value<T> _Value;

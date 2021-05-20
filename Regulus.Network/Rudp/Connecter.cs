@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Regulus.Network.Rudp
 {
-
+    using Regulus.Remote;
     public class Connector : IConnectable
     {
         private readonly Agent _Agent;

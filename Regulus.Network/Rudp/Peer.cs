@@ -3,6 +3,7 @@ using System.Net.Sockets;
 
 namespace Regulus.Network.Rudp
 {
+    using Regulus.Remote;
     internal class Peer : IPeer
     {
         private readonly Regulus.Network.Socket _RudpSocket;

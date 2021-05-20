@@ -3,6 +3,7 @@
 
 namespace Regulus.Network
 {
+    using Regulus.Remote;
     public static class TaskExtension
     {
         public static IWaitableValue<T> ToWaitableValue<T>(this System.Threading.Tasks.Task<T> task)

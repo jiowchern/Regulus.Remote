@@ -7,6 +7,7 @@ using System.Net.Sockets;
 
 namespace Regulus.Network
 {
+    using Regulus.Remote;
     public class Socket : IUpdatable<Timestamp>
     {
 

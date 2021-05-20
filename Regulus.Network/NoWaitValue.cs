@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-
+using Regulus.Remote;
 namespace Regulus.Network
 {
     public class NoWaitValue<T> : IWaitableValue<T> , IAwaitable<T>

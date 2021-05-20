@@ -5,6 +5,7 @@ using System.Net.WebSockets;
 
 namespace Regulus.Network.Web
 {
+    using Regulus.Remote;
     public class Peer : IStreamable , IDisposable
     {
         private readonly WebSocket _Socket;

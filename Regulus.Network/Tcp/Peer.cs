@@ -4,7 +4,7 @@ using System.Net.Sockets;
 
 namespace Regulus.Network.Tcp
 {
-    
+    using Regulus.Remote;
     public class Peer : IStreamable , IDisposable
     {
         public readonly System.Net.Sockets.Socket Socket;
