@@ -330,6 +330,7 @@ class Client
 * Add remote container.
 * Integrate rx.
 ## Recommend
+* [Regulus.Application.TemplateCreator](https://github.com/jiowchern/Regulus.Remote/tree/release/Regulus.Application.TemplateCreator) - Quick project creation tool. 
 * [Regulus.Remote.CodeAnalysis](https://github.com/jiowchern/Regulus.Remote.CodeAnalysis) - Protocol syntax checker.
 ## Sample 
 **[Regulus.Samples](https://github.com/jiowchern/Regulus.Samples)** ,This repository shows applications such as chat rooms.  
