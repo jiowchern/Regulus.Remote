@@ -12,7 +12,12 @@
 
 ## Introduce
 This is server-client connection framework, available for Unity development.
-
+* [Feature](#Feature)
+* [Communication](#Communication)
+* [Getting Start](#Getting-Start)
+* [Connection](#Connection)
+* [Recommend](#Recommend)
+* [Sample](#Sample)
 ## Feature
 * Remote method invocation
 * .Net Standard 2.0 base
@@ -270,7 +275,7 @@ if(online != null)
 else
 	// connect failed.
 ```
-## Extension
+### Extension
 If you want to customize. Simply provide ```IService``` and ```IAgent``` a **data stream**.  
 Implement ```Regulus.Network.IStreamable```.  
 ```csharp
