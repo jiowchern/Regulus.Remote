@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <Version>0.1.9.1</Version>
+    <AssemblyName>Regulus.Remote.Tools.Protocol</AssemblyName>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <BuildOutputTargetFolder>tasks</BuildOutputTargetFolder>
+    <DevelopmentDependency>true</DevelopmentDependency>
+    <Authors>jc</Authors>
+    <NoPackageAnalysis>true</NoPackageAnalysis>
+  </PropertyGroup>
+  
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Build.Framework" Version="16.9.0" />
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="16.9.0" />
+    <ProjectReference Include="..\Regulus.Remote.Protocol\Regulus.Remote.Protocol.csproj" />
+    <PackageReference Update="@(PackageReference)" PrivateAssets="All" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\tasks\" />
+  </ItemGroup>
+  <ItemGroup>    
+    <None Include="Assets\build\**" Pack="True" PackagePath="build\" />
+    <None Include="Assets\buildMultiTargeting\**" Pack="True" PackagePath="buildMultiTargeting\" />
+    <None Include="Assets\readme.txt" Pack="True" PackagePath="" />
+  </ItemGroup>
+
+</Project>

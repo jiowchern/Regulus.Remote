@@ -1,11 +1,21 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>    
+    
   </PropertyGroup>
 
   <ItemGroup>
+
+    <ProjectReference Include="..\Regulus.Remote.Tools.Protocol\Regulus.Remote.Tools.Protocol.csproj" >
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference >
     <ProjectReference Include="..\Regulus.Remote\Regulus.Remote.csproj" />
   </ItemGroup>
-
+  
+  
+  <Target DependsOnTargets="ResolveProjectReferences" Name="RegulusRemoteToolsProtocol" >
+    <UsingTask TaskName="Regulus.Remote.Tools.Protocol.CodeGenerator" AssemblyFile="..\Regulus.Remote.Tools.Protocol\$(OutDir)Regulus.Remote.Tools.Protocol.dll" />
+    <CodeGenerator ProtocolFilesOutputDir="../Regulus.Projects.TestProtocol.Protocol" />    
+  </Target>
 </Project>

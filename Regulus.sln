@@ -63,6 +63,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Remote.Standalone.Test", "Regulus.Remote.Standalone.Test\Regulus.Remote.Standalone.Test.csproj", "{82BAA92B-B238-4F83-B836-9D81C335393F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Projects.TestProtocol.Common", "Regulus.Projects.TestProtocol.Common\Regulus.Projects.TestProtocol.Common.csproj", "{FBA5C01D-B12F-4C15-9A1F-2178761DC268}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E95CCE80-055C-4E8C-9351-BE92B29DDD68} = {E95CCE80-055C-4E8C-9351-BE92B29DDD68}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Projects.TestProtocol.Protocol", "Regulus.Projects.TestProtocol.Protocol\Regulus.Projects.TestProtocol.Protocol.csproj", "{C212EC33-8497-470B-AE2B-C993FDF34129}"
 EndProject
@@ -73,6 +76,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Utility", "RegulusUtility\Regulus.Utility\Regulus.Utility.csproj", "{BBEA4BDD-AE30-4905-9EC8-398D14FC98C7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Utility.Test", "RegulusUtility\Regulus.Utility.Test\Regulus.Utility.Test.csproj", "{4C4332A4-962B-494F-882B-5E254CCD7C29}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Remote.Tools.Protocol", "Regulus.Remote.Tools.Protocol\Regulus.Remote.Tools.Protocol.csproj", "{E95CCE80-055C-4E8C-9351-BE92B29DDD68}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -172,6 +177,10 @@ Global
 		{4C4332A4-962B-494F-882B-5E254CCD7C29}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C4332A4-962B-494F-882B-5E254CCD7C29}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C4332A4-962B-494F-882B-5E254CCD7C29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E95CCE80-055C-4E8C-9351-BE92B29DDD68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E95CCE80-055C-4E8C-9351-BE92B29DDD68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E95CCE80-055C-4E8C-9351-BE92B29DDD68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E95CCE80-055C-4E8C-9351-BE92B29DDD68}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -201,6 +210,7 @@ Global
 		{1A57D297-F056-4C80-94DD-267B30A871A3} = {A088BA49-DE34-4F59-AF19-C82A94D7F834}
 		{BBEA4BDD-AE30-4905-9EC8-398D14FC98C7} = {BF82B497-EC2D-4F8B-AF59-02AEC21A6B15}
 		{4C4332A4-962B-494F-882B-5E254CCD7C29} = {F37C2CFD-4962-4E1B-96EB-E5E8928D217B}
+		{E95CCE80-055C-4E8C-9351-BE92B29DDD68} = {A088BA49-DE34-4F59-AF19-C82A94D7F834}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5F361C65-F7E7-4579-84BF-3D8DB0C9DABA}

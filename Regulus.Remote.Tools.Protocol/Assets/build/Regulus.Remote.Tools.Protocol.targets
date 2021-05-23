@@ -1,0 +1,11 @@
+
+<Project>
+  
+  <PropertyGroup>
+    <NuGetRegulusRemoteToolsProtocolFolder>$(MSBuildThisFileDirectory)..\tasks\netstandard2.0\</NuGetRegulusRemoteToolsProtocolFolder>
+  </PropertyGroup>
+  <UsingTask TaskName="Regulus.Remote.Tools.Protocol.CodeGenerator" AssemblyFile="$(NuGetRegulusRemoteToolsProtocolFolder)\Regulus.Remote.Tools.Protocol.dll" />
+  <Target Name="RegulusRemoteToolsProtocol" AfterTargets="Build">
+    <CodeGenerator/>
+  </Target>
+</Project>
