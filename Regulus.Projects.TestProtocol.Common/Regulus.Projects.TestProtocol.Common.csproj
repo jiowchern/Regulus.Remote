@@ -5,17 +5,10 @@
     
   </PropertyGroup>
 
-  <ItemGroup>
-
-    <ProjectReference Include="..\Regulus.Remote.Tools.Protocol\Regulus.Remote.Tools.Protocol.csproj" >
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference >
+  <ItemGroup> 
     <ProjectReference Include="..\Regulus.Remote\Regulus.Remote.csproj" />
   </ItemGroup>
   
   
-  <Target DependsOnTargets="ResolveProjectReferences" Name="RegulusRemoteToolsProtocol" >
-    <UsingTask TaskName="Regulus.Remote.Tools.Protocol.CodeGenerator" AssemblyFile="..\Regulus.Remote.Tools.Protocol\$(OutDir)Regulus.Remote.Tools.Protocol.dll" />
-    <CodeGenerator ProtocolFilesOutputDir="../Regulus.Projects.TestProtocol.Protocol" />    
-  </Target>
+ 
 </Project>
