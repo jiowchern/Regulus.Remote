@@ -20,8 +20,10 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Build.Framework" Version="16.9.0" />
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="16.9.0" />
-    <ProjectReference Include="..\Regulus.Remote.Protocol\Regulus.Remote.Protocol.csproj" />    
-    <PackageReference Update="@(PackageReference)" PrivateAssets="All" />
+    
+    
+    <!--<PackageReference Update="@(PackageReference)" PrivateAssets="All" />    -->
+    
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Assets\tasks\" />
@@ -33,7 +35,10 @@
     
     
   </ItemGroup>
-  <Target Name="HelloWorld" AfterTargets="Build">    
+  <ItemGroup>
+    <ProjectReference Include="..\Regulus.Remote.Protocol\Regulus.Remote.Protocol.csproj" />
+  </ItemGroup>
+  <Target Name="CopyDeps" AfterTargets="Build">    
     <!-- <ItemGroup>
       <None Include="$(OutDir)**" Pack="True" PackagePath="tasks/netstandard2.0" />
     </ItemGroup>-->

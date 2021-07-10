@@ -9,23 +9,25 @@ namespace Regulus.Remote.Tools.Protocol
         [Required]
         public string InputFile { get; set; }
         [Required]
-        public string RemoteFile { get; set; }
+        public string OutputDir { get; set; }
 
 
         public override bool Execute()
-        {            
-            var args = new GenerateArguments("./", new TaskItem(InputFile));
-            Log.LogMessage(MessageImportance.High, $"RegulusRemoteProtocol Input is {args.InputFullFile}");
-            Log.LogMessage(MessageImportance.High, $"RegulusRemoteProtocol Output is {args.OuputFullDir}");
-            Log.LogMessage(MessageImportance.High, $"RegulusRemoteProtocol Current is {System.IO.Directory.GetCurrentDirectory()}");
-            if (!System.IO.File.Exists(args.InputFullFile))
+        {
+            var inputPath = System.IO.Path.GetFullPath(InputFile);
+            var outputDir = System.IO.Path.GetFullPath(OutputDir); 
+            Log.LogMessage(MessageImportance.High, $"RegulusRemoteProtocol Input is {inputPath}");
+            Log.LogMessage(MessageImportance.High, $"RegulusRemoteProtocol Output is {outputDir}");
+            if (!System.IO.File.Exists(inputPath))
                 return false;
-            if (!System.IO.Directory.Exists(args.OuputFullDir))
+            if (!System.IO.File.Exists(outputDir))
                 return false;
-            var asm = System.Reflection.Assembly.LoadFile(args.InputFullFile);
+
+            /*var asm = System.Reflection.Assembly.LoadFile(inputPath);
             var outputer = new Regulus.Remote.Protocol.CodeOutputer(asm);
-            outputer.Output(args.OuputFullDir);
-            return !Log.HasLoggedErrors;
+            outputer.Output(outputDir); */
+            
+            return true;
         }
     }
 }
