@@ -7,7 +7,7 @@
     <Version>0.1.9.1</Version>
     <PackageProjectUrl>https://github.com/jiowchern/Regulus.Remote</PackageProjectUrl>
     <Authors>jc</Authors>
-  
+    <Description>client.</Description>
   </PropertyGroup>
 
   <ItemGroup>

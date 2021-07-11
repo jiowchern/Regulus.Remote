@@ -6,6 +6,7 @@
     <Version>0.1.9.1</Version>
     <PackageProjectUrl>https://github.com/jiowchern/Regulus.Remote</PackageProjectUrl>
     <Authors>jc</Authors>
+    <Description>remote core.</Description>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Regulus.Network\Regulus.Network.csproj" />

@@ -8,6 +8,7 @@
     <Version>0.1.9.1</Version>
     <PackageProjectUrl>https://github.com/jiowchern/Regulus.Remote</PackageProjectUrl>
     <Authors>jc</Authors>
+    <Description>quick project creation tool.</Description>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.20253.1" />

@@ -154,7 +154,8 @@ Sample/Common>dotnet new classlib
 Add references to **Common.csproj**.
 ```xml
 <ItemGroup>
-	<ProjectReference Include="Regulus\Regulus.Remote\Regulus.Remote.csproj" />
+	<PackageReference Include="Regulus.Remote" Version="0.1.9.1" />
+	<PackageReference Include="Regulus.Remote.Tools.Protocol" Version="0.1.9.1"/>
 </ItemGroup>
 ```
 Add a sample file,**IFoo.cs**.
@@ -173,17 +174,24 @@ Sample/Protocol>dotnet new classlib
 Add references to **Protocol.csproj**.
 ```xml
 <ItemGroup>
-	<ProjectReference Include="Regulus\Regulus.Remote\Regulus.Remote.csproj" />
-	<ProjectReference Include="Regulus\Regulus.Serialization\Regulus.Serialization.csproj" />
+	<PackageReference Include="Regulus.Serialization" Version="0.1.9.1" />
 	<ProjectReference Include="Common\Common.csproj" />
 </ItemGroup>
 ```
-**Generation the protocol code.**  
-Use ```Regulus.Application.Protocol.CodeWriter.dll``` to generate code to **Protocol** project.
-```powershell
-Sample>dotnet run --project Regulus/Regulus.Application.Protocol.CodeWriter  --common Common.dll --output Protocol
-```
 At this point, there are two projects, **Common.csproj** and **Protocol.csproj**.
+
+### Generation the protocol code.
+In ```Common.csproj``` specify the code export path.
+```xml
+<!-- Common.csproj -->
+<ItemGroup>
+	<PackageReference Include="Regulus.Remote" Version="0.1.9.1" />
+	<PackageReference Include="Regulus.Remote.Tools.Protocol" Version="0.1.9.1"/>
+	<!-- new -->
+	<RegulusProtocolOutputDir Include="..\Protocol\" />
+</ItemGroup>
+```
+Building **Common** in this way generates a code to **Protocol**.
 	
 #### Server  
 The following example sets up a server in console.  
@@ -193,7 +201,7 @@ Sample/Server>dotnet new console
 Add references to **Server.csproj**.  
 ```xml
 <ItemGroup>
-	<ProjectReference Include="Regulus\Regulus.Remote.Server\Regulus.Remote.Server.csproj" />
+	<PackageReference Include="Regulus.Remote.Server" Version="0.1.9.1" />
 	<ProjectReference Include="..\Common\Common.csproj" />	
 </ItemGroup>
 ```
@@ -240,7 +248,7 @@ Sample/Client>dotnet new console
 Add references to **Client.csproj**.  
 ```xml
 <ItemGroup>
-	<ProjectReference Include="Regulus\Regulus.Remote.Server\Regulus.Remote.Client.csproj" />
+	<PackageReference Include="Regulus.Remote.Client" Version="0.1.9.1" />
 	<ProjectReference Include="..\Common\Common.csproj" />
 </ItemGroup>
 ```

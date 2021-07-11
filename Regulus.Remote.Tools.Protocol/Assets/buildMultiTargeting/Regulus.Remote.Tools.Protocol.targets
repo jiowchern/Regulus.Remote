@@ -1,5 +1,0 @@
-
-<Project>
-  <Import Project="..\build\Regulus.Remote.Tools.Protocol.targets" />
-
-</Project>
