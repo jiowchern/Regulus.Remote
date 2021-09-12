@@ -139,23 +139,25 @@ The current communication capabilities of the interface are as follows...
           
 
 ## Getting Start
-This is a server-client framework, so it requires at least four projects: **Common**, **Protocol**, **Server** and **Client**.
+This is a server-client framework, so it requires at least three projects: **Protocol**, **Server** and **Client**.
 ### Dependency
-* Visual Studio 2019.
+* Visual Studio 2019  16.11.1.
 * .NET Core Sdk 2.0 or above.
 
-### Common And Protocol 
+
+### Protocol 
 Create a protocol component to handle the communication requirements between client and server.  
 
-**Create Common Project.**
+**Create Project.**
 ```powershell
-Sample/Common>dotnet new classlib 
+Sample/Protocol>dotnet new classlib 
 ```
-Add references to **Common.csproj**.
+Add references to **Protocol.csproj**.
 ```xml
 <ItemGroup>
 	<PackageReference Include="Regulus.Remote" Version="0.1.9.1" />
-	<PackageReference Include="Regulus.Remote.Tools.Protocol" Version="0.1.9.1"/>
+	<PackageReference Include="Regulus.Remote.Tools.Protocol.Sources" Version="0.0.0.2"/>
+	<PackageReference Include="Regulus.Serialization" Version="0.1.9.1" />   
 </ItemGroup>
 ```
 Add a sample file,**IFoo.cs**.
@@ -167,31 +169,7 @@ namespace Common
 	}
 }
 ```
-**Create Protocol Project.**
-```powershell
-Sample/Protocol>dotnet new classlib 
-```
-Add references to **Protocol.csproj**.
-```xml
-<ItemGroup>
-	<PackageReference Include="Regulus.Serialization" Version="0.1.9.1" />
-	<ProjectReference Include="Common\Common.csproj" />
-</ItemGroup>
-```
-At this point, there are two projects, **Common.csproj** and **Protocol.csproj**.
 
-### Generation the protocol code.
-In ```Common.csproj``` specify the code export path.
-```xml
-<!-- Common.csproj -->
-<ItemGroup>
-	<PackageReference Include="Regulus.Remote" Version="0.1.9.1" />
-	<PackageReference Include="Regulus.Remote.Tools.Protocol" Version="0.1.9.1"/>
-	<!-- new -->
-	<RegulusProtocolOutputDir Include="..\Protocol\" />
-</ItemGroup>
-```
-Building **Common** in this way generates a code to **Protocol**.
 	
 #### Server  
 The following example sets up a server in console.  
@@ -202,7 +180,7 @@ Add references to **Server.csproj**.
 ```xml
 <ItemGroup>
 	<PackageReference Include="Regulus.Remote.Server" Version="0.1.9.1" />
-	<ProjectReference Include="..\Common\Common.csproj" />	
+	<ProjectReference Include="..\Protocol\Protocol.csproj" />	
 </ItemGroup>
 ```
 The server needs an entry point for the startup environment.  
@@ -249,7 +227,7 @@ Add references to **Client.csproj**.
 ```xml
 <ItemGroup>
 	<PackageReference Include="Regulus.Remote.Client" Version="0.1.9.1" />
-	<ProjectReference Include="..\Common\Common.csproj" />
+	<ProjectReference Include="..\Protocol\Protocol.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
 </ItemGroup>
 ```
 Create a ```Regulus.Remote.IAgent``` to handle the connection and receive objects from the server.
