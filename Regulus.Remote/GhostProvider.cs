@@ -302,9 +302,15 @@ namespace Regulus.Remote
             MemberMap map = _Protocol.GetMemberMap();
             PropertyInfo info = map.GetProperty(data.PropertyId);
             var type = _InterfaceProvider.Find(info.DeclaringType);
-            FieldInfo field = type.GetField("_" + info.Name, BindingFlags.Instance | BindingFlags.Public);
+            var fieldName = _GetFieldName(info);
+            FieldInfo field = type.GetField( fieldName, BindingFlags.Instance | BindingFlags.Public);
             object filedValue = field.GetValue(owner.GetInstance());
             return filedValue as IObjectAccessible;
+        }
+
+        private static string _GetFieldName(PropertyInfo info)
+        {
+            return $"_{info.DeclaringType.FullName.Replace('.','_')}_{info.Name}";
         }
 
         private void _UpdateSetProperty(long entity_id, int property, byte[] buffer)
@@ -319,7 +325,7 @@ namespace Regulus.Remote
             object value = _Serializer.Deserialize(buffer);
             object instance = ghost.GetInstance();
             Type type = _InterfaceProvider.Find(info.DeclaringType);
-            FieldInfo field = type.GetField("_" + info.Name, BindingFlags.Instance | BindingFlags.Public);
+            FieldInfo field = type.GetField(_GetFieldName(info), BindingFlags.Instance | BindingFlags.Public);
             if (field != null)
             {
                 object filedValue = field.GetValue(instance);
