@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.11.0" />
+    
+    <!-- <PackageReference Include="Regulus.Remote" Version="0.1.9.1" />
+    <PackageReference Include="Regulus.Serialization" Version="0.1.9.1" />-->
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Regulus.Remote.Tools.Protocol.Sources\Regulus.Remote.Tools.Protocol.Sources.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\Regulus.Remote\Regulus.Remote.csproj" />
+    <ProjectReference Include="..\Regulus.Serialization\Regulus.Serialization.csproj" />
+  </ItemGroup>
+
+ 
+
+</Project>

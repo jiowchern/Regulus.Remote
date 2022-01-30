@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29006.145
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Remote", "Regulus.Remote\Regulus.Remote.csproj", "{FA43729F-3EE3-4EE5-8E76-CA500042B25B}"
 EndProject
@@ -73,6 +73,14 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Utility", "RegulusUtility\Regulus.Utility\Regulus.Utility.csproj", "{BBEA4BDD-AE30-4905-9EC8-398D14FC98C7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Utility.Test", "RegulusUtility\Regulus.Utility.Test\Regulus.Utility.Test.csproj", "{4C4332A4-962B-494F-882B-5E254CCD7C29}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Remote.Tools.Protocol.Sources", "Regulus.Remote.Tools.Protocol.Sources\Regulus.Remote.Tools.Protocol.Sources.csproj", "{2CD0DDC2-9643-48E3-85DF-06BFAE95615B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Remote.Tools.Protocol.Sources.Tests", "Regulus.Remote.Tools.Protocol.Sources.Tests\Regulus.Remote.Tools.Protocol.Sources.Tests.csproj", "{C7E838C3-E040-4EDF-9EBC-523691444BE4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Remote.Tools.Protocol.Sources.TestCommon", "Regulus.Remote.Tools.Protocol.Sources.TestCommon\Regulus.Remote.Tools.Protocol.Sources.TestCommon.csproj", "{7BDE997C-09FC-4449-BC49-5F109D5E4C6E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests", "Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests\Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests.csproj", "{A6D432C5-A491-4FAB-AC3B-C6A425FB4490}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -172,6 +180,22 @@ Global
 		{4C4332A4-962B-494F-882B-5E254CCD7C29}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C4332A4-962B-494F-882B-5E254CCD7C29}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C4332A4-962B-494F-882B-5E254CCD7C29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CD0DDC2-9643-48E3-85DF-06BFAE95615B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CD0DDC2-9643-48E3-85DF-06BFAE95615B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CD0DDC2-9643-48E3-85DF-06BFAE95615B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CD0DDC2-9643-48E3-85DF-06BFAE95615B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7E838C3-E040-4EDF-9EBC-523691444BE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7E838C3-E040-4EDF-9EBC-523691444BE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7E838C3-E040-4EDF-9EBC-523691444BE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7E838C3-E040-4EDF-9EBC-523691444BE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BDE997C-09FC-4449-BC49-5F109D5E4C6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BDE997C-09FC-4449-BC49-5F109D5E4C6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BDE997C-09FC-4449-BC49-5F109D5E4C6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BDE997C-09FC-4449-BC49-5F109D5E4C6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6D432C5-A491-4FAB-AC3B-C6A425FB4490}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6D432C5-A491-4FAB-AC3B-C6A425FB4490}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6D432C5-A491-4FAB-AC3B-C6A425FB4490}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6D432C5-A491-4FAB-AC3B-C6A425FB4490}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -195,12 +219,14 @@ Global
 		{9AC9D5ED-2B49-4C25-B851-518D0B8F024A} = {F37C2CFD-4962-4E1B-96EB-E5E8928D217B}
 		{011E01DE-6672-4E26-B406-8868A5B5391A} = {845C59A2-925C-4D68-BAF9-E3545A354CF2}
 		{82BAA92B-B238-4F83-B836-9D81C335393F} = {F37C2CFD-4962-4E1B-96EB-E5E8928D217B}
-		{FBA5C01D-B12F-4C15-9A1F-2178761DC268} = {F37C2CFD-4962-4E1B-96EB-E5E8928D217B}
-		{C212EC33-8497-470B-AE2B-C993FDF34129} = {F37C2CFD-4962-4E1B-96EB-E5E8928D217B}
 		{03FFAAFA-F74E-4D4D-83D2-492B38DC20BB} = {BF82B497-EC2D-4F8B-AF59-02AEC21A6B15}
 		{1A57D297-F056-4C80-94DD-267B30A871A3} = {A088BA49-DE34-4F59-AF19-C82A94D7F834}
 		{BBEA4BDD-AE30-4905-9EC8-398D14FC98C7} = {BF82B497-EC2D-4F8B-AF59-02AEC21A6B15}
 		{4C4332A4-962B-494F-882B-5E254CCD7C29} = {F37C2CFD-4962-4E1B-96EB-E5E8928D217B}
+		{2CD0DDC2-9643-48E3-85DF-06BFAE95615B} = {BF82B497-EC2D-4F8B-AF59-02AEC21A6B15}
+		{C7E838C3-E040-4EDF-9EBC-523691444BE4} = {F37C2CFD-4962-4E1B-96EB-E5E8928D217B}
+		{7BDE997C-09FC-4449-BC49-5F109D5E4C6E} = {F37C2CFD-4962-4E1B-96EB-E5E8928D217B}
+		{A6D432C5-A491-4FAB-AC3B-C6A425FB4490} = {F37C2CFD-4962-4E1B-96EB-E5E8928D217B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5F361C65-F7E7-4579-84BF-3D8DB0C9DABA}
