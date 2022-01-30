@@ -4,13 +4,15 @@ namespace Regulus.Remote.Protocol
 {
     public static class ProtocolProvider
     {
-        public static Regulus.Remote.IProtocol Create(System.Reflection.Assembly protocol_assembly)
+        public static System.Collections.Generic.IEnumerable<Regulus.Remote.IProtocol> Create(System.Reflection.Assembly protocol_assembly)
         {
             System.Type[] types = protocol_assembly.GetExportedTypes();
-            System.Type protocolType = types.Where(type => type.GetInterface(nameof(Regulus.Remote.IProtocol)) != null).FirstOrDefault();
-            if (protocolType == null)
-                throw new System.Exception($"找不到{nameof(Regulus.Remote.IProtocol)}的實作");
-            return System.Activator.CreateInstance(protocolType) as Regulus.Remote.IProtocol;
+            var protocolTypes = types.Where(type => type.GetInterface(nameof(Regulus.Remote.IProtocol)) != null);
+            foreach (var type in protocolTypes)
+            {
+                yield return System.Activator.CreateInstance(type) as Regulus.Remote.IProtocol;
+            }
+            
         }
 
         public static System.Collections.Generic.IEnumerable<System.Type> GetProtocols()

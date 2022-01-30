@@ -324,7 +324,7 @@ namespace Regulus.Remote
 
             object value = _Serializer.Deserialize(buffer);
             object instance = ghost.GetInstance();
-            Type type = _InterfaceProvider.Find(info.DeclaringType);
+            Type type = instance.GetType();
             FieldInfo field = type.GetField(_GetFieldName(info), BindingFlags.Instance | BindingFlags.Public);
             if (field != null)
             {

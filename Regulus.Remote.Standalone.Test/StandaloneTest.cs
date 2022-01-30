@@ -9,7 +9,7 @@ namespace Regulus.Remote.Standalone.Test
     {
 
         
-        [Fact(Timeout =5000)]
+       /* [Fact(Timeout =5000)]
         
         public void Test()
         {
@@ -26,7 +26,7 @@ namespace Regulus.Remote.Standalone.Test
             Xunit.Assert.True(true);
             
 
-        }
+        }*/
         
         
 

@@ -94,17 +94,13 @@ namespace Regulus.Remote.Ghost
             _Reader.Update();            
             ResponsePackage receivePkg;
             while(_Receives.TryDequeue(out receivePkg))
-            {
-            
+            {            
                 _ResponseEvent(receivePkg.Code, receivePkg.Data);
             }
-
-            
 
             RequestPackage[] sends = _SendsPop();
             if (sends.Length > 0)
                 _Writer.Push(sends);
-
             
         }
 

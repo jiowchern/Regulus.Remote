@@ -1,10 +1,10 @@
-﻿using Regulus.Projects.TestProtocol.Common;
-using Regulus.Projects.TestProtocol.Common.Ghost;
+﻿//using Regulus.Projects.TestProtocol.Common;
+//using Regulus.Projects.TestProtocol.Common.Ghost;
 using System;
 
 namespace Regulus.Remote.Standalone.Test
 {
-    public class TestEnv<T> where T : Regulus.Remote.IBinderProvider, System.IDisposable     
+  /*  public class TestEnv<T> where T : Regulus.Remote.IBinderProvider, System.IDisposable     
     {
         readonly ThreadUpdater _AgentUpdater;
         readonly IService _Service;
@@ -41,6 +41,6 @@ namespace Regulus.Remote.Standalone.Test
             _Service.Dispose();
 
         }
-    }
+    }*/
     
 }

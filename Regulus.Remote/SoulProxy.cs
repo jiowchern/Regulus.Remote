@@ -15,6 +15,8 @@ namespace Regulus.Remote
         public readonly Type ObjectType;
 
         public readonly MethodInfo[] MethodInfos;
+        public readonly PropertyInfo[] PropertyInfos;
+
 
         readonly List<SoulProxyEventHandler> _EventHandlers;
         readonly List<PropertyUpdater> _PropertyUpdaters;
@@ -32,9 +34,12 @@ namespace Regulus.Remote
         long ISoul.Id => Id;
         object ISoul.Instance => ObjectInstance;
 
+        
         public SoulProxy(long id, int interface_id, Type object_type, object object_instance )
         {
-            MethodInfos = object_type.GetMethods();
+            
+            MethodInfos = _GetInterfaces(object_type).SelectMany(i=>i.GetMethods() ).ToArray();
+            PropertyInfos = _GetInterfaces(object_type).SelectMany(s => s.GetProperties(BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public)).ToArray();
             ObjectInstance = object_instance;
             ObjectType = object_type;
             InterfaceId = interface_id;
@@ -82,9 +87,9 @@ namespace Regulus.Remote
         
 
         private IEnumerable<Tuple<int, PropertyInfo>> _GetPropertys(Type soul_type , System.Collections.Generic.IReadOnlyDictionary<PropertyInfo, int> property_ids)
-        {
-            return from p in soul_type.GetProperties(BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public)
-                    select new Tuple<int, PropertyInfo>(property_ids[p] , p);            
+        {            
+            return from p in PropertyInfos
+                   select new Tuple<int, PropertyInfo>(property_ids[p] , p);            
         }
 
         private IEnumerable<NotifierUpdater> _BuildNotifier(object soul, Type soul_type, System.Collections.Generic.IReadOnlyDictionary<PropertyInfo, int> propertyIds)
@@ -111,6 +116,9 @@ namespace Regulus.Remote
             }
             
         }
+
+       
+
         private void _Regist(List<NotifierUpdater> updaters)
         {
             foreach (var updater  in updaters)
@@ -220,6 +228,18 @@ namespace Regulus.Remote
             if (ObjectType.GetInterfaces().Any(i => i == declaring_type))
                 return true;
             return declaring_type == ObjectType;
+        }
+
+        IEnumerable<Type> _GetInterfaces(Type object_type)
+        {
+            yield return object_type;
+            foreach (var item in object_type.GetInterfaces())
+            {
+                foreach (var item2 in _GetInterfaces(item))
+                {
+                    yield return item2;
+                }
+            }
         }
     }
 }

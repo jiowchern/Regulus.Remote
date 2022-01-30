@@ -1,11 +1,11 @@
-﻿using Regulus.Projects.TestProtocol.Common;
+﻿//using Regulus.Projects.TestProtocol.Common;
 using Regulus.Utility;
 using System;
 using System.Threading;
 
 namespace Regulus.Remote.Standalone.Test
 {
-    public class StatusEntryUserAddItemsStage : Regulus.Utility.IBootable , INext
+   /* public class StatusEntryUserAddItemsStage : Regulus.Utility.IBootable , INext
     {
         readonly Regulus.Projects.TestProtocol.Common.Sample _Sample;
         private readonly IBinder _Binder;
@@ -119,5 +119,5 @@ namespace Regulus.Remote.Standalone.Test
         {
             _Dispose.Dispose();
         }
-    }
+    }*/
 }

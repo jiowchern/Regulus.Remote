@@ -138,8 +138,7 @@ namespace Regulus.Remote
         }
 
         private void _ReturnSoulValue(long return_id, IValue returnValue)
-        {
-            
+        {            
             var soul = returnValue.GetObject() ;
             Type type = returnValue.GetObjectType();
 
@@ -149,11 +148,11 @@ namespace Regulus.Remote
         private void _LoadProperty(SoulProxy new_soul)
         {
 
-            PropertyInfo[] propertys = new_soul.ObjectType.GetProperties(BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public);
+            IEnumerable<PropertyInfo> propertys = new_soul.PropertyInfos;
             MemberMap map = _Protocol.GetMemberMap();
-            for (int i = 0; i < propertys.Length; ++i)
+            foreach (PropertyInfo property in propertys)
             {
-                PropertyInfo property = propertys[i];
+                
                 int id = map.GetProperty(property);
 
                 if (property.PropertyType.GetInterfaces().Any(t => t == typeof(IDirtyable)))
@@ -166,9 +165,6 @@ namespace Regulus.Remote
 
             }
         }
-
-
-
         private void _ReturnDataValue(long returnId, IValue returnValue)
         {
             object value = returnValue.GetObject();

@@ -46,7 +46,7 @@ namespace Regulus.Utility.Client.JIT.Tests
         {
             System.Type type = typeof(TestProtocol);
 
-            IProtocol protocol = Regulus.Remote.Protocol.ProtocolProvider.Create(type.Assembly);
+            IProtocol protocol = Regulus.Remote.Protocol.ProtocolProvider.Create(type.Assembly).FirstOrDefault();
             Xunit.Assert.NotEqual(protocol, null);
         }
 

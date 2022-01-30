@@ -1,4 +1,5 @@
 using Regulus.Remote.Standalone;
+using System.Linq;
 
 namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 {
@@ -14,7 +15,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
         {
 
             Entry = entry;
-            IProtocol protocol = Regulus.Remote.Protocol.ProtocolProvider.Create(typeof(T2).Assembly);
+            IProtocol protocol = Regulus.Remote.Protocol.ProtocolProvider.Create(typeof(T2).Assembly).Single();
             _Service = new Regulus.Remote.Standalone.Service(entry, protocol);
             _Agent = new Regulus.Remote.Ghost.Agent(protocol);
             _Service.Join(_Agent);

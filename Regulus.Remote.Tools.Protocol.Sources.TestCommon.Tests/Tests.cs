@@ -1,9 +1,10 @@
 using System;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Threading.Tasks;
+
+
 using NUnit.Framework;
+using Regulus.Remote.Reactive;
 using Regulus.Remote.Tools.Protocol.Sources.TestCommon.MultipleNotices;
 
 namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
@@ -16,7 +17,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 
         }
         [Test]
-        public void SupplyAndUnsupplyTest()
+        public void NotifierSupplyAndUnsupplyTest()
         {
             var multipleNotices = new MultipleNotices.MultipleNotices();
 
@@ -84,7 +85,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
             env.Dispose();
         }
         [Test]
-        public void SupplyTest()
+        public void NotifierSupplyTest()
         {
 
            
@@ -170,18 +171,18 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 
 
 
-          var event11Obs = from eventer in env.Queryable.QueryNotifier<IEventabe>().SupplyEvent()
-                             from n in NotifierReactive.EventObservable(NewMethod(eventer), (h) => eventer.Event1 -= h)
+            var event11Obs = from eventer in env.Queryable.QueryNotifier<IEventabe>().SupplyEvent()
+                             from n in Extensions.EventObservable((h) => eventer.Event1 += h, (h) => eventer.Event1 -= h)
                              select n;
             var event12Obs = from eventer in env.Queryable.QueryNotifier<IEventabe>().SupplyEvent()
-                             from n in NotifierReactive.EventObservable((h) => eventer.Event21 += h, (h) => eventer.Event21 -= h)
+                             from n in Extensions.EventObservable((h) => eventer.Event21 += h, (h) => eventer.Event21 -= h)
                              select n;
 
             var event21Obs = from eventer in env.Queryable.QueryNotifier<IEventabe>().SupplyEvent()
-                             from n in NotifierReactive.EventObservable<int>((h) => eventer.Event2 += h, (h) => eventer.Event2 -= h)
+                             from n in Extensions.EventObservable<int>((h) => eventer.Event2 += h, (h) => eventer.Event2 -= h)
                              select n;
             var event22Obs = from eventer in env.Queryable.QueryNotifier<IEventabe>().SupplyEvent()
-                             from n in NotifierReactive.EventObservable<int>(
+                             from n in Extensions.EventObservable<int>(
                                  (h) => eventer.Event22 += h,
                                  (h) => eventer.Event22 -= h)
                              select n;
@@ -219,10 +220,59 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 
         }
 
-        private static Action<Action> NewMethod(IEventabe eventer)
+        [Test]
+        public void MethodTest()
         {
-            return (h) => { 
-                eventer.Event1 += h; };
+            var tester = new MethodTester();
+            
+            var env = new TestEnv<Entry<IMethodable>, IMethodable>(new Entry<IMethodable>(tester));
+            var valuesObs = from gpi in env.Queryable.QueryNotifier<IMethodable>().SupplyEvent()
+                             from v1 in gpi.GetValue1().RemoteValue()
+                             from v2 in gpi.GetValue2().RemoteValue()
+                             select new {v1,v2};
+
+            var values = valuesObs.FirstAsync().Wait();
+            env.Dispose();
+
+            Assert.AreEqual(1, values.v1);
+            Assert.AreEqual(2, values.v2);            
         }
+
+        [Test]
+        public void PropertyTest()
+        {
+            var tester = new PropertyTester();
+            var env = new TestEnv<Entry<IPropertyable>, IPropertyable>(new Entry<IPropertyable>(tester));
+
+            tester.Property1.Value = 1;
+            tester.Property2.Value = 2;
+            
+            var values1Obs = from gpi in env.Queryable.QueryNotifier<IPropertyable>().SupplyEvent()                            
+                            select new { v1=gpi.Property1.Value,v2= gpi.Property2.Value };
+
+            var values1 = values1Obs.FirstAsync().Wait();
+
+            Assert.AreEqual(1, values1.v1);
+            Assert.AreEqual(2, values1.v2);
+
+            tester.Property1.Value = 3;
+            tester.Property2.Value = 4;
+
+            var values2Obs = from gpi in env.Queryable.QueryNotifier<IPropertyable>().SupplyEvent()
+                             from v1 in gpi.Property1.PropertyChangeValue()
+                             from v2 in gpi.Property2.PropertyChangeValue()
+                             select new { v1 , v2};
+            
+            var values2 = values2Obs.FirstAsync().Wait();
+
+            Assert.AreEqual(3, values2.v1);
+            Assert.AreEqual(4, values2.v2);
+
+            env.Dispose();
+
+            
+        }
+
+        
     }
 }

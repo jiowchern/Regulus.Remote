@@ -14,7 +14,7 @@ namespace Regulus.Network.Tests
             Assert.Equal((ushort)0x1234, seq);
         }
 
-
+        [Xunit.Fact]
         public void Ack()
         {
             SocketMessageFactory spawner = SocketMessageFactory.Instance;
@@ -24,7 +24,7 @@ namespace Regulus.Network.Tests
             Assert.Equal((ushort)0x1234, value);
         }
 
-
+        [Xunit.Fact]
         public void AckFields()
         {
             SocketMessageFactory spawner = SocketMessageFactory.Instance;
@@ -35,6 +35,7 @@ namespace Regulus.Network.Tests
         }
 
 
+        [Xunit.Fact]
         public void Operation()
         {
             SocketMessageFactory spawner = SocketMessageFactory.Instance;
@@ -46,7 +47,7 @@ namespace Regulus.Network.Tests
 
 
 
-
+        [Xunit.Fact]
         public void Payload()
         {
             SocketMessageFactory spawner = SocketMessageFactory.Instance;

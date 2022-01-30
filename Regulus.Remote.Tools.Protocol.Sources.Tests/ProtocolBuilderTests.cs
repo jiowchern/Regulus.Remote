@@ -10,27 +10,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
 {
     public class ProtocolBuilderTests
     {
-        [Test]
-        public async Task ProtocolCreateTest()
-        {
-            var source = @"
-namespace NS1
-{
-    public static class Protocol
-    {
-        public static Regulus.Remote.IProtocol Create()
-        {
-            return Regulus.Remote.ProtocolGenerator.Generate(); 
-        }
-    }
-}
-
-";
-            var tree = CSharpSyntaxTree.ParseText(source,null, "NS1.Protocol.Create.cs");
-
-
-            await new GhostTest(tree).RunAsync();
-        }
+       
 
         [Test]
         public async Task ProtocolTest()

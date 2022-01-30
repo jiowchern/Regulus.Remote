@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Regulus.Remote.Protocol\Regulus.Remote.Protocol.csproj" />
+    
     <ProjectReference Include="..\Regulus.Remote.Reactive\Regulus.Remote.Reactive.csproj" />
   </ItemGroup>
 
