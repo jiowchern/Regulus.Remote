@@ -12,7 +12,7 @@ namespace Regulus.Remote.Standalone.Test
     {
 
         
-        [Xunit.Theory()]
+        /*[Xunit.Theory()]
         [Xunit.InlineData(1)]
         public void AllInOneCount(int count)
         {
@@ -214,6 +214,6 @@ namespace Regulus.Remote.Standalone.Test
         private void _Throw(Exception e)
         {
             throw e;
-        }
+        }*/
     }
 }

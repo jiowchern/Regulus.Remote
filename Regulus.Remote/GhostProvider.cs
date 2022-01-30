@@ -343,40 +343,49 @@ namespace Regulus.Remote
         private void _InvokeEvent(long ghost_id, int event_id, long handler_id, byte[][] event_params)
         {
             IGhost ghost = _FindGhost(ghost_id);
-            if (ghost != null)
+            if (ghost == null)
             {
-                MemberMap map = _Protocol.GetMemberMap();
-                EventInfo info = map.GetEvent(event_id);
+                return;
+            }
+
+            MemberMap map = _Protocol.GetMemberMap();
+            EventInfo info = map.GetEvent(event_id);
 
 
-                Type type = _InterfaceProvider.Find(info.DeclaringType);
-                object instance = ghost.GetInstance();
-                if (type != null)
+
+            object instance = ghost.GetInstance();
+            Type type = instance.GetType();
+            
+
+            var fieldName = _GetFieldName(info);
+            FieldInfo eventInfos = type.GetField(fieldName, BindingFlags.Instance | BindingFlags.Public);
+            object fieldValue = eventInfos.GetValue(instance);
+            if (fieldValue is GhostEventHandler)
+            {
+                GhostEventHandler fieldValueDelegate = fieldValue as GhostEventHandler;
+
+                object[] pars = (from a in event_params select _Serializer.Deserialize(a)).ToArray();
+                try
                 {
-                    FieldInfo eventInfos = type.GetField("_" + info.Name, BindingFlags.Instance | BindingFlags.Public);
-                    object fieldValue = eventInfos.GetValue(instance);
-                    if (fieldValue is GhostEventHandler)
-                    {
-                        GhostEventHandler fieldValueDelegate = fieldValue as GhostEventHandler;
-
-                        object[] pars = (from a in event_params select _Serializer.Deserialize(a)).ToArray();
-                        try
-                        {
-                            fieldValueDelegate.Invoke(handler_id, pars);
-                        }
-                        catch (TargetInvocationException tie)
-                        {
-                            Regulus.Utility.Log.Instance.WriteInfo(string.Format("Call event error in {0}:{1}. \n{2}", type.FullName, info.Name, tie.InnerException.ToString()));
-                            throw tie;
-                        }
-                        catch (Exception e)
-                        {
-                            Regulus.Utility.Log.Instance.WriteInfo(string.Format("Call event error in {0}:{1}.", type.FullName, info.Name));
-                            throw e;
-                        }
-                    }
+                    fieldValueDelegate.Invoke(handler_id, pars);
+                }
+                catch (TargetInvocationException tie)
+                {
+                    Regulus.Utility.Log.Instance.WriteInfo(string.Format("Call event error in {0}:{1}. \n{2}", type.FullName, info.Name, tie.InnerException.ToString()));
+                    throw tie;
+                }
+                catch (Exception e)
+                {
+                    Regulus.Utility.Log.Instance.WriteInfo(string.Format("Call event error in {0}:{1}.", type.FullName, info.Name));
+                    throw e;
                 }
             }
+            
+        }
+
+        private string _GetFieldName(EventInfo info)
+        {
+            return $"_{info.DeclaringType.FullName.Replace('.', '_')}_{info.Name}";
         }
 
         private IGhost _FindGhost(long ghost_id)

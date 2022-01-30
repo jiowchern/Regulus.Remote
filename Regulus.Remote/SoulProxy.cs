@@ -214,6 +214,13 @@ namespace Regulus.Remote
         {
             return this.ObjectInstance == obj.Instance && this.ObjectType == obj.Type;
         }
+
+        internal bool Is(Type declaring_type)
+        {
+            if (ObjectType.GetInterfaces().Any(i => i == declaring_type))
+                return true;
+            return declaring_type == ObjectType;
+        }
     }
 }
 

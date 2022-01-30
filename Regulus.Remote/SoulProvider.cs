@@ -281,7 +281,8 @@ namespace Regulus.Remote
             if (eventInfo == null)
                 return;
 
-            if (eventInfo.DeclaringType != soul.ObjectType)
+            
+            if (!soul.Is(eventInfo.DeclaringType))
                 return;
 
             soul.RemoveEvent(eventInfo, handler_id);
@@ -298,7 +299,7 @@ namespace Regulus.Remote
             EventInfo eventInfo = _Protocol.GetMemberMap().GetEvent(event_id);
             if (eventInfo == null)
                 return;
-            if (eventInfo.DeclaringType != soul.ObjectType)
+            if (!soul.Is(eventInfo.DeclaringType))
                 return;
 
             Delegate del = _BuildDelegate(eventInfo, soul.Id, handler_id, _InvokeEvent);
