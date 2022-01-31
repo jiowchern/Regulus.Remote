@@ -1,10 +1,10 @@
-# Regulus Remote
+﻿# Regulus Remote
 [![Maintainability](https://api.codeclimate.com/v1/badges/99cb5e1dc12cafbfe451/maintainability)](https://codeclimate.com/github/jiowchern/Regulus.Remote/maintainability)
 [![Actions Status](https://github.com/jiowchern/Regulus.Remote/workflows/Build/badge.svg)](https://github.com/jiowchern/Regulus.Remote/actions)
 [![Build status](https://ci.appveyor.com/api/projects/status/fv1owwit4utddawv/branch/release?svg=true)](https://ci.appveyor.com/project/jiowchern/regulus-remote/branch/release)
 [![Coverage Status](https://coveralls.io/repos/github/jiowchern/Regulus.Remote/badge.svg?branch=master)](https://coveralls.io/github/jiowchern/Regulus.Remote?branch=master)
 ![commit last date](https://img.shields.io/github/last-commit/jiowchern/Regulus.Remote)  
-[![Discord](https://img.shields.io/discord/101557008930451456.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/uDF8NTp)
+<!-- [![Discord](https://img.shields.io/discord/101557008930451456.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)](https://discord.gg/uDF8NTp) -->
 
 <!-- [![GitHub release](https://img.shields.io/github/release/jiowchern/regulus.svg?style=flat-square)](https://github.com/jiowchern/Regulus/releases)![pre-release](https://img.shields.io/github/v/release/jiowchern/Regulus?include_prereleases) -->
 <!-- [![Gitter](https://badges.gitter.im/JoinChat.svg)](https://gitter.im/Regulus-Library) -->
@@ -19,7 +19,7 @@ This is server-client connection framework, available for Unity development.
 * [Recommend](#Recommend)
 * [Sample](#Sample)
 ## Feature
-* Remote method invocation
+* Remote Method Invocation
 * .Net Standard 2.0 base
 * Compatible with Unity il2cpp
 * Compatible with Unity WebGL
@@ -27,7 +27,7 @@ This is server-client connection framework, available for Unity development.
 * Stand-alone mode  
 
 ## Latest Version
-Download the latest ![Latest Version](https://img.shields.io/github/v/tag/jiowchern/Regulus) .
+Download the latest ![Latest Version](https://img.shields.io/github/v/tag/jiowchern/Regulus.Remote) .
 ## Architecture
 <!-- 
 @startuml
@@ -92,6 +92,7 @@ namespace Server
 		{
 			_Greeter = new Greeter();
 			_Binder = binder;
+			// bind to client.
 			_GreeterSoul = binder.Bind<IBinder>(_Greeter);
 		}
 		public void Dispose()
@@ -141,8 +142,8 @@ The current communication capabilities of the interface are as follows...
 ## Getting Start
 This is a server-client framework, so it requires at least three projects: **Protocol**, **Server** and **Client**.
 ### Dependency
-* Visual Studio 2019  16.11.1.
-* .NET Core Sdk 2.0 or above.
+* Visual Studio 2022  17.0.5 or above.
+* .NET Sdk 6.0.101 or above.
 
 
 ### Protocol 
@@ -155,9 +156,12 @@ Sample/Protocol>dotnet new classlib
 Add references to **Protocol.csproj**.
 ```xml
 <ItemGroup>
-	<PackageReference Include="Regulus.Remote" Version="0.1.9.1" />
-	<PackageReference Include="Regulus.Remote.Tools.Protocol.Sources" Version="0.0.0.2"/>
-	<PackageReference Include="Regulus.Serialization" Version="0.1.9.1" />   
+	<PackageReference Include="Regulus.Remote" Version="0.1.10.0" />
+	<PackageReference Include="Regulus.Serialization" Version="0.1.10.0" />
+	<PackageReference Include="Regulus.Remote.Tools.Protocol.Sources" Version="0.0.0.4">
+		<PrivateAssets>all</PrivateAssets>
+		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	</PackageReference>	
 </ItemGroup>
 ```
 Add a sample file,**IFoo.cs**.
@@ -179,7 +183,7 @@ Sample/Server>dotnet new console
 Add references to **Server.csproj**.  
 ```xml
 <ItemGroup>
-	<PackageReference Include="Regulus.Remote.Server" Version="0.1.9.1" />
+	<PackageReference Include="Regulus.Remote.Server" Version="0.1.10.0" />
 	<ProjectReference Include="..\Protocol\Protocol.csproj" />	
 </ItemGroup>
 ```
@@ -190,7 +194,7 @@ namespace Server
 {
 	public class Entry : Regulus.Remote.IEntry
 	{
-		void IBinderProvider.AssignBinder(IBinder binder)
+		void IBinderProvider.AssignBinder(IBinder binder,object state)
 		{
 			// IBinder is what you get when your client completes the connection.
 		}		
@@ -201,11 +205,12 @@ Create service.
 ```csharp
 namespace Server
 {
+	using System.Linq;
 	static void Main(string[] args)
 	{
 		var protocolAsm = Assembly.LoadFrom("Protocol.dll");
 		// Create protocol.
-		var protocol = Regulus.Remote.Protocol.ProtocolProvider.Create(protocolAsm);
+		var protocol = Regulus.Remote.Protocol.ProtocolProvider.Create(protocolAsm).First();
 		// your server entry.
 		var entry = new Entry();
 		
@@ -226,8 +231,8 @@ Sample/Client>dotnet new console
 Add references to **Client.csproj**.  
 ```xml
 <ItemGroup>
-	<PackageReference Include="Regulus.Remote.Client" Version="0.1.9.1" />
-	<ProjectReference Include="..\Protocol\Protocol.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+	<PackageReference Include="Regulus.Remote.Client" Version="0.1.10.0" />
+	<ProjectReference Include="..\Protocol\Protocol.csproj" />
 </ItemGroup>
 ```
 Create a ```Regulus.Remote.IAgent``` to handle the connection and receive objects from the server.
@@ -316,12 +321,7 @@ class Client
 	}
 }
 ```
-## Future Features
-* Standalone serialization system.
-* Add remote container.
-* Integrate rx.
 ## Recommend
-* [Regulus.Application.TemplateCreator](https://github.com/jiowchern/Regulus.Remote/tree/release/Regulus.Application.TemplateCreator) - Quick project creation tool. 
 * [Regulus.Remote.CodeAnalysis](https://github.com/jiowchern/Regulus.Remote.CodeAnalysis) - Protocol syntax checker.
 ## Sample 
 **[Regulus.Samples](https://github.com/jiowchern/Regulus.Samples)** ,This repository shows applications such as chat rooms.  

@@ -1,8 +1,8 @@
-version: 0.1.9.{build}
+version: 0.1.10.{build}
 branches:
   only:
   - release
-image: Visual Studio 2019
+image: Visual Studio 2022
 configuration: Release
 install:
   - cmd: >-
@@ -16,7 +16,7 @@ build:
   publish_nuget: true  
   verbosity: minimal
 after_build:
-- cmd: build_package.cmd
+- cmd: ''
 before_deploy:
 - cmd: ''
 deploy:
