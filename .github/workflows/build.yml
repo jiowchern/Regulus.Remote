@@ -18,7 +18,7 @@ jobs:
     - name: Setup .NET Core SDK
       uses: actions/setup-dotnet@v1.7.2
       with:
-        dotnet-version: 
+        dotnet-version: |
           3.1.300
           5.0.301
           6.0.101
