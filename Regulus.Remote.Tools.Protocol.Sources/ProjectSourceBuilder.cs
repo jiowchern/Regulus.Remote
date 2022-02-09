@@ -16,9 +16,11 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
             var interfaceProviderCodeBuilder = new InterfaceProviderCodeBuilder(builder.Ghosts);
             var membermapCodeBuilder = new MemberMapCodeBuilder(compilation);
-            var protocol = new ProtocolBuilder(compilation, extractor, eventProviderCodeBuilder, interfaceProviderCodeBuilder, membermapCodeBuilder).Tree;
+            var protocolBuilder = new ProtocolBuilder(compilation, extractor, eventProviderCodeBuilder, interfaceProviderCodeBuilder, membermapCodeBuilder);
+            var protocol = protocolBuilder.Tree;
+            var protocolProviders = new ProtocoProviderlBuilder(compilation, protocolBuilder.ProtocolName).Trees;
 
-            Sources = builder.Ghosts.Union(builder.Events).Union(new[] {protocol});
+            Sources = builder.Ghosts.Union(builder.Events).Union(protocolProviders).Union(new[] {protocol });
         }
     }
 }

@@ -17,6 +17,26 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 
         }
         [Test]
+        public void CreateProtocolTest1()
+        {
+            var protocol = Regulus.Remote.Tools.Protocol.Sources.TestCommon.ProtocolProvider.CreateCase1();
+            NUnit.Framework.Assert.IsNotNull(protocol);
+        }
+
+        [Test]
+        public void CreateProtocolTest2()
+        {
+            var protocol = Regulus.Remote.Tools.Protocol.Sources.TestCommon.ProtocolProvider.CreateCase2();
+            NUnit.Framework.Assert.IsNotNull(protocol);
+        }
+
+        [Test]
+        public void CreateProtocolTest3()
+        {
+            var protocol = ProtocolProviderCase3.CreateCase3();
+            NUnit.Framework.Assert.IsNotNull(protocol);
+        }
+        [Test]
         public void NotifierSupplyAndUnsupplyTest()
         {
             var multipleNotices = new MultipleNotices.MultipleNotices();

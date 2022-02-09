@@ -1,5 +1,6 @@
 ﻿namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon
 {
+
     public class PropertyTester : IPropertyable
     {
         public readonly Property<int> Property1 = new Property<int>();

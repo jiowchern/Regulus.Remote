@@ -9,17 +9,12 @@ namespace Regulus.Remote.Tools.Protocol.Sources
     {
         void ISourceGenerator.Execute(GeneratorExecutionContext context)
         {
-
-
-            Compilation compilation = context.Compilation;
-            var sources = new ProjectSourceBuilder(compilation).Sources;
+            var sources = new ProjectSourceBuilder(context.Compilation).Sources;
             
             foreach (var syntaxTree in sources)
             {
                 context.AddSource(syntaxTree.FilePath, syntaxTree.GetText());
-            }
-           
-            
+            }                       
         }
 
         
@@ -30,7 +25,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
  #if DEBUG
              if (!Debugger.IsAttached)
              {
-                 //Debugger.Launch();
+//                 Debugger.Launch();
              }
  #endif
 

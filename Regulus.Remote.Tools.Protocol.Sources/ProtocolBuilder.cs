@@ -12,7 +12,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
     {
 
         public readonly SyntaxTree Tree;
-       
+        public readonly string ProtocolName;
         
         public ProtocolBuilder(
             Compilation compilation,
@@ -22,28 +22,11 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             MemberMapCodeBuilder membermap_code_builder)
         {
 
-            /*
-            "typeof(Regulus.Remote.PackageProtocolSubmit)",
-            "typeof(Regulus.Remote.RequestPackage)",
-            "typeof(Regulus.Remote.ResponsePackage)",
-            "typeof(Regulus.Remote.PackageInvokeEvent)",
-            "typeof(Regulus.Remote.PackageErrorMethod)",
-            "typeof(Regulus.Remote.PackageReturnValue)",
-            "typeof(Regulus.Remote.PackageLoadSoulCompile)",
-            "typeof(Regulus.Remote.PackageLoadSoul)",
-            "typeof(Regulus.Remote.PackageUnloadSoul)",
-            "typeof(Regulus.Remote.PackageCallMethod)",
-            "typeof(Regulus.Remote.PackageRelease)",
-            "typeof(Regulus.Remote.PackageSetProperty)",
-            "typeof(Regulus.Remote.PackageSetPropertyDone)",
-            "typeof(Regulus.Remote.PackageAddEvent)",
-            "typeof(Regulus.Remote.PackageRemoveEvent)",
-            "typeof(Regulus.Remote.PackagePropertySoul)",   
-             */
+            
 
 
             var essentialTypes = new string[]
-            {//typeof(Regulus.Remote.ClientToServerOpCode),typeof(Regulus.Remote.PackageAddEvent),typeof(Regulus.Remote.PackageCallMethod),typeof(Regulus.Remote.PackageErrorMethod),typeof(Regulus.Remote.PackageInvokeEvent),typeof(Regulus.Remote.PackageLoadSoul),typeof(Regulus.Remote.PackageLoadSoulCompile),typeof(Regulus.Remote.PackagePropertySoul),typeof(Regulus.Remote.PackageProtocolSubmit),typeof(Regulus.Remote.PackageRelease),typeof(Regulus.Remote.PackageRemoveEvent),typeof(Regulus.Remote.PackageReturnValue),typeof(Regulus.Remote.PackageSetProperty),typeof(Regulus.Remote.PackageSetPropertyDone),typeof(Regulus.Remote.PackageUnloadSoul),typeof(Regulus.Remote.RequestPackage),typeof(Regulus.Remote.ResponsePackage),typeof(Regulus.Remote.ServerToClientOpCode),typeof(System.Boolean),typeof(System.Byte[]),typeof(System.Byte[][]),typeof(System.Char),typeof(System.Char[]),typeof(System.Int32),typeof(System.Int64),typeof(System.String)
+            {
                 "typeof(Regulus.Remote.PackageProtocolSubmit)",
                 "typeof(Regulus.Remote.RequestPackage)",
                 "typeof(Regulus.Remote.ResponsePackage)",
@@ -135,7 +118,8 @@ public class {protocolName} : Regulus.Remote.IProtocol
             
 ";
 
-           Tree= SyntaxFactory.ParseSyntaxTree(code, null, $"RegulusRemoteProtocol.{protocolName}.cs", Encoding.UTF8);
+            ProtocolName = protocolName;
+           Tree = SyntaxFactory.ParseSyntaxTree(code, null, $"RegulusRemoteProtocol.{protocolName}.cs", Encoding.UTF8);
 
         }
         private string _BuildProtocolName(byte[] code)
