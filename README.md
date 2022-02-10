@@ -144,7 +144,6 @@ This is a server-client framework, so it requires at least three projects: **Pro
 ### Dependency
 * Visual Studio 2022  17.0.5 or above.
 * .NET Sdk 6.0.101 or above.
-* C# 9.0 or above.
 
 
 ### Protocol 
