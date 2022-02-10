@@ -4,7 +4,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon
 {
     public class EventTester : IEventabe
     {
-        public int LisCount;
+        public volatile int LisCount;
         event Action _IEventabe2Event1;
         event Action IEventabe2.Event21
         {

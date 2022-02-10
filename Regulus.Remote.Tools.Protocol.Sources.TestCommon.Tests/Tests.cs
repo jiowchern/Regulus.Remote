@@ -95,6 +95,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
             var c2 = multipleNotices.Numbers2.Items.Count;
 
             var ar = new Regulus.Utility.AutoPowerRegulator(new Utility.PowerRegulator());
+            System.Console.WriteLine("wait NotifierSupplyAndUnsupplyTest removeNum1s.Count ...");
             while (removeNum1s.Count < 2)
             {
                 ar.Operate();
@@ -167,7 +168,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 
             NUnit.Framework.Assert.AreEqual(0, count1);
             NUnit.Framework.Assert.AreEqual(0, count2);
-
+            System.Console.WriteLine("wait NotifierSupplyTest removeNums.Count ...");
             var ar = new Regulus.Utility.AutoPowerRegulator(new Utility.PowerRegulator());
             while (removeNums.Count < 3)
             {
@@ -213,6 +214,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
             event21Obs.Subscribe(vals.Add);
             event22Obs.Subscribe(vals.Add);
 
+
+            System.Console.WriteLine("wait EventTest tester.LisCount ...");
             while (tester.LisCount < 4)
             {
                 re.Operate();
@@ -224,7 +227,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
             tester.Invoke12(8);
 
 
-
+            System.Console.WriteLine("wait EventTest vals.Count ...");
             while (vals.Count < 4)
             {
                 re.Operate();
