@@ -184,6 +184,7 @@ namespace Regulus.Serialization.Tests
             Xunit.Assert.Equal(testb.Data, value.Data);
         }
 
+       
 
         [Xunit.Fact]
         public void ClassArrayTest()
@@ -613,7 +614,9 @@ namespace Regulus.Serialization.Tests
             Assert.Equal(Remote.ServerToClientOpCode.SetProperty, dPkg.Code);
         }
 
+        
 
+        
     }
 
 }

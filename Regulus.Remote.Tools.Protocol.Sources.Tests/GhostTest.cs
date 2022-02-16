@@ -43,8 +43,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
                 TestState =
                 {
                     ReferenceAssemblies = ReferenceAssemblies.Default.AddPackages(ImmutableArray.Create(
-                        new PackageIdentity("Regulus.Remote.Protocol", "0.1.9.1"),
-                        new PackageIdentity("Regulus.Serialization", "0.1.9.1"))),
+                        new PackageIdentity("Regulus.Remote", "0.1.10.1"),
+                        new PackageIdentity("Regulus.Serialization", "0.1.10.0"))),
                     
                 },
             

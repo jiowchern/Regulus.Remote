@@ -23,6 +23,7 @@ namespace Regulus.Remote.Reactive
         {
 
             _Observer = observer;
+            _ThreadUpdater.Stop();
             _ThreadUpdater = new ThreadUpdater(() =>
             {
                 if (_Value.Equals(_Property.Value))

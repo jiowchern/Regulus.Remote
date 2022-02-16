@@ -5,6 +5,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Regulus.Remote.Tools.Protocol.Sources
 {
+
     class EventProviderCodeBuilder
     {
         public readonly string Code;
