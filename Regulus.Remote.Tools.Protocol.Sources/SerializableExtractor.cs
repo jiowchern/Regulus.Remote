@@ -52,8 +52,6 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
                 set.Add(symbol);
 
-
-
                 if (symbol.Kind == SymbolKind.ArrayType)
                 {
                     var ary = symbol as IArrayTypeSymbol;
@@ -72,38 +70,39 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
         private IEnumerable<ITypeSymbol> _GetValues(IEnumerable<INamedTypeSymbol> symbols)
         {
-            foreach (var symbol in symbols)
+            foreach (var member in symbols.SelectMany(s=>s.GetMembers()))
             {
-                foreach (var member in symbol.GetMembers())
+                if (member.Kind == SymbolKind.Method)
                 {
-                    if(member.Kind == SymbolKind.Method)
+                    var method = member as IMethodSymbol;
+                    if (method.MethodKind != MethodKind.Ordinary)
                     {
-                        var method = member as IMethodSymbol;
-                        if(method.MethodKind != MethodKind.Ordinary)
-                        {
-                            continue;
-                        }
+                        continue;
+                    }
 
-                        foreach (var item in _GetTypes(method))
-                        {
-                            yield return item;
-                        }
+                    foreach (var item in _GetTypes(method))
+                    {
+                        yield return item;
+                    }
 
-                    }
-                    else if (member.Kind == SymbolKind.Property)
+                }
+                else if (member.Kind == SymbolKind.Property)
+                {
+                    foreach (var item in _GetTypes(member as IPropertySymbol))
                     {
-                        foreach (var item in _GetTypes(member as IPropertySymbol))
-                        {
-                            yield return item;
-                        }
+                        yield return item;
                     }
-                    else if (member.Kind == SymbolKind.Event)
+                }
+                else if (member.Kind == SymbolKind.Event)
+                {
+                    foreach (var item in _GetTypes(member as IEventSymbol))
                     {
-                        foreach (var item in _GetTypes(member as IEventSymbol))
-                        {
-                            yield return item;
-                        }
+                        yield return item;
                     }
+                }
+                else
+                {
+                    throw new Exceptions.UnserializableException(member);
                 }
             }
         }
