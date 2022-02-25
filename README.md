@@ -52,11 +52,11 @@ Here are the steps to set up the communication.
 ```csharp
 namespace Common
 {
-	public class HelloRequest
+	public struct HelloRequest
 	{
 		public string Name;
 	}
-	public class HelloReply
+	public struct HelloReply
 	{
 		public string Message;
 	}
@@ -136,7 +136,7 @@ The current communication capabilities of the interface are as follows...
 * [Property](document/communications-property.md)
 * [Notifier](document/communications-notifier.md)
 > Serialization supports the following types...  
-> ```short, ushort, int, uint, bool, logn, ulong, float, decimal, double, System.Guid, char, byte, enum, string``` and array of the types.
+> ```short, ushort, int, uint, bool, logn, ulong, float, decimal, double, char, byte, enum, string``` and array of the types.
           
 
 ## Getting Start
