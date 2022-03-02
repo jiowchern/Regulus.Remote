@@ -9,7 +9,10 @@ namespace Regulus.Remote.Tools.Protocol.Sources
     {
         void ISourceGenerator.Execute(GeneratorExecutionContext context)
         {
-            var sources = new ProjectSourceBuilder(context.Compilation).Sources;
+
+            var references = new EssentialReference(context.Compilation);
+
+            var sources = new ProjectSourceBuilder(context.Compilation , references).Sources;
             
             foreach (var syntaxTree in sources)
             {

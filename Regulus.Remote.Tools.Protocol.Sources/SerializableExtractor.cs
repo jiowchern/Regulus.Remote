@@ -9,35 +9,18 @@ namespace Regulus.Remote.Tools.Protocol.Sources
     class SerializableExtractor
     {
         public readonly IReadOnlyCollection<ITypeSymbol> Symbols;
-        private readonly Compilation _Compilation;
-        private readonly INamedTypeSymbol _RegulusRemoteProtocolCreatorAttribute;
-        private readonly INamedTypeSymbol _RegulusRemoteProperty;
-        private readonly INamedTypeSymbol _RegulusRemoteNotifier;
-        private readonly INamedTypeSymbol _RegulusRemoteValue;
+        private readonly EssentialReference _References;
 
-        public SerializableExtractor(Compilation compilation)
+        public SerializableExtractor(EssentialReference references, IEnumerable<GhostBuilder.Ghost> ghosts)
         {
-            
-            _Compilation = compilation;
-            _RegulusRemoteProtocolCreatorAttribute  = _Compilation.GetTypeByMetadataName("Regulus.Remote.Protocol.CreatorAttribute");
-            _RegulusRemoteProperty = _Compilation.GetTypeByMetadataName("Regulus.Remote.Property`1");
-            _RegulusRemoteNotifier = _Compilation.GetTypeByMetadataName("Regulus.Remote.Notifier`1");
-            _RegulusRemoteValue = _Compilation.GetTypeByMetadataName("Regulus.Remote.Value`1");
-            var symbols = 
-                from tree in compilation.SyntaxTrees
-                let semanticModel = compilation.GetSemanticModel(tree)
-                from node in tree.GetRoot().DescendantNodes()
-                let symbol = semanticModel.GetDeclaredSymbol(node) as INamedTypeSymbol
-                where symbol != null && symbol.TypeKind == TypeKind.Interface && symbol.IsGenericType  == false
-                select symbol;
 
+
+
+            this._References = references;
             var set = new HashSet<ITypeSymbol>();
-            _AddSet(set , _GetValues(symbols));
+            _AddSet(set , _GetValues(ghosts));
             Symbols = set;
-
-
-
-
+         
         }
 
         private void _AddSet(HashSet<ITypeSymbol> set, IEnumerable<ITypeSymbol> symbols)
@@ -68,9 +51,9 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
         
 
-        private IEnumerable<ITypeSymbol> _GetValues(IEnumerable<INamedTypeSymbol> symbols)
+        private IEnumerable<ITypeSymbol> _GetValues(IEnumerable<GhostBuilder.Ghost> ghost)
         {
-            foreach (var member in symbols.SelectMany(s=>s.GetMembers()))
+            foreach (var member in ghost.SelectMany(s=>s.GetMembers()))
             {
                 if (member.Kind == SymbolKind.Method)
                 {
@@ -122,11 +105,11 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         private IEnumerable<ITypeSymbol> _GetTypes(IPropertySymbol property_symbol)
         {                        
             var type = property_symbol.Type as INamedTypeSymbol;
-            if (type.OriginalDefinition == _RegulusRemoteProperty)
+            if (type.OriginalDefinition == _References.RegulusRemoteProperty)
             {
                 return type.TypeArguments;
             }
-            else if(type.OriginalDefinition == _RegulusRemoteNotifier)
+            else if(type.OriginalDefinition == _References.RegulusRemoteNotifier)
             {
                 if (type.TypeArguments.Any(t => t.TypeKind != TypeKind.Interface))
                     throw new Exceptions.UnserializableException(property_symbol);
@@ -143,7 +126,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         private IEnumerable<ITypeSymbol> _GetTypes(IMethodSymbol method_symbol)
         {
             var retType = method_symbol.ReturnType as INamedTypeSymbol ;
-            if(retType == null || retType.OriginalDefinition != _RegulusRemoteValue && retType.SpecialType != SpecialType.System_Void) 
+            if(retType == null || retType.OriginalDefinition != _References.RegulusRemoteValue && retType.SpecialType != SpecialType.System_Void) 
             {
                 throw new Exceptions.UnserializableException(method_symbol);
             }

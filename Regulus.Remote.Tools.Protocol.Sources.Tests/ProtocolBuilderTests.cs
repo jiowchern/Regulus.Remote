@@ -220,7 +220,7 @@ namespace NS1
             var tree = CSharpSyntaxTree.ParseText(source);
             Compilation compilation = tree.Compilation();
             
-            var interfaceMap = new InterfaceProviderCodeBuilder(new GhostBuilder(compilation).Ghosts);
+            var interfaceMap = new InterfaceProviderCodeBuilder(new GhostBuilder(compilation).Ghosts.Select(g => g.Syntax));
             NUnit.Framework.Assert.AreEqual("{typeof(global::NS1.IA),typeof(global::NS1.RegulusRemoteGhosts.CIA)},{typeof(global::NS1.IB),typeof(global::NS1.RegulusRemoteGhosts.CIB)}", interfaceMap.Code);
         }
 
@@ -250,7 +250,7 @@ d
             var tree = CSharpSyntaxTree.ParseText(source);
             Compilation compilation = tree.Compilation();
 
-            var interfaceMap = new InterfaceProviderCodeBuilder(new GhostBuilder(compilation).Ghosts);
+            var interfaceMap = new InterfaceProviderCodeBuilder(new GhostBuilder(compilation).Ghosts.Select(g=>g.Syntax));
             NUnit.Framework.Assert.AreEqual("{typeof(global::NS1.IC),typeof(global::NS1.RegulusRemoteGhosts.CIC)},{typeof(global::NS1.IA),typeof(global::NS1.RegulusRemoteGhosts.CIA)},{typeof(global::NS1.IB),typeof(global::NS1.RegulusRemoteGhosts.CIB)}", interfaceMap.Code);
         }
 
@@ -300,9 +300,11 @@ namespace NS1
 }
 
 ";
+            
             var tree = CSharpSyntaxTree.ParseText(source);
             Compilation compilation = tree.Compilation();
-            var symbols = new SerializableExtractor(compilation).Symbols.Select(s=>s.ToDisplayString());
+            var builder = new GhostBuilder(compilation);
+            var symbols = new SerializableExtractor(new EssentialReference(compilation), builder.Ghosts ).Symbols.Select(s=>s.ToDisplayString());
            
             var cSymbols = new[]
             {
@@ -353,7 +355,8 @@ namespace NS1
 ";
             var tree=CSharpSyntaxTree.ParseText(source);
             Compilation compilation =tree.Compilation();
-            var symbols = new SerializableExtractor(compilation).Symbols;
+            var builder = new GhostBuilder(compilation);
+            var symbols = new SerializableExtractor(new EssentialReference(compilation), builder.Ghosts).Symbols;
 
             var cSymbols = new[]
             {
@@ -393,7 +396,8 @@ namespace NS1
 ";
             var tree = CSharpSyntaxTree.ParseText(source);
             Compilation compilation = tree.Compilation();
-            var  symbols = new SerializableExtractor(compilation).Symbols;
+            var builder = new GhostBuilder(compilation);
+            var  symbols = new SerializableExtractor(new EssentialReference(compilation), builder.Ghosts).Symbols;
 
             var cSymbols = new[]
             {
@@ -419,14 +423,14 @@ namespace NS1
 ";
             var tree = CSharpSyntaxTree.ParseText(source);
             Compilation compilation = tree.Compilation();
+            var builder = new GhostBuilder(compilation);
 
-            
             var cSymbols = new[]
              {
                 compilation.GetSpecialType(SpecialType.System_Int32)
             };
 
-            var symbols = new SerializableExtractor(compilation).Symbols;
+            var symbols = new SerializableExtractor(new EssentialReference(compilation), builder.Ghosts).Symbols;
             
             var count = cSymbols.Except(symbols).Count();
             NUnit.Framework.Assert.AreEqual(0, count);
@@ -449,11 +453,11 @@ namespace NS1
             var tree = CSharpSyntaxTree.ParseText(source);
             Compilation compilation = tree.Compilation();
 
-
+            var builder = new GhostBuilder(compilation);
             bool exc = false;
             try
             {
-                var symbols = new SerializableExtractor(compilation).Symbols.ToArray();
+                var symbols = new SerializableExtractor(new EssentialReference(compilation), builder.Ghosts).Symbols.ToArray();
             }
             catch (Regulus.Remote.Tools.Protocol.Sources.Exceptions.UnserializableException ex)
             {
@@ -503,8 +507,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon
             var tree = CSharpSyntaxTree.ParseText(source);
             Compilation compilation = tree.Compilation();
 
-
-            var symbols = new SerializableExtractor(compilation).Symbols;
+            var builder = new GhostBuilder(compilation);
+            var symbols = new SerializableExtractor(new EssentialReference(compilation), builder.Ghosts).Symbols;
 
 
 

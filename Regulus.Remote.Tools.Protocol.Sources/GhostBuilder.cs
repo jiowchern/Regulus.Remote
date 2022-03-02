@@ -13,7 +13,20 @@ namespace Regulus.Remote.Tools.Protocol.Sources
    
     public class GhostBuilder
     {
-        public readonly IReadOnlyCollection<SyntaxTree> Ghosts;
+        public struct Ghost
+        {
+            public INamedTypeSymbol Interface;
+            public IEnumerable<IMethodSymbol> Methods;
+            public IEnumerable<IEventSymbol> Events;
+            public IEnumerable<IPropertySymbol> Propertys;            
+            public SyntaxTree Syntax;
+
+            internal IEnumerable<ISymbol> GetMembers()
+            {
+                return Methods.OfType<ISymbol>().Union(Events).Union(Propertys);
+            }
+        }
+        public readonly IReadOnlyCollection<Ghost> Ghosts;
         public readonly IReadOnlyCollection<SyntaxTree> Events;
         public GhostBuilder(Compilation compilation)
         {
@@ -93,8 +106,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 }}
             }}
                         ";
-
-                    return SyntaxFactory.ParseSyntaxTree(source, null, $"{namespaceName}.{typeName}_{eventName}.RegulusRemoteGhosts.cs",Encoding.UTF8);
+            
+            return SyntaxFactory.ParseSyntaxTree(source, null, $"{namespaceName}.{typeName}_{eventName}.RegulusRemoteGhosts.cs", Encoding.UTF8);
 
           
         }
@@ -109,7 +122,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
         
 
-        private static SyntaxTree _BuildGhost(InterfaceDeclarationSyntax interface_syntax, SemanticModel semantic_model)
+        private static Ghost _BuildGhost(InterfaceDeclarationSyntax interface_syntax, SemanticModel semantic_model)
         {
             INamedTypeSymbol interfaceSymbol = semantic_model.GetDeclaredSymbol(interface_syntax);
             var typeName = interfaceSymbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
@@ -119,7 +132,9 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
             var namespaceName = _BuildNamesapceName(interface_syntax, semantic_model);
 
-
+            var  methods = _SelectMembers<IMethodSymbol>(interfaceSymbols).Where(m => m.MethodKind == MethodKind.Ordinary);
+            var events = _SelectMembers<IEventSymbol>(interfaceSymbols);
+            var propertys  = _SelectMembers<IPropertySymbol>(interfaceSymbols);
             var source = $@"
 namespace {namespaceName}
 {{
@@ -169,14 +184,21 @@ namespace {namespaceName}
             add {{ this._RemoveEventEvent += value; }}
             remove {{ this._RemoveEventEvent -= value; }}
         }}
-        {_BuildMethods(interfaceSymbols, semantic_model)}
-        {_BuildEvents(interfaceSymbols, semantic_model)}
-        {_BuildPropertys(interfaceSymbols, semantic_model)}
+        {_BuildMethods(methods, semantic_model)}
+        {_BuildEvents(events, semantic_model)}
+        {_BuildPropertys(propertys, semantic_model)}
     }}
 }}
 ";
 
-            return SyntaxFactory.ParseSyntaxTree(source, null, $"{namespaceName}.{typeName}.RegulusRemoteGhosts.cs", Encoding.UTF8);
+
+            Ghost ghost = new Ghost();
+            ghost.Interface = interfaceSymbol;
+            ghost.Methods = methods;
+            ghost.Events = events;
+            ghost.Propertys= propertys ;
+            ghost.Syntax = SyntaxFactory.ParseSyntaxTree(source, null, $"{namespaceName}.{typeName}.RegulusRemoteGhosts.cs", Encoding.UTF8);
+            return ghost;
         }
 
         private static IEnumerable<INamedTypeSymbol> GetInterfaceSymbols(INamedTypeSymbol interfaceSymbol)
@@ -191,10 +213,12 @@ namespace {namespaceName}
             yield return interfaceSymbol;
         }
 
-        private static string _BuildPropertys(IEnumerable<INamedTypeSymbol> interface_symbols, SemanticModel semantic_model)
+        
+
+        private static string _BuildPropertys(IEnumerable<IPropertySymbol> propertys, SemanticModel semantic_model)
         {
             return string.Join("\r\n",
-                _SelectMembers<IPropertySymbol>(interface_symbols).Select(m => _BuildProperty(m, semantic_model)));
+                propertys.Select(m => _BuildProperty(m, semantic_model)));
 
         }
 
@@ -221,22 +245,26 @@ public {t.ToDisplayString()} _{fieldName} = new {t.ToDisplayString()}();
         {
             return interface_symbols.SelectMany(i => i.GetMembers()).OfType<T>();
         }
-        private static string _BuildMethods(IEnumerable<INamedTypeSymbol> interface_symbols, SemanticModel semantic_model)
+        
+
+        private static string _BuildMethods(IEnumerable<IMethodSymbol> methods, SemanticModel semantic_model)
         {
-           return string.Join("\r\n",
-                _SelectMembers<IMethodSymbol>(interface_symbols).Where(m=>m.MethodKind == MethodKind.Ordinary).Select(m => _BuildMethod(m, semantic_model)));
+            return string.Join("\r\n",methods.Select(m => _BuildMethod(m, semantic_model)));
 
 
         }
 
-        private static string _BuildEvents(IEnumerable<INamedTypeSymbol >interface_symbols, SemanticModel semantic_model)
+        
+
+        private static string _BuildEvents(IEnumerable<IEventSymbol> events, SemanticModel semantic_model)
         {
 
             return string.Join("\r\n",
-                _SelectMembers<IEventSymbol>(interface_symbols).Select(m => _BuildEvent(m, semantic_model)));
+                events.Select(m => _BuildEvent(m, semantic_model)));
 
 
         }
+
 
         private static string _BuildEvent(IEventSymbol symbol, SemanticModel semanticModel)
         {
