@@ -28,9 +28,16 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         }
         public readonly IReadOnlyCollection<Ghost> Ghosts;
         public readonly IReadOnlyCollection<SyntaxTree> Events;
-        public GhostBuilder(Compilation compilation)
+        private readonly ITypeSymbol _RegulusRemoteValue;
+
+        public GhostBuilder(Compilation compilation) : this(new EssentialReference(compilation))
         {
-            
+
+        }
+        public GhostBuilder(EssentialReference essential)
+        {
+            var compilation = essential.Compilation;
+            _RegulusRemoteValue = essential.RegulusRemoteValue;
             var ghosts = 
                 from syntax in compilation.SyntaxTrees
                 let SemanticModel = compilation.GetSemanticModel(syntax)
@@ -122,7 +129,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
         
 
-        private static Ghost _BuildGhost(InterfaceDeclarationSyntax interface_syntax, SemanticModel semantic_model)
+        private Ghost _BuildGhost(InterfaceDeclarationSyntax interface_syntax, SemanticModel semantic_model)
         {
             INamedTypeSymbol interfaceSymbol = semantic_model.GetDeclaredSymbol(interface_syntax);
             var typeName = interfaceSymbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
@@ -184,9 +191,9 @@ namespace {namespaceName}
             add {{ this._RemoveEventEvent += value; }}
             remove {{ this._RemoveEventEvent -= value; }}
         }}
-        {_BuildMethods(methods, semantic_model)}
-        {_BuildEvents(events, semantic_model)}
-        {_BuildPropertys(propertys, semantic_model)}
+        {_BuildMethods(methods)}
+        {_BuildEvents(events)}
+        {_BuildPropertys(propertys )}
     }}
 }}
 ";
@@ -215,16 +222,16 @@ namespace {namespaceName}
 
         
 
-        private static string _BuildPropertys(IEnumerable<IPropertySymbol> propertys, SemanticModel semantic_model)
+        private static string _BuildPropertys(IEnumerable<IPropertySymbol> propertys)
         {
             return string.Join("\r\n",
-                propertys.Select(m => _BuildProperty(m, semantic_model)));
+                propertys.Select(m => _BuildProperty(m)));
 
         }
 
 
 
-        private static string _BuildProperty(IPropertySymbol symbol, SemanticModel model)
+        private static string _BuildProperty(IPropertySymbol symbol)
         {
 
             var fieldName = symbol.ToDisplayString().Replace('.', '_');
@@ -247,26 +254,24 @@ public {t.ToDisplayString()} _{fieldName} = new {t.ToDisplayString()}();
         }
         
 
-        private static string _BuildMethods(IEnumerable<IMethodSymbol> methods, SemanticModel semantic_model)
+        private string _BuildMethods(IEnumerable<IMethodSymbol> methods)
         {
-            return string.Join("\r\n",methods.Select(m => _BuildMethod(m, semantic_model)));
-
-
+            return string.Join("\r\n",methods.Select(m => _BuildMethod(m )));
         }
 
         
 
-        private static string _BuildEvents(IEnumerable<IEventSymbol> events, SemanticModel semantic_model)
+        private static string _BuildEvents(IEnumerable<IEventSymbol> events)
         {
 
             return string.Join("\r\n",
-                events.Select(m => _BuildEvent(m, semantic_model)));
+                events.Select(m => _BuildEvent(m)));
 
 
         }
 
 
-        private static string _BuildEvent(IEventSymbol symbol, SemanticModel semanticModel)
+        private static string _BuildEvent(IEventSymbol symbol)
         {
             
             
@@ -292,7 +297,7 @@ event {symbol.Type.ToDisplayString()} {symbol.ToDisplayString()}
             return source;
         }
 
-        private static string _BuildMethod(IMethodSymbol symbol, SemanticModel semantic_model)
+        private string _BuildMethod(IMethodSymbol symbol)
         {
             int idx = 0;
             var paramsCode = string.Join(",", symbol.Parameters.Select(symbolParameter => $"{symbolParameter.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)} _{idx++}"));
@@ -314,7 +319,7 @@ event {symbol.Type.ToDisplayString()} {symbol.ToDisplayString()}
                 retRetValueVar = "null";
                 retCode = "void";
             }
-            else if (semantic_model.Compilation.GetTypeByMetadataName("Regulus.Remote.Value`1") == symbol.ReturnType.OriginalDefinition)
+            else if (_RegulusRemoteValue == symbol.ReturnType.OriginalDefinition)
             {
                 retValue = $"var returnValue = new {symbol.ReturnType}();";
                 retRetValue = "return returnValue ;";

@@ -7,8 +7,9 @@ namespace Regulus.Remote.Tools.Protocol.Sources
     public class ProjectSourceBuilder
     {
         public readonly IEnumerable<SyntaxTree> Sources;
-        public ProjectSourceBuilder(Compilation compilation, EssentialReference references)
+        public ProjectSourceBuilder(EssentialReference references)
         {
+            var compilation = references.Compilation;
             var builder = new GhostBuilder(compilation);
 
             var extractor = new SerializableExtractor(references, builder.Ghosts);

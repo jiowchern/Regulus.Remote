@@ -8,6 +8,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         public readonly INamedTypeSymbol RegulusRemoteProperty;
         public readonly INamedTypeSymbol RegulusRemoteNotifier;
         public readonly INamedTypeSymbol RegulusRemoteValue;
+        public readonly Compilation Compilation;
 
         public EssentialReference(Microsoft.CodeAnalysis.Compilation compilation)
         {
@@ -16,6 +17,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             RegulusRemoteProperty = compilation.GetTypeByMetadataName("Regulus.Remote.Property`1");
             RegulusRemoteNotifier = compilation.GetTypeByMetadataName("Regulus.Remote.Notifier`1");
             RegulusRemoteValue = compilation.GetTypeByMetadataName("Regulus.Remote.Value`1");
+            this.Compilation = compilation;
         }
 
         
