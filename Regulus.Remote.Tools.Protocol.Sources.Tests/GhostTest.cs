@@ -50,7 +50,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
 
            
             test.TestState.AdditionalReferences.Add(typeof(Regulus.Remote.Value<>).Assembly);
-            test.TestState.AdditionalReferences.Add(typeof(Regulus.Remote.GhostEventHandler).Assembly);
+            test.TestState.AdditionalReferences.Add(typeof(Regulus.Remote.Property<>).Assembly);
 
 
             foreach (var syntaxTree in _Sources)

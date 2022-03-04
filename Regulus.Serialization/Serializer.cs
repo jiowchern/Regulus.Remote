@@ -4,7 +4,7 @@ namespace Regulus.Serialization
 {
 
 
-    public class Serializer : ISerializable
+    public class Serializer 
     {
         private readonly DescriberProvider _Provider;
 
@@ -91,15 +91,7 @@ namespace Regulus.Serialization
 
 
 
-        byte[] ISerializable.Serialize(object instance)
-        {
-            return ObjectToBuffer(instance);
-        }
-
-        object ISerializable.Deserialize(byte[] buffer)
-        {
-            return BufferToObject(buffer);
-        }
+      
 
         public bool TryBufferToObject<T>(byte[] buffer, out T pkg)
         {
@@ -136,6 +128,7 @@ namespace Regulus.Serialization
 
             return false;
         }
+       
     }
 
 

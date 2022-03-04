@@ -9,9 +9,10 @@ namespace Regulus.Remote
         private readonly IProtocol _Protocol;
         private readonly ISerializable _Serializable;
         private readonly IGhostRequest _Requester;
-
-        public GhostEventMoveHandler(IGhost ghost, IProtocol protocol, ISerializable serializable , IGhostRequest requester)
+        IInternalSerializable _InternalSerializable;
+        public GhostEventMoveHandler(IGhost ghost, IProtocol protocol, ISerializable serializable , IInternalSerializable internal_serializable, IGhostRequest requester)
         {
+            _InternalSerializable = internal_serializable;
             this._Ghost = ghost;
             _Protocol = protocol;
             this._Serializable = serializable;
@@ -27,7 +28,7 @@ namespace Regulus.Remote
             package.Entity = _Ghost.GetID();
             package.Event = map.GetEvent(info);
             package.Handler = handler;
-            _Requester.Request(ClientToServerOpCode.AddEvent, package.ToBuffer(serialize));
+            _Requester.Request(ClientToServerOpCode.AddEvent, package.ToBuffer(_InternalSerializable));
 
         }
 
@@ -40,7 +41,7 @@ namespace Regulus.Remote
             package.Entity = _Ghost.GetID();
             package.Event = map.GetEvent(info);
             package.Handler = handler;
-            _Requester.Request(ClientToServerOpCode.RemoveEvent, package.ToBuffer(serialize));
+            _Requester.Request(ClientToServerOpCode.RemoveEvent, package.ToBuffer(_InternalSerializable));
 
         }
     }

@@ -25,40 +25,9 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             
 
 
-            var essentialTypes = new string[]
-            {
-                "typeof(Regulus.Remote.PackageProtocolSubmit)",
-                "typeof(Regulus.Remote.RequestPackage)",
-                "typeof(Regulus.Remote.ResponsePackage)",
-                "typeof(Regulus.Remote.PackageInvokeEvent)",
-                "typeof(Regulus.Remote.PackageErrorMethod)",
-                "typeof(Regulus.Remote.PackageReturnValue)",
-                "typeof(Regulus.Remote.PackageLoadSoulCompile)",
-                "typeof(Regulus.Remote.PackageLoadSoul)",
-                "typeof(Regulus.Remote.PackageUnloadSoul)",
-                "typeof(Regulus.Remote.PackageCallMethod)",
-                "typeof(Regulus.Remote.PackageRelease)",
-                "typeof(Regulus.Remote.PackageSetProperty)",
-                "typeof(Regulus.Remote.PackageSetPropertyDone)",
-                "typeof(Regulus.Remote.PackageAddEvent)",
-                "typeof(Regulus.Remote.PackageRemoveEvent)",
-                "typeof(Regulus.Remote.PackagePropertySoul)",
-                "typeof(byte)",
-                "typeof(byte[])",
-                "typeof(byte[][])",
-                "typeof(Regulus.Remote.ClientToServerOpCode)",
-                "typeof(Regulus.Remote.ServerToClientOpCode)",
-                "typeof(long)",
-                "typeof(int)",
-                "typeof(string)",
-                "typeof(bool)",
-                "typeof(char)",
-                "typeof(char[])"
-
-
-            };
-            var types = essentialTypes.Union(extractor.Symbols.Select(s =>
-                $"typeof({s.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)})"));
+           
+            var types = extractor.Symbols.Select(s =>
+                $"typeof({s.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)})");
             var serCode =string.Join(",", new HashSet<string>(types));
 
             var md5 = _BuildMd5(serCode + event_provider_code_builder.Code + interface_provider_code_builder.Code +membermap_code_builder.PropertyInfosCode + membermap_code_builder.EventInfosCode + membermap_code_builder.InterfacesCode + membermap_code_builder.MethodInfosCode);
@@ -85,7 +54,7 @@ public class {protocolName} : Regulus.Remote.IProtocol
         _InterfaceProvider = new Regulus.Remote.InterfaceProvider(new Dictionary<Type, Type> (){{ {interface_provider_code_builder.Code}}});
    
         _EventProvider = new Regulus.Remote.EventProvider( new IEventProxyCreator[]{{ {event_provider_code_builder.Code} }});        
-        _SerializeTypes = new [] {{{serCode}}};
+        _SerializeTypes = new System.Type[] {{{serCode}}};
         _MemberMap = new Regulus.Remote.MemberMap(
             new System.Reflection.MethodInfo[] {{{membermap_code_builder.MethodInfosCode}}} ,
             new System.Reflection.EventInfo[]{{ {membermap_code_builder.EventInfosCode}}}, 

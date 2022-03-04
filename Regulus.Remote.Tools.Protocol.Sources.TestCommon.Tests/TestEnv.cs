@@ -16,10 +16,10 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 
             Entry = entry;
             IProtocol protocol = Regulus.Remote.Protocol.ProtocolProvider.Create(typeof(T2).Assembly).Single();
-            var ser=  new Regulus.Serialization.Serializer(new Regulus.Serialization.DescriberBuilder(protocol.SerializeTypes).Describers);
-
-            _Service = new Regulus.Remote.Standalone.Service(entry, protocol, ser);
-            _Agent = new Regulus.Remote.Ghost.Agent(protocol, ser);
+            var ser=  new Regulus.Remote.Serializer(protocol.SerializeTypes);
+            var internalSer = new Regulus.Remote.InternalSerializer();
+            _Service = new Regulus.Remote.Standalone.Service(entry, protocol, ser , internalSer);
+            _Agent = new Regulus.Remote.Ghost.Agent(protocol, ser, internalSer);
             _Service.Join(_Agent);
 
 

@@ -12,17 +12,19 @@ namespace Regulus.Remote.Ghost
 
         private readonly GhostProvider _GhostProvider;
         private readonly GhostSerializer _GhostSerializer;
+        private readonly IInternalSerializable _InternalSerializer;
 
         private long _Ping
         {
             get { return _GhostProvider.Ping; }
         }
 
-        public Agent(IProtocol protocol, ISerializable serializable)
+        public Agent(IProtocol protocol, ISerializable serializable , IInternalSerializable internal_serializable             )
         {
-            GhostSerializer ghostSerializer = new GhostSerializer(new PackageReader<ResponsePackage>(serializable) , new PackageWriter<RequestPackage>(serializable));
+            _InternalSerializer = internal_serializable;
+            GhostSerializer ghostSerializer = new GhostSerializer(new PackageReader<ResponsePackage>(_InternalSerializer) , new PackageWriter<RequestPackage>(_InternalSerializer));
 
-            _GhostProvider = new GhostProvider(protocol, serializable, ghostSerializer);
+            _GhostProvider = new GhostProvider(protocol, serializable, internal_serializable, ghostSerializer);
 
             _GhostSerializer = ghostSerializer;
         }

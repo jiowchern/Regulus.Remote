@@ -12,12 +12,7 @@ namespace Regulus.Remote.Client
         }
         public static Ghost.IAgent CreateAgent(IProtocol protocol,Regulus.Serialization.ISerializable serializable)
         {
-            return new Ghost.Agent(protocol, serializable);
-        }
-
-        public static object CreateWebSocket(IAgent agent)
-        {
-            throw new NotImplementedException();
+            return new Ghost.Agent(protocol, serializable , new Regulus.Remote.InternalSerializer());
         }
     }
 }

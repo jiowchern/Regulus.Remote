@@ -16,9 +16,9 @@ namespace Regulus.Remote.Standalone
         readonly List<Regulus.Remote.Ghost.IAgent> _Agents;
         readonly Dictionary<IAgent, IStreamable> _Streams;
         readonly IDisposable _ServiceDisposable;
-        public Service(IBinderProvider entry, IProtocol protocol ,Regulus.Serialization.ISerializable serializable)
+        public Service(IBinderProvider entry, IProtocol protocol ,Regulus.Serialization.ISerializable serializable , Regulus.Remote.IInternalSerializable internal_serializable)
         {        
-            _Service = new Regulus.Remote.Soul.Service(entry, protocol, serializable);
+            _Service = new Regulus.Remote.Soul.Service(entry, protocol, serializable, internal_serializable);
             _Agents = new List<Ghost.IAgent>();
             _Streams = new Dictionary<IAgent, IStreamable>();
             _ServiceDisposable = _Service;

@@ -43,7 +43,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 else if(symbol.TypeKind == TypeKind.Class || symbol.TypeKind == TypeKind.Struct)
                 {
                     var type = symbol as INamedTypeSymbol;                    
-                    _AddSet(set, type.GetMembers().OfType<IFieldSymbol>().Select(f=>f.Type));
+                    _AddSet(set, type.GetMembers().OfType<IFieldSymbol>().Where(f=>f.IsReadOnly == false && f.IsConst == false).Select(f=>f.Type));
                 }
             }
             
@@ -108,14 +108,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             if (type.OriginalDefinition == _References.RegulusRemoteProperty)
             {
                 return type.TypeArguments;
-            }
-            else if(type.OriginalDefinition == _References.RegulusRemoteNotifier)
-            {
-                if (type.TypeArguments.Any(t => t.TypeKind != TypeKind.Interface))
-                    throw new Exceptions.UnserializableException(property_symbol);
-            }
-            else
-                throw new Exceptions.UnserializableException(property_symbol);
+            }            
 
             return new ITypeSymbol[0];
         }

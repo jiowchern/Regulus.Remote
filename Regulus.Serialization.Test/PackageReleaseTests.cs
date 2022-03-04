@@ -13,12 +13,14 @@ namespace Regulus.Remote.Tests
             Guid id = Guid.NewGuid();
             TestPackageData package1 = new TestPackageData();
 
-            Serializer ser = new Regulus.Serialization.Serializer(new DescriberBuilder(typeof(Guid), typeof(TestPackageData)).Describers);
+            var ser = new Regulus.Serialization.Serializer(new DescriberBuilder(typeof(Guid), typeof(TestPackageData)).Describers);
             package1.Id = id;
 
-            byte[] buffer = package1.ToBuffer(ser);
+            
+            byte[] buffer = ser.ObjectToBuffer(package1);
 
-            TestPackageData package2 = buffer.ToPackageData<TestPackageData>(ser);
+            
+            TestPackageData package2 = ser.BufferToObject(buffer) as TestPackageData;
 
             Xunit.Assert.Equal(id, package2.Id);
         }
@@ -31,14 +33,16 @@ namespace Regulus.Remote.Tests
             string p2 = "234";
             Guid p3 = Guid.NewGuid();
             TestPackageBuffer package1 = new TestPackageBuffer();
-            Serializer ser = new Regulus.Serialization.Serializer(new DescriberBuilder(typeof(int), typeof(string), typeof(char[]), typeof(byte), typeof(byte[]), typeof(byte[][]), typeof(char), typeof(Guid), typeof(TestPackageBuffer)).Describers);
+            var ser = new Regulus.Serialization.Serializer(new DescriberBuilder(typeof(int), typeof(string), typeof(char[]), typeof(byte), typeof(byte[]), typeof(byte[][]), typeof(char), typeof(Guid), typeof(TestPackageBuffer)).Describers);
 
 
             package1.Datas = new[] { ser.ObjectToBuffer(p1), ser.ObjectToBuffer(p2), ser.ObjectToBuffer(p3) };
 
-            byte[] buffer = package1.ToBuffer(ser);
+            //byte[] buffer = package1.ToBuffer(ser);
+            byte[] buffer = ser.ObjectToBuffer(package1);
 
-            TestPackageBuffer package2 = buffer.ToPackageData<TestPackageBuffer>(ser);
+            //TestPackageBuffer package2 = buffer.ToPackageData<TestPackageBuffer>(ser);
+            TestPackageBuffer package2 = ser.BufferToObject(buffer) as TestPackageBuffer;
 
 
             Xunit.Assert.Equal(p1, ser.BufferToObject(package2.Datas[0]));
@@ -73,7 +77,7 @@ namespace Regulus.Remote.Tests
                             typeof(Regulus.Remote.PackageUnloadSoul),
                             typeof(Regulus.Remote.PackageCallMethod),
                             typeof(Regulus.Remote.PackageRelease));
-            Serializer ser = new Regulus.Serialization.Serializer(builder.Describers);
+            var ser = new Regulus.Serialization.Serializer(builder.Describers);
             RequestPackage response = new RequestPackage();
             response.Code = ClientToServerOpCode.Ping;
             response.Data = new byte[] { 0, 1, 2, 3, 4, 5 };
@@ -97,13 +101,14 @@ namespace Regulus.Remote.Tests
 
             TestPackageBuffer package1 = new TestPackageBuffer();
 
-            Serializer ser = new Regulus.Serialization.Serializer(new DescriberBuilder(typeof(int), typeof(string), typeof(char[]), typeof(byte), typeof(byte[]), typeof(byte[][]), typeof(char), typeof(Guid), typeof(TestPackageBuffer)).Describers);
+            var ser = new Regulus.Serialization.Serializer(new DescriberBuilder(typeof(int), typeof(string), typeof(char[]), typeof(byte), typeof(byte[]), typeof(byte[][]), typeof(char), typeof(Guid), typeof(TestPackageBuffer)).Describers);
 
             package1.Datas = new byte[0][];
 
-            byte[] buffer = package1.ToBuffer(ser);
+            //byte[] buffer = package1.ToBuffer(ser);
+            byte[] buffer = ser.ObjectToBuffer(package1);
 
-            TestPackageBuffer package2 = buffer.ToPackageData<TestPackageBuffer>(ser);
+            TestPackageBuffer package2 = ser.BufferToObject(buffer) as TestPackageBuffer;
 
 
             Xunit.Assert.Equal(0, package2.Datas.Length);
