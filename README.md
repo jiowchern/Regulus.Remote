@@ -16,6 +16,7 @@ This is server-client connection framework, available for Unity development.
 * [Communication](#Communication)
 * [Getting Start](#Getting-Start)
 * [Connection](#Connection)
+* [Customisation](#Customisation)
 * [Recommend](#Recommend)
 * [Sample](#Sample)
 ## Feature
@@ -156,9 +157,9 @@ Sample/Protocol>dotnet new classlib
 Add references to **Protocol.csproj**.
 ```xml
 <ItemGroup>
-	<PackageReference Include="Regulus.Remote" Version="0.1.10.1" />
-	<PackageReference Include="Regulus.Serialization" Version="0.1.10.0" />
-	<PackageReference Include="Regulus.Remote.Tools.Protocol.Sources" Version="0.0.0.5">
+	<PackageReference Include="Regulus.Remote" Version="0.1.11.0" />
+	<PackageReference Include="Regulus.Serialization" Version="0.1.11.0" />
+	<PackageReference Include="Regulus.Remote.Tools.Protocol.Sources" Version="0.0.0.7">
 		<PrivateAssets>all</PrivateAssets>
 		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>	
@@ -204,7 +205,7 @@ Sample/Server>dotnet new console
 Add references to **Server.csproj**.  
 ```xml
 <ItemGroup>
-	<PackageReference Include="Regulus.Remote.Server" Version="0.1.10.0" />
+	<PackageReference Include="Regulus.Remote.Server" Version="0.1.11.0" />
 	<ProjectReference Include="..\Protocol\Protocol.csproj" />	
 </ItemGroup>
 ```
@@ -234,9 +235,11 @@ namespace Server
 		var protocol = Protocol.ProtocolCreator.Create();
 		// your server entry.
 		var entry = new Entry();
-		
+
+		// Create serializer. If you would like to customise your serialisation please see the Serialisation heading. 
+		var serializer = new Regulus.Remote.Serializer(protocol.SerializeTypes);
 		// Create service.
-		var service = Regulus.Remote.Server.Provider.CreateService(entry, protocol);
+		var service = Regulus.Remote.Server.Provider.CreateService(entry, protocol,serializer );
 		
 		entry.Run();
 	
@@ -252,14 +255,16 @@ Sample/Client>dotnet new console
 Add references to **Client.csproj**.  
 ```xml
 <ItemGroup>
-	<PackageReference Include="Regulus.Remote.Client" Version="0.1.10.0" />
+	<PackageReference Include="Regulus.Remote.Client" Version="0.1.11.0" />
 	<ProjectReference Include="..\Protocol\Protocol.csproj" />
 </ItemGroup>
 ```
 Create a ```Regulus.Remote.IAgent``` to handle the connection and receive objects from the server.
 ```csharp
 var protocol = Protocol.ProtocolCreator.Create();
-var agent = Regulus.Remote.Client.Provider.CreateAgent(protocol);
+// Create serializer. If you would like to customise your serialisation please see the Serialisation heading. 
+var serializer = new Regulus.Remote.Serializer(protocol.SerializeTypes);
+var agent = Regulus.Remote.Client.Provider.CreateAgent(protocol,serializer);
 // The agent uses single-thread continuations to process server requests and responses, so it needs to keep calling this method to stay operational. 
 agent.Update(); 
 ```
@@ -288,7 +293,8 @@ if(online != null)
 else
 	// connect failed.
 ```
-### Extension
+## Customisation
+### Stream
 If you want to customize. Simply provide ```IService``` and ```IAgent``` a **data stream**.  
 Implement ```Regulus.Network.IStreamable```.  
 ```csharp
@@ -343,6 +349,8 @@ class Client
 	}
 }
 ```
+### Serialisation 
+
 ## Recommend
 * [Regulus.Remote.CodeAnalysis](https://github.com/jiowchern/Regulus.Remote.CodeAnalysis) - Protocol syntax checker.
 ## Sample 
