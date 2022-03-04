@@ -10,9 +10,9 @@ namespace Regulus.Remote.Client
             
             return new Regulus.Remote.Client.Tcp.Connecter(agent);
         }
-        public static Ghost.IAgent CreateAgent(IProtocol protocol)
+        public static Ghost.IAgent CreateAgent(IProtocol protocol,Regulus.Serialization.ISerializable serializable)
         {
-            return new Ghost.Agent(protocol);
+            return new Ghost.Agent(protocol, serializable);
         }
 
         public static object CreateWebSocket(IAgent agent)

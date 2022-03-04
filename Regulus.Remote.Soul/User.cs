@@ -70,7 +70,7 @@ namespace Regulus.Remote.Soul
 
 
         private readonly object _EnableLock;
-        private readonly ISerializer _Serialize;
+        private readonly ISerializable _Serialize;
 
         public static bool IsIdle
         {
@@ -92,12 +92,12 @@ namespace Regulus.Remote.Soul
 
         public readonly object State;
 
-        public User(IStreamable client, IProtocol protocol , object state)
+        public User(IStreamable client, IProtocol protocol , ISerializable serializable, object state)
         {
             State = state;
             Stream = client;
             
-            _Serialize = protocol.GetSerialize();
+            _Serialize = serializable;
 
             _EnableLock = new object();
 
@@ -108,12 +108,12 @@ namespace Regulus.Remote.Soul
 
             _Responses = new System.Collections.Concurrent.ConcurrentQueue<ResponsePackage>();
             _Requests = new System.Collections.Concurrent.ConcurrentQueue<RequestPackage>();
-            _Reader = new PackageReader<RequestPackage>(protocol.GetSerialize());
-            _Writer = new PackageWriter<ResponsePackage>(protocol.GetSerialize());
+            _Reader = new PackageReader<RequestPackage>(serializable);
+            _Writer = new PackageWriter<ResponsePackage>(serializable);
             
             _ExternalRequests = new System.Collections.Concurrent.ConcurrentQueue<RequestPackage>();
 
-            _SoulProvider = new SoulProvider(this, this, protocol);
+            _SoulProvider = new SoulProvider(this, this, protocol, serializable);
 
             _Updater = new ThreadUpdater(_AsyncUpdate);
         }

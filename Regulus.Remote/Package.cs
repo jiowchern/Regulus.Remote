@@ -35,7 +35,7 @@ namespace Regulus.Remote
     [Serializable]
     public class TPackageData<TData> where TData : class
     {
-        public byte[] ToBuffer(ISerializer serializer)
+        public byte[] ToBuffer(ISerializable serializer)
         {
             return serializer.Serialize(this);
         }
@@ -45,7 +45,7 @@ namespace Regulus.Remote
 
     public static class PackageHelper
     {
-        public static TData ToPackageData<TData>(this byte[] buffer, ISerializer serializer) where TData : TPackageData<TData>
+        public static TData ToPackageData<TData>(this byte[] buffer, ISerializable serializer) where TData : TPackageData<TData>
         {
             return serializer.Deserialize(buffer) as TData;
         }

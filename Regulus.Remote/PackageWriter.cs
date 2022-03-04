@@ -10,14 +10,14 @@ namespace Regulus.Remote
 {
     public class PackageWriter<TPackage>
     {
-        private readonly ISerializer _Serializer;
+        private readonly ISerializable _Serializer;
 
 
         private IStreamable _Peer;
 
         public System.Action ErrorEvent;
 
-        public PackageWriter(ISerializer serializer)
+        public PackageWriter(ISerializable serializer)
         {
 
             _Serializer = serializer;

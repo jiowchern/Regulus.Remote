@@ -13,7 +13,7 @@ namespace RemotingTest
         {
 
             IGhostRequest request = Substitute.For<IGhostRequest>();
-            ISerializer serializer = Substitute.For<ISerializer>();
+            ISerializable serializer = Substitute.For<ISerializable>();
 
             AutoRelease ar = new AutoRelease(request, serializer);
             _Register(ar);

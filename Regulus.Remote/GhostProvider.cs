@@ -29,7 +29,7 @@ namespace Regulus.Remote
         private readonly IGhostRequest _Requester;
 
         private readonly InterfaceProvider _InterfaceProvider;
-        private readonly ISerializer _Serializer;        
+        private readonly ISerializable _Serializer;        
        
         private readonly IProtocol _Protocol;
 
@@ -42,7 +42,7 @@ namespace Regulus.Remote
 
         
 
-        public GhostProvider(IProtocol protocol, IGhostRequest req)
+        public GhostProvider(IProtocol protocol, ISerializable serializable, IGhostRequest req)
         {
             
             _Active = false;
@@ -52,7 +52,7 @@ namespace Regulus.Remote
             _ReturnValueQueue = new ReturnValueQueue();
             _Protocol = protocol;
             _InterfaceProvider = _Protocol.GetInterfaceProvider();
-            _Serializer = _Protocol.GetSerialize();
+            _Serializer = serializable;
             _Providers = new Dictionary<Type, IProvider>();
             _AutoRelease = new AutoRelease(_Requester, _Serializer);
 
@@ -223,9 +223,9 @@ namespace Regulus.Remote
             IProvider provider = _QueryProvider(type);
             IGhost ghost = _BuildGhost(type, id, return_type);
 
-            ghost.CallMethodEvent += new GhostMethodHandler(ghost, _ReturnValueQueue, _Protocol, _Requester).Run;
-            ghost.AddEventEvent += new GhostEventMoveHandler(ghost, _Protocol, _Requester).Add;
-            ghost.RemoveEventEvent += new GhostEventMoveHandler(ghost, _Protocol, _Requester).Remove;            
+            ghost.CallMethodEvent += new GhostMethodHandler(ghost, _ReturnValueQueue, _Protocol, _Serializer, _Requester).Run;
+            ghost.AddEventEvent += new GhostEventMoveHandler(ghost, _Protocol,_Serializer, _Requester).Add;
+            ghost.RemoveEventEvent += new GhostEventMoveHandler(ghost, _Protocol, _Serializer, _Requester).Remove;            
 
 
 

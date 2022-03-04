@@ -8,7 +8,7 @@ namespace Regulus.Remote
         EventProvider GetEventProvider();
         InterfaceProvider GetInterfaceProvider();
 
-        ISerializer GetSerialize();
+        System.Type[] SerializeTypes { get; }
 
         MemberMap GetMemberMap();
 

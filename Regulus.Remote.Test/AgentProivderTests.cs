@@ -1,6 +1,7 @@
 ﻿
 using Regulus.Remote;
 using Regulus.Serialization;
+using System;
 using System.Linq;
 using System.Reflection;
 
@@ -18,6 +19,8 @@ namespace Regulus.Utility.Client.JIT.Tests
 
         Assembly IProtocol.Base => throw new System.NotImplementedException();
 
+        Type[] IProtocol.SerializeTypes => throw new NotImplementedException();
+
         EventProvider IProtocol.GetEventProvider()
         {
             throw new System.NotImplementedException();
@@ -33,10 +36,7 @@ namespace Regulus.Utility.Client.JIT.Tests
             throw new System.NotImplementedException();
         }
 
-        ISerializer IProtocol.GetSerialize()
-        {
-            throw new System.NotImplementedException();
-        }
+        
     }
 
     public class AgentProivderTests

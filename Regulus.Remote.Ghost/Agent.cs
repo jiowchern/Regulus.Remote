@@ -1,4 +1,5 @@
 ﻿using Regulus.Network;
+using Regulus.Serialization;
 using Regulus.Utility;
 using System;
 
@@ -17,13 +18,11 @@ namespace Regulus.Remote.Ghost
             get { return _GhostProvider.Ping; }
         }
 
-        public Agent(IProtocol protocol)
+        public Agent(IProtocol protocol, ISerializable serializable)
         {
-            Serialization.ISerializer serializer = protocol.GetSerialize();
+            GhostSerializer ghostSerializer = new GhostSerializer(new PackageReader<ResponsePackage>(serializable) , new PackageWriter<RequestPackage>(serializable));
 
-            GhostSerializer ghostSerializer = new GhostSerializer(serializer);
-
-            _GhostProvider = new GhostProvider(protocol, ghostSerializer);
+            _GhostProvider = new GhostProvider(protocol, serializable, ghostSerializer);
 
             _GhostSerializer = ghostSerializer;
         }

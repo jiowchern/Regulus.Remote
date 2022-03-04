@@ -37,20 +37,22 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
 
         public async Task RunAsync()
         {
-           
+
+
             var test = new CSharpSourceGeneratorVerifier<SourceGenerator>.Test
             {
+
                 TestState =
-                {
-                    ReferenceAssemblies = ReferenceAssemblies.Default.AddPackages(ImmutableArray.Create(
-                        new PackageIdentity("Regulus.Remote", "0.1.10.1"),
-                        new PackageIdentity("Regulus.Serialization", "0.1.10.0"))),
-                    
+                {             
                 },
-            
-            
+
             };
+
            
+            test.TestState.AdditionalReferences.Add(typeof(Regulus.Remote.Value<>).Assembly);
+            test.TestState.AdditionalReferences.Add(typeof(Regulus.Remote.GhostEventHandler).Assembly);
+
+
             foreach (var syntaxTree in _Sources)
             {
                

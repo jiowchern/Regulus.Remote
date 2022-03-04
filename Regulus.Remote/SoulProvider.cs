@@ -26,9 +26,9 @@ namespace Regulus.Remote
 
         private readonly Dictionary<long, IValue> _WaitValues ;
 
-        private readonly ISerializer _Serializer;
+        private readonly ISerializable _Serializer;
         
-        public SoulProvider(IRequestQueue peer, IResponseQueue queue, IProtocol protocol)
+        public SoulProvider(IRequestQueue peer, IResponseQueue queue, IProtocol protocol, ISerializable serializable)
         {            
             _WaitValues = new Dictionary<long, IValue>();
             _Souls = new System.Collections.Concurrent.ConcurrentDictionary<long, SoulProxy>();
@@ -39,7 +39,7 @@ namespace Regulus.Remote
 
             _EventProvider = protocol.GetEventProvider();
 
-            _Serializer = protocol.GetSerialize();
+            _Serializer = serializable;
             _Peer = peer;
             _Peer.InvokeMethodEvent += _InvokeMethod;
         }

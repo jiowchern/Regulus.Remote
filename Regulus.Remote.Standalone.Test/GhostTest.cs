@@ -8,13 +8,13 @@ namespace Regulus.Remote.Standalone.Test
 {
     public static class SerializerHelper
     {
-        public static byte[] ServerToClient<T>(this Regulus.Serialization.ISerializer serializer, ServerToClientOpCode opcode, T instance)
+        public static byte[] ServerToClient<T>(this Regulus.Serialization.ISerializable serializer, ServerToClientOpCode opcode, T instance)
         {
             ResponsePackage pkg = new Regulus.Remote.ResponsePackage() { Code = opcode, Data = serializer.Serialize(instance) };
             return serializer.Serialize(pkg);
         }
 
-        public static void ServerToClient<T>(this Regulus.Remote.PackageWriter<ResponsePackage> writer, Regulus.Serialization.ISerializer serializer, ServerToClientOpCode opcode, T instance)
+        public static void ServerToClient<T>(this Regulus.Remote.PackageWriter<ResponsePackage> writer, Regulus.Serialization.ISerializable serializer, ServerToClientOpCode opcode, T instance)
         {
             ResponsePackage pkg = new ResponsePackage();
             pkg.Code = opcode;
@@ -25,14 +25,14 @@ namespace Regulus.Remote.Standalone.Test
 
     public class ProtocolHelper
     {
-        public static IProtocol CreateProtocol(ISerializer serializer)
+        public static IProtocol CreateProtocol(ISerializable serializer)
         {
             IProtocol protocol = NSubstitute.Substitute.For<IProtocol>();
             var types = new System.Collections.Generic.Dictionary<System.Type, System.Type>();
             types.Add(typeof(IGpiA), typeof(GhostIGpiA));
             InterfaceProvider interfaceProvider = new InterfaceProvider(types);
             protocol.GetInterfaceProvider().Returns(interfaceProvider);
-            protocol.GetSerialize().Returns(serializer);
+            
             System.Func<IProvider> gpiaProviderProvider = () => new TProvider<IGpiA>();
             System.Tuple<System.Type, System.Func<IProvider>>[] typeProviderProvider = new System.Tuple<System.Type, System.Func<IProvider>>[] { new System.Tuple<System.Type, System.Func<IProvider>>(typeof(IGpiA), gpiaProviderProvider) };
             protocol.GetMemberMap().Returns(new MemberMap(new System.Reflection.MethodInfo[0], new System.Reflection.EventInfo[0], new System.Reflection.PropertyInfo[0], typeProviderProvider));
@@ -116,7 +116,7 @@ namespace Regulus.Remote.Standalone.Test
         [Fact(Timeout =5000)]        
         public async void CommunicationDeviceSerializerTest()
         {
-            Regulus.Serialization.ISerializer serializer = new Regulus.Serialization.Dynamic.Serializer();
+            Regulus.Serialization.ISerializable serializer = new Regulus.Serialization.Dynamic.Serializer();
             Stream cd = new Regulus.Remote.Standalone.Stream();
             IStreamable peer = cd;
             byte[] buf = serializer.ServerToClient(ServerToClientOpCode.LoadSoul, new Regulus.Remote.PackageLoadSoul() { EntityId = 1, ReturnType = false, TypeId = 1 });
@@ -136,7 +136,7 @@ namespace Regulus.Remote.Standalone.Test
         
         public  async void CommunicationDeviceSerializerBatchTest()
         {
-            Regulus.Serialization.ISerializer serializer = new Regulus.Serialization.Dynamic.Serializer();
+            Regulus.Serialization.ISerializable serializer = new Regulus.Serialization.Dynamic.Serializer();
             Stream cd = new Regulus.Remote.Standalone.Stream();
             IStreamable peer = cd;
 
@@ -159,7 +159,7 @@ namespace Regulus.Remote.Standalone.Test
         public void AgentSupplyGpiTest()
         {
             IGpiA retGpiA = null;
-            Regulus.Serialization.ISerializer serializer = new Regulus.Serialization.Dynamic.Serializer();
+            Regulus.Serialization.ISerializable serializer = new Regulus.Serialization.Dynamic.Serializer();
             IProtocol protocol = ProtocolHelper.CreateProtocol(serializer);
 
             Stream cdClient = new Regulus.Remote.Standalone.Stream();
@@ -168,7 +168,7 @@ namespace Regulus.Remote.Standalone.Test
             PackageWriter<ResponsePackage> writer = new PackageWriter<ResponsePackage>(serializer);
             writer.Start(new ReverseStream(cdClient));
 
-            Ghost.IAgent agent = new Regulus.Remote.Ghost.Agent(protocol) as Ghost.IAgent;
+            Ghost.IAgent agent = new Regulus.Remote.Ghost.Agent(protocol, serializer) as Ghost.IAgent;
             agent.QueryNotifier<IGpiA>().Supply += gpi => retGpiA = gpi;
             agent.Start(peerClient);
 

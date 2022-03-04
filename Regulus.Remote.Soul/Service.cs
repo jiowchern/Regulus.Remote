@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Regulus.Serialization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,18 +9,19 @@ namespace Regulus.Remote.Soul
     {
         private readonly IBinderProvider _Entry;
         private readonly IProtocol _Protocol;
-
+        private readonly ISerializable _Serializable;
         readonly System.Collections.Generic.List<User> _Users;
         readonly Regulus.Utility.Updater _Updater;
 
         readonly ThreadUpdater _ThreadUpdater;
 
-        public Service(IBinderProvider entry, IProtocol protocol)
+        public Service(IBinderProvider entry, IProtocol protocol,Regulus.Serialization.ISerializable serializable)
         {
             
             _Users = new System.Collections.Generic.List<User>();
             this._Entry = entry;
             this._Protocol = protocol;
+            this._Serializable = serializable;
             _Updater = new Utility.Updater();
             _Updater.AddEvent += (user) => _Entry.AssignBinder(((User)user).Binder, ((User)user).State);
             _ThreadUpdater = new ThreadUpdater(_Update);
@@ -33,7 +35,7 @@ namespace Regulus.Remote.Soul
 
         void IService.Join(Network.IStreamable stream,object state)
         {
-            User user = new User(stream, _Protocol , state);
+            User user = new User(stream, _Protocol , _Serializable, state);
             lock(_Users)
             {
                 _Users.Add(user);                
