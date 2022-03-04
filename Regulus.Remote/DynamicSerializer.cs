@@ -1,9 +1,8 @@
-﻿using Regulus.Serialization;
-using System;
+﻿using System;
 
 namespace Regulus.Remote
 {
-    public class DynamicSerializer : Regulus.Serialization.ISerializable
+    public class DynamicSerializer : ISerializable
     {
         private readonly Serialization.Dynamic.Serializer _Serializer;
 

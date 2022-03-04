@@ -1,5 +1,4 @@
-﻿using Regulus.Serialization;
-using Regulus.Utility;
+﻿using Regulus.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +6,8 @@ using System.Reflection;
 
 namespace Regulus.Remote
 {
-    
-    
+
+
     public class SoulProvider : IDisposable, IBinder
     {
         private readonly IdLandlord _IdLandlord;

@@ -1,9 +1,8 @@
-﻿
-namespace Regulus.Remote.Server
+﻿namespace Regulus.Remote.Server
 {
     public static class Provider
     {
-        public static Soul.IService CreateService(IEntry entry,  IProtocol protocol,Regulus.Serialization.ISerializable serializable)
+        public static Soul.IService CreateService(IEntry entry,  IProtocol protocol, ISerializable serializable)
         {
             return new Soul.Service(entry, protocol, serializable , new Regulus.Remote.InternalSerializer());
         }

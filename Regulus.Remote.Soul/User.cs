@@ -1,5 +1,4 @@
 ﻿using Regulus.Network;
-using Regulus.Serialization;
 using Regulus.Utility;
 using System;
 using System.Collections.Generic;

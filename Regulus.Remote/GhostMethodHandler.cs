@@ -1,4 +1,3 @@
-using Regulus.Serialization;
 using System.Linq;
 using System.Reflection;
 
@@ -16,8 +15,8 @@ namespace Regulus.Remote
         readonly IInternalSerializable _InternalSerializable;
         public GhostMethodHandler(IGhost ghost, 
             ReturnValueQueue return_value_queue, 
-            IProtocol protocol , 
-            Serialization.ISerializable serializable, 
+            IProtocol protocol ,
+            ISerializable serializable, 
             IInternalSerializable internal_serializable,
             Regulus.Remote.IGhostRequest requester)
         {
@@ -32,7 +31,7 @@ namespace Regulus.Remote
         public void Run(MethodInfo info, object[] args, IValue return_value)
         {
             MemberMap map = _Protocol.GetMemberMap();
-            Serialization.ISerializable serialize = _Serializable;
+            ISerializable serialize = _Serializable;
             int method = map.GetMethod(info);
 
             PackageCallMethod package = new PackageCallMethod();

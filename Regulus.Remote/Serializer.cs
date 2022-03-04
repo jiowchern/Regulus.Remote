@@ -1,10 +1,9 @@
-﻿using Regulus.Serialization;
-using System;
+﻿using System;
 using System.Linq;
 namespace Regulus.Remote
 {
-    
-    public class Serializer : Regulus.Serialization.ISerializable
+
+    public class Serializer : ISerializable
     {
         private readonly Serialization.Serializer _Serializer;
 

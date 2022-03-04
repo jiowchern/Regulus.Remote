@@ -18,7 +18,7 @@ namespace Regulus.Remote.Standalone.Test
             IGpiA gpia = new SoulGpiA();
             entry.AssignBinder(NSubstitute.Arg.Do<IBinder>(binder => binder.Bind<IGpiA>(gpia)), NSubstitute.Arg.Any<object>());
 
-            Serialization.ISerializable serializer = new Regulus.Remote.DynamicSerializer();
+            ISerializable serializer = new Regulus.Remote.DynamicSerializer();
             IProtocol protocol = ProtocolHelper.CreateProtocol();
             var internalSer = new Regulus.Remote.InternalSerializer();
             Soul.IService service = new Regulus.Remote.Soul.Service(entry, protocol, serializer , internalSer);

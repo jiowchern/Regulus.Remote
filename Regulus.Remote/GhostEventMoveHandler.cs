@@ -1,6 +1,4 @@
-﻿using Regulus.Serialization;
-
-namespace Regulus.Remote
+﻿namespace Regulus.Remote
 {
     internal class GhostEventMoveHandler
     {
@@ -22,7 +20,7 @@ namespace Regulus.Remote
         internal void Add(System.Reflection.EventInfo info, long handler)
         {
             MemberMap map = _Protocol.GetMemberMap();
-            Serialization.ISerializable serialize = _Serializable;
+            ISerializable serialize = _Serializable;
 
             PackageAddEvent package = new PackageAddEvent();
             package.Entity = _Ghost.GetID();
@@ -35,7 +33,7 @@ namespace Regulus.Remote
         internal void Remove(System.Reflection.EventInfo info, long handler)
         {
             MemberMap map = _Protocol.GetMemberMap();
-            Serialization.ISerializable serialize = _Serializable;
+            ISerializable serialize = _Serializable;
 
             PackageRemoveEvent package = new PackageRemoveEvent();
             package.Entity = _Ghost.GetID();

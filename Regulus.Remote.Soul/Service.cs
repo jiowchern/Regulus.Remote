@@ -1,5 +1,4 @@
-﻿using Regulus.Serialization;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,7 +15,7 @@ namespace Regulus.Remote.Soul
 
         readonly ThreadUpdater _ThreadUpdater;
 
-        public Service(IBinderProvider entry, IProtocol protocol,Regulus.Serialization.ISerializable serializable , Regulus.Remote.IInternalSerializable internal_serializable)
+        public Service(IBinderProvider entry, IProtocol protocol, ISerializable serializable , Regulus.Remote.IInternalSerializable internal_serializable)
         {
             
             _Users = new System.Collections.Generic.List<User>();
