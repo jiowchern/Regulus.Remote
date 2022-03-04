@@ -31,6 +31,22 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
         }
 
         [Test]
+        public void CreateProtocolSerializeTypesTest()
+        {
+            var protocol = Regulus.Remote.Tools.Protocol.Sources.TestCommon.ProtocolProvider.CreateCase1();
+            NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(int)));
+
+            NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(bool)));
+            NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(string)));
+            NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(Regulus.Remote.Tools.Protocol.Sources.TestCommon.TestC)));
+            NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(Regulus.Remote.Tools.Protocol.Sources.TestCommon.TestS)));
+
+            NUnit.Framework.Assert.AreEqual(5, protocol.SerializeTypes.Length);
+            
+
+        }
+
+        [Test]
         public void CreateProtocolTest3()
         {
             var protocol = ProtocolProviderCase3.CreateCase3();

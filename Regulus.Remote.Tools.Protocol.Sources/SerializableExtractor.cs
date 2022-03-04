@@ -26,10 +26,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         private void _AddSet(HashSet<ITypeSymbol> set, IEnumerable<ITypeSymbol> symbols)
         {
             foreach (var symbol in symbols)
-            {
-                if (symbol.IsAbstract)
-                    throw new Exceptions.UnserializableException(symbol);
-
+            {                
                 if (set.Contains(symbol))
                     continue;
 
@@ -83,22 +80,15 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                         yield return item;
                     }
                 }
-                else
-                {
-                    throw new Exceptions.UnserializableException(member);
-                }
+               
             }
         }
 
        
 
         private IEnumerable<ITypeSymbol> _GetTypes(IEventSymbol event_symbol)
-        {
-           
-            var type = event_symbol.Type as INamedTypeSymbol;
-            if (type == null)
-                throw new Exceptions.UnserializableException(event_symbol);
-
+        {           
+            var type = event_symbol.Type as INamedTypeSymbol;        
             return type.TypeArguments;
         }
 
@@ -121,7 +111,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             var retType = method_symbol.ReturnType as INamedTypeSymbol ;
             if(retType == null || retType.OriginalDefinition != _References.RegulusRemoteValue && retType.SpecialType != SpecialType.System_Void) 
             {
-                throw new Exceptions.UnserializableException(method_symbol);
+                yield break;
             }
             
 
@@ -134,7 +124,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             {
                 if(item.RefKind != RefKind.None)
                 {
-                    throw new Exceptions.UnserializableException(method_symbol);
+                    continue;
                 }
                 yield return item.Type;
             }

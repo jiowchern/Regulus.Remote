@@ -437,39 +437,7 @@ namespace NS1
 
         }
 
-        [Test]
-        public void SerializableExtractor5Test()
-        {
-            var source = @"
-namespace NS1
-{
-    
-    public interface IA{}
-    public interface IB{
-        Regulus.Remote.Property<IA> Property1 {get;}
-    }    
-}
-";
-            var tree = CSharpSyntaxTree.ParseText(source);
-            Compilation compilation = tree.Compilation();
-
-            var builder = new GhostBuilder(compilation);
-            bool exc = false;
-            try
-            {
-                var symbols = new SerializableExtractor(new EssentialReference(compilation), builder.Ghosts).Symbols.ToArray();
-            }
-            catch (Regulus.Remote.Tools.Protocol.Sources.Exceptions.UnserializableException ex)
-            {
-
-                exc = true;
-            }
-            
-
-            
-            NUnit.Framework.Assert.IsTrue(exc);
-
-        }
+      
 
 
         [Test]

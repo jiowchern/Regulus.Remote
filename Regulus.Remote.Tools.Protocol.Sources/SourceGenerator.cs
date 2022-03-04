@@ -28,7 +28,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
  #if DEBUG
              if (!Debugger.IsAttached)
              {
-                // Debugger.Launch();
+                 //Debugger.Launch();
              }
  #endif
 
