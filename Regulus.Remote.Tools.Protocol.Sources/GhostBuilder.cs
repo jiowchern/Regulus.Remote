@@ -70,6 +70,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
             var enumerable = typeArgs as string[] ?? typeArgs.ToArray();
             var typeArgCode = $"<{string.Join(",", enumerable)}>";
+            int i = 0;
+            var valueArgCode = $"{string.Join(",", enumerable.Select(e=> $"_{i++}"))}";
 
             if (!enumerable.Any())
                 typeArgCode = "";
@@ -96,8 +98,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                     }}
                     Delegate Regulus.Remote.IEventProxyCreator.Create(long soul_id,int event_id,long handler_id, Regulus.Remote.InvokeEventCallabck invoke_Event)
                     {{                
-                        var closure = new Regulus.Remote.GenericEventClosure{typeArgCode}(soul_id , event_id ,handler_id, invoke_Event);                
-                        return new Action{typeArgCode}(closure.Run);
+                        var closure = new Regulus.Remote.GenericEventClosure(soul_id , event_id ,handler_id, invoke_Event);                
+                        return new Action{typeArgCode}(({valueArgCode}) => closure.Run(new object[]{{{valueArgCode}}}));
                     }}
                 
             

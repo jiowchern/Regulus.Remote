@@ -9,16 +9,18 @@ using Regulus.Remote.Tools.Protocol.Sources.TestCommon.MultipleNotices;
 
 namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 {
+    
     public class Tests
     {
         [SetUp]
         public void Setup()
         {
-
+         
         }
         [Test]
         public void CreateProtocolTest1()
         {
+    
             var protocol = Regulus.Remote.Tools.Protocol.Sources.TestCommon.ProtocolProvider.CreateCase1();
             NUnit.Framework.Assert.IsNotNull(protocol);
         }
@@ -253,19 +255,23 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
         [Test]
         public void MethodTest()
         {
+
+
             var tester = new MethodTester();
             
             var env = new TestEnv<Entry<IMethodable>, IMethodable>(new Entry<IMethodable>(tester));
             var valuesObs = from gpi in env.Queryable.QueryNotifier<IMethodable>().SupplyEvent()
                              from v1 in gpi.GetValue1().RemoteValue()
                              from v2 in gpi.GetValue2().RemoteValue()
-                             select new {v1,v2};
+                             from v0 in gpi.GetValue0(0,"",0,0,0,Guid.Empty).RemoteValue()
+                            select new {v1,v2,v0};
 
             var values = valuesObs.FirstAsync().Wait();
             env.Dispose();
 
             Assert.AreEqual(1, values.v1);
-            Assert.AreEqual(2, values.v2);            
+            Assert.AreEqual(2, values.v2);
+            Assert.AreEqual(0, values.v0);
         }
 
         [Test]

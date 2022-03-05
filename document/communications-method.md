@@ -47,6 +47,4 @@ namesapce Client
 
 ---
 #### Restrictions
-1. The maximum amount of method parameters is 5.  
-If there are more than 5, refactor to one class.  
-2. Return values only support void or Regulus.Remote.Value.
+Return values only support void or Regulus.Remote.Value.

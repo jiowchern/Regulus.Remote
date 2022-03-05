@@ -11,8 +11,7 @@
 
 
 ## Introduce
-This is a server-client network connection framework developed based on .net standard 2.0 , available for unity game engine .
-
+This is server-client connection framework, available for Unity development.
 * [Feature](#Feature)
 * [Communication](#Communication)
 * [Getting Start](#Getting-Start)
@@ -21,59 +20,38 @@ This is a server-client network connection framework developed based on .net sta
 * [Recommend](#Recommend)
 * [Sample](#Sample)
 ## Feature
-Server-side implementation interface, client-side use of objects from the server.
-<!-- 
-@startuml
-package Protocol <<Rectangle>>{
-    interface IGreeter {
-        +SayHello()
-    }
-}
-
-
-package Server <<Rectangle>> {
-    class Greeter {
-        +SayHello()
-    }
-}
-
-package Client <<Rectangle>>{
-    class SomeClass{
-        {field} IGreeter greeter 
-    }
-}
-
-IGreeter --* SomeClass::greeter 
-IGreeter <|.. Greeter  
-
-note left of Greeter  
-    Implement IGreeter 
-end note
-
-note right of SomeClass::greeter 
-    Use object from server.
-end note
-
-@enduml
--->
-![plantUML](http://www.plantuml.com/plantuml/svg/ZP31JiCm38RlUGeVGMXzWAcg9kq0ko4g7Y1aVql1IIR7GqAZxqvRLGdiD5zgsVw_ViekgHKzUpOdwpvj3tgMgD55fhf-WLCRUaRJN0nDDGI5TDQ13ey2A8IcnLeFhVr-0dEykrzcencDoTWMyWNv3rt3ZcrAT1EmyFOy8EYrPC6rqMC_TuLtwGRmSIpk_VejzBpQR9g2s6xpPJweVwegEvCn8Ig8qId5himNyi6V67wspMc3SAGviWPbwD_dvDK_Yzrh0iMt3pYbJgAdj3ndzOUpczgpvry0)
-<!-- * Remote Method Invocation
+* Remote Method Invocation
 * .Net Standard 2.0 base
 * Compatible with Unity il2cpp
 * Compatible with Unity WebGL
 * Customizable connection
-* Stand-alone mode  -->
+* Stand-alone mode  
 
 ## Latest Version
 Download the latest ![Latest Version](https://img.shields.io/github/v/tag/jiowchern/Regulus.Remote) .
+## Architecture
+<!-- 
+@startuml
+!include <c4/C4_Context.puml> 
 
+LAYOUT_LEFT_RIGHT()
+
+System(Regulus,"Regulus Remote")
+System(Server,"Server","Implement a interface IFoo.")
+System(Client,"Client","Communicate with the server through this interface IFoo.")
+
+Rel(Regulus,Client,"notice")
+Rel(Server,Regulus,"bind")
+@enduml
+-->
+![Architecture](http://www.plantuml.com/plantuml/svg/RO_DQiCm48JlUegjJWcOz99ZAIccQGs1WkCUUZAkF4q4qYf8g_wyVUNcfvUSPjZP7RvT9HcYPE_KZMNZyWYwCylRUjdNWGNViZYKy9wKsZoylRns_UPntVLjy_JSpUPARN-ImCzQxBBBgT8dGory4EZvUM6B-8bOwQFgIZV-uE31GWDP5iIFmO2QTGYB_wlQMR1K-gYwcE1zPci60NrPsPFiGUclizWOycuQsNIbKhLm5yvpCGUnPiASmXFZvPTtosE9Lk0nU_SB)
 
 ## Communication   
 Instead of client communicating with server in packets, server send object to client through interface.  
 Here are the steps to set up the communication.  
 **A. Define the interface IGreeter.**  
 ```csharp
-namespace Protocol
+namespace Common
 {
 	public struct HelloRequest
 	{
@@ -152,14 +130,14 @@ namespace Client
 ```
 ---
 In this way, the server and the client can communicate through the interface and achieve object-oriented development as much as possible.  
-<!-- In addition, bind and unbind are used to switch the objects of the server, so as to control the access rights of the client conveniently.  -->
-The current communication capabilities of the interface are as follows...   
+In addition, bind and unbind are used to switch the objects of the server, so as to control the access rights of the client conveniently.  
+The current communication capabilities of the interface are as follows...  
 * [Method](document/communications-method.md)
 * [Event](document/communications-event.md)
 * [Property](document/communications-property.md)
 * [Notifier](document/communications-notifier.md)
-<!-- > Serialization supports the following types...  
-> ```short, ushort, int, uint, bool, logn, ulong, float, decimal, double, char, byte, enum, string``` and array of the types. -->
+> Serialization supports the following types...  
+> ```short, ushort, int, uint, bool, logn, ulong, float, decimal, double, char, byte, enum, string``` and array of the types.
           
 
 ## Getting Start
@@ -170,7 +148,7 @@ This is a server-client framework, so it requires at least three projects: **Pro
 
 
 ### Protocol 
-Create a message component to handle the communication requirements between client and server.  
+Create a protocol component to handle the communication requirements between client and server.  
 
 **Create Project.**
 ```powershell
@@ -191,9 +169,8 @@ Add a sample file,**IFoo.cs**.
 ```csharp
 namespace Protocol
 {
-	public interface IGreeter
+	public interface IFoo	
 	{
-		Regulus.Remote.Value<HelloReply> SayHello(HelloRequest request);
 	}
 }
 ```
@@ -255,7 +232,7 @@ namespace Server
 	{
 		
 		// Create protocol.
-		var protocol = Messages.ProtocolCreator.Create();
+		var protocol = Protocol.ProtocolCreator.Create();
 		// your server entry.
 		var entry = new Entry();
 
@@ -294,9 +271,9 @@ agent.Update();
 
 Receive objects from the server side.
 ```csharp
-var notifier = agent.QueryNotifier<Protocol.IGreeter>();
-notifier.Supply += _AddGreeter; // The Supply is the Bind for the corresponding server.
-notifier.Unsupply += _RemoveGreeter;// The Unsupply is the Unbind for the corresponding server.
+var notifier = agent.QueryNotifier<Common.IFoo>();
+notifier.Supply += _AddFoo; // The Supply is the Bind for the corresponding server.
+notifier.Unsupply += _RemoveFoo;// The Unsupply is the Unbind for the corresponding server.
 ```
 
 ## Connection

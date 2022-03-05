@@ -77,6 +77,19 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon
             }
         }
 
+        event Action<int, string, float, double, decimal, Guid> IEventabe.Event01
+        {
+            add
+            {
+                
+            }
+
+            remove
+            {
+                
+            }
+        }
+
         public void Invoke11()
         {
             _IEventabe1Event1();

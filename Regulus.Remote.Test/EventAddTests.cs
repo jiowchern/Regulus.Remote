@@ -63,7 +63,7 @@ namespace RemotingTest
             };
             GenericEventClosure closure = new GenericEventClosure(1, 1, 1, callback);
             System.Reflection.EventInfo info = typeof(TestType).GetEvent("TestEvent");
-            soul.AddEvent(new SoulProxyEventHandler(obj, new System.Action(closure.Run), info, 1));
+            soul.AddEvent(new SoulProxyEventHandler(obj, new System.Action(() => closure.Run()), info, 1));
 
             obj.TestEvent += Raise.Event<Action>();
 
