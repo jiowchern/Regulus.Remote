@@ -2,13 +2,13 @@ using Xunit;
 using Regulus.Remote;
 using System.Linq;
 
-namespace Regulus.Application.Client.Test
+namespace Regulus.Integration.Tests
 {
     public class Tests
     {
-        
-      
-        [Xunit.Fact]
+
+
+        [Fact]
         public void InterfaceProviderTyepsTest()
         {
             System.Collections.Generic.Dictionary<System.Type, System.Type> types = new System.Collections.Generic.Dictionary<System.Type, System.Type>();
@@ -23,7 +23,7 @@ namespace Regulus.Application.Client.Test
         }
 
 
-        [Xunit.Fact]
+        [Fact]
         public void AgentEventRectifierSupplyTest()
         {
             System.Collections.Generic.Dictionary<System.Type, System.Type> types = new System.Collections.Generic.Dictionary<System.Type, System.Type>();
@@ -50,7 +50,7 @@ namespace Regulus.Application.Client.Test
 
         }
 
-        [Xunit.Fact]
+        [Fact]
         public void AgentEventRectifierUnsupplyTest()
         {
             System.Collections.Generic.Dictionary<System.Type, System.Type> types = new System.Collections.Generic.Dictionary<System.Type, System.Type>();
@@ -81,7 +81,7 @@ namespace Regulus.Application.Client.Test
             Assert.Equal(typeof(IType), outType);
 
         }
-        [Xunit.Fact]
+        [Fact]
         public void MethodStringInvokerTest1()
         {
             CType test = new CType(1);
@@ -94,17 +94,17 @@ namespace Regulus.Application.Client.Test
 
         }
 
-        [Xunit.Fact]
+        [Fact]
         public void AgentCommandTest1()
         {
             CType test = new CType(1);
             System.Reflection.MethodInfo method = typeof(IType).GetMethod(nameof(IType.TestMethod1));
             Remote.Client.MethodStringInvoker invoker = new Remote.Client.MethodStringInvoker(test, method, new Remote.Client.TypeConverterSet());
-            Remote.Client.AgentCommand agentCommand = new Regulus.Remote.Client.AgentCommand(new Remote.Client.AgentCommandVersionProvider(), typeof(IType), invoker);
+            Remote.Client.AgentCommand agentCommand = new Remote.Client.AgentCommand(new Remote.Client.AgentCommandVersionProvider(), typeof(IType), invoker);
             Assert.Equal("IType-0.TestMethod1 [a1,a2,a3]", agentCommand.Name);
 
         }
-        [Xunit.Fact]
+        [Fact]
         public void AgentCommandRegisterTest1()
         {
 

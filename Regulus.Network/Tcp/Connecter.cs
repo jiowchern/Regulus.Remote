@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Regulus.Network.Tcp
 {
-    public class Connecter : Peer, IConnectable
+    public class Connecter : Peer
     {
 
         public Connecter() : base(new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
@@ -14,14 +14,14 @@ namespace Regulus.Network.Tcp
 
         }
 
-        System.Threading.Tasks.Task<bool> IConnectable.Connect(EndPoint endpoint)
+        public System.Threading.Tasks.Task<bool> Connect(EndPoint endpoint)
         {
             System.Net.Sockets.Socket socket = GetSocket();
             return System.Threading.Tasks.Task<bool>.Factory.FromAsync(
                 (handler, obj) => socket.BeginConnect(endpoint, handler, null), _ResultConnect, null);
         }
 
-        Task IConnectable.Disconnect()
+        public Task Disconnect()
         {
             System.Net.Sockets.Socket socket = GetSocket();
             return System.Threading.Tasks.Task<bool>.Factory.FromAsync(
@@ -38,13 +38,9 @@ namespace Regulus.Network.Tcp
                 GetSocket().EndDisconnect(arg);
                 result = true;
             }
-            catch (SocketException ex)
+            catch (SystemException se)
             {
-                Singleton<Log>.Instance.WriteInfo(ex.ToString());
-            }
-            catch (ObjectDisposedException ode)
-            {
-                Singleton<Log>.Instance.WriteInfo(ode.ToString());
+                Singleton<Log>.Instance.WriteInfo(se.ToString());
             }
             finally
             {
@@ -63,14 +59,10 @@ namespace Regulus.Network.Tcp
                 
                 GetSocket().EndConnect(Ar);
                 result = true;
-            }
-            catch (SocketException ex)
+            }            
+            catch(SystemException se)
             {
-                Singleton<Log>.Instance.WriteInfo(ex.ToString());
-            }
-            catch (ObjectDisposedException ode)
-            {
-                Singleton<Log>.Instance.WriteInfo(ode.ToString());
+                Singleton<Log>.Instance.WriteInfo(se.ToString());
             }
             finally
             {

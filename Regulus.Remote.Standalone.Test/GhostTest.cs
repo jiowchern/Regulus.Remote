@@ -172,9 +172,9 @@ namespace Regulus.Remote.Standalone.Test
             PackageWriter<ResponsePackage> writer = new PackageWriter<ResponsePackage>(internalSerializer);
             writer.Start(new ReverseStream(cdClient));
 
-            Ghost.IAgent agent = new Regulus.Remote.Ghost.Agent(protocol, serializer, internalSerializer) as Ghost.IAgent;
+            Ghost.IAgent agent = new Regulus.Remote.Ghost.Agent(peerClient , protocol, serializer, internalSerializer) as Ghost.IAgent;
             agent.QueryNotifier<IGpiA>().Supply += gpi => retGpiA = gpi;
-            agent.Start(peerClient);
+            
 
             writer.ServerToClient(internalSerializer, ServerToClientOpCode.LoadSoul, new Regulus.Remote.PackageLoadSoul() { EntityId = 1, ReturnType = false, TypeId = 1 });
             writer.ServerToClient(internalSerializer, ServerToClientOpCode.LoadSoulCompile, new Regulus.Remote.PackageLoadSoulCompile() { EntityId = 1, TypeId = 1, ReturnId = 0});
@@ -184,7 +184,7 @@ namespace Regulus.Remote.Standalone.Test
                 ar.Operate();
                 agent.Update();                
             }
-            agent.Stop();
+            agent.Dispose();
             writer.Stop();
             Assert.NotNull(retGpiA);
         }

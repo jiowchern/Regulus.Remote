@@ -3,9 +3,8 @@ using System;
 
 namespace Regulus.Remote.Ghost
 {
-    public interface IAgent : INotifierQueryable
-    {
-
+    public interface IAgent : INotifierQueryable , IDisposable
+    {        
         /// <summary>
         ///     Active
         /// </summary>
@@ -30,9 +29,7 @@ namespace Regulus.Remote.Ghost
        
 
 
-        void Start(IStreamable stream);
-        void Stop();
-
+        
         void Update();
     }
 }

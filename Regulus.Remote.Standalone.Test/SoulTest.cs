@@ -15,19 +15,20 @@ namespace Regulus.Remote.Standalone.Test
             IStreamable clientStream = new ReverseStream(serverPeerStream);
 
             IBinderProvider entry = NSubstitute.Substitute.For<IBinderProvider>();
+            var  listenable = NSubstitute.Substitute.For<Soul.IListenable>();
             IGpiA gpia = new SoulGpiA();
-            entry.AssignBinder(NSubstitute.Arg.Do<IBinder>(binder => binder.Bind<IGpiA>(gpia)), NSubstitute.Arg.Any<object>());
+            entry.AssignBinder(NSubstitute.Arg.Do<IBinder>(binder => binder.Bind<IGpiA>(gpia)));
 
             ISerializable serializer = new Regulus.Remote.DynamicSerializer();
             IProtocol protocol = ProtocolHelper.CreateProtocol();
             var internalSer = new Regulus.Remote.InternalSerializer();
-            Soul.IService service = new Regulus.Remote.Soul.Service(entry, protocol, serializer , internalSer);
-            IAgent agent = new Regulus.Remote.Ghost.Agent(protocol, serializer, internalSer) as Ghost.IAgent;
+            Soul.IService service = new Regulus.Remote.Soul.Service(entry, protocol, serializer , listenable, internalSer);
+            IAgent agent = new Regulus.Remote.Ghost.Agent(clientStream,protocol, serializer, internalSer) as Ghost.IAgent;
             IGpiA ghostGpia = null;
 
 
-            service.Join(serverStream);
-            agent.Start(clientStream);
+            listenable.StreamableEnterEvent += NSubstitute.Raise.Event<System.Action<IStreamable>>(serverStream);            
+            
             agent.QueryNotifier<IGpiA>().Supply += gpi => ghostGpia = gpi;
 
             while (ghostGpia == null)
@@ -35,8 +36,8 @@ namespace Regulus.Remote.Standalone.Test
                 agent.Update();
             }
 
-            agent.Stop();
-            service.Leave(serverStream);
+            agent.Dispose();
+            listenable.StreamableLeaveEvent += NSubstitute.Raise.Event<System.Action<IStreamable>>(serverStream);
 
             IDisposable disposable = service;
             disposable.Dispose();

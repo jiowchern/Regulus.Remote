@@ -1,7 +1,7 @@
 ﻿using Regulus.Remote;
 using System;
 
-namespace Regulus.Application.Client.Test
+namespace Regulus.Integration.Tests
 {
     public class CType : IType, IGhost
     {
@@ -9,7 +9,7 @@ namespace Regulus.Application.Client.Test
 
         public CType(long id)
         {
-            this.Id = id;
+            Id = id;
         }
         event CallMethodCallback IGhost.CallMethodEvent
         {
@@ -50,7 +50,7 @@ namespace Regulus.Application.Client.Test
             }
         }
 
-        
+
 
         long IGhost.GetID()
         {
@@ -78,6 +78,6 @@ namespace Regulus.Application.Client.Test
             throw new NotImplementedException();
         }
 
-        
+
     }
 }

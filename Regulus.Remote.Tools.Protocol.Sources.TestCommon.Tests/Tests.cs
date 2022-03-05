@@ -9,7 +9,6 @@ using Regulus.Remote.Tools.Protocol.Sources.TestCommon.MultipleNotices;
 
 namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 {
-    
     public class Tests
     {
         [SetUp]
@@ -40,10 +39,15 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 
             NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(bool)));
             NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(string)));
+            NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(decimal)));
+            NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(float)));
+            NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(double)));
+            NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(System.Guid)));
             NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(Regulus.Remote.Tools.Protocol.Sources.TestCommon.TestC)));
             NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(Regulus.Remote.Tools.Protocol.Sources.TestCommon.TestS)));
+            
 
-            NUnit.Framework.Assert.AreEqual(5, protocol.SerializeTypes.Length);
+            NUnit.Framework.Assert.AreEqual(9, protocol.SerializeTypes.Length);
             
 
         }
@@ -183,7 +187,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 
             NUnit.Framework.Assert.AreEqual(0, count1);
             NUnit.Framework.Assert.AreEqual(0, count2);
-            System.Console.WriteLine("wait NotifierSupplyTest removeNums.Count ...");
+            
             
             System.Threading.SpinWait.SpinUntil(() => removeNums.Count == 3, 5000);
             NUnit.Framework.Assert.AreEqual(1, removeNums[0]);

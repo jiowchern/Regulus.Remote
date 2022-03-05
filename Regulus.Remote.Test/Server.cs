@@ -8,7 +8,7 @@ namespace RemotingTest
     {
         private IBinder _Binder;
 
-        void IBinderProvider.AssignBinder(IBinder binder,object state)
+        void IBinderProvider.AssignBinder(IBinder binder)
         {
             binder.Return<ITestReturn>(this);
             _Binder = binder;

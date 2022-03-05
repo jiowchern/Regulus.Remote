@@ -69,7 +69,7 @@ namespace Regulus.Remote.Soul
 
 
         private readonly object _EnableLock;
-        private readonly ISerializable _Serialize;
+        
 
         public static bool IsIdle
         {
@@ -90,14 +90,14 @@ namespace Regulus.Remote.Soul
             get { return _SoulProvider; }
         }
 
-        public readonly object State;
+        
 
-        public User(IStreamable client, IProtocol protocol , ISerializable serializable, IInternalSerializable internal_serializable, object state)
+        public User(IStreamable client, IProtocol protocol , ISerializable serializable, IInternalSerializable internal_serializable)
         {
-            State = state;
+        
             Stream = client;
             _InternalSerializer = internal_serializable;
-            _Serialize = serializable;
+            
 
             _EnableLock = new object();
 

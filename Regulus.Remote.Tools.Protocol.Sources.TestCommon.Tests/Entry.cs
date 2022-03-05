@@ -9,7 +9,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
         {
             _Entry = entry;
         }
-        void IBinderProvider.AssignBinder(IBinder binder, object state)
+        void IBinderProvider.AssignBinder(IBinder binder)
         {
             binder.Bind(_Entry);
         }
