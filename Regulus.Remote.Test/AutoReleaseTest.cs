@@ -8,7 +8,7 @@ namespace RemotingTest
 
     public class AutoReleaseTest
     {
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void Test()
         {
 

@@ -1,10 +1,10 @@
-﻿using Xunit;
+﻿using NUnit.Framework;
 
 namespace Regulus.Remote.Tests
 {
     public class LandlordTest
     {
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void LongTest()
         {
             Landlord<long> landlord = new Landlord<long>(new LongProvider());
@@ -12,9 +12,9 @@ namespace Regulus.Remote.Tests
             long l2 = landlord.Rent();
             landlord.Return(l2);
             long l3 = landlord.Rent();
-            Assert.Equal(1, l1);
-            Assert.Equal(2, l2);
-            Assert.Equal(2, l3);
+            Assert.AreEqual(1, l1);
+            Assert.AreEqual(2, l2);
+            Assert.AreEqual(2, l3);
         }
     }
 }

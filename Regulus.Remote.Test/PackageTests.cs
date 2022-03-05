@@ -2,7 +2,7 @@
 {
     public class PackageTests
     {
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void WriterRestart()
         {
             var serializer = NSubstitute.Substitute.For<Regulus.Remote.IInternalSerializable>();

@@ -1,4 +1,4 @@
-﻿using Xunit;
+﻿using NUnit.Framework;
 using Regulus.Utility;
 using System;
 using System.Net;
@@ -8,8 +8,8 @@ namespace Regulus.Network.Tests
 {
     public class ConnectTest
     {
-        [Xunit.Fact(Timeout =5000)]
-        
+        [NUnit.Framework.Test(), NUnit.Framework.Timeout(5000)]
+
         public void TestFullFlow()
         {
             SocketMessageFactory spawner = SocketMessageFactory.Instance;
@@ -60,7 +60,7 @@ namespace Regulus.Network.Tests
             updater.Working(new Timestamp(ticks++, 1));
 
             Assert.NotNull(rudpSocket);
-            Assert.Equal(PeerStatus.Transmission, clientPeer.Status);
+            Assert.AreEqual(PeerStatus.Transmission, clientPeer.Status);
 
 
             byte[] sendBuffer = new byte[] { 1, 2, 3, 4, 5 };
@@ -82,7 +82,7 @@ namespace Regulus.Network.Tests
                 updater.Working(new Timestamp(ticks++, 1));
             }
 
-            Assert.Equal(sendBuffer.Length, readCount);
+            Assert.AreEqual(sendBuffer.Length, readCount);
 
             clientPeer.Disconnect();
 
@@ -93,7 +93,7 @@ namespace Regulus.Network.Tests
             updater.Working(new Timestamp(ticks++, 1));
             updater.Working(new Timestamp(ticks++, 1));
 
-            Assert.Equal(PeerStatus.Close, rudpSocket.Status);
+            Assert.AreEqual(PeerStatus.Close, rudpSocket.Status);
 
 
 

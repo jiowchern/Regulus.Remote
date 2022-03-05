@@ -1,4 +1,4 @@
-﻿using Xunit;
+﻿using NUnit.Framework;
 using System;
 using System.Linq;
 
@@ -11,25 +11,25 @@ namespace Regulus.Serialization.Tests
     {
 
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void TypeIdentifier1Test()
         {
 
 
             TypeIdentifier ti = new TypeIdentifier(typeof(TestDelegate), null);
 
-            Assert.Equal(0, ti.Describers.Count());
+            Assert.AreEqual(0, ti.Describers.Count());
         }
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void TypeIdentifier2Test()
         {
             Type type = Type.GetType("System.Void*");
             TypeIdentifier ti = new TypeIdentifier(type, null);
 
-            Assert.Equal(0, ti.Describers.Count());
+            Assert.AreEqual(0, ti.Describers.Count());
 
         }
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void NegativeIntNumberTest()
         {
             DescribersFinder finder = new DescribersFinder(typeof(int), typeof(uint));
@@ -38,10 +38,10 @@ namespace Regulus.Serialization.Tests
             byte[] buf = ser.ObjectToBuffer((int)-1);
             int val = (int)ser.BufferToObject(buf);
 
-            Assert.Equal(-1, val);
+            Assert.AreEqual(-1, val);
         }
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void NegativeLongNumberTest()
         {
             DescribersFinder finder = new DescribersFinder(typeof(long), typeof(uint));
@@ -50,13 +50,13 @@ namespace Regulus.Serialization.Tests
             byte[] buf = ser.ObjectToBuffer((long)-1);
             long val = (long)ser.BufferToObject(buf);
 
-            Assert.Equal(-1, val);
+            Assert.AreEqual(-1, val);
         }
 
 
 
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void EncodeZigZag()
         {
             ulong e64_1 = ZigZag.Encode((long)1);
@@ -66,16 +66,16 @@ namespace Regulus.Serialization.Tests
             uint e32_2 = ZigZag.Encode(-1);
 
 
-            Xunit.Assert.Equal((uint)2, e32_1);
-            Xunit.Assert.Equal((uint)1, e32_2);
+            NUnit.Framework.Assert.AreEqual((uint)2, e32_1);
+            NUnit.Framework.Assert.AreEqual((uint)1, e32_2);
 
-            Xunit.Assert.Equal((ulong)2, e64_1);
-            Xunit.Assert.Equal((ulong)1, e64_2);
+            NUnit.Framework.Assert.AreEqual((ulong)2, e64_1);
+            NUnit.Framework.Assert.AreEqual((ulong)1, e64_2);
 
 
         }
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void DecodeZigZag()
         {
             long e64_1 = ZigZag.Decode((ulong)2);
@@ -85,25 +85,25 @@ namespace Regulus.Serialization.Tests
             int e32_2 = ZigZag.Decode(1);
 
 
-            Xunit.Assert.Equal(1, e32_1);
-            Xunit.Assert.Equal(-1, e32_2);
+            NUnit.Framework.Assert.AreEqual(1, e32_1);
+            NUnit.Framework.Assert.AreEqual(-1, e32_2);
 
-            Xunit.Assert.Equal(1, e64_1);
-            Xunit.Assert.Equal(-1, e64_2);
+            NUnit.Framework.Assert.AreEqual(1, e64_1);
+            NUnit.Framework.Assert.AreEqual(-1, e64_2);
 
 
         }
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void ZigZagTest()
         {
             ulong value = ZigZag.Encode(874534L);
             long result = ZigZag.Decode(value);
-            Xunit.Assert.Equal(874534L, result);
+            NUnit.Framework.Assert.AreEqual(874534L, result);
         }
 
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void VarintToBufferTest()
         {
 
@@ -112,14 +112,14 @@ namespace Regulus.Serialization.Tests
             int index = Varint.NumberToBuffer(buffer, 0, 150);
 
 
-            Xunit.Assert.Equal(0x96, buffer[0]);
-            Xunit.Assert.Equal(0x1, buffer[1]);
-            Xunit.Assert.Equal(2, index);
+            NUnit.Framework.Assert.AreEqual(0x96, buffer[0]);
+            NUnit.Framework.Assert.AreEqual(0x1, buffer[1]);
+            NUnit.Framework.Assert.AreEqual(2, index);
 
         }
 
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void VarintToNumberTest()
         {
             ulong number;
@@ -131,12 +131,12 @@ namespace Regulus.Serialization.Tests
                 },
                 0,
                 out number);
-            Xunit.Assert.Equal(150UL, number);
-            Xunit.Assert.Equal(2, index);
+            NUnit.Framework.Assert.AreEqual(150UL, number);
+            NUnit.Framework.Assert.AreEqual(2, index);
         }
 
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void VarintTest()
         {
             int count = Varint.GetByteCount(12671L);
@@ -146,10 +146,10 @@ namespace Regulus.Serialization.Tests
             ulong value;
             Varint.BufferToNumber(buffer, 0, out value);
 
-            Xunit.Assert.Equal(12671UL, value);
+            NUnit.Framework.Assert.AreEqual(12671UL, value);
         }
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void UlongTest()
         {
 
@@ -165,11 +165,11 @@ namespace Regulus.Serialization.Tests
 
             object value = ser.BufferToObject(buffer);
 
-            Xunit.Assert.Equal(1UL, value);
+            NUnit.Framework.Assert.AreEqual(1UL, value);
         }
 
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void ClassTest()
         {
             DescribersFinder finder = new DescribersFinder(typeof(int), typeof(TestClassB));
@@ -181,12 +181,12 @@ namespace Regulus.Serialization.Tests
             byte[] buffer = ser.ObjectToBuffer(testb);
             TestClassB value = ser.BufferToObject(buffer) as TestClassB;
 
-            Xunit.Assert.Equal(testb.Data, value.Data);
+            NUnit.Framework.Assert.AreEqual(testb.Data, value.Data);
         }
 
        
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void ClassArrayTest()
         {
 
@@ -213,15 +213,15 @@ namespace Regulus.Serialization.Tests
             byte[] buffer = ser.ObjectToBuffer(testbs);
             TestClassB[] value = ser.BufferToObject(buffer) as TestClassB[];
 
-            Xunit.Assert.Equal(null, value[0]);
-            Xunit.Assert.Equal(1, value[1].Data);
-            Xunit.Assert.Equal(null, value[2]);
-            Xunit.Assert.Equal(3, value[3].Data);
-            Xunit.Assert.Equal(null, value[4]);
+            NUnit.Framework.Assert.AreEqual(null, value[0]);
+            NUnit.Framework.Assert.AreEqual(1, value[1].Data);
+            NUnit.Framework.Assert.AreEqual(null, value[2]);
+            NUnit.Framework.Assert.AreEqual(3, value[3].Data);
+            NUnit.Framework.Assert.AreEqual(null, value[4]);
         }
 
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void NumberTest()
         {
 
@@ -246,15 +246,15 @@ namespace Regulus.Serialization.Tests
             byte[] enumBuffer = ser.ObjectToBuffer(TEST1.C);
             TEST1 enumValue = (TEST1)ser.BufferToObject(enumBuffer);
 
-            Xunit.Assert.Equal((byte)128, byteValue);
-            Xunit.Assert.Equal((short)16387, shortValue);
-            Xunit.Assert.Equal((int)65535, intValue);
-            Xunit.Assert.Equal((long)65535000, longValue);
-            Xunit.Assert.Equal(TEST1.C, enumValue);
+            NUnit.Framework.Assert.AreEqual((byte)128, byteValue);
+            NUnit.Framework.Assert.AreEqual((short)16387, shortValue);
+            NUnit.Framework.Assert.AreEqual((int)65535, intValue);
+            NUnit.Framework.Assert.AreEqual((long)65535000, longValue);
+            NUnit.Framework.Assert.AreEqual(TEST1.C, enumValue);
         }
 
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void IntArrayTest4()
         {
 
@@ -280,11 +280,11 @@ namespace Regulus.Serialization.Tests
             int[] value = (int[])ser.BufferToObject(buffer);
 
 
-            Xunit.Assert.Equal(46, value[1]);
-            Xunit.Assert.Equal(323, value[7]);
+            NUnit.Framework.Assert.AreEqual(46, value[1]);
+            NUnit.Framework.Assert.AreEqual(323, value[7]);
         }
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void NumberFloatTest()
         {
 
@@ -310,12 +310,12 @@ namespace Regulus.Serialization.Tests
             float[] value = (float[])ser.BufferToObject(buffer);
 
 
-            Xunit.Assert.Equal(46f, value[1]);
-            Xunit.Assert.Equal(323f, value[7]);
+            NUnit.Framework.Assert.AreEqual(46f, value[1]);
+            NUnit.Framework.Assert.AreEqual(323f, value[7]);
         }
 
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void StructFloatTest()
         {
             DescribersFinder finder = new DescribersFinder(typeof(float));
@@ -326,11 +326,11 @@ namespace Regulus.Serialization.Tests
             byte[] buffer = ser.ObjectToBuffer(123.43f);
             float value = (float)ser.BufferToObject(buffer);
 
-            Xunit.Assert.Equal(123.43f, value);
+            NUnit.Framework.Assert.AreEqual(123.43f, value);
         }
 
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void ByteArrayStructTest()
         {
             DescribersFinder finder = new DescribersFinder(typeof(byte[]));
@@ -342,14 +342,14 @@ namespace Regulus.Serialization.Tests
             byte[] buffer = ser.ObjectToBuffer(new byte[] { 1, 2, 3, 4, 5, 6 });
             byte[] value = (byte[])ser.BufferToObject(buffer);
 
-            Xunit.Assert.Equal(1, value[0]);
-            Xunit.Assert.Equal(2, value[1]);
-            Xunit.Assert.Equal(3, value[2]);
-            Xunit.Assert.Equal(4, value[3]);
+            NUnit.Framework.Assert.AreEqual(1, value[0]);
+            NUnit.Framework.Assert.AreEqual(2, value[1]);
+            NUnit.Framework.Assert.AreEqual(3, value[2]);
+            NUnit.Framework.Assert.AreEqual(4, value[3]);
 
         }
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void CharArrayStructTest()
         {
             DescribersFinder finder = new DescribersFinder(typeof(char[]));
@@ -360,16 +360,16 @@ namespace Regulus.Serialization.Tests
             byte[] buffer = ser.ObjectToBuffer(new char[] { '1', '2', 'a', 'b', 'c', 't' });
             char[] value = (char[])ser.BufferToObject(buffer);
 
-            Xunit.Assert.Equal('1', value[0]);
-            Xunit.Assert.Equal('2', value[1]);
-            Xunit.Assert.Equal('a', value[2]);
-            Xunit.Assert.Equal('b', value[3]);
-            Xunit.Assert.Equal('c', value[4]);
-            Xunit.Assert.Equal('t', value[5]);
+            NUnit.Framework.Assert.AreEqual('1', value[0]);
+            NUnit.Framework.Assert.AreEqual('2', value[1]);
+            NUnit.Framework.Assert.AreEqual('a', value[2]);
+            NUnit.Framework.Assert.AreEqual('b', value[3]);
+            NUnit.Framework.Assert.AreEqual('c', value[4]);
+            NUnit.Framework.Assert.AreEqual('t', value[5]);
 
         }
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void StringCharArrayStructTest()
         {
 
@@ -381,10 +381,10 @@ namespace Regulus.Serialization.Tests
             byte[] buffer = ser.ObjectToBuffer(str.ToCharArray());
             char[] value = (char[])ser.BufferToObject(buffer);
 
-            Xunit.Assert.Equal('a', value[0]);
-            Xunit.Assert.Equal('s', value[1]);
-            Xunit.Assert.Equal('d', value[2]);
-            Xunit.Assert.Equal('f', value[3]);
+            NUnit.Framework.Assert.AreEqual('a', value[0]);
+            NUnit.Framework.Assert.AreEqual('s', value[1]);
+            NUnit.Framework.Assert.AreEqual('d', value[2]);
+            NUnit.Framework.Assert.AreEqual('f', value[3]);
 
         }
 
@@ -392,7 +392,7 @@ namespace Regulus.Serialization.Tests
 
 
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void GuidTest()
         {
             DescribersFinder finder = new DescribersFinder(typeof(Guid), typeof(Guid[]));
@@ -404,11 +404,11 @@ namespace Regulus.Serialization.Tests
             byte[] buffer = ser.ObjectToBuffer(id);
             Guid value = (Guid)ser.BufferToObject(buffer);
 
-            Xunit.Assert.Equal(id, value);
+            NUnit.Framework.Assert.AreEqual(id, value);
         }
 
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void ClassArrayHaveNullTest()
         {
 
@@ -431,13 +431,14 @@ namespace Regulus.Serialization.Tests
             TestClassC[] value = ser.BufferToObject(buffer) as TestClassC[];
 
 
-            Xunit.Assert.Equal(cs[0], value[0]);
-            Xunit.Assert.NotEqual(null, value[1]);
-            Xunit.Assert.Equal(cs[2], value[2]);
+            NUnit.Framework.Assert.AreEqual(cs[0], value[0]);
+            
+            NUnit.Framework.Assert.AreNotEqual(null, value[1]);
+            NUnit.Framework.Assert.AreEqual(cs[2], value[2]);
         }
 
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void ClassNullTest()
         {
             DescribersFinder finder = new DescribersFinder(typeof(TestClassC), typeof(TestClassC[]));
@@ -449,12 +450,12 @@ namespace Regulus.Serialization.Tests
             TestClassC[] value = ser.BufferToObject(buffer) as TestClassC[];
 
 
-            Xunit.Assert.Equal(null, value);
+            NUnit.Framework.Assert.AreEqual(null, value);
 
         }
 
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void ByteArray1Test()
         {
 
@@ -484,14 +485,14 @@ namespace Regulus.Serialization.Tests
             byte[] buffer = ser.ObjectToBuffer(bytes);
             byte[] result = ser.BufferToObject(buffer) as byte[];
 
-            Xunit.Assert.Equal(bytes[3], result[3]);
-            Xunit.Assert.Equal(bytes[1], result[1]);
-            Xunit.Assert.Equal(bytes[8], result[8]);
-            Xunit.Assert.Equal(bytes[9], result[9]);
+            NUnit.Framework.Assert.AreEqual(bytes[3], result[3]);
+            NUnit.Framework.Assert.AreEqual(bytes[1], result[1]);
+            NUnit.Framework.Assert.AreEqual(bytes[8], result[8]);
+            NUnit.Framework.Assert.AreEqual(bytes[9], result[9]);
         }
 
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void ByteArray2Test()
         {
             byte[] bytes = new byte[]
@@ -521,13 +522,13 @@ namespace Regulus.Serialization.Tests
             byte[] buffer = ser.ObjectToBuffer(bytes);
             byte[] result = ser.BufferToObject(buffer) as byte[];
 
-            Xunit.Assert.Equal(bytes[3], result[3]);
-            Xunit.Assert.Equal(bytes[1], result[1]);
-            Xunit.Assert.Equal(bytes[8], result[8]);
-            Xunit.Assert.Equal(bytes[9], result[9]);
+            NUnit.Framework.Assert.AreEqual(bytes[3], result[3]);
+            NUnit.Framework.Assert.AreEqual(bytes[1], result[1]);
+            NUnit.Framework.Assert.AreEqual(bytes[8], result[8]);
+            NUnit.Framework.Assert.AreEqual(bytes[9], result[9]);
         }
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void StringTest()
         {
 
@@ -543,11 +544,11 @@ namespace Regulus.Serialization.Tests
             byte[] buffer = ser.ObjectToBuffer(str);
             string value = ser.BufferToObject(buffer) as string;
 
-            Xunit.Assert.Equal(str, value);
+            NUnit.Framework.Assert.AreEqual(str, value);
         }
 
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void CharArrayTest()
         {
 
@@ -562,12 +563,12 @@ namespace Regulus.Serialization.Tests
             byte[] buffer = ser.ObjectToBuffer(str);
             char[] value = ser.BufferToObject(buffer) as char[];
 
-            Xunit.Assert.Equal(str[0], value[0]);
-            Xunit.Assert.Equal(str[1], value[1]);
+            NUnit.Framework.Assert.AreEqual(str[0], value[0]);
+            NUnit.Framework.Assert.AreEqual(str[1], value[1]);
         }
 
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void TestSerializerVector2()
         {
 
@@ -577,12 +578,12 @@ namespace Regulus.Serialization.Tests
             byte[] array = ser.ObjectToBuffer(v);
             Utility.Vector2 v2 = (Regulus.Utility.Vector2)ser.BufferToObject(array);
 
-            Xunit.Assert.Equal(99, v2.X);
-            Xunit.Assert.Equal(22, v2.Y);
+            NUnit.Framework.Assert.AreEqual(99, v2.X);
+            NUnit.Framework.Assert.AreEqual(22, v2.Y);
         }
 
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void TestSerializer1()
         {
             Type[] types = new[] { typeof(int), typeof(int[]), typeof(float), typeof(string), typeof(char), typeof(char[]) };
@@ -594,10 +595,10 @@ namespace Regulus.Serialization.Tests
             object intZero = ser.BufferToObject(intZeroBuffer);
 
 
-            Assert.Equal("123", intZero);
+            Assert.AreEqual("123", intZero);
         }
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void TestSerializerResponsePackage()
         {
             Type[] types = new[] { typeof(Regulus.Remote.ResponsePackage), typeof(Remote.ServerToClientOpCode), typeof(byte), typeof(byte[]) };
@@ -611,7 +612,7 @@ namespace Regulus.Serialization.Tests
             Remote.ResponsePackage dPkg = ser.BufferToObject(buffer) as Remote.ResponsePackage;
 
 
-            Assert.Equal(Remote.ServerToClientOpCode.SetProperty, dPkg.Code);
+            Assert.AreEqual(Remote.ServerToClientOpCode.SetProperty, dPkg.Code);
         }
 
         

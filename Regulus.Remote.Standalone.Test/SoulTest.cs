@@ -1,4 +1,4 @@
-﻿using Xunit;
+﻿using NUnit.Framework;
 using Regulus.Network;
 using Regulus.Remote.Ghost;
 using System;
@@ -7,7 +7,7 @@ namespace Regulus.Remote.Standalone.Test
 {
     public class SoulTest
     {
-        [Xunit.Fact]        
+        [NUnit.Framework.Test]        
         public void ServiceTest()
         {
             Stream serverPeerStream = new Regulus.Remote.Standalone.Stream();

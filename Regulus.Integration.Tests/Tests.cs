@@ -1,4 +1,4 @@
-using Xunit;
+using NUnit.Framework;
 using Regulus.Remote;
 using System.Linq;
 
@@ -8,7 +8,7 @@ namespace Regulus.Integration.Tests
     {
 
 
-        [Fact]
+        [Test]
         public void InterfaceProviderTyepsTest()
         {
             System.Collections.Generic.Dictionary<System.Type, System.Type> types = new System.Collections.Generic.Dictionary<System.Type, System.Type>();
@@ -17,13 +17,13 @@ namespace Regulus.Integration.Tests
 
             System.Type type = ip.Types.First();
 
-            Assert.Equal(type, typeof(IType));
+            Assert.AreEqual(type, typeof(IType));
 
 
         }
 
 
-        [Fact]
+        [Test]
         public void AgentEventRectifierSupplyTest()
         {
             System.Collections.Generic.Dictionary<System.Type, System.Type> types = new System.Collections.Generic.Dictionary<System.Type, System.Type>();
@@ -46,11 +46,11 @@ namespace Regulus.Integration.Tests
                 agent.Add(typeof(IType), cType);
 
             }
-            Assert.Equal(outSupplyInstance, cType);
+            Assert.AreEqual(outSupplyInstance, cType);
 
         }
 
-        [Fact]
+        [Test]
         public void AgentEventRectifierUnsupplyTest()
         {
             System.Collections.Generic.Dictionary<System.Type, System.Type> types = new System.Collections.Generic.Dictionary<System.Type, System.Type>();
@@ -77,11 +77,11 @@ namespace Regulus.Integration.Tests
                 agent.Remove(typeof(IType), cType);
 
             }
-            Assert.Equal(outInstance, cType);
-            Assert.Equal(typeof(IType), outType);
+            Assert.AreEqual(outInstance, cType);
+            Assert.AreEqual(typeof(IType), outType);
 
         }
-        [Fact]
+        [Test]
         public void MethodStringInvokerTest1()
         {
             CType test = new CType(1);
@@ -89,22 +89,22 @@ namespace Regulus.Integration.Tests
             Remote.Client.MethodStringInvoker invoker = new Remote.Client.MethodStringInvoker(test, method, new Remote.Client.TypeConverterSet());
             invoker.Invoke("1", "2", "3");
 
-            Assert.Equal(true, test.TestMethod1Invoked);
+            Assert.AreEqual(true, test.TestMethod1Invoked);
 
 
         }
 
-        [Fact]
+        [Test]
         public void AgentCommandTest1()
         {
             CType test = new CType(1);
             System.Reflection.MethodInfo method = typeof(IType).GetMethod(nameof(IType.TestMethod1));
             Remote.Client.MethodStringInvoker invoker = new Remote.Client.MethodStringInvoker(test, method, new Remote.Client.TypeConverterSet());
             Remote.Client.AgentCommand agentCommand = new Remote.Client.AgentCommand(new Remote.Client.AgentCommandVersionProvider(), typeof(IType), invoker);
-            Assert.Equal("IType-0.TestMethod1 [a1,a2,a3]", agentCommand.Name);
+            Assert.AreEqual("IType-0.TestMethod1 [a1,a2,a3]", agentCommand.Name);
 
         }
-        [Fact]
+        [Test]
         public void AgentCommandRegisterTest1()
         {
 
@@ -126,8 +126,8 @@ namespace Regulus.Integration.Tests
             agentCommandRegister.Regist(typeof(IType), test);
             agentCommandRegister.Unregist(test);
 
-            Assert.Equal(2, regCount);
-            Assert.Equal(2, unregCount);
+            Assert.AreEqual(2, regCount);
+            Assert.AreEqual(2, unregCount);
         }
 
     }

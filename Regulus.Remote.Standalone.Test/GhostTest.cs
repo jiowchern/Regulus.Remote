@@ -1,5 +1,5 @@
 using NSubstitute;
-using Xunit;
+using NUnit.Framework;
 using System.Linq;
 using Regulus.Network;
 using Regulus.Serialization;
@@ -41,7 +41,7 @@ namespace Regulus.Remote.Standalone.Test
     }
     public class GhostTest
     {
-        //[Fact()]    
+        //[Test()]    
         public void  CommunicationDevicePushTestMutli()
         {
             var tasks = from _ in System.Linq.Enumerable.Range(0, 10000000)
@@ -53,7 +53,7 @@ namespace Regulus.Remote.Standalone.Test
             
 
         }
-        [Fact(/*Timeout = 5000*/)]
+        [Test(/*Timeout = 5000*/)]
         public async System.Threading.Tasks.Task CommunicationDevicePushTest()
         {
             byte[] sendBuf = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
@@ -68,13 +68,13 @@ namespace Regulus.Remote.Standalone.Test
             int receiveCount2 = await peer.Receive(recvBuf, 4, 5);
             int receiveCount3 = await peer.Receive(recvBuf, 9, 2);
 
-            Assert.Equal(4, receiveCount1);
-            Assert.Equal(5, receiveCount2);
-            Assert.Equal(1, receiveCount3);
+            Assert.AreEqual(4, receiveCount1);
+            Assert.AreEqual(5, receiveCount2);
+            Assert.AreEqual(1, receiveCount3);
         }
 
-        [Fact(Timeout =5000)]        
-        public async void CommunicationDevicePopTest()
+        [Test(),Timeout(5000)]        
+        public async System.Threading.Tasks.Task CommunicationDevicePopTest()
         {
             byte[] sendBuf = new byte[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             byte[] recvBuf = new byte[10];
@@ -100,21 +100,21 @@ namespace Regulus.Remote.Standalone.Test
 
 
 
-            Assert.Equal(10, stream3 + stream2 + stream1);
-            Assert.Equal((byte)0, recvBuf[0]);
-            Assert.Equal((byte)1, recvBuf[1]);
-            Assert.Equal((byte)2, recvBuf[2]);
-            Assert.Equal((byte)3, recvBuf[3]);
-            Assert.Equal((byte)4, recvBuf[4]);
-            Assert.Equal((byte)5, recvBuf[5]);
-            Assert.Equal((byte)6, recvBuf[6]);
-            Assert.Equal((byte)7, recvBuf[7]);
-            Assert.Equal((byte)8, recvBuf[8]);
-            Assert.Equal((byte)9, recvBuf[9]);
+            Assert.AreEqual(10, stream3 + stream2 + stream1);
+            Assert.AreEqual((byte)0, recvBuf[0]);
+            Assert.AreEqual((byte)1, recvBuf[1]);
+            Assert.AreEqual((byte)2, recvBuf[2]);
+            Assert.AreEqual((byte)3, recvBuf[3]);
+            Assert.AreEqual((byte)4, recvBuf[4]);
+            Assert.AreEqual((byte)5, recvBuf[5]);
+            Assert.AreEqual((byte)6, recvBuf[6]);
+            Assert.AreEqual((byte)7, recvBuf[7]);
+            Assert.AreEqual((byte)8, recvBuf[8]);
+            Assert.AreEqual((byte)9, recvBuf[9]);
 
         }
-        [Fact(Timeout =5000)]        
-        public async void CommunicationDeviceSerializerTest()
+        [Test(), Timeout(5000)]
+        public async System.Threading.Tasks.Task CommunicationDeviceSerializerTest()
         {
             var serializer = new Regulus.Remote.DynamicSerializer();
             IInternalSerializable internalSerializable = new InternalSerializer();
@@ -127,15 +127,15 @@ namespace Regulus.Remote.Standalone.Test
             await peer.Receive(recvBuf, 0, recvBuf.Length);
             ResponsePackage responsePkg = internalSerializable.Deserialize(recvBuf) as ResponsePackage;
             PackageLoadSoul lordsoulPkg = internalSerializable.Deserialize(responsePkg.Data) as PackageLoadSoul;
-            Assert.Equal(ServerToClientOpCode.LoadSoul, responsePkg.Code);
-            Assert.Equal(1, lordsoulPkg.EntityId);
+            Assert.AreEqual(ServerToClientOpCode.LoadSoul, responsePkg.Code);
+            Assert.AreEqual(1, lordsoulPkg.EntityId);
             Assert.False(lordsoulPkg.ReturnType);
-            Assert.Equal(1, lordsoulPkg.TypeId);
+            Assert.AreEqual(1, lordsoulPkg.TypeId);
         }
 
-        [Fact(Timeout  = 5000)]
-        
-        public  async void CommunicationDeviceSerializerBatchTest()
+        [NUnit.Framework.Test(), NUnit.Framework.Timeout(5000)]
+
+        public async System.Threading.Tasks.Task CommunicationDeviceSerializerBatchTest()
         {
             var serializer = new Regulus.Remote.DynamicSerializer();
             IInternalSerializable internalSerializable = new InternalSerializer();
@@ -152,12 +152,12 @@ namespace Regulus.Remote.Standalone.Test
             await peer.Receive(recvBuf, 1, recvBuf.Length - 1);
             ResponsePackage responsePkg = internalSerializable.Deserialize(recvBuf) as ResponsePackage;
             PackageLoadSoul lordsoulPkg = internalSerializable.Deserialize(responsePkg.Data) as PackageLoadSoul;
-            Assert.Equal(ServerToClientOpCode.LoadSoul, responsePkg.Code);
-            Assert.Equal(1, lordsoulPkg.EntityId);
+            Assert.AreEqual(ServerToClientOpCode.LoadSoul, responsePkg.Code);
+            Assert.AreEqual(1, lordsoulPkg.EntityId);
             Assert.False(lordsoulPkg.ReturnType);
-            Assert.Equal(1, lordsoulPkg.TypeId);
+            Assert.AreEqual(1, lordsoulPkg.TypeId);
         }
-        [Fact(Timeout =10000)]        
+        [Test(), Timeout(5000)]
         public void AgentSupplyGpiTest()
         {
             IGpiA retGpiA = null;

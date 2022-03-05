@@ -41,21 +41,21 @@ namespace Regulus.Utility.Client.JIT.Tests
 
     public class AgentProivderTests
     {
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void CreateProtocol()
         {
             System.Type type = typeof(TestProtocol);
 
             IProtocol protocol = Regulus.Remote.Protocol.ProtocolProvider.Create(type.Assembly).FirstOrDefault();
-            Xunit.Assert.NotEqual(protocol, null);
+            NUnit.Framework.Assert.AreNotEqual(protocol, null);
         }
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void FindProtocols()
         {
 
             System.Type[] protocols = Regulus.Remote.Protocol.ProtocolProvider.GetProtocols().ToArray();
-            Xunit.Assert.Equal(typeof(TestProtocol), protocols[0]);
+            NUnit.Framework.Assert.AreEqual(typeof(TestProtocol), protocols[0]);
         }
 
       

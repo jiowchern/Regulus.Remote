@@ -1,5 +1,5 @@
 ﻿using Regulus.Remote;
-using Xunit;
+using NUnit.Framework;
 using System.Linq;
 using System.Reactive.Linq;
 using Regulus.Remote.Reactive;
@@ -8,7 +8,7 @@ namespace Regulus.Integration.Tests
 {
     public class ConnectTests
     {
-        [Fact]
+        [Test]
         public void TcpLocalConnectTest()
         {
             // bind interface
@@ -60,9 +60,9 @@ namespace Regulus.Integration.Tests
             server.Service.Dispose();
 
             // test
-            Assert.Equal(1, values.v1);
-            Assert.Equal(2, values.v2);
-            Assert.Equal(0, values.v0);
+            Assert.AreEqual(1, values.v1);
+            Assert.AreEqual(2, values.v2);
+            Assert.AreEqual(0, values.v0);
         }
     }
 }
