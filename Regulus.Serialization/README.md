@@ -1,7 +1,7 @@
 ﻿# Regulus Serialization
 
 ## Introduction
-This is a simple ordinalization tool that supports types ```short, ushort, int, uint, bool, logn, ulong, float, decimal, double, char, byte, enum, string, System.Guid``` and its array types.
+This is a simple serialization tool that supports types ```short, ushort, int, uint, bool, logn, ulong, float, decimal, double, char, byte, enum, string, System.Guid``` and its array types.
 
 
 ## Use
