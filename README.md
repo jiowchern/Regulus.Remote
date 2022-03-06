@@ -221,7 +221,7 @@ This step is to generate the generator for the ``IProtocol``, which is an import
 **_Attention_**  
 As shown in the code above, Add ```Regulus.Remote.Protocol``` attribute to the method you want to get ```IProtocol```, the method specification must be ```static partial void Method(ref Regulus.Remote.IProtocol)```, otherwise it will not pass compilation.
 
-
+---
 	
 #### Server Project
 Create the server. **Serrver.csproj**
@@ -284,6 +284,7 @@ namespace Server
 	}
 }
 ```
+---
 #### Client Project
 Create Client. **Client.csproj**.  
 ```powershell
@@ -409,7 +410,7 @@ namespace Standalone
 ## Custom Connections
 If you want to customize the connection system you can do so in the following way.
 #### Client
-Create a connection from ```CreateTcpAgent``` to ```CreateAgent``` and implement the interface ```IStreamable```.
+Create a connection use ```CreateAgent``` and implement the interface ```IStreamable```.
 ```csharp
 var protocol = Protocol.ProtocolCreater.Create();
 IStreamable stream = null ;// todo: Implementation Interface IStreamable
@@ -444,7 +445,7 @@ namespace Regulus.Network
 
 #### Server
 
-Create a service from ```CreateTcpService``` to ```CreateService``` and implement the interface ```IListenable```.
+Create a service use ```CreateService``` and implement the interface ```IListenable```.
 ```csharp
 var protocol = Protocol.ProtocolCreater.Create();
 var entry = new Entry();
