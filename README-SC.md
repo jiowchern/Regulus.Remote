@@ -153,7 +153,7 @@ namespace Client
 * [Notifier](document/communications-notifier.md)
 
 **序列化**  
-可以序列化的类型请参阅 [Regulus.Serialization](Regulus.Serialization/README-CN.md) 说明.
+可以序列化的类型请参阅 [Regulus.Serialization](Regulus.Serialization/README-TC.md) 说明.
 <!-- > Serialization supports the following types...  
 > ```short, ushort, int, uint, bool, logn, ulong, float, decimal, double, char, byte, enum, string``` and array of the types. -->
           

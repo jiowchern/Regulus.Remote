@@ -14,7 +14,7 @@
 It is a server-client connection framework developed using .Net Standard 2.0 and can be used in Unity game engine and other game engines that are compliant with .  
 
 [繁中](README-TC.md)
-[简中](README-CN.md)
+[简中](README-SC.md)
 ## Features
 Server and client transfer through the interface, reducing the maintenance cost of the protocol.
 <!-- 
@@ -157,7 +157,7 @@ In addition to the above example ``IGreeter.SayHello``, there are a total of fou
 * [Notifier](document/communications-notifier.md)
 
 **Serialization**  
-For the types that can be serialized, see [Regulus.Serialization](Regulus.Serialization/README-CN.md) instructions.
+For the types that can be serialized, see [Regulus.Serialization](Regulus.Serialization/README.md) instructions.
 <!-- > Serialization supports the following types...  
 > ```short, ushort, int, uint, bool, logn, ulong, float, decimal, double, char, byte, enum, string``` and array of the types. -->
           
