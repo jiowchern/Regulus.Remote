@@ -1,6 +1,7 @@
 ﻿
 using Regulus.Remote;
 using Regulus.Serialization;
+using System;
 using System.Linq;
 using System.Reflection;
 
@@ -18,6 +19,8 @@ namespace Regulus.Utility.Client.JIT.Tests
 
         Assembly IProtocol.Base => throw new System.NotImplementedException();
 
+        Type[] IProtocol.SerializeTypes => throw new NotImplementedException();
+
         EventProvider IProtocol.GetEventProvider()
         {
             throw new System.NotImplementedException();
@@ -33,29 +36,26 @@ namespace Regulus.Utility.Client.JIT.Tests
             throw new System.NotImplementedException();
         }
 
-        ISerializer IProtocol.GetSerialize()
-        {
-            throw new System.NotImplementedException();
-        }
+        
     }
 
     public class AgentProivderTests
     {
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void CreateProtocol()
         {
             System.Type type = typeof(TestProtocol);
 
             IProtocol protocol = Regulus.Remote.Protocol.ProtocolProvider.Create(type.Assembly).FirstOrDefault();
-            Xunit.Assert.NotEqual(protocol, null);
+            NUnit.Framework.Assert.AreNotEqual(protocol, null);
         }
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void FindProtocols()
         {
 
             System.Type[] protocols = Regulus.Remote.Protocol.ProtocolProvider.GetProtocols().ToArray();
-            Xunit.Assert.Equal(typeof(TestProtocol), protocols[0]);
+            NUnit.Framework.Assert.AreEqual(typeof(TestProtocol), protocols[0]);
         }
 
       

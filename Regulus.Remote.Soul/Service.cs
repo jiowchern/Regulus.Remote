@@ -8,20 +8,28 @@ namespace Regulus.Remote.Soul
     {
         private readonly IBinderProvider _Entry;
         private readonly IProtocol _Protocol;
-
+        private readonly ISerializable _Serializable;
+        private readonly IListenable _Listenable;
+        private readonly IInternalSerializable _InternalSerializable;
         readonly System.Collections.Generic.List<User> _Users;
         readonly Regulus.Utility.Updater _Updater;
 
         readonly ThreadUpdater _ThreadUpdater;
 
-        public Service(IBinderProvider entry, IProtocol protocol)
+        public Service(IBinderProvider entry, IProtocol protocol, ISerializable serializable , IListenable listenable, Regulus.Remote.IInternalSerializable internal_serializable)
         {
             
             _Users = new System.Collections.Generic.List<User>();
             this._Entry = entry;
             this._Protocol = protocol;
+            this._Serializable = serializable;
+            this._Listenable = listenable;
+            _InternalSerializable = internal_serializable;
+
+            _Listenable.StreamableEnterEvent += _Join;
+            _Listenable.StreamableLeaveEvent += _Leave;
             _Updater = new Utility.Updater();
-            _Updater.AddEvent += (user) => _Entry.AssignBinder(((User)user).Binder, ((User)user).State);
+            _Updater.AddEvent += (user) => _Entry.AssignBinder(((User)user).Binder);
             _ThreadUpdater = new ThreadUpdater(_Update);
             _ThreadUpdater.Start();
         }
@@ -31,9 +39,9 @@ namespace Regulus.Remote.Soul
             _Updater.Working();
         }
 
-        void IService.Join(Network.IStreamable stream,object state)
+        void _Join(Network.IStreamable stream)
         {
-            User user = new User(stream, _Protocol , state);
+            User user = new User(stream, _Protocol , _Serializable, _InternalSerializable);
             lock(_Users)
             {
                 _Users.Add(user);                
@@ -43,7 +51,7 @@ namespace Regulus.Remote.Soul
             
         }
 
-        void IService.Leave(Network.IStreamable stream)
+        void _Leave(Network.IStreamable stream)
         {
             User user = null;
             lock(_Users)
@@ -60,6 +68,9 @@ namespace Regulus.Remote.Soul
 
         void IDisposable.Dispose()
         {
+            _Listenable.StreamableEnterEvent -= _Join;
+            _Listenable.StreamableLeaveEvent -= _Leave;
+
             _ThreadUpdater.Stop();
             _Updater.Shutdown();
             lock (_Users)

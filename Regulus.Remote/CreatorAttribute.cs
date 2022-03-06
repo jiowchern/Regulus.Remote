@@ -2,7 +2,7 @@
 {
     [System.AttributeUsage(System.AttributeTargets.Method)]
 
-    public class CreatorAttribute : System.Attribute
+    public class CreaterAttribute : System.Attribute
     {
 
     }

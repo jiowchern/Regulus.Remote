@@ -14,11 +14,12 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
         [SetUp]
         public void Setup()
         {
-
+         
         }
         [Test]
         public void CreateProtocolTest1()
         {
+    
             var protocol = Regulus.Remote.Tools.Protocol.Sources.TestCommon.ProtocolProvider.CreateCase1();
             NUnit.Framework.Assert.IsNotNull(protocol);
         }
@@ -28,6 +29,27 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
         {
             var protocol = Regulus.Remote.Tools.Protocol.Sources.TestCommon.ProtocolProvider.CreateCase2();
             NUnit.Framework.Assert.IsNotNull(protocol);
+        }
+
+        [Test]
+        public void CreateProtocolSerializeTypesTest()
+        {
+            var protocol = Regulus.Remote.Tools.Protocol.Sources.TestCommon.ProtocolProvider.CreateCase1();
+            NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(int)));
+
+            NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(bool)));
+            NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(string)));
+            NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(decimal)));
+            NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(float)));
+            NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(double)));
+            NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(System.Guid)));
+            NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(Regulus.Remote.Tools.Protocol.Sources.TestCommon.TestC)));
+            NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(Regulus.Remote.Tools.Protocol.Sources.TestCommon.TestS)));
+            
+
+            NUnit.Framework.Assert.AreEqual(9, protocol.SerializeTypes.Length);
+            
+
         }
 
         [Test]
@@ -94,12 +116,9 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
             var c1 = multipleNotices.Numbers1.Items.Count;
             var c2 = multipleNotices.Numbers2.Items.Count;
 
-            var ar = new Regulus.Utility.AutoPowerRegulator(new Utility.PowerRegulator());
-            System.Console.WriteLine("wait NotifierSupplyAndUnsupplyTest removeNum1s.Count ...");
-            while (removeNum1s.Count < 2)
-            {
-                ar.Operate();
-            }
+            
+
+            System.Threading.SpinWait.SpinUntil(() => removeNum1s.Count == 2, 5000);
             NUnit.Framework.Assert.AreEqual(2, removeNum1s[0]);
             NUnit.Framework.Assert.AreEqual(2, removeNum1s[1]);
 
@@ -168,12 +187,9 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 
             NUnit.Framework.Assert.AreEqual(0, count1);
             NUnit.Framework.Assert.AreEqual(0, count2);
-            System.Console.WriteLine("wait NotifierSupplyTest removeNums.Count ...");
-            var ar = new Regulus.Utility.AutoPowerRegulator(new Utility.PowerRegulator());
-            while (removeNums.Count < 3)
-            {
-                ar.Operate();
-            }
+            
+            
+            System.Threading.SpinWait.SpinUntil(() => removeNums.Count == 3, 5000);
             NUnit.Framework.Assert.AreEqual(1, removeNums[0]);
             NUnit.Framework.Assert.AreEqual(1, removeNums[1]);
             NUnit.Framework.Assert.AreEqual(1, removeNums[2]);
@@ -216,10 +232,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 
 
             System.Console.WriteLine("wait EventTest tester.LisCount ...");
-            while (tester.LisCount < 4)
-            {
-                re.Operate();
-            }
+            System.Threading.SpinWait.SpinUntil(() => tester.LisCount == 4, 5000);
+            
 
             tester.Invoke22(9);
             tester.Invoke21();
@@ -228,10 +242,9 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 
 
             System.Console.WriteLine("wait EventTest vals.Count ...");
-            while (vals.Count < 4)
-            {
-                re.Operate();
-            }
+
+            System.Threading.SpinWait.SpinUntil(() => vals.Count == 4, 5000);
+            
 
             env.Dispose();
 
@@ -246,19 +259,23 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
         [Test]
         public void MethodTest()
         {
+
+
             var tester = new MethodTester();
             
             var env = new TestEnv<Entry<IMethodable>, IMethodable>(new Entry<IMethodable>(tester));
             var valuesObs = from gpi in env.Queryable.QueryNotifier<IMethodable>().SupplyEvent()
                              from v1 in gpi.GetValue1().RemoteValue()
                              from v2 in gpi.GetValue2().RemoteValue()
-                             select new {v1,v2};
+                             from v0 in gpi.GetValue0(0,"",0,0,0,Guid.Empty).RemoteValue()
+                            select new {v1,v2,v0};
 
             var values = valuesObs.FirstAsync().Wait();
             env.Dispose();
 
             Assert.AreEqual(1, values.v1);
-            Assert.AreEqual(2, values.v2);            
+            Assert.AreEqual(2, values.v2);
+            Assert.AreEqual(0, values.v0);
         }
 
         [Test]
@@ -266,30 +283,33 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
         {
             var tester = new PropertyTester();
             var env = new TestEnv<Entry<IPropertyable>, IPropertyable>(new Entry<IPropertyable>(tester));
-
-            tester.Property1.Value = 1;
-            tester.Property2.Value = 2;
             
             var values1Obs = from gpi in env.Queryable.QueryNotifier<IPropertyable>().SupplyEvent()                            
                             select new { v1=gpi.Property1.Value,v2= gpi.Property2.Value };
 
-            var values1 = values1Obs.FirstAsync().Wait();
+            
+            var values = values1Obs.FirstAsync().Wait();
 
-            Assert.AreEqual(1, values1.v1);
-            Assert.AreEqual(2, values1.v2);
-
-            tester.Property1.Value = 3;
-            tester.Property2.Value = 4;
+            Assert.AreEqual(1, values.v1);
+            Assert.AreEqual(2, values.v2);
+            
 
             var values2Obs = from gpi in env.Queryable.QueryNotifier<IPropertyable>().SupplyEvent()
                              from v1 in gpi.Property1.PropertyChangeValue()
                              from v2 in gpi.Property2.PropertyChangeValue()
                              select new { v1 , v2};
-            
-            var values2 = values2Obs.FirstAsync().Wait();
 
-            Assert.AreEqual(3, values2.v1);
-            Assert.AreEqual(4, values2.v2);
+            int[] changes = new int[] { 0, 0 };
+            values2Obs.Subscribe(o => { changes[0] = o.v1; changes[1] = o.v2; });
+
+
+            tester.Property1.Value = 3;
+            tester.Property2.Value = 4;
+
+            System.Threading.SpinWait.SpinUntil(() => changes[0] == 3 && changes[1] == 4 ,5000);
+            
+            Assert.AreEqual(3, changes[0]);
+            Assert.AreEqual(4, changes[1]);
 
             env.Dispose();
 

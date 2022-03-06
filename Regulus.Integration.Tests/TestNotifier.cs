@@ -1,11 +1,11 @@
 ﻿using Regulus.Remote;
 using System;
 
-namespace Regulus.Application.Client.Test
+namespace Regulus.Integration.Tests
 {
     internal class TestNotifier<T> : INotifier<T>
     {
-        
+
 
 
 

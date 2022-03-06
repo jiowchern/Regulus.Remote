@@ -53,7 +53,7 @@ namespace Regulus.Serialization
                 Describers = new ITypeDescriber[] { new ClassDescriber(type, finder) };
             }
             else
-                throw new Exception("Unrecognized type " + type.FullName);
+                throw new Exception("not supported type " + type);
         }
 
         private bool _IsPoint(Type type)

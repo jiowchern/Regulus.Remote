@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace Regulus.Remote.Standalone
 {
-    public class Service : IService
+    public class Service : Soul.IService , Soul.IListenable
     {
 
         
@@ -16,42 +16,86 @@ namespace Regulus.Remote.Standalone
         readonly List<Regulus.Remote.Ghost.IAgent> _Agents;
         readonly Dictionary<IAgent, IStreamable> _Streams;
         readonly IDisposable _ServiceDisposable;
-        public Service(IBinderProvider entry, IProtocol protocol)
-        {        
-            _Service = new Regulus.Remote.Soul.Service(entry, protocol);
+        internal readonly IProtocol Protocol;
+        internal readonly ISerializable Serializer;
+
+        readonly NotifiableCollection<IStreamable> _NotifiableCollection;
+        public Service(IBinderProvider entry, IProtocol protocol , ISerializable serializable, Regulus.Remote.IInternalSerializable internal_serializable)
+        {
+            _NotifiableCollection = new NotifiableCollection<IStreamable>();
+            Protocol = protocol;
+            Serializer = serializable;
+            _Service = new Regulus.Remote.Soul.Service(entry, protocol, serializable , this, internal_serializable);
             _Agents = new List<Ghost.IAgent>();
             _Streams = new Dictionary<IAgent, IStreamable>();
             _ServiceDisposable = _Service;
         }
 
-        public void Join(IAgent agent,object state)
+
+        event Action<IStreamable> Soul.IListenable.StreamableEnterEvent
         {
-            
-            Stream stream = new Stream();
-            agent.Start(new ReverseStream(stream));
-            _Service.Join(stream, state);
-            _Streams.Add(agent, stream);
-            _Agents.Add(agent);            
+            add
+            {
+                _NotifiableCollection.Notifier.Supply += value;
+            }
+
+            remove
+            {
+                _NotifiableCollection.Notifier.Supply -= value;
+            }
         }
 
-        public void Leave(IAgent queryable)
+        event Action<IStreamable> Soul.IListenable.StreamableLeaveEvent
         {
-            IAgent remove = null;
+            add
+            {
+                _NotifiableCollection.Notifier.Unsupply += value;
+            }
+
+            remove
+            {
+                _NotifiableCollection.Notifier.Unsupply -= value;
+            }
+        }
+
+
+        public Ghost.IAgent Create()
+        {
+            var stream = new Stream();
+            var agent = new Regulus.Remote.Ghost.Agent(stream, this.Protocol, this.Serializer, new Regulus.Remote.InternalSerializer());
+            var revStream = new ReverseStream(stream);
+
+            _NotifiableCollection.Items.Add(revStream);
+            _Streams.Add(agent, revStream);
+            _Agents.Add(agent);
+
+
+            return agent;
+        }
+        
+
+        public void Distroy(IAgent queryable)
+        {
+            var agents = new System.Collections.Generic.List<IAgent>();
             foreach (IAgent agent in _Agents)
             {
                 if (agent != queryable)
                     continue;
-
-                _Service.Leave(_Streams[agent]);
-                agent.Stop();
-                remove = agent;
+                
+                _NotifiableCollection.Items.Remove(_Streams[agent]);
+                _Streams.Remove(agent);
+                agent.Dispose();
+                agents.Add(agent);
             }
-
-            _Agents.Remove(remove);
+            foreach (IAgent agent in agents)
+            {
+                _Agents.Remove(agent);
+            }
+            
         }
 
         
-        void IDisposable.Dispose()
+        public void Dispose()
         {
             _ServiceDisposable.Dispose();
         }

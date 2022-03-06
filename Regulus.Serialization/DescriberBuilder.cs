@@ -6,6 +6,8 @@ namespace Regulus.Serialization
     public class DescriberBuilder
     {
         public readonly DescriberProvider Describers;
+
+        
         public DescriberBuilder(params Type[] types)
         {
             Describers = _BuildDescribers(types);

@@ -1,8 +1,7 @@
-﻿
-using Regulus.Remote;
+﻿using Regulus.Remote;
 using System;
 
-namespace Regulus.Application.Client.Test
+namespace Regulus.Integration.Tests
 {
     internal class TestAgent : INotifierQueryable
     {

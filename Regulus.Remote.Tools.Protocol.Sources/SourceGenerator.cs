@@ -9,7 +9,10 @@ namespace Regulus.Remote.Tools.Protocol.Sources
     {
         void ISourceGenerator.Execute(GeneratorExecutionContext context)
         {
-            var sources = new ProjectSourceBuilder(context.Compilation).Sources;
+
+            var references = new EssentialReference(context.Compilation);
+
+            var sources = new ProjectSourceBuilder(references).Sources;
             
             foreach (var syntaxTree in sources)
             {
@@ -25,7 +28,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
  #if DEBUG
              if (!Debugger.IsAttached)
              {
-//                 Debugger.Launch();
+                 //Debugger.Launch();
              }
  #endif
 

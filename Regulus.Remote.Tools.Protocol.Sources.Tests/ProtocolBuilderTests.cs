@@ -220,7 +220,7 @@ namespace NS1
             var tree = CSharpSyntaxTree.ParseText(source);
             Compilation compilation = tree.Compilation();
             
-            var interfaceMap = new InterfaceProviderCodeBuilder(new GhostBuilder(compilation).Ghosts);
+            var interfaceMap = new InterfaceProviderCodeBuilder(new GhostBuilder(compilation).Ghosts.Select(g => g.Syntax));
             NUnit.Framework.Assert.AreEqual("{typeof(global::NS1.IA),typeof(global::NS1.RegulusRemoteGhosts.CIA)},{typeof(global::NS1.IB),typeof(global::NS1.RegulusRemoteGhosts.CIB)}", interfaceMap.Code);
         }
 
@@ -250,7 +250,7 @@ d
             var tree = CSharpSyntaxTree.ParseText(source);
             Compilation compilation = tree.Compilation();
 
-            var interfaceMap = new InterfaceProviderCodeBuilder(new GhostBuilder(compilation).Ghosts);
+            var interfaceMap = new InterfaceProviderCodeBuilder(new GhostBuilder(compilation).Ghosts.Select(g=>g.Syntax));
             NUnit.Framework.Assert.AreEqual("{typeof(global::NS1.IC),typeof(global::NS1.RegulusRemoteGhosts.CIC)},{typeof(global::NS1.IA),typeof(global::NS1.RegulusRemoteGhosts.CIA)},{typeof(global::NS1.IB),typeof(global::NS1.RegulusRemoteGhosts.CIB)}", interfaceMap.Code);
         }
 
@@ -300,9 +300,11 @@ namespace NS1
 }
 
 ";
+            
             var tree = CSharpSyntaxTree.ParseText(source);
             Compilation compilation = tree.Compilation();
-            var symbols = new SerializableExtractor(compilation).Symbols.Select(s=>s.ToDisplayString());
+            var builder = new GhostBuilder(compilation);
+            var symbols = new SerializableExtractor(new EssentialReference(compilation), builder.Ghosts ).Symbols.Select(s=>s.ToDisplayString());
            
             var cSymbols = new[]
             {
@@ -353,10 +355,12 @@ namespace NS1
 ";
             var tree=CSharpSyntaxTree.ParseText(source);
             Compilation compilation =tree.Compilation();
-            var symbols = new SerializableExtractor(compilation).Symbols;
+            var builder = new GhostBuilder(compilation);
+            var symbols = new SerializableExtractor(new EssentialReference(compilation), builder.Ghosts).Symbols;
 
             var cSymbols = new[]
             {
+                
                 compilation.GetTypeByMetadataName("NS1.C2"),
                 compilation.GetTypeByMetadataName("NS1.C1")
             };
@@ -392,7 +396,8 @@ namespace NS1
 ";
             var tree = CSharpSyntaxTree.ParseText(source);
             Compilation compilation = tree.Compilation();
-            var  symbols = new SerializableExtractor(compilation).Symbols;
+            var builder = new GhostBuilder(compilation);
+            var  symbols = new SerializableExtractor(new EssentialReference(compilation), builder.Ghosts).Symbols;
 
             var cSymbols = new[]
             {
@@ -403,5 +408,82 @@ namespace NS1
             NUnit.Framework.Assert.AreEqual(0,count);
 
         }
+
+        [Test]
+        public void SerializableExtractor4Test()
+        {
+            var source = @"
+namespace NS1
+{
+    
+    public interface IB{
+        Regulus.Remote.Property<int> Property1 {get;}
+    }    
+}
+";
+            var tree = CSharpSyntaxTree.ParseText(source);
+            Compilation compilation = tree.Compilation();
+            var builder = new GhostBuilder(compilation);
+
+            var cSymbols = new[]
+             {
+                compilation.GetSpecialType(SpecialType.System_Int32)
+            };
+
+            var symbols = new SerializableExtractor(new EssentialReference(compilation), builder.Ghosts).Symbols;
+            
+            var count = cSymbols.Except(symbols).Count();
+            NUnit.Framework.Assert.AreEqual(0, count);
+
+        }
+
+      
+
+
+        [Test]
+        public void SerializableExtractor6Test()
+        {
+            var source = @"
+namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon
+{
+    public static partial class ProtocolProvider 
+    {
+        public static Regulus.Remote.IProtocol CreateCase1()
+        {
+            Regulus.Remote.IProtocol protocol = null;
+            _CreateCase1(ref protocol);
+            return protocol;
+        }
+
+        [Remote.Protocol.Creater]
+        static partial void _CreateCase1(ref Regulus.Remote.IProtocol protocol);
+
+
+        public static IProtocol CreateCase2()
+        {
+            IProtocol protocol = null;
+            _CreateCase2(ref protocol);
+            return protocol;
+        }
+
+        [Remote.Protocol.Creater]
+        static partial void _CreateCase2(ref IProtocol protocol);
     }
+}
+
+";
+            var tree = CSharpSyntaxTree.ParseText(source);
+            Compilation compilation = tree.Compilation();
+
+            var builder = new GhostBuilder(compilation);
+            var symbols = new SerializableExtractor(new EssentialReference(compilation), builder.Ghosts).Symbols;
+
+
+
+            NUnit.Framework.Assert.AreEqual(0, symbols.Count);
+
+        }
+    }
+
+
 }

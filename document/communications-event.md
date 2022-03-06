@@ -9,6 +9,5 @@ public interface IFoo
 ```
 ---
 #### Restrictions
-1. The maximum amount of event parameters is 5.  
-If there are more than 5, refactor to one class.  
-2. Delegates only support System.Action.
+
+Delegates only support System.Action<...>.

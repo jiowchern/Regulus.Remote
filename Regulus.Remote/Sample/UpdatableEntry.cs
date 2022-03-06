@@ -40,7 +40,7 @@ namespace Regulus.Remote.Sample
             _Users.Working();
         }
 
-        void IBinderProvider.AssignBinder(IBinder binder, object state)
+        void IBinderProvider.AssignBinder(IBinder binder)
         {
             _AddBinders.Enqueue(binder);
         }

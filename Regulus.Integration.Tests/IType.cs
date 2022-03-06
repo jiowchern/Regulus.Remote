@@ -1,4 +1,4 @@
-﻿namespace Regulus.Application.Client.Test
+﻿namespace Regulus.Integration.Tests
 {
     public interface IType
     {

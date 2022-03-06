@@ -1,10 +1,16 @@
 ﻿namespace Regulus.Remote.Standalone
 {
-    public class Provider
+    public static class Provider
     {
-        public static Standalone.IService CreateService(IProtocol protocol, IBinderProvider entry)
+        public static Service CreateService(IBinderProvider entry, IProtocol protocol)
         {
-            return new Standalone.Service(entry, protocol);
+            return CreateService(entry, protocol, new Regulus.Remote.Serializer(protocol.SerializeTypes));
         }
+        public static Service CreateService(IBinderProvider entry , IProtocol protocol, ISerializable serializable )
+        {
+            return new Standalone.Service(entry, protocol, serializable , new Regulus.Remote.InternalSerializer());
+        }
+
+       
     }
 }

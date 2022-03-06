@@ -6,17 +6,17 @@ namespace Regulus.Remote.Tests
     using System.Reactive.Linq;
     public class ValueTests
     {
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public async System.Threading.Tasks.Task ConstructorOnValueTest()
         {
             var val = new Regulus.Remote.Value<int>(1);
             var vObs = from v in val.RemoteValue()
                             select v;
             var result = await vObs.FirstAsync();
-            Xunit.Assert.Equal(1, result);
+            NUnit.Framework.Assert.AreEqual(1, result);
 
         }
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public async System.Threading.Tasks.Task SetOnValueTest()
         {
             var val = new Regulus.Remote.Value<int>();
@@ -25,25 +25,25 @@ namespace Regulus.Remote.Tests
 
             val.SetValue(1);
             var result = await vObs.FirstAsync();
-            Xunit.Assert.Equal(1, result);
+            NUnit.Framework.Assert.AreEqual(1, result);
 
         }
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public async System.Threading.Tasks.Task ConstructorAwaitOnValueTest()
         {
             var val = await new Regulus.Remote.Value<int>(1);
 
-            Xunit.Assert.Equal(1, val);
+            NUnit.Framework.Assert.AreEqual(1, val);
         }
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public async System.Threading.Tasks.Task SetAwaitOnValueTest()
         {
             var val = new Regulus.Remote.Value<int>();
             val.SetValue(1);
             
-            Xunit.Assert.Equal(1, await val);
+            NUnit.Framework.Assert.AreEqual(1, await val);
         }
     }
 }

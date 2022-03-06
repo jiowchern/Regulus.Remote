@@ -30,27 +30,29 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
 
             };
             CSharpCompilation compilation =  CSharpCompilation.Create(assemblyName, souls, references) ;
-            _Sources = new ProjectSourceBuilder(compilation).Sources;
+            _Sources = new ProjectSourceBuilder(new EssentialReference(compilation)).Sources;
         }
 
       
 
         public async Task RunAsync()
         {
-           
+
+
             var test = new CSharpSourceGeneratorVerifier<SourceGenerator>.Test
             {
+
                 TestState =
-                {
-                    ReferenceAssemblies = ReferenceAssemblies.Default.AddPackages(ImmutableArray.Create(
-                        new PackageIdentity("Regulus.Remote.Protocol", "0.1.9.1"),
-                        new PackageIdentity("Regulus.Serialization", "0.1.9.1"))),
-                    
+                {             
                 },
-            
-            
+
             };
+
            
+            test.TestState.AdditionalReferences.Add(typeof(Regulus.Remote.Value<>).Assembly);
+            test.TestState.AdditionalReferences.Add(typeof(Regulus.Remote.Property<>).Assembly);
+
+
             foreach (var syntaxTree in _Sources)
             {
                

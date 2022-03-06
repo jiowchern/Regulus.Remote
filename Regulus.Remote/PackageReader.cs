@@ -10,7 +10,7 @@ namespace Regulus.Remote
     public delegate void OnByteDataCallback(byte[] bytes);
     public class PackageReader<TPackage>
     {
-        private readonly ISerializer _Serializer;
+        private readonly IInternalSerializable _Serializer;
 
         public delegate void OnRequestPackageCallback(TPackage package);
         public event OnRequestPackageCallback DoneEvent
@@ -30,7 +30,7 @@ namespace Regulus.Remote
 
         private volatile bool _Stop;
 
-        public PackageReader(ISerializer serializer)
+        public PackageReader(IInternalSerializable serializer)
         {
             _Machine = new StatusMachine();
             _Serializer = serializer;

@@ -8,12 +8,12 @@ namespace RemotingTest
 
     public class AutoReleaseTest
     {
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void Test()
         {
 
             IGhostRequest request = Substitute.For<IGhostRequest>();
-            ISerializer serializer = Substitute.For<ISerializer>();
+            var serializer = Substitute.For<IInternalSerializable>();
 
             AutoRelease ar = new AutoRelease(request, serializer);
             _Register(ar);

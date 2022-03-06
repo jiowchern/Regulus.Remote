@@ -13,11 +13,31 @@ namespace Regulus.Remote.Tools.Protocol.Sources
    
     public class GhostBuilder
     {
-        public readonly IReadOnlyCollection<SyntaxTree> Ghosts;
-        public readonly IReadOnlyCollection<SyntaxTree> Events;
-        public GhostBuilder(Compilation compilation)
+        public struct Ghost
         {
-            
+            public INamedTypeSymbol Interface;
+            public IEnumerable<IMethodSymbol> Methods;
+            public IEnumerable<IEventSymbol> Events;
+            public IEnumerable<IPropertySymbol> Propertys;            
+            public SyntaxTree Syntax;
+
+            internal IEnumerable<ISymbol> GetMembers()
+            {
+                return Methods.OfType<ISymbol>().Union(Events).Union(Propertys);
+            }
+        }
+        public readonly IReadOnlyCollection<Ghost> Ghosts;
+        public readonly IReadOnlyCollection<SyntaxTree> Events;
+        private readonly ITypeSymbol _RegulusRemoteValue;
+
+        public GhostBuilder(Compilation compilation) : this(new EssentialReference(compilation))
+        {
+
+        }
+        public GhostBuilder(EssentialReference essential)
+        {
+            var compilation = essential.Compilation;
+            _RegulusRemoteValue = essential.RegulusRemoteValue;
             var ghosts = 
                 from syntax in compilation.SyntaxTrees
                 let SemanticModel = compilation.GetSemanticModel(syntax)
@@ -50,6 +70,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
             var enumerable = typeArgs as string[] ?? typeArgs.ToArray();
             var typeArgCode = $"<{string.Join(",", enumerable)}>";
+            int i = 0;
+            var valueArgCode = $"{string.Join(",", enumerable.Select(e=> $"_{i++}"))}";
 
             if (!enumerable.Any())
                 typeArgCode = "";
@@ -62,7 +84,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             
             namespace {namespaceName}
             {{ 
-                public class {eventName} : Regulus.Remote.IEventProxyCreator
+                public class {eventName} : Regulus.Remote.IEventProxyCreater
                 {{
             
                     Type _Type;
@@ -74,27 +96,27 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                         _Type = typeof({typeName});                   
                     
                     }}
-                    Delegate Regulus.Remote.IEventProxyCreator.Create(long soul_id,int event_id,long handler_id, Regulus.Remote.InvokeEventCallabck invoke_Event)
+                    Delegate Regulus.Remote.IEventProxyCreater.Create(long soul_id,int event_id,long handler_id, Regulus.Remote.InvokeEventCallabck invoke_Event)
                     {{                
-                        var closure = new Regulus.Remote.GenericEventClosure{typeArgCode}(soul_id , event_id ,handler_id, invoke_Event);                
-                        return new Action{typeArgCode}(closure.Run);
+                        var closure = new Regulus.Remote.GenericEventClosure(soul_id , event_id ,handler_id, invoke_Event);                
+                        return new Action{typeArgCode}(({valueArgCode}) => closure.Run(new object[]{{{valueArgCode}}}));
                     }}
                 
             
-                    Type Regulus.Remote.IEventProxyCreator.GetType()
+                    Type Regulus.Remote.IEventProxyCreater.GetType()
                     {{
                         return _Type;
                     }}            
             
-                    string Regulus.Remote.IEventProxyCreator.GetName()
+                    string Regulus.Remote.IEventProxyCreater.GetName()
                     {{
                         return _Name;
                     }}            
                 }}
             }}
                         ";
-
-                    return SyntaxFactory.ParseSyntaxTree(source, null, $"{namespaceName}.{typeName}_{eventName}.RegulusRemoteGhosts.cs",Encoding.UTF8);
+            
+            return SyntaxFactory.ParseSyntaxTree(source, null, $"{namespaceName}.{typeName}_{eventName}.RegulusRemoteGhosts.cs", Encoding.UTF8);
 
           
         }
@@ -109,7 +131,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
         
 
-        private static SyntaxTree _BuildGhost(InterfaceDeclarationSyntax interface_syntax, SemanticModel semantic_model)
+        private Ghost _BuildGhost(InterfaceDeclarationSyntax interface_syntax, SemanticModel semantic_model)
         {
             INamedTypeSymbol interfaceSymbol = semantic_model.GetDeclaredSymbol(interface_syntax);
             var typeName = interfaceSymbol.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat);
@@ -119,7 +141,9 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
             var namespaceName = _BuildNamesapceName(interface_syntax, semantic_model);
 
-
+            var  methods = _SelectMembers<IMethodSymbol>(interfaceSymbols).Where(m => m.MethodKind == MethodKind.Ordinary);
+            var events = _SelectMembers<IEventSymbol>(interfaceSymbols);
+            var propertys  = _SelectMembers<IPropertySymbol>(interfaceSymbols);
             var source = $@"
 namespace {namespaceName}
 {{
@@ -169,14 +193,21 @@ namespace {namespaceName}
             add {{ this._RemoveEventEvent += value; }}
             remove {{ this._RemoveEventEvent -= value; }}
         }}
-        {_BuildMethods(interfaceSymbols, semantic_model)}
-        {_BuildEvents(interfaceSymbols, semantic_model)}
-        {_BuildPropertys(interfaceSymbols, semantic_model)}
+        {_BuildMethods(methods)}
+        {_BuildEvents(events)}
+        {_BuildPropertys(propertys )}
     }}
 }}
 ";
 
-            return SyntaxFactory.ParseSyntaxTree(source, null, $"{namespaceName}.{typeName}.RegulusRemoteGhosts.cs", Encoding.UTF8);
+
+            Ghost ghost = new Ghost();
+            ghost.Interface = interfaceSymbol;
+            ghost.Methods = methods;
+            ghost.Events = events;
+            ghost.Propertys= propertys ;
+            ghost.Syntax = SyntaxFactory.ParseSyntaxTree(source, null, $"{namespaceName}.{typeName}.RegulusRemoteGhosts.cs", Encoding.UTF8);
+            return ghost;
         }
 
         private static IEnumerable<INamedTypeSymbol> GetInterfaceSymbols(INamedTypeSymbol interfaceSymbol)
@@ -191,16 +222,18 @@ namespace {namespaceName}
             yield return interfaceSymbol;
         }
 
-        private static string _BuildPropertys(IEnumerable<INamedTypeSymbol> interface_symbols, SemanticModel semantic_model)
+        
+
+        private static string _BuildPropertys(IEnumerable<IPropertySymbol> propertys)
         {
             return string.Join("\r\n",
-                _SelectMembers<IPropertySymbol>(interface_symbols).Select(m => _BuildProperty(m, semantic_model)));
+                propertys.Select(m => _BuildProperty(m)));
 
         }
 
 
 
-        private static string _BuildProperty(IPropertySymbol symbol, SemanticModel model)
+        private static string _BuildProperty(IPropertySymbol symbol)
         {
 
             var fieldName = symbol.ToDisplayString().Replace('.', '_');
@@ -221,24 +254,26 @@ public {t.ToDisplayString()} _{fieldName} = new {t.ToDisplayString()}();
         {
             return interface_symbols.SelectMany(i => i.GetMembers()).OfType<T>();
         }
-        private static string _BuildMethods(IEnumerable<INamedTypeSymbol> interface_symbols, SemanticModel semantic_model)
+        
+
+        private string _BuildMethods(IEnumerable<IMethodSymbol> methods)
         {
-           return string.Join("\r\n",
-                _SelectMembers<IMethodSymbol>(interface_symbols).Where(m=>m.MethodKind == MethodKind.Ordinary).Select(m => _BuildMethod(m, semantic_model)));
-
-
+            return string.Join("\r\n",methods.Select(m => _BuildMethod(m )));
         }
 
-        private static string _BuildEvents(IEnumerable<INamedTypeSymbol >interface_symbols, SemanticModel semantic_model)
+        
+
+        private static string _BuildEvents(IEnumerable<IEventSymbol> events)
         {
 
             return string.Join("\r\n",
-                _SelectMembers<IEventSymbol>(interface_symbols).Select(m => _BuildEvent(m, semantic_model)));
+                events.Select(m => _BuildEvent(m)));
 
 
         }
 
-        private static string _BuildEvent(IEventSymbol symbol, SemanticModel semanticModel)
+
+        private static string _BuildEvent(IEventSymbol symbol)
         {
             
             
@@ -264,7 +299,7 @@ event {symbol.Type.ToDisplayString()} {symbol.ToDisplayString()}
             return source;
         }
 
-        private static string _BuildMethod(IMethodSymbol symbol, SemanticModel semantic_model)
+        private string _BuildMethod(IMethodSymbol symbol)
         {
             int idx = 0;
             var paramsCode = string.Join(",", symbol.Parameters.Select(symbolParameter => $"{symbolParameter.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)} _{idx++}"));
@@ -286,7 +321,7 @@ event {symbol.Type.ToDisplayString()} {symbol.ToDisplayString()}
                 retRetValueVar = "null";
                 retCode = "void";
             }
-            else if (semantic_model.Compilation.GetTypeByMetadataName("Regulus.Remote.Value`1") == symbol.ReturnType.OriginalDefinition)
+            else if (_RegulusRemoteValue == symbol.ReturnType.OriginalDefinition)
             {
                 retValue = $"var returnValue = new {symbol.ReturnType}();";
                 retRetValue = "return returnValue ;";

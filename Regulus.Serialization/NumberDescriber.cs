@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace Regulus.Serialization
 {
 
-
+   
     public class NumberDescriber<T> : NumberDescriber
     {
         public NumberDescriber() : base(typeof(T)) { }
@@ -20,6 +20,7 @@ namespace Regulus.Serialization
         public NumberDescriber(Type type)
         {
 
+            var t = new System.Tuple<int>(0);
             _Default = Activator.CreateInstance(type);
 
             _Size = Marshal.SizeOf(type);

@@ -33,11 +33,11 @@ jobs:
       run: dotnet build --configuration Release --no-restore
     - name: Test
       run: |        
-        dotnet test /p:CollectCoverage=true  /p:CoverletOutput=../CoverageResults/ /p:MergeWith="../CoverageResults/coverage.json" /p:CoverletOutputFormat="lcov" -m:1        
+        dotnet test /p:CollectCoverage=true  /p:CoverletOutput=../CoverageResults/ /p:MergeWith="../CoverageResults/coverage.json" /p:CoverletOutputFormat="lcov%2cjson" -m:1
         cp CoverageResults/coverage.info .
     
     - name: Coveralls GitHub Action
       uses: coverallsapp/github-action@master
       with:         
         github-token: '${{ secrets.GITHUB_TOKEN }}'
-        path-to-lcov: coverage.info    
+        path-to-lcov: coverage.info

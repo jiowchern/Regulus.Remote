@@ -1,10 +1,10 @@
-﻿using Xunit;
+﻿using NUnit.Framework;
 
 namespace RemotingTest
 {
     public class Property
     {
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void Equip()
         {
             Regulus.Remote.Property<int> p1 = new Regulus.Remote.Property<int>(1);
@@ -14,7 +14,7 @@ namespace RemotingTest
             Assert.True(result);
         }
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void PropertyUpdaterTest()
         {
             

@@ -9,118 +9,125 @@ namespace Regulus.Remote.Tools.Protocol.Sources
     class SerializableExtractor
     {
         public readonly IReadOnlyCollection<ITypeSymbol> Symbols;
-        private readonly Compilation _Compilation;
-        private readonly INamedTypeSymbol _RegulusRemoteProperty;
+        private readonly EssentialReference _References;
 
-        public SerializableExtractor(Compilation compilation)
+        public SerializableExtractor(EssentialReference references, IEnumerable<GhostBuilder.Ghost> ghosts)
         {
-            
-            _Compilation = compilation;
-            _RegulusRemoteProperty = _Compilation.GetTypeByMetadataName("Regulus.Remote.Property`1");
-
-            var symbols = 
-                from tree in compilation.SyntaxTrees
-                let semanticModel = compilation.GetSemanticModel(tree)
-                from node in tree.GetRoot().DescendantNodes()
-                let symbol = semanticModel.GetDeclaredSymbol(node) //as INamedTypeSymbol
-                where symbol != null
-                select symbol;
-
-            //var namedSymbols = symbols.OfType<INamedTypeSymbol>().ToArray();
-            var fieldSymbols = symbols.OfType<IFieldSymbol>().ToArray();
-            var propertySymbols = symbols.OfType<IPropertySymbol>().ToArray();
-            var eventSymbols = symbols.OfType<IEventSymbol>().ToArray();
-            var methodSymbols = symbols.OfType<IMethodSymbol>().ToArray();
-            var paramSymbols = symbols.OfType<IParameterSymbol>().ToArray();
 
 
-            var paramNameds=_GetNameds(paramSymbols);
-            var methodNameds = _GetNameds(methodSymbols);
-            var fieldNameds = _GetNameds(fieldSymbols);
 
-            var eventNameds = _GetNameds(eventSymbols);
-            var propertyNameds = _GetNameds(propertySymbols);
-            Symbols = new HashSet<ITypeSymbol>(paramNameds.Union(methodNameds).Union(fieldNameds).Union(eventNameds).Union(propertyNameds));
-
-        }
-        private IEnumerable<ITypeSymbol> _GetNameds(IEnumerable<IPropertySymbol> symbols)
-        {
-            return _GetNameds(from symbol in symbols
-                let type = symbol.Type as INamedTypeSymbol
-                where type != null
-                where type != null
-                      && _RegulusRemoteProperty == type.OriginalDefinition
-                from arg in type.TypeArguments
-
-                select arg);
+            this._References = references;
+            var set = new HashSet<ITypeSymbol>();
+            _AddSet(set , _GetValues(ghosts));
+            Symbols = set;
+         
         }
 
-        private IEnumerable<ITypeSymbol> _GetNameds(IEnumerable<ITypeSymbol> symbols)
-        {
-            var nameds = symbols.OfType<INamedTypeSymbol>().Where(s=>!(s.IsGenericType || s.IsAbstract)) ;
-            var arrays = symbols.OfType<IArrayTypeSymbol>();
-            return nameds.Union(_GetNameds(arrays));
-        }
-
-        private IEnumerable<ITypeSymbol> _GetNameds(IEnumerable<IArrayTypeSymbol> symbols)
+        private void _AddSet(HashSet<ITypeSymbol> set, IEnumerable<ITypeSymbol> symbols)
         {
             foreach (var symbol in symbols)
-            {
-                yield return symbol;
-                
-                if (symbol is IArrayTypeSymbol arraySymbol)
+            {                
+                if (set.Contains(symbol))
+                    continue;
+
+                set.Add(symbol);
+
+                if (symbol.Kind == SymbolKind.ArrayType)
                 {
-                    foreach (var typeSymbol in _GetNameds(new[] { arraySymbol.ElementType }))
-                    {
-                        yield return typeSymbol;
-                    }
+                    var ary = symbol as IArrayTypeSymbol;
+                    _AddSet(set , new[] { ary.ElementType });
                 }
-                else if(symbol is INamedTypeSymbol named)
+                else if(symbol.TypeKind == TypeKind.Class || symbol.TypeKind == TypeKind.Struct)
                 {
-               
-                    yield return named;
+                    var type = symbol as INamedTypeSymbol;                    
+                    _AddSet(set, type.GetMembers().OfType<IFieldSymbol>().Where(f=>f.IsReadOnly == false && f.IsConst == false).Select(f=>f.Type));
                 }
-                    
             }
+            
         }
 
         
 
-        private IEnumerable<ITypeSymbol> _GetNameds(IEnumerable<IEventSymbol> event_symbols)
+        private IEnumerable<ITypeSymbol> _GetValues(IEnumerable<GhostBuilder.Ghost> ghost)
         {
-            return _GetNameds(from symbol in event_symbols
-                let type = symbol.Type as INamedTypeSymbol
-                where type != null
-                from typeArgument in type.TypeArguments
-              
-                select typeArgument);
-        }
+            foreach (var member in ghost.SelectMany(s=>s.GetMembers()))
+            {
+                if (member.Kind == SymbolKind.Method)
+                {
+                    var method = member as IMethodSymbol;
+                    if (method.MethodKind != MethodKind.Ordinary)
+                    {
+                        continue;
+                    }
 
-        IEnumerable<ITypeSymbol> _GetNameds(IEnumerable<IParameterSymbol> args)
-        {
-            return _GetNameds(from arg in args
-                let type = arg.Type 
-                   
-                    select type);
-        }
+                    foreach (var item in _GetTypes(method))
+                    {
+                        yield return item;
+                    }
 
-        IEnumerable<ITypeSymbol> _GetNameds(IEnumerable<IMethodSymbol> symbols)
-        {
-            return _GetNameds(from symbol in symbols
-                   let type = symbol.ReturnType as INamedTypeSymbol
-
-                    where type !=null && _Compilation.GetTypeByMetadataName("Regulus.Remote.Value`1") == type.OriginalDefinition
-                   from arg in type.TypeArguments   
-                   let argNamed = arg 
-                   select argNamed);
-        }
-
-        IEnumerable<ITypeSymbol> _GetNameds(IEnumerable<IFieldSymbol> symbols)
-        {
-            return _GetNameds(from arg in symbols
-                   let type = arg.Type 
+                }
+                else if (member.Kind == SymbolKind.Property)
+                {
+                    foreach (var item in _GetTypes(member as IPropertySymbol))
+                    {
+                        yield return item;
+                    }
+                }
+                else if (member.Kind == SymbolKind.Event)
+                {
+                    foreach (var item in _GetTypes(member as IEventSymbol))
+                    {
+                        yield return item;
+                    }
+                }
                
-                select type);
+            }
+        }
+
+       
+
+        private IEnumerable<ITypeSymbol> _GetTypes(IEventSymbol event_symbol)
+        {           
+            var type = event_symbol.Type as INamedTypeSymbol;        
+            return type.TypeArguments;
+        }
+
+        private IEnumerable<ITypeSymbol> _GetTypes(IPropertySymbol property_symbol)
+        {                        
+            var type = property_symbol.Type as INamedTypeSymbol;
+            if (type.OriginalDefinition == _References.RegulusRemoteProperty)
+            {
+                return type.TypeArguments;
+            }            
+
+            return new ITypeSymbol[0];
+        }
+
+        
+
+
+        private IEnumerable<ITypeSymbol> _GetTypes(IMethodSymbol method_symbol)
+        {
+            var retType = method_symbol.ReturnType as INamedTypeSymbol ;
+            if(retType == null || retType.OriginalDefinition != _References.RegulusRemoteValue && retType.SpecialType != SpecialType.System_Void) 
+            {
+                yield break;
+            }
+            
+
+            foreach (var item in retType.TypeArguments)
+            {
+                yield return item;
+            }
+
+            foreach(var item in method_symbol.Parameters)
+            {
+                if(item.RefKind != RefKind.None)
+                {
+                    continue;
+                }
+                yield return item.Type;
+            }
         }
 
 

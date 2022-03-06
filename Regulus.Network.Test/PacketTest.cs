@@ -1,53 +1,53 @@
-﻿using Xunit;
+﻿using NUnit.Framework;
 
 namespace Regulus.Network.Tests
 {
     public class PacketTest
     {
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void Seq()
         {
             SocketMessageFactory spawner = SocketMessageFactory.Instance;
             Package.SocketMessage buffer = spawner.Spawn();
             buffer.SetSeq(0x1234);
             ushort seq = buffer.GetSeq();
-            Assert.Equal((ushort)0x1234, seq);
+            Assert.AreEqual((ushort)0x1234, seq);
         }
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void Ack()
         {
             SocketMessageFactory spawner = SocketMessageFactory.Instance;
             Package.SocketMessage buffer = spawner.Spawn();
             buffer.SetAck(0x1234);
             ushort value = buffer.GetAck();
-            Assert.Equal((ushort)0x1234, value);
+            Assert.AreEqual((ushort)0x1234, value);
         }
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void AckFields()
         {
             SocketMessageFactory spawner = SocketMessageFactory.Instance;
             Package.SocketMessage buffer = spawner.Spawn();
             buffer.SetAckFields(0x12345678u);
             uint value = buffer.GetAckFields();
-            Assert.Equal((uint)0x12345678, value);
+            Assert.AreEqual((uint)0x12345678, value);
         }
 
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void Operation()
         {
             SocketMessageFactory spawner = SocketMessageFactory.Instance;
             Package.SocketMessage buffer = spawner.Spawn();
             buffer.SetOperation(0x12);
             byte value = buffer.GetOperation();
-            Assert.Equal((byte)0x12, value);
+            Assert.AreEqual((byte)0x12, value);
         }
 
 
 
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public void Payload()
         {
             SocketMessageFactory spawner = SocketMessageFactory.Instance;
@@ -62,14 +62,14 @@ namespace Regulus.Network.Tests
             bool ok = buffer.CheckPayload();
             Assert.True(ok);
             ushort payloadLength = buffer.GetPayloadLength();
-            Assert.Equal((ushort)payloadSize, payloadLength);
+            Assert.AreEqual((ushort)payloadSize, payloadLength);
 
 
             bool result = buffer.ReadPayload(payloadReaded, 0);
             Assert.True(result);
             for (int i = 0; i < payloadLength; ++i)
             {
-                Assert.Equal((byte)i, payloadReaded[i]);
+                Assert.AreEqual((byte)i, payloadReaded[i]);
             }
         }
 

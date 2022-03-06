@@ -5,7 +5,7 @@ namespace Regulus.Network.Tests
 {
     public class WebSocketConnectTest
     {
-        [Xunit.Fact]
+        [NUnit.Framework.Test]
         public async System.Threading.Tasks.Task Test()
         {
             
@@ -19,7 +19,7 @@ namespace Regulus.Network.Tests
             var connecter = new Regulus.Network.Web.Connecter(new System.Net.WebSockets.ClientWebSocket());
             var connectResult = await connecter.ConnectAsync("ws://127.0.0.1:12345/");
             
-            Xunit.Assert.True(connectResult);
+            NUnit.Framework.Assert.True(connectResult);
 
             var ar = new Regulus.Utility.AutoPowerRegulator(new Utility.PowerRegulator());
 
@@ -36,8 +36,8 @@ namespace Regulus.Network.Tests
             
             var serverReceiveCount = await serverReceiveTask;
 
-            Xunit.Assert.Equal(5, serverReceiveCount);
-            Xunit.Assert.Equal(5, clientSendCount);
+            NUnit.Framework.Assert.AreEqual(5, serverReceiveCount);
+            NUnit.Framework.Assert.AreEqual(5, clientSendCount);
         }
     }
 }

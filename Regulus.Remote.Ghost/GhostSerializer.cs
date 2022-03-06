@@ -18,10 +18,10 @@ namespace Regulus.Remote.Ghost
 
 
         
-        public GhostSerializer(ISerializer serializer)
+        public GhostSerializer(PackageReader<ResponsePackage> reader , PackageWriter<RequestPackage> writer)
         {
-            _Reader = new PackageReader<ResponsePackage>(serializer);
-            _Writer = new PackageWriter<RequestPackage>(serializer);
+            _Reader = reader;
+            _Writer = writer;
             _Sends = new System.Collections.Concurrent.ConcurrentQueue<RequestPackage>();
             _Receives = new System.Collections.Concurrent.ConcurrentQueue<ResponsePackage>();
 

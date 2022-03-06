@@ -1,6 +1,6 @@
 ﻿
 using System;
-using Xunit;
+using NUnit.Framework;
 namespace Regulus.Remote.AOT.Tests
 {
     interface ITest
@@ -15,25 +15,25 @@ namespace Regulus.Remote.AOT.Tests
     
     public class MethodCatcherTests
     {
-        [Fact()]
+        [Test()]
         public void MethodCatcherTest1()
         {
             Utility.Reflection.TypeMethodCatcher catcher = new Utility.Reflection.TypeMethodCatcher((System.Linq.Expressions.Expression<Action<ITest>>)(ins => ins.Method()));
-            Assert.Equal("Method", catcher.Method.Name);
+            Assert.AreEqual("Method", catcher.Method.Name);
         }
 
-        [Fact()]
+        [Test()]
         public void MethodCatcherTest2()
         {
             Utility.Reflection.TypeMethodCatcher catcher = new Utility.Reflection.TypeMethodCatcher((System.Linq.Expressions.Expression<Action<ITest>>)(ins => ins.Method2()));
-            Assert.Equal("Method2", catcher.Method.Name);
+            Assert.AreEqual("Method2", catcher.Method.Name);
         }
 
-        [Fact()]
+        [Test()]
         public void MethodCatcherTest3()
         {
             Utility.Reflection.TypeMethodCatcher catcher = new Utility.Reflection.TypeMethodCatcher((System.Linq.Expressions.Expression<Action<ITest, int, int>>)((ins, _1, _2) => ins.Method3(_1, _2)));
-            Assert.Equal("Method3", catcher.Method.Name);
+            Assert.AreEqual("Method3", catcher.Method.Name);
         }
 
     }

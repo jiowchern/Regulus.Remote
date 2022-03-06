@@ -9,23 +9,23 @@ namespace Regulus.Remote
 {
     public class EventProvider
     {
-        private readonly IEventProxyCreator[] _ProxyCreators;
+        private readonly IEventProxyCreater[] _ProxyCreaters;
 
-        public EventProvider(IEnumerable<IEventProxyCreator> closures)
+        public EventProvider(IEnumerable<IEventProxyCreater> closures)
         {
-            _ProxyCreators = closures.ToArray();
+            _ProxyCreaters = closures.ToArray();
         }
 
 
-        private IEventProxyCreator _Find(EventInfo info)
+        private IEventProxyCreater _Find(EventInfo info)
         {
-            return (from closure in _ProxyCreators
+            return (from closure in _ProxyCreaters
                     where closure.GetType() == info.DeclaringType && closure.GetName() == info.Name
                     select closure).FirstOrDefault();
         }
 
 
-        public IEventProxyCreator Find(EventInfo info)
+        public IEventProxyCreater Find(EventInfo info)
         {
             return _Find(info);
 

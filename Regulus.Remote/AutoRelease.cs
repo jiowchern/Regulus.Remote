@@ -11,9 +11,9 @@ namespace Regulus.Remote
         private readonly Dictionary<long, WeakReference<IGhost>> _Exists;
 
         private readonly IGhostRequest _Requester;
-        private readonly ISerializer _Serializer;
+        private readonly IInternalSerializable _Serializer;
 
-        public AutoRelease(IGhostRequest _Requester, ISerializer serializer)
+        public AutoRelease(IGhostRequest _Requester, IInternalSerializable serializer)
         {
             this._Requester = _Requester;
             _Serializer = serializer;

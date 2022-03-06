@@ -1,5 +1,4 @@
 ﻿using Regulus.Network;
-using Regulus.Serialization;
 using Regulus.Utility;
 using System;
 using System.Collections.Generic;
@@ -70,7 +69,7 @@ namespace Regulus.Remote.Soul
 
 
         private readonly object _EnableLock;
-        private readonly ISerializer _Serialize;
+        
 
         public static bool IsIdle
         {
@@ -82,6 +81,7 @@ namespace Regulus.Remote.Soul
 
         private static long _TotalResponse;
         internal readonly IStreamable Stream;
+        private readonly IInternalSerializable _InternalSerializer;
 
         public static long TotalResponse { get { return _TotalResponse; } }
 
@@ -90,14 +90,14 @@ namespace Regulus.Remote.Soul
             get { return _SoulProvider; }
         }
 
-        public readonly object State;
+        
 
-        public User(IStreamable client, IProtocol protocol , object state)
+        public User(IStreamable client, IProtocol protocol , ISerializable serializable, IInternalSerializable internal_serializable)
         {
-            State = state;
+        
             Stream = client;
+            _InternalSerializer = internal_serializable;
             
-            _Serialize = protocol.GetSerialize();
 
             _EnableLock = new object();
 
@@ -108,12 +108,12 @@ namespace Regulus.Remote.Soul
 
             _Responses = new System.Collections.Concurrent.ConcurrentQueue<ResponsePackage>();
             _Requests = new System.Collections.Concurrent.ConcurrentQueue<RequestPackage>();
-            _Reader = new PackageReader<RequestPackage>(protocol.GetSerialize());
-            _Writer = new PackageWriter<ResponsePackage>(protocol.GetSerialize());
+            _Reader = new PackageReader<RequestPackage>(_InternalSerializer);
+            _Writer = new PackageWriter<ResponsePackage>(_InternalSerializer);
             
             _ExternalRequests = new System.Collections.Concurrent.ConcurrentQueue<RequestPackage>();
 
-            _SoulProvider = new SoulProvider(this, this, protocol);
+            _SoulProvider = new SoulProvider(this, this, protocol, serializable, _InternalSerializer);
 
             _Updater = new ThreadUpdater(_AsyncUpdate);
         }
@@ -131,7 +131,7 @@ namespace Regulus.Remote.Soul
 
             PackageProtocolSubmit pkg = new PackageProtocolSubmit();
             pkg.VerificationCode = _Protocol.VerificationCode;
-            _Push(ServerToClientOpCode.ProtocolSubmit, pkg.ToBuffer(_Serialize));
+            _Push(ServerToClientOpCode.ProtocolSubmit, pkg.ToBuffer(_InternalSerializer));
 
             _Updater.Start();
         }
@@ -225,18 +225,18 @@ namespace Regulus.Remote.Soul
         {
             if (package.Code == ClientToServerOpCode.CallMethod)
             {
-                PackageCallMethod data = package.Data.ToPackageData<PackageCallMethod>(_Serialize);
+                PackageCallMethod data = package.Data.ToPackageData<PackageCallMethod>(_InternalSerializer);
                 var request = _ToRequest(data.EntityId, data.MethodId, data.ReturnId, data.MethodParams);
                 _InvokeMethodEvent(request.EntityId, request.MethodId, request.ReturnId, request.MethodParams);
             }
             else if (package.Code == ClientToServerOpCode.AddEvent)
             {
-                PackageAddEvent data = package.Data.ToPackageData<PackageAddEvent>(_Serialize);
+                PackageAddEvent data = package.Data.ToPackageData<PackageAddEvent>(_InternalSerializer);
                 _SoulProvider.AddEvent(data.Entity, data.Event, data.Handler);
             }
             else if (package.Code == ClientToServerOpCode.RemoveEvent)
             {
-                PackageRemoveEvent data = package.Data.ToPackageData<PackageRemoveEvent>(_Serialize);
+                PackageRemoveEvent data = package.Data.ToPackageData<PackageRemoveEvent>(_InternalSerializer);
                 _SoulProvider.RemoveEvent(data.Entity, data.Event, data.Handler);
             }
             else
@@ -253,13 +253,13 @@ namespace Regulus.Remote.Soul
             }            
             else if (package.Code == ClientToServerOpCode.Release)
             {
-                PackageRelease data = package.Data.ToPackageData<PackageRelease>(_Serialize);
+                PackageRelease data = package.Data.ToPackageData<PackageRelease>(_InternalSerializer);
                 _SoulProvider.Unbind(data.EntityId);
                 
             }
             else if (package.Code == ClientToServerOpCode.UpdateProperty)
             {
-                PackageSetPropertyDone data = package.Data.ToPackageData<PackageSetPropertyDone>(_Serialize);
+                PackageSetPropertyDone data = package.Data.ToPackageData<PackageSetPropertyDone>(_InternalSerializer);
                 _SoulProvider.SetPropertyDone(data.EntityId, data.Property);
             }
             else
