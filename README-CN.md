@@ -10,13 +10,11 @@
 <!-- [![Gitter](https://badges.gitter.im/JoinChat.svg)](https://gitter.im/Regulus-Library) -->
 ![Latest Version](https://img.shields.io/github/v/tag/jiowchern/Regulus.Remote)
 
-## Introduction
-It is a server-client connection framework developed using .Net Standard 2.0 and can be used in Unity game engine and other game engines that are compliant with .  
+## 简介
+这是一个使用 .Net Standard2.0 开发的主从式连线框架，可使用在 Unity 游戏引擎和其他符合 .Net Standard2.0 的游戏引擎。
 
-[繁中](README-TC.md)
-[简中](README-CN.md)
-## Features
-Server and client transfer through the interface, reducing the maintenance cost of the protocol.
+## 特色
+服务端与客户端透过接口做传输, 减少协定的维护成本.
 <!-- 
 @startuml
 package Protocol <<Rectangle>>{
@@ -63,8 +61,8 @@ end note
 
 
 
-## Example
-**1. Definition Interface IGreeter .**  
+## 范例
+**1. 定义接口 IGreeter .**  
 ```csharp
 namespace Protocol
 {
@@ -82,7 +80,7 @@ namespace Protocol
 	}
 }
 ```
-**2. Server-side Implementation IGreeter.**  
+**2. 服务端实作 IGreeter.**  
 ```csharp
 namespace Server
 {	
@@ -95,8 +93,7 @@ namespace Server
 	}
 }
 ```
-
-**3. Use ```IBinder.Bind``` to send the ```IGreeter``` to the client.**  
+**3. 透过 ```IBinder.Bind``` 将 ```IGreeter``` 传送到客户端.**  
 ```csharp
 namespace Server
 {
@@ -113,14 +110,14 @@ namespace Server
 			_GreeterSoul = binder.Bind<IGreeter>(_Greeter);
 		}
 		public void Dispose()
-		{			
+		{
+			// 透过 Unbind 解除与客户端的联系.
 			_Binder.Unbind(_GreeterSoul);
 		}
 	}
 }
 ```
-
-**4. Client uses ```IAgent.QueryNotifier``` to obtain ```IGreeter```.**
+**4. 客户端用 ```IAgent.QueryNotifier``` 取得 ```IGreeter``` .**
 ```csharp
 namespace Client
 {
@@ -144,38 +141,37 @@ namespace Client
 	}
 }
 ```
----
-After completing the above steps, the server and client can communicate through the interface to achieve object-oriented development as much as possible.
-#### Specification
-**Interface**  
-In addition to the above example ``IGreeter.SayHello``, there are a total of four ways to ...
 
+完成以上步骤服务端和客户端就可以通过接口进行通信, 尽可能的实现面向对象的开发.
+#### 支持规范
+**接口**  
+除了上述范例 ```IGreeter.SayHello``` 外还有提供以下总共四种方式 ...
 <!-- In addition, bind and unbind are used to switch the objects of the server, so as to control the access rights of the client conveniently.  -->
-* [Method](document/communications-method.md) <-- ```IGreeter.SayHello``` 
+* [Method](document/communications-method.md) <-- ```IGreeter.SayHello``` 的方式
 * [Event](document/communications-event.md)
 * [Property](document/communications-property.md)
 * [Notifier](document/communications-notifier.md)
 
-**Serialization**  
-For the types that can be serialized, see [Regulus.Serialization](Regulus.Serialization/README-CN.md) instructions.
+**序列化**  
+可以序列化的类型请参阅 [Regulus.Serialization](Regulus.Serialization/README-CN.md) 说明.
 <!-- > Serialization supports the following types...  
 > ```short, ushort, int, uint, bool, logn, ulong, float, decimal, double, char, byte, enum, string``` and array of the types. -->
           
 ---
-## Getting Started
-This is a server-client framework, so you need to create three projects : **Protocol**, **Server** and **Client**.
+## 开始
+这是一个主从式框架, 所以需要建立三个项目 : **Protocol**, **Server** and **Client**.
 
-#### Requirements
-* Visual Studio 2022  17.0.5 above.
-* .NET Sdk 5 above. 
+#### 环境需求
+* Visual Studio 2022  17.0.5 以上.
+* .NET Sdk 5 以上. 
 
 #### Protocol Project
-Create common interface project **Protocol.csproj** .
+建立共用接口项目 **Protocol.csproj** .
 ```powershell
 Sample/Protocol>dotnet new classlib 
 ```
 <!-- Add references to **Protocol.csproj**. -->
-1. Add References
+1. 加入参考
 ```xml
 <ItemGroup>
 	<PackageReference Include="Regulus.Remote" Version="0.1.11.0" />
@@ -186,7 +182,7 @@ Sample/Protocol>dotnet new classlib
 	</PackageReference>	
 </ItemGroup>
 ```
-2. Add interface, **IGreeter.cs**
+2. 新增接口, **IGreeter.cs**
 ```csharp
 namespace Protocol
 {
@@ -196,7 +192,7 @@ namespace Protocol
 	}
 }
 ```
-3. Add **ProtocolCreater.cs**.
+3. 新增 **ProtocolCreater.cs**.
 ```csharp
 namespace Protocol
 {
@@ -217,25 +213,24 @@ namespace Protocol
     }
 }
 ```  
-This step is to generate the generator for the ``IProtocol``, which is an important component of the framework and is needed for communication between the server and the client.  
-**_Attention_**  
-As shown in the code above, Add ```Regulus.Remote.Protocol``` attribute to the method you want to get ```IProtocol```, the method specification must be ```static partial void Method(ref Regulus.Remote.IProtocol)```, otherwise it will not pass compilation.
-
+此步骤是为了产生 ```IProtocol``` 的产生器,```IProtocol``` 是框架的重要元件,服务端与客户端需要的通讯元件.  
+**_注意_**  
+如以上代码所示, 添加 ```Regulus.Remote.Protocol.Creater``` 属性到想要取得 ```IProtocol``` 的方法上, 方法的规范必须是 ```static partial void Method(ref Regulus.Remote.IProtocol)```, 否则会无法通过编译.
 
 	
 #### Server Project
-Create the server. **Serrver.csproj**
+建立服务端. **Serrver.csproj**
 ```powershell
 Sample/Server>dotnet new console 
 ```
-1. Add References
+1. 加入参考
 ```xml
 <ItemGroup>
 	<PackageReference Include="Regulus.Remote.Server" Version="0.1.11.0" />
 	<ProjectReference Include="..\Protocol\Protocol.csproj" />	
 </ItemGroup>
 ```
-2. Instantiate ```IGreeter```
+2. 实作 ```IGreeter```
 ```csharp
 namespace Server
 {
@@ -243,13 +238,13 @@ namespace Server
 	{
 		Regulus.Remote.Value<string> SayHello(string request)
 		{
-			// Return the received message
+			// 回传收到的信息
 			return $"echo:{request}";
 		}
 	}
 }
 ```
-3. The server needs an entry point to start the environment , creating an entry point that inherits from ``Regulus.Remote.IEntry``. **Entry.cs**
+3. 服务器需要一个启动环境的入口点 , 创建一个继承自 ```Regulus.Remote.IEntry``` 的入口. **Entry.cs**
 ```csharp
 namespace Server
 {
@@ -262,53 +257,54 @@ namespace Server
 	}
 }
 ```
-4. Create Tcp service
+4. 建立 Tcp 服务
 ```csharp
 namespace Server
 {	
 	static void Main(string[] args)
 	{		
-		// Get IProtocol with ProtocolCreater
+		// 透过 ProtocolCreater 取得 IProtocol
 		var protocol = Protocol.ProtocolCreater.Create();
+
+		// 服务端的进入点
+		var entry = new Entry();
 		
-		// Create Service
-		var entry = new Entry();		
-		
+		// 带入 Entry , 建立服务
 		var set = Regulus.Remote.Server.Provider.CreateTcpService(entry, protocol);
 		int yourPort = 0;
 		set.Listener.Bind(yourPort);
 				
-		//  Close service
+		// 关闭服务
 		set.Listener.Close();
 		set.Service.Disoprt();
 	}
 }
 ```
 #### Client Project
-Create Client. **Client.csproj**.  
+建立客户端. **Client.csproj**.  
 ```powershell
 Sample/Client>dotnet new console 
 ```
-1. Add References
+1. 加入参考
 ```xml
 <ItemGroup>
 	<PackageReference Include="Regulus.Remote.Client" Version="0.1.11.0" />
 	<ProjectReference Include="..\Protocol\Protocol.csproj" />
 </ItemGroup>
 ```
-2. Create Tcp client
+2. 建立 Tcp 客户端
 ```csharp
 namespace Client
 {	
 	static void Main(string[] args)
 	{		
-		// Get IProtocol with ProtocolCreater
+		// 透过 ProtocolCreater 取得 IProtocol
 		var protocol = Protocol.ProtocolCreater.Create();
 		
-		
+		// 建立客户端
 		var set = Regulus.Remote.Client.Provider.CreateTcpAgent(protocol);
 
-		
+		// 呼叫 Agent.Update 保持资料传输, 在此产生一个简易 thread 使其保持运作.
 		bool stop = false;
 		var task = System.Threading.Tasks.Task.Run(() => 
 		{
@@ -318,23 +314,24 @@ namespace Client
 			}
                 
 		});
-		// Start Connecting
+		// 开始连线
 		EndPoint yourEndPoint = null;
 		set.Connecter.Connect(yourEndPoint ).Wait();
 
-		// SupplyEvent ,Receive add IGreeter.
+		// SupplyEvent 接收服务端绑定的 IGreeter
 		set.Agent.QueryNotifier<Protocol.IGreeter>().Supply += greeter => 
-		{			
+		{
+			// 呼叫物件
 			greeter.SayHello("hello");
 		};
 
-		// SupplyEvent ,Receive remove IGreeter.
+		// UnsupplyEvent 接收服务端解绑的 IGreeter
 		set.Agent.QueryNotifier<Protocol.IGreeter>().Unsupply += greeter => 
 		{
 			
 		};
 
-		// Close
+		// 关闭
 		stop = true;
 		task.Wait();
 		set.Connecter.Disconnect();
@@ -344,12 +341,12 @@ namespace Client
 }
 ```
 ---
-## Standalone mode
-In order to facilitate development and debugging, a standalone mode is provided to run the system without a connection.
+## 单机模式
+为了方便开发与除错, 提供了单机模式, 可以在不经过连线的情况下运行系统.
 ```powershell
 Sample/Standalone>dotnet new console 
 ```
-1. Add References
+1. 加入参考
 ```xml
 <ItemGroup>
 	<PackageReference Include="Regulus.Remote.Standalone" Version="0.1.11.0" />
@@ -357,21 +354,21 @@ Sample/Standalone>dotnet new console
 	<ProjectReference Include="..\Server\Server.csproj" />
 </ItemGroup>
 ```
-2.  Create stand-alone service
+2.  建立单机服务
 ```csharp
 namespace Standalone
 {	
 	static void Main(string[] args)
 	{		
-		// Get IProtocol with ProtocolCreater
+		// 透过 ProtocolCreater 取得 IProtocol
 		var protocol = Protocol.ProtocolCreater.Create();
 		
-		// Create service
+		// 建立服务
 		var entry = new Entry();
 		var service = Regulus.Remote.Standalone.Provider.CreateService(entry , protocol);
 		var agent = service.Create();
 
-		
+		// 呼叫 Agent.Update 保持资料传输, 在此产生一个简易 thread 使其保持运作.
 		bool stop = false;
 		var task = System.Threading.Tasks.Task.Run(() => 
 		{
@@ -382,20 +379,20 @@ namespace Standalone
                 
 		});
 		
-		
+		// SupplyEvent 接收服务端绑定的 IGreeter
 		agent.QueryNotifier<Protocol.IGreeter>().Supply += greeter => 
 		{
-		
+			// 呼叫物件
 			greeter.SayHello("hello");
 		};
 
-		
+		// UnsupplyEvent 接收服务端解绑的 IGreeter
 		agent.QueryNotifier<Protocol.IGreeter>().Unsupply += greeter => 
 		{
 			
 		};
 
-		// Close
+		// 关闭
 		stop = true;
 		task.Wait();
 		
@@ -406,16 +403,16 @@ namespace Standalone
 }
 ```
 ---
-## Custom Connections
-If you want to customize the connection system you can do so in the following way.
-#### Client
-Create a connection from ```CreateTcpAgent``` to ```CreateAgent``` and implement the interface ```IStreamable```.
+## 客制连线
+如果想自定义连线系统可以通过以下方式.
+#### 客户端
+建立连线从 ```CreateTcpAgent``` 改为 ```CreateAgent``` 并实现接口 ```IStreamable```
 ```csharp
 var protocol = Protocol.ProtocolCreater.Create();
-IStreamable stream = null ;// todo: Implementation Interface IStreamable
+IStreamable stream = null ;// todo: 实现接口 IStreamable
 var service = Regulus.Remote.Client.CreateAgent(protocol , stream) ;
 ```
-Implementation Type IStreamable
+实现类型 IStreamable
 ```csharp
 using Regulus.Remote;
 namespace Regulus.Network
@@ -442,31 +439,30 @@ namespace Regulus.Network
 }
 ```
 
-#### Server
-
-Create a service from ```CreateTcpService``` to ```CreateService``` and implement the interface ```IListenable```.
+#### 服务端
+建立服务从 ```CreateTcpService``` 改为 ```CreateService``` 并实现接口 ```IListenable```
 ```csharp
 var protocol = Protocol.ProtocolCreater.Create();
 var entry = new Entry();
-IListenable listener = null; // todo: Implementation Interface IListenable
+IListenable listener = null; // todo: 实现接口 IListenable
 var service = Regulus.Remote.Server.CreateService(entry , protocol , listener) ;
 ```
-Implementation Type IListenable
+实现类型 IListenable
 ```csharp
 namespace Regulus.Remote.Soul
 {
     public interface IListenable
     {
-		// When connected
+		// 连线时提供 IStreamable
         event System.Action<Network.IStreamable> StreamableEnterEvent;
-		// When disconnected
+		// 断线时提供 IStreamable
         event System.Action<Network.IStreamable> StreamableLeaveEvent;
     }
 }
 ```
 ---
-## Custom Serialization
-Implementation Type ```ISerializable``` 
+## 客制序列化
+实现类型 ```ISerializable``` 
 ```csharp
 namespace Regulus.Remote
 {
@@ -477,19 +473,17 @@ namespace Regulus.Remote
     }
 }
 ```
-and bring it to the server ```CreateTcpService```
+并带入到服务端 ```CreateTcpService```
 ```csharp
 var protocol = Protocol.ProtocolCreater.Create();
 var entry = new Entry();
-ISerializable serializer = null; 
+ISerializable serializer = null; // todo: 实现接口 ISerializable
 var service = Regulus.Remote.Server.CreateTcpService(entry , protocol , serializer) ;
 ```
 
-and bring it to the client ```CreateTcpAgent```
+并带入到客户端 ```CreateTcpAgent```
 ```csharp
 var protocol = Protocol.ProtocolCreater.Create();
-ISerializable serializer = null ;
+ISerializable serializer = null ;// todo: 实现接口 ISerializable
 var service = Regulus.Remote.Client.CreateTcpAgent(protocol , serializer) ;
 ```
-
-

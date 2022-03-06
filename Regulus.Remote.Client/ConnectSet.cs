@@ -1,8 +1,8 @@
 ﻿namespace Regulus.Remote.Client
 {
-    public class Integral<TConnecter>
+    public class ConnectSet<TConnecter>
     {
-        public Integral(TConnecter listener, Ghost.IAgent agent)
+        public ConnectSet(TConnecter listener, Ghost.IAgent agent)
         {
             Connecter = listener;
             Agent = agent;

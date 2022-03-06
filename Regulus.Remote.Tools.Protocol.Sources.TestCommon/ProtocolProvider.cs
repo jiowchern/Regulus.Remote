@@ -9,7 +9,7 @@
             return protocol;
         }
 
-        [Remote.Protocol.Creator]
+        [Remote.Protocol.Creater]
         static partial void _CreateCase1(ref Regulus.Remote.IProtocol protocol);
 
 
@@ -20,7 +20,7 @@
             return protocol;
         }
 
-        [Remote.Protocol.Creator]
+        [Remote.Protocol.Creater]
         static partial void _CreateCase2(ref IProtocol protocol);
     }
 }

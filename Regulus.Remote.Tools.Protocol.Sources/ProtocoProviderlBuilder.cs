@@ -31,7 +31,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                         
                         var name = info.Symbol.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
-                        if (name != "global::Regulus.Remote.Protocol.CreatorAttribute")
+                        if (name != "global::Regulus.Remote.Protocol.CreaterAttribute")
                         {
                             continue;
                         }

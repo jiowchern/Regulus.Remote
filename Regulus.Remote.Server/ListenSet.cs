@@ -1,8 +1,8 @@
 ﻿namespace Regulus.Remote.Server
 {
-    public class Integral<TListener>
+    public class ListenSet<TListener>
     {
-        public Integral(TListener listener, Soul.IService service)
+        public ListenSet(TListener listener, Soul.IService service)
         {
             Listener = listener;
             Service = service;

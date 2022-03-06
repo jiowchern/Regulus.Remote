@@ -455,7 +455,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon
             return protocol;
         }
 
-        [Remote.Protocol.Creator]
+        [Remote.Protocol.Creater]
         static partial void _CreateCase1(ref Regulus.Remote.IProtocol protocol);
 
 
@@ -466,7 +466,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon
             return protocol;
         }
 
-        [Remote.Protocol.Creator]
+        [Remote.Protocol.Creater]
         static partial void _CreateCase2(ref IProtocol protocol);
     }
 }

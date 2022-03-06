@@ -23,7 +23,7 @@ namespace Regulus.Integration.Tests
             var server = Regulus.Remote.Server.Provider.CreateTcpService(entry, protocol);
             server.Listener.Bind(47536);
             
-            var client = Regulus.Remote.Client.Provider.CreateTcp(protocol);
+            var client = Regulus.Remote.Client.Provider.CreateTcpAgent(protocol);
 
             bool stop = false;
             var task = System.Threading.Tasks.Task.Run(() => 

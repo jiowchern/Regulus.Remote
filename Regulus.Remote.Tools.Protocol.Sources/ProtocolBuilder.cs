@@ -53,7 +53,7 @@ public class {protocolName} : Regulus.Remote.IProtocol
        
         _InterfaceProvider = new Regulus.Remote.InterfaceProvider(new Dictionary<Type, Type> (){{ {interface_provider_code_builder.Code}}});
    
-        _EventProvider = new Regulus.Remote.EventProvider( new IEventProxyCreator[]{{ {event_provider_code_builder.Code} }});        
+        _EventProvider = new Regulus.Remote.EventProvider( new IEventProxyCreater[]{{ {event_provider_code_builder.Code} }});        
         _SerializeTypes = new System.Type[] {{{serCode}}};
         _MemberMap = new Regulus.Remote.MemberMap(
             new System.Reflection.MethodInfo[] {{{membermap_code_builder.MethodInfosCode}}} ,

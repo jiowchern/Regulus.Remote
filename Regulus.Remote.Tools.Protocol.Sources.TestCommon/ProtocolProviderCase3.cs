@@ -9,6 +9,6 @@ public static partial class ProtocolProviderCase3
         return protocol;
     }
 
-    [Regulus.Remote.Protocol.Creator]
+    [Regulus.Remote.Protocol.Creater]
     static partial void _CreateCase3(ref IProtocol protocol);
 }

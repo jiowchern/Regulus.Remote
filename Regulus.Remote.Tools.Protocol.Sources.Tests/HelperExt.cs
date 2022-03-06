@@ -15,7 +15,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
             
             IEnumerable<MetadataReference> references = new MetadataReference[]
             {
-                MetadataReference.CreateFromFile(typeof(Regulus.Remote.Protocol.CreatorAttribute).GetTypeInfo().Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(Regulus.Remote.Protocol.CreaterAttribute).GetTypeInfo().Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Regulus.Remote.Value<>).GetTypeInfo().Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Regulus.Remote.Property<>).GetTypeInfo().Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Regulus.Remote.Notifier<>).GetTypeInfo().Assembly.Location)

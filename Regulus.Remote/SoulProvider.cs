@@ -399,10 +399,10 @@ namespace Regulus.Remote
         private Delegate _BuildDelegate(EventInfo info, long entity_id, long handler_id, InvokeEventCallabck invoke_Event)
         {
 
-            IEventProxyCreator eventCreator = _EventProvider.Find(info);
+            IEventProxyCreater eventCreater = _EventProvider.Find(info);
             MemberMap map = _Protocol.GetMemberMap();
             int id = map.GetEvent(info);
-            return eventCreator.Create(entity_id, id, handler_id, invoke_Event);
+            return eventCreater.Create(entity_id, id, handler_id, invoke_Event);
 
 
 

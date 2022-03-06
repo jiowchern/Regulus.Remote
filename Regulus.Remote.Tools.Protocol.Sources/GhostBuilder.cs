@@ -84,7 +84,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             
             namespace {namespaceName}
             {{ 
-                public class {eventName} : Regulus.Remote.IEventProxyCreator
+                public class {eventName} : Regulus.Remote.IEventProxyCreater
                 {{
             
                     Type _Type;
@@ -96,19 +96,19 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                         _Type = typeof({typeName});                   
                     
                     }}
-                    Delegate Regulus.Remote.IEventProxyCreator.Create(long soul_id,int event_id,long handler_id, Regulus.Remote.InvokeEventCallabck invoke_Event)
+                    Delegate Regulus.Remote.IEventProxyCreater.Create(long soul_id,int event_id,long handler_id, Regulus.Remote.InvokeEventCallabck invoke_Event)
                     {{                
                         var closure = new Regulus.Remote.GenericEventClosure(soul_id , event_id ,handler_id, invoke_Event);                
                         return new Action{typeArgCode}(({valueArgCode}) => closure.Run(new object[]{{{valueArgCode}}}));
                     }}
                 
             
-                    Type Regulus.Remote.IEventProxyCreator.GetType()
+                    Type Regulus.Remote.IEventProxyCreater.GetType()
                     {{
                         return _Type;
                     }}            
             
-                    string Regulus.Remote.IEventProxyCreator.GetName()
+                    string Regulus.Remote.IEventProxyCreater.GetName()
                     {{
                         return _Name;
                     }}            
