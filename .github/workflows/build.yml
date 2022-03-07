@@ -41,3 +41,7 @@ jobs:
       with:         
         github-token: '${{ secrets.GITHUB_TOKEN }}'
         path-to-lcov: coverage.info
+    - name: Adding README - Chinese Simplified
+      uses: dephraiim/translate-readme@main
+      with:
+        LANG: zh-CN

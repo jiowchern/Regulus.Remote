@@ -82,7 +82,7 @@ namespace Protocol
 	}
 }
 ```
-2. Server-side Implementation IGreeter.
+2. Server implemente **IGreeter**.
 ```csharp
 namespace Server
 {	
@@ -306,10 +306,8 @@ namespace Client
 	{		
 		// Get IProtocol with ProtocolCreater
 		var protocol = Protocol.ProtocolCreater.Create();
-		
-		
+				
 		var set = Regulus.Remote.Client.Provider.CreateTcpAgent(protocol);
-
 		
 		bool stop = false;
 		var task = System.Threading.Tasks.Task.Run(() => 
@@ -382,15 +380,13 @@ namespace Standalone
 				agent.Update();
 			}
                 
-		});
-		
+		});		
 		
 		agent.QueryNotifier<Protocol.IGreeter>().Supply += greeter => 
 		{
 		
 			greeter.SayHello("hello");
 		};
-
 		
 		agent.QueryNotifier<Protocol.IGreeter>().Unsupply += greeter => 
 		{
