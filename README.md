@@ -64,7 +64,7 @@ end note
 
 
 ## Example
-**1. Definition Interface IGreeter .**  
+1. Definition Interface IGreeter .
 ```csharp
 namespace Protocol
 {
@@ -82,7 +82,7 @@ namespace Protocol
 	}
 }
 ```
-**2. Server-side Implementation IGreeter.**  
+2. Server-side Implementation IGreeter.
 ```csharp
 namespace Server
 {	
@@ -96,7 +96,7 @@ namespace Server
 }
 ```
 
-**3. Use ```IBinder.Bind``` to send the ```IGreeter``` to the client.**  
+3. Use ```IBinder.Bind``` to send the ```IGreeter``` to the client.
 ```csharp
 namespace Server
 {
@@ -120,7 +120,7 @@ namespace Server
 }
 ```
 
-**4. Client uses ```IAgent.QueryNotifier``` to obtain ```IGreeter```.**
+4. Client uses ```IAgent.QueryNotifier``` to obtain ```IGreeter```.
 ```csharp
 namespace Client
 {
@@ -224,7 +224,7 @@ As shown in the code above, Add ```Regulus.Remote.Protocol``` attribute to the m
 ---
 	
 #### Server Project
-Create the server. **Serrver.csproj**
+Create the server. **Server.csproj**
 ```powershell
 Sample/Server>dotnet new console 
 ```
@@ -235,7 +235,7 @@ Sample/Server>dotnet new console
 	<ProjectReference Include="..\Protocol\Protocol.csproj" />	
 </ItemGroup>
 ```
-2. Instantiate ```IGreeter```
+2. Instantiate **IGreeter**
 ```csharp
 namespace Server
 {
@@ -264,6 +264,7 @@ namespace Server
 ```
 4. Create Tcp service
 ```csharp
+
 namespace Server
 {	
 	static void Main(string[] args)
@@ -280,7 +281,7 @@ namespace Server
 				
 		//  Close service
 		set.Listener.Close();
-		set.Service.Disoprt();
+		set.Service.Dispose();
 	}
 }
 ```
@@ -358,7 +359,7 @@ Sample/Standalone>dotnet new console
 	<ProjectReference Include="..\Server\Server.csproj" />
 </ItemGroup>
 ```
-2.  Create stand-alone service
+2.  Create standlone service
 ```csharp
 namespace Standalone
 {	
@@ -416,7 +417,7 @@ var protocol = Protocol.ProtocolCreater.Create();
 IStreamable stream = null ;// todo: Implementation Interface IStreamable
 var service = Regulus.Remote.Client.CreateAgent(protocol , stream) ;
 ```
-Implementation Type IStreamable
+Implement **IStreamable**
 ```csharp
 using Regulus.Remote;
 namespace Regulus.Network
@@ -452,7 +453,7 @@ var entry = new Entry();
 IListenable listener = null; // todo: Implementation Interface IListenable
 var service = Regulus.Remote.Server.CreateService(entry , protocol , listener) ;
 ```
-Implementation Type IListenable
+Implement **IListenable**
 ```csharp
 namespace Regulus.Remote.Soul
 {
@@ -467,7 +468,7 @@ namespace Regulus.Remote.Soul
 ```
 ---
 ## Custom Serialization
-Implementation Type ```ISerializable``` 
+Implement **ISerializable**
 ```csharp
 namespace Regulus.Remote
 {
@@ -478,7 +479,7 @@ namespace Regulus.Remote
     }
 }
 ```
-and bring it to the server ```CreateTcpService```
+and bring it to the server **CreateTcpService**
 ```csharp
 var protocol = Protocol.ProtocolCreater.Create();
 var entry = new Entry();
@@ -486,7 +487,7 @@ ISerializable serializer = null;
 var service = Regulus.Remote.Server.CreateTcpService(entry , protocol , serializer) ;
 ```
 
-and bring it to the client ```CreateTcpAgent```
+and bring it to the client **CreateTcpAgent**
 ```csharp
 var protocol = Protocol.ProtocolCreater.Create();
 ISerializable serializer = null ;
