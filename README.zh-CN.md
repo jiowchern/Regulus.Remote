@@ -1,4 +1,4 @@
-# 轩辕遥控器
+# 轩辕远程
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/99cb5e1dc12cafbfe451/maintainability)](https://codeclimate.com/github/jiowchern/Regulus.Remote/maintainability)[![Actions Status](https://github.com/jiowchern/Regulus.Remote/workflows/Build/badge.svg)](https://github.com/jiowchern/Regulus.Remote/actions)[![Build status](https://ci.appveyor.com/api/projects/status/fv1owwit4utddawv/branch/release?svg=true)](https://ci.appveyor.com/project/jiowchern/regulus-remote/branch/release)[![Coverage Status](https://coveralls.io/repos/github/jiowchern/Regulus.Remote/badge.svg?branch=master)](https://coveralls.io/github/jiowchern/Regulus.Remote?branch=master)![commit last date](https://img.shields.io/github/last-commit/jiowchern/Regulus.Remote)
 
@@ -161,10 +161,10 @@ namespace Client
 
 <!-- In addition, bind and unbind are used to switch the objects of the server, so as to control the access rights of the client conveniently.  -->
 
--   [方法](document/communications-method.md)&lt;--`IGreeter.SayHello`
--   [事件](document/communications-event.md)
--   [财产](document/communications-property.md)
--   [通知](document/communications-notifier.md)
+-   [`Method`](document/communications-method.md)&lt;--`IGreeter.SayHello`
+-   [`Event`](document/communications-event.md)
+-   [`Property`](document/communications-property.md)
+-   [`Notifier`](document/communications-notifier.md)
 
 **序列化**  
 对于可以序列化的类型，请参见[`Regulus.Serialization`](Regulus.Serialization/README.md)指示。
@@ -242,8 +242,9 @@ namespace Protocol
 ```
 
 这一步是生成生成器`IProtocol`，它是框架的重要组成部分，是服务器和客户端之间通信所需要的。  
-**_笔记_**  
-如上代码所示，添加`Regulus.Remote.Protocol`属性到你想得到的方法`IProtocol`，方法规范必须是`static partial void Method(ref Regulus.Remote.IProtocol)`, 否则编译不通过。
+**_笔记_**
+
+> > 如上代码所示，添加`Regulus.Remote.Protocol`属性到你想得到的方法`IProtocol`，方法规范必须是`static partial void Method(ref Regulus.Remote.IProtocol)`，否则编译不通过。
 
 * * *
 
@@ -318,6 +319,8 @@ namespace Server
 		set.Service.Dispose();
 	}
 }
+
+
 ```
 
 * * *
@@ -420,7 +423,6 @@ namespace Standalone
 		var entry = new Entry();
 		var service = Regulus.Remote.Standalone.Provider.CreateService(entry , protocol);
 		var agent = service.Create();
-
 		
 		bool stop = false;
 		var task = System.Threading.Tasks.Task.Run(() => 
@@ -509,7 +511,7 @@ IListenable listener = null; // todo: Implementation Interface IListenable
 var service = Regulus.Remote.Server.CreateService(entry , protocol , listener) ;
 ```
 
-工具`IListenable`
+实施`IListenable`
 
 ```csharp
 namespace Regulus.Remote.Soul
