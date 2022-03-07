@@ -63,7 +63,7 @@ end note
 
 
 ## Example
-1. Definition Interface IGreeter .
+1. Definition Interface ```IGreeter``` .
 ```csharp
 namespace Protocol
 {
@@ -81,7 +81,7 @@ namespace Protocol
 	}
 }
 ```
-2. Server implemente **IGreeter**.
+2. Server implemente ```IGreeter```.
 ```csharp
 namespace Server
 {	
@@ -162,14 +162,14 @@ For the types that can be serialized, see [Regulus.Serialization](Regulus.Serial
           
 ---
 ## Getting Started
-This is a server-client framework, so you need to create three projects : **Protocol**, **Server** and **Client**.
+This is a server-client framework, so you need to create three projects : **```Protocol```**, **```Server```** and **```Client```**.
 
 #### Requirements
 * Visual Studio 2022  17.0.5 above.
 * .NET Sdk 5 above. 
 
 #### Protocol Project
-Create common interface project **Protocol.csproj** .
+Create common interface project **```Protocol.csproj```** .
 ```powershell
 Sample/Protocol>dotnet new classlib 
 ```
@@ -185,7 +185,7 @@ Sample/Protocol>dotnet new classlib
 	</PackageReference>	
 </ItemGroup>
 ```
-2. Add interface, **IGreeter.cs**
+2. Add interface, ```IGreeter.cs```
 ```csharp
 namespace Protocol
 {
@@ -195,7 +195,7 @@ namespace Protocol
 	}
 }
 ```
-3. Add **ProtocolCreater.cs**.
+3. Add ```ProtocolCreater.cs```.
 ```csharp
 namespace Protocol
 {
@@ -223,7 +223,7 @@ As shown in the code above, Add ```Regulus.Remote.Protocol``` attribute to the m
 ---
 	
 #### Server Project
-Create the server. **Server.csproj**
+Create the server. **```Server.csproj```**
 ```powershell
 Sample/Server>dotnet new console 
 ```
@@ -234,7 +234,7 @@ Sample/Server>dotnet new console
 	<ProjectReference Include="..\Protocol\Protocol.csproj" />	
 </ItemGroup>
 ```
-2. Instantiate **IGreeter**
+2. Instantiate ```IGreeter```
 ```csharp
 namespace Server
 {
@@ -248,7 +248,7 @@ namespace Server
 	}
 }
 ```
-3. The server needs an entry point to start the environment , creating an entry point that inherits from ``Regulus.Remote.IEntry``. **Entry.cs**
+3. The server needs an entry point to start the environment , creating an entry point that inherits from ``Regulus.Remote.IEntry``. **```Entry.cs```**
 ```csharp
 namespace Server
 {
@@ -286,7 +286,7 @@ namespace Server
 ```
 ---
 #### Client Project
-Create Client. **Client.csproj**.  
+Create Client. **```Client.csproj```**.  
 ```powershell
 Sample/Client>dotnet new console 
 ```
@@ -412,7 +412,7 @@ var protocol = Protocol.ProtocolCreater.Create();
 IStreamable stream = null ;// todo: Implementation Interface IStreamable
 var service = Regulus.Remote.Client.CreateAgent(protocol , stream) ;
 ```
-Implement **IStreamable**
+Implement **```IStreamable```**
 ```csharp
 using Regulus.Remote;
 namespace Regulus.Network
@@ -448,7 +448,7 @@ var entry = new Entry();
 IListenable listener = null; // todo: Implementation Interface IListenable
 var service = Regulus.Remote.Server.CreateService(entry , protocol , listener) ;
 ```
-Implement **IListenable**
+Implement **```IListenable```**
 ```csharp
 namespace Regulus.Remote.Soul
 {
@@ -463,7 +463,7 @@ namespace Regulus.Remote.Soul
 ```
 ---
 ## Custom Serialization
-Implement **ISerializable**
+Implement **```ISerializable```**
 ```csharp
 namespace Regulus.Remote
 {
@@ -474,7 +474,7 @@ namespace Regulus.Remote
     }
 }
 ```
-and bring it to the server **CreateTcpService**
+and bring it to the server **```CreateTcpService```**
 ```csharp
 var protocol = Protocol.ProtocolCreater.Create();
 var entry = new Entry();
@@ -482,7 +482,7 @@ ISerializable serializer = null;
 var service = Regulus.Remote.Server.CreateTcpService(entry , protocol , serializer) ;
 ```
 
-and bring it to the client **CreateTcpAgent**
+and bring it to the client **```CreateTcpAgent```**
 ```csharp
 var protocol = Protocol.ProtocolCreater.Create();
 ISerializable serializer = null ;
