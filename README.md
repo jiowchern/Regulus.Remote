@@ -150,10 +150,10 @@ After completing the above steps, the server and client can communicate through 
 In addition to the above example ``IGreeter.SayHello``, there are a total of four ways to ...
 
 <!-- In addition, bind and unbind are used to switch the objects of the server, so as to control the access rights of the client conveniently.  -->
-* [Method](document/communications-method.md) <-- ```IGreeter.SayHello``` 
-* [Event](document/communications-event.md)
-* [Property](document/communications-property.md)
-* [Notifier](document/communications-notifier.md)
+* [```Method```](document/communications-method.md) <-- ```IGreeter.SayHello``` 
+* [```Event```](document/communications-event.md)
+* [```Property```](document/communications-property.md)
+* [```Notifier```](document/communications-notifier.md)
 
 **Serialization**  
 For the types that can be serialized, see [```Regulus.Serialization```](Regulus.Serialization/README.md) instructions.
@@ -218,7 +218,7 @@ namespace Protocol
 ```  
 This step is to generate the generator for the ``IProtocol``, which is an important component of the framework and is needed for communication between the server and the client.  
 **_Note_**  
-As shown in the code above, Add ```Regulus.Remote.Protocol``` attribute to the method you want to get ```IProtocol```, the method specification must be ```static partial void Method(ref Regulus.Remote.IProtocol)```, otherwise it will not pass compilation.
+>> As shown in the code above, Add ```Regulus.Remote.Protocol``` attribute to the method you want to get ```IProtocol```, the method specification must be ```static partial void Method(ref Regulus.Remote.IProtocol)```, otherwise it will not pass compilation.
 
 ---
 	
@@ -283,6 +283,8 @@ namespace Server
 		set.Service.Dispose();
 	}
 }
+
+
 ```
 ---
 #### Client Project
@@ -369,7 +371,6 @@ namespace Standalone
 		var entry = new Entry();
 		var service = Regulus.Remote.Standalone.Provider.CreateService(entry , protocol);
 		var agent = service.Create();
-
 		
 		bool stop = false;
 		var task = System.Threading.Tasks.Task.Run(() => 
@@ -412,7 +413,7 @@ var protocol = Protocol.ProtocolCreater.Create();
 IStreamable stream = null ;// todo: Implementation Interface IStreamable
 var service = Regulus.Remote.Client.CreateAgent(protocol , stream) ;
 ```
-Implemente ```IStreamable```
+implemente ```IStreamable```
 ```csharp
 using Regulus.Remote;
 namespace Regulus.Network
@@ -448,7 +449,7 @@ var entry = new Entry();
 IListenable listener = null; // todo: Implementation Interface IListenable
 var service = Regulus.Remote.Server.CreateService(entry , protocol , listener) ;
 ```
-Implemente ```IListenable```
+implement ```IListenable```
 ```csharp
 namespace Regulus.Remote.Soul
 {
@@ -463,7 +464,7 @@ namespace Regulus.Remote.Soul
 ```
 ---
 ## Custom Serialization
-Implement ```ISerializable```
+implement ```ISerializable```
 ```csharp
 namespace Regulus.Remote
 {
