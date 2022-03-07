@@ -13,8 +13,7 @@
 ## Introduction
 It is a server-client connection framework developed using .Net Standard 2.0 and can be used in Unity game engine and other game engines that are compliant with .  
 
-[繁中](README-TC.md)
-[简中](README-SC.md)
+
 ## Features
 Server and client transfer through the interface, reducing the maintenance cost of the protocol.
 <!-- 
