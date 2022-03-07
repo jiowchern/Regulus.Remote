@@ -14,7 +14,7 @@
 
 它是使用.Net Standard 2.0开发的服务器-客户端连接框架，可用于Unity游戏引擎和其他兼容.Net标准的游戏引擎。
 
-## 特征
+## Features
 
 服务器和客户端通过接口进行传输，降低了协议的维护成本。
 
@@ -64,7 +64,7 @@ end note
 
 ## 例子
 
-1.  定义接口 IGreeter 。
+1.  定义接口`IGreeter`.
 
 ```csharp
 namespace Protocol
@@ -84,7 +84,7 @@ namespace Protocol
 }
 ```
 
-2.  实现服务器**迎宾员**.
+2.  实现服务器`IGreeter`.
 
 ```csharp
 namespace Server
@@ -176,7 +176,7 @@ namespace Client
 
 ## 入门
 
-这是一个服务器-客户端框架，因此您需要创建三个项目：**协议**,**服务器**和**客户**.
+这是一个服务器-客户端框架，因此您需要创建三个项目：**`Protocol`**,**`Server`**和**`Client`**.
 
 #### 要求
 
@@ -185,7 +185,7 @@ namespace Client
 
 #### 协议项目
 
-创建通用接口项目**协议.csproj**.
+创建通用接口项目**`Protocol.csproj`**.
 
 ```powershell
 Sample/Protocol>dotnet new classlib 
@@ -206,7 +206,7 @@ Sample/Protocol>dotnet new classlib
 </ItemGroup>
 ```
 
-2.  添加接口，**IGreeter.cs**
+2.  添加接口，`IGreeter.cs`
 
 ```csharp
 namespace Protocol
@@ -218,7 +218,7 @@ namespace Protocol
 }
 ```
 
-3.  添加**协议创建者.cs**.
+3.  添加`ProtocolCreater.cs`.
 
 ```csharp
 namespace Protocol
@@ -249,7 +249,7 @@ namespace Protocol
 
 #### 服务器项目
 
-创建服务器。**服务器.csproj**
+创建服务器。**`Server.csproj`**
 
 ```powershell
 Sample/Server>dotnet new console 
@@ -264,7 +264,7 @@ Sample/Server>dotnet new console
 </ItemGroup>
 ```
 
-2.  实例化**迎宾员**
+2.  实例化`IGreeter`
 
 ```csharp
 namespace Server
@@ -280,7 +280,7 @@ namespace Server
 }
 ```
 
-3.  服务器需要一个入口点来启动环境，创建一个继承自`Regulus.Remote.IEntry`.**入口.cs**
+3.  服务器需要一个入口点来启动环境，创建一个继承自`Regulus.Remote.IEntry`.**`Entry.cs`**
 
 ```csharp
 namespace Server
@@ -324,7 +324,7 @@ namespace Server
 
 #### 客户项目
 
-创建客户端。**客户端.csproj**.
+创建客户端。**`Client.csproj`**.
 
 ```powershell
 Sample/Client>dotnet new console 
@@ -470,7 +470,7 @@ IStreamable stream = null ;// todo: Implementation Interface IStreamable
 var service = Regulus.Remote.Client.CreateAgent(protocol , stream) ;
 ```
 
-实施**IStreamable**
+实施**`IStreamable`**
 
 ```csharp
 using Regulus.Remote;
@@ -509,7 +509,7 @@ IListenable listener = null; // todo: Implementation Interface IListenable
 var service = Regulus.Remote.Server.CreateService(entry , protocol , listener) ;
 ```
 
-实施**IListenable**
+实施**`IListenable`**
 
 ```csharp
 namespace Regulus.Remote.Soul
@@ -528,7 +528,7 @@ namespace Regulus.Remote.Soul
 
 ## 自定义序列化
 
-实施**可序列化的**
+实施**`ISerializable`**
 
 ```csharp
 namespace Regulus.Remote
@@ -541,7 +541,7 @@ namespace Regulus.Remote
 }
 ```
 
-并将其带到服务器**创建TcpServer**
+并将其带到服务器**`CreateTcpService`**
 
 ```csharp
 var protocol = Protocol.ProtocolCreater.Create();
@@ -550,7 +550,7 @@ ISerializable serializer = null;
 var service = Regulus.Remote.Server.CreateTcpService(entry , protocol , serializer) ;
 ```
 
-并将其带给客户**创建TcpAgent**
+并将其带给客户**`CreateTcpAgent`**
 
 ```csharp
 var protocol = Protocol.ProtocolCreater.Create();
