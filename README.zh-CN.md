@@ -342,7 +342,7 @@ Sample/Client>dotnet new console
 </ItemGroup>
 ```
 
-2.  创建 Tcp 客户端
+2.  Create Tcp client
 
 ```csharp
 namespace Client
@@ -559,3 +559,10 @@ var protocol = Protocol.ProtocolCreater.Create();
 ISerializable serializer = null ;
 var service = Regulus.Remote.Client.CreateTcpAgent(protocol , serializer) ;
 ```
+
+* * *
+
+## 样品
+
+聊天室  
+[关联](https://github.com/jiowchern/Regulus.Samples/tree/readme/Chat1)
