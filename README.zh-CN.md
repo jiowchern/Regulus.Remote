@@ -62,7 +62,7 @@ end note
 * Customizable connection
 * Stand-alone mode  -->
 
-## 例子
+## 用法
 
 1.  定义接口`IGreeter`.
 
@@ -342,7 +342,7 @@ Sample/Client>dotnet new console
 </ItemGroup>
 ```
 
-2.  Create Tcp client
+2.  创建 Tcp 客户端
 
 ```csharp
 namespace Client
@@ -562,7 +562,7 @@ var service = Regulus.Remote.Client.CreateTcpAgent(protocol , serializer) ;
 
 * * *
 
-## 样品
+## 例子
 
 聊天室  
-[关联](https://github.com/jiowchern/Regulus.Samples/tree/readme/Chat1)
+可以在此处找到应用程序的完整示例，包括 Unity 版本。[关联](https://github.com/jiowchern/Regulus.Samples/tree/readme/Chat1)
