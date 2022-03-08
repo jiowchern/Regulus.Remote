@@ -24,10 +24,10 @@ classA.Field2 = "2";
 // need to add the required type when creating.
 var serializer = new Regulus.Serialization.Serializer(new Regulus.Serialization.DescriberBuilder(typeof(ClassA)).Describers);
 
-// Serialization
+// Serializ
 var buffer = serializer.ObjectToBuffer(classA);
 
-// Deserialization
+// Deserializ
 var cloneClassA = serializer.ObjectToBuffer(buffer) as ClassA;
 
 ```
