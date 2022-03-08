@@ -489,5 +489,7 @@ var protocol = Protocol.ProtocolCreater.Create();
 ISerializable serializer = null ;
 var service = Regulus.Remote.Client.CreateTcpAgent(protocol , serializer) ;
 ```
-
-
+---
+## Samples
+Chat Room                                                                                                                                   
+[Link](https://github.com/jiowchern/Regulus.Samples/tree/readme/Chat1)
