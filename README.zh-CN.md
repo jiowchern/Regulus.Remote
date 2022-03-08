@@ -244,7 +244,7 @@ namespace Protocol
 这一步是生成生成器`IProtocol`，它是框架的重要组成部分，是服务器和客户端之间通信所需要的。  
 **_笔记_**
 
-> > 如上代码所示，添加`Regulus.Remote.Protocol`属性到你想得到的方法`IProtocol`，方法规范必须是`static partial void Method(ref Regulus.Remote.IProtocol)`，否则编译不通过。
+> > 如上面代码所示，添加`Regulus.Remote.Protocol`属性到你想得到的方法`IProtocol`，方法规范必须是`static partial void Method(ref Regulus.Remote.IProtocol)`，否则编译不通过。
 
 * * *
 
