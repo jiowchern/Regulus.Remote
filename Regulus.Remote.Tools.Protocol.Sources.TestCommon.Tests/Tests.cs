@@ -254,9 +254,35 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
             NUnit.Framework.Assert.AreEqual(8, vals[3]);
 
 
+
         }
 
+
         [Test]
+        public void MethodNotSupportedTest()
+        {
+            var tester = new MethodTester();
+
+            var env = new TestEnv<Entry<IMethodable>, IMethodable>(new Entry<IMethodable>(tester));
+            var gpiObs = from g in env.Queryable.QueryNotifier<IMethodable>().SupplyEvent()
+                         select g;
+
+            var gpi= gpiObs.FirstAsync().Wait();
+            try
+            {
+                gpi.NotSupported();
+            }
+            catch (System.NotSupportedException sue)
+            {
+
+                NUnit.Framework.Assert.Pass();
+                return;
+            }
+
+            NUnit.Framework.Assert.Fail();
+        }
+
+            [Test]
         public void MethodTest()
         {
 
