@@ -28,7 +28,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         }
         public readonly IReadOnlyCollection<Ghost> Ghosts;
         public readonly IReadOnlyCollection<SyntaxTree> Events;
-        private readonly ITypeSymbol _RegulusRemoteValue;
+        
+        readonly EssentialReference _EssentialReference;
 
         public GhostBuilder(Compilation compilation) : this(new EssentialReference(compilation))
         {
@@ -36,8 +37,9 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         }
         public GhostBuilder(EssentialReference essential)
         {
+            _EssentialReference = essential;
             var compilation = essential.Compilation;
-            _RegulusRemoteValue = essential.RegulusRemoteValue;
+            
             var ghosts = 
                 from syntax in compilation.SyntaxTrees
                 let SemanticModel = compilation.GetSemanticModel(syntax)
@@ -263,7 +265,7 @@ public {t.ToDisplayString()} _{fieldName} = new {t.ToDisplayString()}();
 
         
 
-        private static string _BuildEvents(IEnumerable<IEventSymbol> events)
+        private string _BuildEvents(IEnumerable<IEventSymbol> events)
         {
 
             return string.Join("\r\n",
@@ -273,12 +275,42 @@ public {t.ToDisplayString()} _{fieldName} = new {t.ToDisplayString()}();
         }
 
 
-        private static string _BuildEvent(IEventSymbol symbol)
+        private string _BuildEvent(IEventSymbol symbol)
         {
-            
-            
-            var fieldName = symbol.ToDisplayString().Replace('.','_');
-            
+            if (_EssentialReference.SystemActions.Any(t => t == (symbol.Type.OriginalDefinition ?? symbol.Type) ))
+            {
+                return _CreateEventSource(symbol);
+            }
+            return _CreateEventEmptySource(symbol);
+
+        }
+
+        private string _CreateEventEmptySource(IEventSymbol symbol)
+        {
+            var fieldName = symbol.ToDisplayString().Replace('.', '_');
+
+            var source =
+                $@"
+public Regulus.Remote.GhostEventHandler  _{fieldName} = new Regulus.Remote.GhostEventHandler();
+event {symbol.Type.ToDisplayString()} {symbol.ToDisplayString()}
+{{
+    add 
+    {{
+        throw new Regulus.Remote.Exceptions.NotSupportedException();
+    }}
+    remove
+    {{
+        throw new Regulus.Remote.Exceptions.NotSupportedException();
+    }}
+}}
+";
+            return source;
+        }
+
+        private static string _CreateEventSource(IEventSymbol symbol)
+        {
+            var fieldName = symbol.ToDisplayString().Replace('.', '_');
+
             var source =
                 $@"
 public Regulus.Remote.GhostEventHandler  _{fieldName} = new Regulus.Remote.GhostEventHandler();
@@ -321,7 +353,7 @@ event {symbol.Type.ToDisplayString()} {symbol.ToDisplayString()}
                 retRetValueVar = "null";
                 retCode = "void";
             }
-            else if (_RegulusRemoteValue == symbol.ReturnType.OriginalDefinition)
+            else if (_EssentialReference.RegulusRemoteValue == symbol.ReturnType.OriginalDefinition)
             {
                 retValue = $"var returnValue = new {symbol.ReturnType}();";
                 retRetValue = "return returnValue ;";
@@ -331,7 +363,7 @@ event {symbol.Type.ToDisplayString()} {symbol.ToDisplayString()}
             else
             {
                 retValue = $"";
-                retRetValue = "throw new System.NotSupportedException() ;";
+                retRetValue = "throw new Regulus.Remote.Exceptions.NotSupportedException();";
                 retRetValueVar = "null";
                 retCode = symbol.ReturnType.ToDisplayString();
             }

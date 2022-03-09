@@ -105,6 +105,19 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon
             }
         }
 
+        event CustomDelegate IEventabe.CustomDelegateEvent
+        {
+            add
+            {
+                throw new NotImplementedException();
+            }
+
+            remove
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public void Invoke11()
         {
             _IEventabe1Event1();

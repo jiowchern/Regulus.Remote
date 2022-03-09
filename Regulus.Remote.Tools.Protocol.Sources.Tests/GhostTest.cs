@@ -27,6 +27,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
             {
                 MetadataReference.CreateFromFile(typeof(Regulus.Remote.Property<>).GetTypeInfo().Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Regulus.Remote.Value<>).GetTypeInfo().Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(System.Action).GetTypeInfo().Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(System.Action<,,,,,,,,>).GetTypeInfo().Assembly.Location),
 
             };
             CSharpCompilation compilation =  CSharpCompilation.Create(assemblyName, souls, references) ;
@@ -52,6 +54,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
             test.TestState.AdditionalReferences.Add(typeof(Regulus.Remote.Value<>).Assembly);
             test.TestState.AdditionalReferences.Add(typeof(Regulus.Remote.Property<>).Assembly);
 
+            
 
             foreach (var syntaxTree in _Sources)
             {

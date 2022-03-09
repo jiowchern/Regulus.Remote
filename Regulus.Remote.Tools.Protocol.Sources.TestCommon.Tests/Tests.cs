@@ -197,7 +197,36 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 
             env.Dispose();
         }
+
         [Test]
+        public void EventCustomDelegateTest()
+        {
+            var tester = new EventTester();
+
+
+            var env = new TestEnv<Entry<IEventabe>, IEventabe>(new Entry<IEventabe>(tester));
+
+            var eventerObs = from e in env.Queryable.QueryNotifier<IEventabe>().SupplyEvent()
+                             select e;
+
+            var eventer = eventerObs.FirstAsync().Wait();
+
+            CustomDelegate testAction = () => { };
+            try
+            {
+                eventer.CustomDelegateEvent += testAction;
+            }
+            catch   (Regulus.Remote.Exceptions.NotSupportedException ns)
+            {
+                NUnit.Framework.Assert.Pass();
+                return;
+
+            }
+            NUnit.Framework.Assert.Fail();
+
+        }
+
+            [Test]
         public void EventRemoveTest()
         {
             var tester = new EventTester();
@@ -299,7 +328,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
             {
                 gpi.NotSupported();
             }
-            catch (System.NotSupportedException sue)
+            catch (Regulus.Remote.Exceptions.NotSupportedException sue)
             {
 
                 NUnit.Framework.Assert.Pass();
