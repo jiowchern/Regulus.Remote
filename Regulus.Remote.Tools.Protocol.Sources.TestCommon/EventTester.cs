@@ -5,6 +5,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon
     public class EventTester : IEventabe
     {
         public volatile int LisCount;
+        public volatile int Event02AddCount;
+        public volatile int Event02RemoveCount;
         event Action _IEventabe2Event1;
         event Action IEventabe2.Event21
         {
@@ -87,6 +89,19 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon
             remove
             {
                 
+            }
+        }
+
+        event Action IEventabe.Event02
+        {
+            add
+            {
+                Event02AddCount++;
+            }
+
+            remove
+            {
+                Event02RemoveCount++;
             }
         }
 

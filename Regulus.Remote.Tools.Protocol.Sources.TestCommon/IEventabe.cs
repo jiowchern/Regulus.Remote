@@ -3,5 +3,7 @@
     public interface IEventabe : IEventabe2
     {
         event System.Action<int, string, float, double, decimal, System.Guid> Event01;
+
+        event System.Action Event02;
     }
 }

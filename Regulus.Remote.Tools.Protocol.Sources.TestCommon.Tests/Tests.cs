@@ -14,12 +14,12 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
         [SetUp]
         public void Setup()
         {
-         
+
         }
         [Test]
         public void CreateProtocolTest1()
         {
-    
+
             var protocol = Regulus.Remote.Tools.Protocol.Sources.TestCommon.ProtocolProvider.CreateCase1();
             NUnit.Framework.Assert.IsNotNull(protocol);
         }
@@ -45,10 +45,10 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
             NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(System.Guid)));
             NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(Regulus.Remote.Tools.Protocol.Sources.TestCommon.TestC)));
             NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(Regulus.Remote.Tools.Protocol.Sources.TestCommon.TestS)));
-            
+
 
             NUnit.Framework.Assert.AreEqual(9, protocol.SerializeTypes.Length);
-            
+
 
         }
 
@@ -116,7 +116,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
             var c1 = multipleNotices.Numbers1.Items.Count;
             var c2 = multipleNotices.Numbers2.Items.Count;
 
-            
+
 
             System.Threading.SpinWait.SpinUntil(() => removeNum1s.Count == 2, 5000);
             NUnit.Framework.Assert.AreEqual(2, removeNum1s[0]);
@@ -128,14 +128,14 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
         public void NotifierSupplyTest()
         {
 
-           
+
             var multipleNotices = new MultipleNotices.MultipleNotices();
 
             var env = new TestEnv<Entry<IMultipleNotices>, IMultipleNotices>(new Entry<IMultipleNotices>(multipleNotices));
 
             var n1 = new Regulus.Remote.Tools.Protocol.Sources.TestCommon.Number(1);
 
-            
+
             multipleNotices.Numbers1.Items.Add(n1);
             multipleNotices.Numbers1.Items.Add(n1);
             multipleNotices.Numbers2.Items.Add(n1);
@@ -162,33 +162,33 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
             NUnit.Framework.Assert.AreEqual(1, num1s[0]);
             NUnit.Framework.Assert.AreEqual(1, num1s[1]);
             NUnit.Framework.Assert.AreEqual(1, num2s[0]);
-        
+
             var removeNums = new System.Collections.Generic.List<int>();
 
             unsupplyn1Obs.Subscribe(removeNums.Add);
             unsupplyn2Obs.Subscribe(removeNums.Add);
 
             var count1Obs = from mn in env.Queryable.QueryNotifier<IMultipleNotices>().SupplyEvent()
-                from count in mn.GetNumber1Count().RemoteValue()
-                select count;
+                            from count in mn.GetNumber1Count().RemoteValue()
+                            select count;
 
             var count2Obs = from mn in env.Queryable.QueryNotifier<IMultipleNotices>().SupplyEvent()
-                from count in mn.GetNumber2Count().RemoteValue()
-                select count;
+                            from count in mn.GetNumber2Count().RemoteValue()
+                            select count;
 
-           
-            
+
+
             multipleNotices.Numbers2.Items.Remove(n1);
             multipleNotices.Numbers1.Items.Remove(n1);
             multipleNotices.Numbers1.Items.Remove(n1);
 
-            var count1 =  count1Obs.FirstAsync().Wait();
-            var count2 =  count2Obs.FirstAsync().Wait();
+            var count1 = count1Obs.FirstAsync().Wait();
+            var count2 = count2Obs.FirstAsync().Wait();
 
             NUnit.Framework.Assert.AreEqual(0, count1);
             NUnit.Framework.Assert.AreEqual(0, count2);
-            
-            
+
+
             System.Threading.SpinWait.SpinUntil(() => removeNums.Count == 3, 5000);
             NUnit.Framework.Assert.AreEqual(1, removeNums[0]);
             NUnit.Framework.Assert.AreEqual(1, removeNums[1]);
@@ -197,13 +197,40 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 
             env.Dispose();
         }
+        [Test]
+        public void EventRemoveTest()
+        {
+            var tester = new EventTester();
+
+            
+            var env = new TestEnv<Entry<IEventabe>, IEventabe>(new Entry<IEventabe>(tester));
+
+            var eventerObs = from e in env.Queryable.QueryNotifier<IEventabe>().SupplyEvent()
+                             select e;
+
+            var eventer = eventerObs.FirstAsync().Wait();
+
+            System.Action actionEmpty = () => { };
+            eventer.Event02 += actionEmpty;
+            System.Threading.SpinWait.SpinUntil(() => tester.Event02AddCount == 1, 5000);
+
+            eventer.Event02 -= actionEmpty;
+            System.Threading.SpinWait.SpinUntil(() => tester.Event02RemoveCount == 1, 5000);
+
+
+
+            env.Dispose();
+
+            NUnit.Framework.Assert.AreEqual(1, tester.Event02AddCount);
+            NUnit.Framework.Assert.AreEqual(1, tester.Event02RemoveCount);
+        }
 
         [Test]
         public void EventTest()
         {
             var tester = new EventTester();
 
-            var re = new Regulus.Utility.AutoPowerRegulator(new Utility.PowerRegulator());
+            
             var env = new TestEnv<Entry<IEventabe>, IEventabe>(new Entry<IEventabe>(tester));
 
 
