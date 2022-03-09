@@ -62,7 +62,7 @@ end note
 * Customizable connection
 * Stand-alone mode  -->
 
-## 例子
+## 用法
 
 1.  定义接口`IGreeter`.
 
@@ -244,7 +244,7 @@ namespace Protocol
 这一步是生成生成器`IProtocol`，它是框架的重要组成部分，是服务器和客户端之间通信所需要的。  
 **_笔记_**
 
-> > 如上代码所示，添加`Regulus.Remote.Protocol`属性到你想得到的方法`IProtocol`，方法规范必须是`static partial void Method(ref Regulus.Remote.IProtocol)`，否则编译不通过。
+> > 如上面代码所示，添加`Regulus.Remote.Protocol`属性到你想得到的方法`IProtocol`，方法规范必须是`static partial void Method(ref Regulus.Remote.IProtocol)`，否则编译不通过。
 
 * * *
 
@@ -559,3 +559,10 @@ var protocol = Protocol.ProtocolCreater.Create();
 ISerializable serializer = null ;
 var service = Regulus.Remote.Client.CreateTcpAgent(protocol , serializer) ;
 ```
+
+* * *
+
+## 例子
+
+聊天室  
+可以在此处找到应用程序的完整示例，包括 Unity 版本。[关联](https://github.com/jiowchern/Regulus.Samples/tree/readme/Chat1)

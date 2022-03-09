@@ -62,7 +62,7 @@ end note
 
 
 
-## Example
+## Usage
 1. Definition Interface ```IGreeter``` .
 ```csharp
 namespace Protocol
@@ -489,5 +489,8 @@ var protocol = Protocol.ProtocolCreater.Create();
 ISerializable serializer = null ;
 var service = Regulus.Remote.Client.CreateTcpAgent(protocol , serializer) ;
 ```
-
-
+---
+## Example 
+Chat Room                                                                                                                                   
+A full example of the application can be found here, including the Unity version.
+[Link](https://github.com/jiowchern/Regulus.Samples/tree/readme/Chat1)
