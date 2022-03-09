@@ -11,6 +11,52 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
     public class GhostBuilderTests
     {
         [Test]
+        public void EssentialReferenceMissingTest()
+        {
+            var source = @"
+
+namespace NS1
+{
+    public interface IB {
+      void Method1();
+    }
+    namespace NS2
+    {
+        public interface IA : IB {
+          void Method1();
+        }
+    }
+    
+}
+";
+            var syntaxBuilder =
+                new Regulus.Remote.Tools.Protocol.Sources.SyntaxTreeBuilder(SourceText.From(source,
+                    System.Text.Encoding.UTF8));
+
+            var assemblyName = "TestProject";
+            System.Collections.Generic.IEnumerable<Microsoft.CodeAnalysis.MetadataReference> references = new Microsoft.CodeAnalysis.MetadataReference[]
+            {                
+
+            };
+            CSharpCompilation compilation = CSharpCompilation.Create(assemblyName, new[] { syntaxBuilder.Tree }, references);
+
+
+            try
+            {
+                new EssentialReference(compilation);
+            }
+            catch (MissingTypeException me)
+            {
+
+                NUnit.Framework.Assert.Pass();
+                return;
+            }
+
+            NUnit.Framework.Assert.Fail();
+
+
+        }
+        [Test]
         public async Task InterfaceInheritMethodTest()
         {
             var source = @"

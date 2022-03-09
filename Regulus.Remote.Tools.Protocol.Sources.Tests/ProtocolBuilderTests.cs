@@ -320,7 +320,7 @@ namespace NS1
                 "float",
                 "NS1.ENUM1",
             };
-           
+            
             var count = symbols.Except(cSymbols).Count();
             NUnit.Framework.Assert.AreEqual(0, count);
         }

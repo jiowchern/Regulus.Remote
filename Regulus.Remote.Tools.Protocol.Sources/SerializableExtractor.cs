@@ -40,7 +40,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 else if(symbol.TypeKind == TypeKind.Class || symbol.TypeKind == TypeKind.Struct)
                 {
                     var type = symbol as INamedTypeSymbol;                    
-                    _AddSet(set, type.GetMembers().OfType<IFieldSymbol>().Where(f=>f.IsReadOnly == false && f.IsConst == false).Select(f=>f.Type));
+                    _AddSet(set, type.GetMembers().OfType<IFieldSymbol>().Where(f=>f.IsReadOnly == false && f.IsConst == false && f.DeclaredAccessibility == Accessibility.Public && f.IsStatic == false).Select(f=>f.Type));
                 }
             }
             

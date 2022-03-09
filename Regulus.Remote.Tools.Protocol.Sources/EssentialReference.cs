@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using Regulus.Remote.Exceptions;
 
 namespace Regulus.Remote.Tools.Protocol.Sources
 {
@@ -13,38 +14,49 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
         public EssentialReference(Microsoft.CodeAnalysis.Compilation compilation)
         {
-            
-            RegulusRemoteProtocolCreaterAttribute = compilation.GetTypeByMetadataName("Regulus.Remote.Protocol.CreaterAttribute");
-            RegulusRemoteProperty = compilation.GetTypeByMetadataName("Regulus.Remote.Property`1");
-            RegulusRemoteNotifier = compilation.GetTypeByMetadataName("Regulus.Remote.Notifier`1");
-            RegulusRemoteValue = compilation.GetTypeByMetadataName("Regulus.Remote.Value`1");
+            this.Compilation = compilation;
+
+            RegulusRemoteProtocolCreaterAttribute = _GetType("Regulus.Remote.Protocol.CreaterAttribute");
+            RegulusRemoteProperty = _GetType("Regulus.Remote.Property`1");
+            RegulusRemoteNotifier = _GetType("Regulus.Remote.Notifier`1");
+            RegulusRemoteValue = _GetType("Regulus.Remote.Value`1");
 
             
             SystemActions = new[]
             {
-                compilation.GetTypeByMetadataName("System.Action"),                
-                compilation.GetTypeByMetadataName("System.Action`1"),
-                compilation.GetTypeByMetadataName("System.Action`2"),
-                compilation.GetTypeByMetadataName("System.Action`3"),
-                compilation.GetTypeByMetadataName("System.Action`4"),
-                compilation.GetTypeByMetadataName("System.Action`5"),
-                compilation.GetTypeByMetadataName("System.Action`6"),
-                compilation.GetTypeByMetadataName("System.Action`7"),
-                compilation.GetTypeByMetadataName("System.Action`8"),
-                compilation.GetTypeByMetadataName("System.Action`9"),
-                compilation.GetTypeByMetadataName("System.Action`10"),
-                compilation.GetTypeByMetadataName("System.Action`11"),
-                compilation.GetTypeByMetadataName("System.Action`12"),
-                compilation.GetTypeByMetadataName("System.Action`13"),
-                compilation.GetTypeByMetadataName("System.Action`14"),
-                compilation.GetTypeByMetadataName("System.Action`15"),
-                compilation.GetTypeByMetadataName("System.Action`16"),
+                _GetType("System.Action"),
+                _GetType("System.Action`1"),
+                _GetType("System.Action`2"),
+                _GetType("System.Action`3"),
+                _GetType("System.Action`4"),
+                _GetType("System.Action`5"),
+                _GetType("System.Action`6"),
+                _GetType("System.Action`7"),
+                _GetType("System.Action`8"),
+                _GetType("System.Action`9"),
+                _GetType("System.Action`10"),
+                _GetType("System.Action`11"),
+                _GetType("System.Action`12"),
+                _GetType("System.Action`13"),
+                _GetType("System.Action`14"),
+                _GetType("System.Action`15"),
+                _GetType("System.Action`16"),
 
 
             };
-            this.Compilation = compilation;
+            
         }
 
-        
+
+        INamedTypeSymbol _GetType(string metaname)
+        {
+            var type = Compilation.GetTypeByMetadataName(metaname);
+            if (type == null)
+                throw new MissingTypeException(metaname);
+
+            return type;
+        }
+
+
     }
 }

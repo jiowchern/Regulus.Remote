@@ -18,7 +18,10 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
                 MetadataReference.CreateFromFile(typeof(Regulus.Remote.Protocol.CreaterAttribute).GetTypeInfo().Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Regulus.Remote.Value<>).GetTypeInfo().Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Regulus.Remote.Property<>).GetTypeInfo().Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(Regulus.Remote.Notifier<>).GetTypeInfo().Assembly.Location)
+                MetadataReference.CreateFromFile(typeof(Regulus.Remote.Notifier<>).GetTypeInfo().Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(System.Action).GetTypeInfo().Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(System.Action<>).GetTypeInfo().Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(System.Action<,,,,,,,,>).GetTypeInfo().Assembly.Location),
             };
             return CSharpCompilation.Create(assemblyName, new []{ tree }, references);
         }
