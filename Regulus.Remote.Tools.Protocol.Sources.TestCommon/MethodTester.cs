@@ -18,5 +18,10 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon
         {
             return 2;
         }
+
+        int IMethodable.NotSupported()
+        {
+            return 0;
+        }
     }
 }

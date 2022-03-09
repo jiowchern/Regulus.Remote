@@ -331,7 +331,7 @@ event {symbol.Type.ToDisplayString()} {symbol.ToDisplayString()}
             else
             {
                 retValue = $"";
-                retRetValue = "throw new NotSupportedException() ;";
+                retRetValue = "throw new System.NotSupportedException() ;";
                 retRetValueVar = "null";
                 retCode = symbol.ReturnType.ToDisplayString();
             }
