@@ -86,7 +86,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             
             namespace {namespaceName}
             {{ 
-                public class {eventName} : Regulus.Remote.IEventProxyCreater
+                class {eventName} : Regulus.Remote.IEventProxyCreater
                 {{
             
                     Type _Type;
