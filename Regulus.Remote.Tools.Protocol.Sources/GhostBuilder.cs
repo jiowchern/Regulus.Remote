@@ -7,10 +7,8 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Regulus.Remote.Tools.Protocol.Sources
 {
-    
-    using System.Linq;
 
-   
+    using System.Linq;
     public class GhostBuilder
     {
         public struct Ghost
@@ -28,7 +26,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         }
         public readonly IReadOnlyCollection<Ghost> Ghosts;
         public readonly IReadOnlyCollection<SyntaxTree> Events;
-        
+        const string NamespaceName = "RegulusRemoteGhosts";
         readonly EssentialReference _EssentialReference;
 
         public GhostBuilder(Compilation compilation) : this(new EssentialReference(compilation))
@@ -38,6 +36,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         public GhostBuilder(EssentialReference essential)
         {
             _EssentialReference = essential;
+
             var compilation = essential.Compilation;
             
             var ghosts = 
@@ -56,6 +55,10 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 select _BuildGhostEvent(eventSyntax, SemanticModel);
             Events = events.ToArray();
         }
+
+       
+
+        
 
         private static SyntaxTree _BuildGhostEvent(EventFieldDeclarationSyntax event_syntax, SemanticModel semantic_model)
         {
