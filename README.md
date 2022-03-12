@@ -413,7 +413,7 @@ var protocol = Protocol.ProtocolCreater.Create();
 IStreamable stream = null ;// todo: Implementation Interface IStreamable
 var service = Regulus.Remote.Client.CreateAgent(protocol , stream) ;
 ```
-implemente ```IStreamable```
+implement ```IStreamable```
 ```csharp
 using Regulus.Remote;
 namespace Regulus.Network
@@ -488,7 +488,27 @@ and bring it to the client ```CreateTcpAgent```
 var protocol = Protocol.ProtocolCreater.Create();
 ISerializable serializer = null ;
 var service = Regulus.Remote.Client.CreateTcpAgent(protocol , serializer) ;
+```  
+
+If you need to know what types need to be serialized you can refer ```Regulus.Remote.IProtocol.SerializeTypes```.  
+```csharp
+namespace Regulus.Remote
+{
+    public interface IProtocol
+    {
+        System.Reflection.Assembly Base { get; }
+        EventProvider GetEventProvider();
+        InterfaceProvider GetInterfaceProvider();
+        // What types need to be serialized.
+        System.Type[] SerializeTypes { get; }
+
+        MemberMap GetMemberMap();
+
+        byte[] VerificationCode { get; }
+    }
+}
 ```
+
 ---
 ## Example 
 Chat Room                                                                                                                                   
