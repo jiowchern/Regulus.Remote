@@ -499,11 +499,11 @@ namespace Regulus.Remote
         System.Reflection.Assembly Base { get; }
         EventProvider GetEventProvider();
         InterfaceProvider GetInterfaceProvider();
+
         // What types need to be serialized.
         System.Type[] SerializeTypes { get; }
 
         MemberMap GetMemberMap();
-
         byte[] VerificationCode { get; }
     }
 }
@@ -511,6 +511,5 @@ namespace Regulus.Remote
 
 ---
 ## Example 
-Chat Room                                                                                                                                   
-A full example of the application can be found here, including the Unity version.
-[Link](https://github.com/jiowchern/Regulus.Samples/tree/readme/Chat1)
+**Chat Room**  
+A full example of the application can be found here, including the Unity version. [Link](https://github.com/jiowchern/Regulus.Samples/tree/readme/Chat1)
