@@ -5,17 +5,26 @@ using System.Linq;
 
 namespace Regulus.Remote.Tools.Protocol.Sources
 {
-    public class GhostSyntaxBuilder
+    public class InheritanceBuilder
     {
-        public readonly ClassDeclarationSyntax Ghost;
-        public GhostSyntaxBuilder(InterfaceDeclarationSyntax interface_declaration)
+        
+        private readonly InterfaceDeclarationSyntax soul;
+
+        public InheritanceBuilder(InterfaceDeclarationSyntax soul)
         {
 
+        
+            this.soul = soul;
+        }
+
+        public ClassDeclarationSyntax Inherite(ClassDeclarationSyntax ghost)
+        {
+            var interface_declaration = soul;
             var exc = SyntaxFactory.ArrowExpressionClause(SyntaxFactory.ThrowExpression(SyntaxFactory.ParseExpression("new SystemException(\"\")")));
             var explicitInterfaceSpecifier = SyntaxFactory.ExplicitInterfaceSpecifier(SyntaxFactory.ParseName(interface_declaration.Identifier.ToString()));
 
-            var classSyntax = SyntaxFactory.ClassDeclaration($"C{interface_declaration.Identifier}");
-            
+            var classSyntax = ghost;
+
             var nodes = from n in interface_declaration.DescendantNodes().OfType<MemberDeclarationSyntax>() select _Clone(n);
 
             var newNodes = new System.Collections.Generic.List<MemberDeclarationSyntax>();
@@ -23,8 +32,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             {
 
                 var newNode = node;
-                if(node is EventFieldDeclarationSyntax eventFieldDeclarationSyntax)
-                {                    
+                if (node is EventFieldDeclarationSyntax eventFieldDeclarationSyntax)
+                {
                     newNode = SyntaxFactory.EventDeclaration(eventFieldDeclarationSyntax.Declaration.Type, eventFieldDeclarationSyntax.Declaration.Variables[0].Identifier);
                 }
                 newNodes.Add(newNode);
@@ -33,15 +42,15 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             foreach (var member in newNodes.OfType<MethodDeclarationSyntax>())
             {
                 var node = member;
-                
-                node = node.WithExplicitInterfaceSpecifier(explicitInterfaceSpecifier);                
+
+                node = node.WithExplicitInterfaceSpecifier(explicitInterfaceSpecifier);
                 node = node.WithExpressionBody(exc);
-                classSyntax = classSyntax.AddMembers(node);                
+                classSyntax = classSyntax.AddMembers(node);
             }
 
             foreach (var member in newNodes.OfType<PropertyDeclarationSyntax>())
             {
-                var node = member;                
+                var node = member;
                 node = node.WithExplicitInterfaceSpecifier(explicitInterfaceSpecifier);
                 node = node.WithAccessorList(SyntaxFactory.AccessorList(SyntaxFactory.List(new[] {
                  SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithExpressionBody(exc),
@@ -75,7 +84,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             }
 
 
-            Ghost = classSyntax;
+            return classSyntax;
         }
 
         private MemberDeclarationSyntax _Clone(MemberDeclarationSyntax n)
@@ -87,8 +96,9 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 stream.Seek(0, System.IO.SeekOrigin.Begin);
                 return CSharpSyntaxNode.DeserializeFrom(stream) as MemberDeclarationSyntax;
             }
-                
+
         }
     }
+
 
 }

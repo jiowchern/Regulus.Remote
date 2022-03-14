@@ -4,26 +4,64 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
-namespace Regulus.Remote.Tools.Protocol.Sources
+namespace Regulus.Remote.Tools.Protocol.Sources.Extensions
 {
-    public static class TextExtension
+    public static class SyntaxExtensions
     {
-        public static string ToNormalizeWhitespace(this string str)
+        public static SyntaxNode ToSyntax(this INamedTypeSymbol symbol)
         {
-            return SyntaxFactory.ParseSyntaxTree(str, null, "", System.Text.Encoding.UTF8).GetRoot().NormalizeWhitespace().ToFullString(); ;
             
+            var syntax = SyntaxFactory.InterfaceDeclaration(symbol.Name);
+            
+
+
+
+            foreach (var member in symbol.GetMembers())
+            {
+                MemberDeclarationSyntax memberSyntax = null;
+                if (member is IMethodSymbol methodSymbol)
+                {
+
+                    var retType = _GetTypeName(methodSymbol.ReturnType);
+                    var method = SyntaxFactory.MethodDeclaration(retType, methodSymbol.Name);
+                    var list = SyntaxFactory.ParameterList();
+                    
+                    foreach (var parameter in methodSymbol.Parameters)
+                    {
+                        var p = SyntaxFactory.Parameter(SyntaxFactory.Identifier(parameter.Name));
+                        p = p.WithType(_GetTypeName(parameter.Type));
+                        list = list.AddParameters(p);
+                        
+                    }
+                    method = method.WithParameterList(list);
+                    memberSyntax = method;
+                }
+                
+                syntax = syntax.AddMembers(memberSyntax);
+            }
+
+            var root = SyntaxFactory.CompilationUnit();
+
+            var namespaceSymbol = symbol.ContainingNamespace;
+            if (namespaceSymbol != null)
+            {
+                var namespaceSyntax = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName(namespaceSymbol.ToDisplayString()));
+                namespaceSyntax = namespaceSyntax.AddMembers(syntax);
+                root = root.AddMembers(namespaceSyntax);
+            }
+            else
+            {
+                root = root.AddMembers(syntax);
+            }
+
+
+            return root;
         }
 
-        public static SourceText ToNormalizeWhitespace(this SyntaxTree str)
+        private static TypeSyntax _GetTypeName(ITypeSymbol symbol)
         {
-            return str.GetRoot().NormalizeWhitespace().GetText(System.Text.Encoding.UTF8) ;
+            return SyntaxFactory.ParseTypeName(symbol.ToDisplayString());
         }
 
-        public static string ToNamespaceTypeName(this InterfaceDeclarationSyntax node)
-        {
-            var nss = node.Ancestors().OfType<NamespaceDeclarationSyntax>();
-            var namespaceDel = nss.Count() == 1 ? $"{nss.Single().Name}." : "";
-            return  $"{namespaceDel}{node.Identifier}";
-        }
     }
 }
