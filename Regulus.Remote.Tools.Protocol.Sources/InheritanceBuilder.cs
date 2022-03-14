@@ -51,6 +51,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             foreach (var member in newNodes.OfType<PropertyDeclarationSyntax>())
             {
                 var node = member;
+
+                
                 node = node.WithExplicitInterfaceSpecifier(explicitInterfaceSpecifier);
                 node = node.WithAccessorList(SyntaxFactory.AccessorList(SyntaxFactory.List(new[] {
                  SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithExpressionBody(exc),

@@ -73,14 +73,14 @@ interface IA
             var symbol = com.GetSemanticModel(tree).GetDeclaredSymbol(tree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>().Single());
 
 
-            var syntax = symbol.ToSyntax().DescendantNodes().OfType<NamespaceDeclarationSyntax>().Single();
+            var syntax = symbol.ToSyntax().DescendantNodes().OfType<NamespaceDeclarationSyntax>().Any();
 
-            NUnit.Framework.Assert.AreEqual("", syntax.Name.ToFullString());
+            NUnit.Framework.Assert.AreEqual(false, syntax);
         }
 
 
         [Test]
-        public void Method1()
+        public void MethodIdentifier()
         {
             var source = @"
 
@@ -97,6 +97,9 @@ interface IA {
 
             NUnit.Framework.Assert.AreEqual("Method1" , method.Identifier.ToString());
         }
+
+
+
 
         [Test]
         public void MethodParam()
@@ -140,5 +143,128 @@ interface IA {
             
             NUnit.Framework.Assert.AreEqual("System.IDisposable", method.ReturnType.ToFullString());
         }
+
+        [Test]
+        public void MethodRefParam()
+        {
+            var source = @"
+
+using System;
+
+interface IA {
+    IDisposable Method1(ref IDisposable p1);
+}
+";
+
+            var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
+            var com = tree.Compilation();
+            var symbol = com.GetSemanticModel(tree).GetDeclaredSymbol(tree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>().Single());
+
+            var syntax = symbol.ToSyntax();
+            
+            var parameter = syntax.DescendantNodes().OfType<ParameterSyntax>().Single();
+
+            NUnit.Framework.Assert.AreEqual("ref", parameter.Modifiers[0].Text);
+            
+            NUnit.Framework.Assert.AreEqual("p1", parameter.Identifier.ToString());
+
+        }
+
+      
+
+
+        [Test]
+        public void PropertyIdentifier()
+        {
+            var source = @"
+interface IA {
+    int Property1 {get ;};
+}
+";
+
+            
+            var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
+            var com = tree.Compilation();
+            
+            var symbol = com.GetSemanticModel(tree).GetDeclaredSymbol(tree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>().Single());
+
+            var syntax = symbol.ToSyntax();
+            var member = syntax.DescendantNodes().OfType<PropertyDeclarationSyntax>().Single();
+
+            var accessor = member.DescendantNodes().OfType<AccessorDeclarationSyntax>().Single();
+            
+             
+
+            NUnit.Framework.Assert.AreEqual("Property1", member.Identifier.ToFullString());
+            NUnit.Framework.Assert.AreEqual(SyntaxKind.GetAccessorDeclaration, accessor.Kind());
+        }
+
+        [Test]
+        public void Event()
+        {
+
+        var source = @"
+using System;
+namespace N1
+{
+    public delegate IDisposable TestDelegate(int a);
+}
+
+interface IA
+{
+    event N1.TestDelegate Event1;
+}   
+";
+            var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
+            var com = tree.Compilation();
+
+            var symbol = com.GetSemanticModel(tree).GetDeclaredSymbol(tree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>().Single());
+
+            var syntax = symbol.ToSyntax();
+
+            var member = syntax.DescendantNodes().OfType<EventFieldDeclarationSyntax>().Single();
+            
+            NUnit.Framework.Assert.AreEqual("Event1", member.Declaration.Variables[0].Identifier.ToFullString());
+
+            NUnit.Framework.Assert.AreEqual("N1.TestDelegate", member.Declaration.Type.ToFullString());
+
+        }
+
+        [Test]
+        public void Index()
+        {
+
+            var source = @"
+    interface IA
+    {
+        string this[int index]
+        {
+            get;
+            set;
+        }
     }
+}   
+";
+            var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
+            var nodes = tree.GetRoot().DescendantNodes().ToArray();
+            var com = tree.Compilation();
+
+
+
+            var symbol = com.GetSemanticModel(tree).GetDeclaredSymbol(tree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>().Single());
+
+            var syntax = symbol.ToSyntax();
+
+            var member = syntax.DescendantNodes().OfType<IndexerDeclarationSyntax>().Single();
+            NUnit.Framework.Assert.AreEqual("string", member.Type.ToFullString());
+            
+
+
+
+        }
+
+
+    }
+
+    
 }
