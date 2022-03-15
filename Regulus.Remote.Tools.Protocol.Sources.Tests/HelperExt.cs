@@ -9,7 +9,23 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
 {
     public static class HelperExt
     {
-    
+        public static CSharpCompilation Compilate(params SyntaxTree[] trees)
+        {
+            var assemblyName = Guid.NewGuid().ToString();
+
+            IEnumerable<MetadataReference> references = new MetadataReference[]
+            {
+                MetadataReference.CreateFromFile(typeof(Regulus.Remote.Protocol.CreaterAttribute).GetTypeInfo().Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(Regulus.Remote.Value<>).GetTypeInfo().Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(Regulus.Remote.Property<>).GetTypeInfo().Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(Regulus.Remote.Notifier<>).GetTypeInfo().Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(System.Action).GetTypeInfo().Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(System.Action<>).GetTypeInfo().Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(System.Action<,,,,,,,,>).GetTypeInfo().Assembly.Location),
+            };
+            return CSharpCompilation.Create(assemblyName, trees, references);
+        }
+
         public static CSharpCompilation Compilation(this SyntaxTree tree)
         {
             var assemblyName = Guid.NewGuid().ToString();
@@ -27,8 +43,10 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
             return CSharpCompilation.Create(assemblyName, new []{ tree }, references);
         }
 
+       
 
-       public static System.Reflection.Assembly ToAssembly(this Microsoft.CodeAnalysis.CSharp.CSharpCompilation compilation)
+
+        public static System.Reflection.Assembly ToAssembly(this Microsoft.CodeAnalysis.CSharp.CSharpCompilation compilation)
         {
             
             Assembly assembly = null;

@@ -6,11 +6,8 @@ using System.Linq;
 
 namespace Regulus.Remote.Tools.Protocol.Sources.Tests
 {
-   
-
     public class InterfaceInheritorTests
     {
-     
 
         [Test]
         public void Method1()
@@ -20,17 +17,19 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
 interface IA {
     void Method1();
 }
-";            
+";          
+            
             var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
             
             var builder = new Regulus.Remote.Tools.Protocol.Sources.InterfaceInheritor(tree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>().Single());
 
+            
             var cia = SyntaxFactory.ClassDeclaration("CIA");
             cia = builder.Inherite(cia);
             var member = cia.DescendantNodes().OfType<MethodDeclarationSyntax>().Single();            
             NUnit.Framework.Assert.AreEqual("IA", member.ExplicitInterfaceSpecifier.Name.ToFullString());
 
-            var exp = member.DescendantNodes().OfType<ArrowExpressionClauseSyntax>().Single();            
+            var exp = member.DescendantNodes().OfType<BlockSyntax>().Single();            
             NUnit.Framework.Assert.True(builder.Expression.IsEquivalentTo(exp));
         }
 
@@ -59,7 +58,7 @@ namespace N2
             var member = cia.DescendantNodes().OfType<MethodDeclarationSyntax>().Single();
             NUnit.Framework.Assert.AreEqual("N2.N1.IA", member.ExplicitInterfaceSpecifier.Name.ToFullString());
 
-            var exp = member.DescendantNodes().OfType<ArrowExpressionClauseSyntax>().Single();
+            var exp = member.DescendantNodes().OfType<BlockSyntax>().Single();
             NUnit.Framework.Assert.True(builder.Expression.IsEquivalentTo(exp));
         }
 
@@ -86,7 +85,7 @@ interface IA {
 
             NUnit.Framework.Assert.AreEqual("IA", member.ExplicitInterfaceSpecifier.Name.ToFullString());
 
-            var exps = member.DescendantNodes().OfType<ArrowExpressionClauseSyntax>().ToArray();
+            var exps = member.DescendantNodes().OfType<BlockSyntax>().ToArray();
             NUnit.Framework.Assert.True(builder.Expression.IsEquivalentTo(exps[0]));
             NUnit.Framework.Assert.True(builder.Expression.IsEquivalentTo(exps[1]));
 
@@ -109,7 +108,7 @@ interface IA {
             var member = cia.DescendantNodes().OfType<PropertyDeclarationSyntax>().Single();
             
             NUnit.Framework.Assert.AreEqual("IA", member.ExplicitInterfaceSpecifier.Name.ToFullString());
-            var exps = member.DescendantNodes().OfType<ArrowExpressionClauseSyntax>().ToArray();
+            var exps = member.DescendantNodes().OfType<BlockSyntax>().ToArray();
             NUnit.Framework.Assert.True(builder.Expression.IsEquivalentTo(exps[0]));
             NUnit.Framework.Assert.True(builder.Expression.IsEquivalentTo(exps[1]));
         }
@@ -154,7 +153,7 @@ interface IA {
             var member = cia.DescendantNodes().OfType<PropertyDeclarationSyntax>().Single();
 
             NUnit.Framework.Assert.AreEqual("IA", member.ExplicitInterfaceSpecifier.Name.ToFullString());
-            var exp = member.DescendantNodes().OfType<ArrowExpressionClauseSyntax>().Single();
+            var exp = member.DescendantNodes().OfType<BlockSyntax>().Single();
             NUnit.Framework.Assert.True(builder.Expression.IsEquivalentTo(exp));
             
 
@@ -179,7 +178,7 @@ interface IA {
             NUnit.Framework.Assert.AreEqual("IA", member.ExplicitInterfaceSpecifier.Name.ToFullString());
             NUnit.Framework.Assert.AreEqual("System.Action<int> ", member.Type.ToFullString());
 
-            var exps = member.DescendantNodes().OfType<ArrowExpressionClauseSyntax>().ToArray();
+            var exps = member.DescendantNodes().OfType<BlockSyntax>().ToArray();
             NUnit.Framework.Assert.True(builder.Expression.IsEquivalentTo(exps[0]));
             NUnit.Framework.Assert.True(builder.Expression.IsEquivalentTo(exps[1]));
 

@@ -8,16 +8,19 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 {
     public class InterfaceInheritor
     {
-        
+        readonly string _NamePath;
         private readonly InterfaceDeclarationSyntax _Base;
-        public readonly ArrowExpressionClauseSyntax Expression;
+        
+        public readonly BlockSyntax Expression;
 
-        public InterfaceInheritor(InterfaceDeclarationSyntax @base) :this(@base , SyntaxFactory.ArrowExpressionClause(SyntaxFactory.ThrowExpression(SyntaxFactory.ParseExpression("new System.NotImplementedException(\"\")"))) )
+        public InterfaceInheritor(InterfaceDeclarationSyntax @base) :this(@base , SyntaxFactory.Block(SyntaxFactory.ExpressionStatement(SyntaxFactory.ThrowExpression(SyntaxFactory.ParseExpression("new System.NotImplementedException(\"\")")))))
         {
             
         }
-        public InterfaceInheritor(InterfaceDeclarationSyntax @base, ArrowExpressionClauseSyntax expression)
+        public InterfaceInheritor(InterfaceDeclarationSyntax @base, BlockSyntax expression)
         {
+            Expression = expression;
+            _NamePath = @base.GetNamePath();
             Expression = expression;
             this._Base = @base;
         }
@@ -26,7 +29,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         {
             
             var interfaceDeclaration = _Base;
-            var namePath = interfaceDeclaration.GetNamePath();
+            var namePath = _NamePath;
 
             var expression = Expression;
             
@@ -44,7 +47,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 var node = member;
 
                 node = node.WithExplicitInterfaceSpecifier(explicitInterfaceSpecifier);
-                node = node.WithExpressionBody(expression);
+                node = node.WithBody(expression);
                 classSyntax = classSyntax.AddMembers(node);
             }
 
@@ -54,7 +57,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 node = node.WithExplicitInterfaceSpecifier(explicitInterfaceSpecifier);
 
                 var accessors = from a in node.AccessorList.Accessors
-                                select a.WithExpressionBody(expression);
+                                select a.WithBody(expression);
 
                 node = node.WithAccessorList(SyntaxFactory.AccessorList(SyntaxFactory.List(accessors)));
 
@@ -69,8 +72,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 
                 eventDeclaration = eventDeclaration.WithExplicitInterfaceSpecifier(explicitInterfaceSpecifier);
                 var accessors = SyntaxFactory.AccessorList();
-                accessors = accessors.AddAccessors(SyntaxFactory.AccessorDeclaration(SyntaxKind.AddAccessorDeclaration).WithExpressionBody(expression));
-                accessors = accessors.AddAccessors(SyntaxFactory.AccessorDeclaration(SyntaxKind.RemoveAccessorDeclaration).WithExpressionBody(expression));
+                accessors = accessors.AddAccessors(SyntaxFactory.AccessorDeclaration(SyntaxKind.AddAccessorDeclaration).WithBody(expression));
+                accessors = accessors.AddAccessors(SyntaxFactory.AccessorDeclaration(SyntaxKind.RemoveAccessorDeclaration).WithBody(expression));
                 eventDeclaration = eventDeclaration.WithAccessorList(accessors);
                 classSyntax = classSyntax.AddMembers(eventDeclaration);
             }
@@ -82,7 +85,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 node = node.WithExplicitInterfaceSpecifier(explicitInterfaceSpecifier);
 
                 var accessors = from a in node.AccessorList.Accessors
-                                select a.WithExpressionBody(expression);
+                                select a.WithBody(expression);
                 node = node.WithAccessorList(SyntaxFactory.AccessorList(SyntaxFactory.List(accessors)));
 
                 classSyntax = classSyntax.AddMembers(node);                

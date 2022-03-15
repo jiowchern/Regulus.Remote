@@ -6,6 +6,8 @@ using Regulus.Remote.Tools.Protocol.Sources.Extensions;
 
 namespace Regulus.Remote.Tools.Protocol.Sources.Tests
 {
+    
+
     public class SyntaxExtensionsTests
     {
         [Test]
@@ -156,6 +158,29 @@ interface IA {
         }
 
         [Test]
+        public void MethodNamePathParam()
+        {
+            var source = @"
+using System;
+interface IA {
+    void Method1(ICloneable p1);
+}
+";            
+            var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
+
+            var com = tree.Compilation();
+            var symbol = com.GetSemanticModel(tree).GetDeclaredSymbol(tree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>().Single());
+
+            var syntax = symbol.ToInferredInterface();
+
+            var parameter = syntax.DescendantNodes().OfType<ParameterSyntax>().Single();
+
+            NUnit.Framework.Assert.AreEqual("p1", parameter.Identifier.ToString());
+            NUnit.Framework.Assert.AreEqual("System.ICloneable", parameter.Type.ToFullString());
+
+        }
+
+        [Test]
         public void MethodReturn()
         {
             var source = @"
@@ -175,6 +200,52 @@ interface IA {
             var method = syntax.DescendantNodes().OfType<MethodDeclarationSyntax>().Single();
             
             NUnit.Framework.Assert.AreEqual("System.IDisposable", method.ReturnType.ToFullString());
+        }
+
+        [Test]
+        public void MethodReturnSystem()
+        {
+            var source = @"
+
+using System;
+
+interface IA {
+    Tuple<Guid,int> Method1(int p1);
+}
+";
+            
+            var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
+            var com = tree.Compilation();
+            var symbol = com.GetSemanticModel(tree).GetDeclaredSymbol(tree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>().Single());
+
+            var syntax = symbol.ToInferredInterface();
+            var method = syntax.DescendantNodes().OfType<MethodDeclarationSyntax>().Single();
+
+            NUnit.Framework.Assert.AreEqual("System.Tuple<System.Guid, int>", method.ReturnType.ToFullString());
+        }
+
+        [Test]
+        public void MethodReturnRegulusRemoteValue()
+        {
+            var source = @"
+
+using System;
+using Regulus.Remote;
+interface IA {
+    Value<int> Method1(int p1);
+}
+";
+
+            var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
+            var com = tree.Compilation();
+
+            
+            var symbol = com.GetSemanticModel(tree).GetDeclaredSymbol(com.SyntaxTrees[0].GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>().Single());
+
+            var syntax = symbol.ToInferredInterface();
+            var method = syntax.DescendantNodes().OfType<MethodDeclarationSyntax>().Single();
+
+            NUnit.Framework.Assert.AreEqual("Regulus.Remote.Value<int>", method.ReturnType.ToFullString());
         }
 
         [Test]
