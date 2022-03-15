@@ -120,6 +120,8 @@ interface IA {
             var parameter = syntax.DescendantNodes().OfType<ParameterSyntax>().Single();
 
             NUnit.Framework.Assert.AreEqual("p1", parameter.Identifier.ToString());
+            NUnit.Framework.Assert.AreEqual("int", parameter.Type.ToFullString());
+            
         }
 
         [Test]
