@@ -9,13 +9,53 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Extensions
 {
     public static class SyntaxExtensions
     {
-        
-    
-        public static SyntaxNode ToSyntax(this INamedTypeSymbol symbol)
+
+        public static string GetNamePath(this BaseTypeDeclarationSyntax syntax)
+        {
+            
+            var names = new System.Collections.Generic.Stack<string>();
+
+            NamespaceDeclarationSyntax @namespace = default;
+            while (syntax != null)
+            {
+                names.Push(syntax.Identifier.ValueText);                
+
+                if (syntax.Parent is BaseTypeDeclarationSyntax type)
+                    syntax = type;
+                else if(syntax.Parent is NamespaceDeclarationSyntax ns)
+                {
+                    @namespace = ns;
+                    break;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            while(@namespace !=null)
+            {
+                names.Push(@namespace.Name.ToString());
+
+                if(@namespace.Parent is NamespaceDeclarationSyntax ns)
+                {
+                    @namespace = ns; 
+                }
+                else
+                {
+                    break;
+                }
+                
+                  
+            }
+            
+            return string.Join(".", names);
+        }
+
+        public static InterfaceDeclarationSyntax ToInferredInterface(this INamedTypeSymbol symbol)
         {
             
             var syntax = SyntaxFactory.InterfaceDeclaration(symbol.Name);
-
 
             foreach (var member in symbol.GetMembers())
             {
@@ -59,8 +99,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Extensions
                 root = root.AddMembers(namespaceSyntax);                
             }
 
-
-            return root;
+            
+            return root.DescendantNodes().OfType<InterfaceDeclarationSyntax>().First();
         }
 
        

@@ -6,8 +6,8 @@ using System.Linq;
 
 namespace Regulus.Remote.Tools.Protocol.Sources.Tests
 {
-
    
+
     public class InterfaceInheritorTests
     {
      
@@ -35,6 +35,35 @@ interface IA {
         }
 
         [Test]
+        public void NamespaceMethod()
+        {
+            var source = @"
+namespace N2
+{
+    namespace N1
+    {
+        interface IA {
+            void Method1();
+        }
+    }
+}
+
+
+";
+            var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
+
+            var builder = new Regulus.Remote.Tools.Protocol.Sources.InterfaceInheritor(tree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>().Single());
+
+            var cia = SyntaxFactory.ClassDeclaration("CIA");
+            cia = builder.Inherite(cia);
+            var member = cia.DescendantNodes().OfType<MethodDeclarationSyntax>().Single();
+            NUnit.Framework.Assert.AreEqual("N2.N1.IA", member.ExplicitInterfaceSpecifier.Name.ToFullString());
+
+            var exp = member.DescendantNodes().OfType<ArrowExpressionClauseSyntax>().Single();
+            NUnit.Framework.Assert.True(builder.Expression.IsEquivalentTo(exp));
+        }
+
+        [Test]
         public void Index1()
         {
             var source = @"
@@ -47,8 +76,7 @@ interface IA {
         }
 }
 ";
-            var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
-            
+            var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);            
 
             var builder = new Regulus.Remote.Tools.Protocol.Sources.InterfaceInheritor(tree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>().Single());
 
@@ -75,7 +103,6 @@ interface IA {
 ";
             var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
             
-
             var builder = new Regulus.Remote.Tools.Protocol.Sources.InterfaceInheritor(tree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>().Single());
             var cia = SyntaxFactory.ClassDeclaration("CIA");
             cia = builder.Inherite(cia);
@@ -85,8 +112,29 @@ interface IA {
             var exps = member.DescendantNodes().OfType<ArrowExpressionClauseSyntax>().ToArray();
             NUnit.Framework.Assert.True(builder.Expression.IsEquivalentTo(exps[0]));
             NUnit.Framework.Assert.True(builder.Expression.IsEquivalentTo(exps[1]));
-
         }
+
+        [Test]
+        public void Base1()
+        {
+            var source = @"
+
+interface IA {    
+}
+";
+            var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
+
+
+            var builder = new Regulus.Remote.Tools.Protocol.Sources.InterfaceInheritor(tree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>().Single());
+            var cia = SyntaxFactory.ClassDeclaration("CIA");
+            cia = builder.Inherite(cia);
+
+            var base1 = cia.BaseList.Types[0];
+            NUnit.Framework.Assert.AreEqual("IA", base1.ToFullString());
+        }
+
+        
+
 
         [Test]
         public void Property2()
@@ -116,13 +164,9 @@ interface IA {
         public void Event1()
         {
             var source = @"
-
-
 interface IA {
     event System.Action<int> Event1;
 }
-
-
 ";
             var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
             
@@ -139,9 +183,7 @@ interface IA {
             NUnit.Framework.Assert.True(builder.Expression.IsEquivalentTo(exps[0]));
             NUnit.Framework.Assert.True(builder.Expression.IsEquivalentTo(exps[1]));
 
-        }
-
-
+        }       
 
         [Test]
         public void ToInterfaceDeclarationTest()

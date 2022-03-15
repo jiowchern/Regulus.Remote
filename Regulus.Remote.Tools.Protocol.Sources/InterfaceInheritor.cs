@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Regulus.Remote.Tools.Protocol.Sources.Extensions;
 using System;
 using System.Linq;
 
@@ -23,34 +24,37 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
         public ClassDeclarationSyntax Inherite(ClassDeclarationSyntax class_syntax)
         {
-            var interfaceDeclaration = _Base;
             
-            var exc = Expression;
-            var explicitInterfaceSpecifier = SyntaxFactory.ExplicitInterfaceSpecifier(SyntaxFactory.ParseName(interfaceDeclaration.Identifier.ToString()));
+            var interfaceDeclaration = _Base;
+            var namePath = interfaceDeclaration.GetNamePath();
+
+            var expression = Expression;
+            
+            var explicitInterfaceSpecifier = SyntaxFactory.ExplicitInterfaceSpecifier(SyntaxFactory.ParseName(namePath));
 
             var classSyntax = class_syntax;
-            
+            var bases = classSyntax.BaseList ?? SyntaxFactory.BaseList();
+            bases = bases.AddTypes(SyntaxFactory.SimpleBaseType(SyntaxFactory.ParseTypeName(namePath)));
+            classSyntax = classSyntax.WithBaseList(bases);
+
             var nodes = interfaceDeclaration.DescendantNodes().OfType<MemberDeclarationSyntax>();
 
-            var newNodes = nodes;
-            
-
-            foreach (var member in newNodes.OfType<MethodDeclarationSyntax>())
+            foreach (var member in nodes.OfType<MethodDeclarationSyntax>())
             {
                 var node = member;
 
                 node = node.WithExplicitInterfaceSpecifier(explicitInterfaceSpecifier);
-                node = node.WithExpressionBody(exc);
+                node = node.WithExpressionBody(expression);
                 classSyntax = classSyntax.AddMembers(node);
             }
 
-            foreach (var member in newNodes.OfType<PropertyDeclarationSyntax>())
+            foreach (var member in nodes.OfType<PropertyDeclarationSyntax>())
             {
                 var node = member;
                 node = node.WithExplicitInterfaceSpecifier(explicitInterfaceSpecifier);
 
                 var accessors = from a in node.AccessorList.Accessors
-                                select a.WithExpressionBody(exc);
+                                select a.WithExpressionBody(expression);
 
                 node = node.WithAccessorList(SyntaxFactory.AccessorList(SyntaxFactory.List(accessors)));
 
@@ -58,27 +62,27 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
             }
 
-            foreach (var member in newNodes.OfType<EventFieldDeclarationSyntax>())
+            foreach (var member in nodes.OfType<EventFieldDeclarationSyntax>())
             {
                 var node = member;
-                var eve = SyntaxFactory.EventDeclaration(node.Declaration.Type, node.Declaration.Variables[0].Identifier);
+                var eventDeclaration = SyntaxFactory.EventDeclaration(node.Declaration.Type, node.Declaration.Variables[0].Identifier);
                 
-                eve = eve.WithExplicitInterfaceSpecifier(explicitInterfaceSpecifier);
+                eventDeclaration = eventDeclaration.WithExplicitInterfaceSpecifier(explicitInterfaceSpecifier);
                 var accessors = SyntaxFactory.AccessorList();
-                accessors = accessors.AddAccessors(SyntaxFactory.AccessorDeclaration(SyntaxKind.AddAccessorDeclaration).WithExpressionBody(exc));
-                accessors = accessors.AddAccessors(SyntaxFactory.AccessorDeclaration(SyntaxKind.RemoveAccessorDeclaration).WithExpressionBody(exc));
-                eve = eve.WithAccessorList(accessors);
-                classSyntax = classSyntax.AddMembers(eve);
+                accessors = accessors.AddAccessors(SyntaxFactory.AccessorDeclaration(SyntaxKind.AddAccessorDeclaration).WithExpressionBody(expression));
+                accessors = accessors.AddAccessors(SyntaxFactory.AccessorDeclaration(SyntaxKind.RemoveAccessorDeclaration).WithExpressionBody(expression));
+                eventDeclaration = eventDeclaration.WithAccessorList(accessors);
+                classSyntax = classSyntax.AddMembers(eventDeclaration);
             }
            
 
-            foreach (var member in newNodes.OfType<IndexerDeclarationSyntax>())
+            foreach (var member in nodes.OfType<IndexerDeclarationSyntax>())
             {
                 var node = member;
                 node = node.WithExplicitInterfaceSpecifier(explicitInterfaceSpecifier);
 
                 var accessors = from a in node.AccessorList.Accessors
-                                select a.WithExpressionBody(exc);
+                                select a.WithExpressionBody(expression);
                 node = node.WithAccessorList(SyntaxFactory.AccessorList(SyntaxFactory.List(accessors)));
 
                 classSyntax = classSyntax.AddMembers(node);                
