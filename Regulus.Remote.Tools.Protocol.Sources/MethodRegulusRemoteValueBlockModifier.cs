@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace Regulus.Remote.Tools.Protocol.Sources.BlockModifiers
 {
+    
     internal class MethodRegulusRemoteValue
     {
         public BlockSyntax Block;
@@ -21,7 +22,11 @@ namespace Regulus.Remote.Tools.Protocol.Sources.BlockModifiers
             {
                 return null;
             }
-
+            if ((from p in md.ParameterList.Parameters
+                 from m in p.Modifiers
+                 where m.IsKind(SyntaxKind.OutKeyword)
+                 select m).Any())
+                return null;
 
             var interfaceCode = md.ExplicitInterfaceSpecifier.Name.ToFullString();
             var methodCode = md.Identifier.ToFullString();
@@ -36,13 +41,11 @@ namespace Regulus.Remote.Tools.Protocol.Sources.BlockModifiers
                 return null;
 
             var gn = qn.Right as GenericNameSyntax;
-            if (qn == null)
+            if (gn == null)
                 return null;
 
             if (gn.Identifier.ToString() != "Value")
                 return null;
-            
-               
 
             return new MethodRegulusRemoteValue
             {

@@ -21,6 +21,12 @@ namespace Regulus.Remote.Tools.Protocol.Sources.BlockModifiers
                 return null;
             }
 
+            if((from p in md.ParameterList.Parameters
+            from m in p.Modifiers
+            where m.IsKind(SyntaxKind.OutKeyword)
+            select m).Any())
+                return null;
+
             var interfaceCode = md.ExplicitInterfaceSpecifier.Name.ToFullString();
             var methodCode = md.Identifier.ToFullString();
             var methodCallParamsCode = string.Join(",", from p in md.ParameterList.Parameters select p.Identifier.ToFullString());

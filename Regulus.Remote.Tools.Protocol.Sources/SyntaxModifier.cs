@@ -22,12 +22,13 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             foreach (var block in blocks)
             {
                 var nodes = block.GetParentPathAndSelf();
+
                 var e = BlockModifiers.Event.Mod(nodes);
                 if (e != null)
-                {
-                    typesOfSerialization.AddRange(e.Types);
+                {                    
                     replaceBlocks.Add( block, e.Block);                    
                 }
+
                 var methodVoid = BlockModifiers.MethodVoid.Mod(nodes);
                 if (methodVoid != null)
                 {
@@ -41,6 +42,11 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                     typesOfSerialization.AddRange(mrrv.Types);
                     replaceBlocks.Add(block, mrrv.Block);
                 }
+                var prrb = BlockModifiers.PropertyRegulusRemoteBlock.Mod(nodes);
+                if(prrb != null)
+                {
+                    replaceBlocks.Add(block, prrb.Block);                    
+                }
             }
 
             type = type.ReplaceNodes(replaceBlocks.Keys,(n1,n2) =>
@@ -51,6 +57,30 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 }
                 return n1;
             } );
+
+            var eventDeclarationSyntaxes = type.DescendantNodes().OfType<EventDeclarationSyntax>();
+
+            foreach (var eds in eventDeclarationSyntaxes)
+            {
+                var efds = Modifiers.EventFieldDeclarationSyntax.Mod(eds);
+                if (efds == null)
+                    continue;
+
+                type = type.AddMembers(efds.Field);
+                typesOfSerialization.AddRange(efds.Types);
+            }
+
+            var propertyDeclarationSyntaxes = type.DescendantNodes().OfType<PropertyDeclarationSyntax>();
+
+            foreach (var pds in propertyDeclarationSyntaxes)
+            {
+                var pfds = Modifiers.PropertyFieldDeclarationSyntax.Mod(pds);
+                if (pfds == null)
+                    continue;
+                type = type.AddMembers(pfds.Field);
+                typesOfSerialization.AddRange(pfds.Types);
+            }
+
             TypesOfSerialization = typesOfSerialization;
             Type = type;
 
