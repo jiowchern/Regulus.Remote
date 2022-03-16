@@ -9,7 +9,19 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Extensions
 {
     public static class SyntaxExtensions
     {
+        public static bool AnyNull(params SyntaxNode[] nodes)
+        {
+            return nodes.Any(n => n == null);
+        }
 
+        public static System.Collections.Generic.IEnumerable<SyntaxNode> GetParentPathAndSelf(this SyntaxNode syntax)
+        {            
+            while(syntax != null)
+            {
+                yield return syntax;
+                syntax = syntax.Parent;
+            }
+        }
         public static string GetNamePath(this BaseTypeDeclarationSyntax syntax)
         {
             

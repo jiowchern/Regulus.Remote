@@ -25,7 +25,7 @@ interface IA {
 
             var modifier = new SyntaxModifier(cia);
 
-            var exps = cia.DescendantNodes().OfType<BlockSyntax>().ToArray();
+            var exps = modifier.Type.DescendantNodes().OfType<BlockSyntax>().ToArray();
             NUnit.Framework.Assert.AreEqual(0, modifier.TypesOfSerialization.Count());
             NUnit.Framework.Assert.False(builder.Expression.IsEquivalentTo(exps[0]));
             NUnit.Framework.Assert.False(builder.Expression.IsEquivalentTo(exps[1]));

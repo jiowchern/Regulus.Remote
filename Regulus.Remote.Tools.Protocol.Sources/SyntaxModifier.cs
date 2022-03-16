@@ -3,99 +3,61 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Linq;
 using static Microsoft.CodeAnalysis.SyntaxNodeExtensions;
+using Regulus.Remote.Tools.Protocol.Sources.Extensions;
 namespace Regulus.Remote.Tools.Protocol.Sources
 {
     public class SyntaxModifier
-    {
-        
-        public readonly System.Collections.Generic.IEnumerable<TypeSyntax>  TypesOfSerialization;
+    {        
+        public readonly System.Collections.Generic.IEnumerable<TypeSyntax> TypesOfSerialization;
         public readonly ClassDeclarationSyntax Type;
         public SyntaxModifier(ClassDeclarationSyntax type)
         {
             
 
-            var blocks = type.DescendantNodes().OfType<BlockSyntax>().ToArray();
+            var blocks = type.DescendantNodes().OfType<BlockSyntax>();
 
             var typesOfSerialization = new System.Collections.Generic.List<TypeSyntax>();
+
+            var replaceBlocks = new System.Collections.Generic.Dictionary<BlockSyntax, BlockSyntax>();
             foreach (var block in blocks)
             {
-                if(block.Parent is MethodDeclarationSyntax method)
+                var nodes = block.GetParentPathAndSelf();
+                var e = BlockModifiers.Event.Mod(nodes);
+                if (e != null)
                 {
-                    type = _Method(type, typesOfSerialization, method);
+                    typesOfSerialization.AddRange(e.Types);
+                    replaceBlocks.Add( block, e.Block);                    
                 }
-                else if (block.Parent is AccessorDeclarationSyntax ad)
+                var methodVoid = BlockModifiers.MethodVoid.Mod(nodes);
+                if (methodVoid != null)
                 {
-                    if(ad.Parent is AccessorListSyntax al)
-                    {
-                        if(al.Parent is EventDeclarationSyntax ed)
-                        {
-                            if(ad.IsKind(SyntaxKind.AddAccessorDeclaration))
-                            {
-
-                            }
-                            else if(ad.IsKind(SyntaxKind.RemoveAccessorDeclaration))
-                            {
-
-                            }
-                        }
-                    }
-                }
-                else
-                {
-
+                    typesOfSerialization.AddRange(methodVoid.Types);
+                    replaceBlocks.Add(block, methodVoid.Block);
                 }
 
+                var mrrv = BlockModifiers.MethodRegulusRemoteValue.Mod(nodes);
+                if (mrrv != null)
+                {
+                    typesOfSerialization.AddRange(mrrv.Types);
+                    replaceBlocks.Add(block, mrrv.Block);
+                }
             }
 
-            
+            type = type.ReplaceNodes(replaceBlocks.Keys,(n1,n2) =>
+            {
+                if(replaceBlocks.ContainsKey(n1))
+                {
+                    return replaceBlocks[n1];
+                }
+                return n1;
+            } );
             TypesOfSerialization = typesOfSerialization;
             Type = type;
 
         }
 
-        private static ClassDeclarationSyntax _Method(ClassDeclarationSyntax type, System.Collections.Generic.List<TypeSyntax> typesOfSerialization, MethodDeclarationSyntax method)
-        {
-            var interfaceCode = method.ExplicitInterfaceSpecifier.Name.ToFullString();
-            var methodCode = method.Identifier.ToFullString();
-            var methodCallParamsCode = string.Join(",", from p in method.ParameterList.Parameters select p.Identifier.ToFullString());
-            var returnType = method.ReturnType;
-            typesOfSerialization.AddRange(from p in method.ParameterList.Parameters select p.Type);
-            if (returnType is PredefinedTypeSyntax pt)
-            {
-                if (pt.Keyword.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.VoidKeyword))
-                {
-                    var method1 = method.WithBody(SyntaxFactory.Block(SyntaxFactory.ParseStatement(
-$@"var info = typeof({interfaceCode}).GetMethod(""{methodCode}"");
-_CallMethodEvent(info , new object[] {{{methodCallParamsCode}}} , null);")));
-                    type = type.ReplaceNode(method, method1);
-                }
-            }
-            else if (returnType is QualifiedNameSyntax qn)
-            {
-                if (qn.Left.ToString() == "Regulus.Remote")
-                {
-                    if (qn.Right is GenericNameSyntax gn)
-                    {
-                        if (gn.Identifier.ToString() == "Value")
-                        {
-                            var arg = gn.TypeArgumentList.Arguments[0];
-
-                            var method1 = method.WithBody(SyntaxFactory.Block(SyntaxFactory.ParseStatement(
-                                                $@"
-var returnValue = new {returnType}();
-var info = typeof({interfaceCode}).GetMethod(""{methodCode}"");
-_CallMethodEvent(info , new object[] {{{methodCallParamsCode}}} , returnValue);                    
-return returnValue;
-                                                        ")));
-                            typesOfSerialization.Add(arg);
-                            type = type.ReplaceNode(method, method1);
-                        }
-                    }
-                }
-            }
-
-            return type;
-        }
+     
+     
 
     }
 

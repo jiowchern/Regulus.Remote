@@ -1,7 +1,7 @@
 ﻿using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Regulus.Remote.Tools.Protocol.Sources.Extensions;
-using System;
+
 using System.Linq;
 
 namespace Regulus.Remote.Tools.Protocol.Sources
