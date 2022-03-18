@@ -6,6 +6,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 {
     public static class ClassDeclarationSyntaxExtensions
     {
+        
         public static ClassDeclarationSyntax ImplementRegulusRemoteIGhost(this ClassDeclarationSyntax class_declaration)
         {
             var cd = class_declaration;

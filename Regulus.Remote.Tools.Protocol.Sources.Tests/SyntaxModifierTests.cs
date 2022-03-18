@@ -285,6 +285,7 @@ interface IA {
             NUnit.Framework.Assert.AreEqual(2, replacer.TypesOfSerialization.Count());
             NUnit.Framework.Assert.False(builder.Expression.IsEquivalentTo(exp));
         }
+        
 
         [Test]
         public void MethodVoidParam1()
@@ -326,6 +327,45 @@ interface IA {
 
             NUnit.Framework.Assert.AreEqual("C123" , member.Identifier.ToString());
             
+        }
+
+        [Test]
+        public void CreateRegulusRemoteIEventProxyCreater()
+        {
+            var source = @"
+
+class CIA : NS1.IA {
+    event System.Action<Regulus.Int,TT<Test.FLoat>> NS1.IA.Event1
+    {
+        add{}
+        remove{}
+    }
+}
+";
+            var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
+            var efd = tree.GetRoot().DescendantNodes().OfType<EventDeclarationSyntax>().Single();
+            var cefd = efd.CreateRegulusRemoteIEventProxyCreater();
+            NUnit.Framework.Assert.AreEqual("CNS1_IA_Event1", cefd.Identifier.ValueText);
+
+        }
+
+        [Test]
+        public void CreateRegulusRemoteIEventProxyCreaterNoTypes()
+        {
+            var source = @"
+class CIA : NS1.IA {
+    event System.Action NS1.IA.Event1
+    {
+        add{}
+        remove{}
+    }
+}
+";
+            var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
+            var efd = tree.GetRoot().DescendantNodes().OfType<EventDeclarationSyntax>().Single();
+            var cefd = efd.CreateRegulusRemoteIEventProxyCreater();
+            NUnit.Framework.Assert.AreEqual("CNS1_IA_Event1", cefd.Identifier.ValueText);
+
         }
     }
  

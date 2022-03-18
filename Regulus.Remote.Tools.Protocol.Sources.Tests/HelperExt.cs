@@ -12,7 +12,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
         public static CSharpCompilation Compilate(params SyntaxTree[] trees)
         {
             var assemblyName = Guid.NewGuid().ToString();
-
+            
             IEnumerable<MetadataReference> references = new MetadataReference[]
             {
                 MetadataReference.CreateFromFile(typeof(Regulus.Remote.Protocol.CreaterAttribute).GetTypeInfo().Assembly.Location),
@@ -22,8 +22,11 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
                 MetadataReference.CreateFromFile(typeof(System.Action).GetTypeInfo().Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(System.Action<>).GetTypeInfo().Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(System.Action<,,,,,,,,>).GetTypeInfo().Assembly.Location),
+                MetadataReference.CreateFromFile(Assembly.Load("netstandard, Version=2.0.0.0").Location)
             };
-            return CSharpCompilation.Create(assemblyName, trees, references);
+
+            
+            return CSharpCompilation.Create(assemblyName, trees, references , new CSharpCompilationOptions(outputKind  : OutputKind.DynamicallyLinkedLibrary));
         }
 
         public static CSharpCompilation Compilation(this SyntaxTree tree)
@@ -39,7 +42,9 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
                 MetadataReference.CreateFromFile(typeof(System.Action).GetTypeInfo().Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(System.Action<>).GetTypeInfo().Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(System.Action<,,,,,,,,>).GetTypeInfo().Assembly.Location),
+                MetadataReference.CreateFromFile(Assembly.Load("netstandard, Version=2.0.0.0").Location)
             };
+        
             return CSharpCompilation.Create(assemblyName, new []{ tree }, references);
         }
 

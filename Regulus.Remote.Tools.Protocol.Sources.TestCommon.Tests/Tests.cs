@@ -381,17 +381,18 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
                              from v2 in gpi.Property2.PropertyChangeValue()
                              select new { v1 , v2};
 
-            int[] changes = new int[] { 0, 0 };
+            int[] changes = new int[] { 1, 2 };
             values2Obs.Subscribe(o => { changes[0] = o.v1; changes[1] = o.v2; });
 
-
-            tester.Property1.Value = 3;
-            tester.Property2.Value = 4;
-
-            System.Threading.SpinWait.SpinUntil(() => changes[0] == 3 && changes[1] == 4 ,5000);
             
-            Assert.AreEqual(3, changes[0]);
-            Assert.AreEqual(4, changes[1]);
+            System.Threading.SpinWait.SpinUntil(() => {
+                tester.Property1.Value ++ ;
+                tester.Property2.Value ++;                
+                return changes[0] != 1 && changes[1] != 2;
+            } ,5000);
+            
+            Assert.AreNotEqual(1, changes[0]);
+            Assert.AreNotEqual(2, changes[1]);
 
             env.Dispose();
 

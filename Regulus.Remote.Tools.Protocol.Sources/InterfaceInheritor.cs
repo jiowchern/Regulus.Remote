@@ -12,8 +12,9 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         private readonly InterfaceDeclarationSyntax _Base;
         
         public readonly BlockSyntax Expression;
+        
 
-        public InterfaceInheritor(InterfaceDeclarationSyntax @base) :this(@base , SyntaxFactory.Block(SyntaxFactory.ExpressionStatement(SyntaxFactory.ThrowExpression(SyntaxFactory.ParseExpression("new System.NotImplementedException(\"\")")))))
+        public InterfaceInheritor(InterfaceDeclarationSyntax @base) :this(@base , SyntaxFactory.Block(SyntaxFactory.ExpressionStatement(SyntaxFactory.ThrowExpression(SyntaxFactory.ParseExpression("new System.NotImplementedException()")))))
         {
             
         }

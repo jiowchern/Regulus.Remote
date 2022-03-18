@@ -2,9 +2,13 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 using NUnit.Framework;
+
+using Regulus.Remote.Tools.Protocol.Sources.Extensions;
 
 namespace Regulus.Remote.Tools.Protocol.Sources.Tests
 {
@@ -333,6 +337,79 @@ public interface IB {
                     System.Text.Encoding.UTF8));
 
             await new GhostTest(syntaxBuilder.Tree).RunAsync();
+        }
+
+
+
+        [Test]
+        public async Task GhostCompileTest()
+        {
+
+            var source = @"
+using System;
+namespace NS1
+{
+    /*public interface IB : IDisposable{
+        event System.Action<int> Event1;
+    }
+    public interface IA :IB{
+          void Method();    
+    }*/
+
+public interface IC {}
+
+}
+
+";
+            
+            var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
+            var com = tree.Compilation();
+
+            var interfaces = new System.Collections.Generic.HashSet<INamedTypeSymbol>((from syntaxTree in com.SyntaxTrees
+                                                                                       let model = com.GetSemanticModel(syntaxTree)
+                                                                                       from interfaneSyntax in syntaxTree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>()
+                                                                                       let symbol = model.GetDeclaredSymbol(interfaneSyntax)
+                                                                                       where symbol.IsGenericType == false
+                                                                                       select symbol).SelectMany(s => s.AllInterfaces.Union(new[] { s })));
+
+
+            var builders = new System.Collections.Generic.Dictionary<INamedTypeSymbol, InterfaceInheritor>(from i in interfaces
+                                                                                            select new System.Collections.Generic.KeyValuePair<INamedTypeSymbol, InterfaceInheritor>(i, new InterfaceInheritor(i.ToInferredInterface())));
+            var types = new System.Collections.Generic.List<ClassDeclarationSyntax>();
+            foreach (var i in interfaces)
+            {
+                var name = $"C{i.ToDisplayString().Replace('.','_')}";
+                var type = SyntaxFactory.ClassDeclaration(name);
+
+                foreach (var i2 in i.AllInterfaces.Union(new[] { i }))
+                {
+
+                    var builder = builders[i2];
+                    type = builder.Inherite(type);
+                }
+
+                var modifier = new SyntaxModifier(type);
+                type = modifier.Type;
+
+                type = type.ImplementRegulusRemoteIGhost();
+
+                types.Add(type);
+            }
+
+            
+
+            var ghostTree = SyntaxFactory.CompilationUnit().WithMembers(new SyntaxList<MemberDeclarationSyntax>(types));
+            
+
+            var ghostCom = HelperExt.Compilate(tree, SyntaxFactory.SyntaxTree(ghostTree));
+
+            var asm = ghostCom.ToAssembly();
+
+
+            var eTypes = asm.GetTypes();
+
+
+            NUnit.Framework.Assert.Fail();
         }
     }
 }

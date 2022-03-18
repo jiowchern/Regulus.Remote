@@ -131,6 +131,25 @@ interface IA {
             NUnit.Framework.Assert.AreEqual("Method1" , method.Identifier.ToString());
         }
 
+        [Test]
+        public void IgnoreEventMethod()
+        {
+            var source = @"
+
+interface IA {
+    event System.Action Event;
+}
+";
+            var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
+            var com = tree.Compilation();
+            var symbol = com.GetSemanticModel(tree).GetDeclaredSymbol(tree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>().Single());
+
+            var syntax = symbol.ToInferredInterface();
+            var count = syntax.DescendantNodes().OfType<MethodDeclarationSyntax>().Count();
+
+            NUnit.Framework.Assert.AreEqual(0, count);
+        }
+
 
 
 

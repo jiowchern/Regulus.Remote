@@ -74,8 +74,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Extensions
             foreach (var member in symbol.GetMembers())
             {
                 MemberDeclarationSyntax memberSyntax = null;
-                if (member is IMethodSymbol methodSymbol)
-                {
+                if (member is IMethodSymbol methodSymbol && methodSymbol.MethodKind == MethodKind.Ordinary)
+                {                    
                     memberSyntax = _ToMethod(methodSymbol);                    
                 }
                 else if (member is IPropertySymbol propertySymbol)
@@ -94,7 +94,10 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Extensions
                 {
                     memberSyntax = _ToEvent(eventSymbol);
                 }
-                
+                else
+                {
+                    continue;
+                }
 
                 syntax = syntax.AddMembers(memberSyntax);
             }

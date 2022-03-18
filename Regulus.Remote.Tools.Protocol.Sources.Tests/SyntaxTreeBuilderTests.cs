@@ -17,5 +17,9 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
             var interfaces = syntaxBuilder.GetInterfaces("IA");
             Assert.AreEqual(1 , interfaces.Count());
         }
+
+
+        
+
     }
 }
