@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp;
 using NUnit.Framework;
 using System.Linq;
+using Microsoft.CodeAnalysis;
 
 namespace Regulus.Remote.Tools.Protocol.Sources.Tests
 {    
@@ -308,6 +309,19 @@ interface IA {
             NUnit.Framework.Assert.AreEqual(1, replacer.TypesOfSerialization.Count());
             NUnit.Framework.Assert.False(builder.Expression.IsEquivalentTo(exp));
         }
+
+        [Test]
+        public void ImplementRegulusRemoteIGhost()
+        {
+            var cia = SyntaxFactory.ClassDeclaration("C123");
+            cia = cia.ImplementRegulusRemoteIGhost();
+
+            var member = cia.DescendantNodes().OfType<ConstructorDeclarationSyntax>().Single();
+
+            NUnit.Framework.Assert.AreEqual("C123" , member.Identifier.ToString());
+            
+        }
     }
+ 
     
 }
