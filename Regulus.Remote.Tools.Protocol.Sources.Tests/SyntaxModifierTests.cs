@@ -308,6 +308,12 @@ interface IA {
             var exp = cia.DescendantNodes().OfType<BlockSyntax>().Single();
             NUnit.Framework.Assert.AreEqual(1, replacer.TypesOfSerialization.Count());
             NUnit.Framework.Assert.False(builder.Expression.IsEquivalentTo(exp));
+
+            var method  = cia.DescendantNodes().OfType<MethodDeclarationSyntax>().Single();
+            string paramName = method.ParameterList.Parameters.Single().Identifier.ToString();
+
+            NUnit.Framework.Assert.AreEqual("_1" , paramName);
+
         }
 
         [Test]

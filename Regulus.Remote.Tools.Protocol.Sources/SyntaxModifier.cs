@@ -12,12 +12,31 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         public readonly ClassDeclarationSyntax Type;
         public SyntaxModifier(ClassDeclarationSyntax type)
         {
-            
 
-            var blocks = type.DescendantNodes().OfType<BlockSyntax>();
+            var methods = type.DescendantNodes().OfType<MethodDeclarationSyntax>();
+
+            var newParams = new System.Collections.Generic.Dictionary<ParameterSyntax, ParameterSyntax>();
+            foreach (var method in methods)
+            {
+                int idx = 0;
+                foreach (var p in method.ParameterList.Parameters)
+                {
+                    var newP = p.WithIdentifier(SyntaxFactory.Identifier($"_{++idx}"));
+                    newParams.Add(p,newP);
+                }
+            }
+
+            type = type.ReplaceNodes(newParams.Keys, (n1, n2) =>
+            {
+                if (newParams.ContainsKey(n1))
+                {
+                    return newParams[n1];
+                }
+                return n1;
+            });
 
             var typesOfSerialization = new System.Collections.Generic.List<TypeSyntax>();
-
+            var blocks = type.DescendantNodes().OfType<BlockSyntax>();
             var replaceBlocks = new System.Collections.Generic.Dictionary<BlockSyntax, BlockSyntax>();
             foreach (var block in blocks)
             {
