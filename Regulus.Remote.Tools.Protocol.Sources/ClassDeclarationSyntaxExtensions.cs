@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Linq;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -24,7 +25,11 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             var type = SimpleBaseType(baseName);
 
             var baseList = cd.BaseList ?? SyntaxFactory.BaseList();
-            cd = cd.WithBaseList(baseList.AddTypes(type));
+
+            var baseTypes = baseList.Types.ToArray();
+            
+            baseList = baseList.WithTypes(new SeparatedSyntaxList<BaseTypeSyntax>().Add(type).AddRange(baseTypes));
+            cd = cd.WithBaseList(baseList);
 
             cd = cd.AddMembers(_CreateMembers(baseName, class_declaration.Identifier));
             

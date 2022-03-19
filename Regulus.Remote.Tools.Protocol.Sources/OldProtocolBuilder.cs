@@ -8,21 +8,29 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace Regulus.Remote.Tools.Protocol.Sources
 {
-    internal class ProtocolBuilder
+    internal class OldProtocolBuilder
     {
-        public readonly string ProtocolName;
-        public readonly SyntaxTree Tree;
 
-        public ProtocolBuilder(Compilation compilation, EventProviderCodeBuilder event_provider_code_builder,
+        public readonly SyntaxTree Tree;
+        public readonly string ProtocolName;
+        
+        public OldProtocolBuilder(
+            Compilation compilation,
+            SerializableExtractor extractor,
+            EventProviderCodeBuilder event_provider_code_builder,
             InterfaceProviderCodeBuilder interface_provider_code_builder,
-            MemberMapCodeBuilder membermap_code_builder, IEnumerable<Microsoft.CodeAnalysis.CSharp.Syntax.TypeSyntax> types)
+            MemberMapCodeBuilder membermap_code_builder)
         {
-            var serCode = string.Join(",", types.Select(type => $"typeof({type.ToString()})"));
-            var md5 = _BuildMd5(serCode + event_provider_code_builder.Code + interface_provider_code_builder.Code + membermap_code_builder.PropertyInfosCode + membermap_code_builder.EventInfosCode + membermap_code_builder.InterfacesCode + membermap_code_builder.MethodInfosCode);
+
+            var types = extractor.Symbols.Select(s =>
+                $"typeof({s.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)})");
+            var serCode =string.Join(",", new HashSet<string>(types));
+
+            var md5 = _BuildMd5(serCode + event_provider_code_builder.Code + interface_provider_code_builder.Code +membermap_code_builder.PropertyInfosCode + membermap_code_builder.EventInfosCode + membermap_code_builder.InterfacesCode + membermap_code_builder.MethodInfosCode);
 
             var protocolName = _BuildProtocolName(md5);
             var verCode = _BuildVerificationCode(md5);
-            string code = $@"
+            string code =$@"
 using System;  
 using System.Collections.Generic;
 using Regulus.Remote;
@@ -75,18 +83,18 @@ public class {protocolName} : Regulus.Remote.IProtocol
 }}
             
 ";
+
             ProtocolName = protocolName;
-            Tree = SyntaxFactory.ParseSyntaxTree(code, null, $"RegulusRemoteProtocol.{protocolName}.cs", Encoding.UTF8);
+           Tree = SyntaxFactory.ParseSyntaxTree(code, null, $"RegulusRemoteProtocol.{protocolName}.cs", Encoding.UTF8);
+
         }
-
-
         private string _BuildProtocolName(byte[] code)
         {
             return $"C{BitConverter.ToString(code).Replace("-", "")}";
         }
         private string _BuildVerificationCode(byte[] code)
         {
-
+            
             return string.Join(",", code.Select(val => val.ToString()).ToArray());
         }
 
@@ -95,7 +103,5 @@ public class {protocolName} : Regulus.Remote.IProtocol
             MD5 md5 = MD5.Create();
             return md5.ComputeHash(Encoding.ASCII.GetBytes(codes));
         }
-
-
     }
 }

@@ -346,7 +346,12 @@ public interface IB {
 using System;
 namespace NS1
 {    
-    public interface IA 
+    public interface IB 
+    {
+        void IBM1();
+    }
+
+    public interface IA :IB 
     {
         void M123(int a);
 
@@ -404,14 +409,19 @@ namespace NS1
         }
 
         [Test]
-        public async Task GhostCompileTest()
+        public async Task ProjectSourceBuilderTest()
         {
 
             var source = @"
 using System;
 namespace NS1
 {    
-    public interface IA 
+    public interface IB
+    {
+        event System.Action<int> Event22;
+        int Property {get;}
+    }
+    public interface IA  :IB
     {
         void M123(int a);
 
@@ -428,46 +438,15 @@ namespace NS1
             var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
             var com = tree.Compilation();
 
-            var interfaces = new System.Collections.Generic.HashSet<INamedTypeSymbol>((from syntaxTree in com.SyntaxTrees
-                                                                                       let model = com.GetSemanticModel(syntaxTree)
-                                                                                       from interfaneSyntax in syntaxTree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>()
-                                                                                       let symbol = model.GetDeclaredSymbol(interfaneSyntax)
-                                                                                       where symbol.IsGenericType == false
-                                                                                       select symbol).SelectMany(s => s.AllInterfaces.Union(new[] { s })));
+            var builder = new ProjectSourceBuilder(new EssentialReference(com));
 
-            
-            var builders = new System.Collections.Generic.Dictionary<INamedTypeSymbol, InterfaceInheritor>(from i in interfaces
-                                                                                            select new System.Collections.Generic.KeyValuePair<INamedTypeSymbol, InterfaceInheritor>(i, new InterfaceInheritor(i.ToInferredInterface())));
-            var trees = new System.Collections.Generic.List<SyntaxTree>();
-            foreach (var i in interfaces)
-            {
-                var name = $"C{i.ToDisplayString().Replace('.','_')}";
-                var type = SyntaxFactory.ClassDeclaration(name);
-
-                foreach (var i2 in i.AllInterfaces.Union(new[] { i }))
-                {
-
-                    var builder = builders[i2];
-                    type = builder.Inherite(type);
-                }
-
-                var modifier = new SyntaxModifier(type);
-                type = modifier.Type;
-
-                type = type.ImplementRegulusRemoteIGhost();
-
-                
-                trees.Add(CSharpSyntaxTree.ParseText(type.NormalizeWhitespace().ToFullString()));
-            }
-
-            
-            var ghostCom = HelperExt.Compilate(trees.Union(new[] { tree }).ToArray());
+            var ghostCom = HelperExt.Compile(builder.Sources.Union(new[] { tree }));
 
             var asm = ghostCom.ToAssembly();
 
 
             var eTypes = asm.GetTypes();
-            var cia = (from t in eTypes where t.FullName == "CNS1_IA" select t).Single();
+            var cia = (from t in eTypes where t.Name == "CNS1_IA" select t).Single();
             var ciaCons = cia.GetConstructor(new[] { typeof(long), typeof(bool) });
 
 

@@ -12,7 +12,22 @@ using Microsoft.CodeAnalysis.Text;
 using Regulus.Remote.Tools.Protocol.Sources.Extensions;
 namespace Regulus.Remote.Tools.Protocol.Sources
 {
-    public class GhostBuilder
+    class TypeSyntaxEqualityComparer : IEqualityComparer<TypeSyntax>
+    {
+        bool IEqualityComparer<TypeSyntax>.Equals(TypeSyntax x, TypeSyntax y)
+        {
+            var b = x.IsEquivalentTo(y);
+            return b;
+        }
+
+        int IEqualityComparer<TypeSyntax>.GetHashCode(TypeSyntax obj)
+        {
+            
+            return obj.ToFullString().GetHashCode();
+        }
+    }
+
+    public class GhostBuilder  
     {
         public readonly IEnumerable<TypeSyntax> Types;
         public readonly IEnumerable<ClassDeclarationSyntax> Ghosts;
@@ -21,12 +36,13 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
         public GhostBuilder(IEnumerable<INamedTypeSymbol> symbols)
         {
-
+            
             var builders = new Dictionary<INamedTypeSymbol, InterfaceInheritor>(SymbolEqualityComparer.Default);
             foreach (var item in from i in symbols
                                  select new KeyValuePair<INamedTypeSymbol, InterfaceInheritor>(i, new InterfaceInheritor(i.ToInferredInterface())))
             {
-                builders.Add(item.Key, item.Value);
+                if(!builders.ContainsKey(item.Key))
+                    builders.Add(item.Key, item.Value);
             }
 
 
@@ -53,9 +69,11 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 type = type.ImplementRegulusRemoteIGhost();                
                 ghosts.Add(type);
             }
-            Types = types;
-            Ghosts = ghosts;
-            EventProxys = eventProxys;
+
+            
+            Types = new HashSet<TypeSyntax>(types , new TypeSyntaxEqualityComparer());
+            Ghosts = new HashSet<ClassDeclarationSyntax>(ghosts, new ClassDeclarationSyntaxEqualityComparer());
+            EventProxys = new HashSet<ClassDeclarationSyntax>(eventProxys, new ClassDeclarationSyntaxEqualityComparer()); 
         }
     }
 

@@ -22,7 +22,9 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
                 MetadataReference.CreateFromFile(typeof(System.Action).GetTypeInfo().Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(System.Action<>).GetTypeInfo().Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(System.Action<,,,,,,,,>).GetTypeInfo().Assembly.Location),
-                MetadataReference.CreateFromFile(Assembly.Load("netstandard, Version=2.0.0.0").Location)
+                MetadataReference.CreateFromFile(Assembly.Load("netstandard, Version=2.0.0.0").Location),
+                MetadataReference.CreateFromFile(Assembly.Load("System.Collections, Version=4.1.2.0").Location),
+                MetadataReference.CreateFromFile(Assembly.Load("System.Linq.Expressions, Version=4.2.2.0").Location)
             };
 
 
@@ -46,7 +48,10 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
                 MetadataReference.CreateFromFile(typeof(System.Action).GetTypeInfo().Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(System.Action<>).GetTypeInfo().Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(System.Action<,,,,,,,,>).GetTypeInfo().Assembly.Location),
-                MetadataReference.CreateFromFile(Assembly.Load("netstandard, Version=2.0.0.0").Location)
+                MetadataReference.CreateFromFile(Assembly.Load("netstandard, Version=2.0.0.0").Location),
+                MetadataReference.CreateFromFile(Assembly.Load("System.Collections, Version=4.1.2.0").Location),
+                MetadataReference.CreateFromFile(Assembly.Load("System.Linq.Expressions, Version=4.2.2.0").Location)
+                
             };
         
             return CSharpCompilation.Create(assemblyName, new []{ tree }, references);
