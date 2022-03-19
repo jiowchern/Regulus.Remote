@@ -53,7 +53,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources.BlockModifiers
                                 $@"
 var returnValue = new {returnType}();
 var info = typeof({interfaceCode}).GetMethod(""{methodCode}"");
-_CallMethodEvent(info , new object[] {{{methodCallParamsCode}}} , returnValue);                    
+
+this._CallMethodEvent(info , new object[] {{{methodCallParamsCode}}} , returnValue);                    
 return returnValue;
                                             ")),
                 Types = (from p in md.ParameterList.Parameters select p.Type).Union(gn.TypeArgumentList.Arguments)

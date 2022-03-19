@@ -219,6 +219,16 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Extensions
 
         private static TypeSyntax _GetTypeSyntax(ITypeSymbol symbol)
         {
+
+
+            var types = new System.Collections.Generic.Dictionary<SpecialType, TypeSyntax>()
+            { 
+                {SpecialType.System_Void , SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.VoidKeyword))}                
+            };
+            if(types.ContainsKey(symbol.SpecialType))
+            {
+                return types[symbol.SpecialType];
+            }
             return SyntaxFactory.ParseTypeName(symbol.ToDisplayString());
         }
 

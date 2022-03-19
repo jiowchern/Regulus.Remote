@@ -348,16 +348,11 @@ public interface IB {
             var source = @"
 using System;
 namespace NS1
-{
-    /*public interface IB : IDisposable{
-        event System.Action<int> Event1;
+{    
+    public interface IA 
+    {
+        void M123(int a);
     }
-    public interface IA :IB{
-          void Method();    
-    }*/
-
-public interface IC {}
-
 }
 
 ";
@@ -375,7 +370,7 @@ public interface IC {}
 
             var builders = new System.Collections.Generic.Dictionary<INamedTypeSymbol, InterfaceInheritor>(from i in interfaces
                                                                                             select new System.Collections.Generic.KeyValuePair<INamedTypeSymbol, InterfaceInheritor>(i, new InterfaceInheritor(i.ToInferredInterface())));
-            var types = new System.Collections.Generic.List<ClassDeclarationSyntax>();
+            var trees = new System.Collections.Generic.List<SyntaxTree>();
             foreach (var i in interfaces)
             {
                 var name = $"C{i.ToDisplayString().Replace('.','_')}";
@@ -388,28 +383,39 @@ public interface IC {}
                     type = builder.Inherite(type);
                 }
 
+                
+
                 var modifier = new SyntaxModifier(type);
                 type = modifier.Type;
 
                 type = type.ImplementRegulusRemoteIGhost();
 
-                types.Add(type);
+                
+                trees.Add(CSharpSyntaxTree.ParseText(type.NormalizeWhitespace().ToFullString()));
             }
 
             
-
-            var ghostTree = SyntaxFactory.CompilationUnit().WithMembers(new SyntaxList<MemberDeclarationSyntax>(types));
-            
-
-            var ghostCom = HelperExt.Compilate(tree, SyntaxFactory.SyntaxTree(ghostTree));
+            var ghostCom = HelperExt.Compilate(trees.Union(new[] { tree }).ToArray());
 
             var asm = ghostCom.ToAssembly();
 
 
             var eTypes = asm.GetTypes();
+            var cia = (from t in eTypes where t.FullName == "CNS1_IA" select t).Single();
+            var ciaCons = cia.GetConstructor(new[] { typeof(long), typeof(bool) });
 
 
-            NUnit.Framework.Assert.Fail();
+            var instance = ciaCons.Invoke( new object[] { 1, false });
+            var ghost = instance as Regulus.Remote.IGhost;
+            object arg1 = null;
+            ghost.CallMethodEvent += (mi, args, ret) => arg1 = args[0];
+
+            
+            var method = cia.GetMethod("NS1.IA.M123", BindingFlags.Instance | BindingFlags.NonPublic);
+            method.Invoke(ghost, new object[] { 1});
+
+
+            NUnit.Framework.Assert.AreEqual(1, arg1);
         }
     }
 }
