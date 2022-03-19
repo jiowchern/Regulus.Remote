@@ -11,7 +11,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         public readonly IReadOnlyCollection<ITypeSymbol> Symbols;
         private readonly EssentialReference _References;
 
-        public SerializableExtractor(EssentialReference references, IEnumerable<GhostBuilder.Ghost> ghosts)
+        public SerializableExtractor(EssentialReference references, IEnumerable<OldGhostBuilder.Ghost> ghosts)
         {
 
 
@@ -48,7 +48,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
         
 
-        private IEnumerable<ITypeSymbol> _GetValues(IEnumerable<GhostBuilder.Ghost> ghost)
+        private IEnumerable<ITypeSymbol> _GetValues(IEnumerable<OldGhostBuilder.Ghost> ghost)
         {
             foreach (var member in ghost.SelectMany(s=>s.GetMembers()))
             {

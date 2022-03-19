@@ -10,7 +10,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         public ProjectSourceBuilder(EssentialReference references)
         {
             var compilation = references.Compilation;
-            var builder = new GhostBuilder(compilation);
+            var builder = new OldGhostBuilder(compilation);
 
             var extractor = new SerializableExtractor(references, builder.Ghosts);
             var eventProviderCodeBuilder = new EventProviderCodeBuilder(builder.Events);

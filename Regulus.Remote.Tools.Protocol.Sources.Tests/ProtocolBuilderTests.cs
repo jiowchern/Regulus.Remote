@@ -195,7 +195,7 @@ public interface IB
             var tree = CSharpSyntaxTree.ParseText(source);
             Compilation compilation = tree.Compilation();
 
-            var interfaceMap = new EventProviderCodeBuilder(new GhostBuilder(compilation).Events);
+            var interfaceMap = new EventProviderCodeBuilder(new OldGhostBuilder(compilation).Events);
             NUnit.Framework.Assert.AreEqual("new global::RegulusRemoteGhosts.IA_Event1(),new global::RegulusRemoteGhosts.IA_Event2(),new global::NS1.RegulusRemoteGhosts.IB_Event1()", interfaceMap.Code);
         }
 
@@ -220,7 +220,7 @@ namespace NS1
             var tree = CSharpSyntaxTree.ParseText(source);
             Compilation compilation = tree.Compilation();
             
-            var interfaceMap = new InterfaceProviderCodeBuilder(new GhostBuilder(compilation).Ghosts.Select(g => g.Syntax));
+            var interfaceMap = new InterfaceProviderCodeBuilder(new OldGhostBuilder(compilation).Ghosts.Select(g => g.Syntax));
             NUnit.Framework.Assert.AreEqual("{typeof(global::NS1.IA),typeof(global::NS1.RegulusRemoteGhosts.CIA)},{typeof(global::NS1.IB),typeof(global::NS1.RegulusRemoteGhosts.CIB)}", interfaceMap.Code);
         }
 
@@ -250,7 +250,7 @@ d
             var tree = CSharpSyntaxTree.ParseText(source);
             Compilation compilation = tree.Compilation();
 
-            var interfaceMap = new InterfaceProviderCodeBuilder(new GhostBuilder(compilation).Ghosts.Select(g=>g.Syntax));
+            var interfaceMap = new InterfaceProviderCodeBuilder(new OldGhostBuilder(compilation).Ghosts.Select(g=>g.Syntax));
             NUnit.Framework.Assert.AreEqual("{typeof(global::NS1.IC),typeof(global::NS1.RegulusRemoteGhosts.CIC)},{typeof(global::NS1.IA),typeof(global::NS1.RegulusRemoteGhosts.CIA)},{typeof(global::NS1.IB),typeof(global::NS1.RegulusRemoteGhosts.CIB)}", interfaceMap.Code);
         }
 
@@ -303,7 +303,7 @@ namespace NS1
             
             var tree = CSharpSyntaxTree.ParseText(source);
             Compilation compilation = tree.Compilation();
-            var builder = new GhostBuilder(compilation);
+            var builder = new OldGhostBuilder(compilation);
             var symbols = new SerializableExtractor(new EssentialReference(compilation), builder.Ghosts ).Symbols.Select(s=>s.ToDisplayString());
            
             var cSymbols = new[]
@@ -355,7 +355,7 @@ namespace NS1
 ";
             var tree=CSharpSyntaxTree.ParseText(source);
             Compilation compilation =tree.Compilation();
-            var builder = new GhostBuilder(compilation);
+            var builder = new OldGhostBuilder(compilation);
             var symbols = new SerializableExtractor(new EssentialReference(compilation), builder.Ghosts).Symbols;
 
             var cSymbols = new[]
@@ -396,7 +396,7 @@ namespace NS1
 ";
             var tree = CSharpSyntaxTree.ParseText(source);
             Compilation compilation = tree.Compilation();
-            var builder = new GhostBuilder(compilation);
+            var builder = new OldGhostBuilder(compilation);
             var  symbols = new SerializableExtractor(new EssentialReference(compilation), builder.Ghosts).Symbols;
 
             var cSymbols = new[]
@@ -423,7 +423,7 @@ namespace NS1
 ";
             var tree = CSharpSyntaxTree.ParseText(source);
             Compilation compilation = tree.Compilation();
-            var builder = new GhostBuilder(compilation);
+            var builder = new OldGhostBuilder(compilation);
 
             var cSymbols = new[]
              {
@@ -475,7 +475,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon
             var tree = CSharpSyntaxTree.ParseText(source);
             Compilation compilation = tree.Compilation();
 
-            var builder = new GhostBuilder(compilation);
+            var builder = new OldGhostBuilder(compilation);
             var symbols = new SerializableExtractor(new EssentialReference(compilation), builder.Ghosts).Symbols;
 
 

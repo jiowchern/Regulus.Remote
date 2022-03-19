@@ -339,7 +339,69 @@ public interface IB {
             await new GhostTest(syntaxBuilder.Tree).RunAsync();
         }
 
+        [Test]
+        public void GhostBuilderCompileTest()
+        {
+            var source = @"
+using System;
+namespace NS1
+{    
+    public interface IA 
+    {
+        void M123(int a);
 
+        int NoSupple(int a);
+     
+        event Action<int> Event1;
+    }
+}
+
+";
+            var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
+            var com = tree.Compilation();
+            var builder = new GhostBuilder((from syntaxTree in com.SyntaxTrees
+                             let model = com.GetSemanticModel(syntaxTree)
+                             from interfaneSyntax in syntaxTree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>()
+                             let symbol = model.GetDeclaredSymbol(interfaneSyntax)
+                             where symbol.IsGenericType == false
+                             select symbol).SelectMany(s => s.AllInterfaces.Union(new[] { s })));
+            var trees = builder.Ghosts.Union(builder.EventProxys).Select( c=> CSharpSyntaxTree.ParseText(c.NormalizeWhitespace().ToFullString()));
+
+            var ghostCom = HelperExt.Compile(trees.Union(new[] { tree }));
+
+            var asm = ghostCom.ToAssembly();
+
+            var eTypes = asm.GetTypes();
+            var cia = (from t in eTypes where t.FullName == "CNS1_IA" select t).Single();
+            var ciaCons = cia.GetConstructor(new[] { typeof(long), typeof(bool) });
+
+
+            var instance = ciaCons.Invoke(new object[] { 1, false });
+            var ghost = instance as Regulus.Remote.IGhost;
+            object arg1 = null;
+            ghost.CallMethodEvent += (mi, args, ret) => arg1 = args[0];
+
+
+            var m123 = cia.GetMethod("NS1.IA.M123", BindingFlags.Instance | BindingFlags.NonPublic);
+            m123.Invoke(ghost, new object[] { 1 });
+
+
+            var noSupple = cia.GetMethod("NS1.IA.NoSupple", BindingFlags.Instance | BindingFlags.NonPublic);
+
+            bool hasException = false;
+            try
+            {
+                noSupple.Invoke(ghost, new object[] { 1 });
+            }
+            catch (System.Reflection.TargetInvocationException tie)
+            {
+
+                hasException = tie.InnerException.GetType() == typeof(Regulus.Remote.Exceptions.NotSupportedException);
+            }
+            NUnit.Framework.Assert.True(hasException);
+            NUnit.Framework.Assert.AreEqual(1, arg1);
+
+        }
 
         [Test]
         public async Task GhostCompileTest()
@@ -354,7 +416,8 @@ namespace NS1
         void M123(int a);
 
         int NoSupple(int a);
-       
+     
+        event System.Action<int> Event1;
     }
 
     
@@ -372,7 +435,7 @@ namespace NS1
                                                                                        where symbol.IsGenericType == false
                                                                                        select symbol).SelectMany(s => s.AllInterfaces.Union(new[] { s })));
 
-
+            
             var builders = new System.Collections.Generic.Dictionary<INamedTypeSymbol, InterfaceInheritor>(from i in interfaces
                                                                                             select new System.Collections.Generic.KeyValuePair<INamedTypeSymbol, InterfaceInheritor>(i, new InterfaceInheritor(i.ToInferredInterface())));
             var trees = new System.Collections.Generic.List<SyntaxTree>();
@@ -387,8 +450,6 @@ namespace NS1
                     var builder = builders[i2];
                     type = builder.Inherite(type);
                 }
-
-                
 
                 var modifier = new SyntaxModifier(type);
                 type = modifier.Type;

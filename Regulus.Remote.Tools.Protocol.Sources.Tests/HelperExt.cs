@@ -9,10 +9,10 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
 {
     public static class HelperExt
     {
-        public static CSharpCompilation Compilate(params SyntaxTree[] trees)
+        public static CSharpCompilation Compile(IEnumerable<SyntaxTree> trees)
         {
             var assemblyName = Guid.NewGuid().ToString();
-            
+
             IEnumerable<MetadataReference> references = new MetadataReference[]
             {
                 MetadataReference.CreateFromFile(typeof(Regulus.Remote.Protocol.CreaterAttribute).GetTypeInfo().Assembly.Location),
@@ -25,8 +25,12 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
                 MetadataReference.CreateFromFile(Assembly.Load("netstandard, Version=2.0.0.0").Location)
             };
 
-            
-            return CSharpCompilation.Create(assemblyName, trees, references , new CSharpCompilationOptions(outputKind  : OutputKind.DynamicallyLinkedLibrary));
+
+            return CSharpCompilation.Create(assemblyName, trees, references, new CSharpCompilationOptions(outputKind: OutputKind.DynamicallyLinkedLibrary));
+        }
+        public static CSharpCompilation Compilate(params SyntaxTree[] trees)
+        {
+            return Compile(trees);
         }
 
         public static CSharpCompilation Compilation(this SyntaxTree tree)
