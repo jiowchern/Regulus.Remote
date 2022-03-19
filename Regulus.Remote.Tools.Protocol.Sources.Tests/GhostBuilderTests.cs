@@ -352,7 +352,12 @@ namespace NS1
     public interface IA 
     {
         void M123(int a);
+
+        int NoSupple(int a);
+       
     }
+
+    
 }
 
 ";
@@ -411,10 +416,23 @@ namespace NS1
             ghost.CallMethodEvent += (mi, args, ret) => arg1 = args[0];
 
             
-            var method = cia.GetMethod("NS1.IA.M123", BindingFlags.Instance | BindingFlags.NonPublic);
-            method.Invoke(ghost, new object[] { 1});
+            var m123 = cia.GetMethod("NS1.IA.M123", BindingFlags.Instance | BindingFlags.NonPublic);
+            m123.Invoke(ghost, new object[] { 1});
 
 
+            var noSupple = cia.GetMethod("NS1.IA.NoSupple", BindingFlags.Instance | BindingFlags.NonPublic);
+
+            bool hasException = false;
+            try
+            {
+                noSupple.Invoke(ghost, new object[] { 1 });
+            }
+            catch (System.Reflection.TargetInvocationException tie)
+            {
+
+                hasException = tie.InnerException.GetType() == typeof(Regulus.Remote.Exceptions.NotSupportedException);
+            }
+            NUnit.Framework.Assert.True(hasException);            
             NUnit.Framework.Assert.AreEqual(1, arg1);
         }
     }

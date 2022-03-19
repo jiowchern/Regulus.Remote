@@ -14,7 +14,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         public readonly BlockSyntax Expression;
         
 
-        public InterfaceInheritor(InterfaceDeclarationSyntax @base) :this(@base , SyntaxFactory.Block(SyntaxFactory.ExpressionStatement(SyntaxFactory.ThrowExpression(SyntaxFactory.ParseExpression("new System.NotImplementedException()")))))
+        public InterfaceInheritor(InterfaceDeclarationSyntax @base) :this(@base , SyntaxFactory.Block(SyntaxFactory.ExpressionStatement(SyntaxFactory.ThrowExpression(SyntaxFactory.ParseExpression("new Regulus.Remote.Exceptions.NotSupportedException()")))))
         {
             
         }
