@@ -9,7 +9,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
     public class InterfaceInheritor
     {
         readonly string _NamePath;
-        private readonly InterfaceDeclarationSyntax _Base;
+        public readonly InterfaceDeclarationSyntax Base;
         
         public readonly BlockSyntax Expression;
         
@@ -23,13 +23,13 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             Expression = expression;
             _NamePath = @base.GetNamePath();
             Expression = expression;
-            this._Base = @base;
+            this.Base = @base;
         }
 
         public ClassDeclarationSyntax Inherite(ClassDeclarationSyntax class_syntax)
         {
             
-            var interfaceDeclaration = _Base;
+            var interfaceDeclaration = Base;
             var namePath = _NamePath;
 
             var expression = Expression;

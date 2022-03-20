@@ -59,7 +59,7 @@ public interface IB
             var tree = CSharpSyntaxTree.ParseText(source);
             Compilation compilation = tree.Compilation();
 
-            var builder = new MemberMapCodeBuilder(compilation);
+            var builder = new OldMemberMapCodeBuilder(compilation);
             NUnit.Framework.Assert.AreEqual(@"new System.Tuple<System.Type, System.Func<Regulus.Remote.IProvider>>(typeof(global::IA),()=>new Regulus.Remote.TProvider<global::IA>()),new System.Tuple<System.Type, System.Func<Regulus.Remote.IProvider>>(typeof(global::NS1.IB),()=>new Regulus.Remote.TProvider<global::NS1.IB>())", builder.InterfacesCode);
         }
 
@@ -84,7 +84,7 @@ public interface IB
             var tree = CSharpSyntaxTree.ParseText(source);
             Compilation compilation = tree.Compilation();
 
-            var builder = new MemberMapCodeBuilder(compilation);
+            var builder = new OldMemberMapCodeBuilder(compilation);
             NUnit.Framework.Assert.AreEqual(@"typeof(global::NS1.IB).GetProperty(""Property1"")", builder.PropertyInfosCode);
         }
 
@@ -114,7 +114,7 @@ public interface IB
             var tree = CSharpSyntaxTree.ParseText(source);
             Compilation compilation = tree.Compilation();
 
-            var builder = new MemberMapCodeBuilder(compilation);
+            var builder = new OldMemberMapCodeBuilder(compilation);
             NUnit.Framework.Assert.AreEqual(@"typeof(global::IA).GetProperty(""Property1""),typeof(global::NS1.IB).GetProperty(""Property1"")", builder.PropertyInfosCode);
         }
 
@@ -140,7 +140,7 @@ public interface IB
             var tree = CSharpSyntaxTree.ParseText(source);
             Compilation compilation = tree.Compilation();
 
-            var builder = new MemberMapCodeBuilder(compilation);
+            var builder = new OldMemberMapCodeBuilder(compilation);
             NUnit.Framework.Assert.AreEqual(@"typeof(global::IA).GetEvent(""Event1""),typeof(global::NS1.IB).GetEvent(""Event1"")", builder.EventInfosCode);
         }
 
@@ -167,7 +167,7 @@ public interface IB
             var tree = CSharpSyntaxTree.ParseText(source);
             Compilation compilation = tree.Compilation();
             //new Regulus.Utility.Reflection.TypeMethodCatcher((System.Linq.Expressions.Expression<System.Action<global::IA,int,int>>)((ins,_1,_2) => ins.Method(_1,_2))).Method,new Regulus.Utility.Reflection.TypeMethodCatcher((System.Linq.Expressions.Expression<System.Action<global::NS1.IB,int,int>>)((ins,_1,_2) => ins.Method(_1,_2))).Method
-            var builder = new MemberMapCodeBuilder(compilation);
+            var builder = new OldMemberMapCodeBuilder(compilation);
             NUnit.Framework.Assert.AreEqual("new Regulus.Utility.Reflection.TypeMethodCatcher((System.Linq.Expressions.Expression<System.Action<global::IA,int,int>>)((ins,_1,_2) => ins.Method1(_1,_2))).Method,new Regulus.Utility.Reflection.TypeMethodCatcher((System.Linq.Expressions.Expression<System.Action<global::NS1.IB,int,int>>)((ins,_1,_2) => ins.Method1(_1,_2))).Method,new Regulus.Utility.Reflection.TypeMethodCatcher((System.Linq.Expressions.Expression<System.Action<global::NS1.IB>>)((ins) => ins.Method2())).Method", builder.MethodInfosCode);
         }
 

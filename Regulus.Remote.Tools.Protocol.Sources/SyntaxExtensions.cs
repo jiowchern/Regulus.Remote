@@ -9,7 +9,9 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Extensions
 {
     public static class SyntaxExtensions
     {
+
         
+
         public static bool AnyNull(params SyntaxNode[] nodes)
         {
             

@@ -265,17 +265,17 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 
 
             var event11Obs = from eventer in env.Queryable.QueryNotifier<IEventabe>().SupplyEvent()
-                             from n in Extensions.EventObservable((h) => eventer.Event1 += h, (h) => eventer.Event1 -= h)
+                             from n in Reactive.Extensions.EventObservable((h) => eventer.Event1 += h, (h) => eventer.Event1 -= h)
                              select n;
             var event12Obs = from eventer in env.Queryable.QueryNotifier<IEventabe>().SupplyEvent()
-                             from n in Extensions.EventObservable((h) => eventer.Event21 += h, (h) => eventer.Event21 -= h)
+                             from n in Reactive.Extensions.EventObservable((h) => eventer.Event21 += h, (h) => eventer.Event21 -= h)
                              select n;
 
             var event21Obs = from eventer in env.Queryable.QueryNotifier<IEventabe>().SupplyEvent()
-                             from n in Extensions.EventObservable<int>((h) => eventer.Event2 += h, (h) => eventer.Event2 -= h)
+                             from n in Reactive.Extensions.EventObservable<int>((h) => eventer.Event2 += h, (h) => eventer.Event2 -= h)
                              select n;
             var event22Obs = from eventer in env.Queryable.QueryNotifier<IEventabe>().SupplyEvent()
-                             from n in Extensions.EventObservable<int>(
+                             from n in Reactive.Extensions.EventObservable<int>(
                                  (h) => eventer.Event22 += h,
                                  (h) => eventer.Event22 -= h)
                              select n;

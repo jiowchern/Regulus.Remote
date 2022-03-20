@@ -1,6 +1,6 @@
 ﻿
 
-using Regulus.Extension;
+using Regulus.Extensions;
 using Regulus.Utility;
 using System;
 using System.Collections.Generic;

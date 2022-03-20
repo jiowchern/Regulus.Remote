@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace Regulus.Remote.Tools.Protocol.Sources
 {
+    
     internal class OldProtocolBuilder
     {
 
@@ -19,7 +20,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             SerializableExtractor extractor,
             EventProviderCodeBuilder event_provider_code_builder,
             InterfaceProviderCodeBuilder interface_provider_code_builder,
-            MemberMapCodeBuilder membermap_code_builder)
+            OldMemberMapCodeBuilder membermap_code_builder)
         {
 
             var types = extractor.Symbols.Select(s =>
