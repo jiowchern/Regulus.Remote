@@ -170,10 +170,19 @@ public interface IA {
         {
             var source = @"
 
+namespace NS2
+{
+    public class Test
+    {
+    }
+
+}
 namespace NS
 {
+    
     public interface IA {
       void Method1(int a,int b);
+      event System.Action<NS2.Test> Event1;
     }
 }
 ";
@@ -349,6 +358,7 @@ namespace NS1
     public interface IB 
     {
         void IBM1();
+        event Action Event2;
     }
 
     public interface IA :IB 

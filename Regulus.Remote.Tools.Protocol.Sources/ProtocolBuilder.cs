@@ -76,7 +76,7 @@ public class {protocolName} : Regulus.Remote.IProtocol
             
 ";
             ProtocolName = protocolName;
-            Tree = SyntaxFactory.ParseSyntaxTree(code, null, $"RegulusRemoteProtocol.{protocolName}.cs", Encoding.UTF8);
+            Tree = SyntaxFactory.ParseSyntaxTree(code, null, $"ProtocolBuilder.{protocolName}.cs", Encoding.UTF8);
         }
 
 

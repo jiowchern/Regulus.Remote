@@ -44,7 +44,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
             NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(double)));
             NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(System.Guid)));
             NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(Regulus.Remote.Tools.Protocol.Sources.TestCommon.TestC)));
-            NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(Regulus.Remote.Tools.Protocol.Sources.TestCommon.TestS)));
+            NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(Regulus.Remote.Tools.Protocol.Sources.TestCommon.TestS)));            
 
 
             NUnit.Framework.Assert.AreEqual(9, protocol.SerializeTypes.Length);
@@ -212,17 +212,10 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
             var eventer = eventerObs.FirstAsync().Wait();
 
             CustomDelegate testAction = () => { };
-            try
-            {
-                eventer.CustomDelegateEvent += testAction;
-            }
-            catch   (Regulus.Remote.Exceptions.NotSupportedException ns)
-            {
-                NUnit.Framework.Assert.Pass();
-                return;
 
-            }
-            NUnit.Framework.Assert.Fail();
+            NUnit.Framework.Assert.Throws<Regulus.Remote.Exceptions.NotSupportedException>(() => eventer.CustomDelegateEvent += testAction);
+            
+            
 
         }
 

@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Regulus.Extensions.NumberExtensions;
+
 
 
 
 namespace Regulus.Remote.Tools.Protocol.Sources
 {
+    
     using Regulus.Remote.Tools.Protocol.Sources.Extensions;
     using System.Linq;
 
@@ -80,8 +81,9 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             var paramNames = method_syntax.ParameterList.Parameters.Count.GetSeries().Select(n=>$"_{n+1}");
             var paramTypes = method_syntax.ParameterList.Parameters.Select(p => p.Type.ToString());
 
-            var typeAndParamTypes = string.Join(",", (new[] { typeName }).Union(paramTypes));
-            var instanceAndParamNames = string.Join(",", (new[] { "ins" }).Union(paramNames));
+            
+            var typeAndParamTypes = string.Join(",", (new[] { typeName }).Concat(paramTypes));
+            var instanceAndParamNames = string.Join(",", (new[] { "ins" }).Concat(paramNames));
             var paramNamesStr = string.Join(",", paramNames);
             return $"new Regulus.Utility.Reflection.TypeMethodCatcher((System.Linq.Expressions.Expression<System.Action<{typeAndParamTypes}>>)(({instanceAndParamNames}) => ins.{method_syntax.Identifier}({paramNamesStr}))).Method";
 

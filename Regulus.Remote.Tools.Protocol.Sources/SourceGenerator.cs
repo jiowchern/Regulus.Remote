@@ -12,8 +12,9 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
             var references = new EssentialReference(context.Compilation);
 
-            var sources = new OldProjectSourceBuilder(references).Sources;
+            var sources = new ProjectSourceBuilder(references).Sources;
             
+
             foreach (var syntaxTree in sources)
             {
                 context.AddSource(syntaxTree.FilePath, syntaxTree.GetText());

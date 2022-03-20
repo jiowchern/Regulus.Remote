@@ -167,7 +167,7 @@ namespace Regulus.Remote
 
         private bool _Comparison(byte[] code1, byte[] code2)
         {
-            return new Regulus.Utility.Comparison<byte>(code1, code2, (arg1, arg2) => arg1 == arg2).Same;
+            return new Regulus.Utility.Comparer<byte>(code1, code2, (arg1, arg2) => arg1 == arg2).Same;
         }
 
         private void _ErrorReturnValue(long return_target, string method, string message)
@@ -302,7 +302,7 @@ namespace Regulus.Remote
             PropertyInfo info = map.GetProperty(data.PropertyId);
             var type = _InterfaceProvider.Find(info.DeclaringType);
             var fieldName = _GetFieldName(info);
-            FieldInfo field = type.GetField( fieldName, BindingFlags.Instance | BindingFlags.Public);
+            FieldInfo field = type.GetField( fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
             object filedValue = field.GetValue(owner.GetInstance());
             return filedValue as IObjectAccessible;
         }
@@ -324,7 +324,7 @@ namespace Regulus.Remote
 
             object instance = ghost.GetInstance();
             Type type = instance.GetType();
-            FieldInfo field = type.GetField(_GetFieldName(info), BindingFlags.Instance | BindingFlags.Public);
+            FieldInfo field = type.GetField(_GetFieldName(info), BindingFlags.Instance | BindingFlags.NonPublic);
             if (field != null)
             {
                 object filedValue = field.GetValue(instance);
@@ -357,7 +357,7 @@ namespace Regulus.Remote
             
 
             var fieldName = _GetFieldName(info);
-            FieldInfo eventInfo = type.GetField(fieldName, BindingFlags.Instance | BindingFlags.Public);
+            FieldInfo eventInfo = type.GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
             object fieldValue = eventInfo.GetValue(instance);
             if (fieldValue is GhostEventHandler)
             {

@@ -4,22 +4,18 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-
-
 using Regulus.Remote.Tools.Protocol.Sources.Extensions;
 namespace Regulus.Remote.Tools.Protocol.Sources
 {
 
     public class GhostBuilder  
     {
-        struct Ghost
-        {
-            public ClassDeclarationSyntax Type;
-        }
+        
         public readonly IEnumerable<TypeSyntax> Types;
         public readonly IEnumerable<ClassDeclarationSyntax> Ghosts;
         public readonly IEnumerable<ClassDeclarationSyntax> EventProxys;
         public readonly IEnumerable<InterfaceDeclarationSyntax> Souls;
+        public readonly string Namespace;
 
         public GhostBuilder(IEnumerable<INamedTypeSymbol> symbols)
         {
@@ -61,9 +57,25 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 ghosts.Add(type);
             }
             
-            Types = new HashSet<TypeSyntax>(types , new TypeSyntaxEqualityComparer());
+            Types = new HashSet<TypeSyntax>(_WithOutNamespaceFilter(types) , new TypeSyntaxEqualityComparer());
             Ghosts = new HashSet<ClassDeclarationSyntax>(ghosts, new ClassDeclarationSyntaxEqualityComparer());
-            EventProxys = new HashSet<ClassDeclarationSyntax>(eventProxys, new ClassDeclarationSyntaxEqualityComparer()); 
+            EventProxys = new HashSet<ClassDeclarationSyntax>(eventProxys, new ClassDeclarationSyntaxEqualityComparer());
+
+
+            var all = string.Join("", Types.Select(t => t.ToFullString()).Union(Ghosts.Select(g => g.Identifier.ToFullString())).Union(EventProxys.Select(e => e.Identifier.ToFullString())));
+
+
+            Namespace = $"RegulusRemoteProtocol{all.ToMd5().ToMd5String().Replace("-","")}";
+
+
+        }
+
+        private IEnumerable<TypeSyntax> _WithOutNamespaceFilter(List<TypeSyntax> types)
+        {
+            foreach (var type in types)
+            {
+                yield return type;
+            }
         }
     }
 

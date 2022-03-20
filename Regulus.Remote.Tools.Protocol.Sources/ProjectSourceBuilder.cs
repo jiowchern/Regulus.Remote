@@ -7,22 +7,23 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 {
     public class ProjectSourceBuilder
     {
-        public readonly IEnumerable<SyntaxTree> Sources;
+        public readonly IEnumerable<SyntaxTree> Sources;        
 
         public ProjectSourceBuilder(EssentialReference references)
         {
+            
             var compilation = references.Compilation;
             
 
             var ghostBuilder = new GhostBuilder(compilation.FindAllInterfaceSymbol());
 
 
-            var name = System.Guid.NewGuid().ToString().Replace("-", "");
+            var name = ghostBuilder.Namespace;
             
             var root = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName($"NS{name}"));
             
-            var eventProxys= ghostBuilder.EventProxys.Select(e => CSharpSyntaxTree.ParseText(root.AddMembers(e).NormalizeWhitespace().ToString(),null,$"{name}.{e.Identifier}.cs"));
-            var ghosts  = ghostBuilder.Ghosts.Select(e => CSharpSyntaxTree.ParseText(root.AddMembers(e).NormalizeWhitespace().ToString(), null, $"{name}.{e.Identifier}.cs"));
+            var eventProxys= ghostBuilder.EventProxys.Select(e => CSharpSyntaxTree.ParseText(root.AddMembers(e).NormalizeWhitespace().ToString(),null,$"{name}.{e.Identifier}.cs", System.Text.Encoding.UTF8));
+            var ghosts  = ghostBuilder.Ghosts.Select(e => CSharpSyntaxTree.ParseText(root.AddMembers(e).NormalizeWhitespace().ToString(), null, $"{name}.{e.Identifier}.cs", System.Text.Encoding.UTF8));
 
             var eventProviderCodeBuilder = new EventProviderCodeBuilder(eventProxys);
 
@@ -33,7 +34,16 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
             var protocolProviders = new ProtocoProviderlBuilder(compilation, protocolBuilder.ProtocolName).Trees;
 
-            Sources = ghosts.Union(eventProxys).Union(protocolProviders).Union(new[] { protocolBuilder.Tree });
+            Sources = _UniteFilePath(name,ghosts.Concat(eventProxys).Concat(protocolProviders).Concat(new[] { protocolBuilder.Tree }));
+        }
+
+        private IEnumerable<SyntaxTree> _UniteFilePath(string name,IEnumerable<SyntaxTree> sources)
+        {
+            int index = 0;
+            foreach (var source in sources)
+            {
+                yield return source.WithFilePath($"{name}.{index++}.cs");
+            }
         }
     }
 }

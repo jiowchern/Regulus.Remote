@@ -34,7 +34,12 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Modifiers
             if(!pd.DescendantNodes().OfType<AccessorDeclarationSyntax>().Any( a=>a.Kind() == SyntaxKind.GetAccessorDeclaration))
                 return null;
 
-            types.AddRange(qn.Right.DescendantNodes().OfType<TypeSyntax>());
+            if(qn.Right is GenericNameSyntax gn)
+            {                
+                if(sn.Identifier.ToString() == "Property" )
+                    types.AddRange(gn.TypeArgumentList.Arguments);
+            }
+            
 
             return new PropertyFieldDeclarationSyntax() { Field = _CreateField(name, qn), Types = types };
         }

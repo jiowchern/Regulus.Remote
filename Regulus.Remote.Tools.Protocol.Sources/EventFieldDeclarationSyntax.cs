@@ -29,8 +29,12 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Modifiers
             if (sn.Identifier.ToString() != "Action")
                 return null;
 
-            types.AddRange(qn.Right.DescendantNodes().OfType<TypeSyntax>());
 
+            if (qn.Right is GenericNameSyntax gn)
+            {
+                types.AddRange(gn.TypeArgumentList.Arguments);
+            }
+            
 
             return new EventFieldDeclarationSyntax() { Field = _CreateGhostEventHandler(name), Types = types};
         }

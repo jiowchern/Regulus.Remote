@@ -43,7 +43,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                     paramList = paramList.AddParameters(SyntaxFactory.Parameter(SyntaxFactory.Identifier(name)));
                 }
                 paramExpression = string.Join(",", names);
-                typesExpression = typeList.ToString();
+                if(paramCount > 0)
+                    typesExpression = typeList.ToString();
             }
 
 

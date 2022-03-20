@@ -41,8 +41,6 @@ namespace Regulus.Remote.Tools.Protocol.Sources.BlockModifiers
                 return null;
             }
 
-            var b = _Build();
-
 
             return new MethodVoid
             { 
@@ -52,115 +50,7 @@ this._CallMethodEvent(info , new object[] {{{methodCallParamsCode}}} , null);",0
                 Types = from p in md.ParameterList.Parameters select p.Type
                 };
             
-            
         }
-
-
-        static BlockSyntax _Build()
-        {
-            return Block(
-                                    LocalDeclarationStatement(
-                                        VariableDeclaration(
-                                            IdentifierName(
-                                                Identifier(
-                                                    TriviaList(),
-                                                    SyntaxKind.VarKeyword,
-                                                    "var",
-                                                    "var",
-                                                    TriviaList()
-                                                )
-                                            )
-                                        )
-                                        .WithVariables(
-                                            SingletonSeparatedList<VariableDeclaratorSyntax>(
-                                                VariableDeclarator(
-                                                    Identifier("info")
-                                                )
-                                                .WithInitializer(
-                                                    EqualsValueClause(
-                                                        InvocationExpression(
-                                                            MemberAccessExpression(
-                                                                SyntaxKind.SimpleMemberAccessExpression,
-                                                                TypeOfExpression(
-                                                                    QualifiedName(
-                                                                        IdentifierName("NS1"),
-                                                                        IdentifierName("IA")
-                                                                    )
-                                                                ),
-                                                                IdentifierName("GetMethod")
-                                                            )
-                                                        )
-                                                        .WithArgumentList(
-                                                            ArgumentList(
-                                                                SingletonSeparatedList<ArgumentSyntax>(
-                                                                    Argument(
-                                                                        LiteralExpression(
-                                                                            SyntaxKind.StringLiteralExpression,
-                                                                            Literal("M123")
-                                                                        )
-                                                                    )
-                                                                )
-                                                            )
-                                                        )
-                                                    )
-                                                )
-                                            )
-                                        )
-                                    ),
-                                    ExpressionStatement(
-                                        InvocationExpression(
-                                            MemberAccessExpression(
-                                                SyntaxKind.SimpleMemberAccessExpression,
-                                                ThisExpression(),
-                                                IdentifierName("_CallMethodEvent")
-                                            )
-                                        )
-                                        .WithArgumentList(
-                                            ArgumentList(
-                                                SeparatedList<ArgumentSyntax>(
-                                                    new SyntaxNodeOrToken[]{
-                                                        Argument(
-                                                            IdentifierName("info")
-                                                        ),
-                                                        Token(SyntaxKind.CommaToken),
-                                                        Argument(
-                                                            ArrayCreationExpression(
-                                                                ArrayType(
-                                                                    PredefinedType(
-                                                                        Token(SyntaxKind.ObjectKeyword)
-                                                                    )
-                                                                )
-                                                                .WithRankSpecifiers(
-                                                                    SingletonList<ArrayRankSpecifierSyntax>(
-                                                                        ArrayRankSpecifier(
-                                                                            SingletonSeparatedList<ExpressionSyntax>(
-                                                                                OmittedArraySizeExpression()
-                                                                            )
-                                                                        )
-                                                                    )
-                                                                )
-                                                            )
-                                                            .WithInitializer(
-                                                                InitializerExpression(
-                                                                    SyntaxKind.ArrayInitializerExpression,
-                                                                    SingletonSeparatedList<ExpressionSyntax>(
-                                                                        IdentifierName("_1")
-                                                                    )
-                                                                )
-                                                            )
-                                                        ),
-                                                        Token(SyntaxKind.CommaToken),
-                                                        Argument(
-                                                            LiteralExpression(
-                                                                SyntaxKind.NullLiteralExpression
-                                                            )
-                                                        )
-                                                    }
-                                                )
-                                            )
-                                        )
-                                    )
-                                );
-        }
+        
     }
 }

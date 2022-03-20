@@ -82,7 +82,7 @@ interface IA {
             var modifier = new SyntaxModifier(cia);
 
             var exp = modifier.Type.DescendantNodes().OfType<BlockSyntax>().Single();
-            NUnit.Framework.Assert.AreEqual(1, modifier.TypesOfSerialization.Count());
+            NUnit.Framework.Assert.AreEqual(0, modifier.TypesOfSerialization.Count());
             NUnit.Framework.Assert.False(builder.Expression.IsEquivalentTo(exp));
             NUnit.Framework.Assert.AreEqual(1, modifier.Type.DescendantNodes().OfType<FieldDeclarationSyntax>().Count());
 
