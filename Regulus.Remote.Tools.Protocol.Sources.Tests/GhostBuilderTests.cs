@@ -10,6 +10,9 @@ using NUnit.Framework;
 
 using Regulus.Remote.Tools.Protocol.Sources.Extensions;
 
+
+
+
 namespace Regulus.Remote.Tools.Protocol.Sources.Tests
 {
     
@@ -434,8 +437,19 @@ namespace NS1
 
             var source = @"
 using System;
+using Regulus.Remote;
+
 namespace NS1
 {    
+    public struct Struct2
+    {
+        public string Field1;
+    }
+
+    public struct Struct1
+    {
+        public Struct2 Field1;
+    }
     public delegate void NoSuppleDelegate(int a);
     public interface IB
     {
@@ -444,20 +458,31 @@ namespace NS1
     }
     public interface IA  :IB
     {
-        void M123(int a);
+        Value<Struct1> M123(int a);
 
         int NoSupple(int a);
         Regulus.Remote.Property<int> Property1{get;}
         Regulus.Remote.Notifier<IB> Property2{get;}
         event System.Action<int> Event1;
-        event NoSuppleDelegate NoSuppleEvent;
-
+        event NoSuppleDelegate NoSuppleEvent;        
         
     }
 
     
 }
 
+ public static partial class ProtocolProvider 
+ {
+        public static Regulus.Remote.IProtocol CreateCase1()
+        {
+            Regulus.Remote.IProtocol protocol = null;
+            _CreateCase1(ref protocol);
+            return protocol;
+        }
+
+        [Regulus.Remote.Protocol.Creater]
+        static partial void _CreateCase1(ref Regulus.Remote.IProtocol protocol);    
+}
 ";
             
             var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);

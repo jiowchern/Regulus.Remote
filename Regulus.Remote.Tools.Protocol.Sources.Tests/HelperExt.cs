@@ -57,7 +57,6 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
             return CSharpCompilation.Create(assemblyName, new []{ tree }, references);
         }
 
-       
 
 
         public static System.Reflection.Assembly ToAssembly(this Microsoft.CodeAnalysis.CSharp.CSharpCompilation compilation)

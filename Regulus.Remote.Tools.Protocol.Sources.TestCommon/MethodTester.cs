@@ -23,5 +23,10 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon
         {
             return 0;
         }
+
+        Value<HelloReply> IMethodable2.SayHello(HelloRequest request)
+        {
+            return new HelloReply() { Message = request.Name };
+        }
     }
 }

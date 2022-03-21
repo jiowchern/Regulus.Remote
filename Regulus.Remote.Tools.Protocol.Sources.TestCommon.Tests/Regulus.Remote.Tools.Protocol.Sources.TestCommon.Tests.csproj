@@ -15,7 +15,7 @@
     <PackageReference Include="NUnit" Version="3.13.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />    
     <!--<PackageReference Include="Regulus.Remote.Standalone" Version="0.1.9.1" />-->
-    <PackageReference Include="System.Reactive" Version="5.0.0" />
+    
   </ItemGroup>
 
   <ItemGroup>

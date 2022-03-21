@@ -47,7 +47,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
             NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(Regulus.Remote.Tools.Protocol.Sources.TestCommon.TestS)));            
 
 
-            NUnit.Framework.Assert.AreEqual(9, protocol.SerializeTypes.Length);
+            NUnit.Framework.Assert.AreEqual(11, protocol.SerializeTypes.Length);
 
 
         }
@@ -351,6 +351,25 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
             Assert.AreEqual(1, values.v1);
             Assert.AreEqual(2, values.v2);
             Assert.AreEqual(0, values.v0);
+        }
+
+        [Test]
+        public void MethodSayHelloTest()
+        {
+
+
+            var tester = new MethodTester();
+
+            var env = new TestEnv<Entry<IMethodable>, IMethodable>(new Entry<IMethodable>(tester));
+            var valuesObs = from gpi in env.Queryable.QueryNotifier<IMethodable>().SupplyEvent()
+                            from response in gpi.SayHello(new HelloRequest() { Name = "jc"}).RemoteValue()
+                            select response;
+
+            var values = valuesObs.FirstAsync().Wait();
+            env.Dispose();
+
+            Assert.AreEqual("jc", values.Message);
+            
         }
 
         [Test]

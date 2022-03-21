@@ -15,6 +15,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Extensions
         public static bool AnyNull(params SyntaxNode[] nodes)
         {
             
+                
             return nodes.Any(n => n == null);
         }
 
@@ -221,17 +222,72 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Extensions
 
         private static TypeSyntax _GetTypeSyntax(ITypeSymbol symbol)
         {
-
-
-            var types = new System.Collections.Generic.Dictionary<SpecialType, TypeSyntax>()
-            { 
-                {SpecialType.System_Void , SyntaxFactory.PredefinedType(SyntaxFactory.Token(SyntaxKind.VoidKeyword))}                
-            };
-            if(types.ContainsKey(symbol.SpecialType))
+            if (symbol.SpecialType == SpecialType.System_Void)
             {
-                return types[symbol.SpecialType];
+                return SyntaxFactory.ParseTypeName("void");
             }
-            return SyntaxFactory.ParseTypeName(symbol.ToDisplayString());
+            var sdf = new SymbolDisplayFormat(
+                SymbolDisplayGlobalNamespaceStyle.Omitted,
+
+                SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
+
+                SymbolDisplayGenericsOptions.IncludeTypeParameters | 
+                SymbolDisplayGenericsOptions.IncludeTypeConstraints | 
+                SymbolDisplayGenericsOptions.IncludeVariance|
+                SymbolDisplayGenericsOptions.None,
+
+                
+                SymbolDisplayMemberOptions.IncludeType |
+                SymbolDisplayMemberOptions.IncludeModifiers |
+                SymbolDisplayMemberOptions.IncludeAccessibility |
+                SymbolDisplayMemberOptions.IncludeExplicitInterface |
+                SymbolDisplayMemberOptions.IncludeParameters |
+                SymbolDisplayMemberOptions.IncludeContainingType |
+                SymbolDisplayMemberOptions.IncludeConstantValue |
+                SymbolDisplayMemberOptions.IncludeRef|
+                SymbolDisplayMemberOptions.None,
+
+                    SymbolDisplayDelegateStyle.NameOnly,
+
+                    SymbolDisplayExtensionMethodStyle.InstanceMethod,
+
+                   /* SymbolDisplayParameterOptions.IncludeExtensionThis |
+                    SymbolDisplayParameterOptions.IncludeParamsRefOut |
+                    SymbolDisplayParameterOptions.IncludeType |
+                    SymbolDisplayParameterOptions.IncludeName |
+                    SymbolDisplayParameterOptions.IncludeDefaultValue |
+                    SymbolDisplayParameterOptions.IncludeOptionalBrackets|*/
+                    SymbolDisplayParameterOptions.None, 
+
+                    SymbolDisplayPropertyStyle.ShowReadWriteDescriptor,
+
+                    SymbolDisplayLocalOptions.IncludeRef | 
+                    SymbolDisplayLocalOptions.IncludeType | 
+                    SymbolDisplayLocalOptions.IncludeConstantValue|
+                    SymbolDisplayLocalOptions.None,
+
+                    //SymbolDisplayKindOptions.IncludeTypeKeyword | 
+                    //SymbolDisplayKindOptions.IncludeNamespaceKeyword | 
+                    //SymbolDisplayKindOptions.IncludeTypeKeyword|
+                    SymbolDisplayKindOptions.None
+                    ,
+
+                    /*SymbolDisplayMiscellaneousOptions.UseSpecialTypes |
+                    SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers |
+                    SymbolDisplayMiscellaneousOptions.UseAsterisksInMultiDimensionalArrays |
+                    SymbolDisplayMiscellaneousOptions.UseErrorTypeSymbolName |
+                    SymbolDisplayMiscellaneousOptions.RemoveAttributeSuffix |
+                    SymbolDisplayMiscellaneousOptions.ExpandNullable |
+                    SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier |
+                    SymbolDisplayMiscellaneousOptions.AllowDefaultLiteral |
+                    SymbolDisplayMiscellaneousOptions.IncludeNotNullableReferenceTypeModifier|*/
+                    
+                    SymbolDisplayMiscellaneousOptions.None
+
+                );
+            
+            var syntax = SyntaxFactory.ParseTypeName(symbol.ToDisplayString(sdf));
+            return syntax;
         }
 
 

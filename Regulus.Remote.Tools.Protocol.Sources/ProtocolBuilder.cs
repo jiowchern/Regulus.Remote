@@ -15,9 +15,9 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
         public ProtocolBuilder(Compilation compilation, EventProviderCodeBuilder event_provider_code_builder,
             InterfaceProviderCodeBuilder interface_provider_code_builder,
-            MemberMapCodeBuilder membermap_code_builder, IEnumerable<Microsoft.CodeAnalysis.CSharp.Syntax.TypeSyntax> types)
+            MemberMapCodeBuilder membermap_code_builder, SerializableExtractor extractor)
         {
-            var serCode = string.Join(",", types.Select(type => $"typeof({type.ToString()})"));
+            var serCode = extractor.Code;
             var md5 = _BuildMd5(serCode + event_provider_code_builder.Code + interface_provider_code_builder.Code + membermap_code_builder.PropertyInfosCode + membermap_code_builder.EventInfosCode + membermap_code_builder.InterfacesCode + membermap_code_builder.MethodInfosCode);
 
             var protocolName = _BuildProtocolName(md5);

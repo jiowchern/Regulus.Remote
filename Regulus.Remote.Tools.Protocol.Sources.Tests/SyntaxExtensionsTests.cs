@@ -172,7 +172,7 @@ interface IA {
             var parameter = syntax.DescendantNodes().OfType<ParameterSyntax>().Single();
 
             NUnit.Framework.Assert.AreEqual("p1", parameter.Identifier.ToString());
-            NUnit.Framework.Assert.AreEqual("int", parameter.Type.ToFullString());
+            NUnit.Framework.Assert.AreEqual("System.Int32", parameter.Type.ToFullString());
             
         }
 
@@ -240,7 +240,7 @@ interface IA {
             var syntax = symbol.ToInferredInterface();
             var method = syntax.DescendantNodes().OfType<MethodDeclarationSyntax>().Single();
 
-            NUnit.Framework.Assert.AreEqual("System.Tuple<System.Guid, int>", method.ReturnType.ToFullString());
+            NUnit.Framework.Assert.AreEqual("System.Tuple<System.Guid, System.Int32>", method.ReturnType.ToFullString());
         }
 
         [Test]
@@ -264,7 +264,7 @@ interface IA {
             var syntax = symbol.ToInferredInterface();
             var method = syntax.DescendantNodes().OfType<MethodDeclarationSyntax>().Single();
 
-            NUnit.Framework.Assert.AreEqual("Regulus.Remote.Value<int>", method.ReturnType.ToFullString());
+            NUnit.Framework.Assert.AreEqual("Regulus.Remote.Value<System.Int32>", method.ReturnType.ToFullString());
         }
 
         [Test]
@@ -407,7 +407,7 @@ interface IA
             var syntax = symbol.ToInferredInterface();
 
             var member = syntax.DescendantNodes().OfType<IndexerDeclarationSyntax>().Single();
-            NUnit.Framework.Assert.AreEqual("string", member.Type.ToFullString());
+            NUnit.Framework.Assert.AreEqual("System.String", member.Type.ToFullString());
             
 
 
