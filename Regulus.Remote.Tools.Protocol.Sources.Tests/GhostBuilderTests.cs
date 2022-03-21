@@ -12,6 +12,7 @@ using Regulus.Remote.Tools.Protocol.Sources.Extensions;
 
 namespace Regulus.Remote.Tools.Protocol.Sources.Tests
 {
+    
     public class GhostBuilderTests
     {
         [Test]
@@ -426,18 +427,21 @@ namespace NS1
 using System;
 namespace NS1
 {    
+    public delegate void NoSuppleDelegate(int a);
     public interface IB
     {
         event System.Action<int> Event22;
-        int Property {get;}
+        int NoSuppleProperty {get; set; }
     }
     public interface IA  :IB
     {
         void M123(int a);
 
         int NoSupple(int a);
-     
+        Regulus.Remote.Property<int> Property1{get;}
+        Regulus.Remote.Notifier<IB> Property2{get;}
         event System.Action<int> Event1;
+        event NoSuppleDelegate NoSuppleEvent;
     }
 
     
@@ -472,18 +476,28 @@ namespace NS1
 
             var noSupple = cia.GetMethod("NS1.IA.NoSupple", BindingFlags.Instance | BindingFlags.NonPublic);
 
-            bool hasException = false;
+            
+
+            ThrowTest(()=> noSupple.Invoke(ghost, new object[] { 1 }));
+            
+            NUnit.Framework.Assert.AreEqual(1, arg1);
+        }
+
+        void ThrowTest(System.Action action)
+        {
+            NUnit.Framework.Assert.Throws<Regulus.Remote.Exceptions.NotSupportedException>(() => Throw(action));
+        }
+        void Throw(System.Action action)
+        {
             try
             {
-                noSupple.Invoke(ghost, new object[] { 1 });
+                action();
             }
             catch (System.Reflection.TargetInvocationException tie)
             {
 
-                hasException = tie.InnerException.GetType() == typeof(Regulus.Remote.Exceptions.NotSupportedException);
+                throw tie.InnerException as Regulus.Remote.Exceptions.NotSupportedException;
             }
-            NUnit.Framework.Assert.True(hasException);            
-            NUnit.Framework.Assert.AreEqual(1, arg1);
         }
     }
 }
