@@ -369,6 +369,8 @@ namespace NS1
         int NoSupple(int a);
      
         event Action<int> Event1;
+
+        void MethodRefTest(ref int aa);
     }
 }
 
@@ -394,12 +396,18 @@ namespace NS1
 
             var instance = ciaCons.Invoke(new object[] { 1, false });
             var ghost = instance as Regulus.Remote.IGhost;
-            object arg1 = null;
-            ghost.CallMethodEvent += (mi, args, ret) => arg1 = args[0];
+
+
+            System.Collections.Generic.List<object> values = new System.Collections.Generic.List<object>();
+            ghost.CallMethodEvent += (mi, args, ret) => values.Add(args[0])  ;
 
 
             var m123 = cia.GetMethod("NS1.IA.M123", BindingFlags.Instance | BindingFlags.NonPublic);
             m123.Invoke(ghost, new object[] { 1 });
+
+            var methodRefTest = cia.GetMethod("NS1.IA.MethodRefTest", BindingFlags.Instance | BindingFlags.NonPublic);
+            methodRefTest.Invoke(ghost, new object[] { 2 });
+
 
 
             var noSupple = cia.GetMethod("NS1.IA.NoSupple", BindingFlags.Instance | BindingFlags.NonPublic);
@@ -415,7 +423,8 @@ namespace NS1
                 hasException = tie.InnerException.GetType() == typeof(Regulus.Remote.Exceptions.NotSupportedException);
             }
             NUnit.Framework.Assert.True(hasException);
-            NUnit.Framework.Assert.AreEqual(1, arg1);
+            NUnit.Framework.Assert.AreEqual(1, values[0]);
+            NUnit.Framework.Assert.AreEqual(2, values[1]);
 
         }
 
@@ -442,6 +451,8 @@ namespace NS1
         Regulus.Remote.Notifier<IB> Property2{get;}
         event System.Action<int> Event1;
         event NoSuppleDelegate NoSuppleEvent;
+
+        
     }
 
     
