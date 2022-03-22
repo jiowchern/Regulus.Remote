@@ -6,11 +6,11 @@ namespace Regulus.Remote.Tools.Protocol.Sources.BlockModifiers
 {
     internal class PropertyRegulusRemoteBlock
     {
-        private readonly Compilation compilation;
+        private readonly Compilation _Compilation;
 
         public PropertyRegulusRemoteBlock(Compilation compilation)
         {
-            this.compilation = compilation;
+            this._Compilation = compilation;
         }
         public PropertyAndBlock Mod(System.Collections.Generic.IEnumerable<SyntaxNode> nodes)
         {
@@ -42,22 +42,18 @@ namespace Regulus.Remote.Tools.Protocol.Sources.BlockModifiers
 
             if(gn.Identifier.ToString() == "Property")
             {
-                foreach (var t in gn.TypeArgumentList.Arguments)
+                if (!_Compilation.AllNotInterface(gn.TypeArgumentList.Arguments))
                 {
-                    var typeSymbol = compilation.GetTypeByMetadataName(t.ToString());
-                    if (typeSymbol.TypeKind == TypeKind.Interface)
-                        return null;
+                    return null;
                 }
             }
 
             if (gn.Identifier.ToString() == "Notifier")
             {
-                foreach (var t in gn.TypeArgumentList.Arguments)
+                if(!_Compilation.AllInterface(gn.TypeArgumentList.Arguments))
                 {
-                    var typeSymbol = compilation.GetTypeByMetadataName(t.ToString());
-                    if (typeSymbol.TypeKind != TypeKind.Interface)
-                        return null;
-                }
+                    return null;
+                }                
             }
 
 

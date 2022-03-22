@@ -252,7 +252,7 @@ interface IA {
             var source = @"
 interface IA {
     int Method1();
-    void Method2(out int val);
+    void Method2(out System.Int32 val);
 }
 ";
             var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
@@ -272,6 +272,29 @@ interface IA {
             NUnit.Framework.Assert.True(builder.Expression.IsEquivalentTo(exps[1]));
         }
         [Test]
+        public void MethodVoidT()
+        {
+            var source = @"
+interface IA {
+    void Method1<T>(T int);
+}
+";
+            var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
+            var com = tree.Compilation();
+            var root = com.SyntaxTrees[0].GetRoot();
+            var builder = new Regulus.Remote.Tools.Protocol.Sources.InterfaceInheritor(root.DescendantNodes().OfType<InterfaceDeclarationSyntax>().Single());
+
+            var cia = SyntaxFactory.ClassDeclaration("CIA");
+            cia = builder.Inherite(cia);
+
+            var modifier = SyntaxModifier.Create(com).Mod(cia);
+            cia = modifier.Type;
+
+            var exp = cia.DescendantNodes().OfType<BlockSyntax>().Single();
+            NUnit.Framework.Assert.AreEqual(0, modifier.TypesOfSerialization.Count());
+            NUnit.Framework.Assert.True(builder.Expression.IsEquivalentTo(exp));
+        }
+            [Test]
         public void MethodVoid()
         {
             var source = @"
@@ -350,7 +373,7 @@ interface IA {
             var source = @"
 
 interface IA {
-    Regulus.Remote.Value<int> Method1(int i);
+    Regulus.Remote.Value<int> Method1(System.Int32 i);
 }
 ";
             var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
@@ -375,7 +398,7 @@ interface IA {
         {
             var source = @"
 interface IA {
-    void Method1(int i);
+    void Method1(System.Int32 i);
 }
 ";
             var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);

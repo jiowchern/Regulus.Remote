@@ -9,7 +9,13 @@ namespace Regulus.Remote.Tools.Protocol.Sources.BlockModifiers
     
     internal class MethodRegulusRemoteValue
     {
-        
+        private readonly Compilation _Compilation;
+
+        public MethodRegulusRemoteValue(Compilation compilation)
+        {
+            this._Compilation = compilation;
+        }
+
         public BlockAndTypes Mod(System.Collections.Generic.IEnumerable<SyntaxNode> nodes)
         {
             var block = nodes.Skip(0).FirstOrDefault() as BlockSyntax;
@@ -21,6 +27,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources.BlockModifiers
             {
                 return null;
             }
+            if (!_Compilation.AllNotInterface(md.ParameterList.Parameters.Select(p => p.Type)))
+                return null;
             if ((from p in md.ParameterList.Parameters
                  from m in p.Modifiers
                  where m.IsKind(SyntaxKind.OutKeyword)

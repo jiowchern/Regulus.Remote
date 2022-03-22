@@ -47,10 +47,10 @@ namespace Regulus.Remote.Tools.Protocol.Sources.BlockModifiers
                 return null;
             if(sn is GenericNameSyntax gn)
             {
-                if(gn.TypeArgumentList.Arguments.Select(a => _Compilation.GetTypeByMetadataName(a.ToString())).Any(a => a.TypeKind == TypeKind.Interface))
+                if (!_Compilation.AllNotInterface(gn.TypeArgumentList.Arguments))
                 {
                     return null;
-                }
+                }                
             }
             
 

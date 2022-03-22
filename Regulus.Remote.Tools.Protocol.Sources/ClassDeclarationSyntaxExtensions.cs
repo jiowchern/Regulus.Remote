@@ -3,55 +3,11 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using static Regulus.Remote.Tools.Protocol.Sources.ClassDeclarationSyntaxExtensionsHelper;
 namespace Regulus.Remote.Tools.Protocol.Sources
 {
     public static class ClassDeclarationSyntaxExtensions
-    {
-        static BlockSyntax _Block(SyntaxKind exp_1 ,string field_name)
-        {
-            return Block(
-                        SingletonList<StatementSyntax>(
-                                ExpressionStatement(
-                                    AssignmentExpression(
-                                        exp_1,
-                                        MemberAccessExpression(
-                                            SyntaxKind.SimpleMemberAccessExpression,
-                                            ThisExpression(),
-                                            IdentifierName(field_name)
-                                        ),
-                                        IdentifierName("value")
-                                    )
-                                )
-                            )
-                        );
-        }
-
-        static readonly QualifiedNameSyntax _RegulusRemoteEventNotifyCallback = QualifiedName(
-                                QualifiedName(
-                                    IdentifierName("Regulus"),
-                                    IdentifierName("Remote")
-                                ),
-                                IdentifierName("EventNotifyCallback")
-                            );
-        static readonly QualifiedNameSyntax _RegulusRemoteCallMethodCallback = QualifiedName(
-                            QualifiedName(
-                                IdentifierName("Regulus"),
-                                IdentifierName("Remote")
-                            ),
-                            IdentifierName("CallMethodCallback")
-                        );
-        static readonly QualifiedNameSyntax _RegulusRemoteIGhost = QualifiedName
-                        (
-                            QualifiedName(
-                                IdentifierName("Regulus"),
-                                IdentifierName("Remote")
-                            )
-                            .WithDotToken(
-                                Token(SyntaxKind.DotToken)
-                            ),
-                            IdentifierName("IGhost")
-                        );
-
+    {        
         public static ClassDeclarationSyntax ImplementRegulusRemoteIGhost(this ClassDeclarationSyntax class_declaration)
         {
             var cd = class_declaration;            
@@ -64,12 +20,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             var baseTypes = baseList.Types.ToArray();
             
             baseList = baseList.WithTypes(new SeparatedSyntaxList<BaseTypeSyntax>().Add(type).AddRange(baseTypes));
-            cd = cd.WithBaseList(baseList);
-
-            cd = cd.AddMembers(_CreateMembers(class_declaration.Identifier));
-            
-
-            return cd;
+            return cd.WithBaseList(baseList).AddMembers(_CreateMembers(class_declaration.Identifier));
         }
 
         public static MemberDeclarationSyntax[] _CreateMembers(SyntaxToken name)

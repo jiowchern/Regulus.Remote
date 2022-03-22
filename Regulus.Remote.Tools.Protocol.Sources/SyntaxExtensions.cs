@@ -9,9 +9,6 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Extensions
 {
     public static class SyntaxExtensions
     {
-
-        
-
         public static bool AnyNull(params SyntaxNode[] nodes)
         {
             
@@ -231,8 +228,5 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Extensions
             var syntax = SyntaxFactory.ParseTypeName(symbol.ToDisplayString(FullSpreadSymbolDisplayFormat.Default));
             return syntax;
         }
-
-
-
     }
 }

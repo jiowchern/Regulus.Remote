@@ -13,8 +13,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         public static SyntaxModifier Create(Compilation com)
         {
             return new SyntaxModifier(
-                    new BlockModifiers.MethodVoid(),
-                    new BlockModifiers.MethodRegulusRemoteValue(),
+                    new BlockModifiers.MethodVoid(com),
+                    new BlockModifiers.MethodRegulusRemoteValue(com),
                     new BlockModifiers.EventSystemAction(com),
                     new BlockModifiers.PropertyRegulusRemoteBlock(com),
                     new Modifiers.EventFieldDeclarationSyntax(),

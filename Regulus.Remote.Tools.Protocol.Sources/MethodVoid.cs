@@ -5,11 +5,15 @@ using System.Linq;
 
 namespace Regulus.Remote.Tools.Protocol.Sources.BlockModifiers
 {
+
+    
     internal class MethodVoid
     {
-        public MethodVoid()
-        {
+        private readonly Compilation _Compilation;
 
+        public MethodVoid(Compilation compilation)
+        {
+            this._Compilation = compilation;
         }
         public BlockAndTypes Mod(System.Collections.Generic.IEnumerable<SyntaxNode> nodes)
         {
@@ -21,6 +25,9 @@ namespace Regulus.Remote.Tools.Protocol.Sources.BlockModifiers
             {
                 return null;
             }
+
+            if (!_Compilation.AllNotInterface(md.ParameterList.Parameters.Select(p=>p.Type)))
+                return null;
 
             if((from p in md.ParameterList.Parameters
             from m in p.Modifiers
@@ -41,6 +48,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.BlockModifiers
             {
                 return null;
             }
+            
             return new BlockAndTypes
             {
                 Block = SyntaxFactory.Block(SyntaxFactory.ParseStatement(
