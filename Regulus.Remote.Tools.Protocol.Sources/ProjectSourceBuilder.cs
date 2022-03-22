@@ -12,10 +12,9 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         public ProjectSourceBuilder(EssentialReference references)
         {
             
-            var compilation = references.Compilation;
-            
+            var compilation = references.Compilation;            
 
-            var ghostBuilder = new GhostBuilder(compilation.FindAllInterfaceSymbol());
+            var ghostBuilder = new GhostBuilder(SyntaxModifier.Create(compilation) ,compilation.FindAllInterfaceSymbol());
 
 
             var name = ghostBuilder.Namespace;

@@ -8,7 +8,7 @@ using Regulus.Remote.Tools.Protocol.Sources.Extensions;
 namespace Regulus.Remote.Tools.Protocol.Sources
 {
 
-    public class GhostBuilder  
+    class GhostBuilder  
     {
         
         public readonly IEnumerable<TypeSyntax> Types;
@@ -17,7 +17,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         public readonly IEnumerable<InterfaceDeclarationSyntax> Souls;
         public readonly string Namespace;
 
-        public GhostBuilder(IEnumerable<INamedTypeSymbol> symbols)
+        public GhostBuilder(SyntaxModifier modifier, IEnumerable<INamedTypeSymbol> symbols)
         {
             
             var builders = new Dictionary<INamedTypeSymbol, InterfaceInheritor>(SymbolEqualityComparer.Default);
@@ -50,17 +50,10 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
                 eventProxys.AddRange(type.DescendantNodes().OfType<EventDeclarationSyntax>().Select(e => e.CreateRegulusRemoteIEventProxyCreater()));
 
-                var modifier = new SyntaxModifier(
-                    new BlockModifiers.MethodVoid(),
-                    new BlockModifiers.MethodRegulusRemoteValue(),
-                    new BlockModifiers.EventSystemAction(),
-                    new BlockModifiers.PropertyRegulusRemoteBlock(),
-                    new Modifiers.EventFieldDeclarationSyntax(),
-                    new Modifiers.PropertyFieldDeclarationSyntax()
-                ).Mod(type);
+                var classAndTypes = modifier.Mod(type);
 
-                types.AddRange(modifier.TypesOfSerialization);
-                type = modifier.Type; 
+                types.AddRange(classAndTypes.TypesOfSerialization);
+                type = classAndTypes.Type; 
                 type = type.ImplementRegulusRemoteIGhost();                
                 ghosts.Add(type);
             }

@@ -8,13 +8,14 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
 {    
     public class SyntaxModifierTests
     {
+        
         [Test]
         public void ZeroProperty()
         {
             var source = @"
 interface IA {
-    int Property1 {get;}
-    Regulus.Remote.Property<int> Property2 {set;}
+    System.Int32 Property1 {get;}
+    Regulus.Remote.Property<System.Int32> Property2 {set;}
 }
 ";
             var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
@@ -25,14 +26,7 @@ interface IA {
             var cia = SyntaxFactory.ClassDeclaration("CIA");
             cia = builder.Inherite(cia);
 
-            var modifier = new SyntaxModifier(
-                    new BlockModifiers.MethodVoid(),
-                    new BlockModifiers.MethodRegulusRemoteValue(),
-                    new BlockModifiers.EventSystemAction(),
-                    new BlockModifiers.PropertyRegulusRemoteBlock(),
-                    new Modifiers.EventFieldDeclarationSyntax(),
-                    new Modifiers.PropertyFieldDeclarationSyntax()                    
-                ).Mod(cia);
+            var modifier = SyntaxModifier.Create(com).Mod(cia);
             
 
             var exps = modifier.Type.DescendantNodes().OfType<BlockSyntax>().ToArray();
@@ -46,11 +40,11 @@ interface IA {
 
 
         [Test]
-        public void PropertyProperty()
+        public void PropertyPropertyTrue()
         {
             var source = @"
 interface IA {
-    Regulus.Remote.Property<int> Property1 {get;}
+    Regulus.Remote.Property<System.Int32> Property1 {get;}
 }
 ";
             var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
@@ -61,14 +55,7 @@ interface IA {
             var cia = SyntaxFactory.ClassDeclaration("CIA");
             cia = builder.Inherite(cia);
 
-            var modifier = new SyntaxModifier(
-                    new BlockModifiers.MethodVoid(),
-                    new BlockModifiers.MethodRegulusRemoteValue(),
-                    new BlockModifiers.EventSystemAction(),
-                    new BlockModifiers.PropertyRegulusRemoteBlock(),
-                    new Modifiers.EventFieldDeclarationSyntax(),
-                    new Modifiers.PropertyFieldDeclarationSyntax()
-                ).Mod(cia);
+            var modifier = SyntaxModifier.Create(com).Mod(cia);
 
             var exp = modifier.Type.DescendantNodes().OfType<BlockSyntax>().Single();
             NUnit.Framework.Assert.AreEqual(1, modifier.TypesOfSerialization.Count());
@@ -79,11 +66,11 @@ interface IA {
         }
 
         [Test]
-        public void PropertyNotifier()
+        public void PropertyPropertyFail()
         {
             var source = @"
 interface IA {
-    Regulus.Remote.Notifier<int> Property1 {get;}
+    Regulus.Remote.Property<IA> Property1 {get;}
 }
 ";
             var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
@@ -94,14 +81,59 @@ interface IA {
             var cia = SyntaxFactory.ClassDeclaration("CIA");
             cia = builder.Inherite(cia);
 
-            var modifier = new SyntaxModifier(
-                    new BlockModifiers.MethodVoid(),
-                    new BlockModifiers.MethodRegulusRemoteValue(),
-                    new BlockModifiers.EventSystemAction(),
-                    new BlockModifiers.PropertyRegulusRemoteBlock(),
-                    new Modifiers.EventFieldDeclarationSyntax(),
-                    new Modifiers.PropertyFieldDeclarationSyntax()
-                ).Mod(cia);
+            var modifier = SyntaxModifier.Create(com).Mod(cia);
+
+            var exp = modifier.Type.DescendantNodes().OfType<BlockSyntax>().Single();
+            NUnit.Framework.Assert.AreEqual(0, modifier.TypesOfSerialization.Count());
+            NUnit.Framework.Assert.True(builder.Expression.IsEquivalentTo(exp));
+            NUnit.Framework.Assert.AreEqual(0, modifier.Type.DescendantNodes().OfType<FieldDeclarationSyntax>().Count());
+
+
+        }
+
+        [Test]
+        public void PropertyNotifierFail()
+        {
+            var source = @"
+interface IA {
+    Regulus.Remote.Notifier<System.Int32> Property1 {get;}
+}
+";
+            var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
+            var com = tree.Compilation();
+            var root = com.SyntaxTrees[0].GetRoot();
+            var builder = new Regulus.Remote.Tools.Protocol.Sources.InterfaceInheritor(root.DescendantNodes().OfType<InterfaceDeclarationSyntax>().Single());
+
+            var cia = SyntaxFactory.ClassDeclaration("CIA");
+            cia = builder.Inherite(cia);
+
+            var modifier = SyntaxModifier.Create(com).Mod(cia);
+
+            var exp = modifier.Type.DescendantNodes().OfType<BlockSyntax>().Single();
+            NUnit.Framework.Assert.AreEqual(0, modifier.TypesOfSerialization.Count());
+            NUnit.Framework.Assert.True(builder.Expression.IsEquivalentTo(exp));
+            NUnit.Framework.Assert.AreEqual(0, modifier.Type.DescendantNodes().OfType<FieldDeclarationSyntax>().Count());
+
+
+        }
+
+        [Test]
+        public void PropertyNotifierSuccess()
+        {
+            var source = @"
+interface IA {
+    Regulus.Remote.Notifier<IA> Property1 {get;}
+}
+";
+            var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
+            var com = tree.Compilation();
+            var root = com.SyntaxTrees[0].GetRoot();
+            var builder = new Regulus.Remote.Tools.Protocol.Sources.InterfaceInheritor(root.DescendantNodes().OfType<InterfaceDeclarationSyntax>().Single());
+
+            var cia = SyntaxFactory.ClassDeclaration("CIA");
+            cia = builder.Inherite(cia);
+
+            var modifier = SyntaxModifier.Create(com).Mod(cia);
 
             var exp = modifier.Type.DescendantNodes().OfType<BlockSyntax>().Single();
             NUnit.Framework.Assert.AreEqual(0, modifier.TypesOfSerialization.Count());
@@ -110,6 +142,8 @@ interface IA {
 
 
         }
+
+
         [Test]
         public void ZeroEvent()
         {
@@ -126,14 +160,7 @@ interface IA {
             var cia = SyntaxFactory.ClassDeclaration("CIA");
             cia = builder.Inherite(cia);
 
-            var modifier = new SyntaxModifier(
-                    new BlockModifiers.MethodVoid(),
-                    new BlockModifiers.MethodRegulusRemoteValue(),
-                    new BlockModifiers.EventSystemAction(),
-                    new BlockModifiers.PropertyRegulusRemoteBlock(),
-                    new Modifiers.EventFieldDeclarationSyntax(),
-                    new Modifiers.PropertyFieldDeclarationSyntax()
-                ).Mod(cia);
+            var modifier = SyntaxModifier.Create(com).Mod(cia);
 
             var exps = modifier.Type.DescendantNodes().OfType<BlockSyntax>().ToArray();
             NUnit.Framework.Assert.AreEqual(0, modifier.TypesOfSerialization.Count());
@@ -160,7 +187,7 @@ interface IA {
                     new BlockModifiers.MethodVoid(),
                     new BlockModifiers.MethodRegulusRemoteValue(),
                     new BlockModifiers.EventSystemAction(),
-                    new BlockModifiers.PropertyRegulusRemoteBlock(),
+                    new BlockModifiers.PropertyRegulusRemoteBlock(com),
                     new Modifiers.EventFieldDeclarationSyntax(),
                     new Modifiers.PropertyFieldDeclarationSyntax()
                 ).Mod(cia);
@@ -187,14 +214,7 @@ interface IA {
             var cia = SyntaxFactory.ClassDeclaration("CIA");
             cia = builder.Inherite(cia);
 
-            var modifier = new SyntaxModifier(
-                    new BlockModifiers.MethodVoid(),
-                    new BlockModifiers.MethodRegulusRemoteValue(),
-                    new BlockModifiers.EventSystemAction(),
-                    new BlockModifiers.PropertyRegulusRemoteBlock(),
-                    new Modifiers.EventFieldDeclarationSyntax(),
-                    new Modifiers.PropertyFieldDeclarationSyntax()
-                ).Mod(cia);
+            var modifier = SyntaxModifier.Create(com).Mod(cia);
 
             var exps = modifier.Type.DescendantNodes().OfType<BlockSyntax>().ToArray();
             NUnit.Framework.Assert.AreEqual(0, modifier.TypesOfSerialization.Count());
@@ -223,18 +243,11 @@ interface IA {
             var cia = SyntaxFactory.ClassDeclaration("CIA");
             cia = builder.Inherite(cia);
 
-            var replacer = new SyntaxModifier(
-                    new BlockModifiers.MethodVoid(),
-                    new BlockModifiers.MethodRegulusRemoteValue(),
-                    new BlockModifiers.EventSystemAction(),
-                    new BlockModifiers.PropertyRegulusRemoteBlock(),
-                    new Modifiers.EventFieldDeclarationSyntax(),
-                    new Modifiers.PropertyFieldDeclarationSyntax()
-                ).Mod(cia);
-            cia = replacer.Type;
+            var modifier = SyntaxModifier.Create(com).Mod(cia);
+            cia = modifier.Type;
 
             var exps = cia.DescendantNodes().OfType<BlockSyntax>().ToArray();
-            NUnit.Framework.Assert.AreEqual(0, replacer.TypesOfSerialization.Count());
+            NUnit.Framework.Assert.AreEqual(0, modifier.TypesOfSerialization.Count());
             NUnit.Framework.Assert.True(builder.Expression.IsEquivalentTo(exps[0]));
             NUnit.Framework.Assert.True(builder.Expression.IsEquivalentTo(exps[1]));
         }
@@ -254,18 +267,11 @@ interface IA {
             var cia = SyntaxFactory.ClassDeclaration("CIA");
             cia = builder.Inherite(cia);
 
-            var replacer = new SyntaxModifier(
-                    new BlockModifiers.MethodVoid(),
-                    new BlockModifiers.MethodRegulusRemoteValue(),
-                    new BlockModifiers.EventSystemAction(),
-                    new BlockModifiers.PropertyRegulusRemoteBlock(),
-                    new Modifiers.EventFieldDeclarationSyntax(),
-                    new Modifiers.PropertyFieldDeclarationSyntax()
-                ).Mod(cia);
-            cia = replacer.Type;
+            var modifier = SyntaxModifier.Create(com).Mod(cia);
+            cia = modifier.Type;
 
             var exp = cia.DescendantNodes().OfType<BlockSyntax>().Single();
-            NUnit.Framework.Assert.AreEqual(0, replacer.TypesOfSerialization.Count());            
+            NUnit.Framework.Assert.AreEqual(0, modifier.TypesOfSerialization.Count());            
             NUnit.Framework.Assert.False(builder.Expression.IsEquivalentTo(exp));
         }
 
@@ -285,18 +291,11 @@ interface IA {
             var cia = SyntaxFactory.ClassDeclaration("CIA");
             cia = builder.Inherite(cia);
 
-            var replacer = new SyntaxModifier(
-                    new BlockModifiers.MethodVoid(),
-                    new BlockModifiers.MethodRegulusRemoteValue(),
-                    new BlockModifiers.EventSystemAction(),
-                    new BlockModifiers.PropertyRegulusRemoteBlock(),
-                    new Modifiers.EventFieldDeclarationSyntax(),
-                    new Modifiers.PropertyFieldDeclarationSyntax()
-                ).Mod(cia);
-            cia = replacer.Type;
+            var modifier = SyntaxModifier.Create(com).Mod(cia); 
+            cia = modifier.Type;
 
             var exp = cia.DescendantNodes().OfType<BlockSyntax>().Single();
-            NUnit.Framework.Assert.AreEqual(0, replacer.TypesOfSerialization.Count());
+            NUnit.Framework.Assert.AreEqual(0, modifier.TypesOfSerialization.Count());
             NUnit.Framework.Assert.True(builder.Expression.IsEquivalentTo(exp));
         }
 
@@ -317,18 +316,11 @@ interface IA {
             var cia = SyntaxFactory.ClassDeclaration("CIA");
             cia = builder.Inherite(cia);
 
-            var replacer = new SyntaxModifier(
-                    new BlockModifiers.MethodVoid(),
-                    new BlockModifiers.MethodRegulusRemoteValue(),
-                    new BlockModifiers.EventSystemAction(),
-                    new BlockModifiers.PropertyRegulusRemoteBlock(),
-                    new Modifiers.EventFieldDeclarationSyntax(),
-                    new Modifiers.PropertyFieldDeclarationSyntax()
-                ).Mod(cia);
-            cia = replacer.Type;
+            var modifier = SyntaxModifier.Create(com).Mod(cia); 
+            cia = modifier.Type;
 
             var exp = cia.DescendantNodes().OfType<BlockSyntax>().Single();
-            NUnit.Framework.Assert.AreEqual(1, replacer.TypesOfSerialization.Count());
+            NUnit.Framework.Assert.AreEqual(1, modifier.TypesOfSerialization.Count());
             NUnit.Framework.Assert.False(builder.Expression.IsEquivalentTo(exp));
         }
 
@@ -349,18 +341,11 @@ interface IA {
             var cia = SyntaxFactory.ClassDeclaration("CIA");
             cia = builder.Inherite(cia);
 
-            var replacer = new SyntaxModifier(
-                    new BlockModifiers.MethodVoid(),
-                    new BlockModifiers.MethodRegulusRemoteValue(),
-                    new BlockModifiers.EventSystemAction(),
-                    new BlockModifiers.PropertyRegulusRemoteBlock(),
-                    new Modifiers.EventFieldDeclarationSyntax(),
-                    new Modifiers.PropertyFieldDeclarationSyntax()
-                ).Mod(cia);
-            cia = replacer.Type;
+            var modifier = SyntaxModifier.Create(com).Mod(cia);
+            cia = modifier.Type;
 
             var exp = cia.DescendantNodes().OfType<BlockSyntax>().Single();
-            NUnit.Framework.Assert.AreEqual(2, replacer.TypesOfSerialization.Count());
+            NUnit.Framework.Assert.AreEqual(2, modifier.TypesOfSerialization.Count());
             NUnit.Framework.Assert.False(builder.Expression.IsEquivalentTo(exp));
         }
         
@@ -381,18 +366,11 @@ interface IA {
             var cia = SyntaxFactory.ClassDeclaration("CIA");
             cia = builder.Inherite(cia);
 
-            var replacer = new SyntaxModifier(
-                    new BlockModifiers.MethodVoid(),
-                    new BlockModifiers.MethodRegulusRemoteValue(),
-                    new BlockModifiers.EventSystemAction(),
-                    new BlockModifiers.PropertyRegulusRemoteBlock(),
-                    new Modifiers.EventFieldDeclarationSyntax(),
-                    new Modifiers.PropertyFieldDeclarationSyntax()
-                ).Mod(cia);
-            cia = replacer.Type;
+            var modifier = SyntaxModifier.Create(com).Mod(cia);
+            cia = modifier.Type;
 
             var exp = cia.DescendantNodes().OfType<BlockSyntax>().Single();
-            NUnit.Framework.Assert.AreEqual(1, replacer.TypesOfSerialization.Count());
+            NUnit.Framework.Assert.AreEqual(1, modifier.TypesOfSerialization.Count());
             NUnit.Framework.Assert.False(builder.Expression.IsEquivalentTo(exp));
 
             var method  = cia.DescendantNodes().OfType<MethodDeclarationSyntax>().Single();

@@ -380,7 +380,8 @@ namespace NS1
 ";
             var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
             var com = tree.Compilation();
-            var builder = new GhostBuilder((from syntaxTree in com.SyntaxTrees
+            SyntaxModifier modifier = SyntaxModifier.Create(com);
+            var builder = new GhostBuilder(modifier , (from syntaxTree in com.SyntaxTrees
                              let model = com.GetSemanticModel(syntaxTree)
                              from interfaneSyntax in syntaxTree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>()
                              let symbol = model.GetDeclaredSymbol(interfaneSyntax)

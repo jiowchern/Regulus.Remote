@@ -10,6 +10,17 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
     class SyntaxModifier
     {
+        public static SyntaxModifier Create(Compilation com)
+        {
+            return new SyntaxModifier(
+                    new BlockModifiers.MethodVoid(),
+                    new BlockModifiers.MethodRegulusRemoteValue(),
+                    new BlockModifiers.EventSystemAction(),
+                    new BlockModifiers.PropertyRegulusRemoteBlock(com),
+                    new Modifiers.EventFieldDeclarationSyntax(),
+                    new Modifiers.PropertyFieldDeclarationSyntax()
+                );
+        }
         private readonly BlockModifiers.MethodVoid _MethodVoid;
         private readonly BlockModifiers.MethodRegulusRemoteValue _MethodRegulusRemoteValue;
         private readonly BlockModifiers.EventSystemAction _EventSystemAction;
