@@ -6,16 +6,32 @@ using static Microsoft.CodeAnalysis.SyntaxNodeExtensions;
 using Regulus.Remote.Tools.Protocol.Sources.Extensions;
 namespace Regulus.Remote.Tools.Protocol.Sources
 {
+    
 
+    class SyntaxModifier
+    {
+        private readonly BlockModifiers.MethodVoid _MethodVoid;
+        private readonly BlockModifiers.MethodRegulusRemoteValue _MethodRegulusRemoteValue;
+        private readonly BlockModifiers.EventSystemAction _EventSystemAction;
+        private readonly BlockModifiers.PropertyRegulusRemoteBlock _PropertyRegulusRemoteBlock;
+        private readonly Modifiers.EventFieldDeclarationSyntax _EventFieldDeclarationSyntax;
+        private readonly Modifiers.PropertyFieldDeclarationSyntax _PropertyFieldDeclarationSyntax;
 
-    public class SyntaxModifier
-    {        
-        
-        public SyntaxModifier()
+        public SyntaxModifier(
+            BlockModifiers.MethodVoid method_void,
+            BlockModifiers.MethodRegulusRemoteValue method_regulus_remote_value,
+            BlockModifiers.EventSystemAction event_system_action ,
+            BlockModifiers.PropertyRegulusRemoteBlock property_regulus_remote_block,
+            Modifiers.EventFieldDeclarationSyntax event_field_declaration_syntax,
+            Modifiers.PropertyFieldDeclarationSyntax property_field_declaration_syntax
+            )
         {
-
-        
-
+            _MethodVoid = method_void;
+            _MethodRegulusRemoteValue = method_regulus_remote_value;
+            _EventSystemAction = event_system_action;
+            _PropertyRegulusRemoteBlock = property_regulus_remote_block;
+            _EventFieldDeclarationSyntax = event_field_declaration_syntax;
+            _PropertyFieldDeclarationSyntax = property_field_declaration_syntax;
         }
 
 
@@ -43,36 +59,42 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 return n1;
             });
 
-            var typesOfSerialization = new System.Collections.Generic.List<TypeSyntax>();
+            var propertys = new System.Collections.Generic.HashSet<PropertyDeclarationSyntax>(SyntaxNodeComparer.Default);
+            var events = new System.Collections.Generic.HashSet<EventDeclarationSyntax>(SyntaxNodeComparer.Default);
+            var typesOfSerialization = new System.Collections.Generic.HashSet<TypeSyntax>(SyntaxNodeComparer.Default);
+
             var blocks = type.DescendantNodes().OfType<BlockSyntax>();
+            
             var replaceBlocks = new System.Collections.Generic.Dictionary<BlockSyntax, BlockSyntax>();
             foreach (var block in blocks)
             {
                 var nodes = block.GetParentPathAndSelf();
 
-                var e = new BlockModifiers.Event().Mod(nodes);
-                if (e != null)
+                var esa = _EventSystemAction.Mod(nodes);
+                if (esa != null)
                 {
-                    replaceBlocks.Add(block, e);
+                    events.Add(esa.Event);
+                    replaceBlocks.Add(block, esa.Block);
                 }
 
-                var methodVoid = new BlockModifiers.MethodVoid().Mod(nodes);
+                var methodVoid = _MethodVoid.Mod(nodes);
                 if (methodVoid != null)
                 {
                     typesOfSerialization.AddRange(methodVoid.Types);
                     replaceBlocks.Add(block, methodVoid.Block);
                 }
 
-                var mrrv = new BlockModifiers.MethodRegulusRemoteValue().Mod(nodes);
+                var mrrv = _MethodRegulusRemoteValue.Mod(nodes);
                 if (mrrv != null)
                 {
                     typesOfSerialization.AddRange(mrrv.Types);
                     replaceBlocks.Add(block, mrrv.Block);
                 }
-                var prrb = new BlockModifiers.PropertyRegulusRemoteBlock().Mod(nodes);
+                var prrb = _PropertyRegulusRemoteBlock.Mod(nodes);
                 if (prrb != null)
                 {
-                    replaceBlocks.Add(block, prrb);
+                    propertys.Add(prrb.Property);
+                    replaceBlocks.Add(block, prrb.Block);
                 }
             }
 
@@ -85,11 +107,11 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 return n1;
             });
 
-            var eventDeclarationSyntaxes = type.DescendantNodes().OfType<EventDeclarationSyntax>();
+            var eventDeclarationSyntaxes = events;
 
             foreach (var eds in eventDeclarationSyntaxes)
             {
-                var efds = new Modifiers.EventFieldDeclarationSyntax().Mod(eds);
+                var efds = _EventFieldDeclarationSyntax.Mod(eds);
                 if (efds == null)
                     continue;
 
@@ -97,11 +119,11 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 typesOfSerialization.AddRange(efds.Types);
             }
 
-            var propertyDeclarationSyntaxes = type.DescendantNodes().OfType<PropertyDeclarationSyntax>();
+            var propertyDeclarationSyntaxes = propertys;
 
             foreach (var pds in propertyDeclarationSyntaxes)
             {
-                var pfds = new Modifiers.PropertyFieldDeclarationSyntax().Mod(pds);
+                var pfds = _PropertyFieldDeclarationSyntax.Mod(pds);
                 if (pfds == null)
                     continue;
                 type = type.AddMembers(pfds.Field);

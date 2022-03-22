@@ -8,13 +8,18 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Modifiers
 }
 namespace Regulus.Remote.Tools.Protocol.Sources.BlockModifiers
 {
+    class BlockAndEvent
+    {
+        public BlockSyntax Block;
+        public EventDeclarationSyntax Event;
+    }
 
-    internal class Event
+    internal class EventSystemAction
     {
         
                 
 
-        public BlockSyntax Mod(System.Collections.Generic.IEnumerable<SyntaxNode> nodes)
+        public BlockAndEvent Mod(System.Collections.Generic.IEnumerable<SyntaxNode> nodes)
         {
             
             var block = nodes.Skip(0).FirstOrDefault() as BlockSyntax;
@@ -63,7 +68,8 @@ var id = {name}.{ghostEventHandlerMethod}(value);
 _{ghostEventHandlerMethod}EventEvent(typeof({ownerName}).GetEvent(""{ed.Identifier}""),id);
 "));
 
-            return newBlock ;
+            return new BlockAndEvent { Block = newBlock , 
+             Event =ed} ;
         }
 
 

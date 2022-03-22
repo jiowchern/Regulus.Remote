@@ -50,16 +50,24 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
                 eventProxys.AddRange(type.DescendantNodes().OfType<EventDeclarationSyntax>().Select(e => e.CreateRegulusRemoteIEventProxyCreater()));
 
-                var modifier = new SyntaxModifier().Mod(type);
+                var modifier = new SyntaxModifier(
+                    new BlockModifiers.MethodVoid(),
+                    new BlockModifiers.MethodRegulusRemoteValue(),
+                    new BlockModifiers.EventSystemAction(),
+                    new BlockModifiers.PropertyRegulusRemoteBlock(),
+                    new Modifiers.EventFieldDeclarationSyntax(),
+                    new Modifiers.PropertyFieldDeclarationSyntax()
+                ).Mod(type);
+
                 types.AddRange(modifier.TypesOfSerialization);
                 type = modifier.Type; 
                 type = type.ImplementRegulusRemoteIGhost();                
                 ghosts.Add(type);
             }
             
-            Types = new HashSet<TypeSyntax>(_WithOutNamespaceFilter(types) , new TypeSyntaxEqualityComparer());
-            Ghosts = new HashSet<ClassDeclarationSyntax>(ghosts, new ClassDeclarationSyntaxEqualityComparer());
-            EventProxys = new HashSet<ClassDeclarationSyntax>(eventProxys, new ClassDeclarationSyntaxEqualityComparer());
+            Types = new HashSet<TypeSyntax>(_WithOutNamespaceFilter(types) , SyntaxNodeComparer.Default);
+            Ghosts = new HashSet<ClassDeclarationSyntax>(ghosts, SyntaxNodeComparer.Default);
+            EventProxys = new HashSet<ClassDeclarationSyntax>(eventProxys, SyntaxNodeComparer.Default);
 
 
             var all = string.Join("", Types.Select(t => t.ToFullString()).Union(Ghosts.Select(g => g.Identifier.ToFullString())).Union(EventProxys.Select(e => e.Identifier.ToFullString())));
