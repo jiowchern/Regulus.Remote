@@ -7,11 +7,40 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 {
     public static class ClassDeclarationSyntaxExtensions
     {
-        
-        public static ClassDeclarationSyntax ImplementRegulusRemoteIGhost(this ClassDeclarationSyntax class_declaration)
+        static BlockSyntax _Block(SyntaxKind exp_1 ,string field_name)
         {
-            var cd = class_declaration;
-            var baseName = QualifiedName
+            return Block(
+                        SingletonList<StatementSyntax>(
+                                ExpressionStatement(
+                                    AssignmentExpression(
+                                        exp_1,
+                                        MemberAccessExpression(
+                                            SyntaxKind.SimpleMemberAccessExpression,
+                                            ThisExpression(),
+                                            IdentifierName(field_name)
+                                        ),
+                                        IdentifierName("value")
+                                    )
+                                )
+                            )
+                        );
+        }
+
+        static readonly QualifiedNameSyntax _RegulusRemoteEventNotifyCallback = QualifiedName(
+                                QualifiedName(
+                                    IdentifierName("Regulus"),
+                                    IdentifierName("Remote")
+                                ),
+                                IdentifierName("EventNotifyCallback")
+                            );
+        static readonly QualifiedNameSyntax _RegulusRemoteCallMethodCallback = QualifiedName(
+                            QualifiedName(
+                                IdentifierName("Regulus"),
+                                IdentifierName("Remote")
+                            ),
+                            IdentifierName("CallMethodCallback")
+                        );
+        static readonly QualifiedNameSyntax _RegulusRemoteIGhost = QualifiedName
                         (
                             QualifiedName(
                                 IdentifierName("Regulus"),
@@ -22,7 +51,13 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                             ),
                             IdentifierName("IGhost")
                         );
-            var type = SimpleBaseType(baseName);
+
+        public static ClassDeclarationSyntax ImplementRegulusRemoteIGhost(this ClassDeclarationSyntax class_declaration)
+        {
+            var cd = class_declaration;            
+
+         
+            var type = SimpleBaseType(_RegulusRemoteIGhost);
 
             var baseList = cd.BaseList ?? SyntaxFactory.BaseList();
 
@@ -31,13 +66,13 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             baseList = baseList.WithTypes(new SeparatedSyntaxList<BaseTypeSyntax>().Add(type).AddRange(baseTypes));
             cd = cd.WithBaseList(baseList);
 
-            cd = cd.AddMembers(_CreateMembers(baseName, class_declaration.Identifier));
+            cd = cd.AddMembers(_CreateMembers(class_declaration.Identifier));
             
 
             return cd;
         }
 
-        public static MemberDeclarationSyntax[] _CreateMembers(QualifiedNameSyntax base_name ,SyntaxToken name )
+        public static MemberDeclarationSyntax[] _CreateMembers(SyntaxToken name)
         {
             return new MemberDeclarationSyntax[]{
                     FieldDeclaration(
@@ -137,7 +172,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                     )
                     .WithExplicitInterfaceSpecifier(
                         ExplicitInterfaceSpecifier(
-                            base_name
+                            _RegulusRemoteIGhost
                         )
                     )
                     .WithBody(
@@ -157,7 +192,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                     )
                     .WithExplicitInterfaceSpecifier(
                         ExplicitInterfaceSpecifier(
-                            base_name
+                            _RegulusRemoteIGhost
                         )
                     )
                     .WithBody(
@@ -177,7 +212,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                     )
                     .WithExplicitInterfaceSpecifier(
                         ExplicitInterfaceSpecifier(
-                            base_name
+                            _RegulusRemoteIGhost
                         )
                     )
                     .WithBody(
@@ -191,13 +226,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                     ),
                     EventFieldDeclaration(
                         VariableDeclaration(
-                            QualifiedName(
-                                QualifiedName(
-                                    IdentifierName("Regulus"),
-                                    IdentifierName("Remote")
-                                ),
-                                IdentifierName("CallMethodCallback")
-                            )
+                            _RegulusRemoteCallMethodCallback
                         )
                         .WithVariables(
                             SingletonSeparatedList<VariableDeclaratorSyntax>(
@@ -213,18 +242,13 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                         )
                     ),
                     EventDeclaration(
-                        QualifiedName(
-                            QualifiedName(
-                                IdentifierName("Regulus"),
-                                IdentifierName("Remote")
-                            ),
-                            IdentifierName("CallMethodCallback")
-                        ),
+                            _RegulusRemoteCallMethodCallback
+                        ,
                         Identifier("CallMethodEvent")
                     )
                     .WithExplicitInterfaceSpecifier(
                         ExplicitInterfaceSpecifier(
-                            base_name
+                            _RegulusRemoteIGhost
                         )
                     )
                     .WithAccessorList(
@@ -235,41 +259,13 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                                         SyntaxKind.AddAccessorDeclaration
                                     )
                                     .WithBody(
-                                        Block(
-                                            SingletonList<StatementSyntax>(
-                                                ExpressionStatement(
-                                                    AssignmentExpression(
-                                                        SyntaxKind.AddAssignmentExpression,
-                                                        MemberAccessExpression(
-                                                            SyntaxKind.SimpleMemberAccessExpression,
-                                                            ThisExpression(),
-                                                            IdentifierName("_CallMethodEvent")
-                                                        ),
-                                                        IdentifierName("value")
-                                                    )
-                                                )
-                                            )
-                                        )
+                                        _Block(SyntaxKind.AddAssignmentExpression ,"_CallMethodEvent")
                                     ),
                                     AccessorDeclaration(
                                         SyntaxKind.RemoveAccessorDeclaration
                                     )
                                     .WithBody(
-                                        Block(
-                                            SingletonList<StatementSyntax>(
-                                                ExpressionStatement(
-                                                    AssignmentExpression(
-                                                        SyntaxKind.SubtractAssignmentExpression,
-                                                        MemberAccessExpression(
-                                                            SyntaxKind.SimpleMemberAccessExpression,
-                                                            ThisExpression(),
-                                                            IdentifierName("_CallMethodEvent")
-                                                        ),
-                                                        IdentifierName("value")
-                                                    )
-                                                )
-                                            )
-                                        )
+                                        _Block(SyntaxKind.SubtractAssignmentExpression ,"_CallMethodEvent")
                                     )
                                 }
                             )
@@ -277,13 +273,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                     ),
                     EventFieldDeclaration(
                         VariableDeclaration(
-                            QualifiedName(
-                                QualifiedName(
-                                    IdentifierName("Regulus"),
-                                    IdentifierName("Remote")
-                                ),
-                                IdentifierName("EventNotifyCallback")
-                            )
+                            _RegulusRemoteEventNotifyCallback
                         )
                         .WithVariables(
                             SingletonSeparatedList<VariableDeclaratorSyntax>(
@@ -299,18 +289,12 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                         )
                     ),
                     EventDeclaration(
-                        QualifiedName(
-                            QualifiedName(
-                                IdentifierName("Regulus"),
-                                IdentifierName("Remote")
-                            ),
-                            IdentifierName("EventNotifyCallback")
-                        ),
+                        _RegulusRemoteEventNotifyCallback,
                         Identifier("AddEventEvent")
                     )
                     .WithExplicitInterfaceSpecifier(
                         ExplicitInterfaceSpecifier(
-                            base_name
+                            _RegulusRemoteIGhost
                         )
                     )
                     .WithAccessorList(
@@ -321,41 +305,13 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                                         SyntaxKind.AddAccessorDeclaration
                                     )
                                     .WithBody(
-                                        Block(
-                                            SingletonList<StatementSyntax>(
-                                                ExpressionStatement(
-                                                    AssignmentExpression(
-                                                        SyntaxKind.AddAssignmentExpression,
-                                                        MemberAccessExpression(
-                                                            SyntaxKind.SimpleMemberAccessExpression,
-                                                            ThisExpression(),
-                                                            IdentifierName("_AddEventEvent")
-                                                        ),
-                                                        IdentifierName("value")
-                                                    )
-                                                )
-                                            )
-                                        )
+                                        _Block(SyntaxKind.AddAssignmentExpression , "_AddEventEvent")                                        
                                     ),
                                     AccessorDeclaration(
                                         SyntaxKind.RemoveAccessorDeclaration
                                     )
                                     .WithBody(
-                                        Block(
-                                            SingletonList<StatementSyntax>(
-                                                ExpressionStatement(
-                                                    AssignmentExpression(
-                                                        SyntaxKind.SubtractAssignmentExpression,
-                                                        MemberAccessExpression(
-                                                            SyntaxKind.SimpleMemberAccessExpression,
-                                                            ThisExpression(),
-                                                            IdentifierName("_AddEventEvent")
-                                                        ),
-                                                        IdentifierName("value")
-                                                    )
-                                                )
-                                            )
-                                        )
+                                        _Block(SyntaxKind.SubtractAssignmentExpression, "_AddEventEvent")                                        
                                     )
                                 }
                             )
@@ -363,13 +319,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                     ),
                     EventFieldDeclaration(
                         VariableDeclaration(
-                            QualifiedName(
-                                QualifiedName(
-                                    IdentifierName("Regulus"),
-                                    IdentifierName("Remote")
-                                ),
-                                IdentifierName("EventNotifyCallback")
-                            )
+                            _RegulusRemoteEventNotifyCallback
                         )
                         .WithVariables(
                             SingletonSeparatedList<VariableDeclaratorSyntax>(
@@ -385,18 +335,12 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                         )
                     ),
                     EventDeclaration(
-                        QualifiedName(
-                            QualifiedName(
-                                IdentifierName("Regulus"),
-                                IdentifierName("Remote")
-                            ),
-                            IdentifierName("EventNotifyCallback")
-                        ),
+                        _RegulusRemoteEventNotifyCallback,
                         Identifier("RemoveEventEvent")
                     )
                     .WithExplicitInterfaceSpecifier(
                         ExplicitInterfaceSpecifier(
-                            base_name
+                            _RegulusRemoteIGhost
                         )
                     )
                     .WithAccessorList(
@@ -407,41 +351,13 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                                         SyntaxKind.AddAccessorDeclaration
                                     )
                                     .WithBody(
-                                        Block(
-                                            SingletonList<StatementSyntax>(
-                                                ExpressionStatement(
-                                                    AssignmentExpression(
-                                                        SyntaxKind.AddAssignmentExpression,
-                                                        MemberAccessExpression(
-                                                            SyntaxKind.SimpleMemberAccessExpression,
-                                                            ThisExpression(),
-                                                            IdentifierName("_RemoveEventEvent")
-                                                        ),
-                                                        IdentifierName("value")
-                                                    )
-                                                )
-                                            )
-                                        )
+                                        _Block(SyntaxKind.AddAssignmentExpression, "_RemoveEventEvent")                                        
                                     ),
                                     AccessorDeclaration(
                                         SyntaxKind.RemoveAccessorDeclaration
                                     )
                                     .WithBody(
-                                        Block(
-                                            SingletonList<StatementSyntax>(
-                                                ExpressionStatement(
-                                                    AssignmentExpression(
-                                                        SyntaxKind.SubtractAssignmentExpression,
-                                                        MemberAccessExpression(
-                                                            SyntaxKind.SimpleMemberAccessExpression,
-                                                            ThisExpression(),
-                                                            IdentifierName("_RemoveEventEvent")
-                                                        ),
-                                                        IdentifierName("value")
-                                                    )
-                                                )
-                                            )
-                                        )
+                                        _Block(SyntaxKind.SubtractAssignmentExpression, "_RemoveEventEvent")                                        
                                     )
                                 }
                             )
