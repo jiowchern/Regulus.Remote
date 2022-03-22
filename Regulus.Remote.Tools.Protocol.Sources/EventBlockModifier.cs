@@ -8,16 +8,15 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Modifiers
 }
 namespace Regulus.Remote.Tools.Protocol.Sources.BlockModifiers
 {
-    class BlockAndEvent
-    {
-        public BlockSyntax Block;
-        public EventDeclarationSyntax Event;
-    }
 
     internal class EventSystemAction
     {
-        
-                
+        private readonly Compilation _Compilation;
+
+        public EventSystemAction(Compilation compilation)
+        {
+            this._Compilation = compilation;
+        }
 
         public BlockAndEvent Mod(System.Collections.Generic.IEnumerable<SyntaxNode> nodes)
         {
@@ -46,6 +45,14 @@ namespace Regulus.Remote.Tools.Protocol.Sources.BlockModifiers
 
             if (sn.Identifier.ToString() != "Action")
                 return null;
+            if(sn is GenericNameSyntax gn)
+            {
+                if(gn.TypeArgumentList.Arguments.Select(a => _Compilation.GetTypeByMetadataName(a.ToString())).Any(a => a.TypeKind == TypeKind.Interface))
+                {
+                    return null;
+                }
+            }
+            
 
             var ownerName = ed.ExplicitInterfaceSpecifier.Name;
             var name = $"_{ownerName}.{ed.Identifier}";

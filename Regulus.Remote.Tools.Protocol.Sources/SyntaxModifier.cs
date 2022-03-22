@@ -15,7 +15,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             return new SyntaxModifier(
                     new BlockModifiers.MethodVoid(),
                     new BlockModifiers.MethodRegulusRemoteValue(),
-                    new BlockModifiers.EventSystemAction(),
+                    new BlockModifiers.EventSystemAction(com),
                     new BlockModifiers.PropertyRegulusRemoteBlock(com),
                     new Modifiers.EventFieldDeclarationSyntax(),
                     new Modifiers.PropertyFieldDeclarationSyntax()
