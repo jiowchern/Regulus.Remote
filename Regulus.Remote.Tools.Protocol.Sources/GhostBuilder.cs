@@ -50,7 +50,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
                 eventProxys.AddRange(type.DescendantNodes().OfType<EventDeclarationSyntax>().Select(e => e.CreateRegulusRemoteIEventProxyCreater()));
 
-                var modifier = new SyntaxModifier(type);
+                var modifier = new SyntaxModifier().Mod(type);
                 types.AddRange(modifier.TypesOfSerialization);
                 type = modifier.Type; 
                 type = type.ImplementRegulusRemoteIGhost();                

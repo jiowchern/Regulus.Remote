@@ -8,11 +8,24 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 {
     public class SyntaxModifier
     {        
-        public readonly System.Collections.Generic.IEnumerable<TypeSyntax> TypesOfSerialization;
-        public readonly ClassDeclarationSyntax Type;
-        public SyntaxModifier(ClassDeclarationSyntax type)
+        public struct Moded
+        {
+            public System.Collections.Generic.IEnumerable<TypeSyntax> TypesOfSerialization;
+            public ClassDeclarationSyntax Type;
+        }
+            
+
+        
+        public SyntaxModifier()
         {
 
+        
+
+        }
+
+
+        public Moded Mod(ClassDeclarationSyntax type)
+        {
             var methods = type.DescendantNodes().OfType<MethodDeclarationSyntax>();
 
             var newParams = new System.Collections.Generic.Dictionary<ParameterSyntax, ParameterSyntax>();
@@ -22,7 +35,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 foreach (var p in method.ParameterList.Parameters)
                 {
                     var newP = p.WithIdentifier(SyntaxFactory.Identifier($"_{++idx}"));
-                    newParams.Add(p,newP);
+                    newParams.Add(p, newP);
                 }
             }
 
@@ -44,8 +57,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
                 var e = BlockModifiers.Event.Mod(nodes);
                 if (e != null)
-                {                    
-                    replaceBlocks.Add( block, e.Block);                    
+                {
+                    replaceBlocks.Add(block, e.Block);
                 }
 
                 var methodVoid = BlockModifiers.MethodVoid.Mod(nodes);
@@ -62,20 +75,20 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                     replaceBlocks.Add(block, mrrv.Block);
                 }
                 var prrb = BlockModifiers.PropertyRegulusRemoteBlock.Mod(nodes);
-                if(prrb != null)
+                if (prrb != null)
                 {
-                    replaceBlocks.Add(block, prrb.Block);                    
+                    replaceBlocks.Add(block, prrb.Block);
                 }
             }
 
-            type = type.ReplaceNodes(replaceBlocks.Keys,(n1,n2) =>
+            type = type.ReplaceNodes(replaceBlocks.Keys, (n1, n2) =>
             {
-                if(replaceBlocks.ContainsKey(n1))
+                if (replaceBlocks.ContainsKey(n1))
                 {
                     return replaceBlocks[n1];
                 }
                 return n1;
-            } );
+            });
 
             var eventDeclarationSyntaxes = type.DescendantNodes().OfType<EventDeclarationSyntax>();
 
@@ -100,13 +113,10 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 typesOfSerialization.AddRange(pfds.Types);
             }
 
-            TypesOfSerialization = typesOfSerialization;
-            Type = type;
 
+            return new Moded { Type = type, TypesOfSerialization = typesOfSerialization };
+            
         }
-
-     
-     
 
     }
 
