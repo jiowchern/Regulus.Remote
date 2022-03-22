@@ -11,10 +11,10 @@ namespace Regulus.Remote.Tools.Protocol.Sources.BlockModifiers
 
     internal class Event
     {
-        public BlockSyntax Block;
+        
                 
 
-        public static Event Mod(System.Collections.Generic.IEnumerable<SyntaxNode> nodes)
+        public BlockSyntax Mod(System.Collections.Generic.IEnumerable<SyntaxNode> nodes)
         {
             
             var block = nodes.Skip(0).FirstOrDefault() as BlockSyntax;
@@ -63,7 +63,7 @@ var id = {name}.{ghostEventHandlerMethod}(value);
 _{ghostEventHandlerMethod}EventEvent(typeof({ownerName}).GetEvent(""{ed.Identifier}""),id);
 "));
 
-            return new Event() { Block = newBlock };
+            return newBlock ;
         }
 
 

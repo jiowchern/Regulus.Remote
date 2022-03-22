@@ -6,15 +6,10 @@ using static Microsoft.CodeAnalysis.SyntaxNodeExtensions;
 using Regulus.Remote.Tools.Protocol.Sources.Extensions;
 namespace Regulus.Remote.Tools.Protocol.Sources
 {
+
+
     public class SyntaxModifier
     {        
-        public struct Moded
-        {
-            public System.Collections.Generic.IEnumerable<TypeSyntax> TypesOfSerialization;
-            public ClassDeclarationSyntax Type;
-        }
-            
-
         
         public SyntaxModifier()
         {
@@ -24,7 +19,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         }
 
 
-        public Moded Mod(ClassDeclarationSyntax type)
+        public ClassAndTypes Mod(ClassDeclarationSyntax type)
         {
             var methods = type.DescendantNodes().OfType<MethodDeclarationSyntax>();
 
@@ -55,29 +50,29 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             {
                 var nodes = block.GetParentPathAndSelf();
 
-                var e = BlockModifiers.Event.Mod(nodes);
+                var e = new BlockModifiers.Event().Mod(nodes);
                 if (e != null)
                 {
-                    replaceBlocks.Add(block, e.Block);
+                    replaceBlocks.Add(block, e);
                 }
 
-                var methodVoid = BlockModifiers.MethodVoid.Mod(nodes);
+                var methodVoid = new BlockModifiers.MethodVoid().Mod(nodes);
                 if (methodVoid != null)
                 {
                     typesOfSerialization.AddRange(methodVoid.Types);
                     replaceBlocks.Add(block, methodVoid.Block);
                 }
 
-                var mrrv = BlockModifiers.MethodRegulusRemoteValue.Mod(nodes);
+                var mrrv = new BlockModifiers.MethodRegulusRemoteValue().Mod(nodes);
                 if (mrrv != null)
                 {
                     typesOfSerialization.AddRange(mrrv.Types);
                     replaceBlocks.Add(block, mrrv.Block);
                 }
-                var prrb = BlockModifiers.PropertyRegulusRemoteBlock.Mod(nodes);
+                var prrb = new BlockModifiers.PropertyRegulusRemoteBlock().Mod(nodes);
                 if (prrb != null)
                 {
-                    replaceBlocks.Add(block, prrb.Block);
+                    replaceBlocks.Add(block, prrb);
                 }
             }
 
@@ -94,7 +89,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
             foreach (var eds in eventDeclarationSyntaxes)
             {
-                var efds = Modifiers.EventFieldDeclarationSyntax.Mod(eds);
+                var efds = new Modifiers.EventFieldDeclarationSyntax().Mod(eds);
                 if (efds == null)
                     continue;
 
@@ -106,7 +101,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
             foreach (var pds in propertyDeclarationSyntaxes)
             {
-                var pfds = Modifiers.PropertyFieldDeclarationSyntax.Mod(pds);
+                var pfds = new Modifiers.PropertyFieldDeclarationSyntax().Mod(pds);
                 if (pfds == null)
                     continue;
                 type = type.AddMembers(pfds.Field);
@@ -114,7 +109,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             }
 
 
-            return new Moded { Type = type, TypesOfSerialization = typesOfSerialization };
+            return new ClassAndTypes { Type = type, TypesOfSerialization = typesOfSerialization };
             
         }
 

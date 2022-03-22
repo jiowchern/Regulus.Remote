@@ -6,8 +6,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources.BlockModifiers
 {
     internal class PropertyRegulusRemoteBlock
     {
-        public BlockSyntax Block;
-        public static PropertyRegulusRemoteBlock Mod(System.Collections.Generic.IEnumerable<SyntaxNode> nodes)
+        
+        public BlockSyntax Mod(System.Collections.Generic.IEnumerable<SyntaxNode> nodes)
         {
             var block = nodes.Skip(0).FirstOrDefault() as BlockSyntax;
             var ad = nodes.Skip(1).FirstOrDefault() as AccessorDeclarationSyntax;
@@ -50,7 +50,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.BlockModifiers
 $@"
 return {name};
 "));
-            return new PropertyRegulusRemoteBlock() { Block = newBlock };
+            return newBlock ;
         }
     }
 }

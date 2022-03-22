@@ -5,10 +5,9 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Modifiers
 {
     internal class PropertyFieldDeclarationSyntax
     {
-        public FieldDeclarationSyntax Field;
-        public System.Collections.Generic.IEnumerable<TypeSyntax> Types;
+        
 
-        public static PropertyFieldDeclarationSyntax Mod(PropertyDeclarationSyntax pd)
+        public FieldAndTypes Mod(PropertyDeclarationSyntax pd)
         {
 
             var ownerName = pd.ExplicitInterfaceSpecifier.Name;
@@ -41,7 +40,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Modifiers
             }
             
 
-            return new PropertyFieldDeclarationSyntax() { Field = _CreateField(name, qn), Types = types };
+            return new FieldAndTypes() { Field = _CreateField(name, qn), Types = types };
         }
 
         private static FieldDeclarationSyntax _CreateField(string name, QualifiedNameSyntax qn)

@@ -5,9 +5,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Modifiers
 {
     internal class EventFieldDeclarationSyntax
     {
-        public FieldDeclarationSyntax Field;
-        public System.Collections.Generic.IEnumerable<TypeSyntax> Types;
-        public static EventFieldDeclarationSyntax Mod(EventDeclarationSyntax ed)
+        
+        public FieldAndTypes Mod(EventDeclarationSyntax ed)
         {
             
             var ownerName = ed.ExplicitInterfaceSpecifier.Name;
@@ -36,7 +35,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Modifiers
             }
             
 
-            return new EventFieldDeclarationSyntax() { Field = _CreateGhostEventHandler(name), Types = types};
+            return new FieldAndTypes() { Field = _CreateGhostEventHandler(name), Types = types};
         }
 
         private static FieldDeclarationSyntax _CreateGhostEventHandler(string name)

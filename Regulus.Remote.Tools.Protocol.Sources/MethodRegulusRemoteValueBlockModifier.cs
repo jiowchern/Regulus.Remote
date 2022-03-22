@@ -9,9 +9,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources.BlockModifiers
     
     internal class MethodRegulusRemoteValue
     {
-        public BlockSyntax Block;
-        public System.Collections.Generic.IEnumerable<TypeSyntax> Types;
-        public static MethodRegulusRemoteValue Mod(System.Collections.Generic.IEnumerable<SyntaxNode> nodes)
+        
+        public BlockAndTypes Mod(System.Collections.Generic.IEnumerable<SyntaxNode> nodes)
         {
             var block = nodes.Skip(0).FirstOrDefault() as BlockSyntax;
             var md = nodes.Skip(1).FirstOrDefault() as MethodDeclarationSyntax;
@@ -47,7 +46,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.BlockModifiers
             if (gn.Identifier.ToString() != "Value")
                 return null;
 
-            return new MethodRegulusRemoteValue
+            return new BlockAndTypes
             {
                 Block = SyntaxFactory.Block(SyntaxFactory.ParseStatement(
                                 $@"
