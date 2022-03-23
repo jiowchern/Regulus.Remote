@@ -21,7 +21,7 @@ namespace Regulus.Remote
 
         private readonly object _Sync = new object();
 
-        private TimeCounter _PingTimeCounter = new TimeCounter();
+        private readonly TimeCounter _PingTimeCounter = new TimeCounter();
 
         private Timer _PingTimer;
 
@@ -417,7 +417,7 @@ namespace Regulus.Remote
             {
                 if (_PingTimer != null)
                 {
-                    _PingTimeCounter = new TimeCounter();
+                    _PingTimeCounter.Reset();
                     _Requester.Request(ClientToServerOpCode.Ping, new byte[0]);
                 }
             }
