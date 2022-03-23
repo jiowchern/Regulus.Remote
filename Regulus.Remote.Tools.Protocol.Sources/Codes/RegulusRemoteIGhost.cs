@@ -1,10 +1,11 @@
 ﻿using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-namespace Regulus.Remote.Tools.Protocol.Sources
+namespace Regulus.Remote.Tools.Protocol.Sources.Codes
 {
-    public static class ClassDeclarationSyntaxExtensionsHelper
+    public static partial class RegulusRemoteIGhost
     {
+        
         public static BlockSyntax _Block(SyntaxKind exp_1, string field_name)
         {
             return Block(
@@ -49,5 +50,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                             ),
                             IdentifierName("IGhost")
                         );
+
+
     }
 }
