@@ -42,7 +42,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.BlockModifiers
 
             if(gn.Identifier.ToString() == "Property")
             {
-                if (!_Compilation.AllNotInterface(gn.TypeArgumentList.Arguments))
+                if (!_Compilation.AllSerializable(gn.TypeArgumentList.Arguments))
                 {
                     return null;
                 }
@@ -50,7 +50,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.BlockModifiers
 
             if (gn.Identifier.ToString() == "Notifier")
             {
-                if(!_Compilation.AllInterface(gn.TypeArgumentList.Arguments))
+                if(!_Compilation.AllGhostable(gn.TypeArgumentList.Arguments))
                 {
                     return null;
                 }                

@@ -47,7 +47,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.BlockModifiers
                 return null;
             if(sn is GenericNameSyntax gn)
             {
-                if (!_Compilation.AllNotInterface(gn.TypeArgumentList.Arguments))
+                if (!_Compilation.AllSerializable(gn.TypeArgumentList.Arguments))
                 {
                     return null;
                 }                

@@ -20,7 +20,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             return new System.Collections.Generic.HashSet<INamedTypeSymbol>(symbols , SymbolEqualityComparer.Default);
         }
 
-        public static bool AllInterface(this Compilation compilation, System.Collections.Generic.IEnumerable<TypeSyntax> types)
+        public static bool AllGhostable(this Compilation compilation, System.Collections.Generic.IEnumerable<TypeSyntax> types)
         {
             foreach (var t in types)
             {
@@ -33,7 +33,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             return true;
         }
 
-        public static bool AllNotInterface(this Compilation compilation, System.Collections.Generic.IEnumerable<TypeSyntax> types)
+        public static bool AllSerializable(this Compilation compilation, System.Collections.Generic.IEnumerable<TypeSyntax> types)
         {
             foreach (var t in types)
             {
