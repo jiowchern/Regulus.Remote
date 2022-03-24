@@ -11,14 +11,14 @@ namespace Regulus.Remote.Tests
         interface IA
         {
             Regulus.Remote.Property<int> Property1 { get; }
+            Notifier<IA> Property2 { get; }
             event System.Action<int> Event1;
         }
         class GhostIA : IA, IGhost
         {
             public GhostIA()
             {                
-                _Regulus_Remote_Tests_GhostResponseHandlerTests_IA_Property1 = new Property<int>();
-                _Regulus_Remote_Tests_GhostResponseHandlerTests_IA_Event1 = new GhostEventHandler();
+                
             }
 
             
@@ -61,7 +61,7 @@ namespace Regulus.Remote.Tests
                 }
             }
             
-            private readonly GhostEventHandler _Regulus_Remote_Tests_GhostResponseHandlerTests_IA_Event1;
+            private readonly GhostEventHandler _Regulus_Remote_Tests_GhostResponseHandlerTests_IA_Event1 = new GhostEventHandler();
             event Action<int> IA.Event1
             {
                 add
@@ -75,8 +75,12 @@ namespace Regulus.Remote.Tests
                 }
             }
             
-            private readonly Property<int> _Regulus_Remote_Tests_GhostResponseHandlerTests_IA_Property1;
+            private readonly Property<int> _Regulus_Remote_Tests_GhostResponseHandlerTests_IA_Property1 = new Property<int>();
             Property<int> IA.Property1 => _Regulus_Remote_Tests_GhostResponseHandlerTests_IA_Property1;
+
+
+            private readonly Notifier<IA> _Regulus_Remote_Tests_GhostResponseHandlerTests_IA_Property2 = new Notifier<IA>();
+            Notifier<IA> IA.Property2 => _Regulus_Remote_Tests_GhostResponseHandlerTests_IA_Property2;
 
             long IGhost.GetID()
             {
@@ -140,6 +144,20 @@ namespace Regulus.Remote.Tests
             var property = _MemberMap.GetProperty(typeof(IA).GetProperties()[0]);
             handler.UpdateSetProperty(property, _Serializable.Serialize(typeof(int) , 2));
             NUnit.Framework.Assert.AreEqual(2, _IA.Property1.Value);
+        }
+
+        [NUnit.Framework.Test]
+        public void GetAccesserTest()
+        {
+            var handler = _GhostResponseHandler;
+            var property = _MemberMap.GetProperty(typeof(IA).GetProperties()[1]);
+            var accesser =  handler.GetAccesser(property);
+
+            IA ia = null;
+            _IA.Property2.Base.Supply += obj => ia = obj;
+
+            accesser.Add(_IA);
+            NUnit.Framework.Assert.AreEqual(_IA, ia);
         }
 
 

@@ -15,7 +15,18 @@ namespace Regulus.Remote
             _Serializer = serializable;
             Base = ghost;
         }
-       
+
+        public IObjectAccessible GetAccesser(int property)
+        {
+            MemberMap map = _MemberMap;
+            PropertyInfo info = map.GetProperty(property);
+            var instance = Base.GetInstance();
+            var type = instance.GetType();
+            var fieldName = $"_{info.GetPathName()}";
+            FieldInfo field = type.GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+            object filedValue = field.GetValue(instance);
+            return filedValue as IObjectAccessible;
+        }
         public void UpdateSetProperty(int property, byte[] payload)
         {
             var ghost = Base;

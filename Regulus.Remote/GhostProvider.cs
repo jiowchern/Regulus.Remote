@@ -267,21 +267,21 @@ namespace Regulus.Remote
         }
         private void _RemovePropertySoul(PackagePropertySoul data)
         {
-            var owner = _FindGhost(data.OwnerId).Base;
+            var owner = _FindGhost(data.OwnerId);
             var ghost = _FindGhost(data.EntiryId).Base;
-            var accessible = _GetAccesser(data, owner);
+            var accessible = owner.GetAccesser(data.PropertyId);
             accessible.Remove(ghost.GetInstance());
         }
 
         private void _AddPropertySoul(PackagePropertySoul data)
         {
-            var owner = _FindGhost(data.OwnerId).Base;
+            var owner = _FindGhost(data.OwnerId);
             var ghost = _FindGhost(data.EntiryId).Base;
-            var accessible = _GetAccesser(data, owner);            
+            var accessible = owner.GetAccesser(data.PropertyId);
             accessible.Add(ghost.GetInstance());
         }
 
-        private IObjectAccessible _GetAccesser(PackagePropertySoul data, IGhost owner)
+        /*private IObjectAccessible _GetAccesser(PackagePropertySoul data, IGhost owner)
         {
             MemberMap map = _Protocol.GetMemberMap();
             PropertyInfo info = map.GetProperty(data.PropertyId);
@@ -290,7 +290,7 @@ namespace Regulus.Remote
             FieldInfo field = type.GetField( fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
             object filedValue = field.GetValue(owner.GetInstance());
             return filedValue as IObjectAccessible;
-        }
+        }*/
 
         private static string _GetFieldName(PropertyInfo info)
         {
@@ -374,12 +374,10 @@ namespace Regulus.Remote
 
         private IGhost _BuildGhost(Type ghost_base_type, long id, bool return_type)
         {
-
-
             Type ghostType = _QueryGhostType(ghost_base_type);
 
             ConstructorInfo constructor = ghostType.GetConstructor(new[] { typeof(long), typeof(bool) });
-            if (constructor == null)
+            /*if (constructor == null)
             {
                 List<string> constructorInfos = new List<string>();
 
@@ -389,9 +387,7 @@ namespace Regulus.Remote
 
                 }
                 throw new Exception(string.Format("{0} Not found constructor.\n{1}", ghostType.FullName, string.Join("\n", constructorInfos.ToArray())));
-            }
-
-
+            }*/
             object o = constructor.Invoke(new object[] { id, return_type });
 
             return (IGhost)o;
