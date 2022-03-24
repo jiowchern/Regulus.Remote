@@ -15,7 +15,7 @@ namespace Regulus.Remote
             _Serializer = serializable;
             Base = ghost;
         }
-
+       
         public void UpdateSetProperty(int property, byte[] payload)
         {
             var ghost = Base;
