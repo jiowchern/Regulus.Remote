@@ -8,7 +8,9 @@ using System.Linq;
 using System.Reflection;
 using System.Timers;
 using Timer = System.Timers.Timer;
-
+namespace Regulus.Remote
+{
+}
 namespace Regulus.Remote
 {
     public class GhostProvider
@@ -37,7 +39,6 @@ namespace Regulus.Remote
 
         public long Ping { get; private set; }
 
-
         readonly IInternalSerializable _InternalSerializer;
 
 
@@ -46,8 +47,7 @@ namespace Regulus.Remote
             _InternalSerializer = internal_serializable;
             _Active = false;
             _Requester = req;
-            
-            
+
             _ReturnValueQueue = new ReturnValueQueue();
             _Protocol = protocol;
             _InterfaceProvider = _Protocol.GetInterfaceProvider();
@@ -226,8 +226,6 @@ namespace Regulus.Remote
             ghost.AddEventEvent += new GhostEventMoveHandler(ghost, _Protocol,_Serializer, _InternalSerializer, _Requester).Add;
             ghost.RemoveEventEvent += new GhostEventMoveHandler(ghost, _Protocol, _Serializer, _InternalSerializer, _Requester).Remove;            
 
-
-
             provider.Add(ghost);
 
             if (ghost.IsReturnType())
@@ -275,7 +273,6 @@ namespace Regulus.Remote
             MemberMap map = _Protocol.GetMemberMap();
             return map.CreateProvider(type);
         }
-
         public INotifier<T> QueryProvider<T>()
         {
             return _QueryProvider(typeof(T)) as INotifier<T>;
@@ -325,19 +322,20 @@ namespace Regulus.Remote
             object instance = ghost.GetInstance();
             Type type = instance.GetType();
             FieldInfo field = type.GetField(_GetFieldName(info), BindingFlags.Instance | BindingFlags.NonPublic);
-            if (field != null)
+            if (field == null)
             {
-                object filedValue = field.GetValue(instance);
-                IAccessable updateable = filedValue as IAccessable;
-                updateable.Set(value);
-
-                PackageSetPropertyDone pkg = new PackageSetPropertyDone();
-                pkg.EntityId = entity_id;
-                pkg.Property = property;
-                _Requester.Request(ClientToServerOpCode.UpdateProperty, pkg.ToBuffer(_InternalSerializer));
+                return;
             }
-        }
 
+            object filedValue = field.GetValue(instance);
+            IAccessable updateable = filedValue as IAccessable;
+            updateable.Set(value);
+
+            PackageSetPropertyDone pkg = new PackageSetPropertyDone();
+            pkg.EntityId = entity_id;
+            pkg.Property = property;
+            _Requester.Request(ClientToServerOpCode.UpdateProperty, pkg.ToBuffer(_InternalSerializer));
+        }
 
         private void _InvokeEvent(long ghost_id, int event_id, long handler_id, byte[][] event_params)
         {
@@ -350,19 +348,14 @@ namespace Regulus.Remote
             MemberMap map = _Protocol.GetMemberMap();
             EventInfo info = map.GetEvent(event_id);
 
-
-
             object instance = ghost.GetInstance();
             Type type = instance.GetType();
-            
 
             var fieldName = _GetFieldName(info);
             FieldInfo eventInfo = type.GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
             object fieldValue = eventInfo.GetValue(instance);
-            if (fieldValue is GhostEventHandler)
+            if (fieldValue is GhostEventHandler fieldValueDelegate)
             {
-                GhostEventHandler fieldValueDelegate = fieldValue as GhostEventHandler;
-
                 object[] pars = (from payload in event_params select _Serializer.Deserialize(eventInfo.FieldType ,payload)).ToArray();
                 try
                 {
