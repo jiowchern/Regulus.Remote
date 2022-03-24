@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using NSubstitute;
 
 namespace Regulus.Remote.Tests
@@ -10,15 +11,17 @@ namespace Regulus.Remote.Tests
         interface IA
         {
             Regulus.Remote.Property<int> Property1 { get; }
+            event System.Action<int> Event1;
         }
         class GhostIA : IA, IGhost
         {
             public GhostIA()
-            {
-                Property1 = new Property<int>();
-                _Regulus_Remote_Tests_GhostResponseHandlerTests_IA_Property1 = Property1;
+            {                
+                _Regulus_Remote_Tests_GhostResponseHandlerTests_IA_Property1 = new Property<int>();
+                _Regulus_Remote_Tests_GhostResponseHandlerTests_IA_Event1 = new GhostEventHandler();
             }
 
+            
             event CallMethodCallback IGhost.CallMethodEvent
             {
                 add
@@ -57,10 +60,23 @@ namespace Regulus.Remote.Tests
                     throw new System.NotImplementedException();
                 }
             }
+            
+            private readonly GhostEventHandler _Regulus_Remote_Tests_GhostResponseHandlerTests_IA_Event1;
+            event Action<int> IA.Event1
+            {
+                add
+                {
+                    _Regulus_Remote_Tests_GhostResponseHandlerTests_IA_Event1.Add(value);
+                }
 
-            public Property<int> Property1;
-            private Property<int> _Regulus_Remote_Tests_GhostResponseHandlerTests_IA_Property1;
-            Property<int> IA.Property1 => Property1;
+                remove
+                {
+                    _Regulus_Remote_Tests_GhostResponseHandlerTests_IA_Event1.Remove(value);
+                }
+            }
+            
+            private readonly Property<int> _Regulus_Remote_Tests_GhostResponseHandlerTests_IA_Property1;
+            Property<int> IA.Property1 => _Regulus_Remote_Tests_GhostResponseHandlerTests_IA_Property1;
 
             long IGhost.GetID()
             {
@@ -81,7 +97,8 @@ namespace Regulus.Remote.Tests
 
         Regulus.Remote.GhostResponseHandler _GhostResponseHandler;
         ISerializable _Serializable;
-        GhostIA _GhostIA;
+        //GhostIA _GhostIA;
+        IA _IA;
         MemberMap _MemberMap;
         [NUnit.Framework.SetUp]
         public void Setup()
@@ -92,8 +109,8 @@ namespace Regulus.Remote.Tests
             
             _Serializable = serializable;
             _GhostResponseHandler = new GhostResponseHandler(ghostIA, map , serializable);
-            _GhostIA = ghostIA;
             _MemberMap = map;
+            _IA = ghostIA;
         }
         [NUnit.Framework.Test]
         public void BaseTest()
@@ -106,14 +123,23 @@ namespace Regulus.Remote.Tests
         [NUnit.Framework.Test]
         public void InvokeEvent()
         {
+            var handler = _GhostResponseHandler;
+            var eventId = _MemberMap.GetEvent(typeof(IA).GetEvents()[0]);
+            int value = 0;
+            _IA.Event1 += (v) => value = v;
 
+            byte[][] buffers = new byte[][] { _Serializable.Serialize(typeof(int), 10) };
+            handler.InvokeEvent(eventId, 1, buffers);
+            NUnit.Framework.Assert.AreEqual(10, value);
         }
+
         [NUnit.Framework.Test]
         public void UpdateSetPropertyTest()
         {
             var handler = _GhostResponseHandler;
-            handler.UpdateSetProperty(1, _Serializable.Serialize(typeof(int) , 2));
-            NUnit.Framework.Assert.AreEqual(2, _GhostIA.Property1.Value);
+            var property = _MemberMap.GetProperty(typeof(IA).GetProperties()[0]);
+            handler.UpdateSetProperty(property, _Serializable.Serialize(typeof(int) , 2));
+            NUnit.Framework.Assert.AreEqual(2, _IA.Property1.Value);
         }
 
 

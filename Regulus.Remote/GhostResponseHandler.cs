@@ -49,7 +49,7 @@ namespace Regulus.Remote
             object instance = ghost.GetInstance();
             Type type = instance.GetType();
 
-            var fieldName = info.GetPathName();
+            var fieldName = $"_{info.GetPathName()}";
             FieldInfo eventInfo = type.GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
             object fieldValue = eventInfo.GetValue(instance);
             if (fieldValue is GhostEventHandler fieldValueDelegate)
