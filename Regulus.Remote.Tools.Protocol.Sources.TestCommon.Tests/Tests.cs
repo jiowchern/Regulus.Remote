@@ -11,6 +11,19 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 {
     public class Tests
     {
+        [Test]
+        public static void AReturnVoid()
+        {
+            var versionRegex = @"(\[\s*assembly\s*:\s*AssemblyVersion\s*\(\s*\""\d+.\d+).(\d+).(\d+\""\s*\)\s*\])";
+            var assemblyInfo = "[assembly: AssemblyVersion(\"2022.3.23.2\")]";
+            var matchs = System.Text.RegularExpressions.Regex.Match(assemblyInfo, versionRegex);
+            var buildVersion = System.Convert.ToInt32(matchs.Groups[2].ToString()) + 1;
+            
+            
+            var result = System.Text.RegularExpressions.Regex.Replace(assemblyInfo, versionRegex, $"$1.{buildVersion}.$3");
+
+        }
+
         [SetUp]
         public void Setup()
         {

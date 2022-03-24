@@ -1,12 +1,13 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.1.10.5</Version>    
+    
     <PackageProjectUrl>https://github.com/jiowchern/Regulus.Remote</PackageProjectUrl>
     <Authors>jc</Authors>
     <Description>rx integration kit.</Description>
+	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,5 +17,20 @@
   <ItemGroup>
     <ProjectReference Include="..\Regulus.Remote\Regulus.Remote.csproj" />
   </ItemGroup>
+
+	<Target Name="AssemblyVersion" BeforeTargets="CoreCompile" DependsOnTargets="PrepareForBuild" Condition="'$(BuildingInsideVisualStudio)'!=''" >
+		<PropertyGroup>			
+			<AssemblyInfo>AssemblyInfo.cs</AssemblyInfo>
+			<AssemblyInfoContent>$([System.IO.File]::ReadAllText($(AssemblyInfo)))</AssemblyInfoContent>
+			<VersionRegex>(\[\s*assembly\s*:\s*AssemblyVersion\s*\(\s*\"\d+.\d+).(\d+).(\d+\"\s*\)\s*\])</VersionRegex>
+			<BuildVersion> $([System.Text.RegularExpressions.Regex]::Match('$(AssemblyInfoContent)', '$(VersionRegex)').Groups[2].Value)</BuildVersion>
+			<AssemblyVersion1>$([System.Text.RegularExpressions.Regex]::Match('$(AssemblyInfoContent)', '$(VersionRegex)').Groups[1].Value)</AssemblyVersion1>
+			<AssemblyVersion2>$([System.Text.RegularExpressions.Regex]::Match('$(AssemblyInfoContent)', '$(VersionRegex)').Groups[3].Value)</AssemblyVersion2>
+			<BuildVersionAdded>$([MSBuild]::Add( $([System.Convert]::ToUInt16($(BuildVersion))), 1))</BuildVersionAdded>
+			<AssemblyVersion>$([System.Text.RegularExpressions.Regex]::Replace('$(AssemblyInfoContent)', '$(VersionRegex)' ,'$(AssemblyVersion1).$(BuildVersionAdded).$(AssemblyVersion2)' ))</AssemblyVersion>
+		</PropertyGroup>
+		
+		<WriteLinesToFile File="$(AssemblyInfo)" Lines="$([System.Text.RegularExpressions.Regex]::Replace('$(AssemblyInfoContent)', '$(VersionRegex)' ,'$(AssemblyVersion1).$(BuildVersionAdded).$(AssemblyVersion2)' ))" Overwrite="true" />
+	</Target>
 
 </Project>
