@@ -50,32 +50,14 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         {
             var methods = type.DescendantNodes().OfType<MethodDeclarationSyntax>();
 
-            var newParams = new System.Collections.Generic.Dictionary<ParameterSyntax, ParameterSyntax>();
-            foreach (var method in methods)
-            {
-                int idx = 0;
-                foreach (var p in method.ParameterList.Parameters)
-                {
-                    var newP = p.WithIdentifier(SyntaxFactory.Identifier($"_{++idx}"));
-                    newParams.Add(p, newP);
-                }
-            }
-
-            type = type.ReplaceNodes(newParams.Keys, (n1, n2) =>
-            {
-                if (newParams.ContainsKey(n1))
-                {
-                    return newParams[n1];
-                }
-                return n1;
-            });
+            type = _ModifyMethodParameters(type, methods);
 
             var propertys = new System.Collections.Generic.HashSet<PropertyDeclarationSyntax>(SyntaxNodeComparer.Default);
             var events = new System.Collections.Generic.HashSet<EventDeclarationSyntax>(SyntaxNodeComparer.Default);
             var typesOfSerialization = new System.Collections.Generic.HashSet<TypeSyntax>(SyntaxNodeComparer.Default);
 
             var blocks = type.DescendantNodes().OfType<BlockSyntax>();
-            
+
             var replaceBlocks = new System.Collections.Generic.Dictionary<BlockSyntax, BlockSyntax>();
             foreach (var block in blocks)
             {
@@ -109,14 +91,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 }
             }
 
-            type = type.ReplaceNodes(replaceBlocks.Keys, (n1, n2) =>
-            {
-                if (replaceBlocks.ContainsKey(n1))
-                {
-                    return replaceBlocks[n1];
-                }
-                return n1;
-            });
+            type = _ModifyBlocks(type, replaceBlocks);
 
             var eventDeclarationSyntaxes = events;
 
@@ -143,9 +118,45 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
 
             return new ClassAndTypes { Type = type, TypesOfSerialization = typesOfSerialization };
-            
+
         }
 
+        private static ClassDeclarationSyntax _ModifyBlocks(ClassDeclarationSyntax type, System.Collections.Generic.Dictionary<BlockSyntax, BlockSyntax> replaceBlocks)
+        {
+            type = type.ReplaceNodes(replaceBlocks.Keys, (n1, n2) =>
+            {
+                if (replaceBlocks.ContainsKey(n1))
+                {
+                    return replaceBlocks[n1];
+                }
+                return n1;
+            });
+            return type;
+        }
+
+        private static ClassDeclarationSyntax _ModifyMethodParameters(ClassDeclarationSyntax type, System.Collections.Generic.IEnumerable<MethodDeclarationSyntax> methods)
+        {
+            var newParams = new System.Collections.Generic.Dictionary<ParameterSyntax, ParameterSyntax>();
+            foreach (var method in methods)
+            {
+                int idx = 0;
+                foreach (var p in method.ParameterList.Parameters)
+                {
+                    var newP = p.WithIdentifier(SyntaxFactory.Identifier($"_{++idx}"));
+                    newParams.Add(p, newP);
+                }
+            }
+
+            type = type.ReplaceNodes(newParams.Keys, (n1, n2) =>
+            {
+                if (newParams.ContainsKey(n1))
+                {
+                    return newParams[n1];
+                }
+                return n1;
+            });
+            return type;
+        }
     }
 
 
