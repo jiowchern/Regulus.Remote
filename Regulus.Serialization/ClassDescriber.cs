@@ -23,7 +23,7 @@ namespace Regulus.Serialization
             _Type = type;
             _TypeSet = finder;
             _Fields = (from field in _Type.GetFields()
-                       where field.IsStatic == false && field.IsPublic
+                       where field.IsStatic == false && field.IsPublic && field.FieldType.IsAbstract == false 
                        orderby field.Name
                        select field).ToArray();
         }
@@ -53,14 +53,10 @@ namespace Regulus.Serialization
                 {
 
                     var validField = validFields[i];
-                    object value = validField.field.GetValue(instance);
-                    Type valueType = value.GetType();
-                    int valueTypeCount = _TypeSet.Get().GetByteCount(valueType);
-                    ITypeDescriber describer = _TypeSet.Get(valueType);
-                    int byteCount = describer.GetByteCount(value);
+                    var index = validField.index;
+                    var field = validField.field;
 
-                    int indexCount = Varint.GetByteCount(validField.index);
-                    count += byteCount + indexCount + valueTypeCount;
+                    count = _GetCount(instance, count, index, field);
                 }
                 return count + validCount;
             }
@@ -69,6 +65,18 @@ namespace Regulus.Serialization
                 throw new DescriberException(typeof(ClassDescriber), _Type, "GetByteCount", ex);
             }
 
+        }
+
+        private int _GetCount(object instance, int count, int index, FieldInfo field)
+        {
+            object value = field.GetValue(instance);
+            Type valueType = value.GetType();
+            int valueTypeCount = _TypeSet.Get().GetByteCount(valueType);
+            ITypeDescriber describer = _TypeSet.Get(valueType);
+            int byteCount = describer.GetByteCount(value);
+            int indexCount = Varint.GetByteCount(index);
+            count += byteCount + indexCount + valueTypeCount;
+            return count;
         }
 
         private ITypeDescriber _GetDescriber(FieldInfo field)
@@ -96,13 +104,9 @@ namespace Regulus.Serialization
                 foreach (var validField in validFields)
                 {
                     int index = validField.index;
-                    offset += Varint.NumberToBuffer(buffer, offset, index);
                     FieldInfo field = validField.field;
-                    object value = field.GetValue(instance);
-                    Type valueType = value.GetType();
-                    offset += _TypeSet.Get().ToBuffer(valueType, buffer, offset);
-                    ITypeDescriber describer = _TypeSet.Get(valueType);
-                    offset += describer.ToBuffer(value, buffer, offset);
+
+                    offset = _ToBuffer(instance, buffer, offset, index, field);
                 }
 
 
@@ -116,28 +120,22 @@ namespace Regulus.Serialization
 
         }
 
+        private int _ToBuffer(object instance, byte[] buffer, int offset, int index, FieldInfo field)
+        {
+            offset += Varint.NumberToBuffer(buffer, offset, index);
+            object value = field.GetValue(instance);
+            Type valueType = value.GetType();
+            offset += _TypeSet.Get().ToBuffer(valueType, buffer, offset);
+            ITypeDescriber describer = _TypeSet.Get(valueType);
+            offset += describer.ToBuffer(value, buffer, offset);
+            return offset;
+        }
+
         int ITypeDescriber.ToObject(byte[] buffer, int begin, out object instance)
         {
             try
             {
-                ConstructorInfo constructor = _Type.GetConstructors().OrderBy(c => c.GetParameters().Length).Select(c => c).FirstOrDefault();
-                if (constructor != null)
-                {
-                    Type[] argTypes = constructor.GetParameters().Select(info => info.ParameterType).ToArray();
-                    object[] objArgs = new object[argTypes.Length];
-
-                    for (int i = 0; i < argTypes.Length; i++)
-                    {
-                        objArgs[i] = Activator.CreateInstance(argTypes[i]);
-                    }
-                    instance = Activator.CreateInstance(_Type, objArgs);
-                }
-                else
-                {
-                    instance = Activator.CreateInstance(_Type);
-                }
-
-
+                instance = _CreateInstance();
 
                 int offset = begin;
 
@@ -146,15 +144,7 @@ namespace Regulus.Serialization
 
                 for (ulong i = 0ul; i < validLength; i++)
                 {
-                    ulong index;
-                    offset += Varint.BufferToNumber(buffer, offset, out index);
-                    Type valueType;
-                    offset += _TypeSet.Get().ToObject(buffer, offset, out valueType);
-                    FieldInfo filed = _Fields[index];
-                    ITypeDescriber describer = _TypeSet.Get(valueType);
-                    object valueInstance;
-                    offset += describer.ToObject(buffer, offset, out valueInstance);
-                    filed.SetValue(instance, valueInstance);
+                    offset = _ToObject(buffer, instance, offset);
                 }
 
                 return offset - begin;
@@ -169,6 +159,42 @@ namespace Regulus.Serialization
 
         }
 
+        private int _ToObject(byte[] buffer, object instance, int offset)
+        {
+            ulong index;
+            offset += Varint.BufferToNumber(buffer, offset, out index);
+            Type valueType;
+            offset += _TypeSet.Get().ToObject(buffer, offset, out valueType);
+            FieldInfo filed = _Fields[index];
+            ITypeDescriber describer = _TypeSet.Get(valueType);
+            object valueInstance;
+            offset += describer.ToObject(buffer, offset, out valueInstance);
+            filed.SetValue(instance, valueInstance);
+            return offset;
+        }
+
+        private object _CreateInstance()
+        {
+            object instance;
+            ConstructorInfo constructor = _Type.GetConstructors().OrderBy(c => c.GetParameters().Length).Select(c => c).FirstOrDefault();
+            if (constructor != null)
+            {
+                Type[] argTypes = constructor.GetParameters().Select(info => info.ParameterType).ToArray();
+                object[] objArgs = new object[argTypes.Length];
+
+                for (int i = 0; i < argTypes.Length; i++)
+                {
+                    objArgs[i] = Activator.CreateInstance(argTypes[i]);
+                }
+                instance = Activator.CreateInstance(_Type, objArgs);
+            }
+            else
+            {
+                instance = Activator.CreateInstance(_Type);
+            }
+
+            return instance;
+        }
 
     }
 }
