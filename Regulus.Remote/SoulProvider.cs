@@ -105,7 +105,7 @@ namespace Regulus.Remote
             
             package.EventParams = args.Zip(info.EventHandlerType.GetGenericArguments(), (arg, par) => _Serializer.Serialize(par, arg)).ToArray();
             
-            _InvokeEvent(package.ToBuffer(_InternalSerializable));
+            _InvokeEvent(_InternalSerializable.Serialize(package));
         }
 
         private void _InvokeEvent(byte[] argmants)
@@ -175,7 +175,7 @@ namespace Regulus.Remote
             PackageReturnValue package = new PackageReturnValue();
             package.ReturnTarget = return_id;
             package.ReturnValue = _Serializer.Serialize(return_value.GetObjectType() , value);
-            _Queue.Push(ServerToClientOpCode.ReturnValue, package.ToBuffer(_InternalSerializable));
+            _Queue.Push(ServerToClientOpCode.ReturnValue, _InternalSerializable.Serialize(package));
         }
 
 
@@ -186,7 +186,7 @@ namespace Regulus.Remote
             package.EntityId = id;
             package.ReturnId = return_id;
             package.TypeId = type_id;            
-            _Queue.Push(ServerToClientOpCode.LoadSoulCompile, package.ToBuffer(_InternalSerializable));
+            _Queue.Push(ServerToClientOpCode.LoadSoulCompile, _InternalSerializable.Serialize(package));
         }
         private void _LoadProperty(long id, int property , object val)
         {
@@ -195,7 +195,7 @@ namespace Regulus.Remote
             package.EntityId = id;
             package.Property = property;
             package.Value = _Serializer.Serialize(info.PropertyType, val);
-            _Queue.Push(ServerToClientOpCode.SetProperty, package.ToBuffer(_InternalSerializable));
+            _Queue.Push(ServerToClientOpCode.SetProperty, _InternalSerializable.Serialize(package));
         }
         private void _LoadSoul(int type_id, long id, bool return_type)
         {
@@ -203,7 +203,7 @@ namespace Regulus.Remote
             package.TypeId = type_id;
             package.EntityId = id;
             package.ReturnType = return_type;
-            _Queue.Push(ServerToClientOpCode.LoadSoul, package.ToBuffer(_InternalSerializable));
+            _Queue.Push(ServerToClientOpCode.LoadSoul, _InternalSerializable.Serialize(package));
 
 
         }
@@ -214,7 +214,7 @@ namespace Regulus.Remote
             PackageUnloadSoul package = new PackageUnloadSoul();            
             package.EntityId = id;
             
-            _Queue.Push(ServerToClientOpCode.UnloadSoul, package.ToBuffer(_InternalSerializable));
+            _Queue.Push(ServerToClientOpCode.UnloadSoul, _InternalSerializable.Serialize(package));
         }
 
         public void SetPropertyDone(long entityId, int property)
@@ -316,7 +316,8 @@ namespace Regulus.Remote
             package.Message = message;
             package.Method = method_name;
             package.ReturnTarget = return_id;
-            _Queue.Push(ServerToClientOpCode.ErrorMethod, package.ToBuffer(_InternalSerializable));
+            
+            _Queue.Push(ServerToClientOpCode.ErrorMethod, _InternalSerializable.Serialize(package));
         }
 
         private ISoul _Bind<TSoul>(TSoul soul, bool return_type, long return_id)
@@ -375,7 +376,7 @@ namespace Regulus.Remote
             package.OwnerId = soul_id;
             package.PropertyId = property_id;
             package.EntiryId = property_soul_id;
-            _Queue.Push(ServerToClientOpCode.RemovePropertySoul, package.ToBuffer(_InternalSerializable));
+            _Queue.Push(ServerToClientOpCode.RemovePropertySoul, _InternalSerializable.Serialize(package));
 
             SoulProxy soul;
             _Souls.TryGetValue(property_soul_id , out soul);
@@ -391,7 +392,7 @@ namespace Regulus.Remote
             package.OwnerId = soul_id;
             package.PropertyId = property_id;
             package.EntiryId = soul.Id;            
-            _Queue.Push(ServerToClientOpCode.AddPropertySoul, package.ToBuffer(_InternalSerializable));
+            _Queue.Push(ServerToClientOpCode.AddPropertySoul, _InternalSerializable.Serialize(package));
         
             return soul;
         }

@@ -7,7 +7,7 @@ namespace Regulus.Remote
 {
 
 
-    [Serializable]
+    
     public class RequestPackage
     {
         public RequestPackage()
@@ -20,7 +20,7 @@ namespace Regulus.Remote
         public ClientToServerOpCode Code;
     }
 
-    [Serializable]
+    
     public class ResponsePackage
     {
         public ResponsePackage()
@@ -32,26 +32,9 @@ namespace Regulus.Remote
 
         public ServerToClientOpCode Code;
     }
-    [Serializable]
-    public class TPackageData<TData> where TData : class
-    {
-        public byte[] ToBuffer(IInternalSerializable serializer)
-        {
-            return serializer.Serialize(this);
-        }
-    }
 
 
-
-    public static class PackageHelper
-    {
-        public static TData ToPackageData<TData>(this byte[] buffer, IInternalSerializable serializer) where TData : TPackageData<TData>
-        {
-            return serializer.Deserialize(buffer) as TData;
-        }
-    }
-
-    public class PackageSetProperty : TPackageData<PackageSetProperty>
+    public class PackageSetProperty 
 
     {
         public PackageSetProperty()
@@ -64,8 +47,8 @@ namespace Regulus.Remote
     }
 
 
-    [Serializable]
-    public class PackageSetPropertyDone : TPackageData<PackageSetPropertyDone>
+    
+    public class PackageSetPropertyDone 
     {
         public PackageSetPropertyDone()
         {
@@ -74,8 +57,8 @@ namespace Regulus.Remote
         public int Property;
     }
 
-    [Serializable]
-    public class PackageInvokeEvent : TPackageData<PackageInvokeEvent>
+    
+    public class PackageInvokeEvent 
     {
         public PackageInvokeEvent()
         {
@@ -93,8 +76,8 @@ namespace Regulus.Remote
         public byte[][] EventParams;
     }
 
-    [Serializable]
-    public class PackageErrorMethod : TPackageData<PackageErrorMethod>
+    
+    public class PackageErrorMethod 
     {
         public PackageErrorMethod()
         {
@@ -109,8 +92,8 @@ namespace Regulus.Remote
         public string Message;
     }
 
-    [Serializable]
-    public class PackageReturnValue : TPackageData<PackageReturnValue>
+    
+    public class PackageReturnValue 
     {
         public PackageReturnValue()
         {
@@ -123,7 +106,7 @@ namespace Regulus.Remote
     }
 
     
-    public class PackagePropertySoul : TPackageData<PackagePropertySoul>
+    public class PackagePropertySoul
     {
         public PackagePropertySoul()
         {
@@ -133,8 +116,8 @@ namespace Regulus.Remote
         public long EntiryId;
         public int PropertyId;
     }
-    [Serializable]
-    public class PackageLoadSoulCompile : TPackageData<PackageLoadSoulCompile>
+    
+    public class PackageLoadSoulCompile 
     {
         public PackageLoadSoulCompile()
         {
@@ -144,8 +127,8 @@ namespace Regulus.Remote
         public long EntityId;
         public long ReturnId;        
     }
-    [Serializable]
-    public class PackageLoadSoul : TPackageData<PackageLoadSoul>
+    
+    public class PackageLoadSoul 
     {
         public PackageLoadSoul()
         {
@@ -158,8 +141,8 @@ namespace Regulus.Remote
 
         public bool ReturnType;
     }
-    [Serializable]
-    public class PackageUnloadSoul : TPackageData<PackageUnloadSoul>
+    
+    public class PackageUnloadSoul 
     {
         public PackageUnloadSoul()
         {
@@ -171,8 +154,8 @@ namespace Regulus.Remote
     }
 
 
-    [Serializable]
-    public class PackageCallMethod : TPackageData<PackageCallMethod>
+    
+    public class PackageCallMethod 
     {
 
         public PackageCallMethod()
@@ -194,8 +177,8 @@ namespace Regulus.Remote
         public byte[][] MethodParams;
     }
 
-    [Serializable]
-    public class PackageRelease : TPackageData<PackageRelease>
+    
+    public class PackageRelease 
     {
         public PackageRelease()
         {
@@ -205,7 +188,7 @@ namespace Regulus.Remote
     }
 
 
-    public class PackageProtocolSubmit : TPackageData<PackageProtocolSubmit>
+    public class PackageProtocolSubmit 
     {
         public PackageProtocolSubmit()
         {
@@ -215,7 +198,7 @@ namespace Regulus.Remote
 
     }
 
-    public class PackageAddEvent : TPackageData<PackageAddEvent>
+    public class PackageAddEvent 
     {
 
         public PackageAddEvent()
@@ -228,7 +211,7 @@ namespace Regulus.Remote
 
     }
 
-    public class PackageRemoveEvent : TPackageData<PackageRemoveEvent>
+    public class PackageRemoveEvent 
     {
         public PackageRemoveEvent()
         {

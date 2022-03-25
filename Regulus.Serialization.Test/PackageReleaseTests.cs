@@ -117,14 +117,14 @@ namespace Regulus.Remote.Tests
     }
     [Serializable]
 
-    public class TestPackageData : TPackageData<TestPackageData>
+    public class TestPackageData 
     {
 
         public Guid Id;
     }
     [Serializable]
 
-    public class TestPackageBuffer : TPackageData<TestPackageBuffer>
+    public class TestPackageBuffer 
     {
 
         public TestPackageBuffer()

@@ -26,7 +26,8 @@
             package.Entity = _Ghost.GetID();
             package.Event = map.GetEvent(info);
             package.Handler = handler;
-            _Requester.Request(ClientToServerOpCode.AddEvent, package.ToBuffer(_InternalSerializable));
+            
+            _Requester.Request(ClientToServerOpCode.AddEvent, _InternalSerializable.Serialize(package));
 
         }
 
@@ -39,7 +40,8 @@
             package.Entity = _Ghost.GetID();
             package.Event = map.GetEvent(info);
             package.Handler = handler;
-            _Requester.Request(ClientToServerOpCode.RemoveEvent, package.ToBuffer(_InternalSerializable));
+            
+            _Requester.Request(ClientToServerOpCode.RemoveEvent, _InternalSerializable.Serialize(package));
 
         }
     }

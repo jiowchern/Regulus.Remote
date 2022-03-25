@@ -90,60 +90,61 @@ namespace Regulus.Remote
             }
             else if (id == ServerToClientOpCode.SetProperty)
             {
-                PackageSetProperty data = args.ToPackageData<PackageSetProperty>(_InternalSerializer);
+                
+                PackageSetProperty data = _InternalSerializer.Deserialize(args)  as  PackageSetProperty;
                 _UpdateSetProperty(data.EntityId, data.Property, data.Value);
             }
 
             else if (id == ServerToClientOpCode.InvokeEvent)
             {
-                PackageInvokeEvent data = args.ToPackageData<PackageInvokeEvent>(_InternalSerializer);
+                PackageInvokeEvent data = _InternalSerializer.Deserialize(args) as PackageInvokeEvent;
                 _InvokeEvent(data.EntityId, data.Event, data.HandlerId, data.EventParams);
             }
             else if (id == ServerToClientOpCode.ErrorMethod)
             {
-                PackageErrorMethod data = args.ToPackageData<PackageErrorMethod>(_InternalSerializer);
+                PackageErrorMethod data = _InternalSerializer.Deserialize(args) as PackageErrorMethod;
 
                 _ErrorReturnValue(data.ReturnTarget, data.Method, data.Message);
             }
             else if (id == ServerToClientOpCode.ReturnValue)
             {
-                PackageReturnValue data = args.ToPackageData<PackageReturnValue>(_InternalSerializer);
+                PackageReturnValue data = _InternalSerializer.Deserialize(args) as PackageReturnValue;
                 _SetReturnValue(data.ReturnTarget, data.ReturnValue);
             }
             else if (id == ServerToClientOpCode.LoadSoulCompile)
             {
                 
-                PackageLoadSoulCompile data = args.ToPackageData<PackageLoadSoulCompile>(_InternalSerializer);            
+                PackageLoadSoulCompile data = _InternalSerializer.Deserialize(args) as PackageLoadSoulCompile;
                 _LoadSoulCompile(data.TypeId, data.EntityId, data.ReturnId);
                 
             }            
             else if (id == ServerToClientOpCode.LoadSoul)
             {                
-                PackageLoadSoul data = args.ToPackageData<PackageLoadSoul>(_InternalSerializer);            
+                PackageLoadSoul data = _InternalSerializer.Deserialize(args) as PackageLoadSoul;
                 _LoadSoul(data.TypeId, data.EntityId, data.ReturnType);                
             }
             else if (id == ServerToClientOpCode.UnloadSoul)
             {
-                PackageUnloadSoul data = args.ToPackageData<PackageUnloadSoul>(_InternalSerializer);
-                
+                PackageUnloadSoul data = _InternalSerializer.Deserialize(args) as PackageUnloadSoul;
+
                 _UnloadSoul(data.EntityId);
             }
             else if (id == ServerToClientOpCode.AddPropertySoul)
             {
-                PackagePropertySoul data = args.ToPackageData<PackagePropertySoul>(_InternalSerializer);
+                PackagePropertySoul data = _InternalSerializer.Deserialize(args) as PackagePropertySoul;
 
                 _AddPropertySoul(data);
             }
             else if (id == ServerToClientOpCode.RemovePropertySoul)
             {
-                PackagePropertySoul data = args.ToPackageData<PackagePropertySoul>(_InternalSerializer);
+                PackagePropertySoul data = _InternalSerializer.Deserialize(args) as PackagePropertySoul;
 
                 _RemovePropertySoul(data);
             }
             else if (id == ServerToClientOpCode.ProtocolSubmit)
             {
-                PackageProtocolSubmit data = args.ToPackageData<PackageProtocolSubmit>(_InternalSerializer);
-            
+                PackageProtocolSubmit data = _InternalSerializer.Deserialize(args) as PackageProtocolSubmit;
+
                 _ProtocolSubmit(data);
             }
         }
@@ -281,17 +282,6 @@ namespace Regulus.Remote
             accessible.Add(ghost.GetInstance());
         }
 
-        /*private IObjectAccessible _GetAccesser(PackagePropertySoul data, IGhost owner)
-        {
-            MemberMap map = _Protocol.GetMemberMap();
-            PropertyInfo info = map.GetProperty(data.PropertyId);
-            var type = _InterfaceProvider.Find(info.DeclaringType);
-            var fieldName = _GetFieldName(info);
-            FieldInfo field = type.GetField( fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
-            object filedValue = field.GetValue(owner.GetInstance());
-            return filedValue as IObjectAccessible;
-        }*/
-
         private void _UpdateSetProperty(long entity_id, int property, byte[] payload)
         {
             var ghost = _FindGhost(entity_id);
@@ -302,7 +292,8 @@ namespace Regulus.Remote
             PackageSetPropertyDone pkg = new PackageSetPropertyDone();
             pkg.EntityId = entity_id;
             pkg.Property = property;
-            _Requester.Request(ClientToServerOpCode.UpdateProperty, pkg.ToBuffer(_InternalSerializer));
+            
+            _Requester.Request(ClientToServerOpCode.UpdateProperty, _InternalSerializer.Serialize(pkg));
         }
 
         private void _InvokeEvent(long ghost_id, int event_id, long handler_id, byte[][] event_params)
