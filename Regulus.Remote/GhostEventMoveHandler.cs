@@ -22,7 +22,7 @@
             MemberMap map = _Protocol.GetMemberMap();
             ISerializable serialize = _Serializable;
 
-            PackageAddEvent package = new PackageAddEvent();
+            Regulus.Remote.Packages.PackageAddEvent package = new Regulus.Remote.Packages.PackageAddEvent();
             package.Entity = _Ghost.GetID();
             package.Event = map.GetEvent(info);
             package.Handler = handler;
@@ -36,7 +36,7 @@
             MemberMap map = _Protocol.GetMemberMap();
             ISerializable serialize = _Serializable;
 
-            PackageRemoveEvent package = new PackageRemoveEvent();
+            Regulus.Remote.Packages.PackageRemoveEvent package = new Regulus.Remote.Packages.PackageRemoveEvent();
             package.Entity = _Ghost.GetID();
             package.Event = map.GetEvent(info);
             package.Handler = handler;

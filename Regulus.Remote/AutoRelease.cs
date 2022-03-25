@@ -55,7 +55,7 @@ namespace Regulus.Remote
 
                 if (_Requester != null)
                 {
-                    PackageRelease data = new PackageRelease();
+                    Regulus.Remote.Packages.PackageRelease data = new Regulus.Remote.Packages.PackageRelease();
                     data.EntityId = id;
                     
                     _Requester.Request(ClientToServerOpCode.Release, _Serializer.Serialize(data));

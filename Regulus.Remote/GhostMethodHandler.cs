@@ -34,7 +34,7 @@ namespace Regulus.Remote
             ISerializable serialize = _Serializable;
             int method = map.GetMethod(info);
 
-            PackageCallMethod package = new PackageCallMethod();
+            Regulus.Remote.Packages.PackageCallMethod package = new Regulus.Remote.Packages.PackageCallMethod();
             package.EntityId = _Ghost.GetID();
             package.MethodId = method;
             

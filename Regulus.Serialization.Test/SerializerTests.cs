@@ -601,15 +601,15 @@ namespace Regulus.Serialization.Tests
         [NUnit.Framework.Test]
         public void TestSerializerResponsePackage()
         {
-            Type[] types = new[] { typeof(Regulus.Remote.ResponsePackage), typeof(Remote.ServerToClientOpCode), typeof(byte), typeof(byte[]) };
+            Type[] types = new[] { typeof(Regulus.Remote.Packages.ResponsePackage), typeof(Remote.ServerToClientOpCode), typeof(byte), typeof(byte[]) };
 
             Serializer ser = new Serializer(new DescriberBuilder(types).Describers);
-            Remote.ResponsePackage pkg = new Regulus.Remote.ResponsePackage();
+            Regulus.Remote.Packages.ResponsePackage pkg = new Regulus.Remote.Packages.ResponsePackage();
             pkg.Code = Remote.ServerToClientOpCode.SetProperty;
             pkg.Data = new byte[1] { 255 };
             byte[] buffer = ser.ObjectToBuffer(pkg);
 
-            Remote.ResponsePackage dPkg = ser.BufferToObject(buffer) as Remote.ResponsePackage;
+            Regulus.Remote.Packages.ResponsePackage dPkg = (Regulus.Remote.Packages.ResponsePackage)ser.BufferToObject(buffer)  ;
 
 
             Assert.AreEqual(Remote.ServerToClientOpCode.SetProperty, dPkg.Code);

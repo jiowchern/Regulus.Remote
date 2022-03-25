@@ -23,7 +23,7 @@ namespace Regulus.Remote.Ghost
             _Stream = stream;
             _InternalSerializer = internal_serializable;
 
-            GhostSerializer ghostSerializer = new GhostSerializer(new PackageReader<ResponsePackage>(_InternalSerializer), new PackageWriter<RequestPackage>(_InternalSerializer));
+            GhostSerializer ghostSerializer = new GhostSerializer(new PackageReader<Regulus.Remote.Packages.ResponsePackage>(_InternalSerializer), new PackageWriter<Regulus.Remote.Packages.RequestPackage>(_InternalSerializer));
             _GhostProvider = new GhostProvider(protocol, serializable, internal_serializable, ghostSerializer);            
             _GhostSerializer = ghostSerializer;
 
