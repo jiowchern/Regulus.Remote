@@ -1,4 +1,4 @@
-﻿namespace Regulus.Remote
+﻿namespace Regulus.Remote.Extensions
 {
     static class SystemReflectionExtensions
     {

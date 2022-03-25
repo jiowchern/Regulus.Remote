@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using static Regulus.Remote.SystemReflectionExtensions;
+using static Regulus.Remote.Extensions.SystemReflectionExtensions;
 namespace Regulus.Remote
 {
     class GhostResponseHandler
@@ -72,7 +72,7 @@ namespace Regulus.Remote
                 }
                 catch (TargetInvocationException tie)
                 {
-                    Regulus.Utility.Log.Instance.WriteInfo(string.Format("Call event error in {0}:{1}. \n{2}", type.FullName, info.Name, tie.InnerException.ToString()));
+                    Regulus.Utility.Log.Instance.WriteInfo(string.Format("Call event error in {0}:{1}. {2}", type.FullName, info.Name, tie.InnerException.ToString()));
                     throw tie;
                 }
                 catch (Exception e)

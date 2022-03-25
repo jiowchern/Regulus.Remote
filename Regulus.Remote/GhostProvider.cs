@@ -292,11 +292,6 @@ namespace Regulus.Remote
             return filedValue as IObjectAccessible;
         }*/
 
-        private static string _GetFieldName(PropertyInfo info)
-        {
-            return $"_{info.DeclaringType.FullName.Replace('.','_')}_{info.Name}";
-        }
-
         private void _UpdateSetProperty(long entity_id, int property, byte[] payload)
         {
             var ghost = _FindGhost(entity_id);
