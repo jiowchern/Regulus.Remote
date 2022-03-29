@@ -375,7 +375,7 @@ namespace Regulus.Remote
             Regulus.Remote.Packages.PackagePropertySoul package = new Regulus.Remote.Packages.PackagePropertySoul();
             package.OwnerId = soul_id;
             package.PropertyId = property_id;
-            package.EntiryId = property_soul_id;
+            package.EntityId = property_soul_id;
             _Queue.Push(ServerToClientOpCode.RemovePropertySoul, _InternalSerializable.Serialize(package));
 
             SoulProxy soul;
@@ -391,7 +391,7 @@ namespace Regulus.Remote
             Regulus.Remote.Packages.PackagePropertySoul package = new Regulus.Remote.Packages.PackagePropertySoul();
             package.OwnerId = soul_id;
             package.PropertyId = property_id;
-            package.EntiryId = soul.Id;            
+            package.EntityId = soul.Id;            
             _Queue.Push(ServerToClientOpCode.AddPropertySoul, _InternalSerializable.Serialize(package));
         
             return soul;

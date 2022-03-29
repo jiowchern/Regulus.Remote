@@ -112,7 +112,7 @@ namespace Regulus.Remote.Tests
             var map = new MemberMap(typeof(IA).GetMethods(), typeof(IA).GetEvents(), typeof(IA).GetProperties(), new System.Tuple<System.Type, System.Func<Regulus.Remote.IProvider>>[] { });
             
             _Serializable = serializable;
-            _GhostResponseHandler = new GhostResponseHandler(ghostIA, map , serializable);
+            _GhostResponseHandler = new GhostResponseHandler(new System.WeakReference<IGhost>(ghostIA), map , serializable);
             _MemberMap = map;
             _IA = ghostIA;
         }
@@ -120,8 +120,8 @@ namespace Regulus.Remote.Tests
         public void BaseTest()
         {
             var ghost = NSubstitute.Substitute.For<IGhost>();
-            var handler = new Regulus.Remote.GhostResponseHandler(ghost,null, null);
-            NUnit.Framework.Assert.AreEqual(ghost , handler.Base);
+            var handler = new Regulus.Remote.GhostResponseHandler(new WeakReference<IGhost>(ghost),null, null);
+            NUnit.Framework.Assert.AreEqual(ghost , handler.FindGhost());
         }
 
         [NUnit.Framework.Test]

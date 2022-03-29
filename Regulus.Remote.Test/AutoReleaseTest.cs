@@ -5,7 +5,6 @@ using System;
 
 namespace RemotingTest
 {
-
     public class AutoReleaseTest
     {
         [NUnit.Framework.Test]

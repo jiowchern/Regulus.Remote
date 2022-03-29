@@ -4,7 +4,7 @@
     {
        
         public long OwnerId;
-        public long EntiryId;
+        public long EntityId;
         public int PropertyId;
     }
     

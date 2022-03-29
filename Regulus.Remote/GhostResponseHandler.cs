@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Regulus.Remote.Extensions;
+using System;
 using System.Linq;
 using System.Reflection;
 using static Regulus.Remote.Extensions.SystemReflectionExtensions;
@@ -6,21 +7,24 @@ namespace Regulus.Remote
 {
     class GhostResponseHandler
     {
-        public readonly IGhost Base;
+        readonly WeakReference<IGhost> _Base;
         readonly MemberMap _MemberMap;
         readonly ISerializable _Serializer;
-        public GhostResponseHandler(IGhost ghost, MemberMap map , ISerializable serializable)
+        public GhostResponseHandler(WeakReference<IGhost> ghost, MemberMap map , ISerializable serializable)
         {
             _MemberMap = map;
             _Serializer = serializable;
-            Base = ghost;
+            _Base = ghost;
         }
-
+        
         public IObjectAccessible GetAccesser(int property)
         {
             MemberMap map = _MemberMap;
             PropertyInfo info = map.GetProperty(property);
-            var instance = Base.GetInstance();
+
+            IGhost ghost = _Base.GetTargetOrException();
+            
+            var instance = ghost.GetInstance();
             var type = instance.GetType();
             var fieldName = $"_{info.GetPathName()}";
             FieldInfo field = type.GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
@@ -29,12 +33,13 @@ namespace Regulus.Remote
         }
         public void UpdateSetProperty(int property, byte[] payload)
         {
-            var ghost = Base;
+            
             
             var map = _MemberMap;
             var info = map.GetProperty(property);
             var value = _Serializer.Deserialize(info.DeclaringType, payload);
 
+            IGhost ghost = _Base.GetTargetOrException();
             object instance = ghost.GetInstance();
             var type = instance.GetType();
 
@@ -52,7 +57,7 @@ namespace Regulus.Remote
 
         public void InvokeEvent(int event_id, long handler_id, byte[][] event_params)
         {
-            IGhost ghost = Base;            
+            IGhost ghost = _Base.GetTargetOrException(); 
 
             MemberMap map = _MemberMap;
             EventInfo info = map.GetEvent(event_id);
@@ -82,6 +87,17 @@ namespace Regulus.Remote
                 }
             }
 
+        }
+
+        internal bool IsValid()
+        {
+            return _Base.TryGetTarget(out _);
+        }
+        internal IGhost FindGhost()
+        {
+            IGhost g;
+            _Base.TryGetTarget(out g);
+            return g;
         }
     }
 }

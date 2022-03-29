@@ -1,4 +1,6 @@
-﻿using Regulus.Utility;
+﻿using Regulus.Remote.Extensions;
+using Regulus.Remote.Packages;
+using Regulus.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +10,7 @@ using Timer = System.Timers.Timer;
 
 namespace Regulus.Remote
 {
+    delegate System.Action<object> GetObjectAccesserMethod(IObjectAccessible accessible);
     public class GhostProvider
     {
         private readonly AutoRelease _AutoRelease;
@@ -211,13 +214,14 @@ namespace Regulus.Remote
             IProvider provider = _QueryProvider(type);
             IGhost ghost = _BuildGhost(type, id, return_type);
 
-            ghost.CallMethodEvent += new GhostMethodHandler(ghost, _ReturnValueQueue, _Protocol, _Serializer, _InternalSerializer, _Requester).Run;
-            ghost.AddEventEvent += new GhostEventMoveHandler(ghost, _Protocol,_Serializer, _InternalSerializer, _Requester).Add;
-            ghost.RemoveEventEvent += new GhostEventMoveHandler(ghost, _Protocol, _Serializer, _InternalSerializer, _Requester).Remove;            
+            var weak = new WeakReference<IGhost>(ghost);
+            ghost.CallMethodEvent += new GhostMethodHandler(weak, _ReturnValueQueue, _Protocol, _Serializer, _InternalSerializer, _Requester).Run;
+            ghost.AddEventEvent += new GhostEventMoveHandler(weak, _Protocol, _InternalSerializer, _Requester).Add;
+            ghost.RemoveEventEvent += new GhostEventMoveHandler(weak, _Protocol, _InternalSerializer, _Requester).Remove;            
 
             provider.Add(ghost);
             lock (_Ghosts)
-                _Ghosts.Add(ghost.GetID(), new GhostResponseHandler(ghost, _Protocol.GetMemberMap(), _Serializer));
+                _Ghosts.Add(ghost.GetID(), new GhostResponseHandler(weak, _Protocol.GetMemberMap(), _Serializer));
             if (ghost.IsReturnType())
             {
                 _RegisterRelease(ghost);
@@ -268,19 +272,32 @@ namespace Regulus.Remote
         }
         private void _RemovePropertySoul(Regulus.Remote.Packages.PackagePropertySoul data)
         {
-            var owner = _FindGhost(data.OwnerId);
-            var ghost = _FindGhost(data.EntiryId).Base;
-            var accessible = owner.GetAccesser(data.PropertyId);
-            accessible.Remove(ghost.GetInstance());
+            _PropertySoulAccesser(data, (a) => a.Remove);            
         }
-
         private void _AddPropertySoul(Regulus.Remote.Packages.PackagePropertySoul data)
         {
-            var owner = _FindGhost(data.OwnerId);
-            var ghost = _FindGhost(data.EntiryId).Base;
-            var accessible = owner.GetAccesser(data.PropertyId);
-            accessible.Add(ghost.GetInstance());
+            _PropertySoulAccesser(data, (a) => a.Add);
         }
+
+        internal void _PropertySoulAccesser(PackagePropertySoul data, System.Linq.Expressions.Expression<GetObjectAccesserMethod> oper)
+        {
+
+            var owner_handler = _FindGhost(data.OwnerId);
+            if (owner_handler == null)
+                return;
+
+            var entity = _FindGhost(data.EntityId);
+            if (entity == null)
+                return;
+
+            var entity_ghost = entity.FindGhost();
+
+            oper.Execute().Invoke(owner_handler.GetAccesser(data.PropertyId) , new object[] { entity_ghost.GetInstance() });
+        }
+
+        
+
+        
 
         private void _UpdateSetProperty(long entity_id, int property, byte[] payload)
         {
@@ -310,13 +327,26 @@ namespace Regulus.Remote
 
         private GhostResponseHandler _FindGhost(long ghost_id)
         {
-            GhostResponseHandler ghost = null;
+            GhostResponseHandler handler = null;
             lock (_Ghosts)
             {
                 if(_Ghosts.ContainsKey(ghost_id))
-                    ghost = _Ghosts[ghost_id];                
+                {
+                    handler = _Ghosts[ghost_id];
+                    
+                    if (handler.IsValid())
+                    {
+                        return handler;
+                    }                        
+                    else
+                    {
+                        _Ghosts.Remove(ghost_id);
+                    }
+                }
+
             }
-            return ghost;
+            
+            return handler;
         }
 
         protected void _StartPing()
