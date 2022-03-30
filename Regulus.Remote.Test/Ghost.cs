@@ -1,7 +1,7 @@
 ﻿using Regulus.Remote;
 using System;
 
-namespace RemotingTest
+namespace Regulus.Remote.Test
 {
     internal class Ghost : IGhost
     {
@@ -28,8 +28,8 @@ namespace RemotingTest
 
         event CallMethodCallback IGhost.CallMethodEvent
         {
-            add { this._CallMethodEvent += value; }
-            remove { this._CallMethodEvent -= value; }
+            add { _CallMethodEvent += value; }
+            remove { _CallMethodEvent -= value; }
         }
 
         event EventNotifyCallback IGhost.AddEventEvent
@@ -58,7 +58,7 @@ namespace RemotingTest
             }
         }
 
-        
+
 
         bool IGhost.IsReturnType()
         {
@@ -70,6 +70,6 @@ namespace RemotingTest
             throw new NotImplementedException();
         }
 
-        
+
     }
 }

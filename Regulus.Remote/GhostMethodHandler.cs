@@ -11,16 +11,16 @@ namespace Regulus.Remote
         private readonly ISerializable _Serializable;
         private readonly ReturnValueQueue _ReturnValueQueue;
 
-        private readonly System.WeakReference<IGhost> _Ghost;
+        private readonly long _Ghost;
 
-        private readonly IGhostRequest _Requester;
+        private readonly IOpCodeExchangeable _Requester;
         readonly IInternalSerializable _InternalSerializable;
-        public GhostMethodHandler(System.WeakReference<IGhost> ghost, 
+        public GhostMethodHandler(long ghost, 
             ReturnValueQueue return_value_queue, 
             IProtocol protocol ,
             ISerializable serializable, 
             IInternalSerializable internal_serializable,
-            Regulus.Remote.IGhostRequest requester)
+            Regulus.Remote.IOpCodeExchangeable requester)
         {
             _InternalSerializable = internal_serializable;
             _Ghost = ghost;
@@ -38,9 +38,9 @@ namespace Regulus.Remote
 
             Regulus.Remote.Packages.PackageCallMethod package = new Regulus.Remote.Packages.PackageCallMethod();
 
-            IGhost ghost = _Ghost.GetTargetOrException();             
+            
                 
-            package.EntityId = ghost.GetID();
+            package.EntityId = _Ghost;
             package.MethodId = method;
             
             package.MethodParams = args.Zip(info.GetParameters(), (arg, par) => serialize.Serialize(par.ParameterType, arg)).ToArray();

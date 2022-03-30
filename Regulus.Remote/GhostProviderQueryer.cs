@@ -11,23 +11,23 @@ using Timer = System.Timers.Timer;
 namespace Regulus.Remote
 {
     delegate System.Action<object> GetObjectAccesserMethod(IObjectAccessible accessible);
-    public class GhostProvider
+    public class GhostProviderQueryer
     {
-        private readonly AutoRelease _AutoRelease;
+        private readonly AutoRelease<long ,IGhost> _AutoRelease;
 
         private readonly Dictionary<Type, IProvider> _Providers;
 
-        private readonly Dictionary<long, GhostResponseHandler> _Ghosts;
+        private readonly Dictionary<long, GhostResponseHandler> _GhostHandlers;
 
         private readonly ReturnValueQueue _ReturnValueQueue;
 
-        private readonly object _Sync = new object();
+        private readonly object _Sync ;
 
         private readonly TimeCounter _PingTimeCounter = new TimeCounter();
 
         private Timer _PingTimer;
 
-        private readonly IGhostRequest _Requester;
+        private readonly IOpCodeExchangeable _Exchanger;
 
         private readonly InterfaceProvider _InterfaceProvider;
         private readonly ISerializable _Serializer;        
@@ -42,28 +42,29 @@ namespace Regulus.Remote
         readonly IInternalSerializable _InternalSerializer;
 
 
-        public GhostProvider(IProtocol protocol, ISerializable serializable, IInternalSerializable internal_serializable, IGhostRequest req)
+        public GhostProviderQueryer(IProtocol protocol, ISerializable serializable, IInternalSerializable internal_serializable, IOpCodeExchangeable exchanger)
         {
+            _Sync = new object();
             _InternalSerializer = internal_serializable;
             _Active = false;
-            _Requester = req;
+            _Exchanger = exchanger;
 
             _ReturnValueQueue = new ReturnValueQueue();
             _Protocol = protocol;
             _InterfaceProvider = _Protocol.GetInterfaceProvider();
             _Serializer = serializable;
             _Providers = new Dictionary<Type, IProvider>();
-            _Ghosts = new Dictionary<long, GhostResponseHandler>();
-            _AutoRelease = new AutoRelease(_Requester, _InternalSerializer);
+            _GhostHandlers = new Dictionary<long, GhostResponseHandler>();
+            _AutoRelease = new AutoRelease<long,IGhost>();
         }
         public void Start()
         {
-            _Requester.ResponseEvent += OnResponse;
+            _Exchanger.ResponseEvent += _OnResponse;
             _StartPing();            
         }
         public void Stop()
         {
-            _Requester.ResponseEvent -= OnResponse;
+            _Exchanger.ResponseEvent -= _OnResponse;
             
             lock (_Providers)
             {
@@ -72,85 +73,95 @@ namespace Regulus.Remote
                     providerPair.Value.ClearGhosts();
                 }
             }
-            lock(_Ghosts)
-                _Ghosts.Clear();
+            lock(_GhostHandlers)
+                _GhostHandlers.Clear();
 
             _EndPing();
         }
 
-        public void OnResponse(ServerToClientOpCode id, byte[] args)
-        {
-            _OnResponse(id, args);
-            _AutoRelease.Update();
-        }
+        
 
-        protected void _OnResponse(ServerToClientOpCode id, byte[] args)
+        protected void _OnResponse(ServerToClientOpCode code, byte[] args)
         {
-            if (id == ServerToClientOpCode.Ping)
-            {                
+            _UpdateAutoRelease();
+            if (code == ServerToClientOpCode.Ping)
+            {
                 Ping = _PingTimeCounter.Ticks;
                 _StartPing();
             }
-            else if (id == ServerToClientOpCode.SetProperty)
+            else if (code == ServerToClientOpCode.SetProperty)
             {
 
-                Regulus.Remote.Packages.PackageSetProperty data = (Regulus.Remote.Packages.PackageSetProperty)_InternalSerializer.Deserialize(args)   ;
+                Regulus.Remote.Packages.PackageSetProperty data = (Regulus.Remote.Packages.PackageSetProperty)_InternalSerializer.Deserialize(args);
                 _UpdateSetProperty(data.EntityId, data.Property, data.Value);
             }
 
-            else if (id == ServerToClientOpCode.InvokeEvent)
+            else if (code == ServerToClientOpCode.InvokeEvent)
             {
-                Regulus.Remote.Packages.PackageInvokeEvent data = (Regulus.Remote.Packages.PackageInvokeEvent)_InternalSerializer.Deserialize(args)  ;
+                Regulus.Remote.Packages.PackageInvokeEvent data = (Regulus.Remote.Packages.PackageInvokeEvent)_InternalSerializer.Deserialize(args);
                 _InvokeEvent(data.EntityId, data.Event, data.HandlerId, data.EventParams);
             }
-            else if (id == ServerToClientOpCode.ErrorMethod)
+            else if (code == ServerToClientOpCode.ErrorMethod)
             {
-                Regulus.Remote.Packages.PackageErrorMethod data = (Regulus.Remote.Packages.PackageErrorMethod)_InternalSerializer.Deserialize(args)  ;
+                Regulus.Remote.Packages.PackageErrorMethod data = (Regulus.Remote.Packages.PackageErrorMethod)_InternalSerializer.Deserialize(args);
 
                 _ErrorReturnValue(data.ReturnTarget, data.Method, data.Message);
             }
-            else if (id == ServerToClientOpCode.ReturnValue)
+            else if (code == ServerToClientOpCode.ReturnValue)
             {
-                Regulus.Remote.Packages.PackageReturnValue data = (Regulus.Remote.Packages.PackageReturnValue)_InternalSerializer.Deserialize(args)  ;
+                Regulus.Remote.Packages.PackageReturnValue data = (Regulus.Remote.Packages.PackageReturnValue)_InternalSerializer.Deserialize(args);
                 _SetReturnValue(data.ReturnTarget, data.ReturnValue);
             }
-            else if (id == ServerToClientOpCode.LoadSoulCompile)
+            else if (code == ServerToClientOpCode.LoadSoulCompile)
             {
 
-                Regulus.Remote.Packages.PackageLoadSoulCompile data = (Regulus.Remote.Packages.PackageLoadSoulCompile)_InternalSerializer.Deserialize(args)  ;
+                Regulus.Remote.Packages.PackageLoadSoulCompile data = (Regulus.Remote.Packages.PackageLoadSoulCompile)_InternalSerializer.Deserialize(args);
                 _LoadSoulCompile(data.TypeId, data.EntityId, data.ReturnId);
-                
-            }            
-            else if (id == ServerToClientOpCode.LoadSoul)
-            {
-                Regulus.Remote.Packages.PackageLoadSoul data = (Regulus.Remote.Packages.PackageLoadSoul)_InternalSerializer.Deserialize(args)  ;
-                _LoadSoul(data.TypeId, data.EntityId, data.ReturnType);                
+
             }
-            else if (id == ServerToClientOpCode.UnloadSoul)
+            else if (code == ServerToClientOpCode.LoadSoul)
             {
-                Regulus.Remote.Packages.PackageUnloadSoul data = (Regulus.Remote.Packages.PackageUnloadSoul)_InternalSerializer.Deserialize(args)  ;
+                Regulus.Remote.Packages.PackageLoadSoul data = (Regulus.Remote.Packages.PackageLoadSoul)_InternalSerializer.Deserialize(args);
+                _LoadSoul(data.TypeId, data.EntityId, data.ReturnType);
+            }
+            else if (code == ServerToClientOpCode.UnloadSoul)
+            {
+                Regulus.Remote.Packages.PackageUnloadSoul data = (Regulus.Remote.Packages.PackageUnloadSoul)_InternalSerializer.Deserialize(args);
 
                 _UnloadSoul(data.EntityId);
             }
-            else if (id == ServerToClientOpCode.AddPropertySoul)
+            else if (code == ServerToClientOpCode.AddPropertySoul)
             {
-                Regulus.Remote.Packages.PackagePropertySoul data = (Regulus.Remote.Packages.PackagePropertySoul)_InternalSerializer.Deserialize(args)  ;
+                Regulus.Remote.Packages.PackagePropertySoul data = (Regulus.Remote.Packages.PackagePropertySoul)_InternalSerializer.Deserialize(args);
 
                 _AddPropertySoul(data);
             }
-            else if (id == ServerToClientOpCode.RemovePropertySoul)
+            else if (code == ServerToClientOpCode.RemovePropertySoul)
             {
-                Regulus.Remote.Packages.PackagePropertySoul data = (Regulus.Remote.Packages.PackagePropertySoul)_InternalSerializer.Deserialize(args)  ;
+                Regulus.Remote.Packages.PackagePropertySoul data = (Regulus.Remote.Packages.PackagePropertySoul)_InternalSerializer.Deserialize(args);
 
                 _RemovePropertySoul(data);
             }
-            else if (id == ServerToClientOpCode.ProtocolSubmit)
+            else if (code == ServerToClientOpCode.ProtocolSubmit)
             {
-                Regulus.Remote.Packages.PackageProtocolSubmit data = (Regulus.Remote.Packages.PackageProtocolSubmit)_InternalSerializer.Deserialize(args)  ;
+                Regulus.Remote.Packages.PackageProtocolSubmit data = (Regulus.Remote.Packages.PackageProtocolSubmit)_InternalSerializer.Deserialize(args);
 
                 _ProtocolSubmit(data);
             }
         }
+
+        private void _UpdateAutoRelease()
+        {
+            foreach (var id in _AutoRelease.NoExist())
+            {
+                var pkg = new Regulus.Remote.Packages.PackageRelease();
+                pkg.EntityId = id;
+                _Exchanger.Request(ClientToServerOpCode.Release, _InternalSerializer.Serialize(pkg));
+
+                _UnloadSoul(id);
+            }
+        }
+
         private void _ProtocolSubmit(Regulus.Remote.Packages.PackageProtocolSubmit data)
         {
             _Active = _Comparison(_Protocol.VerificationCode, data.VerificationCode);
@@ -200,37 +211,40 @@ namespace Regulus.Remote
             
             IProvider provider = _QueryProvider(type);
 
-            IGhost ghost = provider.Ready(entity_id);            
+            var handler = _FindHandler(entity_id);
             if (return_id != 0)
-                _ReturnValue(return_id, ghost);
+            {
+                _ReturnValue(return_id, handler.FindGhost());
+            }
+            else
+            {
+                provider.Ready(entity_id);
+            }
+                
         }
-
-        
 
         private void _LoadSoul(int type_id, long id, bool return_type)
         {
-            MemberMap map = _Protocol.GetMemberMap();
-            Type type = map.GetInterface(type_id);
-            IProvider provider = _QueryProvider(type);
-            IGhost ghost = _BuildGhost(type, id, return_type);
+            var map = _Protocol.GetMemberMap();
+            var type = map.GetInterface(type_id);
+            var ghost = _BuildGhost(type, id, return_type);
+            
+            ghost.CallMethodEvent += new GhostMethodHandler(ghost.GetID(), _ReturnValueQueue, _Protocol, _Serializer, _InternalSerializer, _Exchanger).Run;
+            ghost.AddEventEvent += new GhostEventMoveHandler(ghost.GetID(), _Protocol, _InternalSerializer, _Exchanger).Add;
+            ghost.RemoveEventEvent += new GhostEventMoveHandler(ghost.GetID(), _Protocol, _InternalSerializer, _Exchanger).Remove;            
+            
+            lock (_GhostHandlers)
+                _GhostHandlers.Add(ghost.GetID(), new GhostResponseHandler(new WeakReference<IGhost>(ghost), _Protocol.GetMemberMap(), _Serializer));
 
-            var weak = new WeakReference<IGhost>(ghost);
-            ghost.CallMethodEvent += new GhostMethodHandler(weak, _ReturnValueQueue, _Protocol, _Serializer, _InternalSerializer, _Requester).Run;
-            ghost.AddEventEvent += new GhostEventMoveHandler(weak, _Protocol, _InternalSerializer, _Requester).Add;
-            ghost.RemoveEventEvent += new GhostEventMoveHandler(weak, _Protocol, _InternalSerializer, _Requester).Remove;            
-
-            provider.Add(ghost);
-            lock (_Ghosts)
-                _Ghosts.Add(ghost.GetID(), new GhostResponseHandler(weak, _Protocol.GetMemberMap(), _Serializer));
             if (ghost.IsReturnType())
             {
-                _RegisterRelease(ghost);
+                _AutoRelease.Push(ghost.GetID(), ghost);                
             }
-        }
-
-        private void _RegisterRelease(IGhost ghost)
-        {
-            _AutoRelease.Register(ghost);
+            else
+            {
+                var provider = _QueryProvider(type);
+                provider.Add(ghost);
+            }
         }
 
         private void _UnloadSoul(long id)
@@ -242,8 +256,8 @@ namespace Regulus.Remote
                     provider.Remove(id);
                 }
             }
-            lock (_Ghosts)
-                _Ghosts.Remove(id);
+            lock (_GhostHandlers)
+                _GhostHandlers.Remove(id);
         }
 
         private IProvider _QueryProvider(Type type)
@@ -282,11 +296,11 @@ namespace Regulus.Remote
         internal void _PropertySoulAccesser(PackagePropertySoul data, System.Linq.Expressions.Expression<GetObjectAccesserMethod> oper)
         {
 
-            var owner_handler = _FindGhost(data.OwnerId);
+            var owner_handler = _FindHandler(data.OwnerId);
             if (owner_handler == null)
                 return;
 
-            var entity = _FindGhost(data.EntityId);
+            var entity = _FindHandler(data.EntityId);
             if (entity == null)
                 return;
 
@@ -301,7 +315,7 @@ namespace Regulus.Remote
 
         private void _UpdateSetProperty(long entity_id, int property, byte[] payload)
         {
-            var ghost = _FindGhost(entity_id);
+            var ghost = _FindHandler(entity_id);
             if (ghost == null)
                 return;
             ghost.UpdateSetProperty(property, payload);
@@ -310,12 +324,12 @@ namespace Regulus.Remote
             pkg.EntityId = entity_id;
             pkg.Property = property;
             
-            _Requester.Request(ClientToServerOpCode.UpdateProperty, _InternalSerializer.Serialize(pkg));
+            _Exchanger.Request(ClientToServerOpCode.UpdateProperty, _InternalSerializer.Serialize(pkg));
         }
 
         private void _InvokeEvent(long ghost_id, int event_id, long handler_id, byte[][] event_params)
         {
-            var ghost = _FindGhost(ghost_id);
+            var ghost = _FindHandler(ghost_id);
             if (ghost == null)
             {
                 return;
@@ -325,23 +339,19 @@ namespace Regulus.Remote
 
         }       
 
-        private GhostResponseHandler _FindGhost(long ghost_id)
+        private GhostResponseHandler _FindHandler(long ghost_id)
         {
             GhostResponseHandler handler = null;
-            lock (_Ghosts)
+            lock (_GhostHandlers)
             {
-                if(_Ghosts.ContainsKey(ghost_id))
+                if(_GhostHandlers.ContainsKey(ghost_id))
                 {
-                    handler = _Ghosts[ghost_id];
+                    handler = _GhostHandlers[ghost_id];
                     
                     if (handler.IsValid())
                     {
                         return handler;
-                    }                        
-                    else
-                    {
-                        _Ghosts.Remove(ghost_id);
-                    }
+                    }                                            
                 }
 
             }
@@ -369,7 +379,7 @@ namespace Regulus.Remote
                 if (_PingTimer != null)
                 {
                     _PingTimeCounter.Reset();
-                    _Requester.Request(ClientToServerOpCode.Ping, new byte[0]);
+                    _Exchanger.Request(ClientToServerOpCode.Ping, new byte[0]);
                 }
             }
 
@@ -393,17 +403,7 @@ namespace Regulus.Remote
             Type ghostType = _QueryGhostType(ghost_base_type);
 
             ConstructorInfo constructor = ghostType.GetConstructor(new[] { typeof(long), typeof(bool) });
-            /*if (constructor == null)
-            {
-                List<string> constructorInfos = new List<string>();
-
-                foreach (ConstructorInfo constructorInfo in ghostType.GetConstructors())
-                {
-                    constructorInfos.Add("(" + constructorInfo.GetParameters() + ")");
-
-                }
-                throw new Exception(string.Format("{0} Not found constructor.\n{1}", ghostType.FullName, string.Join("\n", constructorInfos.ToArray())));
-            }*/
+            
             object o = constructor.Invoke(new object[] { id, return_type });
 
             return (IGhost)o;

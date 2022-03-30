@@ -19,6 +19,11 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon
             return 2;
         }
 
+        Value<IMethodable> IMethodable.GetValueSelf()
+        {
+            return this;
+        }
+
         int IMethodable.NotSupported()
         {
             return 0;

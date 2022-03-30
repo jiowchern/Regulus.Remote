@@ -36,7 +36,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
         }
 
         public void Dispose()
-        {
+        {            
             Entry.Dispose();
             _AgentUpdater.Stop();
             _Service.Destroy(_Agent);

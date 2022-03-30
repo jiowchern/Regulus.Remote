@@ -14,7 +14,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
         [SetUp]
         public void Setup()
         {
-
+            
         }
         [Test]
         public void CreateProtocolTest1()
@@ -37,17 +37,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
             var protocol = Regulus.Remote.Tools.Protocol.Sources.TestCommon.ProtocolProvider.CreateCase1();
             NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(int)));
 
-            NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(bool)));
-            NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(string)));
-            NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(decimal)));
-            NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(float)));
-            NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(double)));
-            NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(System.Guid)));
-            NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(Regulus.Remote.Tools.Protocol.Sources.TestCommon.TestC)));
-            NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(Regulus.Remote.Tools.Protocol.Sources.TestCommon.TestS)));            
-
-
-            NUnit.Framework.Assert.AreEqual(11, protocol.SerializeTypes.Length);
+            NUnit.Framework.Assert.AreEqual(12, protocol.SerializeTypes.Length);
 
 
         }
@@ -351,6 +341,38 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
             Assert.AreEqual(1, values.v1);
             Assert.AreEqual(2, values.v2);
             Assert.AreEqual(0, values.v0);
+        }
+
+        [Test , Timeout(1000*60)]
+        public void MethodReturnTypeTest()
+        {
+
+
+            var tester = new MethodTester();
+
+            var env = new TestEnv<Entry<IMethodable>, IMethodable>(new Entry<IMethodable>(tester));
+            var methodObs = from gpi in env.Queryable.QueryNotifier<IMethodable>().SupplyEvent()
+                            from v1 in gpi.GetValueSelf().RemoteValue()                            
+                            select v1;
+
+            var method = methodObs.FirstAsync().Wait();
+
+            var valueObs = from v1 in method.GetValue1().RemoteValue()
+                            select v1;
+
+            var value = valueObs.FirstAsync().Wait();
+
+            method = null;
+            
+            GC.Collect();
+            GC.WaitForFullGCComplete();
+            GC.WaitForPendingFinalizers();
+
+
+            env.Dispose();
+
+
+            Assert.AreEqual(1, value);            
         }
 
         [Test]

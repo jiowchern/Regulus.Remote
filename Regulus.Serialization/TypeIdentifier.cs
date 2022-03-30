@@ -52,6 +52,10 @@ namespace Regulus.Serialization
             {
                 Describers = new ITypeDescriber[] { new ClassDescriber(type, finder) };
             }
+            else if (type.IsInterface)
+            {
+                Describers = new ITypeDescriber[0];
+            }
             else
                 throw new Exception("not supported type " + type);
         }

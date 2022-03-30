@@ -2,35 +2,32 @@
 using Regulus.Remote;
 using Regulus.Serialization;
 using System;
+using System.Linq;
 
-namespace RemotingTest
+namespace Regulus.Remote.Test
 {
-    public class AutoReleaseTest
+    public class AutoReleaseTests
     {
         [NUnit.Framework.Test]
         public void Test()
         {
+            var ar = new AutoRelease<long, IGhost>();
+            var ar2 = new AutoRelease<long, IGhost>();
 
-            IGhostRequest request = Substitute.For<IGhostRequest>();
-            var serializer = Substitute.For<IInternalSerializable>();
+            AddGhost(ar, ar2);            
 
-            AutoRelease ar = new AutoRelease(request, serializer);
-            _Register(ar);
-            ar.Update();
+            GC.Collect(2, GCCollectionMode.Forced,true);
 
-            GC.Collect();
-            GC.WaitForFullGCComplete();
-            GC.WaitForPendingFinalizers();
-
-            ar.Update();
-            request.Received(1).Request(Arg.Any<ClientToServerOpCode>(), Arg.Any<byte[]>());
+            NUnit.Framework.Assert.AreEqual(1, ar.NoExist().Count());
+            NUnit.Framework.Assert.AreEqual(1, ar2.NoExist().Count());
         }
 
-        private static AutoRelease _Register(AutoRelease ar)
+        private static void AddGhost(AutoRelease<long, IGhost> ar , AutoRelease<long, IGhost>  ar2)
         {
-            Ghost ghost = new Ghost();
-            ar.Register(ghost);
-            return ar;
+            IGhost ghost = new Ghost();
+            ar.Push(ghost.GetID(), ghost);
+            ar2.Push(ghost.GetID(), ghost);
         }
+
     }
 }

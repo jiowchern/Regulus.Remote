@@ -6,6 +6,7 @@ namespace Regulus.Remote.Tests
     using System.Reactive.Linq;
     public class ValueTests
     {
+        
         [NUnit.Framework.Test]
         public async System.Threading.Tasks.Task ConstructorOnValueTest()
         {

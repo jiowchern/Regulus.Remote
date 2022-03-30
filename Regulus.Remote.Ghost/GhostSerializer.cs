@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Regulus.Remote.Ghost
 {
-    class GhostSerializer : IGhostRequest
+    class GhostSerializer : IOpCodeExchangeable
     {
         private readonly PackageReader<Regulus.Remote.Packages.ResponsePackage> _Reader;
 
@@ -34,7 +34,7 @@ namespace Regulus.Remote.Ghost
 
         event Action<ServerToClientOpCode, byte[]> _ResponseEvent;
 
-        event Action<ServerToClientOpCode, byte[]> IGhostRequest.ResponseEvent
+        event Action<ServerToClientOpCode, byte[]> IOpCodeExchangeable.ResponseEvent
         {
             add
             {
@@ -48,7 +48,7 @@ namespace Regulus.Remote.Ghost
             }
         }
 
-        void IGhostRequest.Request(ClientToServerOpCode code, byte[] args)
+        void IOpCodeExchangeable.Request(ClientToServerOpCode code, byte[] args)
         {
             _Sends.Enqueue(
                     new Regulus.Remote.Packages.RequestPackage()
