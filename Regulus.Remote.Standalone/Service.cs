@@ -74,7 +74,7 @@ namespace Regulus.Remote.Standalone
         }
         
 
-        public void Distroy(IAgent queryable)
+        public void Destroy(IAgent queryable)
         {
             var agents = new System.Collections.Generic.List<IAgent>();
             foreach (IAgent agent in _Agents)

@@ -1,7 +1,7 @@
 ﻿using Regulus.Utility;
 using System.Collections.Generic;
 using System.Threading;
-using QueueThreadHelper = Regulus.Extension.QueueThreadHelper;
+using QueueThreadHelper = Regulus.Extensions.QueueThreadHelper;
 
 namespace Regulus.Network.Profile
 {

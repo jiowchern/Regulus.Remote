@@ -28,9 +28,10 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                     foreach (var attribute in method.AttributeLists.SelectMany(a=>a.Attributes))
                     {
                         var info = model.GetSymbolInfo(attribute);
-                        
-                        var name = info.Symbol.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+                        if(info.Symbol == null)
+                            continue;
 
+                        var name = info.Symbol.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
                         if (name != "global::Regulus.Remote.Protocol.CreaterAttribute")
                         {
                             continue;
@@ -73,8 +74,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                         {
                             syntaxFactory = syntaxFactory.AddMembers(newClass);
                         }
-                        var guid = System.Guid.NewGuid();
-                        var t = SyntaxFactory.ParseSyntaxTree(syntaxFactory.NormalizeWhitespace().ToFullString(), null, $"RegulusRemoteProtocol.{guid}.cs", Encoding.UTF8);
+                        
+                        var t = SyntaxFactory.ParseSyntaxTree(syntaxFactory.NormalizeWhitespace().ToFullString(), null, $"ProtocoProviderlBuilder.{protocol_name}.cs", Encoding.UTF8);
                         trees.Add(t);
                     }
                 }

@@ -97,15 +97,15 @@ namespace Regulus.Remote
 
         private void _InvokeEvent(long entity_id, int event_id, long handler_id, object[] args)
         {
-            var info = _Protocol.GetMemberMap().GetEvent(event_id);            
-            PackageInvokeEvent package = new PackageInvokeEvent();
+            var info = _Protocol.GetMemberMap().GetEvent(event_id);
+            Regulus.Remote.Packages.PackageInvokeEvent package = new Regulus.Remote.Packages.PackageInvokeEvent();
             package.EntityId = entity_id;
             package.Event = event_id;
             package.HandlerId = handler_id;
             
             package.EventParams = args.Zip(info.EventHandlerType.GetGenericArguments(), (arg, par) => _Serializer.Serialize(par, arg)).ToArray();
             
-            _InvokeEvent(package.ToBuffer(_InternalSerializable));
+            _InvokeEvent(_InternalSerializable.Serialize(package));
         }
 
         private void _InvokeEvent(byte[] argmants)
@@ -172,38 +172,38 @@ namespace Regulus.Remote
         private void _ReturnDataValue(long return_id, IValue return_value)
         {
             object value = return_value.GetObject();
-            PackageReturnValue package = new PackageReturnValue();
+            Regulus.Remote.Packages.PackageReturnValue package = new Regulus.Remote.Packages.PackageReturnValue();
             package.ReturnTarget = return_id;
             package.ReturnValue = _Serializer.Serialize(return_value.GetObjectType() , value);
-            _Queue.Push(ServerToClientOpCode.ReturnValue, package.ToBuffer(_InternalSerializable));
+            _Queue.Push(ServerToClientOpCode.ReturnValue, _InternalSerializable.Serialize(package));
         }
 
 
 
         private void _LoadSoulCompile(int type_id, long id, long return_id)
         {
-            PackageLoadSoulCompile package = new PackageLoadSoulCompile();
+            Regulus.Remote.Packages.PackageLoadSoulCompile package = new Regulus.Remote.Packages.PackageLoadSoulCompile();
             package.EntityId = id;
             package.ReturnId = return_id;
             package.TypeId = type_id;            
-            _Queue.Push(ServerToClientOpCode.LoadSoulCompile, package.ToBuffer(_InternalSerializable));
+            _Queue.Push(ServerToClientOpCode.LoadSoulCompile, _InternalSerializable.Serialize(package));
         }
         private void _LoadProperty(long id, int property , object val)
         {
             var info = _Protocol.GetMemberMap().GetProperty(property);
-            PackageSetProperty package = new PackageSetProperty();
+            Regulus.Remote.Packages.PackageSetProperty package = new Regulus.Remote.Packages.PackageSetProperty();
             package.EntityId = id;
             package.Property = property;
             package.Value = _Serializer.Serialize(info.PropertyType, val);
-            _Queue.Push(ServerToClientOpCode.SetProperty, package.ToBuffer(_InternalSerializable));
+            _Queue.Push(ServerToClientOpCode.SetProperty, _InternalSerializable.Serialize(package));
         }
         private void _LoadSoul(int type_id, long id, bool return_type)
         {
-            PackageLoadSoul package = new PackageLoadSoul();
+            Regulus.Remote.Packages.PackageLoadSoul package = new Regulus.Remote.Packages.PackageLoadSoul();
             package.TypeId = type_id;
             package.EntityId = id;
             package.ReturnType = return_type;
-            _Queue.Push(ServerToClientOpCode.LoadSoul, package.ToBuffer(_InternalSerializable));
+            _Queue.Push(ServerToClientOpCode.LoadSoul, _InternalSerializable.Serialize(package));
 
 
         }
@@ -211,10 +211,10 @@ namespace Regulus.Remote
         private void _UnloadSoul(int type_id, long id)
         {
 
-            PackageUnloadSoul package = new PackageUnloadSoul();            
+            Regulus.Remote.Packages.PackageUnloadSoul package = new Regulus.Remote.Packages.PackageUnloadSoul();            
             package.EntityId = id;
             
-            _Queue.Push(ServerToClientOpCode.UnloadSoul, package.ToBuffer(_InternalSerializable));
+            _Queue.Push(ServerToClientOpCode.UnloadSoul, _InternalSerializable.Serialize(package));
         }
 
         public void SetPropertyDone(long entityId, int property)
@@ -312,11 +312,12 @@ namespace Regulus.Remote
 
         private void _ErrorDeserialize(string method_name, long return_id, string message)
         {
-            PackageErrorMethod package = new PackageErrorMethod();
+            Regulus.Remote.Packages.PackageErrorMethod package = new Regulus.Remote.Packages.PackageErrorMethod();
             package.Message = message;
             package.Method = method_name;
             package.ReturnTarget = return_id;
-            _Queue.Push(ServerToClientOpCode.ErrorMethod, package.ToBuffer(_InternalSerializable));
+            
+            _Queue.Push(ServerToClientOpCode.ErrorMethod, _InternalSerializable.Serialize(package));
         }
 
         private ISoul _Bind<TSoul>(TSoul soul, bool return_type, long return_id)
@@ -370,12 +371,12 @@ namespace Regulus.Remote
 
         private void _PropertyUnbind(long soul_id, int property_id, long property_soul_id)
         {
-            
-            PackagePropertySoul package = new PackagePropertySoul();
+
+            Regulus.Remote.Packages.PackagePropertySoul package = new Regulus.Remote.Packages.PackagePropertySoul();
             package.OwnerId = soul_id;
             package.PropertyId = property_id;
-            package.EntiryId = property_soul_id;
-            _Queue.Push(ServerToClientOpCode.RemovePropertySoul, package.ToBuffer(_InternalSerializable));
+            package.EntityId = property_soul_id;
+            _Queue.Push(ServerToClientOpCode.RemovePropertySoul, _InternalSerializable.Serialize(package));
 
             SoulProxy soul;
             _Souls.TryGetValue(property_soul_id , out soul);
@@ -387,11 +388,11 @@ namespace Regulus.Remote
         {            
             var soul = _Bind(type_object.Instance, type_object.Type, false, 0);
 
-            PackagePropertySoul package = new PackagePropertySoul();
+            Regulus.Remote.Packages.PackagePropertySoul package = new Regulus.Remote.Packages.PackagePropertySoul();
             package.OwnerId = soul_id;
             package.PropertyId = property_id;
-            package.EntiryId = soul.Id;            
-            _Queue.Push(ServerToClientOpCode.AddPropertySoul, package.ToBuffer(_InternalSerializable));
+            package.EntityId = soul.Id;            
+            _Queue.Push(ServerToClientOpCode.AddPropertySoul, _InternalSerializable.Serialize(package));
         
             return soul;
         }

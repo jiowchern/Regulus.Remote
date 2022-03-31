@@ -19,7 +19,7 @@ namespace Regulus.Remote
         byte[] ISerializable.Serialize(Type type, object instance)
         {
             return _Serializer.ObjectToBuffer(instance);    
-        }
+        } 
     }
 
 

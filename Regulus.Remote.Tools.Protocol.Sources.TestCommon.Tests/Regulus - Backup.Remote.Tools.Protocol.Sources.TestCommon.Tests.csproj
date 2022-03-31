@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.msbuild" Version="3.1.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
+    <PackageReference Include="NUnit" Version="3.13.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />    
+    <!--<PackageReference Include="Regulus.Remote.Standalone" Version="0.1.9.1" />-->
+    <PackageReference Include="System.Reactive" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Regulus.Remote.Reactive\Regulus.Remote.Reactive.csproj" />
+    <ProjectReference Include="..\Regulus.Remote.Standalone\Regulus.Remote.Standalone.csproj" />
+    <ProjectReference Include="..\Regulus.Remote.Tools.Protocol.Sources.TestCommon\Regulus.Remote.Tools.Protocol.Sources.TestCommon.csproj" />
+  </ItemGroup>
+
+ 
+
+</Project>

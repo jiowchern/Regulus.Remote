@@ -6,59 +6,57 @@ using System.Collections.Generic;
 
 namespace Regulus.Remote
 {
-    public class AutoRelease
+    public class AutoRelease<TKey,TValue> where TValue : class
     {
-        private readonly Dictionary<long, WeakReference<IGhost>> _Exists;
+        private readonly Dictionary<TKey, WeakReference<TValue>> _Exists;
 
-        private readonly IGhostRequest _Requester;
+        private readonly IOpCodeExchangeable _Requester;
         private readonly IInternalSerializable _Serializer;
 
-        public AutoRelease(IGhostRequest _Requester, IInternalSerializable serializer)
+        public AutoRelease()
         {
-            this._Requester = _Requester;
-            _Serializer = serializer;
-            _Exists = new Dictionary<long, WeakReference<IGhost>>();
+            
+            _Exists = new Dictionary<TKey, WeakReference<TValue>>();
         }
 
 
-        public void Register(IGhost ghost)
+        public void Push(TKey key , TValue value)
         {
-            long id = ghost.GetID();
-            WeakReference<IGhost> instance;
-            if (_Exists.TryGetValue(id, out instance) == false)
+            
+            WeakReference<TValue> instance;
+            lock (_Exists)
             {
-                _Exists.Add(id, new WeakReference<IGhost>(ghost));
+                if (_Exists.TryGetValue(key, out instance) == false)
+                {
+                    _Exists.Add(key, new WeakReference<TValue>(value));
+                }
             }
+            
         }
 
 
-        public void Update()
+        public IEnumerable<TKey> NoExist()
         {
-            List<long> ids = new List<long>();
+            List<TKey> ids = new List<TKey>();
 
-            foreach (KeyValuePair<long, WeakReference<IGhost>> e in _Exists)
+            lock (_Exists)
             {
-                IGhost target = null;
-
-
-                if (!e.Value.TryGetTarget(out target))
+                foreach (KeyValuePair<TKey, WeakReference<TValue>> e in _Exists)
                 {
-                    ids.Add(e.Key);
+                    TValue target;                    
+                    if (!e.Value.TryGetTarget(out target))
+                    {
+                        ids.Add(e.Key);
+                    }
                 }
             }
+            
 
-            foreach (long id in ids)
+            foreach (TKey id in ids)
             {
-
-                _Exists.Remove(id);
-
-
-                if (_Requester != null)
-                {
-                    PackageRelease data = new PackageRelease();
-                    data.EntityId = id;
-                    _Requester.Request(ClientToServerOpCode.Release, data.ToBuffer(_Serializer));
-                }
+                lock(_Exists)
+                    _Exists.Remove(id);
+                yield return id;
             }
         }
     }

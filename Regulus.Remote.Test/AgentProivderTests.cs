@@ -5,13 +5,11 @@ using System;
 using System.Linq;
 using System.Reflection;
 
+namespace Regulus.Remote.Tests
+{
+}
 namespace Regulus.Utility.Client.JIT.Tests
 {
-
-    public class Test
-    {
-
-    }
 
     public class TestProtocol : Regulus.Remote.IProtocol
     {

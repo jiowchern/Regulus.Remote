@@ -27,9 +27,9 @@ namespace Regulus.Remote.Soul
         
 
 
-        private readonly System.Collections.Concurrent.ConcurrentQueue<RequestPackage> _Requests;
+        private readonly System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.RequestPackage> _Requests;
 
-        private readonly System.Collections.Concurrent.ConcurrentQueue<ResponsePackage> _Responses;
+        private readonly System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.ResponsePackage> _Responses;
 
         private readonly IStreamable _Peer;
 
@@ -37,11 +37,11 @@ namespace Regulus.Remote.Soul
 
         private readonly SoulProvider _SoulProvider;
 
-        private readonly PackageReader<RequestPackage> _Reader;
+        private readonly PackageReader<Regulus.Remote.Packages.RequestPackage> _Reader;
 
-        private readonly PackageWriter<ResponsePackage> _Writer;
+        private readonly PackageWriter<Regulus.Remote.Packages.ResponsePackage> _Writer;
 
-        private readonly System.Collections.Concurrent.ConcurrentQueue<RequestPackage> _ExternalRequests;
+        private readonly System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.RequestPackage> _ExternalRequests;
 
         readonly ThreadUpdater _Updater;
 
@@ -106,12 +106,12 @@ namespace Regulus.Remote.Soul
             
             
 
-            _Responses = new System.Collections.Concurrent.ConcurrentQueue<ResponsePackage>();
-            _Requests = new System.Collections.Concurrent.ConcurrentQueue<RequestPackage>();
-            _Reader = new PackageReader<RequestPackage>(_InternalSerializer);
-            _Writer = new PackageWriter<ResponsePackage>(_InternalSerializer);
+            _Responses = new System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.ResponsePackage>();
+            _Requests = new System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.RequestPackage>();
+            _Reader = new PackageReader<Regulus.Remote.Packages.RequestPackage>(_InternalSerializer);
+            _Writer = new PackageWriter<Regulus.Remote.Packages.ResponsePackage>(_InternalSerializer);
             
-            _ExternalRequests = new System.Collections.Concurrent.ConcurrentQueue<RequestPackage>();
+            _ExternalRequests = new System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.RequestPackage>();
 
             _SoulProvider = new SoulProvider(this, this, protocol, serializable, _InternalSerializer);
 
@@ -129,9 +129,10 @@ namespace Regulus.Remote.Soul
             _Writer.ErrorEvent += () => { _Enable = false; };
             _Writer.Start(_Peer);
 
-            PackageProtocolSubmit pkg = new PackageProtocolSubmit();
+            Regulus.Remote.Packages.PackageProtocolSubmit pkg = new Regulus.Remote.Packages.PackageProtocolSubmit();
             pkg.VerificationCode = _Protocol.VerificationCode;
-            _Push(ServerToClientOpCode.ProtocolSubmit, pkg.ToBuffer(_InternalSerializer));
+            
+            _Push(ServerToClientOpCode.ProtocolSubmit, _InternalSerializer.Serialize(pkg));
 
             _Updater.Start();
         }
@@ -147,7 +148,7 @@ namespace Regulus.Remote.Soul
             _Writer.Stop();
 
             _Updater.Stop();
-            RequestPackage req;
+            Regulus.Remote.Packages.RequestPackage req;
             while (_ExternalRequests.TryDequeue(out req))
             {
 
@@ -186,7 +187,7 @@ namespace Regulus.Remote.Soul
         
         private void _ExecuteRequests()
         {
-            RequestPackage pkg;
+            Regulus.Remote.Packages.RequestPackage pkg;
             while (_Requests.TryDequeue(out pkg))
             {
                 System.Threading.Interlocked.Decrement(ref _TotalRequest);
@@ -206,7 +207,7 @@ namespace Regulus.Remote.Soul
                 System.Threading.Interlocked.Increment(ref _TotalResponse);
 
                 _Responses.Enqueue(
-                    new ResponsePackage
+                    new Regulus.Remote.Packages.ResponsePackage
                     {
                         Code = cmd,
                         Data = data
@@ -214,29 +215,30 @@ namespace Regulus.Remote.Soul
             }
         }
 
-        private void _RequestPush(RequestPackage package)
+        private void _RequestPush(Regulus.Remote.Packages.RequestPackage package)
         {
             System.Threading.Interlocked.Increment(ref _TotalRequest);
 
             _Requests.Enqueue(package);
         }
 
-        private void _ExternalRequest(RequestPackage package)
+        private void _ExternalRequest(Regulus.Remote.Packages.RequestPackage package)
         {
             if (package.Code == ClientToServerOpCode.CallMethod)
             {
-                PackageCallMethod data = package.Data.ToPackageData<PackageCallMethod>(_InternalSerializer);
+
+                Regulus.Remote.Packages.PackageCallMethod data = (Regulus.Remote.Packages.PackageCallMethod)_InternalSerializer.Deserialize(package.Data)  ;
                 var request = _ToRequest(data.EntityId, data.MethodId, data.ReturnId, data.MethodParams);
                 _InvokeMethodEvent(request.EntityId, request.MethodId, request.ReturnId, request.MethodParams);
             }
             else if (package.Code == ClientToServerOpCode.AddEvent)
             {
-                PackageAddEvent data = package.Data.ToPackageData<PackageAddEvent>(_InternalSerializer);
+                Regulus.Remote.Packages.PackageAddEvent data = (Regulus.Remote.Packages.PackageAddEvent)_InternalSerializer.Deserialize(package.Data)  ;
                 _SoulProvider.AddEvent(data.Entity, data.Event, data.Handler);
             }
             else if (package.Code == ClientToServerOpCode.RemoveEvent)
             {
-                PackageRemoveEvent data = package.Data.ToPackageData<PackageRemoveEvent>(_InternalSerializer);
+                Regulus.Remote.Packages.PackageRemoveEvent data = (Regulus.Remote.Packages.PackageRemoveEvent)_InternalSerializer.Deserialize(package.Data)  ;
                 _SoulProvider.RemoveEvent(data.Entity, data.Event, data.Handler);
             }
             else
@@ -244,7 +246,7 @@ namespace Regulus.Remote.Soul
                 Regulus.Utility.Log.Instance.WriteInfo($"invalid request code {package.Code}.");
             }
         }
-        private void _InternalRequest(RequestPackage package)
+        private void _InternalRequest(Regulus.Remote.Packages.RequestPackage package)
         {
 
             if (package.Code == ClientToServerOpCode.Ping)
@@ -253,13 +255,13 @@ namespace Regulus.Remote.Soul
             }            
             else if (package.Code == ClientToServerOpCode.Release)
             {
-                PackageRelease data = package.Data.ToPackageData<PackageRelease>(_InternalSerializer);
+                Regulus.Remote.Packages.PackageRelease data = (Regulus.Remote.Packages.PackageRelease)_InternalSerializer.Deserialize(package.Data)  ;
                 _SoulProvider.Unbind(data.EntityId);
                 
             }
             else if (package.Code == ClientToServerOpCode.UpdateProperty)
             {
-                PackageSetPropertyDone data = package.Data.ToPackageData<PackageSetPropertyDone>(_InternalSerializer);
+                Regulus.Remote.Packages.PackageSetPropertyDone data = (Regulus.Remote.Packages.PackageSetPropertyDone)_InternalSerializer.Deserialize(package.Data)  ;
                 _SoulProvider.SetPropertyDone(data.EntityId, data.Property);
             }
             else
@@ -288,9 +290,9 @@ namespace Regulus.Remote.Soul
             }
         }
 
-        private IEnumerable<ResponsePackage>  _ResponsePop()
-        {            
-            ResponsePackage pkg;
+        private IEnumerable<Regulus.Remote.Packages.ResponsePackage>  _ResponsePop()
+        {
+            Regulus.Remote.Packages.ResponsePackage pkg;
             while (_Responses.TryDequeue(out pkg))
             {
                 System.Threading.Interlocked.Decrement(ref _TotalResponse);
@@ -300,7 +302,7 @@ namespace Regulus.Remote.Soul
 
         bool IUpdatable.Update()
         {
-            RequestPackage pkg;
+            Regulus.Remote.Packages.RequestPackage pkg;
             while (_ExternalRequests.TryDequeue(out pkg))
             {
                 _ExternalRequest(pkg);

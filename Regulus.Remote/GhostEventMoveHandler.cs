@@ -2,44 +2,51 @@
 {
     internal class GhostEventMoveHandler
     {
-        private readonly IGhost _Ghost;
+
+        private readonly long _Ghost;
 
         private readonly IProtocol _Protocol;
-        private readonly ISerializable _Serializable;
-        private readonly IGhostRequest _Requester;
+        
+        private readonly IOpCodeExchangeable _Requester;
         IInternalSerializable _InternalSerializable;
-        public GhostEventMoveHandler(IGhost ghost, IProtocol protocol, ISerializable serializable , IInternalSerializable internal_serializable, IGhostRequest requester)
+        public GhostEventMoveHandler(long ghost, IProtocol protocol,  IInternalSerializable internal_serializable, IOpCodeExchangeable requester)
         {
             _InternalSerializable = internal_serializable;
             this._Ghost = ghost;
-            _Protocol = protocol;
-            this._Serializable = serializable;
+            _Protocol = protocol;            
             _Requester = requester;
         }
 
         internal void Add(System.Reflection.EventInfo info, long handler)
         {
             MemberMap map = _Protocol.GetMemberMap();
-            ISerializable serialize = _Serializable;
 
-            PackageAddEvent package = new PackageAddEvent();
-            package.Entity = _Ghost.GetID();
+
+            Regulus.Remote.Packages.PackageAddEvent package = new Regulus.Remote.Packages.PackageAddEvent();
+            
+            package.Entity = _Ghost;
             package.Event = map.GetEvent(info);
             package.Handler = handler;
-            _Requester.Request(ClientToServerOpCode.AddEvent, package.ToBuffer(_InternalSerializable));
+
+            _Requester.Request(ClientToServerOpCode.AddEvent, _InternalSerializable.Serialize(package));
 
         }
+
+       
 
         internal void Remove(System.Reflection.EventInfo info, long handler)
         {
             MemberMap map = _Protocol.GetMemberMap();
-            ISerializable serialize = _Serializable;
+            
 
-            PackageRemoveEvent package = new PackageRemoveEvent();
-            package.Entity = _Ghost.GetID();
+            Regulus.Remote.Packages.PackageRemoveEvent package = new Regulus.Remote.Packages.PackageRemoveEvent();
+
+
+            package.Entity = _Ghost;
             package.Event = map.GetEvent(info);
             package.Handler = handler;
-            _Requester.Request(ClientToServerOpCode.RemoveEvent, package.ToBuffer(_InternalSerializable));
+            
+            _Requester.Request(ClientToServerOpCode.RemoveEvent, _InternalSerializable.Serialize(package));
 
         }
     }

@@ -10,13 +10,13 @@ namespace Regulus.Remote.Standalone.Test
     {
         public static byte[] ServerToClient<T>(this Regulus.Remote.IInternalSerializable serializer, ServerToClientOpCode opcode, T instance)
         {
-            ResponsePackage pkg = new Regulus.Remote.ResponsePackage() { Code = opcode, Data = serializer.Serialize(instance) };
+            Regulus.Remote.Packages.ResponsePackage pkg = new Regulus.Remote.Packages.ResponsePackage() { Code = opcode, Data = serializer.Serialize(instance) };
             return serializer.Serialize(pkg);
         }
 
-        public static void ServerToClient<T>(this Regulus.Remote.PackageWriter<ResponsePackage> writer, Regulus.Remote.IInternalSerializable serializer, ServerToClientOpCode opcode, T instance)
+        public static void ServerToClient<T>(this Regulus.Remote.PackageWriter<Regulus.Remote.Packages.ResponsePackage> writer, Regulus.Remote.IInternalSerializable serializer, ServerToClientOpCode opcode, T instance)
         {
-            ResponsePackage pkg = new ResponsePackage();
+            Regulus.Remote.Packages.ResponsePackage pkg = new Regulus.Remote.Packages.ResponsePackage();
             pkg.Code = opcode;
             pkg.Data = serializer.Serialize(instance);
             writer.Push(new[] { pkg });
@@ -120,13 +120,13 @@ namespace Regulus.Remote.Standalone.Test
             IInternalSerializable internalSerializable = new InternalSerializer();
             Stream cd = new Regulus.Remote.Standalone.Stream();
             IStreamable peer = cd;
-            byte[] buf = internalSerializable.ServerToClient(ServerToClientOpCode.LoadSoul, new Regulus.Remote.PackageLoadSoul() { EntityId = 1, ReturnType = false, TypeId = 1 });
+            byte[] buf = internalSerializable.ServerToClient(ServerToClientOpCode.LoadSoul, new Regulus.Remote.Packages.PackageLoadSoul() { EntityId = 1, ReturnType = false, TypeId = 1 });
             await cd.Push(buf, 0, buf.Length);
 
             byte[] recvBuf = new byte[buf.Length];
             await peer.Receive(recvBuf, 0, recvBuf.Length);
-            ResponsePackage responsePkg = internalSerializable.Deserialize(recvBuf) as ResponsePackage;
-            PackageLoadSoul lordsoulPkg = internalSerializable.Deserialize(responsePkg.Data) as PackageLoadSoul;
+            Regulus.Remote.Packages.ResponsePackage responsePkg = (Regulus.Remote.Packages.ResponsePackage)internalSerializable.Deserialize(recvBuf)  ;
+            Regulus.Remote.Packages.PackageLoadSoul lordsoulPkg = (Regulus.Remote.Packages.PackageLoadSoul)internalSerializable.Deserialize(responsePkg.Data)  ;
             Assert.AreEqual(ServerToClientOpCode.LoadSoul, responsePkg.Code);
             Assert.AreEqual(1, lordsoulPkg.EntityId);
             Assert.False(lordsoulPkg.ReturnType);
@@ -142,7 +142,7 @@ namespace Regulus.Remote.Standalone.Test
             Stream cd = new Regulus.Remote.Standalone.Stream();
             IStreamable peer = cd;
 
-            byte[] buf = internalSerializable.ServerToClient(ServerToClientOpCode.LoadSoul, new Regulus.Remote.PackageLoadSoul() { EntityId = 1, ReturnType = false, TypeId = 1 });
+            byte[] buf = internalSerializable.ServerToClient(ServerToClientOpCode.LoadSoul, new Regulus.Remote.Packages.PackageLoadSoul() { EntityId = 1, ReturnType = false, TypeId = 1 });
 
             await cd.Push(buf, 0, 1);
             await cd.Push(buf, 1, buf.Length - 1);
@@ -150,8 +150,8 @@ namespace Regulus.Remote.Standalone.Test
             byte[] recvBuf = new byte[buf.Length];
             await peer.Receive(recvBuf, 0, recvBuf.Length);
             await peer.Receive(recvBuf, 1, recvBuf.Length - 1);
-            ResponsePackage responsePkg = internalSerializable.Deserialize(recvBuf) as ResponsePackage;
-            PackageLoadSoul lordsoulPkg = internalSerializable.Deserialize(responsePkg.Data) as PackageLoadSoul;
+            Regulus.Remote.Packages.ResponsePackage responsePkg = (Regulus.Remote.Packages.ResponsePackage)internalSerializable.Deserialize(recvBuf)  ;
+            Regulus.Remote.Packages.PackageLoadSoul lordsoulPkg = (Regulus.Remote.Packages.PackageLoadSoul)internalSerializable.Deserialize(responsePkg.Data)  ;
             Assert.AreEqual(ServerToClientOpCode.LoadSoul, responsePkg.Code);
             Assert.AreEqual(1, lordsoulPkg.EntityId);
             Assert.False(lordsoulPkg.ReturnType);
@@ -169,15 +169,15 @@ namespace Regulus.Remote.Standalone.Test
             Stream cdClient = new Regulus.Remote.Standalone.Stream();
 
             Network.IStreamable peerClient = cdClient;
-            PackageWriter<ResponsePackage> writer = new PackageWriter<ResponsePackage>(internalSerializer);
+            PackageWriter<Regulus.Remote.Packages.ResponsePackage> writer = new PackageWriter<Regulus.Remote.Packages.ResponsePackage>(internalSerializer);
             writer.Start(new ReverseStream(cdClient));
 
             Ghost.IAgent agent = new Regulus.Remote.Ghost.Agent(peerClient , protocol, serializer, internalSerializer) as Ghost.IAgent;
             agent.QueryNotifier<IGpiA>().Supply += gpi => retGpiA = gpi;
             
 
-            writer.ServerToClient(internalSerializer, ServerToClientOpCode.LoadSoul, new Regulus.Remote.PackageLoadSoul() { EntityId = 1, ReturnType = false, TypeId = 1 });
-            writer.ServerToClient(internalSerializer, ServerToClientOpCode.LoadSoulCompile, new Regulus.Remote.PackageLoadSoulCompile() { EntityId = 1, TypeId = 1, ReturnId = 0});
+            writer.ServerToClient(internalSerializer, ServerToClientOpCode.LoadSoul, new Regulus.Remote.Packages.PackageLoadSoul() { EntityId = 1, ReturnType = false, TypeId = 1 });
+            writer.ServerToClient(internalSerializer, ServerToClientOpCode.LoadSoulCompile, new Regulus.Remote.Packages.PackageLoadSoulCompile() { EntityId = 1, TypeId = 1, ReturnId = 0});
             var ar = new Regulus.Utility.AutoPowerRegulator(new Utility.PowerRegulator());
             while (retGpiA == null)
             {

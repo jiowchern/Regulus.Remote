@@ -18,5 +18,20 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon
         {
             return 2;
         }
+
+        Value<IMethodable> IMethodable.GetValueSelf()
+        {
+            return this;
+        }
+
+        int IMethodable.NotSupported()
+        {
+            return 0;
+        }
+
+        Value<HelloReply> IMethodable2.SayHello(HelloRequest request)
+        {
+            return new HelloReply() { Message = request.Name };
+        }
     }
 }

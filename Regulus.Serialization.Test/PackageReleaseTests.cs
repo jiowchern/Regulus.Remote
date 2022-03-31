@@ -61,29 +61,29 @@ namespace Regulus.Remote.Tests
                             typeof(System.Char[]),
                             typeof(System.String),
                             typeof(System.Boolean),
-                            typeof(Regulus.Remote.RequestPackage),
+                            typeof(Regulus.Remote.Packages.RequestPackage),
                             typeof(System.Byte[]),
                             typeof(System.Byte),
                             typeof(Regulus.Remote.ClientToServerOpCode),
-                            typeof(Regulus.Remote.ResponsePackage),
+                            typeof(Regulus.Remote.Packages.ResponsePackage),
                             typeof(Regulus.Remote.ServerToClientOpCode),
                             typeof(System.Guid),
-                            typeof(Regulus.Remote.PackageInvokeEvent),
+                            typeof(Regulus.Remote.Packages.PackageInvokeEvent),
                             typeof(System.Byte[][]),
-                            typeof(Regulus.Remote.PackageErrorMethod),
-                            typeof(Regulus.Remote.PackageReturnValue),
-                            typeof(Regulus.Remote.PackageLoadSoulCompile),
-                            typeof(Regulus.Remote.PackageLoadSoul),
-                            typeof(Regulus.Remote.PackageUnloadSoul),
-                            typeof(Regulus.Remote.PackageCallMethod),
-                            typeof(Regulus.Remote.PackageRelease));
+                            typeof(Regulus.Remote.Packages.PackageErrorMethod),
+                            typeof(Regulus.Remote.Packages.PackageReturnValue),
+                            typeof(Regulus.Remote.Packages.PackageLoadSoulCompile),
+                            typeof(Regulus.Remote.Packages.PackageLoadSoul),
+                            typeof(Regulus.Remote.Packages.PackageUnloadSoul),
+                            typeof(Regulus.Remote.Packages.PackageCallMethod),
+                            typeof(Regulus.Remote.Packages.PackageRelease));
             var ser = new Regulus.Serialization.Serializer(builder.Describers);
-            RequestPackage response = new RequestPackage();
+            Regulus.Remote.Packages.RequestPackage response = new Regulus.Remote.Packages.RequestPackage();
             response.Code = ClientToServerOpCode.Ping;
             response.Data = new byte[] { 0, 1, 2, 3, 4, 5 };
 
             byte[] bufferResponse = ser.ObjectToBuffer(response);
-            RequestPackage result = ser.BufferToObject(bufferResponse) as RequestPackage;
+            Regulus.Remote.Packages.RequestPackage result = (Regulus.Remote.Packages.RequestPackage)ser.BufferToObject(bufferResponse)  ;
             NUnit.Framework.Assert.AreEqual(ClientToServerOpCode.Ping, result.Code);
             NUnit.Framework.Assert.AreEqual(3, result.Data[3]);
         }
@@ -117,14 +117,14 @@ namespace Regulus.Remote.Tests
     }
     [Serializable]
 
-    public class TestPackageData : TPackageData<TestPackageData>
+    public class TestPackageData 
     {
 
         public Guid Id;
     }
     [Serializable]
 
-    public class TestPackageBuffer : TPackageData<TestPackageBuffer>
+    public class TestPackageBuffer 
     {
 
         public TestPackageBuffer()
