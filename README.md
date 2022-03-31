@@ -11,10 +11,18 @@
 ![Latest Version](https://img.shields.io/github/v/tag/jiowchern/Regulus.Remote)
 
 ## Introduction
-It is a server-client connection framework developed using .Net Standard 2.0 and can be used in Unity game engine and other game engines that are compliant with .  
+It is a server-client connection framework developed using **C#** and can be used in Unity game engine and other game engines that are compliant with .  
 
 
-## Features
+
+<!-- * Remote Method Invocation
+* .Net Standard 2.0 base
+* Compatible with Unity il2cpp
+* Compatible with Unity WebGL
+* Customizable connection
+* Stand-alone mode  -->
+
+## Feature
 Server and client transfer through the interface, reducing the maintenance cost of the protocol.
 <!-- 
 @startuml
@@ -51,17 +59,13 @@ end note
 @enduml
 -->
 ![plantUML](http://www.plantuml.com/plantuml/svg/ZP31JiCm38RlUGeVGMXzWAcg9kq0ko4g7Y1aVql1IIR7GqAZxqvRLGdiD5zgsVw_ViekgHKzUpOdwpvj3tgMgD55fhf-WLCRUaRJN0nDDGI5TDQ13ey2A8IcnLeFhVr-0dEykrzcencDoTWMyWNv3rt3ZcrAT1EmyFOy8EYrPC6rqMC_TuLtwGRmSIpk_VejzBpQR9g2s6xpPJweVwegEvCn8Ig8qId5himNyi6V67wspMc3SAGviWPbwD_dvDK_Yzrh0iMt3pYbJgAdj3ndzOUpczgpvry0)
-
-
-<!-- * Remote Method Invocation
-* .Net Standard 2.0 base
-* Compatible with Unity il2cpp
-* Compatible with Unity WebGL
-* Customizable connection
-* Stand-alone mode  -->
-
-
-
+## Supports
+* Support **IL2CPP & AOT**.  
+* Compatible with **.Net Standard2.0** or above development environment.
+* **Tcp** connection is provided by default, and any connection can be customized according to your needs.
+* **Serialization** is provided by default, and can be customized.
+* Support **Unity3D WebGL**, provide server-side Websocket, client-side need to implement their own.
+ 
 ## Usage
 1. Definition Interface ```IGreeter``` .
 ```csharp
@@ -177,8 +181,8 @@ Sample/Protocol>dotnet new classlib
 1. Add References
 ```xml
 <ItemGroup>
-	<PackageReference Include="Regulus.Remote" Version="0.1.11.0" />
-	<PackageReference Include="Regulus.Serialization" Version="0.1.11.0" />
+	<PackageReference Include="Regulus.Remote" Version="0.1.11.10-alpha" />
+	<PackageReference Include="Regulus.Serialization" Version="0.1.11.10-alpha" />
 	<PackageReference Include="Regulus.Remote.Tools.Protocol.Sources" Version="0.0.0.7">
 		<PrivateAssets>all</PrivateAssets>
 		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -230,7 +234,7 @@ Sample/Server>dotnet new console
 1. Add References
 ```xml
 <ItemGroup>
-	<PackageReference Include="Regulus.Remote.Server" Version="0.1.11.0" />
+	<PackageReference Include="Regulus.Remote.Server" Version="0.1.11.10-alpha" />
 	<ProjectReference Include="..\Protocol\Protocol.csproj" />	
 </ItemGroup>
 ```
@@ -295,7 +299,7 @@ Sample/Client>dotnet new console
 1. Add References
 ```xml
 <ItemGroup>
-	<PackageReference Include="Regulus.Remote.Client" Version="0.1.11.0" />
+	<PackageReference Include="Regulus.Remote.Client" Version="0.1.11.10-alpha" />
 	<ProjectReference Include="..\Protocol\Protocol.csproj" />
 </ItemGroup>
 ```
@@ -353,7 +357,7 @@ Sample/Standalone>dotnet new console
 1. Add References
 ```xml
 <ItemGroup>
-	<PackageReference Include="Regulus.Remote.Standalone" Version="0.1.11.0" />
+	<PackageReference Include="Regulus.Remote.Standalone" Version="0.1.11.10-alpha" />
 	<ProjectReference Include="..\Protocol\Protocol.csproj" />
 	<ProjectReference Include="..\Server\Server.csproj" />
 </ItemGroup>
@@ -404,7 +408,7 @@ namespace Standalone
 }
 ```
 ---
-## Custom Connections
+## Custom Connection
 If you want to customize the connection system you can do so in the following way.
 #### Client
 Create a connection use ```CreateAgent``` and implement the interface ```IStreamable```.
@@ -413,7 +417,7 @@ var protocol = Protocol.ProtocolCreater.Create();
 IStreamable stream = null ;// todo: Implementation Interface IStreamable
 var service = Regulus.Remote.Client.CreateAgent(protocol , stream) ;
 ```
-implement ```IStreamable```
+implement ```IStreamable```.
 ```csharp
 using Regulus.Remote;
 namespace Regulus.Network
@@ -449,7 +453,7 @@ var entry = new Entry();
 IListenable listener = null; // todo: Implementation Interface IListenable
 var service = Regulus.Remote.Server.CreateService(entry , protocol , listener) ;
 ```
-implement ```IListenable```
+implement ```IListenable```.
 ```csharp
 namespace Regulus.Remote.Soul
 {
@@ -464,7 +468,7 @@ namespace Regulus.Remote.Soul
 ```
 ---
 ## Custom Serialization
-implement ```ISerializable```
+implement ```ISerializable```.
 ```csharp
 namespace Regulus.Remote
 {
@@ -475,37 +479,36 @@ namespace Regulus.Remote
     }
 }
 ```
-and bring it to the server ```CreateTcpService```
+and bring it to the server ```CreateTcpService```.
 ```csharp
 var protocol = Protocol.ProtocolCreater.Create();
 var entry = new Entry();
-ISerializable serializer = null; 
-var service = Regulus.Remote.Server.CreateTcpService(entry , protocol , serializer) ;
+ISerializable yourSerializer = null; 
+var service = Regulus.Remote.Server.CreateTcpService(entry , protocol , yourSerializer) ;
 ```
 
-and bring it to the client ```CreateTcpAgent```
+and bring it to the client ```CreateTcpAgent```.
 ```csharp
 var protocol = Protocol.ProtocolCreater.Create();
-ISerializable serializer = null ;
-var service = Regulus.Remote.Client.CreateTcpAgent(protocol , serializer) ;
+ISerializable yourSerializer = null ;
+var service = Regulus.Remote.Client.CreateTcpAgent(protocol , yourSerializer) ;
 ```  
 
-If you need to know what types need to be serialized you can refer ```Regulus.Remote.IProtocol.SerializeTypes```.  
+If need to know what types need to be serialized can refer ```Regulus.Remote.IProtocol.SerializeTypes```.  
 ```csharp
 namespace Regulus.Remote
 {
-    public interface IProtocol
-    {
-        System.Reflection.Assembly Base { get; }
-        EventProvider GetEventProvider();
-        InterfaceProvider GetInterfaceProvider();
-
-        // What types need to be serialized.
-        System.Type[] SerializeTypes { get; }
-
-        MemberMap GetMemberMap();
-        byte[] VerificationCode { get; }
-    }
+	public interface IProtocol
+	{
+		// What types need to be serialized.
+		System.Type[] SerializeTypes { get; }
+				
+		System.Reflection.Assembly Base { get; }
+		EventProvider GetEventProvider();
+		InterfaceProvider GetInterfaceProvider();
+		MemberMap GetMemberMap();
+		byte[] VerificationCode { get; }
+	}
 }
 ```
 
