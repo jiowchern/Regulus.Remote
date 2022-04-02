@@ -515,4 +515,5 @@ namespace Regulus.Remote
 ---
 ## Example 
 **Chat Room**  
-A full example of the application can be found here, including the Unity version. [Link](https://github.com/jiowchern/Regulus.Samples/tree/readme/Chat1)
+
+A full example of the application can be found here, including the Unity and Stride3D version. [Link](https://github.com/jiowchern/Regulus.Samples/tree/readme/Chat1)
