@@ -183,7 +183,7 @@ Sample/Protocol>dotnet new classlib
 <ItemGroup>
 	<PackageReference Include="Regulus.Remote" Version="0.1.11.10-alpha" />
 	<PackageReference Include="Regulus.Serialization" Version="0.1.11.10-alpha" />
-	<PackageReference Include="Regulus.Remote.Tools.Protocol.Sources" Version="0.0.0.7">
+	<PackageReference Include="Regulus.Remote.Tools.Protocol.Sources" Version="0.0.0.13-alpha">
 		<PrivateAssets>all</PrivateAssets>
 		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>	
