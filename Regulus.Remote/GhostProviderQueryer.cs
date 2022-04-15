@@ -21,11 +21,7 @@ namespace Regulus.Remote
 
         private readonly ReturnValueQueue _ReturnValueQueue;
 
-        private readonly object _Sync ;
-
-        private readonly TimeCounter _PingTimeCounter = new TimeCounter();
-
-        private Timer _PingTimer;
+        
 
         private readonly IOpCodeExchangeable _Exchanger;
 
@@ -37,14 +33,15 @@ namespace Regulus.Remote
         bool _Active;
         public bool Active => _Active;
 
-        public long Ping { get; private set; }
+        public float Ping => _Ping.GetSeconds();
 
         readonly IInternalSerializable _InternalSerializer;
-
+        readonly Ping _Ping;
 
         public GhostProviderQueryer(IProtocol protocol, ISerializable serializable, IInternalSerializable internal_serializable, IOpCodeExchangeable exchanger)
         {
-            _Sync = new object();
+            _Ping = new Ping(1f);
+            _Ping.TriggerEvent += _SendPing;
             _InternalSerializer = internal_serializable;
             _Active = false;
             _Exchanger = exchanger;
@@ -57,10 +54,16 @@ namespace Regulus.Remote
             _GhostHandlers = new Dictionary<long, GhostResponseHandler>();
             _AutoRelease = new AutoRelease<long,IGhost>();
         }
+
+        private void _SendPing()
+        {
+            _Exchanger.Request(ClientToServerOpCode.Ping, new byte[0]);
+        }
+
         public void Start()
         {
             _Exchanger.ResponseEvent += _OnResponse;
-            _StartPing();            
+            
         }
         public void Stop()
         {
@@ -76,7 +79,7 @@ namespace Regulus.Remote
             lock(_GhostHandlers)
                 _GhostHandlers.Clear();
 
-            _EndPing();
+            
         }
 
         
@@ -86,8 +89,8 @@ namespace Regulus.Remote
             _UpdateAutoRelease();
             if (code == ServerToClientOpCode.Ping)
             {
-                Ping = _PingTimeCounter.Ticks;
-                _StartPing();
+                _Ping.Update();
+                
             }
             else if (code == ServerToClientOpCode.SetProperty)
             {
@@ -359,44 +362,11 @@ namespace Regulus.Remote
             return handler;
         }
 
-        protected void _StartPing()
-        {
-            _EndPing();
-            lock (_Sync)
-            {
-                _PingTimer = new Timer(1000);
-                _PingTimer.Enabled = true;
-                _PingTimer.AutoReset = true;
-                _PingTimer.Elapsed += _PingTimerElapsed;
-                _PingTimer.Start();
-            }
-        }
+        
 
-        private void _PingTimerElapsed(object sender, ElapsedEventArgs e)
-        {
-            lock (_Sync)
-            {
-                if (_PingTimer != null)
-                {
-                    _PingTimeCounter.Reset();
-                    _Exchanger.Request(ClientToServerOpCode.Ping, new byte[0]);
-                }
-            }
+        
 
-            _EndPing();
-        }
-
-        protected void _EndPing()
-        {
-            lock (_Sync)
-            {
-                if (_PingTimer != null)
-                {
-                    _PingTimer.Stop();
-                    _PingTimer = null;
-                }
-            }
-        }
+        
 
         private IGhost _BuildGhost(Type ghost_base_type, long id, bool return_type)
         {
