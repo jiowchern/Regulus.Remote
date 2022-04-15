@@ -6,7 +6,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>    
     <DevelopmentDependency>true</DevelopmentDependency>
     <NoPackageAnalysis>true</NoPackageAnalysis>
-    <Version>0.0.0.14-alpha</Version>
+    <Version>0.0.0.13-alpha</Version>
     <PackageProjectUrl>https://github.com/jiowchern/Regulus.Remote</PackageProjectUrl>
     <Authors>jc</Authors>
   
@@ -20,6 +20,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.10.0" />
+
+	  
+   
   </ItemGroup>
 
   <ItemGroup>
@@ -27,9 +30,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="bin\$(Configuration)\netstandard2.0\Regulus.Remote.Tools.Protocol.Sources.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Regulus.Remote.Tools.Protocol\Regulus.Remote.Tools.Protocol.csproj" />
   </ItemGroup>
   
 </Project>
