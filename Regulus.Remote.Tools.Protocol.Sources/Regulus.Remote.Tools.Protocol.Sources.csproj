@@ -6,7 +6,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>    
     <DevelopmentDependency>true</DevelopmentDependency>
     <NoPackageAnalysis>true</NoPackageAnalysis>
-    <Version>0.0.0.14</Version>
+    <Version>0.0.0.15</Version>
     <PackageProjectUrl>https://github.com/jiowchern/Regulus.Remote</PackageProjectUrl>
     <Authors>jc</Authors>
   
@@ -19,7 +19,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.10.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" />
 
 	  
    
