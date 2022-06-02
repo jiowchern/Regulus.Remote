@@ -5,6 +5,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 {
     public class EssentialReference
     {
+        public readonly INamedTypeSymbol RegulusRemoteProtocolable;
         public readonly INamedTypeSymbol RegulusRemoteProtocolCreaterAttribute;
         public readonly INamedTypeSymbol RegulusRemoteProperty;
         public readonly INamedTypeSymbol RegulusRemoteNotifier;
@@ -16,6 +17,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         {
             this.Compilation = compilation;
 
+            RegulusRemoteProtocolable = _GetType("Regulus.Remote.Protocolable");
             RegulusRemoteProtocolCreaterAttribute = _GetType("Regulus.Remote.Protocol.CreaterAttribute");
             RegulusRemoteProperty = _GetType("Regulus.Remote.Property`1");
             RegulusRemoteNotifier = _GetType("Regulus.Remote.Notifier`1");

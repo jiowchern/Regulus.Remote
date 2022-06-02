@@ -452,7 +452,7 @@ namespace NS1
         public Struct2 Field1;
     }
     public delegate void NoSuppleDelegate(int a);
-    public interface IB
+    public interface IB : Regulus.Remote.Protocolable
     {
         event System.Action<int> Event22;
         int NoSuppleProperty {get; set; }

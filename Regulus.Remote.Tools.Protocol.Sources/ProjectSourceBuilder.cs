@@ -14,7 +14,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             
             var compilation = references.Compilation;            
 
-            var ghostBuilder = new GhostBuilder(SyntaxModifier.Create(compilation) ,compilation.FindAllInterfaceSymbol());
+            var ghostBuilder = new GhostBuilder(SyntaxModifier.Create(compilation) ,compilation.FindAllInterfaceSymbol(references.RegulusRemoteProtocolable));
 
 
             var name = ghostBuilder.Namespace;

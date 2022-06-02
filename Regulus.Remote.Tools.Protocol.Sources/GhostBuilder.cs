@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿
+
+
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using Regulus.Remote.Tools.Protocol.Sources.Extensions;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 namespace Regulus.Remote.Tools.Protocol.Sources
 {
 
@@ -41,17 +45,17 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             {
                 var name = $"C{symbol.ToDisplayString().Replace('.', '_')}";
                 var type = SyntaxFactory.ClassDeclaration(name);
-
+                type = _DisableCS0067(type);
                 foreach (var i2 in symbol.AllInterfaces.Union(new[] { symbol }))
                 {
                     var builder = builders[i2];
                     type = builder.Inherite(type);
                 }
-
+            
                 eventProxys.AddRange(type.DescendantNodes().OfType<EventDeclarationSyntax>().Select(e => e.CreateRegulusRemoteIEventProxyCreater()));
 
                 var classAndTypes = modifier.Mod(type);
-
+                
                 types.AddRange(classAndTypes.TypesOfSerialization);
                 type = classAndTypes.Type; 
                 type = type.ImplementRegulusRemoteIGhost();                
@@ -69,6 +73,25 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             Namespace = $"RegulusRemoteProtocol{all.ToMd5().ToMd5String().Replace("-","")}";
 
 
+        }
+
+       
+
+        private ClassDeclarationSyntax _DisableCS0067(ClassDeclarationSyntax type)
+        {
+            
+            return type.WithKeyword(
+            Token(
+                TriviaList(
+                    Trivia(
+                        PragmaWarningDirectiveTrivia(
+                            Token(SyntaxKind.DisableKeyword),
+                            true)
+                        .WithErrorCodes(
+                            SingletonSeparatedList<ExpressionSyntax>(
+                                IdentifierName("CS0067"))))),
+                SyntaxKind.ClassKeyword,
+                TriviaList()));
         }
 
         private IEnumerable<TypeSyntax> _WithOutNamespaceFilter(List<TypeSyntax> types)

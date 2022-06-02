@@ -8,13 +8,13 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 {
     public static class CompilationExtensions
     {
-        public static System.Collections.Generic.IEnumerable<INamedTypeSymbol> FindAllInterfaceSymbol(this Compilation com)
+        public static System.Collections.Generic.IEnumerable<INamedTypeSymbol> FindAllInterfaceSymbol(this Compilation com, INamedTypeSymbol tag)
         {            
             var symbols = (from syntaxTree in com.SyntaxTrees
                              let model = com.GetSemanticModel(syntaxTree)
                              from interfaneSyntax in syntaxTree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>()
                              let symbol = model.GetDeclaredSymbol(interfaneSyntax)
-                             where symbol.IsGenericType == false && symbol.IsAbstract
+                             where symbol.IsGenericType == false && symbol.IsAbstract && symbol.AllInterfaces.Any( i => i == tag)
                             select symbol).SelectMany(s => s.AllInterfaces.Concat(new[] { s }));
 
             return new System.Collections.Generic.HashSet<INamedTypeSymbol>(symbols , SymbolEqualityComparer.Default);
