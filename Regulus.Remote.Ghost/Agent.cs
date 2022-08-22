@@ -12,15 +12,15 @@ namespace Regulus.Remote.Ghost
         private readonly GhostProviderQueryer _GhostProvider;
         private readonly GhostSerializer _GhostSerializer;
         private readonly IInternalSerializable _InternalSerializer;
-        readonly IStreamable _Stream;
-        private long _Ping
+        
+        private float _Ping
         {
             get { return _GhostProvider.Ping; }
         }
 
         public Agent(IStreamable stream,IProtocol protocol, ISerializable serializable , IInternalSerializable internal_serializable             )
         {
-            _Stream = stream;
+        
             _InternalSerializer = internal_serializable;
 
             GhostSerializer ghostSerializer = new GhostSerializer(new PackageReader<Regulus.Remote.Packages.ResponsePackage>(_InternalSerializer), new PackageWriter<Regulus.Remote.Packages.RequestPackage>(_InternalSerializer));
@@ -59,7 +59,7 @@ namespace Regulus.Remote.Ghost
             Singleton<Log>.Instance.WriteInfo("Agent Shutdown.");
         }
 
-        long IAgent.Ping
+        float IAgent.Ping
         {
             get { return _Ping; }
         }

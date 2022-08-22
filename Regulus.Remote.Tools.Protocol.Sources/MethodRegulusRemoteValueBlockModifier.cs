@@ -41,7 +41,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.BlockModifiers
             var returnType = md.ReturnType;
             var qn = returnType as QualifiedNameSyntax;
 
-            if(qn == null)
+            if (qn == null)
                 return null;
 
             if (qn.Left.ToString() != "Regulus.Remote")
