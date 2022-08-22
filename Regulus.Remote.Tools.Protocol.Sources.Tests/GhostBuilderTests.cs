@@ -15,9 +15,9 @@ using Regulus.Remote.Tools.Protocol.Sources.Extensions;
 
 namespace Regulus.Remote.Tools.Protocol.Sources.Tests
 {
-    
     public class GhostBuilderTests
     {
+
         [Test]
         public void EssentialReferenceMissingTest()
         {
@@ -91,15 +91,19 @@ namespace NS1
         }
 
         [Test]
-        public async Task ArrayTest()
+        public async Task SerializableTypesTest()
         {
             var source = @"
 
 namespace NS1
 {
+public enum ENUM1
+{
+    ITEM1
+}
     
     public interface IB {
-        Regulus.Remote.Value<int[]> Method0();
+        Regulus.Remote.Value<ENUM1[]> Method0(System.Int32 p1,int p2);
         
     }
 }

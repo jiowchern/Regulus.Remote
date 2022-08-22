@@ -340,7 +340,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 
             Assert.AreEqual(1, values.v1);
             Assert.AreEqual(2, values.v2);
-            Assert.AreEqual(0, values.v0);
+            Assert.AreEqual(0, values.v0[0]);
         }
 
         [Test , Timeout(1000*60)]
