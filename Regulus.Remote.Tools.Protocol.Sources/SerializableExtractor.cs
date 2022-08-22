@@ -13,13 +13,11 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         private readonly EssentialReference _References;
 
         public SerializableExtractor(EssentialReference references, IEnumerable<TypeSyntax> types)
-        {
-
-
-
+        {            
+            
             this._References = references;
             var set = new HashSet<ITypeSymbol>();
-
+            
 
             var symbols = from type in types 
                           select _References.Compilation.GetTypeByMetadataName(type.ToString());
@@ -28,7 +26,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             _AddSet(set , symbols);
             Symbols = set;
 
-            Code=  string.Join(",", from symbol in Symbols select $"typeof({symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)})");
+            Code = string.Join(",", from symbol in Symbols select $"typeof({symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)})");
         }
 
         private void _AddSet(HashSet<ITypeSymbol> set, IEnumerable<ITypeSymbol> symbols)
@@ -60,49 +58,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
        
 
-        private IEnumerable<ITypeSymbol> _GetTypes(IEventSymbol event_symbol)
-        {           
-            var type = event_symbol.Type as INamedTypeSymbol;        
-            return type.TypeArguments;
-        }
-
-        private IEnumerable<ITypeSymbol> _GetTypes(IPropertySymbol property_symbol)
-        {                        
-            var type = property_symbol.Type as INamedTypeSymbol;
-            if (type.OriginalDefinition == _References.RegulusRemoteProperty)
-            {
-                return type.TypeArguments;
-            }            
-
-            return new ITypeSymbol[0];
-        }
-
-        
-
-
-        private IEnumerable<ITypeSymbol> _GetTypes(IMethodSymbol method_symbol)
-        {
-            var retType = method_symbol.ReturnType as INamedTypeSymbol ;
-            if(retType == null || retType.OriginalDefinition != _References.RegulusRemoteValue && retType.SpecialType != SpecialType.System_Void) 
-            {
-                yield break;
-            }
-            
-
-            foreach (var item in retType.TypeArguments)
-            {
-                yield return item;
-            }
-
-            foreach(var item in method_symbol.Parameters)
-            {
-                if(item.RefKind != RefKind.None)
-                {
-                    continue;
-                }
-                yield return item.Type;
-            }
-        }
+      
 
 
     }

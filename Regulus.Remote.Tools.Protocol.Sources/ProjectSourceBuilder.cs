@@ -16,7 +16,6 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
             var ghostBuilder = new GhostBuilder(SyntaxModifier.Create(compilation) ,compilation.FindAllInterfaceSymbol());
 
-
             var name = ghostBuilder.Namespace;
             
             var root = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName($"NS{name}"));
@@ -31,7 +30,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             var membermapCodeBuilder = new MemberMapCodeBuilder(ghostBuilder.Souls);
 
             
-            var protocolBuilder = new ProtocolBuilder(compilation, eventProviderCodeBuilder, interfaceProviderCodeBuilder, membermapCodeBuilder, new SerializableExtractor(references, ghostBuilder.Types));
+            var protocolBuilder = new ProtocolBuilder(compilation, eventProviderCodeBuilder, interfaceProviderCodeBuilder, membermapCodeBuilder, new  SerializableExtractor(references, ghostBuilder.Types));
 
             var protocolProviders = new ProtocoProviderlBuilder(compilation, protocolBuilder.ProtocolName).Trees;
 

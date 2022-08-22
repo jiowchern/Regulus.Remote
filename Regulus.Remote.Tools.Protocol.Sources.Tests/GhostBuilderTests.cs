@@ -89,6 +89,29 @@ namespace NS1
 
             await new GhostTest(syntaxBuilder.Tree).RunAsync();
         }
+
+        [Test]
+        public async Task ArrayTest()
+        {
+            var source = @"
+
+namespace NS1
+{
+    
+    public interface IB {
+        Regulus.Remote.Value<int[]> Method0();
+        
+    }
+}
+";
+            var syntaxBuilder =
+                new Regulus.Remote.Tools.Protocol.Sources.SyntaxTreeBuilder(SourceText.From(source,
+                    System.Text.Encoding.UTF8));
+
+            await new GhostTest(syntaxBuilder.Tree).RunAsync();
+        }
+
+
         [Test]
         public async Task InterfaceInheritEventTest()
         {

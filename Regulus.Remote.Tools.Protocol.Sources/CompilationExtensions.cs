@@ -10,12 +10,12 @@ namespace Regulus.Remote.Tools.Protocol.Sources
     {
         public static System.Collections.Generic.IEnumerable<INamedTypeSymbol> FindAllInterfaceSymbol(this Compilation com)
         {            
-            var symbols = (from syntaxTree in com.SyntaxTrees
-                             let model = com.GetSemanticModel(syntaxTree)
-                             from interfaneSyntax in syntaxTree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>()
-                             let symbol = model.GetDeclaredSymbol(interfaneSyntax)
-                             where symbol.IsGenericType == false && symbol.IsAbstract
-                            select symbol).SelectMany(s => s.AllInterfaces.Concat(new[] { s }));
+            var symbols = ( from syntaxTree in com.SyntaxTrees
+                            let model = com.GetSemanticModel(syntaxTree)
+                            from interfaneSyntax in syntaxTree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>()
+                            let symbol = model.GetDeclaredSymbol(interfaneSyntax)
+                            where symbol.IsGenericType == false && symbol.IsAbstract
+                            select symbol).SelectMany(s => s.AllInterfaces.Concat(new[] { s }) );
 
             return new System.Collections.Generic.HashSet<INamedTypeSymbol>(symbols , SymbolEqualityComparer.Default);
         }
