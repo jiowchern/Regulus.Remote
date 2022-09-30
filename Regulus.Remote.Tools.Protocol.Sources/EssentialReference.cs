@@ -16,6 +16,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         public EssentialReference(Microsoft.CodeAnalysis.Compilation compilation)
         {
             this.Compilation = compilation;
+            
 
             RegulusRemoteProtocolable = _GetType("Regulus.Remote.Protocolable");
             RegulusRemoteProtocolCreaterAttribute = _GetType("Regulus.Remote.Protocol.CreaterAttribute");

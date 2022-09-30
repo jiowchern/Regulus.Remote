@@ -43,6 +43,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             var eventProxys= new System.Collections.Generic.List<ClassDeclarationSyntax>();
             foreach (var symbol in symbols)
             {
+              
                 var name = $"C{symbol.ToDisplayString().Replace('.', '_')}";
                 var type = SyntaxFactory.ClassDeclaration(name);
                 type = _DisableCS0067(type);

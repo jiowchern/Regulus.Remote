@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace Regulus.Remote.Tools.Protocol.Sources.Tests
 {
+   
     public class InterfaceInheritorTests
     {
 

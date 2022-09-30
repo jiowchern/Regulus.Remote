@@ -181,9 +181,9 @@ Sample/Protocol>dotnet new classlib
 1. Add References
 ```xml
 <ItemGroup>
-	<PackageReference Include="Regulus.Remote" Version="0.1.11.10-alpha" />
-	<PackageReference Include="Regulus.Serialization" Version="0.1.11.10-alpha" />
-	<PackageReference Include="Regulus.Remote.Tools.Protocol.Sources" Version="0.0.0.7">
+	<PackageReference Include="Regulus.Remote" Version="0.1.11.12" />
+	<PackageReference Include="Regulus.Serialization" Version="0.1.11.12" />
+	<PackageReference Include="Regulus.Remote.Tools.Protocol.Sources" Version="0.0.0.15">
 		<PrivateAssets>all</PrivateAssets>
 		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>	
@@ -234,7 +234,7 @@ Sample/Server>dotnet new console
 1. Add References
 ```xml
 <ItemGroup>
-	<PackageReference Include="Regulus.Remote.Server" Version="0.1.11.10-alpha" />
+	<PackageReference Include="Regulus.Remote.Server" Version="0.1.11.12" />
 	<ProjectReference Include="..\Protocol\Protocol.csproj" />	
 </ItemGroup>
 ```
@@ -299,7 +299,7 @@ Sample/Client>dotnet new console
 1. Add References
 ```xml
 <ItemGroup>
-	<PackageReference Include="Regulus.Remote.Client" Version="0.1.11.10-alpha" />
+	<PackageReference Include="Regulus.Remote.Client" Version="0.1.11.12" />
 	<ProjectReference Include="..\Protocol\Protocol.csproj" />
 </ItemGroup>
 ```
@@ -357,7 +357,7 @@ Sample/Standalone>dotnet new console
 1. Add References
 ```xml
 <ItemGroup>
-	<PackageReference Include="Regulus.Remote.Standalone" Version="0.1.11.10-alpha" />
+	<PackageReference Include="Regulus.Remote.Standalone" Version="0.1.11.12" />
 	<ProjectReference Include="..\Protocol\Protocol.csproj" />
 	<ProjectReference Include="..\Server\Server.csproj" />
 </ItemGroup>

@@ -37,7 +37,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
             var protocol = Regulus.Remote.Tools.Protocol.Sources.TestCommon.ProtocolProvider.CreateCase1();
             NUnit.Framework.Assert.IsTrue(protocol.SerializeTypes.Any(t => t == typeof(int)));
 
-            NUnit.Framework.Assert.AreEqual(12, protocol.SerializeTypes.Length);
+            NUnit.Framework.Assert.AreEqual(13, protocol.SerializeTypes.Length);
 
 
         }
@@ -340,7 +340,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 
             Assert.AreEqual(1, values.v1);
             Assert.AreEqual(2, values.v2);
-            Assert.AreEqual(0, values.v0);
+            Assert.AreEqual(0, values.v0[0]);
         }
 
         [Test , Timeout(1000*60)]
