@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Regulus.Remote.Soul
 {
-    public class User : IRequestQueue, IResponseQueue , Regulus.Utility.IUpdatable
+    public class User : IRequestQueue, IResponseQueue , Regulus.Utility.IUpdatable, Advanceable
     {
         public delegate void DisconnectCallback();
 
@@ -302,11 +302,7 @@ namespace Regulus.Remote.Soul
 
         bool IUpdatable.Update()
         {
-            Regulus.Remote.Packages.RequestPackage pkg;
-            while (_ExternalRequests.TryDequeue(out pkg))
-            {
-                _ExternalRequest(pkg);
-            }
+            
             
             return _Enable;
         }
@@ -320,6 +316,15 @@ namespace Regulus.Remote.Soul
         {
             
             _Shutdown();
+        }
+
+        void Advanceable.Advance()
+        {
+            Regulus.Remote.Packages.RequestPackage pkg;
+            while (_ExternalRequests.TryDequeue(out pkg))
+            {
+                _ExternalRequest(pkg);
+            }
         }
     }
 }

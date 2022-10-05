@@ -10,7 +10,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
         readonly Ghost.IAgent _Agent;
         public readonly INotifierQueryable Queryable;
         public readonly T Entry;
-
+        readonly System.IDisposable _Driver;
         public TestEnv(T entry)
         {
 
@@ -20,11 +20,11 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
             var internalSer = new Regulus.Remote.InternalSerializer();
             
             _Service = Regulus.Remote.Standalone.Provider.CreateService(entry,protocol, ser );
-                        
+            _Driver = new Soul.Driver(_Service);
             _Agent = _Service.Create();
             
             Queryable = _Agent;
-
+            
            
             _AgentUpdater = new ThreadUpdater(_Update);
             _AgentUpdater.Start();
@@ -36,7 +36,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
         }
 
         public void Dispose()
-        {            
+        {
+            _Driver.Dispose();
             Entry.Dispose();
             _AgentUpdater.Stop();
             _Service.Destroy(_Agent);

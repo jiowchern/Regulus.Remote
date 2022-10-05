@@ -21,6 +21,7 @@ namespace Regulus.Integration.Tests
 
             // create server and client
             var server = Regulus.Remote.Server.Provider.CreateTcpService(entry, protocol);
+            
             server.Listener.Bind(47536);
             
             var client = Regulus.Remote.Client.Provider.CreateTcpAgent(protocol);
@@ -57,6 +58,7 @@ namespace Regulus.Integration.Tests
             client.Agent.Dispose();
 
             server.Listener.Close();
+            
             server.Service.Dispose();
 
             // test

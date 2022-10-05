@@ -23,6 +23,7 @@ namespace Regulus.Remote.Standalone.Test
             IProtocol protocol = ProtocolHelper.CreateProtocol();
             var internalSer = new Regulus.Remote.InternalSerializer();
             Soul.IService service = new Regulus.Remote.Soul.Service(entry, protocol, serializer , listenable, internalSer);
+            
             IAgent agent = new Regulus.Remote.Ghost.Agent(clientStream,protocol, serializer, internalSer) as Ghost.IAgent;
             IGpiA ghostGpia = null;
 
@@ -38,7 +39,7 @@ namespace Regulus.Remote.Standalone.Test
 
             agent.Dispose();
             listenable.StreamableLeaveEvent += NSubstitute.Raise.Event<System.Action<IStreamable>>(serverStream);
-
+            
             IDisposable disposable = service;
             disposable.Dispose();
         }

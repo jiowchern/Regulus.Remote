@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Regulus.Remote.Soul
 {
-    public class Service : IService
+    public class Service : IService , AdvanceProviable
     {
         private readonly IBinderProvider _Entry;
         private readonly IProtocol _Protocol;
@@ -13,8 +13,7 @@ namespace Regulus.Remote.Soul
         private readonly IInternalSerializable _InternalSerializable;
         readonly System.Collections.Generic.List<User> _Users;
         readonly Regulus.Utility.Updater _Updater;
-
-        readonly ThreadUpdater _ThreadUpdater;
+        readonly  Regulus.Remote.ThreadUpdater _ThreadUpdater;
 
         public Service(IBinderProvider entry, IProtocol protocol, ISerializable serializable , IListenable listenable, Regulus.Remote.IInternalSerializable internal_serializable)
         {
@@ -29,15 +28,46 @@ namespace Regulus.Remote.Soul
             _Listenable.StreamableEnterEvent += _Join;
             _Listenable.StreamableLeaveEvent += _Leave;
             _Updater = new Utility.Updater();
-            _Updater.AddEvent += (user) => _Entry.AssignBinder(((User)user).Binder);
-            _ThreadUpdater = new ThreadUpdater(_Update);
+            _Updater.AddEvent += (user) => _Entry.AssignBinder((user as User).Binder);
+            _Updater.AddEvent += (user) => _JoinEvent.Invoke(user as User);
+            _Updater.RemoveEvent += (user) => _LeaveEvent.Invoke(user as User);
+
+            
+
+            _JoinEvent += d => { };
+            _LeaveEvent += d => { };
+
+            _ThreadUpdater = new ThreadUpdater(_Drive);
             _ThreadUpdater.Start();
         }
 
-        private void _Update()
+        event Action<Advanceable> _JoinEvent;
+        event Action<Advanceable> AdvanceProviable.JoinEvent
         {
-            _Updater.Working();
+            add
+            {
+                _JoinEvent += value;
+            }
+
+            remove
+            {
+                _JoinEvent -= value;
+            }
         }
+
+        event Action<Advanceable> _LeaveEvent;
+        event Action<Advanceable> AdvanceProviable.LeaveEvent
+        {
+            add
+            {
+                _LeaveEvent += value;
+            }
+
+            remove
+            {
+                _LeaveEvent -= value;
+            }
+        }       
 
         void _Join(Network.IStreamable stream)
         {
@@ -68,15 +98,20 @@ namespace Regulus.Remote.Soul
 
         void IDisposable.Dispose()
         {
+            _ThreadUpdater.Stop();
             _Listenable.StreamableEnterEvent -= _Join;
             _Listenable.StreamableLeaveEvent -= _Leave;
 
-            _ThreadUpdater.Stop();
-            _Updater.Shutdown();
             lock (_Users)
             {                
                 _Users.Clear();
             }            
         }
+
+        void _Drive()
+        {
+            _Updater.Working();
+        }
     }
 }
+
