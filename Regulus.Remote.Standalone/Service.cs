@@ -3,6 +3,7 @@
 
 using Regulus.Network;
 using Regulus.Remote.Ghost;
+using Regulus.Remote.Soul;
 using System;
 using System.Collections.Generic;
 
@@ -16,6 +17,7 @@ namespace Regulus.Remote.Standalone
         readonly List<Regulus.Remote.Ghost.IAgent> _Agents;
         readonly Dictionary<IAgent, IStreamable> _Streams;
         readonly IDisposable _ServiceDisposable;
+        
         internal readonly IProtocol Protocol;
         internal readonly ISerializable Serializer;
 
@@ -25,7 +27,9 @@ namespace Regulus.Remote.Standalone
             _NotifiableCollection = new NotifiableCollection<IStreamable>();
             Protocol = protocol;
             Serializer = serializable;
-            _Service = new Regulus.Remote.Soul.Service(entry, protocol, serializable , this, internal_serializable);
+            var service = new Regulus.Remote.Soul.AsyncService(new SyncService(entry , new UserProvider(protocol, serializable, this, internal_serializable)) );
+            _Service = service;
+        
             _Agents = new List<Ghost.IAgent>();
             _Streams = new Dictionary<IAgent, IStreamable>();
             _ServiceDisposable = _Service;
@@ -59,6 +63,8 @@ namespace Regulus.Remote.Standalone
         }
 
 
+     
+
         public Ghost.IAgent Create()
         {
             var stream = new Stream();
@@ -69,7 +75,7 @@ namespace Regulus.Remote.Standalone
             _Streams.Add(agent, revStream);
             _Agents.Add(agent);
 
-
+            
             return agent;
         }
         
