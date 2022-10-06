@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace Regulus.Remote.Standalone
 {
-    public class Service : Soul.IService , Soul.IListenable, AdvanceProviable
+    public class Service : Soul.IService , Soul.IListenable
     {
 
         
@@ -17,7 +17,7 @@ namespace Regulus.Remote.Standalone
         readonly List<Regulus.Remote.Ghost.IAgent> _Agents;
         readonly Dictionary<IAgent, IStreamable> _Streams;
         readonly IDisposable _ServiceDisposable;
-        readonly AdvanceProviable _DriverProviable;
+        
         internal readonly IProtocol Protocol;
         internal readonly ISerializable Serializer;
 
@@ -27,9 +27,9 @@ namespace Regulus.Remote.Standalone
             _NotifiableCollection = new NotifiableCollection<IStreamable>();
             Protocol = protocol;
             Serializer = serializable;
-            var service = new Regulus.Remote.Soul.Service(entry, protocol, serializable, this, internal_serializable);
+            var service = new Regulus.Remote.Soul.AsyncService(new SyncService(entry , new UserProvider(protocol, serializable, this, internal_serializable)) );
             _Service = service;
-            _DriverProviable = service;
+        
             _Agents = new List<Ghost.IAgent>();
             _Streams = new Dictionary<IAgent, IStreamable>();
             _ServiceDisposable = _Service;
@@ -63,32 +63,7 @@ namespace Regulus.Remote.Standalone
         }
 
 
-        event Action<Advanceable> AdvanceProviable.JoinEvent
-        {
-            add
-            {
-                _DriverProviable.JoinEvent += value;
-            }
-
-            remove
-            {
-                _DriverProviable.JoinEvent -= value;
-            }
-        }
-
-        
-        event Action<Advanceable> AdvanceProviable.LeaveEvent
-        {
-            add
-            {
-                _DriverProviable.LeaveEvent += value;
-            }
-
-            remove
-            {
-                _DriverProviable.LeaveEvent -= value;
-            }
-        }
+     
 
         public Ghost.IAgent Create()
         {

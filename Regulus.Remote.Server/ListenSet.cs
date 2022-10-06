@@ -2,17 +2,16 @@
 {
 
     
-    public class ListenSet<TListener>
+    public class ListenSet<TListener , TService>
     {
-        public ListenSet(TListener listener, Soul.IService service)
+        public ListenSet(TListener listener, TService service)
         {
             Listener = listener;
-            Service = service;
-            
+            Service = service;            
         }
 
         public readonly TListener Listener;
-        public readonly Soul.IService Service;
+        public readonly TService Service;
         
     }
 }

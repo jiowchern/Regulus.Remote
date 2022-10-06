@@ -4,14 +4,17 @@
 
     public static class Provider
     {
+
+        
         public static Soul.IService CreateService(IEntry entry, IProtocol protocol, Soul.IListenable listenable)
         {
-            return new DriverService(new Soul.Service(entry, protocol, new Regulus.Remote.Serializer(protocol.SerializeTypes), listenable, new Regulus.Remote.InternalSerializer()));            
+            return new Soul.AsyncService(new Soul.SyncService(entry, new Soul.UserProvider(protocol, new Regulus.Remote.Serializer(protocol.SerializeTypes), listenable, new Regulus.Remote.InternalSerializer())));            
         }
 
         public static Soul.IService CreateService(IEntry entry,  IProtocol protocol, ISerializable serializable ,Soul.IListenable listenable)
         {
-            return new DriverService(new Soul.Service(entry, protocol, serializable , listenable, new Regulus.Remote.InternalSerializer()));
+
+            return new Soul.AsyncService(new Soul.SyncService(entry, new Soul.UserProvider(protocol, serializable, listenable, new Regulus.Remote.InternalSerializer())));            
         }
 
         public static TcpListenSet CreateTcpService(IEntry entry, IProtocol protocol)
@@ -35,6 +38,6 @@
             return new WebListenSet(listener, service);
         }
 
-
+        
     }
 }

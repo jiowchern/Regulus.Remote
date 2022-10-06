@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Regulus.Remote.Soul
 {
-    public class User : IRequestQueue, IResponseQueue , Regulus.Utility.IUpdatable, Advanceable
+    public class User : IRequestQueue, IResponseQueue , Advanceable
     {
         public delegate void DisconnectCallback();
 
@@ -300,19 +300,19 @@ namespace Regulus.Remote.Soul
             }
         }
 
-        bool IUpdatable.Update()
+        public bool Update()
         {
             
             
             return _Enable;
         }
 
-        void IBootable.Launch()
+        public void Launch()
         {
             _Launch();
         }
 
-        void IBootable.Shutdown()
+        public void Shutdown()
         {
             
             _Shutdown();
