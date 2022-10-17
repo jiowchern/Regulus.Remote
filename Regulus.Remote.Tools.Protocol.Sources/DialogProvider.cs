@@ -10,16 +10,16 @@ namespace Regulus.Remote.Tools.Protocol.Sources
     {
         
 
-        public readonly DiagnosticDescriptor DoneDescriptor;
-        public readonly DiagnosticDescriptor ExceptionDescriptor;
-        public readonly DiagnosticDescriptor MissingReferenceDescriptor;
-        public readonly DiagnosticDescriptor UnsupportDescriptor;
+        public static readonly DiagnosticDescriptor DoneDescriptor = new DiagnosticDescriptor("RRSI1", "Result", "done.", "Execute", DiagnosticSeverity.Info, true);
+        public static readonly DiagnosticDescriptor ExceptionDescriptor = new DiagnosticDescriptor("RRSE1", "Error", "unknown error:{0}", "Execute", DiagnosticSeverity.Error, true, "https://github.com/jiowchern/Regulus.Remote/wiki/RRSE1");
+        public static readonly DiagnosticDescriptor MissingReferenceDescriptor = new DiagnosticDescriptor("RRSE2", "Error", "Missing essentialt type :{0}", "Execute", DiagnosticSeverity.Error, true, "https://github.com/jiowchern/Regulus.Remote/wiki/RRSE2");
+        public static readonly DiagnosticDescriptor UnsupportDescriptor = new DiagnosticDescriptor("RRSW1", "Warring", "Unsupport({0}):{1}", "Execute", DiagnosticSeverity.Warning, true, "https://github.com/jiowchern/Regulus.Remote/wiki/RRSW1");
         public DialogProvider()
         {            
-            DoneDescriptor = new DiagnosticDescriptor("RRSI1", "Result", "done.", "Execute", DiagnosticSeverity.Info, true);            
-            ExceptionDescriptor= new DiagnosticDescriptor("RRSE1", "Error", "unknown error:{0}", "Execute", DiagnosticSeverity.Error, true, "https://github.com/jiowchern/Regulus.Remote/wiki/RRSE1");
-            MissingReferenceDescriptor = new DiagnosticDescriptor("RRSE2", "Error", "Missing essentialt type :{0}", "Execute", DiagnosticSeverity.Error, true , "https://github.com/jiowchern/Regulus.Remote/wiki/RRSE2");
-            UnsupportDescriptor = new DiagnosticDescriptor("RRSW1", "Warring", "Unsupport({0}):{1}", "Execute", DiagnosticSeverity.Warning, true, "https://github.com/jiowchern/Regulus.Remote/wiki/RRSW1");
+            
+            
+            
+            
         }
 
         internal System.Collections.Generic.IEnumerable<Diagnostic> Unsupports(IEnumerable<ClassAndTypes> classAndTypess)
@@ -29,8 +29,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 var methods = cnt.GetSyntaxs<MethodDeclarationSyntax>().ToArray();
                 var indexs = cnt.GetSyntaxs<IndexerDeclarationSyntax>().ToArray();
                 var events = cnt.GetSyntaxs<EventDeclarationSyntax>().ToArray();
-                var propertys = cnt.GetSyntaxs<PropertyDeclarationSyntax>().ToArray();
-                var unknown = cnt.UnprocessedBlocks.Except(methods.OfType<SyntaxNode>()).Except(indexs.OfType<SyntaxNode>()).Except(events.OfType<SyntaxNode>()).Except(propertys.OfType<SyntaxNode>());
+                var propertys = cnt.GetSyntaxs<PropertyDeclarationSyntax>().ToArray();                
 
                 foreach (var item in indexs)
                 {
@@ -48,6 +47,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 {
                     yield return _Unsupport(item.WithAccessorList(Microsoft.CodeAnalysis.CSharp.SyntaxFactory.AccessorList()), "property");
                 }
+                
 
             }
             

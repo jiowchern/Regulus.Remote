@@ -37,7 +37,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
 
       
 
-        public async Task RunAsync()
+        public async Task RunAsync(params DiagnosticResult[] diagnostic_results)
         {
 
 
@@ -66,8 +66,13 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
             {
                 test.TestState.Sources.Add(await syntaxTree.GetTextAsync( ));
             }
+            test.TestState.ExpectedDiagnostics.Add(new DiagnosticResult(DialogProvider.DoneDescriptor));
             
+                
+
             await test.RunAsync();
         }
+
+        
     }
 }
