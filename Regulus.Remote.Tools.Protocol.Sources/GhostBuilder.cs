@@ -16,6 +16,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         public readonly IEnumerable<ClassDeclarationSyntax> EventProxys;
         public readonly IEnumerable<InterfaceDeclarationSyntax> Souls;
         public readonly string Namespace;
+        public readonly IEnumerable<ClassAndTypes> ClassAndTypess;
 
         public GhostBuilder(SyntaxModifier modifier, IEnumerable<INamedTypeSymbol> symbols)
         {
@@ -37,6 +38,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             var types  = new System.Collections.Generic.List<TypeSyntax>();
             var ghosts = new System.Collections.Generic.List<ClassDeclarationSyntax>();
             var eventProxys= new System.Collections.Generic.List<ClassDeclarationSyntax>();
+            
+            var classAndTypess = new System.Collections.Generic.List<ClassAndTypes>();
             foreach (var symbol in symbols)
             {
               
@@ -52,13 +55,14 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 eventProxys.AddRange(type.DescendantNodes().OfType<EventDeclarationSyntax>().Select(e => e.CreateRegulusRemoteIEventProxyCreater()));
 
                 var classAndTypes = modifier.Mod(type);
-
+                classAndTypess.Add(classAndTypes);
                 types.AddRange(classAndTypes.TypesOfSerialization);
                 type = classAndTypes.Type; 
                 type = type.ImplementRegulusRemoteIGhost();                
                 ghosts.Add(type);
+
             }
-            
+            ClassAndTypess = classAndTypess;
             Types = new HashSet<TypeSyntax>(_WithOutNamespaceFilter(types) , SyntaxNodeComparer.Default);
             Ghosts = new HashSet<ClassDeclarationSyntax>(ghosts, SyntaxNodeComparer.Default);
             EventProxys = new HashSet<ClassDeclarationSyntax>(eventProxys, SyntaxNodeComparer.Default);

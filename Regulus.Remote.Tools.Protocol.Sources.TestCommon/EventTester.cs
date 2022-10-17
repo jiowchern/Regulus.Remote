@@ -134,7 +134,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon
         }
 
         public void Invoke22(int val)
-        {
+        {  
             _IEventabe2Event2(val);
         }
     }

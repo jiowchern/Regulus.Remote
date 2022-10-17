@@ -185,39 +185,6 @@ interface IA {
 
         }       
 
-        [Test]
-        public void ToInterfaceDeclarationTest()
-        {
-            var source = @"
-
-public interface IA {
-    void Method1();
-}
-";
-          /*  var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
-            var com = tree.Compilation();
-            var s = com.GetSemanticModel(tree).GetDeclaredSymbol(tree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>().Single());
-            INamedTypeSymbol symbol = s as INamedTypeSymbol;
-            var syntax = symbol.ToInterfaceDeclaration();
-
-            var tree2 = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.Create(syntax);
-            var com2 = tree.Compilation();
-
-            var assembly = com2.ToAssembly();
-
-            var cia = (from type in assembly.GetExportedTypes() where type.Name == "CIA" select type).Single();
-
-            try
-            {
-                cia.GetMethod("Method1").Invoke(null, null);
-            }
-            catch (Regulus.Remote.Exceptions.NotSupportedException nse)
-            {
-                NUnit.Framework.Assert.Pass();
-                return;
-            }
-            NUnit.Framework.Assert.Fail();*/
-
-        }
+       
     }
 }

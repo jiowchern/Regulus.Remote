@@ -11,12 +11,12 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         public readonly INamedTypeSymbol RegulusRemoteValue;
         public readonly INamedTypeSymbol[] SystemActions;
         public readonly Compilation Compilation;
+        public readonly DialogProvider Log;
 
         public EssentialReference(Microsoft.CodeAnalysis.Compilation compilation)
         {
-            this.Compilation = compilation;
             
-
+            this.Compilation = compilation;
             
             RegulusRemoteProtocolCreaterAttribute = _GetType("Regulus.Remote.Protocol.CreaterAttribute");
             RegulusRemoteProperty = _GetType("Regulus.Remote.Property`1");
@@ -43,8 +43,6 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 _GetType("System.Action`14"),
                 _GetType("System.Action`15"),
                 _GetType("System.Action`16"),
-
-
             };
             
         }
@@ -54,7 +52,10 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         {
             var type = Compilation.GetTypeByMetadataName(metaname);
             if (type == null)
+            {                
                 throw new MissingTypeException(metaname);
+            }
+                
 
             return type;
         }

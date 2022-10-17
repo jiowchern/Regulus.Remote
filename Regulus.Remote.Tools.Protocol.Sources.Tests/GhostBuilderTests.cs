@@ -15,6 +15,7 @@ using Regulus.Remote.Tools.Protocol.Sources.Extensions;
 
 namespace Regulus.Remote.Tools.Protocol.Sources.Tests
 {
+    
     public class GhostBuilderTests
     {
 
@@ -48,7 +49,7 @@ namespace NS1
             };
             CSharpCompilation compilation = CSharpCompilation.Create(assemblyName, new[] { syntaxBuilder.Tree }, references);
 
-
+            
             try
             {
                 new EssentialReference(compilation);
@@ -378,6 +379,57 @@ public interface IB {
 
             await new GhostTest(syntaxBuilder.Tree).RunAsync();
         }
+        [Test]
+        
+        public void GhostBuilderUnprocessedsTest()
+        {
+            var source = @"
+using System;
+using Regulus.Remote;
+namespace NS1
+{    
+    delegate void GhostTest(int val);
+    public interface IA 
+    {
+        int UnprocessedMethod();
+        Value<int> ProcessedMethod();
+        string this[int index]
+        {
+            get;
+            set;
+        }
+
+        event GhostTest Event1;
+        event System.Action Event2;
+
+        int Property1 {get;set;}
+        Regulus.Remote.Property<int> Property2 {get;set;}
+        
+    }
+}
+
+";
+            var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
+            var com = tree.Compilation();
+            SyntaxModifier modifier = SyntaxModifier.Create(com);
+            var builder = new GhostBuilder(modifier, com.FindAllInterfaceSymbol());            
+
+            var cnt = builder.ClassAndTypess.First();
+            var methods = cnt.GetSyntaxs<MethodDeclarationSyntax>().ToArray();
+            var indexs = cnt.GetSyntaxs<IndexerDeclarationSyntax>().ToArray();
+            var events = cnt.GetSyntaxs<EventDeclarationSyntax>().ToArray();
+            var propertys = cnt.GetSyntaxs<PropertyDeclarationSyntax>().ToArray();
+            NUnit.Framework.Assert.AreEqual(1, methods.Count());
+            NUnit.Framework.Assert.AreEqual(2, indexs.Count());
+            NUnit.Framework.Assert.AreEqual(2, events.Count());
+            NUnit.Framework.Assert.AreEqual(3, propertys.Count());
+
+
+            var dialogProvider = new DialogProvider();
+            var dialogs = dialogProvider.Unsupports(builder.ClassAndTypess).ToArray();
+            NUnit.Framework.Assert.AreEqual(8, dialogs.Count());
+        }
+
 
         [Test]
         public void GhostBuilderCompileTest()
@@ -408,12 +460,7 @@ namespace NS1
             var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
             var com = tree.Compilation();
             SyntaxModifier modifier = SyntaxModifier.Create(com);
-            var builder = new GhostBuilder(modifier , (from syntaxTree in com.SyntaxTrees
-                             let model = com.GetSemanticModel(syntaxTree)
-                             from interfaneSyntax in syntaxTree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>()
-                             let symbol = model.GetDeclaredSymbol(interfaneSyntax)
-                             where symbol.IsGenericType == false
-                             select symbol).SelectMany(s => s.AllInterfaces.Union(new[] { s })));
+            var builder = new GhostBuilder(modifier , com.FindAllInterfaceSymbol());
             var trees = builder.Ghosts.Union(builder.EventProxys).Select( c=> CSharpSyntaxTree.ParseText(c.NormalizeWhitespace().ToFullString()));
 
             var ghostCom = HelperExt.Compile(trees.Union(new[] { tree }));
@@ -512,12 +559,14 @@ namespace NS1
         static partial void _CreateCase1(ref Regulus.Remote.IProtocol protocol);    
 }
 ";
+
             
             var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
             var com = tree.Compilation();
 
             var builder = new ProjectSourceBuilder(new EssentialReference(com));
 
+            
             var ghostCom = HelperExt.Compile(builder.Sources.Union(new[] { tree }));
 
             var asm = ghostCom.ToAssembly();

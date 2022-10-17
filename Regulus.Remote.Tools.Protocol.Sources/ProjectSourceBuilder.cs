@@ -7,15 +7,15 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 {
     public class ProjectSourceBuilder
     {
-        public readonly IEnumerable<SyntaxTree> Sources;        
+        public readonly IEnumerable<SyntaxTree> Sources;
+        public readonly IEnumerable<ClassAndTypes> ClassAndTypess;
 
         public ProjectSourceBuilder(EssentialReference references)
-        {
-            
+        {            
             var compilation = references.Compilation;            
 
             var ghostBuilder = new GhostBuilder(SyntaxModifier.Create(compilation) ,compilation.FindAllInterfaceSymbol());
-
+            ClassAndTypess = ghostBuilder.ClassAndTypess.ToArray();
             var name = ghostBuilder.Namespace;
             
             var root = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName($"NS{name}"));
@@ -33,9 +33,11 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             var protocolBuilder = new ProtocolBuilder(compilation, eventProviderCodeBuilder, interfaceProviderCodeBuilder, membermapCodeBuilder, new  SerializableExtractor(ghostBuilder.Types));
 
             var protocolProviders = new ProtocoProviderlBuilder(compilation, protocolBuilder.ProtocolName).Trees;
-
+            
             Sources = _UniteFilePath(name,ghosts.Concat(eventProxys).Concat(protocolProviders).Concat(new[] { protocolBuilder.Tree }));
         }
+
+       
 
         private IEnumerable<SyntaxTree> _UniteFilePath(string name,IEnumerable<SyntaxTree> sources)
         {

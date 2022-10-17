@@ -59,6 +59,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             var blocks = type.DescendantNodes().OfType<BlockSyntax>();
 
             var replaceBlocks = new System.Collections.Generic.Dictionary<BlockSyntax, BlockSyntax>();
+            var unprocessedBlocks = new System.Collections.Generic.List<Microsoft.CodeAnalysis.CSharp.Syntax.BlockSyntax>();
             foreach (var block in blocks)
             {
                 var nodes = block.GetParentPathAndSelf();
@@ -68,6 +69,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 {
                     events.Add(esa.Event);
                     replaceBlocks.Add(block, esa.Block);
+                    continue;
                 }
 
                 var methodVoid = _MethodVoid.Mod(nodes);
@@ -75,6 +77,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 {
                     typesOfSerialization.AddRange(methodVoid.Types);
                     replaceBlocks.Add(block, methodVoid.Block);
+                    continue;
                 }
 
                 var mrrv = _MethodRegulusRemoteValue.Mod(nodes);
@@ -82,13 +85,16 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 {
                     typesOfSerialization.AddRange(mrrv.Types);
                     replaceBlocks.Add(block, mrrv.Block);
+                    continue;
                 }
                 var prrb = _PropertyRegulusRemoteBlock.Mod(nodes);
                 if (prrb != null)
                 {
                     propertys.Add(prrb.Property);
                     replaceBlocks.Add(block, prrb.Block);
+                    continue;
                 }
+                unprocessedBlocks.Add(block);                
             }
 
             type = _ModifyBlocks(type, replaceBlocks);
@@ -99,25 +105,36 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             {
                 var efds = _EventFieldDeclarationSyntax.Mod(eds);
                 if (efds == null)
+                {
+
                     continue;
+                }
+                    
 
                 type = type.AddMembers(efds.Field);
                 typesOfSerialization.AddRange(efds.Types);
             }
 
             var propertyDeclarationSyntaxes = propertys;
-
+            
             foreach (var pds in propertyDeclarationSyntaxes)
             {
                 var pfds = _PropertyFieldDeclarationSyntax.Mod(pds);
                 if (pfds == null)
+                {
+            
                     continue;
+                }
+                    
                 type = type.AddMembers(pfds.Field);
                 typesOfSerialization.AddRange(pfds.Types);
             }
 
 
-            return new ClassAndTypes { Type = type, TypesOfSerialization = typesOfSerialization };
+            return new ClassAndTypes { Type = type, 
+                TypesOfSerialization = typesOfSerialization,
+                UnprocessedBlocks = unprocessedBlocks.ToArray() 
+            };
 
         }
 
