@@ -45,7 +45,25 @@ namespace Regulus.Remote.Tools.Protocol.Sources
               
                 var name = $"C{symbol.ToDisplayString().Replace('.', '_')}";
                 var type = SyntaxFactory.ClassDeclaration(name);
-
+                type = type.WithOpenBraceToken(
+                     SyntaxFactory.Token(
+                        SyntaxFactory.TriviaList(
+                            SyntaxFactory.Trivia(
+                                SyntaxFactory.PragmaWarningDirectiveTrivia(
+                                    SyntaxFactory.Token(SyntaxKind.DisableKeyword),
+                                    true
+                                )
+                                .WithErrorCodes(
+                                    SyntaxFactory.SingletonSeparatedList<ExpressionSyntax>(
+                                        SyntaxFactory.IdentifierName("CS0067")
+                                    )
+                                )
+                            )
+                        ),
+                        SyntaxKind.OpenBraceToken,
+                        SyntaxFactory.TriviaList()
+                    )
+                );
                 foreach (var i2 in symbol.AllInterfaces.Union(new[] { symbol }))
                 {
                     var builder = builders[i2];
@@ -58,7 +76,26 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 classAndTypess.Add(classAndTypes);
                 types.AddRange(classAndTypes.TypesOfSerialization);
                 type = classAndTypes.Type; 
-                type = type.ImplementRegulusRemoteIGhost();                
+                type = type.ImplementRegulusRemoteIGhost();
+                type = type.WithCloseBraceToken(
+                            SyntaxFactory.Token(
+                                SyntaxFactory.TriviaList(
+                                    SyntaxFactory.Trivia(
+                                        SyntaxFactory.PragmaWarningDirectiveTrivia(
+                                            SyntaxFactory.Token(SyntaxKind.RestoreKeyword),
+                                            true
+                                        )
+                                        .WithErrorCodes(
+                                            SyntaxFactory.SingletonSeparatedList<ExpressionSyntax>(
+                                                SyntaxFactory.IdentifierName("CS0067")
+                                            )
+                                        )
+                                    )
+                                ),
+                                SyntaxKind.CloseBraceToken,
+                                SyntaxFactory.TriviaList()
+                            )
+                        );
                 ghosts.Add(type);
 
             }

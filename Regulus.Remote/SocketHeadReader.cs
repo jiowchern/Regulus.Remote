@@ -93,8 +93,9 @@ namespace Regulus.Remote
             add { _DoneEvent += value; }
             remove { _DoneEvent -= value; }
         }
-
+#pragma warning disable CS0067
         private event OnErrorCallback _ErrorEvent;
+#pragma warning restore CS0067
         event OnErrorCallback ISocketReader.ErrorEvent
         {
             add { _ErrorEvent += value; }

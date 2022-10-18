@@ -10,10 +10,10 @@ namespace Regulus.Remote.Tools.Protocol.Sources
     {
         
 
-        public static readonly DiagnosticDescriptor DoneDescriptor = new DiagnosticDescriptor("RRSI1", "Result", "done.", "Execute", DiagnosticSeverity.Info, true);
-        public static readonly DiagnosticDescriptor ExceptionDescriptor = new DiagnosticDescriptor("RRSE1", "Error", "unknown error:{0}", "Execute", DiagnosticSeverity.Error, true, "https://github.com/jiowchern/Regulus.Remote/wiki/RRSE1");
-        public static readonly DiagnosticDescriptor MissingReferenceDescriptor = new DiagnosticDescriptor("RRSE2", "Error", "Missing essentialt type :{0}", "Execute", DiagnosticSeverity.Error, true, "https://github.com/jiowchern/Regulus.Remote/wiki/RRSE2");
-        public static readonly DiagnosticDescriptor UnsupportDescriptor = new DiagnosticDescriptor("RRSW1", "Warring", "Unsupport({0}):{1}", "Execute", DiagnosticSeverity.Warning, true, "https://github.com/jiowchern/Regulus.Remote/wiki/RRSW1");
+        public static readonly DiagnosticDescriptor DoneDescriptor = new DiagnosticDescriptor("RRSI1", "Info", "Done", "Execute", DiagnosticSeverity.Info, true);
+        public static readonly DiagnosticDescriptor ExceptionDescriptor = new DiagnosticDescriptor("RRSE1", "Error", "unknown error:{0}", "Execute", DiagnosticSeverity.Error, false, null, "https://github.com/jiowchern/Regulus.Remote/wiki/RRSE1");
+        public static readonly DiagnosticDescriptor MissingReferenceDescriptor = new DiagnosticDescriptor("RRSE2", "Error", "Missing essentialt type :{0}", "Execute", DiagnosticSeverity.Error, false, null, "https://github.com/jiowchern/Regulus.Remote/wiki/RRSE2");
+        public static readonly DiagnosticDescriptor UnsupportDescriptor = new DiagnosticDescriptor("RRSW1", "Warring", "Unsupport({0}):{1}", "Execute", DiagnosticSeverity.Warning, false, null, "https://github.com/jiowchern/Regulus.Remote/wiki/RRSW1");
         public DialogProvider()
         {            
             
