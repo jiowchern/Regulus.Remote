@@ -10,7 +10,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
     {
         public static ClassDeclarationSyntax CreateRegulusRemoteIEventProxyCreater(this EventDeclarationSyntax eds)
         {
-
+            
             var een = eds.ExplicitInterfaceSpecifier.Name.ToString().Replace('.', '_');
 
             var fieldName = eds.Identifier.ValueText;

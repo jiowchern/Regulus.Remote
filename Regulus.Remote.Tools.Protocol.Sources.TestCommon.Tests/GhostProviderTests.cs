@@ -3,6 +3,7 @@ using System;
 
 namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 {
+    
     public class GhostProviderTests
     {
         static bool _HasSub = false;

@@ -18,6 +18,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         public readonly string Namespace;
         public readonly IEnumerable<ClassAndTypes> ClassAndTypess;
 
+        
         public GhostBuilder(SyntaxModifier modifier, IEnumerable<INamedTypeSymbol> symbols)
         {
             

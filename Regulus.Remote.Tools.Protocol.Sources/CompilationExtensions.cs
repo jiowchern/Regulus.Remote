@@ -9,12 +9,16 @@ namespace Regulus.Remote.Tools.Protocol.Sources
     public static class CompilationExtensions
     {
         public static System.Collections.Generic.IEnumerable<INamedTypeSymbol> FindAllInterfaceSymbol(this Compilation com)
+        {
+            return com.FindAllInterfaceSymbol(s=>true);
+        }
+        public static System.Collections.Generic.IEnumerable<INamedTypeSymbol> FindAllInterfaceSymbol(this Compilation com , System.Func<INamedTypeSymbol,bool> additional)
         {            
             var symbols = ( from syntaxTree in com.SyntaxTrees
                             let model = com.GetSemanticModel(syntaxTree)
                             from interfaneSyntax in syntaxTree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>()
                             let symbol = model.GetDeclaredSymbol(interfaneSyntax)
-                            where symbol.IsGenericType == false && symbol.IsAbstract
+                            where symbol.IsGenericType == false && symbol.IsAbstract && additional(symbol)
                             select symbol).SelectMany(s => s.AllInterfaces.Concat(new[] { s }) );
 
             return new System.Collections.Generic.HashSet<INamedTypeSymbol>(symbols , SymbolEqualityComparer.Default);
@@ -45,5 +49,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             }
             return true;
         }
+
+        
     }
 }

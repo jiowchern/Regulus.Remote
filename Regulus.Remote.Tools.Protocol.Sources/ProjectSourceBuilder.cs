@@ -5,16 +5,17 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace Regulus.Remote.Tools.Protocol.Sources
 {
-    public class ProjectSourceBuilder
+    class ProjectSourceBuilder
     {
         public readonly IEnumerable<SyntaxTree> Sources;
         public readonly IEnumerable<ClassAndTypes> ClassAndTypess;
 
-        public ProjectSourceBuilder(EssentialReference references)
+        public ProjectSourceBuilder(EssentialReference references )
         {            
-            var compilation = references.Compilation;            
+            var compilation = references.Compilation;
 
-            var ghostBuilder = new GhostBuilder(SyntaxModifier.Create(compilation) ,compilation.FindAllInterfaceSymbol());
+            var ghostBuilder = new GhostBuilder(SyntaxModifier.Create(compilation) ,compilation.FindAllInterfaceSymbol(references.Tag));
+            //var ghostBuilder = ghost_builder;
             ClassAndTypess = ghostBuilder.ClassAndTypess.ToArray();
             var name = ghostBuilder.Namespace;
             

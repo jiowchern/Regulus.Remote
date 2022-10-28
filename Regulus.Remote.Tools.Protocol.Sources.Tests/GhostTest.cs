@@ -12,27 +12,28 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Regulus.Remote.Tools.Protocol.Sources.Tests
 {
-    public class GhostTest
+    class GhostTest
     {
         private readonly SyntaxTree[] _Souls;
       
         private readonly IEnumerable<SyntaxTree> _Sources;
 
-        public GhostTest(params SyntaxTree[] souls)
+        public GhostTest(Configuration cfg,params SyntaxTree[] souls)
         {
 
             _Souls = souls;
             var assemblyName = "TestProject";
+            
             IEnumerable<MetadataReference> references = new MetadataReference[]
             {
                 MetadataReference.CreateFromFile(typeof(Regulus.Remote.Property<>).GetTypeInfo().Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(Regulus.Remote.Value<>).GetTypeInfo().Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(System.Action).GetTypeInfo().Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(System.Action<,,,,,,,,>).GetTypeInfo().Assembly.Location),
-
             };
             CSharpCompilation compilation =  CSharpCompilation.Create(assemblyName, souls, references) ;
-            _Sources = new ProjectSourceBuilder(new EssentialReference(compilation)).Sources;
+            
+            _Sources = new ProjectSourceBuilder(new EssentialReference(compilation, cfg.GetTag(compilation))).Sources;
         }
 
       

@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
-
+using System;
+using System.Linq;
 
 namespace Regulus.Remote.Tools.Protocol.Sources
 {
@@ -11,9 +12,11 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         public readonly INamedTypeSymbol RegulusRemoteValue;
         public readonly INamedTypeSymbol[] SystemActions;
         public readonly Compilation Compilation;
-        public readonly DialogProvider Log;
 
-        public EssentialReference(Microsoft.CodeAnalysis.Compilation compilation)
+        public readonly System.Func<INamedTypeSymbol, bool> Tag;
+
+
+        public EssentialReference(Microsoft.CodeAnalysis.Compilation compilation, INamedTypeSymbol tag)
         {
             
             this.Compilation = compilation;
@@ -44,9 +47,17 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 _GetType("System.Action`15"),
                 _GetType("System.Action`16"),
             };
-            
+
+            Tag = _SetTag(tag);
         }
 
+        private Func<INamedTypeSymbol, bool> _SetTag(INamedTypeSymbol tag)
+        {
+            if (tag == null)
+                return s => true;
+
+            return s => s.AllInterfaces.Any(i=>i.Name == tag.Name);
+        }
 
         INamedTypeSymbol _GetType(string metaname)
         {
