@@ -18,7 +18,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
       
         private readonly IEnumerable<SyntaxTree> _Sources;
 
-        public GhostTest(Configuration cfg,params SyntaxTree[] souls)
+        public GhostTest(params SyntaxTree[] souls)
         {
 
             _Souls = souls;
@@ -33,7 +33,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
             };
             CSharpCompilation compilation =  CSharpCompilation.Create(assemblyName, souls, references) ;
             
-            _Sources = new ProjectSourceBuilder(new EssentialReference(compilation, cfg.GetTag(compilation))).Sources;
+            _Sources = new ProjectSourceBuilder(new EssentialReference(compilation, null)).Sources;
         }
 
       
@@ -67,7 +67,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.Tests
             {
                 test.TestState.Sources.Add(await syntaxTree.GetTextAsync( ));
             }
-            test.TestState.ExpectedDiagnostics.Add(new DiagnosticResult(DialogProvider.DoneDescriptor));
+            
             
                 
 

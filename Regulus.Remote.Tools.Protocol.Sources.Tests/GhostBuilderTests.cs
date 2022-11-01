@@ -15,7 +15,6 @@ using Regulus.Remote.Tools.Protocol.Sources.Extensions;
 
 namespace Regulus.Remote.Tools.Protocol.Sources.Tests
 {
-    
     public class GhostBuilderTests
     {
 
@@ -88,7 +87,7 @@ namespace NS1
                 new Regulus.Remote.Tools.Protocol.Sources.SyntaxTreeBuilder(SourceText.From(source,
                     System.Text.Encoding.UTF8));
 
-            await new GhostTest(new Configuration(), syntaxBuilder.Tree).RunAsync();
+            await new GhostTest( syntaxBuilder.Tree).RunAsync();
         }
 
         [Test]
@@ -113,7 +112,7 @@ public enum ENUM1
                 new Regulus.Remote.Tools.Protocol.Sources.SyntaxTreeBuilder(SourceText.From(source,
                     System.Text.Encoding.UTF8));
 
-            await new GhostTest(new Configuration(), syntaxBuilder.Tree).RunAsync();
+            await new GhostTest(syntaxBuilder.Tree).RunAsync();
         }
 
 
@@ -143,7 +142,7 @@ namespace NS1
                 new Regulus.Remote.Tools.Protocol.Sources.SyntaxTreeBuilder(SourceText.From(source,
                     System.Text.Encoding.UTF8));
 
-            await new GhostTest(new Configuration(), syntaxBuilder.Tree).RunAsync();
+            await new GhostTest( syntaxBuilder.Tree).RunAsync();
         }
         [Test]
         public async Task InterfaceInheritPropertyTest()
@@ -170,7 +169,7 @@ namespace NS1
                 new Regulus.Remote.Tools.Protocol.Sources.SyntaxTreeBuilder(SourceText.From(source,
                     System.Text.Encoding.UTF8));
 
-            await new GhostTest(new Configuration(), syntaxBuilder.Tree).RunAsync();
+            await new GhostTest(syntaxBuilder.Tree).RunAsync();
         }
 
         [Test]
@@ -193,7 +192,7 @@ public interface IA {
                 new Regulus.Remote.Tools.Protocol.Sources.SyntaxTreeBuilder(SourceText.From(source,
                     System.Text.Encoding.UTF8));
 
-            await new GhostTest(new Configuration(), syntaxBuilder.Tree).RunAsync();
+            await new GhostTest(syntaxBuilder.Tree).RunAsync();
 
 
         }
@@ -221,7 +220,7 @@ namespace NS
             var syntaxBuilder =
                 new Regulus.Remote.Tools.Protocol.Sources.SyntaxTreeBuilder(SourceText.From(source,
                     System.Text.Encoding.UTF8));
-            await new GhostTest(new Configuration(), syntaxBuilder.Tree).RunAsync();
+            await new GhostTest(syntaxBuilder.Tree).RunAsync();
         }
 
         [Test]
@@ -241,7 +240,7 @@ namespace NS
             var syntaxBuilder =
                 new Regulus.Remote.Tools.Protocol.Sources.SyntaxTreeBuilder(SourceText.From(source,
                     System.Text.Encoding.UTF8));
-            await new GhostTest(new Configuration(), syntaxBuilder.Tree).RunAsync();
+            await new GhostTest(syntaxBuilder.Tree).RunAsync();
         }
 
         [Test]
@@ -264,7 +263,7 @@ namespace NS
             var syntaxBuilder =
                 new Regulus.Remote.Tools.Protocol.Sources.SyntaxTreeBuilder(SourceText.From(source,
                     System.Text.Encoding.UTF8));
-            await new GhostTest(new Configuration(), syntaxBuilder.Tree).RunAsync();
+            await new GhostTest(syntaxBuilder.Tree).RunAsync();
         }
 
         [Test]
@@ -282,7 +281,7 @@ namespace NS
             var syntaxBuilder =
                 new Regulus.Remote.Tools.Protocol.Sources.SyntaxTreeBuilder(SourceText.From(source,
                     System.Text.Encoding.UTF8));
-            await new GhostTest(new Configuration(), syntaxBuilder.Tree).RunAsync();
+            await new GhostTest(syntaxBuilder.Tree).RunAsync();
         }
 
         [Test]
@@ -300,7 +299,7 @@ namespace NS
             var syntaxBuilder =
                 new Regulus.Remote.Tools.Protocol.Sources.SyntaxTreeBuilder(SourceText.From(source,
                     System.Text.Encoding.UTF8));
-            await new GhostTest(new Configuration(), syntaxBuilder.Tree).RunAsync();
+            await new GhostTest(syntaxBuilder.Tree).RunAsync();
         }
         [Test]
         public async Task InterfaceMethod1Test()
@@ -317,7 +316,7 @@ namespace NS
             var syntaxBuilder =
                 new Regulus.Remote.Tools.Protocol.Sources.SyntaxTreeBuilder(SourceText.From(source,
                     System.Text.Encoding.UTF8));
-            await new GhostTest(new Configuration(), syntaxBuilder.Tree).RunAsync();
+            await new GhostTest(syntaxBuilder.Tree).RunAsync();
         }
 
         [Test]
@@ -335,7 +334,7 @@ namespace NS
             var syntaxBuilder =
                 new Regulus.Remote.Tools.Protocol.Sources.SyntaxTreeBuilder(SourceText.From(source,
                     System.Text.Encoding.UTF8));
-            await new GhostTest(new Configuration(), syntaxBuilder.Tree).RunAsync();
+            await new GhostTest( syntaxBuilder.Tree).RunAsync();
         }
 
         [Test]
@@ -354,7 +353,7 @@ namespace NS1{}
                 new Regulus.Remote.Tools.Protocol.Sources.SyntaxTreeBuilder(SourceText.From(source,
                     System.Text.Encoding.UTF8));
 
-            await new GhostTest(new Configuration(), syntaxBuilder.Tree).RunAsync();
+            await new GhostTest(syntaxBuilder.Tree).RunAsync();
         }
 
         [Test]
@@ -377,7 +376,7 @@ public interface IB {
                 new Regulus.Remote.Tools.Protocol.Sources.SyntaxTreeBuilder(SourceText.From(source,
                     System.Text.Encoding.UTF8));
 
-            await new GhostTest(new Configuration(), syntaxBuilder.Tree).RunAsync();
+            await new GhostTest(syntaxBuilder.Tree).RunAsync();
         }
         [Test]
         
@@ -613,41 +612,7 @@ namespace NS1
             }
         }
 
-        [Test]
-        public void WithTag()
-        {
-            var src = @"
-    namespace NS
-    {
-        public interface ITagable
-        {
-        }
-    }
-
-    public interface IWithTag : NS.ITagable
-    {
-
-    }
-
-    public interface IWithoutTag 
-    {
-    }
-";
-            var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(src);
-            var com = tree.Compilation();
-
-            var cfg = new Configuration();
-            cfg.Identification.Tag = "NS.ITagable";
-            var builder = new ProjectSourceBuilder(new EssentialReference(com, cfg.GetTag(com)));
-            var sources = builder.Sources.ToArray();
-            var names = from source in sources
-                        let name = source.GetRoot().DescendantNodes().OfType<ClassDeclarationSyntax>().FirstOrDefault()?.Identifier.ToString()
-                        where name != null
-                        select name;
-            
-            NUnit.Framework.Assert.True(names.Any(n => n == "CIWithTag")) ;
-            NUnit.Framework.Assert.False(names.Any(n => n == "CIWithoutTag"));
-        }
+       
     }
 
     

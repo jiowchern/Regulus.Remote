@@ -18,13 +18,13 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-	  <PackageReference Include="Samboy063.Tomlet" Version="5.0.0" PrivateAssets="all" GeneratePathProperty="true"  />
 
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Regulus.Remote.Tools.Protocol.Sources.TestCommon\Regulus.Remote.Tools.Protocol.Sources.TestCommon.csproj" />
+    <ProjectReference Include="..\Regulus.Remote.Protocol.Identify\Regulus.Remote.Protocol.Identify.csproj" />
     <ProjectReference Include="..\Regulus.Remote.Tools.Protocol.Sources\Regulus.Remote.Tools.Protocol.Sources.csproj" />
+    <ProjectReference Include="..\Regulus.Remote\Regulus.Remote.csproj" />
   </ItemGroup>
 
 </Project>

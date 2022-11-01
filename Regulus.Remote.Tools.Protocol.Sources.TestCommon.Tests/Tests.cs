@@ -17,6 +17,17 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
             
         }
         [Test]
+        public void CreateIdentifyProtocol()
+        {
+            var protocol = Regulus.Remote.Tools.Protocol.Sources.IdentifyTestCommon.ProtocolProvider.CreateCase1();
+            var i1  = protocol.GetMemberMap().GetInterface(typeof(Regulus.Remote.Tools.Protocol.Sources.IdentifyTestCommon.IInterface1)); ;
+            var i2 = protocol.GetMemberMap().GetInterface(typeof(Regulus.Remote.Tools.Protocol.Sources.IdentifyTestCommon.IInterface2)); ;
+
+            NUnit.Framework.Assert.Zero(i2);
+            NUnit.Framework.Assert.NotZero(i1);
+
+        }
+        [Test]
         public void CreateProtocolTest1()
         {
 

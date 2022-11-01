@@ -34,7 +34,7 @@ namespace NS1
             var tree = CSharpSyntaxTree.ParseText(source);
 
 
-            await new GhostTest(new Configuration(), tree).RunAsync();
+            await new GhostTest(tree).RunAsync();
         }
 
     }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Collections.Immutable;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace Regulus.Remote.Tools.Protocol.Sources
 {
@@ -12,13 +13,13 @@ namespace Regulus.Remote.Tools.Protocol.Sources
     {
         void ISourceGenerator.Execute(GeneratorExecutionContext context)
         {
-           
+            
 
             var logger = new DialogProvider();
 
             try
             {
-                var tag = _GetTag(context.AdditionalFiles, context.Compilation);
+                INamedTypeSymbol tag = new IdentifyFinder(context.Compilation).Tag;
 
                 var references = new EssentialReference(context.Compilation, tag);
 
@@ -36,7 +37,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 {
                     context.AddSource(syntaxTree.FilePath, syntaxTree.GetText());
                 }
-                context.ReportDiagnostic(logger.Done());
+                
                 
             }
             catch (MissingTypeException e)
@@ -50,13 +51,6 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             }
             
             
-        }
-
-        private INamedTypeSymbol _GetTag(ImmutableArray<AdditionalText> additionalFiles ,Compilation com )
-        {
-            
-            
-            return additionalFiles.GetConfigurations().FirstOrDefault()?.GetTag(com);
         }
 
         void ISourceGenerator.Initialize(GeneratorInitializationContext context)

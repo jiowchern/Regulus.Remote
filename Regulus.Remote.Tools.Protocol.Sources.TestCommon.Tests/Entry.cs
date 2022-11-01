@@ -1,5 +1,6 @@
 using System;
 
+
 namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 {
     public class Entry<T> : IBinderProvider, System.IDisposable

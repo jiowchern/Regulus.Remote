@@ -56,7 +56,12 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             if (tag == null)
                 return s => true;
 
-            return s => s.AllInterfaces.Any(i=>i.Name == tag.Name);
+            return s => s.AllInterfaces.Any(i => _Equal(tag, i));
+        }
+
+        private static bool _Equal(INamedTypeSymbol tag, INamedTypeSymbol i)
+        {
+            return i.Name == tag.Name;
         }
 
         INamedTypeSymbol _GetType(string metaname)
