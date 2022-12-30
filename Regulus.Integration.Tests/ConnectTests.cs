@@ -54,7 +54,7 @@ namespace Regulus.Integration.Tests
             task.Wait();
 
             // release
-            client.Connecter.Disconnect();
+            client.Connecter.Disconnect().Wait();
             client.Agent.Dispose();
 
             server.Listener.Close();

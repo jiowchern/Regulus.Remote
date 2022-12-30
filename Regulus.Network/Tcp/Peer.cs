@@ -58,19 +58,19 @@ namespace Regulus.Network.Tcp
         }
         private int _EndReceive(IAsyncResult arg)
         {
-            
-            
+            if (!Socket.Connected)
+            {
+                _SocketErrorEvent(SocketError.Success);
+                return 0;
+            }
+
 
             SocketError error;
             int size = Socket.EndReceive(arg, out error);
             if(size == 0)
                 _SocketErrorEvent(error);
 
-            if (!Socket.Connected)
-            {
-                _SocketErrorEvent(error);
-                return size;
-            }
+           
 
             if (error == SocketError.Success)
                 return size;

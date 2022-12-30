@@ -37,6 +37,7 @@ namespace Regulus.Remote.Soul
         void _Join(Network.IStreamable stream)
         {
             User user = new User(stream, _Protocol , _Serializable, _InternalSerializable);
+            
             user.Launch();
             lock (_Users)
             {

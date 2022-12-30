@@ -45,32 +45,10 @@ namespace Regulus.Remote.Soul
 
         readonly ThreadUpdater _Updater;
 
-        private volatile bool _EnableValue;
-        private bool _Enable
-        {
-            get
-            {
-                lock (_EnableLock)
-                {
-                    return _EnableValue;
-                }
-            }
-
-            set
-            {
-                lock (_EnableLock)
-                {
-                    _EnableValue = value;
-                }
-            }
-
-        }
-
-
-
-        private readonly object _EnableLock;
         
+        private bool _Enable;
 
+        public bool Enable => _Enable;
         public static bool IsIdle
         {
             get { return User.TotalRequest <= 0 && User.TotalResponse <= 0; }
@@ -98,9 +76,6 @@ namespace Regulus.Remote.Soul
             Stream = client;
             _InternalSerializer = internal_serializable;
             
-
-            _EnableLock = new object();
-
             _Peer = client;
             _Protocol = protocol;
             
@@ -300,12 +275,7 @@ namespace Regulus.Remote.Soul
             }
         }
 
-        public bool Update()
-        {
-            
-            
-            return _Enable;
-        }
+      
 
         public void Launch()
         {
@@ -328,3 +298,4 @@ namespace Regulus.Remote.Soul
         }
     }
 }
+ 
