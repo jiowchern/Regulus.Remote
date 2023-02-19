@@ -23,7 +23,7 @@ namespace Regulus.Remote.Soul
             _Users = new System.Collections.Generic.List<User>();
             _Looper = new Utility.Looper<Network.IStreamable>();
             _Looper.AddItemEvent += _Join;
-            _Looper.RemoveItemEvent -= _Leave;
+            _Looper.RemoveItemEvent += _Leave;
             this._Protocol = protocol;
             this._Serializable = serializable;
             this._Listenable = listenable;
@@ -63,9 +63,11 @@ namespace Regulus.Remote.Soul
 
         void IDisposable.Dispose()
         {
-        
-            _Listenable.StreamableEnterEvent -= _Join;
-            _Listenable.StreamableLeaveEvent -= _Leave;
+            _Looper.AddItemEvent += _Join;
+            _Looper.RemoveItemEvent += _Leave;
+
+            _Listenable.StreamableEnterEvent -= _Looper.Add;
+            _Listenable.StreamableLeaveEvent -= _Looper.Remove;
 
             lock (_Users)
             {                
