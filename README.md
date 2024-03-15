@@ -8,7 +8,8 @@
 
 <!-- [![GitHub release](https://img.shields.io/github/release/jiowchern/regulus.svg?style=flat-square)](https://github.com/jiowchern/Regulus/releases)![pre-release](https://img.shields.io/github/v/release/jiowchern/Regulus?include_prereleases) -->
 <!-- [![Gitter](https://badges.gitter.im/JoinChat.svg)](https://gitter.im/Regulus-Library) -->
-![Latest Version](https://img.shields.io/github/v/tag/jiowchern/Regulus.Remote)
+
+[![nuget](https://buildstats.info/nuget/Regulus.Remote)](https://buildstats.info/nuget/Regulus.Remote)  
 
 ## Introduction
 It is a server-client connection framework developed using **C#** and can be used in Unity game engine and other game engines that are compliant with .  
