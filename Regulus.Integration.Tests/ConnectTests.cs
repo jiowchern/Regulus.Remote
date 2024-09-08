@@ -4,6 +4,8 @@ using System.Linq;
 using System.Reactive.Linq;
 using Regulus.Remote.Reactive;
 using NSubstitute;
+using System.Net.Sockets;
+using System.Net;
 namespace Regulus.Integration.Tests
 {
     public class ConnectTests
@@ -11,6 +13,16 @@ namespace Regulus.Integration.Tests
         [Test]
         public void TcpLocalConnectTest()
         {
+            // 獲取一個臨時可用的端口
+            int GetAvailablePort()
+            {
+                TcpListener listener = new TcpListener(IPAddress.Loopback, 0);
+                listener.Start();
+                int port = ((IPEndPoint)listener.LocalEndpoint).Port;
+                listener.Stop();
+                return port;
+            }
+            var port = GetAvailablePort();
             // bind interface
             var tester = new Regulus.Remote.Tools.Protocol.Sources.TestCommon.MethodTester();
             var entry = NSubstitute.Substitute.For<IEntry>();            
@@ -22,7 +34,7 @@ namespace Regulus.Integration.Tests
             // create server and client
             var server = Regulus.Remote.Server.Provider.CreateTcpService(entry, protocol);
             
-            server.Listener.Bind(47536);
+            server.Listener.Bind(port);
             
             var client = Regulus.Remote.Client.Provider.CreateTcpAgent(protocol);
 
@@ -38,7 +50,7 @@ namespace Regulus.Integration.Tests
 
             // do connect
             System.Net.IPEndPoint endPoint;            
-            System.Net.IPEndPoint.TryParse("127.0.0.1:47536", out endPoint);
+            System.Net.IPEndPoint.TryParse($"127.0.0.1:{port}", out endPoint);
             client.Connecter.Connect(endPoint).Wait();
 
             // get values
