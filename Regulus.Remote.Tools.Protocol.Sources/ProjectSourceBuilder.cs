@@ -30,8 +30,9 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             var interfaceProviderCodeBuilder = new InterfaceProviderCodeBuilder(ghosts);
             var membermapCodeBuilder = new MemberMapCodeBuilder(ghostBuilder.Souls);
 
+
             
-            var protocolBuilder = new ProtocolBuilder(compilation, eventProviderCodeBuilder, interfaceProviderCodeBuilder, membermapCodeBuilder, new  SerializableExtractor(ghostBuilder.Types));
+            var protocolBuilder = new ProtocolBuilder(compilation, eventProviderCodeBuilder, interfaceProviderCodeBuilder, membermapCodeBuilder, new  SerializableExtractor(compilation, ghostBuilder.Types));
 
             var protocolProviders = new ProtocoProviderlBuilder(compilation, protocolBuilder.ProtocolName).Trees;
             

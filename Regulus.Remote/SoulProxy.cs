@@ -210,7 +210,12 @@ namespace Regulus.Remote
             lock(_EventHandlers)
             {
                 SoulProxyEventHandler eventHandler = _EventHandlers.FirstOrDefault(eh => eh.HandlerId == handler_id && eh.EventInfo == eventInfo);
-
+                if (eventHandler == null)
+                {
+                    Regulus.Utility.Log.Instance.WriteInfo($" RemoveEvent {handler_id} {eventInfo.Name} not found.");
+                    return;
+                }
+                    
                 _EventHandlers.Remove(eventHandler);
 
                 eventHandler.Release();
