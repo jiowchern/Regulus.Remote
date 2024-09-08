@@ -41,15 +41,35 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         {
             foreach (var t in types)
             {
-                var typeSymbol = compilation.GetTypeByMetadataName(t.ToString());
-                if(typeSymbol == null)
+                var typeSyntax = t;
+                if (typeSyntax is ArrayTypeSyntax arrayType)
+                {
+                    typeSyntax = arrayType.ElementType;
+                }
+                var typeName = typeSyntax.ToString();
+                var symbol = compilation.GetTypeByMetadataName(typeName);
+
+                if (symbol == null)
                     return false;
-                if (typeSymbol.TypeKind == TypeKind.Interface)
+                
+                if(symbol.IsAbstract)
                     return false;
             }
             return true;
         }
 
         
+        static  bool isSerializableType(int val)
+        {
+            var begin = (int)SpecialType.System_Boolean;
+            var end = (int)SpecialType.System_String;
+            return val >= begin && val <= end;
+        }
+        static bool isSerializableType(ITypeSymbol type)
+        {
+
+            
+            return isSerializableType((int)type.SpecialType);
+        }
     }
 }
