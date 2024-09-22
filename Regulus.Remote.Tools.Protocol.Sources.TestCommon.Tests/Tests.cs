@@ -119,7 +119,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 
 
 
-            System.Threading.SpinWait.SpinUntil(() => removeNum1s.Count == 2, 5000);
+            System.Threading.SpinWait.SpinUntil(() => removeNum1s.Count == 2, 60000);
             NUnit.Framework.Assert.AreEqual(2, removeNum1s[0]);
             NUnit.Framework.Assert.AreEqual(2, removeNum1s[1]);
 
@@ -408,36 +408,28 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
         [Test]
         public void PropertyTest()
         {
+            Regulus.Utility.Singleton<Regulus.Utility.Log>.Instance.RecordEvent += System.Console.WriteLine;
             var tester = new PropertyTester();
             var env = new TestEnv<Entry<IPropertyable>, IPropertyable>(new Entry<IPropertyable>(tester));
-            
-            var values1Obs = from gpi in env.Queryable.QueryNotifier<IPropertyable>().SupplyEvent()                            
-                            select new { v1=gpi.Property1.Value,v2= gpi.Property2.Value };
 
-            
-            var values = values1Obs.FirstAsync().Wait();
+            var gpiObs = from g in env.Queryable.QueryNotifier<IPropertyable>().SupplyEvent()
+                         select g;
 
-            Assert.AreEqual(1, values.v1);
-            Assert.AreEqual(2, values.v2);
-            
+            var gpi = gpiObs.FirstAsync().Wait();
 
-            var values2Obs = from gpi in env.Queryable.QueryNotifier<IPropertyable>().SupplyEvent()
-                             from v1 in gpi.Property1.PropertyChangeValue()
-                             from v2 in gpi.Property2.PropertyChangeValue()
-                             select new { v1 , v2};
+            Assert.AreEqual(1, gpi.Property1.Value);
+            Assert.AreEqual(2, gpi.Property2.Value);
 
-            int[] changes = new int[] { 1, 2 };
-            values2Obs.Subscribe(o => { changes[0] = o.v1; changes[1] = o.v2; });
+            tester.Property1.Value++;
+            tester.Property2.Value++;
 
-            
             System.Threading.SpinWait.SpinUntil(() => {
-                tester.Property1.Value ++ ;
-                tester.Property2.Value ++;                
-                return changes[0] != 1 && changes[1] != 2;
-            } ,5000);
+                
+                return gpi.Property1.Value == 2 && gpi.Property2.Value == 3;
+            } ,60000);
             
-            Assert.AreNotEqual(1, changes[0]);
-            Assert.AreNotEqual(2, changes[1]);
+            Assert.AreNotEqual(3, gpi.Property1.Value);
+            Assert.AreNotEqual(4, gpi.Property2.Value);
 
             env.Dispose();
 

@@ -18,13 +18,13 @@ namespace RemotingTest
         public void PropertyUpdaterTest()
         {
             
-            Regulus.Remote.Property<int> p1 = new Regulus.Remote.Property<int>(1);
+            Regulus.Remote.Property<int> p1 = new Regulus.Remote.Property<int>(0);
             
             var updater = new Regulus.Remote.PropertyUpdater(p1, 1);
             Regulus.Remote.IPropertyIdValue idValue = updater;
 
             System.Collections.Generic.Queue<object> objs = new System.Collections.Generic.Queue<object>();
-            updater.ChnageEvent += objs.Enqueue;
+            updater.ChnageEvent +=(u,o) => objs.Enqueue(o);
             p1.Value = 1;
             p1.Value = 2;
             p1.Value = 3;

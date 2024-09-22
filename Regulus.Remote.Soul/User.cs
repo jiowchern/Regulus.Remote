@@ -1,4 +1,5 @@
-﻿using Regulus.Network;
+﻿using Regulus.Extensions;
+using Regulus.Network;
 using Regulus.Utility;
 using System;
 using System.Collections.Generic;
@@ -90,7 +91,7 @@ namespace Regulus.Remote.Soul
 
             _SoulProvider = new SoulProvider(this, this, protocol, serializable, _InternalSerializer);
 
-            _Updater = new ThreadUpdater(_AsyncUpdate);
+            //_Updater = new ThreadUpdater(_AsyncUpdate);
         }
 
         void _Launch()
@@ -109,7 +110,7 @@ namespace Regulus.Remote.Soul
             
             _Push(ServerToClientOpCode.ProtocolSubmit, _InternalSerializer.Serialize(pkg));
 
-            _Updater.Start();
+            //_Updater.Start();
         }
 
 
@@ -122,7 +123,7 @@ namespace Regulus.Remote.Soul
 
             _Writer.Stop();
 
-            _Updater.Stop();
+            //_Updater.Stop();
             Regulus.Remote.Packages.RequestPackage req;
             while (_ExternalRequests.TryDequeue(out req))
             {
@@ -151,8 +152,6 @@ namespace Regulus.Remote.Soul
         void _AsyncUpdate()
         {
 
-            _SoulProvider.Update();
-
             _Writer.Push(_ResponsePop());
             
             _Reader.Update();
@@ -180,7 +179,7 @@ namespace Regulus.Remote.Soul
             if (_Enable)
             {
                 System.Threading.Interlocked.Increment(ref _TotalResponse);
-
+                
                 _Responses.Enqueue(
                     new Regulus.Remote.Packages.ResponsePackage
                     {
@@ -290,6 +289,7 @@ namespace Regulus.Remote.Soul
 
         void Advanceable.Advance()
         {
+            _AsyncUpdate();
             Regulus.Remote.Packages.RequestPackage pkg;
             while (_ExternalRequests.TryDequeue(out pkg))
             {
