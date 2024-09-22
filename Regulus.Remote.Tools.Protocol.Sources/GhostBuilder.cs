@@ -7,10 +7,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Regulus.Remote.Tools.Protocol.Sources.Extensions;
 namespace Regulus.Remote.Tools.Protocol.Sources
 {
-
     class GhostBuilder  
     {
-        
+
         public readonly IEnumerable<TypeSyntax> Types;
         public readonly IEnumerable<ClassDeclarationSyntax> Ghosts;
         public readonly IEnumerable<ClassDeclarationSyntax> EventProxys;
@@ -100,6 +99,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 ghosts.Add(type);
 
             }
+            
             ClassAndTypess = classAndTypess;
             Types = new HashSet<TypeSyntax>(_WithOutNamespaceFilter(types) , SyntaxNodeComparer.Default);
             Ghosts = new HashSet<ClassDeclarationSyntax>(ghosts, SyntaxNodeComparer.Default);
@@ -116,10 +116,13 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
         private IEnumerable<TypeSyntax> _WithOutNamespaceFilter(List<TypeSyntax> types)
         {
-            foreach (var type in types)
+            
+            foreach(var type in types)
             {
+                
                 yield return type;
             }
+            
         }
     }
 

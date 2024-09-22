@@ -437,10 +437,17 @@ namespace NS1
 using System;
 namespace NS1
 {    
+    public struct Effect{
+        public int Value;
+    }
+    public struct Item{
+        public Effect[] Effects;
+    }
     public interface IB 
     {
         void IBM1();
         event Action Event2;
+        event Action<Item[]> Event3;
     }
 
     public interface IA :IB 
@@ -502,7 +509,7 @@ namespace NS1
             NUnit.Framework.Assert.True(hasException);
             NUnit.Framework.Assert.AreEqual(1, values[0]);
             NUnit.Framework.Assert.AreEqual(2, values[1]);
-
+            
         }
 
         [Test]
@@ -532,7 +539,7 @@ namespace NS1
     }
     public interface IA  :IB
     {
-        Value<Struct1> M123(int a);
+        Value<Struct1[]> M123(int a);
 
         int NoSupple(int a);
         Regulus.Remote.Property<int> Property1{get;}

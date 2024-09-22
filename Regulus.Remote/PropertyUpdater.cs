@@ -6,7 +6,7 @@ namespace Regulus.Remote
     {
         private readonly IDirtyable _Dirtyable;
         public readonly int PropertyId;
-        public event System.Action<object> ChnageEvent;
+        public event System.Action<IPropertyIdValue , object> ChnageEvent;
         bool _Dirty;
         bool _Close;
         object _Object;
@@ -32,7 +32,7 @@ namespace Regulus.Remote
 
             if(_Update())
             {
-                ChnageEvent(_Object);
+                ChnageEvent(this,_Object);
             }
         }
 
@@ -64,7 +64,7 @@ namespace Regulus.Remote
             _Close = false;
             if(_Update())
             {
-                ChnageEvent(_Object);
+                ChnageEvent(this,_Object);
             }
         }
     }

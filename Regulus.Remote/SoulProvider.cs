@@ -11,7 +11,7 @@ namespace Regulus.Remote
     public class SoulProvider : IDisposable, IBinder
     {
         private readonly IdLandlord _IdLandlord;
-        private readonly Queue<byte[]> _EventFilter ;
+        
 
         private readonly IRequestQueue _Peer;
 
@@ -33,7 +33,7 @@ namespace Regulus.Remote
             _InternalSerializable = internal_serializable;
             _WaitValues = new Dictionary<long, IValue>();
             _Souls = new System.Collections.Concurrent.ConcurrentDictionary<long, SoulProxy>();
-            _EventFilter = new Queue<byte[]>();
+            
             _IdLandlord = new IdLandlord();
             _Queue = queue;
             _Protocol = protocol;
@@ -110,10 +110,7 @@ namespace Regulus.Remote
 
         private void _InvokeEvent(byte[] argmants)
         {
-            lock (_EventFilter)
-            {
-                _EventFilter.Enqueue(argmants);
-            }
+            _Queue.Push(ServerToClientOpCode.InvokeEvent, argmants);            
         }
 
         private void _ReturnValue(long returnId, IValue returnValue)
@@ -194,7 +191,7 @@ namespace Regulus.Remote
             Regulus.Remote.Packages.PackageSetProperty package = new Regulus.Remote.Packages.PackageSetProperty();
             package.EntityId = id;
             package.Property = property;
-            package.Value = _Serializer.Serialize(info.PropertyType, val);
+            package.Value = _Serializer.Serialize(info.PropertyType, val);            
             _Queue.Push(ServerToClientOpCode.SetProperty, _InternalSerializable.Serialize(package));
         }
         private void _LoadSoul(int type_id, long id, bool return_type)
@@ -331,11 +328,17 @@ namespace Regulus.Remote
             int interfaceId = _Protocol.GetMemberMap().GetInterface(soul_type);
             var newSoul = new SoulProxy(_IdLandlord.Rent(), interfaceId, soul_type, soul );
             newSoul.SupplySoulEvent += _PropertyBind;
-            newSoul.UnsupplySoulEvent += _PropertyUnbind;            
+            newSoul.UnsupplySoulEvent += _PropertyUnbind;
+            newSoul.PropertyChangedEvent += _LoadProperty;
             Regulus.Utility.Log.Instance.WriteInfo($"soul add {newSoul.Id}:{soul_type.Name}.");
             _Souls.TryAdd(newSoul.Id, newSoul);
 
             return newSoul;
+        }
+
+        private void _LoadProperty(long soul, IPropertyIdValue prop)
+        {
+            _LoadProperty(soul, prop.Id, prop.Instance);
         }
 
         private SoulProxy _Bind(object soul, Type soul_type, bool return_type, long return_id)
@@ -362,8 +365,10 @@ namespace Regulus.Remote
 
             soulInfo.SupplySoulEvent -= _PropertyBind;
             soulInfo.UnsupplySoulEvent -= _PropertyUnbind;
+            soulInfo.PropertyChangedEvent -= _LoadProperty;
 
-            
+
+
             _UnloadSoul(soulInfo.InterfaceId, soulInfo.Id);            
             _IdLandlord.Return(soulInfo.Id);
             
@@ -409,30 +414,7 @@ namespace Regulus.Remote
 
         }
 
-        public void Update()
-        {
-            SoulProxy[] souls = _Souls.ToArray().Select(kv=>kv.Value).ToArray();
-
-
-            foreach (SoulProxy soul in souls)
-            {
-                IPropertyIdValue change;
-                while (soul.TryGetPropertyChange(out change))
-                {
-                    _LoadProperty(soul.Id, change.Id, change.Instance);
-                }
-            }
-
-            lock (_EventFilter)
-            {
-                foreach (byte[] filter in _EventFilter)
-                {
-                    _Queue.Push(ServerToClientOpCode.InvokeEvent, filter);
-                }
-
-                _EventFilter.Clear();
-            }
-        }
+        
 
         public void Unbind(long entityId)
         {

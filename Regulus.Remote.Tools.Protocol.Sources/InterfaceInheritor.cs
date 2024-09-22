@@ -22,7 +22,6 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         {
             Expression = expression;
             _NamePath = @base.GetNamePath();
-            Expression = expression;
             this.Base = @base;
         }
 
@@ -31,8 +30,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
             var interfaceDeclaration = Base;
             var namePath = _NamePath;
-
-            var expression = Expression;
+            
 
             var explicitInterfaceSpecifier = SyntaxFactory.ExplicitInterfaceSpecifier(SyntaxFactory.ParseName(namePath));
 
@@ -43,18 +41,18 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
             var nodes = interfaceDeclaration.DescendantNodes().OfType<MemberDeclarationSyntax>();
 
-            classSyntax = _InheriteMethods(expression, explicitInterfaceSpecifier, classSyntax, nodes);
+            classSyntax = _InheriteMethods(explicitInterfaceSpecifier, classSyntax, nodes);
 
-            classSyntax = _InheriteProperties(expression, explicitInterfaceSpecifier, classSyntax, nodes);
+            classSyntax = _InheriteProperties(explicitInterfaceSpecifier, classSyntax, nodes);
 
-            classSyntax = _InheriteEvents(expression, explicitInterfaceSpecifier, classSyntax, nodes);
+            classSyntax = _InheriteEvents(explicitInterfaceSpecifier, classSyntax, nodes);
 
-            classSyntax = _InheriteIndexs(expression, explicitInterfaceSpecifier, classSyntax, nodes);
+            classSyntax = _InheriteIndexs(explicitInterfaceSpecifier, classSyntax, nodes);
 
             return classSyntax;
         }
 
-        private static ClassDeclarationSyntax _InheriteIndexs(BlockSyntax expression, ExplicitInterfaceSpecifierSyntax explicitInterfaceSpecifier, ClassDeclarationSyntax classSyntax, System.Collections.Generic.IEnumerable<MemberDeclarationSyntax> nodes)
+        private ClassDeclarationSyntax _InheriteIndexs(ExplicitInterfaceSpecifierSyntax explicitInterfaceSpecifier, ClassDeclarationSyntax classSyntax, System.Collections.Generic.IEnumerable<MemberDeclarationSyntax> nodes)
         {
             foreach (var member in nodes.OfType<IndexerDeclarationSyntax>())
             {
@@ -62,7 +60,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 node = node.WithExplicitInterfaceSpecifier(explicitInterfaceSpecifier);
 
                 var accessors = from a in node.AccessorList.Accessors
-                                select a.WithBody(expression);
+                                select a.WithBody(Expression);
                 node = node.WithAccessorList(SyntaxFactory.AccessorList(SyntaxFactory.List(accessors)));
 
                 classSyntax = classSyntax.AddMembers(node);
@@ -71,7 +69,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             return classSyntax;
         }
 
-        private static ClassDeclarationSyntax _InheriteEvents(BlockSyntax expression, ExplicitInterfaceSpecifierSyntax explicitInterfaceSpecifier, ClassDeclarationSyntax classSyntax, System.Collections.Generic.IEnumerable<MemberDeclarationSyntax> nodes)
+        private ClassDeclarationSyntax _InheriteEvents(ExplicitInterfaceSpecifierSyntax explicitInterfaceSpecifier, ClassDeclarationSyntax classSyntax, System.Collections.Generic.IEnumerable<MemberDeclarationSyntax> nodes)
         {
             foreach (var member in nodes.OfType<EventFieldDeclarationSyntax>())
             {
@@ -80,8 +78,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
                 eventDeclaration = eventDeclaration.WithExplicitInterfaceSpecifier(explicitInterfaceSpecifier);
                 var accessors = SyntaxFactory.AccessorList();
-                accessors = accessors.AddAccessors(SyntaxFactory.AccessorDeclaration(SyntaxKind.AddAccessorDeclaration).WithBody(expression));
-                accessors = accessors.AddAccessors(SyntaxFactory.AccessorDeclaration(SyntaxKind.RemoveAccessorDeclaration).WithBody(expression));
+                accessors = accessors.AddAccessors(SyntaxFactory.AccessorDeclaration(SyntaxKind.AddAccessorDeclaration).WithBody(Expression));
+                accessors = accessors.AddAccessors(SyntaxFactory.AccessorDeclaration(SyntaxKind.RemoveAccessorDeclaration).WithBody(Expression));
                 eventDeclaration = eventDeclaration.WithAccessorList(accessors);
                 classSyntax = classSyntax.AddMembers(eventDeclaration);
             }
@@ -89,7 +87,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             return classSyntax;
         }
 
-        private static ClassDeclarationSyntax _InheriteProperties(BlockSyntax expression, ExplicitInterfaceSpecifierSyntax explicitInterfaceSpecifier, ClassDeclarationSyntax classSyntax, System.Collections.Generic.IEnumerable<MemberDeclarationSyntax> nodes)
+        private ClassDeclarationSyntax _InheriteProperties(ExplicitInterfaceSpecifierSyntax explicitInterfaceSpecifier, ClassDeclarationSyntax classSyntax, System.Collections.Generic.IEnumerable<MemberDeclarationSyntax> nodes)
         {
             foreach (var member in nodes.OfType<PropertyDeclarationSyntax>())
             {
@@ -97,7 +95,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 node = node.WithExplicitInterfaceSpecifier(explicitInterfaceSpecifier);
 
                 var accessors = from a in node.AccessorList.Accessors
-                                select a.WithBody(expression);
+                                select a.WithBody(Expression);
 
                 node = node.WithAccessorList(SyntaxFactory.AccessorList(SyntaxFactory.List(accessors)));
 
@@ -108,14 +106,14 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             return classSyntax;
         }
 
-        private static ClassDeclarationSyntax _InheriteMethods(BlockSyntax expression, ExplicitInterfaceSpecifierSyntax explicitInterfaceSpecifier, ClassDeclarationSyntax classSyntax, System.Collections.Generic.IEnumerable<MemberDeclarationSyntax> nodes)
+        private ClassDeclarationSyntax _InheriteMethods(ExplicitInterfaceSpecifierSyntax explicitInterfaceSpecifier, ClassDeclarationSyntax classSyntax, System.Collections.Generic.IEnumerable<MemberDeclarationSyntax> nodes)
         {
             foreach (var member in nodes.OfType<MethodDeclarationSyntax>())
             {
                 var node = member;
 
                 node = node.WithExplicitInterfaceSpecifier(explicitInterfaceSpecifier);
-                node = node.WithBody(expression);
+                node = node.WithBody(Expression);
                 classSyntax = classSyntax.AddMembers(node);
             }
 

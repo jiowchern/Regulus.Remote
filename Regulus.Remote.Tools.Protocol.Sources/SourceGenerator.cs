@@ -35,10 +35,15 @@ namespace Regulus.Remote.Tools.Protocol.Sources
 
                 foreach (var syntaxTree in sources)
                 {
+#if DEBUG
+                      // System.IO.File.WriteAllText(syntaxTree.FilePath, syntaxTree.GetText().ToString());
+#endif
                     context.AddSource(syntaxTree.FilePath, syntaxTree.GetText());
+
+
                 }
-                
-                
+
+
             }
             catch (MissingTypeException e)
             {
@@ -49,8 +54,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             {
                 context.ReportDiagnostic(logger.Exception(e.ToString()));                
             }
-            
-            
+
         }
 
         void ISourceGenerator.Initialize(GeneratorInitializationContext context)

@@ -1,4 +1,5 @@
-﻿using Regulus.Network;
+﻿using Regulus.Extensions;
+using Regulus.Network;
 using Regulus.Utility;
 using System;
 using System.Collections.Generic;
@@ -24,12 +25,6 @@ namespace Regulus.Remote.Soul
             public byte[][] MethodParams { get; set; }
         }
 
-        
-
-
-        private readonly System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.RequestPackage> _Requests;
-
-        private readonly System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.ResponsePackage> _Responses;
 
         private readonly IStreamable _Peer;
 
@@ -42,26 +37,13 @@ namespace Regulus.Remote.Soul
         private readonly PackageWriter<Regulus.Remote.Packages.ResponsePackage> _Writer;
 
         private readonly System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.RequestPackage> _ExternalRequests;
-
-        readonly ThreadUpdater _Updater;
-
         
         private bool _Enable;
 
         public bool Enable => _Enable;
-        public static bool IsIdle
-        {
-            get { return User.TotalRequest <= 0 && User.TotalResponse <= 0; }
-        }
-
-        private static long _TotalRequest;
-        public static long TotalRequest { get { return _TotalRequest; } }
-
-        private static long _TotalResponse;
+        
         internal readonly IStreamable Stream;
         private readonly IInternalSerializable _InternalSerializer;
-
-        public static long TotalResponse { get { return _TotalResponse; } }
 
         public IBinder Binder
         {
@@ -81,8 +63,7 @@ namespace Regulus.Remote.Soul
             
             
 
-            _Responses = new System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.ResponsePackage>();
-            _Requests = new System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.RequestPackage>();
+                        
             _Reader = new PackageReader<Regulus.Remote.Packages.RequestPackage>(_InternalSerializer);
             _Writer = new PackageWriter<Regulus.Remote.Packages.ResponsePackage>(_InternalSerializer);
             
@@ -90,7 +71,7 @@ namespace Regulus.Remote.Soul
 
             _SoulProvider = new SoulProvider(this, this, protocol, serializable, _InternalSerializer);
 
-            _Updater = new ThreadUpdater(_AsyncUpdate);
+            //_Updater = new ThreadUpdater(_AsyncUpdate);
         }
 
         void _Launch()
@@ -109,7 +90,7 @@ namespace Regulus.Remote.Soul
             
             _Push(ServerToClientOpCode.ProtocolSubmit, _InternalSerializer.Serialize(pkg));
 
-            _Updater.Start();
+            //_Updater.Start();
         }
 
 
@@ -122,15 +103,14 @@ namespace Regulus.Remote.Soul
 
             _Writer.Stop();
 
-            _Updater.Stop();
+            //_Updater.Stop();
             Regulus.Remote.Packages.RequestPackage req;
             while (_ExternalRequests.TryDequeue(out req))
             {
 
             }
 
-            System.Threading.Interlocked.Add(ref _TotalResponse, -_Responses.Count);
-            System.Threading.Interlocked.Add(ref _TotalRequest, -_Requests.Count);
+                        
 
             _SendBreakEvent();
             _Enable = false;
@@ -148,27 +128,7 @@ namespace Regulus.Remote.Soul
             remove { _BreakEvent -= value; }
         }
 
-        void _AsyncUpdate()
-        {
-
-            _SoulProvider.Update();
-
-            _Writer.Push(_ResponsePop());
-            
-            _Reader.Update();
-
-            _ExecuteRequests();
-        }
-        
-        private void _ExecuteRequests()
-        {
-            Regulus.Remote.Packages.RequestPackage pkg;
-            while (_Requests.TryDequeue(out pkg))
-            {
-                System.Threading.Interlocked.Decrement(ref _TotalRequest);
-                _InternalRequest(pkg);
-            }
-        }
+       
 
         void IResponseQueue.Push(ServerToClientOpCode cmd, byte[] data)
         {
@@ -179,22 +139,17 @@ namespace Regulus.Remote.Soul
         {
             if (_Enable)
             {
-                System.Threading.Interlocked.Increment(ref _TotalResponse);
-
-                _Responses.Enqueue(
-                    new Regulus.Remote.Packages.ResponsePackage
-                    {
-                        Code = cmd,
-                        Data = data
-                    });
+                _Writer.Push(new Regulus.Remote.Packages.ResponsePackage
+                {
+                    Code = cmd,
+                    Data = data
+                });                                                
             }
         }
 
         private void _RequestPush(Regulus.Remote.Packages.RequestPackage package)
         {
-            System.Threading.Interlocked.Increment(ref _TotalRequest);
-
-            _Requests.Enqueue(package);
+            _InternalRequest(package);            
         }
 
         private void _ExternalRequest(Regulus.Remote.Packages.RequestPackage package)
@@ -216,6 +171,11 @@ namespace Regulus.Remote.Soul
                 Regulus.Remote.Packages.PackageRemoveEvent data = (Regulus.Remote.Packages.PackageRemoveEvent)_InternalSerializer.Deserialize(package.Data)  ;
                 _SoulProvider.RemoveEvent(data.Entity, data.Event, data.Handler);
             }
+            else if (package.Code == ClientToServerOpCode.UpdateProperty)
+            {
+                Regulus.Remote.Packages.PackageSetPropertyDone data = (Regulus.Remote.Packages.PackageSetPropertyDone)_InternalSerializer.Deserialize(package.Data);
+                _SoulProvider.SetPropertyDone(data.EntityId, data.Property);
+            }
             else
             {
                 Regulus.Utility.Log.Instance.WriteInfo($"invalid request code {package.Code}.");
@@ -233,12 +193,7 @@ namespace Regulus.Remote.Soul
                 Regulus.Remote.Packages.PackageRelease data = (Regulus.Remote.Packages.PackageRelease)_InternalSerializer.Deserialize(package.Data)  ;
                 _SoulProvider.Unbind(data.EntityId);
                 
-            }
-            else if (package.Code == ClientToServerOpCode.UpdateProperty)
-            {
-                Regulus.Remote.Packages.PackageSetPropertyDone data = (Regulus.Remote.Packages.PackageSetPropertyDone)_InternalSerializer.Deserialize(package.Data)  ;
-                _SoulProvider.SetPropertyDone(data.EntityId, data.Property);
-            }
+            }            
             else
             {
                 _ExternalRequests.Enqueue(package);
@@ -265,17 +220,6 @@ namespace Regulus.Remote.Soul
             }
         }
 
-        private IEnumerable<Regulus.Remote.Packages.ResponsePackage>  _ResponsePop()
-        {
-            Regulus.Remote.Packages.ResponsePackage pkg;
-            while (_Responses.TryDequeue(out pkg))
-            {
-                System.Threading.Interlocked.Decrement(ref _TotalResponse);
-                yield return pkg;
-            }
-        }
-
-      
 
         public void Launch()
         {
@@ -283,13 +227,12 @@ namespace Regulus.Remote.Soul
         }
 
         public void Shutdown()
-        {
-            
+        {            
             _Shutdown();
         }
 
         void Advanceable.Advance()
-        {
+        {            
             Regulus.Remote.Packages.RequestPackage pkg;
             while (_ExternalRequests.TryDequeue(out pkg))
             {

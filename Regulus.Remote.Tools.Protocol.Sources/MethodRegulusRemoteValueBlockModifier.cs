@@ -26,7 +26,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.BlockModifiers
             if (Extensions.SyntaxExtensions.AnyNull(block, md,cd))
             {
                 return null;
-            }
+            }            
             if (!_Compilation.AllSerializable(md.ParameterList.Parameters.Select(p => p.Type)))
                 return null;
             if ((from p in md.ParameterList.Parameters

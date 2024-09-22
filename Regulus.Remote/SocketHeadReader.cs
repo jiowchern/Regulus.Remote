@@ -6,47 +6,39 @@ using System.Threading.Tasks;
 
 namespace Regulus.Remote
 {
+    
     internal class SocketHeadReader : ISocketReader
     {
         private readonly IStreamable _Peer;
 
         private readonly System.Collections.Generic.List<byte> _Buffer;
 
-        private readonly byte[] _ReadedByte;
-        int _ReadSize;
-        System.Action _Update;
+        private readonly byte[] _ReadedByte;        
         
         public SocketHeadReader(IStreamable peer)
         {
-        
             _ReadedByte = new byte[1];
             _Peer = peer;
-            _Buffer = new List<byte>();
-            _Update = () => { };
+            _Buffer = new List<byte>();            
         }
 
         public void Read()
         {
-            _Read();
-        }
-        private void _Read()
-        {
-            _ReadSize = 0;
-            _Update = () => { };
-            _Peer.Receive(_ReadedByte, 0, 1).ValueEvent += _ReadDone;            
-        }
-
-        private void _ReadDone(int read_size)
-        {
-            _ReadSize += read_size;
-            _Update = _Check;
-        }
-
-        private bool _ReadData()
-        {
-            if (_ReadSize == 0)
-                return false;
             
+            _Check(0);
+        }
+        private async Task<int> _Read()
+        {            
+            //_Peer.Receive(_ReadedByte, 0, 1).ValueEvent += _ReadDone;            
+            return await _Peer.Receive(_ReadedByte, 0, 1);
+            
+        }
+        
+
+        private bool _ReadData(int read_size)
+        {
+            if (read_size == 0)
+                return false;            
             byte value = _ReadedByte[0];
             _Buffer.Add(value);
 
@@ -57,33 +49,23 @@ namespace Regulus.Remote
             return false;
         }
 
-        
-
-        void IStatus.Enter()
+        private void _Check(int read_size)
         {
-            
-        }
-
-        void IStatus.Leave()
-        {
-            
-        }
-
-        void IStatus.Update()
-        {
-            _Update();
-            
-        }
-
-        private void _Check()
-        {
-            if (_ReadData())
+            if (_ReadData(read_size))
             {
+                
                 _DoneEvent(_Buffer.ToArray());
             }
             else
             {
-                _Read();
+                int delayTime = read_size == 0 ? 10 : 0;    
+                System.Threading.Tasks.Task.Delay(delayTime).ContinueWith((_) =>
+                {
+                    _Read().ContinueWith((task) =>
+                    {
+                        _Check(task.Result);
+                    });
+                });                
             }
         }
 

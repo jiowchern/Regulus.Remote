@@ -17,9 +17,11 @@ namespace Regulus.Remote
 
         public System.Action ErrorEvent;
 
+        
+
         public PackageWriter(IInternalSerializable serializer)
         {
-
+        
             _Serializer = serializer;
         
         }
@@ -35,13 +37,31 @@ namespace Regulus.Remote
             NetworkMonitor.Instance.Write.Set(send_count);
         }
 
-        public async void Push(System.Collections.Generic.IEnumerable<TPackage>   packages)
+        public void Push(TPackage package)
         {
-            
-            var buffer = _CreateBuffer(packages.ToArray());
+            var buffer = _CreateBuffer(ref package);
             if (buffer.Length == 0)
                 return;
 
+            _Write(buffer).ContinueWith(t => { }); 
+            
+        }
+
+        public async void Push(System.Collections.Generic.IEnumerable<TPackage> packages)
+        {
+
+            var buffer = _CreateBuffer(packages.ToArray());
+            if (buffer.Length == 0)
+                return;
+            
+            await _Write(buffer);            
+        }
+
+        private async System.Threading.Tasks.Task _Write(byte[] buffer)
+        {
+            
+            
+            
             IWaitableValue<int> wv = null;
             try
             {
@@ -49,20 +69,31 @@ namespace Regulus.Remote
             }
             catch (System.Exception ex)
             {
-                Regulus.Utility.Log.Instance.WriteInfo(ex.ToString()) ;
+                Regulus.Utility.Log.Instance.WriteInfo(ex.ToString());
                 ErrorEvent();
             }
 
-            if(wv == null)
-            {
-                return;
-            }
+            
             var sendCount = await wv;
-            _WriteEnd(sendCount);
-
+            _WriteEnd(sendCount);            
         }
+
         
 
+        private byte[] _CreateBuffer(ref TPackage package)
+        {
+            byte[] buffers = _Serializer.Serialize(package);
+            using (MemoryStream stream = new MemoryStream())
+            {
+                int len = buffers.Length;
+                int lenCount = Regulus.Serialization.Varint.GetByteCount(len);
+                byte[] lenBuffer = new byte[lenCount];
+                Regulus.Serialization.Varint.NumberToBuffer(lenBuffer, 0, len);
+                stream.Write(lenBuffer, 0, lenBuffer.Length);
+                stream.Write(buffers, 0, buffers.Length);
+                return stream.ToArray();
+            }
+        }
         private byte[] _CreateBuffer(TPackage[] packages)
         {
             IEnumerable<byte[]> buffers = from p in packages select _Serializer.Serialize(p);

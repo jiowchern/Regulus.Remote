@@ -27,7 +27,8 @@ namespace Regulus.Remote
         public delegate void OnUnsupplyPropertySoul(long soul_id, int property_id, long property_soul_id);
         public event OnSupplyPropertySoul SupplySoulEvent;        
         public event OnUnsupplyPropertySoul UnsupplySoulEvent;
-        readonly System.Collections.Concurrent.ConcurrentQueue<IPropertyIdValue> _PropertyChangeds;
+        
+        public event System.Action<long ,IPropertyIdValue> PropertyChangedEvent;
 
         public readonly int InterfaceId;
 
@@ -38,14 +39,14 @@ namespace Regulus.Remote
         public SoulProxy(long id, int interface_id, Type object_type, object object_instance )
         {
             
-            MethodInfos = _GetInterfaces(object_type).SelectMany(i=>i.GetMethods() ).ToArray();
-            PropertyInfos = _GetInterfaces(object_type).SelectMany(s => s.GetProperties(BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public)).ToArray();
+            MethodInfos = _GetInterfaces(object_type).SelectMany(i => i.GetMethods()).Union(new MethodInfo[0]).ToArray();
+            
+            PropertyInfos = _GetInterfaces(object_type).SelectMany(s => s.GetProperties(BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public)).Union(new PropertyInfo[0] ).ToArray();
             ObjectInstance = object_instance;
             ObjectType = object_type;
             InterfaceId = interface_id;
             Id = id;
-            
-            _PropertyChangeds = new System.Collections.Concurrent.ConcurrentQueue<IPropertyIdValue>();
+                        
             
             _EventHandlers = new List<SoulProxyEventHandler>();            
             _TypeObjectNotifiables = new List<NotifierUpdater>();
@@ -132,13 +133,13 @@ namespace Regulus.Remote
         {
             foreach (var updater in property_updaters)
             {
-                updater.ChnageEvent += _UpdatePropertyChange(updater);
+                updater.ChnageEvent += _ChangeInvoke;
             }
         }
 
-        private Action<object> _UpdatePropertyChange(PropertyUpdater updater)
+        private void _ChangeInvoke(IPropertyIdValue value, object instance)
         {
-            return (o) => _PropertyChangeds.Enqueue(updater);
+            PropertyChangedEvent.Invoke(Id, value);
         }
 
         internal void Release()
@@ -151,7 +152,8 @@ namespace Regulus.Remote
         {
             foreach (var updater in property_updaters)
             {
-                updater.ChnageEvent += _UpdatePropertyChange(updater);
+
+                updater.ChnageEvent -= _ChangeInvoke;
             }
         }
 
@@ -173,13 +175,7 @@ namespace Regulus.Remote
         private ISoul _SupplySoul(int property_id, TypeObject type_object)
         {
             return SupplySoulEvent(Id , property_id, type_object);
-        }
-
-        internal bool TryGetPropertyChange(out IPropertyIdValue property_id_value)
-        {
-            return _PropertyChangeds.TryDequeue(out property_id_value);
-        }
-        
+        }        
 
         internal void PropertyUpdateReset(int property)
         {
@@ -210,7 +206,12 @@ namespace Regulus.Remote
             lock(_EventHandlers)
             {
                 SoulProxyEventHandler eventHandler = _EventHandlers.FirstOrDefault(eh => eh.HandlerId == handler_id && eh.EventInfo == eventInfo);
-
+                if (eventHandler == null)
+                {
+                    Regulus.Utility.Log.Instance.WriteInfo($" RemoveEvent {handler_id} {eventInfo.Name} not found.");
+                    return;
+                }
+                    
                 _EventHandlers.Remove(eventHandler);
 
                 eventHandler.Release();
