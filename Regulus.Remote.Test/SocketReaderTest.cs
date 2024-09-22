@@ -46,14 +46,13 @@ namespace Regulus.Remote.Tests
                 readBytes.AddRange(data);
             };
             reader.Read(10);
-            Regulus.Utility.IStatus status = reader;
-            status.Enter();
+            
             
             while (readBytes.Count < 10)
             {
-                status.Update();
+                System.Threading.Thread.Sleep(1);
             }
-            status.Leave();
+
             NUnit.Framework.Assert.AreEqual(1, readBytes[1]);
             NUnit.Framework.Assert.AreEqual(5, readBytes[5]);
             NUnit.Framework.Assert.AreEqual(9, readBytes[9]);
@@ -73,12 +72,12 @@ namespace Regulus.Remote.Tests
             };
 
             reader.Read();
-            readEvent.Enter();            
+            
             while (buffer.Count != 2)
             {
-                readEvent.Update();
+                System.Threading.Thread.Sleep(1);   
             }
-            readEvent.Leave();
+            
             NUnit.Framework.Assert.AreEqual(0x85, buffer[0]);
             NUnit.Framework.Assert.AreEqual(0x05, buffer[1]);
 

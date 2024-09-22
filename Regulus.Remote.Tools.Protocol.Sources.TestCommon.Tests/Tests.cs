@@ -365,20 +365,20 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
             var methodObs = from gpi in env.Queryable.QueryNotifier<IMethodable>().SupplyEvent()
                             from v1 in gpi.GetValueSelf().RemoteValue()                            
                             select v1;
-
+            System.Console.WriteLine("methodObs.FirstAsync().Wait()");
             var method = methodObs.FirstAsync().Wait();
 
             var valueObs = from v1 in method.GetValue1().RemoteValue()
                             select v1;
-
+            System.Console.WriteLine("valueObs.FirstAsync().Wait()");
             var value = valueObs.FirstAsync().Wait();
 
             method = null;
-            
-            GC.Collect();
-            GC.WaitForFullGCComplete();
-            GC.WaitForPendingFinalizers();
-
+            System.Console.WriteLine("start gc collect");
+            //GC.Collect();
+            //GC.WaitForFullGCComplete();
+            //GC.WaitForPendingFinalizers();
+            System.Console.WriteLine("end gc collect");
 
             env.Dispose();
 

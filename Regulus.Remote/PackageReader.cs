@@ -24,7 +24,8 @@ namespace Regulus.Remote
 
         private OnRequestPackageCallback _DoneEvent;
 
-        readonly Regulus.Utility.StatusMachine _Machine;        
+
+        ISocketReader _Reader;
 
         private IStreamable _Peer;
 
@@ -32,7 +33,7 @@ namespace Regulus.Remote
 
         public PackageReader(IInternalSerializable serializer)
         {
-            _Machine = new StatusMachine();
+            
             _Serializer = serializer;
             _DoneEvent += _Empty;
             ErrorEvent += _Empty;
@@ -58,11 +59,10 @@ namespace Regulus.Remote
         private void _ReadHead()
         {
             var readHead = new SocketHeadReader(_Peer);
-            
+            _Reader = readHead;
             ISocketReader reader = readHead;
             reader.DoneEvent += _ReadBody;
-            reader.ErrorEvent += ErrorEvent;
-            _Machine.Push(readHead);
+            reader.ErrorEvent += ErrorEvent;            
             readHead.Read();
             
 
@@ -75,10 +75,11 @@ namespace Regulus.Remote
             int bodySize = (int)len;
 
             var bodyReader = new SocketBodyReader(_Peer);
+            _Reader = bodyReader;
             ISocketReader reader = bodyReader;
             reader.DoneEvent += _Package;
             reader.ErrorEvent += ErrorEvent;
-            _Machine.Push(bodyReader);
+            
             bodyReader.Read(bodySize);
         }
 
@@ -98,15 +99,10 @@ namespace Regulus.Remote
                 _ReadHead();
             }
         }
-        public void Update()
-        {
-            _Machine.Update();
-        }
+       
         public void Stop()
-        {
-            _Machine.Termination();
+        {            
             _Stop = true;
-
             Singleton<Log>.Instance.WriteInfo("pakcage read stop.");
         }
     }

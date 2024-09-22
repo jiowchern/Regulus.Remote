@@ -2,7 +2,7 @@
 
 namespace Regulus.Remote
 {
-    internal interface ISocketReader : Regulus.Utility.IStatus
+    internal interface ISocketReader 
     {
         event OnByteDataCallback DoneEvent;
         event OnErrorCallback ErrorEvent;

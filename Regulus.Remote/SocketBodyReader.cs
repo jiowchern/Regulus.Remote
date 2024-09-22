@@ -1,6 +1,8 @@
 ﻿using Regulus.Network;
 using Regulus.Utility;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Regulus.Remote
 {
@@ -16,25 +18,38 @@ namespace Regulus.Remote
 
         private int _Offset;
 
-        System.Action _Update;
+        public static readonly byte[] Empty = new byte[0];
+
         public SocketBodyReader(IStreamable peer)
         {
             this._Peer = peer;
-            _Update = () => { };
+         
         }
 
 
 
         internal void Read(int size)
         {
-            _Update = () => { };
+        
+            
+            
             _Offset = 0;
             _Buffer = new byte[size];
+
+
+
+            _Check(_Offset);
+            
+            
+        }
+
+        private async Task<int> _Read()
+        {
+            
             try
             {
-                var task = _Peer.Receive(_Buffer, _Offset, _Buffer.Length - _Offset);
-                task.ValueEvent += _Readed;
-                
+                return await _Peer.Receive(_Buffer, _Offset, _Buffer.Length - _Offset);
+
             }
             catch (SystemException e)
             {
@@ -42,49 +57,34 @@ namespace Regulus.Remote
                 {
                     ErrorEvent();
                 }
+
+                throw e;
             }
+        }
+
+
+
+        private void _Check(int read_size)
+        {
             
-        }
-
-        private void _Readed(int read_count)
-        {            
-            int readSize = read_count;
-
-            _Offset += readSize;
-            NetworkMonitor.Instance.Read.Set(readSize);
-            _Update = _Check;
-        }
-
-
-        void IStatus.Enter()
-        {
-
-        }
-
-        void IStatus.Leave()
-        {
-
-        }
-
-        void IStatus.Update()
-        {
-            _Update();
-            
-        }
-
-        private void _Check()
-        {
+            _Offset += read_size;
+            NetworkMonitor.Instance.Read.Set(read_size);
             if (_Offset == _Buffer.Length)
             {
-                DoneEvent(_Buffer);
+                
+                DoneEvent(_Buffer);                
             }
             else
             {
-                var task = _Peer.Receive(
-                    _Buffer,
-                    _Offset,
-                    _Buffer.Length - _Offset);
-                task.ValueEvent += _Readed;
+                _Read().ContinueWith(t => {
+                    var readSize = t.Result;
+                    int waitTime = readSize == 0 ? 10 : 0;   
+
+                    System.Threading.Tasks.Task.Delay(waitTime).ContinueWith(_ => {
+                        _Check(readSize);
+                    });
+
+                });
             }
         }
     }

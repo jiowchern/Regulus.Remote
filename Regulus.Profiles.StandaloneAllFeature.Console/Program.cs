@@ -25,7 +25,7 @@ namespace Regulus.Profiles.StandaloneAllFeature.Console
             var entry = new Server.Entry();
             var service = Regulus.Remote.Standalone.Provider.CreateService(entry , protocol);
 
-            int range = 50;
+            int range = 100;
             
             var agents = new System.Collections.Generic.List<User>();
             for (int i = 0; i < range; i++)
@@ -54,11 +54,16 @@ namespace Regulus.Profiles.StandaloneAllFeature.Console
                 bufferObs.Subscribe(v =>
                 {                    
                     stopWatch.Stop();
-                    a.Ticks = stopWatch.ElapsedTicks;
+                    a.Ticks = stopWatch.ElapsedTicks;                    
                     System.Threading.Volatile.Write(ref enable, false);
                     
                 });
 
+                /*while(System.Threading.Volatile.Read(ref enable))
+                {
+                    agent.Update();
+                    System.Threading.Tasks.Task.Delay(0).Wait();
+                }*/
                 System.Threading.SpinWait.SpinUntil(() => {
                     agent.Update();
                     return !System.Threading.Volatile.Read(ref enable);

@@ -1,110 +1,102 @@
 ﻿using Regulus.Network;
-using Regulus.Utility;
-using System.IO;
-using System.Threading.Tasks;
+using System;
+using System.Buffers;
+using System.Collections.Concurrent;
+
 namespace Regulus.Remote.Standalone
 {
-
-
     public class Stream : Network.IStreamable
     {
-        
-        readonly System.Collections.Concurrent.ConcurrentQueue<byte> _Sends;
-        
-        readonly System.Collections.Concurrent.ConcurrentQueue<byte> _Receives;
+        private class BufferSegment
+        {
+            public byte[] Buffer { get; }
+            public int Offset { get; private set; }
+            public int Length { get; private set; }
 
-        
+            public BufferSegment(byte[] buffer, int offset, int length)
+            {
+                Buffer = buffer;
+                Offset = offset;
+                Length = length;
+            }
+
+            public void Advance(int count)
+            {
+                Offset += count;
+                Length -= count;
+            }
+        }
+
+        private readonly ConcurrentQueue<BufferSegment> _sends;
+        private readonly ConcurrentQueue<BufferSegment> _receives;
+        private readonly ArrayPool<byte> _bufferPool;
 
         public Stream()
         {
-        
-            _Sends = new System.Collections.Concurrent.ConcurrentQueue<byte>();
-            _Receives = new System.Collections.Concurrent.ConcurrentQueue<byte>();
-
+            _sends = new ConcurrentQueue<BufferSegment>();
+            _receives = new ConcurrentQueue<BufferSegment>();
+            _bufferPool = ArrayPool<byte>.Shared;
         }
 
         public IWaitableValue<int> Push(byte[] buffer, int offset, int count)
         {
-            int readCount = 0;            
-            
-            for (int i = offset; i < buffer.Length; i++)
-            {
-                int index = i - offset;
-                if (index >= count)
-                {                    
-                    return new Regulus.Network.NoWaitValue<int>(readCount);
-                }
-                readCount++;
-                _Receives.Enqueue(buffer[i]);
-            }
-            return new Regulus.Network.NoWaitValue<int>(readCount);
-            
-        }
+            // 租借一个缓冲区
+            byte[] pooledBuffer = _bufferPool.Rent(count);
+            Buffer.BlockCopy(buffer, offset, pooledBuffer, 0, count);
 
+            // 将缓冲区加入队列
+            _receives.Enqueue(new BufferSegment(pooledBuffer, 0, count));
 
-
-
-        IWaitableValue<int> IStreamable.Receive(byte[] buffer, int offset, int count)
-        {
-            
-            return _Read(buffer, offset, count);
-        }
-
-        private IWaitableValue<int> _Read(byte[] buffer, int offset, int count)
-        {
-
-            return _Dequeue(_Receives , buffer , offset , count);
-        }
-
-        private IWaitableValue<int> _Dequeue(System.Collections.Concurrent.ConcurrentQueue<byte> quque,byte[] buffer, int offset, int count)
-        {
-            int readCount = 0;
-            byte b;
-            while (quque.TryDequeue(out b))
-            {
-                int index = offset + readCount++;
-                buffer[index] = b;
-
-                if (readCount == count)
-                    return new Regulus.Network.NoWaitValue<int>(readCount);
-            }
-            return new Regulus.Network.NoWaitValue<int>(readCount);
-        }
-
-        private IWaitableValue<int> _Write(byte[] buffer, int offset, int count)
-        {
-            return _Dequeue(_Sends , buffer , offset , count);
-            
-
-
+            return new NoWaitValue<int>(count);
         }
 
         public IWaitableValue<int> Pop(byte[] buffer, int offset, int count)
         {
-            return _Write(buffer, offset, count);
-
-
+            return Dequeue(_sends, buffer, offset, count);
         }
-
 
         IWaitableValue<int> IStreamable.Send(byte[] buffer, int offset, int count)
         {
-            int readCount = 0;
+            // 租借一个缓冲区
+            byte[] pooledBuffer = _bufferPool.Rent(count);
+            Buffer.BlockCopy(buffer, offset, pooledBuffer, 0, count);
 
-            for (int i = offset; i < buffer.Length; i++)
+            // 将缓冲区加入队列
+            _sends.Enqueue(new BufferSegment(pooledBuffer, 0, count));
+
+            return new NoWaitValue<int>(count);
+        }
+
+        IWaitableValue<int> IStreamable.Receive(byte[] buffer, int offset, int count)
+        {
+            return Dequeue(_receives, buffer, offset, count);
+        }
+
+        private IWaitableValue<int> Dequeue(ConcurrentQueue<BufferSegment> queue, byte[] buffer, int offset, int count)
+        {
+            int totalRead = 0;
+
+            while (totalRead < count && queue.TryPeek(out BufferSegment segment))
             {
-                int index = i - offset;
-                if (index >= count)
+                int bytesToCopy = Math.Min(segment.Length, count - totalRead);
+
+                // 使用 Span 进行高效的内存复制
+                var sourceSpan = new ReadOnlySpan<byte>(segment.Buffer, segment.Offset, bytesToCopy);
+                var destinationSpan = new Span<byte>(buffer, offset + totalRead, bytesToCopy);
+                sourceSpan.CopyTo(destinationSpan);
+
+                totalRead += bytesToCopy;
+                segment.Advance(bytesToCopy);
+
+                if (segment.Length == 0)
                 {
-                    
-                    return new Regulus.Network.NoWaitValue<int>(readCount);
+                    // 从队列中移除已消费的缓冲区并归还到池中
+                    queue.TryDequeue(out _);
+                    _bufferPool.Return(segment.Buffer);
                 }
-                readCount++;
-                _Sends.Enqueue(buffer[i]);
             }
 
-            return new Regulus.Network.NoWaitValue<int>(readCount);
-
+            return new NoWaitValue<int>(totalRead);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Regulus.Remote.Standalone.Test
             Regulus.Remote.Packages.ResponsePackage pkg = new Regulus.Remote.Packages.ResponsePackage();
             pkg.Code = opcode;
             pkg.Data = serializer.Serialize(instance);
-            writer.Push(new[] { pkg });
+            writer.Push( pkg );
         }
     }
 
