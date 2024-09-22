@@ -1,5 +1,6 @@
 ﻿using Regulus.Network;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Regulus.Remote.Tests
@@ -41,11 +42,14 @@ namespace Regulus.Remote.Tests
             SocketBodyReader reader = new Regulus.Remote.SocketBodyReader(peer);
             
             var readBytes = new System.Collections.Generic.List<byte>();
+            var buf = MemoryPoolProvider.Shared.Alloc(10);
             reader.DoneEvent += (data) =>
             {
-                readBytes.AddRange(data);
+                readBytes.AddRange(buf.ToArray());
+                buf.Dispose();
             };
-            reader.Read(10);
+            
+            reader.Read(buf);
             
             
             while (readBytes.Count < 10)

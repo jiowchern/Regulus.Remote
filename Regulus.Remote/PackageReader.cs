@@ -2,6 +2,7 @@
 using Regulus.Serialization;
 using Regulus.Utility;
 using System;
+using System.Linq;
 
 namespace Regulus.Remote
 {
@@ -73,14 +74,20 @@ namespace Regulus.Remote
             ulong len;
             Regulus.Serialization.Varint.BufferToNumber(bytes, 0, out len);
             int bodySize = (int)len;
-
+            var buf = MemoryPoolProvider.Shared.Alloc(bodySize);
             var bodyReader = new SocketBodyReader(_Peer);
             _Reader = bodyReader;
             ISocketReader reader = bodyReader;
-            reader.DoneEvent += _Package;
+            reader.DoneEvent += (b) => {
+
+                var bb = buf.ToArray();
+                buf.Dispose();
+                _Package(bb);
+                
+            };
             reader.ErrorEvent += ErrorEvent;
             
-            bodyReader.Read(bodySize);
+            bodyReader.Read(buf);
         }
 
         private void _Package(byte[] bytes)
@@ -91,7 +98,7 @@ namespace Regulus.Remote
             {
                 ErrorEvent();
                 return;
-            }
+            }            
             _DoneEvent.Invoke(pkg);
 
             if (_Stop == false)

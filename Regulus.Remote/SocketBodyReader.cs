@@ -14,11 +14,10 @@ namespace Regulus.Remote
 
         private readonly IStreamable _Peer;
 
-        private byte[] _Buffer;
+        private Regulus.Memorys.Buffer _Buffer;
 
         private int _Offset;
-
-        public static readonly byte[] Empty = new byte[0];
+        
 
         public SocketBodyReader(IStreamable peer)
         {
@@ -26,21 +25,11 @@ namespace Regulus.Remote
          
         }
 
-
-
-        internal void Read(int size)
+        internal void Read(Regulus.Memorys.Buffer buffer)
         {
-        
-            
-            
             _Offset = 0;
-            _Buffer = new byte[size];
-
-
-
+            _Buffer = buffer;
             _Check(_Offset);
-            
-            
         }
 
         private async Task<int> _Read()
@@ -48,7 +37,9 @@ namespace Regulus.Remote
             
             try
             {
-                return await _Peer.Receive(_Buffer, _Offset, _Buffer.Length - _Offset);
+                var bytes = _Buffer.Bytes;
+                return await _Peer.Receive(bytes.Array, bytes.Offset + _Offset, bytes.Count - _Offset);
+                //return await _Peer.Receive(_Buffer, _Offset, _Buffer.Count - _Offset);
 
             }
             catch (SystemException e)
@@ -69,10 +60,10 @@ namespace Regulus.Remote
             
             _Offset += read_size;
             NetworkMonitor.Instance.Read.Set(read_size);
-            if (_Offset == _Buffer.Length)
+            if (_Offset == _Buffer.Count)
             {
                 
-                DoneEvent(_Buffer);                
+                DoneEvent(_Buffer.Bytes.Array);                
             }
             else
             {

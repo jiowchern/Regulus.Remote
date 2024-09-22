@@ -241,31 +241,28 @@ namespace Regulus.Remote
             MethodInfo methodInfo =
                 (from m in soulInfo.MethodInfos where m == info && m.GetParameters().Count() == args.Count() select m)
                     .FirstOrDefault();
-            if (methodInfo != null)
+            if (methodInfo == null)
+                return;
+            try
             {
 
-                try
-                {
+                IEnumerable<object> argObjects = args.Zip(methodInfo.GetParameters(), (arg, par) => _Serializer.Deserialize(par.ParameterType, arg));
 
-                    IEnumerable<object> argObjects = args.Zip(methodInfo.GetParameters(), (arg , par) => _Serializer.Deserialize(par.ParameterType, arg));
-
-                    object returnValue = methodInfo.Invoke(soulInfo.ObjectInstance, argObjects.ToArray());
-                    if (returnValue != null)
-                    {
-                        _ReturnValue(returnId, returnValue as IValue);
-                    }
-                }
-                catch (DeserializeException deserialize_exception)
+                object returnValue = methodInfo.Invoke(soulInfo.ObjectInstance, argObjects.ToArray());
+                if (returnValue != null)
                 {
-                    string message = deserialize_exception.Base.ToString();
-                    _ErrorDeserialize(method_id.ToString(), returnId, message);
+                    _ReturnValue(returnId, returnValue as IValue);
                 }
-                catch (Exception e)
-                {
-                    Log.Instance.WriteDebug(e.ToString());
-                    _ErrorDeserialize(method_id.ToString(), returnId, e.Message);
-                }
-
+            }
+            catch (DeserializeException deserialize_exception)
+            {
+                string message = deserialize_exception.Base.ToString();
+                _ErrorDeserialize(method_id.ToString(), returnId, message);
+            }
+            catch (Exception e)
+            {
+                Log.Instance.WriteDebug(e.ToString());
+                _ErrorDeserialize(method_id.ToString(), returnId, e.Message);
             }
         }
         public void RemoveEvent(long entity_id, int event_id, long handler_id)

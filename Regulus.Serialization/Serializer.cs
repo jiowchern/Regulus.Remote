@@ -8,13 +8,31 @@ namespace Regulus.Serialization
     {
         private readonly DescriberProvider _Provider;
 
+       /* static Regulus.Memorys.Pool _Create()
+        {
+            return new Memorys.Pool(
+                                   new Memorys.ChunkSetting[]
+                                   {
+                        //new Memorys.ChunkSetting(1, 1024),
+                        //new Memorys.ChunkSetting(2, 1024),
+                        new Memorys.ChunkSetting(4, 1024),
+                        //new Memorys.ChunkSetting(8, 1024),
+                        //new Memorys.ChunkSetting(16, 1024),
+                        new Memorys.ChunkSetting(32, 1024),
+                        //new Memorys.ChunkSetting(64, 1024),
+                        //new Memorys.ChunkSetting(128, 1024),
+                        new Memorys.ChunkSetting(256, 1024),
+                        new Memorys.ChunkSetting(512, 1024),
+                        new Memorys.ChunkSetting(1024, 128),
+                        new Memorys.ChunkSetting(2048, 128) }                        
+                                   
+                                                  );
+        }
+        internal readonly static Regulus.Memorys.Pool Shared = _Create();*/
+
         public Serializer(DescriberProvider provider)
         {
-
             _Provider = provider;
-
-
-
         }
 
         public byte[] ObjectToBuffer(object instance)
