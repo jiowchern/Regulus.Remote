@@ -12,7 +12,11 @@
 [![nuget](https://buildstats.info/nuget/Regulus.Remote)](https://buildstats.info/nuget/Regulus.Remote)  
 
 ## Introduction
-It is a server-client connection framework developed using **C#** and can be used in Unity game engine and other game engines that are compliant with .  
+Regulus Remote is a powerful and flexible server-client communication framework developed in C#. Designed to work seamlessly with the Unity game engine and any other .NET Standard 2.0 compliant environments, it simplifies network communication by enabling servers and clients to interact through interfaces. This object-oriented approach reduces the maintenance cost of protocols and enhances code readability and maintainability.  
+
+Key features of Regulus Remote include support for IL2CPP and AOT, making it compatible with various platforms, including Unity WebGL. It provides default TCP connection and serialization mechanisms but also allows for customization to suit specific project needs. The framework supports methods, events, properties, and notifiers, giving developers comprehensive tools to build robust networked applications.  
+
+With its stand-alone mode, developers can simulate server-client interactions without a network connection, facilitating development and debugging. Regulus Remote aims to streamline network communication in game development and other applications, enabling developers to focus more on implementing business logic rather than dealing with the complexities of network protocols.  
 
 
 
