@@ -16,7 +16,7 @@ namespace Regulus.Remote
             return _Serializer.BufferToObject(buffer);
         }
 
-        byte[] ISerializable.Serialize(Type type, object instance)
+        Regulus.Memorys.Buffer ISerializable.Serialize(Type type, object instance)
         {
             return _Serializer.ObjectToBuffer(instance);    
         } 

@@ -163,7 +163,7 @@ namespace Regulus.Remote
             {
                 var pkg = new Regulus.Remote.Packages.PackageRelease();
                 pkg.EntityId = id;
-                _Exchanger.Request(ClientToServerOpCode.Release, _InternalSerializer.Serialize(pkg));
+                _Exchanger.Request(ClientToServerOpCode.Release, _InternalSerializer.Serialize(pkg).ToArray());
 
                 _UnloadSoul(id);
             }
@@ -331,7 +331,7 @@ namespace Regulus.Remote
             pkg.EntityId = entity_id;
             pkg.Property = property;
             
-            _Exchanger.Request(ClientToServerOpCode.UpdateProperty, _InternalSerializer.Serialize(pkg));
+            _Exchanger.Request(ClientToServerOpCode.UpdateProperty, _InternalSerializer.Serialize(pkg).ToArray());
         }
 
         private void _InvokeEvent(long ghost_id, int event_id, long handler_id, byte[][] event_params)

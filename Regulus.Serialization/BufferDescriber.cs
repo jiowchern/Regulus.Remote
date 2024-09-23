@@ -43,17 +43,18 @@ namespace Regulus.Serialization
             return bufferLen + bufferLength + elementLen;
         }
 
-        int ITypeDescriber.ToBuffer(object instance, byte[] buffer, int begin)
+        int ITypeDescriber.ToBuffer(object instance, Regulus.Memorys.Buffer buffer, int begin)
         {
+            var bytes = buffer.Bytes;
             Array src = instance as Array;
             int bufferLength = Buffer.ByteLength(src);
             int offset = begin;
-            offset += Varint.NumberToBuffer(buffer, offset, bufferLength);
-            offset += Varint.NumberToBuffer(buffer, offset, src.Length);
+            offset += Varint.NumberToBuffer(bytes.Array , bytes.Offset + offset, bufferLength);
+            offset += Varint.NumberToBuffer(bytes.Array, bytes.Offset + offset, src.Length);
 
 
 
-            Buffer.BlockCopy(src, 0, buffer, offset, bufferLength);
+            Buffer.BlockCopy(src, 0, bytes.Array, bytes.Offset + offset, bufferLength);
             return offset - begin + bufferLength;
         }
 

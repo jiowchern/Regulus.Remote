@@ -124,22 +124,23 @@ namespace Regulus.Serialization
             return instanceCount + lenCount + validCount;
         }
 
-        int ITypeDescriber.ToBuffer(object instance, byte[] buffer, int begin)
+        int ITypeDescriber.ToBuffer(object instance, Regulus.Memorys.Buffer buffer, int begin)
         {
 
             try
             {
+                var bytes = buffer.Bytes;
                 ValidObjectSet set = _GetSet(instance);
                 int offset = begin;
-                offset += Varint.NumberToBuffer(buffer, offset, set.TotalLength);
-                offset += Varint.NumberToBuffer(buffer, offset, set.ValidLength);
+                offset += Varint.NumberToBuffer(bytes.Array, bytes.Offset + offset, set.TotalLength);
+                offset += Varint.NumberToBuffer(bytes.Array, bytes.Offset + offset, set.ValidLength);
 
 
                 for (int i = 0; i < set.ValidObjects.Length; i++)
                 {
                     int index = set.ValidObjects[i].Index;
                     object obj = set.ValidObjects[i].Object;
-                    offset += Varint.NumberToBuffer(buffer, offset, index);
+                    offset += Varint.NumberToBuffer(bytes.Array, bytes.Offset + offset, index);
                     Type objType = obj.GetType();
                     ITypeDescriber describer = _TypeSet.Get(objType);
                     offset += _TypeSet.Get().ToBuffer(objType, buffer, offset);

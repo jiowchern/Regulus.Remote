@@ -10,15 +10,15 @@ namespace Regulus.Remote.Standalone.Test
     {
         public static byte[] ServerToClient<T>(this Regulus.Remote.IInternalSerializable serializer, ServerToClientOpCode opcode, T instance)
         {
-            Regulus.Remote.Packages.ResponsePackage pkg = new Regulus.Remote.Packages.ResponsePackage() { Code = opcode, Data = serializer.Serialize(instance) };
-            return serializer.Serialize(pkg);
+            Regulus.Remote.Packages.ResponsePackage pkg = new Regulus.Remote.Packages.ResponsePackage() { Code = opcode, Data = serializer.Serialize(instance).ToArray() };
+            return serializer.Serialize(pkg).ToArray();
         }
 
         public static void ServerToClient<T>(this Regulus.Remote.PackageWriter<Regulus.Remote.Packages.ResponsePackage> writer, Regulus.Remote.IInternalSerializable serializer, ServerToClientOpCode opcode, T instance)
         {
             Regulus.Remote.Packages.ResponsePackage pkg = new Regulus.Remote.Packages.ResponsePackage();
             pkg.Code = opcode;
-            pkg.Data = serializer.Serialize(instance);
+            pkg.Data = serializer.Serialize(instance).ToArray();
             writer.Push( pkg );
         }
     }

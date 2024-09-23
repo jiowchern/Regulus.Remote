@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using NSubstitute;
 
@@ -132,7 +133,7 @@ namespace Regulus.Remote.Tests
             int value = 0;
             _IA.Event1 += (v) => value = v;
 
-            byte[][] buffers = new byte[][] { _Serializable.Serialize(typeof(int), 10) };
+            byte[][] buffers = new byte[][] { _Serializable.Serialize(typeof(int), 10).ToArray() };
             handler.InvokeEvent(eventId, 1, buffers);
             NUnit.Framework.Assert.AreEqual(10, value);
         }
@@ -142,7 +143,7 @@ namespace Regulus.Remote.Tests
         {
             var handler = _GhostResponseHandler;
             var property = _MemberMap.GetProperty(typeof(IA).GetProperties()[0]);
-            handler.UpdateSetProperty(property, _Serializable.Serialize(typeof(int) , 2));
+            handler.UpdateSetProperty(property, _Serializable.Serialize(typeof(int) , 2).ToArray());
             NUnit.Framework.Assert.AreEqual(2, _IA.Property1.Value);
         }
 

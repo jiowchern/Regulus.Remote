@@ -43,12 +43,12 @@ namespace Regulus.Remote
             package.EntityId = _Ghost;
             package.MethodId = method;
             
-            package.MethodParams = args.Zip(info.GetParameters(), (arg, par) => serialize.Serialize(par.ParameterType, arg)).ToArray();
+            package.MethodParams = args.Zip(info.GetParameters(), (arg, par) => serialize.Serialize(par.ParameterType, arg).ToArray()).ToArray();
 
             if (return_value != null)
                 package.ReturnId = _ReturnValueQueue.PushReturnValue(return_value);
             
-            _Requester.Request(ClientToServerOpCode.CallMethod, _InternalSerializable.Serialize(package));
+            _Requester.Request(ClientToServerOpCode.CallMethod, _InternalSerializable.Serialize(package).ToArray());
         }
     }
 }

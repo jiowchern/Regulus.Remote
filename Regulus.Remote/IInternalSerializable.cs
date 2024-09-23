@@ -2,7 +2,7 @@
 {
     public interface IInternalSerializable
     {
-        byte[] Serialize(object instance);
+        Regulus.Memorys.Buffer Serialize(object instance);
         object Deserialize(byte[] buffer);
     }
     

@@ -81,7 +81,7 @@ namespace Regulus.Remote
             reader.DoneEvent += (b) => {
 
                 var bb = buf.ToArray();
-                buf.Dispose();
+               // buf.Dispose();
                 _Package(bb);
                 
             };

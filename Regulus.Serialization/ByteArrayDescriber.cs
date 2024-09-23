@@ -31,7 +31,7 @@ namespace Regulus.Serialization
             return len + lenByetCount;
         }
 
-        int ITypeDescriber.ToBuffer(object instance, byte[] buffer, int begin)
+        int ITypeDescriber.ToBuffer(object instance, Regulus.Memorys.Buffer buffer, int begin)
         {
             byte[] array = instance as byte[];
             int len = array.Length;

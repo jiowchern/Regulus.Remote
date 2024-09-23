@@ -56,19 +56,20 @@ namespace Regulus.Serialization
             return _Size;
         }
 
-        int ITypeDescriber.ToBuffer(object instance, byte[] buffer, int begin)
+        int ITypeDescriber.ToBuffer(object instance, Regulus.Memorys.Buffer buffer, int begin)
         {
             return _ToBuffer(instance, buffer, begin);
         }
 
-        private int _ToBuffer(object instance, byte[] buffer, int begin)
+        private int _ToBuffer(object instance, Regulus.Memorys.Buffer buffer, int begin)
         {
             int readCount;
             GCHandle pinStructure = GCHandle.Alloc(instance, GCHandleType.Pinned);
             try
             {
                 readCount = _Size;
-                Marshal.Copy(pinStructure.AddrOfPinnedObject(), buffer, begin, readCount);
+                var bytes = buffer.Bytes;
+                Marshal.Copy(pinStructure.AddrOfPinnedObject(), bytes.Array, bytes.Offset + begin, readCount);
             }
             catch (Exception ex)
             {

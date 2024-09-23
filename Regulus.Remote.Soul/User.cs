@@ -3,6 +3,7 @@ using Regulus.Network;
 using Regulus.Utility;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Regulus.Remote.Soul
 {
@@ -88,7 +89,7 @@ namespace Regulus.Remote.Soul
             Regulus.Remote.Packages.PackageProtocolSubmit pkg = new Regulus.Remote.Packages.PackageProtocolSubmit();
             pkg.VerificationCode = _Protocol.VerificationCode;
             
-            _Push(ServerToClientOpCode.ProtocolSubmit, _InternalSerializer.Serialize(pkg));
+            _Push(ServerToClientOpCode.ProtocolSubmit, _InternalSerializer.Serialize(pkg).ToArray());
 
             //_Updater.Start();
         }

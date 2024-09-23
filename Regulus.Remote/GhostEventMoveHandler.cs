@@ -1,4 +1,6 @@
-﻿namespace Regulus.Remote
+﻿using System.Linq;
+
+namespace Regulus.Remote
 {
     internal class GhostEventMoveHandler
     {
@@ -28,7 +30,7 @@
             package.Event = map.GetEvent(info);
             package.Handler = handler;
 
-            _Requester.Request(ClientToServerOpCode.AddEvent, _InternalSerializable.Serialize(package));
+            _Requester.Request(ClientToServerOpCode.AddEvent, _InternalSerializable.Serialize(package).ToArray());
 
         }
 
@@ -46,7 +48,7 @@
             package.Event = map.GetEvent(info);
             package.Handler = handler;
             
-            _Requester.Request(ClientToServerOpCode.RemoveEvent, _InternalSerializable.Serialize(package));
+            _Requester.Request(ClientToServerOpCode.RemoveEvent, _InternalSerializable.Serialize(package).ToArray());
 
         }
     }

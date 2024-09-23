@@ -43,9 +43,10 @@ namespace Regulus.Serialization
             return Varint.GetByteCount(Convert.ToUInt64(instance));
         }
 
-        int ITypeDescriber.ToBuffer(object instance, byte[] buffer, int begin)
+        int ITypeDescriber.ToBuffer(object instance, Regulus.Memorys.Buffer buffer, int begin)
         {
-            return Varint.NumberToBuffer(buffer, begin, Convert.ToUInt64(instance));
+            var bytes = buffer.Bytes;
+            return Varint.NumberToBuffer(bytes.Array, bytes.Offset + begin, Convert.ToUInt64(instance));
         }
 
         int ITypeDescriber.ToObject(byte[] buffer, int begin, out object instnace)

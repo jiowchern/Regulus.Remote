@@ -1,5 +1,6 @@
 ﻿using NSubstitute;
 using System;
+using System.Linq;
 
 namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 {
@@ -32,7 +33,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
                 package.TypeId = protocol.GetMemberMap().GetInterface(typeof(IMethodable));
                 package.EntityId = 1;
                 package.ReturnType = false;
-                exchanger.Responser.Invoke(ServerToClientOpCode.LoadSoul, iniers.Serialize(package));
+                exchanger.Responser.Invoke(ServerToClientOpCode.LoadSoul, iniers.Serialize(package).ToArray());
 
             }
 
@@ -41,7 +42,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
                 package.TypeId = protocol.GetMemberMap().GetInterface(typeof(IMethodable));
                 package.EntityId = 1;
                 package.ReturnId = 0;
-                exchanger.Responser.Invoke(ServerToClientOpCode.LoadSoulCompile, iniers.Serialize(package));
+                exchanger.Responser.Invoke(ServerToClientOpCode.LoadSoulCompile, iniers.Serialize(package).ToArray());
             }
             
 
@@ -53,7 +54,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
                 package.TypeId = protocol.GetMemberMap().GetInterface(typeof(IMethodable));
                 package.EntityId = 2;
                 package.ReturnType = true;
-                exchanger.Responser.Invoke(ServerToClientOpCode.LoadSoul, iniers.Serialize(package));
+                exchanger.Responser.Invoke(ServerToClientOpCode.LoadSoul, iniers.Serialize(package).ToArray());
 
             }
 
@@ -62,21 +63,21 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
                 package.TypeId = protocol.GetMemberMap().GetInterface(typeof(IMethodable));
                 package.EntityId = 2;
                 package.ReturnId = 1;
-                exchanger.Responser.Invoke(ServerToClientOpCode.LoadSoulCompile, iniers.Serialize(package));
+                exchanger.Responser.Invoke(ServerToClientOpCode.LoadSoulCompile, iniers.Serialize(package).ToArray());
             }
 
             {
                 var package = new Regulus.Remote.Packages.PackageUnloadSoul();
                 package.EntityId = 1;
 
-                exchanger.Responser.Invoke(ServerToClientOpCode.UnloadSoul, iniers.Serialize(package));
+                exchanger.Responser.Invoke(ServerToClientOpCode.UnloadSoul, iniers.Serialize(package).ToArray());
             }
 
 
             GC.Collect(2, GCCollectionMode.Forced, true);
             
             {
-                exchanger.Responser.Invoke(ServerToClientOpCode.Ping, iniers.Serialize(new byte[0]));
+                exchanger.Responser.Invoke(ServerToClientOpCode.Ping, iniers.Serialize(new byte[0]).ToArray());
             }
 
             var pkg = exchanger.IgnoreUntil(ClientToServerOpCode.Release);
