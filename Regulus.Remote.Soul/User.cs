@@ -92,9 +92,9 @@ namespace Regulus.Remote.Soul
 
             var buf = _InternalSerializer.Serialize(pkg);
             _Push(ServerToClientOpCode.ProtocolSubmit, buf.ToArray());
-            buf.Dispose();
+            
 
-            //_Updater.Start();
+            
         }
 
 

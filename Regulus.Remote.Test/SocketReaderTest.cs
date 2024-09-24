@@ -46,8 +46,7 @@ namespace Regulus.Remote.Tests
             var buf = Regulus.Memorys.PoolProvider.Shared.Alloc(10);
             reader.DoneEvent += (b) =>
             {
-                readBytes.AddRange(buf.ToArray());
-                buf.Dispose();
+                readBytes.AddRange(buf.ToArray());              
             };
             
             reader.Read(buf);

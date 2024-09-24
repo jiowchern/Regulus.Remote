@@ -95,9 +95,7 @@ namespace Regulus.Remote
                 for (int i = 0; i < bodyBytes.Count; i++)
                 {
                     newBodyBytes.Array[newBodyBytes.Offset + prevBodyReaded + i] = bodyBytes.Array[bodyBytes.Offset + i];                
-                }
-                body_buffer.Dispose();
-                head_buffer.Dispose();
+                }                
                 _Package(newBodyBuffer);
                 
             };
@@ -112,7 +110,7 @@ namespace Regulus.Remote
         {
 
             TPackage pkg = (TPackage)_Serializer.Deserialize(bytes);
-            bytes.Dispose();
+            
             if (pkg == null)
             {
                 ErrorEvent();

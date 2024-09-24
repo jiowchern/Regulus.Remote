@@ -12,10 +12,10 @@ namespace Regulus.Remote.Standalone.Test
         {
             var buf = serializer.Serialize(instance);
             Regulus.Remote.Packages.ResponsePackage pkg = new Regulus.Remote.Packages.ResponsePackage() { Code = opcode, Data = buf.ToArray() };
-            buf.Dispose();
+            
             buf = serializer.Serialize(pkg);
             var bytes = buf.ToArray();
-            buf.Dispose();
+            
             return bytes;
         }
 
@@ -25,7 +25,7 @@ namespace Regulus.Remote.Standalone.Test
             pkg.Code = opcode;
             var buf = serializer.Serialize(instance);
             pkg.Data = buf.ToArray();
-            buf.Dispose();
+            
             writer.Push( pkg );
         }
     }

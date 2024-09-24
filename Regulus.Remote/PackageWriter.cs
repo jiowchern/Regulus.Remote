@@ -93,33 +93,30 @@ namespace Regulus.Remote
             var lenBufferBytes = lenBuffer.Bytes;
             Regulus.Serialization.Varint.NumberToBuffer(lenBufferBytes.Array, lenBufferBytes.Offset, len);
 
-            using (var stream = _Pool.Alloc(lenCount + bytes.Count))
-            {
-                var totalBytes = stream.Bytes;
+            var stream = _Pool.Alloc(lenCount + bytes.Count);
+            
+            var totalBytes = stream.Bytes;
 
-                //lenBufferBytes.Array.CopyTo(totalBytes.Array, totalBytes.Offset);                
-                //bytes.Array.CopyTo(totalBytes.Array, totalBytes.Offset + lenBufferBytes.Count);
-                for (int i = 0; i < lenBufferBytes.Count; i++)
-                {
-                    totalBytes.Array[totalBytes.Offset + i] = lenBufferBytes.Array[lenBufferBytes.Offset + i];
-                }
-                for (int i = 0; i < bytes.Count; i++)
-                {
-                    totalBytes.Array[totalBytes.Offset + lenBufferBytes.Count + i] = bytes.Array[bytes.Offset + i];
-                }
-                buffer.Dispose();
-                lenBuffer.Dispose();
-                var buf = stream.ToArray();
-                stream.Dispose();
-                return buf;
+            //lenBufferBytes.Array.CopyTo(totalBytes.Array, totalBytes.Offset);                
+            //bytes.Array.CopyTo(totalBytes.Array, totalBytes.Offset + lenBufferBytes.Count);
+            for (int i = 0; i < lenBufferBytes.Count; i++)
+            {
+                totalBytes.Array[totalBytes.Offset + i] = lenBufferBytes.Array[lenBufferBytes.Offset + i];
             }
+            for (int i = 0; i < bytes.Count; i++)
+            {
+                totalBytes.Array[totalBytes.Offset + lenBufferBytes.Count + i] = bytes.Array[bytes.Offset + i];
+            }
+                
+            var buf = stream.ToArray();                
+            return buf;
+            
 
         }
         private byte[] _CreateBuffer(TPackage[] packages)
         {
             IEnumerable<Regulus.Memorys.Buffer> buffers = from p in packages select _Serializer.Serialize(p);
-
-            // Regulus.Utility.Log.Instance.WriteDebug(string.Format("Serialize to Buffer size {0}", buffers.Sum( b => b.Length )));
+            
             using (MemoryStream stream = new MemoryStream())
             {
                 foreach (var buffer in buffers)
@@ -132,8 +129,7 @@ namespace Regulus.Remote
                     Regulus.Serialization.Varint.NumberToBuffer(lenBytes.Array, lenBytes.Offset, len);
                     stream.Write(lenBytes.Array, lenBytes.Offset, lenBytes.Count );
                     stream.Write(bytes.Array , bytes.Offset , bytes.Count);
-                    lenBuffer.Dispose();
-                    buffer.Dispose();
+                    
                 }
 
                 return stream.ToArray();
