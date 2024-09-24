@@ -19,7 +19,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
             var ser=  new Regulus.Remote.Serializer(protocol.SerializeTypes);
             var internalSer = new Regulus.Remote.InternalSerializer();
             
-            _Service = Regulus.Remote.Standalone.Provider.CreateService(entry,protocol, ser );
+            _Service = Regulus.Remote.Standalone.Provider.CreateService(entry,protocol, ser , Memorys.PoolProvider.Shared );
             
             _Agent = _Service.Create();
             

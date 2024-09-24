@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Regulus.Memorys;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,9 +17,11 @@ namespace Regulus.Remote.Soul
         private readonly IInternalSerializable _InternalSerializable;
         readonly System.Collections.Generic.List<User> _Users;
         readonly Regulus.Utility.Looper<Network.IStreamable> _Looper;
+        private readonly IPool _Pool;
         public readonly System.Collections.Concurrent.ConcurrentQueue<User> NewUsers;
-        public UserProvider(IProtocol protocol, ISerializable serializable , IListenable listenable, Regulus.Remote.IInternalSerializable internal_serializable)
+        public UserProvider(IProtocol protocol, ISerializable serializable , IListenable listenable, Regulus.Remote.IInternalSerializable internal_serializable , Regulus.Memorys.IPool pool)
         {
+            _Pool = pool;
             NewUsers = new System.Collections.Concurrent.ConcurrentQueue<User>();
             _Users = new System.Collections.Generic.List<User>();
             _Looper = new Utility.Looper<Network.IStreamable>();
@@ -36,7 +39,7 @@ namespace Regulus.Remote.Soul
 
         void _Join(Network.IStreamable stream)
         {
-            User user = new User(stream, _Protocol , _Serializable, _InternalSerializable);
+            User user = new User(stream, _Protocol , _Serializable, _InternalSerializable, _Pool);
             
             user.Launch();
             lock (_Users)

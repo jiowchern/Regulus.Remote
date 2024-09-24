@@ -1,4 +1,5 @@
-﻿using Regulus.Network;
+﻿using Regulus.Memorys;
+using Regulus.Network;
 using Regulus.Utility;
 using System;
 using System.Collections.Generic;
@@ -11,41 +12,46 @@ namespace Regulus.Remote
     {
         private readonly IStreamable _Peer;
 
-        private readonly System.Collections.Generic.List<byte> _Buffer;
+        readonly Regulus.Memorys.Buffer _Buffer;
+        readonly ArraySegment<byte> _Bytes;
+        int _Offset;
+        int _Readed;
 
-        private readonly byte[] _ReadedByte;        
-        
-        public SocketHeadReader(IStreamable peer)
+        public SocketHeadReader(IStreamable peer , Regulus.Memorys.Buffer buffer)
         {
-            _ReadedByte = new byte[1];
+            
             _Peer = peer;
-            _Buffer = new List<byte>();            
+            _Buffer = buffer;
+            _Bytes = _Buffer.Bytes;
         }
 
         public void Read()
-        {
-            
+        {            
             _Check(0);
         }
         private async Task<int> _Read()
-        {            
-            //_Peer.Receive(_ReadedByte, 0, 1).ValueEvent += _ReadDone;            
-            return await _Peer.Receive(_ReadedByte, 0, 1);
-            
+        {                        
+            return await _Peer.Receive(_Bytes.Array, _Bytes.Offset + _Offset, _Bytes.Count - _Offset );            
         }
         
 
         private bool _ReadData(int read_size)
         {
+            
             if (read_size == 0)
-                return false;            
-            byte value = _ReadedByte[0];
-            _Buffer.Add(value);
+                return false;
+            _Readed += read_size;
 
-            if (value < 0x80)
+            for (int i = 0; i < read_size; i++)
             {
-                return true;
+                
+                byte value = _Bytes.Array[_Bytes.Offset + _Offset++ ];                
+                if (value < 0x80)
+                {                    
+                    return true;
+                }
             }
+           
             return false;
         }
 
@@ -53,8 +59,7 @@ namespace Regulus.Remote
         {
             if (_ReadData(read_size))
             {
-                
-                _DoneEvent(_Buffer.ToArray());
+                DoneEvent(_Offset, _Readed);
             }
             else
             {
@@ -69,12 +74,8 @@ namespace Regulus.Remote
             }
         }
 
-        private OnByteDataCallback _DoneEvent;
-        event OnByteDataCallback ISocketReader.DoneEvent
-        {
-            add { _DoneEvent += value; }
-            remove { _DoneEvent -= value; }
-        }
+        public System.Action<int,int> DoneEvent;
+        
 #pragma warning disable CS0067
         private event OnErrorCallback _ErrorEvent;
 #pragma warning restore CS0067

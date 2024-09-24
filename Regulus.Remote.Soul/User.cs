@@ -54,7 +54,7 @@ namespace Regulus.Remote.Soul
 
         
 
-        public User(IStreamable client, IProtocol protocol , ISerializable serializable, IInternalSerializable internal_serializable)
+        public User(IStreamable client, IProtocol protocol , ISerializable serializable, IInternalSerializable internal_serializable , Regulus.Memorys.IPool pool)
         {
         
             Stream = client;
@@ -66,8 +66,8 @@ namespace Regulus.Remote.Soul
             
 
                         
-            _Reader = new PackageReader<Regulus.Remote.Packages.RequestPackage>(_InternalSerializer);
-            _Writer = new PackageWriter<Regulus.Remote.Packages.ResponsePackage>(_InternalSerializer);
+            _Reader = new PackageReader<Regulus.Remote.Packages.RequestPackage>(_InternalSerializer , pool);
+            _Writer = new PackageWriter<Regulus.Remote.Packages.ResponsePackage>(_InternalSerializer , pool);
             
             _ExternalRequests = new System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.RequestPackage>();
 
@@ -89,8 +89,10 @@ namespace Regulus.Remote.Soul
 
             Regulus.Remote.Packages.PackageProtocolSubmit pkg = new Regulus.Remote.Packages.PackageProtocolSubmit();
             pkg.VerificationCode = _Protocol.VerificationCode;
-            
-            _Push(ServerToClientOpCode.ProtocolSubmit, _InternalSerializer.Serialize(pkg).ToArray());
+
+            var buf = _InternalSerializer.Serialize(pkg);
+            _Push(ServerToClientOpCode.ProtocolSubmit, buf.ToArray());
+            buf.Dispose();
 
             //_Updater.Start();
         }

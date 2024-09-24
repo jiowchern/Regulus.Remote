@@ -9,7 +9,8 @@
 <!-- [![GitHub release](https://img.shields.io/github/release/jiowchern/regulus.svg?style=flat-square)](https://github.com/jiowchern/Regulus/releases)![pre-release](https://img.shields.io/github/v/release/jiowchern/Regulus?include_prereleases) -->
 <!-- [![Gitter](https://badges.gitter.im/JoinChat.svg)](https://gitter.im/Regulus-Library) -->
 
-[![nuget](https://buildstats.info/nuget/Regulus.Remote)](https://buildstats.info/nuget/Regulus.Remote)  
+![NuGet Downloads](https://img.shields.io/nuget/dt/Regulus.Remote)
+
 
 ## Introduction
 Regulus Remote is a powerful and flexible server-client communication framework developed in C#. Designed to work seamlessly with the Unity game engine and any other .NET Standard 2.0 compliant environments, it simplifies network communication by enabling servers and clients to interact through interfaces. This object-oriented approach reduces the maintenance cost of protocols and enhances code readability and maintainability.  
@@ -479,8 +480,8 @@ namespace Regulus.Remote
 {
     public interface ISerializable
     {
-        byte[] Serialize(System.Type type, object instance);
-        object Deserialize(System.Type type, byte[] buffer);
+        Regulus.Memorys.Buffer Serialize(System.Type type, object instance);
+        object Deserialize(System.Type type, Regulus.Memorys.Buffer buffer);
     }
 }
 ```

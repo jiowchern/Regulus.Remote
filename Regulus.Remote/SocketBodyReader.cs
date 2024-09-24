@@ -8,7 +8,7 @@ namespace Regulus.Remote
 {
     internal class SocketBodyReader : ISocketReader
     {
-        public event OnByteDataCallback DoneEvent;
+        public event System.Action<Regulus.Memorys.Buffer> DoneEvent;
 
         public event OnErrorCallback ErrorEvent;
 
@@ -61,9 +61,8 @@ namespace Regulus.Remote
             _Offset += read_size;
             NetworkMonitor.Instance.Read.Set(read_size);
             if (_Offset == _Buffer.Count)
-            {
-                
-                DoneEvent(_Buffer.Bytes.Array);                
+            {                
+                DoneEvent(_Buffer);                
             }
             else
             {

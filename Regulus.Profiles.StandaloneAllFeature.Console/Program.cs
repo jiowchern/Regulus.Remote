@@ -1,7 +1,9 @@
 ﻿
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading;
 using Regulus.Remote.Reactive;
 
 namespace Regulus.Profiles.StandaloneAllFeature.Console
@@ -25,7 +27,7 @@ namespace Regulus.Profiles.StandaloneAllFeature.Console
             var entry = new Server.Entry();
             var service = Regulus.Remote.Standalone.Provider.CreateService(entry , protocol);
 
-            int range = 100;
+            int range = 500;
             
             var agents = new System.Collections.Generic.List<User>();
             for (int i = 0; i < range; i++)
@@ -34,9 +36,13 @@ namespace Regulus.Profiles.StandaloneAllFeature.Console
                 agents.Add(new User(agent , i + 1));
             }
 
-            
-            
-            System.Threading.Tasks.Parallel.ForEach(agents, a =>
+            ParallelOptions options = new ParallelOptions
+            {
+                MaxDegreeOfParallelism = 100, 
+            };
+
+
+            System.Threading.Tasks.Parallel.ForEach(agents, options, a =>
             {
                 var agent = a.Agent;
 
@@ -54,20 +60,24 @@ namespace Regulus.Profiles.StandaloneAllFeature.Console
                 bufferObs.Subscribe(v =>
                 {                    
                     stopWatch.Stop();
-                    a.Ticks = stopWatch.ElapsedTicks;                    
-                    System.Threading.Volatile.Write(ref enable, false);
-                    
+                    a.Ticks = stopWatch.ElapsedTicks;
+                    //System.Threading.Volatile.Write(ref enable, false);
+                    enable = false;
+
+
                 });
-                int sleepCount = 0;
-                while(System.Threading.Volatile.Read(ref enable))
+                long sleepCount = 0;
+                //while(System.Threading.Volatile.Read(ref enable))
+                while (enable)
                 {
                     agent.Update();
-                    System.Threading.Tasks.Task.Delay(100).Wait();
-                    sleepCount++;
+                    var sw = new Stopwatch();
+                    System.Threading.Tasks.Task.Delay(range).Wait();                   
+                    sleepCount += sw.ElapsedTicks;
                 }
                 
                 agent.Dispose();
-                a.Ticks = a.Ticks - TimeSpan.FromMilliseconds((sleepCount-1) * 100 ).Ticks;
+                a.Ticks = a.Ticks - sleepCount;
                 var time = new TimeSpan(a.Ticks / range);
                 System.Console.WriteLine($"Done {a.Id}/{range} time:{time}");
             });
@@ -79,6 +89,13 @@ namespace Regulus.Profiles.StandaloneAllFeature.Console
             System.Console.WriteLine($"Total time : {new TimeSpan(ticks)}");
 
             service.Dispose();
+
+            var chunks = Regulus.Memorys.PoolProvider.Shared.Chunks;
+            foreach (var chunk in chunks)
+            {
+                System.Console.WriteLine($"Remote Chunk : {chunk.BufferSize} {chunk.AvailableCount} {chunk.DefaultAllocationThreshold} {chunk.PageSize}");
+            }
+
         }
     }
 }

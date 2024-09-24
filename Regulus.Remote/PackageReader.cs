@@ -1,4 +1,5 @@
-﻿using Regulus.Network;
+﻿using Regulus.Memorys;
+using Regulus.Network;
 using Regulus.Serialization;
 using Regulus.Utility;
 using System;
@@ -8,7 +9,7 @@ namespace Regulus.Remote
 {
     public delegate void OnErrorCallback();
 
-    public delegate void OnByteDataCallback(byte[] bytes);
+    
     public class PackageReader<TPackage>
     {
         private readonly IInternalSerializable _Serializer;
@@ -31,10 +32,11 @@ namespace Regulus.Remote
         private IStreamable _Peer;
 
         private volatile bool _Stop;
-
-        public PackageReader(IInternalSerializable serializer)
+        readonly Regulus.Memorys.IPool _Pool;
+        public PackageReader(IInternalSerializable serializer , Regulus.Memorys.IPool pool)
         {
-            
+            _Pool = pool;
+
             _Serializer = serializer;
             _DoneEvent += _Empty;
             ErrorEvent += _Empty;
@@ -59,37 +61,58 @@ namespace Regulus.Remote
 
         private void _ReadHead()
         {
-            var readHead = new SocketHeadReader(_Peer);
+            var buffer = _Pool.Alloc(8);
+            var readHead = new SocketHeadReader(_Peer, buffer);
             _Reader = readHead;
             ISocketReader reader = readHead;
-            reader.DoneEvent += _ReadBody;
+            readHead.DoneEvent += (readed_count , readed_size) => { _ReadBody(buffer, readed_count, readed_size); };
             reader.ErrorEvent += ErrorEvent;            
             readHead.Read();
             
 
         }
 
-        private void _ReadBody(byte[] bytes)
+        private void _ReadBody(Regulus.Memorys.Buffer head_buffer,int readed_count,int readed_size)
         {
-            ulong len;
-            Regulus.Serialization.Varint.BufferToNumber(bytes, 0, out len);
-            int bodySize = (int)len;
-            var buf = MemoryPoolProvider.Shared.Alloc(bodySize);
+            var headBytes = head_buffer.Bytes;
+            int realBodySize = 0;
+            Regulus.Serialization.Varint.BufferToNumber(headBytes.Array, headBytes.Offset, out realBodySize);
+            var prevBodyReaded = readed_size - readed_count;
+
             var bodyReader = new SocketBodyReader(_Peer);
             _Reader = bodyReader;
             ISocketReader reader = bodyReader;
-            reader.DoneEvent += (b) => {                
-                _Package(buf);                
+            bodyReader.DoneEvent += (body_buffer) => {
+
+                var needReadFromHeadSize = prevBodyReaded;
+                var newBodyBuffer = _Pool.Alloc(realBodySize);
+                var newBodyBytes = newBodyBuffer.Bytes;
+                for (int i = 0; i < needReadFromHeadSize; i++)
+                {
+                    newBodyBytes.Array[newBodyBytes.Offset + i] = headBytes.Array[headBytes.Offset + readed_count + i];
+                }
+                var bodyBytes = body_buffer.Bytes;
+                for (int i = 0; i < bodyBytes.Count; i++)
+                {
+                    newBodyBytes.Array[newBodyBytes.Offset + prevBodyReaded + i] = bodyBytes.Array[bodyBytes.Offset + i];                
+                }
+                body_buffer.Dispose();
+                head_buffer.Dispose();
+                _Package(newBodyBuffer);
+                
             };
             reader.ErrorEvent += ErrorEvent;
             
-            bodyReader.Read(buf);
+            var bodySize = realBodySize - prevBodyReaded;
+            var bodyBuffer = _Pool.Alloc(bodySize);
+            bodyReader.Read(bodyBuffer);
         }
 
         private void _Package(Regulus.Memorys.Buffer bytes)
         {
 
             TPackage pkg = (TPackage)_Serializer.Deserialize(bytes);
+            bytes.Dispose();
             if (pkg == null)
             {
                 ErrorEvent();

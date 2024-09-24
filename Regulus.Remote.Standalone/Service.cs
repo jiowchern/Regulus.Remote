@@ -1,6 +1,7 @@
 ﻿
 
 
+using Regulus.Memorys;
 using Regulus.Network;
 using Regulus.Remote.Ghost;
 using Regulus.Remote.Soul;
@@ -20,14 +21,15 @@ namespace Regulus.Remote.Standalone
         
         internal readonly IProtocol Protocol;
         internal readonly ISerializable Serializer;
-
+        private readonly IPool _Pool;
         readonly NotifiableCollection<IStreamable> _NotifiableCollection;
-        public Service(IBinderProvider entry, IProtocol protocol , ISerializable serializable, Regulus.Remote.IInternalSerializable internal_serializable)
+        public Service(IBinderProvider entry, IProtocol protocol , ISerializable serializable, Regulus.Remote.IInternalSerializable internal_serializable ,Memorys.IPool pool )
         {
+            _Pool = pool;
             _NotifiableCollection = new NotifiableCollection<IStreamable>();
             Protocol = protocol;
             Serializer = serializable;
-            var service = new Regulus.Remote.Soul.AsyncService(new SyncService(entry , new UserProvider(protocol, serializable, this, internal_serializable)) );
+            var service = new Regulus.Remote.Soul.AsyncService(new SyncService(entry , new UserProvider(protocol, serializable, this, internal_serializable, _Pool)) );
             _Service = service;
         
             _Agents = new List<Ghost.IAgent>();
@@ -62,13 +64,10 @@ namespace Regulus.Remote.Standalone
             }
         }
 
-
-     
-
         public Ghost.IAgent Create()
         {
             var stream = new Stream();
-            var agent = new Regulus.Remote.Ghost.Agent(stream, this.Protocol, this.Serializer, new Regulus.Remote.InternalSerializer());
+            var agent = new Regulus.Remote.Ghost.Agent(stream, this.Protocol, this.Serializer, new Regulus.Remote.InternalSerializer(), _Pool);
             var revStream = new ReverseStream(stream);
 
             _NotifiableCollection.Items.Add(revStream);

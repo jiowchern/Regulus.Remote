@@ -1,4 +1,5 @@
 ﻿using Regulus.Network;
+using Regulus.Memorys;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -42,8 +43,8 @@ namespace Regulus.Remote.Tests
             SocketBodyReader reader = new Regulus.Remote.SocketBodyReader(peer);
             
             var readBytes = new System.Collections.Generic.List<byte>();
-            var buf = MemoryPoolProvider.Shared.Alloc(10);
-            reader.DoneEvent += (data) =>
+            var buf = Regulus.Memorys.PoolProvider.Shared.Alloc(10);
+            reader.DoneEvent += (b) =>
             {
                 readBytes.AddRange(buf.ToArray());
                 buf.Dispose();
@@ -66,18 +67,20 @@ namespace Regulus.Remote.Tests
         public void ReadHeadTest()
         {
             SocketHeadReaderTestPeer peer = new SocketHeadReaderTestPeer();
-
-            SocketHeadReader reader = new Regulus.Remote.SocketHeadReader(peer);
+            var buffer = new byte[3];
+            SocketHeadReader reader = new Regulus.Remote.SocketHeadReader(peer , buffer.AsBuffer());
             ISocketReader readEvent = reader as ISocketReader;
-            var buffer = new System.Collections.Generic.List<byte>();
-            readEvent.DoneEvent += (read_buffer) =>
+            int resultOffset = 0;
+            int readSize = 0;
+            reader.DoneEvent += (read_count,read_size) =>
             {
-                buffer.AddRange(read_buffer);
+                resultOffset = read_count;
+                readSize = read_size;
             };
 
             reader.Read();
             
-            while (buffer.Count != 2)
+            while (!(resultOffset == 2 || readSize == 3) )
             {
                 System.Threading.Thread.Sleep(1);   
             }

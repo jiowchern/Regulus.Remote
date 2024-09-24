@@ -22,9 +22,11 @@ namespace Regulus.Remote.Standalone.Test
             ISerializable serializer = new Regulus.Remote.DynamicSerializer();
             IProtocol protocol = ProtocolHelper.CreateProtocol();
             var internalSer = new Regulus.Remote.InternalSerializer();
-            Soul.IService service = new Regulus.Remote.Soul.AsyncService(new Soul.SyncService(entry , new Soul.UserProvider(protocol, serializer, listenable, internalSer)));
+            var pool = Regulus.Memorys.PoolProvider.Shared;
+            Soul.IService service = new Regulus.Remote.Soul.AsyncService(new Soul.SyncService(entry , new Soul.UserProvider(protocol, serializer, listenable, internalSer, pool)));
+
             
-            IAgent agent = new Regulus.Remote.Ghost.Agent(clientStream,protocol, serializer, internalSer) as Ghost.IAgent;
+            IAgent agent = new Regulus.Remote.Ghost.Agent(clientStream,protocol, serializer, internalSer , pool) as Ghost.IAgent;
             IGpiA ghostGpia = null;
 
 

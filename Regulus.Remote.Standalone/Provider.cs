@@ -4,11 +4,12 @@
     {
         public static Service CreateService(IBinderProvider entry, IProtocol protocol)
         {
-            return CreateService(entry, protocol, new Regulus.Remote.Serializer(protocol.SerializeTypes));
+
+            return CreateService(entry, protocol, new Regulus.Remote.Serializer(protocol.SerializeTypes),Regulus.Memorys.PoolProvider.Shared );
         }
-        public static Service CreateService(IBinderProvider entry , IProtocol protocol, ISerializable serializable )
+        public static Service CreateService(IBinderProvider entry , IProtocol protocol, ISerializable serializable ,Regulus.Memorys.IPool pool)
         {
-            return new Standalone.Service(entry, protocol, serializable , new Regulus.Remote.InternalSerializer());
+            return new Standalone.Service(entry, protocol, serializable , new Regulus.Remote.InternalSerializer(), pool);
         }
 
        

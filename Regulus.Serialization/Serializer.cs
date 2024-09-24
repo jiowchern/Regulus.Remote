@@ -8,31 +8,17 @@ namespace Regulus.Serialization
     {
         private readonly DescriberProvider _Provider;
 
-        static Regulus.Memorys.Pool _Create()
-        {
-            return new Memorys.Pool(
-                                   new Memorys.ChunkSetting[]
-                                   {
-                        //new Memorys.ChunkSetting(1, 1024),
-                        //new Memorys.ChunkSetting(2, 1024),
-                        new Memorys.ChunkSetting(4, 1024),
-                        new Memorys.ChunkSetting(8, 1024),
-                        new Memorys.ChunkSetting(16, 1024),
-                        new Memorys.ChunkSetting(32, 1024),
-                        new Memorys.ChunkSetting(64, 1024),
-                        new Memorys.ChunkSetting(128, 1024),
-                        new Memorys.ChunkSetting(256, 1024),
-                        new Memorys.ChunkSetting(512, 1024),
-                        new Memorys.ChunkSetting(1024, 128),
-                        new Memorys.ChunkSetting(2048, 128) }                        
-                                   
-                                                  );
-        }
-        internal readonly static Regulus.Memorys.Pool Shared = _Create();
+        Memorys.IPool _Pool;
 
-        public Serializer(DescriberProvider provider)
+
+        public Serializer(DescriberProvider provider) : this(provider, Regulus.Memorys.PoolProvider.Shared)
+        {
+
+        }
+        public Serializer(DescriberProvider provider , Memorys.IPool pool)
         {
             _Provider = provider;
+            _Pool = pool;
         }
 
         public Regulus.Memorys.Buffer ObjectToBuffer(object instance)
@@ -51,7 +37,7 @@ namespace Regulus.Serialization
 
                 int idCount = _Provider.KeyDescriber.GetByteCount(type);
                 int bufferCount = describer.GetByteCount(instance);
-                var buffer = Shared.Alloc(idCount + bufferCount);
+                var buffer = _Pool.Alloc(idCount + bufferCount);
                 var bytes = buffer.Bytes;
                 int readCount = _Provider.KeyDescriber.ToBuffer(type, buffer, 0);
                 describer.ToBuffer(instance, buffer, readCount);
@@ -75,7 +61,7 @@ namespace Regulus.Serialization
         private Memorys.Buffer _NullBuffer()
         {
             int idCount = Varint.GetByteCount(0);
-            var buffer = Shared.Alloc(idCount);
+            var buffer = _Pool.Alloc(idCount);
             var bytes = buffer.Bytes;
             Varint.NumberToBuffer(bytes.Array, bytes.Offset, 0);
             return buffer;

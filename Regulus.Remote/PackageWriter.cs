@@ -1,4 +1,5 @@
-﻿using Regulus.Network;
+﻿using Regulus.Memorys;
+using Regulus.Network;
 using Regulus.Serialization;
 
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ namespace Regulus.Remote
 {
     public class PackageWriter<TPackage>
     {
+        private readonly IPool _Pool;
         private readonly IInternalSerializable _Serializer;
 
 
@@ -19,9 +21,9 @@ namespace Regulus.Remote
 
         
 
-        public PackageWriter(IInternalSerializable serializer)
+        public PackageWriter(IInternalSerializable serializer,Regulus.Memorys.IPool pool)
         {
-        
+            _Pool = pool;
             _Serializer = serializer;
         
         }
@@ -87,11 +89,11 @@ namespace Regulus.Remote
             var bytes = buffer.Bytes;
             int len = bytes.Count;
             int lenCount = Regulus.Serialization.Varint.GetByteCount(len);
-            var lenBuffer = MemoryPoolProvider.Shared.Alloc(lenCount);
+            var lenBuffer = _Pool.Alloc(lenCount);
             var lenBufferBytes = lenBuffer.Bytes;
             Regulus.Serialization.Varint.NumberToBuffer(lenBufferBytes.Array, lenBufferBytes.Offset, len);
 
-            using (var stream = MemoryPoolProvider.Shared.Alloc(lenCount + bytes.Count))
+            using (var stream = _Pool.Alloc(lenCount + bytes.Count))
             {
                 var totalBytes = stream.Bytes;
 
@@ -107,25 +109,31 @@ namespace Regulus.Remote
                 }
                 buffer.Dispose();
                 lenBuffer.Dispose();
-                return stream.ToArray();
+                var buf = stream.ToArray();
+                stream.Dispose();
+                return buf;
             }
 
         }
         private byte[] _CreateBuffer(TPackage[] packages)
         {
-            IEnumerable<byte[]> buffers = from p in packages select _Serializer.Serialize(p).ToArray();
+            IEnumerable<Regulus.Memorys.Buffer> buffers = from p in packages select _Serializer.Serialize(p);
 
             // Regulus.Utility.Log.Instance.WriteDebug(string.Format("Serialize to Buffer size {0}", buffers.Sum( b => b.Length )));
             using (MemoryStream stream = new MemoryStream())
             {
-                foreach (byte[] buffer in buffers)
+                foreach (var buffer in buffers)
                 {
-                    int len = buffer.Length;
+                    var bytes = buffer.Bytes;
+                    int len = bytes.Count;
                     int lenCount = Regulus.Serialization.Varint.GetByteCount(len);
-                    byte[] lenBuffer = new byte[lenCount];
-                    Regulus.Serialization.Varint.NumberToBuffer(lenBuffer, 0, len);
-                    stream.Write(lenBuffer, 0, lenBuffer.Length);
-                    stream.Write(buffer, 0, buffer.Length);
+                    var lenBuffer = _Pool.Alloc(lenCount);
+                    var lenBytes = lenBuffer.Bytes;
+                    Regulus.Serialization.Varint.NumberToBuffer(lenBytes.Array, lenBytes.Offset, len);
+                    stream.Write(lenBytes.Array, lenBytes.Offset, lenBytes.Count );
+                    stream.Write(bytes.Array , bytes.Offset , bytes.Count);
+                    lenBuffer.Dispose();
+                    buffer.Dispose();
                 }
 
                 return stream.ToArray();
