@@ -48,7 +48,7 @@ namespace Regulus.Remote
             if (return_value != null)
                 package.ReturnId = _ReturnValueQueue.PushReturnValue(return_value);
             
-            _Requester.Request(ClientToServerOpCode.CallMethod, _InternalSerializable.Serialize(package).ToArray());
+            _Requester.Request(ClientToServerOpCode.CallMethod, _InternalSerializable.Serialize(package));
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Regulus.Remote.Extensions;
+﻿using Regulus.Memorys;
+using Regulus.Remote.Extensions;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -37,7 +38,7 @@ namespace Regulus.Remote
             
             var map = _MemberMap;
             var info = map.GetProperty(property);
-            var value = _Serializer.Deserialize(info.DeclaringType, payload);
+            var value = _Serializer.Deserialize(info.DeclaringType, payload.AsBuffer());
 
             IGhost ghost = _Base.GetTargetOrException();
             object instance = ghost.GetInstance();
@@ -70,7 +71,7 @@ namespace Regulus.Remote
             object fieldValue = eventInfo.GetValue(instance);
             if (fieldValue is GhostEventHandler fieldValueDelegate)
             {
-                object[] pars = (from payload in event_params select _Serializer.Deserialize(eventInfo.FieldType, payload)).ToArray();
+                object[] pars = (from payload in event_params select _Serializer.Deserialize(eventInfo.FieldType, payload.AsBuffer())).ToArray();
                 try
                 {
                     fieldValueDelegate.Invoke(handler_id, pars);

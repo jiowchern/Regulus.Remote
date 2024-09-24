@@ -70,7 +70,7 @@ namespace Regulus.Serialization
         }
 
 
-        int ITypeDescriber.ToObject(byte[] buffer, int begin, out object instance)
+        int ITypeDescriber.ToObject(Regulus.Memorys.Buffer buffer, int begin, out object instance)
         {
             ulong value;
             int readed = Varint.BufferToNumber(buffer, begin, out value);

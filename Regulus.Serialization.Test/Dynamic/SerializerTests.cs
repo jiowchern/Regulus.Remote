@@ -14,7 +14,7 @@ namespace Regulus.Serialization.Dynamic.Tests
 
             Serializer ser = new Regulus.Serialization.Dynamic.Serializer();
 
-            byte[] buf = ser.ObjectToBuffer(12345).ToArray();
+            var buf = ser.ObjectToBuffer(12345);
             int val = (int)ser.BufferToObject(buf);
             Assert.AreEqual(12345, val);
         }
@@ -25,7 +25,7 @@ namespace Regulus.Serialization.Dynamic.Tests
 
             Serializer ser = new Regulus.Serialization.Dynamic.Serializer();
 
-            byte[] buf = ser.ObjectToBuffer("12345").ToArray();
+            var buf = ser.ObjectToBuffer("12345");
             string val = (string)ser.BufferToObject(buf);
             Assert.AreEqual("12345", val);
         }
@@ -37,7 +37,7 @@ namespace Regulus.Serialization.Dynamic.Tests
 
             Serializer ser = new Regulus.Serialization.Dynamic.Serializer();
 
-            byte[] buf = ser.ObjectToBuffer(null).ToArray();
+            var buf = ser.ObjectToBuffer(null);
             object val = ser.BufferToObject(buf);
             Assert.AreEqual(null, val);
         }
@@ -49,7 +49,7 @@ namespace Regulus.Serialization.Dynamic.Tests
 
             Serializer ser = new Regulus.Serialization.Dynamic.Serializer();
 
-            byte[] buf = ser.ObjectToBuffer(new[] { 1, 2, 3, 4, 5 }).ToArray();
+            var buf = ser.ObjectToBuffer(new[] { 1, 2, 3, 4, 5 });
             int[] val = (int[])ser.BufferToObject(buf);
             Assert.AreEqual(1, val[0]);
             Assert.AreEqual(2, val[1]);
@@ -67,7 +67,7 @@ namespace Regulus.Serialization.Dynamic.Tests
 
             Serializer ser = new Regulus.Serialization.Dynamic.Serializer();
 
-            byte[] buf = ser.ObjectToBuffer(new[] { "1", "2", "3", "4", "5" }).ToArray();
+            var buf = ser.ObjectToBuffer(new[] { "1", "2", "3", "4", "5" });
             string[] val = (string[])ser.BufferToObject(buf);
             Assert.AreEqual("1", val[0]);
             Assert.AreEqual("2", val[1]);
@@ -92,7 +92,7 @@ namespace Regulus.Serialization.Dynamic.Tests
             TestParent testParent = test as TestParent;
             testParent.Data = 33;
 
-            byte[] buf = ser.ObjectToBuffer(test).ToArray();
+            var buf = ser.ObjectToBuffer(test);
             TestGrandson val = (TestGrandson)ser.BufferToObject(buf);
             TestParent valParent = val as TestParent;
             TestChild child = val as TestChild;
@@ -135,7 +135,7 @@ namespace Regulus.Serialization.Dynamic.Tests
 
             Serializer serializer =
                 new Regulus.Serialization.Dynamic.Serializer(new CustomFinder((name) => Type.GetType(name)));
-            byte[] buf = serializer.ObjectToBuffer(new TestParent[] { test, testChild, testParent }).ToArray();
+            var buf = serializer.ObjectToBuffer(new TestParent[] { test, testChild, testParent });
             TestParent[] val = (TestParent[])serializer.BufferToObject(buf);
 
             Assert.AreEqual(100, (val[0] as TestGrandson).Data);
@@ -156,7 +156,7 @@ namespace Regulus.Serialization.Dynamic.Tests
 
             Serializer serializer =
                 new Regulus.Serialization.Dynamic.Serializer(new CustomFinder((name) => Type.GetType(name)));
-            byte[] buf = serializer.ObjectToBuffer(test).ToArray();
+            var buf = serializer.ObjectToBuffer(test);
             TestPoly val = (TestPoly)serializer.BufferToObject(buf);
             TestGrandson valChild = val.Parent as TestGrandson;
             Assert.AreEqual(100, valChild.Data);

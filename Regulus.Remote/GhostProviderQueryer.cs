@@ -1,4 +1,5 @@
-﻿using Regulus.Remote.Extensions;
+﻿using Regulus.Memorys;
+using Regulus.Remote.Extensions;
 using Regulus.Remote.Packages;
 using Regulus.Utility;
 using System;
@@ -57,7 +58,7 @@ namespace Regulus.Remote
 
         private void _SendPing()
         {
-            _Exchanger.Request(ClientToServerOpCode.Ping, new byte[0]);
+            _Exchanger.Request(ClientToServerOpCode.Ping, new byte[0].AsBuffer());
         }
 
         public void Start()
@@ -84,7 +85,7 @@ namespace Regulus.Remote
 
         
 
-        protected void _OnResponse(ServerToClientOpCode code, byte[] args)
+        protected void _OnResponse(ServerToClientOpCode code, Regulus.Memorys.Buffer args)
         {
             _UpdateAutoRelease();
             if (code == ServerToClientOpCode.Ping)
@@ -163,7 +164,7 @@ namespace Regulus.Remote
             {
                 var pkg = new Regulus.Remote.Packages.PackageRelease();
                 pkg.EntityId = id;
-                _Exchanger.Request(ClientToServerOpCode.Release, _InternalSerializer.Serialize(pkg).ToArray());
+                _Exchanger.Request(ClientToServerOpCode.Release, _InternalSerializer.Serialize(pkg));
 
                 _UnloadSoul(id);
             }
@@ -195,7 +196,7 @@ namespace Regulus.Remote
             IValue value = _ReturnValueQueue.PopReturnValue(returnTarget);
             if (value != null)
             {
-                object returnInstance = _Serializer.Deserialize(value.GetObjectType() , returnValue);
+                object returnInstance = _Serializer.Deserialize(value.GetObjectType() , returnValue.AsBuffer());
                 value.SetValue(returnInstance);
             }
         }
@@ -331,7 +332,7 @@ namespace Regulus.Remote
             pkg.EntityId = entity_id;
             pkg.Property = property;
             
-            _Exchanger.Request(ClientToServerOpCode.UpdateProperty, _InternalSerializer.Serialize(pkg).ToArray());
+            _Exchanger.Request(ClientToServerOpCode.UpdateProperty, _InternalSerializer.Serialize(pkg));
         }
 
         private void _InvokeEvent(long ghost_id, int event_id, long handler_id, byte[][] event_params)

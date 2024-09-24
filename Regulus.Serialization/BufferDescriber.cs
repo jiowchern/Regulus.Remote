@@ -58,7 +58,7 @@ namespace Regulus.Serialization
             return offset - begin + bufferLength;
         }
 
-        int ITypeDescriber.ToObject(byte[] buffer, int begin, out object instnace)
+        int ITypeDescriber.ToObject(Regulus.Memorys.Buffer buffer, int begin, out object instnace)
         {
             int offset = begin;
             int bufferLen = 0;
@@ -66,7 +66,9 @@ namespace Regulus.Serialization
             int elementLen = 0;
             offset += Varint.BufferToNumber(buffer, offset, out elementLen);
             Array dst = _Create(elementLen);
-            Buffer.BlockCopy(buffer, offset, dst, 0, bufferLen);
+
+            var bytes = buffer.Bytes;
+            Buffer.BlockCopy(bytes.Array, bytes.Offset + offset, dst, 0, bufferLen);
 
             instnace = dst;
             return offset - begin + bufferLen;

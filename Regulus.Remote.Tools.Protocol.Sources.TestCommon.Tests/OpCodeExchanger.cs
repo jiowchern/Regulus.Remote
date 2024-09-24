@@ -1,5 +1,6 @@
 ﻿using System;
-
+using System.Linq;
+using Regulus.Memorys;
 namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 {
     public class OpCodeExchanger : IOpCodeExchangeable
@@ -9,8 +10,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
         {
             Requests = new System.Collections.Generic.Queue<Tuple<ClientToServerOpCode, byte[]>>();
         }
-        public Action<ServerToClientOpCode, byte[]> Responser; 
-        event Action<ServerToClientOpCode, byte[]> IOpCodeExchangeable.ResponseEvent
+        public Action<ServerToClientOpCode, Regulus.Memorys.Buffer> Responser; 
+        event Action<ServerToClientOpCode, Regulus.Memorys.Buffer> IOpCodeExchangeable.ResponseEvent
         {
             add
             {
@@ -25,9 +26,9 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 
 
         public event Action<ClientToServerOpCode, byte[]> RequestEvent;
-        void IOpCodeExchangeable.Request(ClientToServerOpCode code, byte[] args)
+        void IOpCodeExchangeable.Request(ClientToServerOpCode code, Regulus.Memorys.Buffer args)
         {
-            Requests.Enqueue(new Tuple<ClientToServerOpCode, byte[]>(code, args) );
+            Requests.Enqueue(new Tuple<ClientToServerOpCode, byte[]>(code, args.ToArray()) );
         }
         public Tuple<ClientToServerOpCode, byte[]> IgnoreUntil(ClientToServerOpCode code)
         {

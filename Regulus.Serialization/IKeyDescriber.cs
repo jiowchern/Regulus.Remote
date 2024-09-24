@@ -6,6 +6,6 @@ namespace Regulus.Serialization
     {
         int GetByteCount(Type type);
         int ToBuffer(Type type, Regulus.Memorys.Buffer buffer, int begin);
-        int ToObject(byte[] buffer, int begin, out Type type);
+        int ToObject(Regulus.Memorys.Buffer buffer, int begin, out Type type);
     }
 }

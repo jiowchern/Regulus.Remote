@@ -13,7 +13,7 @@ namespace Regulus.Remote
 
         
 
-        object ISerializable.Deserialize(Type type, byte[] buffer)
+        object ISerializable.Deserialize(Type type, Regulus.Memorys.Buffer buffer)
         {
             return _Serializer.BufferToObject(buffer);
         }

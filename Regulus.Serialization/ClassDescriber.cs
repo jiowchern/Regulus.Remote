@@ -133,7 +133,7 @@ namespace Regulus.Serialization
             return offset;
         }
 
-        int ITypeDescriber.ToObject(byte[] buffer, int begin, out object instance)
+        int ITypeDescriber.ToObject(Regulus.Memorys.Buffer buffer, int begin, out object instance)
         {
             try
             {
@@ -161,7 +161,7 @@ namespace Regulus.Serialization
 
         }
 
-        private int _ToObject(byte[] buffer, object instance, int offset)
+        private int _ToObject(Regulus.Memorys.Buffer buffer, object instance, int offset)
         {
             ulong index;
             offset += Varint.BufferToNumber(buffer, offset, out index);

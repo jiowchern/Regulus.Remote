@@ -78,19 +78,15 @@ namespace Regulus.Remote
             var bodyReader = new SocketBodyReader(_Peer);
             _Reader = bodyReader;
             ISocketReader reader = bodyReader;
-            reader.DoneEvent += (b) => {
-
-                var bb = buf.ToArray();
-               // buf.Dispose();
-                _Package(bb);
-                
+            reader.DoneEvent += (b) => {                
+                _Package(buf);                
             };
             reader.ErrorEvent += ErrorEvent;
             
             bodyReader.Read(buf);
         }
 
-        private void _Package(byte[] bytes)
+        private void _Package(Regulus.Memorys.Buffer bytes)
         {
 
             TPackage pkg = (TPackage)_Serializer.Deserialize(bytes);

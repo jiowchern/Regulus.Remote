@@ -30,7 +30,7 @@ namespace Regulus.Remote
             package.Event = map.GetEvent(info);
             package.Handler = handler;
 
-            _Requester.Request(ClientToServerOpCode.AddEvent, _InternalSerializable.Serialize(package).ToArray());
+            _Requester.Request(ClientToServerOpCode.AddEvent, _InternalSerializable.Serialize(package));
 
         }
 
@@ -48,7 +48,7 @@ namespace Regulus.Remote
             package.Event = map.GetEvent(info);
             package.Handler = handler;
             
-            _Requester.Request(ClientToServerOpCode.RemoveEvent, _InternalSerializable.Serialize(package).ToArray());
+            _Requester.Request(ClientToServerOpCode.RemoveEvent, _InternalSerializable.Serialize(package));
 
         }
     }

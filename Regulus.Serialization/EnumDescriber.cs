@@ -49,7 +49,7 @@ namespace Regulus.Serialization
             return Varint.NumberToBuffer(bytes.Array, bytes.Offset + begin, Convert.ToUInt64(instance));
         }
 
-        int ITypeDescriber.ToObject(byte[] buffer, int begin, out object instnace)
+        int ITypeDescriber.ToObject(Regulus.Memorys.Buffer buffer, int begin, out object instnace)
         {
             ulong value;
             int readed = Varint.BufferToNumber(buffer, begin, out value);

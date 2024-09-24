@@ -1,8 +1,10 @@
-﻿using Regulus.Network;
+﻿using Regulus.Memorys;
+using Regulus.Network;
 using Regulus.Serialization;
 using Regulus.Utility;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Regulus.Remote.Ghost
 {
@@ -28,13 +30,13 @@ namespace Regulus.Remote.Ghost
             _ResponseEvent += _Empty;
         }
 
-        private void _Empty(ServerToClientOpCode arg1, byte[] arg2)
+        private void _Empty(ServerToClientOpCode arg1, Regulus.Memorys.Buffer arg2)
         {
         }
 
-        event Action<ServerToClientOpCode, byte[]> _ResponseEvent;
+        event Action<ServerToClientOpCode, Regulus.Memorys.Buffer> _ResponseEvent;
 
-        event Action<ServerToClientOpCode, byte[]> IOpCodeExchangeable.ResponseEvent
+        event Action<ServerToClientOpCode, Regulus.Memorys.Buffer> IOpCodeExchangeable.ResponseEvent
         {
             add
             {
@@ -48,12 +50,12 @@ namespace Regulus.Remote.Ghost
             }
         }
 
-        void IOpCodeExchangeable.Request(ClientToServerOpCode code, byte[] args)
+        void IOpCodeExchangeable.Request(ClientToServerOpCode code, Regulus.Memorys.Buffer args)
         {
             _Sends.Enqueue(
                     new Regulus.Remote.Packages.RequestPackage()
                     {
-                        Data = args,
+                        Data = args.ToArray(),
                         Code = code
                     });            
         }
@@ -95,7 +97,7 @@ namespace Regulus.Remote.Ghost
             Regulus.Remote.Packages.ResponsePackage receivePkg;
             while(_Receives.TryDequeue(out receivePkg))
             {            
-                _ResponseEvent(receivePkg.Code, receivePkg.Data);
+                _ResponseEvent(receivePkg.Code, receivePkg.Data.AsBuffer());
             }
 
             Regulus.Remote.Packages.RequestPackage[] sends = _SendsPop();

@@ -1,4 +1,5 @@
 ﻿using Regulus.Extensions;
+using Regulus.Memorys;
 using Regulus.Network;
 using Regulus.Utility;
 using System;
@@ -158,23 +159,23 @@ namespace Regulus.Remote.Soul
             if (package.Code == ClientToServerOpCode.CallMethod)
             {
 
-                Regulus.Remote.Packages.PackageCallMethod data = (Regulus.Remote.Packages.PackageCallMethod)_InternalSerializer.Deserialize(package.Data)  ;
+                Regulus.Remote.Packages.PackageCallMethod data = (Regulus.Remote.Packages.PackageCallMethod)_InternalSerializer.Deserialize(package.Data.AsBuffer())  ;
                 var request = _ToRequest(data.EntityId, data.MethodId, data.ReturnId, data.MethodParams);
                 _InvokeMethodEvent(request.EntityId, request.MethodId, request.ReturnId, request.MethodParams);
             }
             else if (package.Code == ClientToServerOpCode.AddEvent)
             {
-                Regulus.Remote.Packages.PackageAddEvent data = (Regulus.Remote.Packages.PackageAddEvent)_InternalSerializer.Deserialize(package.Data)  ;
+                Regulus.Remote.Packages.PackageAddEvent data = (Regulus.Remote.Packages.PackageAddEvent)_InternalSerializer.Deserialize(package.Data.AsBuffer())  ;
                 _SoulProvider.AddEvent(data.Entity, data.Event, data.Handler);
             }
             else if (package.Code == ClientToServerOpCode.RemoveEvent)
             {
-                Regulus.Remote.Packages.PackageRemoveEvent data = (Regulus.Remote.Packages.PackageRemoveEvent)_InternalSerializer.Deserialize(package.Data)  ;
+                Regulus.Remote.Packages.PackageRemoveEvent data = (Regulus.Remote.Packages.PackageRemoveEvent)_InternalSerializer.Deserialize(package.Data.AsBuffer())  ;
                 _SoulProvider.RemoveEvent(data.Entity, data.Event, data.Handler);
             }
             else if (package.Code == ClientToServerOpCode.UpdateProperty)
             {
-                Regulus.Remote.Packages.PackageSetPropertyDone data = (Regulus.Remote.Packages.PackageSetPropertyDone)_InternalSerializer.Deserialize(package.Data);
+                Regulus.Remote.Packages.PackageSetPropertyDone data = (Regulus.Remote.Packages.PackageSetPropertyDone)_InternalSerializer.Deserialize(package.Data.AsBuffer());
                 _SoulProvider.SetPropertyDone(data.EntityId, data.Property);
             }
             else
@@ -191,7 +192,7 @@ namespace Regulus.Remote.Soul
             }            
             else if (package.Code == ClientToServerOpCode.Release)
             {
-                Regulus.Remote.Packages.PackageRelease data = (Regulus.Remote.Packages.PackageRelease)_InternalSerializer.Deserialize(package.Data)  ;
+                Regulus.Remote.Packages.PackageRelease data = (Regulus.Remote.Packages.PackageRelease)_InternalSerializer.Deserialize(package.Data.AsBuffer())  ;
                 _SoulProvider.Unbind(data.EntityId);
                 
             }            

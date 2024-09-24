@@ -2,7 +2,7 @@ using NSubstitute;
 using NUnit.Framework;
 using System.Linq;
 using Regulus.Network;
-using Regulus.Serialization;
+using Regulus.Memorys;
 
 namespace Regulus.Remote.Standalone.Test
 {
@@ -125,8 +125,8 @@ namespace Regulus.Remote.Standalone.Test
 
             byte[] recvBuf = new byte[buf.Length];
             await peer.Receive(recvBuf, 0, recvBuf.Length);
-            Regulus.Remote.Packages.ResponsePackage responsePkg = (Regulus.Remote.Packages.ResponsePackage)internalSerializable.Deserialize(recvBuf)  ;
-            Regulus.Remote.Packages.PackageLoadSoul lordsoulPkg = (Regulus.Remote.Packages.PackageLoadSoul)internalSerializable.Deserialize(responsePkg.Data)  ;
+            Regulus.Remote.Packages.ResponsePackage responsePkg = (Regulus.Remote.Packages.ResponsePackage)internalSerializable.Deserialize(recvBuf.AsBuffer())  ;
+            Regulus.Remote.Packages.PackageLoadSoul lordsoulPkg = (Regulus.Remote.Packages.PackageLoadSoul)internalSerializable.Deserialize(responsePkg.Data.AsBuffer())  ;
             Assert.AreEqual(ServerToClientOpCode.LoadSoul, responsePkg.Code);
             Assert.AreEqual(1, lordsoulPkg.EntityId);
             Assert.False(lordsoulPkg.ReturnType);
@@ -150,8 +150,8 @@ namespace Regulus.Remote.Standalone.Test
             byte[] recvBuf = new byte[buf.Length];
             await peer.Receive(recvBuf, 0, recvBuf.Length);
             await peer.Receive(recvBuf, 1, recvBuf.Length - 1);
-            Regulus.Remote.Packages.ResponsePackage responsePkg = (Regulus.Remote.Packages.ResponsePackage)internalSerializable.Deserialize(recvBuf)  ;
-            Regulus.Remote.Packages.PackageLoadSoul lordsoulPkg = (Regulus.Remote.Packages.PackageLoadSoul)internalSerializable.Deserialize(responsePkg.Data)  ;
+            Regulus.Remote.Packages.ResponsePackage responsePkg = (Regulus.Remote.Packages.ResponsePackage)internalSerializable.Deserialize(recvBuf.AsBuffer())  ;
+            Regulus.Remote.Packages.PackageLoadSoul lordsoulPkg = (Regulus.Remote.Packages.PackageLoadSoul)internalSerializable.Deserialize(responsePkg.Data.AsBuffer())  ;
             Assert.AreEqual(ServerToClientOpCode.LoadSoul, responsePkg.Code);
             Assert.AreEqual(1, lordsoulPkg.EntityId);
             Assert.False(lordsoulPkg.ReturnType);

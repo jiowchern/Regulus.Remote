@@ -157,7 +157,7 @@ namespace Regulus.Serialization
 
         }
 
-        int ITypeDescriber.ToObject(byte[] buffer, int begin, out object instnace)
+        int ITypeDescriber.ToObject(Regulus.Memorys.Buffer buffer, int begin, out object instnace)
         {
             try
             {

@@ -86,16 +86,17 @@ namespace Regulus.Serialization
             return readCount;
         }
 
-        int ITypeDescriber.ToObject(byte[] buffer, int begin, out object instnace)
+        int ITypeDescriber.ToObject(Regulus.Memorys.Buffer buffer, int begin, out object instnace)
         {
 
             try
             {
+                var bytes = buffer.Bytes;
                 int size = Marshal.SizeOf(_Type);
 
                 IntPtr ptr = Marshal.AllocHGlobal(size);
 
-                Marshal.Copy(buffer, begin, ptr, size);
+                Marshal.Copy(bytes.Array, bytes.Offset + begin, ptr, size);
 
                 instnace = Marshal.PtrToStructure(ptr, _Type);
                 Marshal.FreeHGlobal(ptr);

@@ -41,7 +41,7 @@ namespace Regulus.Remote
             _Serializer = new Regulus.Serialization.Serializer(new Regulus.Serialization.DescriberBuilder(essentialTypes).Describers);
         }
 
-        object IInternalSerializable.Deserialize(byte[] buffer)
+        object IInternalSerializable.Deserialize(Regulus.Memorys.Buffer buffer)
         {
             return _Serializer.BufferToObject(buffer);
         }

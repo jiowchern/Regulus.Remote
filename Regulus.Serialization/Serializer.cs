@@ -81,7 +81,7 @@ namespace Regulus.Serialization
             return buffer;
         }
 
-        public object BufferToObject(byte[] buffer)
+        public object BufferToObject(Memorys.Buffer buffer)
         {
             Type id = null;
             try
@@ -113,7 +113,7 @@ namespace Regulus.Serialization
 
       
 
-        public bool TryBufferToObject<T>(byte[] buffer, out T pkg)
+        public bool TryBufferToObject<T>(Regulus.Memorys.Buffer buffer, out T pkg)
         {
 
             pkg = default(T);
@@ -131,7 +131,7 @@ namespace Regulus.Serialization
             return false;
         }
 
-        public bool TryBufferToObject(byte[] buffer, out object pkg)
+        public bool TryBufferToObject(Regulus.Memorys.Buffer buffer, out object pkg)
         {
 
             pkg = null;

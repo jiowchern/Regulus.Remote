@@ -26,7 +26,7 @@ namespace Regulus.Serialization
             return _TypeDescriber.ToBuffer(type.FullName, buffer, begin);
         }
 
-        int IKeyDescriber.ToObject(byte[] buffer, int begin, out Type type)
+        int IKeyDescriber.ToObject(Regulus.Memorys.Buffer buffer, int begin, out Type type)
         {
             object nameObject;
             int count = _TypeDescriber.ToObject(buffer, begin, out nameObject);

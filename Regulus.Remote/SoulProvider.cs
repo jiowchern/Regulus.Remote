@@ -1,4 +1,5 @@
-﻿using Regulus.Utility;
+﻿using Regulus.Memorys;
+using Regulus.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -246,7 +247,7 @@ namespace Regulus.Remote
             try
             {
 
-                IEnumerable<object> argObjects = args.Zip(methodInfo.GetParameters(), (arg, par) => _Serializer.Deserialize(par.ParameterType, arg));
+                IEnumerable<object> argObjects = args.Zip(methodInfo.GetParameters(), (arg, par) => _Serializer.Deserialize(par.ParameterType, arg.AsBuffer()));
 
                 object returnValue = methodInfo.Invoke(soulInfo.ObjectInstance, argObjects.ToArray());
                 if (returnValue != null)

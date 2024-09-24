@@ -44,7 +44,7 @@ namespace Regulus.Serialization
             return offset - begin;
         }
 
-        int ITypeDescriber.ToObject(byte[] buffer, int begin, out object instnace)
+        int ITypeDescriber.ToObject(Regulus.Memorys.Buffer buffer, int begin, out object instnace)
         {
             int offset = begin;
             object chars;

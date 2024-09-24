@@ -51,7 +51,7 @@ namespace Regulus.Serialization
             return Varint.NumberToBuffer(bytes.Array, bytes.Offset + begin, id);
         }
 
-        int IKeyDescriber.ToObject(byte[] buffer, int begin, out Type type)
+        int IKeyDescriber.ToObject(Regulus.Memorys.Buffer buffer, int begin, out Type type)
         {
             int id;
             int count = Varint.BufferToNumber(buffer, begin, out id);
