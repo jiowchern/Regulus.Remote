@@ -1,4 +1,5 @@
 using Regulus.Remote.Extensions;
+using Regulus.Remote.ProviderHelper;
 using System.Linq;
 using System.Reflection;
 
@@ -9,14 +10,14 @@ namespace Regulus.Remote
         
         private readonly IProtocol _Protocol;
         private readonly ISerializable _Serializable;
-        private readonly ReturnValueQueue _ReturnValueQueue;
+        private readonly GhostsReturnValueHandler _ReturnValueQueue;
 
         private readonly long _Ghost;
 
         private readonly IOpCodeExchangeable _Requester;
         readonly IInternalSerializable _InternalSerializable;
-        public GhostMethodHandler(long ghost, 
-            ReturnValueQueue return_value_queue, 
+        public GhostMethodHandler(long ghost,
+            GhostsReturnValueHandler return_value_queue, 
             IProtocol protocol ,
             ISerializable serializable, 
             IInternalSerializable internal_serializable,
@@ -45,6 +46,7 @@ namespace Regulus.Remote
             
             package.MethodParams = args.Zip(info.GetParameters(), (arg, par) => serialize.Serialize(par.ParameterType, arg).ToArray()).ToArray();
 
+            
             if (return_value != null)
                 package.ReturnId = _ReturnValueQueue.PushReturnValue(return_value);
             

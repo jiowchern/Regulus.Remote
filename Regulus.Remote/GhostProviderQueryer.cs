@@ -1,6 +1,7 @@
 ﻿using Regulus.Memorys;
 using Regulus.Remote.Extensions;
 using Regulus.Remote.Packages;
+using Regulus.Remote.ProviderHelper;
 using Regulus.Utility;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,59 @@ using Timer = System.Timers.Timer;
 
 namespace Regulus.Remote
 {
-    delegate System.Action<object> GetObjectAccesserMethod(IObjectAccessible accessible);
     public class GhostProviderQueryer
+    {
+        private readonly GhostsPingHandler _PingHandler;
+        private readonly GhostsReturnValueHandler _ReturnValueHandler;
+        private readonly GhostsProviderManager _ProviderManager;
+        private readonly GhostsManager _GhostManager;
+        private readonly GhostsResponseHandler _ResponseHandler;
+        private readonly IOpCodeExchangeable _Exchanger;
+
+        public bool Active => _ResponseHandler.Active;
+        public float Ping => _PingHandler.PingTime;
+
+        public GhostProviderQueryer(
+            IProtocol protocol,
+            ISerializable serializer,
+            IInternalSerializable internalSerializer,
+            IOpCodeExchangeable exchanger)
+        {
+            _Exchanger = exchanger;
+
+            _PingHandler = new GhostsPingHandler(_Exchanger);
+            _ReturnValueHandler = new GhostsReturnValueHandler(serializer);
+            _ProviderManager = new GhostsProviderManager(protocol);
+            _GhostManager = new GhostsManager(protocol, serializer, internalSerializer, _Exchanger, _ProviderManager, _ReturnValueHandler);
+            _ResponseHandler = new GhostsResponseHandler(internalSerializer, _GhostManager, _ReturnValueHandler, _PingHandler, _ProviderManager, _Exchanger, protocol);
+
+            _ReturnValueHandler.ErrorMethodEvent += (method, message) => ErrorMethodEvent?.Invoke(method, message);
+        }
+
+        public void Start()
+        {
+            _Exchanger.ResponseEvent += _ResponseHandler.OnResponse;
+            
+        }
+
+        public void Stop()
+        {
+            _Exchanger.ResponseEvent -= _ResponseHandler.OnResponse;
+            
+            _ProviderManager.ClearProviders();
+            _GhostManager.ClearGhosts();
+        }
+
+        public INotifier<T> QueryProvider<T>()
+        {
+            return _ProviderManager.QueryProvider<T>();
+        }
+
+        public event Action<string, string> ErrorMethodEvent;
+    }
+    
+    delegate System.Action<object> GetObjectAccesserMethod(IObjectAccessible accessible);
+   /* public class GhostProviderQueryer1
     {
         private readonly AutoRelease<long ,IGhost> _AutoRelease;
 
@@ -39,7 +91,7 @@ namespace Regulus.Remote
         readonly IInternalSerializable _InternalSerializer;
         readonly Ping _Ping;
 
-        public GhostProviderQueryer(IProtocol protocol, ISerializable serializable, IInternalSerializable internal_serializable, IOpCodeExchangeable exchanger)
+        public GhostProviderQueryer1(IProtocol protocol, ISerializable serializable, IInternalSerializable internal_serializable, IOpCodeExchangeable exchanger)
         {
             _Ping = new Ping(1f);
             _Ping.TriggerEvent += _SendPing;
@@ -392,5 +444,5 @@ namespace Regulus.Remote
         }
 
         public event Action<string, string> ErrorMethodEvent;
-    }
+    }*/
 }
