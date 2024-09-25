@@ -15,7 +15,9 @@ namespace Regulus.Remote.Soul
         private readonly ISerializable _Serializable;
         private readonly IListenable _Listenable;
         private readonly IInternalSerializable _InternalSerializable;
-        readonly System.Collections.Generic.List<User> _Users;
+
+        //readonly System.Collections.Generic.List<User> _Users;
+        readonly System.Collections.Concurrent.ConcurrentDictionary<Network.IStreamable, User> _Users;
         readonly Regulus.Utility.Looper<Network.IStreamable> _Looper;
         private readonly IPool _Pool;
         public readonly System.Collections.Concurrent.ConcurrentQueue<User> NewUsers;
@@ -23,7 +25,8 @@ namespace Regulus.Remote.Soul
         {
             _Pool = pool;
             NewUsers = new System.Collections.Concurrent.ConcurrentQueue<User>();
-            _Users = new System.Collections.Generic.List<User>();
+            _Users = new System.Collections.Concurrent.ConcurrentDictionary<Network.IStreamable, User>();
+            
             _Looper = new Utility.Looper<Network.IStreamable>();
             _Looper.AddItemEvent += _Join;
             _Looper.RemoveItemEvent += _Leave;
@@ -42,25 +45,23 @@ namespace Regulus.Remote.Soul
             User user = new User(stream, _Protocol , _Serializable, _InternalSerializable, _Pool);
             
             user.Launch();
-            lock (_Users)
+            while(!_Users.TryAdd(user.Stream, user))
             {
-                _Users.Add(user);                
-            }
+                System.Threading.Thread.Sleep(1);
+            }            
             NewUsers.Enqueue(user);
         }
 
         void _Leave(Network.IStreamable stream)
         {
-            User user = null;
-            lock(_Users)
+            User user = null;            
+            while(!_Users.TryRemove(stream, out user))
             {
-                user = _Users.FirstOrDefault( u=>u.Stream == stream);                
+                System.Threading.Thread.Sleep(1);
             }
             if(user != null)
             {
-                user.Shutdown();
-                lock (_Users)
-                    _Users.Remove(user);
+                user.Shutdown();                
             }
         }
 
@@ -72,20 +73,13 @@ namespace Regulus.Remote.Soul
             _Listenable.StreamableEnterEvent -= _Looper.Add;
             _Listenable.StreamableLeaveEvent -= _Looper.Remove;
 
-            lock (_Users)
-            {                
-                _Users.Clear();
-            }            
+            _Users.Clear();
         }
 
-        public IEnumerable<User> GetUsers()
+        public ICollection<User> GetUsers()
         {
-            _Looper.Update();
-            lock(_Users)
-            {
-                return _Users.ToArray();
-            }
-                
+            _Looper.Update();            
+            return _Users.Values;                
         }
                 
     }

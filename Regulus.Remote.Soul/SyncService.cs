@@ -15,8 +15,6 @@ namespace Regulus.Remote.Soul
             _Binder = binder;
             _UserProvider = user_provider;
             _UserProviderDisposable = user_provider;
-
-            
         }
 
         public void Update()
