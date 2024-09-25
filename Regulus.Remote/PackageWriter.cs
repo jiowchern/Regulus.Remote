@@ -39,13 +39,13 @@ namespace Regulus.Remote
             NetworkMonitor.Instance.Write.Set(send_count);
         }
 
-        public void Push(TPackage package)
+        public async System.Threading.Tasks.Task Push(TPackage package)
         {
             var buffer = _CreateBuffer(ref package);
             if (buffer.Length == 0)
                 return;
 
-            _Write(buffer).ContinueWith(t => { }); 
+            await _Write(buffer); 
             
         }
 

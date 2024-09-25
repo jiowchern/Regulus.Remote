@@ -27,7 +27,7 @@ namespace Regulus.Profiles.StandaloneAllFeature.Console
             var entry = new Server.Entry();
             var service = Regulus.Remote.Standalone.Provider.CreateService(entry , protocol);
 
-            int range = 500;
+            int range = 100;
             
             var agents = new System.Collections.Generic.List<User>();
             for (int i = 0; i < range; i++)
@@ -38,7 +38,7 @@ namespace Regulus.Profiles.StandaloneAllFeature.Console
 
             ParallelOptions options = new ParallelOptions
             {
-                MaxDegreeOfParallelism = 100, 
+                MaxDegreeOfParallelism = 10, 
             };
 
 

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+
 namespace Regulus.Remote.Soul
 {
     public class User : IRequestQueue, IResponseQueue , Advanceable
@@ -42,6 +43,8 @@ namespace Regulus.Remote.Soul
         
         private bool _Enable;
 
+        private readonly IResponseQueue _ResponseQueue;
+
         public bool Enable => _Enable;
         
         internal readonly IStreamable Stream;
@@ -55,16 +58,12 @@ namespace Regulus.Remote.Soul
         
 
         public User(IStreamable client, IProtocol protocol , ISerializable serializable, IInternalSerializable internal_serializable , Regulus.Memorys.IPool pool)
-        {
-        
+        {        
             Stream = client;
             _InternalSerializer = internal_serializable;
             
             _Peer = client;
             _Protocol = protocol;
-            
-            
-
                         
             _Reader = new PackageReader<Regulus.Remote.Packages.RequestPackage>(_InternalSerializer , pool);
             _Writer = new PackageWriter<Regulus.Remote.Packages.ResponsePackage>(_InternalSerializer , pool);
@@ -72,8 +71,8 @@ namespace Regulus.Remote.Soul
             _ExternalRequests = new System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.RequestPackage>();
 
             _SoulProvider = new SoulProvider(this, this, protocol, serializable, _InternalSerializer);
-
-            //_Updater = new ThreadUpdater(_AsyncUpdate);
+            _ResponseQueue = this;
+            
         }
 
         void _Launch()
@@ -90,11 +89,8 @@ namespace Regulus.Remote.Soul
             Regulus.Remote.Packages.PackageProtocolSubmit pkg = new Regulus.Remote.Packages.PackageProtocolSubmit();
             pkg.VerificationCode = _Protocol.VerificationCode;
 
-            var buf = _InternalSerializer.Serialize(pkg);
-            _Push(ServerToClientOpCode.ProtocolSubmit, buf.ToArray());
-            
-
-            
+            var buf = _InternalSerializer.Serialize(pkg);            
+            _ResponseQueue.Push(ServerToClientOpCode.ProtocolSubmit, buf);
         }
 
 
@@ -114,8 +110,6 @@ namespace Regulus.Remote.Soul
 
             }
 
-                        
-
             _SendBreakEvent();
             _Enable = false;
         }
@@ -132,24 +126,17 @@ namespace Regulus.Remote.Soul
             remove { _BreakEvent -= value; }
         }
 
-       
-
-        void IResponseQueue.Push(ServerToClientOpCode cmd, byte[] data)
-        {
-            _Push(cmd, data);
-        }
-
-        private void _Push(ServerToClientOpCode cmd, byte[] data)
+        async void IResponseQueue.Push(ServerToClientOpCode cmd, Regulus.Memorys.Buffer buffer)
         {
             if (_Enable)
             {
-                _Writer.Push(new Regulus.Remote.Packages.ResponsePackage
+                await _Writer.Push(new Regulus.Remote.Packages.ResponsePackage
                 {
                     Code = cmd,
-                    Data = data
-                });                                                
+                    Data = buffer.ToArray()
+                });
             }
-        }
+        }        
 
         private void _RequestPush(Regulus.Remote.Packages.RequestPackage package)
         {
@@ -190,7 +177,7 @@ namespace Regulus.Remote.Soul
 
             if (package.Code == ClientToServerOpCode.Ping)
             {
-                _Push(ServerToClientOpCode.Ping, new byte[0]);            
+                _ResponseQueue.Push(ServerToClientOpCode.Ping, Regulus.Memorys.Pool.Empty);            
             }            
             else if (package.Code == ClientToServerOpCode.Release)
             {

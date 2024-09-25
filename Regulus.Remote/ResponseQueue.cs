@@ -2,6 +2,6 @@
 {
     public interface IResponseQueue
     {
-        void Push(ServerToClientOpCode code, byte[] data);
+        void Push(ServerToClientOpCode code, Regulus.Memorys.Buffer buffer);
     }
 }

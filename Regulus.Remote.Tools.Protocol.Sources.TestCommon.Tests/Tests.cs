@@ -1,8 +1,7 @@
 using System;
 using System.Linq;
 using System.Reactive.Linq;
-
-
+using System.Threading.Tasks;
 using NUnit.Framework;
 using Regulus.Remote.Reactive;
 using Regulus.Remote.Tools.Protocol.Sources.TestCommon.MultipleNotices;
@@ -353,12 +352,11 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
             Assert.AreEqual(2, values.v2);
             Assert.AreEqual(0, values.v0[0]);
         }
-
+        
         //[Test , Timeout(1000*60)]
-        public void MethodReturnTypeTest()
+        public async Task MethodReturnTypeTest()
         {
-
-            // todo : Currently the test method return interface cannot be passed, whether to provide a method return interface in the future is currently being evaluated.
+            
             var tester = new MethodTester();
 
             var env = new TestEnv<Entry<IMethodable>, IMethodable>(new Entry<IMethodable>(tester));
@@ -366,23 +364,20 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
                             from v1 in gpi.GetValueSelf().RemoteValue()                            
                             select v1;
             System.Console.WriteLine("methodObs.FirstAsync().Wait()");
-            var method = methodObs.FirstAsync().Wait();
+            var method = await methodObs.FirstAsync();
 
             var valueObs = from v1 in method.GetValue1().RemoteValue()
                             select v1;
             System.Console.WriteLine("valueObs.FirstAsync().Wait()");
-            var value = valueObs.FirstAsync().Wait();
+            var value = await valueObs.FirstAsync();
 
             method = null;
+
             System.Console.WriteLine("start gc collect");
             GC.Collect();
-            GC.WaitForFullGCComplete();
-            GC.WaitForPendingFinalizers();
             System.Console.WriteLine("end gc collect");
 
             env.Dispose();
-
-
             Assert.AreEqual(1, value);            
         }
 
