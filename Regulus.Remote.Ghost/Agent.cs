@@ -23,7 +23,7 @@ namespace Regulus.Remote.Ghost
         
             _InternalSerializer = internal_serializable;
 
-            GhostSerializer ghostSerializer = new GhostSerializer(new PackageReader<Regulus.Remote.Packages.ResponsePackage>(_InternalSerializer, pool), new PackageWriter<Regulus.Remote.Packages.RequestPackage>(_InternalSerializer,pool));
+            GhostSerializer ghostSerializer = new GhostSerializer(new PackageReader(stream, pool), new PackageSender(stream,pool), _InternalSerializer);
             _GhostProvider = new GhostProviderQueryer(protocol, serializable, internal_serializable, ghostSerializer);            
             _GhostSerializer = ghostSerializer;
 
@@ -32,7 +32,7 @@ namespace Regulus.Remote.Ghost
             _GhostProvider.ErrorMethodEvent += _ErrorMethodEvent;
 
             _GhostProvider.Start();
-            _GhostSerializer.Start(stream);
+            _GhostSerializer.Start();
         }
 
         void IAgent.Update()

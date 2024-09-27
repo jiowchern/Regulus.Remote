@@ -3,6 +3,7 @@ using System.Linq;
 
 namespace Regulus.Network.Tests
 {
+
     public class WebSocketConnectTest
     {
         [NUnit.Framework.Test]

@@ -1,6 +1,4 @@
-﻿
-
-using Regulus.Remote;
+﻿using Regulus.Remote;
 namespace Regulus.Network
 {
     public interface IStreamable

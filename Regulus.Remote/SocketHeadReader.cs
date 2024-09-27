@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 
 namespace Regulus.Remote
 {
-    
+
     internal class SocketHeadReader : ISocketReader
     {
+        
+
         private readonly IStreamable _Peer;
 
         readonly Regulus.Memorys.Buffer _Buffer;

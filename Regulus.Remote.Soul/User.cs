@@ -5,6 +5,7 @@ using Regulus.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 
 namespace Regulus.Remote.Soul
@@ -35,9 +36,8 @@ namespace Regulus.Remote.Soul
 
         private readonly SoulProvider _SoulProvider;
 
-        private readonly PackageReader<Regulus.Remote.Packages.RequestPackage> _Reader;
-
-        private readonly PackageWriter<Regulus.Remote.Packages.ResponsePackage> _Writer;
+        private readonly Regulus.Network.PackageReader _Reader;
+        private readonly Regulus.Network.PackageSender _Sender;
 
         private readonly System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.RequestPackage> _ExternalRequests;
         
@@ -64,10 +64,10 @@ namespace Regulus.Remote.Soul
             
             _Peer = client;
             _Protocol = protocol;
-                        
-            _Reader = new PackageReader<Regulus.Remote.Packages.RequestPackage>(_InternalSerializer , pool);
-            _Writer = new PackageWriter<Regulus.Remote.Packages.ResponsePackage>(_InternalSerializer , pool);
-            
+
+            _Reader = new Regulus.Network.PackageReader(client , pool);
+            _Sender = new Regulus.Network.PackageSender(client , pool);
+
             _ExternalRequests = new System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.RequestPackage>();
 
             _SoulProvider = new SoulProvider(this, this, protocol, serializable, _InternalSerializer);
@@ -78,31 +78,45 @@ namespace Regulus.Remote.Soul
         void _Launch()
         {
             _Enable = true;
-            
-            _Reader.DoneEvent += _RequestPush;
-            _Reader.ErrorEvent += () => { _Enable = false; };
-            _Reader.Start(_Peer);
 
-            _Writer.ErrorEvent += () => { _Enable = false; };
-            _Writer.Start(_Peer);
+            _StartRead();            
+            
 
             Regulus.Remote.Packages.PackageProtocolSubmit pkg = new Regulus.Remote.Packages.PackageProtocolSubmit();
             pkg.VerificationCode = _Protocol.VerificationCode;
 
-            var buf = _InternalSerializer.Serialize(pkg);            
+            var buf = _InternalSerializer.Serialize(pkg);
             _ResponseQueue.Push(ServerToClientOpCode.ProtocolSubmit, buf);
         }
 
+        
+
+        private void _StartRead()
+        {
+            _Reader.Read().ContinueWith(_ReadDone);
+        }
+
+        private void _ReadDone(Task<List<Memorys.Buffer>> task)
+        {
+            if(task.Exception != null)
+            {
+                Regulus.Utility.Log.Instance.WriteInfo(task.Exception.ToString());
+                _Enable = false;
+                return;
+            }
+            foreach(var buffer in task.Result)
+            {
+                if (buffer.Bytes.Count == 0)
+                    continue;
+                var pkg = (Packages.RequestPackage)_InternalSerializer.Deserialize(buffer);
+                _InternalRequest(pkg);
+            }
+            
+            System.Threading.Tasks.Task.Delay(1).ContinueWith(t => _StartRead());            
+        }
 
         void _Shutdown()
         {
-            
-            
-            _Reader.DoneEvent -= _RequestPush;
-            _Reader.Stop();
-
-            _Writer.Stop();
-
             //_Updater.Stop();
             Regulus.Remote.Packages.RequestPackage req;
             while (_ExternalRequests.TryDequeue(out req))
@@ -130,18 +144,23 @@ namespace Regulus.Remote.Soul
         {
             if (_Enable)
             {
-                await _Writer.Push(new Regulus.Remote.Packages.ResponsePackage
-                {
-                    Code = cmd,
-                    Data = buffer.ToArray()
-                });
-            }
-        }        
+                await _StartSend(cmd, buffer);
 
-        private void _RequestPush(Regulus.Remote.Packages.RequestPackage package)
-        {
-            _InternalRequest(package);            
+            }
         }
+
+        private async Task _StartSend(ServerToClientOpCode cmd, Memorys.Buffer buffer)
+        {
+            var pkg = new Regulus.Remote.Packages.ResponsePackage
+            {
+                Code = cmd,
+                Data = buffer.ToArray()
+            };
+            var buf = _InternalSerializer.Serialize(pkg);
+            await _Sender.Send(buf);
+        }
+
+        
 
         private void _ExternalRequest(Regulus.Remote.Packages.RequestPackage package)
         {

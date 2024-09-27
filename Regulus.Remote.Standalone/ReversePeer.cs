@@ -1,26 +1,12 @@
 ﻿using Regulus.Network;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 namespace Regulus.Remote.Standalone
 {
-    public class ReverseStream : Network.IStreamable
+    public class ReverseStream : Network.ReverseStream
     {
-        private readonly Stream _Peer;
-
-        public ReverseStream(Stream peer)
+        public ReverseStream(Network.Stream stream) : base(stream)
         {
-            this._Peer = peer;
-        }
-
-
-        IWaitableValue<int> IStreamable.Receive(byte[] buffer, int offset, int count)
-        {
-            return _Peer.Pop(buffer, offset, count);
-
-        }
-
-        IWaitableValue<int> IStreamable.Send(byte[] buffer, int offset, int count)
-        {
-            return _Peer.Push(buffer, offset, count);
         }
     }
 }

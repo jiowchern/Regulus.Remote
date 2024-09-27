@@ -5,25 +5,31 @@ using Regulus.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Regulus.Remote.Ghost
 {
     class GhostSerializer : IOpCodeExchangeable
     {
-        private readonly PackageReader<Regulus.Remote.Packages.ResponsePackage> _Reader;
+        //private readonly PackageReader<Regulus.Remote.Packages.ResponsePackage> _Reader;
+        //private readonly PackageWriter<Regulus.Remote.Packages.RequestPackage> _Writer;
 
+        private readonly Regulus.Network.PackageReader _Reader;
+        private readonly Regulus.Network.PackageSender _Sender;
+        private readonly IInternalSerializable _Serializable;
         private readonly System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.ResponsePackage> _Receives;
 
         private readonly System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.RequestPackage> _Sends;
 
-        private readonly PackageWriter<Regulus.Remote.Packages.RequestPackage> _Writer;
+        
 
 
         
-        public GhostSerializer(PackageReader<Regulus.Remote.Packages.ResponsePackage> reader , PackageWriter<Regulus.Remote.Packages.RequestPackage> writer)
+        public GhostSerializer(Regulus.Network.PackageReader reader , PackageSender sender, IInternalSerializable serializable)
         {
             _Reader = reader;
-            _Writer = writer;
+            _Sender = sender;
+            this._Serializable = serializable;
             _Sends = new System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.RequestPackage>();
             _Receives = new System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.ResponsePackage>();
 
@@ -60,16 +66,16 @@ namespace Regulus.Remote.Ghost
                     });            
         }
 
-        public void Start(IStreamable peer)
+        public void Start()
         {
             Singleton<Log>.Instance.WriteInfo("Agent online enter.");
-            _ReaderStart(peer);
-            _WriterStart(peer);
+            _ReaderStart();
+            
         }
 
         public void Stop()
         {
-            _WriterStop();
+            
             _ReaderStop();
             Regulus.Remote.Packages.RequestPackage val;
             Regulus.Remote.Packages.ResponsePackage val2;
@@ -82,16 +88,10 @@ namespace Regulus.Remote.Ghost
 
         void _Update()
         {
-            _Process();
+            _Process().ContinueWith(t => { }); 
         }
 
-        private void _ReceivePackage(Regulus.Remote.Packages.ResponsePackage package)
-        {
-            _Receives.Enqueue(package);
-            
-        }
-
-        private void _Process()
+        private async Task _Process()
         {
             
             Regulus.Remote.Packages.ResponsePackage receivePkg;
@@ -101,21 +101,13 @@ namespace Regulus.Remote.Ghost
             }
 
             Regulus.Remote.Packages.RequestPackage[] sends = _SendsPop();
-            if (sends.Length > 0)
-                _Writer.Push(sends);
+            foreach (var send in sends)
+            {
+                var buf = _Serializable.Serialize(send);
+                await _Sender.Send(buf);
+            }
+                
             
-        }
-
-        private void _WriterStart(IStreamable peer)
-        {
-            _Writer.Start(peer);
-        }
-
-        private void _WriterStop()
-        {
-            
-
-            _Writer.Stop();
         }
 
         private Regulus.Remote.Packages.RequestPackage[] _SendsPop()
@@ -131,21 +123,31 @@ namespace Regulus.Remote.Ghost
             return pkgs.ToArray();
         }
 
-        private void _ReaderStart(IStreamable peer)
+        private void _ReaderStart()
         {
-            _Reader.DoneEvent += _ReceivePackage;
-
-            
-            _Reader.Start(peer);
+            _Reader.Read().ContinueWith(_ReadDone);            
         }
 
-     
+        private void _ReadDone(Task<List<Memorys.Buffer>> task)
+        {
+            if (task.Exception != null)
+            {
+                Regulus.Utility.Log.Instance.WriteInfo(task.Exception.ToString());                
+                return;
+            }
+
+            foreach (var buffer in task.Result)
+            {
+                var pkg = (Packages.ResponsePackage)_Serializable.Deserialize(buffer);
+                _Receives.Enqueue(pkg);
+            }
+
+            System.Threading.Tasks.Task.Delay(1).ContinueWith(t => _ReaderStart());            
+        }
 
         private void _ReaderStop()
         {
-            _Reader.DoneEvent -= _ReceivePackage;
             
-            _Reader.Stop();
         }
 
         public void Update()

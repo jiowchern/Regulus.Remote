@@ -9,7 +9,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Regulus.Profiles.StandaloneAllFeature.Protocols\Regulus.Profiles.StandaloneAllFeature.Protocols.csproj" />
+    <ProjectReference Include="..\Regulus.Remote.Client\Regulus.Remote.Client.csproj" />
     <ProjectReference Include="..\Regulus.Remote.Reactive\Regulus.Remote.Reactive.csproj" />
+    <ProjectReference Include="..\Regulus.Remote.Server\Regulus.Remote.Server.csproj" />
     <ProjectReference Include="..\Regulus.Remote.Standalone\Regulus.Remote.Standalone.csproj" />
   </ItemGroup>
 
