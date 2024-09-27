@@ -62,7 +62,8 @@ namespace Regulus.Network
                     {
                         bodyBuffer.Bytes.Array[bodyBuffer.Bytes.Offset + i] = headBuffer.Bytes.Array[headBuffer.Bytes.Offset + bodyVarintSize  + i];
                     }
-                    buffers.Add(bodyBuffer);
+                    if(bodySize>0)
+                        buffers.Add(bodyBuffer);
                     if(needReadSize == 0)
                     {
                         return buffers;
@@ -95,7 +96,8 @@ namespace Regulus.Network
                         var read = headBuffer.Bytes.Array[headBuffer.Bytes.Offset + headBuffer.Bytes.Count - remaining + i];
                         bodyBuffer.Bytes.Array[bodyBuffer.Bytes.Offset + i] = read;
                     }
-                    buffers.Add(bodyBuffer);
+                    if (bodySize > 0)
+                        buffers.Add(bodyBuffer);
                    
                     return buffers;
                 }

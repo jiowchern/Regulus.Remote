@@ -79,7 +79,14 @@ namespace Regulus.Remote.Soul
         {
             _Enable = true;
 
-            _StartRead();            
+            _StartRead().ContinueWith(t =>
+            {
+                if(t.Exception != null)
+                {
+                    Regulus.Utility.Log.Instance.WriteInfo(t.Exception.ToString());
+                    _Enable = false;
+                }
+            });            
             
 
             Regulus.Remote.Packages.PackageProtocolSubmit pkg = new Regulus.Remote.Packages.PackageProtocolSubmit();
@@ -91,28 +98,23 @@ namespace Regulus.Remote.Soul
 
         
 
-        private void _StartRead()
+        private async Task  _StartRead()
         {
-            _Reader.Read().ContinueWith(_ReadDone);
+            var stopWatch = new System.Diagnostics.Stopwatch();
+            var buffers = await _Reader.Read();
+            _ReadDone(buffers);
+            await System.Threading.Tasks.Task.Delay((int)stopWatch.ElapsedMilliseconds+1).ContinueWith(t => _StartRead());
         }
 
-        private void _ReadDone(Task<List<Memorys.Buffer>> task)
+        private void _ReadDone(List<Memorys.Buffer> buffers)
         {
-            if(task.Exception != null)
-            {
-                Regulus.Utility.Log.Instance.WriteInfo(task.Exception.ToString());
-                _Enable = false;
-                return;
-            }
-            foreach(var buffer in task.Result)
-            {
-                if (buffer.Bytes.Count == 0)
-                    continue;
+            
+            foreach(var buffer in buffers)
+            {                
                 var pkg = (Packages.RequestPackage)_InternalSerializer.Deserialize(buffer);
                 _InternalRequest(pkg);
             }
-            
-            System.Threading.Tasks.Task.Delay(1).ContinueWith(t => _StartRead());            
+                      
         }
 
         void _Shutdown()

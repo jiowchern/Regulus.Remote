@@ -99,5 +99,36 @@ namespace Regulus.Network.Tests
 
 
         }
+
+        [NUnit.Framework.Test]
+        public async System.Threading.Tasks.Task Test3()
+        {
+            var serializer = new Regulus.Serialization.Serializer(new DescriberBuilder(typeof(int), typeof(string), typeof(char[]), typeof(byte), typeof(byte[]), typeof(byte[][]), typeof(char), typeof(Guid), typeof(TestStruct)).Describers, Regulus.Memorys.PoolProvider.DriectShared);
+
+            var sendStream = new Stream();
+            var readStream = new Regulus.Network.ReverseStream(sendStream);
+
+
+            var sender = new Regulus.Network.PackageSender(sendStream, Regulus.Memorys.PoolProvider.DriectShared);
+            
+            await sender.Send(Regulus.Memorys.PoolProvider.DriectShared.Alloc(0));
+
+            var testStructBuffer2 = serializer.ObjectToBuffer(null);
+            await sender.Send(testStructBuffer2);
+
+            var testStructBuffer3 = serializer.ObjectToBuffer(null);
+            await sender.Send(testStructBuffer2);
+
+            var reader = new Regulus.Network.PackageReader(readStream, Regulus.Memorys.PoolProvider.DriectShared);
+
+            var buffers = await reader.Read();
+            
+            for (var i = 0; i < 2; i++)
+            {
+                var buffer = buffers.ElementAt(i);
+                var readStruct = serializer.BufferToObject(buffer);
+                NUnit.Framework.Assert.AreEqual(null, readStruct);
+            }
+        }
     }
 }
