@@ -17,7 +17,7 @@ namespace Regulus.Remote.Standalone.Test
             IBinderProvider entry = NSubstitute.Substitute.For<IBinderProvider>();
             var  listenable = NSubstitute.Substitute.For<Soul.IListenable>();
             IGpiA gpia = new SoulGpiA();
-            entry.AssignBinder(NSubstitute.Arg.Do<IBinder>(binder => binder.Bind<IGpiA>(gpia)));
+            entry.RegisterClientBinder(NSubstitute.Arg.Do<IBinder>(binder => binder.Bind<IGpiA>(gpia)));
 
             ISerializable serializer = new Regulus.Remote.DynamicSerializer();
             IProtocol protocol = ProtocolHelper.CreateProtocol();

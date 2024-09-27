@@ -509,12 +509,6 @@ namespace Regulus.Remote
         }
         
 
-        event Action IBinder.BreakEvent
-        {
-            add { _Peer.BreakEvent += value; }
-            remove { _Peer.BreakEvent -= value; }
-        }
-
         // 其他需要實現的接口方法或事件處理可以在這裡添加
     }
 

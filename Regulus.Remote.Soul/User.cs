@@ -14,7 +14,7 @@ namespace Regulus.Remote.Soul
     {
         public delegate void DisconnectCallback();
 
-        private event Action _BreakEvent;
+        
 
         private event InvokeMethodCallback _InvokeMethodEvent;
 
@@ -125,8 +125,6 @@ namespace Regulus.Remote.Soul
             {
 
             }
-
-            _SendBreakEvent();
             _Enable = false;
         }
 
@@ -136,11 +134,7 @@ namespace Regulus.Remote.Soul
             remove { _InvokeMethodEvent -= value; }
         }
 
-        event Action IRequestQueue.BreakEvent
-        {
-            add { _BreakEvent += value; }
-            remove { _BreakEvent -= value; }
-        }
+        
 
         async void IResponseQueue.Push(ServerToClientOpCode cmd, Regulus.Memorys.Buffer buffer)
         {
@@ -223,15 +217,6 @@ namespace Regulus.Remote.Soul
                 ReturnId = return_id
             };
         }
-
-        void _SendBreakEvent()
-        {
-            if (_BreakEvent != null)
-            {
-                _BreakEvent();
-            }
-        }
-
 
         public void Launch()
         {

@@ -10,7 +10,9 @@ namespace Regulus.Remote
         ///     en:When the client is connected successfully, the system will call this method and pass the Binder.
         /// </summary>
         /// <param name="binder"></param>
-        void AssignBinder(IBinder binder);
+        void RegisterClientBinder(IBinder binder);
+        
+        void UnregisterClientBinder(IBinder binder);
 
         
     }

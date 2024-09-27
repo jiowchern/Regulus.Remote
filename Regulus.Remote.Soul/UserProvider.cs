@@ -20,11 +20,24 @@ namespace Regulus.Remote.Soul
         readonly System.Collections.Concurrent.ConcurrentDictionary<Network.IStreamable, User> _Users;
         readonly Regulus.Utility.Looper<Network.IStreamable> _Looper;
         private readonly IPool _Pool;
-        public readonly System.Collections.Concurrent.ConcurrentQueue<User> NewUsers;
+        public enum UserLifecycleState
+        {
+            Join,
+            Leave
+        }
+        public struct UserLifecycleEvent
+        {
+            public UserLifecycleState State;
+            public User User;
+        }
+
+        public readonly System.Collections.Concurrent.ConcurrentBag<UserLifecycleEvent> UserLifecycleEvents;
+        
         public UserProvider(IProtocol protocol, ISerializable serializable , IListenable listenable, Regulus.Remote.IInternalSerializable internal_serializable , Regulus.Memorys.IPool pool)
         {
             _Pool = pool;
-            NewUsers = new System.Collections.Concurrent.ConcurrentQueue<User>();
+
+            UserLifecycleEvents = new System.Collections.Concurrent.ConcurrentBag<UserLifecycleEvent>();            
             _Users = new System.Collections.Concurrent.ConcurrentDictionary<Network.IStreamable, User>();
             
             _Looper = new Utility.Looper<Network.IStreamable>();
@@ -48,8 +61,8 @@ namespace Regulus.Remote.Soul
             while(!_Users.TryAdd(user.Stream, user))
             {
                 System.Threading.Thread.Sleep(1);
-            }            
-            NewUsers.Enqueue(user);
+            }
+            UserLifecycleEvents.Add(new UserLifecycleEvent { State = UserLifecycleState.Join, User = user });    
         }
 
         void _Leave(Network.IStreamable stream)
@@ -59,9 +72,11 @@ namespace Regulus.Remote.Soul
             {
                 System.Threading.Thread.Sleep(1);
             }
+            
             if(user != null)
-            {
-                user.Shutdown();                
+            {                
+                user.Shutdown();
+                UserLifecycleEvents.Add(new UserLifecycleEvent { State = UserLifecycleState.Leave, User = user });
             }
         }
 

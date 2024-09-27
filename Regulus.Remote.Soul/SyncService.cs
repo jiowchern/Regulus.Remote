@@ -19,10 +19,18 @@ namespace Regulus.Remote.Soul
 
         public void Update()
         {
-            User newUser;
-            while (_UserProvider.NewUsers.TryDequeue(out newUser))
+            
+            while (_UserProvider.UserLifecycleEvents.TryTake(out var userAction))
             {
-                _Binder.AssignBinder(newUser.Binder);
+                if(userAction.State == UserProvider.UserLifecycleState.Join)
+                {
+                    _Binder.RegisterClientBinder(userAction.User.Binder);
+                }
+                else if(userAction.State == UserProvider.UserLifecycleState.Leave)
+                {
+                    _Binder.UnregisterClientBinder(userAction.User.Binder);
+                }
+                
             }
 
             var users = _UserProvider.GetUsers();

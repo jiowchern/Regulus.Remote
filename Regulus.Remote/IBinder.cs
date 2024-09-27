@@ -4,8 +4,7 @@ namespace Regulus.Remote
 {
 
     public interface IBinder
-    {
-        event Action BreakEvent;
+    {        
 
         ISoul Return<TSoul>(TSoul soul);
 

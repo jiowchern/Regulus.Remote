@@ -10,11 +10,15 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
         {
             _Entry = entry;
         }
-        void IBinderProvider.AssignBinder(IBinder binder)
+        void IBinderProvider.RegisterClientBinder(IBinder binder)
         {
             binder.Bind(_Entry);
         }
 
+        void IBinderProvider.UnregisterClientBinder(IBinder binder)
+        {
+            //binder.Unbind(_Entry);
+        }
         void IDisposable.Dispose()
         {
         }
