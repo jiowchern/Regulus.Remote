@@ -331,7 +331,7 @@ namespace Client
 		});
 		// Start Connecting
 		EndPoint yourEndPoint = null;
-		set.Connecter.Connect(yourEndPoint ).Wait();
+		set.Connector.Connect(yourEndPoint ).Wait();
 
 		// SupplyEvent ,Receive add IGreeter.
 		set.Agent.QueryNotifier<Protocol.IGreeter>().Supply += greeter => 
@@ -348,7 +348,7 @@ namespace Client
 		// Close
 		stop = true;
 		task.Wait();
-		set.Connecter.Disconnect();
+		set.Connector.Disconnect();
 		set.Agent.Dispose();
 
 	}

@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Regulus.Network.Tcp
 {
-    public class Connecter : Peer
+    public class Connector : Peer
     {
 
-        public Connecter() : base(new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
+        public Connector() : base(new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
         {
 
         }

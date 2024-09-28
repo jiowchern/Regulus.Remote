@@ -21,13 +21,13 @@ namespace Regulus.Remote.Client
 
         public static TcpConnectSet CreateTcpAgent(IProtocol protocol, ISerializable serializable, Regulus.Memorys.IPool pool)
         {
-            var connecter = new Regulus.Network.Tcp.Connecter();
+            var connecter = new Regulus.Network.Tcp.Connector();
             return new TcpConnectSet(connecter, CreateAgent(protocol, connecter, serializable, pool));
         }
 
         public static TcpConnectSet CreateTcpAgent(IProtocol protocol)
         {
-            var connecter = new Regulus.Network.Tcp.Connecter();
+            var connecter = new Regulus.Network.Tcp.Connector();
             return new TcpConnectSet(connecter, CreateAgent(protocol, connecter, new Regulus.Remote.Serializer(protocol.SerializeTypes), Regulus.Memorys.PoolProvider.Shared));
         }
     }

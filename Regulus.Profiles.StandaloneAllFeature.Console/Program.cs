@@ -17,9 +17,6 @@ namespace Regulus.Profiles.StandaloneAllFeature.Console
             int range = 50;
             var agents = new System.Collections.Generic.List<User>();
             var service = Regulus.Remote.Standalone.Provider.CreateService(entry, protocol);
-
-            
-
             
             for (int i = 0; i < range; i++)
             {
@@ -28,6 +25,7 @@ namespace Regulus.Profiles.StandaloneAllFeature.Console
             }
 
             ProcessAgents(service, range, agents);
+            
 
             agents.Clear();
             var set = Regulus.Remote.Server.Provider.CreateTcpService( entry, protocol);
@@ -38,7 +36,7 @@ namespace Regulus.Profiles.StandaloneAllFeature.Console
             {
                 var clientSet = Regulus.Remote.Client.Provider.CreateTcpAgent(protocol);
 
-                clientSet.Connecter.Connect(new System.Net.IPEndPoint(System.Net.IPAddress.Loopback, port)).Wait();
+                clientSet.Connector.Connect(new System.Net.IPEndPoint(System.Net.IPAddress.Loopback, port)).Wait();
 
                 agents.Add(new User(clientSet.Agent, i + 1));
             }

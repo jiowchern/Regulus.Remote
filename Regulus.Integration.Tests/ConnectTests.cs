@@ -26,7 +26,7 @@ namespace Regulus.Integration.Tests
             // bind interface
             var tester = new Regulus.Remote.Tools.Protocol.Sources.TestCommon.MethodTester();
             var entry = NSubstitute.Substitute.For<IEntry>();            
-            entry.AssignBinder(NSubstitute.Arg.Do<IBinder>(b=>b.Bind<Regulus.Remote.Tools.Protocol.Sources.TestCommon.IMethodable>(tester) ));
+            entry.RegisterClientBinder(NSubstitute.Arg.Do<IBinder>(b=>b.Bind<Regulus.Remote.Tools.Protocol.Sources.TestCommon.IMethodable>(tester) ));
 
             // create protocol
             IProtocol protocol = Regulus.Remote.Tools.Protocol.Sources.TestCommon.ProtocolProvider.CreateCase1();
@@ -51,7 +51,7 @@ namespace Regulus.Integration.Tests
             // do connect
             System.Net.IPEndPoint endPoint;            
             System.Net.IPEndPoint.TryParse($"127.0.0.1:{port}", out endPoint);
-            client.Connecter.Connect(endPoint).Wait();
+            client.Connector.Connect(endPoint).Wait();
 
             // get values
             var valuesObs = from gpi in client.Agent.QueryNotifier<Regulus.Remote.Tools.Protocol.Sources.TestCommon.IMethodable>().SupplyEvent()
@@ -66,7 +66,7 @@ namespace Regulus.Integration.Tests
             task.Wait();
 
             // release
-            client.Connecter.Disconnect().Wait();
+            client.Connector.Disconnect().Wait();
             client.Agent.Dispose();
 
             server.Listener.Close();

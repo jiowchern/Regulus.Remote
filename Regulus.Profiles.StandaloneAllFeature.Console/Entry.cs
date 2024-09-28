@@ -12,15 +12,17 @@ namespace Regulus.Profiles.StandaloneAllFeature.Server
             _Users = new List<User>();
         }
 
-        void IBinderProvider.AssignBinder(IBinder binder)
-        {
-            binder.BreakEvent += () => {
-                _Users.RemoveAll(user => user.Binder == binder);
-            };
+        void IBinderProvider.RegisterClientBinder(IBinder binder)
+        {            
             
             var user = new User(binder);
             _Users.Add(user);
             
+        }
+
+        void IBinderProvider.UnregisterClientBinder(IBinder binder)
+        {
+            _Users.RemoveAll(user => user.Binder == binder);
         }
 
     }
