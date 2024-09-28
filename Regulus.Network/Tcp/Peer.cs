@@ -1,20 +1,22 @@
 using System;
-using System.Linq;
 using System.Net.Sockets;
 
 namespace Regulus.Network.Tcp
 {
     using Regulus.Remote;
-    public class Peer : IStreamable , IDisposable
+    public class Peer : IStreamable 
     {
         public readonly System.Net.Sockets.Socket Socket;
-
-        
-
+        readonly SockerTransactor _Send;
+        readonly SockerTransactor _Receive;
         public Peer(System.Net.Sockets.Socket socket)
         {
-            _SocketErrorEvent += (e)=>{ };
+            
             Socket = socket;
+
+            _Receive = new SockerTransactor(Socket.BeginReceive , _EndReceive );
+        
+            _Send = new SockerTransactor(Socket.BeginSend, _EndSend);
         }
 
         event Action<SocketError> _SocketErrorEvent;
@@ -23,33 +25,22 @@ namespace Regulus.Network.Tcp
             add
             {
                 _SocketErrorEvent += value;
+                _Receive.SocketErrorEvent += value;
+                _Send.SocketErrorEvent += value;
             }
 
             remove
             {
                 _SocketErrorEvent -= value;
+                _Receive.SocketErrorEvent -= value;
+                _Send.SocketErrorEvent -= value;
             }
         }
 
         IWaitableValue<int> IStreamable.Receive(byte[] readed_byte, int offset, int count)
         {
-            SocketError error;
-            var ar = Socket.BeginReceive(readed_byte, offset, count, SocketFlags.None, out error, _EndReceiveEmpty, null);
-
-            var safeList = new[] { SocketError.Success, SocketError.IOPending };
-            if (!safeList.Any(s => s == error))
-                _SocketErrorEvent(error);
-
-            if (ar == null)
-                return (0).ToWaitableValue();
-
-            return System.Threading.Tasks.Task<int>.Factory.FromAsync(ar, _EndReceive).ToWaitableValue();            
-        }
-        
-        private void _EndReceiveEmpty(IAsyncResult arg)
-        {
-
-        }
+            return _Receive.Transact(readed_byte, offset, count);                  
+        }        
         private int _EndReceive(IAsyncResult arg)
         {
             if (!Socket.Connected)
@@ -74,18 +65,8 @@ namespace Regulus.Network.Tcp
         }
         IWaitableValue<int> IStreamable.Send(byte[] buffer, int offset, int buffer_length)
         {            
-
-            SocketError error;
-            var ar = Socket.BeginSend(buffer, offset, buffer_length, SocketFlags.None, out error, _EndReceiveEmpty, null);
-
-            var safeList = new[] { SocketError.Success, SocketError.IOPending };
-            if (!safeList.Any(s => s == error))
-                _SocketErrorEvent(error);
-
-            if (ar == null)
-                return (0).ToWaitableValue();
-
-            return System.Threading.Tasks.Task<int>.Factory.FromAsync(ar, _EndSend).ToWaitableValue();
+            return _Send.Transact(buffer, offset, buffer_length);
+            
         }
 
         private int _EndSend(IAsyncResult arg)
@@ -112,9 +93,7 @@ namespace Regulus.Network.Tcp
             return Socket;
         }
 
-        void IDisposable.Dispose()
-        {
-        }
+        
     }
 
 

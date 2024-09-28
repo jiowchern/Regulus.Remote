@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Regulus.Network.Tcp
 {
-    public class Connector : Peer
+    public class Connector : Peer 
     {
 
         public Connector() : base(new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
