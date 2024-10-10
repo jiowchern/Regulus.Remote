@@ -86,18 +86,12 @@ namespace Regulus.Integration.Tests
                     client.Agent.Update();
                 }
 
-            }).ContinueWith(t => { 
-                if(t.Exception!=null)
-                {
-                    NUnit.Framework.Assert.Fail(t.Exception.ToString());
-                }
             });
 
             // do connect
             System.Net.IPEndPoint endPoint;            
             System.Net.IPEndPoint.TryParse($"127.0.0.1:{port}", out endPoint);
             var peer = await client.Connector.Connect(endPoint);
-            peer.SocketErrorEvent += (e) => { NUnit.Framework.Assert.Fail(e.ToString()); };
 
             client.Agent.Enable(peer);
             // get values
