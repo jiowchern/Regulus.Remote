@@ -11,22 +11,17 @@ namespace Regulus.Remote.Ghost
 {
     class GhostSerializer : ServerExchangeable
     {
-        //private readonly PackageReader<Regulus.Remote.Packages.ResponsePackage> _Reader;
-        //private readonly PackageWriter<Regulus.Remote.Packages.RequestPackage> _Writer;
-
         private readonly Regulus.Network.PackageReader _Reader;
         private readonly Regulus.Network.PackageSender _Sender;
         private readonly IInternalSerializable _Serializable;
         private readonly System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.ResponsePackage> _Receives;
 
         private readonly System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.RequestPackage> _Sends;
-
-        
-
-
-        
+        private readonly System.Collections.Concurrent.ConcurrentBag<System.Exception> _Exceptions;
+        public event System.Action<System.Exception> ErrorEvent;
         public GhostSerializer(Regulus.Network.PackageReader reader , PackageSender sender, IInternalSerializable serializable)
         {
+            _Exceptions = new System.Collections.Concurrent.ConcurrentBag<Exception>();
             _Reader = reader;
             _Sender = sender;
             this._Serializable = serializable;
@@ -73,6 +68,7 @@ namespace Regulus.Remote.Ghost
                 if(t.Exception != null)
                 {
                     Singleton<Log>.Instance.WriteInfo($" Agent online error : {t.Exception}");
+                    _Exceptions.Add(t.Exception);
                 }
             });
             
@@ -93,6 +89,11 @@ namespace Regulus.Remote.Ghost
 
         void _Update()
         {
+            if(_Exceptions.TryTake( out var e))
+            {
+                ErrorEvent.Invoke(e);
+                return;
+            }
             _Process(); 
         }
 
@@ -133,7 +134,13 @@ namespace Regulus.Remote.Ghost
             
             var buffers = await _Reader.Read();
             _ReadDone(buffers);
-            await System.Threading.Tasks.Task.Delay(10).ContinueWith(t=> _ReaderStart());            
+            await System.Threading.Tasks.Task.Delay(10).ContinueWith(t=> _ReaderStart().ContinueWith(t1 => {
+                if (t1.Exception != null)
+                {
+                    Singleton<Log>.Instance.WriteInfo($" Agent online error : {t1.Exception}");
+                    _Exceptions.Add(t.Exception);
+                }
+            }));            
         }
 
         private void _ReadDone(List<Memorys.Buffer> buffers)

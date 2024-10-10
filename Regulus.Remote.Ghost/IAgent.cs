@@ -10,6 +10,7 @@ namespace Regulus.Remote.Ghost
         float Ping { get; }
 
         event Action<string, string> ErrorMethodEvent;
+        event Action<System.Exception> ExceptionEvent;
 
         void Update();
         void Enable(IStreamable streamable);

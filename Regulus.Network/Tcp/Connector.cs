@@ -1,83 +1,48 @@
-using Regulus.Utility;
+﻿using Regulus.Utility;
 using System;
-using System.Net;
 using System.Net.Sockets;
-using System.Threading.Tasks;
 
 namespace Regulus.Network.Tcp
 {
-   /* public class Connector : Peer 
+    public class Connector
     {
-        public event System.Action ConnectedEvent;
-        public event System.Action DisonnectedEvent;
-        public Connector() : base(new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
-        {
+        private readonly Socket _Socket;
+        
 
+        public Connector()
+        {
+            _Socket = new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        
+        }
+        public System.Threading.Tasks.Task<Peer> Connect(System.Net.EndPoint endpoint)
+        {        
+            return System.Threading.Tasks.Task<Peer>.Factory.FromAsync(
+                               (handler, obj) => _Socket.BeginConnect(endpoint, handler, null), _ResultConnect, null);
         }
 
-        public System.Threading.Tasks.Task<bool> Connect(EndPoint endpoint)
+        private Peer _ResultConnect(IAsyncResult ar)
         {
-            System.Net.Sockets.Socket socket = GetSocket();
-            return System.Threading.Tasks.Task<bool>.Factory.FromAsync(
-                (handler, obj) => socket.BeginConnect(endpoint, handler, null), _ResultConnect, null);
+            _Socket.EndConnect(ar);
+            return new Peer(_Socket);
         }
 
-        public Task Disconnect()
+        public System.Threading.Tasks.Task Disconnect(bool reuse = false)
         {
-            System.Net.Sockets.Socket socket = GetSocket();
-            return System.Threading.Tasks.Task<bool>.Factory.FromAsync(
-                (handler, obj) => socket.BeginDisconnect(false, handler, null), _ResultDisconnect, null);
-            
-        }
-
-        private bool _ResultDisconnect(IAsyncResult arg)
-        {
-            bool result = false;
-            try
+            if (_Socket.Connected)
             {
-
-                GetSocket().EndDisconnect(arg);
-                result = true;
-                if(result)
-                    DisonnectedEvent?.Invoke();
-            }
-            catch (SystemException se)
-            {
-                Singleton<Log>.Instance.WriteInfo($" result disconnect {se.ToString()}.");
-            }
-            finally
-            {
-
-                Singleton<Log>.Instance.WriteInfo(string.Format("disconnect result {0}.", result));
-
-            }
-            return result;
-        }
-
-        private bool _ResultConnect(IAsyncResult ar)
-        {
-            bool result = false;
-            try
-            {
+                _Socket.Shutdown(SocketShutdown.Both);
+                return System.Threading.Tasks.Task.Factory.FromAsync(
+                            (handler, obj) => _Socket.BeginDisconnect(reuse, handler, null),
+                            _Socket.EndDisconnect,
+                            null);
                 
-                GetSocket().EndConnect(ar);
-                result = true;
-                if(result)
-                    ConnectedEvent?.Invoke();
-            }            
-            catch(SystemException se)
-            {
-                Singleton<Log>.Instance.WriteInfo($" result connect {se.ToString()}.");
             }
-            finally
+            else
             {
-
-                Singleton<Log>.Instance.WriteInfo(string.Format("connect result {0}.", result));
-
+                return System.Threading.Tasks.Task.CompletedTask;
             }
-            return result;
         }
 
-
-    }*/
+       
+    }
 }

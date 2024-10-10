@@ -36,6 +36,7 @@ namespace Regulus.Remote.Ghost
 
             Singleton<Log>.Instance.WriteInfo("Agent Launch.");
             _GhostProvider.ErrorMethodEvent += _ErrorMethodEvent;
+            _ExceptionEvent += (e) => { };
         }
 
         void IAgent.Update()
@@ -50,14 +51,17 @@ namespace Regulus.Remote.Ghost
             var ghostSerializer = new GhostSerializer(new PackageReader(streamable, _Pool), new PackageSender(streamable, _Pool), _InternalSerializer);
             ServerExchangeable serverExchangeable = ghostSerializer;
             ClientExchangeable clientExchangeable = _GhostProvider;
+            ghostSerializer.ErrorEvent += _ExceptionEvent;
             serverExchangeable.ResponseEvent += clientExchangeable.Request;
             clientExchangeable.ResponseEvent += serverExchangeable.Request;
 
             _GhostSerializerStop =
             () =>
             {
+                ghostSerializer.ErrorEvent -= _ExceptionEvent;
+                ghostSerializer.Stop();
                 serverExchangeable.ResponseEvent -= clientExchangeable.Request;
-                clientExchangeable.ResponseEvent -= serverExchangeable.Request;
+                clientExchangeable.ResponseEvent -= serverExchangeable.Request;                
             };
 
             _GhostProvider.Start();
@@ -87,6 +91,8 @@ namespace Regulus.Remote.Ghost
             return _GhostsOwner.QueryProvider<T>();
         }
 
+        
+
         /*void IDisposable.Dispose()
         {
             
@@ -114,8 +120,18 @@ namespace Regulus.Remote.Ghost
             remove { this._ErrorMethodEvent -= value; }
         }
 
-        
+        event Action<Exception> _ExceptionEvent;
+        event Action<Exception> IAgent.ExceptionEvent
+        {
+            add
+            {
+                _ExceptionEvent += value;
+            }
 
-
+            remove
+            {
+                _ExceptionEvent -= value;
+            }
+        }
     }
 }

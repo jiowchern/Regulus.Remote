@@ -12,6 +12,45 @@ namespace Regulus.Integration.Tests
     public class ConnectTests
     {
         [Test]
+
+        public async Task AgentDisconnectTest()
+        {
+            var port = Regulus.Network.Tcp.Tools.GetAvailablePort();
+            var tester = new Regulus.Remote.Tools.Protocol.Sources.TestCommon.MethodTester();
+            var entry = NSubstitute.Substitute.For<IEntry>();
+            entry.RegisterClientBinder(NSubstitute.Arg.Do<IBinder>(b => b.Bind<Regulus.Remote.Tools.Protocol.Sources.TestCommon.IMethodable>(tester)));
+            IProtocol protocol = Regulus.Remote.Tools.Protocol.Sources.TestCommon.ProtocolProvider.CreateCase1();
+
+            var server = Regulus.Remote.Server.Provider.CreateTcpService(entry, protocol);
+            server.Listener.Bind(port);
+
+            var client = Regulus.Remote.Client.Provider.CreateTcpAgent(protocol);
+            System.Exception ex;
+
+            client.Agent.ExceptionEvent += (exc) => { 
+                ex = exc; 
+                NUnit.Framework.Assert.Pass(exc.ToString()); 
+            };
+
+            var peer = await client.Connector.Connect(new IPEndPoint(IPAddress.Loopback, port));
+            SocketError error = SocketError.Success;
+            peer.SocketErrorEvent += (e) => {
+                error = e;
+                NUnit.Framework.Assert.Pass(); 
+            };
+
+            client.Agent.Enable(peer);
+
+            await client.Connector.Disconnect();
+
+            while (error == SocketError.Success)
+            {
+                client.Agent.Update();
+            }
+
+            
+        }
+        [Test]
         public async Task TcpLocalConnectTest()
         {
             // 獲取一個臨時可用的端口
@@ -58,6 +97,8 @@ namespace Regulus.Integration.Tests
             System.Net.IPEndPoint endPoint;            
             System.Net.IPEndPoint.TryParse($"127.0.0.1:{port}", out endPoint);
             var peer = await client.Connector.Connect(endPoint);
+            peer.SocketErrorEvent += (e) => { NUnit.Framework.Assert.Fail(e.ToString()); };
+
             client.Agent.Enable(peer);
             // get values
             var valuesObs = from gpi in client.Agent.QueryNotifier<Regulus.Remote.Tools.Protocol.Sources.TestCommon.IMethodable>().SupplyEvent()
