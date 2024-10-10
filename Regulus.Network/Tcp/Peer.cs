@@ -9,14 +9,20 @@ namespace Regulus.Network.Tcp
         public readonly System.Net.Sockets.Socket Socket;
         readonly SockerTransactor _Send;
         readonly SockerTransactor _Receive;
-        public Peer(System.Net.Sockets.Socket socket)
+        public Peer(System.Net.Sockets.Socket socket )
         {
-            
-            Socket = socket;
-
+            _SocketErrorEvent += Peer__SocketErrorEvent;
+            Socket = socket;            
             _Receive = new SockerTransactor(Socket.BeginReceive , _EndReceive );
         
             _Send = new SockerTransactor(Socket.BeginSend, _EndSend);
+
+            
+        }
+
+        private void Peer__SocketErrorEvent(SocketError obj)
+        {
+            
         }
 
         event Action<SocketError> _SocketErrorEvent;
@@ -43,18 +49,10 @@ namespace Regulus.Network.Tcp
         }        
         private int _EndReceive(IAsyncResult arg)
         {
-            if (!Socket.Connected)
-            {
-                _SocketErrorEvent(SocketError.Success);
-                return 0;
-            }
-
+            
 
             SocketError error;
             int size = Socket.EndReceive(arg, out error);
-            if(size == 0)
-                _SocketErrorEvent(error);
-
            
 
             if (error == SocketError.Success)
@@ -72,16 +70,10 @@ namespace Regulus.Network.Tcp
         private int _EndSend(IAsyncResult arg)
         {
             SocketError error;
-            int sendCount = Socket.EndSend(arg, out error);
-            if (!Socket.Connected)
-            {
-                _SocketErrorEvent(error);
-                return sendCount;
-            }
+            int sendCount = Socket.EndSend(arg, out error);            
 
             if (error == SocketError.Success)
-            {
-                
+            {                
                 return sendCount;
             }
 

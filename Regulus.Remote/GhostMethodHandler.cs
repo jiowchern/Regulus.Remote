@@ -1,11 +1,12 @@
 using Regulus.Remote.Extensions;
 using Regulus.Remote.ProviderHelper;
+using System;
 using System.Linq;
 using System.Reflection;
 
 namespace Regulus.Remote
 {
-    internal class GhostMethodHandler
+    internal class GhostMethodHandler : ClientExchangeable
     {
         
         private readonly IProtocol _Protocol;
@@ -14,21 +15,38 @@ namespace Regulus.Remote
 
         private readonly long _Ghost;
 
-        private readonly IOpCodeExchangeable _Requester;
+        
         readonly IInternalSerializable _InternalSerializable;
+        private readonly ServerToClientOpCode[] _Empty;
+
         public GhostMethodHandler(long ghost,
             GhostsReturnValueHandler return_value_queue, 
             IProtocol protocol ,
             ISerializable serializable, 
-            IInternalSerializable internal_serializable,
-            Regulus.Remote.IOpCodeExchangeable requester)
+            IInternalSerializable internal_serializable)
         {
             _InternalSerializable = internal_serializable;
             _Ghost = ghost;
             _ReturnValueQueue = return_value_queue;
             _Protocol = protocol;
             this._Serializable = serializable;
-            _Requester = requester;
+            _Empty = new ServerToClientOpCode[0];
+        }
+        void Exchangeable<ServerToClientOpCode, ClientToServerOpCode>.Request(ServerToClientOpCode code, Memorys.Buffer args)
+        {            
+        }
+        event Action<ClientToServerOpCode, Memorys.Buffer> _ResponseEvent;
+        event Action<ClientToServerOpCode, Memorys.Buffer> Exchangeable<ServerToClientOpCode, ClientToServerOpCode>.ResponseEvent
+        {
+            add
+            {
+                _ResponseEvent += value;
+            }
+
+            remove
+            {
+                _ResponseEvent -= value;
+            }
         }
 
         public void Run(MethodInfo info, object[] args, IValue return_value)
@@ -49,8 +67,10 @@ namespace Regulus.Remote
             
             if (return_value != null)
                 package.ReturnId = _ReturnValueQueue.PushReturnValue(return_value);
-            
-            _Requester.Request(ClientToServerOpCode.CallMethod, _InternalSerializable.Serialize(package));
+
+            _ResponseEvent(ClientToServerOpCode.CallMethod, _InternalSerializable.Serialize(package));            
         }
+
+       
     }
 }

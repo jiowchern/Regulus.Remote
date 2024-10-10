@@ -21,8 +21,8 @@ namespace Regulus.Network.Tcp
             _Socket.NoDelay = true;
         }
         public void Bind(int Port)
-        {
-            _Socket.Bind(new IPEndPoint(IPAddress.Any, Port));
+        {            
+            _Socket.Bind(new IPEndPoint(IPAddress.Any, Port));            
             _Socket.Listen(backlog: 5);
             _Socket.BeginAccept(_Accept, state: null);
         }
@@ -37,19 +37,19 @@ namespace Regulus.Network.Tcp
             }
             catch (SocketException se)
             {
-                Singleton<Log>.Instance.WriteInfo(se.ToString());
+                Singleton<Log>.Instance.WriteInfo($"accept {se.ToString()}.");
             }
             catch (ObjectDisposedException ode)
             {
-                Singleton<Log>.Instance.WriteInfo(ode.ToString());
+                Singleton<Log>.Instance.WriteInfo($"accept object disposed {ode.ToString()}.");
             }
             catch (InvalidOperationException ioe)
             {
-                Singleton<Log>.Instance.WriteInfo(ioe.ToString());
+                Singleton<Log>.Instance.WriteInfo($"accept invalid operation {ioe.ToString()}.");
             }
             catch (Exception e)
             {
-                Singleton<Log>.Instance.WriteInfo(e.ToString());
+                Singleton<Log>.Instance.WriteInfo($"accept {e.ToString()}.");
             }
         }
 

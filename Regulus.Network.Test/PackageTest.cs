@@ -1,4 +1,5 @@
-﻿using NUnit.Framework.Constraints;
+﻿using NSubstitute.Extensions;
+using NUnit.Framework.Constraints;
 using Regulus.Memorys;
 using Regulus.Serialization;
 using System;
@@ -28,7 +29,7 @@ namespace Regulus.Network.Tests
             
             var testStructBuffer = serializer.ObjectToBuffer(testStruct);
 
-            await sender.Send(testStructBuffer);
+            sender.Send(testStructBuffer);
 
 
             var reader = new Regulus.Network.PackageReader(readStream, Regulus.Memorys.PoolProvider.DriectShared);
@@ -56,17 +57,17 @@ namespace Regulus.Network.Tests
 
             var sender = new Regulus.Network.PackageSender(sendStream, Regulus.Memorys.PoolProvider.DriectShared);
             var testStructBuffer1 = serializer.ObjectToBuffer(null);
-            await sender.Send(testStructBuffer1);
+            sender.Send(testStructBuffer1);
 
             var testStructBuffer2 = serializer.ObjectToBuffer(1);
-            await sender.Send(testStructBuffer2);
+            sender.Send(testStructBuffer2);
 
             var testStructBuffer3 = serializer.ObjectToBuffer(2);
-            await sender.Send(testStructBuffer3);
+            sender.Send(testStructBuffer3);
             var testStruct = new TestStruct();
             testStruct.A = -1;
             var testStructBuffer4 = serializer.ObjectToBuffer(testStruct);
-            await sender.Send(testStructBuffer4);
+            sender.Send(testStructBuffer4);
 
 
 
@@ -111,13 +112,13 @@ namespace Regulus.Network.Tests
 
             var sender = new Regulus.Network.PackageSender(sendStream, Regulus.Memorys.PoolProvider.DriectShared);
             
-            await sender.Send(Regulus.Memorys.PoolProvider.DriectShared.Alloc(0));
+            sender.Send(Regulus.Memorys.PoolProvider.DriectShared.Alloc(0));
 
             var testStructBuffer2 = serializer.ObjectToBuffer(null);
-            await sender.Send(testStructBuffer2);
+            sender.Send(testStructBuffer2);
 
             var testStructBuffer3 = serializer.ObjectToBuffer(null);
-            await sender.Send(testStructBuffer2);
+            sender.Send(testStructBuffer2);
 
             var reader = new Regulus.Network.PackageReader(readStream, Regulus.Memorys.PoolProvider.DriectShared);
 

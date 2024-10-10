@@ -1,5 +1,6 @@
 ﻿using Regulus.Remote;
 using Regulus.Utility;
+using System.Diagnostics;
 
 
 namespace RemotingTest
@@ -28,6 +29,11 @@ namespace RemotingTest
         Value<ITestInterface> ITestReturn.Test(int a, int b)
         {
             return new TestInterface();
+        }
+
+        void IEntry.Update()
+        {
+            
         }
     }
 }

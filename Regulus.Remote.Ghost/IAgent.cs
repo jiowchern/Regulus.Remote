@@ -3,7 +3,7 @@ using System;
 
 namespace Regulus.Remote.Ghost
 {
-    public interface IAgent : INotifierQueryable , IDisposable
+    public interface IAgent : INotifierQueryable 
     {                
         bool Active { get; }
      
@@ -12,5 +12,7 @@ namespace Regulus.Remote.Ghost
         event Action<string, string> ErrorMethodEvent;
 
         void Update();
+        void Enable(IStreamable streamable);
+        void Disable();
     }
 }

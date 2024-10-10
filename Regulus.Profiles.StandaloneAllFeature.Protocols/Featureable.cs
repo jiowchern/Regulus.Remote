@@ -2,6 +2,6 @@
 {
     public interface Featureable
     {
-        Regulus.Remote.Value<long> Inc(long value); 
+        Regulus.Remote.Value<string> Inc(string msg); 
     }
 }

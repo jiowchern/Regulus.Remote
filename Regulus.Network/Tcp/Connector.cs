@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Regulus.Network.Tcp
 {
-    public class Connector : Peer 
+   /* public class Connector : Peer 
     {
-
+        public event System.Action ConnectedEvent;
+        public event System.Action DisonnectedEvent;
         public Connector() : base(new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
         {
 
@@ -37,10 +38,12 @@ namespace Regulus.Network.Tcp
 
                 GetSocket().EndDisconnect(arg);
                 result = true;
+                if(result)
+                    DisonnectedEvent?.Invoke();
             }
             catch (SystemException se)
             {
-                Singleton<Log>.Instance.WriteInfo(se.ToString());
+                Singleton<Log>.Instance.WriteInfo($" result disconnect {se.ToString()}.");
             }
             finally
             {
@@ -51,18 +54,20 @@ namespace Regulus.Network.Tcp
             return result;
         }
 
-        private bool _ResultConnect(IAsyncResult Ar)
+        private bool _ResultConnect(IAsyncResult ar)
         {
             bool result = false;
             try
             {
                 
-                GetSocket().EndConnect(Ar);
+                GetSocket().EndConnect(ar);
                 result = true;
+                if(result)
+                    ConnectedEvent?.Invoke();
             }            
             catch(SystemException se)
             {
-                Singleton<Log>.Instance.WriteInfo(se.ToString());
+                Singleton<Log>.Instance.WriteInfo($" result connect {se.ToString()}.");
             }
             finally
             {
@@ -74,5 +79,5 @@ namespace Regulus.Network.Tcp
         }
 
 
-    }
+    }*/
 }

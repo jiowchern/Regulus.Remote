@@ -14,9 +14,10 @@ namespace Regulus.Profiles.StandaloneAllFeature.Server
             _Soul = Binder.Bind<Regulus.Profiles.StandaloneAllFeature.Protocols.Featureable>(this);
         }
 
-        Value<long> Featureable.Inc(long value)
+        Value<string> Featureable.Inc(string value)
         {
-            return value + 1;
+            string reversed = new string(value.Reverse().ToArray());
+            return new Value<string>(reversed);
         }
     }
 }

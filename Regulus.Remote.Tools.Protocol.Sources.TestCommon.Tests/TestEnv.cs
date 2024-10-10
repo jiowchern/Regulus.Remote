@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 {
-    public class TestEnv<T,T2> where T : Regulus.Remote.IBinderProvider, System.IDisposable
+    public class TestEnv<T,T2> where T : Regulus.Remote.IEntry, System.IDisposable
     {
         readonly ThreadUpdater _AgentUpdater;
         readonly Service _Service;

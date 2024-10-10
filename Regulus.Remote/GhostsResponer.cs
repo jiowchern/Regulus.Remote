@@ -4,40 +4,37 @@ namespace Regulus.Remote
 {
     namespace ProviderHelper
     {
-        public class GhostsResponseHandler
+        public class GhostsResponer
         {
             private readonly IInternalSerializable _InternalSerializer;
-            private readonly GhostsManager _GhostManager;
+            private readonly GhostsHandler _GhostHandler;
             private readonly GhostsReturnValueHandler _ReturnValueHandler;
-            private readonly GhostsPingHandler _PingHandler;
-            private readonly GhostsProviderManager _ProviderManager;
-            private readonly IOpCodeExchangeable _Exchanger;
+            private readonly PingHandler _PingHandler;
+            private readonly GhostsOwner _ProviderManager;            
             private readonly IProtocol _Protocol;
             private bool _Active;
 
             public bool Active => _Active;
 
-            public GhostsResponseHandler(
+            public GhostsResponer(
                 IInternalSerializable internalSerializer,
-                GhostsManager ghostManager,
+                GhostsHandler ghost_handler,
                 GhostsReturnValueHandler returnValueHandler,
-                GhostsPingHandler pingHandler,
-                GhostsProviderManager ghostsProviderManager,
-                IOpCodeExchangeable exchanger,
+                PingHandler pingHandler,
+                GhostsOwner ghostsProviderManager,                
                 IProtocol protocol)
             {
                 _InternalSerializer = internalSerializer;
-                _GhostManager = ghostManager;
+                _GhostHandler = ghost_handler;
                 _ReturnValueHandler = returnValueHandler;
-                _PingHandler = pingHandler;
-                _Exchanger = exchanger;
+                _PingHandler = pingHandler;                
                 _Protocol = protocol;
                 _ProviderManager = ghostsProviderManager;
             }
 
             public void OnResponse(ServerToClientOpCode code, Regulus.Memorys.Buffer args)
             {
-                _GhostManager.UpdateAutoRelease();
+                _GhostHandler.UpdateAutoRelease();
 
                 switch (code)
                 {
@@ -47,12 +44,12 @@ namespace Regulus.Remote
 
                     case ServerToClientOpCode.SetProperty:
                         var setPropertyData = (PackageSetProperty)_InternalSerializer.Deserialize(args);
-                        _GhostManager.UpdateSetProperty(setPropertyData.EntityId, setPropertyData.Property, setPropertyData.Value);
+                        _GhostHandler.UpdateSetProperty(setPropertyData.EntityId, setPropertyData.Property, setPropertyData.Value);
                         break;
 
                     case ServerToClientOpCode.InvokeEvent:
                         var invokeEventData = (PackageInvokeEvent)_InternalSerializer.Deserialize(args);
-                        _GhostManager.InvokeEvent(invokeEventData.EntityId, invokeEventData.Event, invokeEventData.HandlerId, invokeEventData.EventParams);
+                        _GhostHandler.InvokeEvent(invokeEventData.EntityId, invokeEventData.Event, invokeEventData.HandlerId, invokeEventData.EventParams);
                         break;
 
                     case ServerToClientOpCode.ErrorMethod:
@@ -72,22 +69,22 @@ namespace Regulus.Remote
 
                     case ServerToClientOpCode.LoadSoul:
                         var loadSoulData = (PackageLoadSoul)_InternalSerializer.Deserialize(args);
-                        _GhostManager.LoadSoul(loadSoulData.TypeId, loadSoulData.EntityId, loadSoulData.ReturnType);
+                        _GhostHandler.LoadSoul(loadSoulData.TypeId, loadSoulData.EntityId, loadSoulData.ReturnType);
                         break;
 
                     case ServerToClientOpCode.UnloadSoul:
                         var unloadSoulData = (PackageUnloadSoul)_InternalSerializer.Deserialize(args);
-                        _GhostManager.UnloadSoul(unloadSoulData.EntityId);
+                        _GhostHandler.UnloadSoul(unloadSoulData.EntityId);
                         break;
 
                     case ServerToClientOpCode.AddPropertySoul:
                         var addPropertySoulData = (PackagePropertySoul)_InternalSerializer.Deserialize(args);
-                        _GhostManager.AddPropertySoul(addPropertySoulData);
+                        _GhostHandler.AddPropertySoul(addPropertySoulData);
                         break;
 
                     case ServerToClientOpCode.RemovePropertySoul:
                         var removePropertySoulData = (PackagePropertySoul)_InternalSerializer.Deserialize(args);
-                        _GhostManager.RemovePropertySoul(removePropertySoulData);
+                        _GhostHandler.RemovePropertySoul(removePropertySoulData);
                         break;
 
                     case ServerToClientOpCode.ProtocolSubmit:
@@ -100,40 +97,14 @@ namespace Regulus.Remote
                         break;
                 }
             }
-            /*
-             private void _LoadSoulCompile(int type_id, long entity_id, long return_id )
-        {
             
-            MemberMap map = _Protocol.GetMemberMap();
-            
-            Type type = map.GetInterface(type_id);
-            
-            IProvider provider = _QueryProvider(type);
-
-            var handler = _FindHandler(entity_id);
-            if (return_id != 0)
-            {
-                
-                IValue value = _ReturnValueQueue.PopReturnValue(return_id);
-                if (value != null)
-                {
-                    value.SetValue(ghost);
-                }
-            }
-            else
-            {
-                provider.Ready(entity_id);
-            }
-                
-        }
-             */
             private void LoadSoulCompile(int typeId, long entityId, long returnId)
             {
                 var map = _Protocol.GetMemberMap();
                 var type = map.GetInterface(typeId);
                 var provider = _ProviderManager.QueryProvider(type);
 
-                var handler = _GhostManager.FindHandler(entityId);
+                var handler = _GhostHandler.FindHandler(entityId);
                 if (returnId != 0)
                 {
                     var ghost = handler.FindGhost();

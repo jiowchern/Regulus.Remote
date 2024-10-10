@@ -9,7 +9,7 @@ namespace Regulus.Network
     {
         private readonly IStreamable _Stream;
         private readonly Regulus.Memorys.IPool _Pool;
-
+        volatile bool _IsStop;
         public struct StreamSegment
         {
             public ArraySegment<byte>[] Packages;
@@ -18,25 +18,36 @@ namespace Regulus.Network
 
         public PackageReader(IStreamable stream, Regulus.Memorys.IPool pool)
         {
+            _IsStop = true;
             _Stream = stream;
             _Pool = pool;
         }
-
+        public void Stop()
+        {
+            _IsStop = true;
+        }
         public async Task<List<Regulus.Memorys.Buffer>> Read()
         {
             var buffers = new List<Regulus.Memorys.Buffer>();
             var remainingBuffer = _Pool.Alloc(0);
-
-            while (true)
+            _IsStop = false;
+            while (!_IsStop)
             {
                 var headBuffer = _Pool.Alloc(8);
                 _CopyBuffer(remainingBuffer.Bytes, headBuffer.Bytes, remainingBuffer.Bytes.Count);
-                var headReadCount = await _ReadFromStream(headBuffer.Bytes.Array, headBuffer.Bytes.Offset + remainingBuffer.Count, headBuffer.Bytes.Count - remainingBuffer.Count);
-                headReadCount += remainingBuffer.Bytes.Count;
+                var headReadCount = await _ReadFromStream(headBuffer.Bytes.Array, headBuffer.Bytes.Offset + remainingBuffer.Count, headBuffer.Bytes.Count - remainingBuffer.Count);                
+
+                if (headReadCount == 0 && remainingBuffer.Bytes.Count == 0)
+                    return buffers;
+
+                var remainingBufferCount = remainingBuffer.Count;
+                headReadCount += remainingBuffer.Count;
                 remainingBuffer = _Pool.Alloc(0);
 
-                if (headReadCount == 0)
+                if (headBuffer.All(B => B == 0))
+                {
                     return buffers;
+                }
 
                 var headReadedBuffer = new ArraySegment<byte>(headBuffer.Bytes.Array, headBuffer.Bytes.Offset, headReadCount);
                 var headVarint = Regulus.Serialization.Varint.FindVarint(ref headReadedBuffer);
@@ -71,7 +82,7 @@ namespace Regulus.Network
                     var bodyReadCount = 0;
                     while (bodyReadCount < needReadSize)
                     {
-                        bodyReadCount += await _ReadFromStream(bodyBuffer.Bytes.Array, bodyBuffer.Bytes.Offset + remaining + bodyReadCount, needReadSize - bodyReadCount);
+                        bodyReadCount += await _ReadFromStream(bodyBuffer.Bytes.Array, bodyBuffer.Bytes.Offset + remaining + bodyReadCount, needReadSize - bodyReadCount);                        
                     }
 
                     if (bodySize > 0)
@@ -80,6 +91,8 @@ namespace Regulus.Network
                     return buffers;
                 }
             }
+
+            return buffers;
         }
 
         private void _CopyBuffer(ArraySegment<byte> source, ArraySegment<byte> destination, int count)

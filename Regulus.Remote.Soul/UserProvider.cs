@@ -15,10 +15,10 @@ namespace Regulus.Remote.Soul
         private readonly ISerializable _Serializable;
         private readonly IListenable _Listenable;
         private readonly IInternalSerializable _InternalSerializable;
-
-        //readonly System.Collections.Generic.List<User> _Users;
+        
         readonly System.Collections.Concurrent.ConcurrentDictionary<Network.IStreamable, User> _Users;
-        readonly Regulus.Utility.Looper<Network.IStreamable> _Looper;
+        public readonly IReadOnlyDictionary<Network.IStreamable,User> Users;
+        
         private readonly IPool _Pool;
         public enum UserLifecycleState
         {
@@ -39,16 +39,15 @@ namespace Regulus.Remote.Soul
 
             UserLifecycleEvents = new System.Collections.Concurrent.ConcurrentBag<UserLifecycleEvent>();            
             _Users = new System.Collections.Concurrent.ConcurrentDictionary<Network.IStreamable, User>();
-            
-            _Looper = new Utility.Looper<Network.IStreamable>();
-            _Looper.AddItemEvent += _Join;
-            _Looper.RemoveItemEvent += _Leave;
+            Users= _Users;
+
+
             this._Protocol = protocol;
             this._Serializable = serializable;
             this._Listenable = listenable;
             _InternalSerializable = internal_serializable;
-            _Listenable.StreamableEnterEvent += _Looper.Add;
-            _Listenable.StreamableLeaveEvent += _Looper.Remove;
+            _Listenable.StreamableEnterEvent += _Join;
+            _Listenable.StreamableLeaveEvent += _Leave;
 
         
         }
@@ -56,7 +55,7 @@ namespace Regulus.Remote.Soul
         void _Join(Network.IStreamable stream)
         {
             User user = new User(stream, _Protocol , _Serializable, _InternalSerializable, _Pool);
-            
+            user.ErrorEvent += () => _Leave(user.Stream);
             user.Launch();
             while(!_Users.TryAdd(user.Stream, user))
             {
@@ -81,21 +80,15 @@ namespace Regulus.Remote.Soul
         }
 
         void IDisposable.Dispose()
-        {
-            _Looper.AddItemEvent += _Join;
-            _Looper.RemoveItemEvent += _Leave;
+        {            
 
-            _Listenable.StreamableEnterEvent -= _Looper.Add;
-            _Listenable.StreamableLeaveEvent -= _Looper.Remove;
+            _Listenable.StreamableEnterEvent -= _Join;
+            _Listenable.StreamableLeaveEvent -= _Leave;
 
             _Users.Clear();
         }
 
-        public ICollection<User> GetUsers()
-        {
-            _Looper.Update();            
-            return _Users.Values;                
-        }
+        
                 
     }
 }

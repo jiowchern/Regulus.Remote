@@ -3,6 +3,7 @@ using NUnit.Framework;
 using System.Linq;
 using Regulus.Network;
 using Regulus.Memorys;
+using Regulus.Remote.Ghost;
 
 namespace Regulus.Remote.Standalone.Test
 {
@@ -26,7 +27,7 @@ namespace Regulus.Remote.Standalone.Test
             var buf = serializer.Serialize(instance);
             pkg.Data = buf.ToArray();
             
-            writer.Push( pkg );
+            writer.Push( pkg ).Wait();
         }
     }
 
@@ -180,7 +181,9 @@ namespace Regulus.Remote.Standalone.Test
             PackageWriter<Regulus.Remote.Packages.ResponsePackage> writer = new PackageWriter<Regulus.Remote.Packages.ResponsePackage>(internalSerializer, pool);
             writer.Start(new ReverseStream(cdClient));
             
-            Ghost.IAgent agent = new Regulus.Remote.Ghost.Agent(peerClient , protocol, serializer, internalSerializer, pool) as Ghost.IAgent;
+            var ghostAgent= new Regulus.Remote.Ghost.Agent(  protocol, serializer, internalSerializer, pool) ;
+            ghostAgent.Enable(peerClient);
+            IAgent agent = ghostAgent;
             agent.QueryNotifier<IGpiA>().Supply += gpi => retGpiA = gpi;
             
 
@@ -192,7 +195,8 @@ namespace Regulus.Remote.Standalone.Test
                 ar.Operate();
                 agent.Update();                
             }
-            agent.Dispose();
+            ghostAgent.Disable();
+            agent.Disable();
             writer.Stop();
             Assert.NotNull(retGpiA);
         }

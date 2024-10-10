@@ -263,11 +263,20 @@ namespace Server
 namespace Server
 {
 	public class Entry : Regulus.Remote.IEntry
-	{
-		void IBinderProvider.AssignBinder(IBinder binder)
+	{		
+		void IBinderProvider.RegisterClientBinder(IBinder binder)
 		{					
 			binder.Binder<IGreeter>(new Greeter());
 		}		
+		void IBinderProvider.UnregisterClientBinder(IBinder binder)
+		{
+			// when client disconnect.
+		}
+
+		void IEntry.Update()
+		{
+			// Update
+		}
 	}
 }
 ```
@@ -313,7 +322,7 @@ Sample/Client>dotnet new console
 ```csharp
 namespace Client
 {	
-	static void Main(string[] args)
+	static async Task Main(string[] args)
 	{		
 		// Get IProtocol with ProtocolCreater
 		var protocol = Protocol.ProtocolCreater.Create();
@@ -331,7 +340,9 @@ namespace Client
 		});
 		// Start Connecting
 		EndPoint yourEndPoint = null;
-		set.Connector.Connect(yourEndPoint ).Wait();
+		var peer = await set.Connector.Connect(yourEndPoint );
+
+		set.Agent.Enable(peer);
 
 		// SupplyEvent ,Receive add IGreeter.
 		set.Agent.QueryNotifier<Protocol.IGreeter>().Supply += greeter => 
@@ -349,7 +360,7 @@ namespace Client
 		stop = true;
 		task.Wait();
 		set.Connector.Disconnect();
-		set.Agent.Dispose();
+		set.Agent.Disable();
 
 	}
 }

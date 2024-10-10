@@ -1,5 +1,6 @@
 ﻿using Regulus.Profiles.StandaloneAllFeature.Protocols;
 using Regulus.Remote;
+using System.Diagnostics;
 
 namespace Regulus.Profiles.StandaloneAllFeature.Server
 {
@@ -25,5 +26,9 @@ namespace Regulus.Profiles.StandaloneAllFeature.Server
             _Users.RemoveAll(user => user.Binder == binder);
         }
 
+        void IEntry.Update()
+        {
+            
+        }
     }
 }

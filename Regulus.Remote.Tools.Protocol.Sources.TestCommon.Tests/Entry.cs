@@ -1,9 +1,10 @@
 using System;
+using System.Diagnostics;
 
 
 namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 {
-    public class Entry<T> : IBinderProvider, System.IDisposable
+    public class Entry<T> : IEntry, System.IDisposable
     {
         readonly T _Entry;
         public Entry(T entry)
@@ -21,6 +22,11 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
         }
         void IDisposable.Dispose()
         {
+        }
+
+        void IEntry.Update()
+        {
+            
         }
     }
 }

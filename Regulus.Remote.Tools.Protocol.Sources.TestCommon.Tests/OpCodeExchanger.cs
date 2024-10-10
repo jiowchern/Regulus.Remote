@@ -3,7 +3,7 @@ using System.Linq;
 using Regulus.Memorys;
 namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 {
-    public class OpCodeExchanger : IOpCodeExchangeable
+    public class OpCodeExchanger : ServerExchangeable
     {
         public readonly System.Collections.Generic.Queue<System.Tuple<ClientToServerOpCode, byte[]>> Requests;
         public OpCodeExchanger()
@@ -11,7 +11,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
             Requests = new System.Collections.Generic.Queue<Tuple<ClientToServerOpCode, byte[]>>();
         }
         public Action<ServerToClientOpCode, Regulus.Memorys.Buffer> Responser; 
-        event Action<ServerToClientOpCode, Regulus.Memorys.Buffer> IOpCodeExchangeable.ResponseEvent
+        event Action<ServerToClientOpCode, Regulus.Memorys.Buffer> Exchangeable<ClientToServerOpCode, ServerToClientOpCode>.ResponseEvent
         {
             add
             {
@@ -26,7 +26,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
 
 
         public event Action<ClientToServerOpCode, byte[]> RequestEvent;
-        void IOpCodeExchangeable.Request(ClientToServerOpCode code, Regulus.Memorys.Buffer args)
+        void Exchangeable<ClientToServerOpCode, ServerToClientOpCode>.Request(ClientToServerOpCode code, Regulus.Memorys.Buffer args)
         {
             Requests.Enqueue(new Tuple<ClientToServerOpCode, byte[]>(code, args.ToArray()) );
         }

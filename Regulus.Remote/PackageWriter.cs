@@ -42,47 +42,46 @@ namespace Regulus.Remote
         public async System.Threading.Tasks.Task Push(TPackage package)
         {
             var buffer = _CreateBuffer(ref package);
-            if (buffer.Length == 0)
-                return;
-
-            await _Write(buffer); 
-            
+            var sendCount = await _Write(buffer);
+            _WriteEnd(sendCount);
         }
 
-        public async void Push(System.Collections.Generic.IEnumerable<TPackage> packages)
-        {
 
-            var buffer = _CreateBuffer(packages.ToArray());
-            if (buffer.Length == 0)
-                return;
-            
-            await _Write(buffer);            
-        }
 
-        private async System.Threading.Tasks.Task _Write(byte[] buffer)
+        
+        private async System.Threading.Tasks.Task<int> _Write(Regulus.Memorys.Buffer buffer)
         {
             
-            
-            
-            IWaitableValue<int> wv = null;
             try
             {
-                wv = _Peer.Send(buffer, 0, buffer.Length);
+                var offset = 0;
+                
+                var bytes = buffer.Bytes;
+                while (offset < buffer.Count)
+                {
+
+                    offset += await _Peer.Send(bytes.Array, bytes.Offset + offset, bytes.Count - offset);
+
+                }
+                
+                
+                
+                return offset;
             }
             catch (System.Exception ex)
             {
-                Regulus.Utility.Log.Instance.WriteInfo(ex.ToString());
-                ErrorEvent();
+                Regulus.Utility.Log.Instance.WriteInfo($"send error {ex.ToString()}.");
+                throw ex;
             }
 
             
-            var sendCount = await wv;
-            _WriteEnd(sendCount);            
+            
+            
         }
 
         
 
-        private byte[] _CreateBuffer(ref TPackage package)
+        private Regulus.Memorys.Buffer _CreateBuffer(ref TPackage package)
         {
             var buffer = _Serializer.Serialize(package);
             
@@ -108,33 +107,12 @@ namespace Regulus.Remote
                 totalBytes.Array[totalBytes.Offset + lenBufferBytes.Count + i] = bytes.Array[bytes.Offset + i];
             }
                 
-            var buf = stream.ToArray();                
-            return buf;
+            
+            return stream;
             
 
         }
-        private byte[] _CreateBuffer(TPackage[] packages)
-        {
-            IEnumerable<Regulus.Memorys.Buffer> buffers = from p in packages select _Serializer.Serialize(p);
-            
-            using (MemoryStream stream = new MemoryStream())
-            {
-                foreach (var buffer in buffers)
-                {
-                    var bytes = buffer.Bytes;
-                    int len = bytes.Count;
-                    int lenCount = Regulus.Serialization.Varint.GetByteCount(len);
-                    var lenBuffer = _Pool.Alloc(lenCount);
-                    var lenBytes = lenBuffer.Bytes;
-                    Regulus.Serialization.Varint.NumberToBuffer(lenBytes.Array, lenBytes.Offset, len);
-                    stream.Write(lenBytes.Array, lenBytes.Offset, lenBytes.Count );
-                    stream.Write(bytes.Array , bytes.Offset , bytes.Count);
-                    
-                }
-
-                return stream.ToArray();
-            }
-        }
+      
 
         public void Stop()
         {

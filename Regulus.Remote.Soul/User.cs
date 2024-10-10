@@ -41,15 +41,15 @@ namespace Regulus.Remote.Soul
 
         private readonly System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.RequestPackage> _ExternalRequests;
         
-        private bool _Enable;
+        
 
         private readonly IResponseQueue _ResponseQueue;
 
-        public bool Enable => _Enable;
+        
         
         internal readonly IStreamable Stream;
         private readonly IInternalSerializable _InternalSerializer;
-
+        public event System.Action ErrorEvent;
         public IBinder Binder
         {
             get { return _SoulProvider; }
@@ -77,14 +77,14 @@ namespace Regulus.Remote.Soul
 
         void _Launch()
         {
-            _Enable = true;
+            
 
             _StartRead().ContinueWith(t =>
             {
                 if(t.Exception != null)
                 {
                     Regulus.Utility.Log.Instance.WriteInfo(t.Exception.ToString());
-                    _Enable = false;
+                    ErrorEvent();
                 }
             });            
             
@@ -98,12 +98,21 @@ namespace Regulus.Remote.Soul
 
         
 
-        private async Task  _StartRead()
+        private async Task _StartRead()
         {
-            var stopWatch = new System.Diagnostics.Stopwatch();
-            var buffers = await _Reader.Read();
+            
+            var buffers = await _Reader.Read().ContinueWith(t => {
+                System.Collections.Generic.List<Memorys.Buffer> result = t.Result;
+                t.Exception?.Handle(e =>
+                {
+                    Regulus.Utility.Log.Instance.WriteInfo($"User _StartRead error {e.ToString()}.");
+                    result = new System.Collections.Generic.List<Memorys.Buffer>();
+                    return true;
+                });                
+                return result;
+            }); 
             _ReadDone(buffers);
-            await System.Threading.Tasks.Task.Delay((int)stopWatch.ElapsedMilliseconds+1).ContinueWith(t => _StartRead());
+            await System.Threading.Tasks.Task.Delay(10).ContinueWith(t => _StartRead());
         }
 
         private void _ReadDone(List<Memorys.Buffer> buffers)
@@ -124,8 +133,7 @@ namespace Regulus.Remote.Soul
             while (_ExternalRequests.TryDequeue(out req))
             {
 
-            }
-            _Enable = false;
+            }            
         }
 
         event InvokeMethodCallback IRequestQueue.InvokeMethodEvent
@@ -136,16 +144,12 @@ namespace Regulus.Remote.Soul
 
         
 
-        async void IResponseQueue.Push(ServerToClientOpCode cmd, Regulus.Memorys.Buffer buffer)
+        void IResponseQueue.Push(ServerToClientOpCode cmd, Regulus.Memorys.Buffer buffer)
         {
-            if (_Enable)
-            {
-                await _StartSend(cmd, buffer);
-
-            }
+            _StartSend(cmd, buffer);
         }
 
-        private async Task _StartSend(ServerToClientOpCode cmd, Memorys.Buffer buffer)
+        private void _StartSend(ServerToClientOpCode cmd, Memorys.Buffer buffer)
         {
             var pkg = new Regulus.Remote.Packages.ResponsePackage
             {
@@ -153,7 +157,7 @@ namespace Regulus.Remote.Soul
                 Data = buffer.ToArray()
             };
             var buf = _InternalSerializer.Serialize(pkg);
-            await _Sender.Send(buf);
+            _Sender.Send(buf);
         }
 
         
@@ -176,12 +180,7 @@ namespace Regulus.Remote.Soul
             {
                 Regulus.Remote.Packages.PackageRemoveEvent data = (Regulus.Remote.Packages.PackageRemoveEvent)_InternalSerializer.Deserialize(package.Data.AsBuffer())  ;
                 _SoulProvider.RemoveEvent(data.Entity, data.Event, data.Handler);
-            }
-            else if (package.Code == ClientToServerOpCode.UpdateProperty)
-            {
-                Regulus.Remote.Packages.PackageSetPropertyDone data = (Regulus.Remote.Packages.PackageSetPropertyDone)_InternalSerializer.Deserialize(package.Data.AsBuffer());
-                _SoulProvider.SetPropertyDone(data.EntityId, data.Property);
-            }
+            }            
             else
             {
                 Regulus.Utility.Log.Instance.WriteInfo($"invalid request code {package.Code}.");
@@ -197,9 +196,13 @@ namespace Regulus.Remote.Soul
             else if (package.Code == ClientToServerOpCode.Release)
             {
                 Regulus.Remote.Packages.PackageRelease data = (Regulus.Remote.Packages.PackageRelease)_InternalSerializer.Deserialize(package.Data.AsBuffer())  ;
-                _SoulProvider.Unbind(data.EntityId);
-                
-            }            
+                _SoulProvider.Unbind(data.EntityId);                
+            }
+            else if (package.Code == ClientToServerOpCode.UpdateProperty)
+            {
+                Regulus.Remote.Packages.PackageSetPropertyDone data = (Regulus.Remote.Packages.PackageSetPropertyDone)_InternalSerializer.Deserialize(package.Data.AsBuffer());
+                _SoulProvider.SetPropertyDone(data.EntityId, data.Property);
+            }
             else
             {
                 _ExternalRequests.Enqueue(package);

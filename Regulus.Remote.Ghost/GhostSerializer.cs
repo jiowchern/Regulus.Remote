@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Regulus.Remote.Ghost
 {
-    class GhostSerializer : IOpCodeExchangeable
+    class GhostSerializer : ServerExchangeable
     {
         //private readonly PackageReader<Regulus.Remote.Packages.ResponsePackage> _Reader;
         //private readonly PackageWriter<Regulus.Remote.Packages.RequestPackage> _Writer;
@@ -42,7 +42,7 @@ namespace Regulus.Remote.Ghost
 
         event Action<ServerToClientOpCode, Regulus.Memorys.Buffer> _ResponseEvent;
 
-        event Action<ServerToClientOpCode, Regulus.Memorys.Buffer> IOpCodeExchangeable.ResponseEvent
+        event Action<ServerToClientOpCode, Regulus.Memorys.Buffer> Exchangeable<ClientToServerOpCode, ServerToClientOpCode>.ResponseEvent
         {
             add
             {
@@ -56,7 +56,7 @@ namespace Regulus.Remote.Ghost
             }
         }
 
-        void IOpCodeExchangeable.Request(ClientToServerOpCode code, Regulus.Memorys.Buffer args)
+        void Exchangeable<ClientToServerOpCode, ServerToClientOpCode>.Request(ClientToServerOpCode code, Regulus.Memorys.Buffer args)
         {
             _Sends.Enqueue(
                     new Regulus.Remote.Packages.RequestPackage()
@@ -93,10 +93,10 @@ namespace Regulus.Remote.Ghost
 
         void _Update()
         {
-            _Process().ContinueWith(t => { }); 
+            _Process(); 
         }
 
-        private async Task _Process()
+        private void _Process()
         {
             
             Regulus.Remote.Packages.ResponsePackage receivePkg;
@@ -109,7 +109,7 @@ namespace Regulus.Remote.Ghost
             foreach (var send in sends)
             {
                 var buf = _Serializable.Serialize(send);
-                await _Sender.Send(buf);
+                _Sender.Send(buf);
             }
                 
             
@@ -130,10 +130,10 @@ namespace Regulus.Remote.Ghost
 
         private async Task _ReaderStart()
         {
-            var stopWatch = new System.Diagnostics.Stopwatch();
+            
             var buffers = await _Reader.Read();
             _ReadDone(buffers);
-            await System.Threading.Tasks.Task.Delay((int)stopWatch.ElapsedMilliseconds+1).ContinueWith(t=> _ReaderStart());            
+            await System.Threading.Tasks.Task.Delay(10).ContinueWith(t=> _ReaderStart());            
         }
 
         private void _ReadDone(List<Memorys.Buffer> buffers)
@@ -148,7 +148,7 @@ namespace Regulus.Remote.Ghost
 
         private void _ReaderStop()
         {
-            
+            _Reader.Stop();
         }
 
         public void Update()

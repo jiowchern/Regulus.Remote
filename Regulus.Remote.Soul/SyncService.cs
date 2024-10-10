@@ -1,18 +1,19 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Regulus.Remote.Soul
 {
     public class SyncService : System.IDisposable
     {
-        readonly IBinderProvider _Binder;
+        readonly IEntry _Entry;
         readonly UserProvider _UserProvider;
         readonly IDisposable _UserProviderDisposable;
         
 
 
-        public SyncService(IBinderProvider binder, UserProvider user_provider)
+        public SyncService(IEntry entry, UserProvider user_provider)
         {
-            _Binder = binder;
+            _Entry = entry;
             _UserProvider = user_provider;
             _UserProviderDisposable = user_provider;
         }
@@ -24,20 +25,23 @@ namespace Regulus.Remote.Soul
             {
                 if(userAction.State == UserProvider.UserLifecycleState.Join)
                 {
-                    _Binder.RegisterClientBinder(userAction.User.Binder);
+                    _Entry.RegisterClientBinder(userAction.User.Binder);
                 }
                 else if(userAction.State == UserProvider.UserLifecycleState.Leave)
                 {
-                    _Binder.UnregisterClientBinder(userAction.User.Binder);
+                    _Entry.UnregisterClientBinder(userAction.User.Binder);
                 }
                 
             }
 
-            var users = _UserProvider.GetUsers();
-            foreach (Advanceable user in users)
+            _Entry.Update();
+            
+            
+            foreach (Advanceable user in _UserProvider.Users.Values)
             {
                 user.Advance();
             }
+            
         }
 
         void IDisposable.Dispose()

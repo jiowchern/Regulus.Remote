@@ -6,12 +6,13 @@ using Regulus.Remote.Reactive;
 using NSubstitute;
 using System.Net.Sockets;
 using System.Net;
+using System.Threading.Tasks;
 namespace Regulus.Integration.Tests
 {
     public class ConnectTests
     {
         [Test]
-        public void TcpLocalConnectTest()
+        public async Task TcpLocalConnectTest()
         {
             // 獲取一個臨時可用的端口
             int GetAvailablePort()
@@ -45,14 +46,19 @@ namespace Regulus.Integration.Tests
                 {
                     client.Agent.Update();
                 }
-                
+
+            }).ContinueWith(t => { 
+                if(t.Exception!=null)
+                {
+                    NUnit.Framework.Assert.Fail(t.Exception.ToString());
+                }
             });
 
             // do connect
             System.Net.IPEndPoint endPoint;            
             System.Net.IPEndPoint.TryParse($"127.0.0.1:{port}", out endPoint);
-            client.Connector.Connect(endPoint).Wait();
-
+            var peer = await client.Connector.Connect(endPoint);
+            client.Agent.Enable(peer);
             // get values
             var valuesObs = from gpi in client.Agent.QueryNotifier<Regulus.Remote.Tools.Protocol.Sources.TestCommon.IMethodable>().SupplyEvent()
                             from v1 in gpi.GetValue1().RemoteValue()
@@ -61,13 +67,13 @@ namespace Regulus.Integration.Tests
                             select new { v1, v2, v0 };
 
 
-            var values = valuesObs.FirstAsync().Wait();
+            var values = await valuesObs.FirstAsync();
             stop = true;
-            task.Wait();
+            await task;
 
             // release
-            client.Connector.Disconnect().Wait();
-            client.Agent.Dispose();
+            await client.Connector.Disconnect();
+            client.Agent.Disable();
 
             server.Listener.Close();
             

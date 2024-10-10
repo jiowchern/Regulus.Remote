@@ -14,7 +14,7 @@ namespace Regulus.Remote.Standalone.Test
             IStreamable serverStream = serverPeerStream;
             IStreamable clientStream = new ReverseStream(serverPeerStream);
 
-            IBinderProvider entry = NSubstitute.Substitute.For<IBinderProvider>();
+            IEntry entry = NSubstitute.Substitute.For<IEntry>();
             var  listenable = NSubstitute.Substitute.For<Soul.IListenable>();
             IGpiA gpia = new SoulGpiA();
             entry.RegisterClientBinder(NSubstitute.Arg.Do<IBinder>(binder => binder.Bind<IGpiA>(gpia)));
@@ -26,7 +26,9 @@ namespace Regulus.Remote.Standalone.Test
             Soul.IService service = new Regulus.Remote.Soul.AsyncService(new Soul.SyncService(entry , new Soul.UserProvider(protocol, serializer, listenable, internalSer, pool)));
 
             
-            IAgent agent = new Regulus.Remote.Ghost.Agent(clientStream,protocol, serializer, internalSer , pool) as Ghost.IAgent;
+            var ghostAgent = new Regulus.Remote.Ghost.Agent(protocol, serializer, internalSer , pool) ;
+            ghostAgent.Enable(clientStream);
+            IAgent agent = ghostAgent;
             IGpiA ghostGpia = null;
 
 
@@ -38,8 +40,8 @@ namespace Regulus.Remote.Standalone.Test
             {
                 agent.Update();
             }
-
-            agent.Dispose();
+            ghostAgent.Disable();
+            agent.Disable();
             listenable.StreamableLeaveEvent += NSubstitute.Raise.Event<System.Action<IStreamable>>(serverStream);
             
             IDisposable disposable = service;

@@ -8,35 +8,51 @@ namespace Regulus.Remote
 {
     namespace ProviderHelper
     {
-        public class GhostsManager
+        public class GhostsHandler : ClientExchangeable
         {
-            private readonly Dictionary<long, GhostResponseHandler> _GhostHandlers;
+            private readonly Dictionary<long, GhostResponseHandler> _GhostResponseHandlers;
+            
             private readonly AutoRelease<long, IGhost> _AutoRelease;
             private readonly IProtocol _Protocol;
             private readonly ISerializable _Serializer;
             private readonly IInternalSerializable _InternalSerializer;
-            private readonly IOpCodeExchangeable _Exchanger;
-            private readonly GhostsProviderManager _ProviderManager;
+            
+            private readonly GhostsOwner _GhostsOwner;
             private readonly GhostsReturnValueHandler _ReturnValueHandler;
             private readonly InterfaceProvider _InterfaceProvider;
+            
 
-            public GhostsManager(
+            public GhostsHandler(
                 IProtocol protocol,
                 ISerializable serializer,
-                IInternalSerializable internalSerializer,
-                IOpCodeExchangeable exchanger,
-                GhostsProviderManager providerManager,
+                IInternalSerializable internalSerializer,                
+                GhostsOwner ghosts_owner,
                 GhostsReturnValueHandler returnValueHandler)
             {
                 _Protocol = protocol;
                 _Serializer = serializer;
-                _InternalSerializer = internalSerializer;
-                _Exchanger = exchanger;
-                _ProviderManager = providerManager;
+                _InternalSerializer = internalSerializer;                
+                _GhostsOwner = ghosts_owner;
                 _ReturnValueHandler = returnValueHandler;
                 _InterfaceProvider = _Protocol.GetInterfaceProvider();
-                _GhostHandlers = new Dictionary<long, GhostResponseHandler>();
-                _AutoRelease = new AutoRelease<long, IGhost>();
+                _GhostResponseHandlers = new Dictionary<long, GhostResponseHandler>();
+                _AutoRelease = new AutoRelease<long, IGhost>();                
+            }
+            
+           
+            event Action<ClientToServerOpCode, Memorys.Buffer> _ResponseEvent;
+
+            event Action<ClientToServerOpCode, Memorys.Buffer> Exchangeable<ServerToClientOpCode, ClientToServerOpCode>.ResponseEvent
+            {
+                add
+                {
+                    _ResponseEvent += value;
+                }
+
+                remove
+                {
+                    _ResponseEvent -= value;
+                }
             }
 
             public void LoadSoul(int typeId, long id, bool returnType)
@@ -45,12 +61,21 @@ namespace Regulus.Remote
                 var type = map.GetInterface(typeId);
                 var ghost = BuildGhost(type, id, returnType);
 
-                ghost.CallMethodEvent += new GhostMethodHandler(ghost.GetID(), _ReturnValueHandler, _Protocol, _Serializer, _InternalSerializer, _Exchanger).Run;
-                ghost.AddEventEvent += new GhostEventMoveHandler(ghost.GetID(), _Protocol, _InternalSerializer, _Exchanger).Add;
-                ghost.RemoveEventEvent += new GhostEventMoveHandler(ghost.GetID(), _Protocol, _InternalSerializer, _Exchanger).Remove;
+                var gm = new GhostMethodHandler(ghost.GetID(), _ReturnValueHandler, _Protocol, _Serializer, _InternalSerializer);
+                ghost.CallMethodEvent += gm.Run;
+                ClientExchangeable gmec = gm ;
+                gmec.ResponseEvent += _ResponseEvent;
 
-                lock (_GhostHandlers)
-                    _GhostHandlers.Add(ghost.GetID(), new GhostResponseHandler(new WeakReference<IGhost>(ghost), _Protocol.GetMemberMap(), _Serializer));
+                var gem = new GhostEventMoveHandler(ghost.GetID(), _Protocol, _InternalSerializer);
+                ghost.AddEventEvent += gem.Add;
+                ghost.RemoveEventEvent += gem.Remove;
+                ClientExchangeable gemec = gem;
+                gemec.ResponseEvent += _ResponseEvent;
+
+
+
+                lock (_GhostResponseHandlers)
+                    _GhostResponseHandlers.Add(ghost.GetID(), new GhostResponseHandler(new WeakReference<IGhost>(ghost), _Protocol.GetMemberMap(), _Serializer));
 
                 if (ghost.IsReturnType())
                 {
@@ -58,16 +83,17 @@ namespace Regulus.Remote
                 }
                 else
                 {
-                    var provider = _ProviderManager.QueryProvider(type);
+                    var provider = _GhostsOwner.QueryProvider(type);
                     provider.Add(ghost);
                 }
             }
 
             public void UnloadSoul(long id)
             {
-                _ProviderManager.RemoveGhost(id);
-                lock (_GhostHandlers)
-                    _GhostHandlers.Remove(id);
+                _GhostsOwner.RemoveGhost(id);
+                lock (_GhostResponseHandlers)
+                    _GhostResponseHandlers.Remove(id);
+                
             }
 
             public void UpdateSetProperty(long entityId, int propertyId, byte[] payload)
@@ -82,7 +108,7 @@ namespace Regulus.Remote
                     EntityId = entityId,
                     Property = propertyId
                 };
-                _Exchanger.Request(ClientToServerOpCode.UpdateProperty, _InternalSerializer.Serialize(pkg));
+                _ResponseEvent(ClientToServerOpCode.UpdateProperty, _InternalSerializer.Serialize(pkg));
             }
 
             public void InvokeEvent(long ghostId, int eventId, long handlerId, byte[][] eventParams)
@@ -123,9 +149,9 @@ namespace Regulus.Remote
             }
             private GhostResponseHandler _FindHandler(long ghostId)
             {
-                lock (_GhostHandlers)
+                lock (_GhostResponseHandlers)
                 {
-                    if (_GhostHandlers.TryGetValue(ghostId, out var handler))
+                    if (_GhostResponseHandlers.TryGetValue(ghostId, out var handler))
                     {
                         if (handler.IsValid())
                             return handler;
@@ -147,18 +173,21 @@ namespace Regulus.Remote
                 foreach (var id in _AutoRelease.NoExist())
                 {
                     var pkg = new PackageRelease { EntityId = id };
-                    _Exchanger.Request(ClientToServerOpCode.Release, _InternalSerializer.Serialize(pkg));
+                    _ResponseEvent(ClientToServerOpCode.Release, _InternalSerializer.Serialize(pkg));
                     UnloadSoul(id);
                 }
             }
 
             public void ClearGhosts()
             {
-                lock (_GhostHandlers)
-                    _GhostHandlers.Clear();
+                lock (_GhostResponseHandlers)
+                    _GhostResponseHandlers.Clear();
             }
 
-           
+            void Exchangeable<ServerToClientOpCode, ClientToServerOpCode>.Request(ServerToClientOpCode code, Memorys.Buffer args)
+            {
+                //throw new NotImplementedException();
+            }
         }
 
     }

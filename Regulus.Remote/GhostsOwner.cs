@@ -5,12 +5,12 @@ namespace Regulus.Remote
 {
     namespace ProviderHelper
     {
-        public class GhostsProviderManager
+        public class GhostsOwner
         {
             private readonly Dictionary<Type, IProvider> _Providers;
             private readonly IProtocol _Protocol;
 
-            public GhostsProviderManager(IProtocol protocol)
+            public GhostsOwner(IProtocol protocol)
             {
                 _Protocol = protocol;
                 _Providers = new Dictionary<Type, IProvider>();

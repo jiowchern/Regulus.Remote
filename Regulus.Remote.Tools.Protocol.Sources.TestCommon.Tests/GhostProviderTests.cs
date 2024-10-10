@@ -1,4 +1,5 @@
 ﻿using NSubstitute;
+using Regulus.Remote.ProviderHelper;
 using System;
 using System.Linq;
 
@@ -16,9 +17,13 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
             var es = new Regulus.Remote.Serializer(protocol.SerializeTypes);
             IInternalSerializable iniers = new Regulus.Remote.InternalSerializer();
             var exchanger = new OpCodeExchanger();
-
-            var provider = new Regulus.Remote.GhostProviderQueryer(protocol, es, iniers, exchanger);
-
+            var ghostOwner = new GhostsOwner(protocol);
+            var provider = new Regulus.Remote.GhostProviderQueryer(protocol, es, iniers, ghostOwner);
+            ClientExchangeable providerExchange = provider;
+            System.Collections.Generic.List<Regulus.Remote.ClientToServerOpCode> opcodes = new System.Collections.Generic.List<Regulus.Remote.ClientToServerOpCode>();
+            providerExchange.ResponseEvent += (code , buf) => {
+                opcodes.Add(code);
+            };
             provider.Start();
 
             IMethodable methodable = null;
@@ -33,7 +38,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
                 package.TypeId = protocol.GetMemberMap().GetInterface(typeof(IMethodable));
                 package.EntityId = 1;
                 package.ReturnType = false;
-                exchanger.Responser.Invoke(ServerToClientOpCode.LoadSoul, iniers.Serialize(package));
+
+                providerExchange.Request(ServerToClientOpCode.LoadSoul, iniers.Serialize(package));
 
             }
 
@@ -42,7 +48,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
                 package.TypeId = protocol.GetMemberMap().GetInterface(typeof(IMethodable));
                 package.EntityId = 1;
                 package.ReturnId = 0;
-                exchanger.Responser.Invoke(ServerToClientOpCode.LoadSoulCompile, iniers.Serialize(package));
+                providerExchange.Request(ServerToClientOpCode.LoadSoulCompile, iniers.Serialize(package));
             }
             
 
@@ -54,7 +60,7 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
                 package.TypeId = protocol.GetMemberMap().GetInterface(typeof(IMethodable));
                 package.EntityId = 2;
                 package.ReturnType = true;
-                exchanger.Responser.Invoke(ServerToClientOpCode.LoadSoul, iniers.Serialize(package));
+                providerExchange.Request(ServerToClientOpCode.LoadSoul, iniers.Serialize(package));
 
             }
 
@@ -63,29 +69,31 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
                 package.TypeId = protocol.GetMemberMap().GetInterface(typeof(IMethodable));
                 package.EntityId = 2;
                 package.ReturnId = 1;
-                exchanger.Responser.Invoke(ServerToClientOpCode.LoadSoulCompile, iniers.Serialize(package));
+                providerExchange.Request(ServerToClientOpCode.LoadSoulCompile, iniers.Serialize(package));
             }
 
             {
                 var package = new Regulus.Remote.Packages.PackageUnloadSoul();
                 package.EntityId = 1;
 
-                exchanger.Responser.Invoke(ServerToClientOpCode.UnloadSoul, iniers.Serialize(package));
+                providerExchange.Request(ServerToClientOpCode.UnloadSoul, iniers.Serialize(package));
             }
 
 
             GC.Collect(2, GCCollectionMode.Forced, true);
             
             {
-                exchanger.Responser.Invoke(ServerToClientOpCode.Ping, iniers.Serialize(new byte[0]));
+                providerExchange.Request(ServerToClientOpCode.Ping, iniers.Serialize(new byte[0]));
             }
-
-            var pkg = exchanger.IgnoreUntil(ClientToServerOpCode.Release);
+            
+            
 
             provider.Stop();
             NUnit.Framework.Assert.True(_HasSub);
-            NUnit.Framework.Assert.AreNotEqual(null, pkg);
+            NUnit.Framework.Assert.AreNotEqual(null, opcodes.Any(o => o == ClientToServerOpCode.Release));
         }
+
+        
 
         private static void _SetHasSub(IMethodable methodable)
         {
