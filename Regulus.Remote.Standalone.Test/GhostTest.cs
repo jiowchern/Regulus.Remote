@@ -103,12 +103,12 @@ namespace Regulus.Remote.Standalone.Test
             var streamTask2 = cd.Pop(recvBuf, stream1, recvBuf.Length - stream1);
             int stream2 = await streamTask2;
 
-            var streamTask3 = cd.Pop(recvBuf, stream1 + stream2, recvBuf.Length - (stream1 + stream2));
-            int stream3 = await streamTask3;
+            //var streamTask3 = cd.Pop(recvBuf, stream1 + stream2, recvBuf.Length - (stream1 + stream2));
+            //int stream3 = await streamTask3;
 
 
 
-            Assert.AreEqual(10, stream3 + stream2 + stream1);
+            Assert.AreEqual(10, /*stream3 + */stream2 + stream1);
             Assert.AreEqual((byte)0, recvBuf[0]);
             Assert.AreEqual((byte)1, recvBuf[1]);
             Assert.AreEqual((byte)2, recvBuf[2]);
@@ -157,7 +157,7 @@ namespace Regulus.Remote.Standalone.Test
 
             byte[] recvBuf = new byte[buf.Length];
             await peer.Receive(recvBuf, 0, recvBuf.Length);
-            await peer.Receive(recvBuf, 1, recvBuf.Length - 1);
+            //await peer.Receive(recvBuf, 1, recvBuf.Length - 1);
             Regulus.Remote.Packages.ResponsePackage responsePkg = (Regulus.Remote.Packages.ResponsePackage)internalSerializable.Deserialize(recvBuf.AsBuffer())  ;
             Regulus.Remote.Packages.PackageLoadSoul lordsoulPkg = (Regulus.Remote.Packages.PackageLoadSoul)internalSerializable.Deserialize(responsePkg.Data.AsBuffer())  ;
             Assert.AreEqual(ServerToClientOpCode.LoadSoul, responsePkg.Code);

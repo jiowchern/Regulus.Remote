@@ -47,6 +47,11 @@ namespace Regulus.Network.Tcp
             if(error != SocketError.Success && error != SocketError.IOPending)
             {
                 _SocketErrorEvent(error);
+                return System.Threading.Tasks.Task.Delay(1000).ContinueWith(t =>
+                {
+                    return 0;
+                }).ToWaitableValue();
+                
             }
 
             return System.Threading.Tasks.Task<int>.Factory.FromAsync(ar, (a)=> { return _EndHandler(a); }).ToWaitableValue();

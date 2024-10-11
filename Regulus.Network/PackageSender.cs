@@ -33,6 +33,8 @@ namespace Regulus.Network
 
         public void Send(Regulus.Memorys.Buffer buffer)
         {
+            if (buffer.Count == 0)
+                return;
             
             var packageVarintCount = Regulus.Serialization.Varint.GetByteCount(buffer.Bytes.Count);
             var sendBuffer = _Pool.Alloc(packageVarintCount + buffer.Bytes.Count);

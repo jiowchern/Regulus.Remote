@@ -64,14 +64,7 @@ namespace Regulus.Remote.Ghost
         public void Start()
         {
             Singleton<Log>.Instance.WriteInfo("Agent online enter.");
-            _ReaderStart().ContinueWith(t => { 
-                if(t.Exception != null)
-                {
-                    Singleton<Log>.Instance.WriteInfo($" Agent online error : {t.Exception}");
-                    _Exceptions.Add(t.Exception);
-                }
-            });
-            
+            Task.Run( async () => await _ReaderStart());
         }
 
         public void Stop()
@@ -131,21 +124,27 @@ namespace Regulus.Remote.Ghost
 
         private async Task _ReaderStart()
         {
-            
-            var buffers = await _Reader.Read();
-            _ReadDone(buffers);
-            await System.Threading.Tasks.Task.Delay(10).ContinueWith(t=> _ReaderStart().ContinueWith(t1 => {
-                if (t1.Exception != null)
+
+            var packages = await _Reader.Read().ContinueWith(t => { 
+                if(t.Exception != null)
                 {
-                    Singleton<Log>.Instance.WriteInfo($" Agent online error : {t1.Exception}");
+                    Singleton<Log>.Instance.WriteInfo($" Agent online error : {t.Exception}");
                     _Exceptions.Add(t.Exception);
+                    return new List<Regulus.Memorys.Buffer>();
                 }
-            }));            
+                return t.Result;
+            });
+            if(packages.Count == 0)
+            {
+                _Exceptions.Add(new System.Exception("Agent online error : read 0"));
+                return;
+            }
+            _ReadDone(packages);
+            await System.Threading.Tasks.Task.Delay(0).ContinueWith(t=> _ReaderStart());            
         }
 
         private void _ReadDone(List<Memorys.Buffer> buffers)
         {
-
             foreach (var buffer in buffers)
             {
                 var pkg = (Packages.ResponsePackage)_Serializable.Deserialize(buffer);

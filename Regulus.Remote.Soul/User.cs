@@ -78,15 +78,22 @@ namespace Regulus.Remote.Soul
         void _Launch()
         {
             
-
-            _StartRead().ContinueWith(t =>
+            System.Threading.Tasks.Task.Run(() => _StartRead()).ContinueWith(t =>
+            {
+                if (t.Exception != null)
+                {
+                    Regulus.Utility.Log.Instance.WriteInfo(t.Exception.ToString());
+                    ErrorEvent();
+                }
+            });
+            /*_StartRead().ContinueWith(t =>
             {
                 if(t.Exception != null)
                 {
                     Regulus.Utility.Log.Instance.WriteInfo(t.Exception.ToString());
                     ErrorEvent();
                 }
-            });            
+            });         */   
             
 
             Regulus.Remote.Packages.PackageProtocolSubmit pkg = new Regulus.Remote.Packages.PackageProtocolSubmit();
@@ -102,11 +109,11 @@ namespace Regulus.Remote.Soul
         {
             
             var buffers = await _Reader.Read().ContinueWith(t => {
-                System.Collections.Generic.List<Memorys.Buffer> result = t.Result;
+                System.Collections.Generic.List<Regulus.Memorys.Buffer> result = t.Result;
                 t.Exception?.Handle(e =>
                 {
                     Regulus.Utility.Log.Instance.WriteInfo($"User _StartRead error {e.ToString()}.");
-                    result = new System.Collections.Generic.List<Memorys.Buffer>();
+                    result = new System.Collections.Generic.List<Regulus.Memorys.Buffer>();
                     return true;
                 });                
                 return result;
@@ -115,11 +122,12 @@ namespace Regulus.Remote.Soul
             await System.Threading.Tasks.Task.Delay(10).ContinueWith(t => _StartRead());
         }
 
-        private void _ReadDone(List<Memorys.Buffer> buffers)
+        private void _ReadDone(List<Regulus.Memorys.Buffer> buffers)
         {
             
             foreach(var buffer in buffers)
             {                
+                
                 var pkg = (Packages.RequestPackage)_InternalSerializer.Deserialize(buffer);
                 _InternalRequest(pkg);
             }

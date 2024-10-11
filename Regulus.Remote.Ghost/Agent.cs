@@ -81,10 +81,6 @@ namespace Regulus.Remote.Ghost
             _GhostSerializerStop = () => { };
             _GhostsOwner.ClearProviders();
             _GhostProvider.Stop();
-
-            
-
-
         }
         INotifier<T> INotifierQueryable.QueryNotifier<T>()
         {

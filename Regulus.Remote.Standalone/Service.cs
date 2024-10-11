@@ -70,7 +70,6 @@ namespace Regulus.Remote.Standalone
             var agent = new Regulus.Remote.Ghost.Agent( this.Protocol, this.Serializer, new Regulus.Remote.InternalSerializer(), _Pool);
             agent.Enable(stream);
             var revStream = new ReverseStream(stream);
-
             _NotifiableCollection.Items.Add(revStream);
             _Streams.Add(agent, revStream);
             _Agents.Add(agent);

@@ -31,9 +31,10 @@ namespace Regulus.Remote.Standalone.Test
             IAgent agent = ghostAgent;
             IGpiA ghostGpia = null;
 
+            var wapper = NSubstitute.Raise.Event<System.Action<IStreamable>>(serverStream);
+            listenable.StreamableEnterEvent += wapper;
 
-            listenable.StreamableEnterEvent += NSubstitute.Raise.Event<System.Action<IStreamable>>(serverStream);            
-            
+
             agent.QueryNotifier<IGpiA>().Supply += gpi => ghostGpia = gpi;
 
             while (ghostGpia == null)
@@ -42,7 +43,7 @@ namespace Regulus.Remote.Standalone.Test
             }
             ghostAgent.Disable();
             agent.Disable();
-            listenable.StreamableLeaveEvent += NSubstitute.Raise.Event<System.Action<IStreamable>>(serverStream);
+            listenable.StreamableLeaveEvent -= wapper;
             
             IDisposable disposable = service;
             disposable.Dispose();

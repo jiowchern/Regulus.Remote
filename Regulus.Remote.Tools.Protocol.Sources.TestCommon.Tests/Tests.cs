@@ -423,8 +423,8 @@ namespace Regulus.Remote.Tools.Protocol.Sources.TestCommon.Tests
                 return gpi.Property1.Value == 2 && gpi.Property2.Value == 3;
             } ,60000);
             
-            Assert.AreNotEqual(3, gpi.Property1.Value);
-            Assert.AreNotEqual(4, gpi.Property2.Value);
+            Assert.AreEqual(2, gpi.Property1.Value);
+            Assert.AreEqual(3, gpi.Property2.Value);
 
             env.Dispose();
 
