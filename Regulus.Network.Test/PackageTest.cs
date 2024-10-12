@@ -29,7 +29,7 @@ namespace Regulus.Network.Tests
             
             var testStructBuffer = serializer.ObjectToBuffer(testStruct);
 
-            sender.Send(testStructBuffer);
+            sender.Push(testStructBuffer);
 
 
             var reader = new Regulus.Network.PackageReader(readStream, Regulus.Memorys.PoolProvider.Shared);
@@ -57,26 +57,33 @@ namespace Regulus.Network.Tests
 
             var sender = new Regulus.Network.PackageSender(sendStream, Regulus.Memorys.PoolProvider.Shared);
             var testStructBuffer1 = serializer.ObjectToBuffer(null);
-            sender.Send(testStructBuffer1);
+            sender.Push(testStructBuffer1);
 
             var testStructBuffer2 = serializer.ObjectToBuffer(1);
-            sender.Send(testStructBuffer2);
+            sender.Push(testStructBuffer2);
 
             var testStructBuffer3 = serializer.ObjectToBuffer(2);
-            sender.Send(testStructBuffer3);
+            sender.Push(testStructBuffer3);
             var testStruct = new TestStruct();
             testStruct.A = -1;
             var testStructBuffer4 = serializer.ObjectToBuffer(testStruct);
-            sender.Send(testStructBuffer4);
+            sender.Push(testStructBuffer4);
 
 
 
 
             var reader = new Regulus.Network.PackageReader(readStream, Regulus.Memorys.PoolProvider.Shared);
 
+            System.Collections.Generic.List<Regulus.Memorys.Buffer> buffers = new System.Collections.Generic.List<Memorys.Buffer>();
 
-
-            var buffers = await reader.Read();
+            while(buffers.Count < 4)
+            {
+                var bufs = await reader.Read();
+                if (bufs.Count == 0)
+                    break;
+                buffers.AddRange(bufs);
+            }
+            
             {
                 var buffer = buffers.ElementAt(0);
                 var readStruct = serializer.BufferToObject(buffer);
@@ -89,9 +96,9 @@ namespace Regulus.Network.Tests
                 NUnit.Framework.Assert.AreEqual(i, readStruct);
             }
 
-            var buffers2 = await reader.Read();
+            
             {
-                var buffer = buffers2.ElementAt(0);
+                var buffer = buffers.ElementAt(3);
                 var readStruct = (TestStruct)serializer.BufferToObject(buffer);
                 NUnit.Framework.Assert.AreEqual(-1, readStruct.A);
             }
@@ -115,17 +122,25 @@ namespace Regulus.Network.Tests
             var sender = new Regulus.Network.PackageSender(sendStream, Regulus.Memorys.PoolProvider.Shared);
 
             var buff = Regulus.Memorys.PoolProvider.DirectShared.Alloc(0);
-            sender.Send(buff);
+            sender.Push(buff);
 
             var testStructBuffer2 = serializer.ObjectToBuffer(null);
-            sender.Send(testStructBuffer2);
+            sender.Push(testStructBuffer2);
 
             var testStructBuffer3 = serializer.ObjectToBuffer(null);
-            sender.Send(testStructBuffer3);
+            sender.Push(testStructBuffer3);
 
             var reader = new Regulus.Network.PackageReader(readStream, Regulus.Memorys.PoolProvider.Shared);
 
-            var buffers = await reader.Read();
+            var buffers = new System.Collections.Generic.List<Regulus.Memorys.Buffer>();
+            while (buffers.Count < 2)
+            {
+                var bufs = await reader.Read();
+                if (bufs.Count == 0)
+                    break;
+
+                buffers.AddRange(bufs);
+            }
             
             for (var i = 0; i < 2; i++)
             {

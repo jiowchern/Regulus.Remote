@@ -29,9 +29,6 @@ namespace Regulus.Remote.Soul
             public byte[][] MethodParams { get; set; }
         }
 
-
-        private readonly IStreamable _Peer;
-
         private readonly IProtocol _Protocol;
 
         private readonly SoulProvider _SoulProvider;
@@ -40,12 +37,8 @@ namespace Regulus.Remote.Soul
         private readonly Regulus.Network.PackageSender _Sender;
 
         private readonly System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.RequestPackage> _ExternalRequests;
-        
-        
 
         private readonly IResponseQueue _ResponseQueue;
-
-        
         
         internal readonly IStreamable Stream;
         private readonly IInternalSerializable _InternalSerializer;
@@ -62,7 +55,6 @@ namespace Regulus.Remote.Soul
             Stream = client;
             _InternalSerializer = internal_serializable;
             
-            _Peer = client;
             _Protocol = protocol;
 
             _Reader = new Regulus.Network.PackageReader(client , pool);
@@ -85,16 +77,7 @@ namespace Regulus.Remote.Soul
                     Regulus.Utility.Log.Instance.WriteInfo(t.Exception.ToString());
                     ErrorEvent();
                 }
-            });
-            /*_StartRead().ContinueWith(t =>
-            {
-                if(t.Exception != null)
-                {
-                    Regulus.Utility.Log.Instance.WriteInfo(t.Exception.ToString());
-                    ErrorEvent();
-                }
-            });         */   
-            
+            });                        
 
             Regulus.Remote.Packages.PackageProtocolSubmit pkg = new Regulus.Remote.Packages.PackageProtocolSubmit();
             pkg.VerificationCode = _Protocol.VerificationCode;
@@ -118,8 +101,13 @@ namespace Regulus.Remote.Soul
                 });                
                 return result;
             }); 
+            if(buffers.Count == 0)
+            {
+                ErrorEvent();
+                return;
+            }
             _ReadDone(buffers);
-            await System.Threading.Tasks.Task.Delay(10).ContinueWith(t => _StartRead());
+            await System.Threading.Tasks.Task.Delay(0).ContinueWith(t => _StartRead());
         }
 
         private void _ReadDone(List<Regulus.Memorys.Buffer> buffers)
@@ -137,6 +125,8 @@ namespace Regulus.Remote.Soul
         void _Shutdown()
         {
             //_Updater.Stop();
+            var senderDispose = _Sender as IDisposable;
+            senderDispose.Dispose();
             Regulus.Remote.Packages.RequestPackage req;
             while (_ExternalRequests.TryDequeue(out req))
             {
@@ -165,7 +155,7 @@ namespace Regulus.Remote.Soul
                 Data = buffer.ToArray()
             };
             var buf = _InternalSerializer.Serialize(pkg);
-            _Sender.Send(buf);
+            _Sender.Push(buf);
         }
 
         

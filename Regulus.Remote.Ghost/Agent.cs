@@ -48,7 +48,9 @@ namespace Regulus.Remote.Ghost
         public void Enable(IStreamable streamable)
         {
             Disable();
-            var ghostSerializer = new GhostSerializer(new PackageReader(streamable, _Pool), new PackageSender(streamable, _Pool), _InternalSerializer);
+            var sender = new PackageSender(streamable, _Pool);
+            var reader = new PackageReader(streamable, _Pool);
+            var ghostSerializer = new GhostSerializer(reader, sender, _InternalSerializer);
             ServerExchangeable serverExchangeable = ghostSerializer;
             ClientExchangeable clientExchangeable = _GhostProvider;
             ghostSerializer.ErrorEvent += _ExceptionEvent;
@@ -58,6 +60,8 @@ namespace Regulus.Remote.Ghost
             _GhostSerializerStop =
             () =>
             {
+                var senderDispose = sender as IDisposable;
+                senderDispose.Dispose();
                 ghostSerializer.ErrorEvent -= _ExceptionEvent;
                 ghostSerializer.Stop();
                 serverExchangeable.ResponseEvent -= clientExchangeable.Request;

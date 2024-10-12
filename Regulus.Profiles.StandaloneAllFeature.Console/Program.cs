@@ -17,14 +17,7 @@ namespace Regulus.Profiles.StandaloneAllFeature.Console
             var entry = new Server.Entry();
             int range = 10;
 
-            var service = Regulus.Remote.Standalone.Provider.CreateService(entry, protocol);
             
-            
-
-            ProcessAgents( range, () => {
-                lock(service)
-                    return service.Create();
-            });
             
 
             
@@ -39,6 +32,13 @@ namespace Regulus.Profiles.StandaloneAllFeature.Console
                 var peer = w.GetResult();
                 clientSet.Agent.Enable(peer);
                 return clientSet.Agent;
+            });
+
+
+            var service = Regulus.Remote.Standalone.Provider.CreateService(entry, protocol);
+            ProcessAgents(range, () => {
+                lock (service)
+                    return service.Create();
             });
 
             set.Service.Dispose();

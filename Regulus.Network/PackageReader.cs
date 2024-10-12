@@ -11,7 +11,7 @@ namespace Regulus.Network
         private readonly IStreamable _Stream;
         private readonly Regulus.Memorys.IPool _Pool;
         private readonly Memorys.Buffer _Empty;
-        volatile bool _IsStop;
+        
         public struct Package
         {
             public Regulus.Memorys.Buffer Buffer;
@@ -20,19 +20,14 @@ namespace Regulus.Network
 
         public PackageReader(IStreamable stream, Regulus.Memorys.IPool pool)
         {
-            
-            _IsStop = true;
+                        
             _Stream = stream;
             _Pool = pool;
             _Empty = _Pool.Alloc(0);
         }
-        public void Stop()
-        {
-            _IsStop = true;
-        }
+        
         public async Task<List<Regulus.Memorys.Buffer>> Read()
-        {
-            
+        {            
             return await ReadBuffers( new Package { Buffer = _Empty, Segment = _Empty.Bytes });
         }
         public async Task<List<Regulus.Memorys.Buffer>> ReadBuffers(Package unfin)

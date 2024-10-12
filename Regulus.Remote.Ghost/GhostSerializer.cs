@@ -103,7 +103,7 @@ namespace Regulus.Remote.Ghost
             foreach (var send in sends)
             {
                 var buf = _Serializable.Serialize(send);
-                _Sender.Send(buf);
+                _Sender.Push(buf);
             }
                 
             
@@ -136,7 +136,8 @@ namespace Regulus.Remote.Ghost
             });
             if(packages.Count == 0)
             {
-                _Exceptions.Add(new System.Exception("Agent online error : read 0"));                
+                _Exceptions.Add(new System.Exception("Agent online error : read 0"));      
+                return;
             }
             _ReadDone(packages);
             await System.Threading.Tasks.Task.Delay(0).ContinueWith(t=> _ReaderStart());            
@@ -153,7 +154,7 @@ namespace Regulus.Remote.Ghost
 
         private void _ReaderStop()
         {
-            _Reader.Stop();
+         
         }
 
         public void Update()
