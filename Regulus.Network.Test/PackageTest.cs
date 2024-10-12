@@ -22,7 +22,7 @@ namespace Regulus.Network.Tests
             var sendStream = new Stream();
             var readStream = new Regulus.Network.ReverseStream(sendStream);
             
-
+            
             var sender = new Regulus.Network.PackageSender(sendStream, Regulus.Memorys.PoolProvider.Shared);
             var testStruct = new TestStruct();
             testStruct.A = -1;
@@ -54,7 +54,7 @@ namespace Regulus.Network.Tests
             var sendStream = new Stream();
             var readStream = new Regulus.Network.ReverseStream(sendStream);
 
-
+            
             var sender = new Regulus.Network.PackageSender(sendStream, Regulus.Memorys.PoolProvider.Shared);
             var testStructBuffer1 = serializer.ObjectToBuffer(null);
             sender.Push(testStructBuffer1);
@@ -102,8 +102,8 @@ namespace Regulus.Network.Tests
                 var readStruct = (TestStruct)serializer.BufferToObject(buffer);
                 NUnit.Framework.Assert.AreEqual(-1, readStruct.A);
             }
-            
 
+            
 
 
 
@@ -118,7 +118,7 @@ namespace Regulus.Network.Tests
             var sendStream = new Stream();
             var readStream = new Regulus.Network.ReverseStream(sendStream);
 
-
+            
             var sender = new Regulus.Network.PackageSender(sendStream, Regulus.Memorys.PoolProvider.Shared);
 
             var buff = Regulus.Memorys.PoolProvider.DirectShared.Alloc(0);
@@ -148,6 +148,8 @@ namespace Regulus.Network.Tests
                 var readStruct = serializer.BufferToObject(buffer);
                 NUnit.Framework.Assert.AreEqual(null, readStruct);
             }
+
+            
         }
     }
 }

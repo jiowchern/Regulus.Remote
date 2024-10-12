@@ -40,7 +40,7 @@ namespace Regulus.Remote.Soul
 
         private readonly IResponseQueue _ResponseQueue;
         
-        internal readonly IStreamable Stream;
+        
         private readonly IInternalSerializable _InternalSerializer;
         public event System.Action ErrorEvent;
         public IBinder Binder
@@ -50,15 +50,15 @@ namespace Regulus.Remote.Soul
 
         
 
-        public User(IStreamable client, IProtocol protocol , ISerializable serializable, IInternalSerializable internal_serializable , Regulus.Memorys.IPool pool)
+        public User(Regulus.Network.PackageReader reader, Regulus.Network.PackageSender sender, IProtocol protocol , ISerializable serializable, IInternalSerializable internal_serializable , Regulus.Memorys.IPool pool)
         {        
-            Stream = client;
+            
             _InternalSerializer = internal_serializable;
             
             _Protocol = protocol;
 
-            _Reader = new Regulus.Network.PackageReader(client , pool);
-            _Sender = new Regulus.Network.PackageSender(client , pool);
+            _Reader = reader;
+            _Sender = sender;
 
             _ExternalRequests = new System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.RequestPackage>();
 
@@ -123,10 +123,7 @@ namespace Regulus.Remote.Soul
         }
 
         void _Shutdown()
-        {
-            //_Updater.Stop();
-            var senderDispose = _Sender as IDisposable;
-            senderDispose.Dispose();
+        {            
             Regulus.Remote.Packages.RequestPackage req;
             while (_ExternalRequests.TryDequeue(out req))
             {

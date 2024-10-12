@@ -1,4 +1,5 @@
 ﻿using Regulus.Memorys;
+using Regulus.Network;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +36,7 @@ namespace Regulus.Remote.Soul
         
         public UserProvider(IProtocol protocol, ISerializable serializable , IListenable listenable, Regulus.Remote.IInternalSerializable internal_serializable , Regulus.Memorys.IPool pool)
         {
+            
             _Pool = pool;
 
             UserLifecycleEvents = new System.Collections.Concurrent.ConcurrentBag<UserLifecycleEvent>();            
@@ -54,23 +56,24 @@ namespace Regulus.Remote.Soul
 
         void _Join(Network.IStreamable stream)
         {
-            User user = new User(stream, _Protocol , _Serializable, _InternalSerializable, _Pool);
-            user.ErrorEvent += () => _Leave(user.Stream);
+            var reader = new Regulus.Network.PackageReader(stream, _Pool);
+            var sender = new Regulus.Network.PackageSender(stream, _Pool);
+            User user = new User(reader ,sender, _Protocol , _Serializable, _InternalSerializable, _Pool);
+            user.ErrorEvent += () => {
+                var dispose = sender as IDisposable;
+                dispose.Dispose();
+                _Leave(stream); 
+
+            } ;
             user.Launch();
-            while(!_Users.TryAdd(user.Stream, user))
-            {
-                System.Threading.Thread.Sleep(1);
-            }
+            System.Threading.SpinWait.SpinUntil(() => { return _Users.TryAdd(stream, user); });            
             UserLifecycleEvents.Add(new UserLifecycleEvent { State = UserLifecycleState.Join, User = user });    
         }
 
         void _Leave(Network.IStreamable stream)
         {
-            User user = null;            
-            while(!_Users.TryRemove(stream, out user))
-            {
-                System.Threading.Thread.Sleep(1);
-            }
+            User user = null;
+            System.Threading.SpinWait.SpinUntil(() => { return _Users.TryRemove(stream,out user); });
             
             if(user != null)
             {                
@@ -81,7 +84,6 @@ namespace Regulus.Remote.Soul
 
         void IDisposable.Dispose()
         {            
-
             _Listenable.StreamableEnterEvent -= _Join;
             _Listenable.StreamableLeaveEvent -= _Leave;
 

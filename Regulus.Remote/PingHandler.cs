@@ -18,6 +18,7 @@ namespace Regulus.Remote
                 
                 _Ping = new Ping(1f);
                 _Ping.TriggerEvent += SendPing;
+                _ResponseEvent += (a1, a2) => { };
             }
 
             event Action<ClientToServerOpCode, Memorys.Buffer> _ResponseEvent;

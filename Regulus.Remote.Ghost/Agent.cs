@@ -11,7 +11,7 @@ namespace Regulus.Remote.Ghost
 {
     public class Agent : IAgent
     {
-
+        
         private readonly GhostProviderQueryer _GhostProvider;        
         private readonly GhostsOwner _GhostsOwner;
         private readonly IPool _Pool;
@@ -46,8 +46,7 @@ namespace Regulus.Remote.Ghost
         }
 
         public void Enable(IStreamable streamable)
-        {
-            Disable();
+        {            
             var sender = new PackageSender(streamable, _Pool);
             var reader = new PackageReader(streamable, _Pool);
             var ghostSerializer = new GhostSerializer(reader, sender, _InternalSerializer);

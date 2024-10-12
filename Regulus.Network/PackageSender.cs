@@ -6,24 +6,22 @@ using System.Threading.Tasks;
 
 namespace Regulus.Network
 {
-    public class PackageSender : TaskExecutionController.Collectible , IDisposable
-    {
-        private static readonly TaskExecutionController asyncConsumer = new TaskExecutionController();
+    public class PackageSender : IDisposable
+    {        
         private readonly IStreamable _Stream;
         private readonly IPool _Pool;
-        private readonly TaskExecutionController _Consumer;
-        private readonly BlockingCollection<Func<Task>> _Collection;
         
-
+        
+        private Task _Sending;
 
         public PackageSender(IStreamable stream, Regulus.Memorys.IPool pool)
         {
-            _Consumer = asyncConsumer;
-            _Collection = new BlockingCollection<Func<Task>>();
+            _Sending = Task.CompletedTask;
+                    
             _Stream = stream;
             _Pool = pool;
 
-            _Consumer.Add(this);
+            //_Consumer.Add(this);
         }
 
         public void Push(Regulus.Memorys.Buffer buffer)
@@ -46,35 +44,31 @@ namespace Regulus.Network
 
         void IDisposable.Dispose()
         {
-            _Consumer.Remove(this);
+            //_Consumer.Remove(this);
         }
 
-        BlockingCollection<Func<Task>> TaskExecutionController.Collectible.Funcs()
-        {
-            return _Collection;
-        }
+        
 
         private void _Push(Memorys.Buffer buffer)
         {
-            _Collection.Add(_SendBufferAsync(buffer));            
+            _Sending = _Sending.ContinueWith(async t => {
+                await _SendBufferAsync(buffer);
+            });
+        
         }
-
-        private System.Func<Task> _SendBufferAsync(Regulus.Memorys.Buffer buffer)
+        private async Task _SendBufferAsync(Regulus.Memorys.Buffer buffer)
         {
-            return async () =>
+            var sendCount = 0;
+            do
             {
-                var sendCount = 0;
-                do
-                {
-                    var count = await _Stream.Send(buffer.Bytes.Array, buffer.Bytes.Offset + sendCount, buffer.Count - sendCount);
-                    if (count == 0)
-                        return;
-                    sendCount += count;
+                var count = await _Stream.Send(buffer.Bytes.Array, buffer.Bytes.Offset + sendCount, buffer.Count - sendCount);
+                if (count == 0)
+                    return;
+                sendCount += count;
 
-                } while (sendCount < buffer.Count);
-            };
-            
+            } while (sendCount < buffer.Count);
         }
+        
 
 
     }
