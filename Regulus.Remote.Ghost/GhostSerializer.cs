@@ -16,7 +16,7 @@ namespace Regulus.Remote.Ghost
         private readonly IInternalSerializable _Serializable;
         private readonly System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.ResponsePackage> _Receives;
 
-        private readonly System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.RequestPackage> _Sends;
+        
         private readonly System.Collections.Concurrent.ConcurrentBag<System.Exception> _Exceptions;
         public event System.Action<System.Exception> ErrorEvent;
         public GhostSerializer(Regulus.Network.PackageReader reader , PackageSender sender, IInternalSerializable serializable)
@@ -25,7 +25,7 @@ namespace Regulus.Remote.Ghost
             _Reader = reader;
             _Sender = sender;
             this._Serializable = serializable;
-            _Sends = new System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.RequestPackage>();
+        
             _Receives = new System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.ResponsePackage>();
 
             _ResponseEvent += _Empty;
@@ -52,13 +52,13 @@ namespace Regulus.Remote.Ghost
         }
 
         void Exchangeable<ClientToServerOpCode, ServerToClientOpCode>.Request(ClientToServerOpCode code, Regulus.Memorys.Buffer args)
-        {
-            _Sends.Enqueue(
-                    new Regulus.Remote.Packages.RequestPackage()
-                    {
-                        Data = args.ToArray(),
-                        Code = code
-                    });            
+        {            
+            var buf = _Serializable.Serialize(new Regulus.Remote.Packages.RequestPackage()
+            {
+                Data = args.ToArray(),
+                Code = code
+            });
+            _Sender.Push(buf);
         }
 
         public void Start()
@@ -71,9 +71,9 @@ namespace Regulus.Remote.Ghost
         {
             
             _ReaderStop();
-            Regulus.Remote.Packages.RequestPackage val;
+            
             Regulus.Remote.Packages.ResponsePackage val2;
-            while (_Sends.TryDequeue(out val) ||　_Receives.TryDequeue(out val2))
+            while (_Receives.TryDequeue(out val2))
             {
 
             }
@@ -93,34 +93,14 @@ namespace Regulus.Remote.Ghost
         private void _Process()
         {
             
-            Regulus.Remote.Packages.ResponsePackage receivePkg;
-            while(_Receives.TryDequeue(out receivePkg))
+            
+            while(_Receives.TryDequeue(out var receivePkg))
             {            
                 _ResponseEvent(receivePkg.Code, receivePkg.Data.AsBuffer());
             }
-
-            Regulus.Remote.Packages.RequestPackage[] sends = _SendsPop();
-            foreach (var send in sends)
-            {
-                var buf = _Serializable.Serialize(send);
-                _Sender.Push(buf);
-            }
-                
-            
         }
 
-        private Regulus.Remote.Packages.RequestPackage[] _SendsPop()
-        {           
-
-            List<Regulus.Remote.Packages.RequestPackage> pkgs = new List<Regulus.Remote.Packages.RequestPackage>();
-            Regulus.Remote.Packages.RequestPackage pkg;
-            while(_Sends.TryDequeue(out pkg))
-            {
-                pkgs.Add(pkg);
-                
-            }
-            return pkgs.ToArray();
-        }
+       
 
         private async Task _ReaderStart()
         {

@@ -12,16 +12,14 @@ namespace Regulus.Network
         private readonly IPool _Pool;
         
         
-        private Task _Sending;
+        private Task<int> _Sending;
 
         public PackageSender(IStreamable stream, Regulus.Memorys.IPool pool)
         {
-            _Sending = Task.CompletedTask;
-                    
+            _Sending = Task.FromResult(0);
+
             _Stream = stream;
             _Pool = pool;
-
-            //_Consumer.Add(this);
         }
 
         public void Push(Regulus.Memorys.Buffer buffer)
@@ -43,30 +41,35 @@ namespace Regulus.Network
         }
 
         void IDisposable.Dispose()
-        {
-            //_Consumer.Remove(this);
+        {            
         }
 
         
 
         private void _Push(Memorys.Buffer buffer)
         {
-            _Sending = _Sending.ContinueWith(async t => {
-                await _SendBufferAsync(buffer);
-            });
-        
+            if(_Sending.IsCompleted || _Sending.IsFaulted || _Sending.IsCanceled )
+            {
+                _Sending = _SendBufferAsync(buffer);
+            }
+            else
+            {
+                _Sending = _Sending.ContinueWith(t=> _SendBufferAsync(buffer)).Unwrap();
+            }
         }
-        private async Task _SendBufferAsync(Regulus.Memorys.Buffer buffer)
+
+        private async Task<int> _SendBufferAsync(Regulus.Memorys.Buffer buffer)
         {
             var sendCount = 0;
             do
             {
                 var count = await _Stream.Send(buffer.Bytes.Array, buffer.Bytes.Offset + sendCount, buffer.Count - sendCount);
                 if (count == 0)
-                    return;
+                    return 0;
                 sendCount += count;
 
             } while (sendCount < buffer.Count);
+            return sendCount;
         }
         
 
