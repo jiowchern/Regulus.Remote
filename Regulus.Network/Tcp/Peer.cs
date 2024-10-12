@@ -21,6 +21,7 @@ namespace Regulus.Network.Tcp
             _SocketErrorEvent += (e) => { BreakEvent(); };
             ReceiveEvent += (size) => { if(size == 0) BreakEvent(); };
             SendEvent += (size) => { if (size == 0) BreakEvent(); };
+            BreakEvent += () => { };
         }
 
         public event System.Action BreakEvent ;
@@ -28,7 +29,7 @@ namespace Regulus.Network.Tcp
         public event System.Action<int> SendEvent;
         event Action<SocketError> _SocketErrorEvent;
         public event Action<SocketError> SocketErrorEvent
-        {
+        {   
             add
             {
                 _SocketErrorEvent += value;

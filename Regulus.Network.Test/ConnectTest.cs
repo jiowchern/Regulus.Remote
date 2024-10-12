@@ -17,8 +17,7 @@ namespace Regulus.Network.Tests
             
             var peer = await connector.Connect(new System.Net.IPEndPoint(System.Net.IPAddress.Loopback, port));
             
-            NUnit.Framework.Assert.IsNotNull(peer);
-            peer.SocketErrorEvent += (e) => { NUnit.Framework.Assert.Pass(); };
+            NUnit.Framework.Assert.IsNotNull(peer);            
 
             if(false)
             {
@@ -66,11 +65,11 @@ namespace Regulus.Network.Tests
         
             var lintener = new Regulus.Network.Tcp.Listener();
             var serverPeers = new System.Collections.Generic.List<Regulus.Network.Tcp.Peer>();
-            
-            var receiveds = new System.Collections.Generic.List<int>();
+
+            bool breakEvent = false;
             lintener.AcceptEvent+= (peer) => 
             {
-                peer.ReceiveEvent += size => { receiveds.Add(size); };
+                peer.BreakEvent += () => { breakEvent = true; };
                 
                 serverPeers.Add(peer); 
             };
@@ -96,8 +95,8 @@ namespace Regulus.Network.Tests
             
 
             lintener.Close();
-            var lastReceive = receiveds.Last();
-            NUnit.Framework.Assert.AreEqual(0, lastReceive);
+            
+            NUnit.Framework.Assert.AreEqual(true, breakEvent);
         }
     }
 }
