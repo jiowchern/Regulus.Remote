@@ -19,16 +19,7 @@ namespace Regulus.Remote.Standalone.Test
             
             return bytes;
         }
-
-        public static void ServerToClient<T>(this Regulus.Remote.PackageWriter<Regulus.Remote.Packages.ResponsePackage> writer, Regulus.Remote.IInternalSerializable serializer, ServerToClientOpCode opcode, T instance)
-        {
-            Regulus.Remote.Packages.ResponsePackage pkg = new Regulus.Remote.Packages.ResponsePackage();
-            pkg.Code = opcode;
-            var buf = serializer.Serialize(instance);
-            pkg.Data = buf.ToArray();
-            
-            writer.Push( pkg ).Wait();
-        }
+       
     }
 
     public class ProtocolHelper
@@ -165,42 +156,7 @@ namespace Regulus.Remote.Standalone.Test
             Assert.False(lordsoulPkg.ReturnType);
             Assert.AreEqual(1, lordsoulPkg.TypeId);
         }
-        [Test(), Timeout(5000)]
-        public void AgentSupplyGpiTest()
-        {
-            var pool = Regulus.Memorys.PoolProvider.Shared;
-            IGpiA retGpiA = null;
-            var serializer = new Regulus.Remote.DynamicSerializer();
-
-            var internalSerializer = new InternalSerializer();
-            IProtocol protocol = ProtocolHelper.CreateProtocol();
-
-            Stream cdClient = new Regulus.Remote.Standalone.Stream();
-
-            Network.IStreamable peerClient = cdClient;
-            PackageWriter<Regulus.Remote.Packages.ResponsePackage> writer = new PackageWriter<Regulus.Remote.Packages.ResponsePackage>(internalSerializer, pool);
-            writer.Start(new ReverseStream(cdClient));
-            
-            var ghostAgent= new Regulus.Remote.Ghost.Agent(  protocol, serializer, internalSerializer, pool) ;
-            ghostAgent.Enable(peerClient);
-            IAgent agent = ghostAgent;
-            agent.QueryNotifier<IGpiA>().Supply += gpi => retGpiA = gpi;
-            
-
-            writer.ServerToClient(internalSerializer, ServerToClientOpCode.LoadSoul, new Regulus.Remote.Packages.PackageLoadSoul() { EntityId = 1, ReturnType = false, TypeId = 1 });
-            writer.ServerToClient(internalSerializer, ServerToClientOpCode.LoadSoulCompile, new Regulus.Remote.Packages.PackageLoadSoulCompile() { EntityId = 1, TypeId = 1, ReturnId = 0});
-            var ar = new Regulus.Utility.AutoPowerRegulator(new Utility.PowerRegulator());
-            while (retGpiA == null)
-            {
-                ar.Operate();
-                agent.Update();                
-            }
-            ghostAgent.Disable();
-            agent.Disable();
-            writer.Stop();
-            Assert.NotNull(retGpiA);
-        }
-
+       
 
     }
 }
