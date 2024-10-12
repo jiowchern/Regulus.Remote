@@ -28,23 +28,38 @@ namespace Regulus.Integration.Tests
             System.Exception ex;
 
             client.Agent.ExceptionEvent += (exc) => { 
-                ex = exc; 
-                NUnit.Framework.Assert.Pass(exc.ToString()); 
+                ex = exc;                 
             };
 
             var peer = await client.Connector.Connect(new IPEndPoint(IPAddress.Loopback, port));
             SocketError error = SocketError.Success;
             peer.SocketErrorEvent += (e) => {
-                error = e;
-                NUnit.Framework.Assert.Pass(); 
+                error = e;                
+            };
+            var sizes = new System.Collections.Generic.List<int>();
+            peer.ReceiveEvent += (size) => {
+                lock (sizes)
+                    sizes.Add(size);
+            };
+            peer.SendEvent += (size) => {
+                lock (sizes)
+                    sizes.Add(size);
             };
 
             client.Agent.Enable(peer);
 
             await client.Connector.Disconnect();
 
-            while (error == SocketError.Success)
+            while (true)
             {
+                lock(sizes)
+                {
+                    if(sizes.Any(s => { return s == 0; }))
+                    {
+                        break;
+                    }
+                }
+                
                 client.Agent.Update();
             }
 

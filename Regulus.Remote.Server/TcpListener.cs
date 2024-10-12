@@ -56,12 +56,14 @@ namespace Regulus.Remote.Server.Tcp
 
         private void _Join(Peer peer)
         {
-            peer.SocketErrorEvent += (e) => {
+            peer.BreakEvent += () => {                 
                 lock (_NotifiableCollection)
-                    _NotifiableCollection.Items.Remove(peer);
+                    _NotifiableCollection.Items.Remove(peer);                
             };
+            
             lock (_NotifiableCollection)
                 _NotifiableCollection.Items.Add(peer);
         }
+
     }
 }

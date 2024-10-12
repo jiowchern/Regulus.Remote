@@ -42,7 +42,7 @@ namespace Regulus.Network.Tcp
         public IWaitableValue<int> Transact(byte[] readed_byte, int offset, int count)
         {
             SocketError error;
-            var ar = _StartHandler(readed_byte, offset, count, SocketFlags.None, out error, _EndDummy, null);
+            var ar = _StartHandler(readed_byte, offset, count, SocketFlags.None, out error, _StartDone, null);
 
             if(error != SocketError.Success && error != SocketError.IOPending)
             {
@@ -56,9 +56,9 @@ namespace Regulus.Network.Tcp
 
             return System.Threading.Tasks.Task<int>.Factory.FromAsync(ar, (a)=> { return _EndHandler(a); }).ToWaitableValue();
         }
-        private void _EndDummy(IAsyncResult arg)
+        private void _StartDone(IAsyncResult arg)
         {
-
+            
         }
     }
 

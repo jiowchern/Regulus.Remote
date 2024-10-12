@@ -136,8 +136,7 @@ namespace Regulus.Remote.Ghost
             });
             if(packages.Count == 0)
             {
-                _Exceptions.Add(new System.Exception("Agent online error : read 0"));
-                return;
+                _Exceptions.Add(new System.Exception("Agent online error : read 0"));                
             }
             _ReadDone(packages);
             await System.Threading.Tasks.Task.Delay(0).ContinueWith(t=> _ReaderStart());            

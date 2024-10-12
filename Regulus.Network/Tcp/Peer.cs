@@ -11,20 +11,21 @@ namespace Regulus.Network.Tcp
         readonly SockerTransactor _Receive;
         public Peer(System.Net.Sockets.Socket socket )
         {
-            _SocketErrorEvent += Peer__SocketErrorEvent;
+                        
             Socket = socket;            
             _Receive = new SockerTransactor(Socket.BeginReceive , _EndReceive );
-        
+            _Receive.SocketErrorEvent += (e) => { ReceiveEvent(0); };
             _Send = new SockerTransactor(Socket.BeginSend, _EndSend);
+            _Send.SocketErrorEvent += (e) => { SendEvent(0); };
 
-            
+            _SocketErrorEvent += (e) => { BreakEvent(); };
+            ReceiveEvent += (size) => { if(size == 0) BreakEvent(); };
+            SendEvent += (size) => { if (size == 0) BreakEvent(); };
         }
 
-        private void Peer__SocketErrorEvent(SocketError obj)
-        {
-            
-        }
-
+        public event System.Action BreakEvent ;
+        public event System.Action<int> ReceiveEvent;
+        public event System.Action<int> SendEvent;
         event Action<SocketError> _SocketErrorEvent;
         public event Action<SocketError> SocketErrorEvent
         {
@@ -49,12 +50,11 @@ namespace Regulus.Network.Tcp
         }        
         private int _EndReceive(IAsyncResult arg)
         {
-            
 
             SocketError error;
+            
             int size = Socket.EndReceive(arg, out error);
-           
-
+            ReceiveEvent(size);
             if (error == SocketError.Success)
                 return size;
             
@@ -70,15 +70,14 @@ namespace Regulus.Network.Tcp
         private int _EndSend(IAsyncResult arg)
         {
             SocketError error;
-            int sendCount = Socket.EndSend(arg, out error);            
 
+            int size = Socket.EndSend(arg, out error);
+            SendEvent(size);
             if (error == SocketError.Success)
-            {                
-                return sendCount;
-            }
+                return size;
 
             _SocketErrorEvent(error);
-            return sendCount;
+            return size;
         }
         protected System.Net.Sockets.Socket GetSocket()
         {
