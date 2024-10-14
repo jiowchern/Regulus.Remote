@@ -8,10 +8,16 @@
 
 <!-- [![GitHub release](https://img.shields.io/github/release/jiowchern/regulus.svg?style=flat-square)](https://github.com/jiowchern/Regulus/releases)![pre-release](https://img.shields.io/github/v/release/jiowchern/Regulus?include_prereleases) -->
 <!-- [![Gitter](https://badges.gitter.im/JoinChat.svg)](https://gitter.im/Regulus-Library) -->
-![Latest Version](https://img.shields.io/github/v/tag/jiowchern/Regulus.Remote)
+
+![NuGet Downloads](https://img.shields.io/nuget/dt/Regulus.Remote)
+
 
 ## Introduction
-It is a server-client connection framework developed using **C#** and can be used in Unity game engine and other game engines that are compliant with .  
+Regulus Remote is a powerful and flexible server-client communication framework developed in C#. Designed to work seamlessly with the Unity game engine and any other .NET Standard 2.0 compliant environments, it simplifies network communication by enabling servers and clients to interact through interfaces. This object-oriented approach reduces the maintenance cost of protocols and enhances code readability and maintainability.  
+
+Key features of Regulus Remote include support for IL2CPP and AOT, making it compatible with various platforms, including Unity WebGL. It provides default TCP connection and serialization mechanisms but also allows for customization to suit specific project needs. The framework supports methods, events, properties, and notifiers, giving developers comprehensive tools to build robust networked applications.  
+
+With its stand-alone mode, developers can simulate server-client interactions without a network connection, facilitating development and debugging. Regulus Remote aims to streamline network communication in game development and other applications, enabling developers to focus more on implementing business logic rather than dealing with the complexities of network protocols.  
 
 
 
@@ -257,11 +263,20 @@ namespace Server
 namespace Server
 {
 	public class Entry : Regulus.Remote.IEntry
-	{
-		void IBinderProvider.AssignBinder(IBinder binder)
+	{		
+		void IBinderProvider.RegisterClientBinder(IBinder binder)
 		{					
 			binder.Binder<IGreeter>(new Greeter());
 		}		
+		void IBinderProvider.UnregisterClientBinder(IBinder binder)
+		{
+			// when client disconnect.
+		}
+
+		void IEntry.Update()
+		{
+			// Update
+		}
 	}
 }
 ```
@@ -307,7 +322,7 @@ Sample/Client>dotnet new console
 ```csharp
 namespace Client
 {	
-	static void Main(string[] args)
+	static async Task Main(string[] args)
 	{		
 		// Get IProtocol with ProtocolCreater
 		var protocol = Protocol.ProtocolCreater.Create();
@@ -325,7 +340,9 @@ namespace Client
 		});
 		// Start Connecting
 		EndPoint yourEndPoint = null;
-		set.Connecter.Connect(yourEndPoint ).Wait();
+		var peer = await set.Connector.Connect(yourEndPoint );
+
+		set.Agent.Enable(peer);
 
 		// SupplyEvent ,Receive add IGreeter.
 		set.Agent.QueryNotifier<Protocol.IGreeter>().Supply += greeter => 
@@ -342,8 +359,8 @@ namespace Client
 		// Close
 		stop = true;
 		task.Wait();
-		set.Connecter.Disconnect();
-		set.Agent.Dispose();
+		set.Connector.Disconnect();
+		set.Agent.Disable();
 
 	}
 }
@@ -474,8 +491,8 @@ namespace Regulus.Remote
 {
     public interface ISerializable
     {
-        byte[] Serialize(System.Type type, object instance);
-        object Deserialize(System.Type type, byte[] buffer);
+        Regulus.Memorys.Buffer Serialize(System.Type type, object instance);
+        object Deserialize(System.Type type, Regulus.Memorys.Buffer buffer);
     }
 }
 ```

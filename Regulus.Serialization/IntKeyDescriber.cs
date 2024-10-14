@@ -44,13 +44,14 @@ namespace Regulus.Serialization
             return idCount;
         }
 
-        int IKeyDescriber.ToBuffer(Type type, byte[] buffer, int begin)
+        int IKeyDescriber.ToBuffer(Type type, Regulus.Memorys.Buffer buffer, int begin)
         {
+            var bytes = buffer.Bytes;
             int id = _Get(type);
-            return Varint.NumberToBuffer(buffer, begin, id);
+            return Varint.NumberToBuffer(bytes.Array, bytes.Offset + begin, id);
         }
 
-        int IKeyDescriber.ToObject(byte[] buffer, int begin, out Type type)
+        int IKeyDescriber.ToObject(Regulus.Memorys.Buffer buffer, int begin, out Type type)
         {
             int id;
             int count = Varint.BufferToNumber(buffer, begin, out id);

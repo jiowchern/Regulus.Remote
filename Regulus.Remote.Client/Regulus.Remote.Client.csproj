@@ -2,9 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.1.11.12</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>    
+    <Version>0.1.12.12</Version>
     <PackageProjectUrl>https://github.com/jiowchern/Regulus.Remote</PackageProjectUrl>
     <Authors>jc</Authors>
     <Description>client.</Description>

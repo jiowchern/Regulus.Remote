@@ -35,8 +35,8 @@ namespace Regulus.Serialization
             return charCount;
         }
 
-        int ITypeDescriber.ToBuffer(object instance, byte[] buffer, int begin)
-        {
+        int ITypeDescriber.ToBuffer(object instance, Regulus.Memorys.Buffer buffer, int begin)
+        {            
             string str = instance as string;
             char[] chars = str.ToCharArray();
             int offset = begin;
@@ -44,7 +44,7 @@ namespace Regulus.Serialization
             return offset - begin;
         }
 
-        int ITypeDescriber.ToObject(byte[] buffer, int begin, out object instnace)
+        int ITypeDescriber.ToObject(Regulus.Memorys.Buffer buffer, int begin, out object instnace)
         {
             int offset = begin;
             object chars;

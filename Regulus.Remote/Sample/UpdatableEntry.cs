@@ -3,7 +3,7 @@ using System;
 
 namespace Regulus.Remote.Sample
 {
-    public class UpdatableEntry : IBinderProvider, System.IDisposable
+ /*   public class UpdatableEntry : IBinderProvider, System.IDisposable
     {
         public delegate IUpdatable OnSpawnUpdatable(IBinder binder);
         readonly System.Collections.Concurrent.ConcurrentQueue<IBinder> _AddBinders;
@@ -49,6 +49,6 @@ namespace Regulus.Remote.Sample
             _Updater.Stop();
             _Users.Shutdown();
         }
-    }
+    }*/
 }
 

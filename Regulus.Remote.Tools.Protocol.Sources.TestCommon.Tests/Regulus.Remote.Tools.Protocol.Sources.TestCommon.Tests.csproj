@@ -22,6 +22,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Regulus.Remote.Reactive\Regulus.Remote.Reactive.csproj" />
     <ProjectReference Include="..\Regulus.Remote.Standalone\Regulus.Remote.Standalone.csproj" />
+    <ProjectReference Include="..\Regulus.Remote.Tools.Protocol.Sources.IdentifyTestCommon\Regulus.Remote.Tools.Protocol.Sources.IdentifyTestCommon.csproj" />
     <ProjectReference Include="..\Regulus.Remote.Tools.Protocol.Sources.TestCommon\Regulus.Remote.Tools.Protocol.Sources.TestCommon.csproj" />
   </ItemGroup>
 

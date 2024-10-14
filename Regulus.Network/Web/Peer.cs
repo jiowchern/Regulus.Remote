@@ -28,18 +28,25 @@ namespace Regulus.Network.Web
 
         IWaitableValue<int> IStreamable.Receive(byte[] buffer, int offset, int count)
         {
-            
+            if(_Socket.State == WebSocketState.Aborted)
+            {
+                ErrorEvent(_Socket.State);
+                return 0.ToWaitableValue();
+            }
+
+
             ArraySegment<byte> segment = new ArraySegment<byte>(buffer, offset, count);
             return _Socket.ReceiveAsync(segment, _CancelSource.Token).ContinueWith<int>((t) =>
             {
                 try
                 {
+                    
                     WebSocketReceiveResult r = t.Result;
                     return r.Count;
                 }
                 catch (Exception e)
                 {
-                    Regulus.Utility.Log.Instance.WriteInfo(_Socket.CloseStatus.ToString());
+                    Regulus.Utility.Log.Instance.WriteInfo($"websocket receive error state:{_Socket.State} ,{e.ToString()}.");
 
                     ErrorEvent(_Socket.State);                    
 
@@ -51,6 +58,11 @@ namespace Regulus.Network.Web
 
         IWaitableValue<int> IStreamable.Send(byte[] buffer, int offset, int count)
         {
+            if (_Socket.State == WebSocketState.Aborted)
+            {
+                ErrorEvent(_Socket.State);
+                return 0.ToWaitableValue();
+            }
             var arraySegment = new ArraySegment<byte>(buffer, offset, count);
             return _Socket.SendAsync(arraySegment, WebSocketMessageType.Binary, true, _CancelSource.Token).ContinueWith((t) =>
             {

@@ -5,30 +5,32 @@ using System;
 namespace Regulus.Remote.Client
 {
 
-
-
     public class Provider
     {        
-        public static Ghost.IAgent CreateAgent(IProtocol protocol, IStreamable stream, ISerializable serializable)
+        public static Ghost.Agent CreateAgent(IProtocol protocol, ISerializable serializable , Regulus.Memorys.IPool pool)
         {
-            return new Ghost.Agent(stream , protocol, serializable , new Regulus.Remote.InternalSerializer());
+            return new Ghost.Agent(protocol, serializable , new Regulus.Remote.InternalSerializer(), pool);
         }
 
-        public static Ghost.IAgent CreateAgent(IProtocol protocol, IStreamable stream)
+        public static Ghost.Agent CreateAgent(IProtocol protocol)
         {
-            return new Ghost.Agent(stream, protocol, new Regulus.Remote.Serializer(protocol.SerializeTypes) , new Regulus.Remote.InternalSerializer());
+            return new Ghost.Agent( protocol, new Regulus.Remote.Serializer(protocol.SerializeTypes) , new Regulus.Remote.InternalSerializer() , Regulus.Memorys.PoolProvider.Shared);
         }
 
-        public static TcpConnectSet CreateTcpAgent(IProtocol protocol, ISerializable serializable)
+        public static TcpConnectSet CreateTcpAgent(IProtocol protocol, ISerializable serializable, Regulus.Memorys.IPool pool)
         {
-            var connecter = new Regulus.Network.Tcp.Connecter();
-            return new TcpConnectSet(connecter, CreateAgent(protocol, connecter, serializable));
+            var connecter = new Regulus.Network.Tcp.Connector();
+            
+            var agent = CreateAgent(protocol, serializable , pool);
+            
+            return new TcpConnectSet(connecter, agent);
         }
 
         public static TcpConnectSet CreateTcpAgent(IProtocol protocol)
         {
-            var connecter = new Regulus.Network.Tcp.Connecter();
-            return new TcpConnectSet(connecter, CreateAgent(protocol, connecter, new Regulus.Remote.Serializer(protocol.SerializeTypes)));
+            var connecter = new Regulus.Network.Tcp.Connector();
+            var agent = CreateAgent(protocol,  new Regulus.Remote.Serializer(protocol.SerializeTypes), Regulus.Memorys.PoolProvider.Shared);            
+            return new TcpConnectSet(connecter, agent);
         }
     }
 }

@@ -4,11 +4,11 @@
     {
         public ConnectSet(TConnecter listener, Ghost.IAgent agent)
         {
-            Connecter = listener;
+            Connector = listener;
             Agent = agent;
         }
 
-        public readonly TConnecter Connecter;
+        public readonly TConnecter Connector;
         public readonly Ghost.IAgent Agent;
 
     }

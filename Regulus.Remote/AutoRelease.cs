@@ -10,7 +10,7 @@ namespace Regulus.Remote
     {
         private readonly Dictionary<TKey, WeakReference<TValue>> _Exists;
 
-        private readonly IOpCodeExchangeable _Requester;
+        private readonly ServerExchangeable _Requester;
         private readonly IInternalSerializable _Serializer;
 
         public AutoRelease()

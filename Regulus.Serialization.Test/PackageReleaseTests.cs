@@ -1,6 +1,9 @@
 ﻿
 using Regulus.Serialization;
+using Regulus.Memorys;
 using System;
+using System.Linq;
+
 
 namespace Regulus.Remote.Tests
 {
@@ -17,7 +20,7 @@ namespace Regulus.Remote.Tests
             package1.Id = id;
 
             
-            byte[] buffer = ser.ObjectToBuffer(package1);
+            var buffer = ser.ObjectToBuffer(package1);
 
             
             TestPackageData package2 = ser.BufferToObject(buffer) as TestPackageData;
@@ -36,18 +39,18 @@ namespace Regulus.Remote.Tests
             var ser = new Regulus.Serialization.Serializer(new DescriberBuilder(typeof(int), typeof(string), typeof(char[]), typeof(byte), typeof(byte[]), typeof(byte[][]), typeof(char), typeof(Guid), typeof(TestPackageBuffer)).Describers);
 
 
-            package1.Datas = new[] { ser.ObjectToBuffer(p1), ser.ObjectToBuffer(p2), ser.ObjectToBuffer(p3) };
+            package1.Datas = new[] { ser.ObjectToBuffer(p1).ToArray(), ser.ObjectToBuffer(p2).ToArray(), ser.ObjectToBuffer(p3).ToArray() };
 
             //byte[] buffer = package1.ToBuffer(ser);
-            byte[] buffer = ser.ObjectToBuffer(package1);
+            var buffer = ser.ObjectToBuffer(package1);
 
             //TestPackageBuffer package2 = buffer.ToPackageData<TestPackageBuffer>(ser);
             TestPackageBuffer package2 = ser.BufferToObject(buffer) as TestPackageBuffer;
 
 
-            NUnit.Framework.Assert.AreEqual(p1, ser.BufferToObject(package2.Datas[0]));
-            NUnit.Framework.Assert.AreEqual(p2, ser.BufferToObject(package2.Datas[1]));
-            NUnit.Framework.Assert.AreEqual(p3, ser.BufferToObject(package2.Datas[2]));
+            NUnit.Framework.Assert.AreEqual(p1, ser.BufferToObject(package2.Datas[0].AsBuffer()));
+            NUnit.Framework.Assert.AreEqual(p2, ser.BufferToObject(package2.Datas[1].AsBuffer()));
+            NUnit.Framework.Assert.AreEqual(p3, ser.BufferToObject(package2.Datas[2].AsBuffer()));
         }
 
 
@@ -82,7 +85,7 @@ namespace Regulus.Remote.Tests
             response.Code = ClientToServerOpCode.Ping;
             response.Data = new byte[] { 0, 1, 2, 3, 4, 5 };
 
-            byte[] bufferResponse = ser.ObjectToBuffer(response);
+            var bufferResponse = ser.ObjectToBuffer(response);
             Regulus.Remote.Packages.RequestPackage result = (Regulus.Remote.Packages.RequestPackage)ser.BufferToObject(bufferResponse)  ;
             NUnit.Framework.Assert.AreEqual(ClientToServerOpCode.Ping, result.Code);
             NUnit.Framework.Assert.AreEqual(3, result.Data[3]);
@@ -106,7 +109,7 @@ namespace Regulus.Remote.Tests
             package1.Datas = new byte[0][];
 
             //byte[] buffer = package1.ToBuffer(ser);
-            byte[] buffer = ser.ObjectToBuffer(package1);
+            var buffer = ser.ObjectToBuffer(package1);
 
             TestPackageBuffer package2 = ser.BufferToObject(buffer) as TestPackageBuffer;
 

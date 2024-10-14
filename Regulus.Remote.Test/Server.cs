@@ -1,5 +1,6 @@
 ﻿using Regulus.Remote;
 using Regulus.Utility;
+using System.Diagnostics;
 
 
 namespace RemotingTest
@@ -8,11 +9,16 @@ namespace RemotingTest
     {
         private IBinder _Binder;
 
-        void IBinderProvider.AssignBinder(IBinder binder)
+        void IBinderProvider.RegisterClientBinder(IBinder binder)
         {
             binder.Return<ITestReturn>(this);
             _Binder = binder;
             _Binder.Bind<ITestGPI>(this);
+        }
+
+        void IBinderProvider.UnregisterClientBinder(IBinder binder)
+        {
+            _Binder = null;
         }
 
         Value<int> ITestGPI.Add(int a, int b)
@@ -23,6 +29,11 @@ namespace RemotingTest
         Value<ITestInterface> ITestReturn.Test(int a, int b)
         {
             return new TestInterface();
+        }
+
+        void IEntry.Update()
+        {
+            
         }
     }
 }

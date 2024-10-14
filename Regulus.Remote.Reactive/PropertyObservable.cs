@@ -14,7 +14,7 @@ namespace Regulus.Remote.Reactive
         {
             this._Property = property;
             _Value = _Property.Value;
-            _ThreadUpdater = new ThreadUpdater(() => { });
+            _ThreadUpdater = new ThreadUpdater(() => {});
             _ThreadUpdater.Start();
         }
 

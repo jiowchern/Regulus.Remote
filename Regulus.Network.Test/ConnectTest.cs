@@ -1,104 +1,102 @@
-﻿using NUnit.Framework;
-using Regulus.Utility;
-using System;
-using System.Net;
-using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Net.Sockets;
 
 namespace Regulus.Network.Tests
 {
     public class ConnectTest
     {
-        [NUnit.Framework.Test(), NUnit.Framework.Timeout(5000)]
-
-        public void TestFullFlow()
+        [NUnit.Framework.Test]
+        public async System.Threading.Tasks.Task ConnectSuccessTest()
         {
-            SocketMessageFactory spawner = SocketMessageFactory.Instance;
-            IPEndPoint hostEndpoint = new IPEndPoint(IPAddress.Parse("0.0.0.1"), 0);
-            IPEndPoint agentEndpoint = new IPEndPoint(IPAddress.Parse("0.0.0.2"), 0);
+            var port = Regulus.Network.Tcp.Tools.GetAvailablePort();
 
-            FakeSocket hostSocket = new FakeSocket(hostEndpoint);
-            FakeSocket agentSocket = new FakeSocket(agentEndpoint);
-
-            hostSocket.SendEvent += (pkg) =>
-            {
-                Package.SocketMessage package = spawner.Spawn();
-                package.SetEndPoint(hostEndpoint);
-                Buffer.BlockCopy(pkg.Package, 0, package.Package, 0, pkg.Package.Length);
-
-                agentSocket.Receive(package);
-            };
-            agentSocket.SendEvent += (pkg) =>
-            {
-                Package.SocketMessage package = spawner.Spawn();
-                package.SetEndPoint(agentEndpoint);
-                Buffer.BlockCopy(pkg.Package, 0, package.Package, 0, pkg.Package.Length);
-
-                hostSocket.Receive(package);
-            };
-
-            Host host = new Regulus.Network.Host(hostSocket, hostSocket);
-            Agent agent = new Regulus.Network.Agent(agentSocket, agentSocket);
-            Socket clientPeer = agent.Connect(hostEndpoint, (connect_result) => { });
-
-            Updater<Timestamp> updater = new Updater<Timestamp>();
-            updater.Add(hostSocket);
-            updater.Add(agentSocket);
-            updater.Add(host);
-            updater.Add(agent);
-
-            long ticks = 0;
-
-
-            Socket rudpSocket = null;
-            host.AcceptEvent += p => rudpSocket = p;
-
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-
-            Assert.NotNull(rudpSocket);
-            Assert.AreEqual(PeerStatus.Transmission, clientPeer.Status);
-
-
-            byte[] sendBuffer = new byte[] { 1, 2, 3, 4, 5 };
-            clientPeer.Send(sendBuffer, 0, sendBuffer.Length);
-
-
-            int readCount = 0;
-            byte[] receivedBuffer = new byte[Config.Default.PackageSize];
-            var task = rudpSocket.Receive(receivedBuffer, 0, receivedBuffer.Length);
-            task.ValueEvent += t =>
-            {
-                readCount = t;
-            };
-
+            var lintener = new Regulus.Network.Tcp.Listener();
+            lintener.AcceptEvent+= (peer) => { NUnit.Framework.Assert.IsNotNull(peer); };
+            lintener.Bind(port);
+            var connector = new Regulus.Network.Tcp.Connector();
             
+            var peer = await connector.Connect(new System.Net.IPEndPoint(System.Net.IPAddress.Loopback, port));
+            
+            NUnit.Framework.Assert.IsNotNull(peer);            
 
-            while (readCount == 0)
+            if(false)
             {
-                updater.Working(new Timestamp(ticks++, 1));
+                // disconnect test
+                await connector.Disconnect(true);
+
+
+                // reconnect test
+                peer = await connector.Connect(new System.Net.IPEndPoint(System.Net.IPAddress.Loopback, port));
+
+                NUnit.Framework.Assert.IsNotNull(peer);
+            }
+            else
+            {
+                // disconnect test
+                await connector.Disconnect(false);
             }
 
-            Assert.AreEqual(sendBuffer.Length, readCount);
-
-            clientPeer.Disconnect();
-
-
-
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-            updater.Working(new Timestamp(ticks++, 1));
-
-            Assert.AreEqual(PeerStatus.Close, rudpSocket.Status);
-
-
-
+            lintener.Close();
         }
 
+        [NUnit.Framework.Test]
+        public async System.Threading.Tasks.Task ConnectFailTest()
+        {
+            var port = Regulus.Network.Tcp.Tools.GetAvailablePort();            
 
+            var connector = new Regulus.Network.Tcp.Connector();
+            var ex = await connector.Connect(new System.Net.IPEndPoint(System.Net.IPAddress.Loopback, port)).ContinueWith(t => { 
+                t.Exception.Handle(e =>
+                {
+                    NUnit.Framework.Assert.IsNotNull(e);
+                    return true;
+                });
+
+                return t.Exception;
+            });
+            
+            NUnit.Framework.Assert.IsNotNull(ex);
+        }
+
+        [NUnit.Framework.Test]
+        public async System.Threading.Tasks.Task DisconnectTest()
+        {             
+            var port = Regulus.Network.Tcp.Tools.GetAvailablePort();
+        
+            var lintener = new Regulus.Network.Tcp.Listener();
+            var serverPeers = new System.Collections.Generic.List<Regulus.Network.Tcp.Peer>();
+
+            bool breakEvent = false;
+            lintener.AcceptEvent+= (peer) => 
+            {
+                peer.BreakEvent += () => { breakEvent = true; };
+                
+                serverPeers.Add(peer); 
+            };
+            lintener.Bind(port);
+            var connector = new Regulus.Network.Tcp.Connector();
+                   
+            var peer = await connector.Connect(new System.Net.IPEndPoint(System.Net.IPAddress.Loopback, port));
+
+            {
+                IStreamable streamable = peer;
+                var buffer = new byte[1024];
+                var count = await streamable.Send(buffer, 0, buffer.Length);
+            }
+            
+
+            await connector.Disconnect(false);
+            {
+                IStreamable streamable = serverPeers.Single();
+                var buffer = new byte[1024];
+                var count = await streamable.Receive(buffer, 0, buffer.Length);
+                var count2 = await streamable.Receive(buffer, 0, buffer.Length);
+            }
+            
+
+            lintener.Close();
+            
+            NUnit.Framework.Assert.AreEqual(true, breakEvent);
+        }
     }
 }

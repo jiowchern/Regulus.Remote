@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
-
+using System;
+using System.Linq;
 
 namespace Regulus.Remote.Tools.Protocol.Sources
 {
@@ -12,11 +13,13 @@ namespace Regulus.Remote.Tools.Protocol.Sources
         public readonly INamedTypeSymbol[] SystemActions;
         public readonly Compilation Compilation;
 
-        public EssentialReference(Microsoft.CodeAnalysis.Compilation compilation)
-        {
-            this.Compilation = compilation;
-            
+        public readonly System.Func<INamedTypeSymbol, bool> Tag;
 
+
+        public EssentialReference(Microsoft.CodeAnalysis.Compilation compilation, INamedTypeSymbol tag)
+        {
+            
+            this.Compilation = compilation;
             
             RegulusRemoteProtocolCreaterAttribute = _GetType("Regulus.Remote.Protocol.CreaterAttribute");
             RegulusRemoteProperty = _GetType("Regulus.Remote.Property`1");
@@ -43,18 +46,32 @@ namespace Regulus.Remote.Tools.Protocol.Sources
                 _GetType("System.Action`14"),
                 _GetType("System.Action`15"),
                 _GetType("System.Action`16"),
-
-
             };
-            
+
+            Tag = _SetTag(tag);
         }
 
+        private Func<INamedTypeSymbol, bool> _SetTag(INamedTypeSymbol tag)
+        {
+            if (tag == null)
+                return s => true;
+
+            return s => s.AllInterfaces.Any(i => _Equal(tag, i));
+        }
+
+        private static bool _Equal(INamedTypeSymbol tag, INamedTypeSymbol i)
+        {
+            return i.Name == tag.Name;
+        }
 
         INamedTypeSymbol _GetType(string metaname)
         {
             var type = Compilation.GetTypeByMetadataName(metaname);
             if (type == null)
+            {                
                 throw new MissingTypeException(metaname);
+            }
+                
 
             return type;
         }

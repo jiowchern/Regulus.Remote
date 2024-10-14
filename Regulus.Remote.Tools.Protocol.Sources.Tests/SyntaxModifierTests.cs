@@ -218,6 +218,31 @@ interface IA {
             NUnit.Framework.Assert.False(builder.Expression.IsEquivalentTo(exps[1]));
 
         }
+
+        [Test]
+        public void EventActionIntArray()
+        {
+            var source = @"
+interface IA {
+    event System.Action<System.Int32[]> Event1;
+}
+";
+            var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
+            var com = tree.Compilation();
+            var root = com.SyntaxTrees[0].GetRoot();
+            var builder = new Regulus.Remote.Tools.Protocol.Sources.InterfaceInheritor(root.DescendantNodes().OfType<InterfaceDeclarationSyntax>().Single());
+
+            var cia = SyntaxFactory.ClassDeclaration("CIA");
+            cia = builder.Inherite(cia);
+
+            var modifier = SyntaxModifier.Create(com).Mod(cia);
+
+            var exps = modifier.Type.DescendantNodes().OfType<BlockSyntax>().ToArray();
+            NUnit.Framework.Assert.AreEqual(1, modifier.TypesOfSerialization.Count());
+            NUnit.Framework.Assert.False(builder.Expression.IsEquivalentTo(exps[0]));
+            NUnit.Framework.Assert.False(builder.Expression.IsEquivalentTo(exps[1]));
+
+        }
         [Test]
         public void EventAction()
         {
@@ -342,6 +367,8 @@ interface IA {
             NUnit.Framework.Assert.True(builder.Expression.IsEquivalentTo(exp));
         }
 
+        
+
         [Test]
         public void MethodValue()
         {
@@ -367,13 +394,14 @@ interface IA {
             NUnit.Framework.Assert.False(builder.Expression.IsEquivalentTo(exp));
         }
 
+
         [Test]
         public void MethodValueParamInt()
         {
             var source = @"
 
 interface IA {
-    Regulus.Remote.Value<int> Method1(System.Int32 i);
+    Regulus.Remote.Value<System.Int32> Method1(System.Int32 i);
 }
 ";
             var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
@@ -391,7 +419,32 @@ interface IA {
             NUnit.Framework.Assert.AreEqual(2, modifier.TypesOfSerialization.Count());
             NUnit.Framework.Assert.False(builder.Expression.IsEquivalentTo(exp));
         }
-        
+
+        [Test]
+        public void MethodValueParamGuid()
+        {
+            var source = @"
+
+interface IA {
+    Regulus.Remote.Value<System.Int32> Method1(System.Guid i);
+}
+";
+            var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
+            var com = tree.Compilation();
+            var root = com.SyntaxTrees[0].GetRoot();
+            var builder = new Regulus.Remote.Tools.Protocol.Sources.InterfaceInheritor(root.DescendantNodes().OfType<InterfaceDeclarationSyntax>().Single());
+
+            var cia = SyntaxFactory.ClassDeclaration("CIA");
+            cia = builder.Inherite(cia);
+
+            var modifier = SyntaxModifier.Create(com).Mod(cia);
+            cia = modifier.Type;
+
+            var exp = cia.DescendantNodes().OfType<BlockSyntax>().Single();
+            NUnit.Framework.Assert.AreEqual(2, modifier.TypesOfSerialization.Count());
+            NUnit.Framework.Assert.False(builder.Expression.IsEquivalentTo(exp));
+        }
+
 
         [Test]
         public void MethodVoidParam1()
@@ -422,6 +475,8 @@ interface IA {
             NUnit.Framework.Assert.AreEqual("_1" , paramName);
 
         }
+
+       
 
         [Test]
         public void ImplementRegulusRemoteIGhost()

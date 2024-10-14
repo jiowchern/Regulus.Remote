@@ -18,7 +18,7 @@ namespace Regulus.Remote
         public T Value
         {
             get
-            {
+            {                
                 return _Value;
             }
             set
@@ -29,8 +29,8 @@ namespace Regulus.Remote
         }
 
         private void _SetValue(T value)
-        {
-            _Value = value;
+        {            
+            _Value = value;            
             DirtyEvent(_Value);
         }
 

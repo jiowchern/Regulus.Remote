@@ -1,15 +1,20 @@
-﻿using Regulus.Network;
+﻿using Regulus.Extensions;
+using Regulus.Memorys;
+using Regulus.Network;
 using Regulus.Utility;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
 
 namespace Regulus.Remote.Soul
 {
-    public class User : IRequestQueue, IResponseQueue , Regulus.Utility.IUpdatable
+    public class User : IRequestQueue, IResponseQueue , Advanceable
     {
         public delegate void DisconnectCallback();
 
-        private event Action _BreakEvent;
+        
 
         private event InvokeMethodCallback _InvokeMethodEvent;
 
@@ -24,67 +29,20 @@ namespace Regulus.Remote.Soul
             public byte[][] MethodParams { get; set; }
         }
 
-        
-
-
-        private readonly System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.RequestPackage> _Requests;
-
-        private readonly System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.ResponsePackage> _Responses;
-
-        private readonly IStreamable _Peer;
-
         private readonly IProtocol _Protocol;
 
         private readonly SoulProvider _SoulProvider;
 
-        private readonly PackageReader<Regulus.Remote.Packages.RequestPackage> _Reader;
-
-        private readonly PackageWriter<Regulus.Remote.Packages.ResponsePackage> _Writer;
+        private readonly Regulus.Network.PackageReader _Reader;
+        private readonly Regulus.Network.PackageSender _Sender;
 
         private readonly System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.RequestPackage> _ExternalRequests;
 
-        readonly ThreadUpdater _Updater;
-
-        private volatile bool _EnableValue;
-        private bool _Enable
-        {
-            get
-            {
-                lock (_EnableLock)
-                {
-                    return _EnableValue;
-                }
-            }
-
-            set
-            {
-                lock (_EnableLock)
-                {
-                    _EnableValue = value;
-                }
-            }
-
-        }
-
-
-
-        private readonly object _EnableLock;
+        private readonly IResponseQueue _ResponseQueue;
         
-
-        public static bool IsIdle
-        {
-            get { return User.TotalRequest <= 0 && User.TotalResponse <= 0; }
-        }
-
-        private static long _TotalRequest;
-        public static long TotalRequest { get { return _TotalRequest; } }
-
-        private static long _TotalResponse;
-        internal readonly IStreamable Stream;
+        
         private readonly IInternalSerializable _InternalSerializer;
-
-        public static long TotalResponse { get { return _TotalResponse; } }
-
+        public event System.Action ErrorEvent;
         public IBinder Binder
         {
             get { return _SoulProvider; }
@@ -92,73 +50,95 @@ namespace Regulus.Remote.Soul
 
         
 
-        public User(IStreamable client, IProtocol protocol , ISerializable serializable, IInternalSerializable internal_serializable)
-        {
-        
-            Stream = client;
+        public User(Regulus.Network.PackageReader reader, Regulus.Network.PackageSender sender, IProtocol protocol , ISerializable serializable, IInternalSerializable internal_serializable , Regulus.Memorys.IPool pool)
+        {        
+            
             _InternalSerializer = internal_serializable;
             
-
-            _EnableLock = new object();
-
-            _Peer = client;
             _Protocol = protocol;
-            
-            
 
-            _Responses = new System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.ResponsePackage>();
-            _Requests = new System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.RequestPackage>();
-            _Reader = new PackageReader<Regulus.Remote.Packages.RequestPackage>(_InternalSerializer);
-            _Writer = new PackageWriter<Regulus.Remote.Packages.ResponsePackage>(_InternalSerializer);
-            
+            _Reader = reader;
+            _Sender = sender;
+
             _ExternalRequests = new System.Collections.Concurrent.ConcurrentQueue<Regulus.Remote.Packages.RequestPackage>();
 
             _SoulProvider = new SoulProvider(this, this, protocol, serializable, _InternalSerializer);
-
-            _Updater = new ThreadUpdater(_AsyncUpdate);
+            _ResponseQueue = this;
+            
         }
 
         void _Launch()
         {
-            _Enable = true;
             
-            _Reader.DoneEvent += _RequestPush;
-            _Reader.ErrorEvent += () => { _Enable = false; };
-            _Reader.Start(_Peer);
-
-            _Writer.ErrorEvent += () => { _Enable = false; };
-            _Writer.Start(_Peer);
+            System.Threading.Tasks.Task.Run(() => _StartRead()).ContinueWith(t =>
+            {
+                if (t.Exception != null)
+                {
+                    Regulus.Utility.Log.Instance.WriteInfo(t.Exception.ToString());
+                    ErrorEvent();
+                }
+            });                        
 
             Regulus.Remote.Packages.PackageProtocolSubmit pkg = new Regulus.Remote.Packages.PackageProtocolSubmit();
             pkg.VerificationCode = _Protocol.VerificationCode;
-            
-            _Push(ServerToClientOpCode.ProtocolSubmit, _InternalSerializer.Serialize(pkg));
 
-            _Updater.Start();
+            var buf = _InternalSerializer.Serialize(pkg);
+            _ResponseQueue.Push(ServerToClientOpCode.ProtocolSubmit, buf);
         }
 
+        
 
-        void _Shutdown()
+        private async Task _StartRead()
         {
             
+            var buffers = await _Reader.Read().ContinueWith(t => {
+                System.Collections.Generic.List<Regulus.Memorys.Buffer> result = t.Result;
+                t.Exception?.Handle(e =>
+                {
+                    Regulus.Utility.Log.Instance.WriteInfo($"User _StartRead error {e.ToString()}.");
+                    result = new System.Collections.Generic.List<Regulus.Memorys.Buffer>();
+                    return true;
+                });                
+                return result;
+            }); 
+            if(buffers.Count == 0)
+            {
+                ErrorEvent();
+                return;
+            }
+            try
+            {
+                _ReadDone(buffers);
+            }
+            catch (Exception e)
+            {
+                Regulus.Utility.Log.Instance.WriteInfo($"User _StartRead error {e.ToString()}.");
+                ErrorEvent();
+                return;
+            }
             
-            _Reader.DoneEvent -= _RequestPush;
-            _Reader.Stop();
+            await System.Threading.Tasks.Task.Delay(0).ContinueWith(t => _StartRead());
+        }
 
-            _Writer.Stop();
+        private void _ReadDone(List<Regulus.Memorys.Buffer> buffers)
+        {
+            
+            foreach(var buffer in buffers)
+            {                
+                
+                var pkg = (Packages.RequestPackage)_InternalSerializer.Deserialize(buffer);
+                _InternalRequest(pkg);
+            }
+                      
+        }
 
-            _Updater.Stop();
+        void _Shutdown()
+        {            
             Regulus.Remote.Packages.RequestPackage req;
             while (_ExternalRequests.TryDequeue(out req))
             {
 
-            }
-
-            System.Threading.Interlocked.Add(ref _TotalResponse, -_Responses.Count);
-            System.Threading.Interlocked.Add(ref _TotalRequest, -_Requests.Count);
-
-            _SendBreakEvent();
-            _Enable = false;
+            }            
         }
 
         event InvokeMethodCallback IRequestQueue.InvokeMethodEvent
@@ -167,80 +147,45 @@ namespace Regulus.Remote.Soul
             remove { _InvokeMethodEvent -= value; }
         }
 
-        event Action IRequestQueue.BreakEvent
-        {
-            add { _BreakEvent += value; }
-            remove { _BreakEvent -= value; }
-        }
-
-        void _AsyncUpdate()
-        {
-
-            _SoulProvider.Update();
-
-            _Writer.Push(_ResponsePop());
-            
-            _Reader.Update();
-
-            _ExecuteRequests();
-        }
         
-        private void _ExecuteRequests()
+
+        void IResponseQueue.Push(ServerToClientOpCode cmd, Regulus.Memorys.Buffer buffer)
         {
-            Regulus.Remote.Packages.RequestPackage pkg;
-            while (_Requests.TryDequeue(out pkg))
+            _StartSend(cmd, buffer);
+        }
+
+        private void _StartSend(ServerToClientOpCode cmd, Memorys.Buffer buffer)
+        {
+            var pkg = new Regulus.Remote.Packages.ResponsePackage
             {
-                System.Threading.Interlocked.Decrement(ref _TotalRequest);
-                _InternalRequest(pkg);
-            }
+                Code = cmd,
+                Data = buffer.ToArray()
+            };
+            var buf = _InternalSerializer.Serialize(pkg);
+            _Sender.Push(buf);
         }
 
-        void IResponseQueue.Push(ServerToClientOpCode cmd, byte[] data)
-        {
-            _Push(cmd, data);
-        }
-
-        private void _Push(ServerToClientOpCode cmd, byte[] data)
-        {
-            if (_Enable)
-            {
-                System.Threading.Interlocked.Increment(ref _TotalResponse);
-
-                _Responses.Enqueue(
-                    new Regulus.Remote.Packages.ResponsePackage
-                    {
-                        Code = cmd,
-                        Data = data
-                    });
-            }
-        }
-
-        private void _RequestPush(Regulus.Remote.Packages.RequestPackage package)
-        {
-            System.Threading.Interlocked.Increment(ref _TotalRequest);
-
-            _Requests.Enqueue(package);
-        }
+        
 
         private void _ExternalRequest(Regulus.Remote.Packages.RequestPackage package)
         {
             if (package.Code == ClientToServerOpCode.CallMethod)
             {
 
-                Regulus.Remote.Packages.PackageCallMethod data = (Regulus.Remote.Packages.PackageCallMethod)_InternalSerializer.Deserialize(package.Data)  ;
+                Regulus.Remote.Packages.PackageCallMethod data = (Regulus.Remote.Packages.PackageCallMethod)_InternalSerializer.Deserialize(package.Data.AsBuffer())  ;
                 var request = _ToRequest(data.EntityId, data.MethodId, data.ReturnId, data.MethodParams);
                 _InvokeMethodEvent(request.EntityId, request.MethodId, request.ReturnId, request.MethodParams);
             }
             else if (package.Code == ClientToServerOpCode.AddEvent)
             {
-                Regulus.Remote.Packages.PackageAddEvent data = (Regulus.Remote.Packages.PackageAddEvent)_InternalSerializer.Deserialize(package.Data)  ;
+                Regulus.Remote.Packages.PackageAddEvent data = (Regulus.Remote.Packages.PackageAddEvent)_InternalSerializer.Deserialize(package.Data.AsBuffer())  ;
                 _SoulProvider.AddEvent(data.Entity, data.Event, data.Handler);
             }
             else if (package.Code == ClientToServerOpCode.RemoveEvent)
             {
-                Regulus.Remote.Packages.PackageRemoveEvent data = (Regulus.Remote.Packages.PackageRemoveEvent)_InternalSerializer.Deserialize(package.Data)  ;
+                Regulus.Remote.Packages.PackageRemoveEvent data = (Regulus.Remote.Packages.PackageRemoveEvent)_InternalSerializer.Deserialize(package.Data.AsBuffer())  ;
                 _SoulProvider.RemoveEvent(data.Entity, data.Event, data.Handler);
-            }
+            }            
             else
             {
                 Regulus.Utility.Log.Instance.WriteInfo($"invalid request code {package.Code}.");
@@ -251,17 +196,16 @@ namespace Regulus.Remote.Soul
 
             if (package.Code == ClientToServerOpCode.Ping)
             {
-                _Push(ServerToClientOpCode.Ping, new byte[0]);            
+                _ResponseQueue.Push(ServerToClientOpCode.Ping, Regulus.Memorys.Pool.Empty);            
             }            
             else if (package.Code == ClientToServerOpCode.Release)
             {
-                Regulus.Remote.Packages.PackageRelease data = (Regulus.Remote.Packages.PackageRelease)_InternalSerializer.Deserialize(package.Data)  ;
-                _SoulProvider.Unbind(data.EntityId);
-                
+                Regulus.Remote.Packages.PackageRelease data = (Regulus.Remote.Packages.PackageRelease)_InternalSerializer.Deserialize(package.Data.AsBuffer())  ;
+                _SoulProvider.Unbind(data.EntityId);                
             }
             else if (package.Code == ClientToServerOpCode.UpdateProperty)
             {
-                Regulus.Remote.Packages.PackageSetPropertyDone data = (Regulus.Remote.Packages.PackageSetPropertyDone)_InternalSerializer.Deserialize(package.Data)  ;
+                Regulus.Remote.Packages.PackageSetPropertyDone data = (Regulus.Remote.Packages.PackageSetPropertyDone)_InternalSerializer.Deserialize(package.Data.AsBuffer());
                 _SoulProvider.SetPropertyDone(data.EntityId, data.Property);
             }
             else
@@ -282,44 +226,24 @@ namespace Regulus.Remote.Soul
             };
         }
 
-        void _SendBreakEvent()
+        public void Launch()
         {
-            if (_BreakEvent != null)
-            {
-                _BreakEvent();
-            }
+            _Launch();
         }
 
-        private IEnumerable<Regulus.Remote.Packages.ResponsePackage>  _ResponsePop()
-        {
-            Regulus.Remote.Packages.ResponsePackage pkg;
-            while (_Responses.TryDequeue(out pkg))
-            {
-                System.Threading.Interlocked.Decrement(ref _TotalResponse);
-                yield return pkg;
-            }
+        public void Shutdown()
+        {            
+            _Shutdown();
         }
 
-        bool IUpdatable.Update()
-        {
+        void Advanceable.Advance()
+        {            
             Regulus.Remote.Packages.RequestPackage pkg;
             while (_ExternalRequests.TryDequeue(out pkg))
             {
                 _ExternalRequest(pkg);
             }
-            
-            return _Enable;
-        }
-
-        void IBootable.Launch()
-        {
-            _Launch();
-        }
-
-        void IBootable.Shutdown()
-        {
-            
-            _Shutdown();
         }
     }
 }
+ 

@@ -31,7 +31,7 @@ namespace Regulus.Serialization
             return len + lenByetCount;
         }
 
-        int ITypeDescriber.ToBuffer(object instance, byte[] buffer, int begin)
+        int ITypeDescriber.ToBuffer(object instance, Regulus.Memorys.Buffer buffer, int begin)
         {
             byte[] array = instance as byte[];
             int len = array.Length;
@@ -47,7 +47,7 @@ namespace Regulus.Serialization
             return offset - begin;
         }
 
-        int ITypeDescriber.ToObject(byte[] buffer, int begin, out object instnace)
+        int ITypeDescriber.ToObject(Regulus.Memorys.Buffer buffer, int begin, out object instnace)
         {
             int offset = begin;
             object lenObject = null;

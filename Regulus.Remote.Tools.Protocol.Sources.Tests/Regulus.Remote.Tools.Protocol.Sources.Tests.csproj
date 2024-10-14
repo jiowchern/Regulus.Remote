@@ -11,18 +11,20 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.10.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.NUnit" Version="1.1.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
+    <PackageReference Include="NSubstitute" Version="4.4.0" />
     <PackageReference Include="NUnit" Version="3.13.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
     <PackageReference Include="coverlet.msbuild" Version="3.1.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-   
+
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Regulus.Remote.Tools.Protocol.Sources.TestCommon\Regulus.Remote.Tools.Protocol.Sources.TestCommon.csproj" />
+    <ProjectReference Include="..\Regulus.Remote.Protocol.Identify\Regulus.Remote.Protocol.Identify.csproj" />
     <ProjectReference Include="..\Regulus.Remote.Tools.Protocol.Sources\Regulus.Remote.Tools.Protocol.Sources.csproj" />
+    <ProjectReference Include="..\Regulus.Remote\Regulus.Remote.csproj" />
   </ItemGroup>
 
 </Project>

@@ -8,16 +8,20 @@ namespace Regulus.Serialization
     {
         private readonly DescriberProvider _Provider;
 
-        public Serializer(DescriberProvider provider)
+        Memorys.IPool _Pool;
+
+
+        public Serializer(DescriberProvider provider) : this(provider, Regulus.Memorys.PoolProvider.Shared)
         {
 
+        }
+        public Serializer(DescriberProvider provider , Memorys.IPool pool)
+        {
             _Provider = provider;
-
-
-
+            _Pool = pool;
         }
 
-        public byte[] ObjectToBuffer(object instance)
+        public Regulus.Memorys.Buffer ObjectToBuffer(object instance)
         {
 
             try
@@ -33,7 +37,8 @@ namespace Regulus.Serialization
 
                 int idCount = _Provider.KeyDescriber.GetByteCount(type);
                 int bufferCount = describer.GetByteCount(instance);
-                byte[] buffer = new byte[idCount + bufferCount];
+                var buffer = _Pool.Alloc(idCount + bufferCount);
+                var bytes = buffer.Bytes;
                 int readCount = _Provider.KeyDescriber.ToBuffer(type, buffer, 0);
                 describer.ToBuffer(instance, buffer, readCount);
                 return buffer;
@@ -53,15 +58,16 @@ namespace Regulus.Serialization
 
         }
 
-        private byte[] _NullBuffer()
+        private Memorys.Buffer _NullBuffer()
         {
             int idCount = Varint.GetByteCount(0);
-            byte[] buffer = new byte[idCount];
-            Varint.NumberToBuffer(buffer, 0, 0);
+            var buffer = _Pool.Alloc(idCount);
+            var bytes = buffer.Bytes;
+            Varint.NumberToBuffer(bytes.Array, bytes.Offset, 0);
             return buffer;
         }
 
-        public object BufferToObject(byte[] buffer)
+        public object BufferToObject(Memorys.Buffer buffer)
         {
             Type id = null;
             try
@@ -93,7 +99,7 @@ namespace Regulus.Serialization
 
       
 
-        public bool TryBufferToObject<T>(byte[] buffer, out T pkg)
+        public bool TryBufferToObject<T>(Regulus.Memorys.Buffer buffer, out T pkg)
         {
 
             pkg = default(T);
@@ -111,7 +117,7 @@ namespace Regulus.Serialization
             return false;
         }
 
-        public bool TryBufferToObject(byte[] buffer, out object pkg)
+        public bool TryBufferToObject(Regulus.Memorys.Buffer buffer, out object pkg)
         {
 
             pkg = null;

@@ -1,8 +1,10 @@
 ﻿
 
 
+using Regulus.Memorys;
 using Regulus.Network;
 using Regulus.Remote.Ghost;
+using Regulus.Remote.Soul;
 using System;
 using System.Collections.Generic;
 
@@ -16,16 +18,20 @@ namespace Regulus.Remote.Standalone
         readonly List<Regulus.Remote.Ghost.IAgent> _Agents;
         readonly Dictionary<IAgent, IStreamable> _Streams;
         readonly IDisposable _ServiceDisposable;
+        
         internal readonly IProtocol Protocol;
         internal readonly ISerializable Serializer;
-
+        private readonly IPool _Pool;
         readonly NotifiableCollection<IStreamable> _NotifiableCollection;
-        public Service(IBinderProvider entry, IProtocol protocol , ISerializable serializable, Regulus.Remote.IInternalSerializable internal_serializable)
+        public Service(IEntry entry, IProtocol protocol , ISerializable serializable, Regulus.Remote.IInternalSerializable internal_serializable ,Memorys.IPool pool )
         {
+            _Pool = pool;
             _NotifiableCollection = new NotifiableCollection<IStreamable>();
             Protocol = protocol;
             Serializer = serializable;
-            _Service = new Regulus.Remote.Soul.Service(entry, protocol, serializable , this, internal_serializable);
+            var service = new Regulus.Remote.Soul.AsyncService(new SyncService(entry , new UserProvider(protocol, serializable, this, internal_serializable, _Pool)) );
+            _Service = service;
+        
             _Agents = new List<Ghost.IAgent>();
             _Streams = new Dictionary<IAgent, IStreamable>();
             _ServiceDisposable = _Service;
@@ -58,18 +64,17 @@ namespace Regulus.Remote.Standalone
             }
         }
 
-
         public Ghost.IAgent Create()
         {
             var stream = new Stream();
-            var agent = new Regulus.Remote.Ghost.Agent(stream, this.Protocol, this.Serializer, new Regulus.Remote.InternalSerializer());
+            var agent = new Regulus.Remote.Ghost.Agent( this.Protocol, this.Serializer, new Regulus.Remote.InternalSerializer(), _Pool);
+            agent.Enable(stream);
             var revStream = new ReverseStream(stream);
-
             _NotifiableCollection.Items.Add(revStream);
             _Streams.Add(agent, revStream);
             _Agents.Add(agent);
 
-
+            
             return agent;
         }
         
@@ -84,7 +89,7 @@ namespace Regulus.Remote.Standalone
                 
                 _NotifiableCollection.Items.Remove(_Streams[agent]);
                 _Streams.Remove(agent);
-                agent.Dispose();
+                agent.Disable();
                 agents.Add(agent);
             }
             foreach (IAgent agent in agents)

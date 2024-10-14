@@ -10,7 +10,7 @@ namespace Regulus.Serialization
         object Default { get; }
 
         int GetByteCount(object instance);
-        int ToBuffer(object instance, byte[] buffer, int begin);
-        int ToObject(byte[] buffer, int begin, out object instnace);
+        int ToBuffer(object instance,Regulus.Memorys.Buffer buffer, int begin);
+        int ToObject(Regulus.Memorys.Buffer buffer, int begin, out object instnace);
     }
 }

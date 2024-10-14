@@ -35,7 +35,7 @@ namespace Regulus.Serialization.Tests
             DescribersFinder finder = new DescribersFinder(typeof(int), typeof(uint));
             DescriberProvider provider = new DescriberProvider(finder.KeyDescriber, finder);
             Serializer ser = new Serializer(provider);
-            byte[] buf = ser.ObjectToBuffer((int)-1);
+            var buf = ser.ObjectToBuffer((int)-1);
             int val = (int)ser.BufferToObject(buf);
 
             Assert.AreEqual(-1, val);
@@ -47,7 +47,7 @@ namespace Regulus.Serialization.Tests
             DescribersFinder finder = new DescribersFinder(typeof(long), typeof(uint));
             DescriberProvider provider = new DescriberProvider(finder.KeyDescriber, finder);
             Serializer ser = new Serializer(provider);
-            byte[] buf = ser.ObjectToBuffer((long)-1);
+            var buf = ser.ObjectToBuffer((long)-1);
             long val = (long)ser.BufferToObject(buf);
 
             Assert.AreEqual(-1, val);
@@ -161,7 +161,7 @@ namespace Regulus.Serialization.Tests
 
             Serializer ser = new Serializer(provider);
 
-            byte[] buffer = ser.ObjectToBuffer(1UL);
+            var buffer = ser.ObjectToBuffer(1UL);
 
             object value = ser.BufferToObject(buffer);
 
@@ -178,7 +178,7 @@ namespace Regulus.Serialization.Tests
             Serializer ser = new Serializer(provider);
             TestClassB testb = new TestClassB();
             testb.Data = 1234;
-            byte[] buffer = ser.ObjectToBuffer(testb);
+            var buffer = ser.ObjectToBuffer(testb);
             TestClassB value = ser.BufferToObject(buffer) as TestClassB;
 
             NUnit.Framework.Assert.AreEqual(testb.Data, value.Data);
@@ -210,7 +210,7 @@ namespace Regulus.Serialization.Tests
                 null,
             };
 
-            byte[] buffer = ser.ObjectToBuffer(testbs);
+            var buffer = ser.ObjectToBuffer(testbs);
             TestClassB[] value = ser.BufferToObject(buffer) as TestClassB[];
 
             NUnit.Framework.Assert.AreEqual(null, value[0]);
@@ -231,19 +231,19 @@ namespace Regulus.Serialization.Tests
 
             Serializer ser = new Serializer(provider);
 
-            byte[] byteBuffer = ser.ObjectToBuffer((byte)128);
+            var byteBuffer = ser.ObjectToBuffer((byte)128);
             byte byteValue = (byte)ser.BufferToObject(byteBuffer);
 
-            byte[] shortBuffer = ser.ObjectToBuffer((short)16387);
+            var shortBuffer = ser.ObjectToBuffer((short)16387);
             short shortValue = (short)ser.BufferToObject(shortBuffer);
 
-            byte[] intBuffer = ser.ObjectToBuffer((int)65535);
+            var intBuffer = ser.ObjectToBuffer((int)65535);
             int intValue = (int)ser.BufferToObject(intBuffer);
 
-            byte[] longBuffer = ser.ObjectToBuffer((long)65535000);
+            var longBuffer = ser.ObjectToBuffer((long)65535000);
             long longValue = (long)ser.BufferToObject(longBuffer);
 
-            byte[] enumBuffer = ser.ObjectToBuffer(TEST1.C);
+            var enumBuffer = ser.ObjectToBuffer(TEST1.C);
             TEST1 enumValue = (TEST1)ser.BufferToObject(enumBuffer);
 
             NUnit.Framework.Assert.AreEqual((byte)128, byteValue);
@@ -276,7 +276,7 @@ namespace Regulus.Serialization.Tests
                 323,
                 78
             };
-            byte[] buffer = ser.ObjectToBuffer(ints);
+            var buffer = ser.ObjectToBuffer(ints);
             int[] value = (int[])ser.BufferToObject(buffer);
 
 
@@ -306,7 +306,7 @@ namespace Regulus.Serialization.Tests
                 323f,
                 78f
             };
-            byte[] buffer = ser.ObjectToBuffer(ints);
+            var buffer = ser.ObjectToBuffer(ints);
             float[] value = (float[])ser.BufferToObject(buffer);
 
 
@@ -323,7 +323,7 @@ namespace Regulus.Serialization.Tests
 
             Serializer ser = new Serializer(provider);
 
-            byte[] buffer = ser.ObjectToBuffer(123.43f);
+            var buffer = ser.ObjectToBuffer(123.43f);
             float value = (float)ser.BufferToObject(buffer);
 
             NUnit.Framework.Assert.AreEqual(123.43f, value);
@@ -339,7 +339,7 @@ namespace Regulus.Serialization.Tests
 
             Serializer ser = new Serializer(provider);
 
-            byte[] buffer = ser.ObjectToBuffer(new byte[] { 1, 2, 3, 4, 5, 6 });
+            var buffer = ser.ObjectToBuffer(new byte[] { 1, 2, 3, 4, 5, 6 });
             byte[] value = (byte[])ser.BufferToObject(buffer);
 
             NUnit.Framework.Assert.AreEqual(1, value[0]);
@@ -357,7 +357,7 @@ namespace Regulus.Serialization.Tests
 
             Serializer ser = new Serializer(provider);
 
-            byte[] buffer = ser.ObjectToBuffer(new char[] { '1', '2', 'a', 'b', 'c', 't' });
+            var buffer = ser.ObjectToBuffer(new char[] { '1', '2', 'a', 'b', 'c', 't' });
             char[] value = (char[])ser.BufferToObject(buffer);
 
             NUnit.Framework.Assert.AreEqual('1', value[0]);
@@ -378,7 +378,7 @@ namespace Regulus.Serialization.Tests
 
             Serializer ser = new Serializer(provider);
             string str = "asdfgh";
-            byte[] buffer = ser.ObjectToBuffer(str.ToCharArray());
+            var buffer = ser.ObjectToBuffer(str.ToCharArray());
             char[] value = (char[])ser.BufferToObject(buffer);
 
             NUnit.Framework.Assert.AreEqual('a', value[0]);
@@ -401,7 +401,7 @@ namespace Regulus.Serialization.Tests
             Serializer ser = new Serializer(provider);
 
             Guid id = Guid.NewGuid();
-            byte[] buffer = ser.ObjectToBuffer(id);
+            var buffer = ser.ObjectToBuffer(id);
             Guid value = (Guid)ser.BufferToObject(buffer);
 
             NUnit.Framework.Assert.AreEqual(id, value);
@@ -427,7 +427,7 @@ namespace Regulus.Serialization.Tests
             };
 
 
-            byte[] buffer = ser.ObjectToBuffer(cs);
+            var buffer = ser.ObjectToBuffer(cs);
             TestClassC[] value = ser.BufferToObject(buffer) as TestClassC[];
 
 
@@ -446,7 +446,7 @@ namespace Regulus.Serialization.Tests
 
             Serializer ser = new Serializer(provider);
 
-            byte[] buffer = ser.ObjectToBuffer(null);
+            var buffer = ser.ObjectToBuffer(null);
             TestClassC[] value = ser.BufferToObject(buffer) as TestClassC[];
 
 
@@ -482,7 +482,7 @@ namespace Regulus.Serialization.Tests
 
             Serializer ser = new Serializer(provider);
 
-            byte[] buffer = ser.ObjectToBuffer(bytes);
+            var buffer = ser.ObjectToBuffer(bytes);
             byte[] result = ser.BufferToObject(buffer) as byte[];
 
             NUnit.Framework.Assert.AreEqual(bytes[3], result[3]);
@@ -519,7 +519,7 @@ namespace Regulus.Serialization.Tests
 
             Serializer ser = new Serializer(provider);
 
-            byte[] buffer = ser.ObjectToBuffer(bytes);
+            var buffer = ser.ObjectToBuffer(bytes);
             byte[] result = ser.BufferToObject(buffer) as byte[];
 
             NUnit.Framework.Assert.AreEqual(bytes[3], result[3]);
@@ -541,7 +541,7 @@ namespace Regulus.Serialization.Tests
 
 
             string str = "fliwjfo3f3fnmsdlgmnlgrkmbr'nhmlredhgnedra'lngh";
-            byte[] buffer = ser.ObjectToBuffer(str);
+            var buffer = ser.ObjectToBuffer(str);
             string value = ser.BufferToObject(buffer) as string;
 
             NUnit.Framework.Assert.AreEqual(str, value);
@@ -560,7 +560,7 @@ namespace Regulus.Serialization.Tests
 
 
             char[] str = new char[] { 'd', 'a' };
-            byte[] buffer = ser.ObjectToBuffer(str);
+            var buffer = ser.ObjectToBuffer(str);
             char[] value = ser.BufferToObject(buffer) as char[];
 
             NUnit.Framework.Assert.AreEqual(str[0], value[0]);
@@ -575,7 +575,7 @@ namespace Regulus.Serialization.Tests
             Serializer ser = new Serializer(new DescriberBuilder(typeof(Regulus.Utility.Vector2), typeof(float)).Describers);
             Utility.Vector2 v = new Regulus.Utility.Vector2(99, 22);
 
-            byte[] array = ser.ObjectToBuffer(v);
+            var array = ser.ObjectToBuffer(v);
             Utility.Vector2 v2 = (Regulus.Utility.Vector2)ser.BufferToObject(array);
 
             NUnit.Framework.Assert.AreEqual(99, v2.X);
@@ -590,7 +590,7 @@ namespace Regulus.Serialization.Tests
 
             Serializer ser = new Serializer(new DescriberBuilder(types).Describers);
 
-            byte[] intZeroBuffer = ser.ObjectToBuffer("123");
+            var intZeroBuffer = ser.ObjectToBuffer("123");
 
             object intZero = ser.BufferToObject(intZeroBuffer);
 
@@ -607,7 +607,7 @@ namespace Regulus.Serialization.Tests
             Regulus.Remote.Packages.ResponsePackage pkg = new Regulus.Remote.Packages.ResponsePackage();
             pkg.Code = Remote.ServerToClientOpCode.SetProperty;
             pkg.Data = new byte[1] { 255 };
-            byte[] buffer = ser.ObjectToBuffer(pkg);
+            var buffer = ser.ObjectToBuffer(pkg);
 
             Regulus.Remote.Packages.ResponsePackage dPkg = (Regulus.Remote.Packages.ResponsePackage)ser.BufferToObject(buffer)  ;
 

@@ -1,5 +1,7 @@
-﻿using Regulus.Utility;
+﻿using Regulus.Memorys;
+using Regulus.Utility;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -8,10 +10,10 @@ namespace Regulus.Remote
 {
 
 
-    public class SoulProvider : IDisposable, IBinder
+    /*public class SoulProvider2 : IDisposable, IBinder
     {
         private readonly IdLandlord _IdLandlord;
-        private readonly Queue<byte[]> _EventFilter ;
+        
 
         private readonly IRequestQueue _Peer;
 
@@ -28,12 +30,12 @@ namespace Regulus.Remote
         private readonly ISerializable _Serializer;
         readonly IInternalSerializable _InternalSerializable;
         
-        public SoulProvider(IRequestQueue peer, IResponseQueue queue, IProtocol protocol, ISerializable serializable, IInternalSerializable internal_serializable )
+        public SoulProvider2(IRequestQueue peer, IResponseQueue queue, IProtocol protocol, ISerializable serializable, IInternalSerializable internal_serializable )
         {
             _InternalSerializable = internal_serializable;
             _WaitValues = new Dictionary<long, IValue>();
             _Souls = new System.Collections.Concurrent.ConcurrentDictionary<long, SoulProxy>();
-            _EventFilter = new Queue<byte[]>();
+            
             _IdLandlord = new IdLandlord();
             _Queue = queue;
             _Protocol = protocol;
@@ -103,17 +105,14 @@ namespace Regulus.Remote
             package.Event = event_id;
             package.HandlerId = handler_id;
             
-            package.EventParams = args.Zip(info.EventHandlerType.GetGenericArguments(), (arg, par) => _Serializer.Serialize(par, arg)).ToArray();
+            package.EventParams = args.Zip(info.EventHandlerType.GetGenericArguments(), (arg, par) => _Serializer.Serialize(par, arg).ToArray()).ToArray();
             
-            _InvokeEvent(_InternalSerializable.Serialize(package));
+            _InvokeEvent(_InternalSerializable.Serialize(package).ToArray());
         }
 
         private void _InvokeEvent(byte[] argmants)
         {
-            lock (_EventFilter)
-            {
-                _EventFilter.Enqueue(argmants);
-            }
+            _Queue.Push(ServerToClientOpCode.InvokeEvent, argmants);            
         }
 
         private void _ReturnValue(long returnId, IValue returnValue)
@@ -174,8 +173,8 @@ namespace Regulus.Remote
             object value = return_value.GetObject();
             Regulus.Remote.Packages.PackageReturnValue package = new Regulus.Remote.Packages.PackageReturnValue();
             package.ReturnTarget = return_id;
-            package.ReturnValue = _Serializer.Serialize(return_value.GetObjectType() , value);
-            _Queue.Push(ServerToClientOpCode.ReturnValue, _InternalSerializable.Serialize(package));
+            package.ReturnValue = _Serializer.Serialize(return_value.GetObjectType() , value).ToArray();
+            _Queue.Push(ServerToClientOpCode.ReturnValue, _InternalSerializable.Serialize(package).ToArray());
         }
 
 
@@ -186,7 +185,7 @@ namespace Regulus.Remote
             package.EntityId = id;
             package.ReturnId = return_id;
             package.TypeId = type_id;            
-            _Queue.Push(ServerToClientOpCode.LoadSoulCompile, _InternalSerializable.Serialize(package));
+            _Queue.Push(ServerToClientOpCode.LoadSoulCompile, _InternalSerializable.Serialize(package).ToArray());
         }
         private void _LoadProperty(long id, int property , object val)
         {
@@ -194,8 +193,8 @@ namespace Regulus.Remote
             Regulus.Remote.Packages.PackageSetProperty package = new Regulus.Remote.Packages.PackageSetProperty();
             package.EntityId = id;
             package.Property = property;
-            package.Value = _Serializer.Serialize(info.PropertyType, val);
-            _Queue.Push(ServerToClientOpCode.SetProperty, _InternalSerializable.Serialize(package));
+            package.Value = _Serializer.Serialize(info.PropertyType, val).ToArray();            
+            _Queue.Push(ServerToClientOpCode.SetProperty, _InternalSerializable.Serialize(package).ToArray());
         }
         private void _LoadSoul(int type_id, long id, bool return_type)
         {
@@ -203,7 +202,7 @@ namespace Regulus.Remote
             package.TypeId = type_id;
             package.EntityId = id;
             package.ReturnType = return_type;
-            _Queue.Push(ServerToClientOpCode.LoadSoul, _InternalSerializable.Serialize(package));
+            _Queue.Push(ServerToClientOpCode.LoadSoul, _InternalSerializable.Serialize(package).ToArray());
 
 
         }
@@ -214,7 +213,7 @@ namespace Regulus.Remote
             Regulus.Remote.Packages.PackageUnloadSoul package = new Regulus.Remote.Packages.PackageUnloadSoul();            
             package.EntityId = id;
             
-            _Queue.Push(ServerToClientOpCode.UnloadSoul, _InternalSerializable.Serialize(package));
+            _Queue.Push(ServerToClientOpCode.UnloadSoul, _InternalSerializable.Serialize(package).ToArray());
         }
 
         public void SetPropertyDone(long entityId, int property)
@@ -244,31 +243,28 @@ namespace Regulus.Remote
             MethodInfo methodInfo =
                 (from m in soulInfo.MethodInfos where m == info && m.GetParameters().Count() == args.Count() select m)
                     .FirstOrDefault();
-            if (methodInfo != null)
+            if (methodInfo == null)
+                return;
+            try
             {
 
-                try
-                {
+                IEnumerable<object> argObjects = args.Zip(methodInfo.GetParameters(), (arg, par) => _Serializer.Deserialize(par.ParameterType, arg.AsBuffer()));
 
-                    IEnumerable<object> argObjects = args.Zip(methodInfo.GetParameters(), (arg , par) => _Serializer.Deserialize(par.ParameterType, arg));
-
-                    object returnValue = methodInfo.Invoke(soulInfo.ObjectInstance, argObjects.ToArray());
-                    if (returnValue != null)
-                    {
-                        _ReturnValue(returnId, returnValue as IValue);
-                    }
-                }
-                catch (DeserializeException deserialize_exception)
+                object returnValue = methodInfo.Invoke(soulInfo.ObjectInstance, argObjects.ToArray());
+                if (returnValue != null)
                 {
-                    string message = deserialize_exception.Base.ToString();
-                    _ErrorDeserialize(method_id.ToString(), returnId, message);
+                    _ReturnValue(returnId, returnValue as IValue);
                 }
-                catch (Exception e)
-                {
-                    Log.Instance.WriteDebug(e.ToString());
-                    _ErrorDeserialize(method_id.ToString(), returnId, e.Message);
-                }
-
+            }
+            catch (DeserializeException deserialize_exception)
+            {
+                string message = deserialize_exception.Base.ToString();
+                _ErrorDeserialize(method_id.ToString(), returnId, message);
+            }
+            catch (Exception e)
+            {
+                Log.Instance.WriteDebug(e.ToString());
+                _ErrorDeserialize(method_id.ToString(), returnId, e.Message);
             }
         }
         public void RemoveEvent(long entity_id, int event_id, long handler_id)
@@ -317,7 +313,7 @@ namespace Regulus.Remote
             package.Method = method_name;
             package.ReturnTarget = return_id;
             
-            _Queue.Push(ServerToClientOpCode.ErrorMethod, _InternalSerializable.Serialize(package));
+            _Queue.Push(ServerToClientOpCode.ErrorMethod, _InternalSerializable.Serialize(package).ToArray());
         }
 
         private ISoul _Bind<TSoul>(TSoul soul, bool return_type, long return_id)
@@ -331,11 +327,17 @@ namespace Regulus.Remote
             int interfaceId = _Protocol.GetMemberMap().GetInterface(soul_type);
             var newSoul = new SoulProxy(_IdLandlord.Rent(), interfaceId, soul_type, soul );
             newSoul.SupplySoulEvent += _PropertyBind;
-            newSoul.UnsupplySoulEvent += _PropertyUnbind;            
+            newSoul.UnsupplySoulEvent += _PropertyUnbind;
+            newSoul.PropertyChangedEvent += _LoadProperty;
             Regulus.Utility.Log.Instance.WriteInfo($"soul add {newSoul.Id}:{soul_type.Name}.");
             _Souls.TryAdd(newSoul.Id, newSoul);
 
             return newSoul;
+        }
+
+        private void _LoadProperty(long soul, IPropertyIdValue prop)
+        {
+            _LoadProperty(soul, prop.Id, prop.Instance);
         }
 
         private SoulProxy _Bind(object soul, Type soul_type, bool return_type, long return_id)
@@ -362,8 +364,10 @@ namespace Regulus.Remote
 
             soulInfo.SupplySoulEvent -= _PropertyBind;
             soulInfo.UnsupplySoulEvent -= _PropertyUnbind;
+            soulInfo.PropertyChangedEvent -= _LoadProperty;
 
-            
+
+
             _UnloadSoul(soulInfo.InterfaceId, soulInfo.Id);            
             _IdLandlord.Return(soulInfo.Id);
             
@@ -376,7 +380,7 @@ namespace Regulus.Remote
             package.OwnerId = soul_id;
             package.PropertyId = property_id;
             package.EntityId = property_soul_id;
-            _Queue.Push(ServerToClientOpCode.RemovePropertySoul, _InternalSerializable.Serialize(package));
+            _Queue.Push(ServerToClientOpCode.RemovePropertySoul, _InternalSerializable.Serialize(package).ToArray());
 
             SoulProxy soul;
             _Souls.TryGetValue(property_soul_id , out soul);
@@ -392,7 +396,7 @@ namespace Regulus.Remote
             package.OwnerId = soul_id;
             package.PropertyId = property_id;
             package.EntityId = soul.Id;            
-            _Queue.Push(ServerToClientOpCode.AddPropertySoul, _InternalSerializable.Serialize(package));
+            _Queue.Push(ServerToClientOpCode.AddPropertySoul, _InternalSerializable.Serialize(package).ToArray());
         
             return soul;
         }
@@ -409,30 +413,7 @@ namespace Regulus.Remote
 
         }
 
-        public void Update()
-        {
-            SoulProxy[] souls = _Souls.ToArray().Select(kv=>kv.Value).ToArray();
-
-
-            foreach (SoulProxy soul in souls)
-            {
-                IPropertyIdValue change;
-                while (soul.TryGetPropertyChange(out change))
-                {
-                    _LoadProperty(soul.Id, change.Id, change.Instance);
-                }
-            }
-
-            lock (_EventFilter)
-            {
-                foreach (byte[] filter in _EventFilter)
-                {
-                    _Queue.Push(ServerToClientOpCode.InvokeEvent, filter);
-                }
-
-                _EventFilter.Clear();
-            }
-        }
+        
 
         public void Unbind(long entityId)
         {
@@ -441,5 +422,94 @@ namespace Regulus.Remote
             _Unbind(soul);
             
         }
+    }*/
+
+    public class SoulProvider : IDisposable, IBinder
+    {
+        private readonly IdLandlord _IdLandlord;
+        private readonly IRequestQueue _Peer;
+        private readonly IResponseQueue _Queue;
+        private readonly IProtocol _Protocol;
+        private readonly EventProvider _EventProvider;
+        private readonly ConcurrentDictionary<long, SoulProxy> _Souls;
+        private readonly Dictionary<long, IValue> _WaitValues;
+        private readonly ISerializable _Serializer;
+        private readonly IInternalSerializable _InternalSerializable;
+
+        private readonly SoulBindHandler _bindHandler;
+        private readonly SoulMethodHandler _methodHandler;
+        private readonly SoulEventHandler _eventHandler;
+        private readonly SoulPropertyHandler _propertyHandler;
+
+        public SoulProvider(
+            IRequestQueue peer,
+            IResponseQueue queue,
+            IProtocol protocol,
+            ISerializable serializer,
+            IInternalSerializable internalSerializable)
+        {
+            _IdLandlord = new IdLandlord();
+            _Peer = peer;
+            _Queue = queue;
+            _Protocol = protocol;
+            _Serializer = serializer;
+            _InternalSerializable = internalSerializable;
+
+            _EventProvider = protocol.GetEventProvider();
+            _Souls = new ConcurrentDictionary<long, SoulProxy>();
+            _WaitValues = new Dictionary<long, IValue>();
+
+            _bindHandler = new SoulBindHandler(_IdLandlord, _Queue, _Protocol, _Souls, _Serializer, _InternalSerializable, _EventProvider);
+            _methodHandler = new SoulMethodHandler(_Peer, _Queue, _Protocol, _Souls, _WaitValues, _Serializer, _InternalSerializable);
+            _eventHandler = new SoulEventHandler(_Queue, _Protocol, _Souls, _EventProvider, _Serializer, _InternalSerializable);
+            _propertyHandler = new SoulPropertyHandler(_Queue, _Protocol, _Souls, _Serializer, _InternalSerializable);
+        }
+
+        public void Dispose()
+        {
+            _methodHandler.Dispose();
+        }
+
+        ISoul IBinder.Return<TSoul>(TSoul soul)
+        {
+            return _bindHandler.Return(soul);
+        }
+
+        ISoul IBinder.Bind<TSoul>(TSoul soul)
+        {
+            return _bindHandler.Bind(soul);
+        }
+
+        void IBinder.Unbind(ISoul soul)
+        {
+            _bindHandler.Unbind(soul);
+        }
+
+        public void AddEvent(long entity, int @event, long handler)
+        {
+            _eventHandler.AddEvent(entity, @event, handler);
+        }
+
+        public void RemoveEvent(long entity, int @event, long handler)
+        {
+            _eventHandler.RemoveEvent(entity, @event, handler);
+        }
+
+        public void SetPropertyDone(long entityId, int property)
+        {
+            _propertyHandler.SetPropertyDone(entityId, property);
+        }
+
+        public void Unbind(long entityId)
+        {
+            SoulProxy soul;
+            _Souls.TryGetValue(entityId, out soul);
+            _bindHandler.Unbind(soul);            
+
+        }
+        
+
+        // 其他需要實現的接口方法或事件處理可以在這裡添加
     }
+
 }

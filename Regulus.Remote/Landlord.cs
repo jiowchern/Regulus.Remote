@@ -22,23 +22,21 @@ namespace Regulus.Remote
     public class Landlord<T>
     {
 
-        readonly System.Collections.Concurrent.ConcurrentQueue<T> _Enrollments;
+        readonly System.Collections.Concurrent.ConcurrentBag<T> _Enrollments;
+        
         readonly ILandlordProviable<T> _Provider;
         public Landlord(ILandlordProviable<T> provider)
         {
             _Provider = provider;
-            _Enrollments = new System.Collections.Concurrent.ConcurrentQueue<T>();
+            _Enrollments = new System.Collections.Concurrent.ConcurrentBag<T>();
         }
 
         public T Rent()
         {
-            
-             
-            T id;
-            if(_Enrollments.TryDequeue(out id))
+            if (_Enrollments.TryTake(out T id))
             {
                 return id;
-            }   
+            }
 
             return _Provider.Spawn();
 
@@ -46,7 +44,7 @@ namespace Regulus.Remote
         }
         public void Return(T obj)
         {
-            _Enrollments.Enqueue(obj);
+            _Enrollments.Add(obj);            
         }
 
     }

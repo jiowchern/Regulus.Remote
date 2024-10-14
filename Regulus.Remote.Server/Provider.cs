@@ -1,17 +1,22 @@
 ﻿namespace Regulus.Remote.Server
 {
 
-   
+
     public static class Provider
     {
+
+        
         public static Soul.IService CreateService(IEntry entry, IProtocol protocol, Soul.IListenable listenable)
         {
-            return new Soul.Service(entry, protocol, new Regulus.Remote.Serializer(protocol.SerializeTypes), listenable, new Regulus.Remote.InternalSerializer());
+            var pool = Regulus.Memorys.PoolProvider.Shared;
+            return new Soul.AsyncService(new Soul.SyncService(entry, new Soul.UserProvider(protocol, new Regulus.Remote.Serializer(protocol.SerializeTypes), listenable, new Regulus.Remote.InternalSerializer(), pool)));            
         }
 
         public static Soul.IService CreateService(IEntry entry,  IProtocol protocol, ISerializable serializable ,Soul.IListenable listenable)
         {
-            return new Soul.Service(entry, protocol, serializable , listenable, new Regulus.Remote.InternalSerializer());
+            var pool = Regulus.Memorys.PoolProvider.Shared;
+
+            return new Soul.AsyncService(new Soul.SyncService(entry, new Soul.UserProvider(protocol, serializable, listenable, new Regulus.Remote.InternalSerializer(), pool)));            
         }
 
         public static TcpListenSet CreateTcpService(IEntry entry, IProtocol protocol)
@@ -35,6 +40,6 @@
             return new WebListenSet(listener, service);
         }
 
-
+        
     }
 }

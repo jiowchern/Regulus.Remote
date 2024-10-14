@@ -5,17 +5,18 @@ using Microsoft.CodeAnalysis.CSharp;
 
 namespace Regulus.Remote.Tools.Protocol.Sources
 {
-    public class ProjectSourceBuilder
+    class ProjectSourceBuilder
     {
-        public readonly IEnumerable<SyntaxTree> Sources;        
+        public readonly IEnumerable<SyntaxTree> Sources;
+        public readonly IEnumerable<ClassAndTypes> ClassAndTypess;
 
-        public ProjectSourceBuilder(EssentialReference references)
-        {
-            
-            var compilation = references.Compilation;            
+        public ProjectSourceBuilder(EssentialReference references )
+        {            
+            var compilation = references.Compilation;
 
-            var ghostBuilder = new GhostBuilder(SyntaxModifier.Create(compilation) ,compilation.FindAllInterfaceSymbol());
-
+            var ghostBuilder = new GhostBuilder(SyntaxModifier.Create(compilation) ,compilation.FindAllInterfaceSymbol(references.Tag));
+            //var ghostBuilder = ghost_builder;
+            ClassAndTypess = ghostBuilder.ClassAndTypess.ToArray();
             var name = ghostBuilder.Namespace;
             
             var root = SyntaxFactory.NamespaceDeclaration(SyntaxFactory.ParseName($"NS{name}"));
@@ -29,13 +30,16 @@ namespace Regulus.Remote.Tools.Protocol.Sources
             var interfaceProviderCodeBuilder = new InterfaceProviderCodeBuilder(ghosts);
             var membermapCodeBuilder = new MemberMapCodeBuilder(ghostBuilder.Souls);
 
+
             
-            var protocolBuilder = new ProtocolBuilder(compilation, eventProviderCodeBuilder, interfaceProviderCodeBuilder, membermapCodeBuilder, new  SerializableExtractor(ghostBuilder.Types));
+            var protocolBuilder = new ProtocolBuilder(compilation, eventProviderCodeBuilder, interfaceProviderCodeBuilder, membermapCodeBuilder, new  SerializableExtractor(compilation, ghostBuilder.Types));
 
             var protocolProviders = new ProtocoProviderlBuilder(compilation, protocolBuilder.ProtocolName).Trees;
-
+            
             Sources = _UniteFilePath(name,ghosts.Concat(eventProxys).Concat(protocolProviders).Concat(new[] { protocolBuilder.Tree }));
         }
+
+       
 
         private IEnumerable<SyntaxTree> _UniteFilePath(string name,IEnumerable<SyntaxTree> sources)
         {

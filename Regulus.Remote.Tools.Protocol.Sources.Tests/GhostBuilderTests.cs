@@ -48,10 +48,10 @@ namespace NS1
             };
             CSharpCompilation compilation = CSharpCompilation.Create(assemblyName, new[] { syntaxBuilder.Tree }, references);
 
-
+            
             try
             {
-                new EssentialReference(compilation);
+                new EssentialReference(compilation,null);
             }
             catch (MissingTypeException me)
             {
@@ -87,7 +87,7 @@ namespace NS1
                 new Regulus.Remote.Tools.Protocol.Sources.SyntaxTreeBuilder(SourceText.From(source,
                     System.Text.Encoding.UTF8));
 
-            await new GhostTest(syntaxBuilder.Tree).RunAsync();
+            await new GhostTest( syntaxBuilder.Tree).RunAsync();
         }
 
         [Test]
@@ -142,7 +142,7 @@ namespace NS1
                 new Regulus.Remote.Tools.Protocol.Sources.SyntaxTreeBuilder(SourceText.From(source,
                     System.Text.Encoding.UTF8));
 
-            await new GhostTest(syntaxBuilder.Tree).RunAsync();
+            await new GhostTest( syntaxBuilder.Tree).RunAsync();
         }
         [Test]
         public async Task InterfaceInheritPropertyTest()
@@ -334,7 +334,7 @@ namespace NS
             var syntaxBuilder =
                 new Regulus.Remote.Tools.Protocol.Sources.SyntaxTreeBuilder(SourceText.From(source,
                     System.Text.Encoding.UTF8));
-            await new GhostTest(syntaxBuilder.Tree).RunAsync();
+            await new GhostTest( syntaxBuilder.Tree).RunAsync();
         }
 
         [Test]
@@ -378,6 +378,57 @@ public interface IB {
 
             await new GhostTest(syntaxBuilder.Tree).RunAsync();
         }
+        [Test]
+        
+        public void GhostBuilderUnprocessedsTest()
+        {
+            var source = @"
+using System;
+using Regulus.Remote;
+namespace NS1
+{    
+    delegate void GhostTest(int val);
+    public interface IA 
+    {
+        int UnprocessedMethod();
+        Value<int> ProcessedMethod();
+        string this[int index]
+        {
+            get;
+            set;
+        }
+
+        event GhostTest Event1;
+        event System.Action Event2;
+
+        int Property1 {get;set;}
+        Regulus.Remote.Property<int> Property2 {get;set;}
+        
+    }
+}
+
+";
+            var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
+            var com = tree.Compilation();
+            SyntaxModifier modifier = SyntaxModifier.Create(com);
+            var builder = new GhostBuilder(modifier, com.FindAllInterfaceSymbol());            
+
+            var cnt = builder.ClassAndTypess.First();
+            var methods = cnt.GetSyntaxs<MethodDeclarationSyntax>().ToArray();
+            var indexs = cnt.GetSyntaxs<IndexerDeclarationSyntax>().ToArray();
+            var events = cnt.GetSyntaxs<EventDeclarationSyntax>().ToArray();
+            var propertys = cnt.GetSyntaxs<PropertyDeclarationSyntax>().ToArray();
+            NUnit.Framework.Assert.AreEqual(1, methods.Count());
+            NUnit.Framework.Assert.AreEqual(2, indexs.Count());
+            NUnit.Framework.Assert.AreEqual(2, events.Count());
+            NUnit.Framework.Assert.AreEqual(3, propertys.Count());
+
+
+            var dialogProvider = new DialogProvider();
+            var dialogs = dialogProvider.Unsupports(builder.ClassAndTypess).ToArray();
+            NUnit.Framework.Assert.AreEqual(8, dialogs.Count());
+        }
+
 
         [Test]
         public void GhostBuilderCompileTest()
@@ -386,10 +437,17 @@ public interface IB {
 using System;
 namespace NS1
 {    
+    public struct Effect{
+        public int Value;
+    }
+    public struct Item{
+        public Effect[] Effects;
+    }
     public interface IB 
     {
         void IBM1();
         event Action Event2;
+        event Action<Item[]> Event3;
     }
 
     public interface IA :IB 
@@ -408,12 +466,7 @@ namespace NS1
             var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
             var com = tree.Compilation();
             SyntaxModifier modifier = SyntaxModifier.Create(com);
-            var builder = new GhostBuilder(modifier , (from syntaxTree in com.SyntaxTrees
-                             let model = com.GetSemanticModel(syntaxTree)
-                             from interfaneSyntax in syntaxTree.GetRoot().DescendantNodes().OfType<InterfaceDeclarationSyntax>()
-                             let symbol = model.GetDeclaredSymbol(interfaneSyntax)
-                             where symbol.IsGenericType == false
-                             select symbol).SelectMany(s => s.AllInterfaces.Union(new[] { s })));
+            var builder = new GhostBuilder(modifier , com.FindAllInterfaceSymbol());
             var trees = builder.Ghosts.Union(builder.EventProxys).Select( c=> CSharpSyntaxTree.ParseText(c.NormalizeWhitespace().ToFullString()));
 
             var ghostCom = HelperExt.Compile(trees.Union(new[] { tree }));
@@ -456,7 +509,7 @@ namespace NS1
             NUnit.Framework.Assert.True(hasException);
             NUnit.Framework.Assert.AreEqual(1, values[0]);
             NUnit.Framework.Assert.AreEqual(2, values[1]);
-
+            
         }
 
         [Test]
@@ -486,7 +539,7 @@ namespace NS1
     }
     public interface IA  :IB
     {
-        Value<Struct1> M123(int a);
+        Value<Struct1[]> M123(int a);
 
         int NoSupple(int a);
         Regulus.Remote.Property<int> Property1{get;}
@@ -512,12 +565,14 @@ namespace NS1
         static partial void _CreateCase1(ref Regulus.Remote.IProtocol protocol);    
 }
 ";
+
             
             var tree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(source);
             var com = tree.Compilation();
 
-            var builder = new ProjectSourceBuilder(new EssentialReference(com));
+            var builder = new ProjectSourceBuilder(new EssentialReference(com,null));
 
+            
             var ghostCom = HelperExt.Compile(builder.Sources.Union(new[] { tree }));
 
             var asm = ghostCom.ToAssembly();
@@ -563,5 +618,9 @@ namespace NS1
                 throw tie.InnerException as Regulus.Remote.Exceptions.NotSupportedException;
             }
         }
+
+       
     }
+
+    
 }

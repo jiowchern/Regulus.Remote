@@ -84,11 +84,12 @@ namespace Regulus.Serialization
             return _TypeSet.Get(field.FieldType);
         }
 
-        int ITypeDescriber.ToBuffer(object instance, byte[] buffer, int begin)
+        int ITypeDescriber.ToBuffer(object instance, Regulus.Memorys.Buffer buffer, int begin)
         {
 
             try
             {
+                var bytes = buffer.Bytes;
                 int offset = begin;
                 var validFields = _Fields.Select(
                            (field, index) => new
@@ -98,7 +99,7 @@ namespace Regulus.Serialization
                            }).Where(validField => object.Equals(_GetDescriber(validField.field).Default, validField.field.GetValue(instance)) == false)
                        .ToArray();
 
-                offset += Varint.NumberToBuffer(buffer, offset, validFields.Length);
+                offset += Varint.NumberToBuffer(bytes.Array, bytes.Offset + offset, validFields.Length);
 
 
                 foreach (var validField in validFields)
@@ -120,9 +121,10 @@ namespace Regulus.Serialization
 
         }
 
-        private int _ToBuffer(object instance, byte[] buffer, int offset, int index, FieldInfo field)
+        private int _ToBuffer(object instance, Memorys.Buffer buffer, int offset, int index, FieldInfo field)
         {
-            offset += Varint.NumberToBuffer(buffer, offset, index);
+            var bytes = buffer.Bytes;
+            offset += Varint.NumberToBuffer(bytes.Array, bytes.Offset + offset, index);
             object value = field.GetValue(instance);
             Type valueType = value.GetType();
             offset += _TypeSet.Get().ToBuffer(valueType, buffer, offset);
@@ -131,7 +133,7 @@ namespace Regulus.Serialization
             return offset;
         }
 
-        int ITypeDescriber.ToObject(byte[] buffer, int begin, out object instance)
+        int ITypeDescriber.ToObject(Regulus.Memorys.Buffer buffer, int begin, out object instance)
         {
             try
             {
@@ -159,7 +161,7 @@ namespace Regulus.Serialization
 
         }
 
-        private int _ToObject(byte[] buffer, object instance, int offset)
+        private int _ToObject(Regulus.Memorys.Buffer buffer, object instance, int offset)
         {
             ulong index;
             offset += Varint.BufferToNumber(buffer, offset, out index);
