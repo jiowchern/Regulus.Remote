@@ -1,14 +1,17 @@
-name: Build
+name: Build and Publish
 
 on:
   push:
-    branches: [ master ]
+    branches: 
+      - master
+      - release
   pull_request:
-    branches: [ master ]
+    branches: 
+      - master
 
 jobs:
   build:
-
+    if: github.ref == 'refs/heads/master'
     runs-on: windows-latest
 
     steps:
@@ -35,9 +38,29 @@ jobs:
       run: |        
         dotnet test /p:CollectCoverage=true  /p:CoverletOutput=../CoverageResults/ /p:MergeWith="../CoverageResults/coverage.json" /p:CoverletOutputFormat="lcov%2cjson" -m:1
         cp CoverageResults/coverage.info .
-    
     - name: Coveralls GitHub Action
       uses: coverallsapp/github-action@master
       with:         
         github-token: '${{ secrets.GITHUB_TOKEN }}'
-        path-to-lcov: coverage.info   
+        path-to-lcov: coverage.info
+
+  publish:
+    if: github.ref == 'refs/heads/release'
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: 'true'
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.101'
+    - name: Install dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    - name: Pack
+      run: dotnet pack --configuration Release --output ./nupkgs
+    - name: Publish to NuGet
+      run: dotnet nuget push "./nupkgs/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
