@@ -17,11 +17,11 @@ namespace Regulus.Profiles.StandaloneAllFeature.Console
             var entry = new Server.Entry();
             int range = 10;
 
-            
-            
 
-            
-            var set = Regulus.Remote.Server.Provider.CreateTcpService( entry, protocol);
+
+
+
+            /*var set = Regulus.Remote.Server.Provider.CreateTcpService( entry, protocol);
             var port = Regulus.Network.Tcp.Tools.GetAvailablePort();
             set.Listener.Bind(port);
 
@@ -33,6 +33,8 @@ namespace Regulus.Profiles.StandaloneAllFeature.Console
                 clientSet.Agent.Enable(peer);
                 return clientSet.Agent;
             });
+            set.Service.Dispose();
+            */
 
 
             var service = Regulus.Remote.Standalone.Provider.CreateService(entry, protocol);
@@ -41,7 +43,7 @@ namespace Regulus.Profiles.StandaloneAllFeature.Console
                     return service.Create();
             });
 
-            set.Service.Dispose();
+            
 
         }
 

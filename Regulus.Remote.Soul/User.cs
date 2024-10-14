@@ -106,7 +106,17 @@ namespace Regulus.Remote.Soul
                 ErrorEvent();
                 return;
             }
-            _ReadDone(buffers);
+            try
+            {
+                _ReadDone(buffers);
+            }
+            catch (Exception e)
+            {
+                Regulus.Utility.Log.Instance.WriteInfo($"User _StartRead error {e.ToString()}.");
+                ErrorEvent();
+                return;
+            }
+            
             await System.Threading.Tasks.Task.Delay(0).ContinueWith(t => _StartRead());
         }
 
