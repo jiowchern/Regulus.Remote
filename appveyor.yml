@@ -11,7 +11,7 @@ install:
 nuget:  
   project_feed: true
 before_build:
-- cmd: "cd %APPVEYOR_BUILD_FOLDER% \nnuget restore"
+- cmd: "cd %APPVEYOR_BUILD_FOLDER% \nnuget restore\ngit submodule update --init --recursive\ndonet restore"
 build:
   publish_nuget: true  
   verbosity: minimal
