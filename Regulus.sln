@@ -33,7 +33,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Serialization.Test"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{845C59A2-925C-4D68-BAF9-E3545A354CF2}"
 	ProjectSection(SolutionItems) = preProject
-		appveyor.yml = appveyor.yml
 		.github\workflows\build.yml = .github\workflows\build.yml
 		.github\workflows\readme-translate.yml = .github\workflows\readme-translate.yml
 		README.md = README.md
@@ -74,7 +73,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Profile", "Profile", "{762A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Profiles.StandaloneAllFeature.Protocols", "Regulus.Profiles.StandaloneAllFeature.Protocols\Regulus.Profiles.StandaloneAllFeature.Protocols.csproj", "{06665995-D764-49A5-BE7B-388452F29639}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Regulus.Profiles.StandaloneAllFeature.Console", "Regulus.Profiles.StandaloneAllFeature.Console\Regulus.Profiles.StandaloneAllFeature.Console.csproj", "{66F25862-2257-4258-9BB5-90F5957ED35F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Regulus.Profiles.StandaloneAllFeature.Console", "Regulus.Profiles.StandaloneAllFeature.Console\Regulus.Profiles.StandaloneAllFeature.Console.csproj", "{66F25862-2257-4258-9BB5-90F5957ED35F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
