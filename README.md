@@ -1,4 +1,8 @@
-﻿# Regulus Remote
+﻿This project has been renamed to **PinionCore.Remote** , please move to this [page](https://github.com/jiowchern/PinionCore.Remote).
+  
+  
+
+# Regulus Remote
 [![Maintainability](https://api.codeclimate.com/v1/badges/99cb5e1dc12cafbfe451/maintainability)](https://codeclimate.com/github/jiowchern/Regulus.Remote/maintainability)
 [![Actions Status](https://github.com/jiowchern/Regulus.Remote/workflows/Build/badge.svg)](https://github.com/jiowchern/Regulus.Remote/actions)
 [![Coverage Status](https://coveralls.io/repos/github/jiowchern/Regulus.Remote/badge.svg?branch=master)](https://coveralls.io/github/jiowchern/Regulus.Remote?branch=master)
